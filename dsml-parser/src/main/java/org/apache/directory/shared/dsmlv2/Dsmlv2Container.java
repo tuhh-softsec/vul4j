@@ -35,13 +35,13 @@ import org.xmlpull.v1.XmlPullParser;
 public class Dsmlv2Container implements Container
 {
     /** The current state of the decoding */
-    private int state;
+    private Enum<Dsmlv2StatesEnum> state;
 
     /** The current transition */
-    private int transition;
+    private Enum<Dsmlv2StatesEnum> transition;
 
     /** Store the different states for debug purpose */
-    private IStates states;
+    private Enum<Dsmlv2StatesEnum>[] states;
 
     /** The pool parser */
     private XmlPullParser parser;
@@ -134,7 +134,7 @@ public class Dsmlv2Container implements Container
      * @return
      *      the current grammar state
      */
-    public int getState()
+    public Enum<Dsmlv2StatesEnum> getState()
     {
         return state;
     }
@@ -146,7 +146,7 @@ public class Dsmlv2Container implements Container
      * @param state
      *      the new state
      */
-    public void setState( int state )
+    public void setState( Enum<Dsmlv2StatesEnum> state )
     {
         this.state = state;
     }
@@ -158,7 +158,7 @@ public class Dsmlv2Container implements Container
      * @return
      *      the transition from the previous state to the new state
      */
-    public int getTransition()
+    public Enum<Dsmlv2StatesEnum> getTransition()
     {
         return transition;
     }
@@ -170,7 +170,7 @@ public class Dsmlv2Container implements Container
      * @param transition
      *      the transition to set
      */
-    public void setTransition( int transition )
+    public void setTransition( Enum<Dsmlv2StatesEnum> transition )
     {
         this.transition = transition;
     }
@@ -184,7 +184,7 @@ public class Dsmlv2Container implements Container
      */
     @edu.umd.cs.findbugs.annotations.SuppressWarnings(value="UWF_UNWRITTEN_FIELD",
         justification="it exists a setter for 'states'")
-    public IStates getStates()
+    public Enum<Dsmlv2StatesEnum>[] getStates()
     {
         return states;
     }
@@ -224,7 +224,7 @@ public class Dsmlv2Container implements Container
      * @return
      *      a valid transition if any, or null.
      */
-    public GrammarTransition getTransition( int currentState, Tag currentTag )
+    public GrammarTransition getTransition( Enum<Dsmlv2StatesEnum> currentState, Tag currentTag )
     {
         return grammar.getTransition( currentState, currentTag );
     }

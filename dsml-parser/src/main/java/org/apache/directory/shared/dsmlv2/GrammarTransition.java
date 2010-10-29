@@ -30,13 +30,13 @@ package org.apache.directory.shared.dsmlv2;
 public class GrammarTransition
 {
     /** The next state in the grammar */
-    private int nextState;
+    private Enum<Dsmlv2StatesEnum> nextState;
 
     /** The action associated to the transition */
     private GrammarAction action;
 
     /** The current state */
-    private int currentState;
+    private Enum<Dsmlv2StatesEnum> currentState;
 
     
     /**
@@ -49,7 +49,7 @@ public class GrammarTransition
      * @param action
      *      The action to execute. It could be null.
      */
-    public GrammarTransition( int currentState, int nextState, GrammarAction action )
+    public GrammarTransition( Enum<Dsmlv2StatesEnum> currentState, Enum<Dsmlv2StatesEnum> nextState, GrammarAction action )
     {
         this.currentState = currentState;
         this.nextState = nextState;
@@ -62,7 +62,7 @@ public class GrammarTransition
      * @return
      *      the target state.
      */
-    public int getNextState()
+    public Enum<Dsmlv2StatesEnum> getNextState()
     {
         return nextState;
     }
@@ -103,13 +103,13 @@ public class GrammarTransition
      * @return 
      *      a representation of the transition as a string.
      */
-    public String toString( int grammar, IStates statesEnum )
+    public String toString( int grammar, Enum<Dsmlv2StatesEnum> statesEnum )
     {
 
         StringBuffer sb = new StringBuffer();
 
-        sb.append( "Transition from <" ).append( statesEnum.getState( currentState ) ).append( "> to <" ).append(
-            statesEnum.getState( nextState ) ).append( ">, action : " ).append(
+        sb.append( "Transition from <" ).append( currentState ).append( "> to <" ).append(
+            nextState ).append( ">, action : " ).append(
             ( ( action == null ) ? "no action" : action.toString() ) ).append( ">" );
 
         return sb.toString();
