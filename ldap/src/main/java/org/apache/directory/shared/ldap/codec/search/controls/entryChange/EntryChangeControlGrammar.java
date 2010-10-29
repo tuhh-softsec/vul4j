@@ -103,13 +103,13 @@ public final class EntryChangeControlGrammar extends AbstractGrammar
                 try
                 {
                     int change = IntegerDecoder.parse( value, 1, 8 );
-
-                    switch ( change )
+                    
+                    switch ( ChangeType.getChangeType( change ) )
                     {
-                        case ChangeType.ADD_VALUE:
-                        case ChangeType.DELETE_VALUE:
-                        case ChangeType.MODDN_VALUE:
-                        case ChangeType.MODIFY_VALUE:
+                        case ADD:
+                        case DELETE:
+                        case MODDN:
+                        case MODIFY:
                             ChangeType changeType = ChangeType.getChangeType( change );
 
                             if ( IS_DEBUG )
@@ -134,6 +134,10 @@ public final class EntryChangeControlGrammar extends AbstractGrammar
                     String msg = I18n.err( I18n.ERR_04044 );
                     LOG.error( msg, e );
                     throw new DecoderException( msg );
+                }
+                catch ( IllegalArgumentException e )
+                {
+                    throw new DecoderException( e.getLocalizedMessage() );
                 }
             }
         } );

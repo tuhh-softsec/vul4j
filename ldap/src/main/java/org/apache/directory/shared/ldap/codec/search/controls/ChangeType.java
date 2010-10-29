@@ -37,49 +37,39 @@ import org.apache.directory.shared.i18n.I18n;
  *   }
  * </pre>
  * 
- * TODO: should this be an enum?
- * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public final class ChangeType
+public enum ChangeType
 {
-    public static final int ADD_VALUE = 1;
+    ADD(1),
 
-    public static final int DELETE_VALUE = 2;
+    DELETE(2),
 
-    public static final int MODIFY_VALUE = 4;
+    MODIFY(4),
 
-    public static final int MODDN_VALUE = 8;
+    MODDN(8);
 
-    public static final ChangeType ADD = new ChangeType( "ADD", ADD_VALUE );
-
-    public static final ChangeType DELETE = new ChangeType( "DELETE", DELETE_VALUE );
-
-    public static final ChangeType MODIFY = new ChangeType( "MODIFY", MODIFY_VALUE );
-
-    public static final ChangeType MODDN = new ChangeType( "MODDN", MODDN_VALUE );
-    
-    private final String label;
-
-    private final int value;
+    private int value;
 
 
-    private ChangeType(String label, int value)
+    /**
+     * 
+     * Creates a new instance of ChangeType.
+     *
+     * @param value
+     */
+    private ChangeType(int value)
     {
-        this.label = label;
         this.value = value;
     }
 
 
+    /**
+     * @return The int value of the ChangeType
+     */
     public int getValue()
     {
         return value;
-    }
-
-
-    public String toString()
-    {
-        return label;
     }
 
 
@@ -94,13 +84,13 @@ public final class ChangeType
     {
         switch ( value )
         {
-            case ( ADD_VALUE ):
+            case ( 1 ):
                 return ADD;
-            case ( DELETE_VALUE ):
+            case ( 2 ):
                 return DELETE;
-            case ( MODIFY_VALUE ):
+            case ( 4 ):
                 return MODIFY;
-            case ( MODDN_VALUE ):
+            case ( 8 ):
                 return MODDN;
             default:
                 throw new IllegalArgumentException( I18n.err( I18n.ERR_04055, value ) );
