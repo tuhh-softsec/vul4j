@@ -1138,29 +1138,22 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         // If the session has not been establish, or is closed, we get out immediately
         checkSession();
 
-        if ( bindRequest.isSimple() )
-        {
-            // Update the messageId
-            int newId = messageId.incrementAndGet();
-            bindRequest.setMessageId( newId );
+        // Update the messageId
+        int newId = messageId.incrementAndGet();
+        bindRequest.setMessageId( newId );
 
-            LOG.debug( "-----------------------------------------------------------------" );
-            LOG.debug( "Sending request \n{}", bindRequest );
+        LOG.debug( "-----------------------------------------------------------------" );
+        LOG.debug( "Sending request \n{}", bindRequest );
 
-            // Create a future for this Bind operation
-            BindFuture bindFuture = new BindFuture( this, newId );
+        // Create a future for this Bind operation
+        BindFuture bindFuture = new BindFuture( this, newId );
 
-            addToFutureMap( newId, bindFuture );
+        addToFutureMap( newId, bindFuture );
 
-            writeBindRequest( bindRequest );
+        writeBindRequest( bindRequest );
 
-            // Ok, done return the future
-            return bindFuture;
-        }
-        else
-        {
-            return bindSasl( new SaslRequest( bindRequest ) );
-        }
+        // Ok, done return the future
+        return bindFuture;
     }
 
 
@@ -1342,31 +1335,34 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         Control... ctrls )
         throws LdapException, IOException
     {
-        BindRequest bindRequest = createBindRequest( name, credentials, SupportedSaslMechanisms.GSSAPI, ctrls );
-
         String krbConfPath = createKrbConfFile( realmName, kdcHost, kdcPort );
         System.setProperty( "java.security.krb5.conf", krbConfPath );
 
         Configuration.setConfiguration( new Krb5LoginConfiguration() );
         System.setProperty( "javax.security.auth.useSubjectCredsOnly", "true" );
 
-        final SaslRequest saslRequest = new SaslRequest( bindRequest );
+        final SaslRequest saslRequest = new SaslRequest();
+        saslRequest.setUsername( name );
+        saslRequest.setCredentials( credentials );
+        saslRequest.setSaslMechanism( SupportedSaslMechanisms.GSSAPI );
+        saslRequest.setRealmName( realmName );
+        saslRequest.addAllControls( ctrls );
 
         try
         {
             LoginContext loginContext = new LoginContext( "ldapnetworkconnection",
-                new SaslCallbackHandler( saslRequest ) );
+                        new SaslCallbackHandler( saslRequest ) );
             loginContext.login();
 
             // Now, bind by calling the internal bindSasl method
             BindFuture future = ( BindFuture ) Subject.doAs( loginContext.getSubject(),
-                new PrivilegedExceptionAction<Object>()
-            {
-                public Object run() throws Exception
-                {
-                    return bindSasl( saslRequest );
-                }
-            } );
+                        new PrivilegedExceptionAction<Object>()
+                    {
+                        public Object run() throws Exception
+                        {
+                            return bindSasl( saslRequest );
+                        }
+                    } );
 
             return future.get();
         }
@@ -3485,13 +3481,15 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         Control... ctrls )
         throws LdapException, IOException
     {
-        BindRequest bindReq = createBindRequest( name, credentials, saslMech, ctrls );
+        SaslRequest saslRequest = new SaslRequest();
+        saslRequest.setUsername( name );
+        saslRequest.setCredentials( credentials );
+        saslRequest.setSaslMechanism( saslMech );
+        saslRequest.setAuthorizationId( authzId );
+        saslRequest.setRealmName( realmName );
+        saslRequest.addAllControls( ctrls );
 
-        SaslRequest saslReq = new SaslRequest( bindReq );
-        saslReq.setRealmName( realmName );
-        saslReq.setAuthorizationId( authzId );
-
-        return bindSasl( saslReq );
+        return bindSasl( saslRequest );
     }
 
 
@@ -3511,7 +3509,8 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         // If the session has not been establish, or is closed, we get out immediately
         checkSession();
 
-        BindRequest bindRequest = saslRequest.getBindRequest();
+        BindRequest bindRequest = createBindRequest( ( String ) null, null, saslRequest.getSaslMechanism(), saslRequest
+            .getControls() );
 
         // Update the messageId
         int newId = messageId.incrementAndGet();
@@ -3538,7 +3537,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
                 saslRequest.getAuthorizationId(),
                 "ldap",
                 config.getLdapHost(),
-                saslRequest.getSaslMechProps(),
+                null,
                 new SaslCallbackHandler( saslRequest ) );
 
             // If the SaslClient wasn't created, that means we can't create the SASL client
