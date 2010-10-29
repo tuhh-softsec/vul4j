@@ -3420,8 +3420,6 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
     {
         try
         {
-            connect();
-
             checkSession();
 
             ExtendedResponse resp = extended( START_TLS_REQ_OID );
