@@ -28,8 +28,6 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
  * This class store the SyncModifyDnControl's grammar constants. It is also used for
  * debugging purposes.
  * 
- * TODO: should this be an enum?
- * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public enum SyncModifyDnControlStatesEnum implements States
@@ -37,77 +35,47 @@ public enum SyncModifyDnControlStatesEnum implements States
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
 
-    /** The initial state of every grammar */
-    INIT_GRAMMAR_STATE(0),
-
-    /** The ending state for every grammars */
-    GRAMMAR_END(-1),
-
     /** The END_STATE */
-    END_STATE(-1),
+    END_STATE,
 
     // =========================================================================
     // SyncModifyDnControl's control grammar states
     // =========================================================================
     /** Initial state */
-    START_SYNC_MODDN(0),
+    START_SYNC_MODDN,
 
     /** Sequence Value */
-    SYNC_MODDN_VALUE_SEQUENCE_STATE(1),
+    SYNC_MODDN_VALUE_SEQUENCE_STATE,
 
     /** modDn control's entryDN */
-    ENTRY_DN_STATE(2),
+    ENTRY_DN_STATE,
     
     /** modDn control's move operation state */
-    MOVE_STATE(3),
+    MOVE_STATE,
     
     /** modDn rename sequence */
-    RENAME_STATE(4),
+    RENAME_STATE,
 
     /** modDn rename sequence */
-    MOVE_AND_RENAME_STATE(5),
+    MOVE_AND_RENAME_STATE,
 
     /** modDn control's rename newRDN */
-    RENAME_NEW_RDN_STATE(6),
+    RENAME_NEW_RDN_STATE,
 
     /** modDn control's rename deleteOldRdn flag */
-    RENAME_DEL_OLD_RDN_STATE(7),
+    RENAME_DEL_OLD_RDN_STATE,
     
     /** modDn control's move and rename newSuperiorDN */
-    MOVE_AND_RENAME_NEW_SUPERIOR_DN_STATE(8),
+    MOVE_AND_RENAME_NEW_SUPERIOR_DN_STATE,
 
     /** modDn control's move and rename newRDN */
-    MOVE_AND_RENAME_NEW_RDN_STATE(9),
+    MOVE_AND_RENAME_NEW_RDN_STATE,
 
     /** modDn control's move and rename deleteOldRdn flag */
-    MOVE_AND_RENAME_DEL_OLD_RDN_STATE(10),
+    MOVE_AND_RENAME_DEL_OLD_RDN_STATE,
 
     /** terminal state */
-    LAST_SYNC_MODDN_VALUE_STATE(11);
-    
-    private int state;
-    
-    /**
-     * 
-     * Creates a new instance of SyncModifyDnControlStatesEnum.
-     *
-     * @param state
-     */
-    SyncModifyDnControlStatesEnum(int state)
-    {
-        this.state = state;
-    }
-
-    /**
-     * 
-     * Get the state.
-     *
-     * @return State as integer value
-     */
-    public int getState()
-    {
-        return state;
-    }
+    LAST_SYNC_MODDN_VALUE_STATE;
     
     /**
      * Get the grammar name
@@ -146,7 +114,7 @@ public enum SyncModifyDnControlStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END.getState() ) ? "SYNC_MODDN_VALUE_END_STATE" : this.name() );
+        return ( ( state == END_STATE.ordinal() ) ? "SYNC_MODDN_VALUE_END_STATE" : this.name() );
     }
 
     

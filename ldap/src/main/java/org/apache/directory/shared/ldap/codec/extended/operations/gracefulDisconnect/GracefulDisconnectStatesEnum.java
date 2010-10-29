@@ -28,8 +28,6 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
  * This class store the GracefulDisconnect's grammar constants. It is also used
  * for debugging purposes.
  * 
- * TODO: should this be an enum?
- * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public enum GracefulDisconnectStatesEnum implements States
@@ -37,63 +35,33 @@ public enum GracefulDisconnectStatesEnum implements States
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
 
-    /** The initial state of every grammar */
-    INIT_GRAMMAR_STATE(0),
-
-    /** The ending state for every grammars */
-    GRAMMAR_END(-1),
-
     /** The END_STATE */
-    END_STATE(-1),
+    END_STATE,
 
     // =========================================================================
     // GracefulDisconnect grammar states
     // =========================================================================
     /** Initial state */
-    START_STATE(0),
+    START_STATE,
 
     /** Sequence */
-    GRACEFUL_DISCONNECT_SEQUENCE_STATE(1),
+    GRACEFUL_DISCONNECT_SEQUENCE_STATE,
 
     /** Time offline */
-    TIME_OFFLINE_STATE(2),
+    TIME_OFFLINE_STATE,
 
     /** Delay */
-    DELAY_STATE(3),
+    DELAY_STATE,
 
     /** Replicated contexts */
-    REPLICATED_CONTEXTS_STATE(4),
+    REPLICATED_CONTEXTS_STATE,
 
     /** Referral */
-    REFERRAL_STATE(5),
+    REFERRAL_STATE,
 
     /** terminal state */
-    LAST_GRACEFUL_DISCONNECT_STATE(6);
+    LAST_GRACEFUL_DISCONNECT_STATE;
 
-    private int state;
-    
-    /**
-     * 
-     * Creates a new instance of GracefulDisconnectStatesEnum.
-     *
-     * @param state
-     */
-    private GracefulDisconnectStatesEnum(int state)
-    {
-        this.state = state;
-    }
-
-    /**
-     * 
-     * Get the state.
-     *
-     * @return State as integer value
-     */
-    public int getState()
-    {
-        return state;
-    }
-    
     /**
      * Get the grammar name
      * 
@@ -131,7 +99,7 @@ public enum GracefulDisconnectStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END.getState() ) ? "GRACEFUL_DISCONNECT_END_STATE" : name() );
+        return ( ( state == END_STATE.ordinal() ) ? "GRACEFUL_DISCONNECT_END_STATE" : name() );
     }
 
     

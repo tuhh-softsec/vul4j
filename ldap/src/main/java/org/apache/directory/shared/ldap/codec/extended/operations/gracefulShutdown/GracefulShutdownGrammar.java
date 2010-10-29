@@ -32,7 +32,6 @@ import org.apache.directory.shared.asn1.util.IntegerDecoder;
 import org.apache.directory.shared.asn1.util.IntegerDecoderException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.extended.operations.GracefulActionConstants;
-import org.apache.directory.shared.ldap.codec.extended.operations.gracefulDisconnect.GracefulDisconnectStatesEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,7 +71,7 @@ public final class GracefulShutdownGrammar extends AbstractGrammar
         setName( GracefulShutdownGrammar.class.getName() );
 
         // Create the transitions table
-        super.transitions = new GrammarTransition[GracefulShutdownStatesEnum.LAST_GRACEFUL_SHUTDOWN_STATE.getState()][256];
+        super.transitions = new GrammarTransition[GracefulShutdownStatesEnum.LAST_GRACEFUL_SHUTDOWN_STATE.ordinal()][256];
 
         /**
          * Transition from init state to graceful shutdown
@@ -82,8 +81,8 @@ public final class GracefulShutdownGrammar extends AbstractGrammar
          *     
          * Creates the GracefulShutdown object
          */
-        super.transitions[GracefulShutdownStatesEnum.INIT_GRAMMAR_STATE.getState()][UniversalTag.SEQUENCE.getValue()] = 
-            new GrammarTransition( GracefulDisconnectStatesEnum.INIT_GRAMMAR_STATE, 
+        super.transitions[GracefulShutdownStatesEnum.START_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = 
+            new GrammarTransition( GracefulShutdownStatesEnum.START_STATE, 
                 GracefulShutdownStatesEnum.GRACEFUL_SHUTDOWN_SEQUENCE_STATE, 
                 UniversalTag.SEQUENCE.getValue(),
                 new GrammarAction( "Init GracefulShutdown" )
@@ -107,7 +106,7 @@ public final class GracefulShutdownGrammar extends AbstractGrammar
          * Set the time offline value into the GracefulShutdown
          * object.
          */
-        super.transitions[GracefulShutdownStatesEnum.GRACEFUL_SHUTDOWN_SEQUENCE_STATE.getState()][UniversalTag.INTEGER.getValue()] = 
+        super.transitions[GracefulShutdownStatesEnum.GRACEFUL_SHUTDOWN_SEQUENCE_STATE.ordinal()][UniversalTag.INTEGER.getValue()] = 
             new GrammarTransition( GracefulShutdownStatesEnum.GRACEFUL_SHUTDOWN_SEQUENCE_STATE, 
                                     GracefulShutdownStatesEnum.TIME_OFFLINE_STATE, 
                                     UniversalTag.INTEGER.getValue(), 
@@ -149,7 +148,7 @@ public final class GracefulShutdownGrammar extends AbstractGrammar
          * Set the delay value into the GracefulShutdown
          * object.
          */
-        super.transitions[GracefulShutdownStatesEnum.TIME_OFFLINE_STATE.getState()][GracefulActionConstants.GRACEFUL_ACTION_DELAY_TAG] = 
+        super.transitions[GracefulShutdownStatesEnum.TIME_OFFLINE_STATE.ordinal()][GracefulActionConstants.GRACEFUL_ACTION_DELAY_TAG] = 
             new GrammarTransition( GracefulShutdownStatesEnum.TIME_OFFLINE_STATE, 
                                     GracefulShutdownStatesEnum.DELAY_STATE, 
                                     GracefulActionConstants.GRACEFUL_ACTION_DELAY_TAG, 
@@ -192,7 +191,7 @@ public final class GracefulShutdownGrammar extends AbstractGrammar
          * Set the delay value into the GracefulShutdown
          * object.
          */
-        super.transitions[GracefulShutdownStatesEnum.GRACEFUL_SHUTDOWN_SEQUENCE_STATE.getState()]
+        super.transitions[GracefulShutdownStatesEnum.GRACEFUL_SHUTDOWN_SEQUENCE_STATE.ordinal()]
                          [GracefulActionConstants.GRACEFUL_ACTION_DELAY_TAG] = 
             new GrammarTransition( GracefulShutdownStatesEnum.GRACEFUL_SHUTDOWN_SEQUENCE_STATE, 
                                     GracefulShutdownStatesEnum.DELAY_STATE, 

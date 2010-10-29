@@ -35,52 +35,22 @@ public enum SubentriesControlStatesEnum implements States
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
 
-    /** The initial state of every grammar */
-    INIT_GRAMMAR_STATE(0),
-
-    /** The ending state for every grammars */
-    GRAMMAR_END(-1),
-
     /** The END_STATE */
-    END_STATE(-1),
+    END_STATE,
 
     // =========================================================================
     // Sub entry control grammar states
     // =========================================================================
 
     /** Starting state */
-    START_STATE(0),
+    START_STATE,
 
     /** Visibility Value */
-    SUB_ENTRY_VISIBILITY_STATE(1),
+    SUB_ENTRY_VISIBILITY_STATE,
 
     /** terminal state */
-    LAST_SUB_ENTRY_STATE(2);
+    LAST_SUB_ENTRY_STATE;
 
-    private int state;
-    
-    /**
-     * 
-     * Creates a new instance of SubentriesControlStatesEnum.
-     *
-     * @param state
-     */
-    SubentriesControlStatesEnum(int state)
-    {
-        this.state = state;
-    }
-
-    /**
-     * 
-     * Get the state.
-     *
-     * @return State as integer value
-     */
-    public int getState()
-    {
-        return state;
-    }
-    
 
     /**
      * Get the grammar name
@@ -119,7 +89,7 @@ public enum SubentriesControlStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END.getState() ) ? "SUB_ENTRY_END_STATE" : name() );
+        return ( ( state == END_STATE.ordinal() ) ? "SUB_ENTRY_END_STATE" : name() );
     }
 
     

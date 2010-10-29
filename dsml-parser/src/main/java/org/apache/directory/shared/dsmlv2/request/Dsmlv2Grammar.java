@@ -108,932 +108,932 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
         //====================================================
         //  Transitions concerning : BATCH REQUEST
         //====================================================
-        super.transitions[Dsmlv2StatesEnum.INIT_GRAMMAR_STATE.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_START_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_LOOP.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_END_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.INIT_GRAMMAR_STATE.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_START_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_LOOP.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_END_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
 
         // ** OPEN BATCH REQUEST **
         // State: [INIT_GRAMMAR_STATE] - Tag: <batchRequest>
-        super.transitions[Dsmlv2StatesEnum.INIT_GRAMMAR_STATE.getState()].put( new Tag( "batchRequest", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.INIT_GRAMMAR_STATE.ordinal()].put( new Tag( "batchRequest", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.INIT_GRAMMAR_STATE, Dsmlv2StatesEnum.BATCHREQUEST_START_TAG,
                 batchRequestCreation ) );
 
         // ** CLOSE BATCH REQUEST **
         // state: [BATCHREQUEST_START_TAG] - Tag: </batchRequest>
-        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_START_TAG.getState()]
+        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_START_TAG.ordinal()]
             .put( new Tag( "batchRequest", Tag.END ), new GrammarTransition( Dsmlv2StatesEnum.BATCHREQUEST_START_TAG,
                 Dsmlv2StatesEnum.BATCHREQUEST_END_TAG, null ) );
         //state: [BATCHREQUEST_LOOP] - Tag: </batchRequest>
-        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_LOOP.getState()].put( new Tag( "batchRequest", Tag.END ),
-            new GrammarTransition( Dsmlv2StatesEnum.BATCHREQUEST_LOOP, Dsmlv2StatesEnum.END_STATE, null ) );
+        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_LOOP.ordinal()].put( new Tag( "batchRequest", Tag.END ),
+            new GrammarTransition( Dsmlv2StatesEnum.BATCHREQUEST_LOOP, Dsmlv2StatesEnum.GRAMMAR_END, null ) );
 
         // ** ABANDON REQUEST **
         // State: [BATCHREQUEST_START_TAG] - Tag: <abandonRequest>
-        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_START_TAG.getState()].put( new Tag( "abandonRequest", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_START_TAG.ordinal()].put( new Tag( "abandonRequest", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.BATCHREQUEST_START_TAG, Dsmlv2StatesEnum.ABANDON_REQUEST_START_TAG,
                 abandonRequestCreation ) );
         // state: [BATCHREQUEST_LOOP] - Tag: <abandonRequest>
-        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_LOOP.getState()].put( new Tag( "abandonRequest", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_LOOP.ordinal()].put( new Tag( "abandonRequest", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.BATCHREQUEST_LOOP, Dsmlv2StatesEnum.ABANDON_REQUEST_START_TAG,
                 abandonRequestCreation ) );
 
         // ** ADD REQUEST **
         // state: [BATCHREQUEST_START_TAG] - Tag: <addRequest>
-        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_START_TAG.getState()].put( new Tag( "addRequest", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_START_TAG.ordinal()].put( new Tag( "addRequest", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.BATCHREQUEST_START_TAG, Dsmlv2StatesEnum.ADD_REQUEST_START_TAG,
                 addRequestCreation ) );
         // state: [BATCHREQUEST_LOOP] - Tag: <addRequest>
-        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_LOOP.getState()].put( new Tag( "addRequest", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_LOOP.ordinal()].put( new Tag( "addRequest", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.BATCHREQUEST_LOOP, Dsmlv2StatesEnum.ADD_REQUEST_START_TAG,
                 addRequestCreation ) );
 
         // ** AUTH REQUEST **
         // state: [BATCHREQUEST_START_TAG] - Tag: <authRequest>
-        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_START_TAG.getState()].put( new Tag( "authRequest", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_START_TAG.ordinal()].put( new Tag( "authRequest", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.BATCHREQUEST_START_TAG, Dsmlv2StatesEnum.AUTH_REQUEST_START_TAG,
                 authRequestCreation ) );
 
         // ** COMPARE REQUEST **
         // state: [BATCHREQUEST_START_TAG] - Tag: <compareRequest>
-        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_START_TAG.getState()].put( new Tag( "compareRequest", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_START_TAG.ordinal()].put( new Tag( "compareRequest", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.BATCHREQUEST_START_TAG, Dsmlv2StatesEnum.COMPARE_REQUEST_START_TAG,
                 compareRequestCreation ) );
         // state: [BATCHREQUEST_LOOP] - Tag: <compareRequest>
-        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_LOOP.getState()].put( new Tag( "compareRequest", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_LOOP.ordinal()].put( new Tag( "compareRequest", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.BATCHREQUEST_LOOP, Dsmlv2StatesEnum.COMPARE_REQUEST_START_TAG,
                 compareRequestCreation ) );
 
         // ** DEL REQUEST **
         // state: [BATCHREQUEST_START_TAG] - Tag: <delRequest>
-        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_START_TAG.getState()].put( new Tag( "delRequest", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_START_TAG.ordinal()].put( new Tag( "delRequest", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.BATCHREQUEST_START_TAG, Dsmlv2StatesEnum.DEL_REQUEST_START_TAG,
                 delRequestCreation ) );
         // state: [BATCHREQUEST_LOOP] - Tag: <delRequest>
-        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_LOOP.getState()].put( new Tag( "delRequest", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_LOOP.ordinal()].put( new Tag( "delRequest", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.BATCHREQUEST_LOOP, Dsmlv2StatesEnum.DEL_REQUEST_START_TAG,
                 delRequestCreation ) );
 
         // ** EXTENDED REQUEST **
         // state: [BATCHREQUEST_START_TAG] - Tag: <extendedRequest>
-        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_START_TAG.getState()].put( new Tag( "extendedRequest", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_START_TAG.ordinal()].put( new Tag( "extendedRequest", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.BATCHREQUEST_START_TAG,
                 Dsmlv2StatesEnum.EXTENDED_REQUEST_START_TAG, extendedRequestCreation ) );
         // state: [BATCHREQUEST_LOOP] - Tag: <extendedRequest>
-        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_LOOP.getState()].put( new Tag( "extendedRequest", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_LOOP.ordinal()].put( new Tag( "extendedRequest", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.BATCHREQUEST_LOOP, Dsmlv2StatesEnum.EXTENDED_REQUEST_START_TAG,
                 extendedRequestCreation ) );
 
         // ** MOD DN REQUEST **
         // state: [BATCHREQUEST_START_TAG] - Tag: <modDNRequest>
-        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_START_TAG.getState()].put( new Tag( "modDNRequest", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_START_TAG.ordinal()].put( new Tag( "modDNRequest", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.BATCHREQUEST_START_TAG,
                 Dsmlv2StatesEnum.MODIFY_DN_REQUEST_START_TAG, modDNRequestCreation ) );
         // state: [BATCHREQUEST_LOOP] - Tag: <modDNRequest>
-        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_LOOP.getState()].put( new Tag( "modDNRequest", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_LOOP.ordinal()].put( new Tag( "modDNRequest", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.BATCHREQUEST_LOOP, Dsmlv2StatesEnum.MODIFY_DN_REQUEST_START_TAG,
                 modDNRequestCreation ) );
 
         // ** MODIFY REQUEST **
         // state: [BATCHREQUEST_START_TAG] - Tag: <modifyRequest>
-        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_START_TAG.getState()].put( new Tag( "modifyRequest", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_START_TAG.ordinal()].put( new Tag( "modifyRequest", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.BATCHREQUEST_START_TAG, Dsmlv2StatesEnum.MODIFY_REQUEST_START_TAG,
                 modifyRequestCreation ) );
         // state: [BATCHREQUEST_LOOP] - Tag: <modifyRequest>
-        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_LOOP.getState()].put( new Tag( "modifyRequest", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_LOOP.ordinal()].put( new Tag( "modifyRequest", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.BATCHREQUEST_LOOP, Dsmlv2StatesEnum.MODIFY_REQUEST_START_TAG,
                 modifyRequestCreation ) );
 
         // ** SEARCH REQUEST **
         // state: [BATCHREQUEST_START_TAG] - Tag: <searchRequest>
-        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_START_TAG.getState()].put( new Tag( "searchRequest", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_START_TAG.ordinal()].put( new Tag( "searchRequest", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.BATCHREQUEST_START_TAG, Dsmlv2StatesEnum.SEARCH_REQUEST_START_TAG,
                 searchRequestCreation ) );
         // state: [BATCHREQUEST_LOOP] - Tag: <searchRequest>
-        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_LOOP.getState()].put( new Tag( "searchRequest", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_LOOP.ordinal()].put( new Tag( "searchRequest", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.BATCHREQUEST_LOOP, Dsmlv2StatesEnum.SEARCH_REQUEST_START_TAG,
                 searchRequestCreation ) );
 
         //====================================================
         //  Transitions concerning : ABANDON REQUEST
         //====================================================
-        super.transitions[Dsmlv2StatesEnum.ABANDON_REQUEST_START_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.ABANDON_REQUEST_CONTROL_START_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.ABANDON_REQUEST_CONTROL_END_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.ABANDON_REQUEST_CONTROLVALUE_END_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.ABANDON_REQUEST_START_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.ABANDON_REQUEST_CONTROL_START_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.ABANDON_REQUEST_CONTROL_END_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.ABANDON_REQUEST_CONTROLVALUE_END_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
 
         // State: [ABANDON_REQUEST_START_TAG] - Tag: </abandonRequest>
-        super.transitions[Dsmlv2StatesEnum.ABANDON_REQUEST_START_TAG.getState()]
+        super.transitions[Dsmlv2StatesEnum.ABANDON_REQUEST_START_TAG.ordinal()]
             .put( new Tag( "abandonRequest", Tag.END ), new GrammarTransition(
                 Dsmlv2StatesEnum.ABANDON_REQUEST_START_TAG, Dsmlv2StatesEnum.BATCHREQUEST_LOOP, null ) );
 
         // State: [ABANDON_REQUEST_START_TAG] - Tag: <control>
-        super.transitions[Dsmlv2StatesEnum.ABANDON_REQUEST_START_TAG.getState()].put( new Tag( "control", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.ABANDON_REQUEST_START_TAG.ordinal()].put( new Tag( "control", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.ABANDON_REQUEST_START_TAG,
                 Dsmlv2StatesEnum.ABANDON_REQUEST_CONTROL_START_TAG, controlCreation ) );
 
         // State: [ABANDON_REQUEST_CONTROL_START_TAG] - Tag: <controlValue>
-        super.transitions[Dsmlv2StatesEnum.ABANDON_REQUEST_CONTROL_START_TAG.getState()].put(
+        super.transitions[Dsmlv2StatesEnum.ABANDON_REQUEST_CONTROL_START_TAG.ordinal()].put(
             new Tag( "controlValue", Tag.START ), new GrammarTransition(
                 Dsmlv2StatesEnum.ABANDON_REQUEST_CONTROL_START_TAG,
                 Dsmlv2StatesEnum.ABANDON_REQUEST_CONTROLVALUE_END_TAG, controlValueCreation ) );
 
         // State: [ABANDON_REQUEST_CONTROLVALUE_END_TAG] - Tag: </control>
-        super.transitions[Dsmlv2StatesEnum.ABANDON_REQUEST_CONTROLVALUE_END_TAG.getState()].put( new Tag( "control", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.ABANDON_REQUEST_CONTROLVALUE_END_TAG.ordinal()].put( new Tag( "control", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.ABANDON_REQUEST_CONTROLVALUE_END_TAG,
                 Dsmlv2StatesEnum.ABANDON_REQUEST_CONTROL_END_TAG, null ) );
 
         // State: [ABANDON_REQUEST_CONTROL_START_TAG] - Tag: </control>
-        super.transitions[Dsmlv2StatesEnum.ABANDON_REQUEST_CONTROL_START_TAG.getState()].put( new Tag( "control", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.ABANDON_REQUEST_CONTROL_START_TAG.ordinal()].put( new Tag( "control", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.ABANDON_REQUEST_CONTROL_START_TAG,
                 Dsmlv2StatesEnum.ABANDON_REQUEST_CONTROL_END_TAG, null ) );
 
         // State: [ABANDON_REQUEST_CONTROL_END_TAG] - Tag: <control>
-        super.transitions[Dsmlv2StatesEnum.ABANDON_REQUEST_CONTROL_END_TAG.getState()].put( new Tag( "control", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.ABANDON_REQUEST_CONTROL_END_TAG.ordinal()].put( new Tag( "control", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.ABANDON_REQUEST_CONTROL_END_TAG,
                 Dsmlv2StatesEnum.ABANDON_REQUEST_CONTROL_START_TAG, controlCreation ) );
 
         // State: [ABANDON_REQUEST_CONTROL_END_TAG] - Tag: </abandonRequest>
-        super.transitions[Dsmlv2StatesEnum.ABANDON_REQUEST_CONTROL_END_TAG.getState()].put( new Tag( "abandonRequest", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.ABANDON_REQUEST_CONTROL_END_TAG.ordinal()].put( new Tag( "abandonRequest", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.ABANDON_REQUEST_CONTROL_END_TAG,
                 Dsmlv2StatesEnum.BATCHREQUEST_LOOP, null ) );
 
         //====================================================
         //  Transitions concerning : ADD REQUEST
         //====================================================
-        super.transitions[Dsmlv2StatesEnum.ADD_REQUEST_START_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.ADD_REQUEST_CONTROL_START_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.ADD_REQUEST_CONTROL_END_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.ADD_REQUEST_CONTROLVALUE_END_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.ADD_REQUEST_ATTR_START_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.ADD_REQUEST_ATTR_END_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.ADD_REQUEST_START_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.ADD_REQUEST_CONTROL_START_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.ADD_REQUEST_CONTROL_END_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.ADD_REQUEST_CONTROLVALUE_END_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.ADD_REQUEST_ATTR_START_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.ADD_REQUEST_ATTR_END_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
 
         // state: [ADD_REQUEST_START_TAG] -> Tag: </addRequest>
-        super.transitions[Dsmlv2StatesEnum.ADD_REQUEST_START_TAG.getState()].put( new Tag( "addRequest", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.ADD_REQUEST_START_TAG.ordinal()].put( new Tag( "addRequest", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.ADD_REQUEST_START_TAG, Dsmlv2StatesEnum.BATCHREQUEST_LOOP, null ) );
 
         // State: [ADD_REQUEST_START_TAG] - Tag: <control>
-        super.transitions[Dsmlv2StatesEnum.ADD_REQUEST_START_TAG.getState()].put( new Tag( "control", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.ADD_REQUEST_START_TAG.ordinal()].put( new Tag( "control", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.ADD_REQUEST_START_TAG,
                 Dsmlv2StatesEnum.ADD_REQUEST_CONTROL_START_TAG, controlCreation ) );
 
         // State: [ADD_REQUEST_CONTROL_START_TAG] - Tag: <controlValue>
-        super.transitions[Dsmlv2StatesEnum.ADD_REQUEST_CONTROL_START_TAG.getState()].put( new Tag( "controlValue", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.ADD_REQUEST_CONTROL_START_TAG.ordinal()].put( new Tag( "controlValue", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.ADD_REQUEST_CONTROL_START_TAG,
                 Dsmlv2StatesEnum.ADD_REQUEST_CONTROLVALUE_END_TAG, controlValueCreation ) );
 
         // State: [ADD_REQUEST_CONTROLVALUE_END_TAG] - Tag: </control>
-        super.transitions[Dsmlv2StatesEnum.ADD_REQUEST_CONTROLVALUE_END_TAG.getState()].put( new Tag( "control", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.ADD_REQUEST_CONTROLVALUE_END_TAG.ordinal()].put( new Tag( "control", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.ADD_REQUEST_CONTROLVALUE_END_TAG,
                 Dsmlv2StatesEnum.ADD_REQUEST_CONTROL_END_TAG, null ) );
 
         // State: [ADD_REQUEST_CONTROL_START_TAG] - Tag: </control>
-        super.transitions[Dsmlv2StatesEnum.ADD_REQUEST_CONTROL_START_TAG.getState()].put( new Tag( "control", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.ADD_REQUEST_CONTROL_START_TAG.ordinal()].put( new Tag( "control", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.ADD_REQUEST_CONTROL_START_TAG,
                 Dsmlv2StatesEnum.ADD_REQUEST_CONTROL_END_TAG, null ) );
 
         // State: [ADD_REQUEST_CONTROL_END_TAG] - Tag: <control>
-        super.transitions[Dsmlv2StatesEnum.ADD_REQUEST_CONTROL_END_TAG.getState()].put( new Tag( "control", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.ADD_REQUEST_CONTROL_END_TAG.ordinal()].put( new Tag( "control", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.ADD_REQUEST_CONTROL_END_TAG,
                 Dsmlv2StatesEnum.ADD_REQUEST_CONTROL_START_TAG, controlCreation ) );
 
         // State: [ADD_REQUEST_CONTROL_END_TAG] - Tag: </addRequest>
-        super.transitions[Dsmlv2StatesEnum.ADD_REQUEST_CONTROL_END_TAG.getState()].put( new Tag( "addRequest", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.ADD_REQUEST_CONTROL_END_TAG.ordinal()].put( new Tag( "addRequest", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.ADD_REQUEST_CONTROL_END_TAG, Dsmlv2StatesEnum.BATCHREQUEST_LOOP,
                 null ) );
 
         // State: [ADD_REQUEST_START_TAG] - Tag: <attr>
-        super.transitions[Dsmlv2StatesEnum.ADD_REQUEST_START_TAG.getState()].put( new Tag( "attr", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.ADD_REQUEST_START_TAG.ordinal()].put( new Tag( "attr", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.ADD_REQUEST_START_TAG, Dsmlv2StatesEnum.ADD_REQUEST_ATTR_START_TAG,
                 addRequestAddAttribute ) );
 
         // State: [ADD_REQUEST_CONTROL_END_TAG] - Tag: <attr>
-        super.transitions[Dsmlv2StatesEnum.ADD_REQUEST_CONTROL_END_TAG.getState()].put( new Tag( "attr", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.ADD_REQUEST_CONTROL_END_TAG.ordinal()].put( new Tag( "attr", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.ADD_REQUEST_CONTROL_END_TAG,
                 Dsmlv2StatesEnum.ADD_REQUEST_ATTR_START_TAG, addRequestAddAttribute ) );
 
         // State: [ADD_REQUEST_ATTR_END_TAG] - Tag: <attr>
-        super.transitions[Dsmlv2StatesEnum.ADD_REQUEST_ATTR_END_TAG.getState()].put( new Tag( "attr", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.ADD_REQUEST_ATTR_END_TAG.ordinal()].put( new Tag( "attr", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.ADD_REQUEST_ATTR_END_TAG,
                 Dsmlv2StatesEnum.ADD_REQUEST_ATTR_START_TAG, addRequestAddAttribute ) );
 
         // State: [ADD_REQUEST_ATTR_START_TAG] - Tag: </attr>
-        super.transitions[Dsmlv2StatesEnum.ADD_REQUEST_ATTR_START_TAG.getState()].put( new Tag( "attr", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.ADD_REQUEST_ATTR_START_TAG.ordinal()].put( new Tag( "attr", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.ADD_REQUEST_ATTR_START_TAG,
                 Dsmlv2StatesEnum.ADD_REQUEST_ATTR_END_TAG, null ) );
 
         // State: [ADD_REQUEST_ATTR_START_TAG] - Tag: <value>
-        super.transitions[Dsmlv2StatesEnum.ADD_REQUEST_ATTR_START_TAG.getState()].put( new Tag( "value", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.ADD_REQUEST_ATTR_START_TAG.ordinal()].put( new Tag( "value", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.ADD_REQUEST_ATTR_START_TAG,
                 Dsmlv2StatesEnum.ADD_REQUEST_ATTR_START_TAG, addRequestAddValue ) );
 
         // State: [ADD_REQUEST_ATTR_END_TAG] - Tag: </addRequest>
-        super.transitions[Dsmlv2StatesEnum.ADD_REQUEST_ATTR_END_TAG.getState()]
+        super.transitions[Dsmlv2StatesEnum.ADD_REQUEST_ATTR_END_TAG.ordinal()]
             .put( new Tag( "addRequest", Tag.END ), new GrammarTransition( Dsmlv2StatesEnum.ADD_REQUEST_ATTR_END_TAG,
                 Dsmlv2StatesEnum.BATCHREQUEST_LOOP, null ) );
 
         //====================================================
         //  Transitions concerning : AUTH REQUEST
         //====================================================
-        super.transitions[Dsmlv2StatesEnum.AUTH_REQUEST_START_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.AUTH_REQUEST_CONTROL_START_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.AUTH_REQUEST_CONTROL_END_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.AUTH_REQUEST_CONTROLVALUE_END_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.AUTH_REQUEST_START_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.AUTH_REQUEST_CONTROL_START_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.AUTH_REQUEST_CONTROL_END_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.AUTH_REQUEST_CONTROLVALUE_END_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
 
         // state: [AUTH_REQUEST_START_TAG] -> Tag: </authRequest>
-        super.transitions[Dsmlv2StatesEnum.AUTH_REQUEST_START_TAG.getState()].put( new Tag( "authRequest", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.AUTH_REQUEST_START_TAG.ordinal()].put( new Tag( "authRequest", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.AUTH_REQUEST_START_TAG, Dsmlv2StatesEnum.BATCHREQUEST_LOOP, null ) );
 
         // State: [AUTH_REQUEST_START_TAG] - Tag: <control>
-        super.transitions[Dsmlv2StatesEnum.AUTH_REQUEST_START_TAG.getState()].put( new Tag( "control", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.AUTH_REQUEST_START_TAG.ordinal()].put( new Tag( "control", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.AUTH_REQUEST_START_TAG,
                 Dsmlv2StatesEnum.AUTH_REQUEST_CONTROL_START_TAG, controlCreation ) );
 
         // State: [AUTH_REQUEST_CONTROL_START_TAG] - Tag: <controlValue>
-        super.transitions[Dsmlv2StatesEnum.AUTH_REQUEST_CONTROL_START_TAG.getState()].put( new Tag( "controlValue", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.AUTH_REQUEST_CONTROL_START_TAG.ordinal()].put( new Tag( "controlValue", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.AUTH_REQUEST_CONTROL_START_TAG,
                 Dsmlv2StatesEnum.AUTH_REQUEST_CONTROLVALUE_END_TAG, controlValueCreation ) );
 
         // State: [AUTH_REQUEST_CONTROLVALUE_END_TAG] - Tag: </control>
-        super.transitions[Dsmlv2StatesEnum.AUTH_REQUEST_CONTROLVALUE_END_TAG.getState()].put( new Tag( "control", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.AUTH_REQUEST_CONTROLVALUE_END_TAG.ordinal()].put( new Tag( "control", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.AUTH_REQUEST_CONTROLVALUE_END_TAG,
                 Dsmlv2StatesEnum.AUTH_REQUEST_CONTROL_END_TAG, null ) );
 
         // State: [AUTH_REQUEST_CONTROL_START_TAG] - Tag: </control>
-        super.transitions[Dsmlv2StatesEnum.AUTH_REQUEST_CONTROL_START_TAG.getState()].put( new Tag( "control", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.AUTH_REQUEST_CONTROL_START_TAG.ordinal()].put( new Tag( "control", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.AUTH_REQUEST_CONTROL_START_TAG,
                 Dsmlv2StatesEnum.AUTH_REQUEST_CONTROL_END_TAG, null ) );
 
         // State: [AUTH_REQUEST_CONTROL_END_TAG] - Tag: <control>
-        super.transitions[Dsmlv2StatesEnum.AUTH_REQUEST_CONTROL_END_TAG.getState()].put( new Tag( "control", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.AUTH_REQUEST_CONTROL_END_TAG.ordinal()].put( new Tag( "control", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.AUTH_REQUEST_CONTROL_END_TAG,
                 Dsmlv2StatesEnum.AUTH_REQUEST_CONTROL_START_TAG, controlCreation ) );
 
         // State: [AUTH_REQUEST_CONTROL_END_TAG] - Tag: </authRequest>
-        super.transitions[Dsmlv2StatesEnum.AUTH_REQUEST_CONTROL_END_TAG.getState()].put( new Tag( "authRequest", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.AUTH_REQUEST_CONTROL_END_TAG.ordinal()].put( new Tag( "authRequest", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.AUTH_REQUEST_CONTROL_END_TAG, Dsmlv2StatesEnum.BATCHREQUEST_LOOP,
                 null ) );
 
         //====================================================
         //  Transitions concerning : COMPARE REQUEST
         //====================================================
-        super.transitions[Dsmlv2StatesEnum.COMPARE_REQUEST_START_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.COMPARE_REQUEST_CONTROL_START_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.COMPARE_REQUEST_CONTROL_END_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.COMPARE_REQUEST_CONTROLVALUE_END_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.COMPARE_REQUEST_ASSERTION_START_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.COMPARE_REQUEST_ASSERTION_END_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.COMPARE_REQUEST_VALUE_END_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.COMPARE_REQUEST_START_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.COMPARE_REQUEST_CONTROL_START_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.COMPARE_REQUEST_CONTROL_END_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.COMPARE_REQUEST_CONTROLVALUE_END_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.COMPARE_REQUEST_ASSERTION_START_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.COMPARE_REQUEST_ASSERTION_END_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.COMPARE_REQUEST_VALUE_END_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
 
         // State: [COMPARE_REQUEST_START_TAG] - Tag: <control>
-        super.transitions[Dsmlv2StatesEnum.COMPARE_REQUEST_START_TAG.getState()].put( new Tag( "control", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.COMPARE_REQUEST_START_TAG.ordinal()].put( new Tag( "control", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.COMPARE_REQUEST_START_TAG,
                 Dsmlv2StatesEnum.COMPARE_REQUEST_CONTROL_START_TAG, controlCreation ) );
 
         // State: [COMPARE_REQUEST_CONTROL_START_TAG] - Tag: <controlValue>
-        super.transitions[Dsmlv2StatesEnum.COMPARE_REQUEST_CONTROL_START_TAG.getState()].put(
+        super.transitions[Dsmlv2StatesEnum.COMPARE_REQUEST_CONTROL_START_TAG.ordinal()].put(
             new Tag( "controlValue", Tag.START ), new GrammarTransition(
                 Dsmlv2StatesEnum.COMPARE_REQUEST_CONTROL_START_TAG,
                 Dsmlv2StatesEnum.COMPARE_REQUEST_CONTROLVALUE_END_TAG, controlValueCreation ) );
 
         // State: [COMPARE_REQUEST_CONTROLVALUE_END_TAG] - Tag: </control>
-        super.transitions[Dsmlv2StatesEnum.COMPARE_REQUEST_CONTROLVALUE_END_TAG.getState()].put( new Tag( "control", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.COMPARE_REQUEST_CONTROLVALUE_END_TAG.ordinal()].put( new Tag( "control", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.COMPARE_REQUEST_CONTROLVALUE_END_TAG,
                 Dsmlv2StatesEnum.COMPARE_REQUEST_CONTROL_END_TAG, null ) );
 
         // State: [COMPARE_REQUEST_CONTROL_START_TAG] - Tag: </control>
-        super.transitions[Dsmlv2StatesEnum.COMPARE_REQUEST_CONTROL_START_TAG.getState()].put( new Tag( "control", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.COMPARE_REQUEST_CONTROL_START_TAG.ordinal()].put( new Tag( "control", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.COMPARE_REQUEST_CONTROL_START_TAG,
                 Dsmlv2StatesEnum.COMPARE_REQUEST_CONTROL_END_TAG, null ) );
 
         // State: [COMPARE_REQUEST_CONTROL_END_TAG] - Tag: <control>
-        super.transitions[Dsmlv2StatesEnum.COMPARE_REQUEST_CONTROL_END_TAG.getState()].put( new Tag( "control", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.COMPARE_REQUEST_CONTROL_END_TAG.ordinal()].put( new Tag( "control", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.COMPARE_REQUEST_CONTROL_END_TAG,
                 Dsmlv2StatesEnum.COMPARE_REQUEST_CONTROL_START_TAG, controlCreation ) );
 
         // State: [COMPARE_REQUEST_CONTROL_END_TAG] - Tag: </compareRequest>
-        super.transitions[Dsmlv2StatesEnum.COMPARE_REQUEST_CONTROL_END_TAG.getState()].put( new Tag( "compareRequest", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.COMPARE_REQUEST_CONTROL_END_TAG.ordinal()].put( new Tag( "compareRequest", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.COMPARE_REQUEST_CONTROL_END_TAG,
                 Dsmlv2StatesEnum.BATCHREQUEST_LOOP, null ) );
 
         // State: [COMPARE_REQUEST_START_TAG] - Tag: <assertion>
-        super.transitions[Dsmlv2StatesEnum.COMPARE_REQUEST_START_TAG.getState()].put( new Tag( "assertion", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.COMPARE_REQUEST_START_TAG.ordinal()].put( new Tag( "assertion", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.COMPARE_REQUEST_CONTROL_START_TAG,
                 Dsmlv2StatesEnum.COMPARE_REQUEST_ASSERTION_START_TAG, compareRequestAddAssertion ) );
 
         // State: [COMPARE_REQUEST_CONTROL_END_TAG] - Tag: <assertion>
-        super.transitions[Dsmlv2StatesEnum.COMPARE_REQUEST_CONTROL_END_TAG.getState()].put( new Tag( "assertion", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.COMPARE_REQUEST_CONTROL_END_TAG.ordinal()].put( new Tag( "assertion", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.COMPARE_REQUEST_CONTROL_END_TAG,
                 Dsmlv2StatesEnum.COMPARE_REQUEST_ASSERTION_START_TAG, compareRequestAddAssertion ) );
 
         // State: [COMPARE_REQUEST_ASSERTION_START_TAG] - Tag: <value>
-        super.transitions[Dsmlv2StatesEnum.COMPARE_REQUEST_ASSERTION_START_TAG.getState()].put( new Tag( "value", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.COMPARE_REQUEST_ASSERTION_START_TAG.ordinal()].put( new Tag( "value", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.COMPARE_REQUEST_ASSERTION_START_TAG,
                 Dsmlv2StatesEnum.COMPARE_REQUEST_VALUE_END_TAG, compareRequestAddValue ) );
 
         //State: [COMPARE_REQUEST_VALUE_END_TAG] - Tag: </assertion>
-        super.transitions[Dsmlv2StatesEnum.COMPARE_REQUEST_VALUE_END_TAG.getState()].put( new Tag( "assertion", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.COMPARE_REQUEST_VALUE_END_TAG.ordinal()].put( new Tag( "assertion", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.COMPARE_REQUEST_VALUE_END_TAG,
                 Dsmlv2StatesEnum.COMPARE_REQUEST_ASSERTION_END_TAG, null ) );
 
         // State: [COMPARE_REQUEST_ASSERTION_END_TAG] - Tag: </compareRequest>
-        super.transitions[Dsmlv2StatesEnum.COMPARE_REQUEST_ASSERTION_END_TAG.getState()].put(
+        super.transitions[Dsmlv2StatesEnum.COMPARE_REQUEST_ASSERTION_END_TAG.ordinal()].put(
             new Tag( "compareRequest", Tag.END ), new GrammarTransition(
                 Dsmlv2StatesEnum.COMPARE_REQUEST_ASSERTION_END_TAG, Dsmlv2StatesEnum.BATCHREQUEST_LOOP, null ) );
 
         //====================================================
         //  Transitions concerning : DEL REQUEST
         //====================================================
-        super.transitions[Dsmlv2StatesEnum.DEL_REQUEST_START_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.DEL_REQUEST_CONTROL_START_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.DEL_REQUEST_CONTROL_END_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.DEL_REQUEST_CONTROLVALUE_END_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.DEL_REQUEST_START_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.DEL_REQUEST_CONTROL_START_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.DEL_REQUEST_CONTROL_END_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.DEL_REQUEST_CONTROLVALUE_END_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
 
         // State: [DEL_REQUEST_START_TAG] - Tag: </delRequest>
-        super.transitions[Dsmlv2StatesEnum.DEL_REQUEST_START_TAG.getState()].put( new Tag( "delRequest", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.DEL_REQUEST_START_TAG.ordinal()].put( new Tag( "delRequest", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.DEL_REQUEST_START_TAG, Dsmlv2StatesEnum.BATCHREQUEST_LOOP, null ) );
 
         // State: [DEL_REQUEST_START_TAG] - Tag: <control>
-        super.transitions[Dsmlv2StatesEnum.DEL_REQUEST_START_TAG.getState()].put( new Tag( "control", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.DEL_REQUEST_START_TAG.ordinal()].put( new Tag( "control", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.DEL_REQUEST_START_TAG,
                 Dsmlv2StatesEnum.DEL_REQUEST_CONTROL_START_TAG, controlCreation ) );
 
         // State: [DEL_REQUEST_CONTROL_START_TAG] - Tag: <controlValue>
-        super.transitions[Dsmlv2StatesEnum.DEL_REQUEST_CONTROL_START_TAG.getState()].put( new Tag( "controlValue", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.DEL_REQUEST_CONTROL_START_TAG.ordinal()].put( new Tag( "controlValue", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.DEL_REQUEST_CONTROL_START_TAG,
                 Dsmlv2StatesEnum.DEL_REQUEST_CONTROLVALUE_END_TAG, controlValueCreation ) );
 
         // State: [DEL_REQUEST_CONTROLVALUE_END_TAG] - Tag: </control>
-        super.transitions[Dsmlv2StatesEnum.DEL_REQUEST_CONTROLVALUE_END_TAG.getState()].put( new Tag( "control", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.DEL_REQUEST_CONTROLVALUE_END_TAG.ordinal()].put( new Tag( "control", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.DEL_REQUEST_CONTROLVALUE_END_TAG,
                 Dsmlv2StatesEnum.DEL_REQUEST_CONTROL_END_TAG, null ) );
 
         // State: [DEL_REQUEST_CONTROL_START_TAG] - Tag: </control>
-        super.transitions[Dsmlv2StatesEnum.DEL_REQUEST_CONTROL_START_TAG.getState()].put( new Tag( "control", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.DEL_REQUEST_CONTROL_START_TAG.ordinal()].put( new Tag( "control", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.DEL_REQUEST_CONTROL_START_TAG,
                 Dsmlv2StatesEnum.DEL_REQUEST_CONTROL_END_TAG, null ) );
 
         // State: [DEL_REQUEST_CONTROL_END_TAG] - Tag: <control>
-        super.transitions[Dsmlv2StatesEnum.DEL_REQUEST_CONTROL_END_TAG.getState()].put( new Tag( "control", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.DEL_REQUEST_CONTROL_END_TAG.ordinal()].put( new Tag( "control", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.DEL_REQUEST_CONTROL_END_TAG,
                 Dsmlv2StatesEnum.DEL_REQUEST_CONTROL_START_TAG, controlCreation ) );
 
         // State: [DEL_REQUEST_CONTROL_END_TAG] - Tag: </delRequest>
-        super.transitions[Dsmlv2StatesEnum.DEL_REQUEST_CONTROL_END_TAG.getState()].put( new Tag( "delRequest", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.DEL_REQUEST_CONTROL_END_TAG.ordinal()].put( new Tag( "delRequest", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.DEL_REQUEST_CONTROL_END_TAG, Dsmlv2StatesEnum.BATCHREQUEST_LOOP,
                 null ) );
 
         //====================================================
         //  Transitions concerning : EXTENDED REQUEST
         //====================================================
-        super.transitions[Dsmlv2StatesEnum.EXTENDED_REQUEST_START_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.EXTENDED_REQUEST_CONTROL_START_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.EXTENDED_REQUEST_CONTROL_END_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.EXTENDED_REQUEST_CONTROLVALUE_END_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.EXTENDED_REQUEST_REQUESTNAME_END_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.EXTENDED_REQUEST_REQUESTVALUE_END_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.EXTENDED_REQUEST_START_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.EXTENDED_REQUEST_CONTROL_START_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.EXTENDED_REQUEST_CONTROL_END_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.EXTENDED_REQUEST_CONTROLVALUE_END_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.EXTENDED_REQUEST_REQUESTNAME_END_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.EXTENDED_REQUEST_REQUESTVALUE_END_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
 
         // State: [EXTENDED_REQUEST_START_TAG] - Tag: <control>
-        super.transitions[Dsmlv2StatesEnum.EXTENDED_REQUEST_START_TAG.getState()].put( new Tag( "control", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.EXTENDED_REQUEST_START_TAG.ordinal()].put( new Tag( "control", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.EXTENDED_REQUEST_START_TAG,
                 Dsmlv2StatesEnum.EXTENDED_REQUEST_CONTROL_START_TAG, controlCreation ) );
 
         // State: [EXTENDED_REQUEST_CONTROL_START_TAG] - Tag: <controlValue>
-        super.transitions[Dsmlv2StatesEnum.EXTENDED_REQUEST_CONTROL_START_TAG.getState()].put(
+        super.transitions[Dsmlv2StatesEnum.EXTENDED_REQUEST_CONTROL_START_TAG.ordinal()].put(
             new Tag( "controlValue", Tag.START ), new GrammarTransition(
                 Dsmlv2StatesEnum.EXTENDED_REQUEST_CONTROL_START_TAG,
                 Dsmlv2StatesEnum.EXTENDED_REQUEST_CONTROLVALUE_END_TAG, controlValueCreation ) );
 
         // State: [EXTENDED_REQUEST_CONTROLVALUE_END_TAG] - Tag: </control>
-        super.transitions[Dsmlv2StatesEnum.EXTENDED_REQUEST_CONTROLVALUE_END_TAG.getState()].put( new Tag( "control", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.EXTENDED_REQUEST_CONTROLVALUE_END_TAG.ordinal()].put( new Tag( "control", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.EXTENDED_REQUEST_CONTROLVALUE_END_TAG,
                 Dsmlv2StatesEnum.EXTENDED_REQUEST_CONTROL_END_TAG, null ) );
 
         // State: [EXTENDED_REQUEST_CONTROL_START_TAG] - Tag: </control>
-        super.transitions[Dsmlv2StatesEnum.EXTENDED_REQUEST_CONTROL_START_TAG.getState()].put( new Tag( "control", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.EXTENDED_REQUEST_CONTROL_START_TAG.ordinal()].put( new Tag( "control", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.EXTENDED_REQUEST_CONTROL_START_TAG,
                 Dsmlv2StatesEnum.EXTENDED_REQUEST_CONTROL_END_TAG, null ) );
 
         // State: [EXTENDED_REQUEST_CONTROL_END_TAG] - Tag: <control>
-        super.transitions[Dsmlv2StatesEnum.EXTENDED_REQUEST_CONTROL_END_TAG.getState()].put( new Tag( "control", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.EXTENDED_REQUEST_CONTROL_END_TAG.ordinal()].put( new Tag( "control", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.EXTENDED_REQUEST_CONTROL_END_TAG,
                 Dsmlv2StatesEnum.EXTENDED_REQUEST_CONTROL_START_TAG, controlCreation ) );
 
         // State: [EXTENDED_REQUEST_CONTROL_END_TAG] - Tag: </extendedRequest>
-        super.transitions[Dsmlv2StatesEnum.EXTENDED_REQUEST_CONTROL_END_TAG.getState()].put(
+        super.transitions[Dsmlv2StatesEnum.EXTENDED_REQUEST_CONTROL_END_TAG.ordinal()].put(
             new Tag( "extendedRequest", Tag.END ), new GrammarTransition(
                 Dsmlv2StatesEnum.EXTENDED_REQUEST_CONTROL_END_TAG, Dsmlv2StatesEnum.BATCHREQUEST_LOOP, null ) );
 
         // State: [EXTENDED_REQUEST_START_TAG] - Tag: <requestName>
-        super.transitions[Dsmlv2StatesEnum.EXTENDED_REQUEST_START_TAG.getState()].put( new Tag( "requestName", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.EXTENDED_REQUEST_START_TAG.ordinal()].put( new Tag( "requestName", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.EXTENDED_REQUEST_START_TAG,
                 Dsmlv2StatesEnum.EXTENDED_REQUEST_REQUESTNAME_END_TAG, extendedRequestAddName ) );
 
         // State: [EXTENDED_REQUEST_CONTROL_END_TAG] - Tag: <requestName>
-        super.transitions[Dsmlv2StatesEnum.EXTENDED_REQUEST_CONTROL_END_TAG.getState()].put( new Tag( "requestName", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.EXTENDED_REQUEST_CONTROL_END_TAG.ordinal()].put( new Tag( "requestName", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.EXTENDED_REQUEST_CONTROL_END_TAG,
                 Dsmlv2StatesEnum.EXTENDED_REQUEST_REQUESTNAME_END_TAG, extendedRequestAddName ) );
 
         // State: [EXTENDED_REQUEST_REQUESTNAME_END_TAG] - Tag: </extendedRequest>
-        super.transitions[Dsmlv2StatesEnum.EXTENDED_REQUEST_REQUESTNAME_END_TAG.getState()].put( new Tag( "extendedRequest",
+        super.transitions[Dsmlv2StatesEnum.EXTENDED_REQUEST_REQUESTNAME_END_TAG.ordinal()].put( new Tag( "extendedRequest",
             Tag.END ), new GrammarTransition( Dsmlv2StatesEnum.EXTENDED_REQUEST_REQUESTNAME_END_TAG,
             Dsmlv2StatesEnum.BATCHREQUEST_LOOP, null ) );
 
         // State: [EXTENDED_REQUEST_REQUESTNAME_END_TAG] - Tag: <requestValue>
-        super.transitions[Dsmlv2StatesEnum.EXTENDED_REQUEST_REQUESTNAME_END_TAG.getState()].put( new Tag( "requestValue",
+        super.transitions[Dsmlv2StatesEnum.EXTENDED_REQUEST_REQUESTNAME_END_TAG.ordinal()].put( new Tag( "requestValue",
             Tag.START ), new GrammarTransition( Dsmlv2StatesEnum.EXTENDED_REQUEST_REQUESTNAME_END_TAG,
             Dsmlv2StatesEnum.EXTENDED_REQUEST_REQUESTVALUE_END_TAG, extendedRequestAddValue ) );
 
         // State: [EXTENDED_REQUEST_REQUESTVALUE_END_TAG] - Tag: </requestRequest>
-        super.transitions[Dsmlv2StatesEnum.EXTENDED_REQUEST_REQUESTVALUE_END_TAG.getState()].put( new Tag( "extendedRequest",
+        super.transitions[Dsmlv2StatesEnum.EXTENDED_REQUEST_REQUESTVALUE_END_TAG.ordinal()].put( new Tag( "extendedRequest",
             Tag.END ), new GrammarTransition( Dsmlv2StatesEnum.EXTENDED_REQUEST_REQUESTVALUE_END_TAG,
             Dsmlv2StatesEnum.BATCHREQUEST_LOOP, null ) );
 
         //====================================================
         //  Transitions concerning : MODIFY DN REQUEST
         //====================================================
-        super.transitions[Dsmlv2StatesEnum.MODIFY_DN_REQUEST_START_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.MODIFY_DN_REQUEST_CONTROL_START_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.MODIFY_DN_REQUEST_CONTROL_END_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.MODIFY_DN_REQUEST_CONTROLVALUE_END_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.MODIFY_DN_REQUEST_START_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.MODIFY_DN_REQUEST_CONTROL_START_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.MODIFY_DN_REQUEST_CONTROL_END_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.MODIFY_DN_REQUEST_CONTROLVALUE_END_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
 
         // State: [MODIFY_DN_REQUEST_START_TAG] - Tag: </modDNRequest>
-        super.transitions[Dsmlv2StatesEnum.MODIFY_DN_REQUEST_START_TAG.getState()].put( new Tag( "modDNRequest", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.MODIFY_DN_REQUEST_START_TAG.ordinal()].put( new Tag( "modDNRequest", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.MODIFY_DN_REQUEST_START_TAG, Dsmlv2StatesEnum.BATCHREQUEST_LOOP,
                 null ) );
 
         // State: [MODIFY_DN_REQUEST_START_TAG] - Tag: <control>
-        super.transitions[Dsmlv2StatesEnum.MODIFY_DN_REQUEST_START_TAG.getState()].put( new Tag( "control", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.MODIFY_DN_REQUEST_START_TAG.ordinal()].put( new Tag( "control", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.MODIFY_DN_REQUEST_START_TAG,
                 Dsmlv2StatesEnum.MODIFY_DN_REQUEST_CONTROL_START_TAG, controlCreation ) );
 
         // State: [MODIFY_DN_REQUEST_CONTROL_START_TAG] - Tag: <controlValue>
-        super.transitions[Dsmlv2StatesEnum.MODIFY_DN_REQUEST_CONTROL_START_TAG.getState()].put(
+        super.transitions[Dsmlv2StatesEnum.MODIFY_DN_REQUEST_CONTROL_START_TAG.ordinal()].put(
             new Tag( "controlValue", Tag.START ), new GrammarTransition(
                 Dsmlv2StatesEnum.MODIFY_DN_REQUEST_CONTROL_START_TAG,
                 Dsmlv2StatesEnum.MODIFY_DN_REQUEST_CONTROLVALUE_END_TAG, controlValueCreation ) );
 
         // State: [MODIFY_DN_REQUEST_CONTROLVALUE_END_TAG] - Tag: </control>
-        super.transitions[Dsmlv2StatesEnum.MODIFY_DN_REQUEST_CONTROLVALUE_END_TAG.getState()].put( new Tag( "control", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.MODIFY_DN_REQUEST_CONTROLVALUE_END_TAG.ordinal()].put( new Tag( "control", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.MODIFY_DN_REQUEST_CONTROLVALUE_END_TAG,
                 Dsmlv2StatesEnum.MODIFY_DN_REQUEST_CONTROL_END_TAG, null ) );
 
         // State: [MODIFY_DN_REQUEST_CONTROL_START_TAG] - Tag: </control>
-        super.transitions[Dsmlv2StatesEnum.MODIFY_DN_REQUEST_CONTROL_START_TAG.getState()].put( new Tag( "control", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.MODIFY_DN_REQUEST_CONTROL_START_TAG.ordinal()].put( new Tag( "control", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.MODIFY_DN_REQUEST_CONTROL_START_TAG,
                 Dsmlv2StatesEnum.MODIFY_DN_REQUEST_CONTROL_END_TAG, null ) );
 
         // State: [MODIFY_DN_REQUEST_CONTROL_END_TAG] - Tag: <control>
-        super.transitions[Dsmlv2StatesEnum.MODIFY_DN_REQUEST_CONTROL_END_TAG.getState()].put( new Tag( "control", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.MODIFY_DN_REQUEST_CONTROL_END_TAG.ordinal()].put( new Tag( "control", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.MODIFY_DN_REQUEST_CONTROL_END_TAG,
                 Dsmlv2StatesEnum.MODIFY_DN_REQUEST_CONTROL_START_TAG, controlCreation ) );
 
         // State: [MODIFY_DN_REQUEST_CONTROL_END_TAG] - Tag: </modDNRequest>
-        super.transitions[Dsmlv2StatesEnum.MODIFY_DN_REQUEST_CONTROL_END_TAG.getState()].put( new Tag( "modDNRequest", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.MODIFY_DN_REQUEST_CONTROL_END_TAG.ordinal()].put( new Tag( "modDNRequest", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.MODIFY_DN_REQUEST_CONTROL_END_TAG,
                 Dsmlv2StatesEnum.BATCHREQUEST_LOOP, null ) );
 
         //====================================================
         //  Transitions concerning : MODIFY REQUEST
         //====================================================
-        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_START_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_CONTROL_START_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_CONTROL_END_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_CONTROLVALUE_END_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_MODIFICATION_START_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_MODIFICATION_END_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_VALUE_END_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_START_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_CONTROL_START_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_CONTROL_END_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_CONTROLVALUE_END_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_MODIFICATION_START_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_MODIFICATION_END_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_VALUE_END_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
 
         // State: [MODIFY_REQUEST_START_TAG] - Tag: </modifyRequest>
-        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_START_TAG.getState()]
+        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_START_TAG.ordinal()]
             .put( new Tag( "modifyRequest", Tag.END ), new GrammarTransition(
                 Dsmlv2StatesEnum.MODIFY_REQUEST_START_TAG, Dsmlv2StatesEnum.BATCHREQUEST_LOOP, null ) );
 
         // State: [MODIFY_REQUEST_START_TAG] - Tag: <control>
-        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_START_TAG.getState()].put( new Tag( "control", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_START_TAG.ordinal()].put( new Tag( "control", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.MODIFY_REQUEST_START_TAG,
                 Dsmlv2StatesEnum.MODIFY_REQUEST_CONTROL_START_TAG, controlCreation ) );
 
         // State: [MODIFY_REQUEST_CONTROL_START_TAG] - Tag: <controlValue>
-        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_CONTROL_START_TAG.getState()].put( new Tag( "controlValue", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_CONTROL_START_TAG.ordinal()].put( new Tag( "controlValue", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.MODIFY_REQUEST_CONTROL_START_TAG,
                 Dsmlv2StatesEnum.MODIFY_REQUEST_CONTROLVALUE_END_TAG, controlValueCreation ) );
 
         // State: [MODIFY_REQUEST_CONTROLVALUE_END_TAG] - Tag: </control>
-        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_CONTROLVALUE_END_TAG.getState()].put( new Tag( "control", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_CONTROLVALUE_END_TAG.ordinal()].put( new Tag( "control", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.MODIFY_REQUEST_CONTROLVALUE_END_TAG,
                 Dsmlv2StatesEnum.MODIFY_REQUEST_CONTROL_END_TAG, null ) );
 
         // State: [MODIFY_REQUEST_CONTROL_START_TAG] - Tag: </control>
-        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_CONTROL_START_TAG.getState()].put( new Tag( "control", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_CONTROL_START_TAG.ordinal()].put( new Tag( "control", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.MODIFY_REQUEST_CONTROL_START_TAG,
                 Dsmlv2StatesEnum.MODIFY_REQUEST_CONTROL_END_TAG, null ) );
 
         // State: [MODIFY_REQUEST_CONTROL_END_TAG] - Tag: <control>
-        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_CONTROL_END_TAG.getState()].put( new Tag( "control", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_CONTROL_END_TAG.ordinal()].put( new Tag( "control", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.MODIFY_REQUEST_CONTROL_END_TAG,
                 Dsmlv2StatesEnum.MODIFY_REQUEST_CONTROL_START_TAG, controlCreation ) );
 
         // State: [MODIFY_REQUEST_CONTROL_END_TAG] - Tag: </modifyRequest>
-        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_CONTROL_END_TAG.getState()].put( new Tag( "modifyRequest", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_CONTROL_END_TAG.ordinal()].put( new Tag( "modifyRequest", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.MODIFY_REQUEST_CONTROL_END_TAG, Dsmlv2StatesEnum.BATCHREQUEST_LOOP,
                 null ) );
 
         // State: [MODIFY_REQUEST_CONTROL_END_TAG] - Tag: <modification>
-        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_CONTROL_END_TAG.getState()].put( new Tag( "modification", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_CONTROL_END_TAG.ordinal()].put( new Tag( "modification", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.MODIFY_REQUEST_CONTROL_END_TAG,
                 Dsmlv2StatesEnum.MODIFY_REQUEST_MODIFICATION_START_TAG, modifyRequestAddModification ) );
 
         // State: [MODIFY_REQUEST_START_TAG] - Tag: <modification>
-        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_START_TAG.getState()].put( new Tag( "modification", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_START_TAG.ordinal()].put( new Tag( "modification", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.MODIFY_REQUEST_START_TAG,
                 Dsmlv2StatesEnum.MODIFY_REQUEST_MODIFICATION_START_TAG, modifyRequestAddModification ) );
 
         // State: [MODIFY_REQUEST_MODIFICATION_END_TAG] - Tag: <modification>
-        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_MODIFICATION_END_TAG.getState()].put(
+        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_MODIFICATION_END_TAG.ordinal()].put(
             new Tag( "modification", Tag.START ), new GrammarTransition(
                 Dsmlv2StatesEnum.MODIFY_REQUEST_MODIFICATION_END_TAG,
                 Dsmlv2StatesEnum.MODIFY_REQUEST_MODIFICATION_START_TAG, modifyRequestAddModification ) );
 
         // State: [MODIFY_REQUEST_MODIFICATION_START_TAG] - Tag: </modification>
-        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_MODIFICATION_START_TAG.getState()].put(
+        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_MODIFICATION_START_TAG.ordinal()].put(
             new Tag( "modification", Tag.END ), new GrammarTransition(
                 Dsmlv2StatesEnum.MODIFY_REQUEST_MODIFICATION_START_TAG,
                 Dsmlv2StatesEnum.MODIFY_REQUEST_MODIFICATION_END_TAG, null ) );
 
         // State: [MODIFY_REQUEST_MODIFICATION_START_TAG] - Tag: <value>
-        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_MODIFICATION_START_TAG.getState()].put( new Tag( "value", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_MODIFICATION_START_TAG.ordinal()].put( new Tag( "value", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.MODIFY_REQUEST_MODIFICATION_START_TAG,
                 Dsmlv2StatesEnum.MODIFY_REQUEST_VALUE_END_TAG, modifyRequestAddValue ) );
 
         // State: [MODIFY_REQUEST_VALUE_END_TAG] - Tag: <value>
-        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_VALUE_END_TAG.getState()].put( new Tag( "value", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_VALUE_END_TAG.ordinal()].put( new Tag( "value", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.MODIFY_REQUEST_VALUE_END_TAG,
                 Dsmlv2StatesEnum.MODIFY_REQUEST_VALUE_END_TAG, modifyRequestAddValue ) );
 
         // State: [MODIFY_REQUEST_VALUE_END_TAG] - Tag: </modification>
-        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_VALUE_END_TAG.getState()].put( new Tag( "modification", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_VALUE_END_TAG.ordinal()].put( new Tag( "modification", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.MODIFY_REQUEST_VALUE_END_TAG,
                 Dsmlv2StatesEnum.MODIFY_REQUEST_MODIFICATION_END_TAG, null ) );
 
         // State: [MODIFY_REQUEST_MODIFICATION_END_TAG] - Tag: </modifyRequest>
-        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_MODIFICATION_END_TAG.getState()].put(
+        super.transitions[Dsmlv2StatesEnum.MODIFY_REQUEST_MODIFICATION_END_TAG.ordinal()].put(
             new Tag( "modifyRequest", Tag.END ), new GrammarTransition(
                 Dsmlv2StatesEnum.MODIFY_REQUEST_MODIFICATION_END_TAG, Dsmlv2StatesEnum.BATCHREQUEST_LOOP, null ) );
 
         //====================================================
         //  Transitions concerning : SEARCH REQUEST
         //====================================================
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_START_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_CONTROL_START_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_CONTROL_END_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_CONTROLVALUE_END_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_ATTRIBUTES_START_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_ATTRIBUTES_END_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_ATTRIBUTE_START_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_ATTRIBUTE_END_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_START_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_CONTROL_START_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_CONTROL_END_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_CONTROLVALUE_END_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_ATTRIBUTES_START_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_ATTRIBUTES_END_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_ATTRIBUTE_START_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_ATTRIBUTE_END_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
 
         // State: [SEARCH_REQUEST_START_TAG] - Tag: <control>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_START_TAG.getState()].put( new Tag( "control", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_START_TAG.ordinal()].put( new Tag( "control", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_START_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_CONTROL_START_TAG, controlCreation ) );
 
         // State: [SEARCH_REQUEST_CONTROL_START_TAG] - Tag: <controlValue>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_CONTROL_START_TAG.getState()].put( new Tag( "controlValue", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_CONTROL_START_TAG.ordinal()].put( new Tag( "controlValue", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_CONTROL_START_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_CONTROLVALUE_END_TAG, controlValueCreation ) );
 
         // State: [SEARCH_REQUEST_CONTROLVALUE_END_TAG] - Tag: </control>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_CONTROLVALUE_END_TAG.getState()].put( new Tag( "control", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_CONTROLVALUE_END_TAG.ordinal()].put( new Tag( "control", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_CONTROLVALUE_END_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_CONTROL_END_TAG, null ) );
 
         // State: [SEARCH_REQUEST_CONTROL_START_TAG] - Tag: </control>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_CONTROL_START_TAG.getState()].put( new Tag( "control", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_CONTROL_START_TAG.ordinal()].put( new Tag( "control", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_CONTROL_START_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_CONTROL_END_TAG, null ) );
 
         // State: [SEARCH_REQUEST_CONTROL_END_TAG] - Tag: <control>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_CONTROL_END_TAG.getState()].put( new Tag( "control", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_CONTROL_END_TAG.ordinal()].put( new Tag( "control", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_CONTROL_END_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_CONTROL_START_TAG, controlCreation ) );
 
         // State: [SEARCH_REQUEST_ATTRIBUTES_START_TAG] - Tag: </attributes>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_ATTRIBUTES_START_TAG.getState()].put( new Tag( "attributes", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_ATTRIBUTES_START_TAG.ordinal()].put( new Tag( "attributes", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_ATTRIBUTES_START_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_ATTRIBUTES_END_TAG, null ) );
 
         // State: [SEARCH_REQUEST_ATTRIBUTES_START_TAG] - Tag: <attribute>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_ATTRIBUTES_START_TAG.getState()].put( new Tag( "attribute", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_ATTRIBUTES_START_TAG.ordinal()].put( new Tag( "attribute", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_ATTRIBUTES_START_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_ATTRIBUTE_START_TAG, searchRequestAddAttribute ) );
 
         // State: [SEARCH_REQUEST_ATTRIBUTE_START_TAG] - Tag: </attribute>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_ATTRIBUTE_START_TAG.getState()].put( new Tag( "attribute", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_ATTRIBUTE_START_TAG.ordinal()].put( new Tag( "attribute", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_ATTRIBUTE_START_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_ATTRIBUTE_END_TAG, null ) );
 
         // State: [SEARCH_REQUEST_ATTRIBUTE_END_TAG] - Tag: <attribute>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_ATTRIBUTE_END_TAG.getState()].put( new Tag( "attribute", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_ATTRIBUTE_END_TAG.ordinal()].put( new Tag( "attribute", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_ATTRIBUTE_END_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_ATTRIBUTE_START_TAG, searchRequestAddAttribute ) );
 
         // State: [SEARCH_REQUEST_ATTRIBUTE_END_TAG] - Tag: </attributes>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_ATTRIBUTE_END_TAG.getState()].put( new Tag( "attributes", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_ATTRIBUTE_END_TAG.ordinal()].put( new Tag( "attributes", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_ATTRIBUTE_END_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_ATTRIBUTES_END_TAG, null ) );
 
         // State: [SEARCH_REQUEST_ATTRIBUTES_END_TAG] - Tag: </searchRequest>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_ATTRIBUTES_END_TAG.getState()].put( new Tag( "searchRequest", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_ATTRIBUTES_END_TAG.ordinal()].put( new Tag( "searchRequest", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_ATTRIBUTES_END_TAG,
                 Dsmlv2StatesEnum.BATCHREQUEST_LOOP, null ) );
 
         //====================================================
         //  Transitions concerning : FILTER
         //====================================================
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_START_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_END_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_EQUALITYMATCH_START_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_GREATEROREQUAL_START_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_LESSOREQUAL_START_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_APPROXMATCH_START_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_PRESENT_START_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_EXTENSIBLEMATCH_START_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_EXTENSIBLEMATCH_VALUE_END_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_VALUE_END_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_START_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_END_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_EQUALITYMATCH_START_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_GREATEROREQUAL_START_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_LESSOREQUAL_START_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_APPROXMATCH_START_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_PRESENT_START_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_EXTENSIBLEMATCH_START_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_EXTENSIBLEMATCH_VALUE_END_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_VALUE_END_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
 
         // State: [SEARCH_REQUEST_START_TAG] - Tag: <filter>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_START_TAG.getState()].put( new Tag( "filter", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_START_TAG.ordinal()].put( new Tag( "filter", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_START_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_START_TAG, null ) );
 
         // State: [SEARCH_REQUEST_CONTROL_END_TAG] - Tag: <filter>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_CONTROL_END_TAG.getState()].put( new Tag( "filter", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_CONTROL_END_TAG.ordinal()].put( new Tag( "filter", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_CONTROL_END_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_START_TAG, null ) );
 
         //*** AND ***
         // State: [SEARCH_REQUEST_FILTER_START_TAG] - Tag: <and>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_START_TAG.getState()].put( new Tag( "and", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_START_TAG.ordinal()].put( new Tag( "and", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_START_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP, andFilterCreation ) );
 
         // State: [SEARCH_REQUEST_FILTER_LOOP] - Tag: <and>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP.getState()].put( new Tag( "and", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP.ordinal()].put( new Tag( "and", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP, andFilterCreation ) );
 
         // State: [SEARCH_REQUEST_FILTER_LOOP] - Tag: </and>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP.getState()].put( new Tag( "and", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP.ordinal()].put( new Tag( "and", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP, connectorFilterClose ) );
 
         //*** OR ***
         // State: [SEARCH_REQUEST_FILTER_START_TAG] - Tag: <or>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_START_TAG.getState()].put( new Tag( "or", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_START_TAG.ordinal()].put( new Tag( "or", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_START_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP, orFilterCreation ) );
 
         // State: [SEARCH_REQUEST_FILTER_LOOP] - Tag: <or>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP.getState()].put( new Tag( "or", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP.ordinal()].put( new Tag( "or", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP, orFilterCreation ) );
 
         // State: [SEARCH_REQUEST_FILTER_LOOP] - Tag: </or>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP.getState()].put( new Tag( "or", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP.ordinal()].put( new Tag( "or", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP, connectorFilterClose ) );
 
         //*** NOT ***
         // State: [SEARCH_REQUEST_FILTER_START_TAG] - Tag: <not>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_START_TAG.getState()].put( new Tag( "not", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_START_TAG.ordinal()].put( new Tag( "not", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_START_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP, notFilterCreation ) );
 
         // State: [SEARCH_REQUEST_FILTER_LOOP] - Tag: <not>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP.getState()].put( new Tag( "not", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP.ordinal()].put( new Tag( "not", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP, notFilterCreation ) );
 
         // State: [SEARCH_REQUEST_FILTER_LOOP] - Tag: </not>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP.getState()].put( new Tag( "not", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP.ordinal()].put( new Tag( "not", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP, connectorFilterClose ) );
 
         //*** SUBSTRINGS ***
         // State: [SEARCH_REQUEST_FILTER_START_TAG] - Tag: <substrings>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_START_TAG.getState()].put( new Tag( "substrings", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_START_TAG.ordinal()].put( new Tag( "substrings", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_START_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_SUBSTRINGS_START_TAG, substringsFilterCreation ) );
 
         // State: [SEARCH_REQUEST_FILTER_LOOP] - Tag: <substrings>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP.getState()].put( new Tag( "substrings", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP.ordinal()].put( new Tag( "substrings", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_SUBSTRINGS_START_TAG, substringsFilterCreation ) );
 
         //*** EQUALITY MATCH ***
         // State: [SEARCH_REQUEST_FILTER_START_TAG] - Tag: <equalityMatch>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_START_TAG.getState()].put( new Tag( "equalityMatch", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_START_TAG.ordinal()].put( new Tag( "equalityMatch", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_START_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_EQUALITYMATCH_START_TAG, equalityMatchFilterCreation ) );
 
         // State: [SEARCH_REQUEST_FILTER_LOOP] - Tag: <equalityMatch>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP.getState()].put( new Tag( "equalityMatch", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP.ordinal()].put( new Tag( "equalityMatch", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_EQUALITYMATCH_START_TAG, equalityMatchFilterCreation ) );
 
         // State: [SEARCH_REQUEST_EQUALITYMATCH_START_TAG] - Tag: <value>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_EQUALITYMATCH_START_TAG.getState()].put( new Tag( "value", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_EQUALITYMATCH_START_TAG.ordinal()].put( new Tag( "value", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_EQUALITYMATCH_START_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_VALUE_END_TAG, filterAddValue ) );
 
         // State: [SEARCH_REQUEST_VALUE_END_TAG] - Tag: </equalityMatch>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_VALUE_END_TAG.getState()].put( new Tag( "equalityMatch", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_VALUE_END_TAG.ordinal()].put( new Tag( "equalityMatch", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_VALUE_END_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP, null ) );
 
         //*** GREATER OR EQUAL ***
         // State: [SEARCH_REQUEST_FILTER_START_TAG] - Tag: <greaterOrEqual>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_START_TAG.getState()].put(
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_START_TAG.ordinal()].put(
             new Tag( "greaterOrEqual", Tag.START ), new GrammarTransition(
                 Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_START_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_GREATEROREQUAL_START_TAG, greaterOrEqualFilterCreation ) );
 
         // State: [SEARCH_REQUEST_FILTER_LOOP] - Tag: <greaterOrEqual>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP.getState()].put( new Tag( "greaterOrEqual", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP.ordinal()].put( new Tag( "greaterOrEqual", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_GREATEROREQUAL_START_TAG, greaterOrEqualFilterCreation ) );
 
         // State: [SEARCH_REQUEST_GREATEROREQUAL_START_TAG] - Tag: <value>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_GREATEROREQUAL_START_TAG.getState()].put( new Tag( "value", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_GREATEROREQUAL_START_TAG.ordinal()].put( new Tag( "value", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_GREATEROREQUAL_START_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_VALUE_END_TAG, filterAddValue ) );
 
         // State: [SEARCH_REQUEST_VALUE_END_TAG] - Tag: </greaterOrEqual>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_VALUE_END_TAG.getState()].put( new Tag( "greaterOrEqual", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_VALUE_END_TAG.ordinal()].put( new Tag( "greaterOrEqual", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_VALUE_END_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP, null ) );
 
         //*** LESS OR EQUAL ***
         // State: [SEARCH_REQUEST_FILTER_START_TAG] - Tag: <lessOrEqual>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_START_TAG.getState()].put( new Tag( "lessOrEqual", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_START_TAG.ordinal()].put( new Tag( "lessOrEqual", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_START_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_LESSOREQUAL_START_TAG, lessOrEqualFilterCreation ) );
 
         // State: [SEARCH_REQUEST_FILTER_LOOP] - Tag: <lessOrEqual>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP.getState()].put( new Tag( "lessOrEqual", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP.ordinal()].put( new Tag( "lessOrEqual", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_LESSOREQUAL_START_TAG, lessOrEqualFilterCreation ) );
 
         // State: [SEARCH_REQUEST_LESSOREQUAL_START_TAG] - Tag: <value>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_LESSOREQUAL_START_TAG.getState()].put( new Tag( "value", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_LESSOREQUAL_START_TAG.ordinal()].put( new Tag( "value", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_LESSOREQUAL_START_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_VALUE_END_TAG, filterAddValue ) );
 
         // State: [SEARCH_REQUEST_VALUE_END_TAG] - Tag: </lessOrEqual>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_VALUE_END_TAG.getState()].put( new Tag( "lessOrEqual", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_VALUE_END_TAG.ordinal()].put( new Tag( "lessOrEqual", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_VALUE_END_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP, null ) );
 
         //*** LESS OR EQUAL ***
         // State: [SEARCH_REQUEST_FILTER_START_TAG] - Tag: <approxMatch>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_START_TAG.getState()].put( new Tag( "approxMatch", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_START_TAG.ordinal()].put( new Tag( "approxMatch", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_START_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_APPROXMATCH_START_TAG, approxMatchFilterCreation ) );
 
         // State: [SEARCH_REQUEST_FILTER_LOOP] - Tag: <approxMatch>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP.getState()].put( new Tag( "approxMatch", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP.ordinal()].put( new Tag( "approxMatch", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_APPROXMATCH_START_TAG, approxMatchFilterCreation ) );
 
         // State: [SEARCH_REQUEST_APPROXMATCH_START_TAG] - Tag: <value>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_APPROXMATCH_START_TAG.getState()].put( new Tag( "value", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_APPROXMATCH_START_TAG.ordinal()].put( new Tag( "value", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_APPROXMATCH_START_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_VALUE_END_TAG, filterAddValue ) );
 
         // State: [SEARCH_REQUEST_VALUE_END_TAG] - Tag: </approxMatch>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_VALUE_END_TAG.getState()].put( new Tag( "approxMatch", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_VALUE_END_TAG.ordinal()].put( new Tag( "approxMatch", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_VALUE_END_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP, null ) );
 
         //*** PRESENT ***
         // State: [SEARCH_REQUEST_FILTER_START_TAG] - Tag: <present>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_START_TAG.getState()].put( new Tag( "present", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_START_TAG.ordinal()].put( new Tag( "present", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_START_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_PRESENT_START_TAG, presentFilterCreation ) );
 
         // State: [SEARCH_REQUEST_FILTER_LOOP] - Tag: <present>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP.getState()].put( new Tag( "present", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP.ordinal()].put( new Tag( "present", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_PRESENT_START_TAG, presentFilterCreation ) );
 
         // State: [SEARCH_REQUEST_PRESENT_START_TAG] - Tag: </present>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_PRESENT_START_TAG.getState()].put( new Tag( "present", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_PRESENT_START_TAG.ordinal()].put( new Tag( "present", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_PRESENT_START_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP, null ) );
 
         //*** EXTENSIBLE MATCH ***
         // State: [SEARCH_REQUEST_FILTER_START_TAG] - Tag: <extensibleMatch>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_START_TAG.getState()].put(
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_START_TAG.ordinal()].put(
             new Tag( "extensibleMatch", Tag.START ), new GrammarTransition(
                 Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_START_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_EXTENSIBLEMATCH_START_TAG, extensibleMatchFilterCreation ) );
 
         // State: [SEARCH_REQUEST_FILTER_LOOP] - Tag: <extensibleMatch>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP.getState()].put( new Tag( "extensibleMatch", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP.ordinal()].put( new Tag( "extensibleMatch", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_EXTENSIBLEMATCH_START_TAG, extensibleMatchFilterCreation ) );
 
         // State: [SEARCH_REQUEST_EXTENSIBLEMATCH_START_TAG] - Tag: <value>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_EXTENSIBLEMATCH_START_TAG.getState()].put(
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_EXTENSIBLEMATCH_START_TAG.ordinal()].put(
             new Tag( "value", Tag.START ), new GrammarTransition(
                 Dsmlv2StatesEnum.SEARCH_REQUEST_EXTENSIBLEMATCH_START_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_EXTENSIBLEMATCH_VALUE_END_TAG, extensibleMatchAddValue ) );
 
         // State: [SEARCH_REQUEST_EXTENSIBLEMATCH_VALUE_END_TAG] - Tag: </extensibleMatch>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_EXTENSIBLEMATCH_VALUE_END_TAG.getState()].put( new Tag(
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_EXTENSIBLEMATCH_VALUE_END_TAG.ordinal()].put( new Tag(
             "extensibleMatch", Tag.END ), new GrammarTransition(
             Dsmlv2StatesEnum.SEARCH_REQUEST_EXTENSIBLEMATCH_VALUE_END_TAG, Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP,
             null ) );
 
         //*** Filter (end) ***
         // State: [SEARCH_REQUEST_FILTER_LOOP] - Tag: </filter>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP.getState()].put( new Tag( "filter", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP.ordinal()].put( new Tag( "filter", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_END_TAG, null ) );
 
         // State: [SEARCH_REQUEST_FILTER_END_TAG] - Tag: <attributes>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_END_TAG.getState()].put( new Tag( "attributes", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_END_TAG.ordinal()].put( new Tag( "attributes", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_END_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_ATTRIBUTES_START_TAG, null ) );
 
         // State: [SEARCH_REQUEST_FILTER_END_TAG] - Tag: </searchRequest>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_END_TAG.getState()].put( new Tag( "searchRequest", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_END_TAG.ordinal()].put( new Tag( "searchRequest", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_END_TAG, Dsmlv2StatesEnum.BATCHREQUEST_LOOP,
                 null ) );
 
         //====================================================
         //  Transitions concerning : SUBSTRING FILTER
         //====================================================
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_SUBSTRINGS_START_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_INITIAL_END_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_ANY_END_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FINAL_END_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_SUBSTRINGS_END_TAG.getState()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_SUBSTRINGS_START_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_INITIAL_END_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_ANY_END_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FINAL_END_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_SUBSTRINGS_END_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
 
         // State: [SEARCH_REQUEST_SUBSTRINGS_START_TAG] - Tag: </substrings>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_SUBSTRINGS_START_TAG.getState()].put( new Tag( "substrings", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_SUBSTRINGS_START_TAG.ordinal()].put( new Tag( "substrings", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_SUBSTRINGS_START_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP, null ) );
 
         // State: [SEARCH_REQUEST_SUBSTRINGS_START_TAG] - Tag: <initial>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_SUBSTRINGS_START_TAG.getState()].put( new Tag( "initial", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_SUBSTRINGS_START_TAG.ordinal()].put( new Tag( "initial", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_SUBSTRINGS_START_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_INITIAL_END_TAG, substringsFilterSetInitial ) );
 
         // State: [SEARCH_REQUEST_INITIAL_END_TAG] - Tag: <any>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_INITIAL_END_TAG.getState()].put( new Tag( "any", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_INITIAL_END_TAG.ordinal()].put( new Tag( "any", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_INITIAL_END_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_ANY_END_TAG, substringsFilterAddAny ) );
 
         // State: [SEARCH_REQUEST_INITIAL_END_TAG] - Tag: <final>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_INITIAL_END_TAG.getState()].put( new Tag( "final", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_INITIAL_END_TAG.ordinal()].put( new Tag( "final", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_INITIAL_END_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_FINAL_END_TAG, substringsFilterSetFinal ) );
 
         // State: [SEARCH_REQUEST_INITIAL_END_TAG] - Tag: </substrings>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_INITIAL_END_TAG.getState()].put( new Tag( "substrings", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_INITIAL_END_TAG.ordinal()].put( new Tag( "substrings", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_INITIAL_END_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP, substringsFilterClose ) );
 
         // State: [SEARCH_REQUEST_SUBSTRINGS_START_TAG] - Tag: <any>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_SUBSTRINGS_START_TAG.getState()].put( new Tag( "any", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_SUBSTRINGS_START_TAG.ordinal()].put( new Tag( "any", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_SUBSTRINGS_START_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_ANY_END_TAG, substringsFilterAddAny ) );
 
         // State: [SEARCH_REQUEST_ANY_END_TAG] - Tag: </any>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_ANY_END_TAG.getState()].put( new Tag( "any", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_ANY_END_TAG.ordinal()].put( new Tag( "any", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_ANY_END_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_ANY_END_TAG, substringsFilterAddAny ) );
 
         // State: [SEARCH_REQUEST_ANY_END_TAG] - Tag: <final>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_ANY_END_TAG.getState()].put( new Tag( "final", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_ANY_END_TAG.ordinal()].put( new Tag( "final", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_ANY_END_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_FINAL_END_TAG, substringsFilterSetFinal ) );
 
         // State: [SEARCH_REQUEST_ANY_END_TAG] - Tag: </substrings>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_ANY_END_TAG.getState()].put( new Tag( "substrings", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_ANY_END_TAG.ordinal()].put( new Tag( "substrings", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_ANY_END_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP, substringsFilterClose ) );
 
         // State: [SEARCH_REQUEST_SUBSTRINGS_START_TAG] - Tag: <final>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_SUBSTRINGS_START_TAG.getState()].put( new Tag( "final", Tag.START ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_SUBSTRINGS_START_TAG.ordinal()].put( new Tag( "final", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_SUBSTRINGS_START_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_FINAL_END_TAG, substringsFilterSetFinal ) );
 
         // State: [SEARCH_REQUEST_FINAL_END_TAG] - Tag: </substrings>
-        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FINAL_END_TAG.getState()].put( new Tag( "substrings", Tag.END ),
+        super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FINAL_END_TAG.ordinal()].put( new Tag( "substrings", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_FINAL_END_TAG,
                 Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_LOOP, substringsFilterClose ) );
 

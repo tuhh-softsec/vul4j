@@ -60,9 +60,9 @@ public final class SubentriesControlGrammar extends AbstractGrammar
         setName( SubentriesControlGrammar.class.getName() );
 
         // Create the transitions table
-        super.transitions = new GrammarTransition[SubentriesControlStatesEnum.LAST_SUB_ENTRY_STATE.getState()][256];
+        super.transitions = new GrammarTransition[SubentriesControlStatesEnum.LAST_SUB_ENTRY_STATE.ordinal()][256];
 
-        super.transitions[SubentriesControlStatesEnum.START_STATE.getState()][UniversalTag.BOOLEAN.getValue()] = 
+        super.transitions[SubentriesControlStatesEnum.START_STATE.ordinal()][UniversalTag.BOOLEAN.getValue()] = 
             new GrammarTransition( SubentriesControlStatesEnum.START_STATE, 
                                     SubentriesControlStatesEnum.SUB_ENTRY_VISIBILITY_STATE, UniversalTag.BOOLEAN.getValue(), 
                 new GrammarAction( "SubEntryControl visibility" )

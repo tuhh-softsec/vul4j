@@ -28,8 +28,6 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
  * This class store the GracefulShutdown's grammar constants. It is also used
  * for debugging purposes.
  * 
- * TODO: should this be an enum?
- * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public enum GracefulShutdownStatesEnum implements States
@@ -37,58 +35,28 @@ public enum GracefulShutdownStatesEnum implements States
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
 
-    /** The initial state of every grammar */
-    INIT_GRAMMAR_STATE(0),
-
-    /** The ending state for every grammars */
-    GRAMMAR_END(-1),
-
     /** The END_STATE */
-    END_STATE(-1),
+    END_STATE,
 
     // =========================================================================
     // GracefulShutdown grammar states
     // =========================================================================
 
     /** Initial state */
-    START_STATE(0),
+    START_STATE,
 
     /** Sequence */
-    GRACEFUL_SHUTDOWN_SEQUENCE_STATE(1),
+    GRACEFUL_SHUTDOWN_SEQUENCE_STATE,
 
     /** Time offline */
-    TIME_OFFLINE_STATE(2),
+    TIME_OFFLINE_STATE,
 
     /** Delay */
-    DELAY_STATE(3),
+    DELAY_STATE,
 
     /** terminal state */
-    LAST_GRACEFUL_SHUTDOWN_STATE(4);
+    LAST_GRACEFUL_SHUTDOWN_STATE;
 
-    private int state;
-    
-    /**
-     * 
-     * Creates a new instance of GracefulShutdownStatesEnum.
-     *
-     * @param state
-     */
-    GracefulShutdownStatesEnum(int state)
-    {
-        this.state = state;
-    }
-
-    /**
-     * 
-     * Get the state.
-     *
-     * @return State as integer value
-     */
-    public int getState()
-    {
-        return state;
-    }
-    
     /**
      * Get the grammar name
      * 
@@ -126,7 +94,7 @@ public enum GracefulShutdownStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END.getState() ) ? "GRACEFUL_SHUTDOWN_END_STATE" : name() );
+        return ( ( state == END_STATE.ordinal() ) ? "GRACEFUL_SHUTDOWN_END_STATE" : name() );
     }
 
     

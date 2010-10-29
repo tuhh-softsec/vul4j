@@ -22,14 +22,11 @@ package org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValu
 
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.States;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.SyncDoneValueControlStatesEnum;
 
 
 /**
  * This class store the SyncInfoValueControl's grammar constants. It is also used for
  * debugging purposes.
- * 
- * TODO: should this be an enum?
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
@@ -38,84 +35,55 @@ public enum SyncInfoValueControlStatesEnum implements States
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
 
-    /** The initial state of every grammar */
-    INIT_GRAMMAR_STATE(0),
-
-    /** The ending state for every grammars */
-    GRAMMAR_END(-1),
-
     /** The END_STATE */
-    END_STATE(-1),
+    END_STATE,
 
     // =========================================================================
     // SyncRequestValue control grammar states
     // =========================================================================
     /** Initial state */
-    START_STATE(0),
+    START_STATE,
 
     /** NewCookie state */
-    NEW_COOKIE_STATE(1),
+    NEW_COOKIE_STATE,
 
     /** RefreshDelete state */
-    REFRESH_DELETE_STATE(2),
+    REFRESH_DELETE_STATE,
     
     /** RefreshDelete cookie state */
-    REFRESH_DELETE_COOKIE_STATE(3),
+    REFRESH_DELETE_COOKIE_STATE,
     
     /** RefreshDelete refreshDone state */
-    REFRESH_DELETE_REFRESH_DONE_STATE(4),
+    REFRESH_DELETE_REFRESH_DONE_STATE,
     
     /** RefreshPresent state */
-    REFRESH_PRESENT_STATE(5),
+    REFRESH_PRESENT_STATE,
     
     /** RefreshPresent cookie state */
-    REFRESH_PRESENT_COOKIE_STATE(6),
+    REFRESH_PRESENT_COOKIE_STATE,
     
     /** RefreshPresent refreshDone state */
-    REFRESH_PRESENT_REFRESH_DONE_STATE(7),
+    REFRESH_PRESENT_REFRESH_DONE_STATE,
     
     /** SyncIdSet state */
-    SYNC_ID_SET_STATE(8),
+    SYNC_ID_SET_STATE,
     
     /** SyncIdSet cookie state */
-    SYNC_ID_SET_COOKIE_STATE(9),
+    SYNC_ID_SET_COOKIE_STATE,
     
     /** SyncIdSet refreshDone state */
-    SYNC_ID_SET_REFRESH_DELETES_STATE(10),
+    SYNC_ID_SET_REFRESH_DELETES_STATE,
     
     /** SyncIdSet SET OF UUIDs state */
-    SYNC_ID_SET_SET_OF_UUIDS_STATE(11),
+    SYNC_ID_SET_SET_OF_UUIDS_STATE,
     
     /** SyncIdSet UUID state */
-    SYNC_ID_SET_UUID_STATE(12),
+    SYNC_ID_SET_UUID_STATE,
 
     /** terminal state */
-    LAST_SYNC_INFO_VALUE_STATE(13);
+    LAST_SYNC_INFO_VALUE_STATE;
 
-    private int state;
-    
-    /**
-     * 
-     * Creates a new instance of SyncInfoValueControlStatesEnum.
-     *
-     * @param state
-     */
-    SyncInfoValueControlStatesEnum(int state)
-    {
-        this.state = state;
-    }
 
-    /**
-     * 
-     * Get the state.
-     *
-     * @return State as integer value
-     */
-    public int getState()
-    {
-        return state;
-    }
-    
     /**
      * Get the grammar name
      * 
@@ -153,7 +121,7 @@ public enum SyncInfoValueControlStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END.getState() ) ? "SYNC_INFO_VALUE_END_STATE" : this.name() );
+        return ( ( state == END_STATE.ordinal() ) ? "SYNC_INFO_VALUE_END_STATE" : this.name() );
     }
 
     

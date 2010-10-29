@@ -70,7 +70,7 @@ public final class CancelGrammar extends AbstractGrammar
         setName( CancelGrammar.class.getName() );
 
         // Create the transitions table
-        super.transitions = new GrammarTransition[CancelStatesEnum.LAST_CANCEL_STATE.getState()][256];
+        super.transitions = new GrammarTransition[CancelStatesEnum.LAST_CANCEL_STATE.ordinal()][256];
 
         /**
          * Transition from init state to cancel sequence
@@ -79,8 +79,8 @@ public final class CancelGrammar extends AbstractGrammar
          * 
          * Creates the Cancel object
          */
-        super.transitions[CancelStatesEnum.INIT_GRAMMAR_STATE.getState()][UniversalTag.SEQUENCE.getValue()] = 
-            new GrammarTransition( CancelStatesEnum.INIT_GRAMMAR_STATE,
+        super.transitions[CancelStatesEnum.START_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = 
+            new GrammarTransition( CancelStatesEnum.START_STATE,
                                     CancelStatesEnum.CANCEL_SEQUENCE_STATE, 
                                     UniversalTag.SEQUENCE.getValue(),
                 new GrammarAction(
@@ -103,7 +103,7 @@ public final class CancelGrammar extends AbstractGrammar
          *     
          * Set the cancelId value into the Cancel object.    
          */
-        super.transitions[CancelStatesEnum.CANCEL_SEQUENCE_STATE.getState()][UniversalTag.INTEGER.getValue()] = 
+        super.transitions[CancelStatesEnum.CANCEL_SEQUENCE_STATE.ordinal()][UniversalTag.INTEGER.getValue()] = 
             new GrammarTransition( CancelStatesEnum.CANCEL_SEQUENCE_STATE,
                                     CancelStatesEnum.CANCEL_ID_STATE, 
                                     UniversalTag.INTEGER.getValue(), 

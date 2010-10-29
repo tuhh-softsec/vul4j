@@ -33,46 +33,19 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
 public enum PasswordPolicyResponseControlStates implements States
 {
 
-    /** The initial state of every grammar */
-    INIT_GRAMMAR_STATE(0),
-
     /** The ending state for every grammars */
-    GRAMMAR_END(-1),
+    GRAMMAR_END,
 
-    START_STATE(0),
+    START_STATE,
 
-    PPOLICY_TIME_BEFORE_EXPIRATION_STATE(1),
+    PPOLICY_TIME_BEFORE_EXPIRATION_STATE,
 
-    PPOLICY_GRACE_AUTHNS_REMAINING_STATE(2),
+    PPOLICY_GRACE_AUTHNS_REMAINING_STATE,
 
-    PPOLICY_ERROR_STATE(3),
+    PPOLICY_ERROR_STATE,
 
-    END_STATE(4);
+    END_STATE;
 
-    private int state;
-    
-    /**
-     * 
-     * Creates a new instance of PasswordPolicyResponseControlStates.
-     *
-     * @param state
-     */
-    private PasswordPolicyResponseControlStates(int state)
-    {
-        this.state = state;
-    }
-
-    /**
-     * 
-     * Get the state.
-     *
-     * @return State as integer value
-     */
-    public int getState()
-    {
-        return state;
-    }
-    
     /**
      * {@inheritDoc}
      */
@@ -100,7 +73,7 @@ public enum PasswordPolicyResponseControlStates implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END.getState() ) ? "PASSWORD_POLICY_RESPONSE_CONTROL_GRAMMAR" : name() );
+        return ( ( state == GRAMMAR_END.ordinal() ) ? "PASSWORD_POLICY_RESPONSE_CONTROL_GRAMMAR" : name() );
     }
 
 

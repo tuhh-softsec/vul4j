@@ -42,7 +42,7 @@ public class CertGenerationContainer extends AbstractContainer
         super();
         stateStack = new int[1];
         grammar = CertGenerationGrammar.getInstance();
-        setTransition( CertGenerationStatesEnum.INIT_GRAMMAR_STATE );
+        setTransition( CertGenerationStatesEnum.START_STATE );
     }
 
 

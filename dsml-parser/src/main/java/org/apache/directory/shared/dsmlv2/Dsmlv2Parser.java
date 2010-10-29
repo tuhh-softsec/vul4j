@@ -151,7 +151,7 @@ public class Dsmlv2Parser
             }
             else if ( eventType == XmlPullParser.END_DOCUMENT )
             {
-                container.setState( Dsmlv2StatesEnum.END_STATE );
+                container.setState( Dsmlv2StatesEnum.GRAMMAR_END );
             }
             else if ( eventType == XmlPullParser.START_TAG )
             {
@@ -258,7 +258,7 @@ public class Dsmlv2Parser
             }
             else if ( eventType == XmlPullParser.END_DOCUMENT )
             {
-                container.setState( Dsmlv2StatesEnum.END_STATE );
+                container.setState( Dsmlv2StatesEnum.GRAMMAR_END );
                 return null;
             }
             else if ( eventType == XmlPullParser.START_TAG )

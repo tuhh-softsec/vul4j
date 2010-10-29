@@ -71,7 +71,7 @@ public class CertGenerationGrammar extends AbstractGrammar
         setName( CertGenerationGrammar.class.getName() );
 
         // Create the transitions table
-        super.transitions = new GrammarTransition[CertGenerationStatesEnum.LAST_CERT_GENERATION_STATE.getState()][256];
+        super.transitions = new GrammarTransition[CertGenerationStatesEnum.LAST_CERT_GENERATION_STATE.ordinal()][256];
 
         /**
          * Transition from init state to certificate generation
@@ -81,8 +81,8 @@ public class CertGenerationGrammar extends AbstractGrammar
          *     
          * Creates the CertGenerationObject object
          */
-        super.transitions[CertGenerationStatesEnum.INIT_GRAMMAR_STATE.getState()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
-            CertGenerationStatesEnum.INIT_GRAMMAR_STATE, CertGenerationStatesEnum.CERT_GENERATION_REQUEST_SEQUENCE_STATE,
+        super.transitions[CertGenerationStatesEnum.START_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
+            CertGenerationStatesEnum.START_STATE, CertGenerationStatesEnum.CERT_GENERATION_REQUEST_SEQUENCE_STATE,
             UniversalTag.SEQUENCE.getValue(), new GrammarAction( "Init CertGenerationObject" )
             {
                 public void action( Asn1Container container )
@@ -102,7 +102,7 @@ public class CertGenerationGrammar extends AbstractGrammar
          *     
          * Set the targetDN value into the CertGenerationObject instance.
          */
-        super.transitions[CertGenerationStatesEnum.CERT_GENERATION_REQUEST_SEQUENCE_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[CertGenerationStatesEnum.CERT_GENERATION_REQUEST_SEQUENCE_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             CertGenerationStatesEnum.CERT_GENERATION_REQUEST_SEQUENCE_STATE, CertGenerationStatesEnum.TARGETDN_STATE,
             UniversalTag.OCTET_STRING.getValue(), new GrammarAction( "Set Cert Generation target DN value" )
             {
@@ -148,7 +148,7 @@ public class CertGenerationGrammar extends AbstractGrammar
          *     
          * Set the issuerDN value into the CertGenerationObject instance.
          */
-        super.transitions[CertGenerationStatesEnum.TARGETDN_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[CertGenerationStatesEnum.TARGETDN_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             CertGenerationStatesEnum.TARGETDN_STATE, CertGenerationStatesEnum.ISSUER_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Set Cert Generation issuer DN value" )
             {
@@ -188,7 +188,7 @@ public class CertGenerationGrammar extends AbstractGrammar
          *     
          * Set the subjectDN value into the CertGenerationObject instance.
          */
-        super.transitions[CertGenerationStatesEnum.ISSUER_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[CertGenerationStatesEnum.ISSUER_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             CertGenerationStatesEnum.ISSUER_STATE, CertGenerationStatesEnum.SUBJECT_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Set Cert Generation subject DN value" )
             {
@@ -233,7 +233,7 @@ public class CertGenerationGrammar extends AbstractGrammar
          *     
          * Set the key algorithm value into the CertGenerationObject instance.
          */
-        super.transitions[CertGenerationStatesEnum.SUBJECT_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[CertGenerationStatesEnum.SUBJECT_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             CertGenerationStatesEnum.SUBJECT_STATE, CertGenerationStatesEnum.KEY_ALGORITHM_STATE,
             UniversalTag.OCTET_STRING.getValue(), new GrammarAction( "Set Cert Generation key algorithm value" )
             {

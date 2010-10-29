@@ -27,61 +27,29 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
 /**
  * ASN.1 grammer constants of SyncDoneValueControl.
  * 
- * TODO: should this be an enum?
- *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public enum SyncDoneValueControlStatesEnum implements States
 {
-    /** The initial state of every grammar */
-    INIT_GRAMMAR_STATE(0),
-
-    /** The ending state for every grammars */
-    GRAMMAR_END(-1),
 
     /** The END_STATE */
-    END_STATE(-1),
-
+    END_STATE,
     
     /***/
-    START_STATE(0),
+    START_STATE,
 
     /** sequence start state */
-    SYNC_DONE_VALUE_SEQUENCE_STATE(1),
+    SYNC_DONE_VALUE_SEQUENCE_STATE,
 
     /** cookie value state */
-    COOKIE_STATE(2),
+    COOKIE_STATE,
 
     /** refreshDeletes value state */
-    REFRESH_DELETES_STATE(3),
+    REFRESH_DELETES_STATE,
 
     /** terminal state */
-    LAST_SYNC_DONE_VALUE_STATE(4);
+    LAST_SYNC_DONE_VALUE_STATE;
 
-    private int state;
-    
-    /**
-     * 
-     * Creates a new instance of SyncDoneValueControlStatesEnum.
-     *
-     * @param state
-     */
-    private SyncDoneValueControlStatesEnum(int state)
-    {
-        this.state = state;
-    }
-
-    /**
-     * 
-     * Get the state.
-     *
-     * @return State as integer value
-     */
-    public int getState()
-    {
-        return state;
-    }
-    
     /**
      * Get the grammar name
      * 
@@ -119,7 +87,7 @@ public enum SyncDoneValueControlStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END.getState() ) ? "SYNC_DONE_VALUE_GRAMMAR" : this.name() );
+        return ( ( state == END_STATE.ordinal() ) ? "SYNC_DONE_VALUE_GRAMMAR" : this.name() );
     }
 
 

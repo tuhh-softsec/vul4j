@@ -28,8 +28,6 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
  * This class store the EntryChangeControl's grammar constants. It is also used
  * for debugging purposes.
  * 
- * TODO: should this be an enum?
- * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public enum EntryChangeControlStatesEnum implements States
@@ -37,61 +35,31 @@ public enum EntryChangeControlStatesEnum implements States
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
 
-    /** The initial state of every grammar */
-    INIT_GRAMMAR_STATE(0),
-
-    /** The ending state for every grammars */
-    GRAMMAR_END(-1),
-
     /** The END_STATE */
-    END_STATE(-1),
+    END_STATE,
 
     // =========================================================================
     // Entry change control grammar states
     // =========================================================================
 
     /** Sequence Tag */
-    START_STATE(0),
+    START_STATE,
 
     /** Sequence */
-    EC_SEQUENCE_STATE(1),
+    EC_SEQUENCE_STATE,
 
     /** changeType */
-    CHANGE_TYPE_STATE(2),
+    CHANGE_TYPE_STATE,
 
     /** previousDN */
-    PREVIOUS_DN_STATE(3),
+    PREVIOUS_DN_STATE,
 
     /** changeNumber */
-    CHANGE_NUMBER_STATE(4),
+    CHANGE_NUMBER_STATE,
 
     /** terminal state */
-    LAST_EC_STATE(5);
+    LAST_EC_STATE;
 
-    private int state;
-    
-    /**
-     * 
-     * Creates a new instance of EntryChangeControlStatesEnum.
-     *
-     * @param state
-     */
-    EntryChangeControlStatesEnum(int state)
-    {
-        this.state = state;
-    }
-
-    /**
-     * 
-     * Get the state.
-     *
-     * @return State as integer value
-     */
-    public int getState()
-    {
-        return state;
-    }
-    
     /**
      * Get the grammar name
      * 
@@ -129,7 +97,7 @@ public enum EntryChangeControlStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END.getState() ) ? "EC_END_STATE" : name() );
+        return ( ( state == END_STATE.ordinal() ) ? "EC_END_STATE" : name() );
     }
 
     

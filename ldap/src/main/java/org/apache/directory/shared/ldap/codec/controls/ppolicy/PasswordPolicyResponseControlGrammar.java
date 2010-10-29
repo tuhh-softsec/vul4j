@@ -57,10 +57,10 @@ public class PasswordPolicyResponseControlGrammar extends AbstractGrammar
     {
         setName( PasswordPolicyResponseControlGrammar.class.getName() );
 
-        super.transitions = new GrammarTransition[PasswordPolicyResponseControlStates.END_STATE.getState()][256];
+        super.transitions = new GrammarTransition[PasswordPolicyResponseControlStates.END_STATE.ordinal()][256];
         
-        super.transitions[PasswordPolicyResponseControlStates.INIT_GRAMMAR_STATE.getState()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
-            PasswordPolicyResponseControlStates.INIT_GRAMMAR_STATE, PasswordPolicyResponseControlStates.START_STATE, UniversalTag.SEQUENCE.getValue(),
+        super.transitions[PasswordPolicyResponseControlStates.START_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
+            PasswordPolicyResponseControlStates.START_STATE, PasswordPolicyResponseControlStates.START_STATE, UniversalTag.SEQUENCE.getValue(),
             new GrammarAction( "Initialization" )
             {
                 public void action( Asn1Container container ) throws DecoderException
@@ -72,7 +72,7 @@ public class PasswordPolicyResponseControlGrammar extends AbstractGrammar
                 }
             } );
 
-        super.transitions[PasswordPolicyResponseControlStates.START_STATE.getState()][PasswordPolicyResponseControlTags.TIME_BEFORE_EXPIRATION_TAG
+        super.transitions[PasswordPolicyResponseControlStates.START_STATE.ordinal()][PasswordPolicyResponseControlTags.TIME_BEFORE_EXPIRATION_TAG
             .getValue()] = new GrammarTransition( PasswordPolicyResponseControlStates.START_STATE,
             PasswordPolicyResponseControlStates.PPOLICY_ERROR_STATE,
             PasswordPolicyResponseControlTags.TIME_BEFORE_EXPIRATION_TAG.getValue(), new GrammarAction(
@@ -104,7 +104,7 @@ public class PasswordPolicyResponseControlGrammar extends AbstractGrammar
                 }
             } );
 
-        super.transitions[PasswordPolicyResponseControlStates.PPOLICY_ERROR_STATE.getState()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
+        super.transitions[PasswordPolicyResponseControlStates.PPOLICY_ERROR_STATE.ordinal()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
             PasswordPolicyResponseControlStates.PPOLICY_ERROR_STATE, PasswordPolicyResponseControlStates.END_STATE,
             UniversalTag.ENUMERATED.getValue(), new GrammarAction( "set ppolicy error value" )
             {
@@ -118,7 +118,7 @@ public class PasswordPolicyResponseControlGrammar extends AbstractGrammar
                 }
             } );
 
-        super.transitions[PasswordPolicyResponseControlStates.START_STATE.getState()][PasswordPolicyResponseControlTags.GRACE_AUTHNS_REMAINING_TAG
+        super.transitions[PasswordPolicyResponseControlStates.START_STATE.ordinal()][PasswordPolicyResponseControlTags.GRACE_AUTHNS_REMAINING_TAG
             .getValue()] = new GrammarTransition( PasswordPolicyResponseControlStates.START_STATE,
             PasswordPolicyResponseControlStates.PPOLICY_ERROR_STATE,
             PasswordPolicyResponseControlTags.GRACE_AUTHNS_REMAINING_TAG.getValue(), new GrammarAction(
@@ -150,7 +150,7 @@ public class PasswordPolicyResponseControlGrammar extends AbstractGrammar
                 }
             } );
 
-        super.transitions[PasswordPolicyResponseControlStates.START_STATE.getState()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
+        super.transitions[PasswordPolicyResponseControlStates.START_STATE.ordinal()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
             PasswordPolicyResponseControlStates.START_STATE, PasswordPolicyResponseControlStates.PPOLICY_ERROR_STATE,
             UniversalTag.ENUMERATED.getValue(), new GrammarAction( "set ppolicy error value" )
             {

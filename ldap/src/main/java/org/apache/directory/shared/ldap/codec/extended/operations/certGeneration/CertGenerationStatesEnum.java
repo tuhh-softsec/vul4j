@@ -32,60 +32,30 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
 public enum CertGenerationStatesEnum implements States
 {
 
-    /** The initial state of every grammar */
-    INIT_GRAMMAR_STATE(0),
-
-    /** The ending state for every grammars */
-    GRAMMAR_END(-1),
-
     /** The END_STATE */
-    END_STATE(-1),
+    END_STATE,
 
     /** start state*/
-    START_STATE(0),
+    START_STATE,
 
     /** sequence*/
-    CERT_GENERATION_REQUEST_SEQUENCE_STATE(1),
+    CERT_GENERATION_REQUEST_SEQUENCE_STATE,
 
     /** the target DN*/
-    TARGETDN_STATE(2),
+    TARGETDN_STATE,
 
     /** the issuer DN*/
-    ISSUER_STATE(3),
+    ISSUER_STATE,
 
     /** the subject DN*/
-    SUBJECT_STATE(4),
+    SUBJECT_STATE,
 
     /** the key algorithm*/
-    KEY_ALGORITHM_STATE(5),
+    KEY_ALGORITHM_STATE,
 
     /** terminal state */
-    LAST_CERT_GENERATION_STATE(6);
+    LAST_CERT_GENERATION_STATE;
 
-    private int state;
-    
-    /**
-     * 
-     * Creates a new instance of CertGenerationStatesEnum.
-     *
-     * @param state
-     */
-    private CertGenerationStatesEnum( int state )
-    {
-        this.state = state;
-    }
-
-    /**
-     * 
-     * Get the state.
-     *
-     * @return State as integer value
-     */
-    public int getState()
-    {
-        return state;
-    }
-    
     /**
      * Get the grammar name
      * 
@@ -123,7 +93,7 @@ public enum CertGenerationStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END.getState() ) ? "CERT_GENERATION_END_STATE" : this.name() );
+        return ( ( state == END_STATE.ordinal() ) ? "CERT_GENERATION_END_STATE" : this.name() );
     }
 
     

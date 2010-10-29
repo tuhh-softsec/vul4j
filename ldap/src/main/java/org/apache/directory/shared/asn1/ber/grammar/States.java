@@ -28,15 +28,6 @@ package org.apache.directory.shared.asn1.ber.grammar;
 public interface States
 {
     /**
-     * Get the string representing the state
-     * 
-     * @param state The state number
-     * @return The String representing the state
-     */
-    public int getState();
-
-
-    /**
      * @return True if this is the END_STATE
      */
     public boolean isEndState();

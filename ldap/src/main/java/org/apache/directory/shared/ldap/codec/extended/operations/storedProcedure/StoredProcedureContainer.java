@@ -46,7 +46,7 @@ public class StoredProcedureContainer extends AbstractContainer
         super();
         stateStack = new int[1];
         grammar = StoredProcedureGrammar.getInstance();
-        setTransition( StoredProcedureStatesEnum.INIT_GRAMMAR_STATE );
+        setTransition( StoredProcedureStatesEnum.START_STATE );
     }
 
 

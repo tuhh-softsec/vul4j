@@ -40,7 +40,7 @@ public class SubentriesControlContainer extends AbstractContainer
         super();
         stateStack = new int[1];
         grammar = SubentriesControlGrammar.getInstance();
-        setTransition( SubentriesControlStatesEnum.INIT_GRAMMAR_STATE );
+        setTransition( SubentriesControlStatesEnum.START_STATE );
     }
 
 

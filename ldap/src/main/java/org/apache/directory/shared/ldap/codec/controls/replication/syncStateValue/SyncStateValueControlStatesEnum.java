@@ -28,8 +28,6 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
  * This class store the SyncStateValueControl's grammar constants. It is also used for
  * debugging purposes.
  * 
- * TODO: should this be an enum?
- * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public enum SyncStateValueControlStatesEnum implements States
@@ -37,60 +35,30 @@ public enum SyncStateValueControlStatesEnum implements States
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
 
-    /** The initial state of every grammar */
-    INIT_GRAMMAR_STATE(0),
-
-    /** The ending state for every grammars */
-    GRAMMAR_END(-1),
-
     /** The END_STATE */
-    END_STATE(-1),
+    END_STATE,
 
     // =========================================================================
     // SyncStateValue control grammar states
     // =========================================================================
     /** Initial state */
-    START_STATE(0),
+    START_STATE,
 
     /** Sequence Value */
-    SYNC_STATE_VALUE_SEQUENCE_STATE(1),
+    SYNC_STATE_VALUE_SEQUENCE_STATE,
 
     /** sync state type Value */
-    SYNC_TYPE_STATE(2),
+    SYNC_TYPE_STATE,
     
     /** syncUUID Value */
-    SYNC_UUID_STATE(3),
+    SYNC_UUID_STATE,
 
     /** cookie Value */
-    COOKIE_STATE(4),
+    COOKIE_STATE,
 
     /** terminal state */
-    LAST_SYNC_STATE_VALUE_STATE(5);
+    LAST_SYNC_STATE_VALUE_STATE;
 
-    private int state;
-    
-    /**
-     * 
-     * Creates a new instance of SyncStateValueControlStatesEnum.
-     *
-     * @param state
-     */
-    private SyncStateValueControlStatesEnum(int state)
-    {
-        this.state = state;
-    }
-
-    /**
-     * 
-     * Get the state.
-     *
-     * @return State as integer value
-     */
-    public int getState()
-    {
-        return state;
-    }
-    
     /**
      * Get the grammar name
      * 
@@ -128,7 +96,7 @@ public enum SyncStateValueControlStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END.getState() ) ? "SYNC_STATE_VALUE_END_STATE" : this.name() );
+        return ( ( state == END_STATE.ordinal() ) ? "SYNC_STATE_VALUE_END_STATE" : this.name() );
     }
 
     

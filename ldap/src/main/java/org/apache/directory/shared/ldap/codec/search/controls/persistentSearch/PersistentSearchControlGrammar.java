@@ -77,7 +77,7 @@ public final class PersistentSearchControlGrammar extends AbstractGrammar
         setName( PersistentSearchControlGrammar.class.getName() );
 
         // Create the transitions table
-        super.transitions = new GrammarTransition[PersistentSearchControlStatesEnum.LAST_PSEARCH_STATE.getState()][256];
+        super.transitions = new GrammarTransition[PersistentSearchControlStatesEnum.LAST_PSEARCH_STATE.ordinal()][256];
 
         /** 
          * Transition from initial state to Psearch sequence
@@ -86,8 +86,8 @@ public final class PersistentSearchControlGrammar extends AbstractGrammar
          *     
          * Initialize the persistence search object
          */
-        super.transitions[PersistentSearchControlStatesEnum.INIT_GRAMMAR_STATE.getState()][UniversalTag.SEQUENCE.getValue()] = 
-            new GrammarTransition( PersistentSearchControlStatesEnum.INIT_GRAMMAR_STATE, 
+        super.transitions[PersistentSearchControlStatesEnum.START_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = 
+            new GrammarTransition( PersistentSearchControlStatesEnum.START_STATE, 
                                     PersistentSearchControlStatesEnum.PSEARCH_SEQUENCE_STATE, 
                                     UniversalTag.SEQUENCE.getValue(), null );
 
@@ -100,7 +100,7 @@ public final class PersistentSearchControlGrammar extends AbstractGrammar
          *     
          * Stores the change types value
          */
-        super.transitions[PersistentSearchControlStatesEnum.PSEARCH_SEQUENCE_STATE.getState()][UniversalTag.INTEGER.getValue()] = 
+        super.transitions[PersistentSearchControlStatesEnum.PSEARCH_SEQUENCE_STATE.ordinal()][UniversalTag.INTEGER.getValue()] = 
             new GrammarTransition( PersistentSearchControlStatesEnum.PSEARCH_SEQUENCE_STATE, 
                 PersistentSearchControlStatesEnum.CHANGE_TYPES_STATE, 
                 UniversalTag.INTEGER.getValue(),
@@ -143,7 +143,7 @@ public final class PersistentSearchControlGrammar extends AbstractGrammar
          *     
          * Stores the change only flag
          */
-        super.transitions[PersistentSearchControlStatesEnum.CHANGE_TYPES_STATE.getState()][UniversalTag.BOOLEAN.getValue()] = 
+        super.transitions[PersistentSearchControlStatesEnum.CHANGE_TYPES_STATE.ordinal()][UniversalTag.BOOLEAN.getValue()] = 
             new GrammarTransition( PersistentSearchControlStatesEnum.CHANGE_TYPES_STATE,
                                     PersistentSearchControlStatesEnum.CHANGES_ONLY_STATE, UniversalTag.BOOLEAN.getValue(),
                 new GrammarAction( "Set PSearchControl changesOnly" )
@@ -182,7 +182,7 @@ public final class PersistentSearchControlGrammar extends AbstractGrammar
          *     
          * Stores the return ECs flag 
          */
-        super.transitions[PersistentSearchControlStatesEnum.CHANGES_ONLY_STATE.getState()][UniversalTag.BOOLEAN.getValue()] = 
+        super.transitions[PersistentSearchControlStatesEnum.CHANGES_ONLY_STATE.ordinal()][UniversalTag.BOOLEAN.getValue()] = 
             new GrammarTransition( PersistentSearchControlStatesEnum.CHANGES_ONLY_STATE, 
                                     PersistentSearchControlStatesEnum.RETURN_ECS_STATE, UniversalTag.BOOLEAN.getValue(),
                 new GrammarAction( "Set PSearchControl returnECs" )

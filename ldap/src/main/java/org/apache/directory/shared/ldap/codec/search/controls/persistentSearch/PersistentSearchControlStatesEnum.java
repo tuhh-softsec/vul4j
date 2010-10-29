@@ -28,8 +28,6 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
  * This class store the PSearchControl's grammar constants. It is also used for
  * debugging purposes.
  * 
- * TODO: should this be an enum?
- * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public enum PersistentSearchControlStatesEnum implements States
@@ -37,60 +35,30 @@ public enum PersistentSearchControlStatesEnum implements States
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
 
-    /** The initial state of every grammar */
-    INIT_GRAMMAR_STATE(0),
-
-    /** The ending state for every grammars */
-    GRAMMAR_END(-1),
-
     /** The END_STATE */
-    END_STATE(-1),
+    END_STATE,
 
     // =========================================================================
     // Persistent search control grammar states
     // =========================================================================
     /** Initial state */
-    START_STATE(0),
+    START_STATE,
 
     /** Sequence Value */
-    PSEARCH_SEQUENCE_STATE(1),
+    PSEARCH_SEQUENCE_STATE,
 
     /** changeTypes Value */
-    CHANGE_TYPES_STATE(2),
+    CHANGE_TYPES_STATE,
     
     /** changesOnly Value */
-    CHANGES_ONLY_STATE(3),
+    CHANGES_ONLY_STATE,
 
     /** returnECs Value */
-    RETURN_ECS_STATE(4),
+    RETURN_ECS_STATE,
 
     /** terminal state */
-    LAST_PSEARCH_STATE(5);
+    LAST_PSEARCH_STATE;
 
-    private int state;
-    
-    /**
-     * 
-     * Creates a new instance of PersistentSearchControlStatesEnum.
-     *
-     * @param state
-     */
-    PersistentSearchControlStatesEnum(int state)
-    {
-        this.state = state;
-    }
-
-    /**
-     * 
-     * Get the state.
-     *
-     * @return State as integer value
-     */
-    public int getState()
-    {
-        return state;
-    }
-    
 
     /**
      * Get the grammar name
@@ -129,7 +97,7 @@ public enum PersistentSearchControlStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END.getState() ) ? "PSEARCH_END_STATE" : name() );
+        return ( ( state == END_STATE.ordinal() ) ? "PSEARCH_END_STATE" : name() );
     }
 
     

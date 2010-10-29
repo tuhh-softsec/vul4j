@@ -30,494 +30,467 @@ package org.apache.directory.shared.dsmlv2;
 public enum Dsmlv2StatesEnum
 {
     /** The initial state of every grammar */
-    INIT_GRAMMAR_STATE(0),
+    INIT_GRAMMAR_STATE,
 
     /** The ending state for every grammars */
-    GRAMMAR_END(-1),
-
-    /** The END_STATE */
-    END_STATE(-1),
+    GRAMMAR_END,
 
     //====================================================
     //  <batchRequest> ... </batchRequest>
     //====================================================
     /** The &lt;batchRequest&gt; tag */
-    BATCHREQUEST_START_TAG(104),
+    BATCHREQUEST_START_TAG,
 
-    BATCHREQUEST_LOOP(105),
+    BATCHREQUEST_LOOP,
 
     /** The &lt;/batchRequest&gt; tag */
-    BATCHREQUEST_END_TAG(1),
+    BATCHREQUEST_END_TAG,
 
     //====================================================
     //  <abandonRequest> ... </abandonRequest>
     //====================================================
     /** The &lt;abandonRequest&gt; tag */
-    ABANDON_REQUEST_START_TAG(2),
+    ABANDON_REQUEST_START_TAG,
 
     /** The &lt;control&gt; tag */
-    ABANDON_REQUEST_CONTROL_START_TAG(4),
+    ABANDON_REQUEST_CONTROL_START_TAG,
 
     /** The &lt;/control&gt; tag */
-    ABANDON_REQUEST_CONTROL_END_TAG(5),
+    ABANDON_REQUEST_CONTROL_END_TAG,
 
     /** The &lt;controlValue&gt; tag */
-    ABANDON_REQUEST_CONTROLVALUE_START_TAG(6),
+    ABANDON_REQUEST_CONTROLVALUE_START_TAG,
 
     /** The &lt;/controlValue&gt; tag */
-    ABANDON_REQUEST_CONTROLVALUE_END_TAG(7),
+    ABANDON_REQUEST_CONTROLVALUE_END_TAG,
 
     //====================================================
     //  <addRequest> ... </addRequest>
     //====================================================
     /** The &lt;addRequest&gt; tag */
-    ADD_REQUEST_START_TAG(8),
+    ADD_REQUEST_START_TAG,
 
     /** The &lt;control&gt; tag */
-    ADD_REQUEST_CONTROL_START_TAG(10),
+    ADD_REQUEST_CONTROL_START_TAG,
 
     /** The &lt;/control&gt; tag */
-    ADD_REQUEST_CONTROL_END_TAG(11),
+    ADD_REQUEST_CONTROL_END_TAG,
 
     /** The &lt;controlValue&gt; tag */
-    ADD_REQUEST_CONTROLVALUE_START_TAG(12),
+    ADD_REQUEST_CONTROLVALUE_START_TAG,
 
     /** The &lt;/controlValue&gt; tag */
-    ADD_REQUEST_CONTROLVALUE_END_TAG(13),
+    ADD_REQUEST_CONTROLVALUE_END_TAG,
 
     /** The &lt;attr&gt; tag */
-    ADD_REQUEST_ATTR_START_TAG(14),
+    ADD_REQUEST_ATTR_START_TAG,
 
     /** The &lt;/attr&gt; tag */
-    ADD_REQUEST_ATTR_END_TAG(15),
+    ADD_REQUEST_ATTR_END_TAG,
 
     /** The &lt;value&gt; tag */
-    ADD_REQUEST_VALUE_START_TAG(16),
+    ADD_REQUEST_VALUE_START_TAG,
 
     /** The &lt;/value&gt; tag */
-    ADD_REQUEST_VALUE_END_TAG(17),
+    ADD_REQUEST_VALUE_END_TAG,
 
     //====================================================
     //  <authRequest> ... </authRequest>
     //====================================================
     /** The &lt;authRequest&gt; tag */
-    AUTH_REQUEST_START_TAG(18),
+    AUTH_REQUEST_START_TAG,
 
     /** The &lt;control&gt; tag */
-    AUTH_REQUEST_CONTROL_START_TAG(20),
+    AUTH_REQUEST_CONTROL_START_TAG,
 
     /** The &lt;/control&gt; tag */
-    AUTH_REQUEST_CONTROL_END_TAG(21),
+    AUTH_REQUEST_CONTROL_END_TAG,
 
     /** The &lt;controlValue&gt; tag */
-    AUTH_REQUEST_CONTROLVALUE_START_TAG(22),
+    AUTH_REQUEST_CONTROLVALUE_START_TAG,
 
     /** The &lt;/controlValue&gt; tag */
-    AUTH_REQUEST_CONTROLVALUE_END_TAG(23),
+    AUTH_REQUEST_CONTROLVALUE_END_TAG,
 
     //====================================================
     //  <compareRequest> ... </compareRequest>
     //====================================================
     /** The &lt;compareRequest&gt; tag */
-    COMPARE_REQUEST_START_TAG(24),
+    COMPARE_REQUEST_START_TAG,
 
     /** The &lt;control&gt; tag */
-    COMPARE_REQUEST_CONTROL_START_TAG(26),
+    COMPARE_REQUEST_CONTROL_START_TAG,
 
     /** The &lt;/control&gt; tag */
-    COMPARE_REQUEST_CONTROL_END_TAG(27),
+    COMPARE_REQUEST_CONTROL_END_TAG,
 
     /** The &lt;controlValue&gt; tag */
-    COMPARE_REQUEST_CONTROLVALUE_START_TAG(28),
+    COMPARE_REQUEST_CONTROLVALUE_START_TAG,
 
     /** The &lt;/controlValue&gt; tag */
-    COMPARE_REQUEST_CONTROLVALUE_END_TAG(29),
+    COMPARE_REQUEST_CONTROLVALUE_END_TAG,
 
     /** The &lt;assertion&gt; tag */
-    COMPARE_REQUEST_ASSERTION_START_TAG(30),
+    COMPARE_REQUEST_ASSERTION_START_TAG,
 
     /** The &lt;/assertion&gt; tag */
-    COMPARE_REQUEST_ASSERTION_END_TAG(31),
+    COMPARE_REQUEST_ASSERTION_END_TAG,
 
     /** The &lt;value&gt; tag */
-    COMPARE_REQUEST_VALUE_START_TAG(32),
+    COMPARE_REQUEST_VALUE_START_TAG,
 
     /** The &lt;/value&gt; tag */
-    COMPARE_REQUEST_VALUE_END_TAG(33),
+    COMPARE_REQUEST_VALUE_END_TAG,
 
     //====================================================
     //  <delRequest> ... </delRequest>
     //====================================================
     /** The &lt;delRequest&gt; tag */
-    DEL_REQUEST_START_TAG(34),
+    DEL_REQUEST_START_TAG,
 
     /** The &lt;control&gt; tag */
-    DEL_REQUEST_CONTROL_START_TAG(36),
+    DEL_REQUEST_CONTROL_START_TAG,
 
     /** The &lt;/control&gt; tag */
-    DEL_REQUEST_CONTROL_END_TAG(37),
+    DEL_REQUEST_CONTROL_END_TAG,
 
     /** The &lt;controlValue&gt; tag */
-    DEL_REQUEST_CONTROLVALUE_START_TAG(38),
+    DEL_REQUEST_CONTROLVALUE_START_TAG,
 
     /** The &lt;/controlValue&gt; tag */
-    DEL_REQUEST_CONTROLVALUE_END_TAG(39),
+    DEL_REQUEST_CONTROLVALUE_END_TAG,
 
     //====================================================
     //  <extendedRequest> ... </extendedRequest>
     //====================================================
     /** The &lt;extendedRequest&gt; tag */
-    EXTENDED_REQUEST_START_TAG(40),
+    EXTENDED_REQUEST_START_TAG,
 
     /** The &lt;control&gt; tag */
-    EXTENDED_REQUEST_CONTROL_START_TAG(42),
+    EXTENDED_REQUEST_CONTROL_START_TAG,
 
     /** The &lt;/control&gt; tag */
-    EXTENDED_REQUEST_CONTROL_END_TAG(43),
+    EXTENDED_REQUEST_CONTROL_END_TAG,
 
     /** The &lt;controlValue&gt; tag */
-    EXTENDED_REQUEST_CONTROLVALUE_START_TAG(44),
+    EXTENDED_REQUEST_CONTROLVALUE_START_TAG,
 
     /** The &lt;/controlValue&gt; tag */
-    EXTENDED_REQUEST_CONTROLVALUE_END_TAG(45),
+    EXTENDED_REQUEST_CONTROLVALUE_END_TAG,
 
     /** The &lt;requestName&gt; tag */
-    EXTENDED_REQUEST_REQUESTNAME_START_TAG(46),
+    EXTENDED_REQUEST_REQUESTNAME_START_TAG,
 
     /** The &lt;/requestName&gt; tag */
-    EXTENDED_REQUEST_REQUESTNAME_END_TAG(47),
+    EXTENDED_REQUEST_REQUESTNAME_END_TAG,
 
     /** The &lt;requestValue&gt; tag */
-    EXTENDED_REQUEST_REQUESTVALUE_START_TAG(48),
+    EXTENDED_REQUEST_REQUESTVALUE_START_TAG,
 
     /** The &lt;/requestValue&gt; tag */
-    EXTENDED_REQUEST_REQUESTVALUE_END_TAG(49),
+    EXTENDED_REQUEST_REQUESTVALUE_END_TAG,
 
     //====================================================
     //  <modDNRequest> ... </modDNRequest>
     //====================================================
     /** The &lt;modDNRequest&gt; tag */
-    MODIFY_DN_REQUEST_START_TAG(50),
+    MODIFY_DN_REQUEST_START_TAG,
 
     /** The &lt;control&gt; tag */
-    MODIFY_DN_REQUEST_CONTROL_START_TAG(52),
+    MODIFY_DN_REQUEST_CONTROL_START_TAG,
 
     /** The &lt;/control&gt; tag */
-    MODIFY_DN_REQUEST_CONTROL_END_TAG(53),
+    MODIFY_DN_REQUEST_CONTROL_END_TAG,
 
     /** The &lt;controlValue&gt; tag */
-    MODIFY_DN_REQUEST_CONTROLVALUE_START_TAG(54),
+    MODIFY_DN_REQUEST_CONTROLVALUE_START_TAG,
 
     /** The &lt;/controlValue&gt; tag */
-    MODIFY_DN_REQUEST_CONTROLVALUE_END_TAG(55),
+    MODIFY_DN_REQUEST_CONTROLVALUE_END_TAG,
 
     //====================================================
     //  <modifyRequest> ... </modifyRequest>
     //====================================================
     /** The &lt;modifyRequest&gt; tag */
-    MODIFY_REQUEST_START_TAG(56),
+    MODIFY_REQUEST_START_TAG,
 
     /** The &lt;control&gt; tag */
-    MODIFY_REQUEST_CONTROL_START_TAG(58),
+    MODIFY_REQUEST_CONTROL_START_TAG,
 
     /** The &lt;/control&gt; tag */
-    MODIFY_REQUEST_CONTROL_END_TAG(59),
+    MODIFY_REQUEST_CONTROL_END_TAG,
 
     /** The &lt;controlValue&gt; tag */
-    MODIFY_REQUEST_CONTROLVALUE_START_TAG(60),
+    MODIFY_REQUEST_CONTROLVALUE_START_TAG,
 
     /** The &lt;/controlValue&gt; tag */
-    MODIFY_REQUEST_CONTROLVALUE_END_TAG(61),
+    MODIFY_REQUEST_CONTROLVALUE_END_TAG,
 
     /** The &lt;modification&gt; tag */
-    MODIFY_REQUEST_MODIFICATION_START_TAG(62),
+    MODIFY_REQUEST_MODIFICATION_START_TAG,
 
     /** The &lt;/modification&gt; tag */
-    MODIFY_REQUEST_MODIFICATION_END_TAG(63),
+    MODIFY_REQUEST_MODIFICATION_END_TAG,
 
     /** The &lt;value&gt; tag */
-    MODIFY_REQUEST_VALUE_START_TAG(64),
+    MODIFY_REQUEST_VALUE_START_TAG,
 
     /** The &lt;/value&gt; tag */
-    MODIFY_REQUEST_VALUE_END_TAG(65),
+    MODIFY_REQUEST_VALUE_END_TAG,
 
     //====================================================
     //  <searchRequest> ... </searchRequest>
     //====================================================
     /** The &lt;searchRequest&gt; tag */
-    SEARCH_REQUEST_START_TAG(66),
+    SEARCH_REQUEST_START_TAG,
 
     /** The &lt;control&gt; tag */
-    SEARCH_REQUEST_CONTROL_START_TAG(68),
+    SEARCH_REQUEST_CONTROL_START_TAG,
 
     /** The &lt;/control&gt; tag */
-    SEARCH_REQUEST_CONTROL_END_TAG(69),
+    SEARCH_REQUEST_CONTROL_END_TAG,
 
     /** The &lt;controlValue&gt; tag */
-    SEARCH_REQUEST_CONTROLVALUE_START_TAG(70),
+    SEARCH_REQUEST_CONTROLVALUE_START_TAG,
 
     /** The &lt;/controlValue&gt; tag */
-    SEARCH_REQUEST_CONTROLVALUE_END_TAG(71),
+    SEARCH_REQUEST_CONTROLVALUE_END_TAG,
 
     /** The &lt;filter&gt; tag */
-    SEARCH_REQUEST_FILTER_START_TAG(72),
+    SEARCH_REQUEST_FILTER_START_TAG,
 
     /** The &lt;/filter&gt; tag */
-    SEARCH_REQUEST_FILTER_END_TAG(73),
+    SEARCH_REQUEST_FILTER_END_TAG,
 
     /** The &lt;attributes&gt; tag */
-    SEARCH_REQUEST_ATTRIBUTES_START_TAG(74),
+    SEARCH_REQUEST_ATTRIBUTES_START_TAG,
 
     /** The &lt;/attributes&gt; tag */
-    SEARCH_REQUEST_ATTRIBUTES_END_TAG(75),
+    SEARCH_REQUEST_ATTRIBUTES_END_TAG,
 
     /** The &lt;attribute&gt; tag */
-    SEARCH_REQUEST_ATTRIBUTE_START_TAG(76),
+    SEARCH_REQUEST_ATTRIBUTE_START_TAG,
 
     /** The &lt;/attribute&gt; tag */
-    SEARCH_REQUEST_ATTRIBUTE_END_TAG(77),
+    SEARCH_REQUEST_ATTRIBUTE_END_TAG,
 
     /** The &lt;equalityMatch&gt; tag */
-    SEARCH_REQUEST_EQUALITYMATCH_START_TAG(84),
+    SEARCH_REQUEST_EQUALITYMATCH_START_TAG,
 
     /** The &lt;subStrings&gt; tag */
-    SEARCH_REQUEST_SUBSTRINGS_START_TAG(86),
+    SEARCH_REQUEST_SUBSTRINGS_START_TAG,
 
     /** The &lt;/subStrings&gt; tag */
-    SEARCH_REQUEST_SUBSTRINGS_END_TAG(87),
+    SEARCH_REQUEST_SUBSTRINGS_END_TAG,
 
     /** The &lt;greaterOrEqual&gt; tag */
-    SEARCH_REQUEST_GREATEROREQUAL_START_TAG(88),
+    SEARCH_REQUEST_GREATEROREQUAL_START_TAG,
 
     /** The &lt;lessOrEqual&gt; tag */
-    SEARCH_REQUEST_LESSOREQUAL_START_TAG(90),
+    SEARCH_REQUEST_LESSOREQUAL_START_TAG,
 
     /** The &lt;present&gt; tag */
-    SEARCH_REQUEST_PRESENT_START_TAG(92),
+    SEARCH_REQUEST_PRESENT_START_TAG,
 
     /** The &lt;approxMatch&gt; tag */
-    SEARCH_REQUEST_APPROXMATCH_START_TAG(94),
+    SEARCH_REQUEST_APPROXMATCH_START_TAG,
 
     /** The &lt;extensibleMatch&gt; tag */
-    SEARCH_REQUEST_EXTENSIBLEMATCH_START_TAG(96),
+    SEARCH_REQUEST_EXTENSIBLEMATCH_START_TAG,
 
     /** The &lt;value&gt; tag */
-    SEARCH_REQUEST_EXTENSIBLEMATCH_VALUE_START_TAG(109),
+    SEARCH_REQUEST_EXTENSIBLEMATCH_VALUE_START_TAG,
 
     /** The &lt;/value&gt; tag */
-    SEARCH_REQUEST_EXTENSIBLEMATCH_VALUE_END_TAG(110),
+    SEARCH_REQUEST_EXTENSIBLEMATCH_VALUE_END_TAG,
 
     /** The &lt;initial&gt; tag */
-    SEARCH_REQUEST_INITIAL_START_TAG(98),
+    SEARCH_REQUEST_INITIAL_START_TAG,
 
     /** The &lt;/initial&gt; tag */
-    SEARCH_REQUEST_INITIAL_END_TAG(99),
+    SEARCH_REQUEST_INITIAL_END_TAG,
 
     /** The &lt;any&gt; tag */
-    SEARCH_REQUEST_ANY_START_TAG(100),
+    SEARCH_REQUEST_ANY_START_TAG,
 
     /** The &lt;/any&gt; tag */
-    SEARCH_REQUEST_ANY_END_TAG(101),
+    SEARCH_REQUEST_ANY_END_TAG,
 
     /** The &lt;final&gt; tag */
-    SEARCH_REQUEST_FINAL_START_TAG(102),
+    SEARCH_REQUEST_FINAL_START_TAG,
 
     /** The &lt;/final&gt; tag */
-    SEARCH_REQUEST_FINAL_END_TAG(103),
+    SEARCH_REQUEST_FINAL_END_TAG,
 
     /** The &lt;value&gt; tag */
-    SEARCH_REQUEST_VALUE_START_TAG(107),
+    SEARCH_REQUEST_VALUE_START_TAG,
 
     /** The &lt;/value&gt; tag */
-    SEARCH_REQUEST_VALUE_END_TAG(108),
+    SEARCH_REQUEST_VALUE_END_TAG,
 
     /** The Filter Loop state */
-    SEARCH_REQUEST_FILTER_LOOP(106),
+    SEARCH_REQUEST_FILTER_LOOP,
 
     //****************
     // DSML Response 
     //****************
 
     /** The Batch Response Loop state */
-    BATCH_RESPONSE_LOOP(200),
+    BATCH_RESPONSE_LOOP,
 
     /** The Error Response Loop state */
-    ERROR_RESPONSE(201),
+    ERROR_RESPONSE,
 
     /** The Message Start state */
-    MESSAGE_START(202),
+    MESSAGE_START,
 
     /** The Message End state */
-    MESSAGE_END(203),
+    MESSAGE_END,
 
     /** The Detail Start state */
-    DETAIL_START(204),
+    DETAIL_START,
 
     /** The Detail End state */
-    DETAIL_END(205),
+    DETAIL_END,
 
     /** The Extended Response state */
-    EXTENDED_RESPONSE(206),
+    EXTENDED_RESPONSE,
 
     /** The Extended Response Control Start state */
-    EXTENDED_RESPONSE_CONTROL_START(207),
+    EXTENDED_RESPONSE_CONTROL_START,
 
     /** The Extended Response Control End state */
-    EXTENDED_RESPONSE_CONTROL_END(208),
+    EXTENDED_RESPONSE_CONTROL_END,
 
     /** The Extended Response Control Value Start state */
-    EXTENDED_RESPONSE_CONTROL_VALUE_START(245),
+    EXTENDED_RESPONSE_CONTROL_VALUE_START,
 
     /** The Extended Response Control Value End state */
-    EXTENDED_RESPONSE_CONTROL_VALUE_END(246),
+    EXTENDED_RESPONSE_CONTROL_VALUE_END,
 
     /** The Extended Response Result Code Start state */
-    EXTENDED_RESPONSE_RESULT_CODE_START(209),
+    EXTENDED_RESPONSE_RESULT_CODE_START,
 
     /** The Extended Response Result Code End state */
-    EXTENDED_RESPONSE_RESULT_CODE_END(210),
+    EXTENDED_RESPONSE_RESULT_CODE_END,
 
     /** The Extended Response Error Message Start state */
-    EXTENDED_RESPONSE_ERROR_MESSAGE_START(211),
+    EXTENDED_RESPONSE_ERROR_MESSAGE_START,
 
     /** The Extended Response Error Message End state */
-    EXTENDED_RESPONSE_ERROR_MESSAGE_END(212),
+    EXTENDED_RESPONSE_ERROR_MESSAGE_END,
 
     /** The Extended Response Referral Start state */
-    EXTENDED_RESPONSE_REFERRAL_START(213),
+    EXTENDED_RESPONSE_REFERRAL_START,
 
     /** The Extended Response Referral End state */
-    EXTENDED_RESPONSE_REFERRAL_END(214),
+    EXTENDED_RESPONSE_REFERRAL_END,
 
     /** The Response Name Start state */
-    RESPONSE_NAME_START(215),
+    RESPONSE_NAME_START,
 
     /** The Response Name End state */
-    RESPONSE_NAME_END(216),
+    RESPONSE_NAME_END,
 
     /** The Response Start state */
-    RESPONSE_START(217),
+    RESPONSE_START,
 
     /** The Response End state */
-    RESPONSE_END(218),
+    RESPONSE_END,
 
     /** The LDAP Result state */
-    LDAP_RESULT(219),
+    LDAP_RESULT,
 
     /** The LDAP Result Control Start state */
-    LDAP_RESULT_CONTROL_START(220),
+    LDAP_RESULT_CONTROL_START,
 
     /** The LDAP Result Control End state */
-    LDAP_RESULT_CONTROL_END(221),
+    LDAP_RESULT_CONTROL_END,
 
     /** The LDAP Result Control Value Start state */
-    LDAP_RESULT_CONTROL_VALUE_START(247),
+    LDAP_RESULT_CONTROL_VALUE_START,
 
     /** The LDAP Result Control Value End state */
-    LDAP_RESULT_CONTROL_VALUE_END(248),
+    LDAP_RESULT_CONTROL_VALUE_END,
 
     /** The LDAP Result Result Code Start state */
-    LDAP_RESULT_RESULT_CODE_START(222),
+    LDAP_RESULT_RESULT_CODE_START,
 
     /** The LDAP Result Result Code End state */
-    LDAP_RESULT_RESULT_CODE_END(223),
+    LDAP_RESULT_RESULT_CODE_END,
 
     /** The LDAP Result Error Message Start state */
-    LDAP_RESULT_ERROR_MESSAGE_START(224),
+    LDAP_RESULT_ERROR_MESSAGE_START,
 
     /** The LDAP Result Error Message End state */
-    LDAP_RESULT_ERROR_MESSAGE_END(225),
+    LDAP_RESULT_ERROR_MESSAGE_END,
 
     /** The LDAP Result Referral Start state */
-    LDAP_RESULT_REFERRAL_START(226),
+    LDAP_RESULT_REFERRAL_START,
 
     /** The LDAP Result Referral End state */
-    LDAP_RESULT_REFERRAL_END(227),
+    LDAP_RESULT_REFERRAL_END,
 
     /** The LDAP Result End state */
-    LDAP_RESULT_END(228),
+    LDAP_RESULT_END,
 
     /** The Search Response state */
-    SEARCH_RESPONSE(229),
+    SEARCH_RESPONSE,
 
     /** The Search Result Entry state */
-    SEARCH_RESULT_ENTRY(230),
+    SEARCH_RESULT_ENTRY,
 
     /** The Search Result Entry Control Start state */
-    SEARCH_RESULT_ENTRY_CONTROL_START(231),
+    SEARCH_RESULT_ENTRY_CONTROL_START,
 
     /** The Search Result Entry Control End state */
-    SEARCH_RESULT_ENTRY_CONTROL_END(232),
+    SEARCH_RESULT_ENTRY_CONTROL_END,
 
     /** The Search Result Entry Control Value Start state */
-    SEARCH_RESULT_ENTRY_CONTROL_VALUE_START(249),
+    SEARCH_RESULT_ENTRY_CONTROL_VALUE_START,
 
     /** The Search Result Entry Control Value End state */
-    SEARCH_RESULT_ENTRY_CONTROL_VALUE_END(250),
+    SEARCH_RESULT_ENTRY_CONTROL_VALUE_END,
 
     /** The Search Result Entry Attr Start state */
-    SEARCH_RESULT_ENTRY_ATTR_START(233),
+    SEARCH_RESULT_ENTRY_ATTR_START,
 
     /** The Search Result Entry Attr End state */
-    SEARCH_RESULT_ENTRY_ATTR_END(234),
+    SEARCH_RESULT_ENTRY_ATTR_END,
 
     /** The Search Result Entry Value Start state */
-    SEARCH_RESULT_ENTRY_VALUE_START(235),
+    SEARCH_RESULT_ENTRY_VALUE_START,
 
     /** The Search Result Entry Value End state */
-    SEARCH_RESULT_ENTRY_VALUE_END(236),
+    SEARCH_RESULT_ENTRY_VALUE_END,
 
     /** The Search Result Entry Loop state */
-    SEARCH_RESULT_ENTRY_LOOP(237),
+    SEARCH_RESULT_ENTRY_LOOP,
 
     /** The Search Result Reference state */
-    SEARCH_RESULT_REFERENCE(238),
+    SEARCH_RESULT_REFERENCE,
 
     /** The Search Result Reference Control Start state */
-    SEARCH_RESULT_REFERENCE_CONTROL_START(239),
+    SEARCH_RESULT_REFERENCE_CONTROL_START,
 
     /** The Search Result Reference Control End state */
-    SEARCH_RESULT_REFERENCE_CONTROL_END(240),
+    SEARCH_RESULT_REFERENCE_CONTROL_END,
 
     /** The Search Result Reference Control Value Start state */
-    SEARCH_RESULT_REFERENCE_CONTROL_VALUE_START(251),
+    SEARCH_RESULT_REFERENCE_CONTROL_VALUE_START,
 
     /** The Search Result Reference Control Value End state */
-    SEARCH_RESULT_REFERENCE_CONTROL_VALUE_END(252),
+    SEARCH_RESULT_REFERENCE_CONTROL_VALUE_END,
 
     /** The Search Result Reference Ref Start state */
-    SEARCH_RESULT_REFERENCE_REF_START(241),
+    SEARCH_RESULT_REFERENCE_REF_START,
 
     /** The Search Result Reference Ref End state */
-    SEARCH_RESULT_REFERENCE_REF_END(242),
+    SEARCH_RESULT_REFERENCE_REF_END,
 
     /** The Search Result Reference Loop state */
-    SEARCH_RESULT_REFERENCE_LOOP(243),
+    SEARCH_RESULT_REFERENCE_LOOP,
 
     /** The Search Result Done End state */
-    SEARCH_RESULT_DONE_END(244);
-    
-    private int state;
-
-    /**
-     * 
-     * Creates a new instance of Dsmlv2StatesEnum.
-     *
-     * @param state
-     */
-    Dsmlv2StatesEnum(int state)
-    {
-        this.state = state;
-    }
-
-    /**
-     * 
-     * Get the state.
-     *
-     * @return State as integer value
-     */
-    public int getState()
-    {
-        return state;
-    }
+    SEARCH_RESULT_DONE_END;
 }

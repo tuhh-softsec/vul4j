@@ -43,7 +43,7 @@ public class CancelContainer extends AbstractContainer
         super();
         stateStack = new int[1];
         grammar = CancelGrammar.getInstance();
-        setTransition( CancelStatesEnum.INIT_GRAMMAR_STATE );
+        setTransition( CancelStatesEnum.START_STATE );
     }
 
 

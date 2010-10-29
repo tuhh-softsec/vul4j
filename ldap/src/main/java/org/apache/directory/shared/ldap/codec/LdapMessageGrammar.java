@@ -168,7 +168,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         setName( LdapMessageGrammar.class.getName() );
 
         // Create the transitions table
-        super.transitions = new GrammarTransition[LdapStatesEnum.LAST_LDAP_STATE.getState()][256];
+        super.transitions = new GrammarTransition[LdapStatesEnum.LAST_LDAP_STATE.ordinal()][256];
 
         // ============================================================================================
         // Transition from START to LdapMessage
@@ -181,7 +181,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // The next state will be LDAP_MESSAGE_STATE
         //
         // We will just check that the length is not null
-        super.transitions[LdapStatesEnum.START_STATE.getState()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.START_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
             LdapStatesEnum.START_STATE, LdapStatesEnum.LDAP_MESSAGE_STATE, UniversalTag.SEQUENCE.getValue(),
             new GrammarAction( "LdapMessage initialization" )
             {
@@ -216,7 +216,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //
         // The message ID will be temporarely stored in the container, because we can't store it
         // into an object.
-        super.transitions[LdapStatesEnum.LDAP_MESSAGE_STATE.getState()][UniversalTag.INTEGER.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.LDAP_MESSAGE_STATE.ordinal()][UniversalTag.INTEGER.getValue()] = new GrammarTransition(
             LdapStatesEnum.LDAP_MESSAGE_STATE, LdapStatesEnum.MESSAGE_ID_STATE, UniversalTag.INTEGER.getValue(),
             new GrammarAction( "Store MessageId" )
             {
@@ -293,7 +293,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // LdapMessage ::= ... UnBindRequest ...
         // unbindRequest ::= [APPLICATION 2] NULL
         // We have to switch to the UnBindRequest grammar
-        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.getState()][LdapConstants.UNBIND_REQUEST_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.UNBIND_REQUEST_TAG] = new GrammarTransition(
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.UNBIND_REQUEST_STATE, LdapConstants.UNBIND_REQUEST_TAG,
             new GrammarAction( "Unbind Request initialization" )
             {
@@ -329,7 +329,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //         ... },
         //     controls       [0] Controls OPTIONAL }
         //
-        super.transitions[LdapStatesEnum.UNBIND_REQUEST_STATE.getState()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.UNBIND_REQUEST_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.UNBIND_REQUEST_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
             new ControlsInitAction() );
 
@@ -340,7 +340,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // delRequest ::= [APPLICATION 10] LDAPDN
         //
         // We store the DN to bve deleted into the DelRequest object
-        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.getState()][LdapConstants.DEL_REQUEST_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.DEL_REQUEST_TAG] = new GrammarTransition(
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.DEL_REQUEST_STATE, LdapConstants.DEL_REQUEST_TAG,
             new GrammarAction( "Init del Request" )
             {
@@ -405,7 +405,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //         ... },
         //     controls       [0] Controls OPTIONAL }
         //
-        super.transitions[LdapStatesEnum.DEL_REQUEST_STATE.getState()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.DEL_REQUEST_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.DEL_REQUEST_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
             new ControlsInitAction() );
 
@@ -416,7 +416,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // AbandonRequest ::= [APPLICATION 16] MessageID
         //
         // Create the AbandonRequest object, and store the ID in it
-        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.getState()][LdapConstants.ABANDON_REQUEST_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.ABANDON_REQUEST_TAG] = new GrammarTransition(
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.ABANDON_REQUEST_STATE, LdapConstants.ABANDON_REQUEST_TAG,
             new GrammarAction( "Init Abandon Request" )
             {
@@ -478,7 +478,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //         ... },
         //     controls       [0] Controls OPTIONAL }
         //
-        super.transitions[LdapStatesEnum.ABANDON_REQUEST_STATE.getState()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ABANDON_REQUEST_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.ABANDON_REQUEST_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
             new ControlsInitAction() );
 
@@ -489,7 +489,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // BindRequest ::= [APPLICATION 0] SEQUENCE { ...
         //
         // We have to allocate a BindRequest
-        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.getState()][LdapConstants.BIND_REQUEST_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.BIND_REQUEST_TAG] = new GrammarTransition(
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.BIND_REQUEST_STATE, LdapConstants.BIND_REQUEST_TAG,
             new GrammarAction( "Init BindRequest" )
             {
@@ -523,7 +523,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ....
         //
         // The Ldap version is parsed and stored into the BindRequest object
-        super.transitions[LdapStatesEnum.BIND_REQUEST_STATE.getState()][UniversalTag.INTEGER.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.BIND_REQUEST_STATE.ordinal()][UniversalTag.INTEGER.getValue()] = new GrammarTransition(
             LdapStatesEnum.BIND_REQUEST_STATE, LdapStatesEnum.VERSION_STATE, UniversalTag.INTEGER.getValue(),
             new GrammarAction( "Store version" )
             {
@@ -569,7 +569,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ....
         //
         // The Ldap version is parsed and stored into the BindRequest object
-        super.transitions[LdapStatesEnum.VERSION_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.VERSION_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.VERSION_STATE, LdapStatesEnum.NAME_STATE, UniversalTag.OCTET_STRING.getValue(), new GrammarAction(
                 "Store Bind Name value" )
             {
@@ -628,7 +628,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // We have to create an Authentication Object to store the credentials.
-        super.transitions[LdapStatesEnum.NAME_STATE.getState()][LdapConstants.BIND_REQUEST_SIMPLE_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.NAME_STATE.ordinal()][LdapConstants.BIND_REQUEST_SIMPLE_TAG] = new GrammarTransition(
             LdapStatesEnum.NAME_STATE, LdapStatesEnum.SIMPLE_STATE, LdapConstants.BIND_REQUEST_SIMPLE_TAG,
             new GrammarAction( "Store Bind Simple Authentication value" )
             {
@@ -670,7 +670,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //         ... },
         //     controls       [0] Controls OPTIONAL }
         //
-        super.transitions[LdapStatesEnum.SIMPLE_STATE.getState()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.SIMPLE_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.SIMPLE_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
             new ControlsInitAction() );
 
@@ -687,7 +687,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // We have to create an Authentication Object to store the credentials.
-        super.transitions[LdapStatesEnum.NAME_STATE.getState()][LdapConstants.BIND_REQUEST_SASL_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.NAME_STATE.ordinal()][LdapConstants.BIND_REQUEST_SASL_TAG] = new GrammarTransition(
             LdapStatesEnum.NAME_STATE, LdapStatesEnum.SASL_STATE, LdapConstants.BIND_REQUEST_SASL_TAG,
             new GrammarAction( "Initialize Bind SASL Authentication" )
             {
@@ -726,7 +726,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // We have to store the mechanism.
-        super.transitions[LdapStatesEnum.SASL_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.SASL_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.SASL_STATE, LdapStatesEnum.MECHANISM_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Store SASL mechanism" )
             {
@@ -765,7 +765,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     credentials OCTET STRING OPTIONAL }
         //
         // We have to store the mechanism.
-        super.transitions[LdapStatesEnum.MECHANISM_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MECHANISM_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.MECHANISM_STATE, LdapStatesEnum.CREDENTIALS_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Store SASL credentials" )
             {
@@ -807,7 +807,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //         ... },
         //     controls       [0] Controls OPTIONAL }
         //
-        super.transitions[LdapStatesEnum.MECHANISM_STATE.getState()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MECHANISM_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.MECHANISM_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
             new ControlsInitAction() );
 
@@ -818,7 +818,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //         ... },
         //     controls       [0] Controls OPTIONAL }
         //
-        super.transitions[LdapStatesEnum.CREDENTIALS_STATE.getState()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.CREDENTIALS_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.CREDENTIALS_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
             new ControlsInitAction() );
 
@@ -828,7 +828,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // LdapMessage ::= ... BindResponse ...
         // BindResponse ::= [APPLICATION 1] SEQUENCE { ...
         // We have to switch to the BindResponse grammar
-        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.getState()][LdapConstants.BIND_RESPONSE_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.BIND_RESPONSE_TAG] = new GrammarTransition(
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.BIND_RESPONSE_STATE, LdapConstants.BIND_RESPONSE_TAG,
             new GrammarAction( "Init BindReponse" )
             {
@@ -854,7 +854,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //         ...
         // 
         // Stores the result code into the Bind Response object
-        super.transitions[LdapStatesEnum.BIND_RESPONSE_STATE.getState()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.BIND_RESPONSE_STATE.ordinal()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
             LdapStatesEnum.BIND_RESPONSE_STATE, LdapStatesEnum.RESULT_CODE_BR_STATE, UniversalTag.ENUMERATED.getValue(),
             new ResultCodeAction() );
 
@@ -867,7 +867,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Stores the matched DN
-        super.transitions[LdapStatesEnum.RESULT_CODE_BR_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.RESULT_CODE_BR_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.RESULT_CODE_BR_STATE, LdapStatesEnum.MATCHED_DN_BR_STATE, UniversalTag.OCTET_STRING.getValue(),
             new MatchedDNAction() );
 
@@ -880,7 +880,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Stores the error message
-        super.transitions[LdapStatesEnum.MATCHED_DN_BR_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MATCHED_DN_BR_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.MATCHED_DN_BR_STATE, LdapStatesEnum.ERROR_MESSAGE_BR_STATE, UniversalTag.OCTET_STRING.getValue(),
             new ErrorMessageAction() );
 
@@ -892,7 +892,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     serverSaslCreds [7] OCTET STRING OPTIONAL }
         //
         // Stores the sasl credentials 
-        super.transitions[LdapStatesEnum.ERROR_MESSAGE_BR_STATE.getState()][LdapConstants.SERVER_SASL_CREDENTIAL_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ERROR_MESSAGE_BR_STATE.ordinal()][LdapConstants.SERVER_SASL_CREDENTIAL_TAG] = new GrammarTransition(
             LdapStatesEnum.ERROR_MESSAGE_BR_STATE, LdapStatesEnum.SERVER_SASL_CREDENTIALS_STATE,
             LdapConstants.SERVER_SASL_CREDENTIAL_TAG, new ServerSASLCredsAction() );
 
@@ -904,7 +904,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     referral   [3] Referral OPTIONNAL }
         //
         // Initialiaze the referrals list 
-        super.transitions[LdapStatesEnum.ERROR_MESSAGE_BR_STATE.getState()][LdapConstants.LDAP_RESULT_REFERRAL_SEQUENCE_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ERROR_MESSAGE_BR_STATE.ordinal()][LdapConstants.LDAP_RESULT_REFERRAL_SEQUENCE_TAG] = new GrammarTransition(
             LdapStatesEnum.ERROR_MESSAGE_BR_STATE, LdapStatesEnum.REFERRALS_BR_STATE,
             LdapConstants.LDAP_RESULT_REFERRAL_SEQUENCE_TAG, new InitReferralsAction() );
 
@@ -915,7 +915,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // URI ::= LDAPString
         //
         // Add a first Referral
-        super.transitions[LdapStatesEnum.REFERRALS_BR_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.REFERRALS_BR_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.REFERRALS_BR_STATE, LdapStatesEnum.REFERRAL_BR_STATE, UniversalTag.OCTET_STRING.getValue(),
             new ReferralAction() );
 
@@ -926,7 +926,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // URI ::= LDAPString
         //
         // Adda new Referral
-        super.transitions[LdapStatesEnum.REFERRAL_BR_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.REFERRAL_BR_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.REFERRAL_BR_STATE, LdapStatesEnum.REFERRAL_BR_STATE, UniversalTag.OCTET_STRING.getValue(),
             new ReferralAction() );
 
@@ -937,7 +937,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // URI ::= LDAPString
         //
         // Adda new Referral
-        super.transitions[LdapStatesEnum.REFERRAL_BR_STATE.getState()][LdapConstants.SERVER_SASL_CREDENTIAL_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.REFERRAL_BR_STATE.ordinal()][LdapConstants.SERVER_SASL_CREDENTIAL_TAG] = new GrammarTransition(
             LdapStatesEnum.REFERRAL_BR_STATE, LdapStatesEnum.SERVER_SASL_CREDENTIALS_STATE,
             LdapConstants.SERVER_SASL_CREDENTIAL_TAG, new ServerSASLCredsAction() );
 
@@ -949,7 +949,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     controls       [0] Controls OPTIONAL }
         //
         // Adda new Referral
-        super.transitions[LdapStatesEnum.REFERRAL_BR_STATE.getState()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.REFERRAL_BR_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.REFERRAL_BR_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
             new ControlsInitAction() );
 
@@ -961,7 +961,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     controls       [0] Controls OPTIONAL }
         //
         //  
-        super.transitions[LdapStatesEnum.ERROR_MESSAGE_BR_STATE.getState()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ERROR_MESSAGE_BR_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.ERROR_MESSAGE_BR_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
             new ControlsInitAction() );
 
@@ -972,7 +972,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //         ... },
         //     controls       [0] Controls OPTIONAL }
         //
-        super.transitions[LdapStatesEnum.SERVER_SASL_CREDENTIALS_STATE.getState()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.SERVER_SASL_CREDENTIALS_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.SERVER_SASL_CREDENTIALS_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
             new ControlsInitAction() );
 
@@ -985,7 +985,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Stores the matched DN
-        super.transitions[LdapStatesEnum.RESULT_CODE_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.RESULT_CODE_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.RESULT_CODE_STATE, LdapStatesEnum.MATCHED_DN_STATE, UniversalTag.OCTET_STRING.getValue(),
             new MatchedDNAction() );
 
@@ -998,7 +998,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Stores the error message
-        super.transitions[LdapStatesEnum.MATCHED_DN_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MATCHED_DN_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.MATCHED_DN_STATE, LdapStatesEnum.ERROR_MESSAGE_STATE, UniversalTag.OCTET_STRING.getValue(),
             new ErrorMessageAction() );
 
@@ -1010,7 +1010,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     referral   [3] Referral OPTIONNAL }
         //
         // Initialiaze the referrals list 
-        super.transitions[LdapStatesEnum.ERROR_MESSAGE_STATE.getState()][LdapConstants.LDAP_RESULT_REFERRAL_SEQUENCE_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ERROR_MESSAGE_STATE.ordinal()][LdapConstants.LDAP_RESULT_REFERRAL_SEQUENCE_TAG] = new GrammarTransition(
             LdapStatesEnum.ERROR_MESSAGE_STATE, LdapStatesEnum.REFERRALS_STATE,
             LdapConstants.LDAP_RESULT_REFERRAL_SEQUENCE_TAG, new GrammarAction( "Init referrals list" )
             {
@@ -1047,7 +1047,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // URI ::= LDAPString
         //
         // Add a first Referral
-        super.transitions[LdapStatesEnum.REFERRALS_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.REFERRALS_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.REFERRALS_STATE, LdapStatesEnum.REFERRAL_STATE, UniversalTag.OCTET_STRING.getValue(),
             new ReferralAction() );
 
@@ -1058,7 +1058,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // URI ::= LDAPString
         //
         // Adda new Referral
-        super.transitions[LdapStatesEnum.REFERRAL_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.REFERRAL_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.REFERRAL_STATE, LdapStatesEnum.REFERRAL_STATE, UniversalTag.OCTET_STRING.getValue(),
             new ReferralAction() );
 
@@ -1070,7 +1070,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     controls       [0] Controls OPTIONAL }
         //
         // Adda new Referral
-        super.transitions[LdapStatesEnum.REFERRAL_STATE.getState()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.REFERRAL_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.REFERRAL_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
             new ControlsInitAction() );
 
@@ -1082,7 +1082,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     controls       [0] Controls OPTIONAL }
         //
         //  
-        super.transitions[LdapStatesEnum.ERROR_MESSAGE_STATE.getState()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ERROR_MESSAGE_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.ERROR_MESSAGE_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
             new ControlsInitAction() );
 
@@ -1093,7 +1093,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // SearchResultEntry ::= [APPLICATION 4] SEQUENCE { ...
         //
         // Initialize the searchResultEntry object
-        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.getState()][LdapConstants.SEARCH_RESULT_ENTRY_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.SEARCH_RESULT_ENTRY_TAG] = new GrammarTransition(
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.SEARCH_RESULT_ENTRY_STATE,
             LdapConstants.SEARCH_RESULT_ENTRY_TAG, new GrammarAction( "Init SearchResultEntry" )
             {
@@ -1116,7 +1116,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // ...
         //
         // Store the object name.
-        super.transitions[LdapStatesEnum.SEARCH_RESULT_ENTRY_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.SEARCH_RESULT_ENTRY_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.SEARCH_RESULT_ENTRY_STATE, LdapStatesEnum.OBJECT_NAME_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Store search result entry object name Value" )
             {
@@ -1174,7 +1174,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // ...
         //
         // We may have no attributes. Just allows the grammar to end
-        super.transitions[LdapStatesEnum.OBJECT_NAME_STATE.getState()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.OBJECT_NAME_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
             LdapStatesEnum.OBJECT_NAME_STATE, LdapStatesEnum.ATTRIBUTES_SR_STATE, UniversalTag.SEQUENCE.getValue(),
             new GrammarAction( "Pop and end allowed" )
             {
@@ -1195,7 +1195,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // ...
         //
         // nothing to do
-        super.transitions[LdapStatesEnum.ATTRIBUTES_SR_STATE.getState()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ATTRIBUTES_SR_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
             LdapStatesEnum.ATTRIBUTES_SR_STATE, LdapStatesEnum.PARTIAL_ATTRIBUTES_LIST_STATE,
             UniversalTag.SEQUENCE.getValue(), null );
 
@@ -1207,7 +1207,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // controls   [0] Controls OPTIONAL }
         //
         // Initialize the controls
-        super.transitions[LdapStatesEnum.ATTRIBUTES_SR_STATE.getState()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ATTRIBUTES_SR_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.ATTRIBUTES_SR_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
             new ControlsInitAction() );
 
@@ -1223,7 +1223,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Store the attribute's name.
-        super.transitions[LdapStatesEnum.PARTIAL_ATTRIBUTES_LIST_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.PARTIAL_ATTRIBUTES_LIST_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.PARTIAL_ATTRIBUTES_LIST_STATE, LdapStatesEnum.TYPE_SR_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Store search result entry object name Value" )
             {
@@ -1280,7 +1280,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     vals SET OF AttributeValue }
         //
         // We may have no value. Just allows the grammar to end
-        super.transitions[LdapStatesEnum.TYPE_SR_STATE.getState()][UniversalTag.SET.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.TYPE_SR_STATE.ordinal()][UniversalTag.SET.getValue()] = new GrammarTransition(
             LdapStatesEnum.TYPE_SR_STATE, LdapStatesEnum.VALS_SR_STATE, UniversalTag.SET.getValue(), new GrammarAction(
                 "Grammar end allowed" )
             {
@@ -1300,7 +1300,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // AttributeValue ::= OCTET STRING
         // 
         // Store the attribute value
-        super.transitions[LdapStatesEnum.VALS_SR_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.VALS_SR_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.VALS_SR_STATE, LdapStatesEnum.ATTRIBUTE_VALUE_SR_STATE, UniversalTag.OCTET_STRING.getValue(),
             new SearchResultAttributeValueAction() );
 
@@ -1312,7 +1312,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     vals SET OF AttributeValue }
         // 
         // Loop when we don't have any attribute value. Nothing to do
-        super.transitions[LdapStatesEnum.VALS_SR_STATE.getState()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.VALS_SR_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
             LdapStatesEnum.VALS_SR_STATE, LdapStatesEnum.PARTIAL_ATTRIBUTES_LIST_STATE, UniversalTag.SEQUENCE.getValue(), null );
 
         // --------------------------------------------------------------------------------------------
@@ -1323,7 +1323,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // controls   [0] Controls OPTIONAL }
         //
         // Initialize the controls
-        super.transitions[LdapStatesEnum.VALS_SR_STATE.getState()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.VALS_SR_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.VALS_SR_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
             new ControlsInitAction() );
 
@@ -1337,7 +1337,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // AttributeValue ::= OCTET STRING
         // 
         // Store the attribute value
-        super.transitions[LdapStatesEnum.ATTRIBUTE_VALUE_SR_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ATTRIBUTE_VALUE_SR_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.ATTRIBUTE_VALUE_SR_STATE, LdapStatesEnum.ATTRIBUTE_VALUE_SR_STATE,
             UniversalTag.OCTET_STRING.getValue(), new SearchResultAttributeValueAction() );
 
@@ -1349,7 +1349,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     vals SET OF AttributeValue }
         // 
         // Loop when we don't have any attribute value. Nothing to do
-        super.transitions[LdapStatesEnum.ATTRIBUTE_VALUE_SR_STATE.getState()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ATTRIBUTE_VALUE_SR_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
             LdapStatesEnum.ATTRIBUTE_VALUE_SR_STATE, LdapStatesEnum.PARTIAL_ATTRIBUTES_LIST_STATE,
             UniversalTag.SEQUENCE.getValue(), null );
 
@@ -1361,7 +1361,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // controls   [0] Controls OPTIONAL }
         //
         // Initialize the controls
-        super.transitions[LdapStatesEnum.ATTRIBUTE_VALUE_SR_STATE.getState()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ATTRIBUTE_VALUE_SR_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.ATTRIBUTE_VALUE_SR_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
             new ControlsInitAction() );
 
@@ -1371,7 +1371,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // LdapMessage ::= ... SearchResultDone ...
         // SearchResultDone ::= [APPLICATION 5] SEQUENCE { ...
         // 
-        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.getState()][LdapConstants.SEARCH_RESULT_DONE_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.SEARCH_RESULT_DONE_TAG] = new GrammarTransition(
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.SEARCH_RESULT_DONE_STATE,
             LdapConstants.SEARCH_RESULT_DONE_TAG, new GrammarAction( "Init search Result Done" )
             {
@@ -1398,7 +1398,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //         ...
         // 
         // Stores the result code
-        super.transitions[LdapStatesEnum.SEARCH_RESULT_DONE_STATE.getState()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.SEARCH_RESULT_DONE_STATE.ordinal()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
             LdapStatesEnum.SEARCH_RESULT_DONE_STATE, LdapStatesEnum.RESULT_CODE_STATE, UniversalTag.ENUMERATED.getValue(),
             new ResultCodeAction() );
 
@@ -1409,7 +1409,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // ModifyRequest ::= [APPLICATION 6] SEQUENCE { ...
         //
         // Creates the Modify Request object
-        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.getState()][LdapConstants.MODIFY_REQUEST_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.MODIFY_REQUEST_TAG] = new GrammarTransition(
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.MODIFY_REQUEST_STATE, LdapConstants.MODIFY_REQUEST_TAG,
             new GrammarAction( "Init ModifyRequest" )
             {
@@ -1431,7 +1431,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Stores the object DN
-        super.transitions[LdapStatesEnum.MODIFY_REQUEST_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MODIFY_REQUEST_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.MODIFY_REQUEST_STATE, LdapStatesEnum.OBJECT_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Store Modify request object Value" )
             {
@@ -1489,7 +1489,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Initialize the modifications list
-        super.transitions[LdapStatesEnum.OBJECT_STATE.getState()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.OBJECT_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
             LdapStatesEnum.OBJECT_STATE, LdapStatesEnum.MODIFICATIONS_STATE, UniversalTag.SEQUENCE.getValue(), null );
 
         // --------------------------------------------------------------------------------------------
@@ -1501,7 +1501,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Nothing to do
-        super.transitions[LdapStatesEnum.MODIFICATIONS_STATE.getState()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MODIFICATIONS_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
             LdapStatesEnum.MODIFICATIONS_STATE, LdapStatesEnum.MODIFICATIONS_SEQ_STATE, UniversalTag.SEQUENCE.getValue(), null );
 
         // --------------------------------------------------------------------------------------------
@@ -1514,7 +1514,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //             ...
         //
         // Store operation type
-        super.transitions[LdapStatesEnum.MODIFICATIONS_SEQ_STATE.getState()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MODIFICATIONS_SEQ_STATE.ordinal()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
             LdapStatesEnum.MODIFICATIONS_SEQ_STATE, LdapStatesEnum.OPERATION_STATE, UniversalTag.ENUMERATED.getValue(),
             new GrammarAction( "Store operation type" )
             {
@@ -1579,7 +1579,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Nothing to do
-        super.transitions[LdapStatesEnum.OPERATION_STATE.getState()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.OPERATION_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
             LdapStatesEnum.OPERATION_STATE, LdapStatesEnum.MODIFICATION_STATE, UniversalTag.SEQUENCE.getValue(), null );
 
         // --------------------------------------------------------------------------------------------
@@ -1596,7 +1596,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Stores the type
-        super.transitions[LdapStatesEnum.MODIFICATION_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MODIFICATION_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.MODIFICATION_STATE, LdapStatesEnum.TYPE_MOD_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Store type" )
             {
@@ -1647,7 +1647,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     vals SET OF AttributeValue }
         //
         // Initialize the list of values
-        super.transitions[LdapStatesEnum.TYPE_MOD_STATE.getState()][UniversalTag.SET.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.TYPE_MOD_STATE.ordinal()][UniversalTag.SET.getValue()] = new GrammarTransition(
             LdapStatesEnum.TYPE_MOD_STATE, LdapStatesEnum.VALS_STATE, UniversalTag.SET.getValue(), new GrammarAction(
                 "Init Attribute vals" )
             {
@@ -1687,7 +1687,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // AttributeValue ::= OCTET STRING
         //
         // Stores a value
-        super.transitions[LdapStatesEnum.VALS_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.VALS_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.VALS_STATE, LdapStatesEnum.ATTRIBUTE_VALUE_STATE, UniversalTag.OCTET_STRING.getValue(),
             new ModifyAttributeValueAction() );
 
@@ -1707,7 +1707,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // AttributeValue ::= OCTET STRING
         //
         // Nothing to do
-        super.transitions[LdapStatesEnum.VALS_STATE.getState()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.VALS_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
             LdapStatesEnum.VALS_STATE, LdapStatesEnum.MODIFICATIONS_SEQ_STATE, UniversalTag.SEQUENCE.getValue(), null );
 
         // --------------------------------------------------------------------------------------------
@@ -1718,7 +1718,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // controls   [0] Controls OPTIONAL }
         //
         // Nothing to do
-        super.transitions[LdapStatesEnum.VALS_STATE.getState()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.VALS_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.VALS_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
             new ControlsInitAction() );
 
@@ -1738,7 +1738,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // AttributeValue ::= OCTET STRING
         //
         // Stores a value
-        super.transitions[LdapStatesEnum.ATTRIBUTE_VALUE_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ATTRIBUTE_VALUE_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.ATTRIBUTE_VALUE_STATE, LdapStatesEnum.ATTRIBUTE_VALUE_STATE, UniversalTag.OCTET_STRING.getValue(),
             new ModifyAttributeValueAction() );
 
@@ -1758,7 +1758,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // AttributeValue ::= OCTET STRING
         //
         // Nothing to do
-        super.transitions[LdapStatesEnum.ATTRIBUTE_VALUE_STATE.getState()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ATTRIBUTE_VALUE_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
             LdapStatesEnum.ATTRIBUTE_VALUE_STATE, LdapStatesEnum.MODIFICATIONS_SEQ_STATE, UniversalTag.SEQUENCE.getValue(),
             null );
 
@@ -1770,7 +1770,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // controls   [0] Controls OPTIONAL }
         //
         // Nothing to do
-        super.transitions[LdapStatesEnum.ATTRIBUTE_VALUE_STATE.getState()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ATTRIBUTE_VALUE_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.ATTRIBUTE_VALUE_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
             new ControlsInitAction() );
 
@@ -1780,7 +1780,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // LdapMessage ::= ... ModifyResponse ...
         // ModifyResponse ::= [APPLICATION 7] SEQUENCE { ...
         // We have to switch to the ModifyResponse grammar
-        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.getState()][LdapConstants.MODIFY_RESPONSE_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.MODIFY_RESPONSE_TAG] = new GrammarTransition(
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.MODIFY_RESPONSE_STATE, LdapConstants.MODIFY_RESPONSE_TAG,
             new GrammarAction( "Init ModifyResponse" )
             {
@@ -1807,7 +1807,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //         ...
         // 
         // Stores the result code
-        super.transitions[LdapStatesEnum.MODIFY_RESPONSE_STATE.getState()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MODIFY_RESPONSE_STATE.ordinal()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
             LdapStatesEnum.MODIFY_RESPONSE_STATE, LdapStatesEnum.RESULT_CODE_STATE, UniversalTag.ENUMERATED.getValue(),
             new ResultCodeAction() );
 
@@ -1818,7 +1818,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // AddRequest ::= [APPLICATION 8] SEQUENCE { ...
         //
         // Initialize the AddRequest object
-        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.getState()][LdapConstants.ADD_REQUEST_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.ADD_REQUEST_TAG] = new GrammarTransition(
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.ADD_REQUEST_STATE, LdapConstants.ADD_REQUEST_TAG,
             new GrammarAction( "Init addRequest" )
             {
@@ -1854,7 +1854,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Stores the DN
-        super.transitions[LdapStatesEnum.ADD_REQUEST_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ADD_REQUEST_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.ADD_REQUEST_STATE, LdapStatesEnum.ENTRY_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Store add request object Value" )
             {
@@ -1917,7 +1917,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // AttributeList ::= SEQUENCE OF ... 
         //
         // Initialize the attribute list
-        super.transitions[LdapStatesEnum.ENTRY_STATE.getState()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ENTRY_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
             LdapStatesEnum.ENTRY_STATE, LdapStatesEnum.ATTRIBUTES_STATE, UniversalTag.SEQUENCE.getValue(), null );
 
         // --------------------------------------------------------------------------------------------
@@ -1926,7 +1926,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // AttributeList ::= SEQUENCE OF SEQUENCE {
         //
         // We don't do anything in this transition. The attribute will be created when we met the type
-        super.transitions[LdapStatesEnum.ATTRIBUTES_STATE.getState()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ATTRIBUTES_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
             LdapStatesEnum.ATTRIBUTES_STATE, LdapStatesEnum.ATTRIBUTE_STATE, UniversalTag.SEQUENCE.getValue(), null );
 
         // --------------------------------------------------------------------------------------------
@@ -1939,7 +1939,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // AttributeDescription LDAPString
         //
         // We store the type in the current attribute
-        super.transitions[LdapStatesEnum.ATTRIBUTE_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ATTRIBUTE_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.ATTRIBUTE_STATE, LdapStatesEnum.TYPE_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Store attribute type" )
             {
@@ -1994,7 +1994,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     vals SET OF AttributeValue }
         //
         // Nothing to do here.
-        super.transitions[LdapStatesEnum.TYPE_STATE.getState()][UniversalTag.SET.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.TYPE_STATE.ordinal()][UniversalTag.SET.getValue()] = new GrammarTransition(
             LdapStatesEnum.TYPE_STATE, LdapStatesEnum.VALUES_STATE, UniversalTag.SET.getValue(), null );
 
         // --------------------------------------------------------------------------------------------
@@ -2007,7 +2007,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // AttributeValue OCTET STRING
         //
         // Store the value into the current attribute
-        super.transitions[LdapStatesEnum.VALUES_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.VALUES_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.VALUES_STATE, LdapStatesEnum.VALUE_STATE, UniversalTag.OCTET_STRING.getValue(), new ValueAction() );
 
         // --------------------------------------------------------------------------------------------
@@ -2020,7 +2020,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // AttributeValue OCTET STRING
         //
         // Store the value into the current attribute
-        super.transitions[LdapStatesEnum.VALUE_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.VALUE_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.VALUE_STATE, LdapStatesEnum.VALUE_STATE, UniversalTag.OCTET_STRING.getValue(), new ValueAction() );
 
         // --------------------------------------------------------------------------------------------
@@ -2029,7 +2029,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // AttributeList ::= SEQUENCE OF SEQUENCE {
         //
         // Nothing to do here.
-        super.transitions[LdapStatesEnum.VALUE_STATE.getState()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.VALUE_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
             LdapStatesEnum.VALUE_STATE, LdapStatesEnum.ATTRIBUTE_STATE, UniversalTag.SEQUENCE.getValue(), null );
 
         // --------------------------------------------------------------------------------------------
@@ -2038,7 +2038,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // AttributeList ::= SEQUENCE OF SEQUENCE {
         //
         // Initialize the controls
-        super.transitions[LdapStatesEnum.VALUE_STATE.getState()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.VALUE_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.VALUE_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
             new ControlsInitAction() );
 
@@ -2048,7 +2048,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // LdapMessage ::= ... AddResponse ...
         // AddResponse ::= [APPLICATION 9] LDAPResult
         // 
-        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.getState()][LdapConstants.ADD_RESPONSE_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.ADD_RESPONSE_TAG] = new GrammarTransition(
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.ADD_RESPONSE_STATE, LdapConstants.ADD_RESPONSE_TAG,
             new GrammarAction( "Init AddResponse" )
             {
@@ -2087,7 +2087,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //         ...
         // 
         // Stores the result code
-        super.transitions[LdapStatesEnum.ADD_RESPONSE_STATE.getState()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ADD_RESPONSE_STATE.ordinal()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
             LdapStatesEnum.ADD_RESPONSE_STATE, LdapStatesEnum.RESULT_CODE_STATE, UniversalTag.ENUMERATED.getValue(),
             new ResultCodeAction() );
 
@@ -2097,7 +2097,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // LdapMessage ::= ... DelResponse ...
         // DelResponse ::= [APPLICATION 11] LDAPResult
         // We have to switch to the DelResponse grammar
-        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.getState()][LdapConstants.DEL_RESPONSE_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.DEL_RESPONSE_TAG] = new GrammarTransition(
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.DEL_RESPONSE_STATE, LdapConstants.DEL_RESPONSE_TAG,
             new GrammarAction( "Init DelResponse" )
             {
@@ -2124,7 +2124,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //         ...
         // 
         // Stores the result code
-        super.transitions[LdapStatesEnum.DEL_RESPONSE_STATE.getState()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.DEL_RESPONSE_STATE.ordinal()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
             LdapStatesEnum.DEL_RESPONSE_STATE, LdapStatesEnum.RESULT_CODE_STATE, UniversalTag.ENUMERATED.getValue(),
             new ResultCodeAction() );
 
@@ -2135,7 +2135,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // ModifyDNRequest ::= [APPLICATION 12] SEQUENCE { ...
         //
         // Create the ModifyDNRequest Object
-        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.getState()][LdapConstants.MODIFY_DN_REQUEST_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.MODIFY_DN_REQUEST_TAG] = new GrammarTransition(
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.MODIFY_DN_REQUEST_STATE,
             LdapConstants.MODIFY_DN_REQUEST_TAG, new GrammarAction( "Init Modify DN Request" )
             {
@@ -2160,7 +2160,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Stores the entry DN
-        super.transitions[LdapStatesEnum.MODIFY_DN_REQUEST_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MODIFY_DN_REQUEST_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.MODIFY_DN_REQUEST_STATE, LdapStatesEnum.ENTRY_MOD_DN_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Store entry" )
             {
@@ -2223,7 +2223,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // RelativeRDN :: LDAPString
         //
         // Stores the new RDN
-        super.transitions[LdapStatesEnum.ENTRY_MOD_DN_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ENTRY_MOD_DN_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.ENTRY_MOD_DN_STATE, LdapStatesEnum.NEW_RDN_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Store new RDN" )
             {
@@ -2289,7 +2289,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Stores the deleteOldRDN flag
-        super.transitions[LdapStatesEnum.NEW_RDN_STATE.getState()][UniversalTag.BOOLEAN.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.NEW_RDN_STATE.ordinal()][UniversalTag.BOOLEAN.getValue()] = new GrammarTransition(
             LdapStatesEnum.NEW_RDN_STATE, LdapStatesEnum.DELETE_OLD_RDN_STATE, UniversalTag.BOOLEAN.getValue(),
             new GrammarAction( "Store matching dnAttributes Value" )
             {
@@ -2346,7 +2346,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     newSuperior [0] LDAPDN OPTIONAL }
         //
         // Stores the new superior
-        super.transitions[LdapStatesEnum.DELETE_OLD_RDN_STATE.getState()][LdapConstants.MODIFY_DN_REQUEST_NEW_SUPERIOR_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.DELETE_OLD_RDN_STATE.ordinal()][LdapConstants.MODIFY_DN_REQUEST_NEW_SUPERIOR_TAG] = new GrammarTransition(
             LdapStatesEnum.DELETE_OLD_RDN_STATE, LdapStatesEnum.NEW_SUPERIOR_STATE,
             LdapConstants.MODIFY_DN_REQUEST_NEW_SUPERIOR_TAG, new GrammarAction( "Store new superior" )
             {
@@ -2418,7 +2418,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // controls   [0] Controls OPTIONAL }
         //
         // Stores the new superior
-        super.transitions[LdapStatesEnum.DELETE_OLD_RDN_STATE.getState()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.DELETE_OLD_RDN_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.DELETE_OLD_RDN_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
             new ControlsInitAction() );
 
@@ -2430,7 +2430,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // controls   [0] Controls OPTIONAL }
         //
         // Stores the new superior
-        super.transitions[LdapStatesEnum.NEW_SUPERIOR_STATE.getState()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.NEW_SUPERIOR_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.NEW_SUPERIOR_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
             new ControlsInitAction() );
 
@@ -2441,7 +2441,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Creates the ModifyDNResponse
-        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.getState()][LdapConstants.MODIFY_DN_RESPONSE_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.MODIFY_DN_RESPONSE_TAG] = new GrammarTransition(
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.MODIFY_DN_RESPONSE_STATE,
             LdapConstants.MODIFY_DN_RESPONSE_TAG, new GrammarAction( "Init ModifyDNResponse" )
             {
@@ -2471,7 +2471,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // Stores the result co        //     modifyDNRequest ModifyDNRequest,
         //     ... },
         // controls   [0] Controls OPTIONAL }
-        super.transitions[LdapStatesEnum.MODIFY_DN_RESPONSE_STATE.getState()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MODIFY_DN_RESPONSE_STATE.ordinal()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
             LdapStatesEnum.MODIFY_DN_RESPONSE_STATE, LdapStatesEnum.RESULT_CODE_STATE, UniversalTag.ENUMERATED.getValue(),
             new ResultCodeAction() );
 
@@ -2484,7 +2484,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // ...
         //
         // Initialize the Compare Request object 
-        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.getState()][LdapConstants.COMPARE_REQUEST_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.COMPARE_REQUEST_TAG] = new GrammarTransition(
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.COMPARE_REQUEST_STATE, LdapConstants.COMPARE_REQUEST_TAG,
             new GrammarAction( "Init Compare Request" )
             {
@@ -2508,7 +2508,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Stores the compared DN
-        super.transitions[LdapStatesEnum.COMPARE_REQUEST_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.COMPARE_REQUEST_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.COMPARE_REQUEST_STATE, LdapStatesEnum.ENTRY_COMP_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Store entry" )
             {
@@ -2569,7 +2569,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // AttributeValueAssertion ::= SEQUENCE {
         // 
         // Nothing to do
-        super.transitions[LdapStatesEnum.ENTRY_COMP_STATE.getState()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ENTRY_COMP_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
             LdapStatesEnum.ENTRY_COMP_STATE, LdapStatesEnum.AVA_STATE, UniversalTag.SEQUENCE.getValue(), null );
 
         // --------------------------------------------------------------------------------------------
@@ -2582,7 +2582,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // AttributeDescription LDAPString
         // 
         // Stores the attribute description
-        super.transitions[LdapStatesEnum.AVA_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.AVA_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.AVA_STATE, LdapStatesEnum.ATTRIBUTE_DESC_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Store attribute desc" )
             {
@@ -2629,7 +2629,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // AssertionValue OCTET STRING
         // 
         // Stores the attribute value
-        super.transitions[LdapStatesEnum.ATTRIBUTE_DESC_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ATTRIBUTE_DESC_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.ATTRIBUTE_DESC_STATE, LdapStatesEnum.ASSERTION_VALUE_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Store assertion value" )
             {
@@ -2687,7 +2687,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // AssertionValue OCTET STRING
         // 
         // Stores the attribute value
-        super.transitions[LdapStatesEnum.ASSERTION_VALUE_STATE.getState()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ASSERTION_VALUE_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.ASSERTION_VALUE_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
             new ControlsInitAction() );
 
@@ -2697,7 +2697,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // LdapMessage ::= ... CompareResponse ...
         // CompareResponse ::= [APPLICATION 15] LDAPResult
         // We have to switch to the CompareResponse grammar
-        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.getState()][LdapConstants.COMPARE_RESPONSE_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.COMPARE_RESPONSE_TAG] = new GrammarTransition(
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.COMPARE_RESPONSE_STATE, LdapConstants.COMPARE_RESPONSE_TAG,
             new GrammarAction( "Init CompareResponse" )
             {
@@ -2735,7 +2735,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //         ...
         // 
         // Stores the result code
-        super.transitions[LdapStatesEnum.COMPARE_RESPONSE_STATE.getState()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.COMPARE_RESPONSE_STATE.ordinal()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
             LdapStatesEnum.COMPARE_RESPONSE_STATE, LdapStatesEnum.RESULT_CODE_STATE, UniversalTag.ENUMERATED.getValue(),
             new ResultCodeAction() );
 
@@ -2746,7 +2746,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // SearchResultReference ::= [APPLICATION 19] SEQUENCE OF LDAPURL
         //
         // Initialization of SearchResultReference object
-        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.getState()][LdapConstants.SEARCH_RESULT_REFERENCE_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.SEARCH_RESULT_REFERENCE_TAG] = new GrammarTransition(
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.SEARCH_RESULT_REFERENCE_STATE,
             LdapConstants.SEARCH_RESULT_REFERENCE_TAG, new GrammarAction( "Init SearchResultReference" )
             {
@@ -2770,7 +2770,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // SearchResultReference ::= [APPLICATION 19] SEQUENCE OF LDAPURL
         //
         // Initialization of SearchResultReference object
-        super.transitions[LdapStatesEnum.SEARCH_RESULT_REFERENCE_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.SEARCH_RESULT_REFERENCE_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.SEARCH_RESULT_REFERENCE_STATE, LdapStatesEnum.REFERENCE_STATE, UniversalTag.OCTET_STRING.getValue(),
             new StoreReferenceAction() );
 
@@ -2781,7 +2781,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // SearchResultReference ::= [APPLICATION 19] SEQUENCE OF LDAPURL
         //
         // Initialization of SearchResultReference object
-        super.transitions[LdapStatesEnum.REFERENCE_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.REFERENCE_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.REFERENCE_STATE, LdapStatesEnum.REFERENCE_STATE, UniversalTag.OCTET_STRING.getValue(),
             new StoreReferenceAction() );
 
@@ -2793,7 +2793,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // controls   [0] Controls OPTIONAL }
         //
         // Initialization the controls
-        super.transitions[LdapStatesEnum.REFERENCE_STATE.getState()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.REFERENCE_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.REFERENCE_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
             new ControlsInitAction() );
 
@@ -2804,7 +2804,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // ExtendedRequest ::= [APPLICATION 23] SEQUENCE {
         //
         // Creates the ExtendedRequest object
-        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.getState()][LdapConstants.EXTENDED_REQUEST_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.EXTENDED_REQUEST_TAG] = new GrammarTransition(
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.EXTENDED_REQUEST_STATE, LdapConstants.EXTENDED_REQUEST_TAG,
             new GrammarAction( "Init Extended Request" )
             {
@@ -2829,7 +2829,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Stores the name
-        super.transitions[LdapStatesEnum.EXTENDED_REQUEST_STATE.getState()][LdapConstants.EXTENDED_REQUEST_NAME_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.EXTENDED_REQUEST_STATE.ordinal()][LdapConstants.EXTENDED_REQUEST_NAME_TAG] = new GrammarTransition(
             LdapStatesEnum.EXTENDED_REQUEST_STATE, LdapStatesEnum.REQUEST_NAME_STATE,
             LdapConstants.EXTENDED_REQUEST_NAME_TAG, new GrammarAction( "Store name" )
             {
@@ -2904,7 +2904,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     requestValue  [1] OCTET STRING OPTIONAL }
         //
         // Stores the value
-        super.transitions[LdapStatesEnum.REQUEST_NAME_STATE.getState()][LdapConstants.EXTENDED_REQUEST_VALUE_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.REQUEST_NAME_STATE.ordinal()][LdapConstants.EXTENDED_REQUEST_VALUE_TAG] = new GrammarTransition(
             LdapStatesEnum.REQUEST_NAME_STATE, LdapStatesEnum.REQUEST_VALUE_STATE,
             LdapConstants.EXTENDED_REQUEST_VALUE_TAG, new GrammarAction( "Store value" )
             {
@@ -2947,7 +2947,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     controls       [0] Controls OPTIONAL }
         //
         // Stores the value
-        super.transitions[LdapStatesEnum.REQUEST_NAME_STATE.getState()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.REQUEST_NAME_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.REQUEST_NAME_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
             new ControlsInitAction() );
 
@@ -2959,7 +2959,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     controls       [0] Controls OPTIONAL }
         //
         // Stores the value
-        super.transitions[LdapStatesEnum.REQUEST_VALUE_STATE.getState()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.REQUEST_VALUE_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.REQUEST_VALUE_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
             new ControlsInitAction() );
 
@@ -2970,7 +2970,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // ExtendedResponse ::= [APPLICATION 24] SEQUENCE {
         //
         // Creates the ExtendeResponse object
-        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.getState()][LdapConstants.EXTENDED_RESPONSE_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.EXTENDED_RESPONSE_TAG] = new GrammarTransition(
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.EXTENDED_RESPONSE_STATE,
             LdapConstants.EXTENDED_RESPONSE_TAG, new GrammarAction( "Init Extended Reponse" )
             {
@@ -2995,7 +2995,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Stores the result code
-        super.transitions[LdapStatesEnum.EXTENDED_RESPONSE_STATE.getState()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.EXTENDED_RESPONSE_STATE.ordinal()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
             LdapStatesEnum.EXTENDED_RESPONSE_STATE, LdapStatesEnum.RESULT_CODE_ER_STATE, UniversalTag.ENUMERATED.getValue(),
             new ResultCodeAction() );
 
@@ -3008,7 +3008,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // 
-        super.transitions[LdapStatesEnum.RESULT_CODE_ER_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.RESULT_CODE_ER_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.RESULT_CODE_ER_STATE, LdapStatesEnum.MATCHED_DN_ER_STATE, UniversalTag.OCTET_STRING.getValue(),
             new MatchedDNAction() );
 
@@ -3021,7 +3021,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // 
-        super.transitions[LdapStatesEnum.MATCHED_DN_ER_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MATCHED_DN_ER_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.MATCHED_DN_ER_STATE, LdapStatesEnum.ERROR_MESSAGE_ER_STATE, UniversalTag.OCTET_STRING.getValue(),
             new ErrorMessageAction() );
 
@@ -3034,7 +3034,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // 
-        super.transitions[LdapStatesEnum.ERROR_MESSAGE_ER_STATE.getState()][LdapConstants.LDAP_RESULT_REFERRAL_SEQUENCE_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ERROR_MESSAGE_ER_STATE.ordinal()][LdapConstants.LDAP_RESULT_REFERRAL_SEQUENCE_TAG] = new GrammarTransition(
             LdapStatesEnum.ERROR_MESSAGE_ER_STATE, LdapStatesEnum.REFERRALS_ER_STATE,
             LdapConstants.LDAP_RESULT_REFERRAL_SEQUENCE_TAG, new InitReferralsAction() );
 
@@ -3045,7 +3045,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // URI ::= LDAPString
         //
         // Add a first Referral
-        super.transitions[LdapStatesEnum.REFERRALS_ER_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.REFERRALS_ER_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.REFERRALS_ER_STATE, LdapStatesEnum.REFERRAL_ER_STATE, UniversalTag.OCTET_STRING.getValue(),
             new ReferralAction() );
 
@@ -3056,7 +3056,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // URI ::= LDAPString
         //
         // Adda new Referral
-        super.transitions[LdapStatesEnum.REFERRAL_ER_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.REFERRAL_ER_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.REFERRAL_ER_STATE, LdapStatesEnum.REFERRAL_ER_STATE, UniversalTag.OCTET_STRING.getValue(),
             new ReferralAction() );
 
@@ -3067,7 +3067,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // URI ::= LDAPString
         //
         // Adda new Referral
-        super.transitions[LdapStatesEnum.REFERRAL_ER_STATE.getState()][LdapConstants.EXTENDED_RESPONSE_RESPONSE_NAME_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.REFERRAL_ER_STATE.ordinal()][LdapConstants.EXTENDED_RESPONSE_RESPONSE_NAME_TAG] = new GrammarTransition(
             LdapStatesEnum.REFERRAL_ER_STATE, LdapStatesEnum.RESPONSE_NAME_STATE,
             LdapConstants.EXTENDED_RESPONSE_RESPONSE_NAME_TAG, new ResponseNameAction() );
 
@@ -3078,7 +3078,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // URI ::= LDAPString
         //
         // Adda new Referral
-        super.transitions[LdapStatesEnum.REFERRAL_ER_STATE.getState()][LdapConstants.EXTENDED_RESPONSE_RESPONSE_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.REFERRAL_ER_STATE.ordinal()][LdapConstants.EXTENDED_RESPONSE_RESPONSE_TAG] = new GrammarTransition(
             LdapStatesEnum.REFERRAL_ER_STATE, LdapStatesEnum.RESPONSE_STATE,
             LdapConstants.EXTENDED_RESPONSE_RESPONSE_TAG, new ResponseAction() );
 
@@ -3090,7 +3090,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     controls       [0] Controls OPTIONAL }
         //
         // Adda new Referral
-        super.transitions[LdapStatesEnum.REFERRAL_ER_STATE.getState()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.REFERRAL_ER_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.REFERRAL_ER_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
             new ControlsInitAction() );
 
@@ -3103,7 +3103,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // 
-        super.transitions[LdapStatesEnum.ERROR_MESSAGE_ER_STATE.getState()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ERROR_MESSAGE_ER_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.ERROR_MESSAGE_ER_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
             new ControlsInitAction() );
 
@@ -3117,7 +3117,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Stores the response name
-        super.transitions[LdapStatesEnum.ERROR_MESSAGE_ER_STATE.getState()][LdapConstants.EXTENDED_RESPONSE_RESPONSE_NAME_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ERROR_MESSAGE_ER_STATE.ordinal()][LdapConstants.EXTENDED_RESPONSE_RESPONSE_NAME_TAG] = new GrammarTransition(
             LdapStatesEnum.ERROR_MESSAGE_ER_STATE, LdapStatesEnum.RESPONSE_NAME_STATE,
             LdapConstants.EXTENDED_RESPONSE_RESPONSE_NAME_TAG, new ResponseNameAction() );
 
@@ -3131,7 +3131,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     response       [11] OCTET STRING OPTIONAL}
         //
         // Stores the response
-        super.transitions[LdapStatesEnum.RESPONSE_NAME_STATE.getState()][LdapConstants.EXTENDED_RESPONSE_RESPONSE_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.RESPONSE_NAME_STATE.ordinal()][LdapConstants.EXTENDED_RESPONSE_RESPONSE_TAG] = new GrammarTransition(
             LdapStatesEnum.RESPONSE_NAME_STATE, LdapStatesEnum.RESPONSE_STATE,
             LdapConstants.EXTENDED_RESPONSE_RESPONSE_TAG, new ResponseAction() );
 
@@ -3143,7 +3143,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     controls       [0] Controls OPTIONAL }
         //
         // Init the controls
-        super.transitions[LdapStatesEnum.RESPONSE_NAME_STATE.getState()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.RESPONSE_NAME_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.RESPONSE_NAME_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
             new ControlsInitAction() );
 
@@ -3157,7 +3157,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     response       [11] OCTET STRING OPTIONAL}
         //
         // Stores the response
-        super.transitions[LdapStatesEnum.ERROR_MESSAGE_ER_STATE.getState()][LdapConstants.EXTENDED_RESPONSE_RESPONSE_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ERROR_MESSAGE_ER_STATE.ordinal()][LdapConstants.EXTENDED_RESPONSE_RESPONSE_TAG] = new GrammarTransition(
             LdapStatesEnum.ERROR_MESSAGE_ER_STATE, LdapStatesEnum.RESPONSE_STATE,
             LdapConstants.EXTENDED_RESPONSE_RESPONSE_TAG, new ResponseAction() );
 
@@ -3169,7 +3169,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     controls       [0] Controls OPTIONAL }
         //
         // Init the controls
-        super.transitions[LdapStatesEnum.RESPONSE_STATE.getState()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.RESPONSE_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.RESPONSE_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
             new ControlsInitAction() );
 
@@ -3180,7 +3180,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // IntermediateResponse ::= [APPLICATION 25] SEQUENCE {
         //
         // Creates the IntermediateResponse object
-        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.getState()][LdapConstants.INTERMEDIATE_RESPONSE_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.INTERMEDIATE_RESPONSE_TAG] = new GrammarTransition(
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.INTERMEDIATE_RESPONSE_STATE,
             LdapConstants.INTERMEDIATE_RESPONSE_TAG, new GrammarAction( "Init Intermediate Response" )
             {
@@ -3205,7 +3205,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Stores the name
-        super.transitions[LdapStatesEnum.INTERMEDIATE_RESPONSE_STATE.getState()][LdapConstants.INTERMEDIATE_RESPONSE_NAME_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.INTERMEDIATE_RESPONSE_STATE.ordinal()][LdapConstants.INTERMEDIATE_RESPONSE_NAME_TAG] = new GrammarTransition(
             LdapStatesEnum.INTERMEDIATE_RESPONSE_STATE, LdapStatesEnum.INTERMEDIATE_RESPONSE_NAME_STATE,
             LdapConstants.INTERMEDIATE_RESPONSE_NAME_TAG, new GrammarAction( "Store response name" )
             {
@@ -3271,7 +3271,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     }
         //
         // Stores the value
-        super.transitions[LdapStatesEnum.INTERMEDIATE_RESPONSE_STATE.getState()][LdapConstants.INTERMEDIATE_RESPONSE_VALUE_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.INTERMEDIATE_RESPONSE_STATE.ordinal()][LdapConstants.INTERMEDIATE_RESPONSE_VALUE_TAG] = new GrammarTransition(
             LdapStatesEnum.INTERMEDIATE_RESPONSE_STATE, LdapStatesEnum.INTERMEDIATE_RESPONSE_VALUE_STATE,
             LdapConstants.INTERMEDIATE_RESPONSE_VALUE_TAG, new GrammarAction( "Store response value" )
             {
@@ -3314,7 +3314,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     responseValue  [1] OCTET STRING OPTIONAL }
         //
         // Stores the value
-        super.transitions[LdapStatesEnum.INTERMEDIATE_RESPONSE_NAME_STATE.getState()][LdapConstants.INTERMEDIATE_RESPONSE_VALUE_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.INTERMEDIATE_RESPONSE_NAME_STATE.ordinal()][LdapConstants.INTERMEDIATE_RESPONSE_VALUE_TAG] = new GrammarTransition(
             LdapStatesEnum.INTERMEDIATE_RESPONSE_NAME_STATE, LdapStatesEnum.INTERMEDIATE_RESPONSE_VALUE_STATE,
             LdapConstants.INTERMEDIATE_RESPONSE_VALUE_TAG, new GrammarAction( "Store value" )
             {
@@ -3357,7 +3357,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     controls       [0] Controls OPTIONAL }
         //
         // Stores the value
-        super.transitions[LdapStatesEnum.INTERMEDIATE_RESPONSE_NAME_STATE.getState()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.INTERMEDIATE_RESPONSE_NAME_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.INTERMEDIATE_RESPONSE_NAME_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
             new ControlsInitAction() );
 
@@ -3369,7 +3369,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     controls       [0] Controls OPTIONAL }
         //
         // Stores the value
-        super.transitions[LdapStatesEnum.INTERMEDIATE_RESPONSE_VALUE_STATE.getState()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.INTERMEDIATE_RESPONSE_VALUE_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.INTERMEDIATE_RESPONSE_VALUE_STATE, LdapStatesEnum.CONTROLS_STATE,
             LdapConstants.CONTROLS_TAG, new ControlsInitAction() );
 
@@ -3405,7 +3405,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //  ...
         //
         // Initialize the controls 
-        super.transitions[LdapStatesEnum.CONTROLS_STATE.getState()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.CONTROLS_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
             LdapStatesEnum.CONTROLS_STATE, LdapStatesEnum.CONTROL_STATE, UniversalTag.SEQUENCE.getValue(), addControl );
 
         // ============================================================================================
@@ -3415,7 +3415,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Create a new Control object, and store it in the message Container
-        super.transitions[LdapStatesEnum.CONTROL_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.CONTROL_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.CONTROL_STATE, LdapStatesEnum.CONTROL_TYPE_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Set Control Type" )
             {
@@ -3479,7 +3479,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Store the value in the control object created before
-        super.transitions[LdapStatesEnum.CONTROL_TYPE_STATE.getState()][UniversalTag.BOOLEAN.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.CONTROL_TYPE_STATE.ordinal()][UniversalTag.BOOLEAN.getValue()] = new GrammarTransition(
             LdapStatesEnum.CONTROL_TYPE_STATE, LdapStatesEnum.CRITICALITY_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Set Criticality" )
             {
@@ -3535,7 +3535,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     controlValue OCTET STRING OPTIONAL }
         //
         // Store the value in the control object created before
-        super.transitions[LdapStatesEnum.CRITICALITY_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.CRITICALITY_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.CRITICALITY_STATE, LdapStatesEnum.CONTROL_VALUE_STATE, UniversalTag.OCTET_STRING.getValue(),
             new ControlValueAction() );
 
@@ -3547,7 +3547,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     controlValue OCTET STRING OPTIONAL }
         //
         // Store the value in the control object created before
-        super.transitions[LdapStatesEnum.CONTROL_TYPE_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.CONTROL_TYPE_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.CONTROL_TYPE_STATE, LdapStatesEnum.CONTROL_VALUE_STATE, UniversalTag.OCTET_STRING.getValue(),
             new ControlValueAction() );
 
@@ -3559,7 +3559,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     controlValue OCTET STRING OPTIONAL }
         //
         // Store the value in the control object created before
-        super.transitions[LdapStatesEnum.CONTROL_TYPE_STATE.getState()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.CONTROL_TYPE_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
             LdapStatesEnum.CONTROL_TYPE_STATE, LdapStatesEnum.CONTROL_STATE, UniversalTag.SEQUENCE.getValue(), addControl );
 
         // ============================================================================================
@@ -3570,7 +3570,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     controlValue OCTET STRING OPTIONAL }
         //
         // Store the value in the control object created before
-        super.transitions[LdapStatesEnum.CRITICALITY_STATE.getState()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.CRITICALITY_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
             LdapStatesEnum.CRITICALITY_STATE, LdapStatesEnum.CONTROL_STATE, UniversalTag.SEQUENCE.getValue(), addControl );
 
         // ============================================================================================
@@ -3581,7 +3581,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     controlValue OCTET STRING OPTIONAL }
         //
         // Store the value in the control object created before
-        super.transitions[LdapStatesEnum.CONTROL_VALUE_STATE.getState()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.CONTROL_VALUE_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
             LdapStatesEnum.CONTROL_VALUE_STATE, LdapStatesEnum.CONTROL_STATE, UniversalTag.SEQUENCE.getValue(), addControl );
 
         // --------------------------------------------------------------------------------------------
@@ -3591,7 +3591,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // SearchRequest ::= [APPLICATION 3] SEQUENCE { ...
         //
         // Initialize the searchRequest object
-        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.getState()][LdapConstants.SEARCH_REQUEST_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.SEARCH_REQUEST_TAG] = new GrammarTransition(
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.SEARCH_REQUEST_STATE, LdapConstants.SEARCH_REQUEST_TAG,
             new GrammarAction( "Init SearchRequest" )
             {
@@ -3618,7 +3618,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // We have a value for the base object, we will store it in the message
-        super.transitions[LdapStatesEnum.SEARCH_REQUEST_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.SEARCH_REQUEST_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.SEARCH_REQUEST_STATE, LdapStatesEnum.BASE_OBJECT_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "store base object value" )
             {
@@ -3679,7 +3679,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // We have a value for the scope, we will store it in the message
-        super.transitions[LdapStatesEnum.BASE_OBJECT_STATE.getState()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.BASE_OBJECT_STATE.ordinal()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
             LdapStatesEnum.BASE_OBJECT_STATE, LdapStatesEnum.SCOPE_STATE, UniversalTag.ENUMERATED.getValue(),
             new GrammarAction( "store scope value" )
             {
@@ -3742,7 +3742,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // We have a value for the derefAliases, we will store it in the message
-        super.transitions[LdapStatesEnum.SCOPE_STATE.getState()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.SCOPE_STATE.ordinal()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
             LdapStatesEnum.SCOPE_STATE, LdapStatesEnum.DEREF_ALIAS_STATE, UniversalTag.ENUMERATED.getValue(),
             new GrammarAction( "store derefAliases value" )
             {
@@ -3805,7 +3805,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // We have a value for the sizeLimit, we will store it in the message
-        super.transitions[LdapStatesEnum.DEREF_ALIAS_STATE.getState()][UniversalTag.INTEGER.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.DEREF_ALIAS_STATE.ordinal()][UniversalTag.INTEGER.getValue()] = new GrammarTransition(
             LdapStatesEnum.DEREF_ALIAS_STATE, LdapStatesEnum.SIZE_LIMIT_STATE, UniversalTag.INTEGER.getValue(),
             new GrammarAction( "store sizeLimit value" )
             {
@@ -3851,7 +3851,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // We have a value for the timeLimit, we will store it in the message
-        super.transitions[LdapStatesEnum.SIZE_LIMIT_STATE.getState()][UniversalTag.INTEGER.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.SIZE_LIMIT_STATE.ordinal()][UniversalTag.INTEGER.getValue()] = new GrammarTransition(
             LdapStatesEnum.SIZE_LIMIT_STATE, LdapStatesEnum.TIME_LIMIT_STATE, UniversalTag.INTEGER.getValue(),
             new GrammarAction( "store timeLimit value" )
             {
@@ -3898,7 +3898,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // We have a value for the typesOnly, we will store it in the message.
-        super.transitions[LdapStatesEnum.TIME_LIMIT_STATE.getState()][UniversalTag.BOOLEAN.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.TIME_LIMIT_STATE.ordinal()][UniversalTag.BOOLEAN.getValue()] = new GrammarTransition(
             LdapStatesEnum.TIME_LIMIT_STATE, LdapStatesEnum.TYPES_ONLY_STATE, UniversalTag.BOOLEAN.getValue(),
             new GrammarAction( "store typesOnly value" )
             {
@@ -4015,7 +4015,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init AND filter
-        super.transitions[LdapStatesEnum.TYPES_ONLY_STATE.getState()][LdapConstants.AND_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.TYPES_ONLY_STATE.ordinal()][LdapConstants.AND_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.TYPES_ONLY_STATE, LdapStatesEnum.AND_STATE, LdapConstants.AND_FILTER_TAG,
             new InitAndFilterAction() );
 
@@ -4033,7 +4033,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init OR filter
-        super.transitions[LdapStatesEnum.TYPES_ONLY_STATE.getState()][LdapConstants.OR_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.TYPES_ONLY_STATE.ordinal()][LdapConstants.OR_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.TYPES_ONLY_STATE, LdapStatesEnum.OR_STATE, LdapConstants.OR_FILTER_TAG,
             new InitOrFilterAction() );
 
@@ -4051,7 +4051,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init NOT filter
-        super.transitions[LdapStatesEnum.TYPES_ONLY_STATE.getState()][LdapConstants.NOT_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.TYPES_ONLY_STATE.ordinal()][LdapConstants.NOT_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.TYPES_ONLY_STATE, LdapStatesEnum.NOT_STATE, LdapConstants.NOT_FILTER_TAG,
             new InitNotFilterAction() );
 
@@ -4069,7 +4069,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Equality filter
-        super.transitions[LdapStatesEnum.TYPES_ONLY_STATE.getState()][LdapConstants.EQUALITY_MATCH_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.TYPES_ONLY_STATE.ordinal()][LdapConstants.EQUALITY_MATCH_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.TYPES_ONLY_STATE, LdapStatesEnum.EQUALITY_MATCH_STATE,
             LdapConstants.EQUALITY_MATCH_FILTER_TAG, new InitEqualityMatchFilterAction() );
 
@@ -4087,7 +4087,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Substrings filter
-        super.transitions[LdapStatesEnum.TYPES_ONLY_STATE.getState()][LdapConstants.SUBSTRINGS_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.TYPES_ONLY_STATE.ordinal()][LdapConstants.SUBSTRINGS_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.TYPES_ONLY_STATE, LdapStatesEnum.SUBSTRING_FILTER_STATE,
             LdapConstants.SUBSTRINGS_FILTER_TAG, new InitSubstringsFilterAction() );
 
@@ -4105,7 +4105,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Greater Or Equal filter
-        super.transitions[LdapStatesEnum.TYPES_ONLY_STATE.getState()][LdapConstants.GREATER_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.TYPES_ONLY_STATE.ordinal()][LdapConstants.GREATER_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.TYPES_ONLY_STATE, LdapStatesEnum.GREATER_OR_EQUAL_STATE,
             LdapConstants.GREATER_OR_EQUAL_FILTER_TAG, new InitGreaterOrEqualFilterAction() );
 
@@ -4123,7 +4123,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Less Or Equal filter
-        super.transitions[LdapStatesEnum.TYPES_ONLY_STATE.getState()][LdapConstants.LESS_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.TYPES_ONLY_STATE.ordinal()][LdapConstants.LESS_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.TYPES_ONLY_STATE, LdapStatesEnum.LESS_OR_EQUAL_STATE,
             LdapConstants.LESS_OR_EQUAL_FILTER_TAG, new InitLessOrEqualFilterAction() );
 
@@ -4141,7 +4141,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Present Match filter
-        super.transitions[LdapStatesEnum.TYPES_ONLY_STATE.getState()][LdapConstants.PRESENT_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.TYPES_ONLY_STATE.ordinal()][LdapConstants.PRESENT_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.TYPES_ONLY_STATE, LdapStatesEnum.PRESENT_STATE, LdapConstants.PRESENT_FILTER_TAG,
             new InitPresentFilterAction() );
 
@@ -4159,7 +4159,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Approx Match filter
-        super.transitions[LdapStatesEnum.TYPES_ONLY_STATE.getState()][LdapConstants.APPROX_MATCH_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.TYPES_ONLY_STATE.ordinal()][LdapConstants.APPROX_MATCH_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.TYPES_ONLY_STATE, LdapStatesEnum.APPROX_MATCH_STATE, LdapConstants.APPROX_MATCH_FILTER_TAG,
             new InitApproxMatchFilterAction() );
 
@@ -4177,7 +4177,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Extensible Match filter
-        super.transitions[LdapStatesEnum.TYPES_ONLY_STATE.getState()][LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.TYPES_ONLY_STATE.ordinal()][LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.TYPES_ONLY_STATE, LdapStatesEnum.EXTENSIBLE_MATCH_STATE,
             LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG, new InitExtensibleMatchFilterAction() );
 
@@ -4194,7 +4194,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init AND filter
-        super.transitions[LdapStatesEnum.AND_STATE.getState()][LdapConstants.AND_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.AND_STATE.ordinal()][LdapConstants.AND_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.AND_STATE, LdapStatesEnum.AND_STATE, LdapConstants.AND_FILTER_TAG, new InitAndFilterAction() );
 
         // --------------------------------------------------------------------------------------------
@@ -4211,7 +4211,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init OR filter
-        super.transitions[LdapStatesEnum.AND_STATE.getState()][LdapConstants.OR_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.AND_STATE.ordinal()][LdapConstants.OR_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.AND_STATE, LdapStatesEnum.OR_STATE, LdapConstants.OR_FILTER_TAG, new InitOrFilterAction() );
 
         // --------------------------------------------------------------------------------------------
@@ -4228,7 +4228,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init NOT filter
-        super.transitions[LdapStatesEnum.AND_STATE.getState()][LdapConstants.NOT_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.AND_STATE.ordinal()][LdapConstants.NOT_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.AND_STATE, LdapStatesEnum.NOT_STATE, LdapConstants.NOT_FILTER_TAG, new InitNotFilterAction() );
 
         // --------------------------------------------------------------------------------------------
@@ -4245,7 +4245,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init NOT filter
-        super.transitions[LdapStatesEnum.AND_STATE.getState()][LdapConstants.EQUALITY_MATCH_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.AND_STATE.ordinal()][LdapConstants.EQUALITY_MATCH_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.AND_STATE, LdapStatesEnum.EQUALITY_MATCH_STATE, LdapConstants.EQUALITY_MATCH_FILTER_TAG,
             new InitEqualityMatchFilterAction() );
 
@@ -4263,7 +4263,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Substrings filter
-        super.transitions[LdapStatesEnum.AND_STATE.getState()][LdapConstants.SUBSTRINGS_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.AND_STATE.ordinal()][LdapConstants.SUBSTRINGS_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.AND_STATE, LdapStatesEnum.SUBSTRING_FILTER_STATE, LdapConstants.SUBSTRINGS_FILTER_TAG,
             new InitSubstringsFilterAction() );
 
@@ -4281,7 +4281,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Greater Or Equal filter
-        super.transitions[LdapStatesEnum.AND_STATE.getState()][LdapConstants.GREATER_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.AND_STATE.ordinal()][LdapConstants.GREATER_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.AND_STATE, LdapStatesEnum.GREATER_OR_EQUAL_STATE, LdapConstants.GREATER_OR_EQUAL_FILTER_TAG,
             new InitGreaterOrEqualFilterAction() );
 
@@ -4299,7 +4299,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Less Or Equal filter
-        super.transitions[LdapStatesEnum.AND_STATE.getState()][LdapConstants.LESS_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.AND_STATE.ordinal()][LdapConstants.LESS_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.AND_STATE, LdapStatesEnum.LESS_OR_EQUAL_STATE, LdapConstants.LESS_OR_EQUAL_FILTER_TAG,
             new InitLessOrEqualFilterAction() );
 
@@ -4317,7 +4317,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Approx Match filter
-        super.transitions[LdapStatesEnum.AND_STATE.getState()][LdapConstants.PRESENT_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.AND_STATE.ordinal()][LdapConstants.PRESENT_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.AND_STATE, LdapStatesEnum.PRESENT_STATE, LdapConstants.PRESENT_FILTER_TAG,
             new InitPresentFilterAction() );
 
@@ -4335,7 +4335,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Approx Match filter
-        super.transitions[LdapStatesEnum.AND_STATE.getState()][LdapConstants.APPROX_MATCH_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.AND_STATE.ordinal()][LdapConstants.APPROX_MATCH_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.AND_STATE, LdapStatesEnum.APPROX_MATCH_STATE, LdapConstants.APPROX_MATCH_FILTER_TAG,
             new InitApproxMatchFilterAction() );
 
@@ -4353,7 +4353,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Approx Match filter
-        super.transitions[LdapStatesEnum.AND_STATE.getState()][LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.AND_STATE.ordinal()][LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.AND_STATE, LdapStatesEnum.EXTENSIBLE_MATCH_STATE, LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG,
             new InitExtensibleMatchFilterAction() );
 
@@ -4370,7 +4370,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init AND filter
-        super.transitions[LdapStatesEnum.OR_STATE.getState()][LdapConstants.AND_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.OR_STATE.ordinal()][LdapConstants.AND_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.OR_STATE, LdapStatesEnum.AND_STATE, LdapConstants.AND_FILTER_TAG, new InitAndFilterAction() );
 
         // --------------------------------------------------------------------------------------------
@@ -4387,7 +4387,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init OR filter
-        super.transitions[LdapStatesEnum.OR_STATE.getState()][LdapConstants.OR_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.OR_STATE.ordinal()][LdapConstants.OR_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.OR_STATE, LdapStatesEnum.OR_STATE, LdapConstants.OR_FILTER_TAG, new InitOrFilterAction() );
 
         // --------------------------------------------------------------------------------------------
@@ -4404,7 +4404,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init NOT filter
-        super.transitions[LdapStatesEnum.OR_STATE.getState()][LdapConstants.NOT_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.OR_STATE.ordinal()][LdapConstants.NOT_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.OR_STATE, LdapStatesEnum.NOT_STATE, LdapConstants.NOT_FILTER_TAG, new InitNotFilterAction() );
 
         // --------------------------------------------------------------------------------------------
@@ -4421,7 +4421,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init NOT filter
-        super.transitions[LdapStatesEnum.OR_STATE.getState()][LdapConstants.EQUALITY_MATCH_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.OR_STATE.ordinal()][LdapConstants.EQUALITY_MATCH_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.OR_STATE, LdapStatesEnum.EQUALITY_MATCH_STATE, LdapConstants.EQUALITY_MATCH_FILTER_TAG,
             new InitEqualityMatchFilterAction() );
 
@@ -4439,7 +4439,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Substrings filter
-        super.transitions[LdapStatesEnum.OR_STATE.getState()][LdapConstants.SUBSTRINGS_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.OR_STATE.ordinal()][LdapConstants.SUBSTRINGS_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.OR_STATE, LdapStatesEnum.SUBSTRING_FILTER_STATE, LdapConstants.SUBSTRINGS_FILTER_TAG,
             new InitSubstringsFilterAction() );
 
@@ -4457,7 +4457,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Greater Or Equal filter
-        super.transitions[LdapStatesEnum.OR_STATE.getState()][LdapConstants.GREATER_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.OR_STATE.ordinal()][LdapConstants.GREATER_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.OR_STATE, LdapStatesEnum.GREATER_OR_EQUAL_STATE, LdapConstants.GREATER_OR_EQUAL_FILTER_TAG,
             new InitGreaterOrEqualFilterAction() );
 
@@ -4475,7 +4475,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Less Or Equal filter
-        super.transitions[LdapStatesEnum.OR_STATE.getState()][LdapConstants.LESS_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.OR_STATE.ordinal()][LdapConstants.LESS_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.OR_STATE, LdapStatesEnum.LESS_OR_EQUAL_STATE, LdapConstants.LESS_OR_EQUAL_FILTER_TAG,
             new InitLessOrEqualFilterAction() );
 
@@ -4493,7 +4493,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Approx Match filter
-        super.transitions[LdapStatesEnum.OR_STATE.getState()][LdapConstants.PRESENT_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.OR_STATE.ordinal()][LdapConstants.PRESENT_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.OR_STATE, LdapStatesEnum.PRESENT_STATE, LdapConstants.PRESENT_FILTER_TAG,
             new InitPresentFilterAction() );
 
@@ -4511,7 +4511,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Approx Match filter
-        super.transitions[LdapStatesEnum.OR_STATE.getState()][LdapConstants.APPROX_MATCH_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.OR_STATE.ordinal()][LdapConstants.APPROX_MATCH_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.OR_STATE, LdapStatesEnum.APPROX_MATCH_STATE, LdapConstants.APPROX_MATCH_FILTER_TAG,
             new InitApproxMatchFilterAction() );
 
@@ -4529,7 +4529,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Approx Match filter
-        super.transitions[LdapStatesEnum.OR_STATE.getState()][LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.OR_STATE.ordinal()][LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.OR_STATE, LdapStatesEnum.EXTENSIBLE_MATCH_STATE, LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG,
             new InitExtensibleMatchFilterAction() );
 
@@ -4546,7 +4546,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init AND filter
-        super.transitions[LdapStatesEnum.NOT_STATE.getState()][LdapConstants.AND_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.NOT_STATE.ordinal()][LdapConstants.AND_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.NOT_STATE, LdapStatesEnum.AND_STATE, LdapConstants.AND_FILTER_TAG, new InitAndFilterAction() );
 
         // --------------------------------------------------------------------------------------------
@@ -4563,7 +4563,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init OR filter
-        super.transitions[LdapStatesEnum.NOT_STATE.getState()][LdapConstants.OR_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.NOT_STATE.ordinal()][LdapConstants.OR_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.NOT_STATE, LdapStatesEnum.OR_STATE, LdapConstants.OR_FILTER_TAG, new InitOrFilterAction() );
 
         // --------------------------------------------------------------------------------------------
@@ -4580,7 +4580,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init NOT filter
-        super.transitions[LdapStatesEnum.NOT_STATE.getState()][LdapConstants.NOT_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.NOT_STATE.ordinal()][LdapConstants.NOT_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.NOT_STATE, LdapStatesEnum.NOT_STATE, LdapConstants.NOT_FILTER_TAG, new InitNotFilterAction() );
 
         // --------------------------------------------------------------------------------------------
@@ -4597,7 +4597,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init NOT filter
-        super.transitions[LdapStatesEnum.NOT_STATE.getState()][LdapConstants.EQUALITY_MATCH_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.NOT_STATE.ordinal()][LdapConstants.EQUALITY_MATCH_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.NOT_STATE, LdapStatesEnum.EQUALITY_MATCH_STATE, LdapConstants.EQUALITY_MATCH_FILTER_TAG,
             new InitEqualityMatchFilterAction() );
 
@@ -4615,7 +4615,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Substrings filter
-        super.transitions[LdapStatesEnum.NOT_STATE.getState()][LdapConstants.SUBSTRINGS_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.NOT_STATE.ordinal()][LdapConstants.SUBSTRINGS_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.NOT_STATE, LdapStatesEnum.SUBSTRING_FILTER_STATE, LdapConstants.SUBSTRINGS_FILTER_TAG,
             new InitSubstringsFilterAction() );
 
@@ -4633,7 +4633,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Greater Or Equal filter
-        super.transitions[LdapStatesEnum.NOT_STATE.getState()][LdapConstants.GREATER_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.NOT_STATE.ordinal()][LdapConstants.GREATER_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.NOT_STATE, LdapStatesEnum.GREATER_OR_EQUAL_STATE, LdapConstants.GREATER_OR_EQUAL_FILTER_TAG,
             new InitGreaterOrEqualFilterAction() );
 
@@ -4651,7 +4651,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Less Or Equal filter
-        super.transitions[LdapStatesEnum.NOT_STATE.getState()][LdapConstants.LESS_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.NOT_STATE.ordinal()][LdapConstants.LESS_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.NOT_STATE, LdapStatesEnum.LESS_OR_EQUAL_STATE, LdapConstants.LESS_OR_EQUAL_FILTER_TAG,
             new InitLessOrEqualFilterAction() );
 
@@ -4669,7 +4669,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init present filter
-        super.transitions[LdapStatesEnum.NOT_STATE.getState()][LdapConstants.PRESENT_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.NOT_STATE.ordinal()][LdapConstants.PRESENT_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.NOT_STATE, LdapStatesEnum.PRESENT_STATE, LdapConstants.PRESENT_FILTER_TAG,
             new InitPresentFilterAction() );
 
@@ -4687,7 +4687,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Approx Match filter
-        super.transitions[LdapStatesEnum.NOT_STATE.getState()][LdapConstants.APPROX_MATCH_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.NOT_STATE.ordinal()][LdapConstants.APPROX_MATCH_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.NOT_STATE, LdapStatesEnum.APPROX_MATCH_STATE, LdapConstants.APPROX_MATCH_FILTER_TAG,
             new InitApproxMatchFilterAction() );
 
@@ -4705,7 +4705,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init extensible match filter
-        super.transitions[LdapStatesEnum.NOT_STATE.getState()][LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.NOT_STATE.ordinal()][LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.NOT_STATE, LdapStatesEnum.EXTENSIBLE_MATCH_STATE, LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG,
             new InitExtensibleMatchFilterAction() );
 
@@ -4722,7 +4722,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Attribute Desc filter
-        super.transitions[LdapStatesEnum.EQUALITY_MATCH_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.EQUALITY_MATCH_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.EQUALITY_MATCH_STATE, LdapStatesEnum.ATTRIBUTE_DESC_FILTER_STATE,
             UniversalTag.OCTET_STRING.getValue(), new InitAttributeDescFilterAction() );
 
@@ -4739,7 +4739,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     assertionValue   AssertionValue }
         //
         // Init Assertion Value filter
-        super.transitions[LdapStatesEnum.ATTRIBUTE_DESC_FILTER_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ATTRIBUTE_DESC_FILTER_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.ATTRIBUTE_DESC_FILTER_STATE, LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE,
             UniversalTag.OCTET_STRING.getValue(), new InitAssertionValueFilterAction() );
 
@@ -4756,7 +4756,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init AND filter
-        super.transitions[LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE.getState()][LdapConstants.AND_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE.ordinal()][LdapConstants.AND_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE, LdapStatesEnum.AND_STATE, LdapConstants.AND_FILTER_TAG,
             new InitAndFilterAction() );
 
@@ -4774,7 +4774,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init OR filter
-        super.transitions[LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE.getState()][LdapConstants.OR_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE.ordinal()][LdapConstants.OR_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE, LdapStatesEnum.OR_STATE, LdapConstants.OR_FILTER_TAG,
             new InitOrFilterAction() );
 
@@ -4792,7 +4792,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init NOT filter
-        super.transitions[LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE.getState()][LdapConstants.NOT_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE.ordinal()][LdapConstants.NOT_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE, LdapStatesEnum.NOT_STATE, LdapConstants.NOT_FILTER_TAG,
             new InitNotFilterAction() );
 
@@ -4810,7 +4810,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init NOT filter
-        super.transitions[LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE.getState()][LdapConstants.EQUALITY_MATCH_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE.ordinal()][LdapConstants.EQUALITY_MATCH_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE, LdapStatesEnum.EQUALITY_MATCH_STATE,
             LdapConstants.EQUALITY_MATCH_FILTER_TAG, new InitEqualityMatchFilterAction() );
 
@@ -4828,7 +4828,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Substrings filter
-        super.transitions[LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE.getState()][LdapConstants.SUBSTRINGS_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE.ordinal()][LdapConstants.SUBSTRINGS_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE, LdapStatesEnum.SUBSTRING_FILTER_STATE,
             LdapConstants.SUBSTRINGS_FILTER_TAG, new InitSubstringsFilterAction() );
 
@@ -4846,7 +4846,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Greater Or Equal filter
-        super.transitions[LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE.getState()][LdapConstants.GREATER_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE.ordinal()][LdapConstants.GREATER_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE, LdapStatesEnum.GREATER_OR_EQUAL_STATE,
             LdapConstants.GREATER_OR_EQUAL_FILTER_TAG, new InitGreaterOrEqualFilterAction() );
 
@@ -4864,7 +4864,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Less Or Equal filter
-        super.transitions[LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE.getState()][LdapConstants.LESS_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE.ordinal()][LdapConstants.LESS_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE, LdapStatesEnum.LESS_OR_EQUAL_STATE,
             LdapConstants.LESS_OR_EQUAL_FILTER_TAG, new InitLessOrEqualFilterAction() );
 
@@ -4882,7 +4882,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init present filter
-        super.transitions[LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE.getState()][LdapConstants.PRESENT_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE.ordinal()][LdapConstants.PRESENT_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE, LdapStatesEnum.PRESENT_STATE,
             LdapConstants.PRESENT_FILTER_TAG, new InitPresentFilterAction() );
 
@@ -4900,7 +4900,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Approx Match filter
-        super.transitions[LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE.getState()][LdapConstants.APPROX_MATCH_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE.ordinal()][LdapConstants.APPROX_MATCH_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE, LdapStatesEnum.APPROX_MATCH_STATE,
             LdapConstants.APPROX_MATCH_FILTER_TAG, new InitApproxMatchFilterAction() );
 
@@ -4918,7 +4918,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Assertion Value Filter filter
-        super.transitions[LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE.getState()][LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE.ordinal()][LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE, LdapStatesEnum.EXTENSIBLE_MATCH_STATE,
             LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG, new InitExtensibleMatchFilterAction() );
 
@@ -4934,7 +4934,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     AttributeDescription
         //
         // Init attribute description list
-        super.transitions[LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE.getState()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
             LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE, LdapStatesEnum.ATTRIBUTE_DESCRIPTION_LIST_STATE,
             UniversalTag.SEQUENCE.getValue(), new InitAttributeDescListAction() );
 
@@ -4950,7 +4950,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     AttributeDescription
         //
         // Store attribute description
-        super.transitions[LdapStatesEnum.ATTRIBUTE_DESCRIPTION_LIST_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ATTRIBUTE_DESCRIPTION_LIST_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.ATTRIBUTE_DESCRIPTION_LIST_STATE, LdapStatesEnum.ATTRIBUTE_DESCRIPTION_STATE,
             UniversalTag.OCTET_STRING.getValue(), new AttributeDescAction() );
 
@@ -4962,7 +4962,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     controls       [0] Controls OPTIONAL }
         //
         // Empty attribute description list, with controls
-        super.transitions[LdapStatesEnum.ATTRIBUTE_DESCRIPTION_LIST_STATE.getState()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ATTRIBUTE_DESCRIPTION_LIST_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.ATTRIBUTE_DESCRIPTION_LIST_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
             new ControlsInitAction() );
 
@@ -4978,7 +4978,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     AttributeDescription
         //
         // Store attribute description
-        super.transitions[LdapStatesEnum.ATTRIBUTE_DESCRIPTION_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ATTRIBUTE_DESCRIPTION_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.ATTRIBUTE_DESCRIPTION_STATE, LdapStatesEnum.ATTRIBUTE_DESCRIPTION_STATE,
             UniversalTag.OCTET_STRING.getValue(), new AttributeDescAction() );
 
@@ -4989,7 +4989,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //         ... },
         //     controls       [0] Controls OPTIONAL }
         //
-        super.transitions[LdapStatesEnum.ATTRIBUTE_DESCRIPTION_STATE.getState()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ATTRIBUTE_DESCRIPTION_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.ATTRIBUTE_DESCRIPTION_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
             new ControlsInitAction() );
 
@@ -5006,7 +5006,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Attribute Desc filter
-        super.transitions[LdapStatesEnum.GREATER_OR_EQUAL_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.GREATER_OR_EQUAL_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.GREATER_OR_EQUAL_STATE, LdapStatesEnum.ATTRIBUTE_DESC_FILTER_STATE,
             UniversalTag.OCTET_STRING.getValue(), new InitAttributeDescFilterAction() );
 
@@ -5023,7 +5023,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Attribute Desc filter
-        super.transitions[LdapStatesEnum.LESS_OR_EQUAL_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.LESS_OR_EQUAL_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.LESS_OR_EQUAL_STATE, LdapStatesEnum.ATTRIBUTE_DESC_FILTER_STATE,
             UniversalTag.OCTET_STRING.getValue(), new InitAttributeDescFilterAction() );
 
@@ -5040,7 +5040,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init substring type
-        super.transitions[LdapStatesEnum.SUBSTRING_FILTER_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.SUBSTRING_FILTER_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.SUBSTRING_FILTER_STATE, LdapStatesEnum.TYPE_SUBSTRING_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Store substring filter type" )
             {
@@ -5087,7 +5087,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init substring type
-        super.transitions[LdapStatesEnum.TYPE_SUBSTRING_STATE.getState()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.TYPE_SUBSTRING_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
             LdapStatesEnum.TYPE_SUBSTRING_STATE, LdapStatesEnum.SUBSTRINGS_STATE, UniversalTag.SEQUENCE.getValue(),
             new GrammarAction( "Substring Filter substringsSequence " )
             {
@@ -5115,7 +5115,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //         ...
         //
         // Store initial value
-        super.transitions[LdapStatesEnum.SUBSTRINGS_STATE.getState()][LdapConstants.SUBSTRINGS_FILTER_INITIAL_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.SUBSTRINGS_STATE.ordinal()][LdapConstants.SUBSTRINGS_FILTER_INITIAL_TAG] = new GrammarTransition(
             LdapStatesEnum.SUBSTRINGS_STATE, LdapStatesEnum.INITIAL_STATE, LdapConstants.SUBSTRINGS_FILTER_INITIAL_TAG,
             new GrammarAction( "Store substring filter initial Value" )
             {
@@ -5156,7 +5156,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //         ...
         //
         // Store substring any type
-        super.transitions[LdapStatesEnum.SUBSTRINGS_STATE.getState()][LdapConstants.SUBSTRINGS_FILTER_ANY_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.SUBSTRINGS_STATE.ordinal()][LdapConstants.SUBSTRINGS_FILTER_ANY_TAG] = new GrammarTransition(
             LdapStatesEnum.SUBSTRINGS_STATE, LdapStatesEnum.ANY_STATE, LdapConstants.SUBSTRINGS_FILTER_ANY_TAG,
             new StoreAnyAction() );
 
@@ -5170,7 +5170,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //         final  [2] LDAPSTRING }
         //
         // Store substring final type
-        super.transitions[LdapStatesEnum.SUBSTRINGS_STATE.getState()][LdapConstants.SUBSTRINGS_FILTER_FINAL_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.SUBSTRINGS_STATE.ordinal()][LdapConstants.SUBSTRINGS_FILTER_FINAL_TAG] = new GrammarTransition(
             LdapStatesEnum.SUBSTRINGS_STATE, LdapStatesEnum.FINAL_STATE, LdapConstants.SUBSTRINGS_FILTER_FINAL_TAG,
             new StoreFinalAction() );
 
@@ -5185,7 +5185,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //         ...
         //
         // Store substring any type
-        super.transitions[LdapStatesEnum.INITIAL_STATE.getState()][LdapConstants.SUBSTRINGS_FILTER_ANY_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.INITIAL_STATE.ordinal()][LdapConstants.SUBSTRINGS_FILTER_ANY_TAG] = new GrammarTransition(
             LdapStatesEnum.INITIAL_STATE, LdapStatesEnum.ANY_STATE, LdapConstants.SUBSTRINGS_FILTER_ANY_TAG,
             new StoreAnyAction() );
 
@@ -5199,7 +5199,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //         final  [2] LDAPSTRING }
         //
         // Store substring final type
-        super.transitions[LdapStatesEnum.INITIAL_STATE.getState()][LdapConstants.SUBSTRINGS_FILTER_FINAL_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.INITIAL_STATE.ordinal()][LdapConstants.SUBSTRINGS_FILTER_FINAL_TAG] = new GrammarTransition(
             LdapStatesEnum.INITIAL_STATE, LdapStatesEnum.FINAL_STATE, LdapConstants.SUBSTRINGS_FILTER_FINAL_TAG,
             new StoreFinalAction() );
 
@@ -5215,7 +5215,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     AttributeDescription
         //
         // Init attribute description list
-        super.transitions[LdapStatesEnum.INITIAL_STATE.getState()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.INITIAL_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
             LdapStatesEnum.INITIAL_STATE, LdapStatesEnum.ATTRIBUTE_DESCRIPTION_LIST_STATE, UniversalTag.SEQUENCE.getValue(),
             new InitAttributeDescListAction() );
 
@@ -5232,7 +5232,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init AND filter
-        super.transitions[LdapStatesEnum.INITIAL_STATE.getState()][LdapConstants.AND_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.INITIAL_STATE.ordinal()][LdapConstants.AND_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.INITIAL_STATE, LdapStatesEnum.AND_STATE, LdapConstants.AND_FILTER_TAG,
             new InitAndFilterAction() );
 
@@ -5250,7 +5250,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init OR filter
-        super.transitions[LdapStatesEnum.INITIAL_STATE.getState()][LdapConstants.OR_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.INITIAL_STATE.ordinal()][LdapConstants.OR_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.INITIAL_STATE, LdapStatesEnum.OR_STATE, LdapConstants.OR_FILTER_TAG,
             new InitOrFilterAction() );
 
@@ -5268,7 +5268,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init NOT filter
-        super.transitions[LdapStatesEnum.INITIAL_STATE.getState()][LdapConstants.NOT_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.INITIAL_STATE.ordinal()][LdapConstants.NOT_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.INITIAL_STATE, LdapStatesEnum.NOT_STATE, LdapConstants.NOT_FILTER_TAG,
             new InitNotFilterAction() );
 
@@ -5286,7 +5286,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init NOT filter
-        super.transitions[LdapStatesEnum.INITIAL_STATE.getState()][LdapConstants.EQUALITY_MATCH_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.INITIAL_STATE.ordinal()][LdapConstants.EQUALITY_MATCH_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.INITIAL_STATE, LdapStatesEnum.EQUALITY_MATCH_STATE, LdapConstants.EQUALITY_MATCH_FILTER_TAG,
             new InitEqualityMatchFilterAction() );
 
@@ -5304,7 +5304,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Substrings filter
-        super.transitions[LdapStatesEnum.INITIAL_STATE.getState()][LdapConstants.SUBSTRINGS_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.INITIAL_STATE.ordinal()][LdapConstants.SUBSTRINGS_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.INITIAL_STATE, LdapStatesEnum.SUBSTRING_FILTER_STATE, LdapConstants.SUBSTRINGS_FILTER_TAG,
             new InitSubstringsFilterAction() );
 
@@ -5322,7 +5322,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Greater Or Equal filter
-        super.transitions[LdapStatesEnum.INITIAL_STATE.getState()][LdapConstants.GREATER_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.INITIAL_STATE.ordinal()][LdapConstants.GREATER_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.INITIAL_STATE, LdapStatesEnum.GREATER_OR_EQUAL_STATE,
             LdapConstants.GREATER_OR_EQUAL_FILTER_TAG, new InitGreaterOrEqualFilterAction() );
 
@@ -5340,7 +5340,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Less Or Equal filter
-        super.transitions[LdapStatesEnum.INITIAL_STATE.getState()][LdapConstants.LESS_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.INITIAL_STATE.ordinal()][LdapConstants.LESS_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.INITIAL_STATE, LdapStatesEnum.LESS_OR_EQUAL_STATE, LdapConstants.LESS_OR_EQUAL_FILTER_TAG,
             new InitLessOrEqualFilterAction() );
 
@@ -5358,7 +5358,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init present filter
-        super.transitions[LdapStatesEnum.INITIAL_STATE.getState()][LdapConstants.PRESENT_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.INITIAL_STATE.ordinal()][LdapConstants.PRESENT_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.INITIAL_STATE, LdapStatesEnum.PRESENT_STATE, LdapConstants.PRESENT_FILTER_TAG,
             new InitPresentFilterAction() );
 
@@ -5376,7 +5376,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Approx Match filter
-        super.transitions[LdapStatesEnum.INITIAL_STATE.getState()][LdapConstants.APPROX_MATCH_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.INITIAL_STATE.ordinal()][LdapConstants.APPROX_MATCH_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.INITIAL_STATE, LdapStatesEnum.APPROX_MATCH_STATE, LdapConstants.APPROX_MATCH_FILTER_TAG,
             new InitApproxMatchFilterAction() );
 
@@ -5394,7 +5394,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Assertion Value Filter filter
-        super.transitions[LdapStatesEnum.INITIAL_STATE.getState()][LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.INITIAL_STATE.ordinal()][LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.INITIAL_STATE, LdapStatesEnum.EXTENSIBLE_MATCH_STATE,
             LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG, new InitExtensibleMatchFilterAction() );
 
@@ -5408,7 +5408,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //         final  [2] LDAPSTRING }
         //
         // Store substring final type
-        super.transitions[LdapStatesEnum.ANY_STATE.getState()][LdapConstants.SUBSTRINGS_FILTER_FINAL_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ANY_STATE.ordinal()][LdapConstants.SUBSTRINGS_FILTER_FINAL_TAG] = new GrammarTransition(
             LdapStatesEnum.ANY_STATE, LdapStatesEnum.FINAL_STATE, LdapConstants.SUBSTRINGS_FILTER_FINAL_TAG,
             new StoreFinalAction() );
 
@@ -5423,7 +5423,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //         ...
         //
         // Store substring any type
-        super.transitions[LdapStatesEnum.ANY_STATE.getState()][LdapConstants.SUBSTRINGS_FILTER_ANY_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ANY_STATE.ordinal()][LdapConstants.SUBSTRINGS_FILTER_ANY_TAG] = new GrammarTransition(
             LdapStatesEnum.ANY_STATE, LdapStatesEnum.ANY_STATE, LdapConstants.SUBSTRINGS_FILTER_ANY_TAG,
             new StoreAnyAction() );
 
@@ -5439,7 +5439,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     AttributeDescription
         //
         // Init attribute description list
-        super.transitions[LdapStatesEnum.ANY_STATE.getState()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ANY_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
             LdapStatesEnum.ANY_STATE, LdapStatesEnum.ATTRIBUTE_DESCRIPTION_LIST_STATE, UniversalTag.SEQUENCE.getValue(),
             new InitAttributeDescListAction() );
 
@@ -5456,7 +5456,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init AND filter
-        super.transitions[LdapStatesEnum.ANY_STATE.getState()][LdapConstants.AND_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ANY_STATE.ordinal()][LdapConstants.AND_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.ANY_STATE, LdapStatesEnum.AND_STATE, LdapConstants.AND_FILTER_TAG, new InitAndFilterAction() );
 
         // --------------------------------------------------------------------------------------------
@@ -5473,7 +5473,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init OR filter
-        super.transitions[LdapStatesEnum.ANY_STATE.getState()][LdapConstants.OR_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ANY_STATE.ordinal()][LdapConstants.OR_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.ANY_STATE, LdapStatesEnum.OR_STATE, LdapConstants.OR_FILTER_TAG, new InitOrFilterAction() );
 
         // --------------------------------------------------------------------------------------------
@@ -5490,7 +5490,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init NOT filter
-        super.transitions[LdapStatesEnum.ANY_STATE.getState()][LdapConstants.NOT_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ANY_STATE.ordinal()][LdapConstants.NOT_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.ANY_STATE, LdapStatesEnum.NOT_STATE, LdapConstants.NOT_FILTER_TAG, new InitNotFilterAction() );
 
         // --------------------------------------------------------------------------------------------
@@ -5507,7 +5507,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init NOT filter
-        super.transitions[LdapStatesEnum.ANY_STATE.getState()][LdapConstants.EQUALITY_MATCH_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ANY_STATE.ordinal()][LdapConstants.EQUALITY_MATCH_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.ANY_STATE, LdapStatesEnum.EQUALITY_MATCH_STATE, LdapConstants.EQUALITY_MATCH_FILTER_TAG,
             new InitEqualityMatchFilterAction() );
 
@@ -5525,7 +5525,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Substrings filter
-        super.transitions[LdapStatesEnum.ANY_STATE.getState()][LdapConstants.SUBSTRINGS_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ANY_STATE.ordinal()][LdapConstants.SUBSTRINGS_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.ANY_STATE, LdapStatesEnum.SUBSTRING_FILTER_STATE, LdapConstants.SUBSTRINGS_FILTER_TAG,
             new InitSubstringsFilterAction() );
 
@@ -5543,7 +5543,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Greater Or Equal filter
-        super.transitions[LdapStatesEnum.ANY_STATE.getState()][LdapConstants.GREATER_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ANY_STATE.ordinal()][LdapConstants.GREATER_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.ANY_STATE, LdapStatesEnum.GREATER_OR_EQUAL_STATE, LdapConstants.GREATER_OR_EQUAL_FILTER_TAG,
             new InitGreaterOrEqualFilterAction() );
 
@@ -5561,7 +5561,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Less Or Equal filter
-        super.transitions[LdapStatesEnum.ANY_STATE.getState()][LdapConstants.LESS_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ANY_STATE.ordinal()][LdapConstants.LESS_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.ANY_STATE, LdapStatesEnum.LESS_OR_EQUAL_STATE, LdapConstants.LESS_OR_EQUAL_FILTER_TAG,
             new InitLessOrEqualFilterAction() );
 
@@ -5579,7 +5579,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init present filter
-        super.transitions[LdapStatesEnum.ANY_STATE.getState()][LdapConstants.PRESENT_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ANY_STATE.ordinal()][LdapConstants.PRESENT_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.ANY_STATE, LdapStatesEnum.PRESENT_STATE, LdapConstants.PRESENT_FILTER_TAG,
             new InitPresentFilterAction() );
 
@@ -5597,7 +5597,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Approx Match filter
-        super.transitions[LdapStatesEnum.ANY_STATE.getState()][LdapConstants.APPROX_MATCH_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ANY_STATE.ordinal()][LdapConstants.APPROX_MATCH_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.ANY_STATE, LdapStatesEnum.APPROX_MATCH_STATE, LdapConstants.APPROX_MATCH_FILTER_TAG,
             new InitApproxMatchFilterAction() );
 
@@ -5615,7 +5615,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Assertion Value Filter filter
-        super.transitions[LdapStatesEnum.ANY_STATE.getState()][LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ANY_STATE.ordinal()][LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.ANY_STATE, LdapStatesEnum.EXTENSIBLE_MATCH_STATE, LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG,
             new InitExtensibleMatchFilterAction() );
 
@@ -5631,7 +5631,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     AttributeDescription
         //
         // Init attribute description list
-        super.transitions[LdapStatesEnum.FINAL_STATE.getState()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.FINAL_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
             LdapStatesEnum.FINAL_STATE, LdapStatesEnum.ATTRIBUTE_DESCRIPTION_LIST_STATE, UniversalTag.SEQUENCE.getValue(),
             new InitAttributeDescListAction() );
 
@@ -5648,7 +5648,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init AND filter
-        super.transitions[LdapStatesEnum.FINAL_STATE.getState()][LdapConstants.AND_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.FINAL_STATE.ordinal()][LdapConstants.AND_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.FINAL_STATE, LdapStatesEnum.AND_STATE, LdapConstants.AND_FILTER_TAG,
             new InitAndFilterAction() );
 
@@ -5666,7 +5666,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init OR filter
-        super.transitions[LdapStatesEnum.FINAL_STATE.getState()][LdapConstants.OR_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.FINAL_STATE.ordinal()][LdapConstants.OR_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.FINAL_STATE, LdapStatesEnum.OR_STATE, LdapConstants.OR_FILTER_TAG, new InitOrFilterAction() );
 
         // --------------------------------------------------------------------------------------------
@@ -5683,7 +5683,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init NOT filter
-        super.transitions[LdapStatesEnum.FINAL_STATE.getState()][LdapConstants.NOT_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.FINAL_STATE.ordinal()][LdapConstants.NOT_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.FINAL_STATE, LdapStatesEnum.NOT_STATE, LdapConstants.NOT_FILTER_TAG,
             new InitNotFilterAction() );
 
@@ -5701,7 +5701,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init NOT filter
-        super.transitions[LdapStatesEnum.FINAL_STATE.getState()][LdapConstants.EQUALITY_MATCH_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.FINAL_STATE.ordinal()][LdapConstants.EQUALITY_MATCH_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.FINAL_STATE, LdapStatesEnum.EQUALITY_MATCH_STATE, LdapConstants.EQUALITY_MATCH_FILTER_TAG,
             new InitEqualityMatchFilterAction() );
 
@@ -5719,7 +5719,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Substrings filter
-        super.transitions[LdapStatesEnum.FINAL_STATE.getState()][LdapConstants.SUBSTRINGS_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.FINAL_STATE.ordinal()][LdapConstants.SUBSTRINGS_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.FINAL_STATE, LdapStatesEnum.SUBSTRING_FILTER_STATE, LdapConstants.SUBSTRINGS_FILTER_TAG,
             new InitSubstringsFilterAction() );
 
@@ -5737,7 +5737,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Greater Or Equal filter
-        super.transitions[LdapStatesEnum.FINAL_STATE.getState()][LdapConstants.GREATER_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.FINAL_STATE.ordinal()][LdapConstants.GREATER_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.FINAL_STATE, LdapStatesEnum.GREATER_OR_EQUAL_STATE,
             LdapConstants.GREATER_OR_EQUAL_FILTER_TAG, new InitGreaterOrEqualFilterAction() );
 
@@ -5755,7 +5755,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Less Or Equal filter
-        super.transitions[LdapStatesEnum.FINAL_STATE.getState()][LdapConstants.LESS_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.FINAL_STATE.ordinal()][LdapConstants.LESS_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.FINAL_STATE, LdapStatesEnum.LESS_OR_EQUAL_STATE, LdapConstants.LESS_OR_EQUAL_FILTER_TAG,
             new InitLessOrEqualFilterAction() );
 
@@ -5773,7 +5773,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init present filter
-        super.transitions[LdapStatesEnum.FINAL_STATE.getState()][LdapConstants.PRESENT_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.FINAL_STATE.ordinal()][LdapConstants.PRESENT_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.FINAL_STATE, LdapStatesEnum.PRESENT_STATE, LdapConstants.PRESENT_FILTER_TAG,
             new InitPresentFilterAction() );
 
@@ -5791,7 +5791,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Approx Match filter
-        super.transitions[LdapStatesEnum.FINAL_STATE.getState()][LdapConstants.APPROX_MATCH_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.FINAL_STATE.ordinal()][LdapConstants.APPROX_MATCH_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.FINAL_STATE, LdapStatesEnum.APPROX_MATCH_STATE, LdapConstants.APPROX_MATCH_FILTER_TAG,
             new InitApproxMatchFilterAction() );
 
@@ -5809,7 +5809,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Assertion Value Filter filter
-        super.transitions[LdapStatesEnum.FINAL_STATE.getState()][LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.FINAL_STATE.ordinal()][LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.FINAL_STATE, LdapStatesEnum.EXTENSIBLE_MATCH_STATE,
             LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG, new InitExtensibleMatchFilterAction() );
 
@@ -5826,7 +5826,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init AND filter
-        super.transitions[LdapStatesEnum.PRESENT_STATE.getState()][LdapConstants.AND_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.PRESENT_STATE.ordinal()][LdapConstants.AND_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.PRESENT_STATE, LdapStatesEnum.AND_STATE, LdapConstants.AND_FILTER_TAG,
             new InitAndFilterAction() );
 
@@ -5844,7 +5844,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init OR filter
-        super.transitions[LdapStatesEnum.PRESENT_STATE.getState()][LdapConstants.OR_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.PRESENT_STATE.ordinal()][LdapConstants.OR_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.PRESENT_STATE, LdapStatesEnum.OR_STATE, LdapConstants.OR_FILTER_TAG,
             new InitOrFilterAction() );
 
@@ -5862,7 +5862,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init NOT filter
-        super.transitions[LdapStatesEnum.PRESENT_STATE.getState()][LdapConstants.NOT_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.PRESENT_STATE.ordinal()][LdapConstants.NOT_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.PRESENT_STATE, LdapStatesEnum.NOT_STATE, LdapConstants.NOT_FILTER_TAG,
             new InitNotFilterAction() );
 
@@ -5880,7 +5880,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init NOT filter
-        super.transitions[LdapStatesEnum.PRESENT_STATE.getState()][LdapConstants.EQUALITY_MATCH_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.PRESENT_STATE.ordinal()][LdapConstants.EQUALITY_MATCH_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.PRESENT_STATE, LdapStatesEnum.EQUALITY_MATCH_STATE, LdapConstants.EQUALITY_MATCH_FILTER_TAG,
             new InitEqualityMatchFilterAction() );
 
@@ -5898,7 +5898,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Substrings filter
-        super.transitions[LdapStatesEnum.PRESENT_STATE.getState()][LdapConstants.SUBSTRINGS_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.PRESENT_STATE.ordinal()][LdapConstants.SUBSTRINGS_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.PRESENT_STATE, LdapStatesEnum.SUBSTRING_FILTER_STATE, LdapConstants.SUBSTRINGS_FILTER_TAG,
             new InitSubstringsFilterAction() );
 
@@ -5916,7 +5916,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Greater Or Equal filter
-        super.transitions[LdapStatesEnum.PRESENT_STATE.getState()][LdapConstants.GREATER_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.PRESENT_STATE.ordinal()][LdapConstants.GREATER_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.PRESENT_STATE, LdapStatesEnum.GREATER_OR_EQUAL_STATE,
             LdapConstants.GREATER_OR_EQUAL_FILTER_TAG, new InitGreaterOrEqualFilterAction() );
 
@@ -5934,7 +5934,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Less Or Equal filter
-        super.transitions[LdapStatesEnum.PRESENT_STATE.getState()][LdapConstants.LESS_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.PRESENT_STATE.ordinal()][LdapConstants.LESS_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.PRESENT_STATE, LdapStatesEnum.LESS_OR_EQUAL_STATE, LdapConstants.LESS_OR_EQUAL_FILTER_TAG,
             new InitLessOrEqualFilterAction() );
 
@@ -5952,7 +5952,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init present filter
-        super.transitions[LdapStatesEnum.PRESENT_STATE.getState()][LdapConstants.PRESENT_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.PRESENT_STATE.ordinal()][LdapConstants.PRESENT_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.PRESENT_STATE, LdapStatesEnum.PRESENT_STATE, LdapConstants.PRESENT_FILTER_TAG,
             new InitPresentFilterAction() );
 
@@ -5970,7 +5970,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Approx Match filter
-        super.transitions[LdapStatesEnum.PRESENT_STATE.getState()][LdapConstants.APPROX_MATCH_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.PRESENT_STATE.ordinal()][LdapConstants.APPROX_MATCH_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.PRESENT_STATE, LdapStatesEnum.APPROX_MATCH_STATE, LdapConstants.APPROX_MATCH_FILTER_TAG,
             new InitApproxMatchFilterAction() );
 
@@ -5988,7 +5988,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Assertion Value Filter filter
-        super.transitions[LdapStatesEnum.PRESENT_STATE.getState()][LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.PRESENT_STATE.ordinal()][LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.PRESENT_STATE, LdapStatesEnum.EXTENSIBLE_MATCH_STATE,
             LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG, new InitExtensibleMatchFilterAction() );
 
@@ -6004,7 +6004,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     AttributeDescription
         //
         // Init attribute description list
-        super.transitions[LdapStatesEnum.PRESENT_STATE.getState()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.PRESENT_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
             LdapStatesEnum.PRESENT_STATE, LdapStatesEnum.ATTRIBUTE_DESCRIPTION_LIST_STATE, UniversalTag.SEQUENCE.getValue(),
             new InitAttributeDescListAction() );
 
@@ -6021,7 +6021,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Attribute Desc filter
-        super.transitions[LdapStatesEnum.APPROX_MATCH_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.APPROX_MATCH_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.APPROX_MATCH_STATE, LdapStatesEnum.ATTRIBUTE_DESC_FILTER_STATE,
             UniversalTag.OCTET_STRING.getValue(), new InitAttributeDescFilterAction() );
 
@@ -6037,7 +6037,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Store the matching rule ID 
-        super.transitions[LdapStatesEnum.EXTENSIBLE_MATCH_STATE.getState()][LdapConstants.MATCHING_RULE_ID_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.EXTENSIBLE_MATCH_STATE.ordinal()][LdapConstants.MATCHING_RULE_ID_TAG] = new GrammarTransition(
             LdapStatesEnum.EXTENSIBLE_MATCH_STATE, LdapStatesEnum.MATCHING_RULE_STATE,
             LdapConstants.MATCHING_RULE_ID_TAG, new GrammarAction( "Store matching rule Value" )
             {
@@ -6080,7 +6080,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Store the matching rule ID 
-        super.transitions[LdapStatesEnum.EXTENSIBLE_MATCH_STATE.getState()][LdapConstants.MATCHING_RULE_TYPE_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.EXTENSIBLE_MATCH_STATE.ordinal()][LdapConstants.MATCHING_RULE_TYPE_TAG] = new GrammarTransition(
             LdapStatesEnum.EXTENSIBLE_MATCH_STATE, LdapStatesEnum.TYPE_MATCHING_RULE_STATE,
             LdapConstants.MATCHING_RULE_TYPE_TAG, new StoreTypeMatchingRuleAction() );
 
@@ -6097,7 +6097,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Store the matching rule ID 
-        super.transitions[LdapStatesEnum.EXTENSIBLE_MATCH_STATE.getState()][LdapConstants.MATCH_VALUE_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.EXTENSIBLE_MATCH_STATE.ordinal()][LdapConstants.MATCH_VALUE_TAG] = new GrammarTransition(
             LdapStatesEnum.EXTENSIBLE_MATCH_STATE, LdapStatesEnum.MATCH_VALUE_STATE, LdapConstants.MATCH_VALUE_TAG,
             new StoreMatchValueAction() );
 
@@ -6114,7 +6114,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Store the matching rule ID 
-        super.transitions[LdapStatesEnum.MATCHING_RULE_STATE.getState()][LdapConstants.MATCHING_RULE_TYPE_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MATCHING_RULE_STATE.ordinal()][LdapConstants.MATCHING_RULE_TYPE_TAG] = new GrammarTransition(
             LdapStatesEnum.MATCHING_RULE_STATE, LdapStatesEnum.TYPE_MATCHING_RULE_STATE,
             LdapConstants.MATCHING_RULE_TYPE_TAG, new StoreTypeMatchingRuleAction() );
 
@@ -6131,7 +6131,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Store the matching rule ID 
-        super.transitions[LdapStatesEnum.MATCHING_RULE_STATE.getState()][LdapConstants.MATCH_VALUE_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MATCHING_RULE_STATE.ordinal()][LdapConstants.MATCH_VALUE_TAG] = new GrammarTransition(
             LdapStatesEnum.MATCHING_RULE_STATE, LdapStatesEnum.MATCH_VALUE_STATE, LdapConstants.MATCH_VALUE_TAG,
             new StoreMatchValueAction() );
 
@@ -6148,7 +6148,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Store the matching rule ID 
-        super.transitions[LdapStatesEnum.TYPE_MATCHING_RULE_STATE.getState()][LdapConstants.MATCH_VALUE_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.TYPE_MATCHING_RULE_STATE.ordinal()][LdapConstants.MATCH_VALUE_TAG] = new GrammarTransition(
             LdapStatesEnum.TYPE_MATCHING_RULE_STATE, LdapStatesEnum.MATCH_VALUE_STATE, LdapConstants.MATCH_VALUE_TAG,
             new StoreMatchValueAction() );
 
@@ -6164,7 +6164,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     dnAttributes [4] BOOLEAN DEFAULT FALSE }
         //
         // Store the dnAttributes flag 
-        super.transitions[LdapStatesEnum.MATCH_VALUE_STATE.getState()][LdapConstants.DN_ATTRIBUTES_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MATCH_VALUE_STATE.ordinal()][LdapConstants.DN_ATTRIBUTES_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.MATCH_VALUE_STATE, LdapStatesEnum.DN_ATTRIBUTES_STATE,
             LdapConstants.DN_ATTRIBUTES_FILTER_TAG, new GrammarAction( "Store matching dnAttributes Value" )
             {
@@ -6222,7 +6222,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init AND filter
-        super.transitions[LdapStatesEnum.MATCH_VALUE_STATE.getState()][LdapConstants.AND_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MATCH_VALUE_STATE.ordinal()][LdapConstants.AND_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.MATCH_VALUE_STATE, LdapStatesEnum.AND_STATE, LdapConstants.AND_FILTER_TAG,
             new InitAndFilterAction() );
 
@@ -6240,7 +6240,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init OR filter
-        super.transitions[LdapStatesEnum.MATCH_VALUE_STATE.getState()][LdapConstants.OR_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MATCH_VALUE_STATE.ordinal()][LdapConstants.OR_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.MATCH_VALUE_STATE, LdapStatesEnum.OR_STATE, LdapConstants.OR_FILTER_TAG,
             new InitOrFilterAction() );
 
@@ -6258,7 +6258,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init NOT filter
-        super.transitions[LdapStatesEnum.MATCH_VALUE_STATE.getState()][LdapConstants.NOT_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MATCH_VALUE_STATE.ordinal()][LdapConstants.NOT_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.MATCH_VALUE_STATE, LdapStatesEnum.NOT_STATE, LdapConstants.NOT_FILTER_TAG,
             new InitNotFilterAction() );
 
@@ -6276,7 +6276,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init NOT filter
-        super.transitions[LdapStatesEnum.MATCH_VALUE_STATE.getState()][LdapConstants.EQUALITY_MATCH_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MATCH_VALUE_STATE.ordinal()][LdapConstants.EQUALITY_MATCH_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.MATCH_VALUE_STATE, LdapStatesEnum.EQUALITY_MATCH_STATE,
             LdapConstants.EQUALITY_MATCH_FILTER_TAG, new InitEqualityMatchFilterAction() );
 
@@ -6294,7 +6294,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Substrings filter
-        super.transitions[LdapStatesEnum.MATCH_VALUE_STATE.getState()][LdapConstants.SUBSTRINGS_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MATCH_VALUE_STATE.ordinal()][LdapConstants.SUBSTRINGS_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.MATCH_VALUE_STATE, LdapStatesEnum.SUBSTRING_FILTER_STATE,
             LdapConstants.SUBSTRINGS_FILTER_TAG, new InitSubstringsFilterAction() );
 
@@ -6312,7 +6312,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Greater Or Equal filter
-        super.transitions[LdapStatesEnum.MATCH_VALUE_STATE.getState()][LdapConstants.GREATER_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MATCH_VALUE_STATE.ordinal()][LdapConstants.GREATER_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.MATCH_VALUE_STATE, LdapStatesEnum.GREATER_OR_EQUAL_STATE,
             LdapConstants.GREATER_OR_EQUAL_FILTER_TAG, new InitGreaterOrEqualFilterAction() );
 
@@ -6330,7 +6330,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Less Or Equal filter
-        super.transitions[LdapStatesEnum.MATCH_VALUE_STATE.getState()][LdapConstants.LESS_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MATCH_VALUE_STATE.ordinal()][LdapConstants.LESS_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.MATCH_VALUE_STATE, LdapStatesEnum.LESS_OR_EQUAL_STATE,
             LdapConstants.LESS_OR_EQUAL_FILTER_TAG, new InitLessOrEqualFilterAction() );
 
@@ -6348,7 +6348,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init present filter
-        super.transitions[LdapStatesEnum.MATCH_VALUE_STATE.getState()][LdapConstants.PRESENT_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MATCH_VALUE_STATE.ordinal()][LdapConstants.PRESENT_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.MATCH_VALUE_STATE, LdapStatesEnum.PRESENT_STATE, LdapConstants.PRESENT_FILTER_TAG,
             new InitPresentFilterAction() );
 
@@ -6366,7 +6366,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Approx Match filter
-        super.transitions[LdapStatesEnum.MATCH_VALUE_STATE.getState()][LdapConstants.APPROX_MATCH_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MATCH_VALUE_STATE.ordinal()][LdapConstants.APPROX_MATCH_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.MATCH_VALUE_STATE, LdapStatesEnum.APPROX_MATCH_STATE, LdapConstants.APPROX_MATCH_FILTER_TAG,
             new InitApproxMatchFilterAction() );
 
@@ -6384,7 +6384,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Assertion Value Filter filter
-        super.transitions[LdapStatesEnum.MATCH_VALUE_STATE.getState()][LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MATCH_VALUE_STATE.ordinal()][LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.MATCH_VALUE_STATE, LdapStatesEnum.EXTENSIBLE_MATCH_STATE,
             LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG, new InitExtensibleMatchFilterAction() );
 
@@ -6400,7 +6400,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     AttributeDescription
         //
         // Init attribute description list
-        super.transitions[LdapStatesEnum.MATCH_VALUE_STATE.getState()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MATCH_VALUE_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
             LdapStatesEnum.MATCH_VALUE_STATE, LdapStatesEnum.ATTRIBUTE_DESCRIPTION_LIST_STATE,
             UniversalTag.SEQUENCE.getValue(), new InitAttributeDescListAction() );
 
@@ -6417,7 +6417,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init AND filter
-        super.transitions[LdapStatesEnum.DN_ATTRIBUTES_STATE.getState()][LdapConstants.AND_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.DN_ATTRIBUTES_STATE.ordinal()][LdapConstants.AND_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.DN_ATTRIBUTES_STATE, LdapStatesEnum.AND_STATE, LdapConstants.AND_FILTER_TAG,
             new InitAndFilterAction() );
 
@@ -6435,7 +6435,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init OR filter
-        super.transitions[LdapStatesEnum.DN_ATTRIBUTES_STATE.getState()][LdapConstants.OR_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.DN_ATTRIBUTES_STATE.ordinal()][LdapConstants.OR_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.DN_ATTRIBUTES_STATE, LdapStatesEnum.OR_STATE, LdapConstants.OR_FILTER_TAG,
             new InitOrFilterAction() );
 
@@ -6453,7 +6453,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init NOT filter
-        super.transitions[LdapStatesEnum.DN_ATTRIBUTES_STATE.getState()][LdapConstants.NOT_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.DN_ATTRIBUTES_STATE.ordinal()][LdapConstants.NOT_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.DN_ATTRIBUTES_STATE, LdapStatesEnum.NOT_STATE, LdapConstants.NOT_FILTER_TAG,
             new InitNotFilterAction() );
 
@@ -6471,7 +6471,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init NOT filter
-        super.transitions[LdapStatesEnum.DN_ATTRIBUTES_STATE.getState()][LdapConstants.EQUALITY_MATCH_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.DN_ATTRIBUTES_STATE.ordinal()][LdapConstants.EQUALITY_MATCH_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.DN_ATTRIBUTES_STATE, LdapStatesEnum.EQUALITY_MATCH_STATE,
             LdapConstants.EQUALITY_MATCH_FILTER_TAG, new InitEqualityMatchFilterAction() );
 
@@ -6489,7 +6489,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Substrings filter
-        super.transitions[LdapStatesEnum.DN_ATTRIBUTES_STATE.getState()][LdapConstants.SUBSTRINGS_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.DN_ATTRIBUTES_STATE.ordinal()][LdapConstants.SUBSTRINGS_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.DN_ATTRIBUTES_STATE, LdapStatesEnum.SUBSTRING_FILTER_STATE,
             LdapConstants.SUBSTRINGS_FILTER_TAG, new InitSubstringsFilterAction() );
 
@@ -6507,7 +6507,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Greater Or Equal filter
-        super.transitions[LdapStatesEnum.DN_ATTRIBUTES_STATE.getState()][LdapConstants.GREATER_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.DN_ATTRIBUTES_STATE.ordinal()][LdapConstants.GREATER_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.DN_ATTRIBUTES_STATE, LdapStatesEnum.GREATER_OR_EQUAL_STATE,
             LdapConstants.GREATER_OR_EQUAL_FILTER_TAG, new InitGreaterOrEqualFilterAction() );
 
@@ -6525,7 +6525,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Less Or Equal filter
-        super.transitions[LdapStatesEnum.DN_ATTRIBUTES_STATE.getState()][LdapConstants.LESS_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.DN_ATTRIBUTES_STATE.ordinal()][LdapConstants.LESS_OR_EQUAL_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.DN_ATTRIBUTES_STATE, LdapStatesEnum.LESS_OR_EQUAL_STATE,
             LdapConstants.LESS_OR_EQUAL_FILTER_TAG, new InitLessOrEqualFilterAction() );
 
@@ -6543,7 +6543,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init present filter
-        super.transitions[LdapStatesEnum.DN_ATTRIBUTES_STATE.getState()][LdapConstants.PRESENT_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.DN_ATTRIBUTES_STATE.ordinal()][LdapConstants.PRESENT_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.DN_ATTRIBUTES_STATE, LdapStatesEnum.PRESENT_STATE, LdapConstants.PRESENT_FILTER_TAG,
             new InitPresentFilterAction() );
 
@@ -6561,7 +6561,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Approx Match filter
-        super.transitions[LdapStatesEnum.DN_ATTRIBUTES_STATE.getState()][LdapConstants.APPROX_MATCH_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.DN_ATTRIBUTES_STATE.ordinal()][LdapConstants.APPROX_MATCH_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.DN_ATTRIBUTES_STATE, LdapStatesEnum.APPROX_MATCH_STATE,
             LdapConstants.APPROX_MATCH_FILTER_TAG, new InitApproxMatchFilterAction() );
 
@@ -6579,7 +6579,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // Init Assertion Value Filter filter
-        super.transitions[LdapStatesEnum.DN_ATTRIBUTES_STATE.getState()][LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.DN_ATTRIBUTES_STATE.ordinal()][LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.DN_ATTRIBUTES_STATE, LdapStatesEnum.EXTENSIBLE_MATCH_STATE,
             LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG, new InitExtensibleMatchFilterAction() );
 
@@ -6595,7 +6595,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     AttributeDescription
         //
         // Init attribute description list
-        super.transitions[LdapStatesEnum.DN_ATTRIBUTES_STATE.getState()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.DN_ATTRIBUTES_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
             LdapStatesEnum.DN_ATTRIBUTES_STATE, LdapStatesEnum.ATTRIBUTE_DESCRIPTION_LIST_STATE,
             UniversalTag.SEQUENCE.getValue(), new InitAttributeDescListAction() );
     }

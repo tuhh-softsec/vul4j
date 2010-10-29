@@ -43,7 +43,7 @@ public class SyncStateValueControlContainer extends AbstractContainer
         super();
         stateStack = new int[1];
         grammar = SyncStateValueControlGrammar.getInstance();
-        setTransition( SyncStateValueControlStatesEnum.INIT_GRAMMAR_STATE );
+        setTransition( SyncStateValueControlStatesEnum.START_STATE );
     }
 
 

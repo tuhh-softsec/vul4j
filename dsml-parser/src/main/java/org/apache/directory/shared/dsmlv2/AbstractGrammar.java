@@ -86,7 +86,7 @@ public abstract class AbstractGrammar implements IGrammar
      */
     public GrammarTransition getTransition( Enum<Dsmlv2StatesEnum> state, Tag tag )
     {
-        return transitions[((Dsmlv2StatesEnum)state).getState()].get( tag );
+        return transitions[state.ordinal()].get( tag );
     }
 
 
@@ -131,7 +131,7 @@ public abstract class AbstractGrammar implements IGrammar
             }
             else if ( eventType == XmlPullParser.END_DOCUMENT )
             {
-                container.setState( Dsmlv2StatesEnum.END_STATE );
+                container.setState( Dsmlv2StatesEnum.GRAMMAR_END );
             }
             else if ( eventType == XmlPullParser.START_TAG )
             {

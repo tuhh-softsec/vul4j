@@ -28,83 +28,52 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
 /**
  * Constants for StoredProcedureGrammar.
  * 
- * TODO: should this be an enum?
- * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public enum StoredProcedureStatesEnum implements States
 {
     //~ Static fields/initializers -----------------------------------------------------------------
 
-    /** The initial state of every grammar */
-    INIT_GRAMMAR_STATE(0),
-
-    /** The ending state for every grammars */
-    GRAMMAR_END(-1),
-
     /** The END_STATE */
-    END_STATE(-1),
+    END_STATE,
 
     //=========================================================================
     // StoredProcedure
     //=========================================================================
     /** starting state */
-    START_STATE(0),
+    START_STATE,
 
     /** StoredProcedure */
-    STORED_PROCEDURE_STATE(1),
+    STORED_PROCEDURE_STATE,
 
     // Language ---------------------------------------------------------------
     /** Language */
-    LANGUAGE_STATE(2),
+    LANGUAGE_STATE,
 
     // Procedure --------------------------------------------------------------
     /** Procedure */
-    PROCEDURE_STATE(3),
+    PROCEDURE_STATE,
 
     // Parameters -------------------------------------------------------------
     /** Parameters */
-    PARAMETERS_STATE(4),
+    PARAMETERS_STATE,
 
     // Parameter --------------------------------------------------------------
     /** Parameter */
-    PARAMETER_STATE(5),
+    PARAMETER_STATE,
 
     // Parameter type ---------------------------------------------------------
     /** Parameter type */
-    PARAMETER_TYPE_STATE(6),
+    PARAMETER_TYPE_STATE,
 
     // Parameters value -------------------------------------------------------
     /** Parameter value */
-    PARAMETER_VALUE_STATE(7),
+    PARAMETER_VALUE_STATE,
 
     /** Last Stored Procedure */
-    LAST_STORED_PROCEDURE_STATE(8);
+    LAST_STORED_PROCEDURE_STATE;
 
-    private int state;
-    
-    /**
-     * 
-     * Creates a new instance of StoredProcedureStatesEnum.
-     *
-     * @param state
-     */
-    StoredProcedureStatesEnum(int state)
-    {
-        this.state = state;
-    }
 
-    /**
-     * 
-     * Get the state.
-     *
-     * @return State as integer value
-     */
-    public int getState()
-    {
-        return state;
-    }
-    
     /**
      * Get the grammar name
      * @param grammar The grammar code
@@ -142,7 +111,7 @@ public enum StoredProcedureStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END.getState() ) ? "STORED_PROCEDURE_END_STATE" : name() );
+        return ( ( state == END_STATE.ordinal() ) ? "STORED_PROCEDURE_END_STATE" : name() );
     }
 
     

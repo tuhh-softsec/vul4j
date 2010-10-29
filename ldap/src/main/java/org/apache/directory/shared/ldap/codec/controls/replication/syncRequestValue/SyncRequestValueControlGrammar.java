@@ -33,7 +33,6 @@ import org.apache.directory.shared.asn1.util.BooleanDecoderException;
 import org.apache.directory.shared.asn1.util.IntegerDecoder;
 import org.apache.directory.shared.asn1.util.IntegerDecoderException;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValue.SyncInfoValueControlStatesEnum;
 import org.apache.directory.shared.ldap.message.control.replication.SynchronizationModeEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
@@ -79,7 +78,7 @@ public final class SyncRequestValueControlGrammar extends AbstractGrammar
         setName( SyncRequestValueControlGrammar.class.getName() );
 
         // Create the transitions table
-        super.transitions = new GrammarTransition[SyncRequestValueControlStatesEnum.LAST_SYNC_REQUEST_VALUE_STATE.getState()][256];
+        super.transitions = new GrammarTransition[SyncRequestValueControlStatesEnum.LAST_SYNC_REQUEST_VALUE_STATE.ordinal()][256];
 
         /** 
          * Transition from initial state to SyncRequestValue sequence
@@ -88,8 +87,8 @@ public final class SyncRequestValueControlGrammar extends AbstractGrammar
          *     
          * Initialize the syncRequestValue object
          */
-        super.transitions[SyncRequestValueControlStatesEnum.INIT_GRAMMAR_STATE.getState()][UniversalTag.SEQUENCE.getValue()] = 
-            new GrammarTransition( SyncInfoValueControlStatesEnum.INIT_GRAMMAR_STATE, 
+        super.transitions[SyncRequestValueControlStatesEnum.START_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = 
+            new GrammarTransition( SyncRequestValueControlStatesEnum.START_STATE, 
                                     SyncRequestValueControlStatesEnum.SYNC_REQUEST_VALUE_SEQUENCE_STATE, 
                                     UniversalTag.SEQUENCE.getValue(), 
                 null );
@@ -108,7 +107,7 @@ public final class SyncRequestValueControlGrammar extends AbstractGrammar
          *     
          * Stores the mode value
          */
-        super.transitions[SyncRequestValueControlStatesEnum.SYNC_REQUEST_VALUE_SEQUENCE_STATE.getState()][UniversalTag.ENUMERATED.getValue()] = 
+        super.transitions[SyncRequestValueControlStatesEnum.SYNC_REQUEST_VALUE_SEQUENCE_STATE.ordinal()][UniversalTag.ENUMERATED.getValue()] = 
             new GrammarTransition( SyncRequestValueControlStatesEnum.SYNC_REQUEST_VALUE_SEQUENCE_STATE, 
                 SyncRequestValueControlStatesEnum.MODE_STATE, 
                 UniversalTag.ENUMERATED.getValue(),
@@ -157,7 +156,7 @@ public final class SyncRequestValueControlGrammar extends AbstractGrammar
          *     
          * Stores the cookie
          */
-        super.transitions[SyncRequestValueControlStatesEnum.MODE_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = 
+        super.transitions[SyncRequestValueControlStatesEnum.MODE_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = 
             new GrammarTransition( SyncRequestValueControlStatesEnum.MODE_STATE,
                                     SyncRequestValueControlStatesEnum.COOKIE_STATE, UniversalTag.OCTET_STRING.getValue(),
                 new GrammarAction( "Set SyncRequestValueControl cookie" )
@@ -191,7 +190,7 @@ public final class SyncRequestValueControlGrammar extends AbstractGrammar
          *     
          * Stores the reloadHint flag
          */
-        super.transitions[SyncRequestValueControlStatesEnum.MODE_STATE.getState()][UniversalTag.BOOLEAN.getValue()] = 
+        super.transitions[SyncRequestValueControlStatesEnum.MODE_STATE.ordinal()][UniversalTag.BOOLEAN.getValue()] = 
             new GrammarTransition( SyncRequestValueControlStatesEnum.MODE_STATE,
                                     SyncRequestValueControlStatesEnum.RELOAD_HINT_STATE, UniversalTag.BOOLEAN.getValue(),
                 new GrammarAction( "Set SyncRequestValueControl reloadHint flag" )
@@ -234,7 +233,7 @@ public final class SyncRequestValueControlGrammar extends AbstractGrammar
          *     
          * Stores the reloadHint flag
          */
-        super.transitions[SyncRequestValueControlStatesEnum.COOKIE_STATE.getState()][UniversalTag.BOOLEAN.getValue()] = 
+        super.transitions[SyncRequestValueControlStatesEnum.COOKIE_STATE.ordinal()][UniversalTag.BOOLEAN.getValue()] = 
             new GrammarTransition( SyncRequestValueControlStatesEnum.COOKIE_STATE,
                                     SyncRequestValueControlStatesEnum.RELOAD_HINT_STATE, UniversalTag.BOOLEAN.getValue(),
                 new GrammarAction( "Set SyncRequestValueControl reloadHint flag" )

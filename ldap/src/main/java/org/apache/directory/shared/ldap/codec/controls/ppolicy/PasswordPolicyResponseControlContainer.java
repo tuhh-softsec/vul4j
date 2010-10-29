@@ -39,7 +39,7 @@ public class PasswordPolicyResponseControlContainer extends AbstractContainer
         super();
         stateStack = new int[1];
         grammar = PasswordPolicyResponseControlGrammar.getInstance();
-        setTransition( PasswordPolicyResponseControlStates.INIT_GRAMMAR_STATE );
+        setTransition( PasswordPolicyResponseControlStates.START_STATE );
     }
 
 

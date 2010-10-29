@@ -89,7 +89,7 @@ public abstract class AbstractGrammar implements Grammar
      */
     public GrammarTransition getTransition( Enum<?> state, int tag )
     {
-        return transitions[((States)state).getState()][tag & 0x00FF];
+        return transitions[state.ordinal()][tag & 0x00FF];
     }
 
 
@@ -104,7 +104,6 @@ public abstract class AbstractGrammar implements Grammar
     {
 
         Enum<?> currentState = container.getTransition();
-        Grammar currentGrammar = container.getGrammar();
         // We have to deal with the special case of a GRAMMAR_END state
         if ( ((States)currentState).isEndState() )
         {

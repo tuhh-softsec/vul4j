@@ -28,8 +28,6 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
  * This class store the Cancel's grammar constants. It is also used
  * for debugging purposes.
  * 
- * TODO: should this be an enum?
- * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public enum CancelStatesEnum implements States
@@ -37,54 +35,24 @@ public enum CancelStatesEnum implements States
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
 
-    /** The initial state of every grammar */
-    INIT_GRAMMAR_STATE(0),
-
-    /** The ending state for every grammars */
-    GRAMMAR_END(-1),
-
     /** The END_STATE */
-    END_STATE(-1),
+    END_STATE,
 
     // =========================================================================
     // Cancel grammar states
     // =========================================================================
     /** Initial state */
-    START_STATE(0),
+    START_STATE,
 
     /** Sequence */
-    CANCEL_SEQUENCE_STATE(1),
+    CANCEL_SEQUENCE_STATE,
 
     /** cancelId */
-    CANCEL_ID_STATE(2),
+    CANCEL_ID_STATE,
 
     /** terminal state */
-    LAST_CANCEL_STATE(3);
+    LAST_CANCEL_STATE;
 
-    private int state;
-    
-    /**
-     * 
-     * Creates a new instance of CancelStatesEnum.
-     *
-     * @param state
-     */
-    CancelStatesEnum(int state)
-    {
-        this.state = state;
-    }
-
-    /**
-     * 
-     * Get the state.
-     *
-     * @return State as integer value
-     */
-    public int getState()
-    {
-        return state;
-    }
-    
     /**
      * Get the grammar name
      * 
@@ -122,7 +90,7 @@ public enum CancelStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END.getState() ) ? "CANCEL_END_STATE" : this.name() );
+        return ( ( state == END_STATE.ordinal() ) ? "CANCEL_END_STATE" : this.name() );
     }
 
     

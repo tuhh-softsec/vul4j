@@ -63,7 +63,7 @@ public final class StoredProcedureGrammar extends AbstractGrammar
         setName( StoredProcedureGrammar.class.getName() );
 
         // Create the transitions table
-        super.transitions = new GrammarTransition[StoredProcedureStatesEnum.LAST_STORED_PROCEDURE_STATE.getState()][256];
+        super.transitions = new GrammarTransition[StoredProcedureStatesEnum.LAST_STORED_PROCEDURE_STATE.ordinal()][256];
 
         //============================================================================================
         // StoredProcedure Message
@@ -71,7 +71,7 @@ public final class StoredProcedureGrammar extends AbstractGrammar
         // StoredProcedure ::= SEQUENCE {
         //   ...
         // Nothing to do.
-        super.transitions[StoredProcedureStatesEnum.START_STATE.getState()][UniversalTag.SEQUENCE.getValue()] = 
+        super.transitions[StoredProcedureStatesEnum.START_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = 
             new GrammarTransition( StoredProcedureStatesEnum.START_STATE, 
                                     StoredProcedureStatesEnum.STORED_PROCEDURE_STATE, 
                                     UniversalTag.SEQUENCE.getValue(), 
@@ -81,7 +81,7 @@ public final class StoredProcedureGrammar extends AbstractGrammar
         //    ...
         //
         // Creates the storeProcedure and stores the language
-        super.transitions[StoredProcedureStatesEnum.STORED_PROCEDURE_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = 
+        super.transitions[StoredProcedureStatesEnum.STORED_PROCEDURE_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = 
             new GrammarTransition( StoredProcedureStatesEnum.STORED_PROCEDURE_STATE, 
                                     StoredProcedureStatesEnum.LANGUAGE_STATE, 
                                     UniversalTag.OCTET_STRING.getValue(),
@@ -124,7 +124,7 @@ public final class StoredProcedureGrammar extends AbstractGrammar
         //    procedure OCTETSTRING, (Value)
         //    ...
         // Stores the procedure.
-        super.transitions[StoredProcedureStatesEnum.LANGUAGE_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = 
+        super.transitions[StoredProcedureStatesEnum.LANGUAGE_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = 
             new GrammarTransition( StoredProcedureStatesEnum.LANGUAGE_STATE, 
                                     StoredProcedureStatesEnum.PROCEDURE_STATE, 
                                     UniversalTag.OCTET_STRING.getValue(),
@@ -166,7 +166,7 @@ public final class StoredProcedureGrammar extends AbstractGrammar
         //    ...
         // The list of parameters will be created with the first parameter.
         // We can have an empty list of parameters, so the PDU can be empty
-        super.transitions[StoredProcedureStatesEnum.PROCEDURE_STATE.getState()][UniversalTag.SEQUENCE.getValue()] = 
+        super.transitions[StoredProcedureStatesEnum.PROCEDURE_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = 
             new GrammarTransition( StoredProcedureStatesEnum.PROCEDURE_STATE, 
                                     StoredProcedureStatesEnum.PARAMETERS_STATE, 
                                     UniversalTag.SEQUENCE.getValue(), 
@@ -183,7 +183,7 @@ public final class StoredProcedureGrammar extends AbstractGrammar
         // parameter SEQUENCE OF { (Value)
         //    ...
         // Nothing to do. 
-        super.transitions[StoredProcedureStatesEnum.PARAMETERS_STATE.getState()][UniversalTag.SEQUENCE.getValue()] = 
+        super.transitions[StoredProcedureStatesEnum.PARAMETERS_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = 
             new GrammarTransition( StoredProcedureStatesEnum.PARAMETERS_STATE, 
                                     StoredProcedureStatesEnum.PARAMETER_STATE, 
                                     UniversalTag.SEQUENCE.getValue(), 
@@ -194,7 +194,7 @@ public final class StoredProcedureGrammar extends AbstractGrammar
         //    ...
         //
         // We can create a parameter, and store its type
-        super.transitions[StoredProcedureStatesEnum.PARAMETER_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = 
+        super.transitions[StoredProcedureStatesEnum.PARAMETER_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = 
             new GrammarTransition( StoredProcedureStatesEnum.PARAMETER_STATE, 
                                     StoredProcedureStatesEnum.PARAMETER_TYPE_STATE, 
                                     UniversalTag.OCTET_STRING.getValue(),
@@ -240,7 +240,7 @@ public final class StoredProcedureGrammar extends AbstractGrammar
         //    value OCTETSTRING (Tag)
         // }
         // Store the parameter value
-        super.transitions[StoredProcedureStatesEnum.PARAMETER_TYPE_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = 
+        super.transitions[StoredProcedureStatesEnum.PARAMETER_TYPE_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = 
             new GrammarTransition( StoredProcedureStatesEnum.PARAMETER_TYPE_STATE, 
                                     StoredProcedureStatesEnum.PARAMETER_VALUE_STATE, 
                                     UniversalTag.OCTET_STRING.getValue(),
@@ -294,7 +294,7 @@ public final class StoredProcedureGrammar extends AbstractGrammar
         // Parameters ::= SEQUENCE OF Parameter
         // 
         // Loop on next parameter
-        super.transitions[StoredProcedureStatesEnum.PARAMETER_VALUE_STATE.getState()][UniversalTag.SEQUENCE.getValue()] = 
+        super.transitions[StoredProcedureStatesEnum.PARAMETER_VALUE_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = 
             new GrammarTransition( StoredProcedureStatesEnum.PARAMETER_VALUE_STATE, 
                                     StoredProcedureStatesEnum.PARAMETER_STATE, 
                                     UniversalTag.SEQUENCE.getValue(),
