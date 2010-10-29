@@ -32,98 +32,83 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public final class SyncModifyDnControlStatesEnum implements States
+public enum SyncModifyDnControlStatesEnum implements States
 {
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
+
+    /** The initial state of every grammar */
+    INIT_GRAMMAR_STATE(0),
+
+    /** The ending state for every grammars */
+    GRAMMAR_END(-1),
+
+    /** The END_STATE */
+    END_STATE(-1),
 
     // =========================================================================
     // SyncModifyDnControl's control grammar states
     // =========================================================================
     /** Initial state */
-    public static final int START_SYNC_MODDN = 0;
+    START_SYNC_MODDN(0),
 
     /** Sequence Value */
-    public static final int SYNC_MODDN_VALUE_SEQUENCE_STATE = 1;
+    SYNC_MODDN_VALUE_SEQUENCE_STATE(1),
 
     /** modDn control's entryDN */
-    public static final int ENTRY_DN_STATE = 2;
+    ENTRY_DN_STATE(2),
     
     /** modDn control's move operation state */
-    public static final int MOVE_STATE = 3;
+    MOVE_STATE(3),
     
     /** modDn rename sequence */
-    public static final int RENAME_STATE = 4;
+    RENAME_STATE(4),
 
     /** modDn rename sequence */
-    public static final int MOVE_AND_RENAME_STATE = 5;
+    MOVE_AND_RENAME_STATE(5),
 
     /** modDn control's rename newRDN */
-    public static final int RENAME_NEW_RDN_STATE = 6;
+    RENAME_NEW_RDN_STATE(6),
 
     /** modDn control's rename deleteOldRdn flag */
-    public static final int RENAME_DEL_OLD_RDN_STATE = 7;
+    RENAME_DEL_OLD_RDN_STATE(7),
     
     /** modDn control's move and rename newSuperiorDN */
-    public static final int MOVE_AND_RENAME_NEW_SUPERIOR_DN_STATE = 8;
+    MOVE_AND_RENAME_NEW_SUPERIOR_DN_STATE(8),
 
     /** modDn control's move and rename newRDN */
-    public static final int MOVE_AND_RENAME_NEW_RDN_STATE = 9;
+    MOVE_AND_RENAME_NEW_RDN_STATE(9),
 
     /** modDn control's move and rename deleteOldRdn flag */
-    public static final int MOVE_AND_RENAME_DEL_OLD_RDN_STATE = 10;
+    MOVE_AND_RENAME_DEL_OLD_RDN_STATE(10),
 
     /** terminal state */
-    public static final int LAST_SYNC_MODDN_VALUE_STATE = 11;
+    LAST_SYNC_MODDN_VALUE_STATE(11);
     
-    // =========================================================================
-    // States debug strings
-    // =========================================================================
-    /** A string representation of all the states */
-    private static final String[] SYNC_MODIFY_DN_STRING = new String[]
-        { 
-        "START_SYNC_MODDN", 
-        "SYNC_MODDN_VALUE_SEQUENCE_STATE", 
-        "ENTRY_DN_STATE",
-        "MOVE_STATE", 
-        "RENAME_STATE",
-        "MOVE_AND_RENAME_STATE",
-        "RENAME_NEW_RDN_STATE",
-        "RENAME_DEL_OLD_RDN_STATE",
-        "MOVE_AND_RENAME_NEW_SUPERIOR_DN_STATE",
-        "MOVE_AND_RENAME_NEW_RDN_STATE",
-        "MOVE_AND_RENAME_DEL_OLD_RDN_STATE",
-        };
-
-    /** The instance */
-    private static SyncModifyDnControlStatesEnum instance = new SyncModifyDnControlStatesEnum();
-
-
-    // ~ Constructors
-    // -------------------------------------------------------------------------------
-
+    private int state;
+    
     /**
-     * This is a private constructor. This class is a singleton
-     */
-    private SyncModifyDnControlStatesEnum()
-    {
-    }
-
-
-    // ~ Methods
-    // ------------------------------------------------------------------------------------
-
-    /**
-     * Get an instance of this class
      * 
-     * @return An instance on this class
+     * Creates a new instance of SyncModifyDnControlStatesEnum.
+     *
+     * @param state
      */
-    public static States getInstance()
+    SyncModifyDnControlStatesEnum(int state)
     {
-        return instance;
+        this.state = state;
     }
 
-
+    /**
+     * 
+     * Get the state.
+     *
+     * @return State as integer value
+     */
+    public int getState()
+    {
+        return state;
+    }
+    
     /**
      * Get the grammar name
      * 
@@ -161,6 +146,24 @@ public final class SyncModifyDnControlStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END ) ? "SYNC_MODDN_VALUE_END_STATE" : SYNC_MODIFY_DN_STRING[state] );
+        return ( ( state == GRAMMAR_END.getState() ) ? "SYNC_MODDN_VALUE_END_STATE" : this.name() );
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isEndState()
+    {
+        return this == END_STATE;
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public SyncModifyDnControlStatesEnum getStartState()
+    {
+        return START_SYNC_MODDN;
     }
 }

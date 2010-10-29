@@ -25,7 +25,6 @@ import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
-import org.apache.directory.shared.asn1.ber.grammar.States;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.DecoderException;
@@ -68,10 +67,9 @@ public final class PagedResultsControlGrammar extends AbstractGrammar
     private PagedResultsControlGrammar()
     {
         setName( PagedResultsControlGrammar.class.getName() );
-        setStatesEnum( PagedResultsControlStatesEnum.getInstance() );
 
         // Create the transitions table
-        super.transitions = new GrammarTransition[PagedResultsControlStatesEnum.LAST_PAGED_SEARCH_STATE][256];
+        super.transitions = new GrammarTransition[PagedResultsControlStatesEnum.LAST_PAGED_SEARCH_STATE.getState()][256];
 
         /** 
          * Transition from initial state to PagedSearch sequence
@@ -80,8 +78,8 @@ public final class PagedResultsControlGrammar extends AbstractGrammar
          *     
          * Nothing to do
          */
-        super.transitions[States.INIT_GRAMMAR_STATE][UniversalTag.SEQUENCE.getValue()] = 
-            new GrammarTransition( States.INIT_GRAMMAR_STATE, 
+        super.transitions[PagedResultsControlStatesEnum.INIT_GRAMMAR_STATE.getState()][UniversalTag.SEQUENCE.getValue()] = 
+            new GrammarTransition( PagedResultsControlStatesEnum.INIT_GRAMMAR_STATE, 
                                     PagedResultsControlStatesEnum.PAGED_SEARCH_SEQUENCE_STATE, 
                                     UniversalTag.SEQUENCE.getValue(), null );
 
@@ -95,7 +93,7 @@ public final class PagedResultsControlGrammar extends AbstractGrammar
          *     
          * Stores the size value
          */
-        super.transitions[PagedResultsControlStatesEnum.PAGED_SEARCH_SEQUENCE_STATE][UniversalTag.INTEGER.getValue()] = 
+        super.transitions[PagedResultsControlStatesEnum.PAGED_SEARCH_SEQUENCE_STATE.getState()][UniversalTag.INTEGER.getValue()] = 
             new GrammarTransition( PagedResultsControlStatesEnum.PAGED_SEARCH_SEQUENCE_STATE, 
                 PagedResultsControlStatesEnum.SIZE_STATE, 
                 UniversalTag.INTEGER.getValue(),
@@ -143,7 +141,7 @@ public final class PagedResultsControlGrammar extends AbstractGrammar
          *     
          * Stores the cookie flag
          */
-        super.transitions[PagedResultsControlStatesEnum.SIZE_STATE][UniversalTag.OCTET_STRING.getValue()] = 
+        super.transitions[PagedResultsControlStatesEnum.SIZE_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = 
             new GrammarTransition( PagedResultsControlStatesEnum.SIZE_STATE,
                                     PagedResultsControlStatesEnum.COOKIE_STATE, UniversalTag.OCTET_STRING.getValue(),
                 new GrammarAction( "Set PagedSearchControl cookie" )

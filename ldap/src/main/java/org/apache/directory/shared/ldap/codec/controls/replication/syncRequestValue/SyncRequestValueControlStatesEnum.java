@@ -32,74 +32,65 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public final class SyncRequestValueControlStatesEnum implements States
+public enum SyncRequestValueControlStatesEnum implements States
 {
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
+
+    /** The initial state of every grammar */
+    INIT_GRAMMAR_STATE(0),
+
+    /** The ending state for every grammars */
+    GRAMMAR_END(-1),
+
+    /** The END_STATE */
+    END_STATE(-1),
 
     // =========================================================================
     // SyncRequestValue control grammar states
     // =========================================================================
     /** Initial state */
-    public static final int START_STATE = 0;
+    START_STATE(0),
 
     /** Sequence Value */
-    public static final int SYNC_REQUEST_VALUE_SEQUENCE_STATE = 1;
+    SYNC_REQUEST_VALUE_SEQUENCE_STATE(1),
 
     /** mode Value */
-    public static final int MODE_STATE = 2;
+    MODE_STATE(2),
     
     /** cookie Value */
-    public static final int COOKIE_STATE = 3;
+    COOKIE_STATE(3),
 
     /** reloadHint Value */
-    public static final int RELOAD_HINT_STATE = 4;
+    RELOAD_HINT_STATE(4),
 
     /** terminal state */
-    public static final int LAST_SYNC_REQUEST_VALUE_STATE = 5;
+    LAST_SYNC_REQUEST_VALUE_STATE(5);
 
-    // =========================================================================
-    // States debug strings
-    // =========================================================================
-    /** A string representation of all the states */
-    private static final String[] SYNC_REQUEST_VALUE_STRING = new String[]
-        { 
-        "START_STATE", 
-        "SYNC_REQUEST_VALUE_SEQUENCE_STATE", 
-        "MODE_STATE",
-        "COOKIE_STATE", 
-        "RELOAD_HINT_STATE" 
-        };
-
-    /** The instance */
-    private static SyncRequestValueControlStatesEnum instance = new SyncRequestValueControlStatesEnum();
-
-
-    // ~ Constructors
-    // -------------------------------------------------------------------------------
-
+    private int state;
+    
     /**
-     * This is a private constructor. This class is a singleton
-     */
-    private SyncRequestValueControlStatesEnum()
-    {
-    }
-
-
-    // ~ Methods
-    // ------------------------------------------------------------------------------------
-
-    /**
-     * Get an instance of this class
      * 
-     * @return An instance on this class
+     * Creates a new instance of SyncRequestValueControlStatesEnum.
+     *
+     * @param state
      */
-    public static States getInstance()
+    SyncRequestValueControlStatesEnum(int state)
     {
-        return instance;
+        this.state = state;
     }
 
-
+    /**
+     * 
+     * Get the state.
+     *
+     * @return State as integer value
+     */
+    public int getState()
+    {
+        return state;
+    }
+    
     /**
      * Get the grammar name
      * 
@@ -137,6 +128,24 @@ public final class SyncRequestValueControlStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END ) ? "SYNC_REQUEST_VALUE_END_STATE" : SYNC_REQUEST_VALUE_STRING[state] );
+        return ( ( state == GRAMMAR_END.getState() ) ? "SYNC_REQUEST_VALUE_END_STATE" : this.name() );
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isEndState()
+    {
+        return this == END_STATE;
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public SyncRequestValueControlStatesEnum getStartState()
+    {
+        return START_STATE;
     }
 }

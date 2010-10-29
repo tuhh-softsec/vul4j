@@ -21,7 +21,6 @@ package org.apache.directory.shared.asn1.ber;
 
 
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
-import org.apache.directory.shared.asn1.ber.grammar.States;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.TLVStateEnum;
 
@@ -78,7 +77,7 @@ public interface Asn1Container
      * 
      * @return Returns the transition from the previous state to the new state
      */
-    int getTransition();
+    Enum<?> getTransition();
 
 
     /**
@@ -86,13 +85,7 @@ public interface Asn1Container
      * 
      * @param transition The transition to set
      */
-    void setTransition( int transition );
-
-
-    /**
-     * @return Returns the states.
-     */
-    States getStates();
+    void setTransition( Enum<?> transition );
 
 
     /**

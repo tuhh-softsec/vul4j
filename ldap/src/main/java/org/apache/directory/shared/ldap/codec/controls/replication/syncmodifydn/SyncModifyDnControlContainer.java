@@ -43,7 +43,7 @@ public class SyncModifyDnControlContainer extends AbstractContainer
         super();
         stateStack = new int[1];
         grammar = SyncModifyDnControlGrammar.getInstance();
-        states = SyncModifyDnControlStatesEnum.getInstance();
+        setTransition( SyncModifyDnControlStatesEnum.INIT_GRAMMAR_STATE );
     }
 
 

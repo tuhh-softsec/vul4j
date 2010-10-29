@@ -32,73 +32,65 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public final class PersistentSearchControlStatesEnum implements States
+public enum PersistentSearchControlStatesEnum implements States
 {
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
+
+    /** The initial state of every grammar */
+    INIT_GRAMMAR_STATE(0),
+
+    /** The ending state for every grammars */
+    GRAMMAR_END(-1),
+
+    /** The END_STATE */
+    END_STATE(-1),
 
     // =========================================================================
     // Persistent search control grammar states
     // =========================================================================
     /** Initial state */
-    public static final int START_STATE = 0;
+    START_STATE(0),
 
     /** Sequence Value */
-    public static final int PSEARCH_SEQUENCE_STATE = 1;
+    PSEARCH_SEQUENCE_STATE(1),
 
     /** changeTypes Value */
-    public static final int CHANGE_TYPES_STATE = 2;
+    CHANGE_TYPES_STATE(2),
     
     /** changesOnly Value */
-    public static final int CHANGES_ONLY_STATE = 3;
+    CHANGES_ONLY_STATE(3),
 
     /** returnECs Value */
-    public static final int RETURN_ECS_STATE = 4;
+    RETURN_ECS_STATE(4),
 
     /** terminal state */
-    public static final int LAST_PSEARCH_STATE = 5;
+    LAST_PSEARCH_STATE(5);
 
-    // =========================================================================
-    // States debug strings
-    // =========================================================================
-    /** A string representation of all the states */
-    private static final String[] PSEARCH_STRING = new String[]
-        { 
-        "START_STATE", 
-        "PSEARCH_SEQUENCE_VALUE", 
-        "CHANGE_TYPES_STATE",
-        "CHANGES_ONLY_STATE", 
-        "RETURN_ECS_STATE" 
-        };
-
-    /** The instance */
-    private static PersistentSearchControlStatesEnum instance = new PersistentSearchControlStatesEnum();
-
-
-    // ~ Constructors
-    // -------------------------------------------------------------------------------
-
+    private int state;
+    
     /**
-     * This is a private constructor. This class is a singleton
-     */
-    private PersistentSearchControlStatesEnum()
-    {
-    }
-
-
-    // ~ Methods
-    // ------------------------------------------------------------------------------------
-
-    /**
-     * Get an instance of this class
      * 
-     * @return An instance on this class
+     * Creates a new instance of PersistentSearchControlStatesEnum.
+     *
+     * @param state
      */
-    public static States getInstance()
+    PersistentSearchControlStatesEnum(int state)
     {
-        return instance;
+        this.state = state;
     }
 
+    /**
+     * 
+     * Get the state.
+     *
+     * @return State as integer value
+     */
+    public int getState()
+    {
+        return state;
+    }
+    
 
     /**
      * Get the grammar name
@@ -137,6 +129,24 @@ public final class PersistentSearchControlStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END ) ? "PSEARCH_END_STATE" : PSEARCH_STRING[state] );
+        return ( ( state == GRAMMAR_END.getState() ) ? "PSEARCH_END_STATE" : name() );
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isEndState()
+    {
+        return this == END_STATE;
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public PersistentSearchControlStatesEnum getStartState()
+    {
+        return START_STATE;
     }
 }

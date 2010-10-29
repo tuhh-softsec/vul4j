@@ -32,70 +32,62 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public final class PagedResultsControlStatesEnum implements States
+public enum PagedResultsControlStatesEnum implements States
 {
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
+
+    /** The initial state of every grammar */
+    INIT_GRAMMAR_STATE(0),
+
+    /** The ending state for every grammars */
+    GRAMMAR_END(-1),
+
+    /** The END_STATE */
+    END_STATE(-1),
 
     // =========================================================================
     // Paged search control grammar states
     // =========================================================================
     /** Initial state */
-    public static final int START_STATE = 0;
+    START_STATE(0),
 
     /** Sequence Value */
-    public static final int PAGED_SEARCH_SEQUENCE_STATE = 1;
+    PAGED_SEARCH_SEQUENCE_STATE(1),
 
     /** Size Value */
-    public static final int SIZE_STATE = 2;
+    SIZE_STATE(2),
     
     /** Cookie Value */
-    public static final int COOKIE_STATE = 3;
+    COOKIE_STATE(3),
 
     /** terminal state */
-    public static final int LAST_PAGED_SEARCH_STATE = 4;
+    LAST_PAGED_SEARCH_STATE(4);
 
-    // =========================================================================
-    // States debug strings
-    // =========================================================================
-    /** A string representation of all the states */
-    private static final String[] PAGED_SEARCH_STRING = new String[]
-        {
-        "START_STATE", 
-        "PAGED_SEARCH_SEQUENCE_VALUE", 
-        "SIZE_STATE",
-        "COOKIE_STATE" 
-        };
-
-    /** The instance */
-    private static PagedResultsControlStatesEnum instance = new PagedResultsControlStatesEnum();
-
-
-    // ~ Constructors
-    // -------------------------------------------------------------------------------
-
+    private int state;
+    
     /**
-     * This is a private constructor. This class is a singleton
-     */
-    private PagedResultsControlStatesEnum()
-    {
-    }
-
-
-    // ~ Methods
-    // ------------------------------------------------------------------------------------
-
-    /**
-     * Get an instance of this class
      * 
-     * @return An instance on this class
+     * Creates a new instance of PagedResultsControlStatesEnum.
+     *
+     * @param state
      */
-    public static States getInstance()
+    PagedResultsControlStatesEnum(int state)
     {
-        return instance;
+        this.state = state;
     }
 
-
+    /**
+     * 
+     * Get the state.
+     *
+     * @return State as integer value
+     */
+    public int getState()
+    {
+        return state;
+    }
+    
     /**
      * Get the grammar name
      * 
@@ -133,6 +125,24 @@ public final class PagedResultsControlStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END ) ? "PAGED_SEARCH_END_STATE" : PAGED_SEARCH_STRING[state] );
+        return ( ( state == GRAMMAR_END.getState() ) ? "PAGED_SEARCH_END_STATE" : name() );
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isEndState()
+    {
+        return this == END_STATE;
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public PagedResultsControlStatesEnum getStartState()
+    {
+        return START_STATE;
     }
 }

@@ -31,52 +31,57 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public final class SyncDoneValueControlStatesEnum implements States
+public enum SyncDoneValueControlStatesEnum implements States
 {
+    /** The initial state of every grammar */
+    INIT_GRAMMAR_STATE(0),
+
+    /** The ending state for every grammars */
+    GRAMMAR_END(-1),
+
+    /** The END_STATE */
+    END_STATE(-1),
+
+    
     /***/
-    public static final int START_STATE = 0;
+    START_STATE(0),
 
     /** sequence start state */
-    public static final int SYNC_DONE_VALUE_SEQUENCE_STATE = 1;
+    SYNC_DONE_VALUE_SEQUENCE_STATE(1),
 
     /** cookie value state */
-    public static final int COOKIE_STATE = 2;
+    COOKIE_STATE(2),
 
     /** refreshDeletes value state */
-    public static final int REFRESH_DELETES_STATE = 3;
+    REFRESH_DELETES_STATE(3),
 
     /** terminal state */
-    public static final int LAST_SYNC_DONE_VALUE_STATE = 4;
+    LAST_SYNC_DONE_VALUE_STATE(4);
 
-    /** A string representation of all the states */
-    private static final String[] SYNC_DONE_VALUE_STRING = new String[]
-       {
-           "START_STATE",
-           "SYNC_DONE_VALUE_SEQUENCE_STATE",
-           "COOKIE_STATE",
-           "REFRESH_DELETES_STATE",
-       };
-
-    /** The instance */
-    private static SyncDoneValueControlStatesEnum instance = new SyncDoneValueControlStatesEnum();
-
-
-    private SyncDoneValueControlStatesEnum()
+    private int state;
+    
+    /**
+     * 
+     * Creates a new instance of SyncDoneValueControlStatesEnum.
+     *
+     * @param state
+     */
+    private SyncDoneValueControlStatesEnum(int state)
     {
+        this.state = state;
     }
-
 
     /**
-     * Get an instance of this class
      * 
-     * @return An instance on this class
+     * Get the state.
+     *
+     * @return State as integer value
      */
-    public static States getInstance()
+    public int getState()
     {
-        return instance;
+        return state;
     }
-
-
+    
     /**
      * Get the grammar name
      * 
@@ -114,7 +119,24 @@ public final class SyncDoneValueControlStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END ) ? "SYNC_DONE_VALUE_GRAMMAR" : SYNC_DONE_VALUE_STRING[state] );
+        return ( ( state == GRAMMAR_END.getState() ) ? "SYNC_DONE_VALUE_GRAMMAR" : this.name() );
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isEndState()
+    {
+        return this == END_STATE;
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public SyncDoneValueControlStatesEnum getStartState()
+    {
+        return START_STATE;
+    }
 }

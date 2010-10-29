@@ -35,10 +35,10 @@ public class GrammarTransition
     private Action action;
 
     /** The previous state */
-    private int previousState;
+    private Enum<?> previousState;
 
     /** The current state */
-    private int currentState;
+    private Enum<?> currentState;
 
     /** The current tag */
     private int currentTag;
@@ -52,7 +52,7 @@ public class GrammarTransition
      * @param currentTag the current TLV's tag
      * @param action The action to execute. It could be null.
      */
-    public GrammarTransition( int previousState, int currentState, int currentTag, Action action )
+    public GrammarTransition( Enum<?> previousState, Enum<?> currentState, int currentTag, Action action )
     {
         this.previousState = previousState;
         this.currentState = currentState;
@@ -84,7 +84,7 @@ public class GrammarTransition
     /**
      * @return The current state
      */
-    public int getCurrentState()
+    public Enum<?> getCurrentState()
     {
         return currentState;
     }
@@ -93,7 +93,7 @@ public class GrammarTransition
     /**
      * @return The previous state
      */
-    public int getPreviousState()
+    public Enum<?> getPreviousState()
     {
         return previousState;
     }
@@ -103,12 +103,12 @@ public class GrammarTransition
      * @param statesEnum Starting state.
      * @return A representation of the transition as a string.
      */
-    public String toString( States statesEnum )
+    public String toString( )
     {
         StringBuilder sb = new StringBuilder();
 
-        sb.append( "Transition from state <" ).append( statesEnum.getState( previousState ) ).append( "> " );
-        sb.append( "to state <" ).append( statesEnum.getState( currentState ) ).append( ">, " );
+        sb.append( "Transition from state <" ).append( previousState ).append( "> " );
+        sb.append( "to state <" ).append( currentState ).append( ">, " );
         sb.append( "tag <" ).append( Asn1StringUtils.dumpByte( ( byte ) currentTag ) ).append( ">, " );
         sb.append( "action : " );
 

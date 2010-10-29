@@ -102,8 +102,8 @@ public class LdapMessageContainer extends AbstractContainer
         super();
         this.stateStack = new int[10];
         this.grammar = LdapMessageGrammar.getInstance();
-        this.states = LdapStatesEnum.getInstance();
         this.binaryAttributeDetector = binaryAttributeDetector;
+        setTransition( LdapStatesEnum.INIT_GRAMMAR_STATE );
     }
 
 

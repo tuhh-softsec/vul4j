@@ -32,75 +32,66 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public final class EntryChangeControlStatesEnum implements States
+public enum EntryChangeControlStatesEnum implements States
 {
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
+
+    /** The initial state of every grammar */
+    INIT_GRAMMAR_STATE(0),
+
+    /** The ending state for every grammars */
+    GRAMMAR_END(-1),
+
+    /** The END_STATE */
+    END_STATE(-1),
 
     // =========================================================================
     // Entry change control grammar states
     // =========================================================================
 
     /** Sequence Tag */
-    public static final int START_STATE = 0;
+    START_STATE(0),
 
     /** Sequence */
-    public static final int EC_SEQUENCE_STATE = 1;
+    EC_SEQUENCE_STATE(1),
 
     /** changeType */
-    public static final int CHANGE_TYPE_STATE = 2;
+    CHANGE_TYPE_STATE(2),
 
     /** previousDN */
-    public static final int PREVIOUS_DN_STATE = 3;
+    PREVIOUS_DN_STATE(3),
 
     /** changeNumber */
-    public static final int CHANGE_NUMBER_STATE = 4;
+    CHANGE_NUMBER_STATE(4),
 
     /** terminal state */
-    public static final int LAST_EC_STATE = 5;
+    LAST_EC_STATE(5);
 
-    // =========================================================================
-    // States debug strings
-    // =========================================================================
-    /** A string representation of all the states */
-    private static final String[] E_C_STRING = new String[]
-        { 
-        "START_STATE",
-        "EC_SEQUENCE_STATE", 
-        "CHANGE_TYPE_STATE",
-        "PREVIOUS_DN_STATE", 
-        "CHANGE_NUMBER_STATE" 
-        };
-
-    /** The instance */
-    private static EntryChangeControlStatesEnum instance = new EntryChangeControlStatesEnum();
-
-
-    // ~ Constructors
-    // -------------------------------------------------------------------------------
-
+    private int state;
+    
     /**
-     * This is a private constructor. This class is a singleton
-     */
-    private EntryChangeControlStatesEnum()
-    {
-    }
-
-
-    // ~ Methods
-    // ------------------------------------------------------------------------------------
-
-    /**
-     * Get an instance of this class
      * 
-     * @return An instance on this class
+     * Creates a new instance of EntryChangeControlStatesEnum.
+     *
+     * @param state
      */
-    public static States getInstance()
+    EntryChangeControlStatesEnum(int state)
     {
-        return instance;
+        this.state = state;
     }
 
-
+    /**
+     * 
+     * Get the state.
+     *
+     * @return State as integer value
+     */
+    public int getState()
+    {
+        return state;
+    }
+    
     /**
      * Get the grammar name
      * 
@@ -138,6 +129,24 @@ public final class EntryChangeControlStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END ) ? "EC_END_STATE" : E_C_STRING[state] );
+        return ( ( state == GRAMMAR_END.getState() ) ? "EC_END_STATE" : name() );
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isEndState()
+    {
+        return this == END_STATE;
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public EntryChangeControlStatesEnum getStartState()
+    {
+        return START_STATE;
     }
 }

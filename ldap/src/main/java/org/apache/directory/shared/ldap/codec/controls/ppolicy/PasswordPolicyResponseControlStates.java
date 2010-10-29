@@ -30,46 +30,49 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class PasswordPolicyResponseControlStates implements States
+public enum PasswordPolicyResponseControlStates implements States
 {
 
-    public static final int START_STATE = 0;
+    /** The initial state of every grammar */
+    INIT_GRAMMAR_STATE(0),
 
-    public static final int PPOLICY_TIME_BEFORE_EXPIRATION_STATE = 1;
+    /** The ending state for every grammars */
+    GRAMMAR_END(-1),
 
-    public static final int PPOLICY_GRACE_AUTHNS_REMAINING_STATE = 2;
+    START_STATE(0),
 
-    public static final int PPOLICY_ERROR_STATE = 3;
+    PPOLICY_TIME_BEFORE_EXPIRATION_STATE(1),
 
-    public static final int END_STATE = 4;
+    PPOLICY_GRACE_AUTHNS_REMAINING_STATE(2),
 
-    private static PasswordPolicyResponseControlStates instance = new PasswordPolicyResponseControlStates();
+    PPOLICY_ERROR_STATE(3),
 
-    private static final String[] PPOLICY_STATE_STRING = new String[]
-        { 
-          "START_STATE",
-          "PPOLICY_TIME_BEFORE_EXPIRATION_STATE",
-          "PPOLICY_GRACE_AUTHNS_REMAINING_STATE",
-          "PPOLICY_ERROR_STATE"
-        };
+    END_STATE(4);
 
-
-    private PasswordPolicyResponseControlStates()
+    private int state;
+    
+    /**
+     * 
+     * Creates a new instance of PasswordPolicyResponseControlStates.
+     *
+     * @param state
+     */
+    private PasswordPolicyResponseControlStates(int state)
     {
+        this.state = state;
     }
-
 
     /**
-     * Get an instance of this class
      * 
-     * @return An instance on this class
+     * Get the state.
+     *
+     * @return State as integer value
      */
-    public static States getInstance()
+    public int getState()
     {
-        return instance;
+        return state;
     }
-
-
+    
     /**
      * {@inheritDoc}
      */
@@ -82,7 +85,6 @@ public class PasswordPolicyResponseControlStates implements States
         
         return "UNKNOWN_GRAMMAR";
     }
-
 
     /**
      * {@inheritDoc}
@@ -98,6 +100,24 @@ public class PasswordPolicyResponseControlStates implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END ) ? "PASSWORD_POLICY_RESPONSE_CONTROL_GRAMMAR" : PPOLICY_STATE_STRING[state] );
+        return ( ( state == GRAMMAR_END.getState() ) ? "PASSWORD_POLICY_RESPONSE_CONTROL_GRAMMAR" : name() );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isEndState()
+    {
+        return this == END_STATE;
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public PasswordPolicyResponseControlStates getStartState()
+    {
+        return START_STATE;
     }
 }

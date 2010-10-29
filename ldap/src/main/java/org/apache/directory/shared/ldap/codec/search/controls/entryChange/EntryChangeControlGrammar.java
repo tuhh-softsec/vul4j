@@ -65,10 +65,9 @@ public final class EntryChangeControlGrammar extends AbstractGrammar
     private EntryChangeControlGrammar()
     {
         setName( EntryChangeControlGrammar.class.getName() );
-        setStatesEnum( EntryChangeControlStatesEnum.getInstance() );
 
         // Create the transitions table
-        super.transitions = new GrammarTransition[EntryChangeControlStatesEnum.LAST_EC_STATE][256];
+        super.transitions = new GrammarTransition[EntryChangeControlStatesEnum.LAST_EC_STATE.getState()][256];
 
         // ============================================================================================
         // Transition from start state to Entry Change sequence
@@ -77,7 +76,7 @@ public final class EntryChangeControlGrammar extends AbstractGrammar
         //     ...
         //
         // Initialization of the structure
-        super.transitions[EntryChangeControlStatesEnum.START_STATE][UniversalTag.SEQUENCE.getValue()] = 
+        super.transitions[EntryChangeControlStatesEnum.START_STATE.getState()][UniversalTag.SEQUENCE.getValue()] = 
             new GrammarTransition( EntryChangeControlStatesEnum.START_STATE, 
                                     EntryChangeControlStatesEnum.EC_SEQUENCE_STATE, 
                                     UniversalTag.SEQUENCE.getValue(), null );
@@ -90,7 +89,7 @@ public final class EntryChangeControlGrammar extends AbstractGrammar
         //     ...
         //
         // Evaluates the changeType
-        super.transitions[EntryChangeControlStatesEnum.EC_SEQUENCE_STATE][UniversalTag.ENUMERATED.getValue()] = 
+        super.transitions[EntryChangeControlStatesEnum.EC_SEQUENCE_STATE.getState()][UniversalTag.ENUMERATED.getValue()] = 
             new GrammarTransition( EntryChangeControlStatesEnum.EC_SEQUENCE_STATE,
                                     EntryChangeControlStatesEnum.CHANGE_TYPE_STATE, 
                                     UniversalTag.ENUMERATED.getValue(),
@@ -149,7 +148,7 @@ public final class EntryChangeControlGrammar extends AbstractGrammar
         //
         // Set the previousDN into the structure. We first check that it's a
         // valid DN
-        super.transitions[EntryChangeControlStatesEnum.CHANGE_TYPE_STATE][UniversalTag.OCTET_STRING.getValue()] = 
+        super.transitions[EntryChangeControlStatesEnum.CHANGE_TYPE_STATE.getState()][UniversalTag.OCTET_STRING.getValue()] = 
             new GrammarTransition( EntryChangeControlStatesEnum.CHANGE_TYPE_STATE, 
                                     EntryChangeControlStatesEnum.PREVIOUS_DN_STATE,
                                     UniversalTag.OCTET_STRING.getValue(),
@@ -234,7 +233,7 @@ public final class EntryChangeControlGrammar extends AbstractGrammar
         // }
         //
         // Set the changeNumber into the structure
-        super.transitions[EntryChangeControlStatesEnum.PREVIOUS_DN_STATE][UniversalTag.INTEGER.getValue()] = 
+        super.transitions[EntryChangeControlStatesEnum.PREVIOUS_DN_STATE.getState()][UniversalTag.INTEGER.getValue()] = 
             new GrammarTransition( EntryChangeControlStatesEnum.PREVIOUS_DN_STATE, 
                                     EntryChangeControlStatesEnum.CHANGE_NUMBER_STATE, 
                                     UniversalTag.INTEGER.getValue(),
@@ -249,7 +248,7 @@ public final class EntryChangeControlGrammar extends AbstractGrammar
         // }
         //
         // Set the changeNumber into the structure
-        super.transitions[EntryChangeControlStatesEnum.CHANGE_TYPE_STATE][UniversalTag.INTEGER.getValue()] = 
+        super.transitions[EntryChangeControlStatesEnum.CHANGE_TYPE_STATE.getState()][UniversalTag.INTEGER.getValue()] = 
             new GrammarTransition( EntryChangeControlStatesEnum.CHANGE_TYPE_STATE, 
                                     EntryChangeControlStatesEnum.CHANGE_NUMBER_STATE, 
                                     UniversalTag.INTEGER.getValue(),

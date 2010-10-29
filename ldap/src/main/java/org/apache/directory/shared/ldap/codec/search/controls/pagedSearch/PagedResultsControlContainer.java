@@ -43,7 +43,7 @@ public class PagedResultsControlContainer extends AbstractContainer
         super();
         stateStack = new int[1];
         grammar = PagedResultsControlGrammar.getInstance();
-        states = PagedResultsControlStatesEnum.getInstance();
+        setTransition( PagedResultsControlStatesEnum.INIT_GRAMMAR_STATE );
     }
 
 

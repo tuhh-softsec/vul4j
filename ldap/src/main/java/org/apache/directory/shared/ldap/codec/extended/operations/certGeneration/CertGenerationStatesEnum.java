@@ -29,42 +29,62 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class CertGenerationStatesEnum implements States
+public enum CertGenerationStatesEnum implements States
 {
 
+    /** The initial state of every grammar */
+    INIT_GRAMMAR_STATE(0),
+
+    /** The ending state for every grammars */
+    GRAMMAR_END(-1),
+
+    /** The END_STATE */
+    END_STATE(-1),
+
     /** start state*/
-    public static final int START_STATE = 0;
+    START_STATE(0),
 
     /** sequence*/
-    public static final int CERT_GENERATION_REQUEST_SEQUENCE_STATE = 1;
+    CERT_GENERATION_REQUEST_SEQUENCE_STATE(1),
 
     /** the target DN*/
-    public static final int TARGETDN_STATE = 2;
+    TARGETDN_STATE(2),
 
     /** the issuer DN*/
-    public static final int ISSUER_STATE = 3;
+    ISSUER_STATE(3),
 
     /** the subject DN*/
-    public static final int SUBJECT_STATE = 4;
+    SUBJECT_STATE(4),
 
     /** the key algorithm*/
-    public static final int KEY_ALGORITHM_STATE = 5;
+    KEY_ALGORITHM_STATE(5),
 
     /** terminal state */
-    public static final int LAST_CERT_GENERATION_STATE = 6;
+    LAST_CERT_GENERATION_STATE(6);
 
-    private static String[] certGenerationString = new String[]
-        {
-          "START_STATE",
-          "CERT_GENERATION_REQUEST_SEQUENCE_STATE",
-          "TARGETDN_STATE", "ISSUER_STATE",
-          "SUBJECT_STATE",
-          "KEY_ALGORITHM_STATE"
-        };
+    private int state;
+    
+    /**
+     * 
+     * Creates a new instance of CertGenerationStatesEnum.
+     *
+     * @param state
+     */
+    private CertGenerationStatesEnum( int state )
+    {
+        this.state = state;
+    }
 
-    /** a singleton instance*/
-    private static CertGenerationStatesEnum instance = new CertGenerationStatesEnum();
-
+    /**
+     * 
+     * Get the state.
+     *
+     * @return State as integer value
+     */
+    public int getState()
+    {
+        return state;
+    }
     
     /**
      * Get the grammar name
@@ -103,16 +123,24 @@ public class CertGenerationStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END ) ? "CERT_GENERATION_END_STATE" : certGenerationString[state] );
+        return ( ( state == GRAMMAR_END.getState() ) ? "CERT_GENERATION_END_STATE" : this.name() );
     }
 
+    
     /**
-     * Get an instance of this class
-     * 
-     * @return An instance on this class
+     * {@inheritDoc}
      */
-    public static States getInstance()
+    public boolean isEndState()
     {
-        return instance;
+        return this == END_STATE;
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public CertGenerationStatesEnum getStartState()
+    {
+        return START_STATE;
     }
 }
