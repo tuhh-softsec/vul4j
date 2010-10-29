@@ -45,6 +45,34 @@ public class FilterToStringTest
         String str = "(ou=test)";
         ExprNode node = FilterParser.parse( str );
         assertEquals( str, node.toString() );
+
+        str = "(ou~=test)";
+        node = FilterParser.parse( str );
+        assertEquals( str, node.toString() );
+
+        str = "(ou>=test)";
+        node = FilterParser.parse( str );
+        assertEquals( str, node.toString() );
+
+        str = "(ou<=test)";
+        node = FilterParser.parse( str );
+        assertEquals( str, node.toString() );
+
+        str="(ou=)";
+        node = FilterParser.parse( str );
+        assertEquals( str, node.toString() );
+
+        str="(ou~=)";
+        node = FilterParser.parse( str );
+        assertEquals( str, node.toString() );
+
+        str="(ou>=)";
+        node = FilterParser.parse( str );
+        assertEquals( str, node.toString() );
+
+        str="(ou<=)";
+        node = FilterParser.parse( str );
+        assertEquals( str, node.toString() );
     }
 
 

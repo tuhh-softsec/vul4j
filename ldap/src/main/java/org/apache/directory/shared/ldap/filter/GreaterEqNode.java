@@ -74,7 +74,13 @@ public class GreaterEqNode<T> extends SimpleNode<T>
             buf.append( attribute );
         }
         
-        buf.append( ">=" ).append( getEscapedValue() );
+        buf.append( ">=" );
+
+        Value<?> escapedValue = getEscapedValue();
+        if ( !escapedValue.isNull())
+        {
+            buf.append( escapedValue );
+        }
 
         buf.append( super.toString() );
 
