@@ -41,7 +41,7 @@ public class EntryChangeControlContainer extends AbstractContainer
         super();
         stateStack = new int[1];
         grammar = EntryChangeControlGrammar.getInstance();
-        states = EntryChangeControlStatesEnum.getInstance();
+        setTransition( EntryChangeControlStatesEnum.START_STATE );
     }
 
 

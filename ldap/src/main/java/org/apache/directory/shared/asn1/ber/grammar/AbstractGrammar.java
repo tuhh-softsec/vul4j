@@ -52,10 +52,6 @@ public abstract class AbstractGrammar implements Grammar
     /** The grammar name */
     private String name;
 
-    /** The grammar's states */
-    private States statesEnum;
-
-
     /** Default constructor */
     public AbstractGrammar()
     {
@@ -91,9 +87,9 @@ public abstract class AbstractGrammar implements Grammar
      * @param tag The current tag
      * @return A valid transition if any, or null.
      */
-    public GrammarTransition getTransition( int state, int tag )
+    public GrammarTransition getTransition( Enum<?> state, int tag )
     {
-        return transitions[state][tag & 0x00FF];
+        return transitions[state.ordinal()][tag & 0x00FF];
     }
 
 
@@ -107,11 +103,9 @@ public abstract class AbstractGrammar implements Grammar
     public void executeAction( Asn1Container container ) throws DecoderException
     {
 
-        int currentState = container.getTransition();
-        Grammar currentGrammar = container.getGrammar();
-
+        Enum<?> currentState = container.getTransition();
         // We have to deal with the special case of a GRAMMAR_END state
-        if ( currentState == States.END_STATE )
+        if ( ((States)currentState).isEndState() )
         {
             return;
         }
@@ -124,8 +118,7 @@ public abstract class AbstractGrammar implements Grammar
 
         if ( transition == null )
         {
-            String errorMessage = I18n.err( I18n.ERR_00001_BAD_TRANSITION_FROM_STATE, currentGrammar.getStatesEnum()
-                .getState( currentState ), Asn1StringUtils.dumpByte( tagByte ) );
+            String errorMessage = I18n.err( I18n.ERR_00001_BAD_TRANSITION_FROM_STATE, currentState, Asn1StringUtils.dumpByte( tagByte ) );
 
             LOG.error( errorMessage );
 
@@ -136,7 +129,7 @@ public abstract class AbstractGrammar implements Grammar
 
         if ( IS_DEBUG )
         {
-            LOG.debug( transition.toString( currentGrammar.getStatesEnum() ) );
+            LOG.debug( transition.toString() );
         }
 
         if ( transition.hasAction() )
@@ -146,27 +139,5 @@ public abstract class AbstractGrammar implements Grammar
         }
 
         container.setTransition( transition.getCurrentState() );
-    }
-
-
-    /**
-     * Get the states of the current grammar
-     * 
-     * @return Returns the statesEnum.
-     */
-    public States getStatesEnum()
-    {
-        return statesEnum;
-    }
-
-
-    /**
-     * Set the states for this grammar
-     * 
-     * @param statesEnum The statesEnum to set.
-     */
-    public void setStatesEnum( States statesEnum )
-    {
-        this.statesEnum = statesEnum;
     }
 }

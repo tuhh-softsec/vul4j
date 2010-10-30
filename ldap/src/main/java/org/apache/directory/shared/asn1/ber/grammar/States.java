@@ -21,47 +21,19 @@ package org.apache.directory.shared.asn1.ber.grammar;
 
 
 /**
- * This interface is used to store the different states of a grammar. While
- * tracing debugging information, the methods to dump the current state as a
- * string are called.
+ * Interface to get custom function from enum when casting.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public interface States
 {
-    /** The initial state of every grammar */
-    int INIT_GRAMMAR_STATE = 0;
-
-    /** The ending state for every grammars */
-    int GRAMMAR_END = -1;
-
-    /** The END_STATE */
-    int END_STATE = -1;
-
-
-    /** 
-     * Get the current state's name 
-     * 
-     * @param state the current state
-     * @return the associated name for this state
+    /**
+     * @return True if this is the END_STATE
      */
-    String getState( int state );
-
-
-    /** 
-     * Return the grammar name of a grammar
-     * 
-     * @param grammar the grammar from which we want the name
-     * @return the grammar's name
+    public boolean isEndState();
+    
+    /**
+     * @return The START_STATE of the enum
      */
-    String getGrammarName( Grammar grammar );
-
-
-    /** 
-     * Return the grammar name from a grammar number 
-     * 
-     * @param grammar the grammar number from which we want the name
-     * @return the grammar's name
-     */
-    String getGrammarName( int grammar );
+    public Enum<?> getStartState();
 }

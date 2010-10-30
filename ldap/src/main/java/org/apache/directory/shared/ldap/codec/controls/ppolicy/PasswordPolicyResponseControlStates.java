@@ -30,45 +30,21 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class PasswordPolicyResponseControlStates implements States
+public enum PasswordPolicyResponseControlStates implements States
 {
 
-    public static final int START_STATE = 0;
+    /** The ending state for every grammars */
+    GRAMMAR_END,
 
-    public static final int PPOLICY_TIME_BEFORE_EXPIRATION_STATE = 1;
+    START_STATE,
 
-    public static final int PPOLICY_GRACE_AUTHNS_REMAINING_STATE = 2;
+    PPOLICY_TIME_BEFORE_EXPIRATION_STATE,
 
-    public static final int PPOLICY_ERROR_STATE = 3;
+    PPOLICY_GRACE_AUTHNS_REMAINING_STATE,
 
-    public static final int END_STATE = 4;
+    PPOLICY_ERROR_STATE,
 
-    private static PasswordPolicyResponseControlStates instance = new PasswordPolicyResponseControlStates();
-
-    private static final String[] PPOLICY_STATE_STRING = new String[]
-        { 
-          "START_STATE",
-          "PPOLICY_TIME_BEFORE_EXPIRATION_STATE",
-          "PPOLICY_GRACE_AUTHNS_REMAINING_STATE",
-          "PPOLICY_ERROR_STATE"
-        };
-
-
-    private PasswordPolicyResponseControlStates()
-    {
-    }
-
-
-    /**
-     * Get an instance of this class
-     * 
-     * @return An instance on this class
-     */
-    public static States getInstance()
-    {
-        return instance;
-    }
-
+    END_STATE;
 
     /**
      * {@inheritDoc}
@@ -82,7 +58,6 @@ public class PasswordPolicyResponseControlStates implements States
         
         return "UNKNOWN_GRAMMAR";
     }
-
 
     /**
      * {@inheritDoc}
@@ -98,6 +73,24 @@ public class PasswordPolicyResponseControlStates implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END ) ? "PASSWORD_POLICY_RESPONSE_CONTROL_GRAMMAR" : PPOLICY_STATE_STRING[state] );
+        return ( ( state == GRAMMAR_END.ordinal() ) ? "PASSWORD_POLICY_RESPONSE_CONTROL_GRAMMAR" : name() );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isEndState()
+    {
+        return this == END_STATE;
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public PasswordPolicyResponseControlStates getStartState()
+    {
+        return START_STATE;
     }
 }

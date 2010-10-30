@@ -28,108 +28,60 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
  * This class store the SyncInfoValueControl's grammar constants. It is also used for
  * debugging purposes.
  * 
- * TODO: should this be an enum?
- * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public final class SyncInfoValueControlStatesEnum implements States
+public enum SyncInfoValueControlStatesEnum implements States
 {
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
+
+    /** The END_STATE */
+    END_STATE,
 
     // =========================================================================
     // SyncRequestValue control grammar states
     // =========================================================================
     /** Initial state */
-    public static final int START_STATE = 0;
+    START_STATE,
 
     /** NewCookie state */
-    public static final int NEW_COOKIE_STATE = 1;
+    NEW_COOKIE_STATE,
 
     /** RefreshDelete state */
-    public static final int REFRESH_DELETE_STATE = 2;
+    REFRESH_DELETE_STATE,
     
     /** RefreshDelete cookie state */
-    public static final int REFRESH_DELETE_COOKIE_STATE = 3;
+    REFRESH_DELETE_COOKIE_STATE,
     
     /** RefreshDelete refreshDone state */
-    public static final int REFRESH_DELETE_REFRESH_DONE_STATE = 4;
+    REFRESH_DELETE_REFRESH_DONE_STATE,
     
     /** RefreshPresent state */
-    public static final int REFRESH_PRESENT_STATE = 5;
+    REFRESH_PRESENT_STATE,
     
     /** RefreshPresent cookie state */
-    public static final int REFRESH_PRESENT_COOKIE_STATE = 6;
+    REFRESH_PRESENT_COOKIE_STATE,
     
     /** RefreshPresent refreshDone state */
-    public static final int REFRESH_PRESENT_REFRESH_DONE_STATE = 7;
+    REFRESH_PRESENT_REFRESH_DONE_STATE,
     
     /** SyncIdSet state */
-    public static final int SYNC_ID_SET_STATE = 8;
+    SYNC_ID_SET_STATE,
     
     /** SyncIdSet cookie state */
-    public static final int SYNC_ID_SET_COOKIE_STATE = 9;
+    SYNC_ID_SET_COOKIE_STATE,
     
     /** SyncIdSet refreshDone state */
-    public static final int SYNC_ID_SET_REFRESH_DELETES_STATE = 10;
+    SYNC_ID_SET_REFRESH_DELETES_STATE,
     
     /** SyncIdSet SET OF UUIDs state */
-    public static final int SYNC_ID_SET_SET_OF_UUIDS_STATE = 11;
+    SYNC_ID_SET_SET_OF_UUIDS_STATE,
     
     /** SyncIdSet UUID state */
-    public static final int SYNC_ID_SET_UUID_STATE = 12;
+    SYNC_ID_SET_UUID_STATE,
 
     /** terminal state */
-    public static final int LAST_SYNC_INFO_VALUE_STATE = 13;
-
-    // =========================================================================
-    // States debug strings
-    // =========================================================================
-    /** A string representation of all the states */
-    private static final String[] SYNC_INFO_VALUE_STRING = new String[]
-        { 
-            "START_STATE",
-            "NEW_COOKIE_STATE",
-            "REFRESH_DELETE_STATE",
-            "REFRESH_DELETE_COOKIE_STATE",
-            "REFRESH_DELETE_REFRESH_DONE_STATE",
-            "REFRESH_PRESENT_STATE",
-            "REFRESH_PRESENT_COOKIE_STATE",
-            "REFRESH_PRESENT_REFRESH_DONE_STATE",
-            "SYNC_ID_SET_STATE",
-            "SYNC_ID_SET_COOKIE_STATE",
-            "SYNC_ID_SET_REFRESH_DELETES_STATE",
-            "SYNC_ID_SET_SET_OF_UUIDS_STATE",
-            "int SYNC_ID_SET_UUID_STATE"
-        };
-
-    /** The instance */
-    private static SyncInfoValueControlStatesEnum instance = new SyncInfoValueControlStatesEnum();
-
-
-    // ~ Constructors
-    // -------------------------------------------------------------------------------
-
-    /**
-     * This is a private constructor. This class is a singleton
-     */
-    private SyncInfoValueControlStatesEnum()
-    {
-    }
-
-
-    // ~ Methods
-    // ------------------------------------------------------------------------------------
-
-    /**
-     * Get an instance of this class
-     * 
-     * @return An instance on this class
-     */
-    public static States getInstance()
-    {
-        return instance;
-    }
+    LAST_SYNC_INFO_VALUE_STATE;
 
 
     /**
@@ -169,6 +121,24 @@ public final class SyncInfoValueControlStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END ) ? "SYNC_INFO_VALUE_END_STATE" : SYNC_INFO_VALUE_STRING[state] );
+        return ( ( state == END_STATE.ordinal() ) ? "SYNC_INFO_VALUE_END_STATE" : this.name() );
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isEndState()
+    {
+        return this == END_STATE;
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public SyncInfoValueControlStatesEnum getStartState()
+    {
+        return START_STATE;
     }
 }

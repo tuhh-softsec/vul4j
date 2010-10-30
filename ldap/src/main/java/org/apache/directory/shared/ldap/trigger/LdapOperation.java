@@ -24,38 +24,42 @@ package org.apache.directory.shared.ldap.trigger;
 /**
  * An enumeration that represents change inducing LDAP operations.
  * 
- * TODO: should this be an enum?
- * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public final class LdapOperation
+public enum LdapOperation
 {
-    public static final LdapOperation MODIFY = new LdapOperation( "Modify" );
+    MODIFY( "Modify" ),
 
-    public static final LdapOperation ADD = new LdapOperation( "Add" );
+    ADD( "Add" ),
 
-    public static final LdapOperation DELETE = new LdapOperation( "Delete" );
+    DELETE( "Delete" ),
 
-    public static final LdapOperation MODIFYDN = new LdapOperation( "ModifyDN" );
+    MODIFYDN( "ModifyDN" ),
     
-    public static final LdapOperation MODIFYDN_RENAME = new LdapOperation( "ModifyDN.Rename" );
+    MODIFYDN_RENAME( "ModifyDN.Rename" ),
     
-    public static final LdapOperation MODIFYDN_EXPORT = new LdapOperation( "ModifyDN.Export" );
+    MODIFYDN_EXPORT( "ModifyDN.Export" ),
     
-    public static final LdapOperation MODIFYDN_IMPORT = new LdapOperation( "ModifyDN.Import" );
+    MODIFYDN_IMPORT( "ModifyDN.Import" );
 
     
     private final String name;
 
 
-    private LdapOperation( String name )
+    /**
+     * 
+     * Creates a new instance of LdapOperation.
+     *
+     * @param name
+     */
+    LdapOperation( String name )
     {
         this.name = name;
     }
 
 
     /**
-     * Returns the name of this LDAP operation.
+     * @return the name of this LDAP operation
      */
     public String getName()
     {
@@ -66,54 +70,5 @@ public final class LdapOperation
     public String toString()
     {
         return name;
-    }
-
-
-    /**
-     * @see java.lang.Object#hashCode()
-     * @return the instance's hash code 
-     */
-    public int hashCode()
-    {
-        int h = 37;
-
-        h = h*17 + ( ( name == null ) ? 0 : name.hashCode() );
-        
-        return h;
-    }
-
-
-    /**
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    public boolean equals( Object obj )
-    {
-        if ( this == obj )
-        {
-            return true;
-        }
-        
-        if ( ! ( obj  instanceof LdapOperation ) )
-        {
-            return false;
-        }
-
-        final LdapOperation other = ( LdapOperation ) obj;
-
-        if ( name == null )
-        {
-            if ( other.name != null )
-            {
-                return false;
-            }
-            else
-            { 
-                return true;
-            }
-        }
-        else 
-        {
-            return name.equals( other.name );
-        }
     }
 }

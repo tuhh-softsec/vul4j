@@ -45,13 +45,10 @@ public abstract class AbstractContainer implements Asn1Container
     private TLVStateEnum state;
 
     /** The current transition */
-    private int transition;
+    private Enum<?> transition;
 
     /** The current TLV */
     private TLV tlv;
-
-    /** Store the different states for debug purpose */
-    protected States states;
 
     /** The parent TLV */
     private TLV parentTLV;
@@ -140,7 +137,7 @@ public abstract class AbstractContainer implements Asn1Container
      * 
      * @return Returns the transition from the previous state to the new state
      */
-    public int getTransition()
+    public Enum<?> getTransition()
     {
         return transition;
     }
@@ -151,7 +148,7 @@ public abstract class AbstractContainer implements Asn1Container
      * 
      * @param transition The transition to set
      */
-    public void setTransition( int transition )
+    public void setTransition( Enum<?> transition )
     {
         this.transition = transition;
     }
@@ -176,17 +173,6 @@ public abstract class AbstractContainer implements Asn1Container
     public TLV getCurrentTLV()
     {
         return this.tlv;
-    }
-
-
-    /**
-     * Get the states for this container's grammars
-     * 
-     * @return Returns the states.
-     */
-    public States getStates()
-    {
-        return states;
     }
 
 
@@ -219,7 +205,7 @@ public abstract class AbstractContainer implements Asn1Container
     {
         tlv = null;
         parentTLV = null;
-        transition = 0;
+        transition = ((States)transition).getStartState();
         state = TLVStateEnum.TAG_STATE_START;
     }
 

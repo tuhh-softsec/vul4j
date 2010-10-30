@@ -59,7 +59,7 @@ public interface IGrammar
      * 
      * @return The specific States Enum for the current grammar
      */
-    IStates getStatesEnum();
+    Enum<Dsmlv2StatesEnum>[] getStatesEnum();
 
 
     /**

@@ -28,74 +28,34 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
  * This class store the GracefulShutdown's grammar constants. It is also used
  * for debugging purposes.
  * 
- * TODO: should this be an enum?
- * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public final class GracefulShutdownStatesEnum implements States
+public enum GracefulShutdownStatesEnum implements States
 {
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
+
+    /** The END_STATE */
+    END_STATE,
 
     // =========================================================================
     // GracefulShutdown grammar states
     // =========================================================================
 
     /** Initial state */
-    public static final int START_STATE = 0;
+    START_STATE,
 
     /** Sequence */
-    public static final int GRACEFUL_SHUTDOWN_SEQUENCE_STATE = 1;
+    GRACEFUL_SHUTDOWN_SEQUENCE_STATE,
 
     /** Time offline */
-    public static final int TIME_OFFLINE_STATE = 2;
+    TIME_OFFLINE_STATE,
 
     /** Delay */
-    public static final int DELAY_STATE = 3;
+    DELAY_STATE,
 
     /** terminal state */
-    public static final int LAST_GRACEFUL_SHUTDOWN_STATE = 4;
-
-    // =========================================================================
-    // States debug strings
-    // =========================================================================
-    /** A string representation of all the states */
-    private static final String[] GRACEFUL_SHUTDOWN_STRING = new String[]
-        { 
-        "START_STATE",
-        "GRACEFUL_SHUTDOWN_SEQUENCE_STATE", 
-        "TIME_OFFLINE_STATE", 
-        "DELAY_STATE" 
-        };
-
-    /** The instance */
-    private static GracefulShutdownStatesEnum instance = new GracefulShutdownStatesEnum();
-
-
-    // ~ Constructors
-    // -------------------------------------------------------------------------------
-
-    /**
-     * This is a private constructor. This class is a singleton
-     */
-    private GracefulShutdownStatesEnum()
-    {
-    }
-
-
-    // ~ Methods
-    // ------------------------------------------------------------------------------------
-
-    /**
-     * Get an instance of this class
-     * 
-     * @return An instance on this class
-     */
-    public static States getInstance()
-    {
-        return instance;
-    }
-
+    LAST_GRACEFUL_SHUTDOWN_STATE;
 
     /**
      * Get the grammar name
@@ -134,6 +94,24 @@ public final class GracefulShutdownStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END ) ? "GRACEFUL_SHUTDOWN_END_STATE" : GRACEFUL_SHUTDOWN_STRING[state] );
+        return ( ( state == END_STATE.ordinal() ) ? "GRACEFUL_SHUTDOWN_END_STATE" : name() );
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isEndState()
+    {
+        return this == END_STATE;
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public GracefulShutdownStatesEnum getStartState()
+    {
+        return START_STATE;
     }
 }

@@ -29,43 +29,33 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class CertGenerationStatesEnum implements States
+public enum CertGenerationStatesEnum implements States
 {
 
+    /** The END_STATE */
+    END_STATE,
+
     /** start state*/
-    public static final int START_STATE = 0;
+    START_STATE,
 
     /** sequence*/
-    public static final int CERT_GENERATION_REQUEST_SEQUENCE_STATE = 1;
+    CERT_GENERATION_REQUEST_SEQUENCE_STATE,
 
     /** the target DN*/
-    public static final int TARGETDN_STATE = 2;
+    TARGETDN_STATE,
 
     /** the issuer DN*/
-    public static final int ISSUER_STATE = 3;
+    ISSUER_STATE,
 
     /** the subject DN*/
-    public static final int SUBJECT_STATE = 4;
+    SUBJECT_STATE,
 
     /** the key algorithm*/
-    public static final int KEY_ALGORITHM_STATE = 5;
+    KEY_ALGORITHM_STATE,
 
     /** terminal state */
-    public static final int LAST_CERT_GENERATION_STATE = 6;
+    LAST_CERT_GENERATION_STATE;
 
-    private static String[] certGenerationString = new String[]
-        {
-          "START_STATE",
-          "CERT_GENERATION_REQUEST_SEQUENCE_STATE",
-          "TARGETDN_STATE", "ISSUER_STATE",
-          "SUBJECT_STATE",
-          "KEY_ALGORITHM_STATE"
-        };
-
-    /** a singleton instance*/
-    private static CertGenerationStatesEnum instance = new CertGenerationStatesEnum();
-
-    
     /**
      * Get the grammar name
      * 
@@ -103,16 +93,24 @@ public class CertGenerationStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END ) ? "CERT_GENERATION_END_STATE" : certGenerationString[state] );
+        return ( ( state == END_STATE.ordinal() ) ? "CERT_GENERATION_END_STATE" : this.name() );
     }
 
+    
     /**
-     * Get an instance of this class
-     * 
-     * @return An instance on this class
+     * {@inheritDoc}
      */
-    public static States getInstance()
+    public boolean isEndState()
     {
-        return instance;
+        return this == END_STATE;
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public CertGenerationStatesEnum getStartState()
+    {
+        return START_STATE;
     }
 }

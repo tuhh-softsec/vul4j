@@ -25,7 +25,6 @@ import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
-import org.apache.directory.shared.asn1.ber.grammar.States;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.DecoderException;
@@ -171,10 +170,9 @@ public final class GracefulDisconnectGrammar extends AbstractGrammar
     private GracefulDisconnectGrammar()
     {
         setName( GracefulDisconnectGrammar.class.getName() );
-        setStatesEnum( GracefulDisconnectStatesEnum.getInstance() );
 
         // Create the transitions table
-        super.transitions = new GrammarTransition[GracefulDisconnectStatesEnum.LAST_GRACEFUL_DISCONNECT_STATE][256];
+        super.transitions = new GrammarTransition[GracefulDisconnectStatesEnum.LAST_GRACEFUL_DISCONNECT_STATE.ordinal()][256];
 
         /**
          * Transition from init state to graceful disconnect
@@ -183,8 +181,8 @@ public final class GracefulDisconnectGrammar extends AbstractGrammar
          * 
          * Creates the GracefulDisconnect object
          */
-        super.transitions[States.INIT_GRAMMAR_STATE][UniversalTag.SEQUENCE.getValue()] = 
-            new GrammarTransition( States.INIT_GRAMMAR_STATE,
+        super.transitions[GracefulDisconnectStatesEnum.START_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = 
+            new GrammarTransition( GracefulDisconnectStatesEnum.START_STATE,
                                     GracefulDisconnectStatesEnum.GRACEFUL_DISCONNECT_SEQUENCE_STATE, 
                                     UniversalTag.SEQUENCE.getValue(),
                 new GrammarAction(
@@ -208,7 +206,7 @@ public final class GracefulDisconnectGrammar extends AbstractGrammar
          *     
          * Set the time offline value into the GracefulDisconnect object.    
          */
-        super.transitions[GracefulDisconnectStatesEnum.GRACEFUL_DISCONNECT_SEQUENCE_STATE][UniversalTag.INTEGER.getValue()] = 
+        super.transitions[GracefulDisconnectStatesEnum.GRACEFUL_DISCONNECT_SEQUENCE_STATE.ordinal()][UniversalTag.INTEGER.getValue()] = 
             new GrammarTransition( GracefulDisconnectStatesEnum.GRACEFUL_DISCONNECT_SEQUENCE_STATE,
                                     GracefulDisconnectStatesEnum.TIME_OFFLINE_STATE, 
                                     UniversalTag.INTEGER.getValue(), 
@@ -224,7 +222,7 @@ public final class GracefulDisconnectGrammar extends AbstractGrammar
          *     
          * Set the delay value into the GracefulDisconnect object.    
          */
-        super.transitions[GracefulDisconnectStatesEnum.GRACEFUL_DISCONNECT_SEQUENCE_STATE]
+        super.transitions[GracefulDisconnectStatesEnum.GRACEFUL_DISCONNECT_SEQUENCE_STATE.ordinal()]
                          [GracefulActionConstants.GRACEFUL_ACTION_DELAY_TAG] = 
             new GrammarTransition( GracefulDisconnectStatesEnum.GRACEFUL_DISCONNECT_SEQUENCE_STATE,
                                     GracefulDisconnectStatesEnum.DELAY_STATE, 
@@ -242,7 +240,7 @@ public final class GracefulDisconnectGrammar extends AbstractGrammar
          *     
          * Get some replicated contexts. Nothing to do    
          */
-        super.transitions[GracefulDisconnectStatesEnum.GRACEFUL_DISCONNECT_SEQUENCE_STATE][UniversalTag.SEQUENCE.getValue()] = 
+        super.transitions[GracefulDisconnectStatesEnum.GRACEFUL_DISCONNECT_SEQUENCE_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = 
             new GrammarTransition( GracefulDisconnectStatesEnum.GRACEFUL_DISCONNECT_SEQUENCE_STATE,
                                     GracefulDisconnectStatesEnum.REPLICATED_CONTEXTS_STATE,
                                     UniversalTag.SEQUENCE.getValue(), null );
@@ -257,7 +255,7 @@ public final class GracefulDisconnectGrammar extends AbstractGrammar
          *     
          * Set the delay value into the GracefulDisconnect object.    
          */
-        super.transitions[GracefulDisconnectStatesEnum.TIME_OFFLINE_STATE][GracefulActionConstants.GRACEFUL_ACTION_DELAY_TAG] = 
+        super.transitions[GracefulDisconnectStatesEnum.TIME_OFFLINE_STATE.ordinal()][GracefulActionConstants.GRACEFUL_ACTION_DELAY_TAG] = 
             new GrammarTransition( GracefulDisconnectStatesEnum.TIME_OFFLINE_STATE,
                                     GracefulDisconnectStatesEnum.DELAY_STATE, 
                                     GracefulActionConstants.GRACEFUL_ACTION_DELAY_TAG,
@@ -274,7 +272,7 @@ public final class GracefulDisconnectGrammar extends AbstractGrammar
          *     
          * Get some replicated contexts. Nothing to do    
          */
-        super.transitions[GracefulDisconnectStatesEnum.TIME_OFFLINE_STATE][UniversalTag.SEQUENCE.getValue()] = 
+        super.transitions[GracefulDisconnectStatesEnum.TIME_OFFLINE_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = 
             new GrammarTransition( GracefulDisconnectStatesEnum.TIME_OFFLINE_STATE,
                                     GracefulDisconnectStatesEnum.REPLICATED_CONTEXTS_STATE,
                                     UniversalTag.SEQUENCE.getValue(), null );
@@ -290,7 +288,7 @@ public final class GracefulDisconnectGrammar extends AbstractGrammar
          *     
          * Get some replicated contexts. Nothing to do    
          */
-        super.transitions[GracefulDisconnectStatesEnum.DELAY_STATE][UniversalTag.SEQUENCE.getValue()] = 
+        super.transitions[GracefulDisconnectStatesEnum.DELAY_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = 
             new GrammarTransition( GracefulDisconnectStatesEnum.DELAY_STATE,
                                     GracefulDisconnectStatesEnum.REPLICATED_CONTEXTS_STATE, 
                                     UniversalTag.SEQUENCE.getValue(), null );
@@ -306,7 +304,7 @@ public final class GracefulDisconnectGrammar extends AbstractGrammar
          *     
          * Stores the referral
          */
-        super.transitions[GracefulDisconnectStatesEnum.REPLICATED_CONTEXTS_STATE][UniversalTag.OCTET_STRING.getValue()] = 
+        super.transitions[GracefulDisconnectStatesEnum.REPLICATED_CONTEXTS_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = 
             new GrammarTransition( GracefulDisconnectStatesEnum.REPLICATED_CONTEXTS_STATE,
                                     GracefulDisconnectStatesEnum.REFERRAL_STATE, 
                                     UniversalTag.OCTET_STRING.getValue(),
@@ -323,7 +321,7 @@ public final class GracefulDisconnectGrammar extends AbstractGrammar
          *     
          * Stores the referral
          */
-        super.transitions[GracefulDisconnectStatesEnum.REFERRAL_STATE][UniversalTag.OCTET_STRING.getValue()] = 
+        super.transitions[GracefulDisconnectStatesEnum.REFERRAL_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = 
             new GrammarTransition( GracefulDisconnectStatesEnum.REFERRAL_STATE,
                                     GracefulDisconnectStatesEnum.REFERRAL_STATE, 
                                     UniversalTag.OCTET_STRING.getValue(),

@@ -29,6 +29,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.collections.MultiMap;
 import org.apache.commons.collections.map.MultiValueMap;
@@ -188,7 +189,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
     public static final int EQUAL = 0;
 
     /** A flag used to tell if the RDN has been normalized */
-    private boolean normalized;
+    private AtomicBoolean normalized = new AtomicBoolean();
 
     /** the schema manager */
     private transient SchemaManager schemaManager;
@@ -217,7 +218,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
         this.schemaManager = schemaManager;
         upName = "";
         normName = "";
-        normalized = false;
+        normalized.set( false );
     }
 
 
@@ -243,12 +244,12 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
             {
                 this.schemaManager = schemaManager;
                 normalize( schemaManager.getNormalizerMapping() );
-                normalized = true;
+                normalized.set( true );
             }
             else
             {
                 normalize();
-                normalized = false;
+                normalized.set( false );
             }
 
             upName = rdn;
@@ -259,7 +260,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
             upName = "";
             normName = "";
             length = 0;
-            normalized = false;
+            normalized.set( false );
         }
     }
 
@@ -304,12 +305,12 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
 
         if( schemaManager != null )
         {
-            normalized = true;
+            normalized.set( true );
         }
         else
         {
             // As strange as it seems, the RDN is *not* normalized against the schema at this point
-            normalized = false;
+            normalized.set( false );
         }
     }
 
@@ -353,7 +354,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
         {
             this.schemaManager = schemaManager;
             normalize( schemaManager.getNormalizerMapping() );
-            normalized = true;
+            normalized.set( true );
         }
         else
         {
@@ -361,7 +362,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
             normalize();
 
             // As strange as it seems, the RDN is *not* normalized against the schema at this point
-            normalized = false;
+            normalized.set( false );
         }
     }
 
@@ -394,7 +395,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
         this.length = length;
         this.upName = upName;
         this.normName = normName;
-        normalized = true;
+        normalized.set( true );
     }
 
 
@@ -411,7 +412,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
         this.upName = rdn.getName();
         this.start = rdn.start;
         this.length = rdn.length;
-        normalized = rdn.normalized;
+        normalized.set(rdn.normalized.get());
 
         switch ( rdn.getNbAtavs() )
         {
@@ -506,13 +507,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
      */
     public RDN normalize( SchemaManager sm ) throws LdapInvalidDnException
     {
-        String savedUpName = getName();
-        DN.rdnOidToName( this, sm.getNormalizerMapping() );
-        normalize();
-        this.upName = savedUpName;
-        normalized = true;
-
-        return this;
+        return normalize( sm.getNormalizerMapping() );
     }
 
 
@@ -526,13 +521,26 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
      */
     public RDN normalize( Map<String, OidNormalizer> oidsMap ) throws LdapInvalidDnException
     {
-        String savedUpName = getName();
-        DN.rdnOidToName( this, oidsMap );
-        normalize();
-        this.upName = savedUpName;
-        normalized = true;
+        if ( ( oidsMap == null ) || ( oidsMap.isEmpty() ) )
+        {
+            return this;
+        }
 
-        return this;
+        if ( normalized.get() )
+        {
+            return this;
+        }
+
+        synchronized ( this )
+        {
+            String savedUpName = getName();
+            DN.rdnOidToName( this, oidsMap );
+            normalize();
+            this.upName = savedUpName;
+            normalized.set( true );
+    
+            return this;
+        }
     }
 
 
@@ -674,7 +682,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
         upName = "";
         start = -1;
         length = 0;
-        normalized = false;
+        normalized.set( false );
     }
 
 
@@ -847,6 +855,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
         try
         {
             RDN rdn = ( RDN ) super.clone();
+            rdn.normalized = new AtomicBoolean( normalized.get() );
 
             // The AttributeTypeAndValue is immutable. We won't clone it
 
@@ -1449,7 +1458,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
      */
     public boolean isNormalized()
     {
-        return normalized;
+        return normalized.get();
     }
 
 

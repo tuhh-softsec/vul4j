@@ -25,7 +25,7 @@ import org.apache.directory.shared.asn1.codec.DecoderException;
 
 
 /**
- * The interface which expose common behavior of a Gramar implementer.
+ * The interface which expose common behavior of a Grammar implementer.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
@@ -47,14 +47,6 @@ public interface Grammar
      * @return Return the grammar's name
      */
     String getName();
-
-
-    /**
-     * Get the statesEnum for the current grammar
-     * 
-     * @return The specific States Enum for the current grammar
-     */
-    States getStatesEnum();
 
 
     /**

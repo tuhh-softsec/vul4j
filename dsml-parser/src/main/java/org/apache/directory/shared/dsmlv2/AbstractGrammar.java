@@ -49,7 +49,7 @@ public abstract class AbstractGrammar implements IGrammar
     protected String name;
 
     /** The grammar's states */
-    protected IStates statesEnum;
+    protected Enum<Dsmlv2StatesEnum>[] statesEnum;
 
 
     /**
@@ -84,9 +84,9 @@ public abstract class AbstractGrammar implements IGrammar
      *            The current tag
      * @return A valid transition if any, or null.
      */
-    public GrammarTransition getTransition( int state, Tag tag )
+    public GrammarTransition getTransition( Enum<Dsmlv2StatesEnum> state, Tag tag )
     {
-        return transitions[state].get( tag );
+        return transitions[state.ordinal()].get( tag );
     }
 
 
@@ -96,9 +96,9 @@ public abstract class AbstractGrammar implements IGrammar
      * @return 
      *      Returns the statesEnum.
      */
-    public IStates getStatesEnum()
+    public Enum<Dsmlv2StatesEnum>[] getStatesEnum()
     {
-        return statesEnum;
+        return Dsmlv2StatesEnum.values();
     }
 
 
@@ -108,7 +108,7 @@ public abstract class AbstractGrammar implements IGrammar
      * @param statesEnum
      *      The statesEnum to set.
      */
-    public void setStatesEnum( IStates statesEnum )
+    public void setStatesEnum( Enum<Dsmlv2StatesEnum>[] statesEnum )
     {
         this.statesEnum = statesEnum;
     }
@@ -131,7 +131,7 @@ public abstract class AbstractGrammar implements IGrammar
             }
             else if ( eventType == XmlPullParser.END_DOCUMENT )
             {
-                container.setState( Dsmlv2StatesEnum.END_STATE );
+                container.setState( Dsmlv2StatesEnum.GRAMMAR_END );
             }
             else if ( eventType == XmlPullParser.START_TAG )
             {

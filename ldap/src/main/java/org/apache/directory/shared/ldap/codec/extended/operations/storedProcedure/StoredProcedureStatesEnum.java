@@ -28,90 +28,50 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
 /**
  * Constants for StoredProcedureGrammar.
  * 
- * TODO: should this be an enum?
- * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public final class StoredProcedureStatesEnum implements States
+public enum StoredProcedureStatesEnum implements States
 {
     //~ Static fields/initializers -----------------------------------------------------------------
+
+    /** The END_STATE */
+    END_STATE,
 
     //=========================================================================
     // StoredProcedure
     //=========================================================================
     /** starting state */
-    public static final int START_STATE = 0;
+    START_STATE,
 
     /** StoredProcedure */
-    public static final int STORED_PROCEDURE_STATE = 1;
+    STORED_PROCEDURE_STATE,
 
     // Language ---------------------------------------------------------------
     /** Language */
-    public static final int LANGUAGE_STATE = 2;
+    LANGUAGE_STATE,
 
     // Procedure --------------------------------------------------------------
     /** Procedure */
-    public static final int PROCEDURE_STATE = 3;
+    PROCEDURE_STATE,
 
     // Parameters -------------------------------------------------------------
     /** Parameters */
-    public static final int PARAMETERS_STATE = 4;
+    PARAMETERS_STATE,
 
     // Parameter --------------------------------------------------------------
     /** Parameter */
-    public static final int PARAMETER_STATE = 5;
+    PARAMETER_STATE,
 
     // Parameter type ---------------------------------------------------------
     /** Parameter type */
-    public static final int PARAMETER_TYPE_STATE = 6;
+    PARAMETER_TYPE_STATE,
 
     // Parameters value -------------------------------------------------------
     /** Parameter value */
-    public static final int PARAMETER_VALUE_STATE = 7;
+    PARAMETER_VALUE_STATE,
 
     /** Last Stored Procedure */
-    public static final int LAST_STORED_PROCEDURE_STATE = 8;
-
-    //=========================================================================
-    // States debug strings 
-    //=========================================================================
-    /** A string representation of all the states */
-    private static final String[] STORED_PROCEDURE_STRING = new String[]
-        { 
-        "START_STATE", 
-        "STORED_PROCEDURE_STATE", 
-        "LANGUAGE_STATE", 
-        "PROCEDURE_STATE", 
-        "PARAMETERS_STATE", 
-        "PARAMETER_TYPE_STATE",
-        "PARAMETER_VALUE_STATE" 
-        };
-
-    /** The instance */
-    private static StoredProcedureStatesEnum instance = new StoredProcedureStatesEnum();
-
-
-    //~ Constructors -------------------------------------------------------------------------------
-
-    /**
-     * This is a private constructor. This class is a singleton
-     *
-     */
-    private StoredProcedureStatesEnum()
-    {
-    }
-
-
-    //~ Methods ------------------------------------------------------------------------------------
-
-    /**
-     * Get an instance of this class
-     * @return An instance on this class
-     */
-    public static States getInstance()
-    {
-        return instance;
-    }
+    LAST_STORED_PROCEDURE_STATE;
 
 
     /**
@@ -151,6 +111,24 @@ public final class StoredProcedureStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END ) ? "STORED_PROCEDURE_END_STATE" : STORED_PROCEDURE_STRING[state] );
+        return ( ( state == END_STATE.ordinal() ) ? "STORED_PROCEDURE_END_STATE" : name() );
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isEndState()
+    {
+        return this == END_STATE;
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public StoredProcedureStatesEnum getStartState()
+    {
+        return START_STATE;
     }
 }

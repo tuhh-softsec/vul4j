@@ -25,7 +25,6 @@ import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
-import org.apache.directory.shared.asn1.ber.grammar.States;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.DecoderException;
@@ -75,10 +74,9 @@ public final class SyncStateValueControlGrammar extends AbstractGrammar
     private SyncStateValueControlGrammar()
     {
         setName( SyncStateValueControlGrammar.class.getName() );
-        setStatesEnum( SyncStateValueControlStatesEnum.getInstance() );
 
         // Create the transitions table
-        super.transitions = new GrammarTransition[SyncStateValueControlStatesEnum.LAST_SYNC_STATE_VALUE_STATE][256];
+        super.transitions = new GrammarTransition[SyncStateValueControlStatesEnum.LAST_SYNC_STATE_VALUE_STATE.ordinal()][256];
 
         /** 
          * Transition from initial state to SyncStateValue sequence
@@ -87,8 +85,8 @@ public final class SyncStateValueControlGrammar extends AbstractGrammar
          *     
          * Initialize the syncStateValue object
          */
-        super.transitions[States.INIT_GRAMMAR_STATE][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
-            States.INIT_GRAMMAR_STATE, SyncStateValueControlStatesEnum.SYNC_STATE_VALUE_SEQUENCE_STATE,
+        super.transitions[SyncStateValueControlStatesEnum.START_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
+            SyncStateValueControlStatesEnum.START_STATE, SyncStateValueControlStatesEnum.SYNC_STATE_VALUE_SEQUENCE_STATE,
             UniversalTag.SEQUENCE.getValue(), null );
 
         /** 
@@ -104,7 +102,7 @@ public final class SyncStateValueControlGrammar extends AbstractGrammar
          *     
          * Stores the sync state type value
          */
-        super.transitions[SyncStateValueControlStatesEnum.SYNC_STATE_VALUE_SEQUENCE_STATE][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
+        super.transitions[SyncStateValueControlStatesEnum.SYNC_STATE_VALUE_SEQUENCE_STATE.ordinal()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
             SyncStateValueControlStatesEnum.SYNC_STATE_VALUE_SEQUENCE_STATE,
             SyncStateValueControlStatesEnum.SYNC_TYPE_STATE, UniversalTag.ENUMERATED.getValue(), new GrammarAction(
                 "Set SyncStateValueControl state type" )
@@ -150,7 +148,7 @@ public final class SyncStateValueControlGrammar extends AbstractGrammar
          *     
          * Stores the entryUUID
          */
-        super.transitions[SyncStateValueControlStatesEnum.SYNC_TYPE_STATE][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[SyncStateValueControlStatesEnum.SYNC_TYPE_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             SyncStateValueControlStatesEnum.SYNC_TYPE_STATE, SyncStateValueControlStatesEnum.SYNC_UUID_STATE,
             UniversalTag.OCTET_STRING.getValue(), new GrammarAction( "Set SyncStateValueControl entryUUID" )
             {
@@ -182,7 +180,7 @@ public final class SyncStateValueControlGrammar extends AbstractGrammar
          *     
          * Stores the reloadHint flag
          */
-        super.transitions[SyncStateValueControlStatesEnum.SYNC_UUID_STATE][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[SyncStateValueControlStatesEnum.SYNC_UUID_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             SyncStateValueControlStatesEnum.SYNC_UUID_STATE, SyncStateValueControlStatesEnum.COOKIE_STATE,
             UniversalTag.OCTET_STRING.getValue(), new GrammarAction( "Set SyncStateValueControl cookie value" )
             {

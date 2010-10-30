@@ -41,7 +41,7 @@ public class PersistentSearchControlContainer extends AbstractContainer
         super();
         stateStack = new int[1];
         grammar = PersistentSearchControlGrammar.getInstance();
-        states = PersistentSearchControlStatesEnum.getInstance();
+        setTransition( PersistentSearchControlStatesEnum.START_STATE );
     }
 
 

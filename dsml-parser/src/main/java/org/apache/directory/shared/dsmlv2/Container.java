@@ -33,7 +33,7 @@ public interface Container
      * 
      * @return Returns the current grammar state
      */
-    int getState();
+    Enum<Dsmlv2StatesEnum> getState();
 
 
     /**
@@ -42,7 +42,7 @@ public interface Container
      * @param state
      *            The new state
      */
-    void setState( int state );
+    void setState( Enum<Dsmlv2StatesEnum> state );
 
 
     /**
@@ -50,7 +50,7 @@ public interface Container
      * 
      * @return Returns the transition from the previous state to the new state
      */
-    int getTransition();
+    Enum<Dsmlv2StatesEnum> getTransition();
 
 
     /**
@@ -59,12 +59,12 @@ public interface Container
      * @param transition
      *            The transition to set
      */
-    void setTransition( int transition );
+    void setTransition( Enum<Dsmlv2StatesEnum> transition );
 
 
     /**
      * @return Returns the states.
      */
-    IStates getStates();
+    Enum<Dsmlv2StatesEnum>[] getStates();
 
 }

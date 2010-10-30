@@ -30,61 +30,26 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public final class SubentriesControlStatesEnum implements States
+public enum SubentriesControlStatesEnum implements States
 {
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
+
+    /** The END_STATE */
+    END_STATE,
 
     // =========================================================================
     // Sub entry control grammar states
     // =========================================================================
 
     /** Starting state */
-    public static final int START_STATE = 0;
+    START_STATE,
 
     /** Visibility Value */
-    public static final int SUB_ENTRY_VISIBILITY_STATE = 1;
+    SUB_ENTRY_VISIBILITY_STATE,
 
     /** terminal state */
-    public static final int LAST_SUB_ENTRY_STATE = 2;
-
-    // =========================================================================
-    // States debug strings
-    // =========================================================================
-    /** A string representation of all the states */
-    private static final String[] SUB_ENTRY_STRING = new String[]
-        {
-            "START_STATE",
-            "SUB_ENTRY_VISIBILITY_STATE"
-        };
-
-    /** The instance */
-    private static SubentriesControlStatesEnum instance = new SubentriesControlStatesEnum();
-
-
-    // ~ Constructors
-    // -------------------------------------------------------------------------------
-
-    /**
-     * This is a private constructor. This class is a singleton
-     */
-    private SubentriesControlStatesEnum()
-    {
-    }
-
-
-    // ~ Methods
-    // ------------------------------------------------------------------------------------
-
-    /**
-     * Get an instance of this class
-     * 
-     * @return An instance on this class
-     */
-    public static States getInstance()
-    {
-        return instance;
-    }
+    LAST_SUB_ENTRY_STATE;
 
 
     /**
@@ -124,6 +89,24 @@ public final class SubentriesControlStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END ) ? "SUB_ENTRY_END_STATE" : SUB_ENTRY_STRING[state] );
+        return ( ( state == END_STATE.ordinal() ) ? "SUB_ENTRY_END_STATE" : name() );
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isEndState()
+    {
+        return this == END_STATE;
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public SubentriesControlStatesEnum getStartState()
+    {
+        return START_STATE;
     }
 }

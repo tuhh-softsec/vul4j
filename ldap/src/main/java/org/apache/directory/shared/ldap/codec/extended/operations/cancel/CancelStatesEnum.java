@@ -28,69 +28,30 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
  * This class store the Cancel's grammar constants. It is also used
  * for debugging purposes.
  * 
- * TODO: should this be an enum?
- * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public final class CancelStatesEnum implements States
+public enum CancelStatesEnum implements States
 {
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
+
+    /** The END_STATE */
+    END_STATE,
 
     // =========================================================================
     // Cancel grammar states
     // =========================================================================
     /** Initial state */
-    public static final int START_STATE = 0;
+    START_STATE,
 
     /** Sequence */
-    public static final int CANCEL_SEQUENCE_STATE = 1;
+    CANCEL_SEQUENCE_STATE,
 
     /** cancelId */
-    public static final int CANCEL_ID_STATE = 2;
+    CANCEL_ID_STATE,
 
     /** terminal state */
-    public static final int LAST_CANCEL_STATE = 3;
-
-    // =========================================================================
-    // States debug strings
-    // =========================================================================
-    /** A string representation of all the states */
-    private static final String[] CANCEL_STRING = new String[]
-        { 
-        "START_STATE", 
-        "CANCEL_SEQUENCE_STATE",
-        "CANCEL_ID_STATE" 
-        };
-
-    /** The instance */
-    private static CancelStatesEnum instance = new CancelStatesEnum();
-
-
-    // ~ Constructors
-    // -------------------------------------------------------------------------------
-
-    /**
-     * This is a private constructor. This class is a singleton
-     */
-    private CancelStatesEnum()
-    {
-    }
-
-
-    // ~ Methods
-    // ------------------------------------------------------------------------------------
-
-    /**
-     * Get an instance of this class
-     * 
-     * @return An instance on this class
-     */
-    public static States getInstance()
-    {
-        return instance;
-    }
-
+    LAST_CANCEL_STATE;
 
     /**
      * Get the grammar name
@@ -129,6 +90,24 @@ public final class CancelStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END ) ? "CANCEL_END_STATE" : CANCEL_STRING[state] );
+        return ( ( state == END_STATE.ordinal() ) ? "CANCEL_END_STATE" : this.name() );
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isEndState()
+    {
+        return this == END_STATE;
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public CancelStatesEnum getStartState()
+    {
+        return START_STATE;
     }
 }

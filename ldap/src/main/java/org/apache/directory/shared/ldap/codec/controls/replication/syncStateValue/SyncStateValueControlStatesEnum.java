@@ -28,77 +28,36 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
  * This class store the SyncStateValueControl's grammar constants. It is also used for
  * debugging purposes.
  * 
- * TODO: should this be an enum?
- * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public final class SyncStateValueControlStatesEnum implements States
+public enum SyncStateValueControlStatesEnum implements States
 {
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
+
+    /** The END_STATE */
+    END_STATE,
 
     // =========================================================================
     // SyncStateValue control grammar states
     // =========================================================================
     /** Initial state */
-    public static final int START_STATE = 0;
+    START_STATE,
 
     /** Sequence Value */
-    public static final int SYNC_STATE_VALUE_SEQUENCE_STATE = 1;
+    SYNC_STATE_VALUE_SEQUENCE_STATE,
 
     /** sync state type Value */
-    public static final int SYNC_TYPE_STATE = 2;
+    SYNC_TYPE_STATE,
     
     /** syncUUID Value */
-    public static final int SYNC_UUID_STATE = 3;
+    SYNC_UUID_STATE,
 
     /** cookie Value */
-    public static final int COOKIE_STATE = 4;
+    COOKIE_STATE,
 
     /** terminal state */
-    public static final int LAST_SYNC_STATE_VALUE_STATE = 5;
-
-    // =========================================================================
-    // States debug strings
-    // =========================================================================
-    /** A string representation of all the states */
-    private static final String[] SYNC_STATE_VALUE_STRING = new String[]
-        { 
-        "START_STATE", 
-        "SYNC_STATE_VALUE_SEQUENCE_STATE", 
-        "SYNC_TYPE_STATE",
-        "SYNC_UUID_STATE", 
-        "COOKIE_STATE" 
-        };
-
-    /** The instance */
-    private static SyncStateValueControlStatesEnum instance = new SyncStateValueControlStatesEnum();
-
-
-    // ~ Constructors
-    // -------------------------------------------------------------------------------
-
-    /**
-     * This is a private constructor. This class is a singleton
-     */
-    private SyncStateValueControlStatesEnum()
-    {
-    }
-
-
-    // ~ Methods
-    // ------------------------------------------------------------------------------------
-
-    /**
-     * Get an instance of this class
-     * 
-     * @return An instance on this class
-     */
-    public static States getInstance()
-    {
-        return instance;
-    }
-
+    LAST_SYNC_STATE_VALUE_STATE;
 
     /**
      * Get the grammar name
@@ -137,6 +96,24 @@ public final class SyncStateValueControlStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END ) ? "SYNC_STATE_VALUE_END_STATE" : SYNC_STATE_VALUE_STRING[state] );
+        return ( ( state == END_STATE.ordinal() ) ? "SYNC_STATE_VALUE_END_STATE" : this.name() );
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isEndState()
+    {
+        return this == END_STATE;
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public SyncStateValueControlStatesEnum getStartState()
+    {
+        return START_STATE;
     }
 }

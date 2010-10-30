@@ -28,81 +28,39 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
  * This class store the GracefulDisconnect's grammar constants. It is also used
  * for debugging purposes.
  * 
- * TODO: should this be an enum?
- * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public final class GracefulDisconnectStatesEnum implements States
+public enum GracefulDisconnectStatesEnum implements States
 {
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
+
+    /** The END_STATE */
+    END_STATE,
 
     // =========================================================================
     // GracefulDisconnect grammar states
     // =========================================================================
     /** Initial state */
-    public static final int START_STATE = 0;
+    START_STATE,
 
     /** Sequence */
-    public static final int GRACEFUL_DISCONNECT_SEQUENCE_STATE = 1;
+    GRACEFUL_DISCONNECT_SEQUENCE_STATE,
 
     /** Time offline */
-    public static final int TIME_OFFLINE_STATE = 2;
+    TIME_OFFLINE_STATE,
 
     /** Delay */
-    public static final int DELAY_STATE = 3;
+    DELAY_STATE,
 
     /** Replicated contexts */
-    public static final int REPLICATED_CONTEXTS_STATE = 4;
+    REPLICATED_CONTEXTS_STATE,
 
     /** Referral */
-    public static final int REFERRAL_STATE = 5;
+    REFERRAL_STATE,
 
     /** terminal state */
-    public static final int LAST_GRACEFUL_DISCONNECT_STATE = 6;
-
-    // =========================================================================
-    // States debug strings
-    // =========================================================================
-    /** A string representation of all the states */
-    private static final String[] GRACEFUL_DISCONNECT_STRING = new String[]
-        { 
-        "START_STATE", 
-        "GRACEFUL_DISCONNECT_SEQUENCE_STATE",
-        "TIME_OFFLINE_STATE", 
-        "DELAY_STATE", 
-        "REPLICATED_CONTEXTS_STATE",
-        "REFERRAL_STATE"
-        };
-
-    /** The instance */
-    private static GracefulDisconnectStatesEnum instance = new GracefulDisconnectStatesEnum();
-
-
-    // ~ Constructors
-    // -------------------------------------------------------------------------------
-
-    /**
-     * This is a private constructor. This class is a singleton
-     */
-    private GracefulDisconnectStatesEnum()
-    {
-    }
-
-
-    // ~ Methods
-    // ------------------------------------------------------------------------------------
-
-    /**
-     * Get an instance of this class
-     * 
-     * @return An instance on this class
-     */
-    public static States getInstance()
-    {
-        return instance;
-    }
-
+    LAST_GRACEFUL_DISCONNECT_STATE;
 
     /**
      * Get the grammar name
@@ -141,6 +99,24 @@ public final class GracefulDisconnectStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == GRAMMAR_END ) ? "GRACEFUL_DISCONNECT_END_STATE" : GRACEFUL_DISCONNECT_STRING[state] );
+        return ( ( state == END_STATE.ordinal() ) ? "GRACEFUL_DISCONNECT_END_STATE" : name() );
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isEndState()
+    {
+        return this == END_STATE;
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public GracefulDisconnectStatesEnum getStartState()
+    {
+        return START_STATE;
     }
 }

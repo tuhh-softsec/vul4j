@@ -18,51 +18,24 @@
  *
  */
 
-package org.apache.directory.shared.ldap.codec.controls.ppolicy;
+package org.apache.directory.shared.ldap.cursor;
 
 
-import org.apache.directory.shared.asn1.ber.AbstractContainer;
+import org.apache.directory.shared.ldap.message.Response;
+import org.apache.directory.shared.ldap.message.SearchResultDone;
 
 
 /**
- * container for PasswordPolicyResponseControl.
- *
+ * An extension of Cursor which includes the retrieval of the SearchResultDone. 
+ * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class PasswordPolicyResponseControlContainer extends AbstractContainer
+public interface SearchCursor extends Cursor<Response>
 {
-    private PasswordPolicyResponseControl control;
-
-
-    public PasswordPolicyResponseControlContainer()
-    {
-        super();
-        stateStack = new int[1];
-        grammar = PasswordPolicyResponseControlGrammar.getInstance();
-        setTransition( PasswordPolicyResponseControlStates.START_STATE );
-    }
-
-
-    public PasswordPolicyResponseControl getPasswordPolicyResponseControl()
-    {
-        return control;
-    }
-
-
-    public void setPasswordPolicyResponseControl( PasswordPolicyResponseControl control )
-    {
-        this.control = control;
-    }
-
-
     /**
-     * clean the container
+     * gives the SearchResultDone message received at the end of search results
+     * 
+     * @return the SearchResultDone message, null if the search operation fails for any reason 
      */
-    @Override
-    public void clean()
-    {
-        super.clean();
-        control = null;
-    }
-
+    public SearchResultDone getSearchResultDone();
 }

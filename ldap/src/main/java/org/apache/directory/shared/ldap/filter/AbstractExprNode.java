@@ -145,6 +145,11 @@ public abstract class AbstractExprNode implements ExprNode
      */
     protected static Value<?> escapeFilterValue( Value<?> value )
     {
+        if ( value.isNull() )
+        {
+            return value;
+        }
+
         StringBuilder sb = null;
         String val;
 
@@ -195,7 +200,7 @@ public abstract class AbstractExprNode implements ExprNode
                     sb.append( digit.toUpperCase() );
                 }
             }
-            
+
             return new StringValue( sb.toString() );
         }
 
