@@ -24,6 +24,7 @@ package org.apache.directory.ldap.client.api;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.directory.ldap.client.api.future.SearchFuture;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.cursor.AbstractCursor;
 import org.apache.directory.shared.ldap.cursor.InvalidCursorPositionException;
 import org.apache.directory.shared.ldap.cursor.SearchCursor;
@@ -219,7 +220,8 @@ public class SearchCursorImpl extends AbstractCursor<Response> implements Search
      */
     public void after( Response element ) throws Exception
     {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException( I18n.err( I18n.ERR_02014_UNSUPPORTED_OPERATION, getClass().getName()
+            .concat( "." ).concat( "after( Response element )" ) ) );
     }
 
 
@@ -229,7 +231,8 @@ public class SearchCursorImpl extends AbstractCursor<Response> implements Search
      */
     public void afterLast() throws Exception
     {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException( I18n.err( I18n.ERR_02014_UNSUPPORTED_OPERATION, getClass().getName()
+            .concat( "." ).concat( "afterLast()" ) ) );
     }
 
 
@@ -239,7 +242,8 @@ public class SearchCursorImpl extends AbstractCursor<Response> implements Search
      */
     public void before( Response element ) throws Exception
     {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException( I18n.err( I18n.ERR_02014_UNSUPPORTED_OPERATION, getClass().getName()
+            .concat( "." ).concat( "before( Response element )" ) ) );
     }
 
 
@@ -249,7 +253,8 @@ public class SearchCursorImpl extends AbstractCursor<Response> implements Search
      */
     public void beforeFirst() throws Exception
     {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException( I18n.err( I18n.ERR_02014_UNSUPPORTED_OPERATION, getClass().getName()
+            .concat( "." ).concat( "beforeFirst()" ) ) );
     }
 
 
@@ -259,7 +264,8 @@ public class SearchCursorImpl extends AbstractCursor<Response> implements Search
      */
     public boolean first() throws Exception
     {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException( I18n.err( I18n.ERR_02014_UNSUPPORTED_OPERATION, getClass().getName()
+            .concat( "." ).concat( "first()" ) ) );
     }
 
 
@@ -269,7 +275,8 @@ public class SearchCursorImpl extends AbstractCursor<Response> implements Search
      */
     public boolean last() throws Exception
     {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException( I18n.err( I18n.ERR_02014_UNSUPPORTED_OPERATION, getClass().getName()
+            .concat( "." ).concat( "last()" ) ) );
     }
 
 
@@ -279,7 +286,8 @@ public class SearchCursorImpl extends AbstractCursor<Response> implements Search
      */
     public boolean previous() throws Exception
     {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException( I18n.err( I18n.ERR_02014_UNSUPPORTED_OPERATION, getClass().getName()
+            .concat( "." ).concat( "previous()" ) ) );
     }
 
 }
