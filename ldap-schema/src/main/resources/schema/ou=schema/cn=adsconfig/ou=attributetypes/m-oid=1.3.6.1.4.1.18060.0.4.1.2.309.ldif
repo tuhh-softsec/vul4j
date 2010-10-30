@@ -13,7 +13,7 @@ m-syntax: 1.3.6.1.4.1.1466.115.121.1.44
 objectclass: metaTop
 objectclass: metaAttributeType
 objectclass: top
-m-name: ads-ldapServerCertificatePassword
+m-name: ads-certificatePassword
 m-length: 0
 m-equality: caseExactMatch
 

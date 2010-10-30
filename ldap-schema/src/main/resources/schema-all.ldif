@@ -1458,6 +1458,33 @@ objectclass: organizationalUnit
 objectclass: top
 creatorsname: 0.9.2342.19200300.100.1.1=admin,2.5.4.11=system
 
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.3.1, ou=objectClasses, cn=adsconfig, ou=schema
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: ads-base
+m-oid: 1.3.6.1.4.1.18060.0.4.1.3.1
+m-description: The base bean
+m-typeobjectclass: ABSTRACT
+createtimestamp: 20100111145217Z
+creatorsname: 0.9.2342.19200300.100.1.1=admin,2.5.4.11=system
+entrycsn: 20100111202217.860000Z#000000#000#000000
+m-must: ads-id
+m-may: ads-enabled
+m-may: description
+
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.3.2, ou=objectClasses, cn=adsconfig, ou=schema
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: ads-composite-element
+m-oid: 1.3.6.1.4.1.18060.0.4.1.3.2
+m-description: An Auxiliary ObjectClass for composite configuration elements
+m-typeobjectclass: AUXILIARY
+createtimestamp: 20100111145217Z
+creatorsname: 0.9.2342.19200300.100.1.1=admin,2.5.4.11=system
+entrycsn: 20100111202217.860000Z#000000#000#000000
+
 dn: m-oid=1.3.6.1.4.1.18060.0.4.1.3.100,ou=objectClasses,cn=adsconfig,ou=schema
 m-must: ads-directoryServiceId
 m-must: ads-dsReplicaId
@@ -1475,7 +1502,7 @@ m-may: ads-dsDenormalizeOpAttrsEnabled
 m-may: ads-dsJournal
 m-may: ads-dsMaxPDUSize
 m-may: ads-dsPasswordHidden
-m-may: ads-dsReplication
+#m-may: ads-dsReplication
 m-may: ads-dsSyncPeriodMillis
 m-may: ads-dsTestEntries
 m-may: ads-enabled
