@@ -21,10 +21,17 @@
 package org.apache.directory.ldap.client.api;
 
 
+import java.security.KeyStore;
 import java.security.SecureRandom;
 
 import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -82,7 +89,45 @@ public class LdapConnectionConfig
     /** name of the protocol used for creating SSL context, default value is "TLS" */
     private String sslProtocol = DEFAULT_SSL_PROTOCOL;
 
+    private static final Logger LOG = LoggerFactory.getLogger( LdapConnectionConfig.class );
+    
+    public LdapConnectionConfig()
+    {
+        setDefaultTrustManager();
+    }
 
+    
+    /**
+     * sets the default trust manager based on the SunX509 trustManagement algorithm
+     */
+    private void setDefaultTrustManager()
+    {
+        String trustMgmtAlgo = "SunX509";
+
+        try
+        {
+            TrustManagerFactory tmFactory = TrustManagerFactory.getInstance( trustMgmtAlgo );
+            tmFactory.init( KeyStore.getInstance( KeyStore.getDefaultType() ) );
+
+            TrustManager factoryTrustManagers[] = tmFactory.getTrustManagers();
+
+            for ( int i = 0; i < factoryTrustManagers.length; i++ )
+            {
+                if ( factoryTrustManagers[i] instanceof X509TrustManager )
+                {
+                    trustManagers = new TrustManager[] { factoryTrustManagers[i] };
+                    LOG.debug( "found X509TrustManager {}", factoryTrustManagers[i] );
+                    break;
+                }
+            }
+        }
+        catch( Exception e )
+        {
+            LOG.warn( "couldn't find any default X509 TrustManager with algorithm {}", trustMgmtAlgo );
+        }
+    }
+    
+    
     /**
      * Checks if SSL (ldaps://) is used.
      *

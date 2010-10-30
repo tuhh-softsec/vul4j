@@ -65,6 +65,7 @@ import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.constants.SupportedSaslMechanisms;
 import org.apache.directory.shared.ldap.cursor.Cursor;
+import org.apache.directory.shared.ldap.cursor.SearchCursor;
 import org.apache.directory.shared.ldap.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
@@ -172,7 +173,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
     private long timeout = LdapConnectionConfig.DEFAULT_TIMEOUT;
 
     /** configuration object for the connection */
-    private LdapConnectionConfig config = new LdapConnectionConfig();
+    private LdapConnectionConfig config;
 
     /** The connector open with the remote server */
     private IoConnector connector;
@@ -329,6 +330,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
      */
     public LdapNetworkConnection()
     {
+        config = new LdapConnectionConfig();
         config.setUseSsl( false );
         config.setLdapPort( config.getDefaultLdapPort() );
         config.setLdapHost( config.getDefaultLdapHost() );
@@ -358,6 +360,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
      */
     public LdapNetworkConnection( boolean useSsl )
     {
+        config = new LdapConnectionConfig();
         config.setUseSsl( useSsl );
         config.setLdapPort( useSsl ? config.getDefaultLdapsPort() : config.getDefaultLdapPort() );
         config.setLdapHost( config.getDefaultLdapHost() );
@@ -374,6 +377,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
      */
     public LdapNetworkConnection( String server )
     {
+        config = new LdapConnectionConfig();
         config.setUseSsl( false );
         config.setLdapPort( config.getDefaultLdapPort() );
 
@@ -402,6 +406,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
      */
     public LdapNetworkConnection( String server, boolean useSsl )
     {
+        config = new LdapConnectionConfig();
         config.setUseSsl( useSsl );
         config.setLdapPort( useSsl ? config.getDefaultLdapsPort() : config.getDefaultLdapPort() );
 
@@ -444,6 +449,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
      */
     public LdapNetworkConnection( String server, int port, boolean useSsl )
     {
+        config = new LdapConnectionConfig();
         config.setUseSsl( useSsl );
         config.setLdapPort( port );
 
@@ -619,7 +625,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         }
 
         // And close the connector if it has been created locally
-        if ( localConnector )
+        if ( localConnector && ( connector != null ) )
         {
             // Release the connector
             connector.dispose();
@@ -1132,29 +1138,22 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         // If the session has not been establish, or is closed, we get out immediately
         checkSession();
 
-        if ( bindRequest.isSimple() )
-        {
-            // Update the messageId
-            int newId = messageId.incrementAndGet();
-            bindRequest.setMessageId( newId );
+        // Update the messageId
+        int newId = messageId.incrementAndGet();
+        bindRequest.setMessageId( newId );
 
-            LOG.debug( "-----------------------------------------------------------------" );
-            LOG.debug( "Sending request \n{}", bindRequest );
+        LOG.debug( "-----------------------------------------------------------------" );
+        LOG.debug( "Sending request \n{}", bindRequest );
 
-            // Create a future for this Bind operation
-            BindFuture bindFuture = new BindFuture( this, newId );
+        // Create a future for this Bind operation
+        BindFuture bindFuture = new BindFuture( this, newId );
 
-            addToFutureMap( newId, bindFuture );
+        addToFutureMap( newId, bindFuture );
 
-            writeBindRequest( bindRequest );
+        writeBindRequest( bindRequest );
 
-            // Ok, done return the future
-            return bindFuture;
-        }
-        else
-        {
-            return bindSasl( new SaslRequest( bindRequest ) );
-        }
+        // Ok, done return the future
+        return bindFuture;
     }
 
 
@@ -1311,13 +1310,14 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
      * @throws IOException if an IO exception occurred
      * @see #bindGssApi(String, byte[], String, String, int, Control...)
      */
-    public BindResponse bindGssApi( String name, String credentials, String realmName, String kdcHost, int kdcPort, Control... ctrls )
-    throws LdapException, IOException
+    public BindResponse bindGssApi( String name, String credentials, String realmName, String kdcHost, int kdcPort,
+        Control... ctrls )
+        throws LdapException, IOException
     {
         return bindGssApi( name, StringTools.getBytesUtf8( credentials ), realmName, kdcHost, kdcPort, ctrls );
     }
-    
-    
+
+
     /**
      * Bind to the LDAP server using GSSAPI SASL mechanism.
      *
@@ -1331,34 +1331,38 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
      * @throws LdapException if an LDAP error occurred during bind
      * @throws IOException if an IO exception occurred
      */
-    public BindResponse bindGssApi( String name, byte[] credentials, String realmName, String kdcHost, int kdcPort, Control... ctrls )
+    public BindResponse bindGssApi( String name, byte[] credentials, String realmName, String kdcHost, int kdcPort,
+        Control... ctrls )
         throws LdapException, IOException
     {
-        BindRequest bindRequest = createBindRequest( name, credentials, SupportedSaslMechanisms.GSSAPI, ctrls );
-        
         String krbConfPath = createKrbConfFile( realmName, kdcHost, kdcPort );
         System.setProperty( "java.security.krb5.conf", krbConfPath );
 
         Configuration.setConfiguration( new Krb5LoginConfiguration() );
         System.setProperty( "javax.security.auth.useSubjectCredsOnly", "true" );
 
-        final SaslRequest saslRequest = new SaslRequest( bindRequest );
+        final SaslRequest saslRequest = new SaslRequest();
+        saslRequest.setUsername( name );
+        saslRequest.setCredentials( credentials );
+        saslRequest.setSaslMechanism( SupportedSaslMechanisms.GSSAPI );
+        saslRequest.setRealmName( realmName );
+        saslRequest.addAllControls( ctrls );
 
         try
         {
             LoginContext loginContext = new LoginContext( "ldapnetworkconnection",
-                new SaslCallbackHandler( saslRequest ) );
+                        new SaslCallbackHandler( saslRequest ) );
             loginContext.login();
 
             // Now, bind by calling the internal bindSasl method
             BindFuture future = ( BindFuture ) Subject.doAs( loginContext.getSubject(),
-                new PrivilegedExceptionAction<Object>()
-            {
-                public Object run() throws Exception
-                {
-                    return bindSasl( saslRequest );
-                }
-            } );
+                        new PrivilegedExceptionAction<Object>()
+                    {
+                        public Object run() throws Exception
+                        {
+                            return bindSasl( saslRequest );
+                        }
+                    } );
 
             return future.get();
         }
@@ -1372,7 +1376,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
     /**
      * {@inheritDoc}
      */
-    public Cursor<Response> search( DN baseDn, String filter, SearchScope scope, String... attributes )
+    public SearchCursor search( DN baseDn, String filter, SearchScope scope, String... attributes )
         throws LdapException
     {
         if ( baseDn == null )
@@ -1398,7 +1402,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
     /**
      * {@inheritDoc}
      */
-    public Cursor<Response> search( String baseDn, String filter, SearchScope scope, String... attributes )
+    public SearchCursor search( String baseDn, String filter, SearchScope scope, String... attributes )
         throws LdapException
     {
         return search( new DN( baseDn ), filter, scope, attributes );
@@ -1486,7 +1490,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
     /**
      * {@inheritDoc}
      */
-    public Cursor<Response> search( SearchRequest searchRequest ) throws LdapException
+    public SearchCursor search( SearchRequest searchRequest ) throws LdapException
     {
         if ( searchRequest == null )
         {
@@ -1499,7 +1503,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
 
         long timeout = getTimeout( searchRequest.getTimeLimit() );
 
-        return new SearchCursor( searchFuture, timeout, TimeUnit.MILLISECONDS );
+        return new SearchCursorImpl( searchFuture, timeout, TimeUnit.MILLISECONDS );
     }
 
 
@@ -1525,7 +1529,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         LOG.debug( "Sending Unbind request \n{}", unbindRequest );
 
         // Send the request to the server
-       // Use this for logging instead: WriteFuture unbindFuture = ldapSession.write( unbindRequest );
+        // Use this for logging instead: WriteFuture unbindFuture = ldapSession.write( unbindRequest );
         ldapSession.write( unbindRequest );
 
         //LOG.debug( "waiting for unbindFuture" );
@@ -1592,6 +1596,8 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
      */
     public void exceptionCaught( IoSession session, Throwable cause ) throws Exception
     {
+        LOG.warn( cause.getMessage(), cause );
+
         if ( cause instanceof ProtocolEncoderException )
         {
             Throwable realCause = ( ( ProtocolEncoderException ) cause ).getCause();
@@ -3145,8 +3151,8 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
             throw new LdapException( e );
         }
     }
-    
-    
+
+
     /**
      * loads schema using the specified schema loader
      * 
@@ -3159,13 +3165,6 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         {
             SchemaManager tmp = new DefaultSchemaManager( loader );
 
-            // we enable all the schemas so that need not check with server for enabled schemas
-            Collection<Schema> schemas = tmp.getLoader().getAllSchemas();
-            for ( Schema s : schemas )
-            {
-                //s.enable();
-            }
-
             tmp.loadAllEnabled();
 
             if ( !tmp.getErrors().isEmpty() )
@@ -3174,7 +3173,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
                 LOG.error( msg + " {}", schemaManager.getErrors() );
                 throw new LdapException( msg );
             }
-            
+
             schemaManager = tmp;
         }
         catch ( LdapException le )
@@ -3417,8 +3416,6 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
     {
         try
         {
-            connect();
-
             checkSession();
 
             ExtendedResponse resp = extended( START_TLS_REQ_OID );
@@ -3484,13 +3481,15 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         Control... ctrls )
         throws LdapException, IOException
     {
-        BindRequest bindReq = createBindRequest( name, credentials, saslMech, ctrls );
+        SaslRequest saslRequest = new SaslRequest();
+        saslRequest.setUsername( name );
+        saslRequest.setCredentials( credentials );
+        saslRequest.setSaslMechanism( saslMech );
+        saslRequest.setAuthorizationId( authzId );
+        saslRequest.setRealmName( realmName );
+        saslRequest.addAllControls( ctrls );
 
-        SaslRequest saslReq = new SaslRequest( bindReq );
-        saslReq.setRealmName( realmName );
-        saslReq.setAuthorizationId( authzId );
-
-        return bindSasl( saslReq );
+        return bindSasl( saslRequest );
     }
 
 
@@ -3510,7 +3509,8 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         // If the session has not been establish, or is closed, we get out immediately
         checkSession();
 
-        BindRequest bindRequest = saslRequest.getBindRequest();
+        BindRequest bindRequest = createBindRequest( ( String ) null, null, saslRequest.getSaslMechanism(), saslRequest
+            .getControls() );
 
         // Update the messageId
         int newId = messageId.incrementAndGet();
@@ -3537,7 +3537,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
                 saslRequest.getAuthorizationId(),
                 "ldap",
                 config.getLdapHost(),
-                saslRequest.getSaslMechProps(),
+                null,
                 new SaslCallbackHandler( saslRequest ) );
 
             // If the SaslClient wasn't created, that means we can't create the SASL client

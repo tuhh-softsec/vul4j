@@ -21,10 +21,11 @@
 package org.apache.directory.ldap.client.api;
 
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import org.apache.directory.shared.ldap.message.BindRequest;
+import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.util.StringTools;
 
 
@@ -35,61 +36,91 @@ import org.apache.directory.shared.ldap.util.StringTools;
  */
 public class SaslRequest
 {
-    /** the bind request */
-    private BindRequest bindRequest;
+    /** The list of controls */
+    private List<Control> controls = new ArrayList<Control>();
 
-    /** the sasl mechaism's properties */
-    private Map<String, String> saslMechProps = new HashMap<String, String>();
+    /** The username */
+    private String username;
+
+    /** The credentials */
+    private byte[] credentials;
 
     /** SASL realm name on the server */
     private String realmName;
 
-    /** the authorization ID of the entity */
+    /** The authorization ID of the entity */
     private String authorizationId;
 
+    /** The mechanism used to decode user identity */
+    private String saslMechanism;
+
 
     /**
-     * Creates a new instance of SaslRequest.
+     * Adds the given controls.
      *
-     * @param bindRequest The included BindRequest
+     * @param controls the controls
      */
-    protected SaslRequest( BindRequest bindRequest )
+    public void addAllControls( Control[] controls )
     {
-        this.bindRequest = bindRequest;
+        this.controls.addAll( Arrays.asList( controls ) );
     }
 
 
     /**
-     * @return The interned BindRequest
-     */
-    public BindRequest getBindRequest()
-    {
-        return bindRequest;
-    }
-
-
-    /**
-     * @return The supported SASL mechanisms
-     */
-    public Map<String, String> getSaslMechProps()
-    {
-        return saslMechProps;
-    }
-
-
-    /**
-     * Set the supported SASL mechanisms
+     * Adds the given control.
      *
-     * @param saslMechProps The list of supported mechanisms
+     * @param control the control
      */
-    public void setSaslMechProps( Map<String, String> saslMechProps )
+    public void addControl( Control control )
     {
-        this.saslMechProps = saslMechProps;
+        this.controls.add( control );
     }
 
 
     /**
-     * @return The realm name
+     * Gets the authorization ID.
+     *
+     * @return the authorization ID
+     */
+    public String getAuthorizationId()
+    {
+        return authorizationId;
+    }
+
+
+    /**
+     * Gets the controls.
+     *
+     * @return the controls
+     */
+    public Control[] getControls()
+    {
+        return controls.toArray( new Control[0] );
+    }
+
+
+    /**
+     * Gets the crendentials
+     *
+     * @return the credentials
+     */
+    public byte[] getCredentials()
+    {
+        if ( credentials != null )
+        {
+            return credentials;
+        }
+        else
+        {
+            return StringTools.EMPTY_BYTES;
+        }
+    }
+
+
+    /**
+     * Gets realm name.
+     *
+     * @return the realm name
      */
     public String getRealmName()
     {
@@ -98,21 +129,24 @@ public class SaslRequest
 
 
     /**
-     * Set the realm Name
-     * @param realmName The realm name
+     * Gets the SASL mechanism.
+     *
+     * @return the SASL mechanism
      */
-    public void setRealmName( String realmName )
+    public String getSaslMechanism()
     {
-        this.realmName = realmName;
+        return saslMechanism;
     }
 
 
     /**
-     * @return The authorization Id
+     * Gets the username.
+     *
+     * @return the username
      */
-    public String getAuthorizationId()
+    public String getUsername()
     {
-        return authorizationId;
+        return username;
     }
 
 
@@ -128,30 +162,45 @@ public class SaslRequest
 
 
     /**
-     * Sets the interned BindRequest
+     * Sets the credentials.
      *
-     * @param bindRequest The interned BindRequest
+     * @param credentials the credentials
      */
-    public void setBindRequest( BindRequest bindRequest )
+    public void setCredentials( byte[] credentials )
     {
-        this.bindRequest = bindRequest;
+        this.credentials = credentials;
     }
 
 
     /**
-     * @return the credentials
+     * Sets the realm name.
+     * 
+     * @param realmName The realm name
      */
-    public byte[] getCredentials()
+    public void setRealmName( String realmName )
     {
-        byte[] credentials = bindRequest.getCredentials();
+        this.realmName = realmName;
+    }
 
-        if ( credentials != null )
-        {
-            return credentials;
-        }
-        else
-        {
-            return StringTools.EMPTY_BYTES;
-        }
+
+    /**
+     * Sets the SASL mechanism
+     *
+     * @param saslMechanism the SASL mechanism
+     */
+    public void setSaslMechanism( String saslMechanism )
+    {
+        this.saslMechanism = saslMechanism;
+    }
+
+
+    /**
+     * Sets the username.
+     *
+     * @param username the username
+     */
+    public void setUsername( String username )
+    {
+        this.username = username;
     }
 }

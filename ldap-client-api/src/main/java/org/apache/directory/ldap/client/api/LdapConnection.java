@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apache.directory.shared.asn1.primitives.OID;
-import org.apache.directory.shared.ldap.cursor.Cursor;
+import org.apache.directory.shared.ldap.cursor.SearchCursor;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.ModificationOperation;
@@ -46,7 +46,6 @@ import org.apache.directory.shared.ldap.message.ModifyDnRequest;
 import org.apache.directory.shared.ldap.message.ModifyDnResponse;
 import org.apache.directory.shared.ldap.message.ModifyRequest;
 import org.apache.directory.shared.ldap.message.ModifyResponse;
-import org.apache.directory.shared.ldap.message.Response;
 import org.apache.directory.shared.ldap.message.SearchRequest;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
@@ -204,10 +203,10 @@ public interface LdapConnection
      * @param filter The filter to use for this search. It can't be empty
      * @param scope The search scope : OBJECT, ONELEVEL or SUBTREE
      * @param attributes The attributes to use for this search
-     * @return A cursor on the result.
+     * @return A search cursor on the result.
      * @throws LdapException if some error occurred
      */
-    Cursor<Response> search( DN baseDn, String filter, SearchScope scope, String... attributes )
+    SearchCursor search( DN baseDn, String filter, SearchScope scope, String... attributes )
         throws LdapException;
 
 
@@ -227,10 +226,10 @@ public interface LdapConnection
      * @param filter The filter to use for this search. It can't be empty
      * @param scope The search scope : OBJECT, ONELEVEL or SUBTREE
      * @param attributes The attributes to use for this search
-     * @return A cursor on the result.
+     * @return A search cursor on the result.
      * @throws LdapException if some error occurred
      */
-    Cursor<Response> search( String baseDn, String filter, SearchScope scope, String... attributes )
+    SearchCursor search( String baseDn, String filter, SearchScope scope, String... attributes )
         throws LdapException;
 
 
@@ -238,10 +237,10 @@ public interface LdapConnection
      * Performs search in a synchronous mode.
      *
      * @param searchRequest The search configuration
-     * @return A {@link Cursor} containing Entries and References
+     * @return a search cursor on the result.
      * @throws LdapException if some error occurred
      */
-    Cursor<Response> search( SearchRequest searchRequest ) throws LdapException;
+    SearchCursor search( SearchRequest searchRequest ) throws LdapException;
 
 
     //------------------------ The LDAP operations ------------------------//
@@ -702,8 +701,8 @@ public interface LdapConnection
 
 
     /**
-     * Loads the default schema that is bundled in the API.
-     *
+     * Loads all the default schemas that are bundled with the API.<br><br>
+     * <b>Note:</b> This method enables <b>all</b> schemas prior to loading
      * @throws LdapException in case of problems while loading the schema
      */
     void loadSchema() throws LdapException;
