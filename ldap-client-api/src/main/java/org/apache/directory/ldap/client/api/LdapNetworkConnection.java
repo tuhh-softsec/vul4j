@@ -3125,13 +3125,21 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         try
         {
             JarLdifSchemaLoader jarSchemaLoader = new JarLdifSchemaLoader();
+
+            // we enable all the schemas so that need not check with server for enabled schemas
+            Collection<Schema> schemas = jarSchemaLoader.getAllSchemas();
+            for ( Schema s : schemas )
+            {
+                s.enable();
+            }
+
             loadSchema( jarSchemaLoader );
         }
-        catch( LdapException e )
+        catch ( LdapException e )
         {
             throw e;
         }
-        catch( Exception e )
+        catch ( Exception e )
         {
             LOG.error( "failed to load the schema using JarLdifSchemaLoader", e );
             throw new LdapException( e );
