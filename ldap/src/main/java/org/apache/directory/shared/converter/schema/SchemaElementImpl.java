@@ -21,7 +21,9 @@ package org.apache.directory.shared.converter.schema;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.directory.shared.ldap.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
@@ -54,7 +56,7 @@ public abstract class SchemaElementImpl implements SchemaElement
     protected boolean obsolete = false;
 
     /** The optional list of extensions */
-    protected List<String> extensions = new ArrayList<String>();
+    protected Map<String, List<String>> extensions = new HashMap<String, List<String>>();
 
 
     /**
@@ -123,7 +125,16 @@ public abstract class SchemaElementImpl implements SchemaElement
     /**
      * {@inheritDoc}
      */
-    public List<String> getExtensions()
+    public List<String> getExtension( String key)
+    {
+        return extensions.get( key );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Map<String, List<String>> getExtensions()
     {
         return extensions;
     }
@@ -132,7 +143,7 @@ public abstract class SchemaElementImpl implements SchemaElement
     /**
      * {@inheritDoc}
      */
-    public void setExtensions( List<String> extensions )
+    public void setExtensions( Map<String, List<String>> extensions )
     {
         this.extensions = extensions;
     }
@@ -221,7 +232,7 @@ public abstract class SchemaElementImpl implements SchemaElement
         Entry entry = new DefaultEntry();
         EntryAttribute attribute = new DefaultEntryAttribute( id );
 
-        for ( String extension : extensions )
+        for ( String extension : extensions.keySet() )
         {
             attribute.add( extension );
         }
