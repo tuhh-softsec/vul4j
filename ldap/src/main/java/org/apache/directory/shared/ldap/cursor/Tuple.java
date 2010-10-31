@@ -195,7 +195,7 @@ public class Tuple<K, V>
             return false;
         }
 
-        Tuple<?, ?> other = ( org.apache.directory.shared.ldap.cursor.Tuple<?, ?> ) obj;
+        Tuple<?, ?> other = ( Tuple<?, ?> ) obj;
 
         if ( key == null )
         {
