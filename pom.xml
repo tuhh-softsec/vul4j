@@ -34,9 +34,9 @@ limitations under the License.
   <url>http://plexus.codehaus.org/plexus-utils</url>
 
   <scm>
-    <connection>scm:svn:http://svn.codehaus.org/plexus/plexus-utils/trunk/</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/plexus/plexus-utils/trunk</developerConnection>
-    <url>http://fisheye.codehaus.org/browse/plexus/plexus-utils/trunk/</url>
+    <connection>scm:git:git@github.com:sonatype/plexus-utils.git</connection>
+    <developerConnection>scm:git:git@github.com:sonatype/plexus-utils.git</developerConnection>
+    <url>http://github.com/sonatype/plexus-utils</url>
   </scm>
   <issueManagement>
     <system>JIRA</system>
