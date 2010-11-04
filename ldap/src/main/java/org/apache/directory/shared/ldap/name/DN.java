@@ -1029,6 +1029,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
 
         newDn.normName = newDn.toNormName();
         newDn.upName = getUpNamePrefix( posn );
+        newDn.normalized.set( normalized.get() );
 
         return newDn;
     }

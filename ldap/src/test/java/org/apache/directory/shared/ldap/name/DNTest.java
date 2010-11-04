@@ -2418,6 +2418,7 @@ public class DNTest
 
         DN two = new DN( "cn=test,o=acme" );
         assertNotNull( two.getParent() );
+        assertFalse( two.getParent().isNormalized() );
         assertFalse( two.getParent().isEmpty() );
         assertEquals( "o=acme", two.getParent().getName() );
 
@@ -2425,6 +2426,7 @@ public class DNTest
         three.normalize( oids );
         DN threeParent = three.getParent();
         assertNotNull( threeParent );
+        assertTrue( threeParent.isNormalized() );
         assertFalse( threeParent.isEmpty() );
         assertEquals( "dc=example,dc=com", threeParent.getName() );
         assertEquals( 2, threeParent.getRdns().size() );
@@ -2432,6 +2434,7 @@ public class DNTest
         DN five = new DN( "uid=user1,ou=sales,ou=users,dc=example,dc=com" );
         DN fiveParent = five.getParent();
         assertNotNull( fiveParent );
+        assertFalse( fiveParent.isNormalized() );
         assertFalse( fiveParent.isEmpty() );
         assertEquals( "ou=sales,ou=users,dc=example,dc=com", fiveParent.getName() );
         assertEquals( 4, fiveParent.getRdns().size() );
