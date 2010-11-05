@@ -49,16 +49,13 @@ import org.apache.directory.shared.ldap.message.spi.BinaryAttributeDetector;
 
 /**
  * The LdapMessage container stores all the messages decoded by the Asn1Decoder.
- * When dealing whith an incoding PDU, we will obtain a LdapMessage in the
- * ILdapContainer.
+ * When dealing with an incoding PDU, we will obtain a LdapMessage in the
+ * container.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class LdapMessageContainer extends AbstractContainer
 {
-    // ~ Instance fields
-    // ----------------------------------------------------------------------------
-
     /** The internal ldap message */
     private Message message;
 
@@ -71,9 +68,6 @@ public class LdapMessageContainer extends AbstractContainer
     /** The current control */
     private AbstractControl currentControl;
 
-
-    // ~ Constructors
-    // -------------------------------------------------------------------------------
 
     /**
      * Creates a new LdapMessageContainer object. We will store ten grammars,
@@ -107,8 +101,6 @@ public class LdapMessageContainer extends AbstractContainer
     }
 
 
-    // ~ Methods
-    // ------------------------------------------------------------------------------------
     /**
      * @return Returns the ldapMessage.
      */
@@ -319,6 +311,9 @@ public class LdapMessageContainer extends AbstractContainer
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void clean()
     {
         super.clean();
