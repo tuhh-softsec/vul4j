@@ -20,6 +20,8 @@
 package org.apache.directory.shared.asn1.ber;
 
 
+import java.nio.ByteBuffer;
+
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.TLVStateEnum;
@@ -32,6 +34,22 @@ import org.apache.directory.shared.asn1.ber.tlv.TLVStateEnum;
  */
 public interface Asn1Container
 {
+    /**
+     * Gets the current stream containing the bytes to decode
+     * 
+     * @return The current stream
+     */
+    ByteBuffer getStream();
+    
+    
+    /**
+     * Stores the Stream being decoded
+     * 
+     * @param stream The stream being decoded
+     */
+    void setStream( ByteBuffer stream );
+    
+    
     /**
      * Get the current grammar state
      * 

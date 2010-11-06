@@ -20,6 +20,8 @@
 package org.apache.directory.shared.asn1.ber;
 
 
+import java.nio.ByteBuffer;
+
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.States;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
@@ -65,6 +67,8 @@ public abstract class AbstractContainer implements Asn1Container
     /** The incremental id used to tag TLVs */
     private int id = 0;
 
+    /** The Stream being decoded */
+    private ByteBuffer stream;
 
     /**
      * Creates a new instance of AbstractContainer with a starting state.
@@ -275,4 +279,23 @@ public abstract class AbstractContainer implements Asn1Container
             this.maxPDUSize = Integer.MAX_VALUE;
         }
     }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public ByteBuffer getStream()
+    {
+        return stream;
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void setStream( ByteBuffer stream )
+    {
+        this.stream = stream;
+    }
+
 }
