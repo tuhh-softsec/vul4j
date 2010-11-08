@@ -97,6 +97,7 @@
     <path id="id.classpath.xalan" >
         <pathelement location="${lib.xalan.1}" />
         <pathelement location="${lib.xalan.2}" />
+        <pathelement location="${lib.xalan.3}" />
     </path >
     <path id="id.classpath.xerces" >
         <pathelement location="${lib.xerces.1}" />
@@ -127,7 +128,7 @@
     </path >
     <path id="id.classpath.test" >
         <path refid="id.classpath" />
-	<pathelement path="${lib.junit}"/>
+        <pathelement path="${lib.junit}"/>
         <pathelement location="${dir.build.bin}" />
         <pathelement location="${dir.build.test}" />
         <path refid="id.classpath.coverage" />
@@ -274,7 +275,8 @@
 			unless="is.bin.dist">
         <javac target="1.4" source="1.4" srcdir="${dir.src}"
                destdir="${dir.build.bin}"
-               debug="${build.compile.debug}">
+               debug="${build.compile.debug}"
+               includeAntRuntime="false">
             <classpath refid="id.classpath" />
             <include name="**/org/apache/xml/security/**/*.java" />
             <include name="**/javax/xml/crypto/**/*.java" />
@@ -294,7 +296,8 @@
 		unless="is.bin.dist">
     	<javac srcdir="${dir.src.test}"
                destdir="${dir.build.test}"
-               debug="${build.compile.debug}">
+               debug="${build.compile.debug}"
+               includeAntRuntime="false">
         	<classpath refid="id.classpath.test" />
         	<include name="**/org/apache/xml/security/**/*.java" />
         	<include name="**/javax/xml/crypto/**/*.java" />
@@ -312,7 +315,8 @@
 		unless="is.bin.dist">
 	<javac srcdir="${dir.src.samples}"
 		destdir="${dir.build.samples}"
-		debug="${build.compile.debug}">
+		debug="${build.compile.debug}"
+        includeAntRuntime="false">
 		<classpath refid="id.classpath.samples"/>
 	</javac>
     </target>
