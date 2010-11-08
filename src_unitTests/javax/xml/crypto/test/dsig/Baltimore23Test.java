@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2009 The Apache Software Foundation.
+ * Copyright 2006-2010 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import java.io.FileInputStream;
 import java.security.KeyStore;
 import java.security.Security;
 import javax.xml.crypto.KeySelector;
+import javax.xml.crypto.URIDereferencer;
 import javax.xml.crypto.dsig.XMLSignatureException;
 
 import junit.framework.*;
@@ -40,6 +41,7 @@ public class Baltimore23Test extends TestCase {
 
     private SignatureValidator validator;
     private File dir;
+    private final URIDereferencer ud;
 
     static {
         Security.insertProviderAt
@@ -55,6 +57,7 @@ public class Baltimore23Test extends TestCase {
 	    + "ie" + fs + "baltimore" + fs + "merlin-examples",
             "merlin-xmldsig-twenty-three");
 	validator = new SignatureValidator(dir);
+        ud = new LocalHttpCacheURIDereferencer();
     }
 
     public void test_signature_enveloped_dsa() throws Exception {
@@ -93,7 +96,7 @@ public class Baltimore23Test extends TestCase {
         String file = "signature-external-dsa.xml";
         
 	boolean coreValidity = validator.validate
-	    (file, new KeySelectors.KeyValueKeySelector());
+	    (file, new KeySelectors.KeyValueKeySelector(), ud);
 	assertTrue("Signature failed core validation", coreValidity);
     }
     
@@ -132,7 +135,7 @@ public class Baltimore23Test extends TestCase {
         String file = "signature-keyname.xml";
         
 	boolean coreValidity = validator.validate
-	    (file, new KeySelectors.CollectionKeySelector(dir));
+	    (file, new KeySelectors.CollectionKeySelector(dir), ud);
 	assertTrue("Signature failed core validation", coreValidity);
     }
     
@@ -140,7 +143,7 @@ public class Baltimore23Test extends TestCase {
         String file = "signature-retrievalmethod-rawx509crt.xml";
         
 	boolean coreValidity = validator.validate
-	    (file, new KeySelectors.CollectionKeySelector(dir));
+	    (file, new KeySelectors.CollectionKeySelector(dir), ud);
 	assertTrue("Signature failed core validation", coreValidity);
     }
     
@@ -148,7 +151,7 @@ public class Baltimore23Test extends TestCase {
         String file = "signature-x509-crt-crl.xml";
         
 	boolean coreValidity = validator.validate
-	    (file, new KeySelectors.RawX509KeySelector());
+	    (file, new KeySelectors.RawX509KeySelector(), ud);
 	assertTrue("Signature failed core validation", coreValidity);
     }
 
@@ -156,7 +159,7 @@ public class Baltimore23Test extends TestCase {
         String file = "signature-x509-crt.xml";
        
 	boolean coreValidity = validator.validate
-	    (file, new KeySelectors.RawX509KeySelector());
+	    (file, new KeySelectors.RawX509KeySelector(), ud);
 	assertTrue("Signature failed core validation", coreValidity);
     }
     
@@ -164,7 +167,7 @@ public class Baltimore23Test extends TestCase {
         String file = "signature-x509-is.xml";
         
 	boolean coreValidity = validator.validate
-	    (file, new KeySelectors.CollectionKeySelector(dir));
+	    (file, new KeySelectors.CollectionKeySelector(dir), ud);
 	assertTrue("Signature failed core validation", coreValidity);
     }
     
@@ -172,7 +175,7 @@ public class Baltimore23Test extends TestCase {
         String file = "signature-x509-ski.xml";
         
 	boolean coreValidity = validator.validate
-	    (file, new KeySelectors.CollectionKeySelector(dir));
+	    (file, new KeySelectors.CollectionKeySelector(dir), ud);
 	assertTrue("Signature failed core validation", coreValidity);
     }
 
@@ -180,7 +183,7 @@ public class Baltimore23Test extends TestCase {
         String file = "signature-x509-sn.xml";
         
 	boolean coreValidity = validator.validate
-	    (file, new KeySelectors.CollectionKeySelector(dir));
+	    (file, new KeySelectors.CollectionKeySelector(dir), ud);
 	assertTrue("Signature failed core validation", coreValidity);
     }
 
@@ -195,7 +198,7 @@ public class Baltimore23Test extends TestCase {
 	KeyStore ks = KeyStore.getInstance("JKS");
 	ks.load(new FileInputStream(keystore), "changeit".toCharArray());
 
-        boolean cv = validator.validate(file, new X509KeySelector(ks, false));
+        boolean cv = validator.validate(file, new X509KeySelector(ks, false), ud);
         assertTrue("Signature failed core validation", cv);
     }
 

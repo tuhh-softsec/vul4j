@@ -1,5 +1,5 @@
 /*
- * Copyright 2006 The Apache Software Foundation.
+ * Copyright 2006-2010 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ package javax.xml.crypto.test.dsig;
 import java.io.File;
 import java.security.Security;
 import javax.xml.crypto.KeySelector;
+import javax.xml.crypto.URIDereferencer;
 
 import junit.framework.*;
 
@@ -38,6 +39,7 @@ public class Baltimore18Test extends TestCase {
     private SignatureValidator validator;
     private File dir;
     private KeySelector cks;
+    private URIDereferencer ud;
 
     static {
 	Security.insertProviderAt
@@ -54,54 +56,55 @@ public class Baltimore18Test extends TestCase {
             "merlin-xmldsig-eighteen");
 	validator = new SignatureValidator(dir);
 	cks = new KeySelectors.CollectionKeySelector(dir);
+        ud = new LocalHttpCacheURIDereferencer();
     }
     
     public void test_signature_keyname() throws Exception {
         String file = "signature-keyname.xml";
 	
-	boolean coreValidity = validator.validate(file, cks);
+	boolean coreValidity = validator.validate(file, cks, ud);
 	assertTrue("Signature failed core validation", coreValidity);
     }
     
     public void test_signature_retrievalmethod_rawx509crt() throws Exception {
         String file = "signature-retrievalmethod-rawx509crt.xml";
 
-	boolean coreValidity = validator.validate(file, cks);
+	boolean coreValidity = validator.validate(file, cks, ud);
 	assertTrue("Signature failed core validation", coreValidity);
     }
     
     public void test_signature_x509_crt_crl() throws Exception {
         String file = "signature-x509-crt-crl.xml";
 
-	boolean coreValidity = validator.validate(file, cks);
+	boolean coreValidity = validator.validate(file, cks, ud);
 	assertTrue("Signature failed core validation", coreValidity);
     }
 
     public void test_signature_x509_crt() throws Exception {
         String file = "signature-x509-crt.xml";
 
-	boolean coreValidity = validator.validate(file, cks);
+	boolean coreValidity = validator.validate(file, cks, ud);
 	assertTrue("Signature failed core validation", coreValidity);
     }
     
     public void test_signature_x509_is() throws Exception {
         String file = "signature-x509-is.xml";
 
-	boolean coreValidity = validator.validate(file, cks);
+	boolean coreValidity = validator.validate(file, cks, ud);
 	assertTrue("Signature failed core validation", coreValidity);
     }
     
     public void test_signature_x509_ski() throws Exception {
         String file = "signature-x509-ski.xml";
 
-	boolean coreValidity = validator.validate(file, cks);
+	boolean coreValidity = validator.validate(file, cks, ud);
 	assertTrue("Signature failed core validation", coreValidity);
     }
 
     public void test_signature_x509_sn() throws Exception {
         String file = "signature-x509-sn.xml";
 
-	boolean coreValidity = validator.validate(file, cks);
+	boolean coreValidity = validator.validate(file, cks, ud);
 	assertTrue("Signature failed core validation", coreValidity);
     }
 

@@ -1,4 +1,5 @@
 Changelog for "Apache xml-security" <http://santuario.apache.org/>
+    Fixed Bug 50215: test_jsr105 target appears to fail certain tests because of changes to W3C xml-stylesheet spec
 New in v1.4.4-SNAPSHOT
     Fixed Bug 50122: JSR 105 TransformService classloading issue
     Fixed Bug 40897: String comparisons using '==' causes validation errors with some parsers.
