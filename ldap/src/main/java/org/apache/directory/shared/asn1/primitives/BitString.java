@@ -27,7 +27,7 @@ import org.apache.directory.shared.i18n.I18n;
 
 /**
  * Implement the Bit String primitive type. A BitString is internally stored as
- * an array of int.
+ * an array of byte.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
