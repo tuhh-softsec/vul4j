@@ -20,6 +20,10 @@
 package org.apache.directory.shared.asn1.ber.tlv;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -33,10 +37,6 @@ import org.apache.directory.shared.asn1.util.IntegerDecoder;
 import org.apache.directory.shared.asn1.util.LongDecoder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 
 
@@ -783,7 +783,7 @@ public class ValueTest
             fail();
         }
         
-        assertEquals( "0x03 0x03 0x06 0x80 0x00 ", Asn1StringUtils.dumpBytes( buffer.array() )  );
+        assertEquals( "0x03 0x03 0x06 0x00 0x40 ", Asn1StringUtils.dumpBytes( buffer.array() )  );
     }
 }
 

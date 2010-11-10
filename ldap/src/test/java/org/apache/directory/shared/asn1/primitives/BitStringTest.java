@@ -20,16 +20,16 @@
 package org.apache.directory.shared.asn1.primitives;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.util.Asn1StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertTrue;
 
 
 /**
@@ -98,10 +98,7 @@ public class BitStringTest
     public void testSingleBitBitString() throws DecoderException
     {
 
-        BitString bitString = new BitString( 1 );
-
-        bitString.setData( new byte[]
-            { 0x07, ( byte ) 0x80 } );
+        BitString bitString = new BitString(new byte[] {0x07, ( byte ) 0x80 });
 
         assertEquals( true, bitString.getBit( 0 ) );
     }
@@ -196,7 +193,7 @@ public class BitStringTest
         BitString bitString = new BitString( 32 );
 
         byte[] bytes = new byte[]
-            { (byte)0xAA, 0x11, (byte)0x88, (byte)0xFE };
+            { 0x00, (byte)0xAA, 0x11, (byte)0x88, (byte)0xFE };
         
         int[] bits = new int[]
             {
@@ -210,7 +207,7 @@ public class BitStringTest
         {
             if ( bits[i] == 1 )
             {
-                bitString.setBit( bits.length - i - 1 );
+                bitString.setBit( i );
             }
         }
         
@@ -234,13 +231,13 @@ public class BitStringTest
         {
             if ( bits[i] == 1 )
             {
-                bitString.setBit( bits.length - i - 1 );
+                bitString.setBit( i );
             }
         }
         
         bitString.setBit( 9 );
         byte[] bytesModified = new byte[]
-            { (byte)0xAA, 0x11, (byte)0x8A, (byte)0xFE };
+            { 0x00, (byte)0xAA, 0x51, (byte)0x88, (byte)0xFE };
                             
         assertEquals( Asn1StringUtils.dumpBytes( bytesModified ), Asn1StringUtils.dumpBytes( bitString.getData() ) );
     }
@@ -262,13 +259,13 @@ public class BitStringTest
         {
             if ( bits[i] == 1 )
             {
-                bitString.setBit( bits.length - i - 1 );
+                bitString.setBit( i );
             }
         }
         
         bitString.clearBit( 11 );
         byte[] bytesModified = new byte[]
-            { (byte)0xAA, 0x11, (byte)0x80, (byte)0xFE };
+            { 0x00, (byte)0xAA, 0x11, (byte)0x80, (byte)0xFE };
                             
         assertEquals( Asn1StringUtils.dumpBytes( bytesModified ), Asn1StringUtils.dumpBytes( bitString.getData() ) );
     }

@@ -685,8 +685,7 @@ public class Value implements Serializable
             int length = bitString.size() + 1;
 
             buffer.put( TLV.getBytes( length ) );
-            buffer.put( bitString.getUnusedBits() );
-            buffer.put( bitString.getDataRef() );
+            buffer.put( bitString.getData() );
         }
         catch ( BufferOverflowException boe )
         {

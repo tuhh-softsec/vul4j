@@ -39,20 +39,8 @@ public class BitString implements Serializable
     /** A null MutableString */
     public static final BitString EMPTY_STRING = new BitString( 1 );
 
-    /**
-     * A flag to mark the OctetString as Streamed (for OctetString larger than
-     * 1024 chars)
-     */
-    public static final boolean STREAMED = true;
-
-    /** The default length of a BitString */
-    private static final int DEFAULT_LENGTH = 1024;
-
     /** The number of unused ints */
     private int nbUnusedBits;
-
-    /** Tells if the OctetString is streamed or not */
-    private boolean isStreamed;
 
     /** The string is stored in a byte array */
     private byte[] bytes;
@@ -88,46 +76,7 @@ public class BitString implements Serializable
             nbBytes += 1;
         }
 
-        nbUnusedBits = ( 8 - length % 8 ) % 8;
-
-        if ( nbBytes > DEFAULT_LENGTH )
-        {
-            isStreamed = true;
-            bytes = new byte[nbBytes];
-        }
-        else
-        {
-            isStreamed = false;
-            bytes = new byte[nbBytes];
-        }
-    }
-
-
-    /**
-     * Creates a streamed BitString with a specific length. Actually, it's just
-     * a simple BitString.
-     * 
-     * @param length The BitString length, in number of bits
-     * @param isStreamed Tells if the BitString must be streamed or not
-     */
-    public BitString( int length, boolean isStreamed )
-    {
-        if ( length <= 0 )
-        {
-            // This is not allowed
-            throw new IndexOutOfBoundsException( I18n.err( I18n.ERR_00029_NULL_OR_NEG_LENGTH_NOT_ALLOWED ) );
-        }
-
-        nbBits = length;
-        this.isStreamed = isStreamed;
-        nbBytes = ( length / 8 );
-
-        if ( ( length % 8 ) != 0 )
-        {
-            nbBytes += 1;
-        }
-
-        nbUnusedBits = length % 8;
+        nbUnusedBits = ( 8 - ( length % 8 ) ) & 0x07;
 
         bytes = new byte[nbBytes];
     }
@@ -141,23 +90,13 @@ public class BitString implements Serializable
      */
     public BitString( byte[] bytes )
     {
-        nbBytes = bytes.length - 1;
-
-        if ( nbBytes > DEFAULT_LENGTH )
+        if ( ( bytes == null ) || ( bytes.length == 0 ) )
         {
-            isStreamed = true;
-
-            // It will be a streamed OctetString.
-            this.bytes = new byte[nbBytes];
-        }
-        else
-        {
-            isStreamed = false;
-
-            this.bytes = new byte[nbBytes];
+            nbBits = -1;
+            return;
         }
 
-        setBytes( bytes, nbBytes );
+        setBytes( bytes );
     }
 
 
@@ -167,13 +106,15 @@ public class BitString implements Serializable
      * @param bytes The bytes to copy
      * @param nbBytes Number of bytes to copy
      */
-    private void setBytes( byte[] bytes, int nbBytes )
+    private void setBytes( byte[] bytes )
     {
-        // The first byte contains the number of unused ints
+        // The first byte contains the number of unused bits
         nbUnusedBits = bytes[0] & 0x07;
+        nbBytes = bytes.length - 1;
         nbBits = ( nbBytes * 8 ) - nbUnusedBits;
+        this.bytes = new byte[nbBytes];
 
-        // We have to transfer the data from bytes to ints
+        // We have to transfer the data
         for ( int i = 0; i < nbBytes; i++ )
         {
             this.bytes[i] = bytes[i + 1];
@@ -195,42 +136,24 @@ public class BitString implements Serializable
             return;
         }
 
-        int nbb = bytes.length - 1;
-
-        if ( ( nbb > DEFAULT_LENGTH ) && ( bytes.length < nbb ) )
-        {
-            // The current size is too small.
-            // We have to allocate more space
-            bytes = new byte[nbb];
-        }
-
-        setBytes( bytes, nbb );
+        setBytes( bytes );
     }
 
 
     /**
-     * Get the representation of a BitString
+     * Get the representation of a BitString. A first byte containing the number
+     * of unused bits is added
      * 
      * @return A byte array which represent the BitString
      */
     public byte[] getData()
     {
-        byte[] copy = new byte[bytes.length];
+        byte[] copy = new byte[bytes.length + 1];
 
-        System.arraycopy( bytes, 0, copy, 0, bytes.length );
+        System.arraycopy( bytes, 0, copy, 1, bytes.length );
+        copy[0] = (byte)nbUnusedBits;
 
         return copy;
-    }
-
-
-    /**
-     * Get the representation of a BitString
-     * 
-     * @return A byte array which represent the BitString (this is a reference to the internal bytes)
-     */
-    public byte[] getDataRef()
-    {
-        return bytes;
     }
 
 
@@ -259,10 +182,10 @@ public class BitString implements Serializable
             throw new IndexOutOfBoundsException( I18n.err( I18n.ERR_00030_BIT_NUMBER_OUT_OF_BOUND ) );
         }
 
-        int posInt = nbBytes - 1 - ( ( pos + nbUnusedBits ) >> 3 );
-        int bitNumber = ( pos + nbUnusedBits ) % 8;
+        int posBytes = ( pos >> 3 );
+        int bitNumber = 7 - pos % 8;
 
-        bytes[posInt] |= ( 1 << bitNumber );
+        bytes[posBytes] |= ( 1 << bitNumber );
     }
 
 
@@ -281,27 +204,28 @@ public class BitString implements Serializable
             throw new IndexOutOfBoundsException( I18n.err( I18n.ERR_00030_BIT_NUMBER_OUT_OF_BOUND ) );
         }
 
-        int posInt = nbBytes - 1 - ( ( pos + nbUnusedBits ) >> 3 );
-        int bitNumber = ( pos + nbUnusedBits ) % 8;
+        int realPos = pos + nbUnusedBits;
+        int posBytes = nbBytes - 1 - ( realPos >> 3 );
+        int bitNumber = realPos % 8;
 
-        bytes[posInt] &= ~( 1 << bitNumber );
+        bytes[posBytes] &= ~( 1 << bitNumber );
     }
 
 
     /**
      * Get the bit stored into the BitString at a specific position. 
-     * The bits are stored from left to right, the LSB on the right and the
-     * MSB on the left
+     * The bits are stored from left to right, the LSB on the left and the
+     * MSB on the right
      * For instance, if we have 10 bits, then they are coded as 
-     * b9 b8 b7 b6 - b5 b4 b3 b2 - b1 b0 x x - x x x x
+     * b0 b1 b2 b3 - b4 b5 b6 b7 - b8 b9 x x - x x x x
      * 
      * With '1001 000x', where x is an unused bit, 
      *       ^ ^    ^ 
      *       | |    | 
      *       | |    |  
-     *       | |    +----- getBit(0) = 0 
-     *       | +---------- getBit(4) = 0 
-     *       +------------ getBit(6) = 1
+     *       | |    +----- getBit(6) = 0 
+     *       | +---------- getBit(2) = 0 
+     *       +------------ getBit(0) = 1
      *       
      * @param pos The position of the requested bit.  
      * 
@@ -315,10 +239,12 @@ public class BitString implements Serializable
             throw new IndexOutOfBoundsException( I18n.err( I18n.ERR_00031_CANNOT_FIND_BIT, pos, nbBits ) );
         }
 
-        int posInt = nbBytes - 1 - ( ( pos + nbUnusedBits ) >> 3 );
-        int bitNumber = ( pos + nbUnusedBits ) % 8;
+        int realPos = pos + nbUnusedBits;
+        int posBytes = nbBytes - ( realPos >> 3 ) - 1;
+        int bitNumber = realPos % 8;
 
-        int res = bytes[posInt] & ( 1 << bitNumber );
+        int res = bytes[posBytes] & ( 1 << bitNumber );
+        
         return res != 0;
     }
 
@@ -333,17 +259,6 @@ public class BitString implements Serializable
 
 
     /**
-     * Tells if the OctetString is streamed or not
-     * 
-     * @return <code>true</code> if the OctetString is streamed.
-     */
-    public boolean isStreamed()
-    {
-        return isStreamed;
-    }
-
-
-    /**
      * Return a native String representation of the BitString.
      * 
      * @return A String representing the BitString
@@ -352,7 +267,7 @@ public class BitString implements Serializable
     {
         StringBuilder sb = new StringBuilder();
 
-        for ( int i = nbBits; i > 0; i-- )
+        for ( int i = nbBits-1; i >= 0; i-- )
         {
             if ( getBit( i ) )
             {
