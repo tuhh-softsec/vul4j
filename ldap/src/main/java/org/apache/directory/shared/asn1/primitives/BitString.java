@@ -182,7 +182,7 @@ public class BitString implements Serializable
             throw new IndexOutOfBoundsException( I18n.err( I18n.ERR_00030_BIT_NUMBER_OUT_OF_BOUND ) );
         }
 
-        int posBytes = ( pos >> 3 );
+        int posBytes = pos >> 3;
         int bitNumber = 7 - pos % 8;
 
         bytes[posBytes] |= ( 1 << bitNumber );
@@ -204,9 +204,8 @@ public class BitString implements Serializable
             throw new IndexOutOfBoundsException( I18n.err( I18n.ERR_00030_BIT_NUMBER_OUT_OF_BOUND ) );
         }
 
-        int realPos = pos + nbUnusedBits;
-        int posBytes = nbBytes - 1 - ( realPos >> 3 );
-        int bitNumber = realPos % 8;
+        int posBytes = pos >> 3;
+        int bitNumber = 7 - pos % 8;
 
         bytes[posBytes] &= ~( 1 << bitNumber );
     }
@@ -239,9 +238,8 @@ public class BitString implements Serializable
             throw new IndexOutOfBoundsException( I18n.err( I18n.ERR_00031_CANNOT_FIND_BIT, pos, nbBits ) );
         }
 
-        int realPos = pos + nbUnusedBits;
-        int posBytes = nbBytes - ( realPos >> 3 ) - 1;
-        int bitNumber = realPos % 8;
+        int posBytes = pos >> 3;
+        int bitNumber = 7 - pos % 8;
 
         int res = bytes[posBytes] & ( 1 << bitNumber );
         
@@ -250,11 +248,11 @@ public class BitString implements Serializable
 
 
     /**
-     * @return The number of bytes used to encode this BitString
+     * @return The number of bits stored in this BitString
      */
     public int size()
     {
-        return nbBytes;
+        return nbBits;
     }
 
 

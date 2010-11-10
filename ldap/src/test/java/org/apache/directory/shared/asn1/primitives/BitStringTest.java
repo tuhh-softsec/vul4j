@@ -265,7 +265,7 @@ public class BitStringTest
         
         bitString.clearBit( 11 );
         byte[] bytesModified = new byte[]
-            { 0x00, (byte)0xAA, 0x11, (byte)0x80, (byte)0xFE };
+            { 0x00, (byte)0xAA, 0x01, (byte)0x88, (byte)0xFE };
                             
         assertEquals( Asn1StringUtils.dumpBytes( bytesModified ), Asn1StringUtils.dumpBytes( bitString.getData() ) );
     }
