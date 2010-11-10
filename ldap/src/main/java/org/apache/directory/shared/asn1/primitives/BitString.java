@@ -265,7 +265,7 @@ public class BitString implements Serializable
     {
         StringBuilder sb = new StringBuilder();
 
-        for ( int i = nbBits-1; i >= 0; i-- )
+        for ( int i = 0; i < nbBits; i++ )
         {
             if ( getBit( i ) )
             {
