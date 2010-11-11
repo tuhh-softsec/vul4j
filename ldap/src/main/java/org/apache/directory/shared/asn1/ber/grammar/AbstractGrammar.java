@@ -124,7 +124,7 @@ public abstract class AbstractGrammar implements Grammar
 
             // If we have no more grammar on the stack, then this is an
             // error
-            throw new DecoderException( I18n.err( I18n.ERR_00002_BAD_TRANSITION ) );
+            throw new DecoderException( errorMessage );
         }
 
         if ( IS_DEBUG )
