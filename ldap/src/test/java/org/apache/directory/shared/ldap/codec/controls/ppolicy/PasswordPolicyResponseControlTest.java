@@ -43,13 +43,14 @@ public class PasswordPolicyResponseControlTest
     public void testDecodeRespWithExpiryWarningAndError() throws Exception
     {
         Asn1Decoder decoder = new PasswordPolicyResponseControlDecoder();
-        ByteBuffer bb = ByteBuffer.allocate( 8 );
+        ByteBuffer bb = ByteBuffer.allocate( 0xA );
 
         bb.put( new byte[]
             { 
-             0x30, 0x06,
-              (byte)0x80, 1, 1, //  
-              0x0A, 0x01, 1 
+             0x30, 0x08,
+              (byte)0xA0, 0x03,         // timeBeforeExpiration
+                     0x02, 0x01, 0x01, 
+              0x0A, 0x01, 0x01             // ppolicyError
             } );
 
         bb.flip();
@@ -63,17 +64,18 @@ public class PasswordPolicyResponseControlTest
         assertEquals( 1, control.getTimeBeforeExpiration() );
         assertEquals( 1, control.getPasswordPolicyError().getValue() );
         
-        ByteBuffer buffer = ByteBuffer.allocate( 0x25 );
+        ByteBuffer buffer = ByteBuffer.allocate( 0x27 );
         buffer.put( new byte[]
                {
-                 0x30, 0x23,
+                 0x30, 0x25,
                   0x04, 0x19,
                    '1','.', '3', '.', '6', '.', '1', '.', '4',
                    '.', '1', '.', '4', '2', '.', '2', '.', '2',
                    '7', '.', '8', '.', '5', '.', '1',
-                   0x04, 0x06,
-                   (byte)0x80, 1, 0x01, //  
-                   0x0A, 0x01, 0x01
+                   0x04, 0x08,
+                   (byte)0xA0, 0x03,         // timeBeforeExpiration
+                          0x02, 0x01, 0x01, 
+                   0x0A, 0x01, 0x01             // error
                } );
         buffer.flip();
         
@@ -86,13 +88,14 @@ public class PasswordPolicyResponseControlTest
     public void testDecodeRespWithGraceAuthWarningAndError() throws Exception
     {
         Asn1Decoder decoder = new PasswordPolicyResponseControlDecoder();
-        ByteBuffer bb = ByteBuffer.allocate( 8 );
+        ByteBuffer bb = ByteBuffer.allocate( 0xA );
 
         bb.put( new byte[]
             { 
-             0x30, 0x06,
-              (byte)0x81, 1, 1, //  
-              0x0A, 0x01, 1 
+             0x30, 0x08,
+              (byte)0xA1, 0x03,          // graceAuthNsRemaining
+                     0x02, 0x01, 0x01,   //  
+              0x0A, 0x01, 1              // error
             } );
 
         bb.flip();
@@ -106,17 +109,18 @@ public class PasswordPolicyResponseControlTest
         assertEquals( 1, control.getGraceAuthNsRemaining() );
         assertEquals( 1, control.getPasswordPolicyError().getValue() );
         
-        ByteBuffer buffer = ByteBuffer.allocate( 0x25 );
+        ByteBuffer buffer = ByteBuffer.allocate( 0x27 );
         buffer.put( new byte[]
                {
-                 0x30, 0x23,
+                 0x30, 0x25,
                   0x04, 0x19,
                    '1','.', '3', '.', '6', '.', '1', '.', '4',
                    '.', '1', '.', '4', '2', '.', '2', '.', '2',
                    '7', '.', '8', '.', '5', '.', '1',
-                   0x04, 0x06,
-                   (byte)0x81, 1, 0x01, //  
-                   0x0A, 0x01, 0x01
+                   0x04, 0x08,
+                   (byte)0xA1, 0x03,          // graceAuthNsRemaining
+                          0x02, 0x01, 0x01,   //  
+                   0x0A, 0x01, 1              // error
                } );
         buffer.flip();
         
@@ -126,15 +130,58 @@ public class PasswordPolicyResponseControlTest
 
     
     @Test
-    public void testDecodeRespWithExpiryWarningOnly() throws Exception
+    public void testDecodeRespWithTimeBeforeExpiryWarningOnly() throws Exception
     {
         Asn1Decoder decoder = new PasswordPolicyResponseControlDecoder();
-        ByteBuffer bb = ByteBuffer.allocate( 5 );
+        ByteBuffer bb = ByteBuffer.allocate( 7 );
 
         bb.put( new byte[]
             { 
-             0x30, 0x03,
-              (byte)0x81, 1, 1 //  
+             0x30, 0x05,
+              (byte)0xA0, 0x03,
+                     0x02, 0x01, 0x01 //  timeBeforeExpiration
+            } );
+
+        bb.flip();
+
+        PasswordPolicyResponseControlContainer container = new PasswordPolicyResponseControlContainer();
+        container.setPasswordPolicyResponseControl( new PasswordPolicyResponseControl() );
+
+        decoder.decode( bb, container );
+
+        PasswordPolicyResponseControl control = container.getPasswordPolicyResponseControl();
+        assertEquals( 1, control.getTimeBeforeExpiration() );
+        
+        ByteBuffer buffer = ByteBuffer.allocate( 0x24 );
+        buffer.put( new byte[]
+               {
+                 0x30, 0x22,
+                  0x04, 0x19,
+                   '1','.', '3', '.', '6', '.', '1', '.', '4',
+                   '.', '1', '.', '4', '2', '.', '2', '.', '2',
+                   '7', '.', '8', '.', '5', '.', '1',
+                   0x04, 0x05,
+                   (byte)0xA0, 0x03,
+                          0x02, 0x01, 0x01  // timeBeforeExpiration
+               } );
+        buffer.flip();
+        
+        ByteBuffer encoded = control.encode( ByteBuffer.allocate( control.computeLength() ) );
+        assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
+    }
+    
+
+    @Test
+    public void testDecodeRespWithGraceAuthWarningOnly() throws Exception
+    {
+        Asn1Decoder decoder = new PasswordPolicyResponseControlDecoder();
+        ByteBuffer bb = ByteBuffer.allocate( 7 );
+
+        bb.put( new byte[]
+            { 
+             0x30, 0x05,
+              (byte)0xA1, 0x03,
+                     0x02, 0x01, 0x01 //  graceAuthNsRemaining
             } );
 
         bb.flip();
@@ -147,23 +194,24 @@ public class PasswordPolicyResponseControlTest
         PasswordPolicyResponseControl control = container.getPasswordPolicyResponseControl();
         assertEquals( 1, control.getGraceAuthNsRemaining() );
         
-        ByteBuffer buffer = ByteBuffer.allocate( 0x22 );
+        ByteBuffer buffer = ByteBuffer.allocate( 0x24 );
         buffer.put( new byte[]
                {
-                 0x30, 0x20,
+                 0x30, 0x22,
                   0x04, 0x19,
                    '1','.', '3', '.', '6', '.', '1', '.', '4',
                    '.', '1', '.', '4', '2', '.', '2', '.', '2',
                    '7', '.', '8', '.', '5', '.', '1',
-                   0x04, 0x03,
-                   (byte)0x81, 1, 0x01  
+                   0x04, 0x05,
+                   (byte)0xA1, 0x03,
+                          0x02, 0x01, 0x01  // graceAuthNsRemaining
                } );
         buffer.flip();
         
         ByteBuffer encoded = control.encode( ByteBuffer.allocate( control.computeLength() ) );
         assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
     }
-
+    
     
     @Test
     public void testDecodeRespWithErrorOnly() throws Exception
@@ -174,7 +222,7 @@ public class PasswordPolicyResponseControlTest
         bb.put( new byte[]
             { 
              0x30, 0x03,
-              0x0A, 1, 1 //  
+              0x0A, 1, 1 //  error
             } );
 
         bb.flip();
@@ -196,7 +244,7 @@ public class PasswordPolicyResponseControlTest
                    '.', '1', '.', '4', '2', '.', '2', '.', '2',
                    '7', '.', '8', '.', '5', '.', '1',
                    0x04, 0x03,
-                   0x0A, 1, 0x01  
+                   0x0A, 1, 0x01  // error
                } );
         buffer.flip();
         

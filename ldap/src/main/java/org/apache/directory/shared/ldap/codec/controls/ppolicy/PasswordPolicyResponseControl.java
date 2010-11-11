@@ -48,9 +48,11 @@ public class PasswordPolicyResponseControl extends AbstractControl
     /** number representing the password policy error */
     private PasswordPolicyErrorEnum ppolicyError;
 
-    private int controlLen = 0;
+    private int valueLen = 0;
 
-
+    private transient int timeBeforeExpirationTagLen;
+    private transient int graceAuthNsRemainingTagLen;
+    
     public PasswordPolicyResponseControl()
     {
         super( PasswordPolicyRequestControl.CONTROL_OID );
@@ -62,19 +64,24 @@ public class PasswordPolicyResponseControl extends AbstractControl
     {
         if ( timeBeforeExpiration >= 0 )
         {
-            controlLen = 1 + ( 2 * TLV.getNbBytes( timeBeforeExpiration ) );
+            int timeBefExpLen = Value.getNbBytes( timeBeforeExpiration );
+            timeBeforeExpirationTagLen = 1 + TLV.getNbBytes( timeBefExpLen ) + timeBefExpLen;
+            valueLen = 1 + TLV.getNbBytes( timeBeforeExpirationTagLen ) + timeBeforeExpirationTagLen;
         }
         else if ( graceAuthNsRemaining >= 0 )
         {
-            controlLen = 1 + ( 2 * TLV.getNbBytes( graceAuthNsRemaining ) );
+            int graceAuthRemLen = Value.getNbBytes( graceAuthNsRemaining );
+            graceAuthNsRemainingTagLen = 1 + TLV.getNbBytes( graceAuthRemLen ) + graceAuthRemLen;
+            valueLen = 1 + TLV.getNbBytes( graceAuthNsRemainingTagLen ) + graceAuthNsRemainingTagLen;
         }
 
         if ( ppolicyError != null )
         {
-            controlLen += 1 + ( 2 * TLV.getNbBytes( ppolicyError.getValue() ) );
+            int ppolicyErrLen = Value.getNbBytes( ppolicyError.getValue() );
+            valueLen += 1 + TLV.getNbBytes( ppolicyErrLen ) + ppolicyErrLen;
         }
 
-        return super.computeLength( controlLen );
+        return super.computeLength( valueLen );
     }
 
 
@@ -89,7 +96,7 @@ public class PasswordPolicyResponseControl extends AbstractControl
         // Encode the Control envelop
         super.encode( buffer );
 
-        if( controlLen > 0 )
+        if( valueLen > 0 )
         {
             // Encode the OCTET_STRING tag
             buffer.put( UniversalTag.OCTET_STRING.getValue() );
@@ -99,20 +106,20 @@ public class PasswordPolicyResponseControl extends AbstractControl
         if ( timeBeforeExpiration >= 0 )
         {
             buffer.put( ( byte ) PasswordPolicyResponseControlTags.TIME_BEFORE_EXPIRATION_TAG.getValue() );
-            buffer.put( TLV.getBytes( TLV.getNbBytes( timeBeforeExpiration ) ) );
-            buffer.put( Value.getBytes( timeBeforeExpiration ) );
+            buffer.put( TLV.getBytes( timeBeforeExpirationTagLen ) );
+            Value.encode( buffer, timeBeforeExpiration );
         }
         else if ( graceAuthNsRemaining >= 0 )
         {
             buffer.put( ( byte ) PasswordPolicyResponseControlTags.GRACE_AUTHNS_REMAINING_TAG.getValue() );
-            buffer.put( TLV.getBytes( TLV.getNbBytes( graceAuthNsRemaining ) ) );
-            buffer.put( Value.getBytes( graceAuthNsRemaining ) );
+            buffer.put( TLV.getBytes( graceAuthNsRemainingTagLen ) );
+            Value.encode( buffer, graceAuthNsRemaining );
         }
 
         if ( ppolicyError != null )
         {
             buffer.put( UniversalTag.ENUMERATED.getValue() );
-            buffer.put( TLV.getBytes( TLV.getNbBytes( ppolicyError.getValue() ) ) );
+            buffer.put( ( byte ) 0x01 );
             buffer.put( Value.getBytes( ppolicyError.getValue() ) );
         }
 
