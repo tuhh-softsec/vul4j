@@ -36,7 +36,11 @@ limitations under the License.
     <!-- Add new releases here; action attributes: type:(add | fix | update); -->
     <!-- context:(docs | java_something | c_something ) -->
     
-    <release version="Java 1.4.4" date="November 2010">    
+    <release version="Java 1.4.4" date="November 2010">   
+      <action dev="CO" type="fix" fixes-bug="50248" context="java_general"
+      due-to="Oliver Moehrke">
+        Concurrency problem on incomplete Init.init() calls.  
+      </action>
       <action dev="SM" type="fix" fixes-bug="50125" context="java_general">
         test_jsr105 target appears to fail certain tests because of changes to 
         W3C xml-stylesheet spec

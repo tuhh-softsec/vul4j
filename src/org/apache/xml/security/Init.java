@@ -88,7 +88,6 @@ public class Init {
       long XX_configure_reg_transforms_end=0;
       long XX_configure_reg_keyInfo_end=0;
       long XX_configure_reg_keyResolver_start=0;
-         _alreadyInitialized = true;
 
          try {
             long XX_init_start = System.currentTimeMillis();
@@ -400,6 +399,7 @@ public class Init {
             log.fatal("Bad: ", e);
             e.printStackTrace();
          }
+         _alreadyInitialized = true;
       
    }
 
