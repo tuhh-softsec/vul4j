@@ -316,7 +316,7 @@ public class BindRequestTest
         }
         catch ( DecoderException de )
         {
-            assertEquals( "ERR_00002_BAD_TRANSITION Bad transition !", de.getMessage() );
+            assertEquals( "ERR_00001_BAD_TRANSITION_FROM_STATE Bad transition from state VERSION_STATE, tag 0x80", de.getMessage() );
             return;
         }
 
