@@ -26,11 +26,10 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.apache.directory.shared.ldap.exception.LdapException;
-import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueException;
-
 import org.apache.directory.shared.asn1.primitives.OID;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
@@ -495,6 +494,17 @@ public class DefaultEntryAttribute implements EntryAttribute
         }
         else
         {
+            if ( isHR )
+            {
+                // Try to convert the value from a byte[] to a String
+                if ( value != null )
+                {
+                    String valueStr = StringTools.utf8ToString( (byte[])value.getReference() );
+                
+                    return valueStr;
+                }
+            }
+            
             String message = I18n.err( I18n.ERR_04131 );
             LOG.error( message );
             throw new LdapInvalidAttributeValueException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, message );

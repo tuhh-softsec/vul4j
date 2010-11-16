@@ -105,8 +105,10 @@ public class OpenLdapSchemaParserTest
     @Test
     public void testSimpleAttributeTypeParse() throws Exception
     {
-        String attributeTypeData = "# adding a comment  \n" + "attributetype ( 2.5.4.2 NAME 'knowledgeInformation'\n"
-            + "        DESC 'RFC2256: knowledge information'\n" + "        EQUALITY caseIgnoreMatch\n"
+        String attributeTypeData = "# adding a comment  \n" 
+            + "attributetype ( 2.5.4.2 NAME 'knowledgeInformation'\n"
+            + "        DESC 'RFC2256: knowledge information'\n" 
+            + "        EQUALITY caseIgnoreMatch\n"
             + "        SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{32768} )";
         parser.parse( attributeTypeData );
         List<AttributeType> attributeTypeList = parser.getAttributeTypes();
@@ -125,8 +127,10 @@ public class OpenLdapSchemaParserTest
     @Test
     public void testAttributeTypeParseWithDescQuotes() throws Exception
     {
-        String attributeTypeData = "# adding a comment  \n" + "attributetype ( 2.5.4.2 NAME 'knowledgeInformation'\n"
-            + "        DESC 'RFC2256: \"knowledge\" information'\n" + "        EQUALITY caseIgnoreMatch\n"
+        String attributeTypeData = "# adding a comment  \n" 
+            + "attributetype ( 2.5.4.2 NAME 'knowledgeInformation'\n"
+            + "        DESC 'RFC2256: \"knowledge\" information'\n" 
+            + "        EQUALITY caseIgnoreMatch\n"
             + "        SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{32768} )";
         parser.parse( attributeTypeData );
         List<AttributeType> attributeTypeList = parser.getAttributeTypes();
@@ -147,7 +151,8 @@ public class OpenLdapSchemaParserTest
     {
         String attributeTypeData = "# adding a comment  \n"
             + "attributetype ( 2.5.4.2 NAME ( 'knowledgeInformation' 'asdf' ) \n"
-            + "        DESC 'RFC2256: knowledge information'\n" + "        EQUALITY caseIgnoreMatch\n"
+            + "        DESC 'RFC2256: knowledge information'\n" 
+            + "        EQUALITY caseIgnoreMatch\n"
             + "        SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{32768} )";
         parser.parse( attributeTypeData );
         List<AttributeType> attributeTypeList = parser.getAttributeTypes();
@@ -179,8 +184,10 @@ public class OpenLdapSchemaParserTest
     @Test
     public void testObjectClassParse() throws Exception
     {
-        String objectClassData = "objectclass ( 2.5.6.6 NAME 'person'\n" + "        DESC 'RFC2256: a person'\n"
-            + "        SUP top STRUCTURAL\n" + "        MUST ( sn $ cn )\n"
+        String objectClassData = "objectclass ( 2.5.6.6 NAME 'person'\n" 
+            + "        DESC 'RFC2256: a person'\n"
+            + "        SUP top STRUCTURAL\n" 
+            + "        MUST ( sn $ cn )\n"
             + "        MAY ( userPassword $ telephoneNumber $ seeAlso $ description ) )";
         parser.parse( objectClassData );
         List<ObjectClass> objectClassesList = parser.getObjectClassTypes();
@@ -403,4 +410,24 @@ public class OpenLdapSchemaParserTest
         }
     }
 
+
+    @Test
+    public void testDescWithSpaces() throws Exception
+    {
+        String attributeTypeData = "attributetype ( 1.3.6.1.4.1.8104.1.1.37 NAME 'versionNumber'\n"
+            + "        DESC 'versionNumber ' EQUALITY caseIgnoreMatch SUBSTR caseIgnoreSubstringsMatch\n"
+            + "        SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 SINGLE-VALUE)";
+
+        parser.parse( attributeTypeData );
+        List<AttributeType> attributeTypes = parser.getAttributeTypes();
+        Map<String, AttributeType> mapAttributeTypes = mapAttributeTypes( attributeTypes );
+        AttributeType attributeType = mapAttributeTypes.get( "1.3.6.1.4.1.8104.1.1.37" );
+
+        assertNotNull( attributeType );
+        assertEquals( "1.3.6.1.4.1.8104.1.1.37", attributeType.getOid() );
+        assertEquals( "versionNumber", attributeType.getName() );
+        assertEquals( "versionNumber ", attributeType.getDescription() );
+        assertEquals( "1.3.6.1.4.1.1466.115.121.1.15", attributeType.getSyntaxOid() );
+        assertTrue( attributeType.isSingleValued() );
+    }
 }
