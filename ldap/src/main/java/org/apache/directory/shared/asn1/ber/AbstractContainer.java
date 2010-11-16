@@ -298,4 +298,13 @@ public abstract class AbstractContainer implements Asn1Container
         this.stream = stream;
     }
 
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void rewind( TLV tlv )
+    {
+        int start = stream.position() - 1 - tlv.getLengthNbBytes();
+        stream.position( start );
+    }
 }

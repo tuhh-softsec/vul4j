@@ -178,4 +178,13 @@ public interface Asn1Container
      * replaced by the max integer value)
      */
     void setMaxPDUSize( int maxPDUSize );
+    
+    
+    /**
+     * Move backward in the stream to the first byte for a given TLV. This is useful when we have
+     * read some Tag and Length in order to define the next transition, and if this transition
+     * do a grammar switch.
+     * @param tlv The TLV to rollback
+     */
+    void rewind( TLV tlv );
 }
