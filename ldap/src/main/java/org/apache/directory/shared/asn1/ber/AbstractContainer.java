@@ -302,9 +302,26 @@ public abstract class AbstractContainer implements Asn1Container
     /**
      * {@inheritDoc}
      */
-    public void rewind( TLV tlv )
+    public void rewind()
     {
+        
         int start = stream.position() - 1 - tlv.getLengthNbBytes();
         stream.position( start );
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void updateParent()
+    {
+        TLV parentTlv = tlv.getParent();
+        
+        while ( ( parentTlv != null ) && ( parentTlv.getExpectedLength() == 0 ) )
+        {
+            parentTlv = parentTlv.getParent();
+        }
+        
+        this.parentTLV = parentTlv;
     }
 }

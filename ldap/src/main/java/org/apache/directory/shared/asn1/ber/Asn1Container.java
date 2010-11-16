@@ -186,5 +186,11 @@ public interface Asn1Container
      * do a grammar switch.
      * @param tlv The TLV to rollback
      */
-    void rewind( TLV tlv );
+    void rewind();
+    
+    
+    /**
+     * Look for the closest parent which has an expected length above 0
+     */
+    void updateParent();
 }
