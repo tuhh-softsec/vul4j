@@ -86,7 +86,7 @@ public class SearchResultEntryDsml extends AbstractResponseDsml
         {
 
             Element attributeElement = element.addElement( "attr" );
-            attributeElement.addAttribute( "name", attribute.getId() );
+            attributeElement.addAttribute( "name", attribute.getUpId() );
 
             for ( Value<?> value : attribute )
             {
