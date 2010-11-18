@@ -5,6 +5,7 @@ cn: adsconfig
 entrycsn: 20100108131217.807000Z#000000#000#000000
 objectclass: metaSchema
 objectclass: top
+m-dependencies: apache
 m-dependencies: system
 m-dependencies: core
 creatorsname: uid=admin,ou=system
