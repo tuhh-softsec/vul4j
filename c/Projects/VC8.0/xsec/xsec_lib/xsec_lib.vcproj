@@ -539,8 +539,6 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				Description="Create Header files"
-				CommandLine="mkdir ..\..\..\..\include&#x0D;&#x0A;mkdir ..\..\..\..\include\xsec&#x0D;&#x0A;del /q /s ..\..\..\..\include\xsec\*.*&#x0D;&#x0A;xcopy /I /s /f ..\..\..\..\xsec\*.hpp ..\..\..\..\include\xsec&#x0D;&#x0A;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -996,6 +994,14 @@
 				RelativePath="..\..\..\..\xsec\enc\XSECCryptoKeyRSA.hpp"
 				>
 			</File>
+            <File
+                RelativePath="..\..\..\..\xsec\enc\XSECCryptoKeyEC.hpp"
+                >
+            </File>
+            <File
+                RelativePath="..\..\..\..\xsec\enc\XSECCryptoProvider.cpp"
+                >
+            </File>
 			<File
 				RelativePath="..\..\..\..\xsec\enc\XSECCryptoProvider.hpp"
 				>
@@ -1083,6 +1089,14 @@
 					RelativePath="..\..\..\..\xsec\enc\OpenSSL\OpenSSLCryptoKeyRSA.hpp"
 					>
 				</File>
+                <File
+                    RelativePath="..\..\..\..\xsec\enc\OpenSSL\OpenSSLCryptoKeyEC.cpp"
+                    >
+                </File>
+                <File
+                    RelativePath="..\..\..\..\xsec\enc\OpenSSL\OpenSSLCryptoKeyEC.hpp"
+                    >
+                </File>
 				<File
 					RelativePath="..\..\..\..\xsec\enc\OpenSSL\OpenSSLCryptoProvider.cpp"
 					>

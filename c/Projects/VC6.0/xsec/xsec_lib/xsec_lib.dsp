@@ -441,6 +441,14 @@ SOURCE=..\..\..\..\xsec\enc\OpenSSL\OpenSSLCryptoKeyRSA.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\xsec\enc\OpenSSL\OpenSSLCryptoKeyEC.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\xsec\enc\OpenSSL\OpenSSLCryptoKeyEC.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\xsec\enc\openssl\OpenSSLCryptoProvider.cpp
 # End Source File
 # Begin Source File
@@ -650,6 +658,14 @@ SOURCE=..\..\..\..\xsec\enc\XSECCryptoKeyRSA.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\xsec\enc\XSECCryptoKeyEC.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\xsec\enc\XSECCryptoProvider.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\xsec\enc\XSECCryptoProvider.hpp
 # End Source File
 # Begin Source File
@@ -807,61 +823,6 @@ SOURCE=..\..\..\..\xsec\framework\XSECAlgorithmMapper.hpp
 # Begin Source File
 
 SOURCE=..\..\..\..\xsec\framework\XSECDefs.hpp
-
-!IF  "$(CFG)" == "xsec_lib - Win32 Release"
-
-# Begin Custom Build - Copying include files from src directory
-InputPath=..\..\..\..\xsec\framework\XSECDefs.hpp
-
-"..\..\..\..\include\xsec\framework\dummy.hpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	mkdir ..\..\..\..\include 
-	mkdir ..\..\..\..\include\xsec 
-	del /q /s ..\..\..\..\include\xsec\*.* 
-	xcopy /I /s /f  ..\..\..\..\xsec\*.hpp ..\..\..\..\include\xsec 
-	
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "xsec_lib - Win32 Debug"
-
-# Begin Custom Build - Copying include files from src directory
-InputPath=..\..\..\..\xsec\framework\XSECDefs.hpp
-
-"..\..\..\..\include\xsec\framework\dummy.hpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	mkdir ..\..\..\..\include 
-	mkdir ..\..\..\..\include\xsec 
-	del /q /s ..\..\..\..\include\xsec\*.* 
-	xcopy /I /s /f  ..\..\..\..\xsec\*.hpp ..\..\..\..\include\xsec 
-	
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "xsec_lib - Win32 Debug No Xalan"
-
-# Begin Custom Build - Copying include files from src directory
-InputPath=..\..\..\..\xsec\framework\XSECDefs.hpp
-
-"..\..\..\..\include\xsec\framework\dummy.hpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	mkdir ..\..\..\..\include 
-	mkdir ..\..\..\..\include\xsec 
-	del /q /s ..\..\..\..\include\xsec\*.* 
-	xcopy /I /s /f  ..\..\..\..\xsec\*.hpp ..\..\..\..\include\xsec 
-	
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "xsec_lib - Win32 Release No Xalan"
-
-# Begin Custom Build - Copying include files from src directory
-InputPath=..\..\..\..\xsec\framework\XSECDefs.hpp
-
-"..\..\..\..\include\xsec\framework\dummy.hpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	mkdir ..\..\..\..\include 
-	mkdir ..\..\..\..\include\xsec 
-	del /q /s ..\..\..\..\include\xsec\*.* 
-	xcopy /I /s /f  ..\..\..\..\xsec\*.hpp ..\..\..\..\include\xsec 
-	
-# End Custom Build
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 

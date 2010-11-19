@@ -427,6 +427,12 @@
 			<File
 				RelativePath="..\..\..\..\xsec\enc\XSECCryptoKeyRSA.hpp">
 			</File>
+            <File
+                RelativePath="..\..\..\..\xsec\enc\XSECCryptoKeyEC.hpp">
+            </File>
+            <File
+                RelativePath="..\..\..\..\xsec\enc\XSECCryptoProvider.cpp">
+            </File>
 			<File
 				RelativePath="..\..\..\..\xsec\enc\XSECCryptoProvider.hpp">
 			</File>
@@ -493,6 +499,12 @@
 				<File
 					RelativePath="..\..\..\..\xsec\enc\OpenSSL\OpenSSLCryptoKeyRSA.hpp">
 				</File>
+                <File
+                    RelativePath="..\..\..\..\xsec\enc\OpenSSL\OpenSSLCryptoKeyEC.cpp">
+                </File>
+                <File
+                    RelativePath="..\..\..\..\xsec\enc\OpenSSL\OpenSSLCryptoKeyEC.hpp">
+                </File>
 				<File
 					RelativePath="..\..\..\..\xsec\enc\OpenSSL\OpenSSLCryptoProvider.cpp">
 				</File>
