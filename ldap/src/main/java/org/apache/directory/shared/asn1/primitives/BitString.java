@@ -39,7 +39,7 @@ public class BitString implements Serializable
     /** A null MutableString */
     public static final BitString EMPTY_STRING = new BitString( 1 );
 
-    /** The number of unused ints */
+    /** The number of unused bits in the last byte */
     private int nbUnusedBits;
 
     /** The string is stored in a byte array */
@@ -83,7 +83,8 @@ public class BitString implements Serializable
 
 
     /**
-     * Creates a BitString with a value.
+     * Creates a BitString from a byte[]. As the first byteis the number of unused bits
+     * in the last byte, we have to ignore it.
      * 
      * @param bytes The value to store. The first byte contains the number of
      * unused bits
@@ -96,29 +97,7 @@ public class BitString implements Serializable
             return;
         }
 
-        setBytes( bytes );
-    }
-
-
-    /**
-     * Set the value into the bytes.
-     * 
-     * @param bytes The bytes to copy
-     * @param nbBytes Number of bytes to copy
-     */
-    private void setBytes( byte[] bytes )
-    {
-        // The first byte contains the number of unused bits
-        nbUnusedBits = bytes[0] & 0x07;
-        nbBytes = bytes.length - 1;
-        nbBits = ( nbBytes * 8 ) - nbUnusedBits;
-        this.bytes = new byte[nbBytes];
-
-        // We have to transfer the data
-        for ( int i = 0; i < nbBytes; i++ )
-        {
-            this.bytes[i] = bytes[i + 1];
-        }
+        setData( bytes );
     }
 
 
@@ -136,7 +115,17 @@ public class BitString implements Serializable
             return;
         }
 
-        setBytes( bytes );
+        // The first byte contains the number of unused bits
+        nbUnusedBits = bytes[0] & 0x07;
+        nbBytes = bytes.length - 1;
+        nbBits = ( nbBytes * 8 ) - nbUnusedBits;
+        this.bytes = new byte[nbBytes];
+
+        // We have to transfer the data
+        for ( int i = 0; i < nbBytes; i++ )
+        {
+            this.bytes[i] = bytes[i + 1];
+        }
     }
 
 
@@ -182,10 +171,11 @@ public class BitString implements Serializable
             throw new IndexOutOfBoundsException( I18n.err( I18n.ERR_00030_BIT_NUMBER_OUT_OF_BOUND ) );
         }
 
-        int posBytes = pos >> 3;
+        int posBytes = pos>>>3;
         int bitNumber = 7 - pos % 8;
+        byte mask = (byte)( 1 << bitNumber );
 
-        bytes[posBytes] |= ( 1 << bitNumber );
+        bytes[posBytes] |= mask;
     }
 
 
@@ -204,10 +194,11 @@ public class BitString implements Serializable
             throw new IndexOutOfBoundsException( I18n.err( I18n.ERR_00030_BIT_NUMBER_OUT_OF_BOUND ) );
         }
 
-        int posBytes = pos >> 3;
+        int posBytes = pos>>>3;
         int bitNumber = 7 - pos % 8;
+        byte mask = (byte)( 1 << bitNumber );
 
-        bytes[posBytes] &= ~( 1 << bitNumber );
+        bytes[posBytes] &= ~mask;
     }
 
 
@@ -238,10 +229,11 @@ public class BitString implements Serializable
             throw new IndexOutOfBoundsException( I18n.err( I18n.ERR_00031_CANNOT_FIND_BIT, pos, nbBits ) );
         }
 
-        int posBytes = pos >> 3;
+        int posBytes = pos>>>3;
         int bitNumber = 7 - pos % 8;
+        byte mask = (byte)( 1 << bitNumber );
 
-        int res = bytes[posBytes] & ( 1 << bitNumber );
+        int res = bytes[posBytes] & mask;
         
         return res != 0;
     }

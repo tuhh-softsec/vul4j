@@ -38,8 +38,30 @@ public class DERBitString extends DERObject
     {
         super( BIT_STRING, value );
     }
+    
+    
+    /**
+     * Gets the internal representation of a BitString as bytes 
+     * 
+     * @param length the number of bits
+     * @param bytes The flags in an Int
+     * @return A byte array containing the bytes and the initial unused bits
+     */
+    public DERBitString( int length, int value )
+    {
+        super( BIT_STRING, null );
 
-
+        int nbBytes = length / 8 + ( length % 8 != 0 ? 1 : 0 );
+        this.value = new byte[ nbBytes + 1 ];
+        
+        this.value[0] = (byte)( ( 8 - ( length % 8 ) ) % 8 );
+        this.value[1] = (byte)( value >>> 24 );
+        this.value[2] = (byte)( ( value >> 16 ) & 0x00ff ); 
+        this.value[3] = (byte)( ( value >> 8 ) & 0x00ff ); 
+        this.value[4] = (byte)( value & 0x00ff );
+    }
+    
+    
     public byte[] getOctets()
     {
         return value;
@@ -48,11 +70,6 @@ public class DERBitString extends DERObject
 
     public void encode( ASN1OutputStream out ) throws IOException
     {
-        byte[] bytes = new byte[value.length + 1];
-
-        bytes[0] = ( byte ) 0x00;
-        System.arraycopy( value, 0, bytes, 1, bytes.length - 1 );
-
-        out.writeEncoded( BIT_STRING, bytes );
+        out.writeEncoded( BIT_STRING, value );
     }
 }
