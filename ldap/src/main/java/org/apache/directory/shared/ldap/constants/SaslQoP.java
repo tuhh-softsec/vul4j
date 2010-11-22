@@ -23,20 +23,30 @@ package org.apache.directory.shared.ldap.constants;
 /**
  * Contains constants used for populating the SASL QoP 
  * in the RootDSE.
+ * Final reference -> class shouldn't be extended
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface SaslQoP
+public final class SaslQoP
 {
+    /**
+     *  Ensures no construction of this class, also ensures there is no need for final keyword above
+     *  (Implicit super constructor is not visible for default constructor),
+     *  but is still self documenting.
+     */
+    private SaslQoP()
+    {
+    }
+
     /** The supported QOP attribute */
-    String ATTRIBUTE = "supportedQoP";
+    public final static String ATTRIBUTE = "supportedQoP";
 
     /** Authentication only */
-    String QOP_AUTH      = "auth" ;
+    public final static String QOP_AUTH      = "auth" ;
 
     /** Authentication with integrity protection */
-    String QOP_AUTH_INT  = "auth-int" ;
+    public final static String QOP_AUTH_INT  = "auth-int" ;
 
     /** Authentication with integrity and privacy protection */
-    String QOP_AUTH_CONF = "auth-conf" ;
+    public final static String QOP_AUTH_CONF = "auth-conf" ;
 }

@@ -23,26 +23,36 @@ package org.apache.directory.shared.ldap.constants;
 /**
  * Contains constants used for populating the supportedSASLMechanisms 
  * in the RootDSE.
+ * Final reference -> class shouldn't be extended
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface SupportedSaslMechanisms
+public final class SupportedSaslMechanisms
 {
+    /**
+     *  Ensures no construction of this class, also ensures there is no need for final keyword above
+     *  (Implicit super constructor is not visible for default constructor),
+     *  but is still self documenting.
+     */
+    private SupportedSaslMechanisms()
+    {
+    }
+
     /** CRAM-MD5 mechanism */
-    String CRAM_MD5 = "CRAM-MD5";
+    public final static String CRAM_MD5 = "CRAM-MD5";
 
     /** DIGEST_MD5-MD5 mechanism */
-    String DIGEST_MD5 = "DIGEST-MD5";
+    public final static String DIGEST_MD5 = "DIGEST-MD5";
 
     /** GSSAPI mechanism */
-    String GSSAPI = "GSSAPI";
+    public final static String GSSAPI = "GSSAPI";
 
     /** PLAIN mechanism */
-    String PLAIN = "PLAIN";
+    public final static String PLAIN = "PLAIN";
 
     /** Not a SASL JDK supported mechanism */
-    String NTLM = "NTLM";
+    public final static String NTLM = "NTLM";
 
     /** Not a SASL JDK supported mechanism */
-    String GSS_SPNEGO = "GSS-SPNEGO";
+    public final static String GSS_SPNEGO = "GSS-SPNEGO";
 }
