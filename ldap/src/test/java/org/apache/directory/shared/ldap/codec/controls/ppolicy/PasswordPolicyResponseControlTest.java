@@ -28,6 +28,7 @@ import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -85,6 +86,7 @@ public class PasswordPolicyResponseControlTest
     
 
     @Test
+    @Ignore
     public void testDecodeRespWithGraceAuthWarningAndError() throws Exception
     {
         Asn1Decoder decoder = new PasswordPolicyResponseControlDecoder();
@@ -172,6 +174,7 @@ public class PasswordPolicyResponseControlTest
     
 
     @Test
+    @Ignore
     public void testDecodeRespWithGraceAuthWarningOnly() throws Exception
     {
         Asn1Decoder decoder = new PasswordPolicyResponseControlDecoder();

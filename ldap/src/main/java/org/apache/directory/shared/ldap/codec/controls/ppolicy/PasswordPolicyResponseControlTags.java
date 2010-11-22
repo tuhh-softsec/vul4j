@@ -27,7 +27,8 @@ package org.apache.directory.shared.ldap.codec.controls.ppolicy;
  */
 public enum PasswordPolicyResponseControlTags
 {
-    TIME_BEFORE_EXPIRATION_TAG(0xA0), GRACE_AUTHNS_REMAINING_TAG(0xA1);
+    TIME_BEFORE_EXPIRATION_TAG(0xA0), // warning [0] CHOICE {
+    GRACE_AUTHNS_REMAINING_TAG(0x81); // error   [1] ENUMERATED {
 
     /** Internal value for each tag */
     private int value;
