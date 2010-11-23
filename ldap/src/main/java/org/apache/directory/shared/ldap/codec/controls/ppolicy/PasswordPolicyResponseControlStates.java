@@ -33,21 +33,19 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
 public enum PasswordPolicyResponseControlStates implements States
 {
 
-    START_STATE,
+    START_STATE,                            // 0
+
+    PPOLICY_SEQ_STATE,                      // 1
     
-    SEQ_STATE,
+    PPOLICY_WARNING_TAG_STATE,              // 2
 
-    PPOLICY_TIME_BEFORE_EXPIRATION_TAG_STATE,
-    
-    PPOLICY_TIME_BEFORE_EXPIRATION_STATE,
+    PPOLICY_TIME_BEFORE_EXPIRATION_STATE,   // 3
 
-    PPOLICY_GRACE_AUTHNS_REMAINING_TAG_STATE,
-    
-    PPOLICY_GRACE_AUTHNS_REMAINING_STATE,
+    PPOLICY_GRACE_AUTHNS_REMAINING_STATE,   // 4
 
-    PPOLICY_ERROR_STATE,
+    PPOLICY_ERROR_TAG_STATE,                // 5
 
-    END_STATE;
+    END_STATE;                              // 6
 
     /**
      * {@inheritDoc}

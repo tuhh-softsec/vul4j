@@ -21,19 +21,15 @@
 package org.apache.directory.shared.ldap.codec.controls.ppolicy;
 
 
-import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
-import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
-import org.apache.directory.shared.asn1.ber.tlv.Value;
-import org.apache.directory.shared.asn1.codec.DecoderException;
-import org.apache.directory.shared.asn1.util.IntegerDecoder;
-import org.apache.directory.shared.asn1.util.IntegerDecoderException;
-import org.apache.directory.shared.i18n.I18n;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.directory.shared.ldap.codec.controls.ppolicy.actions.CheckNotNullLength;
+import org.apache.directory.shared.ldap.codec.controls.ppolicy.actions.PPolicyInit;
+import org.apache.directory.shared.ldap.codec.controls.ppolicy.actions.StoreError;
+import org.apache.directory.shared.ldap.codec.controls.ppolicy.actions.StoreGraceAuthsRemaining;
+import org.apache.directory.shared.ldap.codec.controls.ppolicy.actions.StoreTimeBeforeExpiration;
 
 
 /**
@@ -59,12 +55,6 @@ import org.slf4j.LoggerFactory;
  */
 public class PasswordPolicyResponseControlGrammar extends AbstractGrammar
 {
-    /** the logger */
-    private static final Logger LOG = LoggerFactory.getLogger( PasswordPolicyResponseControlGrammar.class );
-
-    /** speedup for logger */
-    private static final boolean IS_DEBUG = LOG.isDebugEnabled();
-
     /** PasswordPolicyResponseControlGrammar singleton instance */
     private static final PasswordPolicyResponseControlGrammar INSTANCE = new PasswordPolicyResponseControlGrammar();
 
@@ -78,205 +68,45 @@ public class PasswordPolicyResponseControlGrammar extends AbstractGrammar
         // PasswordPolicyResponseValue ::= SEQUENCE {
         // ...
         super.transitions[PasswordPolicyResponseControlStates.START_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
-            PasswordPolicyResponseControlStates.START_STATE, PasswordPolicyResponseControlStates.SEQ_STATE,
-            UniversalTag.SEQUENCE.getValue(),
-            new GrammarAction( "Initializating PasswordPolicyResponseControl" )
-            {
-                public void action( Asn1Container container ) throws DecoderException
-                {
-                    PasswordPolicyResponseControlContainer ppolicyRespContainer = ( PasswordPolicyResponseControlContainer ) container;
-
-                    // As all the values are optional or defaulted, we can end here
-                    ppolicyRespContainer.setGrammarEndAllowed( true );
-                }
-            } );
-
-        // PasswordPolicyResponseValue ::= SEQUENCE {
-        //              warning [0] CHOICE {
-        //              timeBeforeExpiration [0]
-        super.transitions[PasswordPolicyResponseControlStates.SEQ_STATE.ordinal()][PasswordPolicyResponseControlTags.TIME_BEFORE_EXPIRATION_TAG
-             .getValue()] = new GrammarTransition( PasswordPolicyResponseControlStates.SEQ_STATE,
-             PasswordPolicyResponseControlStates.PPOLICY_TIME_BEFORE_EXPIRATION_TAG_STATE,
-             PasswordPolicyResponseControlTags.TIME_BEFORE_EXPIRATION_TAG.getValue(), new GrammarAction( "read the ppolicy time before expiration warning tag" )
-             {
-                 public void action( Asn1Container container ) throws DecoderException
-                 {
-
-                 }
-             } );
-
-        // timeBeforeExpiration [0] INTEGER (0 .. maxInt)
-        super.transitions[PasswordPolicyResponseControlStates.PPOLICY_TIME_BEFORE_EXPIRATION_TAG_STATE.ordinal()][UniversalTag.INTEGER.getValue()]
-            = new GrammarTransition( PasswordPolicyResponseControlStates.PPOLICY_TIME_BEFORE_EXPIRATION_TAG_STATE,
-            PasswordPolicyResponseControlStates.PPOLICY_TIME_BEFORE_EXPIRATION_STATE,
-            UniversalTag.INTEGER.getValue(), new GrammarAction(
-                "set time before expiration value" )
-            {
-                public void action( Asn1Container container ) throws DecoderException
-                {
-                    PasswordPolicyResponseControlContainer ppolicyRespContainer = ( PasswordPolicyResponseControlContainer ) container;
-                    Value value = ppolicyRespContainer.getCurrentTLV().getValue();
-                    try
-                    {
-                        int timeBeforeExp = IntegerDecoder.parse( value, 0, Integer.MAX_VALUE );
-
-                        if ( IS_DEBUG )
-                        {
-                            LOG.debug( "timeBeforeExpiration {}", timeBeforeExp );
-                        }
-
-                        ppolicyRespContainer.getPasswordPolicyResponseControl().setTimeBeforeExpiration( timeBeforeExp );
-                    }
-                    catch ( IntegerDecoderException e )
-                    {
-                        String msg = I18n.err( I18n.ERR_04028 );
-                        LOG.error( msg, e );
-                        throw new DecoderException( msg );
-                    }
-
-                    ppolicyRespContainer.setGrammarEndAllowed( true );
-                }
-            } );
-
-        // PasswordPolicyResponseValue ::= SEQUENCE {
-        //              warning [0] CHOICE {
-        //              graceAuthNsRemaining [1]
-        super.transitions[PasswordPolicyResponseControlStates.SEQ_STATE.ordinal()][PasswordPolicyResponseControlTags.GRACE_AUTHNS_REMAINING_TAG
-             .getValue()] = new GrammarTransition( PasswordPolicyResponseControlStates.SEQ_STATE,
-             PasswordPolicyResponseControlStates.PPOLICY_GRACE_AUTHNS_REMAINING_TAG_STATE,
-             PasswordPolicyResponseControlTags.GRACE_AUTHNS_REMAINING_TAG.getValue(), new GrammarAction( "read the ppolicy grace auth warning tag" )
-             {
-                 public void action( Asn1Container container ) throws DecoderException
-                 {
-
-                 }
-             } );
-
-        // graceAuthNsRemaining [1] INTEGER (0 .. maxInt)
-        super.transitions[PasswordPolicyResponseControlStates.PPOLICY_GRACE_AUTHNS_REMAINING_TAG_STATE.ordinal()][UniversalTag.INTEGER.getValue()]
-            = new GrammarTransition( PasswordPolicyResponseControlStates.PPOLICY_GRACE_AUTHNS_REMAINING_TAG_STATE,
-            PasswordPolicyResponseControlStates.PPOLICY_GRACE_AUTHNS_REMAINING_STATE,
-            UniversalTag.INTEGER.getValue(), new GrammarAction(
-                "set number of grace authentications remaining" )
-            {
-                public void action( Asn1Container container ) throws DecoderException
-                {
-                    PasswordPolicyResponseControlContainer ppolicyRespContainer = ( PasswordPolicyResponseControlContainer ) container;
-                    Value value = ppolicyRespContainer.getCurrentTLV().getValue();
-                    try
-                    {
-                        int graceAuthNum = IntegerDecoder.parse( value, 0, Integer.MAX_VALUE );
-
-                        if ( IS_DEBUG )
-                        {
-                            LOG.debug( "graceAuthNsRemaining {}", graceAuthNum );
-                        }
-
-                        ppolicyRespContainer.getPasswordPolicyResponseControl().setGraceAuthNsRemaining( graceAuthNum );
-                    }
-                    catch ( IntegerDecoderException e )
-                    {
-                        String msg = I18n.err( I18n.ERR_04028 );
-                        LOG.error( msg, e );
-                        throw new DecoderException( msg );
-                    }
-
-                    ppolicyRespContainer.setGrammarEndAllowed( true );
-                }
-            } );
-
-
-        // transition to the ppolic error after the PPOLICY_TIME_BEFORE_EXPIRATION_STATE
-        // PasswordPolicyResponseValue ::= SEQUENCE {
-        //         warning [0] CHOICE {
-        //         timeBeforeExpiration [0] INTEGER (0 .. maxInt),
-        //
-        //         error   [1] ENUMERATED {
-        super.transitions[PasswordPolicyResponseControlStates.PPOLICY_TIME_BEFORE_EXPIRATION_STATE.ordinal()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
-            PasswordPolicyResponseControlStates.PPOLICY_TIME_BEFORE_EXPIRATION_STATE, PasswordPolicyResponseControlStates.PPOLICY_ERROR_STATE,
-            UniversalTag.ENUMERATED.getValue(), new GrammarAction( "set ppolicy error value after reading the timeBeforeExpiration value" )
-            {
-                public void action( Asn1Container container ) throws DecoderException
-                {
-                    PasswordPolicyResponseControlContainer ppolicyRespContainer = ( PasswordPolicyResponseControlContainer ) container;
-
-                    setPasswordPolicyError( ppolicyRespContainer );
-
-                    ppolicyRespContainer.setGrammarEndAllowed( true );
-                }
-            } );
-
+            PasswordPolicyResponseControlStates.START_STATE, PasswordPolicyResponseControlStates.PPOLICY_SEQ_STATE, UniversalTag.SEQUENCE.getValue(),
+            new PPolicyInit() );
         
-        // transition to the ppolic error after the PPOLICY_GRACE_AUTHNS_REMAINING_STATE
         // PasswordPolicyResponseValue ::= SEQUENCE {
-        //         warning [0] CHOICE {
-        //          ...
-        //         graceAuthNsRemaining [1] INTEGER (0 .. maxInt) } OPTIONAL,
-        //
-        //         error   [1] ENUMERATED {
-        super.transitions[PasswordPolicyResponseControlStates.PPOLICY_GRACE_AUTHNS_REMAINING_STATE.ordinal()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
-            PasswordPolicyResponseControlStates.PPOLICY_GRACE_AUTHNS_REMAINING_STATE, PasswordPolicyResponseControlStates.PPOLICY_ERROR_STATE,
-            UniversalTag.ENUMERATED.getValue(), new GrammarAction( "set ppolicy error value after reading the graceAuthNsRemaining value" )
-            {
-                public void action( Asn1Container container ) throws DecoderException
-                {
-                    PasswordPolicyResponseControlContainer ppolicyRespContainer = ( PasswordPolicyResponseControlContainer ) container;
-
-                    setPasswordPolicyError( ppolicyRespContainer );
-
-                    ppolicyRespContainer.setGrammarEndAllowed( true );
-                }
-            } );
+        //              warning [0] CHOICE {
+        super.transitions[PasswordPolicyResponseControlStates.PPOLICY_SEQ_STATE.ordinal()][PasswordPolicyResponseControlTags.PPOLICY_WARNING_TAG.getValue()] = new GrammarTransition(
+            PasswordPolicyResponseControlStates.PPOLICY_SEQ_STATE, PasswordPolicyResponseControlStates.PPOLICY_WARNING_TAG_STATE, PasswordPolicyResponseControlTags.PPOLICY_WARNING_TAG.getValue(),
+            new CheckNotNullLength() );
+        
+        // PasswordPolicyResponseValue ::= SEQUENCE {
+        //              ...
+        //              error   [1] ENUMERATED {
+        super.transitions[PasswordPolicyResponseControlStates.PPOLICY_SEQ_STATE.ordinal()][PasswordPolicyResponseControlTags.PPOLICY_ERROR_TAG.getValue()] = new GrammarTransition(
+            PasswordPolicyResponseControlStates.PPOLICY_SEQ_STATE, PasswordPolicyResponseControlStates.PPOLICY_ERROR_TAG_STATE, PasswordPolicyResponseControlTags.PPOLICY_ERROR_TAG.getValue(),
+            new StoreError() );
+        
+        // PasswordPolicyResponseValue ::= SEQUENCE {
+        //              warning [0] CHOICE {
+        //                      timeBeforeExpiration [0] INTEGER (0 .. maxInt),
+        super.transitions[PasswordPolicyResponseControlStates.PPOLICY_WARNING_TAG_STATE.ordinal()][PasswordPolicyResponseControlTags.TIME_BEFORE_EXPIRATION_TAG.getValue()] = new GrammarTransition(
+            PasswordPolicyResponseControlStates.PPOLICY_WARNING_TAG_STATE, PasswordPolicyResponseControlStates.PPOLICY_TIME_BEFORE_EXPIRATION_STATE, PasswordPolicyResponseControlTags.TIME_BEFORE_EXPIRATION_TAG.getValue(),
+            new StoreTimeBeforeExpiration() );
+        
+        // PasswordPolicyResponseValue ::= SEQUENCE {
+        //              warning [0] CHOICE {
+        //                      ...
+        //                      graceAuthNsRemaining [1] INTEGER (0 .. maxInt) } OPTIONAL,
+        super.transitions[PasswordPolicyResponseControlStates.PPOLICY_TIME_BEFORE_EXPIRATION_STATE.ordinal()][PasswordPolicyResponseControlTags.GRACE_AUTHNS_REMAINING_TAG.getValue()] = new GrammarTransition(
+            PasswordPolicyResponseControlStates.PPOLICY_TIME_BEFORE_EXPIRATION_STATE, PasswordPolicyResponseControlStates.PPOLICY_GRACE_AUTHNS_REMAINING_STATE, PasswordPolicyResponseControlTags.GRACE_AUTHNS_REMAINING_TAG.getValue(),
+            new StoreGraceAuthsRemaining() );
 
         // PasswordPolicyResponseValue ::= SEQUENCE {
-        //          error   [1] ENUMERATED {
-        super.transitions[PasswordPolicyResponseControlStates.SEQ_STATE.ordinal()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
-            PasswordPolicyResponseControlStates.PPOLICY_ERROR_STATE, PasswordPolicyResponseControlStates.END_STATE,
-            UniversalTag.ENUMERATED.getValue(), new GrammarAction( "set ppolicy error value" )
-            {
-                public void action( Asn1Container container ) throws DecoderException
-                {
-                    PasswordPolicyResponseControlContainer ppolicyRespContainer = ( PasswordPolicyResponseControlContainer ) container;
-
-                    setPasswordPolicyError( ppolicyRespContainer );
-
-                    ppolicyRespContainer.setGrammarEndAllowed( true );
-                }
-            } );
-    }
-
-
-    /**
-     * read and set the Value of password policy error
-     *
-     * @param ppolicyRespContainer the container holding PasswordPolicyResponceControl
-     * @throws DecoderException
-     */
-    private void setPasswordPolicyError( PasswordPolicyResponseControlContainer ppolicyRespContainer )
-        throws DecoderException
-    {
-        Value value = ppolicyRespContainer.getCurrentTLV().getValue();
-        try
-        {
-            int errorNum = IntegerDecoder.parse( value,
-                PasswordPolicyErrorEnum.PASSWORD_EXPIRED.getValue(),
-                PasswordPolicyErrorEnum.PASSWORD_IN_HISTORY.getValue() );
-
-            if ( IS_DEBUG )
-            {
-                LOG.debug( "password policy error {}", errorNum );
-            }
-
-            ppolicyRespContainer.getPasswordPolicyResponseControl().setPasswordPolicyError(
-                PasswordPolicyErrorEnum.get( errorNum ) );
-        }
-        catch ( IntegerDecoderException e )
-        {
-            String msg = I18n.err( I18n.ERR_04028 );
-            LOG.error( msg, e );
-            throw new DecoderException( msg );
-        }
-
+        //              warning [0] CHOICE {
+        //                      ...
+        //                      graceAuthNsRemaining [1] INTEGER (0 .. maxInt) } OPTIONAL,
+        //              error   [1] ENUMERATED {
+        super.transitions[PasswordPolicyResponseControlStates.PPOLICY_GRACE_AUTHNS_REMAINING_STATE.ordinal()][PasswordPolicyResponseControlTags.GRACE_AUTHNS_REMAINING_TAG.getValue()] = new GrammarTransition(
+            PasswordPolicyResponseControlStates.PPOLICY_GRACE_AUTHNS_REMAINING_STATE, PasswordPolicyResponseControlStates.PPOLICY_ERROR_TAG_STATE, PasswordPolicyResponseControlTags.GRACE_AUTHNS_REMAINING_TAG.getValue(),
+            new StoreError() );
     }
 
 
