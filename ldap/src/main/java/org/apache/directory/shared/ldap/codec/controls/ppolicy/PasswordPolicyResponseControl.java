@@ -64,14 +64,21 @@ public class PasswordPolicyResponseControl extends AbstractControl
     @Override
     public int computeLength()
     {
-        if ( ( timeBeforeExpiration >= 0 ) && ( graceAuthNsRemaining >= 0 ) )
+        if ( timeBeforeExpiration >= 0 )
         {
             timeBeforeExpirationTagLength = TLV.getNbBytes( timeBeforeExpiration );
             warningLength = 1 + TLV.getNbBytes( timeBeforeExpirationTagLength ) + timeBeforeExpirationTagLength;
-
+        }
+        
+        
+        if ( graceAuthNsRemaining >= 0 )
+        {
             graceAuthNsRemainingTagLength = TLV.getNbBytes( graceAuthNsRemaining );
-            warningLength += 1 + TLV.getNbBytes( graceAuthNsRemainingTagLength ) + graceAuthNsRemainingTagLength;
-            
+            warningLength = 1 + TLV.getNbBytes( graceAuthNsRemainingTagLength ) + graceAuthNsRemainingTagLength;
+        }
+
+        if ( warningLength != 0 )
+        {
             ppolicySeqLength = 1 + TLV.getNbBytes( warningLength ) + warningLength;
         }
 
@@ -106,9 +113,7 @@ public class PasswordPolicyResponseControl extends AbstractControl
 
         if ( ( timeBeforeExpiration < 0 ) && ( graceAuthNsRemaining < 0 ) && ( ppolicyError == null ) )
         {
-            // Encode the empty Sequence tag
-            buffer.put( UniversalTag.SEQUENCE.getValue() );
-            buffer.put( (byte)0 );
+            return buffer;
         }
         else
         {
@@ -116,19 +121,24 @@ public class PasswordPolicyResponseControl extends AbstractControl
             buffer.put( UniversalTag.SEQUENCE.getValue() );
             buffer.put( TLV.getBytes( ppolicySeqLength ) );
 
-            if ( ( timeBeforeExpiration >= 0 ) && ( graceAuthNsRemaining >= 0 ) )
+            if ( warningLength > 0 )
             {
                 // Encode the Warning tag
                 buffer.put( (byte)PasswordPolicyResponseControlTags.PPOLICY_WARNING_TAG.getValue() );
                 buffer.put( TLV.getBytes( warningLength ) );
-                
-                buffer.put( ( byte ) PasswordPolicyResponseControlTags.TIME_BEFORE_EXPIRATION_TAG.getValue() );
-                buffer.put( TLV.getBytes( timeBeforeExpirationTagLength ) );
-                buffer.put( Value.getBytes( timeBeforeExpiration ) );
-    
-                buffer.put( ( byte ) PasswordPolicyResponseControlTags.GRACE_AUTHNS_REMAINING_TAG.getValue() );
-                buffer.put( TLV.getBytes( graceAuthNsRemainingTagLength ) );
-                buffer.put( Value.getBytes( graceAuthNsRemaining ) );
+
+                if ( timeBeforeExpiration >= 0 )
+                {
+                    buffer.put( ( byte ) PasswordPolicyResponseControlTags.TIME_BEFORE_EXPIRATION_TAG.getValue() );
+                    buffer.put( TLV.getBytes( timeBeforeExpirationTagLength ) );
+                    buffer.put( Value.getBytes( timeBeforeExpiration ) );
+                }
+                else if ( graceAuthNsRemaining >= 0 )
+                {
+                    buffer.put( ( byte ) PasswordPolicyResponseControlTags.GRACE_AUTHNS_REMAINING_TAG.getValue() );
+                    buffer.put( TLV.getBytes( graceAuthNsRemainingTagLength ) );
+                    buffer.put( Value.getBytes( graceAuthNsRemaining ) );
+                }
             }
     
             if ( ppolicyError != null )
@@ -191,8 +201,7 @@ public class PasswordPolicyResponseControl extends AbstractControl
         {
             sb.append( "   timeBeforeExpiration          : '" ).append( timeBeforeExpiration ).append( '\n' );
         }
-        
-        if ( graceAuthNsRemaining >= 0 )
+        else if ( graceAuthNsRemaining >= 0 )
         {
             sb.append( "   graceAuthNsRemaining          : '" ).append( graceAuthNsRemaining ).append( '\n' );
         }
