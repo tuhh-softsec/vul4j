@@ -50,5 +50,7 @@ public class StoreTimeBeforeExpiration extends AbstractReadInteger
         PasswordPolicyResponseControlContainer ppolicyContainer = ( PasswordPolicyResponseControlContainer ) container;
         
         ppolicyContainer.getPasswordPolicyResponseControl().setTimeBeforeExpiration( value );
+        
+        container.setGrammarEndAllowed( true );
     }
 }

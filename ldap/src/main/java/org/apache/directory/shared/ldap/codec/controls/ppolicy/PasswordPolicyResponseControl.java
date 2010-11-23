@@ -69,9 +69,7 @@ public class PasswordPolicyResponseControl extends AbstractControl
             timeBeforeExpirationTagLength = TLV.getNbBytes( timeBeforeExpiration );
             warningLength = 1 + TLV.getNbBytes( timeBeforeExpirationTagLength ) + timeBeforeExpirationTagLength;
         }
-        
-        
-        if ( graceAuthNsRemaining >= 0 )
+        else if ( graceAuthNsRemaining >= 0 )
         {
             graceAuthNsRemainingTagLength = TLV.getNbBytes( graceAuthNsRemaining );
             warningLength = 1 + TLV.getNbBytes( graceAuthNsRemainingTagLength ) + graceAuthNsRemainingTagLength;
@@ -87,7 +85,10 @@ public class PasswordPolicyResponseControl extends AbstractControl
             ppolicySeqLength += 1 + 1 + 1;
         }
         
-        valueLength = 1 + TLV.getNbBytes( ppolicySeqLength ) + ppolicySeqLength;
+        if ( ppolicySeqLength > 0 )
+        {
+            valueLength = 1 + TLV.getNbBytes( ppolicySeqLength ) + ppolicySeqLength;
+        }
 
         return super.computeLength( valueLength );
     }
