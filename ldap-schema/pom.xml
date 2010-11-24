@@ -82,7 +82,7 @@
                 <property name="schema.index" value="target/classes/META-INF/apacheds-schema.index"/>
                 <property name="schema.location" value="src/main/resources/"/>
               
-                <!-- Listing all LDIF files under  -->
+                <!-- Listing all LDIF files under schema location -->
                 <path id="schema.files.path">
                   <fileset dir="${schema.location}">
                     <include name="**/*.ldif" />
