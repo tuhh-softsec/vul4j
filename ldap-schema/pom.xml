@@ -70,6 +70,41 @@
           </systemPropertyVariables>
         </configuration>
       </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.6</version>
+        <executions>
+          <execution>
+            <phase>generate-resources</phase>
+            <configuration>
+              <target>
+                <!-- Various properties -->
+                <property name="schema.index" value="target/classes/META-INF/apacheds-schema.index"/>
+                <property name="schema.location" value="src/main/resources/"/>
+              
+                <!-- Listing all LDIF files under  -->
+                <path id="schema.files.path">
+                  <fileset dir="${schema.location}">
+                    <include name="**/*.ldif" />
+                    <exclude name="schema-all.ldif" />
+                  </fileset>
+                </path>
+                <property name="schema.files" refid="schema.files.path"/>
+                
+                <!-- Creating the schema index file -->
+                <echo message="${schema.files}" file="${schema.index}"/>
+                <replace file="${schema.index}">
+                  <replacefilter token=":" value="${line.separator}"/>
+                  <replacefilter token="${basedir}/${schema.location}" value=""/>
+                </replace>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 </project>
