@@ -1,9 +1,7 @@
 version: 1
 dn: m-oid=2.5.6.22,ou=objectClasses,cn=core,ou=schema
-createtimestamp: 20090818022732Z
 m-oid: 2.5.6.22
 m-obsolete: FALSE
-entrycsn: 20090818052732.529000Z#000000#000#000000
 m-supobjectclass: top
 m-description: RFC2587: PKI certificate authority
 objectclass: metaObjectClass
@@ -16,4 +14,3 @@ m-may: authorityRevocationList
 m-may: certificateRevocationList
 m-may: cACertificate
 m-may: crossCertificatePair
-

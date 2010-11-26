@@ -1,10 +1,16 @@
 version: 1
 dn: m-oid=2.5.6.17,ou=objectClasses,cn=core,ou=schema
-createtimestamp: 20090818022732Z
 m-must: uniqueMember
 m-must: cn
+m-oid: 2.5.6.17
 m-obsolete: FALSE
+m-supobjectclass: top
 m-description: RFC2256: a group of unique names (DN and Unique Identifier)
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: groupOfUniqueNames
+m-typeobjectclass: STRUCTURAL
 creatorsname: uid=admin,ou=system
 m-may: businessCategory
 m-may: seeAlso
@@ -12,12 +18,3 @@ m-may: owner
 m-may: ou
 m-may: o
 m-may: description
-m-oid: 2.5.6.17
-entrycsn: 20090818052732.502000Z#000000#000#000000
-m-supobjectclass: top
-objectclass: metaObjectClass
-objectclass: metaTop
-objectclass: top
-m-name: groupOfUniqueNames
-m-typeobjectclass: STRUCTURAL
-
