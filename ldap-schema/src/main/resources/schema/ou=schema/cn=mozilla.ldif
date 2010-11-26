@@ -1,12 +1,9 @@
 version: 1
 dn: cn=mozilla,ou=schema
-createtimestamp: 20090818022725Z
 cn: mozilla
-entrycsn: 20090818052725.398000Z#000000#000#000000
 m-disabled: TRUE
 objectclass: metaSchema
 objectclass: top
 m-dependencies: system
 m-dependencies: core
 creatorsname: uid=admin,ou=system
-
