@@ -1,7 +1,6 @@
 version: 1
 dn: ou=matchingRuleUse,cn=autofs,ou=schema
 ou: matchingruleuse
-entrycsn: 20090818052725.508000Z#000000#000#000000
 objectclass: organizationalUnit
 objectclass: top
-
+creatorsname: uid=admin,ou=system
