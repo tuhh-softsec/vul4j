@@ -1,7 +1,6 @@
 version: 1
 dn: ou=matchingRules,cn=mozilla,ou=schema
 ou: matchingrules
-entrycsn: 20090818052725.420000Z#000000#000#000000
 objectclass: organizationalUnit
 objectclass: top
-
+creatorsname: uid=admin,ou=system
