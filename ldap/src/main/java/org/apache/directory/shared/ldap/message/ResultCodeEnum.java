@@ -179,7 +179,7 @@ public enum ResultCodeEnum
      * LDAPResult which are not used to indicate an error. Applicable
      * operations: all except for Compare. Result code type: Non-Erroneous
      */
-    SUCCESS( 0 ),
+    SUCCESS( 0, "success" ),
 
     /**
      * Servers sends this result code to LDAP v2 clients to refer them to
@@ -189,7 +189,7 @@ public enum ResultCodeEnum
      * request, servers send an REFERRAL result code instead of this result
      * code.
      */
-    PARTIAL_RESULTS( 9 ),
+    PARTIAL_RESULTS( 9, "partialResults" ),
 
     /**
      * It is used to indicate that the result of a Compare operation is FALSE
@@ -197,7 +197,7 @@ public enum ResultCodeEnum
      * error condition. Applicable operations: Compare. Result code type:
      * Non-Erroneous
      */
-    COMPARE_FALSE( 5 ),
+    COMPARE_FALSE( 5, "compareFalse" ),
 
     /**
      * It is used to indicate that the result of a Compare operation is TRUE and
@@ -205,7 +205,7 @@ public enum ResultCodeEnum
      * condition. Applicable operations: Compare. Result code type:
      * Non-Erroneous
      */
-    COMPARE_TRUE( 6 ),
+    COMPARE_TRUE( 6, "compareTrue" ),
 
     /**
      * Rather than indicating an error, this result code is used to indicate
@@ -217,7 +217,7 @@ public enum ResultCodeEnum
      * complete the request. This result code is new in LDAPv3. Applicable
      * operations: all. Result code type: Non-Erroneous
      */
-    REFERRAL( 10 ),
+    REFERRAL( 10, "referral" ),
 
     /**
      * This result code is not an error response from the server, but rather, is
@@ -226,7 +226,7 @@ public enum ResultCodeEnum
      * authentication process [RFC2251, Section 4.2.3]. This result code is new
      * in LDAPv3. Applicable operations: Bind. Result code type: Non-Erroneous
      */
-    SASL_BIND_IN_PROGRESS( 14 ),
+    SASL_BIND_IN_PROGRESS( 14, "saslBindInProgress" ),
 
     // ------------------------------------------------------------------------
     // Problem Specific Error Codes:
@@ -248,7 +248,7 @@ public enum ResultCodeEnum
      * the server. Applicable operations: Bind. Result code type: Specific
      * (Security)
      */
-    AUTH_METHOD_NOT_SUPPORTED( 7 ),
+    AUTH_METHOD_NOT_SUPPORTED( 7, "authMethodNotSupported" ),
 
     /**
      * This error may be returned on a bind request if the server only accepts
@@ -261,7 +261,7 @@ public enum ResultCodeEnum
      * Section 4.4.1] Applicable operations: all. Result code type: Specific
      * (Security)
      */
-    STRONG_AUTH_REQUIRED( 8 ),
+    STRONG_AUTH_REQUIRED( 8, "strongAuthRequired" ),
 
     /**
      * This error code may be returned if the session is not protected by a
@@ -273,7 +273,7 @@ public enum ResultCodeEnum
      * This error code is new in LDAPv3. Applicable operations: all. Result code
      * type: Specific (Security)
      */
-    CONFIDENTIALITY_REQUIRED( 13 ),
+    CONFIDENTIALITY_REQUIRED( 13, "confidentialityRequired" ),
 
     /**
      * An alias was encountered in a situation where it was not allowed or where
@@ -284,7 +284,7 @@ public enum ResultCodeEnum
      * INSUFFICIENT_ACCESS_RIGHTS (50), but is specific to Searching on an alias.
      * Applicable operations: Search. Result code type: Specific (Security)
      */
-    ALIAS_DEREFERENCING_PROBLEM( 36 ),
+    ALIAS_DEREFERENCING_PROBLEM( 36, "aliasDereferencingProblem" ),
 
     /**
      * This error should be returned by the server when the client has tried to
@@ -296,7 +296,7 @@ public enum ResultCodeEnum
      * Section 12.7]. Applicable operations: Bind. Result code type: Specific
      * (Security)
      */
-    INAPPROPRIATE_AUTHENTICATION( 48 ),
+    INAPPROPRIATE_AUTHENTICATION( 48, "inappropriateAuthentication" ),
 
     /**
      * This error code is returned if the DN or password used in a simple bind
@@ -308,7 +308,7 @@ public enum ResultCodeEnum
      * insufficientAccessRights. Applicable operations: Bind. Result code type:
      * Specific (Security)
      */
-    INVALID_CREDENTIALS( 49 ),
+    INVALID_CREDENTIALS( 49, "invalidCredentials" ),
 
     /**
      * The requestor does not have the right to carry out the requested
@@ -317,7 +317,7 @@ public enum ResultCodeEnum
      * where the requestor has insufficientAccessRights. Applicable operations:
      * all except for Bind. Result code type: Specific (Security)
      */
-    INSUFFICIENT_ACCESS_RIGHTS( 50 ),
+    INSUFFICIENT_ACCESS_RIGHTS( 50, "insufficientAccessRights" ),
 
     // ------------------------------------------------------------------------
     // Service Problem Specific Error Codes:
@@ -333,7 +333,7 @@ public enum ResultCodeEnum
      * [RFC2251, Section 4.2.1] Applicable operations: all except Bind. Result
      * code type: Specific (Service)
      */
-    OPERATIONS_ERROR( 1 ),
+    OPERATIONS_ERROR( 1, "operationsError" ),
 
     /**
      * A protocol error should be returned by the server when an invalid or
@@ -349,7 +349,7 @@ public enum ResultCodeEnum
      * error in the error string. Applicable operations: all. Result code type:
      * Specific (Service)
      */
-    PROTOCOL_ERROR( 2 ),
+    PROTOCOL_ERROR( 2, "protocolError" ),
 
     /**
      * This error should be returned when the time to perform an operation has
@@ -366,7 +366,7 @@ public enum ResultCodeEnum
      * exceed the defined timelimit. Applicable operations: all. Result code
      * type: Specific (Service)
      */
-    TIME_LIMIT_EXCEEDED( 3 ),
+    TIME_LIMIT_EXCEEDED( 3, "timeLimitExceeded" ),
 
     /**
      * This error should be returned when the number of results generated by a
@@ -376,7 +376,7 @@ public enum ResultCodeEnum
      * results, equal in number to the size limit [X511, Section 7.5].
      * Applicable operations: Search. Result code type: Specific (Service)
      */
-    SIZE_LIMIT_EXCEEDED( 4 ),
+    SIZE_LIMIT_EXCEEDED( 4, "sizeLimitExceeded" ),
 
     /**
      * The server has reached some limit set by an administrative authority, and
@@ -386,7 +386,7 @@ public enum ResultCodeEnum
      * candidates [Net]. This error code is new in LDAPv3. Applicable
      * operations: all. Result code type: Specific (Service)
      */
-    ADMIN_LIMIT_EXCEEDED( 11 ),
+    ADMIN_LIMIT_EXCEEDED( 11, "adminLimitExceeded" ),
 
     /**
      * The server was unable to satisfy the request because one or more critical
@@ -397,7 +397,7 @@ public enum ResultCodeEnum
      * code is new in LDAPv3. Applicable operations: all. Result code type:
      * Specific (Service)
      */
-    UNAVAILABLE_CRITICAL_EXTENSION( 12 ),
+    UNAVAILABLE_CRITICAL_EXTENSION( 12, "unavailableCriticalExtension" ),
 
     /**
      * This error code may be returned if the server is unable to process the
@@ -405,7 +405,7 @@ public enum ResultCodeEnum
      * the request shortly the server will be able to process it then.
      * Applicable operations: all. Result code type: Specific (Service)
      */
-    BUSY( 51 ),
+    BUSY( 51, "busy" ),
 
     /**
      * This error code is returned when the server is unavailable to process the
@@ -413,7 +413,7 @@ public enum ResultCodeEnum
      * down [RFC2251, Section 4.2.3]. Applicable operations: all. Result code
      * type: Specific (Service)
      */
-    UNAVAILABLE( 52 ),
+    UNAVAILABLE( 52, "unavailable" ),
 
     /**
      * This error code should be returned by the server when a client request is
@@ -429,14 +429,14 @@ public enum ResultCodeEnum
      * If appropriate, details of the error should be provided in the error
      * message. Applicable operations: all. Result code type: Specific (Service)
      */
-    UNWILLING_TO_PERFORM( 53 ),
+    UNWILLING_TO_PERFORM( 53, "unwillingToPerform" ),
 
     /**
      * This error may be returned by the server if it detects an alias or
      * referral loop, and is unable to satisfy the client's request. Applicable
      * operations: all. Result code type: Specific (Service)
      */
-    LOOP_DETECT( 54 ),
+    LOOP_DETECT( 54, "loopDetect" ),
 
     // ------------------------------------------------------------------------
     // Attribute Problem Specific Error Codes:
@@ -450,7 +450,7 @@ public enum ResultCodeEnum
      * the operation does not exist in the entry. Applicable operations: Modify,
      * Compare. Result code type: Specific (Attribute)
      */
-    NO_SUCH_ATTRIBUTE( 16 ),
+    NO_SUCH_ATTRIBUTE( 16, "noSuchAttribute" ),
 
     /**
      * This error may be returned if the specified attribute is unrecognized by
@@ -462,14 +462,14 @@ public enum ResultCodeEnum
      * Modify operations [X.511, Section 12.4]. Applicable operations: Modify,
      * Add. Result code type: Specific (Attribute)
      */
-    UNDEFINED_ATTRIBUTE_TYPE( 17 ),
+    UNDEFINED_ATTRIBUTE_TYPE( 17, "undefinedAttributeType" ),
 
     /**
      * An attempt was made, e.g., in a filter, to use a matching rule not
      * defined for the attribute type concerned [X511, Section 12.4]. Applicable
      * operations: Search. Result code type: Specific (Attribute)
      */
-    INAPPROPRIATE_MATCHING( 18 ),
+    INAPPROPRIATE_MATCHING( 18, "inappropriateMatching" ),
 
     /**
      * This error should be returned by the server if an attribute value
@@ -478,14 +478,14 @@ public enum ResultCodeEnum
      * constraint on the content. Applicable operations: Modify, Add, ModifyDN.
      * Result code type: Specific (Attribute)
      */
-    CONSTRAINT_VIOLATION( 19 ),
+    CONSTRAINT_VIOLATION( 19, "constraintViolation" ),
 
     /**
      * This error should be returned by the server if the value specified by the
      * client already exists within the attribute. Applicable operations:
      * Modify, Add. Result code type: Specific (Attribute)
      */
-    ATTRIBUTE_OR_VALUE_EXISTS( 20 ),
+    ATTRIBUTE_OR_VALUE_EXISTS( 20, "attributeOrValueExists" ),
 
     /**
      * This error should be returned by the server if the attribute syntax for
@@ -493,7 +493,7 @@ public enum ResultCodeEnum
      * unrecognized or invalid. Applicable operations: Modify, Add. Result code
      * type: Specific (Attribute)
      */
-    INVALID_ATTRIBUTE_SYNTAX( 21 ),
+    INVALID_ATTRIBUTE_SYNTAX( 21, "invalidAttributeSyntax" ),
 
     // ------------------------------------------------------------------------
     // Name Problem Specific Error Codes:
@@ -523,13 +523,13 @@ public enum ResultCodeEnum
      * does not have permission to view or modify the entry. Applicable
      * operations: all except for Bind. Result code type: Specific (Name)
      */
-    NO_SUCH_OBJECT( 32 ),
+    NO_SUCH_OBJECT( 32, "NO_SUCH_OBJECT" ),
 
     /**
      * An alias has been dereferenced which names no object [X511, Section 12.5]
      * Applicable operations: Search. Result code type: Specific (Name)
      */
-    ALIAS_PROBLEM( 33 ),
+    ALIAS_PROBLEM( 33, "aliasProblem" ),
 
     /**
      * This error should be returned by the server if the DN syntax is
@@ -538,7 +538,7 @@ public enum ResultCodeEnum
      * DSA ; in this case namingViolation should be returned instead. Applicable
      * operations: all. Result code type: Specific (Name)
      */
-    INVALID_DN_SYNTAX( 34 ),
+    INVALID_DN_SYNTAX( 34, "invalidDNSyntax" ),
     
     // ------------------------------------------------------------------------
     // Update Problem Specific Error Codes:
@@ -556,7 +556,7 @@ public enum ResultCodeEnum
      * 12.9]. Applicable operations: Add, ModifyDN. Result code type: Specific
      * (Update)
      */
-    NAMING_VIOLATION( 64 ),
+    NAMING_VIOLATION( 64, "namingViolation" ),
 
     /**
      * This error should be returned if the operation requested by the user
@@ -570,7 +570,7 @@ public enum ResultCodeEnum
      * permits are still present. Applicable operations: Add, Modify, ModifyDN.
      * Result code type: Specific (Update)
      */
-    OBJECT_CLASS_VIOLATION( 65 ),
+    OBJECT_CLASS_VIOLATION( 65, "objectClassViolation" ),
 
     /**
      * This error should be returned if the client attempts to perform an
@@ -582,7 +582,7 @@ public enum ResultCodeEnum
      * [X.511, Section 11.4.1]). Applicable operations: Delete, ModifyDN. Result
      * code type: Specific (Update)
      */
-    NOT_ALLOWED_ON_NON_LEAF( 66 ),
+    NOT_ALLOWED_ON_NON_LEAF( 66, "notAllowedOnNonLeaf" ),
 
     /**
      * The attempted operation would affect the RDN (e.g., removal of an
@@ -592,7 +592,7 @@ public enum ResultCodeEnum
      * should return the error notAllowedOnRDN. [RFC2251, Section 4.6]
      * Applicable operations: Modify. Result code type: Specific (Update)
      */
-    NOT_ALLOWED_ON_RDN( 67 ),
+    NOT_ALLOWED_ON_RDN( 67, "notAllowedOnRDN" ),
 
     /**
      * This error should be returned by the server when the client attempts to
@@ -600,7 +600,7 @@ public enum ResultCodeEnum
      * entry with the name of an entry which exists. Applicable operations: Add,
      * ModifyDN. Result code type: Specific (Update)
      */
-    ENTRY_ALREADY_EXISTS( 68 ),
+    ENTRY_ALREADY_EXISTS( 68, "entryAlreadyExists" ),
 
     /**
      * An operation attempted to modify an object class that should not be
@@ -610,7 +610,7 @@ public enum ResultCodeEnum
      * forms, structure rules etc. [X.511, Section 12.9]. Applicable operations:
      * Modify. Result code type: Specific (Update)
      */
-    OBJECT_CLASS_MODS_PROHIBITED( 69 ),
+    OBJECT_CLASS_MODS_PROHIBITED( 69, "objectClassModsProhibited" ),
 
     /**
      * This error code should be returned to indicate that the operation could
@@ -623,7 +623,7 @@ public enum ResultCodeEnum
      * entries and subtrees between servers [RFC2251, Section 4.9]. Applicable
      * operations: ModifyDN. Result code type: Specific (Update)
      */
-    AFFECTS_MULTIPLE_DSAS( 71 ),
+    AFFECTS_MULTIPLE_DSAS( 71, "affectsMultipleDSAs" ),
 
     // ------------------------------------------------------------------------
     // General Error Codes:
@@ -640,20 +640,20 @@ public enum ResultCodeEnum
      * of the error should be provided in the error message. Applicable
      * operations: all. Result code type: General
      */
-    OTHER( 80 ),
+    OTHER( 80, "other" ),
     
     /**
      * This error code is returned when an operation has been canceled using
      * the Cancel extended operation. 
      */
-    CANCELED( 118 ),
+    CANCELED( 118, "canceled" ),
     
     
     /**
      * This error code is returned if the server has no knowledge of
      * the operation requested for cancelation.
      */
-    NO_SUCH_OPERATION( 119 ),
+    NO_SUCH_OPERATION( 119, "noSuchOperation" ),
     
     
     /**
@@ -662,7 +662,7 @@ public enum ResultCodeEnum
      * tooLate for a request to cancel an outstanding modify operation which
      * has already committed updates to the underlying data store.
      */
-    TOO_LATE( 120 ),
+    TOO_LATE( 120, "tooLate" ),
     
     /**
      * The cannotCancel resultCode is returned if the identified operation
@@ -679,7 +679,7 @@ public enum ResultCodeEnum
      *
      * -  operations which abandon or cancel other operations.
      */
-    CANNOT_CANCEL( 121 ),
+    CANNOT_CANCEL( 121, "cannotCancel" ),
 
     /**
      * The server may return this result code on the initial content poll
@@ -687,7 +687,7 @@ public enum ResultCodeEnum
      * due to various reasons. For more detailed explanation refer 
      * <a href="http://www.faqs.org/rfcs/rfc4533.html">RFC 4533 (a.k.a syncrepl)</a>
      */
-    E_SYNC_REFRESH_REQUIRED( 4096 ),
+    E_SYNC_REFRESH_REQUIRED( 4096, "eSyncRefreshRequired" ),
     
     /**
      * A unknown result code to cover all the other cases
@@ -700,20 +700,25 @@ public enum ResultCodeEnum
     // -- 70 reserved for CLDAP --
     // -- 72-79 unused --
     // -- 81-90 reserved for APIs --
-    UNKNOWN( 122 );
+    UNKNOWN( 122, "unknown" );
     
     /** Stores the integer value of each element of the enumeration */
     private int value;
+    
+    /** Stores the description of each element of the enumeration */
+    private String message;
 
     /**
      * Private construct so no other instances can be created other than the
      * public static constants in this class.
      * 
      * @param value the integer value of the enumeration.
+     * @param message the description of the enumeration.
      */
-    private ResultCodeEnum( int value )
+    private ResultCodeEnum( int value, String message )
     {
         this.value = value;
+        this.message = message;
     }
     
     /**
@@ -722,6 +727,14 @@ public enum ResultCodeEnum
     public int getValue()
     {
         return value;
+    }
+    
+    /**
+     * @return The description associated with the current element.
+     */
+    public String getMessage()
+    {
+        return message;
     }
     
     public static final Set<ResultCodeEnum> EMPTY_RESULT_CODE_SET = new HashSet<ResultCodeEnum>();
