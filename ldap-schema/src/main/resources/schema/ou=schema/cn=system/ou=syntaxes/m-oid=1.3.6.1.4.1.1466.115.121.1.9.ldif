@@ -1,13 +1,10 @@
 version: 1
 dn: m-oid=1.3.6.1.4.1.1466.115.121.1.9,ou=syntaxes,cn=system,ou=schema
-createtimestamp: 20090818022727Z
-m-oid: 1.3.6.1.4.1.1466.115.121.1.9
 x-humanreadable: FALSE
+m-oid: 1.3.6.1.4.1.1466.115.121.1.9
 m-obsolete: FALSE
-entrycsn: 20090818052727.056000Z#000000#000#000000
+m-description: Certificate List
 objectclass: metaSyntax
 objectclass: metaTop
 objectclass: top
-m-description: Certificate List
 creatorsname: uid=admin,ou=system
-
