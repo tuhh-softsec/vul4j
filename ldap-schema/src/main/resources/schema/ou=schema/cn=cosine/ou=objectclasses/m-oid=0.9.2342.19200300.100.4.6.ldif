@@ -1,10 +1,8 @@
 version: 1
 dn: m-oid=0.9.2342.19200300.100.4.6,ou=objectClasses,cn=cosine,ou=schema
 m-must: documentIdentifier
-createtimestamp: 20090818022732Z
 m-oid: 0.9.2342.19200300.100.4.6
 m-obsolete: FALSE
-entrycsn: 20090818052732.617000Z#000000#000#000000
 m-supobjectclass: top
 objectclass: metaObjectClass
 objectclass: metaTop
@@ -23,4 +21,3 @@ m-may: documentVersion
 m-may: documentAuthor
 m-may: documentLocation
 m-may: documentPublisher
-
