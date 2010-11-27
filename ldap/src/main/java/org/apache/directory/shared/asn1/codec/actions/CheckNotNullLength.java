@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.controls.ppolicy.actions;
+package org.apache.directory.shared.asn1.codec.actions;
 
 
 import org.apache.directory.shared.asn1.ber.Asn1Container;
@@ -25,7 +25,6 @@ import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.controls.ppolicy.PasswordPolicyResponseControlGrammar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +37,7 @@ import org.slf4j.LoggerFactory;
 public class CheckNotNullLength extends GrammarAction
 {
     /** The logger */
-    private static final Logger LOG = LoggerFactory.getLogger( PasswordPolicyResponseControlGrammar.class );
+    private static final Logger LOG = LoggerFactory.getLogger( "ASN1-DECODER" );
 
     /**
      * Instantiates the action.

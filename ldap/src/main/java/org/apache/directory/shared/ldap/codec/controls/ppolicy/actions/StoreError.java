@@ -21,6 +21,7 @@ package org.apache.directory.shared.ldap.codec.controls.ppolicy.actions;
 
 
 import org.apache.directory.shared.asn1.ber.Asn1Container;
+import org.apache.directory.shared.asn1.codec.actions.AbstractReadInteger;
 import org.apache.directory.shared.ldap.codec.controls.ppolicy.PasswordPolicyErrorEnum;
 import org.apache.directory.shared.ldap.codec.controls.ppolicy.PasswordPolicyResponseControlContainer;
 

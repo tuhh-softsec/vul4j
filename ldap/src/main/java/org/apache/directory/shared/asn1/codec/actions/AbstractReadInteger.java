@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.controls.ppolicy.actions;
+package org.apache.directory.shared.asn1.codec.actions;
 
 
 import org.apache.directory.shared.asn1.ber.Asn1Container;
@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractReadInteger extends GrammarAction
 {
     /** The logger */
-    private static final Logger LOG = LoggerFactory.getLogger( AbstractReadInteger.class );
+    private static final Logger LOG = LoggerFactory.getLogger( "ASN1-DECODER" );
 
     /** Speedup for logs */
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
