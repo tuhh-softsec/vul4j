@@ -70,8 +70,7 @@ import org.apache.directory.shared.ldap.codec.actions.StoreMatchValueAction;
 import org.apache.directory.shared.ldap.codec.actions.StoreReferenceAction;
 import org.apache.directory.shared.ldap.codec.actions.StoreTypeMatchingRuleAction;
 import org.apache.directory.shared.ldap.codec.actions.ValueAction;
-import org.apache.directory.shared.ldap.codec.controls.ControlEnum;
-import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
+import org.apache.directory.shared.ldap.codec.controls.ControlFactory;
 import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
 import org.apache.directory.shared.ldap.exception.LdapException;
@@ -3450,13 +3449,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
 
                     Message message = ldapMessageContainer.getMessage();
 
-                    Control control = ControlEnum.getControl( oidValue );
-
-                    if ( control == null )
-                    {
-                        // This control is unknown, we will create a neutral control
-                        control = new ControlImpl( oidValue );
-                    }
+                    Control control = ControlFactory.createControl( oidValue );
 
                     message.addControl( control );
 

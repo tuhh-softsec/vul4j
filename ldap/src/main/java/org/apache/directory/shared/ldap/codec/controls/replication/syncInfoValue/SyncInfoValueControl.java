@@ -63,22 +63,26 @@ public class SyncInfoValueControl extends AbstractControl
     
     
     /**
+     * The constructor for this codec. Dont't forget to set the type.
+     */
+    public SyncInfoValueControl()
+    {
+        super( CONTROL_OID );
+        
+        decoder = new SyncInfoValueControlDecoder();
+    }
+    
+    
+    /**
      * The constructor for this codec.
      * @param type The kind of syncInfo we will store. Can be newCookie, 
      * refreshPresent, refreshDelete or syncIdSet
      */
     public SyncInfoValueControl( SynchronizationInfoEnum type )
     {
-        super( CONTROL_OID );
+        this();
 
-        decoder = new SyncInfoValueControlDecoder();
-        this.type = type;
-        
-        // Initialize the arrayList if needed
-        if ( type == SynchronizationInfoEnum.SYNC_ID_SET )
-        {
-            syncUUIDs = new ArrayList<byte[]>();
-        }
+        setType( type);
     }
     
     
@@ -102,6 +106,12 @@ public class SyncInfoValueControl extends AbstractControl
     public void setType( SynchronizationInfoEnum type )
     {
         this.type = type;
+
+        // Initialize the arrayList if needed
+        if ( type == SynchronizationInfoEnum.SYNC_ID_SET && syncUUIDs == null )
+        {
+            syncUUIDs = new ArrayList<byte[]>();
+        }
     }
 
     
