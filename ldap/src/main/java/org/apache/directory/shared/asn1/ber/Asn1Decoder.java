@@ -42,8 +42,11 @@ import org.slf4j.LoggerFactory;
 */
 public class Asn1Decoder implements TLVBerDecoderMBean
 {
+    /** A public constant used by all the ASN1 decoder */
+    public static final String ASN1_DECODER = "ASN1-DECODER";
+    
     /** The logger */
-    private static final Logger LOG = LoggerFactory.getLogger( Asn1Decoder.class );
+    private static final Logger LOG = LoggerFactory.getLogger( ASN1_DECODER );
 
     /** A speedup for logger */
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
