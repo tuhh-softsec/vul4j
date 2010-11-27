@@ -21,7 +21,6 @@ package org.apache.directory.shared.asn1.codec.actions;
 
 
 import org.apache.directory.shared.asn1.ber.Asn1Container;
-import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.codec.DecoderException;
@@ -39,7 +38,7 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractReadByteArray extends GrammarAction
 {
     /** The logger */
-    private static final Logger LOG = LoggerFactory.getLogger( Asn1Decoder.ASN1_DECODER );
+    private static final Logger LOG = LoggerFactory.getLogger( AbstractReadByteArray.class );
 
     /** Speedup for logs */
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
