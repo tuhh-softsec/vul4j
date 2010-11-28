@@ -6,6 +6,7 @@
 		<author email="nricheton@users.sourceforge.net">Nicolas Richeton</author>
 	</properties>
 	<body>
+		<h1>Reverse proxy servlets</h1>
 		<section name="Reverse proxy servlets">
 			<p>
 				The toolkit includes two reverse proxy servlets which can be used

@@ -5,6 +5,7 @@
 		<author email="fxbonnet@users.sourceforge.net">Francois-Xavier Bonnet</author>
 	</properties>
 	<body>
+		<h1>Taglib</h1>
 		<section name="Tag the block on the provider application">
 			<p>The block has to be tagged using special HTML comments.</p>
 <source>

@@ -5,6 +5,7 @@
 		<author email="fxbonnet@users.sourceforge.net">Francois-Xavier Bonnet</author>
 	</properties>
 	<body>
+		<h1>Edge Side Include</h1>
 		<section name="Edge Side Include (ESI)">
 			<p>
 				Currently aggregator servlet supports ESI include and comment

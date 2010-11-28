@@ -5,6 +5,7 @@
 		<author email="fxbonnet@users.sourceforge.net">Francois-Xavier Bonnet</author>
 	</properties>
 	<body>
+	<h1>Authentication</h1>
 		<section name="Authentication">
 			<p>
 				User authentication consists in two different things :

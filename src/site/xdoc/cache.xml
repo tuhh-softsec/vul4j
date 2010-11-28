@@ -5,6 +5,7 @@
 		<author email="fxbonnet@users.sourceforge.net">Francois-Xavier Bonnet</author>
 	</properties>
 	<body>
+	<h1>Cache</h1>
 		<section name="Configuration">
 			<p>
 				ESIGate includes a full

@@ -5,6 +5,7 @@
 		<author email="fxbonnet@users.sourceforge.net">Francois-Xavier Bonnet</author>
 	</properties>
 	<body>
+	<h1>Aggregator</h1>
 		<section name="Goals">
 			<p>
 				Like the reverse proxy servlet, the aggregator is implemented as a

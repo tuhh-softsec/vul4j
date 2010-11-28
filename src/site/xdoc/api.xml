@@ -5,6 +5,7 @@
 		<author email="fxbonnet@users.sourceforge.net">Francois-Xavier Bonnet</author>
 	</properties>
 	<body>
+		<h1>API</h1>
 		<p>
 			Any functionality used in the taglib, reverse proxy or aggregator can
 			be used through

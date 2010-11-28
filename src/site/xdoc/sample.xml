@@ -5,6 +5,7 @@
 		<author email="fxbonnet@users.sourceforge.net">Francois-Xavier Bonnet</author>
 	</properties>
 	<body>
+		<h1>Sample applications</h1>
 		<section name="Applications">
 			<p>The source distribution includes to demonstrate most of the
 				functionalities of the toolkit:

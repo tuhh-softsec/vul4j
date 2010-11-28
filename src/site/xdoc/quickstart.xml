@@ -5,6 +5,7 @@
 		<author email="fxbonnet@users.sourceforge.net">Francois-Xavier Bonnet</author>
 	</properties>
 	<body>
+	<h1>Quickstart</h1>
 		Imagine you have to write a java application (master) that must
 		include
 		a block coming from

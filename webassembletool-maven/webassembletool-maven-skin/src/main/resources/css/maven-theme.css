@@ -56,35 +56,42 @@ a.newWindow, a.newWindow:link, a.newWindow:visited, a.newWindow:active, a.newWin
   background: url(../images/newwindow.png) right center no-repeat;
   padding-right: 18px;
 }
+
+
+
+h1 {
+	color: #708691;
+}
+
+
 h2 {
-  padding: 4px 4px 4px 6px;
-  border: 1px solid #999;
-  color: #900;
-  background-color: #ddd;
-  font-weight:900;
-  font-size: x-large;
+	font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+	color: #708691;
+	font-weight:bold;
+	font-size: 1.4em;
+	background-image:url(../images/bg_h2.jpg);
+	background-repeat:no-repeat;
+	padding:0px 10px 20px 25px;
+	border:none;
+	background-color: white;
 }
+
 h3 {
-  padding: 4px 4px 4px 6px;
-  border: 1px solid #aaa;
-  color: #900;
-  background-color: #eee;
-  font-weight: normal;
-  font-size: large;
+	color: #708691;
+	background:url(../images/bg_nav.gif) no-repeat scroll left bottom;
+	
+	font-size: 1.3em;
+	margin-left: 17px;
 }
-h4 {
-  padding: 4px 4px 4px 6px;
-  border: 1px solid #bbb;
-  color: #900;
-  background-color: #fff;
-  font-weight: normal;
-  font-size: large;
-}
+	
 h5 {
-  padding: 4px 4px 4px 6px;
-  color: #900;
-  font-size: medium;
+	font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+	padding: 4px 4px 4px 6px;
+	color: #708691;
+	font-weight:bold;
+	font-size: 1.4em;
 }
+
 p {
   line-height: 1.3em;
   font-size: small;
@@ -111,10 +118,11 @@ table.bodyTable th {
   background-color: #bbb;
   text-align: left;
   font-weight: bold;
+  font-size:1.1em;
 }
 
 table.bodyTable th, table.bodyTable td {
-  font-size: 1em;
+  font-size:1.1em;
 }
 
 table.bodyTable tr.a {
@@ -127,6 +135,7 @@ table.bodyTable tr.b {
 
 .source {
   border: 1px solid #999;
+  font-size: 1.4em;
 }
 dl {
   padding: 4px 4px 4px 6px;

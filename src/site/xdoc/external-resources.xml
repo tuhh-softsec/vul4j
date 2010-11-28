@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+	<properties>
+		<title>ESIGate external resources</title>
+		<author email="nicolas.richeton@gmail.com">Nicolas Richeton</author>
+	</properties>
+	<body>
+		<h1>ESIGate external resources</h1>
+		<section name="External resources">
+			<p>Tutorials and examples can also be found on other sites. Feel free to contact us to add your website in that list.</p>
+			<subsection name="Tutorials">
+				<ul>
+					<li>
+						Le blog de Nicolas Richeton
+						<ul>
+							<li>
+								<a
+									href="http://blog.richeton.com/2010/11/28/esigate-tutorial-part-1/">Part 1</a> - Using taglib and templating.
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</subsection>
+
+
+
+		</section>
+	</body>
+</document>

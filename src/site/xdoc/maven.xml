@@ -3,14 +3,19 @@
 	<properties>
 		<title>Maven</title>
 		<author email="fxbonnet@users.sourceforge.net">Francois-Xavier Bonnet</author>
+		<author email="nicolas.richeton@gmail.com">Nicolas Richeton</author>
 	</properties>
 	<body>
+	<h1>Maven</h1>
 		<section name="Using the Website Assembling Toolkit in a Maven project">
 			<p>
-				The Website Assembling Toolkit has not been deployed yet on Maven central 
+				The Website Assembling Toolkit has not been deployed yet on Maven
+				central
 				repository. You have to add the Website Assembling Toolkit repository to
-				your pom.xml
+				your
+				pom.xml
 			</p>
+
 			<source><![CDATA[
 <repository>
 	<id>webassembletool-repository</id>
@@ -18,6 +23,33 @@
 	<url>http://webassembletool.sourceforge.net/maven/repository</url>
 </repository>
 ]]></source>
+		</section>
+
+		<section name="Repositories">
+			<table>
+				<tr>
+					<th>Type</th>
+					<th>URL</th>
+					<th>Description</th>
+				</tr>
+				<tr>
+					<td>Release</td>
+					<td>
+						<a href="http://www.esigate.org/maven/repository/">http://www.esigate.org/maven/repository/</a>
+					</td>
+					<td>Official releases of ESIGate, usable on production.</td>
+				</tr>
+				<tr>
+					<td>Snapshots</td>
+					<td>
+						<a href="http://www.esigate.org/maven/snapshots/">http://www.esigate.org/maven/snapshots/</a>
+					</td>
+					<td>Development builds of ESIGate, usable for compatibility tests and beta testing.</td>
+				</tr>
+			</table>
+		</section>
+
+		<section name="Adding dependency on ESI Gate">
 			<p>
 				Then you can add the dependency. For the core API:
 			</p>
@@ -28,9 +60,10 @@
 	<version>RELEASE</version>
 </dependency>
 ]]></source>
-<p>
-Note: don't forget to change RELEASE with the latest version.
-</p><br/>
+			<p>
+				Note: don't forget to change RELEASE with the latest version.
+</p>
+			<br />
 			<p>
 				For the taglib (in master application):
 			</p>

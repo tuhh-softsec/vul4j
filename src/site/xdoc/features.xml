@@ -5,23 +5,24 @@
 		<author email="fxbonnet@users.sourceforge.net">Francois-Xavier Bonnet</author>
 	</properties>
 	<body>
-		<section name="Features">
-			<subsection name="Blocks and templates">
+	<h1>Features</h1>
+		
+			<section name="Blocks and templates">
 				<p>
 					Any web application can be used as a provider. The master
 					application will be
 					able to use blocks and templates delimited with special HTML comments.
 				</p>
-			</subsection>
-			<subsection name="Cross technologies">
+			</section>
+			<section name="Cross technologies">
 				<p>
 					As we only use HTML comments inside provider applications, a
 					provider application
 					may have been developed with any technology,
 					including Java, PHP on .NET.
 	</p>
-			</subsection>
-			<subsection name="Reverse proxy">
+			</section>
+			<section name="Reverse proxy">
 				<p>
 					The kit contains a reverse-proxy servlet that can be used to
 					retrieve static contents
@@ -32,29 +33,29 @@
 					well be used in a
 					production environment with good performance.
 	</p>
-			</subsection>
-			<subsection name="Aggregator">
+			</section>
+			<section name="Aggregator">
 				<p>
 					The aggregator is a reverse-proxy servlet that can parse the pages
 					on the fly and process
 					inclusion instructions inserted in the pages by
 					the applications as tags.
 	</p>
-			</subsection>
-			<subsection name="ESI 1.0 specification support">
+			</section>
+			<section name="ESI 1.0 specification support">
 				<p>
 					In addition to its native syntax using HTML comments, the Website Assembling
 					Toolkit partially supports ESI specification (for now, only esi:include and
 					esi comments are supported).
 	</p>
-			</subsection>
-			<subsection name="Xpath expressions and XSLT">
+			</section>
+			<section name="Xpath expressions and XSLT">
 				<p>
 					One of the latest features is the possibility to retrieve elements using xpath
 					expressions and to apply on-the-fly XSLT transformations to retrieved elements.
 	</p>
-			</subsection>
-			<subsection name="Cache">
+			</section>
+			<section name="Cache">
 				<p>
 					In order to improve performance, the tool can be configured to use a
 					cache (the underlying cache
@@ -64,8 +65,8 @@
 					depending on your needs and depending on the provider
 					application.
 	</p>
-			</subsection>
-			<subsection name="User context">
+			</section>
+			<section name="User context">
 				<p>
 					While calling the provider application, you may want to send
 					informations about
@@ -76,15 +77,15 @@
 					appended as request
 					parameters to the http request.
 	</p>
-			</subsection>
-			<subsection name="Single Sign On with CAS">
+			</section>
+			<section name="Single Sign On with CAS">
 				<p>
 					The kit supports CAS protocol using the
 					<a
 						href="http://www.jasig.org/cas/proxy-authentication">proxy authentication mode</a>
 					and the JASIG CAS client.
 				</p>
-			</subsection>
-		</section>
+			</section>
+	
 	</body>
 </document>

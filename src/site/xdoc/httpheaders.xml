@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document>
 	<properties>
-		<title>HTTP headers suppot</title>
+		<title>HTTP headers support</title>
 		<author email="fxbonnet@users.sourceforge.net">Francois-Xavier Bonnet</author>
 	</properties>
 	<body>
+	<h1>HTTP headers support</h1>
 		<section name="Request headers">
 			<p>
 				Some request headers are forwarded to the target server, some are

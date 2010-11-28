@@ -5,6 +5,7 @@
 		<author email="fxbonnet@users.sourceforge.net">Francois-Xavier Bonnet</author>
 	</properties>
 	<body>
+	<h1>Overview</h1>
 		<section name="ESIGate (Website Assembling Toolkit)">
 			<p>
 				ESIGate (formerly known as "Website Assembling Toolkit")is a toolkit developped to help developpers to integrate

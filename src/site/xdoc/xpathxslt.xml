@@ -5,6 +5,7 @@
 		<author email="fxbonnet@users.sourceforge.net">Francois-Xavier Bonnet</author>
 	</properties>
 	<body>
+	<h1>Xpath and XSLT</h1>
 		<section name="Xpath and XSLT">
 			<p>
 				It is possible to extract an Xpath expression from a page or to

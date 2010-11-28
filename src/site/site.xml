@@ -27,6 +27,7 @@
 		<menu name="Download">
 			<item href="http://sourceforge.net/project/showfiles.php?group_id=209844"
 				name="Download" />
+			<item href="maven.html" name="Maven repositories" />
 		</menu>
 		<menu name="Documentation">
 			<item href="quickstart.html" name="Quick start" />
@@ -43,13 +44,17 @@
 			<item href="cas.html" name="Single Sign On with CAS" />
 			<item href="sample.html" name="Sample applications" />
 			<item href="maven.html" name="Maven" />
+			<item href="external-resources.html" name="External resources" />
 		</menu>
-		<menu ref="modules" />
+		
 		<menu name="Community">
 			<item href="http://sourceforge.net/apps/mediawiki/webassembletool/" name="FAQ (Wiki)" />
 			<item href="http://sourceforge.net/projects/webassembletool/"
 				name="SourceForge" />
 		</menu>
+				
 		<menu ref="reports" />
+
+		<menu ref="modules" />
 	</body>
 </project>
