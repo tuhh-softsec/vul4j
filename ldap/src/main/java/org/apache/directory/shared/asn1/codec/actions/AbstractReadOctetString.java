@@ -23,44 +23,58 @@ package org.apache.directory.shared.asn1.codec.actions;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
+import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 /**
- * The action used read the byte array from TLV
+ * The action used to read an OCTET STRING value
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public abstract class AbstractReadByteArray extends GrammarAction
+public abstract class AbstractReadOctetString extends GrammarAction
 {
     /** The logger */
-    private static final Logger LOG = LoggerFactory.getLogger( AbstractReadByteArray.class );
+    private static final Logger LOG = LoggerFactory.getLogger( AbstractReadOctetString.class );
 
-    /** Speedup for logs */
-    private static final boolean IS_DEBUG = LOG.isDebugEnabled();
+    /** the acceptable maximum value for the expected value to be parsed */
+    private boolean canBeNull = Boolean.FALSE;
 
 
     /**
-     * Instantiates a new AbstractReadByteArray action.
+     * Instantiates a new AbstractReadInteger action.
      */
-    public AbstractReadByteArray( String name )
+    public AbstractReadOctetString( String name )
     {
         super( name );
     }
 
 
     /**
-     * gives a byte array to be set to the appropriate field of the ASN.1 object
-     * present in the container 
-     *
-     * @param data the data of the read TLV present in byte array format
-     * @param container the container holding the ASN.1 object
+     * Instantiates a new AbstractReadInteger action.
+     * 
+     * @param name The log message
+     * @param canBeNull Tells if the byte array can be null or not
      */
-    protected abstract void setByteArry( byte[] data, Asn1Container container );
+    public AbstractReadOctetString( String name, boolean canBeNull )
+    {
+        super( name );
+        
+        this.canBeNull = canBeNull;
+    }
+
+
+    /**
+     * 
+     * set the OCTET STRING value to the appropriate field of ASN.1 object present in the container
+     * 
+     * @param value the OCTET STRING value
+     * @param container the ASN.1 object's container
+     */
+    protected abstract void setOctetString( byte[] value, Asn1Container container );
 
 
     /**
@@ -70,21 +84,26 @@ public abstract class AbstractReadByteArray extends GrammarAction
     {
         TLV tlv = container.getCurrentTLV();
 
-        // The Length should not be null, and should be 5
-        if ( tlv.getLength() != 5 )
+        // The Length should not be null
+        if ( ( tlv.getLength() == 0 ) && ( !canBeNull ) )
         {
             LOG.error( I18n.err( I18n.ERR_04066 ) );
 
             // This will generate a PROTOCOL_ERROR
             throw new DecoderException( I18n.err( I18n.ERR_04067 ) );
         }
-
-        byte[] data = tlv.getValue().getData();
-        setByteArry( data, container );
-
-        if ( IS_DEBUG )
+        
+        Value value = tlv.getValue();
+        
+        // The data should not be null
+        if ( ( value.getData() == null ) && ( !canBeNull ) )
         {
-            LOG.debug( "byte array value : {}", StringTools.dumpBytes( data ) );
+            LOG.error( I18n.err( I18n.ERR_04066 ) );
+
+            // This will generate a PROTOCOL_ERROR
+            throw new DecoderException( I18n.err( I18n.ERR_04067 ) );
         }
+        
+        setOctetString( value.getData(), container );
     }
 }
