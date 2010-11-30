@@ -789,7 +789,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         WriteFuture writeFuture = ldapSession.write( addRequest );
 
         // Wait for the message to be sent to the server
-        if ( !writeFuture.awaitUninterruptibly( getTimeout( 0 ) ) )
+        if ( !writeFuture.awaitUninterruptibly( timeout ) )
         {
             // We didn't received anything : this is an error
             LOG.error( "Add failed : timeout occured" );
@@ -1467,7 +1467,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         WriteFuture writeFuture = ldapSession.write( searchRequest );
 
         // Wait for the message to be sent to the server
-        if ( !writeFuture.awaitUninterruptibly( getTimeout( 0 ) ) )
+        if ( !writeFuture.awaitUninterruptibly( timeout ) )
         {
             // We didn't received anything : this is an error
             LOG.error( "Search failed : timeout occured" );
@@ -2131,7 +2131,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         WriteFuture writeFuture = ldapSession.write( modRequest );
 
         // Wait for the message to be sent to the server
-        if ( !writeFuture.awaitUninterruptibly( getTimeout( 0 ) ) )
+        if ( !writeFuture.awaitUninterruptibly( timeout ) )
         {
             // We didn't received anything : this is an error
             LOG.error( "Modify failed : timeout occured" );
@@ -2441,7 +2441,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         WriteFuture writeFuture = ldapSession.write( modDnRequest );
 
         // Wait for the message to be sent to the server
-        if ( !writeFuture.awaitUninterruptibly( getTimeout( 0 ) ) )
+        if ( !writeFuture.awaitUninterruptibly( timeout ) )
         {
             // We didn't received anything : this is an error
             LOG.error( "Modify failed : timeout occured" );
@@ -2636,7 +2636,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         WriteFuture writeFuture = ldapSession.write( deleteRequest );
 
         // Wait for the message to be sent to the server
-        if ( !writeFuture.awaitUninterruptibly( getTimeout( 0 ) ) )
+        if ( !writeFuture.awaitUninterruptibly( timeout ) )
         {
             // We didn't received anything : this is an error
             LOG.error( "Delete failed : timeout occured" );
@@ -2822,7 +2822,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         WriteFuture writeFuture = ldapSession.write( compareRequest );
 
         // Wait for the message to be sent to the server
-        if ( !writeFuture.awaitUninterruptibly( getTimeout( 0 ) ) )
+        if ( !writeFuture.awaitUninterruptibly( timeout ) )
         {
             // We didn't received anything : this is an error
             LOG.error( "Compare failed : timeout occured" );
@@ -2980,7 +2980,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         WriteFuture writeFuture = ldapSession.write( extendedRequest );
 
         // Wait for the message to be sent to the server
-        if ( !writeFuture.awaitUninterruptibly( getTimeout( 0 ) ) )
+        if ( !writeFuture.awaitUninterruptibly( timeout ) )
         {
             // We didn't received anything : this is an error
             LOG.error( "Extended failed : timeout occured" );
@@ -3655,7 +3655,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         WriteFuture writeFuture = ldapSession.write( bindRequest );
 
         // Wait for the message to be sent to the server
-        if ( !writeFuture.awaitUninterruptibly( getTimeout( 0 ) ) )
+        if ( !writeFuture.awaitUninterruptibly( timeout ) )
         {
             // We didn't received anything : this is an error
             LOG.error( "Bind failed : timeout occured" );
