@@ -56,7 +56,7 @@
 			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
 		</license>
 	</licenses>
-	<description>ESIGate</description>
+	<description>ESIGate - ESI reverse proxy, CMS integration, Remove templating</description>
 	<issueManagement>
 		<system>MantisBT</system>
 		<url>https://sourceforge.net/apps/mantisbt/webassembletool/view_all_bug_page.php</url>
