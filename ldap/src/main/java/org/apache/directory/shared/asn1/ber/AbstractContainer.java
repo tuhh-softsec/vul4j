@@ -69,6 +69,10 @@ public abstract class AbstractContainer implements Asn1Container
 
     /** The Stream being decoded */
     private ByteBuffer stream;
+    
+    /** A flag telling if the Value should be accumulated before being decoded 
+     * for constructed types */ 
+    private boolean isGathering = false;
 
     /**
      * Creates a new instance of AbstractContainer with a starting state.
@@ -324,4 +328,23 @@ public abstract class AbstractContainer implements Asn1Container
         
         this.parentTLV = parentTlv;
     }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isGathering()
+    {
+        return isGathering;
+    }
+    
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setGathering( boolean isGathering )
+    {
+        this.isGathering = isGathering;
+    }
+
 }

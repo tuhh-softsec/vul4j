@@ -508,7 +508,7 @@ public class Asn1Decoder implements TLVBerDecoderMBean
     {
         TLV currentTlv = container.getCurrentTLV();
 
-        if ( TLV.isConstructed( currentTlv.getTag() ) )
+        if ( TLV.isConstructed( currentTlv.getTag() ) && !container.isGathering() )
         {
             container.setState( TLVStateEnum.TLV_STATE_DONE );
 

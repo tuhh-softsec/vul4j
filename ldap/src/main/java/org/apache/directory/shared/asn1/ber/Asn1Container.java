@@ -193,4 +193,20 @@ public interface Asn1Container
      * Look for the closest parent which has an expected length above 0
      */
     void updateParent();
+    
+    
+    /**
+     * @return true if the container should gather the value into itself, false
+     * if the decoding of the Value part should be done immediately for 
+     * constructed types.
+     */
+    boolean isGathering();
+    
+    
+    /**
+     * Set the isGathering flag
+     * @param isGathering true to ask the Asn1Decoder to gather the data
+     * into the container. If not set, the default value is 'false'
+     */
+    void setGathering( boolean isGathering );
 }
