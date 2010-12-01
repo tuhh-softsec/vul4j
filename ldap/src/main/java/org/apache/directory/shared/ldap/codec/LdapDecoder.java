@@ -47,10 +47,10 @@ import org.slf4j.LoggerFactory;
 public class LdapDecoder implements ProtocolDecoder
 {
     /** The logger */
-    private static Logger log = LoggerFactory.getLogger( LdapDecoder.class );
+    private static Logger LOG = LoggerFactory.getLogger( LdapDecoder.class );
 
     /** A speedup for logger */
-    private static final boolean IS_DEBUG = log.isDebugEnabled();
+    private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
     /** The message container for this instance */
     private LdapMessageContainer ldapMessageContainer;
@@ -58,7 +58,7 @@ public class LdapDecoder implements ProtocolDecoder
     /** The callback to call when the decoding is done */
     private DecoderCallback decoderCallback;
 
-    /** The ASN 1 deocder instance */
+    /** The ASN 1 decoder instance */
     private Asn1Decoder asn1Decoder;
 
 
@@ -105,7 +105,7 @@ public class LdapDecoder implements ProtocolDecoder
         catch ( Exception e )
         {
             String message = I18n.err( I18n.ERR_04060, e.getLocalizedMessage() );
-            log.error( message );
+            LOG.error( message );
             throw new DecoderException( message, e );
         }
     }
@@ -129,14 +129,14 @@ public class LdapDecoder implements ProtocolDecoder
             {
                 if ( IS_DEBUG )
                 {
-                    log.debug( "Decoded LdapMessage : " + ldapMessageContainer.getMessage() );
+                    LOG.debug( "Decoded LdapMessage : " + ldapMessageContainer.getMessage() );
                 }
 
                 return ldapMessageContainer.getMessage();
             }
             else
             {
-                log.error( I18n.err( I18n.ERR_04062 ) );
+                LOG.error( I18n.err( I18n.ERR_04062 ) );
                 throw new DecoderException( I18n.err( I18n.ERR_04063 ) );
             }
         }
@@ -157,7 +157,7 @@ public class LdapDecoder implements ProtocolDecoder
             catch ( Exception e )
             {
                 String message = I18n.err( I18n.ERR_04060, e.getLocalizedMessage() );
-                log.error( message );
+                LOG.error( message );
                 throw new DecoderException( message, e );
             }
 
@@ -165,14 +165,14 @@ public class LdapDecoder implements ProtocolDecoder
             {
                 if ( IS_DEBUG )
                 {
-                    log.debug( "Decoded LdapMessage : " + ldapMessageContainer.getMessage() );
+                    LOG.debug( "Decoded LdapMessage : " + ldapMessageContainer.getMessage() );
                 }
 
                 return ldapMessageContainer.getMessage();
             }
             else
             {
-                log.error( I18n.err( I18n.ERR_04064 ) );
+                LOG.error( I18n.err( I18n.ERR_04064 ) );
                 throw new DecoderException( I18n.err( I18n.ERR_04063 ) );
             }
         }
@@ -221,7 +221,7 @@ public class LdapDecoder implements ProtocolDecoder
 
                 if ( IS_DEBUG )
                 {
-                    log.debug( "Decoding the PDU : " );
+                    LOG.debug( "Decoding the PDU : " );
 
                     int size = buf.position();
                     buf.flip();
@@ -237,11 +237,11 @@ public class LdapDecoder implements ProtocolDecoder
 
                     if ( array.length == 0 )
                     {
-                        log.debug( "NULL buffer, what the HELL ???" );
+                        LOG.debug( "NULL buffer, what the HELL ???" );
                     }
                     else
                     {
-                        log.debug( StringTools.dumpBytes( array ) );
+                        LOG.debug( StringTools.dumpBytes( array ) );
                     }
                 }
 
@@ -249,7 +249,7 @@ public class LdapDecoder implements ProtocolDecoder
                 {
                     if ( IS_DEBUG )
                     {
-                        log.debug( "Decoded LdapMessage : " + messageContainer.getMessage() );
+                        LOG.debug( "Decoded LdapMessage : " + messageContainer.getMessage() );
                         buf.mark();
                     }
 
