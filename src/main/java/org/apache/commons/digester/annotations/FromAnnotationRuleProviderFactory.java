@@ -17,8 +17,6 @@
  */
 package org.apache.commons.digester.annotations;
 
-import org.apache.commons.digester.annotations.internal.DefaultDigesterLoaderHandlerFactory;
-import org.apache.commons.digester.annotations.spi.AnnotationRuleProviderFactory;
 import org.apache.commons.digester.annotations.spi.DigesterLoaderHandlerFactory;
 
 /**
@@ -26,25 +24,7 @@ import org.apache.commons.digester.annotations.spi.DigesterLoaderHandlerFactory;
  *
  * @since 2.1
  */
-public final class FromAnnotationRuleProviderFactory {
-
-    /**
-     * The {@link AnnotationRuleProviderFactory} selected in the previous
-     * chained builder.
-     */
-    private final AnnotationRuleProviderFactory annotationRuleProviderFactory;
-
-    /**
-     * {@link DigesterLoader} builder implementation.
-     *
-     * @param annotationRuleProviderFactory the
-     *        {@link AnnotationRuleProviderFactory} selected in the previous
-     *        chained builder.
-     */
-    protected FromAnnotationRuleProviderFactory(
-            AnnotationRuleProviderFactory annotationRuleProviderFactory) {
-        this.annotationRuleProviderFactory = annotationRuleProviderFactory;
-    }
+public interface FromAnnotationRuleProviderFactory {
 
     /**
      * Builds a new {@link DigesterLoader} using the default
@@ -52,9 +32,7 @@ public final class FromAnnotationRuleProviderFactory {
      *
      * @return the {@link DigesterLoader}.
      */
-    public DigesterLoader useDefaultDigesterLoaderHandlerFactory() {
-        return this.useDigesterLoaderHandlerFactory(new DefaultDigesterLoaderHandlerFactory());
-    }
+    DigesterLoader useDefaultDigesterLoaderHandlerFactory();
 
     /**
      * Builds a new {@link DigesterLoader} using the user defined
@@ -63,11 +41,6 @@ public final class FromAnnotationRuleProviderFactory {
      * @param digesterLoaderHandlerFactory
      * @return the {@link DigesterLoader}.
      */
-    public DigesterLoader useDigesterLoaderHandlerFactory(DigesterLoaderHandlerFactory digesterLoaderHandlerFactory) {
-        if (digesterLoaderHandlerFactory == null) {
-            throw new IllegalArgumentException("Parameter 'digesterLoaderHandlerFactory' must be not null");
-        }
-        return new DigesterLoader(this.annotationRuleProviderFactory, digesterLoaderHandlerFactory);
-    }
+    DigesterLoader useDigesterLoaderHandlerFactory(DigesterLoaderHandlerFactory digesterLoaderHandlerFactory);
 
 }

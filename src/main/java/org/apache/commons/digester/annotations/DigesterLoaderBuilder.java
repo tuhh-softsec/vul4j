@@ -18,7 +18,9 @@
 package org.apache.commons.digester.annotations;
 
 import org.apache.commons.digester.annotations.internal.DefaultAnnotationRuleProviderFactory;
+import org.apache.commons.digester.annotations.internal.DefaultDigesterLoaderHandlerFactory;
 import org.apache.commons.digester.annotations.spi.AnnotationRuleProviderFactory;
+import org.apache.commons.digester.annotations.spi.DigesterLoaderHandlerFactory;
 
 /**
  * {@link DigesterLoader} builder implementation.
@@ -60,11 +62,24 @@ public final class DigesterLoaderBuilder {
      * @return the next chained builder.
      */
     public FromAnnotationRuleProviderFactory
-            useAnnotationRuleProviderFactory(AnnotationRuleProviderFactory annotationRuleProviderFactory) {
+            useAnnotationRuleProviderFactory(final AnnotationRuleProviderFactory annotationRuleProviderFactory) {
         if (annotationRuleProviderFactory == null) {
             throw new IllegalArgumentException("Parameter 'annotationRuleProviderFactory' must be not null");
         }
-        return new FromAnnotationRuleProviderFactory(annotationRuleProviderFactory);
+        return new FromAnnotationRuleProviderFactory() {
+
+            public DigesterLoader useDefaultDigesterLoaderHandlerFactory() {
+                return this.useDigesterLoaderHandlerFactory(new DefaultDigesterLoaderHandlerFactory());
+            }
+
+            public DigesterLoader useDigesterLoaderHandlerFactory(
+                    final DigesterLoaderHandlerFactory digesterLoaderHandlerFactory) {
+                if (digesterLoaderHandlerFactory == null) {
+                    throw new IllegalArgumentException("Parameter 'digesterLoaderHandlerFactory' must be not null");
+                }
+                return new DigesterLoader(annotationRuleProviderFactory, digesterLoaderHandlerFactory);
+            }
+        };
     }
 
 }
