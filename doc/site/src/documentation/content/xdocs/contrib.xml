@@ -67,7 +67,7 @@ limitations under the License.
         <li>
 	  Debugging - producing reproduceable test cases and/or finding
           causes of bugs. Some known bugs are informally listed on To Do, and some are
-          recorded in Bugzilla (see <link href="#procedure">explanation
+          recorded in Jira (see <link href="#procedure">explanation
 	    below</link>).
 	</li>
       <li>
@@ -137,15 +137,15 @@ limitations under the License.
 	Most issues will be discovered, resolved, and then patched quickly
         via the <code>developer</code> mailing list. Larger issues, and ones that are
         not yet fully understood or are hard to solve, are destined for
-	Bugzilla.
-    Santuario uses Bugzilla for issue tracking. To report a issue, or to submit a patch, go
-    <link href="https://issues.apache.org/bugzilla/buglist.cgi?product=Security">here</link>.
+	Jira.
+    Santuario uses Jira for issue tracking. To report a issue, or to submit a patch, go
+    <link href="https://issues.apache.org/jira/browse/SANTUARIO">here</link>.
       </p>
       <p> 
-	Experienced developers use Bugzilla directly, as they are very sure
+	Experienced developers use Jira directly, as they are very sure
         when they have found a bug and when not. However, less experienced users should
         first discuss it on the user or developer mailing list (as appropriate).
-        Impatient people always enter everything into Bugzilla without caring if it is
+        Impatient people always enter everything into Jira without caring if it is
         a bug of our package or their own installation/configuration mistake - please do
         not do this. 
       </p>

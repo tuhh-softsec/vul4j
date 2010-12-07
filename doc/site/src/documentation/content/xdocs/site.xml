@@ -37,7 +37,7 @@ limitations under the License.
   <getting-involved label="Getting Involved">
     <contrib label="Contributing" href="contrib.html"/>
     <SVN label="SVN" href="http://svn.apache.org/viewvc/santuario/trunk/"/>
-    <bugzilla label="Issue Tracking" href="https://issues.apache.org/bugzilla/buglist.cgi?product=Security"/>
+    <bugzilla label="Issue Tracking" href="https://issues.apache.org/jira/browse/SANTUARIO"/>
     <mail-lists label="Mail lists" href="mail-lists.html"/>
   </getting-involved>
 

@@ -24,7 +24,7 @@
     <artifactId>xmlsec</artifactId>
     <packaging>bundle</packaging>
     <name>Apache Santuario</name>
-    <version>1.4.4-SNAPSHOT</version>
+    <version>1.4.5-SNAPSHOT</version>
     <description>
         Apache Santuario supports XML-Signature Syntax and Processing,
         W3C Recommendation 12 February 2002, and XML Encryption Syntax and
@@ -34,8 +34,8 @@
     </description>
     <url>http://santuario.apache.org/</url>
     <issueManagement>
-        <system>Bugzilla</system>
-        <url>http://issues.apache.org/bugzilla</url>
+        <system>JIRA</system>
+        <url>https://issues.apache.org/jira/browse/SANTUARIO</url>
     </issueManagement>
     <mailingLists>
         <mailingList>
@@ -51,41 +51,6 @@
         </mailingList>
     </mailingLists>
     <inceptionYear>2000</inceptionYear>
-    <!-- who the developers are for the project -->
-    <developers>
-        <developer>
-            <name>Sean Mullan</name>
-            <email>sean.mullan@sun.com</email>
-        </developer>
-        <developer>
-            <name>Berin Lautenbach</name>
-            <email>berin@ozemail.com.au</email>
-        </developer>
-        <developer>
-            <name>Axl Mattheus</name>
-            <email>amattheu@apache.org</email>
-        </developer>
-        <developer>
-            <name>Erwin van der Koog</name>
-            <email>erwin@koogh.com</email>
-        </developer>
-        <developer>
-            <name>Raul Benito Garcia</name>
-            <email>raul-info@r-bg.com</email>
-        </developer>
-        <developer>
-            <name>Vishal Mahajan</name>
-            <email>vmahajan@amberpoint.com</email>
-        </developer>
-        <developer>
-            <name>Milan Tomic</name>
-            <email>milan@setcce.org</email>
-        </developer>
-        <developer>
-            <name>Colm O hEigeartaigh</name>
-            <email>coheigea@apache.org</email>
-        </developer>
-    </developers>
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>

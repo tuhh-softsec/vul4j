@@ -53,7 +53,7 @@ public final class XMLDSigRI extends Provider {
 
     public XMLDSigRI() {
 	/* We are the XMLDSig provider */
-	super("XMLDSig", 1.44, INFO);
+	super("XMLDSig", 1.45, INFO);
 	
 	final Map map = new HashMap();
         map.put("XMLSignatureFactory.DOM", 

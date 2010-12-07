@@ -20,7 +20,7 @@
     <homepage rdf:resource="http://santuario.apache.org" />
     <asfext:pmc rdf:resource="http://santuario.apache.org" />
     <shortdesc>Library implementing XML Digital Signature Specification &amp; XML Encryption Specification</shortdesc>
-    <bug-database rdf:resource="http://issues.apache.org/bugzilla/buglist.cgi?product=Security" />
+    <bug-database rdf:resource="https://issues.apache.org/jira/browse/SANTUARIO" />
     <mailing-list rdf:resource="http://santuario.apache.org/mail/dev/" />
     <download-page rdf:resource="http://santuario.apache.org/mirrors.cgi" />
     <programming-language>Java</programming-language>
@@ -28,9 +28,9 @@
     <category rdf:resource="http://projects.apache.org/category/xml" />
     <release>
       <Version>
-        <name>XML Security (Java) 1.4.3</name>
-        <created>2009-07</created>
-        <revision>1.4.3</revision>
+        <name>XML Security (Java) 1.4.4</name>
+        <created>2010-11</created>
+        <revision>1.4.4</revision>
       </Version>
     </release>
     <release>
