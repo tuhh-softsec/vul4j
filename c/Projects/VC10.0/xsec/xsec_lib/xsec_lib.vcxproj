@@ -183,7 +183,6 @@
       <AdditionalDependencies>xerces-c_3D.lib;Xalan-C_1D.lib;crypt32.lib;libeay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)xsec_1_6D.dll</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>$(OutDir)xsec_lib.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
@@ -221,7 +220,6 @@
       <AdditionalDependencies>xerces-c_3D.lib;Xalan-C_1D.lib;crypt32.lib;libeay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)xsec_1_6D.dll</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>$(OutDir)xsec_lib.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
@@ -259,6 +257,7 @@
       </DataExecutionPrevention>
       <ImportLibrary>$(OutDir)xsec_1.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -293,6 +292,7 @@
       </DataExecutionPrevention>
       <ImportLibrary>$(OutDir)xsec_1.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug No Xalan|Win32'">
@@ -395,6 +395,7 @@
       </DataExecutionPrevention>
       <ImportLibrary>$(OutDir)xsec_1.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release No Xalan|x64'">
@@ -429,6 +430,7 @@
       </DataExecutionPrevention>
       <ImportLibrary>$(OutDir)xsec_1.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
