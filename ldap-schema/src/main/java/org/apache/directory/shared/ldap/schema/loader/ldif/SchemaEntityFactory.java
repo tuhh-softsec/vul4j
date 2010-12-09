@@ -530,7 +530,6 @@ public class SchemaEntityFactory implements EntityFactory
         }
         catch ( Exception e )
         {
-            e.printStackTrace();
             throw new LdapUnwillingToPerformException( ResultCodeEnum.UNWILLING_TO_PERFORM, e.getMessage() );
         }
     }
