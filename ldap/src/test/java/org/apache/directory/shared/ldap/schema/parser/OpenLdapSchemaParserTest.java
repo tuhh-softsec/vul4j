@@ -146,6 +146,32 @@ public class OpenLdapSchemaParserTest
     }
 
 
+    /**
+     * Test that we can handle a DESC which contains only spaces
+     */
+    @Test
+    public void testAttributeTypeParseWithSpaceDesc() throws Exception
+    {
+        String attributeTypeData = "# adding a comment  \n"
+            + "attributetype ( 2.5.4.2 NAME 'knowledgeInformation'\n"
+            + "        DESC '  '\n"
+            + "        EQUALITY caseIgnoreMatch\n"
+            + "        SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{32768} )";
+
+        parser.parse( attributeTypeData );
+        List<AttributeType> attributeTypeList = parser.getAttributeTypes();
+        Map<String, AttributeType> attributeTypes = mapAttributeTypes( attributeTypeList );
+        AttributeType type = attributeTypes.get( "2.5.4.2" );
+
+        assertNotNull( type );
+        assertEquals( "2.5.4.2", type.getOid() );
+        assertEquals( "knowledgeInformation", type.getName() );
+        assertEquals( "  ", type.getDescription() );
+        assertEquals( "1.3.6.1.4.1.1466.115.121.1.15", type.getSyntaxOid() );
+        assertEquals( 32768, type.getSyntaxLength() );
+    }
+
+
     @Test
     public void testComplexAttributeTypeParse() throws Exception
     {

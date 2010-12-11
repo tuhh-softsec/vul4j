@@ -4758,8 +4758,8 @@ public final class PrepareString
         
         if ( start == limit )
         {
-            // we only have spaces
-            return "";
+            // we only have spaces, we keep only one
+            return " ";
         }
         else if ( isCombiningMark( c ) )
         {

@@ -20,15 +20,14 @@
 package org.apache.directory.shared.ldap.schema.normalizers;
 
 
+import static org.junit.Assert.assertEquals;
+
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.Normalizer;
-import org.apache.directory.shared.ldap.schema.normalizers.DeepTrimNormalizer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static org.junit.Assert.assertEquals;
 
 
 /**
@@ -60,7 +59,7 @@ public class DeepTrimNormalizerTest
     public void testDeepTrimNormalizerOneSpace() throws LdapException
     {
         Normalizer normalizer = new DeepTrimNormalizer( "1.1.1" );
-        assertEquals( "", normalizer.normalize( " " ) );
+        assertEquals( " ", normalizer.normalize( " " ) );
     }
 
 
@@ -68,7 +67,7 @@ public class DeepTrimNormalizerTest
     public void testDeepTrimNormalizerTwoSpaces() throws LdapException
     {
         Normalizer normalizer = new DeepTrimNormalizer( "1.1.1" );
-        assertEquals( "", normalizer.normalize( "  " ) );
+        assertEquals( " ", normalizer.normalize( "  " ) );
     }
 
 
@@ -76,7 +75,7 @@ public class DeepTrimNormalizerTest
     public void testDeepTrimNormalizerNSpaces() throws LdapException
     {
         Normalizer normalizer = new DeepTrimNormalizer( "1.1.1" );
-        assertEquals( "", normalizer.normalize( "      " ) );
+        assertEquals( " ", normalizer.normalize( "      " ) );
     }
 
 
@@ -171,7 +170,7 @@ public class DeepTrimNormalizerTest
         char[] chars = new char[]
             { 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0085, 0x00A0, 0x1680, 0x2000, 0x2001, 0x2002, 0x2003, 0x2004, 0x2005,
                 0x2006, 0x2007, 0x2008, 0x2009, 0x200A, 0x2028, 0x2029, 0x202F, 0x205F };
-        assertEquals( "", normalizer.normalize( new String( chars ) ) );
+        assertEquals( " ", normalizer.normalize( new String( chars ) ) );
     }
 
 
@@ -205,7 +204,7 @@ public class DeepTrimNormalizerTest
 
         chars[pos++] = 0x00AD;
 
-        assertEquals( "", normalizer.normalize( new String( chars ) ) );
+        assertEquals( " ", normalizer.normalize( new String( chars ) ) );
     }
 
     /*

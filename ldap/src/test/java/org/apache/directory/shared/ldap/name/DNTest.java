@@ -3373,16 +3373,16 @@ public class DNTest
         DN dn3 = new DN( "ou=\\ ,ou=system" );
         dn3.normalize( oids );
         assertEquals( "ou=\\ ,ou=system", dn3.getName() );
-        assertEquals( "ou=,ou=system", dn3.getNormName() );
+        assertEquals( "ou=\\ ,ou=system", dn3.getNormName() );
         assertEquals( "ou=\\ ", dn3.getRdn().getName() );
-        assertEquals( "ou=", dn3.getRdn().getNormName() );
+        assertEquals( "ou=\\ ", dn3.getRdn().getNormName() );
 
         DN dn4 = new DN( "ou=\\20,ou=system" );
         dn4.normalize( oids );
         assertEquals( "ou=\\20,ou=system", dn4.getName() );
-        assertEquals( "ou=,ou=system", dn4.getNormName() );
+        assertEquals( "ou=\\ ,ou=system", dn4.getNormName() );
         assertEquals( "ou=\\20", dn4.getRdn().getName() );
-        assertEquals( "ou=", dn4.getRdn().getNormName() );
+        assertEquals( "ou=\\ ", dn4.getRdn().getNormName() );
     }
 
 
