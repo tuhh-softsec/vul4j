@@ -202,7 +202,6 @@ public class LdapDecoder implements ProtocolDecoder
     public void decode( IoSession session, IoBuffer in, ProtocolDecoderOutput out ) throws Exception
     {
         ByteBuffer buf = in.buf();
-        int position = 0;
         LdapMessageContainer messageContainer = ( LdapMessageContainer ) session
             .getAttribute( "messageContainer" );
 
@@ -212,6 +211,8 @@ public class LdapDecoder implements ProtocolDecoder
 
             messageContainer.setMaxPDUSize( maxPDUSize );
         }
+
+        buf.mark();
 
         while ( buf.hasRemaining() )
         {
@@ -224,16 +225,15 @@ public class LdapDecoder implements ProtocolDecoder
                     LOG.debug( "Decoding the PDU : " );
 
                     int size = buf.position();
-                    buf.flip();
+                    buf.reset();
+                    int position = buf.position();
+                    int pduLength = size - position;
 
-                    byte[] array = new byte[size - position];
+                    byte[] array = new byte[pduLength];
 
-                    for ( int i = position; i < size; i++ )
-                    {
-                        array[i] = buf.get();
-                    }
+                    System.arraycopy(buf.array(), position, array, 0, pduLength);
 
-                    position = size;
+                    buf.position( size );
 
                     if ( array.length == 0 )
                     {
@@ -245,12 +245,13 @@ public class LdapDecoder implements ProtocolDecoder
                     }
                 }
 
+                buf.mark();
+
                 if ( messageContainer.getState() == TLVStateEnum.PDU_DECODED )
                 {
                     if ( IS_DEBUG )
                     {
                         LOG.debug( "Decoded LdapMessage : " + messageContainer.getMessage() );
-                        buf.mark();
                     }
 
                     out.write( messageContainer.getMessage() );

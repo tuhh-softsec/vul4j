@@ -24,7 +24,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.util.Queue;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
@@ -34,6 +37,12 @@ import org.apache.directory.shared.asn1.ber.tlv.TLVStateEnum;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.ldap.message.BindRequest;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.mina.core.buffer.IoBuffer;
+import org.apache.mina.core.filterchain.IoFilter.NextFilter;
+import org.apache.mina.core.session.DummySession;
+import org.apache.mina.core.session.IoSession;
+import org.apache.mina.filter.codec.AbstractProtocolDecoderOutput;
+import org.apache.mina.filter.codec.ProtocolDecoderOutput;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -47,47 +56,77 @@ import org.junit.runner.RunWith;
 @Concurrent()
 public class LdapDecoderTest
 {
-    // ~ Methods
-    // ------------------------------------------------------------------------------------
+    private static class LdapProtocolDecoderOutput extends AbstractProtocolDecoderOutput 
+    {
+        public LdapProtocolDecoderOutput()
+        {
+            // Do nothing
+        }
+        
+        public void flush( NextFilter nextFilter, IoSession session ) 
+        {
+            // Do nothing
+            Queue<Object> messageQueue = getMessageQueue();
+            
+            while ( !messageQueue.isEmpty() ) 
+            {
+                nextFilter.messageReceived( session, messageQueue.poll()) ;
+            }
+        }
 
+
+        public Object getMessage()
+        {
+            Queue<Object> messageQueue = getMessageQueue();
+
+            if ( !messageQueue.isEmpty() )
+            {
+                return messageQueue.poll();
+            }
+            else
+            {
+                return null;
+            }
+        }
+    }
+    
     /**
      * Test the decoding of a full PDU
      */
     @Test
     public void testDecodeFull()
     {
-
-        Asn1Decoder ldapDecoder = new Asn1Decoder();
+        LdapDecoder ldapDecoder = new LdapDecoder();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        ldapDecoder.setLdapMessageContainer( (LdapMessageContainer)ldapMessageContainer );
 
         ByteBuffer stream = ByteBuffer.allocate( 0x35 );
         stream.put( new byte[]
-            { 0x30,
-                0x33, // LDAPMessage ::=SEQUENCE {
-                0x02, 0x01,
-                0x01, // messageID MessageID
-                0x60,
-                0x2E, // CHOICE { ..., bindRequest BindRequest, ...
-                // BindRequest ::= APPLICATION[0] SEQUENCE {
-                0x02, 0x01,
-                0x03, // version INTEGER (1..127),
-                0x04,
-                0x1F, // name LDAPDN,
-                'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
-                'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', ( byte ) 0x80, 0x08, // authentication
-                // AuthenticationChoice
-                // AuthenticationChoice ::= CHOICE { simple [0] OCTET STRING,
-                // ...
-                'p', 'a', 's', 's', 'w', 'o', 'r', 'd' } );
+            { 
+                0x30, 0x33,                     // LDAPMessage ::=SEQUENCE {
+                    0x02, 0x01, 0x01,           // messageID MessageID
+                  0x60, 0x2E,                   // CHOICE { ..., bindRequest BindRequest, ...
+                                                // BindRequest ::= APPLICATION[0] SEQUENCE {
+                    0x02, 0x01, 0x03,           // version INTEGER (1..127),
+                    0x04, 0x1F,                 // name LDAPDN,
+                      'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
+                      'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 
+                    ( byte ) 0x80, 0x08,        // authentication
+                                                // AuthenticationChoice
+                                                // AuthenticationChoice ::= CHOICE { simple [0] OCTET STRING,
+                                                // ...
+                      'p', 'a', 's', 's', 'w', 'o', 'r', 'd'
+            } );
 
         stream.flip();
 
-        // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        InputStream is = new ByteArrayInputStream(stream.array());
+        Object result = null;
 
         // Decode a BindRequest PDU
         try
         {
-            ldapDecoder.decode( stream, ldapMessageContainer );
+            result = ldapDecoder.decode(null, is);
         }
         catch ( DecoderException de )
         {
@@ -96,9 +135,88 @@ public class LdapDecoderTest
         }
 
         // Check the decoded PDU
-        BindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
+        BindRequest bindRequest = (BindRequest) result;
 
         assertEquals( 1, bindRequest.getMessageId() );
+        assertTrue( bindRequest.isVersion3() );
+        assertEquals( "uid=akarasulu,dc=example,dc=com", bindRequest.getName().toString() );
+        assertTrue( bindRequest.isSimple() );
+        assertEquals( "password", StringTools.utf8ToString( bindRequest.getCredentials() ) );
+    }
+
+
+    /**
+     * Test the decoding of two messages in a PDU
+     */
+    @Test
+    public void testDecode2Messages() throws Exception
+    {
+        LdapDecoder ldapDecoder = new LdapDecoder();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        ldapDecoder.setLdapMessageContainer( (LdapMessageContainer)ldapMessageContainer );
+
+        IoSession dummySession = new DummySession();
+        dummySession.setAttribute( "messageContainer", ldapMessageContainer );
+
+        IoBuffer stream = IoBuffer.allocate( 0x6A );
+        stream.put( new byte[]
+            { 
+                0x30, 0x33,                     // LDAPMessage ::=SEQUENCE {
+                  0x02, 0x01, 0x01,             // messageID MessageID
+                  0x60, 0x2E,                   // CHOICE { ..., bindRequest BindRequest, ...
+                                                // BindRequest ::= APPLICATION[0] SEQUENCE {
+                    0x02, 0x01, 0x03,           // version INTEGER (1..127),
+                    0x04, 0x1F,                 // name LDAPDN,
+                      'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
+                      'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 
+                    ( byte ) 0x80, 0x08,        // authentication
+                                                // AuthenticationChoice
+                                                // AuthenticationChoice ::= CHOICE { simple [0] OCTET STRING,
+                                                // ...
+                      'p', 'a', 's', 's', 'w', 'o', 'r', 'd',
+                0x30, 0x33,                     // LDAPMessage ::=SEQUENCE {
+                  0x02, 0x01, 0x02,             // messageID MessageID
+                  0x60, 0x2E,                   // CHOICE { ..., bindRequest BindRequest, ...
+                                                // BindRequest ::= APPLICATION[0] SEQUENCE {
+                    0x02, 0x01, 0x03,           // version INTEGER (1..127),
+                    0x04, 0x1F,                 // name LDAPDN,
+                      'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
+                      'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 
+                    ( byte ) 0x80, 0x08,        // authentication
+                                                // AuthenticationChoice
+                                                // AuthenticationChoice ::= CHOICE { simple [0] OCTET STRING,
+                                                // ...
+                      'p', 'a', 's', 's', 'w', 'o', 'r', 'd'
+            } );
+
+        stream.flip();
+
+        ProtocolDecoderOutput result = new LdapProtocolDecoderOutput();
+
+        // Decode a BindRequest PDU
+        try
+        {
+            ldapDecoder.decode( dummySession, stream, result );
+        }
+        catch ( DecoderException de )
+        {
+            de.printStackTrace();
+            fail( de.getMessage() );
+        }
+
+        // Check the decoded PDU
+        BindRequest bindRequest = ( BindRequest ) ( ( LdapProtocolDecoderOutput ) result ).getMessage();
+
+        assertEquals( 1, bindRequest.getMessageId() );
+        assertTrue( bindRequest.isVersion3() );
+        assertEquals( "uid=akarasulu,dc=example,dc=com", bindRequest.getName().toString() );
+        assertTrue( bindRequest.isSimple() );
+        assertEquals( "password", StringTools.utf8ToString( bindRequest.getCredentials() ) );
+        
+        // The second message
+        bindRequest = ( BindRequest ) ( ( LdapProtocolDecoderOutput ) result ).getMessage();
+
+        assertEquals( 2, bindRequest.getMessageId() );
         assertTrue( bindRequest.isVersion3() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", bindRequest.getName().toString() );
         assertTrue( bindRequest.isSimple() );
