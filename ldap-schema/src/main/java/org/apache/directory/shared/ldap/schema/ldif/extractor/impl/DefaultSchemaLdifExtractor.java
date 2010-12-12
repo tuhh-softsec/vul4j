@@ -164,7 +164,7 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
         {
             if ( entry.getValue() )
             {
-                extractFromJar( entry.getKey() );
+                extractFromClassLoader( entry.getKey() );
             }
             else
             {
@@ -348,9 +348,9 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
 
 
     /**
-     * Gets the DBFILE resource from within a jar off the base path.  If another jar
-     * with such a DBFILE resource exists then an error will result since the resource
-     * is not unique across all the jars.
+     * Gets the unique schema file resource from the class loader off the base path.  If 
+     * the same resource exists multiple times then an error will result since the resource
+     * is not unique.
      *
      * @param resourceName the file name of the resource to load
      * @param resourceDescription human description of the resource
@@ -367,11 +367,11 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
 
 
     /**
-     * Gets a unique resource from a Jar file.
+     * Gets a unique resource from the class loader.
      * 
      * @param resourceName the name of the resource
      * @param resourceDescription the description of the resource
-     * @return the URL to the resource in the Jar file
+     * @return the URL to the resource in the class loader
      * @throws IOException if there is an IO error
      */
     public static URL getUniqueResource( String resourceName, String resourceDescription ) throws IOException
@@ -391,12 +391,12 @@ public class DefaultSchemaLdifExtractor implements SchemaLdifExtractor
 
 
     /**
-     * Extracts the LDIF schema resource from a Jar.
+     * Extracts the LDIF schema resource from class loader.
      *
      * @param resource the LDIF schema resource
      * @throws IOException if there are IO errors
      */
-    private void extractFromJar( String resource ) throws IOException
+    private void extractFromClassLoader( String resource ) throws IOException
     {
         byte[] buf = new byte[512];
         InputStream in = DefaultSchemaLdifExtractor.getUniqueResourceAsStream( resource,
