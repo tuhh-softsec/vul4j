@@ -954,7 +954,7 @@ public final class SchemaConstants
     public final static String ACCESS_CONTROL_INNER_AREA_OID                  = "2.5.23.3";
 
     // SubSchemaAdminSpecificArea
-    public final static String SUB_SCHEMA_ADMIN_SPECIFIC_AREA                 = "subSchemaSpecificSpecificArea";
+    public final static String SUB_SCHEMA_ADMIN_SPECIFIC_AREA                 = "subSchemaSpecificArea";
     public final static String SUB_SCHEMA_ADMIN_SPECIFIC_AREA_OID             = "2.5.23.4";
 
     // CollectiveAttributeSpecificArea
