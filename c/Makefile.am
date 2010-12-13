@@ -22,6 +22,7 @@ SUBDIRS = xsec
 EXTRA_DIST = \
 	CHANGELOG.txt \
 	LICENSE.txt \
+	NOTICE.txt \
 	Projects \
 	xml-security-c.spec \
 	m4/acx_pthread.m4 \
