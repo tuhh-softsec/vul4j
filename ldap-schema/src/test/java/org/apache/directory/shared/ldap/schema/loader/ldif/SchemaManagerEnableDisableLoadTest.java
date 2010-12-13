@@ -21,6 +21,7 @@ package org.apache.directory.shared.ldap.schema.loader.ldif;
 
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -266,5 +267,40 @@ public class SchemaManagerEnableDisableLoadTest
     public void testEnableMultipleSchemas()
     {
 
+    }
+
+
+    /**
+     * Enable a disabled schema, which depends on a disabled schema itself.
+     * Samba is disabled, and depends on nis which is also disabled. Enabling samba
+     * should enabled nis.
+     */
+    @Test
+    public void testEnableDisabledDependingOnDisabled() throws Exception
+    {
+        schemaManager.loadAllEnabled();
+
+        assertFalse( schemaManager.isEnabled( "samba" ) );
+        assertFalse( schemaManager.isEnabled( "nis" ) );
+
+        assertTrue( schemaManager.enable( "samba" ) );
+        assertTrue( schemaManager.isEnabled( "samba" ) );
+        assertTrue( schemaManager.isEnabled( "nis" ) );
+
+        assertNotNull( schemaManager.lookupAttributeTypeRegistry( "gecos" ) );
+
+        assertTrue( schemaManager.getErrors().isEmpty() );
+        assertEquals( 488, schemaManager.getAttributeTypeRegistry().size() );
+        assertEquals( 49, schemaManager.getComparatorRegistry().size() );
+        assertEquals( 49, schemaManager.getMatchingRuleRegistry().size() );
+        assertEquals( 49, schemaManager.getNormalizerRegistry().size() );
+        assertEquals( 146, schemaManager.getObjectClassRegistry().size() );
+        assertEquals( 68, schemaManager.getSyntaxCheckerRegistry().size() );
+        assertEquals( 73, schemaManager.getLdapSyntaxRegistry().size() );
+        assertEquals( 757, schemaManager.getGlobalOidRegistry().size() );
+
+        assertEquals( 14, schemaManager.getRegistries().getLoadedSchemas().size() );
+        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "samba" ) );
+        assertNotNull( schemaManager.getRegistries().getLoadedSchema( "nis" ) );
     }
 }

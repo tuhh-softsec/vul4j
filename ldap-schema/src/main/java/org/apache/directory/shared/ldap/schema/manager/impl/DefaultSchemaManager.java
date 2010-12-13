@@ -402,10 +402,34 @@ public class DefaultSchemaManager implements SchemaManager
         Registries clonedRegistries = cloneRegistries();
         clonedRegistries.setRelaxed();
 
+        Set<Schema> disabledSchemas = new HashSet<Schema>();
+
         for ( Schema schema : schemas )
         {
+            if ( schema.getDependencies() != null )
+            {
+                for ( String dependency : schema.getDependencies() )
+                {
+                    Schema dependencySchema = schemaLoader.getSchema( dependency );
+
+                    if ( dependencySchema.isDisabled() )
+                    {
+                        disabledSchemas.add( dependencySchema );
+                    }
+                }
+            }
+
             schema.enable();
             load( clonedRegistries, schema );
+        }
+
+        // Revert back the disabled schema to disabled
+        for ( Schema disabledSchema : disabledSchemas )
+        {
+            if ( disabledSchema.isEnabled() )
+            {
+                disabledSchema.disable();
+            }
         }
 
         // Build the cross references
@@ -668,7 +692,9 @@ public class DefaultSchemaManager implements SchemaManager
             {
                 for ( String dependency : schema.getDependencies() )
                 {
-                    if ( schemaLoader.getSchema( dependency ) == null )
+                    Schema dependencySchema = schemaLoader.getSchema( dependency );
+
+                    if ( dependencySchema == null )
                     {
                         // The dependency has not been loaded.
                         String msg = I18n.err( I18n.ERR_11002, schema.getSchemaName() );
@@ -676,6 +702,19 @@ public class DefaultSchemaManager implements SchemaManager
                         Throwable error = new LdapProtocolErrorException( msg );
                         errors.add( error );
                         return false;
+                    }
+
+                    // If the dependency is disabled, then enable it
+                    if ( dependencySchema.isDisabled() )
+                    {
+                        dependencySchema.enable();
+
+                        if ( load( registries, dependencySchema ) == false )
+                        {
+                            dependencySchema.disable();
+
+                            return false;
+                        }
                     }
                 }
             }
