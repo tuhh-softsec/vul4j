@@ -28,11 +28,12 @@ limitations under the License.
     <section> 
       <title>Prerequisites</title>
       <p>
-		The library requires OpenSSL for cryptographic support.  Xalan-C
-		is also required if XPath and/or XSLT transformations are required.
+		The library requires one of OpenSSL, NSS, or WinCAPI for cryptographic
+		support, but only OpenSSL is well-tested.  Xalan-C is also required if
+		XPath and/or XSLT transformations are required.
       </p>
 	  <p>
-		Version 1.5.1 of the library has been tested with versions 3.0.1 and
+		Version 1.6.0 of the library has been tested with versions 3.x and
         2.8.0 of Xerces-C, and Version 0.9.7 (and above) of OpenSSL.
 	  </p>
     </section>
@@ -59,10 +60,9 @@ limitations under the License.
     <section>
 	  <title>Building for UNIX</title>
 	  <p>
-		XML-Security-C is currently fully supported on Linux, FreeBSD and 
-		Solaris.  It is partially supported (in cases where Xalan is not 
-		required) on NetBSD and Cygwin.  It has been built and 
-		tested using GNU gcc 3.x/4.x, Sun Workshop (Solaris), and GNU make.
+		XML-Security-C is currently fully supported on Red Hat and SUSE
+		Linux, Solaris, Mac OS X. It has been built and tested using GNU
+		gcc 3.x/4.x and Sun Workshop (Solaris).
 	  </p>
 	  <section>
 		<title>Set up the Environment</title>
@@ -144,7 +144,7 @@ limitations under the License.
 	  <title>Building for Windows</title>
 	  <p>
 		XML-Security-C has been built and tested on Microsoft's Visual C++ 6.0
-		and 2005/2008 compilers. The following subsections briefly describe how to 
+		and 2005/2008/2010 compilers. The following subsections briefly describe how to 
 		rebuild the library, tools and samples using the supplied workspaces.
 		The specific information is for VC6, but the process for 2005 or 2008
         is similar.

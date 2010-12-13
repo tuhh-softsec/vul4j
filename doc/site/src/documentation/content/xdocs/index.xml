@@ -22,6 +22,15 @@ limitations under the License.
   <body> 
     <section>
       <title>News</title>
+      <section>
+        <title>December 2010</title>
+        <p>
+          The Apache Santuario team are pleased to announce the release
+          of version 1.6.0 of the xml-security-c library.  This release
+          provides many bug fixes and a partial implementation of
+          XML Signature 1.1 features, including ECDSA signatures.
+        </p>
+      </section>
       <section>      
         <title>November 2010</title>
         <p>

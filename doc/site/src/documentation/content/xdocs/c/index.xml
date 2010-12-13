@@ -22,12 +22,12 @@ limitations under the License.
   
   <body>
     <section>
-      <title>Version 1.5.1 Released</title>
+      <title>Version 1.6.0 Released</title>
       <p>
         The Apache Santuario team are pleased to announce the release
-        of version 1.5.1 of the xml-security-c library.  This release
-        provides some bug fixes and a fix for the recently announced
-        HMAC vulnerability in the XML Signature specification.
+        of version 1.6.0 of the xml-security-c library.  This release
+        provides many bug fixes and a partial implementation of
+        XML Signature 1.1 features, including ECDSA signatures.
       </p>
     </section>
     <section>
@@ -53,6 +53,15 @@ limitations under the License.
     </section>
 	<section>
 	  <title>Old News</title>
+      <section>
+        <title>Version 1.5.1 Released</title>
+        <p>
+          The Apache Santuario team are pleased to announce the release
+          of version 1.5.1 of the xml-security-c library.  This release
+          provides some bug fixes and a fix for the recently announced
+          HMAC vulnerability in the XML Signature specification.
+        </p>
+      </section>
       <section>
         <title>Version 1.5.0 Released</title>
         <p>
