@@ -73,7 +73,6 @@
     <module>i18n</module>
     <module>all</module>
     <module>ldap</module>
-    <module>ldap-jndi</module>
     <module>ldap-schema</module>
     <module>ldap-client-api</module>
     <module>dsml-parser</module>
@@ -120,12 +119,6 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>shared-ldap</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>shared-ldap-jndi</artifactId>
         <version>${project.version}</version>
       </dependency>
 

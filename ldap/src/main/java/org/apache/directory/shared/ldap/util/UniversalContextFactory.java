@@ -17,7 +17,7 @@
  *   under the License.
  *
  */
-package org.apache.directory.shared.ldap.jndi;
+package org.apache.directory.shared.ldap.util;
 
 
 import java.util.Hashtable;
