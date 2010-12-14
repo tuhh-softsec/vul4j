@@ -53,21 +53,6 @@ import org.apache.directory.shared.ldap.util.StringTools;
 public class LdapEncoder
 {
     /**
-     * Encode a Ldap request and write it to the remote server.
-     * 
-     * @param session The session containing the LdapMessageContainer
-     * @param message The LDAP message we have to encode to a Byte stream
-     * @param out The callback we have to invoke when the message has been encoded 
-     */
-    public ByteBuffer encode( Message message ) throws Exception
-    {
-        ByteBuffer buffer = encodeMessage( ( Message ) message );
-
-        return buffer;
-    }
-
-
-    /**
      * Generate the PDU which contains the encoded object. 
      * 
      * The generation is done in two phases : 
