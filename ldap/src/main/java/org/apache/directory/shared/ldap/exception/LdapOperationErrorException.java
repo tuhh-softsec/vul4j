@@ -47,6 +47,18 @@ public class LdapOperationErrorException extends LdapOperationException
 
     /**
      * Creates a new instance of LdapOperationErrorException.
+     *
+     * @param message The exception message
+     * @param cause The root cause for this exception
+     */
+    public LdapOperationErrorException( String message, Throwable cause )
+    {
+        super( ResultCodeEnum.OPERATIONS_ERROR, message, cause );
+    }
+    
+    
+    /**
+     * Creates a new instance of LdapOperationErrorException.
      */
     public LdapOperationErrorException()
     {

@@ -37,9 +37,10 @@ public class LdapOperationException extends LdapException
 
     /** The operation resultCode */
     protected ResultCodeEnum resultCode;
-    
+
     /** The resolved DN */
     protected DN resolvedDn;
+
 
     /**
      * @return the resolvedDn
@@ -71,7 +72,21 @@ public class LdapOperationException extends LdapException
         this.resultCode = resultCode;
     }
 
-    
+
+    /**
+     * Creates a new instance of LdapOperationException.
+     *
+     * @param resultCode The operation resultCode
+     * @param message The exception message
+     * @param cause The root cause for this exception
+     */
+    public LdapOperationException( ResultCodeEnum resultCode, String message, Throwable cause )
+    {
+        super( message, cause );
+        this.resultCode = resultCode;
+    }
+
+
     /**
      * Creates a new instance of LdapOperationException.
      *
@@ -81,8 +96,8 @@ public class LdapOperationException extends LdapException
     {
         super( message );
     }
-    
-    
+
+
     /**
      * Gets the LDAP result code that would be associated with this exception.
      * 
