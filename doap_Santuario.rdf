@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl"?>
+<rdf:RDF xml:lang="en"
+         xmlns="http://usefulinc.com/ns/doap#" 
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+         xmlns:asfext="http://projects.apache.org/ns/asfext#"
+         xmlns:foaf="http://xmlns.com/foaf/0.1/">
+<!--
+  =======================================================================
+
+   Copyright (c) 2006-2010 The Apache Software Foundation.  
+   All rights reserved.
+
+  =======================================================================
+-->
+  <Project rdf:about="http://santuario.apache.org">
+    <created>2006-03-20</created>
+    <license rdf:resource="http://usefulinc.com/doap/licenses/asl20" />
+    <name>Apache Santuario</name>
+    <homepage rdf:resource="http://santuario.apache.org" />
+    <asfext:pmc rdf:resource="http://santuario.apache.org" />
+    <shortdesc>Library implementing XML Digital Signature Specification &amp; XML Encryption Specification</shortdesc>
+    <bug-database rdf:resource="https://issues.apache.org/jira/browse/SANTUARIO" />
+    <mailing-list rdf:resource="http://santuario.apache.org/mail/dev/" />
+    <download-page rdf:resource="http://santuario.apache.org/mirrors.cgi" />
+    <programming-language>Java</programming-language>
+    <programming-language>C++</programming-language>
+    <category rdf:resource="http://projects.apache.org/category/xml" />
+    <release>
+      <Version>
+        <name>XML Security (Java) 1.4.4</name>
+        <created>2010-11</created>
+        <revision>1.4.4</revision>
+      </Version>
+    </release>
+    <release>
+      <Version>
+        <name>XML Security (C++) 1.5.1</name>
+        <created>2009-07</created>
+        <revision>1.5.1</revision>
+      </Version>
+    </release>
+    <repository>
+      <SVNRepository>
+        <location rdf:resource="https://svn.apache.org/repos/asf/santuario"/>
+        <browse rdf:resource="http://svn.apache.org/viewcvs.cgi/santuario"/>
+      </SVNRepository>
+    </repository>
+    <asfext:implements>
+    <asfext:Standard>
+      <asfext:title>XML-Signature Syntax and Processing</asfext:title>
+      <asfext:body>W3C</asfext:body>
+      <asfext:id>XML Signature</asfext:id>
+      <asfext:url rdf:resource="http://www.w3.org/TR/xmldsig-core/"/>
+    </asfext:Standard>
+    </asfext:implements>
+    <asfext:implements>
+    <asfext:Standard>
+      <asfext:title>XML-Signature Syntax and Processing</asfext:title>
+      <asfext:body>IETF</asfext:body>
+      <asfext:id>3275</asfext:id>
+      <asfext:url rdf:resource="http://www.ietf.org/rfc/rfc3275.txt"/>
+    </asfext:Standard>
+    </asfext:implements>
+    <asfext:implements>
+    <asfext:Standard>
+      <asfext:title>Canonical XML</asfext:title>
+      <asfext:body>W3C</asfext:body>
+      <asfext:id>Canonical XML</asfext:id>
+      <asfext:url rdf:resource="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+    </asfext:Standard>
+    </asfext:implements>
+    <asfext:implements>
+    <asfext:Standard>
+      <asfext:title>Exclusive XML Canonicalization</asfext:title>
+      <asfext:body>W3C</asfext:body>
+      <asfext:id>Exclusive XML Canonicalization</asfext:id>
+      <asfext:url rdf:resource="http://www.w3.org/TR/xml-exc-c14n/"/>
+    </asfext:Standard>
+    </asfext:implements>
+    <asfext:implements>    
+    <asfext:Standard>
+      <asfext:title>XML Encryption Syntax and Processing</asfext:title>
+      <asfext:body>W3C</asfext:body>
+      <asfext:id>Exclusive XML Encryption</asfext:id>
+      <asfext:url rdf:resource="http://www.w3.org/TR/2002/CR-xmlenc-core-20020304/"/>
+    </asfext:Standard>
+    </asfext:implements>
+
+  </Project>
+</rdf:RDF>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- XPath="self::default:Parent or (parent::default:Parent and not(self::default:Child)) or self::ns1:GrandChild or parent::ns1:GrandChild or self::default:GrandChild or parent::default:GrandChild" -->
+<!-- additionalNSPrefixes="default http://example.org/default ns1 http://example.org/ns1" -->
+
+<!-- Result C14N:
+<Parent xmlns="http://example.org/default">
+    <ns1:GrandChild xmlns:ns1="http://example.org/ns1"></ns1:GrandChild><ns1:GrandChild xmlns="http://bar.com/default" xmlns:ns1="http://example.org/ns1" Gender="male"></ns1:GrandChild><GrandChild xmlns:ns1="http://example.org/ns1"></GrandChild><GrandChild xmlns:ns1="http://example.org/ns1" ns1:Gender="male"></GrandChild>
+  </Parent>
+ -->
+
+<!-- Annotation C14N:
+1. The default namespace node is rendered for Parent, since it is
+   inherited from GrandParent.
+2. The ns1 namespace node is rendered for the first GrandChild, since
+   it is inherited from Child.
+3. The default namespace node is not rendered for the first GrandChild,
+   since the output parent of GrandChild (Parent) has the same namespace
+   node with the same value, which is in the node set.
+4. The ns1 namespace node is rendered for the second GrandChild (same as 2).
+5. The default namespace node is rendered for the second GrandChild,
+   since it is explicitly declared, and has a different value than that of
+   Parent.
+6. The ns1 namespace node is rendered for the third GrandChild (same as 2).   
+7. The default namespace node is not rendered for the third GrandChild 
+   (same as 3).
+8. The ns1 namespace node is rendered for the fourth GrandChild (same as 2).   
+9. The default namespace node is not rendered fourth the third GrandChild 
+   (same as 3).
+-->
+
+<!-- Result EC14N:
+<Parent xmlns="http://example.org/default">
+    <ns1:GrandChild xmlns:ns1="http://example.org/ns1"></ns1:GrandChild><ns1:GrandChild xmlns:ns1="http://example.org/ns1" Gender="male"></ns1:GrandChild><GrandChild></GrandChild><GrandChild xmlns:ns1="http://example.org/ns1" ns1:Gender="male"></GrandChild> 
+  </Parent>    
+-->
+
+<!-- Annotation EC14N:
+1. The default namespace node is rendered for Parent, since it is visibly
+   utilized by Parent.
+2. The ns1 namespace attribute is rendered for the first GrandChild, since it
+   is visibly utilized by GrandChild.
+3. The default namespace node is not rendered for the first GrandChild, since
+   it is not visibly utilized.
+4. The ns1 namespace attribute is rendered for the second GrandChild, since it
+   is visibly utilized by GrandChild.
+5. The default namespace node is not rendered for the second GrandChild, since
+   it is not visibly utilized by GrandChild. The Gender attribute is in no
+   namespace.
+6. The ns1 namespace node is not rendered for the third GrandChild, since it
+   is not visibly utilized.
+7. The default namespace node is not rendered for the third GrandChild. It is
+   visibly utilized, but the same namespace node with the same value has already
+   been rendered in Parent (an output parent of GrandChild).
+8. The default namespace node is not rendered for the fourth GrandChild, since
+   it is not visibly utilized.
+9. The ns1 namespace node is rendered for the fourth GrandChild, since it is
+   visibly utilized by the ns1:Gender attribute of GrandChild.
+-->
+
+<GrandParent xmlns="http://example.org/default">
+  <Parent>
+    <Child xmlns:ns1="http://example.org/ns1">
+      <ns1:GrandChild/>
+      <ns1:GrandChild xmlns="http://bar.com/default" Gender="male"/>
+      <GrandChild/>
+      <GrandChild ns1:Gender="male"/>
+    </Child>
+  </Parent>
+</GrandParent>  

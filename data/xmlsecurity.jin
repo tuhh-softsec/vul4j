@@ -1,0 +1,428 @@
+###
+### Jindent 3.5 property file -- http://www.jindent.com
+###
+
+
+
+### Jindent property format
+
+version                                   = "3.5"
+
+conventionString                          = "EEE, MMM d, ''yy"
+paddingParenthesis             = false
+spaceBeforeConditionBang          = false
+
+### General -- Convention
+
+date                                      = "EEE, MMM d, ''yy"
+conventionName                            = "XMLSecurity Style"
+conventionNote                            = "Formatted in $conventionName$ Style on $date$"
+conventionNotePosition                    = "none"
+blankLinesToSeparateConventionNote        = 2
+
+
+### General -- Jindent Note
+
+jindentNotePosition                       = "none"
+blankLinesToSeparateJindentNote           = 2
+
+
+
+### Header/Footer -- Header Template
+
+headerSmartMode                           = infinite
+
+headerIdentifyKey                         = "Redistribution and use"
+
+blankLinesBeforeHeader                    = 1
+header[00]                                = "/*"
+header[01]                                = " * The Apache Software License, Version 1.1"
+header[02]                                = " *"
+header[03]                                = " *"
+header[04]                                = " * Copyright (c) 1999 The Apache Software Foundation.  All rights "
+header[05]                                = " * reserved."
+header[06]                                = " *"
+header[07]                                = " * Redistribution and use in source and binary forms, with or without"
+header[08]                                = " * modification, are permitted provided that the following conditions"
+header[09]                                = " * are met:"
+header[10]                                = " *"
+header[11]                                = " * 1. Redistributions of source code must retain the above copyright"
+header[12]                                = " *    notice, this list of conditions and the following disclaimer. "
+header[13]                                = " *"
+header[14]                                = " * 2. Redistributions in binary form must reproduce the above copyright"
+header[15]                                = " *    notice, this list of conditions and the following disclaimer in"
+header[16]                                = " *    the documentation and/or other materials provided with the"
+header[17]                                = " *    distribution."
+header[18]                                = " *"
+header[19]                                = " * 3. The end-user documentation included with the redistribution,"
+header[20]                                = " *    if any, must include the following acknowledgment:  "
+header[21]                                = " *       "This product includes software developed by the"
+header[22]                                = " *        Apache Software Foundation (http://www.apache.org/).""
+header[23]                                = " *    Alternately, this acknowledgment may appear in the software itself,"
+header[24]                                = " *    if and wherever such third-party acknowledgments normally appear."
+header[25]                                = " *"
+header[26]                                = " * 4. The names "<WebSig>" and "Apache Software Foundation" must"
+header[27]                                = " *    not be used to endorse or promote products derived from this"
+header[28]                                = " *    software without prior written permission. For written "
+header[29]                                = " *    permission, please contact apache@apache.org."
+header[30]                                = " *"
+header[31]                                = " * 5. Products derived from this software may not be called "Apache","
+header[32]                                = " *    nor may "Apache" appear in their name, without prior written"
+header[33]                                = " *    permission of the Apache Software Foundation."
+header[34]                                = " *"
+header[35]                                = " * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED"
+header[36]                                = " * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES"
+header[37]                                = " * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE"
+header[38]                                = " * DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR"
+header[39]                                = " * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,"
+header[40]                                = " * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT"
+header[41]                                = " * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF"
+header[42]                                = " * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND"
+header[43]                                = " * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,"
+header[44]                                = " * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT"
+header[45]                                = " * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF"
+header[46]                                = " * SUCH DAMAGE."
+header[47]                                = " * ===================================================================="
+header[48]                                = " *"
+header[49]                                = " * This software consists of voluntary contributions made by many"
+header[50]                                = " * individuals on behalf of the Apache Software Foundation and was"
+header[51]                                = " * originally based on software copyright (c) 2001, Institute for"
+header[52]                                = " * Data Communications Systems, <http://www.nue.et-inf.uni-siegen.de/>."
+header[53]                                = " * The development of this software was partly funded by the European "
+header[54]                                = " * Commission in the <WebSig> project in the ISIS Programme. "
+header[55]                                = " * For more information on the Apache Software Foundation, please see"
+header[56]                                = " * <http://www.apache.org/>."
+header[57]                                = " */"
+blankLinesAfterHeader                     = 0
+
+
+### Header/Footer -- Footer Template
+
+footerSmartMode                           = infinite
+
+footerIdentifyKey                         = ""
+
+blankLinesBeforeFooter                    = 0
+footer[00]                                = ""
+blankLinesAfterFooter                     = 0
+
+
+
+### Indentation -- Misc
+
+tabulatorSize                             = 3
+indentSize                                = 3
+firstLevelIndent                          = 0
+indentCaseFromSwitch                      = 0
+labelNewLine                              = false
+indentLabels                              = true
+
+minimumCommentIndent                      = 4
+
+indentLeadingsByTabs                      = false
+indentCommentsByTabs                      = false
+indentDeclarationsByTabs                  = false
+indentAssignmentsByTabs                   = false
+
+
+### Indentation -- Alignment
+
+alignComments                             = false
+alignDeclarations                         = false
+alignAssignments                          = false
+alignTernaryConditions                    = true
+alignTernaryExpressions                   = true
+alignTooLongComments                      = false
+alignTooLongDeclarations                  = false
+alignTooLongAssignments                   = false
+
+
+
+### Braces -- Style
+
+leftBraceNewLineGeneral                   = false
+rightBraceNewLineGeneral                  = false
+indentLeftBraceGeneral                    = 1
+indentRightBraceGeneral                   = 0
+indentAfterRightBraceGeneral              = 1
+
+cuddleEmptyBracesGeneral                  = false
+indentCuddledBracesGeneral                = 1
+
+noBlankLinesAfterLeftBraceGeneral         = false
+
+
+leftBraceNewLineClassInterface            = false
+rightBraceNewLineClassInterface           = false
+indentLeftBraceClassInterface             = 1
+indentRightBraceClassInterface            = 0
+indentAfterRightBraceClassInterface       = 1
+
+cuddleEmptyBracesClassInterface           = false
+indentCuddledBracesClassInterface         = 1
+
+noBlankLinesAfterLeftBraceClassInterface  = false
+
+
+leftBraceNewLineMethod                    = false
+rightBraceNewLineMethod                   = false
+indentLeftBraceMethod                     = 1
+indentRightBraceMethod                    = 0
+indentAfterRightBraceMethod               = 1
+
+cuddleEmptyBracesMethod                   = true
+indentCuddledBracesMethod                 = 1
+
+noBlankLinesAfterLeftBraceMethod          = false
+
+
+leftBraceNewLineTryCatch                  = false
+rightBraceNewLineTryCatch                 = false
+indentLeftBraceTryCatch                   = 1
+indentRightBraceTryCatch                  = 0
+indentAfterRightBraceTryCatch             = 1
+
+cuddleEmptyBracesTryCatch                 = true
+indentCuddledBracesTryCatch               = 1
+
+noBlankLinesAfterLeftBraceTryCatch        = false
+
+
+### Braces -- Insert At
+
+insertBracesAtIfElse                      = true
+insertBracesAtFor                         = true
+insertBracesAtWhile                       = true
+insertBracesAtDoWhile                     = true
+
+insertParenthesisAtConditions             = true
+
+
+### Braces -- If-Else
+
+singleIfStatementInOneLine                = false
+singleElseStatementInOneLine              = false
+specialElseIfTreatment                    = true
+
+
+
+### JavaDoc -- Misc
+
+deleteJavaDocComments                     = false
+formatJavaDocComments                     = true
+
+insertMissingJavaDocTags                  = false
+deleteObsoleteJavaDocTags                 = true
+
+createPublicClassInterfaceJavaDocs        = true
+createFriendlyClassInterfaceJavaDocs      = true
+createPrivateClassInterfaceJavaDocs       = true
+createProtectedClassInterfaceJavaDocs     = true
+
+createPublicMethodJavaDocs                = true
+createFriendlyMethodJavaDocs              = true
+createPrivateMethodJavaDocs               = false
+createProtectedMethodJavaDocs             = true
+
+createPublicFieldJavaDocs                 = true
+createFriendlyFieldJavaDocs               = true
+createPrivateFieldJavaDocs                = false
+createProtectedFieldJavaDocs              = true
+
+
+### JavaDoc -- Templates
+
+sortExceptionsInTemplates                 = true
+
+javaDocMethodTop[00]                      = "/**"
+javaDocMethodTop[01]                      = " * Method $objectName$"
+javaDocMethodTop[02]                      = " *"
+javaDocMethodParamSeparator[00]           = ""
+javaDocMethodParam[00]                    = " * @param $paramName$"
+javaDocMethodReturn[00]                   = ""
+javaDocMethodExceptionSeparator[00]       = ""
+javaDocMethodException[00]                = " * @throws $exceptionName$"
+javaDocMethodBottom[00]                   = " */"
+
+javaDocConstructorTop[00]                 = "/**"
+javaDocConstructorTop[01]                 = " * Constructor $objectName$"
+javaDocConstructorTop[02]                 = " *"
+javaDocConstructorParamSeparator[00]      = ""
+javaDocConstructorParam[00]               = " * @param $paramName$"
+javaDocConstructorExceptionSeparator[00]  = ""
+javaDocConstructorException[00]           = " * @throws $exceptionName$"
+javaDocConstructorBottom[00]              = " */"
+
+javaDocClass[00]                          = "/**"
+javaDocClass[01]                          = " * Class $objectName$"
+javaDocClass[02]                          = " *"
+javaDocClass[03]                          = " * @author $Author$"
+javaDocClass[04]                          = " * @version $Revision$"
+javaDocClass[05]                          = " */"
+
+javaDocInterface[00]                      = "/**"
+javaDocInterface[01]                      = " * Interface $objectName$"
+javaDocInterface[02]                      = " *"
+javaDocInterface[03]                      = " * @author $Author$"
+javaDocInterface[04]                      = " * @version $Revision$"
+javaDocInterface[05]                      = " */"
+
+javaDocField[00]                          = "/** Field $objectName$           */"
+
+
+
+### Comments -- Format/Delete
+
+deleteBlockComments                       = false
+deleteSingleLineComments                  = false
+deleteTrailingComments                    = false
+deleteEndOfLineComments                   = false
+
+formatBlockComments                       = false
+formatSingleLineComments                  = false
+formatTrailingComments                    = false
+formatEndOfLineComments                   = false
+
+
+### Comments -- Exceptions
+
+neverIndentFirstColumnComments            = false
+neverFormatFirstColumnComments            = false
+
+neverFormatHeader                         = false
+neverFormatFooter                         = false
+
+
+
+### Separation -- Misc
+
+keepBlankLines                            = 0
+
+minLinesToInsertBlankLineInClasses        = 3
+minLinesToInsertBlankLineInMethods        = 3
+
+
+### Separation -- Separate
+
+separateChunksByComments                  = true
+separateChunksByTooLongLines              = true
+allowBreakSeparatedFromCaseBlock          = false
+blankLinesBetweenCaseBlocks               = 1
+blankLinesBetweenChunks                   = 1
+
+comparableImportDepth                     = 2
+blankLinesToSeparateImports               = 0
+
+blankLinesBetweenClassInterface           = 2
+
+
+### Separation -- Insert Blank Lines
+
+blankLinesAfterDeclarations               = 1
+blankLinesAfterMethods                    = 1
+blankLinesAfterClasses                    = 1
+blankLinesAfterInterfaces                 = 1
+
+blankLinesBeforeJavaDocComments           = 1
+blankLinesAfterJavaDocComments            = 0
+
+blankLinesBeforeBlockComments             = 1
+blankLinesAfterBlockComments              = 0
+
+blankLinesBeforeSingleLineComments        = 1
+blankLinesAfterSingleLineComments         = 0
+
+blankLinesBeforeEndOfLineComments         = 1
+blankLinesAfterEndOfLineComments          = 0
+
+blankLinesAfterSwitch                     = 1
+blankLinesAfterPackage                    = 3
+blankLinesAfterLastImport                 = 2
+
+blankLinesBeforeFilteredCode              = 1
+blankLinesAfterFilteredCode               = 0
+
+
+
+### Whitespaces -- Padding
+
+separateAssignmentOperators               = true
+separateConditionalOperators              = true
+separateComparisonOperators               = true
+separateNumericalOperators                = true
+
+paddingCastParenthesis                    = false
+paddingStatementParenthesis               = false
+paddingMethodDeclarationParenthesis       = false
+paddingMethodCallParenthesis              = false
+
+paddingBrackets                           = false
+paddingBraces                             = true
+
+
+### Whitespaces -- Space Before
+
+spaceBeforeMethodDeclarationParenthesis   = false
+spaceBeforeMethodCallParenthesis          = false
+spaceBeforeBrackets                       = false
+spaceBeforeBracketsInTypes                = false
+spaceBeforeStatementParenthesis           = true
+
+spaceBeforeBang                           = false
+spaceAfterBang                            = false
+spaceBeforeBangAfterAndOr                 = false
+spaceAfterBangAfterAndOr                  = false
+
+spaceBeforeTilde                          = false
+spaceAfterTilde                           = false
+
+spaceBeforeCaseColon                      = true
+
+spaceBeforeAssertColon                    = true
+spaceAfterAssertColon                     = true
+
+
+### Whitespaces -- Space After
+
+spaceAfterComma                           = true
+spaceAfterSemicolon                       = true
+spaceAfterCasting                         = true
+
+
+### Whitespaces -- No Spaces
+
+noSpacesInEmptyForExpressions             = true
+
+
+
+### Line Wrapping -- Misc
+
+maxFieldElementsPerLine                   = infinite
+
+wrapLines                                 = true
+wrapBecauseOfComments                     = true
+wrapLongMethodNames                       = true
+maxLineLength                             = 80
+deepIndent                                = 45
+forceIndent                               = 8
+forceIndentTolerance                      = 4
+
+deepIndentForMultipleDeclarations         = 45
+
+allowWrappingAfterAssignments             = true
+wrapDeclarationAssignmentsToRightSide     = false
+allowWrappingAfterParenthesis             = true
+preferWrappingAfterThrows                 = true
+
+wrapAfterConditionalOperators             = false
+wrapAfterComparisonOperators              = false
+wrapAfterNumericalOperators               = false
+
+
+alwaysWrapThrows                          = false
+alwaysWrapExtends                         = false
+alwaysWrapImplements                      = false
+
+indentWrappedThrows                       = 0
+indentWrappedExtends                      = 0
+indentWrappedImplements                   = 0

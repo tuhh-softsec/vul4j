@@ -1,0 +1,7 @@
+<p abc="xy&quot;z" style="indented">
+      <x:verbatim xmlns:x="http://www.x.com/sample/" xml:space="preserve">
+        <b xml:lang="fr">def
+          <i xml:space="reset">jkl</i>
+        </b>
+      </x:verbatim>
+    </p>

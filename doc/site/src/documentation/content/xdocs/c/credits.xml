@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V1.1//EN" "document-v11.dtd">
+<!--
+Copyright 2003-2004 The Apache Software Foundation
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<document>
+  <header>
+    <title>Credits</title>
+  </header>
+  <body>
+    <section>
+	  <title>Software Used</title>
+	  <p>
+		The XML-Security-C package makes heavy use of the Xalan-C and
+		Xerces-C++ libraries from the <jump href="http://xml.apache.org">
+		  Apache Software Foundation XML Project</jump>.
+	  </p>
+	  <p>
+		This product includes cryptographic software written by Eric Young
+		(eay@cryptsoft.com).  This product includes software written by Tim
+		Hudson (tjh@cryptsoft.com).
+	  </p>
+	  <p>
+		This product includes software developed by the OpenSSL Project
+		for use in the OpenSSL Toolkit (<jump href="http://www.openssl.org">
+		  www.openssl.org</jump>)
+	  </p>
+	  <p>
+		The license documents for Xerces, Xalan and OpenSSL are contained in
+		the xml-security/c/doc directory in CVS and in the doc directory in
+		distributions of the C++ source code.
+	  </p>
+	  <p>
+		This documentation has been created using Forrest, also part of
+		the Apache Sofware Foundation's XML project.
+	  </p>
+	  <p>
+		API Documentation is created using
+		<jump href="http://www.stack.nl/~dimitri/doxygen/">Doxygen</jump> and
+		<jump href="http://www.research.att.com/sw/tools/graphviz/">GraphViz</jump>
+	  </p>
+	</section>
+  </body>
+</document>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: xml
+sgml-omittag:nil
+sgml-shorttag:nil
+sgml-namecase-general:nil
+sgml-general-insert-case:lower
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:2
+sgml-indent-data:t
+sgml-parent-document:nil
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+-->

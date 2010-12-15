@@ -1,0 +1,47 @@
+------------------------------ NodeSetData -------------------------------
+Node 1 : [ietf:e1: null]
+Node 2 : xml:id="e1ID"
+Node 3 : xmlns="http://www.w3.org/2000/09/xmldsig#"
+Node 4 : xmlns:ietf="http://www.ietf.org"
+Node 5 : xmlns:w3c="http://www.w3.org"
+Node 6 : [#text: 
+		]
+Node 7 : [#comment:  This is a comment for ietf:e1 element ]
+Node 8 : [#text: 
+		]
+Node 9 : [ietf:e11: null]
+Node 10 : xmlns="http://www.w3.org/2000/09/xmldsig#"
+Node 11 : xmlns:ietf="http://www.ietf.org"
+Node 12 : xmlns:w3c="http://www.w3.org"
+Node 13 : [#text: 
+		]
+Node 14 : [#comment:  This is a comment for ietf:e11 element ]
+Node 15 : [#text: 
+			]
+Node 16 : [ietf:e111: null]
+Node 17 : xmlns="http://www.w3.org/2000/09/xmldsig#"
+Node 18 : xmlns:ietf="http://www.ietf.org"
+Node 19 : xmlns:w3c="http://www.w3.org"
+Node 20 : [#text: 
+		]
+Node 21 : [#text: 
+		]
+Node 22 : [ietf:e12: null]
+Node 23 : at="2"
+Node 24 : xmlns="http://www.w3.org/2000/09/xmldsig#"
+Node 25 : xmlns:ietf="http://www.ietf.org"
+Node 26 : xmlns:w3c="http://www.w3.org"
+Node 27 : [#text: 
+		]
+Node 28 : [#comment:  This is a comment for ietf:e12 element ]
+Node 29 : [#text: 
+			]
+Node 30 : [ietf:e121: null]
+Node 31 : xmlns="http://www.w3.org/2000/09/xmldsig#"
+Node 32 : xmlns:ietf="http://www.ietf.org"
+Node 33 : xmlns:w3c="http://www.w3.org"
+Node 34 : [#text: 
+		]
+Node 35 : [#text: 
+	]
+--------------------------------------------------------------------------

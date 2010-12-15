@@ -1,0 +1,394 @@
+<?xml version="1.0"?>
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V1.1//EN" "document-v11.dtd">
+<!--
+Copyright 2003-2004 The Apache Software Foundation
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<document>
+  <header>
+    <title>XML Encryption Programming</title>
+  </header>
+  <body>
+	<section id="overview">
+	  <title>Overview</title>
+	  <p>
+		As with signatures, there are two main modes of operation for the
+		library when performing encryption functions - Encryption and
+		Decryption.  Decryption is generally fairly simple, as the library
+		will handle most of the work around de-referencing key material and
+		re-creating a DOM document (or returning a byte stream).
+	  </p>
+	  <p>
+		Encryption is fairly simple if you are trying to encrypt a DOM
+		structure.  The library will encrypt the nodes and then replace them
+		with the encrypted version.  However if you want to embed an
+		arbitrary encrypted object in the document, you will need to
+		encrypt it first and then pass the encrypted text into the library.
+	  </p>
+	  <p>
+		The rest of this page looks at some simple examples around
+		encrypting and decrypting nodes within an XML document
+	  </p>
+	</section>
+	<section id="simpleencrypt">
+	  <title>A simple encryption example</title>
+	  <p>
+		The next example encrypts an element (and all its children) from
+		a pre-generated document.  It uses a randomly generated key to
+		handle the bulk encryption, and then encrypts this using an RSA
+		public key.  The resultant encrypted key is embedded in an
+		&lt;EncryptedKey&gt; element.
+	  </p>
+	  <p>
+		This example can be found in the src/samples directory as
+		<em>simpleEncrypt.cpp</em>.
+	  </p>
+	  <section>
+		<title>Setup</title>
+		<p>
+		  The first step is initialisation of Xerces, Xalan (if used) and
+		  XML-Security.  Once this is done, we create a document.  For 
+		  brevity, the details of the call to <em>createLetter</em> are
+		  not included on this page.  The function is very simple - it creates
+		  an XML DOM document that represents a letter, and sets a global
+		  variable (<em>g_toEncrypt</em>) that will be used later on to
+		  determine what node to encrypt.
+		</p>
+		<source><![CDATA[
+int main (int argc, char **argv) {
+
+    try {
+        XMLPlatformUtils::Initialize();
+#ifndef XSEC_NO_XALAN
+        XalanTransformer::initialize();
+#endif
+        XSECPlatformUtils::Initialise();
+    }
+    catch (const XMLException &e) {
+
+        cerr << "Error during initialisation of Xerces" << endl;
+        cerr << "Error Message = : "
+             << e.getMessage() << endl;
+
+    }
+
+    // Create a blank Document
+
+    DOMImplementation *impl = 
+        DOMImplementationRegistry::getDOMImplementation(MAKE_UNICODE_STRING("Core"));
+	
+    // Create a letter
+    DOMDocument *doc = createLetter(impl);
+		  ]]></source>
+	  </section>
+	  <section>
+		<title>Setup for Encryption</title>
+		<p>
+		  Once the library is initialised, we create a <em>XENCCipher</em>
+		  object in a manner similar to the creation of a 
+		  <em>DSIGSignature</em> object.  The <em>XENCCipher</em> object
+		  is used to actually perform encryption/decryption functions and
+		  to manipulate the various encryption objects provided by the
+		  library.
+		</p>
+		<p>
+		  As well as creating the <em>XENCCipher</em> object, the sample
+		  uses the <em>RAND_bytes</em> function within the 
+		  <strong>OpenSSL</strong>
+		  library to create a random key that will be used during the
+		  encryption process.
+		</p>
+		<source><![CDATA[
+    try {
+		
+        /* Create the cipher object that we need */
+
+        XSECProvider prov;
+        XENCCipher *cipher;
+
+        cipher = prov.newCipher(doc);
+
+        /* Now generate a random key that we can use to encrypt the element
+         *
+         * First check the status of the random generation in OpenSSL
+         */
+
+        if (RAND_status() != 1) {
+
+            cerr << "OpenSSL random generation not properly initialised" << endl;
+            exit(1);
+
+        }
+
+        unsigned char keyBuf[24];
+        if (RAND_bytes(keyBuf, 24) == 0) {
+
+            cerr << "Error obtaining 24 bytes of random from OpenSSL" << endl;
+            exit(1);
+
+        }
+]]></source>
+	  </section>
+	  <section>
+		<title>Encryption of Element</title>
+		<p>
+		  The actual code to perform encryption is very small.  Most of the
+		  complexity for standard encryption is hidden within the library.
+		</p>
+		<p>
+		  The first two lines of code wrap the generated key bytes in an
+		  OpenSSL 3DES key.  This is then passed into the <em>cipher</em>
+		  object with a call to <em>setKey(key)</em>.
+		</p>
+		<p>
+		  The last line in the following block performs the actual encryption.
+		  the first parameter to <em>cipher->encryptElement</em> is the 
+		  node that will be encrypted.  The second is the algorithm to be 
+		  used.  This is used to calcualte the Algorithm URI to be set in
+		  the &lt;EncryptedData&gt; element.
+		</p>
+		<p>
+		  This call to <em>EncryptElement</em> will encrypt the provided
+		  element using the key set previously.  The passed in element will
+		  be replaced with an &lt;EncryptedData&gt; element containing the
+		  encrypted version of the element and all its children.
+		</p>
+		<p>
+		  If no further information is required to be embedded in the
+		  &lt;EncryptedData&gt; structure (such as &lt;KeyInfo&gt; nodes),
+		  the usage of the library could be terminated here.
+		</p>
+		<source><![CDATA[
+        /* Wrap this in a Symmetric 3DES key */
+
+        OpenSSLCryptoSymmetricKey * key = 
+            new OpenSSLCryptoSymmetricKey(XSECCryptoSymmetricKey::KEY_3DES_192);
+        key->setKey(keyBuf, 24);
+        cipher->setKey(key);
+
+        /* Encrypt the element that needs to be hidden */
+        cipher->encryptElement(g_toEncrypt, ENCRYPT_3DES_CBC);
+]]></source>
+	  </section>
+	  <section>
+		<title>Create an &lt;EncryptedKey&gt;</title>
+		<p>
+		  The following snippet of code uses the previously created
+		  <em>XENCCipher</em> object to encrypt the pseudo random key using
+		  an RSA key loaded from a X.509 certificate.
+		</p>
+		<p>
+		  The first two lines load the certificate into an OpenSSLCryptoX509
+		  structure, which is then used to extract the public key from the
+		  certificate and pass into the cipher.
+		</p>
+		<p>
+		  A call to <em>setKEK</em> is used rather than <em>setKey</em>.
+		  This call is used to tell the cipher object that the key being used
+		  is a Key Encryption Key, and should be used for encrypting/decrypting
+		  &lt;EncryptedKey&gt; elements.
+		</p>
+		<p>
+		  The final line actually performs the encryption and created
+		  the &lt;EncryptedKey&gt; structure.  The first two parameters define
+		  the buffer and its length to be encrypted.  The last defines the
+		  encryption algorithm to be used.
+		</p>
+		<p>
+		  The <em>encryptedKey</em> method returns an <em>XENCEncryptedKey</em>
+		  object.  This contains the DOM structure for the object, but it is
+		  not yet rooted in a particular document.  (Although it is created
+		  using the <em>DOMDocument</em> that was passed in during the call
+		  to <em>newCipher</em>.)
+		</p>
+		<source><![CDATA[
+        /* Now lets create an EncryptedKey element to hold the generated key */
+
+        /* First lets load the public key in the certificate */
+        OpenSSLCryptoX509 * x509 = new OpenSSLCryptoX509();
+        x509->loadX509Base64Bin(cert, strlen(cert));
+	
+        /* Now set the Key Encrypting Key (NOTE: Not the normal key) */
+        cipher->setKEK(x509->clonePublicKey());
+		
+
+        /* Now do the encrypt, using RSA with PKCS 1.5 padding */
+
+        XENCEncryptedKey * encryptedKey = 
+            cipher->encryptKey(keyBuf, 24, ENCRYPT_RSA_15);
+]]></source>
+	  </section>
+	  <section>
+		<title>Append &lt;EncryptedKey&gt; to &lt;EncryptedData&gt;</title>
+		<p>
+		  The final part (other than outputting the result) is to 
+		  retrieve the &lt;EncryptedData&gt; element that was previously 
+		  created and append the newly created &lt;EncryptedKey&gt; as a 
+		  &lt;KeyInfo&gt; element.
+		</p>
+<source><![CDATA[
+        /*
+         * Add the encrypted Key to the previously created EncryptedData, which
+         * we first retrieve from the cipher object.  This will automatically create
+         * the appropriate <KeyInfo> element within the EncryptedData
+         */
+
+        XENCEncryptedData * encryptedData = cipher->getEncryptedData();
+        encryptedData->appendEncryptedKey(encryptedKey);
+]]></source>
+	  </section>
+	  <p>
+		The above code results in a document that contains the newly created
+		&lt;EncryptedData&gt; as follows:
+	  </p>
+<source><![CDATA[
+<Letter>
+<ToAddress>The address of the Recipient</ToAddress>
+<FromAddress>The address of the Sender</FromAddress>
+<xenc:EncryptedData Type="http://www.w3.org/2001/04/xmlenc#Element" 
+xmlns:xenc="http://www.w3.org/2001/04/xmlenc#">
+<xenc:EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#tripledes-cbc"/>
+<ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+<xenc:EncryptedKey xmlns:xenc="http://www.w3.org/2001/04/xmlenc#">
+<xenc:EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#rsa-1_5"/>
+<xenc:CipherData>
+<xenc:CipherValue>Wh8pAkDsQceHiktGxnlhXGfEMPDOLB6FwWp8PLedFEB3L3F6xHUoCOerIvA7Pgvv
+VYzVqLv4a5x5YdnCqikkFBLE/fruAUe2Z8ZTEn/CaPYmpzU6qYHALCl7Q61LcbqH
+R87TzroBYsYwfHmXmrKHL9K9sB6zmuec1TjVzm2c/Xs=
+</xenc:CipherValue>
+</xenc:CipherData>
+</xenc:EncryptedKey>
+</ds:KeyInfo>
+<xenc:CipherData>
+<xenc:CipherValue>YhqQciiFkLG1z0I1TJC6Pewnzw/gmVuGqcTvHtWpgak/b3NQDRAlv07lJOmBLoHX
+23LQ1CdPSxvnyerlJGwkY6xJ0M5tjpDregTVcECXo/bd+x8eIsF2kaawoZGCqD1K
+96T36Fx9rHek9bY/Hp1OiQ==
+</xenc:CipherValue>
+</xenc:CipherData>
+</xenc:EncryptedData></Letter>
+]]></source>
+	</section>
+	<section id="simpledecrypt">
+	  <title>A simple decryption example</title>
+	  <p>
+		The final example shows how to use the library to decrypt an
+		EncryptedData structure.  A private key is loaded as a Key
+		Encryption Key (KEK), and a call is made to the library which
+		decrypts the encrypted data and inserts the resulting DOM nodes
+		back into the original document.
+	  </p>
+	  <p>
+		This example can be found in the src/samples directory as
+		<em>simpleDecrypt.cpp</em>.
+	  </p>
+	  <section>
+		<title>Setup</title>
+		<p>
+		  The setup process is much the same as for 
+		  <jump href="#simpledsa">simpleVerify</jump>.  The document
+		  (which is the document created in simpleEncrypt) is parsed using 
+		  Xerces and a <em>DOMDocument</em> is returned.
+		</p>
+	  </section>
+	  <section>
+		<title>Load Private Key</title>
+		<p>
+		  The <em>simpleDecrypt</em> uses a preloaded RSA private key for
+		  the decryption.  A key resolver (<em>XSECKeyInfoResolver</em>) can 
+		  also be used to provide a callback mechanism such that applications 
+		  can determine the correct key at run time.
+		</p>
+		<p>
+		  The following code uses a <em>XSECProvider</em> to obtain a
+		  <em>XENCCipher</em>uses OpenSSL to load the private key from the
+		  <em>s_privateKey</em> char array.
+		</p>
+		<p>
+		  The key is loaded using a call to <em>setKEK</em>.  This method
+		  loads the key as a Key Encryption Key - which means it will be used
+		  to decrypt an &lt;EncryptedKey&gt; structure.
+		</p>
+<source><![CDATA[
+
+        XSECProvider prov;
+        XENCCipher *cipher;
+
+        cipher = prov.newCipher(doc);
+
+        /* Load the private key via OpenSSL and then wrap in an OpenSSLCrypto construct */
+        BIO * bioMem = BIO_new(BIO_s_mem());
+        BIO_puts(bioMem, s_privateKey);
+        EVP_PKEY * pk = PEM_read_bio_PrivateKey(bioMem, NULL, NULL, NULL);
+
+        /* NOTE : For simplicity - no error checking here */
+
+        OpenSSLCryptoKeyRSA * k = new OpenSSLCryptoKeyRSA(pk);
+        cipher->setKEK(k);
+
+]]></source>
+	  </section>
+	  <section>
+		<title>Perform Decryption</title>
+		<p>
+		  Now that the key is loaded, the actual decryption is performed
+		  using two lines of code.  The first finds the node to be
+		  decrypted.  In this case, the <em>findXENCNode</em> library
+		  function is used.
+		</p>
+		<p>
+		  The second line, <em>decryptElement</em> actually performs the
+		  decryption.  It performs the following steps :
+		</p>
+		<ul>
+		  <li>Load the &lt;EncryptedData&gt; structure into an 
+			<em>XENCEncryptedData</em> structure.</li>
+		  <li>if no decryption key is loaded (in this case, none is),
+			search the &lt;KeyInfo&gt; list for an &lt;EncryptedKey&gt;
+			element (one will be found in this case).</li>
+		  <li>Use the previously loaded KEK to decrypt the key found in
+			the previous step.</li>
+		  <li>Use the decrypted key to decrypt the &lt;EncryptedData&gt;
+			data</li>
+		  <li>Parse the decrypted data into DOM nodes</li>
+		  <li>Replace the &lt;EncryptedData&gt; with the DOM fragment
+			returned in the previous step</li>
+		</ul>
+<source><![CDATA[
+		
+        /* Find the EncryptedData node */
+        DOMNode * encryptedNode = findXENCNode(doc, "EncryptedData");
+
+        /* Do the decrypt */
+        cipher->decryptElement((DOMElement *) encryptedNode);
+
+]]></source>
+	  </section>
+	  <p>
+		The result of these steps is the decrypted letter.
+	  </p>
+<source><![CDATA[
+<Letter>
+<ToAddress>The address of the Recipient</ToAddress>
+<FromAddress>The address of the Sender</FromAddress>
+<Text>
+To whom it may concern, my secret credit card number is : 
+  0123 4567 89ab cdef
+
+...
+</Text></Letter>
+]]></source>
+	</section>
+  </body>
+</document>

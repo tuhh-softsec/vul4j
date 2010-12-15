@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V1.1//EN" "document-v11.dtd"
+[
+  <!ENTITY % xmlsec_entities SYSTEM "../xmlsec_entities.ent"> 
+  %xmlsec_entities; 
+]>
+<!--
+Copyright 2003-2004 The Apache Software Foundation
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<document> 
+  <header> 
+    <title>Java API Documentation</title> 
+  </header> 
+  <body> 
+    <section>
+      <title>Javadoc Generated Documentation</title>
+      <p>&packagenamelong; comes packaged with API documentation.</p>
+      <p>This documentation is generated automatically from the Javadoc-style
+	comments inside the source files.  Click on one of the links below to
+	go to the appropriate API documentation.</p>
+    </section>
+    <section>
+      <title>&packagename; API Documentation</title>
+    <ul>
+      <li><jump href="ext:java/docs/full-api">Full API documentation</jump></li>
+      <li><jump href="ext:java/docs/hierachry">Hierarchy for all the packages</jump></li>
+    </ul>
+    </section>
+  </body>
+</document>

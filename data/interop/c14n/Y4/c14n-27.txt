@@ -1,0 +1,430 @@
+<SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#" xmlns:bar="http://example.org/bar" xmlns:baz="http://example.org/baz" xmlns:foo="http://example.org/foo" xml:lang="en-ie">
+      <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></CanonicalizationMethod>
+      <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#dsa-sha1"></SignatureMethod>
+      <Reference URI="">
+        <Transforms>
+          <Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+            <XPath>
+              
+              ancestor-or-self::bar:Something
+            </XPath>
+          </Transform>
+        </Transforms>
+        <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod>
+        <DigestValue>lCOS/JtpmOE+4eXFaOpY4v4BOgI=</DigestValue>
+      </Reference>
+      <Reference URI="">
+        <Transforms>
+          <Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+            <XPath>
+              
+              ancestor-or-self::bar:Something  and
+              ((name() != "bar") or parent::bar:Something)  and
+              ((name() != "foo") or parent::foo:Something)  and
+              ((name() != "baz") or parent::baz:Something)  and
+              ((name() != "") or self::text())
+            </XPath>
+          </Transform>
+        </Transforms>
+        <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod>
+        <DigestValue>OyVqEWXE7C+5NyKtceUkdmiFO9A=</DigestValue>
+      </Reference>
+      <Reference URI="">
+        <Transforms>
+          <Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+            <XPath>
+              
+              ancestor-or-self::bar:Something  and
+              (self::text()  or
+               (namespace-uri() != "")  or
+               (string(self::node()) = namespace-uri(parent::node())))
+            </XPath>
+          </Transform>
+        </Transforms>
+        <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod>
+        <DigestValue>OyVqEWXE7C+5NyKtceUkdmiFO9A=</DigestValue>
+      </Reference>
+      <Reference URI="">
+        <Transforms>
+          <Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+            <XPath>
+              
+              ancestor-or-self::bar:Something  and
+              not (self::foo:Something)  and
+              (self::text()  or
+               (namespace-uri() != "")  or
+               (string(self::node()) = namespace-uri(parent::node())))
+            </XPath>
+          </Transform>
+        </Transforms>
+        <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod>
+        <DigestValue>mL1aAQ/RoOPO0SHj9KR+yY3n4CM=</DigestValue>
+      </Reference>
+      <Reference URI="">
+        <Transforms>
+          <Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+            <XPath>
+              
+              ancestor-or-self::bar:Something  and
+              (count(parent::node()/namespace::*)  !=
+               count(parent::node()/namespace::* | self::node()))
+            </XPath>
+          </Transform>
+        </Transforms>
+        <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod>
+        <DigestValue>bQgF8ICymYZTuUP0FE40l3Q7BZk=</DigestValue>
+      </Reference>
+      <Reference URI="">
+        <Transforms>
+          <Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+            <XPath>
+              
+              ancestor-or-self::bar:Something  and
+              (self::text()  or
+               (namespace-uri() != ""))
+            </XPath>
+          </Transform>
+        </Transforms>
+        <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod>
+        <DigestValue>bQgF8ICymYZTuUP0FE40l3Q7BZk=</DigestValue>
+      </Reference>
+      <Reference URI="">
+        <Transforms>
+          <Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+            <XPath>
+              
+              ancestor-or-self::bar:Something  and
+              (count(parent::node()/namespace::*)  =
+               count(parent::node()/namespace::* | self::node()))
+            </XPath>
+          </Transform>
+        </Transforms>
+        <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod>
+        <DigestValue>IJQgd59FJ1PAxxCY5mIL6cZemi0=</DigestValue>
+      </Reference>
+      <Reference URI="">
+        <Transforms>
+          <Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+            <XPath>
+              
+              ancestor-or-self::bar:Something  and
+              (string(self::node()) = namespace-uri(parent::node()))
+            </XPath>
+          </Transform>
+        </Transforms>
+        <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod>
+        <DigestValue>SXGijO1eArEaXGphF0dxwj5fp1g=</DigestValue>
+      </Reference>
+      <Reference URI="">
+        <Transforms>
+          <Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+            <XPath>
+              
+              ancestor-or-self::bar:Something  and
+              (self::text()  or
+               (namespace-uri() != "")  or
+               ((name() = "")  and
+                ((count(ancestor-or-self::node()) mod 2) = 1)))
+            </XPath>
+          </Transform>
+        </Transforms>
+        <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod>
+        <DigestValue>rNm4Id9ah12nugzXAUJgjas7ls0=</DigestValue>
+      </Reference>
+      <Reference URI="">
+        <Transforms>
+          <Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+            <XPath>
+              
+              ancestor-or-self::bar:Something
+            </XPath>
+          </Transform>
+          <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"></Transform>
+        </Transforms>
+        <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod>
+        <DigestValue>Wa7sEWwUmSNsv6p75omGKXL6rjI=</DigestValue>
+      </Reference>
+      <Reference URI="">
+        <Transforms>
+          <Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+            <XPath>
+              
+              ancestor-or-self::bar:Something  and
+              ((name() != "bar") or parent::bar:Something)  and
+              ((name() != "foo") or parent::foo:Something)  and
+              ((name() != "baz") or parent::baz:Something)  and
+              ((name() != "") or self::text())
+            </XPath>
+          </Transform>
+          <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"></Transform>
+        </Transforms>
+        <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod>
+        <DigestValue>Wa7sEWwUmSNsv6p75omGKXL6rjI=</DigestValue>
+      </Reference>
+      <Reference URI="">
+        <Transforms>
+          <Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+            <XPath>
+              
+              ancestor-or-self::bar:Something  and
+              (self::text()  or
+               (namespace-uri() != "")  or
+               (string(self::node()) = namespace-uri(parent::node())))
+            </XPath>
+          </Transform>
+          <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"></Transform>
+        </Transforms>
+        <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod>
+        <DigestValue>Wa7sEWwUmSNsv6p75omGKXL6rjI=</DigestValue>
+      </Reference>
+      <Reference URI="">
+        <Transforms>
+          <Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+            <XPath>
+              
+              ancestor-or-self::bar:Something  and
+              not (self::foo:Something)  and
+              (self::text()  or
+               (namespace-uri() != "")  or
+               (string(self::node()) = namespace-uri(parent::node())))
+            </XPath>
+          </Transform>
+          <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"></Transform>
+        </Transforms>
+        <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod>
+        <DigestValue>uOQJQIIUETYyk0+YEBdbEQwrYbw=</DigestValue>
+      </Reference>
+      <Reference URI="">
+        <Transforms>
+          <Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+            <XPath>
+              
+              ancestor-or-self::bar:Something  and
+              (count(parent::node()/namespace::*)  !=
+               count(parent::node()/namespace::* | self::node()))
+            </XPath>
+          </Transform>
+          <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"></Transform>
+        </Transforms>
+        <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod>
+        <DigestValue>6Wmm693F38R+R8E9DZM+MVXXMME=</DigestValue>
+      </Reference>
+      <Reference URI="">
+        <Transforms>
+          <Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+            <XPath>
+              
+              ancestor-or-self::bar:Something  and
+              (self::text()  or
+               (namespace-uri() != ""))
+            </XPath>
+          </Transform>
+          <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"></Transform>
+        </Transforms>
+        <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod>
+        <DigestValue>6Wmm693F38R+R8E9DZM+MVXXMME=</DigestValue>
+      </Reference>
+      <Reference URI="">
+        <Transforms>
+          <Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+            <XPath>
+              
+              ancestor-or-self::bar:Something  and
+              (count(parent::node()/namespace::*)  =
+               count(parent::node()/namespace::* | self::node()))
+            </XPath>
+          </Transform>
+          <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"></Transform>
+        </Transforms>
+        <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod>
+        <DigestValue>2jmj7l5rSw0yVb/vlWAYkK/YBwk=</DigestValue>
+      </Reference>
+      <Reference URI="">
+        <Transforms>
+          <Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+            <XPath>
+              
+              ancestor-or-self::bar:Something  and
+              (string(self::node()) = namespace-uri(parent::node()))
+            </XPath>
+          </Transform>
+          <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"></Transform>
+        </Transforms>
+        <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod>
+        <DigestValue>2jmj7l5rSw0yVb/vlWAYkK/YBwk=</DigestValue>
+      </Reference>
+      <Reference URI="">
+        <Transforms>
+          <Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+            <XPath>
+              
+              ancestor-or-self::bar:Something  and
+              (self::text()  or
+               (namespace-uri() != "")  or
+               ((name() = "")  and
+                ((count(ancestor-or-self::node()) mod 2) = 1)))
+            </XPath>
+          </Transform>
+          <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"></Transform>
+        </Transforms>
+        <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod>
+        <DigestValue>6Wmm693F38R+R8E9DZM+MVXXMME=</DigestValue>
+      </Reference>
+      <Reference URI="">
+        <Transforms>
+          <Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+            <XPath>
+              
+              ancestor-or-self::bar:Something
+            </XPath>
+          </Transform>
+          <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#">
+            <InclusiveNamespaces xmlns="http://www.w3.org/2001/10/xml-exc-c14n#" PrefixList="#default"></InclusiveNamespaces>
+          </Transform>
+        </Transforms>
+        <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod>
+        <DigestValue>AWtqDbXWKf8TV78C2d16uarbpGk=</DigestValue>
+      </Reference>
+      <Reference URI="">
+        <Transforms>
+          <Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+            <XPath>
+              
+              ancestor-or-self::bar:Something  and
+              ((name() != "bar") or parent::bar:Something)  and
+              ((name() != "foo") or parent::foo:Something)  and
+              ((name() != "baz") or parent::baz:Something)  and
+              ((name() != "") or self::text())
+            </XPath>
+          </Transform>
+          <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#">
+            <InclusiveNamespaces xmlns="http://www.w3.org/2001/10/xml-exc-c14n#" PrefixList="#default"></InclusiveNamespaces>
+          </Transform>
+        </Transforms>
+        <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod>
+        <DigestValue>Wa7sEWwUmSNsv6p75omGKXL6rjI=</DigestValue>
+      </Reference>
+      <Reference URI="">
+        <Transforms>
+          <Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+            <XPath>
+              
+              ancestor-or-self::bar:Something  and
+              (self::text()  or
+               (namespace-uri() != "")  or
+               (string(self::node()) = namespace-uri(parent::node())))
+            </XPath>
+          </Transform>
+          <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#">
+            <InclusiveNamespaces xmlns="http://www.w3.org/2001/10/xml-exc-c14n#" PrefixList="#default"></InclusiveNamespaces>
+          </Transform>
+        </Transforms>
+        <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod>
+        <DigestValue>Wa7sEWwUmSNsv6p75omGKXL6rjI=</DigestValue>
+      </Reference>
+      <Reference URI="">
+        <Transforms>
+          <Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+            <XPath>
+              
+              ancestor-or-self::bar:Something  and
+              not (self::foo:Something)  and
+              (self::text()  or
+               (namespace-uri() != "")  or
+               (string(self::node()) = namespace-uri(parent::node())))
+            </XPath>
+          </Transform>
+          <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#">
+            <InclusiveNamespaces xmlns="http://www.w3.org/2001/10/xml-exc-c14n#" PrefixList="#default"></InclusiveNamespaces>
+          </Transform>
+        </Transforms>
+        <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod>
+        <DigestValue>uOQJQIIUETYyk0+YEBdbEQwrYbw=</DigestValue>
+      </Reference>
+      <Reference URI="">
+        <Transforms>
+          <Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+            <XPath>
+              
+              ancestor-or-self::bar:Something  and
+              (count(parent::node()/namespace::*)  !=
+               count(parent::node()/namespace::* | self::node()))
+            </XPath>
+          </Transform>
+          <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#">
+            <InclusiveNamespaces xmlns="http://www.w3.org/2001/10/xml-exc-c14n#" PrefixList="#default"></InclusiveNamespaces>
+          </Transform>
+        </Transforms>
+        <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod>
+        <DigestValue>6Wmm693F38R+R8E9DZM+MVXXMME=</DigestValue>
+      </Reference>
+      <Reference URI="">
+        <Transforms>
+          <Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+            <XPath>
+              
+              ancestor-or-self::bar:Something  and
+              (self::text()  or
+               (namespace-uri() != ""))
+            </XPath>
+          </Transform>
+          <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#">
+            <InclusiveNamespaces xmlns="http://www.w3.org/2001/10/xml-exc-c14n#" PrefixList="#default"></InclusiveNamespaces>
+          </Transform>
+        </Transforms>
+        <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod>
+        <DigestValue>6Wmm693F38R+R8E9DZM+MVXXMME=</DigestValue>
+      </Reference>
+      <Reference URI="">
+        <Transforms>
+          <Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+            <XPath>
+              
+              ancestor-or-self::bar:Something  and
+              (count(parent::node()/namespace::*)  =
+               count(parent::node()/namespace::* | self::node()))
+            </XPath>
+          </Transform>
+          <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#">
+            <InclusiveNamespaces xmlns="http://www.w3.org/2001/10/xml-exc-c14n#" PrefixList="#default"></InclusiveNamespaces>
+          </Transform>
+        </Transforms>
+        <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod>
+        <DigestValue>NpjMPzEF5YZFbz4ls7eN36QWdXs=</DigestValue>
+      </Reference>
+      <Reference URI="">
+        <Transforms>
+          <Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+            <XPath>
+              
+              ancestor-or-self::bar:Something  and
+              (string(self::node()) = namespace-uri(parent::node()))
+            </XPath>
+          </Transform>
+          <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#">
+            <InclusiveNamespaces xmlns="http://www.w3.org/2001/10/xml-exc-c14n#" PrefixList="#default"></InclusiveNamespaces>
+          </Transform>
+        </Transforms>
+        <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod>
+        <DigestValue>2jmj7l5rSw0yVb/vlWAYkK/YBwk=</DigestValue>
+      </Reference>
+      <Reference URI="">
+        <Transforms>
+          <Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+            <XPath>
+              
+              ancestor-or-self::bar:Something  and
+              (self::text()  or
+               (namespace-uri() != "")  or
+               ((name() = "")  and
+                ((count(ancestor-or-self::node()) mod 2) = 1)))
+            </XPath>
+          </Transform>
+          <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#">
+            <InclusiveNamespaces xmlns="http://www.w3.org/2001/10/xml-exc-c14n#" PrefixList="#default"></InclusiveNamespaces>
+          </Transform>
+        </Transforms>
+        <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod>
+        <DigestValue>EacBN2aBBNSjpCOzZUOOvSv4zHU=</DigestValue>
+      </Reference>
+    </SignedInfo>

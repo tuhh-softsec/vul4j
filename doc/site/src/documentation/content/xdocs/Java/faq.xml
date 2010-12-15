@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE faqs PUBLIC "-//APACHE//DTD FAQ V1.1//EN" "dtd/faq-v11.dtd"
+[
+  <!ENTITY % xmlsec_entities SYSTEM "../xmlsec_entities.ent"> 
+  %xmlsec_entities; 
+]>
+<!--
+Copyright 2003-2004 The Apache Software Foundation
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<faqs title="Frequently Asked Questions - Java">
+  <part id="general_j">
+    <title>Questions about Java</title>
+    <faq id="security_j">
+      <question>
+	I have a Java-(security/cryptography) problem. Can you help me?
+      </question>
+      <answer>
+	<p>
+	  Go to the <link href="ext:javaforum">java forum</link> of Sun. You can
+	  find forums where you can ask questions like &quot;How do I generate
+	  a keypair&quot;, etc.
+	</p>
+      </answer>
+    </faq>
+    <faq id="xml_j">
+      <question>
+	I have a Java-XML problem.
+      </question>
+      <answer>
+	<p>
+	  Go to the <link href="ext:javaforum">java forum</link> of Sun, section
+	  Java Technology &amp; XML and have a look at <link
+	    href="ext:xml.apache.org/xml4j-used"> Apache Xerces</link>.
+	</p>
+      </answer>
+    </faq>
+  </part>
+
+  <part id="specific_">
+    <title>Questions about this package</title>
+    <faq id="logging">
+      <question>
+	How do I enable/turn off logging?
+      </question>
+      <answer>
+	<p>
+	  The logging is configured in the <code>config.xml</code> file which
+	  either in the <code>xmlsec.jar</code> file or in the class path. This
+	  is a little bit complicated as config.xml is used both for library
+	  wide configurations like algorithms as well as for the user setting
+	  about log4j. This will be changed someday ;-))
+	</p>
+	<p>OK, so it goes: In the 
+	  <jump
+	    href="http://cvs.apache.org/viewcvs.cgi/xml-security/src/org/apache/xml/security/resource/config.xml?rev=HEAD&amp;content-type=text/vnd.viewcvs-markup">
+	    <code>xml-security/src/org/apache/xml/security/resource/config.xml</code>
+	  </jump> file, there is an element called
+	  <code>&lt;log4j:configuration&gt;</code>. This element contains the
+	  XML style configuration information as defined in the 
+	  <jump
+	    href="http://jakarta.apache.org/log4j/docs/api/org/apache/log4j/xml/DOMConfigurator.html">
+	    log4j DOMConfigurator class
+	  </jump>. You can find examples 
+	  <jump href="http://cvs.apache.org/viewcvs.cgi/jakarta-log4j/tests/input/xml/">here</jump>
+	</p>
+      </answer>
+    </faq>
+    <faq id="baseURI">
+      <question>
+	What is the meaning of <code>BaseURI</code>?
+      </question>
+      <answer>
+	<p>
+	  When you work with URIs like
+	  &quot;<code>http://www.example.com/index.html</code>&quot;, it is
+	  quite sure what you mean as this is an absolute URL, i.e. it is clear
+	  which protocol ise used to fetch which file from which server. When
+	  you use such a URL inside a signature, the software can automatically
+	  figure out what you sign. But when you sign something in your local
+	  file system or if you use a relative path like
+	  &quot;<code>../1.txt</code>&quot;, it's not possible to understand
+	  this reference without some context. <em>This</em> context is the
+	  <code>BaseURI</code>. For instance, if you sign
+	  <code>URI=&quot;../1.txt&quot;</code> and the
+	  <code>BaseURI=&quot;file:///home/user/work/signature.xml&quot;</code>, 
+	  it is clear that the file
+	  <code>BaseURI=&quot;file:///home/user/1.txt&quot;</code> is to be
+	  signed. But when you create the signature, the file
+	  <code>BaseURI=&quot;file:///home/user/work/signature.xml&quot;</code>
+	  does not yet exist; therefore, you have to supply the URL where you
+	  intend to store the signature later (relative to the signed objects). 
+	</p>
+	<p>
+	  The String BaseURI is the systemID on which the Object will be stored
+	  in the future. This is needed to resolve relative links in the
+	  <code>Reference</code> elements which point to the filesystem or
+	  something similar. 
+	</p>
+	<p>
+	  Example: Imagine that you want to create a signature to store it on a
+	  web server as
+	  <code>http://www.acme.com/signatures/sig1.xml</code>. So
+	  <code>BaseURI=&quot;http://www.acme.com/sig1.xml&quot;</code>. This
+	  means that if you create a <code>Reference</code> with
+	  <code>URI=&quot;./index.html&quot;</code>, the library can easily use
+	  it's HTTPResourceResolver to fetch
+	  <code>http://www.acme.com/index.html</code> without that you have to
+	  say <code>URI=&quot;http://www.acme.com/index.html&quot;</code>. 
+	</p>
+      </answer>
+    </faq>
+    <faq id="examples">
+      <question>
+	How do I use the package to generate and verify a signature?
+      </question>
+      <answer>
+	<p>
+	  Checkout the samples in
+	  <code>src_samples/org/apache/xml/security/samples/signature/</code>. 
+	</p>
+	<note>
+	  The samples divide into two groups: Samples that <em>create</em> and
+	  samples that <em>verify</em> Signatures. Eventually, you should
+	  adjust the verifying program to another filename if you get
+	  <code>FileNotFoundException</code>s.
+	</note>
+      </answer>
+    </faq>
+    <faq id="jdk140">
+      <question>
+	I'm using SUN JDK v1.4.0 or v1.4.1 and I get some exceptions. Any clues?
+      </question>
+      <answer>
+	<p>
+	  After SUN released the  <jump href="ext:java"> Java (TM) 2 Platform
+	    Standard Edition v1.4.0 </jump>, the xml-security package stopped
+	  working. This is a  
+	  <jump
+	    href="http://developer.java.sun.com/developer/bugParade/bugs/4615582.html">
+	    known 
+	  </jump> 
+	  problem: SUN packaged a beta of Xalan into the JDK1.4.0, but the
+	  xml-security package requires a stable version of Xalan (v2.2.0 or
+	  later). To fix the problem, you have to put the xalan.jar into a
+	  special directory in your JDK:
+	  <code>j2sdk1.4.0/jre/lib/endorsed/xalan.jar</code>. If you installed
+	  an out-of-the-box JDK1.4 (e.g. on Windows 2000), the
+	  &quot;endorsed&quot; directory does not exist: you'll have to create
+	  it by hand.
+	</p>
+	<warning>Putting this JAR to another location like lib/ext WILL NOT WORK. </warning>
+	<p>
+	  For more on that, you can also check the  <jump
+	    href="http://xml.apache.org/~edwingo/jaxp-faq.html#override">
+	    Unofficial JAXP FAQ </jump>. 
+	</p>
+      </answer>
+    </faq>
+    <faq id="nullptrexception">
+      <question>
+	I get a NullPointerException, and I don't know what's wrong.
+      </question>
+      <answer>
+	<p>
+	  Often, this problem is caused by using DOM1 calls like
+	  <code>createElement(), setAttribute(), createAttribute()</code>. These are
+	  non-namespace-aware and will cause XPath and C14N errors.
+	  Always use the DOM2 <code>create(Attribute|Element)NS(...)</code>
+	  methods instead, even if you're creating an element without a namespace
+	  (in that case, you can use null as a namespace).
+	</p>
+	<p>
+	  The Xalan-J Team told us that DOM1 calls are deprecated and are not to
+	  be used in code. xml-security has been reviewed and is DOM1 clean now. 
+	  The Xalan folks told us that if you create Elements or attributes 
+	  using DOM1 calls which are not namespace aware, they do not care about
+	  any problem you have because of incorrect hehaviour of Xalan.
+	</p> 
+      </answer>
+    </faq>
+	<faq id="elementorder">
+	  <question>
+		I sign a document and when I try to verify using the same key, it fails
+	  </question>
+	  <answer>
+		<p>
+		  After you have created the XMLSignature object, before you sign the
+		  document, you <em>must</em> embed the signature element in the owning
+		  document (using a call to <code>XMLSignature.getElement()</code> to
+		  retrieve the newly created Element node from the signature) before
+		  calling the <code>XMLSignature.sign()</code> method,
+		</p>
+		<p>
+		  During canonicalisation of the SignedInfo element, the library looks
+		  at the parent and ancestor nodes of the Signature element to find
+		  any namespaces that the SignedInfo node has inherited.  Any that are
+		  found are embedded in the canonical form of the SignedInfo.  (This
+		  is not true when Exclusive Canonicalisation is used, but it is still
+		  good practice to insert the element node prior to the sign()
+		  method being called).
+		</p>
+		<p>
+		  If you have not embedded the signature node in the document, it will
+		  not have any parent or ancestor nodes, so it will not inherit their
+		  namespaces.  If you then embed it in the document and call <code>
+			verify()</code>, the namespaces will be found and the canonical 
+		  form of SignedInfo will be different to that generated during 
+		  <code>sign()</code>.
+		</p>
+	  </answer>
+	</faq>
+  </part>
+
+</faqs>
+
+
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: xml
+sgml-omittag:nil
+sgml-shorttag:nil
+sgml-namecase-general:nil
+sgml-general-insert-case:lower
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:2
+sgml-indent-data:t
+sgml-parent-document:nil
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+-->

@@ -1,0 +1,42 @@
+If we sign a Manifest, we have to ensure that the References inside the Manifest have correct digest values (that we do not blindly sign contents which an attacker wants us to sign). Additionally, the signed contents of such a (nested) Manifest have to be made available to the user. Currently, only the 1st level contents (what is referenced by SignedInfo) are available using XMLSignature.getSignedInfo().getSignedContent(int i). Same comments apply to sigining a ds:Reference from another Manifest or SignedInfo. 
+
+Question: What is an appropriate processing model if the user signs a ds:Manifest or a ds:Reference ? 
+Possible choices include:
+- only process the SignedInfo. Make information about signed Manifests, References or Signatures available to the user. Now it's up to the user to decide whether he follows this hint or not.
+- using the XMLSignature.setFollowNestedManifests(true) method, it can be defined that all Mianifests have to be valid, also Manifests which are referenced from Manifests. 
+- the user could define a length how many Manifests have to be followed. But this makes not much sense, cause it makes Signature something 'analog', allowing to scale whether validation fails or not.
+
+TODO for 1.2.1:
+ [X] Fix the memory leak when using xpath or using ResourceResolver and not hitting 
+  	  getElementByIdUsingDOM() [http://issues.apache.org/bugzilla/show_bug.cgi?id=32836]
+ [X] Fix the bug with using XPath2Filter and inclusive c14n
+ [X] Fix the bug arrouse in reusing Canonicalizers
+ [X] Fix base64transformation bug [http://issues.apache.org/bugzilla/show_bug.cgi?id=33393 ]
+ [X] Fix the XMLsignatureInput reset() bug.
+ [X] Clean unused jar (xmlParserAPI.jar,etc) and check and stored new versions.
+ [X] generated the dist jar with version (i.e. xmlsec-1.2.1.jar instead of plain xmlsec.jar)
+ [X] Clean unused build*.xml files.
+TODO for 1.3:
+RAUL:
+
+[X] Remove XPath in IdResolver.
+[X] Deferred XPath till needed.
+[X] Clean unneed XPath
+[ ] Integrate the SAX patch and add Signing
+[ ] More examples.
+[X] Change Symbol table to a more efficient and simple structure
+[ ] constrac name bindings on the fly like XMLSerialicer does.
+[ ] Optimize ouputstream with native jce, nio & threads.
+[X] Migrate to JSR105 API
+[X] Optimize certifacate & public key getting. for loops look wrong, 
+	better registring..
+[X] Optimize xpath2 to only look for the node not for the node and all the parents.
+[ ] There are several places in the library where a Dom is created from a byte array
+see if this is really needed and unified this creation in one class.
+[ ] Get rid of Init.init()
+[ ] Get rid of all if (MODE_SIGN) create a class for signing and another for verifying.
+[ ] Work on examples there are out of sync with the code.Unitest the examples?
+[ ] Clean build.xml, why is still needed the jce?
+[ ] Change to forrest 0.7 instead of 0.6
+[ ] Remove all references to CVS in documentation
+[ ] Add performance section to documentation.

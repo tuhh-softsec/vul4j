@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V1.1//EN" "document-v11.dtd"
+[
+  <!ENTITY % xmlsec_entities SYSTEM "../xmlsec_entities.ent"> 
+  %xmlsec_entities; 
+]>
+<!--
+Copyright 2003-2004 The Apache Software Foundation
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<document> 
+  <header> 
+    <title>Resolver-Mania</title> 
+  </header> 
+  <body> 
+    <section>
+      <title>Why do we need all these resolvers?</title>
+      <p>
+	For security and comfort reasons. In the XML Security package, there
+	exist many kinds of Resolvers for different purposes. Resolvers in this
+	package do the same job as an EntityResolver in the SAX package:
+	retrieve information from the apropriate location and give it to the
+	parser/software who needs it. The reason for offering these different
+	Resolvers is that it should be under complete control of the
+	application which connections to the network are made. In the security
+	area, it wouldn't be a good idea to imediately fetch some documents
+	from the web or make other connections only because you want to verify
+	a Signature. This resolver framework gives the application developer
+	the ability to have total control about the interface from the library
+	to the rest of the world. 
+      </p>
+    </section>
+    <section>
+      <title>Types of resolvers</title>
+      <section>
+	<title>ResourceResolvers</title>
+	<p>
+	  A 
+	  <jump href="&api_ref;utils/resolver/ResourceResolver.html">
+	    ResourceResolver
+	  </jump> is used by a 
+	  <jump href="&api_ref;signature/Reference.html">
+	    Reference
+	  </jump> to retrieve the signed resource from it's location. Different
+	  resolvers exist to get signed portions from the XML document in which
+	  the signature resides, to make HTTP connections or to fetch files
+	  from the local file system. <br /> 
+	  The concept of a 
+	  <jump href="&api_ref;utils/resolver/ResourceResolver.html">
+	    ResourceResolver
+	  </jump> is very similar to an org.xml.sax.EntityResolver, but in
+	  contrast to that Interface, the ResourceResolver is able to
+	  de-reference contents <em>inside</em> an XML document.  
+	</p> 
+      </section>
+      <section>
+	<title>StorageResolver</title>
+	<p>A 
+	  <jump href="&api_ref;keys/storage/StorageResolver.html">
+	    StorageResolver
+	  </jump> is used by 
+	  <jump href="&api_ref;keys/KeyInfo.html">
+	    KeyInfo
+	  </jump> and it's child objects / Elements to retrieve Certificates
+	  from storage locations. This approach is used to allow a user to
+	  customize the library for use in a specific corporate
+	  environment. It's possible to write 
+	  <jump href="&api_ref;keys/storage/StorageResolver.html">
+	    StorageResolver
+	  </jump>s who make requests to LDAP servers or to use specificic PKI
+	  interfaces. <br/>
+	  Bundled with the software come three sample 
+	  <jump href="&api_ref;keys/storage/StorageResolver.html">
+	    StorageResolver
+	  </jump>s which can be used for common tasks:
+	</p>
+	<ul>
+	  <li>
+	    The 
+	    <jump
+	      href="&api_ref;keys/storage/implementations/KeyStoreResolver.html">
+	      KeyStoreResolver
+	    </jump> is able to retrieve Certificates from a JAVA KeyStore
+	    object. This 
+	    <jump
+	      href="&api_ref;keys/storage/implementations/KeyStoreResolver.html">
+	      KeyStoreResolver
+	    </jump> is constructed from an open JAVA KeyStore.
+	  </li>
+	  <li>
+	    The 
+	    <jump
+	      href="&api_ref;keys/storage/implementations/SingleCertificateResolver.html">
+	      SingleCertificateResolver
+	    </jump> resolves only to a single Certificate. The 
+	    <jump
+	      href="&api_ref;keys/storage/implementations/SingleCertificateResolver.html">
+	      SingleCertificateResolver
+	    </jump> is constructed using this single Certificate. 
+	  </li>
+	  <li>
+	    The 
+	    <jump
+	      href="&api_ref;keys/storage/implementations/CertsInFilesystemDirectoryResolver.html">
+	      CertsInFilesystemDirectoryResolver
+	    </jump> is useful for resolving to raw X.509 certificates which
+	    reside as separate files in a directory in the filesystem. Such a
+	    resolver is needed for verifying the test signatures from Merlin
+	    Huges which are bundled in a directory.
+	  </li> 
+	</ul>
+	<p>
+	  <jump href="&api_ref;keys/storage/StorageResolver.html">
+	    StorageResolver
+	  </jump>s are supplied to the KeyInfo's <code>addStorageResolver()</code> method.
+	</p>
+	<p>
+	  Generally, a 
+	  <jump href="&api_ref;keys/storage/StorageResolver.html">
+	    StorageResolver
+	  </jump> has only a method to return an Iterator which iterates
+	  through the available Certificates.
+	</p>
+      </section>
+      <section>
+	<title>KeyResolver</title>
+	<p>
+	  A 
+	  <jump href="&api_ref;keys/keyresolver/KeyResolver.html">
+	    KeyResolver
+	  </jump> is used by 
+	  <jump href="&api_ref;keys/KeyInfo.html">
+	    KeyInfo
+	  </jump> to process it's child Elements. There exist two general
+	  classes of a 
+	  <jump href="&api_ref;keys/keyresolver/KeyResolver.html">
+	    KeyResolver
+	  </jump>:
+	</p>
+	<ul>
+	  <li>
+	    If a ds:RSAKeyValue or ds:DSAKeyValue or ds:X509Certificate is used
+	    inside the ds:KeyInfo, the resolvers can return a public key or
+	    Certificate directly without further action, because the key itself
+	    is contained inside the ds:Signature.
+	  </li>
+	  <li>
+	    If there is only key material identification information like a
+	    ds:KeyName or the serial number of the Certificate, the KeyResolver
+	    must use the StorageResolvers to query the available keys and
+	    certificates to find the correct one.
+	  </li>
+	</ul>
+	<p>
+	  Of course, there are cross-dependencies: e.g. a KeyResolver named 
+	  <jump
+	    href="&api_ref;keys/keyresolver/implementations/RetrievalMethodResolver.html">
+	    RetrievalMethodResolver
+	  </jump> uses the 
+	  <jump href="&api_ref;utils/resolver/ResourceResolver.html">
+	    ResourceResolver
+	  </jump> framework to retrieve a public key or certificate from an
+	  arbitrary location.
+	</p>
+      </section>
+    </section>
+  </body>
+</document>
+
+
+
+

@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<!DOCTYPE document PUBLIC "-//APACHE//DTD Documentation V1.1//EN" "document-v11.dtd">
+<!--
+Copyright 2003-2004 The Apache Software Foundation
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<document>
+  <header>
+    <title>Tools</title>
+  </header>
+  <body>
+	<section>
+	  <title>Provided Tools</title>
+	  <p>
+		A number of very simple "tools" (really examples) are provided with
+		the XML Security library.  These can be used either to provide examples
+		of how to use the library or as simple utilities in their own right for
+		performing canonicalisation and signature functions.
+	  </p>
+	  <p>
+		The tools are :
+	  </p>
+	  <ul>
+		<li><em>c14n</em> - A tool to output a Canonicalised version of an 
+		  input document.</li>
+		<li><em>checksig</em> - A tool to validate a signature in an XML
+		  input document</li>
+		<li><em>templatesign</em> - A tool to sign an XML document that already
+		  has the &lt;Signature&gt; structure installed, but needs the references
+		  hashed and the SignatureValue set.</li>
+		<li><em>txfmout</em> - A tool to take an XML Signature and output
+		  the fully transformed references to stdout or a nominated file</li>
+		<li><em>threadTest</em> - A Windows only program that runs up a number
+		  of threads which simultaneously sign and validate documents.  A
+		  number of documents are modified in between (to cause the signature
+		  validation to fail).</li>
+		<li><em>siginf</em> - A tool to read in an XML Signature and dump
+		  various details about the signature and references to the terminal
+		</li>
+		<li><em>cipher</em> - A tool to encrypt and decrypt XML documents.
+		</li>
+		<li><em>xklient</em> - A tool to generate and process XKMS messages.
+          Can be used to send XKMS requests to XKMS servers over SOAP 1.1/1.2
+          and HTML and to dump the results to screen.
+		</li>
+	  </ul>
+	  <p>
+		The tools can all be run with no command line arguments to see their
+		parameters.
+	  </p>
+	  <p>
+		One extra "tool" is provided - <em>xtest</em>.  This is really a testing
+		program that exercises various capabilities of the library and compares
+		the results with known good results.
+	  </p>
+	</section>
+  </body>
+</document>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: xml
+sgml-omittag:nil
+sgml-shorttag:nil
+sgml-namecase-general:nil
+sgml-general-insert-case:lower
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:2
+sgml-indent-data:t
+sgml-parent-document:nil
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+-->

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FOO xmlns="http://www.foo.org/foo">
+foo
+<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+  <SignedInfo>
+    <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+    <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+    <Reference URI="">
+      <Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+        <Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+      </Transforms>
+      <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+      <DigestValue>1wFIlW0si1FB2G8Ak7LdC9YWZuE=</DigestValue>
+    </Reference>
+  </SignedInfo>
+  <SignatureValue>oAhBlLby9ysCpZZ3A+APjRX6Pf763RwgBxv5MBUfPrBgO9w9ZUCmaVNm8s3VmcoBxCzA+yaHMw0X
+wi8YdLtfvQ==</SignatureValue><KeyInfo>
+    <KeyValue>
+    <RSAKeyValue>
+        <Modulus>19GikKwZG8NFt6TRwnD1zUbj7dIp5WYj8gqk4KUIio7pd9//vVnPzF2QLBUjb2PK6DJf0kZkUpHv
+7RwklU9snQ==</Modulus>
+        <Exponent>EQ==</Exponent>
+      </RSAKeyValue>
+    </KeyValue>
+  </KeyInfo>
+</Signature></FOO>

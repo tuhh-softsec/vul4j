@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE doc [
+<!ATTLIST e9 Id ID #IMPLIED>
+]>
+
+
+<doc>
+   <e9 Id="NO3"></e9>
+   <e9 Id="id2"></e9>
+</doc> 

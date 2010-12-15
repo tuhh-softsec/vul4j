@@ -1,0 +1,30 @@
+<samlp:ArtifactResponse xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" ID="_e5e553f51fe1a009374bdf2186a685d8" IssueInstant="2006-10-11T03:12:59Z" Version="2.0"><samlp:Status><samlp:StatusCode Value="urn:oasis:names:tc:SAML:2.0:status:Success"/></samlp:Status><samlp:Response Destination="https://sp.example.org/SAML/POST" ID="rident" IssueInstant="1970-01-02T01:01:02.100Z" Version="2.0" xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion"><saml:Issuer>https://idp.example.org/</saml:Issuer><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+<ds:SignedInfo>
+<ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+<ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+<ds:Reference URI="#rident">
+<ds:Transforms>
+<ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+<ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+</ds:Transforms>
+<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+<ds:DigestValue>U562AIbwQ8i5kQcxOjTfYAsqbOs=</ds:DigestValue>
+</ds:Reference>
+</ds:SignedInfo>
+<ds:SignatureValue>n5AGrOWy1WkZWaIVrXlr1iBeZ8YsGJLHsS+n472wmFxHn/GT8PsCDS78UjpIFVxY
+qK4G3O5p7rQwe8IGYeWeG3pjclvXcP6KH1CwjlJL3ndaZqu1tVdYqx3fbTAK5QRV
+gDUlyje2TRAgF1YSyyunRmJgOEXJ+JTe8brCmTrkr0E=</ds:SignatureValue>
+<ds:KeyInfo><ds:X509Data><ds:X509Certificate>MIICjzCCAfigAwIBAgIJAKk8t1hYcMkhMA0GCSqGSIb3DQEBBAUAMDoxCzAJBgNV
+BAYTAlVTMRIwEAYDVQQKEwlJbnRlcm5ldDIxFzAVBgNVBAMTDnNwLmV4YW1wbGUu
+b3JnMB4XDTA1MDYyMDE1NDgzNFoXDTMyMTEwNTE1NDgzNFowOjELMAkGA1UEBhMC
+VVMxEjAQBgNVBAoTCUludGVybmV0MjEXMBUGA1UEAxMOc3AuZXhhbXBsZS5vcmcw
+gZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBANlZ1L1mKzYbUVKiMQLhZlfGDyYa
+/jjCiaXP0WhLNgvJpOTeajvsrApYNnFX5MLNzuC3NeQIjXUNLN2Yo2MCSthBIOL5
+qE5dka4z9W9zytoflW1LmJ8vXpx8Ay/meG4z//J5iCpYVEquA0xl28HUIlownZUF
+7w7bx0cF/02qrR23AgMBAAGjgZwwgZkwHQYDVR0OBBYEFJZiO1qsyAyc3HwMlL9p
+JpN6fbGwMGoGA1UdIwRjMGGAFJZiO1qsyAyc3HwMlL9pJpN6fbGwoT6kPDA6MQsw
+CQYDVQQGEwJVUzESMBAGA1UEChMJSW50ZXJuZXQyMRcwFQYDVQQDEw5zcC5leGFt
+cGxlLm9yZ4IJAKk8t1hYcMkhMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEEBQAD
+gYEAMFq/UeSQyngE0GpZueyD2UW0M358uhseYOgGEIfm+qXIFQF6MYwNoX7WFzhC
+LJZ2E6mEvZZFHCHUtl7mGDvsRwgZ85YCtRbvleEpqfgNQToto9pLYe+X6vvH9Z6p
+gmYsTmak+kxO93JprrOd9xp8aZPMEprL7VCdrhbZEfyYER0=</ds:X509Certificate></ds:X509Data></ds:KeyInfo></ds:Signature><samlp:Status><samlp:StatusCode Value="urn:oasis:names:tc:SAML:2.0:status:Success"/></samlp:Status><saml:Assertion ID="aident" IssueInstant="1970-01-02T01:01:02.100Z" Version="2.0"><saml:Issuer>https://idp.example.org/</saml:Issuer><saml:Subject><saml:NameID>John Doe</saml:NameID></saml:Subject><saml:AuthnStatement AuthnInstant="1970-01-02T01:01:02.100Z"><saml:AuthnContext><saml:AuthnContextClassRef>foo</saml:AuthnContextClassRef></saml:AuthnContext></saml:AuthnStatement></saml:Assertion></samlp:Response></samlp:ArtifactResponse>

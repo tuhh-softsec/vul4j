@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Envelope xmlns="http://iaik.at#Envelope">
+  <dsig:Signature xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"><dsig:SignedInfo><dsig:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/><dsig:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/><dsig:Reference URI=""><dsig:Transforms><dsig:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/></dsig:Transforms><dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><dsig:DigestValue>cWFVogsTJUrmoCbGrFoP2mE+F5U=</dsig:DigestValue></dsig:Reference></dsig:SignedInfo><dsig:SignatureValue>l82qilvUhkstzFG8tjTY/DAlWmhMTPz6fhnaIM6qetH9/qagjtrceEwGnc8Q7G20
+laxPg+tjXa9qSHB9wUmOgu5axN3oNsncZxukCi7pmmujflMsXfJKl7jTXweYyKU5
+5tJgeJM3Mnjm4QiAE1X9Ftne4UKFFg4348RUWnlZWBE=</dsig:SignatureValue><dsig:KeyInfo><dsig:KeyValue><dsig:RSAKeyValue><dsig:Modulus>sDa5yzUv4IJmBY60GZCnkQSAhpG7tgxepi6sj3DlCzxjTtO5MNrjI9sK3WhimpNi
+NDmagzNEjxP3+x1huxL19GoIxZgr5O7E/F2IInSASVZTQsvWZlNauhRs0KZAszIS
+FchvrihILLoUf4tzaOSe6jgMEq6IkO0dWVpcFpAjXTc=</dsig:Modulus><dsig:Exponent>Aw==</dsig:Exponent></dsig:RSAKeyValue></dsig:KeyValue></dsig:KeyInfo></dsig:Signature><DataItem>
+    Some Data from IAIK
+  </DataItem>
+</Envelope>

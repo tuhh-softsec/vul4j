@@ -1,0 +1,32 @@
+<!ENTITY packagenamelong  "Apache-XML-Security-J">
+<!ENTITY packagename      "xml-security">
+<!ENTITY packageversion   "1.4">
+<!ENTITY packagedirectory "NOT USED ??">
+<!ENTITY packagedistname  "Apache-XML-Security-J">
+
+<!ENTITY jce_download_file "jce-jdk13-124.jar">
+<!ENTITY lib_jce "./libs/bc-&jce_download_file;">
+
+<!-- ENTITY packagenamelong  "@@packagenamelong@@"-->
+<!-- ENTITY packagename      "@@packagename@@"-->
+<!-- ENTITY packageversion   "@@packageversion@@"-->
+<!-- ENTITY packagedirectory "@@packagedirectory@@ "-->
+<!-- ENTITY packagedistname  "@@packagedistname@@  Apache-XML-Security-J"-->
+
+<!ENTITY xmlsec  "Apache-XML-Security-J">
+<!ENTITY xmldsig "W3C XML-Signature Syntax and Processing">
+<!ENTITY xmlenc  "W3C XML Encryption Syntax and Processing">
+<!ENTITY xmlxkms  "W3C XML Key Management Specification">
+<!ENTITY hac     "Handbook of Applied Cryptography">
+<!ENTITY christpage     "The XML Security Page">
+<!ENTITY supp_java_dsig "XML-Signature Syntax and Processing,  W3C Recommendation 12 February 2002">
+<!ENTITY supp_java_dsig_ref "TR/2002/REC-xmldsig-core-20020212/">
+<!ENTITY supp_C_dsig "XML-Signature Syntax and Processing,  W3C Recommendation 12 February 2002">
+<!ENTITY supp_C_dsig_ref "TR/2002/REC-xmldsig-core-20020212/">
+<!ENTITY supp_java_enc "XML Encryption Syntax and Processing, W3C Recommendation 10 December 2002">
+<!ENTITY supp_java_enc_ref "TR/2002/REC-xmlenc-core-20021210/">
+<!ENTITY supp_C_enc "XML Encryption Syntax and Processing, W3C Recommendation 10 December 2002">
+<!ENTITY supp_C_enc_ref "TR/2002/REC-xmlenc-core-20021210/">
+<!ENTITY api_ref "api/org/apache/xml/security/">
+
+
