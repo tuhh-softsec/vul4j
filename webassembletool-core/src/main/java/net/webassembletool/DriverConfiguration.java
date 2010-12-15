@@ -14,7 +14,10 @@
  */
 package net.webassembletool;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
+import java.util.StringTokenizer;
 
 import net.webassembletool.authentication.RemoteUserAuthenticationHandler;
 import net.webassembletool.cookie.SerializableBasicCookieStore;
@@ -43,15 +46,15 @@ public class DriverConfiguration {
 	private String proxyHost;
 	private int proxyPort = 0;
 	private boolean filterJsessionid = true;
-	private String authenticationHandler = RemoteUserAuthenticationHandler.class.getName();
+	private String authenticationHandler = RemoteUserAuthenticationHandler.class
+			.getName();
 	private final Properties properties;
 	private boolean preserveHost = false;
 	private String cookieStore = SerializableBasicCookieStore.class.getName();
 	private String filter = null;
+	private final List<String> parsableContentTypes;
 
-	public String getFilter() {
-		return filter;
-	}
+	private static String DEFAULT_PARSABLE_CONTENT_TYPES = "text/html, application/xhtml+xml";
 
 	public DriverConfiguration(String instanceName, Properties props) {
 		this.instanceName = instanceName;
@@ -132,8 +135,23 @@ public class DriverConfiguration {
 				visibleBaseURL = baseURL;
 			}
 		}
+		// Parsable content types
+		String strContentTypes = props.getProperty("parsableContentTypes",
+				DEFAULT_PARSABLE_CONTENT_TYPES);
+		StringTokenizer tokenizer = new StringTokenizer(strContentTypes, ",");
+		String contentType;
+		parsableContentTypes = new ArrayList<String>();
+		while (tokenizer.hasMoreElements()) {
+			contentType = tokenizer.nextToken();
+			contentType = contentType.trim();
+			parsableContentTypes.add(contentType);
+		}
 
 		properties = props;
+	}
+
+	public String getFilter() {
+		return filter;
 	}
 
 	public int getFixMode() {
@@ -218,6 +236,16 @@ public class DriverConfiguration {
 
 	public String getCookieStore() {
 		return cookieStore;
+	}
+
+	/**
+	 * List of parsable content types. Default is text/html,
+	 * application/xhtml+xml
+	 * 
+	 * @return
+	 */
+	public List<String> getParsableContentTypes() {
+		return parsableContentTypes;
 	}
 
 }

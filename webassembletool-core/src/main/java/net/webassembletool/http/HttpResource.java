@@ -214,9 +214,9 @@ public class HttpResource extends Resource {
 	private void removeSessionId(InputStream inputStream, Output output)
 			throws IOException {
 		String jsessionid = RewriteUtils.getSessionId(target);
-		boolean textContentType = ResourceUtils
-				.isTextContentType(httpClientResponse
-						.getHeader(HttpHeaders.CONTENT_TYPE));
+		boolean textContentType = ResourceUtils.isTextContentType(
+				httpClientResponse.getHeader(HttpHeaders.CONTENT_TYPE), target
+						.getDriver().getConfiguration().getParsableContentTypes());
 		if (jsessionid == null || !textContentType) {
 			IOUtils.copy(inputStream, output.getOutputStream());
 		} else {

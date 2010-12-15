@@ -53,6 +53,14 @@
 					<td>No</td>
 					<td>20</td>
 				</tr>
+                <tr>
+                    <td>parsableContentTypes</td>
+                    <td>List of parsable content types.  By default, parsable content types are text/html and application/xhtml+xml.                    
+                    <code>parsableContentTypes=text/html,application/xhtml+xml,text/plain</code>                    
+                    </td>
+                    <td>No</td>
+                    <td>text/html,application/xhtml+xml</td>
+                </tr>
 				<tr>
 					<td>timeout</td>
 					<td>Timeout while establishing a connection with the server

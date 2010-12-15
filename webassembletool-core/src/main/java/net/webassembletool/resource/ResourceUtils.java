@@ -3,11 +3,13 @@ package net.webassembletool.resource;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.servlet.http.HttpSession;
 
+import net.webassembletool.DriverConfiguration;
 import net.webassembletool.ResourceContext;
 import net.webassembletool.http.RewriteUtils;
 
@@ -58,8 +60,8 @@ public class ResourceUtils {
 				queryString.append(originalQuerystring);
 			}
 			if (target.getParameters() != null) {
-				ResourceUtils.appendParameters(queryString, charset, target
-						.getParameters());
+				ResourceUtils.appendParameters(queryString, charset,
+						target.getParameters());
 			}
 			return queryString.toString();
 		} catch (UnsupportedEncodingException e) {
@@ -69,19 +71,27 @@ public class ResourceUtils {
 
 	/**
 	 * Check whether the given content-type value corresponds to "parsable"
-	 * text. "Parsable" text is actually html/xhtml
+	 * text. Content types parsable are
+	 * {@link DriverConfiguration#getParsableContentTypes()}
 	 * 
 	 * @param contentType
 	 *            the value of http header Content-Type
 	 * @return true if this represents text or false if not
 	 */
-	public static boolean isTextContentType(String contentType) {
-		if (contentType == null) {
-			return false;
+	public static boolean isTextContentType(String contentType,
+			List<String> textContentTypes) {
+		boolean isText = false;
+
+		if (contentType != null) {
+			String lowerContentType = contentType.toLowerCase();
+			for (String textContentType : textContentTypes) {
+				if (lowerContentType.startsWith(textContentType)) {
+					isText = true;
+					break;
+				}
+			}
 		}
-		String lowerContentType = contentType.toLowerCase();
-		return (lowerContentType.startsWith("text/html") || lowerContentType
-				.startsWith("application/xhtml+xml"));
+		return isText;
 	}
 
 	private static void appendParameters(StringBuilder buf, String charset,

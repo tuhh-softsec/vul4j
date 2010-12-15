@@ -451,7 +451,8 @@ public class Driver {
 			renderResource(resourceContext, new ResponseOutput(response));
 		} else {
 			// Directly stream out non text data
-			TextOnlyStringOutput textOutput = new TextOnlyStringOutput(response);
+			TextOnlyStringOutput textOutput = new TextOnlyStringOutput(
+					response, this.config.getParsableContentTypes());
 			renderResource(resourceContext, textOutput);
 			// If data was binary, no text buffer is available and no rendering
 			// is needed.

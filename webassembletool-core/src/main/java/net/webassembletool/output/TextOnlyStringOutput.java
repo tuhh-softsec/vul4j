@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
@@ -32,9 +33,12 @@ public class TextOnlyStringOutput extends Output {
 	private ByteArrayOutputStream byteArrayOutputStream;
 	private OutputStream outputStream;
 	private boolean text = false;
+	private final List<String> contentTypes;
 
-	public TextOnlyStringOutput(HttpServletResponse response) {
+	public TextOnlyStringOutput(HttpServletResponse response,
+			List<String> contentTypes) {
 		this.response = response;
+		this.contentTypes = contentTypes;
 	}
 
 	/**
@@ -55,7 +59,8 @@ public class TextOnlyStringOutput extends Output {
 	@Override
 	public void open() {
 		response.setStatus(getStatusCode());
-		if (ResourceUtils.isTextContentType(getHeader("Content-Type"))) {
+		if (ResourceUtils.isTextContentType(getHeader("Content-Type"),
+				this.contentTypes)) {
 			text = true;
 		}
 		copyHeaders();
