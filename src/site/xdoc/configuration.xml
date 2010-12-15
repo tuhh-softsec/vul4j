@@ -55,7 +55,8 @@
 				</tr>
                 <tr>
                     <td>parsableContentTypes</td>
-                    <td>List of parsable content types.  By default, parsable content types are text/html and application/xhtml+xml.                    
+                    <td>List of parsable content types.  By default, parsable content types are text/html and application/xhtml+xml.  
+                    Use this syntax to set content types :                   
                     <code>parsableContentTypes=text/html,application/xhtml+xml,text/plain</code>                    
                     </td>
                     <td>No</td>
