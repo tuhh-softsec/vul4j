@@ -8,7 +8,7 @@ m-supattributetype: ads-compositeElement
 objectclass: top
 objectclass: metaTop
 objectclass: metaAttributeType
-m-syntax: 1.3.6.1.4.1.1466.115.121.1.12
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.44
 m-name: ads-transports
 creatorsname: uid=admin,ou=system
 m-equality: caseExactMatch
