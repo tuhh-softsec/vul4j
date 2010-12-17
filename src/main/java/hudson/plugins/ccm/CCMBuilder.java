@@ -1,24 +1,25 @@
-/**
- *	 __                                        
- *	/\ \      __                               
- *	\ \ \/'\ /\_\    ___     ___   __  __  __  
- *	 \ \ , < \/\ \ /' _ `\  / __`\/\ \/\ \/\ \ 
- *	  \ \ \\`\\ \ \/\ \/\ \/\ \L\ \ \ \_/ \_/ \
- *	   \ \_\ \_\ \_\ \_\ \_\ \____/\ \___x___/'
- *	    \/_/\/_/\/_/\/_/\/_/\/___/  \/__//__/  
- *                                          
- * Copyright (c) 1999-present Kinow
- * Casa Verde - São Paulo - SP. Brazil.
- * All rights reserved.
- *
- * This software is the confidential and proprietary information of
- * Kinow ("Confidential Information").  You shall not
- * disclose such Confidential Information and shall use it only in
- * accordance with the terms of the license agreement you entered into
- * with Kinow.                                      
+/* 
+ * The MIT License
  * 
- * @author Bruno P. Kinoshita - http://www.kinoshita.eti.br
- * @since 7 april, 2010 
+ * Copyright (c) 2010 Bruno P. Kinoshita <http://www.kinoshita.eti.br>
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
 package hudson.plugins.ccm;
 
@@ -33,10 +34,13 @@ import hudson.model.AbstractBuild;
 import hudson.plugins.ccm.config.CCMConfigCallable;
 import hudson.plugins.ccm.config.CCMResultCallable;
 import hudson.plugins.ccm.model.CCM;
+import hudson.plugins.ccm.model.CCMParser;
+import hudson.plugins.ccm.model.CCMReport;
 import hudson.tasks.Builder;
 import hudson.util.ArgumentListBuilder;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.Serializable;
 import java.util.Map;
 
@@ -115,6 +119,11 @@ implements Serializable
      * Default number of metrics.
      */
     public static final Integer DEFAULT_NUMBER_OF_METRICS = 30;
+	
+    /**
+     * Process success exit code.
+     */
+    protected static final int EXIT_SUCCESS = 0;
     
     @DataBoundConstructor
     public CCMBuilder(
@@ -210,6 +219,17 @@ implements Serializable
     	return foundInstallation;
     }
     
+	
+	/**
+	 * CCM doesn't need to continue if the build's status is ABORTED or FAILURE.
+	 * 
+	 * @param result
+	 * @return true if build status is not ABORTED or FAILURE.
+	 */
+	protected boolean canContinue(final Result result) {
+        return result != Result.ABORTED && result != Result.FAILURE;
+    }
+
 	/**
 	 * <p>Called when the job is executed.</p>
 	 * 
@@ -291,9 +311,17 @@ implements Serializable
         try 
         {
             Map<String,String> env = build.getEnvironment(listener);
-            int r = launcher.launch().cmds(args).envs(env).stdout(listener).pwd(build.getModuleRoot()).join();
+            int exitCode = launcher.launch().cmds(args).envs(env).stdout(listener).pwd(build.getModuleRoot()).join();
             
-            return r==0;
+            // If the returned ccm status is equals to 0, call the publishing results method
+            Boolean ccmExecuteSuccess = exitCode == EXIT_SUCCESS;
+            
+            if( ccmExecuteSuccess )
+            {
+            	this.publishResults(build, listener, workspace);
+            }
+            
+            return ccmExecuteSuccess;
         }
         catch (Exception e) 
         {
@@ -301,9 +329,45 @@ implements Serializable
             build.setResult(Result.FAILURE);
             return false;
         }
-		
 	}
 	
+	/**
+	 * Publish of CCM results.
+	 * @param build
+	 * @param listener
+	 * @param workspace
+	 * @throws InterruptedException
+	 * @throws IOException
+	 */
+	protected void publishResults(AbstractBuild<?, ?> build,
+					   		      BuildListener listener,
+					   		      FilePath workspace) 
+	throws InterruptedException, IOException 
+	{
+		listener.getLogger().println("Publishing CCM results");
+		
+		PrintStream logger = listener.getLogger();
+		
+		CCMParser parser = new CCMParser(logger);
+		CCMReport report = null;
+		
+		logger.println("Generating report");
+		
+		try
+		{
+            report = workspace.act(parser);
+            CCMResult result = new CCMResult(report, build);
+            CCMBuildAction buildAction = new CCMBuildAction(build, result);
+            build.addAction( buildAction );
+        }
+		catch(IOException ioe)
+		{
+            ioe.printStackTrace(logger);
+        }
+		catch(InterruptedException ie)
+		{
+            ie.printStackTrace(logger);
+        }
+	}
 	
-    
 }

@@ -3,7 +3,7 @@
 	    <div align="right">
           <p/>
 		  <div class="test-trend-caption">
-		    CCM Trend
+		    ${%CCMTrend}
 		  </div>
 		  <div>
 		    <img src="${from.urlName}/trend" lazymap="${from.urlName}/trendMap"/>

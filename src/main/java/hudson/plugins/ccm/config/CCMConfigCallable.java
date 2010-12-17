@@ -1,24 +1,25 @@
-/**
- *	 __                                        
- *	/\ \      __                               
- *	\ \ \/'\ /\_\    ___     ___   __  __  __  
- *	 \ \ , < \/\ \ /' _ `\  / __`\/\ \/\ \/\ \ 
- *	  \ \ \\`\\ \ \/\ \/\ \/\ \L\ \ \ \_/ \_/ \
- *	   \ \_\ \_\ \_\ \_\ \_\ \____/\ \___x___/'
- *	    \/_/\/_/\/_/\/_/\/_/\/___/  \/__//__/  
- *                                          
- * Copyright (c) 1999-present Kinow
- * Casa Verde - São Paulo - SP. Brazil.
- * All rights reserved.
- *
- * This software is the confidential and proprietary information of
- * Kinow ("Confidential Information"). You shall not
- * disclose such Confidential Information and shall use it only in
- * accordance with the terms of the license agreement you entered into
- * with Kinow.                                      
+/* 
+ * The MIT License
  * 
- * @author Bruno P. Kinoshita - http://www.kinoshita.eti.br
- * @since 21/09/2010
+ * Copyright (c) 2010 Bruno P. Kinoshita <http://www.kinoshita.eti.br>
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
 package hudson.plugins.ccm.config;
 
@@ -36,7 +37,7 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * @author Bruno P. Kinoshita - http://www.kinoshita.eti.br
- * @since 21/09/2010
+ * @since 1.0
  */
 public class CCMConfigCallable 
 implements FileCallable<String>
@@ -51,6 +52,15 @@ implements FileCallable<String>
 	
 	private final BuildListener listener;
 
+	/**
+	 * @param srcFolders
+	 * @param excludeFiles
+	 * @param excludeFolders
+	 * @param excludeFunctions
+	 * @param isRecursive
+	 * @param numMetrics
+	 * @param listener
+	 */
 	public CCMConfigCallable(
 		String srcFolders, 
 		String excludeFiles, 
@@ -83,12 +93,11 @@ implements FileCallable<String>
 	{
     	File ccmConfigFile = new File( workspace, CCMBuilder.CCM_CONFIG_FILE );
 		listener.getLogger().println("Creating CCM config file " + ccmConfigFile.getAbsolutePath());
-		//TBD: improve this
+
 		ccmConfigFile.createNewFile();
 		
 		StringBuffer buffer = new StringBuffer();
 		
-		// TBD: eck! correct this. later...
 		buffer.append("<ccm>\n");
 		buffer.append("<exclude>\n");
 		
@@ -104,7 +113,6 @@ implements FileCallable<String>
 		StringTokenizer st = new StringTokenizer(normalizedSourceFolders, " ");
 		while ( st.hasMoreTokens() )
 		{
-			//buffer.append("<folder>"+new File(workspace, st.nextToken()).getAbsolutePath()+"</folder>\n");
 			buffer.append("<folder>"+st.nextToken()+"</folder>\n");
 		}
 		buffer.append("</analyze>\n");
@@ -116,10 +124,17 @@ implements FileCallable<String>
 		listener.getLogger().println("Writing CCM configuration into file");
 		listener.getLogger().println(buffer.toString());
 		
-		FileWriter writer = new FileWriter(ccmConfigFile);
-		writer.append(buffer.toString());
-		writer.flush(); // TBD: do it better.
-		writer.close();
+		FileWriter writer = null;
+		try
+		{
+			writer = new FileWriter(ccmConfigFile);
+			writer.append(buffer.toString());
+			writer.flush(); 
+		}
+		finally 
+		{
+			writer.close();
+		}
 		
 		return ccmConfigFile.getAbsolutePath();
 	}

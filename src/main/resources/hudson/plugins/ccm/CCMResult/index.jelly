@@ -5,13 +5,11 @@
 		<st:include it="${it.owner}" page="sidepanel.jelly" />
 		<l:main-panel>
 
-			<h1>CCM Results</h1>
+			<h1>${%CCMResults}</h1>
 
-	        <!--st:include page="/tabview/main.jelly" /-->
-	        
-	        <p>Average Complexity per Method: <b>${it.report.averageComplexityPerMethod}</b></p>
-	        <p>Number of Methods: <b>${it.report.numberOfMethods}</b></p>
-	        <p>Total Complexity of Project: <b>${it.report.totalComplexity}</b></p>
+	        <p>${%AverageComplexity} <b>${it.report.averageComplexityPerMethod}</b></p>
+	        <p>${%NumberOfMethods} <b>${it.report.numberOfMethods}</b></p>
+	        <p>${%TotalComplexity} <b>${it.report.totalComplexity}</b></p>
 
 		</l:main-panel>
 	</l:layout>
