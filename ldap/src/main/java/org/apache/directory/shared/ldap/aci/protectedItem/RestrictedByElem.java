@@ -75,6 +75,73 @@ public class RestrictedByElem
      * {@inheritDoc}
      */
     @Override
+    public int hashCode()
+    {
+        int hash = 37;
+        hash = hash * 17 + attributeType.hashCode();
+        hash = hash * 17 + valuesIn.hashCode();
+        return hash;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals( Object o )
+    {
+        if (o == null)
+        {
+            return false;
+        }
+        
+        if ( this == o )
+        {
+            return true;
+        }
+        
+        if ( o instanceof RestrictedByElem )
+        {
+            RestrictedByElem that = ( RestrictedByElem ) o;
+            if ( this.attributeType == null )
+            {
+                if ( that.attributeType == null )
+                {
+                    if ( this.valuesIn == null )
+                    {
+                        return that.valuesIn == null;
+                    }
+                    else
+                    {
+                        return this.valuesIn.equals( that.valuesIn );
+                    }
+                }
+                return false;
+            }
+            else
+            {
+                if ( this.attributeType.equals( that.attributeType ))
+                {
+                    if ( this.valuesIn == null )
+                    {
+                        return that.valuesIn == null;
+                    }
+                    else
+                    {
+                        return this.valuesIn.equals( that.valuesIn );
+                    }
+                }
+                return false;
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public String toString()
     {
         return "{ type " + attributeType.getName() + ", valuesIn " + valuesIn.getName() + " }";

@@ -70,6 +70,55 @@ public class MaxValueCountElem
         return maxCount;
     }
 
+    
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode()
+    {
+        int hash = 37;
+        hash = hash * 17 + maxCount;
+        hash = hash * 17 + attributeType.hashCode();
+        return hash;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals( Object o )
+    {
+        if (o == null)
+        {
+            return false;
+        }
+        
+        if ( this == o )
+        {
+            return true;
+        }
+        
+        if ( o instanceof MaxValueCountElem )
+        {
+            MaxValueCountElem that = ( MaxValueCountElem ) o;
+            if ( this.maxCount == that.maxCount )
+            {
+                if ( this.attributeType == null )
+                {
+                    return that.attributeType == null;
+                }
+                else
+                {
+                    return this.attributeType.equals( that.attributeType );
+                }
+            }
+        }
+        return false;
+    }
+
 
     /**
      * {@inheritDoc}
