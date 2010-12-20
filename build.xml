@@ -15,8 +15,8 @@
     <property name="product.shortname" value="xmlsec"/>
 
     <property name="product.version.major" value="1"/>
-    <property name="product.version.minor" value="4"/>
-    <property name="product.version.level" value="5"/>
+    <property name="product.version.minor" value="5"/>
+    <property name="product.version.level" value="0"/>
     <property name='product.version.qualifier' value='-SNAPSHOT'/>
     <property name="product.version" 
 	  value="${product.version.major}.${product.version.minor}.${product.version.level}${product.version.qualifier}"/>
@@ -62,7 +62,7 @@
     <property name="lib.xalan.3"        value="${dir.libs}/xml-apis-1.3.03.jar" />
     <property name="lib.xerces.1"       value="${dir.libs}/xercesImpl-2.9.1.jar" />
     <property name="lib.jce"            value="${dir.libs}/${jce.provider.prefix}-${jce.provider.jar}" />
-    <property name="lib.junit"		value="${dir.libs}/junit-3.8.2.jar" />
+    <property name="lib.junit"		value="${dir.libs}/junit-4.8.1.jar" />
     <property name="lib.clover"		value="${dir.libs}/clover.jar" />
 
     <!-- Apache Santuario libraries (for bin distribution) -->
