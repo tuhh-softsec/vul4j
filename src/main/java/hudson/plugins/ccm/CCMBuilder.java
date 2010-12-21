@@ -26,7 +26,6 @@ package hudson.plugins.ccm;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
-import hudson.model.Build;
 import hudson.model.BuildListener;
 import hudson.model.Descriptor;
 import hudson.model.Result;
@@ -45,22 +44,16 @@ import java.io.Serializable;
 import java.util.Map;
 
 import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.StaplerRequest;
-
 
 /**
  * <p>
 * When the user configures the project and enables this builder,
-* {@link CCMBuilderDescriptor#newInstance(StaplerRequest)} is invoked
+* {@link CCMBuilderDescriptor} newInstance() is invoked
 * and a new {@link CcmBuilder} is created. The created
 * instance is persisted to the project configuration XML by using
 * XStream, so this allows you to use instance fields (like {@link #ccmName})
-* to remember the configuration.
-*
-* <p>
-* When a build is performed, the {@link #perform(Build, Launcher, BuildListener)} method
-* will be invoked. 
-* 
+* to remember the configuration.</p>
+*  
 * @author Bruno P. Kinoshita - http://www.kinoshita.eti.br
 * @since 1.0
 */

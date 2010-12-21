@@ -109,9 +109,18 @@ implements FilePath.FileCallable<CCMReport>
 		factory.setValidating(false);
 		try {
             factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-        } catch (ParserConfigurationException e) {
-        } catch (SAXNotRecognizedException e) {
-        } catch (SAXNotSupportedException e) {
+        } 
+		catch (ParserConfigurationException e) 
+        {
+        	e.printStackTrace( logger );
+        } 
+		catch (SAXNotRecognizedException e) 
+		{
+			e.printStackTrace( logger );
+        } 
+		catch (SAXNotSupportedException e) 
+		{
+			e.printStackTrace( logger );
         }
         
         try {

@@ -37,6 +37,26 @@ public class CCMXmlHandler
 extends DefaultHandler 
 {
 
+	/**
+	 * 
+	 */
+	private static final String METRIC = "metric";
+	/**
+	 * 
+	 */
+	private static final String FILE = "file";
+	/**
+	 * 
+	 */
+	private static final String CLASSIFICATION = "classification";
+	/**
+	 * 
+	 */
+	private static final String UNIT = "unit";
+	/**
+	 * 
+	 */
+	private static final String COMPLEXITY = "complexity";
 	private CCM ccm;
 	private Metric tempMetric;
 	private String tempVal;
@@ -52,16 +72,6 @@ extends DefaultHandler
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.xml.sax.helpers.DefaultHandler#endDocument()
-	 */
-	@Override
-	public void endDocument() 
-	throws SAXException 
-	{
-		super.endDocument();
-	}
-	
-	/* (non-Javadoc)
 	 * @see org.xml.sax.helpers.DefaultHandler#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
 	 */
 	@Override
@@ -72,7 +82,7 @@ extends DefaultHandler
 			Attributes attributes) 
 	throws SAXException 
 	{
-		if ( "metric".equals(qName) )
+		if ( METRIC.equals(qName) )
 		{
 			tempMetric = new Metric();
 		} 
@@ -98,19 +108,19 @@ extends DefaultHandler
 	public void endElement(String uri, String localName, String qName)
 	throws SAXException 
 	{
-		if ( "complexity".equals(qName) )
+		if ( COMPLEXITY.equals(qName) )
 		{
 			tempMetric.setComplexity( Integer.parseInt(tempVal) );
-		} else if ("unit".equals(qName))
+		} else if ( UNIT.equals(qName) )
 		{
 			tempMetric.setUnit(tempVal);
-		} else if ("classification".equals(qName))
+		} else if ( CLASSIFICATION.equals(qName) )
 		{
 			tempMetric.setClassification(tempVal);
-		} else if ("file".equals(qName))
+		} else if ( FILE.equals(qName) )
 		{
 			tempMetric.setFile(tempVal);
-		} else if ("metric".equals(qName))
+		} else if ( METRIC.equals(qName) )
 		{
 			this.ccm.getMetrics().add(tempMetric);
 		}
