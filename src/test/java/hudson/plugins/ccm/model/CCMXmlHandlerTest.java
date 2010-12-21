@@ -1,4 +1,4 @@
-package br.eti.kinoshita.ccm.model;
+package hudson.plugins.ccm.model;
 
 import hudson.plugins.ccm.model.CCMXmlHandler;
 import junit.framework.TestCase;

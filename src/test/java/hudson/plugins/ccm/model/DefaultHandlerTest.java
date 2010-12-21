@@ -1,20 +1,20 @@
-package br.eti.kinoshita.ccm.model;
+package hudson.plugins.ccm.model;
 
 import hudson.plugins.ccm.model.Metric;
 import junit.framework.TestCase;
 
 /**
- * Tests Metric.
+ * Tests DefaultHandler.
  * 
  * @author César Fernandes de Almeida
  * @since 21/10/2010
  */
-public class MetricTest 
+public class DefaultHandlerTest 
 extends TestCase 
 {
 	Metric metric;
 	
-	public void testMetric()
+	public void testDefaultHandler()
 	{
 		metric = new Metric();
 		metric.setFile("Test File 1");

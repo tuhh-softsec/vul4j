@@ -1,4 +1,4 @@
-package br.eti.kinoshita.ccm.model;
+package hudson.plugins.ccm.model;
 
 import hudson.plugins.ccm.CCMBuildAction;
 import hudson.plugins.ccm.CCMResult;
@@ -34,7 +34,7 @@ extends TestCase
 		
 		try 
 		{
-			String sFile = CCMParserTest.class.getResource("ccm.result.xml").getFile();
+			String sFile = this.getClass().getResource("ccm.result.xml").getFile();
 			report = parser.invoke(new File(sFile).getParentFile(), null);
 		} catch (IOException e) {
 			e.printStackTrace();

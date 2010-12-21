@@ -1,6 +1,6 @@
-package br.eti.kinoshita.ccm.model;
+package hudson.plugins.ccm.model;
 
-import hudson.plugins.ccm.model.CCMReport;
+import hudson.plugins.ccm.model.CCM;
 import hudson.plugins.ccm.model.Metric;
 
 import java.util.ArrayList;
@@ -9,20 +9,20 @@ import java.util.List;
 import junit.framework.TestCase;
 
 /**
- * Tests CCM Report.
+ * Tests CCM.
  * 
  * @author César Fernandes de Almeida
  * @since 21/10/2010
  */
-public class CCMReportTest 
+public class CCMTest 
 extends TestCase 
 {
-	CCMReport ccmReport;
+	CCM ccm;
 	Metric metric;
 	
-	public void testCCMReport()
+	public void testCCM()
 	{
-		ccmReport = new CCMReport();
+		ccm = new CCM();
 		
 		List<Metric> metricList = new ArrayList<Metric>();
 		
@@ -40,18 +40,10 @@ extends TestCase
 		metric.setComplexity(3);
 		metricList.add(metric);
 		
-		ccmReport.setMetrics(metricList);
+		ccm.setMetrics(metricList);
 		
-		assertNotNull( ccmReport.getMetrics() );
-		
-		assertNull(ccmReport.getNumberOfMethods());
-		
-		// Test Metrics Update
-		ccmReport.updateNumbers();
-		
-		assertEquals(ccmReport.getNumberOfMethods(), 2);
-		assertNotNull(ccmReport.getAverageComplexityPerMethod());
-		assertNotNull(ccmReport.getTotalComplexity());
+		// Test getter and setter
+		assertNotNull( ccm.getMetrics() );
 		
 	}
 }
