@@ -16,10 +16,6 @@
   <version>2.2-SNAPSHOT</version>
   <packaging>hpi</packaging>
   
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
-  
   <scm>
 	<connection>scm:svn:https://guest@svn.java.net/svn/hudson~svn/trunk/hudson/plugins/ccm</connection>
     <developerConnection>scm:svn:https://svn.java.net/svn/hudson~svn/trunk/hudson/plugins/ccm</developerConnection>
@@ -36,13 +32,6 @@
   		</plugin>
   	</plugins>
   </build>
-  
-  <distributionManagement>
-  	<repository>
-      <id>java.net-m2-repository</id>
-      <url>http://maven.hudson-labs.org/content/repositories/releases/</url>
-    </repository>
-  </distributionManagement>
 
   <!-- get every artifact through maven.glassfish.org, which proxies all the artifacts that we need -->
   <repositories>
