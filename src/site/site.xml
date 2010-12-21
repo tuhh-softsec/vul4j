@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="CCM Hudson Plug-in">
+  <bannerLeft>
+    <name>ccm</name>
+    <src>images/ccm-48.png</src>
+    <href>http://www.kinoshita.eti.br/projects/ccm/</href>
+  </bannerLeft>
+  <body>
+  
+  	<breadcrumbs>
+  		<item name="CCM .NET Cyclomatic Complexity Analyser (by Jonas Blunck)" href="http://www.blunck.se/ccm.html" />
+  	</breadcrumbs>
+  
+    <links>
+      <item name="Bruno P. Kinoshita" href="http://www.kinoshita.eti.br" />
+      <item name="Jonas Blunck" href="http://www.blunck.se" />
+    </links>
+
+    <menu name="Reference">
+      <item name="Plug-in Wiki page hosted in Hudson project website" href="wiki.html"/>
+    </menu>
+
+    <menu ref="reports" />
+
+  </body>
+  
+  <skin>
+    <groupId>org.apache.maven.skins</groupId>
+    <artifactId>maven-stylus-skin</artifactId>
+    <version>1.2</version>
+  </skin>
+  
+</project>
