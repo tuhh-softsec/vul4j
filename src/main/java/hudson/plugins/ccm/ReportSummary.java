@@ -23,6 +23,8 @@
  */
 package hudson.plugins.ccm;
 
+import java.text.DecimalFormat;
+
 import hudson.plugins.ccm.model.CCMReport;
 import hudson.plugins.ccm.model.Metric;
 
@@ -39,7 +41,7 @@ public class ReportSummary {
 		StringBuilder builder = new StringBuilder();
 		
 		builder.append("<a href=\"" + CCMBuildAction.URL_NAME + "\">");
-        builder.append(report.getAverageComplexityPerMethod());
+        builder.append(report.getFormattedAverageComplexityPerMethod());
         if(previous != null){
             printDifference(
             		report.getAverageComplexityPerMethod(),
@@ -106,7 +108,7 @@ public class ReportSummary {
         if(difference >= 0.0){
             builder.append('+');
         }
-        builder.append(difference);
+        builder.append(new DecimalFormat("###.##").format( difference ));
         builder.append(")");
     }
 
