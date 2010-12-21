@@ -1,0 +1,134 @@
+<ccm>
+  <metric>
+    <complexity>3</complexity>
+    <unit>AboutBox1::Dispose</unit>
+    <classification>simple, without much risk</classification>
+    <file>\AboutBox1.Designer.cs</file>
+  </metric>
+  <metric>
+    <complexity>3</complexity>
+    <unit>AboutBox1::AssemblyTitle::get</unit>
+    <classification>simple, without much risk</classification>
+    <file>\AboutBox1.cs</file>
+  </metric>
+  <metric>
+    <complexity>3</complexity>
+    <unit>Form1::Dispose</unit>
+    <classification>simple, without much risk</classification>
+    <file>\Form1.Designer.cs</file>
+  </metric>
+  <metric>
+    <complexity>2</complexity>
+    <unit>AboutBox1::AssemblyDescription::get</unit>
+    <classification>simple, without much risk</classification>
+    <file>\AboutBox1.cs</file>
+  </metric>
+  <metric>
+    <complexity>2</complexity>
+    <unit>AboutBox1::AssemblyProduct::get</unit>
+    <classification>simple, without much risk</classification>
+    <file>\AboutBox1.cs</file>
+  </metric>
+  <metric>
+    <complexity>2</complexity>
+    <unit>AboutBox1::AssemblyCopyright::get</unit>
+    <classification>simple, without much risk</classification>
+    <file>\AboutBox1.cs</file>
+  </metric>
+  <metric>
+    <complexity>2</complexity>
+    <unit>AboutBox1::AssemblyCompany::get</unit>
+    <classification>simple, without much risk</classification>
+    <file>\AboutBox1.cs</file>
+  </metric>
+  <metric>
+    <complexity>2</complexity>
+    <unit>Resources::ResourceManager::get</unit>
+    <classification>simple, without much risk</classification>
+    <file>\Properties\Resources.Designer.cs</file>
+  </metric>
+  <metric>
+    <complexity>1</complexity>
+    <unit>AboutBox1::AboutBox1</unit>
+    <classification>simple, without much risk</classification>
+    <file>\AboutBox1.cs</file>
+  </metric>
+  <metric>
+    <complexity>1</complexity>
+    <unit>AboutBox1::AssemblyVersion::get</unit>
+    <classification>simple, without much risk</classification>
+    <file>\AboutBox1.cs</file>
+  </metric>
+  <metric>
+    <complexity>1</complexity>
+    <unit>AboutBox1::InitializeComponent</unit>
+    <classification>simple, without much risk</classification>
+    <file>\AboutBox1.Designer.cs</file>
+  </metric>
+  <metric>
+    <complexity>1</complexity>
+    <unit>Form1::Form1</unit>
+    <classification>simple, without much risk</classification>
+    <file>\Form1.cs</file>
+  </metric>
+  <metric>
+    <complexity>1</complexity>
+    <unit>Form1::button2_Click</unit>
+    <classification>simple, without much risk</classification>
+    <file>\Form1.cs</file>
+  </metric>
+  <metric>
+    <complexity>1</complexity>
+    <unit>Form1::button3_Click</unit>
+    <classification>simple, without much risk</classification>
+    <file>\Form1.cs</file>
+  </metric>
+  <metric>
+    <complexity>1</complexity>
+    <unit>Form1::decodeBtn_Click</unit>
+    <classification>simple, without much risk</classification>
+    <file>\Form1.cs</file>
+  </metric>
+  <metric>
+    <complexity>1</complexity>
+    <unit>AboutBox1::okButton_Click</unit>
+    <classification>simple, without much risk</classification>
+    <file>\AboutBox1.cs</file>
+  </metric>
+  <metric>
+    <complexity>1</complexity>
+    <unit>Program::Main</unit>
+    <classification>simple, without much risk</classification>
+    <file>\Program.cs</file>
+  </metric>
+  <metric>
+    <complexity>1</complexity>
+    <unit>Form1::InitializeComponent</unit>
+    <classification>simple, without much risk</classification>
+    <file>\Form1.Designer.cs</file>
+  </metric>
+  <metric>
+    <complexity>1</complexity>
+    <unit>Resources::Resources</unit>
+    <classification>simple, without much risk</classification>
+    <file>\Properties\Resources.Designer.cs</file>
+  </metric>
+  <metric>
+    <complexity>1</complexity>
+    <unit>Resources::Culture::get</unit>
+    <classification>simple, without much risk</classification>
+    <file>\Properties\Resources.Designer.cs</file>
+  </metric>
+  <metric>
+    <complexity>1</complexity>
+    <unit>Resources::Culture::set</unit>
+    <classification>simple, without much risk</classification>
+    <file>\Properties\Resources.Designer.cs</file>
+  </metric>
+  <metric>
+    <complexity>1</complexity>
+    <unit>Settings::Default::get</unit>
+    <classification>simple, without much risk</classification>
+    <file>\Properties\Settings.Designer.cs</file>
+  </metric>
+</ccm>
