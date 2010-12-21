@@ -280,8 +280,6 @@ implements Serializable
         
     	// create project ccm config file and result file
         
-    	args.addKeyValuePairs("-P:",build.getBuildVariables());
-    	
         CCMConfigCallable ccmConfigGenerator = new CCMConfigCallable( srcFolders, excludeFiles, excludeFolders, excludeFunctions, recursive, numMetrics, listener );
         String ccmConfigFile = workspace.act( ccmConfigGenerator );
     	args.add( ccmConfigFile );
