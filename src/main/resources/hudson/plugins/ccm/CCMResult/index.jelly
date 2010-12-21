@@ -7,7 +7,7 @@
 
 			<h1>${%CCMResults}</h1>
 
-	        <p>${%AverageComplexity} <b>${it.report.averageComplexityPerMethod}</b></p>
+	        <p>${%AverageComplexity} <b>${it.report.formattedAverageComplexityPerMethod}</b></p>
 	        <p>${%NumberOfMethods} <b>${it.report.numberOfMethods}</b></p>
 	        <p>${%TotalComplexity} <b>${it.report.totalComplexity}</b></p>
 

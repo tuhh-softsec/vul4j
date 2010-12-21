@@ -102,9 +102,9 @@ public class ChartUtil
 		
 		CCMBuildAction tempAction = lastAction;
 		final XYSeriesCollection dataset = new XYSeriesCollection();
-		final XYSeries avgCCseries = new XYSeries( "Average Complexity" );
-		final XYSeries totalCCseries = new XYSeries( "Total Complexity" );
-		final XYSeries numberOfMethodsSeries = new XYSeries( "Number of Methods" );
+		final XYSeries avgCCseries = new XYSeries( Messages.CCM_ChartUtil_AverageComplexity() );
+		final XYSeries totalCCseries = new XYSeries( Messages.CCM_ChartUtil_TotalComplexity() );
+		final XYSeries numberOfMethodsSeries = new XYSeries( Messages.CCM_ChartUtil_NumberOfMethods() );
 		dataset.addSeries(avgCCseries);
 		dataset.addSeries(totalCCseries);
 		dataset.addSeries(numberOfMethodsSeries);

@@ -46,15 +46,16 @@ public class ReportSummary {
             		previous.getAverageComplexityPerMethod(), 
             		builder);
         }
-        builder.append(" average complexity per method.</a> in ");
-        builder.append(report.getNumberOfMethods());
+        builder.append( " " + Messages.CCM_Report_Summary_AverageComplexity() + "</a> ");
+        builder.append( Messages.CCM_Report_Summary_In() + " ");
+        builder.append( report.getNumberOfMethods() );
         if(previous != null){
             printDifference(
             		report.getNumberOfMethods(), 
             		previous.getNumberOfMethods(), 
             		builder);
         }
-        builder.append(" methods. Project's total Cyclomatic Complexity: ");
+        builder.append(" " + Messages.CCM_Report_Summary_TotalCC() + " ");
         builder.append(report.getTotalComplexity());
         if(previous != null){
             printDifference(
@@ -73,7 +74,7 @@ public class ReportSummary {
 	{
 		StringBuilder builder = new StringBuilder();
 
-		builder.append("Top 15 CC methods.");
+		builder.append( Messages.CCM_Report_Summary_TopFifteen() );
 		builder.append("<table border=\"1\">\n");
 		int i = 0 ;
         for(Metric metric: report.getMetrics()){

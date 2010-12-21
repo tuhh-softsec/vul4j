@@ -26,6 +26,8 @@ package hudson.plugins.ccm;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
+import hudson.model.AbstractProject;
+import hudson.model.Action;
 import hudson.model.BuildListener;
 import hudson.model.Descriptor;
 import hudson.model.Result;
@@ -223,6 +225,15 @@ implements Serializable
         return result != Result.ABORTED && result != Result.FAILURE;
     }
 
+	/* (non-Javadoc)
+	 * @see hudson.tasks.BuildStepCompatibilityLayer#getProjectAction(hudson.model.AbstractProject)
+	 */
+	@Override
+	public Action getProjectAction( AbstractProject<?, ?> project )
+	{
+		return new CCMProjectAction( project );
+	}
+	
 	/**
 	 * <p>Called when the job is executed.</p>
 	 * 
@@ -251,7 +262,7 @@ implements Serializable
     	// ------------------------- 
     	if ( installation == null )
     	{
-    		listener.error("Missing CCM installation");
+    		listener.error( Messages.CCM_Builder_MissingCCMInstallation() );
     		build.setResult(Result.FAILURE);
     		return false;
     	} 
@@ -262,7 +273,7 @@ implements Serializable
     	
     	// Path to CCM.exe
     	final String pathToCCM = installation.getExecutable(launcher);
-    	listener.getLogger().println("Path To CCM.exe: " + pathToCCM);
+    	listener.getLogger().println( Messages.CCM_Builder_PathToCCM( pathToCCM ) );
     	args.add("\"");
     	args.add(pathToCCM);		
     	
@@ -297,7 +308,7 @@ implements Serializable
     	// Executing CCM    
     	// ------------------------- 
         
-        listener.getLogger().println("Executing CCM command: "+args.toStringWithQuote());
+        listener.getLogger().println( Messages.CCM_Builder_ExecutingCCMCommand(args.toStringWithQuote()) );
         
         try 
         {
@@ -316,7 +327,7 @@ implements Serializable
         }
         catch (Exception e) 
         {
-            e.printStackTrace( listener.error("CCM command execution failed") );
+            e.printStackTrace( listener.error( Messages.CCM_Builder_CCMCommandExecutionFailed()) );
             build.setResult(Result.FAILURE);
             return false;
         }
@@ -335,14 +346,14 @@ implements Serializable
 					   		      FilePath workspace) 
 	throws InterruptedException, IOException 
 	{
-		listener.getLogger().println("Publishing CCM results");
+		listener.getLogger().println( Messages.CCM_Publisher_PerformingPublisher() );
 		
 		PrintStream logger = listener.getLogger();
 		
 		CCMParser parser = new CCMParser(logger);
 		CCMReport report = null;
 		
-		logger.println("Generating report");
+		logger.println( Messages.CCM_Publisher_GeneratingReport() );
 		
 		try
 		{

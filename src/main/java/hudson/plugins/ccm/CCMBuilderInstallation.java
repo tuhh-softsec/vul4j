@@ -96,7 +96,7 @@ implements Serializable
 						return exe.getPath();
 					}
 					
-					throw new IOException(exe.getPath() + " doesn't exist");
+					throw new IOException( Messages.CCM_Builder_Installation_NoExe( exe ) );
 				}
 			}
 		);

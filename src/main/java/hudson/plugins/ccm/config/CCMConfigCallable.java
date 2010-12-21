@@ -25,6 +25,7 @@ package hudson.plugins.ccm.config;
 
 import hudson.FilePath.FileCallable;
 import hudson.model.BuildListener;
+import hudson.plugins.ccm.Messages;
 import hudson.plugins.ccm.CCMBuilder;
 import hudson.remoting.VirtualChannel;
 
@@ -92,7 +93,7 @@ implements FileCallable<String>
 	throws IOException
 	{
     	File ccmConfigFile = new File( workspace, CCMBuilder.CCM_CONFIG_FILE );
-		listener.getLogger().println("Creating CCM config file " + ccmConfigFile.getAbsolutePath());
+		listener.getLogger().println( Messages.CCM_Config_CreatingCCMConfigFile( ccmConfigFile ) );
 
 		ccmConfigFile.createNewFile();
 		
@@ -121,7 +122,7 @@ implements FileCallable<String>
 		buffer.append("<numMetrics>"+numMetrics+"</numMetrics>\n");
 		buffer.append("</ccm>\n");
 		
-		listener.getLogger().println("Writing CCM configuration into file");
+		listener.getLogger().println( Messages.CCM_Config_WritingCCMConfigurationToFile( ccmConfigFile ) );
 		listener.getLogger().println(buffer.toString());
 		
 		FileWriter writer = null;

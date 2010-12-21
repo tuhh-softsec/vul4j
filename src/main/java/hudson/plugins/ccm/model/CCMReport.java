@@ -24,6 +24,7 @@
 package hudson.plugins.ccm.model;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,6 +90,11 @@ implements Serializable {
 	public float getAverageComplexityPerMethod() 
 	{
 		return this.averageComplexityPerMethod;
+	}
+	
+	public String getFormattedAverageComplexityPerMethod()
+	{
+		return new DecimalFormat("###.##").format( averageComplexityPerMethod );
 	}
 	
 	/**

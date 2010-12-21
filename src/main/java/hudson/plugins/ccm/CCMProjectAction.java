@@ -65,7 +65,7 @@ implements ProminentProjectAction, Serializable{
 	 * @see hudson.model.Action#getDisplayName()
 	 */
 	public String getDisplayName() {
-		return "CCM Results";
+		return Messages.CCM_Project_Action_CCMResults();
 	}
 
 	/* (non-Javadoc)
