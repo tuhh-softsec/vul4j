@@ -13,7 +13,7 @@
 
   <artifactId>ccm</artifactId>
   <name>Hudson CCM Plugin</name>
-  <version>2.5-SNAPSHOT</version>
+  <version>2.4-SNAPSHOT</version>
   <packaging>hpi</packaging>
   
   <scm>
