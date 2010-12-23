@@ -250,11 +250,12 @@
     </profiles>
 
     <properties>
-        <xml.apis.version>1.3.03</xml.apis.version>
-        <commons.logging.version>1.1</commons.logging.version>
+        <xml.apis.version>1.3.04</xml.apis.version>
+        <commons.logging.version>1.1.1</commons.logging.version>
         <xalan.version>2.7.1</xalan.version>
         <xerces.version>2.9.1</xerces.version>
-        <junit.version>4.8.1</junit.version>
+        <junit.version>4.8.2</junit.version>
+        <log4j.version>1.2.16</log4j.version>
     </properties>
     
     <dependencies>
@@ -268,6 +269,12 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${log4j.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

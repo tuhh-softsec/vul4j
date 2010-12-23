@@ -54,15 +54,14 @@
     <property name="dir.manifest"       value="${dir.build.bin}/META-INF"/>
 
     <!-- library properties -->
-    <property name="lib.logging"        value="${dir.libs}/commons-logging-1.1.jar" />
-    <property name="lib.logging.api"    value="${dir.libs}/commons-logging-api-1.1.jar" />
-    <property name="lib.log4j"          value="${dir.libs}/log4j-1.2.8.jar" />
+    <property name="lib.logging"        value="${dir.libs}/commons-logging-1.1.1.jar" />
+    <property name="lib.log4j"          value="${dir.libs}/log4j-1.2.16.jar" />
     <property name="lib.xalan.1"        value="${dir.libs}/xalan-2.7.1.jar" />
     <property name="lib.xalan.2"        value="${dir.libs}/serializer-2.7.1.jar" />
-    <property name="lib.xalan.3"        value="${dir.libs}/xml-apis-1.3.03.jar" />
+    <property name="lib.xalan.3"        value="${dir.libs}/xml-apis-1.3.04.jar" />
     <property name="lib.xerces.1"       value="${dir.libs}/xercesImpl-2.9.1.jar" />
     <property name="lib.jce"            value="${dir.libs}/${jce.provider.prefix}-${jce.provider.jar}" />
-    <property name="lib.junit"		value="${dir.libs}/junit-4.8.1.jar" />
+    <property name="lib.junit"		value="${dir.libs}/junit-4.8.2.jar" />
     <property name="lib.clover"		value="${dir.libs}/clover.jar" />
 
     <!-- Apache Santuario libraries (for bin distribution) -->
@@ -104,7 +103,6 @@
     </path >
     <path id="id.classpath.logging" >
         <pathelement location="${lib.logging}" />
-        <pathelement location="${lib.logging.api}" />
         <pathelement location="${lib.log4j}" />
     </path >
     <path id="id.classpath.common" >
@@ -351,7 +349,7 @@
         <copy file="${lib.xalan.1}" todir="${dir.build.libs2}"/>
         <copy file="${lib.xalan.2}" todir="${dir.build.libs2}"/>
         <copy file="${lib.xalan.3}" todir="${dir.build.libs2}"/>
-        <copy file="${lib.logging.api}" todir="${dir.build.libs2}"/>
+        <copy file="${lib.logging}" todir="${dir.build.libs2}"/>
         <copy file="${lib.junit}" todir="${dir.build.libs2}"/>
         <copy file="${jar.library}" todir="${dir.build.libs2}"/>
         <copy file="${jar.tests}" todir="${dir.build.libs2}"/>
@@ -395,7 +393,7 @@
         <copy file="${lib.xalan.1}" todir="${dir.build.libs2}"/>
         <copy file="${lib.xalan.2}" todir="${dir.build.libs2}"/>
         <copy file="${lib.xalan.3}" todir="${dir.build.libs2}"/>
-        <copy file="${lib.logging.api}" todir="${dir.build.libs2}"/>
+        <copy file="${lib.logging}" todir="${dir.build.libs2}"/>
         <copy file="${lib.junit}" todir="${dir.build.libs2}"/>
         <copy file="${jar.library}" todir="${dir.build.libs2}"/>
         <copy file="${jar.tests}" todir="${dir.build.libs2}"/>
@@ -670,8 +668,6 @@
 	<copy file="${lib.xalan.3}" 
 	      todir="${dir.build.bindist}/libs"/>
 	<copy file="${lib.logging}" 
-	      todir="${dir.build.bindist}/libs"/>
-	<copy file="${lib.logging.api}" 
 	      todir="${dir.build.bindist}/libs"/>
 	
 	<copy description="copy xmlsec JAR" 
