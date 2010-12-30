@@ -6,7 +6,7 @@ import junit.framework.TestCase;
 /**
  * Tests DefaultHandler.
  * 
- * @author César Fernandes de Almeida
+ * @author Cesar Fernandes de Almeida
  * @since 21/10/2010
  */
 public class DefaultHandlerTest 
