@@ -26,7 +26,7 @@ import junit.framework.TestSuite;
 
 public class UtfHelperTest extends TestCase {
 	public void testBug40156() {
-		String s="äöü";
+		String s="\u00e4\u00f6\u00fc";
 		byte a[]=UtfHelpper.getStringInUtf8(s);
 		try {
 			byte correct[]=s.getBytes("UTF8");

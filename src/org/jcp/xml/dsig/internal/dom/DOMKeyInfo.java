@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2009 The Apache Software Foundation.
+ * Copyright 2005-2010 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -105,7 +105,7 @@ public final class DOMKeyInfo extends DOMStructure implements KeyInfo {
             } else if (localName.equals("KeyName")) {
 	        content.add(new DOMKeyName(childElem));
             } else if (localName.equals("KeyValue")) {
-	        content.add(new DOMKeyValue(childElem));
+	        content.add(DOMKeyValue.unmarshal(childElem));
             } else if (localName.equals("RetrievalMethod")) {
 	        content.add
 		    (new DOMRetrievalMethod(childElem, context, provider));
@@ -195,10 +195,5 @@ public final class DOMKeyInfo extends DOMStructure implements KeyInfo {
 	    id.equals(oki.getId()));
 
 	return (keyInfoTypes.equals(oki.getContent()) && idsEqual);
-    }
-
-    public int hashCode() {
-	assert false : "hashCode not designed";
-	return 43;
     }
 }

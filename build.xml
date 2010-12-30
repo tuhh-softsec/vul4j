@@ -271,10 +271,11 @@
     <target name="build.src"
             depends="do.build.src,env.mk.dirs,do.check.bindist"
 			unless="is.bin.dist">
-        <javac target="1.4" source="1.4" srcdir="${dir.src}"
+        <javac target="1.5" source="1.5" srcdir="${dir.src}"
                destdir="${dir.build.bin}"
                debug="${build.compile.debug}"
                includeAntRuntime="false">
+            <compilerarg value="-XDignore.symbol.file" />
             <classpath refid="id.classpath" />
             <include name="**/org/apache/xml/security/**/*.java" />
             <include name="**/javax/xml/crypto/**/*.java" />
@@ -292,7 +293,7 @@
     <target name="build.test"
     		depends="build.src"
 		unless="is.bin.dist">
-    	<javac srcdir="${dir.src.test}"
+    	<javac target="1.5" source="1.5" srcdir="${dir.src.test}"
                destdir="${dir.build.test}"
                debug="${build.compile.debug}"
                includeAntRuntime="false">
@@ -311,7 +312,7 @@
     <target name="build.samples"
 		depends="build.src"
 		unless="is.bin.dist">
-	<javac srcdir="${dir.src.samples}"
+	<javac target="1.5" source="1.5" srcdir="${dir.src.samples}"
 		destdir="${dir.build.samples}"
 		debug="${build.compile.debug}"
         includeAntRuntime="false">
@@ -411,7 +412,7 @@
 	    <batchtest fork="yes" todir="${dir.build.junit.xml}">
 	        <fileset dir="${dir.src.test}">
 	            <include name="javax/xml/crypto/**/*Test.java"/>
-                <exclude name="javax/xml/crypto/test/dsig/InteropC14nTest.java"/>
+                    <exclude name="javax/xml/crypto/test/dsig/InteropC14nTest.java"/>
             </fileset>
             </batchtest>
         </junit>

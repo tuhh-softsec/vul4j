@@ -519,11 +519,6 @@ public final class DOMReference extends DOMStructure
             allTransforms.equals(oref.getTransforms()) && digestValuesEqual;
     }
 
-    public int hashCode() {
-	assert false : "hashCode not designed";
-	return 47;
-    }
-
     boolean isDigested() {
 	return digested;
     }

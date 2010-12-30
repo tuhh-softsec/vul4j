@@ -278,9 +278,4 @@ public final class DOMX509Data extends DOMStructure implements X509Data {
 
 	return true;
     }
-
-    public int hashCode() {
-	assert false : "hashCode not designed";
-	return 56;
-    }
 }

@@ -14,7 +14,6 @@
  *  limitations under the License.
  *
  */
-package javax.xml.crypto.dsig.samples;
 
 import javax.xml.crypto.*;
 import javax.xml.crypto.dsig.*;
@@ -136,6 +135,9 @@ public class Validate {
 		return true;
             } else if (algName.equalsIgnoreCase("RSA") &&
                        algURI.equalsIgnoreCase(SignatureMethod.RSA_SHA1)) {
+		return true;
+            } else if (algName.equalsIgnoreCase("EC") &&
+                       algURI.equalsIgnoreCase("http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256")) {
 		return true;
             } else {
 		return false;

@@ -247,9 +247,4 @@ public final class DOMRetrievalMethod extends DOMStructure
 	return (uri.equals(orm.getURI()) && 
 	    transforms.equals(orm.getTransforms()) && typesEqual);
     }
-
-    public int hashCode() {
-	assert false : "hashCode not designed";
-	return 48;
-    }
 }

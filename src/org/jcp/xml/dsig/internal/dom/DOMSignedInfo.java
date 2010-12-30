@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2009 The Apache Software Foundation.
+ * Copyright 2005-2010 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -220,8 +220,7 @@ public final class DOMSignedInfo extends DOMStructure implements SignedInfo {
 	dcm.marshal(siElem, dsPrefix, context); 
 
 	// create and append SignatureMethod element
-	((DOMSignatureMethod) signatureMethod).marshal
-	    (siElem, dsPrefix, context);
+	((DOMStructure) signatureMethod).marshal(siElem, dsPrefix, context);
 
 	// create and append Reference elements
 	for (int i = 0, size = references.size(); i < size; i++) {
@@ -252,10 +251,5 @@ public final class DOMSignedInfo extends DOMStructure implements SignedInfo {
 	return (canonicalizationMethod.equals(osi.getCanonicalizationMethod()) 
 	    && signatureMethod.equals(osi.getSignatureMethod()) && 
 	    references.equals(osi.getReferences()) && idEqual);
-    }
-
-    public int hashCode() {
-	assert false : "hashCode not designed";
-	return 59;
     }
 }

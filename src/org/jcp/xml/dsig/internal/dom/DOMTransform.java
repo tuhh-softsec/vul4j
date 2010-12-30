@@ -162,11 +162,6 @@ public class DOMTransform extends DOMStructure implements Transform {
 		(getParameterSpec(), otransform.getParameterSpec()));
     }
 
-    public int hashCode() {
-	assert false : "hashCode not designed";
-	return 58;
-    }
-
     /**
      * Transforms the specified data using the underlying transform algorithm.
      * This method invokes the {@link #marshal marshal} method and passes it

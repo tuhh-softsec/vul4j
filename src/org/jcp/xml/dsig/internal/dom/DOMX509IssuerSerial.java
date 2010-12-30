@@ -117,9 +117,4 @@ public final class DOMX509IssuerSerial extends DOMStructure
 	return (issuerName.equals(ois.getIssuerName()) && 
 	    serialNumber.equals(ois.getSerialNumber()));
     }
-
-    public int hashCode() {
-	assert false : "hashCode not designed";
-	return 52;
-    }
 }

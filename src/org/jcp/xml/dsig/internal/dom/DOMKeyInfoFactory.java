@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2009 The Apache Software Foundation.
+ * Copyright 2005-2010 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -54,7 +54,16 @@ public final class DOMKeyInfoFactory extends KeyInfoFactory {
     }
 
     public KeyValue newKeyValue(PublicKey key)  throws KeyException {
-	return new DOMKeyValue(key);
+        String algorithm = key.getAlgorithm();
+        if (algorithm.equals("DSA")) {
+            return new DOMKeyValue.DSA(key);
+        } else if (algorithm.equals("RSA")) {
+            return new DOMKeyValue.RSA(key);
+        } else if (algorithm.equals("EC")) {
+            return new DOMKeyValue.EC(key);
+        } else {
+	    throw new KeyException("unsupported key algorithm: " + algorithm);
+        }
     }
 
     public PGPData newPGPData(byte[] keyId) {

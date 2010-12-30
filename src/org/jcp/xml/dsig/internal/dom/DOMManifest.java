@@ -131,9 +131,4 @@ public final class DOMManifest extends DOMStructure implements Manifest {
 
 	return (idsEqual && references.equals(oman.getReferences()));
     }
-
-    public int hashCode() {
-	assert false : "hashCode not designed";
-	return 46;
-    }
 }

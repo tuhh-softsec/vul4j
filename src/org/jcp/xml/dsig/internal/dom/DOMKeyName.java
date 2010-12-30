@@ -86,9 +86,4 @@ public final class DOMKeyName extends DOMStructure implements KeyName {
         KeyName okn = (KeyName) obj;
 	return name.equals(okn.getName());
     }
-
-    public int hashCode() {
-	assert false : "hashCode not designed";
-	return 44;
-    }
 }

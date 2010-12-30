@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2009 The Apache Software Foundation.
+ * Copyright 2005-2010 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -216,12 +216,20 @@ public final class DOMXMLSignatureFactory extends XMLSignatureFactory {
             return new DOMSignatureMethod.SHA1withDSA(params);
         } else if (algorithm.equals(SignatureMethod.HMAC_SHA1)) {
             return new DOMHMACSignatureMethod.SHA1(params);
-        } else if (algorithm.equals(DOMSignatureMethod.HMAC_SHA256)) {
+        } else if (algorithm.equals(DOMHMACSignatureMethod.HMAC_SHA256)) {
             return new DOMHMACSignatureMethod.SHA256(params);
-        } else if (algorithm.equals(DOMSignatureMethod.HMAC_SHA384)) {
+        } else if (algorithm.equals(DOMHMACSignatureMethod.HMAC_SHA384)) {
             return new DOMHMACSignatureMethod.SHA384(params);
-        } else if (algorithm.equals(DOMSignatureMethod.HMAC_SHA512)) {
+        } else if (algorithm.equals(DOMHMACSignatureMethod.HMAC_SHA512)) {
             return new DOMHMACSignatureMethod.SHA512(params);
+        } else if (algorithm.equals(DOMSignatureMethod.ECDSA_SHA1)) {
+            return new DOMSignatureMethod.SHA1withECDSA(params);
+        } else if (algorithm.equals(DOMSignatureMethod.ECDSA_SHA256)) {
+            return new DOMSignatureMethod.SHA256withECDSA(params);
+        } else if (algorithm.equals(DOMSignatureMethod.ECDSA_SHA384)) {
+            return new DOMSignatureMethod.SHA384withECDSA(params);
+        } else if (algorithm.equals(DOMSignatureMethod.ECDSA_SHA512)) {
+            return new DOMSignatureMethod.SHA512withECDSA(params);
         } else {
             throw new NoSuchAlgorithmException("unsupported algorithm");
         }

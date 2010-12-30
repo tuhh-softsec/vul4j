@@ -183,11 +183,6 @@ public final class DOMXMLObject extends DOMStructure implements XMLObject {
 	    equalsContent(oxo.getContent()));
     }
 
-    public int hashCode() {
-	assert false : "hashCode not designed";
-	return 53;
-    }
-
     private boolean equalsContent(List otherContent) {
 	if (content.size() != otherContent.size()) {
 	    return false;

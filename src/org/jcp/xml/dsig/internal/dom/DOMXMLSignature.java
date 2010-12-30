@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2009 The Apache Software Foundation.
+ * Copyright 2005-2010 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -386,15 +386,13 @@ public final class DOMXMLSignature extends DOMStructure
 	}
 
 	// calculate signature value
-	byte[] val = null;
 	try {
-            val = ((DOMSignatureMethod) si.getSignatureMethod()).sign
-		(signingKey, (DOMSignedInfo) si, signContext);
+            byte[] val = ((AbstractDOMSignatureMethod) 
+                si.getSignatureMethod()).sign(signingKey, si, signContext);
+	    ((DOMSignatureValue) sv).setValue(val);
 	} catch (InvalidKeyException ike) {
             throw new XMLSignatureException(ike);
 	}
-
-	((DOMSignatureValue) sv).setValue(val);
 
         this.localSigElem = sigElem;   
 	this.ksr = ksr;
@@ -420,11 +418,6 @@ public final class DOMXMLSignature extends DOMStructure
 	    sv.equals(osig.getSignatureValue()) &&
 	    si.equals(osig.getSignedInfo()) && 
 	    objects.equals(osig.getObjects()));
-    }
-
-    public int hashCode() {
-	assert false : "hashCode not designed";
-	return 54;
     }
 
     private void digestReference(DOMReference ref, XMLSignContext signContext)
@@ -531,8 +524,8 @@ public final class DOMXMLSignature extends DOMStructure
 
 	    // canonicalize SignedInfo and verify signature
 	    try {
-		validationStatus = ((DOMSignatureMethod) sm).verify
-		    (validationKey, (DOMSignedInfo) si, value, validateContext);
+		validationStatus = ((AbstractDOMSignatureMethod) sm).verify
+		    (validationKey, si, value, validateContext);
 	    } catch (Exception e) {
 		throw new XMLSignatureException(e);
 	    }
@@ -557,12 +550,6 @@ public final class DOMXMLSignature extends DOMStructure
 
 	    //XXX compare signature values?
 	    return idEqual;
-	}
-    
-        public int hashCode() {
-	    // uncomment when JDK 1.4 is required
-	    // assert false : "hashCode not designed";
-	    return 55;
 	}
 
 	public void marshal(Node parent, String dsPrefix,
