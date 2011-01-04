@@ -28,8 +28,8 @@
 
 
     <!-- directory properties -->
-    <property name="dir.src"            value="${basedir}/src" />
-    <property name="dir.src.test"       value="${basedir}/src_unitTests" />
+    <property name="dir.src"            value="${basedir}/src/main/java" />
+    <property name="dir.src.test"       value="${basedir}/src/test/java" />
     <property name="dir.src.samples"    value="${basedir}/src_samples" />
     <property name="dir.libs"           value="${basedir}/libs" />
     <property name="dir.data"           value="${basedir}/data" />
