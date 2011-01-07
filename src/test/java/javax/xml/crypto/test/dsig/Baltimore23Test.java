@@ -27,8 +27,6 @@ import javax.xml.crypto.KeySelector;
 import javax.xml.crypto.URIDereferencer;
 import javax.xml.crypto.dsig.XMLSignatureException;
 
-import junit.framework.*;
-
 import javax.xml.crypto.test.KeySelectors;
 
 /**
@@ -37,7 +35,7 @@ import javax.xml.crypto.test.KeySelectors;
  *
  * @author Sean Mullan
  */
-public class Baltimore23Test extends TestCase {
+public class Baltimore23Test extends org.junit.Assert {
 
     private SignatureValidator validator;
     private File dir;
@@ -48,82 +46,89 @@ public class Baltimore23Test extends TestCase {
             (new org.jcp.xml.dsig.internal.dom.XMLDSigRI(), 1);
     }
 
-    public Baltimore23Test(String name) {
-        super(name);
-	String fs = System.getProperty("file.separator");
-	String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
-	
-	dir = new File(base + fs + "data" + fs 
-	    + "ie" + fs + "baltimore" + fs + "merlin-examples",
+    public Baltimore23Test() {
+        String fs = System.getProperty("file.separator");
+        String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
+        
+        dir = new File(base + fs + "data" + fs 
+            + "ie" + fs + "baltimore" + fs + "merlin-examples",
             "merlin-xmldsig-twenty-three");
-	validator = new SignatureValidator(dir);
+        validator = new SignatureValidator(dir);
         ud = new LocalHttpCacheURIDereferencer();
     }
 
+    @org.junit.Test
     public void test_signature_enveloped_dsa() throws Exception {
         String file = "signature-enveloped-dsa.xml";
 
-	boolean coreValidity = validator.validate
-	    (file, new KeySelectors.KeyValueKeySelector());
-	assertTrue("Signature failed core validation", coreValidity);
+        boolean coreValidity = validator.validate
+            (file, new KeySelectors.KeyValueKeySelector());
+        assertTrue("Signature failed core validation", coreValidity);
     }
     
+    @org.junit.Test
     public void test_signature_enveloping_b64_dsa() throws Exception {
         String file = "signature-enveloping-b64-dsa.xml";
      
-	boolean coreValidity = validator.validate
-	    (file, new KeySelectors.KeyValueKeySelector());
-	assertTrue("Signature failed core validation", coreValidity);
+        boolean coreValidity = validator.validate
+            (file, new KeySelectors.KeyValueKeySelector());
+        assertTrue("Signature failed core validation", coreValidity);
     }
     
+    @org.junit.Test
     public void test_signature_enveloping_dsa() throws Exception {
         String file = "signature-enveloping-dsa.xml";
        
-	boolean coreValidity = validator.validate
-	    (file, new KeySelectors.KeyValueKeySelector());
-	assertTrue("Signature failed core validation", coreValidity);
+        boolean coreValidity = validator.validate
+            (file, new KeySelectors.KeyValueKeySelector());
+        assertTrue("Signature failed core validation", coreValidity);
     }
 
+    @org.junit.Test
     public void test_signature_external_b64_dsa() throws Exception {
         String file = "signature-external-b64-dsa.xml";
        
-	boolean coreValidity = validator.validate
-	    (file, new KeySelectors.KeyValueKeySelector());
-	assertTrue("Signature failed core validation", coreValidity);
+        boolean coreValidity = validator.validate
+            (file, new KeySelectors.KeyValueKeySelector());
+        assertTrue("Signature failed core validation", coreValidity);
     }
 
+    @org.junit.Test
     public void test_signature_external_dsa() throws Exception {
         String file = "signature-external-dsa.xml";
         
-	boolean coreValidity = validator.validate
-	    (file, new KeySelectors.KeyValueKeySelector(), ud);
-	assertTrue("Signature failed core validation", coreValidity);
+        boolean coreValidity = validator.validate
+            (file, new KeySelectors.KeyValueKeySelector(), ud);
+        assertTrue("Signature failed core validation", coreValidity);
     }
     
+    @org.junit.Test
     public void test_signature_enveloping_rsa() throws Exception {
         String file = "signature-enveloping-rsa.xml";
        
-	boolean coreValidity = validator.validate
-	    (file, new KeySelectors.KeyValueKeySelector());
-	assertTrue("Signature failed core validation", coreValidity);
+        boolean coreValidity = validator.validate
+            (file, new KeySelectors.KeyValueKeySelector());
+        assertTrue("Signature failed core validation", coreValidity);
     }
 
+    @org.junit.Test
     public void test_signature_enveloping_hmac_sha1() throws Exception {
         String file = "signature-enveloping-hmac-sha1.xml";
         
-	KeySelector ks = new KeySelectors.SecretKeySelector
-	    ("secret".getBytes("ASCII") );
-	boolean coreValidity = validator.validate(file, ks);
-	assertTrue("Signature failed core validation", coreValidity);
+        KeySelector ks = new KeySelectors.SecretKeySelector
+            ("secret".getBytes("ASCII") );
+        boolean coreValidity = validator.validate(file, ks);
+        assertTrue("Signature failed core validation", coreValidity);
     }
 
+    @org.junit.Test
     public void test_signature_enveloping_hmac_sha1_40() throws Exception {
         String file = "signature-enveloping-hmac-sha1-40.xml";
         
-	KeySelector ks = new KeySelectors.SecretKeySelector
-	    ("secret".getBytes("ASCII") );
+        KeySelector ks = new KeySelectors.SecretKeySelector
+            ("secret".getBytes("ASCII") );
         try {
-	    boolean coreValidity = validator.validate(file, ks);
+            validator.validate(file, ks);
             fail("Expected HMACOutputLength exception");
         } catch (XMLSignatureException xse) {
             System.out.println(xse.getMessage());
@@ -131,94 +136,83 @@ public class Baltimore23Test extends TestCase {
         }
     }
 
+    @org.junit.Test
     public void test_signature_keyname() throws Exception {
         String file = "signature-keyname.xml";
         
-	boolean coreValidity = validator.validate
-	    (file, new KeySelectors.CollectionKeySelector(dir), ud);
-	assertTrue("Signature failed core validation", coreValidity);
+        boolean coreValidity = validator.validate
+            (file, new KeySelectors.CollectionKeySelector(dir), ud);
+        assertTrue("Signature failed core validation", coreValidity);
     }
     
+    @org.junit.Test
     public void test_signature_retrievalmethod_rawx509crt() throws Exception {
         String file = "signature-retrievalmethod-rawx509crt.xml";
         
-	boolean coreValidity = validator.validate
-	    (file, new KeySelectors.CollectionKeySelector(dir), ud);
-	assertTrue("Signature failed core validation", coreValidity);
+        boolean coreValidity = validator.validate
+            (file, new KeySelectors.CollectionKeySelector(dir), ud);
+        assertTrue("Signature failed core validation", coreValidity);
     }
     
+    @org.junit.Test
     public void test_signature_x509_crt_crl() throws Exception {
         String file = "signature-x509-crt-crl.xml";
         
-	boolean coreValidity = validator.validate
-	    (file, new KeySelectors.RawX509KeySelector(), ud);
-	assertTrue("Signature failed core validation", coreValidity);
+        boolean coreValidity = validator.validate
+            (file, new KeySelectors.RawX509KeySelector(), ud);
+        assertTrue("Signature failed core validation", coreValidity);
     }
 
+    @org.junit.Test
     public void test_signature_x509_crt() throws Exception {
         String file = "signature-x509-crt.xml";
        
-	boolean coreValidity = validator.validate
-	    (file, new KeySelectors.RawX509KeySelector(), ud);
-	assertTrue("Signature failed core validation", coreValidity);
+        boolean coreValidity = validator.validate
+            (file, new KeySelectors.RawX509KeySelector(), ud);
+        assertTrue("Signature failed core validation", coreValidity);
     }
     
+    @org.junit.Test
     public void test_signature_x509_is() throws Exception {
         String file = "signature-x509-is.xml";
         
-	boolean coreValidity = validator.validate
-	    (file, new KeySelectors.CollectionKeySelector(dir), ud);
-	assertTrue("Signature failed core validation", coreValidity);
+        boolean coreValidity = validator.validate
+            (file, new KeySelectors.CollectionKeySelector(dir), ud);
+        assertTrue("Signature failed core validation", coreValidity);
     }
     
+    @org.junit.Test
     public void test_signature_x509_ski() throws Exception {
         String file = "signature-x509-ski.xml";
         
-	boolean coreValidity = validator.validate
-	    (file, new KeySelectors.CollectionKeySelector(dir), ud);
-	assertTrue("Signature failed core validation", coreValidity);
+        boolean coreValidity = validator.validate
+            (file, new KeySelectors.CollectionKeySelector(dir), ud);
+        assertTrue("Signature failed core validation", coreValidity);
     }
 
+    @org.junit.Test
     public void test_signature_x509_sn() throws Exception {
         String file = "signature-x509-sn.xml";
         
-	boolean coreValidity = validator.validate
-	    (file, new KeySelectors.CollectionKeySelector(dir), ud);
-	assertTrue("Signature failed core validation", coreValidity);
+        boolean coreValidity = validator.validate
+            (file, new KeySelectors.CollectionKeySelector(dir), ud);
+        assertTrue("Signature failed core validation", coreValidity);
     }
 
+    @org.junit.Test
     public void test_signature() throws Exception {
         String file = "signature.xml";
-	String fs = System.getProperty("file.separator");
-	String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
-	
-	String keystore = base + fs + "data" + fs +
-	     "ie" + fs + "baltimore" + fs + "merlin-examples" + fs +
-	     "merlin-xmldsig-twenty-three" + fs + "certs" + fs + "xmldsig.jks";
-	KeyStore ks = KeyStore.getInstance("JKS");
-	ks.load(new FileInputStream(keystore), "changeit".toCharArray());
+        String fs = System.getProperty("file.separator");
+        String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
+        
+        String keystore = base + fs + "data" + fs +
+             "ie" + fs + "baltimore" + fs + "merlin-examples" + fs +
+             "merlin-xmldsig-twenty-three" + fs + "certs" + fs + "xmldsig.jks";
+        KeyStore ks = KeyStore.getInstance("JKS");
+        ks.load(new FileInputStream(keystore), "changeit".toCharArray());
 
         boolean cv = validator.validate(file, new X509KeySelector(ks, false), ud);
         assertTrue("Signature failed core validation", cv);
     }
 
-    public static void main(String[] args) throws Exception {
-        Baltimore23Test bt = new Baltimore23Test("");
-        bt.test_signature_enveloped_dsa();
-	bt.test_signature(); 
-	bt.test_signature_enveloping_b64_dsa();
-	bt.test_signature_enveloping_dsa();
-	bt.test_signature_enveloping_hmac_sha1();
-	bt.test_signature_enveloping_hmac_sha1_40();
-	bt.test_signature_enveloping_rsa();
-	bt.test_signature_external_b64_dsa();
-	bt.test_signature_external_dsa();
-	bt.test_signature_keyname();
-	bt.test_signature_retrievalmethod_rawx509crt();
-	bt.test_signature_x509_crt_crl();
-	bt.test_signature_x509_crt();
-	bt.test_signature_x509_is();
-	bt.test_signature_x509_ski();
-	bt.test_signature_x509_sn();
-    }
 }

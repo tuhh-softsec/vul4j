@@ -108,7 +108,7 @@ public class ECDSASignatureTest extends TestCase {
 
         javax.xml.parsers.DocumentBuilderFactory dbf = 
             javax.xml.parsers.DocumentBuilderFactory.newInstance();
-    	dbf.setNamespaceAware(true);
+        dbf.setNamespaceAware(true);
         log.info("dbf.isIgnoringComments()=" + dbf.isIgnoringComments());
         log.info("dbf.isIgnoringElementContentWhitespace()=" + dbf.isIgnoringElementContentWhitespace());
         
@@ -116,8 +116,8 @@ public class ECDSASignatureTest extends TestCase {
        
         dbf.setAttribute(id, IndexedDocument.class.getName());
         
-    	db = dbf.newDocumentBuilder();
-    	org.apache.xml.security.Init.init();
+        db = dbf.newDocumentBuilder();
+        org.apache.xml.security.Init.init();
     }
     
     public void testOne() throws Exception {
@@ -210,12 +210,12 @@ public class ECDSASignatureTest extends TestCase {
         KeyInfo ki = signature.getKeyInfo();
 
         if (ki == null) {
-        	throw new RuntimeException("No keyinfo");
+                throw new RuntimeException("No keyinfo");
         }
         X509Certificate cert = signature.getKeyInfo().getX509Certificate();
 
         if (cert == null) {
-        	throw new RuntimeException("No certificate");
+                throw new RuntimeException("No certificate");
         }
         assertTrue(signature.checkSignatureValue(cert) );
     }

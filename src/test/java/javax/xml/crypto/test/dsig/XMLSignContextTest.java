@@ -43,74 +43,74 @@ public class XMLSignContextTest extends TestCase {
     private Document doc;
 
     public XMLSignContextTest() {
-	super("XMLSignContextTest");
+        super("XMLSignContextTest");
     }
 
     public XMLSignContextTest(String name) {
-	super(name);
+        super(name);
     }
 
     public void setUp() throws Exception {
-	// set up the signingKeys
-	KEYS = new Key[3];
-	KEYS[0] = TestUtils.getPrivateKey("DSA");
-	KEYS[1] = TestUtils.getPrivateKey("RSA");
-	KEYS[2] = new SecretKeySpec(new byte[16], "HmacSHA1");
-	// set up the default XMLSignContext
-	SecretKey sk = new SecretKeySpec(new byte[8], "DES");
-	doc = TestUtils.newDocument();
-	defContext = new DOMSignContext(sk, doc);
+        // set up the signingKeys
+        KEYS = new Key[3];
+        KEYS[0] = TestUtils.getPrivateKey("DSA");
+        KEYS[1] = TestUtils.getPrivateKey("RSA");
+        KEYS[2] = new SecretKeySpec(new byte[16], "HmacSHA1");
+        // set up the default XMLSignContext
+        SecretKey sk = new SecretKeySpec(new byte[8], "DES");
+        doc = TestUtils.newDocument();
+        defContext = new DOMSignContext(sk, doc);
     }
 
     public void tearDown() { }
 
     public void testsetngetBaseURI() throws Exception {
-	assertNull(defContext.getBaseURI());
+        assertNull(defContext.getBaseURI());
 
-	String uri = "http://www.w3.org/2000/09/xmldsig#";
-	defContext.setBaseURI(uri);
-	assertEquals(defContext.getBaseURI(), uri);
-	defContext.setBaseURI(null);
-	assertNull(defContext.getBaseURI());
+        String uri = "http://www.w3.org/2000/09/xmldsig#";
+        defContext.setBaseURI(uri);
+        assertEquals(defContext.getBaseURI(), uri);
+        defContext.setBaseURI(null);
+        assertNull(defContext.getBaseURI());
     }
 
 
     public void testsetngetProperty() throws Exception {
-	String name = "key";
-	assertNull(defContext.getProperty(name));
-	try {
-	    defContext.setProperty(null, null);
-	    fail("Should raise a NPE with a null name");
-	} catch (NullPointerException npe) {
-	} catch (Exception ex) {
-	    fail("Should raise a NPE instead of " + ex);
-	}
-	String value1 = "value#1";
-	String value2 = "value#2";
-	assertNull(defContext.setProperty(name, value1));
-	assertEquals(defContext.getProperty(name), value1);
-	assertEquals(defContext.setProperty(name, value2), value1);
-	assertEquals(defContext.getProperty(name), value2);
-	assertEquals(defContext.setProperty(name, null), value2);
-	assertNull(defContext.getProperty(name));
+        String name = "key";
+        assertNull(defContext.getProperty(name));
+        try {
+            defContext.setProperty(null, null);
+            fail("Should raise a NPE with a null name");
+        } catch (NullPointerException npe) {
+        } catch (Exception ex) {
+            fail("Should raise a NPE instead of " + ex);
+        }
+        String value1 = "value#1";
+        String value2 = "value#2";
+        assertNull(defContext.setProperty(name, value1));
+        assertEquals(defContext.getProperty(name), value1);
+        assertEquals(defContext.setProperty(name, value2), value1);
+        assertEquals(defContext.getProperty(name), value2);
+        assertEquals(defContext.setProperty(name, null), value2);
+        assertNull(defContext.getProperty(name));
     }
 
     public void testsetngetURIDereferencer() throws Exception {
-	assertNull(defContext.getURIDereferencer());
-	byte[] data = "simpleDereferencer".getBytes();
-	URIDereferencer deref = new TestUtils.OctetStreamURIDereferencer(data);
+        assertNull(defContext.getURIDereferencer());
+        byte[] data = "simpleDereferencer".getBytes();
+        URIDereferencer deref = new TestUtils.OctetStreamURIDereferencer(data);
 
-	defContext.setURIDereferencer(deref);
-	assertEquals(defContext.getURIDereferencer(), deref);
-	defContext.setURIDereferencer(null);
-	assertNull(defContext.getURIDereferencer());
+        defContext.setURIDereferencer(deref);
+        assertEquals(defContext.getURIDereferencer(), deref);
+        defContext.setURIDereferencer(null);
+        assertNull(defContext.getURIDereferencer());
     }
 
     public void testsetngetKeySelector() throws Exception {
-	defContext.setKeySelector(null);
-	assertNull(defContext.getKeySelector());
-	KeySelector ks = KeySelector.singletonKeySelector(KEYS[0]);
-	defContext.setKeySelector(ks);
-       	assertEquals(defContext.getKeySelector(), ks);
+        defContext.setKeySelector(null);
+        assertNull(defContext.getKeySelector());
+        KeySelector ks = KeySelector.singletonKeySelector(KEYS[0]);
+        defContext.setKeySelector(ks);
+        assertEquals(defContext.getKeySelector(), ks);
     }
 }

@@ -90,13 +90,13 @@ public class UnknownAlgoSignatureTest extends TestCase {
 
     public void setUp() throws KeyStoreException, NoSuchAlgorithmException,
             CertificateException, IOException {
-	FileInputStream fis = null;
-	if (BASEDIR != null && !"".equals(BASEDIR)) {
+        FileInputStream fis = null;
+        if (BASEDIR != null && !"".equals(BASEDIR)) {
             fis = new FileInputStream(BASEDIR + SEP + KEYSTORE_FILE);
-	} else {
+        } else {
             fis = new FileInputStream(KEYSTORE_FILE);
-	}
-	KeyStore keyStore = KeyStore.getInstance(KEYSTORE_TYPE);
+        }
+        KeyStore keyStore = KeyStore.getInstance(KEYSTORE_TYPE);
         keyStore.load(fis, null);
         X509Certificate cert = (X509Certificate) keyStore
                 .getCertificate(CERT_ALIAS);
@@ -145,26 +145,26 @@ public class UnknownAlgoSignatureTest extends TestCase {
     protected boolean checkSignature(String fileName)
             throws ParserConfigurationException, SAXException, IOException,
             TransformerException, XMLSecurityException {
-	XMLSignature signature = unmarshalXMLSignature(fileName);
+        XMLSignature signature = unmarshalXMLSignature(fileName);
         return signature.checkSignatureValue(publicKey);
     }
 
     protected boolean checkReferences(String fileName)
             throws ParserConfigurationException, SAXException, IOException,
             TransformerException, XMLSecurityException {
-	XMLSignature signature = unmarshalXMLSignature(fileName);
+        XMLSignature signature = unmarshalXMLSignature(fileName);
         return signature.getSignedInfo().verify(false);
     }
 
     private XMLSignature unmarshalXMLSignature(String fileName)
             throws ParserConfigurationException, SAXException, IOException,
             TransformerException, XMLSecurityException {
-	File file = null;
-	if (BASEDIR != null && !"".equals(BASEDIR)) {
+        File file = null;
+        if (BASEDIR != null && !"".equals(BASEDIR)) {
             file = new File(BASEDIR + SEP + SIGNATURE_SOURCE_PATH, fileName);
-	} else {
+        } else {
             file = new File(SIGNATURE_SOURCE_PATH, fileName);
-	}
+        }
         Document doc = getDocument(file);
         Element nscontext = TestUtils.createDSctx(doc, "ds",
                 Constants.SignatureSpecNS);
@@ -172,7 +172,7 @@ public class UnknownAlgoSignatureTest extends TestCase {
                 "//ds:Signature[1]", nscontext);
         XMLSignature signature = new XMLSignature(signatureEl, file.toURL()
                 .toString());
-	return signature;
+        return signature;
     }
 
     public static Document getDocument(File file)

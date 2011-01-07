@@ -22,80 +22,72 @@ package javax.xml.crypto.test.dsig;
 import javax.xml.crypto.dsig.*;
 import java.security.*;
 
-import junit.framework.*;
-
 /**
  * Unit test for javax.xml.crypto.dsig.DigestMethod
  *
- * @version $Id$
  * @author Valerie Peng
  */
-public class DigestMethodTest extends TestCase {
+public class DigestMethodTest extends org.junit.Assert {
 
     private XMLSignatureFactory factory;
 
     private static final String MD_ALGOS[] = {
-	DigestMethod.SHA1
+        DigestMethod.SHA1
     };
 
     public DigestMethodTest() {
-	super("DigestMethodTest");
-    }
-
-    public DigestMethodTest(String name) {
-	super(name);
-    }
-
-    public void setUp() throws Exception { 
-	factory = XMLSignatureFactory.getInstance
+        factory = XMLSignatureFactory.getInstance
             ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
     }
 
-    public void tearDown() { }
-
+    @org.junit.Test
     public void testisFeatureSupported() throws Exception {
-	DigestMethod dm;
-	for (int i = 0; i < MD_ALGOS.length; i++) {
-	    String algo = MD_ALGOS[i];
-	    dm = factory.newDigestMethod(algo, null);	
-	    try {
-		dm.isFeatureSupported(null); 
-		fail("Should raise a NPE for null feature"); 
-	    } catch (NullPointerException npe) {}
-	    assertTrue(!dm.isFeatureSupported("not supported"));
-	}
+        DigestMethod dm;
+        for (int i = 0; i < MD_ALGOS.length; i++) {
+            String algo = MD_ALGOS[i];
+            dm = factory.newDigestMethod(algo, null);	
+            try {
+                dm.isFeatureSupported(null); 
+                fail("Should raise a NPE for null feature"); 
+            } catch (NullPointerException npe) {}
+            assertTrue(!dm.isFeatureSupported("not supported"));
+        }
     }
 
+    @org.junit.Test
     public void testConstructor() throws Exception {
-	// test DSigStructureFactory.newDigestMethod
-	// (String algorithm, AlgorithmParameterSpec params)
-	// for generating DigestMethod objects
-	DigestMethod dm;
-	for (int i = 0; i < MD_ALGOS.length; i++) {
-	    String algo = MD_ALGOS[i];
-	    dm = factory.newDigestMethod(algo, null);
-	    assertEquals(dm.getAlgorithm(), algo);
+        // test DSigStructureFactory.newDigestMethod
+        // (String algorithm, AlgorithmParameterSpec params)
+        // for generating DigestMethod objects
+        DigestMethod dm;
+        for (int i = 0; i < MD_ALGOS.length; i++) {
+            String algo = MD_ALGOS[i];
+            dm = factory.newDigestMethod(algo, null);
+            assertEquals(dm.getAlgorithm(), algo);
 
-	    assertNull(dm.getParameterSpec());
-	    try {
-		dm = factory.newDigestMethod(algo, 
-				  new TestUtils.MyOwnDigestMethodParameterSpec());
-		fail("Should raise an IAPE for invalid parameters"); 
-	    } catch (InvalidAlgorithmParameterException iape) {
-	    } catch (Exception ex) {
-		fail("Should raise an IAPE instead of " + ex);
-	    }
-	}
+            assertNull(dm.getParameterSpec());
+            try {
+                dm = factory.newDigestMethod(algo, 
+                                  new TestUtils.MyOwnDigestMethodParameterSpec());
+                fail("Should raise an IAPE for invalid parameters"); 
+            } catch (InvalidAlgorithmParameterException iape) {
+            } catch (Exception ex) {
+                fail("Should raise an IAPE instead of " + ex);
+            }
+        }
 
-	try {
-	    dm = factory.newDigestMethod("non-existent", 
-					 null); 
-	    fail("Should raise an NSAE for non-existent algos"); 
-	} catch (NoSuchAlgorithmException nsae) {}
+        try {
+            dm = factory.newDigestMethod("non-existent", 
+                                         null); 
+            fail("Should raise an NSAE for non-existent algos"); 
+        } catch (NoSuchAlgorithmException nsae) {}
 
-	try {
-	    dm = factory.newDigestMethod(null, null); 
-	    fail("Should raise a NPE for null algo"); 
-	} catch (NullPointerException npe) {}
-    }    
+        try {
+            dm = factory.newDigestMethod(null, null); 
+            fail("Should raise a NPE for null algo"); 
+        } catch (NullPointerException npe) {
+            //
+        }
+    } 
+    
 }

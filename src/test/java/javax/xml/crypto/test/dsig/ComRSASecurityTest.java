@@ -22,8 +22,6 @@ package javax.xml.crypto.test.dsig;
 import java.io.File;
 import java.security.Security;
 
-import junit.framework.*;
-
 import javax.xml.crypto.test.KeySelectors;
 
 /**
@@ -32,7 +30,7 @@ import javax.xml.crypto.test.KeySelectors;
  *
  * @author Sean Mullan
  */
-public class ComRSASecurityTest extends TestCase {
+public class ComRSASecurityTest extends org.junit.Assert {
 
     private SignatureValidator validator;
 
@@ -41,32 +39,31 @@ public class ComRSASecurityTest extends TestCase {
             (new org.jcp.xml.dsig.internal.dom.XMLDSigRI(), 1);
     }
 
-    public ComRSASecurityTest(String name) {
-        super(name);
-	String fs = System.getProperty("file.separator");
-	String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
-	
-	base += fs + "data" + fs + "com";
-	validator = new SignatureValidator(new File
-	    (base, "rsasecurity/bdournaee"));
+    public ComRSASecurityTest() {
+        String fs = System.getProperty("file.separator");
+        String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
+        
+        base += fs + "data" + fs + "com";
+        validator = new SignatureValidator(new File
+            (base, "rsasecurity/bdournaee"));
     }
+    
+    @org.junit.Test
     public void test_certj201_enveloping() throws Exception {
         String file = "certj201_enveloping.xml";
 
-	boolean coreValidity = validator.validate
-	    (file, new KeySelectors.KeyValueKeySelector());
-	assertTrue("Signature failed core validation", coreValidity);
+        boolean coreValidity = validator.validate
+            (file, new KeySelectors.KeyValueKeySelector());
+        assertTrue("Signature failed core validation", coreValidity);
     }
+    
+    @org.junit.Test
     public void test_certj201_enveloped() throws Exception {
         String file = "certj201_enveloped.xml";
 
-	boolean coreValidity = validator.validate
-	    (file, new KeySelectors.KeyValueKeySelector());
-	assertTrue("Signature failed core validation", coreValidity);
+        boolean coreValidity = validator.validate
+            (file, new KeySelectors.KeyValueKeySelector());
+        assertTrue("Signature failed core validation", coreValidity);
     }
-    public static void main(String[] args) throws Exception {
-        ComRSASecurityTest ct = new ComRSASecurityTest("");
-	ct.test_certj201_enveloped();
-	ct.test_certj201_enveloping();
-    }
+    
 }

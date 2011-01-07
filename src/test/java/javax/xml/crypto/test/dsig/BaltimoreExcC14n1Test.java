@@ -22,8 +22,6 @@ package javax.xml.crypto.test.dsig;
 import java.io.File;
 import java.security.Security;
 
-import junit.framework.*;
-
 import javax.xml.crypto.test.KeySelectors;
 
 /**
@@ -32,7 +30,7 @@ import javax.xml.crypto.test.KeySelectors;
  *
  * @author Sean Mullan
  */
-public class BaltimoreExcC14n1Test extends TestCase {
+public class BaltimoreExcC14n1Test extends org.junit.Assert {
 
     private SignatureValidator validator;
 
@@ -41,27 +39,23 @@ public class BaltimoreExcC14n1Test extends TestCase {
             (new org.jcp.xml.dsig.internal.dom.XMLDSigRI(), 1);
     }
 
-    public BaltimoreExcC14n1Test(String name) {
-        super(name);
-	String fs = System.getProperty("file.separator");
-	String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
-	
-	base += fs + "data" + fs + "ie" +
-	    fs + "baltimore" + fs + "merlin-examples";
-	validator = new SignatureValidator(new File
-	    (base, "merlin-exc-c14n-one"));
+    public BaltimoreExcC14n1Test() {
+        String fs = System.getProperty("file.separator");
+        String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
+        
+        base += fs + "data" + fs + "ie" +
+            fs + "baltimore" + fs + "merlin-examples";
+        validator = new SignatureValidator(new File
+            (base, "merlin-exc-c14n-one"));
     }
 
-    public void test_exc_signature() throws Exception {
+    @org.junit.Test
+    public void testExcSignature() throws Exception {
         String file = "exc-signature.xml";
 
-	boolean coreValidity = validator.validate
-	    (file, new KeySelectors.KeyValueKeySelector());
-	assertTrue("Signature failed core validation", coreValidity);
+        boolean coreValidity = validator.validate
+            (file, new KeySelectors.KeyValueKeySelector());
+        assertTrue("Signature failed core validation", coreValidity);
     }
 
-    public static void main(String[] args) throws Exception {
-        BaltimoreExcC14n1Test bt = new BaltimoreExcC14n1Test("");
-	bt.test_exc_signature();
-    }
 }

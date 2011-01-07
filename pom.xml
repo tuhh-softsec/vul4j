@@ -203,7 +203,7 @@
                         <childDelegation>false</childDelegation>
                         <argLine>-Djava.endorsed.dirs=${basedir}/target</argLine>
                         <includes>
-                            <include>org/apache/xml/security/test/AllTests.java</include>
+                            <include>**/*Test.java</include>
                         </includes>
                         <systemPropertyVariables>
                             <product.version>${project.version}</product.version>

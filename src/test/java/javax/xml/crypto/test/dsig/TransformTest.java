@@ -42,11 +42,11 @@ public class TransformTest extends TestCase {
     XMLSignatureFactory factory;
 
     private static final String TRANSFORM_ALGOS[] = {
-	Transform.BASE64,
-	Transform.ENVELOPED,
-	Transform.XPATH,
-	Transform.XPATH2,
-	Transform.XSLT
+        Transform.BASE64,
+        Transform.ENVELOPED,
+        Transform.XPATH,
+        Transform.XPATH2,
+        Transform.XSLT
     };
 
     static {
@@ -55,101 +55,101 @@ public class TransformTest extends TestCase {
     }
 
     public TransformTest() {
-	super("TransformTest");
+        super("TransformTest");
     }
 
     public TransformTest(String name) {
-	super(name);
+        super(name);
     }
 
     public void setUp() throws Exception { 
-	factory = XMLSignatureFactory.getInstance
+        factory = XMLSignatureFactory.getInstance
             ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
     }
 
     public void tearDown() { }
 
     public void testisFeatureSupported() throws Exception {
-	Transform tm; 
-	for (int i = 0; i < TRANSFORM_ALGOS.length; i++) {
-	    String algo = TRANSFORM_ALGOS[i];
-	    TransformParameterSpec params = null;
-	    if (algo.equals(Transform.XPATH)) {
-		params = new XPathFilterParameterSpec("xPath");
-	    } else if (algo.equals(Transform.XPATH2)) {
-		params = new XPathFilter2ParameterSpec
-		    (Collections.singletonList(new XPathType
-			("xPath2", XPathType.Filter.INTERSECT)));
-	    } else if (algo.equals(Transform.XSLT)) {
-		params = new XSLTTransformParameterSpec(new XSLTStructure());
-	    }
-	    tm = factory.newTransform(algo, params);
-	    try {
-		tm.isFeatureSupported(null); 
-		fail(TRANSFORM_ALGOS[i] + 
-		     ": Should raise a NPE for null feature"); 
-	    } catch (NullPointerException npe) {}
-	    
-	    assertTrue(!tm.isFeatureSupported("not supported"));
-	}
+        Transform tm; 
+        for (int i = 0; i < TRANSFORM_ALGOS.length; i++) {
+            String algo = TRANSFORM_ALGOS[i];
+            TransformParameterSpec params = null;
+            if (algo.equals(Transform.XPATH)) {
+                params = new XPathFilterParameterSpec("xPath");
+            } else if (algo.equals(Transform.XPATH2)) {
+                params = new XPathFilter2ParameterSpec
+                    (Collections.singletonList(new XPathType
+                        ("xPath2", XPathType.Filter.INTERSECT)));
+            } else if (algo.equals(Transform.XSLT)) {
+                params = new XSLTTransformParameterSpec(new XSLTStructure());
+            }
+            tm = factory.newTransform(algo, params);
+            try {
+                tm.isFeatureSupported(null); 
+                fail(TRANSFORM_ALGOS[i] + 
+                     ": Should raise a NPE for null feature"); 
+            } catch (NullPointerException npe) {}
+            
+            assertTrue(!tm.isFeatureSupported("not supported"));
+        }
     }
 
     public void testConstructor() throws Exception {
-	// test newTransform(String algorithm, 
-	//                   AlgorithmParameterSpec params)
-	// for generating Transform objects
-	Transform tm; 
-	for (int i = 0; i < TRANSFORM_ALGOS.length; i++) {
-	    String algo = TRANSFORM_ALGOS[i];
-	    TransformParameterSpec params = null;
-	    if (algo.equals(Transform.XPATH)) {
-		params = new XPathFilterParameterSpec("xPath");
-	    } else if (algo.equals(Transform.XPATH2)) {
-		params = new XPathFilter2ParameterSpec
-		    (Collections.singletonList(new XPathType
-			("xPath2", XPathType.Filter.INTERSECT)));
-	    } else if (algo.equals(Transform.XSLT)) {
-		params = new XSLTTransformParameterSpec(new XSLTStructure());
-	    }
-	    try {
-		tm = factory.newTransform(algo, params);
-		assertNotNull(tm);
-		assertEquals(tm.getAlgorithm(), algo);
-		assertEquals(tm.getParameterSpec(), params);
-	    } catch (Exception ex) {
-		fail(TRANSFORM_ALGOS[i] + ": Unexpected exception " + ex); 
-	    }
-	    try {
-		tm = factory.newTransform
-		    (algo, new TestUtils.MyOwnC14nParameterSpec());
-		fail(TRANSFORM_ALGOS[i] + 
-		     ": Should raise an IAPE for invalid parameters"); 
-	    } catch (InvalidAlgorithmParameterException iape) {
-	    } catch (Exception ex) {
-		fail(TRANSFORM_ALGOS[i] + 
-		     ": Should raise a IAPE instead of " + ex); 
-	    }
-	}
+        // test newTransform(String algorithm, 
+        //                   AlgorithmParameterSpec params)
+        // for generating Transform objects
+        Transform tm; 
+        for (int i = 0; i < TRANSFORM_ALGOS.length; i++) {
+            String algo = TRANSFORM_ALGOS[i];
+            TransformParameterSpec params = null;
+            if (algo.equals(Transform.XPATH)) {
+                params = new XPathFilterParameterSpec("xPath");
+            } else if (algo.equals(Transform.XPATH2)) {
+                params = new XPathFilter2ParameterSpec
+                    (Collections.singletonList(new XPathType
+                        ("xPath2", XPathType.Filter.INTERSECT)));
+            } else if (algo.equals(Transform.XSLT)) {
+                params = new XSLTTransformParameterSpec(new XSLTStructure());
+            }
+            try {
+                tm = factory.newTransform(algo, params);
+                assertNotNull(tm);
+                assertEquals(tm.getAlgorithm(), algo);
+                assertEquals(tm.getParameterSpec(), params);
+            } catch (Exception ex) {
+                fail(TRANSFORM_ALGOS[i] + ": Unexpected exception " + ex); 
+            }
+            try {
+                tm = factory.newTransform
+                    (algo, new TestUtils.MyOwnC14nParameterSpec());
+                fail(TRANSFORM_ALGOS[i] + 
+                     ": Should raise an IAPE for invalid parameters"); 
+            } catch (InvalidAlgorithmParameterException iape) {
+            } catch (Exception ex) {
+                fail(TRANSFORM_ALGOS[i] + 
+                     ": Should raise a IAPE instead of " + ex); 
+            }
+        }
 
-	try {
-	    tm = factory.newTransform(null, (TransformParameterSpec) null); 
-	    fail("Should raise a NPE for null algo"); 
-	} catch (NullPointerException npe) {
-	} catch (Exception ex) {
-	    fail("Should raise a NPE instead of " + ex); 
-	}
+        try {
+            tm = factory.newTransform(null, (TransformParameterSpec) null); 
+            fail("Should raise a NPE for null algo"); 
+        } catch (NullPointerException npe) {
+        } catch (Exception ex) {
+            fail("Should raise a NPE instead of " + ex); 
+        }
 
-	try {
-	    tm = factory.newTransform
-		("non-existent", (TransformParameterSpec) null); 
-	    fail("Should raise an NSAE for non-existent algos"); 
-	} catch (NoSuchAlgorithmException nsae) {
-	} catch (Exception ex) {
-	    fail("Should raise an NSAE instead of " + ex); 
-	}
+        try {
+            tm = factory.newTransform
+                ("non-existent", (TransformParameterSpec) null); 
+            fail("Should raise an NSAE for non-existent algos"); 
+        } catch (NoSuchAlgorithmException nsae) {
+        } catch (Exception ex) {
+            fail("Should raise an NSAE instead of " + ex); 
+        }
     }
 
     private static class XSLTStructure implements XMLStructure {
-	public boolean isFeatureSupported(String feature) { return false; }
+        public boolean isFeatureSupported(String feature) { return false; }
     }
 }

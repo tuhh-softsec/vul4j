@@ -37,84 +37,84 @@ public class SignaturePropertyTest extends TestCase {
     private String id = "id";
 
     public SignaturePropertyTest() {
-	super("SignaturePropertyTest");
+        super("SignaturePropertyTest");
     }
 
     public SignaturePropertyTest(String name) {
-	super(name);
+        super(name);
     }
 
     public void setUp() throws Exception {
-	factory = XMLSignatureFactory.getInstance
+        factory = XMLSignatureFactory.getInstance
             ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
     }
     
     public void tearDown() {}
     
     public void testConstructor() {
-	// test XMLSignatureFactory.newSignatureProperty(List, String, String) 
-	SignatureProperty prop;
+        // test XMLSignatureFactory.newSignatureProperty(List, String, String) 
+        SignatureProperty prop;
 
-	try {
-	    prop = factory.newSignatureProperty(null, target, id); 
-	    fail("Should raise a NPE for null content"); 
-	} catch (NullPointerException npe) {
-	} catch (Exception ex) {
-	    fail("Should raise a NPE for null content instead of " + ex);
-	}
-	List list = new Vector();
-	try {
-	    prop = factory.newSignatureProperty(list, target, id); 
-	    fail("Should raise an IAE for empty content"); 
-	} catch (IllegalArgumentException iae) {
-	} catch (Exception ex) {
-	    fail("Should raise an IAE for empty content instead of " + ex);
-	}
-	String strEntry = "wrong type";
-	list.add(strEntry);
-	try {
-	    prop = factory.newSignatureProperty(list, target, id); 
-	    fail("Should raise a CCE for content containing " +
-		 "invalid, i.e. non-XMLStructure, entries"); 
-	} catch (ClassCastException cce) {
-	} catch (Exception ex) {
-	    fail("Should raise a CCE for content with invalid entries " +
-		 "instead of " + ex);
-	}
-	list.remove(strEntry);
-	list.add(new TestUtils.MyOwnXMLStructure());
-	try {
-	    prop = factory.newSignatureProperty(list, null, id);
-	    fail("Should raise a NPE for null target"); 
-	} catch (NullPointerException npe) {
-	} catch (Exception ex) {
-	    fail("Should raise a NPE for null target instead of " + ex);
-	}
+        try {
+            prop = factory.newSignatureProperty(null, target, id); 
+            fail("Should raise a NPE for null content"); 
+        } catch (NullPointerException npe) {
+        } catch (Exception ex) {
+            fail("Should raise a NPE for null content instead of " + ex);
+        }
+        List list = new Vector();
+        try {
+            prop = factory.newSignatureProperty(list, target, id); 
+            fail("Should raise an IAE for empty content"); 
+        } catch (IllegalArgumentException iae) {
+        } catch (Exception ex) {
+            fail("Should raise an IAE for empty content instead of " + ex);
+        }
+        String strEntry = "wrong type";
+        list.add(strEntry);
+        try {
+            prop = factory.newSignatureProperty(list, target, id); 
+            fail("Should raise a CCE for content containing " +
+                 "invalid, i.e. non-XMLStructure, entries"); 
+        } catch (ClassCastException cce) {
+        } catch (Exception ex) {
+            fail("Should raise a CCE for content with invalid entries " +
+                 "instead of " + ex);
+        }
+        list.remove(strEntry);
+        list.add(new TestUtils.MyOwnXMLStructure());
+        try {
+            prop = factory.newSignatureProperty(list, null, id);
+            fail("Should raise a NPE for null target"); 
+        } catch (NullPointerException npe) {
+        } catch (Exception ex) {
+            fail("Should raise a NPE for null target instead of " + ex);
+        }
 
-	prop = factory.newSignatureProperty(list, target, id);
-	assertNotNull(prop);
-	List unmodifiable = prop.getContent();
-	assertNotNull(unmodifiable);
-	try {
-	    unmodifiable.add(new TestUtils.MyOwnXMLStructure());
-	    fail("Should return an unmodifiable List object");
-	} catch (UnsupportedOperationException uoe) {}
-	assertTrue(Arrays.equals(unmodifiable.toArray(), list.toArray()));
-	assertEquals(prop.getTarget(), target);
-	assertEquals(prop.getId(), id);
-	assertNotNull(prop);
+        prop = factory.newSignatureProperty(list, target, id);
+        assertNotNull(prop);
+        List unmodifiable = prop.getContent();
+        assertNotNull(unmodifiable);
+        try {
+            unmodifiable.add(new TestUtils.MyOwnXMLStructure());
+            fail("Should return an unmodifiable List object");
+        } catch (UnsupportedOperationException uoe) {}
+        assertTrue(Arrays.equals(unmodifiable.toArray(), list.toArray()));
+        assertEquals(prop.getTarget(), target);
+        assertEquals(prop.getId(), id);
+        assertNotNull(prop);
     }
 
     public void testisFeatureSupported() {
-	List list = new Vector();
-	list.add(new TestUtils.MyOwnXMLStructure());
-	SignatureProperty prop = factory.newSignatureProperty
-	    (list, target, id);
-	try {
-	    prop.isFeatureSupported(null); 
-	    fail("Should raise a NPE for null feature"); 
-	} catch (NullPointerException npe) {}
+        List list = new Vector();
+        list.add(new TestUtils.MyOwnXMLStructure());
+        SignatureProperty prop = factory.newSignatureProperty
+            (list, target, id);
+        try {
+            prop.isFeatureSupported(null); 
+            fail("Should raise a NPE for null feature"); 
+        } catch (NullPointerException npe) {}
 
-	assertTrue(!prop.isFeatureSupported("not supported"));
+        assertTrue(!prop.isFeatureSupported("not supported"));
     }
 }

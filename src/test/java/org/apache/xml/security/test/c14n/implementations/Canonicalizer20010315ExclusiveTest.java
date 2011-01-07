@@ -343,7 +343,7 @@ public class Canonicalizer20010315ExclusiveTest extends TestCase {
                                  "(//. | //@* | //namespace::*)[ancestor-or-self::p]");
       Canonicalizer20010315Excl c = new Canonicalizer20010315ExclWithComments();
       byte[] reference = JavaUtils.getBytesFromFile(
-      		getAbsolutePath("data/org/apache/xml/security/c14n/inExcl/example2_2_3_c14nized_exclusive.xml") );
+                getAbsolutePath("data/org/apache/xml/security/c14n/inExcl/example2_2_3_c14nized_exclusive.xml") );
       byte[] result = c.engineCanonicalizeXPathNodeSet(nodes);
       assertEquals(new String(reference),new String(result));
    }
@@ -368,24 +368,24 @@ public class Canonicalizer20010315ExclusiveTest extends TestCase {
             + "</env:Body>"
             + "</env:Envelope>";
 
-	final String c14nXML =
-	    "<env:Body"
-	    + " xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\""
-	    + " xmlns:ns0=\"http://xmlsoap.org/Ping\""
-	    + " xmlns:wsu=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\""
-	    + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
-	    + " wsu:Id=\"body\">"
-	    + "<ns0:Ping xsi:type=\"ns0:ping\">"
-	    + "<ns0:text xsi:type=\"xsd:string\">hello</ns0:text>"
-	    + "</ns0:Ping>"
-	    + "</env:Body>";
+        final String c14nXML =
+            "<env:Body"
+            + " xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\""
+            + " xmlns:ns0=\"http://xmlsoap.org/Ping\""
+            + " xmlns:wsu=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\""
+            + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+            + " wsu:Id=\"body\">"
+            + "<ns0:Ping xsi:type=\"ns0:ping\">"
+            + "<ns0:text xsi:type=\"xsd:string\">hello</ns0:text>"
+            + "</ns0:Ping>"
+            + "</env:Body>";
 
         Document doc = this.db.parse(new InputSource(new StringReader(XML)));
         Canonicalizer20010315ExclOmitComments c14n = 
-	    new Canonicalizer20010315ExclOmitComments();
+            new Canonicalizer20010315ExclOmitComments();
         Set nodeSet = new HashSet();
         XMLUtils.getSet
-	    (doc.getDocumentElement().getFirstChild(), nodeSet, null, false);
+            (doc.getDocumentElement().getFirstChild(), nodeSet, null, false);
         XMLSignatureInput input = new XMLSignatureInput(nodeSet);
         byte[] bytes = c14n.engineCanonicalize(input, "env ns0 xsi wsu");
         assertEquals(c14nXML,new String(bytes));
@@ -393,11 +393,11 @@ public class Canonicalizer20010315ExclusiveTest extends TestCase {
 
    private String getAbsolutePath(String path)
    {
-   	  String basedir = System.getProperty("basedir");
-   	  if(basedir != null && !"".equals(basedir)) {
-   		path = basedir + "/" + path;
-   	  }
-   	  return path;
+          String basedir = System.getProperty("basedir");
+          if(basedir != null && !"".equals(basedir)) {
+                path = basedir + "/" + path;
+          }
+          return path;
    }
    
 }

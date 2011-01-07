@@ -21,55 +21,45 @@ package javax.xml.crypto.test.dsig.keyinfo;
 
 import javax.xml.crypto.dsig.keyinfo.*;
 
-import junit.framework.*;
-
 /**
  * Unit test for javax.xml.crypto.dsig.keyinfo.KeyName
  *
- * @version $Id$
  * @author Sean Mullan
  */
-public class KeyNameTest extends TestCase {
+public class KeyNameTest extends org.junit.Assert {
 
     private KeyInfoFactory fac;
 
-    public KeyNameTest() {
-	super("KeyNameTest");
+    public KeyNameTest() throws Exception { 
+        fac = KeyInfoFactory.getInstance
+            ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
     }
 
-    public KeyNameTest(String name) {
-	super(name);
-    }
-
-    public void setUp() throws Exception { 
-	fac = KeyInfoFactory.getInstance
-	    ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
-    }
-
-    public void tearDown() { }
-
+    @org.junit.Test
     public void testgetName() {
-	KeyName kn = fac.newKeyName("skeleton");
-	assertNotNull(kn.getName());
+        KeyName kn = fac.newKeyName("skeleton");
+        assertNotNull(kn.getName());
     }
 
+    @org.junit.Test
     public void testConstructor() {
-	final String name = "keyName";
-	KeyName kn = fac.newKeyName(name);
-	assertEquals(name, kn.getName());
-	try {
-	    kn = fac.newKeyName(null); 
-	    fail("Should raise a NullPointerException"); 
-	} catch (NullPointerException npe) {}
+        final String name = "keyName";
+        KeyName kn = fac.newKeyName(name);
+        assertEquals(name, kn.getName());
+        try {
+            kn = fac.newKeyName(null); 
+            fail("Should raise a NullPointerException"); 
+        } catch (NullPointerException npe) {}
     }
 
+    @org.junit.Test
     public void testisFeatureSupported() {
-	KeyName kn = fac.newKeyName("keyName");
-	try {
-	    kn.isFeatureSupported(null); 
-	    fail("Should raise a NPE for null feature"); 
-	} catch (NullPointerException npe) {}
+        KeyName kn = fac.newKeyName("keyName");
+        try {
+            kn.isFeatureSupported(null); 
+            fail("Should raise a NPE for null feature"); 
+        } catch (NullPointerException npe) {}
 
-	assertTrue(!kn.isFeatureSupported("not supported"));
+        assertTrue(!kn.isFeatureSupported("not supported"));
     }
 }

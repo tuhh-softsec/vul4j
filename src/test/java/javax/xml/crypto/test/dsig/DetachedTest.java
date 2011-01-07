@@ -29,8 +29,6 @@ import java.util.*;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 
-import junit.framework.*;
-
 /**
  * This is a simple example of generating and validating a Detached XML 
  * Signature using the JSR 105 API. The resulting signature will look 
@@ -77,103 +75,99 @@ import junit.framework.*;
  *
  * @author Sean Mullan
  */
-public class DetachedTest extends TestCase {
+public class DetachedTest extends org.junit.Assert {
 
     static {
         Security.insertProviderAt
             (new org.jcp.xml.dsig.internal.dom.XMLDSigRI(), 1);
     }
 
-    public DetachedTest(String name) {
-        super(name);
+    public DetachedTest() {
+        //
     }
     
+    @org.junit.Test
     public void test() {
         try {
             //
-    	    // PART 1 : Creating the detached signature
-    	    //
+            // PART 1 : Creating the detached signature
+            //
     
-    	    // Create a factory that will be used to generate the signature 
+            // Create a factory that will be used to generate the signature 
             // structures
-    	    XMLSignatureFactory fac = XMLSignatureFactory.getInstance
+            XMLSignatureFactory fac = XMLSignatureFactory.getInstance
                 ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
     
-    	    // Create a Reference to an external URI that will be digested
-    	    Reference ref = fac.newReference
+            // Create a Reference to an external URI that will be digested
+            Reference ref = fac.newReference
                 ("http://www.w3.org/TR/xml-stylesheet", 
-		fac.newDigestMethod(DigestMethod.SHA1, null));
+                fac.newDigestMethod(DigestMethod.SHA1, null));
     
-    	    // Create a DSA KeyPair
-    	    KeyPairGenerator kpg = KeyPairGenerator.getInstance("DSA");
-    	    kpg.initialize(1024, 
-		new SecureRandom("not so random bytes".getBytes()));
-    	    KeyPair kp = kpg.generateKeyPair();
+            // Create a DSA KeyPair
+            KeyPairGenerator kpg = KeyPairGenerator.getInstance("DSA");
+            kpg.initialize(1024, 
+                new SecureRandom("not so random bytes".getBytes()));
+            KeyPair kp = kpg.generateKeyPair();
     
-    	    // Create a KeyValue containing the generated DSA PublicKey
-    	    KeyInfoFactory kif = fac.getKeyInfoFactory();
-    	    KeyValue kv = kif.newKeyValue(kp.getPublic());
+            // Create a KeyValue containing the generated DSA PublicKey
+            KeyInfoFactory kif = fac.getKeyInfoFactory();
+            KeyValue kv = kif.newKeyValue(kp.getPublic());
     
-    	    // Create a KeyInfo and add the KeyValue to it
-    	    KeyInfo ki = kif.newKeyInfo(Collections.singletonList(kv));
+            // Create a KeyInfo and add the KeyValue to it
+            KeyInfo ki = kif.newKeyInfo(Collections.singletonList(kv));
 
-	    // Create SignedInfo
-	    SignedInfo si = fac.newSignedInfo(fac.newCanonicalizationMethod(
-		CanonicalizationMethod.INCLUSIVE_WITH_COMMENTS, 
-		(C14NMethodParameterSpec) null), 
-		fac.newSignatureMethod(SignatureMethod.DSA_SHA1, null), 
-		Collections.singletonList(ref));
+            // Create SignedInfo
+            SignedInfo si = fac.newSignedInfo(fac.newCanonicalizationMethod(
+                CanonicalizationMethod.INCLUSIVE_WITH_COMMENTS, 
+                (C14NMethodParameterSpec) null), 
+                fac.newSignatureMethod(SignatureMethod.DSA_SHA1, null), 
+                Collections.singletonList(ref));
 
-	    // Create XMLSignature
-	    XMLSignature signature = fac.newXMLSignature(si,ki,null,null,null);
+            // Create XMLSignature
+            XMLSignature signature = fac.newXMLSignature(si,ki,null,null,null);
     
-    	    // Create an XMLSignContext and set the 
+            // Create an XMLSignContext and set the 
             // DSA PrivateKey for signing
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             dbf.setNamespaceAware(true);
             dbf.setValidating(false);
             Document doc = dbf.newDocumentBuilder().newDocument();
-    	    DOMSignContext signContext = new DOMSignContext(kp.getPrivate(), doc);
-    	    signContext.putNamespacePrefix(XMLSignature.XMLNS, "ds");
+            DOMSignContext signContext = new DOMSignContext(kp.getPrivate(), doc);
+            signContext.putNamespacePrefix(XMLSignature.XMLNS, "ds");
 
-    	    // Generate (and sign) the XMLSignature
-    	    signature.sign(signContext);
+            // Generate (and sign) the XMLSignature
+            signature.sign(signContext);
     
-    	    //
-    	    // PART 2 : Validating the detached signature
-    	    //
+            //
+            // PART 2 : Validating the detached signature
+            //
     
-    	    // Create a XMLValidateContext & set the DSAPublicKey for validating
-	    XMLValidateContext vc = new DOMValidateContext(kp.getPublic(),
-		doc.getDocumentElement());
+            // Create a XMLValidateContext & set the DSAPublicKey for validating
+            XMLValidateContext vc = new DOMValidateContext(kp.getPublic(),
+                doc.getDocumentElement());
     
-    	    // Validate the Signature (generated above)
-    	    boolean coreValidity = signature.validate(vc); 
+            // Validate the Signature (generated above)
+            boolean coreValidity = signature.validate(vc); 
     
-    	    // Check core validation status
-    	    if (coreValidity == false) {
-    	        // check the validation status of each Reference
-    	        Iterator i = signature.getSignedInfo().getReferences().iterator();
-    	        for (int j=0; i.hasNext(); j++) {
-		    Reference reference = (Reference) i.next();
-    		    reference.validate(vc);
-    	        }
-    	        fail("Signature failed core validation");
-    	    }
+            // Check core validation status
+            if (coreValidity == false) {
+                // check the validation status of each Reference
+                Iterator<?> i = signature.getSignedInfo().getReferences().iterator();
+                for (int j = 0; i.hasNext(); j++) {
+                    Reference reference = (Reference) i.next();
+                    reference.validate(vc);
+                }
+                fail("Signature failed core validation");
+            }
     
-    	    // You can also validate an XML Signature which is in XML format.
-    	    // Unmarshal and validate an XMLSignature from a DOMValidateContext
-    	    signature = fac.unmarshalXMLSignature(vc);
-    	    coreValidity = signature.validate(vc);
-    	    assertTrue("Core validity of unmarshalled XMLSignature is false", 
-	        coreValidity);
+            // You can also validate an XML Signature which is in XML format.
+            // Unmarshal and validate an XMLSignature from a DOMValidateContext
+            signature = fac.unmarshalXMLSignature(vc);
+            coreValidity = signature.validate(vc);
+            assertTrue("Core validity of unmarshalled XMLSignature is false", coreValidity);
         } catch(Exception ex) {
             fail("Exception: " + ex);
         }
     }
 
-    public static void main(String[] args) throws Exception {
-        DetachedTest dt = new DetachedTest("");
-        dt.test();
-    }
 }

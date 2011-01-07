@@ -29,21 +29,21 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 
 public class NameSpaceSymbTableTest extends TestCase {
-	public static Test suite() {
-	      return new TestSuite(NameSpaceSymbTableTest.class);
-	   }
-	static Attr node1,node2;
+        public static Test suite() {
+              return new TestSuite(NameSpaceSymbTableTest.class);
+           }
+        static Attr node1,node2;
     static {
-    	try {
+        try {
             Document doc=DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-			node1=doc.createAttributeNS("a","b");
+                        node1=doc.createAttributeNS("a","b");
             node2=doc.createAttributeNS("b","c");
-		} catch (Exception e) {
-			e.printStackTrace();
-		} 
+                } catch (Exception e) {
+                        e.printStackTrace();
+                } 
     }
-	public void testNullFirstXmlns() {
-		NameSpaceSymbTable ns=new NameSpaceSymbTable();
+        public void testNullFirstXmlns() {
+                NameSpaceSymbTable ns=new NameSpaceSymbTable();
         assertNull(ns.getMapping("xmlns"));
     }
     public void testXmlnsPut() {
@@ -91,7 +91,7 @@ public class NameSpaceSymbTableTest extends TestCase {
         assertNull(ns.getMapping("xmlns"));             
     }
     public void testPrefix() {
-    	NameSpaceSymbTable ns=new NameSpaceSymbTable();
+        NameSpaceSymbTable ns=new NameSpaceSymbTable();
         ns.push();
         ns.addMapping("a","http://a",node1);
         assertEquals(node1,ns.getMapping("a"));
@@ -107,7 +107,7 @@ public class NameSpaceSymbTableTest extends TestCase {
         assertEquals(node1,ns.getMapping("a"));
     }
     public void testSeveralPrefixes() {
-    	NameSpaceSymbTable ns=new NameSpaceSymbTable();
+        NameSpaceSymbTable ns=new NameSpaceSymbTable();
         ns.push();
         ns.addMapping("a","http://a",node1);
         ns.addMapping("b","http://b",node2);
@@ -126,7 +126,7 @@ public class NameSpaceSymbTableTest extends TestCase {
         assertEquals(node1,ns.getMapping("a"));        
      }
     public void testGetUnrenderedNodes() {
-    	NameSpaceSymbTable ns=new NameSpaceSymbTable();
+        NameSpaceSymbTable ns=new NameSpaceSymbTable();
         ns.push();
         List l=new ArrayList();
         ns.addMapping("xmlns","http://a",node1);
@@ -138,7 +138,7 @@ public class NameSpaceSymbTableTest extends TestCase {
         assertEquals(n, node2);
     }
     public void testUnrederedNodes() {
-    	NameSpaceSymbTable ns=new NameSpaceSymbTable();
+        NameSpaceSymbTable ns=new NameSpaceSymbTable();
         ns.push();
         List l=new ArrayList();
         ns.getUnrenderedNodes(l);
@@ -167,7 +167,7 @@ public class NameSpaceSymbTableTest extends TestCase {
         
     }
     public void testBug38655() {
-    	 NameSpaceSymbTable ns=new NameSpaceSymbTable();
+         NameSpaceSymbTable ns=new NameSpaceSymbTable();
          ns.push();
          
          ns.addMappingAndRender("generated-command","http://foo.com/command",node1);        	 
@@ -181,6 +181,6 @@ public class NameSpaceSymbTableTest extends TestCase {
          ns.addMappingAndRender("xmlns","http://www.w3.org/1999/xhtml",node1);
          ns.addMappingAndRender("ctrl","http://foo.com/controls",node1);
          ns.addMappingAndRender("wiki","http://foo.com/samples/wiki",node1);
-    		  
+                  
     }
 }

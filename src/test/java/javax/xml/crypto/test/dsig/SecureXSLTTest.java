@@ -34,16 +34,16 @@ public class SecureXSLTTest extends TestCase {
     }
 
     public SecureXSLTTest(String name) {
-	super(name);
+        super(name);
     }
 
     public void test() throws Exception {
 
         String fs = System.getProperty("file.separator");
         String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
-    	
+        
         File baseDir = new File(base + fs + "data" 
-	    + fs + "javax" + fs + "xml" + fs + "crypto", "dsig");
+            + fs + "javax" + fs + "xml" + fs + "crypto", "dsig");
 
         String[] signatures =
             { "signature1.xml", "signature2.xml", "signature3.xml" };
@@ -53,7 +53,7 @@ public class SecureXSLTTest extends TestCase {
         XMLSignatureFactory fac = XMLSignatureFactory.getInstance("DOM");
         File f = new File("doc.xml");
         for (int i=0; i<signatures.length; i++) {
-	    String signature = signatures[i];
+            String signature = signatures[i];
             // System.out.println("Validating " + signature);
             Document doc = dbf.newDocumentBuilder().parse
                 (new FileInputStream(new File(baseDir, signature)));
@@ -66,9 +66,9 @@ public class SecureXSLTTest extends TestCase {
 
             DOMValidateContext valContext = new DOMValidateContext
                 (new KeySelectors.KeyValueKeySelector(), nl.item(0));
-	    // enable reference caching in your validation context 
-	    valContext.setProperty
-    		("javax.xml.crypto.dsig.cacheReference", Boolean.TRUE);
+            // enable reference caching in your validation context 
+            valContext.setProperty
+                ("javax.xml.crypto.dsig.cacheReference", Boolean.TRUE);
 
             // make sure file is not left over from previous run
             f.delete();
@@ -78,7 +78,7 @@ public class SecureXSLTTest extends TestCase {
                 if (sig.validate(valContext)) {
                     System.err.println("Signature UNEXPECTEDLY passed validation");
                 }
-		sig.getSignedInfo().getReferences().get(0);
+                sig.getSignedInfo().getReferences().get(0);
             } catch (XMLSignatureException xse) {
                 // this is good, but still make sure attack was not successful
                 // by falling through and checking if file was created

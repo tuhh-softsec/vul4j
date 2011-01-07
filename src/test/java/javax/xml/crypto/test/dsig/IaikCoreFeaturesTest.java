@@ -24,8 +24,6 @@ import java.io.FileInputStream;
 import java.security.Security;
 import javax.xml.crypto.*;
 
-import junit.framework.*;
-
 import javax.xml.crypto.dsig.XMLSignatureFactory;
 import javax.xml.crypto.test.KeySelectors;
 
@@ -35,7 +33,7 @@ import javax.xml.crypto.test.KeySelectors;
  *
  * @author Sean Mullan
  */
-public class IaikCoreFeaturesTest extends TestCase {
+public class IaikCoreFeaturesTest extends org.junit.Assert {
 
     private SignatureValidator validator;
     private String base;
@@ -45,68 +43,63 @@ public class IaikCoreFeaturesTest extends TestCase {
             (new org.jcp.xml.dsig.internal.dom.XMLDSigRI(), 1);
     }
 
-    public IaikCoreFeaturesTest(String name) {
-        super(name);
-	String fs = System.getProperty("file.separator");
-	base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
-	base = base + fs + "data" + fs +
-	    "at" + fs + "iaik" + fs + "ixsil";
-	validator = new SignatureValidator(new File
-	    (base, "coreFeatures/signatures"));
+    public IaikCoreFeaturesTest() {
+        String fs = System.getProperty("file.separator");
+        base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
+        base = base + fs + "data" + fs +
+            "at" + fs + "iaik" + fs + "ixsil";
+        validator = new SignatureValidator(new File
+            (base, "coreFeatures/signatures"));
     }
     
+    @org.junit.Test
     public void test_anonymousReferenceSignature() throws Exception {
         String file = "anonymousReferenceSignature.xml";
 
-	boolean coreValidity = validator.validate
-	    (file, new KeySelectors.KeyValueKeySelector(), 
-	     new NullURIDereferencer(base));
-	assertTrue("Signature failed core validation", coreValidity);
+        boolean coreValidity = validator.validate
+            (file, new KeySelectors.KeyValueKeySelector(), 
+             new NullURIDereferencer(base));
+        assertTrue("Signature failed core validation", coreValidity);
     }
     
+    @org.junit.Test
     public void test_manifestSignature() throws Exception {
         String file = "manifestSignature.xml";
 
-	boolean coreValidity = validator.validate
-	    (file, new KeySelectors.KeyValueKeySelector());
-	assertTrue("Signature failed core validation", coreValidity);
+        boolean coreValidity = validator.validate
+            (file, new KeySelectors.KeyValueKeySelector());
+        assertTrue("Signature failed core validation", coreValidity);
     }
     
+    @org.junit.Test
     public void test_signatureTypesSignature() throws Exception {
         String file = "signatureTypesSignature.xml";
 
-	boolean coreValidity = validator.validate
-	    (file, new KeySelectors.KeyValueKeySelector(),
-	            new OfflineDereferencer());
-	assertTrue("Signature failed core validation", coreValidity);
+        boolean coreValidity = validator.validate
+            (file, new KeySelectors.KeyValueKeySelector(),
+                    new OfflineDereferencer());
+        assertTrue("Signature failed core validation", coreValidity);
     }
     
-    public static void main(String[] args) throws Exception {
-        IaikCoreFeaturesTest it = new IaikCoreFeaturesTest("");
-	it.test_anonymousReferenceSignature();
-	it.test_manifestSignature();
-	it.test_signatureTypesSignature();
-    }
-
     private static class NullURIDereferencer implements URIDereferencer {
 
-	private OctetStreamData osd;
+        private OctetStreamData osd;
 
-	NullURIDereferencer(String base) throws Exception {
-	    File content = new File
-		(base, "coreFeatures/samples/anonymousReferenceContent.xml");
-	    osd = new OctetStreamData(new FileInputStream(content));
-	}
+        NullURIDereferencer(String base) throws Exception {
+            File content = new File
+                (base, "coreFeatures/samples/anonymousReferenceContent.xml");
+            osd = new OctetStreamData(new FileInputStream(content));
+        }
 
         public Data dereference(URIReference uriReference, 
-	    XMLCryptoContext context) throws URIReferenceException {
+            XMLCryptoContext context) throws URIReferenceException {
 
-	    if (uriReference.getURI() != null) {
-		throw new URIReferenceException("must be a null URI");
-	    }
+            if (uriReference.getURI() != null) {
+                throw new URIReferenceException("must be a null URI");
+            }
 
-	    return osd;
-	}
+            return osd;
+        }
     }
     
     private static class OfflineDereferencer implements URIDereferencer {
@@ -138,4 +131,5 @@ public class IaikCoreFeaturesTest extends TestCase {
             }
         }
     }
+    
 }

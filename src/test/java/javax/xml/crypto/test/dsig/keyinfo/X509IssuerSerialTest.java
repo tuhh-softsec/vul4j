@@ -22,76 +22,69 @@ package javax.xml.crypto.test.dsig.keyinfo;
 import java.math.BigInteger;
 import javax.xml.crypto.dsig.keyinfo.*;
 
-import junit.framework.*;
-
 /**
  * Unit test for javax.xml.crypto.dsig.keyinfo.X509IssuerSerial
  *
  * @version $Id: X509IssuerSerialTest.java,v 1.1 2004/04/07 21:11:36 mullan Exp $
  * @author Valerie Peng
  */
-public class X509IssuerSerialTest extends TestCase {
+public class X509IssuerSerialTest extends org.junit.Assert {
 
     private KeyInfoFactory fac;
     private String name;
 
-    public X509IssuerSerialTest() {
-	super("X509IssuerSerialTest");
+    public X509IssuerSerialTest() throws Exception { 
+        fac = KeyInfoFactory.getInstance
+            ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
+        name = "CN = Wolfgang";
     }
 
-    public X509IssuerSerialTest(String name) {
-	super(name);
-    }
-
-    public void setUp() throws Exception { 
-	fac = KeyInfoFactory.getInstance
-	    ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
-	name = "CN = Wolfgang";
-    }
-
-    public void tearDown() { }
-
+    @org.junit.Test
     public void testgetIssuerName() {
-	X509IssuerSerial x509is = fac.newX509IssuerSerial(name,BigInteger.ZERO);
-	assertNotNull(x509is.getIssuerName());	
+        X509IssuerSerial x509is = fac.newX509IssuerSerial(name,BigInteger.ZERO);
+        assertNotNull(x509is.getIssuerName());	
     }
 
+    @org.junit.Test
     public void testgetSerialNumber() {
-	X509IssuerSerial x509is = fac.newX509IssuerSerial(name,BigInteger.ZERO);
-	assertNotNull(x509is.getSerialNumber());	
+        X509IssuerSerial x509is = fac.newX509IssuerSerial(name,BigInteger.ZERO);
+        assertNotNull(x509is.getSerialNumber());	
     }
 
+    @org.junit.Test
     public void testConstructor() {
-	// test newX509IssuerSerial(String, BigInteger)
-	X509IssuerSerial x509is = fac.newX509IssuerSerial(name, BigInteger.ONE);
-	assertEquals(name, x509is.getIssuerName());
-	assertEquals(BigInteger.ONE, x509is.getSerialNumber());
+        // test newX509IssuerSerial(String, BigInteger)
+        X509IssuerSerial x509is = fac.newX509IssuerSerial(name, BigInteger.ONE);
+        assertEquals(name, x509is.getIssuerName());
+        assertEquals(BigInteger.ONE, x509is.getSerialNumber());
     }
 
     /*
      * Confirm that an IllegalArgumentException is thrown when an issuer
      * distinguished name does not conform to RFC 2253.
      */
+    @org.junit.Test
     public void testConstructorBadIssuerName() {
-	// test newX509IssuerSerial(String, BigInteger)
-	String badName = "cn=bad,=+bad,";
-	try {
-	    fac.newX509IssuerSerial(badName,BigInteger.ONE);
-	    fail("Should raise an IllegalArgumentException when issuer " +
-		"distinguished name does not conform to RFC 2253"); 
-	} catch (IllegalArgumentException e) {
-	    // success
-	}
+        // test newX509IssuerSerial(String, BigInteger)
+        String badName = "cn=bad,=+bad,";
+        try {
+            fac.newX509IssuerSerial(badName,BigInteger.ONE);
+            fail("Should raise an IllegalArgumentException when issuer " +
+                "distinguished name does not conform to RFC 2253"); 
+        } catch (IllegalArgumentException e) {
+            // success
+        }
     }
 
+    @org.junit.Test
     public void testisFeatureSupported() {
-	
-	X509IssuerSerial x509is = fac.newX509IssuerSerial(name, BigInteger.ONE);
-	try {
-	    x509is.isFeatureSupported(null); 
-	    fail("Should raise a NPE for null feature"); 
-	} catch (NullPointerException npe) {}
-	
-	assertTrue(!x509is.isFeatureSupported("not supported"));
+        
+        X509IssuerSerial x509is = fac.newX509IssuerSerial(name, BigInteger.ONE);
+        try {
+            x509is.isFeatureSupported(null); 
+            fail("Should raise a NPE for null feature"); 
+        } catch (NullPointerException npe) {}
+        
+        assertTrue(!x509is.isFeatureSupported("not supported"));
     }
 }

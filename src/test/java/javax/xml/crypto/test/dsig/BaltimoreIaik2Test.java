@@ -22,8 +22,6 @@ package javax.xml.crypto.test.dsig;
 import java.io.File;
 import java.security.Security;
 
-import junit.framework.*;
-
 import javax.xml.crypto.test.KeySelectors;
 
 /**
@@ -32,7 +30,7 @@ import javax.xml.crypto.test.KeySelectors;
  *
  * @author Sean Mullan
  */
-public class BaltimoreIaik2Test extends TestCase {
+public class BaltimoreIaik2Test extends org.junit.Assert {
 
     private SignatureValidator validator;
     private File dir;
@@ -42,26 +40,22 @@ public class BaltimoreIaik2Test extends TestCase {
             (new org.jcp.xml.dsig.internal.dom.XMLDSigRI(), 1);
     }
 
-    public BaltimoreIaik2Test(String name) {
-        super(name);
-	String fs = System.getProperty("file.separator");
-	String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
-	
-	dir = new File(base + fs + "data" + fs +
-	    "ie" + fs + "baltimore" + fs + "merlin-examples",
+    public BaltimoreIaik2Test() {
+        String fs = System.getProperty("file.separator");
+        String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
+        
+        dir = new File(base + fs + "data" + fs +
+            "ie" + fs + "baltimore" + fs + "merlin-examples",
             "ec-merlin-iaikTests-two");
-	validator = new SignatureValidator(dir);
+        validator = new SignatureValidator(dir);
     }
 
-    public void test_signature() throws Exception {
+    @org.junit.Test
+    public void testSignature() throws Exception {
         String file = "signature.xml";
-	boolean coreValidity = validator.validate
-	    (file, new KeySelectors.KeyValueKeySelector());
+        boolean coreValidity = validator.validate
+            (file, new KeySelectors.KeyValueKeySelector());
         assertTrue("Signature failed core validation", coreValidity);
     }    
 
-    public static void main(String[] args) throws Exception {
-        BaltimoreIaik2Test bt = new BaltimoreIaik2Test("");
-	bt.test_signature();
-    }
 }

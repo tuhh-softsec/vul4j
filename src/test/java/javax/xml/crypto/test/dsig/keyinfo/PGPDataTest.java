@@ -25,119 +25,111 @@ import java.util.List;
 import javax.xml.crypto.*;
 import javax.xml.crypto.dsig.keyinfo.*;
 
-import junit.framework.*;
-
 /**
  * Unit test for javax.xml.crypto.dsig.keyinfo.PGPData
  *
- * @version $Id$
  * @author Valerie Peng
  */
-public class PGPDataTest extends TestCase {
+public class PGPDataTest extends org.junit.Assert {
 
     private KeyInfoFactory fac;
     private byte[][] values = { 
-	{
+        {
             0x01, 0x02, 0x03, 0x04,
             0x05, 0x06, 0x07, 0x08
-	},
-	{
-	    (byte)0xc6, (byte)0x01, (byte)0x00
-	}
+        },
+        {
+            (byte)0xc6, (byte)0x01, (byte)0x00
+        }
     };
 
-    public PGPDataTest() {
-	super("PGPDataTest");
+    public PGPDataTest() throws Exception { 
+        fac = KeyInfoFactory.getInstance
+            ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
     }
 
-    public PGPDataTest(String name) {
-	super(name);
-    }
-
-    public void setUp() throws Exception { 
-	fac = KeyInfoFactory.getInstance
-	    ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
-    }
-
-    public void tearDown() { }
-
+    @org.junit.Test
     public void testgetExternalElements() {
-	PGPData[] pds = {
-	    fac.newPGPData(values[0]),
-	    fac.newPGPData(values[0], values[1], null),
-	    fac.newPGPData(values[1], null)
-	};
-	for (int i=0; i<pds.length; i++) {
-	    List li = pds[i].getExternalElements();
-	    assertNotNull(li);
-	    if (!li.isEmpty()) {
-		Object[] types = li.toArray();
-		for (int j=0; j<types.length; j++) {
-		    if (!(types[j] instanceof XMLStructure)) {
-			fail("PGP element has the wrong type");
-		    };
-		}
-	    } 
+        PGPData[] pds = {
+            fac.newPGPData(values[0]),
+            fac.newPGPData(values[0], values[1], null),
+            fac.newPGPData(values[1], null)
+        };
+        for (int i=0; i<pds.length; i++) {
+            List<?> li = pds[i].getExternalElements();
+            assertNotNull(li);
+            if (!li.isEmpty()) {
+                Object[] types = li.toArray();
+                for (int j=0; j<types.length; j++) {
+                    if (!(types[j] instanceof XMLStructure)) {
+                        fail("PGP element has the wrong type");
+                    };
+                }
+            } 
         }
-	try {
-	    fac.newPGPData
-		(values[0], Collections.singletonList(new Object()));
-	    fail("Added PGP element of wrong type");
-	} catch (ClassCastException ex) {
-	    // expected
-	}
+        try {
+            fac.newPGPData
+                (values[0], Collections.singletonList(new Object()));
+            fail("Added PGP element of wrong type");
+        } catch (ClassCastException ex) {
+            // expected
+        }
     }
 
+    @org.junit.Test
     public void testgetKeyId() {
-	PGPData pd = fac.newPGPData(values[0]);
-	assertNotNull(pd.getKeyId());
-	pd = fac.newPGPData(values[0], values[1], null);
-	assertNotNull(pd.getKeyId());
-	pd = fac.newPGPData(values[1], null);
-    }
-
-    public void testgetKeyPacket() {
-	PGPData pd = fac.newPGPData(values[0]);
-	pd = fac.newPGPData(values[0], values[1], null);
-	assertNotNull(pd.getKeyPacket());
+        PGPData pd = fac.newPGPData(values[0]);
+        assertNotNull(pd.getKeyId());
+        pd = fac.newPGPData(values[0], values[1], null);
+        assertNotNull(pd.getKeyId());
         pd = fac.newPGPData(values[1], null);
-	assertNotNull(pd.getKeyPacket());
     }
 
+    @org.junit.Test
+    public void testgetKeyPacket() {
+        PGPData pd = fac.newPGPData(values[0]);
+        pd = fac.newPGPData(values[0], values[1], null);
+        assertNotNull(pd.getKeyPacket());
+        pd = fac.newPGPData(values[1], null);
+        assertNotNull(pd.getKeyPacket());
+    }
+
+    @org.junit.Test
     public void testConstructor() {
-	// test newPGPKeyData(byte[])
-	PGPData pd = fac.newPGPData(values[0]);
-	assertTrue(Arrays.equals(values[0], pd.getKeyId()));
+        // test newPGPKeyData(byte[])
+        PGPData pd = fac.newPGPData(values[0]);
+        assertTrue(Arrays.equals(values[0], pd.getKeyId()));
 
-	// test newPGPData(byte[], byte[], List)
-	pd = fac.newPGPData(values[0], values[1], null);
-	assertTrue(Arrays.equals(values[0], pd.getKeyId()));
-	assertTrue(Arrays.equals(values[1], pd.getKeyPacket()));
-	    
-	// test newPGPData(byte[], List)
-	pd = fac.newPGPData(values[1], null);
-	assertTrue(Arrays.equals(values[1], pd.getKeyPacket()));
+        // test newPGPData(byte[], byte[], List)
+        pd = fac.newPGPData(values[0], values[1], null);
+        assertTrue(Arrays.equals(values[0], pd.getKeyId()));
+        assertTrue(Arrays.equals(values[1], pd.getKeyPacket()));
+            
+        // test newPGPData(byte[], List)
+        pd = fac.newPGPData(values[1], null);
+        assertTrue(Arrays.equals(values[1], pd.getKeyPacket()));
     }
 
+    @org.junit.Test
     public void testisFeatureSupported() {
-	PGPData pd = null;
-	for (int i=0; i<3; i++) {
-	    switch (i) {
-	    case 0:
-		pd = fac.newPGPData(values[0]);
-		break;
-	    case 1:
-		pd = fac.newPGPData(values[0], values[1], null);
-		break;
-	    case 2:
-		pd = fac.newPGPData(values[1], null);
-	    }
-	    try {
-		pd.isFeatureSupported(null); 
-		fail("Should raise a NPE for null feature"); 
-	    } catch (NullPointerException npe) {}
-	    
-	    assertTrue(!pd.isFeatureSupported("not supported"));
-	}
+        PGPData pd = null;
+        for (int i = 0; i < 3; i++) {
+            switch (i) {
+            case 0:
+                pd = fac.newPGPData(values[0]);
+                break;
+            case 1:
+                pd = fac.newPGPData(values[0], values[1], null);
+                break;
+            case 2:
+                pd = fac.newPGPData(values[1], null);
+            }
+            try {
+                pd.isFeatureSupported(null); 
+                fail("Should raise a NPE for null feature"); 
+            } catch (NullPointerException npe) {}
+            
+            assertTrue(!pd.isFeatureSupported("not supported"));
+        }
     }
 }

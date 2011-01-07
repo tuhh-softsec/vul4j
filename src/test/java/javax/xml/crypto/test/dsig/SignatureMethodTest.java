@@ -35,70 +35,70 @@ public class SignatureMethodTest extends TestCase {
     XMLSignatureFactory factory;
 
     private static final String SIG_ALGOS[] = {
-	SignatureMethod.DSA_SHA1,
-	SignatureMethod.RSA_SHA1,
-	SignatureMethod.HMAC_SHA1
+        SignatureMethod.DSA_SHA1,
+        SignatureMethod.RSA_SHA1,
+        SignatureMethod.HMAC_SHA1
     };
 
     public SignatureMethodTest() {
-	super("SignatureMethodTest");
+        super("SignatureMethodTest");
     }
 
     public SignatureMethodTest(String name) {
-	super(name);
+        super(name);
     }
 
     public void setUp() throws Exception { 
-	factory = XMLSignatureFactory.getInstance
+        factory = XMLSignatureFactory.getInstance
             ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
     }
 
     public void tearDown() { }
 
     public void testisFeatureSupported() throws Exception {
-	SignatureMethod sm;
-	for (int i = 0; i < SIG_ALGOS.length; i++) {
-	    String algo = SIG_ALGOS[i];
-	    sm = factory.newSignatureMethod(algo, null);
-	    try {
-		sm.isFeatureSupported(null); 
-		fail("Should raise a NPE for null feature"); 
-	    } catch (NullPointerException npe) {}
-	    
-	    assertTrue(!sm.isFeatureSupported("not supported"));
-	}
+        SignatureMethod sm;
+        for (int i = 0; i < SIG_ALGOS.length; i++) {
+            String algo = SIG_ALGOS[i];
+            sm = factory.newSignatureMethod(algo, null);
+            try {
+                sm.isFeatureSupported(null); 
+                fail("Should raise a NPE for null feature"); 
+            } catch (NullPointerException npe) {}
+            
+            assertTrue(!sm.isFeatureSupported("not supported"));
+        }
     }
 
     public void testConstructor() throws Exception {
-	// test XMLSignatureFactory.newAlgorithmMethod
-	// (String algorithm, AlgorithmParameterSpec params)
-	// for generating SignatureMethod objects
-	SignatureMethod sm;
-	for (int i = 0; i < SIG_ALGOS.length; i++) {
-	    String algo = SIG_ALGOS[i];
-	    sm = factory.newSignatureMethod(algo, null);
-	    assertEquals(sm.getAlgorithm(), algo);
+        // test XMLSignatureFactory.newAlgorithmMethod
+        // (String algorithm, AlgorithmParameterSpec params)
+        // for generating SignatureMethod objects
+        SignatureMethod sm;
+        for (int i = 0; i < SIG_ALGOS.length; i++) {
+            String algo = SIG_ALGOS[i];
+            sm = factory.newSignatureMethod(algo, null);
+            assertEquals(sm.getAlgorithm(), algo);
 
-	    assertNull(sm.getParameterSpec());
-	    try {
-		sm = factory.newSignatureMethod
-		    (algo, new TestUtils.MyOwnSignatureMethodParameterSpec());
-		fail("Should raise an IAPE for invalid parameters"); 
-	    } catch (InvalidAlgorithmParameterException iape) {
-	    } catch (Exception ex) {
-		fail("Should raise an IAPE instead of " + ex);
-	    }
-	}
+            assertNull(sm.getParameterSpec());
+            try {
+                sm = factory.newSignatureMethod
+                    (algo, new TestUtils.MyOwnSignatureMethodParameterSpec());
+                fail("Should raise an IAPE for invalid parameters"); 
+            } catch (InvalidAlgorithmParameterException iape) {
+            } catch (Exception ex) {
+                fail("Should raise an IAPE instead of " + ex);
+            }
+        }
 
-	try {
-	    sm = factory.newSignatureMethod("non-existent", null); 
-	    fail("Should raise an NSAE for non-existent algos"); 
-	} catch (NoSuchAlgorithmException nsae) {}
+        try {
+            sm = factory.newSignatureMethod("non-existent", null); 
+            fail("Should raise an NSAE for non-existent algos"); 
+        } catch (NoSuchAlgorithmException nsae) {}
 
-	try {
-	    sm = factory.newSignatureMethod(null, null); 
-	    fail("Should raise a NPE for null algo"); 
-	} catch (NullPointerException npe) {}
+        try {
+            sm = factory.newSignatureMethod(null, null); 
+            fail("Should raise a NPE for null algo"); 
+        } catch (NullPointerException npe) {}
     } 
 }
 

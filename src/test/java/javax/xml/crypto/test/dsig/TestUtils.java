@@ -55,161 +55,161 @@ public class TestUtils {
     private TestUtils() {}
     
     public static PublicKey getPublicKey(String algo) 
-	throws InvalidKeySpecException, NoSuchAlgorithmException {
-	KeyFactory kf = KeyFactory.getInstance(algo);
-	KeySpec kspec;
-	if (algo.equalsIgnoreCase("DSA")) {
-	    kspec = new DSAPublicKeySpec(new BigInteger(DSA_Y), 
-					 new BigInteger(DSA_P), 
-					 new BigInteger(DSA_Q), 
-					 new BigInteger(DSA_G));
-	} else if (algo.equalsIgnoreCase("RSA")) {
-	    kspec = new RSAPublicKeySpec(new BigInteger(RSA_MOD), 
-					 new BigInteger(RSA_PUB));
-	} else throw new RuntimeException("Unsupported key algorithm " + algo);
-	return kf.generatePublic(kspec);
+        throws InvalidKeySpecException, NoSuchAlgorithmException {
+        KeyFactory kf = KeyFactory.getInstance(algo);
+        KeySpec kspec;
+        if (algo.equalsIgnoreCase("DSA")) {
+            kspec = new DSAPublicKeySpec(new BigInteger(DSA_Y), 
+                                         new BigInteger(DSA_P), 
+                                         new BigInteger(DSA_Q), 
+                                         new BigInteger(DSA_G));
+        } else if (algo.equalsIgnoreCase("RSA")) {
+            kspec = new RSAPublicKeySpec(new BigInteger(RSA_MOD), 
+                                         new BigInteger(RSA_PUB));
+        } else throw new RuntimeException("Unsupported key algorithm " + algo);
+        return kf.generatePublic(kspec);
     }
 
     public static PrivateKey getPrivateKey(String algo) 
-	throws InvalidKeySpecException, NoSuchAlgorithmException {
-	KeyFactory kf = KeyFactory.getInstance(algo);
-	KeySpec kspec;
-	if (algo.equalsIgnoreCase("DSA")) {
-	    kspec = new DSAPrivateKeySpec
-		(new BigInteger(DSA_X), new BigInteger(DSA_P), 
-		 new BigInteger(DSA_Q), new BigInteger(DSA_G));
-	} else if (algo.equalsIgnoreCase("RSA")) {
-	    kspec = new RSAPrivateKeySpec
-		(new BigInteger(RSA_MOD), new BigInteger(RSA_PRIV));
-	} else throw new RuntimeException("Unsupported key algorithm " + algo);
-	return kf.generatePrivate(kspec);
+        throws InvalidKeySpecException, NoSuchAlgorithmException {
+        KeyFactory kf = KeyFactory.getInstance(algo);
+        KeySpec kspec;
+        if (algo.equalsIgnoreCase("DSA")) {
+            kspec = new DSAPrivateKeySpec
+                (new BigInteger(DSA_X), new BigInteger(DSA_P), 
+                 new BigInteger(DSA_Q), new BigInteger(DSA_G));
+        } else if (algo.equalsIgnoreCase("RSA")) {
+            kspec = new RSAPrivateKeySpec
+                (new BigInteger(RSA_MOD), new BigInteger(RSA_PRIV));
+        } else throw new RuntimeException("Unsupported key algorithm " + algo);
+        return kf.generatePrivate(kspec);
     }
 
     public static SecretKey getSecretKey(final byte[] secret) {
-	return new SecretKey() {
-	    public String getFormat()	{ return "RAW"; }
-	    public byte[] getEncoded()	{ return secret; }
-	    public String getAlgorithm(){ return "SECRET"; }
-	};
+        return new SecretKey() {
+            public String getFormat()	{ return "RAW"; }
+            public byte[] getEncoded()	{ return secret; }
+            public String getAlgorithm(){ return "SECRET"; }
+        };
     }
     
     public static Document newDocument() {
-	try {
-	    DocumentBuilderFactory docFac =
+        try {
+            DocumentBuilderFactory docFac =
                 DocumentBuilderFactory.newInstance();
-	    docFac.setNamespaceAware(true);
+            docFac.setNamespaceAware(true);
             DocumentBuilder docBuilder = docFac.newDocumentBuilder();
-	    return docBuilder.newDocument();
-	} catch (Exception ex) {
-	    return null;
-	}
+            return docBuilder.newDocument();
+        } catch (Exception ex) {
+            return null;
+        }
     }
 
     public static class MyOwnC14nParameterSpec implements C14NMethodParameterSpec {}
     
     public static class MyOwnDigestMethodParameterSpec 
-	implements DigestMethodParameterSpec {}
+        implements DigestMethodParameterSpec {}
     
     public static class MyOwnSignatureMethodParameterSpec 
-	implements SignatureMethodParameterSpec {}
+        implements SignatureMethodParameterSpec {}
 
     public static XMLValidateContext getXMLValidateContext(String type, 
-						       File input, 
-						       String tag) 
-	throws Exception {
-	if (type.equalsIgnoreCase("dom")) {
-	    DocumentBuilderFactory docFactory =
-		DocumentBuilderFactory.newInstance();
-	    DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-	    Document doc = docBuilder.parse(input);
-	    if (tag == null) {
-		return new DOMValidateContext
-		    (TestUtils.getPublicKey("RSA"), doc.getDocumentElement());
-	    } else {
-		NodeList list = doc.getElementsByTagName(tag);
-		return new DOMValidateContext
-		    (TestUtils.getPublicKey("RSA"), list.item(0));
-	    }
-	} else {
-	    throw new Exception("Unsupported XMLValidateContext type: " + 
-				type);
-	}
+                                                       File input, 
+                                                       String tag) 
+        throws Exception {
+        if (type.equalsIgnoreCase("dom")) {
+            DocumentBuilderFactory docFactory =
+                DocumentBuilderFactory.newInstance();
+            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+            Document doc = docBuilder.parse(input);
+            if (tag == null) {
+                return new DOMValidateContext
+                    (TestUtils.getPublicKey("RSA"), doc.getDocumentElement());
+            } else {
+                NodeList list = doc.getElementsByTagName(tag);
+                return new DOMValidateContext
+                    (TestUtils.getPublicKey("RSA"), list.item(0));
+            }
+        } else {
+            throw new Exception("Unsupported XMLValidateContext type: " + 
+                                type);
+        }
     }
 
     public static class MyOwnDOMReference extends DOMStructure 
-	implements Reference {
-	private String id;
-	private boolean status;
-	private byte[] digest;
-	private static MessageDigest MD;
-	private static DigestMethod DIG_METHOD;
-	private Data derefData;
-	private InputStream dis;
-	static {
-	    try {
-		MD = MessageDigest.getInstance("SHA");
-		XMLSignatureFactory factory = XMLSignatureFactory.getInstance
-       		    ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
-		DIG_METHOD = 
-		    factory.newDigestMethod(DigestMethod.SHA1, null);
-	    } catch (Exception ex) {
-		// should never be thrown
-	    }
-	};
-	
-	public MyOwnDOMReference(String id, boolean status) {
-	    super(newDocument());
-	    this.id = id;
-	    this.status = status;
-	    digest = null;
-	}
+        implements Reference {
+        private String id;
+        private boolean status;
+        private byte[] digest;
+        private static MessageDigest MD;
+        private static DigestMethod DIG_METHOD;
+        private Data derefData;
+        private InputStream dis;
+        static {
+            try {
+                MD = MessageDigest.getInstance("SHA");
+                XMLSignatureFactory factory = XMLSignatureFactory.getInstance
+                    ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
+                DIG_METHOD = 
+                    factory.newDigestMethod(DigestMethod.SHA1, null);
+            } catch (Exception ex) {
+                // should never be thrown
+            }
+        };
+        
+        public MyOwnDOMReference(String id, boolean status) {
+            super(newDocument());
+            this.id = id;
+            this.status = status;
+            digest = null;
+        }
 
-	public byte[] getDigestValue() {
-	    if (digest == null) {
-		byte[] inBytes = id.getBytes();
-		digest = new byte[20];
-		if (status) {
-		    digest = MD.digest(inBytes);
-		}
-	    }
-	    return digest;
-	}
-	public byte[] getCalculatedDigestValue() {
-	    return null;
-	}
-	public DigestMethod getDigestMethod() { return DIG_METHOD; }
-	public String getId() {
-	    return id;
-	}
-	public String getType() {
-	    return null;
-	}
-	public String getURI() {
-	    return null;
-	}
-	public List getTransforms() {
-	    return Collections.EMPTY_LIST;
-	}
-	public boolean validate(XMLValidateContext vCtx) 
-	    throws XMLSignatureException {
-	    this.dis = new ByteArrayInputStream(id.getBytes());
-	    this.derefData = new OctetStreamData(this.dis);
-	    return status;
-	}
-	public Data getDereferencedData() {
-	    return derefData;
-	}
-	public InputStream getDigestInputStream() {
-	    return dis;
+        public byte[] getDigestValue() {
+            if (digest == null) {
+                byte[] inBytes = id.getBytes();
+                digest = new byte[20];
+                if (status) {
+                    digest = MD.digest(inBytes);
+                }
+            }
+            return digest;
+        }
+        public byte[] getCalculatedDigestValue() {
+            return null;
+        }
+        public DigestMethod getDigestMethod() { return DIG_METHOD; }
+        public String getId() {
+            return id;
+        }
+        public String getType() {
+            return null;
+        }
+        public String getURI() {
+            return null;
+        }
+        public List getTransforms() {
+            return Collections.EMPTY_LIST;
+        }
+        public boolean validate(XMLValidateContext vCtx) 
+            throws XMLSignatureException {
+            this.dis = new ByteArrayInputStream(id.getBytes());
+            this.derefData = new OctetStreamData(this.dis);
+            return status;
+        }
+        public Data getDereferencedData() {
+            return derefData;
+        }
+        public InputStream getDigestInputStream() {
+            return dis;
         }
     }
 
     public static class MyOwnXMLStructure implements XMLStructure {
-	public boolean isFeatureSupported(String feature) 
-	    throws NullPointerException {
-	    if (feature == null) throw new NullPointerException();
-	    return false;
-	}
+        public boolean isFeatureSupported(String feature) 
+            throws NullPointerException {
+            if (feature == null) throw new NullPointerException();
+            return false;
+        }
     }
 
     public static class OctetStreamURIDereferencer implements URIDereferencer {
@@ -251,9 +251,9 @@ public class TestUtils {
     }
 
     public static void dumpDocument(Document doc, String outName)
-	throws Exception {
+        throws Exception {
         DOMSource source = new DOMSource(doc);
-	File path = new File(System.getProperty("test.dir"), outName);
+        File path = new File(System.getProperty("test.dir"), outName);
         Result result = new StreamResult(new FileOutputStream(path));
         Transformer trans = TransformerFactory.newInstance().newTransformer();
         trans.setOutputProperty(OutputKeys.INDENT, "yes");

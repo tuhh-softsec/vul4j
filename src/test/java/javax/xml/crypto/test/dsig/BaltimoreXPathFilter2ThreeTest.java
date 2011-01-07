@@ -22,8 +22,6 @@ package javax.xml.crypto.test.dsig;
 import java.io.File;
 import java.security.Security;
 
-import junit.framework.*;
-
 import javax.xml.crypto.test.KeySelectors;
 
 /**
@@ -32,7 +30,7 @@ import javax.xml.crypto.test.KeySelectors;
  *
  * @author Sean Mullan
  */
-public class BaltimoreXPathFilter2ThreeTest extends TestCase {
+public class BaltimoreXPathFilter2ThreeTest extends org.junit.Assert {
 
     private SignatureValidator validator = null;
 
@@ -41,41 +39,39 @@ public class BaltimoreXPathFilter2ThreeTest extends TestCase {
             (new org.jcp.xml.dsig.internal.dom.XMLDSigRI(), 1);
     }
 
-    public BaltimoreXPathFilter2ThreeTest(String name) {
-        super(name);
-	String fs = System.getProperty("file.separator");
-	String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
-	base += fs + "data"
-	    + fs + "interop" + fs + "xfilter2";
-	validator = new SignatureValidator(new File
-	    (base, "merlin-xpath-filter2-three"));
+    public BaltimoreXPathFilter2ThreeTest() {
+        String fs = System.getProperty("file.separator");
+        String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
+        base += fs + "data"
+            + fs + "interop" + fs + "xfilter2";
+        validator = new SignatureValidator(new File
+            (base, "merlin-xpath-filter2-three"));
     }
-    public void test_sign_spec() throws Exception {
+    
+    @org.junit.Test
+    public void testSignSpec() throws Exception {
         String file = "sign-spec.xml";
 
-	boolean coreValidity = validator.validate(file, 
-		    new KeySelectors.KeyValueKeySelector());
-	assertTrue("Signature failed core validation#1", coreValidity);
+        boolean coreValidity = validator.validate(file, 
+                    new KeySelectors.KeyValueKeySelector());
+        assertTrue("Signature failed core validation#1", coreValidity);
 
- 	coreValidity = validator.validate(file, 
-		    new KeySelectors.RawX509KeySelector());
-	assertTrue("Signature failed core validation#2", coreValidity);
+        coreValidity = validator.validate(file, 
+                    new KeySelectors.RawX509KeySelector());
+        assertTrue("Signature failed core validation#2", coreValidity);
     }
-    public void test_sign_xfdl() throws Exception {
+    
+    @org.junit.Test
+    public void testSignXfdl() throws Exception {
         String file = "sign-xfdl.xml";
 
-	boolean coreValidity = validator.validate(file, 
-		    new KeySelectors.KeyValueKeySelector());
-	assertTrue("Signature failed core validation#1", coreValidity);
+        boolean coreValidity = validator.validate(file, 
+                    new KeySelectors.KeyValueKeySelector());
+        assertTrue("Signature failed core validation#1", coreValidity);
 
- 	coreValidity = validator.validate(file, 
-		    new KeySelectors.RawX509KeySelector());
-	assertTrue("Signature failed core validation#2", coreValidity);
+        coreValidity = validator.validate(file, 
+                    new KeySelectors.RawX509KeySelector());
+        assertTrue("Signature failed core validation#2", coreValidity);
     }
-    public static void main(String[] args) throws Exception {
-        BaltimoreXPathFilter2ThreeTest it = 
-	    new BaltimoreXPathFilter2ThreeTest("");
-	it.test_sign_spec();
-	it.test_sign_xfdl();
-    }
+    
 }

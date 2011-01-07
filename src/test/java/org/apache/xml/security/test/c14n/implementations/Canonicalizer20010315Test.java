@@ -353,7 +353,7 @@ public class Canonicalizer20010315Test extends TestCase {
                   ParserConfigurationException, CanonicalizationException,
                   InvalidCanonicalizerException, TransformerException
    {
-   	
+        
 
       String descri =
          "3.4 Character Modifications and Character References. (uncommented)";
@@ -1163,9 +1163,9 @@ public class Canonicalizer20010315Test extends TestCase {
       if (result == false) {    	  
          File f = new File(fileOut);
          if (!f.exists()) {
-         	File parent = new File(f.getParent());
-         	parent.mkdirs();
-         	f.createNewFile();
+                File parent = new File(f.getParent());
+                parent.mkdirs();
+                f.createNewFile();
          }
          FileOutputStream fos = new FileOutputStream(f);
 
@@ -1223,10 +1223,10 @@ public class Canonicalizer20010315Test extends TestCase {
          throw new RuntimeException(urlEx.getMessage());
       }
       */
-   	  prefix = "data/org/apache/xml/security/c14n/";
-   	  String basedir = System.getProperty("basedir");
-   	  if(basedir != null && !"".equals(basedir)) {
-   		prefix = basedir + "/" + prefix;
+          prefix = "data/org/apache/xml/security/c14n/";
+          String basedir = System.getProperty("basedir");
+          if(basedir != null && !"".equals(basedir)) {
+                prefix = basedir + "/" + prefix;
       }
       
       org.apache.xml.security.Init.init();

@@ -38,7 +38,7 @@ public class NoKeyInfoTest extends TestCase {
     private DocumentBuilder db;
 
     public NoKeyInfoTest(String name) {
-	super(name);
+        super(name);
     }
 
     public static Test suite() {
@@ -54,7 +54,7 @@ public class NoKeyInfoTest extends TestCase {
 
 
     public void testNullKeyInfo() throws Exception {
-	File f = null;
+        File f = null;
         if (BASEDIR != null && !"".equals(BASEDIR)) {
             f = new File(BASEDIR + SEP +
                   "data/ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/signature-enveloping-hmac-sha1.xml");
@@ -62,12 +62,12 @@ public class NoKeyInfoTest extends TestCase {
             f = new File(
                   "data/ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/signature-enveloping-hmac-sha1.xml");
         }
-	Document doc = db.parse(new FileInputStream(f));
-	NodeList nl = doc.getElementsByTagNameNS
-	    (Constants.SignatureSpecNS, "Signature");
-	XMLSignature sig = new XMLSignature
-	    ((Element) nl.item(0), f.toURL().toString());
-	KeyInfo ki = sig.getKeyInfo();
-	assertNull(ki);
+        Document doc = db.parse(new FileInputStream(f));
+        NodeList nl = doc.getElementsByTagNameNS
+            (Constants.SignatureSpecNS, "Signature");
+        XMLSignature sig = new XMLSignature
+            ((Element) nl.item(0), f.toURL().toString());
+        KeyInfo ki = sig.getKeyInfo();
+        assertNull(ki);
     }
 }

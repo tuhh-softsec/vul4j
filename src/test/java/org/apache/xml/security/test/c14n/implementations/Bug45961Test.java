@@ -44,25 +44,25 @@ import junit.framework.TestSuite;
 
 public class Bug45961Test extends TestCase {
 
-	private static final String OBJECT_ID = "Object";
-	private static final String MOCK_CANONICALIZATION_METHOD = MockCanonicalizationMethod.MOCK_CANONICALIZATION_METHOD;
-	private static final char[] PASSWORD = "changeit".toCharArray();
-	private static final String ALIAS = "mullan";
-	private DocumentBuilder _builder;
-	private ObjectContainer object;
-	
-	public static Test suite() {
-		return new TestSuite(Bug45961Test.class);
-	}
+        private static final String OBJECT_ID = "Object";
+        private static final String MOCK_CANONICALIZATION_METHOD = MockCanonicalizationMethod.MOCK_CANONICALIZATION_METHOD;
+        private static final char[] PASSWORD = "changeit".toCharArray();
+        private static final String ALIAS = "mullan";
+        private DocumentBuilder _builder;
+        private ObjectContainer object;
+        
+        public static Test suite() {
+                return new TestSuite(Bug45961Test.class);
+        }
 
-	protected void setUp() throws Exception {
-		Init.init();
-		Canonicalizer.register(MOCK_CANONICALIZATION_METHOD,
-				MockCanonicalizationMethod.class.getName());
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		factory.setNamespaceAware(true);
-		_builder = factory.newDocumentBuilder();
-	}
+        protected void setUp() throws Exception {
+                Init.init();
+                Canonicalizer.register(MOCK_CANONICALIZATION_METHOD,
+                                MockCanonicalizationMethod.class.getName());
+                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                factory.setNamespaceAware(true);
+                _builder = factory.newDocumentBuilder();
+        }
 
         public void testBug() throws Exception {
                 Document document = getSignedDocument();
@@ -76,24 +76,24 @@ public class Bug45961Test extends TestCase {
                 try {
                         signature.checkSignatureValue(certificate);
                 } catch (XMLSignatureException e) {
-               		fail(e.getMessage());
+                        fail(e.getMessage());
                 }
         }
 
-	private Document getSignedDocument() throws Exception {
-		KeyStore ks = KeyStore.getInstance("JKS");
-		FileInputStream fis = new FileInputStream(getAbsolutePath("data/test.jks"));
-		ks.load(fis, PASSWORD);
-		fis.close();
-		PrivateKey privateKey = (PrivateKey) ks.getKey(ALIAS, PASSWORD);
-		X509Certificate signingCert = (X509Certificate) ks
-				.getCertificate(ALIAS);
+        private Document getSignedDocument() throws Exception {
+                KeyStore ks = KeyStore.getInstance("JKS");
+                FileInputStream fis = new FileInputStream(getAbsolutePath("data/test.jks"));
+                ks.load(fis, PASSWORD);
+                fis.close();
+                PrivateKey privateKey = (PrivateKey) ks.getKey(ALIAS, PASSWORD);
+                X509Certificate signingCert = (X509Certificate) ks
+                                .getCertificate(ALIAS);
 
-		Document document = _builder.newDocument();
+                Document document = _builder.newDocument();
 
-		XMLSignature signature = new XMLSignature(document, null,
-				XMLSignature.ALGO_ID_SIGNATURE_DSA,
-				MOCK_CANONICALIZATION_METHOD);
+                XMLSignature signature = new XMLSignature(document, null,
+                                XMLSignature.ALGO_ID_SIGNATURE_DSA,
+                                MOCK_CANONICALIZATION_METHOD);
 
                 Element root = document.createElementNS("", "RootElement");
                 root.appendChild(document.createTextNode("Some simple test\n"));
@@ -102,19 +102,19 @@ public class Bug45961Test extends TestCase {
 
 //		document.appendChild(signature.getElement());
 
-		Element root2 = document.createElementNS("", "RootElement");
-		root2.appendChild(document.createTextNode("Some simple test\n"));
-		object = new ObjectContainer(document);
-		object.appendChild(root2);
-		object.setId(OBJECT_ID);
+                Element root2 = document.createElementNS("", "RootElement");
+                root2.appendChild(document.createTextNode("Some simple test\n"));
+                object = new ObjectContainer(document);
+                object.appendChild(root2);
+                object.setId(OBJECT_ID);
 
-		signature.addDocument("#" + OBJECT_ID);
-		signature.addDocument("", getTransforms(document));
+                signature.addDocument("#" + OBJECT_ID);
+                signature.addDocument("", getTransforms(document));
 
-		signature.addKeyInfo(signingCert);
-		signature.sign(privateKey);
-		return document;
-	}
+                signature.addKeyInfo(signingCert);
+                signature.sign(privateKey);
+                return document;
+        }
 
         private Transforms getTransforms(Document document) throws Exception {
                 Transforms transforms = new Transforms(document);

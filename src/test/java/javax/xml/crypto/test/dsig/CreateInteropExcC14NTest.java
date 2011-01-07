@@ -31,8 +31,6 @@ import javax.xml.crypto.dsig.spec.*;
 import javax.xml.parsers.*;
 import org.w3c.dom.*;
 
-import junit.framework.*;
-
 import javax.xml.crypto.test.KeySelectors;
 
 /**
@@ -41,7 +39,7 @@ import javax.xml.crypto.test.KeySelectors;
  *
  * @author Sean Mullan
  */
-public class CreateInteropExcC14NTest extends TestCase {
+public class CreateInteropExcC14NTest extends org.junit.Assert {
 
     private XMLSignatureFactory fac;
     private KeyInfoFactory kifac;
@@ -55,11 +53,7 @@ public class CreateInteropExcC14NTest extends TestCase {
             (new org.jcp.xml.dsig.internal.dom.XMLDSigRI(), 1);
     }
 
-    public CreateInteropExcC14NTest(String name) {
-        super(name);
-    }
-
-    public void setUp() throws Exception {
+    public CreateInteropExcC14NTest() throws Exception {
         fac = XMLSignatureFactory.getInstance
             ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
         kifac = fac.getKeyInfoFactory();
@@ -69,8 +63,8 @@ public class CreateInteropExcC14NTest extends TestCase {
 
         // get key & self-signed certificate from keystore
         String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
-    	
-	String fs = System.getProperty("file.separator");
+        
+        String fs = System.getProperty("file.separator");
         FileInputStream fis = new FileInputStream
             (base + fs + "data" + fs + "test.jks");
         ks = KeyStore.getInstance("JKS");
@@ -80,88 +74,87 @@ public class CreateInteropExcC14NTest extends TestCase {
         validatingKey = signingCert.getPublicKey();
     }
 
+    @org.junit.Test
     public void test_create_Y1() throws Exception {
-	List refs = new ArrayList(4);
+        List<Reference> refs = new ArrayList<Reference>(4);
 
-	// create reference 1
-	refs.add(fac.newReference
-	    ("#xpointer(id('to-be-signed'))", 
-	     fac.newDigestMethod(DigestMethod.SHA1, null),
-	     Collections.singletonList
-		(fac.newTransform(CanonicalizationMethod.EXCLUSIVE, 
-		 (TransformParameterSpec) null)),
-	     null, null));
+        // create reference 1
+        refs.add(fac.newReference
+            ("#xpointer(id('to-be-signed'))", 
+             fac.newDigestMethod(DigestMethod.SHA1, null),
+             Collections.singletonList
+                (fac.newTransform(CanonicalizationMethod.EXCLUSIVE, 
+                 (TransformParameterSpec) null)),
+             null, null));
 
-	// create reference 2
-	List prefixList = new ArrayList(2);
-	prefixList.add("bar");
-	prefixList.add("#default");
-	ExcC14NParameterSpec params = new ExcC14NParameterSpec(prefixList);
-	refs.add(fac.newReference
-	    ("#xpointer(id('to-be-signed'))", 
-	     fac.newDigestMethod(DigestMethod.SHA1, null),
-	     Collections.singletonList
-		(fac.newTransform(CanonicalizationMethod.EXCLUSIVE, params)),
-	     null, null));
+        // create reference 2
+        List<String> prefixList = new ArrayList<String>(2);
+        prefixList.add("bar");
+        prefixList.add("#default");
+        ExcC14NParameterSpec params = new ExcC14NParameterSpec(prefixList);
+        refs.add(fac.newReference
+            ("#xpointer(id('to-be-signed'))", 
+             fac.newDigestMethod(DigestMethod.SHA1, null),
+             Collections.singletonList
+                (fac.newTransform(CanonicalizationMethod.EXCLUSIVE, params)),
+             null, null));
 
-	// create reference 3
-	refs.add(fac.newReference
-	    ("#xpointer(id('to-be-signed'))", 
-	     fac.newDigestMethod(DigestMethod.SHA1, null),
-	     Collections.singletonList(fac.newTransform
-		(CanonicalizationMethod.EXCLUSIVE_WITH_COMMENTS, 
-		 (TransformParameterSpec) null)),
-	     null, null));
+        // create reference 3
+        refs.add(fac.newReference
+            ("#xpointer(id('to-be-signed'))", 
+             fac.newDigestMethod(DigestMethod.SHA1, null),
+             Collections.singletonList(fac.newTransform
+                (CanonicalizationMethod.EXCLUSIVE_WITH_COMMENTS, 
+                 (TransformParameterSpec) null)),
+             null, null));
 
-	// create reference 4
-	prefixList = new ArrayList(2);
-	prefixList.add("bar");
-	prefixList.add("#default");
-	params = new ExcC14NParameterSpec(prefixList);
-	refs.add(fac.newReference
-	    ("#xpointer(id('to-be-signed'))", 
-	     fac.newDigestMethod(DigestMethod.SHA1, null),
-	     Collections.singletonList(fac.newTransform
-		(CanonicalizationMethod.EXCLUSIVE_WITH_COMMENTS, 
-		 (TransformParameterSpec) params)),
-	     null, null));
+        // create reference 4
+        prefixList = new ArrayList<String>(2);
+        prefixList.add("bar");
+        prefixList.add("#default");
+        params = new ExcC14NParameterSpec(prefixList);
+        refs.add(fac.newReference
+            ("#xpointer(id('to-be-signed'))", 
+             fac.newDigestMethod(DigestMethod.SHA1, null),
+             Collections.singletonList(fac.newTransform
+                (CanonicalizationMethod.EXCLUSIVE_WITH_COMMENTS, 
+                 (TransformParameterSpec) params)),
+             null, null));
 
         // create SignedInfo
         SignedInfo si = fac.newSignedInfo(
-	    fac.newCanonicalizationMethod
-	        (CanonicalizationMethod.EXCLUSIVE, 
-		 (C14NMethodParameterSpec) null),
-	    fac.newSignatureMethod(SignatureMethod.DSA_SHA1, null), refs);
+            fac.newCanonicalizationMethod
+                (CanonicalizationMethod.EXCLUSIVE, 
+                 (C14NMethodParameterSpec) null),
+            fac.newSignatureMethod(SignatureMethod.DSA_SHA1, null), refs);
 
-	// create KeyInfo
-	List kits = new ArrayList(2);
-	kits.add(kifac.newKeyValue(validatingKey));
-	KeyInfo ki = kifac.newKeyInfo(kits);
+        // create KeyInfo
+        List<KeyValue> kits = new ArrayList<KeyValue>(2);
+        kits.add(kifac.newKeyValue(validatingKey));
+        KeyInfo ki = kifac.newKeyInfo(kits);
 
         // create Objects
         Document doc = db.newDocument();
-	Element baz = doc.createElementNS("urn:bar", "bar:Baz");
-	Comment com = doc.createComment(" comment ");
-	baz.appendChild(com);
-	XMLObject obj = fac.newXMLObject(Collections.singletonList
-	    (new DOMStructure(baz)), "to-be-signed", null, null);
+        Element baz = doc.createElementNS("urn:bar", "bar:Baz");
+        Comment com = doc.createComment(" comment ");
+        baz.appendChild(com);
+        XMLObject obj = fac.newXMLObject(Collections.singletonList
+            (new DOMStructure(baz)), "to-be-signed", null, null);
 
-	// create XMLSignature
-	XMLSignature sig = fac.newXMLSignature
-	    (si, ki, Collections.singletonList(obj), null, null);
+        // create XMLSignature
+        XMLSignature sig = fac.newXMLSignature
+            (si, ki, Collections.singletonList(obj), null, null);
 
         Element foo = doc.createElementNS("urn:foo", "Foo");
         foo.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns", "urn:foo");
         foo.setAttributeNS
-	    ("http://www.w3.org/2000/xmlns/", "xmlns:bar", "urn:bar");
-	doc.appendChild(foo);
+            ("http://www.w3.org/2000/xmlns/", "xmlns:bar", "urn:bar");
+        doc.appendChild(foo);
 
         DOMSignContext dsc = new DOMSignContext(signingKey, foo);
-	dsc.putNamespacePrefix(XMLSignature.XMLNS, "dsig");
+        dsc.putNamespacePrefix(XMLSignature.XMLNS, "dsig");
 
         sig.sign(dsc);
-
-//	dumpDocument(doc, new FileWriter("/tmp/foo.xml"));
 
         DOMValidateContext dvc = new DOMValidateContext
             (new KeySelectors.KeyValueKeySelector(), foo.getLastChild());

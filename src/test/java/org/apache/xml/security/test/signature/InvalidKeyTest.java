@@ -40,7 +40,7 @@ import junit.framework.TestSuite;
 public class InvalidKeyTest extends TestCase {
 
     static {
-	Init.init();
+        Init.init();
     }
 
     public static Test suite() {
@@ -52,23 +52,23 @@ public class InvalidKeyTest extends TestCase {
     private static final String SEP = System.getProperty("file.separator");
 
     public void test() throws Exception {
-	FileInputStream input = new FileInputStream(BASEDIR + SEP + 
-	    "data/org/apache/xml/security/samples/input/truststore.jks");
+        FileInputStream input = new FileInputStream(BASEDIR + SEP + 
+            "data/org/apache/xml/security/samples/input/truststore.jks");
         KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
         trustStore.load(input, "testpw".toCharArray());
         
-	try {
+        try {
             validate(trustStore.getCertificate("bedag-test").getPublicKey());
             throw new Exception("Failure expected on a DSA key");
-	} catch (Exception e) {
-	    // e.printStackTrace();
-	}
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
         validate(trustStore.getCertificate("a70-garaio-frontend-u").getPublicKey());
     }
     
     public void validate(PublicKey pk) throws Exception {
         FileInputStream is = new FileInputStream(BASEDIR + SEP +
-	    "data/org/apache/xml/security/samples/input/test-assertion.xml");
+            "data/org/apache/xml/security/samples/input/test-assertion.xml");
             
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);
@@ -80,6 +80,6 @@ public class InvalidKeyTest extends TestCase {
         XMLSignature si = new XMLSignature((Element)n,"");
         si.checkSignatureValue(pk);
 
-       	// System.out.println("VALIDATION OK" );
+        // System.out.println("VALIDATION OK" );
     }
 }

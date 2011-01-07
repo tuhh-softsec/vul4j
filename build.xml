@@ -412,7 +412,6 @@
 	    <batchtest fork="yes" todir="${dir.build.junit.xml}">
 	        <fileset dir="${dir.src.test}">
 	            <include name="javax/xml/crypto/**/*Test.java"/>
-                    <exclude name="javax/xml/crypto/test/dsig/InteropC14nTest.java"/>
             </fileset>
             </batchtest>
         </junit>

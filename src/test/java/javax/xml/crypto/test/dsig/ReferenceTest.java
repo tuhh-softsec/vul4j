@@ -32,15 +32,12 @@ import javax.xml.crypto.dsig.spec.C14NMethodParameterSpec;
 import javax.xml.crypto.dsig.spec.TransformParameterSpec;
 import org.w3c.dom.Document;
 
-import junit.framework.*;
-
 /**
  * Unit test for javax.xml.crypto.dsig.Reference
  *
- * @version $Id$
  * @author Valerie Peng
  */
-public class ReferenceTest extends TestCase {
+public class ReferenceTest extends org.junit.Assert {
     private XMLSignatureFactory fac;
     private KeyInfoFactory kifac;
     private DigestMethod dmSHA1;
@@ -48,8 +45,8 @@ public class ReferenceTest extends TestCase {
 
     private static final String[] CRYPTO_ALGS = { "RSA", "DSA" };
     private static final String[] SIG_ALGS = { 
-	SignatureMethod.RSA_SHA1, 
-	SignatureMethod.DSA_SHA1 
+        SignatureMethod.RSA_SHA1, 
+        SignatureMethod.DSA_SHA1 
     };
 
     static {
@@ -57,177 +54,178 @@ public class ReferenceTest extends TestCase {
             (new org.jcp.xml.dsig.internal.dom.XMLDSigRI(), 1);
     }
 
-    public ReferenceTest() {
-	super("ReferenceTest");
-    }
-
-    public ReferenceTest(String name) {
-	super(name);
-    }
-
-    public void setUp() throws Exception {
+    public ReferenceTest() throws Exception {
         fac = XMLSignatureFactory.getInstance
             ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
-	kifac = KeyInfoFactory.getInstance
+        kifac = KeyInfoFactory.getInstance
             ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
-	dmSHA1 = fac.newDigestMethod(DigestMethod.SHA1, null); 
+        dmSHA1 = fac.newDigestMethod(DigestMethod.SHA1, null); 
     }
 
-    public void tearDown() {}
-
+    @org.junit.Test
     public void testConstructor() throws Exception {
-	Reference ref;
-	// test XMLSignatureFactory.newReference(String uri, 
-	//     DigestMethod dm) for generating Reference objects
-	ref = fac.newReference(null, dmSHA1);
-	assertNotNull(ref);
-	ref = fac.newReference(uri, dmSHA1);
-	assertNotNull(ref);
-	try {
-	    ref = fac.newReference("illegal!@#$%" + uri, dmSHA1);
-	    fail("Should throw a IAE for non-RFC2396-compliant uri");
-	} catch (IllegalArgumentException iae) {
-	} catch (Exception ex) {
-	    fail("Should throw a IAE instead of " + ex + 
-		 " for non-RFC2396-compliant uri");
-	}
-	try {
-	    ref = fac.newReference(uri, null);
-	    fail("Should throw a NPE for null dm");
-	} catch (NullPointerException npe) {
-	} catch (Exception ex) {
-	    fail("Should throw a NPE instead of " + ex + " for null dm");
-	}
+        Reference ref;
+        // test XMLSignatureFactory.newReference(String uri, 
+        //     DigestMethod dm) for generating Reference objects
+        ref = fac.newReference(null, dmSHA1);
+        assertNotNull(ref);
+        ref = fac.newReference(uri, dmSHA1);
+        assertNotNull(ref);
+        
+        try {
+            ref = fac.newReference("illegal!@#$%" + uri, dmSHA1);
+            fail("Should throw a IAE for non-RFC2396-compliant uri");
+        } catch (IllegalArgumentException iae) {
+        } catch (Exception ex) {
+            fail("Should throw a IAE instead of " + ex + 
+                 " for non-RFC2396-compliant uri");
+        }
+        
+        try {
+            ref = fac.newReference(uri, null);
+            fail("Should throw a NPE for null dm");
+        } catch (NullPointerException npe) {
+        } catch (Exception ex) {
+            fail("Should throw a NPE instead of " + ex + " for null dm");
+        }
 
-	// test XMLSignatureFactory.newReference(String uri, 
-	//    DigestMethod dm, List transforms, String type, String id)
-	// for generating Reference objects
-	try {   
-	    ref = fac.newReference(null, dmSHA1, null, null, null);
-	    assertEquals(ref.getDigestMethod(), dmSHA1);
-	} catch(Exception ex) {
-	    fail("Unexpected Exception: " + ex);
-	}
+        // test XMLSignatureFactory.newReference(String uri, 
+        //    DigestMethod dm, List transforms, String type, String id)
+        // for generating Reference objects
+        try {   
+            ref = fac.newReference(null, dmSHA1, null, null, null);
+            assertEquals(ref.getDigestMethod(), dmSHA1);
+        } catch(Exception ex) {
+            fail("Unexpected Exception: " + ex);
+        }
 
-	try {
-	    ref = fac.newReference(null, null, null, null, null);
-	    fail("Should throw a NPE for null dm");
-	} catch (NullPointerException npe) {
-	} catch(Exception ex) {
-	    fail("Should throw a NPE instead of " + ex + " for null dm");
-	}
-	String id  = "id";
-	String type = "type";
-	try {
-	    ref = fac.newReference(uri, dmSHA1, null, type, id);
-	    assertNotNull(ref.getDigestMethod());
-	    assertEquals(uri, ref.getURI());
-	    assertEquals(id, ref.getId());
-	    assertEquals(type, ref.getType());        
+        try {
+            ref = fac.newReference(null, null, null, null, null);
+            fail("Should throw a NPE for null dm");
+        } catch (NullPointerException npe) {
+        } catch(Exception ex) {
+            fail("Should throw a NPE instead of " + ex + " for null dm");
+        }
+        
+        String id  = "id";
+        String type = "type";
+        try {
+            ref = fac.newReference(uri, dmSHA1, null, type, id);
+            assertNotNull(ref.getDigestMethod());
+            assertEquals(uri, ref.getURI());
+            assertEquals(id, ref.getId());
+            assertEquals(type, ref.getType());        
         assertEquals(ref.getTransforms(), Collections.EMPTY_LIST);
-	    
-	} catch(Exception ex) {
-	    fail("Unexpected Exception: " + ex);
-	}
-	List transforms = new Vector();
-	try {
-	    // try empty transforms list
-	    ref = fac.newReference(uri, dmSHA1, transforms, 
-				   type, id);
-	    assertTrue(Arrays.equals(transforms.toArray(), 
-				     ref.getTransforms().toArray()));
-	} catch(Exception ex) {
-	    fail("Unexpected Exception: " + ex);
-	}
-	transforms.add(new Object());
-	try {
-	    // try a transforms list with an invalid object
-	    ref = fac.newReference(uri, dmSHA1, transforms, 
-				   type, id);
-	} catch (ClassCastException cce) {
-	} catch (Exception ex) {
-	    fail("Should throw a ClassCastException instead of " + ex);
-	}
-	// Test with various composition of Transform list 
-	// 1. String only 
-	transforms.clear();
-	transforms.add(Transform.BASE64);
-	try {
-	    // try a transforms list with a String object
-	    ref = fac.newReference(uri, dmSHA1, transforms, 
-	    			   type, id);
-	    fail("Should throw a CCE for illegal transforms");
-	} catch (ClassCastException cce) {
-	} catch(Exception ex) {
-	    fail("Should throw a CCE instead of " + ex + 
-		 " for illegal transforms");
-	}
-	// 2. Transform only
-	transforms.clear();
-	Transform c14nWithComments = fac.newTransform
-	    (CanonicalizationMethod.INCLUSIVE_WITH_COMMENTS, 
-	     (TransformParameterSpec) null);
-	transforms.add(c14nWithComments);
-	try {
-	    // try a transforms list with a Transform object
-	    ref = fac.newReference(uri, dmSHA1, transforms, type, id);
-	    assertTrue(Arrays.equals(transforms.toArray(), 
-				     ref.getTransforms().toArray()));
-	} catch (Exception ex) {
-	    fail("Unexpected Exception: " + ex);
-	}
+            
+        } catch(Exception ex) {
+            fail("Unexpected Exception: " + ex);
+        }
+        
+        List<Object> transforms = new Vector<Object>();
+        try {
+            // try empty transforms list
+            ref = fac.newReference(uri, dmSHA1, transforms, 
+                                   type, id);
+            assertTrue(Arrays.equals(transforms.toArray(), 
+                                     ref.getTransforms().toArray()));
+        } catch(Exception ex) {
+            fail("Unexpected Exception: " + ex);
+        }
+        transforms.add(new Object());
+        try {
+            // try a transforms list with an invalid object
+            ref = fac.newReference(uri, dmSHA1, transforms, 
+                                   type, id);
+        } catch (ClassCastException cce) {
+        } catch (Exception ex) {
+            fail("Should throw a ClassCastException instead of " + ex);
+        }
+        
+        // Test with various composition of Transform list 
+        // 1. String only 
+        transforms.clear();
+        transforms.add(Transform.BASE64);
+        try {
+            // try a transforms list with a String object
+            ref = fac.newReference(uri, dmSHA1, transforms, 
+                                   type, id);
+            fail("Should throw a CCE for illegal transforms");
+        } catch (ClassCastException cce) {
+        } catch(Exception ex) {
+            fail("Should throw a CCE instead of " + ex + 
+                 " for illegal transforms");
+        }
+        
+        // 2. Transform only
+        transforms.clear();
+        Transform c14nWithComments = fac.newTransform
+            (CanonicalizationMethod.INCLUSIVE_WITH_COMMENTS, 
+             (TransformParameterSpec) null);
+        transforms.add(c14nWithComments);
+        try {
+            // try a transforms list with a Transform object
+            ref = fac.newReference(uri, dmSHA1, transforms, type, id);
+            assertTrue(Arrays.equals(transforms.toArray(), 
+                                     ref.getTransforms().toArray()));
+        } catch (Exception ex) {
+            fail("Unexpected Exception: " + ex);
+        }
     }
+    
+    @org.junit.Test
     public void testisFeatureSupported() throws Exception {
-	Reference ref = fac.newReference(null, dmSHA1, null, null, null);
-	try {
-	    ref.isFeatureSupported(null); 
-	    fail("Should raise a NPE for null feature"); 
-	} catch (NullPointerException npe) {}
-	    
-	assertTrue(!ref.isFeatureSupported("not supported"));
+        Reference ref = fac.newReference(null, dmSHA1, null, null, null);
+        try {
+            ref.isFeatureSupported(null); 
+            fail("Should raise a NPE for null feature"); 
+        } catch (NullPointerException npe) {}
+            
+        assertTrue(!ref.isFeatureSupported("not supported"));
     }
 
+    @org.junit.Test
     public void testvalidate() throws Exception {
         testvalidate(false);
     }
 
+    @org.junit.Test
     public void testvalidateWithCaching() throws Exception {
         testvalidate(true);
     }
 
     private void testvalidate(boolean cache) throws Exception {
-	Reference ref = null;
-	String type = "http://www.w3.org/2000/09/xmldsig#Object";
-	byte[] in = new byte[200];
-	Random rand = new Random();
-	
-	// Test XMLSignContext
-	XMLSignContext signContext;
-	XMLValidateContext validateContext;
-	for (int i = 0; i < CRYPTO_ALGS.length; i++) {
-	    rand.nextBytes(in);
+        Reference ref = null;
+        String type = "http://www.w3.org/2000/09/xmldsig#Object";
+        byte[] in = new byte[200];
+        Random rand = new Random();
+        
+        // Test XMLSignContext
+        XMLSignContext signContext;
+        XMLValidateContext validateContext;
+        for (int i = 0; i < CRYPTO_ALGS.length; i++) {
+            rand.nextBytes(in);
             URIDereferencer dereferrer =
                 new TestUtils.OctetStreamURIDereferencer(in);
-	    Document doc = TestUtils.newDocument();
-	    signContext = new 
-		DOMSignContext(TestUtils.getPrivateKey(CRYPTO_ALGS[i]), doc);
-	    signContext.setURIDereferencer(dereferrer);
+            Document doc = TestUtils.newDocument();
+            signContext = new 
+                DOMSignContext(TestUtils.getPrivateKey(CRYPTO_ALGS[i]), doc);
+            signContext.setURIDereferencer(dereferrer);
             if (cache) {
                 signContext.setProperty
                     ("javax.xml.crypto.dsig.cacheReference", Boolean.TRUE);
             }
-	    ref = fac.newReference(null, dmSHA1, null, type, null);
-	    XMLSignature sig = fac.newXMLSignature(fac.newSignedInfo
-		(fac.newCanonicalizationMethod
-		 (CanonicalizationMethod.INCLUSIVE_WITH_COMMENTS, 
-		  (C14NMethodParameterSpec) null),
-	    	fac.newSignatureMethod(SIG_ALGS[i], null),
-		Collections.singletonList(ref)),
-		kifac.newKeyInfo(Collections.singletonList
-		(kifac.newKeyValue(TestUtils.getPublicKey(CRYPTO_ALGS[i])))));
-	    try {
-		sig.sign(signContext);
-         	if (!cache) {
+            ref = fac.newReference(null, dmSHA1, null, type, null);
+            XMLSignature sig = fac.newXMLSignature(fac.newSignedInfo
+                (fac.newCanonicalizationMethod
+                 (CanonicalizationMethod.INCLUSIVE_WITH_COMMENTS, 
+                  (C14NMethodParameterSpec) null),
+                fac.newSignatureMethod(SIG_ALGS[i], null),
+                Collections.singletonList(ref)),
+                kifac.newKeyInfo(Collections.singletonList
+                (kifac.newKeyValue(TestUtils.getPublicKey(CRYPTO_ALGS[i])))));
+            try {
+                sig.sign(signContext);
+                if (!cache) {
                     assertNull(ref.getDereferencedData());
                     assertNull(ref.getDigestInputStream());
                 } else {
@@ -235,21 +233,21 @@ public class ReferenceTest extends TestCase {
                     assertNotNull(ref.getDigestInputStream());
                     assertTrue(digestInputEqual(ref));
                 }
-	        validateContext = new DOMValidateContext
-		    (TestUtils.getPublicKey(CRYPTO_ALGS[i]), 
-		    doc.getDocumentElement());
-	        validateContext.setURIDereferencer(dereferrer);
+                validateContext = new DOMValidateContext
+                    (TestUtils.getPublicKey(CRYPTO_ALGS[i]), 
+                    doc.getDocumentElement());
+                validateContext.setURIDereferencer(dereferrer);
 
                 if (cache) {
                     validateContext.setProperty
                         ("javax.xml.crypto.dsig.cacheReference", Boolean.TRUE);
                 }
-		boolean result = sig.validate(validateContext);
-		assertTrue(result);
+                boolean result = sig.validate(validateContext);
+                assertTrue(result);
      
-		Iterator iter = sig.getSignedInfo().getReferences().iterator();
-		for (int j=0; iter.hasNext(); j++) {
-		    Reference validated_ref = (Reference) iter.next();
+                Iterator<?> iter = sig.getSignedInfo().getReferences().iterator();
+                for (int j=0; iter.hasNext(); j++) {
+                    Reference validated_ref = (Reference) iter.next();
                     if (!cache) {
                         assertNull(validated_ref.getDereferencedData());
                         assertNull(validated_ref.getDigestInputStream());
@@ -258,16 +256,16 @@ public class ReferenceTest extends TestCase {
                         assertNotNull(validated_ref.getDigestInputStream());
                         assertTrue(digestInputEqual(validated_ref));
                     }
-		    byte[] dv =  validated_ref.getDigestValue();
+                    byte[] dv =  validated_ref.getDigestValue();
                     byte[] cdv = validated_ref.getCalculatedDigestValue();
                     assertTrue(Arrays.equals(dv, cdv));
-		    boolean valid = validated_ref.validate(validateContext);
-		    assertTrue(valid);
-		}
-	    } catch (XMLSignatureException xse) {
-		fail("Unexpected Exception: " + xse); 
-	    }
-	}
+                    boolean valid = validated_ref.validate(validateContext);
+                    assertTrue(valid);
+                }
+            } catch (XMLSignatureException xse) {
+                fail("Unexpected Exception: " + xse); 
+            }
+        }
     }
 
     private boolean digestInputEqual(Reference ref) throws Exception {

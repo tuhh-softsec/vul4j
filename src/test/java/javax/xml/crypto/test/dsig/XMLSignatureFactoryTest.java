@@ -50,141 +50,141 @@ public class XMLSignatureFactoryTest extends TestCase {
     }
 
     public XMLSignatureFactoryTest(String name) {
-	super(name);
+        super(name);
     }
 
     public void setUp() throws Exception { 
-	factory = XMLSignatureFactory.getInstance
+        factory = XMLSignatureFactory.getInstance
             ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
     }
 
     public void tearDown() { }
 
     public void testgetInstance() {
-	try {
-	    XMLSignatureFactory.getInstance("non-existent");
-	    fail("Should throw NoSuchMechanismException if no impl found");
-	} catch (NoSuchMechanismException ex) {}
+        try {
+            XMLSignatureFactory.getInstance("non-existent");
+            fail("Should throw NoSuchMechanismException if no impl found");
+        } catch (NoSuchMechanismException ex) {}
 
-	try {
-	    XMLSignatureFactory.getInstance(null);
-	    fail("Should raise a NPE for null mechanismType"); 
-	} catch (NullPointerException npe) {}
+        try {
+            XMLSignatureFactory.getInstance(null);
+            fail("Should raise a NPE for null mechanismType"); 
+        } catch (NullPointerException npe) {}
 
-	try {
-	    XMLSignatureFactory.getInstance("DOM", "non-existent");
-	    fail("Should throw NoSuchProviderException if specified " +
-		 "provider is not found");
-	} catch (NoSuchProviderException nspe) {
-	} catch (NoSuchMechanismException nse) {
-	    fail("Should raise a NoSuchProviderException instead of " + nse +
-		 " if specified provider is not found"); 
-	}
+        try {
+            XMLSignatureFactory.getInstance("DOM", "non-existent");
+            fail("Should throw NoSuchProviderException if specified " +
+                 "provider is not found");
+        } catch (NoSuchProviderException nspe) {
+        } catch (NoSuchMechanismException nse) {
+            fail("Should raise a NoSuchProviderException instead of " + nse +
+                 " if specified provider is not found"); 
+        }
 
-	try {
-	    XMLSignatureFactory.getInstance(null);
-	    fail("Should raise a NPE for null mechanismType"); 
-	} catch (NullPointerException npe) {}
+        try {
+            XMLSignatureFactory.getInstance(null);
+            fail("Should raise a NPE for null mechanismType"); 
+        } catch (NullPointerException npe) {}
 
-	try {
-	    XMLSignatureFactory.getInstance("DOM", (Provider) null);
-	    fail("Should raise a NPE for null provider"); 
-	} catch (NullPointerException npe) {}
+        try {
+            XMLSignatureFactory.getInstance("DOM", (Provider) null);
+            fail("Should raise a NPE for null provider"); 
+        } catch (NullPointerException npe) {}
     }
 
     public void testgetMechanismType() {
-	assertNotNull(factory);
-	assertEquals("DOM", factory.getMechanismType());
+        assertNotNull(factory);
+        assertEquals("DOM", factory.getMechanismType());
     }
 
     public void testisFeatureSupported() {
-	try {
-	    factory.isFeatureSupported(null); 
-	    fail("Should raise a NPE for null feature"); 
-	} catch (NullPointerException npe) {}
+        try {
+            factory.isFeatureSupported(null); 
+            fail("Should raise a NPE for null feature"); 
+        } catch (NullPointerException npe) {}
 
-	assertTrue(!factory.isFeatureSupported("not supported"));
+        assertTrue(!factory.isFeatureSupported("not supported"));
     }
 
     public void testgetKeyInfoFactory() throws Exception {
-	KeyInfoFactory kifac = factory.getKeyInfoFactory();
-	assertEquals(kifac.getMechanismType(), factory.getMechanismType());
-	assertEquals(kifac.getProvider(), factory.getProvider());
+        KeyInfoFactory kifac = factory.getKeyInfoFactory();
+        assertEquals(kifac.getMechanismType(), factory.getMechanismType());
+        assertEquals(kifac.getProvider(), factory.getProvider());
     }
 
     public void testunmarshalXMLSignature() throws Exception {
-	XMLSignature stuff;
-	try {
-	    stuff = factory.unmarshalXMLSignature((XMLValidateContext) null);
-	    fail("Should raise an NPE for null inputs"); 
-	} catch (NullPointerException ex) {
-	} catch (Exception ex) {
-	    fail("Should throw an NPE instead of " + ex +
-		 " for null inputs");
-	}
+        XMLSignature stuff;
+        try {
+            stuff = factory.unmarshalXMLSignature((XMLValidateContext) null);
+            fail("Should raise an NPE for null inputs"); 
+        } catch (NullPointerException ex) {
+        } catch (Exception ex) {
+            fail("Should throw an NPE instead of " + ex +
+                 " for null inputs");
+        }
 
-	try {
-	    stuff = factory.unmarshalXMLSignature(
-		new XMLValidateContext() {
-		    public Object getProperty(String name) { return null; }
-		    public Object setProperty(String name, Object property) {
-			return null;
-		    }
-		    public String getBaseURI()	{ return null; }
-		    public void setBaseURI(String uri)	{ return; }
-		    public KeySelector getKeySelector() { return null; }
-		    public void setKeySelector(KeySelector ks) { return; }
-		    public URIDereferencer getURIDereferencer() { return null; }
-		    public void setURIDereferencer(URIDereferencer ud) {return;}
-		    public Object get(Object key) {return null;}
-		    public Object put(Object key, Object value) {return null;}
+        try {
+            stuff = factory.unmarshalXMLSignature(
+                new XMLValidateContext() {
+                    public Object getProperty(String name) { return null; }
+                    public Object setProperty(String name, Object property) {
+                        return null;
+                    }
+                    public String getBaseURI()	{ return null; }
+                    public void setBaseURI(String uri)	{ return; }
+                    public KeySelector getKeySelector() { return null; }
+                    public void setKeySelector(KeySelector ks) { return; }
+                    public URIDereferencer getURIDereferencer() { return null; }
+                    public void setURIDereferencer(URIDereferencer ud) {return;}
+                    public Object get(Object key) {return null;}
+                    public Object put(Object key, Object value) {return null;}
                     public void setDefaultNamespacePrefix(String defPrefix) {}
                     public String getDefaultNamespacePrefix() {return null;}
                     public String putNamespacePrefix
                         (String nsURI, String prefix) {return null;}
                     public String getNamespacePrefix
                         (String nsURI, String defPrefix) {return null;}
-		    });
-	    fail("Should throw a CCE for input of wrong type"); 
-	} catch (ClassCastException ex) {
-	} catch (Exception ex) {
-	    fail("Should raise a CCE instead of " + ex +
-		 " for wrong inputs"); 
-	}
+                    });
+            fail("Should throw a CCE for input of wrong type"); 
+        } catch (ClassCastException ex) {
+        } catch (Exception ex) {
+            fail("Should raise a CCE instead of " + ex +
+                 " for wrong inputs"); 
+        }
 
         DocumentBuilderFactory docFactory =
             DocumentBuilderFactory.newInstance();
-	docFactory.setNamespaceAware(true);
-	DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-	String fs = System.getProperty("file.separator");
-	String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
-	File dir = new File(base + fs +
-	    "data" + fs + "ie" + fs + "baltimore" + fs + "merlin-examples",
-	    "merlin-xmldsig-twenty-three");
-	Document doc = docBuilder.parse(new File(dir, "signature.xml"));
-	NodeList nl = doc.getElementsByTagName("KeyInfo");
-	try {
-	    stuff = factory.unmarshalXMLSignature
-	    (new DOMValidateContext(TestUtils.getPublicKey("RSA"), nl.item(0)));
-	    fail("Should throw a MarshalException for non-XMLSignature inputs"); 
-	} catch (MarshalException ex) {}
-	
-	nl = doc.getElementsByTagName("Signature");
-	try {
-	    stuff = factory.unmarshalXMLSignature
-	    (new DOMValidateContext(TestUtils.getPublicKey("DSA"), nl.item(0)));
-	    assertNotNull(stuff);
-	} catch (MarshalException ex) {
-	    fail("Unmarshal failed: " + ex.getMessage());
-	    ex.printStackTrace();
-	}
+        docFactory.setNamespaceAware(true);
+        DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+        String fs = System.getProperty("file.separator");
+        String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
+        File dir = new File(base + fs +
+            "data" + fs + "ie" + fs + "baltimore" + fs + "merlin-examples",
+            "merlin-xmldsig-twenty-three");
+        Document doc = docBuilder.parse(new File(dir, "signature.xml"));
+        NodeList nl = doc.getElementsByTagName("KeyInfo");
+        try {
+            stuff = factory.unmarshalXMLSignature
+            (new DOMValidateContext(TestUtils.getPublicKey("RSA"), nl.item(0)));
+            fail("Should throw a MarshalException for non-XMLSignature inputs"); 
+        } catch (MarshalException ex) {}
+        
+        nl = doc.getElementsByTagName("Signature");
+        try {
+            stuff = factory.unmarshalXMLSignature
+            (new DOMValidateContext(TestUtils.getPublicKey("DSA"), nl.item(0)));
+            assertNotNull(stuff);
+        } catch (MarshalException ex) {
+            fail("Unmarshal failed: " + ex.getMessage());
+            ex.printStackTrace();
+        }
     }
 
     // for debugging purposes
     public static void main(String[] args) throws Exception {
-	XMLSignatureFactoryTest test = 
-	    new XMLSignatureFactoryTest("XMLSignatureFactoryTest");
-	test.setUp();
-	test.testunmarshalXMLSignature();
+        XMLSignatureFactoryTest test = 
+            new XMLSignatureFactoryTest("XMLSignatureFactoryTest");
+        test.setUp();
+        test.testunmarshalXMLSignature();
     }
 }

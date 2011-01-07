@@ -63,36 +63,36 @@ public class XmlSecTest extends TestCase {
     }
 
     public void testCheckXmlSignatureSoftwareStack() throws Exception {
-	checkXmlSignatureSoftwareStack(false);
+        checkXmlSignatureSoftwareStack(false);
     }
     public void testCheckXmlSignatureSoftwareStackWithCert() throws Exception {
-	checkXmlSignatureSoftwareStack(true);
+        checkXmlSignatureSoftwareStack(true);
     }
     private void checkXmlSignatureSoftwareStack(boolean cert) throws Exception {
-	Init.init();
-	DocumentBuilderFactory documentBuilderFactory = 
-	    DocumentBuilderFactory.newInstance();
-	documentBuilderFactory.setNamespaceAware(true);
-	DocumentBuilder documentBuilder = 
-	    documentBuilderFactory.newDocumentBuilder();
-	Document testDocument = documentBuilder.newDocument();
+        Init.init();
+        DocumentBuilderFactory documentBuilderFactory = 
+            DocumentBuilderFactory.newInstance();
+        documentBuilderFactory.setNamespaceAware(true);
+        DocumentBuilder documentBuilder = 
+            documentBuilderFactory.newDocumentBuilder();
+        Document testDocument = documentBuilder.newDocument();
 
-	Element rootElement = 
-	    testDocument.createElementNS("urn:namespace", "tns:document");
-	rootElement.setAttributeNS
-	    (Constants.NamespaceSpecNS, "xmlns:tns", "urn:namespace");
-	testDocument.appendChild(rootElement);
-	Element childElement = 
-	    testDocument.createElementNS("urn:childnamespace", "t:child");
-	childElement.setAttributeNS
-	    (Constants.NamespaceSpecNS, "xmlns:t", "urn:childnamespace");
-	childElement.appendChild(testDocument.createTextNode("hello world"));
-	rootElement.appendChild(childElement);
+        Element rootElement = 
+            testDocument.createElementNS("urn:namespace", "tns:document");
+        rootElement.setAttributeNS
+            (Constants.NamespaceSpecNS, "xmlns:tns", "urn:namespace");
+        testDocument.appendChild(rootElement);
+        Element childElement = 
+            testDocument.createElementNS("urn:childnamespace", "t:child");
+        childElement.setAttributeNS
+            (Constants.NamespaceSpecNS, "xmlns:t", "urn:childnamespace");
+        childElement.appendChild(testDocument.createTextNode("hello world"));
+        rootElement.appendChild(childElement);
 
-	PrivateKey privateKey = null;
-	PublicKey publicKey = null;
-	X509Certificate signingCert = null;
-	if (cert) {
+        PrivateKey privateKey = null;
+        PublicKey publicKey = null;
+        X509Certificate signingCert = null;
+        if (cert) {
             // get key & self-signed certificate from keystore
             String fs = System.getProperty("file.separator");
             FileInputStream fis = new FileInputStream
@@ -100,54 +100,54 @@ public class XmlSecTest extends TestCase {
             KeyStore ks = KeyStore.getInstance("JKS");
             ks.load(fis, "changeit".toCharArray());
             signingCert = (X509Certificate) ks.getCertificate("mullan");
-	    publicKey = signingCert.getPublicKey();
+            publicKey = signingCert.getPublicKey();
             privateKey = (PrivateKey) ks.getKey("mullan", "changeit".toCharArray());
-	} else {
-	    KeyPair keyPair = KeyPairGenerator.getInstance("DSA").generateKeyPair();
-	    publicKey = keyPair.getPublic();
-	    privateKey = keyPair.getPrivate();
-	}
+        } else {
+            KeyPair keyPair = KeyPairGenerator.getInstance("DSA").generateKeyPair();
+            publicKey = keyPair.getPublic();
+            privateKey = keyPair.getPrivate();
+        }
 
-	XMLSignature signature = new XMLSignature(testDocument, "",
-				XMLSignature.ALGO_ID_SIGNATURE_DSA,
-				Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
+        XMLSignature signature = new XMLSignature(testDocument, "",
+                                XMLSignature.ALGO_ID_SIGNATURE_DSA,
+                                Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
 
-	Element signatureElement = signature.getElement();
-	rootElement.appendChild(signatureElement);
+        Element signatureElement = signature.getElement();
+        rootElement.appendChild(signatureElement);
 
-	Transforms transforms = new Transforms(testDocument);
-	XPathContainer xpath = new XPathContainer(testDocument);
-	xpath.setXPathNamespaceContext("ds", Constants.SignatureSpecNS);
-	xpath.setXPath("not(ancestor-or-self::ds:Signature)");
-	transforms.addTransform(Transforms.TRANSFORM_XPATH, xpath
-				.getElementPlusReturns());
-	transforms.addTransform(Transforms.TRANSFORM_C14N_WITH_COMMENTS);
-	signature.addDocument("", transforms,
-				MessageDigestAlgorithm.ALGO_ID_DIGEST_SHA1);
+        Transforms transforms = new Transforms(testDocument);
+        XPathContainer xpath = new XPathContainer(testDocument);
+        xpath.setXPathNamespaceContext("ds", Constants.SignatureSpecNS);
+        xpath.setXPath("not(ancestor-or-self::ds:Signature)");
+        transforms.addTransform(Transforms.TRANSFORM_XPATH, xpath
+                                .getElementPlusReturns());
+        transforms.addTransform(Transforms.TRANSFORM_C14N_WITH_COMMENTS);
+        signature.addDocument("", transforms,
+                                MessageDigestAlgorithm.ALGO_ID_DIGEST_SHA1);
 
-	if (cert) {
-	    signature.addKeyInfo(signingCert);
-	} else {
-	    signature.addKeyInfo(publicKey);
-	}
+        if (cert) {
+            signature.addKeyInfo(signingCert);
+        } else {
+            signature.addKeyInfo(publicKey);
+        }
 
-	Element nsElement = testDocument.createElementNS(null, "nsElement");
-	nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:ds",
-				Constants.SignatureSpecNS);
+        Element nsElement = testDocument.createElementNS(null, "nsElement");
+        nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:ds",
+                                Constants.SignatureSpecNS);
 
-	signature.sign(privateKey);
+        signature.sign(privateKey);
 
-	// TransformerFactory tf = TransformerFactory.newInstance();
-	// Transformer t = tf.newTransformer();
-	// t.transform(new DOMSource(testDocument), new StreamResult(System.out));
+        // TransformerFactory tf = TransformerFactory.newInstance();
+        // Transformer t = tf.newTransformer();
+        // t.transform(new DOMSource(testDocument), new StreamResult(System.out));
 
-	NodeList signatureElems = XPathAPI.selectNodeList(testDocument,
-				"//ds:Signature", nsElement);
-	signatureElement = (Element) signatureElems.item(0);
-	XMLSignature signatureToVerify = new XMLSignature(signatureElement, "");
+        NodeList signatureElems = XPathAPI.selectNodeList(testDocument,
+                                "//ds:Signature", nsElement);
+        signatureElement = (Element) signatureElems.item(0);
+        XMLSignature signatureToVerify = new XMLSignature(signatureElement, "");
 
-	boolean signResult = signatureToVerify.checkSignatureValue(publicKey);
+        boolean signResult = signatureToVerify.checkSignatureValue(publicKey);
 
-	assertTrue(signResult);
+        assertTrue(signResult);
     }
 }

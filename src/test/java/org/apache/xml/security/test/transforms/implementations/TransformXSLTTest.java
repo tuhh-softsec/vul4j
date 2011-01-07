@@ -44,9 +44,9 @@ public class TransformXSLTTest extends TestCase {
         System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
     private static final String SEP = System.getProperty("file.separator");
     private static final String SOURCE_PATH = 
-	"data/com/phaos/phaos-xmldsig-three/";
+        "data/com/phaos/phaos-xmldsig-three/";
     private static final String SIGNATURE_FILE = 
-	"signature-rsa-detached-xslt-transform.xml";
+        "signature-rsa-detached-xslt-transform.xml";
     private static final String STYLESHEET_FILE = "document-stylesheet.xml";
 
     /** {@link org.apache.commons.logging} logging facility */
@@ -70,7 +70,7 @@ public class TransformXSLTTest extends TestCase {
     }
 
     private static Document getDocument(File file) 
-	throws ParserConfigurationException, SAXException, IOException {
+        throws ParserConfigurationException, SAXException, IOException {
 
         DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
         dfactory.setNamespaceAware(true);
@@ -97,13 +97,13 @@ public class TransformXSLTTest extends TestCase {
         Document doc2 = getDocument(file2);
 
         Element nscontext = TestUtils.createDSctx
-	    (doc1, "dsig", Constants.SignatureSpecNS);
+            (doc1, "dsig", Constants.SignatureSpecNS);
         Node transformEl = XPathAPI.selectSingleNode
-	    (doc1, "//dsig:Transform[1]", nscontext);
-	Transform transform = Transform.getInstance
-	    (doc1, Transforms.TRANSFORM_XSLT, transformEl.getChildNodes());
+            (doc1, "//dsig:Transform[1]", nscontext);
+        Transform transform = Transform.getInstance
+            (doc1, Transforms.TRANSFORM_XSLT, transformEl.getChildNodes());
 
-	transform.performTransform(new XMLSignatureInput(doc2));
+        transform.performTransform(new XMLSignatureInput(doc2));
     }
 
     static {

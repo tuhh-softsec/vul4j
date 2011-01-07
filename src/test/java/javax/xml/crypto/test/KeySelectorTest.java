@@ -26,81 +26,69 @@ import javax.xml.crypto.*;
 import javax.xml.crypto.dsig.keyinfo.*;
 import javax.xml.crypto.dsig.*;
 
-import junit.framework.*;
-
 /**
  * Unit test for javax.xml.crypto.KeySelector
  *
- * @version $Id$
  * @author Valerie Peng
  */
-public class KeySelectorTest extends TestCase {
+public class KeySelectorTest extends org.junit.Assert {
     private Key key;
     private KeySelector selector1;
 
     private class MyOwnKey implements Key {
-	private String algo;
-	private byte[] val;
-	MyOwnKey(String algorithm, byte[] value) {
-	    algo = algorithm;
-	    val = (byte[]) value.clone();
-	}
-	
-	public String getAlgorithm() {
-	    return algo;
-	}
-	public byte[] getEncoded() {
-	    return val;
-	}
-	public String getFormat() {
-	    return "RAW";
-	}
+        private String algo;
+        private byte[] val;
+        MyOwnKey(String algorithm, byte[] value) {
+            algo = algorithm;
+            val = (byte[]) value.clone();
+        }
+        
+        public String getAlgorithm() {
+            return algo;
+        }
+        public byte[] getEncoded() {
+            return val;
+        }
+        public String getFormat() {
+            return "RAW";
+        }
     }
 
-    public KeySelectorTest() {
-	super("KeySelectorTest");
+    public KeySelectorTest() throws Exception {
+        // selector1: singletonKeySelector
+        key = new MyOwnKey("test", new byte[16]);
+        selector1 = KeySelector.singletonKeySelector(key);
     }
 
-    public KeySelectorTest(String name) {
-	super(name);
-    }
-
-    public void setUp() throws Exception {
-	// selector1: singletonKeySelector
-	key = new MyOwnKey("test", new byte[16]);
-	selector1 = KeySelector.singletonKeySelector(key);
-    }
-
-    public void tearDown() { }
-
+    @org.junit.Test
     public void testselect() throws Exception {
-	KeyInfoFactory factory = KeyInfoFactory.getInstance
-	    ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
-	X509Data obj = factory.newX509Data(Collections.singletonList("CN=foo"));
-	KeyInfo info = factory.newKeyInfo(Collections.singletonList(obj));
-	//@@@@@what about other types of X509Data, i.e. subject name String,
-	// X509IssuerSerial objects, etc?
-	XMLSignatureFactory dsigFac = XMLSignatureFactory.getInstance
-	    ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
-	SignatureMethod sm1 = 
-	    dsigFac.newSignatureMethod(SignatureMethod.DSA_SHA1, null);
-	SignatureMethod sm2 = 
-	    dsigFac.newSignatureMethod(SignatureMethod.RSA_SHA1, null);
+        KeyInfoFactory factory = KeyInfoFactory.getInstance
+            ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
+        X509Data obj = factory.newX509Data(Collections.singletonList("CN=foo"));
+        KeyInfo info = factory.newKeyInfo(Collections.singletonList(obj));
+        //@@@@@what about other types of X509Data, i.e. subject name String,
+        // X509IssuerSerial objects, etc?
+        XMLSignatureFactory dsigFac = XMLSignatureFactory.getInstance
+            ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
+        SignatureMethod sm1 = 
+            dsigFac.newSignatureMethod(SignatureMethod.DSA_SHA1, null);
+        SignatureMethod sm2 = 
+            dsigFac.newSignatureMethod(SignatureMethod.RSA_SHA1, null);
 
-	assertTrue(compareKey(key, selector1.select
-	    (info, KeySelector.Purpose.VERIFY, sm1, null).getKey()));
-	assertTrue(compareKey(key, selector1.select
-	    (info, KeySelector.Purpose.VERIFY, sm2, null).getKey()));
+        assertTrue(compareKey(key, selector1.select
+            (info, KeySelector.Purpose.VERIFY, sm1, null).getKey()));
+        assertTrue(compareKey(key, selector1.select
+            (info, KeySelector.Purpose.VERIFY, sm2, null).getKey()));
     }
     
     private static boolean compareKey(Object answer, Key key) {
-	boolean result = false;
-	if (answer instanceof MyOwnKey) {
-	    result = ((MyOwnKey) answer == key);
-	} else if (answer instanceof X509Certificate) {
-	    result =
-	        ((X509Certificate)answer).getPublicKey().equals(key);
-	}
-	return result;
+        boolean result = false;
+        if (answer instanceof MyOwnKey) {
+            result = ((MyOwnKey) answer == key);
+        } else if (answer instanceof X509Certificate) {
+            result =
+                ((X509Certificate)answer).getPublicKey().equals(key);
+        }
+        return result;
     }
 }

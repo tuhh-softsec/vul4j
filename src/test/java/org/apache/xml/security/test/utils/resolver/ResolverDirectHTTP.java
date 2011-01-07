@@ -29,17 +29,17 @@ import org.w3c.dom.Element;
 
 public class ResolverDirectHTTP extends TestCase {
   public void testBug40783() throws Exception{
-	  Init.init();
-	  Document doc=DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();		
-	  Attr uri=doc.createAttribute("id");
-	  uri.setNodeValue("urn:ddd:uuu");
-	  ((Element)doc.createElement("test")).setAttributeNode(uri);
-	  try {
-		  ResourceResolver resolver=ResourceResolver.getInstance(uri, null);		  
-		  fail("No exception throw, but resolver found:"+resolver);
-	  } catch (ResourceResolverException e) {
-		  
-	  }
-	}
+          Init.init();
+          Document doc=DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();		
+          Attr uri=doc.createAttribute("id");
+          uri.setNodeValue("urn:ddd:uuu");
+          ((Element)doc.createElement("test")).setAttributeNode(uri);
+          try {
+                  ResourceResolver resolver=ResourceResolver.getInstance(uri, null);		  
+                  fail("No exception throw, but resolver found:"+resolver);
+          } catch (ResourceResolverException e) {
+                  
+          }
+        }
   
 }

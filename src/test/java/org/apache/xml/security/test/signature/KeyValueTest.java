@@ -40,7 +40,7 @@ public class KeyValueTest extends TestCase {
     private DocumentBuilder db;
 
     public KeyValueTest(String name) {
-	super(name);
+        super(name);
     }
 
     public static Test suite() {
@@ -57,7 +57,7 @@ public class KeyValueTest extends TestCase {
 
     public void testDSAPublicKey() throws Exception {
 
-	File f = null;
+        File f = null;
         if (BASEDIR != null && !"".equals(BASEDIR)) {
             f = new File(BASEDIR + SEP +
                   "data/ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/signature-enveloping-dsa.xml");
@@ -65,14 +65,14 @@ public class KeyValueTest extends TestCase {
             f = new File(
                   "data/ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/signature-enveloping-dsa.xml");
         }
-	Document doc = db.parse(new FileInputStream(f));
-	NodeList nl = doc.getElementsByTagNameNS
-	    (Constants.SignatureSpecNS, "Signature");
-	XMLSignature sig = new XMLSignature
-	    ((Element) nl.item(0), f.toURL().toString());
-	KeyInfo ki = sig.getKeyInfo();
-	KeyValue kv = ki.itemKeyValue(0);
-	PublicKey pk = kv.getPublicKey();
-	assertNotNull(pk);
+        Document doc = db.parse(new FileInputStream(f));
+        NodeList nl = doc.getElementsByTagNameNS
+            (Constants.SignatureSpecNS, "Signature");
+        XMLSignature sig = new XMLSignature
+            ((Element) nl.item(0), f.toURL().toString());
+        KeyInfo ki = sig.getKeyInfo();
+        KeyValue kv = ki.itemKeyValue(0);
+        PublicKey pk = kv.getPublicKey();
+        assertNotNull(pk);
     }
 }

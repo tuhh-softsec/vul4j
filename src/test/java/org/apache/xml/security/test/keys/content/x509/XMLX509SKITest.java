@@ -36,19 +36,19 @@ public class XMLX509SKITest extends TestCase {
     private CertificateFactory cf;
 
     public XMLX509SKITest() {
-	super("XMLX509SKITest");
+        super("XMLX509SKITest");
     }
 
     public XMLX509SKITest(String name) {
-	super(name);
+        super(name);
     }
 
     public static Test suite() {
-	return new TestSuite(XMLX509SKITest.class);
+        return new TestSuite(XMLX509SKITest.class);
     }
 
     public void setUp() throws Exception {
-	cf = CertificateFactory.getInstance("X.509");
+        cf = CertificateFactory.getInstance("X.509");
     }
 
     public void testGetSKIBytesFromCert() throws Exception {
@@ -56,33 +56,33 @@ public class XMLX509SKITest extends TestCase {
         File f = null;
         if (BASEDIR != null && !"".equals(BASEDIR)) {
             f = new File(BASEDIR + SEP +
-		"data/ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/certs/lugh.crt");
-	} else {
+                "data/ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/certs/lugh.crt");
+        } else {
             f = new File(
-		"data/ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/certs/lugh.crt");
-	}
+                "data/ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/certs/lugh.crt");
+        }
 
-	FileInputStream fis = new FileInputStream(f);
-	X509Certificate cert = (X509Certificate) cf.generateCertificate(fis);
+        FileInputStream fis = new FileInputStream(f);
+        X509Certificate cert = (X509Certificate) cf.generateCertificate(fis);
 
-	// Get subject key identifier from certificate
-	byte[] skid = XMLX509SKI.getSKIBytesFromCert(cert);
+        // Get subject key identifier from certificate
+        byte[] skid = XMLX509SKI.getSKIBytesFromCert(cert);
 
-	// Use X509CertSelector to match on certificate using the skid,
-	// thereby testing that the returned skid was correct
-	X509CertSelector xcs = new X509CertSelector();
-	// DER-encode skid - required by X509CertSelector
-	byte[] encodedSkid = new byte[skid.length+2];
-	encodedSkid[0] = 0x04; // OCTET STRING tag value
-	encodedSkid[1] = (byte) skid.length; // length
-	System.arraycopy(skid, 0, encodedSkid, 2, skid.length);
-	xcs.setSubjectKeyIdentifier(encodedSkid);
+        // Use X509CertSelector to match on certificate using the skid,
+        // thereby testing that the returned skid was correct
+        X509CertSelector xcs = new X509CertSelector();
+        // DER-encode skid - required by X509CertSelector
+        byte[] encodedSkid = new byte[skid.length+2];
+        encodedSkid[0] = 0x04; // OCTET STRING tag value
+        encodedSkid[1] = (byte) skid.length; // length
+        System.arraycopy(skid, 0, encodedSkid, 2, skid.length);
+        xcs.setSubjectKeyIdentifier(encodedSkid);
 
-	CertStore cs = CertStore.getInstance(
-	    "Collection", 
-	    new CollectionCertStoreParameters(Collections.singleton(cert)));
-	
-	Collection certs = cs.getCertificates(xcs);
-	assertTrue(!certs.isEmpty());
+        CertStore cs = CertStore.getInstance(
+            "Collection", 
+            new CollectionCertStoreParameters(Collections.singleton(cert)));
+        
+        Collection certs = cs.getCertificates(xcs);
+        assertTrue(!certs.isEmpty());
     }
 }

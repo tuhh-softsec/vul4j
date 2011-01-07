@@ -38,69 +38,69 @@ public class XMLObjectTest extends TestCase {
     private String encoding = "encoding";
 
     public XMLObjectTest() {
-	super("XMLObjectTest");
+        super("XMLObjectTest");
     }
 
     public XMLObjectTest(String name) {
-	super(name);
+        super(name);
     }
 
     public void setUp() throws Exception {
-	factory = XMLSignatureFactory.getInstance
+        factory = XMLSignatureFactory.getInstance
             ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
     }
     
     public void tearDown() {}
     
     public void testConstructor() {
-	// test XMLSignatureFactory.newXMLObject(List, String, String, String) 
-	XMLObject obj;
-	
-	obj = factory.newXMLObject(null, null, null, null); 
-	assertNotNull(obj);
+        // test XMLSignatureFactory.newXMLObject(List, String, String, String) 
+        XMLObject obj;
+        
+        obj = factory.newXMLObject(null, null, null, null); 
+        assertNotNull(obj);
 
-	Vector list = new Vector();
-	obj = factory.newXMLObject(list, null, null, null); 
-	assertNotNull(obj);
-	
-	String strEntry = "wrong type";
-	list.add(strEntry);
-	try {
-	    obj = factory.newXMLObject(list, null, null, null); 
-	    fail("Should raise a CCE for content containing " +
-		 "invalid, i.e. non-XMLStructure, entries"); 
-	} catch (ClassCastException cce) {
-	} catch (Exception ex) {
-	    fail("Should raise a CCE for content with invalid entries " +
-		 "instead of " + ex);
-	}
-	list.remove(strEntry);
-	list.add(new TestUtils.MyOwnXMLStructure());
-	obj = factory.newXMLObject(list, id, mimeType, encoding);
-	assertNotNull(obj);
-	assertNotNull(obj.getContent());
-	assertTrue(Arrays.equals(obj.getContent().toArray(), list.toArray()));
-	assertEquals(obj.getId(), id);
-	assertEquals(obj.getMimeType(), mimeType);
-	assertEquals(obj.getEncoding(), encoding);
+        Vector list = new Vector();
+        obj = factory.newXMLObject(list, null, null, null); 
+        assertNotNull(obj);
+        
+        String strEntry = "wrong type";
+        list.add(strEntry);
+        try {
+            obj = factory.newXMLObject(list, null, null, null); 
+            fail("Should raise a CCE for content containing " +
+                 "invalid, i.e. non-XMLStructure, entries"); 
+        } catch (ClassCastException cce) {
+        } catch (Exception ex) {
+            fail("Should raise a CCE for content with invalid entries " +
+                 "instead of " + ex);
+        }
+        list.remove(strEntry);
+        list.add(new TestUtils.MyOwnXMLStructure());
+        obj = factory.newXMLObject(list, id, mimeType, encoding);
+        assertNotNull(obj);
+        assertNotNull(obj.getContent());
+        assertTrue(Arrays.equals(obj.getContent().toArray(), list.toArray()));
+        assertEquals(obj.getId(), id);
+        assertEquals(obj.getMimeType(), mimeType);
+        assertEquals(obj.getEncoding(), encoding);
 
-	List unmodifiable = obj.getContent();
-	try {
-	    unmodifiable.add(new TestUtils.MyOwnXMLStructure());
-	    fail("Should return an unmodifiable List object");
-	} catch (UnsupportedOperationException uoe) {}
-	assertTrue(Arrays.equals(unmodifiable.toArray(), list.toArray()));
+        List unmodifiable = obj.getContent();
+        try {
+            unmodifiable.add(new TestUtils.MyOwnXMLStructure());
+            fail("Should return an unmodifiable List object");
+        } catch (UnsupportedOperationException uoe) {}
+        assertTrue(Arrays.equals(unmodifiable.toArray(), list.toArray()));
     }
 
     public void testisFeatureSupported() {
-	List list = new Vector();
-	list.add(new TestUtils.MyOwnXMLStructure());
-	XMLObject obj = factory.newXMLObject(list, id, mimeType, encoding);
-	try {
-	    obj.isFeatureSupported(null); 
-	    fail("Should raise a NPE for null feature"); 
-	} catch (NullPointerException npe) {}
+        List list = new Vector();
+        list.add(new TestUtils.MyOwnXMLStructure());
+        XMLObject obj = factory.newXMLObject(list, id, mimeType, encoding);
+        try {
+            obj.isFeatureSupported(null); 
+            fail("Should raise a NPE for null feature"); 
+        } catch (NullPointerException npe) {}
 
-	assertTrue(!obj.isFeatureSupported("not supported"));
+        assertTrue(!obj.isFeatureSupported("not supported"));
     }
 }

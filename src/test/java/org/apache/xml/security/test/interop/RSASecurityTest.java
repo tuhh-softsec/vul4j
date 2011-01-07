@@ -17,10 +17,6 @@
 package org.apache.xml.security.test.interop;
 
 
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
 
 
@@ -32,81 +28,59 @@ import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
  * @author $Author$
  * @see <A HREF="http://www.rsasecurity.com/products/bsafe/certj.html">RSA BSAFE Cert-J</A>
  */
-public class RSASecurityTest extends InteropTest {
+public class RSASecurityTest extends InteropTestBase {
 
-   /** {@link org.apache.commons.logging} logging facility */
+    /** {@link org.apache.commons.logging} logging facility */
     static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(RSASecurityTest.class.getName());
 
-   /** Field blakesDir           */
-   static String blakesDir =
-      "data/com/rsasecurity/bdournaee/";
+    /** Field blakesDir           */
+    static String blakesDir =
+        "data/com/rsasecurity/bdournaee/";
 
-   /**
-    * Method suite
-    *
-    *
-    */
-   public static Test suite() {
-      TestSuite suite = new TestSuite(RSASecurityTest.class);
+    static {
+        String basedir = System.getProperty("basedir");
+        if(basedir != null && !"".equals(basedir)) {
+            blakesDir = basedir + "/" + blakesDir;
+        }
+        org.apache.xml.security.Init.init();
+    }
 
-      return suite;
-   }
-   /**
-    * Constructor RSASecurityTest
-    *
-    * @param Name_
-    */
-   public RSASecurityTest(String Name_) {
-      super(Name_);
-   }
+    /**
+     * Constructor RSASecurityTest
+     */
+    public RSASecurityTest() {
+        super();
+    }
 
-   /**
-    * Method main
-    *
-    * @param args
-    */
-   public static void main(String[] args) {
+    @org.junit.Test
+    public void test_enveloping() throws Exception {
 
-      String[] testCaseName = { "-noloading", RSASecurityTest.class.getName() };
+        String filename = blakesDir + "certj201_enveloping.xml";
+        boolean followManifests = false;
+        ResourceResolverSpi resolver = null;
+        boolean verify = this.verify(filename, resolver, followManifests);
 
-      junit.textui.TestRunner.main(testCaseName);
-   }
+        if (!verify) {
+            log.error("Verification failed for " + filename);
+        }
 
-   public void test_enveloping() throws Exception {
+        assertTrue(filename, verify);
+    }
 
-      String filename = blakesDir + "certj201_enveloping.xml";
-      boolean followManifests = false;
-      ResourceResolverSpi resolver = null;
-      boolean verify = this.verify(filename, resolver, followManifests);
+    @org.junit.Test
+    public void test_enveloped() throws Exception {
 
-      if (!verify) {
-         log.error("Verification failed for " + filename);
-      }
+        String filename = blakesDir + "certj201_enveloped.xml";
+        boolean followManifests = false;
+        ResourceResolverSpi resolver = null;
+        boolean verify = this.verify(filename, resolver, followManifests);
 
-      assertTrue(filename, verify);
-   }
+        if (!verify) {
+            log.error("Verification failed for " + filename);
+        }
 
+        assertTrue(filename, verify);
+    }
 
-   public void test_enveloped() throws Exception {
-
-      String filename = blakesDir + "certj201_enveloped.xml";
-      boolean followManifests = false;
-      ResourceResolverSpi resolver = null;
-      boolean verify = this.verify(filename, resolver, followManifests);
-
-      if (!verify) {
-         log.error("Verification failed for " + filename);
-      }
-
-      assertTrue(filename, verify);
-   }
-
-   static {
-   	  String basedir = System.getProperty("basedir");
-   	  if(basedir != null && !"".equals(basedir)) {
-   		blakesDir = basedir + "/" + blakesDir;
-   	  }
-      org.apache.xml.security.Init.init();
-   }
 }

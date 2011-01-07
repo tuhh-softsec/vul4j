@@ -23,8 +23,6 @@ import java.io.File;
 import java.security.Security;
 import javax.xml.crypto.dsig.XMLSignatureException;
 
-import junit.framework.*;
-
 import javax.xml.crypto.test.KeySelectors;
 
 /**
@@ -33,7 +31,7 @@ import javax.xml.crypto.test.KeySelectors;
  *
  * @author Sean Mullan
  */
-public class IaikSignatureAlgosTest extends TestCase {
+public class IaikSignatureAlgosTest extends org.junit.Assert {
 
     private SignatureValidator validator;
 
@@ -42,53 +40,54 @@ public class IaikSignatureAlgosTest extends TestCase {
             (new org.jcp.xml.dsig.internal.dom.XMLDSigRI(), 1);
     }
 
-    public IaikSignatureAlgosTest(String name) {
-        super(name);
-	String fs = System.getProperty("file.separator");
-	String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
-	base +=  fs + "data" + fs
-	    + "at" + fs + "iaik" + fs + "ixsil";
-	validator = new SignatureValidator(new File
-	    (base, "signatureAlgorithms/signatures"));
+    public IaikSignatureAlgosTest() {
+        String fs = System.getProperty("file.separator");
+        String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
+        base +=  fs + "data" + fs
+            + "at" + fs + "iaik" + fs + "ixsil";
+        validator = new SignatureValidator(new File
+            (base, "signatureAlgorithms/signatures"));
     }
+    
+    @org.junit.Test
     public void test_dsaSignature() throws Exception {
         String file = "dSASignature.xml";
 
-	boolean coreValidity = validator.validate(file, new 
-	    KeySelectors.KeyValueKeySelector());
-	assertTrue("Signature failed core validation", coreValidity);
+        boolean coreValidity = validator.validate(file, new 
+            KeySelectors.KeyValueKeySelector());
+        assertTrue("Signature failed core validation", coreValidity);
     }
+    
+    @org.junit.Test
     public void test_rsaSignature() throws Exception {
         String file = "rSASignature.xml";
 
-	boolean coreValidity = validator.validate(file, new 
-	    KeySelectors.KeyValueKeySelector());
-	assertTrue("Signature failed core validation", coreValidity);
+        boolean coreValidity = validator.validate(file, new 
+            KeySelectors.KeyValueKeySelector());
+        assertTrue("Signature failed core validation", coreValidity);
     }
+    
+    @org.junit.Test
     public void test_hmacShortSignature() throws Exception {
         String file = "hMACShortSignature.xml";
 
         try {
-	    boolean coreValidity = validator.validate(file, new 
-	        KeySelectors.SecretKeySelector("secret".getBytes("ASCII")));
+            validator.validate(file, new 
+                KeySelectors.SecretKeySelector("secret".getBytes("ASCII")));
             fail("Expected HMACOutputLength Exception");
         } catch (XMLSignatureException xse) {
-            System.out.println(xse.getMessage());
+            // System.out.println(xse.getMessage());
             // pass
         }
     }
+    
+    @org.junit.Test
     public void test_hmacSignature() throws Exception {
         String file = "hMACSignature.xml";
 
-	boolean coreValidity = validator.validate(file, new
-	    KeySelectors.SecretKeySelector("secret".getBytes("ASCII")));
-	assertTrue("Signature failed core validation", coreValidity);
+        boolean coreValidity = validator.validate(file, new
+            KeySelectors.SecretKeySelector("secret".getBytes("ASCII")));
+        assertTrue("Signature failed core validation", coreValidity);
     }
-    public static void main(String[] args) throws Exception {
-        IaikSignatureAlgosTest it = new IaikSignatureAlgosTest("");
-	it.test_dsaSignature();
-	it.test_rsaSignature();
-	it.test_hmacShortSignature();
-	it.test_hmacSignature();
-    }
+    
 }

@@ -58,189 +58,189 @@ public class XMLSignatureTest extends TestCase {
     }
 
     public XMLSignatureTest() {
-	super("XMLSignatureTest");
+        super("XMLSignatureTest");
     }
 
     public XMLSignatureTest(String name) {
-	super(name);
+        super(name);
     }
 
     public void setUp() throws Exception {
-	fac = XMLSignatureFactory.getInstance
+        fac = XMLSignatureFactory.getInstance
             ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
-	kifac = KeyInfoFactory.getInstance
+        kifac = KeyInfoFactory.getInstance
             ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
 
-	// set up the corresponding SignatureMethod 
-	SIG_METHODS = new SignatureMethod[3];
-	SIG_METHODS[0] = fac.newSignatureMethod(SignatureMethod.DSA_SHA1, null);
-	SIG_METHODS[1] = fac.newSignatureMethod(SignatureMethod.RSA_SHA1, null);
-	SIG_METHODS[2] = fac.newSignatureMethod(SignatureMethod.HMAC_SHA1, null);
-	// set up the signingKeys
-	SIGN_KEYS = new Key[3];
-	SIGN_KEYS[0] = TestUtils.getPrivateKey("DSA");
-	SIGN_KEYS[1] = TestUtils.getPrivateKey("RSA");
-	SIGN_KEYS[2] = new SecretKeySpec(new byte[16], "HmacSHA1");
-	// set up the validatingKeys
-	VALIDATE_KEYS = new Key[3];
-	VALIDATE_KEYS[0] = TestUtils.getPublicKey("DSA");
-	VALIDATE_KEYS[1] = TestUtils.getPublicKey("RSA");
-	VALIDATE_KEYS[2] = new SecretKeySpec(new byte[16], "HmacSHA1");
-	defSi = createSignedInfo(SIG_METHODS[0]);
-	defKi = kifac.newKeyInfo
-	    (Collections.singletonList(kifac.newKeyName("Alice")));
-	objs = Collections.singletonList
-	    (fac.newXMLObject(null, null, null, null));
+        // set up the corresponding SignatureMethod 
+        SIG_METHODS = new SignatureMethod[3];
+        SIG_METHODS[0] = fac.newSignatureMethod(SignatureMethod.DSA_SHA1, null);
+        SIG_METHODS[1] = fac.newSignatureMethod(SignatureMethod.RSA_SHA1, null);
+        SIG_METHODS[2] = fac.newSignatureMethod(SignatureMethod.HMAC_SHA1, null);
+        // set up the signingKeys
+        SIGN_KEYS = new Key[3];
+        SIGN_KEYS[0] = TestUtils.getPrivateKey("DSA");
+        SIGN_KEYS[1] = TestUtils.getPrivateKey("RSA");
+        SIGN_KEYS[2] = new SecretKeySpec(new byte[16], "HmacSHA1");
+        // set up the validatingKeys
+        VALIDATE_KEYS = new Key[3];
+        VALIDATE_KEYS[0] = TestUtils.getPublicKey("DSA");
+        VALIDATE_KEYS[1] = TestUtils.getPublicKey("RSA");
+        VALIDATE_KEYS[2] = new SecretKeySpec(new byte[16], "HmacSHA1");
+        defSi = createSignedInfo(SIG_METHODS[0]);
+        defKi = kifac.newKeyInfo
+            (Collections.singletonList(kifac.newKeyName("Alice")));
+        objs = Collections.singletonList
+            (fac.newXMLObject(null, null, null, null));
     }
 
     public void tearDown() {}
 
     public void testConstructor() throws Exception {
-	XMLSignature sig = null;
-	// test  XMLSignatureFactory.newXMLSignature(SignedInfo, KeyInfo)
-	// and  XMLSignatureFactory.newXMLSignature(SignedInfo,
-	//          KeyInfo, List, String, String)
-	// for generating XMLSignature objects
-	for (int i = 0; i < 2; i++) {
-	    try {
-		switch (i) {
-		case 0:
-		    sig = fac.newXMLSignature(null, defKi);
-		    break;
-		case 1:
-		    sig = fac.newXMLSignature(null, defKi, objs, id, sigValueId);
-		    break;
-		}
-		fail("Should throw a NPE for null references");
-	    } catch (NullPointerException npe) {
-	    } catch (Exception ex) {
-		fail("Should throw a NPE instead of " + ex + 
-		     " for null references");
-	    }
-	}
-	try {
-	    sig = fac.newXMLSignature(defSi, defKi, 
-		     Collections.singletonList("wrongType"), id, sigValueId);
-	    fail("Should throw a CCE for invalid objects");
-	} catch (ClassCastException cce) {
-	} catch (Exception ex) {
-	    fail("Should throw a CCE instead of " + ex + 
-		 " for invalid objects");
-	}
-	sig = fac.newXMLSignature(defSi, defKi, objs, id, sigValueId);
-	assertEquals(sig.getId(), id);
-	assertEquals(sig.getKeyInfo(), defKi);
-	assertTrue(Arrays.equals(sig.getObjects().toArray(), objs.toArray()));
-	assertNull(sig.getSignatureValue().getValue());
-	assertEquals(sig.getSignatureValue().getId(), sigValueId);
-	assertEquals(sig.getSignedInfo(), defSi);
+        XMLSignature sig = null;
+        // test  XMLSignatureFactory.newXMLSignature(SignedInfo, KeyInfo)
+        // and  XMLSignatureFactory.newXMLSignature(SignedInfo,
+        //          KeyInfo, List, String, String)
+        // for generating XMLSignature objects
+        for (int i = 0; i < 2; i++) {
+            try {
+                switch (i) {
+                case 0:
+                    sig = fac.newXMLSignature(null, defKi);
+                    break;
+                case 1:
+                    sig = fac.newXMLSignature(null, defKi, objs, id, sigValueId);
+                    break;
+                }
+                fail("Should throw a NPE for null references");
+            } catch (NullPointerException npe) {
+            } catch (Exception ex) {
+                fail("Should throw a NPE instead of " + ex + 
+                     " for null references");
+            }
+        }
+        try {
+            sig = fac.newXMLSignature(defSi, defKi, 
+                     Collections.singletonList("wrongType"), id, sigValueId);
+            fail("Should throw a CCE for invalid objects");
+        } catch (ClassCastException cce) {
+        } catch (Exception ex) {
+            fail("Should throw a CCE instead of " + ex + 
+                 " for invalid objects");
+        }
+        sig = fac.newXMLSignature(defSi, defKi, objs, id, sigValueId);
+        assertEquals(sig.getId(), id);
+        assertEquals(sig.getKeyInfo(), defKi);
+        assertTrue(Arrays.equals(sig.getObjects().toArray(), objs.toArray()));
+        assertNull(sig.getSignatureValue().getValue());
+        assertEquals(sig.getSignatureValue().getId(), sigValueId);
+        assertEquals(sig.getSignedInfo(), defSi);
 
-	sig = fac.newXMLSignature(defSi, defKi);
-	assertNull(sig.getId());
-	assertEquals(sig.getKeyInfo(), defKi);
-	assertTrue(sig.getObjects().size()==0);
-	assertNull(sig.getSignatureValue().getValue());
-	assertNull(sig.getSignatureValue().getId());
-	assertEquals(sig.getSignedInfo(), defSi);
+        sig = fac.newXMLSignature(defSi, defKi);
+        assertNull(sig.getId());
+        assertEquals(sig.getKeyInfo(), defKi);
+        assertTrue(sig.getObjects().size()==0);
+        assertNull(sig.getSignatureValue().getValue());
+        assertNull(sig.getSignatureValue().getId());
+        assertEquals(sig.getSignedInfo(), defSi);
     }
     
     public void testisFeatureSupported() throws Exception {
 
-	XMLSignature sig = fac.newXMLSignature(defSi, null);
-	
-	try {
-	    sig.isFeatureSupported(null); 
-	    fail("Should raise a NPE for null feature"); 
-	} catch (NullPointerException npe) {}
-	    
-	assertTrue(!sig.isFeatureSupported("not supported"));
+        XMLSignature sig = fac.newXMLSignature(defSi, null);
+        
+        try {
+            sig.isFeatureSupported(null); 
+            fail("Should raise a NPE for null feature"); 
+        } catch (NullPointerException npe) {}
+            
+        assertTrue(!sig.isFeatureSupported("not supported"));
     }
 
     public void testsignANDvalidate() throws Exception {
-	XMLSignature sig;
-	SignedInfo si;
-	KeyInfo ki = null;
-	XMLSignContext signContext;
-	XMLValidateContext validateContext;
-	boolean status = true;
-	for (int i = SIGN_KEYS.length-1; i>=0 ; i--) {
-	    si = createSignedInfo(SIG_METHODS[i]);
-	    if (VALIDATE_KEYS[i] instanceof PublicKey) {
-		ki = kifac.newKeyInfo(Collections.singletonList
-		    (kifac.newKeyValue((PublicKey) VALIDATE_KEYS[i])));
-	    } else {
-		ki = kifac.newKeyInfo(Collections.singletonList
-		    (kifac.newKeyName("testuser")));
-	    }
-	    sig = fac.newXMLSignature(si, ki, objs, id, sigValueId); 
-	    Document doc = TestUtils.newDocument();
-	    signContext = new DOMSignContext(SIGN_KEYS[i], doc);
-	    sig.sign(signContext);
-	    validateContext = new DOMValidateContext
-		(VALIDATE_KEYS[i], doc.getDocumentElement());
-	    if (sig.validate(validateContext) == false) {
-		status = false;
-		TestUtils.dumpDocument(doc, "signatureTest_out"+i+".xml");
-	    }
-	}
-	assertTrue(status);
+        XMLSignature sig;
+        SignedInfo si;
+        KeyInfo ki = null;
+        XMLSignContext signContext;
+        XMLValidateContext validateContext;
+        boolean status = true;
+        for (int i = SIGN_KEYS.length-1; i>=0 ; i--) {
+            si = createSignedInfo(SIG_METHODS[i]);
+            if (VALIDATE_KEYS[i] instanceof PublicKey) {
+                ki = kifac.newKeyInfo(Collections.singletonList
+                    (kifac.newKeyValue((PublicKey) VALIDATE_KEYS[i])));
+            } else {
+                ki = kifac.newKeyInfo(Collections.singletonList
+                    (kifac.newKeyName("testuser")));
+            }
+            sig = fac.newXMLSignature(si, ki, objs, id, sigValueId); 
+            Document doc = TestUtils.newDocument();
+            signContext = new DOMSignContext(SIGN_KEYS[i], doc);
+            sig.sign(signContext);
+            validateContext = new DOMValidateContext
+                (VALIDATE_KEYS[i], doc.getDocumentElement());
+            if (sig.validate(validateContext) == false) {
+                status = false;
+                TestUtils.dumpDocument(doc, "signatureTest_out"+i+".xml");
+            }
+        }
+        assertTrue(status);
     }
 
     public void testsignWithProvider() throws Exception {
-	XMLSignature sig;
-	SignedInfo si;
-	KeyInfo ki = null;
-	XMLSignContext signContext;
-	Provider p = new TestProvider();
-	for (int i = SIGN_KEYS.length-2; i>=0 ; i--) {
-	    si = createSignedInfo(SIG_METHODS[i]);
-	    if (VALIDATE_KEYS[i] instanceof PublicKey) {
-		ki = kifac.newKeyInfo(Collections.singletonList
-		    (kifac.newKeyValue((PublicKey) VALIDATE_KEYS[i])));
-	    } else {
-		ki = kifac.newKeyInfo(Collections.singletonList
-		    (kifac.newKeyName("testuser")));
-	    }
-	    sig = fac.newXMLSignature(si, ki, objs, id, sigValueId); 
-	    Document doc = TestUtils.newDocument();
-	    signContext = new DOMSignContext(SIGN_KEYS[i], doc);
-	    signContext.setProperty
-		("org.jcp.xml.dsig.internal.dom.SignatureProvider", p);
-	    try {
-	        sig.sign(signContext);
-	        fail("Should have failed because TestProvider does not " +
-		     "support " + SIGN_KEYS[i].getAlgorithm());
-	    } catch (Exception e) {
-		assertTrue(e.getMessage(), 
-		    e.getCause() instanceof NoSuchAlgorithmException);
-	    }
-	}
+        XMLSignature sig;
+        SignedInfo si;
+        KeyInfo ki = null;
+        XMLSignContext signContext;
+        Provider p = new TestProvider();
+        for (int i = SIGN_KEYS.length-2; i>=0 ; i--) {
+            si = createSignedInfo(SIG_METHODS[i]);
+            if (VALIDATE_KEYS[i] instanceof PublicKey) {
+                ki = kifac.newKeyInfo(Collections.singletonList
+                    (kifac.newKeyValue((PublicKey) VALIDATE_KEYS[i])));
+            } else {
+                ki = kifac.newKeyInfo(Collections.singletonList
+                    (kifac.newKeyName("testuser")));
+            }
+            sig = fac.newXMLSignature(si, ki, objs, id, sigValueId); 
+            Document doc = TestUtils.newDocument();
+            signContext = new DOMSignContext(SIGN_KEYS[i], doc);
+            signContext.setProperty
+                ("org.jcp.xml.dsig.internal.dom.SignatureProvider", p);
+            try {
+                sig.sign(signContext);
+                fail("Should have failed because TestProvider does not " +
+                     "support " + SIGN_KEYS[i].getAlgorithm());
+            } catch (Exception e) {
+                assertTrue(e.getMessage(), 
+                    e.getCause() instanceof NoSuchAlgorithmException);
+            }
+        }
     }
 
     public void testSignWithEmptyNSPrefix() throws Exception {
-	SignedInfo si = createSignedInfo(SIG_METHODS[1]);
-	KeyInfo	ki = kifac.newKeyInfo(Collections.singletonList
-		    (kifac.newKeyValue((PublicKey) VALIDATE_KEYS[1])));
-	XMLSignature sig = fac.newXMLSignature(si, ki, objs, id, sigValueId); 
-	Document doc = TestUtils.newDocument();
-	XMLSignContext signContext = new DOMSignContext(SIGN_KEYS[1], doc);
-	signContext.putNamespacePrefix(XMLSignature.XMLNS, "");
+        SignedInfo si = createSignedInfo(SIG_METHODS[1]);
+        KeyInfo	ki = kifac.newKeyInfo(Collections.singletonList
+                    (kifac.newKeyValue((PublicKey) VALIDATE_KEYS[1])));
+        XMLSignature sig = fac.newXMLSignature(si, ki, objs, id, sigValueId); 
+        Document doc = TestUtils.newDocument();
+        XMLSignContext signContext = new DOMSignContext(SIGN_KEYS[1], doc);
+        signContext.putNamespacePrefix(XMLSignature.XMLNS, "");
         sig.sign(signContext);
 /*
-	StringWriter sw = new StringWriter();
-	dumpDocument(doc, sw);
-	System.out.println(sw);
+        StringWriter sw = new StringWriter();
+        dumpDocument(doc, sw);
+        System.out.println(sw);
 */
     }
 
     public void testSignWithReferenceManifestDependencies() throws Exception {
         // create references
-	DigestMethod dm = fac.newDigestMethod(DigestMethod.SHA1, null);
+        DigestMethod dm = fac.newDigestMethod(DigestMethod.SHA1, null);
         List refs = Collections.singletonList(fac.newReference("#object-1", dm));
 
         // create SignedInfo
-	CanonicalizationMethod cm = fac.newCanonicalizationMethod
-	    (CanonicalizationMethod.INCLUSIVE, (C14NMethodParameterSpec) null);
+        CanonicalizationMethod cm = fac.newCanonicalizationMethod
+            (CanonicalizationMethod.INCLUSIVE, (C14NMethodParameterSpec) null);
         SignedInfo si = fac.newSignedInfo(cm, SIG_METHODS[1], refs);
 
         // create objects
@@ -260,8 +260,8 @@ public class XMLSignatureTest extends TestCase {
         objs.add(fac.newXMLObject(Collections.singletonList
             (new DOMStructure(nc)), "object-2", null, null));
 
-	KeyInfo	ki = kifac.newKeyInfo(Collections.singletonList
-		    (kifac.newKeyValue((PublicKey) VALIDATE_KEYS[1])));
+        KeyInfo	ki = kifac.newKeyInfo(Collections.singletonList
+                    (kifac.newKeyValue((PublicKey) VALIDATE_KEYS[1])));
 
         // create XMLSignature
         XMLSignature sig = fac.newXMLSignature(si, ki, objs, "signature", null);
@@ -270,13 +270,13 @@ public class XMLSignatureTest extends TestCase {
         sig.sign(dsc);
 
 /*
-	StringWriter sw = new StringWriter();
-	dumpDocument(doc, sw);
-	System.out.println(sw);
+        StringWriter sw = new StringWriter();
+        dumpDocument(doc, sw);
+        System.out.println(sw);
 */
 
         DOMValidateContext dvc = new DOMValidateContext
-	    (VALIDATE_KEYS[1], doc.getDocumentElement());
+            (VALIDATE_KEYS[1], doc.getDocumentElement());
         XMLSignature sig2 = fac.unmarshalXMLSignature(dvc);
 
         if (sig.equals(sig2) == false) {
@@ -289,19 +289,19 @@ public class XMLSignatureTest extends TestCase {
     }
 
     private SignedInfo createSignedInfo(SignatureMethod sm) throws Exception {
-	// set up the building blocks
-	CanonicalizationMethod cm = fac.newCanonicalizationMethod
-	    (CanonicalizationMethod.INCLUSIVE_WITH_COMMENTS, 
-	     (C14NMethodParameterSpec) null);
-	DigestMethod dm = fac.newDigestMethod(DigestMethod.SHA1, null);
-	List refs = Collections.singletonList(fac.newReference
-	    ("http://www.w3.org/Signature/2002/04/xml-stylesheet.b64", dm));
+        // set up the building blocks
+        CanonicalizationMethod cm = fac.newCanonicalizationMethod
+            (CanonicalizationMethod.INCLUSIVE_WITH_COMMENTS, 
+             (C14NMethodParameterSpec) null);
+        DigestMethod dm = fac.newDigestMethod(DigestMethod.SHA1, null);
+        List refs = Collections.singletonList(fac.newReference
+            ("http://www.w3.org/Signature/2002/04/xml-stylesheet.b64", dm));
         return fac.newSignedInfo(cm, sm, refs);
     }
 
     static class TestProvider extends Provider {
-	TestProvider() {
-	    super("TestProvider", 0, "TestProvider");
-	}
+        TestProvider() {
+            super("TestProvider", 0, "TestProvider");
+        }
     }
 }

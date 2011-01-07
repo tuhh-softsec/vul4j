@@ -53,7 +53,7 @@ public class CreateSignatureTest extends TestCase {
     /** {@link org.apache.commons.logging} logging facility */
     static org.apache.commons.logging.Log log =
         org.apache.commons.logging.LogFactory.getLog
-	    (CreateSignatureTest.class.getName());
+            (CreateSignatureTest.class.getName());
 
     private static final String BASEDIR = System.getProperty("basedir");
     private static final String SEP = System.getProperty("file.separator");
@@ -87,7 +87,7 @@ public class CreateSignatureTest extends TestCase {
         doc.appendChild(envelope);
 
         XMLSignature sig = 
-	    new XMLSignature(doc, null, XMLSignature.ALGO_ID_SIGNATURE_DSA);
+            new XMLSignature(doc, null, XMLSignature.ALGO_ID_SIGNATURE_DSA);
 
         ObjectContainer object1 = new ObjectContainer(doc);
         object1.setId("object-1");
@@ -113,31 +113,31 @@ public class CreateSignatureTest extends TestCase {
                         "http://www.w3.org/2000/09/xmldsig#Object");
 
         KeyStore ks = KeyStore.getInstance("JKS");
-	FileInputStream fis = null;
+        FileInputStream fis = null;
         if (BASEDIR != null && !"".equals(BASEDIR)) {
             fis = new FileInputStream(BASEDIR + SEP + 
-		  "data/org/apache/xml/security/samples/input/keystore.jks");
-	} else {
+                  "data/org/apache/xml/security/samples/input/keystore.jks");
+        } else {
             fis = new FileInputStream(
-		  "data/org/apache/xml/security/samples/input/keystore.jks");
-	}
+                  "data/org/apache/xml/security/samples/input/keystore.jks");
+        }
         ks.load(fis, "xmlsecurity".toCharArray());
         PrivateKey privateKey = (PrivateKey) ks.getKey("test",
                                  "xmlsecurity".toCharArray());
 
-	sig.sign(privateKey);
+        sig.sign(privateKey);
     }
     
     KeyPair kp = null;    
     javax.xml.parsers.DocumentBuilder db;
     
     protected void setUp() throws Exception {
-    	javax.xml.parsers.DocumentBuilderFactory dbf = javax.xml.parsers.DocumentBuilderFactory
+        javax.xml.parsers.DocumentBuilderFactory dbf = javax.xml.parsers.DocumentBuilderFactory
         .newInstance();
-    	dbf.setNamespaceAware(true);
-    	db = dbf.newDocumentBuilder();
-    	org.apache.xml.security.Init.init();
-    	kp=KeyPairGenerator.getInstance("RSA").genKeyPair();
+        dbf.setNamespaceAware(true);
+        db = dbf.newDocumentBuilder();
+        org.apache.xml.security.Init.init();
+        kp=KeyPairGenerator.getInstance("RSA").genKeyPair();
     }
     public void testOne() throws Exception {        
         doVerify(doSign()); 
@@ -145,19 +145,19 @@ public class CreateSignatureTest extends TestCase {
     }
 
     public void testTwo() throws Exception {
-	doSignWithCert();
+        doSignWithCert();
     }
 
     public void testWithNSPrefixDisabled() throws Exception {
-	String prefix = Constants.getSignatureSpecNSprefix();
-	try {
+        String prefix = Constants.getSignatureSpecNSprefix();
+        try {
             Constants.setSignatureSpecNSprefix("");
             doSign();
             Constants.setSignatureSpecNSprefix(prefix);
-	} catch (Exception e) {
+        } catch (Exception e) {
             Constants.setSignatureSpecNSprefix(prefix);
-	    throw e;
-	}
+            throw e;
+        }
     }
 
     String doSign() throws Exception {
@@ -197,14 +197,14 @@ public class CreateSignatureTest extends TestCase {
     }
 
     String doSignWithCert() throws Exception {
-	KeyStore ks = KeyStore.getInstance("JKS");
-	FileInputStream fis = null;
+        KeyStore ks = KeyStore.getInstance("JKS");
+        FileInputStream fis = null;
         if (BASEDIR != null && !"".equals(BASEDIR)) {
             fis = new FileInputStream(BASEDIR + SEP + 
-		  "data/test.jks");
-	} else {
+                  "data/test.jks");
+        } else {
             fis = new FileInputStream("data/test.jks");
-	}
+        }
         ks.load(fis, "changeit".toCharArray());
         PrivateKey privateKey = (PrivateKey) ks.getKey("mullan",
                                  "changeit".toCharArray());
@@ -236,8 +236,8 @@ public class CreateSignatureTest extends TestCase {
 
         sig.addKeyInfo(signingCert);
         sig.sign(privateKey);
-	X509Certificate cert = sig.getKeyInfo().getX509Certificate();
-	sig.checkSignatureValue(cert.getPublicKey());
+        X509Certificate cert = sig.getKeyInfo().getX509Certificate();
+        sig.checkSignatureValue(cert.getPublicKey());
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
         XMLUtils.outputDOMc14nWithComments(doc, bos);
@@ -252,12 +252,12 @@ public class CreateSignatureTest extends TestCase {
         KeyInfo ki = signature.getKeyInfo();
 
         if (ki == null) {
-        	throw new RuntimeException("No keyinfo");
+                throw new RuntimeException("No keyinfo");
         }
         PublicKey pk = signature.getKeyInfo().getPublicKey();
 
         if (pk == null) {
-        	throw new RuntimeException("No public key");
+                throw new RuntimeException("No public key");
         }
         assertTrue(signature.checkSignatureValue(pk) );
     }

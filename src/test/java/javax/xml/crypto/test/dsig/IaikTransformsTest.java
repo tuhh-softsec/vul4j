@@ -22,8 +22,6 @@ package javax.xml.crypto.test.dsig;
 import java.io.File;
 import java.security.Security;
 
-import junit.framework.*;
-
 import javax.xml.crypto.test.KeySelectors;
 
 /**
@@ -32,7 +30,7 @@ import javax.xml.crypto.test.KeySelectors;
  *
  * @author Sean Mullan
  */
-public class IaikTransformsTest extends TestCase {
+public class IaikTransformsTest extends org.junit.Assert {
 
     private SignatureValidator validator;
 
@@ -41,49 +39,50 @@ public class IaikTransformsTest extends TestCase {
             (new org.jcp.xml.dsig.internal.dom.XMLDSigRI(), 1);
     }
 
-    public IaikTransformsTest(String name) {
-        super(name);
-	String fs = System.getProperty("file.separator");
-	String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
-	base +=  fs + "data" + fs +
-	    "at" + fs + "iaik" + fs + "ixsil";
-	validator = new SignatureValidator(new File
-	    (base, "transforms/signatures"));
+    public IaikTransformsTest() {
+        String fs = System.getProperty("file.separator");
+        String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
+        base +=  fs + "data" + fs +
+            "at" + fs + "iaik" + fs + "ixsil";
+        validator = new SignatureValidator(new File
+            (base, "transforms/signatures"));
     }
+    
+    @org.junit.Test
     public void test_base64DecodeSignature() throws Exception {
         String file = "base64DecodeSignature.xml";
 
-	boolean coreValidity = validator.validate
-	    (file, new KeySelectors.KeyValueKeySelector());
-	assertTrue("Signature failed core validation", coreValidity);
+        boolean coreValidity = validator.validate
+            (file, new KeySelectors.KeyValueKeySelector());
+        assertTrue("Signature failed core validation", coreValidity);
 
     }
+    
+    @org.junit.Test
     public void test_envelopedSignatureSignature() throws Exception {
         String file = "envelopedSignatureSignature.xml";
 
-	boolean coreValidity = validator.validate
-	    (file, new KeySelectors.KeyValueKeySelector());
-	assertTrue("Signature failed core validation", coreValidity);
+        boolean coreValidity = validator.validate
+            (file, new KeySelectors.KeyValueKeySelector());
+        assertTrue("Signature failed core validation", coreValidity);
     }
+    
+    @org.junit.Test
     public void test_c14nSignature() throws Exception {
         String file = "c14nSignature.xml";
 
-	boolean coreValidity = validator.validate
-	    (file, new KeySelectors.KeyValueKeySelector());
-	assertTrue("Signature failed core validation", coreValidity);
+        boolean coreValidity = validator.validate
+            (file, new KeySelectors.KeyValueKeySelector());
+        assertTrue("Signature failed core validation", coreValidity);
     }
+    
+    @org.junit.Test
     public void test_xPathSignature() throws Exception {
         String file = "xPathSignature.xml";
 
-	boolean coreValidity = validator.validate
-	    (file, new KeySelectors.KeyValueKeySelector());
-	assertTrue("Signature failed core validation", coreValidity);
+        boolean coreValidity = validator.validate
+            (file, new KeySelectors.KeyValueKeySelector());
+        assertTrue("Signature failed core validation", coreValidity);
     }
-    public static void main(String[] args) throws Exception {
-        IaikTransformsTest it = new IaikTransformsTest("");
-	it.test_xPathSignature();
-	it.test_c14nSignature();
-	it.test_base64DecodeSignature();
-	it.test_envelopedSignatureSignature();
-    }
+    
 }

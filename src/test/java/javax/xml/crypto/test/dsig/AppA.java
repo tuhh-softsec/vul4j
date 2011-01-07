@@ -25,6 +25,6 @@ public class AppA {
 
     public void dsig() throws Exception {
 
-	Security.addProvider(new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
+        Security.addProvider(new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
     }
 }

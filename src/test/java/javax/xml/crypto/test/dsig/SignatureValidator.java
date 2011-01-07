@@ -41,55 +41,55 @@ public class SignatureValidator {
     private File dir;
 
     public SignatureValidator(File base) {
-	dir = base;
+        dir = base;
     }
 
     public boolean validate(String fn, KeySelector ks) throws Exception {
-	return validate(fn, ks, null);
+        return validate(fn, ks, null);
     }
 
     public DOMValidateContext getValidateContext(String fn, KeySelector ks)
-	throws Exception {
+        throws Exception {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);
         dbf.setValidating(false);
         Document doc = dbf.newDocumentBuilder().parse(new File(dir, fn));
         Element sigElement = getSignatureElement(doc);
-	if (sigElement == null) {
-	    throw new Exception("Couldn't find signature Element");
-	}
-	DOMValidateContext vc = new DOMValidateContext(ks, sigElement);
-	vc.setBaseURI(dir.toURI().toString());
-	return vc;
+        if (sigElement == null) {
+            throw new Exception("Couldn't find signature Element");
+        }
+        DOMValidateContext vc = new DOMValidateContext(ks, sigElement);
+        vc.setBaseURI(dir.toURI().toString());
+        return vc;
     }
 
     public boolean validate(String fn, KeySelector ks, URIDereferencer ud)
-	throws Exception {
+        throws Exception {
 
-	DOMValidateContext vc = getValidateContext(fn, ks);
-	if (ud != null) {
-	    vc.setURIDereferencer(ud);
-	}
+        DOMValidateContext vc = getValidateContext(fn, ks);
+        if (ud != null) {
+            vc.setURIDereferencer(ud);
+        }
 
-	return validate(vc);
+        return validate(vc);
     }
 
     public boolean validate(DOMValidateContext vc) throws Exception {
 
         XMLSignatureFactory factory = XMLSignatureFactory.getInstance
             ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
-    	XMLSignature signature = factory.unmarshalXMLSignature(vc);
-    	boolean coreValidity = signature.validate(vc);
+        XMLSignature signature = factory.unmarshalXMLSignature(vc);
+        boolean coreValidity = signature.validate(vc);
     
-    	// Check core validation status
-    	if (coreValidity == false) {
-    	    // check the validation status of each Reference
-    	    Iterator i = signature.getSignedInfo().getReferences().iterator();
-    	    for (int j=0; i.hasNext(); j++) {
-		Reference reference = (Reference) i.next();
-		reference.validate(vc);
-    	    }
-    	}
+        // Check core validation status
+        if (coreValidity == false) {
+            // check the validation status of each Reference
+            Iterator i = signature.getSignedInfo().getReferences().iterator();
+            for (int j=0; i.hasNext(); j++) {
+                Reference reference = (Reference) i.next();
+                reference.validate(vc);
+            }
+        }
         return coreValidity;
     }
 

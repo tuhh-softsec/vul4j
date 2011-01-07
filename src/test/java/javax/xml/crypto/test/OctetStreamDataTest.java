@@ -23,72 +23,57 @@ import java.io.*;
 import java.util.*;
 import javax.xml.crypto.*;
 
-import junit.framework.*;
-
 /**
  * Unit test for javax.xml.crypto.OctetStreamData
  *
- * @version $Id$
  * @author Valerie Peng
  */
-public class OctetStreamDataTest extends TestCase {
+public class OctetStreamDataTest extends org.junit.Assert {
 
-    public OctetStreamDataTest() {
-	super("OctetStreamDataTest");
-    }
-
-    public OctetStreamDataTest(String name) {
-	super(name);
-    }
-
-    public void setUp() throws Exception { 
-    }
-    
-    public void tearDown() {}
-    
+    @org.junit.Test
     public void testConstructor() {
-	// test OctetStreamData(InputStream) and 
-	// OctetStreamData(InputStream, String, String)
-	OctetStreamData osdata;
-	try {
-	    osdata = new OctetStreamData(null); 
-	    fail("Should raise a NPE for null input stream"); 
-	} catch (NullPointerException npe) {}	
-	try {
-	    osdata = new OctetStreamData(null, "uri", "mimeType");
-	    fail("Should raise a NPE for null input stream"); 
-	} catch (NullPointerException npe) {}
+        // test OctetStreamData(InputStream) and 
+        // OctetStreamData(InputStream, String, String)
+        OctetStreamData osdata;
+        try {
+            osdata = new OctetStreamData(null); 
+            fail("Should raise a NPE for null input stream"); 
+        } catch (NullPointerException npe) {}	
+        try {
+            osdata = new OctetStreamData(null, "uri", "mimeType");
+            fail("Should raise a NPE for null input stream"); 
+        } catch (NullPointerException npe) {}
 
-	int len = 300;
-	byte[] in = new byte[len];
-	new Random().nextBytes(in);
-	ByteArrayInputStream bais = new ByteArrayInputStream(in);
-	try {
-	    osdata = new OctetStreamData(bais); 
-	    assertNotNull(osdata);
-	    assertEquals(osdata.getOctetStream(), bais);
-	    assertNull(osdata.getURI());
-	    assertNull(osdata.getMimeType());
-	
-	    osdata = new OctetStreamData(bais, null, null);
-	    assertNotNull(osdata);
-	    assertEquals(osdata.getOctetStream(), bais);
-	    assertNull(osdata.getURI());
-	    assertNull(osdata.getMimeType());
-	} catch (Exception ex) {
-	    fail("Unexpected Exception: " + ex);
-	}
+        int len = 300;
+        byte[] in = new byte[len];
+        new Random().nextBytes(in);
+        ByteArrayInputStream bais = new ByteArrayInputStream(in);
+        try {
+            osdata = new OctetStreamData(bais); 
+            assertNotNull(osdata);
+            assertEquals(osdata.getOctetStream(), bais);
+            assertNull(osdata.getURI());
+            assertNull(osdata.getMimeType());
+        
+            osdata = new OctetStreamData(bais, null, null);
+            assertNotNull(osdata);
+            assertEquals(osdata.getOctetStream(), bais);
+            assertNull(osdata.getURI());
+            assertNull(osdata.getMimeType());
+        } catch (Exception ex) {
+            fail("Unexpected Exception: " + ex);
+        }
 
-	String uri="testUri";
-	String mimeType="test";
-	try {
-	    osdata = new OctetStreamData(bais, uri, mimeType);
-	    assertNotNull(osdata);
-	    assertEquals(osdata.getOctetStream(), bais);
-	    assertEquals(osdata.getURI(), uri);
-	    assertEquals(osdata.getMimeType(), mimeType);
-	} catch (Exception ex) {
-	    fail("Unexpected Exception: " + ex);
-	}
+        String uri="testUri";
+        String mimeType="test";
+        try {
+            osdata = new OctetStreamData(bais, uri, mimeType);
+            assertNotNull(osdata);
+            assertEquals(osdata.getOctetStream(), bais);
+            assertEquals(osdata.getURI(), uri);
+            assertEquals(osdata.getMimeType(), mimeType);
+        } catch (Exception ex) {
+            fail("Unexpected Exception: " + ex);
+        }
     }
 }

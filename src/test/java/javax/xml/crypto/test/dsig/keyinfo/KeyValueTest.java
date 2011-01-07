@@ -22,80 +22,71 @@ package javax.xml.crypto.test.dsig.keyinfo;
 import java.security.*;
 import javax.xml.crypto.dsig.keyinfo.*;
 
-import junit.framework.*;
-
 /**
  * Unit test for javax.xml.crypto.dsig.keyinfo.KeyValue
  *
- * @version $Id$
  * @author Valerie Peng
  */
-public class KeyValueTest extends TestCase {
+public class KeyValueTest extends org.junit.Assert {
 
     private static final String[] ALGOS = { "DSA", "RSA" };
     private KeyInfoFactory fac;
     private PublicKey keys[] = null;
 
-    public KeyValueTest() {
-	super("KeyValueTest");
+    public KeyValueTest() throws Exception { 
+        fac = KeyInfoFactory.getInstance
+            ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
+        // generate PublicKey(s) and XMLStructure(s) for DSA and RSA
+        keys = new PublicKey[ALGOS.length];
+
+        for (int i = 0; i < ALGOS.length; i++) {
+            keys[i] = genPublicKey(ALGOS[i], 512);
+        }
     }
 
-    public KeyValueTest(String name) {
-	super(name);
+    @org.junit.Test
+    public void testgetPublicKey() {
+        try {
+            KeyValue kv = fac.newKeyValue(keys[0]);
+            assertNotNull(kv.getPublicKey());
+        } catch (KeyException ke) {
+            fail("Should pass instead of throwing KeyException");
+        }
     }
 
+    @org.junit.Test
+    public void testConstructor() {
+        // test newKeyValue(PublicKey pk)
+        for (int i = 0; i < keys.length; i++) {
+            try {
+                KeyValue kv = fac.newKeyValue(keys[i]);
+                assertEquals(keys[i], kv.getPublicKey());
+            } catch (KeyException ke) {
+                fail("Should pass instead of throwing KeyException");
+            }
+        }
+    }
+
+    @org.junit.Test
+    public void testisFeatureSupported() {
+        KeyValue kv = null;
+        try {
+            kv = fac.newKeyValue(keys[0]);
+            kv.isFeatureSupported(null); 
+            fail("Should raise a NPE for null feature"); 
+        } catch (KeyException ke) {
+            fail("Should raise a NPE for null feature"); 
+        } catch (NullPointerException npe) {}
+            
+        assertTrue(!kv.isFeatureSupported("not supported"));
+    }
+    
     private PublicKey genPublicKey(String algo, int keysize) throws Exception {
         KeyPairGenerator kpg = KeyPairGenerator.getInstance(algo);
         kpg.initialize(keysize, new SecureRandom(("Not so random bytes" 
-	    + System.currentTimeMillis() ).getBytes() ));
+            + System.currentTimeMillis() ).getBytes() ));
         KeyPair kp = kpg.generateKeyPair();
         return kp.getPublic();
     }
 
-    public void setUp() throws Exception { 
-	fac = KeyInfoFactory.getInstance
-	    ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
-	// generate PublicKey(s) and XMLStructure(s) for DSA and RSA
-	keys = new PublicKey[ALGOS.length];
-
-	for (int i = 0; i<ALGOS.length; i++) {
-	    keys[i] = genPublicKey(ALGOS[i], 512);
-	}
-    }
-
-    public void tearDown() { }
-
-    public void testgetPublicKey() {
-	try {
-	    KeyValue kv = fac.newKeyValue(keys[0]);
-	    assertNotNull(kv.getPublicKey());
-        } catch (KeyException ke) {
-	    fail("Should pass instead of throwing KeyException");
-        }
-    }
-
-    public void testConstructor() {
-	// test newKeyValue(PublicKey pk)
-	for (int i = 0; i < keys.length; i++) {
-	    try {
-	        KeyValue kv = fac.newKeyValue(keys[i]);
-	        assertEquals(keys[i], kv.getPublicKey());
-	    } catch (KeyException ke) {
-		fail("Should pass instead of throwing KeyException");
-	    }
-	}
-    }
-
-    public void testisFeatureSupported() {
-	KeyValue kv = null;
-        try {
-	    kv = fac.newKeyValue(keys[0]);
-	    kv.isFeatureSupported(null); 
-	    fail("Should raise a NPE for null feature"); 
-        } catch (KeyException ke) {
-	    fail("Should raise a NPE for null feature"); 
-        } catch (NullPointerException npe) {}
-	    
-        assertTrue(!kv.isFeatureSupported("not supported"));
-    }
 }

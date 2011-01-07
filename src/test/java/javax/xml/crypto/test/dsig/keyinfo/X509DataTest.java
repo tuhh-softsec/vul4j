@@ -25,77 +25,69 @@ import java.security.cert.X509CRL;
 import javax.xml.crypto.*;
 import javax.xml.crypto.dsig.keyinfo.*;
 
-import junit.framework.*;
-
 /**
  * Unit test for javax.xml.crypto.dsig.keyinfo.X509Data
  *
  * @version $Id$
  * @author Valerie Peng
  */
-public class X509DataTest extends TestCase {
+public class X509DataTest extends org.junit.Assert {
 
     private KeyInfoFactory fac;
 
-    public X509DataTest() {
-	super("X509DataTest");
+    public X509DataTest() throws Exception { 
+        fac = KeyInfoFactory.getInstance
+            ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
     }
 
-    public X509DataTest(String name) {
-	super(name);
-    }
-
-    public void setUp() throws Exception { 
-	fac = KeyInfoFactory.getInstance
-	    ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
-    }
-
-    public void tearDown() { }
-
+    @org.junit.Test
+    @SuppressWarnings("unchecked")
     public void testgetTypes() {
-	X509Data x509 = fac.newX509Data(Collections.singletonList("cn=foo"));
-	List li = x509.getContent();
-	assertNotNull(li);
-	if (!li.isEmpty()) {
-	    Object[] content = li.toArray();
-	    for (int j=0; j<content.length; j++) {
-		if (!(content[j] instanceof String) &&
-		    !(content[j] instanceof byte[]) &&
-		    !(content[j] instanceof X509Certificate) &&
-		    !(content[j] instanceof X509CRL) &&
-		    !(content[j] instanceof XMLStructure)) {
-		    fail("X509 element has the wrong type");
-		};
-	    }
-	} else {
-	    li.add("any string");
-	    li.add(new byte[5]);
-	    //@@@@@li.add(X509Certificate);
-	    //@@@@@li.add(X509CRL);
-	    //@@@@@li.add(XMLStructure);
-	    try {
-		li.add(new Object());
-		fail("Added X509 element of wrong type");
-	    } catch (ClassCastException ex) {
-		// expected
-	    }
-	}
+        X509Data x509 = fac.newX509Data(Collections.singletonList("cn=foo"));
+        List li = x509.getContent();
+        assertNotNull(li);
+        if (!li.isEmpty()) {
+            Object[] content = li.toArray();
+            for (int j=0; j<content.length; j++) {
+                if (!(content[j] instanceof String) &&
+                    !(content[j] instanceof byte[]) &&
+                    !(content[j] instanceof X509Certificate) &&
+                    !(content[j] instanceof X509CRL) &&
+                    !(content[j] instanceof XMLStructure)) {
+                    fail("X509 element has the wrong type");
+                };
+            }
+        } else {
+            li.add("any string");
+            li.add(new byte[5]);
+            //@@@@@li.add(X509Certificate);
+            //@@@@@li.add(X509CRL);
+            //@@@@@li.add(XMLStructure);
+            try {
+                li.add(new Object());
+                fail("Added X509 element of wrong type");
+            } catch (ClassCastException ex) {
+                // expected
+            }
+        }
     }
 
+    @org.junit.Test
     public void testConstructor() {
-	// test newX509Data()
-	X509Data x509 = fac.newX509Data(Collections.singletonList("cn=foo"));
-	assertNotNull(x509);
+        // test newX509Data()
+        X509Data x509 = fac.newX509Data(Collections.singletonList("cn=foo"));
+        assertNotNull(x509);
     }
 
+    @org.junit.Test
     public void testisFeatureSupported() {
 
-	X509Data x509 = fac.newX509Data(Collections.singletonList("cn=foo"));
-	try {
-	    x509.isFeatureSupported(null); 
-	    fail("Should raise a NPE for null feature"); 
-	} catch (NullPointerException npe) {}
-	
-	assertTrue(!x509.isFeatureSupported("not supported"));
+        X509Data x509 = fac.newX509Data(Collections.singletonList("cn=foo"));
+        try {
+            x509.isFeatureSupported(null); 
+            fail("Should raise a NPE for null feature"); 
+        } catch (NullPointerException npe) {}
+        
+        assertTrue(!x509.isFeatureSupported("not supported"));
     }
 }

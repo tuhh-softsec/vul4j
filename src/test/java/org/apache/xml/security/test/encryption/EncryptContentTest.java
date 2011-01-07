@@ -46,14 +46,14 @@ public class EncryptContentTest extends TestCase {
         org.apache.commons.logging.LogFactory.getLog(EncryptContentTest.class.getName());
 
     private static final String DATA =
-	"<users>\n" +
-  	"  <user>\n" +
-    	"    <firstname>Bugs</firstname>\n" +
+        "<users>\n" +
+        "  <user>\n" +
+        "    <firstname>Bugs</firstname>\n" +
         "    <lastname>Bunny</lastname>\n" +
         "    <age>34</age>\n" +
         "    <serial>Y10</serial>\n" +
-	"  </user>\n" +
-	"</users>\n";
+        "  </user>\n" +
+        "</users>\n";
 
     private DocumentBuilder db;
     private SecretKey secretKey;
@@ -72,31 +72,31 @@ public class EncryptContentTest extends TestCase {
         org.apache.xml.security.Init.init();
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);
-	db = dbf.newDocumentBuilder();
+        db = dbf.newDocumentBuilder();
 
         byte[] bits192 = "abcdefghijklmnopqrstuvwx".getBytes();
         DESedeKeySpec keySpec = new DESedeKeySpec(bits192);
         SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DESede");
         secretKey = keyFactory.generateSecret(keySpec);
 
-	TransformerFactory tf = TransformerFactory.newInstance();
-	tf.newTransformer();
-	
-	// Determine if we have ISO 10126 Padding - needed for Bulk AES or
-	// 3DES encryption
+        TransformerFactory tf = TransformerFactory.newInstance();
+        tf.newTransformer();
+        
+        // Determine if we have ISO 10126 Padding - needed for Bulk AES or
+        // 3DES encryption
 
-	haveISOPadding = false;
-	String algorithmId = 
-	    JCEMapper.translateURItoJCEID(org.apache.xml.security.utils.EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES128);
+        haveISOPadding = false;
+        String algorithmId = 
+            JCEMapper.translateURItoJCEID(org.apache.xml.security.utils.EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES128);
 
-	if (algorithmId != null) {
-	    try {
-	        if (Cipher.getInstance(algorithmId) != null)
-	            haveISOPadding = true;
-	    } catch (NoSuchAlgorithmException nsae) {
-	    } catch (NoSuchPaddingException nspe) {
-	    }
-	}
+        if (algorithmId != null) {
+            try {
+                if (Cipher.getInstance(algorithmId) != null)
+                    haveISOPadding = true;
+            } catch (NoSuchAlgorithmException nsae) {
+            } catch (NoSuchPaddingException nspe) {
+            }
+        }
 
     }
 
@@ -107,38 +107,38 @@ public class EncryptContentTest extends TestCase {
             return;
         }
 
-	Document doc = db.parse(new ByteArrayInputStream(DATA.getBytes("UTF8")));
-	NodeList dataToEncrypt = doc.getElementsByTagName("user");
+        Document doc = db.parse(new ByteArrayInputStream(DATA.getBytes("UTF8")));
+        NodeList dataToEncrypt = doc.getElementsByTagName("user");
 
-	XMLCipher dataCipher = XMLCipher.getInstance(XMLCipher.TRIPLEDES);
-	dataCipher.init(XMLCipher.ENCRYPT_MODE, secretKey);
+        XMLCipher dataCipher = XMLCipher.getInstance(XMLCipher.TRIPLEDES);
+        dataCipher.init(XMLCipher.ENCRYPT_MODE, secretKey);
 
-	for (int i = 0; i < dataToEncrypt.getLength(); i++) {
-    	    dataCipher.doFinal(doc,(Element) dataToEncrypt.item(i), true);
-	}
+        for (int i = 0; i < dataToEncrypt.getLength(); i++) {
+            dataCipher.doFinal(doc,(Element) dataToEncrypt.item(i), true);
+        }
 
-	// Check that user content has been removed
-	Element user = (Element) dataToEncrypt.item(0);
+        // Check that user content has been removed
+        Element user = (Element) dataToEncrypt.item(0);
         Node child = user.getFirstChild();
         while (child != null && child.getNodeType() != Node.ELEMENT_NODE) {
             child = child.getNextSibling();
         }
-	// child should be EncryptedData, if not throw exception
-	Element childElem = (Element) child;
-	if (!childElem.getLocalName().equals("EncryptedData")) {
-	    // t.transform(new DOMSource(doc), new StreamResult(System.out));
-	    throw new Exception("Element content not replaced");
-	}
-	// there shouldn't be any more children elements
+        // child should be EncryptedData, if not throw exception
+        Element childElem = (Element) child;
+        if (!childElem.getLocalName().equals("EncryptedData")) {
+            // t.transform(new DOMSource(doc), new StreamResult(System.out));
+            throw new Exception("Element content not replaced");
+        }
+        // there shouldn't be any more children elements
         Node sibling = childElem.getNextSibling();
         while (sibling != null && sibling.getNodeType() != Node.ELEMENT_NODE) {
             sibling = sibling.getNextSibling();
         }
-	if (sibling != null) {
-	    // t.transform(new DOMSource(doc), new StreamResult(System.out));
-	    throw new Exception("Sibling element content not replaced");
-	}
+        if (sibling != null) {
+            // t.transform(new DOMSource(doc), new StreamResult(System.out));
+            throw new Exception("Sibling element content not replaced");
+        }
 
-	// t.transform(new DOMSource(doc), new StreamResult(System.out));
+        // t.transform(new DOMSource(doc), new StreamResult(System.out));
     }
 }

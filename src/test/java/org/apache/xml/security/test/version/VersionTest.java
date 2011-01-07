@@ -28,61 +28,61 @@ import java.security.Security;
  */
 public class VersionTest extends TestCase {
 
-	public VersionTest() {
-		super("VersionTest");
-	}
+        public VersionTest() {
+                super("VersionTest");
+        }
 
-	public VersionTest(String name) {
-		super(name);
-	}
+        public VersionTest(String name) {
+                super(name);
+        }
 
-	public static Test suite() {
-		return new TestSuite(VersionTest.class);
-	}
-	
-	/**
-	 * A unit test for the algorithm below to convert a version number
-	 * to a double.
-	 */
-	public void testConvertVersion() throws Exception {
-	    String version = convertVersion("1.4.4");
-	    assertTrue("1.44".equals(version));
-	    
-	    version = convertVersion("1.4.4-SNAPSHOT");
+        public static Test suite() {
+                return new TestSuite(VersionTest.class);
+        }
+        
+        /**
+         * A unit test for the algorithm below to convert a version number
+         * to a double.
+         */
+        public void testConvertVersion() throws Exception {
+            String version = convertVersion("1.4.4");
+            assertTrue("1.44".equals(version));
+            
+            version = convertVersion("1.4.4-SNAPSHOT");
         assertTrue("1.44".equals(version));
         
         version = convertVersion("1.4");
         assertTrue("1.4".equals(version));
-	}
+        }
 
-	public void testVersion() throws Exception {
-	    Security.addProvider(new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
-	    
-	    Provider provider = Security.getProvider("XMLDSig");
+        public void testVersion() throws Exception {
+            Security.addProvider(new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
+            
+            Provider provider = Security.getProvider("XMLDSig");
         assertTrue(provider != null);
         
-	    String version = System.getProperty("product.version");
-	    assertTrue(version != null);
-	    
-	    version = convertVersion(version);
-	    
-	    double versionD = Double.parseDouble(version);
-	    assertTrue(versionD == provider.getVersion());
-	    
-	    String info = "Apache Santuario XMLDSig " + 
+            String version = System.getProperty("product.version");
+            assertTrue(version != null);
+            
+            version = convertVersion(version);
+            
+            double versionD = Double.parseDouble(version);
+            assertTrue(versionD == provider.getVersion());
+            
+            String info = "Apache Santuario XMLDSig " + 
             "(DOM XMLSignatureFactory; DOM KeyInfoFactory)";
-	    
-	    assertTrue(info.equals(provider.getInfo()));
-	}
-	
-	/**
-	 * Convert the version to a number that can be parsed to a double.
-	 * Namely, remove the "-SNAPSHOT" from the end, and convert version
-	 * numbers like 1.4.4 to 1.44.
-	 */
-	private String convertVersion(String version) {
-	    
-	    // Remove the "-SNAPSHOT" version if it exists
+            
+            assertTrue(info.equals(provider.getInfo()));
+        }
+        
+        /**
+         * Convert the version to a number that can be parsed to a double.
+         * Namely, remove the "-SNAPSHOT" from the end, and convert version
+         * numbers like 1.4.4 to 1.44.
+         */
+        private String convertVersion(String version) {
+            
+            // Remove the "-SNAPSHOT" version if it exists
         int dash = version.indexOf('-');
         if (dash != -1) {
             version = version.substring(0, dash);
@@ -97,6 +97,6 @@ public class VersionTest extends TestCase {
         }
         
         return version;
-	}
-	
+        }
+        
 }

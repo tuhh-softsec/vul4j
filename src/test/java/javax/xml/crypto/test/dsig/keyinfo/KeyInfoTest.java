@@ -28,92 +28,86 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import org.jcp.xml.dsig.internal.dom.DOMUtils;
-import junit.framework.*;
 
 /**
  * Unit test for javax.xml.crypto.dsig.keyinfo.KeyInfo
  *
- * @version $Id$
  * @author Valerie Peng
  */
-public class KeyInfoTest extends TestCase {
+public class KeyInfoTest extends org.junit.Assert {
 
     private KeyInfoFactory fac;
 
-    public KeyInfoTest() {
-	super("KeyInfoTest");
+    public KeyInfoTest() throws Exception { 
+        fac = KeyInfoFactory.getInstance
+            ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
     }
 
-    public KeyInfoTest(String name) {
-	super(name);
-    }
-
-    public void setUp() throws Exception { 
-	fac = KeyInfoFactory.getInstance
-	    ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
-    }
-
-    public void tearDown() { }
-
+    @org.junit.Test
     public void testgetId() {
-	KeyInfo ki = fac.newKeyInfo
-	    (Collections.singletonList(fac.newKeyName("foo")), "skeleton");
-	assertNotNull(ki.getId());
+        KeyInfo ki = fac.newKeyInfo
+            (Collections.singletonList(fac.newKeyName("foo")), "skeleton");
+        assertNotNull(ki.getId());
     }
 
+    @org.junit.Test
+    @SuppressWarnings("unchecked")
     public void testgetContent() {
-	KeyInfo[] infos = new KeyInfo[2];
-	infos[0] = fac.newKeyInfo
-	    (Collections.singletonList(fac.newKeyName("foo")), "skeleton");
-	infos[1] = fac.newKeyInfo
-	    (Collections.singletonList(fac.newKeyName("foo")));
-	for (int j=0; j < infos.length; j++) {
-	    KeyInfo ki = infos[j];
-	    List li = ki.getContent();
-	    assertNotNull(ki.getContent());
-	    if (!li.isEmpty()) {
-		Object[] content = li.toArray();
-		for (int i=0; i<content.length; i++) {
-		    if (!(content[i] instanceof XMLStructure)) {
-			fail("KeyInfo element has the wrong type");
-		    };
-		}
-	    } else {
-		try {
-		    li.add(new Object());
-		    fail("Added KeyInfo element of wrong type");
-		} catch (ClassCastException ex) {
-		    // expected
-		}
-	    }
-	}
+        KeyInfo[] infos = new KeyInfo[2];
+        infos[0] = fac.newKeyInfo
+            (Collections.singletonList(fac.newKeyName("foo")), "skeleton");
+        infos[1] = fac.newKeyInfo
+            (Collections.singletonList(fac.newKeyName("foo")));
+        for (int j = 0; j < infos.length; j++) {
+            KeyInfo ki = infos[j];
+            List li = ki.getContent();
+            assertNotNull(ki.getContent());
+            if (!li.isEmpty()) {
+                Object[] content = li.toArray();
+                for (int i = 0; i < content.length; i++) {
+                    if (!(content[i] instanceof XMLStructure)) {
+                        fail("KeyInfo element has the wrong type");
+                    };
+                }
+            } else {
+                try {
+                    li.add(new Object());
+                    fail("Added KeyInfo element of wrong type");
+                } catch (ClassCastException ex) {
+                    // expected
+                }
+            }
+        }
     }
 
+    @org.junit.Test
     public void testConstructor() {
-	final String id = "keyId";
-	// test newKeyInfo(List, String id)
-	KeyInfo ki = fac.newKeyInfo
-	    (Collections.singletonList(fac.newKeyName("foo")), id);
-	assertEquals(id, ki.getId());
-	try {
-	    ki = fac.newKeyInfo(null, id); 
-	    fail("Should raise a NullPointerException"); 
-	} catch (NullPointerException npe) {}
-	// test newKeyInfo(List)
-	ki = fac.newKeyInfo(Collections.singletonList(fac.newKeyName("foo")));
+        final String id = "keyId";
+        // test newKeyInfo(List, String id)
+        KeyInfo ki = fac.newKeyInfo
+            (Collections.singletonList(fac.newKeyName("foo")), id);
+        assertEquals(id, ki.getId());
+        try {
+            ki = fac.newKeyInfo(null, id); 
+            fail("Should raise a NullPointerException"); 
+        } catch (NullPointerException npe) {}
+        // test newKeyInfo(List)
+        ki = fac.newKeyInfo(Collections.singletonList(fac.newKeyName("foo")));
     }
 
+    @org.junit.Test
     public void testisFeatureSupported() {
-	KeyInfo ki = fac.newKeyInfo
-	    (Collections.singletonList(fac.newKeyName("foo")), "keyid");
-	try {
-	    ki.isFeatureSupported(null); 
-	    fail("Should raise a NPE for null feature"); 
-	} catch (NullPointerException npe) {}
+        KeyInfo ki = fac.newKeyInfo
+            (Collections.singletonList(fac.newKeyName("foo")), "keyid");
+        try {
+            ki.isFeatureSupported(null); 
+            fail("Should raise a NPE for null feature"); 
+        } catch (NullPointerException npe) {}
 
-	assertTrue(!ki.isFeatureSupported("not supported"));
+        assertTrue(!ki.isFeatureSupported("not supported"));
     }
 
+    @org.junit.Test
     public void testMarshal() throws Exception {
         KeyInfo ki = fac.newKeyInfo
             (Collections.singletonList(fac.newKeyName("foo")), "keyid");

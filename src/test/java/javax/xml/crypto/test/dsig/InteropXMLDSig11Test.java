@@ -22,8 +22,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 import javax.xml.crypto.KeySelector;
 
-import junit.framework.*;
-
 import javax.xml.crypto.test.KeySelectors;
 
 /**
@@ -31,7 +29,7 @@ import javax.xml.crypto.test.KeySelectors;
  *
  * @author Sean Mullan
  */
-public class InteropXMLDSig11Test extends TestCase {
+public class InteropXMLDSig11Test extends org.junit.Assert {
 
     private SignatureValidator validator;
     private File dir;
@@ -43,8 +41,7 @@ public class InteropXMLDSig11Test extends TestCase {
             (new org.jcp.xml.dsig.internal.dom.XMLDSigRI(), 1);
     }
 
-    public InteropXMLDSig11Test(String name) throws Exception {
-        super(name);
+    public InteropXMLDSig11Test() throws Exception {
         // check if EC is supported
         try {
             KeyFactory.getInstance("EC");
@@ -54,125 +51,146 @@ public class InteropXMLDSig11Test extends TestCase {
         String fs = File.separator;
         String base = System.getProperty("basedir") == null
             ? "./": System.getProperty("basedir");
-    	dir = new File(base + fs + "data" + fs
+        dir = new File(base + fs + "data" + fs
             + "org" + fs + "w3c" + fs + "www" + fs
-	    + "interop" + fs + "xmldsig11");
+            + "interop" + fs + "xmldsig11");
         validator = new SignatureValidator(dir);
-	kvks = new KeySelectors.KeyValueKeySelector();
-	sks = new KeySelectors.SecretKeySelector("testkey".getBytes("ASCII"));
+        kvks = new KeySelectors.KeyValueKeySelector();
+        sks = new KeySelectors.SecretKeySelector("testkey".getBytes("ASCII"));
     }
 
+    @org.junit.Test
     public void test_enveloping_p256_sha1() throws Exception {
         if (ecSupport) {
             test_xmldsig11("signature-enveloping-p256_sha1", "oracle");
         }
     }
 
+    @org.junit.Test
     public void test_enveloping_p256_sha256() throws Exception {
         if (ecSupport) {
             test_xmldsig11("signature-enveloping-p256_sha256", "oracle");
         }
     }
 
+    @org.junit.Test
     public void test_enveloping_p256_sha384() throws Exception {
         if (ecSupport) {
             test_xmldsig11("signature-enveloping-p256_sha384", "oracle");
         }
     }
 
+    @org.junit.Test
     public void test_enveloping_p256_sha512() throws Exception {
         if (ecSupport) {
             test_xmldsig11("signature-enveloping-p256_sha512", "oracle");
         }
     }
 
+    @org.junit.Test
     public void test_enveloping_p384_sha1() throws Exception {
         if (ecSupport) {
             test_xmldsig11("signature-enveloping-p384_sha1", "oracle");
         }
     }
 
+    @org.junit.Test
     public void test_enveloping_p384_sha256() throws Exception {
         if (ecSupport) {
             test_xmldsig11("signature-enveloping-p384_sha256", "oracle");
         }
     }
 
+    @org.junit.Test
     public void test_enveloping_p384_sha384() throws Exception {
         if (ecSupport) {
             test_xmldsig11("signature-enveloping-p384_sha384", "oracle");
         }
     }
 
+    @org.junit.Test
     public void test_enveloping_p384_sha512() throws Exception {
         if (ecSupport) {
             test_xmldsig11("signature-enveloping-p384_sha512", "oracle");
         }
     }
 
+    @org.junit.Test
     public void test_enveloping_p521_sha1() throws Exception {
         if (ecSupport) {
             test_xmldsig11("signature-enveloping-p521_sha1", "oracle");
         }
     }
 
+    @org.junit.Test
     public void test_enveloping_p521_sha256() throws Exception {
         if (ecSupport) {
             test_xmldsig11("signature-enveloping-p521_sha256", "oracle");
         }
     }
 
+    @org.junit.Test
     public void test_enveloping_p521_sha384() throws Exception {
         if (ecSupport) {
             test_xmldsig11("signature-enveloping-p521_sha384", "oracle");
         }
     }
 
+    @org.junit.Test
     public void test_enveloping_p521_sha512() throws Exception {
         if (ecSupport) {
             test_xmldsig11("signature-enveloping-p521_sha512", "oracle");
         }
     }
 
+    @org.junit.Test
     public void test_enveloping_rsa_sha256() throws Exception {
         test_xmldsig11("signature-enveloping-rsa-sha256", "oracle");
     }
 
+    @org.junit.Test
     public void test_enveloping_rsa_sha384() throws Exception {
         test_xmldsig11("signature-enveloping-rsa_sha384", "oracle");
     }
 
+    @org.junit.Test
     public void test_enveloping_rsa_sha512() throws Exception {
         test_xmldsig11("signature-enveloping-rsa_sha512", "oracle");
     }
 
+    @org.junit.Test
     public void test_enveloping_sha256_rsa_sha256() throws Exception {
         test_xmldsig11("signature-enveloping-sha256-rsa-sha256", "oracle");
     }
 
+    @org.junit.Test
     public void test_enveloping_sha384_rsa_sha256() throws Exception {
         test_xmldsig11("signature-enveloping-sha384-rsa_sha256", "oracle");
     }
 
+    @org.junit.Test
     public void test_enveloping_sha512_rsa_sha256() throws Exception {
         test_xmldsig11("signature-enveloping-sha512-rsa_sha256", "oracle");
     }
 
+    @org.junit.Test
     public void test_enveloping_hmac_sha256() throws Exception {
         test_xmldsig11("signature-enveloping-hmac-sha256", sks, "oracle");
     }
 
+    @org.junit.Test
     public void test_enveloping_hmac_sha384() throws Exception {
         test_xmldsig11("signature-enveloping-hmac-sha384", sks, "oracle");
     }
 
+    @org.junit.Test
     public void test_enveloping_hmac_sha512() throws Exception {
         test_xmldsig11("signature-enveloping-hmac-sha512", sks, "oracle");
     }
 
     private void test_xmldsig11(String test, String vendor) throws Exception {
         String file = vendor + File.separator + test + ".xml";
-        System.out.println("Validating " + file);
+        // System.out.println("Validating " + file);
         boolean coreValidity = validator.validate(file, kvks);
         assertTrue(file + " failed core validation", coreValidity);
     }
@@ -180,7 +198,7 @@ public class InteropXMLDSig11Test extends TestCase {
     private void test_xmldsig11(String test, KeySelector ks, String vendor) 
         throws Exception {
         String file = vendor + File.separator + test + ".xml";
-        System.out.println("Validating " + file);
+        // System.out.println("Validating " + file);
         boolean coreValidity = validator.validate(file, ks);
         assertTrue(file + " failed core validation", coreValidity);
     }

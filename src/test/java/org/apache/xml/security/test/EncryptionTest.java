@@ -33,7 +33,7 @@ public class EncryptionTest extends TestCase {
     }
 
     public static void main(String[] args) {
-		org.apache.xml.security.Init.init();
+                org.apache.xml.security.Init.init();
         
         processCmdLineArgs(args);
         TestRunner.run(suite());

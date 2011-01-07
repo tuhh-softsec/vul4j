@@ -37,77 +37,77 @@ public class SignaturePropertiesTest extends TestCase {
     private SignatureProperty prop;
 
     public SignaturePropertiesTest() {
-	super("SignaturePropertiesTest");
+        super("SignaturePropertiesTest");
     }
 
     public SignaturePropertiesTest(String name) {
-	super(name);
+        super(name);
     }
 
     public void setUp() throws Exception {
-	factory = XMLSignatureFactory.getInstance
+        factory = XMLSignatureFactory.getInstance
             ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
-	prop = factory.newSignatureProperty
-	    (Collections.singletonList(new TestUtils.MyOwnXMLStructure()),
-	     "propTarget", "propId");
+        prop = factory.newSignatureProperty
+            (Collections.singletonList(new TestUtils.MyOwnXMLStructure()),
+             "propTarget", "propId");
     }
     
     public void tearDown() {}
     
     public void testConstructor() {
-	// test XMLSignatureFactory.newSignatureProperties(List, String) 
-	SignatureProperties props;
+        // test XMLSignatureFactory.newSignatureProperties(List, String) 
+        SignatureProperties props;
 
-	try {
-	    props = factory.newSignatureProperties(null, id); 
-	    fail("Should raise a NPE for null content"); 
-	} catch (NullPointerException npe) {
-	} catch (Exception ex) {
-	    fail("Should raise a NPE for null content instead of " + ex);
-	}
-	List list = new Vector();
-	try {
-	    props = factory.newSignatureProperties(list, id); 
-	    fail("Should raise an IAE for empty content"); 
-	} catch (IllegalArgumentException iae) {
-	} catch (Exception ex) {
-	    fail("Should raise an IAE for empty content instead of " + ex);
-	}
-	String strEntry = "wrong type";
-	list.add(strEntry);
-	try {
-	    props = factory.newSignatureProperties(list, id); 
-	    fail("Should raise a CCE for content containing " +
-		 "invalid, i.e. non-SignatureProperty, entries"); 
-	} catch (ClassCastException cce) {
-	} catch (Exception ex) {
-	    fail("Should raise a CCE for content with invalid entries " +
-		 "instead of " + ex);
-	}
-	list.remove(strEntry);
-	list.add(prop);
-	props = factory.newSignatureProperties(list, id);
-	assertNotNull(props);
-	List unmodifiable = props.getProperties();
-	assertNotNull(unmodifiable);
-	try {
-	    unmodifiable.add(prop);
-	    fail("Should return an unmodifiable List object");
-	} catch (UnsupportedOperationException uoe) {}
-	assertTrue(Arrays.equals(unmodifiable.toArray(), list.toArray()));
-	assertNotNull(props);
-	assertEquals(props.getId(), id);
+        try {
+            props = factory.newSignatureProperties(null, id); 
+            fail("Should raise a NPE for null content"); 
+        } catch (NullPointerException npe) {
+        } catch (Exception ex) {
+            fail("Should raise a NPE for null content instead of " + ex);
+        }
+        List list = new Vector();
+        try {
+            props = factory.newSignatureProperties(list, id); 
+            fail("Should raise an IAE for empty content"); 
+        } catch (IllegalArgumentException iae) {
+        } catch (Exception ex) {
+            fail("Should raise an IAE for empty content instead of " + ex);
+        }
+        String strEntry = "wrong type";
+        list.add(strEntry);
+        try {
+            props = factory.newSignatureProperties(list, id); 
+            fail("Should raise a CCE for content containing " +
+                 "invalid, i.e. non-SignatureProperty, entries"); 
+        } catch (ClassCastException cce) {
+        } catch (Exception ex) {
+            fail("Should raise a CCE for content with invalid entries " +
+                 "instead of " + ex);
+        }
+        list.remove(strEntry);
+        list.add(prop);
+        props = factory.newSignatureProperties(list, id);
+        assertNotNull(props);
+        List unmodifiable = props.getProperties();
+        assertNotNull(unmodifiable);
+        try {
+            unmodifiable.add(prop);
+            fail("Should return an unmodifiable List object");
+        } catch (UnsupportedOperationException uoe) {}
+        assertTrue(Arrays.equals(unmodifiable.toArray(), list.toArray()));
+        assertNotNull(props);
+        assertEquals(props.getId(), id);
     }
 
     public void testisFeatureSupported() {
-	List list = new Vector();
-	list.add(prop);
-	SignatureProperties props = factory.newSignatureProperties(list, id);
-	try {
-	    props.isFeatureSupported(null); 
-	    fail("Should raise a NPE for null feature"); 
-	} catch (NullPointerException npe) {}
+        List list = new Vector();
+        list.add(prop);
+        SignatureProperties props = factory.newSignatureProperties(list, id);
+        try {
+            props.isFeatureSupported(null); 
+            fail("Should raise a NPE for null feature"); 
+        } catch (NullPointerException npe) {}
 
-	assertTrue(!props.isFeatureSupported("not supported"));
+        assertTrue(!props.isFeatureSupported("not supported"));
     }
 }

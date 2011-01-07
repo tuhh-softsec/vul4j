@@ -30,13 +30,13 @@ public class Driver {
         XMLSignatureFactory fac = XMLSignatureFactory.getInstance
             ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
         long start = System.currentTimeMillis();
-        for (int i=0; i<100; i++) {
-        fac.newCanonicalizationMethod
-            (CanonicalizationMethod.EXCLUSIVE, (C14NMethodParameterSpec) null);
+        for (int i = 0; i < 100; i++) {
+            fac.newCanonicalizationMethod
+                (CanonicalizationMethod.EXCLUSIVE, (C14NMethodParameterSpec) null);
         }
         long end = System.currentTimeMillis();
-        long elapsed = end-start;
-        System.out.println("Elapsed:"+elapsed);
+        long elapsed = end - start;
+        System.out.println("Elapsed: " + elapsed);
         System.out.println("dsig succeeded");
     }
 }

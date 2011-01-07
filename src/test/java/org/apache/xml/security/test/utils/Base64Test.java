@@ -97,58 +97,58 @@ public class Base64Test extends TestCase {
    /**
     * Method testWrap1
     *
-	* Test for correct line wrapping at end of an exactly 76 char string
-	*
+        * Test for correct line wrapping at end of an exactly 76 char string
+        *
     * @throws java.io.UnsupportedEncodingException
     * @throws Exception
     */
 
-	public static void testWrap1() 
-		throws java.io.UnsupportedEncodingException,Exception {
+        public static void testWrap1() 
+                throws java.io.UnsupportedEncodingException,Exception {
 
-		String inputData = "The quick brown fox jumps over the lazy dog and some extr";
-		String expectedResult = "VGhlIHF1aWNrIGJyb3duIGZveCBqdW1wcyBvdmVyIHRoZSBsYXp5IGRvZyBhbmQgc29tZSBleHRy";
-		String result = Base64.encode(inputData.getBytes("UTF-8"));
-		assertEquals("Result of encoding", result, expectedResult);
+                String inputData = "The quick brown fox jumps over the lazy dog and some extr";
+                String expectedResult = "VGhlIHF1aWNrIGJyb3duIGZveCBqdW1wcyBvdmVyIHRoZSBsYXp5IGRvZyBhbmQgc29tZSBleHRy";
+                String result = Base64.encode(inputData.getBytes("UTF-8"));
+                assertEquals("Result of encoding", result, expectedResult);
 
-		String result2 = new String(Base64.decode(result), "UTF-8");
-		assertEquals("Result of encoding", result2, inputData);
+                String result2 = new String(Base64.decode(result), "UTF-8");
+                assertEquals("Result of encoding", result2, inputData);
         ByteArrayOutputStream os=new ByteArrayOutputStream();
         Base64.decode(expectedResult.getBytes(),os);
           result2 = new String(os.toByteArray(), "UTF-8");
           assertEquals("Result of encoding", result2, inputData);
 
-	}
+        }
 
    /**
     * Method testWrap2
     *
-	* Test for correct line wrapping after more than 76 characters
-	*
+        * Test for correct line wrapping after more than 76 characters
+        *
     * @throws java.io.UnsupportedEncodingException
     * @throws Exception
     */
 
-	public static void testWrap2() 
-		throws java.io.UnsupportedEncodingException, Exception {
+        public static void testWrap2() 
+                throws java.io.UnsupportedEncodingException, Exception {
 
-		String inputData = "The quick brown fox jumps over the lazy dog and some extra text that will cause a line wrap";
-		String expectedResult = null;
-		if (XMLUtils.ignoreLineBreaks()) {
-		    expectedResult = "VGhlIHF1aWNrIGJyb3duIGZveCBqdW1wcyBvdmVyIHRoZSBsYXp5IGRvZyBhbmQgc29tZSBleHRyYSB0ZXh0IHRoYXQgd2lsbCBjYXVzZSBhIGxpbmUgd3JhcA==";
-		} else {
-		    expectedResult = "VGhlIHF1aWNrIGJyb3duIGZveCBqdW1wcyBvdmVyIHRoZSBsYXp5IGRvZyBhbmQgc29tZSBleHRy\nYSB0ZXh0IHRoYXQgd2lsbCBjYXVzZSBhIGxpbmUgd3JhcA==";
-		}
-		String result = Base64.encode(inputData.getBytes("UTF-8"));
-		assertEquals("Result of encoding", result, expectedResult);
+                String inputData = "The quick brown fox jumps over the lazy dog and some extra text that will cause a line wrap";
+                String expectedResult = null;
+                if (XMLUtils.ignoreLineBreaks()) {
+                    expectedResult = "VGhlIHF1aWNrIGJyb3duIGZveCBqdW1wcyBvdmVyIHRoZSBsYXp5IGRvZyBhbmQgc29tZSBleHRyYSB0ZXh0IHRoYXQgd2lsbCBjYXVzZSBhIGxpbmUgd3JhcA==";
+                } else {
+                    expectedResult = "VGhlIHF1aWNrIGJyb3duIGZveCBqdW1wcyBvdmVyIHRoZSBsYXp5IGRvZyBhbmQgc29tZSBleHRy\nYSB0ZXh0IHRoYXQgd2lsbCBjYXVzZSBhIGxpbmUgd3JhcA==";
+                }
+                String result = Base64.encode(inputData.getBytes("UTF-8"));
+                assertEquals("Result of encoding", result, expectedResult);
 
-		String result2 = new String(Base64.decode(result), "UTF-8");
-		assertEquals("Result of encoding", result2, inputData);
+                String result2 = new String(Base64.decode(result), "UTF-8");
+                assertEquals("Result of encoding", result2, inputData);
         ByteArrayOutputStream os=new ByteArrayOutputStream();
         Base64.decode(expectedResult.getBytes(),os);
           result2 = new String(os.toByteArray(), "UTF-8");
           assertEquals("Result of encoding", result2, inputData);
-	}
+        }
 
    static {
       org.apache.xml.security.Init.init();

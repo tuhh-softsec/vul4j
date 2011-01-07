@@ -32,7 +32,7 @@ public class AllTests extends TestCase {
    /** {@link org.apache.commons.logging} logging facility */
     static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(
-			    AllTests.class.getName());
+                            AllTests.class.getName());
 
    public AllTests(String test) {
       super(test);
@@ -50,7 +50,6 @@ public class AllTests extends TestCase {
 
       //J-
       suite.addTest(org.apache.xml.security.test.ModuleTest.suite());
-      suite.addTest(org.apache.xml.security.test.InteropTest.suite());
       suite.addTest(org.apache.xml.security.test.EncryptionTest.suite());
       //J+
 

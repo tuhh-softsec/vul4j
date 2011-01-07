@@ -40,33 +40,33 @@ public class XMLX509CertificateTest extends TestCase {
     private static final String SEP = System.getProperty("file.separator");
 
     public XMLX509CertificateTest() {
-	super("XMLX509CertificateTest");
+        super("XMLX509CertificateTest");
     }
 
     public XMLX509CertificateTest(String name) {
-	super(name);
+        super(name);
     }
 
     public static Test suite() {
-	return new TestSuite(XMLX509CertificateTest.class);
+        return new TestSuite(XMLX509CertificateTest.class);
     }
 
     public void testGetX509Certificate() throws Exception {
 
         File f = null;
         f = new File(BASEDIR + SEP + "data" + SEP + "ie" + SEP + "baltimore" +
-	    SEP + "merlin-examples" + SEP + "merlin-xmldsig-twenty-three" +
-	    SEP + "signature-x509-crt.xml");
+            SEP + "merlin-examples" + SEP + "merlin-xmldsig-twenty-three" +
+            SEP + "signature-x509-crt.xml");
 
-	FileInputStream fis = new FileInputStream(f);
-	DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-	dbf.setNamespaceAware(true);
-	Document doc = dbf.newDocumentBuilder().parse(fis);
-	NodeList nl = doc.getElementsByTagNameNS
-		(Constants.SignatureSpecNS, "X509Certificate");
-	XMLX509Certificate xmlCert = 
-	    new XMLX509Certificate((Element) nl.item(0), "");
-	xmlCert.getX509Certificate();
-	// System.out.println(cert);
+        FileInputStream fis = new FileInputStream(f);
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setNamespaceAware(true);
+        Document doc = dbf.newDocumentBuilder().parse(fis);
+        NodeList nl = doc.getElementsByTagNameNS
+                (Constants.SignatureSpecNS, "X509Certificate");
+        XMLX509Certificate xmlCert = 
+            new XMLX509Certificate((Element) nl.item(0), "");
+        xmlCert.getX509Certificate();
+        // System.out.println(cert);
     }
 }

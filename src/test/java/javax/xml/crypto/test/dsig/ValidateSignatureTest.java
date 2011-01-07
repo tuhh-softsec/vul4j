@@ -51,12 +51,12 @@ public class ValidateSignatureTest extends TestCase {
 
     public ValidateSignatureTest(String name) {
         super(name);
-	String fs = System.getProperty("file.separator");
-	String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
-	
-	dir = new File(base + fs + "data" + fs 
-	    + "javax" + fs + "xml" + fs + "crypto", "dsig");
-	validator = new SignatureValidator(dir);
+        String fs = System.getProperty("file.separator");
+        String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
+        
+        dir = new File(base + fs + "data" + fs 
+            + "javax" + fs + "xml" + fs + "crypto", "dsig");
+        validator = new SignatureValidator(dir);
     }
 
     /** 
@@ -66,21 +66,21 @@ public class ValidateSignatureTest extends TestCase {
     public void test_signature_with_ID() throws Exception {
         String file = "envelopingSignature.xml";
 
-	DOMValidateContext vc = validator.getValidateContext
-	    (file, new KeySelectors.KeyValueKeySelector());
-	Document doc = vc.getNode().getOwnerDocument();
-	NodeList nl = doc.getElementsByTagName("Assertion");
-	vc.setIdAttributeNS((Element) nl.item(0), null, "AssertionID");
-	boolean coreValidity = validator.validate(vc);
-	assertTrue("Signature failed core validation", coreValidity);
+        DOMValidateContext vc = validator.getValidateContext
+            (file, new KeySelectors.KeyValueKeySelector());
+        Document doc = vc.getNode().getOwnerDocument();
+        NodeList nl = doc.getElementsByTagName("Assertion");
+        vc.setIdAttributeNS((Element) nl.item(0), null, "AssertionID");
+        boolean coreValidity = validator.validate(vc);
+        assertTrue("Signature failed core validation", coreValidity);
     }
 
     public void test_signature_external_c14n_xmlattrs() throws Exception {
-	String file = "signature-external-c14n-xmlatrs.xml";
+        String file = "signature-external-c14n-xmlatrs.xml";
 
-	boolean coreValidity = validator.validate(file, 
-	    new KeySelectors.SecretKeySelector("secret".getBytes("ASCII")));
-	assertTrue("Signature failed core validation", coreValidity);
+        boolean coreValidity = validator.validate(file, 
+            new KeySelectors.SecretKeySelector("secret".getBytes("ASCII")));
+        assertTrue("Signature failed core validation", coreValidity);
     }
 
     /**
@@ -90,9 +90,9 @@ public class ValidateSignatureTest extends TestCase {
         InvalidURIDereferencer ud = new InvalidURIDereferencer();
 
         boolean coreValidity = validator.validate("invalid-signature.xml", 
-	    new KeySelectors.KeyValueKeySelector(), ud);
-	assertFalse("Invalid signature should fail!", coreValidity);
-	assertTrue("References validated before signature", ud.dereferenced);
+            new KeySelectors.KeyValueKeySelector(), ud);
+        assertFalse("Invalid signature should fail!", coreValidity);
+        assertTrue("References validated before signature", ud.dereferenced);
     }
 
     public void test_signature_enveloping_hmac_sha1_trunclen_0() throws Exception {
@@ -123,10 +123,10 @@ public class ValidateSignatureTest extends TestCase {
     // Bug 47761: validates an xml signature containing a reference with
     // xmlns:xml attributes. C14n should not emit these attributes.
     public void test_signature_exclc14n_xmlnamespace() throws Exception {
-	String file = "demo.signed.xml";
-	boolean coreValidity = validator.validate(file, 
-	    new KeySelectors.RawX509KeySelector());
-	assertTrue("Signature failed core validation", coreValidity);
+        String file = "demo.signed.xml";
+        boolean coreValidity = validator.validate(file, 
+            new KeySelectors.RawX509KeySelector());
+        assertTrue("Signature failed core validation", coreValidity);
     }
 
     /**

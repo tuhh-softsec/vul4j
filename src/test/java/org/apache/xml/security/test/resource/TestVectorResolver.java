@@ -38,7 +38,7 @@ public class TestVectorResolver implements EntityResolver {
    /** {@link org.apache.commons.logging} logging facility */
     static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(
-			TestVectorResolver.class.getName());
+                        TestVectorResolver.class.getName());
 
    /** Field _firstEntityResolved */
    boolean _firstEntityResolved = false;
