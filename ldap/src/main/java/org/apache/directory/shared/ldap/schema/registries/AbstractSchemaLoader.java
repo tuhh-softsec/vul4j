@@ -127,7 +127,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
      */
     public void addSchema( Schema schema )
     {
-        schemaMap.put( schema.getSchemaName(), schema );
+        schemaMap.put( StringTools.toLowerCase( schema.getSchemaName() ), schema );
     }
     
     
@@ -136,7 +136,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
      */
     public void removeSchema( Schema schema )
     {
-        schemaMap.remove( schema.getSchemaName() );
+        schemaMap.remove( StringTools.toLowerCase ( schema.getSchemaName() ) );
     }
 
 
