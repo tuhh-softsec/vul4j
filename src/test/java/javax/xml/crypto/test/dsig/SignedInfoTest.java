@@ -24,48 +24,36 @@ import java.util.*;
 import javax.xml.crypto.dsig.*;
 import javax.xml.crypto.dsig.spec.C14NMethodParameterSpec;
 
-import junit.framework.*;
-
 /**
  * Unit test for javax.xml.crypto.dsig.SignedInfo
  *
- * @version $Id$
  * @author Valerie Peng
  */
-public class SignedInfoTest extends TestCase {
+public class SignedInfoTest extends org.junit.Assert {
     private XMLSignatureFactory fac;
     private CanonicalizationMethod cm;
     private SignatureMethod sm;
-    private List references;
+    private List<Reference> references;
 
     static {
         Security.insertProviderAt
             (new org.jcp.xml.dsig.internal.dom.XMLDSigRI(), 1);
     }
 
-    public SignedInfoTest() {
-        super("SignedInfoTest");
-    }
-
-    public SignedInfoTest(String name) {
-        super(name);
-    }
-
-    public void setUp() throws Exception {
+    public SignedInfoTest() throws Exception {
         fac = XMLSignatureFactory.getInstance
             ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
         cm = fac.newCanonicalizationMethod
             (CanonicalizationMethod.INCLUSIVE_WITH_COMMENTS, 
              (C14NMethodParameterSpec) null);
         sm = fac.newSignatureMethod(SignatureMethod.DSA_SHA1, null);
-        references = new Vector();
+        references = new Vector<Reference>();
         references.add(fac.newReference
                        ("http://www.sun.com/index.html", 
                         fac.newDigestMethod(DigestMethod.SHA1, null)));
     }
 
-    public void tearDown() {}
-    
+    @org.junit.Test
     public void testConstructor() {
         // test XMLSignatureFactory.newSignedInfo(
         //	CanonicalizationMethod cm, 
@@ -93,7 +81,7 @@ public class SignedInfoTest extends TestCase {
             }
         }
 
-        List empty = new Vector();
+        List<Object> empty = new Vector<Object>();
         try {
             si = fac.newSignedInfo(cm, sm, empty);
             fail("Should throw an IAE for empty references");
@@ -137,4 +125,5 @@ public class SignedInfoTest extends TestCase {
         assertNotNull(si);
         assertEquals(si.getId(), "id");
     }
+    
 }

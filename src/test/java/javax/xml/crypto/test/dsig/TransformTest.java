@@ -29,15 +29,12 @@ import javax.xml.crypto.dsig.spec.XPathFilter2ParameterSpec;
 import javax.xml.crypto.dsig.spec.XSLTTransformParameterSpec;
 import java.security.*;
 
-import junit.framework.*;
-
 /**
  * Unit test for javax.xml.crypto.dsig.Transform
  *
- * @version $Id$
  * @author Valerie Peng
  */
-public class TransformTest extends TestCase {
+public class TransformTest extends org.junit.Assert {
 
     XMLSignatureFactory factory;
 
@@ -54,21 +51,12 @@ public class TransformTest extends TestCase {
             (new org.jcp.xml.dsig.internal.dom.XMLDSigRI(), 1);
     }
 
-    public TransformTest() {
-        super("TransformTest");
-    }
-
-    public TransformTest(String name) {
-        super(name);
-    }
-
-    public void setUp() throws Exception { 
+    public TransformTest() throws Exception {
         factory = XMLSignatureFactory.getInstance
             ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
     }
 
-    public void tearDown() { }
-
+    @org.junit.Test
     public void testisFeatureSupported() throws Exception {
         Transform tm; 
         for (int i = 0; i < TRANSFORM_ALGOS.length; i++) {
@@ -94,6 +82,7 @@ public class TransformTest extends TestCase {
         }
     }
 
+    @org.junit.Test
     public void testConstructor() throws Exception {
         // test newTransform(String algorithm, 
         //                   AlgorithmParameterSpec params)

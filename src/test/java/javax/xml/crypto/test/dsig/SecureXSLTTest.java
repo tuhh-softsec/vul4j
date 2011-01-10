@@ -23,20 +23,16 @@ import javax.xml.crypto.dsig.dom.*;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.*;
 
-import junit.framework.*;
 import javax.xml.crypto.test.KeySelectors;
 
-public class SecureXSLTTest extends TestCase {
+public class SecureXSLTTest extends org.junit.Assert {
 
     static {
         Security.insertProviderAt
             (new org.jcp.xml.dsig.internal.dom.XMLDSigRI(), 1);
     }
 
-    public SecureXSLTTest(String name) {
-        super(name);
-    }
-
+    @org.junit.Test
     public void test() throws Exception {
 
         String fs = System.getProperty("file.separator");
@@ -52,7 +48,7 @@ public class SecureXSLTTest extends TestCase {
         dbf.setNamespaceAware(true);
         XMLSignatureFactory fac = XMLSignatureFactory.getInstance("DOM");
         File f = new File("doc.xml");
-        for (int i=0; i<signatures.length; i++) {
+        for (int i = 0; i < signatures.length; i++) {
             String signature = signatures[i];
             // System.out.println("Validating " + signature);
             Document doc = dbf.newDocumentBuilder().parse
@@ -82,7 +78,7 @@ public class SecureXSLTTest extends TestCase {
             } catch (XMLSignatureException xse) {
                 // this is good, but still make sure attack was not successful
                 // by falling through and checking if file was created
-//		xse.printStackTrace();
+                // xse.printStackTrace();
             }
             if (f.exists()) {
                 f.delete(); // cleanup file. comment out when debugging

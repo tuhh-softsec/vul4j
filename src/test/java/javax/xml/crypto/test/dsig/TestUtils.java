@@ -43,14 +43,21 @@ import org.w3c.dom.*;
  */
 public class TestUtils {
     
-    private static final String DSA_Y = "07066284216756577193658833512863439617178933165631848358445549382240081120085333137303066923542492834619027404463194956043802393462371310375123430985057160";
-    private static final String DSA_P = "013232376895198612407547930718267435757728527029623408872245156039757713029036368719146452186041204237350521785240337048752071462798273003935646236777459223";
-    private static final String DSA_Q = "0857393771208094202104259627990318636601332086981";
-    private static final String DSA_G = "05421644057436475141609648488325705128047428394380474376834667300766108262613900542681289080713724597310673074119355136085795982097390670890367185141189796";
-    private static final String DSA_X = "0527140396812450214498055937934275626078768840117";
-    private static final String RSA_MOD = "010800185049102889923150759252557522305032794699952150943573164381936603255999071981574575044810461362008102247767482738822150129277490998033971789476107463";
+    private static final String DSA_Y = 
+        "07066284216756577193658833512863439617178933165631848358445549382240081120085333137303066923542492834619027404463194956043802393462371310375123430985057160";
+    private static final String DSA_P = 
+        "013232376895198612407547930718267435757728527029623408872245156039757713029036368719146452186041204237350521785240337048752071462798273003935646236777459223";
+    private static final String DSA_Q = 
+        "0857393771208094202104259627990318636601332086981";
+    private static final String DSA_G = 
+        "05421644057436475141609648488325705128047428394380474376834667300766108262613900542681289080713724597310673074119355136085795982097390670890367185141189796";
+    private static final String DSA_X = 
+        "0527140396812450214498055937934275626078768840117";
+    private static final String RSA_MOD = 
+        "010800185049102889923150759252557522305032794699952150943573164381936603255999071981574575044810461362008102247767482738822150129277490998033971789476107463";
     private static final String RSA_PUB = "065537";
-    private static final String RSA_PRIV = "0161169735844219697954459962296126719476357984292128166117072108359155865913405986839960884870654387514883422519600695753920562880636800379454345804879553";
+    private static final String RSA_PRIV = 
+        "0161169735844219697954459962296126719476357984292128166117072108359155865913405986839960884870654387514883422519600695753920562880636800379454345804879553";
 
     private TestUtils() {}
     
@@ -174,37 +181,47 @@ public class TestUtils {
             }
             return digest;
         }
+        
         public byte[] getCalculatedDigestValue() {
             return null;
         }
+        
         public DigestMethod getDigestMethod() { return DIG_METHOD; }
+        
         public String getId() {
             return id;
         }
+        
         public String getType() {
             return null;
         }
+        
         public String getURI() {
             return null;
         }
-        public List getTransforms() {
+        
+        public List<?> getTransforms() {
             return Collections.EMPTY_LIST;
         }
+        
         public boolean validate(XMLValidateContext vCtx) 
             throws XMLSignatureException {
             this.dis = new ByteArrayInputStream(id.getBytes());
             this.derefData = new OctetStreamData(this.dis);
             return status;
         }
+        
         public Data getDereferencedData() {
             return derefData;
         }
+        
         public InputStream getDigestInputStream() {
             return dis;
         }
     }
 
     public static class MyOwnXMLStructure implements XMLStructure {
+        
         public boolean isFeatureSupported(String feature) 
             throws NullPointerException {
             if (feature == null) throw new NullPointerException();
@@ -213,16 +230,21 @@ public class TestUtils {
     }
 
     public static class OctetStreamURIDereferencer implements URIDereferencer {
+        
         private byte[] data = null;
+        
         public OctetStreamURIDereferencer(byte[] in) {
             data = (byte[]) in.clone();
         }
+        
         public Data dereference(URIReference ref, XMLCryptoContext ctxt) {
             return new OctetStreamData(new ByteArrayInputStream(data));
         }
+        
         public byte[] getData() {
             return data;
         }
+        
         public boolean equals(Object obj) {
             if (obj instanceof OctetStreamURIDereferencer) {
                 return Arrays.equals
@@ -231,27 +253,30 @@ public class TestUtils {
                 return false;
             }
         }
+        
         public int hashCode() {
             return 5678;
         }
     }
 
     public static class NodeSetURIDereferencer implements URIDereferencer {
+        
         private Node data = null;
+        
         public NodeSetURIDereferencer(Node node) {
             data = node;
         }
+        
         public Data dereference(URIReference ref, XMLCryptoContext ctxt) {
             return new NodeSetData() {
-                public Iterator iterator() {
+                public Iterator<?> iterator() {
                     return Collections.singletonList(data).iterator();
                 }
             };
         }
     }
 
-    public static void dumpDocument(Document doc, String outName)
-        throws Exception {
+    public static void dumpDocument(Document doc, String outName) throws Exception {
         DOMSource source = new DOMSource(doc);
         File path = new File(System.getProperty("test.dir"), outName);
         Result result = new StreamResult(new FileOutputStream(path));
@@ -259,4 +284,5 @@ public class TestUtils {
         trans.setOutputProperty(OutputKeys.INDENT, "yes");
         trans.transform(source, result);
     }
+    
 }

@@ -22,8 +22,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import junit.framework.*;
-
 import javax.xml.crypto.test.KeySelectors;
 import javax.xml.crypto.Data;
 import javax.xml.crypto.URIDereferencer;
@@ -39,7 +37,7 @@ import javax.xml.crypto.dsig.dom.DOMValidateContext;
  *
  * @author Sean Mullan
  */
-public class ValidateSignatureTest extends TestCase {
+public class ValidateSignatureTest extends org.junit.Assert {
 
     private SignatureValidator validator;
     private File dir;
@@ -49,8 +47,7 @@ public class ValidateSignatureTest extends TestCase {
             (new org.jcp.xml.dsig.internal.dom.XMLDSigRI(), 1);
     }
 
-    public ValidateSignatureTest(String name) {
-        super(name);
+    public ValidateSignatureTest() {
         String fs = System.getProperty("file.separator");
         String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
         
@@ -63,6 +60,7 @@ public class ValidateSignatureTest extends TestCase {
      * Validates a signature that references an element with an ID attribute. 
      * The element's ID needs to be registered so that it can be found.
      */
+    @org.junit.Test
     public void test_signature_with_ID() throws Exception {
         String file = "envelopingSignature.xml";
 
@@ -75,6 +73,7 @@ public class ValidateSignatureTest extends TestCase {
         assertTrue("Signature failed core validation", coreValidity);
     }
 
+    @org.junit.Test
     public void test_signature_external_c14n_xmlattrs() throws Exception {
         String file = "signature-external-c14n-xmlatrs.xml";
 
@@ -86,6 +85,7 @@ public class ValidateSignatureTest extends TestCase {
     /**
      * This test checks that the signature is verified before the references.
      */
+    @org.junit.Test
     public void test_invalid_signature() throws Exception {
         InvalidURIDereferencer ud = new InvalidURIDereferencer();
 
@@ -95,33 +95,36 @@ public class ValidateSignatureTest extends TestCase {
         assertTrue("References validated before signature", ud.dereferenced);
     }
 
+    @org.junit.Test
     public void test_signature_enveloping_hmac_sha1_trunclen_0() throws Exception {
         try {
-            boolean coreValidity = validator.validate
+            validator.validate
                 ("signature-enveloping-hmac-sha1-trunclen-0-attack.xml", 
                 new KeySelectors.SecretKeySelector("secret".getBytes("ASCII")));
             fail("Expected HMACOutputLength exception");
         } catch (XMLSignatureException xse) {
-            System.out.println(xse.getMessage());
+            // System.out.println(xse.getMessage());
             // pass
         }
     }
 
+    @org.junit.Test
     public void test_signature_enveloping_hmac_sha1_trunclen_8() throws Exception {
    
         try {
-            boolean coreValidity = validator.validate
+            validator.validate
                 ("signature-enveloping-hmac-sha1-trunclen-8-attack.xml", 
                 new KeySelectors.SecretKeySelector("secret".getBytes("ASCII")));
             fail("Expected HMACOutputLength exception");
         } catch (XMLSignatureException xse) {
-            System.out.println(xse.getMessage());
+            // System.out.println(xse.getMessage());
             // pass
         }
     }
 
     // Bug 47761: validates an xml signature containing a reference with
     // xmlns:xml attributes. C14n should not emit these attributes.
+    @org.junit.Test
     public void test_signature_exclc14n_xmlnamespace() throws Exception {
         String file = "demo.signed.xml";
         boolean coreValidity = validator.validate(file, 
@@ -146,9 +149,4 @@ public class ValidateSignatureTest extends TestCase {
         }
     }
     
-    public static void main(String[] args) throws Exception {
-        ValidateSignatureTest vst = new ValidateSignatureTest("");
-        vst.test_signature_with_ID();
-        vst.test_signature_external_c14n_xmlattrs();
-    }
 }

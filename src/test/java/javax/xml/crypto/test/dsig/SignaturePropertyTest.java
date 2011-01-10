@@ -20,37 +20,27 @@
 package javax.xml.crypto.test.dsig;
 
 import java.util.*;
+import javax.xml.crypto.XMLStructure;
 import javax.xml.crypto.dsig.*;
-
-import junit.framework.*;
 
 /**
  * Unit test for javax.xml.crypto.dsig.SignatureProperty
  *
- * @version $Id$
  * @author Valerie Peng
  */
-public class SignaturePropertyTest extends TestCase {
+public class SignaturePropertyTest extends org.junit.Assert {
 
     private XMLSignatureFactory factory;
     private String target = "target";
     private String id = "id";
 
-    public SignaturePropertyTest() {
-        super("SignaturePropertyTest");
-    }
-
-    public SignaturePropertyTest(String name) {
-        super(name);
-    }
-
-    public void setUp() throws Exception {
+    public SignaturePropertyTest() throws Exception {
         factory = XMLSignatureFactory.getInstance
             ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
     }
     
-    public void tearDown() {}
-    
+    @org.junit.Test
+    @SuppressWarnings("unchecked")
     public void testConstructor() {
         // test XMLSignatureFactory.newSignatureProperty(List, String, String) 
         SignatureProperty prop;
@@ -62,7 +52,7 @@ public class SignaturePropertyTest extends TestCase {
         } catch (Exception ex) {
             fail("Should raise a NPE for null content instead of " + ex);
         }
-        List list = new Vector();
+        List<Object> list = new Vector<Object>();
         try {
             prop = factory.newSignatureProperty(list, target, id); 
             fail("Should raise an IAE for empty content"); 
@@ -93,7 +83,7 @@ public class SignaturePropertyTest extends TestCase {
 
         prop = factory.newSignatureProperty(list, target, id);
         assertNotNull(prop);
-        List unmodifiable = prop.getContent();
+        List<Object> unmodifiable = prop.getContent();
         assertNotNull(unmodifiable);
         try {
             unmodifiable.add(new TestUtils.MyOwnXMLStructure());
@@ -105,8 +95,9 @@ public class SignaturePropertyTest extends TestCase {
         assertNotNull(prop);
     }
 
+    @org.junit.Test
     public void testisFeatureSupported() {
-        List list = new Vector();
+        List<XMLStructure> list = new Vector<XMLStructure>();
         list.add(new TestUtils.MyOwnXMLStructure());
         SignatureProperty prop = factory.newSignatureProperty
             (list, target, id);
@@ -117,4 +108,5 @@ public class SignaturePropertyTest extends TestCase {
 
         assertTrue(!prop.isFeatureSupported("not supported"));
     }
+    
 }

@@ -22,29 +22,18 @@ package javax.xml.crypto.test.dsig;
 import java.util.*;
 import javax.xml.crypto.dsig.*;
 
-import junit.framework.*;
-
 /**
  * Unit test for javax.xml.crypto.dsig.SignatureProperties
  *
- * @version $Id$
  * @author Valerie Peng
  */
-public class SignaturePropertiesTest extends TestCase {
+public class SignaturePropertiesTest extends org.junit.Assert {
 
     private XMLSignatureFactory factory;
     private String id = "id";
     private SignatureProperty prop;
 
-    public SignaturePropertiesTest() {
-        super("SignaturePropertiesTest");
-    }
-
-    public SignaturePropertiesTest(String name) {
-        super(name);
-    }
-
-    public void setUp() throws Exception {
+    public SignaturePropertiesTest() throws Exception {
         factory = XMLSignatureFactory.getInstance
             ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
         prop = factory.newSignatureProperty
@@ -52,8 +41,8 @@ public class SignaturePropertiesTest extends TestCase {
              "propTarget", "propId");
     }
     
-    public void tearDown() {}
-    
+    @org.junit.Test
+    @SuppressWarnings("unchecked")
     public void testConstructor() {
         // test XMLSignatureFactory.newSignatureProperties(List, String) 
         SignatureProperties props;
@@ -65,7 +54,8 @@ public class SignaturePropertiesTest extends TestCase {
         } catch (Exception ex) {
             fail("Should raise a NPE for null content instead of " + ex);
         }
-        List list = new Vector();
+        
+        List<Object> list = new Vector<Object>();
         try {
             props = factory.newSignatureProperties(list, id); 
             fail("Should raise an IAE for empty content"); 
@@ -73,6 +63,7 @@ public class SignaturePropertiesTest extends TestCase {
         } catch (Exception ex) {
             fail("Should raise an IAE for empty content instead of " + ex);
         }
+        
         String strEntry = "wrong type";
         list.add(strEntry);
         try {
@@ -84,11 +75,12 @@ public class SignaturePropertiesTest extends TestCase {
             fail("Should raise a CCE for content with invalid entries " +
                  "instead of " + ex);
         }
+        
         list.remove(strEntry);
         list.add(prop);
         props = factory.newSignatureProperties(list, id);
         assertNotNull(props);
-        List unmodifiable = props.getProperties();
+        List<Object> unmodifiable = props.getProperties();
         assertNotNull(unmodifiable);
         try {
             unmodifiable.add(prop);
@@ -99,8 +91,9 @@ public class SignaturePropertiesTest extends TestCase {
         assertEquals(props.getId(), id);
     }
 
+    @org.junit.Test
     public void testisFeatureSupported() {
-        List list = new Vector();
+        List<Object> list = new Vector<Object>();
         list.add(prop);
         SignatureProperties props = factory.newSignatureProperties(list, id);
         try {
@@ -110,4 +103,5 @@ public class SignaturePropertiesTest extends TestCase {
 
         assertTrue(!props.isFeatureSupported("not supported"));
     }
+    
 }

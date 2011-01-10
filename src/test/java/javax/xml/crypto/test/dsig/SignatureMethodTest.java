@@ -22,15 +22,12 @@ package javax.xml.crypto.test.dsig;
 import javax.xml.crypto.dsig.*;
 import java.security.*;
 
-import junit.framework.*;
-
 /**
  * Unit test for javax.xml.crypto.dsig.SignatureMethod
  *
- * @version $Id$
  * @author Valerie Peng
  */
-public class SignatureMethodTest extends TestCase {
+public class SignatureMethodTest extends org.junit.Assert {
 
     XMLSignatureFactory factory;
 
@@ -40,21 +37,12 @@ public class SignatureMethodTest extends TestCase {
         SignatureMethod.HMAC_SHA1
     };
 
-    public SignatureMethodTest() {
-        super("SignatureMethodTest");
-    }
-
-    public SignatureMethodTest(String name) {
-        super(name);
-    }
-
-    public void setUp() throws Exception { 
+    public SignatureMethodTest() throws Exception {
         factory = XMLSignatureFactory.getInstance
             ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
     }
 
-    public void tearDown() { }
-
+    @org.junit.Test
     public void testisFeatureSupported() throws Exception {
         SignatureMethod sm;
         for (int i = 0; i < SIG_ALGOS.length; i++) {
@@ -69,6 +57,7 @@ public class SignatureMethodTest extends TestCase {
         }
     }
 
+    @org.junit.Test
     public void testConstructor() throws Exception {
         // test XMLSignatureFactory.newAlgorithmMethod
         // (String algorithm, AlgorithmParameterSpec params)
@@ -93,12 +82,17 @@ public class SignatureMethodTest extends TestCase {
         try {
             sm = factory.newSignatureMethod("non-existent", null); 
             fail("Should raise an NSAE for non-existent algos"); 
-        } catch (NoSuchAlgorithmException nsae) {}
+        } catch (NoSuchAlgorithmException nsae) {
+            //
+        }
 
         try {
             sm = factory.newSignatureMethod(null, null); 
             fail("Should raise a NPE for null algo"); 
-        } catch (NullPointerException npe) {}
-    } 
+        } catch (NullPointerException npe) {
+            //
+        }
+    }
+    
 }
 

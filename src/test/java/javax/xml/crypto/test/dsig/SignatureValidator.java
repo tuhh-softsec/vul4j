@@ -84,8 +84,8 @@ public class SignatureValidator {
         // Check core validation status
         if (coreValidity == false) {
             // check the validation status of each Reference
-            Iterator i = signature.getSignedInfo().getReferences().iterator();
-            for (int j=0; i.hasNext(); j++) {
+            Iterator<?> i = signature.getSignedInfo().getReferences().iterator();
+            for (int j = 0; i.hasNext(); j++) {
                 Reference reference = (Reference) i.next();
                 reference.validate(vc);
             }
@@ -97,8 +97,8 @@ public class SignatureValidator {
         NodeIterator ni = ((DocumentTraversal)doc).createNodeIterator(
             doc.getDocumentElement(), NodeFilter.SHOW_ELEMENT, null, false);
         
-        for(Node n = ni.nextNode(); n != null; n = ni.nextNode() ) {
-            if("Signature".equals(n.getLocalName())) {
+        for (Node n = ni.nextNode(); n != null; n = ni.nextNode() ) {
+            if ("Signature".equals(n.getLocalName())) {
                 return (Element) n;
             }
         }
