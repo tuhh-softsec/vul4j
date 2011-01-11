@@ -53,8 +53,30 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
      * populated when this class is created with all the schemas present in
      * the LDIF based schema repository.
      */
-    protected final Map<String, Schema> schemaMap = new HashMap<String, Schema>();
+    protected final Map<String, Schema> schemaMap = new LowerCaseKeyMap();
 
+    /**
+     * a map implementation which converts the keys to lower case before inserting
+     */
+    private class LowerCaseKeyMap extends HashMap<String,Schema>
+    {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public Schema put( String key, Schema value )
+        {
+            return super.put( StringTools.lowerCase( key ), value );
+        }
+
+        @Override
+        public void putAll( Map<? extends String, ? extends Schema> map )
+        {
+            for( Map.Entry<? extends String, ? extends Schema> e : map.entrySet() )
+            {
+                put( e.getKey(), e.getValue() );
+            }
+        }
+    }
 
     /**
      * {@inheritDoc}
@@ -127,7 +149,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
      */
     public void addSchema( Schema schema )
     {
-        schemaMap.put( StringTools.toLowerCase( schema.getSchemaName() ), schema );
+        schemaMap.put( schema.getSchemaName(), schema );
     }
     
     
