@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 The Apache Software Foundation.
+ * Copyright 2005-2011 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ public final class DOMSignatureProperties extends DOMStructure
     implements SignatureProperties {
  
     private final String id;
-    private final List properties;
+    private final List<SignatureProperty> properties;
 
     /**
      * Creates a <code>DOMSignatureProperties</code> from the specified 
@@ -56,13 +56,15 @@ public final class DOMSignatureProperties extends DOMStructure
      * @throws IllegalArgumentException if <code>properties</code> is empty
      * @throws NullPointerException if <code>properties</code>
      */
-    public DOMSignatureProperties(List properties, String id) {
+    public DOMSignatureProperties(List<SignatureProperty> properties, String id)
+    {
 	if (properties == null) {
 	    throw new NullPointerException("properties cannot be null");
 	} else if (properties.isEmpty()) {
 	    throw new IllegalArgumentException("properties cannot be empty");
         } else {
-            List propsCopy = new ArrayList(properties);
+            List<SignatureProperty> propsCopy =
+                new ArrayList<SignatureProperty>(properties);
             for (int i = 0, size = propsCopy.size(); i < size; i++) {
                 if (!(propsCopy.get(i) instanceof SignatureProperty)) {
                     throw new ClassCastException
@@ -80,17 +82,18 @@ public final class DOMSignatureProperties extends DOMStructure
      * @param propsElem a SignatureProperties element
      * @throws MarshalException if a marshalling error occurs
      */
-    public DOMSignatureProperties(Element propsElem) throws MarshalException{
+    public DOMSignatureProperties(Element propsElem) throws MarshalException {
 	// unmarshal attributes
         id = DOMUtils.getAttributeValue(propsElem, "Id");
 
 	NodeList nodes = propsElem.getChildNodes();
 	int length = nodes.getLength();
-	List properties = new ArrayList(length);
+	List<SignatureProperty> properties =
+            new ArrayList<SignatureProperty>(length);
 	for (int i = 0; i < length; i++) {
 	    Node child = nodes.item(i);
 	    if (child.getNodeType() == Node.ELEMENT_NODE) {
-	        properties.add(new DOMSignatureProperty((Element) child));
+	        properties.add(new DOMSignatureProperty((Element)child));
 	    }
 	}
         if (properties.isEmpty()) {
@@ -109,25 +112,27 @@ public final class DOMSignatureProperties extends DOMStructure
     }
 
     public void marshal(Node parent, String dsPrefix, DOMCryptoContext context)
-	throws MarshalException {
+	throws MarshalException
+    {
         Document ownerDoc = DOMUtils.getOwnerDocument(parent);
-
-        Element propsElem = DOMUtils.createElement
-            (ownerDoc, "SignatureProperties", XMLSignature.XMLNS, dsPrefix);
+        Element propsElem = DOMUtils.createElement(ownerDoc,
+                                                   "SignatureProperties",
+                                                   XMLSignature.XMLNS,
+                                                   dsPrefix);
 
 	// set attributes
         DOMUtils.setAttributeID(propsElem, "Id", id);
 
         // create and append any properties
-	for (int i = 0, size = properties.size(); i < size; i++) {
-	    DOMSignatureProperty property = 
-		(DOMSignatureProperty) properties.get(i);
-	    property.marshal(propsElem, dsPrefix, context);
+        for (SignatureProperty property : properties) {
+	    ((DOMSignatureProperty)property).marshal(propsElem, dsPrefix,
+                                                     context);
         }
 	    
 	parent.appendChild(propsElem);
     }
 
+    @Override
     public boolean equals(Object o) {
 	if (this == o) {
             return true;
@@ -136,10 +141,10 @@ public final class DOMSignatureProperties extends DOMStructure
         if (!(o instanceof SignatureProperties)) {
             return false;
 	}
-        SignatureProperties osp = (SignatureProperties) o;
+        SignatureProperties osp = (SignatureProperties)o;
 
-	boolean idsEqual = (id == null ? osp.getId() == null :
-            id.equals(osp.getId()));
+	boolean idsEqual = (id == null ? osp.getId() == null
+                                       : id.equals(osp.getId()));
 
 	return (properties.equals(osp.getProperties()) && idsEqual);
     }

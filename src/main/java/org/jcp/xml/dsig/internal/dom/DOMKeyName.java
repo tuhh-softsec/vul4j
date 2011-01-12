@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 The Apache Software Foundation.
+ * Copyright 2005-2011 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -67,15 +67,17 @@ public final class DOMKeyName extends DOMStructure implements KeyName {
     }
 
     public void marshal(Node parent, String dsPrefix, DOMCryptoContext context)
-	throws MarshalException {
+	throws MarshalException
+    {
 	Document ownerDoc = DOMUtils.getOwnerDocument(parent);
 	// prepend namespace prefix, if necessary
-	Element knElem = DOMUtils.createElement
-	    (ownerDoc, "KeyName", XMLSignature.XMLNS, dsPrefix);
+	Element knElem = DOMUtils.createElement(ownerDoc, "KeyName",
+                                                XMLSignature.XMLNS, dsPrefix);
         knElem.appendChild(ownerDoc.createTextNode(name));
 	parent.appendChild(knElem);
     }
 
+    @Override
     public boolean equals(Object obj) {
 	if (this == obj) {
             return true;
@@ -83,7 +85,7 @@ public final class DOMKeyName extends DOMStructure implements KeyName {
         if (!(obj instanceof KeyName)) {
             return false;
 	}
-        KeyName okn = (KeyName) obj;
+        KeyName okn = (KeyName)obj;
 	return name.equals(okn.getName());
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2009 The Apache Software Foundation.
+ * Copyright 2005-2011 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.Transform;
@@ -52,7 +53,8 @@ public abstract class ApacheTransform extends TransformService {
         org.apache.xml.security.Init.init();
     }
 
-    private static Logger log = Logger.getLogger("org.jcp.xml.dsig.internal.dom");
+    private static Logger log =
+        Logger.getLogger("org.jcp.xml.dsig.internal.dom");
     private Transform apacheTransform;
     protected Document ownerDoc;
     protected Element transformElem;
@@ -63,7 +65,8 @@ public abstract class ApacheTransform extends TransformService {
     }
 
     public void init(XMLStructure parent, XMLCryptoContext context)
-	throws InvalidAlgorithmParameterException {
+	throws InvalidAlgorithmParameterException
+    {
         if (context != null && !(context instanceof DOMCryptoContext)) {
             throw new ClassCastException
                 ("context must be of type DOMCryptoContext");
@@ -74,7 +77,8 @@ public abstract class ApacheTransform extends TransformService {
     }
 
     public void marshalParams(XMLStructure parent, XMLCryptoContext context)
-	throws MarshalException {
+	throws MarshalException
+    {
         if (context != null && !(context instanceof DOMCryptoContext)) {
             throw new ClassCastException
                 ("context must be of type DOMCryptoContext");
@@ -84,16 +88,18 @@ public abstract class ApacheTransform extends TransformService {
 	ownerDoc = DOMUtils.getOwnerDocument(transformElem);
     }
 
-    public Data transform(Data data, XMLCryptoContext xc) 
-	throws TransformException {
+    public Data transform(Data data, XMLCryptoContext xc)
+	throws TransformException
+    {
 	if (data == null) {
 	    throw new NullPointerException("data must not be null");
 	}
-	return transformIt(data, xc, (OutputStream) null);
+	return transformIt(data, xc, (OutputStream)null);
     }
 
-    public Data transform(Data data, XMLCryptoContext xc, OutputStream os) 
-	throws TransformException {
+    public Data transform(Data data, XMLCryptoContext xc, OutputStream os)
+	throws TransformException
+    {
 	if (data == null) {
 	    throw new NullPointerException("data must not be null");
 	}
@@ -103,9 +109,9 @@ public abstract class ApacheTransform extends TransformService {
 	return transformIt(data, xc, os);
     }
 
-    private Data transformIt(Data data, XMLCryptoContext xc, OutputStream os) 
-	throws TransformException {
-
+    private Data transformIt(Data data, XMLCryptoContext xc, OutputStream os)
+	throws TransformException
+    {
         if (ownerDoc == null) {
             throw new TransformException("transform must be marshalled");
         }
@@ -116,12 +122,12 @@ public abstract class ApacheTransform extends TransformService {
 		    (ownerDoc, getAlgorithm(), transformElem.getChildNodes());
 		apacheTransform.setElement(transformElem, xc.getBaseURI());
 		if (log.isLoggable(Level.FINE)) {
-                    log.log(Level.FINE, "Created transform for algorithm: " 
-		        + getAlgorithm());
+                    log.log(Level.FINE, "Created transform for algorithm: " +
+                            getAlgorithm());
 		}
             } catch (Exception ex) {
-                throw new TransformException
-		    ("Couldn't find Transform for: " + getAlgorithm(), ex);
+                throw new TransformException("Couldn't find Transform for: " +
+                                             getAlgorithm(), ex);
             } 
 	}
 
@@ -130,7 +136,7 @@ public abstract class ApacheTransform extends TransformService {
 	    if (log.isLoggable(Level.FINE)) {
                 log.log(Level.FINE, "ApacheData = true");
 	    }
-	    in = ((ApacheData) data).getXMLSignatureInput();
+	    in = ((ApacheData)data).getXMLSignatureInput();
 	} else if (data instanceof NodeSetData) {
 	    if (log.isLoggable(Level.FINE)) {
                 log.log(Level.FINE, "isNodeSet() = true");
@@ -139,12 +145,12 @@ public abstract class ApacheTransform extends TransformService {
 		if (log.isLoggable(Level.FINE)) {
                     log.log(Level.FINE, "DOMSubTreeData = true");
                 }
-		DOMSubTreeData subTree = (DOMSubTreeData) data;
+		DOMSubTreeData subTree = (DOMSubTreeData)data;
                 in = new XMLSignatureInput(subTree.getRoot());
 		in.setExcludeComments(subTree.excludeComments());
 	    } else {
-		Set nodeSet = 
-		    Utils.toNodeSet(((NodeSetData) data).iterator());
+		Set<Node> nodeSet =
+		    Utils.toNodeSet(((NodeSetData)data).iterator());
                 in = new XMLSignatureInput(nodeSet);
 	    }
         } else {

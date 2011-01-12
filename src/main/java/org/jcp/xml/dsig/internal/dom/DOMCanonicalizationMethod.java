@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 The Apache Software Foundation.
+ * Copyright 2005-2011 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -45,7 +45,8 @@ public class DOMCanonicalizationMethod extends DOMTransform
      * @param spi TransformService
      */
     public DOMCanonicalizationMethod(TransformService spi)
-	throws InvalidAlgorithmParameterException {
+        throws InvalidAlgorithmParameterException
+    {
 	super(spi);
     }
 
@@ -57,7 +58,9 @@ public class DOMCanonicalizationMethod extends DOMTransform
      * @param cmElem a CanonicalizationMethod element
      */
     public DOMCanonicalizationMethod(Element cmElem, XMLCryptoContext context,
-	Provider provider) throws MarshalException {
+	                             Provider provider)
+        throws MarshalException
+    {
 	super(cmElem, context, provider);
     }
 
@@ -74,16 +77,19 @@ public class DOMCanonicalizationMethod extends DOMTransform
      * @throws TransformException if an unexpected error occurs while
      *    canonicalizing the data
      */
-    public Data canonicalize(Data data, XMLCryptoContext xc) 
-	throws TransformException {
+    public Data canonicalize(Data data, XMLCryptoContext xc)
+	throws TransformException
+    {
 	return transform(data, xc);
     }
 
-    public Data canonicalize(Data data, XMLCryptoContext xc, OutputStream os) 
-	throws TransformException {
+    public Data canonicalize(Data data, XMLCryptoContext xc, OutputStream os)
+	throws TransformException
+    {
 	return transform(data, xc, os);
     }
 
+    @Override
     public boolean equals(Object o) {
 	if (this == o) {
             return true;
@@ -92,9 +98,9 @@ public class DOMCanonicalizationMethod extends DOMTransform
         if (!(o instanceof CanonicalizationMethod)) {
             return false;
 	}
-        CanonicalizationMethod ocm = (CanonicalizationMethod) o;
+        CanonicalizationMethod ocm = (CanonicalizationMethod)o;
 
-	return (getAlgorithm().equals(ocm.getAlgorithm()) && 
+	return (getAlgorithm().equals(ocm.getAlgorithm()) &&
 	    DOMUtils.paramsEqual(getParameterSpec(), ocm.getParameterSpec()));
     }
 }

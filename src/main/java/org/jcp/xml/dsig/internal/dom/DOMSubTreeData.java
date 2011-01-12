@@ -1,5 +1,5 @@
 /*
- * Copyright 2006 The Apache Software Foundation.
+ * Copyright 2006-2011 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -66,8 +66,8 @@ public class DOMSubTreeData implements NodeSetData {
      */
     static class DelayedNodeIterator implements Iterator {
     	private Node root;
-	private List nodeSet;
-	private ListIterator li;
+	private List<Node> nodeSet;
+	private ListIterator<Node> li;
 	private boolean withComments;
 
 	DelayedNodeIterator(Node root, boolean excludeComments) {
@@ -89,7 +89,7 @@ public class DOMSubTreeData implements NodeSetData {
 		li = nodeSet.listIterator();
             }
             if (li.hasNext()) {
-		return (Node) li.next();
+		return li.next();
             } else {
                 throw new NoSuchElementException();
 	    }
@@ -106,8 +106,8 @@ public class DOMSubTreeData implements NodeSetData {
          *	 URI fragment. If null, returns an empty set.
 	 * @return a set of nodes (minus any comment nodes)
 	 */
-	private List dereferenceSameDocumentURI(Node node) {
-            List nodeSet = new ArrayList();
+	private List<Node> dereferenceSameDocumentURI(Node node) {
+            List<Node> nodeSet = new ArrayList<Node>();
             if (node != null) {
 		nodeSetMinusCommentNodes(node, nodeSet, null);
             }
@@ -123,8 +123,9 @@ public class DOMSubTreeData implements NodeSetData {
 	 * @param nodeSet the set of nodes traversed so far
 	 * @param the previous sibling node
 	 */
-	private void nodeSetMinusCommentNodes(Node node, List nodeSet,
-            Node prevSibling) {
+	private void nodeSetMinusCommentNodes(Node node, List<Node> nodeSet,
+                                              Node prevSibling)
+        {
             switch (node.getNodeType()) {
 		case Node.ELEMENT_NODE :
                     NamedNodeMap attrs = node.getAttributes();

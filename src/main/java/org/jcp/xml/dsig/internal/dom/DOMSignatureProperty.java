@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 The Apache Software Foundation.
+ * Copyright 2005-2011 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ public final class DOMSignatureProperty extends DOMStructure
  
     private final String id;
     private final String target;
-    private final List content;
+    private final List<XMLStructure> content;
 
     /**
      * Creates a <code>SignatureProperty</code> from the specified parameters.
@@ -58,7 +58,9 @@ public final class DOMSignatureProperty extends DOMStructure
      * @throws NullPointerException if <code>content</code> or 
      *    <code>target</code> is <code>null</code>
      */
-    public DOMSignatureProperty(List content, String target, String id) {
+    public DOMSignatureProperty(List<XMLStructure> content, String target,
+                                String id)
+    {
 	if (target == null) {
 	    throw new NullPointerException("target cannot be null");
 	} else if (content == null) {
@@ -66,7 +68,8 @@ public final class DOMSignatureProperty extends DOMStructure
 	} else if (content.isEmpty()) {
 	    throw new IllegalArgumentException("content cannot be empty");
         } else {
-            List contentCopy = new ArrayList(content);
+            List<XMLStructure> contentCopy =
+                new ArrayList<XMLStructure>(content);
             for (int i = 0, size = contentCopy.size(); i < size; i++) {
                 if (!(contentCopy.get(i) instanceof XMLStructure)) {
                     throw new ClassCastException
@@ -94,7 +97,7 @@ public final class DOMSignatureProperty extends DOMStructure
 
 	NodeList nodes = propElem.getChildNodes();
 	int length = nodes.getLength();
-	List content = new ArrayList(length);
+	List<XMLStructure> content = new ArrayList<XMLStructure>(length);
 	for (int i = 0; i < length; i++) {
 	    content.add(new javax.xml.crypto.dom.DOMStructure(nodes.item(i)));
 	}
@@ -118,26 +121,26 @@ public final class DOMSignatureProperty extends DOMStructure
     }
 
     public void marshal(Node parent, String dsPrefix, DOMCryptoContext context)
-	throws MarshalException {
+	throws MarshalException
+    {
         Document ownerDoc = DOMUtils.getOwnerDocument(parent);
-
-        Element propElem = DOMUtils.createElement
-            (ownerDoc, "SignatureProperty", XMLSignature.XMLNS, dsPrefix);
+        Element propElem = DOMUtils.createElement(ownerDoc, "SignatureProperty",
+                                                  XMLSignature.XMLNS, dsPrefix);
 
 	// set attributes
 	DOMUtils.setAttributeID(propElem, "Id", id);
         DOMUtils.setAttribute(propElem, "Target", target);
 
         // create and append any elements and mixed content
-	for (int i = 0, size = content.size(); i < size; i++) {
-	    javax.xml.crypto.dom.DOMStructure property = 
-		(javax.xml.crypto.dom.DOMStructure) content.get(i);
-	    DOMUtils.appendChild(propElem, property.getNode());
+        for (XMLStructure property : content) {
+	    DOMUtils.appendChild(propElem,
+                ((javax.xml.crypto.dom.DOMStructure)property).getNode());
         }
 	    
 	parent.appendChild(propElem);
     }
 
+    @Override
     public boolean equals(Object o) {
 	if (this == o) {
             return true;
@@ -146,31 +149,31 @@ public final class DOMSignatureProperty extends DOMStructure
 	if (!(o instanceof SignatureProperty)) {
             return false;
 	}
-        SignatureProperty osp = (SignatureProperty) o;
+        SignatureProperty osp = (SignatureProperty)o;
 
-	boolean idsEqual = (id == null ? osp.getId() == null :
-            id.equals(osp.getId()));
+	boolean idsEqual = (id == null ? osp.getId() == null
+                                       : id.equals(osp.getId()));
 
-	return (equalsContent(osp.getContent()) && 
-	    target.equals(osp.getTarget()) && idsEqual);
+        @SuppressWarnings("unchecked")
+        List<XMLStructure> ospContent = osp.getContent();
+	return (equalsContent(ospContent) &&
+	        target.equals(osp.getTarget()) && idsEqual);
     }
 
-    private boolean equalsContent(List otherContent) {
+    private boolean equalsContent(List<XMLStructure> otherContent) {
 	int osize = otherContent.size();
 	if (content.size() != osize) {
             return false;
 	}
         for (int i = 0; i < osize; i++) {
-            XMLStructure oxs = (XMLStructure) otherContent.get(i);
-            XMLStructure xs = (XMLStructure) content.get(i);
+            XMLStructure oxs = otherContent.get(i);
+            XMLStructure xs = content.get(i);
             if (oxs instanceof javax.xml.crypto.dom.DOMStructure) {
 		if (!(xs instanceof javax.xml.crypto.dom.DOMStructure)) {
                     return false;
 		}
-                Node onode =
-                    ((javax.xml.crypto.dom.DOMStructure) oxs).getNode();
-		Node node =
-                    ((javax.xml.crypto.dom.DOMStructure) xs).getNode();
+                Node onode = ((javax.xml.crypto.dom.DOMStructure)oxs).getNode();
+		Node node = ((javax.xml.crypto.dom.DOMStructure)xs).getNode();
 		if (!DOMUtils.nodesEqual(node, onode)) {
 		    return false;
 		}

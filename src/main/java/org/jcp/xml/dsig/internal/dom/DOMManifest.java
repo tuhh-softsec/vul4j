@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 The Apache Software Foundation.
+ * Copyright 2005-2011 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ import org.w3c.dom.Node;
  */
 public final class DOMManifest extends DOMStructure implements Manifest {
 
-    private final List references;
+    private final List<Reference> references;
     private final String id;
 
     /**
@@ -55,11 +55,11 @@ public final class DOMManifest extends DOMStructure implements Manifest {
      * @throws ClassCastException if <code>references</code> contains any
      *    entries that are not of type {@link Reference}
      */
-    public DOMManifest(List references, String id) {
+    public DOMManifest(List<Reference> references, String id) {
 	if (references == null) {
 	    throw new NullPointerException("references cannot be null");
 	}
-	List refCopy = new ArrayList(references);
+	List<Reference> refCopy = new ArrayList<Reference>(references);
 	if (refCopy.isEmpty()) {
 	    throw new IllegalArgumentException("list of references must " +
 	        "contain at least one entry");
@@ -80,10 +80,12 @@ public final class DOMManifest extends DOMStructure implements Manifest {
      * @param manElem a Manifest element
      */
     public DOMManifest(Element manElem, XMLCryptoContext context,
-	Provider provider) throws MarshalException {
+	               Provider provider)
+        throws MarshalException
+    {
         this.id = DOMUtils.getAttributeValue(manElem, "Id");
         Element refElem = DOMUtils.getFirstChildElement(manElem);
-	List refs = new ArrayList();
+	List<Reference> refs = new ArrayList<Reference>();
 	while (refElem != null) {
 	    refs.add(new DOMReference(refElem, context, provider));
 	    refElem = DOMUtils.getNextSiblingElement(refElem);
@@ -100,22 +102,22 @@ public final class DOMManifest extends DOMStructure implements Manifest {
     }
 
     public void marshal(Node parent, String dsPrefix, DOMCryptoContext context)
-	throws MarshalException {
+	throws MarshalException
+    {
         Document ownerDoc = DOMUtils.getOwnerDocument(parent);
-
-        Element manElem = DOMUtils.createElement
-            (ownerDoc, "Manifest", XMLSignature.XMLNS, dsPrefix);
+        Element manElem = DOMUtils.createElement(ownerDoc, "Manifest",
+                                                 XMLSignature.XMLNS, dsPrefix);
 
         DOMUtils.setAttributeID(manElem, "Id", id);
 
 	// add references
-	for (int i = 0, size = references.size(); i < size; i++) {
-	    DOMReference ref = (DOMReference) references.get(i);
-	    ref.marshal(manElem, dsPrefix, context);
+        for (Reference ref : references) {
+	    ((DOMReference)ref).marshal(manElem, dsPrefix, context);
 	}
         parent.appendChild(manElem);
     }
 
+    @Override
     public boolean equals(Object o) {
 	if (this == o) {
             return true;
@@ -124,10 +126,10 @@ public final class DOMManifest extends DOMStructure implements Manifest {
 	if (!(o instanceof Manifest)) {
             return false;
 	}
-        Manifest oman = (Manifest) o;
+        Manifest oman = (Manifest)o;
 
-	boolean idsEqual = (id == null ? oman.getId() == null :
-            id.equals(oman.getId()));
+	boolean idsEqual = (id == null ? oman.getId() == null
+                                       : id.equals(oman.getId()));
 
 	return (idsEqual && references.equals(oman.getReferences()));
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 The Apache Software Foundation.
+ * Copyright 2005-2011 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -43,7 +43,8 @@ import org.w3c.dom.NamedNodeMap;
 public final class DOMXPathTransform extends ApacheTransform {
  
     public void init(TransformParameterSpec params)
-        throws InvalidAlgorithmParameterException {
+        throws InvalidAlgorithmParameterException
+    {
         if (params == null) {
 	    throw new InvalidAlgorithmParameterException("params are required");
 	} else if (!(params instanceof XPathFilterParameterSpec)) {
@@ -54,8 +55,8 @@ public final class DOMXPathTransform extends ApacheTransform {
     }
 
     public void init(XMLStructure parent, XMLCryptoContext context)
-        throws InvalidAlgorithmParameterException {
-
+        throws InvalidAlgorithmParameterException
+    {
 	super.init(parent, context);
 	unmarshalParams(DOMUtils.getFirstChildElement(transformElem));
     }
@@ -66,9 +67,10 @@ public final class DOMXPathTransform extends ApacheTransform {
         NamedNodeMap attributes = paramsElem.getAttributes();
         if (attributes != null) {
 	    int length = attributes.getLength();
-            Map namespaceMap = new HashMap(length);
+            Map<String, String> namespaceMap =
+                new HashMap<String, String>(length);
 	    for (int i = 0; i < length; i++) {
-	        Attr attr = (Attr) attributes.item(i);
+	        Attr attr = (Attr)attributes.item(i);
 	        String prefix = attr.getPrefix();
 	        if (prefix != null && prefix.equals("xmlns")) {
 	            namespaceMap.put(attr.getLocalName(), attr.getValue());
@@ -81,22 +83,23 @@ public final class DOMXPathTransform extends ApacheTransform {
     }
 
     public void marshalParams(XMLStructure parent, XMLCryptoContext context)
-        throws MarshalException {
-
+        throws MarshalException
+    {
 	super.marshalParams(parent, context);
 	XPathFilterParameterSpec xp = 
-	    (XPathFilterParameterSpec) getParameterSpec();
-	Element xpathElem = DOMUtils.createElement
-	    (ownerDoc, "XPath", XMLSignature.XMLNS, 
-	     DOMUtils.getSignaturePrefix(context));
+	    (XPathFilterParameterSpec)getParameterSpec();
+	Element xpathElem = DOMUtils.createElement(ownerDoc, "XPath",
+             XMLSignature.XMLNS, DOMUtils.getSignaturePrefix(context));
 	xpathElem.appendChild(ownerDoc.createTextNode(xp.getXPath()));
 
 	// add namespace attributes, if necessary
-	Iterator i = xp.getNamespaceMap().entrySet().iterator();
+        @SuppressWarnings("unchecked")
+	Iterator<Map.Entry> i = xp.getNamespaceMap().entrySet().iterator();
 	while (i.hasNext()) {
-	    Map.Entry entry = (Map.Entry) i.next();
-	    xpathElem.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:" 
-		+ (String) entry.getKey(), (String) entry.getValue());
+	    Map.Entry entry = i.next();
+	    xpathElem.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:" +
+                                     (String)entry.getKey(),
+                                     (String)entry.getValue());
 	}
 	    
 	transformElem.appendChild(xpathElem);

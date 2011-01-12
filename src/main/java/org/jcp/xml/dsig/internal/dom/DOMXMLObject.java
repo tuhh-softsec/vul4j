@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 The Apache Software Foundation.
+ * Copyright 2005-2011 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ public final class DOMXMLObject extends DOMStructure implements XMLObject {
     private final String id;
     private final String mimeType;
     private final String encoding;
-    private final List content;
+    private final List<XMLStructure> content;
 
     /**
      * Creates an <code>XMLObject</code> from the specified parameters.
@@ -58,12 +58,14 @@ public final class DOMXMLObject extends DOMStructure implements XMLObject {
      * @throws ClassCastException if <code>content</code> contains any
      *    entries that are not of type {@link XMLStructure}
      */
-    public DOMXMLObject(List content, String id, String mimeType, 
-	String encoding) {
+    public DOMXMLObject(List<XMLStructure> content, String id, String mimeType,
+	                String encoding)
+    {
         if (content == null || content.isEmpty()) {
-            this.content = Collections.EMPTY_LIST;
+            this.content = Collections.emptyList();
         } else {
-            List contentCopy = new ArrayList(content);
+            List<XMLStructure> contentCopy =
+                new ArrayList<XMLStructure>(content);
             for (int i = 0, size = contentCopy.size(); i < size; i++) {
                 if (!(contentCopy.get(i) instanceof XMLStructure)) {
                     throw new ClassCastException
@@ -84,7 +86,9 @@ public final class DOMXMLObject extends DOMStructure implements XMLObject {
      * @throws MarshalException if there is an error when unmarshalling
      */
     public DOMXMLObject(Element objElem, XMLCryptoContext context,
-	Provider provider) throws MarshalException {
+	                Provider provider)
+    throws MarshalException
+    {
 	// unmarshal attributes
         this.encoding = DOMUtils.getAttributeValue(objElem, "Encoding");
         this.id = DOMUtils.getAttributeValue(objElem, "Id");
@@ -92,11 +96,11 @@ public final class DOMXMLObject extends DOMStructure implements XMLObject {
 
 	NodeList nodes = objElem.getChildNodes();
 	int length = nodes.getLength();
-	List content = new ArrayList(length);
+	List<XMLStructure> content = new ArrayList<XMLStructure>(length);
 	for (int i = 0; i < length; i++) {
             Node child = nodes.item(i);
             if (child.getNodeType() == Node.ELEMENT_NODE) {
-		Element childElem = (Element) child;
+		Element childElem = (Element)child;
                 String tag = childElem.getLocalName();
                 if (tag.equals("Manifest")) {
                     content.add(new DOMManifest(childElem, context, provider));
@@ -113,7 +117,7 @@ public final class DOMXMLObject extends DOMStructure implements XMLObject {
 	    content.add(new javax.xml.crypto.dom.DOMStructure(child));
 	}
         if (content.isEmpty()) {
-            this.content = Collections.EMPTY_LIST;
+            this.content = Collections.emptyList();
         } else {
             this.content = Collections.unmodifiableList(content);
         }
@@ -139,8 +143,8 @@ public final class DOMXMLObject extends DOMStructure implements XMLObject {
 	throws MarshalException {
         Document ownerDoc = DOMUtils.getOwnerDocument(parent);
 
-        Element objElem = DOMUtils.createElement
-            (ownerDoc, "Object", XMLSignature.XMLNS, dsPrefix);
+        Element objElem = DOMUtils.createElement(ownerDoc, "Object",
+                                                 XMLSignature.XMLNS, dsPrefix);
 
 	// set attributes
         DOMUtils.setAttributeID(objElem, "Id", id);
@@ -148,13 +152,12 @@ public final class DOMXMLObject extends DOMStructure implements XMLObject {
         DOMUtils.setAttribute(objElem, "Encoding", encoding);
 
         // create and append any elements and mixed content, if necessary
-	for (int i = 0, size = content.size(); i < size; i++) {
-            XMLStructure object = (XMLStructure) content.get(i);
+        for (XMLStructure object : content) {
             if (object instanceof DOMStructure) {
-                ((DOMStructure) object).marshal(objElem, dsPrefix, context);
+                ((DOMStructure)object).marshal(objElem, dsPrefix, context);
             } else {
 	        javax.xml.crypto.dom.DOMStructure domObject = 
-		    (javax.xml.crypto.dom.DOMStructure) object;
+		    (javax.xml.crypto.dom.DOMStructure)object;
 		DOMUtils.appendChild(objElem, domObject.getNode());
             }
         }
@@ -162,6 +165,7 @@ public final class DOMXMLObject extends DOMStructure implements XMLObject {
 	parent.appendChild(objElem);
     }
 
+    @Override
     public boolean equals(Object o) {
 	if (this == o) {
             return true;
@@ -170,34 +174,36 @@ public final class DOMXMLObject extends DOMStructure implements XMLObject {
         if (!(o instanceof XMLObject)) {
             return false;
 	}
-        XMLObject oxo = (XMLObject) o;
+        XMLObject oxo = (XMLObject)o;
 
-	boolean idsEqual = (id == null ? oxo.getId() == null :
-	    id.equals(oxo.getId()));
-	boolean encodingsEqual = (encoding == null ? oxo.getEncoding() == null :
-	    encoding.equals(oxo.getEncoding()));
-	boolean mimeTypesEqual = (mimeType == null ? oxo.getMimeType() == null :
-	    mimeType.equals(oxo.getMimeType()));
+	boolean idsEqual = (id == null ? oxo.getId() == null
+                                       : id.equals(oxo.getId()));
+	boolean encodingsEqual =
+            (encoding == null ? oxo.getEncoding() == null
+                              : encoding.equals(oxo.getEncoding()));
+	boolean mimeTypesEqual =
+            (mimeType == null ? oxo.getMimeType() == null
+                              : mimeType.equals(oxo.getMimeType()));
 
+        @SuppressWarnings("unchecked")
+        List<XMLStructure> oxoContent = oxo.getContent();
 	return (idsEqual && encodingsEqual && mimeTypesEqual && 
-	    equalsContent(oxo.getContent()));
+	        equalsContent(oxoContent));
     }
 
-    private boolean equalsContent(List otherContent) {
+    private boolean equalsContent(List<XMLStructure> otherContent) {
 	if (content.size() != otherContent.size()) {
 	    return false;
 	}
 	for (int i = 0, osize = otherContent.size(); i < osize; i++) {
-	    XMLStructure oxs = (XMLStructure) otherContent.get(i);
-	    XMLStructure xs = (XMLStructure) content.get(i);
+	    XMLStructure oxs = otherContent.get(i);
+	    XMLStructure xs = content.get(i);
 	    if (oxs instanceof javax.xml.crypto.dom.DOMStructure) {
 		if (!(xs instanceof javax.xml.crypto.dom.DOMStructure)) {
 		    return false;
 		}
-		Node onode = 
-		    ((javax.xml.crypto.dom.DOMStructure) oxs).getNode();
-		Node node = 
-		    ((javax.xml.crypto.dom.DOMStructure) xs).getNode();
+		Node onode = ((javax.xml.crypto.dom.DOMStructure)oxs).getNode();
+		Node node = ((javax.xml.crypto.dom.DOMStructure)xs).getNode();
 		if (!DOMUtils.nodesEqual(node, onode)) {
 		    return false;
 		}

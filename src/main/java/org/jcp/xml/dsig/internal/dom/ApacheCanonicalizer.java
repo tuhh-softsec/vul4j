@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2009 The Apache Software Foundation.
+ * Copyright 2005-2011 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -42,6 +42,7 @@ import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.Transform;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 public abstract class ApacheCanonicalizer extends TransformService {
 
@@ -49,7 +50,8 @@ public abstract class ApacheCanonicalizer extends TransformService {
 	org.apache.xml.security.Init.init();
     }
 
-    private static Logger log = Logger.getLogger("org.jcp.xml.dsig.internal.dom");
+    private static Logger log =
+        Logger.getLogger("org.jcp.xml.dsig.internal.dom");
     protected Canonicalizer apacheCanonicalizer;
     private Transform apacheTransform;
     protected String inclusiveNamespaces;
@@ -57,51 +59,55 @@ public abstract class ApacheCanonicalizer extends TransformService {
     protected Document ownerDoc;
     protected Element transformElem;
     
-    public final AlgorithmParameterSpec getParameterSpec() {
+    public final AlgorithmParameterSpec getParameterSpec()
+    {
 	return params;
     }
 
     public void init(XMLStructure parent, XMLCryptoContext context)
-	throws InvalidAlgorithmParameterException {
+	throws InvalidAlgorithmParameterException
+    {
 	if (context != null && !(context instanceof DOMCryptoContext)) {
 	    throw new ClassCastException
 		("context must be of type DOMCryptoContext");
 	}
         transformElem = (Element)
-            ((javax.xml.crypto.dom.DOMStructure) parent).getNode();
+            ((javax.xml.crypto.dom.DOMStructure)parent).getNode();
         ownerDoc = DOMUtils.getOwnerDocument(transformElem);
     }
 
     public void marshalParams(XMLStructure parent, XMLCryptoContext context)
-	throws MarshalException {
+	throws MarshalException
+    {
 	if (context != null && !(context instanceof DOMCryptoContext)) {
 	    throw new ClassCastException
 		("context must be of type DOMCryptoContext");
 	}
         transformElem = (Element)
-            ((javax.xml.crypto.dom.DOMStructure) parent).getNode();
+            ((javax.xml.crypto.dom.DOMStructure)parent).getNode();
         ownerDoc = DOMUtils.getOwnerDocument(transformElem);
     }
     
     public Data canonicalize(Data data, XMLCryptoContext xc) 
-	throws TransformException {
+	throws TransformException
+    {
 	return canonicalize(data, xc, null);
     }
 
     public Data canonicalize(Data data, XMLCryptoContext xc, OutputStream os) 
-	throws TransformException {
-
+	throws TransformException
+    {
 	if (apacheCanonicalizer == null) {
 	    try {
                 apacheCanonicalizer = Canonicalizer.getInstance(getAlgorithm());
 		if (log.isLoggable(Level.FINE)) {
                     log.log(Level.FINE, "Created canonicalizer for algorithm: " 
-		        + getAlgorithm());
+		            + getAlgorithm());
 		}
 	    } catch (InvalidCanonicalizerException ice) {
                 throw new TransformException
-		    ("Couldn't find Canonicalizer for: " + getAlgorithm() +
-			": " + ice.getMessage(), ice);
+                    ("Couldn't find Canonicalizer for: " + getAlgorithm() +
+		     ": " + ice.getMessage(), ice);
 	    }
 	}
 
@@ -112,10 +118,10 @@ public abstract class ApacheCanonicalizer extends TransformService {
 	}
 
 	try {
-	    Set nodeSet = null;
+	    Set<Node> nodeSet = null;
 	    if (data instanceof ApacheData) {
 		XMLSignatureInput in = 
-		    ((ApacheData) data).getXMLSignatureInput();
+		    ((ApacheData)data).getXMLSignatureInput();
 		if (in.isElement()) {
 		    if (inclusiveNamespaces != null) {
                         return new OctetStreamData(new ByteArrayInputStream
@@ -134,7 +140,7 @@ public abstract class ApacheCanonicalizer extends TransformService {
         		    Utils.readBytesFromStream(in.getOctetStream()))));
 		}
 	    } else if (data instanceof DOMSubTreeData) {
-	        DOMSubTreeData subTree = (DOMSubTreeData) data;
+	        DOMSubTreeData subTree = (DOMSubTreeData)data;
 	        if (inclusiveNamespaces != null) {
 	            return new OctetStreamData(new ByteArrayInputStream
 		        (apacheCanonicalizer.canonicalizeSubtree
@@ -145,12 +151,12 @@ public abstract class ApacheCanonicalizer extends TransformService {
 		         (subTree.getRoot())));
 	        }
 	    } else if (data instanceof NodeSetData) {
-	        NodeSetData nsd = (NodeSetData) data;
+	        NodeSetData nsd = (NodeSetData)data;
 	        // convert Iterator to Set
 	        nodeSet = Utils.toNodeSet(nsd.iterator());
 		if (log.isLoggable(Level.FINE)) {
-	            log.log(Level.FINE, "Canonicalizing " + nodeSet.size() 
-		        + " nodes");
+	            log.log(Level.FINE, "Canonicalizing " + nodeSet.size() +
+                            " nodes");
 		}
             } else {
 		return new OctetStreamData(new ByteArrayInputStream(
@@ -172,7 +178,8 @@ public abstract class ApacheCanonicalizer extends TransformService {
     }
 
     public Data transform(Data data, XMLCryptoContext xc, OutputStream os)
-        throws TransformException {
+        throws TransformException
+    {
 	if (data == null) {
 	    throw new NullPointerException("data must not be null");
 	}
@@ -190,8 +197,8 @@ public abstract class ApacheCanonicalizer extends TransformService {
                     (ownerDoc, getAlgorithm(), transformElem.getChildNodes());
                 apacheTransform.setElement(transformElem, xc.getBaseURI());
 		if (log.isLoggable(Level.FINE)) {
-                    log.log(Level.FINE, "Created transform for algorithm: " 
-		        + getAlgorithm());            
+                    log.log(Level.FINE, "Created transform for algorithm: " +
+                            getAlgorithm());            
 		}
 	    } catch (Exception ex) {
                 throw new TransformException
@@ -204,18 +211,18 @@ public abstract class ApacheCanonicalizer extends TransformService {
 	    if (log.isLoggable(Level.FINE)) {
                 log.log(Level.FINE, "ApacheData = true");
 	    }
-            in = ((ApacheData) data).getXMLSignatureInput();
+            in = ((ApacheData)data).getXMLSignatureInput();
         } else if (data instanceof NodeSetData) {
 	    if (log.isLoggable(Level.FINE)) {
                 log.log(Level.FINE, "isNodeSet() = true");
 	    }
             if (data instanceof DOMSubTreeData) {
-                DOMSubTreeData subTree = (DOMSubTreeData) data;
+                DOMSubTreeData subTree = (DOMSubTreeData)data;
                 in = new XMLSignatureInput(subTree.getRoot());
 		in.setExcludeComments(subTree.excludeComments());
             } else {
-                Set nodeSet =
-                    Utils.toNodeSet(((NodeSetData) data).iterator());
+                Set<Node> nodeSet =
+                    Utils.toNodeSet(((NodeSetData)data).iterator());
                 in = new XMLSignatureInput(nodeSet);
             }
         } else {

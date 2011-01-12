@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2010 The Apache Software Foundation.
+ * Copyright 2005-2011 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -73,14 +73,15 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
      *    appropriate for this signature method
      */
     DOMSignatureMethod(AlgorithmParameterSpec params) 
-	throws InvalidAlgorithmParameterException {
+	throws InvalidAlgorithmParameterException
+    {
 	if (params != null && 
 	    !(params instanceof SignatureMethodParameterSpec)) {
 	    throw new InvalidAlgorithmParameterException
 		("params must be of type SignatureMethodParameterSpec");
 	}
-        checkParams((SignatureMethodParameterSpec) params);
-	this.params = (SignatureMethodParameterSpec) params;
+        checkParams((SignatureMethodParameterSpec)params);
+	this.params = (SignatureMethodParameterSpec)params;
     }
 
     /**
@@ -141,8 +142,9 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
     }
 
     boolean verify(Key key, SignedInfo si, byte[] sig,
-	XMLValidateContext context) throws InvalidKeyException, 
-	SignatureException, XMLSignatureException {
+	           XMLValidateContext context)
+        throws InvalidKeyException, SignatureException, XMLSignatureException
+    {
         if (key == null || si == null || sig == null) {
             throw new NullPointerException();
         }
@@ -152,27 +154,28 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
         }
         if (signature == null) {
             try {
-                Provider p = (Provider) context.getProperty
+                Provider p = (Provider)context.getProperty
                     ("org.jcp.xml.dsig.internal.dom.SignatureProvider");
-                signature = (p == null) 
+                signature = (p == null)
                     ? Signature.getInstance(getJCAAlgorithm()) 
                     : Signature.getInstance(getJCAAlgorithm(), p);
             } catch (NoSuchAlgorithmException nsae) {
                 throw new XMLSignatureException(nsae);
             }
         }
-        signature.initVerify((PublicKey) key);
+        signature.initVerify((PublicKey)key);
         if (log.isLoggable(Level.FINE)) {
             log.log(Level.FINE, "Signature provider:"+ signature.getProvider());
             log.log(Level.FINE, "verifying with key: " + key);
         }
-        ((DOMSignedInfo)si).canonicalize(context, new SignerOutputStream(signature));
+        ((DOMSignedInfo)si).canonicalize(context,
+                                         new SignerOutputStream(signature));
 
         try {
-            int type = getAlgorithmType();
-            if (type == DSA) {
+            Type type = getAlgorithmType();
+            if (type == Type.DSA) {
                 return signature.verify(convertXMLDSIGtoASN1(sig));
-            } else if (type == ECDSA) {
+            } else if (type == Type.ECDSA) {
                 return signature.verify(SignatureECDSA.convertXMLDSIGtoASN1(sig));
             } else {
                 return signature.verify(sig);
@@ -182,8 +185,9 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
         }
     }
 
-    byte[] sign(Key key, SignedInfo si, XMLSignContext context) 
-        throws InvalidKeyException, XMLSignatureException {
+    byte[] sign(Key key, SignedInfo si, XMLSignContext context)
+        throws InvalidKeyException, XMLSignatureException
+    {
         if (key == null || si == null) {
             throw new NullPointerException();
         }
@@ -193,28 +197,29 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
         }
         if (signature == null) {
             try {
-                Provider p = (Provider) context.getProperty
+                Provider p = (Provider)context.getProperty
                     ("org.jcp.xml.dsig.internal.dom.SignatureProvider");
-                signature = (p == null) 
+                signature = (p == null)
                     ? Signature.getInstance(getJCAAlgorithm()) 
                     : Signature.getInstance(getJCAAlgorithm(), p);
             } catch (NoSuchAlgorithmException nsae) {
                 throw new XMLSignatureException(nsae);
             }
         }
-        signature.initSign((PrivateKey) key);
+        signature.initSign((PrivateKey)key);
         if (log.isLoggable(Level.FINE)) {
             log.log(Level.FINE, "Signature provider:" +signature.getProvider());
             log.log(Level.FINE, "Signing with key: " + key);
         }
 
-        ((DOMSignedInfo)si).canonicalize(context, new SignerOutputStream(signature));
+        ((DOMSignedInfo)si).canonicalize(context,
+                                         new SignerOutputStream(signature));
 
         try {
-            int type = getAlgorithmType();
-            if (type == DSA) {
+            Type type = getAlgorithmType();
+            if (type == Type.DSA) {
                 return convertASN1toXMLDSIG(signature.sign());
-            } else if (type == ECDSA) {
+            } else if (type == Type.ECDSA) {
                 return SignatureECDSA.convertASN1toXMLDSIG(signature.sign());
             } else {
                 return signature.sign();
@@ -238,8 +243,8 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
      * @see <A HREF="http://www.w3.org/TR/xmldsig-core/#dsa-sha1">6.4.1 DSA</A>
      */
     private static byte[] convertASN1toXMLDSIG(byte asn1Bytes[])
-        throws IOException {
-
+        throws IOException
+    {
         byte rLength = asn1Bytes[3];
         int i;
 
@@ -260,7 +265,7 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
 
             System.arraycopy(asn1Bytes, (4+rLength)-i, xmldsigBytes, 20-i, i);
             System.arraycopy(asn1Bytes, (6+rLength+sLength)-j, xmldsigBytes,
-                          40 - j, j);
+                             40 - j, j);
 
             return xmldsigBytes;
         }
@@ -278,8 +283,8 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
      * @see <A HREF="http://www.w3.org/TR/xmldsig-core/#dsa-sha1">6.4.1 DSA</A>
      */
     private static byte[] convertXMLDSIGtoASN1(byte xmldsigBytes[])
-        throws IOException {
-
+        throws IOException
+    {
         if (xmldsigBytes.length != 40) {
             throw new IOException("Invalid XMLDSIG format of DSA signature");
         }
@@ -307,9 +312,9 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
         byte asn1Bytes[] = new byte[6 + j + l];
 
         asn1Bytes[0] = 48;
-        asn1Bytes[1] = (byte) (4 + j + l);
+        asn1Bytes[1] = (byte)(4 + j + l);
         asn1Bytes[2] = 2;
-        asn1Bytes[3] = (byte) j;
+        asn1Bytes[3] = (byte)j;
 
         System.arraycopy(xmldsigBytes, 20 - i, asn1Bytes, (4 + j) - i, i);
 
@@ -335,8 +340,8 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
         String getJCAAlgorithm() {
             return "SHA1withRSA";
         }
-        int getAlgorithmType() {
-            return RSA;
+        Type getAlgorithmType() {
+            return Type.RSA;
         }
     }
 
@@ -354,8 +359,8 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
         String getJCAAlgorithm() {
             return "SHA256withRSA";
         }
-        int getAlgorithmType() {
-            return RSA;
+        Type getAlgorithmType() {
+            return Type.RSA;
         }
     }
 
@@ -373,8 +378,8 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
         String getJCAAlgorithm() {
             return "SHA384withRSA";
         }
-        int getAlgorithmType() {
-            return RSA;
+        Type getAlgorithmType() {
+            return Type.RSA;
         }
     }
 
@@ -392,8 +397,8 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
         String getJCAAlgorithm() {
             return "SHA512withRSA";
         }
-        int getAlgorithmType() {
-            return RSA;
+        Type getAlgorithmType() {
+            return Type.RSA;
         }
     }
 
@@ -411,8 +416,8 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
         String getJCAAlgorithm() {
             return "SHA1withDSA";
         }
-        int getAlgorithmType() {
-            return DSA;
+        Type getAlgorithmType() {
+            return Type.DSA;
         }
     }
 
@@ -430,8 +435,8 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
         String getJCAAlgorithm() {
             return "SHA1withECDSA";
         }
-        int getAlgorithmType() {
-            return ECDSA;
+        Type getAlgorithmType() {
+            return Type.ECDSA;
         }
     }
 
@@ -449,8 +454,8 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
         String getJCAAlgorithm() {
             return "SHA256withECDSA";
         }
-        int getAlgorithmType() {
-            return ECDSA;
+        Type getAlgorithmType() {
+            return Type.ECDSA;
         }
     }
 
@@ -468,8 +473,8 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
         String getJCAAlgorithm() {
             return "SHA384withECDSA";
         }
-        int getAlgorithmType() {
-            return ECDSA;
+        Type getAlgorithmType() {
+            return Type.ECDSA;
         }
     }
 
@@ -487,8 +492,8 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
         String getJCAAlgorithm() {
             return "SHA512withECDSA";
         }
-        int getAlgorithmType() {
-            return ECDSA;
+        Type getAlgorithmType() {
+            return Type.ECDSA;
         }
     }
 }

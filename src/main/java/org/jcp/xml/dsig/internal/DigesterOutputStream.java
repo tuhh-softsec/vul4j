@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2005 The Apache Software Foundation.
+ * Copyright 1999-2011 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ import org.apache.xml.security.utils.UnsyncByteArrayOutputStream;
  * @author Sean Mullan
  */
 public class DigesterOutputStream extends OutputStream {
-    private boolean buffer = false;
+    private final boolean buffer;
     private UnsyncByteArrayOutputStream bos;
     private final MessageDigest md;
     private static Logger log = Logger.getLogger("org.jcp.xml.dsig.internal");
@@ -69,12 +69,6 @@ public class DigesterOutputStream extends OutputStream {
 	}
     }
 
-    /** @inheritDoc */
-    public void write(byte[] input) {
-	write(input, 0, input.length);
-    }
-    
-    /** @inheritDoc */
     public void write(int input) {
 	if (buffer) {
 	    bos.write(input);
@@ -82,7 +76,7 @@ public class DigesterOutputStream extends OutputStream {
 	md.update((byte)input);
     }
     
-    /** @inheritDoc */
+    @Override
     public void write(byte[] input, int offset, int len) {
 	if (buffer) {
 	    bos.write(input, offset, len);
@@ -91,7 +85,7 @@ public class DigesterOutputStream extends OutputStream {
 	    log.log(Level.FINER, "Pre-digested input:");
 	    StringBuffer sb = new StringBuffer(len);
             for (int i=offset; i<(offset+len); i++) {
-		sb.append((char) input[i]);
+		sb.append((char)input[i]);
             }
 	    log.log(Level.FINER, sb.toString());
 	}

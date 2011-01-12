@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2009 The Apache Software Foundation.
+ * Copyright 2005-2011 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -54,7 +54,7 @@ import org.w3c.dom.Node;
 public final class DOMRetrievalMethod extends DOMStructure
     implements RetrievalMethod, DOMURIReference {
 
-    private final List transforms;
+    private final List<Transform> transforms;
     private String uri;
     private String type;
     private Attr here;
@@ -76,14 +76,17 @@ public final class DOMRetrievalMethod extends DOMStructure
      * @throws ClassCastException if <code>transforms</code> contains any
      *    entries that are not of type {@link Transform}
      */
-    public DOMRetrievalMethod(String uri, String type, List transforms) {
+    public DOMRetrievalMethod(String uri, String type,
+                              List<Transform> transforms)
+    {
 	if (uri == null) {
 	    throw new NullPointerException("uri cannot be null");
 	}
         if (transforms == null || transforms.isEmpty()) {
-            this.transforms = Collections.EMPTY_LIST;
+            this.transforms = Collections.emptyList();
         } else {
-            List transformsCopy = new ArrayList(transforms);
+            List<Transform> transformsCopy =
+                new ArrayList<Transform>(transforms);
             for (int i = 0, size = transformsCopy.size(); i < size; i++) {
                 if (!(transformsCopy.get(i) instanceof Transform)) {
                     throw new ClassCastException
@@ -110,7 +113,9 @@ public final class DOMRetrievalMethod extends DOMStructure
      * @param rmElem a RetrievalMethod element
      */
     public DOMRetrievalMethod(Element rmElem, XMLCryptoContext context,
-	Provider provider) throws MarshalException {
+	                      Provider provider)
+        throws MarshalException
+    {
         // get URI and Type attributes
         uri = DOMUtils.getAttributeValue(rmElem, "URI");
         type = DOMUtils.getAttributeValue(rmElem, "Type");
@@ -119,10 +124,10 @@ public final class DOMRetrievalMethod extends DOMStructure
 	here = rmElem.getAttributeNodeNS(null, "URI");
 
         // get Transforms, if specified
-        List transforms = new ArrayList();
+        List<Transform> transforms = new ArrayList<Transform>();
         Element transformsElem = DOMUtils.getFirstChildElement(rmElem);
         if (transformsElem != null) {
-            Element transformElem = 
+            Element transformElem =
 		DOMUtils.getFirstChildElement(transformsElem);
             while (transformElem != null) {
                 transforms.add
@@ -131,7 +136,7 @@ public final class DOMRetrievalMethod extends DOMStructure
 	    }
         }
 	if (transforms.isEmpty()) {
-            this.transforms = Collections.EMPTY_LIST;
+            this.transforms = Collections.emptyList();
 	} else {
             this.transforms = Collections.unmodifiableList(transforms);
 	}
@@ -150,11 +155,11 @@ public final class DOMRetrievalMethod extends DOMStructure
     }
 
     public void marshal(Node parent, String dsPrefix, DOMCryptoContext context)
-	throws MarshalException {
+	throws MarshalException
+    {
         Document ownerDoc = DOMUtils.getOwnerDocument(parent);
-
-        Element rmElem = DOMUtils.createElement
-            (ownerDoc, "RetrievalMethod", XMLSignature.XMLNS, dsPrefix);
+        Element rmElem = DOMUtils.createElement(ownerDoc, "RetrievalMethod",
+                                                XMLSignature.XMLNS, dsPrefix);
 
         // add URI and Type attributes
         DOMUtils.setAttribute(rmElem, "URI", uri);
@@ -162,12 +167,14 @@ public final class DOMRetrievalMethod extends DOMStructure
 
         // add Transforms elements
 	if (!transforms.isEmpty()) {
-	    Element transformsElem = DOMUtils.createElement
-                (ownerDoc, "Transforms", XMLSignature.XMLNS, dsPrefix);
+	    Element transformsElem = DOMUtils.createElement(ownerDoc,
+                                                            "Transforms",
+                                                            XMLSignature.XMLNS,
+                                                            dsPrefix);
 	    rmElem.appendChild(transformsElem);
-	    for (int i = 0, size = transforms.size(); i < size; i++) {
-	        ((DOMTransform) transforms.get(i)).marshal
-		    (transformsElem, dsPrefix, context);
+            for (Transform transform : transforms) {
+	        ((DOMTransform)transform).marshal(transformsElem,
+                                                   dsPrefix, context);
             }
 	}
 
@@ -182,8 +189,8 @@ public final class DOMRetrievalMethod extends DOMStructure
     }
 
     public Data dereference(XMLCryptoContext context)
-        throws URIReferenceException {
-
+        throws URIReferenceException
+    {
 	if (context == null) {
 	    throw new NullPointerException("context cannot be null");
 	}
@@ -201,9 +208,8 @@ public final class DOMRetrievalMethod extends DOMStructure
 
         // pass dereferenced data through Transforms
 	try {
-	    for (int i = 0, size = transforms.size(); i < size; i++) {
-                Transform transform = (Transform) transforms.get(i);
-                data = ((DOMTransform) transform).transform(data, context);
+            for (Transform transform : transforms) {
+                data = ((DOMTransform)transform).transform(data, context);
             }
 	} catch (Exception e) {
 	    throw new URIReferenceException(e);
@@ -212,10 +218,10 @@ public final class DOMRetrievalMethod extends DOMStructure
     }
 
     public XMLStructure dereferenceAsXMLStructure(XMLCryptoContext context)
-	throws URIReferenceException {
-
+	throws URIReferenceException
+    {
 	try {
-	    ApacheData data = (ApacheData) dereference(context);
+	    ApacheData data = (ApacheData)dereference(context);
 	    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 	    dbf.setNamespaceAware(true);
 	    DocumentBuilder db = dbf.newDocumentBuilder();
@@ -232,6 +238,7 @@ public final class DOMRetrievalMethod extends DOMStructure
 	}
     }
 
+    @Override
     public boolean equals(Object obj) {
 	if (this == obj) {
             return true;
@@ -239,12 +246,12 @@ public final class DOMRetrievalMethod extends DOMStructure
         if (!(obj instanceof RetrievalMethod)) {
             return false;
 	}
-        RetrievalMethod orm = (RetrievalMethod) obj;
+        RetrievalMethod orm = (RetrievalMethod)obj;
 
-	boolean typesEqual = (type == null ? orm.getType() == null :
-            type.equals(orm.getType()));
+	boolean typesEqual = (type == null ? orm.getType() == null
+                                           : type.equals(orm.getType()));
 
-	return (uri.equals(orm.getURI()) && 
+	return (uri.equals(orm.getURI()) &&
 	    transforms.equals(orm.getTransforms()) && typesEqual);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2009 The Apache Software Foundation.
+ * Copyright 2005-2011 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -60,24 +60,22 @@ public class ApacheNodeSetData implements ApacheData, NodeSetData {
         return xi;
     }
 
-    private Set getNodeSet(List nodeFilters) {
+    private Set<Node> getNodeSet(List nodeFilters) {
         if (xi.isNeedsToBeExpanded()) {
             XMLUtils.circumventBug2650
                 (XMLUtils.getOwnerDocument(xi.getSubNode()));
         }
 
-        Set inputSet = new LinkedHashSet();
-        XMLUtils.getSet
-          (xi.getSubNode(), inputSet, null, !xi.isExcludeComments());
-        Set nodeSet = new LinkedHashSet();
-        Iterator i = inputSet.iterator();
-        while (i.hasNext()) {
-            Node currentNode = (Node) i.next();
+        Set<Node> inputSet = new LinkedHashSet<Node>();
+        XMLUtils.getSet(xi.getSubNode(), inputSet,
+                        null, !xi.isExcludeComments());
+        Set<Node> nodeSet = new LinkedHashSet<Node>();
+        for (Node currentNode : inputSet) {
             Iterator it = nodeFilters.iterator();
             boolean skipNode = false;
             while (it.hasNext() && !skipNode) {
                 NodeFilter nf = (NodeFilter) it.next();
-                if (nf.isNodeInclude(currentNode)!=1) {
+                if (nf.isNodeInclude(currentNode) != 1) {
                     skipNode = true;
                 }
             }

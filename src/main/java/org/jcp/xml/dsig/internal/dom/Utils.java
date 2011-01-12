@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 The Apache Software Foundation.
+ * Copyright 2005-2011 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -38,8 +38,9 @@ public final class Utils {
 
     private Utils() {}
 
-    public static byte[] readBytesFromStream(InputStream is) 
-	throws IOException {
+    public static byte[] readBytesFromStream(InputStream is)
+	throws IOException
+    {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         byte[] buf = new byte[1024];
         while (true) {
@@ -62,10 +63,10 @@ public final class Utils {
      * @param i the Iterator
      * @return the Set of Nodes
      */
-    static Set toNodeSet(Iterator i) {
-	Set nodeSet = new HashSet();
+    static Set<Node> toNodeSet(Iterator<Node> i) {
+	Set<Node> nodeSet = new HashSet<Node>();
 	while (i.hasNext()) {
-	    Node n = (Node) i.next();
+	    Node n = i.next();
 	    nodeSet.add(n);
 	    // insert attributes nodes to comply with XPath
 	    if (n.getNodeType() == Node.ELEMENT_NODE) {

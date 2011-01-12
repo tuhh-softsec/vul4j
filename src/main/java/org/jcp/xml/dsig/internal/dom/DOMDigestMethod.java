@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 The Apache Software Foundation.
+ * Copyright 2005-2010 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -53,13 +53,14 @@ public abstract class DOMDigestMethod extends DOMStructure
      *    appropriate for this digest method
      */
     DOMDigestMethod(AlgorithmParameterSpec params)
-	throws InvalidAlgorithmParameterException {
+	throws InvalidAlgorithmParameterException
+    {
 	if (params != null && !(params instanceof DigestMethodParameterSpec)) {
 	    throw new InvalidAlgorithmParameterException
 		("params must be of type DigestMethodParameterSpec");
 	}
-	checkParams((DigestMethodParameterSpec) params);
-	this.params = (DigestMethodParameterSpec) params;
+	checkParams((DigestMethodParameterSpec)params);
+	this.params = (DigestMethodParameterSpec)params;
     }
 
     /**
@@ -92,8 +93,8 @@ public abstract class DOMDigestMethod extends DOMStructure
         } else if (alg.equals(DigestMethod.SHA512)) {
             return new SHA512(dmElem);
         } else {
-            throw new MarshalException
-		("unsupported DigestMethod algorithm: " + alg);
+            throw new MarshalException("unsupported DigestMethod algorithm: " +
+                                       alg);
         }
     }
 
@@ -107,12 +108,13 @@ public abstract class DOMDigestMethod extends DOMStructure
      * @throws InvalidAlgorithmParameterException if the parameters are not
      *    appropriate for this digest method
      */
-    void checkParams(DigestMethodParameterSpec params) 
-	throws InvalidAlgorithmParameterException {
+    void checkParams(DigestMethodParameterSpec params)
+	throws InvalidAlgorithmParameterException
+    {
         if (params != null) {
             throw new InvalidAlgorithmParameterException("no parameters " +
-                "should be specified for the " + getMessageDigestAlgorithm()
-                 + " DigestMethod algorithm");
+                "should be specified for the " + getMessageDigestAlgorithm() +
+                " DigestMethod algorithm");
         }
     }
 
@@ -130,23 +132,26 @@ public abstract class DOMDigestMethod extends DOMStructure
      * @return the algorithm-specific <code>DigestMethodParameterSpec</code>
      * @throws MarshalException if the parameters cannot be unmarshalled
      */
-    DigestMethodParameterSpec 
-	unmarshalParams(Element paramsElem) throws MarshalException {
+    DigestMethodParameterSpec unmarshalParams(Element paramsElem)
+        throws MarshalException
+    {
         throw new MarshalException("no parameters should " +
-            "be specified for the " + getMessageDigestAlgorithm() +
-            " DigestMethod algorithm");
+                                   "be specified for the " +
+                                   getMessageDigestAlgorithm() +
+                                   " DigestMethod algorithm");
     }
 
     /**
      * This method invokes the abstract {@link #marshalParams marshalParams} 
      * method to marshal any algorithm-specific parameters.
      */
-    public void marshal(Node parent, String prefix, DOMCryptoContext context) 
-	throws MarshalException {
+    public void marshal(Node parent, String prefix, DOMCryptoContext context)
+	throws MarshalException
+    {
         Document ownerDoc = DOMUtils.getOwnerDocument(parent);
 
-        Element dmElem = DOMUtils.createElement
-	    (ownerDoc, "DigestMethod", XMLSignature.XMLNS, prefix);
+        Element dmElem = DOMUtils.createElement(ownerDoc, "DigestMethod",
+                                                XMLSignature.XMLNS, prefix);
         DOMUtils.setAttribute(dmElem, "Algorithm", getAlgorithm());
 
         if (params != null) {
@@ -156,6 +161,7 @@ public abstract class DOMDigestMethod extends DOMStructure
         parent.appendChild(dmElem);
     }
 
+    @Override
     public boolean equals(Object o) {
 	if (this == o) {
             return true;
@@ -164,7 +170,7 @@ public abstract class DOMDigestMethod extends DOMStructure
         if (!(o instanceof DigestMethod)) {
             return false;
 	}
-        DigestMethod odm = (DigestMethod) o;
+        DigestMethod odm = (DigestMethod)o;
 
 	boolean paramsEqual = (params == null ? odm.getParameterSpec() == null :
 	    params.equals(odm.getParameterSpec()));
@@ -183,10 +189,12 @@ public abstract class DOMDigestMethod extends DOMStructure
      * @throws MarshalException if the parameters cannot be marshalled
      */
     void marshalParams(Element parent, String prefix)
-	throws MarshalException {
+	throws MarshalException
+    {
         throw new MarshalException("no parameters should " +
-            "be specified for the " + getMessageDigestAlgorithm() +
-            " DigestMethod algorithm");
+                                   "be specified for the " +
+                                   getMessageDigestAlgorithm() +
+                                   " DigestMethod algorithm");
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 The Apache Software Foundation.
+ * Copyright 2005-2011 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -90,15 +90,16 @@ public final class DOMX509IssuerSerial extends DOMStructure
     }
 
     public void marshal(Node parent, String dsPrefix, DOMCryptoContext context)
-	throws MarshalException {
+	throws MarshalException
+    {
         Document ownerDoc = DOMUtils.getOwnerDocument(parent);
 
-        Element isElem = DOMUtils.createElement
-            (ownerDoc, "X509IssuerSerial", XMLSignature.XMLNS, dsPrefix);
-        Element inElem = DOMUtils.createElement
-            (ownerDoc, "X509IssuerName", XMLSignature.XMLNS, dsPrefix);
-        Element snElem = DOMUtils.createElement
-            (ownerDoc, "X509SerialNumber", XMLSignature.XMLNS, dsPrefix);
+        Element isElem = DOMUtils.createElement(ownerDoc, "X509IssuerSerial",
+                                                XMLSignature.XMLNS, dsPrefix);
+        Element inElem = DOMUtils.createElement(ownerDoc, "X509IssuerName",
+                                                XMLSignature.XMLNS, dsPrefix);
+        Element snElem = DOMUtils.createElement(ownerDoc, "X509SerialNumber",
+                                                XMLSignature.XMLNS, dsPrefix);
         inElem.appendChild(ownerDoc.createTextNode(issuerName));
         snElem.appendChild(ownerDoc.createTextNode(serialNumber.toString()));
         isElem.appendChild(inElem);
@@ -106,6 +107,7 @@ public final class DOMX509IssuerSerial extends DOMStructure
         parent.appendChild(isElem);
     }
 
+    @Override
     public boolean equals(Object obj) {
 	if (this == obj) {
             return true;
@@ -113,8 +115,8 @@ public final class DOMX509IssuerSerial extends DOMStructure
         if (!(obj instanceof X509IssuerSerial)) {
             return false;
 	}
-        X509IssuerSerial ois = (X509IssuerSerial) obj;
-	return (issuerName.equals(ois.getIssuerName()) && 
-	    serialNumber.equals(ois.getSerialNumber()));
+        X509IssuerSerial ois = (X509IssuerSerial)obj;
+	return (issuerName.equals(ois.getIssuerName()) &&
+	        serialNumber.equals(ois.getSerialNumber()));
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 The Apache Software Foundation.
+ * Copyright 2005-2011 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -53,7 +53,8 @@ import org.w3c.dom.NamedNodeMap;
 public final class DOMXPathFilter2Transform extends ApacheTransform {
 
     public void init(TransformParameterSpec params)
-        throws InvalidAlgorithmParameterException {
+        throws InvalidAlgorithmParameterException
+    {
         if (params == null) {
 	    throw new InvalidAlgorithmParameterException("params are required");
 	} else if (!(params instanceof XPathFilter2ParameterSpec)) {
@@ -64,23 +65,23 @@ public final class DOMXPathFilter2Transform extends ApacheTransform {
     }
 
     public void init(XMLStructure parent, XMLCryptoContext context)
-        throws InvalidAlgorithmParameterException {
-
+        throws InvalidAlgorithmParameterException
+    {
 	super.init(parent, context);
 	try {
 	    unmarshalParams(DOMUtils.getFirstChildElement(transformElem));
 	} catch (MarshalException me) {
-	    throw (InvalidAlgorithmParameterException)
-		new InvalidAlgorithmParameterException().initCause(me);
+	    throw new InvalidAlgorithmParameterException(me);
 	}
     }
 
-    private void unmarshalParams(Element curXPathElem) throws MarshalException {
-        List list = new ArrayList();
+    private void unmarshalParams(Element curXPathElem) throws MarshalException
+    {
+        List<XPathType> list = new ArrayList<XPathType>();
 	while (curXPathElem != null) {
 	    String xPath = curXPathElem.getFirstChild().getNodeValue();
-	    String filterVal = 
-		DOMUtils.getAttributeValue(curXPathElem, "Filter");
+	    String filterVal = DOMUtils.getAttributeValue(curXPathElem,
+                                                          "Filter");
 	    if (filterVal == null) {
 		throw new MarshalException("filter cannot be null");
 	    }
@@ -92,15 +93,16 @@ public final class DOMXPathFilter2Transform extends ApacheTransform {
             } else if (filterVal.equals("union")) {
                 filter = XPathType.Filter.UNION;
             } else {
-                throw new MarshalException("Unknown XPathType filter type" 
-		    + filterVal);
+                throw new MarshalException("Unknown XPathType filter type" +
+                                           filterVal);
             }
 	    NamedNodeMap attributes = curXPathElem.getAttributes();
 	    if (attributes != null) {
 		int length = attributes.getLength();
-	        Map namespaceMap = new HashMap(length);
+	        Map<String, String> namespaceMap =
+                    new HashMap<String, String>(length);
 	        for (int i = 0; i < length; i++) {
-	    	    Attr attr = (Attr) attributes.item(i);
+	    	    Attr attr = (Attr)attributes.item(i);
 	    	    String prefix = attr.getPrefix();
 	    	    if (prefix != null && prefix.equals("xmlns")) {
 	                namespaceMap.put(attr.getLocalName(), attr.getValue());
@@ -117,32 +119,35 @@ public final class DOMXPathFilter2Transform extends ApacheTransform {
     }
 
     public void marshalParams(XMLStructure parent, XMLCryptoContext context)
-        throws MarshalException {
-
+        throws MarshalException
+    {
 	super.marshalParams(parent, context);
 	XPathFilter2ParameterSpec xp = 
-	    (XPathFilter2ParameterSpec) getParameterSpec();
+	    (XPathFilter2ParameterSpec)getParameterSpec();
         String prefix = DOMUtils.getNSPrefix(context, Transform.XPATH2);
 	String qname = (prefix == null || prefix.length() == 0) 
 		       ? "xmlns" : "xmlns:" + prefix;
-	List list = xp.getXPathList();
-	for (int i = 0, size = list.size(); i < size; i++) {
-            XPathType xpathType = (XPathType) list.get(i);
-            Element elem = DOMUtils.createElement
-                (ownerDoc, "XPath", Transform.XPATH2, prefix);
+        @SuppressWarnings("unchecked")
+        List<XPathType> xpathList = xp.getXPathList();
+        for (XPathType xpathType : xpathList) {
+            Element elem = DOMUtils.createElement(ownerDoc, "XPath",
+                                                  Transform.XPATH2, prefix);
             elem.appendChild
 		(ownerDoc.createTextNode(xpathType.getExpression()));
-	    DOMUtils.setAttribute
-		(elem, "Filter", xpathType.getFilter().toString());
-            elem.setAttributeNS("http://www.w3.org/2000/xmlns/", qname, 
-	        Transform.XPATH2);
+	    DOMUtils.setAttribute(elem, "Filter",
+                                  xpathType.getFilter().toString());
+            elem.setAttributeNS("http://www.w3.org/2000/xmlns/", qname,
+	                        Transform.XPATH2);
 
             // add namespace attributes, if necessary
-            Iterator it = xpathType.getNamespaceMap().entrySet().iterator();
+            @SuppressWarnings("unchecked")
+            Iterator<Map.Entry> it =
+                xpathType.getNamespaceMap().entrySet().iterator();
             while (it.hasNext()) {
-                Map.Entry entry = (Map.Entry) it.next();
-                elem.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:"
-                    + (String) entry.getKey(), (String) entry.getValue());
+                Map.Entry entry = it.next();
+                elem.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:" +
+                                    (String)entry.getKey(), 
+                                    (String)entry.getValue());
             }
 
             transformElem.appendChild(elem);

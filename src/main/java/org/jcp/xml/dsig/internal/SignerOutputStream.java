@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2005 The Apache Software Foundation.
+ * Copyright 1999-2011 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -28,8 +28,8 @@ import java.security.SignatureException;
 
 /**
  * Derived from Apache sources and changed to use java.security.Signature 
- * objects as input instead of org.apache.xml.security.algorithms.SignatureAlgorithm
- * objects.
+ * objects as input instead of 
+ * org.apache.xml.security.algorithms.SignatureAlgorithm objects.
  *
  * @author raul
  * @author Sean Mullan
@@ -38,36 +38,26 @@ public class SignerOutputStream extends ByteArrayOutputStream {
     private final Signature sig;
 
     public SignerOutputStream(Signature sig) {
-        this.sig=sig;       
+        this.sig = sig;
     }
 
-    /** @inheritDoc */
-    public void write(byte[] arg0)  {
-	super.write(arg0, 0, arg0.length);
-        try {
-	    sig.update(arg0);
-	} catch (SignatureException e) {
-            throw new RuntimeException(""+e);
-	}
-    }
-    
-    /** @inheritDoc */
+    @Override
     public void write(int arg0) {
 	super.write(arg0);
         try {
             sig.update((byte)arg0);
         } catch (SignatureException e) {
-            throw new RuntimeException(""+e);
+            throw new RuntimeException(e);
         }
     }
-    
-    /** @inheritDoc */
+
+    @Override
     public void write(byte[] arg0, int arg1, int arg2) {
 	super.write(arg0, arg1, arg2);
         try {
-            sig.update(arg0,arg1,arg2);
+            sig.update(arg0, arg1, arg2);
         } catch (SignatureException e) {
-            throw new RuntimeException(""+e);
+            throw new RuntimeException(e);
         }
     }
 }

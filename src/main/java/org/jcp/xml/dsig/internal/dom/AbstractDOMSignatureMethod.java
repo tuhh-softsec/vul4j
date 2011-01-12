@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 The Apache Software Foundation.
+ * Copyright 2010-2011 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -43,10 +43,7 @@ abstract class AbstractDOMSignatureMethod extends DOMStructure
     implements SignatureMethod {
 
     // denotes the type of signature algorithm
-    final static int DSA = 0;
-    final static int RSA = 1;
-    final static int ECDSA = 2;
-    final static int HMAC = 3;
+    enum Type { DSA, RSA, ECDSA, HMAC }
 
     /**
      * Verifies the passed-in signature with the specified key, using the
@@ -67,8 +64,8 @@ abstract class AbstractDOMSignatureMethod extends DOMStructure
      * @throws XMLSignatureException if an unexpected error occurs
      */
     abstract boolean verify(Key key, SignedInfo si, byte[] sig,
-        XMLValidateContext context) throws InvalidKeyException,
-        SignatureException, XMLSignatureException;
+                            XMLValidateContext context)
+        throws InvalidKeyException, SignatureException, XMLSignatureException;
 
     /**
      * Signs the bytes with the specified key, using the underlying
@@ -96,18 +93,19 @@ abstract class AbstractDOMSignatureMethod extends DOMStructure
     /**
      * Returns the type of signature algorithm.
      */
-    abstract int getAlgorithmType();
+    abstract Type getAlgorithmType();
 
     /**
      * This method invokes the {@link #marshalParams marshalParams}
      * method to marshal any algorithm-specific parameters.
      */
     public void marshal(Node parent, String dsPrefix, DOMCryptoContext context)
-        throws MarshalException {
+        throws MarshalException
+    {
         Document ownerDoc = DOMUtils.getOwnerDocument(parent);
 
-        Element smElem = DOMUtils.createElement
-            (ownerDoc, "SignatureMethod", XMLSignature.XMLNS, dsPrefix);
+        Element smElem = DOMUtils.createElement(ownerDoc, "SignatureMethod",
+                                                XMLSignature.XMLNS, dsPrefix);
         DOMUtils.setAttribute(smElem, "Algorithm", getAlgorithm());
 
         if (getParameterSpec() != null) {
@@ -128,10 +126,11 @@ abstract class AbstractDOMSignatureMethod extends DOMStructure
      * @throws MarshalException if the parameters cannot be marshalled
      */
     void marshalParams(Element parent, String paramsPrefix)
-        throws MarshalException {
+        throws MarshalException
+    {
         throw new MarshalException("no parameters should " +
-            "be specified for the " + getAlgorithm() +
-            " SignatureMethod algorithm");
+                                   "be specified for the " + getAlgorithm() +
+                                   " SignatureMethod algorithm");
     }
 
     /**
@@ -144,11 +143,12 @@ abstract class AbstractDOMSignatureMethod extends DOMStructure
      * @return the algorithm-specific <code>SignatureMethodParameterSpec</code>
      * @throws MarshalException if the parameters cannot be unmarshalled
      */
-    SignatureMethodParameterSpec
-        unmarshalParams(Element paramsElem) throws MarshalException {
+    SignatureMethodParameterSpec unmarshalParams(Element paramsElem)
+        throws MarshalException
+    {
         throw new MarshalException("no parameters should " +
-            "be specified for the " + getAlgorithm() +
-            " SignatureMethod algorithm");
+                                   "be specified for the " + getAlgorithm() +
+                                   " SignatureMethod algorithm");
     }
 
     /**
@@ -162,15 +162,18 @@ abstract class AbstractDOMSignatureMethod extends DOMStructure
      *    appropriate for this signature method
      */
     void checkParams(SignatureMethodParameterSpec params)
-        throws InvalidAlgorithmParameterException {
+        throws InvalidAlgorithmParameterException
+    {
         if (params != null) {
             throw new InvalidAlgorithmParameterException("no parameters " +
-                "should be specified for the " + getAlgorithm()
-                 + " SignatureMethod algorithm");
+                "should be specified for the " + getAlgorithm() +
+                " SignatureMethod algorithm");
         }
     }
 
-    public boolean equals(Object o) {
+    @Override
+    public boolean equals(Object o)
+    {
         if (this == o) {
             return true;
         }
@@ -178,7 +181,7 @@ abstract class AbstractDOMSignatureMethod extends DOMStructure
         if (!(o instanceof SignatureMethod)) {
             return false;
         }
-        SignatureMethod osm = (SignatureMethod) o;
+        SignatureMethod osm = (SignatureMethod)o;
 
         return (getAlgorithm().equals(osm.getAlgorithm()) &&
             paramsEqual(osm.getParameterSpec()));
@@ -190,7 +193,8 @@ abstract class AbstractDOMSignatureMethod extends DOMStructure
      * Subclasses should override this method to compare algorithm-specific
      * parameters.
      */
-    boolean paramsEqual(AlgorithmParameterSpec spec) {
+    boolean paramsEqual(AlgorithmParameterSpec spec)
+    {
         return (getParameterSpec() == spec);
     }
 }
