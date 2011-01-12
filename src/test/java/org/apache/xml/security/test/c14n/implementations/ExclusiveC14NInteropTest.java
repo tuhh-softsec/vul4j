@@ -144,41 +144,37 @@ public class ExclusiveC14NInteropTest extends InteropTestBase {
         int failures = 0;
 
         // if (!verify) {
-        if (true) {
-            StringBuffer sb = new StringBuffer();
+        StringBuffer sb = new StringBuffer();
 
-            for (int i = 0; i < signature.getSignedInfo().getLength(); i++) {
-                boolean refVerify =
-                    signature.getSignedInfo().getVerificationResult(i);
+        for (int i = 0; i < signature.getSignedInfo().getLength(); i++) {
+            boolean refVerify =
+                signature.getSignedInfo().getVerificationResult(i);
+            JavaUtils.writeBytesToFilename(directory + "/c14n-" + i + ".apache.html", signature.getSignedInfo().item(i).getHTMLRepresentation().getBytes());
+
+            if (refVerify) {
+                log.debug("Reference " + i + " was OK");
+            } else {
+                failures++;
+
+                sb.append(i + " ");
+
+                JavaUtils.writeBytesToFilename(directory + "/c14n-" + i + ".apache.txt", signature.getSignedInfo().item(i).getContentsAfterTransformation().getBytes());
                 JavaUtils.writeBytesToFilename(directory + "/c14n-" + i + ".apache.html", signature.getSignedInfo().item(i).getHTMLRepresentation().getBytes());
 
-                if (refVerify) {
-                    log.debug("Reference " + i + " was OK");
-                } else {
-                    failures++;
+                Reference reference = signature.getSignedInfo().item(i);
+                int length = reference.getTransforms().getLength();
+                String algo = reference.getTransforms().item(length - 1).getURI();
 
-                    sb.append(i + " ");
-
-                    JavaUtils.writeBytesToFilename(directory + "/c14n-" + i + ".apache.txt", signature.getSignedInfo().item(i).getContentsAfterTransformation().getBytes());
-                    JavaUtils.writeBytesToFilename(directory + "/c14n-" + i + ".apache.html", signature.getSignedInfo().item(i).getHTMLRepresentation().getBytes());
-
-                    Reference reference = signature.getSignedInfo().item(i);
-                    int length = reference.getTransforms().getLength();
-                    String algo = reference.getTransforms().item(length - 1).getURI();
-
-                    log.debug("Reference " + i + " failed: " + algo);
-                }
+                log.debug("Reference " + i + " failed: " + algo);
             }
+        }
 
-            String r = sb.toString().trim();
+        String r = sb.toString().trim();
 
-            if (r.length() == 0) {
-                return null;
-            } else {
-                return r;
-            }
-        } else {
+        if (r.length() == 0) {
             return null;
+        } else {
+            return r;
         }
     }
     
