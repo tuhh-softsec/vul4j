@@ -35,12 +35,8 @@ import org.w3c.dom.NodeList;
 import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.encryption.XMLCipher;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+public class EncryptContentTest extends org.junit.Assert {
 
-public class EncryptContentTest extends TestCase {
-    
     /** {@link org.apache.commons.logging} logging facility */
     static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(EncryptContentTest.class.getName());
@@ -59,16 +55,7 @@ public class EncryptContentTest extends TestCase {
     private SecretKey secretKey;
     private boolean haveISOPadding;
 
-    public static Test suite() throws Exception {
-        return new TestSuite(EncryptContentTest.class);
-    }
-
-    public EncryptContentTest(String name) {
-        super(name);
-    }
-
-    public void setUp() throws Exception {
-
+    public EncryptContentTest() throws Exception {
         org.apache.xml.security.Init.init();
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);
@@ -81,27 +68,31 @@ public class EncryptContentTest extends TestCase {
 
         TransformerFactory tf = TransformerFactory.newInstance();
         tf.newTransformer();
-        
+
         // Determine if we have ISO 10126 Padding - needed for Bulk AES or
         // 3DES encryption
 
         haveISOPadding = false;
         String algorithmId = 
-            JCEMapper.translateURItoJCEID(org.apache.xml.security.utils.EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES128);
+            JCEMapper.translateURItoJCEID(
+                org.apache.xml.security.utils.EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES128
+            );
 
         if (algorithmId != null) {
             try {
-                if (Cipher.getInstance(algorithmId) != null)
+                if (Cipher.getInstance(algorithmId) != null) {
                     haveISOPadding = true;
+                }
             } catch (NoSuchAlgorithmException nsae) {
+                //
             } catch (NoSuchPaddingException nspe) {
+                //
             }
         }
-
     }
 
+    @org.junit.Test
     public void testContentRemoved() throws Exception {
-        
         if (!haveISOPadding) {
             log.warn("Test testContentRemoved skipped as necessary algorithms not available");
             return;
@@ -123,17 +114,20 @@ public class EncryptContentTest extends TestCase {
         while (child != null && child.getNodeType() != Node.ELEMENT_NODE) {
             child = child.getNextSibling();
         }
+        
         // child should be EncryptedData, if not throw exception
         Element childElem = (Element) child;
         if (!childElem.getLocalName().equals("EncryptedData")) {
             // t.transform(new DOMSource(doc), new StreamResult(System.out));
             throw new Exception("Element content not replaced");
         }
+        
         // there shouldn't be any more children elements
         Node sibling = childElem.getNextSibling();
         while (sibling != null && sibling.getNodeType() != Node.ELEMENT_NODE) {
             sibling = sibling.getNextSibling();
         }
+        
         if (sibling != null) {
             // t.transform(new DOMSource(doc), new StreamResult(System.out));
             throw new Exception("Sibling element content not replaced");
@@ -141,4 +135,5 @@ public class EncryptContentTest extends TestCase {
 
         // t.transform(new DOMSource(doc), new StreamResult(System.out));
     }
+    
 }

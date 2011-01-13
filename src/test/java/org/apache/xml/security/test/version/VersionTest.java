@@ -69,10 +69,7 @@ public class VersionTest extends TestCase {
             double versionD = Double.parseDouble(version);
             assertTrue(versionD == provider.getVersion());
             
-            String info = "Apache Santuario XMLDSig " + 
-            "(DOM XMLSignatureFactory; DOM KeyInfoFactory)";
-            
-            assertTrue(info.equals(provider.getInfo()));
+            assertTrue(provider.getInfo().contains("Santuario"));
         }
         
         /**

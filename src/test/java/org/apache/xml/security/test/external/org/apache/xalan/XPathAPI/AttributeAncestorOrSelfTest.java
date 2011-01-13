@@ -16,16 +16,10 @@
  */
 package org.apache.xml.security.test.external.org.apache.xalan.XPathAPI;
 
-
-
 import java.io.ByteArrayInputStream;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 import org.apache.xml.security.utils.Constants;
 import org.apache.xpath.XPathAPI;
@@ -38,132 +32,99 @@ import org.w3c.dom.Node;
 /**
  * This test is to ensure that the owner element of an Attribute is on the
  * ancestor-or-self axis.
- *
- * @author $Author$
  */
-public class AttributeAncestorOrSelfTest extends TestCase {
+public class AttributeAncestorOrSelfTest extends org.junit.Assert {
 
-   /** {@link org.apache.commons.logging} logging facility */
+    /** {@link org.apache.commons.logging} logging facility */
     static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(
-                    AttributeAncestorOrSelfTest.class.getName());
+        org.apache.commons.logging.LogFactory.getLog(AttributeAncestorOrSelfTest.class.getName());
 
+    private static final String _nodeSetInput1 =
+        "<?xml version=\"1.0\"?>\n"
+        + "<ds:Signature xmlns:ds='http://www.w3.org/2000/09/xmldsig#'>" + "\n"
+        + "<ds:Object Id='id1'>" + "\n"
+        + "<!-- the comment -->and text"
+        + "</ds:Object>" + "\n"
+        + "</ds:Signature>";
+    
+    static {
+        org.apache.xml.security.Init.init();
+    }
 
-   /**
-    * Method suite
-    *
-    *
-    */
-   public static Test suite() {
-      return new TestSuite(AttributeAncestorOrSelfTest.class);
-   }
+    /**
+     * Method test01
+     *
+     * @throws Exception
+     */
+    @org.junit.Test
+    public void test01() throws Exception {
 
-   /**
-    * Constructor AttributeAncestorOrSelf
-    *
-    * @param Name_
-    */
-   public AttributeAncestorOrSelfTest(String Name_) {
-      super(Name_);
-   }
+        String ctxNodeStr = "/ds:Signature/ds:Object";
+        String evalStr = "ancestor-or-self::ds:Signature";
 
-   /**
-    * Method main
-    *
-    * @param args
-    */
-   public static void main(String[] args) {
+        assertTrue("Bad " + ctxNodeStr + " " + evalStr + "  ",
+                   isAncestorOf(_nodeSetInput1, ctxNodeStr, evalStr));
+    }
 
-      String[] testCaseName = { "-noloading",
-                                AttributeAncestorOrSelfTest.class.getName() };
+    /**
+     * Method test02
+     *
+     * @throws Exception
+     */
+    @org.junit.Test
+    public void test02() throws Exception {
 
-      junit.textui.TestRunner.main(testCaseName);
-   }
+        String ctxNodeStr = "/ds:Signature/ds:Object/text()";
+        String evalStr = "ancestor-or-self::ds:Signature";
 
-   /**
-    * Process input args and execute the XPath.
-    *
-    * @param xmlString
-    * @param ctxNodeStr
-    * @param evalStr
-    *
-    * @throws Exception
-    */
-   static private boolean isAncestorOf(
-           String xmlString, String ctxNodeStr, String evalStr)
-              throws Exception {
+        assertTrue("Bad " + ctxNodeStr + " " + evalStr + "  "  ,
+                   isAncestorOf(_nodeSetInput1, ctxNodeStr, evalStr));
+    }
 
-      DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+    /**
+     * Method test03
+     *
+     * @throws Exception
+     */
+    @org.junit.Test
+    public void test03() throws Exception {
 
-      dfactory.setValidating(false);
-      dfactory.setNamespaceAware(true);
+        String ctxNodeStr = "/ds:Signature/ds:Object/@Id";
+        String evalStr = "ancestor-or-self::ds:Object";
 
-      DocumentBuilder db = dfactory.newDocumentBuilder();
-      Document document =
-         db.parse(new ByteArrayInputStream(_nodeSetInput1.getBytes()));
-      Element nscontext = document.createElementNS(null, "nscontext");
+        assertTrue("Bad " + ctxNodeStr + " " + evalStr + "  " ,
+                   isAncestorOf(_nodeSetInput1, ctxNodeStr, evalStr));
+    }
+    
+    /**
+     * Process input args and execute the XPath.
+     *
+     * @param xmlString
+     * @param ctxNodeStr
+     * @param evalStr
+     *
+     * @throws Exception
+     */
+    private static boolean isAncestorOf(String xmlString, String ctxNodeStr, String evalStr)
+        throws Exception {
+        DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
 
-      nscontext.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:ds", "http://www.w3.org/2000/09/xmldsig#");
+        dfactory.setValidating(false);
+        dfactory.setNamespaceAware(true);
 
-      Node ctxNode = XPathAPI.selectSingleNode(document, ctxNodeStr, nscontext);
-      XObject include = XPathAPI.eval(ctxNode, evalStr, nscontext);
+        DocumentBuilder db = dfactory.newDocumentBuilder();
+        Document document =
+            db.parse(new ByteArrayInputStream(_nodeSetInput1.getBytes()));
+        Element nscontext = document.createElementNS(null, "nscontext");
 
-      return include.bool();
-   }
+        nscontext.setAttributeNS(
+            Constants.NamespaceSpecNS, "xmlns:ds", "http://www.w3.org/2000/09/xmldsig#"
+        );
 
-   //J-
-   static final String _nodeSetInput1 =
-     "<?xml version=\"1.0\"?>\n"
-   + "<ds:Signature xmlns:ds='http://www.w3.org/2000/09/xmldsig#'>" + "\n"
-   + "<ds:Object Id='id1'>" + "\n"
-   + "<!-- the comment -->and text"
-   + "</ds:Object>" + "\n"
-   + "</ds:Signature>";
-   //J+
+        Node ctxNode = XPathAPI.selectSingleNode(document, ctxNodeStr, nscontext);
+        XObject include = XPathAPI.eval(ctxNode, evalStr, nscontext);
 
-   /**
-    * Method test01
-    *
-    * @throws Exception
-    */
-   public static void test01() throws Exception {
+        return include.bool();
+    }
 
-      String ctxNodeStr = "/ds:Signature/ds:Object";
-      String evalStr = "ancestor-or-self::ds:Signature";
-
-      assertTrue("Bad " + ctxNodeStr + " " + evalStr + "  ",
-                 isAncestorOf(_nodeSetInput1, ctxNodeStr, evalStr));
-   }
-
-   /**
-    * Method test02
-    *
-    * @throws Exception
-    */
-   public static void test02() throws Exception {
-
-      String ctxNodeStr = "/ds:Signature/ds:Object/text()";
-      String evalStr = "ancestor-or-self::ds:Signature";
-
-      assertTrue("Bad " + ctxNodeStr + " " + evalStr + "  "  ,
-                 isAncestorOf(_nodeSetInput1, ctxNodeStr, evalStr));
-   }
-
-   /**
-    * Method test03
-    *
-    * @throws Exception
-    */
-   public static void test03() throws Exception {
-
-      String ctxNodeStr = "/ds:Signature/ds:Object/@Id";
-      String evalStr = "ancestor-or-self::ds:Object";
-
-      assertTrue("Bad " + ctxNodeStr + " " + evalStr + "  " ,
-                 isAncestorOf(_nodeSetInput1, ctxNodeStr, evalStr));
-   }
-
-   static {
-      org.apache.xml.security.Init.init();
-   }
 }

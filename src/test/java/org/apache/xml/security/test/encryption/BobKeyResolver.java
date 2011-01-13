@@ -35,111 +35,102 @@ import org.w3c.dom.Element;
  *
  * @author Berin Lautenbach
  */
-
 public class BobKeyResolver extends KeyResolverSpi {
-        
-        /** {@link org.apache.commons.logging} logging facility */
+
+    /** {@link org.apache.commons.logging} logging facility */
     static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(BobKeyResolver.class.getName());
-        
-        KeyName _kn = null;
 
-        /**
-         * Method engineCanResolve
-         *
-         * @param element
-         * @param BaseURI
-         * @param storage
-         *
-         */
+    KeyName _kn = null;
 
-        public boolean engineCanResolve(Element element, String BaseURI,
-                                                                        StorageResolver storage) {
-
-                log.debug("Can I resolve " + element.getTagName());
-
-                if (element == null) {
-                        return false;
-                }
-
-                boolean isKeyName = XMLUtils.elementIsInSignatureSpace(element,
-                                                                           Constants._TAG_KEYNAME);
-
-                try {
-                        if (isKeyName) {
-                                _kn = new KeyName(element, "");
-                                if (_kn.getKeyName().equals("bob")) {
-                                        return true;
-                                }
-                        }
-                }
-                catch (Exception e) {
-                        // Do nothing
-                }
-                
-                return false;
+    /**
+     * Method engineCanResolve
+     *
+     * @param element
+     * @param BaseURI
+     * @param storage
+     *
+     */
+    public boolean engineCanResolve(Element element, String BaseURI, StorageResolver storage) {
+        log.debug("Can I resolve " + element.getTagName());
+        if (element == null) {
+            return false;
         }
 
-        /**
-         * Method engineResolvePublicKey
-         *
-         * @param element
-         * @param BaseURI
-         * @param storage
-         * @return null if no {@link PublicKey} could be obtained
-         * @throws KeyResolverException
-         */
-        public PublicKey engineLookupAndResolvePublicKey(
-                  Element element, String BaseURI, StorageResolver storage)
-              throws KeyResolverException {
-
-                return null;
-        }
-
-        /**
-         * Method engineResolveX509Certificate
-         *
-         * @param element
-         * @param BaseURI
-         * @param storage
-         *
-         * @throws KeyResolverException
-         */
-        public X509Certificate engineLookupResolveX509Certificate(
-                           Element element, String BaseURI, StorageResolver storage)
-                throws KeyResolverException {
-                return null;
-        }
-
-        /**
-         * Method engineResolveSecretKey
-         *
-         * @param element
-         * @param BaseURI
-         * @param storage
-         *
-         * @throws KeyResolverException
-         */
-        public javax.crypto.SecretKey engineLookupAndResolveSecretKey(
-           Element element, String BaseURI, StorageResolver storage)
-                throws KeyResolverException {
-
-                if (engineCanResolve(element, BaseURI, storage)) {
-                        try {
-                                DESedeKeySpec keySpec = new DESedeKeySpec(
-                                        "abcdefghijklmnopqrstuvwx".getBytes("ASCII"));
-                                SecretKeyFactory keyFactory = 
-                                        SecretKeyFactory.getInstance("DESede");
-                                SecretKey key = keyFactory.generateSecret(keySpec);
-                                        
-                                return key;
-                        }
-                        catch (Exception e) {
-                                throw new KeyResolverException("Something badly wrong in creation of bob's key");
-                        }
+        boolean isKeyName = XMLUtils.elementIsInSignatureSpace(element, Constants._TAG_KEYNAME);
+        try {
+            if (isKeyName) {
+                _kn = new KeyName(element, "");
+                if (_kn.getKeyName().equals("bob")) {
+                    return true;
                 }
-
-                return null;
+            }
+        } catch (Exception e) {
+            // Do nothing
         }
+
+        return false;
+    }
+
+    /**
+     * Method engineResolvePublicKey
+     *
+     * @param element
+     * @param BaseURI
+     * @param storage
+     * @return null if no {@link PublicKey} could be obtained
+     * @throws KeyResolverException
+     */
+    public PublicKey engineLookupAndResolvePublicKey(
+        Element element, String BaseURI, StorageResolver storage
+    ) throws KeyResolverException {
+        return null;
+    }
+
+    /**
+     * Method engineResolveX509Certificate
+     *
+     * @param element
+     * @param BaseURI
+     * @param storage
+     *
+     * @throws KeyResolverException
+     */
+    public X509Certificate engineLookupResolveX509Certificate(
+        Element element, String BaseURI, StorageResolver storage
+    ) throws KeyResolverException {
+        return null;
+    }
+
+    /**
+     * Method engineResolveSecretKey
+     *
+     * @param element
+     * @param BaseURI
+     * @param storage
+     *
+     * @throws KeyResolverException
+     */
+    public javax.crypto.SecretKey engineLookupAndResolveSecretKey(
+        Element element, String BaseURI, StorageResolver storage
+    ) throws KeyResolverException {
+        if (engineCanResolve(element, BaseURI, storage)) {
+            try {
+                DESedeKeySpec keySpec = 
+                    new DESedeKeySpec("abcdefghijklmnopqrstuvwx".getBytes("ASCII"));
+                SecretKeyFactory keyFactory = 
+                    SecretKeyFactory.getInstance("DESede");
+                SecretKey key = keyFactory.generateSecret(keySpec);
+
+                return key;
+            }
+            catch (Exception e) {
+                throw new KeyResolverException("Something badly wrong in creation of bob's key");
+            }
+        }
+
+        return null;
+    }
+    
 }
 

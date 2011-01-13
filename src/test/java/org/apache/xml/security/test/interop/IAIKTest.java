@@ -68,10 +68,9 @@ public class IAIKTest extends InteropTestBase {
         ResourceResolverSpi resolver = new OfflineResolver();
         boolean followManifests = false;
         byte[] hmacKey = "secret".getBytes("ASCII");
-        boolean verify = false;
 
         try {
-            verify = this.verifyHMAC(filename, resolver, followManifests, hmacKey);
+            this.verifyHMAC(filename, resolver, followManifests, hmacKey);
             fail("HMACOutputLength Exception not caught");
         } catch (RuntimeException ex) {
             log.error("Verification crashed for " + filename);
