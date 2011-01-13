@@ -27,7 +27,7 @@
   
   <artifactId>shared-i18n</artifactId>
   <name>Apache Directory Shared I18n</name>
-  
+  <packaging>bundle</packaging> 
   <description>Internationalization of errors and other messages</description>
 
   <build>
@@ -37,6 +37,21 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration> 
           <forkMode>always</forkMode>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <inherited>true</inherited>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>${pom.groupId}.${pom.artifactId}</Bundle-SymbolicName>
+            <Bundle-Name>${pom.artifactId}</Bundle-Name>
+            <Bundle-Version>${pom.version}</Bundle-Version>
+            <Export-Package>org.apache.directory.shared.i18n</Export-Package>
+          </instructions>
         </configuration>
       </plugin>
     </plugins>
