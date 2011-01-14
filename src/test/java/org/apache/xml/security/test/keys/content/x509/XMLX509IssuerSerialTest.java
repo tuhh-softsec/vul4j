@@ -19,39 +19,24 @@ package org.apache.xml.security.test.keys.content.x509;
 import javax.xml.parsers.*;
 import org.w3c.dom.Document;
 import org.apache.xml.security.keys.content.x509.XMLX509IssuerSerial;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /**
  * XMLX509IssuerSerial tests.
  *
  * @author Sean Mullan
  */
-public class XMLX509IssuerSerialTest extends TestCase {
+public class XMLX509IssuerSerialTest extends org.junit.Assert {
 
     private Document doc;
 
-    public XMLX509IssuerSerialTest() {
-        super("XMLX509IssuerSerialTest");
-    }
-
-    public XMLX509IssuerSerialTest(String name) {
-        super(name);
-    }
-
-    public static Test suite() {
-        return new TestSuite(XMLX509IssuerSerialTest.class);
-    }
-
-    public void setUp() throws Exception {
+    public XMLX509IssuerSerialTest() throws Exception {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);
         doc = dbf.newDocumentBuilder().newDocument();
     }
 
+    @org.junit.Test
     public void testGetIssuerName() throws Exception {
-
         // Make sure hex encoded value is not escaped (see ...)
         String issuer = "9.99.999=#abc123";
         XMLX509IssuerSerial is = 

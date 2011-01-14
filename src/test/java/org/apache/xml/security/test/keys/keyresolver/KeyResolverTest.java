@@ -31,10 +31,6 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.encryption.EncryptedData;
 import org.apache.xml.security.encryption.EncryptedKey;
@@ -52,19 +48,10 @@ import org.w3c.dom.Text;
 /**
  * KeyResolver test.
  */
-public class KeyResolverTest extends TestCase {
+public class KeyResolverTest extends org.junit.Assert {
 
     public KeyResolverTest() {
-        super("KeyResolverTest");
-    }
-
-    public KeyResolverTest(String name) {
-        super(name);
         org.apache.xml.security.Init.init();
-    }
-
-    public static Test suite() {
-        return new TestSuite(KeyResolverTest.class);
     }
 
     /**
@@ -73,6 +60,7 @@ public class KeyResolverTest extends TestCase {
      * Decrypt the data by resolving the Key Encryption Key.
      * This test verifies if a KeyResolver can return a PrivateKey.
      */
+    @org.junit.Test
     public void testResolvePrivateKey() throws Exception {
         // See if AES-128 is available...
         String algorithmId = 
@@ -86,7 +74,9 @@ public class KeyResolverTest extends TestCase {
                     haveAES = true;
                 }
             } catch (NoSuchAlgorithmException nsae) {
+                //
             } catch (NoSuchPaddingException nspe) {
+                //
             }
         }
         
@@ -183,17 +173,15 @@ public class KeyResolverTest extends TestCase {
         private static PrivateKey pk;
         private static String pkName;
         
-        public boolean engineCanResolve(Element element, String BaseURI,
-                StorageResolver storage) {
+        public boolean engineCanResolve(Element element, String BaseURI, StorageResolver storage) {
             return false;
         }
 
-        public PrivateKey engineLookupAndResolvePrivateKey(Element element,
-                String BaseURI, StorageResolver storage)
-                throws KeyResolverException {
-
+        public PrivateKey engineLookupAndResolvePrivateKey(
+            Element element, String BaseURI, StorageResolver storage
+        ) throws KeyResolverException {
             if (Constants.SignatureSpecNS.equals(element.getNamespaceURI()) && 
-                    Constants._TAG_KEYNAME.equals(element.getLocalName())) {
+                Constants._TAG_KEYNAME.equals(element.getLocalName())) {
                 String keyName = element.getFirstChild().getNodeValue();
                 if (pkName.equals(keyName)) {
                     return pk;
@@ -203,4 +191,5 @@ public class KeyResolverTest extends TestCase {
             return null;
         }
     }
+    
 }

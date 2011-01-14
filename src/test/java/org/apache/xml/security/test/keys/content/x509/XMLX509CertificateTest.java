@@ -24,37 +24,21 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.apache.xml.security.keys.content.x509.XMLX509Certificate;
 import org.apache.xml.security.utils.Constants;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /**
  * Certificate parsing test.
  *
  * @author Sean Mullan
  */
-public class XMLX509CertificateTest extends TestCase {
+public class XMLX509CertificateTest extends org.junit.Assert {
 
     private static final String BASEDIR =
         System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
     private static final String SEP = System.getProperty("file.separator");
 
-    public XMLX509CertificateTest() {
-        super("XMLX509CertificateTest");
-    }
-
-    public XMLX509CertificateTest(String name) {
-        super(name);
-    }
-
-    public static Test suite() {
-        return new TestSuite(XMLX509CertificateTest.class);
-    }
-
+    @org.junit.Test
     public void testGetX509Certificate() throws Exception {
-
-        File f = null;
-        f = new File(BASEDIR + SEP + "data" + SEP + "ie" + SEP + "baltimore" +
+        File f = new File(BASEDIR + SEP + "data" + SEP + "ie" + SEP + "baltimore" +
             SEP + "merlin-examples" + SEP + "merlin-xmldsig-twenty-three" +
             SEP + "signature-x509-crt.xml");
 
@@ -69,4 +53,5 @@ public class XMLX509CertificateTest extends TestCase {
         xmlCert.getX509Certificate();
         // System.out.println(cert);
     }
+    
 }

@@ -22,37 +22,22 @@ import java.security.cert.*;
 import java.util.Collection;
 import java.util.Collections;
 import org.apache.xml.security.keys.content.x509.XMLX509SKI;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /**
  * Test bugfix 41892: XML Security 1.4.0 does not build with IBM's JDK
  */
-public class XMLX509SKITest extends TestCase {
+public class XMLX509SKITest extends org.junit.Assert {
 
     private static final String BASEDIR = System.getProperty("basedir");
     private static final String SEP = System.getProperty("file.separator");
     private CertificateFactory cf;
 
-    public XMLX509SKITest() {
-        super("XMLX509SKITest");
-    }
-
-    public XMLX509SKITest(String name) {
-        super(name);
-    }
-
-    public static Test suite() {
-        return new TestSuite(XMLX509SKITest.class);
-    }
-
-    public void setUp() throws Exception {
+    public XMLX509SKITest() throws Exception {
         cf = CertificateFactory.getInstance("X.509");
     }
 
+    @org.junit.Test
     public void testGetSKIBytesFromCert() throws Exception {
-
         File f = null;
         if (BASEDIR != null && !"".equals(BASEDIR)) {
             f = new File(BASEDIR + SEP +
@@ -82,7 +67,7 @@ public class XMLX509SKITest extends TestCase {
             "Collection", 
             new CollectionCertStoreParameters(Collections.singleton(cert)));
         
-        Collection certs = cs.getCertificates(xcs);
+        Collection<?> certs = cs.getCertificates(xcs);
         assertTrue(!certs.isEmpty());
     }
 }
