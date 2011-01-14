@@ -70,6 +70,7 @@
   </issueManagement>
 
   <modules>
+    <module>integ</module>
     <module>i18n</module>
     <module>all</module>
     <module>ldap</module>

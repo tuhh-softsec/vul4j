@@ -27,7 +27,7 @@
   
   <artifactId>shared-ldap</artifactId>
   <name>Apache Directory Shared LDAP</name>
-
+  <packaging>bundle</packaging>
   <description>Common LDAP packages used by clients and servers</description>
 
   <dependencies>
@@ -101,6 +101,21 @@
             <exclude>**/Abstract*</exclude>
             <exclude>**/*RegressionTest*</exclude>
           </excludes>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <inherited>true</inherited>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>${pom.groupId}.${pom.artifactId}</Bundle-SymbolicName>
+            <Bundle-Name>${pom.artifactId}</Bundle-Name>
+            <Bundle-Version>${pom.version}</Bundle-Version>
+            <Export-Package>org.apache.directory.shared.ldap.*</Export-Package>
+          </instructions>
         </configuration>
       </plugin>
     </plugins>
