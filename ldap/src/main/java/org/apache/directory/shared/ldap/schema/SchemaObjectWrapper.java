@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.schema;
 
 /**
  * A class containing a SchemaObject, used by the global registries. As the hash code
- * method of the SchemaObjetc class is too complex, we had to define a simplest class
+ * method of the SchemaObject class is too complex, we had to define a simplest class
  * for this purpose, where the hash code is computed using only the SchemaObject
  * type and its OID.
  *
