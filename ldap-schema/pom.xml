@@ -79,7 +79,7 @@
             <configuration>
               <target>
                 <!-- Various properties -->
-                <property name="schema.index" value="target/classes/META-INF/apacheds-schema.index"/>
+                <property name="schema.index" value="target/generated-resources/apacheds/META-INF/apacheds-schema.index"/>
                 <property name="schema.location" value="src${file.separator}main${file.separator}resources${file.separator}"/>
               
                 <!-- Listing all LDIF files under schema location -->
@@ -110,5 +110,13 @@
         </executions>
       </plugin>
     </plugins>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+      <resource>
+        <directory>target/generated-resources/apacheds</directory>
+      </resource>
+    </resources>
   </build>
 </project>
