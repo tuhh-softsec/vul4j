@@ -111,7 +111,7 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Bundle-SymbolicName>${pom.groupId}.${pom.artifactId}</Bundle-SymbolicName>
+            <Bundle-SymbolicName>${pom.groupId}.ldap</Bundle-SymbolicName>
             <Bundle-Name>${pom.artifactId}</Bundle-Name>
             <Bundle-Version>${pom.version}</Bundle-Version>
             <Export-Package>org.apache.directory.shared.ldap.*</Export-Package>
