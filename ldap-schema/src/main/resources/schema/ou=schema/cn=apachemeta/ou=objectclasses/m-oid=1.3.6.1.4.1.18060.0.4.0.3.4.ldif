@@ -10,3 +10,5 @@ objectclass: top
 m-name: metaSyntax
 m-typeobjectclass: STRUCTURAL
 creatorsname: uid=admin,ou=system
+m-may: x-humanReadable
+m-may: m-obsolete
