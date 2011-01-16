@@ -27,6 +27,7 @@
 
   <artifactId>shared-dsml-engine</artifactId>
   <name>Apache Directory Shared DSML Engine</name>
+  <packaging>bundle</packaging>
 
   <dependencies>
     <dependency>
@@ -54,4 +55,23 @@
       <artifactId>xpp3</artifactId>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <inherited>true</inherited>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>${pom.groupId}.dsmlv2.engine</Bundle-SymbolicName>
+            <Bundle-Name>${pom.artifactId}</Bundle-Name>
+            <Bundle-Version>${pom.version}</Bundle-Version>
+            <Export-Package>org.apache.directory.shared.dsmlv2.engine</Export-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
