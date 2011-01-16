@@ -29,6 +29,7 @@
 
   <artifactId>ldap-client-api</artifactId>
   <name>Apache Directory LDAP Client API</name>
+  <packaging>bundle</packaging>
   <inceptionYear>2009</inceptionYear>
 
   <issueManagement>
@@ -86,6 +87,29 @@
             <exclude>**/Abstract*</exclude>
             <exclude>**/*RegressionTest*</exclude>
           </excludes>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <inherited>true</inherited>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>
+              ${pom.groupId}.ldap.client
+            </Bundle-SymbolicName>
+            <Bundle-Name>${pom.artifactId}</Bundle-Name>
+            <Bundle-Version>${pom.version}</Bundle-Version>
+            <Export-Package>
+              org.apache.directory.shared.ldap.client.api,
+              org.apache.directory.shared.ldap.client.api.future,
+              org.apache.directory.shared.ldap.client.api.exception,
+              org.apache.directory.shared.ldap.client.api.callback,
+              org.apache.directory.shared.ldap.client.api.protocol
+            </Export-Package>
+          </instructions>
         </configuration>
       </plugin>
     </plugins>
