@@ -98,16 +98,12 @@
         <configuration>
           <instructions>
             <Bundle-SymbolicName>
-              ${pom.groupId}.ldap.client
+              ${pom.groupId}.ldap.client.api
             </Bundle-SymbolicName>
             <Bundle-Name>${pom.artifactId}</Bundle-Name>
             <Bundle-Version>${pom.version}</Bundle-Version>
             <Export-Package>
-              org.apache.directory.shared.ldap.client.api,
-              org.apache.directory.shared.ldap.client.api.future,
-              org.apache.directory.shared.ldap.client.api.exception,
-              org.apache.directory.shared.ldap.client.api.callback,
-              org.apache.directory.shared.ldap.client.api.protocol
+              org.apache.directory.ldap.client.api.*
             </Export-Package>
           </instructions>
         </configuration>
