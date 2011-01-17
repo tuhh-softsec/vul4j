@@ -115,9 +115,8 @@
         <artifactId>maven-jar-plugin</artifactId>
         <configuration>
           <archive>
-            <manifestFile>
-              ${project.build.outputDirectory}/META-INF/MANIFEST.MF
-            </manifestFile>
+            <manifestFile>META-INF/MANIFEST.MF</manifestFile>
+            <addMavenDescriptor>false</addMavenDescriptor>
           </archive>
         </configuration>
       </plugin>
@@ -137,15 +136,11 @@
           </execution>
         </executions>
         <configuration>
+          <manifestLocation>META-INF</manifestLocation>
           <instructions>
-            <Bundle-SymbolicName>
-              ${pom.groupId}.ldap.schema
-            </Bundle-SymbolicName>
-            <Bundle-Name>${pom.artifactId}</Bundle-Name>
-            <Bundle-Version>${pom.version}</Bundle-Version>
-            <Export-Package>
-              org.apache.directory.shared.ldap.schema.*
-            </Export-Package>
+            <Bundle-SymbolicName>${project.groupId}.ldap.schema</Bundle-SymbolicName>
+            <Bundle-Name>${project.name}</Bundle-Name>
+            <Export-Package>org.apache.directory.shared.ldap.schema.*</Export-Package>
           </instructions>
         </configuration>
       </plugin>

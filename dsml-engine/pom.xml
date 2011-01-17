@@ -59,15 +59,26 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestFile>META-INF/MANIFEST.MF</manifestFile>
+            <addMavenDescriptor>false</addMavenDescriptor>
+          </archive>
+        </configuration>
+      </plugin>
+      
+      <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <inherited>true</inherited>
         <extensions>true</extensions>
         <configuration>
+          <manifestLocation>META-INF</manifestLocation>
           <instructions>
-            <Bundle-SymbolicName>${pom.groupId}.dsmlv2.engine</Bundle-SymbolicName>
-            <Bundle-Name>${pom.artifactId}</Bundle-Name>
-            <Bundle-Version>${pom.version}</Bundle-Version>
+            <Bundle-SymbolicName>${project.groupId}.dsmlv2.engine</Bundle-SymbolicName>
+            <Bundle-Name>${project.name}</Bundle-Name>
             <Export-Package>org.apache.directory.shared.dsmlv2.engine</Export-Package>
           </instructions>
         </configuration>
