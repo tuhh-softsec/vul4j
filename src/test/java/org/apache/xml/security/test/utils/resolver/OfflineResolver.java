@@ -17,8 +17,6 @@
  */
 package org.apache.xml.security.test.utils.resolver;
 
-
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,7 +29,6 @@ import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
 import org.apache.xml.utils.URI;
 import org.w3c.dom.Attr;
 
-
 /**
  * This class helps us home users to resolve http URIs without a network
  * connection.
@@ -41,131 +38,135 @@ import org.w3c.dom.Attr;
  * so that I can do unit testing with http:// URIs even if I'm not connected
  * to the internet.
  *
- * @author $Author$
  */
 public class OfflineResolver extends ResourceResolverSpi {
 
-   /** {@link org.apache.commons.logging} logging facility */
+    /** {@link org.apache.commons.logging} logging facility */
     static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(OfflineResolver.class.getName());
+    
+    /** Field _uriMap */
+    static Map<String, String> _uriMap = null;
 
-   /**
-    * Method engineResolve
-    *
-    * @param uri
-    * @param BaseURI
-    *
-    * @throws ResourceResolverException
-    */
-   public XMLSignatureInput engineResolve(Attr uri, String BaseURI)
-           throws ResourceResolverException {
+    /** Field _mimeMap */
+    static Map<String, String> _mimeMap = null;
+    
+    static {
+        org.apache.xml.security.Init.init();
 
-      try {
-         String URI = uri.getNodeValue();
+        _uriMap = new HashMap<String, String>();
+        _mimeMap = new HashMap<String, String>();
 
-         if (OfflineResolver._uriMap.containsKey(URI)) {
-            String newURI = (String) OfflineResolver._uriMap.get(URI);
+        String basedir = 
+            System.getProperty("basedir") == null ? "./": System.getProperty("basedir") + "/";
 
-            log.debug("Mapped " + URI + " to " + newURI);
+        OfflineResolver.register(
+            "http://www.w3.org/TR/xml-stylesheet",
+            basedir + "data/org/w3c/www/TR/xml-stylesheet.html", "text/html"
+        );
+        OfflineResolver.register(
+            "http://www.w3.org/TR/2000/REC-xml-20001006",
+            basedir + "data/org/w3c/www/TR/2000/REC-xml-20001006", "text/xml"
+        );
+        OfflineResolver.register(
+            "http://www.nue.et-inf.uni-siegen.de/index.html",
+            basedir + "data/org/apache/xml/security/temp/nuehomepage", "text/html"
+        );
+        OfflineResolver.register(
+            "http://www.nue.et-inf.uni-siegen.de/~geuer-pollmann/id2.xml",
+            basedir + "data/org/apache/xml/security/temp/id2.xml", "text/xml"
+        );
+        OfflineResolver.register(
+            "http://xmldsig.pothole.com/xml-stylesheet.txt",
+             basedir + "data/com/pothole/xmldsig/xml-stylesheet.txt", "text/xml"
+        );
+        OfflineResolver.register(
+            "http://www.w3.org/Signature/2002/04/xml-stylesheet.b64",
+            basedir 
+            + "data/ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/xml-stylesheet.b64", 
+            "text/plain"
+        );
+    }
 
-            InputStream is = new FileInputStream(newURI);
+    /**
+     * Method engineResolve
+     *
+     * @param uri
+     * @param BaseURI
+     *
+     * @throws ResourceResolverException
+     */
+    public XMLSignatureInput engineResolve(Attr uri, String BaseURI)
+        throws ResourceResolverException {
+        try {
+            String URI = uri.getNodeValue();
 
-            log.debug("Available bytes = " + is.available());
+            if (OfflineResolver._uriMap.containsKey(URI)) {
+                String newURI = (String) OfflineResolver._uriMap.get(URI);
 
-            XMLSignatureInput result = new XMLSignatureInput(is);
+                log.debug("Mapped " + URI + " to " + newURI);
 
-            // XMLSignatureInput result = new XMLSignatureInput(inputStream);
-            result.setSourceURI(URI);
-            result.setMIMEType((String) OfflineResolver._mimeMap.get(URI));
+                InputStream is = new FileInputStream(newURI);
 
-            return result;
-         } else {
-            Object exArgs[] = {
-               "The URI " + URI + " is not configured for offline work" };
+                log.debug("Available bytes = " + is.available());
 
-            throw new ResourceResolverException("generic.EmptyMessage", exArgs,
-                                                uri, BaseURI);
-         }
-      } catch (IOException ex) {
-         throw new ResourceResolverException("generic.EmptyMessage", ex, uri,
-                                             BaseURI);
-      }
-   }
+                XMLSignatureInput result = new XMLSignatureInput(is);
 
-   /**
-    * We resolve http URIs <I>without</I> fragment...
-    *
-    * @param uri
-    * @param BaseURI
-    *
-    */
-   public boolean engineCanResolve(Attr uri, String BaseURI) {
+                // XMLSignatureInput result = new XMLSignatureInput(inputStream);
+                result.setSourceURI(URI);
+                result.setMIMEType((String) OfflineResolver._mimeMap.get(URI));
 
-      String uriNodeValue = uri.getNodeValue();
+                return result;
+            } else {
+                Object exArgs[] = {"The URI " + URI + " is not configured for offline work" };
 
-      if (uriNodeValue.equals("") || uriNodeValue.startsWith("#")) {
-         return false;
-      }
+                throw new ResourceResolverException(
+                    "generic.EmptyMessage", exArgs, uri, BaseURI
+                );
+            }
+        } catch (IOException ex) {
+            throw new ResourceResolverException("generic.EmptyMessage", ex, uri, BaseURI);
+        }
+    }
 
-      try {
-         URI uriNew = new URI(new URI(BaseURI), uri.getNodeValue());
+    /**
+     * We resolve http URIs <I>without</I> fragment...
+     *
+     * @param uri
+     * @param BaseURI
+     */
+    public boolean engineCanResolve(Attr uri, String BaseURI) {
+        String uriNodeValue = uri.getNodeValue();
+        if (uriNodeValue.equals("") || uriNodeValue.startsWith("#")) {
+            return false;
+        }
 
-         if (uriNew.getScheme().equals("http")) {
-            log.debug("I state that I can resolve " + uriNew.toString());
+        try {
+            URI uriNew = new URI(new URI(BaseURI), uri.getNodeValue());
 
-            return true;
-         }
+            if (uriNew.getScheme().equals("http")) {
+                log.debug("I state that I can resolve " + uriNew.toString());
+                return true;
+            }
 
-         log.debug("I state that I can't resolve " + uriNew.toString());
-      } catch (URI.MalformedURIException ex) {}
+            log.debug("I state that I can't resolve " + uriNew.toString());
+        } catch (URI.MalformedURIException ex) {
+            //
+        }
 
-      return false;
-   }
+        return false;
+    }
 
-   /** Field _uriMap */
-   static Map _uriMap = null;
+    /**
+     * Method register
+     *
+     * @param URI
+     * @param filename
+     * @param MIME
+     */
+    private static void register(String URI, String filename, String MIME) {
+        OfflineResolver._uriMap.put(URI, filename);
+        OfflineResolver._mimeMap.put(URI, MIME);
+    }
 
-   /** Field _mimeMap */
-   static Map _mimeMap = null;
-
-   /**
-    * Method register
-    *
-    * @param URI
-    * @param filename
-    * @param MIME
-    */
-   private static void register(String URI, String filename, String MIME) {
-      OfflineResolver._uriMap.put(URI, filename);
-      OfflineResolver._mimeMap.put(URI, MIME);
-   }
-
-   static {
-      org.apache.xml.security.Init.init();
-
-      OfflineResolver._uriMap = new HashMap();
-      OfflineResolver._mimeMap = new HashMap();
-      
-      String basedir = 
-          System.getProperty("basedir") == null ? "./": System.getProperty("basedir") + "/";
-
-      OfflineResolver.register("http://www.w3.org/TR/xml-stylesheet",
-                               basedir + "data/org/w3c/www/TR/xml-stylesheet.html",
-                               "text/html");
-      OfflineResolver.register("http://www.w3.org/TR/2000/REC-xml-20001006",
-                               basedir + "data/org/w3c/www/TR/2000/REC-xml-20001006",
-                               "text/xml");
-      OfflineResolver.register("http://www.nue.et-inf.uni-siegen.de/index.html",
-                               basedir + "data/org/apache/xml/security/temp/nuehomepage",
-                               "text/html");
-      OfflineResolver.register(
-         "http://www.nue.et-inf.uni-siegen.de/~geuer-pollmann/id2.xml",
-         basedir + "data/org/apache/xml/security/temp/id2.xml", "text/xml");
-      OfflineResolver.register(
-         "http://xmldsig.pothole.com/xml-stylesheet.txt",
-         basedir + "data/com/pothole/xmldsig/xml-stylesheet.txt", "text/xml");
-      OfflineResolver.register(
-         "http://www.w3.org/Signature/2002/04/xml-stylesheet.b64",
-         basedir + "data/ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/xml-stylesheet.b64", "text/plain");
-   }
 }

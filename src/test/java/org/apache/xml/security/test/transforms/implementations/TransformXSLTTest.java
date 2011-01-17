@@ -27,10 +27,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.test.TestUtils;
 import org.apache.xml.security.transforms.Transform;
@@ -38,7 +34,7 @@ import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xpath.XPathAPI;
 
-public class TransformXSLTTest extends TestCase {
+public class TransformXSLTTest extends org.junit.Assert {
 
     private static final String BASEDIR = 
         System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
@@ -51,39 +47,18 @@ public class TransformXSLTTest extends TestCase {
 
     /** {@link org.apache.commons.logging} logging facility */
     static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(
-                    TransformXSLTTest.class.getName());
-
-    public static Test suite() {
-        return new TestSuite(TransformXSLTTest.class);
-    }
-
-    public TransformXSLTTest(String name) {
-        super(name);
-    }
-
-    public static void main(String[] args) {
-
-        String[] testCaseName = { "-noloading",
-                                TransformXSLTTest.class.getName() };
-        junit.textui.TestRunner.main(testCaseName);
-    }
-
-    private static Document getDocument(File file) 
-        throws ParserConfigurationException, SAXException, IOException {
-
-        DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
-        dfactory.setNamespaceAware(true);
-        DocumentBuilder db = dfactory.newDocumentBuilder();
-        Document doc = db.parse(new FileInputStream(file));
-        return doc;
+        org.apache.commons.logging.LogFactory.getLog(TransformXSLTTest.class.getName());
+    
+    static {
+        org.apache.xml.security.Init.init();
     }
 
     /**
      * Make sure Transform.performTransform does not throw NullPointerException.
      * See bug 41927 for more info.
      */
-    public static void test1() throws Exception {
+    @org.junit.Test
+    public void test1() throws Exception {
         File file1  = null;
         File file2  = null;
         if (BASEDIR != null && !"".equals(BASEDIR)) {
@@ -96,17 +71,22 @@ public class TransformXSLTTest extends TestCase {
         Document doc1 = getDocument(file1);
         Document doc2 = getDocument(file2);
 
-        Element nscontext = TestUtils.createDSctx
-            (doc1, "dsig", Constants.SignatureSpecNS);
-        Node transformEl = XPathAPI.selectSingleNode
-            (doc1, "//dsig:Transform[1]", nscontext);
-        Transform transform = Transform.getInstance
-            (doc1, Transforms.TRANSFORM_XSLT, transformEl.getChildNodes());
+        Element nscontext = 
+            TestUtils.createDSctx(doc1, "dsig", Constants.SignatureSpecNS);
+        Node transformEl = 
+            XPathAPI.selectSingleNode(doc1, "//dsig:Transform[1]", nscontext);
+        Transform transform = 
+            Transform.getInstance(doc1, Transforms.TRANSFORM_XSLT, transformEl.getChildNodes());
 
         transform.performTransform(new XMLSignatureInput(doc2));
     }
-
-    static {
-        org.apache.xml.security.Init.init();
+    
+    private static Document getDocument(File file) 
+        throws ParserConfigurationException, SAXException, IOException {
+        DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+        dfactory.setNamespaceAware(true);
+        DocumentBuilder db = dfactory.newDocumentBuilder();
+        return db.parse(new FileInputStream(file));
     }
+
 }

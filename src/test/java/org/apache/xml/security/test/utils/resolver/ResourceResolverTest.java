@@ -17,10 +17,6 @@
  */
 package org.apache.xml.security.test.utils.resolver;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 import java.io.File;
 import javax.xml.parsers.*;
 import org.w3c.dom.Attr;
@@ -33,34 +29,22 @@ import org.apache.xml.security.utils.resolver.ResourceResolver;
  *
  * @author Sean Mullan
  */
-public class ResourceResolverTest extends TestCase {
+public class ResourceResolverTest extends org.junit.Assert {
 
     /** {@link org.apache.commons.logging} logging facility */
     static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog
             (ResourceResolverTest.class.getName());
-
-    public static Test suite() {
-        return new TestSuite(ResourceResolverTest.class);
-    }
-
-    public ResourceResolverTest(String name) {
-        super(name);
-    }
-
-    public static void main(String[] args) {
-        String[] testCaseName = 
-            { "-noloading", ResourceResolverTest.class.getName() };
-
-        junit.textui.TestRunner.main(testCaseName);
-
-        // junit.swingui.TestRunner.main(testCaseName);
+    
+    static {
+        org.apache.xml.security.Init.init();
     }
 
     /**
      * Tests registering a custom resolver implementation.
      */
-    public static void testCustomResolver() throws Exception {
+    @org.junit.Test
+    public void testCustomResolver() throws Exception {
         String className = 
             "org.apache.xml.security.test.utils.resolver.OfflineResolver";
         ResourceResolver.registerAtStart(className);
@@ -81,14 +65,16 @@ public class ResourceResolverTest extends TestCase {
         try {
             uriAttr.setValue("http://www.apache.org");
             res.resolve(uriAttr, null);
-            fail(uriAttr.getValue() 
-                + " should not be resolvable by the OfflineResolver");
-        } catch (Exception e) { }
+            fail(uriAttr.getValue() + " should not be resolvable by the OfflineResolver");
+        } catch (Exception e) {
+            //
+        }
     }
 
-    public static void testLocalFileWithEmptyBaseURI() throws Exception {
+    @org.junit.Test
+    public void testLocalFileWithEmptyBaseURI() throws Exception {
         Document doc = 
-        DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+            DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
         Attr uriAttr = doc.createAttribute("URI");
         String basedir = System.getProperty("basedir");
         String file = new File(basedir, "build.xml").toURI().toString();
@@ -101,7 +87,4 @@ public class ResourceResolverTest extends TestCase {
         }
     }
 
-    static {
-        org.apache.xml.security.Init.init();
-    }
 }

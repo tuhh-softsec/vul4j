@@ -24,36 +24,25 @@ import java.net.URLClassLoader;
 import org.apache.xml.security.exceptions.AlgorithmAlreadyRegisteredException;
 import org.apache.xml.security.transforms.Transform;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 /**
  * RegisterTest tests registering a custom Transform implementation loaded
  * by a URLCLassLoader.
  */
-public class RegisterTest extends TestCase {
+public class RegisterTest extends org.junit.Assert {
 
     private final static String basedir = System.getProperty("basedir", "./");
 
-    public RegisterTest(String name) {
-        super(name);
-    }
-
-    public static Test suite() {
-       return new TestSuite(RegisterTest.class);
-    }
-
-    public static void test() throws Exception {
+    @org.junit.Test
+    public void test() throws Exception {
 
         Transform.init();
         File file = new File(basedir);
         URL[] urls = new URL[1];
         urls[0] = file.toURI().toURL();
         URLClassLoader ucl = new URLClassLoader(urls);
-        Class c = ucl.loadClass
+        Class<?> c = ucl.loadClass
             ("org.apache.xml.security.test.transforms.SampleTransform");
-        Constructor cons = c.getConstructor(new Class[0]);
+        Constructor<?> cons = c.getConstructor(new Class[0]);
         cons.newInstance(new Object[0]);
         // Apache code swallows the ClassNotFoundExc, so we need to
         // check if the Transform has already been registered by registering
