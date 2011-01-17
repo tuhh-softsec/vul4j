@@ -125,7 +125,7 @@
           <instructions>
             <Bundle-SymbolicName>${project.groupId}.ldap</Bundle-SymbolicName>
             <Bundle-Name>${project.name}</Bundle-Name>
-            <Export-Package>org.apache.directory.shared.ldap.*</Export-Package>
+            <Export-Package>org.apache.directory.shared.*</Export-Package>
           </instructions>
         </configuration>
       </plugin>
