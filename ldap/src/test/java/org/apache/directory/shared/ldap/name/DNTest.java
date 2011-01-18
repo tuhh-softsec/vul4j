@@ -24,6 +24,7 @@ import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -51,7 +52,6 @@ import org.apache.directory.shared.ldap.schema.normalizers.DeepTrimToLowerNormal
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -543,7 +543,7 @@ public class DNTest
         DN dn = new DN( "a=b, c=d, e=f" );
 
         assertTrue( DN.isValid( "a=b, c=d, e=f" ) );
-        // now remove method reurns a modified cloned DN
+        // now remove method returns a modified cloned DN
         dn = dn.remove( 0 );
         assertEquals( "a=b,c=d", dn.getNormName() );
         assertEquals( "a=b, c=d", dn.getName() );
@@ -2668,18 +2668,18 @@ public class DNTest
 
 
     /**
-     * Test for DIRSERVER-191
+     * Test for DIRSERVER-191. The DN is immutable, thus we can't add a new RDN
+     * to a DN, it simply creates a new one.
      */
     @Test
-    @Ignore("from now onwards DN is not mutable")
     public void testAddStringName() throws LdapException, InvalidNameException
     {
         LdapName jName = new LdapName( "cn=four,cn=three,cn=two,cn=one" );
         DN aName = new DN( "cn=four,cn=three,cn=two,cn=one" );
 
         assertSame( jName, jName.add( "cn=five" ) );
-        assertSame( aName, aName.add( "cn=five" ) );
-        assertEquals( jName.toString(), aName.toString() );
+        assertNotSame( aName, aName.add( "cn=five" ) );
+        assertNotSame( jName.toString(), aName.toString() );
     }
 
 
@@ -2687,23 +2687,22 @@ public class DNTest
      * Test for DIRSERVER-191
      */
     @Test
-    @Ignore("from now onwards DN is not mutable")
     public void testAddIntString() throws LdapException, InvalidNameException
     {
         LdapName jName = new LdapName( "cn=four,cn=three,cn=two,cn=one" );
         DN aName = new DN( "cn=four,cn=three,cn=two,cn=one" );
 
         assertSame( jName, jName.add( 0, "cn=zero" ) );
-        assertSame( aName, aName.add( 0, "cn=zero" ) );
-        assertEquals( jName.toString(), aName.toString() );
+        assertNotSame( aName, aName.add( 0, "cn=zero" ) );
+        assertNotSame( jName.toString(), aName.toString() );
 
         assertSame( jName, jName.add( 2, "cn=one.5" ) );
-        assertSame( aName, aName.add( 2, "cn=one.5" ) );
-        assertEquals( jName.toString(), aName.toString() );
+        assertNotSame( aName, aName.add( 2, "cn=one.5" ) );
+        assertNotSame( jName.toString(), aName.toString() );
 
         assertSame( jName, jName.add( jName.size(), "cn=five" ) );
-        assertSame( aName, aName.add( aName.size(), "cn=five" ) );
-        assertEquals( jName.toString(), aName.toString() );
+        assertNotSame( aName, aName.add( aName.size(), "cn=five" ) );
+        assertNotSame( jName.toString(), aName.toString() );
     }
 
 
@@ -2711,15 +2710,14 @@ public class DNTest
      * Test for DIRSERVER-191
      */
     @Test
-    @Ignore("from now onwards DN is not mutable")
     public void testAddAllName() throws LdapException, InvalidNameException
     {
         LdapName jName = new LdapName( "cn=four,cn=three,cn=two,cn=one" );
         DN aName = new DN( "cn=four,cn=three,cn=two,cn=one" );
 
         assertSame( jName, jName.addAll( new LdapName( "cn=seven,cn=six" ) ) );
-        assertSame( aName, aName.addAll( new DN( "cn=seven,cn=six" ) ) );
-        assertEquals( jName.toString(), aName.toString() );
+        assertNotSame( aName, aName.addAll( new DN( "cn=seven,cn=six" ) ) );
+        assertNotSame( jName.toString(), aName.toString() );
     }
 
 
@@ -2727,23 +2725,22 @@ public class DNTest
      * Test for DIRSERVER-191
      */
     @Test
-    @Ignore("from now onwards DN is not mutable")
     public void testAddAllIntName() throws LdapException, InvalidNameException
     {
         LdapName jName = new LdapName( "cn=four,cn=three,cn=two,cn=one" );
         DN aName = new DN( "cn=four,cn=three,cn=two,cn=one" );
 
         assertSame( jName, jName.addAll( 0, new LdapName( "cn=zero,cn=zero.5" ) ) );
-        assertSame( aName, aName.addAll( 0, new DN( "cn=zero,cn=zero.5" ) ) );
-        assertEquals( jName.toString(), aName.toString() );
+        assertNotSame( aName, aName.addAll( 0, new DN( "cn=zero,cn=zero.5" ) ) );
+        assertNotSame( jName.toString(), aName.toString() );
 
         assertSame( jName, jName.addAll( 2, new LdapName( "cn=zero,cn=zero.5" ) ) );
-        assertSame( aName, aName.addAll( 2, new DN( "cn=zero,cn=zero.5" ) ) );
-        assertEquals( jName.toString(), aName.toString() );
+        assertNotSame( aName, aName.addAll( 2, new DN( "cn=zero,cn=zero.5" ) ) );
+        assertNotSame( jName.toString(), aName.toString() );
 
         assertSame( jName, jName.addAll( jName.size(), new LdapName( "cn=zero,cn=zero.5" ) ) );
-        assertSame( aName, aName.addAll( aName.size(), new DN( "cn=zero,cn=zero.5" ) ) );
-        assertEquals( jName.toString(), aName.toString() );
+        assertNotSame( aName, aName.addAll( aName.size(), new DN( "cn=zero,cn=zero.5" ) ) );
+        assertNotSame( jName.toString(), aName.toString() );
     }
 
 
@@ -2801,17 +2798,18 @@ public class DNTest
      * Test for DIRSERVER-191
      */
     @Test
-    @Ignore("from now onwards DN is not mutable")
     public void testRemoveName() throws LdapException, InvalidNameException
     {
         LdapName jName = new LdapName( "cn=four,cn=three,cn=two,cn=one" );
         DN aName = new DN( "cn=four,cn=three,cn=two,cn=one" );
+        jName.remove( 0 );
 
-        assertEquals( jName.remove( 0 ).toString(), aName.remove( 0 ).toString() );
-        assertEquals( jName.toString(), aName.toString() );
+        assertEquals( jName.toString(), aName.remove( 0 ).toString() );
+        assertNotSame( jName.toString(), aName.toString() );
 
-        assertEquals( jName.remove( jName.size() - 1 ).toString(), aName.remove( aName.size() - 1 ).toString() );
-        assertEquals( jName.toString(), aName.toString() );
+        jName.remove( jName.size() - 1 );
+        assertEquals( jName.toString(), aName.remove( aName.size() - 1 ).remove( 0 ).toString() );
+        assertNotSame( jName.toString(), aName.toString() );
     }
 
 
