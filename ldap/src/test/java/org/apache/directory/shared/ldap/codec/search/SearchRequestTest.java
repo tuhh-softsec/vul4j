@@ -34,8 +34,8 @@ import java.util.Set;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
+import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.tlv.TLVStateEnum;
 import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.codec.EncoderException;
@@ -57,7 +57,6 @@ import org.apache.directory.shared.ldap.schema.normalizers.DeepTrimToLowerNormal
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -1031,54 +1030,40 @@ public class SearchRequestTest
     /**
      * Test the decoding of a SearchRequest with controls.
      */
-    @Ignore("failing when ran using maven")
     @Test
     public void testDecodeSearchRequestWithControls()
     {
         byte[] asn1BER = new byte[]
             { 0x30, 0x7f,
-                0x02,
-                0x01,
-                0x04, // messageID
-                0x63,
-                0x33,
-                0x04,
-                0x13, // baseObject
-                'd', 'c', '=', 'm', 'y', '-', 'd', 'o', 'm', 'a', 'i', 'n', ',', 'd', 'c', '=', 'c', 'o', 'm',
-                0x0a,
-                0x01,
-                0x02, // scope: subtree
-                0x0a,
-                0x01,
-                0x03, // derefAliases: derefAlways
-                0x02,
-                0x01,
-                0x00, // sizeLimit: 0
-                0x02,
-                0x01,
-                0x00, // timeLimit: 0
-                0x01,
-                0x01,
-                0x00, // typesOnly: false
-                ( byte ) 0x87,
-                0x0b, // Present filter: (objectClass=*)
-                'o', 'b', 'j', 'e', 'c', 't', 'C', 'l', 'a', 's', 's',
-                0x30,
-                0x00, // Attributes = '*'
-                ( byte ) 0xa0,
-                0x45, // controls
-                0x30, 0x28,
-                0x04,
-                0x16, // control
-                '1', '.', '2', '.', '8', '4', '0', '.', '1', '1', '3', '5', '5', '6', '.', '1', '.', '4', '.', '3',
-                '1', '9', 0x01, 0x01,
-                ( byte ) 0xff, // criticality: false
-                0x04, 0x0b, 0x30, 0x09, 0x02, 0x01, 0x02, 0x04, 0x04, 0x47, 0x00, 0x00,
-                0x00, // value: pageSize=2
-                0x30, 0x19, 0x04,
-                0x17, // control
-                '2', '.', '1', '6', '.', '8', '4', '0', '.', '1', '.', '1', '1', '3', '7', '3', '0', '.', '3', '.',
-                '4', '.', '2', };
+                0x02, 0x01, 0x04, // messageID
+                0x63, 0x33,
+                  0x04, 0x13, // baseObject
+                    'd', 'c', '=', 'm', 'y', '-', 'd', 'o', 'm', 'a', 'i', 'n', ',', 'd', 'c', '=', 'c', 'o', 'm',
+                  0x0a, 0x01, 0x02, // scope: subtree
+                  0x0a, 0x01, 0x03, // derefAliases: derefAlways
+                  0x02, 0x01, 0x00, // sizeLimit: 0
+                  0x02, 0x01, 0x00, // timeLimit: 0
+                  0x01, 0x01, 0x00, // typesOnly: false
+                  ( byte ) 0x87, 0x0b, // Present filter: (objectClass=*)
+                    'o', 'b', 'j', 'e', 'c', 't', 'C', 'l', 'a', 's', 's',
+                  0x30, 0x00, // Attributes = '*'
+                  ( byte ) 0xa0, 0x45, // controls
+                    0x30, 0x28,
+                      0x04, 0x16, // control
+                        '1', '.', '2', '.', '8', '4', '0', '.', 
+                        '1', '1', '3', '5', '5', '6', '.', '1', 
+                        '.', '4', '.', '3', '1', '9', 
+                      0x01, 0x01, ( byte ) 0xff, // criticality: false
+                      0x04, 0x0b, 
+                        0x30, 0x09, 
+                          0x02, 0x01, 0x02, 
+                          0x04, 0x04, 0x47, 0x00, 0x00, 0x00, // value: pageSize=2
+                    0x30, 0x19, 
+                      0x04, 0x17, // control
+                        '2', '.', '1', '6', '.', '8', '4', '0', 
+                        '.', '1', '.', '1', '1', '3', '7', '3', 
+                        '0', '.', '3', '.', '4', '.', '2', 
+                        };
 
         Asn1Decoder ldapDecoder = new Asn1Decoder();
 
