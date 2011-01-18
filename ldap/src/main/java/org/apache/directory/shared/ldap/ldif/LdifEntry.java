@@ -265,18 +265,28 @@ public class LdifEntry implements Cloneable, Externalizable
      * 
      * @param id The attribute ID
      * 
-     * @param value The attribute value
+     * @param values The attribute values
      * @throws LdapException if something went wrong
      */
-    public void addAttribute( String id, Object value ) throws LdapException
+    public void addAttribute( String id, Object... values ) throws LdapException
     {
-        if ( value instanceof String )
+        if ( values != null )
         {
-            entry.add( id, ( String ) value );
+            for ( Object value : values )
+            {
+                if ( value instanceof String )
+                {
+                    entry.add( id, ( String ) value );
+                }
+                else
+                {
+                    entry.add( id, ( byte[] ) value );
+                }
+            }
         }
         else
         {
-            entry.add( id, ( byte[] ) value );
+            entry.add( id, (Value<?>)null );
         }
     }
 
@@ -584,26 +594,29 @@ public class LdifEntry implements Cloneable, Externalizable
     /**
      * Add a control to the entry
      * 
-     * @param control The added control
+     * @param controls The added controls
      */
-    public void addControl( Control control )
+    public void addControl( Control... controls )
     {
-        if ( control == null )
+        if ( controls == null )
         {
             throw new IllegalArgumentException( "The added control must not be null" );
         }
 
-        if ( changeType == ChangeType.None )
+        for ( Control control : controls )
         {
-            changeType = ChangeType.Add;
+            if ( changeType == ChangeType.None )
+            {
+                changeType = ChangeType.Add;
+            }
+    
+            if ( this.controls == null )
+            {
+                this.controls = new ConcurrentHashMap<String, Control>();
+            }
+    
+            this.controls.put( control.getOid(), control );
         }
-
-        if ( controls == null )
-        {
-            controls = new ConcurrentHashMap<String, Control>();
-        }
-
-        controls.put( control.getOid(), control );
     }
 
 

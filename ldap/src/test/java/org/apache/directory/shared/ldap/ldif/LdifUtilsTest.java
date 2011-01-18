@@ -38,15 +38,12 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.codec.controls.ManageDsaITControl;
 import org.apache.directory.shared.ldap.entry.DefaultEntry;
-import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.Entry;
-import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueException;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
 import org.apache.directory.shared.ldap.util.StringTools;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -350,11 +347,7 @@ public class LdifUtilsTest
         entry.setDn( "cn=Saarbr\u00FCcken, dc=example, dc=com" );
         entry.setChangeType( ChangeType.Add );
         
-        EntryAttribute oc = new DefaultEntryAttribute( "objectClass" );
-        oc.add( "top", "person", "inetorgPerson" );
-        
-        entry.addAttribute( oc );
-        
+        entry.addAttribute( "objectClass", "top", "person", "inetorgPerson" );
         entry.addAttribute( "cn", "Saarbr\u00FCcken" );
         entry.addAttribute( "sn", "test" );
 
@@ -487,9 +480,10 @@ public class LdifUtilsTest
     
     
     @Test
-    @Ignore("The attributes are not printed in the same order in Java5 and Java6")
     public void testConvertEntryNoControls() throws Exception 
     {
+        LdifReader reader = new LdifReader();
+
         String expected = 
             "dn: ou=test\n" +
             "ObjectClass: top\n" +
@@ -498,28 +492,34 @@ public class LdifUtilsTest
             "m-oid: 1.2.3.4\n" +
             "m-description: description\n\n";
         
+        List<LdifEntry> entries = reader.parseLdif( expected );
+        LdifEntry expectedEntry = entries.get( 0 );
+
         LdifEntry entry = new LdifEntry();
         
         entry.setDn( "ou=test" );
-        entry.addAttribute( "ObjectClass", "top" );
-        entry.addAttribute( "ObjectClass", "metaTop" );
-        entry.addAttribute( "ObjectClass", "metaSyntax" );
+        entry.addAttribute( "ObjectClass", "top", "metaTop", "metaSyntax" );
         entry.addAttribute( "m-oid", "1.2.3.4" );
         entry.addAttribute( "m-description", "description" );
         
         String converted = LdifUtils.convertToLdif( entry );
         
         assertNotNull( converted );
-        assertEquals( expected, converted );
+        
+        entries = reader.parseLdif( converted );
+        LdifEntry convertedEntry = entries.get( 0 );
+
+        assertEquals( expectedEntry, convertedEntry );
     }
 
 
     
     
     @Test
-    @Ignore("The attributes are not printed in the same order in Java5 and Java6")
     public void testConvertEntryOneControl() throws Exception 
     {
+        LdifReader reader = new LdifReader();
+
         String expected = 
             "dn: ou=test\n" +
             "control: 2.16.840.1.113730.3.4.2 false\n" +
@@ -529,13 +529,14 @@ public class LdifUtilsTest
             "ObjectClass: metaSyntax\n" +
             "m-oid: 1.2.3.4\n" +
             "m-description: description\n\n";
-        
+
+        List<LdifEntry> entries = reader.parseLdif( expected );
+        LdifEntry expectedEntry = entries.get( 0 );
+
         LdifEntry entry = new LdifEntry();
         
         entry.setDn( "ou=test" );
-        entry.addAttribute( "ObjectClass", "top" );
-        entry.addAttribute( "ObjectClass", "metaTop" );
-        entry.addAttribute( "ObjectClass", "metaSyntax" );
+        entry.addAttribute( "ObjectClass", "top", "metaTop", "metaSyntax" );
         entry.addAttribute( "m-oid", "1.2.3.4" );
         entry.addAttribute( "m-description", "description" );
         
@@ -546,6 +547,10 @@ public class LdifUtilsTest
         String converted = LdifUtils.convertToLdif( entry );
         
         assertNotNull( converted );
-        assertEquals( expected, converted );
+        
+        entries = reader.parseLdif( converted );
+        LdifEntry convertedEntry = entries.get( 0 );
+
+        assertEquals( expectedEntry, convertedEntry );
     }
 }

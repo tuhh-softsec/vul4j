@@ -57,10 +57,8 @@ public abstract class AbstractControl extends AbstractAsn1Object implements Cont
     /** The control length */
     private int controlLength;
     
+    /** The control decoder */
     protected ControlDecoder decoder;
-
-    // ~ Methods
-    // ------------------------------------------------------------------------------------
 
     /**
      * Default constructor.
@@ -213,9 +211,48 @@ public abstract class AbstractControl extends AbstractAsn1Object implements Cont
     }
     
     
+    /**
+     * {@inheritDoc}
+     */
     public ControlDecoder getDecoder()
     {
         return decoder;
+    }
+    
+    
+    /**
+     * @see Object#equals(Object)
+     */
+    public boolean equals( Object o )
+    {
+        if ( o == this )
+        {
+            return true;
+        }
+
+        if ( o == null )
+        {
+            return false;
+        }
+
+        if ( !( o instanceof Control ) )
+        {
+            return false;
+        }
+
+        Control otherControl = ( Control ) o;
+        
+        if ( !oid.equalsIgnoreCase( otherControl.getOid() ) )
+        {
+            return false;
+        }
+        
+        if ( criticality != otherControl.isCritical() )
+        {
+            return false;
+        }
+
+        return hasValue() == otherControl.hasValue();
     }
 
 

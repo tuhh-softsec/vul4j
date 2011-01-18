@@ -144,6 +144,22 @@ public class SubentriesControl extends AbstractControl
 
 
     /**
+     * @see Object#equals(Object)
+     */
+    public boolean equals( Object o )
+    {
+        if ( !super.equals( o ) )
+        {
+            return false;
+        }
+
+        SubentriesControl otherControl = ( SubentriesControl ) o;
+
+        return ( visibility == otherControl.visibility );
+    }
+
+
+    /**
      * Return a String representing this EntryChangeControl.
      */
     public String toString()

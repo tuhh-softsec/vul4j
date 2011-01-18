@@ -20,9 +20,8 @@
 package org.apache.directory.shared.ldap.codec.controls;
 
 
-
-
 /**
+ * The Cascade control
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */

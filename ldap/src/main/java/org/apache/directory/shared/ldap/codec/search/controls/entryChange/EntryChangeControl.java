@@ -277,6 +277,24 @@ public class EntryChangeControl extends AbstractControl
 
 
     /**
+     * @see Object#equals(Object)
+     */
+    public boolean equals( Object o )
+    {
+        if ( !super.equals( o ) )
+        {
+            return false;
+        }
+
+        EntryChangeControl otherControl = ( EntryChangeControl ) o;
+
+        return ( changeNumber == otherControl.changeNumber ) &&
+             ( changeType == otherControl.changeType ) &&
+             ( previousDn.equals( otherControl.previousDn ) );
+    }
+
+    
+    /**
      * Return a String representing this EntryChangeControl.
      */
     public String toString()

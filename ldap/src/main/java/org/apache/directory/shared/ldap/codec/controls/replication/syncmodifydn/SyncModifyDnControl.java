@@ -308,6 +308,54 @@ public class SyncModifyDnControl extends AbstractControl
 
 
     /**
+     * @see Object#equals(Object)
+     */
+    public boolean equals( Object o )
+    {
+        if ( !super.equals( o ) )
+        {
+            return false;
+        }
+
+        SyncModifyDnControl otherControl = ( SyncModifyDnControl ) o;
+        
+        if ( newRdn != null )
+        {
+            if ( newRdn.equals( otherControl.newRdn ) )
+            {
+                return false;
+            }
+        }
+        else
+        {
+            if ( otherControl.newRdn != null )
+            {
+                return false;
+            }
+        }
+        
+        if ( newSuperiorDn != null )
+        {
+            if ( newSuperiorDn.equals( otherControl.newSuperiorDn ) )
+            {
+                return false;
+            }
+        }
+        else
+        {
+            if ( otherControl.newSuperiorDn != null )
+            {
+                return false;
+            }
+        }
+        
+        return ( deleteOldRdn == otherControl.deleteOldRdn ) && 
+            ( modDnType == otherControl.modDnType ) &&
+            ( entryDn.equals( otherControl.entryDn ) );
+    }
+
+
+    /**
      * @see Object#toString()
      */
     public String toString()

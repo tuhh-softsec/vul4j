@@ -21,6 +21,7 @@ package org.apache.directory.shared.ldap.codec.search.controls.pagedSearch;
 
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
@@ -259,6 +260,22 @@ public class PagedResultsControl extends AbstractControl
         }
 
         return value;
+    }
+
+
+    /**
+     * @see Object#equals(Object)
+     */
+    public boolean equals( Object o )
+    {
+        if ( !super.equals( o ) )
+        {
+            return false;
+        }
+
+        PagedResultsControl otherControl = ( PagedResultsControl ) o;
+
+        return ( size == otherControl.size ) && Arrays.equals( cookie, otherControl.cookie );
     }
 
 

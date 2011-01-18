@@ -45,5 +45,4 @@ public class PasswordPolicyRequestControl extends AbstractControl
     {
         return super.computeLength( 0 );
     }
-
 }

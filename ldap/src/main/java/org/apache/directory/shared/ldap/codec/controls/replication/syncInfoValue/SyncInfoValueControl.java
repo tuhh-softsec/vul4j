@@ -108,7 +108,7 @@ public class SyncInfoValueControl extends AbstractControl
         this.type = type;
 
         // Initialize the arrayList if needed
-        if ( type == SynchronizationInfoEnum.SYNC_ID_SET && syncUUIDs == null )
+        if ( ( type == SynchronizationInfoEnum.SYNC_ID_SET ) && ( syncUUIDs == null ) )
         {
             syncUUIDs = new ArrayList<byte[]>();
         }
@@ -528,6 +528,47 @@ public class SyncInfoValueControl extends AbstractControl
         
         return value;
     }
+
+    
+    /**
+     * @see Object#equals(Object)
+     */
+    public boolean equals( Object o )
+    {
+        if ( !super.equals( o ) )
+        {
+            return false;
+        }
+
+        SyncInfoValueControl otherControl = ( SyncInfoValueControl ) o;
+
+        if ( syncUUIDs != null )
+        {
+            if ( otherControl.syncUUIDs == null )
+            {
+                return false;
+            }
+            
+            // @TODO : check the UUIDs
+            for ( byte[] syncUuid : syncUUIDs )
+            {
+            }
+        }
+        else
+        {
+            if ( otherControl.syncUUIDs != null )
+            {
+                return false;
+            }
+        }
+        
+        return ( refreshDeletes == otherControl.refreshDeletes ) &&
+            ( refreshDone == otherControl.refreshDone ) &&
+            ( type == otherControl.type ) &&
+            ( Arrays.equals( cookie, otherControl.cookie ) );
+    }
+
+
 
     
     /**

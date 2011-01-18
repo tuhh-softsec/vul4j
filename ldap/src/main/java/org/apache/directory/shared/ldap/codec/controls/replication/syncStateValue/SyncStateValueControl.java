@@ -21,6 +21,7 @@ package org.apache.directory.shared.ldap.codec.controls.replication.syncStateVal
 
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
@@ -231,6 +232,24 @@ public class SyncStateValueControl  extends AbstractControl
         }
         
         return value;
+    }
+
+
+    /**
+     * @see Object#equals(Object)
+     */
+    public boolean equals( Object o )
+    {
+        if ( !super.equals( o ) )
+        {
+            return false;
+        }
+
+        SyncStateValueControl otherControl = ( SyncStateValueControl ) o;
+        
+        return ( syncStateType == otherControl.syncStateType ) && 
+            ( Arrays.equals( entryUUID, otherControl.entryUUID ) ) &&
+            ( Arrays.equals( cookie, otherControl.cookie ) );
     }
 
 
