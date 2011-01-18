@@ -20,6 +20,7 @@
 package org.apache.directory.shared.ldap.codec.controls.replication.syncRequestValue;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
@@ -235,6 +236,26 @@ public class SyncRequestValueControl  extends AbstractControl
         }
         
         return value;
+    }
+
+
+
+
+    /**
+     * @see Object#equals(Object)
+     */
+    public boolean equals( Object o )
+    {
+        if ( !super.equals( o ) )
+        {
+            return false;
+        }
+
+        SyncRequestValueControl otherControl = ( SyncRequestValueControl ) o;
+        
+        return ( mode == otherControl.mode ) && 
+            ( reloadHint == otherControl.reloadHint ) &&
+            ( Arrays.equals( cookie, otherControl.cookie ) );
     }
 
 
