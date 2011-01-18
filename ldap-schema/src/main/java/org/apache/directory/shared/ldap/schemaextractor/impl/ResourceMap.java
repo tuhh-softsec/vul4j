@@ -17,7 +17,7 @@
  *   under the License.
  *
  */
-package org.apache.directory.shared.ldap.schema.ldif.extractor.impl;
+package org.apache.directory.shared.ldap.schemaextractor.impl;
 
 
 import java.io.BufferedReader;

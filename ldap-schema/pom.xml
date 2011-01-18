@@ -140,7 +140,15 @@
           <instructions>
             <Bundle-SymbolicName>${project.groupId}.ldap.schema</Bundle-SymbolicName>
             <Bundle-Name>${project.name}</Bundle-Name>
-            <Export-Package>org.apache.directory.shared.ldap.schema.*</Export-Package>
+            <Export-Package>org.apache.directory.shared.ldap.schema*</Export-Package>
+            <Import-Package>
+              *,
+              org.apache.directory.shared.ldap.schema.comparators,
+              org.apache.directory.shared.ldap.schema.normalizers,
+              org.apache.directory.shared.ldap.schema.parsers,
+              org.apache.directory.shared.ldap.schema.registries,
+              org.apache.directory.shared.ldap.schema.syntaxCheckers
+            </Import-Package>
           </instructions>
         </configuration>
       </plugin>

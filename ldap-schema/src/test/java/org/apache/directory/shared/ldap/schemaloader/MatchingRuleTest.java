@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.schema.loader.ldif;
+package org.apache.directory.shared.ldap.schemaloader;
 
 
 import static junit.framework.Assert.assertEquals;
@@ -38,13 +38,14 @@ import org.apache.directory.shared.ldap.schema.comparators.GeneralizedTimeCompar
 import org.apache.directory.shared.ldap.schema.comparators.IntegerComparator;
 import org.apache.directory.shared.ldap.schema.comparators.NumericStringComparator;
 import org.apache.directory.shared.ldap.schema.comparators.TelephoneNumberComparator;
-import org.apache.directory.shared.ldap.schema.ldif.extractor.SchemaLdifExtractor;
-import org.apache.directory.shared.ldap.schema.ldif.extractor.impl.DefaultSchemaLdifExtractor;
-import org.apache.directory.shared.ldap.schema.manager.impl.DefaultSchemaManager;
 import org.apache.directory.shared.ldap.schema.normalizers.GeneralizedTimeNormalizer;
 import org.apache.directory.shared.ldap.schema.normalizers.NumericNormalizer;
 import org.apache.directory.shared.ldap.schema.normalizers.TelephoneNumberNormalizer;
 import org.apache.directory.shared.ldap.schema.registries.Schema;
+import org.apache.directory.shared.ldap.schemaextractor.SchemaLdifExtractor;
+import org.apache.directory.shared.ldap.schemaextractor.impl.DefaultSchemaLdifExtractor;
+import org.apache.directory.shared.ldap.schemaloader.LdifSchemaLoader;
+import org.apache.directory.shared.ldap.schemamanager.impl.DefaultSchemaManager;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

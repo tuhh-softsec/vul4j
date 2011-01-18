@@ -18,7 +18,7 @@
  *
  */
 
-package org.apache.directory.shared.ldap.schema.loader.ldif;
+package org.apache.directory.shared.ldap.schemaloader;
 
 
 import java.io.IOException;
