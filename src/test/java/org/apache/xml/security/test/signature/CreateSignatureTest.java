@@ -39,50 +39,41 @@ import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /**
  * Tests that create signatures.
  *
  * @author Sean Mullan
  */
-public class CreateSignatureTest extends TestCase {
+public class CreateSignatureTest extends org.junit.Assert {
 
     /** {@link org.apache.commons.logging} logging facility */
     static org.apache.commons.logging.Log log =
-        org.apache.commons.logging.LogFactory.getLog
-            (CreateSignatureTest.class.getName());
+        org.apache.commons.logging.LogFactory.getLog(CreateSignatureTest.class.getName());
 
     private static final String BASEDIR = System.getProperty("basedir");
     private static final String SEP = System.getProperty("file.separator");
 
-    public static Test suite() {
-        return new TestSuite(CreateSignatureTest.class);
+    private KeyPair kp = null;    
+    private javax.xml.parsers.DocumentBuilder db;
+    
+    public CreateSignatureTest() throws Exception {
+        javax.xml.parsers.DocumentBuilderFactory dbf = 
+            javax.xml.parsers.DocumentBuilderFactory.newInstance();
+        dbf.setNamespaceAware(true);
+        db = dbf.newDocumentBuilder();
+        org.apache.xml.security.Init.init();
+        kp = KeyPairGenerator.getInstance("RSA").genKeyPair();
     }
-
-    public CreateSignatureTest(String name) {
-        super(name);
-    }
-
-    public static void main(String[] args) {
-        String[] testCaseName = { "-noloading",
-                                  CreateSignatureTest.class.getName() };
-
-        junit.textui.TestRunner.main(testCaseName);
-    }
-
     
     /**
      * Test for bug 36044 - Canonicalizing an empty node-set throws an 
      * ArrayIndexOutOfBoundsException.
      */
+    @org.junit.Test
     public void testEmptyNodeSet() throws Exception {
-
         Document doc = db.newDocument();
-        Element envelope = doc.createElementNS("http://www.usps.gov/",
-                                               "Envelope");
+        Element envelope = doc.createElementNS("http://www.usps.gov/", "Envelope");
         envelope.appendChild(doc.createTextNode("\n"));
         doc.appendChild(envelope);
 
@@ -106,48 +97,41 @@ public class CreateSignatureTest extends TestCase {
         XPathContainer xpathC = new XPathContainer(doc);
 
         xpathC.setXPath("self::text()");
-        transforms.addTransform(Transforms.TRANSFORM_XPATH,
-                                xpathC.getElementPlusReturns());
-        sig.addDocument("#object-1", transforms,
-                        Constants.ALGO_ID_DIGEST_SHA1, null,
-                        "http://www.w3.org/2000/09/xmldsig#Object");
+        transforms.addTransform(Transforms.TRANSFORM_XPATH, xpathC.getElementPlusReturns());
+        sig.addDocument(
+            "#object-1", transforms, Constants.ALGO_ID_DIGEST_SHA1, null,
+            "http://www.w3.org/2000/09/xmldsig#Object"
+        );
 
         KeyStore ks = KeyStore.getInstance("JKS");
         FileInputStream fis = null;
         if (BASEDIR != null && !"".equals(BASEDIR)) {
-            fis = new FileInputStream(BASEDIR + SEP + 
-                  "data/org/apache/xml/security/samples/input/keystore.jks");
+            fis = 
+                new FileInputStream(BASEDIR + SEP 
+                    + "data/org/apache/xml/security/samples/input/keystore.jks"
+                );
         } else {
-            fis = new FileInputStream(
-                  "data/org/apache/xml/security/samples/input/keystore.jks");
+            fis = 
+                new FileInputStream("data/org/apache/xml/security/samples/input/keystore.jks");
         }
         ks.load(fis, "xmlsecurity".toCharArray());
-        PrivateKey privateKey = (PrivateKey) ks.getKey("test",
-                                 "xmlsecurity".toCharArray());
+        PrivateKey privateKey = (PrivateKey) ks.getKey("test", "xmlsecurity".toCharArray());
 
         sig.sign(privateKey);
     }
-    
-    KeyPair kp = null;    
-    javax.xml.parsers.DocumentBuilder db;
-    
-    protected void setUp() throws Exception {
-        javax.xml.parsers.DocumentBuilderFactory dbf = javax.xml.parsers.DocumentBuilderFactory
-        .newInstance();
-        dbf.setNamespaceAware(true);
-        db = dbf.newDocumentBuilder();
-        org.apache.xml.security.Init.init();
-        kp=KeyPairGenerator.getInstance("RSA").genKeyPair();
-    }
+
+    @org.junit.Test
     public void testOne() throws Exception {        
         doVerify(doSign()); 
         doVerify(doSign());
     }
 
+    @org.junit.Test
     public void testTwo() throws Exception {
         doSignWithCert();
     }
 
+    @org.junit.Test
     public void testWithNSPrefixDisabled() throws Exception {
         String prefix = Constants.getSignatureSpecNSprefix();
         try {
@@ -160,25 +144,25 @@ public class CreateSignatureTest extends TestCase {
         }
     }
 
-    String doSign() throws Exception {
+    private String doSign() throws Exception {
         PrivateKey privateKey = kp.getPrivate();
         org.w3c.dom.Document doc = db.newDocument();
         doc.appendChild(doc.createComment(" Comment before "));
-        Element root = doc.createElementNS("",
-                "RootElement");
+        Element root = doc.createElementNS("", "RootElement");
 
         doc.appendChild(root);
         root.appendChild(doc.createTextNode("Some simple text\n"));
 
-        Element canonElem = XMLUtils.createElementInSignatureSpace(doc,
-                Constants._TAG_CANONICALIZATIONMETHOD);
-        canonElem.setAttributeNS(null, Constants._ATT_ALGORITHM,
-                Canonicalizer.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
+        Element canonElem = 
+            XMLUtils.createElementInSignatureSpace(doc, Constants._TAG_CANONICALIZATIONMETHOD);
+        canonElem.setAttributeNS(
+            null, Constants._ATT_ALGORITHM, Canonicalizer.ALGO_ID_C14N_EXCL_OMIT_COMMENTS
+        );
 
-        SignatureAlgorithm signatureAlgorithm = new SignatureAlgorithm(doc,
-                XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA1);
-        XMLSignature sig = new XMLSignature(doc, null, signatureAlgorithm
-                .getElement(), canonElem);
+        SignatureAlgorithm signatureAlgorithm = 
+            new SignatureAlgorithm(doc, XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA1);
+        XMLSignature sig = 
+            new XMLSignature(doc, null, signatureAlgorithm.getElement(), canonElem);
 
         root.appendChild(sig.getElement());
         doc.appendChild(doc.createComment(" Comment after "));
@@ -196,36 +180,35 @@ public class CreateSignatureTest extends TestCase {
         return new String(bos.toByteArray());
     }
 
-    String doSignWithCert() throws Exception {
+    private String doSignWithCert() throws Exception {
         KeyStore ks = KeyStore.getInstance("JKS");
         FileInputStream fis = null;
         if (BASEDIR != null && !"".equals(BASEDIR)) {
             fis = new FileInputStream(BASEDIR + SEP + 
-                  "data/test.jks");
+            "data/test.jks");
         } else {
             fis = new FileInputStream("data/test.jks");
         }
         ks.load(fis, "changeit".toCharArray());
-        PrivateKey privateKey = (PrivateKey) ks.getKey("mullan",
-                                 "changeit".toCharArray());
+        PrivateKey privateKey = (PrivateKey) ks.getKey("mullan", "changeit".toCharArray());
         org.w3c.dom.Document doc = db.newDocument();
         X509Certificate signingCert = (X509Certificate) ks.getCertificate("mullan");
         doc.appendChild(doc.createComment(" Comment before "));
-        Element root = doc.createElementNS("",
-                "RootElement");
+        Element root = doc.createElementNS("", "RootElement");
 
         doc.appendChild(root);
         root.appendChild(doc.createTextNode("Some simple text\n"));
 
-        Element canonElem = XMLUtils.createElementInSignatureSpace(doc,
-                Constants._TAG_CANONICALIZATIONMETHOD);
-        canonElem.setAttributeNS(null, Constants._ATT_ALGORITHM,
-                Canonicalizer.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
+        Element canonElem = 
+            XMLUtils.createElementInSignatureSpace(doc, Constants._TAG_CANONICALIZATIONMETHOD);
+        canonElem.setAttributeNS(
+            null, Constants._ATT_ALGORITHM, Canonicalizer.ALGO_ID_C14N_EXCL_OMIT_COMMENTS
+        );
 
-        SignatureAlgorithm signatureAlgorithm = new SignatureAlgorithm(doc,
-                XMLSignature.ALGO_ID_SIGNATURE_DSA);
-        XMLSignature sig = new XMLSignature(doc, null, signatureAlgorithm
-                .getElement(), canonElem);
+        SignatureAlgorithm signatureAlgorithm = 
+            new SignatureAlgorithm(doc, XMLSignature.ALGO_ID_SIGNATURE_DSA);
+        XMLSignature sig = 
+            new XMLSignature(doc, null, signatureAlgorithm.getElement(), canonElem);
 
         root.appendChild(sig.getElement());
         doc.appendChild(doc.createComment(" Comment after "));
@@ -244,21 +227,23 @@ public class CreateSignatureTest extends TestCase {
         return new String(bos.toByteArray());
     }
 
-    void doVerify(String signedXML) throws Exception {
+    private void doVerify(String signedXML) throws Exception {
         org.w3c.dom.Document doc = db.parse(new ByteArrayInputStream(signedXML.getBytes()));
         Element nscontext = TestUtils.createDSctx(doc, "ds",Constants.SignatureSpecNS);
-        Element sigElement = (Element) XPathAPI.selectSingleNode(doc,"//ds:Signature[1]", nscontext);
+        Element sigElement = 
+            (Element) XPathAPI.selectSingleNode(doc,"//ds:Signature[1]", nscontext);
         XMLSignature signature = new XMLSignature(sigElement, "");
         KeyInfo ki = signature.getKeyInfo();
 
         if (ki == null) {
-                throw new RuntimeException("No keyinfo");
+            throw new RuntimeException("No keyinfo");
         }
         PublicKey pk = signature.getKeyInfo().getPublicKey();
 
         if (pk == null) {
-                throw new RuntimeException("No public key");
+            throw new RuntimeException("No public key");
         }
-        assertTrue(signature.checkSignatureValue(pk) );
+        assertTrue(signature.checkSignatureValue(pk));
     }
+    
 }

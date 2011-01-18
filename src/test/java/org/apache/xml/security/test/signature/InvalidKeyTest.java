@@ -28,29 +28,22 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 /**
  * Test case contributed by Matthias Germann for testing that bug 43239 is
  * fixed: "No installed provider supports this key" when checking a RSA 
  * signature against a DSA key before RSA key.
  */
-public class InvalidKeyTest extends TestCase {
-
-    static {
-        Init.init();
-    }
-
-    public static Test suite() {
-       return new TestSuite(InvalidKeyTest.class);
-    }
+public class InvalidKeyTest extends org.junit.Assert {
 
     private static final String BASEDIR = 
         System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
     private static final String SEP = System.getProperty("file.separator");
+    
+    static {
+        Init.init();
+    }
 
+    @org.junit.Test
     public void test() throws Exception {
         FileInputStream input = new FileInputStream(BASEDIR + SEP + 
             "data/org/apache/xml/security/samples/input/truststore.jks");
@@ -66,7 +59,7 @@ public class InvalidKeyTest extends TestCase {
         validate(trustStore.getCertificate("a70-garaio-frontend-u").getPublicKey());
     }
     
-    public void validate(PublicKey pk) throws Exception {
+    private void validate(PublicKey pk) throws Exception {
         FileInputStream is = new FileInputStream(BASEDIR + SEP +
             "data/org/apache/xml/security/samples/input/test-assertion.xml");
             
@@ -82,4 +75,5 @@ public class InvalidKeyTest extends TestCase {
 
         // System.out.println("VALIDATION OK" );
     }
+    
 }

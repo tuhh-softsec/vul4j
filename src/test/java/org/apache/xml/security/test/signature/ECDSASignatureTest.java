@@ -28,10 +28,6 @@ import java.security.PrivateKey;
 import java.security.Security;
 import java.security.cert.X509Certificate;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 import org.apache.xml.security.algorithms.SignatureAlgorithm;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.keys.KeyInfo;
@@ -47,7 +43,7 @@ import org.w3c.dom.Element;
  *
  * @author Wolfgang Glas
  */
-public class ECDSASignatureTest extends TestCase {
+public class ECDSASignatureTest extends org.junit.Assert {
 
     /** {@link org.apache.commons.logging} logging facility */
     private static org.apache.commons.logging.Log log =
@@ -63,37 +59,16 @@ public class ECDSASignatureTest extends TestCase {
     
     private javax.xml.parsers.DocumentBuilder db;
 
-    private File makeDataFile(String relPath) {
-        if (BASEDIR != null && !"".equals(BASEDIR)) {
-            return new File(BASEDIR + SEP + relPath);
-        } else {
-            return new File(relPath);
-        }
-    }
-
-    public static Test suite() {
-        return new TestSuite(ECDSASignatureTest.class);
-    }
-
-    public ECDSASignatureTest(String name) {
-        super(name);
-    }
-
-    public static void main(String[] args) {
-        String[] testCaseName = {"-noloading", ECDSASignatureTest.class.getName()};
-        junit.textui.TestRunner.main(testCaseName);
-    }
-    
-    protected void setUp() throws Exception {
+    public ECDSASignatureTest() throws Exception {
         //
         // If the BouncyCastle provider is not installed, then try to load it 
         // via reflection. If it is not available, then skip this test as it is
         // required for elliptic curves
         //
         if (Security.getProvider("BC") == null) {
-            Constructor cons = null;
+            Constructor<?> cons = null;
             try {
-                Class c = Class.forName("org.bouncycastle.jce.provider.BouncyCastleProvider");
+                Class<?> c = Class.forName("org.bouncycastle.jce.provider.BouncyCastleProvider");
                 cons = c.getConstructor(new Class[] {});
             } catch (Exception e) {
                 //ignore
@@ -109,17 +84,20 @@ public class ECDSASignatureTest extends TestCase {
         javax.xml.parsers.DocumentBuilderFactory dbf = 
             javax.xml.parsers.DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);
-        log.info("dbf.isIgnoringComments()=" + dbf.isIgnoringComments());
-        log.info("dbf.isIgnoringElementContentWhitespace()=" + dbf.isIgnoringElementContentWhitespace());
+        log.info("dbf.isIgnoringComments() = " + dbf.isIgnoringComments());
+        log.info(
+             "dbf.isIgnoringElementContentWhitespace() = " 
+             + dbf.isIgnoringElementContentWhitespace()
+         );
         
         String id = "http://apache.org/xml/properties/dom/document-class-name";
-       
         dbf.setAttribute(id, IndexedDocument.class.getName());
         
         db = dbf.newDocumentBuilder();
         org.apache.xml.security.Init.init();
     }
     
+    @org.junit.Test
     public void testOne() throws Exception {
         if (Security.getProvider("BC") == null) {
             return;
@@ -135,6 +113,7 @@ public class ECDSASignatureTest extends TestCase {
         doVerify(doSign());
     }
 
+    @org.junit.Test
     public void testTwo() throws Exception {
         if (Security.getProvider("BC") == null) {
             return;
@@ -147,6 +126,7 @@ public class ECDSASignatureTest extends TestCase {
         doVerify(is);
     }
 
+    @org.junit.Test
     public void testThree()  throws Exception {
         if (Security.getProvider("BC") == null) {
             return;
@@ -168,15 +148,16 @@ public class ECDSASignatureTest extends TestCase {
         doc.appendChild(root);
         root.appendChild(doc.createTextNode("Some simple text\n"));
 
-        Element canonElem = XMLUtils.createElementInSignatureSpace(doc,
-                Constants._TAG_CANONICALIZATIONMETHOD);
-        canonElem.setAttributeNS(null, Constants._ATT_ALGORITHM,
-                Canonicalizer.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
+        Element canonElem = 
+            XMLUtils.createElementInSignatureSpace(doc, Constants._TAG_CANONICALIZATIONMETHOD);
+        canonElem.setAttributeNS(
+            null, Constants._ATT_ALGORITHM, Canonicalizer.ALGO_ID_C14N_EXCL_OMIT_COMMENTS
+        );
 
-        SignatureAlgorithm signatureAlgorithm = new SignatureAlgorithm(doc,
-                XMLSignature.ALGO_ID_SIGNATURE_ECDSA_SHA1);
-        XMLSignature sig = new XMLSignature(doc, null, signatureAlgorithm
-                .getElement(), canonElem);
+        SignatureAlgorithm signatureAlgorithm = 
+            new SignatureAlgorithm(doc, XMLSignature.ALGO_ID_SIGNATURE_ECDSA_SHA1);
+        XMLSignature sig = 
+            new XMLSignature(doc, null, signatureAlgorithm.getElement(), canonElem);
 
         root.appendChild(sig.getElement());
         doc.appendChild(doc.createComment(" Comment after "));
@@ -202,22 +183,30 @@ public class ECDSASignatureTest extends TestCase {
     private void doVerify(InputStream is) throws Exception {
         org.w3c.dom.Document doc = this.db.parse(is);
         Element nscontext = XMLUtils.createDSctx(doc, "ds",Constants.SignatureSpecNS);
-        Element sigElement = (Element) XPathAPI.selectSingleNode(doc,"//ds:Signature[1]", nscontext);
+        Element sigElement = 
+            (Element) XPathAPI.selectSingleNode(doc,"//ds:Signature[1]", nscontext);
         XMLSignature signature = new XMLSignature(sigElement, "");
 
         signature.addResourceResolver(new XPointerResourceResolver(sigElement));
 
         KeyInfo ki = signature.getKeyInfo();
-
         if (ki == null) {
-                throw new RuntimeException("No keyinfo");
+            throw new RuntimeException("No keyinfo");
         }
         X509Certificate cert = signature.getKeyInfo().getX509Certificate();
 
         if (cert == null) {
-                throw new RuntimeException("No certificate");
+            throw new RuntimeException("No certificate");
         }
         assertTrue(signature.checkSignatureValue(cert) );
+    }
+    
+    private File makeDataFile(String relPath) {
+        if (BASEDIR != null && !"".equals(BASEDIR)) {
+            return new File(BASEDIR + SEP + relPath);
+        } else {
+            return new File(relPath);
+        }
     }
      
     /**
@@ -231,7 +220,6 @@ public class ECDSASignatureTest extends TestCase {
      * keystore used for this test ("data/org/apache/xml/security/samples/input/ecdsa.jks").
      *
     private static void setUpKeyAndCertificate() throws Exception {
-        
         java.security.KeyPairGenerator kpg = 
             java.security.KeyPairGenerator.getInstance("ECDSA");
          

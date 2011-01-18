@@ -30,43 +30,35 @@ import org.w3c.dom.Node;
  * 
  * @author wglas
  */
-public class IndexedDocument extends DocumentImpl
-{
+public class IndexedDocument extends DocumentImpl {
     private static final long serialVersionUID = -1342041999864449753L;
 
     private static final String ID_ATTR = "Id";
-    
-    private Map idMap;
-   
-    private void addToIdMap(Element element)
-    {
+
+    private Map<String, Element> idMap;
+
+    private void addToIdMap(Element element) {
         String id = element.getAttribute(ID_ATTR);
-        
-        if (id != null)
+
+        if (id != null) {
             this.idMap.put(id,element);
-        
-        for (Node node = element.getFirstChild(); node != null; node = node.getNextSibling())
-        {
-            if (node instanceof Element)
-            {
+        }
+
+        for (Node node = element.getFirstChild(); node != null; node = node.getNextSibling()) {
+            if (node instanceof Element) {
                 Element e = (Element) node;
                 this.addToIdMap(e);
             }
         }
     }
-    
-    /* (non-Javadoc)
-     * @see org.apache.xerces.dom.CoreDocumentImpl#getElementById(java.lang.String)
-     */
-    public Element getElementById(String id)
-    {
-        if (this.idMap == null)
-        {
-            this.idMap = new HashMap();
+
+    public Element getElementById(String id) {
+        if (this.idMap == null) {
+            this.idMap = new HashMap<String, Element>();
             this.addToIdMap(this.getDocumentElement());
         }
-        
+
         return (Element)this.idMap.get(id);
     }
-    
+
 }

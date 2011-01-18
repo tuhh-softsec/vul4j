@@ -26,48 +26,36 @@ import org.w3c.dom.NodeList;
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.utils.Constants;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
-public class NoKeyInfoTest extends TestCase {
+public class NoKeyInfoTest extends org.junit.Assert {
 
     private static final String BASEDIR = System.getProperty("basedir");
     private static final String SEP = System.getProperty("file.separator");
 
     private DocumentBuilder db;
 
-    public NoKeyInfoTest(String name) {
-        super(name);
-    }
-
-    public static Test suite() {
-        TestSuite suite = new TestSuite(NoKeyInfoTest.class);
-        return suite;
-    }
-
-    public void setUp() throws Exception {
+    public NoKeyInfoTest() throws Exception {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);
         db = dbf.newDocumentBuilder();
     }
 
-
+    @org.junit.Test
     public void testNullKeyInfo() throws Exception {
         File f = null;
+        String filename = 
+            "data/ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/signature-enveloping-hmac-sha1.xml";
         if (BASEDIR != null && !"".equals(BASEDIR)) {
-            f = new File(BASEDIR + SEP +
-                  "data/ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/signature-enveloping-hmac-sha1.xml");
+            f = new File(BASEDIR + SEP + filename);
         } else {
-            f = new File(
-                  "data/ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/signature-enveloping-hmac-sha1.xml");
+            f = new File(filename);
         }
         Document doc = db.parse(new FileInputStream(f));
-        NodeList nl = doc.getElementsByTagNameNS
-            (Constants.SignatureSpecNS, "Signature");
+        NodeList nl = doc.getElementsByTagNameNS(Constants.SignatureSpecNS, "Signature");
         XMLSignature sig = new XMLSignature
-            ((Element) nl.item(0), f.toURL().toString());
+            ((Element) nl.item(0), f.toURI().toURL().toString());
         KeyInfo ki = sig.getKeyInfo();
         assertNull(ki);
     }
+    
 }
