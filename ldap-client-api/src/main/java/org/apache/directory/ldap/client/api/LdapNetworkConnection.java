@@ -3048,11 +3048,33 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
      */
     public Entry lookup( DN dn, String... attributes ) throws LdapException
     {
+        return lookup( dn, null, attributes );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Entry lookup( DN dn, Control[] controls, String... attributes ) throws LdapException
+    {
         Entry entry = null;
 
         try
         {
-            Cursor<Response> cursor = search( dn, "(objectClass=*)", SearchScope.OBJECT, attributes );
+            SearchRequest searchRequest = new SearchRequestImpl();
+
+            searchRequest.setBase( dn );
+            searchRequest.setFilter( "(objectClass=*)" );
+            searchRequest.setScope( SearchScope.OBJECT );
+            searchRequest.addAttributes( attributes );
+            searchRequest.setDerefAliases( AliasDerefMode.DEREF_ALWAYS );
+            
+            if ( ( controls != null ) && ( controls.length > 0 ) )
+            {
+                searchRequest.addAllControls( controls );
+            }
+
+            Cursor<Response> cursor = search( searchRequest );
 
             // Read the response
             if ( cursor.next() )
@@ -3082,7 +3104,16 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
      */
     public Entry lookup( String dn, String... attributes ) throws LdapException
     {
-        return lookup( new DN( dn ), attributes );
+        return lookup( new DN( dn ), null, attributes );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Entry lookup( String dn, Control[] controls, String... attributes ) throws LdapException
+    {
+        return lookup( new DN( dn ), controls, attributes );
     }
 
 

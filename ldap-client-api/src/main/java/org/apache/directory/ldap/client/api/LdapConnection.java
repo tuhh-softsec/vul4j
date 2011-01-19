@@ -47,6 +47,7 @@ import org.apache.directory.shared.ldap.message.ModifyDnResponse;
 import org.apache.directory.shared.ldap.message.ModifyRequest;
 import org.apache.directory.shared.ldap.message.ModifyResponse;
 import org.apache.directory.shared.ldap.message.SearchRequest;
+import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
@@ -673,12 +674,38 @@ public interface LdapConnection
      * Searches for an entry having the given DN.
      *
      * @param dn the DN of the entry to be fetched
+     * @param controls the controls to use
+     * @param attributes the attributes to be returned along with entry
+     * @return the Entry with the given DN or null if no entry exists with that DN
+     * @throws LdapException in case of any problems while searching for the DN or if the returned response contains a referral
+     */
+    Entry lookup( DN dn, Control[] controls, String... attributes ) throws LdapException;
+
+
+
+    /**
+     * Searches for an entry having the given DN.
+     *
+     * @param dn the DN of the entry to be fetched
      * @param attributes the attributes to be returned along with entry
      * @return the Entry with the given DN or null if no entry exists with that DN
      * @throws LdapException in case of any problems while searching for the DN or if the returned response contains a referral
      * @see #lookup(DN, String...)
      */
     Entry lookup( String dn, String... attributes ) throws LdapException;
+
+
+    /**
+     * Searches for an entry having the given DN.
+     *
+     * @param dn the DN of the entry to be fetched
+     * @param controls the controls to use
+     * @param attributes the attributes to be returned along with entry
+     * @return the Entry with the given DN or null if no entry exists with that DN
+     * @throws LdapException in case of any problems while searching for the DN or if the returned response contains a referral
+     * @see #lookup(DN, String...)
+     */
+    Entry lookup( String dn, Control[] controls, String... attributes ) throws LdapException;
 
 
     /**
