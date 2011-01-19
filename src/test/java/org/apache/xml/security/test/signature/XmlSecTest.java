@@ -39,17 +39,13 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 /**
  * Tests creating and validating an XML Signature with an XPath Transform.
  * Tests bug #44617.
  *
  * @author Frank Cornelis
  */
-public class XmlSecTest extends TestCase {
+public class XmlSecTest extends org.junit.Assert {
     
     private static final String BASEDIR = 
         System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
@@ -58,16 +54,16 @@ public class XmlSecTest extends TestCase {
         org.apache.commons.logging.LogFactory.getLog
             (XmlSecTest.class.getName());
 
-    public static Test suite() {
-       return new TestSuite(XmlSecTest.class);
-    }
-
+    @org.junit.Test
     public void testCheckXmlSignatureSoftwareStack() throws Exception {
         checkXmlSignatureSoftwareStack(false);
     }
+    
+    @org.junit.Test
     public void testCheckXmlSignatureSoftwareStackWithCert() throws Exception {
         checkXmlSignatureSoftwareStack(true);
     }
+    
     private void checkXmlSignatureSoftwareStack(boolean cert) throws Exception {
         Init.init();
         DocumentBuilderFactory documentBuilderFactory = 
@@ -95,8 +91,8 @@ public class XmlSecTest extends TestCase {
         if (cert) {
             // get key & self-signed certificate from keystore
             String fs = System.getProperty("file.separator");
-            FileInputStream fis = new FileInputStream
-                (BASEDIR + fs + "data" + fs + "test.jks");
+            FileInputStream fis = 
+                new FileInputStream(BASEDIR + fs + "data" + fs + "test.jks");
             KeyStore ks = KeyStore.getInstance("JKS");
             ks.load(fis, "changeit".toCharArray());
             signingCert = (X509Certificate) ks.getCertificate("mullan");
@@ -108,9 +104,11 @@ public class XmlSecTest extends TestCase {
             privateKey = keyPair.getPrivate();
         }
 
-        XMLSignature signature = new XMLSignature(testDocument, "",
-                                XMLSignature.ALGO_ID_SIGNATURE_DSA,
-                                Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
+        XMLSignature signature = 
+            new XMLSignature(
+                testDocument, "", XMLSignature.ALGO_ID_SIGNATURE_DSA,
+                Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS
+            );
 
         Element signatureElement = signature.getElement();
         rootElement.appendChild(signatureElement);
@@ -119,11 +117,9 @@ public class XmlSecTest extends TestCase {
         XPathContainer xpath = new XPathContainer(testDocument);
         xpath.setXPathNamespaceContext("ds", Constants.SignatureSpecNS);
         xpath.setXPath("not(ancestor-or-self::ds:Signature)");
-        transforms.addTransform(Transforms.TRANSFORM_XPATH, xpath
-                                .getElementPlusReturns());
+        transforms.addTransform(Transforms.TRANSFORM_XPATH, xpath.getElementPlusReturns());
         transforms.addTransform(Transforms.TRANSFORM_C14N_WITH_COMMENTS);
-        signature.addDocument("", transforms,
-                                MessageDigestAlgorithm.ALGO_ID_DIGEST_SHA1);
+        signature.addDocument("", transforms, MessageDigestAlgorithm.ALGO_ID_DIGEST_SHA1);
 
         if (cert) {
             signature.addKeyInfo(signingCert);
@@ -132,17 +128,14 @@ public class XmlSecTest extends TestCase {
         }
 
         Element nsElement = testDocument.createElementNS(null, "nsElement");
-        nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:ds",
-                                Constants.SignatureSpecNS);
+        nsElement.setAttributeNS(
+            Constants.NamespaceSpecNS, "xmlns:ds", Constants.SignatureSpecNS
+        );
 
         signature.sign(privateKey);
 
-        // TransformerFactory tf = TransformerFactory.newInstance();
-        // Transformer t = tf.newTransformer();
-        // t.transform(new DOMSource(testDocument), new StreamResult(System.out));
-
-        NodeList signatureElems = XPathAPI.selectNodeList(testDocument,
-                                "//ds:Signature", nsElement);
+        NodeList signatureElems = 
+            XPathAPI.selectNodeList(testDocument, "//ds:Signature", nsElement);
         signatureElement = (Element) signatureElems.item(0);
         XMLSignature signatureToVerify = new XMLSignature(signatureElement, "");
 
@@ -150,4 +143,5 @@ public class XmlSecTest extends TestCase {
 
         assertTrue(signResult);
     }
+    
 }

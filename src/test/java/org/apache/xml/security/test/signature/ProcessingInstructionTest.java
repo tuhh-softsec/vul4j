@@ -30,10 +30,6 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.w3c.dom.Attr;
@@ -46,7 +42,7 @@ import org.apache.xml.utils.URI;
 /**
  * A test-case for Bugzilla bug 45744 - "XPath transform and xml-stylesheet".
  */
-public class ProcessingInstructionTest extends TestCase {
+public class ProcessingInstructionTest extends org.junit.Assert {
 
     static {
         org.apache.xml.security.Init.init();
@@ -54,12 +50,7 @@ public class ProcessingInstructionTest extends TestCase {
 
     private static String dir;
 
-    public static Test suite() {
-        return new TestSuite(ProcessingInstructionTest.class);
-    }
-    
-    public ProcessingInstructionTest(String name) {
-        super(name);
+    public ProcessingInstructionTest() {
         String base = System.getProperty("basedir") == null 
             ? "./" : System.getProperty("basedir");
         String fs = System.getProperty("file.separator");
@@ -67,6 +58,7 @@ public class ProcessingInstructionTest extends TestCase {
             fs + "security" + fs + "testcases" + fs;
     }
     
+    @org.junit.Test
     public void testProcessingInstruction() throws Exception {
         String signatureFileName = dir + "upp_sign.xml";
         DocumentBuilderFactory dbf = 
@@ -81,8 +73,9 @@ public class ProcessingInstructionTest extends TestCase {
         xpath.setNamespaceContext(new NamespaceContext() {
 
             public String getNamespaceURI(String arg0) {
-                if (!arg0.equals("ds"))
+                if (!arg0.equals("ds")) {
                     throw new RuntimeException();
+                }
                 return "http://www.w3.org/2000/09/xmldsig#";
             }
 
@@ -90,19 +83,18 @@ public class ProcessingInstructionTest extends TestCase {
                 return "ds";
             }
 
-            public Iterator getPrefixes(String arg0) {
-                List al = new ArrayList();
+            public Iterator<String> getPrefixes(String arg0) {
+                List<String> al = new ArrayList<String>();
                 al.add("ds");
                 return al.iterator();
             }
-
         });
 
         String expression = "//ds:Signature[1]";
         Element sigElement = 
             (Element) xpath.evaluate(expression, doc, XPathConstants.NODE);
 
-        String baseUri = new File(".").toURL().toString();
+        String baseUri = new File(".").toURI().toURL().toString();
         XMLSignature signature = new XMLSignature(sigElement, baseUri);
         signature.addResourceResolver(FileResolver.getInstance());
         X509Certificate cert = signature.getKeyInfo().getX509Certificate();
@@ -111,7 +103,6 @@ public class ProcessingInstructionTest extends TestCase {
         }
     }
 
-    
     /**
      * This class resolves "out.xml" on the local filesystem.
      */
@@ -131,7 +122,6 @@ public class ProcessingInstructionTest extends TestCase {
     
         public XMLSignatureInput engineResolve(Attr uri, String baseURI)
             throws ResourceResolverException {
-    
             try {
                 URI uriNew = new URI(uri.getNodeValue(), baseURI);
                 
