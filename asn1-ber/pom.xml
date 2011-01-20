@@ -27,6 +27,7 @@
   
   <artifactId>shared-asn1-ber</artifactId>
   <name>Apache Directory Shared ASN.1 BER</name>
+  <packaging>bundle</packaging>
 
   <description>A BER Codec Implementation for ASN.1</description>
 
@@ -55,6 +56,29 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <inherited>true</inherited>
+        <extensions>true</extensions>
+        <configuration>
+          <manifestLocation>META-INF</manifestLocation>
+          <instructions>
+            <Bundle-SymbolicName>
+              ${project.groupId}.asn1.ber
+            </Bundle-SymbolicName>
+            <Bundle-Name>${project.name}</Bundle-Name>
+            <Import-Package>
+              org.apache.directory.shared.i18n,
+              org.apache.directory.shared.asn1,
+              org.apache.directory.shared.asn1.util
+            </Import-Package>
+            <Export-Package>
+              org.apache.directory.shared.asn1.ber.*
+            </Export-Package>
+          </instructions>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 </project>
