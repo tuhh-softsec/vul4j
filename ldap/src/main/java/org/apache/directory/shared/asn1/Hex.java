@@ -18,7 +18,7 @@
  *  
  */
 
-package org.apache.directory.shared.asn1.codec.binary;
+package org.apache.directory.shared.asn1;
 
 
 import org.apache.directory.shared.asn1.BinaryDecoder;

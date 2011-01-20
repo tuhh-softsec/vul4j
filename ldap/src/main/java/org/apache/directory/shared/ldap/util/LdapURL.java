@@ -29,7 +29,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.directory.shared.asn1.codec.binary.Hex;
+import org.apache.directory.shared.asn1.Hex;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.util.HttpClientError;
 import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
