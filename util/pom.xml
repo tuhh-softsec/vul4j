@@ -27,6 +27,7 @@
   
   <artifactId>shared-util</artifactId>
   <name>Apache Directory Shared Utilities</name>
+  <packaging>bundle</packaging>
 
   <description>Utilities shared across this top level project</description>
 
@@ -45,6 +46,26 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <inherited>true</inherited>
+        <extensions>true</extensions>
+        <configuration>
+          <manifestLocation>META-INF</manifestLocation>
+          <instructions>
+            <Bundle-SymbolicName>${project.groupId}.ldap</Bundle-SymbolicName>
+            <Bundle-Name>${project.name}</Bundle-Name>
+            <Import-Package>
+              org.apache.directory.shared.i18n
+            </Import-Package>
+            <Export-Package>
+              org.apache.directory.shared.util,
+              org.apache.directory.shared.util.exception
+            </Export-Package>
+          </instructions>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 </project>
