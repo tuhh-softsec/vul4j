@@ -17,74 +17,51 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.asn1.codec.actions;
+package org.apache.directory.shared.asn1.actions;
 
 
-import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
+import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.util.StringTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 /**
- * The action used read a BITSTRING from a TLV
+ * An action that checks the length is not null
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public abstract class AbstractReadBitString extends GrammarAction
+public class CheckNotNullLength extends GrammarAction
 {
     /** The logger */
-    private static final Logger LOG = LoggerFactory.getLogger( AbstractReadBitString.class );
-
-    /** Speedup for logs */
-    private static final boolean IS_DEBUG = LOG.isDebugEnabled();
-
+    private static final Logger LOG = LoggerFactory.getLogger( CheckNotNullLength.class );
 
     /**
-     * Instantiates a new AbstractReadByteArray action.
+     * Instantiates the action.
      */
-    public AbstractReadBitString( String name )
+    public CheckNotNullLength()
     {
-        super( name );
+        super( "Check that the length is not null" );
     }
-
-
-    /**
-     * gives a byte array to be set to the appropriate field of the ASN.1 object
-     * present in the container 
-     *
-     * @param data the data of the read TLV present in byte array format
-     * @param container the container holding the ASN.1 object
-     */
-    protected abstract void setBitString( byte[] data, Asn1Container container );
 
 
     /**
      * {@inheritDoc}
      */
-    public final void action( Asn1Container container ) throws DecoderException
+    public void action( Asn1Container container ) throws DecoderException
     {
         TLV tlv = container.getCurrentTLV();
 
-        // The Length should not be null, and should be 5
-        if ( tlv.getLength() != 5 )
+        // The Length should not be null
+        if ( tlv.getLength() == 0 )
         {
             LOG.error( I18n.err( I18n.ERR_04066 ) );
 
             // This will generate a PROTOCOL_ERROR
             throw new DecoderException( I18n.err( I18n.ERR_04067 ) );
-        }
-
-        byte[] data = tlv.getValue().getData();
-        setBitString( data, container );
-
-        if ( IS_DEBUG )
-        {
-            LOG.debug( "BITSTRING value : {}", StringTools.dumpBytes( data ) );
         }
     }
 }

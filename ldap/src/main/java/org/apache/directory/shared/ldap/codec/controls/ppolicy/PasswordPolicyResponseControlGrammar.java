@@ -25,7 +25,7 @@ import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
-import org.apache.directory.shared.asn1.codec.actions.CheckNotNullLength;
+import org.apache.directory.shared.asn1.actions.CheckNotNullLength;
 import org.apache.directory.shared.ldap.codec.controls.ppolicy.actions.PPolicyInit;
 import org.apache.directory.shared.ldap.codec.controls.ppolicy.actions.StoreError;
 import org.apache.directory.shared.ldap.codec.controls.ppolicy.actions.StoreGraceAuthsRemaining;
