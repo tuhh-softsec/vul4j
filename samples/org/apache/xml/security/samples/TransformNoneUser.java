@@ -17,8 +17,6 @@
  */
 package org.apache.xml.security.samples;
 
-
-
 import java.io.ByteArrayInputStream;
 
 import org.apache.xml.security.signature.XMLSignatureInput;
@@ -34,25 +32,25 @@ import org.apache.xml.security.transforms.Transforms;
  */
 public class TransformNoneUser {
 
-   /**
-    * Method main
-    *
-    * @param args
-    * @throws Exception
-    */
-   public static void main(String args[]) throws Exception {
+    /**
+     * Method main
+     *
+     * @param args
+     * @throws Exception
+     */
+    public static void main(String args[]) throws Exception {
 
-      Transform.register(
-         "http://www.xmlsecurity.org/NS/Transforms#none",
-         "org.apache.xml.security.samples.transforms.SampleTransformNone");
+        Transform.register(
+            "http://www.xmlsecurity.org/NS/Transforms#none",
+            "org.apache.xml.security.samples.transforms.SampleTransformNone");
 
-      Transforms identity = new Transforms(null, null);
-      identity.addTransform("http://www.xmlsecurity.org/NS/Transforms#none");
-      XMLSignatureInput input =
-         new XMLSignatureInput(new ByteArrayInputStream("This is the Input"
-            .getBytes()));
-      XMLSignatureInput result = identity.performTransforms(input);
+        Transforms identity = new Transforms(null, null);
+        identity.addTransform("http://www.xmlsecurity.org/NS/Transforms#none");
+        XMLSignatureInput input =
+            new XMLSignatureInput(
+                new ByteArrayInputStream("This is the Input".getBytes()));
+        XMLSignatureInput result = identity.performTransforms(input);
 
-      System.out.println(new String(result.getBytes()));
-   }
+        System.out.println(new String(result.getBytes()));
+    }
 }

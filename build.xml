@@ -23,7 +23,7 @@
     <!-- directory properties -->
     <property name="dir.src"            value="${basedir}/src/main/java" />
     <property name="dir.src.test"       value="${basedir}/src/test/java" />
-    <property name="dir.src.samples"    value="${basedir}/src_samples" />
+    <property name="dir.src.samples"    value="${basedir}/samples" />
     <property name="dir.libs"           value="${basedir}/libs" />
     <property name="dir.data"           value="${basedir}/data" />
     <property name="dir.docs"           value="${basedir}/doc/site" />
@@ -159,14 +159,6 @@
 	<include name="src/**/*"/>
     </patternset>
 	
-    <patternset id="id.patternset.srcSamplesFiles">
-	<include name="src_samples/**/*"/>
-    </patternset>
-	
-    <patternset id="id.patternset.srcUnitTestsFiles">
-	<include name="src_unitTests/**/*"/>
-    </patternset>
-
     <!-- T A R G E T S -->
 
     <!-- Welcome screen -->
@@ -616,8 +608,6 @@
 	    <fileset dir=".">
 		<patternset refid="id.patternset.distFiles"/>
 		<patternset refid="id.patternset.srcFiles"/>
-		<patternset refid="id.patternset.srcUnitTestsFiles"/>
-		<patternset refid="id.patternset.srcSamplesFiles"/>
 		<patternset refid="id.patternset.dataFiles"/>
 				
 		<include name="ant/**/*"/>
@@ -641,8 +631,6 @@
 	    <fileset dir=".">
 		<patternset refid="id.patternset.distFiles"/>
 		<patternset refid="id.patternset.dataFiles"/>
-		<patternset refid="id.patternset.srcUnitTestsFiles"/>
-		<patternset refid="id.patternset.srcSamplesFiles"/>
 				
 		<include name="ant/**/*"/>
 	    </fileset>

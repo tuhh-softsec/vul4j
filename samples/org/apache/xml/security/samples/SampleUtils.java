@@ -15,17 +15,17 @@ public class SampleUtils {
      * @return the element.
      */
     public static Element createDSctx
-	(Document doc, String prefix, String namespace) {
-	
-	if ((prefix == null) || (prefix.trim().length() == 0)) {
+        (Document doc, String prefix, String namespace) {
+        
+        if ((prefix == null) || (prefix.trim().length() == 0)) {
             throw new IllegalArgumentException("You must supply a prefix");
-	}
-	
-	Element ctx = doc.createElementNS(null, "namespaceContext");
-	
-	ctx.setAttributeNS
-	    (Constants.NamespaceSpecNS, "xmlns:" + prefix.trim(), namespace);
-	
-	return ctx;
+        }
+        
+        Element ctx = doc.createElementNS(null, "namespaceContext");
+        
+        ctx.setAttributeNS
+            (Constants.NamespaceSpecNS, "xmlns:" + prefix.trim(), namespace);
+        
+        return ctx;
     }
 }

@@ -16,47 +16,39 @@
  */
 package org.apache.xml.security.samples;
 
-
-
 import java.io.ByteArrayInputStream;
 
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
 import org.w3c.dom.Attr;
 
-
 /**
- *
- *
  * @author $Author$
  */
 public class MyResolver extends ResourceResolverSpi {
 
-   /**
-    * Method engineResolve
-    * @inheritDoc
-    * @param uri
-    * @param BaseURI
-    *
-    */
-   public XMLSignatureInput engineResolve(Attr uri, String BaseURI) {
-
-
-         ByteArrayInputStream is =
+    /**
+     * Method engineResolve
+     * @inheritDoc
+     * @param uri
+     * @param BaseURI
+     *
+     */
+    public XMLSignatureInput engineResolve(Attr uri, String BaseURI) {
+        ByteArrayInputStream is =
             new ByteArrayInputStream("string".getBytes());
+        return new XMLSignatureInput(is);
+    }
 
-         return new XMLSignatureInput(is);
-      
-   }
+    /**
+     * Method engineCanResolve
+     * @inheritDoc
+     * @param uri
+     * @param BaseURI
+     *
+     */
+    public boolean engineCanResolve(Attr uri, String BaseURI) {
+        return true;
+    }
 
-   /**
-    * Method engineCanResolve
-    * @inheritDoc
-    * @param uri
-    * @param BaseURI
-    *
-    */
-   public boolean engineCanResolve(Attr uri, String BaseURI) {
-      return true;
-   }
 }

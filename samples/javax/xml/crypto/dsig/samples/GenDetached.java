@@ -87,65 +87,69 @@ public class GenDetached {
     //
     public static void main(String[] args) throws Exception {
 
-	// First, create a DOM XMLSignatureFactory that will be used to 
-	// generate the XMLSignature and marshal it to DOM.
-	String providerName = System.getProperty
-	    ("jsr105Provider", "org.jcp.xml.dsig.internal.dom.XMLDSigRI");
-	XMLSignatureFactory fac = XMLSignatureFactory.getInstance("DOM",
-	    (Provider) Class.forName(providerName).newInstance());
+        // First, create a DOM XMLSignatureFactory that will be used to 
+        // generate the XMLSignature and marshal it to DOM.
+        String providerName = System.getProperty
+            ("jsr105Provider", "org.jcp.xml.dsig.internal.dom.XMLDSigRI");
+        XMLSignatureFactory fac = XMLSignatureFactory.getInstance("DOM",
+            (Provider) Class.forName(providerName).newInstance());
 
-	// Create a Reference to an external URI that will be digested
-	// using the SHA1 digest algorithm
-	Reference ref = fac.newReference("http://www.w3.org/TR/xml-stylesheet", 	    fac.newDigestMethod(DigestMethod.SHA1, null));
+        // Create a Reference to an external URI that will be digested
+        // using the SHA1 digest algorithm
+        Reference ref = 
+            fac.newReference(
+                "http://www.w3.org/TR/xml-stylesheet",
+                fac.newDigestMethod(DigestMethod.SHA1, null)
+            );
 
-	// Create the SignedInfo
-	SignedInfo si = fac.newSignedInfo(
-	    fac.newCanonicalizationMethod
-	        (CanonicalizationMethod.INCLUSIVE_WITH_COMMENTS, 
-		 (C14NMethodParameterSpec) null),
-	    fac.newSignatureMethod(SignatureMethod.DSA_SHA1, null),
-	    Collections.singletonList(ref));
+        // Create the SignedInfo
+        SignedInfo si = fac.newSignedInfo(
+            fac.newCanonicalizationMethod
+                (CanonicalizationMethod.INCLUSIVE_WITH_COMMENTS, 
+                 (C14NMethodParameterSpec) null),
+            fac.newSignatureMethod(SignatureMethod.DSA_SHA1, null),
+            Collections.singletonList(ref));
 
-	// Create a DSA KeyPair
-	KeyPairGenerator kpg = KeyPairGenerator.getInstance("DSA");
-	kpg.initialize(512);
-	KeyPair kp = kpg.generateKeyPair();
+        // Create a DSA KeyPair
+        KeyPairGenerator kpg = KeyPairGenerator.getInstance("DSA");
+        kpg.initialize(512);
+        KeyPair kp = kpg.generateKeyPair();
 
-	// Create a KeyValue containing the DSA PublicKey that was generated
-	KeyInfoFactory kif = fac.getKeyInfoFactory();
-	KeyValue kv = kif.newKeyValue(kp.getPublic());
+        // Create a KeyValue containing the DSA PublicKey that was generated
+        KeyInfoFactory kif = fac.getKeyInfoFactory();
+        KeyValue kv = kif.newKeyValue(kp.getPublic());
 
-	// Create a KeyInfo and add the KeyValue to it
-	KeyInfo ki = kif.newKeyInfo(Collections.singletonList(kv));
+        // Create a KeyInfo and add the KeyValue to it
+        KeyInfo ki = kif.newKeyInfo(Collections.singletonList(kv));
 
-	// Create the XMLSignature (but don't sign it yet)
-	XMLSignature signature = fac.newXMLSignature(si, ki);
+        // Create the XMLSignature (but don't sign it yet)
+        XMLSignature signature = fac.newXMLSignature(si, ki);
 
-	// Create the Document that will hold the resulting XMLSignature
-	DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-	dbf.setNamespaceAware(true); // must be set
-	Document doc = dbf.newDocumentBuilder().newDocument();
+        // Create the Document that will hold the resulting XMLSignature
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setNamespaceAware(true); // must be set
+        Document doc = dbf.newDocumentBuilder().newDocument();
 
-	// Create a DOMSignContext and set the signing Key to the DSA 
+        // Create a DOMSignContext and set the signing Key to the DSA 
         // PrivateKey and specify where the XMLSignature should be inserted 
-	// in the target document (in this case, the document root)
-	DOMSignContext signContext = new DOMSignContext(kp.getPrivate(), doc);
+        // in the target document (in this case, the document root)
+        DOMSignContext signContext = new DOMSignContext(kp.getPrivate(), doc);
 
-	// Marshal, generate (and sign) the detached XMLSignature. The DOM 
-	// Document will contain the XML Signature if this method returns 
- 	// successfully.
-	signature.sign(signContext);
+        // Marshal, generate (and sign) the detached XMLSignature. The DOM 
+        // Document will contain the XML Signature if this method returns 
+        // successfully.
+        signature.sign(signContext);
 
-	// output the resulting document
-	OutputStream os;
-	if (args.length > 0) {
-	   os = new FileOutputStream(args[0]);
-	} else { 
-	   os = System.out;
-	}
+        // output the resulting document
+        OutputStream os;
+        if (args.length > 0) {
+           os = new FileOutputStream(args[0]);
+        } else { 
+           os = System.out;
+        }
 
-	TransformerFactory tf = TransformerFactory.newInstance();
-	Transformer trans = tf.newTransformer();
-	trans.transform(new DOMSource(doc), new StreamResult(os));
+        TransformerFactory tf = TransformerFactory.newInstance();
+        Transformer trans = tf.newTransformer();
+        trans.transform(new DOMSource(doc), new StreamResult(os));
     }
 }
