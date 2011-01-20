@@ -70,11 +70,11 @@
   </issueManagement>
 
   <modules>
+    <module>i18n</module>
     <module>util</module>
     <module>asn1-api</module>
     <module>asn1-ber</module>
     <module>integ</module>
-    <module>i18n</module>
     <module>all</module>
     <module>ldap</module>
     <module>ldap-schema</module>
