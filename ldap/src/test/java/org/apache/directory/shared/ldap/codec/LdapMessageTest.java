@@ -36,7 +36,7 @@ import org.apache.directory.shared.ldap.message.LdapEncoder;
 import org.apache.directory.shared.ldap.message.Message;
 import org.apache.directory.shared.ldap.message.UnbindRequest;
 import org.apache.directory.shared.ldap.message.UnbindRequestImpl;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -296,7 +296,7 @@ public class LdapMessageTest
             // UnbindRequest ::= [APPLICATION 2] NULL
             } );
 
-        String decodedPdu = StringTools.dumpBytes( stream.array() );
+        String decodedPdu = Strings.dumpBytes(stream.array());
         stream.flip();
 
         // Allocate a BindRequest Container
@@ -326,7 +326,7 @@ public class LdapMessageTest
             // Check the length
             assertEquals( 0x08, bb.limit() );
 
-            String encodedPdu = StringTools.dumpBytes( bb.array() );
+            String encodedPdu = Strings.dumpBytes(bb.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }

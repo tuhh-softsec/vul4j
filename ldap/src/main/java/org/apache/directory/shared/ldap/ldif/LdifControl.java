@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.ldif;
 
 
 import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -53,6 +53,6 @@ public class LdifControl extends AbstractControl
      */
     public String toString()
     {
-        return "LdifControl : {" + getOid() + ", " + isCritical() + ", " + StringTools.dumpBytes( getValue() ) + "}";
+        return "LdifControl : {" + getOid() + ", " + isCritical() + ", " + Strings.dumpBytes(getValue()) + "}";
     }
 }

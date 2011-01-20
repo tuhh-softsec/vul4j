@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.message;
 
 import java.util.Arrays;
 
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -205,7 +205,7 @@ public class BindResponseImpl extends AbstractResultResponse implements BindResp
 
         if ( serverSaslCreds != null )
         {
-            sb.append( "        Server sasl credentials : '" ).append( StringTools.dumpBytes( serverSaslCreds ) )
+            sb.append( "        Server sasl credentials : '" ).append( Strings.dumpBytes(serverSaslCreds) )
                 .append( "'\n" );
         }
 

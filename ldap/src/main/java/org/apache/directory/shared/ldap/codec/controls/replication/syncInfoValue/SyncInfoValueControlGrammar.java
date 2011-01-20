@@ -32,7 +32,7 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.ber.tlv.BooleanDecoder;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.message.control.replication.SynchronizationInfoEnum;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -111,7 +111,7 @@ public final class SyncInfoValueControlGrammar extends AbstractGrammar
 
                     if ( IS_DEBUG )
                     {
-                        LOG.debug( "newcookie = " + StringTools.dumpBytes( newCookie ) );
+                        LOG.debug( "newcookie = " + Strings.dumpBytes(newCookie) );
                     }
 
                     control.setCookie( newCookie );
@@ -180,7 +180,7 @@ public final class SyncInfoValueControlGrammar extends AbstractGrammar
 
                     if ( IS_DEBUG )
                     {
-                        LOG.debug( "cookie = " + StringTools.dumpBytes( cookie ) );
+                        LOG.debug( "cookie = " + Strings.dumpBytes(cookie) );
                     }
 
                     syncInfoValueContainer.getSyncInfoValueControl().setCookie( cookie );
@@ -354,7 +354,7 @@ public final class SyncInfoValueControlGrammar extends AbstractGrammar
 
                     if ( IS_DEBUG )
                     {
-                        LOG.debug( "cookie = " + StringTools.dumpBytes( cookie ) );
+                        LOG.debug( "cookie = " + Strings.dumpBytes(cookie) );
                     }
 
                     syncInfoValueContainer.getSyncInfoValueControl().setCookie( cookie );
@@ -526,7 +526,7 @@ public final class SyncInfoValueControlGrammar extends AbstractGrammar
 
                     if ( IS_DEBUG )
                     {
-                        LOG.debug( "cookie = " + StringTools.dumpBytes( cookie ) );
+                        LOG.debug( "cookie = " + Strings.dumpBytes(cookie) );
                     }
 
                     syncInfoValueContainer.getSyncInfoValueControl().setCookie( cookie );
@@ -740,7 +740,7 @@ public final class SyncInfoValueControlGrammar extends AbstractGrammar
 
                     if ( IS_DEBUG )
                     {
-                        LOG.debug( "UUID = " + StringTools.dumpBytes( uuid ) );
+                        LOG.debug( "UUID = " + Strings.dumpBytes(uuid) );
                     }
 
                     // Store the UUID in the UUIDs list
@@ -787,7 +787,7 @@ public final class SyncInfoValueControlGrammar extends AbstractGrammar
 
                     if ( IS_DEBUG )
                     {
-                        LOG.debug( "UUID = " + StringTools.dumpBytes( uuid ) );
+                        LOG.debug( "UUID = " + Strings.dumpBytes(uuid) );
                     }
 
                     // Store the UUID in the UUIDs list

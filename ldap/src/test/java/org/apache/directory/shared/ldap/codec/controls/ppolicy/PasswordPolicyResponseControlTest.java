@@ -27,8 +27,7 @@ import static org.junit.Assert.assertNotNull;
 import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
-import org.apache.directory.shared.ldap.util.StringTools;
-import org.junit.Ignore;
+import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 
 
@@ -83,7 +82,7 @@ public class PasswordPolicyResponseControlTest
         buffer.flip();
         
         ByteBuffer encoded = control.encode( ByteBuffer.allocate( control.computeLength() ) );
-        assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
+        assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
     }
     
 
@@ -129,7 +128,7 @@ public class PasswordPolicyResponseControlTest
         buffer.flip();
         
         ByteBuffer encoded = control.encode( ByteBuffer.allocate( control.computeLength() ) );
-        assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
+        assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
     }
 
     
@@ -172,7 +171,7 @@ public class PasswordPolicyResponseControlTest
         buffer.flip();
         
         ByteBuffer encoded = control.encode( ByteBuffer.allocate( control.computeLength() ) );
-        assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
+        assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
     }
     
 
@@ -215,7 +214,7 @@ public class PasswordPolicyResponseControlTest
         buffer.flip();
         
         ByteBuffer encoded = control.encode( ByteBuffer.allocate( control.computeLength() ) );
-        assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
+        assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
     }
     
     
@@ -256,7 +255,7 @@ public class PasswordPolicyResponseControlTest
         buffer.flip();
         
         ByteBuffer encoded = control.encode( ByteBuffer.allocate( control.computeLength() ) );
-        assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
+        assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
     }
 
     
@@ -293,6 +292,6 @@ public class PasswordPolicyResponseControlTest
         buffer.flip();
         
         ByteBuffer encoded = control.encode( ByteBuffer.allocate( control.computeLength() ) );
-        assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
+        assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
     }
 }

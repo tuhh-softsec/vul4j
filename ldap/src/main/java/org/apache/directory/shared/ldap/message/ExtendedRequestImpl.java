@@ -27,6 +27,7 @@ import javax.naming.ldap.ExtendedResponse;
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -335,7 +336,7 @@ public class ExtendedRequestImpl extends AbstractRequest implements ExtendedRequ
         if ( oid != null )
         {
             sb.append( "        Request value : '" ).append( StringTools.utf8ToString( requestValue ) ).append( '/' )
-                .append( StringTools.dumpBytes( requestValue ) ).append( "'\n" );
+                .append( Strings.dumpBytes(requestValue) ).append( "'\n" );
         }
 
         // The controls

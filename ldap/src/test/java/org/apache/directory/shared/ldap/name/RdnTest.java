@@ -37,6 +37,7 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -697,10 +698,10 @@ public class RdnTest
     {
         byte[] res = ( byte[] ) RDN.unescapeValue( "#fF" );
 
-        assertEquals( "0xFF ", StringTools.dumpBytes( res ) );
+        assertEquals( "0xFF ", Strings.dumpBytes(res) );
 
         res = ( byte[] ) RDN.unescapeValue( "#0123456789aBCDEF" );
-        assertEquals( "0x01 0x23 0x45 0x67 0x89 0xAB 0xCD 0xEF ", StringTools.dumpBytes( res ) );
+        assertEquals( "0x01 0x23 0x45 0x67 0x89 0xAB 0xCD 0xEF ", Strings.dumpBytes(res) );
     }
 
 

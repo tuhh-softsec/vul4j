@@ -31,6 +31,7 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -270,7 +271,7 @@ public abstract class AbstractControl extends AbstractAsn1Object implements Cont
 
         if ( value != null )
         {
-            sb.append( "        Control value : '" ).append( StringTools.dumpBytes( value ) )
+            sb.append( "        Control value : '" ).append( Strings.dumpBytes(value) )
                 .append( "'\n" );
         }
 

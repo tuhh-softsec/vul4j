@@ -43,7 +43,7 @@ import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueException;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -551,7 +551,7 @@ public class LdifAttributesReaderTest
             if ( "jpegphoto".equalsIgnoreCase( values[i][0] ) )
             {
                 Attribute attr = attributes.get( values[i][0] );
-                assertEquals( StringTools.dumpBytes( data ), StringTools.dumpBytes( ( byte[] ) attr.get() ) );
+                assertEquals( Strings.dumpBytes(data), Strings.dumpBytes((byte[]) attr.get()) );
             }
             else
             {

@@ -33,6 +33,7 @@ import org.apache.directory.shared.ldap.codec.search.controls.ChangeType;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -176,7 +177,7 @@ public final class EntryChangeControlGrammar extends AbstractGrammar
                     }
                     catch ( LdapInvalidDnException ine )
                     {
-                        LOG.error( I18n.err( I18n.ERR_04047, StringTools.dumpBytes( value.getData() ) ) );
+                        LOG.error( I18n.err( I18n.ERR_04047, Strings.dumpBytes(value.getData()) ) );
                         throw new DecoderException( I18n.err( I18n.ERR_04048 ) );
                     }
 

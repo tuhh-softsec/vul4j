@@ -34,7 +34,7 @@ import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.extended.operations.gracefulDisconnect.GracefulDisconnect;
 import org.apache.directory.shared.ldap.codec.extended.operations.gracefulDisconnect.GracefulDisconnectContainer;
 import org.apache.directory.shared.ldap.codec.extended.operations.gracefulDisconnect.GracefulDisconnectDecoder;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -70,7 +70,7 @@ public class GracefulDisconnectTest
                 'c', '0', '4', ')'
             // }
             } );
-        String decodedPdu = StringTools.dumpBytes( stream.array() );
+        String decodedPdu = Strings.dumpBytes(stream.array());
         stream.flip();
 
         GracefulDisconnectContainer container = new GracefulDisconnectContainer();
@@ -101,7 +101,7 @@ public class GracefulDisconnectTest
         {
             ByteBuffer bb = gracefulDisconnect.encode();
 
-            String encodedPdu = StringTools.dumpBytes( bb.array() );
+            String encodedPdu = Strings.dumpBytes(bb.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }
@@ -126,7 +126,7 @@ public class GracefulDisconnectTest
                 0x02, 0x01, 0x01 // timeOffline INTEGER (0..720) DEFAULT 0,
             } );
 
-        String decodedPdu = StringTools.dumpBytes( bb.array() );
+        String decodedPdu = Strings.dumpBytes(bb.array());
         bb.flip();
 
         GracefulDisconnectContainer container = new GracefulDisconnectContainer();
@@ -154,7 +154,7 @@ public class GracefulDisconnectTest
         {
             ByteBuffer bb1 = gracefulDisconnect.encode();
 
-            String encodedPdu = StringTools.dumpBytes( bb1.array() );
+            String encodedPdu = Strings.dumpBytes(bb1.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }
@@ -180,7 +180,7 @@ public class GracefulDisconnectTest
                                             // 0
             } );
 
-        String decodedPdu = StringTools.dumpBytes( bb.array() );
+        String decodedPdu = Strings.dumpBytes(bb.array());
         bb.flip();
 
         GracefulDisconnectContainer container = new GracefulDisconnectContainer();
@@ -208,7 +208,7 @@ public class GracefulDisconnectTest
         {
             ByteBuffer bb1 = gracefulDisconnect.encode();
 
-            String encodedPdu = StringTools.dumpBytes( bb1.array() );
+            String encodedPdu = Strings.dumpBytes(bb1.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }
@@ -235,7 +235,7 @@ public class GracefulDisconnectTest
                                             // DEFAULT 0,
             } );
 
-        String decodedPdu = StringTools.dumpBytes( bb.array() );
+        String decodedPdu = Strings.dumpBytes(bb.array());
         bb.flip();
 
         GracefulDisconnectContainer container = new GracefulDisconnectContainer();
@@ -263,7 +263,7 @@ public class GracefulDisconnectTest
         {
             ByteBuffer bb2 = gracefulDisconnect.encode();
 
-            String encodedPdu = StringTools.dumpBytes( bb2.array() );
+            String encodedPdu = Strings.dumpBytes(bb2.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }
@@ -297,7 +297,7 @@ public class GracefulDisconnectTest
                   '0', '0', '%', '5', 'c', '0', '0', '%', '5', 'c', '0', '4', ')'
             } );
 
-        String decodedPdu = StringTools.dumpBytes( stream.array() );
+        String decodedPdu = Strings.dumpBytes(stream.array());
         stream.flip();
 
         GracefulDisconnectContainer container = new GracefulDisconnectContainer();
@@ -328,7 +328,7 @@ public class GracefulDisconnectTest
         {
             ByteBuffer bb = gracefulDisconnect.encode();
 
-            String encodedPdu = StringTools.dumpBytes( bb.array() );
+            String encodedPdu = Strings.dumpBytes(bb.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }
@@ -352,7 +352,7 @@ public class GracefulDisconnectTest
             { 0x30, 0x00 // GracefulDisconnect ::= SEQUENCE {
             } );
 
-        String decodedPdu = StringTools.dumpBytes( bb.array() );
+        String decodedPdu = Strings.dumpBytes(bb.array());
         bb.flip();
 
         GracefulDisconnectContainer container = new GracefulDisconnectContainer();
@@ -380,7 +380,7 @@ public class GracefulDisconnectTest
         {
             ByteBuffer bb1 = gracefulDisconnect.encode();
 
-            String encodedPdu = StringTools.dumpBytes( bb1.array() );
+            String encodedPdu = Strings.dumpBytes(bb1.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }

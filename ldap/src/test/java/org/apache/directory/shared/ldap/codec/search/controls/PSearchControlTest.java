@@ -33,7 +33,7 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearchControl;
 import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearchControlContainer;
 import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearchControlDecoder;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -68,7 +68,7 @@ public class PSearchControlTest
                   0x01, 0x01, 0x00    // returnECs BOOLEAN
             } );
 
-        String expected = StringTools.dumpBytes( bb.array() );
+        String expected = Strings.dumpBytes(bb.array());
         bb.flip();
 
         PersistentSearchControl ctrl = new PersistentSearchControl();
@@ -76,7 +76,7 @@ public class PSearchControlTest
         ctrl.setReturnECs( false );
         ctrl.setChangeTypes( 1 );
         bb = ctrl.encode(ByteBuffer.allocate( ctrl.computeLength() ) );
-        String decoded = StringTools.dumpBytes( bb.array() );
+        String decoded = Strings.dumpBytes(bb.array());
         assertEquals( expected, decoded );
     }
 

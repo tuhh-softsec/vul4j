@@ -38,7 +38,7 @@ import org.apache.directory.shared.ldap.message.AddResponse;
 import org.apache.directory.shared.ldap.message.LdapEncoder;
 import org.apache.directory.shared.ldap.message.Referral;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -273,7 +273,7 @@ public class LdapResultTest
                 0x04, 0x00 // Empty errorMessage
             } );
 
-        String decodedPdu = StringTools.dumpBytes( stream.array() );
+        String decodedPdu = Strings.dumpBytes(stream.array());
         stream.flip();
 
         // Allocate a LdapMessage Container
@@ -305,7 +305,7 @@ public class LdapResultTest
             // Check the length
             assertEquals( 0x0E, bb.limit() );
 
-            String encodedPdu = StringTools.dumpBytes( bb.array() );
+            String encodedPdu = Strings.dumpBytes(bb.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }
@@ -336,7 +336,7 @@ public class LdapResultTest
                 0x04, 0x00, // Empty errorMessage
                 ( byte ) 0xA3, 0x0A, 0x04, 0x08, 'l', 'd', 'a', 'p', ':', '/', '/', '/' } );
 
-        String decodedPdu = StringTools.dumpBytes( stream.array() );
+        String decodedPdu = Strings.dumpBytes(stream.array());
         stream.flip();
 
         // Allocate a LdapMessage Container
@@ -376,7 +376,7 @@ public class LdapResultTest
             // Check the length
             assertEquals( 0x1A, bb.limit() );
 
-            String encodedPdu = StringTools.dumpBytes( bb.array() );
+            String encodedPdu = Strings.dumpBytes(bb.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }
@@ -414,7 +414,7 @@ public class LdapResultTest
                 ( byte ) 0xA3, 0x14, 0x04, 0x08, 'l', 'd', 'a', 'p', ':', '/', '/', '/', 0x04, 0x08, 'l', 'd', 'a',
                 'p', ':', '/', '/', '/' } );
 
-        String decodedPdu = StringTools.dumpBytes( stream.array() );
+        String decodedPdu = Strings.dumpBytes(stream.array());
         stream.flip();
 
         // Allocate a LdapMessage Container
@@ -459,7 +459,7 @@ public class LdapResultTest
             // Check the length
             assertEquals( 0x24, bb.limit() );
 
-            String encodedPdu = StringTools.dumpBytes( bb.array() );
+            String encodedPdu = Strings.dumpBytes(bb.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }
@@ -491,7 +491,7 @@ public class LdapResultTest
                 0x04, 0x00, // Empty errorMessage
                 ( byte ) 0xA3, 0x0C, 0x04, 0x08, 'l', 'd', 'a', 'p', ':', '/', '/', '/', 0x04, 0x00 } );
 
-        String decodedPdu = StringTools.dumpBytes( stream.array() );
+        String decodedPdu = Strings.dumpBytes(stream.array());
         stream.flip();
 
         // Allocate a LdapMessage Container
@@ -541,7 +541,7 @@ public class LdapResultTest
             // Check the length
             assertEquals( 0x1C, bb.limit() );
 
-            String encodedPdu = StringTools.dumpBytes( bb.array() );
+            String encodedPdu = Strings.dumpBytes(bb.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }

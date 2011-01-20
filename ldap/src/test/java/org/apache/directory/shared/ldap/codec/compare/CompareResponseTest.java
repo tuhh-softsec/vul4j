@@ -38,7 +38,7 @@ import org.apache.directory.shared.ldap.message.CompareResponse;
 import org.apache.directory.shared.ldap.message.LdapEncoder;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -82,7 +82,7 @@ public class CompareResponseTest
             // }
             } );
 
-        String decodedPdu = StringTools.dumpBytes( stream.array() );
+        String decodedPdu = Strings.dumpBytes(stream.array());
         stream.flip();
 
         // Allocate a LdapMessage Container
@@ -115,7 +115,7 @@ public class CompareResponseTest
             // Check the length
             assertEquals( 0x0E, bb.limit() );
 
-            String encodedPdu = StringTools.dumpBytes( bb.array() );
+            String encodedPdu = Strings.dumpBytes(bb.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }
@@ -164,7 +164,7 @@ public class CompareResponseTest
                 0x30, 0x19, 0x04, 0x17, 0x32, 0x2E, 0x31, 0x36, 0x2E, 0x38, 0x34, 0x30, 0x2E, 0x31, 0x2E, 0x31, 0x31,
                 0x33, 0x37, 0x33, 0x30, 0x2E, 0x33, 0x2E, 0x34, 0x2E, 0x32 } );
 
-        String decodedPdu = StringTools.dumpBytes( stream.array() );
+        String decodedPdu = Strings.dumpBytes(stream.array());
         stream.flip();
 
         // Allocate a LdapMessage Container
@@ -196,7 +196,7 @@ public class CompareResponseTest
 
         Control control = controls.get( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
-        assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
+        assertEquals( "", Strings.dumpBytes((byte[]) control.getValue()) );
 
         // Check the encoding
         try
@@ -206,7 +206,7 @@ public class CompareResponseTest
             // Check the length
             assertEquals( 0x2B, bb.limit() );
 
-            String encodedPdu = StringTools.dumpBytes( bb.array() );
+            String encodedPdu = Strings.dumpBytes(bb.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }

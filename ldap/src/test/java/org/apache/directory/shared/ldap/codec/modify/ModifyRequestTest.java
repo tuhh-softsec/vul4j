@@ -45,7 +45,7 @@ import org.apache.directory.shared.ldap.message.ModifyRequest;
 import org.apache.directory.shared.ldap.message.ModifyResponseImpl;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -106,7 +106,7 @@ public class ModifyRequestTest
                 0x04, 0x05, 'a', 't', 't', 'r', 's', 0x31, 0x06, // vals SET OF AttributeValue }
                 0x04, 0x04, 't', 'e', 's', 't' } );
 
-        String decodedPdu = StringTools.dumpBytes( stream.array() );
+        String decodedPdu = Strings.dumpBytes(stream.array());
         stream.flip();
 
         // Allocate a LdapMessage Container
@@ -157,7 +157,7 @@ public class ModifyRequestTest
             // Check the length
             assertEquals( 0x54, bb.limit() );
 
-            String encodedPdu = StringTools.dumpBytes( bb.array() );
+            String encodedPdu = Strings.dumpBytes(bb.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }
@@ -326,7 +326,7 @@ public class ModifyRequestTest
             // Check the length
             assertEquals( 0x8C, bb.limit() );
 
-            String decodedPdu1 = StringTools.dumpBytes( bb.array() );
+            String decodedPdu1 = Strings.dumpBytes(bb.array());
 
             try
             {
@@ -341,7 +341,7 @@ public class ModifyRequestTest
             ModifyRequest modifyRequest2 = ( ( LdapMessageContainer ) ldapMessageContainer ).getModifyRequest();
 
             bb = encoder.encodeMessage( modifyRequest2 );
-            String decodedPdu2 = StringTools.dumpBytes( bb.array() );
+            String decodedPdu2 = Strings.dumpBytes(bb.array());
 
             assertEquals( decodedPdu1, decodedPdu2 );
         }
@@ -468,7 +468,7 @@ public class ModifyRequestTest
             // Check the length
             assertEquals( 0xB9, bb.limit() );
 
-            String decodedPdu1 = StringTools.dumpBytes( bb.array() );
+            String decodedPdu1 = Strings.dumpBytes(bb.array());
 
             try
             {
@@ -483,7 +483,7 @@ public class ModifyRequestTest
             ModifyRequest modifyRequest2 = ( ( LdapMessageContainer ) ldapMessageContainer ).getModifyRequest();
 
             bb = encoder.encodeMessage( modifyRequest2 );
-            String decodedPdu2 = StringTools.dumpBytes( bb.array() );
+            String decodedPdu2 = Strings.dumpBytes(bb.array());
 
             assertEquals( decodedPdu1, decodedPdu2 );
         }
@@ -535,7 +535,7 @@ public class ModifyRequestTest
                 0x04, 0x05, 'a', 't', 't', 'r', 's', 0x31, 0x06, // vals SET OF AttributeValue }
                 0x04, 0x04, 't', 'e', 's', 't' } );
 
-        String decodedPdu = StringTools.dumpBytes( stream.array() );
+        String decodedPdu = Strings.dumpBytes(stream.array());
         stream.flip();
 
         // Allocate a LdapMessage Container
@@ -589,7 +589,7 @@ public class ModifyRequestTest
             // Check the length
             assertEquals( 0x5C, bb.limit() );
 
-            String encodedPdu = StringTools.dumpBytes( bb.array() );
+            String encodedPdu = Strings.dumpBytes(bb.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }
@@ -1064,7 +1064,7 @@ public class ModifyRequestTest
                 's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm', 0x30, 0x0C, 0x30, 0x0A, 0x0A,
                 0x01, 0x00, 0x30, 0x05, 0x04, 0x01, 'l', 0x31, 0x00 } );
 
-        String decodedPdu = StringTools.dumpBytes( stream.array() );
+        String decodedPdu = Strings.dumpBytes(stream.array());
         stream.flip();
 
         // Allocate a LdapMessage Container
@@ -1105,7 +1105,7 @@ public class ModifyRequestTest
             // Check the length
             assertEquals( 0x37, bb.limit() );
 
-            String encodedPdu = StringTools.dumpBytes( bb.array() );
+            String encodedPdu = Strings.dumpBytes(bb.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }
@@ -1144,7 +1144,7 @@ public class ModifyRequestTest
                 0x30, 0x19, 0x04, 0x17, 0x32, 0x2E, 0x31, 0x36, 0x2E, 0x38, 0x34, 0x30, 0x2E, 0x31, 0x2E, 0x31, 0x31,
                 0x33, 0x37, 0x33, 0x30, 0x2E, 0x33, 0x2E, 0x34, 0x2E, 0x32 } );
 
-        String decodedPdu = StringTools.dumpBytes( stream.array() );
+        String decodedPdu = Strings.dumpBytes(stream.array());
         stream.flip();
 
         // Allocate a LdapMessage Container
@@ -1184,7 +1184,7 @@ public class ModifyRequestTest
 
         Control control = modifyRequest.getControl( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
-        assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
+        assertEquals( "", Strings.dumpBytes((byte[]) control.getValue()) );
 
         // Check the encoding
         try
@@ -1194,7 +1194,7 @@ public class ModifyRequestTest
             // Check the length
             assertEquals( 0x54, bb.limit() );
 
-            String encodedPdu = StringTools.dumpBytes( bb.array() );
+            String encodedPdu = Strings.dumpBytes(bb.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }
@@ -1230,7 +1230,7 @@ public class ModifyRequestTest
                 's', 'e', 'r', 's', ',', 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm', 0x30, 0x12, 0x30, 0x10, 0x0A,
                 0x01, 0x00, 0x30, 0x0B, 0x04, 0x01, 'l', 0x31, 0x06, 0x04, 0x01, 'a', 0x04, 0x01, 'b' } );
 
-        String decodedPdu = StringTools.dumpBytes( stream.array() );
+        String decodedPdu = Strings.dumpBytes(stream.array());
         stream.flip();
 
         // Allocate a LdapMessage Container
@@ -1277,7 +1277,7 @@ public class ModifyRequestTest
             // Check the length
             assertEquals( 0x3D, bb.limit() );
 
-            String encodedPdu = StringTools.dumpBytes( bb.array() );
+            String encodedPdu = Strings.dumpBytes(bb.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }

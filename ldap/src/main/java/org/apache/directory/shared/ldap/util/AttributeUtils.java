@@ -47,6 +47,7 @@ import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.MatchingRule;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer;
+import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -704,7 +705,7 @@ public final class AttributeUtils
 
                             sb.append( tabs ).append( "        Val[" ).append( j ).append( "] : " );
                             sb.append( string ).append( '/' );
-                            sb.append( StringTools.dumpBytes( ( byte[] ) attr ) );
+                            sb.append( Strings.dumpBytes((byte[]) attr) );
                             sb.append( " \n" );
                         }
                         else

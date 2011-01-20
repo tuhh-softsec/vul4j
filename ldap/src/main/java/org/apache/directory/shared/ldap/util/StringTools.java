@@ -41,6 +41,7 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.BinaryValue;
 import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.schema.syntaxCheckers.UuidSyntaxChecker;
+import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -989,30 +990,6 @@ public final class StringTools
 
 
     /**
-     * Helper function that dump an array of bytes in hex form
-     * 
-     * @param buffer The bytes array to dump
-     * @return A string representation of the array of bytes
-     */
-    public static String dumpBytes( byte[] buffer )
-    {
-        if ( buffer == null )
-        {
-            return "";
-        }
-
-        StringBuffer sb = new StringBuffer();
-
-        for ( int i = 0; i < buffer.length; i++ )
-        {
-            sb.append( "0x" ).append( ( char ) ( HEX_CHAR[( buffer[i] & 0x00F0 ) >> 4] ) ).append(
-                ( char ) ( HEX_CHAR[buffer[i] & 0x000F] ) ).append( " " );
-        }
-
-        return sb.toString();
-    }
-
-    /**
      * 
      * Helper method to render an object which can be a String or a byte[]
      *
@@ -1028,7 +1005,7 @@ public final class StringTools
             }
             else if ( object instanceof byte[] )
             {
-                return dumpBytes( ( byte[] ) object );
+                return Strings.dumpBytes((byte[]) object);
             }
             else if ( object instanceof StringValue )
             {
@@ -1036,7 +1013,7 @@ public final class StringTools
             }
             else if ( object instanceof BinaryValue )
             {
-                return dumpBytes( ( ( BinaryValue ) object ).get() );
+                return Strings.dumpBytes(((BinaryValue) object).get());
             }
             else
             {

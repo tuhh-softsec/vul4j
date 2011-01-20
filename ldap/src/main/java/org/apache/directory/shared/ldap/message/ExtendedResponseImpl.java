@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.message;
 
 import java.util.Arrays;
 
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -317,7 +317,7 @@ public class ExtendedResponseImpl extends AbstractResultResponse implements Exte
 
         if ( responseValue != null )
         {
-            sb.append( "        ResponseValue :'" ).append( StringTools.dumpBytes( responseValue ) ).append( "'\n" );
+            sb.append( "        ResponseValue :'" ).append( Strings.dumpBytes(responseValue) ).append( "'\n" );
         }
 
         sb.append( super.toString() );

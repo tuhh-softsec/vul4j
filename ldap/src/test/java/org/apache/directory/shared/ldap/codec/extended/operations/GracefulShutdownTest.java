@@ -33,7 +33,7 @@ import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.ldap.codec.extended.operations.gracefulShutdown.GracefulShutdown;
 import org.apache.directory.shared.ldap.codec.extended.operations.gracefulShutdown.GracefulShutdownContainer;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -63,7 +63,7 @@ public class GracefulShutdownTest
             // }
             } );
 
-        String decodedPdu = StringTools.dumpBytes( bb.array() );
+        String decodedPdu = Strings.dumpBytes(bb.array());
         bb.flip();
 
         GracefulShutdownContainer container = new GracefulShutdownContainer();
@@ -90,7 +90,7 @@ public class GracefulShutdownTest
         {
             ByteBuffer bb1 = gracefulShutdown.encode();
 
-            String encodedPdu = StringTools.dumpBytes( bb1.array() );
+            String encodedPdu = Strings.dumpBytes(bb1.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }
@@ -115,7 +115,7 @@ public class GracefulShutdownTest
                 0x02, 0x01, 0x01 // timeOffline INTEGER (0..720) DEFAULT 0,
             } );
 
-        String decodedPdu = StringTools.dumpBytes( bb.array() );
+        String decodedPdu = Strings.dumpBytes(bb.array());
         bb.flip();
 
         GracefulShutdownContainer container = new GracefulShutdownContainer();
@@ -142,7 +142,7 @@ public class GracefulShutdownTest
         {
             ByteBuffer bb1 = gracefulShutdown.encode();
 
-            String encodedPdu = StringTools.dumpBytes( bb1.array() );
+            String encodedPdu = Strings.dumpBytes(bb1.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }
@@ -168,7 +168,7 @@ public class GracefulShutdownTest
                                             // 0
             } );
 
-        String decodedPdu = StringTools.dumpBytes( bb.array() );
+        String decodedPdu = Strings.dumpBytes(bb.array());
         bb.flip();
 
         GracefulShutdownContainer container = new GracefulShutdownContainer();
@@ -195,7 +195,7 @@ public class GracefulShutdownTest
         {
             ByteBuffer bb1 = gracefulShutdown.encode();
 
-            String encodedPdu = StringTools.dumpBytes( bb1.array() );
+            String encodedPdu = Strings.dumpBytes(bb1.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }
@@ -219,7 +219,7 @@ public class GracefulShutdownTest
             { 0x30, 0x00 // GracefulShutdown ::= SEQUENCE {
             } );
 
-        String decodedPdu = StringTools.dumpBytes( bb.array() );
+        String decodedPdu = Strings.dumpBytes(bb.array());
         bb.flip();
 
         GracefulShutdownContainer container = new GracefulShutdownContainer();
@@ -246,7 +246,7 @@ public class GracefulShutdownTest
         {
             ByteBuffer bb1 = gracefulShutdown.encode();
 
-            String encodedPdu = StringTools.dumpBytes( bb1.array() );
+            String encodedPdu = Strings.dumpBytes(bb1.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }
@@ -273,7 +273,7 @@ public class GracefulShutdownTest
                                                             // DEFAULT 0
             } );
 
-        String decodedPdu = StringTools.dumpBytes( bb.array() );
+        String decodedPdu = Strings.dumpBytes(bb.array());
         bb.flip();
 
         GracefulShutdownContainer container = new GracefulShutdownContainer();
@@ -300,7 +300,7 @@ public class GracefulShutdownTest
         {
             ByteBuffer bb1 = gracefulShutdown.encode();
 
-            String encodedPdu = StringTools.dumpBytes( bb1.array() );
+            String encodedPdu = Strings.dumpBytes(bb1.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }
@@ -327,7 +327,7 @@ public class GracefulShutdownTest
                                                             // DEFAULT 0
             } );
 
-        String decodedPdu = StringTools.dumpBytes( bb.array() );
+        String decodedPdu = Strings.dumpBytes(bb.array());
         bb.flip();
 
         GracefulShutdownContainer container = new GracefulShutdownContainer();
@@ -354,7 +354,7 @@ public class GracefulShutdownTest
         {
             ByteBuffer bb1 = gracefulShutdown.encode();
 
-            String encodedPdu = StringTools.dumpBytes( bb1.array() );
+            String encodedPdu = Strings.dumpBytes(bb1.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }
@@ -383,7 +383,7 @@ public class GracefulShutdownTest
                                                                         // 0
             } );
 
-        String decodedPdu = StringTools.dumpBytes( bb.array() );
+        String decodedPdu = Strings.dumpBytes(bb.array());
         bb.flip();
 
         GracefulShutdownContainer container = new GracefulShutdownContainer();
@@ -410,7 +410,7 @@ public class GracefulShutdownTest
         {
             ByteBuffer bb1 = gracefulShutdown.encode();
 
-            String encodedPdu = StringTools.dumpBytes( bb1.array() );
+            String encodedPdu = Strings.dumpBytes(bb1.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }

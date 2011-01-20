@@ -30,6 +30,7 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -290,7 +291,7 @@ public class PagedResultsControl extends AbstractControl
         sb.append( "        oid : " ).append( getOid() ).append( '\n' );
         sb.append( "        critical : " ).append( isCritical() ).append( '\n' );
         sb.append( "        size   : '" ).append( size ).append( "'\n" );
-        sb.append( "        cookie   : '" ).append( StringTools.dumpBytes( cookie ) ).append( "'\n" );
+        sb.append( "        cookie   : '" ).append( Strings.dumpBytes(cookie) ).append( "'\n" );
 
         return sb.toString();
     }

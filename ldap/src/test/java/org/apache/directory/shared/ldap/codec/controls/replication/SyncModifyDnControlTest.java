@@ -35,7 +35,7 @@ import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn.SyncModifyDnControl;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn.SyncModifyDnControlContainer;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn.SyncModifyDnControlDecoder;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -102,7 +102,7 @@ public class SyncModifyDnControlTest
             buffer.flip();
 
             ByteBuffer encoded = syncmodDnControl.encode( ByteBuffer.allocate( syncmodDnControl.computeLength() ) );
-            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
+            assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
                 }
         catch ( EncoderException ee )
         {
@@ -166,7 +166,7 @@ public class SyncModifyDnControlTest
             buffer.flip();
 
             ByteBuffer encoded = syncmodDnControl.encode( ByteBuffer.allocate( syncmodDnControl.computeLength() ) );
-            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
+            assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
                 }
         catch ( EncoderException ee )
         {
@@ -233,7 +233,7 @@ public class SyncModifyDnControlTest
             buffer.flip();
 
             ByteBuffer encoded = syncmodDnControl.encode( ByteBuffer.allocate( syncmodDnControl.computeLength() ) );
-            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
+            assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
                 }
         catch ( EncoderException ee )
         {

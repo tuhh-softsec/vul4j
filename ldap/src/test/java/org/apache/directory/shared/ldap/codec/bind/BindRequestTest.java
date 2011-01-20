@@ -43,6 +43,7 @@ import org.apache.directory.shared.ldap.message.Message;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -185,7 +186,7 @@ public class BindRequestTest
                 // ...
                 'p', 'a', 's', 's', 'w', 'o', 'r', 'd' } );
 
-        String decodedPdu = StringTools.dumpBytes( stream.array() );
+        String decodedPdu = Strings.dumpBytes(stream.array());
         stream.flip();
 
         // Allocate a LdapMessage Container
@@ -219,7 +220,7 @@ public class BindRequestTest
             // Check the length
             assertEquals( 0x35, bb.limit() );
 
-            String encodedPdu = StringTools.dumpBytes( bb.array() );
+            String encodedPdu = Strings.dumpBytes(bb.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }
@@ -346,7 +347,7 @@ public class BindRequestTest
                 // ...
                 'p', 'a', 's', 's', 'w', 'o', 'r', 'd' } );
 
-        String decodedPdu = StringTools.dumpBytes( stream.array() );
+        String decodedPdu = Strings.dumpBytes(stream.array());
 
         stream.flip();
 
@@ -381,7 +382,7 @@ public class BindRequestTest
             // Check the length
             assertEquals( 0x16, bb.limit() );
 
-            String encodedPdu = StringTools.dumpBytes( bb.array() );
+            String encodedPdu = Strings.dumpBytes(bb.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }
@@ -424,7 +425,7 @@ public class BindRequestTest
                 // ...
                 0x04, 0x0B, 'K', 'E', 'R', 'B', 'E', 'R', 'O', 'S', '_', 'V', '4' } );
 
-        String decodedPdu = StringTools.dumpBytes( stream.array() );
+        String decodedPdu = Strings.dumpBytes(stream.array());
         stream.flip();
 
         // Allocate a LdapMessage Container
@@ -458,7 +459,7 @@ public class BindRequestTest
             // Check the length
             assertEquals( 0x3A, bb.limit() );
 
-            String encodedPdu = StringTools.dumpBytes( bb.array() );
+            String encodedPdu = Strings.dumpBytes(bb.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }
@@ -506,7 +507,7 @@ public class BindRequestTest
                 // 
                 'a', 'b', 'c', 'd', 'e', 'f' } );
 
-        String decodedPdu = StringTools.dumpBytes( stream.array() );
+        String decodedPdu = Strings.dumpBytes(stream.array());
         stream.flip();
 
         // Allocate a LdapMessage Container
@@ -541,7 +542,7 @@ public class BindRequestTest
             // Check the length
             assertEquals( 0x42, bb.limit() );
 
-            String encodedPdu = StringTools.dumpBytes( bb.array() );
+            String encodedPdu = Strings.dumpBytes(bb.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }
@@ -583,7 +584,7 @@ public class BindRequestTest
                 // 
                 'a', 'b', 'c', 'd', 'e', 'f' } );
 
-        String decodedPdu = StringTools.dumpBytes( stream.array() );
+        String decodedPdu = Strings.dumpBytes(stream.array());
         stream.flip();
 
         // Allocate a LdapMessage Container
@@ -618,7 +619,7 @@ public class BindRequestTest
             // Check the length
             assertEquals( 0x23, bb.limit() );
 
-            String encodedPdu = StringTools.dumpBytes( bb.array() );
+            String encodedPdu = Strings.dumpBytes(bb.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }
@@ -897,7 +898,7 @@ public class BindRequestTest
                 0x02, 0x01, 0x03, // version INTEGER (1..127),
                 0x04, 0x00, ( byte ) 0x80, 0x00 } );
 
-        String decodedPdu = StringTools.dumpBytes( stream.array() );
+        String decodedPdu = Strings.dumpBytes(stream.array());
         stream.flip();
 
         // Allocate a LdapMessage Container
@@ -931,7 +932,7 @@ public class BindRequestTest
             // Check the length
             assertEquals( 0x0E, bb.limit() );
 
-            String encodedPdu = StringTools.dumpBytes( bb.array() );
+            String encodedPdu = Strings.dumpBytes(bb.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }
@@ -999,7 +1000,7 @@ public class BindRequestTest
                 0x02, 0x01, 0x03, // version INTEGER (1..127),
                 0x04, 0x00, ( byte ) 0xA3, 0x02, 0x04, 0x00 } );
 
-        String decodedPdu = StringTools.dumpBytes( stream.array() );
+        String decodedPdu = Strings.dumpBytes(stream.array());
         stream.flip();
 
         // Allocate a LdapMessage Container
@@ -1033,7 +1034,7 @@ public class BindRequestTest
             // Check the length
             assertEquals( 0x10, bb.limit() );
 
-            String encodedPdu = StringTools.dumpBytes( bb.array() );
+            String encodedPdu = Strings.dumpBytes(bb.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }
@@ -1105,7 +1106,7 @@ public class BindRequestTest
                 0x02, 0x01, 0x03, // version INTEGER (1..127),
                 0x04, 0x00, ( byte ) 0xA3, 0x04, 0x04, 0x00, 0x04, 0x00, } );
 
-        String decodedPdu = StringTools.dumpBytes( stream.array() );
+        String decodedPdu = Strings.dumpBytes(stream.array());
         stream.flip();
 
         // Allocate a LdapMessage Container
@@ -1140,7 +1141,7 @@ public class BindRequestTest
             // Check the length
             assertEquals( 0x12, bb.limit() );
 
-            String encodedPdu = StringTools.dumpBytes( bb.array() );
+            String encodedPdu = Strings.dumpBytes(bb.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }
@@ -1176,7 +1177,7 @@ public class BindRequestTest
                 0x30, 0x19, 0x04, 0x17, 0x32, 0x2E, 0x31, 0x36, 0x2E, 0x38, 0x34, 0x30, 0x2E, 0x31, 0x2E, 0x31, 0x31,
                 0x33, 0x37, 0x33, 0x30, 0x2E, 0x33, 0x2E, 0x34, 0x2E, 0x32 } );
 
-        String decodedPdu = StringTools.dumpBytes( stream.array() );
+        String decodedPdu = Strings.dumpBytes(stream.array());
         stream.flip();
 
         // Allocate a LdapMessage Container
@@ -1210,7 +1211,7 @@ public class BindRequestTest
 
         Control control = controls.get( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
-        assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
+        assertEquals( "", Strings.dumpBytes((byte[]) control.getValue()) );
 
         // Check the encoding
         try
@@ -1220,7 +1221,7 @@ public class BindRequestTest
             // Check the length
             assertEquals( 0x2F, bb.limit() );
 
-            String encodedPdu = StringTools.dumpBytes( bb.array() );
+            String encodedPdu = Strings.dumpBytes(bb.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }
@@ -1255,7 +1256,7 @@ public class BindRequestTest
                 0x30, 0x19, 0x04, 0x17, 0x32, 0x2E, 0x31, 0x36, 0x2E, 0x38, 0x34, 0x30, 0x2E, 0x31, 0x2E, 0x31, 0x31,
                 0x33, 0x37, 0x33, 0x30, 0x2E, 0x33, 0x2E, 0x34, 0x2E, 0x32 } );
 
-        String decodedPdu = StringTools.dumpBytes( stream.array() );
+        String decodedPdu = Strings.dumpBytes(stream.array());
         stream.flip();
 
         // Allocate a LdapMessage Container
@@ -1289,7 +1290,7 @@ public class BindRequestTest
 
         Control control = controls.get( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
-        assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
+        assertEquals( "", Strings.dumpBytes((byte[]) control.getValue()) );
 
         // Check the encoding
         try
@@ -1299,7 +1300,7 @@ public class BindRequestTest
             // Check the length
             assertEquals( 0x2D, bb.limit() );
 
-            String encodedPdu = StringTools.dumpBytes( bb.array() );
+            String encodedPdu = Strings.dumpBytes(bb.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }

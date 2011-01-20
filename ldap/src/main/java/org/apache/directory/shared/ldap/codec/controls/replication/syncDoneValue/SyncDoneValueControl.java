@@ -29,7 +29,7 @@ import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -241,7 +241,7 @@ public class SyncDoneValueControl extends AbstractControl
         sb.append( "    SyncDoneValue control :\n" );
         sb.append( "        oid : " ).append( getOid() ).append( '\n' );
         sb.append( "        critical : " ).append( isCritical() ).append( '\n' );
-        sb.append( "        cookie            : '" ).append( StringTools.dumpBytes( cookie ) ).append( "'\n" );
+        sb.append( "        cookie            : '" ).append( Strings.dumpBytes(cookie) ).append( "'\n" );
         sb.append( "        refreshDeletes : '" ).append( refreshDeletes ).append( "'\n" );
 
         return sb.toString();

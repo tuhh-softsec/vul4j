@@ -36,6 +36,7 @@ import org.apache.directory.shared.ldap.codec.controls.replication.syncRequestVa
 import org.apache.directory.shared.ldap.codec.controls.replication.syncRequestValue.SyncRequestValueControlDecoder;
 import org.apache.directory.shared.ldap.message.control.replication.SynchronizationModeEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -106,8 +107,8 @@ public class SyncRequestValueControlTest
             buffer.flip();
 
             bb = syncRequestValue.encode( ByteBuffer.allocate( syncRequestValue.computeLength() ) );
-            String decoded = StringTools.dumpBytes( bb.array() );
-            String expected = StringTools.dumpBytes( buffer.array() );
+            String decoded = Strings.dumpBytes(bb.array());
+            String expected = Strings.dumpBytes(buffer.array());
             assertEquals( expected, decoded );
         }
         catch ( EncoderException ee )
@@ -175,8 +176,8 @@ public class SyncRequestValueControlTest
             buffer.flip();
 
             bb = syncRequestValue.encode( ByteBuffer.allocate( syncRequestValue.computeLength() ) );
-            String decoded = StringTools.dumpBytes( bb.array() );
-            String expected = StringTools.dumpBytes( buffer.array() );
+            String decoded = Strings.dumpBytes(bb.array());
+            String expected = Strings.dumpBytes(buffer.array());
             assertEquals( expected, decoded );
         }
         catch ( EncoderException ee )
@@ -242,8 +243,8 @@ public class SyncRequestValueControlTest
             buffer.flip();
 
             bb = syncRequestValue.encode( ByteBuffer.allocate( syncRequestValue.computeLength() ) );
-            String decoded = StringTools.dumpBytes( bb.array() );
-            String expected = StringTools.dumpBytes( buffer.array() );
+            String decoded = Strings.dumpBytes(bb.array());
+            String expected = Strings.dumpBytes(buffer.array());
             assertEquals( expected, decoded );
         }
         catch ( EncoderException ee )
@@ -311,8 +312,8 @@ public class SyncRequestValueControlTest
             buffer.flip();
 
             bb = syncRequestValue.encode( ByteBuffer.allocate( syncRequestValue.computeLength() ) );
-            String decoded = StringTools.dumpBytes( bb.array() );
-            String expected = StringTools.dumpBytes( buffer.array() );
+            String decoded = Strings.dumpBytes(bb.array());
+            String expected = Strings.dumpBytes(buffer.array());
             assertEquals( expected, decoded );
         }
         catch ( EncoderException ee )
@@ -378,8 +379,8 @@ public class SyncRequestValueControlTest
             buffer.flip();
 
             bb = syncRequestValue.encode( ByteBuffer.allocate( syncRequestValue.computeLength() ) );
-            String decoded = StringTools.dumpBytes( bb.array() );
-            String expected = StringTools.dumpBytes( buffer.array() );
+            String decoded = Strings.dumpBytes(bb.array());
+            String expected = Strings.dumpBytes(buffer.array());
             assertEquals( expected, decoded );
         }
         catch ( EncoderException ee )
@@ -446,8 +447,8 @@ public class SyncRequestValueControlTest
             buffer.flip();
 
             bb = syncRequestValue.encode( ByteBuffer.allocate( syncRequestValue.computeLength() ) );
-            String decoded = StringTools.dumpBytes( bb.array() );
-            String expected = StringTools.dumpBytes( buffer.array() );
+            String decoded = Strings.dumpBytes(bb.array());
+            String expected = Strings.dumpBytes(buffer.array());
             assertEquals( expected, decoded );
         }
         catch ( EncoderException ee )
@@ -513,8 +514,8 @@ public class SyncRequestValueControlTest
             buffer.flip();
 
             bb = syncRequestValue.encode( ByteBuffer.allocate( syncRequestValue.computeLength() ) );
-            String decoded = StringTools.dumpBytes( bb.array() );
-            String expected = StringTools.dumpBytes( buffer.array() );
+            String decoded = Strings.dumpBytes(bb.array());
+            String expected = Strings.dumpBytes(buffer.array());
             assertEquals( expected, decoded );
         }
         catch ( EncoderException ee )

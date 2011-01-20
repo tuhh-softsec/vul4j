@@ -26,6 +26,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.message.AddRequest;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,7 +80,7 @@ public class ValueAction extends GrammarAction
 
                 if ( IS_DEBUG )
                 {
-                    LOG.debug( "Adding value {}", StringTools.dumpBytes( ( byte[] ) value ) );
+                    LOG.debug( "Adding value {}", Strings.dumpBytes((byte[]) value) );
                 }
 
                 addRequest.addAttributeValue( ( byte[] ) value );

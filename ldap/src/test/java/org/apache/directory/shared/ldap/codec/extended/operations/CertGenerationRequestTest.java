@@ -33,7 +33,7 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.extended.operations.certGeneration.CertGenerationContainer;
 import org.apache.directory.shared.ldap.codec.extended.operations.certGeneration.CertGenerationObject;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -91,7 +91,7 @@ public class CertGenerationRequestTest
         bb.put( new byte[]
             { 0x04, 0x03, 'R', 'S', 'A' } );
 
-        String decodedPdu = StringTools.dumpBytes( bb.array() );
+        String decodedPdu = Strings.dumpBytes(bb.array());
         bb.flip();
 
         CertGenerationContainer container = new CertGenerationContainer();
@@ -115,7 +115,7 @@ public class CertGenerationRequestTest
         try
         {
             ByteBuffer encodedBuf = certGenObj.encode();
-            String encodedPdu = StringTools.dumpBytes( encodedBuf.array() );
+            String encodedPdu = Strings.dumpBytes(encodedBuf.array());
 
             assertEquals( decodedPdu, encodedPdu );
         }

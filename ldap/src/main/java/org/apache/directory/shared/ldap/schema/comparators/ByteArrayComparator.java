@@ -21,7 +21,7 @@ package org.apache.directory.shared.ldap.schema.comparators;
 
 
 import org.apache.directory.shared.ldap.schema.LdapComparator;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +54,7 @@ public class ByteArrayComparator extends LdapComparator<byte[]>
     public int compare( byte[] b1, byte[] b2 )
     {
         LOG.debug( "comparing OctetString objects '{}' with '{}'", 
-            StringTools.dumpBytes( b1 ), StringTools.dumpBytes( b2 ) );
+            Strings.dumpBytes(b1), Strings.dumpBytes(b2) );
 
         // -------------------------------------------------------------------
         // Handle some basis cases

@@ -47,7 +47,7 @@ import org.apache.directory.shared.ldap.message.SearchRequest;
 import org.apache.directory.shared.ldap.message.SearchRequestImpl;
 import org.apache.directory.shared.ldap.schema.normalizers.DeepTrimToLowerNormalizer;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -168,7 +168,7 @@ public class SearchRequestMatchingRuleAssertionTest
                 0x04, 0x05, 'a', 't', 't', 'r', '0', 0x04, 0x05, 'a', 't', 't', 'r', '1', 0x04, 0x05, 'a', 't', 't',
                 'r', '2' } );
 
-        String decodedPdu = StringTools.dumpBytes( stream.array() );
+        String decodedPdu = Strings.dumpBytes(stream.array());
         stream.flip();
 
         // Allocate a BindRequest Container
@@ -212,7 +212,7 @@ public class SearchRequestMatchingRuleAssertionTest
             // Check the length
             assertEquals( 0x63, bb.limit() );
 
-            String encodedPdu = StringTools.dumpBytes( bb.array() );
+            String encodedPdu = Strings.dumpBytes(bb.array());
 
             assertEquals( encodedPdu.substring( 0, 0x56 ), decodedPdu.substring( 0, 0x56 ) );
         }

@@ -36,6 +36,7 @@ import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue
 import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.SyncDoneValueControlContainer;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.SyncDoneValueControlDecoder;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -102,8 +103,8 @@ public class SyncDoneValueControlTest
             buffer.flip();
 
             bb = control.encode( ByteBuffer.allocate( control.computeLength() ) );
-            String expected = StringTools.dumpBytes( buffer.array() );
-            String decoded = StringTools.dumpBytes( bb.array() );
+            String expected = Strings.dumpBytes(buffer.array());
+            String decoded = Strings.dumpBytes(bb.array());
             assertEquals( expected, decoded );
         }
         catch( EncoderException e )
@@ -163,8 +164,8 @@ public class SyncDoneValueControlTest
             buffer.flip();
 
             bb = control.encode( ByteBuffer.allocate( control.computeLength() ) );
-            String expected = StringTools.dumpBytes( buffer.array() );
-            String decoded = StringTools.dumpBytes( bb.array() );
+            String expected = Strings.dumpBytes(buffer.array());
+            String decoded = Strings.dumpBytes(bb.array());
             assertEquals( expected, decoded );
         }
         catch( EncoderException e )
@@ -254,8 +255,8 @@ public class SyncDoneValueControlTest
             buffer.flip();
 
             bb = control.encode( ByteBuffer.allocate( control.computeLength() ) );
-            String expected = StringTools.dumpBytes( buffer.array() );
-            String decoded = StringTools.dumpBytes( bb.array() );
+            String expected = Strings.dumpBytes(buffer.array());
+            String decoded = Strings.dumpBytes(bb.array());
             assertEquals( expected, decoded );
         }
         catch( Exception e )

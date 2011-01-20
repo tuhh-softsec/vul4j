@@ -34,6 +34,7 @@ import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -344,7 +345,7 @@ public class StoredProcedure extends AbstractAsn1Object
                 sb.append( "            type[" ).append( i ) .append( "] : '" ).
                     append( StringTools.utf8ToString( spParam.type ) ).append( "'\n" );
                 sb.append( "            value[" ).append( i ) .append( "] : '" ).
-                    append( StringTools.dumpBytes( spParam.value ) ).append( "'\n" );
+                    append( Strings.dumpBytes(spParam.value) ).append( "'\n" );
             }
         }
 

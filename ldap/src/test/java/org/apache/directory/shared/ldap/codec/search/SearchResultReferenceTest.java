@@ -42,6 +42,7 @@ import org.apache.directory.shared.ldap.message.Referral;
 import org.apache.directory.shared.ldap.message.SearchResultReference;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -110,7 +111,7 @@ public class SearchResultReferenceTest
             }
         }
 
-        String decodedPdu = StringTools.dumpBytes( stream.array() );
+        String decodedPdu = Strings.dumpBytes(stream.array());
         stream.flip();
 
         // Allocate a BindRequest Container
@@ -164,7 +165,7 @@ public class SearchResultReferenceTest
             // Check the length
             assertEquals( 0x3D8, bb.limit() );
 
-            String encodedPdu = StringTools.dumpBytes( bb.array() );
+            String encodedPdu = Strings.dumpBytes(bb.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }
@@ -238,7 +239,7 @@ public class SearchResultReferenceTest
             stream.put( controlBytes[i] );
         }
 
-        String decodedPdu = StringTools.dumpBytes( stream.array() );
+        String decodedPdu = Strings.dumpBytes(stream.array());
         stream.flip();
 
         // Allocate a BindRequest Container
@@ -294,7 +295,7 @@ public class SearchResultReferenceTest
 
         Control control = controls.get( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
-        assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
+        assertEquals( "", Strings.dumpBytes((byte[]) control.getValue()) );
 
         // Check the encoding
         try
@@ -304,7 +305,7 @@ public class SearchResultReferenceTest
             // Check the length
             assertEquals( 0x3F5, bb.limit() );
 
-            String encodedPdu = StringTools.dumpBytes( bb.array() );
+            String encodedPdu = Strings.dumpBytes(bb.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }
@@ -382,7 +383,7 @@ public class SearchResultReferenceTest
             // LDAPURL
             } );
 
-        String decodedPdu = StringTools.dumpBytes( stream.array() );
+        String decodedPdu = Strings.dumpBytes(stream.array());
         stream.flip();
 
         // Allocate a BindRequest Container
@@ -420,7 +421,7 @@ public class SearchResultReferenceTest
             // Check the length
             assertEquals( 0x11, bb.limit() );
 
-            String encodedPdu = StringTools.dumpBytes( bb.array() );
+            String encodedPdu = Strings.dumpBytes(bb.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }

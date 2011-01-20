@@ -41,7 +41,7 @@ import org.apache.directory.shared.ldap.message.ModifyDnRequest;
 import org.apache.directory.shared.ldap.message.ModifyDnResponseImpl;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -89,7 +89,7 @@ public class ModifyDNRequestTest
                 // newSuperior [0] LDAPDN OPTIONAL }
                 ( byte ) 0x80, 0x09, 'o', 'u', '=', 's', 'y', 's', 't', 'e', 'm' } );
 
-        String decodedPdu = StringTools.dumpBytes( stream.array() );
+        String decodedPdu = Strings.dumpBytes(stream.array());
         stream.flip();
 
         // Allocate a ModifyRequest Container
@@ -122,7 +122,7 @@ public class ModifyDNRequestTest
             // Check the length
             assertEquals( 0x48, bb.limit() );
 
-            String encodedPdu = StringTools.dumpBytes( bb.array() );
+            String encodedPdu = Strings.dumpBytes(bb.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }
@@ -328,7 +328,7 @@ public class ModifyDNRequestTest
                 0x30, 0x19, 0x04, 0x17, 0x32, 0x2E, 0x31, 0x36, 0x2E, 0x38, 0x34, 0x30, 0x2E, 0x31, 0x2E, 0x31, 0x31,
                 0x33, 0x37, 0x33, 0x30, 0x2E, 0x33, 0x2E, 0x34, 0x2E, 0x32 } );
 
-        String decodedPdu = StringTools.dumpBytes( stream.array() );
+        String decodedPdu = Strings.dumpBytes(stream.array());
         stream.flip();
 
         // Allocate a ModifyRequest Container
@@ -360,7 +360,7 @@ public class ModifyDNRequestTest
 
         Control control = modifyDnRequest.getControl( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
-        assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
+        assertEquals( "", Strings.dumpBytes((byte[]) control.getValue()) );
 
         // Check the encoding
         try
@@ -370,7 +370,7 @@ public class ModifyDNRequestTest
             // Check the length
             assertEquals( 0x65, bb.limit() );
 
-            String encodedPdu = StringTools.dumpBytes( bb.array() );
+            String encodedPdu = Strings.dumpBytes(bb.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }
@@ -410,7 +410,7 @@ public class ModifyDNRequestTest
             // newSuperior [0] LDAPDN OPTIONAL }
             } );
 
-        String decodedPdu = StringTools.dumpBytes( stream.array() );
+        String decodedPdu = Strings.dumpBytes(stream.array());
         stream.flip();
 
         // Allocate a ModifyRequest Container
@@ -442,7 +442,7 @@ public class ModifyDNRequestTest
             // Check the length
             assertEquals( 0x3D, bb.limit() );
 
-            String encodedPdu = StringTools.dumpBytes( bb.array() );
+            String encodedPdu = Strings.dumpBytes(bb.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }
@@ -489,7 +489,7 @@ public class ModifyDNRequestTest
                 0x30, 0x19, 0x04, 0x17, 0x32, 0x2E, 0x31, 0x36, 0x2E, 0x38, 0x34, 0x30, 0x2E, 0x31, 0x2E, 0x31, 0x31,
                 0x33, 0x37, 0x33, 0x30, 0x2E, 0x33, 0x2E, 0x34, 0x2E, 0x32 } );
 
-        String decodedPdu = StringTools.dumpBytes( stream.array() );
+        String decodedPdu = Strings.dumpBytes(stream.array());
         stream.flip();
 
         // Allocate a ModifyRequest Container
@@ -522,7 +522,7 @@ public class ModifyDNRequestTest
 
         Control control = modifyDnRequest.getControl( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
-        assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
+        assertEquals( "", Strings.dumpBytes((byte[]) control.getValue()) );
 
         // Check the encoding
         try
@@ -532,7 +532,7 @@ public class ModifyDNRequestTest
             // Check the length
             assertEquals( 0x5A, bb.limit() );
 
-            String encodedPdu = StringTools.dumpBytes( bb.array() );
+            String encodedPdu = Strings.dumpBytes(bb.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }

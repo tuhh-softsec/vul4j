@@ -31,6 +31,7 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -131,7 +132,7 @@ public class CertGenerationGrammar extends AbstractGrammar
                     }
                     else
                     {
-                        String msg = I18n.err( I18n.ERR_04033, StringTools.dumpBytes( value.getData() ) );
+                        String msg = I18n.err( I18n.ERR_04033, Strings.dumpBytes(value.getData()) );
                         LOG.error( msg );
                         throw new DecoderException( msg );
                     }
@@ -217,7 +218,7 @@ public class CertGenerationGrammar extends AbstractGrammar
                     }
                     else
                     {
-                        String msg = I18n.err( I18n.ERR_04033, StringTools.dumpBytes( value.getData() ) );
+                        String msg = I18n.err( I18n.ERR_04033, Strings.dumpBytes(value.getData()) );
                         LOG.error( msg );
                         throw new DecoderException( msg );
                     }

@@ -31,7 +31,7 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
 import org.apache.directory.shared.ldap.message.control.replication.SynchronizationInfoEnum;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 
 /**
  * A syncInfoValue object, as defined in RFC 4533
@@ -586,7 +586,7 @@ public class SyncInfoValueControl extends AbstractControl
         {
             case NEW_COOKIE :
                 sb.append( "        newCookie : '" ).
-                    append( StringTools.dumpBytes( cookie ) ).append( "'\n" );
+                    append( Strings.dumpBytes(cookie) ).append( "'\n" );
                 break;
                 
             case REFRESH_DELETE :
@@ -595,7 +595,7 @@ public class SyncInfoValueControl extends AbstractControl
                 if ( cookie != null )
                 {
                     sb.append( "            cookie : '" ).
-                        append( StringTools.dumpBytes( cookie ) ).append( "'\n" );
+                        append( Strings.dumpBytes(cookie) ).append( "'\n" );
                 }
                 
                 sb.append( "            refreshDone : " ).append(  refreshDone ).append( '\n' );
@@ -607,7 +607,7 @@ public class SyncInfoValueControl extends AbstractControl
                 if ( cookie != null )
                 {
                     sb.append( "            cookie : '" ).
-                        append( StringTools.dumpBytes( cookie ) ).append( "'\n" );
+                        append( Strings.dumpBytes(cookie) ).append( "'\n" );
                 }
                 
                 sb.append( "            refreshDone : " ).append(  refreshDone ).append( '\n' );
@@ -619,7 +619,7 @@ public class SyncInfoValueControl extends AbstractControl
                 if ( cookie != null )
                 {
                     sb.append( "            cookie : '" ).
-                        append( StringTools.dumpBytes( cookie ) ).append( "'\n" );
+                        append( Strings.dumpBytes(cookie) ).append( "'\n" );
                 }
                 
                 sb.append( "            refreshDeletes : " ).append(  refreshDeletes ).append( '\n' );

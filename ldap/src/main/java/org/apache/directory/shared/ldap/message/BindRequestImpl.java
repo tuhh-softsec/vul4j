@@ -26,6 +26,7 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -504,7 +505,7 @@ public class BindRequestImpl extends AbstractAbandonableRequest implements BindR
             if ( isSimple )
             {
                 sb.append( "        Simple authentication : '" ).append( StringTools.utf8ToString( credentials ) )
-                    .append( '/' ).append( StringTools.dumpBytes( credentials ) ).append( "'\n" );
+                    .append( '/' ).append( Strings.dumpBytes(credentials) ).append( "'\n" );
             }
             else
             {

@@ -43,6 +43,7 @@ import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -1157,7 +1158,7 @@ public class LdifReaderTest
             else if ( "jpegphoto".equalsIgnoreCase( values[i][0] ) )
             {
                 EntryAttribute attr = entry.get( values[i][0] );
-                assertEquals( StringTools.dumpBytes( data ), StringTools.dumpBytes( attr.getBytes() ) );
+                assertEquals( Strings.dumpBytes(data), Strings.dumpBytes(attr.getBytes()) );
             }
             else
             {
@@ -1349,7 +1350,7 @@ public class LdifReaderTest
             else if ( "jpegphoto".equalsIgnoreCase( values[0][i][0] ) )
             {
                 EntryAttribute attr = entry.get( values[0][i][0] );
-                assertEquals( StringTools.dumpBytes( data ), StringTools.dumpBytes( attr.getBytes() ) );
+                assertEquals( Strings.dumpBytes(data), Strings.dumpBytes(attr.getBytes()) );
             }
             else
             {

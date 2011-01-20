@@ -34,7 +34,7 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.extended.operations.GracefulActionConstants;
 import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.util.LdapURL;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,7 +96,7 @@ public final class GracefulDisconnectGrammar extends AbstractGrammar
             }
             catch ( IntegerDecoderException e )
             {
-                String msg = I18n.err( I18n.ERR_04036, StringTools.dumpBytes( value.getData() ) );
+                String msg = I18n.err( I18n.ERR_04036, Strings.dumpBytes(value.getData()) );
                 LOG.error( msg );
                 throw new DecoderException( msg );
             }
@@ -126,7 +126,7 @@ public final class GracefulDisconnectGrammar extends AbstractGrammar
             }
             catch ( LdapURLEncodingException e )
             {
-                String msg = "failed to decode the URL '" + StringTools.dumpBytes( value.getData() ) + "'";
+                String msg = "failed to decode the URL '" + Strings.dumpBytes(value.getData()) + "'";
                 LOG.error( msg );
                 throw new DecoderException( msg );
             }
@@ -157,7 +157,7 @@ public final class GracefulDisconnectGrammar extends AbstractGrammar
             }
             catch ( IntegerDecoderException e )
             {
-                String msg = I18n.err( I18n.ERR_04037, StringTools.dumpBytes( value.getData() ) );
+                String msg = I18n.err( I18n.ERR_04037, Strings.dumpBytes(value.getData()) );
                 LOG.error( msg );
                 throw new DecoderException( msg );
             }

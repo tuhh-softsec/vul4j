@@ -37,6 +37,7 @@ import org.apache.directory.shared.ldap.codec.controls.replication.syncStateValu
 import org.apache.directory.shared.ldap.codec.controls.replication.syncStateValue.SyncStateValueControlDecoder;
 import org.apache.directory.shared.ldap.message.control.replication.SyncStateTypeEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -109,7 +110,7 @@ public class SyncStateValueControlTest
             buffer.flip();
 
             ByteBuffer encoded = syncStateValue.encode( ByteBuffer.allocate( syncStateValue.computeLength() ) );
-            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
+            assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
         {
@@ -173,7 +174,7 @@ public class SyncStateValueControlTest
             buffer.flip();
 
             ByteBuffer encoded = syncStateValue.encode( ByteBuffer.allocate( syncStateValue.computeLength() ) );
-            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
+            assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
         {
@@ -239,7 +240,7 @@ public class SyncStateValueControlTest
             buffer.flip();
 
             ByteBuffer encoded = syncStateValue.encode( ByteBuffer.allocate( syncStateValue.computeLength() ) );
-            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
+            assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
         {
@@ -396,7 +397,7 @@ public class SyncStateValueControlTest
             buffer.flip();
 
             ByteBuffer encoded = syncStateValue.encode( ByteBuffer.allocate( syncStateValue.computeLength() ) );
-            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
+            assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
         {

@@ -28,7 +28,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLVStateEnum;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.message.Message;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.ProtocolDecoder;
@@ -84,7 +84,7 @@ public class LdapProtocolDecoder implements ProtocolDecoder
 
                     System.arraycopy( buf.array(), currentPos, b, 0, pos - currentPos );
                     currentPos = pos;
-                    LOG.debug( "Received buffer : " + StringTools.dumpBytes( b ) );
+                    LOG.debug( "Received buffer : " + Strings.dumpBytes(b) );
                 }
 
                 if ( ldapMessageContainer.getState() == TLVStateEnum.PDU_DECODED )

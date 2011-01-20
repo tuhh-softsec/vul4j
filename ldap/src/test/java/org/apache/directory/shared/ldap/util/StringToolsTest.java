@@ -36,6 +36,7 @@ import javax.naming.NamingException;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
+import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -148,29 +149,29 @@ public class StringToolsTest
     @Test
     public void testcharToBytesOne()
     {
-        assertEquals( "0x00 ", StringTools.dumpBytes( StringTools.charToBytes( ( char ) 0x0000 ) ) );
-        assertEquals( "0x61 ", StringTools.dumpBytes( StringTools.charToBytes( 'a' ) ) );
-        assertEquals( "0x7F ", StringTools.dumpBytes( StringTools.charToBytes( ( char ) 0x007F ) ) );
+        assertEquals( "0x00 ", Strings.dumpBytes(StringTools.charToBytes((char) 0x0000)) );
+        assertEquals( "0x61 ", Strings.dumpBytes(StringTools.charToBytes('a')) );
+        assertEquals( "0x7F ", Strings.dumpBytes(StringTools.charToBytes((char) 0x007F)) );
     }
 
 
     @Test
     public void testcharToBytesTwo()
     {
-        assertEquals( "0xC2 0x80 ", StringTools.dumpBytes( StringTools.charToBytes( ( char ) 0x0080 ) ) );
-        assertEquals( "0xC3 0xBF ", StringTools.dumpBytes( StringTools.charToBytes( ( char ) 0x00FF ) ) );
-        assertEquals( "0xC4 0x80 ", StringTools.dumpBytes( StringTools.charToBytes( ( char ) 0x0100 ) ) );
-        assertEquals( "0xDF 0xBF ", StringTools.dumpBytes( StringTools.charToBytes( ( char ) 0x07FF ) ) );
+        assertEquals( "0xC2 0x80 ", Strings.dumpBytes(StringTools.charToBytes((char) 0x0080)) );
+        assertEquals( "0xC3 0xBF ", Strings.dumpBytes(StringTools.charToBytes((char) 0x00FF)) );
+        assertEquals( "0xC4 0x80 ", Strings.dumpBytes(StringTools.charToBytes((char) 0x0100)) );
+        assertEquals( "0xDF 0xBF ", Strings.dumpBytes(StringTools.charToBytes((char) 0x07FF)) );
     }
 
 
     @Test
     public void testcharToBytesThree()
     {
-        assertEquals( "0xE0 0xA0 0x80 ", StringTools.dumpBytes( StringTools.charToBytes( ( char ) 0x0800 ) ) );
-        assertEquals( "0xE0 0xBF 0xBF ", StringTools.dumpBytes( StringTools.charToBytes( ( char ) 0x0FFF ) ) );
-        assertEquals( "0xE1 0x80 0x80 ", StringTools.dumpBytes( StringTools.charToBytes( ( char ) 0x1000 ) ) );
-        assertEquals( "0xEF 0xBF 0xBF ", StringTools.dumpBytes( StringTools.charToBytes( ( char ) 0xFFFF ) ) );
+        assertEquals( "0xE0 0xA0 0x80 ", Strings.dumpBytes(StringTools.charToBytes((char) 0x0800)) );
+        assertEquals( "0xE0 0xBF 0xBF ", Strings.dumpBytes(StringTools.charToBytes((char) 0x0FFF)) );
+        assertEquals( "0xE1 0x80 0x80 ", Strings.dumpBytes(StringTools.charToBytes((char) 0x1000)) );
+        assertEquals( "0xEF 0xBF 0xBF ", Strings.dumpBytes(StringTools.charToBytes((char) 0xFFFF)) );
     }
 
 

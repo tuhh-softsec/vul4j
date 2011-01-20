@@ -36,6 +36,7 @@ import org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValue
 import org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValue.SyncInfoValueControlDecoder;
 import org.apache.directory.shared.ldap.message.control.replication.SynchronizationInfoEnum;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -101,7 +102,7 @@ public class SyncInfoValueControlTest
             buffer.flip();
 
             ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
-            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
+            assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
         {
@@ -159,7 +160,7 @@ public class SyncInfoValueControlTest
             buffer.flip();
 
             ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
-            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
+            assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
         {
@@ -226,7 +227,7 @@ public class SyncInfoValueControlTest
             buffer.flip();
 
             ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
-            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
+            assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
         {
@@ -291,7 +292,7 @@ public class SyncInfoValueControlTest
             buffer.flip();
 
             ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
-            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
+            assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
         {
@@ -354,7 +355,7 @@ public class SyncInfoValueControlTest
             buffer.flip();
 
             ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
-            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
+            assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
         {
@@ -417,7 +418,7 @@ public class SyncInfoValueControlTest
             buffer.flip();
 
             ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
-            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
+            assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
         {
@@ -476,7 +477,7 @@ public class SyncInfoValueControlTest
             buffer.flip();
 
             ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
-            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
+            assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
         {
@@ -543,7 +544,7 @@ public class SyncInfoValueControlTest
             buffer.flip();
 
             ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
-            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
+            assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
         {
@@ -608,7 +609,7 @@ public class SyncInfoValueControlTest
             buffer.flip();
 
             ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
-            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
+            assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
         {
@@ -671,7 +672,7 @@ public class SyncInfoValueControlTest
             buffer.flip();
 
             ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
-            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
+            assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
         {
@@ -734,7 +735,7 @@ public class SyncInfoValueControlTest
             buffer.flip();
 
             ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
-            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
+            assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
         {
@@ -793,7 +794,7 @@ public class SyncInfoValueControlTest
             buffer.flip();
 
             ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
-            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
+            assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
         {
@@ -987,7 +988,7 @@ public class SyncInfoValueControlTest
             buffer.flip();
 
             ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
-            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
+            assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
         {
@@ -1078,7 +1079,7 @@ public class SyncInfoValueControlTest
             buffer.flip();
 
             ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
-            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
+            assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
         {
@@ -1143,7 +1144,7 @@ public class SyncInfoValueControlTest
             buffer.flip();
 
             ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
-            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
+            assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
         {
@@ -1237,7 +1238,7 @@ public class SyncInfoValueControlTest
             buffer.flip();
 
             ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
-            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
+            assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
         {
@@ -1302,7 +1303,7 @@ public class SyncInfoValueControlTest
             buffer.flip();
 
             ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
-            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
+            assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
         {
@@ -1395,7 +1396,7 @@ public class SyncInfoValueControlTest
             buffer.flip();
 
             ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
-            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
+            assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
         {
@@ -1462,7 +1463,7 @@ public class SyncInfoValueControlTest
             buffer.flip();
 
             ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
-            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
+            assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
         {
@@ -1558,7 +1559,7 @@ public class SyncInfoValueControlTest
             buffer.flip();
 
             ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
-            assertEquals( StringTools.dumpBytes( buffer.array() ), StringTools.dumpBytes( encoded.array() ) );
+            assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
         {

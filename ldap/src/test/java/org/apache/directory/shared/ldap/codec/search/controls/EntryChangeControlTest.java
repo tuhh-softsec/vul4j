@@ -35,7 +35,7 @@ import org.apache.directory.shared.ldap.codec.search.controls.entryChange.EntryC
 import org.apache.directory.shared.ldap.codec.search.controls.entryChange.EntryChangeControlContainer;
 import org.apache.directory.shared.ldap.codec.search.controls.entryChange.EntryChangeControlDecoder;
 import org.apache.directory.shared.ldap.name.DN;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -344,7 +344,7 @@ public class EntryChangeControlTest
                   0x02, 0x01, 0x10,                //     changeNumber INTEGER OPTIONAL -- if supported
             } );
 
-        String expected = StringTools.dumpBytes( bb.array() );
+        String expected = Strings.dumpBytes(bb.array());
         bb.flip();
 
         EntryChangeControl entry = new EntryChangeControl();
@@ -352,7 +352,7 @@ public class EntryChangeControlTest
         entry.setChangeNumber( 16 );
         entry.setPreviousDn( new DN( "a=b" ) );
         bb = entry.encode( ByteBuffer.allocate( entry.computeLength() ) );
-        String decoded = StringTools.dumpBytes( bb.array() );
+        String decoded = Strings.dumpBytes(bb.array());
         assertEquals( expected, decoded );
     }
 
@@ -381,7 +381,7 @@ public class EntryChangeControlTest
                     0x12, 0x34, 0x56, 0x78, (byte)0x9a, (byte)0xbc, (byte)0xde
             } );
 
-        String expected = StringTools.dumpBytes( bb.array() );
+        String expected = Strings.dumpBytes(bb.array());
         bb.flip();
 
         EntryChangeControl entry = new EntryChangeControl();
@@ -389,7 +389,7 @@ public class EntryChangeControlTest
         entry.setChangeNumber( 5124095576030430L );
         entry.setPreviousDn( new DN( "a=b" ) );
         bb = entry.encode( ByteBuffer.allocate( entry.computeLength() ) );
-        String decoded = StringTools.dumpBytes( bb.array() );
+        String decoded = Strings.dumpBytes(bb.array());
         assertEquals( expected, decoded );
     }
 }

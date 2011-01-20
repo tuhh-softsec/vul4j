@@ -32,6 +32,7 @@ import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.extended.operations.storedProcedure.StoredProcedure.StoredProcedureParameter;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -228,7 +229,7 @@ public final class StoredProcedureGrammar extends AbstractGrammar
 
                         if ( LOG.isDebugEnabled() )
                         {
-                            LOG.debug( "Parameter type found : " + StringTools.dumpBytes( parameterType ) );
+                            LOG.debug( "Parameter type found : " + Strings.dumpBytes(parameterType) );
                         }
 
                     }
@@ -275,7 +276,7 @@ public final class StoredProcedureGrammar extends AbstractGrammar
 
                             if ( LOG.isDebugEnabled() )
                             {
-                                LOG.debug( "Parameter value found : " + StringTools.dumpBytes( parameterValue ) );
+                                LOG.debug( "Parameter value found : " + Strings.dumpBytes(parameterValue) );
                             }
                         }
                         else

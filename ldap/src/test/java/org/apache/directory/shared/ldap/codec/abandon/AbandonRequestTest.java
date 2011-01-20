@@ -39,7 +39,7 @@ import org.apache.directory.shared.ldap.message.AbandonRequest;
 import org.apache.directory.shared.ldap.message.AbandonRequestImpl;
 import org.apache.directory.shared.ldap.message.LdapEncoder;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -123,25 +123,25 @@ public class AbandonRequestTest
 
         Control control = controls.get( "1.3.6.1.5.5.1" );
         assertEquals( "1.3.6.1.5.5.1", control.getOid() );
-        assertEquals( "0x61 0x62 0x63 0x64 0x65 0x66 ", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
+        assertEquals( "0x61 0x62 0x63 0x64 0x65 0x66 ", Strings.dumpBytes((byte[]) control.getValue()) );
         assertTrue( control.isCritical() );
         internalAbandonRequest.addControl( control );
 
         control = controls.get( "1.3.6.1.5.5.2" );
         assertEquals( "1.3.6.1.5.5.2", control.getOid() );
-        assertEquals( "0x67 0x68 0x69 0x6A 0x6B 0x6C ", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
+        assertEquals( "0x67 0x68 0x69 0x6A 0x6B 0x6C ", Strings.dumpBytes((byte[]) control.getValue()) );
         assertFalse( control.isCritical() );
         internalAbandonRequest.addControl( control );
 
         control = controls.get( "1.3.6.1.5.5.3" );
         assertEquals( "1.3.6.1.5.5.3", control.getOid() );
-        assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
+        assertEquals( "", Strings.dumpBytes((byte[]) control.getValue()) );
         assertTrue( control.isCritical() );
         internalAbandonRequest.addControl( control );
 
         control = controls.get( "1.3.6.1.5.5.4" );
         assertEquals( "1.3.6.1.5.5.4", control.getOid() );
-        assertEquals( "", StringTools.dumpBytes( ( byte[] ) control.getValue() ) );
+        assertEquals( "", Strings.dumpBytes((byte[]) control.getValue()) );
         assertFalse( control.isCritical() );
         internalAbandonRequest.addControl( control );
 
@@ -195,7 +195,7 @@ public class AbandonRequestTest
             // AbandonRequest ::= [APPLICATION 16] MessageID
             } );
 
-        String decodedPdu = StringTools.dumpBytes( stream.array() );
+        String decodedPdu = Strings.dumpBytes(stream.array());
         stream.flip();
 
         // Allocate a LdapMessageContainer Container
@@ -230,7 +230,7 @@ public class AbandonRequestTest
             // Check the length
             assertEquals( 0x0A, bb.limit() );
 
-            String encodedPdu = StringTools.dumpBytes( bb.array() );
+            String encodedPdu = Strings.dumpBytes(bb.array());
 
             assertEquals( encodedPdu, decodedPdu );
         }

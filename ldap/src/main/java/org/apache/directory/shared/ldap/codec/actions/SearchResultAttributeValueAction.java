@@ -26,6 +26,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.message.SearchResultEntry;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,7 +81,7 @@ public class SearchResultAttributeValueAction extends GrammarAction
 
                 if ( IS_DEBUG )
                 {
-                    LOG.debug( "Attribute value {}", StringTools.dumpBytes( ( byte[] ) value ) );
+                    LOG.debug( "Attribute value {}", Strings.dumpBytes((byte[]) value) );
                 }
             }
             else

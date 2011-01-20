@@ -35,6 +35,7 @@ import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.directory.shared.ldap.util.UTFUtils;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1293,7 +1294,7 @@ public class DefaultEntryAttribute implements EntryAttribute
                     catch( LdapException ne )
                     {
                         // The value can't be normalized : we don't add it.
-                        LOG.error( I18n.err( I18n.ERR_04449, StringTools.dumpBytes( val ) ) );
+                        LOG.error( I18n.err( I18n.ERR_04449, Strings.dumpBytes(val) ) );
                         return 0;
                     }
                 }
@@ -1304,7 +1305,7 @@ public class DefaultEntryAttribute implements EntryAttribute
                 }
                 else
                 {
-                    LOG.error( I18n.err( I18n.ERR_04486_VALUE_ALREADY_EXISTS, StringTools.dumpBytes( val ), upId ) );
+                    LOG.error( I18n.err( I18n.ERR_04486_VALUE_ALREADY_EXISTS, Strings.dumpBytes(val), upId ) );
                 }
             }
         }
