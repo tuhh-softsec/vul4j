@@ -37,7 +37,6 @@ import java.util.regex.PatternSyntaxException;
 
 import javax.naming.InvalidNameException;
 
-import org.apache.directory.shared.asn1.Hex;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.BinaryValue;
 import org.apache.directory.shared.ldap.entry.StringValue;
@@ -1686,7 +1685,7 @@ public final class StringTools
     /**
      * Test if the current character is equal to a specific character.
      * 
-     * @param string The String which contains the data
+     * @param bytes The String which contains the data
      * @param index Current position in the string
      * @param car The character we want to compare with the current string
      *            position
@@ -1830,7 +1829,7 @@ public final class StringTools
      * Check if the current byte is an Hex Char 
      * &lt;hex> ::= [0x30-0x39] | [0x41-0x46] | [0x61-0x66]
      * 
-     * @param byte The byte we want to check
+     * @param b The byte we want to check
      * @return <code>true</code> if the current byte is a Hex byte
      */
     public static boolean isHex( byte b )
@@ -3605,6 +3604,37 @@ public final class StringTools
     }
 
 
+    /** Used to build output as Hex */
+    private static final char[] HEX_DIGITS =
+        { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
+
+
+    /**
+     * Converts an array of bytes into an array of characters representing the
+     * hexidecimal values of each byte in order. The returned array will be
+     * double the length of the passed array, as it takes two characters to
+     * represent any given byte.
+     *
+     * @param data a byte[] to convert to Hex characters
+     * @return A char[] containing hexidecimal characters
+     */
+    public static char[] encodeHex( byte[] data )
+    {
+        int l = data.length;
+
+        char[] out = new char[l << 1];
+
+        // two characters form the hex value.
+        for ( int i = 0, j = 0; i < l; i++ )
+        {
+            out[j++] = HEX_DIGITS[( 0xF0 & data[i] ) >>> 4];
+            out[j++] = HEX_DIGITS[0x0F & data[i]];
+        }
+
+        return out;
+    }
+
+
     /**
      * converts the bytes of a UUID to string
      *  
@@ -3618,7 +3648,7 @@ public final class StringTools
             return "Invalid UUID";
         }
 
-        char[] hex = Hex.encodeHex( bytes );
+        char[] hex = encodeHex( bytes );
         StringBuffer sb = new StringBuffer();
         sb.append( hex, 0, 8 );
         sb.append( '-' );
