@@ -20,7 +20,7 @@
 <repository>
 	<id>webassembletool-repository</id>
 	<name>Website Assembling Toolkit repository</name>
-	<url>http://webassembletool.sourceforge.net/maven/repository</url>
+	<url>http://www.esigate.org/maven/repository</url>
 </repository>
 ]]></source>
 		</section>

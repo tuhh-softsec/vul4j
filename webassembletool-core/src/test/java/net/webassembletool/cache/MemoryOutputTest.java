@@ -36,7 +36,7 @@ public class MemoryOutputTest extends TestCase {
 		assertNull(memoryOutput.toResource());
 
 		// Size =0 (means no limit) : content is written
-		// see http://webassembletool.sourceforge.net/configuration.html
+		// see http://www.esigate.org/configuration.html
 		memoryOutput = new CacheOutput(0);
 		memoryOutput.setCharsetName(CHARSET);
 		memoryOutput.open();

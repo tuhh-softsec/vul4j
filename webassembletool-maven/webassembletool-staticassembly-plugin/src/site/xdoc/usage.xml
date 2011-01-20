@@ -26,7 +26,7 @@
 				The simplest way is to generate your project with the archetype :
 				<source><![CDATA[
 mvn archetype:generate 
-    -DarchetypeRepository=http://webassembletool.sourceforge.net/maven/repository 
+    -DarchetypeRepository=http://www.esigate.org/maven/repository 
     -DarchetypeArtifactId=webassembletool-staticassembly-archetype
     -DarchetypeGroupId=net.sourceforge.webassembletool.maven  -DarchetypeVersion=RELEASE
 ]]></source>

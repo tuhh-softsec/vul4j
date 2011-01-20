@@ -34,7 +34,7 @@
 
 		<links>
 			<item name="Maven repo"
-				href="http://webassembletool.sourceforge.net/maven/repository/" />
+				href="http://www.esigate.org/maven/repository/" />
 			<item name="Change log"
 				href="https://sourceforge.net/apps/mantisbt/webassembletool/changelog_page.php" />
 			<item name="Roadmap"

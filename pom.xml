@@ -49,7 +49,7 @@
 		<unsubscribe>https://lists.sourceforge.net/lists/listinfo/webassembletool-commits</unsubscribe>
 		</mailingList>
 	</mailingLists>
-	<url>http://webassembletool.sourceforge.net/</url>
+	<url>http://www.esigate.org/</url>
 	<licenses>
 		<license>
 			<name>Apache Software License</name>
@@ -379,7 +379,7 @@
 		<site>
 			<id>webassembletool-site</id>
 			<name>ESIGate</name>
-			<url>sftp://web.sourceforge.net/home/groups/w/we/webassembletool/htdocs</url>
+			<url>scp://shell.sourceforge.net/home/groups/w/we/webassembletool/htdocs</url>
 		</site>
 	</distributionManagement>
 	<properties>

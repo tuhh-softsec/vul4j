@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.google.com/schemas/sitemap/0.84">
 	<url>
-		<loc>http://webassembletool.sourceforge.net/</loc>
+		<loc>http://www.esigate.org/</loc>
 		<changefreq>weekly</changefreq>
 		<priority>0.8</priority>
 	</url>
 	<url>
-		<loc>http://webassembletool.sourceforge.net/index.html</loc>
+		<loc>http://www.esigate.org/index.html</loc>
 		<changefreq>weekly</changefreq>
 		<priority>0.0</priority>
 	</url>
