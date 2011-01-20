@@ -23,7 +23,7 @@ package org.apache.directory.ldap.client.api;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.directory.shared.asn1.primitives.OID;
+import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.ldap.cursor.SearchCursor;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.Modification;
@@ -564,7 +564,7 @@ public interface LdapConnection
      * @param oid the object identifier of the extended operation
      * @return extended operation's response
      * @throws LdapException if some error occurred
-     * @see #extended(OID, byte[])
+     * @see #extended(org.apache.directory.shared.asn1.util.OID, byte[])
      */
     ExtendedResponse extended( String oid ) throws LdapException;
 
@@ -576,7 +576,7 @@ public interface LdapConnection
      * @param value value to be used by the extended operation, can be a null value
      * @return extended operation's response
      * @throws LdapException if some error occurred
-     * @see #extended(OID, byte[])
+     * @see #extended(org.apache.directory.shared.asn1.util.OID, byte[])
      */
     ExtendedResponse extended( String oid, byte[] value ) throws LdapException;
 
@@ -587,7 +587,7 @@ public interface LdapConnection
      * @param oid the object identifier of the extended operation
      * @return extended operation's response
      * @throws LdapException if some error occurred
-     * @see #extended(OID, byte[])
+     * @see #extended(org.apache.directory.shared.asn1.util.OID, byte[])
      */
     ExtendedResponse extended( OID oid ) throws LdapException;
 

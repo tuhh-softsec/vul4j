@@ -20,7 +20,7 @@
 package org.apache.directory.shared.dsmlv2.request;
 
 
-import org.apache.directory.shared.asn1.primitives.OID;
+import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.dsmlv2.ParserUtils;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.ExtendedRequest;

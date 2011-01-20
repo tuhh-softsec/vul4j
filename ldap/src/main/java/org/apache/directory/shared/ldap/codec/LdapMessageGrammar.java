@@ -30,13 +30,8 @@ import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
-import org.apache.directory.shared.asn1.primitives.OID;
-import org.apache.directory.shared.asn1.util.BooleanDecoder;
-import org.apache.directory.shared.asn1.util.BooleanDecoderException;
-import org.apache.directory.shared.asn1.util.IntegerDecoder;
-import org.apache.directory.shared.asn1.util.IntegerDecoderException;
-import org.apache.directory.shared.asn1.util.LongDecoder;
-import org.apache.directory.shared.asn1.util.LongDecoderException;
+import org.apache.directory.shared.asn1.util.OID;
+import org.apache.directory.shared.asn1.util.*;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.actions.AttributeDescAction;
 import org.apache.directory.shared.ldap.codec.actions.ControlValueAction;
@@ -3439,7 +3434,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     String oidValue = StringTools.asciiBytesToString( value );
 
                     // The OID is encoded as a String, not an Object Id
-                    if ( !OID.isOID( oidValue ) )
+                    if ( !OID.isOID(oidValue) )
                     {
                         LOG.error( I18n.err( I18n.ERR_04098, StringTools.dumpBytes( value ) ) );
 

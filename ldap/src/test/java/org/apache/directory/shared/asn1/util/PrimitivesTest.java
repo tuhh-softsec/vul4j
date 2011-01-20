@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.asn1.primitives;
+package org.apache.directory.shared.asn1.util;
 
 
 import org.apache.directory.junit.tools.Concurrent;

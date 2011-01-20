@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.directory.shared.asn1.primitives.OID;
+import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.exception.LdapAttributeInUseException;
 import org.apache.directory.shared.ldap.exception.LdapException;
@@ -90,7 +90,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
      */
     public String getSchemaName( String oid ) throws LdapException
     {
-        if ( !OID.isOID( oid ) )
+        if ( !OID.isOID(oid) )
         {
             String msg = I18n.err( I18n.ERR_04267 );
             LOG.warn( msg );

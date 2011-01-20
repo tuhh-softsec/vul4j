@@ -17,12 +17,13 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.asn1.primitives;
+package org.apache.directory.shared.asn1.util;
 
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
+import org.apache.directory.shared.asn1.util.OID;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 

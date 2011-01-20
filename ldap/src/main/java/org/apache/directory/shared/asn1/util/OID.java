@@ -17,14 +17,13 @@
  *  under the License.
  *
  */
-package org.apache.directory.shared.asn1.primitives;
+package org.apache.directory.shared.asn1.util;
 
 
 import java.io.Serializable;
 import java.util.Arrays;
 
 import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.util.Asn1StringUtils;
 import org.apache.directory.shared.i18n.I18n;
 
 

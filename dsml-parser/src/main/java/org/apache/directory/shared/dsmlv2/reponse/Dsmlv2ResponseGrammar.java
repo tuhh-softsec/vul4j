@@ -28,7 +28,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.primitives.OID;
+import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.dsmlv2.AbstractGrammar;
 import org.apache.directory.shared.dsmlv2.Dsmlv2Container;
 import org.apache.directory.shared.dsmlv2.Dsmlv2StatesEnum;
@@ -1204,7 +1204,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
 
         if ( attributeValue != null )
         {
-            if ( !OID.isOID( attributeValue ) )
+            if ( !OID.isOID(attributeValue) )
             {
                 throw new XmlPullParserException( I18n.err( I18n.ERR_03006 ), xpp, null );
             }

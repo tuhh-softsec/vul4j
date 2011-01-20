@@ -31,7 +31,7 @@ import java.util.Arrays;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.EncoderException;
-import org.apache.directory.shared.asn1.primitives.BitString;
+import org.apache.directory.shared.asn1.util.BitString;
 import org.apache.directory.shared.asn1.util.Asn1StringUtils;
 import org.apache.directory.shared.asn1.util.IntegerDecoder;
 import org.apache.directory.shared.asn1.util.LongDecoder;

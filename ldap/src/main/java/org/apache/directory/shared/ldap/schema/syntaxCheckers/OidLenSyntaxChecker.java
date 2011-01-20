@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.schema.syntaxCheckers;
 
 
-import org.apache.directory.shared.asn1.primitives.OID;
+import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
 import org.apache.directory.shared.ldap.util.StringTools;
@@ -104,7 +104,7 @@ public class OidLenSyntaxChecker extends SyntaxChecker
         if ( pos < 0 )
         {
             // Not found ... but it may still be a valid OID
-            boolean result = OID.isOID( strValue );
+            boolean result = OID.isOID(strValue);
             
             if ( result )
             {

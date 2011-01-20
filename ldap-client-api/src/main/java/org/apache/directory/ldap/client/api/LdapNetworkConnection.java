@@ -58,7 +58,7 @@ import org.apache.directory.ldap.client.api.future.SearchFuture;
 import org.apache.directory.ldap.client.api.protocol.LdapProtocolCodecFactory;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
-import org.apache.directory.shared.asn1.primitives.OID;
+import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.MessageEncoderException;
 import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
