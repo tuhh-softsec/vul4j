@@ -20,7 +20,7 @@
 package org.apache.directory.shared.asn1.codec.stateful;
 
 
-import org.apache.directory.shared.asn1.codec.EncoderException;
+import org.apache.directory.shared.asn1.EncoderException;
 
 
 /**

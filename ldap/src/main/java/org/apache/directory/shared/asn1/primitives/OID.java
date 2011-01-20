@@ -23,7 +23,7 @@ package org.apache.directory.shared.asn1.primitives;
 import java.io.Serializable;
 import java.util.Arrays;
 
-import org.apache.directory.shared.asn1.codec.DecoderException;
+import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.util.Asn1StringUtils;
 import org.apache.directory.shared.i18n.I18n;
 
@@ -87,7 +87,7 @@ public class OID implements Serializable
      * Create a new OID object from a byte array
      *
      * @param oid the byte array containing the OID
-     * @throws DecoderException if the byte array does not contain a
+     * @throws org.apache.directory.shared.asn1.DecoderException if the byte array does not contain a
      * valid OID
      */
     public OID( byte[] oid ) throws DecoderException
@@ -116,7 +116,7 @@ public class OID implements Serializable
      * representation.
      *
      * @param oid The bytes containing the OID
-     * @throws DecoderException if the byte array does not contains a valid OID
+     * @throws org.apache.directory.shared.asn1.DecoderException if the byte array does not contains a valid OID
      */
     public void setOID( byte[] oid ) throws DecoderException
     {
@@ -213,7 +213,7 @@ public class OID implements Serializable
      * OID = ( [ '0' | '1' ] '.' [ 0 .. 39 ] | '2' '.' int) ( '.' int )*
      *
      * @param oid The String containing the OID
-     * @throws DecoderException if the byte array does not contains a valid OID
+     * @throws org.apache.directory.shared.asn1.DecoderException if the byte array does not contains a valid OID
      */
     public void setOID( String oid ) throws DecoderException
     {

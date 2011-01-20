@@ -24,7 +24,7 @@ import java.io.Serializable;
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 
-import org.apache.directory.shared.asn1.codec.EncoderException;
+import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.primitives.BitString;
 import org.apache.directory.shared.asn1.primitives.OID;
 import org.apache.directory.shared.asn1.util.Asn1StringUtils;

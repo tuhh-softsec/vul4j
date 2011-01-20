@@ -21,7 +21,7 @@ package org.apache.directory.shared.ldap.codec.controls;
 
 import java.nio.ByteBuffer;
 
-import org.apache.directory.shared.asn1.codec.EncoderException;
+import org.apache.directory.shared.asn1.EncoderException;
 
 /**
  * Define the transform method to be implemented by all the codec Controls

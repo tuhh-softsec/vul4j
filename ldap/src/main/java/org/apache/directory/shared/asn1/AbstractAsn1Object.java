@@ -22,8 +22,6 @@ package org.apache.directory.shared.asn1;
 
 import java.nio.ByteBuffer;
 
-import org.apache.directory.shared.asn1.codec.DecoderException;
-import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.i18n.I18n;
 
 

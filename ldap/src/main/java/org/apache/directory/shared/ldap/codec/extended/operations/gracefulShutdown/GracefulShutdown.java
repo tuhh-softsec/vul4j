@@ -25,7 +25,7 @@ import java.nio.ByteBuffer;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
-import org.apache.directory.shared.asn1.codec.EncoderException;
+import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.extended.operations.GracefulAction;
 import org.apache.directory.shared.ldap.codec.extended.operations.GracefulActionConstants;
 
@@ -92,7 +92,7 @@ public class GracefulShutdown extends GracefulAction
      * Encodes the gracefulShutdown extended operation.
      * 
      * @return A ByteBuffer that contains the encoded PDU
-     * @throws EncoderException If anything goes wrong.
+     * @throws org.apache.directory.shared.asn1.EncoderException If anything goes wrong.
      */
     public ByteBuffer encode() throws EncoderException
     {

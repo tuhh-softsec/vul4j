@@ -18,32 +18,24 @@
  *  
  */
 
-package org.apache.directory.shared.asn1.codec;
+package org.apache.directory.shared.asn1;
 
 
 /**
- * <p>
- * Provides the highest level of abstraction for Encoders. This is the sister
- * interface of {@link org.apache.directory.shared.asn1.codec.Decoder}. Every
- * implementation of Encoder provides this common generic interface whic allows
- * a user to pass a generic Object to any Encoder implementation in the codec
- * package.
- * </p>
+ * Defines common encoding methods for byte array encoders.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface Encoder
+public interface BinaryEncoder extends Encoder
 {
 
     /**
-     * Encodes an "Object" and returns the encoded content as an Object. The
-     * Objects here may just be <code>byte[]</code> or <code>String</code>s
-     * depending on the implementation used.
+     * Encodes a byte array and return the encoded data as a byte array.
      * 
-     * @param object An object ot encode
-     * @return An "encoded" Object
-     * @throws EncoderException an encoder exception is thrown if the encoder experiences a
-     * failure condition during the encoding process.
+     * @param array Data to be encoded
+     * @return A byte array containing the encoded data
+     * @throws EncoderException thrown if the Encoder encounters a failure condition during
+     * the encoding process.
      */
-    Object encode( Object object ) throws EncoderException;
+    byte[] encode( byte[] array ) throws EncoderException;
 }

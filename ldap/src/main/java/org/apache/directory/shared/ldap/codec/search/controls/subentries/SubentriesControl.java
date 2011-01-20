@@ -22,10 +22,10 @@ package org.apache.directory.shared.ldap.codec.search.controls.subentries;
 
 import java.nio.ByteBuffer;
 
+import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
-import org.apache.directory.shared.asn1.codec.EncoderException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
 
@@ -93,7 +93,7 @@ public class SubentriesControl extends AbstractControl
      * 
      * @param buffer The encoded sink
      * @return A ByteBuffer that contains the encoded PDU
-     * @throws EncoderException If anything goes wrong.
+     * @throws org.apache.directory.shared.asn1.EncoderException If anything goes wrong.
      */
     public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
     {

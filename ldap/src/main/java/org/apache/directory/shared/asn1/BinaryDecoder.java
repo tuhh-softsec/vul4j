@@ -18,31 +18,24 @@
  *  
  */
 
-package org.apache.directory.shared.asn1.codec;
+package org.apache.directory.shared.asn1;
 
 
 /**
- * Thrown when there is a failure condition during the encoding process. This
- * exception is thrown when an Encoder encounters a encoding specific exception
- * such as invalid data, inability to calculate a checksum, characters outside
- * of the expected range.
+ * Defines common decoding methods for byte array decoders.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class EncoderException extends Exception
+public interface BinaryDecoder extends Decoder
 {
-
-    /** Declares the Serial Version Uid */
-    private static final long serialVersionUID = 1L;
-
-
     /**
-     * Creates a new instance of this exception with an useful message.
+     * Decodes a byte array and returns the results as a byte array.
      * 
-     * @param message a useful message relating to the encoder specific error.
+     * @param array A byte array which has been encoded with the appropriate encoder
+     * @return a byte array that contains decoded content
+     * @throws DecoderException
+     * A decoder exception is thrown if a Decoder encounters a
+     * failure condition during the decode process.
      */
-    public EncoderException( String message )
-    {
-        super( message );
-    }
+    byte[] decode( byte[] array ) throws DecoderException;
 }

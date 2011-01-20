@@ -20,7 +20,7 @@
 package org.apache.directory.shared.asn1.codec.stateful;
 
 
-import org.apache.directory.shared.asn1.codec.DecoderException;
+import org.apache.directory.shared.asn1.DecoderException;
 
 
 /**
@@ -45,7 +45,7 @@ public interface StatefulDecoder
      * occur during this call.
      * 
      * @param encoded an object representing a piece of encoded data
-     * @throws DecoderException if the encoded element can't be decoded
+     * @throws org.apache.directory.shared.asn1.DecoderException if the encoded element can't be decoded
      */
     void decode( Object encoded ) throws DecoderException;
 

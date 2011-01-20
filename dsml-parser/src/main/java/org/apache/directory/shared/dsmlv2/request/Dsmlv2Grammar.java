@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.HashMap;
 
-import org.apache.directory.shared.asn1.codec.DecoderException;
+import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.primitives.OID;
 import org.apache.directory.shared.dsmlv2.AbstractGrammar;
 import org.apache.directory.shared.dsmlv2.Dsmlv2Container;

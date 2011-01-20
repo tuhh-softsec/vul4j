@@ -22,11 +22,11 @@ package org.apache.directory.shared.asn1.ber;
 
 import java.nio.ByteBuffer;
 
+import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.TLVBerDecoderMBean;
 import org.apache.directory.shared.asn1.ber.tlv.TLVStateEnum;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
-import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.asn1.util.Asn1StringUtils;
 import org.apache.directory.shared.i18n.I18n;
 import org.slf4j.Logger;

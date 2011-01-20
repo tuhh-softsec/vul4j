@@ -23,8 +23,8 @@ package org.apache.directory.shared.ldap.codec.extended.operations.certGeneratio
 import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.asn1.Asn1Object;
+import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
-import org.apache.directory.shared.asn1.codec.DecoderException;
 
 
 /**
@@ -45,7 +45,7 @@ public class CertGenerationDecoder extends Asn1Decoder
      * 
      * @param stream The bytes to be decoded
      * @return a CertGenerationObject object
-     * @throws DecoderException If the decoding failed
+     * @throws org.apache.directory.shared.asn1.DecoderException If the decoding failed
      */
     public Asn1Object decode( byte[] stream ) throws DecoderException
     {

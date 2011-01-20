@@ -18,7 +18,7 @@
  *  
  */
 
-package org.apache.directory.shared.asn1.codec;
+package org.apache.directory.shared.asn1;
 
 
 /**

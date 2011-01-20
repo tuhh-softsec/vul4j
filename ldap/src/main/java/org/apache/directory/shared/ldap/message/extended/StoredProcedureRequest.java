@@ -25,7 +25,7 @@ import java.nio.ByteBuffer;
 import javax.naming.NamingException;
 import javax.naming.ldap.ExtendedResponse;
 
-import org.apache.directory.shared.asn1.codec.EncoderException;
+import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.NotImplementedException;
 import org.apache.directory.shared.ldap.codec.extended.operations.storedProcedure.StoredProcedure;

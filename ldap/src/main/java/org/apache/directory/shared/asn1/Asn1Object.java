@@ -22,9 +22,6 @@ package org.apache.directory.shared.asn1;
 
 import java.nio.ByteBuffer;
 
-import org.apache.directory.shared.asn1.codec.DecoderException;
-import org.apache.directory.shared.asn1.codec.EncoderException;
-
 
 /**
  * An abstract class which implements basic TLV operations.

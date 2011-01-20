@@ -23,8 +23,8 @@ package org.apache.directory.shared.ldap.codec.extended.operations.gracefulDisco
 import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.asn1.Asn1Object;
+import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
-import org.apache.directory.shared.asn1.codec.DecoderException;
 
 
 /**

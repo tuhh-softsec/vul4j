@@ -23,8 +23,8 @@ package org.apache.directory.shared.ldap.codec.controls.replication.syncStateVal
 import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.asn1.Asn1Object;
+import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
-import org.apache.directory.shared.asn1.codec.DecoderException;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecoder;
 import org.apache.directory.shared.ldap.message.control.Control;
 
@@ -46,7 +46,7 @@ public class SyncStateValueControlDecoder extends Asn1Decoder implements Control
      * 
      * @return A valid SyncStateValueControl object
      * 
-     * @throws DecoderException If the decoding found an error
+     * @throws org.apache.directory.shared.asn1.DecoderException If the decoding found an error
      * @throws NamingException It will never be throw by this method
      */
     public Asn1Object decode( byte[] controlBytes, Control control ) throws DecoderException

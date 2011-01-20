@@ -19,7 +19,7 @@
  */
 package org.apache.directory.shared.ldap.codec;
 
-import org.apache.directory.shared.asn1.codec.EncoderException;
+import org.apache.directory.shared.asn1.EncoderException;
 
 /**
  * Create an exception containing the messageId

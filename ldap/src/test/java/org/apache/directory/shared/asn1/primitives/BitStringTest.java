@@ -26,7 +26,7 @@ import static org.junit.Assert.fail;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.asn1.codec.DecoderException;
+import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.util.Asn1StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -20,7 +20,7 @@
 package org.apache.directory.shared.asn1.ber.tlv;
 
 
-import org.apache.directory.shared.asn1.codec.DecoderException;
+import org.apache.directory.shared.asn1.DecoderException;
 
 
 /**

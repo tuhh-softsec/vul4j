@@ -21,10 +21,10 @@
 package org.apache.directory.shared.asn1.codec.binary;
 
 
-import org.apache.directory.shared.asn1.codec.BinaryDecoder;
-import org.apache.directory.shared.asn1.codec.BinaryEncoder;
-import org.apache.directory.shared.asn1.codec.DecoderException;
-import org.apache.directory.shared.asn1.codec.EncoderException;
+import org.apache.directory.shared.asn1.BinaryDecoder;
+import org.apache.directory.shared.asn1.BinaryEncoder;
+import org.apache.directory.shared.asn1.DecoderException;
+import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.i18n.I18n;
 
 
@@ -207,7 +207,7 @@ public class Hex implements BinaryEncoder, BinaryDecoder
      * 
      * @param object a String, or byte[] to convert to Hex characters
      * @return A char[] containing hexidecimal characters
-     * @throws EncoderException Thrown if the given object is not a String or byte[]
+     * @throws org.apache.directory.shared.asn1.EncoderException Thrown if the given object is not a String or byte[]
      * @see #encodeHex(byte[])
      */
     public Object encode( Object object ) throws EncoderException

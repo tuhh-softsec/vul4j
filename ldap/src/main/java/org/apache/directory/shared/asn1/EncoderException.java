@@ -18,24 +18,31 @@
  *  
  */
 
-package org.apache.directory.shared.asn1.codec;
+package org.apache.directory.shared.asn1;
 
 
 /**
- * Defines common encoding methods for byte array encoders.
+ * Thrown when there is a failure condition during the encoding process. This
+ * exception is thrown when an Encoder encounters a encoding specific exception
+ * such as invalid data, inability to calculate a checksum, characters outside
+ * of the expected range.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface BinaryEncoder extends Encoder
+public class EncoderException extends Exception
 {
 
+    /** Declares the Serial Version Uid */
+    private static final long serialVersionUID = 1L;
+
+
     /**
-     * Encodes a byte array and return the encoded data as a byte array.
+     * Creates a new instance of this exception with an useful message.
      * 
-     * @param array Data to be encoded
-     * @return A byte array containing the encoded data
-     * @throws EncoderException thrown if the Encoder encounters a failure condition during
-     * the encoding process.
+     * @param message a useful message relating to the encoder specific error.
      */
-    byte[] encode( byte[] array ) throws EncoderException;
+    public EncoderException( String message )
+    {
+        super( message );
+    }
 }
