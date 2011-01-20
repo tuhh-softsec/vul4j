@@ -25,7 +25,7 @@ import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,7 +84,7 @@ public abstract class AbstractReadBitString extends GrammarAction
 
         if ( IS_DEBUG )
         {
-            LOG.debug( "BITSTRING value : {}", StringTools.dumpBytes( data ) );
+            LOG.debug( "BITSTRING value : {}", Strings.dumpBytes( data ) );
         }
     }
 }
