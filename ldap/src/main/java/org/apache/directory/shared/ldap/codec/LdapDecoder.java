@@ -27,7 +27,7 @@ import java.security.ProviderException;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.tlv.TLVStateEnum;
-import org.apache.directory.shared.asn1.codec.stateful.DecoderCallback;
+import org.apache.directory.shared.asn1.DecoderCallback;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.message.ResponseCarryingMessageException;
 import org.apache.directory.shared.ldap.util.StringTools;

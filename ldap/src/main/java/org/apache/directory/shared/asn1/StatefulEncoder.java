@@ -17,10 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.asn1.codec.stateful;
-
-
-import org.apache.directory.shared.asn1.EncoderException;
+package org.apache.directory.shared.asn1;
 
 
 /**

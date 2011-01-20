@@ -17,21 +17,21 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.asn1.codec.stateful;
+package org.apache.directory.shared.asn1;
 
 
 /**
- * Callback interface for stateful encoder callbacks.
+ * Callback interface for stateful decoder callbacks.
  * 
- * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
+ * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface EncoderCallback
+public interface DecoderCallback
 {
     /**
-     * Callback to deliver a fully encoded object.
+     * Callback to deliver a fully decoded object.
      * 
-     * @param encoder the stateful encoder driving the callback
-     * @param encoded the object that was encoded
+     * @param decoder the stateful decoder driving the callback
+     * @param decoded the object that was decoded
      */
-    void encodeOccurred( StatefulEncoder encoder, Object encoded );
+    void decodeOccurred( StatefulDecoder decoder, Object decoded );
 }
