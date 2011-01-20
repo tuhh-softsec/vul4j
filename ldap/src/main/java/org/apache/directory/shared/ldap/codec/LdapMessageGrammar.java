@@ -27,11 +27,8 @@ import org.apache.directory.shared.asn1.ber.grammar.Action;
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
-import org.apache.directory.shared.asn1.ber.tlv.TLV;
-import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
-import org.apache.directory.shared.asn1.ber.tlv.Value;
+import org.apache.directory.shared.asn1.ber.tlv.*;
 import org.apache.directory.shared.asn1.util.OID;
-import org.apache.directory.shared.asn1.util.*;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.actions.AttributeDescAction;
 import org.apache.directory.shared.ldap.codec.actions.ControlValueAction;
@@ -3748,8 +3745,8 @@ public final class LdapMessageGrammar extends AbstractGrammar
 
                     try
                     {
-                        derefAliases = IntegerDecoder.parse( value, LdapConstants.NEVER_DEREF_ALIASES,
-                            LdapConstants.DEREF_ALWAYS );
+                        derefAliases = IntegerDecoder.parse(value, LdapConstants.NEVER_DEREF_ALIASES,
+                                LdapConstants.DEREF_ALWAYS);
                     }
                     catch ( IntegerDecoderException ide )
                     {

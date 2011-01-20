@@ -22,9 +22,9 @@ package org.apache.directory.shared.asn1.util;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
+import org.apache.directory.shared.asn1.ber.tlv.IntegerDecoder;
+import org.apache.directory.shared.asn1.ber.tlv.IntegerDecoderException;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
-import org.apache.directory.shared.asn1.util.IntegerDecoder;
-import org.apache.directory.shared.asn1.util.IntegerDecoderException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -75,7 +75,7 @@ public class PrimitivesTest
         value.init( 2 );
         value.setData( new byte[]
             { 0x01, 0x00 } ); // res = 256
-        assertEquals( 256, IntegerDecoder.parse( value ) );
+        assertEquals( 256, IntegerDecoder.parse(value) );
         value.reset();
 
         value.init( 2 );

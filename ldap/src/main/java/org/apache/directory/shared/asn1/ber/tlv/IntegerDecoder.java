@@ -17,10 +17,9 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.asn1.util;
+package org.apache.directory.shared.asn1.ber.tlv;
 
 
-import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
 
 

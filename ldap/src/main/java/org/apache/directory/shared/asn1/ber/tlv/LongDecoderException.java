@@ -18,27 +18,28 @@
  *  
  */
 
-package org.apache.directory.shared.asn1.util;
+package org.apache.directory.shared.asn1.ber.tlv;
 
 
 /**
- * Thrown when a IntegerDecoder has encountered a failure condition during a
+ * Thrown when a LongDecoder has encountered a failure condition during a
  * decode.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class IntegerDecoderException extends Exception
+public class LongDecoderException extends Exception
 {
+
     /** Declares the Serial Version Uid */
     private static final long serialVersionUID = 1L;
 
 
     /**
-     * Creates a IntegerDecoderException
+     * Creates a LongDecoderException
      * 
      * @param message A message with meaning to a human
      */
-    public IntegerDecoderException( String message )
+    public LongDecoderException( String message )
     {
         super( message );
     }

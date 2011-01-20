@@ -18,7 +18,7 @@
  *  
  */
 
-package org.apache.directory.shared.asn1.util;
+package org.apache.directory.shared.asn1.ber.tlv;
 
 
 /**
