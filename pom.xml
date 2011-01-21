@@ -379,7 +379,8 @@
 		<site>
 			<id>webassembletool-site</id>
 			<name>ESIGate</name>
-			<url>scp://shell.sourceforge.net/home/groups/w/we/webassembletool/htdocs</url>
+			<url>sftp://web.sourceforge.net/home/groups/w/we/webassembletool/htdocs</url>
+			<!--<url>scp://shell.sourceforge.net/home/groups/w/we/webassembletool/htdocs</url>-->
 		</site>
 	</distributionManagement>
 	<properties>
