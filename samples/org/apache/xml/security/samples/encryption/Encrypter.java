@@ -16,7 +16,6 @@
  */
 package org.apache.xml.security.samples.encryption;
 
-
 import java.io.File;
 import java.io.FileOutputStream;
 
@@ -72,19 +71,16 @@ public class Encrypter {
          * </apache:RootElement>
          */
         Element root =
-            document.createElementNS(
-                "http://www.apache.org/ns/#app1", "apache:RootElement");
+            document.createElementNS("http://www.apache.org/ns/#app1", "apache:RootElement");
         root.setAttributeNS(
-            Constants.NamespaceSpecNS,
-            "xmlns:apache",
-            "http://www.apache.org/ns/#app1");
+            Constants.NamespaceSpecNS, "xmlns:apache", "http://www.apache.org/ns/#app1"
+        );
         document.appendChild(root);
 
         root.appendChild(document.createTextNode("\n"));
 
         Element childElement =
-            document.createElementNS(
-                "http://www.apache.org/ns/#app1", "apache:foo");
+            document.createElementNS("http://www.apache.org/ns/#app1", "apache:foo");
         childElement.appendChild(
             document.createTextNode("Some simple text"));
         root.appendChild(childElement);
@@ -94,9 +90,7 @@ public class Encrypter {
         return document;
     }
 
-    private static SecretKey GenerateAndStoreKeyEncryptionKey()
-        throws Exception {
-
+    private static SecretKey GenerateAndStoreKeyEncryptionKey() throws Exception {
         String jceAlgorithmName = "DESede";
         KeyGenerator keyGenerator =
             KeyGenerator.getInstance(jceAlgorithmName);
@@ -107,14 +101,12 @@ public class Encrypter {
         FileOutputStream f = new FileOutputStream(kekFile);
         f.write(keyBytes);
         f.close();
-        System.out.println(
-            "Key encryption key stored in " + kekFile.toURL().toString());
+        System.out.println("Key encryption key stored in " + kekFile.toURL().toString());
 
         return kek;
     }
 
     private static SecretKey GenerateDataEncryptionKey() throws Exception {
-
         String jceAlgorithmName = "AES";
         KeyGenerator keyGenerator =
             KeyGenerator.getInstance(jceAlgorithmName);
@@ -122,8 +114,7 @@ public class Encrypter {
         return keyGenerator.generateKey();
     }
 
-    private static void outputDocToFile(Document doc, String fileName)
-        throws Exception {
+    private static void outputDocToFile(Document doc, String fileName) throws Exception {
         File encryptionFile = new File(fileName);
         FileOutputStream f = new FileOutputStream(encryptionFile);
 
@@ -136,8 +127,8 @@ public class Encrypter {
 
         f.close();
         System.out.println(
-            "Wrote document containing encrypted data to " +
-            encryptionFile.toURL().toString());
+            "Wrote document containing encrypted data to " + encryptionFile.toURI().toURL().toString()
+        );
     }
 
     public static void main(String unused[]) throws Exception {

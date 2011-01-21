@@ -17,8 +17,6 @@
  */
 package org.apache.xml.security.samples.canonicalization;
 
-
-
 import java.io.ByteArrayInputStream;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -38,65 +36,60 @@ import org.w3c.dom.Node;
  * @author Christian Geuer-Pollmann
  */
 public class CanonSubTree {
-   //J-
-   static String input = ""
-      + "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-      + "<Signature xmlns=\"http://www.w3.org/2000/09/xmldsig#\">\n"
-      + "  <SignedInfo><!-- comment inside -->\n"
-      + "    <CanonicalizationMethod Algorithm=\"http://www.w3.org/TR/2001/REC-xml-c14n-20010315\" />\n"
-      + "    <SignatureMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#rsa-sha1\" />\n"
-      + "    <Reference URI=\"http://www.w3.org/TR/xml-stylesheet\">\n"
-      + "      <DigestMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#sha1\" />\n"
-      + "      <DigestValue>60NvZvtdTB+7UnlLp/H24p7h4bs=</DigestValue>\n"
-      + "    </Reference>\n"
-      + "  </SignedInfo>\n"
-      + "  <SignatureValue>\n"
-      + "    fKMmy9GYF2s8rLFrZdVugTOFuWx19ccX7jh5HqFd4vMOY7LWAj52ykjSdvtW3fNY\n"
-      + "    PPYGC4MFL19oPSId5GEsMtFMpGXB3XaCtoKjMCHQsN3+kom8YnGf7Ge1JNRcGty5\n"
-      + "    0UsoP6Asj47+QR7QECT64uoziha4WRDVyXjDrg24W+U=\n"
-      + "  </SignatureValue>\n"
-      + "  <KeyInfo>\n"
-      + "    <KeyName>Lugh</KeyName>\n"
-      + "  </KeyInfo>\n"
-      + "</Signature>\n"
-      ;
-   //J+
+    static String input = ""
+        + "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        + "<Signature xmlns=\"http://www.w3.org/2000/09/xmldsig#\">\n"
+        + "  <SignedInfo><!-- comment inside -->\n"
+        + "    <CanonicalizationMethod Algorithm=\"http://www.w3.org/TR/2001/REC-xml-c14n-20010315\" />\n"
+        + "    <SignatureMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#rsa-sha1\" />\n"
+        + "    <Reference URI=\"http://www.w3.org/TR/xml-stylesheet\">\n"
+        + "      <DigestMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#sha1\" />\n"
+        + "      <DigestValue>60NvZvtdTB+7UnlLp/H24p7h4bs=</DigestValue>\n"
+        + "    </Reference>\n"
+        + "  </SignedInfo>\n"
+        + "  <SignatureValue>\n"
+        + "    fKMmy9GYF2s8rLFrZdVugTOFuWx19ccX7jh5HqFd4vMOY7LWAj52ykjSdvtW3fNY\n"
+        + "    PPYGC4MFL19oPSId5GEsMtFMpGXB3XaCtoKjMCHQsN3+kom8YnGf7Ge1JNRcGty5\n"
+        + "    0UsoP6Asj47+QR7QECT64uoziha4WRDVyXjDrg24W+U=\n"
+        + "  </SignatureValue>\n"
+        + "  <KeyInfo>\n"
+        + "    <KeyName>Lugh</KeyName>\n"
+        + "  </KeyInfo>\n"
+        + "</Signature>\n"
+        ;
 
-   /**
-    * Method main
-    *
-    * @param args
-    * @throws Exception
-    */
-   public static void main(String args[]) throws Exception {
-      org.apache.xml.security.Init.init();
+    /**
+     * Method main
+     *
+     * @param args
+     * @throws Exception
+     */
+    public static void main(String args[]) throws Exception {
+        org.apache.xml.security.Init.init();
 
-      DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
 
-      dfactory.setNamespaceAware(true);
-      dfactory.setValidating(true);
+        dfactory.setNamespaceAware(true);
+        dfactory.setValidating(true);
 
-      DocumentBuilder documentBuilder = dfactory.newDocumentBuilder();
+        DocumentBuilder documentBuilder = dfactory.newDocumentBuilder();
 
-      // this is to throw away all validation warnings
-      documentBuilder
-         .setErrorHandler(new org.apache.xml.security.utils
-            .IgnoreAllErrorHandler());
+        // this is to throw away all validation warnings
+        documentBuilder.setErrorHandler(new org.apache.xml.security.utils.IgnoreAllErrorHandler());
 
-      byte inputBytes[] = input.getBytes();
-      Document doc =
-         documentBuilder.parse(new ByteArrayInputStream(inputBytes));
-      Canonicalizer c14n =
-         Canonicalizer
+        byte inputBytes[] = input.getBytes();
+        Document doc =
+            documentBuilder.parse(new ByteArrayInputStream(inputBytes));
+        Canonicalizer c14n =
+            Canonicalizer
             .getInstance("http://www.w3.org/TR/2001/REC-xml-c14n-20010315");
-      Element nscontext = SampleUtils.createDSctx(doc, "ds", Constants.SignatureSpecNS);
+        Element nscontext = SampleUtils.createDSctx(doc, "ds", Constants.SignatureSpecNS);
 
-      Node signedInfo = XPathAPI.selectSingleNode(doc, "//ds:SignedInfo",
-                                                  nscontext);
-      byte outputBytes[] = c14n.canonicalizeSubtree(signedInfo);
+        Node signedInfo = XPathAPI.selectSingleNode(doc, "//ds:SignedInfo", nscontext);
+        byte outputBytes[] = c14n.canonicalizeSubtree(signedInfo);
 
-      if (outputBytes != null) {
-         System.out.println(new String(outputBytes));
-      }
-   }
+        if (outputBytes != null) {
+            System.out.println(new String(outputBytes));
+        }
+    }
 }

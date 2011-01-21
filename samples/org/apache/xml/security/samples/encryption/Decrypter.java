@@ -16,7 +16,6 @@
  */
 package org.apache.xml.security.samples.encryption;
 
-
 import java.io.File;
 import java.io.FileOutputStream;
 
@@ -56,7 +55,6 @@ public class Decrypter {
     }
 
     private static Document loadEncryptionDocument() throws Exception {
-
         String fileName = "encryptedInfo.xml";
         File encryptionFile = new File(fileName);
         javax.xml.parsers.DocumentBuilderFactory dbf =
@@ -65,13 +63,12 @@ public class Decrypter {
         javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
         Document document = db.parse(encryptionFile);
         System.out.println(
-            "Encryption document loaded from " +
-            encryptionFile.toURL().toString());
+            "Encryption document loaded from " + encryptionFile.toURI().toURL().toString()
+        );
         return document;
     }
 
     private static SecretKey loadKeyEncryptionKey() throws Exception {
-
         String fileName = "kek";
         String jceAlgorithmName = "DESede";
 
@@ -84,12 +81,12 @@ public class Decrypter {
         SecretKey key = skf.generateSecret(keySpec);
          
         System.out.println(
-            "Key encryption key loaded from " + kekFile.toURL().toString());
+            "Key encryption key loaded from " + kekFile.toURI().toURL().toString()
+        );
         return key;
     }
 
-    private static void outputDocToFile(Document doc, String fileName)
-        throws Exception {
+    private static void outputDocToFile(Document doc, String fileName) throws Exception {
         File encryptionFile = new File(fileName);
         FileOutputStream f = new FileOutputStream(encryptionFile);
 
@@ -102,12 +99,11 @@ public class Decrypter {
 
         f.close();
         System.out.println(
-            "Wrote document containing decrypted data to " +
-            encryptionFile.toURL().toString());
+            "Wrote document containing decrypted data to " + encryptionFile.toURI().toURL().toString()
+        );
     }
 
     public static void main(String unused[]) throws Exception {
-
         Document document = loadEncryptionDocument();
 
         Element encryptedDataElement =
