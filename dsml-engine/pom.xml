@@ -78,6 +78,7 @@
           <manifestLocation>META-INF</manifestLocation>
           <instructions>
             <Bundle-SymbolicName>${project.groupId}.dsmlv2.engine</Bundle-SymbolicName>
+            <Export-Package>org.apache.directory.shared.dsmlv2.engine</Export-Package>
           </instructions>
         </configuration>
       </plugin>
