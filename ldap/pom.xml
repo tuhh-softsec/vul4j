@@ -137,11 +137,6 @@
         <extensions>true</extensions>
         <configuration>
           <manifestLocation>META-INF</manifestLocation>
-          <instructions>
-            <Bundle-SymbolicName>${project.groupId}.ldap</Bundle-SymbolicName>
-            <Bundle-Name>${project.name}</Bundle-Name>
-            <Export-Package>org.apache.directory.shared.*</Export-Package>
-          </instructions>
         </configuration>
       </plugin>
     </plugins>

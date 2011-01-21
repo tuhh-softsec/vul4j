@@ -139,8 +139,6 @@
           <manifestLocation>META-INF</manifestLocation>
           <instructions>
             <Bundle-SymbolicName>${project.groupId}.ldap.schema</Bundle-SymbolicName>
-            <Bundle-Name>${project.name}</Bundle-Name>
-            <Export-Package>org.apache.directory.shared.ldap.schema*</Export-Package>
             <Import-Package>
               *,
               org.apache.directory.shared.ldap.schema.comparators,

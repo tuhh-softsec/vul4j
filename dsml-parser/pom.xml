@@ -84,8 +84,6 @@
           <manifestLocation>META-INF</manifestLocation>
           <instructions>
             <Bundle-SymbolicName>${project.groupId}.dsmlv2.parser</Bundle-SymbolicName>
-            <Bundle-Name>${project.name}</Bundle-Name>
-            <Export-Package>org.apache.directory.shared.dsmlv2.*</Export-Package>
           </instructions>
         </configuration>
       </plugin>

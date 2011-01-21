@@ -54,16 +54,7 @@
         <configuration>
           <manifestLocation>META-INF</manifestLocation>
           <instructions>
-            <Bundle-SymbolicName>${project.groupId}.ldap</Bundle-SymbolicName>
-            <Bundle-Name>${project.name}</Bundle-Name>
-            <Import-Package>
-              org.apache.directory.shared.i18n,
-              org.apache.directory.shared.util
-            </Import-Package>
-            <Export-Package>
-              org.apache.directory.shared.asn1,
-              org.apache.directory.shared.asn1.util
-            </Export-Package>
+            <Bundle-SymbolicName>${project.groupId}.asn1.api</Bundle-SymbolicName>
           </instructions>
         </configuration>
       </plugin>

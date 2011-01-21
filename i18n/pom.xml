@@ -58,11 +58,6 @@
         <extensions>true</extensions>
         <configuration>
           <manifestLocation>META-INF</manifestLocation>
-          <instructions>
-            <Bundle-SymbolicName>${project.groupId}.i18n</Bundle-SymbolicName>
-            <Bundle-Name>${project.name}</Bundle-Name>
-            <Export-Package>org.apache.directory.shared.i18n</Export-Package>
-          </instructions>
         </configuration>
       </plugin>
     </plugins>
