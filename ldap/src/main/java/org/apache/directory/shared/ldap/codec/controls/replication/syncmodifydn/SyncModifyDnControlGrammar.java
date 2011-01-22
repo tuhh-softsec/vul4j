@@ -29,7 +29,7 @@ import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.ldap.message.control.replication.SyncModifyDnType;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -116,7 +116,7 @@ public final class SyncModifyDnControlGrammar extends AbstractGrammar
                     Value value = syncModifyDnControlContainer.getCurrentTLV().getValue();
 
                     // Check that the value is into the allowed interval
-                    String entryDn = StringTools.utf8ToString( value.getData() );
+                    String entryDn = Strings.utf8ToString(value.getData());
                     
                     if ( IS_DEBUG )
                     {
@@ -152,7 +152,7 @@ public final class SyncModifyDnControlGrammar extends AbstractGrammar
                     Value value = syncModifyDnControlContainer.getCurrentTLV().getValue();
 
                     // Check that the value is into the allowed interval
-                    String newSuperiorDn = StringTools.utf8ToString( value.getData() );
+                    String newSuperiorDn = Strings.utf8ToString(value.getData());
                     
                     if ( IS_DEBUG )
                     {
@@ -202,7 +202,7 @@ public final class SyncModifyDnControlGrammar extends AbstractGrammar
                     SyncModifyDnControlContainer syncModifyDnControlContainer = ( SyncModifyDnControlContainer ) container;
                     Value value = syncModifyDnControlContainer.getCurrentTLV().getValue();
 
-                    String newRdn = StringTools.utf8ToString( value.getData() );
+                    String newRdn = Strings.utf8ToString(value.getData());
 
                     if ( IS_DEBUG )
                     {
@@ -291,7 +291,7 @@ public final class SyncModifyDnControlGrammar extends AbstractGrammar
                     SyncModifyDnControlContainer syncModifyDnControlContainer = ( SyncModifyDnControlContainer ) container;
                     Value value = syncModifyDnControlContainer.getCurrentTLV().getValue();
 
-                    String newSuperirorDn = StringTools.utf8ToString( value.getData() );
+                    String newSuperirorDn = Strings.utf8ToString(value.getData());
 
                     if ( IS_DEBUG )
                     {
@@ -323,7 +323,7 @@ public final class SyncModifyDnControlGrammar extends AbstractGrammar
                     SyncModifyDnControlContainer syncModifyDnControlContainer = ( SyncModifyDnControlContainer ) container;
                     Value value = syncModifyDnControlContainer.getCurrentTLV().getValue();
 
-                    String newRdn = StringTools.utf8ToString( value.getData() );
+                    String newRdn = Strings.utf8ToString(value.getData());
 
                     if ( IS_DEBUG )
                     {

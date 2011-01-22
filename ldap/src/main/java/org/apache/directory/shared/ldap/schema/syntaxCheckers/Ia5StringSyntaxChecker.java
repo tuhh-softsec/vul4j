@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.schema.syntaxCheckers;
 
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,14 +71,14 @@ public class Ia5StringSyntaxChecker extends SyntaxChecker
         }
         else if ( value instanceof byte[] )
         {
-            strValue = StringTools.utf8ToString( ( byte[] ) value ); 
+            strValue = Strings.utf8ToString((byte[]) value);
         }
         else
         {
             strValue = value.toString();
         }
 
-        boolean result = StringTools.isIA5String( strValue );
+        boolean result = Strings.isIA5String(strValue);
         
         if ( result )
         {

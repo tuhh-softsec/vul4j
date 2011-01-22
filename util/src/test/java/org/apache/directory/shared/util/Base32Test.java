@@ -17,12 +17,13 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.util;
+package org.apache.directory.shared.util;
 
 import static org.junit.Assert.assertEquals;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
+import org.apache.directory.shared.util.Base32;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -40,9 +41,9 @@ public class Base32Test
         {
             String in = data[i];
         
-            String res = Base32.encode( in );
+            String res = Base32.encode(in);
             
-            assertEquals( expected[i], res );
+            assertEquals(expected[i], res);
         }
     }
 }

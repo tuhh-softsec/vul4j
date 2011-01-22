@@ -50,7 +50,7 @@ import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
 import org.apache.directory.shared.ldap.schema.SchemaObjectWrapper;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -419,7 +419,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
      */
     public Schema getLoadedSchema( String schemaName )
     {
-        return loadedSchemas.get( StringTools.toLowerCase( schemaName ) );
+        return loadedSchemas.get( Strings.toLowerCase(schemaName) );
     }
 
 
@@ -431,7 +431,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
      */
     public boolean isSchemaLoaded( String schemaName )
     {
-        return loadedSchemas.containsKey( StringTools.toLowerCase( schemaName ) );
+        return loadedSchemas.containsKey( Strings.toLowerCase(schemaName) );
     }
 
 
@@ -1424,7 +1424,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
      */
     public void schemaLoaded( Schema schema )
     {
-        this.loadedSchemas.put( StringTools.toLowerCase( schema.getSchemaName() ), schema );
+        this.loadedSchemas.put( Strings.toLowerCase(schema.getSchemaName()), schema );
     }
 
 
@@ -1436,7 +1436,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
      */
     public void schemaUnloaded( Schema schema )
     {
-        this.loadedSchemas.remove( StringTools.toLowerCase( schema.getSchemaName() ) );
+        this.loadedSchemas.remove( Strings.toLowerCase(schema.getSchemaName()) );
     }
 
 
@@ -1466,7 +1466,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
      */
     private String getSchemaName( SchemaObject schemaObject )
     {
-        String schemaName = StringTools.toLowerCase( schemaObject.getSchemaName() );
+        String schemaName = Strings.toLowerCase(schemaObject.getSchemaName());
 
         if ( loadedSchemas.containsKey( schemaName ) )
         {
@@ -1632,7 +1632,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         if ( content == null )
         {
             content = new HashSet<SchemaObjectWrapper>();
-            schemaObjects.put( StringTools.toLowerCase( schemaName ), content );
+            schemaObjects.put( Strings.toLowerCase(schemaName), content );
         }
 
         SchemaObjectWrapper schemaObjectWrapper = new SchemaObjectWrapper( schemaObject );
@@ -1825,7 +1825,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
     public void dissociateFromSchema( SchemaObject schemaObject ) throws LdapException
     {
         // And unregister the schemaObject within its schema
-        Set<SchemaObjectWrapper> content = schemaObjects.get( StringTools.toLowerCase( schemaObject.getSchemaName() ) );
+        Set<SchemaObjectWrapper> content = schemaObjects.get( Strings.toLowerCase(schemaObject.getSchemaName()) );
 
         if ( content != null )
         {

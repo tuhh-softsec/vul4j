@@ -29,8 +29,8 @@ import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.Normalizer;
-import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.directory.shared.ldap.util.UTFUtils;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -464,7 +464,7 @@ public class StringValue extends AbstractValue<String>
      */
     public byte[] getBytes()
     {
-        return StringTools.getBytesUtf8( wrappedValue );
+        return Strings.getBytesUtf8(wrappedValue);
     }
     
     

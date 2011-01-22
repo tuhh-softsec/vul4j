@@ -30,7 +30,7 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
 import org.apache.directory.shared.ldap.codec.search.controls.ChangeType;
 import org.apache.directory.shared.ldap.name.DN;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -132,7 +132,7 @@ public class EntryChangeControl extends AbstractControl
 
         if ( previousDn != null )
         {
-            previousDnBytes = StringTools.getBytesUtf8( previousDn.getName() );
+            previousDnBytes = Strings.getBytesUtf8(previousDn.getName());
             previousDnLength = 1 + TLV.getNbBytes( previousDnBytes.length ) + previousDnBytes.length;
         }
 

@@ -29,9 +29,7 @@ import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.util.AttributeUtils;
-import org.apache.directory.shared.ldap.util.Position;
-import org.apache.directory.shared.ldap.util.StringTools;
-import org.apache.directory.shared.util.Strings;
+import org.apache.directory.shared.util.*;
 
 
 /**
@@ -94,12 +92,12 @@ public class FilterParser
             }
 
             // Do we have a MatchingRule ?
-            if ( StringTools.charAt( filter, pos.start ) == ':' )
+            if ( Strings.charAt(filter, pos.start) == ':' )
             {
                 pos.start++;
                 int start = pos.start;
 
-                if ( StringTools.charAt( filter, pos.start ) == '=' )
+                if ( Strings.charAt(filter, pos.start) == '=' )
                 {
                     pos.start++;
 
@@ -151,12 +149,12 @@ public class FilterParser
             }
 
             // Do we have a MatchingRule ?
-            if ( StringTools.charAt( filter, pos.start ) == ':' )
+            if ( Strings.charAt(filter, pos.start) == ':' )
             {
                 pos.start++;
                 int start = pos.start;
 
-                if ( StringTools.charAt( filter, pos.start ) == '=' )
+                if ( Strings.charAt(filter, pos.start) == '=' )
                 {
                     if ( oidRequested )
                     {
@@ -234,7 +232,7 @@ public class FilterParser
      */
     private static Value<?> parseAssertionValue( String filter, Position pos ) throws ParseException
     {
-        char c = StringTools.charAt( filter, pos.start );
+        char c = Strings.charAt(filter, pos.start);
         
         // Create a buffer big enough to contain the value once converted
         byte[] value = new byte[ filter.length() - pos.start];
@@ -242,7 +240,7 @@ public class FilterParser
 
         do
         {
-            if ( StringTools.isUnicodeSubset( c ) )
+            if ( Unicode.isUnicodeSubset(c) )
             {
                 value[current++] = (byte)c;
                 pos.start++;
@@ -253,7 +251,7 @@ public class FilterParser
                 pos.start++;
 
                 // First hex
-                if ( StringTools.isHex( filter, pos.start ) )
+                if ( Chars.isHex(filter, pos.start) )
                 {
                     pos.start++;
                 }
@@ -263,9 +261,9 @@ public class FilterParser
                 }
 
                 // second hex
-                if ( StringTools.isHex( filter, pos.start ) )
+                if ( Chars.isHex(filter, pos.start) )
                 {
-                    value[current++] = StringTools.getHexValue( filter.charAt( pos.start - 1 ), filter.charAt( pos.start ) );
+                    value[current++] = Hex.getHexValue(filter.charAt(pos.start - 1), filter.charAt(pos.start));
                     pos.start++;
                 }
                 else
@@ -279,7 +277,7 @@ public class FilterParser
                 break;
             }
         }
-        while ( ( c = StringTools.charAt( filter, pos.start ) ) != '\0' );
+        while ( ( c = Strings.charAt(filter, pos.start) ) != '\0' );
 
         if ( current != 0 )
         {
@@ -530,7 +528,7 @@ public class FilterParser
             attribute = AttributeUtils.parseAttribute( filter, pos, true );
             
             // Now, we may have a present, substring, simple or an extensible
-            c = StringTools.charAt( filter, pos.start );
+            c = Strings.charAt(filter, pos.start);
 
             switch ( c )
             {
@@ -731,7 +729,7 @@ public class FilterParser
             throw new ParseException( I18n.err( I18n.ERR_04154 ), pos.start );
         }
 
-        char c = StringTools.charAt( filter, pos.start );
+        char c = Strings.charAt(filter, pos.start);
 
         switch ( c )
         {
@@ -771,7 +769,7 @@ public class FilterParser
      * Pasre the grammar rule :
      * filter ::= '(' filterComp ')'
      */
-    private static ExprNode parseFilterInternal( SchemaManager schemaManager, String filter, Position pos ) 
+    private static ExprNode parseFilterInternal( SchemaManager schemaManager, String filter, Position pos )
         throws ParseException, LdapException
     {
         // Check for the left '('
@@ -825,7 +823,7 @@ public class FilterParser
     public static ExprNode parse( SchemaManager schemaManager, String filter ) throws ParseException
     {
         // The filter must not be null. This is a defensive test
-        if ( StringTools.isEmpty( filter ) )
+        if ( Strings.isEmpty(filter) )
         {
             throw new ParseException( I18n.err( I18n.ERR_04158 ), 0 );
         }
@@ -852,7 +850,7 @@ public class FilterParser
     public static ExprNode parse( SchemaManager schemaManager, String filter, Position pos ) throws ParseException
     {
         // The filter must not be null. This is a defensive test
-        if ( StringTools.isEmpty( filter ) )
+        if ( Strings.isEmpty(filter) )
         {
             throw new ParseException( I18n.err( I18n.ERR_04158 ), 0 );
         }

@@ -30,7 +30,6 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.name.DN;
-import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -112,7 +111,7 @@ public class CertGenerationGrammar extends AbstractGrammar
                     CertGenerationContainer certGenContainer = ( CertGenerationContainer ) container;
                     Value value = certGenContainer.getCurrentTLV().getValue();
 
-                    String targetDN = StringTools.utf8ToString( value.getData() );
+                    String targetDN = Strings.utf8ToString(value.getData());
 
                     if ( IS_DEBUG )
                     {
@@ -158,7 +157,7 @@ public class CertGenerationGrammar extends AbstractGrammar
                     CertGenerationContainer certGenContainer = ( CertGenerationContainer ) container;
                     Value value = certGenContainer.getCurrentTLV().getValue();
 
-                    String issuerDN = StringTools.utf8ToString( value.getData() );
+                    String issuerDN = Strings.utf8ToString(value.getData());
 
                     if ( IS_DEBUG )
                     {
@@ -198,7 +197,7 @@ public class CertGenerationGrammar extends AbstractGrammar
                     CertGenerationContainer certGenContainer = ( CertGenerationContainer ) container;
                     Value value = certGenContainer.getCurrentTLV().getValue();
 
-                    String subjectDN = StringTools.utf8ToString( value.getData() );
+                    String subjectDN = Strings.utf8ToString(value.getData());
 
                     if ( IS_DEBUG )
                     {
@@ -243,7 +242,7 @@ public class CertGenerationGrammar extends AbstractGrammar
                     CertGenerationContainer certGenContainer = ( CertGenerationContainer ) container;
                     Value value = certGenContainer.getCurrentTLV().getValue();
 
-                    String keyAlgorithm = StringTools.utf8ToString( value.getData() );
+                    String keyAlgorithm = Strings.utf8ToString(value.getData());
 
                     if ( IS_DEBUG )
                     {

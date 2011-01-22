@@ -28,7 +28,7 @@ import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.search.PresentFilter;
 import org.apache.directory.shared.ldap.message.SearchRequest;
 import org.apache.directory.shared.ldap.message.SearchRequestImpl;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,16 +73,16 @@ public class InitPresentFilterAction extends GrammarAction
         ( ( SearchRequestImpl ) searchRequest ).addCurrentFilter( presentFilter );
         ( ( SearchRequestImpl ) searchRequest ).setTerminalFilter( presentFilter );
 
-        String value = StringTools.utf8ToString( tlv.getValue().getData() );
+        String value = Strings.utf8ToString(tlv.getValue().getData());
 
-        if ( StringTools.isEmpty( value ) )
+        if ( Strings.isEmpty(value) )
         {
             presentFilter.setAttributeDescription( "" );
         }
         else
         {
             // Store the value.
-            String type = StringTools.utf8ToString( tlv.getValue().getData() );
+            String type = Strings.utf8ToString(tlv.getValue().getData());
             presentFilter.setAttributeDescription( type );
         }
 

@@ -434,7 +434,7 @@ attributeValue [UpAndNormValue value]
 quotestring [UpAndNormValue value] 
     {
         matchedProduction( "quotestring()" );
-        org.apache.directory.shared.ldap.util.ByteBuffer bb = new org.apache.directory.shared.ldap.util.ByteBuffer();
+        org.apache.directory.shared.util.ByteBuffer bb = new org.apache.directory.shared.util.ByteBuffer();
         byte[] bytes;
     }
     :
@@ -445,7 +445,7 @@ quotestring [UpAndNormValue value]
                 s:~(DQUOTE|ESC|ESCESC|ESCSHARP|HEXPAIR) 
                 {
                     value.rawValue += s.getText();
-                    bb.append( StringTools.getBytesUtf8( s.getText() ) ); 
+                    bb.append( Strings.getBytesUtf8( s.getText() ) );
                 }
             )
             |
@@ -454,7 +454,7 @@ quotestring [UpAndNormValue value]
         dq2:DQUOTE { value.rawValue += dq2.getText(); }
     )
     {
-        String string = StringTools.utf8ToString( bb.copyOfUsedBytes() );
+        String string = Strings.utf8ToString( bb.copyOfUsedBytes() );
         value.value = string;
     }
     ;
@@ -497,7 +497,7 @@ hexstring [UpAndNormValue value]
 string [UpAndNormValue value]
     {
         matchedProduction( "string()" );
-        org.apache.directory.shared.ldap.util.ByteBuffer bb = new org.apache.directory.shared.ldap.util.ByteBuffer();
+        org.apache.directory.shared.util.ByteBuffer bb = new org.apache.directory.shared.util.ByteBuffer();
         String tmp;
         byte[] bytes;
     }
@@ -507,13 +507,13 @@ string [UpAndNormValue value]
             tmp = lutf1 
             { 
                 value.rawValue += tmp;
-                bb.append( StringTools.getBytesUtf8( tmp ) ); 
+                bb.append( Strings.getBytesUtf8( tmp ) );
             }
             |
             tmp = utfmb 
             {
                 value.rawValue += tmp;
-                bb.append( StringTools.getBytesUtf8( tmp ) );
+                bb.append( Strings.getBytesUtf8( tmp ) );
             }
             |
             bytes = pair [value] { bb.append( bytes ); }
@@ -522,20 +522,20 @@ string [UpAndNormValue value]
             tmp = sutf1
             {
                 value.rawValue += tmp;
-                bb.append( StringTools.getBytesUtf8( tmp ) ); 
+                bb.append( Strings.getBytesUtf8( tmp ) );
             }
             |
             tmp = utfmb 
             {
                 value.rawValue += tmp;
-                bb.append( StringTools.getBytesUtf8( tmp ) ); 
+                bb.append( Strings.getBytesUtf8( tmp ) );
             }
             |
             bytes = pair [value] { bb.append( bytes ); }
         )*
     )
     {
-        String string = StringTools.utf8ToString( bb.copyOfUsedBytes() );
+        String string = Strings.utf8ToString( bb.copyOfUsedBytes() );
         
         // trim trailing space characters manually
         // don't know how to tell antlr that the last char mustn't be a space.
@@ -663,7 +663,7 @@ pair [UpAndNormValue value] returns [byte[] pair]
         ESCESC 
         { 
             value.rawValue += "\\\\";
-            pair = StringTools.getBytesUtf8( "\\" );
+            pair = Strings.getBytesUtf8( "\\" );
         } 
     )
     |
@@ -671,7 +671,7 @@ pair [UpAndNormValue value] returns [byte[] pair]
         ESCSHARP 
         { 
             value.rawValue += "\\#";
-            pair = StringTools.getBytesUtf8( "#" );
+            pair = Strings.getBytesUtf8( "#" );
         } 
     )
     |
@@ -680,7 +680,7 @@ pair [UpAndNormValue value] returns [byte[] pair]
         tmp = special 
         { 
             value.rawValue += "\\" + tmp;
-            pair = StringTools.getBytesUtf8( tmp ); 
+            pair = Strings.getBytesUtf8( tmp );
         }
     )
     |

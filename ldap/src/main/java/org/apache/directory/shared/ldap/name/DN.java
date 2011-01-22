@@ -35,7 +35,7 @@ import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -409,7 +409,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         {
             this.normName = rdn.getNormName();
             this.upName = rdn.getName();
-            this.bytes = StringTools.getBytesUtf8( normName );
+            this.bytes = Strings.getBytesUtf8(normName);
             normalized = new AtomicBoolean( true );
         }
         else
@@ -502,7 +502,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
 
             if ( ( normName == null ) || !normName.equals( newNormName ) )
             {
-                bytes = StringTools.getBytesUtf8( newNormName );
+                bytes = Strings.getBytesUtf8(newNormName);
                 normName = newNormName;
             }
 
@@ -1095,7 +1095,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         // Concatenate the rdns
         clonedDn.rdns.addAll( clonedDn.size() - posn, dn.rdns );
 
-        if ( StringTools.isEmpty( normName ) )
+        if ( Strings.isEmpty(normName) )
         {
             clonedDn.normName = dn.normName;
             clonedDn.bytes = dn.bytes;
@@ -1104,7 +1104,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
         else
         {
             clonedDn.normName = dn.normName + "," + normName;
-            clonedDn.bytes = StringTools.getBytesUtf8( normName );
+            clonedDn.bytes = Strings.getBytesUtf8(normName);
             clonedDn.upName = dn.upName + "," + upName;
         }
 
@@ -1142,7 +1142,7 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
             if ( clonedDn.size() != 0 )
             {
                 clonedDn.normName = dn.getNormName() + "," + normName;
-                clonedDn.bytes = StringTools.getBytesUtf8( normName );
+                clonedDn.bytes = Strings.getBytesUtf8(normName);
                 clonedDn.upName = dn.getName() + "," + upName;
             }
         }
@@ -1427,14 +1427,14 @@ public class DN implements Cloneable, Serializable, Comparable<DN>, Iterable<RDN
     private static AVA atavOidToName( AVA atav, Map<String, OidNormalizer> oidsMap )
         throws LdapInvalidDnException
     {
-        String type = StringTools.trim( atav.getNormType() );
+        String type = Strings.trim(atav.getNormType());
 
         if ( ( type.startsWith( "oid." ) ) || ( type.startsWith( "OID." ) ) )
         {
             type = type.substring( 4 );
         }
 
-        if ( StringTools.isNotEmpty( type ) )
+        if ( Strings.isNotEmpty(type) )
         {
             if ( oidsMap == null )
             {

@@ -33,7 +33,7 @@ import org.apache.directory.shared.ldap.message.Referral;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.ResultResponse;
 import org.apache.directory.shared.ldap.util.LdapURL;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,7 +88,7 @@ public class ReferralAction extends GrammarAction
                 }
                 catch ( LdapURLEncodingException luee )
                 {
-                    String badUrl = StringTools.utf8ToString( tlv.getValue().getData() );
+                    String badUrl = Strings.utf8ToString(tlv.getValue().getData());
                     LOG.error( I18n.err( I18n.ERR_04015, badUrl, luee.getMessage() ) );
                     throw new DecoderException( I18n.err( I18n.ERR_04016, luee.getMessage() ) );
                 }

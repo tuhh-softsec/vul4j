@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.schema.comparators;
 
 import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Chars;
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,7 +71,7 @@ public class ObjectIdentifierFirstComponentComparator extends LdapComparator<Str
         
         int start = pos;
         
-        while ( StringTools.isDigit( s, pos ) || Strings.isCharASCII( s, pos, '.' ) )
+        while ( Chars.isDigit(s, pos) || Strings.isCharASCII( s, pos, '.' ) )
         {
             pos++;
         }

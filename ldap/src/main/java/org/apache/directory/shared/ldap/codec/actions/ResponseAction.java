@@ -26,7 +26,7 @@ import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.message.ExtendedResponse;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.StringConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,7 +72,7 @@ public class ResponseAction extends GrammarAction
         // OID
         if ( tlv.getLength() == 0 )
         {
-            extendedResponse.setResponseValue( StringTools.EMPTY_BYTES );
+            extendedResponse.setResponseValue( StringConstants.EMPTY_BYTES );
         }
         else
         {

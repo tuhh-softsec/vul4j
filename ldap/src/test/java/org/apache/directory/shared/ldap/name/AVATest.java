@@ -29,11 +29,12 @@ import java.io.ObjectOutputStream;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.exception.LdapException;
-import org.apache.directory.shared.ldap.util.StringTools;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -279,8 +280,8 @@ public class AVATest
     @Test
     public void testBinaryAtavSerialization() throws LdapException, IOException, ClassNotFoundException
     {
-        byte[] upValue = StringTools.getBytesUtf8( "  Test  " );
-        byte[] normValue = StringTools.getBytesUtf8( "Test" );
+        byte[] upValue = Strings.getBytesUtf8("  Test  ");
+        byte[] normValue = Strings.getBytesUtf8("Test");
 
         AVA atav = new AVA( "cn", "CN", upValue, normValue );
 
@@ -439,8 +440,8 @@ public class AVATest
     @Test
     public void testBinaryAtavStaticSerialization() throws LdapException, IOException, ClassNotFoundException
     {
-        byte[] upValue = StringTools.getBytesUtf8( "  Test  " );
-        byte[] normValue = StringTools.getBytesUtf8( "Test" );
+        byte[] upValue = Strings.getBytesUtf8("  Test  ");
+        byte[] normValue = Strings.getBytesUtf8("Test");
 
         AVA atav = new AVA( "cn", "CN", upValue, normValue );
 

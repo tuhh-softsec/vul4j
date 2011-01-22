@@ -23,7 +23,8 @@ package org.apache.directory.shared.ldap.schema.syntaxCheckers;
 import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Chars;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,7 +86,7 @@ public class OidSyntaxChecker extends SyntaxChecker
         }
         else if ( value instanceof byte[] )
         {
-            strValue = StringTools.utf8ToString( ( byte[] ) value ); 
+            strValue = Strings.utf8ToString((byte[]) value);
         }
         else
         {
@@ -100,7 +101,7 @@ public class OidSyntaxChecker extends SyntaxChecker
         
         // if the first character is a digit it's an attempt at an OID and must be
         // checked to make sure there are no other chars except '.' and digits.
-        if ( StringTools.isDigit( strValue.charAt( 0 ) ) )
+        if ( Chars.isDigit(strValue.charAt(0)) )
         {
             if ( ! OID.isOID(strValue) )
             {
@@ -116,11 +117,11 @@ public class OidSyntaxChecker extends SyntaxChecker
 
         // here we just need to make sure that we have the right characters in the 
         // string and that it starts with a letter.
-        if ( StringTools.isAlphaASCII( strValue, 0 ) )
+        if ( Chars.isAlphaASCII(strValue, 0) )
         {
             for ( int index = 0; index < strValue.length(); index++ )
             {
-                if ( ! StringTools.isAlphaDigitMinus( strValue, index ))
+                if ( ! Chars.isAlphaDigitMinus(strValue, index))
                 {
                     LOG.debug( "Syntax invalid for '{}'", value );
                     return false;

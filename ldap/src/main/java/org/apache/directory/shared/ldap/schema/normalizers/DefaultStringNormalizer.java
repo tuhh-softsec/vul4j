@@ -24,7 +24,7 @@ import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.Normalizer;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -57,7 +57,7 @@ public class DefaultStringNormalizer extends Normalizer
     {
         String str = value.getString();
         
-        if ( StringTools.isEmpty( str ) )
+        if ( Strings.isEmpty(str) )
         {
             return new StringValue( str );
         }
@@ -71,7 +71,7 @@ public class DefaultStringNormalizer extends Normalizer
      */
     public String normalize( String value ) throws LdapException
     {
-        if ( StringTools.isEmpty( value ) )
+        if ( Strings.isEmpty(value) )
         {
             return value;
         }

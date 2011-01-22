@@ -21,7 +21,7 @@ package org.apache.directory.shared.ldap.schema.syntaxCheckers;
 
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Chars;
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,7 +80,7 @@ public class JavaByteSyntaxChecker extends SyntaxChecker
         }
         else if ( value instanceof byte[] )
         {
-            strValue = StringTools.utf8ToString( ( byte[] ) value );
+            strValue = Strings.utf8ToString((byte[]) value);
         }
         else
         {
@@ -102,7 +102,7 @@ public class JavaByteSyntaxChecker extends SyntaxChecker
         {
             pos = 1;
         }
-        else if ( !StringTools.isDigit( c ) )
+        else if ( !Chars.isDigit(c) )
         {
             LOG.debug( "Syntax invalid for '{}'", value );
             return false;
@@ -122,7 +122,7 @@ public class JavaByteSyntaxChecker extends SyntaxChecker
         }
 
         // We must have at least a digit which is not '0'
-        if ( !StringTools.isDigit( strValue, pos ) )
+        if ( !Chars.isDigit(strValue, pos) )
         {
             LOG.debug( "Syntax invalid for '{}'", value );
             return false;
@@ -137,7 +137,7 @@ public class JavaByteSyntaxChecker extends SyntaxChecker
             pos++;
         }
 
-        while ( StringTools.isDigit( strValue, pos) )
+        while ( Chars.isDigit(strValue, pos) )
         {
             pos++;
         }

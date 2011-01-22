@@ -31,7 +31,7 @@ import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -233,14 +233,14 @@ public class SubstringFilter extends Filter
     public int computeLength()
     {
         // The type
-        typeLength = StringTools.getBytesUtf8( type ).length;
+        typeLength = Strings.getBytesUtf8(type).length;
         
         substringsFilterLength = 1 + TLV.getNbBytes( typeLength ) + typeLength;
         substringsFilterSequenceLength = 0;
 
         if ( initialSubstrings != null )
         {
-            int initialLength = StringTools.getBytesUtf8( initialSubstrings ).length; 
+            int initialLength = Strings.getBytesUtf8(initialSubstrings).length;
             substringsFilterSequenceLength += 1 + TLV.getNbBytes( initialLength )
                 + initialLength;
         }
@@ -249,14 +249,14 @@ public class SubstringFilter extends Filter
         {
             for ( String any:anySubstrings )
             {
-                int anyLength = StringTools.getBytesUtf8( any ).length; 
+                int anyLength = Strings.getBytesUtf8(any).length;
                 substringsFilterSequenceLength += 1 + TLV.getNbBytes( anyLength ) + anyLength;
             }
         }
 
         if ( finalSubstrings != null )
         {
-            int finalLength = StringTools.getBytesUtf8( finalSubstrings ).length; 
+            int finalLength = Strings.getBytesUtf8(finalSubstrings).length;
             substringsFilterSequenceLength += 1 + TLV.getNbBytes( finalLength )
                 + finalLength;
         }
@@ -317,7 +317,7 @@ public class SubstringFilter extends Filter
             // The initial substring
             if ( initialSubstrings != null )
             {
-                byte[] initialBytes = StringTools.getBytesUtf8( initialSubstrings );
+                byte[] initialBytes = Strings.getBytesUtf8(initialSubstrings);
                 buffer.put( ( byte ) LdapConstants.SUBSTRINGS_FILTER_INITIAL_TAG );
                 buffer.put( TLV.getBytes( initialBytes.length ) );
                 buffer.put( initialBytes );
@@ -328,7 +328,7 @@ public class SubstringFilter extends Filter
             {
                 for ( String any:anySubstrings )
                 {
-                    byte[] anyBytes = StringTools.getBytesUtf8( any );
+                    byte[] anyBytes = Strings.getBytesUtf8(any);
                     buffer.put( ( byte ) LdapConstants.SUBSTRINGS_FILTER_ANY_TAG );
                     buffer.put( TLV.getBytes( anyBytes.length ) );
                     buffer.put( anyBytes );
@@ -338,7 +338,7 @@ public class SubstringFilter extends Filter
             // The final substring
             if ( finalSubstrings != null )
             {
-                byte[] finalBytes = StringTools.getBytesUtf8( finalSubstrings );
+                byte[] finalBytes = Strings.getBytesUtf8(finalSubstrings);
                 buffer.put( ( byte ) LdapConstants.SUBSTRINGS_FILTER_FINAL_TAG );
                 buffer.put( TLV.getBytes( finalBytes.length ) );
                 buffer.put( finalBytes );

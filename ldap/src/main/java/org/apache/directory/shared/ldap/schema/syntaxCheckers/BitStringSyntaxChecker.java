@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.schema.syntaxCheckers;
 
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Chars;
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,13 +86,13 @@ public class BitStringSyntaxChecker extends SyntaxChecker
         }
 
         // We must have at least one bit
-        if ( ! StringTools.isBit( strValue, pos++ ) )
+        if ( ! Chars.isBit(strValue, pos++) )
         {
             LOG.debug( "Syntax invalid for '{}'", strValue );
             return false;
         }
         
-        while ( StringTools.isBit( strValue, pos ) )
+        while ( Chars.isBit(strValue, pos) )
         {
             // Loop until we get a char which is not a 0 or a 1
             pos++;
@@ -135,7 +135,7 @@ public class BitStringSyntaxChecker extends SyntaxChecker
         }
         else if ( value instanceof byte[] )
         {
-            strValue = StringTools.utf8ToString( ( byte[] ) value ); 
+            strValue = Strings.utf8ToString((byte[]) value);
         }
         else
         {

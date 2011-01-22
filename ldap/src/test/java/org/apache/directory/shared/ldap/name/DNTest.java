@@ -50,7 +50,7 @@ import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.normalizers.DeepTrimToLowerNormalizer;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -1579,9 +1579,9 @@ public class DNTest
     @Test
     public void testStringParser() throws Exception
     {
-        String dn = StringTools.utf8ToString( new byte[]
-            { 'C', 'N', ' ', '=', ' ', 'E', 'm', 'm', 'a', 'n', 'u', 'e', 'l', ' ', ' ', 'L', ( byte ) 0xc3,
-                ( byte ) 0xa9, 'c', 'h', 'a', 'r', 'n', 'y' } );
+        String dn = Strings.utf8ToString(new byte[]
+                {'C', 'N', ' ', '=', ' ', 'E', 'm', 'm', 'a', 'n', 'u', 'e', 'l', ' ', ' ', 'L', (byte) 0xc3,
+                        (byte) 0xa9, 'c', 'h', 'a', 'r', 'n', 'y'});
 
         DN name = DnParser.getNameParser().parse( dn );
 
@@ -3320,7 +3320,7 @@ public class DNTest
         AVA atav3 = dn3.getRdn().getAVA();
         assertEquals( "cn", atav3.getUpType() );
         assertEquals( "ABC", atav3.getUpValue().getString() );
-        assertTrue( Arrays.equals( StringTools.getBytesUtf8( "ABC" ), atav3.getNormValue().getBytes() ) );
+        assertTrue( Arrays.equals( Strings.getBytesUtf8("ABC"), atav3.getNormValue().getBytes() ) );
 
         // antlr parser:
         DN dn4 = new DN( " cn = \\41\\42\\43 , ou=system " );

@@ -37,8 +37,8 @@ import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.util.AttributeUtils;
-import org.apache.directory.shared.ldap.util.Base64;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Base64;
+import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -127,7 +127,7 @@ public final class LdifUtils
      */
     public static boolean isLDIFSafe( String str )
     {
-        if ( StringTools.isEmpty( str ) )
+        if ( Strings.isEmpty(str) )
         {
             // A null string is LDIF safe
             return true;
@@ -388,7 +388,7 @@ public final class LdifUtils
 
                     if ( control.hasValue() )
                     {
-                        controlStr.append( "::" ).append( Base64.encode( control.getValue() ) );
+                        controlStr.append( "::" ).append( Base64.encode(control.getValue()) );
                     }
 
                     sb.append( stripLineToNChars( controlStr.toString(), length ) );
@@ -458,7 +458,7 @@ public final class LdifUtils
                 sb.append( '\n' );
 
                 // Stores the optional newSuperior
-                if ( !StringTools.isEmpty( entry.getNewSuperior() ) )
+                if ( !Strings.isEmpty(entry.getNewSuperior()) )
                 {
                     EntryAttribute newSuperior = new DefaultEntryAttribute( "newsuperior", entry.getNewSuperior() );
                     sb.append( convertToLdif( newSuperior, length ) );

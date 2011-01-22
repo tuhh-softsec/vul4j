@@ -28,7 +28,7 @@ import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -100,7 +100,7 @@ public class UniqueMemberNormalizer extends Normalizer
 
     public String normalize( String value ) throws LdapException
     {
-        if ( StringTools.isEmpty( value ) )
+        if ( Strings.isEmpty(value) )
         {
             return null;
         }

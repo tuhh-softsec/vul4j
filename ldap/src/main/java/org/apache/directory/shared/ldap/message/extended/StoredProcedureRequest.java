@@ -34,7 +34,7 @@ import org.apache.directory.shared.ldap.codec.extended.operations.storedProcedur
 import org.apache.directory.shared.ldap.codec.extended.operations.storedProcedure.StoredProcedure.StoredProcedureParameter;
 import org.apache.directory.shared.ldap.message.ExtendedRequestImpl;
 import org.apache.directory.shared.ldap.message.ResultResponse;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -195,7 +195,7 @@ public class StoredProcedureRequest extends ExtendedRequestImpl
      */
     public void setProcedure( String procedure )
     {
-        this.procedure.setProcedure( StringTools.getBytesUtf8( procedure ) );
+        this.procedure.setProcedure( Strings.getBytesUtf8(procedure) );
     }
 
 
@@ -206,7 +206,7 @@ public class StoredProcedureRequest extends ExtendedRequestImpl
      */
     public String getProcedureSpecification()
     {
-        return StringTools.utf8ToString( procedure.getProcedure() );
+        return Strings.utf8ToString(procedure.getProcedure());
     }
 
 

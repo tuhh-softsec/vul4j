@@ -25,7 +25,7 @@
 
 <suppressions>
     <!-- UnixCrypt is from external, no formatting is applied -->
-    <suppress files="org.apache.directory.shared.ldap.util.UnixCrypt" checks="[A-Za-z0-9]" />
+    <suppress files="org.apache.directory.shared.util.UnixCrypt" checks="[A-Za-z0-9]" />
     
     <!-- hashcode() is final in super class -->
     <suppress files="org.apache.directory.shared.ldap.schema.SyntaxChecker" checks="EqualsHashCode" />

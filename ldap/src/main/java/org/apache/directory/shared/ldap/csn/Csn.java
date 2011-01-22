@@ -26,7 +26,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Chars;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -125,7 +126,7 @@ public class Csn implements Serializable, Comparable<Csn>
      */
     public Csn( String value ) throws InvalidCSNException
     {
-        if ( StringTools.isEmpty( value ) )
+        if ( Strings.isEmpty(value) )
         {
             String message = I18n.err( I18n.ERR_04114 );
             LOG.error( message );
@@ -229,7 +230,7 @@ public class Csn implements Serializable, Comparable<Csn>
 
         String replicaIdStr = value.substring( sepCC + 1, sepRI).trim();
         
-        if ( StringTools.isEmpty( replicaIdStr ) )
+        if ( Strings.isEmpty(replicaIdStr) )
         {
             String message = I18n.err( I18n.ERR_04123 );
             LOG.error( message );
@@ -269,7 +270,7 @@ public class Csn implements Serializable, Comparable<Csn>
         }
         
         csnStr = value;
-        bytes = StringTools.getBytesUtf8( csnStr );
+        bytes = Strings.getBytesUtf8(csnStr);
     }
 
 
@@ -281,7 +282,7 @@ public class Csn implements Serializable, Comparable<Csn>
      */
     public static boolean isValid( String value )
     {
-        if ( StringTools.isEmpty( value ) )
+        if ( Strings.isEmpty(value) )
         {
             return false;
         }
@@ -324,14 +325,14 @@ public class Csn implements Serializable, Comparable<Csn>
         // And add the milliseconds and microseconds now
         String millisStr = timestampStr.substring( 15, 21 );
 
-        if ( StringTools.isEmpty( millisStr ) )
+        if ( Strings.isEmpty(millisStr) )
         {
             return false;
         }
         
         for ( int i = 0; i < 6; i++ )
         {
-            if ( !StringTools.isDigit( millisStr, i ) )
+            if ( !Chars.isDigit(millisStr, i) )
             {
                 return false;
             }
@@ -356,7 +357,7 @@ public class Csn implements Serializable, Comparable<Csn>
     
         String changeCountStr = value.substring( sepTS + 1, sepCC ).trim();
         
-        if ( StringTools.isEmpty( changeCountStr ) )
+        if ( Strings.isEmpty(changeCountStr) )
         {
             return false;
         }
@@ -370,7 +371,7 @@ public class Csn implements Serializable, Comparable<Csn>
         {
             for ( int i = 0; i < 6; i++ )
             {
-                if ( !StringTools.isHex( changeCountStr, i ) )
+                if ( !Chars.isHex(changeCountStr, i) )
                 {
                     return false;
                 }
@@ -393,7 +394,7 @@ public class Csn implements Serializable, Comparable<Csn>
     
         String replicaIdStr = value.substring( sepCC + 1, sepRI ).trim();
         
-        if ( StringTools.isEmpty( replicaIdStr ) )
+        if ( Strings.isEmpty(replicaIdStr) )
         {
             return false;
         }
@@ -405,7 +406,7 @@ public class Csn implements Serializable, Comparable<Csn>
         
         for ( int i = 0; i < 3; i++ )
         {
-            if ( !StringTools.isHex( replicaIdStr, i ) )
+            if ( !Chars.isHex(replicaIdStr, i) )
             {
                 return false;
             }
@@ -435,7 +436,7 @@ public class Csn implements Serializable, Comparable<Csn>
 
         for ( int i = 0; i < 6; i++ )
         {
-            if ( !StringTools.isHex( operationNumberStr, i ) )
+            if ( !Chars.isHex(operationNumberStr, i) )
             {
                 return false;
             }
@@ -461,13 +462,13 @@ public class Csn implements Serializable, Comparable<Csn>
      */
     Csn( byte[] value )
     {
-        csnStr = StringTools.utf8ToString( value );
+        csnStr = Strings.utf8ToString(value);
         Csn csn = new Csn( csnStr );
         timestamp = csn.timestamp;
         changeCount = csn.changeCount;
         replicaId = csn.replicaId;
         operationNumber = csn.operationNumber;
-        bytes = StringTools.getBytesUtf8( csnStr );
+        bytes = Strings.getBytesUtf8(csnStr);
     }
 
 
@@ -483,7 +484,7 @@ public class Csn implements Serializable, Comparable<Csn>
     {
         if ( bytes == null )
         {
-            bytes = StringTools.getBytesUtf8( csnStr );
+            bytes = Strings.getBytesUtf8(csnStr);
         }
 
         byte[] copy = new byte[bytes.length];

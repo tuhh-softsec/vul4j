@@ -36,7 +36,6 @@ import org.apache.directory.shared.ldap.codec.controls.replication.syncStateValu
 import org.apache.directory.shared.ldap.codec.controls.replication.syncStateValue.SyncStateValueControlContainer;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncStateValue.SyncStateValueControlDecoder;
 import org.apache.directory.shared.ldap.message.control.replication.SyncStateTypeEnum;
-import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -85,8 +84,8 @@ public class SyncStateValueControlTest
 
         SyncStateValueControl syncStateValue = container.getSyncStateValueControl();
         assertEquals( SyncStateTypeEnum.PRESENT, syncStateValue.getSyncStateType() );
-        assertEquals( "abc", StringTools.utf8ToString( syncStateValue.getEntryUUID() ) );
-        assertEquals( "xkcd", StringTools.utf8ToString( syncStateValue.getCookie() ) );
+        assertEquals( "abc", Strings.utf8ToString(syncStateValue.getEntryUUID()) );
+        assertEquals( "xkcd", Strings.utf8ToString(syncStateValue.getCookie()) );
 
         // Check the encoding
         try
@@ -150,7 +149,7 @@ public class SyncStateValueControlTest
 
         SyncStateValueControl syncStateValue = container.getSyncStateValueControl();
         assertEquals( SyncStateTypeEnum.ADD, syncStateValue.getSyncStateType() );
-        assertEquals( "abc", StringTools.utf8ToString( syncStateValue.getEntryUUID() ) );
+        assertEquals( "abc", Strings.utf8ToString(syncStateValue.getEntryUUID()) );
         assertNull( syncStateValue.getCookie() );
 
         // Check the encoding
@@ -216,8 +215,8 @@ public class SyncStateValueControlTest
 
         SyncStateValueControl syncStateValue = container.getSyncStateValueControl();
         assertEquals( SyncStateTypeEnum.MODIFY, syncStateValue.getSyncStateType() );
-        assertEquals( "abc", StringTools.utf8ToString( syncStateValue.getEntryUUID() ) );
-        assertEquals( "", StringTools.utf8ToString( syncStateValue.getCookie() ) );
+        assertEquals( "abc", Strings.utf8ToString(syncStateValue.getEntryUUID()) );
+        assertEquals( "", Strings.utf8ToString(syncStateValue.getCookie()) );
 
         // Check the encoding
         try
@@ -372,8 +371,8 @@ public class SyncStateValueControlTest
 
         SyncStateValueControl syncStateValue = container.getSyncStateValueControl();
         assertEquals( SyncStateTypeEnum.MODDN, syncStateValue.getSyncStateType() );
-        assertEquals( "abc", StringTools.utf8ToString( syncStateValue.getEntryUUID() ) );
-        assertEquals( "xkcd", StringTools.utf8ToString( syncStateValue.getCookie() ) );
+        assertEquals( "abc", Strings.utf8ToString(syncStateValue.getEntryUUID()) );
+        assertEquals( "xkcd", Strings.utf8ToString(syncStateValue.getCookie()) );
 
         // Check the encoding
         try

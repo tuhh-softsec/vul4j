@@ -121,6 +121,7 @@ import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.StringConstants;
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -360,7 +361,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     else
                     {
                         byte[] dnBytes = tlv.getValue().getData();
-                        String dnStr = StringTools.utf8ToString( dnBytes );
+                        String dnStr = Strings.utf8ToString(dnBytes);
 
                         try
                         {
@@ -581,7 +582,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     else
                     {
                         byte[] dnBytes = tlv.getValue().getData();
-                        String dnStr = StringTools.utf8ToString( dnBytes );
+                        String dnStr = Strings.utf8ToString(dnBytes);
 
                         try
                         {
@@ -637,7 +638,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     // We have to handle the special case of a 0 length simple
                     if ( tlv.getLength() == 0 )
                     {
-                        bindRequestMessage.setCredentials( StringTools.EMPTY_BYTES );
+                        bindRequestMessage.setCredentials( StringConstants.EMPTY_BYTES );
                     }
                     else
                     {
@@ -736,7 +737,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     }
                     else
                     {
-                        bindRequestMessage.setSaslMechanism( StringTools.utf8ToString( tlv.getValue().getData() ) );
+                        bindRequestMessage.setSaslMechanism( Strings.utf8ToString(tlv.getValue().getData()) );
                     }
 
                     // We can have an END transition
@@ -774,7 +775,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     // credentials
                     if ( tlv.getLength() == 0 )
                     {
-                        bindRequestMessage.setCredentials( StringTools.EMPTY_BYTES );
+                        bindRequestMessage.setCredentials( StringConstants.EMPTY_BYTES );
                     }
                     else
                     {
@@ -1130,7 +1131,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     else
                     {
                         byte[] dnBytes = tlv.getValue().getData();
-                        String dnStr = StringTools.utf8ToString( dnBytes );
+                        String dnStr = Strings.utf8ToString(dnBytes);
 
                         try
                         {
@@ -1445,7 +1446,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     else
                     {
                         byte[] dnBytes = tlv.getValue().getData();
-                        String dnStr = StringTools.utf8ToString( dnBytes );
+                        String dnStr = Strings.utf8ToString(dnBytes);
 
                         try
                         {
@@ -1875,7 +1876,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     {
                         DN entryDn = null;
                         byte[] dnBytes = tlv.getValue().getData();
-                        String dnStr = StringTools.utf8ToString( dnBytes );
+                        String dnStr = Strings.utf8ToString(dnBytes);
 
                         try
                         {
@@ -2177,7 +2178,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     else
                     {
                         byte[] dnBytes = tlv.getValue().getData();
-                        String dnStr = StringTools.utf8ToString( dnBytes );
+                        String dnStr = Strings.utf8ToString(dnBytes);
 
                         try
                         {
@@ -2244,7 +2245,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     else
                     {
                         byte[] dnBytes = tlv.getValue().getData();
-                        String dnStr = StringTools.utf8ToString( dnBytes );
+                        String dnStr = Strings.utf8ToString(dnBytes);
 
                         try
                         {
@@ -2372,7 +2373,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     else
                     {
                         byte[] dnBytes = tlv.getValue().getData();
-                        String dnStr = StringTools.utf8ToString( dnBytes );
+                        String dnStr = Strings.utf8ToString(dnBytes);
 
                         try
                         {
@@ -2524,7 +2525,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     else
                     {
                         byte[] dnBytes = tlv.getValue().getData();
-                        String dnStr = StringTools.utf8ToString( dnBytes );
+                        String dnStr = Strings.utf8ToString(dnBytes);
 
                         try
                         {
@@ -2655,7 +2656,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                         }
                         else
                         {
-                            compareRequest.setAssertionValue( StringTools.utf8ToString( tlv.getValue().getData() ) );
+                            compareRequest.setAssertionValue( Strings.utf8ToString(tlv.getValue().getData()) );
 
                             if ( LOG.isDebugEnabled() )
                             {
@@ -2850,13 +2851,13 @@ public final class LdapMessageGrammar extends AbstractGrammar
 
                         try
                         {
-                            String requestName = StringTools.utf8ToString( requestNameBytes );
+                            String requestName = Strings.utf8ToString(requestNameBytes);
 
                             if ( !OID.isOID( requestName ) )
                             {
 
                                 String msg = "The Request name is not a valid OID : "
-                                    + StringTools.utf8ToString( requestNameBytes ) + " ("
+                                    + Strings.utf8ToString(requestNameBytes) + " ("
                                     + Strings.dumpBytes(requestNameBytes) + ") is invalid";
                                 LOG.error( msg );
 
@@ -2869,7 +2870,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                         catch ( DecoderException de )
                         {
                             String msg = "The Request name is not a valid OID : "
-                                + StringTools.utf8ToString( requestNameBytes ) + " ("
+                                + Strings.utf8ToString(requestNameBytes) + " ("
                                 + Strings.dumpBytes(requestNameBytes) + ") is invalid";
                             LOG.error( "{} : {}", msg, de.getMessage() );
 
@@ -2914,7 +2915,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     // value
                     if ( tlv.getLength() == 0 )
                     {
-                        extendedRequest.setRequestValue( StringTools.EMPTY_BYTES );
+                        extendedRequest.setRequestValue( StringConstants.EMPTY_BYTES );
                     }
                     else
                     {
@@ -3225,7 +3226,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     {
                         byte[] responseNameBytes = tlv.getValue().getData();
 
-                        String oidStr = StringTools.utf8ToString( responseNameBytes );
+                        String oidStr = Strings.utf8ToString(responseNameBytes);
 
                         if ( OID.isOID( oidStr ) )
                         {
@@ -3235,7 +3236,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                         else
                         {
                             String msg = "The Intermediate Response name is not a valid OID : "
-                                + StringTools.utf8ToString( responseNameBytes ) + " ("
+                                + Strings.utf8ToString(responseNameBytes) + " ("
                                 + Strings.dumpBytes(responseNameBytes) + ") is invalid";
                             LOG.error( "{} : {}", msg, oidStr );
 
@@ -3281,7 +3282,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     // value
                     if ( tlv.getLength() == 0 )
                     {
-                        intermediateResponse.setResponseValue( StringTools.EMPTY_BYTES );
+                        intermediateResponse.setResponseValue( StringConstants.EMPTY_BYTES );
                     }
                     else
                     {
@@ -3324,7 +3325,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     // value
                     if ( tlv.getLength() == 0 )
                     {
-                        intermediateResponse.setResponseValue( StringTools.EMPTY_BYTES );
+                        intermediateResponse.setResponseValue( StringConstants.EMPTY_BYTES );
                     }
                     else
                     {
@@ -3429,7 +3430,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     }
 
                     byte[] value = tlv.getValue().getData();
-                    String oidValue = StringTools.asciiBytesToString( value );
+                    String oidValue = Strings.asciiBytesToString(value);
 
                     // The OID is encoded as a String, not an Object Id
                     if ( !OID.isOID(oidValue) )
@@ -3625,7 +3626,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     if ( tlv.getLength() != 0 )
                     {
                         byte[] dnBytes = tlv.getValue().getData();
-                        String dnStr = StringTools.utf8ToString( dnBytes );
+                        String dnStr = Strings.utf8ToString(dnBytes);
 
                         try
                         {
@@ -5123,7 +5124,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                         throw new DecoderException( msg );
                     }
 
-                    substringFilter.setInitialSubstrings( StringTools.utf8ToString( tlv.getValue().getData() ) );
+                    substringFilter.setInitialSubstrings( Strings.utf8ToString(tlv.getValue().getData()) );
 
                     // We now have to get back to the nearest filter which is
                     // not terminal.
@@ -6048,7 +6049,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     }
                     else
                     {
-                        extensibleMatchFilter.setMatchingRule( StringTools.utf8ToString( tlv.getValue().getData() ) );
+                        extensibleMatchFilter.setMatchingRule( Strings.utf8ToString(tlv.getValue().getData()) );
                     }
                 }
             } );

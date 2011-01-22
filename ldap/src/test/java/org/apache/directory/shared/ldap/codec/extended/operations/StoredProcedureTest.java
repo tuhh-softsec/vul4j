@@ -36,7 +36,6 @@ import org.apache.directory.shared.ldap.codec.extended.operations.storedProcedur
 import org.apache.directory.shared.ldap.codec.extended.operations.storedProcedure.StoredProcedureContainer;
 import org.apache.directory.shared.ldap.codec.extended.operations.storedProcedure.StoredProcedureDecoder;
 import org.apache.directory.shared.ldap.codec.extended.operations.storedProcedure.StoredProcedure.StoredProcedureParameter;
-import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -96,24 +95,24 @@ public class StoredProcedureTest
 
         assertEquals("Java", storedProcedure.getLanguage());
         
-        assertEquals( "execute", StringTools.utf8ToString( storedProcedure.getProcedure() ) );
+        assertEquals( "execute", Strings.utf8ToString(storedProcedure.getProcedure()) );
 
         assertEquals( 3, storedProcedure.getParameters().size() );
 
         StoredProcedureParameter param = storedProcedure.getParameters().get( 0 );
 
-        assertEquals( "int", StringTools.utf8ToString( param.getType() ) );
+        assertEquals( "int", Strings.utf8ToString(param.getType()) );
         assertEquals( 1, param.getValue()[0] );
 
         param = storedProcedure.getParameters().get( 1 );
 
-        assertEquals( "boolean", StringTools.utf8ToString( param.getType() ) );
-        assertEquals( "true", StringTools.utf8ToString( param.getValue() ) );
+        assertEquals( "boolean", Strings.utf8ToString(param.getType()) );
+        assertEquals( "true", Strings.utf8ToString(param.getValue()) );
 
         param = storedProcedure.getParameters().get( 2 );
 
-        assertEquals( "String", StringTools.utf8ToString( param.getType() ) );
-        assertEquals( "parameter3", StringTools.utf8ToString( param.getValue() ) );
+        assertEquals( "String", Strings.utf8ToString(param.getType()) );
+        assertEquals( "parameter3", Strings.utf8ToString(param.getValue()) );
 
         // Check the encoding
         try
@@ -167,7 +166,7 @@ public class StoredProcedureTest
 
         assertEquals("Java", storedProcedure.getLanguage());
         
-        assertEquals( "execute", StringTools.utf8ToString( storedProcedure.getProcedure() ) );
+        assertEquals( "execute", Strings.utf8ToString(storedProcedure.getProcedure()) );
 
         assertEquals( 0, storedProcedure.getParameters().size() );
         
@@ -227,13 +226,13 @@ public class StoredProcedureTest
 
         assertEquals("Java", storedProcedure.getLanguage());
         
-        assertEquals( "execute", StringTools.utf8ToString( storedProcedure.getProcedure() ) );
+        assertEquals( "execute", Strings.utf8ToString(storedProcedure.getProcedure()) );
 
         assertEquals( 1, storedProcedure.getParameters().size() );
 
         StoredProcedureParameter param = storedProcedure.getParameters().get( 0 );
 
-        assertEquals( "int", StringTools.utf8ToString( param.getType() ) );
+        assertEquals( "int", Strings.utf8ToString(param.getType()) );
         assertEquals( 1, param.getValue()[0] );
 
         // Check the encoding

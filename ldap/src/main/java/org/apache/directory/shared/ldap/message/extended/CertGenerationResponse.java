@@ -23,7 +23,7 @@ package org.apache.directory.shared.ldap.message.extended;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.message.ExtendedResponseImpl;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.StringConstants;
 
 
 /**
@@ -81,7 +81,7 @@ public class CertGenerationResponse extends ExtendedResponseImpl
      */
     public byte[] getResponse()
     {
-        return StringTools.EMPTY_BYTES;
+        return StringConstants.EMPTY_BYTES;
     }
 
 

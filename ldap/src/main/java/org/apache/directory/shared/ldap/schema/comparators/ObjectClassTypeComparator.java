@@ -21,7 +21,7 @@ package org.apache.directory.shared.ldap.schema.comparators;
 
 
 import org.apache.directory.shared.ldap.schema.LdapComparator;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -79,7 +79,7 @@ public class ObjectClassTypeComparator<T> extends LdapComparator<T>
         }
         else if ( obj instanceof byte[] )
         {
-            strValue = StringTools.utf8ToString( ( byte[] ) obj ); 
+            strValue = Strings.utf8ToString((byte[]) obj);
         }
         else
         {

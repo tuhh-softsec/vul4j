@@ -18,8 +18,10 @@
  *  
  */
 
-package org.apache.directory.shared.ldap.util;
+package org.apache.directory.shared.util;
 
+
+import org.apache.directory.shared.util.Strings;
 
 /**
  * decoding of base32 characters to raw bytes.
@@ -54,12 +56,12 @@ public final class Base32
      */
     public static String encode( String str )
     {
-        if ( StringTools.isEmpty( str ) )
+        if ( Strings.isEmpty(str) )
         {
             return "";
         }
         
-        byte[] data = StringTools.getBytesUtf8( str );
+        byte[] data = Strings.getBytesUtf8(str);
         int dataLength = data.length;
         int newLength = ( ( dataLength << 3 ) / 5 ) + ( ( dataLength % 5 ) == 0 ? 0 : 1 );
         newLength += ( ( newLength % 8 == 0 ) ? 0 : 8 - newLength % 8 );
@@ -153,6 +155,6 @@ public final class Base32
                 break;
         }
         
-        return StringTools.utf8ToString( out );
+        return Strings.utf8ToString(out);
     }
 }

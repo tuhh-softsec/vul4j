@@ -21,7 +21,7 @@ package org.apache.directory.shared.ldap.schema.comparators;
 
 
 import org.apache.directory.shared.ldap.schema.LdapComparator;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,7 +84,7 @@ public class WordComparator extends LdapComparator<String>
         }
 
         // Now, trim the assertion and find it in the value
-        String trimmedAssertion = StringTools.trim( assertion );
+        String trimmedAssertion = Strings.trim(assertion);
         int pos = value.indexOf( trimmedAssertion );
 
         if ( pos != -1 )

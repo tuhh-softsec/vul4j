@@ -26,7 +26,7 @@ import org.apache.directory.shared.asn1.AbstractAsn1Object;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -66,16 +66,16 @@ public class CertGenerationObject extends AbstractAsn1Object
     @Override
     public int computeLength()
     {
-        int len = StringTools.getBytesUtf8( targetDN ).length;
+        int len = Strings.getBytesUtf8(targetDN).length;
         requestLength = 1 + Value.getNbBytes( len ) + len;
 
-        len = StringTools.getBytesUtf8( issuerDN ).length;
+        len = Strings.getBytesUtf8(issuerDN).length;
         requestLength += 1 + Value.getNbBytes( len ) + len;
 
-        len = StringTools.getBytesUtf8( subjectDN ).length;
+        len = Strings.getBytesUtf8(subjectDN).length;
         requestLength += 1 + Value.getNbBytes( len ) + len;
 
-        len = StringTools.getBytesUtf8( keyAlgorithm ).length;
+        len = Strings.getBytesUtf8(keyAlgorithm).length;
         requestLength += 1 + Value.getNbBytes( len ) + len;
 
         return 1 + Value.getNbBytes( requestLength ) + requestLength;

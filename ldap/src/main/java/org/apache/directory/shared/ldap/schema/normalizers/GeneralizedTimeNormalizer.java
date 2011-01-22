@@ -32,10 +32,10 @@ import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueExcep
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.PrepareString;
-import org.apache.directory.shared.ldap.util.GeneralizedTime;
-import org.apache.directory.shared.ldap.util.GeneralizedTime.Format;
-import org.apache.directory.shared.ldap.util.GeneralizedTime.FractionDelimiter;
-import org.apache.directory.shared.ldap.util.GeneralizedTime.TimeZoneFormat;
+import org.apache.directory.shared.util.GeneralizedTime;
+import org.apache.directory.shared.util.GeneralizedTime.Format;
+import org.apache.directory.shared.util.GeneralizedTime.FractionDelimiter;
+import org.apache.directory.shared.util.GeneralizedTime.TimeZoneFormat;
 
 
 /**

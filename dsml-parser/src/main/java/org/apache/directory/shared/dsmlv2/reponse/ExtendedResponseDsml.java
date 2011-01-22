@@ -26,7 +26,7 @@ import org.apache.directory.shared.dsmlv2.ParserUtils;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.ExtendedResponse;
 import org.apache.directory.shared.ldap.message.ExtendedResponseImpl;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
 import org.dom4j.QName;
@@ -107,7 +107,7 @@ public class ExtendedResponseDsml extends AbstractResponseDsml
             }
             else
             {
-                element.addElement( "response" ).addText( StringTools.utf8ToString( (byte[])response ) );
+                element.addElement( "response" ).addText( Strings.utf8ToString((byte[]) response) );
             }
         }
 

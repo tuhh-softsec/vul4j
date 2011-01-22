@@ -27,6 +27,7 @@ import java.util.prefs.BackingStoreException;
 
 import org.apache.commons.lang.exception.NestableRuntimeException;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.util.ArrayEnumeration;
 
 
 /**

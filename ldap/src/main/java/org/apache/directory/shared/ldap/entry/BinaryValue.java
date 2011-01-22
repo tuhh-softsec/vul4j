@@ -32,7 +32,7 @@ import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
 import org.apache.directory.shared.ldap.schema.comparators.ByteArrayComparator;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.StringConstants;
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -186,7 +186,7 @@ public class BinaryValue extends AbstractValue<byte[]>
         }
         else
         {
-            return StringTools.EMPTY_BYTES;
+            return StringConstants.EMPTY_BYTES;
         }
     }
 
@@ -547,7 +547,7 @@ public class BinaryValue extends AbstractValue<byte[]>
      */
     public String getString()
     {
-        return StringTools.utf8ToString( wrappedValue );
+        return Strings.utf8ToString(wrappedValue);
     }
 
 
@@ -744,7 +744,7 @@ public class BinaryValue extends AbstractValue<byte[]>
         }
         else if ( wrappedLength == 0 )
         {
-            wrappedValue = StringTools.EMPTY_BYTES;
+            wrappedValue = StringConstants.EMPTY_BYTES;
             same = true;
             normalized = true;
             normalizedValue = wrappedValue;
@@ -781,7 +781,7 @@ public class BinaryValue extends AbstractValue<byte[]>
                     }
                     else
                     {
-                        normalizedValue = StringTools.EMPTY_BYTES;
+                        normalizedValue = StringConstants.EMPTY_BYTES;
                     }
                 }
                 else

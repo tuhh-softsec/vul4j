@@ -31,7 +31,7 @@ import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.LoadableSchemaObject;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
 import org.apache.directory.shared.ldap.schema.SchemaObjectType;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,7 +78,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
     {
         if ( !byName.containsKey( oid ) )
         {
-            return byName.containsKey( StringTools.toLowerCase( oid ) );
+            return byName.containsKey( Strings.toLowerCase(oid) );
         }
 
         return true;
@@ -165,7 +165,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
         if ( schemaObject == null )
         {
             // let's try with trimming and lowercasing now
-            schemaObject = byName.get( StringTools.trim( StringTools.toLowerCase( oid ) ) );
+            schemaObject = byName.get( Strings.trim(Strings.toLowerCase(oid)) );
         }
 
         if ( schemaObject == null )
@@ -206,7 +206,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
          */
         for ( String name : schemaObject.getNames() )
         {
-            String lowerName = StringTools.trim( StringTools.toLowerCase( name ) );
+            String lowerName = Strings.trim(Strings.toLowerCase(name));
 
             if ( byName.containsKey( lowerName ) )
             {
@@ -284,7 +284,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
          */
         for ( String name : schemaObject.getNames() )
         {
-            byName.remove( StringTools.trim( StringTools.toLowerCase( name ) ) );
+            byName.remove( Strings.trim(Strings.toLowerCase(name)) );
         }
 
         // And unregister the oid -> schemaObject relation

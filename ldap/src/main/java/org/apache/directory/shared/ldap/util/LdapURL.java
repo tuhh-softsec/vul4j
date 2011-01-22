@@ -39,6 +39,10 @@ import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.filter.FilterParser;
 import org.apache.directory.shared.ldap.filter.SearchScope;
 import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.util.Chars;
+import org.apache.directory.shared.util.StringConstants;
+import org.apache.directory.shared.util.Strings;
+import org.apache.directory.shared.util.Unicode;
 
 
 /**
@@ -165,8 +169,8 @@ public class LdapURL
         int pos = 0;
 
         // The scheme
-        if ( ( ( pos = StringTools.areEquals( chars, 0, LDAP_SCHEME ) ) == StringTools.NOT_EQUAL )
-            && ( ( pos = StringTools.areEquals( chars, 0, LDAPS_SCHEME ) ) == StringTools.NOT_EQUAL ) )
+        if ( ( ( pos = Strings.areEquals(chars, 0, LDAP_SCHEME) ) == StringConstants.NOT_EQUAL )
+            && ( ( pos = Strings.areEquals(chars, 0, LDAPS_SCHEME) ) == StringConstants.NOT_EQUAL ) )
         {
             throw new LdapURLEncodingException( I18n.err( I18n.ERR_04398 ) );
         }
@@ -187,7 +191,7 @@ public class LdapURL
         }
 
         // An optional '/'
-        if ( !StringTools.isCharASCII( chars, pos, '/' ) )
+        if ( !Chars.isCharASCII(chars, pos, '/') )
         {
             throw new LdapURLEncodingException( I18n.err( I18n.ERR_04400, pos, chars[pos] ) );
         }
@@ -211,7 +215,7 @@ public class LdapURL
         }
 
         // Optionals attributes
-        if ( !StringTools.isCharASCII( chars, pos, '?' ) )
+        if ( !Chars.isCharASCII(chars, pos, '?') )
         {
             throw new LdapURLEncodingException( I18n.err( I18n.ERR_04402, pos, chars[pos] ) );
         }
@@ -229,7 +233,7 @@ public class LdapURL
         }
 
         // Optional scope
-        if ( !StringTools.isCharASCII( chars, pos, '?' ) )
+        if ( !Chars.isCharASCII(chars, pos, '?') )
         {
             throw new LdapURLEncodingException( I18n.err( I18n.ERR_04402, pos, chars[pos] ) );
         }
@@ -247,7 +251,7 @@ public class LdapURL
         }
 
         // Optional filter
-        if ( !StringTools.isCharASCII( chars, pos, '?' ) )
+        if ( !Chars.isCharASCII(chars, pos, '?') )
         {
             throw new LdapURLEncodingException( I18n.err( I18n.ERR_04402, pos, chars[pos] ) );
         }
@@ -270,7 +274,7 @@ public class LdapURL
         }
 
         // Optional extensions
-        if ( !StringTools.isCharASCII( chars, pos, '?' ) )
+        if ( !Chars.isCharASCII(chars, pos, '?') )
         {
             throw new LdapURLEncodingException( I18n.err( I18n.ERR_04402, pos, chars[pos] ) );
         }
@@ -332,7 +336,7 @@ public class LdapURL
             throw new LdapURLEncodingException( I18n.err( I18n.ERR_04410 ) );
         }
 
-        string = StringTools.utf8ToString( bytes );
+        string = Strings.utf8ToString(bytes);
 
         this.bytes = new byte[bytes.length];
         System.arraycopy( bytes, 0, this.bytes, 0, bytes.length );
@@ -380,7 +384,7 @@ public class LdapURL
         // the end.
         // We will search the end of the host part, and we will check some
         // elements.
-        if ( StringTools.isCharASCII( chars, pos, '-' ) )
+        if ( Chars.isCharASCII(chars, pos, '-') )
         {
 
             // We can't have a '-' on first position
@@ -390,7 +394,7 @@ public class LdapURL
         while ( ( pos < chars.length ) && ( chars[pos] != ':' ) && ( chars[pos] != '/' ) )
         {
 
-            if ( StringTools.isCharASCII( chars, pos, '.' ) )
+            if ( Chars.isCharASCII(chars, pos, '.') )
             {
 
                 if ( ( hadMinus ) || ( hadDot ) )
@@ -420,7 +424,7 @@ public class LdapURL
             else
             {
 
-                if ( hadDot && StringTools.isCharASCII( chars, pos, '-' ) )
+                if ( hadDot && Chars.isCharASCII(chars, pos, '-') )
                 {
 
                     // We can't have a '-' just after a '.'
@@ -430,7 +434,7 @@ public class LdapURL
                 hadDot = false;
             }
 
-            if ( StringTools.isDigit( chars, pos ) )
+            if ( Chars.isDigit(chars, pos) )
             {
 
                 if ( isHostNumber && ( nbDots < 4 ) )
@@ -445,11 +449,11 @@ public class LdapURL
 
                 hadMinus = false;
             }
-            else if ( StringTools.isAlphaDigitMinus( chars, pos ) )
+            else if ( Chars.isAlphaDigitMinus(chars, pos) )
             {
                 isHostNumber = false;
 
-                if ( StringTools.isCharASCII( chars, pos, '-' ) )
+                if ( Chars.isCharASCII(chars, pos, '-') )
                 {
                     hadMinus = true;
                 }
@@ -519,7 +523,7 @@ public class LdapURL
     private int parsePort( char[] chars, int pos )
     {
 
-        if ( !StringTools.isDigit( chars, pos ) )
+        if ( !Chars.isDigit(chars, pos) )
         {
             return -1;
         }
@@ -528,7 +532,7 @@ public class LdapURL
 
         pos++;
 
-        while ( StringTools.isDigit( chars, pos ) )
+        while ( Chars.isDigit(chars, pos) )
         {
             port = ( port * 10 ) + ( chars[pos] - '0' );
 
@@ -565,7 +569,7 @@ public class LdapURL
         }
 
         // We may have a port.
-        if ( StringTools.isCharASCII( chars, pos, ':' ) )
+        if ( Chars.isCharASCII(chars, pos, ':') )
         {
             if ( pos == hostPos )
             {
@@ -681,7 +685,7 @@ public class LdapURL
     {
         if ( bytes == null )
         {
-            return StringTools.EMPTY_BYTES;
+            return StringConstants.EMPTY_BYTES;
         }
 
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -798,7 +802,7 @@ public class LdapURL
             for ( int i = pos; ( i < chars.length ) && ( chars[i] != '?' ); i++ )
             {
 
-                if ( StringTools.isCharASCII( chars, i, ',' ) )
+                if ( Chars.isCharASCII(chars, i, ',') )
                 {
                     hadComma = true;
 
@@ -936,19 +940,19 @@ public class LdapURL
     private int parseScope( char[] chars, int pos )
     {
 
-        if ( StringTools.isCharASCII( chars, pos, 'b' ) || StringTools.isCharASCII( chars, pos, 'B' ) )
+        if ( Chars.isCharASCII(chars, pos, 'b') || Chars.isCharASCII(chars, pos, 'B') )
         {
             pos++;
 
-            if ( StringTools.isCharASCII( chars, pos, 'a' ) || StringTools.isCharASCII( chars, pos, 'A' ) )
+            if ( Chars.isCharASCII(chars, pos, 'a') || Chars.isCharASCII(chars, pos, 'A') )
             {
                 pos++;
 
-                if ( StringTools.isCharASCII( chars, pos, 's' ) || StringTools.isCharASCII( chars, pos, 'S' ) )
+                if ( Chars.isCharASCII(chars, pos, 's') || Chars.isCharASCII(chars, pos, 'S') )
                 {
                     pos++;
 
-                    if ( StringTools.isCharASCII( chars, pos, 'e' ) || StringTools.isCharASCII( chars, pos, 'E' ) )
+                    if ( Chars.isCharASCII(chars, pos, 'e') || Chars.isCharASCII(chars, pos, 'E') )
                     {
                         pos++;
                         scope = SearchScope.OBJECT;
@@ -957,15 +961,15 @@ public class LdapURL
                 }
             }
         }
-        else if ( StringTools.isCharASCII( chars, pos, 'o' ) || StringTools.isCharASCII( chars, pos, 'O' ) )
+        else if ( Chars.isCharASCII(chars, pos, 'o') || Chars.isCharASCII(chars, pos, 'O') )
         {
             pos++;
 
-            if ( StringTools.isCharASCII( chars, pos, 'n' ) || StringTools.isCharASCII( chars, pos, 'N' ) )
+            if ( Chars.isCharASCII(chars, pos, 'n') || Chars.isCharASCII(chars, pos, 'N') )
             {
                 pos++;
 
-                if ( StringTools.isCharASCII( chars, pos, 'e' ) || StringTools.isCharASCII( chars, pos, 'E' ) )
+                if ( Chars.isCharASCII(chars, pos, 'e') || Chars.isCharASCII(chars, pos, 'E') )
                 {
                     pos++;
 
@@ -974,15 +978,15 @@ public class LdapURL
                 }
             }
         }
-        else if ( StringTools.isCharASCII( chars, pos, 's' ) || StringTools.isCharASCII( chars, pos, 'S' ) )
+        else if ( Chars.isCharASCII(chars, pos, 's') || Chars.isCharASCII(chars, pos, 'S') )
         {
             pos++;
 
-            if ( StringTools.isCharASCII( chars, pos, 'u' ) || StringTools.isCharASCII( chars, pos, 'U' ) )
+            if ( Chars.isCharASCII(chars, pos, 'u') || Chars.isCharASCII(chars, pos, 'U') )
             {
                 pos++;
 
-                if ( StringTools.isCharASCII( chars, pos, 'b' ) || StringTools.isCharASCII( chars, pos, 'B' ) )
+                if ( Chars.isCharASCII(chars, pos, 'b') || Chars.isCharASCII(chars, pos, 'B') )
                 {
                     pos++;
 
@@ -991,7 +995,7 @@ public class LdapURL
                 }
             }
         }
-        else if ( StringTools.isCharASCII( chars, pos, '?' ) )
+        else if ( Chars.isCharASCII(chars, pos, '?') )
         {
             // An empty scope. This is valid
             return pos;
@@ -1037,7 +1041,7 @@ public class LdapURL
         {
             for ( int i = pos; ( i < chars.length ); i++ )
             {
-                if ( StringTools.isCharASCII( chars, i, ',' ) )
+                if ( Chars.isCharASCII(chars, i, ',') )
                 {
                     if ( isNewExtension )
                     {
@@ -1067,7 +1071,7 @@ public class LdapURL
                         value = null;
                     }
                 }
-                else if ( StringTools.isCharASCII( chars, i, '=' ) )
+                else if ( Chars.isCharASCII(chars, i, '=') )
                 {
                     if ( hasValue )
                     {
@@ -1087,7 +1091,7 @@ public class LdapURL
                     hasValue = true;
                     start = i + 1;
                 }
-                else if ( StringTools.isCharASCII( chars, i, '!' ) )
+                else if ( Chars.isCharASCII(chars, i, '!') )
                 {
                     if ( hasValue )
                     {
@@ -1304,7 +1308,7 @@ public class LdapURL
                 default:
 
                     // percent encoding
-                    byte[] bytes = StringTools.charToBytes( c );
+                    byte[] bytes = Unicode.charToBytes(c);
                     char[] hex = Hex.encodeHex( bytes );
                     for ( int j = 0; j < hex.length; j++ )
                     {

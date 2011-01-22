@@ -31,7 +31,6 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.extended.operations.storedProcedure.StoredProcedure.StoredProcedureParameter;
-import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,7 +107,7 @@ public final class StoredProcedureGrammar extends AbstractGrammar
                     else
                     {
                         // Only this field's type is String by default
-                        String language = StringTools.utf8ToString( tlv.getValue().getData() );
+                        String language = Strings.utf8ToString(tlv.getValue().getData());
 
                         if ( LOG.isDebugEnabled() )
                         {
@@ -158,7 +157,7 @@ public final class StoredProcedureGrammar extends AbstractGrammar
 
                     if ( LOG.isDebugEnabled() )
                     {
-                        LOG.debug( "Procedure found : " + StringTools.utf8ToString( storedProcedure.getProcedure() ) );
+                        LOG.debug( "Procedure found : " + Strings.utf8ToString(storedProcedure.getProcedure()) );
                     }
                 }
             } );

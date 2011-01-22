@@ -42,7 +42,6 @@ import org.apache.directory.shared.ldap.message.LdapEncoder;
 import org.apache.directory.shared.ldap.message.Message;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -210,7 +209,7 @@ public class BindRequestTest
         assertTrue( bindRequest.isVersion3() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", bindRequest.getName().toString() );
         assertTrue( bindRequest.isSimple() );
-        assertEquals( "password", StringTools.utf8ToString( bindRequest.getCredentials() ) );
+        assertEquals( "password", Strings.utf8ToString(bindRequest.getCredentials()) );
 
         // Check the encoding
         try
@@ -372,7 +371,7 @@ public class BindRequestTest
         assertTrue( bindRequest.isVersion3() );
         assertEquals( "", bindRequest.getName().toString() );
         assertTrue( bindRequest.isSimple() );
-        assertEquals( "password", StringTools.utf8ToString( bindRequest.getCredentials() ) );
+        assertEquals( "password", Strings.utf8ToString(bindRequest.getCredentials()) );
 
         // Check the encoding
         try
@@ -532,7 +531,7 @@ public class BindRequestTest
         assertEquals( "uid=akarasulu,dc=example,dc=com", bindRequest.getName().toString() );
         assertFalse( bindRequest.isSimple() );
         assertEquals( "KERBEROS_V4", bindRequest.getSaslMechanism() );
-        assertEquals( "abcdef", StringTools.utf8ToString( bindRequest.getCredentials() ) );
+        assertEquals( "abcdef", Strings.utf8ToString(bindRequest.getCredentials()) );
 
         // Check the encoding
         try
@@ -609,7 +608,7 @@ public class BindRequestTest
         assertEquals( "", bindRequest.getName().toString() );
         assertFalse( bindRequest.isSimple() );
         assertEquals( "KERBEROS_V4", bindRequest.getSaslMechanism() );
-        assertEquals( "abcdef", StringTools.utf8ToString( bindRequest.getCredentials() ) );
+        assertEquals( "abcdef", Strings.utf8ToString(bindRequest.getCredentials()) );
 
         // Check the encoding
         try
@@ -922,7 +921,7 @@ public class BindRequestTest
         assertTrue( bindRequest.isVersion3() );
         assertEquals( "", bindRequest.getName().toString() );
         assertTrue( bindRequest.isSimple() );
-        assertEquals( "", StringTools.utf8ToString( bindRequest.getCredentials() ) );
+        assertEquals( "", Strings.utf8ToString(bindRequest.getCredentials()) );
 
         // Check the encoding
         try
@@ -1131,7 +1130,7 @@ public class BindRequestTest
         assertEquals( "", bindRequest.getName().toString() );
         assertFalse( bindRequest.isSimple() );
         assertEquals( "", bindRequest.getSaslMechanism() );
-        assertEquals( "", StringTools.utf8ToString( bindRequest.getCredentials() ) );
+        assertEquals( "", Strings.utf8ToString(bindRequest.getCredentials()) );
 
         // Check the encoding
         try
@@ -1202,7 +1201,7 @@ public class BindRequestTest
         assertEquals( "", bindRequest.getName().toString() );
         assertFalse( bindRequest.isSimple() );
         assertEquals( "", bindRequest.getSaslMechanism() );
-        assertEquals( "", StringTools.utf8ToString( bindRequest.getCredentials() ) );
+        assertEquals( "", Strings.utf8ToString(bindRequest.getCredentials()) );
 
         // Check the Control
         Map<String, Control> controls = bindRequest.getControls();
@@ -1281,7 +1280,7 @@ public class BindRequestTest
         assertEquals( "", bindRequest.getName().toString() );
         assertFalse( bindRequest.isSimple() );
         assertEquals( "", bindRequest.getSaslMechanism() );
-        assertEquals( "", StringTools.utf8ToString( bindRequest.getCredentials() ) );
+        assertEquals( "", Strings.utf8ToString(bindRequest.getCredentials()) );
 
         // Check the Control
         Map<String, Control> controls = bindRequest.getControls();

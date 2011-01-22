@@ -20,6 +20,11 @@
 package org.apache.directory.shared.ldap.util;
 
 
+import org.apache.directory.shared.util.Chars;
+import org.apache.directory.shared.util.Hex;
+import org.apache.directory.shared.util.Position;
+import org.apache.directory.shared.util.Unicode;
+
 /**
  * Utility class used by the DN Parser.
  * 
@@ -323,7 +328,7 @@ public final class DNUtils
         {
             byte b = bytes[index++];
 
-            if ( StringTools.isAlpha( b ) )
+            if ( Chars.isAlpha(b) )
             {
                 return index-1;
             }
@@ -416,9 +421,9 @@ public final class DNUtils
                 {
                     return true;
                 }
-                else if ( StringTools.isHex( bytes, index++ ) )
+                else if ( Chars.isHex(bytes, index++) )
                 {
-                    return StringTools.isHex( bytes, index );
+                    return Chars.isHex(bytes, index);
                 }
                 else
                 {
@@ -466,9 +471,9 @@ public final class DNUtils
                 {
                     return 1;
                 }
-                else if ( StringTools.isHex( bytes, index++ ) )
+                else if ( Chars.isHex(bytes, index++) )
                 {
-                    return StringTools.isHex( bytes, index ) ? 2 : PARSING_ERROR;
+                    return Chars.isHex(bytes, index) ? 2 : PARSING_ERROR;
                 }
                 else
                 {
@@ -504,7 +509,7 @@ public final class DNUtils
             }
             else
             {
-                return StringTools.countBytesPerChar( bytes, index );
+                return Unicode.countBytesPerChar(bytes, index);
             }
         }
     }
@@ -537,7 +542,7 @@ public final class DNUtils
             }
             else
             {
-                return StringTools.countBytesPerChar( bytes, index );
+                return Unicode.countBytesPerChar(bytes, index);
             }
         }
     }
@@ -568,7 +573,7 @@ public final class DNUtils
             }
             else
             {
-                return StringTools.countBytesPerChar( bytes, index );
+                return Unicode.countBytesPerChar(bytes, index);
             }
         }
     }
@@ -584,9 +589,9 @@ public final class DNUtils
      */
     public static int parseHexPair( byte[] bytes, int index )
     {
-        if ( StringTools.isHex( bytes, index ) )
+        if ( Chars.isHex(bytes, index) )
         {
-            if ( StringTools.isHex( bytes, index + 1 ) )
+            if ( Chars.isHex(bytes, index + 1) )
             {
                 return index + 2;
             }
@@ -612,7 +617,7 @@ public final class DNUtils
      */
     private static byte getHexPair( byte[] bytes, int index )
     {
-        return StringTools.getHexValue( bytes[index], bytes[index + 1] );
+        return Hex.getHexValue(bytes[index], bytes[index + 1]);
     }
 
     

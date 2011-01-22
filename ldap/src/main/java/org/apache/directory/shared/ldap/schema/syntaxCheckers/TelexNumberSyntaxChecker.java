@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.schema.syntaxCheckers;
 
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,7 +74,7 @@ public class TelexNumberSyntaxChecker extends SyntaxChecker
         }
         else if ( value instanceof byte[] )
         {
-            strValue = StringTools.utf8ToString( ( byte[] ) value ); 
+            strValue = Strings.utf8ToString((byte[]) value);
         }
         else
         {
@@ -108,7 +108,7 @@ public class TelexNumberSyntaxChecker extends SyntaxChecker
         }
         
         // The actual number should be a PrintableString 
-        if ( ! StringTools.isPrintableString( actualNumber ) )
+        if ( ! Strings.isPrintableString(actualNumber) )
         {
             LOG.debug( "Syntax invalid for '{}'", value );
             return false;
@@ -135,7 +135,7 @@ public class TelexNumberSyntaxChecker extends SyntaxChecker
         }
         
         // The country Code should be a PrintableString 
-        if ( ! StringTools.isPrintableString( countryCode ) )
+        if ( ! Strings.isPrintableString(countryCode) )
         {
             LOG.debug( "Syntax invalid for '{}'", value );
             return false;
@@ -152,14 +152,14 @@ public class TelexNumberSyntaxChecker extends SyntaxChecker
         String answerBack = strValue.substring( dollar2 + 1 );
         
         // The answerBack should be a PrintableString 
-        if ( ! StringTools.isPrintableString( answerBack ) )
+        if ( ! Strings.isPrintableString(answerBack) )
         {
             LOG.debug( "Syntax invalid for '{}'", value );
             return false;
         }
         
         // Check that the mailboxType is a PrintableString
-        boolean result = StringTools.isPrintableString( answerBack );
+        boolean result = Strings.isPrintableString(answerBack);
         
         if ( result )
         {

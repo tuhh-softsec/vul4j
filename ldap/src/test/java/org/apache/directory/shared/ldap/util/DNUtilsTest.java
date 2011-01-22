@@ -24,6 +24,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
+import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -48,7 +49,7 @@ public class DNUtilsTest
     public void testAreEqualsFull()
     {
         // Full compare
-        assertEquals( 6, StringTools.areEquals( "azerty".getBytes(), 0, "azerty" ) );
+        assertEquals( 6, Strings.areEquals("azerty".getBytes(), 0, "azerty") );
     }
 
 
@@ -59,7 +60,7 @@ public class DNUtilsTest
     public void testAreEqualsDiff()
     {
         // First character is !=
-        assertEquals( -1, StringTools.areEquals( "azerty".getBytes(), 0, "Azerty" ) );
+        assertEquals( -1, Strings.areEquals("azerty".getBytes(), 0, "Azerty") );
     }
 
 
@@ -70,7 +71,7 @@ public class DNUtilsTest
     public void testAreEqualsEmpty()
     {
         // Compare to an empty string
-        assertEquals( -1, StringTools.areEquals( "azerty".getBytes(), 0, "" ) );
+        assertEquals( -1, Strings.areEquals("azerty".getBytes(), 0, "") );
     }
 
 
@@ -81,7 +82,7 @@ public class DNUtilsTest
     public void testAreEqualsFirstCharDiff()
     {
         // First character is !=
-        assertEquals( -1, StringTools.areEquals( "azerty".getBytes(), 0, "Azerty" ) );
+        assertEquals( -1, Strings.areEquals("azerty".getBytes(), 0, "Azerty") );
     }
 
 
@@ -92,7 +93,7 @@ public class DNUtilsTest
     public void testAreEqualsMiddleCharDiff()
     {
         // First character is !=
-        assertEquals( -1, StringTools.areEquals( "azerty".getBytes(), 0, "azeRty" ) );
+        assertEquals( -1, Strings.areEquals("azerty".getBytes(), 0, "azeRty") );
     }
 
 
@@ -103,7 +104,7 @@ public class DNUtilsTest
     public void testAreEqualsLastCharDiff()
     {
         // First character is !=
-        assertEquals( -1, StringTools.areEquals( "azerty".getBytes(), 0, "azertY" ) );
+        assertEquals( -1, Strings.areEquals("azerty".getBytes(), 0, "azertY") );
     }
 
 
@@ -114,12 +115,12 @@ public class DNUtilsTest
     public void testAreEqualsCharByChar()
     {
         // Index must be incremented after each comparison
-        assertEquals( 1, StringTools.areEquals( "azerty".getBytes(), 0, "a" ) );
-        assertEquals( 2, StringTools.areEquals( "azerty".getBytes(), 1, "z" ) );
-        assertEquals( 3, StringTools.areEquals( "azerty".getBytes(), 2, "e" ) );
-        assertEquals( 4, StringTools.areEquals( "azerty".getBytes(), 3, "r" ) );
-        assertEquals( 5, StringTools.areEquals( "azerty".getBytes(), 4, "t" ) );
-        assertEquals( 6, StringTools.areEquals( "azerty".getBytes(), 5, "y" ) );
+        assertEquals( 1, Strings.areEquals("azerty".getBytes(), 0, "a") );
+        assertEquals( 2, Strings.areEquals("azerty".getBytes(), 1, "z") );
+        assertEquals( 3, Strings.areEquals("azerty".getBytes(), 2, "e") );
+        assertEquals( 4, Strings.areEquals("azerty".getBytes(), 3, "r") );
+        assertEquals( 5, Strings.areEquals("azerty".getBytes(), 4, "t") );
+        assertEquals( 6, Strings.areEquals("azerty".getBytes(), 5, "y") );
     }
 
 
@@ -130,7 +131,7 @@ public class DNUtilsTest
     public void testAreEqualsTooShort()
     {
         // length too short
-        assertEquals( -1, StringTools.areEquals( "azerty".getBytes(), 0, "azertyiop" ) );
+        assertEquals( -1, Strings.areEquals("azerty".getBytes(), 0, "azertyiop") );
     }
 
 
@@ -141,7 +142,7 @@ public class DNUtilsTest
     public void testAreEqualsTooShortMiddle()
     {
         // length too short
-        assertEquals( -1, StringTools.areEquals( "azerty".getBytes(), 0, "ertyiop" ) );
+        assertEquals( -1, Strings.areEquals("azerty".getBytes(), 0, "ertyiop") );
     }
 
 
@@ -152,7 +153,7 @@ public class DNUtilsTest
     public void testAreEqualsLastChar()
     {
         // last character
-        assertEquals( 6, StringTools.areEquals( "azerty".getBytes(), 5, "y" ) );
+        assertEquals( 6, Strings.areEquals("azerty".getBytes(), 5, "y") );
     }
 
 
@@ -163,6 +164,6 @@ public class DNUtilsTest
     public void testAreEqualsMiddle()
     {
         // In the middle
-        assertEquals( 4, StringTools.areEquals( "azerty".getBytes(), 2, "er" ) );
+        assertEquals( 4, Strings.areEquals("azerty".getBytes(), 2, "er") );
     }
 }

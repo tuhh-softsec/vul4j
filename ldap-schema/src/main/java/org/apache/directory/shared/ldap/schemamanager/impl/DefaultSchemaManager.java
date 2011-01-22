@@ -80,7 +80,7 @@ import org.apache.directory.shared.ldap.schema.registries.Schema;
 import org.apache.directory.shared.ldap.schema.registries.SchemaLoader;
 import org.apache.directory.shared.ldap.schema.registries.SyntaxCheckerRegistry;
 import org.apache.directory.shared.ldap.schemaloader.SchemaEntityFactory;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -258,7 +258,7 @@ public class DefaultSchemaManager implements SchemaManager
     private void deleteSchemaObjects( Schema schema, Registries registries ) throws LdapException
     {
         Map<String, Set<SchemaObjectWrapper>> schemaObjects = registries.getObjectBySchemaName();
-        Set<SchemaObjectWrapper> content = schemaObjects.get( StringTools.toLowerCase( schema.getSchemaName() ) );
+        Set<SchemaObjectWrapper> content = schemaObjects.get( Strings.toLowerCase(schema.getSchemaName()) );
 
         List<SchemaObject> toBeDeleted = new ArrayList<SchemaObject>();
 
@@ -1500,7 +1500,7 @@ public class DefaultSchemaManager implements SchemaManager
      */
     public AttributeType lookupAttributeTypeRegistry( String oid ) throws LdapException
     {
-        return registries.getAttributeTypeRegistry().lookup( StringTools.toLowerCase( oid ).trim() );
+        return registries.getAttributeTypeRegistry().lookup( Strings.toLowerCase(oid).trim() );
     }
 
 
@@ -1511,7 +1511,7 @@ public class DefaultSchemaManager implements SchemaManager
     {
         try
         {
-            return registries.getAttributeTypeRegistry().lookup( StringTools.toLowerCase( oid ).trim() );
+            return registries.getAttributeTypeRegistry().lookup( Strings.toLowerCase(oid).trim() );
         }
         catch ( LdapException lnsae )
         {
@@ -1534,7 +1534,7 @@ public class DefaultSchemaManager implements SchemaManager
      */
     public MatchingRule lookupMatchingRuleRegistry( String oid ) throws LdapException
     {
-        return registries.getMatchingRuleRegistry().lookup( StringTools.toLowerCase( oid ).trim() );
+        return registries.getMatchingRuleRegistry().lookup( Strings.toLowerCase(oid).trim() );
     }
 
 
@@ -1552,7 +1552,7 @@ public class DefaultSchemaManager implements SchemaManager
      */
     public ObjectClass lookupObjectClassRegistry( String oid ) throws LdapException
     {
-        return registries.getObjectClassRegistry().lookup( StringTools.toLowerCase( oid ).trim() );
+        return registries.getObjectClassRegistry().lookup( Strings.toLowerCase(oid).trim() );
     }
 
 
@@ -1561,7 +1561,7 @@ public class DefaultSchemaManager implements SchemaManager
      */
     public LdapSyntax lookupLdapSyntaxRegistry( String oid ) throws LdapException
     {
-        return registries.getLdapSyntaxRegistry().lookup( StringTools.toLowerCase( oid ).trim() );
+        return registries.getLdapSyntaxRegistry().lookup( Strings.toLowerCase(oid).trim() );
     }
 
 
@@ -1624,9 +1624,9 @@ public class DefaultSchemaManager implements SchemaManager
      */
     private String getSchemaName( SchemaObject schemaObject )
     {
-        String schemaName = StringTools.toLowerCase( schemaObject.getSchemaName() );
+        String schemaName = Strings.toLowerCase(schemaObject.getSchemaName());
 
-        if ( StringTools.isEmpty( schemaName ) )
+        if ( Strings.isEmpty(schemaName) )
         {
             return MetaSchemaConstants.SCHEMA_OTHER;
         }
@@ -1773,7 +1773,7 @@ public class DefaultSchemaManager implements SchemaManager
                 {
                     // We have some error : reject the addition and get out
                     String msg = "Cannot add the SchemaObject " + copy.getOid() + " into the registries, "
-                        + "the resulting registries would be inconsistent :" + StringTools.listToString( errors );
+                        + "the resulting registries would be inconsistent :" + Strings.listToString(errors);
                     LOG.info( msg );
 
                     return false;
@@ -1826,7 +1826,7 @@ public class DefaultSchemaManager implements SchemaManager
 
             if ( ( referencing != null ) && !referencing.isEmpty() )
             {
-                String msg = I18n.err( I18n.ERR_11012, schemaObject.getOid(), StringTools.setToString( referencing ) );
+                String msg = I18n.err( I18n.ERR_11012, schemaObject.getOid(), Strings.setToString(referencing) );
 
                 Throwable error = new LdapProtocolErrorException( msg );
                 errors.add( error );
@@ -1883,7 +1883,7 @@ public class DefaultSchemaManager implements SchemaManager
                 {
                     // We have some error : reject the deletion and get out
                     String msg = "Cannot delete the SchemaObject " + schemaObject.getOid() + " from the registries, "
-                        + "the resulting registries would be inconsistent :" + StringTools.listToString( errors );
+                        + "the resulting registries would be inconsistent :" + Strings.listToString(errors);
                     LOG.info( msg );
 
                     return false;

@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.util;
+package org.apache.directory.shared.util;
 
 
 import static org.junit.Assert.assertFalse;
@@ -29,6 +29,7 @@ import java.util.NoSuchElementException;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
+import org.apache.directory.shared.util.ArrayEnumeration;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -50,13 +51,13 @@ public class ArrayEnumerationTest
 
         ArrayEnumeration list = new ArrayEnumeration( array );
 
-        assertFalse( list.hasMoreElements() );
+        assertFalse(list.hasMoreElements());
 
         try
         {
             list.nextElement();
 
-            fail( "should never get here due to a NoSuchElementException" );
+            fail("should never get here due to a NoSuchElementException");
         }
         catch ( NoSuchElementException e )
         {
@@ -68,15 +69,15 @@ public class ArrayEnumerationTest
 
         list = new ArrayEnumeration( array );
 
-        assertFalse( list.hasMoreElements() );
+        assertFalse(list.hasMoreElements());
 
-        assertFalse( list.hasMoreElements() );
+        assertFalse(list.hasMoreElements());
 
         try
         {
             list.nextElement();
 
-            fail( "should never get here due to a NoSuchElementException" );
+            fail("should never get here due to a NoSuchElementException");
         }
         catch ( NoSuchElementException e )
         {
@@ -89,17 +90,17 @@ public class ArrayEnumerationTest
 
         list = new ArrayEnumeration( array );
 
-        assertTrue( list.hasMoreElements() );
+        assertTrue(list.hasMoreElements());
 
-        assertNotNull( list.nextElement() );
+        assertNotNull(list.nextElement());
 
-        assertFalse( list.hasMoreElements() );
+        assertFalse(list.hasMoreElements());
 
         try
         {
             list.nextElement();
 
-            fail( "should never get here due to a NoSuchElementException" );
+            fail("should never get here due to a NoSuchElementException");
         }
         catch ( NoSuchElementException e )
         {
@@ -112,21 +113,21 @@ public class ArrayEnumerationTest
 
         list = new ArrayEnumeration( array );
 
-        assertTrue( list.hasMoreElements() );
+        assertTrue(list.hasMoreElements());
 
-        assertNotNull( list.nextElement() );
+        assertNotNull(list.nextElement());
 
-        assertTrue( list.hasMoreElements() );
+        assertTrue(list.hasMoreElements());
 
-        assertNotNull( list.nextElement() );
+        assertNotNull(list.nextElement());
 
-        assertFalse( list.hasMoreElements() );
+        assertFalse(list.hasMoreElements());
 
         try
         {
             list.nextElement();
 
-            fail( "should never get here due to a NoSuchElementException" );
+            fail("should never get here due to a NoSuchElementException");
         }
         catch ( NoSuchElementException e )
         {
@@ -139,25 +140,25 @@ public class ArrayEnumerationTest
 
         list = new ArrayEnumeration( array );
 
-        assertTrue( list.hasMoreElements() );
+        assertTrue(list.hasMoreElements());
 
-        assertNotNull( list.nextElement() );
+        assertNotNull(list.nextElement());
 
-        assertTrue( list.hasMoreElements() );
+        assertTrue(list.hasMoreElements());
 
-        assertNotNull( list.nextElement() );
+        assertNotNull(list.nextElement());
 
-        assertTrue( list.hasMoreElements() );
+        assertTrue(list.hasMoreElements());
 
-        assertNotNull( list.nextElement() );
+        assertNotNull(list.nextElement());
 
-        assertFalse( list.hasMoreElements() );
+        assertFalse(list.hasMoreElements());
 
         try
         {
             list.nextElement();
 
-            fail( "should never get here due to a NoSuchElementException" );
+            fail("should never get here due to a NoSuchElementException");
         }
         catch ( NoSuchElementException e )
         {

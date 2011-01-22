@@ -26,8 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.directory.shared.ldap.util.UTFUtils;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -140,7 +140,7 @@ public final class DnSerializer
         }
         
         // Should we read the byte[] ???
-        byte[] bytes = StringTools.getBytesUtf8( upName );
+        byte[] bytes = Strings.getBytesUtf8(upName);
         
         // Read the RDNs. Is it's null, the number will be -1.
         int nbRdns = in.readInt();

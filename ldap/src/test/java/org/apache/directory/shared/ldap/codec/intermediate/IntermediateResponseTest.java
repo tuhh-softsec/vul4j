@@ -37,7 +37,6 @@ import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.message.IntermediateResponse;
 import org.apache.directory.shared.ldap.message.LdapEncoder;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -99,7 +98,7 @@ public class IntermediateResponseTest
 
         assertEquals( 1, intermediateResponse.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", intermediateResponse.getResponseName() );
-        assertEquals( "value", StringTools.utf8ToString( intermediateResponse.getResponseValue() ) );
+        assertEquals( "value", Strings.utf8ToString(intermediateResponse.getResponseValue()) );
 
         // Check the encoding
         try
@@ -170,7 +169,7 @@ public class IntermediateResponseTest
 
         assertEquals( 1, intermediateResponse.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", intermediateResponse.getResponseName() );
-        assertEquals( "value", StringTools.utf8ToString( intermediateResponse.getResponseValue() ) );
+        assertEquals( "value", Strings.utf8ToString(intermediateResponse.getResponseValue()) );
 
         // Check the Control
         Map<String, Control> controls = intermediateResponse.getControls();
@@ -251,7 +250,7 @@ public class IntermediateResponseTest
 
         assertEquals( 1, intermediateResponse.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", intermediateResponse.getResponseName() );
-        assertEquals( "", StringTools.utf8ToString( intermediateResponse.getResponseValue() ) );
+        assertEquals( "", Strings.utf8ToString(intermediateResponse.getResponseValue()) );
 
         // Check the Control
         Map<String, Control> controls = intermediateResponse.getControls();
@@ -495,7 +494,7 @@ public class IntermediateResponseTest
 
         assertEquals( 1, intermediateResponse.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", intermediateResponse.getResponseName() );
-        assertEquals( "", StringTools.utf8ToString( intermediateResponse.getResponseValue() ) );
+        assertEquals( "", Strings.utf8ToString(intermediateResponse.getResponseValue()) );
 
         // Check the encoding
         try
@@ -558,7 +557,7 @@ public class IntermediateResponseTest
 
         assertEquals( 1, intermediateResponse.getMessageId() );
         assertEquals( "", intermediateResponse.getResponseName() );
-        assertEquals( "value", StringTools.utf8ToString( intermediateResponse.getResponseValue() ) );
+        assertEquals( "value", Strings.utf8ToString(intermediateResponse.getResponseValue()) );
 
         // Check the encoding
         try
@@ -621,7 +620,7 @@ public class IntermediateResponseTest
 
         assertEquals( 1, intermediateResponse.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", intermediateResponse.getResponseName() );
-        assertEquals( "", StringTools.utf8ToString( intermediateResponse.getResponseValue() ) );
+        assertEquals( "", Strings.utf8ToString(intermediateResponse.getResponseValue()) );
 
         // Check the encoding
         try

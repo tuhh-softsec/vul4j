@@ -26,7 +26,7 @@ import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.message.BindResponse;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.StringConstants;
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,7 +71,7 @@ public class ServerSASLCredsAction extends GrammarAction
 
         if ( tlv.getLength() == 0 )
         {
-            serverSaslCreds = StringTools.EMPTY_BYTES;
+            serverSaslCreds = StringConstants.EMPTY_BYTES;
         }
         else
         {

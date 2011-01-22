@@ -22,8 +22,8 @@ package org.apache.directory.shared.ldap.schema;
 
 import java.io.IOException;
 
-import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.directory.shared.ldap.util.unicode.InvalidCharacterException;
+import org.apache.directory.shared.util.Strings;
 
 /**
  * 
@@ -4611,7 +4611,7 @@ public final class PrepareString
      */
     private static String insignifiantCharTelephoneNumber( String str )
     {
-        if ( StringTools.isEmpty( str ) )
+        if ( Strings.isEmpty(str) )
         {
             return "";
         }
@@ -4665,7 +4665,7 @@ public final class PrepareString
      */
     private static String insignifiantCharNumericString( String str )
     {
-        if ( StringTools.isEmpty( str ) )
+        if ( Strings.isEmpty(str) )
         {
             return "";
         }
@@ -4710,7 +4710,7 @@ public final class PrepareString
      */
     private static String insignifiantSpacesString( String str, boolean caseSensitive ) throws InvalidCharacterException
     {
-        if ( StringTools.isEmpty( str ) )
+        if ( Strings.isEmpty(str) )
         {
             // Special case : an empty strings is replaced by 2 spaces
             return "";

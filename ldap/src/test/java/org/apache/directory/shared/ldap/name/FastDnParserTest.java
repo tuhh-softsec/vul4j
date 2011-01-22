@@ -23,7 +23,7 @@ package org.apache.directory.shared.ldap.name;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.exception.LdapException;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -412,16 +412,16 @@ public class FastDnParserTest
         byte[] bytes = DN.getBytes( dn );
 
         assertEquals( 30, bytes.length );
-        assertEquals( "cn=John,ou=People,ou=Marketing", StringTools.utf8ToString( bytes ) );
+        assertEquals( "cn=John,ou=People,ou=Marketing", Strings.utf8ToString(bytes) );
     }
 
 
     @Test
     public void testStringParser() throws LdapException
     {
-        String dn = StringTools.utf8ToString( new byte[]
-            { 'C', 'N', ' ', '=', ' ', 'E', 'm', 'm', 'a', 'n', 'u', 'e', 'l', ' ', ' ', 'L', ( byte ) 0xc3,
-                ( byte ) 0xa9, 'c', 'h', 'a', 'r', 'n', 'y' } );
+        String dn = Strings.utf8ToString(new byte[]
+                {'C', 'N', ' ', '=', ' ', 'E', 'm', 'm', 'a', 'n', 'u', 'e', 'l', ' ', ' ', 'L', (byte) 0xc3,
+                        (byte) 0xa9, 'c', 'h', 'a', 'r', 'n', 'y'});
 
         FastDnParser dnParser = FastDnParser.getNameParser();
         DN name = ( DN ) dnParser.parse( dn );
@@ -434,8 +434,8 @@ public class FastDnParserTest
     @Test
     public void testStringParserShort() throws LdapException
     {
-        String dn = StringTools.utf8ToString( new byte[]
-            { 'C', '=', ' ', 'E', ( byte ) 0xc3, ( byte ) 0xa9, 'c' } );
+        String dn = Strings.utf8ToString(new byte[]
+                {'C', '=', ' ', 'E', (byte) 0xc3, (byte) 0xa9, 'c'});
 
         FastDnParser dnParser = FastDnParser.getNameParser();
         DN name = ( DN ) dnParser.parse( dn );

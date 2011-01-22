@@ -23,7 +23,7 @@ package org.apache.directory.shared.ldap.schema;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -105,7 +105,7 @@ public class AttributeTypeOptions
     {
         if ( hasOption() )
         {
-            return options.contains( StringTools.toLowerCase( StringTools.trim( option ) ) );
+            return options.contains( Strings.toLowerCase(Strings.trim(option)) );
         }
         else
         {
@@ -126,7 +126,7 @@ public class AttributeTypeOptions
             options = new HashSet<String>();
         }
 
-        options.add( StringTools.toLowerCase( StringTools.trim( option ) ) );
+        options.add( Strings.toLowerCase(Strings.trim(option)) );
     }
 
 

@@ -27,7 +27,7 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.message.LdapResult;
 import org.apache.directory.shared.ldap.message.ResultResponse;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,7 +74,7 @@ public class ErrorMessageAction extends GrammarAction
         }
         else
         {
-            errorMessage = StringTools.utf8ToString( tlv.getValue().getData() );
+            errorMessage = Strings.utf8ToString(tlv.getValue().getData());
         }
 
         ResultResponse response = ( ResultResponse ) ldapMessageContainer.getMessage();

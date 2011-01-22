@@ -27,8 +27,8 @@ import org.apache.directory.shared.ldap.entry.BinaryValue;
 import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
-import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.directory.shared.ldap.util.UTFUtils;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,9 +80,9 @@ public final class AVASerializer
      */
     public static void serialize( AVA atav, ObjectOutput out ) throws IOException
     {
-        if ( StringTools.isEmpty( atav.getUpName() )
-            || StringTools.isEmpty( atav.getUpType() )
-            || StringTools.isEmpty( atav.getNormType() )
+        if ( Strings.isEmpty(atav.getUpName())
+            || Strings.isEmpty(atav.getUpType())
+            || Strings.isEmpty(atav.getNormType())
             || ( atav.getStart() < 0 )
             || ( atav.getLength() < 2 ) // At least a type and '='
             || ( atav.getUpValue().isNull() )
@@ -90,15 +90,15 @@ public final class AVASerializer
         {
             String message = "Cannot serialize an wrong ATAV, ";
             
-            if ( StringTools.isEmpty( atav.getUpName() ) )
+            if ( Strings.isEmpty(atav.getUpName()) )
             {
                 message += "the upName should not be null or empty";
             }
-            else if ( StringTools.isEmpty( atav.getUpType() ) )
+            else if ( Strings.isEmpty(atav.getUpType()) )
             {
                 message += "the upType should not be null or empty";
             }
-            else if ( StringTools.isEmpty( atav.getNormType() ) )
+            else if ( Strings.isEmpty(atav.getNormType()) )
             {
                 message += "the normType should not be null or empty";
             }

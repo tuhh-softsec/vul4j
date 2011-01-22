@@ -20,6 +20,16 @@
 package org.apache.directory.shared.util;
 
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.nio.charset.Charset;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Various string manipulation methods that are more efficient then chaining
  * string operations: all is done in the same buffer without creating a bunch of
@@ -37,12 +47,98 @@ public final class Strings
     private static final byte[] HEX_CHAR = new byte[]
         { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
+    /** A table containing booleans when the corresponding char is printable */
+    public static final boolean[] IS_PRINTABLE_CHAR =
+        {
+        false, false, false, false, false, false, false, false, // ---, ---, ---, ---, ---, ---, ---, ---
+        false, false, false, false, false, false, false, false, // ---, ---, ---, ---, ---, ---, ---, ---
+        false, false, false, false, false, false, false, false, // ---, ---, ---, ---, ---, ---, ---, ---
+        false, false, false, false, false, false, false, false, // ---, ---, ---, ---, ---, ---, ---, ---
+        true,  false, false, false, false, false, false, true,  // ' ', ---, ---, ---, ---, ---, ---, "'"
+        true,  true,  false, true,  true,  true,  true,  true,  // '(', ')', ---, '+', ',', '-', '.', '/'
+        true,  true,  true,  true,  true,  true,  true,  true,  // '0', '1', '2', '3', '4', '5', '6', '7',
+        true,  true,  true,  false, false, true,  false, true,  // '8', '9', ':', ---, ---, '=', ---, '?'
+        false, true,  true,  true,  true,  true,  true,  true,  // ---, 'A', 'B', 'C', 'D', 'E', 'F', 'G',
+        true,  true,  true,  true,  true,  true,  true,  true,  // 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O'
+        true,  true,  true,  true,  true,  true,  true,  true,  // 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W'
+        true,  true,  true,  false, false, false, false, false, // 'X', 'Y', 'Z', ---, ---, ---, ---, ---
+        false, true,  true,  true,  true,  true,  true,  true,  // ---, 'a', 'b', 'c', 'd', 'e', 'f', 'g'
+        true,  true,  true,  true,  true,  true,  true,  true,  // 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o'
+        true,  true,  true,  true,  true,  true,  true,  true,  // 'p', 'q', 'r', 's', 't', 'u', 'v', 'w'
+        true,  true,  true,  false, false, false, false, false  // 'x', 'y', 'z', ---, ---, ---, ---, ---
+        };
+    public static final char[] TO_LOWER_CASE =
+        {
+            0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+            0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,
+            0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17,
+            0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F,
+            ' ',  0x21, 0x22, 0x23, 0x24, 0x25, 0x26, '\'',
+            '(',  ')',  0x2A, '+',  ',',  '-',  '.',  '/',
+            '0',  '1',  '2',  '3',  '4',  '5',  '6',  '7',
+            '8',  '9',  ':',  0x3B, 0x3C, '=',  0x3E, '?',
+            0x40, 'a',  'b',  'c',  'd',  'e',  'f',  'g',
+            'h',  'i',  'j',  'k',  'l',  'm',  'n',  'o',
+            'p',  'q',  'r',  's',  't',  'u',  'v',  'w',
+            'x',  'y',  'z',  0x5B, 0x5C, 0x5D, 0x5E, 0x5F,
+            0x60, 'a',  'b',  'c',  'd',  'e',  'f',  'g',
+            'h',  'i',  'j',  'k',  'l',  'm',  'n',  'o',
+            'p',  'q',  'r',  's',  't',  'u',  'v',  'w',
+            'x',  'y',  'z',  0x7B, 0x7C, 0x7D, 0x7E, 0x7F,
+            0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87,
+            0x88, 0x89, 0x8A, 0x8B, 0x8C, 0x8D, 0x8E, 0x8F,
+            0x90, 0x91, 0x92, 0x93, 0x94, 0x95, 0x96, 0x97,
+            0x98, 0x99, 0x9A, 0x9B, 0x9C, 0x9D, 0x9E, 0x9F,
+            0xA0, 0xA1, 0xA2, 0xA3, 0xA4, 0xA5, 0xA6, 0xA7,
+            0xA8, 0xA9, 0xAA, 0xAB, 0xAC, 0xAD, 0xAE, 0xAF,
+            0xB0, 0xB1, 0xB2, 0xB3, 0xB4, 0xB5, 0xB6, 0xB7,
+            0xB8, 0xB9, 0xBA, 0xBB, 0xBC, 0xBD, 0xBE, 0xBF,
+            0xC0, 0xC1, 0xC2, 0xC3, 0xC4, 0xC5, 0xC6, 0xC7,
+            0xC8, 0xC9, 0xCA, 0xCB, 0xCC, 0xCD, 0xCE, 0xCF,
+            0xD0, 0xD1, 0xD2, 0xD3, 0xD4, 0xD5, 0xD6, 0xD7,
+            0xD8, 0xD9, 0xDA, 0xDB, 0xDC, 0xDD, 0xDE, 0xDF,
+            0xE0, 0xE1, 0xE2, 0xE3, 0xE4, 0xE5, 0xE6, 0xE7,
+            0xE8, 0xE9, 0xEA, 0xEB, 0xEC, 0xED, 0xEE, 0xEF,
+            0xF0, 0xF1, 0xF2, 0xF3, 0xF4, 0xF5, 0xF6, 0xF7,
+            0xF8, 0xF9, 0xFA, 0xFB, 0xFC, 0xFD, 0xFE, 0xFF,
+        };
+    /** upperCase = 'A' .. 'Z', '0'..'9', '-' */
+    public static final char[] UPPER_CASE =
+        {
+              0,   0,   0,   0,   0,   0,   0,   0,
+              0,   0,   0,   0,   0,   0,   0,   0,
+              0,   0,   0,   0,   0,   0,   0,   0,
+              0,   0,   0,   0,   0,   0,   0,   0,
+              0,   0,   0,   0,   0,   0,   0,   0,
+              0,   0,   0,   0,   0, '-',   0,   0,
+            '0', '1', '2', '3', '4', '5', '6', '7',
+            '8', '9',   0,   0,   0,   0,   0,   0,
+              0, 'A', 'B', 'C', 'D', 'E', 'F', 'G',
+            'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
+            'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W',
+            'X', 'Y', 'Z',   0,   0,   0,   0,   0,
+              0, 'A', 'B', 'C', 'D', 'E', 'F', 'G',
+            'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
+            'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W',
+            'X', 'Y', 'Z',   0,   0,   0,   0,   0,
+              0,   0,   0,   0,   0,   0,   0,   0,
+              0,   0,   0,   0,   0,   0,   0,   0,
+              0,   0,   0,   0,   0,   0,   0,   0,
+              0,   0,   0,   0,   0,   0,   0,   0,
+              0,   0,   0,   0,   0,   0,   0,   0,
+              0,   0,   0,   0,   0,   0,   0,   0,
+              0,   0,   0,   0,   0,   0,   0,   0,
+              0,   0,   0,   0,   0,   0,   0,   0
+        };
+
+
     /**
      * Private constructor
      */
     private Strings()
     {
     }
+
 
     /**
      * Helper function that dump an array of bytes in hex form
@@ -126,7 +222,7 @@ public final class Strings
      * @param str the string to deep trim
      * @param toLowerCase how to normalize for case: upper or lower
      * @return the deep trimmed string
-     * @see StringTools#deepTrim( String )
+     * @see Strings#deepTrim( String )
      * 
      * TODO Replace the toCharArray() by substring manipulations
      */
@@ -197,7 +293,7 @@ public final class Strings
      * having to create multiple String and StringBuffer objects and is much
      * more efficient.
      * 
-     * @see StringTools#deepTrim( String )
+     * @see Strings#deepTrim( String )
      */
     public static String deepTrimToLower( String string )
     {
@@ -514,5 +610,1211 @@ public final class Strings
         {
             return string.charAt( index ) == car;
         }
+    }
+
+    /**
+     * Return an UTF-8 encoded String
+     *
+     * @param bytes The byte array to be transformed to a String
+     * @return A String.
+     */
+    public static String utf8ToString( byte[] bytes )
+    {
+        if ( bytes == null )
+        {
+            return "";
+        }
+
+        try
+        {
+            return new String( bytes, "UTF-8" );
+        }
+        catch ( UnsupportedEncodingException uee )
+        {
+            // if this happens something is really strange
+            throw new RuntimeException( uee );
+        }
+    }
+
+    /**
+     * Return an UTF-8 encoded String
+     *
+     * @param bytes The byte array to be transformed to a String
+     * @param length The length of the byte array to be converted
+     * @return A String.
+     */
+    public static String utf8ToString( byte[] bytes, int length )
+    {
+        if ( bytes == null )
+        {
+            return "";
+        }
+
+        try
+        {
+            return new String( bytes, 0, length, "UTF-8" );
+        }
+        catch ( UnsupportedEncodingException uee )
+        {
+            // if this happens something is really strange
+            throw new RuntimeException( uee );
+        }
+    }
+
+    /**
+     * Return an UTF-8 encoded String
+     *
+     * @param bytes  The byte array to be transformed to a String
+     * @param start the starting position in the byte array
+     * @param length The length of the byte array to be converted
+     * @return A String.
+     */
+    public static String utf8ToString( byte[] bytes, int start, int length )
+    {
+        if ( bytes == null )
+        {
+            return "";
+        }
+
+        try
+        {
+            return new String( bytes, start, length, "UTF-8" );
+        }
+        catch ( UnsupportedEncodingException uee )
+        {
+            // if this happens something is really strange
+            throw new RuntimeException( uee );
+        }
+    }
+
+    /**
+     * Check if a text is present at the current position in a buffer.
+     *
+     * @param bytes The buffer which contains the data
+     * @param index Current position in the buffer
+     * @param text The text we want to check
+     * @return <code>true</code> if the buffer contains the text.
+     */
+    public static int areEquals( byte[] bytes, int index, String text )
+    {
+        if ( ( bytes == null ) || ( bytes.length == 0 ) || ( bytes.length <= index ) || ( index < 0 )
+            || ( text == null ) )
+        {
+            return StringConstants.NOT_EQUAL;
+        }
+        else
+        {
+            try
+            {
+                byte[] data = text.getBytes( "UTF-8" );
+
+                return areEquals( bytes, index, data );
+            }
+            catch ( UnsupportedEncodingException uee )
+            {
+                // if this happens something is really strange
+                throw new RuntimeException( uee );
+            }
+        }
+    }
+
+    /**
+     * Check if a text is present at the current position in a buffer.
+     *
+     * @param chars The buffer which contains the data
+     * @param index Current position in the buffer
+     * @param text The text we want to check
+     * @return <code>true</code> if the buffer contains the text.
+     */
+    public static int areEquals( char[] chars, int index, String text )
+    {
+        if ( ( chars == null ) || ( chars.length == 0 ) || ( chars.length <= index ) || ( index < 0 )
+            || ( text == null ) )
+        {
+            return StringConstants.NOT_EQUAL;
+        }
+        else
+        {
+            char[] data = text.toCharArray();
+
+            return areEquals( chars, index, data );
+        }
+    }
+
+    /**
+     * Check if a text is present at the current position in a buffer.
+     *
+     * @param chars The buffer which contains the data
+     * @param index Current position in the buffer
+     * @param chars2 The text we want to check
+     * @return <code>true</code> if the buffer contains the text.
+     */
+    public static int areEquals( char[] chars, int index, char[] chars2 )
+    {
+        if ( ( chars == null ) || ( chars.length == 0 ) || ( chars.length <= index ) || ( index < 0 )
+            || ( chars2 == null ) || ( chars2.length == 0 )
+            || ( chars2.length > ( chars.length + index ) ) )
+        {
+            return StringConstants.NOT_EQUAL;
+        }
+        else
+        {
+            for ( int i = 0; i < chars2.length; i++ )
+            {
+                if ( chars[index++] != chars2[i] )
+                {
+                    return StringConstants.NOT_EQUAL;
+                }
+            }
+
+            return index;
+        }
+    }
+
+    /**
+     * Check if a text is present at the current position in a buffer.
+     *
+     * @param bytes The buffer which contains the data
+     * @param index Current position in the buffer
+     * @param bytes2 The text we want to check
+     * @return <code>true</code> if the buffer contains the text.
+     */
+    public static int areEquals( byte[] bytes, int index, byte[] bytes2 )
+    {
+
+        if ( ( bytes == null ) || ( bytes.length == 0 ) || ( bytes.length <= index ) || ( index < 0 )
+            || ( bytes2 == null ) || ( bytes2.length == 0 )
+            || ( bytes2.length > ( bytes.length + index ) ) )
+        {
+            return StringConstants.NOT_EQUAL;
+        }
+        else
+        {
+            for ( int i = 0; i < bytes2.length; i++ )
+            {
+                if ( bytes[index++] != bytes2[i] )
+                {
+                    return StringConstants.NOT_EQUAL;
+                }
+            }
+
+            return index;
+        }
+    }
+
+    /**
+     * <p>
+     * Checks if a String is empty ("") or null.
+     * </p>
+     *
+     * <pre>
+     *  StringUtils.isEmpty(null)      = true
+     *  StringUtils.isEmpty(&quot;&quot;)        = true
+     *  StringUtils.isEmpty(&quot; &quot;)       = false
+     *  StringUtils.isEmpty(&quot;bob&quot;)     = false
+     *  StringUtils.isEmpty(&quot;  bob  &quot;) = false
+     * </pre>
+     *
+     * <p>
+     * NOTE: This method changed in Lang version 2.0. It no longer trims the
+     * String. That functionality is available in isBlank().
+     * </p>
+     *
+     * @param str the String to check, may be null
+     * @return <code>true</code> if the String is empty or null
+     */
+    public static boolean isEmpty( String str )
+    {
+        return str == null || str.length() == 0;
+    }
+
+    /**
+     * Checks if a bytes array is empty or null.
+     *
+     * @param bytes The bytes array to check, may be null
+     * @return <code>true</code> if the bytes array is empty or null
+     */
+    public static boolean isEmpty( byte[] bytes )
+    {
+        return bytes == null || bytes.length == 0;
+    }
+
+    /**
+     * <p>
+     * Removes spaces (char &lt;= 32) from both start and ends of this String,
+     * handling <code>null</code> by returning <code>null</code>.
+     * </p>
+     * Trim removes start and end characters &lt;= 32.
+     *
+     * <pre>
+     *  StringUtils.trim(null)          = null
+     *  StringUtils.trim(&quot;&quot;)            = &quot;&quot;
+     *  StringUtils.trim(&quot;     &quot;)       = &quot;&quot;
+     *  StringUtils.trim(&quot;abc&quot;)         = &quot;abc&quot;
+     *  StringUtils.trim(&quot;    abc    &quot;) = &quot;abc&quot;
+     * </pre>
+     *
+     * @param str the String to be trimmed, may be null
+     * @return the trimmed string, <code>null</code> if null String input
+     */
+    public static String trim( String str )
+    {
+        return ( isEmpty( str ) ? "" : str.trim() );
+    }
+
+    /**
+     * <p>
+     * Removes spaces (char &lt;= 32) from both start and ends of this bytes
+     * array, handling <code>null</code> by returning <code>null</code>.
+     * </p>
+     * Trim removes start and end characters &lt;= 32.
+     *
+     * <pre>
+     *  StringUtils.trim(null)          = null
+     *  StringUtils.trim(&quot;&quot;)            = &quot;&quot;
+     *  StringUtils.trim(&quot;     &quot;)       = &quot;&quot;
+     *  StringUtils.trim(&quot;abc&quot;)         = &quot;abc&quot;
+     *  StringUtils.trim(&quot;    abc    &quot;) = &quot;abc&quot;
+     * </pre>
+     *
+     * @param bytes the byte array to be trimmed, may be null
+     *
+     * @return the trimmed byte array
+     */
+    public static byte[] trim( byte[] bytes )
+    {
+        if ( isEmpty( bytes ) )
+        {
+            return StringConstants.EMPTY_BYTES;
+        }
+
+        int start = trimLeft( bytes, 0 );
+        int end = trimRight( bytes, bytes.length - 1 );
+
+        int length = end - start + 1;
+
+        if ( length != 0 )
+        {
+            byte[] newBytes = new byte[end - start + 1];
+
+            System.arraycopy( bytes, start, newBytes, 0, length );
+
+            return newBytes;
+        }
+        else
+        {
+            return StringConstants.EMPTY_BYTES;
+        }
+    }
+
+    /**
+     * <p>
+     * Removes spaces (char &lt;= 32) from start of this String, handling
+     * <code>null</code> by returning <code>null</code>.
+     * </p>
+     * Trim removes start characters &lt;= 32.
+     *
+     * <pre>
+     *  StringUtils.trimLeft(null)          = null
+     *  StringUtils.trimLeft(&quot;&quot;)            = &quot;&quot;
+     *  StringUtils.trimLeft(&quot;     &quot;)       = &quot;&quot;
+     *  StringUtils.trimLeft(&quot;abc&quot;)         = &quot;abc&quot;
+     *  StringUtils.trimLeft(&quot;    abc    &quot;) = &quot;abc    &quot;
+     * </pre>
+     *
+     * @param str the String to be trimmed, may be null
+     * @return the trimmed string, <code>null</code> if null String input
+     */
+    public static String trimLeft( String str )
+    {
+        if ( isEmpty( str ) )
+        {
+            return "";
+        }
+
+        int start = 0;
+        int end = str.length();
+
+        while ( ( start < end ) && ( str.charAt( start ) == ' ' ) )
+        {
+            start++;
+        }
+
+        return ( start == 0 ? str : str.substring( start ) );
+    }
+
+    /**
+     * <p>
+     * Removes spaces (char &lt;= 32) from start of this array, handling
+     * <code>null</code> by returning <code>null</code>.
+     * </p>
+     * Trim removes start characters &lt;= 32.
+     *
+     * <pre>
+     *  StringUtils.trimLeft(null)          = null
+     *  StringUtils.trimLeft(&quot;&quot;)            = &quot;&quot;
+     *  StringUtils.trimLeft(&quot;     &quot;)       = &quot;&quot;
+     *  StringUtils.trimLeft(&quot;abc&quot;)         = &quot;abc&quot;
+     *  StringUtils.trimLeft(&quot;    abc    &quot;) = &quot;abc    &quot;
+     * </pre>
+     *
+     * @param chars the chars array to be trimmed, may be null
+     * @return the position of the first char which is not a space, or the last
+     *         position of the array.
+     */
+    public static int trimLeft( char[] chars, int pos )
+    {
+        if ( chars == null )
+        {
+            return pos;
+        }
+
+        while ( ( pos < chars.length ) && ( chars[pos] == ' ' ) )
+        {
+            pos++;
+        }
+
+        return pos;
+    }
+
+    /**
+     * <p>
+     * Removes spaces (char &lt;= 32) from a position in this array, handling
+     * <code>null</code> by returning <code>null</code>.
+     * </p>
+     * Trim removes start characters &lt;= 32.
+     *
+     * <pre>
+     *  StringUtils.trimLeft(null)          = null
+     *  StringUtils.trimLeft(&quot;&quot;,...)            = &quot;&quot;
+     *  StringUtils.trimLeft(&quot;     &quot;,...)       = &quot;&quot;
+     *  StringUtils.trimLeft(&quot;abc&quot;,...)         = &quot;abc&quot;
+     *  StringUtils.trimLeft(&quot;    abc    &quot;,...) = &quot;abc    &quot;
+     * </pre>
+     *
+     * @param string the string to be trimmed, may be null
+     * @param pos The starting position
+     */
+    public static void trimLeft( String string, Position pos )
+    {
+        if ( string == null )
+        {
+            return;
+        }
+
+        int length = string.length();
+
+        while ( ( pos.start < length ) && ( string.charAt( pos.start ) == ' ' ) )
+        {
+            pos.start++;
+        }
+
+        pos.end = pos.start;
+    }
+
+    /**
+     * <p>
+     * Removes spaces (char &lt;= 32) from a position in this array, handling
+     * <code>null</code> by returning <code>null</code>.
+     * </p>
+     * Trim removes start characters &lt;= 32.
+     *
+     * <pre>
+     *  StringUtils.trimLeft(null)          = null
+     *  StringUtils.trimLeft(&quot;&quot;,...)            = &quot;&quot;
+     *  StringUtils.trimLeft(&quot;     &quot;,...)       = &quot;&quot;
+     *  StringUtils.trimLeft(&quot;abc&quot;,...)         = &quot;abc&quot;
+     *  StringUtils.trimLeft(&quot;    abc    &quot;,...) = &quot;abc    &quot;
+     * </pre>
+     *
+     * @param bytes the byte array to be trimmed, may be null
+     * @param pos The starting position
+     */
+    public static void trimLeft( byte[] bytes, Position pos )
+    {
+        if ( bytes == null )
+        {
+            return;
+        }
+
+        int length = bytes.length;
+
+        while ( ( pos.start < length ) && ( bytes[ pos.start ] == ' ' ) )
+        {
+            pos.start++;
+        }
+
+        pos.end = pos.start;
+    }
+
+    /**
+     * <p>
+     * Removes spaces (char &lt;= 32) from start of this array, handling
+     * <code>null</code> by returning <code>null</code>.
+     * </p>
+     * Trim removes start characters &lt;= 32.
+     *
+     * <pre>
+     *  StringUtils.trimLeft(null)          = null
+     *  StringUtils.trimLeft(&quot;&quot;)            = &quot;&quot;
+     *  StringUtils.trimLeft(&quot;     &quot;)       = &quot;&quot;
+     *  StringUtils.trimLeft(&quot;abc&quot;)         = &quot;abc&quot;
+     *  StringUtils.trimLeft(&quot;    abc    &quot;) = &quot;abc    &quot;
+     * </pre>
+     *
+     * @param bytes the byte array to be trimmed, may be null
+     * @return the position of the first byte which is not a space, or the last
+     *         position of the array.
+     */
+    public static int trimLeft( byte[] bytes, int pos )
+    {
+        if ( bytes == null )
+        {
+            return pos;
+        }
+
+        while ( ( pos < bytes.length ) && ( bytes[pos] == ' ' ) )
+        {
+            pos++;
+        }
+
+        return pos;
+    }
+
+    /**
+     * <p>
+     * Removes spaces (char &lt;= 32) from end of this String, handling
+     * <code>null</code> by returning <code>null</code>.
+     * </p>
+     * Trim removes start characters &lt;= 32.
+     *
+     * <pre>
+     *  StringUtils.trimRight(null)          = null
+     *  StringUtils.trimRight(&quot;&quot;)            = &quot;&quot;
+     *  StringUtils.trimRight(&quot;     &quot;)       = &quot;&quot;
+     *  StringUtils.trimRight(&quot;abc&quot;)         = &quot;abc&quot;
+     *  StringUtils.trimRight(&quot;    abc    &quot;) = &quot;    abc&quot;
+     * </pre>
+     *
+     * @param str the String to be trimmed, may be null
+     * @return the trimmed string, <code>null</code> if null String input
+     */
+    public static String trimRight( String str )
+    {
+        if ( isEmpty( str ) )
+        {
+            return "";
+        }
+
+        int length = str.length();
+        int end = length;
+
+        while ( ( end > 0 ) && ( str.charAt( end - 1 ) == ' ' ) )
+        {
+            if ( ( end > 1 ) && ( str.charAt(  end - 2 ) == '\\' ) )
+            {
+                break;
+            }
+
+            end--;
+        }
+
+        return ( end == length ? str : str.substring( 0, end ) );
+    }
+
+    /**
+     * <p>
+     * Removes spaces (char &lt;= 32) from end of this String, handling
+     * <code>null</code> by returning <code>null</code>.
+     * </p>
+     * Trim removes start characters &lt;= 32.
+     *
+     * <pre>
+     *  StringUtils.trimRight(null)          = null
+     *  StringUtils.trimRight(&quot;&quot;)            = &quot;&quot;
+     *  StringUtils.trimRight(&quot;     &quot;)       = &quot;&quot;
+     *  StringUtils.trimRight(&quot;abc&quot;)         = &quot;abc&quot;
+     *  StringUtils.trimRight(&quot;    abc    &quot;) = &quot;    abc&quot;
+     * </pre>
+     *
+     * @param str the String to be trimmed, may be null
+     * @param escapedSpace The last escaped space, if any
+     * @return the trimmed string, <code>null</code> if null String input
+     */
+    public static String trimRight( String str, int escapedSpace )
+    {
+        if ( isEmpty( str ) )
+        {
+            return "";
+        }
+
+        int length = str.length();
+        int end = length;
+
+        while ( ( end > 0 ) && ( str.charAt( end - 1 ) == ' ' ) && ( end > escapedSpace ) )
+        {
+            if ( ( end > 1 ) && ( str.charAt(  end - 2 ) == '\\' ) )
+            {
+                break;
+            }
+
+            end--;
+        }
+
+        return ( end == length ? str : str.substring( 0, end ) );
+    }
+
+    /**
+     * <p>
+     * Removes spaces (char &lt;= 32) from end of this array, handling
+     * <code>null</code> by returning <code>null</code>.
+     * </p>
+     * Trim removes start characters &lt;= 32.
+     *
+     * <pre>
+     *  StringUtils.trimRight(null)          = null
+     *  StringUtils.trimRight(&quot;&quot;)            = &quot;&quot;
+     *  StringUtils.trimRight(&quot;     &quot;)       = &quot;&quot;
+     *  StringUtils.trimRight(&quot;abc&quot;)         = &quot;abc&quot;
+     *  StringUtils.trimRight(&quot;    abc    &quot;) = &quot;    abc&quot;
+     * </pre>
+     *
+     * @param chars the chars array to be trimmed, may be null
+     * @return the position of the first char which is not a space, or the last
+     *         position of the array.
+     */
+    public static int trimRight( char[] chars, int pos )
+    {
+        if ( chars == null )
+        {
+            return pos;
+        }
+
+        while ( ( pos >= 0 ) && ( chars[pos - 1] == ' ' ) )
+        {
+            pos--;
+        }
+
+        return pos;
+    }
+
+    /**
+     * <p>
+     * Removes spaces (char &lt;= 32) from end of this string, handling
+     * <code>null</code> by returning <code>null</code>.
+     * </p>
+     * Trim removes start characters &lt;= 32.
+     *
+     * <pre>
+     *  StringUtils.trimRight(null)          = null
+     *  StringUtils.trimRight(&quot;&quot;)            = &quot;&quot;
+     *  StringUtils.trimRight(&quot;     &quot;)       = &quot;&quot;
+     *  StringUtils.trimRight(&quot;abc&quot;)         = &quot;abc&quot;
+     *  StringUtils.trimRight(&quot;    abc    &quot;) = &quot;    abc&quot;
+     * </pre>
+     *
+     * @param string the string to be trimmed, may be null
+     * @return the position of the first char which is not a space, or the last
+     *         position of the string.
+     */
+    public static String trimRight( String string, Position pos )
+    {
+        if ( string == null )
+        {
+            return "";
+        }
+
+        while ( ( pos.end >= 0 ) && ( string.charAt( pos.end - 1 ) == ' ' ) )
+        {
+            if ( ( pos.end > 1 ) && ( string.charAt(  pos.end - 2 ) == '\\' ) )
+            {
+                break;
+            }
+
+            pos.end--;
+        }
+
+        return ( pos.end == string.length() ? string : string.substring( 0, pos.end ) );
+    }
+
+    /**
+     * <p>
+     * Removes spaces (char &lt;= 32) from end of this string, handling
+     * <code>null</code> by returning <code>null</code>.
+     * </p>
+     * Trim removes start characters &lt;= 32.
+     *
+     * <pre>
+     *  StringUtils.trimRight(null)          = null
+     *  StringUtils.trimRight(&quot;&quot;)            = &quot;&quot;
+     *  StringUtils.trimRight(&quot;     &quot;)       = &quot;&quot;
+     *  StringUtils.trimRight(&quot;abc&quot;)         = &quot;abc&quot;
+     *  StringUtils.trimRight(&quot;    abc    &quot;) = &quot;    abc&quot;
+     * </pre>
+     *
+     * @param bytes the byte array to be trimmed, may be null
+     * @return the position of the first char which is not a space, or the last
+     *         position of the byte array.
+     */
+    public static String trimRight( byte[] bytes, Position pos )
+    {
+        if ( bytes == null )
+        {
+            return "";
+        }
+
+        while ( ( pos.end >= 0 ) && ( bytes[pos.end - 1] == ' ' ) )
+        {
+            if ( ( pos.end > 1 ) && ( bytes[pos.end - 2] == '\\' ) )
+            {
+                break;
+            }
+
+            pos.end--;
+        }
+
+        if ( pos.end == bytes.length )
+        {
+            return utf8ToString(bytes);
+        }
+        else
+        {
+            return utf8ToString(bytes, pos.end);
+        }
+    }
+
+    /**
+     * <p>
+     * Removes spaces (char &lt;= 32) from end of this array, handling
+     * <code>null</code> by returning <code>null</code>.
+     * </p>
+     * Trim removes start characters &lt;= 32.
+     *
+     * <pre>
+     *  StringUtils.trimRight(null)          = null
+     *  StringUtils.trimRight(&quot;&quot;)            = &quot;&quot;
+     *  StringUtils.trimRight(&quot;     &quot;)       = &quot;&quot;
+     *  StringUtils.trimRight(&quot;abc&quot;)         = &quot;abc&quot;
+     *  StringUtils.trimRight(&quot;    abc    &quot;) = &quot;    abc&quot;
+     * </pre>
+     *
+     * @param bytes the byte array to be trimmed, may be null
+     * @return the position of the first char which is not a space, or the last
+     *         position of the array.
+     */
+    public static int trimRight( byte[] bytes, int pos )
+    {
+        if ( bytes == null )
+        {
+            return pos;
+        }
+
+        while ( ( pos >= 0 ) && ( bytes[pos] == ' ' ) )
+        {
+            pos--;
+        }
+
+        return pos;
+    }
+
+    /**
+     * Get the character at a given position in a string, checking fo limits
+     *
+     * @param string The string which contains the data
+     * @param index Current position in the string
+     * @return The character ar the given position, or '\0' if something went wrong
+     */
+    public static char charAt( String string, int index )
+    {
+        if ( string == null )
+        {
+            return '\0';
+        }
+
+        int length = string.length();
+
+        if ( ( length == 0 ) || ( index < 0 ) || ( index >= length ) )
+        {
+            return '\0';
+        }
+        else
+        {
+            return string.charAt( index ) ;
+        }
+    }
+
+    /**
+     * Thansform an array of ASCII bytes to a string. the byte array should contains
+     * only values in [0, 127].
+     *
+     * @param bytes The byte array to transform
+     * @return The resulting string
+     */
+    public static String asciiBytesToString( byte[] bytes )
+    {
+        if ( (bytes == null) || (bytes.length == 0 ) )
+        {
+            return "";
+        }
+
+        char[] result = new char[bytes.length];
+
+        for ( int i = 0; i < bytes.length; i++ )
+        {
+            result[i] = (char)bytes[i];
+        }
+
+        return new String( result );
+    }
+
+    /**
+     * Return UTF-8 encoded byte[] representation of a String
+     *
+     * @param string The string to be transformed to a byte array
+     * @return The transformed byte array
+     */
+    public static byte[] getBytesUtf8( String string )
+    {
+        if ( string == null )
+        {
+            return new byte[0];
+        }
+
+        try
+        {
+            return string.getBytes( "UTF-8" );
+        }
+        catch ( UnsupportedEncodingException uee )
+        {
+            // if this happens something is really strange
+            throw new RuntimeException( uee );
+        }
+    }
+
+    /**
+     * Get the default charset
+     *
+     * @return The default charset
+     */
+    public static String getDefaultCharsetName()
+    {
+        if ( null == defaultCharset )
+        {
+            try
+            {
+                // Try with jdk 1.5 method, if we are using a 1.5 jdk :)
+                Method method = Charset.class.getMethod( "defaultCharset", new Class[0] );
+                defaultCharset = ((Charset) method.invoke( null, new Object[0]) ).name();
+            }
+            catch (NoSuchMethodException e)
+            {
+                // fall back to old method
+                defaultCharset = new OutputStreamWriter( new ByteArrayOutputStream() ).getEncoding();
+            }
+            catch (InvocationTargetException e)
+            {
+                // fall back to old method
+                defaultCharset = new OutputStreamWriter( new ByteArrayOutputStream() ).getEncoding();
+            }
+            catch (IllegalAccessException e)
+            {
+                // fall back to old method
+                defaultCharset = new OutputStreamWriter( new ByteArrayOutputStream() ).getEncoding();
+            }
+        }
+
+        return defaultCharset;
+    }
+
+    /**
+     * <p>
+     * Compares two Strings, returning <code>true</code> if they are equal.
+     * </p>
+     * <p>
+     * <code>null</code>s are handled without exceptions. Two
+     * <code>null</code> references are considered to be equal. The comparison
+     * is case sensitive.
+     * </p>
+     *
+     * <pre>
+     *  StringUtils.equals(null, null)   = true
+     *  StringUtils.equals(null, &quot;abc&quot;)  = false
+     *  StringUtils.equals(&quot;abc&quot;, null)  = false
+     *  StringUtils.equals(&quot;abc&quot;, &quot;abc&quot;) = true
+     *  StringUtils.equals(&quot;abc&quot;, &quot;ABC&quot;) = false
+     * </pre>
+     *
+     * @see String#equals(Object)
+     * @param str1 the first String, may be null
+     * @param str2 the second String, may be null
+     * @return <code>true</code> if the Strings are equal, case sensitive, or
+     *         both <code>null</code>
+     */
+    public static boolean equals( String str1, String str2 )
+    {
+        return str1 == null ? str2 == null : str1.equals( str2 );
+    }
+
+    /**
+     * Utility method that return a String representation of a list
+     *
+     * @param list The list to transform to a string
+     * @return A csv string
+     */
+    public static String listToString( List<?> list )
+    {
+        if ( ( list == null ) || ( list.size() == 0 ) )
+        {
+            return "";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        boolean isFirst = true;
+
+        for ( Object elem : list )
+        {
+            if ( isFirst )
+            {
+                isFirst = false;
+            }
+            else
+            {
+                sb.append( ", " );
+            }
+
+            sb.append( elem );
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * Utility method that return a String representation of a set
+     *
+     * @param set The set to transform to a string
+     * @return A csv string
+     */
+    public static String setToString( Set<?> set )
+    {
+        if ( ( set == null ) || ( set.size() == 0 ) )
+        {
+            return "";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        boolean isFirst = true;
+
+        for ( Object elem : set )
+        {
+            if ( isFirst )
+            {
+                isFirst = false;
+            }
+            else
+            {
+                sb.append( ", " );
+            }
+
+            sb.append( elem );
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * Utility method that return a String representation of a list
+     *
+     * @param list The list to transform to a string
+     * @param tabs The tabs to add in ffront of the elements
+     * @return A csv string
+     */
+    public static String listToString( List<?> list, String tabs )
+    {
+        if ( ( list == null ) || ( list.size() == 0 ) )
+        {
+            return "";
+        }
+
+        StringBuffer sb = new StringBuffer();
+
+        for ( Object elem : list )
+        {
+            sb.append( tabs );
+            sb.append( elem );
+            sb.append( '\n' );
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * Utility method that return a String representation of a map. The elements
+     * will be represented as "key = value"
+     *
+     * @param map The map to transform to a string
+     * @return A csv string
+     */
+    public static String mapToString( Map<?,?> map )
+    {
+        if ( ( map == null ) || ( map.size() == 0 ) )
+        {
+            return "";
+        }
+
+        StringBuffer sb = new StringBuffer();
+        boolean isFirst = true;
+
+        for ( Map.Entry<?, ?> entry:map.entrySet() )
+        {
+            if ( isFirst )
+            {
+                isFirst = false;
+            }
+            else
+            {
+                sb.append( ", " );
+            }
+
+            sb.append( entry.getKey() );
+            sb.append( " = '" ).append( entry.getValue() ).append( "'" );
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * Utility method that return a String representation of a map. The elements
+     * will be represented as "key = value"
+     *
+     * @param map The map to transform to a string
+     * @param tabs The tabs to add in ffront of the elements
+     * @return A csv string
+     */
+    public static String mapToString( Map<?,?> map, String tabs )
+    {
+        if ( ( map == null ) || ( map.size() == 0 ) )
+        {
+            return "";
+        }
+
+        StringBuffer sb = new StringBuffer();
+
+        for ( Map.Entry<?, ?> entry:map.entrySet() )
+        {
+            sb.append( tabs );
+            sb.append( entry.getKey() );
+
+            sb.append( " = '" ).append( entry.getValue().toString() ).append( "'\n" );
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * Rewrote the toLowercase method to improve performances.
+     * In Ldap, attributesType are supposed to use ASCII chars :
+     * 'a'-'z', 'A'-'Z', '0'-'9', '.' and '-' only.
+     *
+     * @param value The String to lowercase
+     * @return The lowercase string
+     */
+    public static String toLowerCase( String value )
+    {
+        if ( ( null == value ) || ( value.length() == 0 ) )
+        {
+            return "";
+        }
+
+        char[] chars = value.toCharArray();
+
+        for ( int i = 0; i < chars.length; i++ )
+        {
+            chars[i] = TO_LOWER_CASE[ chars[i] ];
+        }
+
+        return new String( chars );
+    }
+
+    /**
+     * Rewrote the toLowercase method to improve performances.
+     * In Ldap, attributesType are supposed to use ASCII chars :
+     * 'a'-'z', 'A'-'Z', '0'-'9', '.' and '-' only.
+     *
+     * @param value The String to uppercase
+     * @return The uppercase string
+     */
+    public static String toUpperCase( String value )
+    {
+        if ( ( null == value ) || ( value.length() == 0 ) )
+        {
+            return "";
+        }
+
+        char[] chars = value.toCharArray();
+
+        for ( int i = 0; i < chars.length; i++ )
+        {
+            chars[i] = UPPER_CASE[ chars[i] ];
+        }
+
+        return new String( chars );
+    }
+
+    /**
+     * <p>
+     * Converts a String to upper case as per {@link String#toUpperCase()}.
+     * </p>
+     * <p>
+     * A <code>null</code> input String returns <code>null</code>.
+     * </p>
+     *
+     * <pre>
+     *  StringUtils.upperCase(null)  = null
+     *  StringUtils.upperCase(&quot;&quot;)    = &quot;&quot;
+     *  StringUtils.upperCase(&quot;aBc&quot;) = &quot;ABC&quot;
+     * </pre>
+     *
+     * @param str the String to upper case, may be null
+     * @return the upper cased String, <code>null</code> if null String input
+     */
+    public static String upperCase( String str )
+    {
+        if ( str == null )
+        {
+            return null;
+        }
+
+        return str.toUpperCase();
+    }
+
+    /**
+     * <p>
+     * Converts a String to lower case as per {@link String#toLowerCase()}.
+     * </p>
+     * <p>
+     * A <code>null</code> input String returns <code>null</code>.
+     * </p>
+     *
+     * <pre>
+     *  StringUtils.lowerCase(null)  = null
+     *  StringUtils.lowerCase(&quot;&quot;)    = &quot;&quot;
+     *  StringUtils.lowerCase(&quot;aBc&quot;) = &quot;abc&quot;
+     * </pre>
+     *
+     * @param str the String to lower case, may be null
+     * @return the lower cased String, <code>null</code> if null String input
+     */
+    public static String lowerCase( String str )
+    {
+        if ( str == null )
+        {
+            return null;
+        }
+
+        return str.toLowerCase();
+    }
+
+    /**
+     * Rewrote the toLowercase method to improve performances.
+     * In Ldap, attributesType are supposed to use ASCII chars :
+     * 'a'-'z', 'A'-'Z', '0'-'9', '.' and '-' only. We will take
+     * care of any other chars either.
+     *
+     * @param str The String to lowercase
+     * @return The lowercase string
+     */
+    public static String lowerCaseAscii( String str )
+    {
+        if ( str == null )
+        {
+            return null;
+        }
+
+        char[] chars = str.toCharArray();
+        int pos = 0;
+
+        for ( char c:chars )
+        {
+            chars[pos++] = TO_LOWER_CASE[c];
+        }
+
+        return new String( chars );
+    }
+
+    /**
+     *
+     * Check that a String is a valid PrintableString. A PrintableString contains only
+     * the following set of chars :
+     * { ' ', ''', '(', ')', '+', '-', '.', '/', [0-9], ':', '=', '?', [A-Z], [a-z]}
+     *
+     * @param str The String to check
+     * @return <code>true</code> if the string is a PrintableString or is empty,
+     * <code>false</code> otherwise
+     */
+    public static boolean isPrintableString( String str )
+    {
+        if ( ( str == null ) || ( str.length() == 0 ) )
+        {
+            return true;
+        }
+
+        for ( char c:str.toCharArray() )
+        {
+            if ( ( c > 127 ) || !IS_PRINTABLE_CHAR[ c ] )
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * <p>
+     * Checks if a String is not empty ("") and not null.
+     * </p>
+     *
+     * <pre>
+     *  StringUtils.isNotEmpty(null)      = false
+     *  StringUtils.isNotEmpty(&quot;&quot;)        = false
+     *  StringUtils.isNotEmpty(&quot; &quot;)       = true
+     *  StringUtils.isNotEmpty(&quot;bob&quot;)     = true
+     *  StringUtils.isNotEmpty(&quot;  bob  &quot;) = true
+     * </pre>
+     *
+     * @param str the String to check, may be null
+     * @return <code>true</code> if the String is not empty and not null
+     */
+    public static boolean isNotEmpty( String str )
+    {
+        return str != null && str.length() > 0;
+    }
+
+    /**
+     *
+     * Check that a String is a valid IA5String. An IA5String contains only
+     * char which values is between [0, 7F]
+     *
+     * @param str The String to check
+     * @return <code>true</code> if the string is an IA5String or is empty,
+     * <code>false</code> otherwise
+     */
+    public static boolean isIA5String( String str )
+    {
+        if ( ( str == null ) || ( str.length() == 0 ) )
+        {
+            return true;
+        }
+
+        // All the chars must be in [0x00, 0x7F]
+        for ( char c:str.toCharArray() )
+        {
+            if ( ( c < 0 ) || ( c > 0x7F ) )
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

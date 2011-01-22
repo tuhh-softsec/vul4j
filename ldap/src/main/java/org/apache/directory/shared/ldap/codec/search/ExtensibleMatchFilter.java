@@ -28,7 +28,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -213,13 +213,13 @@ public class ExtensibleMatchFilter extends Filter
     {
         if ( matchingRule != null )
         {
-            matchingRuleBytes = StringTools.getBytesUtf8( matchingRule );
+            matchingRuleBytes = Strings.getBytesUtf8(matchingRule);
             extensibleMatchLength = 1 + TLV.getNbBytes( matchingRuleBytes.length ) + matchingRuleBytes.length;
         }
 
         if ( type != null )
         {
-            typeBytes = StringTools.getBytesUtf8( type );
+            typeBytes = Strings.getBytesUtf8(type);
             extensibleMatchLength += 1 + TLV.getNbBytes( typeBytes.length ) + typeBytes.length;
         }
 

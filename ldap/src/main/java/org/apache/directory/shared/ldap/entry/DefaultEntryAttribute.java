@@ -33,7 +33,6 @@ import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueExcep
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
-import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.directory.shared.ldap.util.UTFUtils;
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
@@ -500,7 +499,7 @@ public class DefaultEntryAttribute implements EntryAttribute
                 // Try to convert the value from a byte[] to a String
                 if ( value != null )
                 {
-                    String valueStr = StringTools.utf8ToString( (byte[])value.getReference() );
+                    String valueStr = Strings.utf8ToString((byte[]) value.getReference());
                 
                     return valueStr;
                 }
@@ -555,7 +554,7 @@ public class DefaultEntryAttribute implements EntryAttribute
      */
     public void setId( String id )
     {
-        String newId = StringTools.trim( StringTools.lowerCaseAscii( id ) );
+        String newId = Strings.trim(Strings.lowerCaseAscii(id));
 
         if ( newId.length() == 0 )
         {
@@ -699,14 +698,14 @@ public class DefaultEntryAttribute implements EntryAttribute
      */
     public void setUpId( String upId, AttributeType attributeType )
     {
-        String trimmed = StringTools.trim( upId );
+        String trimmed = Strings.trim(upId);
 
-        if ( StringTools.isEmpty( trimmed ) && ( attributeType == null ) )
+        if ( Strings.isEmpty(trimmed) && ( attributeType == null ) )
         {
             throw new IllegalArgumentException( "Cannot set a null ID with a null AttributeType" );
         }
         
-        String id = StringTools.toLowerCase( trimmed );
+        String id = Strings.toLowerCase(trimmed);
         
         if ( attributeType == null )
         {
@@ -739,11 +738,11 @@ public class DefaultEntryAttribute implements EntryAttribute
             }
         }
         
-        if ( StringTools.isEmpty( id ) )
+        if ( Strings.isEmpty(id) )
         {
             this.attributeType = attributeType;
             this.upId = attributeType.getName();
-            this.id = StringTools.trim( this.upId );
+            this.id = Strings.trim(this.upId);
             
             // Compute the hashCode
             rehash();
@@ -1154,7 +1153,7 @@ public class DefaultEntryAttribute implements EntryAttribute
                     
                     if ( val != null )
                     {
-                        valBytes = StringTools.getBytesUtf8( val );
+                        valBytes = Strings.getBytesUtf8(val);
                     }
                     
                     Value<byte[]> value = createBinaryValue( attributeType, valBytes );
@@ -1209,7 +1208,7 @@ public class DefaultEntryAttribute implements EntryAttribute
                     
                     if ( val != null )
                     {
-                        valBytes = StringTools.getBytesUtf8( val );
+                        valBytes = Strings.getBytesUtf8(val);
                     }
                     
                     Value<byte[]> value = createBinaryValue( attributeType, valBytes );
@@ -1370,7 +1369,7 @@ public class DefaultEntryAttribute implements EntryAttribute
                         byte[] binaryVal = val.getBytes();
                         
                         // We have to convert the binary value to a String
-                        if ( ! values.contains( new StringValue( StringTools.utf8ToString( binaryVal ) ) ) )
+                        if ( ! values.contains( new StringValue( Strings.utf8ToString(binaryVal) ) ) )
                         {
                             return false;
                         }
@@ -1396,7 +1395,7 @@ public class DefaultEntryAttribute implements EntryAttribute
                         String stringVal = val.getString();
                         
                         // We have to convert the binary value to a String
-                        if ( ! values.contains( new BinaryValue( StringTools.getBytesUtf8( stringVal ) ) ) )
+                        if ( ! values.contains( new BinaryValue( Strings.getBytesUtf8(stringVal) ) ) )
                         {
                             return false;
                         }
@@ -1498,7 +1497,7 @@ public class DefaultEntryAttribute implements EntryAttribute
                 // don't find one in the values
                 for ( String val:vals )
                 {
-                    byte[] binaryVal = StringTools.getBytesUtf8( val );
+                    byte[] binaryVal = Strings.getBytesUtf8(val);
     
                     if ( !contains( new BinaryValue( binaryVal ) ) )
                     {
@@ -1576,7 +1575,7 @@ public class DefaultEntryAttribute implements EntryAttribute
                 // don't find one in the values
                 for ( byte[] val:vals )
                 {
-                    String stringVal = StringTools.utf8ToString( val );
+                    String stringVal = Strings.utf8ToString(val);
     
                     if ( !contains( new StringValue( stringVal ) ) )
                     {
@@ -1815,7 +1814,7 @@ public class DefaultEntryAttribute implements EntryAttribute
                     {
                         // Convert the binary value to a string value
                         byte[] binaryVal = val.getBytes();
-                        removed &= values.remove( new StringValue( StringTools.utf8ToString( binaryVal ) ) );
+                        removed &= values.remove( new StringValue( Strings.utf8ToString(binaryVal) ) );
                     }
                 }
             }
@@ -1922,7 +1921,7 @@ public class DefaultEntryAttribute implements EntryAttribute
                 // to String before removing them
                 for ( byte[] val:vals )
                 {
-                    StringValue value = new StringValue( StringTools.utf8ToString( val ) );
+                    StringValue value = new StringValue( Strings.utf8ToString(val) );
                     removed &= values.remove( value );
                 }
             }
@@ -1987,7 +1986,7 @@ public class DefaultEntryAttribute implements EntryAttribute
                 // to byte[] before removing them
                 for ( String val:vals )
                 {
-                    BinaryValue value = new BinaryValue( StringTools.getBytesUtf8( val ) );
+                    BinaryValue value = new BinaryValue( Strings.getBytesUtf8(val) );
                     removed &= values.remove( value );
                 }
             }
@@ -2169,14 +2168,14 @@ public class DefaultEntryAttribute implements EntryAttribute
      */
     public boolean instanceOf( String attributeId ) throws LdapInvalidAttributeValueException
     {
-        String trimmedId = StringTools.trim( attributeId );
+        String trimmedId = Strings.trim(attributeId);
         
-        if ( StringTools.isEmpty( trimmedId ) )
+        if ( Strings.isEmpty(trimmedId) )
         {
             return false;
         }
         
-        String normId = StringTools.lowerCaseAscii( trimmedId );
+        String normId = Strings.lowerCaseAscii(trimmedId);
         
         for ( String name:attributeType.getNames() )
         {

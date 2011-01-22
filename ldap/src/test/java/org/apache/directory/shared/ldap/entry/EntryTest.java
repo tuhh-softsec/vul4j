@@ -42,18 +42,11 @@ import java.util.Set;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
-import org.apache.directory.shared.ldap.entry.BinaryValue;
-import org.apache.directory.shared.ldap.entry.DefaultEntry;
-import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
-import org.apache.directory.shared.ldap.entry.StringValue;
-import org.apache.directory.shared.ldap.entry.Entry;
-import org.apache.directory.shared.ldap.entry.EntryAttribute;
-import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.schema.normalizers.DeepTrimToLowerNormalizer;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -1280,7 +1273,7 @@ public class EntryTest
         
         dn.normalize( oids );
         
-        byte[] password = StringTools.getBytesUtf8( "secret" );
+        byte[] password = Strings.getBytesUtf8("secret");
         Entry entry = new DefaultEntry( dn);
         entry.add( "ObjectClass", "top", "person" );
         entry.add( "cn", "test1" );
@@ -1298,7 +1291,7 @@ public class EntryTest
     @Test
     public void testSerializeEntryWithNoDN() throws LdapException, IOException, ClassNotFoundException
     {
-        byte[] password = StringTools.getBytesUtf8( "secret" );
+        byte[] password = Strings.getBytesUtf8("secret");
         Entry entry = new DefaultEntry();
         entry.add( "ObjectClass", "top", "person" );
         entry.add( "cn", "test1" );

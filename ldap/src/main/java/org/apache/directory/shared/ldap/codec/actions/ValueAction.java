@@ -25,7 +25,6 @@ import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.message.AddRequest;
-import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,7 +86,7 @@ public class ValueAction extends GrammarAction
             }
             else
             {
-                value = StringTools.utf8ToString( tlv.getValue().getData() );
+                value = Strings.utf8ToString(tlv.getValue().getData());
 
                 if ( IS_DEBUG )
                 {

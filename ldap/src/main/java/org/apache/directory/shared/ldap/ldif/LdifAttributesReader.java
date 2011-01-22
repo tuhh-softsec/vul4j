@@ -36,7 +36,7 @@ import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -446,7 +446,7 @@ public class LdifAttributesReader extends LdifReader
 
         LOG.debug( "Starts parsing ldif buffer" );
 
-        if ( StringTools.isEmpty( ldif ) )
+        if ( Strings.isEmpty(ldif) )
         {
             return new BasicAttributes( true );
         }
@@ -509,7 +509,7 @@ public class LdifAttributesReader extends LdifReader
 
         LOG.debug( "Starts parsing ldif buffer" );
 
-        if ( StringTools.isEmpty( ldif ) )
+        if ( Strings.isEmpty(ldif) )
         {
             return new DefaultEntry();
         }
@@ -574,7 +574,7 @@ public class LdifAttributesReader extends LdifReader
 
         LOG.debug( "Starts parsing ldif buffer" );
 
-        if ( StringTools.isEmpty( ldif ) )
+        if ( Strings.isEmpty(ldif) )
         {
             return new DefaultEntry();
         }

@@ -32,7 +32,7 @@ import org.apache.directory.shared.dsmlv2.AbstractTest;
 import org.apache.directory.shared.dsmlv2.Dsmlv2Parser;
 import org.apache.directory.shared.ldap.message.BindRequest;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -146,7 +146,7 @@ public class AuthRequestTest extends AbstractTest
         assertEquals( 1, abandonRequest.getControls().size() );
         assertTrue( control.isCritical() );
         assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
-        assertEquals( "Some text", StringTools.utf8ToString( ( byte[] ) control.getValue() ) );
+        assertEquals( "Some text", Strings.utf8ToString((byte[]) control.getValue()) );
     }
 
 
@@ -177,7 +177,7 @@ public class AuthRequestTest extends AbstractTest
         assertEquals( 1, abandonRequest.getControls().size() );
         assertTrue( control.isCritical() );
         assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
-        assertEquals( "DSMLv2.0 rocks!!", StringTools.utf8ToString( ( byte[] ) control.getValue() ) );
+        assertEquals( "DSMLv2.0 rocks!!", Strings.utf8ToString((byte[]) control.getValue()) );
     }
 
 
@@ -238,7 +238,7 @@ public class AuthRequestTest extends AbstractTest
         assertEquals( 2, abandonRequest.getControls().size() );
         assertFalse( control.isCritical() );
         assertEquals( "1.2.840.113556.1.4.789", control.getOid() );
-        assertEquals( "Some other text", StringTools.utf8ToString( ( byte[] ) control.getValue() ) );
+        assertEquals( "Some other text", Strings.utf8ToString((byte[]) control.getValue()) );
     }
 
 

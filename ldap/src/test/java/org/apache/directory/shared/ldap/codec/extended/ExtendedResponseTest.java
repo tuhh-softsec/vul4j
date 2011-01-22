@@ -38,7 +38,6 @@ import org.apache.directory.shared.ldap.message.ExtendedResponse;
 import org.apache.directory.shared.ldap.message.LdapEncoder;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -111,7 +110,7 @@ public class ExtendedResponseTest
         assertEquals( "", extendedResponse.getLdapResult().getMatchedDn().getName() );
         assertEquals( "", extendedResponse.getLdapResult().getErrorMessage() );
         assertEquals( "1.3.6.1.5.5.2", extendedResponse.getID() );
-        assertEquals( "value", StringTools.utf8ToString( ( byte[] ) extendedResponse.getEncodedValue() ) );
+        assertEquals( "value", Strings.utf8ToString((byte[]) extendedResponse.getEncodedValue()) );
 
         // Check the encoding
         try
@@ -203,7 +202,7 @@ public class ExtendedResponseTest
         assertEquals( "", extendedResponse.getLdapResult().getMatchedDn().getName() );
         assertEquals( "", extendedResponse.getLdapResult().getErrorMessage() );
         assertEquals( "1.3.6.1.5.5.2", extendedResponse.getID() );
-        assertEquals( "value", StringTools.utf8ToString( ( byte[] ) extendedResponse.getEncodedValue() ) );
+        assertEquals( "value", Strings.utf8ToString((byte[]) extendedResponse.getEncodedValue()) );
 
         // Check the Control
         Map<String, Control> controls = extendedResponse.getControls();
@@ -573,7 +572,7 @@ public class ExtendedResponseTest
         assertEquals( "", extendedResponse.getLdapResult().getMatchedDn().getName() );
         assertEquals( "", extendedResponse.getLdapResult().getErrorMessage() );
         assertEquals( "1.3.6.1.5.5.2", extendedResponse.getID() );
-        assertEquals( "", StringTools.utf8ToString( ( byte[] ) extendedResponse.getEncodedValue() ) );
+        assertEquals( "", Strings.utf8ToString((byte[]) extendedResponse.getEncodedValue()) );
 
         // Check the encoding
         try
@@ -660,7 +659,7 @@ public class ExtendedResponseTest
         assertEquals( "", extendedResponse.getLdapResult().getMatchedDn().getName() );
         assertEquals( "", extendedResponse.getLdapResult().getErrorMessage() );
         assertEquals( "1.3.6.1.5.5.2", extendedResponse.getID() );
-        assertEquals( "", StringTools.utf8ToString( ( byte[] ) extendedResponse.getEncodedValue() ) );
+        assertEquals( "", Strings.utf8ToString((byte[]) extendedResponse.getEncodedValue()) );
 
         // Check the Control
         Map<String, Control> controls = extendedResponse.getControls();
@@ -752,7 +751,7 @@ public class ExtendedResponseTest
         assertEquals( "", extendedResponse.getLdapResult().getMatchedDn().getName() );
         assertEquals( "", extendedResponse.getLdapResult().getErrorMessage() );
         assertEquals( "1.3.6.1.5.5.2", extendedResponse.getID() );
-        assertEquals( "", StringTools.utf8ToString( ( byte[] ) extendedResponse.getEncodedValue() ) );
+        assertEquals( "", Strings.utf8ToString((byte[]) extendedResponse.getEncodedValue()) );
 
         // Check the encoding
         try
@@ -840,7 +839,7 @@ public class ExtendedResponseTest
         assertEquals( "", extendedResponse.getLdapResult().getMatchedDn().getName() );
         assertEquals( "", extendedResponse.getLdapResult().getErrorMessage() );
         assertEquals( "1.3.6.1.5.5.2", extendedResponse.getID() );
-        assertEquals( "", StringTools.utf8ToString( ( byte[] ) extendedResponse.getEncodedValue() ) );
+        assertEquals( "", Strings.utf8ToString((byte[]) extendedResponse.getEncodedValue()) );
 
         // Check the Control
         Map<String, Control> controls = extendedResponse.getControls();

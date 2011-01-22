@@ -71,9 +71,9 @@ import org.apache.directory.shared.ldap.message.SearchResultReference;
 import org.apache.directory.shared.ldap.message.SearchResultReferenceImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.name.DN;
-import org.apache.directory.shared.ldap.util.Base64;
+import org.apache.directory.shared.util.Base64;
 import org.apache.directory.shared.ldap.util.LdapURL;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -1306,7 +1306,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
             {
                 if ( ParserUtils.isBase64BinaryValue( xpp, typeValue ) )
                 {
-                    control.setValue( Base64.decode( nextText.trim().toCharArray() ) );
+                    control.setValue( Base64.decode(nextText.trim().toCharArray()) );
                 }
                 else
                 {
@@ -1847,7 +1847,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
                 }
                 else
                 {
-                    extendedResponse.setResponseValue( StringTools.getBytesUtf8( nextText.trim() ) );
+                    extendedResponse.setResponseValue( Strings.getBytesUtf8(nextText.trim()) );
                 }
             }
             catch ( IOException e )

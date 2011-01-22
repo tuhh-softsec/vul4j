@@ -29,7 +29,7 @@ import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
 import org.apache.directory.shared.ldap.message.SearchRequest;
 import org.apache.directory.shared.ldap.message.SearchRequestImpl;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,7 +78,7 @@ public class StoreAnyAction extends GrammarAction
             throw new DecoderException( msg );
         }
 
-        String any = StringTools.utf8ToString( tlv.getValue().getData() );
+        String any = Strings.utf8ToString(tlv.getValue().getData());
         substringFilter.addAnySubstrings( any );
 
         // We now have to get back to the nearest filter which is

@@ -23,7 +23,7 @@ package org.apache.directory.shared.ldap.schema;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.registries.Registries;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -193,7 +193,7 @@ public abstract class LoadableSchemaObject extends AbstractSchemaObject
     {
         String className = this.getClass().getName();
 
-        if ( StringTools.isEmpty( fqcn ) )
+        if ( Strings.isEmpty(fqcn) )
         {
             fqcn = className;
             return true;

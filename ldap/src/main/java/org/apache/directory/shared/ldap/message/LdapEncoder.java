@@ -42,7 +42,7 @@ import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.name.DN;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -243,14 +243,14 @@ public class LdapEncoder
         }
         else
         {
-            byte[] matchedDNBytes = StringTools.getBytesUtf8( StringTools
-                .trimLeft( ldapResult.getMatchedDn().getName() ) );
+            byte[] matchedDNBytes = Strings.getBytesUtf8(Strings
+                    .trimLeft(ldapResult.getMatchedDn().getName()));
             ldapResultLength += 1 + TLV.getNbBytes( matchedDNBytes.length ) + matchedDNBytes.length;
             ldapResult.setMatchedDnBytes( matchedDNBytes );
         }
 
         // The errorMessage length
-        byte[] errorMessageBytes = StringTools.getBytesUtf8( ldapResult.getErrorMessage() );
+        byte[] errorMessageBytes = Strings.getBytesUtf8(ldapResult.getErrorMessage());
         ldapResultLength += 1 + TLV.getNbBytes( errorMessageBytes.length ) + errorMessageBytes.length;
         ldapResult.setErrorMessageBytes( errorMessageBytes );
 
@@ -522,7 +522,7 @@ public class LdapEncoder
         }
         else
         {
-            byte[] mechanismBytes = StringTools.getBytesUtf8( bindRequest.getSaslMechanism() );
+            byte[] mechanismBytes = Strings.getBytesUtf8(bindRequest.getSaslMechanism());
             int saslMechanismLength = 1 + TLV.getNbBytes( mechanismBytes.length ) + mechanismBytes.length;
             int saslCredentialsLength = 0;
 
@@ -607,7 +607,7 @@ public class LdapEncoder
         int compareRequestLength = 1 + TLV.getNbBytes( DN.getNbBytes( entry ) ) + DN.getNbBytes( entry );
 
         // The attribute value assertion
-        byte[] attributeIdBytes = StringTools.getBytesUtf8( compareRequest.getAttributeId() );
+        byte[] attributeIdBytes = Strings.getBytesUtf8(compareRequest.getAttributeId());
         int avaLength = 1 + TLV.getNbBytes( attributeIdBytes.length ) + attributeIdBytes.length;
         compareRequest.setAttrIdBytes( attributeIdBytes );
 
@@ -619,7 +619,7 @@ public class LdapEncoder
         }
         else
         {
-            byte[] value = StringTools.getBytesUtf8( compareRequest.getAssertionValue().getString() );
+            byte[] value = Strings.getBytesUtf8(compareRequest.getAssertionValue().getString());
             avaLength += 1 + TLV.getNbBytes( value.length ) + value.length;
             compareRequest.setAttrValBytes( value );
         }
@@ -712,7 +712,7 @@ public class LdapEncoder
      */
     private int computeExtendedRequestLength( ExtendedRequestImpl extendedRequest )
     {
-        byte[] requestNameBytes = StringTools.getBytesUtf8( extendedRequest.getRequestName() );
+        byte[] requestNameBytes = Strings.getBytesUtf8(extendedRequest.getRequestName());
 
         extendedRequest.setRequestNameBytes( requestNameBytes );
 
@@ -757,9 +757,9 @@ public class LdapEncoder
 
         String id = extendedResponse.getResponseName();
 
-        if ( !StringTools.isEmpty( id ) )
+        if ( !Strings.isEmpty(id) )
         {
-            byte[] idBytes = StringTools.getBytesUtf8( id );
+            byte[] idBytes = Strings.getBytesUtf8(id);
             extendedResponse.setResponseNameBytes( idBytes );
             int idLength = idBytes.length;
             extendedResponseLength += 1 + TLV.getNbBytes( idLength ) + idLength;
@@ -799,9 +799,9 @@ public class LdapEncoder
     {
         int intermediateResponseLength = 0;
 
-        if ( !StringTools.isEmpty( intermediateResponse.getResponseName() ) )
+        if ( !Strings.isEmpty(intermediateResponse.getResponseName()) )
         {
-            byte[] responseNameBytes = StringTools.getBytesUtf8( intermediateResponse.getResponseName() );
+            byte[] responseNameBytes = Strings.getBytesUtf8(intermediateResponse.getResponseName());
 
             int responseNameLength = responseNameBytes.length;
             intermediateResponseLength += 1 + TLV.getNbBytes( responseNameLength ) + responseNameLength;
@@ -975,7 +975,7 @@ public class LdapEncoder
      */
     private int computeModifyDnRequestLength( ModifyDnRequestImpl modifyDnResponse )
     {
-        int newRdnlength = StringTools.getBytesUtf8( modifyDnResponse.getNewRdn().getName() ).length;
+        int newRdnlength = Strings.getBytesUtf8(modifyDnResponse.getNewRdn().getName()).length;
 
         int modifyDNRequestLength = 1 + TLV.getNbBytes( DN.getNbBytes( modifyDnResponse.getName() ) )
             + DN.getNbBytes( modifyDnResponse.getName() ) + 1 + TLV.getNbBytes( newRdnlength ) + newRdnlength + 1 + 1
@@ -1029,7 +1029,7 @@ public class LdapEncoder
                 // Each referral
                 for ( String ldapUrl : ldapUrls )
                 {
-                    byte[] ldapUrlBytes = StringTools.getBytesUtf8( ldapUrl );
+                    byte[] ldapUrlBytes = Strings.getBytesUtf8(ldapUrl);
                     referralLength += 1 + TLV.getNbBytes( ldapUrlBytes.length ) + ldapUrlBytes.length;
                     referral.addLdapUrlBytes( ldapUrlBytes );
                 }
@@ -1109,7 +1109,7 @@ public class LdapEncoder
             for ( String attribute : searchRequest.getAttributes() )
             {
                 // add the attribute length to the attributes length
-                int idLength = StringTools.getBytesUtf8( attribute ).length;
+                int idLength = Strings.getBytesUtf8(attribute).length;
                 attributeDescriptionListLength += 1 + TLV.getNbBytes( idLength ) + idLength;
             }
         }
@@ -1191,7 +1191,7 @@ public class LdapEncoder
     {
         DN dn = searchResultEntry.getObjectName();
 
-        byte[] dnBytes = StringTools.getBytesUtf8( dn.getName() );
+        byte[] dnBytes = Strings.getBytesUtf8(dn.getName());
 
         // The entry
         int searchResultEntryLength = 1 + TLV.getNbBytes( dnBytes.length ) + dnBytes.length;
@@ -1539,7 +1539,7 @@ public class LdapEncoder
                 // The saslAuthentication Tag
                 buffer.put( ( byte ) LdapConstants.BIND_REQUEST_SASL_TAG );
 
-                byte[] mechanismBytes = StringTools.getBytesUtf8( bindRequest.getSaslMechanism() );
+                byte[] mechanismBytes = Strings.getBytesUtf8(bindRequest.getSaslMechanism());
 
                 buffer.put( TLV
                     .getBytes( bindRequest.getSaslMechanismLength() + bindRequest.getSaslCredentialsLength() ) );

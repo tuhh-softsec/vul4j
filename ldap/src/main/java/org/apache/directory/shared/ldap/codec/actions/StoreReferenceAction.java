@@ -31,7 +31,7 @@ import org.apache.directory.shared.ldap.message.Referral;
 import org.apache.directory.shared.ldap.message.ReferralImpl;
 import org.apache.directory.shared.ldap.message.SearchResultReference;
 import org.apache.directory.shared.ldap.util.LdapURL;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,7 +90,7 @@ public class StoreReferenceAction extends GrammarAction
         }
         else
         {
-            String urlStr = StringTools.utf8ToString( tlv.getValue().getData() );
+            String urlStr = Strings.utf8ToString(tlv.getValue().getData());
 
             try
             {

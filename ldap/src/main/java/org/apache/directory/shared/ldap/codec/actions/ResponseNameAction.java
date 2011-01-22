@@ -28,7 +28,7 @@ import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.message.ExtendedResponse;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,7 +79,7 @@ public class ResponseNameAction extends GrammarAction
         }
         else
         {
-            extendedResponse.setResponseName( new OID( StringTools.asciiBytesToString( tlv.getValue().getData() ) )
+            extendedResponse.setResponseName( new OID( Strings.asciiBytesToString(tlv.getValue().getData()) )
                 .toString() );
         }
 

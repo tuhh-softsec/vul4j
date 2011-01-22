@@ -40,9 +40,8 @@ import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
-import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.directory.shared.ldap.util.UTFUtils;
-import org.apache.directory.shared.util.Strings;
+import org.apache.directory.shared.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -234,7 +233,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
     {
         start = 0;
 
-        if ( StringTools.isNotEmpty( rdn ) )
+        if ( Strings.isNotEmpty(rdn) )
         {
             // Parse the string. The Rdn will be updated.
             RdnParser.parse( rdn, this );
@@ -563,7 +562,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
     {
         // First, let's normalize the type
         Value<?> normalizedValue = value;
-        String normalizedType = StringTools.lowerCaseAscii( type );
+        String normalizedType = Strings.lowerCaseAscii(type);
 
         if( schemaManager != null )
         {
@@ -698,7 +697,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
     public Object getValue( String type ) throws LdapInvalidDnException
     {
         // First, let's normalize the type
-        String normalizedType = StringTools.lowerCaseAscii( StringTools.trim( type ) );
+        String normalizedType = Strings.lowerCaseAscii(Strings.trim(type));
 
         switch ( nbAtavs )
         {
@@ -706,7 +705,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
                 return "";
 
             case 1:
-                if ( StringTools.equals( atav.getNormType(), normalizedType ) )
+                if ( Strings.equals(atav.getNormType(), normalizedType) )
                 {
                     return atav.getNormValue().get();
                 }
@@ -776,7 +775,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
     public AVA getAttributeTypeAndValue( String type )
     {
         // First, let's normalize the type
-        String normalizedType = StringTools.lowerCaseAscii( StringTools.trim( type ) );
+        String normalizedType = Strings.lowerCaseAscii(Strings.trim(type));
 
         switch ( nbAtavs )
         {
@@ -1165,7 +1164,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
      */
     public static Object unescapeValue( String value ) throws IllegalArgumentException
     {
-        if ( StringTools.isEmpty( value ) )
+        if ( Strings.isEmpty(value) )
         {
             return "";
         }
@@ -1177,7 +1176,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
             if ( chars.length == 1 )
             {
                 // The value is only containing a #
-                return StringTools.EMPTY_BYTES;
+                return StringConstants.EMPTY_BYTES;
             }
 
             if ( ( chars.length % 2 ) != 1 )
@@ -1191,9 +1190,9 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
 
             for ( int i = 1; i < chars.length; i += 2 )
             {
-                if ( StringTools.isHex( chars, i ) && StringTools.isHex( chars, i + 1 ) )
+                if ( Chars.isHex(chars, i) && Chars.isHex(chars, i + 1) )
                 {
-                    hexValue[pos++] = StringTools.getHexValue( chars[i], chars[i + 1] );
+                    hexValue[pos++] = Hex.getHexValue(chars[i], chars[i + 1]);
                 }
                 else
                 {
@@ -1234,10 +1233,10 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
                             break;
 
                         default:
-                            if ( StringTools.isHex( chars, i ) )
+                            if ( Chars.isHex(chars, i) )
                             {
                                 isHex = true;
-                                pair = ( ( byte ) ( StringTools.getHexValue( chars[i] ) << 4 ) );
+                                pair = ( ( byte ) ( Hex.getHexValue(chars[i]) << 4 ) );
                             }
 
                             break;
@@ -1247,9 +1246,9 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
                 {
                     if ( isHex )
                     {
-                        if ( StringTools.isHex( chars, i ) )
+                        if ( Chars.isHex(chars, i) )
                         {
-                            pair += StringTools.getHexValue( chars[i] );
+                            pair += Hex.getHexValue(chars[i]);
                             bytes[pos++] = pair;
                         }
                     }
@@ -1298,7 +1297,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
                                 }
                                 else
                                 {
-                                    byte[] result = StringTools.charToBytes( chars[i] );
+                                    byte[] result = Unicode.charToBytes(chars[i]);
                                     System.arraycopy( result, 0, bytes, pos, result.length );
                                     pos += result.length;
                                 }
@@ -1309,7 +1308,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
                 }
             }
 
-            return StringTools.utf8ToString( bytes, pos );
+            return Strings.utf8ToString(bytes, pos);
         }
     }
 
@@ -1322,7 +1321,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
      */
     public static String escapeValue( String value )
     {
-        if ( StringTools.isEmpty( value ) )
+        if ( Strings.isEmpty(value) )
         {
             return "";
         }
@@ -1441,12 +1440,12 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
      */
     public static String escapeValue( byte[] attrValue )
     {
-        if ( StringTools.isEmpty( attrValue ) )
+        if ( Strings.isEmpty(attrValue) )
         {
             return "";
         }
 
-        String value = StringTools.utf8ToString( attrValue );
+        String value = Strings.utf8ToString(attrValue);
 
         return escapeValue( value );
     }
@@ -1597,7 +1596,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
         // Read the normName
         normName = UTFUtils.readUTF( in );
 
-        if ( StringTools.isEmpty( normName ) )
+        if ( Strings.isEmpty(normName) )
         {
             normName = upName;
         }

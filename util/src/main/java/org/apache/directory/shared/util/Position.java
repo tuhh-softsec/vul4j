@@ -17,37 +17,28 @@
  *  under the License. 
  *  
  */
-
-package org.apache.directory.shared.ldap.util;
-
+package org.apache.directory.shared.util;
 
 /**
- * A components monitor for optional components.
  *
+ * This class is used to store the position of a token in a string.
+ * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
+ *
  */
-public class OptionalComponentsMonitor extends AbstractSimpleComponentsMonitor
+public class Position
 {
-
-    /**
-     * Instantiates a new optional components monitor.
-     *
-     * @param components the components
-     */
-    public OptionalComponentsMonitor( String[] components )
+    /** The starting position in the string */
+    public int start = 0;
+    
+    /** The current token length */  
+    public int length = 0;
+    
+    /** The token end position in the string */ 
+    public int end = 0;
+    
+    public String toString()
     {
-        super( components );
-    }
-
-
-    /**
-     * Checks if the final state is valid. As all components are optional this
-     * implementation always returns true.
-     * 
-     * @return always true
-     */
-    public boolean finalStateValid()
-    {
-        return true;
+        return "[" + start + ", " + end + ", " + length + "]";
     }
 }

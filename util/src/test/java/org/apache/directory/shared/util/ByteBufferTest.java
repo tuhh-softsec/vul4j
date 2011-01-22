@@ -17,13 +17,14 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.util;
+package org.apache.directory.shared.util;
 
 
 import static org.junit.Assert.assertEquals;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
+import org.apache.directory.shared.util.ByteBuffer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -41,48 +42,48 @@ public class ByteBufferTest
     public void testByteBufferGrowth()
     {
         ByteBuffer buf = new ByteBuffer();
-        assertEquals( 10, buf.capacity() );
+        assertEquals(10, buf.capacity());
         
         for ( int ii = 0; ii < 20; ii++ )
         {
             buf.append( ii );
-            assertEquals( ii, buf.get( ii ) );
-            assertEquals( ii, buf.buffer()[ii] );
+            assertEquals(ii, buf.get(ii));
+            assertEquals(ii, buf.buffer()[ii]);
         }
         
-        assertEquals( 20, buf.capacity() );
+        assertEquals(20, buf.capacity());
         buf.append( 20 );
-        assertEquals( 30, buf.capacity() );
+        assertEquals(30, buf.capacity());
 
         // -------------------------------------------------------------------
         
         buf = new ByteBuffer( 5 );
-        assertEquals( 5, buf.capacity() );
+        assertEquals(5, buf.capacity());
         
         for ( int ii = 0; ii < 5; ii++ )
         {
             buf.append( ii );
-            assertEquals( ii, buf.get( ii ) );
-            assertEquals( ii, buf.buffer()[ii] );
+            assertEquals(ii, buf.get(ii));
+            assertEquals(ii, buf.buffer()[ii]);
         }
         
-        assertEquals( 5, buf.capacity() );
+        assertEquals(5, buf.capacity());
         buf.append( 5 );
-        assertEquals( 10, buf.capacity() );
+        assertEquals(10, buf.capacity());
     }
     
     public void testCopyOfUsedBytes()
     {
         ByteBuffer buf = new ByteBuffer();
         byte[] bytes = buf.copyOfUsedBytes();
-        assertEquals( 0, bytes.length );
+        assertEquals(0, bytes.length);
         
         for ( int ii = 0; ii < 20; ii++ )
         {
             buf.append( ii );
-            assertEquals( ii, buf.get( ii ) );
-            assertEquals( ii, buf.buffer()[ii] );
-            assertEquals( ii, buf.copyOfUsedBytes()[ii] );
+            assertEquals(ii, buf.get(ii));
+            assertEquals(ii, buf.buffer()[ii]);
+            assertEquals(ii, buf.copyOfUsedBytes()[ii]);
         }
     }
     
@@ -92,9 +93,9 @@ public class ByteBufferTest
         buf.append( new byte[]{ 0, 1, 2, 3, 4 } );
         for ( int ii = 0; ii < 5; ii++ )
         {
-            assertEquals( ii, buf.get( ii ) );
-            assertEquals( ii, buf.buffer()[ii] );
-            assertEquals( ii, buf.copyOfUsedBytes()[ii] );
+            assertEquals(ii, buf.get(ii));
+            assertEquals(ii, buf.buffer()[ii]);
+            assertEquals(ii, buf.copyOfUsedBytes()[ii]);
         }
     }
 }

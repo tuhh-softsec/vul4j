@@ -38,7 +38,7 @@
  * by Iris Van den Broeke, Daniel Deville
  */
 
-package org.apache.directory.shared.ldap.util;
+package org.apache.directory.shared.util;
 
 import org.apache.directory.shared.i18n.I18n;
 

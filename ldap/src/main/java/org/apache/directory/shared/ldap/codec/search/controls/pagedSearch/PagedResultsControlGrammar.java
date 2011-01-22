@@ -31,7 +31,7 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.ber.tlv.IntegerDecoder;
 import org.apache.directory.shared.asn1.ber.tlv.IntegerDecoderException;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.StringConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -153,7 +153,7 @@ public final class PagedResultsControlGrammar extends AbstractGrammar
 
                     if ( pagedSearchContainer.getCurrentTLV().getLength() == 0 )
                     {
-                        pagedSearchContainer.getPagedSearchControl().setCookie( StringTools.EMPTY_BYTES );
+                        pagedSearchContainer.getPagedSearchControl().setCookie( StringConstants.EMPTY_BYTES );
                     }
                     else
                     {

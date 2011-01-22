@@ -26,8 +26,7 @@ import java.util.List;
 
 import org.apache.directory.shared.ldap.constants.MetaSchemaConstants;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
-import org.apache.directory.shared.ldap.util.StringTools;
-
+import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -135,7 +134,7 @@ public abstract class AbstractSchemaParser
         {
             String schemaName = schemaExtension.get( 0 );
             
-            if ( StringTools.isEmpty( schemaName ) )
+            if ( Strings.isEmpty(schemaName) )
             {
                 schemaObject.setSchemaName( MetaSchemaConstants.SCHEMA_OTHER );
             }

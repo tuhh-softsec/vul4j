@@ -36,8 +36,8 @@ import org.apache.directory.shared.dsmlv2.request.BatchRequest.ResponseOrder;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.ldif.LdifUtils;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.util.Base64;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Base64;
+import org.apache.directory.shared.util.Strings;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
@@ -167,7 +167,7 @@ public final class ParserUtils
         }
         else if ( value instanceof String )
         {
-            return new String( Base64.encode( StringTools.getBytesUtf8( ( String ) value ) ) );
+            return new String( Base64.encode( Strings.getBytesUtf8((String) value) ) );
         }
 
         return "";

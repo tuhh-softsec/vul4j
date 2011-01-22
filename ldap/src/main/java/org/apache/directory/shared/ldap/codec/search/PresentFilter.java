@@ -27,7 +27,7 @@ import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -103,7 +103,7 @@ public class PresentFilter extends Filter
      */
     public int computeLength()
     {
-        attributeDescriptionBytes = StringTools.getBytesUtf8( attributeDescription );
+        attributeDescriptionBytes = Strings.getBytesUtf8(attributeDescription);
         return 1 + TLV.getNbBytes( attributeDescriptionBytes.length ) + attributeDescriptionBytes.length;
     }
 

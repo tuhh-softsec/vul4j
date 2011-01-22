@@ -35,7 +35,6 @@ import org.apache.directory.shared.ldap.codec.controls.replication.syncRequestVa
 import org.apache.directory.shared.ldap.codec.controls.replication.syncRequestValue.SyncRequestValueControlContainer;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncRequestValue.SyncRequestValueControlDecoder;
 import org.apache.directory.shared.ldap.message.control.replication.SynchronizationModeEnum;
-import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -83,7 +82,7 @@ public class SyncRequestValueControlTest
 
         SyncRequestValueControl syncRequestValue = container.getSyncRequestValueControl();
         assertEquals( SynchronizationModeEnum.REFRESH_ONLY, syncRequestValue.getMode() );
-        assertEquals( "abc", StringTools.utf8ToString( syncRequestValue.getCookie() ) );
+        assertEquals( "abc", Strings.utf8ToString(syncRequestValue.getCookie()) );
         assertEquals( false, syncRequestValue.isReloadHint() );
 
         // Check the encoding
@@ -152,7 +151,7 @@ public class SyncRequestValueControlTest
 
         SyncRequestValueControl syncRequestValue = container.getSyncRequestValueControl();
         assertEquals( SynchronizationModeEnum.REFRESH_AND_PERSIST, syncRequestValue.getMode() );
-        assertEquals( "abc", StringTools.utf8ToString( syncRequestValue.getCookie() ) );
+        assertEquals( "abc", Strings.utf8ToString(syncRequestValue.getCookie()) );
         assertEquals( false, syncRequestValue.isReloadHint() );
 
         // Check the encoding
@@ -423,7 +422,7 @@ public class SyncRequestValueControlTest
 
         SyncRequestValueControl syncRequestValue = container.getSyncRequestValueControl();
         assertEquals( SynchronizationModeEnum.REFRESH_AND_PERSIST, syncRequestValue.getMode() );
-        assertEquals( "abc", StringTools.utf8ToString( syncRequestValue.getCookie() ) );
+        assertEquals( "abc", Strings.utf8ToString(syncRequestValue.getCookie()) );
         assertEquals( false, syncRequestValue.isReloadHint() );
 
         // Check the encoding
@@ -491,7 +490,7 @@ public class SyncRequestValueControlTest
 
         SyncRequestValueControl syncRequestValue = container.getSyncRequestValueControl();
         assertEquals( SynchronizationModeEnum.REFRESH_AND_PERSIST, syncRequestValue.getMode() );
-        assertEquals( "", StringTools.utf8ToString( syncRequestValue.getCookie() ) );
+        assertEquals( "", Strings.utf8ToString(syncRequestValue.getCookie()) );
         assertEquals( false, syncRequestValue.isReloadHint() );
 
         // Check the encoding

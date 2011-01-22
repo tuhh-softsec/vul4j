@@ -37,7 +37,6 @@ import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.message.ExtendedRequest;
 import org.apache.directory.shared.ldap.message.LdapEncoder;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -99,7 +98,7 @@ public class ExtendedRequestTest
 
         assertEquals( 1, extendedRequest.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", extendedRequest.getRequestName() );
-        assertEquals( "value", StringTools.utf8ToString( extendedRequest.getRequestValue() ) );
+        assertEquals( "value", Strings.utf8ToString(extendedRequest.getRequestValue()) );
 
         // Check the encoding
         try
@@ -170,7 +169,7 @@ public class ExtendedRequestTest
 
         assertEquals( 1, extendedRequest.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", extendedRequest.getRequestName() );
-        assertEquals( "value", StringTools.utf8ToString( extendedRequest.getRequestValue() ) );
+        assertEquals( "value", Strings.utf8ToString(extendedRequest.getRequestValue()) );
 
         // Check the Control
         Map<String, Control> controls = extendedRequest.getControls();
@@ -251,7 +250,7 @@ public class ExtendedRequestTest
 
         assertEquals( 1, extendedRequest.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", extendedRequest.getRequestName() );
-        assertEquals( "", StringTools.utf8ToString( extendedRequest.getRequestValue() ) );
+        assertEquals( "", Strings.utf8ToString(extendedRequest.getRequestValue()) );
 
         // Check the Control
         Map<String, Control> controls = extendedRequest.getControls();
@@ -496,7 +495,7 @@ public class ExtendedRequestTest
 
         assertEquals( 1, extendedRequest.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", extendedRequest.getRequestName() );
-        assertEquals( "", StringTools.utf8ToString( extendedRequest.getRequestValue() ) );
+        assertEquals( "", Strings.utf8ToString(extendedRequest.getRequestValue()) );
 
         // Check the encoding
         try

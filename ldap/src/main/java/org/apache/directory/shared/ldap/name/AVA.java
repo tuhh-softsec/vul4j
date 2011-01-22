@@ -32,7 +32,6 @@ import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
-import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.directory.shared.ldap.util.UTFUtils;
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
@@ -167,12 +166,12 @@ public class AVA implements Cloneable, Comparable<Object>, Externalizable
      */
     public AVA( String upType, String normType, Value<?> upValue, Value<?> normValue ) throws LdapInvalidDnException
     {
-        String upTypeTrimmed = StringTools.trim( upType );
-        String normTypeTrimmed = StringTools.trim( normType );
+        String upTypeTrimmed = Strings.trim(upType);
+        String normTypeTrimmed = Strings.trim(normType);
         
-        if ( StringTools.isEmpty( upTypeTrimmed ) )
+        if ( Strings.isEmpty(upTypeTrimmed) )
         {
-            if ( StringTools.isEmpty( normTypeTrimmed ) )
+            if ( Strings.isEmpty(normTypeTrimmed) )
             {
                 String message =  I18n.err( I18n.ERR_04188 );
                 LOG.error( message );
@@ -181,19 +180,19 @@ public class AVA implements Cloneable, Comparable<Object>, Externalizable
             else
             {
                 // In this case, we will use the normType instead
-                this.normType = StringTools.lowerCaseAscii( normTypeTrimmed );
+                this.normType = Strings.lowerCaseAscii(normTypeTrimmed);
                 this.upType = normType;
             }
         }
-        else if ( StringTools.isEmpty( normTypeTrimmed ) )
+        else if ( Strings.isEmpty(normTypeTrimmed) )
         {
             // In this case, we will use the upType instead
-            this.normType = StringTools.lowerCaseAscii( upTypeTrimmed );
+            this.normType = Strings.lowerCaseAscii(upTypeTrimmed);
             this.upType = upType;
         }
         else
         {
-            this.normType = StringTools.lowerCaseAscii( normTypeTrimmed );
+            this.normType = Strings.lowerCaseAscii(normTypeTrimmed);
             this.upType = upType;
             
         }
@@ -224,12 +223,12 @@ public class AVA implements Cloneable, Comparable<Object>, Externalizable
     public AVA( String upType, String normType, Value<?> upValue, Value<?> normValue, String upName )
         throws LdapInvalidDnException
     {
-        String upTypeTrimmed = StringTools.trim( upType );
-        String normTypeTrimmed = StringTools.trim( normType );
+        String upTypeTrimmed = Strings.trim(upType);
+        String normTypeTrimmed = Strings.trim(normType);
 
-        if ( StringTools.isEmpty( upTypeTrimmed ) )
+        if ( Strings.isEmpty(upTypeTrimmed) )
         {
-            if ( StringTools.isEmpty( normTypeTrimmed ) )
+            if ( Strings.isEmpty(normTypeTrimmed) )
             {
                 String message = I18n.err( I18n.ERR_04188 );
                 LOG.error( message );
@@ -238,19 +237,19 @@ public class AVA implements Cloneable, Comparable<Object>, Externalizable
             else
             {
                 // In this case, we will use the normType instead
-                this.normType = StringTools.lowerCaseAscii( normTypeTrimmed );
+                this.normType = Strings.lowerCaseAscii(normTypeTrimmed);
                 this.upType = normType;
             }
         }
-        else if ( StringTools.isEmpty( normTypeTrimmed ) )
+        else if ( Strings.isEmpty(normTypeTrimmed) )
         {
             // In this case, we will use the upType instead
-            this.normType = StringTools.lowerCaseAscii( upTypeTrimmed );
+            this.normType = Strings.lowerCaseAscii(upTypeTrimmed);
             this.upType = upType;
         }
         else
         {
-            this.normType = StringTools.lowerCaseAscii( normTypeTrimmed );
+            this.normType = Strings.lowerCaseAscii(normTypeTrimmed);
             this.upType = upType;
 
         }
@@ -448,17 +447,17 @@ public class AVA implements Cloneable, Comparable<Object>, Externalizable
      */
     private int compareType( String val1, String val2 )
     {
-        if ( StringTools.isEmpty( val1 ) )
+        if ( Strings.isEmpty(val1) )
         {
-            return StringTools.isEmpty( val2 ) ? 0 : -1;
+            return Strings.isEmpty(val2) ? 0 : -1;
         }
-        else if ( StringTools.isEmpty( val2 ) )
+        else if ( Strings.isEmpty(val2) )
         {
             return 1;
         }
         else
         {
-            return ( StringTools.trim( val1 ) ).compareToIgnoreCase( StringTools.trim( val2 ) );
+            return ( Strings.trim(val1) ).compareToIgnoreCase( Strings.trim(val2) );
         }
     }
 
@@ -746,9 +745,9 @@ public class AVA implements Cloneable, Comparable<Object>, Externalizable
      */
     public void writeExternal( ObjectOutput out ) throws IOException
     {
-        if ( StringTools.isEmpty( upName )
-            || StringTools.isEmpty( upType )
-            || StringTools.isEmpty( normType )
+        if ( Strings.isEmpty(upName)
+            || Strings.isEmpty(upType)
+            || Strings.isEmpty(normType)
             || ( start < 0 )
             || ( length < 2 ) // At least a type and '='
             || ( upValue.isNull() )
@@ -756,15 +755,15 @@ public class AVA implements Cloneable, Comparable<Object>, Externalizable
         {
             String message = "Cannot serialize an wrong ATAV, ";
             
-            if ( StringTools.isEmpty( upName ) )
+            if ( Strings.isEmpty(upName) )
             {
                 message += "the upName should not be null or empty";
             }
-            else if ( StringTools.isEmpty( upType ) )
+            else if ( Strings.isEmpty(upType) )
             {
                 message += "the upType should not be null or empty";
             }
-            else if ( StringTools.isEmpty( normType ) )
+            else if ( Strings.isEmpty(normType) )
             {
                 message += "the normType should not be null or empty";
             }
@@ -860,7 +859,7 @@ public class AVA implements Cloneable, Comparable<Object>, Externalizable
     {
         StringBuffer sb = new StringBuffer();
 
-        if ( StringTools.isEmpty( normType ) || StringTools.isEmpty( normType.trim() ) )
+        if ( Strings.isEmpty(normType) || Strings.isEmpty(normType.trim()) )
         {
             return "";
         }

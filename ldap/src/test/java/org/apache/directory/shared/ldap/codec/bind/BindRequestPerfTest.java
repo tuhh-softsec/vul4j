@@ -40,7 +40,6 @@ import org.apache.directory.shared.ldap.message.BindRequestImpl;
 import org.apache.directory.shared.ldap.message.LdapEncoder;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.name.DN;
-import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -133,7 +132,7 @@ public class BindRequestPerfTest
         assertTrue( bindRequest.isVersion3() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", bindRequest.getName().toString() );
         assertTrue( bindRequest.isSimple() );
-        assertEquals( "password", StringTools.utf8ToString( bindRequest.getCredentials() ) );
+        assertEquals( "password", Strings.utf8ToString(bindRequest.getCredentials()) );
 
         // Check the Control
         Map<String, Control> controls = bindRequest.getControls();
@@ -183,7 +182,7 @@ public class BindRequestPerfTest
 
             bindRequest.setSimple( true );
             bindRequest.setName( name );
-            bindRequest.setCredentials( StringTools.getBytesUtf8( "password" ) );
+            bindRequest.setCredentials( Strings.getBytesUtf8("password") );
             Control control = new ControlImpl( "2.16.840.1.113730.3.4.2" );
 
             bindRequest.addControl( control );

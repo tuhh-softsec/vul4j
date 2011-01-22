@@ -26,8 +26,7 @@ import java.util.Set;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.schema.SchemaObjectWrapper;
-import org.apache.directory.shared.ldap.util.StringTools;
-
+import org.apache.directory.shared.util.StringConstants;
 
 
 /**
@@ -124,7 +123,7 @@ public class DefaultSchema implements Schema
         }
         else
         {
-            this.dependencies = StringTools.EMPTY_STRINGS;
+            this.dependencies = StringConstants.EMPTY_STRINGS;
         }
         
         this.disabled = disabled;

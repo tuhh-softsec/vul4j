@@ -31,7 +31,7 @@ import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.sasl.RealmCallback;
 
 import org.apache.directory.ldap.client.api.SaslRequest;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,7 +82,7 @@ public class SaslCallbackHandler implements CallbackHandler
                 PasswordCallback pcb = ( PasswordCallback ) cb;
 
                 LOG.debug( "sending credentials in the PasswordCallback" );
-                pcb.setPassword( StringTools.utf8ToString( saslReq.getCredentials() ).toCharArray() );
+                pcb.setPassword( Strings.utf8ToString(saslReq.getCredentials()).toCharArray() );
             }
             else if ( cb instanceof RealmCallback )
             {

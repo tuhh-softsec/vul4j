@@ -34,7 +34,8 @@ import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.StringConstants;
+import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -65,7 +66,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
         @Override
         public Schema put( String key, Schema value )
         {
-            return super.put( StringTools.lowerCase( key ), value );
+            return super.put( Strings.lowerCase(key), value );
         }
 
         @Override
@@ -140,7 +141,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
      */
     public Schema getSchema( String schemaName )
     {
-        return schemaMap.get( StringTools.toLowerCase( schemaName ) );
+        return schemaMap.get( Strings.toLowerCase(schemaName) );
     }
     
     
@@ -158,7 +159,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
      */
     public void removeSchema( Schema schema )
     {
-        schemaMap.remove( StringTools.toLowerCase ( schema.getSchemaName() ) );
+        schemaMap.remove( Strings.toLowerCase(schema.getSchemaName()) );
     }
 
 
@@ -195,7 +196,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
 
         String name;
         String owner;
-        String[] dependencies = StringTools.EMPTY_STRINGS;
+        String[] dependencies = StringConstants.EMPTY_STRINGS;
         boolean isDisabled = false;
 
         if ( entry.get( SchemaConstants.CN_AT ) == null )
@@ -230,7 +231,7 @@ public abstract class AbstractSchemaLoader implements SchemaLoader
                 depsSet.add( value.getString() );
             }
 
-            dependencies = depsSet.toArray( StringTools.EMPTY_STRINGS );
+            dependencies = depsSet.toArray( StringConstants.EMPTY_STRINGS );
         }
 
         return new DefaultSchema( name, owner, dependencies, isDisabled )

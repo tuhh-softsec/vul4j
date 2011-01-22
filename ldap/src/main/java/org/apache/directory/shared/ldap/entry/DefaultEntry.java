@@ -40,8 +40,8 @@ import org.apache.directory.shared.ldap.name.RDN;
 import org.apache.directory.shared.ldap.name.RdnSerializer;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
-import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.directory.shared.ldap.util.UTFUtils;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -467,7 +467,7 @@ public class DefaultEntry implements Entry
 
     private String getId( String upId )
     {
-        String id = StringTools.trim( StringTools.toLowerCase( upId ) );
+        String id = Strings.trim(Strings.toLowerCase(upId));
 
         // If empty, throw an error
         if ( ( id == null ) || ( id.length() == 0 ) )
@@ -488,22 +488,22 @@ public class DefaultEntry implements Entry
      */
     private static String getUpId( String upId, AttributeType attributeType )
     {
-        String normUpId = StringTools.trim( upId );
+        String normUpId = Strings.trim(upId);
 
         if ( ( attributeType == null ) )
         {
-            if ( StringTools.isEmpty( normUpId ) )
+            if ( Strings.isEmpty(normUpId) )
             {
                 String message = I18n.err( I18n.ERR_04458 );
                 LOG.error( message );
                 throw new IllegalArgumentException( message );
             }
         }
-        else if ( StringTools.isEmpty( normUpId ) )
+        else if ( Strings.isEmpty(normUpId) )
         {
             upId = attributeType.getName();
 
-            if ( StringTools.isEmpty( upId ) )
+            if ( Strings.isEmpty(upId) )
             {
                 upId = attributeType.getOid();
             }
@@ -560,7 +560,7 @@ public class DefaultEntry implements Entry
      */
     protected AttributeType getAttributeType( String upId ) throws LdapException
     {
-        if ( StringTools.isEmpty( StringTools.trim( upId ) ) )
+        if ( Strings.isEmpty(Strings.trim(upId)) )
         {
             String message = I18n.err( I18n.ERR_04457_NULL_ATTRIBUTE_ID );
             LOG.error( message );
@@ -836,7 +836,7 @@ public class DefaultEntry implements Entry
      */
     public void add( String upId, byte[]... values ) throws LdapException
     {
-        if ( StringTools.isEmpty( upId ) )
+        if ( Strings.isEmpty(upId) )
         {
             String message = I18n.err( I18n.ERR_04457_NULL_ATTRIBUTE_ID );
             LOG.error( message );
@@ -878,7 +878,7 @@ public class DefaultEntry implements Entry
      */
     public void add( String upId, String... values ) throws LdapException
     {
-        if ( StringTools.isEmpty( upId ) )
+        if ( Strings.isEmpty(upId) )
         {
             String message = I18n.err( I18n.ERR_04457_NULL_ATTRIBUTE_ID );
             LOG.error( message );
@@ -920,7 +920,7 @@ public class DefaultEntry implements Entry
      */
     public void add( String upId, Value<?>... values ) throws LdapException
     {
-        if ( StringTools.isEmpty( upId ) )
+        if ( Strings.isEmpty(upId) )
         {
             String message = I18n.err( I18n.ERR_04457_NULL_ATTRIBUTE_ID );
             LOG.error( message );
@@ -1059,7 +1059,7 @@ public class DefaultEntry implements Entry
      */
     public boolean contains( String upId ) throws LdapException
     {
-        if ( StringTools.isEmpty( upId ) )
+        if ( Strings.isEmpty(upId) )
         {
             return false;
         }
@@ -1211,7 +1211,7 @@ public class DefaultEntry implements Entry
      */
     public boolean contains( String upId, byte[]... values )
     {
-        if ( StringTools.isEmpty( upId ) )
+        if ( Strings.isEmpty(upId) )
         {
             return false;
         }
@@ -1246,7 +1246,7 @@ public class DefaultEntry implements Entry
      */
     public boolean contains( String upId, String... values )
     {
-        if ( StringTools.isEmpty( upId ) )
+        if ( Strings.isEmpty(upId) )
         {
             return false;
         }
@@ -1281,7 +1281,7 @@ public class DefaultEntry implements Entry
      */
     public boolean contains( String upId, Value<?>... values )
     {
-        if ( StringTools.isEmpty( upId ) )
+        if ( Strings.isEmpty(upId) )
         {
             return false;
         }
@@ -1388,7 +1388,7 @@ public class DefaultEntry implements Entry
      */
     public EntryAttribute put( String upId, byte[]... values )
     {
-        if ( StringTools.isEmpty( upId ) )
+        if ( Strings.isEmpty(upId) )
         {
             String message = I18n.err( I18n.ERR_04457_NULL_ATTRIBUTE_ID );
             LOG.error( message );
@@ -1427,7 +1427,7 @@ public class DefaultEntry implements Entry
      */
     public EntryAttribute put( String upId, String... values )
     {
-        if ( StringTools.isEmpty( upId ) )
+        if ( Strings.isEmpty(upId) )
         {
             String message = I18n.err( I18n.ERR_04457_NULL_ATTRIBUTE_ID );
             LOG.error( message );
@@ -1466,7 +1466,7 @@ public class DefaultEntry implements Entry
      */
     public EntryAttribute put( String upId, Value<?>... values )
     {
-        if ( StringTools.isEmpty( upId ) )
+        if ( Strings.isEmpty(upId) )
         {
             String message = I18n.err( I18n.ERR_04457_NULL_ATTRIBUTE_ID );
             LOG.error( message );
@@ -1730,7 +1730,7 @@ public class DefaultEntry implements Entry
         }
         else
         {
-            if ( !StringTools.isEmpty( upId ) )
+            if ( !Strings.isEmpty(upId) )
             {
                 AttributeType tempAT = getAttributeType( upId );
 
@@ -1780,7 +1780,7 @@ public class DefaultEntry implements Entry
         }
         else
         {
-            if ( !StringTools.isEmpty( upId ) )
+            if ( !Strings.isEmpty(upId) )
             {
                 AttributeType tempAT = getAttributeType( upId );
 
@@ -1823,7 +1823,7 @@ public class DefaultEntry implements Entry
         }
         else
         {
-            if ( !StringTools.isEmpty( upId ) )
+            if ( !Strings.isEmpty(upId) )
             {
                 AttributeType tempAT = getAttributeType( upId );
 
@@ -2185,7 +2185,7 @@ public class DefaultEntry implements Entry
      */
     public boolean remove( String upId, byte[]... values ) throws LdapException
     {
-        if ( StringTools.isEmpty( upId ) )
+        if ( Strings.isEmpty(upId) )
         {
             String message = I18n.err( I18n.ERR_04457_NULL_ATTRIBUTE_ID );
             LOG.info( message );
@@ -2274,7 +2274,7 @@ public class DefaultEntry implements Entry
      */
     public boolean remove( String upId, String... values ) throws LdapException
     {
-        if ( StringTools.isEmpty( upId ) )
+        if ( Strings.isEmpty(upId) )
         {
             String message = I18n.err( I18n.ERR_04457_NULL_ATTRIBUTE_ID );
             LOG.info( message );
@@ -2362,7 +2362,7 @@ public class DefaultEntry implements Entry
      */
     public boolean remove( String upId, Value<?>... values ) throws LdapException
     {
-        if ( StringTools.isEmpty( upId ) )
+        if ( Strings.isEmpty(upId) )
         {
             String message = I18n.err( I18n.ERR_04457_NULL_ATTRIBUTE_ID );
             LOG.info( message );

@@ -42,7 +42,6 @@ import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.directory.shared.util.Strings;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -1530,7 +1529,7 @@ public class LdifReaderTest
 
         assertEquals( "1.2.840.113556.1.4.805", control.getOid() );
         assertFalse( control.isCritical() );
-        assertEquals( "control-value", StringTools.utf8ToString( control.getValue() ) );
+        assertEquals( "control-value", Strings.utf8ToString(control.getValue()) );
     }
 
 
@@ -1952,28 +1951,28 @@ public class LdifReaderTest
         
         assertEquals( "1.1.3", control.getOid() );
         assertFalse( control.isCritical() );
-        assertEquals( "ABCDEF", StringTools.utf8ToString( control.getValue() ) );
+        assertEquals( "ABCDEF", Strings.utf8ToString(control.getValue()) );
         
         // Forth control
         control = entry.getControl( "1.1.4" );
         
         assertEquals( "1.1.4", control.getOid() );
         assertTrue( control.isCritical() );
-        assertEquals( "ABCDEF", StringTools.utf8ToString( control.getValue() ) );
+        assertEquals( "ABCDEF", Strings.utf8ToString(control.getValue()) );
         
         // Fifth control
         control = entry.getControl( "1.1.5" );
         
         assertEquals( "1.1.5", control.getOid() );
         assertFalse( control.isCritical() );
-        assertEquals( "Emmanuel L\u00e9charny", StringTools.utf8ToString( control.getValue() ) );
+        assertEquals( "Emmanuel L\u00e9charny", Strings.utf8ToString(control.getValue()) );
         
         // Sixth control
         control = entry.getControl( "1.1.6" );
         
         assertEquals( "1.1.6", control.getOid() );
         assertTrue( control.isCritical() );
-        assertEquals( "Emmanuel L\u00e9charny", StringTools.utf8ToString( control.getValue() ) );
+        assertEquals( "Emmanuel L\u00e9charny", Strings.utf8ToString(control.getValue()) );
     }
     
     

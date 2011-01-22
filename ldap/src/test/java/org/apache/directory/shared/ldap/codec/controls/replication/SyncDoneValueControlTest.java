@@ -35,7 +35,6 @@ import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.SyncDoneValueControl;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.SyncDoneValueControlContainer;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.SyncDoneValueControlDecoder;
-import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -80,7 +79,7 @@ public class SyncDoneValueControlTest
         }
 
         SyncDoneValueControl control = container.getSyncDoneValueControl();
-        assertEquals( "xkcd", StringTools.utf8ToString( control.getCookie() ) );
+        assertEquals( "xkcd", Strings.utf8ToString(control.getCookie()) );
         assertTrue( control.isRefreshDeletes() );
         
         // test encoding
@@ -234,7 +233,7 @@ public class SyncDoneValueControlTest
         }
 
         SyncDoneValueControl control = container.getSyncDoneValueControl();
-        assertEquals( "", StringTools.utf8ToString( control.getCookie() ) );
+        assertEquals( "", Strings.utf8ToString(control.getCookie()) );
         assertFalse( control.isRefreshDeletes() );
 
         // test encoding

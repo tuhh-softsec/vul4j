@@ -32,7 +32,8 @@ import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.message.SearchRequest;
 import org.apache.directory.shared.ldap.message.SearchRequestImpl;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.StringConstants;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,7 +80,7 @@ public class InitAssertionValueFilterAction extends GrammarAction
         }
         else
         {
-            assertionValue = new BinaryValue( StringTools.EMPTY_BYTES );
+            assertionValue = new BinaryValue( StringConstants.EMPTY_BYTES );
         }
 
         AttributeValueAssertionFilter terminalFilter = ( AttributeValueAssertionFilter ) ( ( SearchRequestImpl ) searchRequest )
@@ -94,7 +95,7 @@ public class InitAssertionValueFilterAction extends GrammarAction
             }
             else
             {
-                assertionValue = new BinaryValue( StringTools.EMPTY_BYTES );
+                assertionValue = new BinaryValue( StringConstants.EMPTY_BYTES );
             }
 
             assertion.setAssertionValue( assertionValue );
@@ -103,7 +104,7 @@ public class InitAssertionValueFilterAction extends GrammarAction
         {
             if ( tlv.getLength() != 0 )
             {
-                assertionValue = new StringValue( StringTools.utf8ToString( tlv.getValue().getData() ) );
+                assertionValue = new StringValue( Strings.utf8ToString(tlv.getValue().getData()) );
             }
             else
             {

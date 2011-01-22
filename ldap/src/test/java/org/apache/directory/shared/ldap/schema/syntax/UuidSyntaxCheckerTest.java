@@ -26,6 +26,7 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.schema.syntaxCheckers.UuidSyntaxChecker;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.StringConstants;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -51,7 +52,7 @@ public class UuidSyntaxCheckerTest
     @Test
     public void testEmptyUuid()
     {
-        assertFalse( checker.isValidSyntax( StringTools.EMPTY_BYTES ) );
+        assertFalse( checker.isValidSyntax( StringConstants.EMPTY_BYTES ) );
     }
 
 

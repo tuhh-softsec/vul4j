@@ -136,7 +136,8 @@ import org.apache.directory.shared.ldap.schema.registries.Schema;
 import org.apache.directory.shared.ldap.schema.registries.SchemaLoader;
 import org.apache.directory.shared.ldap.schemaloader.JarLdifSchemaLoader;
 import org.apache.directory.shared.ldap.schemamanager.impl.DefaultSchemaManager;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.StringConstants;
+import org.apache.directory.shared.util.Strings;
 import org.apache.mina.core.filterchain.IoFilter;
 import org.apache.mina.core.future.CloseFuture;
 import org.apache.mina.core.future.ConnectFuture;
@@ -382,7 +383,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         config.setLdapPort( config.getDefaultLdapPort() );
 
         // Default to localhost if null
-        if ( StringTools.isEmpty( server ) )
+        if ( Strings.isEmpty(server) )
         {
             config.setLdapHost( "localhost" );
         }
@@ -411,7 +412,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         config.setLdapPort( useSsl ? config.getDefaultLdapsPort() : config.getDefaultLdapPort() );
 
         // Default to localhost if null
-        if ( StringTools.isEmpty( server ) )
+        if ( Strings.isEmpty(server) )
         {
             config.setLdapHost( "localhost" );
         }
@@ -454,7 +455,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         config.setLdapPort( port );
 
         // Default to localhost if null
-        if ( StringTools.isEmpty( server ) )
+        if ( Strings.isEmpty(server) )
         {
             config.setLdapHost( "localhost" );
         }
@@ -885,7 +886,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         LOG.debug( "Anonymous Bind request" );
 
         // Create the BindRequest
-        BindRequest bindRequest = createBindRequest( StringTools.EMPTY, StringTools.EMPTY_BYTES );
+        BindRequest bindRequest = createBindRequest( StringConstants.EMPTY, StringConstants.EMPTY_BYTES );
 
         return bind( bindRequest );
     }
@@ -899,7 +900,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         LOG.debug( "Anonymous Bind request" );
 
         // Create the BindRequest
-        BindRequest bindRequest = createBindRequest( StringTools.EMPTY, StringTools.EMPTY_BYTES );
+        BindRequest bindRequest = createBindRequest( StringConstants.EMPTY, StringConstants.EMPTY_BYTES );
 
         return bindAsync( bindRequest );
     }
@@ -913,7 +914,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         LOG.debug( "Bind request : {}", name );
 
         // Create the BindRequest
-        BindRequest bindRequest = createBindRequest( name, StringTools.getBytesUtf8( credentials ) );
+        BindRequest bindRequest = createBindRequest( name, Strings.getBytesUtf8(credentials) );
 
         return bind( bindRequest );
     }
@@ -927,7 +928,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         LOG.debug( "Bind request : {}", name );
 
         // Create the BindRequest
-        BindRequest bindRequest = createBindRequest( name, StringTools.getBytesUtf8( credentials ) );
+        BindRequest bindRequest = createBindRequest( name, Strings.getBytesUtf8(credentials) );
 
         return bindAsync( bindRequest );
     }
@@ -941,7 +942,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         LOG.debug( "Bind request : {}", name );
 
         // Create the BindRequest
-        BindRequest bindRequest = createBindRequest( name, StringTools.getBytesUtf8( credentials ), null );
+        BindRequest bindRequest = createBindRequest( name, Strings.getBytesUtf8(credentials), null );
 
         return bind( bindRequest );
     }
@@ -955,7 +956,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         LOG.debug( "Bind request : {}", name );
 
         // Create the BindRequest
-        BindRequest bindRequest = createBindRequest( name, StringTools.getBytesUtf8( credentials ) );
+        BindRequest bindRequest = createBindRequest( name, Strings.getBytesUtf8(credentials) );
 
         return bindAsync( bindRequest );
     }
@@ -1093,7 +1094,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         bindRequest.setName( name );
 
         // Set the credentials
-        if ( StringTools.isEmpty( saslMechanism ) )
+        if ( Strings.isEmpty(saslMechanism) )
         {
             // Simple bind
             bindRequest.setSimple( true );
@@ -1171,7 +1172,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
     public BindResponse bindCramMd5( String name, String credentials, String authzId )
         throws LdapException, IOException
     {
-        return bindCramMd5( name, StringTools.getBytesUtf8( credentials ), authzId );
+        return bindCramMd5( name, Strings.getBytesUtf8(credentials), authzId );
     }
 
 
@@ -1239,7 +1240,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
     public BindResponse bindDigestMd5( String name, String credentials, String authzId, String realmName )
         throws LdapException, IOException
     {
-        return bindDigestMd5( name, StringTools.getBytesUtf8( credentials ), authzId, realmName );
+        return bindDigestMd5( name, Strings.getBytesUtf8(credentials), authzId, realmName );
     }
 
 
@@ -1314,7 +1315,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         Control... ctrls )
         throws LdapException, IOException
     {
-        return bindGssApi( name, StringTools.getBytesUtf8( credentials ), realmName, kdcHost, kdcPort, ctrls );
+        return bindGssApi( name, Strings.getBytesUtf8(credentials), realmName, kdcHost, kdcPort, ctrls );
     }
 
 

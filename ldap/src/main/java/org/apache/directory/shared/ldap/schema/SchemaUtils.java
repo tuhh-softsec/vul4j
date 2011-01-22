@@ -33,7 +33,7 @@ import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapException;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -1081,7 +1081,7 @@ public final class SchemaUtils
 
         buf.append( " FQCN " ).append( description.getFqcn() );
 
-        if ( !StringTools.isEmpty( description.getBytecode() ) )
+        if ( !Strings.isEmpty(description.getBytecode()) )
         {
             buf.append( " BYTECODE " ).append( description.getBytecode() );
         }
@@ -1150,7 +1150,7 @@ public final class SchemaUtils
             
             for ( String option:res )
             {
-                if ( !StringTools.isEmpty( option ) )
+                if ( !Strings.isEmpty(option) )
                 {
                     options.add( option );
                 }

@@ -36,7 +36,9 @@ import javax.naming.NamingException;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
+import org.apache.directory.shared.util.Hex;
 import org.apache.directory.shared.util.Strings;
+import org.apache.directory.shared.util.Unicode;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -54,12 +56,12 @@ public class StringToolsTest
     public void testDecodeHexString() throws Exception
     {
         // weird stuff - corner cases
-        try{assertEquals( "", StringTools.decodeHexString( "" ) ); fail("should not get here");} catch( NamingException e ){}
-        assertEquals( "", StringTools.decodeHexString( "#" ) );
-        assertEquals( "F", StringTools.decodeHexString( "#46" ) );
-        try{assertEquals( "F", StringTools.decodeHexString( "46" ) ); fail("should not get here");} catch( NamingException e ){}
+        try{assertEquals( "", Hex.decodeHexString("") ); fail("should not get here");} catch( NamingException e ){}
+        assertEquals( "", Hex.decodeHexString("#") );
+        assertEquals( "F", Hex.decodeHexString("#46") );
+        try{assertEquals( "F", Hex.decodeHexString("46") ); fail("should not get here");} catch( NamingException e ){}
 
-        assertEquals( "Ferry", StringTools.decodeHexString( "#4665727279" ) );
+        assertEquals( "Ferry", Hex.decodeHexString("#4665727279") );
     }
     
     
@@ -99,8 +101,8 @@ public class StringToolsTest
     @Test
     public void testOneByteChar()
     {
-        char res = StringTools.bytesToChar( new byte[]
-            { 0x30 } );
+        char res = Unicode.bytesToChar(new byte[]
+                {0x30});
 
         assertEquals( '0', res );
     }
@@ -109,8 +111,8 @@ public class StringToolsTest
     @Test
     public void testOneByteChar00()
     {
-        char res = StringTools.bytesToChar( new byte[]
-            { 0x00 } );
+        char res = Unicode.bytesToChar(new byte[]
+                {0x00});
 
         assertEquals( 0x00, res );
     }
@@ -119,8 +121,8 @@ public class StringToolsTest
     @Test
     public void testOneByteChar7F()
     {
-        char res = StringTools.bytesToChar( new byte[]
-            { 0x7F } );
+        char res = Unicode.bytesToChar(new byte[]
+                {0x7F});
 
         assertEquals( 0x7F, res );
     }
@@ -129,8 +131,8 @@ public class StringToolsTest
     @Test
     public void testTwoBytesChar()
     {
-        char res = StringTools.bytesToChar( new byte[]
-            { ( byte ) 0xCE, ( byte ) 0x91 } );
+        char res = Unicode.bytesToChar(new byte[]
+                {(byte) 0xCE, (byte) 0x91});
 
         assertEquals( 0x0391, res );
     }
@@ -139,8 +141,8 @@ public class StringToolsTest
     @Test
     public void testThreeBytesChar()
     {
-        char res = StringTools.bytesToChar( new byte[]
-            { ( byte ) 0xE2, ( byte ) 0x89, ( byte ) 0xA2 } );
+        char res = Unicode.bytesToChar(new byte[]
+                {(byte) 0xE2, (byte) 0x89, (byte) 0xA2});
 
         assertEquals( 0x2262, res );
     }
@@ -149,29 +151,29 @@ public class StringToolsTest
     @Test
     public void testcharToBytesOne()
     {
-        assertEquals( "0x00 ", Strings.dumpBytes(StringTools.charToBytes((char) 0x0000)) );
-        assertEquals( "0x61 ", Strings.dumpBytes(StringTools.charToBytes('a')) );
-        assertEquals( "0x7F ", Strings.dumpBytes(StringTools.charToBytes((char) 0x007F)) );
+        assertEquals( "0x00 ", Strings.dumpBytes(Unicode.charToBytes((char) 0x0000)) );
+        assertEquals( "0x61 ", Strings.dumpBytes(Unicode.charToBytes('a')) );
+        assertEquals( "0x7F ", Strings.dumpBytes(Unicode.charToBytes((char) 0x007F)) );
     }
 
 
     @Test
     public void testcharToBytesTwo()
     {
-        assertEquals( "0xC2 0x80 ", Strings.dumpBytes(StringTools.charToBytes((char) 0x0080)) );
-        assertEquals( "0xC3 0xBF ", Strings.dumpBytes(StringTools.charToBytes((char) 0x00FF)) );
-        assertEquals( "0xC4 0x80 ", Strings.dumpBytes(StringTools.charToBytes((char) 0x0100)) );
-        assertEquals( "0xDF 0xBF ", Strings.dumpBytes(StringTools.charToBytes((char) 0x07FF)) );
+        assertEquals( "0xC2 0x80 ", Strings.dumpBytes(Unicode.charToBytes((char) 0x0080)) );
+        assertEquals( "0xC3 0xBF ", Strings.dumpBytes(Unicode.charToBytes((char) 0x00FF)) );
+        assertEquals( "0xC4 0x80 ", Strings.dumpBytes(Unicode.charToBytes((char) 0x0100)) );
+        assertEquals( "0xDF 0xBF ", Strings.dumpBytes(Unicode.charToBytes((char) 0x07FF)) );
     }
 
 
     @Test
     public void testcharToBytesThree()
     {
-        assertEquals( "0xE0 0xA0 0x80 ", Strings.dumpBytes(StringTools.charToBytes((char) 0x0800)) );
-        assertEquals( "0xE0 0xBF 0xBF ", Strings.dumpBytes(StringTools.charToBytes((char) 0x0FFF)) );
-        assertEquals( "0xE1 0x80 0x80 ", Strings.dumpBytes(StringTools.charToBytes((char) 0x1000)) );
-        assertEquals( "0xEF 0xBF 0xBF ", Strings.dumpBytes(StringTools.charToBytes((char) 0xFFFF)) );
+        assertEquals( "0xE0 0xA0 0x80 ", Strings.dumpBytes(Unicode.charToBytes((char) 0x0800)) );
+        assertEquals( "0xE0 0xBF 0xBF ", Strings.dumpBytes(Unicode.charToBytes((char) 0x0FFF)) );
+        assertEquals( "0xE1 0x80 0x80 ", Strings.dumpBytes(Unicode.charToBytes((char) 0x1000)) );
+        assertEquals( "0xEF 0xBF 0xBF ", Strings.dumpBytes(Unicode.charToBytes((char) 0xFFFF)) );
     }
 
 
@@ -184,7 +186,7 @@ public class StringToolsTest
         list.add( "elem2" );
         list.add( "elem3" );
 
-        assertEquals( "elem1, elem2, elem3", StringTools.listToString( list ) );
+        assertEquals( "elem1, elem2, elem3", Strings.listToString(list) );
     }
 
 
@@ -217,7 +219,7 @@ public class StringToolsTest
         map.put( "elem2", new Value( "name2", 2 ) );
         map.put( "elem3", new Value( "name3", 3 ) );
 
-        String result = StringTools.mapToString( map );
+        String result = Strings.mapToString(map);
 
         boolean res = "elem1 = '[name1, 1]', elem2 = '[name2, 2]', elem3 = '[name3, 3]'".equals( result )
             || "elem1 = '[name1, 1]', elem3 = '[name3, 3]', elem2 = '[name2, 2]'".equals( result )
@@ -351,37 +353,37 @@ public class StringToolsTest
     @Test
     public void testTrim()
     {
-        assertEquals( "", StringTools.trim( (String)null ) );
-        assertEquals( "", StringTools.trim( "" ) );
-        assertEquals( "", StringTools.trim( " " ) );
-        assertEquals( "", StringTools.trim( "  " ) );
-        assertEquals( "a", StringTools.trim( "a  " ) );
-        assertEquals( "a", StringTools.trim( "  a" ) );
-        assertEquals( "a", StringTools.trim( "  a  " ) );
+        assertEquals( "", Strings.trim((String) null) );
+        assertEquals( "", Strings.trim("") );
+        assertEquals( "", Strings.trim(" ") );
+        assertEquals( "", Strings.trim("  ") );
+        assertEquals( "a", Strings.trim("a  ") );
+        assertEquals( "a", Strings.trim("  a") );
+        assertEquals( "a", Strings.trim("  a  ") );
     }
 
     @Test
     public void testTrimLeft()
     {
-        assertEquals( "", StringTools.trimLeft( (String)null ) );
-        assertEquals( "", StringTools.trimLeft( "" ) );
-        assertEquals( "", StringTools.trimLeft( " " ) );
-        assertEquals( "", StringTools.trimLeft( "  " ) );
-        assertEquals( "a  ", StringTools.trimLeft( "a  " ) );
-        assertEquals( "a", StringTools.trimLeft( "  a" ) );
-        assertEquals( "a  ", StringTools.trimLeft( "  a  " ) );
+        assertEquals( "", Strings.trimLeft((String) null) );
+        assertEquals( "", Strings.trimLeft("") );
+        assertEquals( "", Strings.trimLeft(" ") );
+        assertEquals( "", Strings.trimLeft("  ") );
+        assertEquals( "a  ", Strings.trimLeft("a  ") );
+        assertEquals( "a", Strings.trimLeft("  a") );
+        assertEquals( "a  ", Strings.trimLeft("  a  ") );
     }
 
     @Test
     public void testTrimRight()
     {
-        assertEquals( "", StringTools.trimRight( (String)null ) );
-        assertEquals( "", StringTools.trimRight( "" ) );
-        assertEquals( "", StringTools.trimRight( " " ) );
-        assertEquals( "", StringTools.trimRight( "  " ) );
-        assertEquals( "a", StringTools.trimRight( "a  " ) );
-        assertEquals( "  a", StringTools.trimRight( "  a" ) );
-        assertEquals( "  a", StringTools.trimRight( "  a  " ) );
+        assertEquals( "", Strings.trimRight((String) null) );
+        assertEquals( "", Strings.trimRight("") );
+        assertEquals( "", Strings.trimRight(" ") );
+        assertEquals( "", Strings.trimRight("  ") );
+        assertEquals( "a", Strings.trimRight("a  ") );
+        assertEquals( "  a", Strings.trimRight("  a") );
+        assertEquals( "  a", Strings.trimRight("  a  ") );
     }
 
 

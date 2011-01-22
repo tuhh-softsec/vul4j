@@ -35,7 +35,7 @@ import org.apache.directory.shared.ldap.ldif.LdifEntry;
 import org.apache.directory.shared.ldap.ldif.LdifReader;
 import org.apache.directory.shared.ldap.schema.registries.AbstractSchemaLoader;
 import org.apache.directory.shared.ldap.schema.registries.Schema;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -243,7 +243,7 @@ public class LdifSchemaLoader extends AbstractSchemaLoader
      */
     private File getSchemaDirectory( Schema schema )
     {
-        return new File( new File( baseDirectory, SchemaConstants.OU_SCHEMA ), "cn=" + StringTools.lowerCase( schema.getSchemaName() ) );
+        return new File( new File( baseDirectory, SchemaConstants.OU_SCHEMA ), "cn=" + Strings.lowerCase(schema.getSchemaName()) );
     }
 
 

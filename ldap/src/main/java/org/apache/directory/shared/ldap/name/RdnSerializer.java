@@ -23,8 +23,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.directory.shared.ldap.util.UTFUtils;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -119,7 +119,7 @@ public final class RdnSerializer
         // Read the normName
         String normName = UTFUtils.readUTF( in );
         
-        if ( StringTools.isEmpty( normName ) )
+        if ( Strings.isEmpty(normName) )
         {
             normName = upName;
         }

@@ -43,7 +43,7 @@ import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueException;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -409,7 +409,7 @@ public class LdifUtilsTest
         assertEquals( ChangeType.ModRdn, reversed.getChangeType() );
         assertFalse( reversed.isDeleteOldRdn() );
         assertEquals( "cn=john doe", reversed.getNewRdn() );
-        assertEquals( "dc=example, dc=com", StringTools.trim( reversed.getNewSuperior() ) );
+        assertEquals( "dc=example, dc=com", Strings.trim(reversed.getNewSuperior()) );
         assertNull( reversed.getEntry() );
     }
 
@@ -441,7 +441,7 @@ public class LdifUtilsTest
         assertEquals( ChangeType.ModRdn, reversed.getChangeType() );
         assertTrue( reversed.isDeleteOldRdn() );
         assertEquals( "cn=john doe", reversed.getNewRdn() );
-        assertEquals( "dc=example, dc=com", StringTools.trim( reversed.getNewSuperior() ) );
+        assertEquals( "dc=example, dc=com", Strings.trim(reversed.getNewSuperior()) );
         assertNull( reversed.getEntry() );
     }
     

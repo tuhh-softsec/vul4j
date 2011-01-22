@@ -32,7 +32,7 @@ import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.AttributeTypeOptions;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.SchemaUtils;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -316,7 +316,7 @@ public class SearchParams
 
         if ( returningAttributesStr.size() != 0 )
         {
-            sb.append( "    returning attributes : " ).append( StringTools.setToString( returningAttributesStr ) )
+            sb.append( "    returning attributes : " ).append( Strings.setToString(returningAttributesStr) )
                 .append( "\n" );
         }
 

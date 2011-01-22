@@ -31,7 +31,7 @@ import java.util.Set;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.registries.Registries;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -263,14 +263,14 @@ public abstract class AbstractSchemaObject implements SchemaObject
             // Fills a set with all the existing names
             for ( String name : this.names )
             {
-                lowerNames.add( StringTools.toLowerCase( name ) );
+                lowerNames.add( Strings.toLowerCase(name) );
             }
 
             for ( String name : namesToAdd )
             {
                 if ( name != null )
                 {
-                    String lowerName = StringTools.toLowerCase( name );
+                    String lowerName = Strings.toLowerCase(name);
                     // Check that the lower cased names is not already present
                     if ( !lowerNames.contains( lowerName ) )
                     {

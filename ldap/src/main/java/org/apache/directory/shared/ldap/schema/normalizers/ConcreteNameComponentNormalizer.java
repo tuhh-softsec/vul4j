@@ -30,7 +30,7 @@ import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.MatchingRule;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Hex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,7 +96,7 @@ public class ConcreteNameComponentNormalizer implements NameComponentNormalizer
                 case 2 :
                     escaped=0;
                     low = c;
-                    newVal[pos++] = (char)StringTools.getHexValue( high, low );
+                    newVal[pos++] = (char) Hex.getHexValue(high, low);
                     
             }
         }

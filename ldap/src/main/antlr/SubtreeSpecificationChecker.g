@@ -32,8 +32,8 @@ import org.apache.directory.shared.ldap.filter.OrNode;
 import org.apache.directory.shared.ldap.filter.NotNode;
 import org.apache.directory.shared.ldap.filter.EqualityNode;
 import org.apache.directory.shared.ldap.filter.FilterParser;
-import org.apache.directory.shared.ldap.util.ComponentsMonitor;
-import org.apache.directory.shared.ldap.util.OptionalComponentsMonitor;
+import org.apache.directory.shared.util.ComponentsMonitor;
+import org.apache.directory.shared.util.OptionalComponentsMonitor;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 
 import org.slf4j.Logger;

@@ -21,7 +21,7 @@ package org.apache.directory.shared.ldap.schema.syntaxCheckers;
 
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Chars;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +44,7 @@ public class UuidSyntaxChecker extends SyntaxChecker
     // Tells if the byte is alphanumeric
     private static boolean isHex( byte b )
     {
-        return StringTools.isHex( b );
+        return Chars.isHex(b);
     }
 
     

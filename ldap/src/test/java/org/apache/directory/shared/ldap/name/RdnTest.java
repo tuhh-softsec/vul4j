@@ -36,7 +36,6 @@ import java.util.Iterator;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.exception.LdapException;
-import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -219,9 +218,9 @@ public class RdnTest
     @Test
     public void testRdnPairCharAttributeValue() throws LdapException
     {
-        String rdn = StringTools.utf8ToString( new byte[]
-            { 'a', '=', '\\', ',', '=', '\\', '+', '\\', '<', '\\', '>', '#', '\\', ';', '\\', '\\', '\\', '"', '\\',
-                'C', '3', '\\', 'A', '9' } );
+        String rdn = Strings.utf8ToString(new byte[]
+                {'a', '=', '\\', ',', '=', '\\', '+', '\\', '<', '\\', '>', '#', '\\', ';', '\\', '\\', '\\', '"', '\\',
+                        'C', '3', '\\', 'A', '9'});
         assertEquals( "a=\\,=\\+\\<\\>#\\;\\\\\\\"\u00E9", new RDN( rdn ).getNormName() );
     }
 
@@ -786,7 +785,7 @@ public class RdnTest
     @Test
     public void testEscapeValueString()
     {
-        String res = RDN.escapeValue( StringTools.getBytesUtf8( "azerty" ) );
+        String res = RDN.escapeValue( Strings.getBytesUtf8("azerty") );
 
         assertEquals( "azerty", res );
     }
@@ -795,7 +794,7 @@ public class RdnTest
     @Test
     public void testEscapeValueStringSpecial()
     {
-        String res = RDN.escapeValue( StringTools.getBytesUtf8( "\\#,+;<>=\" " ) );
+        String res = RDN.escapeValue( Strings.getBytesUtf8("\\#,+;<>=\" ") );
 
         assertEquals( "\\\\#\\,\\+\\;\\<\\>\\=\\\"\\ ", res );
     }

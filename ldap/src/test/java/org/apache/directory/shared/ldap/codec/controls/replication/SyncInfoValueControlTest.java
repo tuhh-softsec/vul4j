@@ -35,7 +35,6 @@ import org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValue
 import org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValue.SyncInfoValueControlContainer;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValue.SyncInfoValueControlDecoder;
 import org.apache.directory.shared.ldap.message.control.replication.SynchronizationInfoEnum;
-import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -82,7 +81,7 @@ public class SyncInfoValueControlTest
 
         SyncInfoValueControl syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.NEW_COOKIE, syncInfoValue.getType() );
-        assertEquals( "abc", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
+        assertEquals( "abc", Strings.utf8ToString(syncInfoValue.getCookie()) );
         
         // Check the encoding
         try
@@ -141,7 +140,7 @@ public class SyncInfoValueControlTest
 
         SyncInfoValueControl syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.NEW_COOKIE, syncInfoValue.getType() );
-        assertEquals( "", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
+        assertEquals( "", Strings.utf8ToString(syncInfoValue.getCookie()) );
         
         // Check the encoding
         try
@@ -205,7 +204,7 @@ public class SyncInfoValueControlTest
 
         SyncInfoValueControl syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.REFRESH_DELETE, syncInfoValue.getType() );
-        assertEquals( "abc", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
+        assertEquals( "abc", Strings.utf8ToString(syncInfoValue.getCookie()) );
         assertTrue( syncInfoValue.isRefreshDone() );
         
         // Check the encoding
@@ -269,7 +268,7 @@ public class SyncInfoValueControlTest
 
         SyncInfoValueControl syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.REFRESH_DELETE, syncInfoValue.getType() );
-        assertEquals( "abc", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
+        assertEquals( "abc", Strings.utf8ToString(syncInfoValue.getCookie()) );
         assertFalse( syncInfoValue.isRefreshDone() );
         
         // Check the encoding
@@ -333,7 +332,7 @@ public class SyncInfoValueControlTest
 
         SyncInfoValueControl syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.REFRESH_DELETE, syncInfoValue.getType() );
-        assertEquals( "abc", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
+        assertEquals( "abc", Strings.utf8ToString(syncInfoValue.getCookie()) );
         assertTrue( syncInfoValue.isRefreshDone() );
         
         // Check the encoding
@@ -396,7 +395,7 @@ public class SyncInfoValueControlTest
 
         SyncInfoValueControl syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.REFRESH_DELETE, syncInfoValue.getType() );
-        assertEquals( "", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
+        assertEquals( "", Strings.utf8ToString(syncInfoValue.getCookie()) );
         assertFalse( syncInfoValue.isRefreshDone() );
         
         // Check the encoding
@@ -457,7 +456,7 @@ public class SyncInfoValueControlTest
 
         SyncInfoValueControl syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.REFRESH_DELETE, syncInfoValue.getType() );
-        assertEquals( "", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
+        assertEquals( "", Strings.utf8ToString(syncInfoValue.getCookie()) );
         assertTrue( syncInfoValue.isRefreshDone() );
         
         // Check the encoding
@@ -522,7 +521,7 @@ public class SyncInfoValueControlTest
 
         SyncInfoValueControl syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.REFRESH_PRESENT, syncInfoValue.getType() );
-        assertEquals( "abc", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
+        assertEquals( "abc", Strings.utf8ToString(syncInfoValue.getCookie()) );
         assertTrue( syncInfoValue.isRefreshDone() );
         
         // Check the encoding
@@ -586,7 +585,7 @@ public class SyncInfoValueControlTest
 
         SyncInfoValueControl syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.REFRESH_PRESENT, syncInfoValue.getType() );
-        assertEquals( "abc", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
+        assertEquals( "abc", Strings.utf8ToString(syncInfoValue.getCookie()) );
         assertFalse( syncInfoValue.isRefreshDone() );
         
         // Check the encoding
@@ -650,7 +649,7 @@ public class SyncInfoValueControlTest
 
         SyncInfoValueControl syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.REFRESH_PRESENT, syncInfoValue.getType() );
-        assertEquals( "abc", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
+        assertEquals( "abc", Strings.utf8ToString(syncInfoValue.getCookie()) );
         assertTrue( syncInfoValue.isRefreshDone() );
         
         // Check the encoding
@@ -713,7 +712,7 @@ public class SyncInfoValueControlTest
 
         SyncInfoValueControl syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.REFRESH_PRESENT, syncInfoValue.getType() );
-        assertEquals( "", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
+        assertEquals( "", Strings.utf8ToString(syncInfoValue.getCookie()) );
         assertFalse( syncInfoValue.isRefreshDone() );
         
         // Check the encoding
@@ -774,7 +773,7 @@ public class SyncInfoValueControlTest
 
         SyncInfoValueControl syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.REFRESH_PRESENT, syncInfoValue.getType() );
-        assertEquals( "", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
+        assertEquals( "", Strings.utf8ToString(syncInfoValue.getCookie()) );
         assertTrue( syncInfoValue.isRefreshDone() );
         
         // Check the encoding
@@ -965,7 +964,7 @@ public class SyncInfoValueControlTest
         
         SyncInfoValueControl syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.SYNC_ID_SET, syncInfoValue.getType() );
-        assertEquals( "", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
+        assertEquals( "", Strings.utf8ToString(syncInfoValue.getCookie()) );
         assertFalse( syncInfoValue.isRefreshDeletes() );
         assertEquals( 0, syncInfoValue.getSyncUUIDs().size() );
         
@@ -1037,7 +1036,7 @@ public class SyncInfoValueControlTest
         }
         SyncInfoValueControl syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.SYNC_ID_SET, syncInfoValue.getType() );
-        assertEquals( "", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
+        assertEquals( "", Strings.utf8ToString(syncInfoValue.getCookie()) );
         assertFalse( syncInfoValue.isRefreshDeletes() );
         assertEquals( 3, syncInfoValue.getSyncUUIDs().size() );
         
@@ -1120,7 +1119,7 @@ public class SyncInfoValueControlTest
         }
         SyncInfoValueControl syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.SYNC_ID_SET, syncInfoValue.getType() );
-        assertEquals( "abc", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
+        assertEquals( "abc", Strings.utf8ToString(syncInfoValue.getCookie()) );
         assertFalse( syncInfoValue.isRefreshDeletes() );
         assertEquals( 0, syncInfoValue.getSyncUUIDs().size() );
         
@@ -1195,7 +1194,7 @@ public class SyncInfoValueControlTest
         
         SyncInfoValueControl syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.SYNC_ID_SET, syncInfoValue.getType() );
-        assertEquals( "abc", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
+        assertEquals( "abc", Strings.utf8ToString(syncInfoValue.getCookie()) );
         assertFalse( syncInfoValue.isRefreshDeletes() );
         assertEquals( 3, syncInfoValue.getSyncUUIDs().size() );
         
@@ -1279,7 +1278,7 @@ public class SyncInfoValueControlTest
         }
         SyncInfoValueControl syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.SYNC_ID_SET, syncInfoValue.getType() );
-        assertEquals( "", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
+        assertEquals( "", Strings.utf8ToString(syncInfoValue.getCookie()) );
         assertTrue( syncInfoValue.isRefreshDeletes() );
         assertEquals( 0, syncInfoValue.getSyncUUIDs().size() );
         
@@ -1353,7 +1352,7 @@ public class SyncInfoValueControlTest
         }
         SyncInfoValueControl syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.SYNC_ID_SET, syncInfoValue.getType() );
-        assertEquals( "", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
+        assertEquals( "", Strings.utf8ToString(syncInfoValue.getCookie()) );
         assertTrue( syncInfoValue.isRefreshDeletes() );
         assertEquals( 3, syncInfoValue.getSyncUUIDs().size() );
         
@@ -1438,7 +1437,7 @@ public class SyncInfoValueControlTest
         }
         SyncInfoValueControl syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.SYNC_ID_SET, syncInfoValue.getType() );
-        assertEquals( "abc", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
+        assertEquals( "abc", Strings.utf8ToString(syncInfoValue.getCookie()) );
         assertTrue( syncInfoValue.isRefreshDeletes() );
         assertEquals( 0, syncInfoValue.getSyncUUIDs().size() );
         
@@ -1515,7 +1514,7 @@ public class SyncInfoValueControlTest
         
         SyncInfoValueControl syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.SYNC_ID_SET, syncInfoValue.getType() );
-        assertEquals( "abc", StringTools.utf8ToString( syncInfoValue.getCookie() ) );
+        assertEquals( "abc", Strings.utf8ToString(syncInfoValue.getCookie()) );
         assertTrue( syncInfoValue.isRefreshDeletes() );
         assertEquals( 3, syncInfoValue.getSyncUUIDs().size() );
         

@@ -31,7 +31,6 @@ import org.apache.directory.shared.ldap.message.LdapResult;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.ResultResponse;
 import org.apache.directory.shared.ldap.name.DN;
-import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,7 +94,7 @@ public class MatchedDNAction extends GrammarAction
                 case INVALID_DN_SYNTAX:
                 case ALIAS_DEREFERENCING_PROBLEM:
                     byte[] dnBytes = tlv.getValue().getData();
-                    String dnStr = StringTools.utf8ToString( dnBytes );
+                    String dnStr = Strings.utf8ToString(dnBytes);
 
                     try
                     {

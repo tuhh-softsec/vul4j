@@ -45,7 +45,7 @@ import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -670,7 +670,7 @@ public class LdifRevertorTest
         assertEquals( ChangeType.ModDn, reversed.getChangeType() );
         assertFalse( reversed.isDeleteOldRdn() );
         assertEquals( rdn.getName(), reversed.getNewRdn() );
-        assertEquals( "dc=example, dc=com", StringTools.trim( reversed.getNewSuperior() ) );
+        assertEquals( "dc=example, dc=com", Strings.trim(reversed.getNewSuperior()) );
         assertNull( reversed.getEntry() );
     }
 

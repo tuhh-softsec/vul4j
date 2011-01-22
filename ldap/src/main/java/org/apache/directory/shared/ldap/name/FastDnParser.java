@@ -27,8 +27,8 @@ import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
-import org.apache.directory.shared.ldap.util.Position;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Position;
+import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -169,7 +169,7 @@ public enum FastDnParser
         // here we only match "simple" values
         // stops at \ + # " -> Too Complex Exception
         String upValue = matchValue( name, pos );
-        String value = StringTools.trimRight( upValue );
+        String value = Strings.trimRight(upValue);
         // TODO: trim, normalize, etc
 
         // SPACE*

@@ -53,8 +53,9 @@ import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.DnParser;
 import org.apache.directory.shared.ldap.name.RDN;
-import org.apache.directory.shared.ldap.util.Base64;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Base64;
+import org.apache.directory.shared.util.Chars;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -399,7 +400,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
     // <fill> ::= ' ' <fill> | e
     private void parseFill( char[] document )
     {
-        while ( StringTools.isCharASCII( document, position, ' ' ) )
+        while ( Chars.isCharASCII(document, position, ' ') )
         {
             position++;
         }
@@ -423,7 +424,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
 
         while ( true )
         {
-            if ( StringTools.isDigit( document, position ) )
+            if ( Chars.isDigit(document, position) )
             {
                 position++;
             }
@@ -454,7 +455,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
     {
         ChangeType operation = ChangeType.Add;
 
-        String modOp = StringTools.trim( line.substring( "changetype:".length() + 1 ) );
+        String modOp = Strings.trim(line.substring("changetype:".length() + 1));
 
         if ( "add".equalsIgnoreCase( modOp ) )
         {
@@ -571,13 +572,13 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
 
             if ( c == ':' )
             {
-                String value = StringTools.trim( line.substring( pos + 2 ) );
+                String value = Strings.trim(line.substring(pos + 2));
 
                 return Base64.decode( value.toCharArray() );
             }
             else
             {
-                return StringTools.trim( line.substring( pos + 1 ) );
+                return Strings.trim(line.substring(pos + 1));
             }
         }
         else
@@ -603,13 +604,13 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
 
             if ( c == ':' )
             {
-                String value = StringTools.trim( line.substring( pos + 2 ) );
+                String value = Strings.trim(line.substring(pos + 2));
 
-                return Base64.decode( value.toCharArray() );
+                return Base64.decode(value.toCharArray());
             }
             else if ( c == '<' )
             {
-                String urlName = StringTools.trim( line.substring( pos + 2 ) );
+                String urlName = Strings.trim(line.substring(pos + 2));
 
                 try
                 {
@@ -691,7 +692,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
             }
             else
             {
-                return StringTools.trim( line.substring( pos + 1 ) );
+                return Strings.trim(line.substring(pos + 1));
             }
         }
         else
@@ -740,7 +741,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
 
         int initPos = pos;
 
-        while ( StringTools.isCharASCII( controlValue, pos, '.' ) || StringTools.isDigit( controlValue, pos ) )
+        while ( Chars.isCharASCII(controlValue, pos, '.') || Chars.isDigit(controlValue, pos) )
         {
             pos++;
         }
@@ -766,7 +767,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
 
         // Get the criticality, if any
         // Skip the <fill>
-        while ( StringTools.isCharASCII( controlValue, pos, ' ' ) )
+        while ( Chars.isCharASCII(controlValue, pos, ' ') )
         {
             pos++;
         }
@@ -805,13 +806,13 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
         {
             // We have a value. It can be a normal value, a base64 encoded value
             // or a file contained value
-            if ( StringTools.isCharASCII( controlValue, criticalPos + 1, ':' ) )
+            if ( Chars.isCharASCII(controlValue, criticalPos + 1, ':') )
             {
                 // Base 64 encoded value
                 byte[] value = Base64.decode( line.substring( criticalPos + 2 ).toCharArray() );
                 control.setValue( value );
             }
-            else if ( StringTools.isCharASCII( controlValue, criticalPos + 1, '<' ) )
+            else if ( Chars.isCharASCII(controlValue, criticalPos + 1, '<') )
             {
                 // File contained value
                 throw new NotImplementedException( "See DIRSERVER-1547" );
@@ -921,7 +922,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
                 }
                 else
                 {
-                    entry.setNewRdn( StringTools.utf8ToString( ( byte[] ) attributeValue ) );
+                    entry.setNewRdn( Strings.utf8ToString((byte[]) attributeValue) );
                 }
             }
             else
@@ -1028,7 +1029,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
                     throw new LdapLdifException( I18n.err( I18n.ERR_12042_BAD_MODIFY_SEPARATOR_2 ) );
                 }
 
-                modified = StringTools.trim( line.substring( "add:".length() ) );
+                modified = Strings.trim(line.substring("add:".length()));
                 modificationType = ModificationOperation.ADD_ATTRIBUTE;
                 attribute = new DefaultEntryAttribute( modified );
 
@@ -1042,7 +1043,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
                     throw new LdapLdifException( I18n.err( I18n.ERR_12042_BAD_MODIFY_SEPARATOR_2 ) );
                 }
 
-                modified = StringTools.trim( line.substring( "delete:".length() ) );
+                modified = Strings.trim(line.substring("delete:".length()));
                 modificationType = ModificationOperation.REMOVE_ATTRIBUTE;
                 attribute = new DefaultEntryAttribute( modified );
 
@@ -1056,7 +1057,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
                     throw new LdapLdifException( I18n.err( I18n.ERR_12042_BAD_MODIFY_SEPARATOR_2 ) );
                 }
 
-                modified = StringTools.trim( line.substring( "replace:".length() ) );
+                modified = Strings.trim(line.substring("replace:".length()));
                 modificationType = ModificationOperation.REPLACE_ATTRIBUTE;
                 attribute = new DefaultEntryAttribute( modified );
 
@@ -1189,7 +1190,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
                         }
                         else
                         {
-                            entry.setNewSuperior( StringTools.utf8ToString( ( byte[] ) attributeValue ) );
+                            entry.setNewSuperior( Strings.utf8ToString((byte[]) attributeValue) );
                         }
                     }
                     else
@@ -1560,7 +1561,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
      */
     public List<LdifEntry> parseLdifFile( String fileName ) throws LdapLdifException
     {
-        return parseLdifFile( fileName, Charset.forName( StringTools.getDefaultCharsetName() ).toString() );
+        return parseLdifFile( fileName, Charset.forName( Strings.getDefaultCharsetName() ).toString() );
     }
 
 
@@ -1576,7 +1577,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
     @SuppressWarnings("PMD.EmptyCatchBlock")
     public List<LdifEntry> parseLdifFile( String fileName, String encoding ) throws LdapLdifException
     {
-        if ( StringTools.isEmpty( fileName ) )
+        if ( Strings.isEmpty(fileName) )
         {
             LOG.error( I18n.err( I18n.ERR_12064_EMPTY_FILE_NAME ) );
             throw new LdapLdifException( I18n.err( I18n.ERR_12064_EMPTY_FILE_NAME ) );
@@ -1640,7 +1641,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
     {
         LOG.debug( "Starts parsing ldif buffer" );
 
-        if ( StringTools.isEmpty( ldif ) )
+        if ( Strings.isEmpty(ldif) )
         {
             return new ArrayList<LdifEntry>();
         }

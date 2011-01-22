@@ -39,7 +39,7 @@ import org.apache.directory.shared.ldap.schema.registries.AbstractSchemaLoader;
 import org.apache.directory.shared.ldap.schema.registries.Schema;
 import org.apache.directory.shared.ldap.schemaextractor.impl.DefaultSchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schemaextractor.impl.ResourceMap;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -160,7 +160,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
     private String getSchemaDirectory( Schema schema )
     {
         return "schema" + SEPARATOR_PATTERN + "ou=schema" + SEPARATOR_PATTERN
-                        + "cn=" + StringTools.lowerCase( schema.getSchemaName() ) + SEPARATOR_PATTERN;
+                        + "cn=" + Strings.lowerCase(schema.getSchemaName()) + SEPARATOR_PATTERN;
     }
 
 

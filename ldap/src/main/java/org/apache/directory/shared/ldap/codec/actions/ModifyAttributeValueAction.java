@@ -26,7 +26,8 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.message.ModifyRequest;
 import org.apache.directory.shared.ldap.message.ModifyRequestImpl;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.StringConstants;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,7 +66,7 @@ public class ModifyAttributeValueAction extends GrammarAction
         TLV tlv = ldapMessageContainer.getCurrentTLV();
 
         // Store the value. It can't be null
-        byte[] value = StringTools.EMPTY_BYTES;
+        byte[] value = StringConstants.EMPTY_BYTES;
 
         if ( tlv.getLength() == 0 )
         {
@@ -82,7 +83,7 @@ public class ModifyAttributeValueAction extends GrammarAction
             else
             {
                 ( ( ModifyRequestImpl ) modifyRequest )
-                    .addAttributeValue( StringTools.utf8ToString( ( byte[] ) value ) );
+                    .addAttributeValue( Strings.utf8ToString((byte[]) value) );
             }
         }
 

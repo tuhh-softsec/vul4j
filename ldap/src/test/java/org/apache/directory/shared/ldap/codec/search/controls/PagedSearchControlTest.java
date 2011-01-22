@@ -35,7 +35,7 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedResultsControl;
 import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedResultsControlContainer;
 import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedResultsControlDecoder;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.StringConstants;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -81,7 +81,7 @@ public class PagedSearchControlTest
 
         PagedResultsControl pagedSearch = container.getPagedSearchControl();
         assertEquals( 32, pagedSearch.getSize() );
-        assertTrue( Arrays.equals( StringTools.getBytesUtf8( "test" ), 
+        assertTrue( Arrays.equals( Strings.getBytesUtf8("test"),
             pagedSearch.getCookie() ) );
             
         bb.flip();
@@ -103,7 +103,7 @@ public class PagedSearchControlTest
 
         PagedResultsControl ctrl = new PagedResultsControl();
         ctrl.setSize( 32 );
-        ctrl.setCookie( StringTools.getBytesUtf8( "test" ) );
+        ctrl.setCookie( Strings.getBytesUtf8("test") );
 
         bb = ctrl.encode( ByteBuffer.allocate( ctrl.computeLength() ) );
         String decoded = Strings.dumpBytes(bb.array());
@@ -232,7 +232,7 @@ public class PagedSearchControlTest
 
         PagedResultsControl pagedSearch = container.getPagedSearchControl();
         assertEquals( Integer.MAX_VALUE, pagedSearch.getSize() );
-        assertTrue( Arrays.equals( StringTools.getBytesUtf8( "test" ), 
+        assertTrue( Arrays.equals( Strings.getBytesUtf8("test"),
             pagedSearch.getCookie() ) );
             
         bb.flip();
@@ -255,7 +255,7 @@ public class PagedSearchControlTest
 
         PagedResultsControl ctrl = new PagedResultsControl();
         ctrl.setSize( -1 );
-        ctrl.setCookie( StringTools.getBytesUtf8( "test" ) );
+        ctrl.setCookie( Strings.getBytesUtf8("test") );
 
         bb = ctrl.encode( ByteBuffer.allocate( ctrl.computeLength() ) );
         String decoded = Strings.dumpBytes(bb.array());
@@ -327,7 +327,7 @@ public class PagedSearchControlTest
         PagedResultsControl pagedSearch = container.getPagedSearchControl();
         assertEquals( 32, pagedSearch.getSize() );
         assertNotNull( pagedSearch.getCookie() );
-        assertEquals( StringTools.EMPTY_BYTES, pagedSearch.getCookie() );
+        assertEquals( StringConstants.EMPTY_BYTES, pagedSearch.getCookie() );
             
         ByteBuffer buffer = ByteBuffer.allocate( 0x23 );
         buffer.put( new byte[]

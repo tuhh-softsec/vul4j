@@ -47,6 +47,9 @@ import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.MatchingRule;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer;
+import org.apache.directory.shared.util.Chars;
+import org.apache.directory.shared.util.Hex;
+import org.apache.directory.shared.util.Position;
 import org.apache.directory.shared.util.Strings;
 
 
@@ -327,7 +330,7 @@ public final class AttributeUtils
                             break;
 
                         case 2:
-                            int high = StringTools.getHexValue( c );
+                            int high = Hex.getHexValue(c);
 
                             if ( high == -1 )
                             {
@@ -340,7 +343,7 @@ public final class AttributeUtils
                             break;
 
                         case 3:
-                            int low = StringTools.getHexValue( c );
+                            int low = Hex.getHexValue(c);
 
                             if ( low == -1 )
                             {
@@ -701,7 +704,7 @@ public final class AttributeUtils
                         }
                         else if ( attr instanceof byte[] )
                         {
-                            String string = StringTools.utf8ToString( ( byte[] ) attr );
+                            String string = Strings.utf8ToString((byte[]) attr);
 
                             sb.append( tabs ).append( "        Val[" ).append( j ).append( "] : " );
                             sb.append( string ).append( '/' );
@@ -783,7 +786,7 @@ public final class AttributeUtils
             pos.start++;
 
             // We have an option
-            if ( !StringTools.isAlphaDigitMinus( str, pos.start ) )
+            if ( !Chars.isAlphaDigitMinus(str, pos.start) )
             {
                 // We must have at least one keychar
                 throw new ParseException( I18n.err( I18n.ERR_04343 ), pos.start );
@@ -791,7 +794,7 @@ public final class AttributeUtils
 
             pos.start++;
 
-            while ( StringTools.isAlphaDigitMinus( str, pos.start ) )
+            while ( Chars.isAlphaDigitMinus(str, pos.start) )
             {
                 pos.start++;
             }
@@ -809,7 +812,7 @@ public final class AttributeUtils
      */
     private static boolean parseNumber( String filter, Position pos )
     {
-        char c = StringTools.charAt( filter, pos.start );
+        char c = Strings.charAt(filter, pos.start);
 
         switch ( c )
         {
@@ -835,7 +838,7 @@ public final class AttributeUtils
                 return false;
         }
 
-        while ( StringTools.isDigit( filter, pos.start ) )
+        while ( Chars.isDigit(filter, pos.start) )
         {
             pos.start++;
         }
@@ -912,7 +915,7 @@ public final class AttributeUtils
     public static String parseAttribute( String str, Position pos, boolean withOption ) throws ParseException
     {
         // We must have an OID or an DESCR first
-        char c = StringTools.charAt( str, pos.start );
+        char c = Strings.charAt(str, pos.start);
 
         if ( c == '\0' )
         {
@@ -921,12 +924,12 @@ public final class AttributeUtils
 
         int start = pos.start;
 
-        if ( StringTools.isAlpha( c ) )
+        if ( Chars.isAlpha(c) )
         {
             // A DESCR
             pos.start++;
 
-            while ( StringTools.isAlphaDigitMinus( str, pos.start ) )
+            while ( Chars.isAlphaDigitMinus(str, pos.start) )
             {
                 pos.start++;
             }
@@ -939,7 +942,7 @@ public final class AttributeUtils
 
             return str.substring( start, pos.start );
         }
-        else if ( StringTools.isDigit( c ) )
+        else if ( Chars.isDigit(c) )
         {
             // An OID
             pos.start++;

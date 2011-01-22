@@ -19,7 +19,7 @@
  */
 package org.apache.directory.shared.ldap.subtree;
 
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 
 /**
  * The Administrative roles
@@ -60,7 +60,7 @@ public enum AdministrativeRole
      */
     private AdministrativeRole( String role )
     {
-        this.role = StringTools.toLowerCase( StringTools.trim( role ) );
+        this.role = Strings.toLowerCase(Strings.trim(role));
     }
 
 
