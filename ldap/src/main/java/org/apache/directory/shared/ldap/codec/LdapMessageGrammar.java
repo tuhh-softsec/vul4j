@@ -120,7 +120,6 @@ import org.apache.directory.shared.ldap.message.UnbindRequestImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
-import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.directory.shared.util.StringConstants;
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
@@ -1239,7 +1238,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     }
                     else
                     {
-                        type = StringTools.getType( tlv.getValue().getData() );
+                        type = getType(tlv.getValue().getData());
 
                         try
                         {
@@ -1615,7 +1614,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     }
                     else
                     {
-                        type = StringTools.getType( tlv.getValue().getData() );
+                        type = getType(tlv.getValue().getData());
                         ( ( ModifyRequestImpl ) modifyRequest ).addAttributeTypeAndValues( type );
                     }
 
@@ -1956,7 +1955,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                             addRequest.getEntry().getDn(), null );
                     }
 
-                    String type = StringTools.getType( tlv.getValue().getData() );
+                    String type = getType(tlv.getValue().getData());
 
                     try
                     {
@@ -2602,7 +2601,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                             compareRequest.getName(), null );
                     }
 
-                    String type = StringTools.getType( tlv.getValue().getData() );
+                    String type = getType(tlv.getValue().getData());
                     compareRequest.setAttributeId( type );
 
                     if ( IS_DEBUG )
@@ -5050,7 +5049,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     }
                     else
                     {
-                        String type = StringTools.getType( tlv.getValue().getData() );
+                        String type = getType(tlv.getValue().getData());
                         substringFilter.setType( type );
 
                         // We now have to get back to the nearest filter which
@@ -6599,5 +6598,30 @@ public final class LdapMessageGrammar extends AbstractGrammar
     public static Grammar getInstance()
     {
         return instance;
+    }
+
+    /**
+     * Build an AttributeType froma byte array. An AttributeType contains
+     * only chars within [0-9][a-z][A-Z][-.].
+     *
+     * @param bytes The bytes containing the AttributeType
+     * @return The AttributeType as a String
+     */
+    public static String getType( byte[] bytes )
+    {
+        if ( bytes == null )
+        {
+            return null;
+        }
+
+        char[] chars = new char[bytes.length];
+        int pos = 0;
+
+        for ( byte b:bytes )
+        {
+            chars[pos++] = ( char ) b;
+        }
+
+        return new String( chars );
     }
 }

@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.util;
+package org.apache.directory.shared.util;
 
 
 import static org.junit.Assert.assertEquals;
@@ -31,7 +31,6 @@ import java.util.TimeZone;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.ldap.schema.syntax.GeneralizedTimeSyntaxCheckerTest;
 import org.apache.directory.shared.util.GeneralizedTime.Format;
 import org.apache.directory.shared.util.GeneralizedTime.TimeZoneFormat;
 import org.apache.directory.shared.util.GeneralizedTime;
@@ -525,7 +524,7 @@ public class GeneralizedTimeTest
 
 
     /**
-     * Testcases from {@link GeneralizedTimeSyntaxCheckerTest#testCorrectCase()}.
+     * Testcases from GeneralizedTimeSyntaxCheckerTest#testCorrectCase().
      */
     @Test
     public void testGeneralizedTimeSyntaxCheckerTestCorrectCase() throws ParseException
@@ -540,7 +539,7 @@ public class GeneralizedTimeTest
 
 
     /**
-     * Testcases from {@link GeneralizedTimeSyntaxCheckerTest#testErrorCase()}.
+     * Testcases from GeneralizedTimeSyntaxCheckerTest#testErrorCase().
      */
     @Test
     public void testGeneralizedTimeSyntaxCheckerTestErrorCase()

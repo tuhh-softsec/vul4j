@@ -18,28 +18,40 @@
  *  
  */
 
-package org.apache.directory.shared.ldap.codec.util;
+package org.apache.directory.shared.util.exception;
 
 
 /**
- * Thrown when a Decoder has encountered a failure condition during a decode.
+ * This exception is thrown when a Backend operation is either temporarily
+ * unsupported or perminantly unsupported as part of its implementation. Write
+ * operations on a backend set to readonly throw a type of unsupported exception
+ * called ReadOnlyException.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class UrlDecoderException extends Exception
+public class NotImplementedException extends RuntimeException
 {
-    private static final long serialVersionUID = 1L;
+    /** The serialVersionUID. */
+    static final long serialVersionUID = -5899307402675964298L;
 
 
     /**
-     * Creates a DecoderException
-     * 
-     * @param pMessage
-     *            A message with meaning to a human
+     * Constructs an Exception with a detailed message.
      */
-    public UrlDecoderException(String pMessage)
+    public NotImplementedException()
     {
-        super( pMessage );
+        super( "N O T   I M P L E M E N T E D   Y E T !" );
     }
 
+
+    /**
+     * Constructs an Exception with a detailed message.
+     * 
+     * @param msg
+     *            The message associated with the exception.
+     */
+    public NotImplementedException( String msg )
+    {
+        super( "N O T   I M P L E M E N T E D   Y E T !\n" + msg );
+    }
 }

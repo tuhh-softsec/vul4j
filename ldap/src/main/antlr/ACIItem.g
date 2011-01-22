@@ -45,8 +45,8 @@ import org.apache.directory.shared.ldap.subtree.SubtreeSpecificationModifier;
 import org.apache.directory.shared.util.ComponentsMonitor;
 import org.apache.directory.shared.util.MandatoryAndOptionalComponentsMonitor;
 import org.apache.directory.shared.util.MandatoryComponentsMonitor;
-import org.apache.directory.shared.ldap.util.NamespaceTools;
-import org.apache.directory.shared.ldap.util.NoDuplicateKeysMap;
+import org.apache.directory.shared.ldap.name.DnUtils;
+import org.apache.directory.shared.util.NoDuplicateKeysMap;
 import org.apache.directory.shared.util.OptionalComponentsMonitor;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
@@ -505,8 +505,8 @@ attributeValue
         for ( RDN rdn : attributeTypeAndValueSetAsDn )
         {
             attributeTypeAndValue = rdn.getNormName();
-            attributeType = NamespaceTools.getRdnAttribute( attributeTypeAndValue );
-            attributeValue = NamespaceTools.getRdnValue( attributeTypeAndValue );
+            attributeType = DnUtils.getRdnAttribute( attributeTypeAndValue );
+            attributeValue = DnUtils.getRdnValue( attributeTypeAndValue );
             
             attributeSet.add( new DefaultEntryAttribute( attributeType, attributeValue ) );
             log.debug( "An attributeTypeAndValue from the set: " + attributeType + "=" +  attributeValue);

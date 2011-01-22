@@ -25,18 +25,14 @@ import java.io.UnsupportedEncodingException;
 import javax.naming.directory.Attributes;
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
-import org.apache.directory.shared.ldap.entry.Entry;
-import org.apache.directory.shared.ldap.entry.EntryAttribute;
-import org.apache.directory.shared.ldap.entry.Modification;
-import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.entry.*;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
-import org.apache.directory.shared.ldap.util.AttributeUtils;
+import org.apache.directory.shared.ldap.entry.AttributeUtils;
 import org.apache.directory.shared.util.Base64;
 import org.apache.directory.shared.util.Strings;
 
@@ -180,7 +176,7 @@ public final class LdifUtils
      */
     public static String convertToLdif( Attributes attrs, int length ) throws LdapException
     {
-        return convertAttributesToLdif( AttributeUtils.toClientEntry( attrs, null ), length );
+        return convertAttributesToLdif( AttributeUtils.toClientEntry(attrs, null), length );
     }
 
 

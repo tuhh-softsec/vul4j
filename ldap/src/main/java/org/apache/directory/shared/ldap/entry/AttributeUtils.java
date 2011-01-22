@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.util;
+package org.apache.directory.shared.ldap.entry;
 
 
 import java.text.ParseException;
@@ -447,58 +447,6 @@ public final class AttributeUtils
         return false;
     }
 
-
-    /*
-    public static boolean containsAnyValues( Attribute attr, Object[] compared, AttributeType type )
-        throws NamingException
-    {
-        // quick bypass test
-        for ( Object object : compared )
-        {
-            if ( attr.contains( object ) )
-            {
-                return true;
-            }
-        }
-
-        Normalizer normalizer = type.getEquality().getNormalizer();
-
-        if ( type.getSyntax().isHumanReadable() )
-        {
-            for ( Object object : compared )
-            {
-                String comparedStr = ( String ) normalizer.normalize( object );
-
-                for ( int ii = attr.size(); ii >= 0; ii-- )
-                {
-                    String value = ( String ) attr.get( ii );
-
-                    if ( comparedStr.equals( normalizer.normalize( value ) ) )
-                    {
-                        return true;
-                    }
-                }
-            }
-        }
-        else
-        {
-            for ( Object object : compared )
-            {
-                byte[] comparedBytes = ( byte[] ) object;
-
-                for ( int ii = attr.size(); ii >= 0; ii-- )
-                {
-                    if ( ArrayUtils.isEquals( comparedBytes, attr.get( ii ) ) )
-                    {
-                        return true;
-                    }
-                }
-            }
-        }
-
-        return false;
-    }
-    */
 
     /**
      * Creates a new attribute which contains the values representing the
@@ -1070,130 +1018,6 @@ public final class AttributeUtils
         }
     }
 
-
-    /*
-     * Check if an attribute contains a specific value and remove it using the associated
-     * matchingRule for the attribute type supplied.
-     *
-     * @param attr the attribute we are searching in
-     * @param compared the object we are looking for
-     * @param type the attribute type
-     * @return the value removed from the attribute, otherwise null
-     * @throws NamingException if something went wrong while removing the value
-     *
-    public static Object removeValue( Attribute attr, Object compared, AttributeType type ) throws NamingException
-    {
-        // quick bypass test
-        if ( attr.contains( compared ) )
-        {
-            return attr.remove( compared );
-        }
-
-        MatchingRule matchingRule = type.getEquality();
-        Normalizer normalizer;
-
-        if ( matchingRule != null )
-        {
-            normalizer = type.getEquality().getNormalizer();
-        }
-        else
-        {
-            normalizer = new NoOpNormalizer();
-        }
-
-        if ( type.getSyntax().isHumanReadable() )
-        {
-            String comparedStr = ( String ) normalizer.normalize( compared );
-
-            for ( NamingEnumeration<?> values = attr.getAll(); values.hasMoreElements(); )
-            {
-                String value = ( String ) values.nextElement();
-                if ( comparedStr.equals( normalizer.normalize( value ) ) )
-                {
-                    return attr.remove( value );
-                }
-            }
-        }
-        else
-        {
-            byte[] comparedBytes = null;
-
-            if ( compared instanceof String )
-            {
-                if ( ( ( String ) compared ).length() < 3 )
-                {
-                    return null;
-                }
-
-                // Tansform the String to a byte array
-                int state = 1;
-                comparedBytes = new byte[( ( String ) compared ).length() / 3];
-                int pos = 0;
-
-                for ( char c : ( ( String ) compared ).toCharArray() )
-                {
-                    switch ( state )
-                    {
-                        case 1:
-                            if ( c != '\\' )
-                            {
-                                return null;
-                            }
-
-                            state++;
-                            break;
-
-                        case 2:
-                            int high = StringTools.getHexValue( c );
-
-                            if ( high == -1 )
-                            {
-                                return null;
-                            }
-
-                            comparedBytes[pos] = ( byte ) ( high << 4 );
-
-                            state++;
-                            break;
-
-                        case 3:
-                            int low = StringTools.getHexValue( c );
-
-                            if ( low == -1 )
-                            {
-                                return null;
-                            }
-
-                            comparedBytes[pos] += ( byte ) low;
-                            pos++;
-
-                            state = 1;
-                            break;
-                    }
-                }
-            }
-            else
-            {
-                comparedBytes = ( byte[] ) compared;
-            }
-
-            for ( NamingEnumeration<?> values = attr.getAll(); values.hasMoreElements(); )
-            {
-                Object value = values.nextElement();
-
-                if ( value instanceof byte[] )
-                {
-                    if ( ArrayUtils.isEquals( comparedBytes, value ) )
-                    {
-                        return attr.remove( value );
-                    }
-                }
-            }
-        }
-
-        return null;
-    }
-    */
 
     /**
      * Convert a BasicAttributes or a AttributesImpl to a ServerEntry

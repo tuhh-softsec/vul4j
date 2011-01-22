@@ -27,8 +27,8 @@ import org.apache.directory.shared.ldap.entry.BinaryValue;
 import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
-import org.apache.directory.shared.ldap.util.UTFUtils;
 import org.apache.directory.shared.util.Strings;
+import org.apache.directory.shared.util.Unicode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -123,11 +123,11 @@ public final class AVASerializer
             throw new IOException( message );
         }
         
-        UTFUtils.writeUTF( out, atav.getUpName() );
+        Unicode.writeUTF(out, atav.getUpName());
         out.writeInt( atav.getStart() );
         out.writeInt( atav.getLength() );
-        UTFUtils.writeUTF( out, atav.getUpType() );
-        UTFUtils.writeUTF( out, atav.getNormType() );
+        Unicode.writeUTF(out, atav.getUpType());
+        Unicode.writeUTF(out, atav.getNormType());
         
         boolean isHR = !atav.getNormValue().isBinary();
         
@@ -135,8 +135,8 @@ public final class AVASerializer
         
         if ( isHR )
         {
-            UTFUtils.writeUTF( out, atav.getUpValue().getString() );
-            UTFUtils.writeUTF( out, atav.getNormValue().getString() );
+            Unicode.writeUTF(out, atav.getUpValue().getString());
+            Unicode.writeUTF(out, atav.getNormValue().getString());
         }
         else
         {
@@ -161,11 +161,11 @@ public final class AVASerializer
      */
     public static AVA deserialize( ObjectInput in ) throws IOException
     {
-        String upName = UTFUtils.readUTF( in );
+        String upName = Unicode.readUTF(in);
         in.readInt(); // start
         in.readInt(); // length
-        String upType = UTFUtils.readUTF( in );
-        String normType = UTFUtils.readUTF( in );
+        String upType = Unicode.readUTF(in);
+        String normType = Unicode.readUTF(in);
         
         boolean isHR = in.readBoolean();
 
@@ -173,8 +173,8 @@ public final class AVASerializer
         {
             if ( isHR )
             {
-                Value<String> upValue = new StringValue( UTFUtils.readUTF( in ) );
-                Value<String> normValue = new StringValue( UTFUtils.readUTF( in ) );
+                Value<String> upValue = new StringValue( Unicode.readUTF(in) );
+                Value<String> normValue = new StringValue( Unicode.readUTF(in) );
                 
                 AVA atav = 
                     new AVA( upType, normType, upValue, normValue, upName );

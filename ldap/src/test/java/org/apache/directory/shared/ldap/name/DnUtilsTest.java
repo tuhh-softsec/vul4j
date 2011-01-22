@@ -17,13 +17,15 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.util;
+package org.apache.directory.shared.ldap.name;
 
 
 import static org.junit.Assert.assertEquals;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
+import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,19 +33,19 @@ import org.junit.runner.RunWith;
 
 
 /**
- * Test the class DNUtils
+ * Test the class DnUtils
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 @RunWith(ConcurrentJunitRunner.class)
 @Concurrent()
-public class DNUtilsTest
+public class DnUtilsTest
 {
     // ~ Methods
     // ------------------------------------------------------------------------------------
 
     /**
-     * Test the DNUtils AreEquals method
+     * Test the DnUtils AreEquals method
      */
     @Test
     public void testAreEqualsFull()
@@ -54,7 +56,7 @@ public class DNUtilsTest
 
 
     /**
-     * Test the DNUtils AreEquals method
+     * Test the DnUtils AreEquals method
      */
     @Test
     public void testAreEqualsDiff()
@@ -65,7 +67,7 @@ public class DNUtilsTest
 
 
     /**
-     * Test the DNUtils AreEquals method
+     * Test the DnUtils AreEquals method
      */
     @Test
     public void testAreEqualsEmpty()
@@ -76,7 +78,7 @@ public class DNUtilsTest
 
 
     /**
-     * Test the DNUtils AreEquals method
+     * Test the DnUtils AreEquals method
      */
     @Test
     public void testAreEqualsFirstCharDiff()
@@ -87,7 +89,7 @@ public class DNUtilsTest
 
 
     /**
-     * Test the DNUtils AreEquals method
+     * Test the DnUtils AreEquals method
      */
     @Test
     public void testAreEqualsMiddleCharDiff()
@@ -98,7 +100,7 @@ public class DNUtilsTest
 
 
     /**
-     * Test the DNUtils AreEquals method
+     * Test the DnUtils AreEquals method
      */
     @Test
     public void testAreEqualsLastCharDiff()
@@ -109,7 +111,7 @@ public class DNUtilsTest
 
 
     /**
-     * Test the DNUtils AreEquals method
+     * Test the DnUtils AreEquals method
      */
     @Test
     public void testAreEqualsCharByChar()
@@ -125,7 +127,7 @@ public class DNUtilsTest
 
 
     /**
-     * Test the DNUtils AreEquals method
+     * Test the DnUtils AreEquals method
      */
     @Test
     public void testAreEqualsTooShort()
@@ -136,7 +138,7 @@ public class DNUtilsTest
 
 
     /**
-     * Test the DNUtils AreEquals method
+     * Test the DnUtils AreEquals method
      */
     @Test
     public void testAreEqualsTooShortMiddle()
@@ -147,7 +149,7 @@ public class DNUtilsTest
 
 
     /**
-     * Test the DNUtils AreEquals method
+     * Test the DnUtils AreEquals method
      */
     @Test
     public void testAreEqualsLastChar()
@@ -158,12 +160,52 @@ public class DNUtilsTest
 
 
     /**
-     * Test the DNUtils AreEquals method
+     * Test the DnUtils AreEquals method
      */
     @Test
     public void testAreEqualsMiddle()
     {
         // In the middle
         assertEquals( 4, Strings.areEquals("azerty".getBytes(), 2, "er") );
+    }
+
+
+    @Test
+    public void testGetCompositeComponents() throws LdapException
+    {
+        String[] args = DnUtils.getCompositeComponents("givenName=Alex+sn=Karasulu");
+        assertEquals( "expecting two parts : ", 2, args.length );
+        assertEquals( "givenName=Alex", args[0] );
+        assertEquals( "sn=Karasulu", args[1] );
+
+        args = DnUtils.getCompositeComponents("givenName=Alex+sn=Karasulu+age=13");
+        assertEquals( "expecting two parts : ", 3, args.length );
+        assertEquals( "givenName=Alex", args[0] );
+        assertEquals( "sn=Karasulu", args[1] );
+        assertEquals( "age=13", args[2] );
+
+        args = DnUtils.getCompositeComponents("cn=One\\+Two");
+        assertEquals( "expecting one part : ", 1, args.length );
+        assertEquals( "cn=One\\+Two", args[0] );
+
+        args = DnUtils.getCompositeComponents("cn=Alex");
+        assertEquals( "expecting one part : ", 1, args.length );
+        assertEquals( "cn=Alex", args[0] );
+    }
+
+
+    @Test
+    public void testGetRelativeName() throws LdapInvalidDnException
+    {
+        // test the basis case first with the root
+        DN ancestor = new DN( "" );
+        DN descendant = new DN( "ou=system" );
+        DN relativeName = DnUtils.getRelativeName(ancestor, descendant);
+        assertEquals( relativeName.toString(), "ou=system" );
+
+        ancestor = new DN( "ou=system" );
+        descendant = new DN( "ou=users,ou=system" );
+        relativeName = DnUtils.getRelativeName(ancestor, descendant);
+        assertEquals( relativeName.toString(), "ou=users" );
     }
 }

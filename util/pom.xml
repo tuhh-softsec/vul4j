@@ -59,6 +59,7 @@
               javax.naming,
               javax.net,
               javax.net.ssl,
+              org.slf4j,
               org.apache.directory.shared.i18n
             </Import-Package>
             <Export-Package>

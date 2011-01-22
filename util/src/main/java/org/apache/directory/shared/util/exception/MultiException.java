@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap;
+package org.apache.directory.shared.util.exception;
 
 
 import java.io.PrintStream;

@@ -23,12 +23,12 @@ package org.apache.directory.shared.ldap.filter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.Normalizer;
-import org.apache.directory.shared.ldap.util.StringTools;
 
 
 /**
@@ -150,7 +150,52 @@ public class SubstringNode extends LeafNode
         this.initialPattern = initialPattern;
     }
 
-    
+    /**
+     * Creates a regular expression from an LDAP substring assertion filter
+     * specification.
+     *
+     * @param initialPattern
+     *            the initial fragment before wildcards
+     * @param anyPattern
+     *            fragments surrounded by wildcards if any
+     * @param finalPattern
+     *            the final fragment after last wildcard if any
+     * @return the regular expression for the substring match filter
+     * @throws java.util.regex.PatternSyntaxException
+     *             if a syntactically correct regular expression cannot be
+     *             compiled
+     */
+    public static Pattern getRegex( String initialPattern, String[] anyPattern, String finalPattern )
+            throws PatternSyntaxException
+    {
+        StringBuffer buf = new StringBuffer();
+
+        if ( initialPattern != null )
+        {
+            buf.append( '^' ).append( Pattern.quote( initialPattern ) );
+        }
+
+        if ( anyPattern != null )
+        {
+            for ( int i = 0; i < anyPattern.length; i++ )
+            {
+                buf.append( ".*" ).append( Pattern.quote( anyPattern[i] ) );
+            }
+        }
+
+        if ( finalPattern != null )
+        {
+            buf.append( ".*" ).append( Pattern.quote( finalPattern ) );
+        }
+        else
+        {
+            buf.append( ".*" );
+        }
+
+        return Pattern.compile(buf.toString());
+    }
+
+
     /**
      * Clone the Node
      */
@@ -282,7 +327,7 @@ public class SubstringNode extends LeafNode
                 finalStr = ( String ) normalizer.normalize( finalPattern );
             }
 
-            return StringTools.getRegex( initialStr, any, finalStr );
+            return getRegex(initialStr, any, finalStr);
         }
 
         String initialStr = null;
@@ -299,7 +344,7 @@ public class SubstringNode extends LeafNode
             finalStr = ( String ) normalizer.normalize( finalPattern );
         }
 
-        return StringTools.getRegex( initialStr, null, finalStr );
+        return getRegex(initialStr, null, finalStr);
     }
 
 

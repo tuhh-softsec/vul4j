@@ -17,28 +17,20 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.util;
+package org.apache.directory.shared.util;
 
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.regex.Pattern;
-
-import javax.naming.NamingException;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.util.Hex;
-import org.apache.directory.shared.util.Strings;
-import org.apache.directory.shared.util.Unicode;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -48,23 +40,10 @@ import org.junit.runner.RunWith;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-@RunWith(ConcurrentJunitRunner.class)
+@RunWith( ConcurrentJunitRunner.class )
 @Concurrent()
-public class StringToolsTest
+public class StringsTest
 {
-    @Test
-    public void testDecodeHexString() throws Exception
-    {
-        // weird stuff - corner cases
-        try{assertEquals( "", Hex.decodeHexString("") ); fail("should not get here");} catch( NamingException e ){}
-        assertEquals( "", Hex.decodeHexString("#") );
-        assertEquals( "F", Hex.decodeHexString("#46") );
-        try{assertEquals( "F", Hex.decodeHexString("46") ); fail("should not get here");} catch( NamingException e ){}
-
-        assertEquals( "Ferry", Hex.decodeHexString("#4665727279") );
-    }
-    
-    
     @Test
     public void testTrimConsecutiveToOne()
     {
@@ -99,94 +78,15 @@ public class StringToolsTest
 
 
     @Test
-    public void testOneByteChar()
-    {
-        char res = Unicode.bytesToChar(new byte[]
-                {0x30});
-
-        assertEquals( '0', res );
-    }
-
-
-    @Test
-    public void testOneByteChar00()
-    {
-        char res = Unicode.bytesToChar(new byte[]
-                {0x00});
-
-        assertEquals( 0x00, res );
-    }
-
-
-    @Test
-    public void testOneByteChar7F()
-    {
-        char res = Unicode.bytesToChar(new byte[]
-                {0x7F});
-
-        assertEquals( 0x7F, res );
-    }
-
-
-    @Test
-    public void testTwoBytesChar()
-    {
-        char res = Unicode.bytesToChar(new byte[]
-                {(byte) 0xCE, (byte) 0x91});
-
-        assertEquals( 0x0391, res );
-    }
-
-
-    @Test
-    public void testThreeBytesChar()
-    {
-        char res = Unicode.bytesToChar(new byte[]
-                {(byte) 0xE2, (byte) 0x89, (byte) 0xA2});
-
-        assertEquals( 0x2262, res );
-    }
-
-
-    @Test
-    public void testcharToBytesOne()
-    {
-        assertEquals( "0x00 ", Strings.dumpBytes(Unicode.charToBytes((char) 0x0000)) );
-        assertEquals( "0x61 ", Strings.dumpBytes(Unicode.charToBytes('a')) );
-        assertEquals( "0x7F ", Strings.dumpBytes(Unicode.charToBytes((char) 0x007F)) );
-    }
-
-
-    @Test
-    public void testcharToBytesTwo()
-    {
-        assertEquals( "0xC2 0x80 ", Strings.dumpBytes(Unicode.charToBytes((char) 0x0080)) );
-        assertEquals( "0xC3 0xBF ", Strings.dumpBytes(Unicode.charToBytes((char) 0x00FF)) );
-        assertEquals( "0xC4 0x80 ", Strings.dumpBytes(Unicode.charToBytes((char) 0x0100)) );
-        assertEquals( "0xDF 0xBF ", Strings.dumpBytes(Unicode.charToBytes((char) 0x07FF)) );
-    }
-
-
-    @Test
-    public void testcharToBytesThree()
-    {
-        assertEquals( "0xE0 0xA0 0x80 ", Strings.dumpBytes(Unicode.charToBytes((char) 0x0800)) );
-        assertEquals( "0xE0 0xBF 0xBF ", Strings.dumpBytes(Unicode.charToBytes((char) 0x0FFF)) );
-        assertEquals( "0xE1 0x80 0x80 ", Strings.dumpBytes(Unicode.charToBytes((char) 0x1000)) );
-        assertEquals( "0xEF 0xBF 0xBF ", Strings.dumpBytes(Unicode.charToBytes((char) 0xFFFF)) );
-    }
-
-
-    @Test
     public void testListToString()
     {
         List<String> list = new ArrayList<String>();
 
         list.add( "elem1" );
-        list.add( "elem2" );
+        list.add("elem2");
         list.add( "elem3" );
 
-        assertEquals( "elem1, elem2, elem3", Strings.listToString(list) );
+        assertEquals("elem1, elem2, elem3", Strings.listToString(list));
     }
 
 
@@ -233,106 +133,6 @@ public class StringToolsTest
 
 
     @Test
-    public void testGetRegexpEmpty() throws Exception
-    {
-        Pattern pattern = StringTools.getRegex( "", new String[]
-            { "" }, "" );
-
-        boolean b1 = pattern.matcher( "" ).matches();
-
-        assertTrue( b1 );
-    }
-
-
-    @Test
-    public void testGetRegexpInitial() throws Exception
-    {
-        Pattern pattern = StringTools.getRegex( "Test", new String[]
-            { "" }, "" );
-
-        boolean b1 = pattern.matcher( "Test just a test" ).matches();
-
-        assertTrue( b1 );
-
-        boolean b3 = pattern.matcher( "test just a test" ).matches();
-
-        assertFalse( b3 );
-    }
-
-
-    @Test
-    public void testGetRegexpFinal() throws Exception
-    {
-        Pattern pattern = StringTools.getRegex( "", new String[]
-            { "" }, "Test" );
-
-        boolean b1 = pattern.matcher( "test just a Test" ).matches();
-
-        assertTrue( b1 );
-
-        boolean b3 = pattern.matcher( "test just a test" ).matches();
-
-        assertFalse( b3 );
-    }
-
-
-    @Test
-    public void testGetRegexpAny() throws Exception
-    {
-        Pattern pattern = StringTools.getRegex( "", new String[]
-            { "just", "a" }, "" );
-
-        boolean b1 = pattern.matcher( "test just a Test" ).matches();
-
-        assertTrue( b1 );
-
-        boolean b3 = pattern.matcher( "test just A test" ).matches();
-
-        assertFalse( b3 );
-    }
-
-
-    @Test
-    public void testGetRegexpFull() throws Exception
-    {
-        Pattern pattern = StringTools.getRegex( "Test", new String[]
-            { "just", "a" }, "test" );
-
-        boolean b1 = pattern.matcher( "Test (this is) just (truly !) a (little) test" ).matches();
-
-        assertTrue( b1 );
-
-        boolean b3 = pattern.matcher( "Test (this is) just (truly !) A (little) test" ).matches();
-
-        assertFalse( b3 );
-    }
-
-
-    /**
-     * Tests StringTools.getRegex() with some LDAP filter special characters.
-     */
-    @Test
-    public void testGetRegexpWithLdapFilterSpecialChars() throws Exception
-    {
-        Pattern[] patterns = new Pattern[]
-            { StringTools.getRegex( null, new String[]
-                { "(" }, null ), StringTools.getRegex( null, new String[]
-                { ")" }, null ), StringTools.getRegex( null, new String[]
-                { "*" }, null ), StringTools.getRegex( null, new String[]
-                { "\\" }, null ), };
-
-        for ( Pattern pattern : patterns )
-        {
-            boolean b1 = pattern.matcher( "a(b*c\\d)e" ).matches();
-            assertTrue( b1 );
-
-            boolean b3 = pattern.matcher( "Test test" ).matches();
-            assertFalse( b3 );
-        }
-    }
-
-
-    @Test
     public void testDeepTrim()
     {
         assertEquals( "", Strings.deepTrim( " ", false ) );
@@ -350,6 +150,7 @@ public class StringToolsTest
         assertEquals( "a b", Strings.deepTrim( "a b ", false ) );
     }
 
+
     @Test
     public void testTrim()
     {
@@ -362,6 +163,7 @@ public class StringToolsTest
         assertEquals( "a", Strings.trim("  a  ") );
     }
 
+
     @Test
     public void testTrimLeft()
     {
@@ -373,6 +175,7 @@ public class StringToolsTest
         assertEquals( "a", Strings.trimLeft("  a") );
         assertEquals( "a  ", Strings.trimLeft("  a  ") );
     }
+
 
     @Test
     public void testTrimRight()
@@ -391,9 +194,8 @@ public class StringToolsTest
     public void testConvertUUID()
     {
         UUID uuid = UUID.randomUUID();
-        byte[] bytes = StringTools.uuidToBytes( uuid.toString() );
-        String string = StringTools.uuidToString( bytes );
+        byte[] bytes = Strings.uuidToBytes(uuid.toString());
+        String string = Strings.uuidToString(bytes);
         assertEquals( uuid.toString(), string );
     }
-
 }

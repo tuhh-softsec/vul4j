@@ -17,45 +17,31 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.util;
+
+package org.apache.directory.shared.ldap.exception;
 
 
-import java.util.List;
-
+import org.apache.directory.shared.ldap.exception.LdapException;
 
 /**
- * <p>
- * Provides utilities for manipulating and examining <code>Throwable</code>
- * objects.
- * </p>
+ * Thrown when a Decoder has encountered a failure condition during a decode.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public final class LdapExceptionUtils
+public class UrlDecoderException extends LdapException
 {
-    /**
-     * Private constructor
-     */
-    private LdapExceptionUtils()
-    {
-    }
+    private static final long serialVersionUID = 1L;
 
 
     /**
-     * Appends the messages of each Throwable to a string, separated by a new line.
-     *
-     * @param errors the errors
-     * @return the string with all error message
+     * Creates a DecoderException
+     * 
+     * @param pMessage
+     *            A message with meaning to a human
      */
-    public static String printErrors( List<Throwable> errors )
+    public UrlDecoderException(String pMessage)
     {
-        StringBuilder sb = new StringBuilder();
-
-        for ( Throwable error : errors )
-        {
-            sb.append( "Error : " ).append( error.getMessage() ).append( "\n" );
-        }
-
-        return sb.toString();
+        super( pMessage );
     }
+
 }

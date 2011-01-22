@@ -17,8 +17,7 @@
  *  under the License. 
  *  
  */
-
-package org.apache.directory.shared.ldap.util;
+package org.apache.directory.shared.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,16 +28,16 @@ import java.util.Arrays;
 /**
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public final class DirectoryClassUtils
+public final class MethodUtils
 {
     /** The logger. */
-    private static final Logger LOG = LoggerFactory.getLogger( DirectoryClassUtils.class );
+    private static final Logger LOG = LoggerFactory.getLogger( MethodUtils.class );
 
 
     /**
      * Private constructor.
      */
-    private DirectoryClassUtils()
+    private MethodUtils()
     {
     }
 

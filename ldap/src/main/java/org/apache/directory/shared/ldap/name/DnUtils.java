@@ -17,20 +17,25 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.util;
+package org.apache.directory.shared.ldap.name;
 
 
+import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.util.Chars;
 import org.apache.directory.shared.util.Hex;
 import org.apache.directory.shared.util.Position;
 import org.apache.directory.shared.util.Unicode;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Utility class used by the DN Parser.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public final class DNUtils
+public final class DnUtils
 {
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
@@ -252,12 +257,13 @@ public final class DNUtils
 
     /** "OID." static */
     public static final String OID_UPPER = "OID.";
+    public static final String[] EMPTY_STRING_ARRAY = new String[0];
 
 
     /**
      * Private constructor.
      */
-    private DNUtils()
+    private DnUtils()
     {
     }
 
@@ -731,5 +737,123 @@ public final class DNUtils
 
             return index;
         }
+    }
+
+    /**
+     * Gets the attribute of a single attribute rdn or name component.
+     *
+     * @param rdn the name component
+     * @return the attribute name TODO the name rdn is misused rename refactor
+     *         this method
+     */
+    public static String getRdnAttribute( String rdn )
+    {
+        int index = rdn.indexOf( '=' );
+        return rdn.substring( 0, index );
+    }
+
+    /**
+     * Gets the value of a single name component of a distinguished name.
+     *
+     * @param rdn the name component to get the value from
+     * @return the value of the single name component TODO the name rdn is
+     *         misused rename refactor this method
+     */
+    public static String getRdnValue( String rdn )
+    {
+        int index = rdn.indexOf( '=' );
+        return rdn.substring( index + 1, rdn.length() );
+    }
+
+    /**
+     * Gets the relative name between an ancestor and a potential descendant.
+     * Both name arguments must be normalized. The returned name is also
+     * normalized.
+     *
+     * @param ancestor the normalized distinguished name of the ancestor context
+     * @param descendant the normalized distinguished name of the descendant context
+     * @return the relative normalized name between the ancestor and the
+     *         descendant contexts
+     * @throws org.apache.directory.shared.ldap.exception.LdapInvalidDnException if the contexts are not related in the ancestual sense
+     */
+    public static DN getRelativeName( DN ancestor, DN descendant ) throws LdapInvalidDnException
+    {
+        DN rdn = descendant;
+
+        if ( rdn.isChildOf( ancestor ) )
+        {
+            for ( int ii = 0; ii < ancestor.size(); ii++ )
+            {
+                rdn = rdn.remove( 0 );
+            }
+        }
+        else
+        {
+            LdapInvalidDnException e = new LdapInvalidDnException( I18n.err(I18n.ERR_04417, descendant, ancestor) );
+
+            throw e;
+        }
+
+        return rdn;
+    }
+
+    /**
+     * Gets the '+' appended components of a composite name component.
+     *
+     * @param compositeNameComponent a single name component not a whole name
+     * @return the components of the complex name component in order
+     * @throws org.apache.directory.shared.ldap.exception.LdapInvalidDnException
+     *             if nameComponent is invalid (starts with a +)
+     */
+    public static String[] getCompositeComponents( String compositeNameComponent ) throws LdapInvalidDnException
+    {
+        int lastIndex = compositeNameComponent.length() - 1;
+        List<String> comps = new ArrayList<String>();
+
+        for ( int ii = compositeNameComponent.length() - 1; ii >= 0; ii-- )
+        {
+            if ( compositeNameComponent.charAt( ii ) == '+' )
+            {
+                if ( ii == 0 )
+                {
+                    throw new LdapInvalidDnException( I18n.err( I18n.ERR_04418, compositeNameComponent ) );
+                }
+
+                if ( compositeNameComponent.charAt( ii - 1 ) != '\\' )
+                {
+                    if ( lastIndex == compositeNameComponent.length() - 1 )
+                    {
+                        comps.add( 0, compositeNameComponent.substring( ii + 1, lastIndex + 1 ) );
+                    }
+                    else
+                    {
+                        comps.add( 0, compositeNameComponent.substring( ii + 1, lastIndex ) );
+                    }
+
+                    lastIndex = ii;
+                }
+            }
+
+            if ( ii == 0 )
+            {
+                if ( lastIndex == compositeNameComponent.length() - 1 )
+                {
+                    comps.add( 0, compositeNameComponent );
+                }
+                else
+                {
+                    comps.add( 0, compositeNameComponent.substring( ii, lastIndex ) );
+                }
+
+                lastIndex = 0;
+            }
+        }
+
+        if ( comps.size() == 0 )
+        {
+            comps.add( compositeNameComponent );
+        }
+
+        return comps.toArray( EMPTY_STRING_ARRAY );
     }
 }

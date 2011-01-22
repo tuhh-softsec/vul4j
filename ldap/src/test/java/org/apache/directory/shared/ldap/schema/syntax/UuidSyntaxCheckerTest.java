@@ -25,8 +25,8 @@ import static org.junit.Assert.assertTrue;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.schema.syntaxCheckers.UuidSyntaxChecker;
-import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.directory.shared.util.StringConstants;
+import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -73,7 +73,7 @@ public class UuidSyntaxCheckerTest
             array[ i ] = (byte)i;
         }
 
-        assertTrue( checker.isValidSyntax( StringTools.uuidToString( array ) ) );
+        assertTrue( checker.isValidSyntax( Strings.uuidToString(array) ) );
     }
 
 

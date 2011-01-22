@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.NotImplementedException;
+import org.apache.directory.shared.util.exception.NotImplementedException;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.name.DN;
@@ -40,8 +40,8 @@ import org.apache.directory.shared.ldap.name.RDN;
 import org.apache.directory.shared.ldap.name.RdnSerializer;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
-import org.apache.directory.shared.ldap.util.UTFUtils;
 import org.apache.directory.shared.util.Strings;
+import org.apache.directory.shared.util.Unicode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -2646,7 +2646,7 @@ public class DefaultEntry implements Entry
                 // the attribute
                 String oid = attributeType.getOid();
 
-                UTFUtils.writeUTF( out, oid );
+                Unicode.writeUTF(out, oid);
 
                 // Get the attribute
                 DefaultEntryAttribute attribute = ( DefaultEntryAttribute ) attributes.get( attributeType.getOid() );
@@ -2662,7 +2662,7 @@ public class DefaultEntry implements Entry
             {
                 // Write the id to be able to restore the AttributeType when deserializing
                 // the attribute
-                UTFUtils.writeUTF( out, id );
+                Unicode.writeUTF(out, id);
 
                 // Get the attribute
                 DefaultEntryAttribute attribute = ( DefaultEntryAttribute ) attributes.get( id );
@@ -2703,7 +2703,7 @@ public class DefaultEntry implements Entry
             for ( int i = 0; i < nbAttributes; i++ )
             {
                 // Read the attribute's OID
-                String oid = UTFUtils.readUTF( in );
+                String oid = Unicode.readUTF(in);
 
                 try
                 {
@@ -2731,7 +2731,7 @@ public class DefaultEntry implements Entry
             for ( int i = 0; i < nbAttributes; i++ )
             {
                 // Read the attribute's ID
-                String id = UTFUtils.readUTF( in );
+                String id = Unicode.readUTF(in);
 
                 // Create the attribute we will read
                 EntryAttribute attribute = new DefaultEntryAttribute( id );

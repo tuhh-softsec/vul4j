@@ -23,12 +23,12 @@ package org.apache.directory.shared.ldap.filter;
 import java.text.ParseException;
 
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.entry.AttributeUtils;
 import org.apache.directory.shared.ldap.entry.BinaryValue;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
-import org.apache.directory.shared.ldap.util.AttributeUtils;
 import org.apache.directory.shared.util.*;
 
 
@@ -170,7 +170,7 @@ public class FilterParser
                 }
                 else
                 {
-                    AttributeUtils.parseAttribute( filter, pos, false );
+                    AttributeUtils.parseAttribute(filter, pos, false);
 
                     node.setMatchingRuleId( filter.substring( start, pos.start ) );
 

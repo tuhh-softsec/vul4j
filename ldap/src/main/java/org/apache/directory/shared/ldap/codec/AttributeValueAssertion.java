@@ -19,8 +19,8 @@
  */
 package org.apache.directory.shared.ldap.codec;
 
-import org.apache.directory.shared.ldap.entry.Value;
-import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.ldap.entry.*;
+import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -47,6 +47,43 @@ public class AttributeValueAssertion
 
     /** The assertion value */
     private Value<?> assertionValue;
+
+    /**
+     *
+     * Helper method to render an object which can be a String or a byte[]
+     *
+     * @return A string representing the object
+     */
+    public static String dumpObject( Object object )
+    {
+        if ( object != null )
+        {
+            if ( object instanceof String )
+            {
+                return (String) object;
+            }
+            else if ( object instanceof byte[] )
+            {
+                return Strings.dumpBytes((byte[]) object);
+            }
+            else if ( object instanceof StringValue)
+            {
+                return ( ( StringValue ) object ).get();
+            }
+            else if ( object instanceof BinaryValue )
+            {
+                return Strings.dumpBytes(((BinaryValue) object).get());
+            }
+            else
+            {
+                return "<unknown type>";
+            }
+        }
+        else
+        {
+            return "";
+        }
+    }
 
 
     // ~ Methods
@@ -110,7 +147,7 @@ public class AttributeValueAssertion
         sb.append( tabs ).append( "    Assertion description : '" );
         sb.append( attributeDesc != null ? attributeDesc : "null" );
         sb.append( "'\n" );
-        sb.append( tabs ).append( "    Assertion value : '" ).append( StringTools.dumpObject( assertionValue ) ).append( "'\n" );
+        sb.append( tabs ).append( "    Assertion value : '" ).append( dumpObject(assertionValue) ).append( "'\n" );
 
         return sb.toString();
     }
@@ -148,7 +185,7 @@ public class AttributeValueAssertion
                 break;
         }
 
-        sb.append( StringTools.dumpObject( assertionValue ) );
+        sb.append( dumpObject(assertionValue) );
 
         return sb.toString();
     }

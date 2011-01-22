@@ -17,8 +17,7 @@
  *  under the License. 
  *  
  */
-
-package org.apache.directory.shared.ldap.codec.util;
+package org.apache.directory.shared.ldap.exception;
 
 
 /**
@@ -27,26 +26,14 @@ package org.apache.directory.shared.ldap.codec.util;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class LdapURLEncodingException extends Exception
+public class LdapURLEncodingException extends LdapException
 {
-
-    /**
-     * Declares the Serial Version Uid.
-     * 
-     * @see <a
-     *      href="http://c2.com/cgi/wiki?AlwaysDeclareSerialVersionUid">Always
-     *      Declare Serial Version Uid</a>
-     */
-    private static final long serialVersionUID = 1L;
-
-
     /**
      * Creates a LdapStringEncodingException
      * 
-     * @param pMessage
-     *            A message with meaning to a human
+     * @param pMessage A message with meaning to a human
      */
-    public LdapURLEncodingException(String pMessage)
+    public LdapURLEncodingException( String pMessage )
     {
         super( pMessage );
     }

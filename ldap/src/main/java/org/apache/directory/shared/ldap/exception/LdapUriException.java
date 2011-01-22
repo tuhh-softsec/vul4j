@@ -17,8 +17,7 @@
  *  under the License. 
  *  
  */
-
-package org.apache.directory.shared.ldap.codec.util;
+package org.apache.directory.shared.ldap.exception;
 
 
 /**
@@ -26,7 +25,7 @@ package org.apache.directory.shared.ldap.codec.util;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class URIException extends Exception
+public class LdapUriException extends LdapException
 {
     private static final long serialVersionUID = 1L;
 
@@ -38,7 +37,7 @@ public class URIException extends Exception
      * @param reason
      *            the reason
      */
-    public URIException(String reason)
+    public LdapUriException(String reason)
     {
         super( reason ); // for backward compatibility of Throwable
         this.reason = reason;

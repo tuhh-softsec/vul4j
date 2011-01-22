@@ -17,42 +17,45 @@
  *  under the License. 
  *  
  */
+package org.apache.directory.shared.util.exception;
 
-package org.apache.directory.shared.ldap.codec.util;
+
+import java.util.List;
 
 
 /**
- * Signals that an error has occurred.
- * 
- * TODO: This class is only used in LdapURL, should be removed.
+ * <p>
+ * Provides utilities for manipulating and examining <code>Throwable</code>
+ * objects.
+ * </p>
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- *          2005) $
- * @since 3.0
  */
-public class HttpClientError extends Error
+public final class Exceptions
 {
-    private static final long serialVersionUID = 1L;
-
-
     /**
-     * Creates a new HttpClientError with a <tt>null</tt> detail message.
+     * Private constructor
      */
-    public HttpClientError()
+    private Exceptions()
     {
-        super();
     }
 
 
     /**
-     * Creates a new HttpClientError with the specified detail message.
-     * 
-     * @param message
-     *            The error message
+     * Appends the messages of each Throwable to a string, separated by a new line.
+     *
+     * @param errors the errors
+     * @return the string with all error message
      */
-    public HttpClientError(String message)
+    public static String printErrors( List<Throwable> errors )
     {
-        super( message );
-    }
+        StringBuilder sb = new StringBuilder();
 
+        for ( Throwable error : errors )
+        {
+            sb.append( "Error : " ).append( error.getMessage() ).append( "\n" );
+        }
+
+        return sb.toString();
+    }
 }

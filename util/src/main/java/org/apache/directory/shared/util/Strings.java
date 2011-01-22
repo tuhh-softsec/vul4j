@@ -20,6 +20,9 @@
 package org.apache.directory.shared.util;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
@@ -30,6 +33,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static org.apache.directory.shared.util.Chars.isHex;
+import static org.apache.directory.shared.util.Hex.encodeHex;
+import static org.apache.directory.shared.util.Hex.getHexValue;
+
 /**
  * Various string manipulation methods that are more efficient then chaining
  * string operations: all is done in the same buffer without creating a bunch of
@@ -39,6 +46,9 @@ import java.util.Set;
  */
 public final class Strings
 {
+    /** A logger for this class */
+    private static final Logger LOG = LoggerFactory.getLogger( Strings.class );
+
     /** The default charset, because it's not provided by JDK 1.5 */
     static String defaultCharset = null;
     
@@ -67,6 +77,7 @@ public final class Strings
         true,  true,  true,  true,  true,  true,  true,  true,  // 'p', 'q', 'r', 's', 't', 'u', 'v', 'w'
         true,  true,  true,  false, false, false, false, false  // 'x', 'y', 'z', ---, ---, ---, ---, ---
         };
+
     public static final char[] TO_LOWER_CASE =
         {
             0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
@@ -102,6 +113,7 @@ public final class Strings
             0xF0, 0xF1, 0xF2, 0xF3, 0xF4, 0xF5, 0xF6, 0xF7,
             0xF8, 0xF9, 0xFA, 0xFB, 0xFC, 0xFD, 0xFE, 0xFF,
         };
+
     /** upperCase = 'A' .. 'Z', '0'..'9', '-' */
     public static final char[] UPPER_CASE =
         {
@@ -585,6 +597,7 @@ public final class Strings
         }
     }
 
+
     /**
      * Test if the current character is equal to a specific character.
      * 
@@ -612,6 +625,7 @@ public final class Strings
         }
     }
 
+
     /**
      * Return an UTF-8 encoded String
      *
@@ -635,6 +649,7 @@ public final class Strings
             throw new RuntimeException( uee );
         }
     }
+
 
     /**
      * Return an UTF-8 encoded String
@@ -661,6 +676,7 @@ public final class Strings
         }
     }
 
+
     /**
      * Return an UTF-8 encoded String
      *
@@ -686,6 +702,7 @@ public final class Strings
             throw new RuntimeException( uee );
         }
     }
+
 
     /**
      * Check if a text is present at the current position in a buffer.
@@ -718,6 +735,7 @@ public final class Strings
         }
     }
 
+
     /**
      * Check if a text is present at the current position in a buffer.
      *
@@ -740,6 +758,7 @@ public final class Strings
             return areEquals( chars, index, data );
         }
     }
+
 
     /**
      * Check if a text is present at the current position in a buffer.
@@ -770,6 +789,7 @@ public final class Strings
             return index;
         }
     }
+
 
     /**
      * Check if a text is present at the current position in a buffer.
@@ -802,6 +822,7 @@ public final class Strings
         }
     }
 
+
     /**
      * <p>
      * Checks if a String is empty ("") or null.
@@ -828,6 +849,7 @@ public final class Strings
         return str == null || str.length() == 0;
     }
 
+
     /**
      * Checks if a bytes array is empty or null.
      *
@@ -838,6 +860,7 @@ public final class Strings
     {
         return bytes == null || bytes.length == 0;
     }
+
 
     /**
      * <p>
@@ -861,6 +884,7 @@ public final class Strings
     {
         return ( isEmpty( str ) ? "" : str.trim() );
     }
+
 
     /**
      * <p>
@@ -907,6 +931,7 @@ public final class Strings
         }
     }
 
+
     /**
      * <p>
      * Removes spaces (char &lt;= 32) from start of this String, handling
@@ -943,6 +968,7 @@ public final class Strings
         return ( start == 0 ? str : str.substring( start ) );
     }
 
+
     /**
      * <p>
      * Removes spaces (char &lt;= 32) from start of this array, handling
@@ -976,6 +1002,7 @@ public final class Strings
 
         return pos;
     }
+
 
     /**
      * <p>
@@ -1012,6 +1039,7 @@ public final class Strings
         pos.end = pos.start;
     }
 
+
     /**
      * <p>
      * Removes spaces (char &lt;= 32) from a position in this array, handling
@@ -1047,6 +1075,7 @@ public final class Strings
         pos.end = pos.start;
     }
 
+
     /**
      * <p>
      * Removes spaces (char &lt;= 32) from start of this array, handling
@@ -1080,6 +1109,7 @@ public final class Strings
 
         return pos;
     }
+
 
     /**
      * <p>
@@ -1121,6 +1151,7 @@ public final class Strings
 
         return ( end == length ? str : str.substring( 0, end ) );
     }
+
 
     /**
      * <p>
@@ -1164,6 +1195,7 @@ public final class Strings
         return ( end == length ? str : str.substring( 0, end ) );
     }
 
+
     /**
      * <p>
      * Removes spaces (char &lt;= 32) from end of this array, handling
@@ -1197,6 +1229,7 @@ public final class Strings
 
         return pos;
     }
+
 
     /**
      * <p>
@@ -1236,6 +1269,7 @@ public final class Strings
 
         return ( pos.end == string.length() ? string : string.substring( 0, pos.end ) );
     }
+
 
     /**
      * <p>
@@ -1283,6 +1317,7 @@ public final class Strings
         }
     }
 
+
     /**
      * <p>
      * Removes spaces (char &lt;= 32) from end of this array, handling
@@ -1317,6 +1352,7 @@ public final class Strings
         return pos;
     }
 
+
     /**
      * Get the character at a given position in a string, checking fo limits
      *
@@ -1343,6 +1379,7 @@ public final class Strings
         }
     }
 
+
     /**
      * Thansform an array of ASCII bytes to a string. the byte array should contains
      * only values in [0, 127].
@@ -1367,6 +1404,7 @@ public final class Strings
         return new String( result );
     }
 
+
     /**
      * Return UTF-8 encoded byte[] representation of a String
      *
@@ -1390,6 +1428,7 @@ public final class Strings
             throw new RuntimeException( uee );
         }
     }
+
 
     /**
      * Get the default charset
@@ -1426,6 +1465,7 @@ public final class Strings
         return defaultCharset;
     }
 
+
     /**
      * <p>
      * Compares two Strings, returning <code>true</code> if they are equal.
@@ -1454,6 +1494,7 @@ public final class Strings
     {
         return str1 == null ? str2 == null : str1.equals( str2 );
     }
+
 
     /**
      * Utility method that return a String representation of a list
@@ -1488,6 +1529,7 @@ public final class Strings
         return sb.toString();
     }
 
+
     /**
      * Utility method that return a String representation of a set
      *
@@ -1521,6 +1563,7 @@ public final class Strings
         return sb.toString();
     }
 
+
     /**
      * Utility method that return a String representation of a list
      *
@@ -1546,6 +1589,7 @@ public final class Strings
 
         return sb.toString();
     }
+
 
     /**
      * Utility method that return a String representation of a map. The elements
@@ -1582,6 +1626,7 @@ public final class Strings
         return sb.toString();
     }
 
+
     /**
      * Utility method that return a String representation of a map. The elements
      * will be represented as "key = value"
@@ -1610,6 +1655,7 @@ public final class Strings
         return sb.toString();
     }
 
+
     /**
      * Rewrote the toLowercase method to improve performances.
      * In Ldap, attributesType are supposed to use ASCII chars :
@@ -1635,6 +1681,7 @@ public final class Strings
         return new String( chars );
     }
 
+
     /**
      * Rewrote the toLowercase method to improve performances.
      * In Ldap, attributesType are supposed to use ASCII chars :
@@ -1659,6 +1706,7 @@ public final class Strings
 
         return new String( chars );
     }
+
 
     /**
      * <p>
@@ -1687,6 +1735,7 @@ public final class Strings
         return str.toUpperCase();
     }
 
+
     /**
      * <p>
      * Converts a String to lower case as per {@link String#toLowerCase()}.
@@ -1714,6 +1763,7 @@ public final class Strings
         return str.toLowerCase();
     }
 
+
     /**
      * Rewrote the toLowercase method to improve performances.
      * In Ldap, attributesType are supposed to use ASCII chars :
@@ -1740,6 +1790,7 @@ public final class Strings
 
         return new String( chars );
     }
+
 
     /**
      *
@@ -1769,6 +1820,7 @@ public final class Strings
         return true;
     }
 
+
     /**
      * <p>
      * Checks if a String is not empty ("") and not null.
@@ -1789,6 +1841,7 @@ public final class Strings
     {
         return str != null && str.length() > 0;
     }
+
 
     /**
      *
@@ -1816,5 +1869,112 @@ public final class Strings
         }
 
         return true;
+    }
+
+
+    /**
+     * Checks to see if a String is a valid UUID.
+     *
+     * @param uuid the UUID to check for validity
+     * @return true if the UUID is valid, false otherwise
+     */
+    public static boolean isValidUuid( String uuid )
+    {
+        byte[] b = uuid.getBytes();
+
+        if ( b.length < 36)
+        {
+            return false;
+        }
+
+        if ( isHex( b[0] ) && isHex( b[1] ) && isHex( b[2] ) && isHex( b[3] )
+            && isHex( b[4] ) && isHex( b[5] ) && isHex( b[6] ) && isHex( b[7] )
+            && b[8] == '-'
+            && isHex( b[9] ) && isHex( b[10] ) && isHex( b[11] ) && isHex( b[12] )
+            && b[13] == '-'
+            && isHex( b[14] ) && isHex( b[15] ) && isHex( b[16] ) && isHex( b[17] )
+            && b[18] == '-'
+            && isHex( b[19] ) && isHex( b[20] ) && isHex( b[21] ) && isHex( b[22] )
+            && b[23] == '-'
+            && isHex( b[24] ) && isHex( b[25] ) && isHex( b[26] ) && isHex( b[27] )
+            && isHex( b[28] ) && isHex( b[29] ) && isHex( b[30] ) && isHex( b[31] )
+            && isHex( b[32] ) && isHex( b[33] ) && isHex( b[34] ) && isHex( b[35] ) )
+        {
+            // There is not that much more we can check.
+            LOG.debug( "Syntax valid for '{}'", uuid );
+            return true;
+        }
+
+        LOG.debug( "Syntax invalid for '{}'", uuid );
+        return false;
+    }
+
+
+    /**
+     * converts the bytes of a UUID to string
+     *
+     * @param bytes bytes of a UUID
+     * @return UUID in string format
+     */
+    public static String uuidToString( byte[] bytes )
+    {
+        if ( bytes == null || bytes.length != 16 )
+        {
+            return "Invalid UUID";
+        }
+
+        char[] hex = encodeHex(bytes);
+        StringBuffer sb = new StringBuffer();
+        sb.append( hex, 0, 8 );
+        sb.append( '-' );
+        sb.append( hex, 8, 4 );
+        sb.append( '-' );
+        sb.append( hex, 12, 4 );
+        sb.append( '-' );
+        sb.append( hex, 16, 4 );
+        sb.append( '-' );
+        sb.append( hex, 20, 12 );
+
+        return sb.toString().toLowerCase();
+    }
+
+
+    /**
+     * converts the string representation of an UUID to bytes
+     *
+     * @param string the string representation of an UUID
+     * @return the bytes, null if the the syntax is not valid
+     */
+    public static byte[] uuidToBytes( String string )
+    {
+        if ( ! isValidUuid(string) )
+        {
+            return null;
+        }
+
+        char[] chars = string.toCharArray();
+        byte[] bytes = new byte[16];
+        bytes[0] = getHexValue(chars[0], chars[1]);
+        bytes[1] = getHexValue(chars[2], chars[3]);
+        bytes[2] = getHexValue(chars[4], chars[5]);
+        bytes[3] = getHexValue(chars[6], chars[7]);
+
+        bytes[4] = getHexValue(chars[9], chars[10]);
+        bytes[5] = getHexValue(chars[11], chars[12]);
+
+        bytes[6] = getHexValue(chars[14], chars[15]);
+        bytes[7] = getHexValue(chars[16], chars[17]);
+
+        bytes[8] = getHexValue(chars[19], chars[20]);
+        bytes[9] = getHexValue(chars[21], chars[22]);
+
+        bytes[10] = getHexValue(chars[24], chars[25]);
+        bytes[11] = getHexValue(chars[26], chars[27]);
+        bytes[12] = getHexValue(chars[28], chars[29]);
+        bytes[13] = getHexValue(chars[30], chars[31]);
+        bytes[14] = getHexValue(chars[32], chars[33]);
+        bytes[15] = getHexValue(chars[34], chars[35]);
+
+        return bytes;
     }
 }

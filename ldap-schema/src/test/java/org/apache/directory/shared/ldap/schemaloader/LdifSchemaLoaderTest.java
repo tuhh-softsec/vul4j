@@ -32,9 +32,8 @@ import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schemaextractor.SchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schemaextractor.impl.DefaultSchemaLdifExtractor;
-import org.apache.directory.shared.ldap.schemaloader.LdifSchemaLoader;
 import org.apache.directory.shared.ldap.schemamanager.impl.DefaultSchemaManager;
-import org.apache.directory.shared.ldap.util.LdapExceptionUtils;
+import org.apache.directory.shared.util.exception.Exceptions;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -91,7 +90,7 @@ public class LdifSchemaLoaderTest
         
         if ( !loaded )
         {
-            fail( "Schema load failed : " + LdapExceptionUtils.printErrors( sm.getErrors() ) );
+            fail( "Schema load failed : " + Exceptions.printErrors(sm.getErrors()) );
         }
         
         assertTrue( sm.getRegistries().getAttributeTypeRegistry().contains( "cn" ) );

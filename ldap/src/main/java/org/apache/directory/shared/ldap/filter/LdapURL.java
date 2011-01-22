@@ -17,12 +17,11 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.util;
+package org.apache.directory.shared.ldap.filter;
 
 
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -31,13 +30,10 @@ import java.util.Set;
 
 import org.apache.directory.shared.asn1.Hex;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.util.HttpClientError;
-import org.apache.directory.shared.ldap.codec.util.LdapURLEncodingException;
-import org.apache.directory.shared.ldap.codec.util.URIException;
-import org.apache.directory.shared.ldap.codec.util.UrlDecoderException;
+import org.apache.directory.shared.ldap.exception.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
-import org.apache.directory.shared.ldap.filter.FilterParser;
-import org.apache.directory.shared.ldap.filter.SearchScope;
+import org.apache.directory.shared.ldap.exception.LdapUriException;
+import org.apache.directory.shared.ldap.exception.UrlDecoderException;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.util.Chars;
 import org.apache.directory.shared.util.StringConstants;
@@ -142,7 +138,7 @@ public class LdapURL
     /**
      * Parse a LdapURL
      * @param chars The chars containing the URL
-     * @throws LdapURLEncodingException If the URL is invalid
+     * @throws org.apache.directory.shared.ldap.exception.LdapURLEncodingException If the URL is invalid
      */
     public void parse( char[] chars ) throws LdapURLEncodingException
     {
@@ -650,9 +646,9 @@ public class LdapURL
      * 
      * @param data the string to be encoded
      * @return The string as a byte array.
-     * @since 3.0
+     * @throws UrlDecoderException if encoding is not supported
      */
-    public static byte[] getAsciiBytes( final String data )
+    public static byte[] getAsciiBytes( final String data ) throws UrlDecoderException
     {
 
         if ( data == null )
@@ -666,8 +662,7 @@ public class LdapURL
         }
         catch ( UnsupportedEncodingException e )
         {
-            // TODO: Why do we throw a HttpClientError here?
-            throw new HttpClientError( I18n.err( I18n.ERR_04413 ) );
+            throw new UrlDecoderException( I18n.err( I18n.ERR_04413 ) );
         }
     }
 
@@ -729,10 +724,9 @@ public class LdapURL
      * 
      * @param escaped a string
      * @return the unescaped string
-     * @throws URIException if the string cannot be decoded (invalid)
-     * @see URI#getDefaultProtocolCharset
+     * @throws LdapUriException if the string cannot be decoded (invalid)
      */
-    private static String decode( String escaped ) throws URIException
+    private static String decode( String escaped ) throws LdapUriException
     {
         try
         {
@@ -741,7 +735,7 @@ public class LdapURL
         }
         catch ( UrlDecoderException e )
         {
-            throw new URIException( e.getMessage() );
+            throw new LdapUriException( e.getMessage() );
         }
     }
 
@@ -768,7 +762,7 @@ public class LdapURL
         {
             dn = new DN( decode( new String( chars, pos, end - pos ) ) );
         }
-        catch ( URIException ue )
+        catch ( LdapUriException ue )
         {
             return -1;
         }
@@ -882,7 +876,7 @@ public class LdapURL
 
             return end;
         }
-        catch ( URIException ue )
+        catch ( LdapUriException ue )
         {
             return -1;
         }
@@ -917,7 +911,7 @@ public class LdapURL
             filter = decode( new String( chars, pos, end - pos ) );
             FilterParser.parse( null, filter );
         }
-        catch ( URIException ue )
+        catch ( LdapUriException ue )
         {
             return -1;
         }
@@ -1128,7 +1122,7 @@ public class LdapURL
 
             return chars.length;
         }
-        catch ( URIException ue )
+        catch ( LdapUriException ue )
         {
             return -1;
         }
@@ -1549,8 +1543,8 @@ public class LdapURL
 
 
     /**
-     * Returns the scope, one of {@link SearchScope.OBJECT}, 
-     * {@link SearchScope.ONELEVEL} or {@link SearchScope.SUBTREE}.
+     * Returns the scope, one of {@link SearchScope#OBJECT},
+     * {@link SearchScope#ONELEVEL} or {@link SearchScope#SUBTREE}.
      * 
      * @return Returns the scope.
      */
@@ -1726,9 +1720,9 @@ public class LdapURL
 
 
     /**
-     * Sets the scope. Must be one of {@link SearchScope.OBJECT}, 
-     * {@link SearchScope.ONELEVEL} or {@link SearchScope.SUBTREE},
-     * otherwise {@link SearchScope.OBJECT} is assumed as default.
+     * Sets the scope. Must be one of {@link SearchScope#OBJECT},
+     * {@link SearchScope#ONELEVEL} or {@link SearchScope#SUBTREE},
+     * otherwise {@link SearchScope#OBJECT} is assumed as default.
      * 
      * @param scope the new scope
      */
@@ -1746,9 +1740,9 @@ public class LdapURL
 
 
     /**
-     * Sets the scope. Must be one of {@link SearchScope.OBJECT}, 
-     * {@link SearchScope.ONELEVEL} or {@link SearchScope.SUBTREE},
-     * otherwise {@link SearchScope.OBJECT} is assumed as default.
+     * Sets the scope. Must be one of {@link SearchScope#OBJECT},
+     * {@link SearchScope#ONELEVEL} or {@link SearchScope#SUBTREE},
+     * otherwise {@link SearchScope#OBJECT} is assumed as default.
      * 
      * @param scope the new scope
      */

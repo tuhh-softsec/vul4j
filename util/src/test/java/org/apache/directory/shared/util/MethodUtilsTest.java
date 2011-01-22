@@ -18,7 +18,7 @@
  *  
  */
 
-package org.apache.directory.shared.ldap.util;
+package org.apache.directory.shared.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -30,18 +30,19 @@ import java.util.Collection;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
+import org.apache.directory.shared.util.MethodUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 
 /**
- * Test case for {@link DirectoryClassUtils}.
+ * Test case for {@link MethodUtils}.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 @RunWith(ConcurrentJunitRunner.class)
 @Concurrent()
-public class DirectoryClassUtilsTest
+public class MethodUtilsTest
 {
     private static class TestClass
     {
@@ -79,7 +80,7 @@ public class DirectoryClassUtilsTest
         
         try
         {
-            m2 = DirectoryClassUtils.getAssignmentCompatibleMethod( TestClass.class, "methodA", new Class[] { String.class } );
+            m2 = MethodUtils.getAssignmentCompatibleMethod(TestClass.class, "methodA", new Class[]{String.class});
         }
         catch ( NoSuchMethodException e )
         {
@@ -113,7 +114,7 @@ public class DirectoryClassUtilsTest
         
         try
         {
-            m2 = DirectoryClassUtils.getAssignmentCompatibleMethod( TestClass.class, "methodB", new Class[] { ArrayList.class } );
+            m2 = MethodUtils.getAssignmentCompatibleMethod(TestClass.class, "methodB", new Class[]{ArrayList.class});
         }
         catch ( NoSuchMethodException e )
         {

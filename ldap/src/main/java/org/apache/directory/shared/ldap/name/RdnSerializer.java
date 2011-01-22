@@ -23,8 +23,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.apache.directory.shared.ldap.util.UTFUtils;
 import org.apache.directory.shared.util.Strings;
+import org.apache.directory.shared.util.Unicode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,8 +72,8 @@ public final class RdnSerializer
     public static void serialize( RDN rdn, ObjectOutput out ) throws IOException
     {
         out.writeInt( rdn.getNbAtavs() );
-        UTFUtils.writeUTF( out, rdn.getName() );
-        UTFUtils.writeUTF( out, rdn.getNormName() );
+        Unicode.writeUTF(out, rdn.getName());
+        Unicode.writeUTF(out, rdn.getNormName());
         out.writeInt( rdn.getStart() );
         out.writeInt( rdn.getLength() );
         
@@ -114,10 +114,10 @@ public final class RdnSerializer
         int nbAtavs = in.readInt();
         
         // Read the UPName
-        String upName = UTFUtils.readUTF( in );
+        String upName = Unicode.readUTF(in);
         
         // Read the normName
-        String normName = UTFUtils.readUTF( in );
+        String normName = Unicode.readUTF(in);
         
         if ( Strings.isEmpty(normName) )
         {

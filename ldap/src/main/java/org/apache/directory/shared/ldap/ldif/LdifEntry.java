@@ -46,7 +46,7 @@ import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.name.RDN;
-import org.apache.directory.shared.ldap.util.UTFUtils;
+import org.apache.directory.shared.util.Unicode;
 
 
 /**
@@ -991,12 +991,12 @@ public class LdifEntry implements Cloneable, Externalizable
 
                 if ( in.readBoolean() )
                 {
-                    newRdn = UTFUtils.readUTF( in );
+                    newRdn = Unicode.readUTF(in);
                 }
 
                 if ( in.readBoolean() )
                 {
-                    newSuperior = UTFUtils.readUTF( in );
+                    newSuperior = Unicode.readUTF(in);
                 }
 
                 break;
@@ -1008,7 +1008,7 @@ public class LdifEntry implements Cloneable, Externalizable
                 for ( int i = 0; i < nbModifs; i++ )
                 {
                     int operation = in.readInt();
-                    String modStr = UTFUtils.readUTF( in );
+                    String modStr = Unicode.readUTF(in);
                     DefaultEntryAttribute value = ( DefaultEntryAttribute ) in.readObject();
 
                     addModificationItem( ModificationOperation.getOperation( operation ), modStr, value );
@@ -1090,7 +1090,7 @@ public class LdifEntry implements Cloneable, Externalizable
                 if ( newRdn != null )
                 {
                     out.writeBoolean( true );
-                    UTFUtils.writeUTF( out, newRdn );
+                    Unicode.writeUTF(out, newRdn);
                 }
                 else
                 {
@@ -1100,7 +1100,7 @@ public class LdifEntry implements Cloneable, Externalizable
                 if ( newSuperior != null )
                 {
                     out.writeBoolean( true );
-                    UTFUtils.writeUTF( out, newSuperior );
+                    Unicode.writeUTF(out, newSuperior);
                 }
                 else
                 {
@@ -1115,7 +1115,7 @@ public class LdifEntry implements Cloneable, Externalizable
                 for ( Modification modification : modificationList )
                 {
                     out.writeInt( modification.getOperation().getValue() );
-                    UTFUtils.writeUTF( out, modification.getAttribute().getId() );
+                    Unicode.writeUTF(out, modification.getAttribute().getId());
 
                     EntryAttribute attribute = modification.getAttribute();
                     out.writeObject( attribute );
@@ -1136,7 +1136,7 @@ public class LdifEntry implements Cloneable, Externalizable
 
             for ( Control control : controls.values() )
             {
-                UTFUtils.writeUTF( out, control.getOid() );
+                Unicode.writeUTF(out, control.getOid());
                 out.writeBoolean( control.isCritical() );
                 out.writeBoolean( control.hasValue() );
 

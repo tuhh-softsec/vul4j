@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.util;
+package org.apache.directory.shared.ldap.entry;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -30,14 +30,7 @@ import java.util.Set;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.ldap.entry.DefaultEntry;
-import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
-import org.apache.directory.shared.ldap.entry.DefaultModification;
-import org.apache.directory.shared.ldap.entry.Entry;
-import org.apache.directory.shared.ldap.entry.EntryAttribute;
-import org.apache.directory.shared.ldap.entry.Modification;
-import org.apache.directory.shared.ldap.entry.ModificationOperation;
-import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.entry.*;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.junit.Before;
 import org.junit.Test;
@@ -448,7 +441,7 @@ public class AttributeUtilsTest
     public void testEqualsTransitive() throws Exception
     {
         assertTrue( AttributeUtils.equals( byteArrayA, byteArrayACopy ) );
-        assertTrue( AttributeUtils.equals( byteArrayACopy, byteArrayB ) );
+        assertTrue( AttributeUtils.equals(byteArrayACopy, byteArrayB) );
         assertTrue( AttributeUtils.equals( byteArrayA, byteArrayB ) );
     }
 

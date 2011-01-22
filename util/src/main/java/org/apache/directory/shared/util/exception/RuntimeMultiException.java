@@ -17,8 +17,7 @@
  *  under the License. 
  *  
  */
-
-package org.apache.directory.shared.ldap;
+package org.apache.directory.shared.util.exception;
 
 
 import java.io.PrintStream;
@@ -54,13 +53,24 @@ public class RuntimeMultiException extends RuntimeException
 
     /**
      * Constructs an Exception with a detailed message.
-     * 
-     * @param message
-     *            The message associated with the exception.
+     *
+     * @param message The message associated with the exception.
      */
-    public RuntimeMultiException(String message)
+    public RuntimeMultiException( String message )
     {
         super( message );
+    }
+
+
+    /**
+     * Constructs an Exception with a detailed message.
+     *
+     * @param message The message associated with the exception.
+     */
+    public RuntimeMultiException( String message, Throwable t )
+    {
+        super( message );
+        nestedExceptions.add( t );
     }
 
 
