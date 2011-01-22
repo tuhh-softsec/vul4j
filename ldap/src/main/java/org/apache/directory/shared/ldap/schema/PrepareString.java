@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.schema;
 
 import java.io.IOException;
 
-import org.apache.directory.shared.ldap.util.unicode.InvalidCharacterException;
+import org.apache.directory.shared.util.exception.InvalidCharacterException;
 import org.apache.directory.shared.util.Strings;
 
 /**

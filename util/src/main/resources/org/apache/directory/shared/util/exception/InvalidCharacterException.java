@@ -15,15 +15,15 @@
  * copyright in this work, please see the NOTICE file in the top level
  * directory of this distribution.
  */
-package org.apache.directory.shared.ldap.util.unicode;
+package org.apache.directory.shared.util.exception;
 
 
 import java.io.IOException;
 
 import org.apache.directory.shared.i18n.I18n;
 
+
 /**
- * 
  * Exception thrown when a Character is invalid
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
