@@ -778,7 +778,7 @@ public final class AttributeUtils
      */
     private static void parseOptions( String str, Position pos ) throws ParseException
     {
-        while ( StringTools.isCharASCII( str, pos.start, ';' ) )
+        while ( Strings.isCharASCII( str, pos.start, ';' ) )
         {
             pos.start++;
 
@@ -861,7 +861,7 @@ public final class AttributeUtils
         parseNumber( str, pos );
 
         // We must have at least one '.' number
-        if ( !StringTools.isCharASCII( str, pos.start, '.' ) )
+        if ( !Strings.isCharASCII( str, pos.start, '.' ) )
         {
             throw new ParseException( I18n.err( I18n.ERR_04344 ), pos.start );
         }
@@ -876,7 +876,7 @@ public final class AttributeUtils
         while ( true )
         {
             // Break if we get something which is not a '.'
-            if ( !StringTools.isCharASCII( str, pos.start, '.' ) )
+            if ( !Strings.isCharASCII( str, pos.start, '.' ) )
             {
                 break;
             }

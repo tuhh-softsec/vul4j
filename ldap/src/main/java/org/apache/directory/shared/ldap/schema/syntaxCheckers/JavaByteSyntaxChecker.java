@@ -22,6 +22,7 @@ package org.apache.directory.shared.ldap.schema.syntaxCheckers;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -126,7 +127,7 @@ public class JavaByteSyntaxChecker extends SyntaxChecker
             LOG.debug( "Syntax invalid for '{}'", value );
             return false;
         }
-        else if ( StringTools.isCharASCII( strValue, pos, '0' ) )
+        else if ( Strings.isCharASCII( strValue, pos, '0' ) )
         {
             LOG.debug( "Syntax invalid for '{}'", value );
             return false;

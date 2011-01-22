@@ -70,27 +70,27 @@ public class StringToolsTest
         String result = null;
 
         input = "akarasulu**";
-        result = StringTools.trimConsecutiveToOne( input, '*' );
+        result = Strings.trimConsecutiveToOne( input, '*' );
         assertEquals( "akarasulu*", result );
 
         input = "*****akarasulu**";
-        result = StringTools.trimConsecutiveToOne( input, '*' );
+        result = Strings.trimConsecutiveToOne( input, '*' );
         assertEquals( "*akarasulu*", result );
 
         input = "**akarasulu";
-        result = StringTools.trimConsecutiveToOne( input, '*' );
+        result = Strings.trimConsecutiveToOne( input, '*' );
         assertEquals( "*akarasulu", result );
 
         input = "**akar****asulu**";
-        result = StringTools.trimConsecutiveToOne( input, '*' );
+        result = Strings.trimConsecutiveToOne( input, '*' );
         assertEquals( "*akar*asulu*", result );
 
         input = "akarasulu";
-        result = StringTools.trimConsecutiveToOne( input, '*' );
+        result = Strings.trimConsecutiveToOne( input, '*' );
         assertEquals( "akarasulu", result );
 
         input = "*a*k*a*r*a*s*u*l*u*";
-        result = StringTools.trimConsecutiveToOne( input, '*' );
+        result = Strings.trimConsecutiveToOne( input, '*' );
         assertEquals( "*a*k*a*r*a*s*u*l*u*", result );
 
     }
@@ -333,19 +333,19 @@ public class StringToolsTest
     @Test
     public void testDeepTrim()
     {
-        assertEquals( "", StringTools.deepTrim( " ", false ) );
-        assertEquals( "ab", StringTools.deepTrim( " ab ", false ) );
-        assertEquals( "a b", StringTools.deepTrim( " a b ", false ) );
-        assertEquals( "a b", StringTools.deepTrim( " a  b ", false ) );
-        assertEquals( "a b", StringTools.deepTrim( "  a  b  ", false ) );
-        assertEquals( "ab", StringTools.deepTrim( "ab ", false ) );
-        assertEquals( "ab", StringTools.deepTrim( " ab", false ) );
-        assertEquals( "ab", StringTools.deepTrim( "ab  ", false ) );
-        assertEquals( "ab", StringTools.deepTrim( "  ab", false ) );
-        assertEquals( "a b", StringTools.deepTrim( "a b", false ) );
-        assertEquals( "a b", StringTools.deepTrim( "a  b", false ) );
-        assertEquals( "a b", StringTools.deepTrim( " a b", false ) );
-        assertEquals( "a b", StringTools.deepTrim( "a b ", false ) );
+        assertEquals( "", Strings.deepTrim( " ", false ) );
+        assertEquals( "ab", Strings.deepTrim( " ab ", false ) );
+        assertEquals( "a b", Strings.deepTrim( " a b ", false ) );
+        assertEquals( "a b", Strings.deepTrim( " a  b ", false ) );
+        assertEquals( "a b", Strings.deepTrim( "  a  b  ", false ) );
+        assertEquals( "ab", Strings.deepTrim( "ab ", false ) );
+        assertEquals( "ab", Strings.deepTrim( " ab", false ) );
+        assertEquals( "ab", Strings.deepTrim( "ab  ", false ) );
+        assertEquals( "ab", Strings.deepTrim( "  ab", false ) );
+        assertEquals( "a b", Strings.deepTrim( "a b", false ) );
+        assertEquals( "a b", Strings.deepTrim( "a  b", false ) );
+        assertEquals( "a b", Strings.deepTrim( " a b", false ) );
+        assertEquals( "a b", Strings.deepTrim( "a b ", false ) );
     }
 
     @Test

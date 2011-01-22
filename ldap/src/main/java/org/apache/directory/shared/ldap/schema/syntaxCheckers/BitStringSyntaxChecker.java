@@ -23,6 +23,7 @@ package org.apache.directory.shared.ldap.schema.syntaxCheckers;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,7 +79,7 @@ public class BitStringSyntaxChecker extends SyntaxChecker
         int pos = 0;
         
         // Check that the String respect the syntax : ' ([01]+) ' B
-        if ( ! StringTools.isCharASCII( strValue, pos++, '\'' ) )
+        if ( ! Strings.isCharASCII( strValue, pos++, '\'' ) )
         {
             LOG.debug( "Syntax invalid for '{}'", strValue );
             return false;
@@ -98,14 +99,14 @@ public class BitStringSyntaxChecker extends SyntaxChecker
         }
 
         // Now, we must have a simple quote 
-        if ( ! StringTools.isCharASCII( strValue, pos++, '\'' ) )
+        if ( ! Strings.isCharASCII( strValue, pos++, '\'' ) )
         {
             LOG.debug( "Syntax invalid for '{}'", strValue );
             return false;
         }
 
         // followed by a 'B'
-        if ( ! StringTools.isCharASCII( strValue, pos, 'B' ) )
+        if ( ! Strings.isCharASCII( strValue, pos, 'B' ) )
         {
             LOG.debug( "Syntax invalid for '{}'", strValue );
             return false;

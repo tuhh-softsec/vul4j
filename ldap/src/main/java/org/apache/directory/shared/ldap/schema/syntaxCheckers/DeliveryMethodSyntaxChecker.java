@@ -26,6 +26,7 @@ import java.util.Set;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -183,12 +184,12 @@ public class DeliveryMethodSyntaxChecker extends SyntaxChecker
         while ( pos < length )
         {
             // Skip spaces
-            while ( StringTools.isCharASCII( strValue, pos, ' ' ) )
+            while ( Strings.isCharASCII( strValue, pos, ' ' ) )
             {
                 pos++;
             }
             
-            if ( ! StringTools.isCharASCII( strValue, pos, '$' ) )
+            if ( ! Strings.isCharASCII( strValue, pos, '$' ) )
             {
                 // A '$' was expected
                 LOG.debug( "Syntax invalid for '{}'", value );
@@ -200,7 +201,7 @@ public class DeliveryMethodSyntaxChecker extends SyntaxChecker
             }
             
             // Skip spaces
-            while ( StringTools.isCharASCII( strValue, pos, ' ' ) )
+            while ( Strings.isCharASCII( strValue, pos, ' ' ) )
             {
                 pos++;
             }

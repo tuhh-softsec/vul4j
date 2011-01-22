@@ -32,6 +32,7 @@ import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.BinaryValue;
 import org.apache.directory.shared.ldap.schema.parsers.ParserMonitor;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 
 }
 
@@ -478,7 +479,7 @@ hexstring [UpAndNormValue value]
     {
         // convert to byte[]
         value.rawValue = "#" + hexValue.getText();
-        value.value = StringTools.toByteArray( hexValue.getText() ); 
+        value.value = Strings.toByteArray( hexValue.getText() ); 
     }
     ;
 
@@ -687,7 +688,7 @@ pair [UpAndNormValue value] returns [byte[] pair]
         hexpair:HEXPAIR 
         { 
             value.rawValue += "\\" + hexpair.getText();
-            pair = StringTools.toByteArray( hexpair.getText() ); 
+            pair = Strings.toByteArray( hexpair.getText() ); 
         } 
     )
     ;

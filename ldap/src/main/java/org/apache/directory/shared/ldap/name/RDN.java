@@ -42,6 +42,7 @@ import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.ldap.util.StringTools;
 import org.apache.directory.shared.ldap.util.UTFUtils;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -466,7 +467,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
                 }
                 else
                 {
-                    normName = atav.getNormType() + "=#" + StringTools.dumpHexPairs( atav.getNormValue().getBytes() );
+                    normName = atav.getNormType() + "=#" + Strings.dumpHexPairs( atav.getNormValue().getBytes() );
                 }
 
                 break;
@@ -1396,7 +1397,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
                 case 0x0F:
                     newChars[pos++] = '\\';
                     newChars[pos++] = '0';
-                    newChars[pos++] = StringTools.dumpHex( ( byte ) ( chars[i] & 0x0F ) );
+                    newChars[pos++] = Strings.dumpHex( ( byte ) ( chars[i] & 0x0F ) );
                     break;
 
                 case 0x10:
@@ -1417,7 +1418,7 @@ public class RDN implements Cloneable, Comparable<RDN>, Externalizable, Iterable
                 case 0x1F:
                     newChars[pos++] = '\\';
                     newChars[pos++] = '1';
-                    newChars[pos++] = StringTools.dumpHex( ( byte ) ( chars[i] & 0x0F ) );
+                    newChars[pos++] = Strings.dumpHex( ( byte ) ( chars[i] & 0x0F ) );
                     break;
 
                 default:

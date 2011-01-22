@@ -31,6 +31,7 @@ import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.util.AttributeUtils;
 import org.apache.directory.shared.ldap.util.Position;
 import org.apache.directory.shared.ldap.util.StringTools;
+import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -80,7 +81,7 @@ public class FilterParser
         if ( attribute != null )
         {
             // First check if we have a ":dn"
-            if ( StringTools.areEquals( filter, pos.start, "dn" ) )
+            if ( Strings.areEquals( filter, pos.start, "dn" ) )
             {
                 // Set the dnAttributes flag and move forward in the string
                 node.setDnAttributes( true );
@@ -113,7 +114,7 @@ public class FilterParser
 
                     node.setMatchingRuleId( filter.substring( start, pos.start ) );
 
-                    if ( StringTools.areEquals( filter, pos.start, ":=" ) )
+                    if ( Strings.areEquals( filter, pos.start, ":=" ) )
                     {
                         pos.start += 2;
 
@@ -138,7 +139,7 @@ public class FilterParser
             boolean oidRequested = false;
 
             // First check if we have a ":dn"
-            if ( StringTools.areEquals( filter, pos.start, ":dn" ) )
+            if ( Strings.areEquals( filter, pos.start, ":dn" ) )
             {
                 // Set the dnAttributes flag and move forward in the string
                 node.setDnAttributes( true );
@@ -175,7 +176,7 @@ public class FilterParser
 
                     node.setMatchingRuleId( filter.substring( start, pos.start ) );
 
-                    if ( StringTools.areEquals( filter, pos.start, ":=" ) )
+                    if ( Strings.areEquals( filter, pos.start, ":=" ) )
                     {
                         pos.start += 2;
 
@@ -246,7 +247,7 @@ public class FilterParser
                 value[current++] = (byte)c;
                 pos.start++;
             }
-            else if ( StringTools.isCharASCII( filter, pos.start, '\\' ) )
+            else if ( Strings.isCharASCII( filter, pos.start, '\\' ) )
             {
                 // Maybe an escaped 
                 pos.start++;
@@ -300,7 +301,7 @@ public class FilterParser
     private static ExprNode parseSubstring( SchemaManager schemaManager, String attribute, Value<?> initial, String filter, Position pos )
         throws ParseException, LdapException
     {
-        if ( StringTools.isCharASCII( filter, pos.start, '*' ) )
+        if ( Strings.isCharASCII( filter, pos.start, '*' ) )
         {
             // We have found a '*' : this is a substring
             SubstringNode node = null;
@@ -339,7 +340,7 @@ public class FilterParser
                 Value<?> assertionValue = parseAssertionValue( filter, pos );
 
                 // Is there anything else but a ')' after the value ?
-                if ( StringTools.isCharASCII( filter, pos.start, ')' ) )
+                if ( Strings.isCharASCII( filter, pos.start, ')' ) )
                 {
                     // Nope : as we have had [initial] '*' (any '*' ) *,
                     // this is the final
@@ -351,7 +352,7 @@ public class FilterParser
 
                     return node;
                 }
-                else if ( StringTools.isCharASCII( filter, pos.start, '*' ) )
+                else if ( Strings.isCharASCII( filter, pos.start, '*' ) )
                 {
                     // We have a '*' : it's an any
                     // If the value is empty, that means we have more than 
@@ -406,12 +407,12 @@ public class FilterParser
     private static ExprNode parsePresenceEqOrSubstring( SchemaManager schemaManager, String attribute, String filter, Position pos )
         throws ParseException, LdapException
     {
-        if ( StringTools.isCharASCII( filter, pos.start, '*' ) )
+        if ( Strings.isCharASCII( filter, pos.start, '*' ) )
         {
             // To be a present node, the next char should be a ')'
             pos.start++;
 
-            if ( StringTools.isCharASCII( filter, pos.start, ')' ) )
+            if ( Strings.isCharASCII( filter, pos.start, ')' ) )
             {
                 // This is a present node
                 if ( schemaManager != null )
@@ -440,7 +441,7 @@ public class FilterParser
                 return parseSubstring( schemaManager, attribute, null, filter, pos );
             }
         }
-        else if ( StringTools.isCharASCII( filter, pos.start, ')' ) )
+        else if ( Strings.isCharASCII( filter, pos.start, ')' ) )
         {
             // An empty equality Node
             if ( schemaManager != null )
@@ -468,7 +469,7 @@ public class FilterParser
             Value<?> value = parseAssertionValue( filter, pos );
 
             // Is there anything else but a ')' after the value ?
-            if ( StringTools.isCharASCII( filter, pos.start, ')' ) )
+            if ( Strings.isCharASCII( filter, pos.start, ')' ) )
             {
                 // This is an equality node
                 if ( schemaManager != null )
@@ -543,7 +544,7 @@ public class FilterParser
                     pos.start++;
 
                     // Check that we have a '='
-                    if ( !StringTools.isCharASCII( filter, pos.start, '=' ) )
+                    if ( !Strings.isCharASCII( filter, pos.start, '=' ) )
                     {
                         throw new ParseException( I18n.err( I18n.ERR_04152 ), pos.start );
                     }
@@ -574,7 +575,7 @@ public class FilterParser
                     pos.start++;
 
                     // Check that we have a '='
-                    if ( !StringTools.isCharASCII( filter, pos.start, '=' ) )
+                    if ( !Strings.isCharASCII( filter, pos.start, '=' ) )
                     {
                         throw new ParseException( I18n.err( I18n.ERR_04152 ), pos.start );
                     }
@@ -605,7 +606,7 @@ public class FilterParser
                     pos.start++;
 
                     // Check that we have a '='
-                    if ( !StringTools.isCharASCII( filter, pos.start, '=' ) )
+                    if ( !Strings.isCharASCII( filter, pos.start, '=' ) )
                     {
                         throw new ParseException( I18n.err( I18n.ERR_04152 ), pos.start );
                     }
@@ -774,7 +775,7 @@ public class FilterParser
         throws ParseException, LdapException
     {
         // Check for the left '('
-        if ( !StringTools.isCharASCII( filter, pos.start, '(' ) )
+        if ( !Strings.isCharASCII( filter, pos.start, '(' ) )
         {
             // No more node, get out
             if ( ( pos.start == 0 ) && ( pos.length != 0 ) )
@@ -798,7 +799,7 @@ public class FilterParser
         }
 
         // Check that we have a right ')'
-        if ( !StringTools.isCharASCII( filter, pos.start, ')' ) )
+        if ( !Strings.isCharASCII( filter, pos.start, ')' ) )
         {
             throw new ParseException( I18n.err( I18n.ERR_04157 ), pos.start );
         }
