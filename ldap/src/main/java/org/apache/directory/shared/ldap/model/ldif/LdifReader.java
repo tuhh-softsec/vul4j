@@ -491,7 +491,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
      */
     private String parseDn( String line ) throws LdapLdifException
     {
-        String dn = null;
+        String dn;
 
         String lowerLine = line.toLowerCase();
 
@@ -666,7 +666,10 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
                                 {
                                     try
                                     {
-                                        inf.close();
+                                        if ( inf != null )
+                                        {
+                                            inf.close();
+                                        }
                                     }
                                     catch ( IOException ioe )
                                     {
@@ -775,7 +778,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
         // Check if we have a "true" or a "false"
         int criticalPos = lowerLine.indexOf( ':' );
 
-        int criticalLength = 0;
+        int criticalLength;
 
         if ( criticalPos == -1 )
         {
@@ -1018,7 +1021,6 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
 
                     state = MOD_SPEC;
                     isEmptyValue = true;
-                    continue;
                 }
             }
             else if ( lowerLine.startsWith( "add:" ) )
@@ -1272,8 +1274,8 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
         boolean changeTypeSeen = false;
 
         ChangeType operation = ChangeType.Add;
-        String lowerLine = null;
-        Control control = null;
+        String lowerLine;
+        Control control;
 
         while ( iter.hasNext() )
         {
@@ -1402,7 +1404,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
 
         // <ldif-file> ::= "version:" <fill> <number>
         char[] document = line.toCharArray();
-        String versionNumber = null;
+        String versionNumber;
 
         if ( line.startsWith( "version:" ) )
         {
@@ -1453,7 +1455,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
      * gets a line from the underlying data store
      * 
      * @return a line of characters or null if EOF reached
-     * @throws IOException
+     * @throws IOException on read failure
      */
     protected String getLine() throws IOException
     {
@@ -1471,7 +1473,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
      */
     protected void readLines() throws LdapLdifException
     {
-        String line = null;
+        String line;
         boolean insideComment = true;
         boolean isFirstLine = true;
 
@@ -1674,10 +1676,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
             // Close the reader
             try
             {
-                if ( reader != null )
-                {
-                    reader.close();
-                }
+                reader.close();
             }
             catch ( IOException ioe )
             {
