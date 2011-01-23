@@ -93,7 +93,7 @@ public abstract class AbstractControl extends AbstractAsn1Object implements Cont
     /**
      * Set the encoded control value
      * 
-     * @param encodedValue The encoded control value to store
+     * @param value The encoded control value to store
      */
     public void setValue( byte[] value )
     {
@@ -218,8 +218,8 @@ public abstract class AbstractControl extends AbstractAsn1Object implements Cont
     {
         return decoder;
     }
-    
-    
+
+
     /**
      * @see Object#equals(Object)
      */
@@ -241,12 +241,12 @@ public abstract class AbstractControl extends AbstractAsn1Object implements Cont
         }
 
         Control otherControl = ( Control ) o;
-        
+
         if ( !oid.equalsIgnoreCase( otherControl.getOid() ) )
         {
             return false;
         }
-        
+
         if ( criticality != otherControl.isCritical() )
         {
             return false;
@@ -264,8 +264,7 @@ public abstract class AbstractControl extends AbstractAsn1Object implements Cont
         StringBuffer sb = new StringBuffer();
 
         sb.append( "    Control\n" );
-        sb.append( "        Control oid : '" ).append( oid ).append(
-            "'\n" );
+        sb.append( "        Control oid : '" ).append( oid ).append( "'\n" );
         sb.append( "        Criticality : '" ).append( criticality ).append( "'\n" );
 
         if ( value != null )

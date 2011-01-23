@@ -265,8 +265,7 @@ public class CodecControlDecorator extends AbstractAsn1Object implements Control
         StringBuffer sb = new StringBuffer();
 
         sb.append( "    Control\n" );
-        sb.append( "        Control oid : '" ).append( getOid() ).append(
-            "'\n" );
+        sb.append( "        Control oid : '" ).append( getOid() ).append( "'\n" );
         sb.append( "        Criticality : '" ).append( isCritical() ).append( "'\n" );
 
         if ( getValue() != null )
