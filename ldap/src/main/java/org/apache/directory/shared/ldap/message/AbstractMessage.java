@@ -26,9 +26,9 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.directory.shared.ldap.model.exception.MessageException;
+import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
-import org.apache.directory.shared.ldap.message.control.Control;
 
 
 /**

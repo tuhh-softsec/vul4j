@@ -27,7 +27,7 @@ import org.apache.directory.shared.ldap.codec.controls.replication.syncStateValu
 import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedResultsControl;
 import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearchControl;
 import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesControl;
-import org.apache.directory.shared.ldap.message.control.Control;
+import org.apache.directory.shared.ldap.model.message.Control;
 
 
 /**

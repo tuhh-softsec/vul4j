@@ -112,7 +112,7 @@ import org.apache.directory.shared.ldap.model.message.SearchResultEntry;
 import org.apache.directory.shared.ldap.model.message.SearchResultReference;
 import org.apache.directory.shared.ldap.model.message.UnbindRequest;
 import org.apache.directory.shared.ldap.message.UnbindRequestImpl;
-import org.apache.directory.shared.ldap.message.control.Control;
+import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.message.extended.NoticeOfDisconnect;
 import org.apache.directory.shared.ldap.message.extended.nod.AddNoDResponse;
 import org.apache.directory.shared.ldap.message.extended.nod.BindNoDResponse;

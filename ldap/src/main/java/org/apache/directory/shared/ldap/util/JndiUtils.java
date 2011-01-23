@@ -51,6 +51,7 @@ import javax.naming.ldap.ExtendedResponse;
 import javax.naming.ldap.LdapName;
 
 import org.apache.directory.shared.ldap.model.exception.*;
+import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
 import org.apache.directory.shared.ldap.model.exception.LdapAffectMultipleDsaException;
@@ -80,7 +81,6 @@ import org.apache.directory.shared.ldap.message.ExtendedResponseImpl;
 import org.apache.directory.shared.ldap.model.message.LdapResult;
 import org.apache.directory.shared.ldap.model.exception.MessageException;
 import org.apache.directory.shared.ldap.model.message.ResultResponse;
-import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.name.Dn;
 
 

@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.message.control;
+package org.apache.directory.shared.ldap.model.message;
 
 
 /**

@@ -21,8 +21,8 @@ package org.apache.directory.shared.dsmlv2.request;
 
 
 import org.apache.directory.shared.dsmlv2.LdapMessageDecorator;
+import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.Message;
-import org.apache.directory.shared.ldap.message.control.Control;
 
 
 /**
