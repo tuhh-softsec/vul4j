@@ -24,10 +24,10 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.apache.directory.shared.dsmlv2.ParserUtils;
+import org.apache.directory.shared.ldap.model.entry.ModificationOperation;
+import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
-import org.apache.directory.shared.ldap.entry.Modification;
-import org.apache.directory.shared.ldap.entry.ModificationOperation;
-import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.model.entry.Modification;
 import org.apache.directory.shared.ldap.model.message.ModifyRequest;
 import org.apache.directory.shared.ldap.message.ModifyRequestImpl;
 import org.dom4j.Element;

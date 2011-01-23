@@ -19,7 +19,7 @@
  */
 package org.apache.directory.shared.ldap.schema;
 
-import org.apache.directory.shared.ldap.entry.Entry;
+import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.parsers.LdapComparatorDescription;
 import org.apache.directory.shared.ldap.schema.parsers.NormalizerDescription;
@@ -118,7 +118,7 @@ public interface EntityFactory
      * @return the loaded Normalizer
      * @throws LdapException if anything fails during loading
      */
-    Normalizer getNormalizer( SchemaManager schemaManager, Entry entry, Registries targetRegistries, String schemaName ) 
+    Normalizer getNormalizer( SchemaManager schemaManager, Entry entry, Registries targetRegistries, String schemaName )
         throws LdapException;
     
     

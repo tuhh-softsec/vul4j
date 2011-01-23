@@ -28,10 +28,10 @@ import java.util.Map;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
+import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.MessageException;
 import org.apache.directory.shared.ldap.model.message.*;
-import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.name.Dn;
 import org.junit.Test;

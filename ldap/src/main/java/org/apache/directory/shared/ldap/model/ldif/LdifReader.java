@@ -43,13 +43,13 @@ import java.util.NoSuchElementException;
 
 import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
+import org.apache.directory.shared.ldap.model.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.name.Rdn;
 import org.apache.directory.shared.util.exception.NotImplementedException;
-import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
-import org.apache.directory.shared.ldap.entry.EntryAttribute;
-import org.apache.directory.shared.ldap.entry.ModificationOperation;
+import org.apache.directory.shared.ldap.model.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.ldap.name.DnParser;

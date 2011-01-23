@@ -21,10 +21,10 @@ package org.apache.directory.shared.dsmlv2.request;
 
 
 import org.apache.directory.shared.dsmlv2.ParserUtils;
+import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
+import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
-import org.apache.directory.shared.ldap.entry.Entry;
-import org.apache.directory.shared.ldap.entry.EntryAttribute;
-import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.message.AddRequest;
 import org.apache.directory.shared.ldap.message.AddRequestImpl;
@@ -162,7 +162,7 @@ public class AddRequestDsml extends AbstractRequestDsml
     {
         if ( value instanceof Value<?> )
         {
-            ( ( AddRequest ) instance ).addAttributeValue( ( Value<?> ) value );
+            ( ( AddRequest ) instance ).addAttributeValue( (Value<?>) value );
         }
         else if ( value instanceof String )
         {

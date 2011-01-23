@@ -32,7 +32,7 @@ import java.util.List;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.ldap.entry.StringValue;
+import org.apache.directory.shared.ldap.model.entry.StringValue;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 

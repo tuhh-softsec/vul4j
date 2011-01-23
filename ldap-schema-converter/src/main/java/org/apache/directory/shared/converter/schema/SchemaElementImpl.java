@@ -20,10 +20,10 @@
 package org.apache.directory.shared.converter.schema;
 
 
-import org.apache.directory.shared.ldap.entry.DefaultEntry;
-import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
-import org.apache.directory.shared.ldap.entry.Entry;
-import org.apache.directory.shared.ldap.entry.EntryAttribute;
+import org.apache.directory.shared.ldap.model.entry.DefaultEntry;
+import org.apache.directory.shared.ldap.model.entry.DefaultEntryAttribute;
+import org.apache.directory.shared.ldap.model.entry.Entry;
+import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.ldif.LdifUtils;
 import org.apache.directory.shared.util.Strings;

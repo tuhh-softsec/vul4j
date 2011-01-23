@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.directory.shared.ldap.entry;
+package org.apache.directory.shared.ldap.model.entry;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
@@ -42,6 +42,7 @@ import java.util.Set;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
+import org.apache.directory.shared.ldap.model.entry.*;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.ldap.schema.normalizers.DeepTrimToLowerNormalizer;
@@ -1229,7 +1230,7 @@ public class EntryTest
 
     
     /**
-     * Test method for for {@link org.apache.directory.shared.ldap.entry.DefaultEntry#toString()}.
+     * Test method for for {@link org.apache.directory.shared.ldap.model.entry.DefaultEntry#toString()}.
      */
     @Test
     public void testToString()

@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.entry;
+package org.apache.directory.shared.ldap.model.entry;
 
 /**
  * An enum storing the different modification operation which can be used

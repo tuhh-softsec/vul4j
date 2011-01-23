@@ -16,12 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.directory.shared.ldap.entry;
+package org.apache.directory.shared.ldap.model.entry;
 
 
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.lang.*;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -226,7 +227,7 @@ public class DefaultEntryAttribute implements EntryAttribute
         {
             for ( Value<?> val:vals )
             {
-                if ( ( val instanceof StringValue ) || ( val.isBinary() ) )
+                if ( ( val instanceof StringValue) || ( val.isBinary() ) )
                 {
                     add( val );
                 }
@@ -410,7 +411,7 @@ public class DefaultEntryAttribute implements EntryAttribute
                 Value<?> serverValue = null; 
 
                 // We have to convert the value first
-                if ( clientValue instanceof StringValue )
+                if ( clientValue instanceof StringValue)
                 {
                     if ( isHR )
                     {
@@ -428,7 +429,7 @@ public class DefaultEntryAttribute implements EntryAttribute
                     if ( isHR )
                     {
                         // We have to convert the value to a String value first
-                        serverValue = new StringValue( attributeType, 
+                        serverValue = new StringValue( attributeType,
                             clientValue.getString() );
                     }
                     else
@@ -488,7 +489,7 @@ public class DefaultEntryAttribute implements EntryAttribute
     {
         Value<?> value = get();
         
-        if ( value instanceof StringValue )
+        if ( value instanceof StringValue)
         {
             return value.getString();
         }
@@ -899,7 +900,7 @@ public class DefaultEntryAttribute implements EntryAttribute
                             nbAdded++;
                         }
                     }
-                    else if ( val instanceof StringValue )
+                    else if ( val instanceof StringValue)
                     {
                         StringValue stringValue = (StringValue)val;
                         
@@ -1014,7 +1015,7 @@ public class DefaultEntryAttribute implements EntryAttribute
                 else
                 {
                     // Let's check the value type. 
-                    if ( val instanceof StringValue )
+                    if ( val instanceof StringValue)
                     {
                         // We have a String value
                         if ( isHR == null )
@@ -1357,7 +1358,7 @@ public class DefaultEntryAttribute implements EntryAttribute
                 // contained in the object
                 for ( Value<?> val:vals )
                 {
-                    if ( val instanceof StringValue )
+                    if ( val instanceof StringValue)
                     {
                         if ( !values.contains( val ) )
                         {
@@ -1412,7 +1413,7 @@ public class DefaultEntryAttribute implements EntryAttribute
             {
                 for ( Value<?> val:vals )
                 {
-                    if ( val instanceof StringValue )
+                    if ( val instanceof StringValue)
                     {
                         StringValue stringValue = (StringValue)val;
                         
@@ -1806,7 +1807,7 @@ public class DefaultEntryAttribute implements EntryAttribute
             {
                 for ( Value<?> val:vals )
                 {
-                    if ( val instanceof StringValue )
+                    if ( val instanceof StringValue)
                     {
                         removed &= values.remove( val );
                     }
@@ -1835,7 +1836,7 @@ public class DefaultEntryAttribute implements EntryAttribute
             {
                 for ( Value<?> val:vals )
                 {
-                    if ( val instanceof StringValue )
+                    if ( val instanceof StringValue)
                     {
                         StringValue stringValue = (StringValue)val;
                         
@@ -2431,7 +2432,7 @@ public class DefaultEntryAttribute implements EntryAttribute
             for ( Value<?> value:values )
             {
                 // Write the value, using the correct method
-                if ( value instanceof StringValue )
+                if ( value instanceof StringValue)
                 {
                     ((StringValue)value).serialize( out );
                 }

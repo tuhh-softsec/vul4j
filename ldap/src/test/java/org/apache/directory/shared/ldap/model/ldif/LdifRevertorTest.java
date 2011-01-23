@@ -34,19 +34,15 @@ import javax.naming.directory.BasicAttributes;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.ldap.entry.DefaultEntry;
-import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
-import org.apache.directory.shared.ldap.entry.DefaultModification;
-import org.apache.directory.shared.ldap.entry.Entry;
-import org.apache.directory.shared.ldap.entry.EntryAttribute;
-import org.apache.directory.shared.ldap.entry.Modification;
-import org.apache.directory.shared.ldap.entry.ModificationOperation;
+import org.apache.directory.shared.ldap.model.entry.*;
+import org.apache.directory.shared.ldap.model.entry.DefaultEntryAttribute;
+import org.apache.directory.shared.ldap.model.entry.DefaultModification;
+import org.apache.directory.shared.ldap.model.entry.Entry;
+import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
+import org.apache.directory.shared.ldap.model.entry.Modification;
+import org.apache.directory.shared.ldap.model.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
-import org.apache.directory.shared.ldap.model.ldif.ChangeType;
-import org.apache.directory.shared.ldap.model.ldif.LdifEntry;
-import org.apache.directory.shared.ldap.model.ldif.LdifReader;
-import org.apache.directory.shared.ldap.model.ldif.LdifRevertor;
 import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.ldap.name.Rdn;
 import org.apache.directory.shared.util.Strings;
@@ -503,7 +499,7 @@ public class LdifRevertorTest
         modifications.add( mod );
         
         // Add 'l=FR'
-        mod = new DefaultModification( 
+        mod = new DefaultModification(
             ModificationOperation.ADD_ATTRIBUTE, new DefaultEntryAttribute( "l", "FR" ) );
         modifications.add( mod );
 
@@ -566,7 +562,7 @@ public class LdifRevertorTest
         
         Dn dn = new Dn( "cn=test, ou=system" );
         Modification mod = new DefaultModification(
-            ModificationOperation.ADD_ATTRIBUTE, 
+            ModificationOperation.ADD_ATTRIBUTE,
             new DefaultEntryAttribute( "ou", "BigCompany inc." ) );
 
         LdifEntry reversed = LdifRevertor.reverseModify( dn,

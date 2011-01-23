@@ -19,7 +19,7 @@
  */
 package org.apache.directory.shared.ldap.filter;
 
-import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 
 /**

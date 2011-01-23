@@ -44,7 +44,7 @@ import org.apache.directory.shared.ldap.codec.search.NotFilter;
 import org.apache.directory.shared.ldap.codec.search.OrFilter;
 import org.apache.directory.shared.ldap.codec.search.PresentFilter;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
-import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.filter.AndNode;
 import org.apache.directory.shared.ldap.filter.ApproximateNode;
 import org.apache.directory.shared.ldap.filter.BranchNode;

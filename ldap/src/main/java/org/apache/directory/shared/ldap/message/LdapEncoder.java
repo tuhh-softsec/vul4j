@@ -36,10 +36,10 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.MessageEncoderException;
 import org.apache.directory.shared.ldap.codec.controls.CodecControl;
-import org.apache.directory.shared.ldap.entry.BinaryValue;
-import org.apache.directory.shared.ldap.entry.Entry;
-import org.apache.directory.shared.ldap.entry.EntryAttribute;
-import org.apache.directory.shared.ldap.entry.Modification;
+import org.apache.directory.shared.ldap.model.entry.BinaryValue;
+import org.apache.directory.shared.ldap.model.entry.Entry;
+import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
+import org.apache.directory.shared.ldap.model.entry.Modification;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.LdapResult;
 import org.apache.directory.shared.ldap.model.message.Message;
@@ -431,7 +431,7 @@ public class LdapEncoder
                 {
                     localValuesLength = 0;
 
-                    for ( org.apache.directory.shared.ldap.entry.Value<?> value : attribute )
+                    for ( org.apache.directory.shared.ldap.model.entry.Value<?> value : attribute )
                     {
                         int valueLength = value.getBytes().length;
                         localValuesLength += 1 + TLV.getNbBytes( valueLength ) + valueLength;
@@ -614,7 +614,7 @@ public class LdapEncoder
         int avaLength = 1 + TLV.getNbBytes( attributeIdBytes.length ) + attributeIdBytes.length;
         compareRequest.setAttrIdBytes( attributeIdBytes );
 
-        if ( compareRequest.getAssertionValue() instanceof BinaryValue )
+        if ( compareRequest.getAssertionValue() instanceof BinaryValue)
         {
             byte[] value = compareRequest.getAssertionValue().getBytes();
             avaLength += 1 + TLV.getNbBytes( value.length ) + value.length;
@@ -894,7 +894,7 @@ public class LdapEncoder
                 // Get all the values
                 if ( modification.getAttribute().size() != 0 )
                 {
-                    for ( org.apache.directory.shared.ldap.entry.Value<?> value : modification.getAttribute() )
+                    for ( org.apache.directory.shared.ldap.model.entry.Value<?> value : modification.getAttribute() )
                     {
                         localValuesLength += 1 + TLV.getNbBytes( value.getBytes().length ) + value.getBytes().length;
                     }
@@ -1231,7 +1231,7 @@ public class LdapEncoder
                     {
                         localValuesLength = 0;
 
-                        for ( org.apache.directory.shared.ldap.entry.Value<?> value : attribute )
+                        for ( org.apache.directory.shared.ldap.model.entry.Value<?> value : attribute )
                         {
                             byte[] binaryValue = value.getBytes();
                             localValuesLength += 1 + TLV.getNbBytes( binaryValue.length ) + binaryValue.length;
@@ -1420,7 +1420,7 @@ public class LdapEncoder
 
                     if ( attribute.size() != 0 )
                     {
-                        for ( org.apache.directory.shared.ldap.entry.Value<?> value : attribute )
+                        for ( org.apache.directory.shared.ldap.model.entry.Value<?> value : attribute )
                         {
                             if ( value.isBinary() )
                             {
@@ -1965,7 +1965,7 @@ public class LdapEncoder
 
                     if ( modification.getAttribute().size() != 0 )
                     {
-                        for ( org.apache.directory.shared.ldap.entry.Value<?> value : modification.getAttribute() )
+                        for ( org.apache.directory.shared.ldap.model.entry.Value<?> value : modification.getAttribute() )
                         {
                             if ( !value.isBinary() )
                             {
@@ -2255,7 +2255,7 @@ public class LdapEncoder
 
                     if ( attribute.size() > 0 )
                     {
-                        for ( org.apache.directory.shared.ldap.entry.Value<?> value : attribute )
+                        for ( org.apache.directory.shared.ldap.model.entry.Value<?> value : attribute )
                         {
                             if ( !value.isBinary() )
                             {

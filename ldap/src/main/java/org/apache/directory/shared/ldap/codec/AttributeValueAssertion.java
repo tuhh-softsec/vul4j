@@ -19,7 +19,7 @@
  */
 package org.apache.directory.shared.ldap.codec;
 
-import org.apache.directory.shared.ldap.entry.*;
+import org.apache.directory.shared.ldap.model.entry.*;
 import org.apache.directory.shared.util.Strings;
 
 
@@ -68,7 +68,7 @@ public class AttributeValueAssertion
             }
             else if ( object instanceof StringValue)
             {
-                return ( ( StringValue ) object ).get();
+                return ( (StringValue) object ).get();
             }
             else if ( object instanceof BinaryValue )
             {

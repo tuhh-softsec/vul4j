@@ -30,7 +30,7 @@ import javax.naming.directory.DirContext;
 import javax.naming.ldap.LdapContext;
 
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
-import org.apache.directory.shared.ldap.entry.AttributeUtils;
+import org.apache.directory.shared.ldap.model.entry.AttributeUtils;
 
 /**
  * A utility class for working with Triggers Execution Administrative Points

@@ -22,14 +22,12 @@ package org.apache.directory.shared.ldap.message;
 
 import java.util.List;
 
+import org.apache.directory.shared.ldap.model.entry.*;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.message.AddRequest;
 import org.apache.directory.shared.ldap.model.message.AddResponse;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
-import org.apache.directory.shared.ldap.entry.DefaultEntry;
-import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
-import org.apache.directory.shared.ldap.entry.Entry;
-import org.apache.directory.shared.ldap.entry.EntryAttribute;
+import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.message.ResultResponse;
 import org.apache.directory.shared.ldap.name.Dn;
 
@@ -183,7 +181,7 @@ public class AddRequestImpl extends AbstractAbandonableRequest implements AddReq
      * 
      * @param value The value to add
      */
-    public void addAttributeValue( org.apache.directory.shared.ldap.entry.Value<?> value )
+    public void addAttributeValue( Value<?> value )
     {
         currentAttribute.add( value );
     }

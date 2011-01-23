@@ -23,9 +23,9 @@ package org.apache.directory.shared.ldap.filter;
 import java.text.ParseException;
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.entry.AttributeUtils;
-import org.apache.directory.shared.ldap.entry.BinaryValue;
-import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.model.entry.AttributeUtils;
+import org.apache.directory.shared.ldap.model.entry.BinaryValue;
+import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.SchemaManager;

@@ -21,8 +21,9 @@
 package org.apache.directory.shared.ldap.model.message;
 
 
+import org.apache.directory.shared.ldap.model.entry.Entry;
+import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
-import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.name.Dn;
 
 
@@ -99,7 +100,7 @@ public interface AddRequest extends SingleReplyRequest, AbandonableRequest
      * 
      * @param value The value to add
      */
-    void addAttributeValue( org.apache.directory.shared.ldap.entry.Value<?> value );
+    void addAttributeValue( Value<?> value );
 
 
     /**

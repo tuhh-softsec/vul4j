@@ -23,9 +23,9 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.apache.directory.shared.ldap.entry.BinaryValue;
-import org.apache.directory.shared.ldap.entry.StringValue;
-import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.model.entry.BinaryValue;
+import org.apache.directory.shared.ldap.model.entry.StringValue;
+import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.util.Strings;
 import org.apache.directory.shared.util.Unicode;
@@ -193,7 +193,7 @@ public final class AvaSerializer
     
                 Ava atav =
                     new Ava( upType, normType,
-                        new BinaryValue( upValue) , 
+                        new BinaryValue( upValue) ,
                         new BinaryValue( normValue ), upName );
                 
                 return atav;

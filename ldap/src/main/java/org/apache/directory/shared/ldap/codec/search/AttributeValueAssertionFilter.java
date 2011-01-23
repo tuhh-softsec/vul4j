@@ -152,7 +152,7 @@ public class AttributeValueAssertionFilter extends Filter
 
         avaLength = 1 + TLV.getNbBytes( attributeDescLength ) + attributeDescLength;
 
-        org.apache.directory.shared.ldap.entry.Value<?> assertionValue = assertion.getAssertionValue();
+        org.apache.directory.shared.ldap.model.entry.Value<?> assertionValue = assertion.getAssertionValue();
 
         int assertionValueLength = 0;
 

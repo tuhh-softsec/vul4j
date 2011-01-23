@@ -23,7 +23,7 @@ package org.apache.directory.shared.ldap.name;
 import java.util.List;
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.entry.StringValue;
+import org.apache.directory.shared.ldap.model.entry.StringValue;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;

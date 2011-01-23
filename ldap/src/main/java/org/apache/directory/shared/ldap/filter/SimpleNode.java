@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.filter;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
-import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 
 

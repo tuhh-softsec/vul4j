@@ -25,7 +25,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.apache.directory.shared.ldap.aci.ProtectedItem;
-import org.apache.directory.shared.ldap.entry.EntryAttribute;
+import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
 
 
 /**
@@ -49,7 +49,7 @@ public class AttributeValueItem extends ProtectedItem
 
 
     /**
-     * Returns an iterator of all {@link EntryAttribute}s.
+     * Returns an iterator of all {@link org.apache.directory.shared.ldap.model.entry.EntryAttribute}s.
      *
      * @return the iterator
      */

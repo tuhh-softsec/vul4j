@@ -24,9 +24,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.entry.BinaryValue;
-import org.apache.directory.shared.ldap.entry.StringValue;
-import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.model.entry.BinaryValue;
+import org.apache.directory.shared.ldap.model.entry.StringValue;
+import org.apache.directory.shared.ldap.model.entry.Value;
 
 
 /**
@@ -204,7 +204,7 @@ public abstract class AbstractExprNode implements ExprNode
             return new StringValue( sb.toString() );
         }
 
-        val = ( ( StringValue ) value ).getString();
+        val = ( (StringValue) value ).getString();
         
         for ( int i = 0; i < val.length(); i++ )
         {

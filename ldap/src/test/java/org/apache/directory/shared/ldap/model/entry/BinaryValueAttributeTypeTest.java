@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.entry;
+package org.apache.directory.shared.ldap.model.entry;
 
 
 import static org.junit.Assert.assertEquals;
@@ -36,6 +36,7 @@ import java.util.Arrays;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
+import org.apache.directory.shared.ldap.model.entry.*;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.LdapSyntax;
@@ -331,7 +332,7 @@ public class BinaryValueAttributeTypeTest
         BinaryValue value4 = new BinaryValue( at1, new byte[]{0x01} );
         BinaryValue value5 = new BinaryValue( at1, null );
         BinaryValue value6 = new BinaryValue( at, new byte[]{0x01, 0x02} );
-        StringValue value7 = new StringValue( EntryUtils.getIA5StringAttributeType(), 
+        StringValue value7 = new StringValue( EntryUtils.getIA5StringAttributeType(),
             "test" );
         
         assertTrue( value1.equals( value1 ) );

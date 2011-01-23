@@ -19,7 +19,7 @@
  */
 package org.apache.directory.shared.ldap.model.message;
 
-import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.name.Dn;
 
 

@@ -23,8 +23,8 @@ package org.apache.directory.shared.ldap.schema.normalizers;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.directory.shared.ldap.entry.StringValue;
-import org.apache.directory.shared.ldap.entry.Value;
+import org.apache.directory.shared.ldap.model.entry.StringValue;
+import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 
 

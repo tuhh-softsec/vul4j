@@ -30,7 +30,7 @@ import org.apache.directory.ldap.client.api.future.ExtendedFuture;
 import org.apache.directory.ldap.client.api.future.ModifyDnFuture;
 import org.apache.directory.ldap.client.api.future.ModifyFuture;
 import org.apache.directory.ldap.client.api.future.SearchFuture;
-import org.apache.directory.shared.ldap.entry.Entry;
+import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.filter.SearchScope;
 import org.apache.directory.shared.ldap.model.message.AddRequest;
