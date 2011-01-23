@@ -305,7 +305,7 @@ public class AttributeTypeHolder extends SchemaElementImpl
      * 
      * @param schemaName The name of the schema file containing this attributeType
      * @return A ldif formatted string
-     * @throws LdapException If something went wrong
+     * @throws org.apache.directory.shared.ldap.exception.LdapException If something went wrong
      */
     public String toLdif( String schemaName ) throws LdapException
     {

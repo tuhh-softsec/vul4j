@@ -20,13 +20,13 @@
 package org.apache.directory.shared.converter.schema;
 
 
-import java.io.InputStream;
-import java.io.Writer;
-import java.util.List;
-
 import org.apache.directory.shared.i18n.I18n;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.InputStream;
+import java.io.Writer;
+import java.util.List;
 
 
 /**

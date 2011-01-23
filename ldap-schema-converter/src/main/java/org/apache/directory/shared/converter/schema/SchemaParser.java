@@ -20,21 +20,14 @@
 package org.apache.directory.shared.converter.schema;
 
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
-import java.text.ParseException;
-import java.util.List;
-
+import antlr.RecognitionException;
+import antlr.TokenStreamException;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.directory.shared.i18n.I18n;
 
-import antlr.RecognitionException;
-import antlr.TokenStreamException;
+import java.io.*;
+import java.text.ParseException;
+import java.util.List;
 
 
 /**
@@ -63,7 +56,7 @@ public class SchemaParser
     /**
      * Creates a reusable instance of an SchemaParser.
      *
-     * @throws IOException if the pipe cannot be formed
+     * @throws java.io.IOException if the pipe cannot be formed
      */
     public SchemaParser() throws IOException
     {
@@ -74,7 +67,7 @@ public class SchemaParser
     /**
      * Initializes a parser and its plumbing.
      *
-     * @throws IOException if a pipe cannot be formed.
+     * @throws java.io.IOException if a pipe cannot be formed.
      */
     public synchronized void init() throws IOException
     {
@@ -100,8 +93,8 @@ public class SchemaParser
      *
      * @param schemaObject the String image of a complete schema object
      * @return The list of parsed schema elements
-     * @throws IOException If the schema file can't be processed
-     * @throws ParseException If we weren't able to parse the schema
+     * @throws java.io.IOException If the schema file can't be processed
+     * @throws java.text.ParseException If we weren't able to parse the schema
      */
     public synchronized List<SchemaElement> parse( String schemaObject ) throws IOException, ParseException
     {
@@ -125,10 +118,10 @@ public class SchemaParser
     /**
      * Invoke the parser
      * @param schemaName The schema to be parsed
-     * @return A list of schema elements 
-     * 
-     * @throws IOException If the schema file can't be processed
-     * @throws ParseException If we weren't able to parse the schema
+     * @return A list of schema elements
+     *
+     * @throws java.io.IOException If the schema file can't be processed
+     * @throws java.text.ParseException If we weren't able to parse the schema
      */
     private List<SchemaElement> invokeParser( String schemaName ) throws IOException, ParseException
     {
@@ -158,8 +151,8 @@ public class SchemaParser
      *
      * @param schemaIn a stream of schema objects
      * @return A list of schema elements
-     * @throws IOException If the schema file can't be processed
-     * @throws ParseException If we weren't able to parse the schema
+     * @throws java.io.IOException If the schema file can't be processed
+     * @throws java.text.ParseException If we weren't able to parse the schema
      */
     public synchronized List<SchemaElement> parse( InputStream schemaIn ) throws IOException, ParseException
     {
@@ -180,8 +173,8 @@ public class SchemaParser
      * Thread safe method parses a file of OpenLDAP schemaObject elements/objects.
      *
      * @param schemaFile a file of schema objects
-     * @throws IOException If the schema file can't be processed
-     * @throws ParseException If we weren't able to parse the schema
+     * @throws java.io.IOException If the schema file can't be processed
+     * @throws java.text.ParseException If we weren't able to parse the schema
      */
     public synchronized void parse( File schemaFile ) throws IOException, ParseException
     {
