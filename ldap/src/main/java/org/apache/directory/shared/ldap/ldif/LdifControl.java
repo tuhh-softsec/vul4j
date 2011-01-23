@@ -17,24 +17,34 @@
  *  under the License. 
  *  
  */
-
 package org.apache.directory.shared.ldap.ldif;
 
 
-import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
+import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.util.Strings;
 
 
 /**
- * The LdifControl class stores a control defined for an entry found in a ldif
+ * The LdifControl class stores a control defined for an entry found in a LDIF
  * file.
- * 
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class LdifControl extends AbstractControl
+public class LdifControl implements Control
 {
     /** The serial version UID */
     private static final long serialVersionUID = 1L;
+
+    // ~ Instance fields
+    // ----------------------------------------------------------------------------
+    /** The control type */
+    private String oid;
+
+    /** The criticality (default value is false) */
+    private boolean criticality = false;
+
+    /** Optional control value */
+    protected byte[] value;
 
 
     /**
@@ -44,7 +54,7 @@ public class LdifControl extends AbstractControl
      */
     public LdifControl( String oid )
     {
-        super( oid );
+        this.oid = oid;
     }
 
 
@@ -53,6 +63,96 @@ public class LdifControl extends AbstractControl
      */
     public String toString()
     {
-        return "LdifControl : {" + getOid() + ", " + isCritical() + ", " + Strings.dumpBytes(getValue()) + "}";
+        return "LdifControl : {" + getOid() + ", " + isCritical() + ", " + Strings.dumpBytes( getValue() ) + "}";
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getOid()
+    {
+        return oid;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isCritical()
+    {
+        return criticality;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setCritical( boolean criticality )
+    {
+        this.criticality = criticality;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public byte[] getValue()
+    {
+        return value;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setValue( byte[] value )
+    {
+        this.value = value;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean hasValue()
+    {
+        return value != null;
+    }
+
+
+    /**
+     * @see Object#equals(Object)
+     */
+    public boolean equals( Object o )
+    {
+        if ( o == this )
+        {
+            return true;
+        }
+
+        if ( o == null )
+        {
+            return false;
+        }
+
+        if ( !( o instanceof Control) )
+        {
+            return false;
+        }
+
+        Control otherControl = ( Control ) o;
+
+        if ( !oid.equalsIgnoreCase( otherControl.getOid() ) )
+        {
+            return false;
+        }
+
+        if ( criticality != otherControl.isCritical() )
+        {
+            return false;
+        }
+
+        return hasValue() == otherControl.hasValue();
     }
 }

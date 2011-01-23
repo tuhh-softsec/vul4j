@@ -17,7 +17,6 @@
  *  under the License. 
  *  
  */
-
 package org.apache.directory.shared.ldap.ldif;
 
 
@@ -31,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
 import org.apache.directory.shared.ldap.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.DefaultModification;
@@ -229,7 +227,7 @@ public class LdifEntry implements Cloneable, Externalizable
     {
         if ( changeType == ChangeType.Modify )
         {
-            EntryAttribute attr = null;
+            EntryAttribute attr;
 
             if ( value == null )
             {
@@ -633,8 +631,8 @@ public class LdifEntry implements Cloneable, Externalizable
         {
             for ( Modification modif : modificationList )
             {
-                Modification modifClone = new DefaultModification( modif.getOperation(), ( EntryAttribute ) modif
-                    .getAttribute().clone() );
+                Modification modifClone = new DefaultModification( modif.getOperation(),
+                        modif.getAttribute().clone() );
                 clone.modificationList.add( modifClone );
             }
         }
@@ -644,8 +642,8 @@ public class LdifEntry implements Cloneable, Externalizable
             for ( String key : modificationItems.keySet() )
             {
                 Modification modif = modificationItems.get( key );
-                Modification modifClone = new DefaultModification( modif.getOperation(), ( EntryAttribute ) modif
-                    .getAttribute().clone() );
+                Modification modifClone = new DefaultModification( modif.getOperation(),
+                        modif.getAttribute().clone() );
                 clone.modificationItems.put( key, modifClone );
             }
 
@@ -941,8 +939,6 @@ public class LdifEntry implements Cloneable, Externalizable
                     {
                         return false;
                     }
-
-                    continue;
                 }
                 else
                 {
@@ -1035,7 +1031,7 @@ public class LdifEntry implements Cloneable, Externalizable
                     String controlOid = in.readUTF();
                     boolean isCritical = in.readBoolean();
                     boolean hasValue = in.readBoolean();
-                    Control control = new ControlImpl( controlOid );
+                    Control control = new LdifControl( controlOid );
                     control.setCritical( isCritical );
 
                     if ( hasValue )
@@ -1059,11 +1055,9 @@ public class LdifEntry implements Cloneable, Externalizable
 
 
     /**
-     * @see Externalizable#readExternal(ObjectInput)<p>
-     *
-     *@param out The stream in which the ChangeLogEvent will be serialized. 
-     *
-     *@throws IOException If the serialization fail
+     * @see Externalizable#readExternal(ObjectInput)
+     * @param out The stream in which the ChangeLogEvent will be serialized.
+     * @throws IOException If the serialization fail
      */
     public void writeExternal( ObjectOutput out ) throws IOException
     {
