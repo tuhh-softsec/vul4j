@@ -16,35 +16,38 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.directory.shared.ldap.cursor;
+package org.apache.directory.shared.ldap.model.cursor;
 
 
 /**
- * Thrown to indicate an illegal position state for a Cursor when a call to
- * get is made.
+ * A specific form of IOException to note that an operation is being
+ * attempted on a closed Cursor.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class InvalidCursorPositionException extends Exception
+public class CursorClosedException extends Exception
 {
     /** The serialVersion UID */
-    private static final long serialVersionUID = 5730037129071653272L;
+    private static final long serialVersionUID = -5723233489761854394L;
+
+    /** A static exception to be used by the monitor */
+    public static final CursorClosedException INSTANCE = new CursorClosedException();
 
 
     /**
-     * Creates a new instance of InvalidCursorPositionException.
+     * Creates a new instance of CursorClosedException.
      */
-    public InvalidCursorPositionException()
+    public CursorClosedException()
     {
     }
 
 
     /**
-     * Creates a new instance of InvalidCursorPositionException.
+     * Creates a new instance of CursorClosedException.
      *
      * @param message The associated message
      */
-    public InvalidCursorPositionException( String message )
+    public CursorClosedException( String message )
     {
         super( message );
     }

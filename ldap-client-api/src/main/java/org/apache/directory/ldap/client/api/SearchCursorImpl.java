@@ -25,9 +25,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.directory.ldap.client.api.future.SearchFuture;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.cursor.AbstractCursor;
-import org.apache.directory.shared.ldap.cursor.InvalidCursorPositionException;
-import org.apache.directory.shared.ldap.cursor.SearchCursor;
+import org.apache.directory.shared.ldap.model.cursor.AbstractCursor;
+import org.apache.directory.shared.ldap.model.cursor.InvalidCursorPositionException;
+import org.apache.directory.shared.ldap.model.cursor.SearchCursor;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.message.Response;
 import org.apache.directory.shared.ldap.model.message.SearchResultDone;

@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.cursor;
+package org.apache.directory.shared.ldap.model.cursor;
 
 
 /**

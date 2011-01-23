@@ -18,7 +18,7 @@
  *
  */
 
-package org.apache.directory.shared.ldap.cursor;
+package org.apache.directory.shared.ldap.model.cursor;
 
 
 import org.apache.directory.shared.ldap.model.message.Response;

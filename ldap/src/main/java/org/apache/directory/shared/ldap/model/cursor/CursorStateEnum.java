@@ -16,37 +16,40 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.directory.shared.ldap.cursor;
+package org.apache.directory.shared.ldap.model.cursor;
 
 
 /**
- * Thrown to indicate a condition in the Cursor where the state seems
- * inconsistent based on internal accounting.  This may indicate the
- * underlying structure has changed after the Cursor has been created.
+ * An enumeration to represent the various states of a Cursor.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class InconsistentCursorStateException extends Exception
+public enum CursorStateEnum
 {
-    /** The serialVersion UID */
-    private static final long serialVersionUID = 6222645005251534704L;
+    /** the Cursor has been created and so has not been positioned yet */
+    JUST_OPENED,
 
+    /** the Cursor is positioned just before the first element */
+    BEFORE_FIRST,
 
-    /**
-     * Creates a new instance of InconsistentCursorStateException.
-     */
-    public InconsistentCursorStateException()
-    {
-    }
+    /** the Cursor is positioned just after the last element */
+    AFTER_LAST,
 
+    /** the Cursor is positioned just before an element but not on any element */
+    BEFORE_INNER,
 
-    /**
-     * Creates a new instance of CursorClosedException.
-     *
-     * @param message The associated message
-     */
-    public InconsistentCursorStateException( String message )
-    {
-        super( message );
-    }
+    /** the Cursor is positioned just after an element but not on any element */
+    AFTER_INNER,
+
+    /** the Cursor is positioned on the first element */
+    ON_FIRST,
+
+    /** the Cursor is positioned on the last element */
+    ON_LAST,
+
+    /** the Cursor is positioned on an element */
+    ON_INNER,
+
+    /** the Cursor is closed and not operations can be performed on it */
+    CLOSED
 }

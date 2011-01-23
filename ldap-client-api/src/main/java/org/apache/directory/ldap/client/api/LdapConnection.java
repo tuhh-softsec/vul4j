@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apache.directory.shared.asn1.util.OID;
-import org.apache.directory.shared.ldap.cursor.SearchCursor;
+import org.apache.directory.shared.ldap.model.cursor.SearchCursor;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.ModificationOperation;
