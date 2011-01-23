@@ -25,7 +25,7 @@ import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
-import org.apache.directory.shared.ldap.ldif.LdifUtils;
+import org.apache.directory.shared.ldap.model.ldif.LdifUtils;
 import org.apache.directory.shared.util.Strings;
 
 import java.util.ArrayList;
@@ -180,7 +180,7 @@ public abstract class SchemaElementImpl implements SchemaElement
 
             entry.put( attribute );
 
-            return LdifUtils.convertAttributesToLdif( entry );
+            return LdifUtils.convertAttributesToLdif(entry);
         }
     }
 

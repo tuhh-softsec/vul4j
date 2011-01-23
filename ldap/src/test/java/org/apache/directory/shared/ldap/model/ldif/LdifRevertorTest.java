@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.ldif;
+package org.apache.directory.shared.ldap.model.ldif;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -43,6 +43,10 @@ import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
+import org.apache.directory.shared.ldap.model.ldif.ChangeType;
+import org.apache.directory.shared.ldap.model.ldif.LdifEntry;
+import org.apache.directory.shared.ldap.model.ldif.LdifReader;
+import org.apache.directory.shared.ldap.model.ldif.LdifRevertor;
 import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.ldap.name.Rdn;
 import org.apache.directory.shared.util.Strings;
@@ -1105,7 +1109,7 @@ public class LdifRevertorTest
         entry.put( "objectClass", "person", "top" );
         entry.put( "sn", "this is a test" );
 
-        List<LdifEntry> reverseds = LdifRevertor.reverseRename( entry, newRdn, LdifRevertor.DELETE_OLD_RDN );
+        List<LdifEntry> reverseds = LdifRevertor.reverseRename(entry, newRdn, LdifRevertor.DELETE_OLD_RDN);
 
         assertNotNull( reverseds );
         assertEquals( 1, reverseds.size() );

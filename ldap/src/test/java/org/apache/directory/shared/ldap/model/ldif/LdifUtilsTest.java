@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.ldif;
+package org.apache.directory.shared.ldap.model.ldif;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -41,6 +41,7 @@ import org.apache.directory.shared.ldap.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidAttributeValueException;
+import org.apache.directory.shared.ldap.model.ldif.*;
 import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.ldap.name.Rdn;
 import org.apache.directory.shared.util.Strings;
@@ -304,7 +305,7 @@ public class LdifUtilsTest
         assertEquals( "abcde\n fghi\n jklm", LdifUtils.stripLineToNChars( "abcdefghijklm", 5 ) );
         assertEquals( "abcde\n fghi\n jklm\n n", LdifUtils.stripLineToNChars( "abcdefghijklmn", 5 ) );
         assertEquals( "abcde\n fghi\n jklm\n no", LdifUtils.stripLineToNChars( "abcdefghijklmno", 5 ) );
-        assertEquals( "abcde\n fghi\n jklm\n nop", LdifUtils.stripLineToNChars( "abcdefghijklmnop", 5 ) );
+        assertEquals( "abcde\n fghi\n jklm\n nop", LdifUtils.stripLineToNChars("abcdefghijklmnop", 5) );
     }
     
     
@@ -357,7 +358,7 @@ public class LdifUtilsTest
     
     /**
      * Test a conversion of an attributes from a LDIF file
-     * @throws LdapLdifException 
+     * @throws org.apache.directory.shared.ldap.model.ldif.LdapLdifException
      */
     @Test
     public void testConvertAttributesfromLdif() throws LdapException, LdapLdifException
@@ -399,7 +400,7 @@ public class LdifUtilsTest
         entry.add( "sn", "doe" );
         entry.add( "uid", "jdoe" );
 
-        List<LdifEntry> reverseds = LdifRevertor.reverseMoveAndRename( entry, newSuperior, new Rdn( "cn=jack doe" ), false );
+        List<LdifEntry> reverseds = LdifRevertor.reverseMoveAndRename(entry, newSuperior, new Rdn("cn=jack doe"), false);
 
         assertNotNull( reverseds );
         assertEquals( 1, reverseds.size() );

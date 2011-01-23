@@ -24,7 +24,7 @@ import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
-import org.apache.directory.shared.ldap.ldif.LdifUtils;
+import org.apache.directory.shared.ldap.model.ldif.LdifUtils;
 import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.ldap.name.Rdn;
 import org.apache.directory.shared.ldap.schema.ObjectClassTypeEnum;
@@ -222,7 +222,7 @@ public class ObjectClassHolder extends SchemaElementImpl
 
         // First dump the Dn only
         Entry entry = new DefaultEntry( new Dn( dn ) );
-        sb.append( LdifUtils.convertEntryToLdif( entry ) );
+        sb.append( LdifUtils.convertEntryToLdif(entry) );
 
         return sb.toString();
     }

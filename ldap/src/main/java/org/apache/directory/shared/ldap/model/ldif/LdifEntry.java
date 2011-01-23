@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.ldif;
+package org.apache.directory.shared.ldap.model.ldif;
 
 
 import java.io.Externalizable;
