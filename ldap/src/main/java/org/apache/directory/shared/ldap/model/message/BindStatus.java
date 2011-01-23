@@ -46,5 +46,5 @@ public enum BindStatus
     /**
      * The user has been authenticated
      */
-    AUTHENTICATED;
+    AUTHENTICATED
 }

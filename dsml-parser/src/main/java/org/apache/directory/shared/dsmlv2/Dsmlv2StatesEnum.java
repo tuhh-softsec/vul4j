@@ -492,5 +492,5 @@ public enum Dsmlv2StatesEnum
     SEARCH_RESULT_REFERENCE_LOOP,
 
     /** The Search Result Done End state */
-    SEARCH_RESULT_DONE_END;
+    SEARCH_RESULT_DONE_END
 }

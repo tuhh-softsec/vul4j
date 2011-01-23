@@ -63,5 +63,5 @@ public enum AssertionType
     NOT,
     
     /** Undefined operation */
-    UNDEFINED;
+    UNDEFINED
 }

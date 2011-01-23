@@ -22,8 +22,8 @@ package org.apache.directory.shared.dsmlv2.reponse;
 
 
 import org.apache.directory.shared.dsmlv2.DsmlDecorator;
-import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.AbstractResponse;
+import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.message.Response;
 import org.dom4j.Element;
 
@@ -70,7 +70,7 @@ public class ErrorResponse extends AbstractResponse implements Response, DsmlDec
         UNRESOLVABLE_URI,
         /** Other error response type. */
         OTHER
-    };
+    }
 
     /** The type of error response */
     private ErrorResponseType errorType;

@@ -129,7 +129,7 @@ public class GeneralizedTime implements Comparable<GeneralizedTime>
         /** Time format, minutes and seconds are omitted, excluding fraction. */
         YEAR_MONTH_DAY_HOUR,
         /** Time format, minutes and seconds are omitted, including fraction. */
-        YEAR_MONTH_DAY_HOUR_FRACTION, ;
+        YEAR_MONTH_DAY_HOUR_FRACTION
     }
 
     /**
@@ -153,7 +153,7 @@ public class GeneralizedTime implements Comparable<GeneralizedTime>
         /** g-differential format, using hour only. */
         DIFF_HOUR,
         /** g-differential format, using hour and minute. */
-        DIFF_HOUR_MINUTE;
+        DIFF_HOUR_MINUTE
     }
 
     private static final TimeZone GMT = TimeZone.getTimeZone( "GMT" );

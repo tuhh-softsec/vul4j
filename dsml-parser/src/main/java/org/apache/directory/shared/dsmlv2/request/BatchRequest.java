@@ -55,7 +55,7 @@ public class BatchRequest
         SEQUENTIAL, 
         /** Parallel processing. */
         PARALLEL
-    };
+    }
 
     /**
      * The type of processing of the Batch Request
@@ -73,7 +73,7 @@ public class BatchRequest
         RESUME, 
         /** Exit on error. */
         EXIT
-    };
+    }
 
     /**
      * The type of on error handling
@@ -91,7 +91,7 @@ public class BatchRequest
         SEQUENTIAL,
         /** Unordered response order. */
         UNORDERED
-    };
+    }
 
     /**
      * The response order

@@ -43,19 +43,19 @@ import java.util.NoSuchElementException;
 
 import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
-import org.apache.directory.shared.ldap.model.message.Control;
-import org.apache.directory.shared.ldap.name.Rdn;
-import org.apache.directory.shared.util.exception.NotImplementedException;
 import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
+import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
+import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.ldap.name.DnParser;
+import org.apache.directory.shared.ldap.name.Rdn;
 import org.apache.directory.shared.util.Base64;
 import org.apache.directory.shared.util.Chars;
 import org.apache.directory.shared.util.Strings;
+import org.apache.directory.shared.util.exception.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -666,7 +666,10 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
                                 {
                                     try
                                     {
-                                        inf.close();
+                                        if ( inf != null )
+                                        {
+                                            inf.close();
+                                        }
                                     }
                                     catch ( IOException ioe )
                                     {
@@ -1674,16 +1677,12 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
             // Close the reader
             try
             {
-                if ( reader != null )
-                {
-                    reader.close();
-                }
+                reader.close();
             }
             catch ( IOException ioe )
             {
                 throw new LdapLdifException( I18n.err( I18n.ERR_12024_CANNOT_CLOSE_FILE ) );
             }
-
         }
     }
 
