@@ -20,8 +20,8 @@
 package org.apache.directory.shared.dsmlv2.request;
 
 
-import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.message.AbandonRequest;
+import org.apache.directory.shared.ldap.model.message.AbandonRequest;
+import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.AbandonRequestImpl;
 import org.dom4j.Element;
 
@@ -69,7 +69,7 @@ public class AbandonRequestDsml extends AbstractRequestDsml
     {
         Element element = super.toDsml( root );
 
-        AbandonRequest request = ( AbandonRequest ) instance;
+        AbandonRequest request = (AbandonRequest) instance;
 
         // AbandonID
         if ( request.getAbandoned() != 0 )

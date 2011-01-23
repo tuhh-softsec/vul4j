@@ -21,7 +21,7 @@ package org.apache.directory.shared.ldap.name;
 
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
+import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.util.Chars;
 import org.apache.directory.shared.util.Hex;
 import org.apache.directory.shared.util.Position;
@@ -774,7 +774,7 @@ public final class DnUtils
      * @param descendant the normalized distinguished name of the descendant context
      * @return the relative normalized name between the ancestor and the
      *         descendant contexts
-     * @throws org.apache.directory.shared.ldap.exception.LdapInvalidDnException if the contexts are not related in the ancestual sense
+     * @throws org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException if the contexts are not related in the ancestual sense
      */
     public static Dn getRelativeName( Dn ancestor, Dn descendant ) throws LdapInvalidDnException
     {
@@ -802,7 +802,7 @@ public final class DnUtils
      *
      * @param compositeNameComponent a single name component not a whole name
      * @return the components of the complex name component in order
-     * @throws org.apache.directory.shared.ldap.exception.LdapInvalidDnException
+     * @throws org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException
      *             if nameComponent is invalid (starts with a +)
      */
     public static String[] getCompositeComponents( String compositeNameComponent ) throws LdapInvalidDnException

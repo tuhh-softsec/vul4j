@@ -28,7 +28,7 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecoder;
-import org.apache.directory.shared.ldap.message.Message;
+import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.util.StringConstants;
 import org.apache.directory.shared.util.Strings;

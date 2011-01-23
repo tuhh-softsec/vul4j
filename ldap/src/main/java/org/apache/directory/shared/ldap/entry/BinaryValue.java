@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.Normalizer;
@@ -155,7 +155,7 @@ public class BinaryValue extends AbstractValue<byte[]>
      * determine how to properly normalize the wrapped value.
      *
      * @return the normalized version of the wrapped value
-     * @throws LdapException if schema entity resolution fails or normalization fails
+     * @throws org.apache.directory.shared.ldap.model.exception.LdapException if schema entity resolution fails or normalization fails
      */
     public byte[] getNormalizedValue()
     {

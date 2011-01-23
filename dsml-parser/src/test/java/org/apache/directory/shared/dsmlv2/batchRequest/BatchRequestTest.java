@@ -32,16 +32,15 @@ import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.dsmlv2.AbstractTest;
 import org.apache.directory.shared.dsmlv2.Dsmlv2Parser;
 import org.apache.directory.shared.dsmlv2.request.BatchRequest;
-import org.apache.directory.shared.ldap.message.AbandonRequest;
-import org.apache.directory.shared.ldap.message.AddRequest;
-import org.apache.directory.shared.ldap.message.BindRequest;
-import org.apache.directory.shared.ldap.message.CompareRequest;
-import org.apache.directory.shared.ldap.message.DeleteRequest;
-import org.apache.directory.shared.ldap.message.ExtendedRequest;
-import org.apache.directory.shared.ldap.message.Message;
-import org.apache.directory.shared.ldap.message.ModifyDnRequest;
-import org.apache.directory.shared.ldap.message.ModifyRequest;
-import org.apache.directory.shared.ldap.message.SearchRequest;
+import org.apache.directory.shared.ldap.model.message.AbandonRequest;
+import org.apache.directory.shared.ldap.model.message.*;
+import org.apache.directory.shared.ldap.model.message.BindRequest;
+import org.apache.directory.shared.ldap.model.message.CompareRequest;
+import org.apache.directory.shared.ldap.model.message.DeleteRequest;
+import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
+import org.apache.directory.shared.ldap.model.message.ModifyDnRequest;
+import org.apache.directory.shared.ldap.model.message.ModifyRequest;
+import org.apache.directory.shared.ldap.model.message.SearchRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -146,7 +145,7 @@ public class BatchRequestTest extends AbstractTest
 
         Message request = batchRequest.getCurrentRequest();
 
-        if ( request instanceof BindRequest )
+        if ( request instanceof BindRequest)
         {
             assertTrue( true );
         }
@@ -336,7 +335,7 @@ public class BatchRequestTest extends AbstractTest
 
         Message request = batchRequest.getCurrentRequest();
 
-        if ( request instanceof ExtendedRequest )
+        if ( request instanceof ExtendedRequest)
         {
             assertTrue( true );
         }
@@ -412,7 +411,7 @@ public class BatchRequestTest extends AbstractTest
 
         Message request = batchRequest.getCurrentRequest();
 
-        if ( request instanceof ModifyRequest )
+        if ( request instanceof ModifyRequest)
         {
             assertTrue( true );
         }

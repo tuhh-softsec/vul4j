@@ -23,7 +23,7 @@ package org.apache.directory.shared.ldap.schema.registries;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 
@@ -99,7 +99,7 @@ public interface AttributeTypeRegistry extends SchemaObjectRegistry<AttributeTyp
      * descendants.
      * 
      * @param attributeType The attributeType to register
-     * @throws LdapException If something went wrong
+     * @throws org.apache.directory.shared.ldap.model.exception.LdapException If something went wrong
      */
     void registerDescendants( AttributeType attributeType, AttributeType ancestor ) throws LdapException;
 

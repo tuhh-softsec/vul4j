@@ -33,7 +33,7 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.UsageEnum;
-import org.apache.directory.shared.ldap.schema.parser.ConsoleParserMonitor;
+import org.apache.directory.shared.ldap.schema.parsers.ConsoleParserMonitor;
 import org.apache.directory.shared.ldap.schema.parsers.AttributeTypeDescriptionSchemaParser;
 import org.junit.After;
 import org.junit.Before;

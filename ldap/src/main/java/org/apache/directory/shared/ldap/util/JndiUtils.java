@@ -50,37 +50,36 @@ import javax.naming.ldap.ExtendedRequest;
 import javax.naming.ldap.ExtendedResponse;
 import javax.naming.ldap.LdapName;
 
-import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
+import org.apache.directory.shared.ldap.model.exception.*;
+import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
-import org.apache.directory.shared.ldap.exception.LdapAffectMultipleDsaException;
-import org.apache.directory.shared.ldap.exception.LdapAliasDereferencingException;
-import org.apache.directory.shared.ldap.exception.LdapAliasException;
-import org.apache.directory.shared.ldap.exception.LdapAttributeInUseException;
-import org.apache.directory.shared.ldap.exception.LdapAuthenticationException;
-import org.apache.directory.shared.ldap.exception.LdapAuthenticationNotSupportedException;
-import org.apache.directory.shared.ldap.exception.LdapContextNotEmptyException;
-import org.apache.directory.shared.ldap.exception.LdapEntryAlreadyExistsException;
-import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeTypeException;
-import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueException;
-import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
-import org.apache.directory.shared.ldap.exception.LdapInvalidSearchFilterException;
-import org.apache.directory.shared.ldap.exception.LdapLoopDetectedException;
-import org.apache.directory.shared.ldap.exception.LdapNoPermissionException;
-import org.apache.directory.shared.ldap.exception.LdapNoSuchAttributeException;
-import org.apache.directory.shared.ldap.exception.LdapNoSuchObjectException;
-import org.apache.directory.shared.ldap.exception.LdapOperationErrorException;
-import org.apache.directory.shared.ldap.exception.LdapOtherException;
-import org.apache.directory.shared.ldap.exception.LdapPartialResultException;
-import org.apache.directory.shared.ldap.exception.LdapProtocolErrorException;
-import org.apache.directory.shared.ldap.exception.LdapReferralException;
-import org.apache.directory.shared.ldap.exception.LdapSchemaViolationException;
-import org.apache.directory.shared.ldap.exception.LdapServiceUnavailableException;
-import org.apache.directory.shared.ldap.exception.LdapTimeLimitExceededException;
-import org.apache.directory.shared.ldap.exception.LdapUnwillingToPerformException;
+import org.apache.directory.shared.ldap.model.exception.LdapAffectMultipleDsaException;
+import org.apache.directory.shared.ldap.model.exception.LdapAliasDereferencingException;
+import org.apache.directory.shared.ldap.model.exception.LdapAliasException;
+import org.apache.directory.shared.ldap.model.exception.LdapAttributeInUseException;
+import org.apache.directory.shared.ldap.model.exception.LdapAuthenticationException;
+import org.apache.directory.shared.ldap.model.exception.LdapAuthenticationNotSupportedException;
+import org.apache.directory.shared.ldap.model.exception.LdapContextNotEmptyException;
+import org.apache.directory.shared.ldap.model.exception.LdapEntryAlreadyExistsException;
+import org.apache.directory.shared.ldap.model.exception.LdapInvalidAttributeTypeException;
+import org.apache.directory.shared.ldap.model.exception.LdapInvalidAttributeValueException;
+import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
+import org.apache.directory.shared.ldap.model.exception.LdapInvalidSearchFilterException;
+import org.apache.directory.shared.ldap.model.exception.LdapLoopDetectedException;
+import org.apache.directory.shared.ldap.model.exception.LdapNoPermissionException;
+import org.apache.directory.shared.ldap.model.exception.LdapNoSuchAttributeException;
+import org.apache.directory.shared.ldap.model.exception.LdapNoSuchObjectException;
+import org.apache.directory.shared.ldap.model.exception.LdapOperationErrorException;
+import org.apache.directory.shared.ldap.model.exception.LdapOtherException;
+import org.apache.directory.shared.ldap.model.exception.LdapPartialResultException;
+import org.apache.directory.shared.ldap.model.exception.LdapProtocolErrorException;
+import org.apache.directory.shared.ldap.model.exception.LdapReferralException;
+import org.apache.directory.shared.ldap.model.exception.LdapSchemaViolationException;
+import org.apache.directory.shared.ldap.model.exception.LdapServiceUnavailableException;
 import org.apache.directory.shared.ldap.message.ExtendedResponseImpl;
-import org.apache.directory.shared.ldap.message.LdapResult;
-import org.apache.directory.shared.ldap.message.MessageException;
-import org.apache.directory.shared.ldap.message.ResultResponse;
+import org.apache.directory.shared.ldap.model.message.LdapResult;
+import org.apache.directory.shared.ldap.model.exception.MessageException;
+import org.apache.directory.shared.ldap.model.message.ResultResponse;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.name.Dn;
 
@@ -170,7 +169,7 @@ public final class JndiUtils
      * @return
      */
     public static ExtendedResponse toJndiExtendedResponse(
-        final org.apache.directory.shared.ldap.message.ExtendedResponse response )
+        final org.apache.directory.shared.ldap.model.message.ExtendedResponse response )
     {
         class JndiExtendedResponse implements ExtendedResponse
         {
@@ -191,7 +190,7 @@ public final class JndiUtils
 
 
     public static ExtendedRequest toJndiExtendedRequest(
-        final org.apache.directory.shared.ldap.message.ExtendedRequest request )
+        final org.apache.directory.shared.ldap.model.message.ExtendedRequest request )
     {
         class JndiExtendedRequest implements ExtendedRequest
         {
@@ -201,7 +200,7 @@ public final class JndiUtils
             public ExtendedResponse createExtendedResponse( String id, byte[] berValue, int offset, int length )
                 throws NamingException
             {
-                org.apache.directory.shared.ldap.message.ExtendedResponse response = new ExtendedResponseImpl( request
+                org.apache.directory.shared.ldap.model.message.ExtendedResponse response = new ExtendedResponseImpl( request
                     .getMessageId(), request.getRequestName() );
                 response.setResponseName( id );
                 response.setResponseValue( berValue );
@@ -235,10 +234,10 @@ public final class JndiUtils
      * @param request
      * @return
      */
-    public static org.apache.directory.shared.ldap.message.ExtendedResponse fromJndiExtendedResponse(
+    public static org.apache.directory.shared.ldap.model.message.ExtendedResponse fromJndiExtendedResponse(
         final ExtendedResponse response )
     {
-        class ServerExtendedResponse implements org.apache.directory.shared.ldap.message.ExtendedResponse
+        class ServerExtendedResponse implements org.apache.directory.shared.ldap.model.message.ExtendedResponse
         {
             public String getResponseName()
             {
@@ -376,10 +375,10 @@ public final class JndiUtils
     }
 
 
-    public static org.apache.directory.shared.ldap.message.ExtendedRequest fromJndiExtendedRequest(
+    public static org.apache.directory.shared.ldap.model.message.ExtendedRequest fromJndiExtendedRequest(
         final ExtendedRequest request )
     {
-        class ServerExtendedRequest implements org.apache.directory.shared.ldap.message.ExtendedRequest
+        class ServerExtendedRequest implements org.apache.directory.shared.ldap.model.message.ExtendedRequest
         {
             public String getRequestName()
             {
@@ -525,7 +524,7 @@ public final class JndiUtils
 
         NamingException ne = null;
 
-        if ( t instanceof LdapAffectMultipleDsaException )
+        if ( t instanceof LdapAffectMultipleDsaException)
         {
             ne = new NamingException( t.getLocalizedMessage() );
         }
@@ -581,7 +580,7 @@ public final class JndiUtils
         {
             ne = new NoPermissionException( t.getLocalizedMessage() );
         }
-        else if ( t instanceof LdapNoSuchAttributeException )
+        else if ( t instanceof LdapNoSuchAttributeException)
         {
             ne = new NoSuchAttributeException( t.getLocalizedMessage() );
         }
@@ -613,7 +612,7 @@ public final class JndiUtils
         {
             ne = new SchemaViolationException( t.getLocalizedMessage() );
         }
-        else if ( t instanceof LdapServiceUnavailableException )
+        else if ( t instanceof LdapServiceUnavailableException)
         {
             ne = new ServiceUnavailableException( t.getLocalizedMessage() );
         }

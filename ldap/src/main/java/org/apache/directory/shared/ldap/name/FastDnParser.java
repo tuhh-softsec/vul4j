@@ -24,9 +24,9 @@ import java.util.List;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.StringValue;
-import org.apache.directory.shared.ldap.exception.LdapException;
-import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
-import org.apache.directory.shared.ldap.message.ResultCodeEnum;
+import org.apache.directory.shared.ldap.model.exception.LdapException;
+import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
+import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.shared.util.Position;
 import org.apache.directory.shared.util.Strings;
 
@@ -57,7 +57,7 @@ public enum FastDnParser
      *
      * @param name The Dn to parse
      * @return A valid Dn
-     * @throws LdapException If the Dn was invalid
+     * @throws org.apache.directory.shared.ldap.model.exception.LdapException If the Dn was invalid
      */
     public Dn parse( String name ) throws LdapException
     {
@@ -407,7 +407,7 @@ public enum FastDnParser
      * 
      * @return the attribute type OID
      * 
-     * @throws LdapInvalidDnException the invalid name exception
+     * @throws org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException the invalid name exception
      */
     private String matchAttributeTypeNumericOid( String name, Position pos ) throws LdapInvalidDnException
     {

@@ -23,8 +23,8 @@ package org.apache.directory.shared.ldap.name;
 import java.io.StringReader;
 import java.util.List;
 
-import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
-import org.apache.directory.shared.ldap.message.ResultCodeEnum;
+import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
+import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 
 
 /**

@@ -21,8 +21,8 @@
 package org.apache.directory.shared.ldap.cursor;
 
 
-import org.apache.directory.shared.ldap.message.Response;
-import org.apache.directory.shared.ldap.message.SearchResultDone;
+import org.apache.directory.shared.ldap.model.message.Response;
+import org.apache.directory.shared.ldap.model.message.SearchResultDone;
 
 
 /**

@@ -22,6 +22,7 @@ package org.apache.directory.shared.ldap.message;
 
 import java.util.Arrays;
 
+import org.apache.directory.shared.ldap.model.message.BindResponse;
 import org.apache.directory.shared.util.Strings;
 
 
@@ -143,7 +144,7 @@ public class BindResponseImpl extends AbstractResultResponse implements BindResp
             return true;
         }
 
-        if ( ( obj == null ) || !( obj instanceof BindResponse ) )
+        if ( ( obj == null ) || !( obj instanceof BindResponse) )
         {
             return false;
         }

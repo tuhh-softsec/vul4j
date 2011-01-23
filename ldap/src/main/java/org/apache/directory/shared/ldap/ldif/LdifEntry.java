@@ -41,8 +41,8 @@ import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.Value;
-import org.apache.directory.shared.ldap.exception.LdapException;
-import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
+import org.apache.directory.shared.ldap.model.exception.LdapException;
+import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.ldap.name.Rdn;
@@ -252,7 +252,7 @@ public class LdifEntry implements Cloneable, Externalizable
      * Add an attribute to the entry
      * 
      * @param attr The attribute to be added
-     * @throws LdapException if something went wrong
+     * @throws org.apache.directory.shared.ldap.model.exception.LdapException if something went wrong
      */
     public void addAttribute( EntryAttribute attr ) throws LdapException
     {
@@ -316,7 +316,7 @@ public class LdifEntry implements Cloneable, Externalizable
      * @param id The attribute ID
      * 
      * @param value The attribute value
-     * @throws LdapException if something went wrong
+     * @throws org.apache.directory.shared.ldap.model.exception.LdapException if something went wrong
      */
     public void putAttribute( String id, Object value ) throws LdapException
     {

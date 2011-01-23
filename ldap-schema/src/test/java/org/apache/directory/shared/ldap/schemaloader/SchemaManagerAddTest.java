@@ -35,10 +35,10 @@ import java.util.Set;
 import org.apache.commons.io.FileUtils;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.ldap.exception.LdapAttributeInUseException;
-import org.apache.directory.shared.ldap.exception.LdapException;
-import org.apache.directory.shared.ldap.exception.LdapProtocolErrorException;
-import org.apache.directory.shared.ldap.exception.LdapUnwillingToPerformException;
+import org.apache.directory.shared.ldap.model.exception.LdapException;
+import org.apache.directory.shared.ldap.model.exception.LdapAttributeInUseException;
+import org.apache.directory.shared.ldap.model.exception.LdapUnwillingToPerformException;
+import org.apache.directory.shared.ldap.model.exception.LdapProtocolErrorException;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.LdapSyntax;
@@ -57,7 +57,6 @@ import org.apache.directory.shared.ldap.schema.syntaxCheckers.OctetStringSyntaxC
 import org.apache.directory.shared.ldap.schema.syntaxCheckers.RegexSyntaxChecker;
 import org.apache.directory.shared.ldap.schemaextractor.SchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schemaextractor.impl.DefaultSchemaLdifExtractor;
-import org.apache.directory.shared.ldap.schemaloader.LdifSchemaLoader;
 import org.apache.directory.shared.ldap.schemamanager.impl.DefaultSchemaManager;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -812,7 +811,7 @@ public class SchemaManagerAddTest
         assertEquals( 1, errors.size() );
         Throwable error = errors.get( 0 );
 
-        assertTrue( error instanceof LdapProtocolErrorException );
+        assertTrue( error instanceof LdapProtocolErrorException);
 
         assertFalse( isATPresent( schemaManager, "1.1.0" ) );
         assertEquals( atrSize, schemaManager.getAttributeTypeRegistry().size() );
@@ -1140,7 +1139,7 @@ public class SchemaManagerAddTest
 
         assertEquals( 1, errors.size() );
         Throwable error = errors.get( 0 );
-        assertTrue( error instanceof LdapUnwillingToPerformException );
+        assertTrue( error instanceof LdapUnwillingToPerformException);
 
         // Check that the new MR has been injected
         assertFalse( isMRPresent( schemaManager, "1.1.0" ) );
@@ -1343,7 +1342,7 @@ public class SchemaManagerAddTest
         assertEquals( 1, schemaManager.getErrors().size() );
         Throwable error = schemaManager.getErrors().get( 0 );
 
-        assertTrue( error instanceof LdapAttributeInUseException );
+        assertTrue( error instanceof LdapAttributeInUseException);
 
         assertFalse( isOCPresent( schemaManager, "1.1.0" ) );
 

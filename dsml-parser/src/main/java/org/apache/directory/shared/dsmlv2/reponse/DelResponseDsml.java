@@ -21,8 +21,8 @@
 package org.apache.directory.shared.dsmlv2.reponse;
 
 
-import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.message.DeleteResponse;
+import org.apache.directory.shared.ldap.model.message.DeleteResponse;
+import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.DeleteResponseImpl;
 import org.dom4j.Element;
 
@@ -71,7 +71,7 @@ public class DelResponseDsml extends AbstractResponseDsml
     {
         Element element = root.addElement( "delResponse" );
 
-        LdapResultDsml ldapResultDsml = new LdapResultDsml( ( ( DeleteResponse ) instance ).getLdapResult(), instance );
+        LdapResultDsml ldapResultDsml = new LdapResultDsml( ( (DeleteResponse) instance ).getLdapResult(), instance );
         ldapResultDsml.toDsml( element );
         return element;
     }

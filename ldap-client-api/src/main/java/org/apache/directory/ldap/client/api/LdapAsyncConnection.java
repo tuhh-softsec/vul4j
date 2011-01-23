@@ -31,16 +31,14 @@ import org.apache.directory.ldap.client.api.future.ModifyDnFuture;
 import org.apache.directory.ldap.client.api.future.ModifyFuture;
 import org.apache.directory.ldap.client.api.future.SearchFuture;
 import org.apache.directory.shared.ldap.entry.Entry;
-import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.filter.SearchScope;
-import org.apache.directory.shared.ldap.message.AddRequest;
-import org.apache.directory.shared.ldap.message.BindRequest;
-import org.apache.directory.shared.ldap.message.CompareRequest;
-import org.apache.directory.shared.ldap.message.DeleteRequest;
-import org.apache.directory.shared.ldap.message.ExtendedRequest;
-import org.apache.directory.shared.ldap.message.ModifyDnRequest;
-import org.apache.directory.shared.ldap.message.ModifyRequest;
-import org.apache.directory.shared.ldap.message.SearchRequest;
+import org.apache.directory.shared.ldap.model.message.AddRequest;
+import org.apache.directory.shared.ldap.model.message.*;
+import org.apache.directory.shared.ldap.model.message.DeleteRequest;
+import org.apache.directory.shared.ldap.model.message.BindRequest;
+import org.apache.directory.shared.ldap.model.message.CompareRequest;
+import org.apache.directory.shared.ldap.model.message.ModifyDnRequest;
 import org.apache.directory.shared.ldap.name.Dn;
 
 
@@ -136,7 +134,7 @@ public interface LdapAsyncConnection extends LdapConnection
      * @param scope The search scope : OBJECT, ONELEVEL or SUBTREE 
      * @param attributes The attributes for this search 
      * @return the search operation's future
-     * @throws LdapException if some error occurred
+     * @throws org.apache.directory.shared.ldap.model.exception.LdapException if some error occurred
      */
     SearchFuture searchAsync( String baseDn, String filter, SearchScope scope, String... attributes )
         throws LdapException;

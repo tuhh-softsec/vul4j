@@ -27,12 +27,15 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
+import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.DefaultModification;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.ModificationOperation;
+import org.apache.directory.shared.ldap.model.message.ModifyRequest;
+import org.apache.directory.shared.ldap.model.message.ModifyResponse;
+import org.apache.directory.shared.ldap.model.message.ResultResponse;
 import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.util.StringConstants;
 
@@ -523,7 +526,7 @@ public class ModifyRequestImpl extends AbstractAbandonableRequest implements Mod
             return false;
         }
 
-        ModifyRequest req = ( ModifyRequest ) obj;
+        ModifyRequest req = (ModifyRequest) obj;
 
         if ( name != null && req.getName() == null )
         {

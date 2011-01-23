@@ -30,10 +30,10 @@ import java.util.Set;
 
 import org.apache.directory.shared.asn1.Hex;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.exception.LdapURLEncodingException;
-import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
-import org.apache.directory.shared.ldap.exception.LdapUriException;
-import org.apache.directory.shared.ldap.exception.UrlDecoderException;
+import org.apache.directory.shared.ldap.model.exception.LdapURLEncodingException;
+import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
+import org.apache.directory.shared.ldap.model.exception.UrlDecoderException;
+import org.apache.directory.shared.ldap.model.exception.LdapUriException;
 import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.util.Chars;
 import org.apache.directory.shared.util.StringConstants;
@@ -138,7 +138,7 @@ public class LdapURL
     /**
      * Parse a LdapURL
      * @param chars The chars containing the URL
-     * @throws org.apache.directory.shared.ldap.exception.LdapURLEncodingException If the URL is invalid
+     * @throws org.apache.directory.shared.ldap.model.exception.LdapURLEncodingException If the URL is invalid
      */
     public void parse( char[] chars ) throws LdapURLEncodingException
     {
@@ -646,7 +646,7 @@ public class LdapURL
      * 
      * @param data the string to be encoded
      * @return The string as a byte array.
-     * @throws UrlDecoderException if encoding is not supported
+     * @throws org.apache.directory.shared.ldap.model.exception.UrlDecoderException if encoding is not supported
      */
     public static byte[] getAsciiBytes( final String data ) throws UrlDecoderException
     {

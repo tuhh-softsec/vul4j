@@ -21,8 +21,8 @@
 package org.apache.directory.shared.dsmlv2.reponse;
 
 
-import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.message.ModifyResponse;
+import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
+import org.apache.directory.shared.ldap.model.message.ModifyResponse;
 import org.apache.directory.shared.ldap.message.ModifyResponseImpl;
 import org.dom4j.Element;
 
@@ -71,7 +71,7 @@ public class ModifyResponseDsml extends AbstractResponseDsml
     {
         Element element = root.addElement( "modifyResponse" );
 
-        LdapResultDsml ldapResultDsml = new LdapResultDsml( ( ( ModifyResponse ) instance ).getLdapResult(), instance );
+        LdapResultDsml ldapResultDsml = new LdapResultDsml( ( (ModifyResponse) instance ).getLdapResult(), instance );
         ldapResultDsml.toDsml( element );
         return element;
     }

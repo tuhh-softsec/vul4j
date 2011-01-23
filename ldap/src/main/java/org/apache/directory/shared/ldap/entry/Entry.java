@@ -24,7 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.model.exception.LdapException;
 
 import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.ldap.schema.AttributeType;
@@ -260,7 +260,7 @@ public interface Entry extends Cloneable, Iterable<EntryAttribute>, Externalizab
      * 
      * @param attributeType The attribute Type
      * @param values The list of binary values to inject. It can be empty
-     * @throws LdapException If the attribute does not exist
+     * @throws org.apache.directory.shared.ldap.model.exception.LdapException If the attribute does not exist
      */
     void add( AttributeType attributeType, String... values ) throws LdapException;
 
@@ -420,7 +420,7 @@ public interface Entry extends Cloneable, Iterable<EntryAttribute>, Externalizab
      * @param values the binary values of the new attribute to be put
      * @return the old attribute with the same identifier, if exists; otherwise
      * <code>null</code>
-     * @throws LdapException if there are failures
+     * @throws org.apache.directory.shared.ldap.model.exception.LdapException if there are failures
      */
     EntryAttribute put( AttributeType attributeType, byte[]... values ) throws LdapException;
 
@@ -442,7 +442,7 @@ public interface Entry extends Cloneable, Iterable<EntryAttribute>, Externalizab
      * @param values the String values of the new attribute to be put
      * @return the old attribute with the same identifier, if exists; otherwise
      * <code>null</code>
-     * @throws LdapException if there are failures
+     * @throws org.apache.directory.shared.ldap.model.exception.LdapException if there are failures
      */
     EntryAttribute put( AttributeType attributeType, String... values ) throws LdapException;
 
@@ -515,7 +515,7 @@ public interface Entry extends Cloneable, Iterable<EntryAttribute>, Externalizab
      * @param values the String values of the new attribute to be put
      * @return the old attribute with the same identifier, if exists; otherwise
      * <code>null</code>
-     * @throws LdapException if there are failures.
+     * @throws org.apache.directory.shared.ldap.model.exception.LdapException if there are failures.
      */
     EntryAttribute put( String upId, AttributeType attributeType, String... values ) throws LdapException;
 

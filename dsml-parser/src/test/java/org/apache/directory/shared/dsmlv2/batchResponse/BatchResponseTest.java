@@ -32,14 +32,12 @@ import org.apache.directory.shared.dsmlv2.Dsmlv2ResponseParser;
 import org.apache.directory.shared.dsmlv2.reponse.BatchResponse;
 import org.apache.directory.shared.dsmlv2.reponse.ErrorResponse;
 import org.apache.directory.shared.dsmlv2.reponse.SearchResponse;
-import org.apache.directory.shared.ldap.message.AddResponse;
-import org.apache.directory.shared.ldap.message.BindResponse;
-import org.apache.directory.shared.ldap.message.CompareResponse;
-import org.apache.directory.shared.ldap.message.DeleteResponse;
-import org.apache.directory.shared.ldap.message.ExtendedResponse;
-import org.apache.directory.shared.ldap.message.ModifyDnResponse;
-import org.apache.directory.shared.ldap.message.ModifyResponse;
-import org.apache.directory.shared.ldap.message.Response;
+import org.apache.directory.shared.ldap.model.message.AddResponse;
+import org.apache.directory.shared.ldap.model.message.BindResponse;
+import org.apache.directory.shared.ldap.model.message.*;
+import org.apache.directory.shared.ldap.model.message.DeleteResponse;
+import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
+import org.apache.directory.shared.ldap.model.message.Response;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -144,7 +142,7 @@ public class BatchResponseTest extends AbstractResponseTest
 
         Response response = batchResponse.getCurrentResponse();
 
-        if ( response instanceof AddResponse )
+        if ( response instanceof AddResponse)
         {
             assertTrue( true );
         }
@@ -676,7 +674,7 @@ public class BatchResponseTest extends AbstractResponseTest
 
         Response response = batchResponse.getCurrentResponse();
 
-        if ( response instanceof ExtendedResponse )
+        if ( response instanceof ExtendedResponse)
         {
             assertTrue( true );
         }

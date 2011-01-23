@@ -24,7 +24,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.registries.Registries;
 
 
@@ -123,7 +123,7 @@ public interface SchemaObject extends Serializable
      *
      * @param errors the errors we got
      * @param registries The registries
-     * @throws LdapException if one of the referenced schema objects does not exist
+     * @throws org.apache.directory.shared.ldap.model.exception.LdapException if one of the referenced schema objects does not exist
      */
     void removeFromRegistries( List<Throwable> errors, Registries registries ) throws LdapException;
 

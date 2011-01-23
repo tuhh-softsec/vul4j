@@ -21,9 +21,9 @@
 package org.apache.directory.shared.ldap.codec;
 
 import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.ldap.message.Message;
-import org.apache.directory.shared.ldap.message.ResultCodeEnum;
-import org.apache.directory.shared.ldap.message.ResultResponse;
+import org.apache.directory.shared.ldap.model.message.Message;
+import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
+import org.apache.directory.shared.ldap.model.message.ResultResponse;
 import org.apache.directory.shared.ldap.name.Dn;
 
 
@@ -63,7 +63,7 @@ public class ResponseCarryingException extends DecoderException
      * @param message A message with meaning to a human
      * @param cause The Exception which caused the error
      */
-    public ResponseCarryingException(String message, ResultResponse response, ResultCodeEnum code, 
+    public ResponseCarryingException(String message, ResultResponse response, ResultCodeEnum code,
         Dn matchedDn, Throwable cause)
     {
         super( message, cause );

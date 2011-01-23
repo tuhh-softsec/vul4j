@@ -27,13 +27,13 @@ import javax.naming.ldap.ExtendedResponse;
 
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.model.message.ResultResponse;
 import org.apache.directory.shared.util.exception.NotImplementedException;
 import org.apache.directory.shared.ldap.codec.extended.operations.storedProcedure.StoredProcedure;
 import org.apache.directory.shared.ldap.codec.extended.operations.storedProcedure.StoredProcedureContainer;
 import org.apache.directory.shared.ldap.codec.extended.operations.storedProcedure.StoredProcedureDecoder;
 import org.apache.directory.shared.ldap.codec.extended.operations.storedProcedure.StoredProcedure.StoredProcedureParameter;
 import org.apache.directory.shared.ldap.message.ExtendedRequestImpl;
-import org.apache.directory.shared.ldap.message.ResultResponse;
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

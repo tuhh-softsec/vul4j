@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.message.extended.nod;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.message.AddResponseImpl;
-import org.apache.directory.shared.ldap.message.ResultCodeEnum;
+import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.extended.NoticeOfDisconnect;
 
 

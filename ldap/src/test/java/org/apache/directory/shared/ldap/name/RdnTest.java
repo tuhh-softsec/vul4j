@@ -35,7 +35,7 @@ import java.util.Iterator;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -304,7 +304,7 @@ public class RdnTest
     /**
      * Test teh creation of a new Rdn
      * 
-     * @throws LdapException
+     * @throws org.apache.directory.shared.ldap.model.exception.LdapException
      */
     @Test
     public void testRDNCreation() throws LdapException
@@ -525,7 +525,7 @@ public class RdnTest
      * Test for DIRSHARED-3.
      * Tests that compareTo() is invertable for multi-valued RDNs with different types.
      * 
-     * @throws LdapException
+     * @throws org.apache.directory.shared.ldap.model.exception.LdapException
      */
     @Test
     public void testCompareInvertableNCS2NCSDifferentTypes() throws LdapException

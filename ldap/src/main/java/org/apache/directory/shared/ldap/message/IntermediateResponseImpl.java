@@ -22,6 +22,7 @@ package org.apache.directory.shared.ldap.message;
 
 import java.util.Arrays;
 
+import org.apache.directory.shared.ldap.model.message.IntermediateResponse;
 import org.apache.directory.shared.util.Strings;
 
 
@@ -187,7 +188,7 @@ public class IntermediateResponseImpl extends AbstractResultResponse implements 
             return false;
         }
 
-        IntermediateResponse resp = ( IntermediateResponse ) obj;
+        IntermediateResponse resp = (IntermediateResponse) obj;
 
         if ( ( responseName != null ) && ( resp.getResponseName() == null ) )
         {

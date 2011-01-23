@@ -25,7 +25,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.directory.shared.ldap.entry.Entry;
-import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.model.exception.LdapException;
 
 
 /**

@@ -20,8 +20,8 @@
 package org.apache.directory.shared.dsmlv2.request;
 
 
-import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.message.ModifyDnRequest;
+import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
+import org.apache.directory.shared.ldap.model.message.ModifyDnRequest;
 import org.apache.directory.shared.ldap.message.ModifyDnRequestImpl;
 import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.ldap.name.Rdn;
@@ -172,7 +172,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
      */
     public Dn getNewSuperior()
     {
-        return ( ( ModifyDnRequest ) instance ).getNewSuperior();
+        return ( (ModifyDnRequest) instance ).getNewSuperior();
     }
 
 

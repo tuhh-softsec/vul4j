@@ -22,28 +22,28 @@ package org.apache.directory.shared.ldap.codec;
 
 import org.apache.directory.shared.asn1.ber.AbstractContainer;
 import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
-import org.apache.directory.shared.ldap.message.AbandonRequest;
-import org.apache.directory.shared.ldap.message.AddRequest;
-import org.apache.directory.shared.ldap.message.AddResponse;
-import org.apache.directory.shared.ldap.message.BindRequest;
-import org.apache.directory.shared.ldap.message.BindResponse;
-import org.apache.directory.shared.ldap.message.CompareRequest;
-import org.apache.directory.shared.ldap.message.CompareResponse;
-import org.apache.directory.shared.ldap.message.DeleteRequest;
-import org.apache.directory.shared.ldap.message.DeleteResponse;
-import org.apache.directory.shared.ldap.message.ExtendedRequest;
-import org.apache.directory.shared.ldap.message.ExtendedResponse;
-import org.apache.directory.shared.ldap.message.IntermediateResponse;
-import org.apache.directory.shared.ldap.message.Message;
-import org.apache.directory.shared.ldap.message.ModifyDnRequest;
-import org.apache.directory.shared.ldap.message.ModifyDnResponse;
-import org.apache.directory.shared.ldap.message.ModifyRequest;
-import org.apache.directory.shared.ldap.message.ModifyResponse;
-import org.apache.directory.shared.ldap.message.SearchRequest;
-import org.apache.directory.shared.ldap.message.SearchResultDone;
-import org.apache.directory.shared.ldap.message.SearchResultEntry;
-import org.apache.directory.shared.ldap.message.SearchResultReference;
-import org.apache.directory.shared.ldap.message.UnbindRequest;
+import org.apache.directory.shared.ldap.model.message.AbandonRequest;
+import org.apache.directory.shared.ldap.model.message.AddRequest;
+import org.apache.directory.shared.ldap.model.message.AddResponse;
+import org.apache.directory.shared.ldap.model.message.BindRequest;
+import org.apache.directory.shared.ldap.model.message.BindResponse;
+import org.apache.directory.shared.ldap.model.message.CompareRequest;
+import org.apache.directory.shared.ldap.model.message.CompareResponse;
+import org.apache.directory.shared.ldap.model.message.DeleteRequest;
+import org.apache.directory.shared.ldap.model.message.DeleteResponse;
+import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
+import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
+import org.apache.directory.shared.ldap.model.message.IntermediateResponse;
+import org.apache.directory.shared.ldap.model.message.*;
+import org.apache.directory.shared.ldap.model.message.ModifyDnRequest;
+import org.apache.directory.shared.ldap.model.message.ModifyDnResponse;
+import org.apache.directory.shared.ldap.model.message.ModifyRequest;
+import org.apache.directory.shared.ldap.model.message.ModifyResponse;
+import org.apache.directory.shared.ldap.model.message.SearchRequest;
+import org.apache.directory.shared.ldap.model.message.SearchResultDone;
+import org.apache.directory.shared.ldap.model.message.SearchResultEntry;
+import org.apache.directory.shared.ldap.model.message.SearchResultReference;
+import org.apache.directory.shared.ldap.model.message.UnbindRequest;
 import org.apache.directory.shared.ldap.message.spi.BinaryAttributeDetector;
 
 
@@ -142,7 +142,7 @@ public class LdapMessageContainer extends AbstractContainer
      */
     public BindRequest getBindRequest()
     {
-        return ( BindRequest ) message;
+        return (BindRequest) message;
     }
 
 
@@ -196,7 +196,7 @@ public class LdapMessageContainer extends AbstractContainer
      */
     public ExtendedRequest getExtendedRequest()
     {
-        return ( ExtendedRequest ) message;
+        return (ExtendedRequest) message;
     }
 
 
@@ -286,7 +286,7 @@ public class LdapMessageContainer extends AbstractContainer
      */
     public SearchResultDone getSearchResultDone()
     {
-        return ( SearchResultDone ) message;
+        return (SearchResultDone) message;
     }
 
 

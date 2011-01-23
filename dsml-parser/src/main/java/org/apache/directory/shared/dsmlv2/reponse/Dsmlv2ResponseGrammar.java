@@ -40,35 +40,33 @@ import org.apache.directory.shared.dsmlv2.Tag;
 import org.apache.directory.shared.dsmlv2.reponse.ErrorResponse.ErrorResponseType;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
-import org.apache.directory.shared.ldap.exception.LdapURLEncodingException;
-import org.apache.directory.shared.ldap.exception.LdapException;
-import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
+import org.apache.directory.shared.ldap.model.exception.LdapURLEncodingException;
+import org.apache.directory.shared.ldap.model.exception.LdapException;
+import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.filter.LdapURL;
-import org.apache.directory.shared.ldap.message.AddResponse;
+import org.apache.directory.shared.ldap.model.message.*;
 import org.apache.directory.shared.ldap.message.AddResponseImpl;
-import org.apache.directory.shared.ldap.message.BindResponse;
+import org.apache.directory.shared.ldap.model.message.BindResponse;
 import org.apache.directory.shared.ldap.message.BindResponseImpl;
-import org.apache.directory.shared.ldap.message.CompareResponse;
+import org.apache.directory.shared.ldap.model.message.CompareResponse;
 import org.apache.directory.shared.ldap.message.CompareResponseImpl;
-import org.apache.directory.shared.ldap.message.DeleteResponse;
+import org.apache.directory.shared.ldap.model.message.DeleteResponse;
 import org.apache.directory.shared.ldap.message.DeleteResponseImpl;
-import org.apache.directory.shared.ldap.message.ExtendedResponse;
+import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
 import org.apache.directory.shared.ldap.message.ExtendedResponseImpl;
-import org.apache.directory.shared.ldap.message.LdapResult;
-import org.apache.directory.shared.ldap.message.Message;
-import org.apache.directory.shared.ldap.message.ModifyDnResponse;
+import org.apache.directory.shared.ldap.model.message.LdapResult;
+import org.apache.directory.shared.ldap.model.message.ModifyDnResponse;
 import org.apache.directory.shared.ldap.message.ModifyDnResponseImpl;
-import org.apache.directory.shared.ldap.message.ModifyResponse;
+import org.apache.directory.shared.ldap.model.message.ModifyResponse;
 import org.apache.directory.shared.ldap.message.ModifyResponseImpl;
 import org.apache.directory.shared.ldap.message.ReferralImpl;
-import org.apache.directory.shared.ldap.message.Response;
-import org.apache.directory.shared.ldap.message.ResultCodeEnum;
-import org.apache.directory.shared.ldap.message.ResultResponse;
-import org.apache.directory.shared.ldap.message.SearchResultDone;
+import org.apache.directory.shared.ldap.model.message.Response;
+import org.apache.directory.shared.ldap.model.message.ResultResponse;
+import org.apache.directory.shared.ldap.model.message.SearchResultDone;
 import org.apache.directory.shared.ldap.message.SearchResultDoneImpl;
-import org.apache.directory.shared.ldap.message.SearchResultEntry;
+import org.apache.directory.shared.ldap.model.message.SearchResultEntry;
 import org.apache.directory.shared.ldap.message.SearchResultEntryImpl;
-import org.apache.directory.shared.ldap.message.SearchResultReference;
+import org.apache.directory.shared.ldap.model.message.SearchResultReference;
 import org.apache.directory.shared.ldap.message.SearchResultReferenceImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.name.Dn;
@@ -1401,7 +1399,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
             {
                 try
                 {
-                    ldapResult.setResultCode( ResultCodeEnum.getResultCode( Integer.parseInt( attributeValue ) ) );
+                    ldapResult.setResultCode( ResultCodeEnum.getResultCode(Integer.parseInt(attributeValue)) );
                 }
                 catch ( NumberFormatException e )
                 {

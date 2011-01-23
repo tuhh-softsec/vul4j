@@ -35,10 +35,10 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.dsmlv2.AbstractResponseTest;
 import org.apache.directory.shared.dsmlv2.Dsmlv2ResponseParser;
-import org.apache.directory.shared.ldap.exception.LdapURLEncodingException;
-import org.apache.directory.shared.ldap.message.ExtendedResponse;
-import org.apache.directory.shared.ldap.message.LdapResult;
-import org.apache.directory.shared.ldap.message.ResultCodeEnum;
+import org.apache.directory.shared.ldap.model.exception.LdapURLEncodingException;
+import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
+import org.apache.directory.shared.ldap.model.message.LdapResult;
+import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.filter.LdapURL;
 import org.apache.directory.shared.util.Strings;
@@ -299,7 +299,7 @@ public class ExtendedResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        ExtendedResponse extendedResponse = ( ExtendedResponse ) parser.getBatchResponse().getCurrentResponse();
+        ExtendedResponse extendedResponse = (ExtendedResponse) parser.getBatchResponse().getCurrentResponse();
 
         LdapResult ldapResult = extendedResponse.getLdapResult();
 
@@ -709,7 +709,7 @@ public class ExtendedResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        org.apache.directory.shared.ldap.message.ExtendedResponse extendedResponse = ( ExtendedResponse ) parser
+        ExtendedResponse extendedResponse = ( ExtendedResponse ) parser
             .getBatchResponse().getCurrentResponse();
 
         assertEquals( "This is a response", Strings.utf8ToString(extendedResponse.getResponseValue()) );

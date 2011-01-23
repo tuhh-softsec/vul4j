@@ -29,7 +29,7 @@ import java.util.Map;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -124,7 +124,7 @@ public class OidRegistry implements Iterable<SchemaObject>
      * 
      * @param oid the OID for which we return the set of common names
      * @return a sorted set of names
-     * @throws LdapException if oid does not exist
+     * @throws org.apache.directory.shared.ldap.model.exception.LdapException if oid does not exist
      */
     public List<String> getNameSet( String oid ) throws LdapException
     {

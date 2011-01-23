@@ -21,12 +21,12 @@ package org.apache.directory.shared.dsmlv2.request;
 
 
 import org.apache.directory.shared.dsmlv2.ParserUtils;
-import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
+import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
-import org.apache.directory.shared.ldap.exception.LdapException;
-import org.apache.directory.shared.ldap.message.AddRequest;
+import org.apache.directory.shared.ldap.model.exception.LdapException;
+import org.apache.directory.shared.ldap.model.message.AddRequest;
 import org.apache.directory.shared.ldap.message.AddRequestImpl;
 import org.apache.directory.shared.ldap.name.Dn;
 import org.dom4j.Element;
@@ -145,7 +145,7 @@ public class AddRequestDsml extends AbstractRequestDsml
      * Create a new attributeValue
      * 
      * @param type The attribute's name (called 'type' in the grammar)
-     * @throws LdapException 
+     * @throws org.apache.directory.shared.ldap.model.exception.LdapException
      */
     public void addAttributeType( String type ) throws LdapException
     {

@@ -33,8 +33,8 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.ldap.exception.LdapException;
-import org.apache.directory.shared.ldap.exception.LdapProtocolErrorException;
+import org.apache.directory.shared.ldap.model.exception.LdapException;
+import org.apache.directory.shared.ldap.model.exception.LdapProtocolErrorException;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.LdapSyntax;
@@ -48,7 +48,6 @@ import org.apache.directory.shared.ldap.schema.normalizers.BooleanNormalizer;
 import org.apache.directory.shared.ldap.schema.syntaxCheckers.BooleanSyntaxChecker;
 import org.apache.directory.shared.ldap.schemaextractor.SchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schemaextractor.impl.DefaultSchemaLdifExtractor;
-import org.apache.directory.shared.ldap.schemaloader.LdifSchemaLoader;
 import org.apache.directory.shared.ldap.schemamanager.impl.DefaultSchemaManager;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -940,7 +939,7 @@ public class SchemaManagerDelTest
 
         List<Throwable> errors = schemaManager.getErrors();
         assertFalse( errors.isEmpty() );
-        assertTrue( errors.get( 0 ) instanceof LdapProtocolErrorException );
+        assertTrue( errors.get( 0 ) instanceof LdapProtocolErrorException);
 
         // Now delete the using AT : it should be OK
         AttributeType at = new AttributeType( AT_OID );

@@ -26,7 +26,7 @@ import java.io.ObjectOutput;
 import org.apache.directory.shared.ldap.entry.BinaryValue;
 import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.Value;
-import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
+import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.util.Strings;
 import org.apache.directory.shared.util.Unicode;
 import org.slf4j.Logger;

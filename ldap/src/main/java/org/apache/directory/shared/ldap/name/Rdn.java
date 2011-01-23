@@ -36,8 +36,8 @@ import org.apache.commons.collections.map.MultiValueMap;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.Value;
-import org.apache.directory.shared.ldap.exception.LdapException;
-import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
+import org.apache.directory.shared.ldap.model.exception.LdapException;
+import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.util.*;
@@ -502,7 +502,7 @@ public class Rdn implements Cloneable, Comparable<Rdn>, Externalizable, Iterable
      *
      * @param sm the SchemaManager
      * @return this Rdn, normalized
-     * @throws LdapInvalidDnException if the Rdn is invalid
+     * @throws org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException if the Rdn is invalid
      */
     public Rdn normalize( SchemaManager sm ) throws LdapInvalidDnException
     {

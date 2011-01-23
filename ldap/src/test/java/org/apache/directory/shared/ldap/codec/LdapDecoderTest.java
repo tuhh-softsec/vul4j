@@ -35,7 +35,7 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.tlv.TLVStateEnum;
-import org.apache.directory.shared.ldap.message.BindRequest;
+import org.apache.directory.shared.ldap.model.message.BindRequest;
 import org.apache.directory.shared.util.Strings;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.filterchain.IoFilter.NextFilter;
@@ -205,7 +205,7 @@ public class LdapDecoderTest
         }
 
         // Check the decoded PDU
-        BindRequest bindRequest = ( BindRequest ) ( ( LdapProtocolDecoderOutput ) result ).getMessage();
+        BindRequest bindRequest = (BindRequest) ( ( LdapProtocolDecoderOutput ) result ).getMessage();
 
         assertEquals( 1, bindRequest.getMessageId() );
         assertTrue( bindRequest.isVersion3() );

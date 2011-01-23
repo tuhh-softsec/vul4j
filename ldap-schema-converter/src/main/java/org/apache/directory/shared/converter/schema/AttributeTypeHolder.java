@@ -23,7 +23,7 @@ package org.apache.directory.shared.converter.schema;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.entry.Entry;
-import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.ldif.LdifUtils;
 import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.ldap.name.Rdn;
@@ -305,7 +305,7 @@ public class AttributeTypeHolder extends SchemaElementImpl
      * 
      * @param schemaName The name of the schema file containing this attributeType
      * @return A ldif formatted string
-     * @throws org.apache.directory.shared.ldap.exception.LdapException If something went wrong
+     * @throws org.apache.directory.shared.ldap.model.exception.LdapException If something went wrong
      */
     public String toLdif( String schemaName ) throws LdapException
     {

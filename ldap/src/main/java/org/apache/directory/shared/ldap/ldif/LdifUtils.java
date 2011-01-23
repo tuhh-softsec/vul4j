@@ -26,9 +26,9 @@ import javax.naming.directory.Attributes;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.entry.*;
-import org.apache.directory.shared.ldap.exception.LdapException;
-import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueException;
-import org.apache.directory.shared.ldap.message.ResultCodeEnum;
+import org.apache.directory.shared.ldap.model.exception.LdapException;
+import org.apache.directory.shared.ldap.model.exception.LdapInvalidAttributeValueException;
+import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
@@ -228,7 +228,7 @@ public final class LdifUtils
      * @param entry the Entry to convert
      * @param includeVersionInfo flag to tell whether to include version number or not
      * @return the corresponding LDIF code as a String
-     * @throws LdapException If a naming exception is encountered.
+     * @throws org.apache.directory.shared.ldap.model.exception.LdapException If a naming exception is encountered.
      */
     public static String convertEntryToLdif( Entry entry, boolean includeVersionInfo ) throws LdapException
     {

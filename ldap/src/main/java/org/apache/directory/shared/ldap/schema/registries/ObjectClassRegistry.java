@@ -23,7 +23,7 @@ package org.apache.directory.shared.ldap.schema.registries;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.ObjectClass;
 
 
@@ -78,7 +78,7 @@ public interface ObjectClassRegistry extends SchemaObjectRegistry<ObjectClass>,
      * 
      * @param attributeType The ObjectClass to unregister
      * @param ancestors its ancestors 
-     * @throws LdapException If something went wrong
+     * @throws org.apache.directory.shared.ldap.model.exception.LdapException If something went wrong
      */
     void unregisterDescendants( ObjectClass attributeType, List<ObjectClass> ancestors ) 
         throws LdapException;

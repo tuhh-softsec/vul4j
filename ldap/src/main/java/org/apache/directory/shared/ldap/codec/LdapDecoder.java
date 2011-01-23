@@ -29,7 +29,7 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.tlv.TLVStateEnum;
 import org.apache.directory.shared.asn1.DecoderCallback;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.message.ResponseCarryingMessageException;
+import org.apache.directory.shared.ldap.model.exception.ResponseCarryingMessageException;
 import org.apache.directory.shared.util.Strings;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.IoSession;

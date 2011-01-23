@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.filter;
 
 
-import org.apache.directory.shared.ldap.message.AliasDerefMode;
+import org.apache.directory.shared.ldap.model.message.AliasDerefMode;
 import org.apache.directory.shared.ldap.name.Dn;
 
 

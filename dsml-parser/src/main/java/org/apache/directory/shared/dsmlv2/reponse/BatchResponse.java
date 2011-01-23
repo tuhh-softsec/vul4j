@@ -24,7 +24,7 @@ package org.apache.directory.shared.dsmlv2.reponse;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.directory.shared.ldap.message.Response;
+import org.apache.directory.shared.ldap.model.message.Response;
 
 
 /**

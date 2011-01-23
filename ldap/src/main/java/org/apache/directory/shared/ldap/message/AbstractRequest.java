@@ -20,7 +20,8 @@
 package org.apache.directory.shared.ldap.message;
 
 
-import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
+import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
+import org.apache.directory.shared.ldap.model.message.Request;
 
 
 /**
@@ -79,7 +80,7 @@ public class AbstractRequest extends AbstractMessage implements Request
             return false;
         }
 
-        if ( hasResponse != ( ( Request ) obj ).hasResponse() )
+        if ( hasResponse != ( (Request) obj ).hasResponse() )
         {
             return false;
         }

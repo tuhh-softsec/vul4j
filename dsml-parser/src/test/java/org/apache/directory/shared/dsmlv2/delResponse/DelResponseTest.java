@@ -33,11 +33,11 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.dsmlv2.AbstractResponseTest;
 import org.apache.directory.shared.dsmlv2.Dsmlv2ResponseParser;
-import org.apache.directory.shared.ldap.exception.LdapURLEncodingException;
+import org.apache.directory.shared.ldap.model.exception.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.filter.LdapURL;
-import org.apache.directory.shared.ldap.message.DeleteResponse;
-import org.apache.directory.shared.ldap.message.LdapResult;
-import org.apache.directory.shared.ldap.message.ResultCodeEnum;
+import org.apache.directory.shared.ldap.model.message.DeleteResponse;
+import org.apache.directory.shared.ldap.model.message.LdapResult;
+import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
@@ -353,7 +353,7 @@ public class DelResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        DeleteResponse delResponse = ( DeleteResponse ) parser.getBatchResponse().getCurrentResponse();
+        DeleteResponse delResponse = (DeleteResponse) parser.getBatchResponse().getCurrentResponse();
 
         LdapResult ldapResult = delResponse.getLdapResult();
 

@@ -34,8 +34,8 @@ import javax.naming.directory.BasicAttributes;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.exception.LdapException;
-import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeTypeException;
+import org.apache.directory.shared.ldap.model.exception.LdapException;
+import org.apache.directory.shared.ldap.model.exception.LdapInvalidAttributeTypeException;
 import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.MatchingRule;
@@ -925,7 +925,7 @@ public final class AttributeUtils
      * 
      * @param entry The entry on which we want to apply a modification
      * @param modification the Modification to be applied
-     * @throws LdapException if some operation fails.
+     * @throws org.apache.directory.shared.ldap.model.exception.LdapException if some operation fails.
      */
     public static void applyModification( Entry entry, Modification modification ) throws LdapException
     {

@@ -31,7 +31,7 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.dsmlv2.AbstractTest;
 import org.apache.directory.shared.dsmlv2.Dsmlv2Parser;
-import org.apache.directory.shared.ldap.message.ExtendedRequest;
+import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 import org.apache.directory.shared.ldap.message.control.Control;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
@@ -344,7 +344,7 @@ public class ExtendedRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        org.apache.directory.shared.ldap.message.ExtendedRequest extendedRequest = ( ExtendedRequest ) parser
+        ExtendedRequest extendedRequest = ( ExtendedRequest ) parser
             .getBatchRequest().getCurrentRequest();
         assertNull( extendedRequest.getRequestValue() );
     }

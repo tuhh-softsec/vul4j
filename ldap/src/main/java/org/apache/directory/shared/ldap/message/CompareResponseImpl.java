@@ -20,6 +20,9 @@
 package org.apache.directory.shared.ldap.message;
 
 
+import org.apache.directory.shared.ldap.model.message.CompareResponse;
+import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
+
 /**
  * CompareResponse implementation.
  * 

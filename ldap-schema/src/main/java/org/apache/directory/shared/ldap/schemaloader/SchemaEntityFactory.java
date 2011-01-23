@@ -34,10 +34,10 @@ import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
-import org.apache.directory.shared.ldap.exception.LdapException;
-import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueException;
-import org.apache.directory.shared.ldap.exception.LdapUnwillingToPerformException;
-import org.apache.directory.shared.ldap.message.ResultCodeEnum;
+import org.apache.directory.shared.ldap.model.exception.LdapException;
+import org.apache.directory.shared.ldap.model.exception.LdapInvalidAttributeValueException;
+import org.apache.directory.shared.ldap.model.exception.LdapUnwillingToPerformException;
+import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.EntityFactory;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
@@ -1069,7 +1069,7 @@ public class SchemaEntityFactory implements EntityFactory
      *  - extensions
      *  - isReadOnly
      *  - isEnabled
-     * @throws LdapInvalidAttributeValueException 
+     * @throws org.apache.directory.shared.ldap.model.exception.LdapInvalidAttributeValueException
      */
     private void setSchemaObjectProperties( SchemaObject schemaObject, Entry entry, Schema schema )
         throws LdapInvalidAttributeValueException

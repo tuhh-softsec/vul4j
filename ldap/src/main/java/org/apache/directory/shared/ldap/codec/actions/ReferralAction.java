@@ -26,12 +26,10 @@ import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.exception.LdapURLEncodingException;
-import org.apache.directory.shared.ldap.message.LdapResult;
-import org.apache.directory.shared.ldap.message.Message;
-import org.apache.directory.shared.ldap.message.Referral;
-import org.apache.directory.shared.ldap.message.ResultCodeEnum;
-import org.apache.directory.shared.ldap.message.ResultResponse;
+import org.apache.directory.shared.ldap.model.exception.LdapURLEncodingException;
+import org.apache.directory.shared.ldap.model.message.*;
+import org.apache.directory.shared.ldap.model.message.Referral;
+import org.apache.directory.shared.ldap.model.message.ResultResponse;
 import org.apache.directory.shared.ldap.filter.LdapURL;
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
@@ -71,7 +69,7 @@ public class ReferralAction extends GrammarAction
         TLV tlv = ldapMessageContainer.getCurrentTLV();
 
         Message response = ldapMessageContainer.getMessage();
-        LdapResult ldapResult = ( ( ResultResponse ) response ).getLdapResult();
+        LdapResult ldapResult = ( (ResultResponse) response ).getLdapResult();
         Referral referral = ldapResult.getReferral();
 
         if ( tlv.getLength() == 0 )

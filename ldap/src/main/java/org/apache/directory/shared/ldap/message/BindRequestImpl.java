@@ -23,7 +23,10 @@ package org.apache.directory.shared.ldap.message;
 import java.util.Arrays;
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
+import org.apache.directory.shared.ldap.model.message.BindRequest;
+import org.apache.directory.shared.ldap.model.message.BindResponse;
+import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
+import org.apache.directory.shared.ldap.model.message.ResultResponse;
 import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.util.Strings;
 
@@ -352,7 +355,7 @@ public class BindRequestImpl extends AbstractAbandonableRequest implements BindR
             return true;
         }
 
-        if ( ( obj == null ) || !( obj instanceof BindRequest ) )
+        if ( ( obj == null ) || !( obj instanceof BindRequest) )
         {
             return false;
         }

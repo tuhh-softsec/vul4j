@@ -26,8 +26,9 @@ import org.apache.directory.shared.ldap.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
-import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.message.control.Control;
+import org.apache.directory.shared.ldap.model.message.SearchResultEntry;
 import org.apache.directory.shared.ldap.name.Dn;
 
 
@@ -237,7 +238,7 @@ public class SearchResultEntryImpl extends AbstractResponse implements SearchRes
             return false;
         }
 
-        if ( !( obj instanceof SearchResultEntry ) )
+        if ( !( obj instanceof SearchResultEntry) )
         {
             return false;
         }

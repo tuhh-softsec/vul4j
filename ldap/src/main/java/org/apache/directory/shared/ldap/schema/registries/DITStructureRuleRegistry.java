@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.schema.registries;
 
 import java.util.Iterator;
 
-import org.apache.directory.shared.ldap.exception.LdapException;
+import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.DITStructureRule;
 
 
@@ -116,7 +116,7 @@ public interface DITStructureRuleRegistry extends SchemaObjectRegistry<DITStruct
      *
      * @param originalSchemaName The original Schema name
      * @param newSchemaName The new Schema name
-     * @throws LdapException if the schema can't be renamed
+     * @throws org.apache.directory.shared.ldap.model.exception.LdapException if the schema can't be renamed
      */
     void renameSchema( String originalSchemaName, String newSchemaName ) throws LdapException;
     
