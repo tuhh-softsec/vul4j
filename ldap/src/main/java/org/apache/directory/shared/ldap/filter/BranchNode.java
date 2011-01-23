@@ -169,8 +169,16 @@ public class BranchNode extends AbstractExprNode
      */
     public void setChildren( List<ExprNode> list )
     {
-        children = list;
+        if ( list == null )
+        {
+            children.clear();
+        }
+        else
+        {
+            children = list;
+        }
     }
+    
     
     /**
      * Convenience method that gets the first child in the children array. Its

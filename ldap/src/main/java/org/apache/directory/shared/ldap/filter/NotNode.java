@@ -113,12 +113,20 @@ public class NotNode extends BranchNode
      */
     public void setChildren( List<ExprNode> childList )
     {
-        if ( ( childList != null ) && ( childList.size() > 1 ) )
+        if ( childList == null )
         {
-            throw new IllegalStateException( I18n.err( I18n.ERR_04159 ) );            
+            children.clear();
         }
-
-        children = childList;
+        else
+        {
+            
+            if ( childList.size() > 1 )
+            {
+                throw new IllegalStateException( I18n.err( I18n.ERR_04159 ) );
+            }
+    
+            children = childList;
+        }
     }
 
     

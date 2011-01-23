@@ -101,7 +101,7 @@ public class RegexSyntaxChecker extends SyntaxChecker
 
             for ( String regexp:expressions )
             {
-                match = match && str.matches( regexp );
+                match = str.matches( regexp );
 
                 if ( !match )
                 {
