@@ -29,7 +29,7 @@ import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.SearchResultEntry;
 import org.apache.directory.shared.ldap.message.SearchResultEntryImpl;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
 import org.dom4j.QName;
@@ -114,22 +114,22 @@ public class SearchResultEntryDsml extends AbstractResponseDsml
 
 
     /**
-     * Get the entry DN
+     * Get the entry Dn
      * 
      * @return Returns the objectName.
      */
-    public DN getObjectName()
+    public Dn getObjectName()
     {
         return ( ( SearchResultEntry ) instance ).getObjectName();
     }
 
 
     /**
-     * Set the entry DN
+     * Set the entry Dn
      * 
      * @param objectName The objectName to set.
      */
-    public void setObjectName( DN objectName )
+    public void setObjectName( Dn objectName )
     {
         ( ( SearchResultEntry ) instance ).setObjectName( objectName );
     }

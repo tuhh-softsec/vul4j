@@ -32,7 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A helper class which serialize and deserialize a DN
+ * A helper class which serialize and deserialize a Dn
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
@@ -51,27 +51,27 @@ public final class DnSerializer
 
 
     /**
-     * Serialize a DN
+     * Serialize a Dn
      * 
-     * We have to store a DN data efficiently. Here is the structure :
+     * We have to store a Dn data efficiently. Here is the structure :
      * 
-     * <li>upName</li> The User provided DN<p>
+     * <li>upName</li> The User provided Dn<p>
      * <li>normName</li> May be null if the normName is equivalent to 
      * the upName<p>
      * <li>rdns</li> The rdn's List.<p>
      * 
      * for each rdn :
-     * <li>call the RDN write method</li>
+     * <li>call the Rdn write method</li>
      * 
-     * @param dn The DN to serialize
-     * @param out the stream in which the DN will be serialized
+     * @param dn The Dn to serialize
+     * @param out the stream in which the Dn will be serialized
      * @throws IOException If we can't write in this stream
      */
-    public static void serialize( DN dn, ObjectOutput out ) throws IOException
+    public static void serialize( Dn dn, ObjectOutput out ) throws IOException
     {
         if ( dn.getName() == null )
         {
-            String message = "Cannot serialize a NULL DN";
+            String message = "Cannot serialize a NULL Dn";
             LOG.error( message );
             throw new IOException( message );
         }
@@ -105,7 +105,7 @@ public final class DnSerializer
         out.writeInt( dn.size() );
         
         // Loop on the RDNs
-        for ( RDN rdn:dn.getRdns() )
+        for ( Rdn rdn:dn.getRdns() )
         {
             RdnSerializer.serialize( rdn, out );
         }
@@ -113,17 +113,17 @@ public final class DnSerializer
 
 
     /**
-     * Deserialize a DN
+     * Deserialize a Dn
      * 
-     * We read back the data to create a new DN. The structure 
-     * read is exposed in the {@link DnSerializer#serialize(DN, ObjectOutput)} 
+     * We read back the data to create a new Dn. The structure
+     * read is exposed in the {@link DnSerializer#serialize(Dn, ObjectOutput)}
      * method<p>
      * 
-     * @param in The input stream from which the DN is read
-     * @return a deserialized DN
+     * @param in The input stream from which the Dn is read
+     * @return a deserialized Dn
      * @throws IOException If the stream can't be read
      */
-    public static DN deserialize( ObjectInput in ) throws IOException
+    public static Dn deserialize( ObjectInput in ) throws IOException
     {
         // Read the UPName
         String upName = Unicode.readUTF(in);
@@ -145,13 +145,13 @@ public final class DnSerializer
         // Read the RDNs. Is it's null, the number will be -1.
         int nbRdns = in.readInt();
         
-        List<RDN> rdnList = new ArrayList<RDN>();
+        List<Rdn> rdnList = new ArrayList<Rdn>();
         for ( int i = 0; i < nbRdns; i++ )
         {
-            RDN rdn = RdnSerializer.deserialize( in );
+            Rdn rdn = RdnSerializer.deserialize( in );
             rdnList.add( rdn );
         }
     
-        return new DN( upName, normName, bytes, rdnList );
+        return new Dn( upName, normName, bytes, rdnList );
     }
 }

@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * A Attribute Type And Value, which is the basis of all RDN. It contains a
+ * A Attribute Type And Value, which is the basis of all Rdn. It contains a
  * type, and a value. The type must not be case sensitive. Superfluous leading
  * and trailing spaces MUST have been trimmed before. The value MUST be in UTF8
  * format, according to RFC 2253. If the type is in OID form, then the value
@@ -53,7 +53,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class AVA implements Cloneable, Comparable<Object>, Externalizable
+public class Ava implements Cloneable, Comparable<Object>, Externalizable
 {
     /**
      * Declares the Serial Version Uid.
@@ -65,7 +65,7 @@ public class AVA implements Cloneable, Comparable<Object>, Externalizable
     private static final long serialVersionUID = 1L;
 
     /** The LoggerFactory used by this class */
-    private static final Logger LOG = LoggerFactory.getLogger( AVA.class );
+    private static final Logger LOG = LoggerFactory.getLogger( Ava.class );
 
     /** The normalized Name type */
     private String normType;
@@ -79,7 +79,7 @@ public class AVA implements Cloneable, Comparable<Object>, Externalizable
     /** The name user provided value. It can be a String or a byte array */
     private Value<?> upValue;
 
-    /** The user provided AVA */
+    /** The user provided Ava */
     private String upName;
 
     /** The starting position of this atav in the given string from which
@@ -97,9 +97,9 @@ public class AVA implements Cloneable, Comparable<Object>, Externalizable
 
 
     /**
-     * Construct an empty AVA
+     * Construct an empty Ava
      */
-    public AVA()
+    public Ava()
     {
         normType = null;
         upType = null;
@@ -112,7 +112,7 @@ public class AVA implements Cloneable, Comparable<Object>, Externalizable
 
     
     /**
-     * Construct an AVA. The type and value are normalized :
+     * Construct an Ava. The type and value are normalized :
      * <li> the type is trimmed and lowercased </li>
      * <li> the value is trimmed </li>
      * <p>
@@ -124,7 +124,7 @@ public class AVA implements Cloneable, Comparable<Object>, Externalizable
      * @param upValue The User Provided value
      * @param normValue The normalized value
      */
-    public AVA( String upType, String normType, String upValue, String normValue ) throws LdapInvalidDnException
+    public Ava(String upType, String normType, String upValue, String normValue) throws LdapInvalidDnException
     {
         this( upType, normType, new StringValue( upValue ), new StringValue( normValue ) );
     }
@@ -133,7 +133,7 @@ public class AVA implements Cloneable, Comparable<Object>, Externalizable
 
     
     /**
-     * Construct an AVA. The type and value are normalized :
+     * Construct an Ava. The type and value are normalized :
      * <li> the type is trimmed and lowercased </li>
      * <li> the value is trimmed </li>
      * <p>
@@ -145,14 +145,14 @@ public class AVA implements Cloneable, Comparable<Object>, Externalizable
      * @param upValue The User Provided value
      * @param normValue The normalized value
      */
-    public AVA( String upType, String normType, byte[] upValue, byte[] normValue ) throws LdapInvalidDnException
+    public Ava(String upType, String normType, byte[] upValue, byte[] normValue) throws LdapInvalidDnException
     {
         this( upType, normType, new BinaryValue( upValue ), new BinaryValue( normValue ) );
     }
 
 
     /**
-     * Construct an AVA. The type and value are normalized :
+     * Construct an Ava. The type and value are normalized :
      * <li> the type is trimmed and lowercased </li>
      * <li> the value is trimmed </li>
      * <p>
@@ -164,7 +164,7 @@ public class AVA implements Cloneable, Comparable<Object>, Externalizable
      * @param upValue The User Provided value
      * @param normValue The normalized value
      */
-    public AVA( String upType, String normType, Value<?> upValue, Value<?> normValue ) throws LdapInvalidDnException
+    public Ava(String upType, String normType, Value<?> upValue, Value<?> normValue) throws LdapInvalidDnException
     {
         String upTypeTrimmed = Strings.trim(upType);
         String normTypeTrimmed = Strings.trim(normType);
@@ -207,7 +207,7 @@ public class AVA implements Cloneable, Comparable<Object>, Externalizable
 
 
     /**
-     * Construct an AVA. The type and value are normalized :
+     * Construct an Ava. The type and value are normalized :
      * <li> the type is trimmed and lowercased </li>
      * <li> the value is trimmed </li>
      * <p>
@@ -220,7 +220,7 @@ public class AVA implements Cloneable, Comparable<Object>, Externalizable
      * @param normValue The normalized value
      * @param upName The User Provided name (may be escaped)
      */
-    public AVA( String upType, String normType, Value<?> upValue, Value<?> normValue, String upName )
+    public Ava(String upType, String normType, Value<?> upValue, Value<?> normValue, String upName)
         throws LdapInvalidDnException
     {
         String upTypeTrimmed = Strings.trim(upType);
@@ -264,7 +264,7 @@ public class AVA implements Cloneable, Comparable<Object>, Externalizable
 
 
     /**
-     * Get the normalized type of a AVA
+     * Get the normalized type of a Ava
      *
      * @return The normalized type
      */
@@ -274,7 +274,7 @@ public class AVA implements Cloneable, Comparable<Object>, Externalizable
     }
 
     /**
-     * Get the user provided type of a AVA
+     * Get the user provided type of a Ava
      *
      * @return The user provided type
      */
@@ -285,7 +285,7 @@ public class AVA implements Cloneable, Comparable<Object>, Externalizable
 
 
     /**
-     * Get the Value of a AVA
+     * Get the Value of a Ava
      *
      * @return The value
      */
@@ -295,7 +295,7 @@ public class AVA implements Cloneable, Comparable<Object>, Externalizable
     }
 
     /**
-     * Get the User Provided Value of a AVA
+     * Get the User Provided Value of a Ava
      *
      * @return The value
      */
@@ -305,7 +305,7 @@ public class AVA implements Cloneable, Comparable<Object>, Externalizable
     }
 
     /**
-     * Get the normalized Name of a AVA
+     * Get the normalized Name of a Ava
      *
      * @return The name
      */
@@ -353,11 +353,11 @@ public class AVA implements Cloneable, Comparable<Object>, Externalizable
      *
      * @return a clone of this object
      */
-    public AVA clone()
+    public Ava clone()
     {
         try
         {
-            AVA clone = ( AVA ) super.clone();
+            Ava clone = (Ava) super.clone();
             clone.upValue = upValue.clone();
             clone.normValue = normValue.clone();
             
@@ -382,9 +382,9 @@ public class AVA implements Cloneable, Comparable<Object>, Externalizable
      */
     public int compareTo( Object object )
     {
-        if ( object instanceof AVA )
+        if ( object instanceof Ava)
         {
-            AVA nc = ( AVA ) object;
+            Ava nc = (Ava) object;
 
             int res = compareType( normType, nc.normType );
 
@@ -416,9 +416,9 @@ public class AVA implements Cloneable, Comparable<Object>, Externalizable
      */
     public int compareToIgnoreCase( Object object )
     {
-        if ( object instanceof AVA )
+        if ( object instanceof Ava)
         {
-            AVA nc = ( AVA ) object;
+            Ava nc = (Ava) object;
 
             int res = compareType( normType, nc.normType );
 
@@ -595,12 +595,12 @@ public class AVA implements Cloneable, Comparable<Object>, Externalizable
     }
 
     /**
-     * A Normalized String representation of a AVA : 
+     * A Normalized String representation of a Ava :
      * - type is trimed and lowercased 
      * - value is trimed and lowercased, and special characters
      * are escaped if needed.
      *
-     * @return A normalized string representing a AVA
+     * @return A normalized string representing a Ava
      */
     public String normalize()
     {
@@ -655,12 +655,12 @@ public class AVA implements Cloneable, Comparable<Object>, Externalizable
             return true;
         }
         
-        if ( !( obj instanceof AVA ) )
+        if ( !( obj instanceof Ava) )
         {
             return false;
         }
         
-        AVA instance = (AVA)obj;
+        Ava instance = (Ava)obj;
      
         // Compare the type
         if ( normType == null )
@@ -692,14 +692,14 @@ public class AVA implements Cloneable, Comparable<Object>, Externalizable
     
     /**
      * 
-     * An AVA is composed of  a type and a value.
+     * An Ava is composed of  a type and a value.
      * The data are stored following the structure :
      * <ul>
      *   <li>
      *     <b>upName</b> The User provided ATAV
      *   </li>
      *   <li>
-     *     <b>start</b> The position of this ATAV in the DN
+     *     <b>start</b> The position of this ATAV in the Dn
      *   </li>
      *   <li>
      *     <b>length</b> The ATAV length
@@ -815,7 +815,7 @@ public class AVA implements Cloneable, Comparable<Object>, Externalizable
     
     /**
      * We read back the data to create a new ATAV. The structure 
-     * read is exposed in the {@link AVA#writeExternal(ObjectOutput)} 
+     * read is exposed in the {@link Ava#writeExternal(ObjectOutput)}
      * method
      * 
      * @see Externalizable#readExternal(ObjectInput)
@@ -851,9 +851,9 @@ public class AVA implements Cloneable, Comparable<Object>, Externalizable
     
     
     /**
-     * A String representation of a AVA.
+     * A String representation of a Ava.
      *
-     * @return A string representing a AVA
+     * @return A string representing a Ava
      */
     public String toString()
     {

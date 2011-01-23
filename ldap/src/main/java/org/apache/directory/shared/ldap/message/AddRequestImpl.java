@@ -28,7 +28,7 @@ import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.exception.LdapException;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 
 
 /**
@@ -96,7 +96,7 @@ public class AddRequestImpl extends AbstractAbandonableRequest implements AddReq
      * 
      * @return the Dn of the added entry.
      */
-    public DN getEntryDn()
+    public Dn getEntryDn()
     {
         return entry.getDn();
     }
@@ -107,7 +107,7 @@ public class AddRequestImpl extends AbstractAbandonableRequest implements AddReq
      * 
      * @param dn the Dn of the added entry.
      */
-    public void setEntryDn( DN dn )
+    public void setEntryDn( Dn dn )
     {
         entry.setDn( dn );
     }

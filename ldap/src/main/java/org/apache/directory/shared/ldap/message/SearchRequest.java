@@ -26,7 +26,7 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.filter.ExprNode;
 import org.apache.directory.shared.ldap.filter.SearchScope;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 
 
 /**
@@ -63,7 +63,7 @@ public interface SearchRequest extends ManyReplyRequest, AbandonableRequest
      * 
      * @return the search base
      */
-    DN getBase();
+    Dn getBase();
 
 
     /**
@@ -71,7 +71,7 @@ public interface SearchRequest extends ManyReplyRequest, AbandonableRequest
      * 
      * @param baseDn the search base
      */
-    void setBase( DN baseDn );
+    void setBase( Dn baseDn );
 
 
     /**

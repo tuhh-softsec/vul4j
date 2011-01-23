@@ -50,11 +50,11 @@ import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
  * [\"] <br> - &lt;separator&gt; ::= ',' | ';' <br> - &lt;spaces&gt; ::= ' '
  * &lt;spaces&gt; | e <br>
  * <br>
- * A RDN is a part of a DN. It can be composed of many types, as in the RDN
- * following RDN :<br>
+ * A Rdn is a part of a Dn. It can be composed of many types, as in the Rdn
+ * following Rdn :<br>
  * ou=value + cn=other value<br>
  * <br>
- * In this case, we have to store an 'ou' and a 'cn' in the RDN.<br>
+ * In this case, we have to store an 'ou' and a 'cn' in the Rdn.<br>
  * <br>
  * The types are case insensitive. <br>
  * Spaces before and after types and values are not stored.<br>
@@ -99,11 +99,11 @@ public final class RdnParser
      * </p>
      *
      * @param dn The String to parse
-     * @param rdn The RDN to fill. Beware that if the RDN is not empty, the new
+     * @param rdn The Rdn to fill. Beware that if the Rdn is not empty, the new
      *            AttributeTypeAndValue will be added.
      * @throws LdapInvalidDnException If the NameComponent is invalid
      */
-    public static void parse( String dn, RDN rdn ) throws LdapInvalidDnException
+    public static void parse( String dn, Rdn rdn ) throws LdapInvalidDnException
     {
         try
         {
@@ -125,11 +125,11 @@ public final class RdnParser
      * </p>
      *
      * @param dn The string to parse
-     * @return <code>true</code> if the RDN is valid
+     * @return <code>true</code> if the Rdn is valid
      */
     public static boolean isValid( String dn )
     {
-        RDN rdn = new RDN();
+        Rdn rdn = new Rdn();
         try
         {
             parse( dn, rdn );

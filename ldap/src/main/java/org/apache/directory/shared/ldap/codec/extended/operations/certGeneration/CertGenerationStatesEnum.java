@@ -41,13 +41,13 @@ public enum CertGenerationStatesEnum implements States
     /** sequence*/
     CERT_GENERATION_REQUEST_SEQUENCE_STATE,
 
-    /** the target DN*/
+    /** the target Dn*/
     TARGETDN_STATE,
 
-    /** the issuer DN*/
+    /** the issuer Dn*/
     ISSUER_STATE,
 
-    /** the subject DN*/
+    /** the subject Dn*/
     SUBJECT_STATE,
 
     /** the key algorithm*/

@@ -70,7 +70,7 @@ public final class SchemaConstants
     // Schema root
     public final static String OU_SCHEMA                            = "ou=schema";
 
-    // The DN for the schema modifications
+    // The Dn for the schema modifications
     public final static String SCHEMA_MODIFICATIONS_DN              = "cn=schemaModifications,ou=schema";
 
 

@@ -71,7 +71,7 @@ public class LdapConnectionConfig
     /** the remote LDAP host */
     private String ldapHost;
 
-    /** a valid DN to authenticate the user */
+    /** a valid Dn to authenticate the user */
     private String name;
 
     /** user's credentials ( current implementation supports password only); it must be a non-null value */

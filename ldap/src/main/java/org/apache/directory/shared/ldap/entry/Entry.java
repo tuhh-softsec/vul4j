@@ -26,14 +26,14 @@ import java.util.Set;
 
 import org.apache.directory.shared.ldap.exception.LdapException;
 
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 
 
 /**
  * <p>
  * This interface represent a LDAP entry. An LDAP entry contains :
- * <li> A distinguished name (DN)</li>
+ * <li> A distinguished name (Dn)</li>
  * <li> A list of attributes</li>
  * </p>
  * <p>
@@ -47,7 +47,7 @@ import org.apache.directory.shared.ldap.schema.AttributeType;
 public interface Entry extends Cloneable, Iterable<EntryAttribute>, Externalizable
 {
     /**
-     * Remove all the attributes for this entry. The DN is not reset
+     * Remove all the attributes for this entry. The Dn is not reset
      */
     void clear();
 
@@ -59,11 +59,11 @@ public interface Entry extends Cloneable, Iterable<EntryAttribute>, Externalizab
 
 
     /**
-     * Get this entry's DN.
+     * Get this entry's Dn.
      *
-     * @return The entry's DN
+     * @return The entry's Dn
      */
-    DN getDn();
+    Dn getDn();
 
 
     /**
@@ -161,11 +161,11 @@ public interface Entry extends Cloneable, Iterable<EntryAttribute>, Externalizab
 
 
     /**
-     * Set this entry's DN.
+     * Set this entry's Dn.
      *
-     * @param dn The DN associated with this entry
+     * @param dn The Dn associated with this entry
      */
-    void setDn( DN dn );
+    void setDn( Dn dn );
 
 
     /**

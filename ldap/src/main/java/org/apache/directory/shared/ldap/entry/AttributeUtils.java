@@ -34,15 +34,9 @@ import javax.naming.directory.BasicAttributes;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.entry.DefaultEntry;
-import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
-import org.apache.directory.shared.ldap.entry.Entry;
-import org.apache.directory.shared.ldap.entry.EntryAttribute;
-import org.apache.directory.shared.ldap.entry.Modification;
-import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeTypeException;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.MatchingRule;
 import org.apache.directory.shared.ldap.schema.Normalizer;
@@ -1023,12 +1017,12 @@ public final class AttributeUtils
      * Convert a BasicAttributes or a AttributesImpl to a ServerEntry
      *
      * @param attributes the BasicAttributes or AttributesImpl instance to convert
-     * @param dn The DN which is needed by the ServerEntry 
+     * @param dn The Dn which is needed by the ServerEntry
      * @return An instance of a ServerEntry object
      * 
      * @throws LdapException If we get an invalid attribute
      */
-    public static Entry toClientEntry( Attributes attributes, DN dn ) throws LdapException
+    public static Entry toClientEntry( Attributes attributes, Dn dn ) throws LdapException
     {
         if ( attributes instanceof BasicAttributes )
         {

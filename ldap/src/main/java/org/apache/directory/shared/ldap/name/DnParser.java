@@ -26,7 +26,7 @@ import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 
 
 /**
- * This class parses a DN. The DN MUST respect this BNF grammar (as of RFC2253,
+ * This class parses a Dn. The Dn MUST respect this BNF grammar (as of RFC2253,
  * par. 3, and RFC1779, fig. 1) <br>
  * <p> - &lt;distinguishedName&gt; ::= &lt;name&gt; | e <br> - &lt;name&gt; ::=
  * &lt;name-component&gt; &lt;name-components&gt; <br> - &lt;name-components&gt;
@@ -76,13 +76,13 @@ public enum DnParser
 
 
     /**
-     * Parse a DN.
+     * Parse a Dn.
      *
-     * @param name The DN to be parsed
+     * @param name The Dn to be parsed
      * @param rdns The list that will contain the RDNs
-     * @throws LdapInvalidDnException If the DN is invalid
+     * @throws LdapInvalidDnException If the Dn is invalid
      */
-    public static void parseInternal( String name, List<RDN> rdns ) throws LdapInvalidDnException
+    public static void parseInternal( String name, List<Rdn> rdns ) throws LdapInvalidDnException
     {
         try
         {
@@ -97,15 +97,15 @@ public enum DnParser
 
 
     /**
-     * Validate a DN
+     * Validate a Dn
      *
-     * @param name The DN to be parsed
+     * @param name The Dn to be parsed
      *            
-     * @return <code>true</code> if the DN is valid
+     * @return <code>true</code> if the Dn is valid
      */
     public static boolean validateInternal( String name )
     {
-        DN dn = new DN();
+        Dn dn = new Dn();
         try
         {
             parseInternal( name, dn.rdns );
@@ -119,14 +119,14 @@ public enum DnParser
 
 
     /**
-     * Parse a String and return a DN if the String is a valid DN
+     * Parse a String and return a Dn if the String is a valid Dn
      *
-     * @param dn The DN to parse
-     * @return A DN
-     * @throws LdapInvalidDnException If the String is not a valid DN
+     * @param dn The Dn to parse
+     * @return A Dn
+     * @throws LdapInvalidDnException If the String is not a valid Dn
      */
-    public DN parse( String dn ) throws LdapInvalidDnException
+    public Dn parse( String dn ) throws LdapInvalidDnException
     {
-        return new DN( dn );
+        return new Dn( dn );
     }
 }

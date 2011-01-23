@@ -41,7 +41,7 @@ import org.apache.directory.shared.ldap.message.ExtendedRequest;
 import org.apache.directory.shared.ldap.message.ModifyDnRequest;
 import org.apache.directory.shared.ldap.message.ModifyRequest;
 import org.apache.directory.shared.ldap.message.SearchRequest;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 
 
 /**
@@ -86,7 +86,7 @@ public interface LdapAsyncConnection extends LdapConnection
     /**
      * Simple asynchronous Bind on a server.
      *
-     * @param name The name we use to authenticate the user, it must be a valid DN
+     * @param name The name we use to authenticate the user, it must be a valid Dn
      * @param credentials The password, it can't be null 
      * @return the bind operation's future
      * @throws LdapException if some error occurred
@@ -98,13 +98,13 @@ public interface LdapAsyncConnection extends LdapConnection
     /**
      * Simple asynchronous Bind on a server.
      *
-     * @param name The name we use to authenticate the user, it must be a valid DN
+     * @param name The name we use to authenticate the user, it must be a valid Dn
      * @param credentials The password, it can't be null
      * @return the bind operation's future
      * @throws LdapException if some error occurred
      * @throws IOException if some IO error occurred
      */
-    BindFuture bindAsync( DN name, String credentials ) throws LdapException, IOException;
+    BindFuture bindAsync( Dn name, String credentials ) throws LdapException, IOException;
 
 
     /**
@@ -131,7 +131,7 @@ public interface LdapAsyncConnection extends LdapConnection
      * This method is blocking.
      * </pre>
      * 
-     * @param baseDn The base for the search, it must be a valid DN, and can't be emtpy
+     * @param baseDn The base for the search, it must be a valid Dn, and can't be emtpy
      * @param filter The filter to use for this search, it can't be empty
      * @param scope The search scope : OBJECT, ONELEVEL or SUBTREE 
      * @param attributes The attributes for this search 
@@ -155,14 +155,14 @@ public interface LdapAsyncConnection extends LdapConnection
      * This method is blocking.
      * </pre>
      * 
-     * @param baseDn The base for the search, it must be a valid DN, and can't be empty
+     * @param baseDn The base for the search, it must be a valid Dn, and can't be empty
      * @param filter The filter to use for this search, it can't be empty
      * @param scope The search scope : OBJECT, ONELEVEL or SUBTREE
      * @param attributes The attributes for this search 
      * @return the search operation's future
      * @throws LdapException if some error occurred
      */
-    SearchFuture searchAsync( DN baseDn, String filter, SearchScope scope, String... attributes )
+    SearchFuture searchAsync( Dn baseDn, String filter, SearchScope scope, String... attributes )
         throws LdapException;
 
 
@@ -212,7 +212,7 @@ public interface LdapAsyncConnection extends LdapConnection
      *  
      * @param delRequest the delete operation's request
      * @return delete operation's future
-     * @throws LdapException If the DN is not valid or if the deletion failed
+     * @throws LdapException If the Dn is not valid or if the deletion failed
      */
     DeleteFuture deleteAsync( DeleteRequest delRequest ) throws LdapException;
 
@@ -220,7 +220,7 @@ public interface LdapAsyncConnection extends LdapConnection
     /**
      * Asynchronously compares an entry's attribute's value with that of the given value
      *   
-     * @param compareRequest the CompareRequest which contains the target DN, attribute name and value
+     * @param compareRequest the CompareRequest which contains the target Dn, attribute name and value
      * @return compare operation's future
      * @throws LdapException if some error occurred
      */

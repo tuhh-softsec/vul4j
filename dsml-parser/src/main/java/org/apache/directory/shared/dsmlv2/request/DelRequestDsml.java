@@ -23,7 +23,7 @@ package org.apache.directory.shared.dsmlv2.request;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.DeleteRequest;
 import org.apache.directory.shared.ldap.message.DeleteRequestImpl;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.dom4j.Element;
 
 
@@ -73,7 +73,7 @@ public class DelRequestDsml extends AbstractRequestDsml
 
         DeleteRequest request = ( DeleteRequest ) instance;
 
-        // DN
+        // Dn
         if ( request.getName() != null )
         {
             element.addAttribute( "dn", request.getName().getName() );
@@ -88,7 +88,7 @@ public class DelRequestDsml extends AbstractRequestDsml
      * 
      * @return Returns the entry.
      */
-    public DN getEntry()
+    public Dn getEntry()
     {
         return ( ( DeleteRequest ) instance ).getName();
     }
@@ -99,7 +99,7 @@ public class DelRequestDsml extends AbstractRequestDsml
      * 
      * @param entry The entry to set.
      */
-    public void setEntry( DN entry )
+    public void setEntry( Dn entry )
     {
         ( ( DeleteRequest ) instance ).setName( entry );
     }

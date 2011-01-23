@@ -36,7 +36,7 @@ import org.apache.directory.shared.util.Strings;
 }
 
 /**
- * An antlr generated DN lexer.
+ * An antlr generated Dn lexer.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
@@ -120,7 +120,7 @@ LUTF1_REST :
 
 
 /**
- * An antlr generated DN parser.
+ * An antlr generated Dn parser.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
@@ -152,7 +152,7 @@ options    {
 }
 
     /**
-     * Parses an DN string.
+     * Parses an Dn string.
      *
      * RFC 4514, Section 3
      * distinguishedName = [ relativeDistinguishedName
@@ -172,17 +172,17 @@ options    {
      * <optional-space> ::= ( <CR> ) *( " " )
      *
      */
-distinguishedName [DN dn]
+distinguishedName [Dn dn]
     {
         matchedProduction( "distinguishedName()" );
-        RDN rdn = null;
+        Rdn rdn = null;
     }
     :
     (
-        rdn = relativeDistinguishedName[new RDN()] { dn.add( rdn ); rdn=null; }
+        rdn = relativeDistinguishedName[new Rdn()] { dn.add( rdn ); rdn=null; }
         (
             ( COMMA | SEMI )
-            rdn = relativeDistinguishedName[new RDN()] { dn.add( rdn ); rdn=null; }
+            rdn = relativeDistinguishedName[new Rdn()] { dn.add( rdn ); rdn=null; }
         )*
         EOF
     )?
@@ -190,7 +190,7 @@ distinguishedName [DN dn]
 
 
     /**
-     * Parses an DN string.
+     * Parses an Dn string.
      *
      * RFC 4514, Section 3
      * distinguishedName = [ relativeDistinguishedName
@@ -210,24 +210,24 @@ distinguishedName [DN dn]
      * <optional-space> ::= ( <CR> ) *( " " )
      *
      */
-relativeDistinguishedNames [List<RDN> rdns]
+relativeDistinguishedNames [List<Rdn> rdns]
     {
         matchedProduction( "relativeDistinguishedNames()" );
-        RDN rdn = null;
+        Rdn rdn = null;
     }
     :
     (
-        rdn = relativeDistinguishedName[new RDN()] { rdns.add( rdn ); }
+        rdn = relativeDistinguishedName[new Rdn()] { rdns.add( rdn ); }
         (
             ( COMMA | SEMI )
-            rdn = relativeDistinguishedName[new RDN()] { rdns.add( rdn ); }
+            rdn = relativeDistinguishedName[new Rdn()] { rdns.add( rdn ); }
         )*
         EOF
     )?
     ;
 
     /**
-     * Parses an RDN string.
+     * Parses an Rdn string.
      *
      * RFC 4514, Section 3
      * relativeDistinguishedName = attributeTypeAndValue
@@ -242,7 +242,7 @@ relativeDistinguishedNames [List<RDN> rdns]
      *       <optional-space> <name-component>
      *
      */
-relativeDistinguishedName [RDN initialRdn] returns [RDN rdn]
+relativeDistinguishedName [Rdn initialRdn] returns [Rdn rdn]
     {
         matchedProduction( "relativeDistinguishedName()" );
         rdn = initialRdn;
@@ -278,7 +278,7 @@ relativeDistinguishedName [RDN initialRdn] returns [RDN rdn]
      * attributeTypeAndValue = attributeType "=" attributeValue
      *
      */
-attributeTypeAndValue [RDN rdn] returns [String upName = ""]
+attributeTypeAndValue [Rdn rdn] returns [String upName = ""]
     {
         matchedProduction( "attributeTypeAndValue()" );
         String type = null;
@@ -296,11 +296,11 @@ attributeTypeAndValue [RDN rdn] returns [String upName = ""]
             try
             {
                 upName += value.rawValue;
-                AVA ava = null;
+                Ava ava = null;
             
                 if ( value.value instanceof String )
                 {
-                    ava = new AVA(
+                    ava = new Ava(
                         type,
                         type,
                         new StringValue( (String)value.value ), 
@@ -310,7 +310,7 @@ attributeTypeAndValue [RDN rdn] returns [String upName = ""]
                 }
                 else
                 {
-                    ava = new AVA(
+                    ava = new Ava(
                         type,
                         type,
                         new BinaryValue( (byte[])value.value ), 

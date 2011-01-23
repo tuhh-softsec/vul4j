@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * A DN Name component Normalizer which uses the bootstrap registries to find
+ * A Dn Name component Normalizer which uses the bootstrap registries to find
  * the appropriate normalizer for the attribute of the name component with which
  * to normalize the name component value.
  *
@@ -52,7 +52,7 @@ public class ConcreteNameComponentNormalizer implements NameComponentNormalizer
     
 
     /**
-     * Creates a DN Name component Normalizer which uses the bootstrap
+     * Creates a Dn Name component Normalizer which uses the bootstrap
      * registries to find the appropriate normalizer for the attribute of the
      * name component with which to normalize the name component value.
      *

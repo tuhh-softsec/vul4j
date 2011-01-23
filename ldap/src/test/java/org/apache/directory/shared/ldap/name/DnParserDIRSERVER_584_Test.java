@@ -49,7 +49,7 @@ public class DnParserDIRSERVER_584_Test
    {
        try
        {
-           DnParser.parseInternal( "ou=test+testing", new ArrayList<RDN>() );
+           DnParser.parseInternal( "ou=test+testing", new ArrayList<Rdn>() );
            fail( "should never get here" );
        }
        catch ( LdapException e )
@@ -66,6 +66,6 @@ public class DnParserDIRSERVER_584_Test
     @Test
     public void testb() throws Exception
    {
-       DnParser.parseInternal( "ou=system", new ArrayList<RDN>() );
+       DnParser.parseInternal( "ou=system", new ArrayList<Rdn>() );
    }
 }

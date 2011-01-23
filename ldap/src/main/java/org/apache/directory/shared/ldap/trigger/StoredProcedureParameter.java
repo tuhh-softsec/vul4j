@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.trigger;
 
 
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 
 
 /**
@@ -33,20 +33,20 @@ public abstract class StoredProcedureParameter
 {
     public static final class Generic_LDAP_CONTEXT extends StoredProcedureParameter
     {
-        private DN ctxName;
+        private Dn ctxName;
         
-        private Generic_LDAP_CONTEXT( DN ctxName )
+        private Generic_LDAP_CONTEXT( Dn ctxName )
         {
             super( "$ldapContext" );
             this.ctxName = ctxName;
         }
         
-        public static StoredProcedureParameter instance( DN ctxName )
+        public static StoredProcedureParameter instance( Dn ctxName )
         {
             return new Generic_LDAP_CONTEXT( ctxName );
         }
         
-        public DN getCtxName()
+        public Dn getCtxName()
         {
             return ctxName;
         }

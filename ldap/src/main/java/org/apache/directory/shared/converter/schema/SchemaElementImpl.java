@@ -255,7 +255,7 @@ public abstract class SchemaElementImpl implements SchemaElement
     {
         StringBuilder sb = new StringBuilder();
 
-        // The DN
+        // The Dn
         sb.append( dnToLdif( schemaName ) );
 
         // ObjectClasses

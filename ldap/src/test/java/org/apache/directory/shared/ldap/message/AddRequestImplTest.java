@@ -36,7 +36,7 @@ import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -112,11 +112,11 @@ public class AddRequestImplTest
     public void testEqualsExactCopy() throws LdapException
     {
         AddRequestImpl req0 = new AddRequestImpl( 5 );
-        req0.setEntryDn( new DN( "cn=admin,dc=example,dc=com" ) );
+        req0.setEntryDn( new Dn( "cn=admin,dc=example,dc=com" ) );
         req0.setEntry( getEntry() );
 
         AddRequestImpl req1 = new AddRequestImpl( 5 );
-        req1.setEntryDn( new DN( "cn=admin,dc=example,dc=com" ) );
+        req1.setEntryDn( new Dn( "cn=admin,dc=example,dc=com" ) );
         req1.setEntry( getEntry() );
 
         assertTrue( req0.equals( req1 ) );
@@ -130,11 +130,11 @@ public class AddRequestImplTest
     public void testNotEqualDiffId() throws LdapException
     {
         AddRequestImpl req0 = new AddRequestImpl( 7 );
-        req0.setEntryDn( new DN( "cn=admin,dc=example,dc=com" ) );
+        req0.setEntryDn( new Dn( "cn=admin,dc=example,dc=com" ) );
         req0.setEntry( getEntry() );
 
         AddRequestImpl req1 = new AddRequestImpl( 5 );
-        req1.setEntryDn( new DN( "cn=admin,dc=example,dc=com" ) );
+        req1.setEntryDn( new Dn( "cn=admin,dc=example,dc=com" ) );
         req1.setEntry( getEntry() );
 
         assertFalse( req0.equals( req1 ) );
@@ -142,42 +142,42 @@ public class AddRequestImplTest
 
 
     /**
-     * Test for inequality when only the DN names are different.
+     * Test for inequality when only the Dn names are different.
      */
     @Test
     public void testNotEqualDiffName() throws LdapException
     {
         AddRequestImpl req0 = new AddRequestImpl( 5 );
         req0.setEntry( getEntry() );
-        req0.setEntryDn( new DN( "cn=admin,dc=example,dc=com" ) );
+        req0.setEntryDn( new Dn( "cn=admin,dc=example,dc=com" ) );
 
         AddRequestImpl req1 = new AddRequestImpl( 5 );
         req1.setEntry( getEntry() );
-        req1.setEntryDn( new DN( "cn=admin,dc=apache,dc=org" ) );
+        req1.setEntryDn( new Dn( "cn=admin,dc=apache,dc=org" ) );
 
         assertFalse( req0.equals( req1 ) );
     }
 
 
     /**
-     * Test for inequality when only the DN names are different.
+     * Test for inequality when only the Dn names are different.
      */
     @Test
     public void testNotEqualDiffAttributes() throws LdapException
     {
         AddRequestImpl req0 = new AddRequestImpl( 5 );
         Entry entry0 = getEntry();
-        entry0.setDn( new DN( "cn=admin,dc=apache,dc=org" ) );
+        entry0.setDn( new Dn( "cn=admin,dc=apache,dc=org" ) );
         req0.setEntry( entry0 );
 
         AddRequestImpl req1 = new AddRequestImpl( 5 );
-        req1.setEntryDn( new DN( "cn=admin,dc=apache,dc=org" ) );
+        req1.setEntryDn( new Dn( "cn=admin,dc=apache,dc=org" ) );
 
         assertTrue( req0.equals( req1 ) );
         assertTrue( req1.equals( req0 ) );
 
         Entry entry1 = getEntry();
-        entry1.setDn( new DN( "cn=admin,dc=apache,dc=org" ) );
+        entry1.setDn( new Dn( "cn=admin,dc=apache,dc=org" ) );
         req1.setEntry( entry1 );
 
         assertTrue( req0.equals( req1 ) );
@@ -209,13 +209,13 @@ public class AddRequestImplTest
             }
 
 
-            public DN getEntryDn()
+            public Dn getEntryDn()
             {
                 return null;
             }
 
 
-            public void setEntryDn( DN entryDn )
+            public void setEntryDn( Dn entryDn )
             {
             }
 

@@ -63,7 +63,7 @@ public class CertGenerationRequestTest
         int dnLen = dn.length();
 
         // start Tag + L is 2 bytes
-        // the same value of DN is used for all target,issuer and subject DNs so
+        // the same value of Dn is used for all target,issuer and subject DNs so
         // it is ( ( OCTET_STRING Tag + Len ) + dnLen ) * 3 
         // finally for keyAlgo ( OCTET_STRING Tag + Len ) + keyAlgoLen
 
@@ -185,8 +185,8 @@ public class CertGenerationRequestTest
 
         bb.put( new byte[]
             { 0x30, 0x09, // CertGenerateObject ::= SEQUENCE {
-              0x04, 0x04, 'c', 'n', '=', 'x', // target DN string 
-              0x04, 0x01, ' '} ); // empty issuer DN
+              0x04, 0x04, 'c', 'n', '=', 'x', // target Dn string
+              0x04, 0x01, ' '} ); // empty issuer Dn
 
         CertGenerationContainer container = new CertGenerationContainer();
         bb.flip();
@@ -206,8 +206,8 @@ public class CertGenerationRequestTest
 
         bb.put( new byte[]
                          { 0x30, 0x10, // CertGenerateObject ::= SEQUENCE {
-                           0x04, 0x04, 'c', 'n', '=', 'x', // target DN string 
-                           0x04, 0x02, '=', 'x' } ); // empty issuer DN
+                           0x04, 0x04, 'c', 'n', '=', 'x', // target Dn string
+                           0x04, 0x02, '=', 'x' } ); // empty issuer Dn
 
         bb.flip();
 
@@ -232,9 +232,9 @@ public class CertGenerationRequestTest
 
         bb.put( new byte[]
             { 0x30, 0x15, // CertGenerateObject ::= SEQUENCE {
-              0x04, 0x04, 'c', 'n', '=', 'x', // target DN string 
-              0x04, 0x04, 'c', 'n', '=', 'x', // issuer DN
-              0x04, 0x01, ' ' } ); // empty subject DN
+              0x04, 0x04, 'c', 'n', '=', 'x', // target Dn string
+              0x04, 0x04, 'c', 'n', '=', 'x', // issuer Dn
+              0x04, 0x01, ' ' } ); // empty subject Dn
 
         CertGenerationContainer container = new CertGenerationContainer();
         bb.flip();
@@ -254,16 +254,16 @@ public class CertGenerationRequestTest
 
         bb.put( new byte[]
                          { 0x30, 0x16, // CertGenerateObject ::= SEQUENCE {
-                           0x04, 0x04, 'c', 'n', '=', 'x', // target DN string 
-                           0x04, 0x04, 'c', 'n', '=', 'x', // issuer DN
-                           0x04, 0x02, '=', 'x' } ); // invalid subject DN
+                           0x04, 0x04, 'c', 'n', '=', 'x', // target Dn string
+                           0x04, 0x04, 'c', 'n', '=', 'x', // issuer Dn
+                           0x04, 0x02, '=', 'x' } ); // invalid subject Dn
 
         bb.flip();
 
         try
         {
             decoder.decode( bb, container );
-            fail( "shouldn't accept the invalid subject DN" );
+            fail( "shouldn't accept the invalid subject Dn" );
         }
         catch ( DecoderException e )
         {

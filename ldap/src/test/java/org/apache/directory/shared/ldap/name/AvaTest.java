@@ -46,7 +46,7 @@ import org.junit.runner.RunWith;
  */
 @RunWith(ConcurrentJunitRunner.class)
 @Concurrent()
-public class AVATest
+public class AvaTest
 {
     // ~ Methods
     // ------------------------------------------------------------------------------------
@@ -56,7 +56,7 @@ public class AVATest
     @Test
     public void testAttributeTypeAndValueNull()
     {
-        AVA atav = new AVA();
+        Ava atav = new Ava();
         assertEquals( "", atav.toString() );
         assertEquals( "", atav.getUpName() );
         assertEquals( -1, atav.getStart() );
@@ -72,7 +72,7 @@ public class AVATest
     {
         try
         {
-            new AVA( null, null, (String)null, (String)null );
+            new Ava( null, null, (String)null, (String)null );
             fail();
         }
         catch ( LdapException ine )
@@ -90,7 +90,7 @@ public class AVATest
     {
         try
         {
-            new AVA( "  ", " ", (String)null, (String)null );
+            new Ava( "  ", " ", (String)null, (String)null );
             fail();
         }
         catch ( LdapException ine )
@@ -106,19 +106,19 @@ public class AVATest
     @Test
     public void testAttributeTypeAndValueValidType() throws LdapException
     {
-        AVA atav = new AVA( "A", "a", (String)null, (String)null );
+        Ava atav = new Ava( "A", "a", (String)null, (String)null );
         assertEquals( "a=", atav.toString() );
         assertEquals( "A=", atav.getUpName() );
         
-        atav = new AVA( "  A  ", "a", (String)null, (String)null );
+        atav = new Ava( "  A  ", "a", (String)null, (String)null );
         assertEquals( "a=", atav.toString() );
         assertEquals( "  A  =", atav.getUpName() );
         
-        atav = new AVA( "  A  ", null, (String)null, (String)null );
+        atav = new Ava( "  A  ", null, (String)null, (String)null );
         assertEquals( "a=", atav.toString() );
         assertEquals( "  A  =", atav.getUpName() );
         
-        atav = new AVA( null, "a", (String)null, (String)null );
+        atav = new Ava( null, "a", (String)null, (String)null );
         assertEquals( "a=", atav.toString() );
         assertEquals( "a=", atav.getUpName() );
         
@@ -132,7 +132,7 @@ public class AVATest
     {
         try
         {
-            new AVA( "", "", "", "" );
+            new Ava( "", "", "", "" );
             fail( "Should not occurs ... " );
         }
         catch ( LdapException ine )
@@ -148,7 +148,7 @@ public class AVATest
     @Test
     public void testLdapRDNSimple() throws LdapException
     {
-        AVA atav = new AVA( "a", "a", "b", "b" );
+        Ava atav = new Ava( "a", "a", "b", "b" );
         assertEquals( "a=b", atav.toString() );
         assertEquals( "a=b", atav.getUpName() );
         assertEquals( 0, atav.getStart() );
@@ -162,8 +162,8 @@ public class AVATest
     @Test
     public void testCompareToEquals() throws LdapException
     {
-        AVA atav1 = new AVA( "a", "a","b", "b" );
-        AVA atav2 = new AVA( "a", "a","b", "b" );
+        Ava atav1 = new Ava( "a", "a","b", "b" );
+        Ava atav2 = new Ava( "a", "a","b", "b" );
 
         assertEquals( 0, atav1.compareTo( atav2 ) );
     }
@@ -175,8 +175,8 @@ public class AVATest
     @Test
     public void testCompareToEqualsCase() throws LdapException
     {
-        AVA atav1 = new AVA( "a", "a", "b", "b" );
-        AVA atav2 = new AVA( "A", "A", "b", "b" );
+        Ava atav1 = new Ava( "a", "a", "b", "b" );
+        Ava atav2 = new Ava( "A", "A", "b", "b" );
 
         assertEquals( 0, atav1.compareTo( atav2 ) );
     }
@@ -189,9 +189,9 @@ public class AVATest
     @Test
     public void testCompareAtav1TypeSuperior() throws LdapException
     {
-        AVA atav1 = new AVA( "b", "b", "b", "b" );
+        Ava atav1 = new Ava( "b", "b", "b", "b" );
             
-        AVA atav2 = new AVA( "a", "a", "b", "b" );
+        Ava atav2 = new Ava( "a", "a", "b", "b" );
 
         assertEquals( 1, atav1.compareTo( atav2 ) );
     }
@@ -204,8 +204,8 @@ public class AVATest
     @Test
     public void testCompareAtav2TypeSuperior() throws LdapException
     {
-        AVA atav1 = new AVA( "a", "a", "b", "b" );
-        AVA atav2 = new AVA( "b", "b", "b", "b" );
+        Ava atav1 = new Ava( "a", "a", "b", "b" );
+        Ava atav2 = new Ava( "b", "b", "b", "b" );
 
         assertEquals( -1, atav1.compareTo( atav2 ) );
     }
@@ -218,8 +218,8 @@ public class AVATest
     @Test
     public void testCompareAtav1ValueSuperior() throws LdapException
     {
-        AVA atav1 = new AVA( "a", "a", "b", "b" );
-        AVA atav2 = new AVA( "a", "a", "a", "a" );
+        Ava atav1 = new Ava( "a", "a", "b", "b" );
+        Ava atav2 = new Ava( "a", "a", "a", "a" );
 
         assertEquals( 1, atav1.compareTo( atav2 ) );
     }
@@ -232,8 +232,8 @@ public class AVATest
     @Test
     public void testCompareAtav2ValueSuperior() throws LdapException
     {
-        AVA atav1 = new AVA( "a", "a", "a", "a" );
-        AVA atav2 = new AVA( "a", "a", "b", "b" );
+        Ava atav1 = new Ava( "a", "a", "a", "a" );
+        Ava atav2 = new Ava( "a", "a", "b", "b" );
 
         assertEquals( -1, atav1.compareTo( atav2 ) );
     }
@@ -242,7 +242,7 @@ public class AVATest
     @Test
     public void testNormalize() throws LdapException
     {
-        AVA atav = new AVA( " A ", " A ", "a", "a" );
+        Ava atav = new Ava( " A ", " A ", "a", "a" );
 
         assertEquals( "a=a", atav.normalize() );
 
@@ -257,7 +257,7 @@ public class AVATest
     @Test
     public void testStringAtavSerialization() throws LdapException, IOException, ClassNotFoundException
     {
-        AVA atav = new AVA( "cn", "CN", "test", "Test" );
+        Ava atav = new Ava( "cn", "CN", "test", "Test" );
 
         atav.normalize();
 
@@ -271,7 +271,7 @@ public class AVATest
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        AVA atav2 = (AVA)in.readObject();
+        Ava atav2 = (Ava)in.readObject();
 
         assertEquals( atav, atav2 );
     }
@@ -283,7 +283,7 @@ public class AVATest
         byte[] upValue = Strings.getBytesUtf8("  Test  ");
         byte[] normValue = Strings.getBytesUtf8("Test");
 
-        AVA atav = new AVA( "cn", "CN", upValue, normValue );
+        Ava atav = new Ava( "cn", "CN", upValue, normValue );
 
         atav.normalize();
 
@@ -297,7 +297,7 @@ public class AVATest
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        AVA atav2 = (AVA)in.readObject();
+        Ava atav2 = (Ava)in.readObject();
 
         assertEquals( atav, atav2 );
     }
@@ -309,7 +309,7 @@ public class AVATest
     @Test
     public void testNullAtavSerialization() throws LdapException, IOException, ClassNotFoundException
     {
-        AVA atav = new AVA();
+        Ava atav = new Ava();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
@@ -329,7 +329,7 @@ public class AVATest
     @Test
     public void testNullNormValueSerialization() throws LdapException, IOException, ClassNotFoundException
     {
-        AVA atav = new AVA( "CN", "cn", "test", (String)null );
+        Ava atav = new Ava( "CN", "cn", "test", (String)null );
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
@@ -350,7 +350,7 @@ public class AVATest
     @Test
     public void testNullUpValueSerialization() throws LdapException, IOException, ClassNotFoundException
     {
-        AVA atav = new AVA( "CN", "cn", null, "test" );
+        Ava atav = new Ava( "CN", "cn", null, "test" );
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
@@ -371,7 +371,7 @@ public class AVATest
     @Test
     public void testEmptyNormValueSerialization() throws LdapException, IOException, ClassNotFoundException
     {
-        AVA atav = new AVA( "CN", "cn", "test", "" );
+        Ava atav = new Ava( "CN", "cn", "test", "" );
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
@@ -383,7 +383,7 @@ public class AVATest
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        AVA atav2 = (AVA)in.readObject();
+        Ava atav2 = (Ava)in.readObject();
 
         assertEquals( atav, atav2 );
     }
@@ -392,7 +392,7 @@ public class AVATest
     @Test
     public void testEmptyUpValueSerialization() throws LdapException, IOException, ClassNotFoundException
     {
-        AVA atav = new AVA( "CN", "cn", "", "test" );
+        Ava atav = new Ava( "CN", "cn", "", "test" );
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
@@ -404,7 +404,7 @@ public class AVATest
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        AVA atav2 = (AVA)in.readObject();
+        Ava atav2 = (Ava)in.readObject();
 
         assertEquals( atav, atav2 );
     }
@@ -416,14 +416,14 @@ public class AVATest
     @Test
     public void testStringAtavStaticSerialization() throws LdapException, IOException, ClassNotFoundException
     {
-        AVA atav = new AVA( "cn", "CN", "test", "Test" );
+        Ava atav = new Ava( "cn", "CN", "test", "Test" );
 
         atav.normalize();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        AVASerializer.serialize( atav, out );
+        AvaSerializer.serialize(atav, out);
         out.flush();
 
         ObjectInputStream in = null;
@@ -431,7 +431,7 @@ public class AVATest
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        AVA atav2 = AVASerializer.deserialize( in );
+        Ava atav2 = AvaSerializer.deserialize(in);
 
         assertEquals( atav, atav2 );
     }
@@ -443,14 +443,14 @@ public class AVATest
         byte[] upValue = Strings.getBytesUtf8("  Test  ");
         byte[] normValue = Strings.getBytesUtf8("Test");
 
-        AVA atav = new AVA( "cn", "CN", upValue, normValue );
+        Ava atav = new Ava( "cn", "CN", upValue, normValue );
 
         atav.normalize();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        AVASerializer.serialize( atav, out );
+        AvaSerializer.serialize(atav, out);
         out.flush();
 
         ObjectInputStream in = null;
@@ -458,7 +458,7 @@ public class AVATest
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        AVA atav2 = AVASerializer.deserialize( in );
+        Ava atav2 = AvaSerializer.deserialize(in);
 
         assertEquals( atav, atav2 );
     }
@@ -470,14 +470,14 @@ public class AVATest
     @Test
     public void testNullAtavStaticSerialization() throws LdapException, IOException, ClassNotFoundException
     {
-        AVA atav = new AVA();
+        Ava atav = new Ava();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
         try
         {
-            AVASerializer.serialize( atav, out );
+            AvaSerializer.serialize(atav, out);
             fail();
         }
         catch ( IOException ioe )
@@ -490,14 +490,14 @@ public class AVATest
     @Test
     public void testNullNormValueStaticSerialization() throws LdapException, IOException, ClassNotFoundException
     {
-        AVA atav = new AVA( "CN", "cn", "test", (String)null );
+        Ava atav = new Ava( "CN", "cn", "test", (String)null );
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
         try
         {
-            AVASerializer.serialize( atav, out );
+            AvaSerializer.serialize(atav, out);
             fail();
         }
         catch ( IOException ioe )
@@ -511,14 +511,14 @@ public class AVATest
     @Test
     public void testNullUpValueStaticSerialization() throws LdapException, IOException, ClassNotFoundException
     {
-        AVA atav = new AVA( "CN", "cn", null, "test" );
+        Ava atav = new Ava( "CN", "cn", null, "test" );
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
         try
         {
-            AVASerializer.serialize( atav, out );
+            AvaSerializer.serialize(atav, out);
             fail();
         }
         catch ( IOException ioe )
@@ -532,12 +532,12 @@ public class AVATest
     @Test
     public void testEmptyNormValueStaticSerialization() throws LdapException, IOException, ClassNotFoundException
     {
-        AVA atav = new AVA( "CN", "cn", "test", "" );
+        Ava atav = new Ava( "CN", "cn", "test", "" );
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        AVASerializer.serialize( atav, out );
+        AvaSerializer.serialize(atav, out);
         out.flush();
 
         ObjectInputStream in = null;
@@ -545,7 +545,7 @@ public class AVATest
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        AVA atav2 = AVASerializer.deserialize( in );
+        Ava atav2 = AvaSerializer.deserialize(in);
 
         assertEquals( atav, atav2 );
     }
@@ -554,12 +554,12 @@ public class AVATest
     @Test
     public void testEmptyUpValueStaticSerialization() throws LdapException, IOException, ClassNotFoundException
     {
-        AVA atav = new AVA( "CN", "cn", "", "test" );
+        Ava atav = new Ava( "CN", "cn", "", "test" );
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        AVASerializer.serialize( atav, out );
+        AvaSerializer.serialize(atav, out);
         out.flush();
 
         ObjectInputStream in = null;
@@ -567,7 +567,7 @@ public class AVATest
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        AVA atav2 = AVASerializer.deserialize( in );
+        Ava atav2 = AvaSerializer.deserialize(in);
 
         assertEquals( atav, atav2 );
     }

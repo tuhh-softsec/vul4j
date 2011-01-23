@@ -31,7 +31,7 @@ import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -63,7 +63,7 @@ public class ExtendedResponseImplTest
 
         try
         {
-            result.setMatchedDn( new DN( "dc=example,dc=com" ) );
+            result.setMatchedDn( new Dn( "dc=example,dc=com" ) );
         }
         catch ( LdapException ine )
         {
@@ -156,7 +156,7 @@ public class ExtendedResponseImplTest
 
                 try
                 {
-                    result.setMatchedDn( new DN( "dc=example,dc=com" ) );
+                    result.setMatchedDn( new Dn( "dc=example,dc=com" ) );
                 }
                 catch ( LdapException ine )
                 {

@@ -21,7 +21,7 @@ package org.apache.directory.shared.ldap.schema.syntaxCheckers;
 
 
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
@@ -29,8 +29,8 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * A SyntaxChecker which verifies that a value is a valid DN. We just check
- * that the DN is valid, we don't need to verify each of the RDN syntax.
+ * A SyntaxChecker which verifies that a value is a valid Dn. We just check
+ * that the Dn is valid, we don't need to verify each of the Rdn syntax.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
@@ -86,8 +86,8 @@ public class DNSyntaxChecker extends SyntaxChecker
             return true;
         }
         
-        // Check that the value is a valid DN
-        boolean result = DN.isValid( strValue );
+        // Check that the value is a valid Dn
+        boolean result = Dn.isValid(strValue);
         
         if ( result )
         {

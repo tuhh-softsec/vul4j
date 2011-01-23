@@ -20,23 +20,23 @@
 package org.apache.directory.shared.ldap.message;
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.name.DN;
-import org.apache.directory.shared.ldap.name.RDN;
+import org.apache.directory.shared.ldap.name.Dn;
+import org.apache.directory.shared.ldap.name.Rdn;
 
 
 /**
- * Modify DN request protocol message used to rename or move an existing entry
+ * Modify Dn request protocol message used to rename or move an existing entry
  * in the directory. Here's what <a
  * href="http://www.faqs.org/rfcs/rfc2251.html">RFC 2251</a> has to say about
  * it:
  * 
  * <pre>
- *  4.9. Modify DN Operation
+ *  4.9. Modify Dn Operation
  * 
- *   The Modify DN Operation allows a client to change the leftmost (least
+ *   The Modify Dn Operation allows a client to change the leftmost (least
  *   significant) component of the name of an entry in the directory, or
  *   to move a subtree of entries to a new location in the directory.  The
- *   Modify DN Request is defined as follows:
+ *   Modify Dn Request is defined as follows:
  * 
  *        ModifyDNRequest ::= [APPLICATION 12] SEQUENCE {
  *                entry           LDAPDN,
@@ -44,15 +44,15 @@ import org.apache.directory.shared.ldap.name.RDN;
  *                deleteoldrdn    BOOLEAN,
  *                newSuperior     [0] LDAPDN OPTIONAL }
  * 
- *   Parameters of the Modify DN Request are:
+ *   Parameters of the Modify Dn Request are:
  * 
  *   - entry: the Distinguished Name of the entry to be changed.  This
  *     entry may or may not have subordinate entries.
  * 
- *   - newrdn: the RDN that will form the leftmost component of the new
+ *   - newrdn: the Rdn that will form the leftmost component of the new
  *     name of the entry.
  * 
- *   - deleteoldrdn: a boolean parameter that controls whether the old RDN
+ *   - deleteoldrdn: a boolean parameter that controls whether the old Rdn
  *     attribute values are to be retained as attributes of the entry, or
  *     deleted from the entry.
  * 
@@ -67,10 +67,10 @@ import org.apache.directory.shared.ldap.name.RDN;
  */
 public interface ModifyDnRequest extends SingleReplyRequest, AbandonableRequest
 {
-    /** Modify DN request message type enumeration value */
+    /** Modify Dn request message type enumeration value */
     MessageTypeEnum TYPE = MessageTypeEnum.MODIFYDN_REQUEST;
 
-    /** Modify DN response message type enumeration value */
+    /** Modify Dn response message type enumeration value */
     MessageTypeEnum RESP_TYPE = ModifyDnResponse.TYPE;
 
 
@@ -80,7 +80,7 @@ public interface ModifyDnRequest extends SingleReplyRequest, AbandonableRequest
      * 
      * @return the distinguished name of the entry.
      */
-    DN getName();
+    Dn getName();
 
 
     /**
@@ -90,7 +90,7 @@ public interface ModifyDnRequest extends SingleReplyRequest, AbandonableRequest
      * @param name
      *            the distinguished name of the entry.
      */
-    void setName( DN name );
+    void setName( Dn name );
 
 
     /**
@@ -99,7 +99,7 @@ public interface ModifyDnRequest extends SingleReplyRequest, AbandonableRequest
      * 
      * @return the relative dn with one component
      */
-    RDN getNewRdn();
+    Rdn getNewRdn();
 
 
     /**
@@ -109,7 +109,7 @@ public interface ModifyDnRequest extends SingleReplyRequest, AbandonableRequest
      * @param newRdn
      *            the relative dn with one component
      */
-    void setNewRdn( RDN newRdn );
+    void setNewRdn( Rdn newRdn );
 
 
     /**
@@ -141,7 +141,7 @@ public interface ModifyDnRequest extends SingleReplyRequest, AbandonableRequest
      * 
      * @return the dn of the superior entry the candidate entry is moved under.
      */
-    DN getNewSuperior();
+    Dn getNewSuperior();
 
 
     /**
@@ -152,14 +152,14 @@ public interface ModifyDnRequest extends SingleReplyRequest, AbandonableRequest
      * toggles the move flag obtained via the <code>isMove</code> method.
      * 
      * @param newSuperior
-     *            the dn of the superior entry the candidate entry for DN
+     *            the dn of the superior entry the candidate entry for Dn
      *            modification is moved under.
      */
-    void setNewSuperior( DN newSuperior );
+    void setNewSuperior( Dn newSuperior );
 
 
     /**
-     * Gets whether or not this request is a DN change resulting in a move
+     * Gets whether or not this request is a Dn change resulting in a move
      * operation. Setting the newSuperior property to a non-null name, toggles
      * this flag.
      * 

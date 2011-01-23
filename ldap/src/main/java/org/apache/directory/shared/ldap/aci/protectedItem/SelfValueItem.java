@@ -29,8 +29,8 @@ import org.apache.directory.shared.ldap.schema.AttributeType;
  * The attribute value assertion corresponding to the current requestor. The
  * protected item selfValue applies only when the access controls are to be
  * applied with respect to a specific authenticated user. It can only apply
- * in the specific case where the attribute specified is of DN and the
- * attribute value within the specified attribute matches the DN of the
+ * in the specific case where the attribute specified is of Dn and the
+ * attribute value within the specified attribute matches the Dn of the
  * originator of the operation.
  */
 public class SelfValueItem extends AbstractAttributeTypeProtectedItem

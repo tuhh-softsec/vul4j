@@ -90,7 +90,7 @@ public class SearchRequestDsml extends AbstractRequestDsml
 
         SearchRequest request = ( SearchRequest ) instance;
 
-        // DN
+        // Dn
         if ( request.getBase() != null )
         {
             element.addAttribute( "dn", request.getBase().getName() );

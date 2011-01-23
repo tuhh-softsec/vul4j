@@ -28,8 +28,8 @@ import org.apache.directory.shared.ldap.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.ldif.LdifUtils;
-import org.apache.directory.shared.ldap.name.DN;
-import org.apache.directory.shared.ldap.name.RDN;
+import org.apache.directory.shared.ldap.name.Dn;
+import org.apache.directory.shared.ldap.name.Rdn;
 import org.apache.directory.shared.ldap.schema.ObjectClassTypeEnum;
 
 
@@ -208,20 +208,20 @@ public class ObjectClassHolder extends SchemaElementImpl
 
 
     /**
-     * Transform a schema name to a DN pointing to the correct position in the DIT
+     * Transform a schema name to a Dn pointing to the correct position in the DIT
      * 
      * @param schemaName The schema name
-     * @return the DN associated with this schema in the DIT
+     * @return the Dn associated with this schema in the DIT
      */
     public String dnToLdif( String schemaName ) throws LdapException
     {
         StringBuilder sb = new StringBuilder();
 
         String dn = "m-oid=" + oid + ", " + SchemaConstants.OBJECT_CLASSES_PATH + ", cn="
-            + RDN.escapeValue( schemaName ) + ", ou=schema";
+            + Rdn.escapeValue(schemaName) + ", ou=schema";
 
-        // First dump the DN only
-        Entry entry = new DefaultEntry( new DN( dn ) );
+        // First dump the Dn only
+        Entry entry = new DefaultEntry( new Dn( dn ) );
         sb.append( LdifUtils.convertEntryToLdif( entry ) );
 
         return sb.toString();

@@ -24,13 +24,13 @@ import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapException;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 
 
 /**
- * Normalizer a DN
+ * Normalizer a Dn
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
@@ -39,7 +39,7 @@ public class DnNormalizer extends Normalizer
     // The serial UID
     private static final long serialVersionUID = 1L;
     
-    /** A reference to the schema manager used to normalize the DN */
+    /** A reference to the schema manager used to normalize the Dn */
     private SchemaManager schemaManager;
     
     /**
@@ -56,11 +56,11 @@ public class DnNormalizer extends Normalizer
      */
     public Value<?> normalize( Value<?> value ) throws LdapException
     {
-        DN dn = null;
+        Dn dn = null;
         
         String dnStr = value.getString();
         
-        dn = new DN( dnStr, schemaManager );
+        dn = new Dn( dnStr, schemaManager );
         
         return new StringValue( dn.getNormName() );
     }
@@ -71,25 +71,25 @@ public class DnNormalizer extends Normalizer
      */
     public String normalize( String value ) throws LdapException
     {
-        DN dn = null;
+        Dn dn = null;
         
-        dn = new DN( value, schemaManager );
+        dn = new Dn( value, schemaManager );
         
         return dn.getNormName();
     }
 
 
     /**
-     * Normalize a DN
-     * @param value The DN to normalize
-     * @return A normalized DN
+     * Normalize a Dn
+     * @param value The Dn to normalize
+     * @return A normalized Dn
      * @throws LdapException
      */
-    public String normalize( DN value ) throws LdapException
+    public String normalize( Dn value ) throws LdapException
     {
-        DN dn = null;
+        Dn dn = null;
         
-        dn = new DN( value, schemaManager );
+        dn = new Dn( value, schemaManager );
         
         return dn.getNormName();
     }

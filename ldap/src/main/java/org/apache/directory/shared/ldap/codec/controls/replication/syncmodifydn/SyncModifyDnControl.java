@@ -49,16 +49,16 @@ public class SyncModifyDnControl extends AbstractControl
     /** This control OID */
     public static final String CONTROL_OID = "1.3.6.1.4.1.4203.1.9.1.5";
 
-    /** the entry's DN to be changed */
+    /** the entry's Dn to be changed */
     private String entryDn;
 
-    /** target entry's new parent DN */
+    /** target entry's new parent Dn */
     private String newSuperiorDn;
 
-    /** the new RDN */
+    /** the new Rdn */
     private String newRdn;
 
-    /** flag to indicate whether to delete the old RDN */
+    /** flag to indicate whether to delete the old Rdn */
     private boolean deleteOldRdn = false;
 
     private SyncModifyDnType modDnType;

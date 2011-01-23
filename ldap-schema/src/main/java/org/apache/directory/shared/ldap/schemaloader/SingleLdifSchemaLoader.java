@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
 public class SingleLdifSchemaLoader extends AbstractSchemaLoader
 {
     /** 
-     * Pattern for start of schema DN. 
+     * Pattern for start of schema Dn.
      * java.util.regex.Pattern is immutable so only one instance is needed for all uses.
      */
     private static final Pattern SCHEMA_START_PATTERN = Pattern
@@ -59,7 +59,7 @@ public class SingleLdifSchemaLoader extends AbstractSchemaLoader
     /** The logger. */
     private static final Logger LOG = LoggerFactory.getLogger( SingleLdifSchemaLoader.class );
 
-    /** The schema object RDN attribute types. */
+    /** The schema object Rdn attribute types. */
     private String[] schemaObjectTypeRdns = new String[]
         { "attributetypes", "comparators", "ditContentRules", "ditStructureRules", "matchingRules", "matchingRuleUse",
             "nameForms", "normalizers", "objectClasses", "syntaxes", "syntaxCheckers" };

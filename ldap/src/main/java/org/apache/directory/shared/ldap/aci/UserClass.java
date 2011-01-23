@@ -25,7 +25,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.ldap.subtree.SubtreeSpecification;
 
 
@@ -150,7 +150,7 @@ public abstract class UserClass implements Serializable
         private static final long serialVersionUID = 8571875984468893621L;
 
         /** The names. */
-        protected final Set<DN> names;
+        protected final Set<Dn> names;
 
 
         /**
@@ -158,15 +158,15 @@ public abstract class UserClass implements Serializable
          * 
          * @param names a set of names
          */
-        protected NamedUserClass( Set<DN> names )
+        protected NamedUserClass( Set<Dn> names )
         {
             if ( names == null )
             {
-                this.names = Collections.unmodifiableSet( new HashSet<DN>() );
+                this.names = Collections.unmodifiableSet( new HashSet<Dn>() );
             }
             else
             {
-                this.names = Collections.unmodifiableSet( new HashSet<DN>( names ) );
+                this.names = Collections.unmodifiableSet( new HashSet<Dn>( names ) );
             }
         }
 
@@ -174,7 +174,7 @@ public abstract class UserClass implements Serializable
         /**
          * Returns the set of all names.
          */
-        public Set<DN> getNames()
+        public Set<Dn> getNames()
         {
             return names;
         }
@@ -214,7 +214,7 @@ public abstract class UserClass implements Serializable
         {
             int result = 37;
 
-            for ( DN dn : this.names )
+            for ( Dn dn : this.names )
             {
                 result = result * 17 + dn.hashCode();
             }
@@ -230,7 +230,7 @@ public abstract class UserClass implements Serializable
             boolean isFirst = true;
             buffer.append( "{ " );
 
-            for ( DN name : names )
+            for ( Dn name : names )
             {
                 if ( isFirst )
                 {
@@ -267,7 +267,7 @@ public abstract class UserClass implements Serializable
          * @param usernames
          *            the set of user DNs.
          */
-        public Name( Set<DN> usernames )
+        public Name( Set<Dn> usernames )
         {
             super( usernames );
         }
@@ -301,7 +301,7 @@ public abstract class UserClass implements Serializable
          * @param groupNames
          *            the set of group DNs.
          */
-        public UserGroup( Set<DN> groupNames )
+        public UserGroup( Set<Dn> groupNames )
         {
             super( groupNames );
         }

@@ -39,7 +39,7 @@ import org.apache.directory.shared.ldap.message.BindRequest;
 import org.apache.directory.shared.ldap.message.BindRequestImpl;
 import org.apache.directory.shared.ldap.message.LdapEncoder;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -171,7 +171,7 @@ public class BindRequestPerfTest
     @Ignore
     public void testEncodeBindRequestPerf() throws Exception
     {
-        DN name = new DN( "uid=akarasulu,dc=example,dc=com" );
+        Dn name = new Dn( "uid=akarasulu,dc=example,dc=com" );
         int nbLoops = 1000000;
         long t0 = System.currentTimeMillis();
 

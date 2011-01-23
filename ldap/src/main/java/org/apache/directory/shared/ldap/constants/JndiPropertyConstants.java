@@ -83,7 +83,7 @@ public final class JndiPropertyConstants
     /** The controls to send when connectiong */
     public final static String JNDI_LDAP_CONTROL_CONNECT = "java.naming.ldap.control.connect";
 
-    /** Tells if the old RDN must be deleted when doing a MODDN */
+    /** Tells if the old Rdn must be deleted when doing a MODDN */
     public final static String JNDI_LDAP_DELETE_RDN = "java.naming.ldap.deleteRDN";
 
     /** Tells if and how we dereference aliases */

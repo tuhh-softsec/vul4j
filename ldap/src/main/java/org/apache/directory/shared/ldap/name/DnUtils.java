@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Utility class used by the DN Parser.
+ * Utility class used by the Dn Parser.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
@@ -776,9 +776,9 @@ public final class DnUtils
      *         descendant contexts
      * @throws org.apache.directory.shared.ldap.exception.LdapInvalidDnException if the contexts are not related in the ancestual sense
      */
-    public static DN getRelativeName( DN ancestor, DN descendant ) throws LdapInvalidDnException
+    public static Dn getRelativeName( Dn ancestor, Dn descendant ) throws LdapInvalidDnException
     {
-        DN rdn = descendant;
+        Dn rdn = descendant;
 
         if ( rdn.isChildOf( ancestor ) )
         {

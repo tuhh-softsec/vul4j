@@ -41,8 +41,8 @@ import org.apache.directory.shared.ldap.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidAttributeValueException;
-import org.apache.directory.shared.ldap.name.DN;
-import org.apache.directory.shared.ldap.name.RDN;
+import org.apache.directory.shared.ldap.name.Dn;
+import org.apache.directory.shared.ldap.name.Rdn;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -374,7 +374,7 @@ public class LdifUtilsTest
         attributes.put( "cn", "Saarbrucken" );
         attributes.put( "sn", "test" );
 
-        String ldif = LdifUtils.convertToLdif( attributes, (DN)null, 15 );
+        String ldif = LdifUtils.convertToLdif( attributes, (Dn)null, 15 );
         Attributes result = LdifUtils.convertAttributesFromLdif( ldif );
         assertEquals( attributes, result );
     }
@@ -390,8 +390,8 @@ public class LdifUtilsTest
     @Test
     public void testReverseModifyDNSuperior() throws LdapException
     {
-        DN dn = new DN( "cn=john doe, dc=example, dc=com" );
-        DN newSuperior = new DN( "ou=system" );
+        Dn dn = new Dn( "cn=john doe, dc=example, dc=com" );
+        Dn newSuperior = new Dn( "ou=system" );
 
         Entry entry = new DefaultEntry( dn );
         entry.add( "objectClass", "person", "uidObject" );
@@ -399,7 +399,7 @@ public class LdifUtilsTest
         entry.add( "sn", "doe" );
         entry.add( "uid", "jdoe" );
 
-        List<LdifEntry> reverseds = LdifRevertor.reverseMoveAndRename( entry, newSuperior, new RDN( "cn=jack doe" ), false );
+        List<LdifEntry> reverseds = LdifRevertor.reverseMoveAndRename( entry, newSuperior, new Rdn( "cn=jack doe" ), false );
 
         assertNotNull( reverseds );
         assertEquals( 1, reverseds.size() );
@@ -422,8 +422,8 @@ public class LdifUtilsTest
     @Test
     public void testReverseModifyDNDeleteOldRdnSuperior() throws LdapException
     {
-        DN dn = new DN( "cn=john doe, dc=example, dc=com" );
-        DN newSuperior = new DN( "ou=system" );
+        Dn dn = new Dn( "cn=john doe, dc=example, dc=com" );
+        Dn newSuperior = new Dn( "ou=system" );
 
         Entry entry = new DefaultEntry( dn );
         entry.add( "objectClass", "person", "uidObject" );
@@ -431,7 +431,7 @@ public class LdifUtilsTest
         entry.add( "sn", "doe" );
         entry.add( "uid", "jdoe" );
 
-        List<LdifEntry> reverseds = LdifRevertor.reverseMoveAndRename( entry, newSuperior, new RDN( "cn=jack doe" ), false );
+        List<LdifEntry> reverseds = LdifRevertor.reverseMoveAndRename( entry, newSuperior, new Rdn( "cn=jack doe" ), false );
 
         assertNotNull( reverseds );
         assertEquals( 1, reverseds.size() );

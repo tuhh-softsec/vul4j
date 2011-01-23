@@ -24,7 +24,7 @@ import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 
@@ -50,8 +50,8 @@ public class DnComparator extends LdapComparator<Object>
      */
     public int compare( Object obj0, Object obj1 ) 
     {
-        DN dn0 = null;
-        DN dn1 = null;
+        Dn dn0 = null;
+        Dn dn1 = null;
         
         try 
         {
@@ -68,19 +68,19 @@ public class DnComparator extends LdapComparator<Object>
     }
 
 
-    public DN getDn( Object obj ) throws LdapInvalidDnException
+    public Dn getDn( Object obj ) throws LdapInvalidDnException
     {
-        DN dn = null;
+        Dn dn = null;
         
-        if ( obj instanceof DN )
+        if ( obj instanceof Dn)
         {
-            dn = (DN)obj;
+            dn = (Dn)obj;
             
-            dn = ( dn.isNormalized() ? dn : DN.normalize( dn, schemaManager.getNormalizerMapping() ) );
+            dn = ( dn.isNormalized() ? dn : Dn.normalize(dn, schemaManager.getNormalizerMapping()) );
         }
         else if ( obj instanceof String )
         {
-            dn = new DN( ( String ) obj, schemaManager );
+            dn = new Dn( ( String ) obj, schemaManager );
         }
         else
         {

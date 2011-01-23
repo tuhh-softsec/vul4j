@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.trigger;
 
 
 import org.apache.directory.shared.ldap.filter.SearchScope;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 
 
 /**
@@ -33,7 +33,7 @@ import org.apache.directory.shared.ldap.name.DN;
 public class StoredProcedureSearchContextOption implements StoredProcedureOption
 {
 
-    private final DN baseObject;
+    private final Dn baseObject;
     private SearchScope searchScope;
 
 
@@ -42,7 +42,7 @@ public class StoredProcedureSearchContextOption implements StoredProcedureOption
      *
      * @param baseObject the base object
      */
-    public StoredProcedureSearchContextOption( DN baseObject )
+    public StoredProcedureSearchContextOption( Dn baseObject )
     {
         // the default search scope is "base"
         this( baseObject, SearchScope.OBJECT );
@@ -55,7 +55,7 @@ public class StoredProcedureSearchContextOption implements StoredProcedureOption
      * @param baseObject the base object
      * @param searchScope the search scope
      */
-    public StoredProcedureSearchContextOption( DN baseObject, SearchScope searchScope )
+    public StoredProcedureSearchContextOption( Dn baseObject, SearchScope searchScope )
     {
         this.baseObject = baseObject;
         this.searchScope = searchScope;
@@ -67,7 +67,7 @@ public class StoredProcedureSearchContextOption implements StoredProcedureOption
      *
      * @return the base object
      */
-    public DN getBaseObject()
+    public Dn getBaseObject()
     {
         return baseObject;
     }

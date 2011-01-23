@@ -31,7 +31,7 @@ import org.apache.directory.shared.asn1.ber.tlv.IntegerDecoderException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.search.controls.ChangeType;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -139,7 +139,7 @@ public final class EntryChangeControlGrammar extends AbstractGrammar
         } );
 
         // ============================================================================================
-        // Transition from Change Type to Previous DN
+        // Transition from Change Type to Previous Dn
         // ============================================================================================
         // EntryChangeNotification ::= SEQUENCE {
         //     ...
@@ -147,7 +147,7 @@ public final class EntryChangeControlGrammar extends AbstractGrammar
         //     ...
         //
         // Set the previousDN into the structure. We first check that it's a
-        // valid DN
+        // valid Dn
         super.transitions[EntryChangeControlStatesEnum.CHANGE_TYPE_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = 
             new GrammarTransition( EntryChangeControlStatesEnum.CHANGE_TYPE_STATE, 
                                     EntryChangeControlStatesEnum.PREVIOUS_DN_STATE,
@@ -168,11 +168,11 @@ public final class EntryChangeControlGrammar extends AbstractGrammar
                 else
                 {
                     Value value = entryChangeContainer.getCurrentTLV().getValue();
-                    DN previousDn = null;
+                    Dn previousDn = null;
 
                     try
                     {
-                        previousDn = new DN( Strings.utf8ToString(value.getData()) );
+                        previousDn = new Dn( Strings.utf8ToString(value.getData()) );
                     }
                     catch ( LdapInvalidDnException ine )
                     {
@@ -225,7 +225,7 @@ public final class EntryChangeControlGrammar extends AbstractGrammar
         };
 
         // ============================================================================================
-        // Transition from Previous DN to Change Number
+        // Transition from Previous Dn to Change Number
         // ============================================================================================
         // EntryChangeNotification ::= SEQUENCE {
         //     ...
@@ -240,7 +240,7 @@ public final class EntryChangeControlGrammar extends AbstractGrammar
                 setChangeNumberAction );
 
         // ============================================================================================
-        // Transition from Previous DN to Change Number
+        // Transition from Previous Dn to Change Number
         // ============================================================================================
         // EntryChangeNotification ::= SEQUENCE {
         //     ...

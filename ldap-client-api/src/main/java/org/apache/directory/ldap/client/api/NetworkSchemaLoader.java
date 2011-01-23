@@ -31,7 +31,7 @@ import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.filter.SearchScope;
 import org.apache.directory.shared.ldap.message.Response;
 import org.apache.directory.shared.ldap.message.SearchResultEntry;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.ldap.schema.registries.AbstractSchemaLoader;
 import org.apache.directory.shared.ldap.schema.registries.Schema;
 import org.slf4j.Logger;
@@ -48,7 +48,7 @@ public class NetworkSchemaLoader extends AbstractSchemaLoader
     /** the connection to the ldap server */
     private LdapConnection connection;
 
-    /** the schema base DN */
+    /** the schema base Dn */
     private static final String SCHEMA_BASE = "ou=schema";
 
     /** the search filter */
@@ -91,9 +91,9 @@ public class NetworkSchemaLoader extends AbstractSchemaLoader
 
 
     /**
-     * searches with ONE LEVEL scope under the given DN and retrieves all the schema objects
+     * searches with ONE LEVEL scope under the given Dn and retrieves all the schema objects
      * 
-     * @param baseDn the DN of the schema entry under which the schema objects are present
+     * @param baseDn the Dn of the schema entry under which the schema objects are present
      *               e.x ou=attributeTypes,cn=apache,ou=schema
      * @param filter optional search filter, if null the default fileter {@link #FILTER} is used
      * @return a list of entries of the schema objects 
@@ -112,7 +112,7 @@ public class NetworkSchemaLoader extends AbstractSchemaLoader
                 filter = FILTER;
             }
 
-            Cursor<Response> cursor = connection.search( new DN( baseDn ), filter, SearchScope.ONELEVEL, "*", "+" );
+            Cursor<Response> cursor = connection.search( new Dn( baseDn ), filter, SearchScope.ONELEVEL, "*", "+" );
 
             while ( cursor.next() )
             {

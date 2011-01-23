@@ -82,7 +82,7 @@ import org.apache.directory.shared.ldap.message.LdapResult;
 import org.apache.directory.shared.ldap.message.MessageException;
 import org.apache.directory.shared.ldap.message.ResultResponse;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 
 
 /**
@@ -637,12 +637,12 @@ public final class JndiUtils
 
 
     /**
-     * Convert a DN to a {@link javax.naming.Name}
+     * Convert a Dn to a {@link javax.naming.Name}
      *
-     * @param name The DN to convert
+     * @param name The Dn to convert
      * @return A Name
      */
-    public static Name toName( DN dn )
+    public static Name toName( Dn dn )
     {
         try
         {
@@ -653,23 +653,23 @@ public final class JndiUtils
         catch ( InvalidNameException ine )
         {
             // TODO : check if we must throw an exception.
-            // Logically, the DN must be valid.
+            // Logically, the Dn must be valid.
             return null;
         }
     }
 
 
     /**
-     * Convert a {@link javax.naming.Name} to a DN
+     * Convert a {@link javax.naming.Name} to a Dn
      *
      * @param name The Name to convert
-     * @return A DN
+     * @return A Dn
      */
-    public static DN fromName( Name name )
+    public static Dn fromName( Name name )
     {
         try
         {
-            DN dn = new DN( name.toString() );
+            Dn dn = new Dn( name.toString() );
 
             return dn;
         }

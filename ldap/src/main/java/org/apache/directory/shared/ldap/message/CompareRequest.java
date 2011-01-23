@@ -21,7 +21,7 @@ package org.apache.directory.shared.ldap.message;
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.entry.Value;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 
 
 /**
@@ -43,18 +43,18 @@ public interface CompareRequest extends SingleReplyRequest, AbandonableRequest
      * Gets the distinguished name of the entry to be compared using the
      * attribute value assertion.
      * 
-     * @return the DN of the compared entry.
+     * @return the Dn of the compared entry.
      */
-    DN getName();
+    Dn getName();
 
 
     /**
      * Sets the distinguished name of the entry to be compared using the
      * attribute value assertion.
      * 
-     * @param name the DN of the compared entry.
+     * @param name the Dn of the compared entry.
      */
-    void setName( DN name );
+    void setName( Dn name );
 
 
     /**

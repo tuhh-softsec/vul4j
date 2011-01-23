@@ -24,7 +24,7 @@ import java.util.Arrays;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.util.Strings;
 
 
@@ -42,7 +42,7 @@ public class BindRequestImpl extends AbstractAbandonableRequest implements BindR
      * Distinguished name identifying the name of the authenticating subject -
      * defaults to the empty string
      */
-    private DN name;
+    private Dn name;
 
     /** The passwords, keys or tickets used to verify user identity */
     private byte[] credentials;
@@ -220,11 +220,11 @@ public class BindRequestImpl extends AbstractAbandonableRequest implements BindR
      * request. This field may take on a null value (a zero length string) for
      * the purposes of anonymous binds, when authentication has been performed
      * at a lower layer, or when using SASL credentials with a mechanism that
-     * includes the DN in the credentials.
+     * includes the Dn in the credentials.
      * 
-     * @return the DN of the authenticating user.
+     * @return the Dn of the authenticating user.
      */
-    public DN getName()
+    public Dn getName()
     {
         return name;
     }
@@ -235,13 +235,13 @@ public class BindRequestImpl extends AbstractAbandonableRequest implements BindR
      * request. This field may take on a null value (or a zero length string)
      * for the purposes of anonymous binds, when authentication has been
      * performed at a lower layer, or when using SASL credentials with a
-     * mechanism that includes the DN in the credentials.
+     * mechanism that includes the Dn in the credentials.
      * 
      * @param name
-     *            the DN of the authenticating user - leave null for annonymous
+     *            the Dn of the authenticating user - leave null for annonymous
      *            user.
      */
-    public void setName( DN name )
+    public void setName( Dn name )
     {
         this.name = name;
     }
@@ -374,8 +374,8 @@ public class BindRequestImpl extends AbstractAbandonableRequest implements BindR
             return false;
         }
 
-        DN dn1 = req.getName();
-        DN dn2 = getName();
+        Dn dn1 = req.getName();
+        Dn dn2 = getName();
 
         if ( dn1 == null )
         {

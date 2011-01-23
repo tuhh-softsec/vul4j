@@ -31,8 +31,8 @@ import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.name.DN;
-import org.apache.directory.shared.ldap.name.RDN;
+import org.apache.directory.shared.ldap.name.Dn;
+import org.apache.directory.shared.ldap.name.Rdn;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -62,9 +62,9 @@ public class ModifyDnRequestImplTest
 
         try
         {
-            request.setName( new DN( "dc=admins,dc=apache,dc=org" ) );
-            request.setNewRdn( new RDN( "dc=administrators" ) );
-            request.setNewSuperior( new DN( "dc=groups,dc=apache,dc=org" ) );
+            request.setName( new Dn( "dc=admins,dc=apache,dc=org" ) );
+            request.setNewRdn( new Rdn( "dc=administrators" ) );
+            request.setNewSuperior( new Dn( "dc=groups,dc=apache,dc=org" ) );
         }
         catch ( LdapException ine )
         {
@@ -167,16 +167,16 @@ public class ModifyDnRequestImplTest
 
 
     /**
-     * Test for inequality when only the DN names are different.
+     * Test for inequality when only the Dn names are different.
      */
     @Test
     public void testNotEqualDiffName() throws LdapException
     {
         ModifyDnRequestImpl req0 = getRequest();
-        req0.setName( new DN( "cn=admin,dc=example,dc=com" ) );
+        req0.setName( new Dn( "cn=admin,dc=example,dc=com" ) );
 
         ModifyDnRequestImpl req1 = getRequest();
-        req1.setName( new DN( "cn=admin,dc=apache,dc=org" ) );
+        req1.setName( new Dn( "cn=admin,dc=apache,dc=org" ) );
 
         assertFalse( req0.equals( req1 ) );
     }
@@ -189,10 +189,10 @@ public class ModifyDnRequestImplTest
     public void testNotEqualDiffNewSuperior() throws LdapException
     {
         ModifyDnRequestImpl req0 = getRequest();
-        req0.setNewSuperior( new DN( "cn=admin,dc=example,dc=com" ) );
+        req0.setNewSuperior( new Dn( "cn=admin,dc=example,dc=com" ) );
 
         ModifyDnRequestImpl req1 = getRequest();
-        req1.setNewSuperior( new DN( "cn=admin,dc=apache,dc=org" ) );
+        req1.setNewSuperior( new Dn( "cn=admin,dc=apache,dc=org" ) );
 
         assertFalse( req0.equals( req1 ) );
     }
@@ -221,10 +221,10 @@ public class ModifyDnRequestImplTest
     public void testNotEqualDiffNewRdn() throws LdapException
     {
         ModifyDnRequestImpl req0 = getRequest();
-        req0.setNewRdn( new RDN( "cn=admin0" ) );
+        req0.setNewRdn( new Rdn( "cn=admin0" ) );
 
         ModifyDnRequestImpl req1 = getRequest();
-        req1.setNewRdn( new RDN( "cn=admin1" ) );
+        req1.setNewRdn( new Rdn( "cn=admin1" ) );
 
         assertFalse( req0.equals( req1 ) );
         assertFalse( req1.equals( req0 ) );
@@ -239,11 +239,11 @@ public class ModifyDnRequestImplTest
     {
         ModifyDnRequest req0 = new ModifyDnRequest()
         {
-            public DN getName()
+            public Dn getName()
             {
                 try
                 {
-                    return new DN( "dc=admins,dc=apache,dc=org" );
+                    return new Dn( "dc=admins,dc=apache,dc=org" );
                 }
                 catch ( LdapException ine )
                 {
@@ -253,16 +253,16 @@ public class ModifyDnRequestImplTest
             }
 
 
-            public void setName( DN name )
+            public void setName( Dn name )
             {
             }
 
 
-            public RDN getNewRdn()
+            public Rdn getNewRdn()
             {
                 try
                 {
-                    return new RDN( "dc=administrators" );
+                    return new Rdn( "dc=administrators" );
                 }
                 catch ( LdapException ine )
                 {
@@ -272,7 +272,7 @@ public class ModifyDnRequestImplTest
             }
 
 
-            public void setNewRdn( RDN newRdn )
+            public void setNewRdn( Rdn newRdn )
             {
             }
 
@@ -288,11 +288,11 @@ public class ModifyDnRequestImplTest
             }
 
 
-            public DN getNewSuperior()
+            public Dn getNewSuperior()
             {
                 try
                 {
-                    return new DN( "dc=groups,dc=apache,dc=org" );
+                    return new Dn( "dc=groups,dc=apache,dc=org" );
                 }
                 catch ( LdapException ine )
                 {
@@ -302,7 +302,7 @@ public class ModifyDnRequestImplTest
             }
 
 
-            public void setNewSuperior( DN newSuperior )
+            public void setNewSuperior( Dn newSuperior )
             {
             }
 

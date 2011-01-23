@@ -34,7 +34,7 @@ import org.apache.directory.shared.ldap.exception.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.exception.LdapUriException;
 import org.apache.directory.shared.ldap.exception.UrlDecoderException;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.util.Chars;
 import org.apache.directory.shared.util.StringConstants;
 import org.apache.directory.shared.util.Strings;
@@ -51,7 +51,7 @@ import org.apache.directory.shared.util.Unicode;
  * scheme     = "ldap"
  * attributes = attrdesc *("," attrdesc)
  * scope      = "base" / "one" / "sub"
- * dn         = DN
+ * dn         = Dn
  * hostport   = hostport from Section 5 of RFC 1738
  * attrdesc   = AttributeDescription from Section 4.1.5 of RFC 2251
  * filter     = filter from Section 4 of RFC 2254
@@ -91,8 +91,8 @@ public class LdapURL
     /** The port */
     private int port;
 
-    /** The DN */
-    private DN dn;
+    /** The Dn */
+    private Dn dn;
 
     /** The attributes */
     private List<String> attributes;
@@ -199,7 +199,7 @@ public class LdapURL
             return;
         }
 
-        // An optional DN
+        // An optional Dn
         if ( ( pos = parseDN( chars, pos ) ) == -1 )
         {
             throw new LdapURLEncodingException( I18n.err( I18n.ERR_04401 ) );
@@ -742,11 +742,11 @@ public class LdapURL
 
     /**
      * Parse a string and check that it complies with RFC 2253. Here, we will
-     * just call the DN parser to do the job.
+     * just call the Dn parser to do the job.
      * 
      * @param chars The char array to be checked
      * @param pos the starting position
-     * @return -1 if the char array does not contains a DN
+     * @return -1 if the char array does not contains a Dn
      */
     private int parseDN( char[] chars, int pos )
     {
@@ -760,7 +760,7 @@ public class LdapURL
 
         try
         {
-            dn = new DN( decode( new String( chars, pos, end - pos ) ) );
+            dn = new Dn( decode( new String( chars, pos, end - pos ) ) );
         }
         catch ( LdapUriException ue )
         {
@@ -1458,7 +1458,7 @@ public class LdapURL
     /**
      * @return Returns the dn.
      */
-    public DN getDn()
+    public Dn getDn()
     {
         return dn;
     }
@@ -1695,7 +1695,7 @@ public class LdapURL
      * 
      * @param dn the new dn
      */
-    public void setDn( DN dn )
+    public void setDn( Dn dn )
     {
         this.dn = dn;
     }

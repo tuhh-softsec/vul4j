@@ -34,7 +34,7 @@ import org.apache.directory.shared.ldap.schema.registries.Registries;
  * A nameForm description. NameForms define the relationship between a
  * STRUCTURAL objectClass definition and the attributeTypes allowed to be used
  * for the naming of an Entry of that objectClass: it defines which attributes
- * can be used for the RDN.
+ * can be used for the Rdn.
  * <p>
  * According to ldapbis [MODELS]:
  * </p>
@@ -42,10 +42,10 @@ import org.apache.directory.shared.ldap.schema.registries.Registries;
  * <pre>
  *  4.1.7.2. Name Forms
  *  
- *   A name form &quot;specifies a permissible RDN for entries of a particular
+ *   A name form &quot;specifies a permissible Rdn for entries of a particular
  *   structural object class.  A name form identifies a named object
  *   class and one or more attribute types to be used for naming (i.e.
- *   for the RDN).  Name forms are primitive pieces of specification
+ *   for the Rdn).  Name forms are primitive pieces of specification
  *   used in the definition of DIT structure rules&quot; [X.501].
  * 
  *   Each name form indicates the structural object class to be named,

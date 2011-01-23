@@ -52,13 +52,13 @@ import org.slf4j.LoggerFactory;
  *      }
  *     
  *      Rename SEQUENCE {
- *          new-rdn RDN,
+ *          new-rdn Rdn,
  *          delete-old-rdn BOOLEAN
  *      }
  * 
  *      MoveAndRename SEQUENCE {
  *          superior-name   LDAPDN
- *          new-rdn RDN,
+ *          new-rdn Rdn,
  *          delete-old-rdn BOOLEAN
  *      }
  * 
@@ -100,7 +100,7 @@ public final class SyncModifyDnControlGrammar extends AbstractGrammar
         /** 
          * Transition from SyncModifyDnControl sequence to entryDn
          * move-name ::= SEQUENCE OF {
-         *     DN        entryDN
+         *     Dn        entryDN
          *     ...
          *     
          * Stores the entryDn value
@@ -188,7 +188,7 @@ public final class SyncModifyDnControlGrammar extends AbstractGrammar
          * Transition from rename's RENAME state to newRdn
          * 
          * Rename SEQUENCE {
-         *     new-rdn RDN,
+         *     new-rdn Rdn,
          * }
          *            
          * Stores the newRdn value

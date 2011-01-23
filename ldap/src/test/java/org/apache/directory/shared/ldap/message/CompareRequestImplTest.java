@@ -32,7 +32,7 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -67,12 +67,12 @@ public class CompareRequestImplTest
     public void testEqualsExactCopy() throws LdapException
     {
         CompareRequestImpl req0 = new CompareRequestImpl( 5 );
-        req0.setName( new DN( "cn=admin,dc=example,dc=com" ) );
+        req0.setName( new Dn( "cn=admin,dc=example,dc=com" ) );
         req0.setAttributeId( "objectClass" );
         req0.setAssertionValue( "top" );
 
         CompareRequestImpl req1 = new CompareRequestImpl( 5 );
-        req1.setName( new DN( "cn=admin,dc=example,dc=com" ) );
+        req1.setName( new Dn( "cn=admin,dc=example,dc=com" ) );
         req1.setAttributeId( "objectClass" );
         req1.setAssertionValue( "top" );
 
@@ -99,12 +99,12 @@ public class CompareRequestImplTest
     public void testHashCodeExactCopy() throws LdapException
     {
         CompareRequestImpl req0 = new CompareRequestImpl( 5 );
-        req0.setName( new DN( "cn=admin,dc=example,dc=com" ) );
+        req0.setName( new Dn( "cn=admin,dc=example,dc=com" ) );
         req0.setAttributeId( "objectClass" );
         req0.setAssertionValue( "top" );
 
         CompareRequestImpl req1 = new CompareRequestImpl( 5 );
-        req1.setName( new DN( "cn=admin,dc=example,dc=com" ) );
+        req1.setName( new Dn( "cn=admin,dc=example,dc=com" ) );
         req1.setAttributeId( "objectClass" );
         req1.setAssertionValue( "top" );
 
@@ -119,10 +119,10 @@ public class CompareRequestImplTest
     public void testNotEqualDiffId() throws LdapException
     {
         CompareRequestImpl req0 = new CompareRequestImpl( 7 );
-        req0.setName( new DN( "cn=admin,dc=example,dc=com" ) );
+        req0.setName( new Dn( "cn=admin,dc=example,dc=com" ) );
 
         CompareRequestImpl req1 = new CompareRequestImpl( 5 );
-        req1.setName( new DN( "cn=admin,dc=example,dc=com" ) );
+        req1.setName( new Dn( "cn=admin,dc=example,dc=com" ) );
 
         assertFalse( req0.equals( req1 ) );
         assertFalse( req1.equals( req0 ) );
@@ -136,12 +136,12 @@ public class CompareRequestImplTest
     public void testNotEqualDiffAttributeIds() throws LdapException
     {
         CompareRequestImpl req0 = new CompareRequestImpl( 5 );
-        req0.setName( new DN( "cn=admin,dc=apache,dc=org" ) );
+        req0.setName( new Dn( "cn=admin,dc=apache,dc=org" ) );
         req0.setAttributeId( "dc" );
         req0.setAssertionValue( "apache.org" );
 
         CompareRequestImpl req1 = new CompareRequestImpl( 5 );
-        req1.setName( new DN( "cn=admin,dc=apache,dc=org" ) );
+        req1.setName( new Dn( "cn=admin,dc=apache,dc=org" ) );
         req1.setAttributeId( "nisDomain" );
         req1.setAssertionValue( "apache.org" );
 
@@ -157,12 +157,12 @@ public class CompareRequestImplTest
     public void testNotEqualDiffValue() throws LdapException
     {
         CompareRequestImpl req0 = new CompareRequestImpl( 5 );
-        req0.setName( new DN( "cn=admin,dc=apache,dc=org" ) );
+        req0.setName( new Dn( "cn=admin,dc=apache,dc=org" ) );
         req0.setAttributeId( "dc" );
         req0.setAssertionValue( "apache.org" );
 
         CompareRequestImpl req1 = new CompareRequestImpl( 5 );
-        req1.setName( new DN( "cn=admin,dc=apache,dc=org" ) );
+        req1.setName( new Dn( "cn=admin,dc=apache,dc=org" ) );
         req1.setAttributeId( "dc" );
         req1.setAssertionValue( "nagoya.apache.org" );
 
@@ -210,13 +210,13 @@ public class CompareRequestImplTest
             }
 
 
-            public DN getName()
+            public Dn getName()
             {
                 return null;
             }
 
 
-            public void setName( DN name )
+            public void setName( Dn name )
             {
             }
 

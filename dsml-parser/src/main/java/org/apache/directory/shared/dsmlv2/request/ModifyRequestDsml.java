@@ -81,7 +81,7 @@ public class ModifyRequestDsml extends AbstractRequestDsml
 
         ModifyRequest request = ( ModifyRequest ) instance;
 
-        // DN
+        // Dn
         if ( request.getName() != null )
         {
             element.addAttribute( "dn", request.getName().getName() );

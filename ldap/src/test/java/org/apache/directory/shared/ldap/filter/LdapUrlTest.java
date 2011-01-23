@@ -34,9 +34,7 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.exception.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
-import org.apache.directory.shared.ldap.filter.LdapURL;
-import org.apache.directory.shared.ldap.filter.SearchScope;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.ldap.filter.LdapURL.Extension;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -437,7 +435,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with a valid encoded DN
+     * test a LdapURL with a valid encoded Dn
      */
     @Test
     public void testDnSimpleDNEncoded() throws LdapURLEncodingException
@@ -448,7 +446,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with an invalid DN
+     * test a LdapURL with an invalid Dn
      */
     @Test
     public void testDnInvalidDN()
@@ -466,7 +464,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with an invalid DN 2
+     * test a LdapURL with an invalid Dn 2
      */
     @Test
     public void testDnInvalidDN2()
@@ -535,7 +533,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with attributes but no DN
+     * test a LdapURL with attributes but no Dn
      */
     @Test
     public void testLdapNoDNAttributes()
@@ -746,7 +744,7 @@ public class LdapUrlTest
         LdapURL url = new LdapURL();
         assertNull( url.getDn() );
 
-        DN dn = new DN( "dc=example,dc=com" );
+        Dn dn = new Dn( "dc=example,dc=com" );
         url.setDn( dn );
         assertEquals( dn, url.getDn() );
         assertEquals( "ldap:///dc=example,dc=com", url.toString() );
@@ -768,7 +766,7 @@ public class LdapUrlTest
         assertTrue( url.getAttributes().isEmpty() );
 
         List<String> attributes = new ArrayList<String>();
-        url.setDn( new DN( "dc=example,dc=com" ) );
+        url.setDn( new Dn( "dc=example,dc=com" ) );
 
         url.setAttributes( null );
         assertNotNull( url.getAttributes() );
@@ -798,7 +796,7 @@ public class LdapUrlTest
         LdapURL url = new LdapURL();
         assertEquals( SearchScope.OBJECT, url.getScope() );
 
-        url.setDn( new DN( "dc=example,dc=com" ) );
+        url.setDn( new Dn( "dc=example,dc=com" ) );
 
         url.setScope( SearchScope.ONELEVEL );
         assertEquals( SearchScope.ONELEVEL, url.getScope() );
@@ -823,7 +821,7 @@ public class LdapUrlTest
         LdapURL url = new LdapURL();
         assertNull( url.getFilter() );
 
-        url.setDn( new DN( "dc=example,dc=com" ) );
+        url.setDn( new Dn( "dc=example,dc=com" ) );
 
         url.setFilter( "(objectClass=person)" );
         assertEquals( "(objectClass=person)", url.getFilter() );
@@ -859,7 +857,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL without a host but with a DN
+     * test a LdapURL without a host but with a Dn
      *
      */
     @Test
@@ -880,7 +878,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with a host, no port, and a DN
+     * test a LdapURL with a host, no port, and a Dn
      *
      */
     @Test
@@ -900,7 +898,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with no host, a port, and a DN
+     * test a LdapURL with no host, a port, and a Dn
      *
      */
     @Test
@@ -920,7 +918,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with no DN
+     * test a LdapURL with no Dn
      *
      */
     @Test
@@ -940,7 +938,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with no DN and no attributes 
+     * test a LdapURL with no Dn and no attributes
      *
      */
     @Test
@@ -960,7 +958,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with no DN, no attributes and no scope 
+     * test a LdapURL with no Dn, no attributes and no scope
      *
      */
     @Test
@@ -980,7 +978,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with no DN, no attributes, no scope and no filter 
+     * test a LdapURL with no Dn, no attributes, no scope and no filter
      *
      */
     @Test
@@ -1000,7 +998,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with no DN and attributes
+     * test a LdapURL with no Dn and attributes
      *
      */
     @Test
@@ -1020,7 +1018,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with a DN and attributes
+     * test a LdapURL with a Dn and attributes
      *
      */
     @Test
@@ -1040,7 +1038,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with no DN and attributes
+     * test a LdapURL with no Dn and attributes
      *
      */
     @Test
@@ -1060,7 +1058,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with no DN, no attributes an scope
+     * test a LdapURL with no Dn, no attributes an scope
      *
      */
     @Test
@@ -1080,7 +1078,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with no DN, no attributes an scope base
+     * test a LdapURL with no Dn, no attributes an scope base
      *
      */
     @Test
@@ -1100,7 +1098,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with no DN, no attributes an default scope
+     * test a LdapURL with no Dn, no attributes an default scope
      *
      */
     @Test
@@ -1120,7 +1118,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with a DN, no attributes an scope
+     * test a LdapURL with a Dn, no attributes an scope
      *
      */
     @Test
@@ -1140,7 +1138,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with a DN, no attributes an scope base
+     * test a LdapURL with a Dn, no attributes an scope base
      *
      */
     @Test
@@ -1160,7 +1158,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with a DN, no attributes an default scope
+     * test a LdapURL with a Dn, no attributes an default scope
      *
      */
     @Test
@@ -1180,7 +1178,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with no DN, some attributes an scope
+     * test a LdapURL with no Dn, some attributes an scope
      *
      */
     @Test
@@ -1200,7 +1198,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with no DN, some attributes an scope base
+     * test a LdapURL with no Dn, some attributes an scope base
      *
      */
     @Test
@@ -1220,7 +1218,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with no DN, some attributes an default scope
+     * test a LdapURL with no Dn, some attributes an default scope
      *
      */
     @Test
@@ -1240,7 +1238,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with a DN, some attributes an scope
+     * test a LdapURL with a Dn, some attributes an scope
      *
      */
     @Test
@@ -1260,7 +1258,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with a DN, some attributes an scope base
+     * test a LdapURL with a Dn, some attributes an scope base
      *
      */
     @Test
@@ -1280,7 +1278,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with a DN, some attributes an default scope
+     * test a LdapURL with a Dn, some attributes an default scope
      *
      */
     @Test
@@ -1300,7 +1298,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with no DN, no attributes, no scope and filter
+     * test a LdapURL with no Dn, no attributes, no scope and filter
      *
      */
     @Test
@@ -1320,7 +1318,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with a DN, no attributes, no scope and filter
+     * test a LdapURL with a Dn, no attributes, no scope and filter
      *
      */
     @Test
@@ -1340,7 +1338,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with no DN, some attributes, no scope and filter
+     * test a LdapURL with no Dn, some attributes, no scope and filter
      *
      */
     @Test
@@ -1360,7 +1358,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with no DN, no attributes, a scope and filter
+     * test a LdapURL with no Dn, no attributes, a scope and filter
      *
      */
     @Test
@@ -1380,7 +1378,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with no DN, no attributes, a base scope, and filter
+     * test a LdapURL with no Dn, no attributes, a base scope, and filter
      *
      */
     @Test
@@ -1400,7 +1398,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with no DN, some attributes, a scope and filter
+     * test a LdapURL with no Dn, some attributes, a scope and filter
      *
      */
     @Test
@@ -1420,7 +1418,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with no DN, some attributes, a base scope, and filter
+     * test a LdapURL with no Dn, some attributes, a base scope, and filter
      *
      */
     @Test
@@ -1440,7 +1438,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with a DN, no attributes, a scope and filter
+     * test a LdapURL with a Dn, no attributes, a scope and filter
      *
      */
     @Test
@@ -1460,7 +1458,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with a DN, no attributes, a base scope, and filter
+     * test a LdapURL with a Dn, no attributes, a base scope, and filter
      *
      */
     @Test
@@ -1480,7 +1478,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with a DN, some attributes, no scope and filter
+     * test a LdapURL with a Dn, some attributes, no scope and filter
      *
      */
     @Test
@@ -1500,7 +1498,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with a DN, some attributes, a scope and filter
+     * test a LdapURL with a Dn, some attributes, a scope and filter
      *
      */
     @Test
@@ -1520,7 +1518,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with a DN, some attributes, a base scope, and filter
+     * test a LdapURL with a Dn, some attributes, a base scope, and filter
      *
      */
     @Test
@@ -1540,7 +1538,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with no DN, no attributes, no scope, no filter and no extension 
+     * test a LdapURL with no Dn, no attributes, no scope, no filter and no extension
      *
      */
     @Test
@@ -1560,7 +1558,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with no DN, no attributes, no scope, no filter and some extensions 
+     * test a LdapURL with no Dn, no attributes, no scope, no filter and some extensions
      *
      */
     @Test
@@ -1580,7 +1578,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with no DN, no attributes, no scope, a filter and some extensions 
+     * test a LdapURL with no Dn, no attributes, no scope, a filter and some extensions
      *
      */
     @Test
@@ -1600,7 +1598,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with no DN, no attributes, a scope, no filter and some extensions 
+     * test a LdapURL with no Dn, no attributes, a scope, no filter and some extensions
      *
      */
     @Test
@@ -1620,7 +1618,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with no DN, no attributes, a base scope, no filter and some extensions 
+     * test a LdapURL with no Dn, no attributes, a base scope, no filter and some extensions
      *
      */
     @Test
@@ -1640,7 +1638,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with no DN, no attributes, a scope, a filter and some extensions 
+     * test a LdapURL with no Dn, no attributes, a scope, a filter and some extensions
      *
      */
     @Test
@@ -1660,7 +1658,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with no DN, no attributes, a base scope, a filter and some extensions 
+     * test a LdapURL with no Dn, no attributes, a base scope, a filter and some extensions
      *
      */
     @Test
@@ -1680,7 +1678,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with no DN, some attributes, no scope, no filter and some extensions 
+     * test a LdapURL with no Dn, some attributes, no scope, no filter and some extensions
      *
      */
     @Test
@@ -1700,7 +1698,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with no DN, some attributes, no scope, a filter and some extensions 
+     * test a LdapURL with no Dn, some attributes, no scope, a filter and some extensions
      *
      */
     @Test
@@ -1720,7 +1718,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with no DN, some attributes, a scope, no filter and some extensions 
+     * test a LdapURL with no Dn, some attributes, a scope, no filter and some extensions
      *
      */
     @Test
@@ -1740,7 +1738,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with no DN, some attributes, a base scope, no filter and some extensions 
+     * test a LdapURL with no Dn, some attributes, a base scope, no filter and some extensions
      *
      */
     @Test
@@ -1760,7 +1758,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with no DN, some attributes, a scope, a filter and some extensions 
+     * test a LdapURL with no Dn, some attributes, a scope, a filter and some extensions
      *
      */
     @Test
@@ -1780,7 +1778,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with no DN, some attributes, a base scope, a filter and some extensions 
+     * test a LdapURL with no Dn, some attributes, a base scope, a filter and some extensions
      *
      */
     @Test
@@ -1800,7 +1798,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with a DN, no attributes, no scope, no filter and some extensions 
+     * test a LdapURL with a Dn, no attributes, no scope, no filter and some extensions
      *
      */
     @Test
@@ -1820,7 +1818,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with a DN, no attributes, no scope, a filter and some extensions 
+     * test a LdapURL with a Dn, no attributes, no scope, a filter and some extensions
      *
      */
     @Test
@@ -1840,7 +1838,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with a DN, no attributes, a scope, no filter and some extensions 
+     * test a LdapURL with a Dn, no attributes, a scope, no filter and some extensions
      *
      */
     @Test
@@ -1860,7 +1858,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with a DN, no attributes, a base scope, no filter and some extensions 
+     * test a LdapURL with a Dn, no attributes, a base scope, no filter and some extensions
      *
      */
     @Test
@@ -1880,7 +1878,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with a DN, no attributes, a scope, a filter and some extensions 
+     * test a LdapURL with a Dn, no attributes, a scope, a filter and some extensions
      *
      */
     @Test
@@ -1900,7 +1898,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with a DN, no attributes, a base scope, a filter and some extensions 
+     * test a LdapURL with a Dn, no attributes, a base scope, a filter and some extensions
      *
      */
     @Test
@@ -1920,7 +1918,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with a DN, some attributes, no scope, no filter and some extensions 
+     * test a LdapURL with a Dn, some attributes, no scope, no filter and some extensions
      *
      */
     @Test
@@ -1940,7 +1938,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with a DN, some attributes, no scope, a filter and some extensions 
+     * test a LdapURL with a Dn, some attributes, no scope, a filter and some extensions
      *
      */
     @Test
@@ -1960,7 +1958,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with a DN, some attributes, a scope, no filter and some extensions 
+     * test a LdapURL with a Dn, some attributes, a scope, no filter and some extensions
      *
      */
     @Test
@@ -1980,7 +1978,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with a DN, some attributes, a base scope, no filter and some extensions 
+     * test a LdapURL with a Dn, some attributes, a base scope, no filter and some extensions
      *
      */
     @Test
@@ -2000,7 +1998,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with a DN, some attributes, a scope, a filter and some extensions 
+     * test a LdapURL with a Dn, some attributes, a scope, a filter and some extensions
      *
      */
     @Test
@@ -2020,7 +2018,7 @@ public class LdapUrlTest
 
 
     /**
-     * test a LdapURL with a DN, some attributes, a base scope, a filter and some extensions 
+     * test a LdapURL with a Dn, some attributes, a base scope, a filter and some extensions
      *
      */
     @Test
@@ -2118,7 +2116,7 @@ public class LdapUrlTest
         LdapURL url1 = new LdapURL();
         url1.setHost( "localhost" );
         url1.setPort( 123 );
-        url1.setDn( DN.EMPTY_DN );
+        url1.setDn( Dn.EMPTY_DN );
         url1.getExtensions().add( new Extension( false, "X-CONNECTION-NAME", germanChars ) );
         assertEquals( "ldap://localhost:123/????X-CONNECTION-NAME=%c3%84%c3%96%c3%9c%c3%9f%c3%a4%c3%b6%c3%bc", url1
             .toString() );
@@ -2140,7 +2138,7 @@ public class LdapUrlTest
         LdapURL url1 = new LdapURL();
         url1.setHost( "localhost" );
         url1.setPort( 123 );
-        url1.setDn( DN.EMPTY_DN );
+        url1.setDn( Dn.EMPTY_DN );
         url1.getExtensions().add( new Extension( false, "X-CONNECTION-NAME", "," ) );
         assertEquals( "ldap://localhost:123/????X-CONNECTION-NAME=%2c", url1.toString() );
 
@@ -2167,7 +2165,7 @@ public class LdapUrlTest
         LdapURL url1 = new LdapURL();
         url1.setHost( "localhost" );
         url1.setPort( 123 );
-        url1.setDn( DN.EMPTY_DN );
+        url1.setDn( Dn.EMPTY_DN );
         url1.getExtensions().add( new Extension( false, "X-CONNECTION-NAME", ":/?#[]@!$&'()*+,;=" ) );
         assertEquals( "ldap://localhost:123/????X-CONNECTION-NAME=:/%3f#[]@!$&'()*+%2c;=", url1.toString() );
 
@@ -2188,7 +2186,7 @@ public class LdapUrlTest
         LdapURL url1 = new LdapURL();
         url1.setHost( "localhost" );
         url1.setPort( 123 );
-        url1.setDn( DN.EMPTY_DN );
+        url1.setDn( Dn.EMPTY_DN );
         url1.getExtensions().add(
             new Extension( false, "X-CONNECTION-NAME",
                 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~" ) );

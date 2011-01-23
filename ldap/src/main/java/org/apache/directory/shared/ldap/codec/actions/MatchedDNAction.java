@@ -30,14 +30,14 @@ import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.message.LdapResult;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.ResultResponse;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 /**
- * The action used to set the LdapResult matched DN.
+ * The action used to set the LdapResult matched Dn.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
@@ -55,7 +55,7 @@ public class MatchedDNAction extends GrammarAction
      */
     public MatchedDNAction()
     {
-        super( "Store matched DN" );
+        super( "Store matched Dn" );
     }
 
 
@@ -68,7 +68,7 @@ public class MatchedDNAction extends GrammarAction
 
         // Get the Value and store it in the BindResponse
         TLV tlv = ldapMessageContainer.getCurrentTLV();
-        DN matchedDN = null;
+        Dn matchedDn = null;
         ResultCodeEnum resultCode = null;
 
         ResultResponse response = ( ResultResponse ) ldapMessageContainer.getMessage();
@@ -76,14 +76,14 @@ public class MatchedDNAction extends GrammarAction
         resultCode = ldapResult.getResultCode();
 
         // We have to handle the special case of a 0 length matched
-        // DN
+        // Dn
         if ( tlv.getLength() == 0 )
         {
-            matchedDN = DN.EMPTY_DN;
+            matchedDn = Dn.EMPTY_DN;
         }
         else
         {
-            // A not null matchedDN is valid for resultCodes
+            // A not null matchedDn is valid for resultCodes
             // NoSuchObject, AliasProblem, InvalidDNSyntax and
             // AliasDreferencingProblem.
 
@@ -98,7 +98,7 @@ public class MatchedDNAction extends GrammarAction
 
                     try
                     {
-                        matchedDN = new DN( dnStr );
+                        matchedDn = new Dn( dnStr );
                     }
                     catch ( LdapInvalidDnException ine )
                     {
@@ -113,19 +113,19 @@ public class MatchedDNAction extends GrammarAction
                     break;
 
                 default:
-                    LOG.warn( "The matched DN should not be set when the result code is one of NoSuchObject,"
+                    LOG.warn( "The matched Dn should not be set when the result code is one of NoSuchObject,"
                         + " AliasProblem, InvalidDNSyntax or AliasDreferencingProblem" );
 
-                    matchedDN = DN.EMPTY_DN;
+                    matchedDn = Dn.EMPTY_DN;
                     break;
             }
         }
 
         if ( IS_DEBUG )
         {
-            LOG.debug( "The matchedDN is " + matchedDN );
+            LOG.debug( "The matchedDn is " + matchedDn);
         }
 
-        ldapResult.setMatchedDn( matchedDN );
+        ldapResult.setMatchedDn(matchedDn);
     }
 }

@@ -178,7 +178,7 @@ public class LdifAttributesReader extends LdifReader
 
         String attributeType = lowerLine.substring( 0, colonIndex );
 
-        // We should *not* have a DN twice
+        // We should *not* have a Dn twice
         if ( attributeType.equals( "dn" ) )
         {
             LOG.error( I18n.err( I18n.ERR_12002_ENTRY_WITH_TWO_DNS ) );
@@ -218,7 +218,7 @@ public class LdifAttributesReader extends LdifReader
         String attributeName = lowerLine.substring( 0, colonIndex );
         AttributeType attributeType = null;
 
-        // We should *not* have a DN twice
+        // We should *not* have a Dn twice
         if ( attributeName.equals( "dn" ) )
         {
             LOG.error( I18n.err( I18n.ERR_12002_ENTRY_WITH_TWO_DNS ) );
@@ -337,9 +337,9 @@ public class LdifAttributesReader extends LdifReader
             String lowerLine = line.toLowerCase();
 
             // We have three cases :
-            // 1) The first line after the DN is a "control:" -> this is an error
-            // 2) The first line after the DN is a "changeType:" -> this is an error
-            // 3) The first line after the DN is anything else
+            // 1) The first line after the Dn is a "control:" -> this is an error
+            // 2) The first line after the Dn is a "changeType:" -> this is an error
+            // 3) The first line after the Dn is anything else
             if ( lowerLine.startsWith( "control:" ) )
             {
                 LOG.error( I18n.err( I18n.ERR_12004_CHANGE_NOT_ALLOWED ) );
@@ -399,9 +399,9 @@ public class LdifAttributesReader extends LdifReader
             String lowerLine = line.toLowerCase();
 
             // We have three cases :
-            // 1) The first line after the DN is a "control:" -> this is an error
-            // 2) The first line after the DN is a "changeType:" -> this is an error
-            // 3) The first line after the DN is anything else
+            // 1) The first line after the Dn is a "control:" -> this is an error
+            // 2) The first line after the Dn is a "changeType:" -> this is an error
+            // 3) The first line after the Dn is anything else
             if ( lowerLine.startsWith( "control:" ) )
             {
                 LOG.error( I18n.err( I18n.ERR_12004_CHANGE_NOT_ALLOWED ) );

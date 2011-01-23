@@ -21,7 +21,7 @@ package org.apache.directory.shared.ldap.message;
 
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 
 
 /**
@@ -99,11 +99,11 @@ public interface BindRequest extends SingleReplyRequest, AbandonableRequest
      * request. This field may take on a null value (a zero length string) for
      * the purposes of anonymous binds, when authentication has been performed
      * at a lower layer, or when using SASL credentials with a mechanism that
-     * includes the DN in the credentials.
+     * includes the Dn in the credentials.
      * 
-     * @return the DN of the authenticating user.
+     * @return the Dn of the authenticating user.
      */
-    DN getName();
+    Dn getName();
 
 
     /**
@@ -111,13 +111,13 @@ public interface BindRequest extends SingleReplyRequest, AbandonableRequest
      * request. This field may take on a null value (or a zero length string)
      * for the purposes of anonymous binds, when authentication has been
      * performed at a lower layer, or when using SASL credentials with a
-     * mechanism that includes the DN in the credentials.
+     * mechanism that includes the Dn in the credentials.
      * 
      * @param name
-     *            the DN of the authenticating user - leave null for annonymous
+     *            the Dn of the authenticating user - leave null for annonymous
      *            user.
      */
-    void setName( DN name );
+    void setName( Dn name );
 
 
     /**

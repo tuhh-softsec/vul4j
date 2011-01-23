@@ -25,9 +25,9 @@ import java.util.Hashtable;
 import javax.naming.Context;
 import javax.naming.NamingException;
 
+import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.util.exception.NotImplementedException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
-import org.apache.directory.shared.ldap.name.DN;
 
 
 /**
@@ -41,8 +41,8 @@ public class AbstractLdapReferralException extends LdapOperationException
     /** The serial version UUID */
     static final long serialVersionUID = 1L;
 
-    /** The remaining DN */
-    private DN remainingDn;
+    /** The remaining Dn */
+    private Dn remainingDn;
 
     /** TODO */
     private Object resolvedObject;
@@ -92,7 +92,7 @@ public class AbstractLdapReferralException extends LdapOperationException
     /**
      * @return the remainingDn
      */
-    public DN getRemainingDn()
+    public Dn getRemainingDn()
     {
         return remainingDn;
     }
@@ -101,7 +101,7 @@ public class AbstractLdapReferralException extends LdapOperationException
     /**
      * @param remainingDn the remainingName to set
      */
-    public void setRemainingDn( DN remainingDn )
+    public void setRemainingDn( Dn remainingDn )
     {
         this.remainingDn = remainingDn;
     }

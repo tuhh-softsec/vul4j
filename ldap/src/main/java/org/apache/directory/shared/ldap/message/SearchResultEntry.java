@@ -25,7 +25,7 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.exception.LdapException;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 
 
 /**
@@ -45,7 +45,7 @@ public interface SearchResultEntry extends Response
      * 
      * @return the Dn of the entry returned.
      */
-    DN getObjectName();
+    Dn getObjectName();
 
 
     /**
@@ -53,7 +53,7 @@ public interface SearchResultEntry extends Response
      * 
      * @param objectName the Dn of the entry returned.
      */
-    void setObjectName( DN objectName );
+    void setObjectName( Dn objectName );
 
 
     /**

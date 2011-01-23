@@ -32,11 +32,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.util.exception.NotImplementedException;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.exception.LdapException;
-import org.apache.directory.shared.ldap.name.DN;
-import org.apache.directory.shared.ldap.name.RDN;
+import org.apache.directory.shared.ldap.name.Rdn;
 import org.apache.directory.shared.ldap.name.RdnSerializer;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
@@ -62,8 +62,8 @@ public class DefaultEntry implements Entry
     /** The logger for this class */
     private static final Logger LOG = LoggerFactory.getLogger( DefaultEntry.class );
 
-    /** The DN for this entry */
-    private DN dn;
+    /** The Dn for this entry */
+    private Dn dn;
 
     /** A map containing all the attributes for this entry */
     private Map<String, EntryAttribute> attributes = new HashMap<String, EntryAttribute>();
@@ -92,7 +92,7 @@ public class DefaultEntry implements Entry
     public DefaultEntry()
     {
         schemaManager = null;
-        dn = DN.EMPTY_DN;
+        dn = Dn.EMPTY_DN;
     }
 
 
@@ -109,7 +109,7 @@ public class DefaultEntry implements Entry
     public DefaultEntry( SchemaManager schemaManager )
     {
         this.schemaManager = schemaManager;
-        dn = DN.EMPTY_DN;
+        dn = Dn.EMPTY_DN;
 
         // Initialize the ObjectClass object
         initObjectClassAT();
@@ -118,11 +118,11 @@ public class DefaultEntry implements Entry
 
     /**
      * Creates a new instance of DefaultEntry, with a
-     * DN.
+     * Dn.
      *
-     * @param dn The DN for this serverEntry. Can be null.
+     * @param dn The Dn for this serverEntry. Can be null.
      */
-    public DefaultEntry( DN dn )
+    public DefaultEntry( Dn dn )
     {
         this.dn = dn;
     }
@@ -137,15 +137,15 @@ public class DefaultEntry implements Entry
      * </p>
      *
      * @param schemaManager The reference to the schemaManager
-     * @param dn The DN for this serverEntry. Can be null.
+     * @param dn The Dn for this serverEntry. Can be null.
      */
-    public DefaultEntry( SchemaManager schemaManager, DN dn )
+    public DefaultEntry( SchemaManager schemaManager, Dn dn )
     {
         this.schemaManager = schemaManager;
 
         if ( dn == null )
         {
-            this.dn = DN.EMPTY_DN;
+            this.dn = Dn.EMPTY_DN;
         }
         else
         {
@@ -160,12 +160,12 @@ public class DefaultEntry implements Entry
 
     /**
      * Creates a new instance of DefaultEntry, with a
-     * DN and a list of IDs.
+     * Dn and a list of IDs.
      *
-     * @param dn The DN for this serverEntry. Can be null.
+     * @param dn The Dn for this serverEntry. Can be null.
      * @param upIds The list of attributes to create.
      */
-    public DefaultEntry( DN dn, String... upIds )
+    public DefaultEntry( Dn dn, String... upIds )
     {
         this.dn = dn;
 
@@ -204,7 +204,7 @@ public class DefaultEntry implements Entry
         }
         else
         {
-            dn = DN.EMPTY_DN;
+            dn = Dn.EMPTY_DN;
         }
 
         // Init the attributes map
@@ -240,7 +240,7 @@ public class DefaultEntry implements Entry
 
     /**
      * Creates a new instance of DefaultEntry, with a
-     * DN, a list of ID and schema aware.
+     * Dn, a list of ID and schema aware.
      * <p>
      * No attributes will be created except the ObjectClass attribute,
      * which will contains "top".
@@ -248,16 +248,16 @@ public class DefaultEntry implements Entry
      * If any of the AttributeType does not exist, they are simply discarded.
      *
      * @param schemaManager The reference to the schemaManager
-     * @param dn The DN for this serverEntry. Can be null.
+     * @param dn The Dn for this serverEntry. Can be null.
      * @param upIds The list of attributes to create.
      */
-    public DefaultEntry( SchemaManager schemaManager, DN dn, String... upIds )
+    public DefaultEntry( SchemaManager schemaManager, Dn dn, String... upIds )
     {
         this.schemaManager = schemaManager;
 
         if ( dn == null )
         {
-            this.dn = DN.EMPTY_DN;
+            this.dn = Dn.EMPTY_DN;
         }
         else
         {
@@ -274,13 +274,13 @@ public class DefaultEntry implements Entry
     /**
      * <p>
      * Creates a new instance of DefaultEntry, with a
-     * DN and a list of EntryAttributes.
+     * Dn and a list of EntryAttributes.
      * </p>
      *
-     * @param dn The DN for this serverEntry. Can be null
+     * @param dn The Dn for this serverEntry. Can be null
      * @param attributes The list of attributes to create
      */
-    public DefaultEntry( DN dn, EntryAttribute... attributes )
+    public DefaultEntry( Dn dn, EntryAttribute... attributes )
     {
         this.dn = dn;
 
@@ -299,7 +299,7 @@ public class DefaultEntry implements Entry
 
     /**
      * Creates a new instance of DefaultEntry, with a
-     * DN, a list of ServerAttributes and schema aware.
+     * Dn, a list of ServerAttributes and schema aware.
      * <p>
      * No attributes will be created except the ObjectClass attribute,
      * which will contains "top".
@@ -307,16 +307,16 @@ public class DefaultEntry implements Entry
      * If any of the AttributeType does not exist, they are simply discarded.
      *
      * @param schemaManager The reference to the schemaManager
-     * @param dn The DN for this serverEntry. Can be null
+     * @param dn The Dn for this serverEntry. Can be null
      * @param attributes The list of attributes to create
      */
-    public DefaultEntry( SchemaManager schemaManager, DN dn, EntryAttribute... attributes )
+    public DefaultEntry( SchemaManager schemaManager, Dn dn, EntryAttribute... attributes )
     {
         this.schemaManager = schemaManager;
 
         if ( dn == null )
         {
-            this.dn = DN.EMPTY_DN;
+            this.dn = Dn.EMPTY_DN;
         }
         else
         {
@@ -344,7 +344,7 @@ public class DefaultEntry implements Entry
     /**
      * <p>
      * Creates a new instance of DefaultEntry, with a
-     * DN, a list of attributeTypes and schema aware.
+     * Dn, a list of attributeTypes and schema aware.
      * </p>
      * <p>
      * The newly created entry is fed with the list of attributeTypes. No
@@ -355,16 +355,16 @@ public class DefaultEntry implements Entry
      * </p>
      *
      * @param schemaManager The reference to the schemaManager
-     * @param dn The DN for this serverEntry. Can be null.
+     * @param dn The Dn for this serverEntry. Can be null.
      * @param attributeTypes The list of attributes to create, without value.
      */
-    public DefaultEntry( SchemaManager schemaManager, DN dn, AttributeType... attributeTypes )
+    public DefaultEntry( SchemaManager schemaManager, Dn dn, AttributeType... attributeTypes )
     {
         this.schemaManager = schemaManager;
 
         if ( dn == null )
         {
-            this.dn = DN.EMPTY_DN;
+            this.dn = Dn.EMPTY_DN;
         }
         else
         {
@@ -383,7 +383,7 @@ public class DefaultEntry implements Entry
     /**
      * <p>
      * Creates a new instance of DefaultEntry, with a
-     * DN, an attributeType with the user provided ID, and schema aware.
+     * Dn, an attributeType with the user provided ID, and schema aware.
      * </p>
      * <p>
      * The newly created entry is fed with the given attributeType. No
@@ -397,17 +397,17 @@ public class DefaultEntry implements Entry
      * </p>
      *
      * @param schemaManager The reference to the schemaManager
-     * @param dn The DN for this serverEntry. Can be null.
+     * @param dn The Dn for this serverEntry. Can be null.
      * @param attributeType The attribute to create, without value.
      * @param upId The User Provided ID fro this AttributeType
      */
-    public DefaultEntry( SchemaManager schemaManager, DN dn, AttributeType attributeType, String upId )
+    public DefaultEntry( SchemaManager schemaManager, Dn dn, AttributeType attributeType, String upId )
     {
         this.schemaManager = schemaManager;
 
         if ( dn == null )
         {
-            this.dn = DN.EMPTY_DN;
+            this.dn = Dn.EMPTY_DN;
         }
         else
         {
@@ -975,8 +975,8 @@ public class DefaultEntry implements Entry
                 return null;
             }
 
-            // An Entry has a DN and many attributes.
-            clone.dn = dn; // note that DN is immutable now
+            // An Entry has a Dn and many attributes.
+            clone.dn = dn; // note that Dn is immutable now
 
             // then clone the ClientAttribute Map.
             clone.attributes = ( Map<String, EntryAttribute> ) ( ( ( HashMap<String, EntryAttribute> ) attributes )
@@ -2428,22 +2428,22 @@ public class DefaultEntry implements Entry
 
 
     /**
-     * Get this entry's DN.
+     * Get this entry's Dn.
      *
-     * @return The entry's DN
+     * @return The entry's Dn
      */
-    public DN getDn()
+    public Dn getDn()
     {
         return dn;
     }
 
 
     /**
-     * Set this entry's DN.
+     * Set this entry's Dn.
      *
-     * @param dn The DN associated with this entry
+     * @param dn The Dn associated with this entry
      */
-    public void setDn( DN dn )
+    public void setDn( Dn dn )
     {
         this.dn = dn;
 
@@ -2453,7 +2453,7 @@ public class DefaultEntry implements Entry
 
 
     /**
-     * Remove all the attributes for this entry. The DN is not reset
+     * Remove all the attributes for this entry. The Dn is not reset
      */
     public void clear()
     {
@@ -2522,7 +2522,7 @@ public class DefaultEntry implements Entry
      * The structure used to store the entry is the following :
      * <ul>
      *   <li>
-     *     <b>[DN]</b> : If it's null, stores an empty DN
+     *     <b>[Dn]</b> : If it's null, stores an empty Dn
      *   </li>
      *   <li>
      *     <b>[attributes number]</b> : the number of attributes.
@@ -2536,15 +2536,15 @@ public class DefaultEntry implements Entry
      */
     public void writeExternal( ObjectOutput out ) throws IOException
     {
-        // First, the DN
+        // First, the Dn
         if ( dn == null )
         {
-            // Write an empty DN
-            out.writeObject( DN.EMPTY_DN );
+            // Write an empty Dn
+            out.writeObject( Dn.EMPTY_DN );
         }
         else
         {
-            // Write the DN
+            // Write the Dn
             out.writeObject( dn );
         }
 
@@ -2568,8 +2568,8 @@ public class DefaultEntry implements Entry
      */
     public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException
     {
-        // Read the DN
-        dn = ( DN ) in.readObject();
+        // Read the Dn
+        dn = (Dn) in.readObject();
 
         // Read the number of attributes
         int nbAttributes = in.readInt();
@@ -2607,8 +2607,8 @@ public class DefaultEntry implements Entry
      * Serialize an Entry.
      *
      * The structure is the following :
-     * <b>[a byte]</b> : if the DN is empty 0 will be written else 1
-     * <b>[RDN]</b> : The entry's RDN.
+     * <b>[a byte]</b> : if the Dn is empty 0 will be written else 1
+     * <b>[Rdn]</b> : The entry's Rdn.
      * <b>[numberAttr]</b> : the bumber of attributes. Can be 0
      * <b>[attribute's oid]*</b> : The attribute's OID to get back
      * the attributeType on deserialization
@@ -2619,8 +2619,8 @@ public class DefaultEntry implements Entry
      */
     public void serialize( ObjectOutput out ) throws IOException
     {
-        // First, the DN
-        // Write the RDN of the DN
+        // First, the Dn
+        // Write the Rdn of the Dn
         if ( dn.getRdn() == null )
         {
             out.writeByte( 0 );
@@ -2683,15 +2683,15 @@ public class DefaultEntry implements Entry
      */
     public void deserialize( ObjectInput in ) throws IOException, ClassNotFoundException
     {
-        // Read the DN
-        dn = DN.EMPTY_DN;
+        // Read the Dn
+        dn = Dn.EMPTY_DN;
 
         byte b = in.readByte();
 
         if ( b == 1 )
         {
-            RDN rdn = RdnSerializer.deserialize( in );
-            dn = new DN( rdn );
+            Rdn rdn = RdnSerializer.deserialize( in );
+            dn = new Dn( rdn );
         }
 
         // Read the number of attributes
@@ -2860,7 +2860,7 @@ public class DefaultEntry implements Entry
 
         DefaultEntry other = ( DefaultEntry ) o;
 
-        // Both DN must be equal
+        // Both Dn must be equal
         if ( dn == null )
         {
             if ( other.getDn() != null )
@@ -2973,11 +2973,11 @@ public class DefaultEntry implements Entry
 
 
     /**
-     * normalizes the given DN if it was not already normalized
+     * normalizes the given Dn if it was not already normalized
      *
-     * @param dn the DN to be normalized
+     * @param dn the Dn to be normalized
      */
-    private void normalizeDN( DN dn )
+    private void normalizeDN( Dn dn )
     {
         if ( !dn.isNormalized() )
         {
@@ -2988,7 +2988,7 @@ public class DefaultEntry implements Entry
             }
             catch ( LdapException ne )
             {
-                LOG.warn( "The DN '{}' cannot be normalized", dn );
+                LOG.warn( "The Dn '{}' cannot be normalized", dn );
             }
         }
     }

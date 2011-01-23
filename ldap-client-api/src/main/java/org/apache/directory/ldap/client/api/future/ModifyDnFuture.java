@@ -52,7 +52,7 @@ public class ModifyDnFuture extends ResponseFuture<ModifyDnResponse>
     /**
      * Get the ModifyDnResponse, blocking until one is received.
      * 
-     * @return the modify DN response
+     * @return the modify Dn response
      * @throws InterruptedException {@inheritDoc}
      * @throws ExecutionException {@inheritDoc}
      */
@@ -69,7 +69,7 @@ public class ModifyDnFuture extends ResponseFuture<ModifyDnResponse>
      * 
      * @param timeout {@inheritDoc}
      * @param unit {@inheritDoc}
-     * @return the modify DN response
+     * @return the modify Dn response
      * @throws InterruptedException {@inheritDoc}
      * @throws ExecutionException {@inheritDoc}
      * @throws TimeoutException {@inheritDoc}

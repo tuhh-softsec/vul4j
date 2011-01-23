@@ -30,7 +30,7 @@ import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.exception.LdapException;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -95,11 +95,11 @@ public class SearchResponseEntryImplTest
     {
         SearchResultEntryImpl resp0 = new SearchResultEntryImpl( 5 );
         resp0.setEntry( getEntry() );
-        resp0.setObjectName( new DN( "dc=example,dc=com" ) );
+        resp0.setObjectName( new Dn( "dc=example,dc=com" ) );
 
         SearchResultEntryImpl resp1 = new SearchResultEntryImpl( 5 );
         resp1.setEntry( getEntry() );
-        resp1.setObjectName( new DN( "dc=example,dc=com" ) );
+        resp1.setObjectName( new Dn( "dc=example,dc=com" ) );
 
         assertTrue( "exact copies should be equal", resp0.equals( resp1 ) );
         assertTrue( "exact copies should be equal", resp1.equals( resp0 ) );
@@ -125,11 +125,11 @@ public class SearchResponseEntryImplTest
     {
         SearchResultEntryImpl resp0 = new SearchResultEntryImpl( 5 );
         resp0.setEntry( getEntry() );
-        resp0.setObjectName( new DN( "dc=example,dc=com" ) );
+        resp0.setObjectName( new Dn( "dc=example,dc=com" ) );
 
         SearchResultEntryImpl resp1 = new SearchResultEntryImpl( 5 );
         resp1.setEntry( getEntry() );
-        resp1.setObjectName( new DN( "dc=example,dc=com" ) );
+        resp1.setObjectName( new Dn( "dc=example,dc=com" ) );
 
         assertTrue( resp0.hashCode() == resp1.hashCode() );
     }
@@ -143,11 +143,11 @@ public class SearchResponseEntryImplTest
     {
         SearchResultEntryImpl resp0 = new SearchResultEntryImpl( 5 );
         resp0.setEntry( getEntry() );
-        resp0.setObjectName( new DN( "dc=apache,dc=org" ) );
+        resp0.setObjectName( new Dn( "dc=apache,dc=org" ) );
 
         SearchResultEntryImpl resp1 = new SearchResultEntryImpl( 5 );
         resp1.setEntry( getEntry() );
-        resp1.setObjectName( new DN( "dc=example,dc=com" ) );
+        resp1.setObjectName( new Dn( "dc=example,dc=com" ) );
 
         assertFalse( "different object names should not be equal", resp1.equals( resp0 ) );
         assertFalse( "different object names should not be equal", resp0.equals( resp1 ) );

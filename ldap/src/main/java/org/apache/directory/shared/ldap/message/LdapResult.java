@@ -21,7 +21,7 @@
 package org.apache.directory.shared.ldap.message;
 
 
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 
 
 /**
@@ -75,7 +75,7 @@ public interface LdapResult
      * 
      * @return the Dn of the lowest matched entry.
      */
-    DN getMatchedDn();
+    Dn getMatchedDn();
 
 
     /**
@@ -84,7 +84,7 @@ public interface LdapResult
      * @see #getMatchedDn()
      * @param dn the Dn of the lowest matched entry.
      */
-    void setMatchedDn( DN dn );
+    void setMatchedDn( Dn dn );
 
 
     /**

@@ -23,7 +23,7 @@ package org.apache.directory.shared.dsmlv2.request;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.CompareRequest;
 import org.apache.directory.shared.ldap.message.CompareRequestImpl;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.dom4j.Element;
 
 
@@ -73,7 +73,7 @@ public class CompareRequestDsml extends AbstractRequestDsml
 
         CompareRequest request = ( CompareRequest ) instance;
 
-        // DN
+        // Dn
         if ( request.getName() != null )
         {
             element.addAttribute( "dn", request.getName().getName() );
@@ -99,7 +99,7 @@ public class CompareRequestDsml extends AbstractRequestDsml
      * 
      * @return Returns the entry.
      */
-    public DN getName()
+    public Dn getName()
     {
         return ( ( CompareRequest ) instance ).getName();
     }
@@ -110,7 +110,7 @@ public class CompareRequestDsml extends AbstractRequestDsml
      * 
      * @param entry The entry to set.
      */
-    public void setName( DN entry )
+    public void setName( Dn entry )
     {
         ( ( CompareRequest ) instance ).setName( entry );
     }

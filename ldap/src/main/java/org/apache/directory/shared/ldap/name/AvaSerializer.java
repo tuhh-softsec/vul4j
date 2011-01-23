@@ -37,16 +37,16 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public final class AVASerializer
+public final class AvaSerializer
 {
     /** The LoggerFactory used by this class */
-    protected static final Logger LOG = LoggerFactory.getLogger( AVASerializer.class );
+    protected static final Logger LOG = LoggerFactory.getLogger( AvaSerializer.class );
 
 
     /**
      * Private constructor.
      */
-    private AVASerializer()
+    private AvaSerializer()
     {
     }
 
@@ -58,7 +58,7 @@ public final class AVASerializer
      * The data are stored following the structure :
      * 
      * <li>upName</li> The User provided ATAV
-     * <li>start</li> The position of this ATAV in the DN
+     * <li>start</li> The position of this ATAV in the Dn
      * <li>length</li> The ATAV length
      * <li>upType</li> The user Provided Type
      * <li>normType</li> The normalized AttributeType
@@ -78,7 +78,7 @@ public final class AVASerializer
      * @param out the OutputStream in which the atav will be serialized
      * @throws IOException If we can't serialize the atav
      */
-    public static void serialize( AVA atav, ObjectOutput out ) throws IOException
+    public static void serialize( Ava atav, ObjectOutput out ) throws IOException
     {
         if ( Strings.isEmpty(atav.getUpName())
             || Strings.isEmpty(atav.getUpType())
@@ -152,14 +152,14 @@ public final class AVASerializer
      * Deserialize an AttributeTypeAndValue object
      * 
      * We read back the data to create a new ATAV. The structure 
-     * read is exposed in the {@link AVA#writeExternal(ObjectOutput)} 
+     * read is exposed in the {@link Ava#writeExternal(ObjectOutput)}
      * method<p>
      * 
      * @param in the input stream
      * @throws IOException If the input stream can't be read
      * @return The constructed AttributeTypeAndValue
      */
-    public static AVA deserialize( ObjectInput in ) throws IOException
+    public static Ava deserialize( ObjectInput in ) throws IOException
     {
         String upName = Unicode.readUTF(in);
         in.readInt(); // start
@@ -176,8 +176,8 @@ public final class AVASerializer
                 Value<String> upValue = new StringValue( Unicode.readUTF(in) );
                 Value<String> normValue = new StringValue( Unicode.readUTF(in) );
                 
-                AVA atav = 
-                    new AVA( upType, normType, upValue, normValue, upName );
+                Ava atav =
+                    new Ava( upType, normType, upValue, normValue, upName );
                 
                 return atav;
             }
@@ -191,8 +191,8 @@ public final class AVASerializer
                 byte[] normValue = new byte[valueLength];
                 in.readFully( normValue );
     
-                AVA atav = 
-                    new AVA( upType, normType, 
+                Ava atav =
+                    new Ava( upType, normType,
                         new BinaryValue( upValue) , 
                         new BinaryValue( normValue ), upName );
                 

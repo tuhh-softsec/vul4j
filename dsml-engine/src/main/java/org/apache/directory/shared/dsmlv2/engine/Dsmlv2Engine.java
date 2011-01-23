@@ -73,7 +73,7 @@ import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.message.SearchRequest;
 import org.apache.directory.shared.ldap.message.SearchResultEntry;
 import org.apache.directory.shared.ldap.message.SearchResultReference;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.util.Strings;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -116,7 +116,7 @@ public class Dsmlv2Engine
      * 
      * @param host the server host
      * @param port the server port
-     * @param user the server admin DN
+     * @param user the server admin Dn
      * @param password the server admin's password
      */
     public Dsmlv2Engine( String host, int port, String user, String password )
@@ -476,7 +476,7 @@ public class Dsmlv2Engine
         BindRequest bindRequest = new BindRequestImpl();
         bindRequest.setSimple( true );
         bindRequest.setCredentials( Strings.getBytesUtf8(password) );
-        bindRequest.setName( new DN( user ) );
+        bindRequest.setName( new Dn( user ) );
         bindRequest.setVersion3( true );
         bindRequest.setMessageId( messageId );
 

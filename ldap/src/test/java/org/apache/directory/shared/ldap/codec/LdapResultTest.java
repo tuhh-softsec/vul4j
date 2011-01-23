@@ -180,7 +180,7 @@ public class LdapResultTest
 
 
     /**
-     * Test the decoding of a AddResponse with no matched DN
+     * Test the decoding of a AddResponse with no matched Dn
      */
     @Test
     public void testDecodeAddResponseEmptyResultCodeNoMatchedDN()
@@ -231,7 +231,7 @@ public class LdapResultTest
                 0x02, 0x01, 0x01, // messageID MessageID
                 0x69, 0x05, // CHOICE { ..., addResponse AddResponse, ...
                 0x0A, 0x01, 0x00, // resultCode success
-                0x04, 0x00 // Empty matched DN
+                0x04, 0x00 // Empty matched Dn
             } );
 
         stream.flip();
@@ -269,7 +269,7 @@ public class LdapResultTest
                 0x02, 0x01, 0x01, // messageID MessageID
                 0x69, 0x07, // CHOICE { ..., addResponse AddResponse, ...
                 0x0A, 0x01, 0x00, // resultCode success
-                0x04, 0x00, // Empty matched DN
+                0x04, 0x00, // Empty matched Dn
                 0x04, 0x00 // Empty errorMessage
             } );
 
@@ -332,7 +332,7 @@ public class LdapResultTest
                 0x02, 0x01, 0x01, // messageID MessageID
                 0x69, 0x13, // CHOICE { ..., addResponse AddResponse, ...
                 0x0A, 0x01, 0x0A, // resultCode success (Referral)
-                0x04, 0x00, // Empty matched DN
+                0x04, 0x00, // Empty matched Dn
                 0x04, 0x00, // Empty errorMessage
                 ( byte ) 0xA3, 0x0A, 0x04, 0x08, 'l', 'd', 'a', 'p', ':', '/', '/', '/' } );
 
@@ -408,7 +408,7 @@ public class LdapResultTest
                 0x0A, 0x01,
                 0x0A, // resultCode success (Referral)
                 0x04,
-                0x00, // Empty matched DN
+                0x00, // Empty matched Dn
                 0x04,
                 0x00, // Empty errorMessage
                 ( byte ) 0xA3, 0x14, 0x04, 0x08, 'l', 'd', 'a', 'p', ':', '/', '/', '/', 0x04, 0x08, 'l', 'd', 'a',
@@ -487,7 +487,7 @@ public class LdapResultTest
                 0x02, 0x01, 0x01, // messageID MessageID
                 0x69, 0x15, // CHOICE { ..., addResponse AddResponse, ...
                 0x0A, 0x01, 0x0A, // resultCode success (Referral)
-                0x04, 0x00, // Empty matched DN
+                0x04, 0x00, // Empty matched Dn
                 0x04, 0x00, // Empty errorMessage
                 ( byte ) 0xA3, 0x0C, 0x04, 0x08, 'l', 'd', 'a', 'p', ':', '/', '/', '/', 0x04, 0x00 } );
 
@@ -569,7 +569,7 @@ public class LdapResultTest
                 0x02, 0x01, 0x01, // messageID MessageID
                 0x69, 0x09, // CHOICE { ..., addResponse AddResponse, ...
                 0x0A, 0x01, 0x0A, // resultCode success (Referral)
-                0x04, 0x00, // Empty matched DN
+                0x04, 0x00, // Empty matched Dn
                 0x04, 0x00, // Empty errorMessage
                 ( byte ) 0xA3, 0x00, } );
 

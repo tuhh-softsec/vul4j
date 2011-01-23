@@ -29,7 +29,7 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
 import org.apache.directory.shared.ldap.codec.search.controls.ChangeType;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.util.Strings;
 
 
@@ -68,7 +68,7 @@ import org.apache.directory.shared.util.Strings;
  *    changeType indicates what LDAP operation caused the entry to be
  *    returned.
  *    
- *    previousDN is present only for modifyDN operations and gives the DN of
+ *    previousDN is present only for modifyDN operations and gives the Dn of
  *    the entry before it was renamed and/or moved.  Servers MUST include this
  *    optional field only when returning change notifications as a result of
  *    modifyDN operations.
@@ -91,10 +91,10 @@ public class EntryChangeControl extends AbstractControl
 
     private long changeNumber = UNDEFINED_CHANGE_NUMBER;
 
-    /** The previous DN */
-    private DN previousDn = null;
+    /** The previous Dn */
+    private Dn previousDn = null;
 
-    /** A temporary storage for the previous DN */
+    /** A temporary storage for the previous Dn */
     private byte[] previousDnBytes = null;
 
     /** The entry change global length */
@@ -252,13 +252,13 @@ public class EntryChangeControl extends AbstractControl
     }
 
 
-    public DN getPreviousDn()
+    public Dn getPreviousDn()
     {
         return previousDn;
     }
 
 
-    public void setPreviousDn( DN previousDn )
+    public void setPreviousDn( Dn previousDn )
     {
         this.previousDn = previousDn;
     }

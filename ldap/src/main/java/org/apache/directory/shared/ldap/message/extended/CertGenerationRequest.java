@@ -58,9 +58,9 @@ public class CertGenerationRequest extends ExtendedRequestImpl
      * Creates a new instance of CertGenerationRequest.
      *
      * @param messageId the message id
-     * @param targerDN the DN of target entry whose key and certificate values will be changed 
-     * @param issuerDN DN to be used as the issuer's DN in the certificate
-     * @param subjectDN DN to be used as certificate's subject
+     * @param targerDN the Dn of target entry whose key and certificate values will be changed
+     * @param issuerDN Dn to be used as the issuer's Dn in the certificate
+     * @param subjectDN Dn to be used as certificate's subject
      * @param keyAlgorithm crypto algorithm name to be used for generating the keys
      */
     public CertGenerationRequest( int messageId, String targerDN, String issuerDN, String subjectDN, String keyAlgorithm )

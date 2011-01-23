@@ -299,8 +299,8 @@ public enum ResultCodeEnum
     INAPPROPRIATE_AUTHENTICATION( 48, "inappropriateAuthentication" ),
 
     /**
-     * This error code is returned if the DN or password used in a simple bind
-     * operation is incorrect, or if the DN or password is incorrect for some
+     * This error code is returned if the Dn or password used in a simple bind
+     * operation is incorrect, or if the Dn or password is incorrect for some
      * other reason, e.g. the password has expired. This result code only
      * applies to Bind operations -- it should not be returned for other
      * operations if the client does not have sufficient permission to perform
@@ -532,8 +532,8 @@ public enum ResultCodeEnum
     ALIAS_PROBLEM( 33, "aliasProblem" ),
 
     /**
-     * This error should be returned by the server if the DN syntax is
-     * incorrect. It should not be returned if the DN is correctly formed but
+     * This error should be returned by the server if the Dn syntax is
+     * incorrect. It should not be returned if the Dn is correctly formed but
      * represents an entry which is not permitted by the structure rules at the
      * DSA ; in this case namingViolation should be returned instead. Applicable
      * operations: all. Result code type: Specific (Name)
@@ -552,7 +552,7 @@ public enum ResultCodeEnum
      * of the DIT as defined in the directory schema and X.501. That is, it
      * would place an entry as the subordinate of an alias entry, or in a region
      * of the DIT not permitted to a member of its object class, or would define
-     * an RDN for an entry to include a forbidden attribute type [X511, Section
+     * an Rdn for an entry to include a forbidden attribute type [X511, Section
      * 12.9]. Applicable operations: Add, ModifyDN. Result code type: Specific
      * (Update)
      */
@@ -577,16 +577,16 @@ public enum ResultCodeEnum
      * operation which is permitted only on leaf entries - e.g., if the client
      * attempts to delete a non-leaf entry. If the directory does not permit
      * ModifyDN for non-leaf entries then this error may be returned if the
-     * client attempts to change the DN of a non-leaf entry. (Note that 1988
-     * edition X.500 servers only permitted change of the RDN of an entry's DN
+     * client attempts to change the Dn of a non-leaf entry. (Note that 1988
+     * edition X.500 servers only permitted change of the Rdn of an entry's Dn
      * [X.511, Section 11.4.1]). Applicable operations: Delete, ModifyDN. Result
      * code type: Specific (Update)
      */
     NOT_ALLOWED_ON_NON_LEAF( 66, "notAllowedOnNonLeaf" ),
 
     /**
-     * The attempted operation would affect the RDN (e.g., removal of an
-     * attribute which is a part of the RDN) [X511, Section 12.9]. If the client
+     * The attempted operation would affect the Rdn (e.g., removal of an
+     * attribute which is a part of the Rdn) [X511, Section 12.9]. If the client
      * attempts to remove from an entry any of its distinguished values, those
      * values which form the entry's relative distinguished name the server
      * should return the error notAllowedOnRDN. [RFC2251, Section 4.6]

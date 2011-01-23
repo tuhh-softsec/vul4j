@@ -48,8 +48,8 @@ import org.apache.directory.shared.util.MandatoryComponentsMonitor;
 import org.apache.directory.shared.ldap.name.DnUtils;
 import org.apache.directory.shared.util.NoDuplicateKeysMap;
 import org.apache.directory.shared.util.OptionalComponentsMonitor;
-import org.apache.directory.shared.ldap.name.DN;
-import org.apache.directory.shared.ldap.name.RDN;
+import org.apache.directory.shared.ldap.name.Dn;
+import org.apache.directory.shared.ldap.name.Rdn;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
@@ -140,8 +140,8 @@ tokens
     /** The SchemaManager */
     private SchemaManager schemaManager;
     
-    private Set<DN> chopBeforeExclusions;
-    private Set<DN> chopAfterExclusions;
+    private Set<Dn> chopBeforeExclusions;
+    private Set<Dn> chopAfterExclusions;
     private SubtreeSpecificationModifier ssModifier = null;
     
     private ComponentsMonitor mainACIItemComponentsMonitor;
@@ -495,14 +495,14 @@ attributeValue
     {
         // A Dn can be considered as a set of attributeTypeAndValues
         // So, parse the set as a Dn and extract each attributeTypeAndValue
-        DN attributeTypeAndValueSetAsDn = new DN( token.getText() );
+        Dn attributeTypeAndValueSetAsDn = new Dn( token.getText() );
         
         if ( schemaManager != null )
         {        
           attributeTypeAndValueSetAsDn.normalize( schemaManager );
         }
         
-        for ( RDN rdn : attributeTypeAndValueSetAsDn )
+        for ( Rdn rdn : attributeTypeAndValueSetAsDn )
         {
             attributeTypeAndValue = rdn.getNormName();
             attributeType = DnUtils.getRdnAttribute( attributeTypeAndValue );
@@ -938,8 +938,8 @@ parentOfEntry
 name
 {
     log.debug( "entered name()" );
-    Set<DN> names = new HashSet<DN>();
-    DN distinguishedName = null;
+    Set<Dn> names = new HashSet<Dn>();
+    Dn distinguishedName = null;
 }
     :
     ID_name ( SP )+ 
@@ -961,8 +961,8 @@ name
 userGroup
 {
     log.debug( "entered userGroup()" );
-    Set<DN> userGroup = new HashSet<DN>();
-    DN distinguishedName = null;
+    Set<Dn> userGroup = new HashSet<Dn>();
+    Dn distinguishedName = null;
 }
     :
     ID_userGroup ( SP )+ 
@@ -1078,8 +1078,8 @@ subtreeSpecification returns [SubtreeSpecification ss]
     // in case something is left from the last parse
     ss = null;
     ssModifier = new SubtreeSpecificationModifier();
-    chopBeforeExclusions = new HashSet<DN>();
-    chopAfterExclusions = new HashSet<DN>();
+    chopBeforeExclusions = new HashSet<Dn>();
+    chopAfterExclusions = new HashSet<Dn>();
     subtreeSpecificationComponentsMonitor = new OptionalComponentsMonitor( 
             new String [] { "base", "specificExclusions", "minimum", "maximum" } );
 }
@@ -1124,7 +1124,7 @@ subtreeSpecificationComponent
 ss_base
 {
     log.debug( "entered ss_base()" );
-    DN base = null;
+    Dn base = null;
 }
     :
     ID_base ( SP )+ base=distinguishedName
@@ -1168,7 +1168,7 @@ specificExclusion
 chopBefore
 {
     log.debug( "entered chopBefore()" );
-    DN chopBeforeExclusion = null;
+    Dn chopBeforeExclusion = null;
 }
     :
     ID_chopBefore ( SP )* COLON ( SP )* chopBeforeExclusion=distinguishedName
@@ -1180,7 +1180,7 @@ chopBefore
 chopAfter
 {
     log.debug( "entered chopAfter()" );
-    DN chopAfterExclusion = null;
+    Dn chopAfterExclusion = null;
 }
     :
     ID_chopAfter ( SP )* COLON ( SP )* chopAfterExclusion=distinguishedName
@@ -1213,7 +1213,7 @@ ss_maximum
     }
     ;
 
-distinguishedName returns [ DN name ] 
+distinguishedName returns [ Dn name ]
 {
     log.debug( "entered distinguishedName()" );
     name = null;
@@ -1221,7 +1221,7 @@ distinguishedName returns [ DN name ]
     :
     token:SAFEUTF8STRING
     {
-        name = new DN( token.getText() );
+        name = new Dn( token.getText() );
         if ( schemaManager != null )
         {
             name.normalize( schemaManager );

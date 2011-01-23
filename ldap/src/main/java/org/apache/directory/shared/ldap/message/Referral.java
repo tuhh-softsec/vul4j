@@ -70,7 +70,7 @@ import java.util.Collection;
  *   of the new request may be the same or different as the request which
  *   generated the referral.
  * 
- *   Note that UTF-8 characters appearing in a DN or search filter may not
+ *   Note that UTF-8 characters appearing in a Dn or search filter may not
  *   be legal for URLs (e.g. spaces) and MUST be escaped using the %
  *   method in RFC 1738 &lt;a href=&quot;http://www.faqs.org/rfcs/rfc1738.html&quot;&gt;[7]&lt;/a&gt;.
  * 

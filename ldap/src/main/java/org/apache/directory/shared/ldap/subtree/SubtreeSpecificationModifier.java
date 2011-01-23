@@ -25,7 +25,7 @@ import java.util.Set;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.filter.ExprNode;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 
 
 /**
@@ -38,13 +38,13 @@ import org.apache.directory.shared.ldap.name.DN;
 public class SubtreeSpecificationModifier
 {
     /** the subtree base relative to the administration point */
-    private DN base = new DN();
+    private Dn base = new Dn();
 
     /** the set of subordinates entries and their subordinates to exclude */
-    private Set<DN> chopBefore = Collections.emptySet();
+    private Set<Dn> chopBefore = Collections.emptySet();
 
     /** the set of subordinates entries whose subordinates are to be excluded */
-    private Set<DN> chopAfter = Collections.emptySet();
+    private Set<Dn> chopAfter = Collections.emptySet();
 
     /** the minimum distance below base to start including entries */
     private int minBaseDistance = 0;
@@ -87,7 +87,7 @@ public class SubtreeSpecificationModifier
      * @param base
      *            subtree base relative to the administration point
      */
-    public void setBase( DN base )
+    public void setBase( Dn base )
     {
         this.base = base;
     }
@@ -100,7 +100,7 @@ public class SubtreeSpecificationModifier
      *            the set of subordinates entries and their subordinates to
      *            exclude
      */
-    public void setChopBeforeExclusions( Set<DN> chopBeforeExclusions )
+    public void setChopBeforeExclusions( Set<Dn> chopBeforeExclusions )
     {
         this.chopBefore = chopBeforeExclusions;
     }
@@ -114,7 +114,7 @@ public class SubtreeSpecificationModifier
      *            the set of subordinates entries whose subordinates are to be
      *            excluded
      */
-    public void setChopAfterExclusions( Set<DN> chopAfterExclusions )
+    public void setChopAfterExclusions( Set<Dn> chopAfterExclusions )
     {
         this.chopAfter = chopAfterExclusions;
     }

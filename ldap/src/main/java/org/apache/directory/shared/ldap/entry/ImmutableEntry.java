@@ -26,9 +26,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.util.exception.NotImplementedException;
 import org.apache.directory.shared.ldap.exception.LdapException;
-import org.apache.directory.shared.ldap.name.DN;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 
 
@@ -570,22 +570,22 @@ public class ImmutableEntry implements Entry
 
 
     /**
-     * Get this entry's DN.
+     * Get this entry's Dn.
      *
-     * @return The entry's DN
+     * @return The entry's Dn
      */
-    public DN getDn()
+    public Dn getDn()
     {
         return entry.getDn();
     }
 
 
     /**
-     * Set this entry's DN.
+     * Set this entry's Dn.
      *
-     * @param dn The DN associated with this entry
+     * @param dn The Dn associated with this entry
      */
-    public void setDn( DN dn )
+    public void setDn( Dn dn )
     {
         new Exception().printStackTrace();
         throw new NotImplementedException( "Cannot rename the entry " + entry.getDn() + " is immutable." );
@@ -593,7 +593,7 @@ public class ImmutableEntry implements Entry
 
 
     /**
-     * Remove all the attributes for this entry. The DN is not reset
+     * Remove all the attributes for this entry. The Dn is not reset
      */
     public void clear()
     {
@@ -663,7 +663,7 @@ public class ImmutableEntry implements Entry
      * The structure used to store the entry is the following :
      * <ul>
      *   <li>
-     *     <b>[DN]</b> : If it's null, stores an empty DN
+     *     <b>[Dn]</b> : If it's null, stores an empty Dn
      *   </li>
      *   <li>
      *     <b>[attributes number]</b> : the number of attributes.
@@ -695,8 +695,8 @@ public class ImmutableEntry implements Entry
      * Serialize an Entry.
      * 
      * The structure is the following :
-     * <b>[a byte]</b> : if the DN is empty 0 will be written else 1
-     * <b>[RDN]</b> : The entry's RDN.
+     * <b>[a byte]</b> : if the Dn is empty 0 will be written else 1
+     * <b>[Rdn]</b> : The entry's Rdn.
      * <b>[numberAttr]</b> : the bumber of attributes. Can be 0 
      * <b>[attribute's oid]*</b> : The attribute's OID to get back 
      * the attributeType on deserialization

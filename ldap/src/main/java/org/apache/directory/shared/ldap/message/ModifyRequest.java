@@ -26,7 +26,7 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.ModificationOperation;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 
 
 /**
@@ -57,7 +57,7 @@ import org.apache.directory.shared.ldap.name.DN;
  *   Parameters of the Modify Request are:
  * 
  *   - object: The object to be modified. The value of this field contains
- *     the DN of the entry to be modified.  The server will not perform
+ *     the Dn of the entry to be modified.  The server will not perform
  *     any alias dereferencing in determining the object to be modified.
  * 
  *   - modification: A list of modifications to be performed on the entry.
@@ -110,9 +110,9 @@ public interface ModifyRequest extends SingleReplyRequest, AbandonableRequest
      * Gets the distinguished name of the entry to be modified by this request.
      * This property represents the PDU's <b>object</b> field.
      * 
-     * @return the DN of the modified entry.
+     * @return the Dn of the modified entry.
      */
-    DN getName();
+    Dn getName();
 
 
     /**
@@ -120,9 +120,9 @@ public interface ModifyRequest extends SingleReplyRequest, AbandonableRequest
      * This property represents the PDU's <b>object</b> field.
      * 
      * @param name
-     *            the DN of the modified entry.
+     *            the Dn of the modified entry.
      */
-    void setName( DN name );
+    void setName( Dn name );
 
 
     /**

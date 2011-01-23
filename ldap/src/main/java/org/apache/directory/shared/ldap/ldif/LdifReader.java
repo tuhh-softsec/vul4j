@@ -43,6 +43,7 @@ import java.util.NoSuchElementException;
 
 import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.name.Rdn;
 import org.apache.directory.shared.util.exception.NotImplementedException;
 import org.apache.directory.shared.ldap.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
@@ -50,9 +51,8 @@ import org.apache.directory.shared.ldap.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.ldap.name.DnParser;
-import org.apache.directory.shared.ldap.name.RDN;
 import org.apache.directory.shared.util.Base64;
 import org.apache.directory.shared.util.Chars;
 import org.apache.directory.shared.util.Strings;
@@ -483,11 +483,11 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
 
 
     /**
-     * Parse the DN of an entry
+     * Parse the Dn of an entry
      * 
      * @param line The line to parse
-     * @return A DN
-     * @throws LdapLdifException If the DN is invalid
+     * @return A Dn
+     * @throws LdapLdifException If the Dn is invalid
      */
     private String parseDn( String line ) throws LdapLdifException
     {
@@ -495,14 +495,14 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
 
         String lowerLine = line.toLowerCase();
 
-        if ( lowerLine.startsWith( "dn:" ) || lowerLine.startsWith( "DN:" ) )
+        if ( lowerLine.startsWith( "dn:" ) || lowerLine.startsWith( "Dn:" ) )
         {
-            // Ok, we have a DN. Is it base 64 encoded ?
+            // Ok, we have a Dn. Is it base 64 encoded ?
             int length = line.length();
 
             if ( length == 3 )
             {
-                // The DN is empty : error
+                // The Dn is empty : error
                 LOG.error( I18n.err( I18n.ERR_12012_EMPTY_DN_NOT_ALLOWED ) );
                 throw new LdapLdifException( I18n.err( I18n.ERR_12013_NO_DN ) );
             }
@@ -510,7 +510,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
             {
                 if ( length > 4 )
                 {
-                    // This is a base 64 encoded DN.
+                    // This is a base 64 encoded Dn.
                     String trimmedLine = line.substring( 4 ).trim();
 
                     try
@@ -519,14 +519,14 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
                     }
                     catch ( UnsupportedEncodingException uee )
                     {
-                        // The DN is not base 64 encoded
+                        // The Dn is not base 64 encoded
                         LOG.error( I18n.err( I18n.ERR_12014_BASE64_DN_EXPECTED ) );
                         throw new LdapLdifException( I18n.err( I18n.ERR_12015_INVALID_BASE64_DN ) );
                     }
                 }
                 else
                 {
-                    // The DN is empty : error
+                    // The Dn is empty : error
                     LOG.error( I18n.err( I18n.ERR_12012_EMPTY_DN_NOT_ALLOWED ) );
                     throw new LdapLdifException( I18n.err( I18n.ERR_12013_NO_DN ) );
                 }
@@ -542,10 +542,10 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
             throw new LdapLdifException( I18n.err( I18n.ERR_12013_NO_DN ) );
         }
 
-        // Check that the DN is valid. If not, an exception will be thrown
+        // Check that the Dn is valid. If not, an exception will be thrown
         try
         {
-            DnParser.parseInternal( dn, new ArrayList<RDN>() );
+            DnParser.parseInternal( dn, new ArrayList<Rdn>() );
         }
         catch ( LdapInvalidDnException ine )
         {
@@ -881,7 +881,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
 
         String attributeType = lowerLine.substring( 0, colonIndex );
 
-        // We should *not* have a DN twice
+        // We should *not* have a Dn twice
         if ( attributeType.equals( "dn" ) )
         {
             LOG.error( I18n.err( I18n.ERR_12002_ENTRY_WITH_TWO_DNS ) );
@@ -1082,7 +1082,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
                     throw new LdapLdifException( I18n.err( I18n.ERR_12045 ) );
                 }
 
-                // We should *not* have a DN twice
+                // We should *not* have a Dn twice
                 if ( attributeType.equalsIgnoreCase( "dn" ) )
                 {
                     LOG.error( I18n.err( I18n.ERR_12002_ENTRY_WITH_TWO_DNS ) );
@@ -1127,9 +1127,9 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
      *     // To be checked 
      *     "changetype:" FILL "moddn" SEP &lt;newrdn&gt; SEP &lt;deleteoldrdn&gt; SEP &lt;newsuperior&gt; SEP | 
      *     "changetype:" FILL "modify" SEP &lt;mod-spec&gt; &lt;mod-specs-e&gt; 
-     * &lt;newrdn&gt; ::= "newrdn:" FILL RDN | "newrdn::" FILL BASE64-RDN 
+     * &lt;newrdn&gt; ::= "newrdn:" FILL Rdn | "newrdn::" FILL BASE64-Rdn
      * &lt;deleteoldrdn&gt; ::= "deleteoldrdn:" FILL "0" | "deleteoldrdn:" FILL "1" 
-     * &lt;newsuperior&gt; ::= "newsuperior:" FILL DN | "newsuperior::" FILL BASE64-DN 
+     * &lt;newsuperior&gt; ::= "newsuperior:" FILL Dn | "newsuperior::" FILL BASE64-Dn
      * &lt;mod-specs-e&gt; ::= &lt;mod-spec&gt; &lt;mod-specs-e&gt; | e 
      * &lt;mod-spec&gt; ::= "add:" &lt;mod-val&gt; | "delete:" &lt;mod-val&gt; | "replace:" &lt;mod-val&gt; 
      * &lt;mod-val&gt; ::= FILL ATTRIBUTE-DESCRIPTION SEP ATTRVAL-SPEC &lt;attrval-specs-e&gt; "-" SEP
@@ -1248,9 +1248,9 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
 
         String name = parseDn( line );
 
-        DN dn = new DN( name );
+        Dn dn = new Dn( name );
 
-        // Ok, we have found a DN
+        // Ok, we have found a Dn
         LdifEntry entry = new LdifEntry();
         entry.setDn( dn );
 
@@ -1283,9 +1283,9 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
             lowerLine = line.toLowerCase();
 
             // We have three cases :
-            // 1) The first line after the DN is a "control:"
-            // 2) The first line after the DN is a "changeType:"
-            // 3) The first line after the DN is anything else
+            // 1) The first line after the Dn is a "control:"
+            // 2) The first line after the Dn is a "changeType:"
+            // 3) The first line after the Dn is anything else
             if ( lowerLine.startsWith( "control:" ) )
             {
                 if ( containsEntries )

@@ -28,7 +28,7 @@ import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 
 
 /**
@@ -158,7 +158,7 @@ public class SearchResultEntryImpl extends AbstractResponse implements SearchRes
      * 
      * @return the Dn of the entry returned.
      */
-    public DN getObjectName()
+    public Dn getObjectName()
     {
         return ( entry == null ? null : entry.getDn() );
     }
@@ -191,7 +191,7 @@ public class SearchResultEntryImpl extends AbstractResponse implements SearchRes
      * 
      * @param objectName the Dn of the entry returned.
      */
-    public void setObjectName( DN objectName )
+    public void setObjectName( Dn objectName )
     {
         if ( entry != null )
         {

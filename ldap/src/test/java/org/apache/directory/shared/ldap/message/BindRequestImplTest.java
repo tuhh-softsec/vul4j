@@ -31,7 +31,7 @@ import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -68,13 +68,13 @@ public class BindRequestImplTest
     {
         BindRequestImpl req0 = new BindRequestImpl( 5 );
         req0.setCredentials( "password".getBytes() );
-        req0.setName( new DN( "cn=admin,dc=example,dc=com" ) );
+        req0.setName( new Dn( "cn=admin,dc=example,dc=com" ) );
         req0.setSimple( true );
         req0.setVersion3( true );
 
         BindRequestImpl req1 = new BindRequestImpl( 5 );
         req1.setCredentials( "password".getBytes() );
-        req1.setName( new DN( "cn=admin,dc=example,dc=com" ) );
+        req1.setName( new Dn( "cn=admin,dc=example,dc=com" ) );
         req1.setSimple( true );
         req1.setVersion3( true );
 
@@ -90,13 +90,13 @@ public class BindRequestImplTest
     {
         BindRequestImpl req0 = new BindRequestImpl( 7 );
         req0.setCredentials( "password".getBytes() );
-        req0.setName( new DN( "cn=admin,dc=example,dc=com" ) );
+        req0.setName( new Dn( "cn=admin,dc=example,dc=com" ) );
         req0.setSimple( true );
         req0.setVersion3( true );
 
         BindRequestImpl req1 = new BindRequestImpl( 5 );
         req1.setCredentials( "password".getBytes() );
-        req1.setName( new DN( "cn=admin,dc=example,dc=com" ) );
+        req1.setName( new Dn( "cn=admin,dc=example,dc=com" ) );
         req1.setSimple( true );
         req1.setVersion3( true );
 
@@ -112,13 +112,13 @@ public class BindRequestImplTest
     {
         BindRequestImpl req0 = new BindRequestImpl( 5 );
         req0.setCredentials( "abcdefg".getBytes() );
-        req0.setName( new DN( "cn=admin,dc=example,dc=com" ) );
+        req0.setName( new Dn( "cn=admin,dc=example,dc=com" ) );
         req0.setSimple( true );
         req0.setVersion3( true );
 
         BindRequestImpl req1 = new BindRequestImpl( 5 );
         req1.setCredentials( "password".getBytes() );
-        req1.setName( new DN( "cn=admin,dc=example,dc=com" ) );
+        req1.setName( new Dn( "cn=admin,dc=example,dc=com" ) );
         req1.setSimple( true );
         req1.setVersion3( true );
 
@@ -127,20 +127,20 @@ public class BindRequestImplTest
 
 
     /**
-     * Test for inequality when only the DN names are different.
+     * Test for inequality when only the Dn names are different.
      */
     @Test
     public void testNotEqualDiffName() throws LdapException
     {
         BindRequestImpl req0 = new BindRequestImpl( 5 );
         req0.setCredentials( "password".getBytes() );
-        req0.setName( new DN( "uid=akarasulu,dc=example,dc=com" ) );
+        req0.setName( new Dn( "uid=akarasulu,dc=example,dc=com" ) );
         req0.setSimple( true );
         req0.setVersion3( true );
 
         BindRequestImpl req1 = new BindRequestImpl( 5 );
         req1.setCredentials( "password".getBytes() );
-        req1.setName( new DN( "cn=admin,dc=example,dc=com" ) );
+        req1.setName( new Dn( "cn=admin,dc=example,dc=com" ) );
         req1.setSimple( true );
         req1.setVersion3( true );
 
@@ -156,13 +156,13 @@ public class BindRequestImplTest
     {
         BindRequestImpl req0 = new BindRequestImpl( 5 );
         req0.setCredentials( "password".getBytes() );
-        req0.setName( new DN( "cn=admin,dc=example,dc=com" ) );
+        req0.setName( new Dn( "cn=admin,dc=example,dc=com" ) );
         req0.setSimple( false );
         req0.setVersion3( true );
 
         BindRequestImpl req1 = new BindRequestImpl( 5 );
         req1.setCredentials( "password".getBytes() );
-        req1.setName( new DN( "cn=admin,dc=example,dc=com" ) );
+        req1.setName( new Dn( "cn=admin,dc=example,dc=com" ) );
         req1.setSimple( true );
         req1.setVersion3( true );
 
@@ -178,13 +178,13 @@ public class BindRequestImplTest
     {
         BindRequestImpl req0 = new BindRequestImpl( 5 );
         req0.setCredentials( "password".getBytes() );
-        req0.setName( new DN( "cn=admin,dc=example,dc=com" ) );
+        req0.setName( new Dn( "cn=admin,dc=example,dc=com" ) );
         req0.setSimple( true );
         req0.setVersion3( false );
 
         BindRequestImpl req1 = new BindRequestImpl( 5 );
         req1.setCredentials( "password".getBytes() );
-        req1.setName( new DN( "cn=admin,dc=example,dc=com" ) );
+        req1.setName( new Dn( "cn=admin,dc=example,dc=com" ) );
         req1.setSimple( true );
         req1.setVersion3( true );
 
@@ -233,13 +233,13 @@ public class BindRequestImplTest
             }
 
 
-            public DN getName()
+            public Dn getName()
             {
                 return null;
             }
 
 
-            public void setName( DN name )
+            public void setName( Dn name )
             {
             }
 

@@ -28,7 +28,7 @@ import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.AddRequest;
 import org.apache.directory.shared.ldap.message.AddRequestImpl;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
 import org.dom4j.QName;
@@ -80,7 +80,7 @@ public class AddRequestDsml extends AbstractRequestDsml
 
         AddRequest request = ( AddRequest ) instance;
 
-        // DN
+        // Dn
         if ( request.getEntry() != null )
         {
             element.addAttribute( "dn", request.getEntry().getDn().getName() );
@@ -176,22 +176,22 @@ public class AddRequestDsml extends AbstractRequestDsml
 
 
     /**
-     * Get the added DN
+     * Get the added Dn
      * 
-     * @return Returns the entry DN.
+     * @return Returns the entry Dn.
      */
-    public DN getEntryDn()
+    public Dn getEntryDn()
     {
         return ( ( AddRequest ) instance ).getEntryDn();
     }
 
 
     /**
-     * Set the added DN.
+     * Set the added Dn.
      * 
-     * @param entryDn The entry DN to set.
+     * @param entryDn The entry Dn to set.
      */
-    public void setEntryDn( DN entryDn )
+    public void setEntryDn( Dn entryDn )
     {
         ( ( AddRequest ) instance ).setEntryDn( entryDn );
     }

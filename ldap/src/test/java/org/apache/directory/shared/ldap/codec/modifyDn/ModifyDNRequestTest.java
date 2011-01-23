@@ -135,7 +135,7 @@ public class ModifyDNRequestTest
 
 
     /**
-     * Test the decoding of a bad DN ModifyDNRequest
+     * Test the decoding of a bad Dn ModifyDNRequest
      */
     @Test
     public void testDecodeModifyDNRequestBadDN()
@@ -188,7 +188,7 @@ public class ModifyDNRequestTest
 
 
     /**
-     * Test the decoding of a bad RDN ModifyDNRequest
+     * Test the decoding of a bad Rdn ModifyDNRequest
      */
     @Test
     public void testDecodeModifyDNRequestBadRDN()
@@ -241,7 +241,7 @@ public class ModifyDNRequestTest
 
 
     /**
-     * Test the decoding of a bad RDN ModifyDNRequest
+     * Test the decoding of a bad Rdn ModifyDNRequest
      */
     @Test
     public void testDecodeModifyDNRequestBadNewSuperior()

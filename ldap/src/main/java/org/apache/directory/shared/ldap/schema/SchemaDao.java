@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.directory.shared.ldap.entry.Entry;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.ldap.schema.registries.Schema;
 
 
@@ -78,7 +78,7 @@ public interface SchemaDao
     String findSchema( String entityName ) throws Exception;
 
 
-    DN findDn( String entityName ) throws Exception;
+    Dn findDn( String entityName ) throws Exception;
 
 
     /**

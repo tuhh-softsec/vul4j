@@ -188,7 +188,7 @@ public class DelRequestTest
                 0x02, 0x01, 0x01, // messageID MessageID
                 // CHOICE { ..., delRequest DelRequest, ...
                 // DelRequest ::= [APPLICATION 10] LDAPDN;
-                0x4A, 0x00 // Empty DN
+                0x4A, 0x00 // Empty Dn
             } );
 
         stream.flip();

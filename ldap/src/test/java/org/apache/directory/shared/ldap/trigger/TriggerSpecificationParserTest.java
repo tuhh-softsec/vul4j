@@ -30,7 +30,7 @@ import java.util.List;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.filter.SearchScope;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.ldap.trigger.TriggerSpecification.SPSpec;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -157,7 +157,7 @@ public class TriggerSpecificationParserTest
         assertEquals( theSpec.getOptions().size(), 1 );
         assertTrue( theSpec.getOptions().contains(
             new StoredProcedureSearchContextOption(
-                new DN( "cn=Logger,ou=Stored Procedures,ou=system" ), SearchScope.ONELEVEL ) ) );
+                new Dn( "cn=Logger,ou=Stored Procedures,ou=system" ), SearchScope.ONELEVEL ) ) );
         assertEquals( theSpec.getParameters().size(), 2 );
         assertTrue( theSpec.getParameters().contains(
             StoredProcedureParameter.ModifyDN_ENTRY.instance() ) );
@@ -189,7 +189,7 @@ public class TriggerSpecificationParserTest
         assertTrue( theSpec.getParameters().contains(
             StoredProcedureParameter.Delete_DELETED_ENTRY.instance() ) );
         assertTrue( theSpec.getParameters().contains(
-            StoredProcedureParameter.Generic_LDAP_CONTEXT.instance( new DN( "ou=Backup,ou=System" ) ) ) );
+            StoredProcedureParameter.Generic_LDAP_CONTEXT.instance( new Dn( "ou=Backup,ou=System" ) ) ) );
     }
     
     @Test
@@ -218,7 +218,7 @@ public class TriggerSpecificationParserTest
         assertTrue( firstSpec.getParameters().contains(
             StoredProcedureParameter.Delete_DELETED_ENTRY.instance() ) );
         assertTrue( firstSpec.getParameters().contains(
-            StoredProcedureParameter.Generic_LDAP_CONTEXT.instance( new DN( "ou=Backup,ou=System" ) ) ) );
+            StoredProcedureParameter.Generic_LDAP_CONTEXT.instance( new Dn( "ou=Backup,ou=System" ) ) ) );
         SPSpec secondSpec = spSpecs.get( 1 );
         assertEquals( secondSpec.getName(), "BackupUtilities.recreateDeletedEntry" );
         assertEquals( secondSpec.getOptions().size(), 0 );

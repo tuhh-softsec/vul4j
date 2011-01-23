@@ -23,7 +23,7 @@ package org.apache.directory.shared.ldap.subtree;
 import java.util.Set;
 
 import org.apache.directory.shared.ldap.filter.ExprNode;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 
 
 /**
@@ -39,18 +39,18 @@ public interface SubtreeSpecification
 
 
     /**
-     * Gets an RDN relative to the administrative context where the subtree
+     * Gets an Rdn relative to the administrative context where the subtree
      * scope begins. All subentries containing these specifications are
      * immediate subordinates to the administrative point, and are considered to
      * be part of the same naming context. Hence the base for the subtree
      * specification of a subentry immediately subordinate to dc=apache,dc=org
      * would be relative to the dc=apache,dc=org context.
      * 
-     * @return the RDN representing the base of the subtree, or the empty name
+     * @return the Rdn representing the base of the subtree, or the empty name
      *         if the base is the administrative point - note that this Name is
      *         not Normalized according to matchingRules.
      */
-    DN getBase();
+    Dn getBase();
 
 
     /**
@@ -62,7 +62,7 @@ public interface SubtreeSpecification
      * @return a set of relative {@link javax.naming.Name}s to the subtree base
      *         or the empty set
      */
-    Set<DN> getChopBeforeExclusions();
+    Set<Dn> getChopBeforeExclusions();
 
 
     /**
@@ -74,16 +74,16 @@ public interface SubtreeSpecification
      * @return a set of relative {@link javax.naming.Name}s to the subtree base
      *         or the empty set
      */
-    Set<DN> getChopAfterExclusions();
+    Set<Dn> getChopAfterExclusions();
 
 
     /**
      * Gets the distance at which to start including entries in the subtree. All
-     * entries whose RDN arcs relative to the base are less than the minimum are
+     * entries whose Rdn arcs relative to the base are less than the minimum are
      * excluded from the subtree or subtree refinement. The default is zero and
      * therefore excludes nothing.
      * 
-     * @return the minimum number of RDN arcs relative to base for inclusion
+     * @return the minimum number of Rdn arcs relative to base for inclusion
      */
     int getMinBaseDistance();
 
@@ -91,9 +91,9 @@ public interface SubtreeSpecification
     /**
      * Gets the distance after which to start excluding entries in the subtree
      * or subtree refinement. RFC 3672 Section 2.1.3 states: "Entries that are
-     * more than the maximum number of RDN arcs below the base entry are
+     * more than the maximum number of Rdn arcs below the base entry are
      * excluded from the subtree or subtree refinement. An absent maximum
-     * component indicates that there is no upper limit on the number of RDN
+     * component indicates that there is no upper limit on the number of Rdn
      * arcs below the base entry for entries in the subtree or subtree
      * refinement." If the maximum is limitless a negative value should be used
      * to represent the maximum distance - which makes no sense other than to

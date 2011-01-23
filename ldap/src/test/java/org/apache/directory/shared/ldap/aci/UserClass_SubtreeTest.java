@@ -29,7 +29,7 @@ import java.util.Set;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.aci.UserClass.Subtree;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.ldap.subtree.BaseSubtreeSpecification;
 import org.apache.directory.shared.ldap.subtree.SubtreeSpecification;
 import org.junit.Before;
@@ -61,7 +61,7 @@ public class UserClass_SubtreeTest
         SubtreeSpecification subtreeSpecA = new BaseSubtreeSpecification();
         SubtreeSpecification subtreeSpecB = new BaseSubtreeSpecification();
         SubtreeSpecification subtreeSpecC = new BaseSubtreeSpecification();
-        SubtreeSpecification subtreeSpecD = new BaseSubtreeSpecification( new DN( "cn=dummy" ) );
+        SubtreeSpecification subtreeSpecD = new BaseSubtreeSpecification( new Dn( "cn=dummy" ) );
 
         Set<SubtreeSpecification> colA = new HashSet<SubtreeSpecification>();
         colA.add( subtreeSpecA );

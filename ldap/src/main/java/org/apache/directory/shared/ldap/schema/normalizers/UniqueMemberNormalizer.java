@@ -25,7 +25,7 @@ import org.apache.directory.shared.ldap.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapException;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.ldap.schema.Normalizer;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.util.Strings;
@@ -41,7 +41,7 @@ public class UniqueMemberNormalizer extends Normalizer
     // The serial UID
     private static final long serialVersionUID = 1L;
 
-    /** A reference to the schema manager used to normalize the DN */
+    /** A reference to the schema manager used to normalize the Dn */
     private SchemaManager schemaManager;
     
     
@@ -80,7 +80,7 @@ public class UniqueMemberNormalizer extends Normalizer
             
             if ( sharpPos > 0 )
             {
-                DN dn = new DN( nameAndUid.substring( 0, sharpPos ), schemaManager );
+                Dn dn = new Dn( nameAndUid.substring( 0, sharpPos ), schemaManager );
                 
                 return new StringValue( dn.getNormName() + '#' + uid );
             }
@@ -91,9 +91,9 @@ public class UniqueMemberNormalizer extends Normalizer
         }
         else
         {
-            // No UID, the strValue is a DN
-            // Return the normalized DN
-            return new StringValue( new DN( nameAndUid ).getNormName() );
+            // No UID, the strValue is a Dn
+            // Return the normalized Dn
+            return new StringValue( new Dn( nameAndUid ).getNormName() );
         }
     }
 
@@ -125,7 +125,7 @@ public class UniqueMemberNormalizer extends Normalizer
             
             if ( sharpPos > 0 )
             {
-                DN dn = new DN( value.substring( 0, sharpPos ), schemaManager );
+                Dn dn = new Dn( value.substring( 0, sharpPos ), schemaManager );
                 
                 return dn.getNormName() + '#' + uid;
             }
@@ -136,9 +136,9 @@ public class UniqueMemberNormalizer extends Normalizer
         }
         else
         {
-            // No UID, the strValue is a DN
-            // Return the normalized DN
-            return new DN( value, schemaManager ).getNormName();
+            // No UID, the strValue is a Dn
+            // Return the normalized Dn
+            return new Dn( value, schemaManager ).getNormName();
         }
     }
 

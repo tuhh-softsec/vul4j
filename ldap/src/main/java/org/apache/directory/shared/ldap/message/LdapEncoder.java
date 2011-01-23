@@ -41,7 +41,7 @@ import org.apache.directory.shared.ldap.entry.Entry;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.util.Strings;
 
 
@@ -402,8 +402,8 @@ public class LdapEncoder
             throw new IllegalArgumentException( I18n.err( I18n.ERR_04481_ENTRY_NULL_VALUE ) );
         }
 
-        // The entry DN
-        int addRequestLength = 1 + TLV.getNbBytes( DN.getNbBytes( entry.getDn() ) ) + DN.getNbBytes( entry.getDn() );
+        // The entry Dn
+        int addRequestLength = 1 + TLV.getNbBytes( Dn.getNbBytes(entry.getDn()) ) + Dn.getNbBytes(entry.getDn());
 
         // The attributes sequence
         int entryLength = 0;
@@ -502,8 +502,8 @@ public class LdapEncoder
         int bindRequestLength = 1 + 1 + 1; // Initialized with version
 
         // The name
-        bindRequestLength += 1 + TLV.getNbBytes( DN.getNbBytes( bindRequest.getName() ) )
-            + DN.getNbBytes( bindRequest.getName() );
+        bindRequestLength += 1 + TLV.getNbBytes( Dn.getNbBytes(bindRequest.getName()) )
+            + Dn.getNbBytes(bindRequest.getName());
 
         byte[] credentials = bindRequest.getCredentials();
 
@@ -602,9 +602,9 @@ public class LdapEncoder
      */
     private int computeCompareRequestLength( CompareRequestImpl compareRequest )
     {
-        // The entry DN
-        DN entry = compareRequest.getName();
-        int compareRequestLength = 1 + TLV.getNbBytes( DN.getNbBytes( entry ) ) + DN.getNbBytes( entry );
+        // The entry Dn
+        Dn entry = compareRequest.getName();
+        int compareRequestLength = 1 + TLV.getNbBytes( Dn.getNbBytes(entry) ) + Dn.getNbBytes(entry);
 
         // The attribute value assertion
         byte[] attributeIdBytes = Strings.getBytesUtf8(compareRequest.getAttributeId());
@@ -668,7 +668,7 @@ public class LdapEncoder
     private int computeDeleteRequestLength( DeleteRequestImpl deleteRequest )
     {
         // The entry
-        return 1 + TLV.getNbBytes( DN.getNbBytes( deleteRequest.getName() ) ) + DN.getNbBytes( deleteRequest.getName() );
+        return 1 + TLV.getNbBytes( Dn.getNbBytes(deleteRequest.getName()) ) + Dn.getNbBytes(deleteRequest.getName());
     }
 
 
@@ -864,8 +864,8 @@ public class LdapEncoder
     private int computeModifyRequestLength( ModifyRequestImpl modifyRequest )
     {
         // Initialized with name
-        int modifyRequestLength = 1 + TLV.getNbBytes( DN.getNbBytes( modifyRequest.getName() ) )
-            + DN.getNbBytes( modifyRequest.getName() );
+        int modifyRequestLength = 1 + TLV.getNbBytes( Dn.getNbBytes(modifyRequest.getName()) )
+            + Dn.getNbBytes(modifyRequest.getName());
 
         // All the changes length
         int changesLength = 0;
@@ -977,14 +977,14 @@ public class LdapEncoder
     {
         int newRdnlength = Strings.getBytesUtf8(modifyDnResponse.getNewRdn().getName()).length;
 
-        int modifyDNRequestLength = 1 + TLV.getNbBytes( DN.getNbBytes( modifyDnResponse.getName() ) )
-            + DN.getNbBytes( modifyDnResponse.getName() ) + 1 + TLV.getNbBytes( newRdnlength ) + newRdnlength + 1 + 1
+        int modifyDNRequestLength = 1 + TLV.getNbBytes( Dn.getNbBytes(modifyDnResponse.getName()) )
+            + Dn.getNbBytes(modifyDnResponse.getName()) + 1 + TLV.getNbBytes( newRdnlength ) + newRdnlength + 1 + 1
             + 1; // deleteOldRDN
 
         if ( modifyDnResponse.getNewSuperior() != null )
         {
-            modifyDNRequestLength += 1 + TLV.getNbBytes( DN.getNbBytes( modifyDnResponse.getNewSuperior() ) )
-                + DN.getNbBytes( modifyDnResponse.getNewSuperior() );
+            modifyDNRequestLength += 1 + TLV.getNbBytes( Dn.getNbBytes(modifyDnResponse.getNewSuperior()) )
+                + Dn.getNbBytes(modifyDnResponse.getNewSuperior());
         }
 
         modifyDnResponse.setModifyDnRequestLength( modifyDNRequestLength );
@@ -1079,8 +1079,8 @@ public class LdapEncoder
         int searchRequestLength = 0;
 
         // The baseObject
-        searchRequestLength += 1 + TLV.getNbBytes( DN.getNbBytes( searchRequest.getBase() ) )
-            + DN.getNbBytes( searchRequest.getBase() );
+        searchRequestLength += 1 + TLV.getNbBytes( Dn.getNbBytes(searchRequest.getBase()) )
+            + Dn.getNbBytes(searchRequest.getBase());
 
         // The scope
         searchRequestLength += 1 + 1 + 1;
@@ -1189,7 +1189,7 @@ public class LdapEncoder
      */
     private int computeSearchResultEntryLength( SearchResultEntryImpl searchResultEntry )
     {
-        DN dn = searchResultEntry.getObjectName();
+        Dn dn = searchResultEntry.getObjectName();
 
         byte[] dnBytes = Strings.getBytesUtf8(dn.getName());
 
@@ -1386,7 +1386,7 @@ public class LdapEncoder
             buffer.put( TLV.getBytes( addRequest.getAddRequestLength() ) );
 
             // The entry
-            Value.encode( buffer, DN.getBytes( addRequest.getEntryDn() ) );
+            Value.encode( buffer, Dn.getBytes(addRequest.getEntryDn()) );
 
             // The attributes sequence
             buffer.put( UniversalTag.SEQUENCE.getValue() );
@@ -1498,7 +1498,7 @@ public class LdapEncoder
         Value.encode( buffer, 3 );
 
         // The name
-        Value.encode( buffer, DN.getBytes( bindRequest.getName() ) );
+        Value.encode( buffer, Dn.getBytes(bindRequest.getName()) );
 
         byte[] credentials = bindRequest.getCredentials();
 
@@ -1626,7 +1626,7 @@ public class LdapEncoder
             buffer.put( TLV.getBytes( compareRequest.getCompareRequestLength() ) );
 
             // The entry
-            Value.encode( buffer, DN.getBytes( compareRequest.getName() ) );
+            Value.encode( buffer, Dn.getBytes(compareRequest.getName()) );
 
             // The attributeValueAssertion sequence Tag
             buffer.put( UniversalTag.SEQUENCE.getValue() );
@@ -1685,8 +1685,8 @@ public class LdapEncoder
             buffer.put( LdapConstants.DEL_REQUEST_TAG );
 
             // The entry
-            buffer.put( TLV.getBytes( DN.getNbBytes( deleteRequest.getName() ) ) );
-            buffer.put( DN.getBytes( deleteRequest.getName() ) );
+            buffer.put( TLV.getBytes( Dn.getNbBytes(deleteRequest.getName()) ) );
+            buffer.put( Dn.getBytes(deleteRequest.getName()) );
         }
         catch ( BufferOverflowException boe )
         {
@@ -1920,7 +1920,7 @@ public class LdapEncoder
             buffer.put( TLV.getBytes( modifyRequest.getModifyRequestLength() ) );
 
             // The entry
-            Value.encode( buffer, DN.getBytes( modifyRequest.getName() ) );
+            Value.encode( buffer, Dn.getBytes(modifyRequest.getName()) );
 
             // The modifications sequence
             buffer.put( UniversalTag.SEQUENCE.getValue() );
@@ -2035,7 +2035,7 @@ public class LdapEncoder
 
             // The entry
 
-            Value.encode( buffer, DN.getBytes( modifyDnRequest.getName() ) );
+            Value.encode( buffer, Dn.getBytes(modifyDnRequest.getName()) );
 
             // The newRDN
             Value.encode( buffer, modifyDnRequest.getNewRdn().getName() );
@@ -2049,13 +2049,13 @@ public class LdapEncoder
                 // Encode the reference
                 buffer.put( ( byte ) LdapConstants.MODIFY_DN_REQUEST_NEW_SUPERIOR_TAG );
 
-                int newSuperiorLength = DN.getNbBytes( modifyDnRequest.getNewSuperior() );
+                int newSuperiorLength = Dn.getNbBytes(modifyDnRequest.getNewSuperior());
 
                 buffer.put( TLV.getBytes( newSuperiorLength ) );
 
                 if ( newSuperiorLength != 0 )
                 {
-                    buffer.put( DN.getBytes( modifyDnRequest.getNewSuperior() ) );
+                    buffer.put( Dn.getBytes(modifyDnRequest.getNewSuperior()) );
                 }
             }
         }
@@ -2121,7 +2121,7 @@ public class LdapEncoder
             buffer.put( TLV.getBytes( searchRequest.getSearchRequestLength() ) );
 
             // The baseObject
-            Value.encode( buffer, DN.getBytes( searchRequest.getBase() ) );
+            Value.encode( buffer, Dn.getBytes(searchRequest.getBase()) );
 
             // The scope
             Value.encodeEnumerated( buffer, searchRequest.getScope().getScope() );

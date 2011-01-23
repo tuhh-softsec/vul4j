@@ -33,7 +33,7 @@ import java.util.List;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.ldap.schema.ObjectClass;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schemaloader.JarLdifSchemaLoader;
@@ -200,22 +200,22 @@ public class SubtreeSpecificationParserTest
         SubtreeSpecification ss = parser.parse( SPEC_WITH_SPECIFICEXCLUSIONS );
         assertFalse( ss.getChopBeforeExclusions().isEmpty() );
         assertFalse( ss.getChopAfterExclusions().isEmpty() );
-        assertTrue( ss.getChopBeforeExclusions().contains( new DN( "ab=cd" ) ) );
-        assertTrue( ss.getChopAfterExclusions().contains( new DN( "ef=gh" ) ) );
+        assertTrue( ss.getChopBeforeExclusions().contains( new Dn( "ab=cd" ) ) );
+        assertTrue( ss.getChopAfterExclusions().contains( new Dn( "ef=gh" ) ) );
 
         // try a second time
         ss = parser.parse( SPEC_WITH_SPECIFICEXCLUSIONS );
         assertFalse( ss.getChopBeforeExclusions().isEmpty() );
         assertFalse( ss.getChopAfterExclusions().isEmpty() );
-        assertTrue( ss.getChopBeforeExclusions().contains( new DN( "ab=cd" ) ) );
-        assertTrue( ss.getChopAfterExclusions().contains( new DN( "ef=gh" ) ) );
+        assertTrue( ss.getChopBeforeExclusions().contains( new Dn( "ab=cd" ) ) );
+        assertTrue( ss.getChopAfterExclusions().contains( new Dn( "ef=gh" ) ) );
 
         // try a third time
         ss = parser.parse( SPEC_WITH_SPECIFICEXCLUSIONS );
         assertFalse( ss.getChopBeforeExclusions().isEmpty() );
         assertFalse( ss.getChopAfterExclusions().isEmpty() );
-        assertTrue( ss.getChopBeforeExclusions().contains( new DN( "ab=cd" ) ) );
-        assertTrue( ss.getChopAfterExclusions().contains( new DN( "ef=gh" ) ) );
+        assertTrue( ss.getChopBeforeExclusions().contains( new Dn( "ab=cd" ) ) );
+        assertTrue( ss.getChopAfterExclusions().contains( new Dn( "ef=gh" ) ) );
     }
 
 
@@ -264,7 +264,7 @@ public class SubtreeSpecificationParserTest
     {
         SubtreeSpecification ss = parser.parse( SPEC_WITH_BASE_AND_MINIMUM_AND_MAXIMUM );
 
-        assertEquals( new DN( "ou=ORGANIZATION UNIT" ).getName(), ss.getBase().getName() );
+        assertEquals( new Dn( "ou=ORGANIZATION UNIT" ).getName(), ss.getBase().getName() );
         assertEquals( 1, ss.getMinBaseDistance() );
         assertEquals( 2, ss.getMaxBaseDistance() );
     }
@@ -281,10 +281,10 @@ public class SubtreeSpecificationParserTest
         assertNotNull( ss );
 
         assertEquals( "ou=people", ss.getBase().toString() );
-        assertTrue( ss.getChopBeforeExclusions().contains( new DN( "x=y" ).normalize( schemaManager ) ) );
-        assertTrue( ss.getChopBeforeExclusions().contains( new DN( "y=z" ).normalize( schemaManager ) ) );
-        assertTrue( ss.getChopAfterExclusions().contains( new DN( "k=l" ).normalize( schemaManager ) ) );
-        assertTrue( ss.getChopAfterExclusions().contains( new DN( "l=m" ).normalize( schemaManager ) ) );
+        assertTrue( ss.getChopBeforeExclusions().contains( new Dn( "x=y" ).normalize( schemaManager ) ) );
+        assertTrue( ss.getChopBeforeExclusions().contains( new Dn( "y=z" ).normalize( schemaManager ) ) );
+        assertTrue( ss.getChopAfterExclusions().contains( new Dn( "k=l" ).normalize( schemaManager ) ) );
+        assertTrue( ss.getChopAfterExclusions().contains( new Dn( "l=m" ).normalize( schemaManager ) ) );
         assertEquals( 7, ss.getMinBaseDistance() );
         assertEquals( 77, ss.getMaxBaseDistance() );
     }
@@ -396,17 +396,17 @@ public class SubtreeSpecificationParserTest
     @Test
     public void testReusabiltiy() throws Exception
     {
-        DN firstDN = new DN("k=l");
+        Dn firstDn = new Dn("k=l");
         String firstExclusion = "{ specificExclusions { chopAfter:\"k=l\" } }";
         SubtreeSpecification firstSpec = parser.parse( firstExclusion );
         assertEquals( 1, firstSpec.getChopAfterExclusions().size() );
-        assertEquals( firstDN, firstSpec.getChopAfterExclusions().iterator().next() );
+        assertEquals(firstDn, firstSpec.getChopAfterExclusions().iterator().next() );
 
-        DN secondDN = new DN("x=y");
+        Dn secondDn = new Dn("x=y");
         String secondExclusion = "{ specificExclusions { chopAfter:\"x=y\" } }";
         SubtreeSpecification secondSpec = parser.parse( secondExclusion );
         assertEquals( 1, secondSpec.getChopAfterExclusions().size() );
-        assertEquals( secondDN, secondSpec.getChopAfterExclusions().iterator().next() );
+        assertEquals(secondDn, secondSpec.getChopAfterExclusions().iterator().next() );
 
     }
 

@@ -21,7 +21,7 @@ package org.apache.directory.shared.ldap.schema.syntaxCheckers;
 
 
 import org.apache.directory.shared.ldap.constants.SchemaConstants;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
@@ -31,13 +31,13 @@ import org.slf4j.LoggerFactory;
 /**
  * A SyntaxChecker which verifies that a value is a valid Name and Optional UID.
  * 
- * This element is a composition of two parts : a DN and an optional UID :
+ * This element is a composition of two parts : a Dn and an optional UID :
  * NameAndOptionalUID = distinguishedName [ SHARP BitString ]
  * 
  * Both part already have their syntax checkers, so we will just call them
  * after having splitted the element in two ( if necessary)
  * 
- * We just check that the DN is valid, we don't need to verify each of the RDN 
+ * We just check that the Dn is valid, we don't need to verify each of the Rdn
  * syntax.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
@@ -112,11 +112,11 @@ public class NameAndOptionalUIDSyntaxChecker extends SyntaxChecker
             if ( BitStringSyntaxChecker.isValid( strValue.substring( sharpPos + 1 ) )
                 && ( sharpPos < strValue.length() ) )
             {
-                // Ok, we have a BitString, now check the DN,
+                // Ok, we have a BitString, now check the Dn,
                 // except if the '#' is in first position
                 if ( sharpPos > 0 )
                 {
-                    boolean result = DN.isValid( strValue.substring( 0, sharpPos ) );
+                    boolean result = Dn.isValid(strValue.substring(0, sharpPos));
                     
                     if ( result )
                     {
@@ -132,7 +132,7 @@ public class NameAndOptionalUIDSyntaxChecker extends SyntaxChecker
                 }
                 else
                 {
-                    // The DN must not be null ?
+                    // The Dn must not be null ?
                     LOG.debug( "Syntax invalid for '{}'", value );
                     return false;
                 }
@@ -146,9 +146,9 @@ public class NameAndOptionalUIDSyntaxChecker extends SyntaxChecker
         }
         else
         {
-            // No UID, the strValue is a DN
-            // Check that the value is a valid DN
-            boolean result = DN.isValid( strValue );
+            // No UID, the strValue is a Dn
+            // Check that the value is a valid Dn
+            boolean result = Dn.isValid(strValue);
             
             if ( result )
             {

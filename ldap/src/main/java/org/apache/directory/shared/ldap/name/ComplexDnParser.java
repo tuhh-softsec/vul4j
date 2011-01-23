@@ -28,7 +28,7 @@ import org.apache.directory.shared.ldap.message.ResultCodeEnum;
 
 
 /**
- * A DN parser that is able to parse complex DNs. This is an Antlr based parser.
+ * A Dn parser that is able to parse complex DNs. This is an Antlr based parser.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
@@ -36,14 +36,14 @@ public class ComplexDnParser
 {
 
     /**
-     * Parses an DN.
+     * Parses an Dn.
      * 
      * @param name the string representation of the distinguished name
      * @param rdns the (empty) list where parsed RDNs are put to
      * 
      * @throws LdapInvalidDnException the invalid name exception
      */
-    public void parseDn( String name, List<RDN> rdns ) throws LdapInvalidDnException
+    public void parseDn( String name, List<Rdn> rdns ) throws LdapInvalidDnException
     {
         AntlrDnParser dnParser = new AntlrDnParser( new AntlrDnLexer( new StringReader( name ) ) );
         
@@ -61,14 +61,14 @@ public class ComplexDnParser
 
 
     /**
-     * Parses an RDN.
+     * Parses an Rdn.
      * 
      * @param name the string representationof the relative distinguished name
-     * @param rdn the (empty) RDN where parsed ATAVs are put to
+     * @param rdn the (empty) Rdn where parsed ATAVs are put to
      * 
      * @throws LdapInvalidDnException the invalid name exception
      */
-    public void parseRdn( String name, RDN rdn ) throws LdapInvalidDnException
+    public void parseRdn( String name, Rdn rdn ) throws LdapInvalidDnException
     {
         AntlrDnParser dnParser = new AntlrDnParser( new AntlrDnLexer( new StringReader( name ) ) );
         try

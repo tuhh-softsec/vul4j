@@ -42,7 +42,7 @@ public class SchemaUtilsTest
     public static LdapSyntax[] getSyntaxes()
     {
         LdapSyntax[] syntaxes = new LdapSyntax[3];
-        syntaxes[0] = new LdapSyntax( "1.3.6.1.4.1.1466.115.121.1.12", "DN syntax", true );
+        syntaxes[0] = new LdapSyntax( "1.3.6.1.4.1.1466.115.121.1.12", "Dn syntax", true );
         syntaxes[1] = new LdapSyntax( "1.3.6.1.4.1.1466.115.121.1.15", "Directory String syntax", true );
         syntaxes[2] = new LdapSyntax( "1.3.6.1.4.1.1466.115.121.1.58", "Substring assertion syntax", true );
         

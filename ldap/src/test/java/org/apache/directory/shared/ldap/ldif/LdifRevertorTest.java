@@ -43,8 +43,8 @@ import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
-import org.apache.directory.shared.ldap.name.DN;
-import org.apache.directory.shared.ldap.name.RDN;
+import org.apache.directory.shared.ldap.name.Dn;
+import org.apache.directory.shared.ldap.name.Rdn;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -81,7 +81,7 @@ public class LdifRevertorTest
     @Test
     public void testReverseAdd() throws LdapInvalidDnException
     {
-        DN dn = new DN( "dc=apache, dc=com" );
+        Dn dn = new Dn( "dc=apache, dc=com" );
         LdifEntry reversed = LdifRevertor.reverseAdd( dn );
         
         assertNotNull( reversed );
@@ -98,7 +98,7 @@ public class LdifRevertorTest
     @Test
     public void testReverseDel() throws LdapException
     {
-        DN dn = new DN( "dc=apache, dc=com" );
+        Dn dn = new Dn( "dc=apache, dc=com" );
         
         Entry deletedEntry = new DefaultEntry( dn );
         
@@ -133,7 +133,7 @@ public class LdifRevertorTest
         ou.add( "apache", "acme corp" );
         modifiedEntry.put( ou );
 
-        DN dn = new DN( "cn=test, ou=system" );
+        Dn dn = new Dn( "cn=test, ou=system" );
 
         Modification mod = new DefaultModification( 
             ModificationOperation.REMOVE_ATTRIBUTE, 
@@ -177,7 +177,7 @@ public class LdifRevertorTest
         ou.add( "apache", "acme corp" );
         modifiedEntry.put( ou );
 
-        DN dn = new DN( "cn=test, ou=system" );
+        Dn dn = new Dn( "cn=test, ou=system" );
 
         Modification mod = new DefaultModification(
             ModificationOperation.REMOVE_ATTRIBUTE, 
@@ -221,7 +221,7 @@ public class LdifRevertorTest
         EntryAttribute ou = new DefaultEntryAttribute( "ou", "apache", "acme corp" );
         modifiedEntry.put( ou );
         
-        DN dn = new DN( "cn=test, ou=system" );
+        Dn dn = new Dn( "cn=test, ou=system" );
         
         Modification mod = new DefaultModification(
             ModificationOperation.REMOVE_ATTRIBUTE, ou );
@@ -265,7 +265,7 @@ public class LdifRevertorTest
         ou.add( "apache", "acme corp" );
         modifiedEntry.put( ou );
 
-        DN dn = new DN( "cn=test, ou=system" );
+        Dn dn = new Dn( "cn=test, ou=system" );
 
         EntryAttribute ouModified = new DefaultEntryAttribute( "ou" );
         ouModified.add( "directory" );
@@ -308,7 +308,7 @@ public class LdifRevertorTest
     {
         Entry modifiedEntry = buildEntry();
         
-        DN dn = new DN( "cn=test, ou=system" );
+        Dn dn = new Dn( "cn=test, ou=system" );
         
         EntryAttribute newOu = new DefaultEntryAttribute( "ou" );
         newOu.add( "apache" );
@@ -357,7 +357,7 @@ public class LdifRevertorTest
         ou.add( "acme corp" );
         modifiedEntry.put( ou );
         
-        DN dn = new DN( "cn=test, ou=system" );
+        Dn dn = new Dn( "cn=test, ou=system" );
         
         Modification mod = new DefaultModification( 
             ModificationOperation.REPLACE_ATTRIBUTE, new DefaultEntryAttribute( "ou" ) );
@@ -483,7 +483,7 @@ public class LdifRevertorTest
         //   - add the 'l=FR' attribute
         //   - replace the 'l=FR' by a 'l=USA' attribute
         //   - replace the 'ou' attribute with 'apache' value.
-        DN dn = new DN( "cn=test, ou=system" );
+        Dn dn = new Dn( "cn=test, ou=system" );
         
         List<Modification> modifications = new ArrayList<Modification>();
 
@@ -560,7 +560,7 @@ public class LdifRevertorTest
         ou.add( "acme corp" );
         modifiedEntry.put( ou );
         
-        DN dn = new DN( "cn=test, ou=system" );
+        Dn dn = new Dn( "cn=test, ou=system" );
         Modification mod = new DefaultModification(
             ModificationOperation.ADD_ATTRIBUTE, 
             new DefaultEntryAttribute( "ou", "BigCompany inc." ) );
@@ -597,7 +597,7 @@ public class LdifRevertorTest
     {
         Entry modifiedEntry = buildEntry();
         
-        DN dn = new DN( "cn=test, ou=system" );
+        Dn dn = new Dn( "cn=test, ou=system" );
         Modification mod = new DefaultModification(
             ModificationOperation.ADD_ATTRIBUTE, 
             new DefaultEntryAttribute( "ou", "BigCompany inc." ) );
@@ -627,14 +627,14 @@ public class LdifRevertorTest
     
     
     /**
-     * Test a AddRequest reverse where the DN is to be base64 encoded 
+     * Test a AddRequest reverse where the Dn is to be base64 encoded
      *
      * @throws LdapException
      */
     @Test
     public void testReverseAddBase64DN() throws LdapException
     {
-        DN dn = new DN( "dc=Emmanuel L\u00c9charny" );
+        Dn dn = new Dn( "dc=Emmanuel L\u00c9charny" );
         LdifEntry reversed = LdifRevertor.reverseAdd( dn );
         assertNotNull( reversed );
         assertEquals( dn.getName(), reversed.getDn().getName() );
@@ -651,9 +651,9 @@ public class LdifRevertorTest
     @Test
     public void testReverseModifyDNMove() throws LdapException
     {
-        DN dn = new DN( "cn=john doe, dc=example, dc=com" );
-        DN newSuperior = new DN( "ou=system" );
-        RDN rdn = new RDN( "cn=john doe" );
+        Dn dn = new Dn( "cn=john doe, dc=example, dc=com" );
+        Dn newSuperior = new Dn( "ou=system" );
+        Rdn rdn = new Rdn( "cn=john doe" );
 
         Attributes attrs = new BasicAttributes( "objectClass", "person", true );
         attrs.get( "objectClass" ).add( "uidObject" );
@@ -676,8 +676,8 @@ public class LdifRevertorTest
 
 
     /**
-     * Test a reversed rename ModifyDN, where the RDN are both simple, not overlapping,
-     * with deleteOldRdn = false, and the AVA not present in the initial entry?
+     * Test a reversed rename ModifyDN, where the Rdn are both simple, not overlapping,
+     * with deleteOldRdn = false, and the Ava not present in the initial entry?
      * 
      * Covers case 1.1 of http://cwiki.apache.org/confluence/display/DIRxSRVx11/Reverse+LDIF
      * 
@@ -688,16 +688,16 @@ public class LdifRevertorTest
      * cn: test
      * sn: This is a test 
      * 
-     * new RDN : cn=joe
+     * new Rdn : cn=joe
      *
      * @throws LdapException on error
      */
     @Test
     public void test11ReverseRenameSimpleSimpleNotOverlappingKeepOldRdnDontExistInEntry() throws LdapException
     {
-        DN dn = new DN( "cn=test,ou=system" );
-        RDN oldRdn = new RDN( "cn=test" );
-        RDN newRdn = new RDN( "cn=joe" );
+        Dn dn = new Dn( "cn=test,ou=system" );
+        Rdn oldRdn = new Rdn( "cn=test" );
+        Rdn newRdn = new Rdn( "cn=joe" );
 
         Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test" );
@@ -719,8 +719,8 @@ public class LdifRevertorTest
 
 
     /**
-     * Test a reversed rename ModifyDN, where the RDN are both simple, not overlapping,
-     * with deleteOldRdn = false, and with a AVA present in the initial entry.
+     * Test a reversed rename ModifyDN, where the Rdn are both simple, not overlapping,
+     * with deleteOldRdn = false, and with a Ava present in the initial entry.
      * 
      * Covers case 1.2 of http://cwiki.apache.org/confluence/display/DIRxSRVx11/Reverse+LDIF
      * 
@@ -732,16 +732,16 @@ public class LdifRevertorTest
      * cn: small
      * sn: This is a test 
      * 
-     * new RDN : cn=small
+     * new Rdn : cn=small
      *
      * @throws LdapException on error
      */
     @Test
     public void test12ReverseRenameSimpleSimpleNotOverlappingKeepOldRdnExistInEntry() throws LdapException
     {
-        DN dn = new DN( "cn=test,ou=system" );
-        RDN oldRdn = new RDN( "cn=test" );
-        RDN newRdn = new RDN( "cn=small" );
+        Dn dn = new Dn( "cn=test,ou=system" );
+        Rdn oldRdn = new Rdn( "cn=test" );
+        Rdn newRdn = new Rdn( "cn=small" );
 
         Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "small" );
@@ -763,8 +763,8 @@ public class LdifRevertorTest
 
 
     /**
-     * Test a reversed rename ModifyDN, where the RDN are both simple, not overlapping,
-     * with deleteOldRdn = true, and the AVA not present in the initial entry
+     * Test a reversed rename ModifyDN, where the Rdn are both simple, not overlapping,
+     * with deleteOldRdn = true, and the Ava not present in the initial entry
      * 
      * Covers case 2.1 of http://cwiki.apache.org/confluence/display/DIRxSRVx11/Reverse+LDIF
      * 
@@ -775,16 +775,16 @@ public class LdifRevertorTest
      * cn: test
      * sn: This is a test 
      * 
-     * new RDN : cn=joe
+     * new Rdn : cn=joe
      *
      * @throws LdapException on error
      */
     @Test
     public void test21ReverseRenameSimpleSimpleNotOverlappingDeleteOldRdnDontExistInEntry() throws LdapException
     {
-        DN dn = new DN( "cn=test,ou=system" );
-        RDN oldRdn = new RDN( "cn=test" );
-        RDN newRdn = new RDN( "cn=joe" );
+        Dn dn = new Dn( "cn=test,ou=system" );
+        Rdn oldRdn = new Rdn( "cn=test" );
+        Rdn newRdn = new Rdn( "cn=joe" );
 
         Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test" );
@@ -806,8 +806,8 @@ public class LdifRevertorTest
 
 
     /**
-     * Test a reversed rename ModifyDN, where the RDN are both simple, not overlapping,
-     * with deleteOldRdn = true, and with a AVA present in the initial entry.
+     * Test a reversed rename ModifyDN, where the Rdn are both simple, not overlapping,
+     * with deleteOldRdn = true, and with a Ava present in the initial entry.
      * 
      * Covers case 2.2 of http://cwiki.apache.org/confluence/display/DIRxSRVx11/Reverse+LDIF
      * 
@@ -819,16 +819,16 @@ public class LdifRevertorTest
      * cn: small
      * sn: This is a test 
      * 
-     * new RDN : cn=small
+     * new Rdn : cn=small
      *
      * @throws LdapException on error
      */
     @Test
     public void test22ReverseRenameSimpleSimpleNotOverlappingDeleteOldRdnExistInEntry() throws LdapException
     {
-        DN dn = new DN( "cn=test,ou=system" );
-        RDN oldRdn = new RDN( "cn=test" );
-        RDN newRdn = new RDN( "cn=small" );
+        Dn dn = new Dn( "cn=test,ou=system" );
+        Rdn oldRdn = new Rdn( "cn=test" );
+        Rdn newRdn = new Rdn( "cn=small" );
 
         Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "small" );
@@ -850,9 +850,9 @@ public class LdifRevertorTest
 
 
     /**
-     * Test a reversed rename ModifyDN, where the initial RDN is composite, 
-     * the new RDN is simple, not overlapping, with deleteOldRdn = false, and 
-     * with a AVA not present in the initial entry.
+     * Test a reversed rename ModifyDN, where the initial Rdn is composite,
+     * the new Rdn is simple, not overlapping, with deleteOldRdn = false, and
+     * with a Ava not present in the initial entry.
      * 
      * Covers case 3 of http://cwiki.apache.org/confluence/display/DIRxSRVx11/Reverse+LDIF
      * 
@@ -864,16 +864,16 @@ public class LdifRevertorTest
      * cn: small
      * sn: This is a test 
      * 
-     * new RDN : cn=joe
+     * new Rdn : cn=joe
      *
      * @throws LdapException on error
      */
     @Test
     public void test3ReverseRenameCompositeSimpleNotOverlappingKeepOldRdnDontExistInEntry() throws LdapException
     {
-        DN dn = new DN( "cn=small+cn=test,ou=system" );
-        RDN oldRdn = new RDN( "cn=small+cn=test" );
-        RDN newRdn = new RDN( "cn=joe" );
+        Dn dn = new Dn( "cn=small+cn=test,ou=system" );
+        Rdn oldRdn = new Rdn( "cn=small+cn=test" );
+        Rdn newRdn = new Rdn( "cn=joe" );
 
         Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "small" );
@@ -895,9 +895,9 @@ public class LdifRevertorTest
 
 
     /**
-     * Test a reversed rename ModifyDN, where the initial RDN is composite, 
-     * the new RDN is simple, not overlapping, with deleteOldRdn = false, and 
-     * with an AVA present in the initial entry.
+     * Test a reversed rename ModifyDN, where the initial Rdn is composite,
+     * the new Rdn is simple, not overlapping, with deleteOldRdn = false, and
+     * with an Ava present in the initial entry.
      * 
      * Covers case 3 of http://cwiki.apache.org/confluence/display/DIRxSRVx11/Reverse+LDIF
      * 
@@ -910,16 +910,16 @@ public class LdifRevertorTest
      * cn: big
      * sn: This is a test 
      * 
-     * new RDN : cn=big
+     * new Rdn : cn=big
      *
      * @throws LdapException on error
      */
     @Test
     public void test3ReverseRenameCompositeSimpleNotOverlappingKeepOldRdnExistsInEntry() throws LdapException
     {
-        DN dn = new DN( "cn=small+cn=test,ou=system" );
-        RDN oldRdn = new RDN( "cn=small+cn=test" );
-        RDN newRdn = new RDN( "cn=big" );
+        Dn dn = new Dn( "cn=small+cn=test,ou=system" );
+        Rdn oldRdn = new Rdn( "cn=small+cn=test" );
+        Rdn newRdn = new Rdn( "cn=big" );
 
         Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "small", "big" );
@@ -941,9 +941,9 @@ public class LdifRevertorTest
 
 
     /**
-     * Test a reversed rename ModifyDN, where the initial RDN is composite, 
-     * the new RDN is simple, not overlapping, with deleteOldRdn = true, and 
-     * with an AVA not present in the initial entry.
+     * Test a reversed rename ModifyDN, where the initial Rdn is composite,
+     * the new Rdn is simple, not overlapping, with deleteOldRdn = true, and
+     * with an Ava not present in the initial entry.
      * 
      * Covers case 4 of http://cwiki.apache.org/confluence/display/DIRxSRVx11/Reverse+LDIF
      * 
@@ -955,16 +955,16 @@ public class LdifRevertorTest
      * cn: small
      * sn: This is a test 
      * 
-     * new RDN : cn=joe
+     * new Rdn : cn=joe
      *
      * @throws LdapException on error
      */
     @Test
     public void test4ReverseRenameCompositeSimpleNotOverlappingDeleteOldRdnDontExistsInEntry() throws LdapException
     {
-        DN dn = new DN( "cn=small+cn=test,ou=system" );
-        RDN oldRdn = new RDN( "cn=small+cn=test" );
-        RDN newRdn = new RDN( "cn=joe" );
+        Dn dn = new Dn( "cn=small+cn=test,ou=system" );
+        Rdn oldRdn = new Rdn( "cn=small+cn=test" );
+        Rdn newRdn = new Rdn( "cn=joe" );
 
         Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "small" );
@@ -986,9 +986,9 @@ public class LdifRevertorTest
 
 
     /**
-     * Test a reversed rename ModifyDN, where the initial RDN is composite, 
-     * the new RDN is simple, not overlapping, with deleteOldRdn = true, and 
-     * with an AVA present in the initial entry.
+     * Test a reversed rename ModifyDN, where the initial Rdn is composite,
+     * the new Rdn is simple, not overlapping, with deleteOldRdn = true, and
+     * with an Ava present in the initial entry.
      * 
      * Covers case 4 of http://cwiki.apache.org/confluence/display/DIRxSRVx11/Reverse+LDIF
      * 
@@ -1001,16 +1001,16 @@ public class LdifRevertorTest
      * cn: big
      * sn: This is a test 
      * 
-     * new RDN : cn=big
+     * new Rdn : cn=big
      *
      * @throws LdapException on error
      */
     @Test
     public void test4ReverseRenameCompositeSimpleNotOverlappingDeleteOldRdnExistInEntry() throws LdapException
     {
-        DN dn = new DN( "cn=small+cn=test,ou=system" );
-        RDN oldRdn = new RDN( "cn=small+cn=test" );
-        RDN newRdn = new RDN( "cn=big" );
+        Dn dn = new Dn( "cn=small+cn=test,ou=system" );
+        Rdn oldRdn = new Rdn( "cn=small+cn=test" );
+        Rdn newRdn = new Rdn( "cn=big" );
 
         Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "small", "big" );
@@ -1032,8 +1032,8 @@ public class LdifRevertorTest
 
 
     /**
-     * Test a reversed rename ModifyDN, where the initial RDN is composite, 
-     * the new RDN is simple, they overlap, with deleteOldRdn = false.
+     * Test a reversed rename ModifyDN, where the initial Rdn is composite,
+     * the new Rdn is simple, they overlap, with deleteOldRdn = false.
      * 
      * Covers case 5 of http://cwiki.apache.org/confluence/display/DIRxSRVx11/Reverse+LDIF
      * 
@@ -1045,16 +1045,16 @@ public class LdifRevertorTest
      * cn: small
      * sn: This is a test 
      * 
-     * new RDN : cn=test
+     * new Rdn : cn=test
      *
      * @throws LdapException on error
      */
     @Test
     public void test5ReverseRenameCompositeSimpleOverlappingKeepOldRdn() throws LdapException
     {
-        DN dn = new DN( "cn=small+cn=test,ou=system" );
-        RDN oldRdn = new RDN( "cn=small+cn=test" );
-        RDN newRdn = new RDN( "cn=test" );
+        Dn dn = new Dn( "cn=small+cn=test,ou=system" );
+        Rdn oldRdn = new Rdn( "cn=small+cn=test" );
+        Rdn newRdn = new Rdn( "cn=test" );
 
         Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "small" );
@@ -1076,8 +1076,8 @@ public class LdifRevertorTest
 
 
     /**
-     * Test a reversed rename ModifyDN, where the initial RDN is composite, 
-     * the new RDN is simple, they overlap, with deleteOldRdn = true.
+     * Test a reversed rename ModifyDN, where the initial Rdn is composite,
+     * the new Rdn is simple, they overlap, with deleteOldRdn = true.
      * 
      * Covers case 5 of http://cwiki.apache.org/confluence/display/DIRxSRVx11/Reverse+LDIF
      * 
@@ -1089,16 +1089,16 @@ public class LdifRevertorTest
      * cn: small
      * sn: This is a test 
      * 
-     * new RDN : cn=test
+     * new Rdn : cn=test
      *
      * @throws LdapException on error
      */
     @Test
     public void test5ReverseRenameCompositeSimpleOverlappingDeleteOldRdn() throws LdapException
     {
-        DN dn = new DN( "cn=small+cn=test,ou=system" );
-        RDN oldRdn = new RDN( "cn=small+cn=test" );
-        RDN newRdn = new RDN( "cn=test" );
+        Dn dn = new Dn( "cn=small+cn=test,ou=system" );
+        Rdn oldRdn = new Rdn( "cn=small+cn=test" );
+        Rdn newRdn = new Rdn( "cn=test" );
 
         Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "small" );
@@ -1120,8 +1120,8 @@ public class LdifRevertorTest
 
 
     /**
-     * Test a reversed rename ModifyDN, where the initial RDN is simple, 
-     * the new RDN is composite, they don't overlap, with deleteOldRdn = false, and
+     * Test a reversed rename ModifyDN, where the initial Rdn is simple,
+     * the new Rdn is composite, they don't overlap, with deleteOldRdn = false, and
      * the new values don't exist in the entry.
      * 
      * Covers case 6.1 of http://cwiki.apache.org/confluence/display/DIRxSRVx11/Reverse+LDIF
@@ -1134,16 +1134,16 @@ public class LdifRevertorTest
      * cn: small
      * sn: This is a test 
      * 
-     * new RDN : cn=joe+cn=plumber
+     * new Rdn : cn=joe+cn=plumber
      *
      * @throws LdapException on error
      */
     @Test
     public void test61ReverseRenameSimpleCompositeNotOverlappingKeepOldRdnDontExistInEntry() throws LdapException
     {
-        DN dn = new DN( "cn=test,ou=system" );
-        RDN oldRdn = new RDN( "cn=test" );
-        RDN newRdn = new RDN( "cn=joe+cn=plumber" );
+        Dn dn = new Dn( "cn=test,ou=system" );
+        Rdn oldRdn = new Rdn( "cn=test" );
+        Rdn newRdn = new Rdn( "cn=joe+cn=plumber" );
 
         Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "small" );
@@ -1165,8 +1165,8 @@ public class LdifRevertorTest
 
 
     /**
-     * Test a reversed rename ModifyDN, where the initial RDN is simple, 
-     * the new RDN is composite, they don't overlap, with deleteOldRdn = false, and
+     * Test a reversed rename ModifyDN, where the initial Rdn is simple,
+     * the new Rdn is composite, they don't overlap, with deleteOldRdn = false, and
      * the new values exists in the entry.
      * 
      * Covers case 6.2 of http://cwiki.apache.org/confluence/display/DIRxSRVx11/Reverse+LDIF
@@ -1179,16 +1179,16 @@ public class LdifRevertorTest
      * cn: small
      * sn: This is a test 
      * 
-     * new RDN : cn=joe+cn=small
+     * new Rdn : cn=joe+cn=small
      *
      * @throws LdapException on error
      */
     @Test
     public void test62ReverseRenameSimpleCompositeNotOverlappingKeepOldRdnDontExistInEntry() throws LdapException
     {
-        DN dn = new DN( "cn=test,ou=system" );
-        RDN oldRdn = new RDN( "cn=test" );
-        RDN newRdn = new RDN( "cn=joe+cn=small" );
+        Dn dn = new Dn( "cn=test,ou=system" );
+        Rdn oldRdn = new Rdn( "cn=test" );
+        Rdn newRdn = new Rdn( "cn=joe+cn=small" );
 
         Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "small" );
@@ -1223,8 +1223,8 @@ public class LdifRevertorTest
 
 
     /**
-     * Test a reversed rename ModifyDN, where the initial RDN is simple, 
-     * the new RDN is composite, they don't overlap, with deleteOldRdn = true, and
+     * Test a reversed rename ModifyDN, where the initial Rdn is simple,
+     * the new Rdn is composite, they don't overlap, with deleteOldRdn = true, and
      * none of new values exists in the entry.
      * 
      * Covers case 7.1 of http://cwiki.apache.org/confluence/display/DIRxSRVx11/Reverse+LDIF
@@ -1237,16 +1237,16 @@ public class LdifRevertorTest
      * cn: small
      * sn: This is a test 
      * 
-     * new RDN : cn=joe+cn=plumber
+     * new Rdn : cn=joe+cn=plumber
      *
      * @throws LdapException on error
      */
     @Test
     public void test71ReverseRenameSimpleCompositeNotOverlappingDeleteOldRdnDontExistInEntry() throws LdapException
     {
-        DN dn = new DN( "cn=test,ou=system" );
-        RDN oldRdn = new RDN( "cn=test" );
-        RDN newRdn = new RDN( "cn=joe+cn=plumber" );
+        Dn dn = new Dn( "cn=test,ou=system" );
+        Rdn oldRdn = new Rdn( "cn=test" );
+        Rdn newRdn = new Rdn( "cn=joe+cn=plumber" );
 
         Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "small" );
@@ -1268,8 +1268,8 @@ public class LdifRevertorTest
 
 
     /**
-     * Test a reversed rename ModifyDN, where the initial RDN is simple, 
-     * the new RDN is composite, they don't overlap, with deleteOldRdn = true, and
+     * Test a reversed rename ModifyDN, where the initial Rdn is simple,
+     * the new Rdn is composite, they don't overlap, with deleteOldRdn = true, and
      * some of new values exists in the entry.
      * 
      * Covers case 7.2 of http://cwiki.apache.org/confluence/display/DIRxSRVx11/Reverse+LDIF
@@ -1282,16 +1282,16 @@ public class LdifRevertorTest
      * cn: small
      * sn: This is a test 
      * 
-     * new RDN : cn=joe+cn=small
+     * new Rdn : cn=joe+cn=small
      *
      * @throws LdapException on error
      */
     @Test
     public void test72ReverseRenameSimpleCompositeNotOverlappingDeleteOldRdnExistInEntry() throws LdapException
     {
-        DN dn = new DN( "cn=test,ou=system" );
-        RDN oldRdn = new RDN( "cn=test" );
-        RDN newRdn = new RDN( "cn=joe+cn=small" );
+        Dn dn = new Dn( "cn=test,ou=system" );
+        Rdn oldRdn = new Rdn( "cn=test" );
+        Rdn newRdn = new Rdn( "cn=joe+cn=small" );
 
         Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "small" );
@@ -1326,8 +1326,8 @@ public class LdifRevertorTest
 
 
     /**
-     * Test a reversed rename ModifyDN, where the initial RDN is simple, 
-     * the new RDN is composite, they overlap, with deleteOldRdn = false, and
+     * Test a reversed rename ModifyDN, where the initial Rdn is simple,
+     * the new Rdn is composite, they overlap, with deleteOldRdn = false, and
      * none of new values exists in the entry.
      * 
      * Covers case 8.1 of http://cwiki.apache.org/confluence/display/DIRxSRVx11/Reverse+LDIF
@@ -1340,16 +1340,16 @@ public class LdifRevertorTest
      * cn: big
      * sn: This is a test 
      * 
-     * new RDN : cn=small+cn=test
+     * new Rdn : cn=small+cn=test
      *
      * @throws LdapException on error
      */
     @Test
     public void test81ReverseRenameSimpleCompositeOverlappingKeepOldRdnDontExistInEntry() throws LdapException
     {
-        DN dn = new DN( "cn=test,ou=system" );
-        RDN oldRdn = new RDN( "cn=test" );
-        RDN newRdn = new RDN( "cn=small+cn=test" );
+        Dn dn = new Dn( "cn=test,ou=system" );
+        Rdn oldRdn = new Rdn( "cn=test" );
+        Rdn newRdn = new Rdn( "cn=small+cn=test" );
 
         Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "big" );
@@ -1373,8 +1373,8 @@ public class LdifRevertorTest
 
 
     /**
-     * Test a reversed rename ModifyDN, where the initial RDN is simple, 
-     * the new RDN is composite, they overlap, with deleteOldRdn = false, and
+     * Test a reversed rename ModifyDN, where the initial Rdn is simple,
+     * the new Rdn is composite, they overlap, with deleteOldRdn = false, and
      * some of the new values exist in the entry.
      * 
      * Covers case 8.2 of http://cwiki.apache.org/confluence/display/DIRxSRVx11/Reverse+LDIF
@@ -1387,16 +1387,16 @@ public class LdifRevertorTest
      * cn: big
      * sn: This is a test 
      * 
-     * new RDN : cn=small+cn=test
+     * new Rdn : cn=small+cn=test
      *
      * @throws LdapException on error
      */
     @Test
     public void test82ReverseRenameSimpleCompositeOverlappingKeepOldRdnExistInEntry() throws LdapException
     {
-        DN dn = new DN( "cn=test,ou=system" );
-        RDN oldRdn = new RDN( "cn=test" );
-        RDN newRdn = new RDN( "cn=small+cn=test+cn=big" );
+        Dn dn = new Dn( "cn=test,ou=system" );
+        Rdn oldRdn = new Rdn( "cn=test" );
+        Rdn newRdn = new Rdn( "cn=small+cn=test+cn=big" );
 
         Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "big" );
@@ -1431,8 +1431,8 @@ public class LdifRevertorTest
 
 
     /**
-     * Test a reversed rename ModifyDN, where the initial RDN is simple, 
-     * the new RDN is composite, they overlap, with deleteOldRdn = true, and
+     * Test a reversed rename ModifyDN, where the initial Rdn is simple,
+     * the new Rdn is composite, they overlap, with deleteOldRdn = true, and
      * none of new values exists in the entry.
      * 
      * Covers case 9.1 of http://cwiki.apache.org/confluence/display/DIRxSRVx11/Reverse+LDIF
@@ -1445,16 +1445,16 @@ public class LdifRevertorTest
      * cn: big
      * sn: This is a test 
      * 
-     * new RDN : cn=small+cn=test
+     * new Rdn : cn=small+cn=test
      *
      * @throws LdapException on error
      */
     @Test
     public void test91ReverseRenameSimpleCompositeOverlappingDeleteOldRdnDontExistInEntry() throws LdapException
     {
-        DN dn = new DN( "cn=test,ou=system" );
-        RDN oldRdn = new RDN( "cn=test" );
-        RDN newRdn = new RDN( "cn=small+cn=test" );
+        Dn dn = new Dn( "cn=test,ou=system" );
+        Rdn oldRdn = new Rdn( "cn=test" );
+        Rdn newRdn = new Rdn( "cn=small+cn=test" );
 
         Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "big" );
@@ -1476,8 +1476,8 @@ public class LdifRevertorTest
 
 
     /**
-     * Test a reversed rename ModifyDN, where the initial RDN is simple, 
-     * the new RDN is composite, they overlap, with deleteOldRdn = true, and
+     * Test a reversed rename ModifyDN, where the initial Rdn is simple,
+     * the new Rdn is composite, they overlap, with deleteOldRdn = true, and
      * some of the new values exists in the entry.
      * 
      * Covers case 9.2 of http://cwiki.apache.org/confluence/display/DIRxSRVx11/Reverse+LDIF
@@ -1490,16 +1490,16 @@ public class LdifRevertorTest
      * cn: big
      * sn: This is a test 
      * 
-     * new RDN : cn=small+cn=test+cn=big
+     * new Rdn : cn=small+cn=test+cn=big
      *
      * @throws LdapException on error
      */
     @Test
     public void test92ReverseRenameSimpleCompositeOverlappingDeleteOldRdnDontExistInEntry() throws LdapException
     {
-        DN dn = new DN( "cn=test,ou=system" );
-        RDN oldRdn = new RDN( "cn=test" );
-        RDN newRdn = new RDN( "cn=small+cn=test+cn=big" );
+        Dn dn = new Dn( "cn=test,ou=system" );
+        Rdn oldRdn = new Rdn( "cn=test" );
+        Rdn newRdn = new Rdn( "cn=small+cn=test+cn=big" );
 
         Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "big" );
@@ -1534,8 +1534,8 @@ public class LdifRevertorTest
 
 
     /**
-     * Test a reversed rename ModifyDN, where the initial RDN is composite, 
-     * the new RDN is composite, they don't overlap, with deleteOldRdn = false, and
+     * Test a reversed rename ModifyDN, where the initial Rdn is composite,
+     * the new Rdn is composite, they don't overlap, with deleteOldRdn = false, and
      * none of new values exists in the entry.
      * 
      * Covers case 10.1 of http://cwiki.apache.org/confluence/display/DIRxSRVx11/Reverse+LDIF
@@ -1549,16 +1549,16 @@ public class LdifRevertorTest
      * cn: big
      * sn: This is a test 
      * 
-     * new RDN : cn=joe+cn=plumber
+     * new Rdn : cn=joe+cn=plumber
      *
      * @throws LdapException on error
      */
     @Test
     public void test101ReverseRenameCompositeCompositeNotOverlappingKeepOldRdnDontExistInEntry() throws LdapException
     {
-        DN dn = new DN( "cn=small+cn=test,ou=system" );
-        RDN oldRdn = new RDN( "cn=small+cn=test" );
-        RDN newRdn = new RDN( "cn=joe+cn=plumber" );
+        Dn dn = new Dn( "cn=small+cn=test,ou=system" );
+        Rdn oldRdn = new Rdn( "cn=small+cn=test" );
+        Rdn newRdn = new Rdn( "cn=joe+cn=plumber" );
 
         Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "big", "small" );
@@ -1580,8 +1580,8 @@ public class LdifRevertorTest
 
 
     /**
-     * Test a reversed rename ModifyDN, where the initial RDN is composite, 
-     * the new RDN is composite, they don't overlap, with deleteOldRdn = false, and
+     * Test a reversed rename ModifyDN, where the initial Rdn is composite,
+     * the new Rdn is composite, they don't overlap, with deleteOldRdn = false, and
      * some of the new values exists in the entry.
      * 
      * Covers case 10.2 of http://cwiki.apache.org/confluence/display/DIRxSRVx11/Reverse+LDIF
@@ -1595,16 +1595,16 @@ public class LdifRevertorTest
      * cn: big
      * sn: This is a test 
      * 
-     * new RDN : cn=joe+cn=big
+     * new Rdn : cn=joe+cn=big
      *
      * @throws LdapException on error
      */
     @Test
     public void test102ReverseRenameCompositeCompositeNotOverlappingKeepOldRdnExistInEntry() throws LdapException
     {
-        DN dn = new DN( "cn=small+cn=test,ou=system" );
-        RDN oldRdn = new RDN( "cn=small+cn=test" );
-        RDN newRdn = new RDN( "cn=joe+cn=big" );
+        Dn dn = new Dn( "cn=small+cn=test,ou=system" );
+        Rdn oldRdn = new Rdn( "cn=small+cn=test" );
+        Rdn newRdn = new Rdn( "cn=joe+cn=big" );
 
         Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "big", "small" );
@@ -1639,8 +1639,8 @@ public class LdifRevertorTest
 
 
     /**
-     * Test a reversed rename ModifyDN, where the initial RDN is composite, 
-     * the new RDN is composite, they don't overlap, with deleteOldRdn = true, and
+     * Test a reversed rename ModifyDN, where the initial Rdn is composite,
+     * the new Rdn is composite, they don't overlap, with deleteOldRdn = true, and
      * none of new values exists in the entry.
      * 
      * Covers case 11.1 of http://cwiki.apache.org/confluence/display/DIRxSRVx11/Reverse+LDIF
@@ -1654,16 +1654,16 @@ public class LdifRevertorTest
      * cn: big
      * sn: This is a test 
      * 
-     * new RDN : cn=joe+cn=plumber
+     * new Rdn : cn=joe+cn=plumber
      *
      * @throws LdapException on error
      */
     @Test
     public void test111ReverseRenameCompositeCompositeNotOverlappingDeleteOldRdnDontExistInEntry() throws LdapException
     {
-        DN dn = new DN( "cn=small+cn=test,ou=system" );
-        RDN oldRdn = new RDN( "cn=small+cn=test" );
-        RDN newRdn = new RDN( "cn=joe+cn=plumber" );
+        Dn dn = new Dn( "cn=small+cn=test,ou=system" );
+        Rdn oldRdn = new Rdn( "cn=small+cn=test" );
+        Rdn newRdn = new Rdn( "cn=joe+cn=plumber" );
 
         Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "big", "small" );
@@ -1685,8 +1685,8 @@ public class LdifRevertorTest
 
 
     /**
-     * Test a reversed rename ModifyDN, where the initial RDN is composite, 
-     * the new RDN is composite, they don't overlap, with deleteOldRdn = true, and
+     * Test a reversed rename ModifyDN, where the initial Rdn is composite,
+     * the new Rdn is composite, they don't overlap, with deleteOldRdn = true, and
      * some of the new values exists in the entry.
      * 
      * Covers case 11.2 of http://cwiki.apache.org/confluence/display/DIRxSRVx11/Reverse+LDIF
@@ -1700,16 +1700,16 @@ public class LdifRevertorTest
      * cn: big
      * sn: This is a test 
      * 
-     * new RDN : cn=joe+cn=plumber
+     * new Rdn : cn=joe+cn=plumber
      *
      * @throws LdapException on error
      */
     @Test
     public void test112ReverseRenameCompositeCompositeNotOverlappingDeleteOldRdnExistInEntry() throws LdapException
     {
-        DN dn = new DN( "cn=small+cn=test,ou=system" );
-        RDN oldRdn = new RDN( "cn=small+cn=test" );
-        RDN newRdn = new RDN( "cn=joe+cn=big" );
+        Dn dn = new Dn( "cn=small+cn=test,ou=system" );
+        Rdn oldRdn = new Rdn( "cn=small+cn=test" );
+        Rdn newRdn = new Rdn( "cn=joe+cn=big" );
 
         Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "big", "small" );
@@ -1744,8 +1744,8 @@ public class LdifRevertorTest
 
 
     /**
-     * Test a reversed rename ModifyDN, where the initial RDN is composite, 
-     * the new RDN is composite, they are overlapping, with deleteOldRdn = false, and
+     * Test a reversed rename ModifyDN, where the initial Rdn is composite,
+     * the new Rdn is composite, they are overlapping, with deleteOldRdn = false, and
      * none of new values exists in the entry.
      * 
      * Covers case 12.1 of http://cwiki.apache.org/confluence/display/DIRxSRVx11/Reverse+LDIF
@@ -1759,16 +1759,16 @@ public class LdifRevertorTest
      * cn: big
      * sn: This is a test 
      * 
-     * new RDN : cn=joe+cn=test
+     * new Rdn : cn=joe+cn=test
      *
      * @throws LdapException on error
      */
     @Test
     public void test121ReverseRenameCompositeCompositeOverlappingKeepOldRdnDontExistInEntry() throws LdapException
     {
-        DN dn = new DN( "cn=small+cn=test,ou=system" );
-        RDN oldRdn = new RDN( "cn=small+cn=test" );
-        RDN newRdn = new RDN( "cn=joe+cn=test" );
+        Dn dn = new Dn( "cn=small+cn=test,ou=system" );
+        Rdn oldRdn = new Rdn( "cn=small+cn=test" );
+        Rdn newRdn = new Rdn( "cn=joe+cn=test" );
 
         Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "big", "small" );
@@ -1790,8 +1790,8 @@ public class LdifRevertorTest
 
 
     /**
-     * Test a reversed rename ModifyDN, where the initial RDN is composite, 
-     * the new RDN is composite, they are overlapping, with deleteOldRdn = false, and
+     * Test a reversed rename ModifyDN, where the initial Rdn is composite,
+     * the new Rdn is composite, they are overlapping, with deleteOldRdn = false, and
      * some of the new values exists in the entry.
      * 
      * Covers case 12.2 of http://cwiki.apache.org/confluence/display/DIRxSRVx11/Reverse+LDIF
@@ -1805,16 +1805,16 @@ public class LdifRevertorTest
      * cn: big
      * sn: This is a test 
      * 
-     * new RDN : cn=joe+cn=test
+     * new Rdn : cn=joe+cn=test
      *
      * @throws LdapException on error
      */
     @Test
     public void test122ReverseRenameCompositeCompositeOverlappingKeepOldRdnExistInEntry() throws LdapException
     {
-        DN dn = new DN( "cn=small+cn=test,ou=system" );
-        RDN oldRdn = new RDN( "cn=small+cn=test" );
-        RDN newRdn = new RDN( "cn=big+cn=test" );
+        Dn dn = new Dn( "cn=small+cn=test,ou=system" );
+        Rdn oldRdn = new Rdn( "cn=small+cn=test" );
+        Rdn newRdn = new Rdn( "cn=big+cn=test" );
 
         Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "big", "small" );
@@ -1836,8 +1836,8 @@ public class LdifRevertorTest
 
 
     /**
-     * Test a reversed rename ModifyDN, where the initial RDN is composite, 
-     * the new RDN is composite, they are overlapping, with deleteOldRdn = true, and
+     * Test a reversed rename ModifyDN, where the initial Rdn is composite,
+     * the new Rdn is composite, they are overlapping, with deleteOldRdn = true, and
      * none of new values exists in the entry.
      * 
      * Covers case 13.1 of http://cwiki.apache.org/confluence/display/DIRxSRVx11/Reverse+LDIF
@@ -1851,16 +1851,16 @@ public class LdifRevertorTest
      * cn: big
      * sn: This is a test 
      * 
-     * new RDN : cn=joe+cn=test
+     * new Rdn : cn=joe+cn=test
      *
      * @throws LdapException on error
      */
     @Test
     public void test131ReverseRenameCompositeCompositeOverlappingDeleteOldRdnDontExistInEntry() throws LdapException
     {
-        DN dn = new DN( "cn=small+cn=test,ou=system" );
-        RDN oldRdn = new RDN( "cn=small+cn=test" );
-        RDN newRdn = new RDN( "cn=joe+cn=test" );
+        Dn dn = new Dn( "cn=small+cn=test,ou=system" );
+        Rdn oldRdn = new Rdn( "cn=small+cn=test" );
+        Rdn newRdn = new Rdn( "cn=joe+cn=test" );
 
         Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "big", "small" );
@@ -1882,8 +1882,8 @@ public class LdifRevertorTest
 
 
     /**
-     * Test a reversed rename ModifyDN, where the initial RDN is composite, 
-     * the new RDN is composite, they are overlapping, with deleteOldRdn = true, and
+     * Test a reversed rename ModifyDN, where the initial Rdn is composite,
+     * the new Rdn is composite, they are overlapping, with deleteOldRdn = true, and
      * some of the new values exists in the entry.
      * 
      * Covers case 13.1 of http://cwiki.apache.org/confluence/display/DIRxSRVx11/Reverse+LDIF
@@ -1897,16 +1897,16 @@ public class LdifRevertorTest
      * cn: big
      * sn: This is a test 
      * 
-     * new RDN : cn=big+cn=test
+     * new Rdn : cn=big+cn=test
      *
      * @throws LdapException on error
      */
     @Test
     public void test132ReverseRenameCompositeCompositeOverlappingDeleteOldRdnExistInEntry() throws LdapException
     {
-        DN dn = new DN( "cn=small+cn=test,ou=system" );
-        RDN oldRdn = new RDN( "cn=small+cn=test" );
-        RDN newRdn = new RDN( "cn=big+cn=test" );
+        Dn dn = new Dn( "cn=small+cn=test,ou=system" );
+        Rdn oldRdn = new Rdn( "cn=small+cn=test" );
+        Rdn newRdn = new Rdn( "cn=big+cn=test" );
 
         Entry entry = new DefaultEntry( dn );
         entry.put( "cn", "test", "big", "small" );

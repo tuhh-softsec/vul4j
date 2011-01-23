@@ -39,7 +39,7 @@ import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -68,7 +68,7 @@ public class ModifyRequestImplTest
 
         try
         {
-            req.setName( new DN( "cn=admin,dc=apache,dc=org" ) );
+            req.setName( new Dn( "cn=admin,dc=apache,dc=org" ) );
         }
         catch ( LdapException ne )
         {
@@ -156,7 +156,7 @@ public class ModifyRequestImplTest
 
 
     /**
-     * Test for inequality when only the DN names are different.
+     * Test for inequality when only the Dn names are different.
      */
     @Test
     public void testNotEqualDiffName()
@@ -164,9 +164,9 @@ public class ModifyRequestImplTest
         try
         {
             ModifyRequestImpl req0 = getRequest();
-            req0.setName( new DN( "cn=admin,dc=example,dc=com" ) );
+            req0.setName( new Dn( "cn=admin,dc=example,dc=com" ) );
             ModifyRequestImpl req1 = getRequest();
-            req1.setName( new DN( "cn=admin,dc=apache,dc=org" ) );
+            req1.setName( new Dn( "cn=admin,dc=apache,dc=org" ) );
 
             assertFalse( req0.equals( req1 ) );
         }
@@ -323,11 +323,11 @@ public class ModifyRequestImplTest
             }
 
 
-            public DN getName()
+            public Dn getName()
             {
                 try
                 {
-                    return new DN( "cn=admin,dc=apache,dc=org" );
+                    return new Dn( "cn=admin,dc=apache,dc=org" );
                 }
                 catch ( Exception e )
                 {
@@ -337,7 +337,7 @@ public class ModifyRequestImplTest
             }
 
 
-            public void setName( DN name )
+            public void setName( Dn name )
             {
             }
 

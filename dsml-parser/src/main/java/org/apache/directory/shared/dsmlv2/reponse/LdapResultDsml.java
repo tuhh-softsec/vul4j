@@ -31,7 +31,7 @@ import org.apache.directory.shared.ldap.message.LdapResult;
 import org.apache.directory.shared.ldap.message.Message;
 import org.apache.directory.shared.ldap.message.Referral;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.dom4j.Element;
 
 
@@ -77,12 +77,12 @@ public class LdapResultDsml implements DsmlDecorator
             root.addAttribute( "requestID", "" + requestID );
         }
 
-        // Matched DN
-        DN matchedDN = result.getMatchedDn();
+        // Matched Dn
+        Dn matchedDn = result.getMatchedDn();
 
-        if ( !DN.isNullOrEmpty( matchedDN ) )
+        if ( !Dn.isNullOrEmpty(matchedDn) )
         {
-            root.addAttribute( "matchedDN", matchedDN.getName() );
+            root.addAttribute( "matchedDn", matchedDn.getName() );
         }
 
         // Controls
@@ -143,7 +143,7 @@ public class LdapResultDsml implements DsmlDecorator
 
 
     /**
-     * Get the matched DN
+     * Get the matched Dn
      * 
      * @return Returns the matchedDN.
      */
@@ -154,13 +154,13 @@ public class LdapResultDsml implements DsmlDecorator
 
 
     /**
-     * Set the Matched DN
+     * Set the Matched Dn
      * 
-     * @param matchedDN The matchedDN to set.
+     * @param matchedDn The matchedDn to set.
      */
-    public void setMatchedDn( DN matchedDN )
+    public void setMatchedDn( Dn matchedDn)
     {
-        result.setMatchedDn( matchedDN );
+        result.setMatchedDn(matchedDn);
     }
 
 

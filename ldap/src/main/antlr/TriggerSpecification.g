@@ -26,7 +26,7 @@ package org.apache.directory.shared.ldap.trigger;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.ldap.schema.NormalizerMappingResolver;
 import org.apache.directory.shared.ldap.trigger.StoredProcedureOption;
 import org.apache.directory.shared.ldap.trigger.StoredProcedureParameter;
@@ -345,7 +345,7 @@ genericStoredProcedureParameter
 ldapContextStoredProcedureParameter
 {
     log.debug( "entered ldapContextStoredProcedureParameter()" );
-    DN ldapContext = null;
+    Dn ldapContext = null;
 }
     : ID_ldapContext ( SP )+ ldapContext=distinguishedName
     { triggerStoredProcedureParameters.add( StoredProcedureParameter.Generic_LDAP_CONTEXT.instance( ldapContext ) ); }
@@ -385,7 +385,7 @@ storedProcedureSearchContextOption returns [ StoredProcedureSearchContextOption 
     log.debug( "entered storedProcedureSearchContextOption()" );
     spSearchContextOption = null;
     SearchScope searchScope = SearchScope.OBJECT; // default scope
-    DN spSearchContext = null;
+    Dn spSearchContext = null;
 }
     :
     ID_searchContext ( SP )+ // FIXME: SP should not be mandatory if an OPEN_CURLY follows
@@ -406,7 +406,7 @@ storedProcedureSearchScope returns [ SearchScope scope ]
     | ID_scope_subtree { scope = SearchScope.SUBTREE; }
     ;
 
-storedProcedureSearchContext returns [ DN spSearchContext ]
+storedProcedureSearchContext returns [ Dn spSearchContext ]
 {
     log.debug( "entered storedProcedureSearchContext()" );
     spSearchContext = null;
@@ -425,14 +425,14 @@ fullyQualifiedStoredProcedureName returns [ String spName ]
     { spName = spNameToken.getText(); }
     ;
 
-distinguishedName returns [ DN name ] 
+distinguishedName returns [ Dn name ]
 {
     log.debug( "entered distinguishedName()" );
     name = null;
 }
     : nameToken:UTF8String
     {
-        name = new DN( nameToken.getText() );
+        name = new Dn( nameToken.getText() );
     }
     ;
     exception
@@ -505,9 +505,9 @@ tokens
     ID_newrdn = "$newrdn";
     ID_deleteoldrdn = "$deleteoldrdn";
     ID_newSuperior = "$newSuperior";
-    ID_oldRDN = "$oldRDN";
-    ID_oldSuperiorDN = "$oldSuperiorDN";
-    ID_newDN = "$newDN";
+    ID_oldRDN = "$oldRdn";
+    ID_oldSuperiorDN = "$oldSuperiorDn";
+    ID_newDN = "$newDn";
     
     // generic parameters
     ID_ldapContext = "$ldapcontext";

@@ -524,7 +524,7 @@ public class AuthResponseTest extends AbstractResponseTest
 
 
     /**
-     * Test parsing of a response with wrong matched DN
+     * Test parsing of a response with wrong matched Dn
      */
     @Test
     public void testResponseWithWrongMatchedDN()

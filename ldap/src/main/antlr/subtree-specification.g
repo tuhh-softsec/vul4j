@@ -29,7 +29,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
 
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.ldap.filter.ExprNode;
 import org.apache.directory.shared.ldap.filter.LeafNode;
 import org.apache.directory.shared.ldap.filter.BranchNode;
@@ -89,8 +89,8 @@ options
     
     private NormalizerMappingResolver resolver;
     
-    private Set<DN> chopBeforeExclusions = null;
-    private Set<DN> chopAfterExclusions = null;
+    private Set<Dn> chopBeforeExclusions = null;
+    private Set<Dn> chopAfterExclusions = null;
 
     private SubtreeSpecificationModifier ssModifier = null;
     
@@ -173,8 +173,8 @@ subtreeSpecification returns [SubtreeSpecification ss]
     ssModifier = new SubtreeSpecificationModifier();
     subtreeSpecificationComponentsMonitor = new OptionalComponentsMonitor( 
             new String [] { "base", "specificExclusions", "minimum", "maximum", "specificationFilter" } );
-    chopBeforeExclusions = new HashSet<DN>();
-    chopAfterExclusions = new HashSet<DN>();
+    chopBeforeExclusions = new HashSet<Dn>();
+    chopAfterExclusions = new HashSet<Dn>();
     // always create a new filter parser in case we may have some statefulness problems with it
 }
     :
@@ -222,7 +222,7 @@ subtreeSpecificationComponent
 ss_base
 {
     log.debug( "entered ss_base()" );
-    DN base = null;
+    Dn base = null;
 }
     :
     ID_base ( SP )+ base=distinguishedName
@@ -266,7 +266,7 @@ specificExclusion
 chopBefore
 {
     log.debug( "entered chopBefore()" );
-    DN chopBeforeExclusion = null;
+    Dn chopBeforeExclusion = null;
 }
     :
     ID_chopBefore ( SP )* COLON ( SP )* chopBeforeExclusion=distinguishedName
@@ -278,7 +278,7 @@ chopBefore
 chopAfter
 {
     log.debug( "entered chopAfter()" );
-    DN chopAfterExclusion = null;
+    Dn chopAfterExclusion = null;
 }
     :
     ID_chopAfter ( SP )* COLON ( SP )* chopAfterExclusion=distinguishedName
@@ -341,7 +341,7 @@ filter returns [ ExprNode filterExpr = null ]
         throw new RecognitionException( "filterParser failed. " + e.getMessage() );
     }
     
-distinguishedName returns [ DN name ] 
+distinguishedName returns [ Dn name ]
 {
     log.debug( "entered distinguishedName()" );
     name = null;
@@ -349,7 +349,7 @@ distinguishedName returns [ DN name ]
     :
     token:SAFEUTF8STRING
     {
-        name = new DN( token.getText() );
+        name = new Dn( token.getText() );
         name.normalize( schemaManager );
         
         log.debug( "recognized a DistinguishedName: " + token.getText() );

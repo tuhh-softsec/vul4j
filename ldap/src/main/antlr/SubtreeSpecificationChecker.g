@@ -23,7 +23,7 @@ header
 
 package org.apache.directory.shared.ldap.subtree;
 
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.ldap.filter.ExprNode;
 import org.apache.directory.shared.ldap.filter.LeafNode;
 import org.apache.directory.shared.ldap.filter.BranchNode;
@@ -265,7 +265,7 @@ distinguishedName
     :
     token:SAFEUTF8STRING
     {
-        new DN( token.getText() );
+        new Dn( token.getText() );
         log.debug( "recognized a DistinguishedName: " + token.getText() );
     }
     ;

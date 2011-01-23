@@ -21,7 +21,7 @@ package org.apache.directory.shared.ldap.message;
 
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 
 
 /**
@@ -34,7 +34,7 @@ public class DeleteRequestImpl extends AbstractAbandonableRequest implements Del
     static final long serialVersionUID = 3187847454305567542L;
 
     /** The distinguished name of the entry to delete */
-    private DN name;
+    private Dn name;
 
     /** The deleteResponse associated with this request */
     private DeleteResponse response;
@@ -74,9 +74,9 @@ public class DeleteRequestImpl extends AbstractAbandonableRequest implements Del
      * Gets the distinguished name of the leaf entry to be deleted by this
      * request.
      * 
-     * @return the DN of the leaf entry to delete.
+     * @return the Dn of the leaf entry to delete.
      */
-    public DN getName()
+    public Dn getName()
     {
         return name;
     }
@@ -86,9 +86,9 @@ public class DeleteRequestImpl extends AbstractAbandonableRequest implements Del
      * Sets the distinguished name of the leaf entry to be deleted by this
      * request.
      * 
-     * @param name the DN of the leaf entry to delete.
+     * @param name the Dn of the leaf entry to delete.
      */
-    public void setName( DN name )
+    public void setName( Dn name )
     {
         this.name = name;
     }

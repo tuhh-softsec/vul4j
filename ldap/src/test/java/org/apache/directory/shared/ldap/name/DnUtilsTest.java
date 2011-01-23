@@ -198,13 +198,13 @@ public class DnUtilsTest
     public void testGetRelativeName() throws LdapInvalidDnException
     {
         // test the basis case first with the root
-        DN ancestor = new DN( "" );
-        DN descendant = new DN( "ou=system" );
-        DN relativeName = DnUtils.getRelativeName(ancestor, descendant);
+        Dn ancestor = new Dn( "" );
+        Dn descendant = new Dn( "ou=system" );
+        Dn relativeName = DnUtils.getRelativeName(ancestor, descendant);
         assertEquals( relativeName.toString(), "ou=system" );
 
-        ancestor = new DN( "ou=system" );
-        descendant = new DN( "ou=users,ou=system" );
+        ancestor = new Dn( "ou=system" );
+        descendant = new Dn( "ou=users,ou=system" );
         relativeName = DnUtils.getRelativeName(ancestor, descendant);
         assertEquals( relativeName.toString(), "ou=users" );
     }

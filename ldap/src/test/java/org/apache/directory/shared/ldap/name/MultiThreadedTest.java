@@ -33,7 +33,6 @@ import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.schema.normalizers.DeepTrimToLowerNormalizer;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,12 +52,12 @@ public class MultiThreadedTest
 
     private static Map<String, OidNormalizer> oidsMap;
 
-    private static DN referenceDn;
-    private static DN sharedDn;
-    private static RDN referenceRdn;
-    private static RDN sharedRdn;
-    private static AVA referenceAva;
-    private static AVA sharedAva;
+    private static Dn referenceDn;
+    private static Dn sharedDn;
+    private static Rdn referenceRdn;
+    private static Rdn sharedRdn;
+    private static Ava referenceAva;
+    private static Ava sharedAva;
 
 
     @BeforeClass
@@ -75,19 +74,19 @@ public class MultiThreadedTest
         oidsMap.put( "organizationalUnitName", new OidNormalizer( "2.5.4.11", new DeepTrimToLowerNormalizer() ) );
         oidsMap.put( "2.5.4.11", new OidNormalizer( "2.5.4.11", new DeepTrimToLowerNormalizer() ) );
 
-        referenceDn = new DN( "dc=example,dc=com" );
+        referenceDn = new Dn( "dc=example,dc=com" );
         referenceDn.normalize( oidsMap );
-        sharedDn = new DN( "dc=example,dc=com" );
+        sharedDn = new Dn( "dc=example,dc=com" );
         sharedDn.normalize( oidsMap );
 
-        referenceRdn = new RDN( "ou=system" );
+        referenceRdn = new Rdn( "ou=system" );
         referenceRdn.normalize( oidsMap );
-        sharedRdn = new RDN( "ou=system" );
+        sharedRdn = new Rdn( "ou=system" );
         sharedRdn.normalize( oidsMap );
 
-        referenceAva = new AVA( "ou", "2.5.4.11", "System", "system" );
+        referenceAva = new Ava( "ou", "2.5.4.11", "System", "system" );
         referenceAva.normalize();
-        sharedAva = new AVA( "ou", "2.5.4.11", "System", "system" );
+        sharedAva = new Ava( "ou", "2.5.4.11", "System", "system" );
         sharedAva.normalize();
     }
 

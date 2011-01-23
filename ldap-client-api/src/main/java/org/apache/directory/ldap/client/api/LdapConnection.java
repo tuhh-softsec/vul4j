@@ -48,8 +48,8 @@ import org.apache.directory.shared.ldap.message.ModifyRequest;
 import org.apache.directory.shared.ldap.message.ModifyResponse;
 import org.apache.directory.shared.ldap.message.SearchRequest;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.name.DN;
-import org.apache.directory.shared.ldap.name.RDN;
+import org.apache.directory.shared.ldap.name.Dn;
+import org.apache.directory.shared.ldap.name.Rdn;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 
 
@@ -154,7 +154,7 @@ public interface LdapConnection
      * Simple Bind on a server.
      *
      * @param name The name we use to authenticate the user. It must be a
-     * valid DN
+     * valid Dn
      * @param credentials The password. It can't be null
      * @return The BindResponse LdapResponse
      * @throws LdapException if some error occurred
@@ -167,13 +167,13 @@ public interface LdapConnection
      * Simple Bind on a server.
      *
      * @param name The name we use to authenticate the user. It must be a
-     * valid DN
+     * valid Dn
      * @param credentials The password. It can't be null
      * @return The BindResponse LdapResponse
      * @throws LdapException if some error occurred
      * @throws IOException if an I/O exception occurred
      */
-    BindResponse bind( DN name, String credentials ) throws LdapException, IOException;
+    BindResponse bind( Dn name, String credentials ) throws LdapException, IOException;
 
 
     /**
@@ -200,14 +200,14 @@ public interface LdapConnection
      * This method is blocking.
      *
      * @param baseDn The base for the search. It must be a valid
-     * DN, and can't be emtpy
+     * Dn, and can't be emtpy
      * @param filter The filter to use for this search. It can't be empty
      * @param scope The search scope : OBJECT, ONELEVEL or SUBTREE
      * @param attributes The attributes to use for this search
      * @return A search cursor on the result.
      * @throws LdapException if some error occurred
      */
-    SearchCursor search( DN baseDn, String filter, SearchScope scope, String... attributes )
+    SearchCursor search( Dn baseDn, String filter, SearchScope scope, String... attributes )
         throws LdapException;
 
 
@@ -223,7 +223,7 @@ public interface LdapConnection
      * This method is blocking.
      *
      * @param baseDn The base for the search. It must be a valid
-     * DN, and can't be emtpy
+     * Dn, and can't be emtpy
      * @param filter The filter to use for this search. It can't be empty
      * @param scope The search scope : OBJECT, ONELEVEL or SUBTREE
      * @param attributes The attributes to use for this search
@@ -264,20 +264,20 @@ public interface LdapConnection
 
 
     /**
-     * Applies all the modifications to the entry specified by its DN.
+     * Applies all the modifications to the entry specified by its Dn.
      *
-     * @param dn The entry's DN
+     * @param dn The entry's Dn
      * @param modifications The list of modifications to be applied
      * @return the modify operation's response
      * @throws LdapException in case of modify operation failure or timeout happens
      */
-    ModifyResponse modify( DN dn, Modification... modifications ) throws LdapException;
+    ModifyResponse modify( Dn dn, Modification... modifications ) throws LdapException;
 
 
     /**
-     * Applies all the modifications to the entry specified by its DN.
+     * Applies all the modifications to the entry specified by its Dn.
      *
-     * @param dn The entry's DN
+     * @param dn The entry's Dn
      * @param modifications The list of modifications to be applied
      * @return the modify operation's response
      * @throws LdapException in case of modify operation failure or timeout happens
@@ -308,10 +308,10 @@ public interface LdapConnection
 
 
     /**
-     * Renames the given entryDn with new RDN and deletes the old RDN.
+     * Renames the given entryDn with new Rdn and deletes the old Rdn.
      *
-     * @param entryDn the target DN
-     * @param newRdn new RDN for the target DN
+     * @param entryDn the target Dn
+     * @param newRdn new Rdn for the target Dn
      * @return modifyDn operation's response
      * @throws LdapException if some error occurred
      * @see #rename(String, String, boolean)
@@ -320,109 +320,109 @@ public interface LdapConnection
 
 
     /**
-     * Renames the given entryDn with new RDN and deletes the old RDN.
+     * Renames the given entryDn with new Rdn and deletes the old Rdn.
      *
-     * @param entryDn the target DN
-     * @param newRdn new RDN for the target DN
+     * @param entryDn the target Dn
+     * @param newRdn new Rdn for the target Dn
      * @return modifyDn operation's response
      * @throws LdapException if some error occurred
-     * @see #rename(DN, RDN, boolean)
+     * @see #rename(org.apache.directory.shared.ldap.name.Dn, org.apache.directory.shared.ldap.name.Rdn, boolean)
      */
-    ModifyDnResponse rename( DN entryDn, RDN newRdn ) throws LdapException;
+    ModifyDnResponse rename( Dn entryDn, Rdn newRdn ) throws LdapException;
 
 
     /**
-     * Renames the given entryDn with new RDN and deletes the old RDN if
+     * Renames the given entryDn with new Rdn and deletes the old Rdn if
      * deleteOldRdn is set to true.
      *
-     * @param entryDn the target DN
-     * @param newRdn new RDN for the target DN
-     * @param deleteOldRdn flag to indicate whether to delete the old RDN
+     * @param entryDn the target Dn
+     * @param newRdn new Rdn for the target Dn
+     * @param deleteOldRdn flag to indicate whether to delete the old Rdn
      * @return modifyDn operation's response
      * @throws LdapException if some error occurred
-     * @see #rename(DN, RDN, boolean)
+     * @see #rename(org.apache.directory.shared.ldap.name.Dn, org.apache.directory.shared.ldap.name.Rdn, boolean)
      */
     ModifyDnResponse rename( String entryDn, String newRdn, boolean deleteOldRdn ) throws LdapException;
 
 
     /**
-     * Renames the given entryDn with new RDN and deletes the old RDN if
+     * Renames the given entryDn with new Rdn and deletes the old Rdn if
      * deleteOldRdn is set to true.
      *
-     * @param entryDn the target DN
-     * @param newRdn new RDN for the target DN
-     * @param deleteOldRdn flag to indicate whether to delete the old RDN
+     * @param entryDn the target Dn
+     * @param newRdn new Rdn for the target Dn
+     * @param deleteOldRdn flag to indicate whether to delete the old Rdn
      * @return modifyDn operation's response
      * @throws LdapException if some error occurred
      */
-    ModifyDnResponse rename( DN entryDn, RDN newRdn, boolean deleteOldRdn ) throws LdapException;
+    ModifyDnResponse rename( Dn entryDn, Rdn newRdn, boolean deleteOldRdn ) throws LdapException;
 
 
     /**
-     * Moves the given entry DN under the new superior DN.
+     * Moves the given entry Dn under the new superior Dn.
      *
-     * @param entryDn the DN of the target entry
-     * @param newSuperiorDn DN of the new parent/superior
+     * @param entryDn the Dn of the target entry
+     * @param newSuperiorDn Dn of the new parent/superior
      * @return modifyDn operation's response
      * @throws LdapException if some error occurred
-     * @see #move(DN, DN)
+     * @see #move(org.apache.directory.shared.ldap.name.Dn, org.apache.directory.shared.ldap.name.Dn)
      */
     ModifyDnResponse move( String entryDn, String newSuperiorDn ) throws LdapException;
 
 
     /**
-     * Moves the given entry DN under the new superior DN.
+     * Moves the given entry Dn under the new superior Dn.
      *
-     * @param entryDn the DN of the target entry
-     * @param newSuperiorDn DN of the new parent/superior
+     * @param entryDn the Dn of the target entry
+     * @param newSuperiorDn Dn of the new parent/superior
      * @return modifyDn operation's response
      * @throws LdapException if some error occurred
      */
-    ModifyDnResponse move( DN entryDn, DN newSuperiorDn ) throws LdapException;
+    ModifyDnResponse move( Dn entryDn, Dn newSuperiorDn ) throws LdapException;
 
 
     /**
-     * Moves and renames the given entryDn. The old RDN will be deleted.
+     * Moves and renames the given entryDn. The old Rdn will be deleted.
      *
-     * @param entryDn The original entry DN
-     * @param newDn The new Entry DN
+     * @param entryDn The original entry Dn
+     * @param newDn The new Entry Dn
      * @return modifyDn operations response
      * @throws LdapException if some error occurred
-     * @see #moveAndRename(DN, DN, boolean)
+     * @see #moveAndRename(org.apache.directory.shared.ldap.name.Dn, org.apache.directory.shared.ldap.name.Dn, boolean)
      */
-    ModifyDnResponse moveAndRename( DN entryDn, DN newDn ) throws LdapException;
+    ModifyDnResponse moveAndRename( Dn entryDn, Dn newDn ) throws LdapException;
 
 
     /**
-     * Moves and renames the given entryDn.The old RDN will be deleted
+     * Moves and renames the given entryDn.The old Rdn will be deleted
      *
-     * @param entryDn The original entry DN
-     * @param newDn The new Entry DN
+     * @param entryDn The original entry Dn
+     * @param newDn The new Entry Dn
      * @return modifyDn operations response
      * @throws LdapException if some error occurred
-     * @see #moveAndRename(DN, DN, boolean)
+     * @see #moveAndRename(org.apache.directory.shared.ldap.name.Dn, org.apache.directory.shared.ldap.name.Dn, boolean)
      */
     ModifyDnResponse moveAndRename( String entryDn, String newDn ) throws LdapException;
 
 
     /**
-     * Moves and renames the given entryDn. The old RDN will be deleted if requested.
+     * Moves and renames the given entryDn. The old Rdn will be deleted if requested.
      *
-     * @param entryDn The original entry DN
-     * @param newDn The new Entry DN
-     * @param deleteOldRdn Tells if the old RDN must be removed
+     * @param entryDn The original entry Dn
+     * @param newDn The new Entry Dn
+     * @param deleteOldRdn Tells if the old Rdn must be removed
      * @return modifyDn operations response
      * @throws LdapException if some error occurred
      */
-    ModifyDnResponse moveAndRename( DN entryDn, DN newDn, boolean deleteOldRdn ) throws LdapException;
+    ModifyDnResponse moveAndRename( Dn entryDn, Dn newDn, boolean deleteOldRdn ) throws LdapException;
 
 
     /**
-     * Moves and renames the given entryDn. The old RDN will be deleted if requested.
+     * Moves and renames the given entryDn. The old Rdn will be deleted if requested.
      *
-     * @param entryDn The original entry DN
-     * @param newDn The new Entry DN
-     * @param deleteOldRdn Tells if the old RDN must be removed
+     * @param entryDn The original entry Dn
+     * @param newDn The new Entry Dn
+     * @param deleteOldRdn Tells if the old Rdn must be removed
      * @return modifyDn operation's response
      * @throws LdapException if some error occurred
      */
@@ -441,23 +441,23 @@ public interface LdapConnection
 
 
     /**
-     * Deletes the entry with the given DN.
+     * Deletes the entry with the given Dn.
      *
-     * @param dn the target entry's DN as a String
+     * @param dn the target entry's Dn as a String
      * @return the delete operation's response
-     * @throws LdapException If the DN is not valid or if the deletion failed
+     * @throws LdapException If the Dn is not valid or if the deletion failed
      */
     DeleteResponse delete( String dn ) throws LdapException;
 
 
     /**
-     * Deletes the entry with the given DN.
+     * Deletes the entry with the given Dn.
      *
-     * @param dn the target entry's DN
+     * @param dn the target entry's Dn
      * @return the delete operation's response
-     * @throws LdapException If the DN is not valid or if the deletion failed
+     * @throws LdapException If the Dn is not valid or if the deletion failed
      */
-    DeleteResponse delete( DN dn ) throws LdapException;
+    DeleteResponse delete( Dn dn ) throws LdapException;
 
 
     /**
@@ -465,16 +465,16 @@ public interface LdapConnection
      *
      * @param deleteRequest the delete operation's request
      * @return delete operation's response, null if a non-null listener value is provided
-     * @throws LdapException If the DN is not valid or if the deletion failed
+     * @throws LdapException If the Dn is not valid or if the deletion failed
      */
     DeleteResponse delete( DeleteRequest deleteRequest ) throws LdapException;
 
 
     /**
      * Compares whether a given attribute's value matches that of the
-     * existing value of the attribute present in the entry with the given DN.
+     * existing value of the attribute present in the entry with the given Dn.
      *
-     * @param dn the target entry's String DN
+     * @param dn the target entry's String Dn
      * @param attributeName the attribute's name
      * @param value a String value with which the target entry's attribute value to be compared with
      * @return compare operation's response
@@ -485,9 +485,9 @@ public interface LdapConnection
 
     /**
      * Compares whether a given attribute's value matches that of the
-     * existing value of the attribute present in the entry with the given DN.
+     * existing value of the attribute present in the entry with the given Dn.
      *
-     * @param dn the target entry's String DN
+     * @param dn the target entry's String Dn
      * @param attributeName the attribute's name
      * @param value a byte[] value with which the target entry's attribute value to be compared with
      * @return compare operation's response
@@ -498,9 +498,9 @@ public interface LdapConnection
 
     /**
      * Compares whether a given attribute's value matches that of the
-     * existing value of the attribute present in the entry with the given DN.
+     * existing value of the attribute present in the entry with the given Dn.
      *
-     * @param dn the target entry's String DN
+     * @param dn the target entry's String Dn
      * @param attributeName the attribute's name
      * @param value a Value<?> value with which the target entry's attribute value to be compared with
      * @return compare operation's response
@@ -511,47 +511,47 @@ public interface LdapConnection
 
     /**
      * Compares whether a given attribute's value matches that of the
-     * existing value of the attribute present in the entry with the given DN.
+     * existing value of the attribute present in the entry with the given Dn.
      *
-     * @param dn the target entry's DN
+     * @param dn the target entry's Dn
      * @param attributeName the attribute's name
      * @param value a String value with which the target entry's attribute value to be compared with
      * @return compare operation's response
      * @throws LdapException if some error occurred
      */
-    CompareResponse compare( DN dn, String attributeName, String value ) throws LdapException;
+    CompareResponse compare( Dn dn, String attributeName, String value ) throws LdapException;
 
 
     /**
      * Compares whether a given attribute's value matches that of the
-     * existing value of the attribute present in the entry with the given DN.
+     * existing value of the attribute present in the entry with the given Dn.
      *
-     * @param dn the target entry's DN
+     * @param dn the target entry's Dn
      * @param attributeName the attribute's name
      * @param value a byte[] value with which the target entry's attribute value to be compared with
      * @return compare operation's response
      * @throws LdapException if some error occurred
      */
-    CompareResponse compare( DN dn, String attributeName, byte[] value ) throws LdapException;
+    CompareResponse compare( Dn dn, String attributeName, byte[] value ) throws LdapException;
 
 
     /**
      * Compares whether a given attribute's value matches that of the
-     * existing value of the attribute present in the entry with the given DN.
+     * existing value of the attribute present in the entry with the given Dn.
      *
-     * @param dn the target entry's DN
+     * @param dn the target entry's Dn
      * @param attributeName the attribute's name
      * @param value a Value<?> value with which the target entry's attribute value to be compared with
      * @return compare operation's response
      * @throws LdapException if some error occurred
      */
-    CompareResponse compare( DN dn, String attributeName, Value<?> value ) throws LdapException;
+    CompareResponse compare( Dn dn, String attributeName, Value<?> value ) throws LdapException;
 
 
     /**
      * Compares an entry's attribute's value with that of the given value.
      *
-     * @param compareRequest the CompareRequest which contains the target DN, attribute name and value
+     * @param compareRequest the CompareRequest which contains the target Dn, attribute name and value
      * @return compare operation's response
      * @throws LdapException if some error occurred
      */
@@ -608,7 +608,7 @@ public interface LdapConnection
      *
      * @param extendedRequest the extended operation's request
      * @return Extended operation's response
-     * @throws LdapException If the DN is not valid or if the extended operation failed
+     * @throws LdapException If the Dn is not valid or if the extended operation failed
      */
     ExtendedResponse extended( ExtendedRequest extendedRequest ) throws LdapException;
 
@@ -616,7 +616,7 @@ public interface LdapConnection
     /**
      * Tells if an Entry exists in the server.
      * 
-     * @param dn The DN for the entry we want to check the existence
+     * @param dn The Dn for the entry we want to check the existence
      * @return <code>true</code> if the entry exists, <code>false</code> otherwise. 
      * Note that if the entry exists but if the user does not have the permission to
      * read it, <code>false</code> will also be returned 
@@ -628,82 +628,82 @@ public interface LdapConnection
     /**
      * Tells if an Entry exists in the server.
      * 
-     * @param dn The DN for the entry we want to check the existence
+     * @param dn The Dn for the entry we want to check the existence
      * @return <code>true</code> if the entry exists, <code>false</code> otherwise. 
      * Note that if the entry exists but if the user does not have the permission to
      * read it, <code>false</code> will also be returned 
      * @throws LdapException if some error occurred
      */
-    boolean exists( DN dn ) throws LdapException;
+    boolean exists( Dn dn ) throws LdapException;
 
 
     /**
-     * Searches for an entry having the given DN.
+     * Searches for an entry having the given Dn.
      *
-     * @param dn the DN of the entry to be fetched
-     * @return the Entry with the given DN or null if no entry exists with that DN
-     * @throws LdapException in case of any problems while searching for the DN or if the returned response contains a referral
-     * @see #lookup(DN, String...)
+     * @param dn the Dn of the entry to be fetched
+     * @return the Entry with the given Dn or null if no entry exists with that Dn
+     * @throws LdapException in case of any problems while searching for the Dn or if the returned response contains a referral
+     * @see #lookup(org.apache.directory.shared.ldap.name.Dn, String...)
      */
-    Entry lookup( DN dn ) throws LdapException;
+    Entry lookup( Dn dn ) throws LdapException;
 
 
     /**
-     * Searches for an entry having the given DN.
+     * Searches for an entry having the given Dn.
      *
-     * @param dn the DN of the entry to be fetched
-     * @return the Entry with the given DN or null if no entry exists with that DN
-     * @throws LdapException in case of any problems while searching for the DN or if the returned response contains a referral
+     * @param dn the Dn of the entry to be fetched
+     * @return the Entry with the given Dn or null if no entry exists with that Dn
+     * @throws LdapException in case of any problems while searching for the Dn or if the returned response contains a referral
      * @see #lookup(String, String...)
      */
     Entry lookup( String dn ) throws LdapException;
 
 
     /**
-     * Searches for an entry having the given DN.
+     * Searches for an entry having the given Dn.
      *
-     * @param dn the DN of the entry to be fetched
+     * @param dn the Dn of the entry to be fetched
      * @param attributes the attributes to be returned along with entry
-     * @return the Entry with the given DN or null if no entry exists with that DN
-     * @throws LdapException in case of any problems while searching for the DN or if the returned response contains a referral
+     * @return the Entry with the given Dn or null if no entry exists with that Dn
+     * @throws LdapException in case of any problems while searching for the Dn or if the returned response contains a referral
      */
-    Entry lookup( DN dn, String... attributes ) throws LdapException;
+    Entry lookup( Dn dn, String... attributes ) throws LdapException;
 
 
     /**
-     * Searches for an entry having the given DN.
+     * Searches for an entry having the given Dn.
      *
-     * @param dn the DN of the entry to be fetched
+     * @param dn the Dn of the entry to be fetched
      * @param controls the controls to use
      * @param attributes the attributes to be returned along with entry
-     * @return the Entry with the given DN or null if no entry exists with that DN
-     * @throws LdapException in case of any problems while searching for the DN or if the returned response contains a referral
+     * @return the Entry with the given Dn or null if no entry exists with that Dn
+     * @throws LdapException in case of any problems while searching for the Dn or if the returned response contains a referral
      */
-    Entry lookup( DN dn, Control[] controls, String... attributes ) throws LdapException;
+    Entry lookup( Dn dn, Control[] controls, String... attributes ) throws LdapException;
 
 
 
     /**
-     * Searches for an entry having the given DN.
+     * Searches for an entry having the given Dn.
      *
-     * @param dn the DN of the entry to be fetched
+     * @param dn the Dn of the entry to be fetched
      * @param attributes the attributes to be returned along with entry
-     * @return the Entry with the given DN or null if no entry exists with that DN
-     * @throws LdapException in case of any problems while searching for the DN or if the returned response contains a referral
-     * @see #lookup(DN, String...)
+     * @return the Entry with the given Dn or null if no entry exists with that Dn
+     * @throws LdapException in case of any problems while searching for the Dn or if the returned response contains a referral
+     * @see #lookup(org.apache.directory.shared.ldap.name.Dn, String...)
      */
     Entry lookup( String dn, String... attributes ) throws LdapException;
 
 
     /**
-     * Searches for an entry having the given DN.
+     * Searches for an entry having the given Dn.
      *
-     * @param dn the DN of the entry to be fetched
+     * @param dn the Dn of the entry to be fetched
      * @param controls the controls to use
      * @param attributes the attributes to be returned along with entry
-     * @return the Entry with the given DN or null if no entry exists with that DN
-     * @throws LdapException in case of any problems while searching for the DN or if the returned response contains a referral
-     * @see #lookup(DN, String...)
+     * @return the Entry with the given Dn or null if no entry exists with that Dn
+     * @throws LdapException in case of any problems while searching for the Dn or if the returned response contains a referral
+     * @see #lookup(org.apache.directory.shared.ldap.name.Dn, String...)
      */
     Entry lookup( String dn, Control[] controls, String... attributes ) throws LdapException;
 

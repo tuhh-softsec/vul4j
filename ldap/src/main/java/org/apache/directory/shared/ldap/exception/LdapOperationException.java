@@ -21,7 +21,7 @@ package org.apache.directory.shared.ldap.exception;
 
 
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 
 
 /**
@@ -38,14 +38,14 @@ public class LdapOperationException extends LdapException
     /** The operation resultCode */
     protected ResultCodeEnum resultCode;
 
-    /** The resolved DN */
-    protected DN resolvedDn;
+    /** The resolved Dn */
+    protected Dn resolvedDn;
 
 
     /**
      * @return the resolvedDn
      */
-    public DN getResolvedDn()
+    public Dn getResolvedDn()
     {
         return resolvedDn;
     }
@@ -54,7 +54,7 @@ public class LdapOperationException extends LdapException
     /**
      * @param resolvedDn the resolvedDn to set
      */
-    public void setResolvedDn( DN resolvedDn )
+    public void setResolvedDn( Dn resolvedDn )
     {
         this.resolvedDn = resolvedDn;
     }

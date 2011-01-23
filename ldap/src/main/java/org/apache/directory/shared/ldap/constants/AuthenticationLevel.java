@@ -53,7 +53,7 @@ public enum AuthenticationLevel
     STRONG(2, "strong"),
 
     /**
-     * Unauthentication, if the BIND contains a DN but no credentials
+     * Unauthentication, if the BIND contains a Dn but no credentials
      */
     UNAUTHENT(3, "unauthent");
 

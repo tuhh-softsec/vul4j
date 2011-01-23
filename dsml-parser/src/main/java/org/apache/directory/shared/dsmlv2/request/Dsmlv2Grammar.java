@@ -76,8 +76,8 @@ import org.apache.directory.shared.ldap.message.ModifyRequestImpl;
 import org.apache.directory.shared.ldap.message.SearchRequest;
 import org.apache.directory.shared.ldap.message.SearchRequestImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.name.DN;
-import org.apache.directory.shared.ldap.name.RDN;
+import org.apache.directory.shared.ldap.name.Dn;
+import org.apache.directory.shared.ldap.name.Rdn;
 import org.apache.directory.shared.util.Base64;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -184,7 +184,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             new GrammarTransition( Dsmlv2StatesEnum.BATCHREQUEST_LOOP, Dsmlv2StatesEnum.EXTENDED_REQUEST_START_TAG,
                 extendedRequestCreation ) );
 
-        // ** MOD DN REQUEST **
+        // ** MOD Dn REQUEST **
         // state: [BATCHREQUEST_START_TAG] - Tag: <modDNRequest>
         super.transitions[Dsmlv2StatesEnum.BATCHREQUEST_START_TAG.ordinal()].put( new Tag( "modDNRequest", Tag.START ),
             new GrammarTransition( Dsmlv2StatesEnum.BATCHREQUEST_START_TAG,
@@ -550,7 +550,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             Dsmlv2StatesEnum.BATCHREQUEST_LOOP, null ) );
 
         //====================================================
-        //  Transitions concerning : MODIFY DN REQUEST
+        //  Transitions concerning : MODIFY Dn REQUEST
         //====================================================
         super.transitions[Dsmlv2StatesEnum.MODIFY_DN_REQUEST_START_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
         super.transitions[Dsmlv2StatesEnum.MODIFY_DN_REQUEST_CONTROL_START_TAG.ordinal()] = new HashMap<Tag, GrammarTransition>();
@@ -1210,7 +1210,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             {
                 try
                 {
-                    addRequest.setEntryDn( new DN( attributeValue ) );
+                    addRequest.setEntryDn( new Dn( attributeValue ) );
                 }
                 catch ( LdapInvalidDnException e )
                 {
@@ -1331,7 +1331,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             {
                 try
                 {
-                    authRequest.setName( new DN( attributeValue ) );
+                    authRequest.setName( new Dn( attributeValue ) );
                 }
                 catch ( LdapInvalidDnException e )
                 {
@@ -1381,7 +1381,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             {
                 try
                 {
-                    compareRequest.setName( new DN( attributeValue ) );
+                    compareRequest.setName( new Dn( attributeValue ) );
                 }
                 catch ( LdapInvalidDnException e )
                 {
@@ -1497,7 +1497,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             {
                 try
                 {
-                    delRequest.setName( new DN( attributeValue ) );
+                    delRequest.setName( new Dn( attributeValue ) );
                 }
                 catch ( LdapInvalidDnException e )
                 {
@@ -1621,9 +1621,9 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     };
 
     /**
-     * GrammarAction that creates a Modify DN Request
+     * GrammarAction that creates a Modify Dn Request
      */
-    private final GrammarAction modDNRequestCreation = new GrammarAction( "Create Modify DN Request" )
+    private final GrammarAction modDNRequestCreation = new GrammarAction( "Create Modify Dn Request" )
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
@@ -1656,7 +1656,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             {
                 try
                 {
-                    modifyDNRequest.setName( new DN( attributeValue ) );
+                    modifyDNRequest.setName( new Dn( attributeValue ) );
                 }
                 catch ( LdapInvalidDnException e )
                 {
@@ -1675,7 +1675,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             {
                 try
                 {
-                    modifyDNRequest.setNewRdn( new RDN( attributeValue ) );
+                    modifyDNRequest.setNewRdn( new Rdn( attributeValue ) );
                 }
                 catch ( LdapInvalidDnException e )
                 {
@@ -1717,7 +1717,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             {
                 try
                 {
-                    modifyDNRequest.setNewSuperior( new DN( attributeValue ) );
+                    modifyDNRequest.setNewSuperior( new Dn( attributeValue ) );
                 }
                 catch ( LdapInvalidDnException e )
                 {
@@ -1763,7 +1763,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             {
                 try
                 {
-                    modifyRequest.setName( new DN( attributeValue ) );
+                    modifyRequest.setName( new Dn( attributeValue ) );
                 }
                 catch ( LdapInvalidDnException e )
                 {
@@ -1905,7 +1905,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             {
                 try
                 {
-                    searchRequest.setBase( new DN( attributeValue ) );
+                    searchRequest.setBase( new Dn( attributeValue ) );
                 }
                 catch ( LdapInvalidDnException e )
                 {

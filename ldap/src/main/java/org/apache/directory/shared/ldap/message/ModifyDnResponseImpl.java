@@ -86,7 +86,7 @@ public class ModifyDnResponseImpl extends AbstractResultResponse implements Modi
 
         StringBuilder sb = new StringBuilder();
 
-        sb.append( "    Modify DN Response\n" );
+        sb.append( "    Modify Dn Response\n" );
         sb.append( super.toString() );
 
         return sb.toString();

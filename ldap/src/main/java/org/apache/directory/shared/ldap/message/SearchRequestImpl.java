@@ -62,7 +62,7 @@ import org.apache.directory.shared.ldap.filter.PresenceNode;
 import org.apache.directory.shared.ldap.filter.SearchScope;
 import org.apache.directory.shared.ldap.filter.SimpleNode;
 import org.apache.directory.shared.ldap.filter.SubstringNode;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 
 
 /**
@@ -75,7 +75,7 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Sea
     static final long serialVersionUID = -5655881944020886218L;
 
     /** Search base distinguished name */
-    private DN baseDn;
+    private Dn baseDn;
 
     /** A temporary storage for a terminal Filter */
     private Filter terminalFilter;
@@ -470,7 +470,7 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Sea
      * 
      * @return the search base
      */
-    public DN getBase()
+    public Dn getBase()
     {
         return baseDn;
     }
@@ -482,7 +482,7 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Sea
      * @param base
      *            the search base
      */
-    public void setBase( DN base )
+    public void setBase( Dn base )
     {
         baseDn = base;
     }

@@ -24,7 +24,7 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.entry.BinaryValue;
 import org.apache.directory.shared.ldap.entry.StringValue;
 import org.apache.directory.shared.ldap.entry.Value;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.util.Strings;
 
 
@@ -38,7 +38,7 @@ public class CompareRequestImpl extends AbstractAbandonableRequest implements Co
     static final long serialVersionUID = 1699731530016468977L;
 
     /** Distinguished name identifying the compared entry */
-    private DN name;
+    private Dn name;
 
     /** The id of the attribute used in the comparison */
     private String attrId;
@@ -95,9 +95,9 @@ public class CompareRequestImpl extends AbstractAbandonableRequest implements Co
      * Gets the distinguished name of the entry to be compared using the
      * attribute value assertion.
      * 
-     * @return the DN of the compared entry.
+     * @return the Dn of the compared entry.
      */
-    public DN getName()
+    public Dn getName()
     {
         return name;
     }
@@ -107,9 +107,9 @@ public class CompareRequestImpl extends AbstractAbandonableRequest implements Co
      * Sets the distinguished name of the entry to be compared using the
      * attribute value assertion.
      * 
-     * @param name the DN of the compared entry.
+     * @param name the Dn of the compared entry.
      */
-    public void setName( DN name )
+    public void setName( Dn name )
     {
         this.name = name;
     }
@@ -340,7 +340,7 @@ public class CompareRequestImpl extends AbstractAbandonableRequest implements Co
         }
 
         CompareRequest req = ( CompareRequest ) obj;
-        DN reqName = req.getName();
+        Dn reqName = req.getName();
 
         if ( ( name != null ) && ( reqName == null ) )
         {

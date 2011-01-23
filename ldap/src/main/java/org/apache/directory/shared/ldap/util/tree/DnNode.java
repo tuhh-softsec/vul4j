@@ -27,8 +27,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapUnwillingToPerformException;
 import org.apache.directory.shared.ldap.message.ResultCodeEnum;
-import org.apache.directory.shared.ldap.name.DN;
-import org.apache.directory.shared.ldap.name.RDN;
+import org.apache.directory.shared.ldap.name.Dn;
+import org.apache.directory.shared.ldap.name.Rdn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  * A node may contain a reference to an object whose suffix is the path through the
  * nodes of the tree from the root. <br/>
  * A node may also have no attached element.<br/>
- * Each node is referenced by a RDN, and holds the full DN corresponding to its position<br/>
+ * Each node is referenced by a Rdn, and holds the full Dn corresponding to its position<br/>
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @param <N> The type of node we store
@@ -54,10 +54,10 @@ public class DnNode<N> implements Cloneable
     private N nodeElement;
 
     /** The node's key */
-    private RDN nodeRdn;
+    private Rdn nodeRdn;
 
-    /** The node's DN */
-    private DN nodeDn;
+    /** The node's Dn */
+    private Dn nodeDn;
 
     /** The node's depth in the tree */
     private int depth;
@@ -66,19 +66,19 @@ public class DnNode<N> implements Cloneable
     private DnNode<N> parent;
 
     /** Stores the list of all the descendant */
-    private Map<RDN, DnNode<N>> children;
+    private Map<Rdn, DnNode<N>> children;
 
     //-------------------------------------------------------------------------
     // Helper methods
     //-------------------------------------------------------------------------
     /**
-     * Check that the DN is not null
+     * Check that the Dn is not null
      */
-    private void checkDn( DN dn ) throws LdapException
+    private void checkDn( Dn dn ) throws LdapException
     {
         if ( ( dn == null ) || dn.isEmpty() )
         {
-            String message = "Cannot process an empty DN";
+            String message = "Cannot process an empty Dn";
             LOG.error( message );
             throw new LdapUnwillingToPerformException( ResultCodeEnum.UNWILLING_TO_PERFORM, message );
         }
@@ -87,14 +87,14 @@ public class DnNode<N> implements Cloneable
     /**
      * Create a new DnNode, recursively creating all the intermediate nodes.
      */
-    private DnNode<N> createNode( DN dn, N element, int nbRdns ) throws LdapException
+    private DnNode<N> createNode( Dn dn, N element, int nbRdns ) throws LdapException
     {
         checkDn( dn );
 
         DnNode<N> rootNode = null;
 
         // No parent : add from the current position
-        for ( RDN rdn : dn.getRdns() )
+        for ( Rdn rdn : dn.getRdns() )
         {
             if ( nbRdns == 0 )
             {
@@ -146,9 +146,9 @@ public class DnNode<N> implements Cloneable
      */
     public DnNode()
     {
-        children = new ConcurrentHashMap<RDN, DnNode<N>>();
-        nodeDn = DN.EMPTY_DN;
-        nodeRdn = RDN.EMPTY_RDN;
+        children = new ConcurrentHashMap<Rdn, DnNode<N>>();
+        nodeDn = Dn.EMPTY_DN;
+        nodeRdn = Rdn.EMPTY_RDN;
     }
 
 
@@ -160,22 +160,22 @@ public class DnNode<N> implements Cloneable
     public DnNode( N element )
     {
         this.nodeElement = element;
-        children = new ConcurrentHashMap<RDN, DnNode<N>>();
+        children = new ConcurrentHashMap<Rdn, DnNode<N>>();
     }
 
 
     /**
      * Creates a new instance of DnNode.
      *
-     * @param dn the node's DN
+     * @param dn the node's Dn
      * @param element the element to store
      */
-    public DnNode( DN dn, N element )
+    public DnNode( Dn dn, N element )
     {
         if ( ( dn == null ) || ( dn.isEmpty() ) )
         {
-            children = new ConcurrentHashMap<RDN, DnNode<N>>();
-            this.nodeDn = DN.EMPTY_DN;
+            children = new ConcurrentHashMap<Rdn, DnNode<N>>();
+            this.nodeDn = Dn.EMPTY_DN;
 
             return;
         }
@@ -194,7 +194,7 @@ public class DnNode<N> implements Cloneable
         }
         catch ( LdapException le )
         {
-            // Special cas e: the DN is empty, this is not allowed
+            // Special cas e: the Dn is empty, this is not allowed
             throw new IllegalArgumentException( le.getMessage() );
         }
     }
@@ -216,10 +216,10 @@ public class DnNode<N> implements Cloneable
      * Tells if the implementation is a leaf node. If it's a branch node
      * then false is returned.
      *
-     * @param dn The DN we want to check
+     * @param dn The Dn we want to check
      * @return <code>true</code> if this is a leaf node, false otherwise.
      */
-    public boolean isLeaf( DN dn )
+    public boolean isLeaf( Dn dn )
     {
         DnNode<N> node = getNode( dn );
 
@@ -267,9 +267,9 @@ public class DnNode<N> implements Cloneable
 
     /**
      * @return Return the stored element, if any
-     * @param dn The DN we want to get the element for
+     * @param dn The Dn we want to get the element for
      */
-    public N getElement( DN dn )
+    public N getElement( Dn dn )
     {
         DnNode<N> node = getNode( dn );
 
@@ -295,9 +295,9 @@ public class DnNode<N> implements Cloneable
     /**
      * @return True if the Node stores an element. BranchNode may not hold any
      * element.
-     * @param dn The DN we want to get the element for
+     * @param dn The Dn we want to get the element for
      */
-    public boolean hasElement( DN dn )
+    public boolean hasElement( Dn dn )
     {
         DnNode<N> node = getNode( dn );
 
@@ -341,9 +341,9 @@ public class DnNode<N> implements Cloneable
     /**
      * @return True if one of the node below the current node has one element, 
      * False otherwise
-     * @param dn The DN we want to get the element for
+     * @param dn The Dn we want to get the element for
      */
-    public boolean hasDescendantElement( DN dn )
+    public boolean hasDescendantElement( Dn dn )
     {
         DnNode<N> node = getNode( dn );
 
@@ -401,9 +401,9 @@ public class DnNode<N> implements Cloneable
     /**
      * @return True if one of the node below the current node has one element, 
      * False otherwise
-     * @param dn The DN we want to get the element for
+     * @param dn The Dn we want to get the element for
      */
-    public List<N> getDescendantElements( DN dn )
+    public List<N> getDescendantElements( Dn dn )
     {
         List<N> descendants = new ArrayList<N>();
         
@@ -446,11 +446,11 @@ public class DnNode<N> implements Cloneable
     /**
      * Tells if a node has some children or not.
      *
-     * @param dn the node's DN
+     * @param dn the node's Dn
      * @return <code>true</code> if the node has some children
-     * @throws LdapException if the DN is null or empty
+     * @throws LdapException if the Dn is null or empty
      */
-    public boolean hasChildren( DN dn ) throws LdapException
+    public boolean hasChildren( Dn dn ) throws LdapException
     {
         checkDn( dn );
 
@@ -463,7 +463,7 @@ public class DnNode<N> implements Cloneable
     /**
      * @return The list of DnNode
      */
-    public Map<RDN, DnNode<N>> getChildren()
+    public Map<Rdn, DnNode<N>> getChildren()
     {
         return children;
     }
@@ -488,26 +488,26 @@ public class DnNode<N> implements Cloneable
 
 
     /**
-     * Tells if there is a parent for a given DN,. This parent should be a
+     * Tells if there is a parent for a given Dn,. This parent should be a
      * subset of the given dn.<br>
      * For instance, if we have stored dc=acme, dc=org into the tree,
-     * the DN: ou=example, dc=acme, dc=org will have a parent
-     * <br>For the DN ou=apache, dc=org, there is no parent, so false will be returned.
+     * the Dn: ou=example, dc=acme, dc=org will have a parent
+     * <br>For the Dn ou=apache, dc=org, there is no parent, so false will be returned.
      *
      * @param dn the normalized distinguished name to resolve to a parent
      * @return true if there is a parent associated with the normalized dn
      */
-    public boolean hasParent( DN dn )
+    public boolean hasParent( Dn dn )
     {
-        List<RDN> rdns = dn.getRdns();
+        List<Rdn> rdns = dn.getRdns();
 
         DnNode<N> currentNode = this;
         DnNode<N> parentNode = null;
 
-        // Iterate through all the RDN until we find the associated partition
+        // Iterate through all the Rdn until we find the associated partition
         for ( int i = rdns.size() - 1; i >= 0; i-- )
         {
-            RDN rdn = rdns.get( i );
+            Rdn rdn = rdns.get( i );
 
             if ( rdn.equals( currentNode.nodeRdn ) )
             {
@@ -537,24 +537,24 @@ public class DnNode<N> implements Cloneable
     /**
      * Add a new node in the tree. The added node won't have any element.
      *
-     * @param dn The node's DN
-     * @throws LdapException if the DN is null or empty
+     * @param dn The node's Dn
+     * @throws LdapException if the Dn is null or empty
      */
-    public void add( DN dn ) throws LdapException
+    public void add( Dn dn ) throws LdapException
     {
         add( dn, null );
     }
 
 
     /**
-     * Add a new node in the tree. We can't add a node if its DN is empty. The
-     * added element is attached to the node, which is named by the DN's RDN.<br/>
+     * Add a new node in the tree. We can't add a node if its Dn is empty. The
+     * added element is attached to the node, which is named by the Dn's Rdn.<br/>
      *
-     * @param dn The node's DN
+     * @param dn The node's Dn
      * @param element The element to associate with this Node. Can be null.
-     * @throws LdapException if the DN is null or empty
+     * @throws LdapException if the Dn is null or empty
      */
-    public void add( DN dn, N element ) throws LdapException
+    public void add( Dn dn, N element ) throws LdapException
     {
         checkDn( dn );
 
@@ -575,14 +575,14 @@ public class DnNode<N> implements Cloneable
 
             if ( nbRdns == 0 )
             {
-                // That means the added DN is already present. Check if it already has an element
+                // That means the added Dn is already present. Check if it already has an element
                 if ( parentNode.hasElement() )
                 {
                     String message = "Cannot add a node to a node already having an element";
                     LOG.error( message );
                     throw new LdapUnwillingToPerformException( ResultCodeEnum.UNWILLING_TO_PERFORM, message );
                 }
-                // We may try to add twice the same DN, without any element
+                // We may try to add twice the same Dn, without any element
                 else if ( element == null )
                 {
                     String message = "Cannot add a node with no element if it already exists";
@@ -610,10 +610,10 @@ public class DnNode<N> implements Cloneable
     /**
      * Removes a node from the tree.
      *
-     * @param dn the node's DN
-     * @throws LdapException if the DN is null or empty
+     * @param dn the node's Dn
+     * @throws LdapException if the Dn is null or empty
      */
-    public void remove( DN dn ) throws LdapException
+    public void remove( Dn dn ) throws LdapException
     {
         checkDn( dn );
 
@@ -626,17 +626,17 @@ public class DnNode<N> implements Cloneable
             return;
         }
 
-        // Now, check that this parent has the same DN than the one
+        // Now, check that this parent has the same Dn than the one
         // we gave and that there is no children
         if ( ( dn.size() != parentNode.depth ) || parentNode.hasChildren() )
         {
             return;
         }
 
-        // Ok, no children, same DN, let's remove what we can.
+        // Ok, no children, same Dn, let's remove what we can.
         parentNode = parentNode.getParent();
 
-        for ( RDN rdn : dn.getRdns() )
+        for ( Rdn rdn : dn.getRdns() )
         {
             parentNode.children.remove( rdn );
 
@@ -658,7 +658,7 @@ public class DnNode<N> implements Cloneable
      * @param rdn The name we are looking for
      * @return <code>true</code> if the tree instance contains this name
      */
-    public boolean contains( RDN rdn )
+    public boolean contains( Rdn rdn )
     {
         return children.containsKey( rdn );
     }
@@ -670,7 +670,7 @@ public class DnNode<N> implements Cloneable
      * @param rdn the rdn to use as the node key
      * @return the child node corresponding to the rdn.
      */
-    public DnNode<N> getChild( RDN rdn )
+    public DnNode<N> getChild( Rdn rdn )
     {
         if ( children.containsKey( rdn ) )
         {
@@ -682,35 +682,35 @@ public class DnNode<N> implements Cloneable
 
 
     /**
-     * @return The Node's RDN
+     * @return The Node's Rdn
      */
-    public RDN getRdn()
+    public Rdn getRdn()
     {
         return nodeRdn;
     }
 
 
     /**
-     * Get the Node for a given DN, if present in the tree.<br>
+     * Get the Node for a given Dn, if present in the tree.<br>
      * For instance, if we have stored dc=acme, dc=org into the tree,
-     * the DN: ou=example, dc=acme, dc=org will have a parent, and
+     * the Dn: ou=example, dc=acme, dc=org will have a parent, and
      * dc=acme, dc=org will be returned.
-     * <br>For the DN ou=apache, dc=org, there is no parent, so null will be returned.
+     * <br>For the Dn ou=apache, dc=org, there is no parent, so null will be returned.
      *
      * @param dn the normalized distinguished name to resolve to a parent
      * @return the Node associated with the normalized dn
      */
-    public DnNode<N> getNode( DN dn )
+    public DnNode<N> getNode( Dn dn )
     {
-        List<RDN> rdns = dn.getRdns();
+        List<Rdn> rdns = dn.getRdns();
 
         DnNode<N> currentNode = this;
         DnNode<N> parentNode = null;
 
-        // Iterate through all the RDN until we find the associated partition
+        // Iterate through all the Rdn until we find the associated partition
         for ( int i = rdns.size() - 1; i >= 0; i-- )
         {
-            RDN rdn = rdns.get( i );
+            Rdn rdn = rdns.get( i );
 
             if ( currentNode.hasChildren() )
             {
@@ -734,26 +734,26 @@ public class DnNode<N> implements Cloneable
 
 
     /**
-     * Get the closest Node for a given DN which has an element, if present in the tree.<br>
+     * Get the closest Node for a given Dn which has an element, if present in the tree.<br>
      * For instance, if we have stored dc=acme, dc=org into the tree,
-     * the DN: ou=example, dc=acme, dc=org will have a parent, and
+     * the Dn: ou=example, dc=acme, dc=org will have a parent, and
      * dc=acme, dc=org will be returned if it has an associated element.
-     * <br>For the DN ou=apache, dc=org, there is no parent, so null will be returned.
+     * <br>For the Dn ou=apache, dc=org, there is no parent, so null will be returned.
      *
      * @param dn the normalized distinguished name to resolve to a parent
      * @return the Node associated with the normalized dn
      */
-    public boolean hasParentElement( DN dn )
+    public boolean hasParentElement( Dn dn )
     {
-        List<RDN> rdns = dn.getRdns();
+        List<Rdn> rdns = dn.getRdns();
 
         DnNode<N> currentNode = this;
         boolean hasElement = false;
 
-        // Iterate through all the RDN until we find the associated partition
+        // Iterate through all the Rdn until we find the associated partition
         for ( int i = rdns.size() - 1; i >= 0; i-- )
         {
-            RDN rdn = rdns.get( i );
+            Rdn rdn = rdns.get( i );
 
             if ( currentNode.hasChildren() )
             {
@@ -836,7 +836,7 @@ public class DnNode<N> implements Cloneable
 
         if ( hasChildren )
         {
-            for ( RDN rdn : children.keySet() )
+            for ( Rdn rdn : children.keySet() )
             {
                 if ( isFirst )
                 {
@@ -868,7 +868,7 @@ public class DnNode<N> implements Cloneable
     /**
      * @return the dn
      */
-    public DN getDn()
+    public Dn getDn()
     {
         return nodeDn;
     }

@@ -44,8 +44,8 @@ import org.apache.directory.shared.ldap.entry.Value;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.name.DN;
-import org.apache.directory.shared.ldap.name.RDN;
+import org.apache.directory.shared.ldap.name.Dn;
+import org.apache.directory.shared.ldap.name.Rdn;
 import org.apache.directory.shared.util.Unicode;
 
 
@@ -57,8 +57,8 @@ import org.apache.directory.shared.util.Unicode;
  * <li>added entries</li>
  * <li>deleted entries</li>
  * <li>modified entries</li>
- * <li>RDN modified entries</li>
- * <li>DN modified entries</li>
+ * <li>Rdn modified entries</li>
+ * <li>Dn modified entries</li>
  * </ul>
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
@@ -104,7 +104,7 @@ public class LdifEntry implements Cloneable, Externalizable
         changeType = ChangeType.None; // Default LDIF content
         modificationList = new LinkedList<Modification>();
         modificationItems = new HashMap<String, Modification>();
-        entry = new DefaultEntry( ( DN ) null );
+        entry = new DefaultEntry( (Dn) null );
         controls = null;
     }
 
@@ -114,7 +114,7 @@ public class LdifEntry implements Cloneable, Externalizable
      * 
      * @param dn The Distinguished Name
      */
-    public void setDn( DN dn )
+    public void setDn( Dn dn )
     {
         entry.setDn( dn );
     }
@@ -124,11 +124,11 @@ public class LdifEntry implements Cloneable, Externalizable
      * Set the Distinguished Name
      * 
      * @param dn The Distinguished Name
-     * @throws LdapInvalidDnException If the DN is invalid
+     * @throws LdapInvalidDnException If the Dn is invalid
      */
     public void setDn( String dn ) throws LdapInvalidDnException
     {
-        entry.setDn( new DN( dn ) );
+        entry.setDn( new Dn( dn ) );
     }
 
 
@@ -373,7 +373,7 @@ public class LdifEntry implements Cloneable, Externalizable
     /**
      * @return The entry Distinguished name
      */
-    public DN getDn()
+    public Dn getDn()
     {
         return entry.getDn();
     }
@@ -425,7 +425,7 @@ public class LdifEntry implements Cloneable, Externalizable
 
 
     /**
-     * @return True, if the old RDN should be deleted.
+     * @return True, if the old Rdn should be deleted.
      */
     public boolean isDeleteOldRdn()
     {
@@ -436,7 +436,7 @@ public class LdifEntry implements Cloneable, Externalizable
     /**
      * Set the flage deleteOldRdn
      * 
-     * @param deleteOldRdn True if the old RDN should be deleted
+     * @param deleteOldRdn True if the old Rdn should be deleted
      */
     public void setDeleteOldRdn( boolean deleteOldRdn )
     {
@@ -445,7 +445,7 @@ public class LdifEntry implements Cloneable, Externalizable
 
 
     /**
-     * @return The new RDN
+     * @return The new Rdn
      */
     public String getNewRdn()
     {
@@ -454,9 +454,9 @@ public class LdifEntry implements Cloneable, Externalizable
 
 
     /**
-     * Set the new RDN
+     * Set the new Rdn
      * 
-     * @param newRdn The new RDN
+     * @param newRdn The new Rdn
      */
     public void setNewRdn( String newRdn )
     {
@@ -788,9 +788,9 @@ public class LdifEntry implements Cloneable, Externalizable
 
         LdifEntry otherEntry = ( LdifEntry ) o;
 
-        // Check the DN
-        DN thisDn = entry.getDn();
-        DN dnEntry = otherEntry.getDn();
+        // Check the Dn
+        Dn thisDn = entry.getDn();
+        Dn dnEntry = otherEntry.getDn();
 
         if ( !thisDn.equals( dnEntry ) )
         {
@@ -876,8 +876,8 @@ public class LdifEntry implements Cloneable, Externalizable
                 // Check the newRdn value
                 try
                 {
-                    RDN thisNewRdn = new RDN( newRdn );
-                    RDN entryNewRdn = new RDN( otherEntry.newRdn );
+                    Rdn thisNewRdn = new Rdn( newRdn );
+                    Rdn entryNewRdn = new Rdn( otherEntry.newRdn );
 
                     if ( !thisNewRdn.equals( entryNewRdn ) )
                     {
@@ -892,8 +892,8 @@ public class LdifEntry implements Cloneable, Externalizable
                 // Check the newSuperior value
                 try
                 {
-                    DN thisNewSuperior = new DN( newSuperior );
-                    DN entryNewSuperior = new DN( otherEntry.newSuperior );
+                    Dn thisNewSuperior = new Dn( newSuperior );
+                    Dn entryNewSuperior = new Dn( otherEntry.newSuperior );
 
                     if ( !thisNewSuperior.equals( entryNewSuperior ) )
                     {

@@ -71,7 +71,7 @@ import org.apache.directory.shared.ldap.message.SearchResultEntryImpl;
 import org.apache.directory.shared.ldap.message.SearchResultReference;
 import org.apache.directory.shared.ldap.message.SearchResultReferenceImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.util.Base64;
 import org.apache.directory.shared.util.Strings;
 import org.xmlpull.v1.XmlPullParser;
@@ -816,7 +816,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
             {
                 try
                 {
-                    ldapResult.setMatchedDn( new DN( attributeValue ) );
+                    ldapResult.setMatchedDn( new Dn( attributeValue ) );
                 }
                 catch ( LdapInvalidDnException e )
                 {
@@ -859,7 +859,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
             {
                 try
                 {
-                    ldapResult.setMatchedDn( new DN( attributeValue ) );
+                    ldapResult.setMatchedDn( new Dn( attributeValue ) );
                 }
                 catch ( LdapInvalidDnException e )
                 {
@@ -901,7 +901,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
             {
                 try
                 {
-                    ldapResult.setMatchedDn( new DN( attributeValue ) );
+                    ldapResult.setMatchedDn( new Dn( attributeValue ) );
                 }
                 catch ( LdapInvalidDnException e )
                 {
@@ -943,7 +943,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
             {
                 try
                 {
-                    ldapResult.setMatchedDn( new DN( attributeValue ) );
+                    ldapResult.setMatchedDn( new Dn( attributeValue ) );
                 }
                 catch ( LdapInvalidDnException e )
                 {
@@ -985,7 +985,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
             {
                 try
                 {
-                    ldapResult.setMatchedDn( new DN( attributeValue ) );
+                    ldapResult.setMatchedDn( new Dn( attributeValue ) );
                 }
                 catch ( LdapInvalidDnException e )
                 {
@@ -996,9 +996,9 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
     };
 
     /**
-     * GrammarAction that creates the Mod DN Response
+     * GrammarAction that creates the Mod Dn Response
      */
-    private final GrammarAction modDNResponseCreation = new GrammarAction( "Create Mod DN Response" )
+    private final GrammarAction modDNResponseCreation = new GrammarAction( "Create Mod Dn Response" )
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
@@ -1027,7 +1027,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
             {
                 try
                 {
-                    ldapResult.setMatchedDn( new DN( attributeValue ) );
+                    ldapResult.setMatchedDn( new Dn( attributeValue ) );
                 }
                 catch ( LdapInvalidDnException e )
                 {
@@ -1074,7 +1074,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
             {
                 try
                 {
-                    ldapResult.setMatchedDn( new DN( attributeValue ) );
+                    ldapResult.setMatchedDn( new Dn( attributeValue ) );
                 }
                 catch ( LdapInvalidDnException e )
                 {
@@ -1579,7 +1579,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
             {
                 try
                 {
-                    searchResultEntry.setObjectName( new DN( attributeValue ) );
+                    searchResultEntry.setObjectName( new Dn( attributeValue ) );
                 }
                 catch ( LdapInvalidDnException e )
                 {
@@ -1656,7 +1656,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
             {
                 try
                 {
-                    searchResultDone.getLdapResult().setMatchedDn( new DN( attributeValue ) );
+                    searchResultDone.getLdapResult().setMatchedDn( new Dn( attributeValue ) );
                 }
                 catch ( LdapInvalidDnException e )
                 {

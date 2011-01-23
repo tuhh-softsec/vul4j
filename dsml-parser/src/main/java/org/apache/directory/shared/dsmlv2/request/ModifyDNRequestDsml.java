@@ -23,8 +23,8 @@ package org.apache.directory.shared.dsmlv2.request;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.message.ModifyDnRequest;
 import org.apache.directory.shared.ldap.message.ModifyDnRequestImpl;
-import org.apache.directory.shared.ldap.name.DN;
-import org.apache.directory.shared.ldap.name.RDN;
+import org.apache.directory.shared.ldap.name.Dn;
+import org.apache.directory.shared.ldap.name.Rdn;
 import org.dom4j.Element;
 
 
@@ -74,7 +74,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
 
         ModifyDnRequest request = ( ModifyDnRequest ) instance;
 
-        // DN
+        // Dn
         if ( request.getName() != null )
         {
             element.addAttribute( "dn", request.getName().getName() );
@@ -100,29 +100,29 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
 
 
     /**
-     * Get the modification's DN
+     * Get the modification's Dn
      * 
      * @return Returns the name.
      */
-    public DN getName()
+    public Dn getName()
     {
         return ( ( ModifyDnRequest ) instance ).getName();
     }
 
 
     /**
-     * Set the modification DN.
+     * Set the modification Dn.
      * 
      * @param name The name to set.
      */
-    public void setEntry( DN name )
+    public void setEntry( Dn name )
     {
         ( ( ModifyDnRequest ) instance ).setName( name );
     }
 
 
     /**
-     * Tells if the old RDN is to be deleted
+     * Tells if the old Rdn is to be deleted
      * 
      * @return Returns the deleteOldRDN.
      */
@@ -133,7 +133,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
 
 
     /**
-     * Set the flag to delete the old RDN
+     * Set the flag to delete the old Rdn
      * 
      * @param deleteOldRDN The deleteOldRDN to set.
      */
@@ -144,24 +144,24 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
 
 
     /**
-     * Get the new RDN
+     * Get the new Rdn
      * 
      * @return Returns the newRDN.
      */
-    public RDN getNewRDN()
+    public Rdn getNewRDN()
     {
         return ( ( ModifyDnRequest ) instance ).getNewRdn();
     }
 
 
     /**
-     * Set the new RDN
+     * Set the new Rdn
      * 
-     * @param newRDN The newRDN to set.
+     * @param newRdn The newRdn to set.
      */
-    public void setNewRDN( RDN newRDN )
+    public void setNewRDN( Rdn newRdn)
     {
-        ( ( ModifyDnRequest ) instance ).setNewRdn( newRDN );
+        ( ( ModifyDnRequest ) instance ).setNewRdn(newRdn);
     }
 
 
@@ -170,7 +170,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
      * 
      * @return Returns the newSuperior.
      */
-    public DN getNewSuperior()
+    public Dn getNewSuperior()
     {
         return ( ( ModifyDnRequest ) instance ).getNewSuperior();
     }
@@ -181,7 +181,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
      * 
      * @param newSuperior The newSuperior to set.
      */
-    public void setNewSuperior( DN newSuperior )
+    public void setNewSuperior( Dn newSuperior )
     {
         ( ( ModifyDnRequest ) instance ).setNewSuperior( newSuperior );
     }

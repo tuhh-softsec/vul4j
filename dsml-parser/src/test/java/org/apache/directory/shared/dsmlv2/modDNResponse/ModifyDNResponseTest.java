@@ -45,7 +45,7 @@ import org.junit.runner.RunWith;
 
 
 /**
- * Tests for the Modify DN Response parsing
+ * Tests for the Modify Dn Response parsing
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
@@ -525,7 +525,7 @@ public class ModifyDNResponseTest extends AbstractResponseTest
 
 
     /**
-     * Test parsing of a response with wrong matched DN
+     * Test parsing of a response with wrong matched Dn
      */
     @Test
     public void testResponseWithWrongMatchedDN()

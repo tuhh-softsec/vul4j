@@ -33,7 +33,7 @@ import org.apache.directory.shared.ldap.entry.DefaultModification;
 import org.apache.directory.shared.ldap.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.entry.Modification;
 import org.apache.directory.shared.ldap.entry.ModificationOperation;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.util.StringConstants;
 
 
@@ -47,7 +47,7 @@ public class ModifyRequestImpl extends AbstractAbandonableRequest implements Mod
     static final long serialVersionUID = -505803669028990304L;
 
     /** Dn of the entry to modify or PDU's <b>object</b> field */
-    private DN name;
+    private Dn name;
 
     /** Sequence of modifications or PDU's <b>modification</b> seqence field */
     private List<Modification> mods = new ArrayList<Modification>();
@@ -122,9 +122,9 @@ public class ModifyRequestImpl extends AbstractAbandonableRequest implements Mod
      * Gets the distinguished name of the entry to be modified by this request.
      * This property represents the PDU's <b>object</b> field.
      * 
-     * @return the DN of the modified entry.
+     * @return the Dn of the modified entry.
      */
-    public DN getName()
+    public Dn getName()
     {
         return name;
     }
@@ -134,9 +134,9 @@ public class ModifyRequestImpl extends AbstractAbandonableRequest implements Mod
      * Sets the distinguished name of the entry to be modified by this request.
      * This property represents the PDU's <b>object</b> field.
      * 
-     * @param name the DN of the modified entry.
+     * @param name the Dn of the modified entry.
      */
-    public void setName( DN name )
+    public void setName( Dn name )
     {
         this.name = name;
     }

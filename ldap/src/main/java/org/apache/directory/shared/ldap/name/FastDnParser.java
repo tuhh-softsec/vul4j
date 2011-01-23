@@ -32,7 +32,7 @@ import org.apache.directory.shared.util.Strings;
 
 
 /**
- * A fast LDAP DN parser that handles only simple DNs. If the DN contains
+ * A fast LDAP Dn parser that handles only simple DNs. If the Dn contains
  * any special character an {@link TooComplexException} is thrown.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
@@ -53,40 +53,40 @@ public enum FastDnParser
 
 
     /**
-     * Parses a DN from a String
+     * Parses a Dn from a String
      *
-     * @param name The DN to parse
-     * @return A valid DN
-     * @throws LdapException If the DN was invalid
+     * @param name The Dn to parse
+     * @return A valid Dn
+     * @throws LdapException If the Dn was invalid
      */
-    public DN parse( String name ) throws LdapException
+    public Dn parse( String name ) throws LdapException
     {
-        DN dn = new DN();
+        Dn dn = new Dn();
         parseDn( name, dn );
         return dn;
     }
 
 
     /**
-     * Parses the given name string and fills the given DN object.
+     * Parses the given name string and fills the given Dn object.
      * 
      * @param name the name to parse
-     * @param dn the DN to fill
+     * @param dn the Dn to fill
      * 
      * @throws LdapInvalidDnException the invalid name exception
      */
-    public void parseDn( String name, DN dn ) throws LdapInvalidDnException
+    public void parseDn( String name, Dn dn ) throws LdapInvalidDnException
     {
         parseDn(name, dn.rdns);
         dn.setUpName( name );
         dn.normalizeInternal();
     }
     
-    void parseDn( String name, List<RDN> rdns ) throws LdapInvalidDnException
+    void parseDn( String name, List<Rdn> rdns ) throws LdapInvalidDnException
     {
         if ( ( name == null ) || ( name.trim().length() == 0 ) )
         {
-            // We have an empty DN, just get out of the function.
+            // We have an empty Dn, just get out of the function.
             return;
         }
 
@@ -96,7 +96,7 @@ public enum FastDnParser
 
         while ( true )
         {
-            RDN rdn = new RDN();
+            Rdn rdn = new Rdn();
             parseRdnInternal( name, pos, rdn );
             rdns.add( rdn );
 
@@ -110,7 +110,7 @@ public enum FastDnParser
             {
                 case ',':
                 case ';':
-                    // another RDN to parse
+                    // another Rdn to parse
                     break;
 
                 default:
@@ -124,11 +124,11 @@ public enum FastDnParser
      * Parses the given name string and fills the given Rdn object.
      * 
      * @param name the name to parse
-     * @param rdn the RDN to fill
+     * @param rdn the Rdn to fill
      * 
      * @throws LdapInvalidDnException the invalid name exception
      */
-    public void parseRdn( String name, RDN rdn ) throws LdapInvalidDnException
+    public void parseRdn( String name, Rdn rdn ) throws LdapInvalidDnException
     {
         if ( name == null || name.length() == 0 )
         {
@@ -147,7 +147,7 @@ public enum FastDnParser
     }
 
 
-    private void parseRdnInternal( String name, Position pos, RDN rdn ) throws LdapInvalidDnException
+    private void parseRdnInternal( String name, Position pos, Rdn rdn ) throws LdapInvalidDnException
     {
         int rdnStart = pos.start;
 
@@ -177,7 +177,7 @@ public enum FastDnParser
 
         String upName = name.substring( rdnStart, pos.start );
 
-        AVA ava = new AVA( type, type, new StringValue( upValue ),
+        Ava ava = new Ava( type, type, new StringValue( upValue ),
             new StringValue( value ), upName );
         rdn.addAVA( ava );
 

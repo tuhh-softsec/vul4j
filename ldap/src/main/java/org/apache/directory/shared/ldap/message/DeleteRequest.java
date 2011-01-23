@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.message;
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 
 
 /**
@@ -42,16 +42,16 @@ public interface DeleteRequest extends SingleReplyRequest, AbandonableRequest
      * Gets the distinguished name of the leaf entry to be deleted by this
      * request.
      * 
-     * @return the DN of the leaf entry to delete.
+     * @return the Dn of the leaf entry to delete.
      */
-    DN getName();
+    Dn getName();
 
 
     /**
      * Sets the distinguished name of the leaf entry to be deleted by this
      * request.
      * 
-     * @param name the DN of the leaf entry to delete.
+     * @param name the Dn of the leaf entry to delete.
      */
-    void setName( DN name );
+    void setName( Dn name );
 }

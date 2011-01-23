@@ -47,13 +47,13 @@ import org.apache.directory.shared.util.Strings;
 public class CertGenerationObject extends AbstractAsn1Object
 {
 
-    /** the DN of the server entry which will be updated*/
+    /** the Dn of the server entry which will be updated*/
     private String targetDN;
 
-    /** the issuer DN that will be set in the certificate*/
+    /** the issuer Dn that will be set in the certificate*/
     private String issuerDN;// = "CN=ApacheDS, OU=Directory, O=ASF, C=US";
 
-    /** the DN of the subject that is present in the certificate*/
+    /** the Dn of the subject that is present in the certificate*/
     private String subjectDN;// = "CN=ApacheDS, OU=Directory, O=ASF, C=US";
 
     /** name of the algorithm used for generating the keys*/
@@ -150,9 +150,9 @@ public class CertGenerationObject extends AbstractAsn1Object
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
-        sb.append( "Certficate Generation Object { " ).append( " Target DN: " ).append( targetDN ).append( ',' );
-        sb.append( " Issuer DN: " ).append( issuerDN ).append( ',' );
-        sb.append( " Subject DN: " ).append( subjectDN ).append( ',' );
+        sb.append( "Certficate Generation Object { " ).append( " Target Dn: " ).append( targetDN ).append( ',' );
+        sb.append( " Issuer Dn: " ).append( issuerDN ).append( ',' );
+        sb.append( " Subject Dn: " ).append( subjectDN ).append( ',' );
         sb.append( " Key Algorithm: " ).append( keyAlgorithm ).append( " }" );
 
         return sb.toString();

@@ -29,7 +29,7 @@ import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,7 +104,7 @@ public class CertGenerationGrammar extends AbstractGrammar
          */
         super.transitions[CertGenerationStatesEnum.CERT_GENERATION_REQUEST_SEQUENCE_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             CertGenerationStatesEnum.CERT_GENERATION_REQUEST_SEQUENCE_STATE, CertGenerationStatesEnum.TARGETDN_STATE,
-            UniversalTag.OCTET_STRING.getValue(), new GrammarAction( "Set Cert Generation target DN value" )
+            UniversalTag.OCTET_STRING.getValue(), new GrammarAction( "Set Cert Generation target Dn value" )
             {
                 public void action( Asn1Container container ) throws DecoderException
                 {
@@ -115,12 +115,12 @@ public class CertGenerationGrammar extends AbstractGrammar
 
                     if ( IS_DEBUG )
                     {
-                        LOG.debug( "Target DN = " + targetDN );
+                        LOG.debug( "Target Dn = " + targetDN );
                     }
 
                     if ( ( targetDN != null ) && ( targetDN.trim().length() > 0 ) )
                     {
-                        if( !DN.isValid( targetDN ) )
+                        if( !Dn.isValid(targetDN) )
                         {
                             String msg = I18n.err( I18n.ERR_04032, targetDN );
                             LOG.error( msg );
@@ -150,7 +150,7 @@ public class CertGenerationGrammar extends AbstractGrammar
          */
         super.transitions[CertGenerationStatesEnum.TARGETDN_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             CertGenerationStatesEnum.TARGETDN_STATE, CertGenerationStatesEnum.ISSUER_STATE, UniversalTag.OCTET_STRING.getValue(),
-            new GrammarAction( "Set Cert Generation issuer DN value" )
+            new GrammarAction( "Set Cert Generation issuer Dn value" )
             {
                 public void action( Asn1Container container ) throws DecoderException
                 {
@@ -161,12 +161,12 @@ public class CertGenerationGrammar extends AbstractGrammar
 
                     if ( IS_DEBUG )
                     {
-                        LOG.debug( "Issuer DN = " + issuerDN );
+                        LOG.debug( "Issuer Dn = " + issuerDN );
                     }
 
                     if ( ( issuerDN != null ) && ( issuerDN.trim().length() > 0 ) )
                     {
-                        if( !DN.isValid( issuerDN ) )
+                        if( !Dn.isValid(issuerDN) )
                         {
                             String msg = I18n.err( I18n.ERR_04034, issuerDN );
                             LOG.error( msg );
@@ -190,7 +190,7 @@ public class CertGenerationGrammar extends AbstractGrammar
          */
         super.transitions[CertGenerationStatesEnum.ISSUER_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             CertGenerationStatesEnum.ISSUER_STATE, CertGenerationStatesEnum.SUBJECT_STATE, UniversalTag.OCTET_STRING.getValue(),
-            new GrammarAction( "Set Cert Generation subject DN value" )
+            new GrammarAction( "Set Cert Generation subject Dn value" )
             {
                 public void action( Asn1Container container ) throws DecoderException
                 {
@@ -201,12 +201,12 @@ public class CertGenerationGrammar extends AbstractGrammar
 
                     if ( IS_DEBUG )
                     {
-                        LOG.debug( "subject DN = " + subjectDN );
+                        LOG.debug( "subject Dn = " + subjectDN );
                     }
 
                     if ( ( subjectDN != null ) && ( subjectDN.trim().length() > 0 ) )
                     {
-                        if( !DN.isValid( subjectDN ) )
+                        if( !Dn.isValid(subjectDN) )
                         {
                             String msg = I18n.err( I18n.ERR_04035, subjectDN );
                             LOG.error( msg );

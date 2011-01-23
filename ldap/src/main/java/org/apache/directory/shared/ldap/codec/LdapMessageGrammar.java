@@ -118,8 +118,8 @@ import org.apache.directory.shared.ldap.message.SearchResultReferenceImpl;
 import org.apache.directory.shared.ldap.message.UnbindRequest;
 import org.apache.directory.shared.ldap.message.UnbindRequestImpl;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.name.DN;
-import org.apache.directory.shared.ldap.name.RDN;
+import org.apache.directory.shared.ldap.name.Dn;
+import org.apache.directory.shared.ldap.name.Rdn;
 import org.apache.directory.shared.util.StringConstants;
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
@@ -331,7 +331,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // LdapMessage ::= ... DelRequest ...
         // delRequest ::= [APPLICATION 10] LDAPDN
         //
-        // We store the DN to bve deleted into the DelRequest object
+        // We store the Dn to bve deleted into the DelRequest object
         super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.DEL_REQUEST_TAG] = new GrammarTransition(
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.DEL_REQUEST_STATE, LdapConstants.DEL_REQUEST_TAG,
             new GrammarAction( "Init del Request" )
@@ -344,13 +344,13 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     DeleteRequest delRequest = new DeleteRequestImpl( ldapMessageContainer.getMessageId() );
                     ldapMessageContainer.setMessage( delRequest );
 
-                    // And store the DN into it
+                    // And store the Dn into it
                     // Get the Value and store it in the DelRequest
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
                     // We have to handle the special case of a 0 length matched
-                    // DN
-                    DN entry = null;
+                    // Dn
+                    Dn entry = null;
 
                     if ( tlv.getLength() == 0 )
                     {
@@ -364,7 +364,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
 
                         try
                         {
-                            entry = new DN( dnStr );
+                            entry = new Dn( dnStr );
                         }
                         catch ( LdapInvalidDnException ine )
                         {
@@ -374,7 +374,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
 
                             DeleteResponseImpl response = new DeleteResponseImpl( delRequest.getMessageId() );
                             throw new ResponseCarryingException( msg, response, ResultCodeEnum.INVALID_DN_SYNTAX,
-                                DN.EMPTY_DN, ine );
+                                Dn.EMPTY_DN, ine );
                         }
 
                         delRequest.setName( entry );
@@ -385,7 +385,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
 
                     if ( IS_DEBUG )
                     {
-                        LOG.debug( "Deleting DN {}", entry );
+                        LOG.debug( "Deleting Dn {}", entry );
                     }
                 }
             } );
@@ -576,7 +576,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     // We have to handle the special case of a 0 length name
                     if ( tlv.getLength() == 0 )
                     {
-                        bindRequestMessage.setName( DN.EMPTY_DN );
+                        bindRequestMessage.setName( Dn.EMPTY_DN );
                     }
                     else
                     {
@@ -585,19 +585,19 @@ public final class LdapMessageGrammar extends AbstractGrammar
 
                         try
                         {
-                            DN dn = new DN( dnStr );
+                            Dn dn = new Dn( dnStr );
                             bindRequestMessage.setName( dn );
                         }
                         catch ( LdapInvalidDnException ine )
                         {
-                            String msg = "Incorrect DN given : " + dnStr + " (" + Strings.dumpBytes(dnBytes)
+                            String msg = "Incorrect Dn given : " + dnStr + " (" + Strings.dumpBytes(dnBytes)
                                 + ") is invalid";
                             LOG.error( "{} : {}", msg, ine.getMessage() );
 
                             BindResponseImpl response = new BindResponseImpl( bindRequestMessage.getMessageId() );
 
                             throw new ResponseCarryingException( msg, response, ResultCodeEnum.INVALID_DN_SYNTAX,
-                                DN.EMPTY_DN, ine );
+                                Dn.EMPTY_DN, ine );
                         }
                     }
 
@@ -851,20 +851,20 @@ public final class LdapMessageGrammar extends AbstractGrammar
             new ResultCodeAction() );
 
         // --------------------------------------------------------------------------------------------
-        // Transition from Result Code BR to Matched DN BR 
+        // Transition from Result Code BR to Matched Dn BR
         // --------------------------------------------------------------------------------------------
         // LDAPResult ::= SEQUENCE {
         //     ...
         //     matchedDN LDAPDN,
         //     ...
         //
-        // Stores the matched DN
+        // Stores the matched Dn
         super.transitions[LdapStatesEnum.RESULT_CODE_BR_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.RESULT_CODE_BR_STATE, LdapStatesEnum.MATCHED_DN_BR_STATE, UniversalTag.OCTET_STRING.getValue(),
             new MatchedDNAction() );
 
         // --------------------------------------------------------------------------------------------
-        // Transition from Matched DN BR to Error Message BR 
+        // Transition from Matched Dn BR to Error Message BR
         // --------------------------------------------------------------------------------------------
         // LDAPResult ::= SEQUENCE {
         //     ...
@@ -969,20 +969,20 @@ public final class LdapMessageGrammar extends AbstractGrammar
             new ControlsInitAction() );
 
         // --------------------------------------------------------------------------------------------
-        // Transition from Result Code to Matched DN 
+        // Transition from Result Code to Matched Dn
         // --------------------------------------------------------------------------------------------
         // LDAPResult ::= SEQUENCE {
         //     ...
         //     matchedDN LDAPDN,
         //     ...
         //
-        // Stores the matched DN
+        // Stores the matched Dn
         super.transitions[LdapStatesEnum.RESULT_CODE_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.RESULT_CODE_STATE, LdapStatesEnum.MATCHED_DN_STATE, UniversalTag.OCTET_STRING.getValue(),
             new MatchedDNAction() );
 
         // --------------------------------------------------------------------------------------------
-        // Transition from Matched DN to Error Message 
+        // Transition from Matched Dn to Error Message
         // --------------------------------------------------------------------------------------------
         // LDAPResult ::= SEQUENCE {
         //     ...
@@ -1120,7 +1120,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
-                    DN objectName = DN.EMPTY_DN;
+                    Dn objectName = Dn.EMPTY_DN;
 
                     // Store the value.
                     if ( tlv.getLength() == 0 )
@@ -1134,12 +1134,12 @@ public final class LdapMessageGrammar extends AbstractGrammar
 
                         try
                         {
-                            objectName = new DN( dnStr );
+                            objectName = new Dn( dnStr );
                         }
                         catch ( LdapInvalidDnException ine )
                         {
                             // This is for the client side. We will never decode LdapResult on the server
-                            String msg = "The DN " + Strings.dumpBytes(dnBytes) + "is invalid : "
+                            String msg = "The Dn " + Strings.dumpBytes(dnBytes) + "is invalid : "
                                 + ine.getMessage();
                             LOG.error( "{} : {}", msg, ine.getMessage() );
                             throw new DecoderException( msg, ine );
@@ -1150,7 +1150,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
 
                     if ( IS_DEBUG )
                     {
-                        LOG.debug( "Search Result Entry DN found : {}", searchResultEntry.getObjectName() );
+                        LOG.debug( "Search Result Entry Dn found : {}", searchResultEntry.getObjectName() );
                     }
                 }
             } );
@@ -1422,7 +1422,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     object    LDAPDN,
         //     ...
         //
-        // Stores the object DN
+        // Stores the object Dn
         super.transitions[LdapStatesEnum.MODIFY_REQUEST_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.MODIFY_REQUEST_STATE, LdapStatesEnum.OBJECT_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Store Modify request object Value" )
@@ -1435,7 +1435,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
-                    DN object = DN.EMPTY_DN;
+                    Dn object = Dn.EMPTY_DN;
 
                     // Store the value.
                     if ( tlv.getLength() == 0 )
@@ -1449,17 +1449,17 @@ public final class LdapMessageGrammar extends AbstractGrammar
 
                         try
                         {
-                            object = new DN( dnStr );
+                            object = new Dn( dnStr );
                         }
                         catch ( LdapInvalidDnException ine )
                         {
-                            String msg = "Invalid DN given : " + dnStr + " (" + Strings.dumpBytes(dnBytes)
+                            String msg = "Invalid Dn given : " + dnStr + " (" + Strings.dumpBytes(dnBytes)
                                 + ") is invalid";
                             LOG.error( "{} : {}", msg, ine.getMessage() );
 
                             ModifyResponseImpl response = new ModifyResponseImpl( modifyRequest.getMessageId() );
                             throw new ResponseCarryingException( msg, response, ResultCodeEnum.INVALID_DN_SYNTAX,
-                                DN.EMPTY_DN, ine );
+                                Dn.EMPTY_DN, ine );
                         }
 
                         modifyRequest.setName( object );
@@ -1467,7 +1467,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
 
                     if ( IS_DEBUG )
                     {
-                        LOG.debug( "Modification of DN {}", modifyRequest.getName() );
+                        LOG.debug( "Modification of Dn {}", modifyRequest.getName() );
                     }
                 }
             } );
@@ -1845,7 +1845,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     entry           LDAPDN,
         //     ...
         //
-        // Stores the DN
+        // Stores the Dn
         super.transitions[LdapStatesEnum.ADD_REQUEST_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.ADD_REQUEST_STATE, LdapStatesEnum.ENTRY_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Store add request object Value" )
@@ -1866,36 +1866,36 @@ public final class LdapMessageGrammar extends AbstractGrammar
 
                         AddResponseImpl response = new AddResponseImpl( addRequest.getMessageId() );
 
-                        // I guess that trying to add an entry which DN is empty is a naming violation...
+                        // I guess that trying to add an entry which Dn is empty is a naming violation...
                         // Not 100% sure though ...
                         throw new ResponseCarryingException( msg, response, ResultCodeEnum.NAMING_VIOLATION,
-                            DN.EMPTY_DN, null );
+                            Dn.EMPTY_DN, null );
                     }
                     else
                     {
-                        DN entryDn = null;
+                        Dn entryDn = null;
                         byte[] dnBytes = tlv.getValue().getData();
                         String dnStr = Strings.utf8ToString(dnBytes);
 
                         try
                         {
-                            entryDn = new DN( dnStr );
+                            entryDn = new Dn( dnStr );
                         }
                         catch ( LdapInvalidDnException ine )
                         {
-                            String msg = "Invalid DN given : " + dnStr + " (" + Strings.dumpBytes(dnBytes)
+                            String msg = "Invalid Dn given : " + dnStr + " (" + Strings.dumpBytes(dnBytes)
                                 + ") is invalid";
                             LOG.error( "{} : {}", msg, ine.getMessage() );
 
                             AddResponseImpl response = new AddResponseImpl( addRequest.getMessageId() );
                             throw new ResponseCarryingException( msg, response, ResultCodeEnum.INVALID_DN_SYNTAX,
-                                DN.EMPTY_DN, ine );
+                                Dn.EMPTY_DN, ine );
                         }
 
                         addRequest.setEntryDn( entryDn );
                     }
 
-                    LOG.debug( "Adding an entry with DN : {}", addRequest.getEntry() );
+                    LOG.debug( "Adding an entry with Dn : {}", addRequest.getEntry() );
                 }
             } );
 
@@ -2129,7 +2129,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // Create the ModifyDNRequest Object
         super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.MODIFY_DN_REQUEST_TAG] = new GrammarTransition(
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.MODIFY_DN_REQUEST_STATE,
-            LdapConstants.MODIFY_DN_REQUEST_TAG, new GrammarAction( "Init Modify DN Request" )
+            LdapConstants.MODIFY_DN_REQUEST_TAG, new GrammarAction( "Init Modify Dn Request" )
             {
                 public void action( Asn1Container container )
                 {
@@ -2151,7 +2151,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     entry LDAPDN,
         //     ...
         //
-        // Stores the entry DN
+        // Stores the entry Dn
         super.transitions[LdapStatesEnum.MODIFY_DN_REQUEST_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.MODIFY_DN_REQUEST_STATE, LdapStatesEnum.ENTRY_MOD_DN_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Store entry" )
@@ -2166,8 +2166,8 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
                     // We have to handle the special case of a 0 length matched
-                    // DN
-                    DN entry = null;
+                    // Dn
+                    Dn entry = null;
 
                     if ( tlv.getLength() == 0 )
                     {
@@ -2181,17 +2181,17 @@ public final class LdapMessageGrammar extends AbstractGrammar
 
                         try
                         {
-                            entry = new DN( dnStr );
+                            entry = new Dn( dnStr );
                         }
                         catch ( LdapInvalidDnException ine )
                         {
-                            String msg = "Invalid DN given : " + dnStr + " (" + Strings.dumpBytes(dnBytes)
+                            String msg = "Invalid Dn given : " + dnStr + " (" + Strings.dumpBytes(dnBytes)
                                 + ") is invalid";
                             LOG.error( "{} : {}", msg, ine.getMessage() );
 
                             ModifyDnResponseImpl response = new ModifyDnResponseImpl( modifyDNRequest.getMessageId() );
                             throw new ResponseCarryingException( msg, response, ResultCodeEnum.INVALID_DN_SYNTAX,
-                                DN.EMPTY_DN, ine );
+                                Dn.EMPTY_DN, ine );
                         }
 
                         modifyDNRequest.setName( entry );
@@ -2199,7 +2199,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
 
                     if ( IS_DEBUG )
                     {
-                        LOG.debug( "Modifying DN {}", entry );
+                        LOG.debug( "Modifying Dn {}", entry );
                     }
                 }
             } );
@@ -2214,10 +2214,10 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //
         // RelativeRDN :: LDAPString
         //
-        // Stores the new RDN
+        // Stores the new Rdn
         super.transitions[LdapStatesEnum.ENTRY_MOD_DN_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.ENTRY_MOD_DN_STATE, LdapStatesEnum.NEW_RDN_STATE, UniversalTag.OCTET_STRING.getValue(),
-            new GrammarAction( "Store new RDN" )
+            new GrammarAction( "Store new Rdn" )
             {
                 public void action( Asn1Container container ) throws DecoderException
                 {
@@ -2230,7 +2230,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
 
                     // We have to handle the special case of a 0 length matched
                     // newDN
-                    RDN newRdn = null;
+                    Rdn newRdn = null;
 
                     if ( tlv.getLength() == 0 )
                     {
@@ -2248,12 +2248,12 @@ public final class LdapMessageGrammar extends AbstractGrammar
 
                         try
                         {
-                            DN dn = new DN( dnStr );
+                            Dn dn = new Dn( dnStr );
                             newRdn = dn.getRdn( 0 );
                         }
                         catch ( LdapInvalidDnException ine )
                         {
-                            String msg = "Invalid new RDN given : " + dnStr + " (" + Strings.dumpBytes(dnBytes)
+                            String msg = "Invalid new Rdn given : " + dnStr + " (" + Strings.dumpBytes(dnBytes)
                                 + ") is invalid";
                             LOG.error( "{} : {}", msg, ine.getMessage() );
 
@@ -2267,7 +2267,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
 
                     if ( IS_DEBUG )
                     {
-                        LOG.debug( "Modifying with new RDN {}", newRdn );
+                        LOG.debug( "Modifying with new Rdn {}", newRdn );
                     }
                 }
             } );
@@ -2320,11 +2320,11 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     {
                         if ( modifyDnRequest.getDeleteOldRdn() )
                         {
-                            LOG.debug( " Old RDN attributes will be deleted" );
+                            LOG.debug( " Old Rdn attributes will be deleted" );
                         }
                         else
                         {
-                            LOG.debug( " Old RDN attributes will be retained" );
+                            LOG.debug( " Old Rdn attributes will be retained" );
                         }
                     }
                 }
@@ -2351,8 +2351,8 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
                     // We have to handle the special case of a 0 length matched
-                    // DN
-                    DN newSuperior = DN.EMPTY_DN;
+                    // Dn
+                    Dn newSuperior = Dn.EMPTY_DN;
 
                     if ( tlv.getLength() == 0 )
                     {
@@ -2376,11 +2376,11 @@ public final class LdapMessageGrammar extends AbstractGrammar
 
                         try
                         {
-                            newSuperior = new DN( dnStr );
+                            newSuperior = new Dn( dnStr );
                         }
                         catch ( LdapInvalidDnException ine )
                         {
-                            String msg = "Invalid new superior DN given : " + dnStr + " ("
+                            String msg = "Invalid new superior Dn given : " + dnStr + " ("
                                 + Strings.dumpBytes(dnBytes) + ") is invalid";
                             LOG.error( "{} : {}", msg, ine.getMessage() );
 
@@ -2397,7 +2397,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
 
                     if ( IS_DEBUG )
                     {
-                        LOG.debug( "New superior DN {}", newSuperior );
+                        LOG.debug( "New superior Dn {}", newSuperior );
                     }
                 }
             } );
@@ -2446,7 +2446,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     ModifyDnResponse modifyDnResponse = new ModifyDnResponseImpl( ldapMessageContainer.getMessageId() );
                     ldapMessageContainer.setMessage( modifyDnResponse );
 
-                    LOG.debug( "Modify DN response " );
+                    LOG.debug( "Modify Dn response " );
                 }
             } );
 
@@ -2499,7 +2499,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     entry    LDAPDN,
         //     ...
         //
-        // Stores the compared DN
+        // Stores the compared Dn
         super.transitions[LdapStatesEnum.COMPARE_REQUEST_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.COMPARE_REQUEST_STATE, LdapStatesEnum.ENTRY_COMP_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction( "Store entry" )
@@ -2512,10 +2512,10 @@ public final class LdapMessageGrammar extends AbstractGrammar
 
                     // Get the Value and store it in the CompareRequest
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
-                    DN entry = null;
+                    Dn entry = null;
 
                     // We have to handle the special case of a 0 length matched
-                    // DN
+                    // Dn
                     if ( tlv.getLength() == 0 )
                     {
                         // This will generate a PROTOCOL_ERROR
@@ -2528,17 +2528,17 @@ public final class LdapMessageGrammar extends AbstractGrammar
 
                         try
                         {
-                            entry = new DN( dnStr );
+                            entry = new Dn( dnStr );
                         }
                         catch ( LdapInvalidDnException ine )
                         {
-                            String msg = "Invalid DN given : " + dnStr + " (" + Strings.dumpBytes(dnBytes)
+                            String msg = "Invalid Dn given : " + dnStr + " (" + Strings.dumpBytes(dnBytes)
                                 + ") is invalid";
                             LOG.error( "{} : {}", msg, ine.getMessage() );
 
                             CompareResponseImpl response = new CompareResponseImpl( compareRequest.getMessageId() );
                             throw new ResponseCarryingException( msg, response, ResultCodeEnum.INVALID_DN_SYNTAX,
-                                DN.EMPTY_DN, ine );
+                                Dn.EMPTY_DN, ine );
                         }
 
                         compareRequest.setName( entry );
@@ -2546,7 +2546,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
 
                     if ( IS_DEBUG )
                     {
-                        LOG.debug( "Comparing DN {}", entry );
+                        LOG.debug( "Comparing Dn {}", entry );
                     }
                 }
             } );
@@ -2590,7 +2590,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
                     // We have to handle the special case of a 0 length matched
-                    // DN
+                    // Dn
                     if ( tlv.getLength() == 0 )
                     {
                         String msg = I18n.err( I18n.ERR_04093 );
@@ -2992,7 +2992,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
             new ResultCodeAction() );
 
         // --------------------------------------------------------------------------------------------
-        // Transition from Result Code ER to Matched DN ER
+        // Transition from Result Code ER to Matched Dn ER
         // --------------------------------------------------------------------------------------------
         // LdapMessage ::= ... ExtendedResponse ...
         // ExtendedResponse ::= [APPLICATION 24] SEQUENCE {
@@ -3005,7 +3005,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
             new MatchedDNAction() );
 
         // --------------------------------------------------------------------------------------------
-        // Transition from Matched DN ER to Error Message ER 
+        // Transition from Matched Dn ER to Error Message ER
         // --------------------------------------------------------------------------------------------
         // LdapMessage ::= ... ExtendedResponse ...
         // ExtendedResponse ::= [APPLICATION 24] SEQUENCE {
@@ -3615,8 +3615,8 @@ public final class LdapMessageGrammar extends AbstractGrammar
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
-                    // We have to check that this is a correct DN
-                    DN baseObject = null;
+                    // We have to check that this is a correct Dn
+                    Dn baseObject = null;
 
                     // We have to handle the special case of a 0 length base
                     // object,
@@ -3629,27 +3629,27 @@ public final class LdapMessageGrammar extends AbstractGrammar
 
                         try
                         {
-                            baseObject = new DN( dnStr );
+                            baseObject = new Dn( dnStr );
                         }
                         catch ( LdapInvalidDnException ine )
                         {
-                            String msg = "Invalid root DN given : " + dnStr + " (" + Strings.dumpBytes(dnBytes)
+                            String msg = "Invalid root Dn given : " + dnStr + " (" + Strings.dumpBytes(dnBytes)
                                 + ") is invalid";
                             LOG.error( "{} : {}", msg, ine.getMessage() );
 
                             SearchResultDoneImpl response = new SearchResultDoneImpl( searchRequest.getMessageId() );
                             throw new ResponseCarryingException( msg, response, ResultCodeEnum.INVALID_DN_SYNTAX,
-                                DN.EMPTY_DN, ine );
+                                Dn.EMPTY_DN, ine );
                         }
                     }
                     else
                     {
-                        baseObject = DN.EMPTY_DN;
+                        baseObject = Dn.EMPTY_DN;
                     }
 
                     searchRequest.setBase( baseObject );
 
-                    LOG.debug( "Searching with root DN : {}", baseObject );
+                    LOG.debug( "Searching with root Dn : {}", baseObject );
                 }
             } );
 
@@ -6187,7 +6187,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
 
                     if ( IS_DEBUG )
                     {
-                        LOG.debug( "DN Attributes : {}", Boolean.valueOf( extensibleMatchFilter.isDnAttributes() ) );
+                        LOG.debug( "Dn Attributes : {}", Boolean.valueOf( extensibleMatchFilter.isDnAttributes() ) );
                     }
 
                     // unstack the filters if needed

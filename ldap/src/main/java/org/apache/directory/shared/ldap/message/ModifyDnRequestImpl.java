@@ -21,8 +21,8 @@ package org.apache.directory.shared.ldap.message;
 
 
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
-import org.apache.directory.shared.ldap.name.DN;
-import org.apache.directory.shared.ldap.name.RDN;
+import org.apache.directory.shared.ldap.name.Dn;
+import org.apache.directory.shared.ldap.name.Rdn;
 
 
 /**
@@ -35,13 +35,13 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements M
     static final long serialVersionUID = 1233507339633051696L;
 
     /** PDU's modify Dn candidate <b>entry</b> distinguished name property */
-    private DN name;
+    private Dn name;
 
     /** PDU's <b>newrdn</b> relative distinguished name property */
-    private RDN newRdn;
+    private Rdn newRdn;
 
     /** PDU's <b>newSuperior</b> distinguished name property */
-    private DN newSuperior;
+    private Dn newSuperior;
 
     /** PDU's <b>deleteOldRdn</b> flag */
     private boolean deleteOldRdn = false;
@@ -49,7 +49,7 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements M
     /** The associated response */
     private ModifyDnResponse response;
 
-    /** The modify DN request length */
+    /** The modify Dn request length */
     private int modifyDnRequestLength;
 
 
@@ -109,7 +109,7 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements M
 
 
     /**
-     * Gets whether or not this request is a DN change resulting in a move
+     * Gets whether or not this request is a Dn change resulting in a move
      * operation. Setting the newSuperior property to a non-null name, toggles
      * this flag.
      * 
@@ -128,7 +128,7 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements M
      * 
      * @return the distinguished name of the entry.
      */
-    public DN getName()
+    public Dn getName()
     {
         return name;
     }
@@ -141,7 +141,7 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements M
      * @param name
      *            the distinguished name of the entry.
      */
-    public void setName( DN name )
+    public void setName( Dn name )
     {
         this.name = name;
     }
@@ -153,7 +153,7 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements M
      * 
      * @return the relative dn with one component
      */
-    public RDN getNewRdn()
+    public Rdn getNewRdn()
     {
         return newRdn;
     }
@@ -165,7 +165,7 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements M
      * 
      * @param newRdn the relative dn with one component
      */
-    public void setNewRdn( RDN newRdn )
+    public void setNewRdn( Rdn newRdn )
     {
         this.newRdn = newRdn;
     }
@@ -179,7 +179,7 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements M
      * 
      * @return the dn of the superior entry the candidate entry is moved under.
      */
-    public DN getNewSuperior()
+    public Dn getNewSuperior()
     {
         return newSuperior;
     }
@@ -192,10 +192,10 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements M
      * rather than a move operation. Setting this property to a non-null value
      * toggles the move flag obtained via the <code>isMove</code> method.
      * 
-     * @param newSuperior the dn of the superior entry the candidate entry for DN
+     * @param newSuperior the dn of the superior entry the candidate entry for Dn
      *            modification is moved under.
      */
-    public void setNewSuperior( DN newSuperior )
+    public void setNewSuperior( Dn newSuperior )
     {
         this.newSuperior = newSuperior;
     }
@@ -368,9 +368,9 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements M
         sb.append( "        Entry : '" ).append( name ).append( "'\n" );
         if ( newRdn != null )
         {
-            sb.append( "        New RDN : '" ).append( newRdn.toString() ).append( "'\n" );
+            sb.append( "        New Rdn : '" ).append( newRdn.toString() ).append( "'\n" );
         }
-        sb.append( "        Delete old RDN : " ).append( deleteOldRdn ).append( "\n" );
+        sb.append( "        Delete old Rdn : " ).append( deleteOldRdn ).append( "\n" );
 
         if ( newSuperior != null )
         {

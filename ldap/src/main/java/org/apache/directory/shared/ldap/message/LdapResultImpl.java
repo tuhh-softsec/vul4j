@@ -21,7 +21,7 @@
 package org.apache.directory.shared.ldap.message;
 
 
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 
 
 /**
@@ -34,7 +34,7 @@ public class LdapResultImpl implements LdapResult
     static final long serialVersionUID = -1446626887394613213L;
 
     /** Lowest matched entry Dn - defaults to empty string */
-    private DN matchedDn;
+    private Dn matchedDn;
 
     /** Temporary storage of the byte[] representing the matchedDN */
     private byte[] matchedDnBytes;
@@ -112,7 +112,7 @@ public class LdapResultImpl implements LdapResult
      * 
      * @return the Dn of the lowest matched entry.
      */
-    public DN getMatchedDn()
+    public Dn getMatchedDn()
     {
         return matchedDn;
     }
@@ -133,7 +133,7 @@ public class LdapResultImpl implements LdapResult
      * @see #getMatchedDn()
      * @param matchedDn the Dn of the lowest matched entry.
      */
-    public void setMatchedDn( DN matchedDn )
+    public void setMatchedDn( Dn matchedDn )
     {
         this.matchedDn = matchedDn;
     }
@@ -572,7 +572,7 @@ public class LdapResultImpl implements LdapResult
                 }
         }
 
-        sb.append( "            Matched DN : '" ).append( matchedDn ).append( "'\n" );
+        sb.append( "            Matched Dn : '" ).append( matchedDn ).append( "'\n" );
         sb.append( "            Error message : '" ).append( errorMessage ).append( "'\n" );
 
         if ( referral != null )

@@ -24,13 +24,13 @@ import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 
 
 /**
- * Modify DN protocol response message used to confirm the results of a modify
- * DN request message.
+ * Modify Dn protocol response message used to confirm the results of a modify
+ * Dn request message.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public interface ModifyDnResponse extends ResultResponse
 {
-    /** Modify DN response message type enumeration value */
+    /** Modify Dn response message type enumeration value */
     MessageTypeEnum TYPE = MessageTypeEnum.MODIFYDN_RESPONSE;
 }

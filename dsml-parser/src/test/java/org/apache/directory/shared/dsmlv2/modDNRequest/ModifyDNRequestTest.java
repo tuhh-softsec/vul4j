@@ -38,7 +38,7 @@ import org.junit.runner.RunWith;
 
 
 /**
- * Tests for the Modify DN Request parsing
+ * Tests for the Modify Dn Request parsing
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */

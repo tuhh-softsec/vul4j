@@ -31,7 +31,7 @@ import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.codec.MessageTypeEnum;
 import org.apache.directory.shared.ldap.exception.LdapException;
 import org.apache.directory.shared.ldap.message.control.Control;
-import org.apache.directory.shared.ldap.name.DN;
+import org.apache.directory.shared.ldap.name.Dn;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -66,10 +66,10 @@ public class DeleteRequestImplTest
     public void testEqualsExactCopy() throws LdapException
     {
         DeleteRequestImpl req0 = new DeleteRequestImpl( 5 );
-        req0.setName( new DN( "cn=admin,dc=example,dc=com" ) );
+        req0.setName( new Dn( "cn=admin,dc=example,dc=com" ) );
 
         DeleteRequestImpl req1 = new DeleteRequestImpl( 5 );
-        req1.setName( new DN( "cn=admin,dc=example,dc=com" ) );
+        req1.setName( new Dn( "cn=admin,dc=example,dc=com" ) );
 
         assertTrue( req0.equals( req1 ) );
     }
@@ -93,10 +93,10 @@ public class DeleteRequestImplTest
     public void testHashCodeExactCopy() throws LdapException
     {
         DeleteRequestImpl req0 = new DeleteRequestImpl( 5 );
-        req0.setName( new DN( "cn=admin,dc=example,dc=com" ) );
+        req0.setName( new Dn( "cn=admin,dc=example,dc=com" ) );
 
         DeleteRequestImpl req1 = new DeleteRequestImpl( 5 );
-        req1.setName( new DN( "cn=admin,dc=example,dc=com" ) );
+        req1.setName( new Dn( "cn=admin,dc=example,dc=com" ) );
 
         assertTrue( req0.hashCode() == req1.hashCode() );
     }
@@ -109,26 +109,26 @@ public class DeleteRequestImplTest
     public void testNotEqualDiffId() throws LdapException
     {
         DeleteRequestImpl req0 = new DeleteRequestImpl( 7 );
-        req0.setName( new DN( "cn=admin,dc=example,dc=com" ) );
+        req0.setName( new Dn( "cn=admin,dc=example,dc=com" ) );
 
         DeleteRequestImpl req1 = new DeleteRequestImpl( 5 );
-        req1.setName( new DN( "cn=admin,dc=example,dc=com" ) );
+        req1.setName( new Dn( "cn=admin,dc=example,dc=com" ) );
 
         assertFalse( req0.equals( req1 ) );
     }
 
 
     /**
-     * Test for inequality when only the DN names are different.
+     * Test for inequality when only the Dn names are different.
      */
     @Test
     public void testNotEqualDiffName() throws LdapException
     {
         DeleteRequestImpl req0 = new DeleteRequestImpl( 5 );
-        req0.setName( new DN( "uid=akarasulu,dc=example,dc=com" ) );
+        req0.setName( new Dn( "uid=akarasulu,dc=example,dc=com" ) );
 
         DeleteRequestImpl req1 = new DeleteRequestImpl( 5 );
-        req1.setName( new DN( "cn=admin,dc=example,dc=com" ) );
+        req1.setName( new Dn( "cn=admin,dc=example,dc=com" ) );
 
         assertFalse( req0.equals( req1 ) );
     }
@@ -143,13 +143,13 @@ public class DeleteRequestImplTest
     {
         DeleteRequest req0 = new DeleteRequest()
         {
-            public DN getName()
+            public Dn getName()
             {
                 return null;
             }
 
 
-            public void setName( DN name )
+            public void setName( Dn name )
             {
             }
 
