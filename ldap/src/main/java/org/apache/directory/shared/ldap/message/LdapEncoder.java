@@ -616,7 +616,9 @@ public class LdapEncoder
         int avaLength = 1 + TLV.getNbBytes( attributeIdBytes.length ) + attributeIdBytes.length;
         compareRequest.setAttrIdBytes( attributeIdBytes );
 
-        if ( compareRequest.getAssertionValue() instanceof BinaryValue)
+        org.apache.directory.shared.ldap.model.entry.Value assertionValue = compareRequest.getAssertionValue();
+
+        if ( assertionValue instanceof BinaryValue )
         {
             byte[] value = compareRequest.getAssertionValue().getBytes();
             avaLength += 1 + TLV.getNbBytes( value.length ) + value.length;
