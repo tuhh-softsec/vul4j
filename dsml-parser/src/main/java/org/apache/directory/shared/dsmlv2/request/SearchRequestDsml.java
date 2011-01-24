@@ -25,17 +25,16 @@ import java.util.List;
 import org.apache.directory.shared.dsmlv2.ParserUtils;
 import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
+import org.apache.directory.shared.ldap.model.filter.*;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilter;
 import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
 import org.apache.directory.shared.ldap.codec.search.PresentFilter;
 import org.apache.directory.shared.ldap.model.entry.Value;
-import org.apache.directory.shared.ldap.filter.AndNode;
-import org.apache.directory.shared.ldap.filter.ExprNode;
-import org.apache.directory.shared.ldap.filter.NotNode;
-import org.apache.directory.shared.ldap.filter.OrNode;
-import org.apache.directory.shared.ldap.filter.SearchScope;
-import org.apache.directory.shared.ldap.filter.SubstringNode;
+import org.apache.directory.shared.ldap.model.filter.AndNode;
+import org.apache.directory.shared.ldap.model.filter.ExprNode;
+import org.apache.directory.shared.ldap.model.filter.SearchScope;
+import org.apache.directory.shared.ldap.model.filter.SubstringNode;
 import org.apache.directory.shared.ldap.model.message.AliasDerefMode;
 import org.apache.directory.shared.ldap.model.message.SearchRequest;
 import org.apache.directory.shared.ldap.message.SearchRequestImpl;
@@ -194,7 +193,7 @@ public class SearchRequestDsml extends AbstractRequestDsml
         {
             Element newElement = element.addElement( "and" );
 
-            List<ExprNode> filterList = ( ( AndNode ) filter ).getChildren();
+            List<ExprNode> filterList = ( (AndNode) filter ).getChildren();
 
             for ( int i = 0; i < filterList.size(); i++ )
             {
@@ -224,7 +223,7 @@ public class SearchRequestDsml extends AbstractRequestDsml
         }
 
         // SUBSTRING FILTER
-        else if ( filter instanceof SubstringNode )
+        else if ( filter instanceof SubstringNode)
         {
             Element newElement = element.addElement( "substrings" );
 

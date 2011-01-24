@@ -23,9 +23,9 @@ package org.apache.directory.shared.dsmlv2.reponse;
 
 import java.util.List;
 
+import org.apache.directory.shared.ldap.model.filter.LdapURL;
 import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
-import org.apache.directory.shared.ldap.filter.LdapURL;
 import org.apache.directory.shared.ldap.model.message.SearchResultReference;
 import org.apache.directory.shared.ldap.message.SearchResultReferenceImpl;
 import org.dom4j.Element;

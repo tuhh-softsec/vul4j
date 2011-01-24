@@ -23,7 +23,7 @@ package org.apache.directory.shared.ldap.subtree;
 import java.util.Collections;
 import java.util.Set;
 
-import org.apache.directory.shared.ldap.filter.ExprNode;
+import org.apache.directory.shared.ldap.model.filter.ExprNode;
 import org.apache.directory.shared.ldap.name.Dn;
 
 

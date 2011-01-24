@@ -31,7 +31,7 @@ import org.apache.directory.shared.ldap.schema.NormalizerMappingResolver;
 import org.apache.directory.shared.ldap.trigger.StoredProcedureOption;
 import org.apache.directory.shared.ldap.trigger.StoredProcedureParameter;
 import org.apache.directory.shared.ldap.trigger.TriggerSpecification.SPSpec;
-import org.apache.directory.shared.ldap.filter.SearchScope;
+import org.apache.directory.shared.ldap.model.filter.SearchScope;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

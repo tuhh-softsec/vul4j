@@ -35,18 +35,18 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.dsmlv2.AbstractTest;
 import org.apache.directory.shared.dsmlv2.Dsmlv2Parser;
-import org.apache.directory.shared.ldap.filter.AndNode;
-import org.apache.directory.shared.ldap.filter.ApproximateNode;
-import org.apache.directory.shared.ldap.filter.EqualityNode;
-import org.apache.directory.shared.ldap.filter.ExprNode;
-import org.apache.directory.shared.ldap.filter.ExtensibleNode;
-import org.apache.directory.shared.ldap.filter.GreaterEqNode;
-import org.apache.directory.shared.ldap.filter.LessEqNode;
-import org.apache.directory.shared.ldap.filter.NotNode;
-import org.apache.directory.shared.ldap.filter.OrNode;
-import org.apache.directory.shared.ldap.filter.PresenceNode;
-import org.apache.directory.shared.ldap.filter.SearchScope;
-import org.apache.directory.shared.ldap.filter.SubstringNode;
+import org.apache.directory.shared.ldap.model.filter.AndNode;
+import org.apache.directory.shared.ldap.model.filter.ApproximateNode;
+import org.apache.directory.shared.ldap.model.filter.EqualityNode;
+import org.apache.directory.shared.ldap.model.filter.ExprNode;
+import org.apache.directory.shared.ldap.model.filter.ExtensibleNode;
+import org.apache.directory.shared.ldap.model.filter.GreaterEqNode;
+import org.apache.directory.shared.ldap.model.filter.LessEqNode;
+import org.apache.directory.shared.ldap.model.filter.NotNode;
+import org.apache.directory.shared.ldap.model.filter.OrNode;
+import org.apache.directory.shared.ldap.model.filter.PresenceNode;
+import org.apache.directory.shared.ldap.model.filter.SearchScope;
+import org.apache.directory.shared.ldap.model.filter.SubstringNode;
 import org.apache.directory.shared.ldap.model.message.AliasDerefMode;
 import org.apache.directory.shared.ldap.model.message.SearchRequest;
 import org.apache.directory.shared.ldap.model.message.Control;
@@ -1261,7 +1261,7 @@ public class SearchRequestTest extends AbstractTest
 
         assertTrue( filter instanceof LessEqNode );
 
-        LessEqNode lessOrEqFilter = ( LessEqNode ) filter;
+        LessEqNode lessOrEqFilter = (LessEqNode) filter;
 
         assertEquals( "sn", lessOrEqFilter.getAttribute() );
 
@@ -1465,7 +1465,7 @@ public class SearchRequestTest extends AbstractTest
 
         assertTrue( filter instanceof EqualityNode );
 
-        EqualityNode equalityFilter = ( EqualityNode ) filter;
+        EqualityNode equalityFilter = (EqualityNode) filter;
 
         assertEquals( "sn", equalityFilter.getAttribute() );
 
@@ -1906,7 +1906,7 @@ public class SearchRequestTest extends AbstractTest
 
         assertTrue( filter instanceof SubstringNode );
 
-        SubstringNode substringFilter = ( SubstringNode ) filter;
+        SubstringNode substringFilter = (SubstringNode) filter;
 
         assertEquals( "sn", substringFilter.getAttribute() );
     }

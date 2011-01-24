@@ -28,7 +28,7 @@ import java.util.Set;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.ldap.filter.UndefinedNode;
+import org.apache.directory.shared.ldap.model.filter.UndefinedNode;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.junit.Before;
 import org.junit.Test;

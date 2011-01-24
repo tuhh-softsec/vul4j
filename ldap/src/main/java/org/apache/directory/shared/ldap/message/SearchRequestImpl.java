@@ -34,6 +34,7 @@ import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapProtocolErrorException;
+import org.apache.directory.shared.ldap.model.filter.*;
 import org.apache.directory.shared.ldap.model.message.*;
 import org.apache.directory.shared.ldap.codec.search.AndFilter;
 import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilter;
@@ -45,23 +46,22 @@ import org.apache.directory.shared.ldap.codec.search.OrFilter;
 import org.apache.directory.shared.ldap.codec.search.PresentFilter;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
 import org.apache.directory.shared.ldap.model.entry.Value;
-import org.apache.directory.shared.ldap.filter.AndNode;
-import org.apache.directory.shared.ldap.filter.ApproximateNode;
-import org.apache.directory.shared.ldap.filter.BranchNode;
-import org.apache.directory.shared.ldap.filter.BranchNormalizedVisitor;
-import org.apache.directory.shared.ldap.filter.EqualityNode;
-import org.apache.directory.shared.ldap.filter.ExprNode;
-import org.apache.directory.shared.ldap.filter.ExtensibleNode;
-import org.apache.directory.shared.ldap.filter.FilterParser;
-import org.apache.directory.shared.ldap.filter.GreaterEqNode;
-import org.apache.directory.shared.ldap.filter.LeafNode;
-import org.apache.directory.shared.ldap.filter.LessEqNode;
-import org.apache.directory.shared.ldap.filter.NotNode;
-import org.apache.directory.shared.ldap.filter.OrNode;
-import org.apache.directory.shared.ldap.filter.PresenceNode;
-import org.apache.directory.shared.ldap.filter.SearchScope;
-import org.apache.directory.shared.ldap.filter.SimpleNode;
-import org.apache.directory.shared.ldap.filter.SubstringNode;
+import org.apache.directory.shared.ldap.model.filter.AndNode;
+import org.apache.directory.shared.ldap.model.filter.ApproximateNode;
+import org.apache.directory.shared.ldap.model.filter.BranchNode;
+import org.apache.directory.shared.ldap.model.filter.BranchNormalizedVisitor;
+import org.apache.directory.shared.ldap.model.filter.EqualityNode;
+import org.apache.directory.shared.ldap.model.filter.ExprNode;
+import org.apache.directory.shared.ldap.model.filter.ExtensibleNode;
+import org.apache.directory.shared.ldap.model.filter.FilterParser;
+import org.apache.directory.shared.ldap.model.filter.GreaterEqNode;
+import org.apache.directory.shared.ldap.model.filter.LessEqNode;
+import org.apache.directory.shared.ldap.model.filter.NotNode;
+import org.apache.directory.shared.ldap.model.filter.OrNode;
+import org.apache.directory.shared.ldap.model.filter.PresenceNode;
+import org.apache.directory.shared.ldap.model.filter.SearchScope;
+import org.apache.directory.shared.ldap.model.filter.SimpleNode;
+import org.apache.directory.shared.ldap.model.filter.SubstringNode;
 import org.apache.directory.shared.ldap.name.Dn;
 
 
@@ -309,7 +309,7 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Sea
                     filter = new NotFilter();
                 }
 
-                List<ExprNode> children = ( ( BranchNode ) exprNode ).getChildren();
+                List<ExprNode> children = ( (BranchNode) exprNode ).getChildren();
 
                 // Loop on all AND/OR children
                 if ( children != null )
@@ -365,7 +365,7 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Sea
                     {
                         filter = new AttributeValueAssertionFilter( LdapConstants.APPROX_MATCH_FILTER );
                         AttributeValueAssertion assertion = new AttributeValueAssertion();
-                        assertion.setAttributeDesc( ( ( ApproximateNode<?> ) exprNode ).getAttribute() );
+                        assertion.setAttributeDesc( ( (ApproximateNode<?>) exprNode ).getAttribute() );
                         assertion.setAssertionValue( ( ( ApproximateNode<?> ) exprNode ).getValue() );
                         ( ( AttributeValueAssertionFilter ) filter ).setAssertion( assertion );
                     }

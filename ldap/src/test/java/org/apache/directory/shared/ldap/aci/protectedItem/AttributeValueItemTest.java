@@ -30,7 +30,7 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.model.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
-import org.apache.directory.shared.ldap.filter.UndefinedNode;
+import org.apache.directory.shared.ldap.model.filter.UndefinedNode;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

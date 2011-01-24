@@ -29,7 +29,7 @@ import java.util.List;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.ldap.filter.SearchScope;
+import org.apache.directory.shared.ldap.model.filter.SearchScope;
 import org.apache.directory.shared.ldap.name.Dn;
 import org.apache.directory.shared.ldap.trigger.TriggerSpecification.SPSpec;
 import org.junit.Test;

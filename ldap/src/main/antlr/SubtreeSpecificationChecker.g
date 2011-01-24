@@ -24,14 +24,14 @@ header
 package org.apache.directory.shared.ldap.subtree;
 
 import org.apache.directory.shared.ldap.name.Dn;
-import org.apache.directory.shared.ldap.filter.ExprNode;
-import org.apache.directory.shared.ldap.filter.LeafNode;
-import org.apache.directory.shared.ldap.filter.BranchNode;
-import org.apache.directory.shared.ldap.filter.AndNode;
-import org.apache.directory.shared.ldap.filter.OrNode;
-import org.apache.directory.shared.ldap.filter.NotNode;
-import org.apache.directory.shared.ldap.filter.EqualityNode;
-import org.apache.directory.shared.ldap.filter.FilterParser;
+import org.apache.directory.shared.ldap.model.filter.ExprNode;
+import org.apache.directory.shared.ldap.model.filter.LeafNode;
+import org.apache.directory.shared.ldap.model.filter.BranchNode;
+import org.apache.directory.shared.ldap.model.filter.AndNode;
+import org.apache.directory.shared.ldap.model.filter.OrNode;
+import org.apache.directory.shared.ldap.model.filter.NotNode;
+import org.apache.directory.shared.ldap.model.filter.EqualityNode;
+import org.apache.directory.shared.ldap.model.filter.FilterParser;
 import org.apache.directory.shared.util.ComponentsMonitor;
 import org.apache.directory.shared.util.OptionalComponentsMonitor;
 import org.apache.directory.shared.ldap.schema.SchemaManager;

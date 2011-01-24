@@ -67,7 +67,7 @@ import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
-import org.apache.directory.shared.ldap.filter.SearchScope;
+import org.apache.directory.shared.ldap.model.filter.SearchScope;
 import org.apache.directory.shared.ldap.model.message.AbandonRequest;
 import org.apache.directory.shared.ldap.message.AbandonRequestImpl;
 import org.apache.directory.shared.ldap.model.message.AddRequest;
@@ -3690,7 +3690,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                         throw new DecoderException( msg );
                     }
 
-                    searchRequest.setScope( SearchScope.getSearchScope( scope ) );
+                    searchRequest.setScope( SearchScope.getSearchScope(scope) );
 
                     if ( IS_DEBUG )
                     {

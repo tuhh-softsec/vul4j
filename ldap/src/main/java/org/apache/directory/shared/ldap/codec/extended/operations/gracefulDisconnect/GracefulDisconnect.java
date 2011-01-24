@@ -30,7 +30,7 @@ import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.ldap.codec.extended.operations.GracefulAction;
 import org.apache.directory.shared.ldap.codec.extended.operations.GracefulActionConstants;
-import org.apache.directory.shared.ldap.filter.LdapURL;
+import org.apache.directory.shared.ldap.model.filter.LdapURL;
 
 
 /**

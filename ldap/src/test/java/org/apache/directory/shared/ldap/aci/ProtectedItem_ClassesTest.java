@@ -26,8 +26,8 @@ import static org.junit.Assert.assertFalse;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.aci.protectedItem.ClassesItem;
-import org.apache.directory.shared.ldap.filter.ExprNode;
-import org.apache.directory.shared.ldap.filter.FilterParser;
+import org.apache.directory.shared.ldap.model.filter.ExprNode;
+import org.apache.directory.shared.ldap.model.filter.FilterParser;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,7 +55,7 @@ public class ProtectedItem_ClassesTest
     public void initNames() throws Exception
     {
         ExprNode filterA = FilterParser.parse( "(&(cn=test)(sn=test))" );
-        ExprNode filterB = FilterParser.parse( "(&(cn=test)(sn=test))" );
+        ExprNode filterB = FilterParser.parse("(&(cn=test)(sn=test))");
         ExprNode filterC = FilterParser.parse( "(&(cn=sample)(sn=sample))" );
         classesA = new ClassesItem( filterA );
         classesACopy = new ClassesItem( filterA );
