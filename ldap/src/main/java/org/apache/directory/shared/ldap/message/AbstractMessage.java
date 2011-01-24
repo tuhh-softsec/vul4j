@@ -22,7 +22,6 @@ package org.apache.directory.shared.ldap.message;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.directory.shared.ldap.model.exception.MessageException;
@@ -43,9 +42,6 @@ public abstract class AbstractMessage implements Message
     /** Map of message controls using OID Strings for keys and Control values */
     protected final Map<String, Control> controls;
 
-    /** The encoded controls length */
-    private int controlsLength;
-
     /** The session unique message sequence identifier */
     private int id;
 
@@ -57,9 +53,6 @@ public abstract class AbstractMessage implements Message
 
     /** The current control */
     private Control currentControl;
-
-    /** The encoded message length */
-    private int messageLength;
 
 
     /**
@@ -244,11 +237,9 @@ public abstract class AbstractMessage implements Message
             return false;
         }
 
-        Iterator<String> list = this.controls.keySet().iterator();
-
-        while ( list.hasNext() )
+        for ( String key : this.controls.keySet() )
         {
-            if ( !controls.containsKey( list.next() ) )
+            if ( ! controls.containsKey( key ) )
             {
                 return false;
             }
@@ -284,42 +275,6 @@ public abstract class AbstractMessage implements Message
             this.controls.put( c.getOid(), c );
         }
     }
-
-
-//    /**
-//     * {@inheritDoc}
-//     */
-//    /* No qualifier*/void setControlsLength( int controlsLength )
-//    {
-//        this.controlsLength = controlsLength;
-//    }
-//
-//
-//    /**
-//     * {@inheritDoc}
-//     */
-//    /* No qualifier*/int getControlsLength()
-//    {
-//        return controlsLength;
-//    }
-//
-//
-//    /**
-//     * {@inheritDoc}
-//     */
-//    /* No qualifier*/void setMessageLength( int messageLength )
-//    {
-//        this.messageLength = messageLength;
-//    }
-//
-//
-//    /**
-//     * {@inheritDoc}
-//     */
-//    /* No qualifier*/int getMessageLength()
-//    {
-//        return messageLength;
-//    }
 
 
     /**
