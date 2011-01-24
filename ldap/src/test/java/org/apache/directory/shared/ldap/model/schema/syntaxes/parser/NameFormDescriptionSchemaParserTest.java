@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.schema.syntax.parser;
+package org.apache.directory.shared.ldap.model.schema.syntaxes.parser;
 
 
 import static org.junit.Assert.assertEquals;
@@ -31,6 +31,7 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.schema.NameForm;
+import org.apache.directory.shared.ldap.model.schema.syntaxes.parser.SchemaParserTestUtils;
 import org.apache.directory.shared.ldap.schema.parsers.NameFormDescriptionSchemaParser;
 import org.junit.After;
 import org.junit.Before;
@@ -521,7 +522,7 @@ public class NameFormDescriptionSchemaParserTest
                 "( 2.5.15.3 NAME 'orgNameForm' OC organization MUST o )",
                 "( 2.5.15.3 NAME 'orgNameForm' OC organization MUST o )",
                 "( 1.2.3.4.5.6.7.8.9.0 NAME ( 'abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789' 'test' ) DESC 'Descripton \u00E4\u00F6\u00FC\u00DF \u90E8\u9577' OBSOLETE OC bcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789a MUST ( 3.4.5.6.7.8.9.0.1.2 $ cdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789ab ) MAY ( 4.5.6.7.8.9.0.1.2.3 $ defghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789abc ) X-TEST-a ('test1-1' 'test1-2') X-TEST-b ('test2-1' 'test2-2') )" };
-        SchemaParserTestUtils.testMultiThreaded( parser, testValues );
+        SchemaParserTestUtils.testMultiThreaded(parser, testValues);
 
     }
 

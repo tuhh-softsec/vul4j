@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.schema.syntax.parser;
+package org.apache.directory.shared.ldap.model.schema.syntaxes.parser;
 
 
 import static org.junit.Assert.assertEquals;
@@ -34,6 +34,7 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.model.schema.ObjectClass;
 import org.apache.directory.shared.ldap.model.schema.ObjectClassTypeEnum;
+import org.apache.directory.shared.ldap.model.schema.syntaxes.parser.SchemaParserTestUtils;
 import org.apache.directory.shared.ldap.schema.parsers.ObjectClassDescriptionSchemaParser;
 import org.junit.After;
 import org.junit.Before;
@@ -503,7 +504,7 @@ public class ObjectClassDescriptionSchemaParserTest
                 "( 1.1 SUP test1 SUP test2 )", "( 1.1 STRUCTURAL STRUCTURAL )", "( 1.1 ABSTRACT ABSTRACT )",
                 "( 1.1 AUXILIARY AUXILIARY )", "( 1.1 STRUCTURAL AUXILIARY AUXILIARY )",
                 "( 1.1 MUST test1 MUST test2 )", "( 1.1 MAY test1 MAY test2 )", "( 1.1 X-TEST 'test1' X-TEST 'test2' )" };
-        SchemaParserTestUtils.testUnique( parser, testValues );
+        SchemaParserTestUtils.testUnique(parser, testValues);
     }
 
 

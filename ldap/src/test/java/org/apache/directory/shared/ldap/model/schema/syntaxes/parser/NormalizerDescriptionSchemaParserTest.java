@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.schema.syntax.parser;
+package org.apache.directory.shared.ldap.model.schema.syntaxes.parser;
 
 
 import static org.junit.Assert.assertEquals;
@@ -27,8 +27,9 @@ import java.text.ParseException;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.ldap.schema.parsers.LdapComparatorDescription;
-import org.apache.directory.shared.ldap.schema.parsers.LdapComparatorDescriptionSchemaParser;
+import org.apache.directory.shared.ldap.model.schema.syntaxes.parser.SchemaParserTestUtils;
+import org.apache.directory.shared.ldap.schema.parsers.NormalizerDescription;
+import org.apache.directory.shared.ldap.schema.parsers.NormalizerDescriptionSchemaParser;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,22 +37,22 @@ import org.junit.runner.RunWith;
 
 
 /**
- * Tests the ComparatorDescriptionSchemaParser class.
+ * Tests the NormalizerDescriptionSchemaParser class.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 @RunWith(ConcurrentJunitRunner.class)
 @Concurrent()
-public class ComparatorDescriptionSchemaParserTest
+public class NormalizerDescriptionSchemaParserTest
 {
     /** the parser instance */
-    private LdapComparatorDescriptionSchemaParser parser;
+    private NormalizerDescriptionSchemaParser parser;
 
 
     @Before
     public void setUp() throws Exception
     {
-        parser = new LdapComparatorDescriptionSchemaParser();
+        parser = new NormalizerDescriptionSchemaParser();
     }
 
 
@@ -65,14 +66,14 @@ public class ComparatorDescriptionSchemaParserTest
     @Test
     public void testNumericOid() throws ParseException
     {
-        SchemaParserTestUtils.testNumericOid( parser, "FQCN org.apache.directory.SimpleComparator" );
+        SchemaParserTestUtils.testNumericOid(parser, "FQCN org.apache.directory.SimpleNormalizer");
     }
 
 
     @Test
     public void testDescription() throws ParseException
     {
-        SchemaParserTestUtils.testDescription( parser, "1.1", "FQCN org.apache.directory.SimpleComparator" );
+        SchemaParserTestUtils.testDescription( parser, "1.1", "FQCN org.apache.directory.SimpleNormalizer" );
     }
 
 
@@ -80,13 +81,13 @@ public class ComparatorDescriptionSchemaParserTest
     public void testFqcn() throws ParseException
     {
         String value = null;
-        LdapComparatorDescription ldapComparatorDescription = null;
+        NormalizerDescription nd = null;
 
-        // FQCN simple
-        value = "( 1.1 FQCN org.apache.directory.SimpleComparator )";
-        ldapComparatorDescription = parser.parseComparatorDescription( value );
-        assertNotNull( ldapComparatorDescription.getFqcn() );
-        assertEquals( "org.apache.directory.SimpleComparator", ldapComparatorDescription.getFqcn() );
+        // FQCN simple p
+        value = "( 1.1 FQCN org.apache.directory.SimpleNormalizer )";
+        nd = parser.parseNormalizerDescription( value );
+        assertNotNull( nd.getFqcn() );
+        assertEquals( "org.apache.directory.SimpleNormalizer", nd.getFqcn() );
     }
 
 
@@ -94,35 +95,20 @@ public class ComparatorDescriptionSchemaParserTest
     public void testBytecode() throws ParseException
     {
         String value = null;
-        LdapComparatorDescription ldapComparatorDescription = null;
+        NormalizerDescription nd = null;
 
         // FQCN simple p
-        value = "( 1.1 FQCN org.apache.directory.SimpleComparator BYTECODE ABCDEFGHIJKLMNOPQRSTUVWXYZ+/abcdefghijklmnopqrstuvwxyz0123456789==== )";
-        ldapComparatorDescription = parser.parseComparatorDescription( value );
-        assertNotNull( ldapComparatorDescription.getBytecode() );
-        assertEquals( "ABCDEFGHIJKLMNOPQRSTUVWXYZ+/abcdefghijklmnopqrstuvwxyz0123456789====", ldapComparatorDescription
-            .getBytecode() );
-
-        // FQCN simple, no spaces
-        value = "(1.1 FQCNorg.apache.directory.SimpleComparator BYTECODEABCDEFGHIJKLMNOPQRSTUVWXYZ+/abcdefghijklmnopqrstuvwxyz0123456789====)";
-        ldapComparatorDescription = parser.parseComparatorDescription( value );
-        assertNotNull( ldapComparatorDescription.getBytecode() );
-        assertEquals( "ABCDEFGHIJKLMNOPQRSTUVWXYZ+/abcdefghijklmnopqrstuvwxyz0123456789====", ldapComparatorDescription
-            .getBytecode() );
-
-        // FQCN simple, tabs
-        value = "\t(\t1.1\tFQCN\torg.apache.directory.SimpleComparator\tBYTECODE\tABCDEFGHIJKLMNOPQRSTUVWXYZ+/abcdefghijklmnopqrstuvwxyz0123456789====\t)\t";
-        ldapComparatorDescription = parser.parseComparatorDescription( value );
-        assertNotNull( ldapComparatorDescription.getBytecode() );
-        assertEquals( "ABCDEFGHIJKLMNOPQRSTUVWXYZ+/abcdefghijklmnopqrstuvwxyz0123456789====", ldapComparatorDescription
-            .getBytecode() );
+        value = "( 1.1 FQCN org.apache.directory.SimpleNormalizer BYTECODE ABCDEFGHIJKLMNOPQRSTUVWXYZ+/abcdefghijklmnopqrstuvwxyz0123456789==== )";
+        nd = parser.parseNormalizerDescription( value );
+        assertNotNull( nd.getBytecode() );
+        assertEquals( "ABCDEFGHIJKLMNOPQRSTUVWXYZ+/abcdefghijklmnopqrstuvwxyz0123456789====", nd.getBytecode() );
     }
 
 
     @Test
     public void testExtensions() throws ParseException
     {
-        SchemaParserTestUtils.testExtensions( parser, "1.1", "FQCN org.apache.directory.SimpleComparator" );
+        SchemaParserTestUtils.testExtensions( parser, "1.1", "FQCN org.apache.directory.SimpleNormalizer" );
     }
 
 
@@ -173,7 +159,7 @@ public class ComparatorDescriptionSchemaParserTest
     @Test
     public void testQuirksMode() throws ParseException
     {
-        SchemaParserTestUtils.testQuirksMode( parser, "FQCN org.apache.directory.SimpleComparator" );
+        SchemaParserTestUtils.testQuirksMode( parser, "FQCN org.apache.directory.SimpleNormalizer" );
 
         try
         {
@@ -187,6 +173,7 @@ public class ComparatorDescriptionSchemaParserTest
             testExtensions();
             testFull();
             testUniqueElements();
+            testRequiredElements();
             testMultiThreaded();
         }
         finally
@@ -194,5 +181,4 @@ public class ComparatorDescriptionSchemaParserTest
             parser.setQuirksMode( false );
         }
     }
-
 }

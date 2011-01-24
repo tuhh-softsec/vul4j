@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.schema.syntax.parser;
+package org.apache.directory.shared.ldap.model.schema.syntaxes.parser;
 
 
 import static org.junit.Assert.assertEquals;
@@ -28,6 +28,7 @@ import java.text.ParseException;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.model.schema.LdapSyntax;
+import org.apache.directory.shared.ldap.model.schema.syntaxes.parser.SchemaParserTestUtils;
 import org.apache.directory.shared.ldap.schema.parsers.LdapSyntaxDescriptionSchemaParser;
 import org.junit.After;
 import org.junit.Before;
@@ -81,7 +82,7 @@ public class LdapSyntaxDescriptionSchemaParserTest
     @Test
     public void testNames() throws ParseException
     {
-        SchemaParserTestUtils.testNames( parser, "1.1", "" );
+        SchemaParserTestUtils.testNames(parser, "1.1", "");
     }
 
 

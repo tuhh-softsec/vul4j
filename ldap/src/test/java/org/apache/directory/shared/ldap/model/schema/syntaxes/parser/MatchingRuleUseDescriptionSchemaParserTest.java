@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.schema.syntax.parser;
+package org.apache.directory.shared.ldap.model.schema.syntaxes.parser;
 
 
 import static org.junit.Assert.assertEquals;
@@ -32,6 +32,7 @@ import java.text.ParseException;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.model.schema.MatchingRuleUse;
+import org.apache.directory.shared.ldap.model.schema.syntaxes.parser.SchemaParserTestUtils;
 import org.apache.directory.shared.ldap.schema.parsers.MatchingRuleUseDescriptionSchemaParser;
 import org.junit.After;
 import org.junit.Before;
@@ -378,7 +379,7 @@ public class MatchingRuleUseDescriptionSchemaParserTest
     @Test
     public void testQuirksMode() throws ParseException
     {
-        SchemaParserTestUtils.testQuirksMode( parser, "APPLIES 1.1" );
+        SchemaParserTestUtils.testQuirksMode(parser, "APPLIES 1.1");
 
         try
         {

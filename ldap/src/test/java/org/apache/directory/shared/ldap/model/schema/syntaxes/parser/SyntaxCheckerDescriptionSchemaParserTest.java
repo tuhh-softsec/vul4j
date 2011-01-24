@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.schema.syntax.parser;
+package org.apache.directory.shared.ldap.model.schema.syntaxes.parser;
 
 
 import static org.junit.Assert.assertEquals;
@@ -28,6 +28,7 @@ import java.text.ParseException;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
+import org.apache.directory.shared.ldap.model.schema.syntaxes.parser.SchemaParserTestUtils;
 import org.apache.directory.shared.ldap.schema.parsers.SyntaxCheckerDescription;
 import org.apache.directory.shared.ldap.schema.parsers.SyntaxCheckerDescriptionSchemaParser;
 import org.junit.After;
@@ -77,7 +78,7 @@ public class SyntaxCheckerDescriptionSchemaParserTest
     @Test
     public void testDescription() throws ParseException
     {
-        SchemaParserTestUtils.testDescription( parser, "1.1", "FQCN org.apache.directory.SimpleSyntaxChecker" );
+        SchemaParserTestUtils.testDescription(parser, "1.1", "FQCN org.apache.directory.SimpleSyntaxChecker");
     }
 
 

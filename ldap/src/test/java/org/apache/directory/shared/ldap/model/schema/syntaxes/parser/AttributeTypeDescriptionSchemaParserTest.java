@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.schema.syntax.parser;
+package org.apache.directory.shared.ldap.model.schema.syntaxes.parser;
 
 
 import static org.junit.Assert.assertEquals;
@@ -33,6 +33,7 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.model.schema.AttributeType;
 import org.apache.directory.shared.ldap.model.schema.UsageEnum;
+import org.apache.directory.shared.ldap.model.schema.syntaxes.parser.SchemaParserTestUtils;
 import org.apache.directory.shared.ldap.schema.parsers.ConsoleParserMonitor;
 import org.apache.directory.shared.ldap.schema.parsers.AttributeTypeDescriptionSchemaParser;
 import org.junit.After;
@@ -112,7 +113,7 @@ public class AttributeTypeDescriptionSchemaParserTest
     @Test
     public void testObsolete() throws ParseException
     {
-        SchemaParserTestUtils.testObsolete( parser, "1.1", "SYNTAX 1.1" );
+        SchemaParserTestUtils.testObsolete(parser, "1.1", "SYNTAX 1.1");
     }
 
 
