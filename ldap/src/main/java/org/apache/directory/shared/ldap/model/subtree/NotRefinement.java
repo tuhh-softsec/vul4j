@@ -17,51 +17,35 @@
  *  under the License.
  *
  */
-package org.apache.directory.shared.ldap.subtree;
+package org.apache.directory.shared.ldap.model.subtree;
 
-import org.apache.directory.shared.ldap.model.schema.ObjectClass;
 
 /**
- * A class holding a n ITEM refinement, as defined in RFC 3672
+ * A class holding a NOT refinement, as defined in RFC 3672
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class ItemRefinement implements Refinement
+public class NotRefinement implements Refinement
 {
-    /** The item */
-    private ObjectClass item;
-    
-    
-    /**
-     * Creates a new instance of ItemRefinement.
-     *
-     * @param item The ObjectClass associated with this refinement
-     */
-    public ItemRefinement( ObjectClass item )
+    /** The refinement */
+    private Refinement refinement;
+
+    public NotRefinement( Refinement refinement )
     {
-        this.item = item;
+        this.refinement = refinement;
     }
     
     
     /**
-     * @return the item
+     * @return the refinement
      */
-    public ObjectClass getItem()
+    public Refinement getRefinement()
     {
-        return item;
+        return refinement;
     }
-
-
-    /**
-     * @param item the item to set
-     */
-    public void setItem( ObjectClass item )
-    {
-        this.item = item;
-    }
-
-
+    
+    
     /**
      * @see Object#toString()
      */
@@ -69,9 +53,9 @@ public class ItemRefinement implements Refinement
     {
         StringBuilder sb = new StringBuilder();
         
-        sb.append( "item : " );
-        sb.append( item.getName() );
-     
+        sb.append( "not: " );
+        sb.append( refinement );
+        
         return sb.toString();
     }
 }

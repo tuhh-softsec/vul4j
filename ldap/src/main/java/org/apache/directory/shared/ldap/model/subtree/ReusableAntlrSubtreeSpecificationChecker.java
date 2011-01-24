@@ -18,7 +18,7 @@
  *  
  */
 
-package org.apache.directory.shared.ldap.subtree;
+package org.apache.directory.shared.ldap.model.subtree;
 
 
 import antlr.TokenStream;
@@ -36,12 +36,12 @@ import antlr.TokenStream;
  * @see <a href="http://www.faqs.org/rfcs/rfc3672.html">RFC 3672</a>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-class ReusableAntlrSubtreeSpecificationParser extends AntlrSubtreeSpecificationParser
+class ReusableAntlrSubtreeSpecificationChecker extends AntlrSubtreeSpecificationChecker
 {
     /**
      * Creates a ReusableAntlrSubtreeSpecificationParser instance.
      */
-    public ReusableAntlrSubtreeSpecificationParser(TokenStream lexer)
+    public ReusableAntlrSubtreeSpecificationChecker(TokenStream lexer)
     {
         super( lexer );
     }

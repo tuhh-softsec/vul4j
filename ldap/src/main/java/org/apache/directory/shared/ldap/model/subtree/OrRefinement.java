@@ -17,28 +17,30 @@
  *  under the License.
  *
  */
-package org.apache.directory.shared.ldap.subtree;
+package org.apache.directory.shared.ldap.model.subtree;
 
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
- * A class holding a AND refinement, as defined in RFC 3672
+ * A class holding a OR refinement, as defined in RFC 3672
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class AndRefinement implements Refinement
+public class OrRefinement implements Refinement
 {
     /** The set of refinements */
     private List<Refinement> refinements = new ArrayList<Refinement>();
 
+    
     /**
-     * Creates a new instance of AndRefinement.
+     * Creates a new instance of OrRefinement.
      *
      * @param refinements The refinements. We may have more than one
      */
-    public AndRefinement( List<Refinement> refinements )
+    public OrRefinement( List<Refinement> refinements )
     {
         this.refinements = refinements;
     }
@@ -60,7 +62,7 @@ public class AndRefinement implements Refinement
     {
         StringBuilder sb = new StringBuilder();
         
-        sb.append( "and: { " );
+        sb.append( "or: { " );
 
         boolean isFirst = true;
         

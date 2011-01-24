@@ -17,44 +17,51 @@
  *  under the License.
  *
  */
-package org.apache.directory.shared.ldap.subtree;
+package org.apache.directory.shared.ldap.model.subtree;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.apache.directory.shared.ldap.model.schema.ObjectClass;
 
 /**
- * A class holding a OR refinement, as defined in RFC 3672
+ * A class holding a n ITEM refinement, as defined in RFC 3672
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class OrRefinement implements Refinement
+public class ItemRefinement implements Refinement
 {
-    /** The set of refinements */
-    private List<Refinement> refinements = new ArrayList<Refinement>();
-
+    /** The item */
+    private ObjectClass item;
+    
     
     /**
-     * Creates a new instance of OrRefinement.
+     * Creates a new instance of ItemRefinement.
      *
-     * @param refinements The refinements. We may have more than one
+     * @param item The ObjectClass associated with this refinement
      */
-    public OrRefinement( List<Refinement> refinements )
+    public ItemRefinement( ObjectClass item )
     {
-        this.refinements = refinements;
+        this.item = item;
     }
     
     
     /**
-     * @return Gets the set of refinements
+     * @return the item
      */
-    public List<Refinement> getRefinements()
+    public ObjectClass getItem()
     {
-        return refinements;
+        return item;
     }
-    
-    
+
+
+    /**
+     * @param item the item to set
+     */
+    public void setItem( ObjectClass item )
+    {
+        this.item = item;
+    }
+
+
     /**
      * @see Object#toString()
      */
@@ -62,25 +69,9 @@ public class OrRefinement implements Refinement
     {
         StringBuilder sb = new StringBuilder();
         
-        sb.append( "or: { " );
-
-        boolean isFirst = true;
-        
-        for ( Refinement refinement:refinements )
-        {
-            if ( isFirst )
-            {
-                isFirst = false;
-            }
-            else
-            {
-                sb.append( ", " );
-            }
-
-            sb.append( refinement );
-        }
+        sb.append( "item : " );
+        sb.append( item.getName() );
      
-        sb.append( " }" );
         return sb.toString();
     }
 }

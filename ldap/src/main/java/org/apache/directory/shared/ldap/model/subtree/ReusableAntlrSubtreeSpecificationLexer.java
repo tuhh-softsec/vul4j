@@ -18,7 +18,7 @@
  *  
  */
 
-package org.apache.directory.shared.ldap.subtree;
+package org.apache.directory.shared.ldap.model.subtree;
 
 
 import java.io.Reader;

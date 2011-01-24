@@ -18,14 +18,13 @@
  *  
  */
 
-package org.apache.directory.shared.ldap.subtree;
+package org.apache.directory.shared.ldap.model.subtree;
 
 
 import java.io.StringReader;
 import java.text.ParseException;
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.model.schema.NormalizerMappingResolver;
 import org.apache.directory.shared.ldap.model.schema.SchemaManager;
 
 import antlr.RecognitionException;
@@ -41,45 +40,26 @@ import antlr.TokenStreamException;
  * @see <a href="http://www.faqs.org/rfcs/rfc3672.html">RFC 3672</a>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SubtreeSpecificationParser
+public class SubtreeSpecificationChecker
 {
     /** the antlr generated parser being wrapped */
-    private ReusableAntlrSubtreeSpecificationParser parser;
+    private ReusableAntlrSubtreeSpecificationChecker parser;
 
     /** the antlr generated lexer being wrapped */
-    private ReusableAntlrSubtreeSpecificationLexer lexer;
-
-    private final boolean isNormalizing;
-
-
-    /**
-     * Creates a subtree specification parser.
-     */
-    public SubtreeSpecificationParser( SchemaManager schemaManager )
-    {
-        StringReader in = new StringReader( "" ); // place holder for the
-                                                    // first input
-        this.lexer = new ReusableAntlrSubtreeSpecificationLexer( in );
-        this.parser = new ReusableAntlrSubtreeSpecificationParser( lexer );
-        this.parser.init( schemaManager ); // this method MUST be called while we cannot do
-        // constructor overloading for antlr generated parser
-        this.isNormalizing = false;
-    }
+    private ReusableAntlrSubtreeSpecificationCheckerLexer lexer;
 
 
     /**
      * Creates a normalizing subtree specification parser.
      */
-    public SubtreeSpecificationParser( NormalizerMappingResolver resolver, SchemaManager schemaManager )
+    public SubtreeSpecificationChecker( SchemaManager schemaManager )
     {
         StringReader in = new StringReader( "" ); // place holder for the
-                                                    // first input
-        this.lexer = new ReusableAntlrSubtreeSpecificationLexer( in );
-        this.parser = new ReusableAntlrSubtreeSpecificationParser( lexer );
-        this.parser.setNormalizerMappingResolver( resolver );
+                                                  // first input
+        this.lexer = new ReusableAntlrSubtreeSpecificationCheckerLexer( in );
+        this.parser = new ReusableAntlrSubtreeSpecificationChecker( lexer );
         this.parser.init( schemaManager ); // this method MUST be called while we cannot do
-        // constructor overloading for antlr generated parser
-        this.isNormalizing = true;
+                            // constructor overloading for antlr generated parser
     }
 
 
@@ -101,24 +81,21 @@ public class SubtreeSpecificationParser
      * 
      * @param spec
      *            the specification to be parsed
-     * @return the specification bean
      * @throws ParseException
      *             if there are any recognition errors (bad syntax)
      */
-    public synchronized SubtreeSpecification parse( String spec ) throws ParseException
+    public synchronized void parse( String spec ) throws ParseException
     {
-        SubtreeSpecification ss = null;
-
         if ( spec == null || spec.trim().equals( "" ) )
         {
-            return null;
+            return;
         }
 
         reset( spec ); // reset and initialize the parser / lexer pair
 
         try
         {
-            ss = this.parser.wrapperEntryPoint();
+            this.parser.wrapperEntryPoint();
         }
         catch ( TokenStreamException e )
         {
@@ -135,18 +112,6 @@ public class SubtreeSpecificationParser
             String msg = I18n.err( I18n.ERR_04329, spec, e.getLocalizedMessage() );
             throw new ParseException( msg, 0 );
         }
-
-        return ss;
     }
 
-
-    /**
-     * Tests to see if this parser is normalizing.
-     * 
-     * @return true if it normalizes false otherwise
-     */
-    public boolean isNormizing()
-    {
-        return this.isNormalizing;
-    }
 }

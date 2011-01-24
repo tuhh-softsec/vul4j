@@ -18,20 +18,17 @@
  *  
  */
 
-package org.apache.directory.shared.ldap.subtree;
+package org.apache.directory.shared.ldap.model.subtree;
 
 
-import java.io.Reader;
-
-import antlr.CharBuffer;
-import antlr.LexerSharedInputState;
+import antlr.TokenStream;
 
 
 /**
- * A reusable lexer class extended from antlr generated lexer for an LDAP
+ * A reusable parser class extended from antlr generated parser for an LDAP
  * subtree specification as defined by <a
  * href="http://www.faqs.org/rfcs/rfc3672.html"> RFC 3672</a>. This class
- * enables the reuse of the antlr lexer without having to recreate the it every
+ * enables the reuse of the antlr parser without having to recreate the it every
  * time as stated in <a
  * href="http://www.antlr.org:8080/pipermail/antlr-interest/2003-April/003631.html">
  * a Antlr Interest Group mail</a> .
@@ -39,42 +36,25 @@ import antlr.LexerSharedInputState;
  * @see <a href="http://www.faqs.org/rfcs/rfc3672.html">RFC 3672</a>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ReusableAntlrSubtreeSpecificationCheckerLexer extends AntlrSubtreeSpecificationCheckerLexer
+class ReusableAntlrSubtreeSpecificationParser extends AntlrSubtreeSpecificationParser
 {
-    private boolean savedCaseSensitive;
-
-    private boolean savedCaseSensitiveLiterals;
-
-
     /**
-     * Creates a ReusableAntlrSubtreeSpecificationLexer instance.
-     * 
-     * @param in
-     *            the input to the lexer
+     * Creates a ReusableAntlrSubtreeSpecificationParser instance.
      */
-    public ReusableAntlrSubtreeSpecificationCheckerLexer(Reader in)
+    public ReusableAntlrSubtreeSpecificationParser(TokenStream lexer)
     {
-        super( in );
-        savedCaseSensitive = getCaseSensitive();
-        savedCaseSensitiveLiterals = getCaseSensitiveLiterals();
+        super( lexer );
     }
 
 
     /**
-     * Resets the state of an antlr lexer and initializes it with new input.
-     * 
-     * @param in
-     *            the input to the lexer
+     * Resets the state of an antlr parser.
      */
-    public void prepareNextInput( Reader in )
+    public void resetState()
     {
-        CharBuffer buf = new CharBuffer( in );
-        LexerSharedInputState state = new LexerSharedInputState( buf );
-        this.setInputState( state );
-
-        this.setCaseSensitive( savedCaseSensitive );
-
         // no set method for this protected field.
-        this.caseSensitiveLiterals = savedCaseSensitiveLiterals;
+        this.traceDepth = 0;
+
+        this.getInputState().reset();
     }
 }
