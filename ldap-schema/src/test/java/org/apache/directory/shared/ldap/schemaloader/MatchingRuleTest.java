@@ -41,7 +41,7 @@ import org.apache.directory.shared.ldap.model.schema.comparators.TelephoneNumber
 import org.apache.directory.shared.ldap.model.schema.normalizers.GeneralizedTimeNormalizer;
 import org.apache.directory.shared.ldap.model.schema.normalizers.NumericNormalizer;
 import org.apache.directory.shared.ldap.model.schema.normalizers.TelephoneNumberNormalizer;
-import org.apache.directory.shared.ldap.schema.registries.Schema;
+import org.apache.directory.shared.ldap.model.schema.registries.Schema;
 import org.apache.directory.shared.ldap.schemaextractor.SchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schemaextractor.impl.DefaultSchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schemamanager.impl.DefaultSchemaManager;

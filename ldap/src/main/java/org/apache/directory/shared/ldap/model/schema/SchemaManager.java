@@ -27,21 +27,19 @@ import java.util.Set;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.schema.normalizers.OidNormalizer;
-import org.apache.directory.shared.ldap.schema.registries.AttributeTypeRegistry;
-import org.apache.directory.shared.ldap.schema.registries.ComparatorRegistry;
-import org.apache.directory.shared.ldap.schema.registries.DITContentRuleRegistry;
-import org.apache.directory.shared.ldap.schema.registries.DITStructureRuleRegistry;
-import org.apache.directory.shared.ldap.schema.registries.LdapSyntaxRegistry;
-import org.apache.directory.shared.ldap.schema.registries.MatchingRuleRegistry;
-import org.apache.directory.shared.ldap.schema.registries.MatchingRuleUseRegistry;
-import org.apache.directory.shared.ldap.schema.registries.NameFormRegistry;
-import org.apache.directory.shared.ldap.schema.registries.NormalizerRegistry;
-import org.apache.directory.shared.ldap.schema.registries.ObjectClassRegistry;
-import org.apache.directory.shared.ldap.schema.registries.OidRegistry;
-import org.apache.directory.shared.ldap.schema.registries.Registries;
-import org.apache.directory.shared.ldap.schema.registries.Schema;
-import org.apache.directory.shared.ldap.schema.registries.SchemaLoader;
-import org.apache.directory.shared.ldap.schema.registries.SyntaxCheckerRegistry;
+import org.apache.directory.shared.ldap.model.schema.registries.*;
+import org.apache.directory.shared.ldap.model.schema.registries.AttributeTypeRegistry;
+import org.apache.directory.shared.ldap.model.schema.registries.ComparatorRegistry;
+import org.apache.directory.shared.ldap.model.schema.registries.DITContentRuleRegistry;
+import org.apache.directory.shared.ldap.model.schema.registries.DITStructureRuleRegistry;
+import org.apache.directory.shared.ldap.model.schema.registries.LdapSyntaxRegistry;
+import org.apache.directory.shared.ldap.model.schema.registries.NormalizerRegistry;
+import org.apache.directory.shared.ldap.model.schema.registries.ObjectClassRegistry;
+import org.apache.directory.shared.ldap.model.schema.registries.OidRegistry;
+import org.apache.directory.shared.ldap.model.schema.registries.Registries;
+import org.apache.directory.shared.ldap.model.schema.registries.Schema;
+import org.apache.directory.shared.ldap.model.schema.registries.SchemaLoader;
+import org.apache.directory.shared.ldap.model.schema.registries.SyntaxCheckerRegistry;
 
 
 /**

@@ -25,9 +25,9 @@ import java.util.List;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
-import org.apache.directory.shared.ldap.schema.registries.AttributeTypeRegistry;
-import org.apache.directory.shared.ldap.schema.registries.ObjectClassRegistry;
-import org.apache.directory.shared.ldap.schema.registries.Registries;
+import org.apache.directory.shared.ldap.model.schema.registries.AttributeTypeRegistry;
+import org.apache.directory.shared.ldap.model.schema.registries.ObjectClassRegistry;
+import org.apache.directory.shared.ldap.model.schema.registries.Registries;
 
 
 /**

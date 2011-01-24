@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.model.schema;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
-import org.apache.directory.shared.ldap.schema.registries.Registries;
+import org.apache.directory.shared.ldap.model.schema.registries.Registries;
 import org.apache.directory.shared.util.Strings;
 
 

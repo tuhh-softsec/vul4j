@@ -32,8 +32,8 @@ import org.apache.directory.shared.ldap.model.filter.SearchScope;
 import org.apache.directory.shared.ldap.model.message.Response;
 import org.apache.directory.shared.ldap.model.message.SearchResultEntry;
 import org.apache.directory.shared.ldap.model.name.Dn;
-import org.apache.directory.shared.ldap.schema.registries.AbstractSchemaLoader;
-import org.apache.directory.shared.ldap.schema.registries.Schema;
+import org.apache.directory.shared.ldap.model.schema.registries.Schema;
+import org.apache.directory.shared.ldap.model.schema.registries.AbstractSchemaLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
