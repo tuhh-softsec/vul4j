@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.schema.registries;
+package org.apache.directory.shared.ldap.model.schema.registries;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
@@ -26,17 +26,17 @@ import org.junit.runner.RunWith;
 
 
 /**
- * Test the registries class
+ * Test the OidRegistry class
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 @RunWith(ConcurrentJunitRunner.class)
 @Concurrent()
-public class RegistriesTest
+public class OidRegistryTest
 {
+
     @Test
-    public void testClone()
+    public void testCopy() throws Exception
     {
-        
     }
 }

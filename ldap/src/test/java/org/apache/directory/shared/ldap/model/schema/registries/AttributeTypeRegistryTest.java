@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.schema.registries;
+package org.apache.directory.shared.ldap.model.schema.registries;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
