@@ -35,9 +35,9 @@
     <suppress files="org.apache.directory.shared.ldap.schema.DITStructureRule" checks="EqualsHashCode" />
     
     <!-- No Javadoc for schema constants required -->
-    <suppress files="org.apache.directory.shared.ldap.constants.SchemaConstants" checks="JavadocVariable" />
-    <suppress files="org.apache.directory.shared.ldap.constants.MetaSchemaConstants" checks="JavadocVariable" />
-    <suppress files="org.apache.directory.shared.ldap.constants.PasswordPolicySchemaConstants" checks="JavadocVariable" />
+    <suppress files="org.apache.directory.shared.ldap.model.constants.SchemaConstants" checks="JavadocVariable" />
+    <suppress files="org.apache.directory.shared.ldap.model.constants.MetaSchemaConstants" checks="JavadocVariable" />
+    <suppress files="org.apache.directory.shared.ldap.model.constants.PasswordPolicySchemaConstants" checks="JavadocVariable" />
 
     <!-- Classes in org.apache.directory.shared.asn1.der are forked from Bouncy Castle -->
     <suppress files="org.apache.directory.shared.asn1.der" checks="[A-Za-z0-9]" />

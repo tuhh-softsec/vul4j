@@ -19,7 +19,7 @@
  */
 package org.apache.directory.shared.ldap.schema.syntaxCheckers;
 
-import org.apache.directory.shared.ldap.constants.SchemaConstants;
+import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.csn.Csn;
 import org.apache.directory.shared.ldap.csn.InvalidCSNException;
 import org.apache.directory.shared.ldap.schema.SyntaxChecker;

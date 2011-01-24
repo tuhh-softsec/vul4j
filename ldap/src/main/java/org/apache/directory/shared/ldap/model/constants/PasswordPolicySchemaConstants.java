@@ -18,7 +18,7 @@
  *
  */
 
-package org.apache.directory.shared.ldap.constants;
+package org.apache.directory.shared.ldap.model.constants;
 
 /**
  * PasswordPolicySchemaConstants.

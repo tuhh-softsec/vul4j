@@ -24,7 +24,7 @@ import java.io.StringReader;
 import java.text.ParseException;
 import java.util.List;
 
-import org.apache.directory.shared.ldap.constants.MetaSchemaConstants;
+import org.apache.directory.shared.ldap.model.constants.MetaSchemaConstants;
 import org.apache.directory.shared.ldap.schema.SchemaObject;
 import org.apache.directory.shared.util.Strings;
 
