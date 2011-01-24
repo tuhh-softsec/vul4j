@@ -34,8 +34,8 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.exception.LdapURLEncodingException;
-import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.filter.LdapURL.Extension;
+import org.apache.directory.shared.ldap.model.name.Dn;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -108,7 +108,7 @@ public class LdapUrlTest
             return;
         }
 
-        fail();;
+        fail();
     }
 
 
@@ -128,7 +128,7 @@ public class LdapUrlTest
             return;
         }
 
-        fail();;
+        fail();
     }
 
 
@@ -148,7 +148,7 @@ public class LdapUrlTest
             return;
         }
 
-        fail();;
+        fail();
     }
 
 
@@ -168,7 +168,7 @@ public class LdapUrlTest
             return;
         }
 
-        fail();;
+        fail();
     }
 
 
@@ -198,7 +198,7 @@ public class LdapUrlTest
             return;
         }
 
-        fail();;
+        fail();
     }
 
 
@@ -218,7 +218,7 @@ public class LdapUrlTest
             return;
         }
 
-        fail();;
+        fail();
     }
 
 
@@ -238,7 +238,7 @@ public class LdapUrlTest
             return;
         }
 
-        fail();;
+        fail();
     }
 
 
@@ -258,7 +258,7 @@ public class LdapUrlTest
             return;
         }
 
-        fail();;
+        fail();
     }
 
 
@@ -278,7 +278,7 @@ public class LdapUrlTest
             return;
         }
 
-        fail();;
+        fail();
     }
 
 
@@ -298,7 +298,7 @@ public class LdapUrlTest
             return;
         }
 
-        fail();;
+        fail();
     }
 
 
@@ -338,7 +338,7 @@ public class LdapUrlTest
             return;
         }
 
-        fail();;
+        fail();
     }
 
 
@@ -358,7 +358,7 @@ public class LdapUrlTest
             return;
         }
 
-        fail();;
+        fail();
     }
 
 
@@ -378,7 +378,7 @@ public class LdapUrlTest
             return;
         }
 
-        fail();;
+        fail();
     }
 
 
@@ -398,7 +398,7 @@ public class LdapUrlTest
             return;
         }
 
-        fail();;
+        fail();
     }
 
 
