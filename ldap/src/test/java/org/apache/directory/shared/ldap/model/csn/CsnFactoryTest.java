@@ -18,11 +18,13 @@
  *
  */
 
-package org.apache.directory.shared.ldap.csn;
+package org.apache.directory.shared.ldap.model.csn;
 
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
+import org.apache.directory.shared.ldap.model.csn.Csn;
+import org.apache.directory.shared.ldap.model.csn.CsnFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 

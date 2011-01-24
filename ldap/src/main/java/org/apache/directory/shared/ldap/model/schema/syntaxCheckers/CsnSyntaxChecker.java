@@ -20,8 +20,8 @@
 package org.apache.directory.shared.ldap.model.schema.syntaxCheckers;
 
 import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
-import org.apache.directory.shared.ldap.csn.Csn;
-import org.apache.directory.shared.ldap.csn.InvalidCSNException;
+import org.apache.directory.shared.ldap.model.csn.Csn;
+import org.apache.directory.shared.ldap.model.csn.InvalidCSNException;
 import org.apache.directory.shared.ldap.model.schema.SyntaxChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
