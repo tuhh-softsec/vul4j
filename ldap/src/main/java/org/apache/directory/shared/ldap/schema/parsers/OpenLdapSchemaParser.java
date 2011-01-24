@@ -36,7 +36,7 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.model.schema.AttributeType;
 import org.apache.directory.shared.ldap.model.schema.ObjectClass;
 import org.apache.directory.shared.ldap.model.schema.SchemaObject;
-import org.apache.directory.shared.ldap.schema.syntaxCheckers.OpenLdapObjectIdentifierMacro;
+import org.apache.directory.shared.ldap.model.schema.syntaxCheckers.OpenLdapObjectIdentifierMacro;
 
 import antlr.RecognitionException;
 import antlr.TokenStreamException;
@@ -136,7 +136,7 @@ public class OpenLdapSchemaParser extends AbstractSchemaParser
         {
             if ( obj instanceof OpenLdapObjectIdentifierMacro )
             {
-                OpenLdapObjectIdentifierMacro oid = ( OpenLdapObjectIdentifierMacro ) obj;
+                OpenLdapObjectIdentifierMacro oid = (OpenLdapObjectIdentifierMacro) obj;
                 objectIdentifierMacros.put( oid.getName(), oid );
             }
             else if ( obj instanceof AttributeType )

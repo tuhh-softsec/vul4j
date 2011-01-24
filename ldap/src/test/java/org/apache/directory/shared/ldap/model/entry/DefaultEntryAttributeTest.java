@@ -37,10 +37,9 @@ import javax.naming.directory.InvalidAttributeValueException;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.ldap.model.entry.*;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidAttributeValueException;
-import org.apache.directory.shared.ldap.schema.syntaxCheckers.Ia5StringSyntaxChecker;
+import org.apache.directory.shared.ldap.model.schema.syntaxCheckers.Ia5StringSyntaxChecker;
 import org.apache.directory.shared.util.StringConstants;
 import org.apache.directory.shared.util.Strings;
 import org.junit.BeforeClass;

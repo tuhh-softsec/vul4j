@@ -26,7 +26,7 @@ import java.math.BigInteger;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.ldap.schema.syntaxCheckers.JavaLongSyntaxChecker;
+import org.apache.directory.shared.ldap.model.schema.syntaxCheckers.JavaLongSyntaxChecker;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 

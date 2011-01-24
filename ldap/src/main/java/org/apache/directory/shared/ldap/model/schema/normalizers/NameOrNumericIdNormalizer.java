@@ -28,7 +28,7 @@ import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapOtherException;
 import org.apache.directory.shared.ldap.model.schema.Normalizer;
 import org.apache.directory.shared.ldap.model.schema.SchemaManager;
-import org.apache.directory.shared.ldap.schema.syntaxCheckers.NumericOidSyntaxChecker;
+import org.apache.directory.shared.ldap.model.schema.syntaxCheckers.NumericOidSyntaxChecker;
 
 
 /**

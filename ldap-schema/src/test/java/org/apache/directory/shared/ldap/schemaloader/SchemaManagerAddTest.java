@@ -53,8 +53,8 @@ import org.apache.directory.shared.ldap.model.schema.comparators.BooleanComparat
 import org.apache.directory.shared.ldap.model.schema.comparators.ComparableComparator;
 import org.apache.directory.shared.ldap.model.schema.comparators.CsnComparator;
 import org.apache.directory.shared.ldap.model.schema.normalizers.NoOpNormalizer;
-import org.apache.directory.shared.ldap.schema.syntaxCheckers.OctetStringSyntaxChecker;
-import org.apache.directory.shared.ldap.schema.syntaxCheckers.RegexSyntaxChecker;
+import org.apache.directory.shared.ldap.model.schema.syntaxCheckers.OctetStringSyntaxChecker;
+import org.apache.directory.shared.ldap.model.schema.syntaxCheckers.RegexSyntaxChecker;
 import org.apache.directory.shared.ldap.schemaextractor.SchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schemaextractor.impl.DefaultSchemaLdifExtractor;
 import org.apache.directory.shared.ldap.schemamanager.impl.DefaultSchemaManager;

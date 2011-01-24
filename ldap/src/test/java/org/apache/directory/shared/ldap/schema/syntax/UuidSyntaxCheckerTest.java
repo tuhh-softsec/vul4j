@@ -24,7 +24,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.ldap.schema.syntaxCheckers.UuidSyntaxChecker;
+import org.apache.directory.shared.ldap.model.schema.syntaxCheckers.UuidSyntaxChecker;
 import org.apache.directory.shared.util.StringConstants;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;

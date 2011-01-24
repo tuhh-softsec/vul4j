@@ -25,9 +25,8 @@ import static org.junit.Assert.assertFalse;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.ldap.model.schema.SyntaxChecker;
-import org.apache.directory.shared.ldap.schema.syntaxCheckers.AccessPointSyntaxChecker;
-import org.apache.directory.shared.ldap.schema.syntaxCheckers.CountrySyntaxChecker;
+import org.apache.directory.shared.ldap.model.schema.syntaxCheckers.AccessPointSyntaxChecker;
+import org.apache.directory.shared.ldap.model.schema.syntaxCheckers.CountrySyntaxChecker;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
