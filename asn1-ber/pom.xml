@@ -64,17 +64,9 @@
         <configuration>
           <manifestLocation>META-INF</manifestLocation>
           <instructions>
-            <Bundle-SymbolicName>
-              ${project.groupId}.asn1.ber
-            </Bundle-SymbolicName>
-            <Import-Package>
-              org.slf4j.*,
-              org.apache.directory.shared.util,
-              org.apache.directory.shared.i18n,
-              org.apache.directory.shared.asn1,
-              org.apache.directory.shared.asn1.util
-            </Import-Package>
+            <Bundle-SymbolicName>${project.groupId}.asn1.ber</Bundle-SymbolicName>
             <Export-Package>
+              org.apache.directory.shared.asn1.actions,
               org.apache.directory.shared.asn1.ber.*
             </Export-Package>
           </instructions>

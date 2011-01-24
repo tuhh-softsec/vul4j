@@ -55,17 +55,7 @@
           <manifestLocation>META-INF</manifestLocation>
           <instructions>
             <Bundle-SymbolicName>${project.groupId}.util</Bundle-SymbolicName>
-            <Import-Package>
-              javax.naming,
-              javax.net,
-              javax.net.ssl,
-              org.slf4j,
-              org.apache.directory.shared.i18n
-            </Import-Package>
             <Export-Package>
-              javax.naming,
-              javax.net,
-              javax.net.ssl,
               org.apache.directory.shared.util,
               org.apache.directory.shared.util.exception
             </Export-Package>
