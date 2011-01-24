@@ -216,13 +216,8 @@ public class IntermediateResponseImpl extends AbstractResultResponse implements 
             return false;
         }
 
-        if ( ( responseValue != null ) && ( resp.getResponseValue() != null )
-            && !Arrays.equals( responseValue, resp.getResponseValue() ) )
-        {
-            return false;
-        }
-
-        return true;
+        return ( ( responseValue == null ) || ( resp.getResponseValue() == null )
+            || Arrays.equals( responseValue, resp.getResponseValue() ) );
     }
 
 

@@ -86,12 +86,7 @@ public class BranchNormalizedVisitor implements FilterVisitor
 
     public boolean canVisit( ExprNode node )
     {
-        if ( node instanceof BranchNode )
-        {
-            return true;
-        }
-
-        return false;
+        return node instanceof BranchNode;
     }
 
 

@@ -348,12 +348,7 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements M
             return false;
         }
 
-        if ( newSuperior != null && req.getNewSuperior() != null && !newSuperior.equals( req.getNewSuperior() ) )
-        {
-            return false;
-        }
-
-        return true;
+        return ( ( newSuperior == null ) || ( req.getNewSuperior() == null ) || newSuperior.equals( req.getNewSuperior() ) );
     }
 
 

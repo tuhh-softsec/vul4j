@@ -20,9 +20,9 @@
 package org.apache.directory.shared.ldap.message;
 
 
+import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.LdapResult;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
-import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.ResultResponse;
 
 
@@ -127,12 +127,7 @@ public abstract class AbstractResultResponse extends AbstractResponse implements
             return false;
         }
 
-        if ( ( ldapResult != null ) && ( resp.getLdapResult() != null ) && !ldapResult.equals( resp.getLdapResult() ) )
-        {
-            return false;
-        }
-
-        return true;
+        return ( ( ldapResult == null ) || ( resp.getLdapResult() == null ) || ldapResult.equals( resp.getLdapResult() ) );
     }
 
 

@@ -165,11 +165,6 @@ public class GracefulShutdownResponse extends ExtendedResponseImpl
             return true;
         }
 
-        if ( obj instanceof GracefulShutdownResponse )
-        {
-            return true;
-        }
-
-        return false;
+        return ( obj instanceof GracefulShutdownResponse );
     }
 }

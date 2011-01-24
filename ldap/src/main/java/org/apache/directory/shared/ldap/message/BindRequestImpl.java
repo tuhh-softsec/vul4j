@@ -400,12 +400,7 @@ public class BindRequestImpl extends AbstractAbandonableRequest implements BindR
 
         }
 
-        if ( !Arrays.equals( req.getCredentials(), getCredentials() ) )
-        {
-            return false;
-        }
-
-        return true;
+        return Arrays.equals( req.getCredentials(), getCredentials() );
     }
 
 

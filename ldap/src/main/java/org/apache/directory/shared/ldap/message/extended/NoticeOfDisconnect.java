@@ -228,11 +228,6 @@ public final class NoticeOfDisconnect extends ExtendedResponseImpl
             return true;
         }
 
-        if ( obj instanceof NoticeOfDisconnect )
-        {
-            return true;
-        }
-
-        return false;
+        return ( obj instanceof NoticeOfDisconnect );
     }
 }

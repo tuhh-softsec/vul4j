@@ -322,7 +322,7 @@ public final class Chars
         {
             byte c = bytes[index];
 
-            if ( ( ( c | 0x7F ) != 0x7F ) || ( ALPHA[c] == false ) )
+            if ( ( ( c | 0x7F ) != 0x7F ) || !ALPHA[c] )
             {
                 return false;
             }
@@ -352,7 +352,7 @@ public final class Chars
         {
             char c = chars[index];
 
-            if ( ( c > 127 ) || ( ALPHA[c] == false ) )
+            if ( ( c > 127 ) || !ALPHA[c] )
             {
                 return false;
             }
@@ -389,7 +389,7 @@ public final class Chars
         {
             char c = string.charAt( index );
 
-            if ( ( c > 127 ) || ( ALPHA[c] == false ) )
+            if ( ( c > 127 ) || !ALPHA[c] )
             {
                 return false;
             }
@@ -426,7 +426,7 @@ public final class Chars
         {
             char c = string.charAt( index );
 
-            if ( ( c > 127 ) || ( ALPHA_LOWER_CASE[c] == false ) )
+            if ( ( c > 127 ) || !ALPHA_LOWER_CASE[c] )
             {
                 return false;
             }
@@ -463,7 +463,7 @@ public final class Chars
         {
             char c = string.charAt( index );
 
-            if ( ( c > 127 ) || ( ALPHA_UPPER_CASE[c] == false ) )
+            if ( ( c > 127 ) || !ALPHA_UPPER_CASE[c] )
             {
                 return false;
             }
@@ -500,7 +500,7 @@ public final class Chars
         {
             char c = string.charAt( index );
 
-            if ( ( c > 127 ) || ( ALPHA_DIGIT[c] == false ) )
+            if ( ( c > 127 ) || !ALPHA_DIGIT[c] )
             {
                 return false;
             }
@@ -529,7 +529,7 @@ public final class Chars
         {
             byte c = bytes[index];
 
-            if ( ( ( c | 0x7F ) != 0x7F ) || ( CHAR[c] == false ) )
+            if ( ( ( c | 0x7F ) != 0x7F ) || !CHAR[c] )
             {
                 return false;
             }
@@ -558,7 +558,7 @@ public final class Chars
         {
             char c = chars[index];
 
-            if ( ( c > 127 ) || ( CHAR[c] == false ) )
+            if ( ( c > 127 ) || !CHAR[c] )
             {
                 return false;
             }
@@ -594,7 +594,7 @@ public final class Chars
         {
             char c = string.charAt( index );
 
-            if ( ( c > 127 ) || ( CHAR[c] == false ) )
+            if ( ( c > 127 ) || !CHAR[c] )
             {
                 return false;
             }
@@ -783,7 +783,7 @@ public final class Chars
         {
             byte c = bytes[index];
 
-            if ( ( ( c | 0x7F ) != 0x7F ) || ( HEX[c] == false ) )
+            if ( ( ( c | 0x7F ) != 0x7F ) || !HEX[c] )
             {
                 return false;
             }
@@ -812,7 +812,7 @@ public final class Chars
         {
             char c = chars[index];
 
-            if ( ( c > 127 ) || ( HEX[c] == false ) )
+            if ( ( c > 127 ) || !HEX[c] )
             {
                 return false;
             }
@@ -848,7 +848,7 @@ public final class Chars
         {
             char c = string.charAt( index );
 
-            if ( ( c > 127 ) || ( HEX[c] == false ) )
+            if ( ( c > 127 ) || !HEX[c] )
             {
                 return false;
             }

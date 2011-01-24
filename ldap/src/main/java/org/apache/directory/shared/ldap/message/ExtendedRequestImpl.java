@@ -239,13 +239,8 @@ public class ExtendedRequestImpl extends AbstractRequest implements ExtendedRequ
             return false;
         }
 
-        if ( ( requestValue != null ) && ( req.getRequestValue() != null )
-            && !Arrays.equals( requestValue, req.getRequestValue() ) )
-        {
-            return false;
-        }
-
-        return true;
+        return ( ( requestValue == null ) || ( req.getRequestValue() == null )
+            || Arrays.equals( requestValue, req.getRequestValue() ) );
     }
 
 

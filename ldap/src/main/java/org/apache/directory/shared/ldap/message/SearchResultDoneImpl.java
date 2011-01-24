@@ -99,12 +99,7 @@ public class SearchResultDoneImpl extends AbstractResultResponse implements Sear
 
         LdapResult result = ( ( SearchResultDone ) obj ).getLdapResult();
 
-        if ( !getLdapResult().equals( result ) )
-        {
-            return false;
-        }
-
-        return true;
+        return getLdapResult().equals( result );
     }
 
 

@@ -126,11 +126,6 @@ public class CancelResponse extends ExtendedResponseImpl
             return true;
         }
 
-        if ( obj instanceof CancelResponse )
-        {
-            return true;
-        }
-
-        return false;
+        return ( obj instanceof CancelResponse );
     }
 }

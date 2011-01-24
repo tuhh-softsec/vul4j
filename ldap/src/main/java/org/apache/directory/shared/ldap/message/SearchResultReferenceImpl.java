@@ -162,12 +162,7 @@ public class SearchResultReferenceImpl extends AbstractResponse implements Searc
             return false;
         }
 
-        if ( this.referral != null && resp.getReferral() != null && !this.referral.equals( resp.getReferral() ) )
-        {
-            return false;
-        }
-
-        return true;
+        return ( this.referral == null || resp.getReferral() == null || this.referral.equals( resp.getReferral() ) );
     }
 
 

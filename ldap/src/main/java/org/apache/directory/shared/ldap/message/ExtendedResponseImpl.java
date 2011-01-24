@@ -220,13 +220,8 @@ public class ExtendedResponseImpl extends AbstractResultResponse implements Exte
             return false;
         }
 
-        if ( ( responseValue != null ) && ( resp.getResponseValue() != null )
-            && !Arrays.equals( responseValue, resp.getResponseValue() ) )
-        {
-            return false;
-        }
-
-        return true;
+        return ( ( responseValue == null ) || ( resp.getResponseValue() == null )
+            || Arrays.equals( responseValue, resp.getResponseValue() ) );
     }
 
 

@@ -42,6 +42,7 @@ import org.apache.directory.shared.ldap.model.schema.AttributeType;
 import org.apache.directory.shared.ldap.model.schema.SchemaManager;
 import org.apache.directory.shared.util.Strings;
 import org.apache.directory.shared.util.Unicode;
+import org.apache.directory.shared.util.exception.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1922,16 +1923,7 @@ public class DefaultEntry implements Entry
                 return true;
             }
 
-            if ( nbOldValues != attribute.size() )
-            {
-                // At least one value have been removed, return true.
-                return true;
-            }
-            else
-            {
-                // No values have been removed, return false.
-                return false;
-            }
+            return nbOldValues != attribute.size();
         }
         catch ( IllegalArgumentException iae )
         {
@@ -1974,16 +1966,7 @@ public class DefaultEntry implements Entry
                 return true;
             }
 
-            if ( nbOldValues != attribute.size() )
-            {
-                // At least one value have been removed, return true.
-                return true;
-            }
-            else
-            {
-                // No values have been removed, return false.
-                return false;
-            }
+            return nbOldValues != attribute.size();
         }
         catch ( IllegalArgumentException iae )
         {
@@ -2026,16 +2009,7 @@ public class DefaultEntry implements Entry
                 return true;
             }
 
-            if ( nbOldValues != attribute.size() )
-            {
-                // At least one value have been removed, return true.
-                return true;
-            }
-            else
-            {
-                // No values have been removed, return false.
-                return false;
-            }
+            return nbOldValues != attribute.size();
         }
         catch ( IllegalArgumentException iae )
         {
@@ -2217,16 +2191,7 @@ public class DefaultEntry implements Entry
                 return true;
             }
 
-            if ( nbOldValues != attribute.size() )
-            {
-                // At least one value have been removed, return true.
-                return true;
-            }
-            else
-            {
-                // No values have been removed, return false.
-                return false;
-            }
+            return nbOldValues != attribute.size();
         }
         else
         {
@@ -2306,16 +2271,7 @@ public class DefaultEntry implements Entry
                 return true;
             }
 
-            if ( nbOldValues != attribute.size() )
-            {
-                // At least one value have been removed, return true.
-                return true;
-            }
-            else
-            {
-                // No values have been removed, return false.
-                return false;
-            }
+            return nbOldValues != attribute.size();
         }
         else
         {
@@ -2394,16 +2350,7 @@ public class DefaultEntry implements Entry
                 return true;
             }
 
-            if ( nbOldValues != attribute.size() )
-            {
-                // At least one value have been removed, return true.
-                return true;
-            }
-            else
-            {
-                // No values have been removed, return false.
-                return false;
-            }
+            return nbOldValues != attribute.size();
         }
         else
         {

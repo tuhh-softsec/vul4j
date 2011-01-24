@@ -108,12 +108,7 @@ public class AbandonRequestImpl extends AbstractRequest implements AbandonReques
 
         AbandonRequest req = ( AbandonRequest ) obj;
 
-        if ( req.getAbandoned() != abandonId )
-        {
-            return false;
-        }
-
-        return true;
+        return req.getAbandoned() == abandonId;
     }
 
 

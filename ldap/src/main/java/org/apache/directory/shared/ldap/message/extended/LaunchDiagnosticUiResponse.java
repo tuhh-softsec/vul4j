@@ -150,11 +150,6 @@ public class LaunchDiagnosticUiResponse extends ExtendedResponseImpl
             return true;
         }
 
-        if ( obj instanceof LaunchDiagnosticUiResponse )
-        {
-            return true;
-        }
-
-        return false;
+        return ( obj instanceof LaunchDiagnosticUiResponse );
     }
 }

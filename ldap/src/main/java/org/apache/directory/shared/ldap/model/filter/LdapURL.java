@@ -30,10 +30,10 @@ import java.util.Set;
 
 import org.apache.directory.shared.asn1.Hex;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.model.exception.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
-import org.apache.directory.shared.ldap.model.exception.UrlDecoderException;
+import org.apache.directory.shared.ldap.model.exception.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.model.exception.LdapUriException;
+import org.apache.directory.shared.ldap.model.exception.UrlDecoderException;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.util.Chars;
 import org.apache.directory.shared.util.StringConstants;
@@ -449,14 +449,7 @@ public class LdapURL
             {
                 isHostNumber = false;
 
-                if ( Chars.isCharASCII(chars, pos, '-') )
-                {
-                    hadMinus = true;
-                }
-                else
-                {
-                    hadMinus = false;
-                }
+                hadMinus = Chars.isCharASCII(chars, pos, '-');
             }
             else
             {

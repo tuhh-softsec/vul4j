@@ -147,11 +147,6 @@ public class CertGenerationResponse extends ExtendedResponseImpl
             return true;
         }
 
-        if ( obj instanceof CertGenerationResponse )
-        {
-            return true;
-        }
-
-        return false;
+        return ( obj instanceof CertGenerationResponse );
     }
 }

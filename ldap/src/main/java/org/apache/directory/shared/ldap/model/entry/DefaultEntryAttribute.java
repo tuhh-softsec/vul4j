@@ -668,12 +668,7 @@ public class DefaultEntryAttribute implements EntryAttribute
         }
         
         // Not found in names, check the OID
-        if ( OID.isOID( id )  && attributeType.getOid().equals( id ) )
-        {
-            return true;
-        }
-
-        return false;
+        return OID.isOID(id) && attributeType.getOid().equals(id);
     }
     
 
@@ -2139,14 +2134,7 @@ public class DefaultEntryAttribute implements EntryAttribute
         this.attributeType = attributeType;
         setUpId( null, attributeType );
         
-        if ( attributeType.getSyntax().isHumanReadable() )
-        {
-            isHR = true;
-        }
-        else
-        {
-            isHR = false;
-        }
+        isHR = attributeType.getSyntax().isHumanReadable();
         
         // Compute the hashCode
         rehash();
