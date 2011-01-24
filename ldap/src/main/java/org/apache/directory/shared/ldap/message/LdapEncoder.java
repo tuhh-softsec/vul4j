@@ -145,6 +145,8 @@ public class LdapEncoder
      * MessageId length = Length(0x02) + length(MessageId) + MessageId.length 
      * L1 = length(ProtocolOp) 
      * LdapMessage length = Length(0x30) + Length(L1) + MessageId length + L1
+     *
+     * @param message the Message who's length is to be encoded
      */
     private int computeMessageLength( Message message )
     {
@@ -1572,8 +1574,9 @@ public class LdapEncoder
      * [0x87 LL serverSaslCreds]
      * </pre>
      * 
-     * @param buffer The buffer where to put the PDU
-     * @return The PDU.
+     * @param bb The buffer where to put the PDU
+     * @param bindResponse The BindResponse to encode
+     * @throws EncoderException when encoding operations fail
      */
     private void encodeBindResponse( ByteBuffer bb, BindResponseImpl bindResponse ) throws EncoderException
     {
