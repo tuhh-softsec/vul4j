@@ -29,7 +29,7 @@ import org.apache.directory.shared.ldap.model.message.AddResponse;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.message.ResultResponse;
-import org.apache.directory.shared.ldap.name.Dn;
+import org.apache.directory.shared.ldap.model.name.Dn;
 
 
 /**

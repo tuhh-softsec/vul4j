@@ -33,8 +33,8 @@ import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.filter.SearchScope;
 import org.apache.directory.shared.ldap.model.message.*;
 import org.apache.directory.shared.ldap.model.message.Control;
-import org.apache.directory.shared.ldap.name.Dn;
-import org.apache.directory.shared.ldap.name.Rdn;
+import org.apache.directory.shared.ldap.model.name.Dn;
+import org.apache.directory.shared.ldap.model.name.Rdn;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 
 
@@ -311,7 +311,7 @@ public interface LdapConnection
      * @param newRdn new Rdn for the target Dn
      * @return modifyDn operation's response
      * @throws LdapException if some error occurred
-     * @see #rename(org.apache.directory.shared.ldap.name.Dn, org.apache.directory.shared.ldap.name.Rdn, boolean)
+     * @see #rename(org.apache.directory.shared.ldap.model.name.Dn, org.apache.directory.shared.ldap.model.name.Rdn, boolean)
      */
     ModifyDnResponse rename( Dn entryDn, Rdn newRdn ) throws LdapException;
 
@@ -325,7 +325,7 @@ public interface LdapConnection
      * @param deleteOldRdn flag to indicate whether to delete the old Rdn
      * @return modifyDn operation's response
      * @throws LdapException if some error occurred
-     * @see #rename(org.apache.directory.shared.ldap.name.Dn, org.apache.directory.shared.ldap.name.Rdn, boolean)
+     * @see #rename(org.apache.directory.shared.ldap.model.name.Dn, org.apache.directory.shared.ldap.model.name.Rdn, boolean)
      */
     ModifyDnResponse rename( String entryDn, String newRdn, boolean deleteOldRdn ) throws LdapException;
 
@@ -350,7 +350,7 @@ public interface LdapConnection
      * @param newSuperiorDn Dn of the new parent/superior
      * @return modifyDn operation's response
      * @throws LdapException if some error occurred
-     * @see #move(org.apache.directory.shared.ldap.name.Dn, org.apache.directory.shared.ldap.name.Dn)
+     * @see #move(org.apache.directory.shared.ldap.model.name.Dn, org.apache.directory.shared.ldap.model.name.Dn)
      */
     ModifyDnResponse move( String entryDn, String newSuperiorDn ) throws LdapException;
 
@@ -373,7 +373,7 @@ public interface LdapConnection
      * @param newDn The new Entry Dn
      * @return modifyDn operations response
      * @throws LdapException if some error occurred
-     * @see #moveAndRename(org.apache.directory.shared.ldap.name.Dn, org.apache.directory.shared.ldap.name.Dn, boolean)
+     * @see #moveAndRename(org.apache.directory.shared.ldap.model.name.Dn, org.apache.directory.shared.ldap.model.name.Dn, boolean)
      */
     ModifyDnResponse moveAndRename( Dn entryDn, Dn newDn ) throws LdapException;
 
@@ -385,7 +385,7 @@ public interface LdapConnection
      * @param newDn The new Entry Dn
      * @return modifyDn operations response
      * @throws LdapException if some error occurred
-     * @see #moveAndRename(org.apache.directory.shared.ldap.name.Dn, org.apache.directory.shared.ldap.name.Dn, boolean)
+     * @see #moveAndRename(org.apache.directory.shared.ldap.model.name.Dn, org.apache.directory.shared.ldap.model.name.Dn, boolean)
      */
     ModifyDnResponse moveAndRename( String entryDn, String newDn ) throws LdapException;
 
@@ -628,7 +628,7 @@ public interface LdapConnection
      * @param dn the Dn of the entry to be fetched
      * @return the Entry with the given Dn or null if no entry exists with that Dn
      * @throws LdapException in case of any problems while searching for the Dn or if the returned response contains a referral
-     * @see #lookup(org.apache.directory.shared.ldap.name.Dn, String...)
+     * @see #lookup(org.apache.directory.shared.ldap.model.name.Dn, String...)
      */
     Entry lookup( Dn dn ) throws LdapException;
 
@@ -675,7 +675,7 @@ public interface LdapConnection
      * @param attributes the attributes to be returned along with entry
      * @return the Entry with the given Dn or null if no entry exists with that Dn
      * @throws LdapException in case of any problems while searching for the Dn or if the returned response contains a referral
-     * @see #lookup(org.apache.directory.shared.ldap.name.Dn, String...)
+     * @see #lookup(org.apache.directory.shared.ldap.model.name.Dn, String...)
      */
     Entry lookup( String dn, String... attributes ) throws LdapException;
 
@@ -688,7 +688,7 @@ public interface LdapConnection
      * @param attributes the attributes to be returned along with entry
      * @return the Entry with the given Dn or null if no entry exists with that Dn
      * @throws LdapException in case of any problems while searching for the Dn or if the returned response contains a referral
-     * @see #lookup(org.apache.directory.shared.ldap.name.Dn, String...)
+     * @see #lookup(org.apache.directory.shared.ldap.model.name.Dn, String...)
      */
     Entry lookup( String dn, Control[] controls, String... attributes ) throws LdapException;
 

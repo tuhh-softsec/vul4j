@@ -29,7 +29,7 @@ import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.message.SearchResultEntry;
 import org.apache.directory.shared.ldap.message.SearchResultEntryImpl;
-import org.apache.directory.shared.ldap.name.Dn;
+import org.apache.directory.shared.ldap.model.name.Dn;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
 import org.dom4j.QName;

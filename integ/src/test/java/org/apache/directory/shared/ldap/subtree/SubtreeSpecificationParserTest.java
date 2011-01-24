@@ -33,7 +33,7 @@ import java.util.List;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.ldap.name.Dn;
+import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.schema.ObjectClass;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schemaloader.JarLdifSchemaLoader;

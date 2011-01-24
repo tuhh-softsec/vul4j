@@ -24,7 +24,7 @@ header
 package org.apache.directory.shared.ldap.aci;
 
 
-import org.apache.directory.shared.ldap.name.NameComponentNormalizer;
+import org.apache.directory.shared.ldap.model.name.NameComponentNormalizer;
 }
 
 

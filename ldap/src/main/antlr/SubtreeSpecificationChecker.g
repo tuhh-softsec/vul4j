@@ -23,7 +23,7 @@ header
 
 package org.apache.directory.shared.ldap.subtree;
 
-import org.apache.directory.shared.ldap.name.Dn;
+import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.filter.ExprNode;
 import org.apache.directory.shared.ldap.model.filter.LeafNode;
 import org.apache.directory.shared.ldap.model.filter.BranchNode;

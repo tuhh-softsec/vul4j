@@ -39,7 +39,7 @@ import org.apache.directory.shared.ldap.model.message.DeleteRequest;
 import org.apache.directory.shared.ldap.model.message.BindRequest;
 import org.apache.directory.shared.ldap.model.message.CompareRequest;
 import org.apache.directory.shared.ldap.model.message.ModifyDnRequest;
-import org.apache.directory.shared.ldap.name.Dn;
+import org.apache.directory.shared.ldap.model.name.Dn;
 
 
 /**

@@ -17,7 +17,7 @@
  *  under the License.
  *
  */
-package org.apache.directory.shared.ldap.name;
+package org.apache.directory.shared.ldap.model.name;
 
 
 import static junit.framework.Assert.assertNotNull;
@@ -48,6 +48,7 @@ import javax.naming.ldap.LdapName;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
+import org.apache.directory.shared.ldap.model.name.*;
 import org.apache.directory.shared.ldap.schema.normalizers.DeepTrimToLowerNormalizer;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.util.Strings;
@@ -3270,7 +3271,7 @@ public class DnTest
         byte[] data = baos.toByteArray();
         ObjectInputStream in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        assertEquals( dn, DnSerializer.deserialize( in ) );
+        assertEquals( dn, DnSerializer.deserialize(in) );
         assertEquals( dn, deserializeDN( serializeDN( dn ) ) );
     }
 

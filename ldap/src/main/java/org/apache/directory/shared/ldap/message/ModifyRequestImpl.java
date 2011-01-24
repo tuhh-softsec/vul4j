@@ -36,7 +36,7 @@ import org.apache.directory.shared.ldap.model.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.model.message.ModifyRequest;
 import org.apache.directory.shared.ldap.model.message.ModifyResponse;
 import org.apache.directory.shared.ldap.model.message.ResultResponse;
-import org.apache.directory.shared.ldap.name.Dn;
+import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.util.StringConstants;
 
 

@@ -122,8 +122,8 @@ import org.apache.directory.shared.ldap.message.extended.nod.ExtendedNoDResponse
 import org.apache.directory.shared.ldap.message.extended.nod.ModifyDnNoDResponse;
 import org.apache.directory.shared.ldap.message.extended.nod.ModifyNoDResponse;
 import org.apache.directory.shared.ldap.message.extended.nod.SearchNoDResponse;
-import org.apache.directory.shared.ldap.name.Dn;
-import org.apache.directory.shared.ldap.name.Rdn;
+import org.apache.directory.shared.ldap.model.name.Dn;
+import org.apache.directory.shared.ldap.model.name.Rdn;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.ObjectClass;
 import org.apache.directory.shared.ldap.schema.SchemaManager;

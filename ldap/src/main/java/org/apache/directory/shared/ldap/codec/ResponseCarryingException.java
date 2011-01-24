@@ -24,7 +24,7 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.model.message.ResultResponse;
-import org.apache.directory.shared.ldap.name.Dn;
+import org.apache.directory.shared.ldap.model.name.Dn;
 
 
 /**

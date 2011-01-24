@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.Set;
 
 import org.apache.directory.shared.ldap.model.filter.ExprNode;
-import org.apache.directory.shared.ldap.name.Dn;
+import org.apache.directory.shared.ldap.model.name.Dn;
 
 
 /**
@@ -138,7 +138,7 @@ public class BaseSubtreeSpecification implements SubtreeSpecification
     /**
      * Creates a subtree which may be a refinement filter where all aspects of
      * the specification can be set. If the refinement filter is null this
-     * defaults to {@link #BaseSubtreeSpecification(org.apache.directory.shared.ldap.name.Dn, int, int, Set, Set)}.
+     * defaults to {@link #BaseSubtreeSpecification(org.apache.directory.shared.ldap.model.name.Dn, int, int, Set, Set)}.
      *
      * @param base the base of the subtree relative to the administrative point
      * @param minBaseDistance the minimum distance below base to start including entries

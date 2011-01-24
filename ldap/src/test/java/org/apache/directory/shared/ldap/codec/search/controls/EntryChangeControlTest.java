@@ -34,7 +34,7 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.ldap.codec.search.controls.entryChange.EntryChangeControl;
 import org.apache.directory.shared.ldap.codec.search.controls.entryChange.EntryChangeControlContainer;
 import org.apache.directory.shared.ldap.codec.search.controls.entryChange.EntryChangeControlDecoder;
-import org.apache.directory.shared.ldap.name.Dn;
+import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;

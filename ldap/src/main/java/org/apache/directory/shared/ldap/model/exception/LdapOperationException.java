@@ -21,7 +21,7 @@ package org.apache.directory.shared.ldap.model.exception;
 
 
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
-import org.apache.directory.shared.ldap.name.Dn;
+import org.apache.directory.shared.ldap.model.name.Dn;
 
 
 /**

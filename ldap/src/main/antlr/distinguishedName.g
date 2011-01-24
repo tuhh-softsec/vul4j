@@ -18,7 +18,7 @@ header {
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.name;
+package org.apache.directory.shared.ldap.model.name;
 
 import java.io.StringReader;
 import java.util.ArrayList;

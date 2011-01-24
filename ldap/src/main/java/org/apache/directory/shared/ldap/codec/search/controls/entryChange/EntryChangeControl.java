@@ -29,7 +29,7 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
 import org.apache.directory.shared.ldap.codec.search.controls.ChangeType;
-import org.apache.directory.shared.ldap.name.Dn;
+import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.util.Strings;
 
 

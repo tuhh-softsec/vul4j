@@ -27,8 +27,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapUnwillingToPerformException;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
-import org.apache.directory.shared.ldap.name.Dn;
-import org.apache.directory.shared.ldap.name.Rdn;
+import org.apache.directory.shared.ldap.model.name.Dn;
+import org.apache.directory.shared.ldap.model.name.Rdn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

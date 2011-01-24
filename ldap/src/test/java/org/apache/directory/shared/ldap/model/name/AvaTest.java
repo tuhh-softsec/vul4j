@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.name;
+package org.apache.directory.shared.ldap.model.name;
 
 
 import java.io.ByteArrayInputStream;
@@ -34,6 +34,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.apache.directory.shared.ldap.model.name.Ava;
+import org.apache.directory.shared.ldap.model.name.AvaSerializer;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;

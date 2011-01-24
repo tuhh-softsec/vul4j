@@ -27,7 +27,7 @@ import org.apache.directory.shared.ldap.model.entry.BinaryValue;
 import org.apache.directory.shared.ldap.model.entry.StringValue;
 import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.model.message.ResultResponse;
-import org.apache.directory.shared.ldap.name.Dn;
+import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.util.Strings;
 
 

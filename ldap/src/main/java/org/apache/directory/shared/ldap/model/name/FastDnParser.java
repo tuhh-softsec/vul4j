@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.name;
+package org.apache.directory.shared.ldap.model.name;
 
 
 import java.util.List;

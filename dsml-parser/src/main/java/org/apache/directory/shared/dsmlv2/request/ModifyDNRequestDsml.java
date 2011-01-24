@@ -23,8 +23,8 @@ package org.apache.directory.shared.dsmlv2.request;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.message.ModifyDnRequest;
 import org.apache.directory.shared.ldap.message.ModifyDnRequestImpl;
-import org.apache.directory.shared.ldap.name.Dn;
-import org.apache.directory.shared.ldap.name.Rdn;
+import org.apache.directory.shared.ldap.model.name.Dn;
+import org.apache.directory.shared.ldap.model.name.Rdn;
 import org.dom4j.Element;
 
 

@@ -17,7 +17,7 @@
  *  under the License.
  *
  */
-package org.apache.directory.shared.ldap.name;
+package org.apache.directory.shared.ldap.model.name;
 
 
 import static org.junit.Assert.assertEquals;
@@ -30,6 +30,9 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.junit.tools.MultiThreadedMultiInvoker;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
+import org.apache.directory.shared.ldap.model.name.Ava;
+import org.apache.directory.shared.ldap.model.name.Dn;
+import org.apache.directory.shared.ldap.model.name.Rdn;
 import org.apache.directory.shared.ldap.schema.normalizers.DeepTrimToLowerNormalizer;
 import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
 import org.junit.BeforeClass;

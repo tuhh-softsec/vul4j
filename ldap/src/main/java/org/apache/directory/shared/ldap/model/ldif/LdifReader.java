@@ -47,12 +47,12 @@ import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.model.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.message.Control;
-import org.apache.directory.shared.ldap.name.Rdn;
+import org.apache.directory.shared.ldap.model.name.Dn;
+import org.apache.directory.shared.ldap.model.name.DnParser;
+import org.apache.directory.shared.ldap.model.name.Rdn;
 import org.apache.directory.shared.util.exception.NotImplementedException;
 import org.apache.directory.shared.ldap.model.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
-import org.apache.directory.shared.ldap.name.Dn;
-import org.apache.directory.shared.ldap.name.DnParser;
 import org.apache.directory.shared.util.Base64;
 import org.apache.directory.shared.util.Chars;
 import org.apache.directory.shared.util.Strings;
@@ -545,7 +545,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
         // Check that the Dn is valid. If not, an exception will be thrown
         try
         {
-            DnParser.parseInternal( dn, new ArrayList<Rdn>() );
+            DnParser.parseInternal(dn, new ArrayList<Rdn>());
         }
         catch ( LdapInvalidDnException ine )
         {

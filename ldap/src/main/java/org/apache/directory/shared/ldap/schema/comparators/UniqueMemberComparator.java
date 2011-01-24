@@ -23,7 +23,7 @@ package org.apache.directory.shared.ldap.schema.comparators;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
-import org.apache.directory.shared.ldap.name.Dn;
+import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.schema.LdapComparator;
 import org.apache.directory.shared.ldap.schema.SchemaManager;
 

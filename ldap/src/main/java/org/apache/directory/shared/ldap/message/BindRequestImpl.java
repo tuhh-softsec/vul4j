@@ -27,7 +27,7 @@ import org.apache.directory.shared.ldap.model.message.BindRequest;
 import org.apache.directory.shared.ldap.model.message.BindResponse;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.message.ResultResponse;
-import org.apache.directory.shared.ldap.name.Dn;
+import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.util.Strings;
 
 

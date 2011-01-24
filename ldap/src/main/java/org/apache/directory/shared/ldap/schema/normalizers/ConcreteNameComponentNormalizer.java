@@ -25,7 +25,7 @@ import java.io.UnsupportedEncodingException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.model.entry.BinaryValue;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
-import org.apache.directory.shared.ldap.name.NameComponentNormalizer;
+import org.apache.directory.shared.ldap.model.name.NameComponentNormalizer;
 import org.apache.directory.shared.ldap.schema.AttributeType;
 import org.apache.directory.shared.ldap.schema.MatchingRule;
 import org.apache.directory.shared.ldap.schema.Normalizer;

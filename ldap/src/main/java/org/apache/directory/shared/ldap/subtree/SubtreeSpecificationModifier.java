@@ -25,7 +25,7 @@ import java.util.Set;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.model.filter.ExprNode;
-import org.apache.directory.shared.ldap.name.Dn;
+import org.apache.directory.shared.ldap.model.name.Dn;
 
 
 /**

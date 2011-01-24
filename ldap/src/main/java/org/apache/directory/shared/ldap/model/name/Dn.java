@@ -18,7 +18,7 @@
  *
  */
 
-package org.apache.directory.shared.ldap.name;
+package org.apache.directory.shared.ldap.model.name;
 
 
 import java.io.Serializable;

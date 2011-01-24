@@ -44,7 +44,7 @@ import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.LdapResult;
 import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.model.message.Referral;
-import org.apache.directory.shared.ldap.name.Dn;
+import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.util.Strings;
 
 

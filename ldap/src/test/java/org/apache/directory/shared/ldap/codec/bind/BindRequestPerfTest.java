@@ -39,7 +39,7 @@ import org.apache.directory.shared.ldap.model.message.BindRequest;
 import org.apache.directory.shared.ldap.message.BindRequestImpl;
 import org.apache.directory.shared.ldap.message.LdapEncoder;
 import org.apache.directory.shared.ldap.model.message.Control;
-import org.apache.directory.shared.ldap.name.Dn;
+import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Ignore;
 import org.junit.Test;

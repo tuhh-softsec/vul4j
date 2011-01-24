@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.trigger;
 
 
-import org.apache.directory.shared.ldap.name.Dn;
+import org.apache.directory.shared.ldap.model.name.Dn;
 
 
 /**

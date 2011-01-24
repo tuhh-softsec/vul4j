@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.name;
+package org.apache.directory.shared.ldap.model.name;
 
 
 import static org.junit.Assert.assertEquals;
@@ -36,6 +36,10 @@ import java.util.Iterator;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
+import org.apache.directory.shared.ldap.model.name.Ava;
+import org.apache.directory.shared.ldap.model.name.Rdn;
+import org.apache.directory.shared.ldap.model.name.RdnParser;
+import org.apache.directory.shared.ldap.model.name.RdnSerializer;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -1279,7 +1283,7 @@ public class RdnTest
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        RdnSerializer.serialize( rdn, out );
+        RdnSerializer.serialize(rdn, out);
         out.flush();
 
         ObjectInputStream in = null;
@@ -1353,7 +1357,7 @@ public class RdnTest
     @Test
     public void testRdnWithEmptyValue() throws LdapException
     {
-        assertTrue( RdnParser.isValid( "a=" ) );
+        assertTrue( RdnParser.isValid("a=") );
         assertTrue( RdnParser.isValid( "a=\"\"" ) );
         assertEquals( "a=", new Rdn( "a=\"\"" ).getNormName() );
         assertEquals( "a=", new Rdn( "a=" ).getNormName() );

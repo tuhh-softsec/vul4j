@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.name;
+package org.apache.directory.shared.ldap.model.name;
 
 
 import java.util.ArrayList;
@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
+import org.apache.directory.shared.ldap.model.name.DnParser;
+import org.apache.directory.shared.ldap.model.name.Rdn;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -66,6 +68,6 @@ public class DnParserDIRSERVER_584_Test
     @Test
     public void testb() throws Exception
    {
-       DnParser.parseInternal( "ou=system", new ArrayList<Rdn>() );
+       DnParser.parseInternal("ou=system", new ArrayList<Rdn>());
    }
 }

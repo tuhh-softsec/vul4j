@@ -29,7 +29,7 @@ import java.util.Set;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.aci.UserClass.Subtree;
-import org.apache.directory.shared.ldap.name.Dn;
+import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.subtree.BaseSubtreeSpecification;
 import org.apache.directory.shared.ldap.subtree.SubtreeSpecification;
 import org.junit.Before;

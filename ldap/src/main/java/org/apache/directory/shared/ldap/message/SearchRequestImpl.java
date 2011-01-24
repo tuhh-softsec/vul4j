@@ -62,7 +62,7 @@ import org.apache.directory.shared.ldap.model.filter.PresenceNode;
 import org.apache.directory.shared.ldap.model.filter.SearchScope;
 import org.apache.directory.shared.ldap.model.filter.SimpleNode;
 import org.apache.directory.shared.ldap.model.filter.SubstringNode;
-import org.apache.directory.shared.ldap.name.Dn;
+import org.apache.directory.shared.ldap.model.name.Dn;
 
 
 /**

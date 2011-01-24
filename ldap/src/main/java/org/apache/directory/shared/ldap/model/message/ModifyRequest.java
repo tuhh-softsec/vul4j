@@ -25,7 +25,7 @@ import java.util.Collection;
 import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.model.entry.Modification;
 import org.apache.directory.shared.ldap.model.entry.ModificationOperation;
-import org.apache.directory.shared.ldap.name.Dn;
+import org.apache.directory.shared.ldap.model.name.Dn;
 
 
 /**
