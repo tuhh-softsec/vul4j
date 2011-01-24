@@ -17,65 +17,62 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.schema.comparators;
-
+package org.apache.directory.shared.ldap.model.schema.comparators;
 
 import static org.junit.Assert.assertEquals;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.ldap.model.schema.comparators.BitStringComparator;
+import org.apache.directory.shared.ldap.model.schema.comparators.CsnSidComparator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 
 /**
- * Test the BitString comparator
+ * Test the CSN comparator
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 @RunWith(ConcurrentJunitRunner.class)
 @Concurrent()
-public class BitStringComparatorTest
+public class CsnSidComparatorTest
 {
-    private BitStringComparator comparator;
-
-
+    private CsnSidComparator comparator;
+    
     @Before
     public void init()
     {
-        comparator = new BitStringComparator( null );
+        comparator = new CsnSidComparator( null );
     }
-
-
+    
+    
     @Test
-    public void testNullBitString()
+    public void testNullSids()
     {
         assertEquals( 0, comparator.compare( null, null ) );
-        assertEquals( -1, comparator.compare( null, "0101B" ) );
-        assertEquals( -1, comparator.compare( null, "000B" ) );
-        assertEquals( 1, comparator.compare( "0101B", null ) );
-        assertEquals( 1, comparator.compare( "111B", null ) );
+        
+        assertEquals( -1, comparator.compare( null, "000" ) );
+
+        assertEquals( 1, comparator.compare( "000", null ) );
     }
 
 
     @Test
-    public void testBitStringsEquals()
+    public void testEqualsSids()
     {
-        assertEquals( 0, comparator.compare( "0B", "0B" ) );
-        assertEquals( 0, comparator.compare( "1B", "1B" ) );
-        assertEquals( 0, comparator.compare( "101010B", "101010B" ) );
-        assertEquals( 0, comparator.compare( "00000101010B", "00101010B" ) );
+        assertEquals( 0, comparator.compare( "000", "000" ) );
+        assertEquals( 0, comparator.compare( "000", "0" ) );
+        assertEquals( 0, comparator.compare( "fff", "fff" ) );
     }
-
-
+    
+    
+    
     @Test
-    public void testBitStringsNotEquals()
+    public void testDifferentSids()
     {
-        assertEquals( -1, comparator.compare( "0B", "1B" ) );
-        assertEquals( 1, comparator.compare( "1B", "0B" ) );
-        assertEquals( 1, comparator.compare( "101110B", "101010B" ) );
-        assertEquals( -1, comparator.compare( "00000101010B", "00111010B" ) );
+        assertEquals( -1, comparator.compare( "123", "456" ) );
+        assertEquals( 1, comparator.compare( "FFF", "000" ) );
+        assertEquals( 1, comparator.compare( "FFF", "GGG" ) );
     }
 }

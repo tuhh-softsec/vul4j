@@ -17,55 +17,65 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.schema.comparators;
+package org.apache.directory.shared.ldap.model.schema.comparators;
 
 
 import static org.junit.Assert.assertEquals;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.ldap.model.schema.comparators.BooleanComparator;
+import org.apache.directory.shared.ldap.model.schema.comparators.BitStringComparator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 
 /**
- * Test the Boolean comparator
+ * Test the BitString comparator
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 @RunWith(ConcurrentJunitRunner.class)
 @Concurrent()
-public class BooleanComparatorTest
+public class BitStringComparatorTest
 {
-    private BooleanComparator comparator;
+    private BitStringComparator comparator;
 
 
     @Before
     public void init()
     {
-        comparator = new BooleanComparator( null );
+        comparator = new BitStringComparator( null );
     }
 
 
     @Test
-    public void testNullBooleans()
+    public void testNullBitString()
     {
         assertEquals( 0, comparator.compare( null, null ) );
-        assertEquals( -1, comparator.compare( null, "TRUE" ) );
-        assertEquals( -1, comparator.compare( null, "FALSE" ) );
-        assertEquals( 1, comparator.compare( "TRUE", null ) );
-        assertEquals( 1, comparator.compare( "FALSE", null ) );
+        assertEquals( -1, comparator.compare( null, "0101B" ) );
+        assertEquals( -1, comparator.compare( null, "000B" ) );
+        assertEquals( 1, comparator.compare( "0101B", null ) );
+        assertEquals( 1, comparator.compare( "111B", null ) );
     }
 
 
     @Test
-    public void testBooleans()
+    public void testBitStringsEquals()
     {
-        assertEquals( 0, comparator.compare( "TRUE", "TRUE" ) );
-        assertEquals( 0, comparator.compare( "FALSE", "FALSE" ) );
-        assertEquals( -1, comparator.compare( "FALSE", "TRUE" ) );
-        assertEquals( 1, comparator.compare( "TRUE", "FALSE" ) );
+        assertEquals( 0, comparator.compare( "0B", "0B" ) );
+        assertEquals( 0, comparator.compare( "1B", "1B" ) );
+        assertEquals( 0, comparator.compare( "101010B", "101010B" ) );
+        assertEquals( 0, comparator.compare( "00000101010B", "00101010B" ) );
+    }
+
+
+    @Test
+    public void testBitStringsNotEquals()
+    {
+        assertEquals( -1, comparator.compare( "0B", "1B" ) );
+        assertEquals( 1, comparator.compare( "1B", "0B" ) );
+        assertEquals( 1, comparator.compare( "101110B", "101010B" ) );
+        assertEquals( -1, comparator.compare( "00000101010B", "00111010B" ) );
     }
 }

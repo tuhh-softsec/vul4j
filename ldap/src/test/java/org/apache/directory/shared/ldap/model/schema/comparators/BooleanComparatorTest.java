@@ -17,62 +17,55 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.schema.comparators;
+package org.apache.directory.shared.ldap.model.schema.comparators;
+
 
 import static org.junit.Assert.assertEquals;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.ldap.model.schema.comparators.CsnSidComparator;
+import org.apache.directory.shared.ldap.model.schema.comparators.BooleanComparator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 
 /**
- * Test the CSN comparator
+ * Test the Boolean comparator
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 @RunWith(ConcurrentJunitRunner.class)
 @Concurrent()
-public class CsnSidComparatorTest
+public class BooleanComparatorTest
 {
-    private CsnSidComparator comparator;
-    
+    private BooleanComparator comparator;
+
+
     @Before
     public void init()
     {
-        comparator = new CsnSidComparator( null );
+        comparator = new BooleanComparator( null );
     }
-    
-    
+
+
     @Test
-    public void testNullSids()
+    public void testNullBooleans()
     {
         assertEquals( 0, comparator.compare( null, null ) );
-        
-        assertEquals( -1, comparator.compare( null, "000" ) );
-
-        assertEquals( 1, comparator.compare( "000", null ) );
+        assertEquals( -1, comparator.compare( null, "TRUE" ) );
+        assertEquals( -1, comparator.compare( null, "FALSE" ) );
+        assertEquals( 1, comparator.compare( "TRUE", null ) );
+        assertEquals( 1, comparator.compare( "FALSE", null ) );
     }
 
 
     @Test
-    public void testEqualsSids()
+    public void testBooleans()
     {
-        assertEquals( 0, comparator.compare( "000", "000" ) );
-        assertEquals( 0, comparator.compare( "000", "0" ) );
-        assertEquals( 0, comparator.compare( "fff", "fff" ) );
-    }
-    
-    
-    
-    @Test
-    public void testDifferentSids()
-    {
-        assertEquals( -1, comparator.compare( "123", "456" ) );
-        assertEquals( 1, comparator.compare( "FFF", "000" ) );
-        assertEquals( 1, comparator.compare( "FFF", "GGG" ) );
+        assertEquals( 0, comparator.compare( "TRUE", "TRUE" ) );
+        assertEquals( 0, comparator.compare( "FALSE", "FALSE" ) );
+        assertEquals( -1, comparator.compare( "FALSE", "TRUE" ) );
+        assertEquals( 1, comparator.compare( "TRUE", "FALSE" ) );
     }
 }

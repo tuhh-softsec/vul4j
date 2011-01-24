@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.schema.comparators;
+package org.apache.directory.shared.ldap.model.schema.comparators;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
