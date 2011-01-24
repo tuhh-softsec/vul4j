@@ -1,7 +1,7 @@
 version: 1
 dn: m-oid=1.3.6.1.1.16.3,ou=normalizers,cn=apache,ou=schema
 m-oid: 1.3.6.1.1.16.3
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.NoOpNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
 objectclass: top

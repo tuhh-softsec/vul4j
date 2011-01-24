@@ -3968,7 +3968,7 @@ dn: m-oid=1.3.6.1.1.16.2,ou=comparators,cn=apache,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 1.3.6.1.1.16.2
 entrycsn: 20090818052728.361000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.UUIDComparator
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.UUIDComparator
 objectclass: metaComparator
 objectclass: metaTop
 objectclass: top
@@ -3979,7 +3979,7 @@ dn: m-oid=1.3.6.1.1.16.3,ou=comparators,cn=apache,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 1.3.6.1.1.16.3
 entrycsn: 20090818052728.122000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.UUIDComparator
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.UUIDComparator
 objectclass: metaComparator
 objectclass: metaTop
 objectclass: top
@@ -3990,7 +3990,7 @@ dn: m-oid=1.3.6.1.4.1.18060.0.4.1.1.1,ou=comparators,cn=apache,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 1.3.6.1.4.1.18060.0.4.1.1.1
 entrycsn: 20090818052728.375000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.ComparableComparator
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.ComparableComparator
  
 objectclass: metaComparator
 objectclass: metaTop
@@ -4002,7 +4002,7 @@ dn: m-oid=1.3.6.1.4.1.18060.0.4.1.1.2,ou=comparators,cn=apache,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 1.3.6.1.4.1.18060.0.4.1.1.2
 entrycsn: 20090818052728.264000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.LongComparator
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.LongComparator
 objectclass: metaComparator
 objectclass: metaTop
 objectclass: top
@@ -4013,7 +4013,7 @@ dn: m-oid=1.3.6.1.4.1.18060.0.4.1.1.3,ou=comparators,cn=apache,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 1.3.6.1.4.1.18060.0.4.1.1.3
 entrycsn: 20090818052728.082000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.StringComparator
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.StringComparator
 objectclass: metaComparator
 objectclass: metaTop
 objectclass: top
@@ -4024,7 +4024,7 @@ dn: m-oid=1.3.6.1.4.1.4203.666.11.2.2,ou=comparators,cn=apache,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 1.3.6.1.4.1.4203.666.11.2.2
 entrycsn: 20090818052728.087000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.CsnComparator
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.CsnComparator
 objectclass: metaComparator
 objectclass: metaTop
 objectclass: top
@@ -4035,7 +4035,7 @@ dn: m-oid=1.3.6.1.4.1.4203.666.11.2.3,ou=comparators,cn=apache,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 1.3.6.1.4.1.4203.666.11.2.3
 entrycsn: 20090818052728.142000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.CsnComparator
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.CsnComparator
 objectclass: metaComparator
 objectclass: metaTop
 objectclass: top
@@ -4046,7 +4046,7 @@ dn: m-oid=1.3.6.1.4.1.4203.666.11.2.5,ou=comparators,cn=apache,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 1.3.6.1.4.1.4203.666.11.2.5
 entrycsn: 20090818052728.025000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.CsnSidComparator
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.CsnSidComparator
 objectclass: metaComparator
 objectclass: metaTop
 objectclass: top
@@ -4210,7 +4210,7 @@ dn: m-oid=1.3.6.1.1.16.2,ou=normalizers,cn=apache,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 1.3.6.1.1.16.2
 entrycsn: 20090818052727.959000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.NoOpNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
 objectclass: top
@@ -4221,7 +4221,7 @@ dn: m-oid=1.3.6.1.1.16.3,ou=normalizers,cn=apache,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 1.3.6.1.1.16.3
 entrycsn: 20090818052727.619000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.NoOpNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
 objectclass: top
@@ -4232,7 +4232,7 @@ dn: m-oid=1.3.6.1.4.1.18060.0.4.1.1.1,ou=normalizers,cn=apache,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 1.3.6.1.4.1.18060.0.4.1.1.1
 entrycsn: 20090818052727.962000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.NoOpNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
 objectclass: top
@@ -4243,7 +4243,7 @@ dn: m-oid=1.3.6.1.4.1.18060.0.4.1.1.2,ou=normalizers,cn=apache,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 1.3.6.1.4.1.18060.0.4.1.1.2
 entrycsn: 20090818052727.789000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.NoOpNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
 objectclass: top
@@ -4254,7 +4254,7 @@ dn: m-oid=1.3.6.1.4.1.18060.0.4.1.1.3,ou=normalizers,cn=apache,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 1.3.6.1.4.1.18060.0.4.1.1.3
 entrycsn: 20090818052727.573000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.NoOpNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
 objectclass: top
@@ -4265,7 +4265,7 @@ dn: m-oid=1.3.6.1.4.1.4203.666.11.2.2,ou=normalizers,cn=apache,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 1.3.6.1.4.1.4203.666.11.2.2
 entrycsn: 20090818052727.576000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.NoOpNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
 objectclass: top
@@ -4276,7 +4276,7 @@ dn: m-oid=1.3.6.1.4.1.4203.666.11.2.3,ou=normalizers,cn=apache,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 1.3.6.1.4.1.4203.666.11.2.3
 entrycsn: 20090818052727.637000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.NoOpNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
 objectclass: top
@@ -4287,7 +4287,7 @@ dn: m-oid=1.3.6.1.4.1.4203.666.11.2.5,ou=normalizers,cn=apache,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 1.3.6.1.4.1.4203.666.11.2.5
 entrycsn: 20090818052727.549000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.NoOpNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
 objectclass: top
@@ -4580,7 +4580,7 @@ dn: m-oid=1.3.6.1.1.16.1,ou=syntaxCheckers,cn=apache,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.1.16.1
 entrycsn: 20090818052726.628000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.UuidSyntaxChecker
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.UuidSyntaxChecker
  
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -4592,7 +4592,7 @@ dn: m-oid=1.3.6.1.4.1.4203.666.11.2.1,ou=syntaxCheckers,cn=apache,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.4203.666.11.2.1
 entrycsn: 20090818052726.952000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.CsnSyntaxChecker
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.CsnSyntaxChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
 objectclass: top
@@ -4603,7 +4603,7 @@ dn: m-oid=1.3.6.1.4.1.4203.666.11.2.4,ou=syntaxCheckers,cn=apache,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.4203.666.11.2.4
 entrycsn: 20090818052726.558000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.CsnSidSyntaxCheck
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.CsnSidSyntaxCheck
  er
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -5911,7 +5911,7 @@ dn: m-oid=1.3.6.1.4.1.18060.0.4.0.1.0,ou=comparators,cn=apachemeta,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 1.3.6.1.4.1.18060.0.4.0.1.0
 entrycsn: 20090818052728.241000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.UniqueMemberComparat
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.UniqueMemberComparat
  or
 objectclass: metaComparator
 objectclass: metaTop
@@ -5923,7 +5923,7 @@ dn: m-oid=1.3.6.1.4.1.18060.0.4.0.1.1,ou=comparators,cn=apachemeta,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 1.3.6.1.4.1.18060.0.4.0.1.1
 entrycsn: 20090818052728.290000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.ObjectClassTypeCompa
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.ObjectClassTypeCompa
  rator
 objectclass: metaComparator
 objectclass: metaTop
@@ -5935,7 +5935,7 @@ dn: m-oid=1.3.6.1.4.1.18060.0.4.0.1.2,ou=comparators,cn=apachemeta,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 1.3.6.1.4.1.18060.0.4.0.1.2
 entrycsn: 20090818052728.346000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.StringComparator
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.StringComparator
 objectclass: metaComparator
 objectclass: metaTop
 objectclass: top
@@ -5946,7 +5946,7 @@ dn: m-oid=1.3.6.1.4.1.18060.0.4.0.1.3,ou=comparators,cn=apachemeta,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 1.3.6.1.4.1.18060.0.4.0.1.3
 entrycsn: 20090818052728.114000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.DeepTrimToLowerCachi
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.DeepTrimToLowerCachi
  ngNormalizingComparator
 objectclass: metaComparator
 objectclass: metaTop
@@ -5958,7 +5958,7 @@ dn: m-oid=1.3.6.1.4.1.18060.0.4.0.1.4,ou=comparators,cn=apachemeta,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 1.3.6.1.4.1.18060.0.4.0.1.4
 entrycsn: 20090818052728.072000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.DeepTrimToLowerCachi
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.DeepTrimToLowerCachi
  ngNormalizingComparator
 objectclass: metaComparator
 objectclass: metaTop
@@ -6083,7 +6083,7 @@ dn: m-oid=1.3.6.1.4.1.18060.0.4.0.1.0,ou=normalizers,cn=apachemeta,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 1.3.6.1.4.1.18060.0.4.0.1.0
 entrycsn: 20090818052727.772000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.NameOrNumericIdNorma
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.NameOrNumericIdNorma
  lizer
 objectclass: metaNormalizer
 objectclass: metaTop
@@ -6095,7 +6095,7 @@ dn: m-oid=1.3.6.1.4.1.18060.0.4.0.1.1,ou=normalizers,cn=apachemeta,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 1.3.6.1.4.1.18060.0.4.0.1.1
 entrycsn: 20090818052727.802000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.NoOpNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
 objectclass: top
@@ -6106,7 +6106,7 @@ dn: m-oid=1.3.6.1.4.1.18060.0.4.0.1.2,ou=normalizers,cn=apachemeta,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 1.3.6.1.4.1.18060.0.4.0.1.2
 entrycsn: 20090818052727.909000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.NoOpNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
 objectclass: top
@@ -6117,7 +6117,7 @@ dn: m-oid=1.3.6.1.4.1.18060.0.4.0.1.3,ou=normalizers,cn=apachemeta,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 1.3.6.1.4.1.18060.0.4.0.1.3
 entrycsn: 20090818052727.589000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.DeepTrimToLowerNorma
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.DeepTrimToLowerNorma
  lizer
 objectclass: metaNormalizer
 objectclass: metaTop
@@ -6129,7 +6129,7 @@ dn: m-oid=1.3.6.1.4.1.18060.0.4.0.1.4,ou=normalizers,cn=apachemeta,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 1.3.6.1.4.1.18060.0.4.0.1.4
 entrycsn: 20090818052727.569000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.DeepTrimToLowerNorma
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.DeepTrimToLowerNorma
  lizer
 objectclass: metaNormalizer
 objectclass: metaTop
@@ -6399,7 +6399,7 @@ dn: m-oid=1.3.6.1.4.1.18060.0.4.0.0.1,ou=syntaxCheckers,cn=apachemeta,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.18060.0.4.0.0.1
 entrycsn: 20090818052726.903000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.ObjectClassTypeSy
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.ObjectClassTypeSy
  ntaxChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -6411,7 +6411,7 @@ dn: m-oid=1.3.6.1.4.1.18060.0.4.0.0.2,ou=syntaxCheckers,cn=apachemeta,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.18060.0.4.0.0.2
 entrycsn: 20090818052726.980000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.NumericOidSyntaxC
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.NumericOidSyntaxC
  hecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -6423,7 +6423,7 @@ dn: m-oid=1.3.6.1.4.1.18060.0.4.0.0.4,ou=syntaxCheckers,cn=apachemeta,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.18060.0.4.0.0.4
 entrycsn: 20090818052726.746000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.NumberSyntaxCheck
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.NumberSyntaxCheck
  er
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -6435,7 +6435,7 @@ dn: m-oid=1.3.6.1.4.1.18060.0.4.0.0.6,ou=syntaxCheckers,cn=apachemeta,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.18060.0.4.0.0.6
 entrycsn: 20090818052726.634000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.ObjectNameSyntaxC
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.ObjectNameSyntaxC
  hecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -13248,7 +13248,7 @@ dn: m-oid=1.3.6.1.4.1.4203.1.2.1,ou=comparators,cn=nis,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 1.3.6.1.4.1.4203.1.2.1
 entrycsn: 20090818052728.031000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.DeepTrimCachingNorma
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.DeepTrimCachingNorma
  lizingComparator
 objectclass: metaComparator
 objectclass: metaTop
@@ -13322,7 +13322,7 @@ dn: m-oid=1.3.6.1.4.1.4203.1.2.1,ou=normalizers,cn=nis,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 1.3.6.1.4.1.4203.1.2.1
 entrycsn: 20090818052727.557000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.CachingDeepTrimNorma
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.CachingDeepTrimNorma
  lizer
 objectclass: metaNormalizer
 objectclass: metaTop
@@ -13596,7 +13596,7 @@ dn: m-oid=1.3.6.1.1.1.0.0,ou=syntaxCheckers,cn=nis,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.1.1.0.0
 entrycsn: 20090818052726.864000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.OctetStringSyntax
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.OctetStringSyntax
  Checker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -13608,7 +13608,7 @@ dn: m-oid=1.3.6.1.1.1.0.1,ou=syntaxCheckers,cn=nis,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.1.1.0.1
 entrycsn: 20090818052726.604000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.OctetStringSyntax
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.OctetStringSyntax
  Checker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -15996,7 +15996,7 @@ dn: m-oid=1.3.6.1.4.1.1466.109.114.1,ou=comparators,cn=system,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 1.3.6.1.4.1.1466.109.114.1
 entrycsn: 20090818052728.093000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.DeepTrimCachingNorma
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.DeepTrimCachingNorma
  lizingComparator
 objectclass: metaComparator
 objectclass: metaTop
@@ -16008,7 +16008,7 @@ dn: m-oid=1.3.6.1.4.1.1466.109.114.2,ou=comparators,cn=system,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 1.3.6.1.4.1.1466.109.114.2
 entrycsn: 20090818052728.029000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.DeepTrimToLowerCachi
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.DeepTrimToLowerCachi
  ngNormalizingComparator
 objectclass: metaComparator
 objectclass: metaTop
@@ -16020,7 +16020,7 @@ dn: m-oid=1.3.6.1.4.1.1466.109.114.3,ou=comparators,cn=system,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 1.3.6.1.4.1.1466.109.114.3
 entrycsn: 20090818052728.145000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.DeepTrimToLowerCachi
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.DeepTrimToLowerCachi
  ngNormalizingComparator
 objectclass: metaComparator
 objectclass: metaTop
@@ -16032,7 +16032,7 @@ dn: m-oid=2.5.13.0,ou=comparators,cn=system,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 2.5.13.0
 entrycsn: 20090818052728.341000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.ObjectIdentifierComp
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.ObjectIdentifierComp
  arator
 objectclass: metaComparator
 objectclass: metaTop
@@ -16044,7 +16044,7 @@ dn: m-oid=2.5.13.1,ou=comparators,cn=system,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 2.5.13.1
 entrycsn: 20090818052728.132000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.DnComparator
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.DnComparator
 objectclass: metaComparator
 objectclass: metaTop
 objectclass: top
@@ -16055,7 +16055,7 @@ dn: m-oid=2.5.13.10,ou=comparators,cn=system,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 2.5.13.10
 entrycsn: 20090818052728.244000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.NumericStringComparator
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.NumericStringComparator
 objectclass: metaComparator
 objectclass: metaTop
 objectclass: top
@@ -16066,7 +16066,7 @@ dn: m-oid=2.5.13.11,ou=comparators,cn=system,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 2.5.13.11
 entrycsn: 20090818052728.280000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.DeepTrimToLowerCachi
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.DeepTrimToLowerCachi
  ngNormalizingComparator
 objectclass: metaComparator
 objectclass: metaTop
@@ -16078,7 +16078,7 @@ dn: m-oid=2.5.13.12,ou=comparators,cn=system,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 2.5.13.12
 entrycsn: 20090818052728.337000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.DeepTrimToLowerCachi
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.DeepTrimToLowerCachi
  ngNormalizingComparator
 objectclass: metaComparator
 objectclass: metaTop
@@ -16090,7 +16090,7 @@ dn: m-oid=2.5.13.13,ou=comparators,cn=system,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 2.5.13.13
 entrycsn: 20090818052728.118000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.BooleanComparator
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.BooleanComparator
 objectclass: metaComparator
 objectclass: metaTop
 objectclass: top
@@ -16101,7 +16101,7 @@ dn: m-oid=2.5.13.14,ou=comparators,cn=system,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 2.5.13.14
 entrycsn: 20090818052728.237000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.IntegerComparator
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.IntegerComparator
 objectclass: metaComparator
 objectclass: metaTop
 objectclass: top
@@ -16112,7 +16112,7 @@ dn: m-oid=2.5.13.15,ou=comparators,cn=system,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 2.5.13.15
 entrycsn: 20090818052728.022000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.IntegerComparator
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.IntegerComparator
 objectclass: metaComparator
 objectclass: metaTop
 objectclass: top
@@ -16123,7 +16123,7 @@ dn: m-oid=2.5.13.16,ou=comparators,cn=system,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 2.5.13.16
 entrycsn: 20090818052728.039000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.BitStringComparator
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.BitStringComparator
 objectclass: metaComparator
 objectclass: metaTop
 objectclass: top
@@ -16134,7 +16134,7 @@ dn: m-oid=2.5.13.17,ou=comparators,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 2.5.13.17
 entrycsn: 20090818052727.977000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.ByteArrayComparator
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.ByteArrayComparator
 objectclass: metaComparator
 objectclass: metaTop
 objectclass: top
@@ -16145,7 +16145,7 @@ dn: m-oid=2.5.13.18,ou=comparators,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 2.5.13.18
 entrycsn: 20090818052727.966000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.ByteArrayComparator
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.ByteArrayComparator
 objectclass: metaComparator
 objectclass: metaTop
 objectclass: top
@@ -16156,7 +16156,7 @@ dn: m-oid=2.5.13.19,ou=comparators,cn=system,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 2.5.13.19
 entrycsn: 20090818052728.329000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.ByteArrayComparator
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.ByteArrayComparator
 objectclass: metaComparator
 objectclass: metaTop
 objectclass: top
@@ -16167,7 +16167,7 @@ dn: m-oid=2.5.13.2,ou=comparators,cn=system,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 2.5.13.2
 entrycsn: 20090818052728.285000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.DeepTrimToLowerCachi
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.DeepTrimToLowerCachi
  ngNormalizingComparator
 objectclass: metaComparator
 objectclass: metaTop
@@ -16179,7 +16179,7 @@ dn: m-oid=2.5.13.20,ou=comparators,cn=system,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 2.5.13.20
 entrycsn: 20090818052728.064000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.TelephoneNumberCompa
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.TelephoneNumberCompa
  rator
 objectclass: metaComparator
 objectclass: metaTop
@@ -16191,7 +16191,7 @@ dn: m-oid=2.5.13.21,ou=comparators,cn=system,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 2.5.13.21
 entrycsn: 20090818052728.011000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.TelephoneNumberCompa
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.TelephoneNumberCompa
  rator
 objectclass: metaComparator
 objectclass: metaTop
@@ -16203,7 +16203,7 @@ dn: m-oid=2.5.13.22,ou=comparators,cn=system,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 2.5.13.22
 entrycsn: 20090818052728.234000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.ComparableComparator
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.ComparableComparator
  
 objectclass: metaComparator
 objectclass: metaTop
@@ -16215,7 +16215,7 @@ dn: m-oid=2.5.13.23,ou=comparators,cn=system,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 2.5.13.23
 entrycsn: 20090818052728.218000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.UniqueMemberComparat
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.UniqueMemberComparat
  or
 objectclass: metaComparator
 objectclass: metaTop
@@ -16227,7 +16227,7 @@ dn: m-oid=2.5.13.24,ou=comparators,cn=system,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 2.5.13.24
 entrycsn: 20090818052728.353000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.ComparableComparator
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.ComparableComparator
  
 objectclass: metaComparator
 objectclass: metaTop
@@ -16239,7 +16239,7 @@ dn: m-oid=2.5.13.27,ou=comparators,cn=system,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 2.5.13.27
 entrycsn: 20090818052728.332000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.GeneralizedTimeComparator
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.GeneralizedTimeComparator
 objectclass: metaComparator
 objectclass: metaTop
 objectclass: top
@@ -16250,7 +16250,7 @@ dn: m-oid=2.5.13.28,ou=comparators,cn=system,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 2.5.13.28
 entrycsn: 20090818052728.177000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.GeneralizedTimeComparator
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.GeneralizedTimeComparator
 objectclass: metaComparator
 objectclass: metaTop
 objectclass: top
@@ -16261,7 +16261,7 @@ dn: m-oid=2.5.13.29,ou=comparators,cn=system,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 2.5.13.29
 entrycsn: 20090818052728.194000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.ComparableComparator
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.ComparableComparator
  
 objectclass: metaComparator
 objectclass: metaTop
@@ -16273,7 +16273,7 @@ dn: m-oid=2.5.13.3,ou=comparators,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 2.5.13.3
 entrycsn: 20090818052727.996000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.DeepTrimToLowerCachi
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.DeepTrimToLowerCachi
  ngNormalizingComparator
 objectclass: metaComparator
 objectclass: metaTop
@@ -16285,7 +16285,7 @@ dn: m-oid=2.5.13.30,ou=comparators,cn=system,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 2.5.13.30
 entrycsn: 20090818052728.230000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.ComparableComparator
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.ComparableComparator
  
 objectclass: metaComparator
 objectclass: metaTop
@@ -16297,7 +16297,7 @@ dn: m-oid=2.5.13.31,ou=comparators,cn=system,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 2.5.13.31
 entrycsn: 20090818052728.326000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.ComparableComparator
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.ComparableComparator
  
 objectclass: metaComparator
 objectclass: metaTop
@@ -16309,7 +16309,7 @@ dn: m-oid=2.5.13.32,ou=comparators,cn=system,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 2.5.13.32
 entrycsn: 20090818052728.356000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.WordComparator
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.WordComparator
 objectclass: metaComparator
 objectclass: metaTop
 objectclass: top
@@ -16320,7 +16320,7 @@ dn: m-oid=2.5.13.33,ou=comparators,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 2.5.13.33
 entrycsn: 20090818052727.972000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.WordComparator
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.WordComparator
 objectclass: metaComparator
 objectclass: metaTop
 objectclass: top
@@ -16331,7 +16331,7 @@ dn: m-oid=2.5.13.4,ou=comparators,cn=system,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 2.5.13.4
 entrycsn: 20090818052728.223000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.DeepTrimToLowerCachi
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.DeepTrimToLowerCachi
  ngNormalizingComparator
 objectclass: metaComparator
 objectclass: metaTop
@@ -16343,7 +16343,7 @@ dn: m-oid=2.5.13.5,ou=comparators,cn=system,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 2.5.13.5
 entrycsn: 20090818052728.349000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.DeepTrimCachingNorma
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.DeepTrimCachingNorma
  lizingComparator
 objectclass: metaComparator
 objectclass: metaTop
@@ -16355,7 +16355,7 @@ dn: m-oid=2.5.13.6,ou=comparators,cn=system,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 2.5.13.6
 entrycsn: 20090818052728.135000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.ComparableComparator
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.ComparableComparator
  
 objectclass: metaComparator
 objectclass: metaTop
@@ -16367,7 +16367,7 @@ dn: m-oid=2.5.13.7,ou=comparators,cn=system,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 2.5.13.7
 entrycsn: 20090818052728.227000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.DeepTrimCachingNorma
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.DeepTrimCachingNorma
  lizingComparator
 objectclass: metaComparator
 objectclass: metaTop
@@ -16379,7 +16379,7 @@ dn: m-oid=2.5.13.8,ou=comparators,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 2.5.13.8
 entrycsn: 20090818052727.999000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.NumericStringComparator
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.NumericStringComparator
 objectclass: metaComparator
 objectclass: metaTop
 objectclass: top
@@ -16390,7 +16390,7 @@ dn: m-oid=2.5.13.9,ou=comparators,cn=system,ou=schema
 createtimestamp: 20090818022728Z
 m-oid: 2.5.13.9
 entrycsn: 20090818052728.066000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.NumericStringComparator
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.NumericStringComparator
 objectclass: metaComparator
 objectclass: metaTop
 objectclass: top
@@ -16898,7 +16898,7 @@ dn: m-oid=1.3.6.1.4.1.1466.109.114.1,ou=normalizers,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 1.3.6.1.4.1.1466.109.114.1
 entrycsn: 20090818052727.579000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.CachingDeepTrimNorma
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.CachingDeepTrimNorma
  lizer
 objectclass: metaNormalizer
 objectclass: metaTop
@@ -16910,7 +16910,7 @@ dn: m-oid=1.3.6.1.4.1.1466.109.114.2,ou=normalizers,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 1.3.6.1.4.1.1466.109.114.2
 entrycsn: 20090818052727.553000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.CachingDeepTrimToLow
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.CachingDeepTrimToLow
  erNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
@@ -16922,7 +16922,7 @@ dn: m-oid=1.3.6.1.4.1.1466.109.114.3,ou=normalizers,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 1.3.6.1.4.1.1466.109.114.3
 entrycsn: 20090818052727.647000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.CachingDeepTrimToLow
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.CachingDeepTrimToLow
  erNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
@@ -16934,7 +16934,7 @@ dn: m-oid=2.5.13.0,ou=normalizers,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 2.5.13.0
 entrycsn: 20090818052727.894000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.ObjectIdentifierNorm
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.ObjectIdentifierNorm
  alizer
 objectclass: metaNormalizer
 objectclass: metaTop
@@ -16946,7 +16946,7 @@ dn: m-oid=2.5.13.1,ou=normalizers,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 2.5.13.1
 entrycsn: 20090818052727.622000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.CachingDnNormalizer
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.CachingDnNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
 objectclass: top
@@ -16957,7 +16957,7 @@ dn: m-oid=2.5.13.10,ou=normalizers,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 2.5.13.10
 entrycsn: 20090818052727.779000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.NumericNormalizer
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.NumericNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
 objectclass: top
@@ -16968,7 +16968,7 @@ dn: m-oid=2.5.13.11,ou=normalizers,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 2.5.13.11
 entrycsn: 20090818052727.793000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.CachingDeepTrimToLow
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.CachingDeepTrimToLow
  erNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
@@ -16980,7 +16980,7 @@ dn: m-oid=2.5.13.12,ou=normalizers,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 2.5.13.12
 entrycsn: 20090818052727.853000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.CachingDeepTrimToLow
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.CachingDeepTrimToLow
  erNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
@@ -16992,7 +16992,7 @@ dn: m-oid=2.5.13.13,ou=normalizers,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 2.5.13.13
 entrycsn: 20090818052727.610000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.BooleanNormalizer
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.BooleanNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
 objectclass: top
@@ -17003,7 +17003,7 @@ dn: m-oid=2.5.13.14,ou=normalizers,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 2.5.13.14
 entrycsn: 20090818052727.769000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.NumericNormalizer
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.NumericNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
 objectclass: top
@@ -17014,7 +17014,7 @@ dn: m-oid=2.5.13.15,ou=normalizers,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 2.5.13.15
 entrycsn: 20090818052727.546000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.NumericNormalizer
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.NumericNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
 objectclass: top
@@ -17025,7 +17025,7 @@ dn: m-oid=2.5.13.16,ou=normalizers,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 2.5.13.16
 entrycsn: 20090818052727.560000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.NoOpNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
 objectclass: top
@@ -17036,7 +17036,7 @@ dn: m-oid=2.5.13.17,ou=normalizers,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 2.5.13.17
 entrycsn: 20090818052727.510000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.NoOpNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
 objectclass: top
@@ -17047,7 +17047,7 @@ dn: m-oid=2.5.13.18,ou=normalizers,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 2.5.13.18
 entrycsn: 20090818052727.503000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.NoOpNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
 objectclass: top
@@ -17058,7 +17058,7 @@ dn: m-oid=2.5.13.19,ou=normalizers,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 2.5.13.19
 entrycsn: 20090818052727.840000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.NoOpNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
 objectclass: top
@@ -17069,7 +17069,7 @@ dn: m-oid=2.5.13.2,ou=normalizers,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 2.5.13.2
 entrycsn: 20090818052727.797000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.CachingDeepTrimToLow
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.CachingDeepTrimToLow
  erNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
@@ -17081,7 +17081,7 @@ dn: m-oid=2.5.13.20,ou=normalizers,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 2.5.13.20
 entrycsn: 20090818052727.563000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.TelephoneNumberNormalizer
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.TelephoneNumberNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
 objectclass: top
@@ -17092,7 +17092,7 @@ dn: m-oid=2.5.13.21,ou=normalizers,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 2.5.13.21
 entrycsn: 20090818052727.522000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.TelephoneNumberNormalizer
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.TelephoneNumberNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
 objectclass: top
@@ -17103,7 +17103,7 @@ dn: m-oid=2.5.13.22,ou=normalizers,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 2.5.13.22
 entrycsn: 20090818052727.741000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.NoOpNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
 objectclass: top
@@ -17114,7 +17114,7 @@ dn: m-oid=2.5.13.23,ou=normalizers,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 2.5.13.23
 entrycsn: 20090818052727.714000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.UniqueMemberNormaliz
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.UniqueMemberNormaliz
  er
 objectclass: metaNormalizer
 objectclass: metaTop
@@ -17126,7 +17126,7 @@ dn: m-oid=2.5.13.24,ou=normalizers,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 2.5.13.24
 entrycsn: 20090818052727.920000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.CachingDeepTrimNorma
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.CachingDeepTrimNorma
  lizer
 objectclass: metaNormalizer
 objectclass: metaTop
@@ -17138,7 +17138,7 @@ dn: m-oid=2.5.13.27,ou=normalizers,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 2.5.13.27
 entrycsn: 20090818052727.845000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.GeneralizedTimeNormalizer
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.GeneralizedTimeNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
 objectclass: top
@@ -17149,7 +17149,7 @@ dn: m-oid=2.5.13.28,ou=normalizers,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 2.5.13.28
 entrycsn: 20090818052727.668000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.GeneralizedTimeNormalizer
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.GeneralizedTimeNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
 objectclass: top
@@ -17160,7 +17160,7 @@ dn: m-oid=2.5.13.29,ou=normalizers,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 2.5.13.29
 entrycsn: 20090818052727.692000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.NoOpNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
 objectclass: top
@@ -17171,7 +17171,7 @@ dn: m-oid=2.5.13.3,ou=normalizers,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 2.5.13.3
 entrycsn: 20090818052727.513000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.CachingDeepTrimToLow
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.CachingDeepTrimToLow
  erNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
@@ -17183,7 +17183,7 @@ dn: m-oid=2.5.13.30,ou=normalizers,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 2.5.13.30
 entrycsn: 20090818052727.728000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.NoOpNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
 objectclass: top
@@ -17194,7 +17194,7 @@ dn: m-oid=2.5.13.31,ou=normalizers,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 2.5.13.31
 entrycsn: 20090818052727.836000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.NoOpNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
 objectclass: top
@@ -17205,7 +17205,7 @@ dn: m-oid=2.5.13.32,ou=normalizers,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 2.5.13.32
 entrycsn: 20090818052727.933000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.NoOpNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
 objectclass: top
@@ -17216,7 +17216,7 @@ dn: m-oid=2.5.13.33,ou=normalizers,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 2.5.13.33
 entrycsn: 20090818052727.506000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.NoOpNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
 objectclass: top
@@ -17227,7 +17227,7 @@ dn: m-oid=2.5.13.4,ou=normalizers,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 2.5.13.4
 entrycsn: 20090818052727.720000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.CachingDeepTrimToLow
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.CachingDeepTrimToLow
  erNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
@@ -17239,7 +17239,7 @@ dn: m-oid=2.5.13.5,ou=normalizers,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 2.5.13.5
 entrycsn: 20090818052727.916000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.CachingDeepTrimNorma
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.CachingDeepTrimNorma
  lizer
 objectclass: metaNormalizer
 objectclass: metaTop
@@ -17251,7 +17251,7 @@ dn: m-oid=2.5.13.6,ou=normalizers,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 2.5.13.6
 entrycsn: 20090818052727.626000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.NoOpNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
 objectclass: top
@@ -17262,7 +17262,7 @@ dn: m-oid=2.5.13.7,ou=normalizers,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 2.5.13.7
 entrycsn: 20090818052727.724000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.CachingDeepTrimNorma
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.CachingDeepTrimNorma
  lizer
 objectclass: metaNormalizer
 objectclass: metaTop
@@ -17274,7 +17274,7 @@ dn: m-oid=2.5.13.8,ou=normalizers,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 2.5.13.8
 entrycsn: 20090818052727.517000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.NumericNormalizer
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.NumericNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
 objectclass: top
@@ -17285,7 +17285,7 @@ dn: m-oid=2.5.13.9,ou=normalizers,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 2.5.13.9
 entrycsn: 20090818052727.566000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.NumericNormalizer
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.NumericNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
 objectclass: top
@@ -17453,7 +17453,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.1,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.1
 entrycsn: 20090818052727.039000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.ACIItemSyntaxChec
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.ACIItemSyntaxChec
  ker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17465,7 +17465,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.10,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.10
 entrycsn: 20090818052726.562000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.CertificatePairSy
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.CertificatePairSy
  ntaxChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17477,7 +17477,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.11,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.11
 entrycsn: 20090818052726.964000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.CountrySyntaxChec
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.CountrySyntaxChec
  ker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17489,7 +17489,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.12,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.12
 entrycsn: 20090818052726.590000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.DNSyntaxChecker
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.DNSyntaxChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
 objectclass: top
@@ -17500,7 +17500,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.13,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.13
 entrycsn: 20090818052726.700000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.DataQualitySyntax
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.DataQualitySyntax
  SyntaxChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17512,7 +17512,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.14,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.14
 entrycsn: 20090818052726.732000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.DeliveryMethodSyn
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.DeliveryMethodSyn
  taxChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17524,7 +17524,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.15,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.15
 entrycsn: 20090818052726.762000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.DirectoryStringSy
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.DirectoryStringSy
  ntaxChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17536,7 +17536,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.16,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.16
 entrycsn: 20090818052726.837000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.DITContentRuleDes
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.DITContentRuleDes
  criptionSyntaxChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17548,7 +17548,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.17,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.17
 entrycsn: 20090818052726.880000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.DITStructureRuleD
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.DITStructureRuleD
  escriptionSyntaxChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17560,7 +17560,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.18,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.18
 entrycsn: 20090818052726.938000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.DLSubmitPermissio
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.DLSubmitPermissio
  nSyntaxChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17572,7 +17572,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.19,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.19
 entrycsn: 20090818052726.924000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.DSAQualitySyntaxS
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.DSAQualitySyntaxS
  yntaxChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17584,7 +17584,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.2,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.2
 entrycsn: 20090818052726.947000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.AccessPointSyntax
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.AccessPointSyntax
  Checker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17596,7 +17596,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.20,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.20
 entrycsn: 20090818052726.580000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.DSETypeSyntaxChec
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.DSETypeSyntaxChec
  ker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17608,7 +17608,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.21,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.21
 entrycsn: 20090818052726.624000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.EnhancedGuideSynt
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.EnhancedGuideSynt
  axChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17620,7 +17620,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.22,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.22
 entrycsn: 20090818052726.661000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.FacsimileTelephon
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.FacsimileTelephon
  eNumberSyntaxChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17632,7 +17632,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.23,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.23
 entrycsn: 20090818052726.828000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.FaxSyntaxChecker
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.FaxSyntaxChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
 objectclass: top
@@ -17643,7 +17643,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.24,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.24
 entrycsn: 20090818052726.873000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.GeneralizedTimeSy
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.GeneralizedTimeSy
  ntaxChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17655,7 +17655,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.25,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.25
 entrycsn: 20090818052726.920000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.GuideSyntaxChecke
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.GuideSyntaxChecke
  r
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17667,7 +17667,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.26,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.26
 entrycsn: 20090818052726.931000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.Ia5StringSyntaxCh
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.Ia5StringSyntaxCh
  ecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17679,7 +17679,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.27,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.27
 entrycsn: 20090818052726.825000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.IntegerSyntaxChec
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.IntegerSyntaxChec
  ker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17691,7 +17691,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.28,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.28
 entrycsn: 20090818052726.750000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.JpegSyntaxChecker
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.JpegSyntaxChecker
  
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17703,7 +17703,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.29,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.29
 entrycsn: 20090818052726.683000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.MasterAndShadowAc
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.MasterAndShadowAc
  cessPointSyntaxChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17715,7 +17715,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.3,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.3
 entrycsn: 20090818052726.927000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.AttributeTypeDesc
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.AttributeTypeDesc
  riptionSyntaxChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17727,7 +17727,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.30,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.30
 entrycsn: 20090818052726.958000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.MatchingRuleDescr
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.MatchingRuleDescr
  iptionSyntaxChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17739,7 +17739,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.31,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.31
 entrycsn: 20090818052726.720000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.MatchingRuleUseDe
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.MatchingRuleUseDe
  scriptionSyntaxChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17751,7 +17751,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.32,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.32
 entrycsn: 20090818052726.798000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.MailPreferenceSyn
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.MailPreferenceSyn
  taxChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17763,7 +17763,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.33,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.33
 entrycsn: 20090818052726.583000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.MHSORAddressSynta
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.MHSORAddressSynta
  xChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17775,7 +17775,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.34,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.34
 entrycsn: 20090818052726.985000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.NameAndOptionalUI
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.NameAndOptionalUI
  DSyntaxChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17787,7 +17787,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.35,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.35
 entrycsn: 20090818052726.695000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.NameFormDescripti
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.NameFormDescripti
  onSyntaxChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17799,7 +17799,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.36,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.36
 entrycsn: 20090818052726.640000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.NumericStringSynt
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.NumericStringSynt
  axChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17811,7 +17811,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.37,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.37
 entrycsn: 20090818052726.858000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.ObjectClassDescri
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.ObjectClassDescri
  ptionSyntaxChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17823,7 +17823,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.38,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.38
 entrycsn: 20090818052726.709000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.OidSyntaxChecker
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.OidSyntaxChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
 objectclass: top
@@ -17834,7 +17834,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.39,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.39
 entrycsn: 20090818052726.908000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.OtherMailboxSynta
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.OtherMailboxSynta
  xChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17846,7 +17846,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.4,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.4
 entrycsn: 20090818052726.877000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.AudioSyntaxChecke
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.AudioSyntaxChecke
  r
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17858,7 +17858,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.40,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.40
 entrycsn: 20090818052726.617000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.OctetStringSyntax
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.OctetStringSyntax
  Checker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17870,7 +17870,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.41,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.41
 entrycsn: 20090818052726.671000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.PostalAddressSynt
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.PostalAddressSynt
  axChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17882,7 +17882,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.42,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.42
 entrycsn: 20090818052726.690000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.ProtocolInformati
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.ProtocolInformati
  onSyntaxChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17894,7 +17894,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.43,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.43
 entrycsn: 20090818052726.608000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.PresentationAddre
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.PresentationAddre
  ssSyntaxChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17906,7 +17906,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.44,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.44
 entrycsn: 20090818052726.770000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.PrintableStringSy
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.PrintableStringSy
  ntaxChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17918,7 +17918,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.45,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.45
 entrycsn: 20090818052726.790000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.SubtreeSpecificat
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.SubtreeSpecificat
  ionSyntaxChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17930,7 +17930,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.46,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.46
 entrycsn: 20090818052726.973000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.SupplierInformati
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.SupplierInformati
  onSyntaxChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17942,7 +17942,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.47,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.47
 entrycsn: 20090818052726.891000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.SupplierOrConsume
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.SupplierOrConsume
  rSyntaxChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17954,7 +17954,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.48,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.48
 entrycsn: 20090818052726.570000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.SupplierAndConsum
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.SupplierAndConsum
  erSyntaxChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17966,7 +17966,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.49,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.49
 entrycsn: 20090818052726.566000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.SupportedAlgorith
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.SupportedAlgorith
  mSyntaxChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17978,7 +17978,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.5,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.5
 entrycsn: 20090818052726.816000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.BinarySyntaxCheck
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.BinarySyntaxCheck
  er
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -17990,7 +17990,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.50,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.50
 entrycsn: 20090818052726.916000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.TelephoneNumberSy
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.TelephoneNumberSy
  ntaxChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -18002,7 +18002,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.51,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.51
 entrycsn: 20090818052726.887000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.TeletexTerminalId
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.TeletexTerminalId
  entifierSyntaxChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -18014,7 +18014,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.52,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.52
 entrycsn: 20090818052726.855000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.TelexNumberSyntax
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.TelexNumberSyntax
  Checker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -18026,7 +18026,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.53,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.53
 entrycsn: 20090818052726.742000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.UtcTimeSyntaxChec
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.UtcTimeSyntaxChec
  ker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -18038,7 +18038,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.54,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.54
 entrycsn: 20090818052726.679000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.LdapSyntaxDescrip
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.LdapSyntaxDescrip
  tionSyntaxChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -18050,7 +18050,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.55,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.55
 entrycsn: 20090818052726.656000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.OctetStringSyntax
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.OctetStringSyntax
  Checker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -18062,7 +18062,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.56,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.56
 entrycsn: 20090818052726.587000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.OctetStringSyntax
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.OctetStringSyntax
  Checker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -18074,7 +18074,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.57,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.57
 entrycsn: 20090818052726.934000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.OctetStringSyntax
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.OctetStringSyntax
  Checker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -18086,7 +18086,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.58,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.58
 entrycsn: 20090818052727.027000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.SubstringAssertio
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.SubstringAssertio
  nSyntaxChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -18098,7 +18098,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.59,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.59
 entrycsn: 20090818052726.851000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.OctetStringSyntax
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.OctetStringSyntax
  Checker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -18110,7 +18110,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.6,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.6
 entrycsn: 20090818052726.704000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.BitStringSyntaxCh
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.BitStringSyntaxCh
  ecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -18122,7 +18122,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.7,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.7
 entrycsn: 20090818052726.646000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.BooleanSyntaxChec
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.BooleanSyntaxChec
  ker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -18134,7 +18134,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.8,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022727Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.8
 entrycsn: 20090818052727.035000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.CertificateSyntax
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.CertificateSyntax
  Checker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
@@ -18146,7 +18146,7 @@ dn: m-oid=1.3.6.1.4.1.1466.115.121.1.9,ou=syntaxCheckers,cn=system,ou=schema
 createtimestamp: 20090818022726Z
 m-oid: 1.3.6.1.4.1.1466.115.121.1.9
 entrycsn: 20090818052726.576000Z#000000#000#000000
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.CertificateListSy
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.CertificateListSy
  ntaxChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop

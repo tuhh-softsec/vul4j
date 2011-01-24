@@ -1,7 +1,7 @@
 version: 1
 dn: m-oid=2.5.13.5,ou=comparators,cn=system,ou=schema
 m-oid: 2.5.13.5
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.DeepTrimCachingNormalizingComparator
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.DeepTrimCachingNormalizingComparator
 objectclass: metaComparator
 objectclass: metaTop
 objectclass: top

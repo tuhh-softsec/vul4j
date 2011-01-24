@@ -1,7 +1,7 @@
 version: 1
 dn: m-oid=2.5.13.1,ou=comparators,cn=system,ou=schema
 m-oid: 2.5.13.1
-m-fqcn: org.apache.directory.shared.ldap.schema.comparators.DnComparator
+m-fqcn: org.apache.directory.shared.ldap.model.schema.comparators.DnComparator
 objectclass: metaComparator
 objectclass: metaTop
 objectclass: top

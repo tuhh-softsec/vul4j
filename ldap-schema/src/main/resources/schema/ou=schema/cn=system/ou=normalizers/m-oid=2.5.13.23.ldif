@@ -1,7 +1,7 @@
 version: 1
 dn: m-oid=2.5.13.23,ou=normalizers,cn=system,ou=schema
 m-oid: 2.5.13.23
-m-fqcn: org.apache.directory.shared.ldap.schema.normalizers.UniqueMemberNormalizer
+m-fqcn: org.apache.directory.shared.ldap.model.schema.normalizers.UniqueMemberNormalizer
 objectclass: metaNormalizer
 objectclass: metaTop
 objectclass: top

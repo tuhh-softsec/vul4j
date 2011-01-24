@@ -1,7 +1,7 @@
 version: 1
 dn: m-oid=1.3.6.1.4.1.18060.0.4.0.0.1,ou=syntaxCheckers,cn=apachemeta,ou=schema
 m-oid: 1.3.6.1.4.1.18060.0.4.0.0.1
-m-fqcn: org.apache.directory.shared.ldap.schema.syntaxCheckers.ObjectClassTypeSyntaxChecker
+m-fqcn: org.apache.directory.shared.ldap.model.schema.syntaxCheckers.ObjectClassTypeSyntaxChecker
 objectclass: metaSyntaxChecker
 objectclass: metaTop
 objectclass: top
