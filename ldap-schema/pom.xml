@@ -142,11 +142,11 @@
             <Export-Package>org.apache.directory.shared.ldap.schema*</Export-Package>
             <Import-Package>
               *,
-              org.apache.directory.shared.ldap.schema.comparators,
-              org.apache.directory.shared.ldap.schema.normalizers,
-              org.apache.directory.shared.ldap.schema.parsers,
-              org.apache.directory.shared.ldap.schema.registries,
-              org.apache.directory.shared.ldap.schema.syntaxCheckers
+              org.apache.directory.shared.ldap.model.schema.comparators,
+              org.apache.directory.shared.ldap.model.schema.normalizers,
+              org.apache.directory.shared.ldap.model.schema.parsers,
+              org.apache.directory.shared.ldap.model.schema.registries,
+              org.apache.directory.shared.ldap.model.schema.syntaxCheckers
             </Import-Package>
           </instructions>
         </configuration>
