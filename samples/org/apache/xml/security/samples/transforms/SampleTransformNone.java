@@ -17,12 +17,9 @@
  */
 package org.apache.xml.security.samples.transforms;
 
-
-
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.Transform;
 import org.apache.xml.security.transforms.TransformSpi;
-
 
 /**
  * Implements a null transform which leaved the input unmodified.
@@ -31,42 +28,40 @@ import org.apache.xml.security.transforms.TransformSpi;
  */
 public class SampleTransformNone extends TransformSpi {
 
-   /** {@link org.apache.commons.logging} logging facility */
+    /** {@link org.apache.commons.logging} logging facility */
     static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(
-                    SampleTransformNone.class.getName());
+        org.apache.commons.logging.LogFactory.getLog(SampleTransformNone.class.getName());
 
-   /** Field implementedTransformURI */
-   public static final String implementedTransformURI =
-      "http://www.xmlsecurity.org/NS/Transforms#none";
+    /** Field implementedTransformURI */
+    public static final String implementedTransformURI =
+        "http://www.xmlsecurity.org/NS/Transforms#none";
+    
+    static {
+        org.apache.xml.security.Init.init();
+    }
 
-   /**
-    * Method engineGetURI
-    *
-    *
-    */
-   protected String engineGetURI() {
-      return SampleTransformNone.implementedTransformURI;
-   }
+    /**
+     * Method engineGetURI
+     *
+     *
+     */
+    protected String engineGetURI() {
+        return SampleTransformNone.implementedTransformURI;
+    }
 
-   //J-
-   public boolean wantsOctetStream ()   { return true; }
-   public boolean wantsNodeSet ()       { return true; }
-   public boolean returnsOctetStream () { return true; }
-   public boolean returnsNodeSet ()     { return true; }
-   //J+
+    public boolean wantsOctetStream ()   { return true; }
+    public boolean wantsNodeSet ()       { return true; }
+    public boolean returnsOctetStream () { return true; }
+    public boolean returnsNodeSet ()     { return true; }
 
-   /**
-    * Method enginePerformTransform
-    *
-    * @param input
-    *
-    */
-   protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input, Transform _transformObject) {
-      return input;
-   }
+    /**
+     * Method enginePerformTransform
+     *
+     * @param input
+     *
+     */
+    protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input, Transform _transformObject) {
+        return input;
+    }
 
-   static {
-      org.apache.xml.security.Init.init();
-   }
 }

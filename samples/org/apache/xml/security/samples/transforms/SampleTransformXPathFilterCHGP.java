@@ -16,8 +16,6 @@
  */
 package org.apache.xml.security.samples.transforms;
 
-
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,7 +33,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-
 /**
  * Sample for the <I>XML Signature XPath Filter v2.0</I>
  *
@@ -45,221 +42,199 @@ import org.w3c.dom.NodeList;
  */
 public class SampleTransformXPathFilterCHGP {
 
-   /**
-    * Method main
-    *
-    * @param args
-    * @throws Exception
-    */
-   public static void main(String args[]) throws Exception {
+    /**
+     * Method main
+     *
+     * @param args
+     * @throws Exception
+     */
+    public static void main(String args[]) throws Exception {
 
-      org.apache.xml.security.Init.init();
+        org.apache.xml.security.Init.init();
 
-      DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 
-      dbf.setNamespaceAware(true);
+        dbf.setNamespaceAware(true);
 
-      DocumentBuilder db = dbf.newDocumentBuilder();
+        DocumentBuilder db = dbf.newDocumentBuilder();
 
-      // String inputDoc = "<A><U><B><S><S><S></S><S><S></S><S></S></S><S></S></S><S><S></S></S></S><C><U><U><U><U></U><U><U></U><U></U></U><U></U></U><U><U></U></U></U></U></C></B><D><U></U></D><U><E><S><S><S></S><S><S></S><S></S></S><S></S></S><S><S></S></S></S></E><U><F><G><H/></G></F></U></U></U></A>";
-      // String inputDoc = "<A><U><B><S></S><C><U></U></C></B><D><U></U></D><U><E><S></S></E><U><F><G><H/></G></F></U></U></U></A>";
-      String inputDoc =
-         "<A xmlns:foo=\"http://foo.bar/\">\n<U>\n<U>\n<U>\n<U>\n<U>\n<B foo:attr=\"attr\">\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<C>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</C>\n</B>\n<D>\n<U/>\n</D>\n<U>\n<E>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n</E>\n<U>\n<F>\n<G>\n<H/>\n<G>\n<H/>\n</G>\n</G>\n</F>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</A>\n";
-      Document doc;
+        // String inputDoc = "<A><U><B><S><S><S></S><S><S></S><S></S></S><S></S></S><S><S></S></S></S><C><U><U><U><U></U><U><U></U><U></U></U><U></U></U><U><U></U></U></U></U></C></B><D><U></U></D><U><E><S><S><S></S><S><S></S><S></S></S><S></S></S><S><S></S></S></S></E><U><F><G><H/></G></F></U></U></U></A>";
+        // String inputDoc = "<A><U><B><S></S><C><U></U></C></B><D><U></U></D><U><E><S></S></E><U><F><G><H/></G></F></U></U></U></A>";
+        String inputDoc =
+            "<A xmlns:foo=\"http://foo.bar/\">\n<U>\n<U>\n<U>\n<U>\n<U>\n<B foo:attr=\"attr\">\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<C>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n<U>\n<U>\n<U>\n<U/>\n<U>\n<U/>\n<U/>\n</U>\n<U/>\n</U>\n<U>\n<U/>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</C>\n</B>\n<D>\n<U/>\n</D>\n<U>\n<E>\n<S>\n<S>\n<S/>\n<S>\n<S/>\n<S/>\n</S>\n<S/>\n</S>\n<S>\n<S/>\n</S>\n</S>\n</E>\n<U>\n<F>\n<G>\n<H/>\n<G>\n<H/>\n</G>\n</G>\n</F>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</U>\n</A>\n";
+        Document doc = db.parse(new ByteArrayInputStream(inputDoc.getBytes()));
 
-      doc = db.parse(new ByteArrayInputStream(inputDoc.getBytes()));
+        SampleTransformXPathFilterCHGP.outApache(doc);
 
-      SampleTransformXPathFilterCHGP.outApache(doc);
+        doc = db.parse(new ByteArrayInputStream(inputDoc.getBytes()));
 
-      doc = db.parse(new ByteArrayInputStream(inputDoc.getBytes()));
+        SampleTransformXPathFilterCHGP.outXFilter2(doc);
+    }
 
-      SampleTransformXPathFilterCHGP.outXFilter2(doc);
-   }
+    /**
+     * Method outApache
+     *
+     * @param doc
+     * @throws Exception
+     */
+    static void outApache(Document doc) throws Exception {
 
-   /**
-    * Method outApache
-    *
-    * @param doc
-    * @throws Exception
-    */
-   static void outApache(Document doc) throws Exception {
+        XMLSignature sig = new XMLSignature(doc, null, XMLSignature.ALGO_ID_MAC_HMAC_SHA1);
 
-      XMLSignature sig = new XMLSignature(doc, null,
-                                          XMLSignature.ALGO_ID_MAC_HMAC_SHA1);
+        doc.getDocumentElement().appendChild(sig.getElement());
 
-      doc.getDocumentElement().appendChild(sig.getElement());
+        Transforms transforms = new Transforms(doc);
+        String includeButSearchStr = "//B | //E | //F | //H";
+        String excludeButSearchStr = "//G";
 
-      Transforms transforms = new Transforms(doc);
-      String includeButSearchStr = "//B | //E | //F | //H";
-      String excludeButSearchStr = "//G";
+        // String excludeStr = "//C | //D | //ds:Signature";
+        String excludeStr =
+            "//C | //D | here()/ancestor::ds:Signature[1] | //@x:attr";
+        boolean includeSlashPolicy = XPathFilterCHGPContainer.ExcludeSlash;
+        XPathFilterCHGPContainer xpathContainer =
+            XPathFilterCHGPContainer.getInstance(doc, includeSlashPolicy,
+                                                 includeButSearchStr,
+                                                 excludeButSearchStr, excludeStr);
 
-      // String excludeStr = "//C | //D | //ds:Signature";
-      String excludeStr =
-         "//C | //D | here()/ancestor::ds:Signature[1] | //@x:attr";
-      boolean includeSlashPolicy = XPathFilterCHGPContainer.ExcludeSlash;
-      XPathFilterCHGPContainer xpathContainer =
-         XPathFilterCHGPContainer.getInstance(doc, includeSlashPolicy,
-                                              includeButSearchStr,
-                                              excludeButSearchStr, excludeStr);
+        xpathContainer.setXPathNamespaceContext("ds", Constants.SignatureSpecNS);
+        xpathContainer.setXPathNamespaceContext("x", "http://foo.bar/");
+        transforms.addTransform(Transforms.TRANSFORM_XPATHFILTERCHGP, xpathContainer.getElement());
+        sig.addDocument("", transforms);
 
-      xpathContainer.setXPathNamespaceContext("ds", Constants.SignatureSpecNS);
-      xpathContainer.setXPathNamespaceContext("x", "http://foo.bar/");
-      transforms.addTransform(Transforms.TRANSFORM_XPATHFILTERCHGP,
-                              xpathContainer.getElement());
-      sig.addDocument("", transforms);
+        String secretKey = "secret";
 
-      String secretKey = "secret";
+        sig.getKeyInfo().addKeyName("The UTF-8 octets of \"" + secretKey
+                                    + "\" are used for signing (" + secretKey.length() + " octets)");
+        sig.sign(sig.createSecretKey(secretKey.getBytes()));
 
-      sig.getKeyInfo().addKeyName("The UTF-8 octets of \"" + secretKey
-                                  + "\" are used for signing ("
-                                  + secretKey.length() + " octets)");
-      sig.sign(sig.createSecretKey(secretKey.getBytes()));
+        Canonicalizer c14n =
+            Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
+        byte[] full = c14n.canonicalizeSubtree(doc);
 
-      Canonicalizer c14n =
-         Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
-      byte[] full = c14n.canonicalizeSubtree(doc);
+        System.out.println(
+            "-------------------------------------------------------------");
+        System.out.println("The signed octets (output of the transforms) are ");
+        System.out.println(
+            "-------------------------------------------------------------");
+        System.out.println(new String(sig.getSignedInfo().item(0).getTransformsOutput().getBytes()));
+        System.out.println(
+            "-------------------------------------------------------------");
+        System.out.println("The document is ");
+        System.out.println(
+            "-------------------------------------------------------------");
+        System.out.println(new String(full));
+        System.out.println(
+            "-------------------------------------------------------------");
 
-      System.out.println(
-         "-------------------------------------------------------------");
-      System.out.println("The signed octets (output of the transforms) are ");
-      System.out.println(
-         "-------------------------------------------------------------");
-      System.out
-         .println(new String(sig.getSignedInfo().item(0).getTransformsOutput()
-            .getBytes()));
-      System.out.println(
-         "-------------------------------------------------------------");
-      System.out.println("The document is ");
-      System.out.println(
-         "-------------------------------------------------------------");
-      System.out.println(new String(full));
-      System.out.println(
-         "-------------------------------------------------------------");
+        Element sE =
+            (Element) doc.getElementsByTagNameNS(Constants.SignatureSpecNS,
+                                                 Constants._TAG_SIGNATURE).item(0);
+        XMLSignature sigVer = new XMLSignature(sE, null);
+        boolean verify =
+            sigVer.checkSignatureValue(sigVer.createSecretKey("secret".getBytes()));
 
-      Element sE =
-         (Element) doc.getElementsByTagNameNS(Constants.SignatureSpecNS,
-                                              Constants._TAG_SIGNATURE).item(0);
-      XMLSignature sigVer = new XMLSignature(sE, null);
-      boolean verify =
-         sigVer.checkSignatureValue(sigVer
-            .createSecretKey("secret".getBytes()));
+        System.out.println("verify: " + verify);
+    }
 
-      System.out.println("verify: " + verify);
-   }
+    /**
+     * Method outXFilter2
+     *
+     * @param doc
+     * @throws Exception
+     */
+    static void outXFilter2(Document doc) throws Exception {
 
-   /**
-    * Method outXFilter2
-    *
-    * @param doc
-    * @throws Exception
-    */
-   static void outXFilter2(Document doc) throws Exception {
+        XMLSignature sig = new XMLSignature(doc, null, XMLSignature.ALGO_ID_MAC_HMAC_SHA1);
 
-      XMLSignature sig = new XMLSignature(doc, null,
-                                          XMLSignature.ALGO_ID_MAC_HMAC_SHA1);
+        doc.getDocumentElement().appendChild(sig.getElement());
 
-      doc.getDocumentElement().appendChild(sig.getElement());
+        Transforms transforms = new Transforms(doc);
 
-      Transforms transforms = new Transforms(doc);
+        transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                XPath2FilterContainer.newInstanceIntersect(doc, "//E").getElement());
+        transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                XPath2FilterContainer.newInstanceUnion(doc, "//B").getElement());
+        transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                XPath2FilterContainer.newInstanceSubtract(doc,  "//C").getElement());
+        transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                XPath2FilterContainer.newInstanceUnion(doc, "//F").getElement());
+        transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                XPath2FilterContainer.newInstanceSubtract(doc, "//G").getElement());
+        transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                XPath2FilterContainer.newInstanceUnion(doc, "//H").getElement());
+        transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
+                                XPath2FilterContainer.newInstanceSubtract(doc, 
+                                                                          "//@x:attr").getElement());
+        transforms.setXPathNamespaceContext("xmlns:x", "http://foo.bar/");
+        transforms.setXPathNamespaceContext(
+            Transforms.getDefaultPrefix(
+                Transforms.TRANSFORM_XPATH2FILTER),
+                Transforms.TRANSFORM_XPATH2FILTER
+            );
+        sig.addDocument("", transforms);
 
-      transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                              XPath2FilterContainer.newInstanceIntersect(doc,
-                                 "//E").getElement());
-      transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                              XPath2FilterContainer.newInstanceUnion(doc,
-                                 "//B").getElement());
-      transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                              XPath2FilterContainer.newInstanceSubtract(doc,
-                                 "//C").getElement());
-      transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                              XPath2FilterContainer.newInstanceUnion(doc,
-                                 "//F").getElement());
-      transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                              XPath2FilterContainer.newInstanceSubtract(doc,
-                                 "//G").getElement());
-      transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                              XPath2FilterContainer.newInstanceUnion(doc,
-                                 "//H").getElement());
-      transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER,
-                              XPath2FilterContainer.newInstanceSubtract(doc,
-                                 "//@x:attr").getElement());
-      transforms.setXPathNamespaceContext("xmlns:x", "http://foo.bar/");
-      transforms
-         .setXPathNamespaceContext(Transforms
-            .getDefaultPrefix(Transforms.TRANSFORM_XPATH2FILTER), Transforms
-            .TRANSFORM_XPATH2FILTER);
-      sig.addDocument("", transforms);
+        String secretKey = "secret";
 
-      String secretKey = "secret";
+        sig.getKeyInfo().addKeyName("The UTF-8 octets of \"" + secretKey
+                                    + "\" are used for signing (" + secretKey.length() + " octets)");
+        sig.sign(sig.createSecretKey(secretKey.getBytes()));
 
-      sig.getKeyInfo().addKeyName("The UTF-8 octets of \"" + secretKey
-                                  + "\" are used for signing ("
-                                  + secretKey.length() + " octets)");
-      sig.sign(sig.createSecretKey(secretKey.getBytes()));
+        Canonicalizer c14n =
+            Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
+        byte[] full = c14n.canonicalizeSubtree(doc);
 
-      Canonicalizer c14n =
-         Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
-      byte[] full = c14n.canonicalizeSubtree(doc);
+        System.out.println(
+            "-------------------------------------------------------------");
+        System.out.println("The signed octets (output of the transforms) are ");
+        System.out.println(
+            "-------------------------------------------------------------");
+        System.out.println(new String(sig.getSignedInfo().item(0).getTransformsOutput().getBytes()));
+        System.out.println(
+            "-------------------------------------------------------------");
+        System.out.println("The document is ");
+        System.out.println(
+            "-------------------------------------------------------------");
+        System.out.println(new String(full));
+        System.out.println(
+            "-------------------------------------------------------------");
 
-      System.out.println(
-         "-------------------------------------------------------------");
-      System.out.println("The signed octets (output of the transforms) are ");
-      System.out.println(
-         "-------------------------------------------------------------");
-      System.out
-         .println(new String(sig.getSignedInfo().item(0).getTransformsOutput()
-            .getBytes()));
-      System.out.println(
-         "-------------------------------------------------------------");
-      System.out.println("The document is ");
-      System.out.println(
-         "-------------------------------------------------------------");
-      System.out.println(new String(full));
-      System.out.println(
-         "-------------------------------------------------------------");
+        Element sE =
+            (Element) doc.getElementsByTagNameNS(Constants.SignatureSpecNS,
+                                                 Constants._TAG_SIGNATURE).item(0);
+        XMLSignature sigVer = new XMLSignature(sE, null);
+        boolean verify =
+            sigVer.checkSignatureValue(sigVer.createSecretKey("secret".getBytes()));
 
-      Element sE =
-         (Element) doc.getElementsByTagNameNS(Constants.SignatureSpecNS,
-                                              Constants._TAG_SIGNATURE).item(0);
-      XMLSignature sigVer = new XMLSignature(sE, null);
-      boolean verify =
-         sigVer.checkSignatureValue(sigVer
-            .createSecretKey("secret".getBytes()));
+        System.out.println("verify: " + verify);
+    }
 
-      System.out.println("verify: " + verify);
-   }
+    /**
+     * Method check
+     *
+     * @param filename
+     * @throws Exception
+     */
+    public static void check(String filename) throws Exception {
 
-   /**
-    * Method check
-    *
-    * @param filename
-    * @throws Exception
-    */
-   public static void check(String filename) throws Exception {
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 
-      DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setNamespaceAware(true);
 
-      dbf.setNamespaceAware(true);
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        Document doc = db.parse(new FileInputStream(filename));
+        NodeList sigs = doc.getElementsByTagNameNS(Constants.SignatureSpecNS, Constants._TAG_SIGNATURE);
+        XMLSignature sig =
+            new XMLSignature((Element) sigs.item(0), new File(filename).toURI().toURL().toString());
+        boolean check =
+            sig.checkSignatureValue(sig.createSecretKey("secret".getBytes()));
 
-      DocumentBuilder db = dbf.newDocumentBuilder();
-      Document doc = db.parse(new FileInputStream(filename));
-      NodeList sigs = doc.getElementsByTagNameNS(Constants.SignatureSpecNS,
-                                                 Constants._TAG_SIGNATURE);
-      XMLSignature sig =
-         new XMLSignature((Element) sigs.item(0),
-                          new File(filename).toURL().toString());
-      boolean check =
-         sig.checkSignatureValue(sig.createSecretKey("secret".getBytes()));
-
-      System.out.println(
-         "-------------------------------------------------------------");
-      System.out.println("Verification of " + filename + ": " + check);
-      System.out.println(
-         "-------------------------------------------------------------");
-      System.out
-         .println(new String(sig.getSignedInfo().item(0).getTransformsOutput()
-            .getBytes()));
-      System.out.println(
-         "-------------------------------------------------------------");
-   }
+        System.out.println(
+            "-------------------------------------------------------------");
+        System.out.println("Verification of " + filename + ": " + check);
+        System.out.println(
+            "-------------------------------------------------------------");
+        System.out.println(new String(sig.getSignedInfo().item(0).getTransformsOutput().getBytes()));
+        System.out.println(
+            "-------------------------------------------------------------");
+    }
 }

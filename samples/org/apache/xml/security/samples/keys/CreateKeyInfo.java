@@ -16,8 +16,6 @@
  */
 package org.apache.xml.security.samples.keys;
 
-
-
 import java.io.FileInputStream;
 import java.math.BigInteger;
 import java.security.KeyStore;
@@ -28,7 +26,6 @@ import org.apache.xml.security.keys.content.X509Data;
 import org.apache.xml.security.keys.content.keyvalues.RSAKeyValue;
 import org.apache.xml.security.utils.XMLUtils;
 
-
 /**
  * Class CreateKeyInfo
  *
@@ -37,45 +34,45 @@ import org.apache.xml.security.utils.XMLUtils;
  */
 public class CreateKeyInfo {
 
-   /**
-    * Method main
-    *
-    * @param unused
-    * @throws Exception
-    */
-   public static void main(String unused[]) throws Exception {
+    /**
+     * Method main
+     *
+     * @param unused
+     * @throws Exception
+     */
+    public static void main(String unused[]) throws Exception {
 
-      KeyStore ks = KeyStore.getInstance("JKS");
-      FileInputStream fis = new FileInputStream(
-         "data/org/apache/xml/security/samples/input/keystore.jks");
+        KeyStore ks = KeyStore.getInstance("JKS");
+        FileInputStream fis = new FileInputStream(
+            "data/org/apache/xml/security/samples/input/keystore.jks");
 
-      ks.load(fis, "xmlsecurity".toCharArray());
+        ks.load(fis, "xmlsecurity".toCharArray());
 
-      javax.xml.parsers.DocumentBuilderFactory dbf =
-         javax.xml.parsers.DocumentBuilderFactory.newInstance();
+        javax.xml.parsers.DocumentBuilderFactory dbf =
+            javax.xml.parsers.DocumentBuilderFactory.newInstance();
 
-      dbf.setNamespaceAware(true);
+        dbf.setNamespaceAware(true);
 
-      javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
-      org.w3c.dom.Document doc = db.newDocument();
-      KeyInfo ki = new KeyInfo(doc);
+        javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
+        org.w3c.dom.Document doc = db.newDocument();
+        KeyInfo ki = new KeyInfo(doc);
 
-      doc.appendChild(ki.getElement());
-      ki.setId("myKI");
-      ki.addKeyName("A simple key");
+        doc.appendChild(ki.getElement());
+        ki.setId("myKI");
+        ki.addKeyName("A simple key");
 
-      X509Certificate cert = (X509Certificate) ks.getCertificate("test");
+        X509Certificate cert = (X509Certificate) ks.getCertificate("test");
 
-      ki.addKeyValue(cert.getPublicKey());
+        ki.addKeyValue(cert.getPublicKey());
 
-      X509Data x509Data = new X509Data(doc);
+        X509Data x509Data = new X509Data(doc);
 
-      ki.add(x509Data);
-      x509Data.addCertificate(cert);
-      x509Data.addSubjectName("Subject name");
-      x509Data.addIssuerSerial("Subject nfsdfhs", 6786);
-      ki.add(new RSAKeyValue(doc, new BigInteger("678"),
-                             new BigInteger("6870")));
-      XMLUtils.outputDOMc14nWithComments(doc, System.out);
-   }
+        ki.add(x509Data);
+        x509Data.addCertificate(cert);
+        x509Data.addSubjectName("Subject name");
+        x509Data.addIssuerSerial("Subject nfsdfhs", 6786);
+        ki.add(new RSAKeyValue(doc, new BigInteger("678"), new BigInteger("6870")));
+        XMLUtils.outputDOMc14nWithComments(doc, System.out);
+    }
+    
 }

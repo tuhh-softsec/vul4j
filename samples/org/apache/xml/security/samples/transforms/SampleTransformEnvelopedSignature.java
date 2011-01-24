@@ -17,8 +17,6 @@
  */
 package org.apache.xml.security.samples.transforms;
 
-
-
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.samples.SampleUtils;
 import org.apache.xml.security.transforms.Transforms;
@@ -28,7 +26,6 @@ import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-
 /**
  * This class demonstrates the use of a Transform forEnveloped Signature.
  *
@@ -37,62 +34,62 @@ import org.w3c.dom.Node;
  */
 public class SampleTransformEnvelopedSignature {
 
-   /**
-    * Method main
-    *
-    * @param args
-    * @throws Exception
-    */
-   public static void main(String args[]) throws Exception {
-      //J-
-      String inputStr =
-        "<?xml version=\"1.0\"?>" + "\n"
-      + "<Document xmlns='http://www.w3.org/2000/09/xmldsig#'>" + "\n"
-      + "   <Data attr='attrValue'>text in Data</Data>" + "\n"
-      + "<Signature Id='SignatureToBeOmitted' xmlns='http://www.w3.org/2000/09/xmldsig#'>" + "\n"
-      + "     <SignedInfo>" + "\n"
-      + "       <Reference>" + "\n"
-      + "         <Transforms>" + "\n"
-      // + "           <Transform Algorithm='http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments' />" + "\n"
-      + "           <Transform Algorithm='http://www.w3.org/2000/09/xmldsig#enveloped-signature' />" + "\n"
-      + "           <Transform Algorithm='http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments' />" + "\n"
-      + "         </Transforms>" + "\n"
-      + "       </Reference>" + "\n"
-      + "     </SignedInfo>" + "\n"
-      + "   </Signature>"
-      + "   <Signature Id='VisibleSignature' xmlns='http://www.w3.org/2000/09/xmldsig#'>" + "\n"
-      + "     <SignedInfo xmlns='http://www.w3.org/2000/09/xmldsig#'>" + "\n"
-      + "       <Reference xmlns='http://www.w3.org/2000/09/xmldsig#'>" + "\n"
-      + "         <Transforms xmlns='http://www.w3.org/2000/09/xmldsig#'>" + "\n"
-      + "           <Transform Algorithm='http://www.w3.org/2000/09/xmldsig#enveloped-signature' />" + "\n"
-      + "           <Transform Algorithm='http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments' />" + "\n"
-      + "         </Transforms>" + "\n"
-      + "       </Reference>" + "\n"
-      + "     </SignedInfo>" + "\n"
-      + "   </Signature>" + "\n"
-      + "</Document>" + "\n"
-      ;
-      //J+
-      javax.xml.parsers.DocumentBuilderFactory dbf =
-         javax.xml.parsers.DocumentBuilderFactory.newInstance();
+    /**
+     * Method main
+     *
+     * @param args
+     * @throws Exception
+     */
+    public static void main(String args[]) throws Exception {
+        String inputStr =
+            "<?xml version=\"1.0\"?>" + "\n"
+            + "<Document xmlns='http://www.w3.org/2000/09/xmldsig#'>" + "\n"
+            + "   <Data attr='attrValue'>text in Data</Data>" + "\n"
+            + "<Signature Id='SignatureToBeOmitted' xmlns='http://www.w3.org/2000/09/xmldsig#'>" + "\n"
+            + "     <SignedInfo>" + "\n"
+            + "       <Reference>" + "\n"
+            + "         <Transforms>" + "\n"
+            // + "           <Transform Algorithm='http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments' />" + "\n"
+            + "           <Transform Algorithm='http://www.w3.org/2000/09/xmldsig#enveloped-signature' />" + "\n"
+            + "           <Transform Algorithm='http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments' />" + "\n"
+            + "         </Transforms>" + "\n"
+            + "       </Reference>" + "\n"
+            + "     </SignedInfo>" + "\n"
+            + "   </Signature>"
+            + "   <Signature Id='VisibleSignature' xmlns='http://www.w3.org/2000/09/xmldsig#'>" + "\n"
+            + "     <SignedInfo xmlns='http://www.w3.org/2000/09/xmldsig#'>" + "\n"
+            + "       <Reference xmlns='http://www.w3.org/2000/09/xmldsig#'>" + "\n"
+            + "         <Transforms xmlns='http://www.w3.org/2000/09/xmldsig#'>" + "\n"
+            + "           <Transform Algorithm='http://www.w3.org/2000/09/xmldsig#enveloped-signature' />" + "\n"
+            + "           <Transform Algorithm='http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments' />" + "\n"
+            + "         </Transforms>" + "\n"
+            + "       </Reference>" + "\n"
+            + "     </SignedInfo>" + "\n"
+            + "   </Signature>" + "\n"
+            + "</Document>" + "\n"
+            ;
+        javax.xml.parsers.DocumentBuilderFactory dbf =
+            javax.xml.parsers.DocumentBuilderFactory.newInstance();
 
-      dbf.setNamespaceAware(true);
+        dbf.setNamespaceAware(true);
 
-      javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
-      org.w3c.dom.Document doc =
-         db.parse(new java.io.ByteArrayInputStream(inputStr.getBytes()));
-      Element nscontext = SampleUtils.createDSctx(doc, "ds", Constants.SignatureSpecNS);
+        javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
+        org.w3c.dom.Document doc =
+            db.parse(new java.io.ByteArrayInputStream(inputStr.getBytes()));
+        Element nscontext = SampleUtils.createDSctx(doc, "ds", Constants.SignatureSpecNS);
 
-      Element transformsElem = (Element) XPathAPI.selectSingleNode(
-         doc, "//ds:Signature[@Id='SignatureToBeOmitted']//ds:Transforms",
-         nscontext);
-      Transforms transforms = new Transforms(transformsElem, "memory://");
-      XMLSignatureInput input = new XMLSignatureInput((Node) doc);
+        Element transformsElem = 
+            (Element) XPathAPI.selectSingleNode(
+                doc, "//ds:Signature[@Id='SignatureToBeOmitted']//ds:Transforms", nscontext
+            );
+        Transforms transforms = new Transforms(transformsElem, "memory://");
+        XMLSignatureInput input = new XMLSignatureInput((Node) doc);
 
-      // input.setCanonicalizerURI(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
+        // input.setCanonicalizerURI(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
 
-      XMLSignatureInput result = transforms.performTransforms(input);
+        XMLSignatureInput result = transforms.performTransforms(input);
 
-      System.out.println(new String(result.getBytes()));
-   }
+        System.out.println(new String(result.getBytes()));
+    }
+    
 }

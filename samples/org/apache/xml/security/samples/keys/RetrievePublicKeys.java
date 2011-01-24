@@ -17,8 +17,6 @@
  */
 package org.apache.xml.security.samples.keys;
 
-
-
 import java.io.File;
 import java.security.PublicKey;
 
@@ -31,93 +29,85 @@ import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Element;
 
-
 /**
  *
  * @author $Author$
  */
 public class RetrievePublicKeys {
 
-   /**
-    * Method main
-    *
-    * @param unused
-    */
-   public static void main(String unused[]) {
+    /**
+     * Method main
+     *
+     * @param unused
+     */
+    public static void main(String unused[]) {
+        javax.xml.parsers.DocumentBuilderFactory dbf =
+            javax.xml.parsers.DocumentBuilderFactory.newInstance();
 
-      javax.xml.parsers.DocumentBuilderFactory dbf =
-         javax.xml.parsers.DocumentBuilderFactory.newInstance();
+        dbf.setNamespaceAware(true);
 
-      dbf.setNamespaceAware(true);
+        String merlinsDir =
+            "data/ie/baltimore/merlin-examples/merlin-xmldsig-eighteen/";
+        String ourDir =
+            "data/org/apache/xml/security/temp/key/";
+        String filenames[] = { merlinsDir +
+                               /* 0 */ "signature-keyname.xml",
+                               merlinsDir +
+                               /* 1 */ "signature-retrievalmethod-rawx509crt.xml",
+                               merlinsDir +
+                               /* 2 */ "signature-x509-crt-crl.xml",
+                               merlinsDir +
+                               /* 3 */ "signature-x509-crt.xml",
+                               merlinsDir +
+                               /* 4 */ "signature-x509-is.xml",
+                               merlinsDir +
+                               /* 5 */ "signature-x509-ski.xml",
+                               merlinsDir +
+                               /* 6 */ "signature-x509-sn.xml",
+                               ourDir +
+                               /* 7 */ "signature-retrievalmethod-x509data.xml",
+                               ourDir +
+                               /* 8 */ "signature-retrievalmethod-dsavalue.xml",
+                               ourDir +
+                               /* 9 */ "retrieval-from-same-doc.xml"
+        };
 
-      //J-
-      String merlinsDir =
-         "data/ie/baltimore/merlin-examples/merlin-xmldsig-eighteen/";
-      String ourDir =
-         "data/org/apache/xml/security/temp/key/";
-      String filenames[] = { merlinsDir +
-                             /* 0 */ "signature-keyname.xml",
-                             merlinsDir +
-                             /* 1 */ "signature-retrievalmethod-rawx509crt.xml",
-                             merlinsDir +
-                             /* 2 */ "signature-x509-crt-crl.xml",
-                             merlinsDir +
-                             /* 3 */ "signature-x509-crt.xml",
-                             merlinsDir +
-                             /* 4 */ "signature-x509-is.xml",
-                             merlinsDir +
-                             /* 5 */ "signature-x509-ski.xml",
-                             merlinsDir +
-                             /* 6 */ "signature-x509-sn.xml",
-                             ourDir +
-                             /* 7 */ "signature-retrievalmethod-x509data.xml",
-                             ourDir +
-                             /* 8 */ "signature-retrievalmethod-dsavalue.xml",
-                             ourDir +
-                             /* 9 */ "retrieval-from-same-doc.xml"
-                             };
-      //J+
-      int start = 0;
-      int end = filenames.length;
-      // int end = filenames.length;
-      for (int filetoverify = start; filetoverify < end;
-              filetoverify++) {
-         String filename = filenames[filetoverify];
+        int start = 0;
+        int end = filenames.length;
+        for (int filetoverify = start; filetoverify < end; filetoverify++) {
+            String filename = filenames[filetoverify];
 
-         System.out.println(
-            "#########################################################");
-         System.out.println("Try to verify " + filename);
+            System.out.println("#########################################################");
+            System.out.println("Try to verify " + filename);
 
-         try {
-            javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
-            org.w3c.dom.Document doc =
-               db.parse(new java.io.FileInputStream(filename));
-            Element nscontext = SampleUtils.createDSctx(doc, "ds", Constants.SignatureSpecNS);
+            try {
+                javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
+                org.w3c.dom.Document doc =
+                    db.parse(new java.io.FileInputStream(filename));
+                Element nscontext = SampleUtils.createDSctx(doc, "ds", Constants.SignatureSpecNS);
 
-            Element kiElement = (Element) XPathAPI.selectSingleNode(doc,
-                                   "//ds:KeyInfo[1]", nscontext);
-            KeyInfo ki = new KeyInfo(kiElement,
-                                     (new File(filename)).toURL().toString());
-            StorageResolver storageResolver = new StorageResolver(
-               new CertsInFilesystemDirectoryResolver(merlinsDir + "certs"));
+                Element kiElement = 
+                    (Element) XPathAPI.selectSingleNode(doc, "//ds:KeyInfo[1]", nscontext);
+                KeyInfo ki = new KeyInfo(kiElement, (new File(filename)).toURI().toURL().toString());
+                StorageResolver storageResolver = 
+                    new StorageResolver(new CertsInFilesystemDirectoryResolver(merlinsDir + "certs"));
 
-            ki.addStorageResolver(storageResolver);
+                ki.addStorageResolver(storageResolver);
 
-            PublicKey pk = ki.getPublicKey();
+                PublicKey pk = ki.getPublicKey();
 
-            System.out.println("PublicKey" + ((pk != null)
-                                              ? " found:"
-                                              : " not found!!!"));
+                System.out.println("PublicKey" + ((pk != null) ? " found:" : " not found!!!"));
 
-            if (pk != null) {
-               System.out.println("   Format: " + pk.getFormat());
-               System.out.println("   Algorithm: " + pk.getAlgorithm());
+                if (pk != null) {
+                    System.out.println("   Format: " + pk.getFormat());
+                    System.out.println("   Algorithm: " + pk.getAlgorithm());
+                }
+
+                System.out.println("   Key: " + pk);
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
-
-            System.out.println("   Key: " + pk);
-         } catch (Exception ex) {
-            ex.printStackTrace();
-         }
-      }
-   }
+        }
+    }
+    
 }
