@@ -81,7 +81,8 @@ public class LdapEncoder
      */
     public ByteBuffer encodeMessage( Message message ) throws EncoderException
     {
-        int length = computeMessageLength( message );
+        Encodeable encodeable = new EncodeableDecorator( message );
+        int length = computeMessageLength( encodeable );
         ByteBuffer buffer = ByteBuffer.allocate( length );
 
         try
@@ -92,7 +93,7 @@ public class LdapEncoder
                 buffer.put( UniversalTag.SEQUENCE.getValue() );
 
                 // The length has been calculated by the computeLength method
-                buffer.put( TLV.getBytes( ( ( AbstractMessage ) message ).getMessageLength() ) );
+                buffer.put( TLV.getBytes( encodeable.getMessageLength() ) );
             }
             catch ( BufferOverflowException boe )
             {
@@ -112,7 +113,7 @@ public class LdapEncoder
             {
                 // Encode the controls
                 buffer.put( ( byte ) LdapConstants.CONTROLS_TAG );
-                buffer.put( TLV.getBytes( ( ( AbstractMessage ) message ).getControlsLength() ) );
+                buffer.put( TLV.getBytes( encodeable.getControlsLength() ) );
 
                 // Encode each control
                 for ( Control control : controls.values() )
@@ -146,20 +147,20 @@ public class LdapEncoder
      * L1 = length(ProtocolOp) 
      * LdapMessage length = Length(0x30) + Length(L1) + MessageId length + L1
      *
-     * @param message the Message who's length is to be encoded
+     * @param encodeable the decorated Message who's length is to be encoded
      */
-    private int computeMessageLength( Message message )
+    private int computeMessageLength( Encodeable encodeable )
     {
         // The length of the MessageId. It's the sum of
         // - the tag (0x02), 1 byte
         // - the length of the Id length, 1 byte
         // - the Id length, 1 to 4 bytes
-        int ldapMessageLength = 1 + 1 + Value.getNbBytes( message.getMessageId() );
+        int ldapMessageLength = 1 + 1 + Value.getNbBytes( encodeable.getMessage().getMessageId() );
 
         // Get the protocolOp length
-        ldapMessageLength += computeProtocolOpLength( message );
+        ldapMessageLength += computeProtocolOpLength( encodeable.getMessage() );
 
-        Map<String, Control> controls = message.getControls();
+        Map<String, Control> controls = encodeable.getMessage().getControls();
 
         // Do the same thing for Controls, if any.
         if ( controls.size() > 0 )
@@ -193,14 +194,14 @@ public class LdapEncoder
 
             // Computes the controls length
             // 1 + Length.getNbBytes( controlsSequenceLength ) + controlsSequenceLength;
-            ( ( AbstractMessage ) message ).setControlsLength( controlsSequenceLength );
+            encodeable.setControlsLength( controlsSequenceLength );
 
             // Now, add the tag and the length of the controls length
             ldapMessageLength += 1 + TLV.getNbBytes( controlsSequenceLength ) + controlsSequenceLength;
         }
 
         // Store the messageLength
-        ( ( AbstractMessage ) message ).setMessageLength( ldapMessageLength );
+        encodeable.setMessageLength( ldapMessageLength );
 
         // finally, calculate the global message size :
         // length(Tag) + Length(length) + length

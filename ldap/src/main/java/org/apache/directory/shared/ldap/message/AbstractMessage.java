@@ -286,40 +286,40 @@ public abstract class AbstractMessage implements Message
     }
 
 
-    /**
-     * {@inheritDoc}
-     */
-    /* No qualifier*/void setControlsLength( int controlsLength )
-    {
-        this.controlsLength = controlsLength;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    /* No qualifier*/int getControlsLength()
-    {
-        return controlsLength;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    /* No qualifier*/void setMessageLength( int messageLength )
-    {
-        this.messageLength = messageLength;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    /* No qualifier*/int getMessageLength()
-    {
-        return messageLength;
-    }
+//    /**
+//     * {@inheritDoc}
+//     */
+//    /* No qualifier*/void setControlsLength( int controlsLength )
+//    {
+//        this.controlsLength = controlsLength;
+//    }
+//
+//
+//    /**
+//     * {@inheritDoc}
+//     */
+//    /* No qualifier*/int getControlsLength()
+//    {
+//        return controlsLength;
+//    }
+//
+//
+//    /**
+//     * {@inheritDoc}
+//     */
+//    /* No qualifier*/void setMessageLength( int messageLength )
+//    {
+//        this.messageLength = messageLength;
+//    }
+//
+//
+//    /**
+//     * {@inheritDoc}
+//     */
+//    /* No qualifier*/int getMessageLength()
+//    {
+//        return messageLength;
+//    }
 
 
     /**
