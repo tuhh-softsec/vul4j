@@ -23,7 +23,7 @@ package org.apache.directory.shared.ldap.schema.parsers;
 import java.text.ParseException;
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.schema.MatchingRule;
+import org.apache.directory.shared.ldap.model.schema.MatchingRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

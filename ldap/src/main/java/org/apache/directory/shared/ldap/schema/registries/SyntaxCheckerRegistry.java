@@ -21,7 +21,7 @@ package org.apache.directory.shared.ldap.schema.registries;
 
 
 import org.apache.directory.shared.ldap.model.exception.LdapException;
-import org.apache.directory.shared.ldap.schema.SyntaxChecker;
+import org.apache.directory.shared.ldap.model.schema.SyntaxChecker;
 
 
 /**

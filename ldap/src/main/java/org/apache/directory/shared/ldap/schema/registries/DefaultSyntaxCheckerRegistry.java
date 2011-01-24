@@ -21,9 +21,9 @@ package org.apache.directory.shared.ldap.schema.registries;
 
 
 import org.apache.directory.shared.ldap.model.exception.LdapException;
-import org.apache.directory.shared.ldap.schema.SchemaObject;
-import org.apache.directory.shared.ldap.schema.SchemaObjectType;
-import org.apache.directory.shared.ldap.schema.SyntaxChecker;
+import org.apache.directory.shared.ldap.model.schema.SchemaObject;
+import org.apache.directory.shared.ldap.model.schema.SchemaObjectType;
+import org.apache.directory.shared.ldap.model.schema.SyntaxChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

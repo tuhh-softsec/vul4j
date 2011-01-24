@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.schema.registries;
 
 import org.apache.directory.shared.ldap.model.exception.LdapException;
-import org.apache.directory.shared.ldap.schema.Normalizer;
+import org.apache.directory.shared.ldap.model.schema.Normalizer;
 
 
 /**

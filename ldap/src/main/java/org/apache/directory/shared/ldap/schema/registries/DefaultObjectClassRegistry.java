@@ -30,9 +30,9 @@ import java.util.Set;
 
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapNoSuchAttributeException;
-import org.apache.directory.shared.ldap.schema.ObjectClass;
-import org.apache.directory.shared.ldap.schema.SchemaObject;
-import org.apache.directory.shared.ldap.schema.SchemaObjectType;
+import org.apache.directory.shared.ldap.model.schema.ObjectClass;
+import org.apache.directory.shared.ldap.model.schema.SchemaObject;
+import org.apache.directory.shared.ldap.model.schema.SchemaObjectType;
 
 
 /**

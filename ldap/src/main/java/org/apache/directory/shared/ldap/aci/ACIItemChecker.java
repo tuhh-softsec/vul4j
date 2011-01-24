@@ -25,7 +25,7 @@ import java.io.StringReader;
 import java.text.ParseException;
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.schema.SchemaManager;
+import org.apache.directory.shared.ldap.model.schema.SchemaManager;
 
 import antlr.RecognitionException;
 import antlr.TokenStreamException;

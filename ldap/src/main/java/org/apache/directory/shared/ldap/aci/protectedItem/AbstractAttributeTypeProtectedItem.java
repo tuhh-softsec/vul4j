@@ -25,7 +25,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.apache.directory.shared.ldap.aci.ProtectedItem;
-import org.apache.directory.shared.ldap.schema.AttributeType;
+import org.apache.directory.shared.ldap.model.schema.AttributeType;
 
 
 /**

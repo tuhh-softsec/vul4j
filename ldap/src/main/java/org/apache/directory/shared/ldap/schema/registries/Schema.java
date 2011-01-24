@@ -21,7 +21,7 @@ package org.apache.directory.shared.ldap.schema.registries;
 
 import java.util.Set;
 
-import org.apache.directory.shared.ldap.schema.SchemaObjectWrapper;
+import org.apache.directory.shared.ldap.model.schema.SchemaObjectWrapper;
 
 
 /**

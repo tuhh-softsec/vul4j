@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.aci.protectedItem;
 
 
-import org.apache.directory.shared.ldap.schema.AttributeType;
+import org.apache.directory.shared.ldap.model.schema.AttributeType;
 
 
 /**

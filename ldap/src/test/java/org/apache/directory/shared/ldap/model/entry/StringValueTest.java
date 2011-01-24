@@ -33,7 +33,6 @@ import java.io.ObjectOutputStream;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.ldap.model.entry.*;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.schema.normalizers.DeepTrimToLowerNormalizer;
 import org.apache.directory.shared.ldap.schema.syntaxCheckers.Ia5StringSyntaxChecker;
@@ -403,7 +402,7 @@ public class StringValueTest
 
     
     /**
-     * Test method for {@link org.apache.directory.shared.ldap.model.entry.StringValue#normalize(org.apache.directory.shared.ldap.schema.Normalizer)}.
+     * Test method for {@link org.apache.directory.shared.ldap.model.entry.StringValue#normalize(org.apache.directory.shared.ldap.model.schema.Normalizer)}.
      */
     @Test
     public void testNormalize() throws LdapException
@@ -427,7 +426,7 @@ public class StringValueTest
 
 
     /**
-     * Test method for {@link org.apache.directory.shared.ldap.model.entry.StringValue#isValid(org.apache.directory.shared.ldap.schema.SyntaxChecker)}.
+     * Test method for {@link org.apache.directory.shared.ldap.model.entry.StringValue#isValid(org.apache.directory.shared.ldap.model.schema.SyntaxChecker)}.
      */
     @Test
     public void testIsValid() throws LdapException

@@ -23,6 +23,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
+import org.apache.directory.shared.ldap.model.schema.comparators.CsnSidComparator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

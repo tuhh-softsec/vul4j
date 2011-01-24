@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.schema.syntaxCheckers;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.directory.shared.ldap.schema.SyntaxChecker;
+import org.apache.directory.shared.ldap.model.schema.SyntaxChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,7 +101,7 @@ public class RegexSyntaxChecker extends SyntaxChecker
 
             for ( String regexp:expressions )
             {
-                match = str.matches( regexp );
+                match = match && str.matches( regexp );
 
                 if ( !match )
                 {

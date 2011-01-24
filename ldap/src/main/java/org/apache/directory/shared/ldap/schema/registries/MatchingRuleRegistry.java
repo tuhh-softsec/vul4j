@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.schema.registries;
 
 
-import org.apache.directory.shared.ldap.schema.MatchingRule;
+import org.apache.directory.shared.ldap.model.schema.MatchingRule;
 
 
 /**

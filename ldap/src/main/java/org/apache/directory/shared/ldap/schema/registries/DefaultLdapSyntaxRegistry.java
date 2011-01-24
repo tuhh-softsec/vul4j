@@ -19,8 +19,8 @@
  */
 package org.apache.directory.shared.ldap.schema.registries;
 
-import org.apache.directory.shared.ldap.schema.LdapSyntax;
-import org.apache.directory.shared.ldap.schema.SchemaObjectType;
+import org.apache.directory.shared.ldap.model.schema.LdapSyntax;
+import org.apache.directory.shared.ldap.model.schema.SchemaObjectType;
 
 
 /**

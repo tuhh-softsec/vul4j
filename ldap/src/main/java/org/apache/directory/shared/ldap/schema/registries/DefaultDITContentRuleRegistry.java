@@ -20,8 +20,8 @@
 package org.apache.directory.shared.ldap.schema.registries;
 
 
-import org.apache.directory.shared.ldap.schema.DITContentRule;
-import org.apache.directory.shared.ldap.schema.SchemaObjectType;
+import org.apache.directory.shared.ldap.model.schema.DITContentRule;
+import org.apache.directory.shared.ldap.model.schema.SchemaObjectType;
 
 
 /**

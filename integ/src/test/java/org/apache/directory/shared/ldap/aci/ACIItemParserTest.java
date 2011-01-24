@@ -29,11 +29,7 @@ import java.text.ParseException;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.ldap.aci.ACIItem;
-import org.apache.directory.shared.ldap.aci.ACIItemParser;
-import org.apache.directory.shared.ldap.aci.UserFirstACIItem;
-import org.apache.directory.shared.ldap.aci.UserPermission;
-import org.apache.directory.shared.ldap.schema.SchemaManager;
+import org.apache.directory.shared.ldap.model.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schemaloader.JarLdifSchemaLoader;
 import org.apache.directory.shared.ldap.schemamanager.impl.DefaultSchemaManager;
 import org.junit.BeforeClass;

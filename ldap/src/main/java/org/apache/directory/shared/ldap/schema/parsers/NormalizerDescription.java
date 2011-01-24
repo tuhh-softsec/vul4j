@@ -21,8 +21,8 @@
 package org.apache.directory.shared.ldap.schema.parsers;
 
 
-import org.apache.directory.shared.ldap.schema.LoadableSchemaObject;
-import org.apache.directory.shared.ldap.schema.SchemaObjectType;
+import org.apache.directory.shared.ldap.model.schema.LoadableSchemaObject;
+import org.apache.directory.shared.ldap.model.schema.SchemaObjectType;
 
 
 /**

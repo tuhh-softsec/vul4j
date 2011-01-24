@@ -20,7 +20,7 @@
 
 package org.apache.directory.shared.ldap.schema.normalizers;
 
-import org.apache.directory.shared.ldap.schema.Normalizer;
+import org.apache.directory.shared.ldap.model.schema.Normalizer;
 
 
 /**

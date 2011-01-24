@@ -19,7 +19,7 @@
  */
 package org.apache.directory.shared.ldap.subtree;
 
-import org.apache.directory.shared.ldap.schema.ObjectClass;
+import org.apache.directory.shared.ldap.model.schema.ObjectClass;
 
 /**
  * A class holding a n ITEM refinement, as defined in RFC 3672

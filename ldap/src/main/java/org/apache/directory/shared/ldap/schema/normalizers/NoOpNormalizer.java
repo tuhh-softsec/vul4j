@@ -21,7 +21,7 @@ package org.apache.directory.shared.ldap.schema.normalizers;
 
 
 import org.apache.directory.shared.ldap.model.entry.Value;
-import org.apache.directory.shared.ldap.schema.Normalizer;
+import org.apache.directory.shared.ldap.model.schema.Normalizer;
 
 
 /**
@@ -60,7 +60,7 @@ public class NoOpNormalizer extends Normalizer
      * 
      * @param value any value
      * @return the value argument returned as-is
-     * @see org.apache.directory.shared.ldap.schema.Normalizer#normalize(Value)
+     * @see org.apache.directory.shared.ldap.model.schema.Normalizer#normalize(Value)
      */
     public Value<?> normalize( Value<?> value )
     {
@@ -73,7 +73,7 @@ public class NoOpNormalizer extends Normalizer
      * 
      * @param value any value
      * @return the value argument returned as-is
-     * @see org.apache.directory.shared.ldap.schema.Normalizer#normalize(String)
+     * @see org.apache.directory.shared.ldap.model.schema.Normalizer#normalize(String)
      */
     public String normalize( String value )
     {
