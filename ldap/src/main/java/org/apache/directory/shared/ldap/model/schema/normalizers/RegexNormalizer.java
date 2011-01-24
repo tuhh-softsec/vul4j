@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.schema.normalizers;
+package org.apache.directory.shared.ldap.model.schema.normalizers;
 
 
 import java.util.regex.Matcher;

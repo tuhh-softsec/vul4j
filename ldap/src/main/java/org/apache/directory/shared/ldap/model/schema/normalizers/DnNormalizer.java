@@ -17,32 +17,37 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.schema.normalizers;
+package org.apache.directory.shared.ldap.model.schema.normalizers;
 
 
 import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.model.entry.StringValue;
 import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
+import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.schema.Normalizer;
+import org.apache.directory.shared.ldap.model.schema.SchemaManager;
 
 
 /**
- * A normalizer for the objectIdentifierMatch matching rule.
+ * Normalizer a Dn
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ObjectIdentifierNormalizer extends Normalizer
+public class DnNormalizer extends Normalizer
 {
-    /** The serial UID */
-    public static final long serialVersionUID = 1L;
-
+    // The serial UID
+    private static final long serialVersionUID = 1L;
+    
+    /** A reference to the schema manager used to normalize the Dn */
+    private SchemaManager schemaManager;
+    
     /**
-     * Creates a new instance of ObjectIdentifierNormalizer.
+     * Empty constructor
      */
-    public ObjectIdentifierNormalizer()
+    public DnNormalizer()
     {
-        super( SchemaConstants.OBJECT_IDENTIFIER_MATCH_MR_OID );
+        super( SchemaConstants.DISTINGUISHED_NAME_MATCH_MR_OID );
     }
 
 
@@ -51,53 +56,50 @@ public class ObjectIdentifierNormalizer extends Normalizer
      */
     public Value<?> normalize( Value<?> value ) throws LdapException
     {
-        if ( value == null )
-        {
-            return null;
-        }
-
-        String str = value.getString().trim();
-
-        if ( str.length() == 0 )
-        {
-            return new StringValue( "" );
-        }
-        else if ( Character.isDigit( str.charAt( 0 ) ) )
-        {
-            // We do this test to avoid a lowerCasing which cost time
-            return new StringValue( str );
-        }
-        else
-        {
-            return new StringValue( str.toLowerCase() );
-        }
+        Dn dn = null;
+        
+        String dnStr = value.getString();
+        
+        dn = new Dn( dnStr, schemaManager );
+        
+        return new StringValue( dn.getNormName() );
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
     public String normalize( String value ) throws LdapException
     {
-        if ( value == null )
-        {
-            return null;
-        }
+        Dn dn = null;
+        
+        dn = new Dn( value, schemaManager );
+        
+        return dn.getNormName();
+    }
 
-        String str = value.trim();
 
-        if ( str.length() == 0 )
-        {
-            return "";
-        }
-        else if ( Character.isDigit( str.charAt( 0 ) ) )
-        {
-            // We do this test to avoid a lowerCasing which cost time
-            return str;
-        }
-        else
-        {
-            return str.toLowerCase();
-        }
+    /**
+     * Normalize a Dn
+     * @param value The Dn to normalize
+     * @return A normalized Dn
+     * @throws LdapException
+     */
+    public String normalize( Dn value ) throws LdapException
+    {
+        Dn dn = null;
+        
+        dn = new Dn( value, schemaManager );
+        
+        return dn.getNormName();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setSchemaManager( SchemaManager schemaManager )
+    {
+        this.schemaManager = schemaManager;
     }
 }

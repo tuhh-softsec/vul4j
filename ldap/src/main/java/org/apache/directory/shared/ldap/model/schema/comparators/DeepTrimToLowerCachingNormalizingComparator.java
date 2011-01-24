@@ -20,8 +20,8 @@
 package org.apache.directory.shared.ldap.model.schema.comparators;
 
 
-import org.apache.directory.shared.ldap.schema.normalizers.CachingNormalizer;
-import org.apache.directory.shared.ldap.schema.normalizers.DeepTrimToLowerNormalizer;
+import org.apache.directory.shared.ldap.model.schema.normalizers.CachingNormalizer;
+import org.apache.directory.shared.ldap.model.schema.normalizers.DeepTrimToLowerNormalizer;
 
 
 /**
@@ -36,7 +36,7 @@ public class DeepTrimToLowerCachingNormalizingComparator extends NormalizingComp
     
     public DeepTrimToLowerCachingNormalizingComparator( String oid )
     {
-        super( oid, new CachingNormalizer( new DeepTrimToLowerNormalizer( oid ), 10 ), 
+        super( oid, new CachingNormalizer( new DeepTrimToLowerNormalizer( oid ), 10 ),
             new ComparableComparator( oid ) );
     }
 }

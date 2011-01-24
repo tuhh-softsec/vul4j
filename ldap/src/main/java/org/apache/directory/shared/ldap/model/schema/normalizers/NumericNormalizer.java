@@ -17,7 +17,7 @@
  *  under the License.
  *
  */
-package org.apache.directory.shared.ldap.schema.normalizers;
+package org.apache.directory.shared.ldap.model.schema.normalizers;
 
 
 import java.io.IOException;
@@ -25,7 +25,7 @@ import java.io.IOException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.model.entry.StringValue;
-import org.apache.directory.shared.ldap.model.entry.Value;
+import org.apache.directory.shared.ldap.model.entry.*;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.schema.Normalizer;
@@ -33,25 +33,24 @@ import org.apache.directory.shared.ldap.model.schema.PrepareString;
 
 
 /**
- * Normalize Telephone Number Strings
+ * Normalize Numeric Strings
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class TelephoneNumberNormalizer extends Normalizer
+public class NumericNormalizer extends Normalizer
 {
     /** The serial UID */
     public static final long serialVersionUID = 1L;
 
     /**
-     * Creates a new instance of TelephoneNumberNormalizer.
+     * Creates a new instance of NumericNormalizer.
      */
-    public TelephoneNumberNormalizer()
+    public NumericNormalizer()
     {
-        super( SchemaConstants.TELEPHONE_NUMBER_MATCH_MR_OID );
+        super( SchemaConstants.NUMERIC_STRING_MATCH_MR_OID );
     }
 
-
-
+   
    /**
     * {@inheritDoc}
     */
@@ -60,7 +59,7 @@ public class TelephoneNumberNormalizer extends Normalizer
        try
        {
            String normalized = PrepareString.normalize( value.getString(),
-               PrepareString.StringType.TELEPHONE_NUMBER );
+               PrepareString.StringType.NUMERIC_STRING );
            
            return new StringValue( normalized );
        }
@@ -79,7 +78,7 @@ public class TelephoneNumberNormalizer extends Normalizer
        try
        {
            return PrepareString.normalize( value,
-               PrepareString.StringType.TELEPHONE_NUMBER );
+               PrepareString.StringType.NUMERIC_STRING );
        }
        catch ( IOException ioe )
        {

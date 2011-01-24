@@ -32,8 +32,8 @@ import org.apache.directory.shared.ldap.model.exception.LdapNoSuchAttributeExcep
 import org.apache.directory.shared.ldap.model.schema.AttributeType;
 import org.apache.directory.shared.ldap.model.schema.MatchingRule;
 import org.apache.directory.shared.ldap.model.schema.SchemaObjectType;
-import org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer;
-import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
+import org.apache.directory.shared.ldap.model.schema.normalizers.NoOpNormalizer;
+import org.apache.directory.shared.ldap.model.schema.normalizers.OidNormalizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

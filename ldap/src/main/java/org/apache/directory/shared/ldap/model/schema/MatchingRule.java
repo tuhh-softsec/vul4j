@@ -26,7 +26,7 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapProtocolErrorException;
 import org.apache.directory.shared.ldap.model.schema.comparators.ComparableComparator;
-import org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer;
+import org.apache.directory.shared.ldap.model.schema.normalizers.NoOpNormalizer;
 import org.apache.directory.shared.ldap.schema.registries.Registries;
 
 

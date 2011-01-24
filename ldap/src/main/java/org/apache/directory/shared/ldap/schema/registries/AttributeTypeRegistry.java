@@ -25,7 +25,7 @@ import java.util.Map;
 
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.schema.AttributeType;
-import org.apache.directory.shared.ldap.schema.normalizers.OidNormalizer;
+import org.apache.directory.shared.ldap.model.schema.normalizers.OidNormalizer;
 
 
 /**

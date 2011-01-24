@@ -40,7 +40,7 @@ import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.schema.AttributeType;
 import org.apache.directory.shared.ldap.model.schema.MatchingRule;
 import org.apache.directory.shared.ldap.model.schema.Normalizer;
-import org.apache.directory.shared.ldap.schema.normalizers.NoOpNormalizer;
+import org.apache.directory.shared.ldap.model.schema.normalizers.NoOpNormalizer;
 import org.apache.directory.shared.util.Chars;
 import org.apache.directory.shared.util.Hex;
 import org.apache.directory.shared.util.Position;

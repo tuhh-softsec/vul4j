@@ -17,7 +17,7 @@
  *  under the License.
  *
  */
-package org.apache.directory.shared.ldap.schema.normalizers;
+package org.apache.directory.shared.ldap.model.schema.normalizers;
 
 
 import java.io.IOException;
@@ -25,7 +25,7 @@ import java.io.IOException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.model.entry.StringValue;
-import org.apache.directory.shared.ldap.model.entry.*;
+import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.schema.Normalizer;
@@ -33,24 +33,25 @@ import org.apache.directory.shared.ldap.model.schema.PrepareString;
 
 
 /**
- * Normalize Numeric Strings
+ * Normalize Telephone Number Strings
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class NumericNormalizer extends Normalizer
+public class TelephoneNumberNormalizer extends Normalizer
 {
     /** The serial UID */
     public static final long serialVersionUID = 1L;
 
     /**
-     * Creates a new instance of NumericNormalizer.
+     * Creates a new instance of TelephoneNumberNormalizer.
      */
-    public NumericNormalizer()
+    public TelephoneNumberNormalizer()
     {
-        super( SchemaConstants.NUMERIC_STRING_MATCH_MR_OID );
+        super( SchemaConstants.TELEPHONE_NUMBER_MATCH_MR_OID );
     }
 
-   
+
+
    /**
     * {@inheritDoc}
     */
@@ -59,7 +60,7 @@ public class NumericNormalizer extends Normalizer
        try
        {
            String normalized = PrepareString.normalize( value.getString(),
-               PrepareString.StringType.NUMERIC_STRING );
+               PrepareString.StringType.TELEPHONE_NUMBER );
            
            return new StringValue( normalized );
        }
@@ -78,7 +79,7 @@ public class NumericNormalizer extends Normalizer
        try
        {
            return PrepareString.normalize( value,
-               PrepareString.StringType.NUMERIC_STRING );
+               PrepareString.StringType.TELEPHONE_NUMBER );
        }
        catch ( IOException ioe )
        {

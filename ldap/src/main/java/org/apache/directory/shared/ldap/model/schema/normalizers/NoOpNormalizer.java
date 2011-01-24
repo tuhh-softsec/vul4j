@@ -17,62 +17,66 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.schema.normalizers;
+package org.apache.directory.shared.ldap.model.schema.normalizers;
 
 
-import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
-import org.apache.directory.shared.ldap.model.entry.StringValue;
 import org.apache.directory.shared.ldap.model.entry.Value;
-import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.schema.Normalizer;
 
 
 /**
+ * No op (pass through or do nothing) normalizer returning what its given.
  * 
- * Normalizer for boolean values.
- *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class BooleanNormalizer extends Normalizer
+public class NoOpNormalizer extends Normalizer
 {
     /** The serial UID */
     public static final long serialVersionUID = 1L;
 
-    /**
-     * Creates a new instance of BooleanNormalizer.
-     */
-    public BooleanNormalizer()
-    {
-        super( SchemaConstants.BOOLEAN_MATCH_MR_OID );
-    }
-
 
     /**
-     * {@inheritDoc}
+     * Creates a new instance of NoOpNormalizer.
+     * 
+     * @param oid The MR OID to use with this Normalizer
      */
-    public Value<?> normalize( Value<?> value ) throws LdapInvalidDnException
+    public NoOpNormalizer( String oid )
     {
-        if ( value == null )
-        {
-            return null;
-        }
-
-        String strValue = value.getString();
-        
-        return new StringValue( strValue.trim().toUpperCase() );
+        super( oid );
     }
 
     
     /**
-     * {@inheritDoc}
+     * Default constructor for NoOpNormalizer used when we must set the OID
+     * after instantiating the Normalizer.
      */
-    public String normalize( String value ) throws LdapInvalidDnException
+    public NoOpNormalizer()
     {
-        if ( value == null )
-        {
-            return null;
-        }
+    }
 
-        return value.trim().toUpperCase();
+    
+    /**
+     * Returns the value argument as-is without alterations all the time.
+     * 
+     * @param value any value
+     * @return the value argument returned as-is
+     * @see org.apache.directory.shared.ldap.model.schema.Normalizer#normalize(Value)
+     */
+    public Value<?> normalize( Value<?> value )
+    {
+        return value;
+    }
+    
+    
+    /**
+     * Returns the value argument as-is without alterations all the time.
+     * 
+     * @param value any value
+     * @return the value argument returned as-is
+     * @see org.apache.directory.shared.ldap.model.schema.Normalizer#normalize(String)
+     */
+    public String normalize( String value )
+    {
+        return value;
     }
 }

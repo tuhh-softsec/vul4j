@@ -17,9 +17,10 @@
  *   under the License.
  *
  */
-package org.apache.directory.shared.ldap.schema.normalizers;
+package org.apache.directory.shared.ldap.model.schema.normalizers;
 
 
+import org.apache.directory.shared.ldap.model.schema.SchemaManager;
 
 
 /**
@@ -31,14 +32,23 @@ package org.apache.directory.shared.ldap.schema.normalizers;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class CachingDeepTrimToLowerNormalizer extends CachingNormalizer
+public class CachingDnNormalizer extends CachingNormalizer
 {
     /** serial version UID */
     private static final long serialVersionUID = -206263185305284269L;
 
 
-    public CachingDeepTrimToLowerNormalizer()
+    public CachingDnNormalizer()
     {
-        super( new DeepTrimToLowerNormalizer() );
+        super( new DnNormalizer() );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setSchemaManager( SchemaManager schemaManager )
+    {
+        super.normalizer.setSchemaManager( schemaManager );
     }
 }
