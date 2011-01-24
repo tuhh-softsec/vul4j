@@ -39,9 +39,9 @@ import java.util.ArrayList ;
 import java.util.Collections;
 import java.io.IOException;
 
-import org.apache.directory.shared.ldap.schema.UsageEnum;
 import org.apache.directory.shared.converter.schema.SchemaElement;
-import org.apache.directory.shared.ldap.schema.ObjectClassTypeEnum;
+import org.apache.directory.shared.ldap.model.schema.UsageEnum;
+import org.apache.directory.shared.ldap.model.schema.ObjectClassTypeEnum;
 }
 
 
