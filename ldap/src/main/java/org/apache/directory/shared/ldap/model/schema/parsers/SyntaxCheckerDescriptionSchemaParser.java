@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.schema.parsers;
+package org.apache.directory.shared.ldap.model.schema.parsers;
 
 
 import java.text.ParseException;
@@ -31,30 +31,30 @@ import antlr.TokenStreamException;
 
 
 /**
- * A parser for ApacheDS comparator descriptions.
+ * A parser for ApacheDS syntax checker descriptions.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class LdapComparatorDescriptionSchemaParser extends AbstractSchemaParser
+public class SyntaxCheckerDescriptionSchemaParser extends AbstractSchemaParser
 {
     /** The LoggerFactory used by this class */
-    protected static final Logger LOG = LoggerFactory.getLogger( LdapComparatorDescriptionSchemaParser.class );
+    protected static final Logger LOG = LoggerFactory.getLogger( SyntaxCheckerDescriptionSchemaParser.class );
 
 
     /**
      * Creates a schema parser instance.
      */
-    public LdapComparatorDescriptionSchemaParser()
+    public SyntaxCheckerDescriptionSchemaParser()
     {
         super();
     }
 
 
     /**
-     * Parses an comparator description:
+     * Parses a syntax checker description:
      * 
      * <pre>
-     * ComparatorDescription = LPAREN WSP
+     * SyntaxCheckerDescription = LPAREN WSP
      *     numericoid                           ; object identifier
      *     [ SP "DESC" SP qdstring ]            ; description
      *     SP "FQCN" SP fqcn                    ; fully qualified class name
@@ -70,60 +70,56 @@ public class LdapComparatorDescriptionSchemaParser extends AbstractSchemaParser
      * xstring = "X" HYPHEN 1*( ALPHA / HYPHEN / USCORE ) 
      * </pre>
      * 
-     * @param comparatorDescription the comparator description to be parsed
-     * @return the parsed ComparatorDescription bean
+     * @param syntaxCheckerDescription the syntax checker description to be parsed
+     * @return the parsed SyntaxCheckerDescription bean
      * @throws ParseException if there are any recognition errors (bad syntax)
      */
-    public LdapComparatorDescription parseComparatorDescription( String comparatorDescription )
+    public synchronized SyntaxCheckerDescription parseSyntaxCheckerDescription( String syntaxCheckerDescription )
         throws ParseException
     {
-        LOG.debug( "Parsing a Comparator : {}", comparatorDescription );
+        LOG.debug( "Parsing a SyntaxChecker : {}", syntaxCheckerDescription );
 
-        if ( comparatorDescription == null )
+        if ( syntaxCheckerDescription == null )
         {
-            LOG.error( I18n.err( I18n.ERR_04236 ) );
             throw new ParseException( "Null", 0 );
         }
 
-        synchronized ( parser )
+        reset( syntaxCheckerDescription ); // reset and initialize the parser / lexer pair
+
+        try
         {
-            reset( comparatorDescription ); // reset and initialize the parser / lexer pair
+            SyntaxCheckerDescription syntaxChecker = parser.syntaxCheckerDescription();
 
-            try
-            {
-                LdapComparatorDescription ldapComparatorDescription = parser.ldapComparator();
-                LOG.debug( "Parsed a LdapComparator : {}", ldapComparatorDescription );
+            // Update the schemaName
+            updateSchemaName( syntaxChecker );
 
-                // Update the schemaName
-                updateSchemaName( ldapComparatorDescription );
-
-                return ldapComparatorDescription;
-            }
-            catch ( RecognitionException re )
-            {
-                String msg = I18n.err( I18n.ERR_04273, comparatorDescription, re.getMessage(), re.getColumn() );
-                LOG.error( msg );
-                throw new ParseException( msg, re.getColumn() );
-            }
-            catch ( TokenStreamException tse )
-            {
-                String msg = I18n.err( I18n.ERR_04238, comparatorDescription, tse.getMessage() );
-                LOG.error( msg );
-                throw new ParseException( msg, 0 );
-            }
+            return syntaxChecker;
         }
+        catch ( RecognitionException re )
+        {
+            String msg = I18n.err( I18n.ERR_04259, syntaxCheckerDescription, re.getMessage(), re.getColumn() );
+            LOG.error( msg );
+            throw new ParseException( msg, re.getColumn() );
+        }
+        catch ( TokenStreamException tse )
+        {
+            String msg = I18n.err( I18n.ERR_04260, syntaxCheckerDescription, tse.getMessage() );
+            LOG.error( msg );
+            throw new ParseException( msg, 0 );
+        }
+
     }
 
 
     /**
-     * Parses a LdapComparator description.
+     * Parses a SyntaxChecker description
      * 
-     * @param schemaDescription The LdapComparator description to parse
-     * @return An instance of LdapComparatorDescription
+     * @param schemaDescription The SyntaxChecker description to parse
+     * @return An instance of SyntaxCheckerDescription
      * @throws ParseException {@inheritDoc}
      */
-    public LdapComparatorDescription parse( String schemaDescription ) throws ParseException
+    public SyntaxCheckerDescription parse( String schemaDescription ) throws ParseException
     {
-        return parseComparatorDescription( schemaDescription );
+        return parseSyntaxCheckerDescription( schemaDescription );
     }
 }

@@ -17,40 +17,36 @@
  *  under the License. 
  *  
  */
-
-package org.apache.directory.shared.ldap.schema.parsers;
-
-
-import org.apache.directory.shared.ldap.model.schema.LoadableSchemaObject;
-import org.apache.directory.shared.ldap.model.schema.SchemaObjectType;
+package org.apache.directory.shared.ldap.model.schema.parsers;
 
 
 /**
- * An ApacheDS specific schema description for a SyntaxChecker.
- * 
+ * Default implementation of {@link ParserMonitor} with empty method implementations.
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SyntaxCheckerDescription extends LoadableSchemaObject
+public class ParserMonitorAdapter implements ParserMonitor
 {
-    /** SerialVersionUID */
-    private static final long serialVersionUID = 1L;
-
-
     /**
-     * Default constructor for a SyntaxCheckerDecription
-     * @param oid The SyntaxChecker OID
+     * {@inheritDoc}
      */
-    public SyntaxCheckerDescription( String oid )
+    public void matchedProduction( String prod )
     {
-        super( SchemaObjectType.SYNTAX_CHECKER, oid );
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public String toString()
+    public void startedParse( String s )
     {
-        return "SyntaxChecker description : " + getDescription();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void finishedParse( String s )
+    {
     }
 }

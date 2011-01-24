@@ -17,45 +17,40 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.schema.parsers;
 
-import org.apache.directory.shared.ldap.schema.parsers.ParserMonitor;
+package org.apache.directory.shared.ldap.model.schema.parsers;
+
+
+import org.apache.directory.shared.ldap.model.schema.LoadableSchemaObject;
+import org.apache.directory.shared.ldap.model.schema.SchemaObjectType;
 
 
 /**
- * A console reporting monitor.  Add system property 'maven.eve.schema.parser.trace'
- * to get this monitor to trace parser production execution.
- *
+ * An ApacheDS specific schema description for a SyntaxChecker.
+ * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ConsoleParserMonitor implements ParserMonitor
+public class SyntaxCheckerDescription extends LoadableSchemaObject
 {
-    public static final String TRACE_KEY = "maven.eve.schema.parser.trace";
+    /** SerialVersionUID */
+    private static final long serialVersionUID = 1L;
 
 
-    public void matchedProduction( String prod )
+    /**
+     * Default constructor for a SyntaxCheckerDecription
+     * @param oid The SyntaxChecker OID
+     */
+    public SyntaxCheckerDescription( String oid )
     {
-        if ( System.getProperties().containsKey( TRACE_KEY ) )
-        {
-            System.out.println( prod );
-        }
+        super( SchemaObjectType.SYNTAX_CHECKER, oid );
     }
 
 
-    public void startedParse( String s )
+    /**
+     * {@inheritDoc}
+     */
+    public String toString()
     {
-        if ( System.getProperties().containsKey( TRACE_KEY ) )
-        {
-            System.out.println( s );
-        }
-    }
-
-
-    public void finishedParse( String s )
-    {
-        if ( System.getProperties().containsKey( TRACE_KEY ) )
-        {
-            System.out.println( s );
-        }
+        return "SyntaxChecker description : " + getDescription();
     }
 }

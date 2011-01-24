@@ -18,7 +18,7 @@
  *  
  */
 
-package org.apache.directory.shared.ldap.schema.parsers;
+package org.apache.directory.shared.ldap.model.schema.parsers;
 
 
 import org.apache.directory.shared.ldap.model.schema.LoadableSchemaObject;
@@ -26,23 +26,23 @@ import org.apache.directory.shared.ldap.model.schema.SchemaObjectType;
 
 
 /**
- * An ApacheDS specific schema description for a Normalizer.
+ * An ApacheDS specific schema description for a Comparator.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class NormalizerDescription extends LoadableSchemaObject
+public class LdapComparatorDescription extends LoadableSchemaObject
 {
-    /** SerialVersionUID */
+    /** The serialVersionUID */
     private static final long serialVersionUID = 1L;
 
 
     /**
-     * Default constructor for a NormalizerDecription
-     * @param oid The SyntaxChecker OID
+     * A constructor for a LdapComparatorDescription.
+     * @param oid The associated OID
      */
-    public NormalizerDescription( String oid )
+    public LdapComparatorDescription( String oid )
     {
-        super( SchemaObjectType.NORMALIZER, oid );
+        super( SchemaObjectType.COMPARATOR, oid );
     }
 
 
@@ -51,6 +51,6 @@ public class NormalizerDescription extends LoadableSchemaObject
      */
     public String toString()
     {
-        return "SyntaxChecker description : " + getDescription();
+        return "Comparator description : " + getDescription();
     }
 }

@@ -17,37 +17,40 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.schema.parsers;
+
+package org.apache.directory.shared.ldap.model.schema.parsers;
+
+
+import org.apache.directory.shared.ldap.model.schema.LoadableSchemaObject;
+import org.apache.directory.shared.ldap.model.schema.SchemaObjectType;
 
 
 /**
- * A monitor for the OpenLdap parser.
- *
+ * An ApacheDS specific schema description for a Normalizer.
+ * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface ParserMonitor
+public class NormalizerDescription extends LoadableSchemaObject
 {
-
-    /**
-     * Called when a production matched.
-     *
-     * @param prod the production
-     */
-    void matchedProduction( String prod );
+    /** SerialVersionUID */
+    private static final long serialVersionUID = 1L;
 
 
     /**
-     * Called when parsing is started.
-     *
-     * @param subject the subject
+     * Default constructor for a NormalizerDecription
+     * @param oid The SyntaxChecker OID
      */
-    void startedParse( String subject );
+    public NormalizerDescription( String oid )
+    {
+        super( SchemaObjectType.NORMALIZER, oid );
+    }
 
 
     /**
-     * Called when parsing is finished.
-     *
-     * @param subject the subject
+     * {@inheritDoc}
      */
-    void finishedParse( String subject );
+    public String toString()
+    {
+        return "SyntaxChecker description : " + getDescription();
+    }
 }

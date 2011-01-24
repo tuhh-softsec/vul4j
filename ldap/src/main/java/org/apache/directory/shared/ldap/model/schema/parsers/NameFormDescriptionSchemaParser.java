@@ -17,13 +17,13 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.schema.parsers;
+package org.apache.directory.shared.ldap.model.schema.parsers;
 
 
 import java.text.ParseException;
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.model.schema.DITContentRule;
+import org.apache.directory.shared.ldap.model.schema.NameForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,91 +32,89 @@ import antlr.TokenStreamException;
 
 
 /**
- * A parser for RFC 4512 DIT content rule descriptons
+ * A parser for RFC 4512 name form descriptions
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class DITContentRuleDescriptionSchemaParser extends AbstractSchemaParser
+public class NameFormDescriptionSchemaParser extends AbstractSchemaParser
 {
     /** The LoggerFactory used by this class */
-    protected static final Logger LOG = LoggerFactory.getLogger( DITContentRuleDescriptionSchemaParser.class );
+    protected static final Logger LOG = LoggerFactory.getLogger( NameFormDescriptionSchemaParser.class );
 
 
     /**
      * Creates a schema parser instance.
      */
-    public DITContentRuleDescriptionSchemaParser()
+    public NameFormDescriptionSchemaParser()
     {
     }
 
 
     /**
-     * Parses a DIT content rule description according to RFC 4512:
+     * Parses a name form description according to RFC 4512:
      * 
      * <pre>
-     * DITContentRuleDescription = LPAREN WSP
+     * NameFormDescription = LPAREN WSP
      *    numericoid                 ; object identifier
      *    [ SP "NAME" SP qdescrs ]   ; short names (descriptors)
      *    [ SP "DESC" SP qdstring ]  ; description
      *    [ SP "OBSOLETE" ]          ; not active
-     *    [ SP "AUX" SP oids ]       ; auxiliary object classes
-     *    [ SP "MUST" SP oids ]      ; attribute types
+     *    SP "OC" SP oid             ; structural object class
+     *    SP "MUST" SP oids          ; attribute types
      *    [ SP "MAY" SP oids ]       ; attribute types
-     *    [ SP "NOT" SP oids ]       ; attribute types
      *    extensions WSP RPAREN      ; extensions
      * </pre>
      * 
-     * @param ditContentRuleDescription the DIT content rule description to be parsed
-     * @return the parsed DITContentRuleDescription bean
+     * @param nameFormDescription the name form description to be parsed
+     * @return the parsed NameForm bean
      * @throws ParseException if there are any recognition errors (bad syntax)
      */
-    public synchronized DITContentRule parseDITContentRuleDescription( String ditContentRuleDescription )
+    public synchronized NameForm parseNameFormDescription( String nameFormDescription )
         throws ParseException
     {
-        LOG.debug( "Parsing a DITContentRule : {}", ditContentRuleDescription );
+        LOG.debug( "Parsing a NameForm : {}", nameFormDescription );
 
-        if ( ditContentRuleDescription == null )
+        if ( nameFormDescription == null )
         {
-            LOG.error( I18n.err( I18n.ERR_04230 ) );
+            LOG.error( I18n.err( I18n.ERR_04248 ) );
             throw new ParseException( "Null", 0 );
         }
 
-        reset( ditContentRuleDescription ); // reset and initialize the parser / lexer pair
+        reset( nameFormDescription ); // reset and initialize the parser / lexer pair
 
         try
         {
-            DITContentRule ditContentRule = parser.ditContentRuleDescription();
+            NameForm nameForm = parser.nameFormDescription();
 
             // Update the schemaName
-            updateSchemaName( ditContentRule );
+            updateSchemaName( nameForm );
 
-            return ditContentRule;
+            return nameForm;
         }
         catch ( RecognitionException re )
         {
-            String msg = I18n.err( I18n.ERR_04231, ditContentRuleDescription, re.getMessage(), re.getColumn() );
+            String msg = I18n.err( I18n.ERR_04249, nameFormDescription, re.getMessage(), re.getColumn() );
             LOG.error( msg );
             throw new ParseException( msg, re.getColumn() );
         }
         catch ( TokenStreamException tse )
         {
-            String msg = I18n.err( I18n.ERR_04232, ditContentRuleDescription, tse.getMessage() );
+            String msg = I18n.err( I18n.ERR_04250, nameFormDescription, tse.getMessage() );
             LOG.error( msg );
             throw new ParseException( msg, 0 );
         }
-
     }
 
 
     /**
-     * Parses a DITContentRule description.
+     * Parses a NameForm description.
      * 
-     * @param schemaDescription The DITContentRule description to parse
-     * @return An instance of DITContentRule
+     * @param schemaDescription The NameForm description to parse
+     * @return An instance of NameForm
      * @throws ParseException {@inheritDoc}
      */
-    public DITContentRule parse( String schemaDescription ) throws ParseException
+    public NameForm parse( String schemaDescription ) throws ParseException
     {
-        return parseDITContentRuleDescription( schemaDescription );
+        return parseNameFormDescription( schemaDescription );
     }
 }

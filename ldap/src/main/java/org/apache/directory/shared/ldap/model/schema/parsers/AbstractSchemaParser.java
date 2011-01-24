@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.schema.parsers;
+package org.apache.directory.shared.ldap.model.schema.parsers;
 
 
 import java.io.StringReader;

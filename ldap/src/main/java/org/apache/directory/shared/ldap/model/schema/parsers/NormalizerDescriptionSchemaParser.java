@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.schema.parsers;
+package org.apache.directory.shared.ldap.model.schema.parsers;
 
 
 import java.text.ParseException;
@@ -31,30 +31,30 @@ import antlr.TokenStreamException;
 
 
 /**
- * A parser for ApacheDS syntax checker descriptions.
+ * A parser for ApacheDS normalizer descriptions.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SyntaxCheckerDescriptionSchemaParser extends AbstractSchemaParser
+public class NormalizerDescriptionSchemaParser extends AbstractSchemaParser
 {
     /** The LoggerFactory used by this class */
-    protected static final Logger LOG = LoggerFactory.getLogger( SyntaxCheckerDescriptionSchemaParser.class );
+    protected static final Logger LOG = LoggerFactory.getLogger( NormalizerDescriptionSchemaParser.class );
 
 
     /**
      * Creates a schema parser instance.
      */
-    public SyntaxCheckerDescriptionSchemaParser()
+    public NormalizerDescriptionSchemaParser()
     {
         super();
     }
 
 
     /**
-     * Parses a syntax checker description:
+     * Parses a normalizer description:
      * 
      * <pre>
-     * SyntaxCheckerDescription = LPAREN WSP
+     * NormalizerDescription = LPAREN WSP
      *     numericoid                           ; object identifier
      *     [ SP "DESC" SP qdstring ]            ; description
      *     SP "FQCN" SP fqcn                    ; fully qualified class name
@@ -70,40 +70,41 @@ public class SyntaxCheckerDescriptionSchemaParser extends AbstractSchemaParser
      * xstring = "X" HYPHEN 1*( ALPHA / HYPHEN / USCORE ) 
      * </pre>
      * 
-     * @param syntaxCheckerDescription the syntax checker description to be parsed
-     * @return the parsed SyntaxCheckerDescription bean
+     * @param normalizerDescription the normalizer description to be parsed
+     * @return the parsed NormalizerDescription bean
      * @throws ParseException if there are any recognition errors (bad syntax)
      */
-    public synchronized SyntaxCheckerDescription parseSyntaxCheckerDescription( String syntaxCheckerDescription )
+    public synchronized NormalizerDescription parseNormalizerDescription( String normalizerDescription )
         throws ParseException
     {
-        LOG.debug( "Parsing a SyntaxChecker : {}", syntaxCheckerDescription );
+        LOG.debug( "Parsing a Normalizer : {}", normalizerDescription );
 
-        if ( syntaxCheckerDescription == null )
+        if ( normalizerDescription == null )
         {
+            LOG.error( I18n.err( I18n.ERR_04251 ) );
             throw new ParseException( "Null", 0 );
         }
 
-        reset( syntaxCheckerDescription ); // reset and initialize the parser / lexer pair
+        reset( normalizerDescription ); // reset and initialize the parser / lexer pair
 
         try
         {
-            SyntaxCheckerDescription syntaxChecker = parser.syntaxCheckerDescription();
+            NormalizerDescription normalizer = parser.normalizerDescription();
 
             // Update the schemaName
-            updateSchemaName( syntaxChecker );
+            updateSchemaName( normalizer );
 
-            return syntaxChecker;
+            return normalizer;
         }
         catch ( RecognitionException re )
         {
-            String msg = I18n.err( I18n.ERR_04259, syntaxCheckerDescription, re.getMessage(), re.getColumn() );
+            String msg = I18n.err( I18n.ERR_04252, normalizerDescription, re.getMessage(), re.getColumn() );
             LOG.error( msg );
             throw new ParseException( msg, re.getColumn() );
         }
         catch ( TokenStreamException tse )
         {
-            String msg = I18n.err( I18n.ERR_04260, syntaxCheckerDescription, tse.getMessage() );
+            String msg = I18n.err( I18n.ERR_04253, normalizerDescription, tse.getMessage() );
             LOG.error( msg );
             throw new ParseException( msg, 0 );
         }
@@ -112,14 +113,14 @@ public class SyntaxCheckerDescriptionSchemaParser extends AbstractSchemaParser
 
 
     /**
-     * Parses a SyntaxChecker description
+     * Parses a Normalizer description.
      * 
-     * @param schemaDescription The SyntaxChecker description to parse
-     * @return An instance of SyntaxCheckerDescription
+     * @param schemaDescription The Normalizer description to parse
+     * @return An instance of NormalizerDescription
      * @throws ParseException {@inheritDoc}
      */
-    public SyntaxCheckerDescription parse( String schemaDescription ) throws ParseException
+    public NormalizerDescription parse( String schemaDescription ) throws ParseException
     {
-        return parseSyntaxCheckerDescription( schemaDescription );
+        return parseNormalizerDescription( schemaDescription );
     }
 }

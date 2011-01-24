@@ -17,40 +17,37 @@
  *  under the License. 
  *  
  */
-
-package org.apache.directory.shared.ldap.schema.parsers;
-
-
-import org.apache.directory.shared.ldap.model.schema.LoadableSchemaObject;
-import org.apache.directory.shared.ldap.model.schema.SchemaObjectType;
+package org.apache.directory.shared.ldap.model.schema.parsers;
 
 
 /**
- * An ApacheDS specific schema description for a Comparator.
- * 
+ * A monitor for the OpenLdap parser.
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class LdapComparatorDescription extends LoadableSchemaObject
+public interface ParserMonitor
 {
-    /** The serialVersionUID */
-    private static final long serialVersionUID = 1L;
+
+    /**
+     * Called when a production matched.
+     *
+     * @param prod the production
+     */
+    void matchedProduction( String prod );
 
 
     /**
-     * A constructor for a LdapComparatorDescription.
-     * @param oid The associated OID
+     * Called when parsing is started.
+     *
+     * @param subject the subject
      */
-    public LdapComparatorDescription( String oid )
-    {
-        super( SchemaObjectType.COMPARATOR, oid );
-    }
+    void startedParse( String subject );
 
 
     /**
-     * {@inheritDoc}
+     * Called when parsing is finished.
+     *
+     * @param subject the subject
      */
-    public String toString()
-    {
-        return "Comparator description : " + getDescription();
-    }
+    void finishedParse( String subject );
 }

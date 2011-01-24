@@ -17,36 +17,43 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.schema.parsers;
+package org.apache.directory.shared.ldap.model.schema.parsers;
 
 
 /**
- * Default implementation of {@link ParserMonitor} with empty method implementations.
+ * A console reporting monitor.  Add system property 'maven.eve.schema.parser.trace'
+ * to get this monitor to trace parser production execution.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ParserMonitorAdapter implements ParserMonitor
+public class ConsoleParserMonitor implements ParserMonitor
 {
-    /**
-     * {@inheritDoc}
-     */
+    public static final String TRACE_KEY = "maven.eve.schema.parser.trace";
+
+
     public void matchedProduction( String prod )
     {
+        if ( System.getProperties().containsKey( TRACE_KEY ) )
+        {
+            System.out.println( prod );
+        }
     }
 
 
-    /**
-     * {@inheritDoc}
-     */
     public void startedParse( String s )
     {
+        if ( System.getProperties().containsKey( TRACE_KEY ) )
+        {
+            System.out.println( s );
+        }
     }
 
 
-    /**
-     * {@inheritDoc}
-     */
     public void finishedParse( String s )
     {
+        if ( System.getProperties().containsKey( TRACE_KEY ) )
+        {
+            System.out.println( s );
+        }
     }
 }

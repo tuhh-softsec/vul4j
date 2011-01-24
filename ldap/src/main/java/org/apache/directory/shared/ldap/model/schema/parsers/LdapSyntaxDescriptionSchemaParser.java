@@ -17,13 +17,13 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.schema.parsers;
+package org.apache.directory.shared.ldap.model.schema.parsers;
 
 
 import java.text.ParseException;
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.model.schema.NameForm;
+import org.apache.directory.shared.ldap.model.schema.LdapSyntax;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,74 +32,70 @@ import antlr.TokenStreamException;
 
 
 /**
- * A parser for RFC 4512 name form descriptions
+ * A parser for RFC 4512 LDAP syntx descriptions.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class NameFormDescriptionSchemaParser extends AbstractSchemaParser
+public class LdapSyntaxDescriptionSchemaParser extends AbstractSchemaParser
 {
     /** The LoggerFactory used by this class */
-    protected static final Logger LOG = LoggerFactory.getLogger( NameFormDescriptionSchemaParser.class );
+    protected static final Logger LOG = LoggerFactory.getLogger( LdapSyntaxDescriptionSchemaParser.class );
 
 
     /**
      * Creates a schema parser instance.
      */
-    public NameFormDescriptionSchemaParser()
+    public LdapSyntaxDescriptionSchemaParser()
     {
     }
 
 
     /**
-     * Parses a name form description according to RFC 4512:
+     * Parses a LDAP syntax description according to RFC 4512:
      * 
      * <pre>
-     * NameFormDescription = LPAREN WSP
+     * SyntaxDescription = LPAREN WSP
      *    numericoid                 ; object identifier
-     *    [ SP "NAME" SP qdescrs ]   ; short names (descriptors)
      *    [ SP "DESC" SP qdstring ]  ; description
-     *    [ SP "OBSOLETE" ]          ; not active
-     *    SP "OC" SP oid             ; structural object class
-     *    SP "MUST" SP oids          ; attribute types
-     *    [ SP "MAY" SP oids ]       ; attribute types
      *    extensions WSP RPAREN      ; extensions
      * </pre>
      * 
-     * @param nameFormDescription the name form description to be parsed
-     * @return the parsed NameForm bean
+     * @param ldapSyntaxDescription the LDAP syntax description to be parsed
+     * @return the parsed LdapSyntax bean
      * @throws ParseException if there are any recognition errors (bad syntax)
      */
-    public synchronized NameForm parseNameFormDescription( String nameFormDescription )
+    public synchronized LdapSyntax parseLdapSyntaxDescription( String ldapSyntaxDescription )
         throws ParseException
     {
-        LOG.debug( "Parsing a NameForm : {}", nameFormDescription );
+        LOG.debug( "Parsing a LdapSyntax : {}", ldapSyntaxDescription );
 
-        if ( nameFormDescription == null )
+        if ( ldapSyntaxDescription == null )
         {
-            LOG.error( I18n.err( I18n.ERR_04248 ) );
+            LOG.error( I18n.err( I18n.ERR_04239 ) );
             throw new ParseException( "Null", 0 );
         }
 
-        reset( nameFormDescription ); // reset and initialize the parser / lexer pair
+        reset( ldapSyntaxDescription ); // reset and initialize the parser / lexer pair
 
         try
         {
-            NameForm nameForm = parser.nameFormDescription();
+            LdapSyntax ldapSyntax = parser.ldapSyntaxDescription();
+            ldapSyntax.setSpecification( ldapSyntaxDescription );
 
             // Update the schemaName
-            updateSchemaName( nameForm );
+            updateSchemaName( ldapSyntax );
 
-            return nameForm;
+            return ldapSyntax;
         }
         catch ( RecognitionException re )
         {
-            String msg = I18n.err( I18n.ERR_04249, nameFormDescription, re.getMessage(), re.getColumn() );
+            String msg = I18n.err( I18n.ERR_04240, ldapSyntaxDescription, re.getMessage(), re.getColumn() );
             LOG.error( msg );
             throw new ParseException( msg, re.getColumn() );
         }
         catch ( TokenStreamException tse )
         {
-            String msg = I18n.err( I18n.ERR_04250, nameFormDescription, tse.getMessage() );
+            String msg = I18n.err( I18n.ERR_04241, ldapSyntaxDescription, tse.getMessage() );
             LOG.error( msg );
             throw new ParseException( msg, 0 );
         }
@@ -107,14 +103,14 @@ public class NameFormDescriptionSchemaParser extends AbstractSchemaParser
 
 
     /**
-     * Parses a NameForm description.
+     * Parses a LdapSyntax description.
      * 
-     * @param schemaDescription The NameForm description to parse
-     * @return An instance of NameForm
+     * @param schemaDescription The LdapSyntax description to parse
+     * @return An instance of LdapSyntax
      * @throws ParseException {@inheritDoc}
      */
-    public NameForm parse( String schemaDescription ) throws ParseException
+    public LdapSyntax parse( String schemaDescription ) throws ParseException
     {
-        return parseNameFormDescription( schemaDescription );
+        return parseLdapSyntaxDescription( schemaDescription );
     }
 }

@@ -21,10 +21,10 @@ package org.apache.directory.shared.ldap.model.schema;
 
 import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
+import org.apache.directory.shared.ldap.model.schema.parsers.LdapComparatorDescription;
+import org.apache.directory.shared.ldap.model.schema.parsers.NormalizerDescription;
 import org.apache.directory.shared.ldap.model.schema.registries.Schema;
-import org.apache.directory.shared.ldap.schema.parsers.LdapComparatorDescription;
-import org.apache.directory.shared.ldap.schema.parsers.NormalizerDescription;
-import org.apache.directory.shared.ldap.schema.parsers.SyntaxCheckerDescription;
+import org.apache.directory.shared.ldap.model.schema.parsers.SyntaxCheckerDescription;
 import org.apache.directory.shared.ldap.model.schema.registries.Registries;
 
 public interface EntityFactory
@@ -63,7 +63,7 @@ public interface EntityFactory
      * @throws Exception If the creation has failed
      */
     LdapComparator<?> getLdapComparator( SchemaManager schemaManager, 
-        LdapComparatorDescription comparatorDescription, 
+        LdapComparatorDescription comparatorDescription,
         Registries targetRegistries, String schemaName ) throws Exception;
     
     
@@ -104,7 +104,7 @@ public interface EntityFactory
      * @return A new instance of a normalizer
      * @throws Exception If the creation has failed
      */
-    Normalizer getNormalizer( SchemaManager schemaManager, NormalizerDescription normalizerDescription, 
+    Normalizer getNormalizer( SchemaManager schemaManager, NormalizerDescription normalizerDescription,
         Registries targetRegistries, String schemaName ) throws Exception;
     
     

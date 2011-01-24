@@ -18,7 +18,7 @@ header {
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.schema.syntax;
+package org.apache.directory.shared.ldap.model.schema.syntaxes;
 
 import java.io.StringReader;
 import java.util.List;

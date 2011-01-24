@@ -17,14 +17,16 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.schema.parsers;
+package org.apache.directory.shared.ldap.model.schema.parsers;
+
 
 import java.io.Reader;
 
-import org.apache.directory.shared.ldap.schema.syntax.AntlrSchemaLexer;
+import org.apache.directory.shared.ldap.model.schema.syntaxes.AntlrSchemaLexer;
 
 import antlr.CharBuffer;
 import antlr.LexerSharedInputState;
+
 
 /**
  * A reusable lexer class extended from antlr generated lexer for an LDAP

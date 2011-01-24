@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.schema.parsers;
+package org.apache.directory.shared.ldap.model.schema.parsers;
 
 
 import java.text.ParseException;
@@ -31,30 +31,30 @@ import antlr.TokenStreamException;
 
 
 /**
- * A parser for ApacheDS normalizer descriptions.
+ * A parser for ApacheDS comparator descriptions.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class NormalizerDescriptionSchemaParser extends AbstractSchemaParser
+public class LdapComparatorDescriptionSchemaParser extends AbstractSchemaParser
 {
     /** The LoggerFactory used by this class */
-    protected static final Logger LOG = LoggerFactory.getLogger( NormalizerDescriptionSchemaParser.class );
+    protected static final Logger LOG = LoggerFactory.getLogger( LdapComparatorDescriptionSchemaParser.class );
 
 
     /**
      * Creates a schema parser instance.
      */
-    public NormalizerDescriptionSchemaParser()
+    public LdapComparatorDescriptionSchemaParser()
     {
         super();
     }
 
 
     /**
-     * Parses a normalizer description:
+     * Parses an comparator description:
      * 
      * <pre>
-     * NormalizerDescription = LPAREN WSP
+     * ComparatorDescription = LPAREN WSP
      *     numericoid                           ; object identifier
      *     [ SP "DESC" SP qdstring ]            ; description
      *     SP "FQCN" SP fqcn                    ; fully qualified class name
@@ -70,57 +70,60 @@ public class NormalizerDescriptionSchemaParser extends AbstractSchemaParser
      * xstring = "X" HYPHEN 1*( ALPHA / HYPHEN / USCORE ) 
      * </pre>
      * 
-     * @param normalizerDescription the normalizer description to be parsed
-     * @return the parsed NormalizerDescription bean
+     * @param comparatorDescription the comparator description to be parsed
+     * @return the parsed ComparatorDescription bean
      * @throws ParseException if there are any recognition errors (bad syntax)
      */
-    public synchronized NormalizerDescription parseNormalizerDescription( String normalizerDescription )
+    public LdapComparatorDescription parseComparatorDescription( String comparatorDescription )
         throws ParseException
     {
-        LOG.debug( "Parsing a Normalizer : {}", normalizerDescription );
+        LOG.debug( "Parsing a Comparator : {}", comparatorDescription );
 
-        if ( normalizerDescription == null )
+        if ( comparatorDescription == null )
         {
-            LOG.error( I18n.err( I18n.ERR_04251 ) );
+            LOG.error( I18n.err( I18n.ERR_04236 ) );
             throw new ParseException( "Null", 0 );
         }
 
-        reset( normalizerDescription ); // reset and initialize the parser / lexer pair
-
-        try
+        synchronized ( parser )
         {
-            NormalizerDescription normalizer = parser.normalizerDescription();
+            reset( comparatorDescription ); // reset and initialize the parser / lexer pair
 
-            // Update the schemaName
-            updateSchemaName( normalizer );
+            try
+            {
+                LdapComparatorDescription ldapComparatorDescription = parser.ldapComparator();
+                LOG.debug( "Parsed a LdapComparator : {}", ldapComparatorDescription );
 
-            return normalizer;
-        }
-        catch ( RecognitionException re )
-        {
-            String msg = I18n.err( I18n.ERR_04252, normalizerDescription, re.getMessage(), re.getColumn() );
-            LOG.error( msg );
-            throw new ParseException( msg, re.getColumn() );
-        }
-        catch ( TokenStreamException tse )
-        {
-            String msg = I18n.err( I18n.ERR_04253, normalizerDescription, tse.getMessage() );
-            LOG.error( msg );
-            throw new ParseException( msg, 0 );
-        }
+                // Update the schemaName
+                updateSchemaName( ldapComparatorDescription );
 
+                return ldapComparatorDescription;
+            }
+            catch ( RecognitionException re )
+            {
+                String msg = I18n.err( I18n.ERR_04273, comparatorDescription, re.getMessage(), re.getColumn() );
+                LOG.error( msg );
+                throw new ParseException( msg, re.getColumn() );
+            }
+            catch ( TokenStreamException tse )
+            {
+                String msg = I18n.err( I18n.ERR_04238, comparatorDescription, tse.getMessage() );
+                LOG.error( msg );
+                throw new ParseException( msg, 0 );
+            }
+        }
     }
 
 
     /**
-     * Parses a Normalizer description.
+     * Parses a LdapComparator description.
      * 
-     * @param schemaDescription The Normalizer description to parse
-     * @return An instance of NormalizerDescription
+     * @param schemaDescription The LdapComparator description to parse
+     * @return An instance of LdapComparatorDescription
      * @throws ParseException {@inheritDoc}
      */
-    public NormalizerDescription parse( String schemaDescription ) throws ParseException
+    public LdapComparatorDescription parse( String schemaDescription ) throws ParseException
     {
-        return parseNormalizerDescription( schemaDescription );
+        return parseComparatorDescription( schemaDescription );
     }
 }

@@ -27,9 +27,8 @@ import java.text.ParseException;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.ldap.model.schema.syntaxes.parser.SchemaParserTestUtils;
-import org.apache.directory.shared.ldap.schema.parsers.NormalizerDescription;
-import org.apache.directory.shared.ldap.schema.parsers.NormalizerDescriptionSchemaParser;
+import org.apache.directory.shared.ldap.model.schema.parsers.NormalizerDescription;
+import org.apache.directory.shared.ldap.model.schema.parsers.NormalizerDescriptionSchemaParser;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

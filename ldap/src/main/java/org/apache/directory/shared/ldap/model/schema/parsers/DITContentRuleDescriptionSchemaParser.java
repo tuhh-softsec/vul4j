@@ -17,13 +17,13 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.schema.parsers;
+package org.apache.directory.shared.ldap.model.schema.parsers;
 
 
 import java.text.ParseException;
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.model.schema.LdapSyntax;
+import org.apache.directory.shared.ldap.model.schema.DITContentRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,85 +32,91 @@ import antlr.TokenStreamException;
 
 
 /**
- * A parser for RFC 4512 LDAP syntx descriptions.
+ * A parser for RFC 4512 DIT content rule descriptons
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class LdapSyntaxDescriptionSchemaParser extends AbstractSchemaParser
+public class DITContentRuleDescriptionSchemaParser extends AbstractSchemaParser
 {
     /** The LoggerFactory used by this class */
-    protected static final Logger LOG = LoggerFactory.getLogger( LdapSyntaxDescriptionSchemaParser.class );
+    protected static final Logger LOG = LoggerFactory.getLogger( DITContentRuleDescriptionSchemaParser.class );
 
 
     /**
      * Creates a schema parser instance.
      */
-    public LdapSyntaxDescriptionSchemaParser()
+    public DITContentRuleDescriptionSchemaParser()
     {
     }
 
 
     /**
-     * Parses a LDAP syntax description according to RFC 4512:
+     * Parses a DIT content rule description according to RFC 4512:
      * 
      * <pre>
-     * SyntaxDescription = LPAREN WSP
+     * DITContentRuleDescription = LPAREN WSP
      *    numericoid                 ; object identifier
+     *    [ SP "NAME" SP qdescrs ]   ; short names (descriptors)
      *    [ SP "DESC" SP qdstring ]  ; description
+     *    [ SP "OBSOLETE" ]          ; not active
+     *    [ SP "AUX" SP oids ]       ; auxiliary object classes
+     *    [ SP "MUST" SP oids ]      ; attribute types
+     *    [ SP "MAY" SP oids ]       ; attribute types
+     *    [ SP "NOT" SP oids ]       ; attribute types
      *    extensions WSP RPAREN      ; extensions
      * </pre>
      * 
-     * @param ldapSyntaxDescription the LDAP syntax description to be parsed
-     * @return the parsed LdapSyntax bean
+     * @param ditContentRuleDescription the DIT content rule description to be parsed
+     * @return the parsed DITContentRuleDescription bean
      * @throws ParseException if there are any recognition errors (bad syntax)
      */
-    public synchronized LdapSyntax parseLdapSyntaxDescription( String ldapSyntaxDescription )
+    public synchronized DITContentRule parseDITContentRuleDescription( String ditContentRuleDescription )
         throws ParseException
     {
-        LOG.debug( "Parsing a LdapSyntax : {}", ldapSyntaxDescription );
+        LOG.debug( "Parsing a DITContentRule : {}", ditContentRuleDescription );
 
-        if ( ldapSyntaxDescription == null )
+        if ( ditContentRuleDescription == null )
         {
-            LOG.error( I18n.err( I18n.ERR_04239 ) );
+            LOG.error( I18n.err( I18n.ERR_04230 ) );
             throw new ParseException( "Null", 0 );
         }
 
-        reset( ldapSyntaxDescription ); // reset and initialize the parser / lexer pair
+        reset( ditContentRuleDescription ); // reset and initialize the parser / lexer pair
 
         try
         {
-            LdapSyntax ldapSyntax = parser.ldapSyntaxDescription();
-            ldapSyntax.setSpecification( ldapSyntaxDescription );
+            DITContentRule ditContentRule = parser.ditContentRuleDescription();
 
             // Update the schemaName
-            updateSchemaName( ldapSyntax );
+            updateSchemaName( ditContentRule );
 
-            return ldapSyntax;
+            return ditContentRule;
         }
         catch ( RecognitionException re )
         {
-            String msg = I18n.err( I18n.ERR_04240, ldapSyntaxDescription, re.getMessage(), re.getColumn() );
+            String msg = I18n.err( I18n.ERR_04231, ditContentRuleDescription, re.getMessage(), re.getColumn() );
             LOG.error( msg );
             throw new ParseException( msg, re.getColumn() );
         }
         catch ( TokenStreamException tse )
         {
-            String msg = I18n.err( I18n.ERR_04241, ldapSyntaxDescription, tse.getMessage() );
+            String msg = I18n.err( I18n.ERR_04232, ditContentRuleDescription, tse.getMessage() );
             LOG.error( msg );
             throw new ParseException( msg, 0 );
         }
+
     }
 
 
     /**
-     * Parses a LdapSyntax description.
+     * Parses a DITContentRule description.
      * 
-     * @param schemaDescription The LdapSyntax description to parse
-     * @return An instance of LdapSyntax
+     * @param schemaDescription The DITContentRule description to parse
+     * @return An instance of DITContentRule
      * @throws ParseException {@inheritDoc}
      */
-    public LdapSyntax parse( String schemaDescription ) throws ParseException
+    public DITContentRule parse( String schemaDescription ) throws ParseException
     {
-        return parseLdapSyntaxDescription( schemaDescription );
+        return parseDITContentRuleDescription( schemaDescription );
     }
 }

@@ -17,10 +17,10 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.schema.parsers;
+package org.apache.directory.shared.ldap.model.schema.parsers;
 
 
-import org.apache.directory.shared.ldap.schema.syntax.AntlrSchemaParser;
+import org.apache.directory.shared.ldap.model.schema.syntaxes.AntlrSchemaParser;
 
 import antlr.TokenStream;
 
