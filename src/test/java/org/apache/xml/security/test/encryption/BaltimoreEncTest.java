@@ -23,6 +23,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
@@ -30,6 +32,10 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.encryption.EncryptedData;
@@ -40,10 +46,9 @@ import org.apache.xml.security.keys.content.KeyName;
 import org.apache.xml.security.keys.content.X509Data;
 import org.apache.xml.security.keys.content.x509.XMLX509Certificate;
 import org.apache.xml.security.keys.keyresolver.KeyResolver;
-import org.apache.xml.security.test.TestUtils;
+import org.apache.xml.security.test.DSNamespaceContext;
 import org.apache.xml.security.utils.EncryptionConstants;
 import org.apache.xml.security.utils.JavaUtils;
-import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -582,13 +587,22 @@ public class BaltimoreEncTest extends org.junit.Assert {
      *
      * @param doc The document to retreive the card number from
      * @return The retrieved credit card number
+     * @throws XPathExpressionException 
      */
     private static String retrieveCCNumber(Document doc) 
-        throws javax.xml.transform.TransformerException {
+        throws javax.xml.transform.TransformerException, 
+        XPathExpressionException {
+        
+        XPathFactory xpf = XPathFactory.newInstance();
+        XPath xpath = xpf.newXPath();
+        Map<String, String> namespace = new HashMap<String, String>();
+        namespace.put("x", "urn:example:po");
+        DSNamespaceContext context = new DSNamespaceContext(namespace);
+        xpath.setNamespaceContext(context);
 
-        Element nscontext = TestUtils.createDSctx(doc, "x", "urn:example:po");
+        String expression = "//x:Number/text()";
         Node ccnumElt = 
-            XPathAPI.selectSingleNode(doc, "//x:Number/text()", nscontext);
+            (Node) xpath.evaluate(expression, doc, XPathConstants.NODE);
 
         if (ccnumElt != null) {
             return ccnumElt.getNodeValue();

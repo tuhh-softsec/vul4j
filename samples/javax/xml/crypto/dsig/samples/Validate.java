@@ -15,6 +15,8 @@
  *
  */
 
+package javax.xml.crypto.dsig.samples;
+
 import javax.xml.crypto.*;
 import javax.xml.crypto.dsig.*;
 import javax.xml.crypto.dom.*;

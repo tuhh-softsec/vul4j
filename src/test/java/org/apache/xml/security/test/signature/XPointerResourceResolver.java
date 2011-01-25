@@ -24,17 +24,17 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.xml.transform.TransformerException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.signature.XMLSignatureInput;
+import org.apache.xml.security.test.DSNamespaceContext;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
-import org.apache.xml.utils.PrefixResolverDefault;
-import org.apache.xpath.XPathAPI;
-import org.apache.xpath.axes.NodeSequence;
-import org.apache.xpath.objects.XObject;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -56,33 +56,10 @@ public class XPointerResourceResolver extends ResourceResolverSpi {
         this.baseNode = baseNode;
     }
 
-    private static class XPointerPrefixResolver extends PrefixResolverDefault {
-        private Map<String, String> extraPrefixes;
-
-        public XPointerPrefixResolver(Node node) {
-            super(node);
-            this.extraPrefixes = new HashMap<String, String>();
-        }
-
-        public void addExtraPrefix (String pfx, String nsURI) {
-            this.extraPrefixes.put(pfx, nsURI); 
-        }
-
-        public String getNamespaceForPrefix(String pfx) {
-            String nsURI = extraPrefixes.get(pfx);
-
-            if (nsURI != null) {
-                return nsURI;
-            }
-
-            return super.getNamespaceForPrefix(pfx);
-        }
-    }
-
     public boolean engineCanResolve(Attr uri, String BaseURI) {
         String v = uri.getNodeValue();
 
-        if (v==null || v.length() <= 0) {
+        if (v == null || v.length() <= 0) {
             return false;
         }
 
@@ -141,10 +118,9 @@ public class XPointerResourceResolver extends ResourceResolverSpi {
         String parts[] = xpURI.substring(1).split("\\s");
 
         int i = 0;
-        XPointerPrefixResolver nsContext = null;
-
+        Map<String, String> namespaces = new HashMap<String, String>();
+        
         if (parts.length > 1) {
-            nsContext = new XPointerPrefixResolver(this.baseNode);
 
             for (; i < parts.length - 1; ++i) {
                 if (!parts[i].endsWith(")") ||  !parts[i].startsWith(XNS_OPEN)) {
@@ -161,8 +137,9 @@ public class XPointerResourceResolver extends ResourceResolverSpi {
                     );
                 }
 
-                nsContext.addExtraPrefix(
-                    mapping.substring(0, pos), mapping.substring(pos + 1)
+                namespaces.put(
+                    mapping.substring(0, pos), 
+                    mapping.substring(pos + 1)
                 );
             }
         }
@@ -181,19 +158,16 @@ public class XPointerResourceResolver extends ResourceResolverSpi {
 
                 String xpathExpr = parts[i].substring(XP_OPEN.length(), parts[i].length() - 1);
 
-                XObject xo;
-                if (nsContext != null) {
-                    xo = XPathAPI.eval(this.baseNode, xpathExpr, nsContext);
-                } else {
-                    xo = XPathAPI.eval(this.baseNode, xpathExpr);
-                }
+                XPathFactory xpf = XPathFactory.newInstance();
+                XPath xpath = xpf.newXPath();
+                DSNamespaceContext context = 
+                    new DSNamespaceContext(namespaces);
+                xpath.setNamespaceContext(context);
 
-
-                if (!(xo instanceof NodeSequence)) {
-                    return null;
-                }
-
-                nodes = ((NodeSequence)xo).nodelist();
+                nodes = 
+                    (NodeList) xpath.evaluate(
+                        xpathExpr, this.baseNode, XPathConstants.NODESET
+                    );
 
                 if (nodes.getLength() == 0) {
                     return null;
@@ -224,9 +198,9 @@ public class XPointerResourceResolver extends ResourceResolverSpi {
             result.setSourceURI((BaseURI != null) ? BaseURI.concat(v) : v);      
 
             return result;
-        } catch (TransformerException e) {
+        } catch (XPathExpressionException e) {
             throw new ResourceResolverException(
-                "TransformerException inside XPointer expression", e, uri, BaseURI
+                 "Problem evaluating XPath expression", e, uri, BaseURI
             );
         }
     }

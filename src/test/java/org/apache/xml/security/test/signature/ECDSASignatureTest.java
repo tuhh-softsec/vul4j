@@ -28,14 +28,18 @@ import java.security.PrivateKey;
 import java.security.Security;
 import java.security.cert.X509Certificate;
 
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
+
 import org.apache.xml.security.algorithms.SignatureAlgorithm;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.signature.XMLSignature;
+import org.apache.xml.security.test.DSNamespaceContext;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
-import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Element;
 
 /**
@@ -182,9 +186,14 @@ public class ECDSASignatureTest extends org.junit.Assert {
     
     private void doVerify(InputStream is) throws Exception {
         org.w3c.dom.Document doc = this.db.parse(is);
-        Element nscontext = XMLUtils.createDSctx(doc, "ds",Constants.SignatureSpecNS);
+        
+        XPathFactory xpf = XPathFactory.newInstance();
+        XPath xpath = xpf.newXPath();
+        xpath.setNamespaceContext(new DSNamespaceContext());
+
+        String expression = "//ds:Signature[1]";
         Element sigElement = 
-            (Element) XPathAPI.selectSingleNode(doc,"//ds:Signature[1]", nscontext);
+            (Element) xpath.evaluate(expression, doc, XPathConstants.NODE);
         XMLSignature signature = new XMLSignature(sigElement, "");
 
         signature.addResourceResolver(new XPointerResourceResolver(sigElement));

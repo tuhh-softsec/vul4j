@@ -17,12 +17,15 @@
  */
 package org.apache.xml.security.samples;
 
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
+
 import org.apache.xml.security.samples.SampleUtils;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.utils.resolver.ResourceResolver;
-import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Element;
 
 /**
@@ -98,11 +101,17 @@ public class ResolverUsageHTTP {
         javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
         org.w3c.dom.Document doc =
             db.parse(new java.io.ByteArrayInputStream(inputStr.getBytes()));
-        Element context = SampleUtils.createDSctx(doc, "ds", Constants.SignatureSpecNS);
 
-        Element dsElem = 
-            (Element) XPathAPI.selectSingleNode(doc, "//ds:Signature[1]", context);
-        XMLSignature signature = new XMLSignature(dsElem, currentSystemId);
+        XPathFactory xpf = XPathFactory.newInstance();
+        XPath xpath = xpf.newXPath();
+        xpath.setNamespaceContext(new DSNamespaceContext());
+
+        String expression = "//ds:Signature[1]";
+        Element sigElement = 
+            (Element) xpath.evaluate(expression, doc, XPathConstants.NODE);
+        
+        XMLSignature signature = 
+            new XMLSignature(sigElement, currentSystemId);
 
         // how can I reg my own keystore?
         boolean verify = signature.checkSignatureValue(signature.getKeyInfo().getPublicKey());

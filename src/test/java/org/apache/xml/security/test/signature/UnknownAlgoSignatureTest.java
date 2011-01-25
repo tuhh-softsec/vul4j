@@ -30,15 +30,17 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.apache.xml.security.Init;
 import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.signature.XMLSignatureException;
-import org.apache.xml.security.test.TestUtils;
-import org.apache.xml.security.utils.Constants;
-import org.apache.xpath.XPathAPI;
+import org.apache.xml.security.test.DSNamespaceContext;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -87,13 +89,13 @@ public class UnknownAlgoSignatureTest extends org.junit.Assert {
 
     @org.junit.Test
     public void testGood() throws ParserConfigurationException, SAXException,
-        IOException, TransformerException, XMLSignatureException, XMLSecurityException {
+        IOException, TransformerException, XMLSignatureException, XMLSecurityException, XPathExpressionException {
         assertTrue(checkSignature("signature-good.xml"));
     }
 
     @org.junit.Test
     public void testBadC14NAlgo() throws ParserConfigurationException,
-        SAXException, IOException, TransformerException, XMLSecurityException {
+        SAXException, IOException, TransformerException, XMLSecurityException, XPathExpressionException {
         try {
             assertTrue(checkSignature("signature-bad-c14n-algo.xml"));
             fail("Exception not caught");
@@ -104,7 +106,7 @@ public class UnknownAlgoSignatureTest extends org.junit.Assert {
 
     @org.junit.Test
     public void testBadSigAlgo() throws ParserConfigurationException,
-        SAXException, IOException, TransformerException, XMLSecurityException {
+        SAXException, IOException, TransformerException, XMLSecurityException, XPathExpressionException {
         try {
             assertTrue(checkSignature("signature-bad-sig-algo.xml"));
             fail("Exception not caught");
@@ -115,7 +117,7 @@ public class UnknownAlgoSignatureTest extends org.junit.Assert {
 
     @org.junit.Test
     public void testBadTransformAlgo() throws ParserConfigurationException,
-        SAXException, IOException, TransformerException, XMLSecurityException {
+        SAXException, IOException, TransformerException, XMLSecurityException, XPathExpressionException {
         try {
             assertTrue(checkReferences("signature-bad-transform-algo.xml"));
             fail("Exception not caught");
@@ -126,21 +128,21 @@ public class UnknownAlgoSignatureTest extends org.junit.Assert {
 
     protected boolean checkSignature(String fileName)
         throws ParserConfigurationException, SAXException, IOException,
-        TransformerException, XMLSecurityException {
+        TransformerException, XMLSecurityException, XPathExpressionException {
         XMLSignature signature = unmarshalXMLSignature(fileName);
         return signature.checkSignatureValue(publicKey);
     }
 
     protected boolean checkReferences(String fileName)
         throws ParserConfigurationException, SAXException, IOException,
-        TransformerException, XMLSecurityException {
+        TransformerException, XMLSecurityException, XPathExpressionException {
         XMLSignature signature = unmarshalXMLSignature(fileName);
         return signature.getSignedInfo().verify(false);
     }
 
     private XMLSignature unmarshalXMLSignature(String fileName)
         throws ParserConfigurationException, SAXException, IOException,
-        TransformerException, XMLSecurityException {
+        TransformerException, XMLSecurityException, XPathExpressionException {
         File file = null;
         if (BASEDIR != null && !"".equals(BASEDIR)) {
             file = new File(BASEDIR + SEP + SIGNATURE_SOURCE_PATH, fileName);
@@ -148,10 +150,15 @@ public class UnknownAlgoSignatureTest extends org.junit.Assert {
             file = new File(SIGNATURE_SOURCE_PATH, fileName);
         }
         Document doc = getDocument(file);
-        Element nscontext = TestUtils.createDSctx(doc, "ds", Constants.SignatureSpecNS);
-        Element signatureEl = 
-            (Element) XPathAPI.selectSingleNode(doc, "//ds:Signature[1]", nscontext);
-        return new XMLSignature(signatureEl, file.toURI().toURL().toString());
+        
+        XPathFactory xpf = XPathFactory.newInstance();
+        XPath xpath = xpf.newXPath();
+        xpath.setNamespaceContext(new DSNamespaceContext());
+
+        String expression = "//ds:Signature[1]";
+        Element sigElement = 
+            (Element) xpath.evaluate(expression, doc, XPathConstants.NODE);
+        return new XMLSignature(sigElement, file.toURI().toURL().toString());
     }
 
     public static Document getDocument(File file)

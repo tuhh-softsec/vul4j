@@ -22,17 +22,18 @@ import java.io.IOException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import org.apache.xml.security.signature.XMLSignatureInput;
-import org.apache.xml.security.test.TestUtils;
+import org.apache.xml.security.test.DSNamespaceContext;
 import org.apache.xml.security.transforms.Transform;
 import org.apache.xml.security.transforms.Transforms;
-import org.apache.xml.security.utils.Constants;
-import org.apache.xpath.XPathAPI;
 
 public class TransformXSLTTest extends org.junit.Assert {
 
@@ -71,10 +72,14 @@ public class TransformXSLTTest extends org.junit.Assert {
         Document doc1 = getDocument(file1);
         Document doc2 = getDocument(file2);
 
-        Element nscontext = 
-            TestUtils.createDSctx(doc1, "dsig", Constants.SignatureSpecNS);
-        Node transformEl = 
-            XPathAPI.selectSingleNode(doc1, "//dsig:Transform[1]", nscontext);
+        XPathFactory xpf = XPathFactory.newInstance();
+        XPath xpath = xpf.newXPath();
+        xpath.setNamespaceContext(new DSNamespaceContext());
+
+        String expression = "//ds:Transform[1]";
+        Element transformEl = 
+            (Element) xpath.evaluate(expression, doc1, XPathConstants.NODE);
+
         Transform transform = 
             Transform.getInstance(doc1, Transforms.TRANSFORM_XSLT, transformEl.getChildNodes());
 

@@ -19,9 +19,12 @@ package org.apache.xml.security.samples;
 import java.io.File;
 import java.io.FileInputStream;
 
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
+
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.utils.Constants;
-import org.apache.xpath.CachedXPathAPI;
 import org.w3c.dom.Element;
 
 /**
@@ -48,14 +51,16 @@ public class AxisVerifier {
         javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
         org.w3c.dom.Document doc = db.parse(new FileInputStream(signatureFile));
         String BaseURI = signatureFile.toURI().toURL().toString();
-        CachedXPathAPI xpathAPI = new CachedXPathAPI();
-        Element nsctx = doc.createElementNS(null, "nsctx");
 
-        nsctx.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:ds", Constants.SignatureSpecNS);
+        XPathFactory xpf = XPathFactory.newInstance();
+        XPath xpath = xpf.newXPath();
+        xpath.setNamespaceContext(new DSNamespaceContext());
 
-        Element signatureElem = 
-            (Element) xpathAPI.selectSingleNode(doc, "//ds:Signature", nsctx);
-        XMLSignature sig = new XMLSignature(signatureElem, BaseURI);
+        String expression = "//ds:Signature[1]";
+        Element sigElement = 
+            (Element) xpath.evaluate(expression, doc, XPathConstants.NODE);
+        
+        XMLSignature sig = new XMLSignature(sigElement, BaseURI);
         boolean verify = sig.checkSignatureValue(sig.getKeyInfo().getPublicKey());
 
         System.out.println("The signature is" + (verify ? " " : " not ") + "valid");

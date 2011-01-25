@@ -25,13 +25,16 @@ import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
 
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.signature.XMLSignature;
+import org.apache.xml.security.samples.DSNamespaceContext;
 import org.apache.xml.security.samples.SampleUtils;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
-import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Element;
 
 
@@ -147,10 +150,13 @@ public class VerifyMerlinsExamplesSixteen {
 
       org.w3c.dom.Document doc = db.parse(new java.io.FileInputStream(f));
 
-      Element nscontext = SampleUtils.createDSctx(doc, "ds",
-                                               Constants.SignatureSpecNS);
-      Element sigElement = (Element) XPathAPI.selectSingleNode(doc,
-                              "//ds:Signature[1]", nscontext);
+      XPathFactory xpf = XPathFactory.newInstance();
+      XPath xpath = xpf.newXPath();
+      xpath.setNamespaceContext(new DSNamespaceContext());
+
+      String expression = "//ds:Signature[1]";
+      Element sigElement = 
+          (Element) xpath.evaluate(expression, doc, XPathConstants.NODE);
       XMLSignature signature = new XMLSignature(sigElement,
                                                 f.toURL().toString());
 
@@ -205,20 +211,6 @@ public class VerifyMerlinsExamplesSixteen {
       } else {
          System.out.println("Did not find a KeyInfo");
       }
-
-      /*
-      SignedInfo s = signature.getSignedInfo();
-      for (int i=0; i<s.getSignedContentLength(); i++) {
-         System.out.println("################ Signed Resource " + i + " ################");
-         FileOutputStream f2 = new FileOutputStream(filename + "." + i + ".input");
-         byte[] data = s.getSignedContentItem(i);
-         f2.write(data);
-         f2.close();
-
-         System.out.println(new String(data));
-         System.out.println();
-      }
-      */
    }
 
    static {

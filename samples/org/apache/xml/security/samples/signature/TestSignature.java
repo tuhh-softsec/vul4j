@@ -16,22 +16,23 @@
  */
 package org.apache.xml.security.samples.signature;
 
-
-
 import java.io.File;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
+
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
 
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.keys.storage.StorageResolver;
 import org.apache.xml.security.samples.utils.resolver.OfflineResolver;
 import org.apache.xml.security.signature.XMLSignature;
+import org.apache.xml.security.samples.DSNamespaceContext;
 import org.apache.xml.security.samples.SampleUtils;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
-import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Element;
-
 
 /**
  * Class TestSignature
@@ -94,13 +95,13 @@ public class TestSignature {
             org.w3c.dom.Document doc =
                db.parse(new java.io.FileInputStream(filename));
 
-            //create a namespace context for use in the XPath expression below
-            Element nscontext = SampleUtils.createDSctx(doc, "ds",
-                                                     Constants.SignatureSpecNS);
+            XPathFactory xpf = XPathFactory.newInstance();
+            XPath xpath = xpf.newXPath();
+            xpath.setNamespaceContext(new DSNamespaceContext());
 
-            //retrieve the signature Element from the document
-            Element sigElement = (Element) XPathAPI.selectSingleNode(doc,
-                                    "//ds:Signature[1]", nscontext);
+            String expression = "//ds:Signature[1]";
+            Element sigElement = 
+                (Element) xpath.evaluate(expression, doc, XPathConstants.NODE);
 
             //Creates a XMLSignature from the element and uses the filename as
             //the baseURI. That URI is prepended to all relative URIs.

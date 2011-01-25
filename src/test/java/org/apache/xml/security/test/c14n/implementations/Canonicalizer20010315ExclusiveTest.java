@@ -27,6 +27,10 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.InvalidCanonicalizerException;
@@ -39,10 +43,10 @@ import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.signature.XMLSignatureException;
 import org.apache.xml.security.signature.XMLSignatureInput;
+import org.apache.xml.security.test.DSNamespaceContext;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.JavaUtils;
 import org.apache.xml.security.utils.XMLUtils;
-import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -276,18 +280,26 @@ public class Canonicalizer20010315ExclusiveTest extends org.junit.Assert {
      * @throws TransformerException
      * @throws XMLSecurityException
      * @throws XMLSignatureException
+     * @throws XPathExpressionException 
      */
     @org.junit.Test
     public void test223excl()
         throws IOException, FileNotFoundException, SAXException,
         ParserConfigurationException, CanonicalizationException,
         InvalidCanonicalizerException, TransformerException,
-        XMLSignatureException, XMLSecurityException {
+        XMLSignatureException, XMLSecurityException, XPathExpressionException {
         Document doc =
             this.db.parse(getAbsolutePath(
                 "data/org/apache/xml/security/c14n/inExcl/example2_2_3.xml"));
-        NodeList nodes = XPathAPI.selectNodeList(doc.getDocumentElement(),
-            "(//. | //@* | //namespace::*)[ancestor-or-self::p]");
+
+        XPathFactory xpf = XPathFactory.newInstance();
+        XPath xpath = xpf.newXPath();
+        xpath.setNamespaceContext(new DSNamespaceContext());
+
+        String expression = "(//. | //@* | //namespace::*)[ancestor-or-self::p]";
+        NodeList nodes = 
+            (NodeList) xpath.evaluate(expression, doc, XPathConstants.NODESET);
+
         Canonicalizer20010315Excl c = new Canonicalizer20010315ExclWithComments();
         byte[] reference = JavaUtils.getBytesFromFile(
             getAbsolutePath(

@@ -23,6 +23,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -34,21 +36,20 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.c14n.InvalidCanonicalizerException;
-import org.apache.xml.security.test.TestUtils;
+import org.apache.xml.security.test.DSNamespaceContext;
 import org.apache.xml.security.test.resource.TestVectorResolver;
-import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.IgnoreAllErrorHandler;
 import org.apache.xml.security.utils.JavaUtils;
-import org.apache.xml.security.utils.XMLUtils;
-import org.apache.xpath.CachedXPathAPI;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
 
@@ -89,12 +90,13 @@ public class Canonicalizer20010315Test extends org.junit.Assert {
      * @throws ParserConfigurationException
      * @throws SAXException
      * @throws TransformerException
+     * @throws XPathExpressionException 
      */
     @org.junit.Test
     public void test31withCommentsSubtree()
         throws IOException, FileNotFoundException, SAXException,
         ParserConfigurationException, CanonicalizationException,
-        InvalidCanonicalizerException, TransformerException {
+        InvalidCanonicalizerException, TransformerException, XPathExpressionException {
         String descri =
             "3.1: PIs, Comments, and Outside of Document Element. (commented)";
 
@@ -119,12 +121,13 @@ public class Canonicalizer20010315Test extends org.junit.Assert {
      * @throws ParserConfigurationException
      * @throws SAXException
      * @throws TransformerException
+     * @throws XPathExpressionException 
      */
     @org.junit.Test
     public void test31withCommentsSubset()
         throws IOException, FileNotFoundException, SAXException,
         ParserConfigurationException, CanonicalizationException,
-        InvalidCanonicalizerException, TransformerException {
+        InvalidCanonicalizerException, TransformerException, XPathExpressionException {
         String descri =
             "3.1: PIs, Comments, and Outside of Document Element. (commented)";
 
@@ -150,12 +153,13 @@ public class Canonicalizer20010315Test extends org.junit.Assert {
      * @throws SAXException
      * @see <A HREF="http://www.w3.org/TR/2001/PR-xml-c14n-20010119#Example-OutsideDoc">the example from the spec</A>
      * @throws TransformerException
+     * @throws XPathExpressionException 
      */
     @org.junit.Test
     public void test31subtree()
         throws IOException, FileNotFoundException, SAXException,
         ParserConfigurationException, CanonicalizationException,
-        InvalidCanonicalizerException, TransformerException {
+        InvalidCanonicalizerException, TransformerException, XPathExpressionException {
         String descri =
             "3.1: PIs, Comments, and Outside of Document Element. (uncommented)";
         String fileIn = prefix + "in/31_input.xml";
@@ -180,12 +184,13 @@ public class Canonicalizer20010315Test extends org.junit.Assert {
      * @throws SAXException
      * @see <A HREF="http://www.w3.org/TR/2001/PR-xml-c14n-20010119#Example-OutsideDoc">the example from the spec</A>
      * @throws TransformerException
+     * @throws XPathExpressionException 
      */
     @org.junit.Test
     public void test31subset()
         throws IOException, FileNotFoundException, SAXException,
         ParserConfigurationException, CanonicalizationException,
-        InvalidCanonicalizerException, TransformerException {
+        InvalidCanonicalizerException, TransformerException, XPathExpressionException {
 
         String descri =
             "3.1: PIs, Comments, and Outside of Document Element. (uncommented)";
@@ -211,12 +216,13 @@ public class Canonicalizer20010315Test extends org.junit.Assert {
      * @throws SAXException
      * @see <A HREF="http://www.w3.org/TR/2001/PR-xml-c14n-20010119#Example-WhitespaceInContent">the example from the spec</A>
      * @throws TransformerException
+     * @throws XPathExpressionException 
      */
     @org.junit.Test
     public void test32subtree()
         throws IOException, FileNotFoundException, SAXException,
         ParserConfigurationException, CanonicalizationException,
-        InvalidCanonicalizerException, TransformerException {
+        InvalidCanonicalizerException, TransformerException, XPathExpressionException {
         String descri = "3.2 Whitespace in Document Content. (uncommented)";
         String fileIn = prefix + "in/32_input.xml";
         String fileRef = prefix + "in/32_c14n.xml";
@@ -240,12 +246,13 @@ public class Canonicalizer20010315Test extends org.junit.Assert {
      * @throws SAXException
      * @see <A HREF="http://www.w3.org/TR/2001/PR-xml-c14n-20010119#Example-WhitespaceInContent">the example from the spec</A>
      * @throws TransformerException
+     * @throws XPathExpressionException 
      */
     @org.junit.Test
     public void test32subset()
         throws IOException, FileNotFoundException, SAXException,
         ParserConfigurationException, CanonicalizationException,
-        InvalidCanonicalizerException, TransformerException {
+        InvalidCanonicalizerException, TransformerException, XPathExpressionException {
         String descri = "3.2 Whitespace in Document Content. (uncommented)";
         String fileIn = prefix + "in/32_input.xml";
         String fileRef = prefix + "in/32_c14n.xml";
@@ -269,12 +276,13 @@ public class Canonicalizer20010315Test extends org.junit.Assert {
      * @throws SAXException
      * @see <A HREF="http://www.w3.org/TR/2001/PR-xml-c14n-20010119#Example-SETags">the example from the spec</A>
      * @throws TransformerException
+     * @throws XPathExpressionException 
      */
     @org.junit.Test
     public void test33subtree()
         throws IOException, FileNotFoundException, SAXException,
         ParserConfigurationException, CanonicalizationException,
-        InvalidCanonicalizerException, TransformerException {
+        InvalidCanonicalizerException, TransformerException, XPathExpressionException {
         String descri = "3.3 Start and End Tags. (uncommented)";
         String fileIn = prefix + "in/33_input.xml";
         String fileRef = prefix + "in/33_c14n.xml";
@@ -291,7 +299,7 @@ public class Canonicalizer20010315Test extends org.junit.Assert {
     public void test33subset()
         throws IOException, FileNotFoundException, SAXException,
         ParserConfigurationException, CanonicalizationException,
-        InvalidCanonicalizerException, TransformerException {
+        InvalidCanonicalizerException, TransformerException, XPathExpressionException {
         String descri = "3.3 Start and End Tags. (uncommented)";
         String fileIn = prefix + "in/33_input.xml";
         String fileRef = prefix + "in/33_c14n.xml";
@@ -316,12 +324,13 @@ public class Canonicalizer20010315Test extends org.junit.Assert {
      * @see #test34validatingParser
      * @see <A HREF="http://www.w3.org/TR/2001/PR-xml-c14n-20010119#Example-Chars">the example from the spec</A>
      * @throws TransformerException
+     * @throws XPathExpressionException 
      */
     @org.junit.Test
     public void test34()
         throws IOException, FileNotFoundException, SAXException,
         ParserConfigurationException, CanonicalizationException,
-        InvalidCanonicalizerException, TransformerException {
+        InvalidCanonicalizerException, TransformerException, XPathExpressionException {
         String descri =
             "3.4 Character Modifications and Character References. (uncommented)";
         String fileIn = prefix + "in/34_input.xml";
@@ -354,12 +363,13 @@ public class Canonicalizer20010315Test extends org.junit.Assert {
      * @throws SAXException
      * @see <A HREF="http://www.w3.org/TR/2001/PR-xml-c14n-20010119#Example-Chars">the example from the spec</A>
      * @throws TransformerException
+     * @throws XPathExpressionException 
      */
     @org.junit.Test
     public void test34subtree()
         throws IOException, FileNotFoundException, SAXException,
         ParserConfigurationException, CanonicalizationException,
-        InvalidCanonicalizerException, TransformerException {
+        InvalidCanonicalizerException, TransformerException, XPathExpressionException {
         String descri =
             "3.4 Character Modifications and Character References. (uncommented, patched to run on validating Parsers)";
         String fileIn = prefix + "in/34_input_validatingParser.xml";
@@ -392,12 +402,13 @@ public class Canonicalizer20010315Test extends org.junit.Assert {
      * @throws SAXException
      * @see <A HREF="http://www.w3.org/TR/2001/PR-xml-c14n-20010119#Example-Chars">the example from the spec</A>
      * @throws TransformerException
+     * @throws XPathExpressionException 
      */
     @org.junit.Test
     public void test34subset()
         throws IOException, FileNotFoundException, SAXException,
         ParserConfigurationException, CanonicalizationException,
-        InvalidCanonicalizerException, TransformerException {
+        InvalidCanonicalizerException, TransformerException, XPathExpressionException {
 
         String descri =
             "3.4 Character Modifications and Character References. (uncommented, patched to run on validating Parsers)";
@@ -423,12 +434,13 @@ public class Canonicalizer20010315Test extends org.junit.Assert {
      * @throws SAXException
      * @see <A HREF="http://www.w3.org/TR/2001/PR-xml-c14n-20010119#Example-Entities">the example from the spec</A>
      * @throws TransformerException
+     * @throws XPathExpressionException 
      */
     @org.junit.Test
     public void test35subtree()
         throws IOException, FileNotFoundException, SAXException,
         ParserConfigurationException, CanonicalizationException,
-        InvalidCanonicalizerException, TransformerException {
+        InvalidCanonicalizerException, TransformerException, XPathExpressionException {
         String descri = "3.5 Entity References. (uncommented)";
         String fileIn = prefix + "in/35_input.xml";
         String fileRef = prefix + "in/35_c14n.xml";
@@ -452,12 +464,13 @@ public class Canonicalizer20010315Test extends org.junit.Assert {
      * @throws SAXException
      * @see <A HREF="http://www.w3.org/TR/2001/PR-xml-c14n-20010119#Example-Entities">the example from the spec</A>
      * @throws TransformerException
+     * @throws XPathExpressionException 
      */
     @org.junit.Test
     public void test35subset()
         throws IOException, FileNotFoundException, SAXException,
         ParserConfigurationException, CanonicalizationException,
-        InvalidCanonicalizerException, TransformerException {
+        InvalidCanonicalizerException, TransformerException, XPathExpressionException {
         String descri = "3.5 Entity References. (uncommented)";
         String fileIn = prefix + "in/35_input.xml";
         String fileRef = prefix + "in/35_c14n.xml";
@@ -481,12 +494,13 @@ public class Canonicalizer20010315Test extends org.junit.Assert {
      * @throws SAXException
      * @see <A HREF="http://www.w3.org/TR/2001/PR-xml-c14n-20010119#Example-UTF8">the example from the spec</A>
      * @throws TransformerException
+     * @throws XPathExpressionException 
      */
     @org.junit.Test
     public void test36subtree()
         throws IOException, FileNotFoundException, SAXException,
         ParserConfigurationException, CanonicalizationException,
-        InvalidCanonicalizerException, TransformerException {
+        InvalidCanonicalizerException, TransformerException, XPathExpressionException {
         String descri = "3.6 UTF-8 Encoding. (uncommented)";
         String fileIn = prefix + "in/36_input.xml";
         String fileRef = prefix + "in/36_c14n.xml";
@@ -510,12 +524,13 @@ public class Canonicalizer20010315Test extends org.junit.Assert {
      * @throws SAXException
      * @see <A HREF="http://www.w3.org/TR/2001/PR-xml-c14n-20010119#Example-UTF8">the example from the spec</A>
      * @throws TransformerException
+     * @throws XPathExpressionException 
      */
     @org.junit.Test
     public void test36subset()
         throws IOException, FileNotFoundException, SAXException,
         ParserConfigurationException, CanonicalizationException,
-        InvalidCanonicalizerException, TransformerException {
+        InvalidCanonicalizerException, TransformerException, XPathExpressionException {
         String descri = "3.6 UTF-8 Encoding. (uncommented)";
         String fileIn = prefix + "in/36_input.xml";
         String fileRef = prefix + "in/36_c14n.xml";
@@ -539,32 +554,23 @@ public class Canonicalizer20010315Test extends org.junit.Assert {
      * @throws SAXException
      * @see <A HREF="http://www.w3.org/TR/2001/PR-xml-c14n-20010119#Example-DocSubsets">the example from the spec</A>
      * @throws TransformerException
+     * @throws XPathExpressionException 
      */
     @org.junit.Test
     public void test37()
         throws IOException, FileNotFoundException, SAXException,
         ParserConfigurationException, CanonicalizationException,
-        InvalidCanonicalizerException, TransformerException {
+        InvalidCanonicalizerException, TransformerException, XPathExpressionException {
         String descri = "3.7 Document Subsets. (uncommented)";
         String fileIn = prefix + "in/37_input.xml";
         String fileRef = prefix + "in/37_c14n.xml";
         String fileOut = prefix + "out/xpath_37_output.xml";
         String c14nURI = Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS;
         boolean validating = true;
-        Element xpath = null;
-        DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
 
-        dfactory.setNamespaceAware(true);
-
-        DocumentBuilder db = dfactory.newDocumentBuilder();
-        Document doc = db.newDocument();
-
-        xpath = XMLUtils.createElementInSignatureSpace(doc, Constants._TAG_XPATH);
-
-        xpath.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:ietf", "http://www.ietf.org");
-
-        //J-
-        String xpathFromSpec =
+        Map<String, String> namespace = new HashMap<String, String>();
+        namespace.put("ietf", "http://www.ietf.org");
+        String xpath =
             "(//. | //@* | //namespace::*)"
             + "[ "
             + "self::ietf:e1 or "
@@ -572,10 +578,8 @@ public class Canonicalizer20010315Test extends org.junit.Assert {
             + "count(id(\"E3\")|ancestor-or-self::node()) = count(ancestor-or-self::node()) "
             + "]";
 
-        //J+
-        xpath.appendChild(doc.createTextNode(xpathFromSpec));
         assertTrue(descri,
-                   c14nAndCompare(fileIn, fileRef, fileOut, c14nURI, validating, xpath));
+                   c14nAndCompare(fileIn, fileRef, fileOut, c14nURI, validating, xpath, namespace));
     }
 
     /**
@@ -589,12 +593,13 @@ public class Canonicalizer20010315Test extends org.junit.Assert {
      * @throws SAXException
      * @see <A HREF="http://www.w3.org/TR/2001/PR-xml-c14n-20010119#Example-DocSubsets">the example from the spec</A>
      * @throws TransformerException
+     * @throws XPathExpressionException 
      */
     @org.junit.Test
     public void test37byNodeList()
         throws IOException, FileNotFoundException, SAXException,
         ParserConfigurationException, CanonicalizationException,
-        InvalidCanonicalizerException, TransformerException {
+        InvalidCanonicalizerException, TransformerException, XPathExpressionException {
 
         //String descri = "3.7 Document Subsets. (uncommented), c14n by NodeList";
         String fileIn = prefix + "in/37_input.xml";
@@ -611,8 +616,6 @@ public class Canonicalizer20010315Test extends org.junit.Assert {
         db.setEntityResolver(resolver);
 
         Document doc = db.parse(resolver.resolveEntity(null, fileIn));
-        //J-
-        Element nscontext = TestUtils.createDSctx(doc, "ietf", "http://www.ietf.org");
 
         String xpath = "(//. | //@* | //namespace::*)"
             + "[ "
@@ -620,10 +623,17 @@ public class Canonicalizer20010315Test extends org.junit.Assert {
             + "(parent::ietf:e1 and not(self::text() or self::e2)) or "
             + "count(id(\"E3\")|ancestor-or-self::node()) = count(ancestor-or-self::node()) "
             + "]";
-        //J+
-        CachedXPathAPI xpathAPI = new CachedXPathAPI();
 
-        NodeList nodes = xpathAPI.selectNodeList(doc, xpath, nscontext);
+        Map<String, String> namespace = new HashMap<String, String>();
+        namespace.put("ietf", "http://www.ietf.org");
+  
+        XPathFactory xpf = XPathFactory.newInstance();
+        XPath xPath = xpf.newXPath();
+        DSNamespaceContext namespaceContext =
+            new DSNamespaceContext(namespace);
+        xPath.setNamespaceContext(namespaceContext);
+
+        NodeList nodes = (NodeList)xPath.evaluate((String) xpath, doc, XPathConstants.NODESET);
         Canonicalizer c14n =
             Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
         byte c14nBytes[] = c14n.canonicalizeXPathNodeSet(nodes);
@@ -632,68 +642,6 @@ public class Canonicalizer20010315Test extends org.junit.Assert {
         byte refBytes[] = JavaUtils.getBytesFromStream(refStream);
         assertEquals(new String(refBytes),new String(c14nBytes));
     }
-
-    /**
-     * Method testDefaultNamespaceOverridden
-     *
-     * @throws CanonicalizationException
-     * @throws FileNotFoundException
-     * @throws IOException
-     * @throws InvalidCanonicalizerException
-     * @throws ParserConfigurationException
-     * @throws SAXException
-     * @throws TransformerException
-     * public static void _testDefaultNamespaceOverridden()
-     *       throws IOException, FileNotFoundException, SAXException,
-     *              ParserConfigurationException, CanonicalizationException,
-     *              InvalidCanonicalizerException, TransformerException {
-     *
-     *  String descri = "Default namespace overridden";
-     *  String fileIn =
-     *     "data/org/apache/xml/security/temp/key/retrieval-from-same-doc.xml";
-     *  String fileRef =
-     *     "data/org/apache/xml/security/temp/key/retrieval-from-same-doc-key.xml";
-     *  String fileOut =
-     *     "data/org/apache/xml/security/temp/key/retrieval-from-same-doc-key-error.xml";
-     *  String c14nURI = Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS;
-     *  boolean validating = false;
-     *  DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
-     *
-     *  dfactory.setNamespaceAware(true);
-     *
-     *  DocumentBuilder db = dfactory.newDocumentBuilder();
-     *  // org.xml.sax.EntityResolver resolver = new TestVectorResolver();
-     *  // db.setEntityResolver(resolver);
-     *
-     *  // Document doc = db.parse(resolver.resolveEntity(null, fileIn));
-     *  Document doc = db.parse(fileIn);
-     *  Element nscontext = doc.createElement("container");
-     *
-     *  nscontext.setAttribute("xmlns:ds", "http://www.w3.org/2000/09/xmldsig#");
-     *  nscontext.setAttribute("xmlns:my",
-     *                         "http://www.xmlsecurity.org/temp/mytempns");
-     *
-     *  String xpath =
-     *     "//my:KeyMaterials[1]/descendant::node()[not(self::text())]";
-     *  CachedXPathAPI xpathAPI = new CachedXPathAPI();
-     *  NodeList nodes = xpathAPI.selectNodeList(doc, xpath, nscontext);
-     *  Canonicalizer c14n =
-     *     Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
-     *  byte c14nBytes[] = c14n.canonicalizeXPathNodeSet(nodes);
-     *  // InputStream refStream = resolver.resolveEntity(null, fileRef).getByteStream();
-     *  // byte refBytes[] = JavaUtils.getBytesFromStream(refStream);
-     *  byte refBytes[] = JavaUtils.getBytesFromFile(fileRef);
-     *  boolean equal = JavaUtils.binaryCompare(refBytes, c14nBytes);
-     *
-     *  if (!equal) {
-     *     JavaUtils.writeBytesToFilename(fileOut, c14nBytes);
-     *     log.debug("Wrote malicious output from Test \"" + descri
-     *               + "\" to file " + fileOut);
-     *  }
-     *
-     *  assertTrue(equal);
-     * }
-     */
 
     /**
      * Note: This specification supports the recent XML plenary decision to
@@ -799,12 +747,13 @@ public class Canonicalizer20010315Test extends org.junit.Assert {
      * @throws ParserConfigurationException
      * @throws SAXException
      * @throws TransformerException
+     * @throws XPathExpressionException 
      */
     @org.junit.Test
     public void testXMLAttributes1()
         throws IOException, FileNotFoundException, SAXException,
         ParserConfigurationException, CanonicalizationException,
-        InvalidCanonicalizerException, TransformerException {
+        InvalidCanonicalizerException, TransformerException, XPathExpressionException {
         //J-
         String input = ""
             + "<included    xml:lang='de'>"
@@ -835,12 +784,13 @@ public class Canonicalizer20010315Test extends org.junit.Assert {
      * @throws ParserConfigurationException
      * @throws SAXException
      * @throws TransformerException
+     * @throws XPathExpressionException 
      */
     @org.junit.Test
     public void testXMLAttributes2()
         throws IOException, FileNotFoundException, SAXException,
         ParserConfigurationException, CanonicalizationException,
-        InvalidCanonicalizerException, TransformerException {
+        InvalidCanonicalizerException, TransformerException, XPathExpressionException {
         //J-
         String input = ""
             + "<included    xml:lang='uk'>"
@@ -871,12 +821,13 @@ public class Canonicalizer20010315Test extends org.junit.Assert {
      * @throws ParserConfigurationException
      * @throws SAXException
      * @throws TransformerException
+     * @throws XPathExpressionException 
      */
     @org.junit.Test
     public void testXMLAttributes3()
         throws IOException, FileNotFoundException, SAXException,
         ParserConfigurationException, CanonicalizationException,
-        InvalidCanonicalizerException, TransformerException {
+        InvalidCanonicalizerException, TransformerException, XPathExpressionException {
         //J-
         String input = ""
             + "<included    xml:lang='de'>"
@@ -907,13 +858,14 @@ public class Canonicalizer20010315Test extends org.junit.Assert {
      * @throws ParserConfigurationException
      * @throws SAXException
      * @throws TransformerException
+     * @throws XPathExpressionException 
      */
     @org.junit.Test
     @org.junit.Ignore
     public void _testXMLAttributes4()
         throws IOException, FileNotFoundException, SAXException,
         ParserConfigurationException, CanonicalizationException,
-        InvalidCanonicalizerException, TransformerException {
+        InvalidCanonicalizerException, TransformerException, XPathExpressionException {
         //J-
         String input = ""
             + "<included    xml:lang='de'>"
@@ -946,13 +898,14 @@ public class Canonicalizer20010315Test extends org.junit.Assert {
      * @throws ParserConfigurationException
      * @throws SAXException
      * @throws TransformerException
+     * @throws XPathExpressionException 
      */
     @org.junit.Test
     @org.junit.Ignore
     public void _testXMLAttributes5()
         throws IOException, FileNotFoundException, SAXException,
         ParserConfigurationException, CanonicalizationException,
-        InvalidCanonicalizerException, TransformerException {
+        InvalidCanonicalizerException, TransformerException, XPathExpressionException {
         //J-
         String input = ""
             + "<included                         xml:lang='de'>"
@@ -985,13 +938,14 @@ public class Canonicalizer20010315Test extends org.junit.Assert {
      * @throws ParserConfigurationException
      * @throws SAXException
      * @throws TransformerException
+     * @throws XPathExpressionException 
      */
     @org.junit.Test
     @org.junit.Ignore
     public void _testXMLAttributes6()
         throws IOException, FileNotFoundException, SAXException,
         ParserConfigurationException, CanonicalizationException,
-        InvalidCanonicalizerException, TransformerException {
+        InvalidCanonicalizerException, TransformerException, XPathExpressionException {
         //J-
         String input = ""
             + "<included   xml:space='preserve'  xml:lang='de'>"
@@ -1028,11 +982,12 @@ public class Canonicalizer20010315Test extends org.junit.Assert {
      * @throws ParserConfigurationException
      * @throws SAXException
      * @throws TransformerException
+     * @throws XPathExpressionException 
      */
     private boolean doTestXMLAttributes(String input, String definedOutput)
         throws IOException, FileNotFoundException, SAXException,
     ParserConfigurationException, CanonicalizationException,
-    InvalidCanonicalizerException, TransformerException {
+    InvalidCanonicalizerException, TransformerException, XPathExpressionException {
 
         DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
 
@@ -1047,46 +1002,50 @@ public class Canonicalizer20010315Test extends org.junit.Assert {
         Document doc = db.parse(new ByteArrayInputStream(input.getBytes()));
         Canonicalizer c14nizer =
             Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
-        CachedXPathAPI xpathAPI = new CachedXPathAPI();
 
         //XMLUtils.circumventBug2650(doc);
+        
+        XPathFactory xpf = XPathFactory.newInstance();
+        XPath xPath = xpf.newXPath();
+        xPath.setNamespaceContext(new DSNamespaceContext());
 
-        NodeList nodes =
-            xpathAPI.selectNodeList(doc, "(//*[local-name()='included'] | //@*[parent::node()[local-name()='included']])");
+        String xpath = 
+            "(//*[local-name()='included'] | //@*[parent::node()[local-name()='included']])";
+        NodeList nodes = 
+            (NodeList)xPath.evaluate((String) xpath, doc, XPathConstants.NODESET);
+
         byte result[] = c14nizer.canonicalizeXPathNodeSet(nodes);
         byte defined[] = definedOutput.getBytes();
         assertEquals(definedOutput, new String(result));
         return java.security.MessageDigest.isEqual(defined, result);
     }
 
-    /**
-     * Method c14nAndCompare
-     *
-     * @param fileIn
-     * @param fileRef
-     * @param fileOut
-     * @param c14nURI
-     * @param validating
-     * @param xpath
-     *
-     * @throws CanonicalizationException
-     * @throws FileNotFoundException
-     * @throws IOException
-     * @throws InvalidCanonicalizerException
-     * @throws ParserConfigurationException
-     * @throws SAXException
-     * @throws TransformerException
-     */
+    private boolean c14nAndCompare(
+                                   String fileIn, 
+                                   String fileRef, 
+                                   String fileOut, 
+                                   String c14nURI, 
+                                   boolean validating,
+                                   String xpath
+                               ) throws IOException, FileNotFoundException, SAXException,
+                                   ParserConfigurationException, CanonicalizationException,
+                                   InvalidCanonicalizerException, TransformerException, XPathExpressionException {
+        Map<String, String> namespace = new HashMap<String, String>();
+        return c14nAndCompare(fileIn, fileRef, fileOut, 
+            c14nURI, validating, xpath, namespace);
+    }
+    
     private boolean c14nAndCompare(
         String fileIn, 
         String fileRef, 
         String fileOut, 
         String c14nURI, 
         boolean validating,
-        Object xpath
+        String xpath,
+        Map<String, String> namespaces
     ) throws IOException, FileNotFoundException, SAXException,
         ParserConfigurationException, CanonicalizationException,
-        InvalidCanonicalizerException, TransformerException {
+        InvalidCanonicalizerException, TransformerException, XPathExpressionException {
         DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
 
         dfactory.setNamespaceAware(true);
@@ -1110,17 +1069,15 @@ public class Canonicalizer20010315Test extends org.junit.Assert {
         if (xpath == null) {
             c14nBytes = c14n.canonicalizeSubtree(doc);
         } else {
-            CachedXPathAPI xpathAPI = new CachedXPathAPI();
             NodeList nl = null;
+            
+            XPathFactory xpf = XPathFactory.newInstance();
+            XPath xPath = xpf.newXPath();
+            DSNamespaceContext namespaceContext =
+                new DSNamespaceContext(namespaces);
+            xPath.setNamespaceContext(namespaceContext);
 
-            if (xpath instanceof String) {
-                nl = xpathAPI.selectNodeList(doc, (String) xpath);
-            } else {
-                Element xpathElement = (Element) xpath;
-                String xpathStr = ((Text) xpathElement.getFirstChild()).getData();
-
-                nl = xpathAPI.selectNodeList(doc, xpathStr, xpathElement);
-            }
+            nl = (NodeList)xPath.evaluate((String) xpath, doc, XPathConstants.NODESET);
 
             c14nBytes = c14n.canonicalizeXPathNodeSet(nl);
         }

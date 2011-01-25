@@ -21,15 +21,15 @@ import java.io.ByteArrayInputStream;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
 
 import org.apache.xml.security.signature.XMLSignatureInput;
-import org.apache.xml.security.test.TestUtils;
+import org.apache.xml.security.test.DSNamespaceContext;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.transforms.implementations.TransformBase64Decode;
-import org.apache.xml.security.utils.Constants;
-import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
@@ -111,9 +111,15 @@ public class TransformBase64DecodeTest extends org.junit.Assert {
 
         Document doc = db.parse(new ByteArrayInputStream(input.getBytes()));
         //XMLUtils.circumventBug2650(doc);
-        Element nscontext = TestUtils.createDSctx(doc, "ds", Constants.SignatureSpecNS);
+        
+        XPathFactory xpf = XPathFactory.newInstance();
+        XPath xpath = xpf.newXPath();
+        xpath.setNamespaceContext(new DSNamespaceContext());
 
-        Node base64Node = XPathAPI.selectSingleNode(doc, "//ds:Base64", nscontext);
+        String expression = "//ds:Base64";
+        Node base64Node = 
+            (Node) xpath.evaluate(expression, doc, XPathConstants.NODE);
+
         XMLSignatureInput xmlinput = new XMLSignatureInput(base64Node);
 
         Document doc2 = TransformBase64DecodeTest.createDocument();

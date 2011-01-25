@@ -16,31 +16,27 @@
  */
 package org.apache.xml.security.samples.signature;
 
-
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
+
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.samples.utils.resolver.OfflineResolver;
 import org.apache.xml.security.signature.XMLSignature;
+import org.apache.xml.security.samples.DSNamespaceContext;
 import org.apache.xml.security.samples.SampleUtils;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
-import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Element;
 
-
 /**
- *
- *
- *
- *
  * @author $Author$
- *
  */
 public class VerifySignature {
 
@@ -117,12 +113,16 @@ public class VerifySignature {
          }
 
          org.w3c.dom.Document doc = db.parse(new java.io.FileInputStream(f));
-         Element nscontext = SampleUtils.createDSctx(doc, "ds",
-                                                  Constants.SignatureSpecNS);
-         Element sigElement = (Element) XPathAPI.selectSingleNode(doc,
-                                 "//ds:Signature[1]", nscontext);
+
+         XPathFactory xpf = XPathFactory.newInstance();
+         XPath xpath = xpf.newXPath();
+         xpath.setNamespaceContext(new DSNamespaceContext());
+
+         String expression = "//ds:Signature[1]";
+         Element sigElement = 
+             (Element) xpath.evaluate(expression, doc, XPathConstants.NODE);
          XMLSignature signature = new XMLSignature(sigElement,
-                                                   f.toURL().toString());
+                                                   f.toURI().toURL().toString());
 
          signature.addResourceResolver(new OfflineResolver());
 

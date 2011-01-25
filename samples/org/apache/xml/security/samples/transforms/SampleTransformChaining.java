@@ -1,4 +1,3 @@
-
 /*
  * Copyright  1999-2004 The Apache Software Foundation.
  *
@@ -17,12 +16,16 @@
  */
 package org.apache.xml.security.samples.transforms;
 
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
+
 import org.apache.xml.security.signature.XMLSignatureInput;
+import org.apache.xml.security.samples.DSNamespaceContext;
 import org.apache.xml.security.samples.SampleUtils;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
-import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Element;
 
 /**
@@ -85,11 +88,14 @@ public class SampleTransformChaining {
         org.w3c.dom.Document doc =
             db.parse(new java.io.ByteArrayInputStream(inputStr.getBytes()));
 
-        // catch the ds:Transforms
-        Element nscontext = SampleUtils.createDSctx(doc, "ds", Constants.SignatureSpecNS);
+        XPathFactory xpf = XPathFactory.newInstance();
+        XPath xpath = xpf.newXPath();
+        xpath.setNamespaceContext(new DSNamespaceContext());
 
+        String expression = "//ds:Transforms[1]";
         Element transformsElement = 
-            (Element) XPathAPI.selectSingleNode(doc, "//ds:Transforms", nscontext);
+            (Element) xpath.evaluate(expression, doc, XPathConstants.NODE);
+        
         Transforms transforms = new Transforms(transformsElement, "memory://");
         XMLSignatureInput input = new XMLSignatureInput(doc);
 

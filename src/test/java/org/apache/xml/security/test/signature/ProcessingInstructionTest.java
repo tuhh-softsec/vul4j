@@ -19,11 +19,7 @@ package org.apache.xml.security.test.signature;
 import java.io.File;
 import java.io.FileInputStream;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Iterator;
 
-import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
@@ -32,6 +28,7 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.signature.XMLSignatureInput;
+import org.apache.xml.security.test.DSNamespaceContext;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -70,25 +67,7 @@ public class ProcessingInstructionTest extends org.junit.Assert {
 
         XPathFactory xpf = XPathFactory.newInstance();
         XPath xpath = xpf.newXPath();
-        xpath.setNamespaceContext(new NamespaceContext() {
-
-            public String getNamespaceURI(String arg0) {
-                if (!arg0.equals("ds")) {
-                    throw new RuntimeException();
-                }
-                return "http://www.w3.org/2000/09/xmldsig#";
-            }
-
-            public String getPrefix(String arg0) {
-                return "ds";
-            }
-
-            public Iterator<String> getPrefixes(String arg0) {
-                List<String> al = new ArrayList<String>();
-                al.add("ds");
-                return al.iterator();
-            }
-        });
+        xpath.setNamespaceContext(new DSNamespaceContext());
 
         String expression = "//ds:Signature[1]";
         Element sigElement = 

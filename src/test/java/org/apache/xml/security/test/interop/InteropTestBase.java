@@ -17,17 +17,18 @@
 
 package org.apache.xml.security.test.interop;
 
-
 import java.io.File;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
+
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.signature.XMLSignature;
-import org.apache.xml.security.test.TestUtils;
-import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.test.DSNamespaceContext;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
-import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Element;
 
 public class InteropTestBase extends org.junit.Assert {
@@ -64,10 +65,14 @@ public class InteropTestBase extends org.junit.Assert {
         File f = new File(filename);
         javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
         org.w3c.dom.Document doc = db.parse(new java.io.FileInputStream(f));
-        Element nscontext = TestUtils.createDSctx(doc, "ds",
-                                                  Constants.SignatureSpecNS);
-        Element sigElement = (Element) XPathAPI.selectSingleNode(doc,
-                                                                 "//ds:Signature[1]", nscontext);
+        
+        XPathFactory xpf = XPathFactory.newInstance();
+        XPath xpath = xpf.newXPath();
+        xpath.setNamespaceContext(new DSNamespaceContext());
+
+        String expression = "//ds:Signature[1]";
+        Element sigElement = 
+            (Element) xpath.evaluate(expression, doc, XPathConstants.NODE);
         XMLSignature signature = new XMLSignature(sigElement, f.toURI().toURL().toString());
 
         if (resolver != null) {
@@ -94,10 +99,14 @@ public class InteropTestBase extends org.junit.Assert {
         File f = new File(filename);
         javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
         org.w3c.dom.Document doc = db.parse(f);
-        Element nscontext = TestUtils.createDSctx(doc, "ds",
-                                                  Constants.SignatureSpecNS);
-        Element sigElement = (Element) XPathAPI.selectSingleNode(doc,
-                                                                 "//ds:Signature[1]", nscontext);
+        
+        XPathFactory xpf = XPathFactory.newInstance();
+        XPath xpath = xpf.newXPath();
+        xpath.setNamespaceContext(new DSNamespaceContext());
+
+        String expression = "//ds:Signature[1]";
+        Element sigElement = 
+            (Element) xpath.evaluate(expression, doc, XPathConstants.NODE);
         XMLSignature signature = new XMLSignature(sigElement, f.toURI().toURL().toString());
 
         if (resolver != null) {

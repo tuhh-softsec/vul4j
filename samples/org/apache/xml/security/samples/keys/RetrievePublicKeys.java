@@ -20,13 +20,17 @@ package org.apache.xml.security.samples.keys;
 import java.io.File;
 import java.security.PublicKey;
 
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
+
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.keys.storage.StorageResolver;
 import org.apache.xml.security.keys.storage.implementations.CertsInFilesystemDirectoryResolver;
+import org.apache.xml.security.samples.DSNamespaceContext;
 import org.apache.xml.security.samples.SampleUtils;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
-import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Element;
 
 /**
@@ -72,6 +76,10 @@ public class RetrievePublicKeys {
                                /* 9 */ "retrieval-from-same-doc.xml"
         };
 
+        XPathFactory xpf = XPathFactory.newInstance();
+        XPath xpath = xpf.newXPath();
+        xpath.setNamespaceContext(new DSNamespaceContext());
+
         int start = 0;
         int end = filenames.length;
         for (int filetoverify = start; filetoverify < end; filetoverify++) {
@@ -86,8 +94,9 @@ public class RetrievePublicKeys {
                     db.parse(new java.io.FileInputStream(filename));
                 Element nscontext = SampleUtils.createDSctx(doc, "ds", Constants.SignatureSpecNS);
 
+                String expression = "//ds:KeyInfo[1]";
                 Element kiElement = 
-                    (Element) XPathAPI.selectSingleNode(doc, "//ds:KeyInfo[1]", nscontext);
+                    (Element) xpath.evaluate(expression, doc, XPathConstants.NODE);
                 KeyInfo ki = new KeyInfo(kiElement, (new File(filename)).toURI().toURL().toString());
                 StorageResolver storageResolver = 
                     new StorageResolver(new CertsInFilesystemDirectoryResolver(merlinsDir + "certs"));

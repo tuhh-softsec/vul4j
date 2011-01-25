@@ -17,12 +17,16 @@
  */
 package org.apache.xml.security.samples.transforms;
 
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
+
 import org.apache.xml.security.signature.XMLSignatureInput;
+import org.apache.xml.security.samples.DSNamespaceContext;
 import org.apache.xml.security.samples.SampleUtils;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
-import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -73,12 +77,15 @@ public class SampleTransformXPathHereFunc {
         javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
         org.w3c.dom.Document doc =
             db.parse(new java.io.ByteArrayInputStream(inputStr.getBytes()));
-        Element nscontext = SampleUtils.createDSctx(doc, "ds", Constants.SignatureSpecNS);
+        
+        XPathFactory xpf = XPathFactory.newInstance();
+        XPath xpath = xpf.newXPath();
+        xpath.setNamespaceContext(new DSNamespaceContext());
 
+        String expression = "/Document/ds:Signature[1]/ds:SignedInfo/ds:Reference[1]/ds:Transforms";
         Element transformsElem = 
-            (Element) XPathAPI.selectSingleNode(
-                doc, "/Document/ds:Signature[1]/ds:SignedInfo/ds:Reference[1]/ds:Transforms", nscontext
-            );
+            (Element) xpath.evaluate(expression, doc, XPathConstants.NODE);
+        
         Transforms transforms = new Transforms(transformsElem, "memory://");
         XMLSignatureInput input = new XMLSignatureInput((Node) doc);
 

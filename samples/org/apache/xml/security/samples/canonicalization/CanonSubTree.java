@@ -21,12 +21,15 @@ import java.io.ByteArrayInputStream;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
 
 import org.apache.xml.security.c14n.Canonicalizer;
+import org.apache.xml.security.samples.DSNamespaceContext;
 import org.apache.xml.security.samples.SampleUtils;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
-import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -83,9 +86,14 @@ public class CanonSubTree {
         Canonicalizer c14n =
             Canonicalizer
             .getInstance("http://www.w3.org/TR/2001/REC-xml-c14n-20010315");
-        Element nscontext = SampleUtils.createDSctx(doc, "ds", Constants.SignatureSpecNS);
 
-        Node signedInfo = XPathAPI.selectSingleNode(doc, "//ds:SignedInfo", nscontext);
+        XPathFactory xpf = XPathFactory.newInstance();
+        XPath xpath = xpf.newXPath();
+        xpath.setNamespaceContext(new DSNamespaceContext());
+
+        String expression = "//ds:SignedInfo[1]";
+        Element signedInfo = 
+            (Element) xpath.evaluate(expression, doc, XPathConstants.NODE);
         byte outputBytes[] = c14n.canonicalizeSubtree(signedInfo);
 
         if (outputBytes != null) {

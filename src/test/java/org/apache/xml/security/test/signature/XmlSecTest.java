@@ -26,18 +26,20 @@ import java.security.cert.X509Certificate;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
 
 import org.apache.xml.security.Init;
 import org.apache.xml.security.algorithms.MessageDigestAlgorithm;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.signature.XMLSignature;
+import org.apache.xml.security.test.DSNamespaceContext;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.transforms.params.XPathContainer;
 import org.apache.xml.security.utils.Constants;
-import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 /**
  * Tests creating and validating an XML Signature with an XPath Transform.
@@ -133,11 +135,16 @@ public class XmlSecTest extends org.junit.Assert {
         );
 
         signature.sign(privateKey);
+        
+        XPathFactory xpf = XPathFactory.newInstance();
+        XPath xPath = xpf.newXPath();
+        xPath.setNamespaceContext(new DSNamespaceContext());
 
-        NodeList signatureElems = 
-            XPathAPI.selectNodeList(testDocument, "//ds:Signature", nsElement);
-        signatureElement = (Element) signatureElems.item(0);
-        XMLSignature signatureToVerify = new XMLSignature(signatureElement, "");
+        String expression = "//ds:Signature[1]";
+        Element sigElement = 
+            (Element) xPath.evaluate(expression, testDocument, XPathConstants.NODE);
+
+        XMLSignature signatureToVerify = new XMLSignature(sigElement, "");
 
         boolean signResult = signatureToVerify.checkSignatureValue(publicKey);
 
