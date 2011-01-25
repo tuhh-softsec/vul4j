@@ -17,63 +17,55 @@
  *  under the License. 
  *  
  */
+package org.apache.directory.shared.ldap.message.decorators;
 
-package org.apache.directory.shared.dsmlv2.reponse;
 
-
-import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.message.ModifyResponse;
-import org.apache.directory.shared.ldap.model.message.ModifyResponseImpl;
-import org.dom4j.Element;
 
 
 /**
- * DSML Decorator for ModifyResponse
+ * Doc me!
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ModifyResponseDsml extends AbstractResponseDsml
+public class ModifyResponseDecorator extends MessageDecorator
 {
-    /**
-     * Creates a new instance of ModifyResponseDsml.
-     */
-    public ModifyResponseDsml()
-    {
-        super( new ModifyResponseImpl() );
-    }
+    /** The encoded modifyResponse length */
+    private int modifyResponseLength;
 
 
     /**
-     * Creates a new instance of ModifyResponseDsml.
+     * Makes a ModifyResponse encodable.
      *
-     * @param ldapMessage
-     *      the message to decorate
+     * @param decoratedMessage the decorated ModifyResponse
      */
-    public ModifyResponseDsml( ModifyResponse ldapMessage )
+    public ModifyResponseDecorator( ModifyResponse decoratedMessage )
     {
-        super( ldapMessage );
+        super( decoratedMessage );
+    }
+
+
+    public ModifyResponse getModifyResponse()
+    {
+        return ( ModifyResponse ) getMessage();
     }
 
 
     /**
-     * {@inheritDoc}
+     * Stores the encoded length for the ModifyResponse
+     * @param modifyResponseLength The encoded length
      */
-    public MessageTypeEnum getType()
+    public void setModifyResponseLength( int modifyResponseLength )
     {
-        return instance.getType();
+        this.modifyResponseLength = modifyResponseLength;
     }
 
 
     /**
-     * {@inheritDoc}
+     * @return The encoded ModifyResponse's length
      */
-    public Element toDsml( Element root )
+    public int getModifyResponseLength()
     {
-        Element element = root.addElement( "modifyResponse" );
-
-        LdapResultDsml ldapResultDsml = new LdapResultDsml( ( (ModifyResponse) instance ).getLdapResult(), instance );
-        ldapResultDsml.toDsml( element );
-        return element;
+        return modifyResponseLength;
     }
-
 }

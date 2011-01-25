@@ -40,11 +40,8 @@ import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.model.entry.Modification;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.message.LdapEncoder;
-import org.apache.directory.shared.ldap.model.message.Control;
-import org.apache.directory.shared.ldap.model.message.Message;
-import org.apache.directory.shared.ldap.model.message.ModifyRequest;
-import org.apache.directory.shared.ldap.message.ModifyResponseImpl;
-import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
+import org.apache.directory.shared.ldap.model.message.*;
+import org.apache.directory.shared.ldap.model.message.ModifyResponseImpl;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -990,7 +987,7 @@ public class ModifyRequestTest
         {
             assertTrue( de instanceof ResponseCarryingException );
             Message response = ( ( ResponseCarryingException ) de ).getResponse();
-            assertTrue( response instanceof ModifyResponseImpl );
+            assertTrue( response instanceof ModifyResponseImpl);
             assertEquals( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, ( ( ModifyResponseImpl ) response ).getLdapResult()
                 .getResultCode() );
             return;

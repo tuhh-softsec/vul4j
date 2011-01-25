@@ -958,11 +958,12 @@ public class LdapEncoder
      * Length(ModifyResponse) = Length(0x67) + Length(L1) + L1
      * </pre>
      */
-    private int computeModifyResponseLength( ModifyResponseImpl modifyResponse )
+    private int computeModifyResponseLength( ModifyResponseDecorator decorator )
     {
+        ModifyResponse modifyResponse = decorator.getModifyResponse();
         int modifyResponseLength = computeLdapResultLength( modifyResponse.getLdapResult() );
 
-        modifyResponse.setModifyResponseLength( modifyResponseLength );
+        decorator.setModifyResponseLength( modifyResponseLength );
 
         return 1 + TLV.getNbBytes( modifyResponseLength ) + modifyResponseLength;
     }
@@ -2030,13 +2031,14 @@ public class LdapEncoder
      * 
      * @param buffer The buffer where to put the PDU
      */
-    private void encodeModifyResponse( ByteBuffer buffer, ModifyResponseImpl modifyResponse ) throws EncoderException
+    private void encodeModifyResponse( ByteBuffer buffer, ModifyResponseDecorator decorator ) throws EncoderException
     {
+        ModifyResponse modifyResponse = decorator.getModifyResponse();
         try
         {
             // The ModifyResponse Tag
             buffer.put( LdapConstants.MODIFY_RESPONSE_TAG );
-            buffer.put( TLV.getBytes( modifyResponse.getModifyResponseLength() ) );
+            buffer.put( TLV.getBytes( decorator.getModifyResponseLength() ) );
 
             // The LdapResult
             encodeLdapResult( buffer, modifyResponse.getLdapResult() );
@@ -2429,7 +2431,7 @@ public class LdapEncoder
                 return computeModifyRequestLength( ( ModifyRequestDecorator ) decorator );
 
             case MODIFY_RESPONSE:
-                return computeModifyResponseLength( ( ModifyResponseImpl ) message );
+                return computeModifyResponseLength( ( ModifyResponseDecorator ) decorator );
 
             case MODIFYDN_REQUEST:
                 return computeModifyDnRequestLength( ( ModifyDnRequestDecorator ) decorator );
@@ -2517,7 +2519,7 @@ public class LdapEncoder
                 break;
 
             case MODIFY_RESPONSE:
-                encodeModifyResponse( bb, ( ModifyResponseImpl ) message );
+                encodeModifyResponse( bb, ( ModifyResponseDecorator ) decorator );
                 break;
 
             case MODIFYDN_REQUEST:
