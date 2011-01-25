@@ -50,6 +50,8 @@ public class MessageDecorator
     {
         switch ( decoratedMessage.getType() )
         {
+            case ABANDON_REQUEST:
+                return new MessageDecorator( decoratedMessage );
             case ADD_REQUEST:
                 return new AddRequestDecorator( ( AddRequest ) decoratedMessage );
             default:

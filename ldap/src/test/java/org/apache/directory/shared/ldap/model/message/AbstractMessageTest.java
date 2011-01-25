@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.message;
+package org.apache.directory.shared.ldap.model.message;
 
 
 import static org.junit.Assert.assertFalse;
@@ -25,25 +25,22 @@ import static org.junit.Assert.assertTrue;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.ldap.model.exception.LdapException;
-import org.apache.directory.shared.ldap.model.message.LdapResult;
+import org.apache.directory.shared.ldap.model.message.AbstractMessage;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
-import org.apache.directory.shared.ldap.model.message.Referral;
-import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
-import org.apache.directory.shared.ldap.model.name.Dn;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 
 /**
- * TestCase for the methods of the AbstractResultResponse class.
+ * Test cases for the AbstractMessage class' methods.
  * 
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
+ *         $Rev: 910150 $
  */
 @RunWith(ConcurrentJunitRunner.class)
 @Concurrent()
-public class AbstractResultResponseTest
+public class AbstractMessageTest
 {
     /**
      * Tests to see the same object returns true.
@@ -51,8 +48,8 @@ public class AbstractResultResponseTest
     @Test
     public void testEqualsSameObj()
     {
-        AbstractResultResponse msg;
-        msg = new AbstractResultResponse( 5, MessageTypeEnum.BIND_REQUEST )
+        AbstractMessage msg;
+        msg = new AbstractMessage( 5, MessageTypeEnum.BIND_REQUEST )
         {
             private static final long serialVersionUID = 1L;
         };
@@ -64,77 +61,20 @@ public class AbstractResultResponseTest
      * Tests to see the same exact copy returns true.
      */
     @Test
-    public void testEqualsExactCopy() throws LdapException
+    public void testEqualsExactCopy()
     {
-        AbstractResultResponse msg0 = new AbstractResultResponse( 5, MessageTypeEnum.BIND_REQUEST )
+        AbstractMessage msg0;
+        AbstractMessage msg1;
+        msg0 = new AbstractMessage( 5, MessageTypeEnum.BIND_REQUEST )
         {
             private static final long serialVersionUID = 1L;
         };
-        AbstractResultResponse msg1 = new AbstractResultResponse( 5, MessageTypeEnum.BIND_REQUEST )
+        msg1 = new AbstractMessage( 5, MessageTypeEnum.BIND_REQUEST )
         {
             private static final long serialVersionUID = 1L;
         };
-        LdapResult r0 = msg0.getLdapResult();
-        LdapResult r1 = msg1.getLdapResult();
-
-        r0.setErrorMessage( "blah blah blah" );
-        r1.setErrorMessage( "blah blah blah" );
-
-        r0.setMatchedDn( new Dn( "dc=example,dc=com" ) );
-        r1.setMatchedDn( new Dn( "dc=example,dc=com" ) );
-
-        r0.setResultCode( ResultCodeEnum.TIME_LIMIT_EXCEEDED );
-        r1.setResultCode( ResultCodeEnum.TIME_LIMIT_EXCEEDED );
-
-        Referral refs0 = new ReferralImpl();
-        refs0.addLdapUrl( "ldap://someserver.com" );
-        refs0.addLdapUrl( "ldap://anotherserver.org" );
-
-        Referral refs1 = new ReferralImpl();
-        refs1.addLdapUrl( "ldap://someserver.com" );
-        refs1.addLdapUrl( "ldap://anotherserver.org" );
-
         assertTrue( msg0.equals( msg1 ) );
         assertTrue( msg1.equals( msg0 ) );
-    }
-
-
-    /**
-     * Tests to see the same exact copy returns true.
-     */
-    @Test
-    public void testNotEqualsDiffResult() throws LdapException
-    {
-        AbstractResultResponse msg0 = new AbstractResultResponse( 5, MessageTypeEnum.BIND_REQUEST )
-        {
-            private static final long serialVersionUID = 1L;
-        };
-        AbstractResultResponse msg1 = new AbstractResultResponse( 5, MessageTypeEnum.BIND_REQUEST )
-        {
-            private static final long serialVersionUID = 1L;
-        };
-        LdapResult r0 = msg0.getLdapResult();
-        LdapResult r1 = msg1.getLdapResult();
-
-        r0.setErrorMessage( "blah blah blah" );
-        r1.setErrorMessage( "blah blah blah" );
-
-        r0.setMatchedDn( new Dn( "dc=example,dc=com" ) );
-        r1.setMatchedDn( new Dn( "dc=apache,dc=org" ) );
-
-        r0.setResultCode( ResultCodeEnum.TIME_LIMIT_EXCEEDED );
-        r1.setResultCode( ResultCodeEnum.TIME_LIMIT_EXCEEDED );
-
-        Referral refs0 = new ReferralImpl();
-        refs0.addLdapUrl( "ldap://someserver.com" );
-        refs0.addLdapUrl( "ldap://anotherserver.org" );
-
-        Referral refs1 = new ReferralImpl();
-        refs1.addLdapUrl( "ldap://someserver.com" );
-        refs1.addLdapUrl( "ldap://anotherserver.org" );
-
-        assertFalse( msg0.equals( msg1 ) );
-        assertFalse( msg1.equals( msg0 ) );
     }
 
 
@@ -144,13 +84,13 @@ public class AbstractResultResponseTest
     @Test
     public void testNotEqualsDiffId()
     {
-        AbstractResultResponse msg0;
-        AbstractResultResponse msg1;
-        msg0 = new AbstractResultResponse( 5, MessageTypeEnum.BIND_REQUEST )
+        AbstractMessage msg0;
+        AbstractMessage msg1;
+        msg0 = new AbstractMessage( 5, MessageTypeEnum.BIND_REQUEST )
         {
             private static final long serialVersionUID = 1L;
         };
-        msg1 = new AbstractResultResponse( 6, MessageTypeEnum.BIND_REQUEST )
+        msg1 = new AbstractMessage( 6, MessageTypeEnum.BIND_REQUEST )
         {
             private static final long serialVersionUID = 1L;
         };
@@ -165,13 +105,13 @@ public class AbstractResultResponseTest
     @Test
     public void testNotEqualsDiffType()
     {
-        AbstractResultResponse msg0;
-        AbstractResultResponse msg1;
-        msg0 = new AbstractResultResponse( 5, MessageTypeEnum.BIND_REQUEST )
+        AbstractMessage msg0;
+        AbstractMessage msg1;
+        msg0 = new AbstractMessage( 5, MessageTypeEnum.BIND_REQUEST )
         {
             private static final long serialVersionUID = 1L;
         };
-        msg1 = new AbstractResultResponse( 5, MessageTypeEnum.UNBIND_REQUEST )
+        msg1 = new AbstractMessage( 5, MessageTypeEnum.UNBIND_REQUEST )
         {
             private static final long serialVersionUID = 1L;
         };
@@ -186,10 +126,10 @@ public class AbstractResultResponseTest
     @Test
     public void testNotEqualsDiffControls()
     {
-        AbstractResultResponse msg0;
-        AbstractResultResponse msg1;
+        AbstractMessage msg0;
+        AbstractMessage msg1;
 
-        msg0 = new AbstractResultResponse( 5, MessageTypeEnum.BIND_REQUEST )
+        msg0 = new AbstractMessage( 5, MessageTypeEnum.BIND_REQUEST )
         {
             private static final long serialVersionUID = 1L;
         };
@@ -222,11 +162,12 @@ public class AbstractResultResponseTest
             }
         } );
 
-        msg1 = new AbstractResultResponse( 5, MessageTypeEnum.BIND_REQUEST )
+        msg1 = new AbstractMessage( 5, MessageTypeEnum.BIND_REQUEST )
         {
             private static final long serialVersionUID = 1L;
         };
         assertFalse( msg0.equals( msg1 ) );
         assertFalse( msg1.equals( msg0 ) );
     }
+
 }

@@ -17,15 +17,11 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.message;
+package org.apache.directory.shared.ldap.model.message;
 
 
 import java.util.Observable;
 import java.util.Observer;
-
-import org.apache.directory.shared.ldap.model.message.AbandonListener;
-import org.apache.directory.shared.ldap.model.message.AbandonableRequest;
-import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 
 
 /**
