@@ -20,11 +20,6 @@
 package org.apache.directory.shared.ldap.model.message;
 
 
-import org.apache.directory.shared.ldap.model.message.AbstractMessage;
-import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
-import org.apache.directory.shared.ldap.model.message.Response;
-
-
 /**
  * Abstract base for a Response message.
  * 
