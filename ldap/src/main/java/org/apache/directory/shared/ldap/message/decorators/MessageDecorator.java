@@ -17,21 +17,21 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.message;
+package org.apache.directory.shared.ldap.message.decorators;
 
 
+import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.ldap.model.message.AddRequest;
 import org.apache.directory.shared.ldap.model.message.Message;
 
 
 /**
- * Example to show decorator application. The decorator interface is CodecControl which
- * adds the additional functionality. This class would be the concrete decorator for the
- * CodecControl. The decorated component is Control, and an example of a concrete
- * decorated component would be LdifControl.
- * 
+ * Doc me man!
+ *
+ * @TODO make this class abstract, after finishing switch and all types and make default blow an EncoderException
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class EncodeableDecorator implements Encodeable
+public class MessageDecorator
 {
     // ~ Instance fields
     // ----------------------------------------------------------------------------
@@ -46,10 +46,24 @@ public class EncodeableDecorator implements Encodeable
     private int controlsLength;
 
 
+    public static MessageDecorator getDecorator( Message decoratedMessage ) throws EncoderException
+    {
+        switch ( decoratedMessage.getType() )
+        {
+            case ADD_REQUEST:
+                return new AddRequestDecorator( ( AddRequest ) decoratedMessage );
+            default:
+                return new MessageDecorator( decoratedMessage );
+        }
+    }
+
+
     /**
      * Makes a Message an Encodeable object.
+     *
+     * @TODO make me protected after making this class abstract
      */
-    public EncodeableDecorator(Message decoratedMessage)
+    public MessageDecorator( Message decoratedMessage )
     {
         this.decoratedMessage = decoratedMessage;
     }

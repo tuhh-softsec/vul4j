@@ -36,14 +36,13 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.MessageEncoderException;
 import org.apache.directory.shared.ldap.codec.controls.CodecControl;
+import org.apache.directory.shared.ldap.message.decorators.AddRequestDecorator;
+import org.apache.directory.shared.ldap.message.decorators.MessageDecorator;
 import org.apache.directory.shared.ldap.model.entry.BinaryValue;
 import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.model.entry.Modification;
-import org.apache.directory.shared.ldap.model.message.Control;
-import org.apache.directory.shared.ldap.model.message.LdapResult;
-import org.apache.directory.shared.ldap.model.message.Message;
-import org.apache.directory.shared.ldap.model.message.Referral;
+import org.apache.directory.shared.ldap.model.message.*;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.util.Strings;
 
@@ -81,8 +80,8 @@ public class LdapEncoder
      */
     public ByteBuffer encodeMessage( Message message ) throws EncoderException
     {
-        Encodeable encodeable = new EncodeableDecorator( message );
-        int length = computeMessageLength( encodeable );
+        MessageDecorator decorator = MessageDecorator.getDecorator( message );
+        int length = computeMessageLength( decorator );
         ByteBuffer buffer = ByteBuffer.allocate( length );
 
         try
@@ -93,7 +92,7 @@ public class LdapEncoder
                 buffer.put( UniversalTag.SEQUENCE.getValue() );
 
                 // The length has been calculated by the computeLength method
-                buffer.put( TLV.getBytes( encodeable.getMessageLength() ) );
+                buffer.put( TLV.getBytes(decorator.getMessageLength()) );
             }
             catch ( BufferOverflowException boe )
             {
@@ -104,7 +103,7 @@ public class LdapEncoder
             Value.encode( buffer, message.getMessageId() );
 
             // Add the protocolOp part
-            encodeProtocolOp( buffer, message );
+            encodeProtocolOp( buffer, decorator );
 
             // Do the same thing for Controls, if any.
             Map<String, Control> controls = message.getControls();
@@ -113,7 +112,7 @@ public class LdapEncoder
             {
                 // Encode the controls
                 buffer.put( ( byte ) LdapConstants.CONTROLS_TAG );
-                buffer.put( TLV.getBytes( encodeable.getControlsLength() ) );
+                buffer.put( TLV.getBytes(decorator.getControlsLength()) );
 
                 // Encode each control
                 for ( Control control : controls.values() )
@@ -147,20 +146,20 @@ public class LdapEncoder
      * L1 = length(ProtocolOp) 
      * LdapMessage length = Length(0x30) + Length(L1) + MessageId length + L1
      *
-     * @param encodeable the decorated Message who's length is to be encoded
+     * @param decorator the decorated Message who's length is to be encoded
      */
-    private int computeMessageLength( Encodeable encodeable )
+    private int computeMessageLength( MessageDecorator decorator )
     {
         // The length of the MessageId. It's the sum of
         // - the tag (0x02), 1 byte
         // - the length of the Id length, 1 byte
         // - the Id length, 1 to 4 bytes
-        int ldapMessageLength = 1 + 1 + Value.getNbBytes( encodeable.getMessage().getMessageId() );
+        int ldapMessageLength = 1 + 1 + Value.getNbBytes( decorator.getMessage().getMessageId());
 
         // Get the protocolOp length
-        ldapMessageLength += computeProtocolOpLength( encodeable.getMessage() );
+        ldapMessageLength += computeProtocolOpLength( decorator );
 
-        Map<String, Control> controls = encodeable.getMessage().getControls();
+        Map<String, Control> controls = decorator.getMessage().getControls();
 
         // Do the same thing for Controls, if any.
         if ( controls.size() > 0 )
@@ -194,14 +193,14 @@ public class LdapEncoder
 
             // Computes the controls length
             // 1 + Length.getNbBytes( controlsSequenceLength ) + controlsSequenceLength;
-            encodeable.setControlsLength( controlsSequenceLength );
+            decorator.setControlsLength( controlsSequenceLength );
 
             // Now, add the tag and the length of the controls length
             ldapMessageLength += 1 + TLV.getNbBytes( controlsSequenceLength ) + controlsSequenceLength;
         }
 
         // Store the messageLength
-        encodeable.setMessageLength( ldapMessageLength );
+        decorator.setMessageLength( ldapMessageLength );
 
         // finally, calculate the global message size :
         // length(Tag) + Length(length) + length
@@ -399,8 +398,9 @@ public class LdapEncoder
      *                    +--> ...
      *                    +--> 0x04 L7-m-n value
      */
-    private int computeAddRequestLength( AddRequestImpl addRequest )
+    private int computeAddRequestLength( AddRequestDecorator decorator )
     {
+        AddRequest addRequest = decorator.getAddRequest();
         Entry entry = addRequest.getEntry();
 
         if ( entry == null )
@@ -450,13 +450,13 @@ public class LdapEncoder
                 valuesLength.add( localValuesLength );
             }
 
-            addRequest.setAttributesLength( attributesLength );
-            addRequest.setValuesLength( valuesLength );
-            addRequest.setEntryLength( entryLength );
+            decorator.setAttributesLength( attributesLength );
+            decorator.setValuesLength( valuesLength );
+            decorator.setEntryLength( entryLength );
         }
 
         addRequestLength += 1 + TLV.getNbBytes( entryLength ) + entryLength;
-        addRequest.setAddRequestLength( addRequestLength );
+        decorator.setAddRequestLength( addRequestLength );
 
         // Return the result.
         return 1 + TLV.getNbBytes( addRequestLength ) + addRequestLength;
@@ -1385,20 +1385,22 @@ public class LdapEncoder
      * 
      * @param buffer The buffer where to put the PDU
      */
-    private void encodeAddRequest( ByteBuffer buffer, AddRequestImpl addRequest ) throws EncoderException
+    private void encodeAddRequest( ByteBuffer buffer, AddRequestDecorator decorator ) throws EncoderException
     {
+        AddRequest addRequest = decorator.getAddRequest();
+
         try
         {
             // The AddRequest Tag
             buffer.put( LdapConstants.ADD_REQUEST_TAG );
-            buffer.put( TLV.getBytes( addRequest.getAddRequestLength() ) );
+            buffer.put( TLV.getBytes( decorator.getAddRequestLength() ) );
 
             // The entry
             Value.encode( buffer, Dn.getBytes(addRequest.getEntryDn()) );
 
             // The attributes sequence
             buffer.put( UniversalTag.SEQUENCE.getValue() );
-            buffer.put( TLV.getBytes( addRequest.getEntryLength() ) );
+            buffer.put( TLV.getBytes( decorator.getEntryLength() ) );
 
             // The partial attribute list
             Entry entry = addRequest.getEntry();
@@ -1412,7 +1414,7 @@ public class LdapEncoder
                 {
                     // The attributes list sequence
                     buffer.put( UniversalTag.SEQUENCE.getValue() );
-                    int localAttributeLength = addRequest.getAttributesLength().get( attributeNumber );
+                    int localAttributeLength = decorator.getAttributesLength().get( attributeNumber );
                     buffer.put( TLV.getBytes( localAttributeLength ) );
 
                     // The attribute type
@@ -1420,7 +1422,7 @@ public class LdapEncoder
 
                     // The values
                     buffer.put( UniversalTag.SET.getValue() );
-                    int localValuesLength = addRequest.getValuesLength().get( attributeNumber );
+                    int localValuesLength = decorator.getValuesLength().get( attributeNumber );
                     buffer.put( TLV.getBytes( localValuesLength ) );
 
                     if ( attribute.size() != 0 )
@@ -2351,15 +2353,17 @@ public class LdapEncoder
     /**
      * Compute the protocolOp length 
      */
-    private int computeProtocolOpLength( Message message )
+    private int computeProtocolOpLength( MessageDecorator decorator )
     {
+        Message message = decorator.getMessage();
+
         switch ( message.getType() )
         {
             case ABANDON_REQUEST:
                 return computeAbandonRequestLength( ( AbandonRequestImpl ) message );
 
             case ADD_REQUEST:
-                return computeAddRequestLength( ( AddRequestImpl ) message );
+                return computeAddRequestLength( ( AddRequestDecorator ) decorator );
 
             case ADD_RESPONSE:
                 return computeAddResponseLength( ( AddResponseImpl ) message );
@@ -2424,8 +2428,10 @@ public class LdapEncoder
     }
 
 
-    private void encodeProtocolOp( ByteBuffer bb, Message message ) throws EncoderException
+    private void encodeProtocolOp( ByteBuffer bb, MessageDecorator decorator ) throws EncoderException
     {
+        Message message = decorator.getMessage();
+
         switch ( message.getType() )
         {
             case ABANDON_REQUEST:
@@ -2433,7 +2439,7 @@ public class LdapEncoder
                 break;
 
             case ADD_REQUEST:
-                encodeAddRequest( bb, ( AddRequestImpl ) message );
+                encodeAddRequest( bb, ( AddRequestDecorator ) decorator );
                 break;
 
             case ADD_RESPONSE:

@@ -17,11 +17,11 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.message;
+package org.apache.directory.shared.ldap.model.message;
 
 
-import java.util.List;
-
+import org.apache.directory.shared.ldap.message.AbstractAbandonableRequest;
+import org.apache.directory.shared.ldap.message.AddResponseImpl;
 import org.apache.directory.shared.ldap.model.entry.*;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.message.AddRequest;
@@ -48,18 +48,6 @@ public class AddRequestImpl extends AbstractAbandonableRequest implements AddReq
 
     /** The current attribute being decoded */
     private EntryAttribute currentAttribute;
-
-    /** The add request length */
-    private int addRequestLength;
-
-    /** The Entry length */
-    private int entryLength;
-
-    /** The list of all attributes length */
-    private List<Integer> attributesLength;
-
-    /** The list of all vals length */
-    private List<Integer> valuesLength;
 
 
     // ------------------------------------------------------------------------
@@ -227,82 +215,6 @@ public class AddRequestImpl extends AbstractAbandonableRequest implements AddReq
         }
 
         return response;
-    }
-
-
-    /**
-     * Stores the encoded length for the AddRequest
-     * @param addRequestLength The encoded length
-     */
-    /* No qualifier*/void setAddRequestLength( int addRequestLength )
-    {
-        this.addRequestLength = addRequestLength;
-    }
-
-
-    /**
-     * @return The encoded AddRequest's length
-     */
-    /* No qualifier */int getAddRequestLength()
-    {
-        return addRequestLength;
-    }
-
-
-    /**
-     * Stores the encoded length for the Entry
-     * @param entryLength The encoded length
-     */
-    /* No qualifier*/void setEntryLength( int entryLength )
-    {
-        this.entryLength = entryLength;
-    }
-
-
-    /**
-     * @return The encoded Entry's length
-     */
-    /* No qualifier */int getEntryLength()
-    {
-        return entryLength;
-    }
-
-
-    /**
-     * Stores the encoded length for the attributes
-     * @param atributesLength The encoded length
-     */
-    /* No qualifier*/void setAttributesLength( List<Integer> attributesLength )
-    {
-        this.attributesLength = attributesLength;
-    }
-
-
-    /**
-     * @return The encoded values length
-     */
-    /* No qualifier */List<Integer> getAttributesLength()
-    {
-        return attributesLength;
-    }
-
-
-    /**
-     * Stores the encoded length for the values
-     * @param valuesLength The encoded length
-     */
-    /* No qualifier*/void setValuesLength( List<Integer> valuesLength )
-    {
-        this.valuesLength = valuesLength;
-    }
-
-
-    /**
-     * @return The encoded values length
-     */
-    /* No qualifier */List<Integer> getValuesLength()
-    {
-        return valuesLength;
     }
 
 
