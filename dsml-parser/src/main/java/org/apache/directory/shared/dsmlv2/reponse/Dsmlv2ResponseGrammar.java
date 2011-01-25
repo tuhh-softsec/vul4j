@@ -45,7 +45,7 @@ import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.filter.LdapURL;
 import org.apache.directory.shared.ldap.model.message.*;
-import org.apache.directory.shared.ldap.message.AddResponseImpl;
+import org.apache.directory.shared.ldap.model.message.AddResponseImpl;
 import org.apache.directory.shared.ldap.model.message.BindResponse;
 import org.apache.directory.shared.ldap.message.BindResponseImpl;
 import org.apache.directory.shared.ldap.model.message.CompareResponse;

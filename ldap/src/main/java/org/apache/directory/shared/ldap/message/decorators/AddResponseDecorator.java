@@ -17,62 +17,55 @@
  *  under the License. 
  *  
  */
-
-package org.apache.directory.shared.dsmlv2.reponse;
+package org.apache.directory.shared.ldap.message.decorators;
 
 
 import org.apache.directory.shared.ldap.model.message.AddResponse;
-import org.apache.directory.shared.ldap.model.message.AddResponseImpl;
-import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
-import org.dom4j.Element;
 
 
 /**
- * DSML Decorator for AddResponse
+ * Doc me!
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class AddResponseDsml extends AbstractResponseDsml
+public class AddResponseDecorator extends MessageDecorator
 {
-    /**
-     * Creates a new instance of AddResponseDsml.
-     */
-    public AddResponseDsml()
-    {
-        super( new AddResponseImpl() );
-    }
+    /** The encoded addResponse length */
+    private int addResponseLength;
 
 
     /**
-     * Creates a new instance of AddResponseDsml.
+     * Makes a AddResponse encodable.
      *
-     * @param ldapMessage
-     *      the message to decorate
+     * @param decoratedMessage the decorated AddResponse
      */
-    public AddResponseDsml( AddResponse ldapMessage )
+    public AddResponseDecorator( AddResponse decoratedMessage)
     {
-        super( ldapMessage );
+        super( decoratedMessage );
+    }
+
+
+    public AddResponse getAddResponse()
+    {
+        return ( AddResponse ) getMessage();
     }
 
 
     /**
-     * {@inheritDoc}
+     * Stores the encoded length for the AddResponse
+     * @param addResponseLength The encoded length
      */
-    public MessageTypeEnum getType()
+    public void setAddResponseLength( int addResponseLength )
     {
-        return instance.getType();
+        this.addResponseLength = addResponseLength;
     }
 
 
     /**
-     * {@inheritDoc}
+     * @return The encoded AddResponse's length
      */
-    public Element toDsml( Element root )
+    public int getAddResponseLength()
     {
-        Element element = root.addElement( "addResponse" );
-
-        LdapResultDsml ldapResultDsml = new LdapResultDsml( ( ( AddResponse ) instance ).getLdapResult(), instance );
-        ldapResultDsml.toDsml( element );
-        return element;
+        return addResponseLength;
     }
 }

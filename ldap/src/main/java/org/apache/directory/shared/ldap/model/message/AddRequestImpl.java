@@ -20,7 +20,6 @@
 package org.apache.directory.shared.ldap.model.message;
 
 
-import org.apache.directory.shared.ldap.message.AddResponseImpl;
 import org.apache.directory.shared.ldap.model.entry.*;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.entry.Entry;

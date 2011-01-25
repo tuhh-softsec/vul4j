@@ -25,11 +25,8 @@ import org.apache.directory.shared.ldap.model.message.AddRequest;
 
 
 /**
- * Example to show decorator application. The decorator interface is CodecControl which
- * adds the additional functionality. This class would be the concrete decorator for the
- * CodecControl. The decorated component is Control, and an example of a concrete
- * decorated component would be LdifControl.
- * 
+ * Doc me!
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class AddRequestDecorator extends MessageDecorator

@@ -17,11 +17,12 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.message;
+package org.apache.directory.shared.ldap.model.message;
 
 
 import org.apache.directory.shared.ldap.model.message.AbstractResultResponse;
 import org.apache.directory.shared.ldap.model.message.AddResponse;
+
 
 /**
  * AddResponse implementation.
@@ -30,13 +31,6 @@ import org.apache.directory.shared.ldap.model.message.AddResponse;
  */
 public class AddResponseImpl extends AbstractResultResponse implements AddResponse
 {
-    /** The encoded addResponse length */
-    private int addResponseLength;
-
-    // ------------------------------------------------------------------------
-    // Constructors
-    // ------------------------------------------------------------------------
-
     static final long serialVersionUID = 4027132942339551383L;
 
 
@@ -57,25 +51,6 @@ public class AddResponseImpl extends AbstractResultResponse implements AddRespon
     public AddResponseImpl( final int id )
     {
         super( id, TYPE );
-    }
-
-
-    /**
-     * Stores the encoded length for the AddResponse
-     * @param addResponseLength The encoded length
-     */
-    /* No qualifier*/void setAddResponseLength( int addResponseLength )
-    {
-        this.addResponseLength = addResponseLength;
-    }
-
-
-    /**
-     * @return The encoded AddResponse's length
-     */
-    /* No qualifier */int getAddResponseLength()
-    {
-        return addResponseLength;
     }
 
 

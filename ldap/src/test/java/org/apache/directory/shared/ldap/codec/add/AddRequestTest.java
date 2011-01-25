@@ -43,12 +43,9 @@ import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
 import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.model.entry.Value;
-import org.apache.directory.shared.ldap.model.message.AddRequest;
-import org.apache.directory.shared.ldap.message.AddResponseImpl;
+import org.apache.directory.shared.ldap.model.message.*;
+import org.apache.directory.shared.ldap.model.message.AddResponseImpl;
 import org.apache.directory.shared.ldap.message.LdapEncoder;
-import org.apache.directory.shared.ldap.model.message.Control;
-import org.apache.directory.shared.ldap.model.message.Message;
-import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -381,7 +378,7 @@ public class AddRequestTest
             assertTrue( de instanceof ResponseCarryingException );
             Message response = ( ( ResponseCarryingException ) de ).getResponse();
             assertTrue( response instanceof AddResponseImpl );
-            assertEquals( ResultCodeEnum.INVALID_DN_SYNTAX, ( ( AddResponseImpl ) response ).getLdapResult()
+            assertEquals( ResultCodeEnum.INVALID_DN_SYNTAX, ( (AddResponseImpl) response ).getLdapResult()
                 .getResultCode() );
             return;
         }

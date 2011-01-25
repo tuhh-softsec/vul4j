@@ -37,6 +37,7 @@ import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.MessageEncoderException;
 import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.message.decorators.AddRequestDecorator;
+import org.apache.directory.shared.ldap.message.decorators.AddResponseDecorator;
 import org.apache.directory.shared.ldap.message.decorators.MessageDecorator;
 import org.apache.directory.shared.ldap.model.entry.BinaryValue;
 import org.apache.directory.shared.ldap.model.entry.Entry;
@@ -476,11 +477,12 @@ public class LdapEncoder
      * 
      * Length(AddResponse) = Length(0x69) + Length(L1) + L1
      */
-    private int computeAddResponseLength( AddResponseImpl addResponse )
+    private int computeAddResponseLength( AddResponseDecorator decorator )
     {
+        AddResponse addResponse = decorator.getAddResponse();
         int addResponseLength = computeLdapResultLength( addResponse.getLdapResult() );
 
-        addResponse.setAddResponseLength( addResponseLength );
+        decorator.setAddResponseLength( addResponseLength );
 
         return 1 + TLV.getNbBytes( addResponseLength ) + addResponseLength;
     }
@@ -1457,13 +1459,15 @@ public class LdapEncoder
      * 
      * @param buffer The buffer where to put the PDU
      */
-    private void encodeAddResponse( ByteBuffer buffer, AddResponseImpl addResponse ) throws EncoderException
+    private void encodeAddResponse( ByteBuffer buffer, AddResponseDecorator decorator ) throws EncoderException
     {
+        AddResponse addResponse = decorator.getAddResponse();
+
         try
         {
             // The AddResponse Tag
             buffer.put( LdapConstants.ADD_RESPONSE_TAG );
-            buffer.put( TLV.getBytes( addResponse.getAddResponseLength() ) );
+            buffer.put( TLV.getBytes( decorator.getAddResponseLength() ) );
 
             // The LdapResult
             encodeLdapResult( buffer, addResponse.getLdapResult() );
@@ -2366,7 +2370,7 @@ public class LdapEncoder
                 return computeAddRequestLength( ( AddRequestDecorator ) decorator );
 
             case ADD_RESPONSE:
-                return computeAddResponseLength( ( AddResponseImpl ) message );
+                return computeAddResponseLength( ( AddResponseDecorator ) decorator );
 
             case BIND_REQUEST:
                 return computeBindRequestLength( ( BindRequestImpl ) message );
@@ -2443,7 +2447,7 @@ public class LdapEncoder
                 break;
 
             case ADD_RESPONSE:
-                encodeAddResponse( bb, ( AddResponseImpl ) message );
+                encodeAddResponse( bb, ( AddResponseDecorator ) decorator );
                 break;
 
             case BIND_REQUEST:
