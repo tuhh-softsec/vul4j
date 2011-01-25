@@ -40,18 +40,21 @@ import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.tlv.TLVStateEnum;
 import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
+import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
 import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesControl;
+import org.apache.directory.shared.ldap.message.SearchRequestImpl;
 import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.model.filter.SearchScope;
-import org.apache.directory.shared.ldap.model.message.*;
-import org.apache.directory.shared.ldap.codec.LdapEncoder;
-import org.apache.directory.shared.ldap.message.SearchRequestImpl;
-import org.apache.directory.shared.ldap.model.message.SearchResultDoneImpl;
+import org.apache.directory.shared.ldap.model.message.AliasDerefMode;
 import org.apache.directory.shared.ldap.model.message.Control;
-import org.apache.directory.shared.ldap.model.schema.normalizers.OidNormalizer;
+import org.apache.directory.shared.ldap.model.message.Message;
+import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
+import org.apache.directory.shared.ldap.model.message.SearchRequest;
+import org.apache.directory.shared.ldap.model.message.SearchResultDoneImpl;
 import org.apache.directory.shared.ldap.model.schema.normalizers.DeepTrimToLowerNormalizer;
+import org.apache.directory.shared.ldap.model.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Before;
 import org.junit.Test;
@@ -1030,7 +1033,7 @@ public class SearchRequestTest
     @Test
     public void testDecodeSearchRequestWithControls()
     {
-        byte[] asn1BER = new byte[]
+        byte[] asn1BERJava5 = new byte[]
             { 0x30, 0x7f,
                 0x02, 0x01, 0x04, // messageID
                 0x63, 0x33,
@@ -1062,18 +1065,56 @@ public class SearchRequestTest
                         '0', '.', '3', '.', '4', '.', '2', 
                         };
 
+        byte[] asn1BERJava6 = new byte[]
+           { 0x30, 0x7f,
+               0x02, 0x01, 0x04, // messageID
+               0x63, 0x33,
+                 0x04, 0x13, // baseObject
+                   'd', 'c', '=', 'm', 'y', '-', 'd', 'o', 'm', 'a', 'i', 'n', ',', 'd', 'c', '=', 'c', 'o', 'm',
+                 0x0a, 0x01, 0x02, // scope: subtree
+                 0x0a, 0x01, 0x03, // derefAliases: derefAlways
+                 0x02, 0x01, 0x00, // sizeLimit: 0
+                 0x02, 0x01, 0x00, // timeLimit: 0
+                 0x01, 0x01, 0x00, // typesOnly: false
+                 ( byte ) 0x87, 0x0b, // Present filter: (objectClass=*)
+                   'o', 'b', 'j', 'e', 'c', 't', 'C', 'l', 'a', 's', 's',
+                 0x30, 0x00, // Attributes = '*'
+                 ( byte ) 0xa0, 0x45, // controls
+                   0x30, 0x19, 
+                     0x04, 0x17, // control
+                       '2', '.', '1', '6', '.', '8', '4', '0', 
+                       '.', '1', '.', '1', '1', '3', '7', '3', 
+                       '0', '.', '3', '.', '4', '.', '2', 
+                   0x30, 0x28,
+                     0x04, 0x16, // control
+                       '1', '.', '2', '.', '8', '4', '0', '.', 
+                       '1', '1', '3', '5', '5', '6', '.', '1', 
+                       '.', '4', '.', '3', '1', '9', 
+                     0x01, 0x01, ( byte ) 0xff, // criticality: false
+                     0x04, 0x0b, 
+                       0x30, 0x09, 
+                         0x02, 0x01, 0x02, 
+                         0x04, 0x04, 0x47, 0x00, 0x00, 0x00, // value: pageSize=2
+                       };
+
         Asn1Decoder ldapDecoder = new Asn1Decoder();
 
-        ByteBuffer stream = ByteBuffer.allocate( asn1BER.length );
-        stream.put( asn1BER );
-        String decodedPdu = Strings.dumpBytes(stream.array());
-        stream.flip();
+        // For Java6
+        ByteBuffer streamJava6 = ByteBuffer.allocate( asn1BERJava6.length );
+        streamJava6.put( asn1BERJava6 );
+        String decodedPduJava6 = Strings.dumpBytes(streamJava6.array());
+        streamJava6.flip();
+
+        // For Java5
+        ByteBuffer streamJava5 = ByteBuffer.allocate( asn1BERJava5.length );
+        streamJava5.put( asn1BERJava5 );
+        String decodedPduJava5 = Strings.dumpBytes(streamJava5.array());
 
         Asn1Container ldapMessageContainer = new LdapMessageContainer();
 
         try
         {
-            ldapDecoder.decode( stream, ldapMessageContainer );
+            ldapDecoder.decode( streamJava6, ldapMessageContainer );
         }
         catch ( DecoderException de )
         {
@@ -1118,7 +1159,8 @@ public class SearchRequestTest
             assertEquals( 0x81, bb.limit() );
 
             String encodedPdu = Strings.dumpBytes(bb.array());
-            assertEquals( decodedPdu, encodedPdu );
+            
+            assertTrue( decodedPduJava5.equals( encodedPdu ) || decodedPduJava6.equals( encodedPdu ) );
         }
         catch ( EncoderException ee )
         {
