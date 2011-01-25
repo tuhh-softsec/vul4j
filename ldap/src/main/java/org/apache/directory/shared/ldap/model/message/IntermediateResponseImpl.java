@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.message;
+package org.apache.directory.shared.ldap.model.message;
 
 
 import java.util.Arrays;
@@ -39,19 +39,10 @@ public class IntermediateResponseImpl extends AbstractResultResponse implements 
     /** ResponseName for the intermediate response */
     protected String responseName;
 
-    /** The response name as a byte[] */
-    private byte[] responseNameBytes;
-
     /** Response Value for the intermediate response */
     protected byte[] responseValue;
 
-    /** The encoded intermediateResponse length */
-    private int intermediateResponseLength;
 
-
-    // ------------------------------------------------------------------------
-    // Constructors
-    // ------------------------------------------------------------------------
     public IntermediateResponseImpl( int id )
     {
         super( id, TYPE );
@@ -112,17 +103,6 @@ public class IntermediateResponseImpl extends AbstractResultResponse implements 
 
 
     /**
-     * Gets the ResponseName bytes
-     * 
-     * @return the ResponseName bytes of the Intermediate response type.
-     */
-    /* No qualifier */byte[] getResponseNameBytes()
-    {
-        return responseNameBytes;
-    }
-
-
-    /**
      * Sets the OID uniquely identifying this Intermediate response (a.k.a. its
      * name).
      * 
@@ -131,17 +111,6 @@ public class IntermediateResponseImpl extends AbstractResultResponse implements 
     public void setResponseName( String oid )
     {
         this.responseName = oid;
-    }
-
-
-    /**
-     * Sets the ResponseName bytes
-     * 
-     * @param oid the ResponseName bytes of the Intermediate response type.
-     */
-    /* No qualifier */void setResponseNameBytes( byte[] responseNameBytes )
-    {
-        this.responseNameBytes = responseNameBytes;
     }
 
 
@@ -219,26 +188,6 @@ public class IntermediateResponseImpl extends AbstractResultResponse implements 
 
         return ( ( responseValue == null ) || ( resp.getResponseValue() == null )
             || Arrays.equals( responseValue, resp.getResponseValue() ) );
-    }
-
-
-    /**
-     * Stores the encoded length for the IntermediateResponse
-     * 
-     * @param intermediateResponseLength The encoded length
-     */
-    /* No qualifier*/void setIntermediateResponseLength( int intermediateResponseLength )
-    {
-        this.intermediateResponseLength = intermediateResponseLength;
-    }
-
-
-    /**
-     * @return The encoded IntermediateResponse's length
-     */
-    /* No qualifier*/int getIntermediateResponseLength()
-    {
-        return intermediateResponseLength;
     }
 
 

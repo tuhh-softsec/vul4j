@@ -810,8 +810,9 @@ public class LdapEncoder
      * 
      * @return The IntermediateResponse length
      */
-    private int computeIntermediateResponseLength( IntermediateResponseImpl intermediateResponse )
+    private int computeIntermediateResponseLength( IntermediateResponseDecorator decorator )
     {
+        IntermediateResponse intermediateResponse = decorator.getIntermediateResponse();
         int intermediateResponseLength = 0;
 
         if ( !Strings.isEmpty(intermediateResponse.getResponseName()) )
@@ -820,7 +821,7 @@ public class LdapEncoder
 
             int responseNameLength = responseNameBytes.length;
             intermediateResponseLength += 1 + TLV.getNbBytes( responseNameLength ) + responseNameLength;
-            intermediateResponse.setResponseNameBytes( responseNameBytes );
+            decorator.setResponseNameBytes( responseNameBytes );
         }
 
         byte[] encodedValue = intermediateResponse.getResponseValue();
@@ -830,7 +831,7 @@ public class LdapEncoder
             intermediateResponseLength += 1 + TLV.getNbBytes( encodedValue.length ) + encodedValue.length;
         }
 
-        intermediateResponse.setIntermediateResponseLength( intermediateResponseLength );
+        decorator.setIntermediateResponseLength( intermediateResponseLength );
 
         return 1 + TLV.getNbBytes( intermediateResponseLength ) + intermediateResponseLength;
     }
@@ -1870,17 +1871,18 @@ public class LdapEncoder
      * 
      * @param buffer The buffer where to put the PDU
      */
-    private void encodeIntermediateResponse( ByteBuffer buffer, IntermediateResponseImpl intermediateResponse )
+    private void encodeIntermediateResponse( ByteBuffer buffer, IntermediateResponseDecorator decorator )
         throws EncoderException
     {
+        IntermediateResponse intermediateResponse = decorator.getIntermediateResponse();
         try
         {
             // The ExtendedResponse Tag
             buffer.put( LdapConstants.INTERMEDIATE_RESPONSE_TAG );
-            buffer.put( TLV.getBytes( intermediateResponse.getIntermediateResponseLength() ) );
+            buffer.put( TLV.getBytes( decorator.getIntermediateResponseLength() ) );
 
             // The responseName, if any
-            byte[] responseNameBytes = intermediateResponse.getResponseNameBytes();
+            byte[] responseNameBytes = decorator.getResponseNameBytes();
 
             if ( ( responseNameBytes != null ) && ( responseNameBytes.length != 0 ) )
             {
@@ -2412,7 +2414,7 @@ public class LdapEncoder
                 return computeExtendedResponseLength( ( ExtendedResponseDecorator ) decorator );
 
             case INTERMEDIATE_RESPONSE:
-                return computeIntermediateResponseLength( ( IntermediateResponseImpl ) message );
+                return computeIntermediateResponseLength( ( IntermediateResponseDecorator ) decorator );
 
             case MODIFY_REQUEST:
                 return computeModifyRequestLength( ( ModifyRequestImpl ) message );
@@ -2498,7 +2500,7 @@ public class LdapEncoder
                 break;
 
             case INTERMEDIATE_RESPONSE:
-                encodeIntermediateResponse( bb, ( IntermediateResponseImpl ) message );
+                encodeIntermediateResponse( bb, ( IntermediateResponseDecorator ) decorator );
                 break;
 
             case MODIFY_REQUEST:

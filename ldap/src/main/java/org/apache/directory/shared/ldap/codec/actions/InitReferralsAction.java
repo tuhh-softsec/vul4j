@@ -28,7 +28,7 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.model.message.LdapResult;
 import org.apache.directory.shared.ldap.model.message.Referral;
-import org.apache.directory.shared.ldap.message.ReferralImpl;
+import org.apache.directory.shared.ldap.model.message.ReferralImpl;
 import org.apache.directory.shared.ldap.model.message.ResultResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

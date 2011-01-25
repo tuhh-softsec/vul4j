@@ -71,6 +71,8 @@ public class MessageDecorator
                 return new ExtendedRequestDecorator( ( ExtendedRequest ) decoratedMessage );
             case EXTENDED_RESPONSE:
                 return new ExtendedResponseDecorator( ( ExtendedResponse ) decoratedMessage );
+            case INTERMEDIATE_RESPONSE:
+                return new IntermediateResponseDecorator( ( IntermediateResponse ) decoratedMessage );
             default:
                 return new MessageDecorator( decoratedMessage );
         }
