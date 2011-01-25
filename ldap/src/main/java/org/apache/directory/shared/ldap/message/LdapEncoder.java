@@ -877,11 +877,12 @@ public class LdapEncoder
      *                          +--> ...
      *                          +--> 0x04 L8-2-n attributeValue
      */
-    private int computeModifyRequestLength( ModifyRequestImpl modifyRequest )
+    private int computeModifyRequestLength( ModifyRequestDecorator decorator )
     {
+        ModifyRequest modifyRequest = decorator.getModifyRequest();
         // Initialized with name
-        int modifyRequestLength = 1 + TLV.getNbBytes( Dn.getNbBytes(modifyRequest.getName()) )
-            + Dn.getNbBytes(modifyRequest.getName());
+        int modifyRequestLength = 1 + TLV.getNbBytes( Dn.getNbBytes( modifyRequest.getName() ) )
+            + Dn.getNbBytes(modifyRequest.getName() );
 
         // All the changes length
         int changesLength = 0;
@@ -931,13 +932,13 @@ public class LdapEncoder
 
             // Add the modifications length to the modificationRequestLength
             modifyRequestLength += 1 + TLV.getNbBytes( changesLength ) + changesLength;
-            modifyRequest.setChangeLength( changeLength );
-            modifyRequest.setModificationLength( modificationLength );
-            modifyRequest.setValuesLength( valuesLength );
+            decorator.setChangeLength( changeLength );
+            decorator.setModificationLength( modificationLength );
+            decorator.setValuesLength( valuesLength );
         }
 
-        modifyRequest.setChangesLength( changesLength );
-        modifyRequest.setModifyRequestLength( modifyRequestLength );
+        decorator.setChangesLength( changesLength );
+        decorator.setModifyRequestLength( modifyRequestLength );
 
         return 1 + TLV.getNbBytes( modifyRequestLength ) + modifyRequestLength;
 
@@ -1946,20 +1947,22 @@ public class LdapEncoder
      * @param buffer The buffer where to put the PDU
      * @return The PDU.
      */
-    private void encodeModifyRequest( ByteBuffer buffer, ModifyRequestImpl modifyRequest ) throws EncoderException
+    private void encodeModifyRequest( ByteBuffer buffer, ModifyRequestDecorator decorator )
+            throws EncoderException
     {
+        ModifyRequest modifyRequest = decorator.getModifyRequest();
         try
         {
             // The AddRequest Tag
             buffer.put( LdapConstants.MODIFY_REQUEST_TAG );
-            buffer.put( TLV.getBytes( modifyRequest.getModifyRequestLength() ) );
+            buffer.put( TLV.getBytes( decorator.getModifyRequestLength() ) );
 
             // The entry
-            Value.encode( buffer, Dn.getBytes(modifyRequest.getName()) );
+            Value.encode( buffer, Dn.getBytes( modifyRequest.getName()) );
 
             // The modifications sequence
             buffer.put( UniversalTag.SEQUENCE.getValue() );
-            buffer.put( TLV.getBytes( modifyRequest.getChangesLength() ) );
+            buffer.put( TLV.getBytes( decorator.getChangesLength() ) );
 
             // The modifications list
             Collection<Modification> modifications = modifyRequest.getModifications();
@@ -1973,7 +1976,7 @@ public class LdapEncoder
                 {
                     // The modification sequence
                     buffer.put( UniversalTag.SEQUENCE.getValue() );
-                    int localModificationSequenceLength = modifyRequest.getChangeLength().get( modificationNumber );
+                    int localModificationSequenceLength = decorator.getChangeLength().get( modificationNumber );
                     buffer.put( TLV.getBytes( localModificationSequenceLength ) );
 
                     // The operation. The value has to be changed, it's not
@@ -1984,7 +1987,7 @@ public class LdapEncoder
 
                     // The modification
                     buffer.put( UniversalTag.SEQUENCE.getValue() );
-                    int localModificationLength = modifyRequest.getModificationLength().get( modificationNumber );
+                    int localModificationLength = decorator.getModificationLength().get( modificationNumber );
                     buffer.put( TLV.getBytes( localModificationLength ) );
 
                     // The modification type
@@ -1992,7 +1995,7 @@ public class LdapEncoder
 
                     // The values
                     buffer.put( UniversalTag.SET.getValue() );
-                    int localValuesLength = modifyRequest.getValuesLength().get( modificationNumber );
+                    int localValuesLength = decorator.getValuesLength().get( modificationNumber );
                     buffer.put( TLV.getBytes( localValuesLength ) );
 
                     if ( modification.getAttribute().size() != 0 )
@@ -2423,7 +2426,7 @@ public class LdapEncoder
                 return computeIntermediateResponseLength( ( IntermediateResponseDecorator ) decorator );
 
             case MODIFY_REQUEST:
-                return computeModifyRequestLength( ( ModifyRequestImpl ) message );
+                return computeModifyRequestLength( ( ModifyRequestDecorator ) decorator );
 
             case MODIFY_RESPONSE:
                 return computeModifyResponseLength( ( ModifyResponseImpl ) message );
@@ -2510,7 +2513,7 @@ public class LdapEncoder
                 break;
 
             case MODIFY_REQUEST:
-                encodeModifyRequest( bb, ( ModifyRequestImpl ) message );
+                encodeModifyRequest( bb, ( ModifyRequestDecorator ) decorator );
                 break;
 
             case MODIFY_RESPONSE:

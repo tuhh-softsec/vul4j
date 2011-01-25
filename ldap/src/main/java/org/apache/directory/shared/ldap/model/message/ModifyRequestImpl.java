@@ -17,16 +17,16 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.message;
+package org.apache.directory.shared.ldap.model.message;
 
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.directory.shared.ldap.message.ModifyResponseImpl;
 import org.apache.directory.shared.ldap.model.message.*;
 import org.apache.directory.shared.ldap.model.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.model.entry.DefaultModification;
@@ -61,25 +61,6 @@ public class ModifyRequestImpl extends AbstractAbandonableRequest implements Mod
     /** A local storage for the operation */
     private ModificationOperation currentOperation;
 
-    /** The modify request length */
-    private int modifyRequestLength;
-
-    /** The changes length */
-    private int changesLength;
-
-    /** The list of all change lengths */
-    private List<Integer> changeLength = new LinkedList<Integer>();
-
-    /** The list of all the modification lengths */
-    private List<Integer> modificationLength = new LinkedList<Integer>();
-
-    /** The list of all the value lengths */
-    private List<Integer> valuesLength = new LinkedList<Integer>();
-
-
-    // ------------------------------------------------------------------------
-    // Constructors
-    // ------------------------------------------------------------------------
 
     /**
      * Creates a ModifyRequest implementing object used to modify the
@@ -106,6 +87,8 @@ public class ModifyRequestImpl extends AbstractAbandonableRequest implements Mod
     // ------------------------------------------------------------------------
     // ModifyRequest Interface Method Implementations
     // ------------------------------------------------------------------------
+
+
     /**
      * Gets an immutable Collection of modification items representing the
      * atomic changes to perform on the candidate entry to modify.
@@ -383,101 +366,6 @@ public class ModifyRequestImpl extends AbstractAbandonableRequest implements Mod
         }
 
         return response;
-    }
-
-
-    /**
-     * @return The encoded ModifyRequest's length
-     */
-    /* No Qualifier*/void setModifyRequestLength( int modifyRequestLength )
-    {
-        this.modifyRequestLength = modifyRequestLength;
-    }
-
-
-    /**
-     * Stores the encoded length for the ModifyRequest
-     * @param modifyRequestLength The encoded length
-     */
-    /* No Qualifier*/int getModifyRequestLength()
-    {
-        return modifyRequestLength;
-    }
-
-
-    /**
-     * @return The encoded Changes length
-     */
-    /* No Qualifier*/void setChangesLength( int changesLength )
-    {
-        this.changesLength = changesLength;
-    }
-
-
-    /**
-     * Stores the encoded length for the Changes
-     * @param changesLength The encoded length
-     */
-    /* No Qualifier*/int getChangesLength()
-    {
-        return changesLength;
-    }
-
-
-    /**
-     * @return The list of encoded Change length
-     */
-    /* No Qualifier*/void setChangeLength( List<Integer> changeLength )
-    {
-        this.changeLength = changeLength;
-    }
-
-
-    /**
-     * Stores the list of encoded change length
-     * @param changeLength The list of encoded Change length
-     */
-    /* No Qualifier*/List<Integer> getChangeLength()
-    {
-        return changeLength;
-    }
-
-
-    /**
-     * @return The list of encoded Modification length
-     */
-    /* No Qualifier*/void setModificationLength( List<Integer> modificationLength )
-    {
-        this.modificationLength = modificationLength;
-    }
-
-
-    /**
-     * Stores the list of encoded modification length
-     * @param modificationLength The list of encoded Modification length
-     */
-    /* No Qualifier*/List<Integer> getModificationLength()
-    {
-        return modificationLength;
-    }
-
-
-    /**
-     * @return The list of encoded Values length
-     */
-    /* No Qualifier*/void setValuesLength( List<Integer> valuesLength )
-    {
-        this.valuesLength = valuesLength;
-    }
-
-
-    /**
-     * Stores the list of encoded Values length
-     * @param valuesLength The list of encoded Values length
-     */
-    /* No Qualifier*/List<Integer> getValuesLength()
-    {
-        return valuesLength;
     }
 
 

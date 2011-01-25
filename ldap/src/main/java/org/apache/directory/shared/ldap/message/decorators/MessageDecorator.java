@@ -73,6 +73,8 @@ public class MessageDecorator
                 return new ExtendedResponseDecorator( ( ExtendedResponse ) decoratedMessage );
             case INTERMEDIATE_RESPONSE:
                 return new IntermediateResponseDecorator( ( IntermediateResponse ) decoratedMessage );
+            case MODIFY_REQUEST:
+                return new ModifyRequestDecorator( ( ModifyRequest ) decoratedMessage );
             case MODIFYDN_REQUEST:
                 return new ModifyDnRequestDecorator( ( ModifyDnRequest ) decoratedMessage );
             case MODIFYDN_RESPONSE:
