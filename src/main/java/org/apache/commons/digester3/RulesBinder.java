@@ -44,4 +44,11 @@ public interface RulesBinder {
      */
     void addError(Throwable t);
 
+    /**
+     * Allows sub-modules inclusion while binding rules.
+     *
+     * @param rulesModule the sub-module has to be included.
+     */
+    void install(RulesModule rulesModule);
+
 }
