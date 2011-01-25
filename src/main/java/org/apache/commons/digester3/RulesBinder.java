@@ -17,6 +17,7 @@
  */
 package org.apache.commons.digester3;
 
+import org.apache.commons.digester3.rulesbinder.ConverterBuilder;
 import org.apache.commons.digester3.rulesbinder.LinkedRuleBuilder;
 
 /**
@@ -60,5 +61,14 @@ public interface RulesBinder {
      * @return The Digester rules builder
      */
     LinkedRuleBuilder forPattern(String pattern);
+
+    /**
+     * Allows to associate the given type to one {@link org.apache.commons.digester3.spi.TypeConverter}.
+     *
+     * @param <T>
+     * @param type
+     * @return
+     */
+    <T> ConverterBuilder<T> convert(Class<T> type);
 
 }
