@@ -17,6 +17,8 @@
  */
 package org.apache.commons.digester3;
 
+import org.apache.commons.digester3.rulesbinder.LinkedRuleBuilder;
+
 /**
  * The Digester EDSL.
  */
@@ -50,5 +52,13 @@ public interface RulesBinder {
      * @param rulesModule the sub-module has to be included.
      */
     void install(RulesModule rulesModule);
+
+    /**
+     * Allows to associate the given pattern to one or more Digester rules.
+     *
+     * @param pattern The pattern that this rule should match
+     * @return The Digester rules builder
+     */
+    LinkedRuleBuilder forPattern(String pattern);
 
 }
