@@ -43,8 +43,8 @@ import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
 import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
+import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
 import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesControl;
-import org.apache.directory.shared.ldap.message.SearchRequestImpl;
 import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.model.filter.SearchScope;
 import org.apache.directory.shared.ldap.model.message.AliasDerefMode;
@@ -186,7 +186,8 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -197,7 +198,7 @@ public class SearchRequestTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (& (...
-        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        Filter filter = decorator.getCurrentFilter();
         AndFilter andFilter = ( AndFilter ) filter;
         assertNotNull( andFilter );
 
@@ -353,7 +354,9 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
+
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -364,7 +367,7 @@ public class SearchRequestTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (& (...
-        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        Filter filter = decorator.getCurrentFilter();
         AndFilter andFilter = ( AndFilter ) filter;
         assertNotNull( andFilter );
 
@@ -528,7 +531,9 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
+
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -539,7 +544,7 @@ public class SearchRequestTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (& (...
-        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        Filter filter = decorator.getCurrentFilter();
         AndFilter andFilter = ( AndFilter ) filter;
         assertNotNull( andFilter );
 
@@ -673,7 +678,9 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
+
 
         assertEquals( 3, searchRequest.getMessageId() );
         assertEquals( "ou=users,ou=system", searchRequest.getBase().toString() );
@@ -684,7 +691,7 @@ public class SearchRequestTest
         assertEquals( false, searchRequest.getTypesOnly() );
 
         // (objectClass = *)
-        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        Filter filter = decorator.getCurrentFilter();
         PresentFilter presentFilter = ( PresentFilter ) filter;
         assertNotNull( presentFilter );
         assertEquals( "objectClass", presentFilter.getAttributeDescription() );
@@ -777,7 +784,9 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
+
 
         assertEquals( 3, searchRequest.getMessageId() );
         assertEquals( "ou=users,ou=system", searchRequest.getBase().toString() );
@@ -788,7 +797,7 @@ public class SearchRequestTest
         assertEquals( false, searchRequest.getTypesOnly() );
 
         // (objectClass = *)
-        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        Filter filter = decorator.getCurrentFilter();
         PresentFilter presentFilter = ( PresentFilter ) filter;
         assertNotNull( presentFilter );
         assertEquals( "objectClass", presentFilter.getAttributeDescription() );
@@ -863,7 +872,9 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
+
 
         assertEquals( 3, searchRequest.getMessageId() );
         assertEquals( "ou=users,ou=system", searchRequest.getBase().toString() );
@@ -874,7 +885,7 @@ public class SearchRequestTest
         assertEquals( false, searchRequest.getTypesOnly() );
 
         // (objectClass = *)
-        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        Filter filter = decorator.getCurrentFilter();
         PresentFilter presentFilter = ( PresentFilter ) filter;
         assertNotNull( presentFilter );
         assertEquals( "objectClass", presentFilter.getAttributeDescription() );
@@ -951,7 +962,9 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
+
 
         assertEquals( 33, searchRequest.getMessageId() );
         assertEquals( "dc=example,dc=com", searchRequest.getBase().toString() );
@@ -962,7 +975,7 @@ public class SearchRequestTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (objectclass=t*)
-        OrFilter orFilter = ( OrFilter ) ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        OrFilter orFilter = ( OrFilter ) decorator.getCurrentFilter();
         assertNotNull( orFilter );
         assertEquals( 5, orFilter.getFilterSet().size() );
 
@@ -1123,7 +1136,9 @@ public class SearchRequestTest
         }
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
+
 
         assertEquals( 4, searchRequest.getMessageId() );
         assertEquals( 2, searchRequest.getControls().size() );
@@ -1146,7 +1161,7 @@ public class SearchRequestTest
         assertEquals( 0, searchRequest.getTimeLimit() );
         assertEquals( false, searchRequest.getTypesOnly() );
 
-        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        Filter filter = decorator.getCurrentFilter();
         assertTrue( filter instanceof PresentFilter );
         assertEquals( "objectClass", ( ( PresentFilter ) filter ).getAttributeDescription() );
 
@@ -1300,7 +1315,9 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
+
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -1311,7 +1328,7 @@ public class SearchRequestTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (& (...
-        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        Filter filter = decorator.getCurrentFilter();
         AndFilter andFilter = ( AndFilter ) filter;
         assertNotNull( andFilter );
 
@@ -1424,7 +1441,9 @@ public class SearchRequestTest
         }
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
+
 
         assertEquals( 4, searchRequest.getMessageId() );
         assertEquals( 1, searchRequest.getControls().size() );
@@ -1444,7 +1463,7 @@ public class SearchRequestTest
         assertEquals( 0, searchRequest.getTimeLimit() );
         assertEquals( false, searchRequest.getTypesOnly() );
 
-        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        Filter filter = decorator.getCurrentFilter();
         assertTrue( filter instanceof PresentFilter );
         assertEquals( "objectClass", ( ( PresentFilter ) filter ).getAttributeDescription() );
 
@@ -1612,7 +1631,9 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
+
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "", searchRequest.getBase().toString() );
@@ -1623,7 +1644,7 @@ public class SearchRequestTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (& (...
-        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        Filter filter = decorator.getCurrentFilter();
         AndFilter andFilter = ( AndFilter ) filter;
         assertNotNull( andFilter );
 
@@ -2643,7 +2664,9 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
+
 
         assertEquals( 4, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -2654,7 +2677,7 @@ public class SearchRequestTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // >=
-        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        Filter filter = decorator.getCurrentFilter();
         AttributeValueAssertionFilter greaterThanFilter = ( AttributeValueAssertionFilter ) filter;
         assertNotNull( greaterThanFilter );
 
@@ -2735,7 +2758,9 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
+
 
         assertEquals( 4, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -2746,7 +2771,7 @@ public class SearchRequestTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // >=
-        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        Filter filter = decorator.getCurrentFilter();
         AttributeValueAssertionFilter greaterThanFilter = ( AttributeValueAssertionFilter ) filter;
         assertNotNull( greaterThanFilter );
 
@@ -2827,7 +2852,9 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
+
 
         assertEquals( 4, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -2838,7 +2865,7 @@ public class SearchRequestTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // >=
-        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        Filter filter = decorator.getCurrentFilter();
         AttributeValueAssertionFilter greaterThanFilter = ( AttributeValueAssertionFilter ) filter;
         assertNotNull( greaterThanFilter );
 
@@ -3076,7 +3103,9 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
+
 
         assertEquals( 2, searchRequest.getMessageId() );
         assertEquals( "dc=pgpkeys", searchRequest.getBase().toString() );
@@ -3087,7 +3116,7 @@ public class SearchRequestTest
         assertEquals( false, searchRequest.getTypesOnly() );
 
         // And 
-        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        Filter filter = decorator.getCurrentFilter();
         AndFilter andFilter = ( AndFilter ) filter;
         assertNotNull( andFilter );
 
@@ -3190,7 +3219,9 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
+
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "a=b", searchRequest.getBase().toString() );
@@ -3201,7 +3232,7 @@ public class SearchRequestTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (a=b)
-        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        Filter filter = decorator.getCurrentFilter();
         AttributeValueAssertionFilter equalityMatch = ( AttributeValueAssertionFilter ) filter;
         assertNotNull( equalityMatch );
 
@@ -3294,7 +3325,9 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
+
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "a=b", searchRequest.getBase().toString() );
@@ -3305,7 +3338,7 @@ public class SearchRequestTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (&(...
-        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        Filter filter = decorator.getCurrentFilter();
         AndFilter andFilter = ( AndFilter ) filter;
         assertNotNull( andFilter );
 
@@ -3410,7 +3443,9 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
+
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "a=b", searchRequest.getBase().toString() );
@@ -3421,7 +3456,7 @@ public class SearchRequestTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (&(...
-        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        Filter filter = decorator.getCurrentFilter();
         AndFilter andFilter = ( AndFilter ) filter;
         assertNotNull( andFilter );
 
@@ -3530,7 +3565,9 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
+
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "a=b", searchRequest.getBase().toString() );
@@ -3541,7 +3578,7 @@ public class SearchRequestTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (&(...
-        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        Filter filter = decorator.getCurrentFilter();
         AndFilter andFilter = ( AndFilter ) filter;
         assertNotNull( andFilter );
 
@@ -3653,7 +3690,9 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
+
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "a=b", searchRequest.getBase().toString() );
@@ -3664,7 +3703,7 @@ public class SearchRequestTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (&(...
-        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        Filter filter = decorator.getCurrentFilter();
         AndFilter andFilter = ( AndFilter ) filter;
         assertNotNull( andFilter );
 
@@ -3785,7 +3824,9 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
+
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "a=b", searchRequest.getBase().toString() );
@@ -3796,7 +3837,7 @@ public class SearchRequestTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (&(...
-        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        Filter filter = decorator.getCurrentFilter();
         AndFilter andFilter = ( AndFilter ) filter;
         assertNotNull( andFilter );
 
@@ -3921,7 +3962,9 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
+
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "a=b", searchRequest.getBase().toString() );
@@ -3932,7 +3975,7 @@ public class SearchRequestTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (&(...
-        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        Filter filter = decorator.getCurrentFilter();
         AndFilter andFilter = ( AndFilter ) filter;
         assertNotNull( andFilter );
 
@@ -4067,7 +4110,9 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
+
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "a=b", searchRequest.getBase().toString() );
@@ -4078,7 +4123,7 @@ public class SearchRequestTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (&(...
-        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        Filter filter = decorator.getCurrentFilter();
         AndFilter andFilter = ( AndFilter ) filter;
         assertNotNull( andFilter );
 
@@ -4210,7 +4255,9 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
+
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "a=b", searchRequest.getBase().toString() );
@@ -4221,7 +4268,7 @@ public class SearchRequestTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (&(...
-        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        Filter filter = decorator.getCurrentFilter();
         AndFilter andFilter = ( AndFilter ) filter;
         assertNotNull( andFilter );
 
@@ -4354,7 +4401,9 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
+
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "a=b", searchRequest.getBase().toString() );
@@ -4365,7 +4414,7 @@ public class SearchRequestTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (&(...
-        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        Filter filter = decorator.getCurrentFilter();
         AndFilter andFilter = ( AndFilter ) filter;
         assertNotNull( andFilter );
 
@@ -4503,7 +4552,9 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
+
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "a=b", searchRequest.getBase().toString() );
@@ -4514,7 +4565,7 @@ public class SearchRequestTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (&(...
-        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        Filter filter = decorator.getCurrentFilter();
         AndFilter andFilter = ( AndFilter ) filter;
         assertNotNull( andFilter );
 
@@ -4612,7 +4663,9 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
+
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "", searchRequest.getBase().toString() );
@@ -4622,7 +4675,7 @@ public class SearchRequestTest
         assertEquals( 0, searchRequest.getTimeLimit() );
         assertEquals( false, searchRequest.getTypesOnly() );
 
-        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        Filter filter = decorator.getCurrentFilter();
         PresentFilter presentFilter = ( PresentFilter ) filter;
         assertNotNull( presentFilter );
         assertEquals( "objectClass", presentFilter.getAttributeDescription() );
@@ -4675,7 +4728,9 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
+
 
         assertEquals( 3, searchRequest.getMessageId() );
         assertEquals( "ou=users,ou=system", searchRequest.getBase().toString() );
@@ -4685,7 +4740,7 @@ public class SearchRequestTest
         assertEquals( 30, searchRequest.getTimeLimit() );
         assertEquals( true, searchRequest.getTypesOnly() );
 
-        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        Filter filter = decorator.getCurrentFilter();
         AndFilter andFilter = ( AndFilter ) filter;
         assertNotNull( andFilter );
 
@@ -4790,7 +4845,9 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
+
 
         assertEquals( 6, searchRequest.getMessageId() );
         assertEquals( "ou=system", searchRequest.getBase().toString() );
@@ -4801,7 +4858,7 @@ public class SearchRequestTest
         assertEquals( false, searchRequest.getTypesOnly() );
 
         // (&(...
-        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        Filter filter = decorator.getCurrentFilter();
         AndFilter andFilter = ( AndFilter ) filter;
         assertNotNull( andFilter );
 

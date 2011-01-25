@@ -71,6 +71,7 @@ import org.apache.directory.shared.ldap.codec.actions.StoreReferenceAction;
 import org.apache.directory.shared.ldap.codec.actions.StoreTypeMatchingRuleAction;
 import org.apache.directory.shared.ldap.codec.actions.ValueAction;
 import org.apache.directory.shared.ldap.codec.controls.ControlFactory;
+import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.ModifyRequestDecorator;
 import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
@@ -3601,8 +3602,8 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
                     SearchRequest searchRequest = new SearchRequestImpl( ldapMessageContainer.getMessageId() );
-                    ( ( SearchRequestImpl ) searchRequest ).setTlvId( tlv.getId() );
                     ldapMessageContainer.setMessage( searchRequest );
+                    ldapMessageContainer.getSearchRequestDecorator().setTlvId(tlv.getId());
 
                     LOG.debug( "Search Request" );
                 }
@@ -3623,7 +3624,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                 public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
+                    SearchRequest searchRequest = ldapMessageContainer.getSearchRequestDecorator().getSearchRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -3659,7 +3660,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                         baseObject = Dn.EMPTY_DN;
                     }
 
-                    searchRequest.setBase( baseObject );
+                    searchRequest.setBase(baseObject);
 
                     LOG.debug( "Searching with root Dn : {}", baseObject );
                 }
@@ -3685,7 +3686,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
-                    SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
+                    SearchRequest searchRequest = ldapMessageContainer.getSearchRequestDecorator().getSearchRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -3748,7 +3749,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
-                    SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
+                    SearchRequest searchRequest = ldapMessageContainer.getSearchRequestDecorator().getSearchRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -3811,7 +3812,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
-                    SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
+                    SearchRequest searchRequest = ldapMessageContainer.getSearchRequestDecorator().getSearchRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -3857,7 +3858,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
-                    SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
+                    SearchRequest searchRequest = ldapMessageContainer.getSearchRequestDecorator().getSearchRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -3904,7 +3905,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
-                    SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
+                    SearchRequest searchRequest = ldapMessageContainer.getSearchRequestDecorator().getSearchRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -5045,13 +5046,12 @@ public final class LdapMessageGrammar extends AbstractGrammar
                 public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
+                    SearchRequestDecorator searchRequest = ldapMessageContainer.getSearchRequestDecorator();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
                     // Store the value.
-                    SubstringFilter substringFilter = ( SubstringFilter ) ( ( SearchRequestImpl ) searchRequest )
-                        .getTerminalFilter();
+                    SubstringFilter substringFilter = ( SubstringFilter ) searchRequest.getTerminalFilter();
 
                     if ( tlv.getLength() == 0 )
                     {
@@ -5066,7 +5066,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
 
                         // We now have to get back to the nearest filter which
                         // is not terminal.
-                        ( ( SearchRequestImpl ) searchRequest ).setTerminalFilter( substringFilter );
+                        searchRequest.setTerminalFilter( substringFilter );
                     }
                 }
             } );
@@ -5120,13 +5120,12 @@ public final class LdapMessageGrammar extends AbstractGrammar
                 public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
+                    SearchRequestDecorator searchRequest = ldapMessageContainer.getSearchRequestDecorator();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
                     // Store the value.
-                    SubstringFilter substringFilter = ( SubstringFilter ) ( ( SearchRequestImpl ) searchRequest )
-                        .getTerminalFilter();
+                    SubstringFilter substringFilter = ( SubstringFilter ) searchRequest.getTerminalFilter();
 
                     if ( tlv.getLength() == 0 )
                     {
@@ -5139,7 +5138,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
 
                     // We now have to get back to the nearest filter which is
                     // not terminal.
-                    ( ( SearchRequestImpl ) searchRequest ).unstackFilters( container );
+                    searchRequest.unstackFilters( container );
                 }
             } );
 
@@ -6042,13 +6041,13 @@ public final class LdapMessageGrammar extends AbstractGrammar
                 public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
+                    SearchRequestDecorator searchRequest = ldapMessageContainer.getSearchRequestDecorator();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
                     // Store the value.
-                    ExtensibleMatchFilter extensibleMatchFilter = ( ExtensibleMatchFilter ) ( ( SearchRequestImpl ) searchRequest )
-                        .getTerminalFilter();
+                    ExtensibleMatchFilter extensibleMatchFilter = ( ExtensibleMatchFilter )
+                            searchRequest.getTerminalFilter();
 
                     if ( tlv.getLength() == 0 )
                     {
@@ -6169,13 +6168,12 @@ public final class LdapMessageGrammar extends AbstractGrammar
                 public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
+                    SearchRequestDecorator searchRequest = ldapMessageContainer.getSearchRequestDecorator();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
                     // Store the value.
-                    ExtensibleMatchFilter extensibleMatchFilter = ( ExtensibleMatchFilter ) ( ( SearchRequestImpl ) searchRequest )
-                        .getTerminalFilter();
+                    ExtensibleMatchFilter extensibleMatchFilter = ( ExtensibleMatchFilter ) searchRequest.getTerminalFilter();
 
                     // We get the value. If it's a 0, it's a FALSE. If it's
                     // a FF, it's a TRUE. Any other value should be an error,
@@ -6203,7 +6201,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     }
 
                     // unstack the filters if needed
-                    ( ( SearchRequestImpl ) searchRequest ).unstackFilters( ldapMessageContainer );
+                    searchRequest.unstackFilters( ldapMessageContainer );
                 }
             } );
 

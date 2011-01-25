@@ -22,7 +22,6 @@ package org.apache.directory.shared.ldap.codec.decorators;
 
 import java.util.Map;
 
-import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.model.exception.MessageException;
 import org.apache.directory.shared.ldap.model.message.AddRequest;
 import org.apache.directory.shared.ldap.model.message.AddResponse;
@@ -65,7 +64,7 @@ public class MessageDecorator implements Message
     private int controlsLength;
 
 
-    public static MessageDecorator getDecorator( Message decoratedMessage ) throws EncoderException
+    public static MessageDecorator getDecorator( Message decoratedMessage )
     {
         switch ( decoratedMessage.getType() )
         {

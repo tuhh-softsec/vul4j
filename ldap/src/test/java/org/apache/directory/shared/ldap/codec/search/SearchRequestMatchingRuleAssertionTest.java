@@ -39,6 +39,7 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
 import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.model.filter.SearchScope;
 import org.apache.directory.shared.ldap.model.message.AliasDerefMode;
@@ -184,7 +185,8 @@ public class SearchRequestMatchingRuleAssertionTest
             fail( de.getMessage() );
         }
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "dc=example,dc=com", searchRequest.getBase().toString() );
@@ -396,7 +398,8 @@ public class SearchRequestMatchingRuleAssertionTest
             fail( de.getMessage() );
         }
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
 
         assertEquals( 4, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -407,7 +410,7 @@ public class SearchRequestMatchingRuleAssertionTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // Extended
-        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        Filter filter = decorator.getCurrentFilter();
         ExtensibleMatchFilter extensibleMatchFilter = ( ExtensibleMatchFilter ) filter;
         assertNotNull( extensibleMatchFilter );
 
@@ -696,7 +699,8 @@ public class SearchRequestMatchingRuleAssertionTest
             fail( de.getMessage() );
         }
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
 
         assertEquals( 4, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -707,7 +711,7 @@ public class SearchRequestMatchingRuleAssertionTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // Extended
-        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        Filter filter = decorator.getCurrentFilter();
         ExtensibleMatchFilter extensibleMatchFilter = ( ExtensibleMatchFilter ) filter;
         assertNotNull( extensibleMatchFilter );
 

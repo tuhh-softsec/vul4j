@@ -25,10 +25,10 @@ import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
 import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilter;
 import org.apache.directory.shared.ldap.codec.search.Filter;
-import org.apache.directory.shared.ldap.model.message.SearchRequest;
-import org.apache.directory.shared.ldap.message.SearchRequestImpl;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,17 +62,17 @@ public class InitLessOrEqualFilterAction extends GrammarAction
     public void action( Asn1Container container ) throws DecoderException
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
+        SearchRequestDecorator searchRequest = ldapMessageContainer.getSearchRequestDecorator();
 
         // We can allocate the Attribute Value Assertion
         Filter filter = new AttributeValueAssertionFilter( ldapMessageContainer.getTlvId(),
             LdapConstants.LESS_OR_EQUAL_FILTER );
 
-        ( ( SearchRequestImpl ) searchRequest ).addCurrentFilter( filter );
+        searchRequest.addCurrentFilter( filter );
 
         // Store the filter structure that still has to be
         // fullfiled
-        ( ( SearchRequestImpl ) searchRequest ).setTerminalFilter( filter );
+        searchRequest.setTerminalFilter( filter );
 
         if ( IS_DEBUG )
         {

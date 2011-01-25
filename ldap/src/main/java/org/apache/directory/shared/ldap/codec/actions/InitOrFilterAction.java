@@ -26,10 +26,10 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
 import org.apache.directory.shared.ldap.codec.search.Filter;
 import org.apache.directory.shared.ldap.codec.search.OrFilter;
-import org.apache.directory.shared.ldap.model.message.SearchRequest;
-import org.apache.directory.shared.ldap.message.SearchRequestImpl;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,13 +73,13 @@ public class InitOrFilterAction extends GrammarAction
             throw new DecoderException( msg );
         }
 
-        SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
+        SearchRequestDecorator searchRequest = ldapMessageContainer.getSearchRequestDecorator();
 
         // We can allocate the SearchRequest
         Filter orFilter = new OrFilter( ldapMessageContainer.getTlvId() );
 
         // Set the filter
-        ( ( SearchRequestImpl ) searchRequest ).addCurrentFilter( orFilter );
+        searchRequest.addCurrentFilter( orFilter );
 
         if ( IS_DEBUG )
         {

@@ -22,6 +22,8 @@ package org.apache.directory.shared.ldap.codec;
 
 import org.apache.directory.shared.asn1.ber.AbstractContainer;
 import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
+import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.ModifyRequestDecorator;
 import org.apache.directory.shared.ldap.message.spi.BinaryAttributeDetector;
 import org.apache.directory.shared.ldap.model.message.AbandonRequest;
@@ -59,6 +61,9 @@ public class LdapMessageContainer extends AbstractContainer
 {
     /** The internal ldap message */
     private Message message;
+
+    /** The Message decorator to store various temporary values */
+    private MessageDecorator decorator;
 
     /** checks if attribute is binary */
     private final BinaryAttributeDetector binaryAttributeDetector;
@@ -143,7 +148,7 @@ public class LdapMessageContainer extends AbstractContainer
      */
     public BindRequest getBindRequest()
     {
-        return (BindRequest) message;
+        return ( BindRequest ) message;
     }
 
 
@@ -267,9 +272,9 @@ public class LdapMessageContainer extends AbstractContainer
     /**
      * @return Returns the SearchRequest stored in the container
      */
-    public SearchRequest getSearchRequest()
+    public SearchRequestDecorator getSearchRequestDecorator()
     {
-        return ( SearchRequest ) message;
+        return ( SearchRequestDecorator ) decorator;
     }
 
 
@@ -296,7 +301,7 @@ public class LdapMessageContainer extends AbstractContainer
      */
     public SearchResultDone getSearchResultDone()
     {
-        return (SearchResultDone) message;
+        return ( SearchResultDone ) message;
     }
 
 
@@ -318,6 +323,17 @@ public class LdapMessageContainer extends AbstractContainer
     public void setMessage( Message message )
     {
         this.message = message;
+    }
+
+
+    public MessageDecorator getMessageDecorator()
+    {
+        if ( decorator == null )
+        {
+            decorator = MessageDecorator.getDecorator( message );
+        }
+
+        return decorator;
     }
 
 

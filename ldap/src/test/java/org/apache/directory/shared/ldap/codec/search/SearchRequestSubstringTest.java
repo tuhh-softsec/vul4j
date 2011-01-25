@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.codec.search;
 
 
-import static org.junit.Assert.assertEquals;
+import  static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -37,13 +37,13 @@ import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
 import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.model.filter.SearchScope;
 import org.apache.directory.shared.ldap.model.message.AliasDerefMode;
 import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.SearchRequest;
-import org.apache.directory.shared.ldap.message.SearchRequestImpl;
 import org.apache.directory.shared.ldap.model.schema.normalizers.DeepTrimToLowerNormalizer;
 import org.apache.directory.shared.ldap.model.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.util.Strings;
@@ -164,7 +164,8 @@ public class SearchRequestSubstringTest
             fail( de.getMessage() );
         }
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -175,7 +176,7 @@ public class SearchRequestSubstringTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (objectclass=t*)
-        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        Filter filter = decorator.getCurrentFilter();
         SubstringFilter substringFilter = ( SubstringFilter ) filter;
         assertNotNull( substringFilter );
 
@@ -310,7 +311,8 @@ public class SearchRequestSubstringTest
             fail( de.getMessage() );
         }
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -321,7 +323,7 @@ public class SearchRequestSubstringTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (objectclass=t*)
-        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        Filter filter = decorator.getCurrentFilter();
         SubstringFilter substringFilter = ( SubstringFilter ) filter;
         assertNotNull( substringFilter );
 
@@ -438,7 +440,8 @@ public class SearchRequestSubstringTest
             fail( de.getMessage() );
         }
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -449,7 +452,7 @@ public class SearchRequestSubstringTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (objectclass=t*)
-        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        Filter filter = decorator.getCurrentFilter();
         SubstringFilter substringFilter = ( SubstringFilter ) filter;
         assertNotNull( substringFilter );
 
@@ -560,7 +563,8 @@ public class SearchRequestSubstringTest
             fail( de.getMessage() );
         }
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -571,7 +575,7 @@ public class SearchRequestSubstringTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (objectclass=t*)
-        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        Filter filter = decorator.getCurrentFilter();
         SubstringFilter substringFilter = ( SubstringFilter ) filter;
         assertNotNull( substringFilter );
 
@@ -683,7 +687,8 @@ public class SearchRequestSubstringTest
             fail( de.getMessage() );
         }
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -694,7 +699,7 @@ public class SearchRequestSubstringTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (objectclass=t*)
-        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        Filter filter = decorator.getCurrentFilter();
         SubstringFilter substringFilter = ( SubstringFilter ) filter;
         assertNotNull( substringFilter );
 
@@ -805,7 +810,8 @@ public class SearchRequestSubstringTest
             fail( de.getMessage() );
         }
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -816,7 +822,7 @@ public class SearchRequestSubstringTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (objectclass=t*)
-        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        Filter filter = decorator.getCurrentFilter();
         SubstringFilter substringFilter = ( SubstringFilter ) filter;
         assertNotNull( substringFilter );
 
@@ -930,7 +936,8 @@ public class SearchRequestSubstringTest
             fail( de.getMessage() );
         }
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -941,7 +948,7 @@ public class SearchRequestSubstringTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (objectclass=t*)
-        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        Filter filter = decorator.getCurrentFilter();
         SubstringFilter substringFilter = ( SubstringFilter ) filter;
         assertNotNull( substringFilter );
 
@@ -1053,7 +1060,8 @@ public class SearchRequestSubstringTest
             fail( de.getMessage() );
         }
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -1064,7 +1072,7 @@ public class SearchRequestSubstringTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (objectclass=t*)
-        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        Filter filter = decorator.getCurrentFilter();
         SubstringFilter substringFilter = ( SubstringFilter ) filter;
         assertNotNull( substringFilter );
 
@@ -1175,7 +1183,8 @@ public class SearchRequestSubstringTest
             fail( de.getMessage() );
         }
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -1186,7 +1195,7 @@ public class SearchRequestSubstringTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (objectclass=t*)
-        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        Filter filter = decorator.getCurrentFilter();
         SubstringFilter substringFilter = ( SubstringFilter ) filter;
         assertNotNull( substringFilter );
 
@@ -1318,7 +1327,8 @@ public class SearchRequestSubstringTest
             fail( de.getMessage() );
         }
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
+        SearchRequest searchRequest = decorator.getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -1329,7 +1339,7 @@ public class SearchRequestSubstringTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (objectclass=t*)
-        Filter filter = ( ( SearchRequestImpl ) searchRequest ).getCurrentFilter();
+        Filter filter = decorator.getCurrentFilter();
         SubstringFilter substringFilter = ( SubstringFilter ) filter;
         assertNotNull( substringFilter );
 

@@ -25,6 +25,7 @@ import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
 import org.apache.directory.shared.ldap.model.message.SearchRequest;
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
@@ -61,8 +62,7 @@ public class AttributeDescAction extends GrammarAction
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
-        SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
-
+        SearchRequestDecorator searchRequest = ldapMessageContainer.getSearchRequestDecorator();
         TLV tlv = ldapMessageContainer.getCurrentTLV();
         String attributeDescription = null;
 
@@ -73,7 +73,7 @@ public class AttributeDescAction extends GrammarAction
             // If the attributeDescription is empty, we won't add it
             if ( !Strings.isEmpty(attributeDescription.trim()) )
             {
-                searchRequest.addAttributes( attributeDescription );
+                searchRequest.getSearchRequest().addAttributes( attributeDescription );
             }
         }
 

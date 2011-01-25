@@ -26,9 +26,9 @@ import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
-import org.apache.directory.shared.ldap.model.message.SearchRequest;
-import org.apache.directory.shared.ldap.message.SearchRequestImpl;
+
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,13 +63,12 @@ public class StoreFinalAction extends GrammarAction
     public void action( Asn1Container container ) throws DecoderException
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
+        SearchRequestDecorator searchRequest = ldapMessageContainer.getSearchRequestDecorator();
 
         TLV tlv = ldapMessageContainer.getCurrentTLV();
 
         // Store the value.
-        SubstringFilter substringFilter = ( SubstringFilter ) ( ( SearchRequestImpl ) searchRequest )
-            .getTerminalFilter();
+        SubstringFilter substringFilter = ( SubstringFilter ) searchRequest.getTerminalFilter();
 
         if ( tlv.getLength() == 0 )
         {
@@ -83,7 +82,7 @@ public class StoreFinalAction extends GrammarAction
 
         // We now have to get back to the nearest filter which is
         // not terminal.
-        ( ( SearchRequestImpl ) searchRequest ).unstackFilters( container );
+        searchRequest.unstackFilters( container );
 
         if ( IS_DEBUG )
         {

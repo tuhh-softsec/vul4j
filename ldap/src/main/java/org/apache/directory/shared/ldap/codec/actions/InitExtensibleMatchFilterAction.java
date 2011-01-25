@@ -24,10 +24,10 @@ import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
 import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
 import org.apache.directory.shared.ldap.codec.search.Filter;
-import org.apache.directory.shared.ldap.model.message.SearchRequest;
-import org.apache.directory.shared.ldap.message.SearchRequestImpl;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,13 +61,13 @@ public class InitExtensibleMatchFilterAction extends GrammarAction
     public void action( Asn1Container container ) throws DecoderException
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
+        SearchRequestDecorator searchRequest = ldapMessageContainer.getSearchRequestDecorator();
 
         // We can allocate the ExtensibleMatch Filter
         Filter extensibleMatchFilter = new ExtensibleMatchFilter( ldapMessageContainer.getTlvId() );
 
-        ( ( SearchRequestImpl ) searchRequest ).addCurrentFilter( extensibleMatchFilter );
-        ( ( SearchRequestImpl ) searchRequest ).setTerminalFilter( extensibleMatchFilter );
+        searchRequest.addCurrentFilter( extensibleMatchFilter );
+        searchRequest.setTerminalFilter( extensibleMatchFilter );
 
         if ( IS_DEBUG )
         {

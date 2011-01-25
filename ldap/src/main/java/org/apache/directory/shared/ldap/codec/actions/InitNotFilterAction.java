@@ -26,6 +26,7 @@ import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
 import org.apache.directory.shared.ldap.codec.search.Filter;
 import org.apache.directory.shared.ldap.codec.search.NotFilter;
 import org.apache.directory.shared.ldap.model.message.SearchRequest;
@@ -73,13 +74,13 @@ public class InitNotFilterAction extends GrammarAction
             throw new DecoderException( msg );
         }
 
-        SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
+        SearchRequestDecorator searchRequest = ldapMessageContainer.getSearchRequestDecorator();
 
         // We can allocate the SearchRequest
         Filter notFilter = new NotFilter( ldapMessageContainer.getTlvId() );
 
         // Set the filter
-        ( ( SearchRequestImpl ) searchRequest ).addCurrentFilter( notFilter );
+        searchRequest.addCurrentFilter( notFilter );
 
         if ( IS_DEBUG )
         {

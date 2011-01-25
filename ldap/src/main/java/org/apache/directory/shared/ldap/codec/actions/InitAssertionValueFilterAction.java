@@ -26,12 +26,11 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
 import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilter;
 import org.apache.directory.shared.ldap.model.entry.BinaryValue;
 import org.apache.directory.shared.ldap.model.entry.StringValue;
 import org.apache.directory.shared.ldap.model.entry.Value;
-import org.apache.directory.shared.ldap.model.message.SearchRequest;
-import org.apache.directory.shared.ldap.message.SearchRequestImpl;
 import org.apache.directory.shared.util.StringConstants;
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
@@ -67,7 +66,7 @@ public class InitAssertionValueFilterAction extends GrammarAction
     public void action( Asn1Container container ) throws DecoderException
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
+        SearchRequestDecorator searchRequest = ldapMessageContainer.getSearchRequestDecorator();
 
         TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -83,8 +82,8 @@ public class InitAssertionValueFilterAction extends GrammarAction
             assertionValue = new BinaryValue( StringConstants.EMPTY_BYTES );
         }
 
-        AttributeValueAssertionFilter terminalFilter = ( AttributeValueAssertionFilter ) ( ( SearchRequestImpl ) searchRequest )
-            .getTerminalFilter();
+        AttributeValueAssertionFilter terminalFilter = ( AttributeValueAssertionFilter )
+                searchRequest.getTerminalFilter();
         AttributeValueAssertion assertion = terminalFilter.getAssertion();
 
         if ( ldapMessageContainer.isBinary( assertion.getAttributeDesc() ) )
@@ -116,7 +115,7 @@ public class InitAssertionValueFilterAction extends GrammarAction
 
         // We now have to get back to the nearest filter which is
         // not terminal.
-        ( ( SearchRequestImpl ) searchRequest ).unstackFilters( container );
+        searchRequest.unstackFilters( container );
 
         if ( IS_DEBUG )
         {

@@ -64,10 +64,6 @@ public class LdapDecoder implements ProtocolDecoder
 
     /**
      * Creates an instance of a Ldap Decoder implementation.
-     * 
-     * @param provider the owning provider.
-     * @param binaryAttributeDetector checks for binary attributes 
-     * @param maxPDUSize the maximum size a PDU can be
      */
     public LdapDecoder()
     {

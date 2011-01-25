@@ -25,9 +25,9 @@ import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
 import org.apache.directory.shared.ldap.codec.search.PresentFilter;
-import org.apache.directory.shared.ldap.model.message.SearchRequest;
-import org.apache.directory.shared.ldap.message.SearchRequestImpl;
+
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,7 +62,7 @@ public class InitPresentFilterAction extends GrammarAction
     public void action( Asn1Container container ) throws DecoderException
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
+        SearchRequestDecorator searchRequest = ldapMessageContainer.getSearchRequestDecorator();
 
         TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -70,8 +70,8 @@ public class InitPresentFilterAction extends GrammarAction
         PresentFilter presentFilter = new PresentFilter( ldapMessageContainer.getTlvId() );
 
         // add the filter to the request filter
-        ( ( SearchRequestImpl ) searchRequest ).addCurrentFilter( presentFilter );
-        ( ( SearchRequestImpl ) searchRequest ).setTerminalFilter( presentFilter );
+        searchRequest.addCurrentFilter( presentFilter );
+        searchRequest.setTerminalFilter( presentFilter );
 
         String value = Strings.utf8ToString(tlv.getValue().getData());
 
@@ -88,7 +88,7 @@ public class InitPresentFilterAction extends GrammarAction
 
         // We now have to get back to the nearest filter which is
         // not terminal.
-        ( ( SearchRequestImpl ) searchRequest ).unstackFilters( container );
+        searchRequest.unstackFilters( container );
 
         if ( IS_DEBUG )
         {

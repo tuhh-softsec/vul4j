@@ -20,8 +20,6 @@
 package org.apache.directory.shared.ldap.model.message;
 
 
-import org.apache.directory.shared.ldap.model.message.Message;
-
 /**
  * Ldap protocol request messages derive from this super interface.
  * 

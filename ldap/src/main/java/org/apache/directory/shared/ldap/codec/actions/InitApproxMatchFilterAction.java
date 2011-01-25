@@ -25,6 +25,7 @@ import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
 import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilter;
 import org.apache.directory.shared.ldap.codec.search.Filter;
 import org.apache.directory.shared.ldap.model.message.SearchRequest;
@@ -62,17 +63,17 @@ public class InitApproxMatchFilterAction extends GrammarAction
     public void action( Asn1Container container ) throws DecoderException
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        SearchRequest searchRequest = ldapMessageContainer.getSearchRequest();
+        SearchRequestDecorator searchRequest = ldapMessageContainer.getSearchRequestDecorator();
 
         // We can allocate the Attribute Value Assertion
         Filter filter = new AttributeValueAssertionFilter( ldapMessageContainer.getTlvId(),
             LdapConstants.APPROX_MATCH_FILTER );
 
-        ( ( SearchRequestImpl ) searchRequest ).addCurrentFilter( filter );
+        searchRequest.addCurrentFilter( filter );
 
         // Store the filter structure that still has to be
         // fulfilled
-        ( ( SearchRequestImpl ) searchRequest ).setTerminalFilter( filter );
+        searchRequest.setTerminalFilter( filter );
 
         if ( IS_DEBUG )
         {
