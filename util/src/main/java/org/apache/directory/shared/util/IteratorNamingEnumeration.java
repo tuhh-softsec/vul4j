@@ -18,7 +18,7 @@
  *  
  */
 
-package org.apache.directory.shared.ldap.message;
+package org.apache.directory.shared.util;
 
 
 import java.util.Iterator;
