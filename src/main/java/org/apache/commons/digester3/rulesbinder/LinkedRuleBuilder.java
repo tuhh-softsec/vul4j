@@ -25,6 +25,14 @@ import org.apache.commons.digester3.ObjectCreationFactory;
 public interface LinkedRuleBuilder {
 
     /**
+     * Sets the namespace URI for the current rule pattern.
+     *
+     * @param namespaceURI the namespace URI associated to the rule pattern.
+     * @return this {@link LinkedRuleBuilder} instance
+     */
+    LinkedRuleBuilder withNamespaceURI(String namespaceURI);
+
+    /**
      * Construct rule that automatically sets a property from the body text, taking the property
      * name the same as the current element.
      */
