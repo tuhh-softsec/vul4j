@@ -63,7 +63,7 @@ import org.apache.directory.shared.ldap.model.message.ReferralImpl;
 import org.apache.directory.shared.ldap.model.message.Response;
 import org.apache.directory.shared.ldap.model.message.ResultResponse;
 import org.apache.directory.shared.ldap.model.message.SearchResultDone;
-import org.apache.directory.shared.ldap.message.SearchResultDoneImpl;
+import org.apache.directory.shared.ldap.model.message.SearchResultDoneImpl;
 import org.apache.directory.shared.ldap.model.message.SearchResultEntry;
 import org.apache.directory.shared.ldap.message.SearchResultEntryImpl;
 import org.apache.directory.shared.ldap.model.message.SearchResultReference;

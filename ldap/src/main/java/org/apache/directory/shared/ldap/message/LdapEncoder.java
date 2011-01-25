@@ -1157,11 +1157,12 @@ public class LdapEncoder
      * Length(SearchResultDone) = Length(0x65) + Length(L1) + L1
      * </pre>
      */
-    private int computeSearchResultDoneLength( SearchResultDoneImpl searchResultDone )
+    private int computeSearchResultDoneLength( SearchResultDoneDecorator decorator )
     {
+        SearchResultDone searchResultDone = decorator.getSearchResultDone();
         int searchResultDoneLength = computeLdapResultLength( searchResultDone.getLdapResult() );
 
-        searchResultDone.setSearchResultDoneLength( searchResultDoneLength );
+        decorator.setSearchResultDoneLength( searchResultDoneLength );
 
         return 1 + TLV.getNbBytes( searchResultDoneLength ) + searchResultDoneLength;
     }
@@ -2209,14 +2210,15 @@ public class LdapEncoder
      * 
      * @param buffer The buffer where to put the PDU
      */
-    private void encodeSearchResultDone( ByteBuffer buffer, SearchResultDoneImpl searchResultDone )
+    private void encodeSearchResultDone( ByteBuffer buffer, SearchResultDoneDecorator decorator )
         throws EncoderException
     {
+        SearchResultDone searchResultDone = decorator.getSearchResultDone();
         try
         {
             // The searchResultDone Tag
             buffer.put( LdapConstants.SEARCH_RESULT_DONE_TAG );
-            buffer.put( TLV.getBytes( searchResultDone.getSearchResultDoneLength() ) );
+            buffer.put( TLV.getBytes( decorator.getSearchResultDoneLength() ) );
 
             // The LdapResult
             encodeLdapResult( buffer, searchResultDone.getLdapResult() );
@@ -2443,7 +2445,7 @@ public class LdapEncoder
                 return computeSearchRequestLength( ( SearchRequestImpl ) message );
 
             case SEARCH_RESULT_DONE:
-                return computeSearchResultDoneLength( ( SearchResultDoneImpl ) message );
+                return computeSearchResultDoneLength( ( SearchResultDoneDecorator ) decorator );
 
             case SEARCH_RESULT_ENTRY:
                 return computeSearchResultEntryLength( ( SearchResultEntryImpl ) message );
@@ -2535,7 +2537,7 @@ public class LdapEncoder
                 break;
 
             case SEARCH_RESULT_DONE:
-                encodeSearchResultDone( bb, ( SearchResultDoneImpl ) message );
+                encodeSearchResultDone( bb, ( SearchResultDoneDecorator ) decorator );
                 break;
 
             case SEARCH_RESULT_ENTRY:

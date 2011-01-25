@@ -48,7 +48,7 @@ import org.apache.directory.shared.ldap.model.filter.SearchScope;
 import org.apache.directory.shared.ldap.model.message.*;
 import org.apache.directory.shared.ldap.message.LdapEncoder;
 import org.apache.directory.shared.ldap.message.SearchRequestImpl;
-import org.apache.directory.shared.ldap.message.SearchResultDoneImpl;
+import org.apache.directory.shared.ldap.model.message.SearchResultDoneImpl;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.ldap.model.schema.normalizers.DeepTrimToLowerNormalizer;

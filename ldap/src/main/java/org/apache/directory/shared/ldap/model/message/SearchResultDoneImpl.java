@@ -17,12 +17,13 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.message;
+package org.apache.directory.shared.ldap.model.message;
 
 
 import org.apache.directory.shared.ldap.model.message.AbstractResultResponse;
 import org.apache.directory.shared.ldap.model.message.LdapResult;
 import org.apache.directory.shared.ldap.model.message.SearchResultDone;
+
 
 /**
  * SearchResponseDone implementation
@@ -31,13 +32,6 @@ import org.apache.directory.shared.ldap.model.message.SearchResultDone;
  */
 public class SearchResultDoneImpl extends AbstractResultResponse implements SearchResultDone
 {
-    /** The encoded searchResultDone length */
-    private int searchResultDoneLength;
-
-    // ------------------------------------------------------------------------
-    // Constructors
-    // ------------------------------------------------------------------------
-
     static final long serialVersionUID = 8698484213877460215L;
 
 
@@ -101,25 +95,6 @@ public class SearchResultDoneImpl extends AbstractResultResponse implements Sear
         LdapResult result = ( ( SearchResultDone ) obj ).getLdapResult();
 
         return getLdapResult().equals( result );
-    }
-
-
-    /**
-     * Stores the encoded length for the SearchResultDone
-     * @param searchResultDoneLength The encoded length
-     */
-    /*No qualifier*/void setSearchResultDoneLength( int searchResultDoneLength )
-    {
-        this.searchResultDoneLength = searchResultDoneLength;
-    }
-
-
-    /**
-     * @return The encoded SearchResultDone's length
-     */
-    /*No qualifier*/int getSearchResultDoneLength()
-    {
-        return searchResultDoneLength;
     }
 
 
