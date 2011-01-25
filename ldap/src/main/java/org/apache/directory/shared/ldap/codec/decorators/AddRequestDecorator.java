@@ -21,19 +21,17 @@ package org.apache.directory.shared.ldap.codec.decorators;
 
 
 import java.util.List;
+
 import org.apache.directory.shared.ldap.model.message.AddRequest;
 
 
 /**
- * Doc me!
+ * A decorator for the AddRequest message
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class AddRequestDecorator extends MessageDecorator
 {
-    // ~ Instance fields
-    // ----------------------------------------------------------------------------
-
     /** The add request length */
     private int addRequestLength;
 
@@ -58,6 +56,9 @@ public class AddRequestDecorator extends MessageDecorator
     }
 
 
+    /**
+     * @return The decorated AddRequest
+     */
     public AddRequest getAddRequest()
     {
         return ( AddRequest ) getMessage();

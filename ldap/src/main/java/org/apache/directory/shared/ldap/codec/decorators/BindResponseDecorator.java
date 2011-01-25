@@ -24,7 +24,7 @@ import org.apache.directory.shared.ldap.model.message.BindResponse;
 
 
 /**
- * Doc me!
+ * A decorator for the BindResponse message
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
@@ -45,6 +45,9 @@ public class BindResponseDecorator extends MessageDecorator
     }
 
 
+    /**
+     * @return The decorated BindResponse
+     */
     public BindResponse getBindResponse()
     {
         return ( BindResponse ) getMessage();

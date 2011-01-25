@@ -21,20 +21,35 @@ package org.apache.directory.shared.ldap.codec.decorators;
 
 
 import org.apache.directory.shared.asn1.EncoderException;
-import org.apache.directory.shared.ldap.model.message.*;
+import org.apache.directory.shared.ldap.model.message.AddRequest;
+import org.apache.directory.shared.ldap.model.message.AddResponse;
+import org.apache.directory.shared.ldap.model.message.BindRequest;
+import org.apache.directory.shared.ldap.model.message.BindResponse;
+import org.apache.directory.shared.ldap.model.message.CompareRequest;
+import org.apache.directory.shared.ldap.model.message.CompareResponse;
+import org.apache.directory.shared.ldap.model.message.DeleteResponse;
+import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
+import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
+import org.apache.directory.shared.ldap.model.message.IntermediateResponse;
+import org.apache.directory.shared.ldap.model.message.Message;
+import org.apache.directory.shared.ldap.model.message.ModifyDnRequest;
+import org.apache.directory.shared.ldap.model.message.ModifyDnResponse;
+import org.apache.directory.shared.ldap.model.message.ModifyRequest;
+import org.apache.directory.shared.ldap.model.message.ModifyResponse;
+import org.apache.directory.shared.ldap.model.message.SearchRequest;
+import org.apache.directory.shared.ldap.model.message.SearchResultDone;
+import org.apache.directory.shared.ldap.model.message.SearchResultEntry;
+import org.apache.directory.shared.ldap.model.message.SearchResultReference;
 
 
 /**
- * Doc me man!
+ * A decorator for the generic LDAP Message
  *
  * @TODO make this class abstract, after finishing switch and all types and make default blow an EncoderException
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class MessageDecorator
 {
-    // ~ Instance fields
-    // ----------------------------------------------------------------------------
-
     /** The decorated Control */
     private final Message decoratedMessage;
 
@@ -106,30 +121,45 @@ public class MessageDecorator
     }
 
 
+    /**
+     * @return The decorated LDAP Message
+     */
     public Message getMessage()
     {
         return decoratedMessage;
     }
 
 
+    /**
+     * @param controlsLength the encoded controls length
+     */
     public void setControlsLength( int controlsLength )
     {
         this.controlsLength = controlsLength;
     }
 
 
+    /**
+     * @return the encoded controls length
+     */
     public int getControlsLength()
     {
         return controlsLength;
     }
 
 
+    /**
+     * @param messageLength The encoded message length
+     */
     public void setMessageLength( int messageLength )
     {
         this.messageLength = messageLength;
     }
 
 
+    /**
+     * @return The encoded message length
+     */
     public int getMessageLength()
     {
         return messageLength;

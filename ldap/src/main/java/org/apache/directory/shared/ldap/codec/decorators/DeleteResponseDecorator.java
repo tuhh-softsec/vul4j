@@ -24,7 +24,7 @@ import org.apache.directory.shared.ldap.model.message.DeleteResponse;
 
 
 /**
- * Doc me!
+ * A decorator for the DeleteRequest message
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
@@ -45,6 +45,9 @@ public class DeleteResponseDecorator extends MessageDecorator
     }
 
 
+    /**
+     * @return The decorated DeleteResponse
+     */
     public DeleteResponse getDeleteResponse()
     {
         return ( DeleteResponse ) getMessage();

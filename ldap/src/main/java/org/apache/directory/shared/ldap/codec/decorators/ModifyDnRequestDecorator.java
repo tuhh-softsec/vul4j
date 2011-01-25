@@ -24,13 +24,12 @@ import org.apache.directory.shared.ldap.model.message.ModifyDnRequest;
 
 
 /**
- * Doc me!
+ * A decorator for the ModifyDnRequest message
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class ModifyDnRequestDecorator extends MessageDecorator
 {
-
     /** The modify Dn request length */
     private int modifyDnRequestLength;
 
@@ -46,6 +45,9 @@ public class ModifyDnRequestDecorator extends MessageDecorator
     }
 
 
+    /**
+     * @return The decorated ModifyDnRequest
+     */
     public ModifyDnRequest getModifyDnRequest()
     {
         return ( ModifyDnRequest ) getMessage();

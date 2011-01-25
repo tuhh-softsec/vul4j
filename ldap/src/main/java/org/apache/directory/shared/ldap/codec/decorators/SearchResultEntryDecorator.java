@@ -20,19 +20,18 @@
 package org.apache.directory.shared.ldap.codec.decorators;
 
 
-import org.apache.directory.shared.ldap.model.message.SearchResultEntry;
-
 import java.util.List;
+
+import org.apache.directory.shared.ldap.model.message.SearchResultEntry;
 
 
 /**
- * Doc me!
+ * A decorator for the SearchResultEntry message
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class SearchResultEntryDecorator extends MessageDecorator
 {
-
     /** A temporary storage for the byte[] representing the objectName */
     private byte[] objectNameBytes;
 
@@ -60,6 +59,9 @@ public class SearchResultEntryDecorator extends MessageDecorator
     }
 
 
+    /**
+     * @return The decorated SearchResultEntry
+     */
     public SearchResultEntry getSearchResultEntry()
     {
         return ( SearchResultEntry ) getMessage();

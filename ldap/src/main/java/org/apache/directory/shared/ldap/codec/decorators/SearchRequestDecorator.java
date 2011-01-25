@@ -26,7 +26,7 @@ import org.apache.directory.shared.ldap.model.message.SearchRequest;
 
 
 /**
- * Doc me!
+ * A decorator for the SearchRequest message
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
@@ -50,6 +50,9 @@ public class SearchRequestDecorator extends MessageDecorator
     }
 
 
+    /**
+     * @return The decorated SearchRequest
+     */
     public SearchRequest getSearchRequest()
     {
         return ( SearchRequest ) getMessage();

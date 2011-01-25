@@ -24,7 +24,7 @@ import org.apache.directory.shared.ldap.model.message.LdapResult;
 
 
 /**
- * Doc me!
+ * A decorator for the LdapResultResponse message
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
@@ -51,6 +51,9 @@ public class LdapResultDecorator
     }
 
 
+    /**
+     * @return The decorated LdapResult
+     */
     public LdapResult getLdapResult()
     {
         return decoratedLdapResult;

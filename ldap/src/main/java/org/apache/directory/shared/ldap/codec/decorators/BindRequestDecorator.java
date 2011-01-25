@@ -24,13 +24,12 @@ import org.apache.directory.shared.ldap.model.message.BindRequest;
 
 
 /**
- * Doc me!
+ * A decorator for the BindRequest message
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class BindRequestDecorator extends MessageDecorator
 {
-
     /** The bind request length */
     private int bindRequestLength;
 
@@ -52,6 +51,9 @@ public class BindRequestDecorator extends MessageDecorator
     }
 
 
+    /**
+     * @return The decorated BindRequest
+     */
     public BindRequest getBindRequest()
     {
         return ( BindRequest ) getMessage();

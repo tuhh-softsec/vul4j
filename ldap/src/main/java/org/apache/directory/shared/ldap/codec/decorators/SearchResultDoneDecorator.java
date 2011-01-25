@@ -24,7 +24,7 @@ import org.apache.directory.shared.ldap.model.message.SearchResultDone;
 
 
 /**
- * Doc me!
+ * A decorator for the SearchResultDone message
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
@@ -32,7 +32,6 @@ public class SearchResultDoneDecorator extends MessageDecorator
 {
     /** The encoded searchResultDone length */
     private int searchResultDoneLength;
-
 
 
     /**
@@ -46,6 +45,9 @@ public class SearchResultDoneDecorator extends MessageDecorator
     }
 
 
+    /**
+     * @return The decorated SearchResultDone
+     */
     public SearchResultDone getSearchResultDone()
     {
         return ( SearchResultDone ) getMessage();

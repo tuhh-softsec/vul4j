@@ -24,13 +24,12 @@ import org.apache.directory.shared.ldap.model.message.IntermediateResponse;
 
 
 /**
- * Doc me!
+ * A decorator for the IntermediateResponse message
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class IntermediateResponseDecorator extends MessageDecorator
 {
-
     /** The response name as a byte[] */
     private byte[] responseNameBytes;
 
@@ -49,6 +48,9 @@ public class IntermediateResponseDecorator extends MessageDecorator
     }
 
 
+    /**
+     * @return The decorated IntermediateResponse
+     */
     public IntermediateResponse getIntermediateResponse()
     {
         return ( IntermediateResponse ) getMessage();

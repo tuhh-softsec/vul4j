@@ -24,7 +24,7 @@ import org.apache.directory.shared.ldap.model.message.ModifyDnResponse;
 
 
 /**
- * Doc me!
+ * A decorator for the ModifyDnResponse message
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
@@ -45,6 +45,9 @@ public class ModifyDnResponseDecorator extends MessageDecorator
     }
 
 
+    /**
+     * @return The decorated ModifyDnResponse
+     */
     public ModifyDnResponse getModifyDnResponse()
     {
         return ( ModifyDnResponse ) getMessage();

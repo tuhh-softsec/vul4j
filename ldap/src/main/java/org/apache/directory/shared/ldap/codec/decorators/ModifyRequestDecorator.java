@@ -20,20 +20,19 @@
 package org.apache.directory.shared.ldap.codec.decorators;
 
 
-import org.apache.directory.shared.ldap.model.message.ModifyRequest;
-
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.directory.shared.ldap.model.message.ModifyRequest;
+
 
 /**
- * Doc me!
+ * A decorator for the ModifyRequest message
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class ModifyRequestDecorator extends MessageDecorator
 {
-
     /** The modify request length */
     private int modifyRequestLength;
 
@@ -61,6 +60,9 @@ public class ModifyRequestDecorator extends MessageDecorator
     }
 
 
+    /**
+     * @return The decorated ModifyRequest
+     */
     public ModifyRequest getModifyRequest()
     {
         return ( ModifyRequest ) getMessage();

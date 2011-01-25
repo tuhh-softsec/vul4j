@@ -24,13 +24,12 @@ import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 
 
 /**
- * Doc me!
+ * A decorator for the ExtendedRequest message
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class ExtendedRequestDecorator extends MessageDecorator
 {
-
     /** The extended request length */
     private int extendedRequestLength;
 
@@ -49,6 +48,9 @@ public class ExtendedRequestDecorator extends MessageDecorator
     }
 
 
+    /**
+     * @return The decorated ExtendedRequest
+     */
     public ExtendedRequest getExtendedRequest()
     {
         return ( ExtendedRequest ) getMessage();

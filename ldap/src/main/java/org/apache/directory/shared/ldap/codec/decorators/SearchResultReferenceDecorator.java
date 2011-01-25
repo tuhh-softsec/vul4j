@@ -24,7 +24,7 @@ import org.apache.directory.shared.ldap.model.message.SearchResultReference;
 
 
 /**
- * Doc me!
+ * A decorator for the SearchResultReference message
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
@@ -48,6 +48,9 @@ public class SearchResultReferenceDecorator extends MessageDecorator
     }
 
 
+    /**
+     * @return The decorated SearchResultReference
+     */
     public SearchResultReference getSearchResultReference()
     {
         return ( SearchResultReference ) getMessage();

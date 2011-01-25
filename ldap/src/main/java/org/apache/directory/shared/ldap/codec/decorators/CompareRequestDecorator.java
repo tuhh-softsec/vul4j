@@ -24,7 +24,7 @@ import org.apache.directory.shared.ldap.model.message.CompareRequest;
 
 
 /**
- * Doc me!
+ * A decorator for the CompareRequest message
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
@@ -54,6 +54,9 @@ public class CompareRequestDecorator extends MessageDecorator
     }
 
 
+    /**
+     * @return The decorated CompareRequest
+     */
     public CompareRequest getCompareRequest()
     {
         return ( CompareRequest ) getMessage();
