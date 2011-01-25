@@ -81,6 +81,8 @@ public class MessageDecorator
                 return new ModifyDnRequestDecorator( ( ModifyDnRequest ) decoratedMessage );
             case MODIFYDN_RESPONSE:
                 return new ModifyDnResponseDecorator( ( ModifyDnResponse ) decoratedMessage );
+            case SEARCH_REQUEST:
+                return new SearchRequestDecorator( ( SearchRequest ) decoratedMessage );
             case SEARCH_RESULT_DONE:
                 return new SearchResultDoneDecorator( ( SearchResultDone ) decoratedMessage );
             case SEARCH_RESULT_ENTRY:

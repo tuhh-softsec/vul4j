@@ -18,7 +18,7 @@
  *  
  */
 
-package org.apache.directory.shared.ldap.message;
+package org.apache.directory.shared.ldap.model.message;
 
 
 import org.apache.directory.shared.ldap.model.message.LdapResult;
@@ -39,17 +39,11 @@ public class LdapResultImpl implements LdapResult
     /** Lowest matched entry Dn - defaults to empty string */
     private Dn matchedDn;
 
-    /** Temporary storage of the byte[] representing the matchedDN */
-    private byte[] matchedDnBytes;
-
     /** Referral associated with this LdapResult if the errorCode is REFERRAL */
     private Referral referral;
 
     /** Decriptive error message - defaults to empty string */
     private String errorMessage;
-
-    /** Temporary storage for message bytes */
-    private byte[] errorMessageBytes;
 
     /** Resultant operation error code - defaults to SUCCESS */
     private ResultCodeEnum resultCode = ResultCodeEnum.SUCCESS;
@@ -58,6 +52,8 @@ public class LdapResultImpl implements LdapResult
     // ------------------------------------------------------------------------
     // LdapResult Interface Method Implementations
     // ------------------------------------------------------------------------
+
+
     /**
      * Gets the descriptive error message associated with the error code. May be
      * null for SUCCESS, COMPARETRUE, COMPAREFALSE and REFERRAL operations.
@@ -71,15 +67,6 @@ public class LdapResultImpl implements LdapResult
 
 
     /**
-     * @return The encoded Error message
-     */
-    /*No qualifier*/byte[] getErrorMessageBytes()
-    {
-        return errorMessageBytes;
-    }
-
-
-    /**
      * Sets the descriptive error message associated with the error code. May be
      * null for SUCCESS, COMPARETRUE, and COMPAREFALSE operations.
      * 
@@ -89,16 +76,6 @@ public class LdapResultImpl implements LdapResult
     public void setErrorMessage( String errorMessage )
     {
         this.errorMessage = errorMessage;
-    }
-
-
-    /**
-     * Set the encoded message's bytes
-     * @param errorMessageBytes The encoded bytes
-     */
-    /*No qualifier*/void setErrorMessageBytes( byte[] errorMessageBytes )
-    {
-        this.errorMessageBytes = errorMessageBytes;
     }
 
 
@@ -122,15 +99,6 @@ public class LdapResultImpl implements LdapResult
 
 
     /**
-     * @return the encoded MatchedDN
-     */
-    /*No qualifier*/byte[] getMatchedDnBytes()
-    {
-        return matchedDnBytes;
-    }
-
-
-    /**
      * Sets the lowest entry in the directory that was matched.
      * 
      * @see #getMatchedDn()
@@ -139,17 +107,6 @@ public class LdapResultImpl implements LdapResult
     public void setMatchedDn( Dn matchedDn )
     {
         this.matchedDn = matchedDn;
-    }
-
-
-    /**
-     * Sets the encoded value for MatchedDn
-     * 
-     * @param matchedDnBytes The encoded MatchedDN
-     */
-    /*No qualifier*/void setMatchedDnBytes( byte[] matchedDnBytes )
-    {
-        this.matchedDnBytes = matchedDnBytes;
     }
 
 

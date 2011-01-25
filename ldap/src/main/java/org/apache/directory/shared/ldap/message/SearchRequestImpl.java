@@ -113,16 +113,7 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Sea
     /** The final result containing SearchResponseDone response */
     private SearchResultDone response;
 
-    /** The searchRequest length */
-    private int searchRequestLength;
 
-    /** The attributeDescriptionList length */
-    private int attributeDescriptionListLength;
-
-
-    // ------------------------------------------------------------------------
-    // Constructors
-    // ------------------------------------------------------------------------
     /**
      * Creates a SearcRequest implementing object used to search the
      * DIT.
@@ -148,7 +139,7 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Sea
     /**
      * Transform the Filter part of a SearchRequest to an ExprNode
      * 
-     * @param codecFilter The filter to be transformed
+     * @param filter The filter to be transformed
      * @return An ExprNode
      */
     private ExprNode transform( Filter filter )
@@ -559,17 +550,6 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Sea
 
 
     /**
-     * Set the current filter
-     * 
-     * @param filter The filter to set.
-     */
-    public void setCurrentFilter( Filter filter )
-    {
-        currentFilter = filter;
-    }
-
-
-    /**
      * {@inheritDoc}
      */
     public void setFilter( String filter ) throws LdapException
@@ -584,6 +564,17 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Sea
             String msg = "The filter" + filter + " is invalid.";
             throw new LdapProtocolErrorException( msg );
         }
+    }
+
+
+    /**
+     * Set the current filter
+     *
+     * @param filter The filter to set.
+     */
+    public void setCurrentFilter( Filter filter )
+    {
+        currentFilter = filter;
     }
 
 
@@ -852,44 +843,6 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Sea
         }
 
         return response;
-    }
-
-
-    /**
-     * Stores the encoded length for the SearchRequest
-     * @param searchRequestLength The encoded length
-     */
-    /*No qualifier*/void setSearchRequestLength( int searchRequestLength )
-    {
-        this.searchRequestLength = searchRequestLength;
-    }
-
-
-    /**
-     * @return The encoded SearchRequest's length
-     */
-    /*No qualifier*/int getSearchRequestLength()
-    {
-        return searchRequestLength;
-    }
-
-
-    /**
-     * Stores the encoded length for the list of attributes
-     * @param attributeDescriptionListLength The encoded length of the attributes
-     */
-    /*No qualifier*/void setAttributeDescriptionListLength( int attributeDescriptionListLength )
-    {
-        this.attributeDescriptionListLength = attributeDescriptionListLength;
-    }
-
-
-    /**
-     * @return The encoded SearchRequest's attributes length
-     */
-    /*No qualifier*/int getAttributeDescriptionListLength()
-    {
-        return attributeDescriptionListLength;
     }
 
 
