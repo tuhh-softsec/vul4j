@@ -17,62 +17,55 @@
  *  under the License. 
  *  
  */
-
-package org.apache.directory.shared.dsmlv2.reponse;
+package org.apache.directory.shared.ldap.message.decorators;
 
 
 import org.apache.directory.shared.ldap.model.message.DeleteResponse;
-import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
-import org.apache.directory.shared.ldap.model.message.DeleteResponseImpl;
-import org.dom4j.Element;
 
 
 /**
- * DSML Decorator for DelResponse
+ * Doc me!
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class DelResponseDsml extends AbstractResponseDsml
+public class DeleteResponseDecorator extends MessageDecorator
 {
-    /**
-     * Creates a new instance of DelResponseDsml.
-     */
-    public DelResponseDsml()
-    {
-        super( new DeleteResponseImpl() );
-    }
+    /** The encoded deleteResponse length */
+    private int deleteResponseLength;
 
 
     /**
-     * Creates a new instance of DelResponseDsml.
+     * Makes a DeleteResponse encodable.
      *
-     * @param ldapMessage
-     *      the message to decorate
+     * @param decoratedMessage the decorated DeleteResponse
      */
-    public DelResponseDsml( DeleteResponse ldapMessage )
+    public DeleteResponseDecorator( DeleteResponse decoratedMessage )
     {
-        super( ldapMessage );
+        super( decoratedMessage );
+    }
+
+
+    public DeleteResponse getDeleteResponse()
+    {
+        return ( DeleteResponse ) getMessage();
     }
 
 
     /**
-     * {@inheritDoc}
+     * Stores the encoded length for the DeleteResponse
+     * @param deleteResponseLength The encoded length
      */
-    public MessageTypeEnum getType()
+    public void setDeleteResponseLength( int deleteResponseLength )
     {
-        return instance.getType();
+        this.deleteResponseLength = deleteResponseLength;
     }
 
 
     /**
-     * {@inheritDoc}
+     * @return The encoded DeleteResponse's length
      */
-    public Element toDsml( Element root )
+    public int getDeleteResponseLength()
     {
-        Element element = root.addElement( "delResponse" );
-
-        LdapResultDsml ldapResultDsml = new LdapResultDsml( ( (DeleteResponse) instance ).getLdapResult(), instance );
-        ldapResultDsml.toDsml( element );
-        return element;
+        return deleteResponseLength;
     }
 }

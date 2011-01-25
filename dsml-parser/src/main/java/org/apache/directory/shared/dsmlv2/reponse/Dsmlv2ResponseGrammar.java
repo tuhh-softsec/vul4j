@@ -51,7 +51,7 @@ import org.apache.directory.shared.ldap.model.message.BindResponseImpl;
 import org.apache.directory.shared.ldap.model.message.CompareResponse;
 import org.apache.directory.shared.ldap.model.message.CompareResponseImpl;
 import org.apache.directory.shared.ldap.model.message.DeleteResponse;
-import org.apache.directory.shared.ldap.message.DeleteResponseImpl;
+import org.apache.directory.shared.ldap.model.message.DeleteResponseImpl;
 import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
 import org.apache.directory.shared.ldap.message.ExtendedResponseImpl;
 import org.apache.directory.shared.ldap.model.message.LdapResult;

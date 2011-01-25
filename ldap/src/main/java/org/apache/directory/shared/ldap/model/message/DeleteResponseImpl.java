@@ -17,11 +17,12 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.message;
+package org.apache.directory.shared.ldap.model.message;
 
 
 import org.apache.directory.shared.ldap.model.message.AbstractResultResponse;
 import org.apache.directory.shared.ldap.model.message.DeleteResponse;
+
 
 /**
  * DeleteResponse implementation
@@ -30,13 +31,6 @@ import org.apache.directory.shared.ldap.model.message.DeleteResponse;
  */
 public class DeleteResponseImpl extends AbstractResultResponse implements DeleteResponse
 {
-    /** The encoded deleteResponse length */
-    private int deleteResponseLength;
-
-    // ------------------------------------------------------------------------
-    // Constructors
-    // ------------------------------------------------------------------------
-
     static final long serialVersionUID = -6830004960050713586L;
 
 
@@ -57,25 +51,6 @@ public class DeleteResponseImpl extends AbstractResultResponse implements Delete
     public DeleteResponseImpl( final int id )
     {
         super( id, TYPE );
-    }
-
-
-    /**
-     * Stores the encoded length for the DeleteResponse
-     * @param deleteResponseLength The encoded length
-     */
-    /* No qualifier*/void setDeleteResponseLength( int deleteResponseLength )
-    {
-        this.deleteResponseLength = deleteResponseLength;
-    }
-
-
-    /**
-     * @return The encoded DeleteResponse's length
-     */
-    /* No qualifier*/int getDeleteResponseLength()
-    {
-        return deleteResponseLength;
     }
 
 

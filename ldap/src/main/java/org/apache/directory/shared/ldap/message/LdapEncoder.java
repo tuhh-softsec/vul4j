@@ -697,11 +697,12 @@ public class LdapEncoder
      * 
      * Length(DelResponse) = Length(0x6B) + Length(L1) + L1
      */
-    private int computeDeleteResponseLength( DeleteResponseImpl deleteResponse )
+    private int computeDeleteResponseLength( DeleteResponseDecorator decorator )
     {
+        DeleteResponse deleteResponse = decorator.getDeleteResponse();
         int deleteResponseLength = computeLdapResultLength( deleteResponse.getLdapResult() );
 
-        deleteResponse.setDeleteResponseLength( deleteResponseLength );
+        decorator.setDeleteResponseLength( deleteResponseLength );
 
         return 1 + TLV.getNbBytes( deleteResponseLength ) + deleteResponseLength;
     }
@@ -1723,13 +1724,15 @@ public class LdapEncoder
      * 
      * @param buffer The buffer where to put the PDU
      */
-    private void encodeDeleteResponse( ByteBuffer buffer, DeleteResponseImpl deleteResponse ) throws EncoderException
+    private void encodeDeleteResponse( ByteBuffer buffer, DeleteResponseDecorator decorator ) throws EncoderException
     {
+        DeleteResponse deleteResponse = decorator.getDeleteResponse();
+
         try
         {
             // The DelResponse Tag
             buffer.put( LdapConstants.DEL_RESPONSE_TAG );
-            buffer.put( TLV.getBytes( deleteResponse.getDeleteResponseLength() ) );
+            buffer.put( TLV.getBytes( decorator.getDeleteResponseLength() ) );
 
             // The LdapResult
             encodeLdapResult( buffer, deleteResponse.getLdapResult() );
@@ -2396,7 +2399,7 @@ public class LdapEncoder
                 return computeDeleteRequestLength( ( DeleteRequestImpl ) message );
 
             case DEL_RESPONSE:
-                return computeDeleteResponseLength( ( DeleteResponseImpl ) message );
+                return computeDeleteResponseLength( ( DeleteResponseDecorator ) decorator );
 
             case EXTENDED_REQUEST:
                 return computeExtendedRequestLength( ( ExtendedRequestImpl ) message );
@@ -2479,7 +2482,7 @@ public class LdapEncoder
                 break;
 
             case DEL_RESPONSE:
-                encodeDeleteResponse( bb, ( DeleteResponseImpl ) message );
+                encodeDeleteResponse( bb, ( DeleteResponseDecorator ) decorator );
                 break;
 
             case EXTENDED_REQUEST:

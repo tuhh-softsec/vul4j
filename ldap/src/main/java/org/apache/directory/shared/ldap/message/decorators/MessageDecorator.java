@@ -65,6 +65,8 @@ public class MessageDecorator
                 return new CompareResponseDecorator( ( CompareResponse ) decoratedMessage );
             case DEL_REQUEST:
                 return new MessageDecorator( decoratedMessage );
+            case DEL_RESPONSE:
+                return new DeleteResponseDecorator( ( DeleteResponse ) decoratedMessage );
             default:
                 return new MessageDecorator( decoratedMessage );
         }
