@@ -38,6 +38,7 @@ import org.apache.directory.shared.ldap.codec.MessageEncoderException;
 import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.message.decorators.AddRequestDecorator;
 import org.apache.directory.shared.ldap.message.decorators.AddResponseDecorator;
+import org.apache.directory.shared.ldap.message.decorators.BindRequestDecorator;
 import org.apache.directory.shared.ldap.message.decorators.MessageDecorator;
 import org.apache.directory.shared.ldap.model.entry.BinaryValue;
 import org.apache.directory.shared.ldap.model.entry.Entry;
@@ -505,8 +506,9 @@ public class LdapEncoder
      *      Length(0x04) + Length(L2) + L2 + Length(authentication)
      * </pre>
      */
-    private int computeBindRequestLength( BindRequestImpl bindRequest )
+    private int computeBindRequestLength( BindRequestDecorator decorator )
     {
+        BindRequest bindRequest = decorator.getBindRequest();
         int bindRequestLength = 1 + 1 + 1; // Initialized with version
 
         // The name
@@ -545,11 +547,11 @@ public class LdapEncoder
             bindRequestLength += saslLength;
 
             // Store the mechanism and credentials lengths
-            bindRequest.setSaslMechanismLength( saslMechanismLength );
-            bindRequest.setSaslCredentialsLength( saslCredentialsLength );
+            decorator.setSaslMechanismLength( saslMechanismLength );
+            decorator.setSaslCredentialsLength( saslCredentialsLength );
         }
 
-        bindRequest.setBindRequestLength( bindRequestLength );
+        decorator.setBindRequestLength( bindRequestLength );
 
         // Return the result.
         return 1 + TLV.getNbBytes( bindRequestLength ) + bindRequestLength;
@@ -1494,13 +1496,15 @@ public class LdapEncoder
      * @param buffer The buffer where to put the PDU
      * @return The PDU.
      */
-    private void encodeBindRequest( ByteBuffer buffer, BindRequestImpl bindRequest ) throws EncoderException
+    private void encodeBindRequest( ByteBuffer buffer, BindRequestDecorator decorator ) throws EncoderException
     {
+        BindRequest bindRequest = decorator.getBindRequest();
+
         try
         {
             // The BindRequest Tag
             buffer.put( LdapConstants.BIND_REQUEST_TAG );
-            buffer.put( TLV.getBytes( bindRequest.getBindRequestLength() ) );
+            buffer.put( TLV.getBytes( decorator.getBindRequestLength() ) );
 
         }
         catch ( BufferOverflowException boe )
@@ -1556,7 +1560,7 @@ public class LdapEncoder
                 byte[] mechanismBytes = Strings.getBytesUtf8(bindRequest.getSaslMechanism());
 
                 buffer.put( TLV
-                    .getBytes( bindRequest.getSaslMechanismLength() + bindRequest.getSaslCredentialsLength() ) );
+                    .getBytes( decorator.getSaslMechanismLength() + decorator.getSaslCredentialsLength() ) );
 
                 Value.encode( buffer, mechanismBytes );
 
@@ -2373,7 +2377,7 @@ public class LdapEncoder
                 return computeAddResponseLength( ( AddResponseDecorator ) decorator );
 
             case BIND_REQUEST:
-                return computeBindRequestLength( ( BindRequestImpl ) message );
+                return computeBindRequestLength( ( BindRequestDecorator ) decorator );
 
             case BIND_RESPONSE:
                 return computeBindResponseLength( ( BindResponseImpl ) message );
@@ -2451,7 +2455,7 @@ public class LdapEncoder
                 break;
 
             case BIND_REQUEST:
-                encodeBindRequest( bb, ( BindRequestImpl ) message );
+                encodeBindRequest( bb, ( BindRequestDecorator ) decorator );
                 break;
 
             case BIND_RESPONSE:

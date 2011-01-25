@@ -17,12 +17,13 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.message;
+package org.apache.directory.shared.ldap.model.message;
 
 
 import java.util.Arrays;
 
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.message.BindResponseImpl;
 import org.apache.directory.shared.ldap.model.message.*;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.util.Strings;
@@ -61,15 +62,6 @@ public class BindRequestImpl extends AbstractAbandonableRequest implements BindR
 
     /** The associated response */
     public BindResponse response;
-
-    /** The bind request length */
-    private int bindRequestLength;
-
-    /** The SASL Mechanism length */
-    private int saslMechanismLength;
-
-    /** The SASL credentials length */
-    private int saslCredentialsLength;
 
 
     // ------------------------------------------------------------------------
@@ -417,63 +409,6 @@ public class BindRequestImpl extends AbstractAbandonableRequest implements BindR
         hash = hash * 17 + super.hashCode();
 
         return hash;
-    }
-
-
-    /**
-     * Stores the encoded length for the BindRequest
-     * @param bindRequestLength The encoded length
-     */
-    /* No qualifier*/void setBindRequestLength( int bindRequestLength )
-    {
-        this.bindRequestLength = bindRequestLength;
-    }
-
-
-    /**
-     * @return The encoded BindRequest's length
-     */
-    /* No qualifier */int getBindRequestLength()
-    {
-        return bindRequestLength;
-    }
-
-
-    /**
-     * Stores the encoded length for the SaslCredentials
-     * @param saslCredentialsLength The encoded length
-     */
-    /* No qualifier*/void setSaslCredentialsLength( int saslCredentialsLength )
-    {
-        this.saslCredentialsLength = saslCredentialsLength;
-    }
-
-
-    /**
-     * @return The encoded SaslCredentials's length
-     */
-    /* No qualifier */int getSaslCredentialsLength()
-    {
-        return saslCredentialsLength;
-    }
-
-
-    /**
-     * Stores the encoded length for the Mechanism
-     * @param saslMechanismLength The encoded length
-     */
-    /* No qualifier*/void setSaslMechanismLength( int saslMechanismLength )
-    {
-        this.saslMechanismLength = saslMechanismLength;
-    }
-
-
-    /**
-     * @return The encoded SaslMechanism's length
-     */
-    /* No qualifier */int getSaslMechanismLength()
-    {
-        return saslMechanismLength;
     }
 
 
