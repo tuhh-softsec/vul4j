@@ -1845,7 +1845,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            ModifyRequestDecorator modifyRequest = ( ModifyRequestDecorator ) container.getBatchRequest().getCurrentRequest();
+            ModifyRequestDecorator modifyRequest = ( ModifyRequestDecorator ) container.getBatchRequestDecorator().getCurrentRequest();
 
             XmlPullParser xpp = container.getParser();
 
