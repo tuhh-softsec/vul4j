@@ -20,8 +20,6 @@
 package org.apache.directory.shared.ldap.model.message;
 
 
-import org.apache.directory.shared.ldap.model.message.AbstractResultResponse;
-import org.apache.directory.shared.ldap.model.message.DeleteResponse;
 
 
 /**
@@ -63,7 +61,7 @@ public class DeleteResponseImpl extends AbstractResultResponse implements Delete
     {
         StringBuilder sb = new StringBuilder();
 
-        sb.append( "    Compare Response\n" );
+        sb.append( "    Delete Response\n" );
         sb.append( super.toString() );
 
         return sb.toString();
