@@ -42,6 +42,7 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
+import org.apache.directory.shared.ldap.codec.decorators.ModifyRequestDecorator;
 import org.apache.directory.shared.ldap.codec.search.AndFilter;
 import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilter;
 import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
@@ -50,6 +51,7 @@ import org.apache.directory.shared.ldap.codec.search.NotFilter;
 import org.apache.directory.shared.ldap.codec.search.OrFilter;
 import org.apache.directory.shared.ldap.codec.search.PresentFilter;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
+import org.apache.directory.shared.ldap.message.SearchRequestImpl;
 import org.apache.directory.shared.ldap.model.entry.BinaryValue;
 import org.apache.directory.shared.ldap.model.entry.StringValue;
 import org.apache.directory.shared.ldap.model.entry.Value;
@@ -60,10 +62,13 @@ import org.apache.directory.shared.ldap.model.message.AbandonRequest;
 import org.apache.directory.shared.ldap.model.message.AbandonRequestImpl;
 import org.apache.directory.shared.ldap.model.message.AddRequest;
 import org.apache.directory.shared.ldap.model.message.AddRequestImpl;
-import org.apache.directory.shared.ldap.model.message.*;
+import org.apache.directory.shared.ldap.model.message.AliasDerefMode;
 import org.apache.directory.shared.ldap.model.message.BindRequest;
 import org.apache.directory.shared.ldap.model.message.BindRequestImpl;
+import org.apache.directory.shared.ldap.model.message.CompareRequest;
 import org.apache.directory.shared.ldap.model.message.CompareRequestImpl;
+import org.apache.directory.shared.ldap.model.message.Control;
+import org.apache.directory.shared.ldap.model.message.DeleteRequest;
 import org.apache.directory.shared.ldap.model.message.DeleteRequestImpl;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequestImpl;
@@ -72,8 +77,6 @@ import org.apache.directory.shared.ldap.model.message.ModifyDnRequestImpl;
 import org.apache.directory.shared.ldap.model.message.ModifyRequest;
 import org.apache.directory.shared.ldap.model.message.ModifyRequestImpl;
 import org.apache.directory.shared.ldap.model.message.SearchRequest;
-import org.apache.directory.shared.ldap.message.SearchRequestImpl;
-import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.name.Rdn;
 import org.apache.directory.shared.util.Base64;
@@ -1734,6 +1737,9 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
         {
             ModifyRequest modifyRequest = new ModifyRequestImpl();
             container.getBatchRequest().addRequest( modifyRequest );
+            ModifyRequestDecorator modifyRequestDecorator = new ModifyRequestDecorator( modifyRequest );
+            container.setBatchRequestDecorator(  new BatchRequest() );
+            container.getBatchRequestDecorator().addRequest( modifyRequestDecorator );
 
             XmlPullParser xpp = container.getParser();
 
@@ -1782,7 +1788,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            ModifyRequestImpl modifyRequest = ( ModifyRequestImpl ) container.getBatchRequest().getCurrentRequest();
+            ModifyRequestDecorator modifyRequest = ( ModifyRequestDecorator ) container.getBatchRequestDecorator().getCurrentRequest();
 
             XmlPullParser xpp = container.getParser();
 
@@ -1838,7 +1844,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            ModifyRequestImpl modifyRequest = ( ModifyRequestImpl ) container.getBatchRequest().getCurrentRequest();
+            ModifyRequestDecorator modifyRequest = ( ModifyRequestDecorator ) container.getBatchRequestDecorator().getCurrentRequest();
 
             XmlPullParser xpp = container.getParser();
 
