@@ -23,8 +23,8 @@ package org.apache.directory.shared.ldap.codec;
 import org.apache.directory.shared.asn1.ber.AbstractContainer;
 import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
-import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.ModifyRequestDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
 import org.apache.directory.shared.ldap.message.spi.BinaryAttributeDetector;
 import org.apache.directory.shared.ldap.model.message.AbandonRequest;
 import org.apache.directory.shared.ldap.model.message.AddRequest;
@@ -272,9 +272,18 @@ public class LdapMessageContainer extends AbstractContainer
     /**
      * @return Returns the SearchRequest stored in the container
      */
+    public SearchRequest getSearchRequest()
+    {
+        return (SearchRequest)(( SearchRequestDecorator ) message).getMessage();
+    }
+
+
+    /**
+     * @return Returns the SearchRequest stored in the container
+     */
     public SearchRequestDecorator getSearchRequestDecorator()
     {
-        return ( SearchRequestDecorator ) decorator;
+        return ( SearchRequestDecorator ) message;
     }
 
 

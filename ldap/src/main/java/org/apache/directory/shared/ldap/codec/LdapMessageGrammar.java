@@ -71,8 +71,8 @@ import org.apache.directory.shared.ldap.codec.actions.StoreReferenceAction;
 import org.apache.directory.shared.ldap.codec.actions.StoreTypeMatchingRuleAction;
 import org.apache.directory.shared.ldap.codec.actions.ValueAction;
 import org.apache.directory.shared.ldap.codec.controls.ControlFactory;
-import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.ModifyRequestDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
 import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
 import org.apache.directory.shared.ldap.message.SearchRequestImpl;
@@ -3602,8 +3602,10 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
                     SearchRequest searchRequest = new SearchRequestImpl( ldapMessageContainer.getMessageId() );
-                    ldapMessageContainer.setMessage( searchRequest );
-                    ldapMessageContainer.getSearchRequestDecorator().setTlvId(tlv.getId());
+                    SearchRequestDecorator searchRequestDecorator = new SearchRequestDecorator( searchRequest );
+
+                    searchRequestDecorator.setTlvId( tlv.getId());
+                    ldapMessageContainer.setMessage( searchRequestDecorator );
 
                     LOG.debug( "Search Request" );
                 }
@@ -3624,7 +3626,8 @@ public final class LdapMessageGrammar extends AbstractGrammar
                 public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    SearchRequest searchRequest = ldapMessageContainer.getSearchRequestDecorator().getSearchRequest();
+                    SearchRequestDecorator searchRequestDecorator = ldapMessageContainer.getSearchRequestDecorator();
+                    SearchRequest searchRequest = searchRequestDecorator.getSearchRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
