@@ -21,8 +21,6 @@ package org.apache.directory.shared.ldap.model.message;
 
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.model.message.AbstractRequest;
-import org.apache.directory.shared.ldap.model.message.UnbindRequest;
 
 
 /**

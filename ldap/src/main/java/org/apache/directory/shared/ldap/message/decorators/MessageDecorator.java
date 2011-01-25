@@ -50,6 +50,8 @@ public class MessageDecorator
         switch ( decoratedMessage.getType() )
         {
             case ABANDON_REQUEST:
+            case DEL_REQUEST:
+            case UNBIND_REQUEST:
                 return new MessageDecorator( decoratedMessage );
             case ADD_REQUEST:
                 return new AddRequestDecorator( ( AddRequest ) decoratedMessage );
@@ -63,8 +65,6 @@ public class MessageDecorator
                 return new CompareRequestDecorator( ( CompareRequest ) decoratedMessage );
             case COMPARE_RESPONSE:
                 return new CompareResponseDecorator( ( CompareResponse ) decoratedMessage );
-            case DEL_REQUEST:
-                return new MessageDecorator( decoratedMessage );
             case DEL_RESPONSE:
                 return new DeleteResponseDecorator( ( DeleteResponse ) decoratedMessage );
             case EXTENDED_REQUEST:
