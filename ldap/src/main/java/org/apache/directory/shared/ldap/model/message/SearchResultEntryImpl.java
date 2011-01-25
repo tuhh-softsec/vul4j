@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.message;
+package org.apache.directory.shared.ldap.model.message;
 
 
 import java.util.List;
@@ -48,25 +48,7 @@ public class SearchResultEntryImpl extends AbstractResponse implements SearchRes
     /** The current attribute being decoded */
     private EntryAttribute currentAttribute;
 
-    /** A temporary storage for the byte[] representing the objectName */
-    private byte[] objectNameBytes;
 
-    /** The search result entry length */
-    private int searchResultEntryLength;
-
-    /** The partial attributes length */
-    private int attributesLength;
-
-    /** The list of all attributes length */
-    private List<Integer> attributeLength;
-
-    /** The list of all vals length */
-    private List<Integer> valsLength;
-
-
-    // ------------------------------------------------------------------------
-    // Constructors
-    // ------------------------------------------------------------------------
     /**
      * Creates a SearchResponseEntry as a reply to an SearchRequest to
      * indicate the end of a search operation.
@@ -167,28 +149,6 @@ public class SearchResultEntryImpl extends AbstractResponse implements SearchRes
 
 
     /**
-     * Gets the distinguished name bytes of the entry object returned.
-     * 
-     * @return the Dn bytes of the entry returned.
-     */
-    /*No qualifier*/byte[] getObjectNameBytes()
-    {
-        return objectNameBytes;
-    }
-
-
-    /**
-     * Sets the distinguished name bytes of the entry object returned.
-     * 
-     * @param objectNameBytes the Dn bytes of the entry returned.
-     */
-    /*No qualifier*/void setObjectNameBytes( byte[] objectNameBytes )
-    {
-        this.objectNameBytes = objectNameBytes;
-    }
-
-
-    /**
      * Sets the distinguished name of the entry object returned.
      * 
      * @param objectName the Dn of the entry returned.
@@ -247,81 +207,6 @@ public class SearchResultEntryImpl extends AbstractResponse implements SearchRes
         SearchResultEntry resp = ( SearchResultEntry ) obj;
 
         return entry.equals( resp.getEntry() );
-    }
-
-
-    /**
-     * @return The encoded SearchResultEntry's length
-     */
-    /*No qualifier*/int getSearchResultEntryLength()
-    {
-        return searchResultEntryLength;
-    }
-
-
-    /**
-     * Stores the encoded length for the SearchResultEntry
-     * @param searchResultEntryLength The encoded length
-     */
-    /*No qualifier*/void setSearchResultEntryLength( int searchResultEntryLength )
-    {
-        this.searchResultEntryLength = searchResultEntryLength;
-    }
-
-
-    /**
-     * @return The encoded PartialAttributeList's length
-     */
-    /*No qualifier*/int getAttributesLength()
-    {
-        return attributesLength;
-    }
-
-
-    /**
-     * Stores the encoded length for the Attributes
-     * @param attributeLength The list of encoded lengths
-     */
-    /*No qualifier*/void setAttributesLength( int attributesLength )
-    {
-        this.attributesLength = attributesLength;
-    }
-
-
-    /**
-     * @return The encoded PartialAttributeList's length
-     */
-    /*No qualifier*/List<Integer> getAttributeLength()
-    {
-        return attributeLength;
-    }
-
-
-    /**
-     * @return The list of encoded Attributes' length
-     */
-    /*No qualifier*/void setAttributeLength( List<Integer> attributeLength )
-    {
-        this.attributeLength = attributeLength;
-    }
-
-
-    /**
-     * @return The list of encoded values' length
-     */
-    /*No qualifier*/List<Integer> getValsLength()
-    {
-        return valsLength;
-    }
-
-
-    /**
-     * Stores the list of encoded length for the values 
-     * @param valsLength The list of encoded lengths
-     */
-    /*No qualifier*/void setValsLength( List<Integer> valsLength )
-    {
-        this.valsLength = valsLength;
     }
 
 

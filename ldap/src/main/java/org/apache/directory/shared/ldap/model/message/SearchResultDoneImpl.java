@@ -20,11 +20,6 @@
 package org.apache.directory.shared.ldap.model.message;
 
 
-import org.apache.directory.shared.ldap.model.message.AbstractResultResponse;
-import org.apache.directory.shared.ldap.model.message.LdapResult;
-import org.apache.directory.shared.ldap.model.message.SearchResultDone;
-
-
 /**
  * SearchResponseDone implementation
  * 

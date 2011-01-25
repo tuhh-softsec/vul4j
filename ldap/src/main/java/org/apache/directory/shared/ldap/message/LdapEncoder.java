@@ -1208,15 +1208,16 @@ public class LdapEncoder
      *                    +--> 0x04 L7-m-n value
      * </pre>
      */
-    private int computeSearchResultEntryLength( SearchResultEntryImpl searchResultEntry )
+    private int computeSearchResultEntryLength( SearchResultEntryDecorator decorator )
     {
+        SearchResultEntry searchResultEntry = decorator.getSearchResultEntry();
         Dn dn = searchResultEntry.getObjectName();
 
         byte[] dnBytes = Strings.getBytesUtf8(dn.getName());
 
         // The entry
         int searchResultEntryLength = 1 + TLV.getNbBytes( dnBytes.length ) + dnBytes.length;
-        searchResultEntry.setObjectNameBytes( dnBytes );
+        decorator.setObjectNameBytes( dnBytes );
 
         // The attributes sequence
         int attributesLength = 0;
@@ -1229,8 +1230,8 @@ public class LdapEncoder
             List<Integer> valsLength = new LinkedList<Integer>();
 
             // Store those lists in the object
-            searchResultEntry.setAttributeLength( attributeLength );
-            searchResultEntry.setValsLength( valsLength );
+            decorator.setAttributeLength( attributeLength );
+            decorator.setValsLength( valsLength );
 
             // Compute the attributes length
             for ( EntryAttribute attribute : entry )
@@ -1282,13 +1283,13 @@ public class LdapEncoder
             }
 
             // Store the lengths of the entry
-            searchResultEntry.setAttributesLength( attributesLength );
+            decorator.setAttributesLength( attributesLength );
         }
 
         searchResultEntryLength += 1 + TLV.getNbBytes( attributesLength ) + attributesLength;
 
         // Store the length of the response 
-        searchResultEntry.setSearchResultEntryLength( searchResultEntryLength );
+        decorator.setSearchResultEntryLength( searchResultEntryLength );
 
         // Return the result.
         return 1 + TLV.getNbBytes( searchResultEntryLength ) + searchResultEntryLength;
@@ -2255,21 +2256,22 @@ public class LdapEncoder
      * @param buffer The buffer where to put the PDU
      * @return The PDU.
      */
-    private void encodeSearchResultEntry( ByteBuffer buffer, SearchResultEntryImpl searchResultEntry )
+    private void encodeSearchResultEntry( ByteBuffer buffer, SearchResultEntryDecorator decorator )
         throws EncoderException
     {
+        SearchResultEntry searchResultEntry = decorator.getSearchResultEntry();
         try
         {
             // The SearchResultEntry Tag
             buffer.put( LdapConstants.SEARCH_RESULT_ENTRY_TAG );
-            buffer.put( TLV.getBytes( searchResultEntry.getSearchResultEntryLength() ) );
+            buffer.put( TLV.getBytes( decorator.getSearchResultEntryLength() ) );
 
             // The objectName
-            Value.encode( buffer, searchResultEntry.getObjectNameBytes() );
+            Value.encode( buffer, decorator.getObjectNameBytes() );
 
             // The attributes sequence
             buffer.put( UniversalTag.SEQUENCE.getValue() );
-            buffer.put( TLV.getBytes( searchResultEntry.getAttributesLength() ) );
+            buffer.put( TLV.getBytes( decorator.getAttributesLength() ) );
 
             // The partial attribute list
             Entry entry = searchResultEntry.getEntry();
@@ -2283,7 +2285,7 @@ public class LdapEncoder
                 {
                     // The partial attribute list sequence
                     buffer.put( UniversalTag.SEQUENCE.getValue() );
-                    int localAttributeLength = searchResultEntry.getAttributeLength().get( attributeNumber );
+                    int localAttributeLength = decorator.getAttributeLength().get( attributeNumber );
                     buffer.put( TLV.getBytes( localAttributeLength ) );
 
                     // The attribute type
@@ -2291,7 +2293,7 @@ public class LdapEncoder
 
                     // The values
                     buffer.put( UniversalTag.SET.getValue() );
-                    int localValuesLength = searchResultEntry.getValsLength().get( attributeNumber );
+                    int localValuesLength = decorator.getValsLength().get( attributeNumber );
                     buffer.put( TLV.getBytes( localValuesLength ) );
 
                     if ( attribute.size() > 0 )
@@ -2448,7 +2450,7 @@ public class LdapEncoder
                 return computeSearchResultDoneLength( ( SearchResultDoneDecorator ) decorator );
 
             case SEARCH_RESULT_ENTRY:
-                return computeSearchResultEntryLength( ( SearchResultEntryImpl ) message );
+                return computeSearchResultEntryLength( ( SearchResultEntryDecorator ) decorator );
 
             case SEARCH_RESULT_REFERENCE:
                 return computeSearchResultReferenceLength( ( SearchResultReferenceDecorator ) decorator );
@@ -2541,7 +2543,7 @@ public class LdapEncoder
                 break;
 
             case SEARCH_RESULT_ENTRY:
-                encodeSearchResultEntry( bb, ( SearchResultEntryImpl ) message );
+                encodeSearchResultEntry( bb, ( SearchResultEntryDecorator ) decorator );
                 break;
 
             case SEARCH_RESULT_REFERENCE:
