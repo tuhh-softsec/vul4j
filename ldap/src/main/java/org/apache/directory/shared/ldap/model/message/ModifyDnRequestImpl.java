@@ -17,9 +17,10 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.message;
+package org.apache.directory.shared.ldap.model.message;
 
 
+import org.apache.directory.shared.ldap.message.ModifyDnResponseImpl;
 import org.apache.directory.shared.ldap.model.message.*;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.name.Rdn;
@@ -48,9 +49,6 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements M
 
     /** The associated response */
     private ModifyDnResponse response;
-
-    /** The modify Dn request length */
-    private int modifyDnRequestLength;
 
 
     // -----------------------------------------------------------------------
@@ -230,25 +228,6 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements M
         }
 
         return response;
-    }
-
-
-    /**
-     * @return The encoded ModifyDnRequest's length
-     */
-    /* No Qualifier*/void setModifyDnRequestLength( int modifyDnRequestLength )
-    {
-        this.modifyDnRequestLength = modifyDnRequestLength;
-    }
-
-
-    /**
-     * Stores the encoded length for the ModifyDnRequest
-     * @param modifyDnRequestLength The encoded length
-     */
-    /* No Qualifier*/int getModifyDnResponseLength()
-    {
-        return modifyDnRequestLength;
     }
 
 

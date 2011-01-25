@@ -989,21 +989,22 @@ public class LdapEncoder
      * 
      * @return The PDU's length of a ModifyDN Request
      */
-    private int computeModifyDnRequestLength( ModifyDnRequestImpl modifyDnResponse )
+    private int computeModifyDnRequestLength( ModifyDnRequestDecorator decorator )
     {
-        int newRdnlength = Strings.getBytesUtf8(modifyDnResponse.getNewRdn().getName()).length;
+        ModifyDnRequest modifyDnRequest = decorator.getModifyDnRequest();
+        int newRdnlength = Strings.getBytesUtf8(modifyDnRequest.getNewRdn().getName()).length;
 
-        int modifyDNRequestLength = 1 + TLV.getNbBytes( Dn.getNbBytes(modifyDnResponse.getName()) )
-            + Dn.getNbBytes(modifyDnResponse.getName()) + 1 + TLV.getNbBytes( newRdnlength ) + newRdnlength + 1 + 1
+        int modifyDNRequestLength = 1 + TLV.getNbBytes( Dn.getNbBytes(modifyDnRequest.getName()) )
+            + Dn.getNbBytes(modifyDnRequest.getName()) + 1 + TLV.getNbBytes( newRdnlength ) + newRdnlength + 1 + 1
             + 1; // deleteOldRDN
 
-        if ( modifyDnResponse.getNewSuperior() != null )
+        if ( modifyDnRequest.getNewSuperior() != null )
         {
-            modifyDNRequestLength += 1 + TLV.getNbBytes( Dn.getNbBytes(modifyDnResponse.getNewSuperior()) )
-                + Dn.getNbBytes(modifyDnResponse.getNewSuperior());
+            modifyDNRequestLength += 1 + TLV.getNbBytes( Dn.getNbBytes(modifyDnRequest.getNewSuperior()) )
+                + Dn.getNbBytes(modifyDnRequest.getNewSuperior());
         }
 
-        modifyDnResponse.setModifyDnRequestLength( modifyDNRequestLength );
+        decorator.setModifyDnRequestLength( modifyDNRequestLength );
 
         return 1 + TLV.getNbBytes( modifyDNRequestLength ) + modifyDNRequestLength;
     }
@@ -2057,14 +2058,15 @@ public class LdapEncoder
      * @param buffer The buffer where to put the PDU
      * @return The PDU.
      */
-    private void encodeModifyDnRequest( ByteBuffer buffer, ModifyDnRequestImpl modifyDnRequest )
+    private void encodeModifyDnRequest( ByteBuffer buffer, ModifyDnRequestDecorator decorator )
         throws EncoderException
     {
+        ModifyDnRequest modifyDnRequest = decorator.getModifyDnRequest();
         try
         {
             // The ModifyDNRequest Tag
             buffer.put( LdapConstants.MODIFY_DN_REQUEST_TAG );
-            buffer.put( TLV.getBytes( modifyDnRequest.getModifyDnResponseLength() ) );
+            buffer.put( TLV.getBytes( decorator.getModifyDnResponseLength() ) );
 
             // The entry
 
@@ -2425,7 +2427,7 @@ public class LdapEncoder
                 return computeModifyResponseLength( ( ModifyResponseImpl ) message );
 
             case MODIFYDN_REQUEST:
-                return computeModifyDnRequestLength( ( ModifyDnRequestImpl ) message );
+                return computeModifyDnRequestLength( ( ModifyDnRequestDecorator ) decorator );
 
             case MODIFYDN_RESPONSE:
                 return computeModifyDnResponseLength( ( ModifyDnResponseImpl ) message );
@@ -2514,7 +2516,7 @@ public class LdapEncoder
                 break;
 
             case MODIFYDN_REQUEST:
-                encodeModifyDnRequest( bb, ( ModifyDnRequestImpl ) message );
+                encodeModifyDnRequest( bb, ( ModifyDnRequestDecorator ) decorator );
                 break;
 
             case MODIFYDN_RESPONSE:
