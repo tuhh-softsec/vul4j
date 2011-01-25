@@ -17,62 +17,55 @@
  *  under the License. 
  *  
  */
+package org.apache.directory.shared.ldap.message.decorators;
 
-package org.apache.directory.shared.dsmlv2.reponse;
 
-
-import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.message.ModifyDnResponse;
-import org.apache.directory.shared.ldap.model.message.ModifyDnResponseImpl;
-import org.dom4j.Element;
 
 
 /**
- * DSML Decorator for ModDNResponse
- * 
+ * Doc me!
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ModDNResponseDsml extends AbstractResponseDsml
+public class ModifyDnResponseDecorator extends MessageDecorator
 {
-    /**
-     * Creates a new instance of ModDNResponseDsml.
-     */
-    public ModDNResponseDsml()
-    {
-        super( new ModifyDnResponseImpl() );
-    }
+    /** The encoded modifyDnResponse length */
+    private int modifyDnResponseLength;
 
 
     /**
-     * Creates a new instance of ModDNResponseDsml.
+     * Makes a ModifyDnResponse encodable.
      *
-     * @param ldapMessage
-     *      the message to decorate
+     * @param decoratedMessage the decorated ModifyDnResponse
      */
-    public ModDNResponseDsml( ModifyDnResponse ldapMessage )
+    public ModifyDnResponseDecorator( ModifyDnResponse decoratedMessage )
     {
-        super( ldapMessage );
+        super( decoratedMessage );
+    }
+
+
+    public ModifyDnResponse getModifyDnResponse()
+    {
+        return ( ModifyDnResponse ) getMessage();
     }
 
 
     /**
-     * {@inheritDoc}
+     * @param modifyDnResponseLength The encoded ModifyDnResponse's length
      */
-    public MessageTypeEnum getType()
+    public void setModifyDnResponseLength( int modifyDnResponseLength )
     {
-        return instance.getType();
+        this.modifyDnResponseLength = modifyDnResponseLength;
     }
 
 
     /**
-     * {@inheritDoc}
+     * Stores the encoded length for the ModifyDnResponse
+     * @return The encoded length
      */
-    public Element toDsml( Element root )
+    public int getModifyDnResponseLength()
     {
-        Element element = root.addElement( "modDNResponse" );
-
-        LdapResultDsml ldapResultDsml = new LdapResultDsml( ( ( ModifyDnResponse ) instance ).getLdapResult(), instance );
-        ldapResultDsml.toDsml( element );
-        return element;
+        return modifyDnResponseLength;
     }
 }

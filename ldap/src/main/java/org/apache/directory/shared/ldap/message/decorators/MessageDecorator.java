@@ -75,6 +75,8 @@ public class MessageDecorator
                 return new IntermediateResponseDecorator( ( IntermediateResponse ) decoratedMessage );
             case MODIFYDN_REQUEST:
                 return new ModifyDnRequestDecorator( ( ModifyDnRequest ) decoratedMessage );
+            case MODIFYDN_RESPONSE:
+                return new ModifyDnResponseDecorator( ( ModifyDnResponse ) decoratedMessage );
             case SEARCH_RESULT_REFERENCE:
                 return new SearchResultReferenceDecorator( ( SearchResultReference ) decoratedMessage );
             default:

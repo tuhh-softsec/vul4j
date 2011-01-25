@@ -1023,11 +1023,12 @@ public class LdapEncoder
      * Length(ModifyDNResponse) = Length(0x6D) + Length(L1) + L1
      * </pre>
      */
-    private int computeModifyDnResponseLength( ModifyDnResponseImpl modifyDnResponse )
+    private int computeModifyDnResponseLength( ModifyDnResponseDecorator decorator )
     {
+        ModifyDnResponse modifyDnResponse = decorator.getModifyDnResponse();
         int modifyDnResponseLength = computeLdapResultLength( modifyDnResponse.getLdapResult() );
 
-        modifyDnResponse.setModifyDnResponseLength( modifyDnResponseLength );
+        decorator.setModifyDnResponseLength( modifyDnResponseLength );
 
         return 1 + TLV.getNbBytes( modifyDnResponseLength ) + modifyDnResponseLength;
     }
@@ -2107,14 +2108,15 @@ public class LdapEncoder
      * 
      * @param buffer The buffer where to put the PDU
      */
-    private void encodeModifyDnResponse( ByteBuffer buffer, ModifyDnResponseImpl modifyDnResponse )
+    private void encodeModifyDnResponse( ByteBuffer buffer, ModifyDnResponseDecorator decorator )
         throws EncoderException
     {
+        ModifyDnResponse modifyDnResponse = decorator.getModifyDnResponse();
         try
         {
             // The ModifyResponse Tag
             buffer.put( LdapConstants.MODIFY_DN_RESPONSE_TAG );
-            buffer.put( TLV.getBytes( modifyDnResponse.getModifyDnResponseLength() ) );
+            buffer.put( TLV.getBytes( decorator.getModifyDnResponseLength() ) );
 
             // The LdapResult
             encodeLdapResult( buffer, modifyDnResponse.getLdapResult() );
@@ -2430,7 +2432,7 @@ public class LdapEncoder
                 return computeModifyDnRequestLength( ( ModifyDnRequestDecorator ) decorator );
 
             case MODIFYDN_RESPONSE:
-                return computeModifyDnResponseLength( ( ModifyDnResponseImpl ) message );
+                return computeModifyDnResponseLength( ( ModifyDnResponseDecorator ) decorator );
 
             case SEARCH_REQUEST:
                 return computeSearchRequestLength( ( SearchRequestImpl ) message );
@@ -2520,7 +2522,7 @@ public class LdapEncoder
                 break;
 
             case MODIFYDN_RESPONSE:
-                encodeModifyDnResponse( bb, ( ModifyDnResponseImpl ) message );
+                encodeModifyDnResponse( bb, ( ModifyDnResponseDecorator ) decorator );
                 break;
 
             case SEARCH_REQUEST:

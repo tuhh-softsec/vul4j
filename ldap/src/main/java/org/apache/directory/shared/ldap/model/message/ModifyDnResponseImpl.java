@@ -17,11 +17,12 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.message;
+package org.apache.directory.shared.ldap.model.message;
 
 
 import org.apache.directory.shared.ldap.model.message.AbstractResultResponse;
 import org.apache.directory.shared.ldap.model.message.ModifyDnResponse;
+
 
 /**
  * ModifyDnResponse implementation
@@ -30,13 +31,6 @@ import org.apache.directory.shared.ldap.model.message.ModifyDnResponse;
  */
 public class ModifyDnResponseImpl extends AbstractResultResponse implements ModifyDnResponse
 {
-    /** The encoded modifyDnResponse length */
-    private int modifyDnResponseLength;
-
-    // ------------------------------------------------------------------------
-    // Constructors
-    // ------------------------------------------------------------------------
-
     static final long serialVersionUID = 996870775343263543L;
 
 
@@ -57,25 +51,6 @@ public class ModifyDnResponseImpl extends AbstractResultResponse implements Modi
     public ModifyDnResponseImpl( final int id )
     {
         super( id, TYPE );
-    }
-
-
-    /**
-     * @return The encoded ModifyDnResponse's length
-     */
-    /* No Qualifier*/void setModifyDnResponseLength( int modifyDnResponseLength )
-    {
-        this.modifyDnResponseLength = modifyDnResponseLength;
-    }
-
-
-    /**
-     * Stores the encoded length for the ModifyDnResponse
-     * @param modifyDnResponseLength The encoded length
-     */
-    /* No Qualifier*/int getModifyDnResponseLength()
-    {
-        return modifyDnResponseLength;
     }
 
 

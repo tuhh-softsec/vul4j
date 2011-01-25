@@ -36,11 +36,8 @@ import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
 import org.apache.directory.shared.ldap.message.LdapEncoder;
-import org.apache.directory.shared.ldap.model.message.Control;
-import org.apache.directory.shared.ldap.model.message.Message;
-import org.apache.directory.shared.ldap.model.message.ModifyDnRequest;
-import org.apache.directory.shared.ldap.message.ModifyDnResponseImpl;
-import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
+import org.apache.directory.shared.ldap.model.message.*;
+import org.apache.directory.shared.ldap.model.message.ModifyDnResponseImpl;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -284,7 +281,7 @@ public class ModifyDNRequestTest
             assertTrue( de instanceof ResponseCarryingException );
             Message response = ( ( ResponseCarryingException ) de ).getResponse();
             assertTrue( response instanceof ModifyDnResponseImpl );
-            assertEquals( ResultCodeEnum.INVALID_DN_SYNTAX, ( ( ModifyDnResponseImpl ) response ).getLdapResult()
+            assertEquals( ResultCodeEnum.INVALID_DN_SYNTAX, ( (ModifyDnResponseImpl) response ).getLdapResult()
                 .getResultCode() );
             return;
         }
