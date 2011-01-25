@@ -33,7 +33,7 @@ import org.apache.directory.shared.ldap.codec.extended.operations.storedProcedur
 import org.apache.directory.shared.ldap.codec.extended.operations.storedProcedure.StoredProcedureContainer;
 import org.apache.directory.shared.ldap.codec.extended.operations.storedProcedure.StoredProcedureDecoder;
 import org.apache.directory.shared.ldap.codec.extended.operations.storedProcedure.StoredProcedure.StoredProcedureParameter;
-import org.apache.directory.shared.ldap.message.ExtendedRequestImpl;
+import org.apache.directory.shared.ldap.model.message.ExtendedRequestImpl;
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.message.extended;
 
 import javax.naming.ldap.ExtendedResponse;
 
-import org.apache.directory.shared.ldap.message.ExtendedRequestImpl;
+import org.apache.directory.shared.ldap.model.message.ExtendedRequestImpl;
 
 
 /**

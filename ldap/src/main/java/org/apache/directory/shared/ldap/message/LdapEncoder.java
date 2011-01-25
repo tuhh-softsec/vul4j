@@ -723,11 +723,12 @@ public class LdapEncoder
      * 
      * Length(ExtendedRequest) = Length(0x77) + Length(L1) + L1
      */
-    private int computeExtendedRequestLength( ExtendedRequestImpl extendedRequest )
+    private int computeExtendedRequestLength( ExtendedRequestDecorator decorator )
     {
+        ExtendedRequest extendedRequest = decorator.getExtendedRequest();
         byte[] requestNameBytes = Strings.getBytesUtf8(extendedRequest.getRequestName());
 
-        extendedRequest.setRequestNameBytes( requestNameBytes );
+        decorator.setRequestNameBytes( requestNameBytes );
 
         int extendedRequestLength = 1 + TLV.getNbBytes( requestNameBytes.length ) + requestNameBytes.length;
 
@@ -737,7 +738,7 @@ public class LdapEncoder
                 + extendedRequest.getRequestValue().length;
         }
 
-        extendedRequest.setExtendedRequestLength( extendedRequestLength );
+        decorator.setExtendedRequestLength( extendedRequestLength );
 
         return 1 + TLV.getNbBytes( extendedRequestLength ) + extendedRequestLength;
     }
@@ -1755,27 +1756,28 @@ public class LdapEncoder
      * @param buffer The buffer where to put the PDU
      * @return The PDU.
      */
-    private void encodeExtendedRequest( ByteBuffer buffer, ExtendedRequestImpl extendedRequest )
+    private void encodeExtendedRequest( ByteBuffer buffer, ExtendedRequestDecorator decorator )
         throws EncoderException
     {
+        ExtendedRequest extendedRequest = decorator.getExtendedRequest();
         try
         {
             // The BindResponse Tag
             buffer.put( LdapConstants.EXTENDED_REQUEST_TAG );
-            buffer.put( TLV.getBytes( extendedRequest.getExtendedRequestLength() ) );
+            buffer.put( TLV.getBytes( decorator.getExtendedRequestLength() ) );
 
             // The requestName, if any
-            if ( extendedRequest.getRequestNameBytes() == null )
+            if ( decorator.getRequestNameBytes() == null )
             {
                 throw new EncoderException( I18n.err( I18n.ERR_04043 ) );
             }
 
             buffer.put( ( byte ) LdapConstants.EXTENDED_REQUEST_NAME_TAG );
-            buffer.put( TLV.getBytes( extendedRequest.getRequestNameBytes().length ) );
+            buffer.put( TLV.getBytes( decorator.getRequestNameBytes().length ) );
 
-            if ( extendedRequest.getRequestNameBytes().length != 0 )
+            if ( decorator.getRequestNameBytes().length != 0 )
             {
-                buffer.put( extendedRequest.getRequestNameBytes() );
+                buffer.put( decorator.getRequestNameBytes() );
             }
 
             // The requestValue, if any
@@ -2402,7 +2404,7 @@ public class LdapEncoder
                 return computeDeleteResponseLength( ( DeleteResponseDecorator ) decorator );
 
             case EXTENDED_REQUEST:
-                return computeExtendedRequestLength( ( ExtendedRequestImpl ) message );
+                return computeExtendedRequestLength( ( ExtendedRequestDecorator ) decorator );
 
             case EXTENDED_RESPONSE:
                 return computeExtendedResponseLength( ( ExtendedResponseImpl ) message );
@@ -2486,7 +2488,7 @@ public class LdapEncoder
                 break;
 
             case EXTENDED_REQUEST:
-                encodeExtendedRequest( bb, ( ExtendedRequestImpl ) message );
+                encodeExtendedRequest( bb, ( ExtendedRequestDecorator ) decorator );
                 break;
 
             case EXTENDED_RESPONSE:

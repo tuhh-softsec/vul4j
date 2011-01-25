@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.message;
+package org.apache.directory.shared.ldap.model.message;
 
 
 import static org.junit.Assert.assertFalse;
@@ -32,10 +32,7 @@ import javax.naming.ldap.ExtendedResponse;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.model.exception.MessageException;
-import org.apache.directory.shared.ldap.model.message.Control;
-import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
-import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
-import org.apache.directory.shared.ldap.model.message.ResultResponse;
+import org.apache.directory.shared.ldap.model.message.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 

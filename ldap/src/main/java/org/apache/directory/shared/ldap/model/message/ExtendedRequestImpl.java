@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.message;
+package org.apache.directory.shared.ldap.model.message;
 
 
 import java.util.Arrays;
@@ -25,6 +25,7 @@ import java.util.Arrays;
 import javax.naming.NamingException;
 import javax.naming.ldap.ExtendedResponse;
 
+import org.apache.directory.shared.ldap.message.ExtendedResponseImpl;
 import org.apache.directory.shared.ldap.model.message.AbstractRequest;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
@@ -50,16 +51,6 @@ public class ExtendedRequestImpl extends AbstractRequest implements ExtendedRequ
     /** The associated response */
     protected ResultResponse response;
 
-    /** The extended request length */
-    private int extendedRequestLength;
-
-    /** The OID length */
-    private byte[] requestNameBytes;
-
-
-    // -----------------------------------------------------------------------
-    // Constructors
-    // -----------------------------------------------------------------------
 
     /**
      * Creates an ExtendedRequest implementing object used to perform
@@ -273,48 +264,6 @@ public class ExtendedRequestImpl extends AbstractRequest implements ExtendedRequ
         throws NamingException
     {
         return null;
-    }
-
-
-    /**
-     * Stores the encoded length for the ExtendedRequest
-     * 
-     * @param extendedRequestLength The encoded length
-     */
-    /* No qualifier*/void setExtendedRequestLength( int extendedRequestLength )
-    {
-        this.extendedRequestLength = extendedRequestLength;
-    }
-
-
-    /**
-     * @return The encoded ExtendedRequest's length
-     */
-    /* No qualifier*/int getExtendedRequestLength()
-    {
-        return extendedRequestLength;
-    }
-
-
-    /**
-     * Gets the requestName bytes.
-     * 
-     * @return the requestName bytes of the extended request type.
-     */
-    /* No qualifier*/byte[] getRequestNameBytes()
-    {
-        return requestNameBytes;
-    }
-
-
-    /**
-     * Sets the requestName bytes.
-     * 
-     * @param requestNameBytes the OID bytes of the extended request type.
-     */
-    /* No qualifier*/void setRequestNameBytes( byte[] requestNameBytes )
-    {
-        this.requestNameBytes = requestNameBytes;
     }
 
 
