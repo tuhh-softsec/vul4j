@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.message;
+package org.apache.directory.shared.ldap.model.message;
 
 
 import java.util.Arrays;
@@ -38,9 +38,6 @@ public class BindResponseImpl extends AbstractResultResponse implements BindResp
 
     /** optional property holding SASL authentication response parameters */
     private byte[] serverSaslCreds;
-
-    /** The encoded bindResponse length */
-    private int bindResponseLength;
 
 
     // ------------------------------------------------------------------------
@@ -171,25 +168,6 @@ public class BindResponseImpl extends AbstractResultResponse implements BindResp
         }
 
         return Arrays.equals( serverSaslCreds, creds );
-    }
-
-
-    /**
-     * Stores the encoded length for the BindResponse
-     * @param bindResponseLength The encoded length
-     */
-    /* No qualifier*/void setBindResponseLength( int bindResponseLength )
-    {
-        this.bindResponseLength = bindResponseLength;
-    }
-
-
-    /**
-     * @return The encoded BindResponse's length
-     */
-    /* No qualifier */int getBindResponseLength()
-    {
-        return bindResponseLength;
     }
 
 

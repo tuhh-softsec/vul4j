@@ -36,10 +36,7 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.MessageEncoderException;
 import org.apache.directory.shared.ldap.codec.controls.CodecControl;
-import org.apache.directory.shared.ldap.message.decorators.AddRequestDecorator;
-import org.apache.directory.shared.ldap.message.decorators.AddResponseDecorator;
-import org.apache.directory.shared.ldap.message.decorators.BindRequestDecorator;
-import org.apache.directory.shared.ldap.message.decorators.MessageDecorator;
+import org.apache.directory.shared.ldap.message.decorators.*;
 import org.apache.directory.shared.ldap.model.entry.BinaryValue;
 import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
@@ -572,8 +569,9 @@ public class LdapEncoder
      * Length(BindResponse) = Length(0x61) + Length(L1) + L1
      * </pre>
      */
-    private int computeBindResponseLength( BindResponseImpl bindResponse )
+    private int computeBindResponseLength( BindResponseDecorator decorator )
     {
+        BindResponse bindResponse = decorator.getBindResponse();
         int ldapResultLength = computeLdapResultLength( bindResponse.getLdapResult() );
 
         int bindResponseLength = ldapResultLength;
@@ -585,7 +583,7 @@ public class LdapEncoder
             bindResponseLength += 1 + TLV.getNbBytes( serverSaslCreds.length ) + serverSaslCreds.length;
         }
 
-        bindResponse.setBindResponseLength( bindResponseLength );
+        decorator.setBindResponseLength( bindResponseLength );
 
         return 1 + TLV.getNbBytes( bindResponseLength ) + bindResponseLength;
     }
@@ -1588,16 +1586,18 @@ public class LdapEncoder
      * </pre>
      * 
      * @param bb The buffer where to put the PDU
-     * @param bindResponse The BindResponse to encode
+     * @param decorator The decorated BindResponse to encode
      * @throws EncoderException when encoding operations fail
      */
-    private void encodeBindResponse( ByteBuffer bb, BindResponseImpl bindResponse ) throws EncoderException
+    private void encodeBindResponse( ByteBuffer bb, BindResponseDecorator decorator ) throws EncoderException
     {
+        BindResponse bindResponse = decorator.getBindResponse();
+
         try
         {
             // The BindResponse Tag
             bb.put( LdapConstants.BIND_RESPONSE_TAG );
-            bb.put( TLV.getBytes( bindResponse.getBindResponseLength() ) );
+            bb.put( TLV.getBytes( decorator.getBindResponseLength() ) );
 
             // The LdapResult
             encodeLdapResult( bb, bindResponse.getLdapResult() );
@@ -2380,7 +2380,7 @@ public class LdapEncoder
                 return computeBindRequestLength( ( BindRequestDecorator ) decorator );
 
             case BIND_RESPONSE:
-                return computeBindResponseLength( ( BindResponseImpl ) message );
+                return computeBindResponseLength( ( BindResponseDecorator ) decorator );
 
             case COMPARE_REQUEST:
                 return computeCompareRequestLength( ( CompareRequestImpl ) message );
@@ -2459,7 +2459,7 @@ public class LdapEncoder
                 break;
 
             case BIND_RESPONSE:
-                encodeBindResponse( bb, ( BindResponseImpl ) message );
+                encodeBindResponse( bb, ( BindResponseDecorator ) decorator );
                 break;
 
             case COMPARE_REQUEST:

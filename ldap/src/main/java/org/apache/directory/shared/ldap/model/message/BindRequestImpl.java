@@ -23,8 +23,6 @@ package org.apache.directory.shared.ldap.model.message;
 import java.util.Arrays;
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.message.BindResponseImpl;
-import org.apache.directory.shared.ldap.model.message.*;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.util.Strings;
 

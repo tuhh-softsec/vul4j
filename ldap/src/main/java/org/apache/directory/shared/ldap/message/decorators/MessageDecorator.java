@@ -21,10 +21,7 @@ package org.apache.directory.shared.ldap.message.decorators;
 
 
 import org.apache.directory.shared.asn1.EncoderException;
-import org.apache.directory.shared.ldap.model.message.AddRequest;
-import org.apache.directory.shared.ldap.model.message.AddResponse;
-import org.apache.directory.shared.ldap.model.message.BindRequest;
-import org.apache.directory.shared.ldap.model.message.Message;
+import org.apache.directory.shared.ldap.model.message.*;
 
 
 /**
@@ -60,6 +57,8 @@ public class MessageDecorator
                 return new AddResponseDecorator( ( AddResponse ) decoratedMessage );
             case BIND_REQUEST:
                 return new BindRequestDecorator( ( BindRequest ) decoratedMessage );
+            case BIND_RESPONSE:
+                return new BindResponseDecorator( ( BindResponse ) decoratedMessage );
             default:
                 return new MessageDecorator( decoratedMessage );
         }

@@ -17,62 +17,55 @@
  *  under the License. 
  *  
  */
-
-package org.apache.directory.shared.dsmlv2.reponse;
+package org.apache.directory.shared.ldap.message.decorators;
 
 
 import org.apache.directory.shared.ldap.model.message.BindResponse;
-import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
-import org.apache.directory.shared.ldap.model.message.BindResponseImpl;
-import org.dom4j.Element;
 
 
 /**
- * DSML Decorator for AuthResponse
+ * Doc me!
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class AuthResponseDsml extends AbstractResponseDsml
+public class BindResponseDecorator extends MessageDecorator
 {
-    /**
-     * Creates a new instance of AuthResponseDsml.
-     */
-    public AuthResponseDsml()
-    {
-        super( new BindResponseImpl() );
-    }
+    /** The encoded bindResponse length */
+    private int bindResponseLength;
 
 
     /**
-     * Creates a new instance of AuthResponseDsml.
+     * Makes a BindResponse encodable.
      *
-     * @param ldapMessage
-     *      the message to decorate
+     * @param decoratedMessage the decorated BindResponse
      */
-    public AuthResponseDsml( BindResponse ldapMessage )
+    public BindResponseDecorator( BindResponse decoratedMessage )
     {
-        super( ldapMessage );
+        super( decoratedMessage );
+    }
+
+
+    public BindResponse getBindResponse()
+    {
+        return ( BindResponse ) getMessage();
     }
 
 
     /**
-     * {@inheritDoc}
+     * Stores the encoded length for the BindResponse
+     * @param bindResponseLength The encoded length
      */
-    public MessageTypeEnum getType()
+    public void setBindResponseLength( int bindResponseLength )
     {
-        return instance.getType();
+        this.bindResponseLength = bindResponseLength;
     }
 
 
     /**
-     * {@inheritDoc}
+     * @return The encoded BindResponse's length
      */
-    public Element toDsml( Element root )
+    public int getBindResponseLength()
     {
-        Element element = root.addElement( "authResponse" );
-
-        LdapResultDsml ldapResultDsml = new LdapResultDsml( ( ( BindResponse ) instance ).getLdapResult(), instance );
-        ldapResultDsml.toDsml( element );
-        return element;
+        return bindResponseLength;
     }
 }
