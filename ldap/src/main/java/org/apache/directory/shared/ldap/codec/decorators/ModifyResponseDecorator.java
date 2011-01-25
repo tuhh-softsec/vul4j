@@ -17,12 +17,10 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.message.decorators;
+package org.apache.directory.shared.ldap.codec.decorators;
 
 
-import org.apache.directory.shared.ldap.model.message.AddRequest;
-
-import java.util.List;
+import org.apache.directory.shared.ldap.model.message.ModifyResponse;
 
 
 /**
@@ -30,22 +28,44 @@ import java.util.List;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class FooDecorator extends MessageDecorator
+public class ModifyResponseDecorator extends MessageDecorator
 {
+    /** The encoded modifyResponse length */
+    private int modifyResponseLength;
+
 
     /**
-     * Makes a Foo encodable.
+     * Makes a ModifyResponse encodable.
      *
-     * @param decoratedMessage the decorated Foo
+     * @param decoratedMessage the decorated ModifyResponse
      */
-    public FooDecorator( AddRequest decoratedMessage )
+    public ModifyResponseDecorator( ModifyResponse decoratedMessage )
     {
         super( decoratedMessage );
     }
 
 
-    public AddRequest getAddRequest()
+    public ModifyResponse getModifyResponse()
     {
-        return ( AddRequest ) getMessage();
+        return ( ModifyResponse ) getMessage();
+    }
+
+
+    /**
+     * Stores the encoded length for the ModifyResponse
+     * @param modifyResponseLength The encoded length
+     */
+    public void setModifyResponseLength( int modifyResponseLength )
+    {
+        this.modifyResponseLength = modifyResponseLength;
+    }
+
+
+    /**
+     * @return The encoded ModifyResponse's length
+     */
+    public int getModifyResponseLength()
+    {
+        return modifyResponseLength;
     }
 }

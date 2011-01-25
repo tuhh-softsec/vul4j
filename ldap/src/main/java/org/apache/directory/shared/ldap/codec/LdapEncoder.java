@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.message;
+package org.apache.directory.shared.ldap.codec;
 
 
 import java.nio.BufferOverflowException;
@@ -33,10 +33,8 @@ import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.util.Asn1StringUtils;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.LdapConstants;
-import org.apache.directory.shared.ldap.codec.MessageEncoderException;
 import org.apache.directory.shared.ldap.codec.controls.CodecControl;
-import org.apache.directory.shared.ldap.message.decorators.*;
+import org.apache.directory.shared.ldap.codec.decorators.*;
 import org.apache.directory.shared.ldap.model.entry.BinaryValue;
 import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
@@ -2418,7 +2416,7 @@ public class LdapEncoder
                 return computeCompareRequestLength( ( CompareRequestDecorator ) decorator );
 
             case COMPARE_RESPONSE:
-                return computeCompareResponseLength( ( CompareResponseDecorator ) decorator );
+                return computeCompareResponseLength( (CompareResponseDecorator) decorator );
 
             case DEL_REQUEST:
                 return computeDeleteRequestLength( ( DeleteRequestImpl ) message );
@@ -2430,7 +2428,7 @@ public class LdapEncoder
                 return computeExtendedRequestLength( ( ExtendedRequestDecorator ) decorator );
 
             case EXTENDED_RESPONSE:
-                return computeExtendedResponseLength( ( ExtendedResponseDecorator ) decorator );
+                return computeExtendedResponseLength( (ExtendedResponseDecorator) decorator );
 
             case INTERMEDIATE_RESPONSE:
                 return computeIntermediateResponseLength( ( IntermediateResponseDecorator ) decorator );

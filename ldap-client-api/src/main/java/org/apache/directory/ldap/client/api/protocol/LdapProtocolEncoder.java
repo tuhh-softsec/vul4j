@@ -22,7 +22,7 @@ package org.apache.directory.ldap.client.api.protocol;
 
 import java.nio.ByteBuffer;
 
-import org.apache.directory.shared.ldap.message.LdapEncoder;
+import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.IoSession;

@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.message.decorators;
+package org.apache.directory.shared.ldap.codec.decorators;
 
 
 import java.util.List;

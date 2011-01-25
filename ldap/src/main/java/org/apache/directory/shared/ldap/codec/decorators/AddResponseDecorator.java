@@ -17,10 +17,10 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.message.decorators;
+package org.apache.directory.shared.ldap.codec.decorators;
 
 
-import org.apache.directory.shared.ldap.model.message.ModifyDnResponse;
+import org.apache.directory.shared.ldap.model.message.AddResponse;
 
 
 /**
@@ -28,44 +28,44 @@ import org.apache.directory.shared.ldap.model.message.ModifyDnResponse;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ModifyDnResponseDecorator extends MessageDecorator
+public class AddResponseDecorator extends MessageDecorator
 {
-    /** The encoded modifyDnResponse length */
-    private int modifyDnResponseLength;
+    /** The encoded addResponse length */
+    private int addResponseLength;
 
 
     /**
-     * Makes a ModifyDnResponse encodable.
+     * Makes a AddResponse encodable.
      *
-     * @param decoratedMessage the decorated ModifyDnResponse
+     * @param decoratedMessage the decorated AddResponse
      */
-    public ModifyDnResponseDecorator( ModifyDnResponse decoratedMessage )
+    public AddResponseDecorator( AddResponse decoratedMessage)
     {
         super( decoratedMessage );
     }
 
 
-    public ModifyDnResponse getModifyDnResponse()
+    public AddResponse getAddResponse()
     {
-        return ( ModifyDnResponse ) getMessage();
+        return ( AddResponse ) getMessage();
     }
 
 
     /**
-     * @param modifyDnResponseLength The encoded ModifyDnResponse's length
+     * Stores the encoded length for the AddResponse
+     * @param addResponseLength The encoded length
      */
-    public void setModifyDnResponseLength( int modifyDnResponseLength )
+    public void setAddResponseLength( int addResponseLength )
     {
-        this.modifyDnResponseLength = modifyDnResponseLength;
+        this.addResponseLength = addResponseLength;
     }
 
 
     /**
-     * Stores the encoded length for the ModifyDnResponse
-     * @return The encoded length
+     * @return The encoded AddResponse's length
      */
-    public int getModifyDnResponseLength()
+    public int getAddResponseLength()
     {
-        return modifyDnResponseLength;
+        return addResponseLength;
     }
 }

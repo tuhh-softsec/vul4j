@@ -17,10 +17,10 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.message.decorators;
+package org.apache.directory.shared.ldap.codec.decorators;
 
 
-import org.apache.directory.shared.ldap.model.message.CompareResponse;
+import org.apache.directory.shared.ldap.model.message.ModifyDnResponse;
 
 
 /**
@@ -28,44 +28,44 @@ import org.apache.directory.shared.ldap.model.message.CompareResponse;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class CompareResponseDecorator extends MessageDecorator
+public class ModifyDnResponseDecorator extends MessageDecorator
 {
-    /** The encoded compareResponse length */
-    private int compareResponseLength;
+    /** The encoded modifyDnResponse length */
+    private int modifyDnResponseLength;
 
 
     /**
-     * Makes a CompareResponse encodable.
+     * Makes a ModifyDnResponse encodable.
      *
-     * @param decoratedMessage the decorated CompareResponse
+     * @param decoratedMessage the decorated ModifyDnResponse
      */
-    public CompareResponseDecorator( CompareResponse decoratedMessage )
+    public ModifyDnResponseDecorator( ModifyDnResponse decoratedMessage )
     {
         super( decoratedMessage );
     }
 
 
-    public CompareResponse getCompareResponse()
+    public ModifyDnResponse getModifyDnResponse()
     {
-        return ( CompareResponse ) getMessage();
+        return ( ModifyDnResponse ) getMessage();
     }
 
 
     /**
-     * Stores the encoded length for the CompareResponse
-     * @param compareResponseLength The encoded length
+     * @param modifyDnResponseLength The encoded ModifyDnResponse's length
      */
-    public void setCompareResponseLength( int compareResponseLength )
+    public void setModifyDnResponseLength( int modifyDnResponseLength )
     {
-        this.compareResponseLength = compareResponseLength;
+        this.modifyDnResponseLength = modifyDnResponseLength;
     }
 
 
     /**
-     * @return The encoded CompareResponse's length
+     * Stores the encoded length for the ModifyDnResponse
+     * @return The encoded length
      */
-    public int getCompareResponseLength()
+    public int getModifyDnResponseLength()
     {
-        return compareResponseLength;
+        return modifyDnResponseLength;
     }
 }

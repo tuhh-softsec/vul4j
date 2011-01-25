@@ -17,10 +17,10 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.message.decorators;
+package org.apache.directory.shared.ldap.codec.decorators;
 
 
-import org.apache.directory.shared.ldap.model.message.ModifyDnRequest;
+import org.apache.directory.shared.ldap.model.message.DeleteResponse;
 
 
 /**
@@ -28,45 +28,44 @@ import org.apache.directory.shared.ldap.model.message.ModifyDnRequest;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ModifyDnRequestDecorator extends MessageDecorator
+public class DeleteResponseDecorator extends MessageDecorator
 {
-
-    /** The modify Dn request length */
-    private int modifyDnRequestLength;
+    /** The encoded deleteResponse length */
+    private int deleteResponseLength;
 
 
     /**
-     * Makes a ModifyDnRequest encodable.
+     * Makes a DeleteResponse encodable.
      *
-     * @param decoratedMessage the decorated ModifyDnRequest
+     * @param decoratedMessage the decorated DeleteResponse
      */
-    public ModifyDnRequestDecorator( ModifyDnRequest decoratedMessage )
+    public DeleteResponseDecorator( DeleteResponse decoratedMessage )
     {
         super( decoratedMessage );
     }
 
 
-    public ModifyDnRequest getModifyDnRequest()
+    public DeleteResponse getDeleteResponse()
     {
-        return ( ModifyDnRequest ) getMessage();
+        return ( DeleteResponse ) getMessage();
     }
 
 
     /**
-     * @param modifyDnRequestLength The encoded ModifyDnRequest's length
+     * Stores the encoded length for the DeleteResponse
+     * @param deleteResponseLength The encoded length
      */
-    public void setModifyDnRequestLength( int modifyDnRequestLength )
+    public void setDeleteResponseLength( int deleteResponseLength )
     {
-        this.modifyDnRequestLength = modifyDnRequestLength;
+        this.deleteResponseLength = deleteResponseLength;
     }
 
 
     /**
-     * Stores the encoded length for the ModifyDnRequest
-     * @return the encoded length
+     * @return The encoded DeleteResponse's length
      */
-    public int getModifyDnResponseLength()
+    public int getDeleteResponseLength()
     {
-        return modifyDnRequestLength;
+        return deleteResponseLength;
     }
 }

@@ -17,10 +17,10 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.message.decorators;
+package org.apache.directory.shared.ldap.codec.decorators;
 
 
-import org.apache.directory.shared.ldap.model.message.ModifyResponse;
+import org.apache.directory.shared.ldap.model.message.CompareResponse;
 
 
 /**
@@ -28,44 +28,44 @@ import org.apache.directory.shared.ldap.model.message.ModifyResponse;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ModifyResponseDecorator extends MessageDecorator
+public class CompareResponseDecorator extends MessageDecorator
 {
-    /** The encoded modifyResponse length */
-    private int modifyResponseLength;
+    /** The encoded compareResponse length */
+    private int compareResponseLength;
 
 
     /**
-     * Makes a ModifyResponse encodable.
+     * Makes a CompareResponse encodable.
      *
-     * @param decoratedMessage the decorated ModifyResponse
+     * @param decoratedMessage the decorated CompareResponse
      */
-    public ModifyResponseDecorator( ModifyResponse decoratedMessage )
+    public CompareResponseDecorator( CompareResponse decoratedMessage )
     {
         super( decoratedMessage );
     }
 
 
-    public ModifyResponse getModifyResponse()
+    public CompareResponse getCompareResponse()
     {
-        return ( ModifyResponse ) getMessage();
+        return ( CompareResponse ) getMessage();
     }
 
 
     /**
-     * Stores the encoded length for the ModifyResponse
-     * @param modifyResponseLength The encoded length
+     * Stores the encoded length for the CompareResponse
+     * @param compareResponseLength The encoded length
      */
-    public void setModifyResponseLength( int modifyResponseLength )
+    public void setCompareResponseLength( int compareResponseLength )
     {
-        this.modifyResponseLength = modifyResponseLength;
+        this.compareResponseLength = compareResponseLength;
     }
 
 
     /**
-     * @return The encoded ModifyResponse's length
+     * @return The encoded CompareResponse's length
      */
-    public int getModifyResponseLength()
+    public int getCompareResponseLength()
     {
-        return modifyResponseLength;
+        return compareResponseLength;
     }
 }

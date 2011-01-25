@@ -17,10 +17,10 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.message.decorators;
+package org.apache.directory.shared.ldap.codec.decorators;
 
 
-import org.apache.directory.shared.ldap.model.message.AddResponse;
+import org.apache.directory.shared.ldap.model.message.SearchResultDone;
 
 
 /**
@@ -28,44 +28,45 @@ import org.apache.directory.shared.ldap.model.message.AddResponse;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class AddResponseDecorator extends MessageDecorator
+public class SearchResultDoneDecorator extends MessageDecorator
 {
-    /** The encoded addResponse length */
-    private int addResponseLength;
+    /** The encoded searchResultDone length */
+    private int searchResultDoneLength;
+
 
 
     /**
-     * Makes a AddResponse encodable.
+     * Makes a SearchResultDone encodable.
      *
-     * @param decoratedMessage the decorated AddResponse
+     * @param decoratedMessage the decorated SearchResultDone
      */
-    public AddResponseDecorator( AddResponse decoratedMessage)
+    public SearchResultDoneDecorator( SearchResultDone decoratedMessage )
     {
         super( decoratedMessage );
     }
 
 
-    public AddResponse getAddResponse()
+    public SearchResultDone getSearchResultDone()
     {
-        return ( AddResponse ) getMessage();
+        return ( SearchResultDone ) getMessage();
     }
 
 
     /**
-     * Stores the encoded length for the AddResponse
-     * @param addResponseLength The encoded length
+     * Stores the encoded length for the SearchResultDone
+     * @param searchResultDoneLength The encoded length
      */
-    public void setAddResponseLength( int addResponseLength )
+    public void setSearchResultDoneLength( int searchResultDoneLength )
     {
-        this.addResponseLength = addResponseLength;
+        this.searchResultDoneLength = searchResultDoneLength;
     }
 
 
     /**
-     * @return The encoded AddResponse's length
+     * @return The encoded SearchResultDone's length
      */
-    public int getAddResponseLength()
+    public int getSearchResultDoneLength()
     {
-        return addResponseLength;
+        return searchResultDoneLength;
     }
 }

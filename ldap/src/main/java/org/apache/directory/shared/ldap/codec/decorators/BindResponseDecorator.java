@@ -17,10 +17,10 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.message.decorators;
+package org.apache.directory.shared.ldap.codec.decorators;
 
 
-import org.apache.directory.shared.ldap.model.message.SearchResultDone;
+import org.apache.directory.shared.ldap.model.message.BindResponse;
 
 
 /**
@@ -28,45 +28,44 @@ import org.apache.directory.shared.ldap.model.message.SearchResultDone;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SearchResultDoneDecorator extends MessageDecorator
+public class BindResponseDecorator extends MessageDecorator
 {
-    /** The encoded searchResultDone length */
-    private int searchResultDoneLength;
-
+    /** The encoded bindResponse length */
+    private int bindResponseLength;
 
 
     /**
-     * Makes a SearchResultDone encodable.
+     * Makes a BindResponse encodable.
      *
-     * @param decoratedMessage the decorated SearchResultDone
+     * @param decoratedMessage the decorated BindResponse
      */
-    public SearchResultDoneDecorator( SearchResultDone decoratedMessage )
+    public BindResponseDecorator( BindResponse decoratedMessage )
     {
         super( decoratedMessage );
     }
 
 
-    public SearchResultDone getSearchResultDone()
+    public BindResponse getBindResponse()
     {
-        return ( SearchResultDone ) getMessage();
+        return ( BindResponse ) getMessage();
     }
 
 
     /**
-     * Stores the encoded length for the SearchResultDone
-     * @param searchResultDoneLength The encoded length
+     * Stores the encoded length for the BindResponse
+     * @param bindResponseLength The encoded length
      */
-    public void setSearchResultDoneLength( int searchResultDoneLength )
+    public void setBindResponseLength( int bindResponseLength )
     {
-        this.searchResultDoneLength = searchResultDoneLength;
+        this.bindResponseLength = bindResponseLength;
     }
 
 
     /**
-     * @return The encoded SearchResultDone's length
+     * @return The encoded BindResponse's length
      */
-    public int getSearchResultDoneLength()
+    public int getBindResponseLength()
     {
-        return searchResultDoneLength;
+        return bindResponseLength;
     }
 }
