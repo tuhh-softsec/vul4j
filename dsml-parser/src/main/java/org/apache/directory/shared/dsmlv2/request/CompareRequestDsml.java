@@ -22,7 +22,7 @@ package org.apache.directory.shared.dsmlv2.request;
 
 import org.apache.directory.shared.ldap.model.message.CompareRequest;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
-import org.apache.directory.shared.ldap.message.CompareRequestImpl;
+import org.apache.directory.shared.ldap.model.message.CompareRequestImpl;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.dom4j.Element;
 

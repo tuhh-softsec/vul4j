@@ -63,7 +63,7 @@ import org.apache.directory.shared.ldap.model.message.AddRequestImpl;
 import org.apache.directory.shared.ldap.model.message.*;
 import org.apache.directory.shared.ldap.model.message.BindRequest;
 import org.apache.directory.shared.ldap.model.message.BindRequestImpl;
-import org.apache.directory.shared.ldap.message.CompareRequestImpl;
+import org.apache.directory.shared.ldap.model.message.CompareRequestImpl;
 import org.apache.directory.shared.ldap.message.DeleteRequestImpl;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 import org.apache.directory.shared.ldap.message.ExtendedRequestImpl;

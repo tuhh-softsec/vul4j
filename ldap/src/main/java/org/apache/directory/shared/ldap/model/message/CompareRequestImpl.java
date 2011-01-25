@@ -17,9 +17,10 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.message;
+package org.apache.directory.shared.ldap.model.message;
 
 
+import org.apache.directory.shared.ldap.message.CompareResponseImpl;
 import org.apache.directory.shared.ldap.model.message.*;
 import org.apache.directory.shared.ldap.model.entry.BinaryValue;
 import org.apache.directory.shared.ldap.model.entry.StringValue;
@@ -43,23 +44,11 @@ public class CompareRequestImpl extends AbstractAbandonableRequest implements Co
     /** The id of the attribute used in the comparison */
     private String attrId;
 
-    /** The bytes of the attribute id used in the comparison */
-    private byte[] attrIdBytes;
-
     /** The value of the attribute used in the comparison */
     private Value<?> attrVal;
 
-    /** The bytes of the attribute value used in the comparison */
-    private byte[] attrValBytes;
-
     /** The associated response */
     private CompareResponse response;
-
-    /** The compare request length */
-    private int compareRequestLength;
-
-    /** The attribute value assertion length */
-    private int avaLength;
 
 
     // ------------------------------------------------------------------------
@@ -177,53 +166,10 @@ public class CompareRequestImpl extends AbstractAbandonableRequest implements Co
     }
 
 
-    /**
-     * Gets the attribute id bytes use in making the comparison.
-     * 
-     * @return the attribute id bytes used in comparison.
-     */
-    /*No qualifier*/byte[] getAttrIdBytes()
-    {
-        return attrIdBytes;
-    }
-
-
-    /**
-     * Sets the attribute id bytes used in the comparison.
-     * 
-     * @param attrIdBytes the attribute id bytes used in comparison.
-     */
-    /*No qualifier*/void setAttrIdBytes( byte[] attrIdBytes )
-    {
-        this.attrIdBytes = attrIdBytes;
-    }
-
-
-    /**
-     * Gets the attribute value bytes use in making the comparison.
-     * 
-     * @return the attribute value bytes used in comparison.
-     */
-    /*No qualifier*/byte[] getAttrValBytes()
-    {
-        return attrValBytes;
-    }
-
-
-    /**
-     * Sets the attribute value bytes used in the comparison.
-     * 
-     * @param attrValBytes the attribute value bytes used in comparison.
-     */
-    /*No qualifier*/void setAttrValBytes( byte[] attrValBytes )
-    {
-        this.attrValBytes = attrValBytes;
-    }
-
-
     // ------------------------------------------------------------------------
     // SingleReplyRequest Interface Method Implementations
     // ------------------------------------------------------------------------
+
 
     /**
      * Gets the protocol response message type for this request which produces
@@ -250,44 +196,6 @@ public class CompareRequestImpl extends AbstractAbandonableRequest implements Co
         }
 
         return response;
-    }
-
-
-    /**
-     * Stores the encoded length for the CompareRequest
-     * @param compareRequestLength The encoded length
-     */
-    /* No qualifier*/void setCompareRequestLength( int compareRequestLength )
-    {
-        this.compareRequestLength = compareRequestLength;
-    }
-
-
-    /**
-     * @return The encoded CompareRequest length
-     */
-    /* No qualifier */int getCompareRequestLength()
-    {
-        return compareRequestLength;
-    }
-
-
-    /**
-     * Stores the encoded length for the ava
-     * @param avaLength The encoded length
-     */
-    /* No qualifier*/void setAvaLength( int avaLength )
-    {
-        this.avaLength = avaLength;
-    }
-
-
-    /**
-     * @return The encoded ava length
-     */
-    /* No qualifier */int getAvaLength()
-    {
-        return avaLength;
     }
 
 

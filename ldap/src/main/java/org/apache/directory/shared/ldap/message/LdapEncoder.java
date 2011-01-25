@@ -608,8 +608,9 @@ public class LdapEncoder
      * 
      * @return The CompareRequest PDU's length
      */
-    private int computeCompareRequestLength( CompareRequestImpl compareRequest )
+    private int computeCompareRequestLength( CompareRequestDecorator decorator )
     {
+        CompareRequest compareRequest = decorator.getCompareRequest();
         // The entry Dn
         Dn entry = compareRequest.getName();
         int compareRequestLength = 1 + TLV.getNbBytes( Dn.getNbBytes(entry) ) + Dn.getNbBytes(entry);
@@ -617,7 +618,7 @@ public class LdapEncoder
         // The attribute value assertion
         byte[] attributeIdBytes = Strings.getBytesUtf8(compareRequest.getAttributeId());
         int avaLength = 1 + TLV.getNbBytes( attributeIdBytes.length ) + attributeIdBytes.length;
-        compareRequest.setAttrIdBytes( attributeIdBytes );
+        decorator.setAttrIdBytes( attributeIdBytes );
 
         org.apache.directory.shared.ldap.model.entry.Value assertionValue = compareRequest.getAssertionValue();
 
@@ -625,18 +626,18 @@ public class LdapEncoder
         {
             byte[] value = compareRequest.getAssertionValue().getBytes();
             avaLength += 1 + TLV.getNbBytes( value.length ) + value.length;
-            compareRequest.setAttrValBytes( value );
+            decorator.setAttrValBytes( value );
         }
         else
         {
             byte[] value = Strings.getBytesUtf8(compareRequest.getAssertionValue().getString());
             avaLength += 1 + TLV.getNbBytes( value.length ) + value.length;
-            compareRequest.setAttrValBytes( value );
+            decorator.setAttrValBytes( value );
         }
 
-        compareRequest.setAvaLength( avaLength );
+        decorator.setAvaLength( avaLength );
         compareRequestLength += 1 + TLV.getNbBytes( avaLength ) + avaLength;
-        compareRequest.setCompareRequestLength( compareRequestLength );
+        decorator.setCompareRequestLength( compareRequestLength );
 
         return 1 + TLV.getNbBytes( compareRequestLength ) + compareRequestLength;
 
@@ -1636,20 +1637,21 @@ public class LdapEncoder
      * 
      * @param buffer The buffer where to put the PDU
      */
-    private void encodeCompareRequest( ByteBuffer buffer, CompareRequestImpl compareRequest ) throws EncoderException
+    private void encodeCompareRequest( ByteBuffer buffer, CompareRequestDecorator decorator ) throws EncoderException
     {
+        CompareRequest compareRequest = decorator.getCompareRequest();
         try
         {
             // The CompareRequest Tag
             buffer.put( LdapConstants.COMPARE_REQUEST_TAG );
-            buffer.put( TLV.getBytes( compareRequest.getCompareRequestLength() ) );
+            buffer.put( TLV.getBytes( decorator.getCompareRequestLength() ) );
 
             // The entry
             Value.encode( buffer, Dn.getBytes(compareRequest.getName()) );
 
             // The attributeValueAssertion sequence Tag
             buffer.put( UniversalTag.SEQUENCE.getValue() );
-            buffer.put( TLV.getBytes( compareRequest.getAvaLength() ) );
+            buffer.put( TLV.getBytes( decorator.getAvaLength() ) );
         }
         catch ( BufferOverflowException boe )
         {
@@ -1657,10 +1659,10 @@ public class LdapEncoder
         }
 
         // The attributeDesc
-        Value.encode( buffer, compareRequest.getAttrIdBytes() );
+        Value.encode( buffer, decorator.getAttrIdBytes() );
 
         // The assertionValue
-        Value.encode( buffer, ( byte[] ) compareRequest.getAttrValBytes() );
+        Value.encode( buffer, ( byte[] ) decorator.getAttrValBytes() );
     }
 
 
@@ -2383,7 +2385,7 @@ public class LdapEncoder
                 return computeBindResponseLength( ( BindResponseDecorator ) decorator );
 
             case COMPARE_REQUEST:
-                return computeCompareRequestLength( ( CompareRequestImpl ) message );
+                return computeCompareRequestLength( ( CompareRequestDecorator ) decorator );
 
             case COMPARE_RESPONSE:
                 return computeCompareResponseLength( ( CompareResponseImpl ) message );
@@ -2463,7 +2465,7 @@ public class LdapEncoder
                 break;
 
             case COMPARE_REQUEST:
-                encodeCompareRequest( bb, ( CompareRequestImpl ) message );
+                encodeCompareRequest( bb, ( CompareRequestDecorator ) decorator );
                 break;
 
             case COMPARE_RESPONSE:
