@@ -17,62 +17,55 @@
  *  under the License. 
  *  
  */
+package org.apache.directory.shared.ldap.message.decorators;
 
-package org.apache.directory.shared.dsmlv2.reponse;
 
-
-import org.apache.directory.shared.ldap.model.message.CompareResponseImpl;
-import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.message.CompareResponse;
-import org.dom4j.Element;
 
 
 /**
- * DSML Decorator for CompareResponse
+ * Doc me!
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class CompareResponseDsml extends AbstractResponseDsml
+public class CompareResponseDecorator extends MessageDecorator
 {
-    /**
-     * Creates a new instance of CompareResponseDsml.
-     */
-    public CompareResponseDsml()
-    {
-        super( new CompareResponseImpl() );
-    }
+    /** The encoded compareResponse length */
+    private int compareResponseLength;
 
 
     /**
-     * Creates a new instance of CompareResponseDsml.
+     * Makes a CompareResponse encodable.
      *
-     * @param ldapMessage
-     *      the message to decorate
+     * @param decoratedMessage the decorated CompareResponse
      */
-    public CompareResponseDsml( CompareResponse ldapMessage )
+    public CompareResponseDecorator( CompareResponse decoratedMessage )
     {
-        super( ldapMessage );
+        super( decoratedMessage );
+    }
+
+
+    public CompareResponse getCompareResponse()
+    {
+        return ( CompareResponse ) getMessage();
     }
 
 
     /**
-     * {@inheritDoc}
+     * Stores the encoded length for the CompareResponse
+     * @param compareResponseLength The encoded length
      */
-    public MessageTypeEnum getType()
+    public void setCompareResponseLength( int compareResponseLength )
     {
-        return instance.getType();
+        this.compareResponseLength = compareResponseLength;
     }
 
 
     /**
-     * {@inheritDoc}
+     * @return The encoded CompareResponse's length
      */
-    public Element toDsml( Element root )
+    public int getCompareResponseLength()
     {
-        Element element = root.addElement( "compareResponse" );
-
-        LdapResultDsml ldapResultDsml = new LdapResultDsml( ( ( CompareResponse ) instance ).getLdapResult(), instance );
-        ldapResultDsml.toDsml( element );
-        return element;
+        return compareResponseLength;
     }
 }

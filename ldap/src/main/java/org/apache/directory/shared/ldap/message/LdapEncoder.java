@@ -657,11 +657,12 @@ public class LdapEncoder
      * 
      * Length(CompareResponse) = Length(0x6F) + Length(L1) + L1
      */
-    private int computeCompareResponseLength( CompareResponseImpl compareResponse )
+    private int computeCompareResponseLength( CompareResponseDecorator decorator )
     {
+        CompareResponse compareResponse = decorator.getCompareResponse();
         int compareResponseLength = computeLdapResultLength( compareResponse.getLdapResult() );
 
-        compareResponse.setCompareResponseLength( compareResponseLength );
+        decorator.setCompareResponseLength( compareResponseLength );
 
         return 1 + TLV.getNbBytes( compareResponseLength ) + compareResponseLength;
     }
@@ -1671,14 +1672,15 @@ public class LdapEncoder
      * 
      * @param buffer The buffer where to put the PDU
      */
-    private void encodeCompareResponse( ByteBuffer buffer, CompareResponseImpl compareResponse )
+    private void encodeCompareResponse( ByteBuffer buffer, CompareResponseDecorator decorator )
         throws EncoderException
     {
+        CompareResponse compareResponse = decorator.getCompareResponse();
         try
         {
             // The CompareResponse Tag
             buffer.put( LdapConstants.COMPARE_RESPONSE_TAG );
-            buffer.put( TLV.getBytes( compareResponse.getCompareResponseLength() ) );
+            buffer.put( TLV.getBytes( decorator.getCompareResponseLength() ) );
 
             // The LdapResult
             encodeLdapResult( buffer, compareResponse.getLdapResult() );
@@ -2388,7 +2390,7 @@ public class LdapEncoder
                 return computeCompareRequestLength( ( CompareRequestDecorator ) decorator );
 
             case COMPARE_RESPONSE:
-                return computeCompareResponseLength( ( CompareResponseImpl ) message );
+                return computeCompareResponseLength( ( CompareResponseDecorator ) decorator );
 
             case DEL_REQUEST:
                 return computeDeleteRequestLength( ( DeleteRequestImpl ) message );
@@ -2469,7 +2471,7 @@ public class LdapEncoder
                 break;
 
             case COMPARE_RESPONSE:
-                encodeCompareResponse( bb, ( CompareResponseImpl ) message );
+                encodeCompareResponse( bb, ( CompareResponseDecorator ) decorator );
                 break;
 
             case DEL_REQUEST:

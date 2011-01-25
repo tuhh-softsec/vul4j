@@ -61,6 +61,8 @@ public class MessageDecorator
                 return new BindResponseDecorator( ( BindResponse ) decoratedMessage );
             case COMPARE_REQUEST:
                 return new CompareRequestDecorator( ( CompareRequest ) decoratedMessage );
+            case COMPARE_RESPONSE:
+                return new CompareResponseDecorator( ( CompareResponse ) decoratedMessage );
             default:
                 return new MessageDecorator( decoratedMessage );
         }

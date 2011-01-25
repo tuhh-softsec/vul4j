@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.message;
+package org.apache.directory.shared.ldap.model.message;
 
 
 import org.apache.directory.shared.ldap.model.message.AbstractResultResponse;
@@ -32,13 +32,6 @@ import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
  */
 public class CompareResponseImpl extends AbstractResultResponse implements CompareResponse
 {
-    /** The encoded compareResponse length */
-    private int compareResponseLength;
-
-    // ------------------------------------------------------------------------
-    // Constructors
-    // ------------------------------------------------------------------------
-
     static final long serialVersionUID = 6452521899386487731L;
 
 
@@ -59,25 +52,6 @@ public class CompareResponseImpl extends AbstractResultResponse implements Compa
     public CompareResponseImpl( final int id )
     {
         super( id, TYPE );
-    }
-
-
-    /**
-     * Stores the encoded length for the CompareResponse
-     * @param compareResponseLength The encoded length
-     */
-    /* No qualifier*/void setCompareResponseLength( int compareResponseLength )
-    {
-        this.compareResponseLength = compareResponseLength;
-    }
-
-
-    /**
-     * @return The encoded CompareResponse's length
-     */
-    /* No qualifier*/int getCompareResponseLength()
-    {
-        return compareResponseLength;
     }
 
 
