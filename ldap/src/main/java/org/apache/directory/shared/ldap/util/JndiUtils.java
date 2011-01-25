@@ -77,7 +77,7 @@ import org.apache.directory.shared.ldap.model.exception.LdapProtocolErrorExcepti
 import org.apache.directory.shared.ldap.model.exception.LdapReferralException;
 import org.apache.directory.shared.ldap.model.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.model.exception.LdapServiceUnavailableException;
-import org.apache.directory.shared.ldap.message.ExtendedResponseImpl;
+import org.apache.directory.shared.ldap.model.message.ExtendedResponseImpl;
 import org.apache.directory.shared.ldap.model.message.LdapResult;
 import org.apache.directory.shared.ldap.model.exception.MessageException;
 import org.apache.directory.shared.ldap.model.message.ResultResponse;

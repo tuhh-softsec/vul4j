@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.message.extended;
 
 
-import org.apache.directory.shared.ldap.message.ExtendedResponseImpl;
+import org.apache.directory.shared.ldap.model.message.ExtendedResponseImpl;
 
 
 /**

@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.message;
+package org.apache.directory.shared.ldap.model.message;
 
 
 import java.util.Arrays;
@@ -39,19 +39,9 @@ public class ExtendedResponseImpl extends AbstractResultResponse implements Exte
     /** Object identifier for the extended response */
     protected String responseName;
 
-    /** The response name as a byte[] */
-    private byte[] responseNameBytes;
-
     /** Value encoded in the extended response payload */
     protected byte[] responseValue;
 
-    /** The encoded extendedResponse length */
-    private int extendedResponseLength;
-
-
-    // ------------------------------------------------------------------------
-    // Constructors
-    // ------------------------------------------------------------------------
 
     /**
      * Creates an ExtendedResponse as a reply to an ExtendedRequest.
@@ -120,28 +110,6 @@ public class ExtendedResponseImpl extends AbstractResultResponse implements Exte
     public void setResponseName( String responseName )
     {
         this.responseName = responseName;
-    }
-
-
-    /**
-     * Gets the responseName bytes.
-     * 
-     * @return the responseName bytes of the extended response type.
-     */
-    /* No qualifier*/byte[] getResponseNameBytes()
-    {
-        return responseNameBytes;
-    }
-
-
-    /**
-     * Sets the OID bytes.
-     * 
-     * @param oidBytes the OID bytes of the extended response type.
-     */
-    /* No qualifier*/void setResponseNameBytes( byte[] responseNameBytes )
-    {
-        this.responseNameBytes = responseNameBytes;
     }
 
 
@@ -273,26 +241,6 @@ public class ExtendedResponseImpl extends AbstractResultResponse implements Exte
     public String getID()
     {
         return getResponseName();
-    }
-
-
-    /**
-     * Stores the encoded length for the ExtendedResponse
-     * 
-     * @param extendedResponseLength The encoded length
-     */
-    /* No qualifier*/void setExtendedResponseLength( int extendedResponseLength )
-    {
-        this.extendedResponseLength = extendedResponseLength;
-    }
-
-
-    /**
-     * @return The encoded ExtendedResponse's length
-     */
-    /* No qualifier*/int getExtendedResponseLength()
-    {
-        return extendedResponseLength;
     }
 
 

@@ -763,8 +763,9 @@ public class LdapEncoder
      * 
      * @return The ExtendedResponse length
      */
-    private int computeExtendedResponseLength( ExtendedResponseImpl extendedResponse )
+    private int computeExtendedResponseLength( ExtendedResponseDecorator decorator )
     {
+        ExtendedResponse extendedResponse = decorator.getExtendedResponse();
         int ldapResultLength = computeLdapResultLength( extendedResponse.getLdapResult() );
 
         int extendedResponseLength = ldapResultLength;
@@ -774,7 +775,7 @@ public class LdapEncoder
         if ( !Strings.isEmpty(id) )
         {
             byte[] idBytes = Strings.getBytesUtf8(id);
-            extendedResponse.setResponseNameBytes( idBytes );
+            decorator.setResponseNameBytes( idBytes );
             int idLength = idBytes.length;
             extendedResponseLength += 1 + TLV.getNbBytes( idLength ) + idLength;
         }
@@ -786,7 +787,7 @@ public class LdapEncoder
             extendedResponseLength += 1 + TLV.getNbBytes( encodedValue.length ) + encodedValue.length;
         }
 
-        extendedResponse.setExtendedResponseLength( extendedResponseLength );
+        decorator.setExtendedResponseLength( extendedResponseLength );
 
         return 1 + TLV.getNbBytes( extendedResponseLength ) + extendedResponseLength;
     }
@@ -1811,20 +1812,21 @@ public class LdapEncoder
      * @param buffer The buffer where to put the PDU
      * @return The PDU.
      */
-    private void encodeExtendedResponse( ByteBuffer buffer, ExtendedResponseImpl extendedResponse )
+    private void encodeExtendedResponse( ByteBuffer buffer, ExtendedResponseDecorator decorator )
         throws EncoderException
     {
+        ExtendedResponse extendedResponse = decorator.getExtendedResponse();
         try
         {
             // The ExtendedResponse Tag
             buffer.put( LdapConstants.EXTENDED_RESPONSE_TAG );
-            buffer.put( TLV.getBytes( extendedResponse.getExtendedResponseLength() ) );
+            buffer.put( TLV.getBytes( decorator.getExtendedResponseLength() ) );
 
             // The LdapResult
             encodeLdapResult( buffer, extendedResponse.getLdapResult() );
 
             // The ID, if any
-            byte[] idBytes = extendedResponse.getResponseNameBytes();
+            byte[] idBytes = decorator.getResponseNameBytes();
 
             if ( idBytes != null )
             {
@@ -2407,7 +2409,7 @@ public class LdapEncoder
                 return computeExtendedRequestLength( ( ExtendedRequestDecorator ) decorator );
 
             case EXTENDED_RESPONSE:
-                return computeExtendedResponseLength( ( ExtendedResponseImpl ) message );
+                return computeExtendedResponseLength( ( ExtendedResponseDecorator ) decorator );
 
             case INTERMEDIATE_RESPONSE:
                 return computeIntermediateResponseLength( ( IntermediateResponseImpl ) message );
@@ -2492,7 +2494,7 @@ public class LdapEncoder
                 break;
 
             case EXTENDED_RESPONSE:
-                encodeExtendedResponse( bb, ( ExtendedResponseImpl ) message );
+                encodeExtendedResponse( bb, ( ExtendedResponseDecorator ) decorator );
                 break;
 
             case INTERMEDIATE_RESPONSE:

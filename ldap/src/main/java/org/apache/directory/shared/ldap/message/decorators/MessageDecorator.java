@@ -69,6 +69,8 @@ public class MessageDecorator
                 return new DeleteResponseDecorator( ( DeleteResponse ) decoratedMessage );
             case EXTENDED_REQUEST:
                 return new ExtendedRequestDecorator( ( ExtendedRequest ) decoratedMessage );
+            case EXTENDED_RESPONSE:
+                return new ExtendedResponseDecorator( ( ExtendedResponse ) decoratedMessage );
             default:
                 return new MessageDecorator( decoratedMessage );
         }
