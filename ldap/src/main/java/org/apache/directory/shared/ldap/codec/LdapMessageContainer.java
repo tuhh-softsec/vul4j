@@ -22,6 +22,8 @@ package org.apache.directory.shared.ldap.codec;
 
 import org.apache.directory.shared.asn1.ber.AbstractContainer;
 import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
+import org.apache.directory.shared.ldap.codec.decorators.ModifyRequestDecorator;
+import org.apache.directory.shared.ldap.message.spi.BinaryAttributeDetector;
 import org.apache.directory.shared.ldap.model.message.AbandonRequest;
 import org.apache.directory.shared.ldap.model.message.AddRequest;
 import org.apache.directory.shared.ldap.model.message.AddResponse;
@@ -34,7 +36,7 @@ import org.apache.directory.shared.ldap.model.message.DeleteResponse;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
 import org.apache.directory.shared.ldap.model.message.IntermediateResponse;
-import org.apache.directory.shared.ldap.model.message.*;
+import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.model.message.ModifyDnRequest;
 import org.apache.directory.shared.ldap.model.message.ModifyDnResponse;
 import org.apache.directory.shared.ldap.model.message.ModifyRequest;
@@ -44,7 +46,6 @@ import org.apache.directory.shared.ldap.model.message.SearchResultDone;
 import org.apache.directory.shared.ldap.model.message.SearchResultEntry;
 import org.apache.directory.shared.ldap.model.message.SearchResultReference;
 import org.apache.directory.shared.ldap.model.message.UnbindRequest;
-import org.apache.directory.shared.ldap.message.spi.BinaryAttributeDetector;
 
 
 /**
@@ -219,11 +220,20 @@ public class LdapMessageContainer extends AbstractContainer
 
 
     /**
+     * @return Returns the ModifyRequestDecorator stored in the container
+     */
+    public ModifyRequestDecorator getModifyRequestDecorator()
+    {
+        return ( ModifyRequestDecorator ) message;
+    }
+
+
+    /**
      * @return Returns the ModifyRequest stored in the container
      */
     public ModifyRequest getModifyRequest()
     {
-        return ( ModifyRequest ) message;
+        return (ModifyRequest)(( ModifyRequestDecorator ) message).getMessage();
     }
 
 

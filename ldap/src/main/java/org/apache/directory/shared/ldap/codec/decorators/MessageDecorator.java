@@ -20,18 +20,23 @@
 package org.apache.directory.shared.ldap.codec.decorators;
 
 
+import java.util.Map;
+
 import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.ldap.model.exception.MessageException;
 import org.apache.directory.shared.ldap.model.message.AddRequest;
 import org.apache.directory.shared.ldap.model.message.AddResponse;
 import org.apache.directory.shared.ldap.model.message.BindRequest;
 import org.apache.directory.shared.ldap.model.message.BindResponse;
 import org.apache.directory.shared.ldap.model.message.CompareRequest;
 import org.apache.directory.shared.ldap.model.message.CompareResponse;
+import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.DeleteResponse;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
 import org.apache.directory.shared.ldap.model.message.IntermediateResponse;
 import org.apache.directory.shared.ldap.model.message.Message;
+import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.message.ModifyDnRequest;
 import org.apache.directory.shared.ldap.model.message.ModifyDnResponse;
 import org.apache.directory.shared.ldap.model.message.ModifyRequest;
@@ -48,7 +53,7 @@ import org.apache.directory.shared.ldap.model.message.SearchResultReference;
  * @TODO make this class abstract, after finishing switch and all types and make default blow an EncoderException
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class MessageDecorator
+public class MessageDecorator implements Message
 {
     /** The decorated Control */
     private final Message decoratedMessage;
@@ -186,5 +191,77 @@ public class MessageDecorator
     public int getMessageLength()
     {
         return messageLength;
+    }
+
+
+    public MessageTypeEnum getType()
+    {
+        return decoratedMessage.getType();
+    }
+
+
+    public Map<String, Control> getControls()
+    {
+        return decoratedMessage.getControls();
+    }
+
+
+    public Control getControl( String oid )
+    {
+        return decoratedMessage.getControl( oid );
+    }
+
+
+    public Control getCurrentControl()
+    {
+        return decoratedMessage.getCurrentControl();
+    }
+
+
+    public boolean hasControl( String oid )
+    {
+        return decoratedMessage.hasControl( oid );
+    }
+
+
+    public void addControl( Control control ) throws MessageException
+    {
+        decoratedMessage.addControl( control );
+    }
+
+
+    public void addAllControls( Control[] controls ) throws MessageException
+    {
+        decoratedMessage.addAllControls( controls );
+    }
+
+
+    public void removeControl( Control control ) throws MessageException
+    {
+        decoratedMessage.removeControl( control );
+    }
+
+
+    public int getMessageId()
+    {
+        return decoratedMessage.getMessageId();
+    }
+
+
+    public Object get( Object key )
+    {
+        return decoratedMessage.get( key );
+    }
+
+
+    public Object put( Object key, Object value )
+    {
+        return decoratedMessage.put( key, value );
+    }
+
+
+    public void setMessageId( int messageId )
+    {
+        decoratedMessage.setMessageId( messageId );
     }
 }

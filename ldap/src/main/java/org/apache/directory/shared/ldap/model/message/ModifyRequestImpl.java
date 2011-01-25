@@ -53,13 +53,6 @@ public class ModifyRequestImpl extends AbstractAbandonableRequest implements Mod
     /** The associated response */
     private ModifyResponse response;
 
-    /** The current attribute being decoded */
-    private EntryAttribute currentAttribute;
-
-    /** A local storage for the operation */
-    private ModificationOperation currentOperation;
-
-
     /**
      * Creates a ModifyRequest implementing object used to modify the
      * attributes of an entry.
@@ -85,8 +78,6 @@ public class ModifyRequestImpl extends AbstractAbandonableRequest implements Mod
     // ------------------------------------------------------------------------
     // ModifyRequest Interface Method Implementations
     // ------------------------------------------------------------------------
-
-
     /**
      * Gets an immutable Collection of modification items representing the
      * atomic changes to perform on the candidate entry to modify.
@@ -231,62 +222,6 @@ public class ModifyRequestImpl extends AbstractAbandonableRequest implements Mod
     public void replace( EntryAttribute attr )
     {
         addModification( attr, ModificationOperation.REPLACE_ATTRIBUTE );
-    }
-
-
-    /**
-     * Store the current operation
-     * 
-     * @param currentOperation The currentOperation to set.
-     */
-    public void setCurrentOperation( int currentOperation )
-    {
-        this.currentOperation = ModificationOperation.getOperation( currentOperation );
-    }
-
-
-    /**
-     * Add a new attributeTypeAndValue
-     * 
-     * @param type The attribute's name
-     */
-    public void addAttributeTypeAndValues( String type )
-    {
-        currentAttribute = new DefaultEntryAttribute( type );
-
-        Modification modification = new DefaultModification( currentOperation, currentAttribute );
-        mods.add( modification );
-    }
-
-
-    /**
-     * Return the current attribute's type
-     */
-    public String getCurrentAttributeType()
-    {
-        return currentAttribute.getId();
-    }
-
-
-    /**
-     * Add a new value to the current attribute
-     * 
-     * @param value The value to add
-     */
-    public void addAttributeValue( byte[] value )
-    {
-        currentAttribute.add( value );
-    }
-
-
-    /**
-     * Add a new value to the current attribute
-     * 
-     * @param value The value to add
-     */
-    public void addAttributeValue( String value )
-    {
-        currentAttribute.add( value );
     }
 
 

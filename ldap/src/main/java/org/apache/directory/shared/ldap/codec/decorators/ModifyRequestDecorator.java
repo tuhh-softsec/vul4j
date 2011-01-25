@@ -23,6 +23,11 @@ package org.apache.directory.shared.ldap.codec.decorators;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.directory.shared.ldap.model.entry.DefaultEntryAttribute;
+import org.apache.directory.shared.ldap.model.entry.DefaultModification;
+import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
+import org.apache.directory.shared.ldap.model.entry.Modification;
+import org.apache.directory.shared.ldap.model.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.model.message.ModifyRequest;
 
 
@@ -47,6 +52,13 @@ public class ModifyRequestDecorator extends MessageDecorator
 
     /** The list of all the value lengths */
     private List<Integer> valuesLength = new LinkedList<Integer>();
+
+    /** The current attribute being decoded */
+    private EntryAttribute currentAttribute;
+
+    /** A local storage for the operation */
+    private ModificationOperation currentOperation;
+
 
 
     /**
@@ -156,5 +168,61 @@ public class ModifyRequestDecorator extends MessageDecorator
     public List<Integer> getValuesLength()
     {
         return valuesLength;
+    }
+    
+    
+    /**
+     * Store the current operation
+     * 
+     * @param currentOperation The currentOperation to set.
+     */
+    public void setCurrentOperation( int currentOperation )
+    {
+        this.currentOperation = ModificationOperation.getOperation( currentOperation );
+    }
+
+
+    /**
+     * Add a new attributeTypeAndValue
+     * 
+     * @param type The attribute's name
+     */
+    public void addAttributeTypeAndValues( String type )
+    {
+        currentAttribute = new DefaultEntryAttribute( type );
+
+        Modification modification = new DefaultModification( currentOperation, currentAttribute );
+        ((ModifyRequest)getMessage()).addModification( modification );
+    }
+
+
+    /**
+     * Return the current attribute's type
+     */
+    public String getCurrentAttributeType()
+    {
+        return currentAttribute.getId();
+    }
+
+
+    /**
+     * Add a new value to the current attribute
+     * 
+     * @param value The value to add
+     */
+    public void addAttributeValue( byte[] value )
+    {
+        currentAttribute.add( value );
+    }
+
+
+    /**
+     * Add a new value to the current attribute
+     * 
+     * @param value The value to add
+     */
+    public void addAttributeValue( String value )
+    {
+        currentAttribute.add( value );
     }
 }

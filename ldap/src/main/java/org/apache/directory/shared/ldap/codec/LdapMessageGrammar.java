@@ -27,7 +27,15 @@ import org.apache.directory.shared.asn1.ber.grammar.Action;
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
-import org.apache.directory.shared.asn1.ber.tlv.*;
+import org.apache.directory.shared.asn1.ber.tlv.BooleanDecoder;
+import org.apache.directory.shared.asn1.ber.tlv.BooleanDecoderException;
+import org.apache.directory.shared.asn1.ber.tlv.IntegerDecoder;
+import org.apache.directory.shared.asn1.ber.tlv.IntegerDecoderException;
+import org.apache.directory.shared.asn1.ber.tlv.LongDecoder;
+import org.apache.directory.shared.asn1.ber.tlv.LongDecoderException;
+import org.apache.directory.shared.asn1.ber.tlv.TLV;
+import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
+import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.actions.AttributeDescAction;
@@ -63,8 +71,10 @@ import org.apache.directory.shared.ldap.codec.actions.StoreReferenceAction;
 import org.apache.directory.shared.ldap.codec.actions.StoreTypeMatchingRuleAction;
 import org.apache.directory.shared.ldap.codec.actions.ValueAction;
 import org.apache.directory.shared.ldap.codec.controls.ControlFactory;
+import org.apache.directory.shared.ldap.codec.decorators.ModifyRequestDecorator;
 import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
+import org.apache.directory.shared.ldap.message.SearchRequestImpl;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.filter.SearchScope;
@@ -74,7 +84,7 @@ import org.apache.directory.shared.ldap.model.message.AddRequest;
 import org.apache.directory.shared.ldap.model.message.AddRequestImpl;
 import org.apache.directory.shared.ldap.model.message.AddResponse;
 import org.apache.directory.shared.ldap.model.message.AddResponseImpl;
-import org.apache.directory.shared.ldap.model.message.*;
+import org.apache.directory.shared.ldap.model.message.AliasDerefMode;
 import org.apache.directory.shared.ldap.model.message.BindRequest;
 import org.apache.directory.shared.ldap.model.message.BindRequestImpl;
 import org.apache.directory.shared.ldap.model.message.BindResponse;
@@ -83,6 +93,7 @@ import org.apache.directory.shared.ldap.model.message.CompareRequest;
 import org.apache.directory.shared.ldap.model.message.CompareRequestImpl;
 import org.apache.directory.shared.ldap.model.message.CompareResponse;
 import org.apache.directory.shared.ldap.model.message.CompareResponseImpl;
+import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.DeleteRequest;
 import org.apache.directory.shared.ldap.model.message.DeleteRequestImpl;
 import org.apache.directory.shared.ldap.model.message.DeleteResponse;
@@ -91,8 +102,10 @@ import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequestImpl;
 import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
 import org.apache.directory.shared.ldap.model.message.ExtendedResponseImpl;
+import org.apache.directory.shared.ldap.model.message.IntermediateResponse;
 import org.apache.directory.shared.ldap.model.message.IntermediateResponseImpl;
 import org.apache.directory.shared.ldap.model.message.LdapResult;
+import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.model.message.ModifyDnRequest;
 import org.apache.directory.shared.ldap.model.message.ModifyDnRequestImpl;
 import org.apache.directory.shared.ldap.model.message.ModifyDnResponse;
@@ -103,9 +116,9 @@ import org.apache.directory.shared.ldap.model.message.ModifyResponse;
 import org.apache.directory.shared.ldap.model.message.ModifyResponseImpl;
 import org.apache.directory.shared.ldap.model.message.Referral;
 import org.apache.directory.shared.ldap.model.message.ReferralImpl;
+import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.model.message.ResultResponse;
 import org.apache.directory.shared.ldap.model.message.SearchRequest;
-import org.apache.directory.shared.ldap.message.SearchRequestImpl;
 import org.apache.directory.shared.ldap.model.message.SearchResultDone;
 import org.apache.directory.shared.ldap.model.message.SearchResultDoneImpl;
 import org.apache.directory.shared.ldap.model.message.SearchResultEntry;
@@ -114,7 +127,6 @@ import org.apache.directory.shared.ldap.model.message.SearchResultReference;
 import org.apache.directory.shared.ldap.model.message.SearchResultReferenceImpl;
 import org.apache.directory.shared.ldap.model.message.UnbindRequest;
 import org.apache.directory.shared.ldap.model.message.UnbindRequestImpl;
-import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.name.Rdn;
 import org.apache.directory.shared.util.StringConstants;
@@ -1408,7 +1420,8 @@ public final class LdapMessageGrammar extends AbstractGrammar
 
                     // Now, we can allocate the ModifyRequest Object
                     ModifyRequest modifyRequest = new ModifyRequestImpl( ldapMessageContainer.getMessageId() );
-                    ldapMessageContainer.setMessage( modifyRequest );
+                    ModifyRequestDecorator modifyRequestDecorator = new ModifyRequestDecorator( modifyRequest );
+                    ldapMessageContainer.setMessage( modifyRequestDecorator );
                 }
             } );
 
@@ -1428,7 +1441,8 @@ public final class LdapMessageGrammar extends AbstractGrammar
                 {
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    ModifyRequest modifyRequest = ldapMessageContainer.getModifyRequest();
+                    ModifyRequestDecorator modifyRequestDecorator = ldapMessageContainer.getModifyRequestDecorator();
+                    ModifyRequest modifyRequest = (ModifyRequest)modifyRequestDecorator.getMessage();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -1437,7 +1451,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     // Store the value.
                     if ( tlv.getLength() == 0 )
                     {
-                        modifyRequest.setName( object );
+                        ((ModifyRequest)modifyRequestDecorator.getMessage()).setName( object );
                     }
                     else
                     {
@@ -1511,7 +1525,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                 {
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    ModifyRequest modifyRequest = ldapMessageContainer.getModifyRequest();
+                    ModifyRequestDecorator modifyRequestDecorator = ldapMessageContainer.getModifyRequestDecorator();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -1532,7 +1546,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     }
 
                     // Store the current operation.
-                    ( ( ModifyRequestImpl ) modifyRequest ).setCurrentOperation( operation );
+                    modifyRequestDecorator.setCurrentOperation( operation );
 
                     if ( IS_DEBUG )
                     {
@@ -1593,7 +1607,8 @@ public final class LdapMessageGrammar extends AbstractGrammar
                 {
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    ModifyRequest modifyRequest = ldapMessageContainer.getModifyRequest();
+                    ModifyRequestDecorator modifyRequestDecorator = ldapMessageContainer.getModifyRequestDecorator();
+                    ModifyRequest modifyRequest = (ModifyRequest)modifyRequestDecorator.getMessage();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -1612,7 +1627,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     else
                     {
                         type = getType(tlv.getValue().getData());
-                        ( ( ModifyRequestImpl ) modifyRequest ).addAttributeTypeAndValues( type );
+                        modifyRequestDecorator.addAttributeTypeAndValues( type );
                     }
 
                     if ( IS_DEBUG )

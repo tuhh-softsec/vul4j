@@ -24,8 +24,7 @@ import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.model.message.ModifyRequest;
-import org.apache.directory.shared.ldap.model.message.ModifyRequestImpl;
+import org.apache.directory.shared.ldap.codec.decorators.ModifyRequestDecorator;
 import org.apache.directory.shared.util.StringConstants;
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
@@ -61,7 +60,7 @@ public class ModifyAttributeValueAction extends GrammarAction
     public void action( Asn1Container container )
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        ModifyRequest modifyRequest = ldapMessageContainer.getModifyRequest();
+        ModifyRequestDecorator modifyRequestDecorator = ldapMessageContainer.getModifyRequestDecorator();
 
         TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -70,20 +69,19 @@ public class ModifyAttributeValueAction extends GrammarAction
 
         if ( tlv.getLength() == 0 )
         {
-            ( (ModifyRequestImpl) modifyRequest ).addAttributeValue( "" );
+            modifyRequestDecorator.addAttributeValue( "" );
         }
         else
         {
             value = tlv.getValue().getData();
 
-            if ( ldapMessageContainer.isBinary( ( ( ModifyRequestImpl ) modifyRequest ).getCurrentAttributeType() ) )
+            if ( ldapMessageContainer.isBinary( modifyRequestDecorator.getCurrentAttributeType() ) )
             {
-                ( ( ModifyRequestImpl ) modifyRequest ).addAttributeValue( value );
+                modifyRequestDecorator.addAttributeValue( value );
             }
             else
             {
-                ( ( ModifyRequestImpl ) modifyRequest )
-                    .addAttributeValue( Strings.utf8ToString((byte[]) value) );
+                modifyRequestDecorator.addAttributeValue( Strings.utf8ToString((byte[]) value) );
             }
         }
 
