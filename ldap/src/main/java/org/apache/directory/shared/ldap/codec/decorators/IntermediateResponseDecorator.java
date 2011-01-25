@@ -28,7 +28,7 @@ import org.apache.directory.shared.ldap.model.message.IntermediateResponse;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class IntermediateResponseDecorator extends MessageDecorator
+public class IntermediateResponseDecorator extends ResponseDecorator
 {
     /** The response name as a byte[] */
     private byte[] responseNameBytes;

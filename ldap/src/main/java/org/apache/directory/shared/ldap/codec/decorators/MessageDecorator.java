@@ -65,45 +65,68 @@ public class MessageDecorator
         switch ( decoratedMessage.getType() )
         {
             case ABANDON_REQUEST:
-            case DEL_REQUEST:
-            case UNBIND_REQUEST:
                 return new MessageDecorator( decoratedMessage );
+
             case ADD_REQUEST:
                 return new AddRequestDecorator( ( AddRequest ) decoratedMessage );
+                
             case ADD_RESPONSE:
                 return new AddResponseDecorator( ( AddResponse ) decoratedMessage );
+                
             case BIND_REQUEST:
                 return new BindRequestDecorator( ( BindRequest ) decoratedMessage );
+                
             case BIND_RESPONSE:
                 return new BindResponseDecorator( ( BindResponse ) decoratedMessage );
+                
             case COMPARE_REQUEST:
                 return new CompareRequestDecorator( ( CompareRequest ) decoratedMessage );
+                
             case COMPARE_RESPONSE:
                 return new CompareResponseDecorator( ( CompareResponse ) decoratedMessage );
+                
+            case DEL_REQUEST:
+                return new MessageDecorator( decoratedMessage );
+
             case DEL_RESPONSE:
                 return new DeleteResponseDecorator( ( DeleteResponse ) decoratedMessage );
+                
             case EXTENDED_REQUEST:
                 return new ExtendedRequestDecorator( ( ExtendedRequest ) decoratedMessage );
+                
             case EXTENDED_RESPONSE:
                 return new ExtendedResponseDecorator( ( ExtendedResponse ) decoratedMessage );
+                
             case INTERMEDIATE_RESPONSE:
                 return new IntermediateResponseDecorator( ( IntermediateResponse ) decoratedMessage );
+                
             case MODIFY_REQUEST:
                 return new ModifyRequestDecorator( ( ModifyRequest ) decoratedMessage );
+                
             case MODIFY_RESPONSE:
                 return new ModifyResponseDecorator( ( ModifyResponse ) decoratedMessage );
+                
             case MODIFYDN_REQUEST:
                 return new ModifyDnRequestDecorator( ( ModifyDnRequest ) decoratedMessage );
+                
             case MODIFYDN_RESPONSE:
                 return new ModifyDnResponseDecorator( ( ModifyDnResponse ) decoratedMessage );
+                
             case SEARCH_REQUEST:
                 return new SearchRequestDecorator( ( SearchRequest ) decoratedMessage );
+                
             case SEARCH_RESULT_DONE:
                 return new SearchResultDoneDecorator( ( SearchResultDone ) decoratedMessage );
+                
             case SEARCH_RESULT_ENTRY:
                 return new SearchResultEntryDecorator( ( SearchResultEntry ) decoratedMessage );
+                
             case SEARCH_RESULT_REFERENCE:
                 return new SearchResultReferenceDecorator( ( SearchResultReference ) decoratedMessage );
+            
+            case UNBIND_REQUEST:
+                return new MessageDecorator( decoratedMessage );
+                
             default:
                 return new MessageDecorator( decoratedMessage );
         }

@@ -20,55 +20,45 @@
 package org.apache.directory.shared.ldap.codec.decorators;
 
 
-import org.apache.directory.shared.ldap.model.message.ModifyDnResponse;
+import org.apache.directory.shared.ldap.model.message.Message;
 
 
 /**
- * A decorator for the ModifyDnResponse message
+ * A decorator for the Response message. It will store the LdapResult.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ModifyDnResponseDecorator extends ResponseDecorator
+public abstract class ResponseDecorator extends MessageDecorator
 {
-    /** The encoded modifyDnResponse length */
-    private int modifyDnResponseLength;
+    /** The LdapResult decorator */
+    private LdapResultDecorator ldapResultDecorator;
 
 
     /**
-     * Makes a ModifyDnResponse encodable.
+     * Makes a AddRequest encodable.
      *
-     * @param decoratedMessage the decorated ModifyDnResponse
+     * @param decoratedMessage the decorated AddRequest
      */
-    public ModifyDnResponseDecorator( ModifyDnResponse decoratedMessage )
+    public ResponseDecorator( Message decoratedMessage )
     {
         super( decoratedMessage );
     }
 
 
     /**
-     * @return The decorated ModifyDnResponse
+     * @return the ldapResultDecorator
      */
-    public ModifyDnResponse getModifyDnResponse()
+    public LdapResultDecorator getLdapResultDecorator()
     {
-        return ( ModifyDnResponse ) getMessage();
+        return ldapResultDecorator;
     }
 
 
     /**
-     * @param modifyDnResponseLength The encoded ModifyDnResponse's length
+     * @param ldapResultDecorator the ldapResultDecorator to set
      */
-    public void setModifyDnResponseLength( int modifyDnResponseLength )
+    public void setLdapResultDecorator( LdapResultDecorator ldapResultDecorator )
     {
-        this.modifyDnResponseLength = modifyDnResponseLength;
-    }
-
-
-    /**
-     * Stores the encoded length for the ModifyDnResponse
-     * @return The encoded length
-     */
-    public int getModifyDnResponseLength()
-    {
-        return modifyDnResponseLength;
+        this.ldapResultDecorator = ldapResultDecorator;
     }
 }

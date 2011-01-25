@@ -28,7 +28,7 @@ import org.apache.directory.shared.ldap.model.message.AddResponse;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class AddResponseDecorator extends MessageDecorator
+public class AddResponseDecorator extends ResponseDecorator
 {
     /** The encoded addResponse length */
     private int addResponseLength;

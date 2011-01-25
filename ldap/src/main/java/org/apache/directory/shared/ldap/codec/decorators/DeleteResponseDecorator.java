@@ -28,7 +28,7 @@ import org.apache.directory.shared.ldap.model.message.DeleteResponse;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class DeleteResponseDecorator extends MessageDecorator
+public class DeleteResponseDecorator extends ResponseDecorator
 {
     /** The encoded deleteResponse length */
     private int deleteResponseLength;
