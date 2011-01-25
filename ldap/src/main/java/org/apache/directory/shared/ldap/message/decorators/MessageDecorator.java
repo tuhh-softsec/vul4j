@@ -73,6 +73,8 @@ public class MessageDecorator
                 return new ExtendedResponseDecorator( ( ExtendedResponse ) decoratedMessage );
             case INTERMEDIATE_RESPONSE:
                 return new IntermediateResponseDecorator( ( IntermediateResponse ) decoratedMessage );
+            case SEARCH_RESULT_REFERENCE:
+                return new SearchResultReferenceDecorator( ( SearchResultReference ) decoratedMessage );
             default:
                 return new MessageDecorator( decoratedMessage );
         }

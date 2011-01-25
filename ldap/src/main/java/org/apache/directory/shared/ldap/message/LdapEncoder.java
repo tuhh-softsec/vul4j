@@ -1309,8 +1309,9 @@ public class LdapEncoder
      * Length(SearchResultReference) = Length(0x73 + Length(L1) + L1
      * </pre>
      */
-    private int computeSearchResultReferenceLength( SearchResultReferenceImpl searchResultReference )
+    private int computeSearchResultReferenceLength( SearchResultReferenceDecorator decorator )
     {
+        SearchResultReference searchResultReference = decorator.getSearchResultReference();
         int searchResultReferenceLength = 0;
 
         // We may have more than one reference.
@@ -1326,7 +1327,7 @@ public class LdapEncoder
         }
 
         // Store the length of the response 
-        searchResultReference.setSearchResultReferenceLength( searchResultReferenceLength );
+        decorator.setSearchResultReferenceLength( searchResultReferenceLength );
 
         return 1 + TLV.getNbBytes( searchResultReferenceLength ) + searchResultReferenceLength;
     }
@@ -2342,14 +2343,15 @@ public class LdapEncoder
      * @param buffer The buffer where to put the PDU
      * @return The PDU.
      */
-    private void encodeSearchResultReference( ByteBuffer buffer, SearchResultReferenceImpl searchResultReference )
+    private void encodeSearchResultReference( ByteBuffer buffer, SearchResultReferenceDecorator decorator )
         throws EncoderException
     {
+        SearchResultReference searchResultReference = decorator.getSearchResultReference();
         try
         {
             // The SearchResultReference Tag
             buffer.put( LdapConstants.SEARCH_RESULT_REFERENCE_TAG );
-            buffer.put( TLV.getBytes( searchResultReference.getSearchResultReferenceLength() ) );
+            buffer.put( TLV.getBytes( decorator.getSearchResultReferenceLength() ) );
 
             // The referrals, if any
             Referral referral = searchResultReference.getReferral();
@@ -2438,7 +2440,7 @@ public class LdapEncoder
                 return computeSearchResultEntryLength( ( SearchResultEntryImpl ) message );
 
             case SEARCH_RESULT_REFERENCE:
-                return computeSearchResultReferenceLength( ( SearchResultReferenceImpl ) message );
+                return computeSearchResultReferenceLength( ( SearchResultReferenceDecorator ) decorator );
 
             case UNBIND_REQUEST:
                 return computeUnbindRequestLength( );
@@ -2532,7 +2534,7 @@ public class LdapEncoder
                 break;
 
             case SEARCH_RESULT_REFERENCE:
-                encodeSearchResultReference( bb, ( SearchResultReferenceImpl ) message );
+                encodeSearchResultReference( bb, ( SearchResultReferenceDecorator ) decorator );
                 break;
 
             case UNBIND_REQUEST:

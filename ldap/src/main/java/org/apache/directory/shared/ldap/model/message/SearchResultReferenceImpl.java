@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.message;
+package org.apache.directory.shared.ldap.model.message;
 
 
 import org.apache.directory.shared.ldap.model.message.*;
@@ -35,16 +35,7 @@ public class SearchResultReferenceImpl extends AbstractResponse implements Searc
     /** Referral holding the reference urls */
     private Referral referral = new ReferralImpl();
 
-    /** The length of the referral */
-    private int referralLength;
 
-    /** The search result reference length */
-    private int searchResultReferenceLength;
-
-
-    // ------------------------------------------------------------------------
-    // Constructors
-    // ------------------------------------------------------------------------
     /**
      * Creates a SearchResponseReference as a reply to an SearchRequest
      * to indicate the end of a search operation.
@@ -71,6 +62,7 @@ public class SearchResultReferenceImpl extends AbstractResponse implements Searc
     // SearchResponseReference Interface Method Implementations
     // ------------------------------------------------------------------------
 
+
     /**
      * Gets the sequence of LdapUrls as a Referral instance.
      * 
@@ -90,25 +82,6 @@ public class SearchResultReferenceImpl extends AbstractResponse implements Searc
     public void setReferral( Referral referral )
     {
         this.referral = referral;
-    }
-
-
-    /**
-     * @return The encoded Referral's length
-     */
-    /* No qualifier */int getReferralLength()
-    {
-        return referralLength;
-    }
-
-
-    /**
-     * Stores the encoded length for the Referrals
-     * @param searchReferralLength The encoded length
-     */
-    /* No qualifier */void setReferralLength( int referralLength )
-    {
-        this.referralLength = referralLength;
     }
 
 
@@ -165,25 +138,6 @@ public class SearchResultReferenceImpl extends AbstractResponse implements Searc
 
 
     /**
-     * @return The encoded SearchResultReference's length
-     */
-    /* No qualifier */int getSearchResultReferenceLength()
-    {
-        return searchResultReferenceLength;
-    }
-
-
-    /**
-     * Stores the encoded length for the SearchResultReference's
-     * @param searchResultReferenceLength The encoded length
-     */
-    /* No qualifier */void setSearchResultReferenceLength( int searchResultReferenceLength )
-    {
-        this.searchResultReferenceLength = searchResultReferenceLength;
-    }
-
-
-    /**
      * Returns the Search Result Reference string
      * 
      * @return The Search Result Reference string
@@ -220,3 +174,5 @@ public class SearchResultReferenceImpl extends AbstractResponse implements Searc
         return sb.toString();
     }
 }
+
+
