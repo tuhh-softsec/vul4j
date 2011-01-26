@@ -113,7 +113,8 @@ public final class EntryChangeGrammar extends AbstractGrammar
                                 LOG.debug( "changeType = " + changeType );
                             }
 
-                            entryChangeContainer.getEntryChangeControl().setChangeType( changeType );
+                            ( ( EntryChange ) entryChangeContainer.getEntryChangeDecorator().getDecorated() )
+                                    .setChangeType( changeType );
                             break;
 
                         default:
@@ -158,7 +159,10 @@ public final class EntryChangeGrammar extends AbstractGrammar
             {
                 EntryChangeContainer entryChangeContainer = ( EntryChangeContainer ) container;
 
-                ChangeType changeType = entryChangeContainer.getEntryChangeControl().getChangeType();
+                EntryChange entryChange = ( EntryChange ) entryChangeContainer
+                        .getEntryChangeDecorator().getDecorated();
+                ChangeType changeType = entryChange.getChangeType();
+
 
                 if ( changeType != ChangeType.MODDN )
                 {
@@ -168,7 +172,7 @@ public final class EntryChangeGrammar extends AbstractGrammar
                 else
                 {
                     Value value = entryChangeContainer.getCurrentTLV().getValue();
-                    Dn previousDn = null;
+                    Dn previousDn;
 
                     try
                     {
@@ -185,7 +189,7 @@ public final class EntryChangeGrammar extends AbstractGrammar
                         LOG.debug( "previousDN = " + previousDn );
                     }
 
-                    entryChangeContainer.getEntryChangeControl().setPreviousDn( previousDn );
+                    entryChange.setPreviousDn( previousDn );
 
                     // We can have an END transition
                     entryChangeContainer.setGrammarEndAllowed( true );
@@ -210,7 +214,9 @@ public final class EntryChangeGrammar extends AbstractGrammar
                         LOG.debug( "changeNumber = " + changeNumber );
                     }
 
-                    entryChangeContainer.getEntryChangeControl().setChangeNumber( changeNumber );
+                    EntryChange entryChange = ( EntryChange ) entryChangeContainer
+                            .getEntryChangeDecorator().getDecorated();
+                    entryChange.setChangeNumber( changeNumber );
 
                     // We can have an END transition
                     entryChangeContainer.setGrammarEndAllowed( true );

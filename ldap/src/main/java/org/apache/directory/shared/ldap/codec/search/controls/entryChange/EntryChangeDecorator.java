@@ -91,9 +91,7 @@ public class EntryChangeDecorator extends ControlDecorator
 
 
     /**
-     * 
      * Creates a new instance of EntryChangeControl.
-     *
      */
     public EntryChangeDecorator()
     {

@@ -53,9 +53,9 @@ public class PersistentSearchDecoder extends Asn1Decoder implements ControlDecod
     {
         ByteBuffer bb = ByteBuffer.wrap( controlBytes );
         PersistentSearchContainer container = new PersistentSearchContainer();
-        container.setPSearchControl( (PersistentSearchDecorator )control );
+        container.setPSearchDecorator( ( PersistentSearchDecorator ) control );
 
         decoder.decode( bb, container );
-        return container.getPSearchControl();
+        return container.getPSearchDecorator();
     }
 }

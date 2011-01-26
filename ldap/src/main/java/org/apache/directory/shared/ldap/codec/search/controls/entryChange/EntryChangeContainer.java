@@ -48,7 +48,7 @@ public class EntryChangeContainer extends AbstractContainer
     /**
      * @return Returns the EntryChangeControl.
      */
-    public EntryChangeDecorator getEntryChangeControl()
+    public EntryChangeDecorator getEntryChangeDecorator()
     {
         return control;
     }
@@ -60,7 +60,7 @@ public class EntryChangeContainer extends AbstractContainer
      * 
      * @param control the EntryChangeControl to set.
      */
-    public void setEntryChangeControl( EntryChangeDecorator control )
+    public void setEntryChangeDecorator( EntryChangeDecorator control )
     {
         this.control = control;
     }

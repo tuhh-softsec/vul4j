@@ -48,7 +48,7 @@ public class PersistentSearchContainer extends AbstractContainer
     /**
      * @return Returns the persistent search decorator.
      */
-    public PersistentSearchDecorator getPSearchControl()
+    public PersistentSearchDecorator getPSearchDecorator()
     {
 
         return decorator;
@@ -61,7 +61,7 @@ public class PersistentSearchContainer extends AbstractContainer
      * 
      * @param decorator the PSearchControl to set.
      */
-    public void setPSearchControl( PersistentSearchDecorator decorator )
+    public void setPSearchDecorator( PersistentSearchDecorator decorator )
     {
         this.decorator = decorator;
     }
