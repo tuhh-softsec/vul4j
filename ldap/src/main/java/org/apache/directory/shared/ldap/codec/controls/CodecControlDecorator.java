@@ -34,8 +34,9 @@ import java.nio.ByteBuffer;
 
 
 /**
- * Decorates Control objects enabling the codec to store transient information
- * with the object.
+ * Decorates Control objects by wrapping them, and enabling them as CodecControls
+ * so the codec to store transient information associated with the Control in the
+ * decorator while processing.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
@@ -66,6 +67,53 @@ public class CodecControlDecorator extends AbstractAsn1Object implements Control
 
 
     /**
+     * Creates a ControlDecorator to codec enable it.
+     *
+     * @param decoratedControl The Control to decorate.
+     * @param decoder The Control's decoder.
+     */
+    public CodecControlDecorator( Control decoratedControl, ControlDecoder decoder )
+    {
+        this.decoratedComponent = decoratedControl;
+        this.decoder = decoder;
+    }
+
+
+    /**
+     * Computes the length of the Control given the length of its value.
+     *
+     * @param valueLength The length of the Control's value.
+     * @return The length of the Control including its value.
+     */
+    public int computeLength( int valueLength )
+    {
+        // The OID
+        int oidLengh = Strings.getBytesUtf8( getOid() ).length;
+        controlLength = 1 + TLV.getNbBytes( oidLengh ) + oidLengh;
+
+        // The criticality, only if true
+        if ( isCritical() )
+        {
+            controlLength += 1 + 1 + 1; // Always 3 for a boolean
+        }
+
+        this.valueLength = valueLength;
+
+        if ( valueLength != 0 )
+        {
+            controlLength += 1 + TLV.getNbBytes( valueLength ) + valueLength;
+        }
+
+        return 1 + TLV.getNbBytes( controlLength ) + controlLength;
+    }
+
+
+    // ------------------------------------------------------------------------
+    // Control Methods
+    // ------------------------------------------------------------------------
+
+
+    /**
      * Get the OID
      * 
      * @return A string which represent the control oid
@@ -73,6 +121,15 @@ public class CodecControlDecorator extends AbstractAsn1Object implements Control
     public String getOid()
     {
         return decoratedComponent.getOid();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean hasValue()
+    {
+        return decoratedComponent.hasValue();
     }
 
 
@@ -129,38 +186,17 @@ public class CodecControlDecorator extends AbstractAsn1Object implements Control
     }
 
     
+    // ------------------------------------------------------------------------
+    // CodecControl Methods
+    // ------------------------------------------------------------------------
+
+
     /**
      * {@inheritDoc}
      */
     public int computeLength()
     {
         return 0;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public int computeLength( int valueLength )
-    {
-        // The OID
-        int oidLengh = Strings.getBytesUtf8( getOid() ).length;
-        controlLength = 1 + TLV.getNbBytes( oidLengh ) + oidLengh;
-
-        // The criticality, only if true
-        if ( isCritical() )
-        {
-            controlLength += 1 + 1 + 1; // Always 3 for a boolean
-        }
-
-        this.valueLength = valueLength;
-        
-        if ( valueLength != 0 )
-        {
-            controlLength += 1 + TLV.getNbBytes( valueLength ) + valueLength;
-        }
-        
-        return 1 + TLV.getNbBytes( controlLength ) + controlLength;
     }
 
 
@@ -198,17 +234,8 @@ public class CodecControlDecorator extends AbstractAsn1Object implements Control
 
         return buffer;
     }
-    
-    
-    /**
-     * {@inheritDoc}
-     */
-    public boolean hasValue()
-    {
-        return decoratedComponent.hasValue();
-    }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -216,8 +243,13 @@ public class CodecControlDecorator extends AbstractAsn1Object implements Control
     {
         return decoder;
     }
-    
-    
+
+
+    // ------------------------------------------------------------------------
+    // Object Method Overrides
+    // ------------------------------------------------------------------------
+
+
     /**
      * @see Object#equals(Object)
      */

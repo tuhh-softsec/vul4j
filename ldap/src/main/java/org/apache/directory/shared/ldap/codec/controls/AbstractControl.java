@@ -141,7 +141,10 @@ public abstract class AbstractControl extends AbstractAsn1Object implements Cont
 
 
     /**
-     * {@inheritDoc}
+     * Computes the length of the Control given the length of its value.
+     *
+     * @param valueLength The length of the Control's value.
+     * @return The length of the Control including its value.
      */
     public int computeLength( int valueLength )
     {
