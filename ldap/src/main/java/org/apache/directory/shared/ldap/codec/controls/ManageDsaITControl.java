@@ -20,8 +20,6 @@
 package org.apache.directory.shared.ldap.codec.controls;
 
 
-
-
 /**
  * Control which allows for the management of referrals and other DSA specific
  * entities without processing them: meaning the referrals are treated as
