@@ -31,9 +31,9 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
-import org.apache.directory.shared.ldap.codec.search.controls.entryChange.EntryChangeControl;
+import org.apache.directory.shared.ldap.codec.search.controls.entryChange.EntryChangeDecoder;
+import org.apache.directory.shared.ldap.codec.search.controls.entryChange.EntryChangeDecorator;
 import org.apache.directory.shared.ldap.codec.search.controls.entryChange.EntryChangeControlContainer;
-import org.apache.directory.shared.ldap.codec.search.controls.entryChange.EntryChangeControlDecoder;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
@@ -55,7 +55,7 @@ public class EntryChangeControlTest
     @Test
     public void testDecodeEntryChangeControlSuccess()
     {
-        Asn1Decoder decoder = new EntryChangeControlDecoder();
+        Asn1Decoder decoder = new EntryChangeDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x0D );
         bb.put( new byte[]
             { 
@@ -69,7 +69,7 @@ public class EntryChangeControlTest
         bb.flip();
 
         EntryChangeControlContainer container = new EntryChangeControlContainer();
-        container.setEntryChangeControl( new EntryChangeControl() );
+        container.setEntryChangeControl( new EntryChangeDecorator() );
         
         try
         {
@@ -81,7 +81,7 @@ public class EntryChangeControlTest
             fail( de.getMessage() );
         }
 
-        EntryChangeControl entryChange = container.getEntryChangeControl();
+        EntryChangeDecorator entryChange = container.getEntryChangeControl();
         assertEquals( ChangeType.MODDN, entryChange.getChangeType() );
         assertEquals( "a=b", entryChange.getPreviousDn().toString() );
         assertEquals( 16, entryChange.getChangeNumber() );
@@ -94,7 +94,7 @@ public class EntryChangeControlTest
     @Test
     public void testDecodeEntryChangeControlSuccessLongChangeNumber()
     {
-        Asn1Decoder decoder = new EntryChangeControlDecoder();
+        Asn1Decoder decoder = new EntryChangeDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x13 );
         bb.put( new byte[]
             { 
@@ -109,7 +109,7 @@ public class EntryChangeControlTest
         bb.flip();
 
         EntryChangeControlContainer container = new EntryChangeControlContainer();
-        container.setEntryChangeControl( new EntryChangeControl() );
+        container.setEntryChangeControl( new EntryChangeDecorator() );
         
         try
         {
@@ -121,7 +121,7 @@ public class EntryChangeControlTest
             fail( de.getMessage() );
         }
 
-        EntryChangeControl entryChange = container.getEntryChangeControl();
+        EntryChangeDecorator entryChange = container.getEntryChangeControl();
         assertEquals( ChangeType.MODDN, entryChange.getChangeType() );
         assertEquals( "a=b", entryChange.getPreviousDn().toString() );
         assertEquals( 5124095576030430L, entryChange.getChangeNumber() );
@@ -134,7 +134,7 @@ public class EntryChangeControlTest
     @Test
     public void testDecodeEntryChangeControlWithADDAndChangeNumber()
     {
-        Asn1Decoder decoder = new EntryChangeControlDecoder();
+        Asn1Decoder decoder = new EntryChangeDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x08 );
         bb.put( new byte[]
             { 
@@ -148,7 +148,7 @@ public class EntryChangeControlTest
         bb.flip();
 
         EntryChangeControlContainer container = new EntryChangeControlContainer();
-        container.setEntryChangeControl( new EntryChangeControl() );
+        container.setEntryChangeControl( new EntryChangeDecorator() );
         
         try
         {
@@ -160,7 +160,7 @@ public class EntryChangeControlTest
             fail( de.getMessage() );
         }
 
-        EntryChangeControl entryChange = container.getEntryChangeControl();
+        EntryChangeDecorator entryChange = container.getEntryChangeControl();
         assertEquals( ChangeType.ADD, entryChange.getChangeType() );
         assertNull( entryChange.getPreviousDn() );
         assertEquals( 16, entryChange.getChangeNumber() );
@@ -174,7 +174,7 @@ public class EntryChangeControlTest
     @Test
     public void testDecodeEntryChangeControlWithADDAndPreviousDNBad()
     {
-        Asn1Decoder decoder = new EntryChangeControlDecoder();
+        Asn1Decoder decoder = new EntryChangeDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x0D );
         bb.put( new byte[]
             { 
@@ -190,7 +190,7 @@ public class EntryChangeControlTest
         bb.flip();
 
         EntryChangeControlContainer container = new EntryChangeControlContainer();
-        container.setEntryChangeControl( new EntryChangeControl() );
+        container.setEntryChangeControl( new EntryChangeDecorator() );
         
         try
         {
@@ -213,7 +213,7 @@ public class EntryChangeControlTest
     @Test
     public void testDecodeEntryChangeControlWithADD()
     {
-        Asn1Decoder decoder = new EntryChangeControlDecoder();
+        Asn1Decoder decoder = new EntryChangeDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x05 );
         bb.put( new byte[]
             { 
@@ -226,7 +226,7 @@ public class EntryChangeControlTest
         bb.flip();
 
         EntryChangeControlContainer container = new EntryChangeControlContainer();
-        container.setEntryChangeControl( new EntryChangeControl() );
+        container.setEntryChangeControl( new EntryChangeDecorator() );
         
         try
         {
@@ -238,10 +238,10 @@ public class EntryChangeControlTest
             fail( de.getMessage() );
         }
 
-        EntryChangeControl entryChange = container.getEntryChangeControl();
+        EntryChangeDecorator entryChange = container.getEntryChangeControl();
         assertEquals( ChangeType.ADD, entryChange.getChangeType() );
         assertNull( entryChange.getPreviousDn() );
-        assertEquals( EntryChangeControl.UNDEFINED_CHANGE_NUMBER, entryChange.getChangeNumber() );
+        assertEquals( EntryChangeDecorator.UNDEFINED_CHANGE_NUMBER, entryChange.getChangeNumber() );
     }
 
 
@@ -252,7 +252,7 @@ public class EntryChangeControlTest
     @Test
     public void testDecodeEntryChangeControlWithWrongChangeType()
     {
-        Asn1Decoder decoder = new EntryChangeControlDecoder();
+        Asn1Decoder decoder = new EntryChangeDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x05 );
         bb.put( new byte[]
             { 
@@ -265,7 +265,7 @@ public class EntryChangeControlTest
         bb.flip();
 
         EntryChangeControlContainer container = new EntryChangeControlContainer();
-        container.setEntryChangeControl( new EntryChangeControl() );
+        container.setEntryChangeControl( new EntryChangeDecorator() );
         
         try
         {
@@ -288,7 +288,7 @@ public class EntryChangeControlTest
     @Test
     public void testDecodeEntryChangeControlWithWrongChangeNumber()
     {
-        Asn1Decoder decoder = new EntryChangeControlDecoder();
+        Asn1Decoder decoder = new EntryChangeDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x1C );
         bb.put( new byte[]
             { 
@@ -304,7 +304,7 @@ public class EntryChangeControlTest
         bb.flip();
 
         EntryChangeControlContainer container = new EntryChangeControlContainer();
-        container.setEntryChangeControl( new EntryChangeControl() );
+        container.setEntryChangeControl( new EntryChangeDecorator() );
         
         try
         {
@@ -347,7 +347,7 @@ public class EntryChangeControlTest
         String expected = Strings.dumpBytes(bb.array());
         bb.flip();
 
-        EntryChangeControl entry = new EntryChangeControl();
+        EntryChangeDecorator entry = new EntryChangeDecorator();
         entry.setChangeType( ChangeType.MODDN );
         entry.setChangeNumber( 16 );
         entry.setPreviousDn( new Dn( "a=b" ) );
@@ -384,7 +384,7 @@ public class EntryChangeControlTest
         String expected = Strings.dumpBytes(bb.array());
         bb.flip();
 
-        EntryChangeControl entry = new EntryChangeControl();
+        EntryChangeDecorator entry = new EntryChangeDecorator();
         entry.setChangeType( ChangeType.MODDN );
         entry.setChangeNumber( 5124095576030430L );
         entry.setPreviousDn( new Dn( "a=b" ) );

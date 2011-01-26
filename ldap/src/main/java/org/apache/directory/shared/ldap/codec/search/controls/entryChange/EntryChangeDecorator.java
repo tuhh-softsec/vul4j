@@ -80,10 +80,8 @@ import org.apache.directory.shared.util.Strings;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class EntryChangeControl extends AbstractControl
+public class EntryChangeDecorator extends AbstractControl
 {
-    /** The EntryChange control */
-    public static final String CONTROL_OID = "2.16.840.1.113730.3.4.7";
 
     public static final int UNDEFINED_CHANGE_NUMBER = -1;
 
@@ -106,11 +104,11 @@ public class EntryChangeControl extends AbstractControl
      * Creates a new instance of EntryChangeControl.
      *
      */
-    public EntryChangeControl()
+    public EntryChangeDecorator()
     {
-        super( CONTROL_OID );
+        super( EntryChange.OID );
 
-        decoder = new EntryChangeControlDecoder();
+        decoder = new EntryChangeDecoder();
     }
 
 
@@ -286,7 +284,7 @@ public class EntryChangeControl extends AbstractControl
             return false;
         }
 
-        EntryChangeControl otherControl = ( EntryChangeControl ) o;
+        EntryChangeDecorator otherControl = ( EntryChangeDecorator ) o;
 
         return ( changeNumber == otherControl.changeNumber ) &&
              ( changeType == otherControl.changeType ) &&

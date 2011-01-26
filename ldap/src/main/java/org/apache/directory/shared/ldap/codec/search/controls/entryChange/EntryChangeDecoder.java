@@ -34,7 +34,7 @@ import org.apache.directory.shared.ldap.model.message.Control;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class EntryChangeControlDecoder extends Asn1Decoder implements ControlDecoder
+public class EntryChangeDecoder extends Asn1Decoder implements ControlDecoder
 {
     /** An instance of this decoder */
     private static final Asn1Decoder decoder = new Asn1Decoder();
@@ -54,7 +54,7 @@ public class EntryChangeControlDecoder extends Asn1Decoder implements ControlDec
     {
         ByteBuffer bb = ByteBuffer.wrap( controlBytes );
         EntryChangeControlContainer container = new EntryChangeControlContainer();
-        container.setEntryChangeControl( (EntryChangeControl)control );
+        container.setEntryChangeControl( (EntryChangeDecorator )control );
         decoder.decode( bb, container );
         return container.getEntryChangeControl();
     }

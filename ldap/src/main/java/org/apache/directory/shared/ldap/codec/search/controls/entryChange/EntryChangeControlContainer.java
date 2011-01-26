@@ -29,7 +29,7 @@ import org.apache.directory.shared.asn1.ber.AbstractContainer;
 public class EntryChangeControlContainer extends AbstractContainer
 {
     /** EntryChangeControl */
-    private EntryChangeControl control;
+    private EntryChangeDecorator control;
 
 
     /**
@@ -48,7 +48,7 @@ public class EntryChangeControlContainer extends AbstractContainer
     /**
      * @return Returns the EntryChangeControl.
      */
-    public EntryChangeControl getEntryChangeControl()
+    public EntryChangeDecorator getEntryChangeControl()
     {
         return control;
     }
@@ -60,7 +60,7 @@ public class EntryChangeControlContainer extends AbstractContainer
      * 
      * @param control the EntryChangeControl to set.
      */
-    public void setEntryChangeControl( EntryChangeControl control )
+    public void setEntryChangeControl( EntryChangeDecorator control )
     {
         this.control = control;
     }

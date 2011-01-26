@@ -25,7 +25,7 @@ import org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValue
 import org.apache.directory.shared.ldap.codec.controls.replication.syncRequestValue.SyncRequestValueControl;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncStateValue.SyncStateValueControl;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn.SyncModifyDnControl;
-import org.apache.directory.shared.ldap.codec.search.controls.entryChange.EntryChangeControl;
+import org.apache.directory.shared.ldap.codec.search.controls.entryChange.EntryChange;
 import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedResultsControl;
 import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearchControl;
 import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesControl;
@@ -39,7 +39,7 @@ import org.apache.directory.shared.ldap.codec.search.controls.subentries.Subentr
 public enum ControlEnum
 {
     CASCADE_CONTROL( Cascade.OID ),
-    ENTRY_CHANGE_CONTROL( EntryChangeControl.CONTROL_OID ),
+    ENTRY_CHANGE_CONTROL( EntryChange.OID ),
     MANAGE_DSA_IT_CONTROL( ManageDsaIT.OID ),
     PAGED_RESULTS_CONTROL( PagedResultsControl.CONTROL_OID ),
     PASSWORD_POLICY_REQUEST_CONTROL( PasswordPolicyRequestControl.CONTROL_OID ),
