@@ -5049,12 +5049,12 @@ public final class LdapMessageGrammar extends AbstractGrammar
                 public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    SearchRequestDecorator searchRequest = ldapMessageContainer.getSearchRequestDecorator();
+                    SearchRequestDecorator searchRequestDecorator = ldapMessageContainer.getSearchRequestDecorator();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
                     // Store the value.
-                    SubstringFilter substringFilter = ( SubstringFilter ) searchRequest.getTerminalFilter();
+                    SubstringFilter substringFilter = ( SubstringFilter ) searchRequestDecorator.getTerminalFilter();
 
                     if ( tlv.getLength() == 0 )
                     {
@@ -5069,7 +5069,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
 
                         // We now have to get back to the nearest filter which
                         // is not terminal.
-                        searchRequest.setTerminalFilter( substringFilter );
+                        searchRequestDecorator.setTerminalFilter( substringFilter );
                     }
                 }
             } );
@@ -5123,12 +5123,12 @@ public final class LdapMessageGrammar extends AbstractGrammar
                 public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    SearchRequestDecorator searchRequest = ldapMessageContainer.getSearchRequestDecorator();
+                    SearchRequestDecorator searchRequestDecorator = ldapMessageContainer.getSearchRequestDecorator();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
                     // Store the value.
-                    SubstringFilter substringFilter = ( SubstringFilter ) searchRequest.getTerminalFilter();
+                    SubstringFilter substringFilter = ( SubstringFilter ) searchRequestDecorator.getTerminalFilter();
 
                     if ( tlv.getLength() == 0 )
                     {
@@ -5141,7 +5141,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
 
                     // We now have to get back to the nearest filter which is
                     // not terminal.
-                    searchRequest.unstackFilters( container );
+                    searchRequestDecorator.unstackFilters( container );
                 }
             } );
 

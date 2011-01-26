@@ -24,6 +24,8 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
+import org.apache.directory.shared.ldap.model.message.SearchRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,6 +57,12 @@ public class InitAttributeDescListAction extends GrammarAction
     public void action( Asn1Container container ) throws DecoderException
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
+        
+        // Here, we have to inject the decoded filter into the SearchRequest
+        SearchRequestDecorator searchRequestDecorator = ldapMessageContainer.getSearchRequestDecorator();
+        SearchRequest searchRequest = (SearchRequest)searchRequestDecorator.getMessage();
+        
+        searchRequest.setFilter( searchRequestDecorator.getFilterNode() );
         
         // We can have an END transition
         ldapMessageContainer.setGrammarEndAllowed( true );

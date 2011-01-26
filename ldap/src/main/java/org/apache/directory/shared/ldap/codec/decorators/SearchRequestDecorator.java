@@ -165,7 +165,18 @@ public class SearchRequestDecorator extends MessageDecorator
      */
     public Filter getFilter()
     {
-        return transform( getSearchRequest().getFilter() );
+        return topFilter;
+    }
+
+
+    /**
+     * Gets the search filter associated with this search request.
+     *
+     * @return the expression node for the root of the filter expression tree.
+     */
+    public ExprNode getFilterNode()
+    {
+        return transform( topFilter );
     }
 
 
@@ -196,7 +207,7 @@ public class SearchRequestDecorator extends MessageDecorator
      */
     public void setFilter( ExprNode filter )
     {
-        getSearchRequest().setFilter( filter );
+        topFilter = transform( filter );
     }
 
 
@@ -282,7 +293,6 @@ public class SearchRequestDecorator extends MessageDecorator
             if ( localParent.getId() != parentTlvId )
             {
                 localParent = localParent.getParent();
-
             }
             else
             {
