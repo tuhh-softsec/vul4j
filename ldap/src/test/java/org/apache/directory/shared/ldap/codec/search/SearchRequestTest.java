@@ -44,7 +44,8 @@ import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
 import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
-import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesControl;
+import org.apache.directory.shared.ldap.codec.search.controls.subentries.Subentries;
+import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesDecorator;
 import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.model.filter.SearchScope;
 import org.apache.directory.shared.ldap.model.message.AliasDerefMode;
@@ -1453,8 +1454,8 @@ public class SearchRequestTest
         Control subEntryControl = searchRequest.getControl( subEntryControlOID );
         assertEquals( subEntryControlOID, subEntryControl.getOid() );
         assertTrue( subEntryControl.isCritical() );
-        assertTrue( subEntryControl instanceof SubentriesControl );
-        assertTrue( ( ( SubentriesControl ) subEntryControl ).isVisible() );
+        assertTrue( subEntryControl instanceof SubentriesDecorator );
+        assertTrue( ( ( Subentries ) ( ( SubentriesDecorator ) subEntryControl ).getDecorated() ).isVisible() );
 
         assertEquals( "dc=my-domain,dc=com", searchRequest.getBase().toString() );
         assertEquals( SearchScope.SUBTREE, searchRequest.getScope() );

@@ -28,7 +28,8 @@ import org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn.
 import org.apache.directory.shared.ldap.codec.search.controls.entryChange.EntryChange;
 import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedResults;
 import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearch;
-import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesControl;
+import org.apache.directory.shared.ldap.codec.search.controls.subentries.Subentries;
+
 
 /**
  * An enum listing all the existing controls
@@ -44,7 +45,7 @@ public enum ControlEnum
     PAGED_RESULTS_CONTROL( PagedResults.OID ),
     PASSWORD_POLICY_REQUEST_CONTROL( PasswordPolicyRequestControl.CONTROL_OID ),
     PERSISTENT_SEARCH_CONTROL( PersistentSearch.CONTROL_OID),
-    SUBENTRIES_CONTROL( SubentriesControl.CONTROL_OID ),
+    SUBENTRIES_CONTROL( Subentries.OID ),
     SYNC_DONE_VALUE_CONTROL( SyncDoneValueControl.CONTROL_OID ),
     SYNC_INFO_VALUE_CONTROL( SyncInfoValueControl.CONTROL_OID ),
     SYNC_MODIFY_DN_CONTROL( SyncModifyDnControl.CONTROL_OID ),

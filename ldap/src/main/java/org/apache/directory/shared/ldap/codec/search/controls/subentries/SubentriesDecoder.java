@@ -34,7 +34,7 @@ import org.apache.directory.shared.ldap.model.message.Control;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SubentriesControlDecoder extends Asn1Decoder implements ControlDecoder
+public class SubentriesDecoder extends Asn1Decoder implements ControlDecoder
 {
     /** The sub entry decoder */
     private static final Asn1Decoder decoder = new Asn1Decoder();
@@ -52,8 +52,8 @@ public class SubentriesControlDecoder extends Asn1Decoder implements ControlDeco
     public Asn1Object decode( byte[] controlBytes, Control control ) throws DecoderException
     {
         ByteBuffer bb = ByteBuffer.wrap( controlBytes );
-        SubentriesControlContainer container = new SubentriesControlContainer();
-        container.setSubEntryControl( (SubentriesControl)control );
+        SubentriesContainer container = new SubentriesContainer();
+        container.setSubEntryControl( (SubentriesDecorator )control );
 
         decoder.decode( bb, container );
         return container.getSubEntryControl();

@@ -28,7 +28,8 @@ import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedR
 import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedResultsDecorator;
 import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearch;
 import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearchDecorator;
-import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesControl;
+import org.apache.directory.shared.ldap.codec.search.controls.subentries.Subentries;
+import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesDecorator;
 import org.apache.directory.shared.ldap.model.message.Control;
 
 
@@ -78,9 +79,9 @@ public class ControlFactory
             return new PersistentSearchDecorator();
         }
 
-        if ( SubentriesControl.CONTROL_OID.equals( oid ) )
+        if ( Subentries.OID.equals( oid ) )
         {
-            return new SubentriesControl();
+            return new SubentriesDecorator();
         }
 
         if ( SyncDoneValueControl.CONTROL_OID.equals( oid ) )

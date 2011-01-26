@@ -28,6 +28,7 @@ import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
+import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 
 
 /**
@@ -35,43 +36,15 @@ import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SubentriesControl extends AbstractControl
+public class SubentriesDecorator extends ControlDecorator
 {
-    /** Ths control OID */
-    public static final String CONTROL_OID = "1.3.6.1.4.1.4203.1.10.1";
-
-    private boolean visibility = false;
-
     /**
      * Default constructor
      *
      */
-    public SubentriesControl()
+    public SubentriesDecorator()
     {
-        super( CONTROL_OID );
-        
-        decoder = new SubentriesControlDecoder();
-    }
-
-    /**
-     * Check if the subEntry is visible
-     * 
-     * @return true or false.
-     */
-    public boolean isVisible()
-    {
-        return visibility;
-    }
-
-
-    /**
-     * Set the visibility flag
-     * 
-     * @param visibility The visibility flag : true or false
-     */
-    public void setVisibility( boolean visibility )
-    {
-        this.visibility = visibility;
+        super( new Subentries(), new SubentriesDecoder() );
     }
 
 
@@ -110,7 +83,7 @@ public class SubentriesControl extends AbstractControl
         buffer.put( TLV.getBytes( valueLength ) );
 
         // Now encode the Subentries specific part
-        Value.encode( buffer, visibility );
+        Value.encode( buffer, ( ( Subentries ) getDecorated() ).isVisible() );
 
         return buffer;
     }
@@ -121,7 +94,7 @@ public class SubentriesControl extends AbstractControl
      */
     public byte[] getValue()
     {
-        if ( value == null )
+        if ( getDecorated().getValue() == null )
         {
             try
             { 
@@ -129,9 +102,9 @@ public class SubentriesControl extends AbstractControl
                 ByteBuffer buffer = ByteBuffer.allocate( valueLength );
                 
                 // Now encode the Subentries specific part
-                Value.encode( buffer, visibility );
+                Value.encode( buffer, ( ( Subentries ) getDecorated() ).isVisible() );
                 
-                value = buffer.array();
+                getDecorated().setValue( buffer.array() );
             }
             catch ( Exception e )
             {
@@ -139,38 +112,6 @@ public class SubentriesControl extends AbstractControl
             }
         }
         
-        return value;
-    }
-
-
-    /**
-     * @see Object#equals(Object)
-     */
-    public boolean equals( Object o )
-    {
-        if ( !super.equals( o ) )
-        {
-            return false;
-        }
-
-        SubentriesControl otherControl = ( SubentriesControl ) o;
-
-        return ( visibility == otherControl.visibility );
-    }
-
-
-    /**
-     * Return a String representing this EntryChangeControl.
-     */
-    public String toString()
-    {
-        StringBuffer sb = new StringBuffer();
-
-        sb.append( "    Subentries Control\n" );
-        sb.append( "        oid : " ).append( getOid() ).append( '\n' );
-        sb.append( "        critical : " ).append( isCritical() ).append( '\n' );
-        sb.append( "        Visibility   : '" ).append( visibility ).append( "'\n" );
-
-        return sb.toString();
+        return getDecorated().getValue();
     }
 }

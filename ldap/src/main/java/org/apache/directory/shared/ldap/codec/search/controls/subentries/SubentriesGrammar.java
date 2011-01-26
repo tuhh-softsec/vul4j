@@ -43,34 +43,34 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public final class SubentriesControlGrammar extends AbstractGrammar
+public final class SubentriesGrammar extends AbstractGrammar
 {
     /** The logger */
-    static final Logger LOG = LoggerFactory.getLogger( SubentriesControlGrammar.class );
+    static final Logger LOG = LoggerFactory.getLogger( SubentriesGrammar.class );
 
     /** The instance of grammar. SubEntryControlGrammar is a singleton */
-    private static Grammar instance = new SubentriesControlGrammar();
+    private static Grammar instance = new SubentriesGrammar();
 
 
     /**
      * Creates a new SubEntryGrammar object.
      */
-    private SubentriesControlGrammar()
+    private SubentriesGrammar()
     {
-        setName( SubentriesControlGrammar.class.getName() );
+        setName( SubentriesGrammar.class.getName() );
 
         // Create the transitions table
-        super.transitions = new GrammarTransition[SubentriesControlStatesEnum.LAST_SUB_ENTRY_STATE.ordinal()][256];
+        super.transitions = new GrammarTransition[ SubentriesStates.LAST_SUB_ENTRY_STATE.ordinal()][256];
 
-        super.transitions[SubentriesControlStatesEnum.START_STATE.ordinal()][UniversalTag.BOOLEAN.getValue()] = 
-            new GrammarTransition( SubentriesControlStatesEnum.START_STATE, 
-                                    SubentriesControlStatesEnum.SUB_ENTRY_VISIBILITY_STATE, UniversalTag.BOOLEAN.getValue(), 
+        super.transitions[ SubentriesStates.START_STATE.ordinal()][UniversalTag.BOOLEAN.getValue()] =
+            new GrammarTransition( SubentriesStates.START_STATE,
+                                    SubentriesStates.SUB_ENTRY_VISIBILITY_STATE, UniversalTag.BOOLEAN.getValue(),
                 new GrammarAction( "SubEntryControl visibility" )
             {
                 public void action( Asn1Container container ) throws DecoderException
                 {
-                    SubentriesControlContainer subEntryContainer = ( SubentriesControlContainer ) container;
-                    SubentriesControl control = subEntryContainer.getSubEntryControl();
+                    SubentriesContainer subEntryContainer = ( SubentriesContainer ) container;
+                    SubentriesDecorator decorator = subEntryContainer.getSubEntryControl();
 
                     TLV tlv = subEntryContainer.getCurrentTLV();
 
@@ -84,7 +84,7 @@ public final class SubentriesControlGrammar extends AbstractGrammar
 
                     try
                     {
-                        control.setVisibility( BooleanDecoder.parse( value ) );
+                        ( ( Subentries ) decorator.getDecorated() ).setVisibility( BooleanDecoder.parse( value ) );
 
                         // We can have an END transition
                         container.setGrammarEndAllowed( true );

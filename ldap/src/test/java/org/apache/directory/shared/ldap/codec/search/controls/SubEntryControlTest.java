@@ -32,9 +32,10 @@ import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
-import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesControl;
-import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesControlContainer;
-import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesControlDecoder;
+import org.apache.directory.shared.ldap.codec.search.controls.subentries.Subentries;
+import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesDecoder;
+import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesDecorator;
+import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesContainer;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,7 +56,7 @@ public class SubEntryControlTest
     @Test
     public void testDecodeSubEntryVisibilityTrue()
     {
-        Asn1Decoder decoder = new SubentriesControlDecoder();
+        Asn1Decoder decoder = new SubentriesDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x03 );
         bb.put( new byte[]
             { 
@@ -63,8 +64,8 @@ public class SubEntryControlTest
             } );
         bb.flip();
 
-        SubentriesControlContainer container = new SubentriesControlContainer();
-        container.setSubEntryControl( new SubentriesControl() );
+        SubentriesContainer container = new SubentriesContainer();
+        container.setSubEntryControl( new SubentriesDecorator() );
         
         try
         {
@@ -76,8 +77,8 @@ public class SubEntryControlTest
             fail( de.getMessage() );
         }
 
-        SubentriesControl control = container.getSubEntryControl();
-        assertTrue( control.isVisible() );
+        SubentriesDecorator decorator = container.getSubEntryControl();
+        assertTrue( ( ( Subentries ) decorator.getDecorated() ).isVisible() );
         // test encoding
         try
         {
@@ -95,7 +96,7 @@ public class SubEntryControlTest
 
             buffer.flip();
 
-            bb = control.encode( ByteBuffer.allocate( control.computeLength() ) );
+            bb = decorator.encode( ByteBuffer.allocate( decorator.computeLength() ) );
             String expected = Strings.dumpBytes(buffer.array());
             String decoded = Strings.dumpBytes(bb.array());
             assertEquals( expected, decoded );
@@ -113,7 +114,7 @@ public class SubEntryControlTest
     @Test
     public void testDecodeSubEntryVisibilityFalse()
     {
-        Asn1Decoder decoder = new SubentriesControlDecoder();
+        Asn1Decoder decoder = new SubentriesDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x03 );
         bb.put( new byte[]
             { 
@@ -121,8 +122,8 @@ public class SubEntryControlTest
             } );
         bb.flip();
 
-        SubentriesControlContainer container = new SubentriesControlContainer();
-        container.setSubEntryControl( new SubentriesControl() );
+        SubentriesContainer container = new SubentriesContainer();
+        container.setSubEntryControl( new SubentriesDecorator() );
 
         try
         {
@@ -134,8 +135,8 @@ public class SubEntryControlTest
             fail( de.getMessage() );
         }
 
-        SubentriesControl control = container.getSubEntryControl();
-        assertFalse( control.isVisible() );
+        SubentriesDecorator decorator = container.getSubEntryControl();
+        assertFalse( ( ( Subentries ) decorator.getDecorated() ).isVisible() );
         
         // test encoding
         try
@@ -154,7 +155,7 @@ public class SubEntryControlTest
 
             buffer.flip();
 
-            bb = control.encode( ByteBuffer.allocate( control.computeLength() ) );
+            bb = decorator.encode( ByteBuffer.allocate( decorator.computeLength() ) );
             String expected = Strings.dumpBytes(buffer.array());
             String decoded = Strings.dumpBytes(bb.array());
             assertEquals( expected, decoded );
@@ -172,7 +173,7 @@ public class SubEntryControlTest
     @Test
     public void testDecodeSubEntryEmptyVisibility()
     {
-        Asn1Decoder decoder = new SubentriesControlDecoder();
+        Asn1Decoder decoder = new SubentriesDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x02 );
 
         bb.put( new byte[]
@@ -183,8 +184,8 @@ public class SubEntryControlTest
         bb.flip();
 
         // Allocate a LdapMessage Container
-        SubentriesControlContainer container = new SubentriesControlContainer();
-        container.setSubEntryControl( new SubentriesControl() );
+        SubentriesContainer container = new SubentriesContainer();
+        container.setSubEntryControl( new SubentriesDecorator() );
 
         // Decode a SubEntryControl PDU
         try
@@ -205,7 +206,7 @@ public class SubEntryControlTest
     @Test
     public void testDecodeSubEntryBad()
     {
-        Asn1Decoder decoder = new SubentriesControlDecoder();
+        Asn1Decoder decoder = new SubentriesDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x03 );
 
         bb.put( new byte[]
@@ -216,8 +217,8 @@ public class SubEntryControlTest
         bb.flip();
 
         // Allocate a LdapMessage Container
-        SubentriesControlContainer container = new SubentriesControlContainer();
-        container.setSubEntryControl( new SubentriesControl() );
+        SubentriesContainer container = new SubentriesContainer();
+        container.setSubEntryControl( new SubentriesDecorator() );
 
         // Decode a SubEntryControl PDU
         try

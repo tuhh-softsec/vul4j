@@ -26,30 +26,30 @@ import org.apache.directory.shared.asn1.ber.AbstractContainer;
 /**
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SubentriesControlContainer extends AbstractContainer
+public class SubentriesContainer extends AbstractContainer
 {
     /** PSearchControl */
-    private SubentriesControl control;
+    private SubentriesDecorator decorator;
 
 
     /**
      * Creates a new SubEntryControlContainer object. 
      */
-    public SubentriesControlContainer()
+    public SubentriesContainer()
     {
         super();
         stateStack = new int[1];
-        grammar = SubentriesControlGrammar.getInstance();
-        setTransition( SubentriesControlStatesEnum.START_STATE );
+        grammar = SubentriesGrammar.getInstance();
+        setTransition( SubentriesStates.START_STATE );
     }
 
 
     /**
      * @return Returns the persistent search control.
      */
-    public SubentriesControl getSubEntryControl()
+    public SubentriesDecorator getSubEntryControl()
     {
-        return control;
+        return decorator;
     }
 
 
@@ -57,11 +57,11 @@ public class SubentriesControlContainer extends AbstractContainer
      * Set a SubEntryControl Object into the container. It will be completed by
      * the ldapDecoder.
      * 
-     * @param control the SubEntryControl to set.
+     * @param decorator the SubEntryControl to set.
      */
-    public void setSubEntryControl( SubentriesControl control )
+    public void setSubEntryControl( SubentriesDecorator decorator )
     {
-        this.control = control;
+        this.decorator = decorator;
     }
 
     /**
@@ -70,6 +70,6 @@ public class SubentriesControlContainer extends AbstractContainer
     public void clean()
     {
         super.clean();
-        control = null;
+        decorator = null;
     }
 }

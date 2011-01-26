@@ -38,34 +38,9 @@ import org.apache.directory.shared.ldap.codec.search.controls.ChangeType;
  */
 public class PersistentSearchDecorator extends ControlDecorator
 {
-
-    /**
-     * If changesOnly is TRUE, the server MUST NOT return any existing entries
-     * that match the search criteria. Entries are only returned when they are
-     * changed (added, modified, deleted, or subject to a modifyDN operation).
-     */
-    private boolean changesOnly = true;
-
-    /**
-     * If returnECs is TRUE, the server MUST return an Entry Change Notification
-     * control with each entry returned as the result of changes.
-     */
-    private boolean returnECs = false;
-
-    /**
-     * As changes are made to the server, the effected entries MUST be returned
-     * to the client if they match the standard search criteria and if the
-     * operation that caused the change is included in the changeTypes field.
-     * The changeTypes field is the logical OR of one or more of these values:
-     * add    (1), 
-     * delete (2), 
-     * modify (4), 
-     * modDN  (8).
-     */
-    private int changeTypes = PersistentSearch.CHANGE_TYPES_MAX;
-
     /** A temporary storage for a psearch length */
     private int psearchSeqLength;
+
 
     /**
      * Default constructor
@@ -74,42 +49,6 @@ public class PersistentSearchDecorator extends ControlDecorator
     public PersistentSearchDecorator()
     {
         super( new PersistentSearch(), new PersistentSearchDecoder() );
-    }
-
-
-    public void setChangesOnly( boolean changesOnly )
-    {
-        this.changesOnly = changesOnly;
-    }
-
-
-    public boolean isChangesOnly()
-    {
-        return changesOnly;
-    }
-
-
-    public void setReturnECs( boolean returnECs )
-    {
-        this.returnECs = returnECs;
-    }
-
-
-    public boolean isReturnECs()
-    {
-        return returnECs;
-    }
-
-
-    public void setChangeTypes( int changeTypes )
-    {
-        this.changeTypes = changeTypes;
-    }
-
-
-    public int getChangeTypes()
-    {
-        return changeTypes;
     }
 
 
@@ -129,7 +68,7 @@ public class PersistentSearchDecorator extends ControlDecorator
      */
     public int computeLength()
     {
-        int changeTypesLength = 1 + 1 + Value.getNbBytes( changeTypes );
+        int changeTypesLength = 1 + 1 + Value.getNbBytes( ( ( PersistentSearch ) getDecorated() ).getChangeTypes() );
         int changesOnlyLength = 1 + 1 + 1;
         int returnRCsLength = 1 + 1 + 1;
 
@@ -166,9 +105,9 @@ public class PersistentSearchDecorator extends ControlDecorator
         buffer.put( UniversalTag.SEQUENCE.getValue() );
         buffer.put( TLV.getBytes( psearchSeqLength ) );
 
-        Value.encode( buffer, changeTypes );
-        Value.encode( buffer, changesOnly );
-        Value.encode( buffer, returnECs );
+        Value.encode( buffer, ( ( PersistentSearch ) getDecorated() ).getChangeTypes() );
+        Value.encode( buffer, ( ( PersistentSearch ) getDecorated() ).isChangesOnly() );
+        Value.encode( buffer, ( ( PersistentSearch ) getDecorated() ).isReturnECs() );
         
         return buffer;
     }
@@ -190,10 +129,10 @@ public class PersistentSearchDecorator extends ControlDecorator
                 buffer.put( UniversalTag.SEQUENCE.getValue() );
                 buffer.put( TLV.getBytes( psearchSeqLength ) );
 
-                Value.encode( buffer, changeTypes );
-                Value.encode( buffer, changesOnly );
-                Value.encode( buffer, returnECs );
-                
+                Value.encode( buffer, ( ( PersistentSearch ) getDecorated() ).getChangeTypes() );
+                Value.encode( buffer, ( ( PersistentSearch ) getDecorated() ).isChangesOnly() );
+                Value.encode( buffer, ( ( PersistentSearch ) getDecorated() ).isReturnECs() );
+
                 getDecorated().setValue( buffer.array() );
             }
             catch ( Exception e )
@@ -203,35 +142,5 @@ public class PersistentSearchDecorator extends ControlDecorator
         }
         
         return getDecorated().getValue();
-    }
-
-    
-    public boolean isNotificationEnabled( ChangeType changeType )
-    {
-        return ( changeType.getValue() & changeTypes ) > 0;
-    }
-
-
-    public void enableNotification( ChangeType changeType )
-    {
-        changeTypes |= changeType.getValue();
-    }
-
-
-    /**
-     * Return a String representing this PSearchControl.
-     */
-    public String toString()
-    {
-        StringBuffer sb = new StringBuffer();
-
-        sb.append( "    Persistant Search Control\n" );
-        sb.append( "        oid : " ).append( getOid() ).append( '\n' );
-        sb.append( "        critical : " ).append( isCritical() ).append( '\n' );
-        sb.append( "        changeTypes : '" ).append( changeTypes ).append( "'\n" );
-        sb.append( "        changesOnly : '" ).append( changesOnly ).append( "'\n" );
-        sb.append( "        returnECs   : '" ).append( returnECs ).append( "'\n" );
-
-        return sb.toString();
     }
 }

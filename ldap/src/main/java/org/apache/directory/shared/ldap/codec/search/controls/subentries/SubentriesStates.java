@@ -30,7 +30,7 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public enum SubentriesControlStatesEnum implements States
+public enum SubentriesStates implements States
 {
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
@@ -72,7 +72,7 @@ public enum SubentriesControlStatesEnum implements States
      */
     public String getGrammarName( Grammar grammar )
     {
-        if ( grammar instanceof SubentriesControlGrammar )
+        if ( grammar instanceof SubentriesGrammar )
         {
             return "SUB_ENTRY_GRAMMAR";
         }
@@ -105,7 +105,7 @@ public enum SubentriesControlStatesEnum implements States
     /**
      * {@inheritDoc}
      */
-    public SubentriesControlStatesEnum getStartState()
+    public SubentriesStates getStartState()
     {
         return START_STATE;
     }
