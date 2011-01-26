@@ -23,6 +23,7 @@ import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.asn1.EncoderException;
 
+
 /**
  * Define the transform method to be implemented by all the codec Controls
  *
@@ -63,8 +64,10 @@ public interface CodecControl
      *                  [+ Length(0x01) + 1 + 1]
      *                  [+ Length(0x04) + Length(L3) + L3]
      * </pre>
+     * @return The computed length of the Control
      */
     int computeLength();
+
 
     /**
      * Get the associated decoder

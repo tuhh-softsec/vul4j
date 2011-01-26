@@ -44,8 +44,11 @@ public class ControlImpl extends AbstractControl
     /** Speedup for logs */
     static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
+
     /**
-     * Default constructor.
+     * Creates a Control with an OID.
+     *
+     * @param oid The OID of the Control.
      */
     public ControlImpl( String oid )
     {
@@ -58,7 +61,7 @@ public class ControlImpl extends AbstractControl
     /**
      * Set the encoded control value
      * 
-     * @param encodedValue The encoded control value to store
+     * @param value The encoded control value to store
      */
     public void setValue( byte[] value )
     {

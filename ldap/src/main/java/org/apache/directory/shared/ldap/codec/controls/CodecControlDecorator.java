@@ -34,18 +34,13 @@ import java.nio.ByteBuffer;
 
 
 /**
- * Example to show decorator application. The decorator interface is CodecControl which
- * adds the additional functionality. This class would be the concrete decorator for the
- * CodecControl. The decorated component is Control, and an example of a concrete
- * decorated component would be LdifControl.
+ * Decorates Control objects enabling the codec to store transient information
+ * with the object.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class CodecControlDecorator extends AbstractAsn1Object implements Control, CodecControl
 {
-    // ~ Instance fields
-    // ----------------------------------------------------------------------------
-
     /** The decorated Control */
     private final Control decoratedComponent;
 
@@ -60,11 +55,13 @@ public class CodecControlDecorator extends AbstractAsn1Object implements Control
 
 
     /**
-     * Default constructor.
+     * Creates a ControlDecorator to codec enable it.
+     *
+     * @param decoratedControl The Control to decorate.
      */
-    public CodecControlDecorator( Control decoratedComponent)
+    public CodecControlDecorator( Control decoratedControl )
     {
-        this.decoratedComponent = decoratedComponent;
+        this.decoratedComponent = decoratedControl;
     }
 
 
@@ -248,7 +245,8 @@ public class CodecControlDecorator extends AbstractAsn1Object implements Control
             return false;
         }
 
-        if ( isCritical() != otherControl.isCritical() )
+        //noinspection SimplifiableIfStatement
+        if ( otherControl.isCritical() != isCritical() )
         {
             return false;
         }
