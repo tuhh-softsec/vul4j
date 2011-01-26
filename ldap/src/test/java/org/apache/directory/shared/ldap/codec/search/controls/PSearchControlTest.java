@@ -30,9 +30,10 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearchControl;
-import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearchControlContainer;
-import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearchControlDecoder;
+import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearch;
+import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearchContainer;
+import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearchDecoder;
+import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearchDecorator;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -71,7 +72,7 @@ public class PSearchControlTest
         String expected = Strings.dumpBytes(bb.array());
         bb.flip();
 
-        PersistentSearchControl ctrl = new PersistentSearchControl();
+        PersistentSearchDecorator ctrl = new PersistentSearchDecorator();
         ctrl.setChangesOnly( false );
         ctrl.setReturnECs( false );
         ctrl.setChangeTypes( 1 );
@@ -86,7 +87,7 @@ public class PSearchControlTest
     @Test
     public void testDecodeModifyDNRequestSuccessChangeTypesAddModDN()
     {
-        Asn1Decoder decoder = new PersistentSearchControlDecoder();
+        Asn1Decoder decoder = new PersistentSearchDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x0b );
         bb.put( new byte[]
             { 
@@ -97,8 +98,8 @@ public class PSearchControlTest
             } );
         bb.flip();
 
-        PersistentSearchControlContainer container = new PersistentSearchControlContainer();
-        container.setPSearchControl( new PersistentSearchControl() );
+        PersistentSearchContainer container = new PersistentSearchContainer();
+        container.setPSearchControl( new PersistentSearchDecorator() );
 
         try
         {
@@ -109,12 +110,12 @@ public class PSearchControlTest
             fail( de.getMessage() );
         }
 
-        PersistentSearchControl control = container.getPSearchControl();
-        int changeTypes = control.getChangeTypes();
-        assertEquals( PersistentSearchControl.CHANGE_TYPE_ADD, changeTypes & PersistentSearchControl.CHANGE_TYPE_ADD );
-        assertEquals( PersistentSearchControl.CHANGE_TYPE_MODDN, changeTypes & PersistentSearchControl.CHANGE_TYPE_MODDN );
-        assertEquals( false, control.isChangesOnly() );
-        assertEquals( false, control.isReturnECs() );
+        PersistentSearchDecorator decorator = container.getPSearchControl();
+        int changeTypes = decorator.getChangeTypes();
+        assertEquals( PersistentSearch.CHANGE_TYPE_ADD, changeTypes & PersistentSearch.CHANGE_TYPE_ADD );
+        assertEquals( PersistentSearch.CHANGE_TYPE_MODDN, changeTypes & PersistentSearch.CHANGE_TYPE_MODDN );
+        assertEquals( false, decorator.isChangesOnly() );
+        assertEquals( false, decorator.isReturnECs() );
     }
 
     /**
@@ -124,7 +125,7 @@ public class PSearchControlTest
     @Test
     public void testDecodeModifyDNRequestSuccessChangeTypes0()
     {
-        Asn1Decoder decoder = new PersistentSearchControlDecoder();
+        Asn1Decoder decoder = new PersistentSearchDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x0b );
         bb.put( new byte[]
             { 
@@ -135,8 +136,8 @@ public class PSearchControlTest
             } );
         bb.flip();
 
-        PersistentSearchControlContainer container = new PersistentSearchControlContainer();
-        container.setPSearchControl( new PersistentSearchControl() );
+        PersistentSearchContainer container = new PersistentSearchContainer();
+        container.setPSearchControl( new PersistentSearchDecorator() );
         
         try
         {
@@ -156,7 +157,7 @@ public class PSearchControlTest
     @Test
     public void testDecodeModifyDNRequestSuccessChangeTypes22()
     {
-        Asn1Decoder decoder = new PersistentSearchControlDecoder();
+        Asn1Decoder decoder = new PersistentSearchDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x0b );
         bb.put( new byte[]
             { 
@@ -167,8 +168,8 @@ public class PSearchControlTest
             } );
         bb.flip();
 
-        PersistentSearchControlContainer container = new PersistentSearchControlContainer();
-        container.setPSearchControl( new PersistentSearchControl() );
+        PersistentSearchContainer container = new PersistentSearchContainer();
+        container.setPSearchControl( new PersistentSearchDecorator() );
 
         try
         {
@@ -187,7 +188,7 @@ public class PSearchControlTest
     @Test
     public void testDecodeModifyDNRequestSuccessNullSequence()
     {
-        Asn1Decoder decoder = new PersistentSearchControlDecoder();
+        Asn1Decoder decoder = new PersistentSearchDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x02 );
         bb.put( new byte[]
             { 
@@ -195,8 +196,8 @@ public class PSearchControlTest
             } );
         bb.flip();
 
-        PersistentSearchControlContainer container = new PersistentSearchControlContainer();
-        container.setPSearchControl( new PersistentSearchControl() );
+        PersistentSearchContainer container = new PersistentSearchContainer();
+        container.setPSearchControl( new PersistentSearchDecorator() );
 
         try
         {
@@ -215,7 +216,7 @@ public class PSearchControlTest
     @Test
     public void testDecodeModifyDNRequestSuccessWithoutChangeTypes()
     {
-        Asn1Decoder decoder = new PersistentSearchControlDecoder();
+        Asn1Decoder decoder = new PersistentSearchDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x08 );
         bb.put( new byte[]
             { 
@@ -225,8 +226,8 @@ public class PSearchControlTest
             } );
         bb.flip();
 
-        PersistentSearchControlContainer container = new PersistentSearchControlContainer();
-        container.setPSearchControl( new PersistentSearchControl() );
+        PersistentSearchContainer container = new PersistentSearchContainer();
+        container.setPSearchControl( new PersistentSearchDecorator() );
 
         try
         {
@@ -245,7 +246,7 @@ public class PSearchControlTest
     @Test
     public void testDecodeModifyDNRequestSuccessWithoutChangesOnly()
     {
-        Asn1Decoder decoder = new PersistentSearchControlDecoder();
+        Asn1Decoder decoder = new PersistentSearchDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x08 );
         bb.put( new byte[]
             { 
@@ -255,8 +256,8 @@ public class PSearchControlTest
             } );
         bb.flip();
 
-        PersistentSearchControlContainer container = new PersistentSearchControlContainer();
-        container.setPSearchControl( new PersistentSearchControl() );
+        PersistentSearchContainer container = new PersistentSearchContainer();
+        container.setPSearchControl( new PersistentSearchDecorator() );
 
         try
         {
@@ -275,7 +276,7 @@ public class PSearchControlTest
     @Test
     public void testDecodeModifyDNRequestSuccessWithoutReturnECs()
     {
-        Asn1Decoder decoder = new PersistentSearchControlDecoder();
+        Asn1Decoder decoder = new PersistentSearchDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x08 );
         bb.put( new byte[]
             { 
@@ -285,8 +286,8 @@ public class PSearchControlTest
             } );
         bb.flip();
 
-        PersistentSearchControlContainer container = new PersistentSearchControlContainer();
-        container.setPSearchControl( new PersistentSearchControl() );
+        PersistentSearchContainer container = new PersistentSearchContainer();
+        container.setPSearchControl( new PersistentSearchDecorator() );
 
         try
         {

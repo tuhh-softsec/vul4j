@@ -17,44 +17,45 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.search.controls.pagedSearch;
+package org.apache.directory.shared.ldap.codec.search.controls.persistentSearch;
 
 
 import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.asn1.Asn1Object;
-import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
+import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecoder;
 import org.apache.directory.shared.ldap.model.message.Control;
 
 
 /**
- * A decoder for PagedSearchControls.
+ * A decoder for PSearchControls.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class PagedResultsControlDecoder extends Asn1Decoder implements ControlDecoder
+public class PersistentSearchDecoder extends Asn1Decoder implements ControlDecoder
 {
     /** An instance of this decoder */
     private static final Asn1Decoder decoder = new Asn1Decoder();
 
     /**
-     * Decode the paged search control
+     * Decode the persistence search control
      * 
-     * @param controlBytes The bytes array which contains the encoded paged search
+     * @param controlBytes The bytes array which contains the encoded persistence search
      * 
-     * @return A valid PagedSearch object
+     * @return A valid PersistenceSearch object
      * 
-     * @throws org.apache.directory.shared.asn1.DecoderException If the decoding found an error
+     * @throws DecoderException If the decoding found an error
      * @throws NamingException It will never be throw by this method
      */
     public Asn1Object decode( byte[] controlBytes, Control control ) throws DecoderException
     {
         ByteBuffer bb = ByteBuffer.wrap( controlBytes );
-        PagedResultsControlContainer container = new PagedResultsControlContainer();
-        container.setPagedSearchControl( (PagedResultsControl)control );
+        PersistentSearchContainer container = new PersistentSearchContainer();
+        container.setPSearchControl( (PersistentSearchDecorator )control );
+
         decoder.decode( bb, container );
-        return container.getPagedSearchControl();
+        return container.getPSearchControl();
     }
 }

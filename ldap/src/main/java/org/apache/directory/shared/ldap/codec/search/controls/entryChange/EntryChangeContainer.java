@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.search.controls.persistentSearch;
+package org.apache.directory.shared.ldap.codec.search.controls.entryChange;
 
 
 import org.apache.directory.shared.asn1.ber.AbstractContainer;
@@ -26,42 +26,41 @@ import org.apache.directory.shared.asn1.ber.AbstractContainer;
 /**
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class PersistentSearchControlContainer extends AbstractContainer
+public class EntryChangeContainer extends AbstractContainer
 {
-    /** PSearchControl */
-    private PersistentSearchControl control;
+    /** EntryChangeControl */
+    private EntryChangeDecorator control;
 
 
     /**
-     * Creates a new PSearchControlContainer object. We will store one grammar,
-     * it's enough ...
+     * Creates a new EntryChangeContainer object. We will store one
+     * grammar, it's enough ...
      */
-    public PersistentSearchControlContainer()
+    public EntryChangeContainer()
     {
         super();
         stateStack = new int[1];
-        grammar = PersistentSearchControlGrammar.getInstance();
-        setTransition( PersistentSearchControlStatesEnum.START_STATE );
+        grammar = EntryChangeGrammar.getInstance();
+        setTransition( EntryChangeStates.START_STATE );
     }
 
 
     /**
-     * @return Returns the persistent search control.
+     * @return Returns the EntryChangeControl.
      */
-    public PersistentSearchControl getPSearchControl()
+    public EntryChangeDecorator getEntryChangeControl()
     {
-
         return control;
     }
 
 
     /**
-     * Set a PSearchControl Object into the container. It will be completed by
-     * the ldapDecoder.
+     * Set a EntryChangeControl Object into the container. It will be completed
+     * by the ldapDecoder.
      * 
-     * @param control the PSearchControl to set.
+     * @param control the EntryChangeControl to set.
      */
-    public void setPSearchControl( PersistentSearchControl control )
+    public void setEntryChangeControl( EntryChangeDecorator control )
     {
         this.control = control;
     }

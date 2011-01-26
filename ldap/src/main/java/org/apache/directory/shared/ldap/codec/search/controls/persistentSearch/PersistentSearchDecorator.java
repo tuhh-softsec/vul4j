@@ -27,7 +27,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
+import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 import org.apache.directory.shared.ldap.codec.search.controls.ChangeType;
 
 
@@ -36,10 +36,8 @@ import org.apache.directory.shared.ldap.codec.search.controls.ChangeType;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class PersistentSearchControl extends AbstractControl
+public class PersistentSearchDecorator extends ControlDecorator
 {
-    /** This control OID */
-    public static final String CONTROL_OID = "2.16.840.1.113730.3.4.3";
 
     /**
      * If changesOnly is TRUE, the server MUST NOT return any existing entries
@@ -64,17 +62,7 @@ public class PersistentSearchControl extends AbstractControl
      * modify (4), 
      * modDN  (8).
      */
-    private int changeTypes = CHANGE_TYPES_MAX;
-    
-    /** Definition of the change types */
-    public static final int CHANGE_TYPE_ADD     = 1;
-    public static final int CHANGE_TYPE_DELETE  = 2;
-    public static final int CHANGE_TYPE_MODIFY  = 4;
-    public static final int CHANGE_TYPE_MODDN   = 8;
-    
-    /** Min and Max values for the possible combined change types */
-    public static final int CHANGE_TYPES_MIN = CHANGE_TYPE_ADD;
-    public static final int CHANGE_TYPES_MAX = CHANGE_TYPE_ADD | CHANGE_TYPE_DELETE | CHANGE_TYPE_MODIFY | CHANGE_TYPE_MODDN;
+    private int changeTypes = PersistentSearch.CHANGE_TYPES_MAX;
 
     /** A temporary storage for a psearch length */
     private int psearchSeqLength;
@@ -83,12 +71,11 @@ public class PersistentSearchControl extends AbstractControl
      * Default constructor
      *
      */
-    public PersistentSearchControl()
+    public PersistentSearchDecorator()
     {
-        super( CONTROL_OID );
-        
-        decoder = new PersistentSearchControlDecoder();
+        super( new PersistentSearch(), new PersistentSearchDecoder() );
     }
+
 
     public void setChangesOnly( boolean changesOnly )
     {
@@ -125,12 +112,13 @@ public class PersistentSearchControl extends AbstractControl
         return changeTypes;
     }
 
+
     /**
      * Compute the PagedSearchControl length, which is the sum
      * of the control length and the value length.
      * 
      * <pre>
-     * PersistentSearchControl value length :
+     * PersistentSearchDecorator value length :
      * 
      * 0x30 L1 
      *   | 
@@ -191,7 +179,7 @@ public class PersistentSearchControl extends AbstractControl
      */
     public byte[] getValue()
     {
-        if ( value == null )
+        if ( getDecorated().getValue() == null )
         {
             try
             { 
@@ -206,7 +194,7 @@ public class PersistentSearchControl extends AbstractControl
                 Value.encode( buffer, changesOnly );
                 Value.encode( buffer, returnECs );
                 
-                value = buffer.array();
+                getDecorated().setValue( buffer.array() );
             }
             catch ( Exception e )
             {
@@ -214,7 +202,7 @@ public class PersistentSearchControl extends AbstractControl
             }
         }
         
-        return value;
+        return getDecorated().getValue();
     }
 
     

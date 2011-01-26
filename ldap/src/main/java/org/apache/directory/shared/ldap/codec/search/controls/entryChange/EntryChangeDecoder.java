@@ -53,7 +53,7 @@ public class EntryChangeDecoder extends Asn1Decoder implements ControlDecoder
     public Asn1Object decode( byte[] controlBytes, Control control ) throws DecoderException
     {
         ByteBuffer bb = ByteBuffer.wrap( controlBytes );
-        EntryChangeControlContainer container = new EntryChangeControlContainer();
+        EntryChangeContainer container = new EntryChangeContainer();
         container.setEntryChangeControl( (EntryChangeDecorator )control );
         decoder.decode( bb, container );
         return container.getEntryChangeControl();

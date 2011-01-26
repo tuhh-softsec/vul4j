@@ -17,55 +17,53 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.search.controls.pagedSearch;
+package org.apache.directory.shared.ldap.codec.search.controls.persistentSearch;
 
 
 import org.apache.directory.shared.asn1.ber.AbstractContainer;
 
 
 /**
- * A container for the Paged Search Control.
- * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class PagedResultsControlContainer extends AbstractContainer
+public class PersistentSearchContainer extends AbstractContainer
 {
-    /** PagedSearchControl */
-    private PagedResultsControl control;
+    /** PSearchControl */
+    private PersistentSearchDecorator decorator;
 
 
     /**
-     * Creates a new PagedSearchControl container object. We will store one grammar,
+     * Creates a new PSearchControlContainer object. We will store one grammar,
      * it's enough ...
      */
-    public PagedResultsControlContainer()
+    public PersistentSearchContainer()
     {
         super();
         stateStack = new int[1];
-        grammar = PagedResultsControlGrammar.getInstance();
-        setTransition( PagedResultsControlStatesEnum.START_STATE );
+        grammar = PersistentSearchGrammar.getInstance();
+        setTransition( PersistentSearchStates.START_STATE );
     }
 
 
     /**
-     * @return Returns the paged search control.
+     * @return Returns the persistent search decorator.
      */
-    public PagedResultsControl getPagedSearchControl()
+    public PersistentSearchDecorator getPSearchControl()
     {
 
-        return control;
+        return decorator;
     }
 
 
     /**
-     * Set a PagedSearchControl Object into the container. It will be completed by
+     * Set a PSearchControl Object into the container. It will be completed by
      * the ldapDecoder.
      * 
-     * @param control the PagedSearchControl to set.
+     * @param decorator the PSearchControl to set.
      */
-    public void setPagedSearchControl( PagedResultsControl control )
+    public void setPSearchControl( PersistentSearchDecorator decorator )
     {
-        this.control = control;
+        this.decorator = decorator;
     }
 
     /**
@@ -74,6 +72,6 @@ public class PagedResultsControlContainer extends AbstractContainer
     public void clean()
     {
         super.clean();
-        control = null;
+        decorator = null;
     }
 }

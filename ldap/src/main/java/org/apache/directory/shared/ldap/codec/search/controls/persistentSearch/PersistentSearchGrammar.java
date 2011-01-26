@@ -53,27 +53,27 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public final class PersistentSearchControlGrammar extends AbstractGrammar
+public final class PersistentSearchGrammar extends AbstractGrammar
 {
     /** The logger */
-    static final Logger LOG = LoggerFactory.getLogger( PersistentSearchControlGrammar.class );
+    static final Logger LOG = LoggerFactory.getLogger( PersistentSearchGrammar.class );
 
     /** Speedup for logs */
     static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
     /** The instance of grammar. PSearchControlGrammar is a singleton */
-    private static Grammar instance = new PersistentSearchControlGrammar();
+    private static Grammar instance = new PersistentSearchGrammar();
 
 
     /**
      * Creates a new PSearchControlGrammar object.
      */
-    private PersistentSearchControlGrammar()
+    private PersistentSearchGrammar()
     {
-        setName( PersistentSearchControlGrammar.class.getName() );
+        setName( PersistentSearchGrammar.class.getName() );
 
         // Create the transitions table
-        super.transitions = new GrammarTransition[PersistentSearchControlStatesEnum.LAST_PSEARCH_STATE.ordinal()][256];
+        super.transitions = new GrammarTransition[ PersistentSearchStates.LAST_PSEARCH_STATE.ordinal()][256];
 
         /** 
          * Transition from initial state to Psearch sequence
@@ -82,9 +82,9 @@ public final class PersistentSearchControlGrammar extends AbstractGrammar
          *     
          * Initialize the persistence search object
          */
-        super.transitions[PersistentSearchControlStatesEnum.START_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = 
-            new GrammarTransition( PersistentSearchControlStatesEnum.START_STATE, 
-                                    PersistentSearchControlStatesEnum.PSEARCH_SEQUENCE_STATE, 
+        super.transitions[ PersistentSearchStates.START_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] =
+            new GrammarTransition( PersistentSearchStates.START_STATE,
+                                    PersistentSearchStates.PSEARCH_SEQUENCE_STATE,
                                     UniversalTag.SEQUENCE.getValue(), null );
 
 
@@ -96,23 +96,23 @@ public final class PersistentSearchControlGrammar extends AbstractGrammar
          *     
          * Stores the change types value
          */
-        super.transitions[PersistentSearchControlStatesEnum.PSEARCH_SEQUENCE_STATE.ordinal()][UniversalTag.INTEGER.getValue()] = 
-            new GrammarTransition( PersistentSearchControlStatesEnum.PSEARCH_SEQUENCE_STATE, 
-                PersistentSearchControlStatesEnum.CHANGE_TYPES_STATE, 
+        super.transitions[ PersistentSearchStates.PSEARCH_SEQUENCE_STATE.ordinal()][UniversalTag.INTEGER.getValue()] =
+            new GrammarTransition( PersistentSearchStates.PSEARCH_SEQUENCE_STATE,
+                PersistentSearchStates.CHANGE_TYPES_STATE,
                 UniversalTag.INTEGER.getValue(),
                 new GrammarAction( "Set PSearchControl changeTypes" )
             {
                 public void action( Asn1Container container ) throws DecoderException
                 {
-                    PersistentSearchControlContainer psearchContainer = ( PersistentSearchControlContainer ) container;
+                    PersistentSearchContainer psearchContainer = ( PersistentSearchContainer ) container;
                     Value value = psearchContainer.getCurrentTLV().getValue();
 
                     try
                     {
                         // Check that the value is into the allowed interval
                         int changeTypes = IntegerDecoder.parse( value, 
-                            PersistentSearchControl.CHANGE_TYPES_MIN, 
-                            PersistentSearchControl.CHANGE_TYPES_MAX );
+                            PersistentSearch.CHANGE_TYPES_MIN,
+                            PersistentSearch.CHANGE_TYPES_MAX );
                         
                         if ( IS_DEBUG )
                         {
@@ -139,14 +139,14 @@ public final class PersistentSearchControlGrammar extends AbstractGrammar
          *     
          * Stores the change only flag
          */
-        super.transitions[PersistentSearchControlStatesEnum.CHANGE_TYPES_STATE.ordinal()][UniversalTag.BOOLEAN.getValue()] = 
-            new GrammarTransition( PersistentSearchControlStatesEnum.CHANGE_TYPES_STATE,
-                                    PersistentSearchControlStatesEnum.CHANGES_ONLY_STATE, UniversalTag.BOOLEAN.getValue(),
+        super.transitions[ PersistentSearchStates.CHANGE_TYPES_STATE.ordinal()][UniversalTag.BOOLEAN.getValue()] =
+            new GrammarTransition( PersistentSearchStates.CHANGE_TYPES_STATE,
+                                    PersistentSearchStates.CHANGES_ONLY_STATE, UniversalTag.BOOLEAN.getValue(),
                 new GrammarAction( "Set PSearchControl changesOnly" )
             {
                 public void action( Asn1Container container ) throws DecoderException
                 {
-                    PersistentSearchControlContainer psearchContainer = ( PersistentSearchControlContainer ) container;
+                    PersistentSearchContainer psearchContainer = ( PersistentSearchContainer ) container;
                     Value value = psearchContainer.getCurrentTLV().getValue();
 
                     try
@@ -178,14 +178,14 @@ public final class PersistentSearchControlGrammar extends AbstractGrammar
          *     
          * Stores the return ECs flag 
          */
-        super.transitions[PersistentSearchControlStatesEnum.CHANGES_ONLY_STATE.ordinal()][UniversalTag.BOOLEAN.getValue()] = 
-            new GrammarTransition( PersistentSearchControlStatesEnum.CHANGES_ONLY_STATE, 
-                                    PersistentSearchControlStatesEnum.RETURN_ECS_STATE, UniversalTag.BOOLEAN.getValue(),
+        super.transitions[ PersistentSearchStates.CHANGES_ONLY_STATE.ordinal()][UniversalTag.BOOLEAN.getValue()] =
+            new GrammarTransition( PersistentSearchStates.CHANGES_ONLY_STATE,
+                                    PersistentSearchStates.RETURN_ECS_STATE, UniversalTag.BOOLEAN.getValue(),
                 new GrammarAction( "Set PSearchControl returnECs" )
             {
                 public void action( Asn1Container container ) throws DecoderException
                 {
-                    PersistentSearchControlContainer psearchContainer = ( PersistentSearchControlContainer ) container;
+                    PersistentSearchContainer psearchContainer = ( PersistentSearchContainer ) container;
                     Value value = psearchContainer.getCurrentTLV().getValue();
 
                     try

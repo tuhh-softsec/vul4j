@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.search.controls.persistentSearch;
+package org.apache.directory.shared.ldap.codec.search.controls.entryChange;
 
 
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
@@ -25,12 +25,12 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
 
 
 /**
- * This class store the PSearchControl's grammar constants. It is also used for
- * debugging purposes.
+ * This class store the EntryChangeControl's grammar constants. It is also used
+ * for debugging purposes.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public enum PersistentSearchControlStatesEnum implements States
+public enum EntryChangeStates implements States
 {
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
@@ -39,26 +39,26 @@ public enum PersistentSearchControlStatesEnum implements States
     END_STATE,
 
     // =========================================================================
-    // Persistent search control grammar states
+    // Entry change control grammar states
     // =========================================================================
-    /** Initial state */
+
+    /** Sequence Tag */
     START_STATE,
 
-    /** Sequence Value */
-    PSEARCH_SEQUENCE_STATE,
+    /** Sequence */
+    EC_SEQUENCE_STATE,
 
-    /** changeTypes Value */
-    CHANGE_TYPES_STATE,
-    
-    /** changesOnly Value */
-    CHANGES_ONLY_STATE,
+    /** changeType */
+    CHANGE_TYPE_STATE,
 
-    /** returnECs Value */
-    RETURN_ECS_STATE,
+    /** previousDN */
+    PREVIOUS_DN_STATE,
+
+    /** changeNumber */
+    CHANGE_NUMBER_STATE,
 
     /** terminal state */
-    LAST_PSEARCH_STATE;
-
+    LAST_EC_STATE;
 
     /**
      * Get the grammar name
@@ -68,7 +68,7 @@ public enum PersistentSearchControlStatesEnum implements States
      */
     public String getGrammarName( int grammar )
     {
-        return "PSEARCH_GRAMMAR";
+        return "EC_GRAMMAR";
     }
 
 
@@ -80,9 +80,9 @@ public enum PersistentSearchControlStatesEnum implements States
      */
     public String getGrammarName( Grammar grammar )
     {
-        if ( grammar instanceof PersistentSearchControlGrammar )
+        if ( grammar instanceof EntryChangeGrammar )
         {
-            return "PSEARCH_GRAMMAR";
+            return "EC_GRAMMAR";
         }
 
         return "UNKNOWN GRAMMAR";
@@ -97,7 +97,7 @@ public enum PersistentSearchControlStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == END_STATE.ordinal() ) ? "PSEARCH_END_STATE" : name() );
+        return ( ( state == END_STATE.ordinal() ) ? "EC_END_STATE" : name() );
     }
 
     
@@ -113,7 +113,7 @@ public enum PersistentSearchControlStatesEnum implements States
     /**
      * {@inheritDoc}
      */
-    public PersistentSearchControlStatesEnum getStartState()
+    public EntryChangeStates getStartState()
     {
         return START_STATE;
     }

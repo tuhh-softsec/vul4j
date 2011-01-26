@@ -24,8 +24,10 @@ import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue
 import org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValue.SyncInfoValueControl;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncRequestValue.SyncRequestValueControl;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncStateValue.SyncStateValueControl;
-import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedResultsControl;
-import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearchControl;
+import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedResults;
+import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedResultsDecorator;
+import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearch;
+import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearchDecorator;
 import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesControl;
 import org.apache.directory.shared.ldap.model.message.Control;
 
@@ -44,8 +46,8 @@ public class ControlFactory
      * ControlImpl is returned. The following Controls are known:
      * <ul>
      * <li>ManageDsaITControlDecorator</li>
-     * <li>PagedResultsControl</li>
-     * <li>PersistentSearchControl</li>
+     * <li>PagedResultsDecorator</li>
+     * <li>PersistentSearchDecorator</li>
      * <li>SubentriesControl</li>
      * <li>SyncDoneValueControl</li>
      * <li>SyncInfoValueControl</li>
@@ -66,14 +68,14 @@ public class ControlFactory
             return new ManageDsaITDecorator();
         }
 
-        if ( PagedResultsControl.CONTROL_OID.equals( oid ) )
+        if ( PagedResults.OID.equals( oid ) )
         {
-            return new PagedResultsControl();
+            return new PagedResultsDecorator();
         }
 
-        if ( PersistentSearchControl.CONTROL_OID.equals( oid ) )
+        if ( PersistentSearch.CONTROL_OID.equals( oid ) )
         {
-            return new PersistentSearchControl();
+            return new PersistentSearchDecorator();
         }
 
         if ( SubentriesControl.CONTROL_OID.equals( oid ) )

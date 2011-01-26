@@ -26,8 +26,8 @@ import org.apache.directory.shared.ldap.codec.controls.replication.syncRequestVa
 import org.apache.directory.shared.ldap.codec.controls.replication.syncStateValue.SyncStateValueControl;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn.SyncModifyDnControl;
 import org.apache.directory.shared.ldap.codec.search.controls.entryChange.EntryChange;
-import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedResultsControl;
-import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearchControl;
+import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedResults;
+import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearch;
 import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesControl;
 
 /**
@@ -41,9 +41,9 @@ public enum ControlEnum
     CASCADE_CONTROL( Cascade.OID ),
     ENTRY_CHANGE_CONTROL( EntryChange.OID ),
     MANAGE_DSA_IT_CONTROL( ManageDsaIT.OID ),
-    PAGED_RESULTS_CONTROL( PagedResultsControl.CONTROL_OID ),
+    PAGED_RESULTS_CONTROL( PagedResults.OID ),
     PASSWORD_POLICY_REQUEST_CONTROL( PasswordPolicyRequestControl.CONTROL_OID ),
-    PERSISTENT_SEARCH_CONTROL(PersistentSearchControl.CONTROL_OID),
+    PERSISTENT_SEARCH_CONTROL( PersistentSearch.CONTROL_OID),
     SUBENTRIES_CONTROL( SubentriesControl.CONTROL_OID ),
     SYNC_DONE_VALUE_CONTROL( SyncDoneValueControl.CONTROL_OID ),
     SYNC_INFO_VALUE_CONTROL( SyncInfoValueControl.CONTROL_OID ),

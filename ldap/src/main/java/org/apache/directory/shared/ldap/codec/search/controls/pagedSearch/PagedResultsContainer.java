@@ -17,50 +17,53 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.search.controls.entryChange;
+package org.apache.directory.shared.ldap.codec.search.controls.pagedSearch;
 
 
 import org.apache.directory.shared.asn1.ber.AbstractContainer;
 
 
 /**
+ * A container for the Paged Search Control.
+ * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class EntryChangeControlContainer extends AbstractContainer
+public class PagedResultsContainer extends AbstractContainer
 {
-    /** EntryChangeControl */
-    private EntryChangeDecorator control;
+    /** PagedSearchControl */
+    private PagedResultsDecorator control;
 
 
     /**
-     * Creates a new EntryChangeControlContainer object. We will store one
-     * grammar, it's enough ...
+     * Creates a new PagedSearchControl container object. We will store one grammar,
+     * it's enough ...
      */
-    public EntryChangeControlContainer()
+    public PagedResultsContainer()
     {
         super();
         stateStack = new int[1];
-        grammar = EntryChangeControlGrammar.getInstance();
-        setTransition( EntryChangeControlStatesEnum.START_STATE );
+        grammar = PagedResultsGrammar.getInstance();
+        setTransition( PagedResultsStates.START_STATE );
     }
 
 
     /**
-     * @return Returns the EntryChangeControl.
+     * @return Returns the paged search control.
      */
-    public EntryChangeDecorator getEntryChangeControl()
+    public PagedResultsDecorator getPagedSearchControl()
     {
+
         return control;
     }
 
 
     /**
-     * Set a EntryChangeControl Object into the container. It will be completed
-     * by the ldapDecoder.
+     * Set a PagedSearchControl Object into the container. It will be completed by
+     * the ldapDecoder.
      * 
-     * @param control the EntryChangeControl to set.
+     * @param control the PagedSearchControl to set.
      */
-    public void setEntryChangeControl( EntryChangeDecorator control )
+    public void setPagedSearchControl( PagedResultsDecorator control )
     {
         this.control = control;
     }

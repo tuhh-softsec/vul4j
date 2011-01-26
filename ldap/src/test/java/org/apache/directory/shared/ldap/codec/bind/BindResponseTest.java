@@ -36,7 +36,7 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedResultsControl;
+import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedResultsDecorator;
 import org.apache.directory.shared.ldap.model.message.BindResponse;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
@@ -203,9 +203,9 @@ public class BindResponseTest
 
         Control control = controls.get( "1.2.840.113556.1.4.319" );
         assertEquals( "1.2.840.113556.1.4.319", control.getOid() );
-        assertTrue( control instanceof PagedResultsControl );
+        assertTrue( control instanceof PagedResultsDecorator );
 
-        PagedResultsControl pagedSearchControl = ( PagedResultsControl ) control;
+        PagedResultsDecorator pagedSearchControl = ( PagedResultsDecorator ) control;
 
         assertEquals( 5, pagedSearchControl.getSize() );
         assertTrue( Arrays.equals( "abcdef".getBytes(), pagedSearchControl.getCookie() ) );

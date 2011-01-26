@@ -31,9 +31,9 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
+import org.apache.directory.shared.ldap.codec.search.controls.entryChange.EntryChangeContainer;
 import org.apache.directory.shared.ldap.codec.search.controls.entryChange.EntryChangeDecoder;
 import org.apache.directory.shared.ldap.codec.search.controls.entryChange.EntryChangeDecorator;
-import org.apache.directory.shared.ldap.codec.search.controls.entryChange.EntryChangeControlContainer;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
@@ -68,7 +68,7 @@ public class EntryChangeControlTest
             } );
         bb.flip();
 
-        EntryChangeControlContainer container = new EntryChangeControlContainer();
+        EntryChangeContainer container = new EntryChangeContainer();
         container.setEntryChangeControl( new EntryChangeDecorator() );
         
         try
@@ -108,7 +108,7 @@ public class EntryChangeControlTest
             } );
         bb.flip();
 
-        EntryChangeControlContainer container = new EntryChangeControlContainer();
+        EntryChangeContainer container = new EntryChangeContainer();
         container.setEntryChangeControl( new EntryChangeDecorator() );
         
         try
@@ -147,7 +147,7 @@ public class EntryChangeControlTest
             } );
         bb.flip();
 
-        EntryChangeControlContainer container = new EntryChangeControlContainer();
+        EntryChangeContainer container = new EntryChangeContainer();
         container.setEntryChangeControl( new EntryChangeDecorator() );
         
         try
@@ -189,7 +189,7 @@ public class EntryChangeControlTest
             } );
         bb.flip();
 
-        EntryChangeControlContainer container = new EntryChangeControlContainer();
+        EntryChangeContainer container = new EntryChangeContainer();
         container.setEntryChangeControl( new EntryChangeDecorator() );
         
         try
@@ -225,7 +225,7 @@ public class EntryChangeControlTest
             } );
         bb.flip();
 
-        EntryChangeControlContainer container = new EntryChangeControlContainer();
+        EntryChangeContainer container = new EntryChangeContainer();
         container.setEntryChangeControl( new EntryChangeDecorator() );
         
         try
@@ -264,7 +264,7 @@ public class EntryChangeControlTest
             } );
         bb.flip();
 
-        EntryChangeControlContainer container = new EntryChangeControlContainer();
+        EntryChangeContainer container = new EntryChangeContainer();
         container.setEntryChangeControl( new EntryChangeDecorator() );
         
         try
@@ -303,7 +303,7 @@ public class EntryChangeControlTest
             } );
         bb.flip();
 
-        EntryChangeControlContainer container = new EntryChangeControlContainer();
+        EntryChangeContainer container = new EntryChangeContainer();
         container.setEntryChangeControl( new EntryChangeDecorator() );
         
         try

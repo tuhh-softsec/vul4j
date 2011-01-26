@@ -108,6 +108,12 @@ public class ControlDecorator extends AbstractAsn1Object implements Control, Cod
     }
 
 
+    public Control getDecorated()
+    {
+        return decorated;
+    }
+
+
     // ------------------------------------------------------------------------
     // Control Methods
     // ------------------------------------------------------------------------

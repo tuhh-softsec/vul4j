@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.search.controls.pagedSearch;
+package org.apache.directory.shared.ldap.codec.search.controls.persistentSearch;
 
 
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
@@ -25,12 +25,12 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
 
 
 /**
- * This class store the PagedSearchControl's grammar constants. It is also used for
+ * This class store the PSearchControl's grammar constants. It is also used for
  * debugging purposes.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public enum PagedResultsControlStatesEnum implements States
+public enum PersistentSearchStates implements States
 {
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
@@ -39,22 +39,25 @@ public enum PagedResultsControlStatesEnum implements States
     END_STATE,
 
     // =========================================================================
-    // Paged search control grammar states
+    // Persistent search control grammar states
     // =========================================================================
     /** Initial state */
     START_STATE,
 
     /** Sequence Value */
-    PAGED_SEARCH_SEQUENCE_STATE,
+    PSEARCH_SEQUENCE_STATE,
 
-    /** Size Value */
-    SIZE_STATE,
+    /** changeTypes Value */
+    CHANGE_TYPES_STATE,
     
-    /** Cookie Value */
-    COOKIE_STATE,
+    /** changesOnly Value */
+    CHANGES_ONLY_STATE,
+
+    /** returnECs Value */
+    RETURN_ECS_STATE,
 
     /** terminal state */
-    LAST_PAGED_SEARCH_STATE;
+    LAST_PSEARCH_STATE;
 
 
     /**
@@ -65,7 +68,7 @@ public enum PagedResultsControlStatesEnum implements States
      */
     public String getGrammarName( int grammar )
     {
-        return "PAGED_SEARCH_GRAMMAR";
+        return "PSEARCH_GRAMMAR";
     }
 
 
@@ -77,9 +80,9 @@ public enum PagedResultsControlStatesEnum implements States
      */
     public String getGrammarName( Grammar grammar )
     {
-        if ( grammar instanceof PagedResultsControlGrammar )
+        if ( grammar instanceof PersistentSearchGrammar )
         {
-            return "PAGEDSEARCH_GRAMMAR";
+            return "PSEARCH_GRAMMAR";
         }
 
         return "UNKNOWN GRAMMAR";
@@ -94,7 +97,7 @@ public enum PagedResultsControlStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == END_STATE.ordinal() ) ? "PAGED_SEARCH_END_STATE" : name() );
+        return ( ( state == END_STATE.ordinal() ) ? "PSEARCH_END_STATE" : name() );
     }
 
     
@@ -110,7 +113,7 @@ public enum PagedResultsControlStatesEnum implements States
     /**
      * {@inheritDoc}
      */
-    public PagedResultsControlStatesEnum getStartState()
+    public PersistentSearchStates getStartState()
     {
         return START_STATE;
     }
