@@ -41,7 +41,7 @@ public class TransformXSLTTest extends org.junit.Assert {
         System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
     private static final String SEP = System.getProperty("file.separator");
     private static final String SOURCE_PATH = 
-        "data/com/phaos/phaos-xmldsig-three/";
+        "src/test/resources/com/phaos/phaos-xmldsig-three/";
     private static final String SIGNATURE_FILE = 
         "signature-rsa-detached-xslt-transform.xml";
     private static final String STYLESHEET_FILE = "document-stylesheet.xml";

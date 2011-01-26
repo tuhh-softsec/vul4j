@@ -36,7 +36,7 @@ public class RSASecurityTest extends InteropTestBase {
 
     /** Field blakesDir           */
     static String blakesDir =
-        "data/com/rsasecurity/bdournaee/";
+        "src/test/resources/com/rsasecurity/bdournaee/";
 
     static {
         String basedir = System.getProperty("basedir");

@@ -111,11 +111,11 @@ public class CreateSignatureTest extends org.junit.Assert {
         if (BASEDIR != null && !"".equals(BASEDIR)) {
             fis = 
                 new FileInputStream(BASEDIR + SEP 
-                    + "data/org/apache/xml/security/samples/input/keystore.jks"
+                    + "src/test/resources/org/apache/xml/security/samples/input/keystore.jks"
                 );
         } else {
             fis = 
-                new FileInputStream("data/org/apache/xml/security/samples/input/keystore.jks");
+                new FileInputStream("src/test/resources/org/apache/xml/security/samples/input/keystore.jks");
         }
         ks.load(fis, "xmlsecurity".toCharArray());
         PrivateKey privateKey = (PrivateKey) ks.getKey("test", "xmlsecurity".toCharArray());
@@ -188,9 +188,9 @@ public class CreateSignatureTest extends org.junit.Assert {
         FileInputStream fis = null;
         if (BASEDIR != null && !"".equals(BASEDIR)) {
             fis = new FileInputStream(BASEDIR + SEP + 
-            "data/test.jks");
+            "src/test/resources/test.jks");
         } else {
-            fis = new FileInputStream("data/test.jks");
+            fis = new FileInputStream("src/test/resources/test.jks");
         }
         ks.load(fis, "changeit".toCharArray());
         PrivateKey privateKey = (PrivateKey) ks.getKey("mullan", "changeit".toCharArray());

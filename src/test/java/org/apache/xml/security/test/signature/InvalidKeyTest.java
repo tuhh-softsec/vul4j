@@ -46,7 +46,7 @@ public class InvalidKeyTest extends org.junit.Assert {
     @org.junit.Test
     public void test() throws Exception {
         FileInputStream input = new FileInputStream(BASEDIR + SEP + 
-            "data/org/apache/xml/security/samples/input/truststore.jks");
+            "src/test/resources/org/apache/xml/security/samples/input/truststore.jks");
         KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
         trustStore.load(input, "testpw".toCharArray());
         
@@ -61,7 +61,7 @@ public class InvalidKeyTest extends org.junit.Assert {
     
     private void validate(PublicKey pk) throws Exception {
         FileInputStream is = new FileInputStream(BASEDIR + SEP +
-            "data/org/apache/xml/security/samples/input/test-assertion.xml");
+            "src/test/resources/org/apache/xml/security/samples/input/test-assertion.xml");
             
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);

@@ -53,7 +53,7 @@ public class VerifyMerlinsExamplesTwentyThree {
    static final boolean schemaValidate = false;
 
    /** Field signatureSchemaFile */
-   static final String signatureSchemaFile = "data/xmldsig-core-schema.xsd";
+   static final String signatureSchemaFile = "samples/data/xmldsig-core-schema.xsd";
 
    /**
     * Method main
@@ -91,7 +91,7 @@ public class VerifyMerlinsExamplesTwentyThree {
 
       //J-
       String merlinsDir =
-         "data/ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/";
+         "samples/data/ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/";
       String filenames[] = { // "23signature.xml"
                              // "merlinsTwentyThreeRecreated.xml"
                              merlinsDir + "signature.xml",
@@ -222,19 +222,6 @@ public class VerifyMerlinsExamplesTwentyThree {
          System.out.println("Did not find a KeyInfo");
       }
 
-      /*
-      SignedInfo s = signature.getSignedInfo();
-      for (int i=0; i<s.getSignedContentLength(); i++) {
-         System.out.println("################ Signed Resource " + i + " ################");
-         FileOutputStream f2 = new FileOutputStream(filename + "." + i + ".input");
-         byte[] data = s.getSignedContentItem(i);
-         f2.write(data);
-         f2.close();
-
-         System.out.println(new String(data));
-         System.out.println();
-      }
-      */
    }
 
    static {

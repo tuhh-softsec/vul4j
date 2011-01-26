@@ -64,7 +64,7 @@ public class IBMTest extends InteropTestBase {
      */
     public IBMTest() {
         super();
-        String filename = "data/com/ibm/xss4j-20011029/enveloped-rsa.sig";
+        String filename = "src/test/resources/com/ibm/xss4j-20011029/enveloped-rsa.sig";
         File f = new File(filename);
         if (f.exists()) {
             runTests = true;

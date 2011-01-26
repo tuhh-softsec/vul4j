@@ -38,7 +38,7 @@ public class SecureXSLTTest extends org.junit.Assert {
         String fs = System.getProperty("file.separator");
         String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
         
-        File baseDir = new File(base + fs + "data" 
+        File baseDir = new File(base + fs + "src/test/resources" 
             + fs + "javax" + fs + "xml" + fs + "crypto", "dsig");
 
         String[] signatures =

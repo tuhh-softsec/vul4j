@@ -86,7 +86,7 @@ public class BaltimoreEncTest extends org.junit.Assert {
         dbf.setAttribute("http://xml.org/sax/features/namespaces", Boolean.TRUE);
 
         String filename = 
-            "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml";
+            "src/test/resources/ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml";
         String basedir = System.getProperty("basedir");
         if (basedir != null && !"".equals(basedir)) {
             filename = basedir + "/" + filename;
@@ -113,7 +113,7 @@ public class BaltimoreEncTest extends org.junit.Assert {
         rsaCertSerialNumber = new String("1014918766910");
 
         // rsaKey
-        filename = "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/rsa.p8";
+        filename = "src/test/resources/ie/baltimore/merlin-examples/merlin-xmlenc-five/rsa.p8";
         if (basedir != null && !"".equals(basedir)) {
             filename = basedir + "/" + filename;
         }
@@ -162,7 +162,7 @@ public class BaltimoreEncTest extends org.junit.Assert {
     public void test_five_content_3des_cbc() throws Exception {
         if (haveISOPadding) {
             String filename = 
-                "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-content-tripledes-cbc.xml";
+                "src/test/resources/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-content-tripledes-cbc.xml";
 
             Document dd = decryptElement(filename);
             checkDecryptedDoc(dd, true);
@@ -184,7 +184,7 @@ public class BaltimoreEncTest extends org.junit.Assert {
 
         if (haveISOPadding) {
             String filename = 
-                "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-content-aes256-cbc-prop.xml";
+                "src/test/resources/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-content-aes256-cbc-prop.xml";
 
             Document dd = decryptElement(filename);
             checkDecryptedDoc(dd, true);
@@ -206,7 +206,7 @@ public class BaltimoreEncTest extends org.junit.Assert {
     public void test_five_content_aes128_cbc_kw_aes192() throws Exception {
         if (haveISOPadding && haveKeyWraps) {
             String filename = 
-                "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-content-aes128-cbc-kw-aes192.xml";
+                "src/test/resources/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-content-aes128-cbc-kw-aes192.xml";
 
             Document dd = decryptElement(filename);
             checkDecryptedDoc(dd, true);
@@ -229,7 +229,7 @@ public class BaltimoreEncTest extends org.junit.Assert {
 
         if (haveISOPadding && haveKeyWraps) {
             String filename = 
-                "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-element-tripledes-cbc-kw-aes128.xml";
+                "src/test/resources/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-element-tripledes-cbc-kw-aes128.xml";
 
             Document dd = decryptElement(filename);
             checkDecryptedDoc(dd, true);
@@ -251,7 +251,7 @@ public class BaltimoreEncTest extends org.junit.Assert {
     public void test_five_content_aes128_cbc_rsa_15() throws Exception {
         if (haveISOPadding) {
             String filename = 
-                "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-element-aes128-cbc-rsa-1_5.xml";
+                "src/test/resources/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-element-aes128-cbc-rsa-1_5.xml";
 
             Document dd = decryptElement(filename);
             checkDecryptedDoc(dd, true);
@@ -273,7 +273,7 @@ public class BaltimoreEncTest extends org.junit.Assert {
     public void test_five_element_aes192_cbc_ref() throws Exception {
         if (haveISOPadding) {
             String filename = 
-                "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-element-aes192-cbc-ref.xml";
+                "src/test/resources/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-element-aes192-cbc-ref.xml";
 
             Document dd = decryptElement(filename);
             // Note - we don't check the node count, as it will be different
@@ -297,7 +297,7 @@ public class BaltimoreEncTest extends org.junit.Assert {
     public void test_five_data_aes128_cbc() throws Exception {
         if (haveISOPadding) {
             String filename = 
-                "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-data-aes128-cbc.xml";
+                "src/test/resources/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-data-aes128-cbc.xml";
 
             byte[] decrypt = decryptData(filename);
             checkDecryptedData(decrypt);
@@ -319,7 +319,7 @@ public class BaltimoreEncTest extends org.junit.Assert {
     public void test_five_data_aes256_cbc_3des() throws Exception {
         if (haveISOPadding && haveKeyWraps) {
             String filename = 
-                "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-data-aes256-cbc-kw-tripledes.xml";
+                "src/test/resources/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-data-aes256-cbc-kw-tripledes.xml";
 
             byte[] decrypt = decryptData(filename);
             checkDecryptedData(decrypt);
@@ -341,7 +341,7 @@ public class BaltimoreEncTest extends org.junit.Assert {
     public void test_five_data_aes192_cbc_aes256() throws Exception {
         if (haveISOPadding && haveKeyWraps) {
             String filename = 
-                "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-data-aes192-cbc-kw-aes256.xml";
+                "src/test/resources/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-data-aes192-cbc-kw-aes256.xml";
 
             byte[] decrypt = decryptData(filename);
             checkDecryptedData(decrypt);
@@ -369,7 +369,7 @@ public class BaltimoreEncTest extends org.junit.Assert {
 
         if (haveISOPadding) {
             String filename = 
-                "data/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-data-tripledes-cbc-rsa-oaep-mgf1p.xml";
+                "src/test/resources/ie/baltimore/merlin-examples/merlin-xmlenc-five/encrypt-data-tripledes-cbc-rsa-oaep-mgf1p.xml";
 
             byte[] decrypt = decryptData(filename);
             checkDecryptedData(decrypt);

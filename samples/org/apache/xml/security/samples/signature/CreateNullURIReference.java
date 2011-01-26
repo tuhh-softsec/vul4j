@@ -16,8 +16,6 @@
  */
 package org.apache.xml.security.samples.signature;
 
-
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -34,82 +32,79 @@ import org.apache.xml.security.utils.XMLUtils;
  * Class CreateNullURIReference
  *
  * @author $Author$
- * @version $Revision$
  */
 public class CreateNullURIReference {
 
-   /** {@link org.apache.commons.logging} logging facility */
+    /** {@link org.apache.commons.logging} logging facility */
     static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(
-                        CreateNullURIReference.class.getName());
+        org.apache.commons.logging.LogFactory.getLog(CreateNullURIReference.class.getName());
 
-   /**
-    * Method main
-    *
-    * @param unused
-    * @throws Exception
-    */
-   public static void main(String unused[]) throws Exception {
-      //J-
-      String keystoreType = "JKS";
-      String keystoreFile = "data/org/apache/xml/security/samples/input/keystore.jks";
-      String keystorePass = "xmlsecurity";
-      String privateKeyAlias = "test";
-      String privateKeyPass = "xmlsecurity";
-      String certificateAlias = "test";
-      File signatureFile = new File("signature.xml");
-      //J+
-      KeyStore ks = KeyStore.getInstance(keystoreType);
-      FileInputStream fis = new FileInputStream(keystoreFile);
+    static {
+        org.apache.xml.security.Init.init();
+    }
+    
+    /**
+     * Method main
+     *
+     * @param unused
+     * @throws Exception
+     */
+    public static void main(String unused[]) throws Exception {
+        String keystoreType = "JKS";
+        String keystoreFile = "samples/data/keystore.jks";
+        String keystorePass = "xmlsecurity";
+        String privateKeyAlias = "test";
+        String privateKeyPass = "xmlsecurity";
+        String certificateAlias = "test";
+        File signatureFile = new File("signature.xml");
+        KeyStore ks = KeyStore.getInstance(keystoreType);
+        FileInputStream fis = new FileInputStream(keystoreFile);
 
-      ks.load(fis, keystorePass.toCharArray());
+        ks.load(fis, keystorePass.toCharArray());
 
-      PrivateKey privateKey = (PrivateKey) ks.getKey(privateKeyAlias,
-                                 privateKeyPass.toCharArray());
-      javax.xml.parsers.DocumentBuilderFactory dbf =
-         javax.xml.parsers.DocumentBuilderFactory.newInstance();
+        PrivateKey privateKey = 
+            (PrivateKey) ks.getKey(privateKeyAlias, privateKeyPass.toCharArray());
+        javax.xml.parsers.DocumentBuilderFactory dbf =
+            javax.xml.parsers.DocumentBuilderFactory.newInstance();
 
-      dbf.setNamespaceAware(true);
+        dbf.setNamespaceAware(true);
 
-      javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
-      org.w3c.dom.Document doc = db.newDocument();
-      String BaseURI = signatureFile.toURL().toString();
+        javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
+        org.w3c.dom.Document doc = db.newDocument();
+        String BaseURI = signatureFile.toURL().toString();
 
-      Constants.setSignatureSpecNSprefix(null);
+        Constants.setSignatureSpecNSprefix(null);
 
-      XMLSignature sig = new XMLSignature(doc, BaseURI,
-                                          XMLSignature.ALGO_ID_SIGNATURE_DSA);
-      byte[][] memoryData = {
-         "The secret data".getBytes(), "dataset 2".getBytes(),
-      };
+        XMLSignature sig = 
+            new XMLSignature(doc, BaseURI, XMLSignature.ALGO_ID_SIGNATURE_DSA);
+        byte[][] memoryData = {
+            "The secret data".getBytes(), "dataset 2".getBytes(),
+        };
 
-      sig.addResourceResolver(new NullURIReferenceResolver(memoryData));
-      doc.appendChild(sig.getElement());
+        sig.addResourceResolver(new NullURIReferenceResolver(memoryData));
+        doc.appendChild(sig.getElement());
 
-      {
-         sig.addDocument(null, null, Constants.ALGO_ID_DIGEST_SHA1);
-         sig.addDocument(null, null, Constants.ALGO_ID_DIGEST_SHA1);
-      }
+        {
+            sig.addDocument(null, null, Constants.ALGO_ID_DIGEST_SHA1);
+            sig.addDocument(null, null, Constants.ALGO_ID_DIGEST_SHA1);
+        }
 
-      {
-         X509Certificate cert =
-            (X509Certificate) ks.getCertificate(certificateAlias);
+        {
+            X509Certificate cert =
+                (X509Certificate) ks.getCertificate(certificateAlias);
 
-         sig.addKeyInfo(cert);
-         sig.addKeyInfo(cert.getPublicKey());
-         System.out.println("Start signing");
-         sig.sign(privateKey);
-         System.out.println("Finished signing");
-      }
+            sig.addKeyInfo(cert);
+            sig.addKeyInfo(cert.getPublicKey());
+            System.out.println("Start signing");
+            sig.sign(privateKey);
+            System.out.println("Finished signing");
+        }
 
-      FileOutputStream f = new FileOutputStream(signatureFile);
+        FileOutputStream f = new FileOutputStream(signatureFile);
 
-      XMLUtils.outputDOMc14nWithComments(doc, f);
-      f.close();
-      System.out.println("Wrote signature to " + BaseURI);
-   }
+        XMLUtils.outputDOMc14nWithComments(doc, f);
+        f.close();
+        System.out.println("Wrote signature to " + BaseURI);
+    }
 
-   static {
-      org.apache.xml.security.Init.init();
-   }
 }

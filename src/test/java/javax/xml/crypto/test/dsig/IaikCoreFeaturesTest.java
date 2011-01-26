@@ -46,7 +46,7 @@ public class IaikCoreFeaturesTest extends org.junit.Assert {
     public IaikCoreFeaturesTest() {
         String fs = System.getProperty("file.separator");
         base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
-        base = base + fs + "data" + fs +
+        base = base + fs + "src/test/resources" + fs +
             "at" + fs + "iaik" + fs + "ixsil";
         validator = new SignatureValidator(new File
             (base, "coreFeatures/signatures"));
@@ -110,7 +110,7 @@ public class IaikCoreFeaturesTest extends org.junit.Assert {
             String fs = System.getProperty("file.separator");
             String base = System.getProperty("basedir") == null ? "./" : 
                 System.getProperty("basedir");
-            w3cRec = base + fs + "data" + fs + "org" + fs + "w3c" + fs + "www" + 
+            w3cRec = base + fs + "src/test/resources" + fs + "org" + fs + "w3c" + fs + "www" + 
                 fs + "TR" + fs + "2000";
             defaultDereferencer =
                 XMLSignatureFactory.getInstance().getURIDereferencer();

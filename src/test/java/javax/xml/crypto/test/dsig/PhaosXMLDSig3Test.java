@@ -46,7 +46,7 @@ public class PhaosXMLDSig3Test extends org.junit.Assert {
     public PhaosXMLDSig3Test() {
         String fs = System.getProperty("file.separator");
         String basedir = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
-        base = new File(basedir + fs + "data" + fs +
+        base = new File(basedir + fs + "src/test/resources" + fs +
                         "com" + fs + "phaos", "phaos-xmldsig-three");
         validator = new SignatureValidator(base);
     }

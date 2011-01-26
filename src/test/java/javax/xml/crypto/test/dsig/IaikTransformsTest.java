@@ -42,7 +42,7 @@ public class IaikTransformsTest extends org.junit.Assert {
     public IaikTransformsTest() {
         String fs = System.getProperty("file.separator");
         String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
-        base +=  fs + "data" + fs +
+        base +=  fs + "src/test/resources" + fs +
             "at" + fs + "iaik" + fs + "ixsil";
         validator = new SignatureValidator(new File
             (base, "transforms/signatures"));

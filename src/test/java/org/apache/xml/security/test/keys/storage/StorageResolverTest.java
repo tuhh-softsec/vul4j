@@ -37,7 +37,7 @@ public class StorageResolverTest extends org.junit.Assert {
     @SuppressWarnings("deprecation")
     public void testStorageResolver() throws Exception {
 
-        String inputDir = BASEDIR + SEP + "data" + SEP
+        String inputDir = BASEDIR + SEP + "src/test/resources" + SEP
             + "org" + SEP + "apache" + SEP + "xml" + SEP + "security" + SEP
             + "samples" + SEP + "input";
 

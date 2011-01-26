@@ -36,11 +36,11 @@ public class BaltimoreTest extends InteropTestBase {
 
     /** Field merlinsDir15           */
     static String merlinsDir15 =
-        "data/ie/baltimore/merlin-examples/merlin-xmldsig-fifteen/";
+        "src/test/resources/ie/baltimore/merlin-examples/merlin-xmldsig-fifteen/";
     static String merlinsDir16 =
-        "data/ie/baltimore/merlin-examples/merlin-xmldsig-sixteen";
+        "src/test/resources/ie/baltimore/merlin-examples/merlin-xmldsig-sixteen";
     static String merlinsDir23 =
-        "data/ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/";
+        "src/test/resources/ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/";
 
     static {
         String basedir = System.getProperty("basedir");

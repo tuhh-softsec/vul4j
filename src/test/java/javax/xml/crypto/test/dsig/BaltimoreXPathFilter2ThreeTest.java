@@ -42,7 +42,7 @@ public class BaltimoreXPathFilter2ThreeTest extends org.junit.Assert {
     public BaltimoreXPathFilter2ThreeTest() {
         String fs = System.getProperty("file.separator");
         String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
-        base += fs + "data"
+        base += fs + "src/test/resources"
             + fs + "interop" + fs + "xfilter2";
         validator = new SignatureValidator(new File
             (base, "merlin-xpath-filter2-three"));

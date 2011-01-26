@@ -36,7 +36,7 @@ public class KeyStoreResolverTest extends org.junit.Assert {
     @org.junit.Test
     public void testKeyStoreResolver() throws Exception {
         FileInputStream f = 
-            new FileInputStream(BASEDIR + SEP + "data" + SEP + "org" + SEP + "apache" 
+            new FileInputStream(BASEDIR + SEP + "src/test/resources" + SEP + "org" + SEP + "apache" 
                                 + SEP + "xml" + SEP + "security" + SEP + "samples" 
                                 + SEP + "input" + SEP + "keystore2.jks");
 

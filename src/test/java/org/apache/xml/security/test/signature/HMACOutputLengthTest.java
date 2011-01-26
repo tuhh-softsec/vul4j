@@ -101,7 +101,7 @@ public class HMACOutputLengthTest extends org.junit.Assert {
 
     private boolean validate(String data) throws Exception {
         File file = 
-            new File(BASEDIR + SEP + "data" + SEP + "javax" + SEP + "xml" 
+            new File(BASEDIR + SEP + "src/test/resources" + SEP + "javax" + SEP + "xml" 
                      + SEP + "crypto" + SEP + "dsig" + SEP, data);
 
         Document doc = dbf.newDocumentBuilder().parse(file);

@@ -44,7 +44,7 @@ public class NoKeyInfoTest extends org.junit.Assert {
     public void testNullKeyInfo() throws Exception {
         File f = null;
         String filename = 
-            "data/ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/signature-enveloping-hmac-sha1.xml";
+            "src/test/resources/ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/signature-enveloping-hmac-sha1.xml";
         if (BASEDIR != null && !"".equals(BASEDIR)) {
             f = new File(BASEDIR + SEP + filename);
         } else {

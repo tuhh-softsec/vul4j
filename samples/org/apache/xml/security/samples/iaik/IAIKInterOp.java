@@ -48,7 +48,7 @@ public class IAIKInterOp {
     static final boolean schemaValidate = false;
 
     /** Field signatureSchemaFile */
-    static final String signatureSchemaFile = "data/xmldsig-core-schema.xsd";
+    static final String signatureSchemaFile = "samples/data/xmldsig-core-schema.xsd";
     
     static {
         org.apache.xml.security.Init.init();
@@ -82,7 +82,7 @@ public class IAIKInterOp {
         dbf.setNamespaceAware(true);
         dbf.setAttribute("http://xml.org/sax/features/namespaces", Boolean.TRUE);
 
-        String gregorsDir = "data/at/iaik/ixsil/";
+        String gregorsDir = "samples/data/at/iaik/ixsil/";
         String filenames[] = {
                               gregorsDir + "signatureAlgorithms/signatures/hMACSignature.xml"
                               ,gregorsDir + "signatureAlgorithms/signatures/hMACShortSignature.xml"

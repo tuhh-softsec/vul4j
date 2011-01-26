@@ -51,9 +51,9 @@ public class RetrievePublicKeys {
         dbf.setNamespaceAware(true);
 
         String merlinsDir =
-            "data/ie/baltimore/merlin-examples/merlin-xmldsig-eighteen/";
+            "samples/data/ie/baltimore/merlin-examples/merlin-xmldsig-eighteen/";
         String ourDir =
-            "data/org/apache/xml/security/temp/key/";
+            "samples/data/org/apache/xml/security/temp/key/";
         String filenames[] = { merlinsDir +
                                /* 0 */ "signature-keyname.xml",
                                merlinsDir +

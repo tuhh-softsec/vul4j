@@ -1,0 +1,129 @@
+------------------------------ NodeSetData -------------------------------
+Node 1 : [ietf:c14n11XmlPointerDoc1: null]
+Node 2 : xmlns:ietf="http://www.ietf.org"
+Node 3 : xmlns:w3c="http://www.w3.org"
+Node 4 : [#text: 
+		]
+Node 5 : [#text: 
+	]
+Node 6 : [ietf:e1: null]
+Node 7 : xml:id="e1ID"
+Node 8 : xmlns:ietf="http://www.ietf.org"
+Node 9 : xmlns:w3c="http://www.w3.org"
+Node 10 : [#text: 
+		]
+Node 11 : [#text: 
+		]
+Node 12 : [ietf:e11: null]
+Node 13 : xmlns:ietf="http://www.ietf.org"
+Node 14 : xmlns:w3c="http://www.w3.org"
+Node 15 : [#text: 
+		]
+Node 16 : [#text: 
+			]
+Node 17 : [ietf:e111: null]
+Node 18 : xmlns:ietf="http://www.ietf.org"
+Node 19 : xmlns:w3c="http://www.w3.org"
+Node 20 : [#text: 
+		]
+Node 21 : [#text: 
+		]
+Node 22 : [ietf:e12: null]
+Node 23 : at="2"
+Node 24 : xmlns:ietf="http://www.ietf.org"
+Node 25 : xmlns:w3c="http://www.w3.org"
+Node 26 : [#text: 
+		]
+Node 27 : [#text: 
+			]
+Node 28 : [ietf:e121: null]
+Node 29 : xmlns:ietf="http://www.ietf.org"
+Node 30 : xmlns:w3c="http://www.w3.org"
+Node 31 : [#text: 
+		]
+Node 32 : [#text: 
+	]
+Node 33 : [#text: 
+	]
+Node 34 : [ietf:e2: null]
+Node 35 : xml:id="e2ID"
+Node 36 : xmlns:ietf="http://www.ietf.org"
+Node 37 : xmlns:w3c="http://www.w3.org"
+Node 38 : [#text: 
+		]
+Node 39 : [#text: 
+		]
+Node 40 : [ietf:e21: null]
+Node 41 : xmlns:ietf="http://www.ietf.org"
+Node 42 : xmlns:w3c="http://www.w3.org"
+Node 43 : [#text: 
+	]
+Node 44 : [#text: 
+	]
+Node 45 : [ietf:e3: null]
+Node 46 : xml:id="e3ID"
+Node 47 : xmlns:ietf="http://www.ietf.org"
+Node 48 : xmlns:w3c="http://www.w3.org"
+Node 49 : [#text: 
+		]
+Node 50 : [ietf:e31: null]
+Node 51 : at="3"
+Node 52 : xmlns:ietf="http://www.ietf.org"
+Node 53 : xmlns:w3c="http://www.w3.org"
+Node 54 : [#text: 
+	]
+Node 55 : [#text: 
+]
+Node 56 : [Signature: null]
+Node 57 : xmlns="http://www.w3.org/2000/09/xmldsig#"
+Node 58 : xmlns:ietf="http://www.ietf.org"
+Node 59 : xmlns:w3c="http://www.w3.org"
+Node 60 : [SignedInfo: null]
+Node 61 : xmlns="http://www.w3.org/2000/09/xmldsig#"
+Node 62 : xmlns:ietf="http://www.ietf.org"
+Node 63 : xmlns:w3c="http://www.w3.org"
+Node 64 : [CanonicalizationMethod: null]
+Node 65 : Algorithm="http://www.w3.org/2006/12/xml-c14n11"
+Node 66 : xmlns="http://www.w3.org/2000/09/xmldsig#"
+Node 67 : xmlns:ietf="http://www.ietf.org"
+Node 68 : xmlns:w3c="http://www.w3.org"
+Node 69 : [SignatureMethod: null]
+Node 70 : Algorithm="http://www.w3.org/2000/09/xmldsig#hmac-sha1"
+Node 71 : xmlns="http://www.w3.org/2000/09/xmldsig#"
+Node 72 : xmlns:ietf="http://www.ietf.org"
+Node 73 : xmlns:w3c="http://www.w3.org"
+Node 74 : [Reference: null]
+Node 75 : URI=""
+Node 76 : xmlns="http://www.w3.org/2000/09/xmldsig#"
+Node 77 : xmlns:ietf="http://www.ietf.org"
+Node 78 : xmlns:w3c="http://www.w3.org"
+Node 79 : [Transforms: null]
+Node 80 : xmlns="http://www.w3.org/2000/09/xmldsig#"
+Node 81 : xmlns:ietf="http://www.ietf.org"
+Node 82 : xmlns:w3c="http://www.w3.org"
+Node 83 : [Transform: null]
+Node 84 : Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"
+Node 85 : xmlns="http://www.w3.org/2000/09/xmldsig#"
+Node 86 : xmlns:ietf="http://www.ietf.org"
+Node 87 : xmlns:w3c="http://www.w3.org"
+Node 88 : [Transform: null]
+Node 89 : Algorithm="http://www.w3.org/2006/12/xml-c14n11#WithComments"
+Node 90 : xmlns="http://www.w3.org/2000/09/xmldsig#"
+Node 91 : xmlns:ietf="http://www.ietf.org"
+Node 92 : xmlns:w3c="http://www.w3.org"
+Node 93 : [DigestMethod: null]
+Node 94 : Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"
+Node 95 : xmlns="http://www.w3.org/2000/09/xmldsig#"
+Node 96 : xmlns:ietf="http://www.ietf.org"
+Node 97 : xmlns:w3c="http://www.w3.org"
+Node 98 : [DigestValue: null]
+Node 99 : xmlns="http://www.w3.org/2000/09/xmldsig#"
+Node 100 : xmlns:ietf="http://www.ietf.org"
+Node 101 : xmlns:w3c="http://www.w3.org"
+Node 102 : [#text: ]
+Node 103 : [SignatureValue: null]
+Node 104 : xmlns="http://www.w3.org/2000/09/xmldsig#"
+Node 105 : xmlns:ietf="http://www.ietf.org"
+Node 106 : xmlns:w3c="http://www.w3.org"
+Node 107 : [#text: ]
+--------------------------------------------------------------------------

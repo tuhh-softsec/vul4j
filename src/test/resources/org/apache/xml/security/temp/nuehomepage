@@ -1,0 +1,29 @@
+<HTML>
+<HEAD>
+	<!-- Style sheet added (21.09.99)-->
+	<link rel="stylesheet" type="text/css" href="NUE_Style.css">
+<!-- Last modification: 10.11.98 by Niko Schweitzer -->
+	<META Name="description" Content="Institut fuer Nachrichtenuebermittlung, UNI-Siegen">
+   <META Name="keywords" Content="UNI,Siegen,Institut,Nachrichtenübermittlung,Institute,Data,Communications,Security,Sicherheit,Kryptographie,Cryptography,Digitale,Mobilfunksysteme,Digital,Communication,Information,ATM,GSM,PDH,SDH,PKI,Access,Rights,Profile,Certificate,Management">
+   <META NAME="Content-Language" CONTENT="de"> 
+
+<!------------------------------------------------------------------>
+<title>Home-Page des Instituts fuer Nachrichtenuebermittlung</title>
+<!------------------------------------------------------------------>
+
+
+<FRAMESET COLS="170,*" BORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 FRAMEBORDER=0 FRAMESPACING=0>
+	<FRAME NAME="contents_frame" SRC="contents.html" SCROLLING="Auto" BORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 FRAMEBORDER=0 FRAMESPACING=0>
+	<FRAMESET ><!--ROWS="80,*"> -->
+		<!-- <frame name="header_frame" src="header.html" scrolling="No" FRAMEBORDER="No"> -->
+		<frame name="main_frame" src="start.html" scrolling="Auto" FRAMEBORDER="No">
+	</FRAMESET>
+</FRAMESET>
+
+
+</HEAD>
+
+<BODY> 
+
+</BODY>
+</HTML>

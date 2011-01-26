@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head><title>Implementation report XML Signature, 2nd Edition</title>
+<link rel="stylesheet" href="http://www.w3.org/StyleSheets/base.css" />
+<link rel="stylesheet" href="http://www.w3.org/StyleSheets/member.css" />
+<link rel="stylesheet" href="../report.css" />
+</head>
+<body>
+<a href="http://www.w3.org/"><img alt="W3C Logo" src="http://www.w3.org/Icons/w3c_home"/></a>
+<h1>Implementation report for XML Signature, Second Edition</h1>
+<dl>
+  <dt>Author</dt>
+    <dd>Frederick Hirsch</dd>
+    <dd>Thomas Roessler</dd>
+  <dt>Last Modified</dt>
+    <dd>$Date: 2008/02/15 15:16:22 $ by $Author: fhirsch3 $</dd>
+</dl>
+<h2>Overview</h2>
+<div>
+
+  <p>
+    This implementation report is intended to support the transition of the draft <a
+    href="http://www.w3.org/2007/xmlsec/Drafts/xmldsig-core/">XML Signature, 2nd Edition</a>
+    specification to <a
+    href="http://www.w3.org/2005/10/Process-20051014/tr.html#ProposedEditedRec">Proposed Edited
+    Recommendation</a>.
+  </p>
+
+  <p>
+    The specification was produced by the <a href="/2007/xmlsec/">XML Security Specifications
+    Maintenance Working Group</a>.  A <a
+    href="http://www.w3.org/2007/xmlsec/Drafts/xmldsig-core/explain.html">Summary of Changes and
+    Change Rationale</a> is available.
+  </p>
+
+  <p>
+    Testing was organized and performed by the members of the XML Security Specifications
+    Maintenance Working Group. Five implementations participated in the testing. All five
+    implementations successfully completed the test cases listed in this report; some completed
+    additional optional cases. 
+  </p>
+
+  <p>
+    Test cases are detailed in the <a
+    href="http://www.w3.org/2007/xmlsec/interop/xmlsig-interop-doc/testcases.html">Test Cases for
+    C14N 1.1 and XMLDSig Interoperability</a> document.
+  </p>
+
+  <h2>Test Cases</h2>
+
+  <p>The test cases tested by all implementations covered the following:</p>
+  <ul>
+    <li id="li-ref">
+      <p> <code>ds:Reference</code> <code>URI</code> attribute processing for schema based XPointers
+      and short-name XPointers. These tests demonstrate support for the XPointer idioms that have
+      been mandatory to implement since XML-Signature 1.0, but were defined only by way of a
+      normative reference to a Candidate Recommendation that had been subsequently withdrawn. @@ add
+      reference @@
+      </p>
+
+      <p>See also: <a
+      href="http://www.w3.org/2007/xmlsec/interop/xmlsig-interop-doc/testcases.html#TestCases-SchemaBasedXPointers">detailed
+      description of schema based XPointers and short-name XPointers test cases</a>.
+      </p>
+    </li>
+    <li id="li-dn">
+      <p>
+	Representation of Distinguished Names as Strings as specified by RFC 4514.  These test cases
+	provide evidence that the edge cases related to a change of normative references from RFC
+	2253 to RFC 4514 do not cause issues in implementations.  Since the IBM implementation is
+	known to use an identical code basis for Distinguished Name processing as another
+	implementation, no test results were inclued for this implementation.
+      </p>
+      <p>
+	See also: <a
+	href="http://www.w3.org/2007/xmlsec/interop/xmlsig-interop-doc/testcases.html#TestCases-DistinguishedName-RFC4514">detailed
+	description of RFC-4514 test cases</a>.
+      </p>
+    </li>
+  </ul>
+  <p>
+    Additional optional test cases were created and partially tested, but are not detailed in this
+    report.  These included:
+  </p>
+  <ul> 
+    <li>
+      <p>Test cases to test nodeset to octet-stream conversion by C14n 1.1 explicitly reflected in
+      the chain of transforms (<a
+      href="http://www.w3.org/2007/xmlsec/interop/xmlsig-interop-doc/testcases.html#TestCases-DefaultCan">detailed
+      description of defCan test cases</a>)</p>
+      <p>
+	The defCan-* test cases were intended to demonstrate that implementations are able to
+	generate signatures using Canonical XML 1.1 as a default. However, all test cases rely on
+	the availability of a templating mechanism, and two of them rely on the (optional) XSLT
+	transform.  We therefore do not include detailed results for this test case.
+      </p>
+    </li>
+  </ul>
+
+  <p>
+    The <a href="http://www.w3.org/2007/xmlsec/interop/xmldsig/c14n11/report.html">implementation
+    report for Canonical XML 1.1</a> demonstrates support in all five implementations for both
+    generating and verifying signatures involving Canonical XML 1.1.  All tests covered in that
+    report were performed in the context of generating and verifying digital signatures according to
+    the XML Signature specification.
+  </p>
+
+
+<h2>Participating Implementations</h2>
+<dl>
+  <dt><strong>IBM XML Digital Signature Package</strong> (IBM)</dt>
+    <dd><p>The XML Digital Signature package is bundled into IBM JREs that
+      ship with IBM products or are downloaded for IBM systems. The XML
+      Digital Signature package bundled into all IBM JREs at the Java 6.0
+      level or higher, and by special arrangement at earlier levels. It is a
+      separate security provider, so would either need to be in the provider
+      list in jre/lib/security/java.security or added programmatically at
+      runtime. The C14N11 capability is currently (11 January, 2008) a
+      technology preview that is not yet generally available.</p>
+    </dd>
+  <dt><strong>Sun Java XML Digital Signature API and Implementation</strong> (Sun)</dt>
+    <dd><p>Sun's XML Digital Signature implementation is an implementation of
+      the standard JSR 105 API (Java XML Digital Signature API) and is
+      included in Sun's JDK 6 and Application Server products. The C14N 1.1
+      implementation is not yet generally available but is targeted for
+      future releases. </p>
+    </dd>
+    <dt><strong>Oracle XML Digital Signature package</strong> (Oracle)</dt>
+    <dd>
+      <p>The XML Digital Signature package is part of Oracle Security Developer Tools which is part of
+      Oracle's Fusion Middleware platform. The upcoming AS11R1 release of Fusion Middleware includes
+      full support for C14N version 1.1 in addition to XML Signature, XML Encryption, XML Key
+      Management, SAML and Web Services Security technologies. The XML Digital Signature
+      functionality can be accessed using the industry standard JSR 105 APIs (by using the Oracle
+      provider) or through the current OSDT XML Security APIs.</p>
+    </dd>
+    <dt><strong>upcxslib xml signature package</strong> (Universitat Politecnica de Catalunya)</dt>
+    <dd><p>
+      The upcxslib xml signature package runs on Java 1.4.2 or higher. It uses Sun's security
+      provider within the JRE for basic cryptographic tasks. CN14N 1.1 is not generally available at
+      present, but its incorporation is targeted for a near future.</p>
+    </dd>
+    <dt><strong>IAIK XML Security Toolkit (XSECT)</strong> (Graz University of Technology)</dt>
+    <dd><p>
+      The IAIK <a href="http://jce.iaik.tugraz.at/sic/products/xml_security/xsect">XML Security Toolkit (XSECT)</a> is the successor of the IAIK XML Signature Library
+      (IXSIL). XSECT 1.12 or higher is scheduled to ship in Q2/2008 and will contain the C14N 1.1
+      implementation. C14N 1.1 will be enabled in the default mode for signature creation and may be
+      turned off by a configuration flag allowing for maximum flexibility. XSECT 1.12 will support
+      all Java^(TM) versions since JDK 1.3.1 or higher.
+      </p>
+    </dd>
+</dl>
+
+</div>
+<h2>Test results</h2>
+<table><thead><tr><th/>
+<th>SUN</th>
+<th>IAIK</th>
+<th>IBM</th>
+<th>ORCL</th>
+<th>UPC</th>
+</tr></thead><tbody>
+<tr>
+<td class="tc"><a href="../xmlsig-interop-doc/testcases.html#xpointer-xpointer-1"> xpointer-1 </a></td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+</tr>
+<tr>
+<td class="tc"><a href="../xmlsig-interop-doc/testcases.html#xpointer-xpointer-2"> xpointer-2 </a></td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+</tr>
+<tr>
+<td class="tc"><a href="../xmlsig-interop-doc/testcases.html#xpointer-xpointer-3"> xpointer-3 </a></td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+</tr>
+<tr>
+<td class="tc"><a href="../xmlsig-interop-doc/testcases.html#xpointer-xpointer-4"> xpointer-4 </a></td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+</tr>
+<tr>
+<td class="tc"><a href="../xmlsig-interop-doc/testcases.html#xpointer-xpointer-5"> xpointer-5 </a></td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+</tr>
+<tr>
+<td class="tc"><a href="../xmlsig-interop-doc/testcases.html#xpointer-xpointer-6"> xpointer-6 </a></td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+</tr>
+<tr>
+<td class="tc"><a href="../xmlsig-interop-doc/testcases.html#dname-dnString-4"> dnString-4 </a></td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+<td class="na"><a href="#li-dn">N/A</a></td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+</tr>
+<tr>
+<td class="tc"><a href="../xmlsig-interop-doc/testcases.html#dname-dnString-6"> dnString-6 </a></td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+<td class="na"><a href="#li-dn">N/A</a></td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+</tr>
+<tr>
+<td class="tc"><a href="../xmlsig-interop-doc/testcases.html#dname-dnString-8"> dnString-8 </a></td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+<td class="na"><a href="#li-dn">N/A</a></td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+<td class="pass">
+<a href="$thefile">PASS</a>
+</td>
+</tr>
+</tbody></table>
+<h2>Differences</h2>
+<p>None observed.</p>
+</body></html>

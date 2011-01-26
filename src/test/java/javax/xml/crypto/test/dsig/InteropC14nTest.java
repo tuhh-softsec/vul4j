@@ -43,7 +43,7 @@ public class InteropC14nTest extends org.junit.Assert {
     public InteropC14nTest() {
         String fs = System.getProperty("file.separator");
         base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");	
-        base = base + fs + "data" + fs + "interop";
+        base = base + fs + "src/test/resources" + fs + "interop";
     }
     
     @org.junit.Test

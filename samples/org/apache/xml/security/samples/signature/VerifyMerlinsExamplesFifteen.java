@@ -50,7 +50,7 @@ public class VerifyMerlinsExamplesFifteen {
    static final boolean schemaValidate = false;
 
    /** Field signatureSchemaFile */
-   static final String signatureSchemaFile = "data/xmldsig-core-schema.xsd";
+   static final String signatureSchemaFile = "samples/data/xmldsig-core-schema.xsd";
 
    /**
     * Method main
@@ -88,7 +88,7 @@ public class VerifyMerlinsExamplesFifteen {
 
       //J-
       String merlinsDir =
-         "data/ie/baltimore/merlin-examples/merlin-xmldsig-fifteen/";
+         "samples/data/ie/baltimore/merlin-examples/merlin-xmldsig-fifteen/";
       String filenames[] = { merlinsDir + "signature-enveloping-hmac-sha1.xml",
                              merlinsDir + "signature-enveloping-hmac-sha1-40.xml",
                              merlinsDir + "signature-enveloped-dsa.xml",

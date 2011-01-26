@@ -92,7 +92,7 @@ public class X509DataTest extends org.junit.Assert {
             return ks;
         }
         String keystoreType = "JKS";
-        String keystoreFile = "data/org/apache/xml/security/samples/input/keystore.jks";
+        String keystoreFile = "src/test/resources/org/apache/xml/security/samples/input/keystore.jks";
         String keystorePass = "xmlsecurity";        
         ks = KeyStore.getInstance(keystoreType);
         FileInputStream fis = null;

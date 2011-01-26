@@ -1,0 +1,11 @@
+<ietf:e1 xmlns="http://www.w3.org/2000/09/xmldsig#" xmlns:ietf="http://www.ietf.org" xmlns:w3c="http://www.w3.org" xml:id="e1ID">
+		<!-- This is a comment for ietf:e1 element -->
+		<ietf:e11>
+		<!-- This is a comment for ietf:e11 element -->
+			<ietf:e111></ietf:e111>
+		</ietf:e11>
+		<ietf:e12 at="2">
+		<!-- This is a comment for ietf:e12 element -->
+			<ietf:e121></ietf:e121>
+		</ietf:e12>
+	</ietf:e1>

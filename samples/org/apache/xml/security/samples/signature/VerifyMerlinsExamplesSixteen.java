@@ -53,7 +53,7 @@ public class VerifyMerlinsExamplesSixteen {
    static final boolean schemaValidate = false;
 
    /** Field signatureSchemaFile */
-   static final String signatureSchemaFile = "data/xmldsig-core-schema.xsd";
+   static final String signatureSchemaFile = "samples/data/xmldsig-core-schema.xsd";
 
    /**
     * Method main
@@ -90,9 +90,8 @@ public class VerifyMerlinsExamplesSixteen {
       dbf.setAttribute("http://xml.org/sax/features/namespaces", Boolean.TRUE);
 
       //J-
-      String filenames[] = { // "16signature.xml"
-                             // "merlinsSixteenRecreated.xml"
-                             "data/ie/baltimore/merlin-examples/merlin-xmldsig-sixteen/signature.xml"
+      String filenames[] = {
+                             "samples/data/ie/baltimore/merlin-examples/merlin-xmldsig-sixteen/signature.xml"
                              };
       //J+
       int start = 0;

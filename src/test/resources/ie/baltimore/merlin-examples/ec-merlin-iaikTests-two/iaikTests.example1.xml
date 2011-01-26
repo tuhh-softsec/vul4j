@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- XPath="self::Parent or (parent::Parent and not(self::Child)) or self::GrandChild or parent::GrandChild" -->
+
+<!-- Result C14N:
+<Parent xml:foo="bar" xml:fool="barbar" xml:lang="en" xml:space="default">
+    <GrandChild xml:foo="barbarossa" xml:fool="barbar" xml:lang="ge" xml:space="preserve"></GrandChild>
+  </Parent>
+-->
+
+<!-- Annotation C14N:
+1. Parent inherts xml:lang and xml:space since it is an orphan node.
+2. Parent has explicitly declared attributes xml:foo and xml:fool.
+3. GrandChild inherts xml:foo from its Child ancestor.
+4. GrandChild inherits xml:fool from its Parent ancestor.
+5. GrandChild inherits xml:lang from its Child ancestor.
+6. GrandChild has explicitly declared attribute xml:space.
+-->
+
+<!-- Result EC14N:
+<Parent xml:foo="bar" xml:fool="barbar">
+    <GrandChild xml:space="preserve"></GrandChild>
+  </Parent>
+-->
+
+<!-- Annotation EC14N:
+1. Only those attributes in the xml namespace are rendered, which are
+   explicitely declared in the attribute axis of an element.
+-->
+
+<GrandParent xml:lang="en" xml:space="default">
+  <Parent xml:foo="bar" xml:fool="barbar">
+    <Child xml:foo="barbarossa" xml:lang="ge">
+      <GrandChild xml:space="preserve"/>
+    </Child>
+  </Parent>
+</GrandParent>
+

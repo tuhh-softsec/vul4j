@@ -76,7 +76,8 @@ public class Bug45961Test extends org.junit.Assert {
 
     private Document getSignedDocument() throws Exception {
         KeyStore ks = KeyStore.getInstance("JKS");
-        FileInputStream fis = new FileInputStream(getAbsolutePath("data/test.jks"));
+        FileInputStream fis = 
+            new FileInputStream(getAbsolutePath("src/test/resources/test.jks"));
         ks.load(fis, PASSWORD);
         fis.close();
         PrivateKey privateKey = (PrivateKey) ks.getKey(ALIAS, PASSWORD);

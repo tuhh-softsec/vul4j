@@ -1,0 +1,69 @@
+<Document>
+  <ToBeSigned>
+    <!-- comment -->
+    <Data></Data>
+    <NotToBeSigned>
+      <ReallyToBeSigned>
+        <!-- comment -->
+        <Data></Data>
+      </ReallyToBeSigned>
+    </NotToBeSigned>
+  </ToBeSigned>
+  <ToBeSigned>
+    <Data></Data>
+    <NotToBeSigned>
+      <Data></Data>
+    </NotToBeSigned>
+  </ToBeSigned>
+  <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+    <SignedInfo>
+      <CanonicalizationMethod Algorithm="" />
+      <SignatureMethod Algorithm="" />
+      <Reference URI="">
+        <Transforms>
+          <Transform Algorithm="http://www.w3.org/2002/04/xmldsig-filter2">
+            <XPath xmlns="http://www.w3.org/2002/04/xmldsig-filter2" Filter="intersect">
+              //ToBeSigned
+            </XPath>
+          </Transform>
+          <Transform Algorithm="http://www.w3.org/2002/04/xmldsig-filter2">
+            <XPath xmlns="http://www.w3.org/2002/04/xmldsig-filter2" Filter="subtract">
+              //NotToBeSigned
+            </XPath>
+          </Transform>
+          <Transform Algorithm="http://www.w3.org/2002/04/xmldsig-filter2">
+            <XPath xmlns="http://www.w3.org/2002/04/xmldsig-filter2" Filter="union">
+              //ReallyToBeSigned
+            </XPath>
+          </Transform>
+        </Transforms>
+        <DigestMethod Algorithm="" />
+        <DigestValue />
+      </Reference>
+      <Reference URI="#xpointer(/)">
+        <Transforms>
+          <Transform Algorithm="http://www.w3.org/2002/04/xmldsig-filter2">
+            <XPath xmlns="http://www.w3.org/2002/04/xmldsig-filter2" Filter="intersect">
+              //ToBeSigned
+            </XPath>
+          </Transform>
+          <Transform Algorithm="http://www.w3.org/2002/04/xmldsig-filter2">
+            <XPath xmlns="http://www.w3.org/2002/04/xmldsig-filter2" Filter="subtract">
+              //NotToBeSigned
+            </XPath>
+          </Transform>
+          <Transform Algorithm="http://www.w3.org/2002/04/xmldsig-filter2">
+            <XPath xmlns="http://www.w3.org/2002/04/xmldsig-filter2" Filter="union">
+              //ReallyToBeSigned
+            </XPath>
+          </Transform>
+          <Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments" />
+        </Transforms>
+        <DigestMethod Algorithm="" />
+        <DigestValue />
+      </Reference>
+    </SignedInfo>
+    <SignatureValue />
+    <!-- key info -->
+  </Signature>
+</Document>

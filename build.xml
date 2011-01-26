@@ -25,8 +25,6 @@
     <property name="dir.src.test"       value="${basedir}/src/test/java" />
     <property name="dir.src.samples"    value="${basedir}/samples" />
     <property name="dir.libs"           value="${basedir}/libs" />
-    <property name="dir.data"           value="${basedir}/data" />
-    <property name="dir.docs"           value="${basedir}/doc/site" />
     <property name="dir.build"          value="${basedir}/build" />
     <property name="dir.build.bin"      value="${dir.build}/classes" />
     <property name="dir.build.libs"     value="${dir.build}/libs" />
@@ -71,19 +69,13 @@
 
     <!-- build variable properties -->
 
-
     <!-- T A S K D E F S -->
     <taskdef resource="clovertasks"/>
 	
-	
-
     <!-- C O N D I T I O N A L    P R O P E R T I E S -->
     <target name="do.build.src" >
         <!-- global properties applies here -->
     </target >
-
-
-
 
     <!-- P A T H S -->
     <path id="id.classpath.xalan" >
@@ -137,7 +129,6 @@
         <pathelement location="${lib.xmlsec.tests}" />
     </path>
 
-
     <!-- P A T T E R N S E T S -->
     <patternset id="id.patternset.distFiles">
 	<include name="build.xml"/>
@@ -147,12 +138,6 @@
 	<include name="NOTICE"/>
 	<include name="Readme.html"/>
 	<include name="TODO"/>
-    </patternset>
-
-    <patternset id="id.patternset.dataFiles">
-	<include name="data/**"/>
-	<exclude name="data/de/uni-siegen/**"/>
-	<exclude name="data/com/ibm/xss4j-20030127/**/*"/>
     </patternset>
 
     <patternset id="id.patternset.srcFiles">
@@ -301,8 +286,11 @@
         includeAntRuntime="false">
 		<classpath refid="id.classpath.samples"/>
 	</javac>
+        <copy todir="${dir.build.samples}/data">
+      		<fileset dir="${dir.src.samples}/data" includes="**/*.xml"/>
+      		<fileset dir="${dir.src.samples}/data" includes="**/*.zip"/>
+    	</copy>
     </target>
-
 
 
 	<!-- T E S T  T A R G E T S -->  
@@ -324,12 +312,12 @@
 	
 	         and put the files into the
 	
-	         data/com/ibm/xss4j-20030127/
+	         src/test/resources/com/ibm/xss4j-20030127/
 	
 	         directory. If the file enveloped-rsa.sig is found in that directory,
 	         IBM is 'magically' included in the test ;-))
 	    -->
-	    <available file="data/com/ibm/xss4j-20030127/enveloped-rsa.sig" property="ibm.available"/>
+	    <available file="src/test/resources/com/ibm/xss4j-20030127/enveloped-rsa.sig" property="ibm.available"/>
         <copy file="${lib.xalan.1}" todir="${dir.build.libs2}"/>
         <copy file="${lib.xalan.2}" todir="${dir.build.libs2}"/>
         <copy file="${lib.xalan.3}" todir="${dir.build.libs2}"/>
@@ -608,7 +596,6 @@
 	    <fileset dir=".">
 		<patternset refid="id.patternset.distFiles"/>
 		<patternset refid="id.patternset.srcFiles"/>
-		<patternset refid="id.patternset.dataFiles"/>
 				
 		<include name="ant/**/*"/>
 	    </fileset>
@@ -622,7 +609,7 @@
     </target>
 
     <target name="build.bindist"
-	    depends="clean,build.src,build.jar,build.docs,build.xdocs" 
+	    depends="clean,build.src,build.jar,build.docs" 
 	    description="Creates the binary distribution">
 
 	<mkdir dir="${dir.build.bindist}"/>
@@ -630,7 +617,6 @@
 	<copy todir="${dir.build.bindist}">
 	    <fileset dir=".">
 		<patternset refid="id.patternset.distFiles"/>
-		<patternset refid="id.patternset.dataFiles"/>
 				
 		<include name="ant/**/*"/>
 	    </fileset>
@@ -660,9 +646,6 @@
 	      todir="${dir.build.bindist}/libs"/>
 
 	<mkdir dir="${dir.build.bindist}/doc"/>
-	<copy todir="${dir.build.bindist}/doc">
-	    <fileset dir="${dir.docs}/build/site"/>
-	</copy>
 	<mkdir dir="${dir.build.bindist}/doc/Java/api" />
 	<copy todir="${dir.build.bindist}/doc/Java/api">
 	    <fileset dir="${dir.build.docs.html}/javadoc"/>
@@ -800,7 +783,6 @@
         <echo message="targets:" />
         <echo message="compile  - builds xml-security source" />
         <echo message="docs     - creates java documentation" />
-        <echo message="xdocs    - creates website" />
         <echo message="jar      - creates a jar file, containing the built source" />
         <echo message="dist     - creates a distribution" />
         <echo message="           (see ant help.dist for more information)" />
@@ -851,20 +833,3 @@
     </target>
 		
 </project>
-<!-- Keep this comment at the end of the file
-Local variables:
-mode: xml
-sgml-omittag:nil
-sgml-shorttag:nil
-sgml-namecase-general:nil
-sgml-general-insert-case:lower
-sgml-minimize-attributes:nil
-sgml-always-quote-attributes:t
-sgml-indent-step:4
-sgml-indent-data:t
-sgml-parent-document:nil
-sgml-exposed-tags:nil
-sgml-local-catalogs:("/usr/lib/sgml/catalog" "/usr/share/xemacs21/xemacs-packages/etc/psgml-dtds/CATALOG")
-sgml-local-ecat-files:("ECAT" "~/sgml/ECAT" "/usr/lib/sgml/ECAT" "/usr/local/lib/sgml/ECAT")
-End:
--->

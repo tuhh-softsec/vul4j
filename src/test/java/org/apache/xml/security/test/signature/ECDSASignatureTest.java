@@ -56,7 +56,7 @@ public class ECDSASignatureTest extends org.junit.Assert {
     private static final String BASEDIR = System.getProperty("basedir");
     private static final String SEP = System.getProperty("file.separator");
     private static final String ECDSA_JKS = 
-        "data/org/apache/xml/security/samples/input/ecdsa.jks";
+        "src/test/resources/org/apache/xml/security/samples/input/ecdsa.jks";
     private static final String ECDSA_JKS_PASSWORD = "security";
     
     private KeyStore keyStore;

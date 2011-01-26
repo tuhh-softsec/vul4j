@@ -44,7 +44,7 @@ public class CreateKeyInfo {
 
         KeyStore ks = KeyStore.getInstance("JKS");
         FileInputStream fis = new FileInputStream(
-            "data/org/apache/xml/security/samples/input/keystore.jks");
+            "samples/data/keystore.jks");
 
         ks.load(fis, "xmlsecurity".toCharArray());
 

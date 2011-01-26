@@ -62,28 +62,28 @@ public class OfflineResolver extends ResourceResolverSpi {
 
         OfflineResolver.register(
             "http://www.w3.org/TR/xml-stylesheet",
-            basedir + "data/org/w3c/www/TR/xml-stylesheet.html", "text/html"
+            basedir + "src/test/resources/org/w3c/www/TR/xml-stylesheet.html", "text/html"
         );
         OfflineResolver.register(
             "http://www.w3.org/TR/2000/REC-xml-20001006",
-            basedir + "data/org/w3c/www/TR/2000/REC-xml-20001006", "text/xml"
+            basedir + "src/test/resources/org/w3c/www/TR/2000/REC-xml-20001006", "text/xml"
         );
         OfflineResolver.register(
             "http://www.nue.et-inf.uni-siegen.de/index.html",
-            basedir + "data/org/apache/xml/security/temp/nuehomepage", "text/html"
+            basedir + "src/test/resources/org/apache/xml/security/temp/nuehomepage", "text/html"
         );
         OfflineResolver.register(
             "http://www.nue.et-inf.uni-siegen.de/~geuer-pollmann/id2.xml",
-            basedir + "data/org/apache/xml/security/temp/id2.xml", "text/xml"
+            basedir + "src/test/resources/org/apache/xml/security/temp/id2.xml", "text/xml"
         );
         OfflineResolver.register(
             "http://xmldsig.pothole.com/xml-stylesheet.txt",
-             basedir + "data/com/pothole/xmldsig/xml-stylesheet.txt", "text/xml"
+             basedir + "src/test/resources/com/pothole/xmldsig/xml-stylesheet.txt", "text/xml"
         );
         OfflineResolver.register(
             "http://www.w3.org/Signature/2002/04/xml-stylesheet.b64",
             basedir 
-            + "data/ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/xml-stylesheet.b64", 
+            + "src/test/resources/ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/xml-stylesheet.b64", 
             "text/plain"
         );
     }

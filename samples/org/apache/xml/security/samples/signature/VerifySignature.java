@@ -48,8 +48,8 @@ public class VerifySignature {
    public static void main(String unused[]) {
 
       boolean schemaValidate = false;
-      final String signatureSchemaFile = "data/xmldsig-core-schema.xsd";
-      // String signatureFileName = "data/ie/baltimore/merlin-examples/merlin-xmldsig-fifteen/signature-enveloping-rsa.xml";
+      final String signatureSchemaFile = "samples/data/xmldsig-core-schema.xsd";
+      // String signatureFileName = "samples/data/ie/baltimore/merlin-examples/merlin-xmldsig-fifteen/signature-enveloping-rsa.xml";
       String signatureFileName = "signature.xml";
 
       if (schemaValidate) {

@@ -43,7 +43,7 @@ public class BaltimoreExcC14n1Test extends org.junit.Assert {
         String fs = System.getProperty("file.separator");
         String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
         
-        base += fs + "data" + fs + "ie" +
+        base += fs + "src/test/resources" + fs + "ie" +
             fs + "baltimore" + fs + "merlin-examples";
         validator = new SignatureValidator(new File
             (base, "merlin-exc-c14n-one"));

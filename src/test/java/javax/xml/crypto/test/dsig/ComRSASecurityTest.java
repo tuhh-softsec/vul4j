@@ -43,7 +43,7 @@ public class ComRSASecurityTest extends org.junit.Assert {
         String fs = System.getProperty("file.separator");
         String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
         
-        base += fs + "data" + fs + "com";
+        base += fs + "src/test/resources" + fs + "com";
         validator = new SignatureValidator(new File
             (base, "rsasecurity/bdournaee"));
     }

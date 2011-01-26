@@ -1,0 +1,16 @@
+------------------------------ NodeSetData -------------------------------
+Node 1 : [ietf:e3: null]
+Node 2 : xml:id="e3ID"
+Node 3 : xmlns="http://www.w3.org/2000/09/xmldsig#"
+Node 4 : xmlns:ietf="http://www.ietf.org"
+Node 5 : xmlns:w3c="http://www.w3.org"
+Node 6 : [#text: 
+		]
+Node 7 : [ietf:e31: null]
+Node 8 : at="3"
+Node 9 : xmlns="http://www.w3.org/2000/09/xmldsig#"
+Node 10 : xmlns:ietf="http://www.ietf.org"
+Node 11 : xmlns:w3c="http://www.w3.org"
+Node 12 : [#text: 
+	]
+--------------------------------------------------------------------------

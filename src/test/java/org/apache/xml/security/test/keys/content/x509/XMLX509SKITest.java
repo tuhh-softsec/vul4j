@@ -41,10 +41,10 @@ public class XMLX509SKITest extends org.junit.Assert {
         File f = null;
         if (BASEDIR != null && !"".equals(BASEDIR)) {
             f = new File(BASEDIR + SEP +
-                "data/ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/certs/lugh.crt");
+                "src/test/resources/ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/certs/lugh.crt");
         } else {
             f = new File(
-                "data/ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/certs/lugh.crt");
+                "src/test/resources/ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/certs/lugh.crt");
         }
 
         FileInputStream fis = new FileInputStream(f);

@@ -40,7 +40,7 @@ public class SignatureTest extends org.junit.Assert {
 
     private static final String BASEDIR = 
         System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
-    public final static String KEYSTORE_DIRECTORY = BASEDIR + "/data/";
+    public final static String KEYSTORE_DIRECTORY = BASEDIR + "/src/test/resources/";
     public final static String KEYSTORE_PASSWORD_STRING = "changeit";
     public final static char[] KEYSTORE_PASSWORD = KEYSTORE_PASSWORD_STRING.toCharArray();
 

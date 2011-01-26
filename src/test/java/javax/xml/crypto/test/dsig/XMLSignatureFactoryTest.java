@@ -159,7 +159,7 @@ public class XMLSignatureFactoryTest extends TestCase {
         String fs = System.getProperty("file.separator");
         String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
         File dir = new File(base + fs +
-            "data" + fs + "ie" + fs + "baltimore" + fs + "merlin-examples",
+            "src/test/resources" + fs + "ie" + fs + "baltimore" + fs + "merlin-examples",
             "merlin-xmldsig-twenty-three");
         Document doc = docBuilder.parse(new File(dir, "signature.xml"));
         NodeList nl = doc.getElementsByTagName("KeyInfo");

@@ -36,7 +36,7 @@ public class DOMValidateContextTest extends org.junit.Assert {
         String fs = System.getProperty("file.separator");
         String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
         File dir = new File(base + fs +
-            "data" + fs + "ie" + fs + "baltimore" + fs + "merlin-examples",
+            "src/test/resources" + fs + "ie" + fs + "baltimore" + fs + "merlin-examples",
             "merlin-xmldsig-twenty-three");
         File input = new File(dir, "signature.xml");
         domVC = (DOMValidateContext)

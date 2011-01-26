@@ -89,7 +89,7 @@ public class CreateBaltimore23Test extends org.junit.Assert {
         String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
 
         FileInputStream fis = new FileInputStream
-            (base + fs + "data" + fs + "test.jks");
+            (base + fs + "src/test/resources" + fs + "test.jks");
         ks = KeyStore.getInstance("JKS");
         ks.load(fis, "changeit".toCharArray());
         signingKey = ks.getKey("mullan", "changeit".toCharArray());
@@ -223,7 +223,7 @@ public class CreateBaltimore23Test extends org.junit.Assert {
         String fs = System.getProperty("file.separator");
         String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
         FileInputStream fis = new FileInputStream(
-            base + fs + "data" + fs + "ie" + fs +
+            base + fs + "src/test/resources" + fs + "ie" + fs +
              "baltimore" + fs + "merlin-examples" + fs + 
              "merlin-xmldsig-twenty-three" + fs + "certs" + fs + "crl");
         X509CRL crl = (X509CRL) cf.generateCRL(fis);
@@ -632,7 +632,7 @@ public class CreateBaltimore23Test extends org.junit.Assert {
         String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
         String fs = System.getProperty("file.separator");
         File f = new File(
-            base + fs + "data" + fs + "ie" + fs +
+            base + fs + "src/test/resources" + fs + "ie" + fs +
             "baltimore" + fs + "merlin-examples" + fs +
             "merlin-xmldsig-twenty-three" + fs);
         dvc.setBaseURI(f.toURI().toString()); 

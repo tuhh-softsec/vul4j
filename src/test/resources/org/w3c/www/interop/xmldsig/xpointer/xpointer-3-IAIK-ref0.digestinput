@@ -1,0 +1,21 @@
+<ietf:c14n11XmlPointerDoc1 xmlns:ietf="http://www.ietf.org" xmlns:w3c="http://www.w3.org">
+		
+	<ietf:e1 xml:id="e1ID">
+		
+		<ietf:e11>
+		
+			<ietf:e111></ietf:e111>
+		</ietf:e11>
+		<ietf:e12 at="2">
+		
+			<ietf:e121></ietf:e121>
+		</ietf:e12>
+	</ietf:e1>
+	<ietf:e2 xml:id="e2ID">
+		
+		<ietf:e21></ietf:e21>
+	</ietf:e2>
+	<ietf:e3 xml:id="e3ID">
+		<ietf:e31 at="3"></ietf:e31>
+	</ietf:e3>
+</ietf:c14n11XmlPointerDoc1>

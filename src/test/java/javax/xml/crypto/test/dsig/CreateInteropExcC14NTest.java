@@ -66,7 +66,7 @@ public class CreateInteropExcC14NTest extends org.junit.Assert {
         
         String fs = System.getProperty("file.separator");
         FileInputStream fis = new FileInputStream
-            (base + fs + "data" + fs + "test.jks");
+            (base + fs + "src/test/resources" + fs + "test.jks");
         ks = KeyStore.getInstance("JKS");
         ks.load(fis, "changeit".toCharArray());
         Certificate signingCert = ks.getCertificate("mullan");

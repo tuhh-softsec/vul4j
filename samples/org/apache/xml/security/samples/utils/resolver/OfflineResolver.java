@@ -54,20 +54,20 @@ public class OfflineResolver extends ResourceResolverSpi {
         OfflineResolver._mimeMap = new HashMap<String, String>();
 
         OfflineResolver.register("http://www.w3.org/TR/xml-stylesheet",
-                                 "data/org/w3c/www/TR/xml-stylesheet.html",
+                                 "samples/data/org/w3c/www/TR/xml-stylesheet.html",
                                  "text/html");
         OfflineResolver.register("http://www.w3.org/TR/2000/REC-xml-20001006",
-                                 "data/org/w3c/www/TR/2000/REC-xml-20001006",
+                                 "samples/data/org/w3c/www/TR/2000/REC-xml-20001006",
                                  "text/xml");
         OfflineResolver.register("http://www.nue.et-inf.uni-siegen.de/index.html",
-                                 "data/org/apache/xml/security/temp/nuehomepage",
+                                 "samples/data/org/apache/xml/security/temp/nuehomepage",
                                  "text/html");
         OfflineResolver.register("http://www.nue.et-inf.uni-siegen.de/~geuer-pollmann/id2.xml",
-                                 "data/org/apache/xml/security/temp/id2.xml", "text/xml");
+                                 "samples/data/org/apache/xml/security/temp/id2.xml", "text/xml");
         OfflineResolver.register("http://xmldsig.pothole.com/xml-stylesheet.txt",
-                                 "data/com/pothole/xmldsig/xml-stylesheet.txt", "text/xml");
+                                 "samples/data/com/pothole/xmldsig/xml-stylesheet.txt", "text/xml");
         OfflineResolver.register("http://www.w3.org/Signature/2002/04/xml-stylesheet.b64",
-                                 "data/ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/xml-stylesheet.b64", "text/plain");
+                                 "samples/data/ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/xml-stylesheet.b64", "text/plain");
     }
 
     /**

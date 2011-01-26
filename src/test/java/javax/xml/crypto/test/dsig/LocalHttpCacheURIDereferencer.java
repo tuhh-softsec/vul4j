@@ -41,7 +41,7 @@ public class LocalHttpCacheURIDereferencer implements URIDereferencer {
     public LocalHttpCacheURIDereferencer() {
         ud = XMLSignatureFactory.getInstance().getURIDereferencer();
         String base = BASEDIR == null ? "./": BASEDIR;
-        File dir = new File(base + FS + "data" + FS + "javax" +
+        File dir = new File(base + FS + "src/test/resources" + FS + "javax" +
             FS + "xml" + FS + "crypto" + FS + "dsig");
         f = new File(dir, "xml-stylesheet");
     }

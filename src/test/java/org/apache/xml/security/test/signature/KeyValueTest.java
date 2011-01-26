@@ -46,7 +46,7 @@ public class KeyValueTest extends org.junit.Assert {
     public void testDSAPublicKey() throws Exception {
         File f = null;
         String filename = 
-            "data/ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/signature-enveloping-dsa.xml";
+            "src/test/resources/ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/signature-enveloping-dsa.xml";
         if (BASEDIR != null && !"".equals(BASEDIR)) {
             f = new File(BASEDIR + SEP + filename);
         } else {

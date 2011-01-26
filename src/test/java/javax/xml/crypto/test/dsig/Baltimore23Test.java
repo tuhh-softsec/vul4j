@@ -50,7 +50,7 @@ public class Baltimore23Test extends org.junit.Assert {
         String fs = System.getProperty("file.separator");
         String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
         
-        dir = new File(base + fs + "data" + fs 
+        dir = new File(base + fs + "src/test/resources" + fs 
             + "ie" + fs + "baltimore" + fs + "merlin-examples",
             "merlin-xmldsig-twenty-three");
         validator = new SignatureValidator(dir);
@@ -205,7 +205,7 @@ public class Baltimore23Test extends org.junit.Assert {
         String fs = System.getProperty("file.separator");
         String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
         
-        String keystore = base + fs + "data" + fs +
+        String keystore = base + fs + "src/test/resources" + fs +
              "ie" + fs + "baltimore" + fs + "merlin-examples" + fs +
              "merlin-xmldsig-twenty-three" + fs + "certs" + fs + "xmldsig.jks";
         KeyStore ks = KeyStore.getInstance("JKS");

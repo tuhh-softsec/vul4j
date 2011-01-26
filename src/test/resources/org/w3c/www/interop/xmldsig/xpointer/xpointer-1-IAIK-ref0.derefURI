@@ -1,0 +1,134 @@
+------------------------------ NodeSetData -------------------------------
+Node 1 : [ietf:c14n11XmlPointerDoc1: null]
+Node 2 : xmlns:ietf="http://www.ietf.org"
+Node 3 : xmlns:w3c="http://www.w3.org"
+Node 4 : [#text: 
+		]
+Node 5 : [#comment:  This is a xml document for checking behaviour of tools with regards to  comments when using scheme-based xpointers in the ds:Reference's URI attribute ]
+Node 6 : [#text: 
+	]
+Node 7 : [ietf:e1: null]
+Node 8 : xml:id="e1ID"
+Node 9 : xmlns:ietf="http://www.ietf.org"
+Node 10 : xmlns:w3c="http://www.w3.org"
+Node 11 : [#text: 
+		]
+Node 12 : [#comment:  This is a comment for ietf:e1 element ]
+Node 13 : [#text: 
+		]
+Node 14 : [ietf:e11: null]
+Node 15 : xmlns:ietf="http://www.ietf.org"
+Node 16 : xmlns:w3c="http://www.w3.org"
+Node 17 : [#text: 
+		]
+Node 18 : [#comment:  This is a comment for ietf:e11 element ]
+Node 19 : [#text: 
+			]
+Node 20 : [ietf:e111: null]
+Node 21 : xmlns:ietf="http://www.ietf.org"
+Node 22 : xmlns:w3c="http://www.w3.org"
+Node 23 : [#text: 
+		]
+Node 24 : [#text: 
+		]
+Node 25 : [ietf:e12: null]
+Node 26 : at="2"
+Node 27 : xmlns:ietf="http://www.ietf.org"
+Node 28 : xmlns:w3c="http://www.w3.org"
+Node 29 : [#text: 
+		]
+Node 30 : [#comment:  This is a comment for ietf:e12 element ]
+Node 31 : [#text: 
+			]
+Node 32 : [ietf:e121: null]
+Node 33 : xmlns:ietf="http://www.ietf.org"
+Node 34 : xmlns:w3c="http://www.w3.org"
+Node 35 : [#text: 
+		]
+Node 36 : [#text: 
+	]
+Node 37 : [#text: 
+	]
+Node 38 : [ietf:e2: null]
+Node 39 : xml:id="e2ID"
+Node 40 : xmlns:ietf="http://www.ietf.org"
+Node 41 : xmlns:w3c="http://www.w3.org"
+Node 42 : [#text: 
+		]
+Node 43 : [#comment:  This is a comment for ietf:e2 element ]
+Node 44 : [#text: 
+		]
+Node 45 : [ietf:e21: null]
+Node 46 : xmlns:ietf="http://www.ietf.org"
+Node 47 : xmlns:w3c="http://www.w3.org"
+Node 48 : [#text: 
+	]
+Node 49 : [#text: 
+	]
+Node 50 : [ietf:e3: null]
+Node 51 : xml:id="e3ID"
+Node 52 : xmlns:ietf="http://www.ietf.org"
+Node 53 : xmlns:w3c="http://www.w3.org"
+Node 54 : [#text: 
+		]
+Node 55 : [ietf:e31: null]
+Node 56 : at="3"
+Node 57 : xmlns:ietf="http://www.ietf.org"
+Node 58 : xmlns:w3c="http://www.w3.org"
+Node 59 : [#text: 
+	]
+Node 60 : [#text: 
+]
+Node 61 : [Signature: null]
+Node 62 : xmlns="http://www.w3.org/2000/09/xmldsig#"
+Node 63 : xmlns:ietf="http://www.ietf.org"
+Node 64 : xmlns:w3c="http://www.w3.org"
+Node 65 : [SignedInfo: null]
+Node 66 : xmlns="http://www.w3.org/2000/09/xmldsig#"
+Node 67 : xmlns:ietf="http://www.ietf.org"
+Node 68 : xmlns:w3c="http://www.w3.org"
+Node 69 : [CanonicalizationMethod: null]
+Node 70 : Algorithm="http://www.w3.org/2006/12/xml-c14n11"
+Node 71 : xmlns="http://www.w3.org/2000/09/xmldsig#"
+Node 72 : xmlns:ietf="http://www.ietf.org"
+Node 73 : xmlns:w3c="http://www.w3.org"
+Node 74 : [SignatureMethod: null]
+Node 75 : Algorithm="http://www.w3.org/2000/09/xmldsig#hmac-sha1"
+Node 76 : xmlns="http://www.w3.org/2000/09/xmldsig#"
+Node 77 : xmlns:ietf="http://www.ietf.org"
+Node 78 : xmlns:w3c="http://www.w3.org"
+Node 79 : [Reference: null]
+Node 80 : URI="#xpointer(/)"
+Node 81 : xmlns="http://www.w3.org/2000/09/xmldsig#"
+Node 82 : xmlns:ietf="http://www.ietf.org"
+Node 83 : xmlns:w3c="http://www.w3.org"
+Node 84 : [Transforms: null]
+Node 85 : xmlns="http://www.w3.org/2000/09/xmldsig#"
+Node 86 : xmlns:ietf="http://www.ietf.org"
+Node 87 : xmlns:w3c="http://www.w3.org"
+Node 88 : [Transform: null]
+Node 89 : Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"
+Node 90 : xmlns="http://www.w3.org/2000/09/xmldsig#"
+Node 91 : xmlns:ietf="http://www.ietf.org"
+Node 92 : xmlns:w3c="http://www.w3.org"
+Node 93 : [Transform: null]
+Node 94 : Algorithm="http://www.w3.org/2006/12/xml-c14n11#WithComments"
+Node 95 : xmlns="http://www.w3.org/2000/09/xmldsig#"
+Node 96 : xmlns:ietf="http://www.ietf.org"
+Node 97 : xmlns:w3c="http://www.w3.org"
+Node 98 : [DigestMethod: null]
+Node 99 : Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"
+Node 100 : xmlns="http://www.w3.org/2000/09/xmldsig#"
+Node 101 : xmlns:ietf="http://www.ietf.org"
+Node 102 : xmlns:w3c="http://www.w3.org"
+Node 103 : [DigestValue: null]
+Node 104 : xmlns="http://www.w3.org/2000/09/xmldsig#"
+Node 105 : xmlns:ietf="http://www.ietf.org"
+Node 106 : xmlns:w3c="http://www.w3.org"
+Node 107 : [#text: ]
+Node 108 : [SignatureValue: null]
+Node 109 : xmlns="http://www.w3.org/2000/09/xmldsig#"
+Node 110 : xmlns:ietf="http://www.ietf.org"
+Node 111 : xmlns:w3c="http://www.w3.org"
+Node 112 : [#text: ]
+--------------------------------------------------------------------------

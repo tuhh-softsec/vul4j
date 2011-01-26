@@ -1,0 +1,3 @@
+<root>
+	<element1>test</element1>
+<Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#hmac-sha512"/><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><DigestValue>lYm2WdIYViIUpz/LlDMoTUU8PEg=</DigestValue></Reference></SignedInfo><SignatureValue>xNlBF/pWzUmi/123Ww33uoX1ThXheowj+07rL54Mj83CpU6elebR7MQlJDZ9I+4K8O6qG864m/oUZdSs34jrdQ==</SignatureValue></Signature></root>

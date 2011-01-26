@@ -105,7 +105,7 @@ public class Canonicalizer20010315ExclusiveTest extends org.junit.Assert {
         org.apache.xml.security.keys.keyresolver.KeyResolverException {
 
         File fileIn = new File(getAbsolutePath(
-            "data/ie/baltimore/merlin-examples/ec-merlin-iaikTests-two/signature.xml"));
+            "src/test/resources/ie/baltimore/merlin-examples/ec-merlin-iaikTests-two/signature.xml"));
 
         // File fileIn = new File("signature.xml");
         assertTrue("file exists", fileIn.exists());
@@ -157,12 +157,12 @@ public class Canonicalizer20010315ExclusiveTest extends org.junit.Assert {
 
         Document doc =
             this.db.parse(
-                getAbsolutePath("data/org/apache/xml/security/c14n/inExcl/example2_2_1.xml")
+                getAbsolutePath("src/test/resources/org/apache/xml/security/c14n/inExcl/example2_2_1.xml")
             );
         Node root = doc.getElementsByTagNameNS("http://example.net", "elem2").item(0);
         Canonicalizer20010315 c = new Canonicalizer20010315WithComments();
         byte[] reference = JavaUtils.getBytesFromFile(getAbsolutePath(
-            "data/org/apache/xml/security/c14n/inExcl/example2_2_1_c14nized.xml"));
+            "src/test/resources/org/apache/xml/security/c14n/inExcl/example2_2_1_c14nized.xml"));
         byte[] result = c.engineCanonicalizeSubTree(root);
         boolean equals = java.security.MessageDigest.isEqual(reference, result);
 
@@ -190,12 +190,12 @@ public class Canonicalizer20010315ExclusiveTest extends org.junit.Assert {
         XMLSignatureException, XMLSecurityException {
         Document doc =
             this.db.parse(getAbsolutePath(
-                "data/org/apache/xml/security/c14n/inExcl/example2_2_2.xml")
+                "src/test/resources/org/apache/xml/security/c14n/inExcl/example2_2_2.xml")
             );
         Node root = doc.getElementsByTagNameNS("http://example.net", "elem2").item(0);
         Canonicalizer20010315 c = new Canonicalizer20010315WithComments();
         byte[] reference = JavaUtils.getBytesFromFile(getAbsolutePath(
-            "data/org/apache/xml/security/c14n/inExcl/example2_2_2_c14nized.xml"));
+            "src/test/resources/org/apache/xml/security/c14n/inExcl/example2_2_2_c14nized.xml"));
         byte[] result = c.engineCanonicalizeSubTree(root);
         boolean equals = java.security.MessageDigest.isEqual(reference, result);
 
@@ -223,11 +223,11 @@ public class Canonicalizer20010315ExclusiveTest extends org.junit.Assert {
         XMLSignatureException, XMLSecurityException {
         Document doc =
             this.db.parse(getAbsolutePath(
-                "data/org/apache/xml/security/c14n/inExcl/example2_2_1.xml"));
+                "src/test/resources/org/apache/xml/security/c14n/inExcl/example2_2_1.xml"));
         Node root = doc.getElementsByTagNameNS("http://example.net", "elem2").item(0);
         Canonicalizer20010315Excl c = new Canonicalizer20010315ExclWithComments();
         byte[] reference = JavaUtils.getBytesFromFile(getAbsolutePath(
-            "data/org/apache/xml/security/c14n/inExcl/example2_2_c14nized_exclusive.xml"));
+            "src/test/resources/org/apache/xml/security/c14n/inExcl/example2_2_c14nized_exclusive.xml"));
         byte[] result = c.engineCanonicalizeSubTree(root);
         boolean equals = java.security.MessageDigest.isEqual(reference, result);
 
@@ -255,11 +255,11 @@ public class Canonicalizer20010315ExclusiveTest extends org.junit.Assert {
         XMLSignatureException, XMLSecurityException {
         Document doc =
             this.db.parse(getAbsolutePath(
-                "data/org/apache/xml/security/c14n/inExcl/example2_2_2.xml"));
+                "src/test/resources/org/apache/xml/security/c14n/inExcl/example2_2_2.xml"));
         Node root = doc.getElementsByTagNameNS("http://example.net", "elem2").item(0);
         Canonicalizer20010315Excl c = new Canonicalizer20010315ExclWithComments();
         byte[] reference = JavaUtils.getBytesFromFile(getAbsolutePath(
-            "data/org/apache/xml/security/c14n/inExcl/example2_2_c14nized_exclusive.xml") );
+            "src/test/resources/org/apache/xml/security/c14n/inExcl/example2_2_c14nized_exclusive.xml") );
         byte[] result = c.engineCanonicalizeSubTree(root);
         boolean equals = java.security.MessageDigest.isEqual(reference, result);
 
@@ -290,7 +290,7 @@ public class Canonicalizer20010315ExclusiveTest extends org.junit.Assert {
         XMLSignatureException, XMLSecurityException, XPathExpressionException {
         Document doc =
             this.db.parse(getAbsolutePath(
-                "data/org/apache/xml/security/c14n/inExcl/example2_2_3.xml"));
+                "src/test/resources/org/apache/xml/security/c14n/inExcl/example2_2_3.xml"));
 
         XPathFactory xpf = XPathFactory.newInstance();
         XPath xpath = xpf.newXPath();
@@ -303,7 +303,7 @@ public class Canonicalizer20010315ExclusiveTest extends org.junit.Assert {
         Canonicalizer20010315Excl c = new Canonicalizer20010315ExclWithComments();
         byte[] reference = JavaUtils.getBytesFromFile(
             getAbsolutePath(
-                "data/org/apache/xml/security/c14n/inExcl/example2_2_3_c14nized_exclusive.xml")
+                "src/test/resources/org/apache/xml/security/c14n/inExcl/example2_2_3_c14nized_exclusive.xml")
             );
         byte[] result = c.engineCanonicalizeXPathNodeSet(nodes);
         assertEquals(new String(reference),new String(result));

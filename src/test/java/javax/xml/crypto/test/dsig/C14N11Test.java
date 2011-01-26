@@ -42,7 +42,7 @@ public class C14N11Test extends org.junit.Assert {
     public C14N11Test() throws Exception {
         String fs = System.getProperty("file.separator");
         String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
-        dir = new File(base + fs + "data" + fs
+        dir = new File(base + fs + "src/test/resources" + fs
             + "org" + fs + "w3c" + fs + "www" + fs
             + "interop" + fs + "xmldsig" + fs + "c14n11");
         validator = new SignatureValidator(dir);

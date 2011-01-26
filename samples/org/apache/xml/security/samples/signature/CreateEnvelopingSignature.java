@@ -16,8 +16,6 @@
  */
 package org.apache.xml.security.samples.signature;
 
-
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -32,96 +30,93 @@ import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Element;
 
-
 /**
- *
- *
  * @author $Author$
  */
 public class CreateEnvelopingSignature {
 
-   /** {@link org.apache.commons.logging} logging facility */
+    /** {@link org.apache.commons.logging} logging facility */
     static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(CreateSignature.class.getName());
 
-   /**
-    * Method main
-    *
-    * @param unused
-    * @throws Exception
-    */
-   public static void main(String unused[]) throws Exception {
-      //J-
-      String keystoreType = "JKS";
-      String keystoreFile = "data/org/apache/xml/security/samples/input/keystore.jks";
-      String keystorePass = "xmlsecurity";
-      String privateKeyAlias = "test";
-      String privateKeyPass = "xmlsecurity";
-      String certificateAlias = "test";
-      File signatureFile = new File("signature.xml");
-      //J+
-      KeyStore ks = KeyStore.getInstance(keystoreType);
-      FileInputStream fis = new FileInputStream(keystoreFile);
+    static {
+        org.apache.xml.security.Init.init();
+    }
+    
+    /**
+     * Method main
+     *
+     * @param unused
+     * @throws Exception
+     */
+    public static void main(String unused[]) throws Exception {
+        String keystoreType = "JKS";
+        String keystoreFile = "samples/data/keystore.jks";
+        String keystorePass = "xmlsecurity";
+        String privateKeyAlias = "test";
+        String privateKeyPass = "xmlsecurity";
+        String certificateAlias = "test";
+        File signatureFile = new File("signature.xml");
 
-      ks.load(fis, keystorePass.toCharArray());
+        KeyStore ks = KeyStore.getInstance(keystoreType);
+        FileInputStream fis = new FileInputStream(keystoreFile);
 
-      PrivateKey privateKey = (PrivateKey) ks.getKey(privateKeyAlias,
-                                 privateKeyPass.toCharArray());
-      javax.xml.parsers.DocumentBuilderFactory dbf =
-         javax.xml.parsers.DocumentBuilderFactory.newInstance();
+        ks.load(fis, keystorePass.toCharArray());
 
-      dbf.setNamespaceAware(true);
+        PrivateKey privateKey = 
+            (PrivateKey) ks.getKey(privateKeyAlias, privateKeyPass.toCharArray());
+        javax.xml.parsers.DocumentBuilderFactory dbf =
+            javax.xml.parsers.DocumentBuilderFactory.newInstance();
 
-      javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
-      org.w3c.dom.Document doc = db.newDocument();
-      String BaseURI = signatureFile.toURL().toString();
-      XMLSignature sig = new XMLSignature(doc, BaseURI,
-                                          XMLSignature.ALGO_ID_SIGNATURE_DSA);
+        dbf.setNamespaceAware(true);
 
-      doc.appendChild(sig.getElement());
+        javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
+        org.w3c.dom.Document doc = db.newDocument();
+        String BaseURI = signatureFile.toURI().toURL().toString();
+        XMLSignature sig = 
+            new XMLSignature(doc, BaseURI, XMLSignature.ALGO_ID_SIGNATURE_DSA);
 
-      {
-         ObjectContainer obj = new ObjectContainer(doc);
-         Element anElement = doc.createElementNS(null, "InsideObject");
+        doc.appendChild(sig.getElement());
 
-         anElement.appendChild(doc.createTextNode("A text in a box"));
-         obj.appendChild(anElement);
+        {
+            ObjectContainer obj = new ObjectContainer(doc);
+            Element anElement = doc.createElementNS(null, "InsideObject");
 
-         String Id = "TheFirstObject";
+            anElement.appendChild(doc.createTextNode("A text in a box"));
+            obj.appendChild(anElement);
 
-         obj.setId(Id);
-         sig.appendObject(obj);
+            String Id = "TheFirstObject";
 
-         Transforms transforms = new Transforms(doc);
+            obj.setId(Id);
+            sig.appendObject(obj);
 
-         transforms.addTransform(Transforms.TRANSFORM_C14N_WITH_COMMENTS);
-         sig.addDocument("#" + Id, transforms, Constants.ALGO_ID_DIGEST_SHA1);
-      }
+            Transforms transforms = new Transforms(doc);
 
-      {
-         X509Certificate cert =
-            (X509Certificate) ks.getCertificate(certificateAlias);
+            transforms.addTransform(Transforms.TRANSFORM_C14N_WITH_COMMENTS);
+            sig.addDocument("#" + Id, transforms, Constants.ALGO_ID_DIGEST_SHA1);
+        }
 
-         sig.addKeyInfo(cert);
-         sig.addKeyInfo(cert.getPublicKey());
-         System.out.println("Start signing");
-         sig.sign(privateKey);
-         System.out.println("Finished signing");
-      }
+        {
+            X509Certificate cert =
+                (X509Certificate) ks.getCertificate(certificateAlias);
 
-      FileOutputStream f = new FileOutputStream(signatureFile);
+            sig.addKeyInfo(cert);
+            sig.addKeyInfo(cert.getPublicKey());
+            System.out.println("Start signing");
+            sig.sign(privateKey);
+            System.out.println("Finished signing");
+        }
 
-      XMLUtils.outputDOMc14nWithComments(doc, f);
-      f.close();
-      System.out.println("Wrote signature to " + BaseURI);
+        FileOutputStream f = new FileOutputStream(signatureFile);
 
-      for (int i=0; i<sig.getSignedInfo().getSignedContentLength(); i++) {
-         System.out.println("--- Signed Content follows ---");
-         System.out.println(new String(sig.getSignedInfo().getSignedContentItem(i)));
-      }
-   }
+        XMLUtils.outputDOMc14nWithComments(doc, f);
+        f.close();
+        System.out.println("Wrote signature to " + BaseURI);
 
-   static {
-      org.apache.xml.security.Init.init();
-   }
+        for (int i = 0; i < sig.getSignedInfo().getSignedContentLength(); i++) {
+            System.out.println("--- Signed Content follows ---");
+            System.out.println(new String(sig.getSignedInfo().getSignedContentItem(i)));
+        }
+    }
+
 }

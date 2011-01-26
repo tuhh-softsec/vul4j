@@ -66,7 +66,7 @@ public class CreateInteropXFilter2Test extends org.junit.Assert {
         String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
         
         FileInputStream fis = new FileInputStream
-            (base + fs + "data" + fs + "test.jks");
+            (base + fs + "src/test/resources" + fs + "test.jks");
         ks = KeyStore.getInstance("JKS");
         ks.load(fis, "changeit".toCharArray());
         signingKey = ks.getKey("mullan", "changeit".toCharArray());

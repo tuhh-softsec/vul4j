@@ -51,7 +51,7 @@ public class HMacSHA1RoundTrip {
      */
     public static void main(String unused[]) throws Exception {
         String keystoreType = "JKS";
-        String keystoreFile = "data/org/apache/xml/security/samples/input/keystore.jks";
+        String keystoreFile = "samples/data/keystore.jks";
         String keystorePass = "xmlsecurity";
         String privateKeyAlias = "test";
         String privateKeyPass = "xmlsecurity";

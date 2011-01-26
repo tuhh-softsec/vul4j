@@ -16,8 +16,6 @@
  */
 package org.apache.xml.security.samples.signature;
 
-
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -33,142 +31,140 @@ import org.w3c.dom.Element;
 
 
 /**
- *
- *
  * @author $Author$
  */
 public class CreateSignature {
 
-   /** {@link org.apache.commons.logging} logging facility */
+    /** {@link org.apache.commons.logging} logging facility */
     static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(CreateSignature.class.getName());
 
-   /**
-    * Method main
-    *
-    * @param unused
-    * @throws Exception
-    */
-   public static void main(String unused[]) throws Exception {
-      Constants.setSignatureSpecNSprefix("ds");
+    static {
+        org.apache.xml.security.Init.init();
+    }
+    
+    /**
+     * Method main
+     *
+     * @param unused
+     * @throws Exception
+     */
+    public static void main(String unused[]) throws Exception {
+        Constants.setSignatureSpecNSprefix("ds");
 
-      //J-
-      //All the parameters for the keystore
-      String keystoreType = "JKS";
-      String keystoreFile = "data/org/apache/xml/security/samples/input/keystore.jks";
-      String keystorePass = "xmlsecurity";
-      String privateKeyAlias = "test";
-      String privateKeyPass = "xmlsecurity";
-      String certificateAlias = "test";
-      File signatureFile = new File("signature.xml");
-      //J+
-      KeyStore ks = KeyStore.getInstance(keystoreType);
-      FileInputStream fis = new FileInputStream(keystoreFile);
+        //All the parameters for the keystore
+        String keystoreType = "JKS";
+        String keystoreFile = "samples/data/keystore.jks";
+        String keystorePass = "xmlsecurity";
+        String privateKeyAlias = "test";
+        String privateKeyPass = "xmlsecurity";
+        String certificateAlias = "test";
+        File signatureFile = new File("signature.xml");
 
-      //load the keystore
-      ks.load(fis, keystorePass.toCharArray());
+        KeyStore ks = KeyStore.getInstance(keystoreType);
+        FileInputStream fis = new FileInputStream(keystoreFile);
 
-      //get the private key for signing.
-      PrivateKey privateKey = (PrivateKey) ks.getKey(privateKeyAlias,
-                                             privateKeyPass.toCharArray());
-      javax.xml.parsers.DocumentBuilderFactory dbf =
-         javax.xml.parsers.DocumentBuilderFactory.newInstance();
+        //load the keystore
+        ks.load(fis, keystorePass.toCharArray());
 
-      //XML Signature needs to be namespace aware
-      dbf.setNamespaceAware(true);
+        //get the private key for signing.
+        PrivateKey privateKey = 
+            (PrivateKey) ks.getKey(privateKeyAlias, privateKeyPass.toCharArray());
+        javax.xml.parsers.DocumentBuilderFactory dbf =
+            javax.xml.parsers.DocumentBuilderFactory.newInstance();
 
-      javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
-      org.w3c.dom.Document doc = db.newDocument();
+        //XML Signature needs to be namespace aware
+        dbf.setNamespaceAware(true);
 
-      //Build a sample document. It will look something like:
-      //<!-- Comment before -->
-      //<apache:RootElement xmlns:apache="http://www.apache.org/ns/#app1">Some simple text
-      //</apache:RootElement>
-      //<!-- Comment after -->
-      doc.appendChild(doc.createComment(" Comment before "));
+        javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
+        org.w3c.dom.Document doc = db.newDocument();
 
-      Element root = doc.createElementNS("http://www.apache.org/ns/#app1",
-                                         "apache:RootElement");
+        //Build a sample document. It will look something like:
+        //<!-- Comment before -->
+        //<apache:RootElement xmlns:apache="http://www.apache.org/ns/#app1">Some simple text
+        //</apache:RootElement>
+        //<!-- Comment after -->
+        doc.appendChild(doc.createComment(" Comment before "));
 
-      root.setAttributeNS(null, "attr1", "test1");
-      root.setAttributeNS(null, "attr2", "test2");
-      root.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:foo", "http://example.org/#foo");
-      root.setAttributeNS("http://example.org/#foo", "foo:attr1", "foo's test");
+        Element root = 
+            doc.createElementNS("http://www.apache.org/ns/#app1", "apache:RootElement");
 
-
-
-      root.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:apache", "http://www.apache.org/ns/#app1");
-      doc.appendChild(root);
-      root.appendChild(doc.createTextNode("Some simple text\n"));
-
-      //The BaseURI is the URI that's used to prepend to relative URIs
-      String BaseURI = signatureFile.toURL().toString();
-      //Create an XML Signature object from the document, BaseURI and
-      //signature algorithm (in this case DSA)
-      XMLSignature sig = new XMLSignature(doc, BaseURI,
-                                          XMLSignature.ALGO_ID_SIGNATURE_DSA);
+        root.setAttributeNS(null, "attr1", "test1");
+        root.setAttributeNS(null, "attr2", "test2");
+        root.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:foo", "http://example.org/#foo");
+        root.setAttributeNS("http://example.org/#foo", "foo:attr1", "foo's test");
 
 
-      //Append the signature element to the root element before signing because
-      //this is going to be an enveloped signature.
-      //This means the signature is going to be enveloped by the document.
-      //Two other possible forms are enveloping where the document is inside the
-      //signature and detached where they are seperate.
-      //Note that they can be mixed in 1 signature with seperate references as
-      //shown below.
-      root.appendChild(sig.getElement());
-      doc.appendChild(doc.createComment(" Comment after "));
-      sig.getSignedInfo()
-         .addResourceResolver(new org.apache.xml.security.samples.utils.resolver
-            .OfflineResolver());
 
-      {
-         //create the transforms object for the Document/Reference
-         Transforms transforms = new Transforms(doc);
+        root.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:apache", "http://www.apache.org/ns/#app1");
+        doc.appendChild(root);
+        root.appendChild(doc.createTextNode("Some simple text\n"));
 
-         //First we have to strip away the signature element (it's not part of the
-         //signature calculations). The enveloped transform can be used for this.
-         transforms.addTransform(Transforms.TRANSFORM_ENVELOPED_SIGNATURE);
-         //Part of the signature element needs to be canonicalized. It is a kind
-         //of normalizing algorithm for XML. For more information please take a
-         //look at the W3C XML Digital Signature webpage.
-         transforms.addTransform(Transforms.TRANSFORM_C14N_WITH_COMMENTS);
-         //Add the above Document/Reference
-         sig.addDocument("", transforms, Constants.ALGO_ID_DIGEST_SHA1);
-      }
+        //The BaseURI is the URI that's used to prepend to relative URIs
+        String BaseURI = signatureFile.toURI().toURL().toString();
+        //Create an XML Signature object from the document, BaseURI and
+        //signature algorithm (in this case DSA)
+        XMLSignature sig = 
+            new XMLSignature(doc, BaseURI, XMLSignature.ALGO_ID_SIGNATURE_DSA);
 
-      {
-         //Add in 2 external URIs. This is a detached Reference.
-         //
-         // When sign() is called, two network connections are made. -- well,
-         // not really, as we use the OfflineResolver which acts as a proxy for
-         // these two resouces ;-))
-         //
-         sig.addDocument("http://www.w3.org/TR/xml-stylesheet");
-         sig.addDocument("http://www.nue.et-inf.uni-siegen.de/index.html");
-      }
 
-      {
-         //Add in the KeyInfo for the certificate that we used the private key of
-         X509Certificate cert =
-            (X509Certificate) ks.getCertificate(certificateAlias);
+        //Append the signature element to the root element before signing because
+        //this is going to be an enveloped signature.
+        //This means the signature is going to be enveloped by the document.
+        //Two other possible forms are enveloping where the document is inside the
+        //signature and detached where they are seperate.
+        //Note that they can be mixed in 1 signature with seperate references as
+        //shown below.
+        root.appendChild(sig.getElement());
+        doc.appendChild(doc.createComment(" Comment after "));
+        sig.getSignedInfo().addResourceResolver(
+            new org.apache.xml.security.samples.utils.resolver.OfflineResolver()
+        );
 
-         sig.addKeyInfo(cert);
-         sig.addKeyInfo(cert.getPublicKey());
-         System.out.println("Start signing");
-         sig.sign(privateKey);
-         System.out.println("Finished signing");
-      }
+        {
+            //create the transforms object for the Document/Reference
+            Transforms transforms = new Transforms(doc);
 
-      FileOutputStream f = new FileOutputStream(signatureFile);
+            //First we have to strip away the signature element (it's not part of the
+            //signature calculations). The enveloped transform can be used for this.
+            transforms.addTransform(Transforms.TRANSFORM_ENVELOPED_SIGNATURE);
+            //Part of the signature element needs to be canonicalized. It is a kind
+            //of normalizing algorithm for XML. For more information please take a
+            //look at the W3C XML Digital Signature webpage.
+            transforms.addTransform(Transforms.TRANSFORM_C14N_WITH_COMMENTS);
+            //Add the above Document/Reference
+            sig.addDocument("", transforms, Constants.ALGO_ID_DIGEST_SHA1);
+        }
 
-      XMLUtils.outputDOMc14nWithComments(doc, f);
+        {
+            //Add in 2 external URIs. This is a detached Reference.
+            //
+            // When sign() is called, two network connections are made. -- well,
+            // not really, as we use the OfflineResolver which acts as a proxy for
+            // these two resouces ;-))
+            //
+            sig.addDocument("http://www.w3.org/TR/xml-stylesheet");
+            sig.addDocument("http://www.nue.et-inf.uni-siegen.de/index.html");
+        }
 
-      f.close();
-      System.out.println("Wrote signature to " + BaseURI);
-   }
+        {
+            //Add in the KeyInfo for the certificate that we used the private key of
+            X509Certificate cert =
+                (X509Certificate) ks.getCertificate(certificateAlias);
 
-   static {
-      org.apache.xml.security.Init.init();
-   }
+            sig.addKeyInfo(cert);
+            sig.addKeyInfo(cert.getPublicKey());
+            System.out.println("Start signing");
+            sig.sign(privateKey);
+            System.out.println("Finished signing");
+        }
+
+        FileOutputStream f = new FileOutputStream(signatureFile);
+
+        XMLUtils.outputDOMc14nWithComments(doc, f);
+
+        f.close();
+        System.out.println("Wrote signature to " + BaseURI);
+    }
+
 }

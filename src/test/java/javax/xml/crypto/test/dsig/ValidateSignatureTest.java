@@ -51,7 +51,7 @@ public class ValidateSignatureTest extends org.junit.Assert {
         String fs = System.getProperty("file.separator");
         String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
         
-        dir = new File(base + fs + "data" + fs 
+        dir = new File(base + fs + "src/test/resources" + fs 
             + "javax" + fs + "xml" + fs + "crypto", "dsig");
         validator = new SignatureValidator(dir);
     }

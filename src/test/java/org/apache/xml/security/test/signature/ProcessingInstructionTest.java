@@ -51,7 +51,7 @@ public class ProcessingInstructionTest extends org.junit.Assert {
         String base = System.getProperty("basedir") == null 
             ? "./" : System.getProperty("basedir");
         String fs = System.getProperty("file.separator");
-        dir = base + fs + "data" + fs + "org" + fs + "apache" + fs + "xml" + 
+        dir = base + fs + "src/test/resources" + fs + "org" + fs + "apache" + fs + "xml" + 
             fs + "security" + fs + "testcases" + fs;
     }
     

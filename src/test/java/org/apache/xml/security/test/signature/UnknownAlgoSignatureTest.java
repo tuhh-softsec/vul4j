@@ -60,12 +60,12 @@ public class UnknownAlgoSignatureTest extends org.junit.Assert {
     protected static final String KEYSTORE_TYPE = "JKS";
 
     protected static final String KEYSTORE_FILE = 
-        "data/org/apache/xml/security/samples/input/keystore.jks";
+        "src/test/resources/org/apache/xml/security/samples/input/keystore.jks";
 
     protected static final String CERT_ALIAS = "test";
 
     protected static final String SIGNATURE_SOURCE_PATH = 
-        "data/org/apache/xml/security/temp/signature";
+        "src/test/resources/org/apache/xml/security/temp/signature";
 
     protected PublicKey publicKey;
 

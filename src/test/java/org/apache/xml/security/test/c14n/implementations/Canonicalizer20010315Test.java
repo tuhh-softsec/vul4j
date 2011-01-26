@@ -73,7 +73,7 @@ public class Canonicalizer20010315Test extends org.junit.Assert {
     private String prefix;
     
     public Canonicalizer20010315Test() {
-        prefix = "data/org/apache/xml/security/c14n/";
+        prefix = "src/test/resources/org/apache/xml/security/c14n/";
         String basedir = System.getProperty("basedir");
         if(basedir != null && !"".equals(basedir)) {
             prefix = basedir + "/" + prefix;

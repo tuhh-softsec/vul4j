@@ -48,7 +48,7 @@ public class Baltimore18Test extends org.junit.Assert {
         String base = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
         
         String fs = System.getProperty("file.separator");
-        dir = new File(base + fs + "data" + fs + "ie" +
+        dir = new File(base + fs + "src/test/resources" + fs + "ie" +
             fs + "baltimore" + fs + "merlin-examples",
             "merlin-xmldsig-eighteen");
         validator = new SignatureValidator(dir);

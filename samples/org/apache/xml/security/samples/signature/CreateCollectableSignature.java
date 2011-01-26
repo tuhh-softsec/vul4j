@@ -16,8 +16,6 @@
  */
 package org.apache.xml.security.samples.signature;
 
-
-
 import java.io.File;
 import java.io.FileOutputStream;
 
@@ -29,7 +27,6 @@ import org.apache.xml.security.transforms.params.XPathContainer;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Element;
-
 
 /**
  * These ones can be used to create Signatures which can be collected
@@ -45,120 +42,108 @@ public class CreateCollectableSignature {
 
     /** {@link org.apache.commons.logging} logging facility */
     static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(
-                    CreateCollectableSignature.class.getName());
+        org.apache.commons.logging.LogFactory.getLog(CreateCollectableSignature.class.getName());
 
-   /** Field passphrase */
-   public static final String passphrase =
-      "The super-mega-secret public static passphrase";
+    /** Field passphrase */
+    public static final String passphrase =
+        "The super-mega-secret public static passphrase";
+    
+    static {
+        org.apache.xml.security.Init.init();
 
-   /**
-    * Method main
-    *
-    * @param unused
-    * @throws Exception
-    */
-   public static void main(String unused[]) throws Exception {
-      //J-
-      File signatureFile = new File("collectableSignature.xml");
-      String BaseURI = signatureFile.toURL().toString();
-      //J+
-      javax.xml.parsers.DocumentBuilderFactory dbf =
-         javax.xml.parsers.DocumentBuilderFactory.newInstance();
+        // org.apache.xml.security.utils.Constants.setSignatureSpecNSprefix("");
+    }
 
-      dbf.setNamespaceAware(true);
+    /**
+     * Method main
+     *
+     * @param unused
+     * @throws Exception
+     */
+    public static void main(String unused[]) throws Exception {
+        File signatureFile = new File("collectableSignature.xml");
+        String BaseURI = signatureFile.toURI().toURL().toString();
+        javax.xml.parsers.DocumentBuilderFactory dbf =
+            javax.xml.parsers.DocumentBuilderFactory.newInstance();
 
-      javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
-      org.w3c.dom.Document doc = db.newDocument();
-      Element rootElement = doc.createElementNS(null, "root");
+        dbf.setNamespaceAware(true);
 
-      doc.appendChild(rootElement);
+        javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
+        org.w3c.dom.Document doc = db.newDocument();
+        Element rootElement = doc.createElementNS(null, "root");
 
-      /*
-      Element signedResourceElement = doc.createElementNS("http://custom/", "custom:signedContent");
-      signedResourceElement.setAttributeNS(Constants.NamespaceNS, "xmlns:custom", "http://custom/");
-      signedResourceElement.setAttributeNS(null, "Id", "id0");
-      */
-      Element signedResourceElement = doc.createElementNS(null, "signedContent");
+        doc.appendChild(rootElement);
 
-      signedResourceElement.appendChild(doc.createTextNode("Signed Text\n"));
-      rootElement.appendChild(signedResourceElement);
+        Element signedResourceElement = doc.createElementNS(null, "signedContent");
 
-      XMLSignature sig = new XMLSignature(doc, BaseURI,
-                                          XMLSignature.ALGO_ID_MAC_HMAC_SHA1);
+        signedResourceElement.appendChild(doc.createTextNode("Signed Text\n"));
+        rootElement.appendChild(signedResourceElement);
 
-      signedResourceElement.appendChild(sig.getElement());
+        XMLSignature sig = 
+            new XMLSignature(doc, BaseURI, XMLSignature.ALGO_ID_MAC_HMAC_SHA1);
 
-      {
-         String rootnamespace = signedResourceElement.getNamespaceURI();
-         boolean rootprefixed = (rootnamespace != null)
-                                && (rootnamespace.length() > 0);
-         String rootlocalname = signedResourceElement.getNodeName();
-         Transforms transforms = new Transforms(doc);
-         XPathContainer xpath = new XPathContainer(doc);
+        signedResourceElement.appendChild(sig.getElement());
 
-         xpath.setXPathNamespaceContext("ds", Constants.SignatureSpecNS);
+        {
+            String rootnamespace = signedResourceElement.getNamespaceURI();
+            boolean rootprefixed = (rootnamespace != null) && (rootnamespace.length() > 0);
+            String rootlocalname = signedResourceElement.getNodeName();
+            Transforms transforms = new Transforms(doc);
+            XPathContainer xpath = new XPathContainer(doc);
 
-         if (rootprefixed) {
-            xpath.setXPathNamespaceContext("root", rootnamespace);
-         }
+            xpath.setXPathNamespaceContext("ds", Constants.SignatureSpecNS);
 
-         //J-
-         String xpathStr = "\n"
-          + "count(                                                                 " + "\n"
-          + " ancestor-or-self::" + (rootprefixed ? "root:" : "") + rootlocalname + "" + "\n"
-          + " |                                                                     " + "\n"
-          + " here()/ancestor::" + (rootprefixed ? "root:" : "") + rootlocalname + "[1] " + "\n"
-          + ") <= count(                                                             " + "\n"
-          + " ancestor-or-self::" + (rootprefixed ? "root:" : "") + rootlocalname + "" + "\n"
-          + ")                                                                      " + "\n"
-          + " and                                                                   " + "\n"
-          + "count(                                                                 " + "\n"
-          + " ancestor-or-self::ds:Signature                                        " + "\n"
-          + " |                                                                     " + "\n"
-          + " here()/ancestor::ds:Signature[1]                                      " + "\n"
-          + ") > count(                                                             " + "\n"
-          + " ancestor-or-self::ds:Signature                                        " + "\n"
-          + ")                                                                      " + "\n"
+            if (rootprefixed) {
+                xpath.setXPathNamespaceContext("root", rootnamespace);
+            }
+
+            String xpathStr = "\n"
+                + "count(                                                                 " + "\n"
+                + " ancestor-or-self::" + (rootprefixed ? "root:" : "") + rootlocalname + "" + "\n"
+                + " |                                                                     " + "\n"
+                + " here()/ancestor::" + (rootprefixed ? "root:" : "") + rootlocalname + "[1] " + "\n"
+                + ") <= count(                                                             " + "\n"
+                + " ancestor-or-self::" + (rootprefixed ? "root:" : "") + rootlocalname + "" + "\n"
+                + ")                                                                      " + "\n"
+                + " and                                                                   " + "\n"
+                + "count(                                                                 " + "\n"
+                + " ancestor-or-self::ds:Signature                                        " + "\n"
+                + " |                                                                     " + "\n"
+                + " here()/ancestor::ds:Signature[1]                                      " + "\n"
+                + ") > count(                                                             " + "\n"
+                + " ancestor-or-self::ds:Signature                                        " + "\n"
+                + ")                                                                      " + "\n"
 
 
 
-          ;
-         //J+
-         xpath.setXPath(xpathStr);
-         transforms.addTransform(Transforms.TRANSFORM_XPATH,
-                                 xpath.getElementPlusReturns());
-         sig.addDocument("", transforms, Constants.ALGO_ID_DIGEST_SHA1);
-      }
+                ;
+            xpath.setXPath(xpathStr);
+            transforms.addTransform(Transforms.TRANSFORM_XPATH,
+                                    xpath.getElementPlusReturns());
+            sig.addDocument("", transforms, Constants.ALGO_ID_DIGEST_SHA1);
+        }
 
-      {
-         sig.getKeyInfo()
-            .add(new KeyName(doc, CreateCollectableSignature.passphrase));
-         System.out.println("Start signing");
-         sig.sign(sig
-            .createSecretKey(CreateCollectableSignature.passphrase.getBytes()));
-         System.out.println("Finished signing");
-      }
+        {
+            sig.getKeyInfo().add(new KeyName(doc, CreateCollectableSignature.passphrase));
+            System.out.println("Start signing");
+            sig.sign(sig.createSecretKey(CreateCollectableSignature.passphrase.getBytes()));
+            System.out.println("Finished signing");
+        }
 
-      FileOutputStream f = new FileOutputStream(signatureFile);
+        FileOutputStream f = new FileOutputStream(signatureFile);
 
-      XMLUtils.outputDOMc14nWithComments(doc, f);
-      f.close();
-      System.out.println("Wrote signature to " + BaseURI);
+        XMLUtils.outputDOMc14nWithComments(doc, f);
+        f.close();
+        System.out.println("Wrote signature to " + BaseURI);
 
-      SignedInfo s = sig.getSignedInfo();
+        SignedInfo s = sig.getSignedInfo();
 
-      for (int i = 0; i < s.getSignedContentLength(); i++) {
-         System.out.println("################ Signed Resource " + i
-                            + " ################");
-         System.out.println(new String(s.getSignedContentItem(i)));
-         System.out.println();
-      }
-   }
+        for (int i = 0; i < s.getSignedContentLength(); i++) {
+            System.out.println("################ Signed Resource " + i
+                               + " ################");
+            System.out.println(new String(s.getSignedContentItem(i)));
+            System.out.println();
+        }
+    }
 
-   static {
-      org.apache.xml.security.Init.init();
-
-      // org.apache.xml.security.utils.Constants.setSignatureSpecNSprefix("");
-   }
 }

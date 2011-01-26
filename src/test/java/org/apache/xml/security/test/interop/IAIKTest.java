@@ -33,11 +33,10 @@ public class IAIKTest extends InteropTestBase {
 
     /** {@link org.apache.commons.logging} logging facility */
     static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(
-                                                     IAIKTest.class.getName());
+        org.apache.commons.logging.LogFactory.getLog(IAIKTest.class.getName());
 
     /** Field gregorsDir */
-    static String gregorsDir = "data/at/iaik/ixsil/";
+    static String gregorsDir = "src/test/resources/at/iaik/ixsil/";
     
     static {
         String basedir = System.getProperty("basedir");

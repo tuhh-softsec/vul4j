@@ -94,7 +94,7 @@ public class XmlSecTest extends org.junit.Assert {
             // get key & self-signed certificate from keystore
             String fs = System.getProperty("file.separator");
             FileInputStream fis = 
-                new FileInputStream(BASEDIR + fs + "data" + fs + "test.jks");
+                new FileInputStream(BASEDIR + fs + "src/test/resources" + fs + "test.jks");
             KeyStore ks = KeyStore.getInstance("JKS");
             ks.load(fis, "changeit".toCharArray());
             signingCert = (X509Certificate) ks.getCertificate("mullan");

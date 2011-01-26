@@ -38,7 +38,7 @@ public class XMLX509CertificateTest extends org.junit.Assert {
 
     @org.junit.Test
     public void testGetX509Certificate() throws Exception {
-        File f = new File(BASEDIR + SEP + "data" + SEP + "ie" + SEP + "baltimore" +
+        File f = new File(BASEDIR + SEP + "src/test/resources" + SEP + "ie" + SEP + "baltimore" +
             SEP + "merlin-examples" + SEP + "merlin-xmldsig-twenty-three" +
             SEP + "signature-x509-crt.xml");
 

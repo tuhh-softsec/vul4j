@@ -165,7 +165,7 @@ public class TransformPerformanceTester {
 
         if (pureedge_xfilter2) {
             Document doc =
-                db.parse(new FileInputStream("data/com/pureedge/LeaveRequest.xfd"));
+                db.parse(new FileInputStream("samples/data/com/pureedge/LeaveRequest.xfd"));
             long start = System.currentTimeMillis();
             byte[][] result = null;
 
@@ -202,7 +202,7 @@ public class TransformPerformanceTester {
 
         if (pureedge_xfilter2_new) {
             Document doc =
-                db.parse(new FileInputStream("data/com/pureedge/LeaveRequest.xfd"));
+                db.parse(new FileInputStream("samples/data/com/pureedge/LeaveRequest.xfd"));
             long start = System.currentTimeMillis();
             byte[][] result = null;
 
