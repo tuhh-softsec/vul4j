@@ -20,10 +20,10 @@
 package org.apache.directory.shared.ldap.codec.actions;
 
 
+import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
-import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
@@ -66,7 +66,7 @@ public class InitAssertionValueFilterAction extends GrammarAction
     public void action( Asn1Container container ) throws DecoderException
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        SearchRequestDecorator searchRequest = ldapMessageContainer.getSearchRequestDecorator();
+        SearchRequestDecorator searchRequestDecorator = ldapMessageContainer.getSearchRequestDecorator();
 
         TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -83,7 +83,7 @@ public class InitAssertionValueFilterAction extends GrammarAction
         }
 
         AttributeValueAssertionFilter terminalFilter = ( AttributeValueAssertionFilter )
-                searchRequest.getTerminalFilter();
+                searchRequestDecorator.getTerminalFilter();
         AttributeValueAssertion assertion = terminalFilter.getAssertion();
 
         if ( ldapMessageContainer.isBinary( assertion.getAttributeDesc() ) )
@@ -115,7 +115,7 @@ public class InitAssertionValueFilterAction extends GrammarAction
 
         // We now have to get back to the nearest filter which is
         // not terminal.
-        searchRequest.unstackFilters( container );
+        searchRequestDecorator.unstackFilters( container );
 
         if ( IS_DEBUG )
         {

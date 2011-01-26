@@ -73,13 +73,13 @@ public class InitOrFilterAction extends GrammarAction
             throw new DecoderException( msg );
         }
 
-        SearchRequestDecorator searchRequest = ldapMessageContainer.getSearchRequestDecorator();
+        SearchRequestDecorator searchRequestDecorator = ldapMessageContainer.getSearchRequestDecorator();
 
         // We can allocate the SearchRequest
         Filter orFilter = new OrFilter( ldapMessageContainer.getTlvId() );
 
         // Set the filter
-        searchRequest.addCurrentFilter( orFilter );
+        searchRequestDecorator.addCurrentFilter( orFilter );
 
         if ( IS_DEBUG )
         {

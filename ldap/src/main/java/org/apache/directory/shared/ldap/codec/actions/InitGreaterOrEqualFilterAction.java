@@ -20,15 +20,14 @@
 package org.apache.directory.shared.ldap.codec.actions;
 
 
+import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
-import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
 import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilter;
 import org.apache.directory.shared.ldap.codec.search.Filter;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,17 +61,17 @@ public class InitGreaterOrEqualFilterAction extends GrammarAction
     public void action( Asn1Container container ) throws DecoderException
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        SearchRequestDecorator searchRequest = ldapMessageContainer.getSearchRequestDecorator();
+        SearchRequestDecorator searchRequestDecorator = ldapMessageContainer.getSearchRequestDecorator();
 
         // We can allocate the Attribute Value Assertion
         Filter filter = new AttributeValueAssertionFilter( ldapMessageContainer.getTlvId(),
             LdapConstants.GREATER_OR_EQUAL_FILTER );
 
-        searchRequest.addCurrentFilter( filter );
+        searchRequestDecorator.addCurrentFilter( filter );
 
         // Store the filter structure that still has to be
         // fullfiled
-        searchRequest.setTerminalFilter( filter );
+        searchRequestDecorator.setTerminalFilter( filter );
 
         if ( IS_DEBUG )
         {

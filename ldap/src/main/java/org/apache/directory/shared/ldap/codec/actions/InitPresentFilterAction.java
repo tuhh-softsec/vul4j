@@ -62,7 +62,7 @@ public class InitPresentFilterAction extends GrammarAction
     public void action( Asn1Container container ) throws DecoderException
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        SearchRequestDecorator searchRequest = ldapMessageContainer.getSearchRequestDecorator();
+        SearchRequestDecorator searchRequestDecorator = ldapMessageContainer.getSearchRequestDecorator();
 
         TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -70,8 +70,8 @@ public class InitPresentFilterAction extends GrammarAction
         PresentFilter presentFilter = new PresentFilter( ldapMessageContainer.getTlvId() );
 
         // add the filter to the request filter
-        searchRequest.addCurrentFilter( presentFilter );
-        searchRequest.setTerminalFilter( presentFilter );
+        searchRequestDecorator.addCurrentFilter( presentFilter );
+        searchRequestDecorator.setTerminalFilter( presentFilter );
 
         String value = Strings.utf8ToString(tlv.getValue().getData());
 
@@ -88,7 +88,7 @@ public class InitPresentFilterAction extends GrammarAction
 
         // We now have to get back to the nearest filter which is
         // not terminal.
-        searchRequest.unstackFilters( container );
+        searchRequestDecorator.unstackFilters( container );
 
         if ( IS_DEBUG )
         {

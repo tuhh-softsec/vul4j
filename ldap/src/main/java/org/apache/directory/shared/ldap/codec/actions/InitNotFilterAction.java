@@ -29,8 +29,6 @@ import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
 import org.apache.directory.shared.ldap.codec.search.Filter;
 import org.apache.directory.shared.ldap.codec.search.NotFilter;
-import org.apache.directory.shared.ldap.model.message.SearchRequest;
-import org.apache.directory.shared.ldap.message.SearchRequestImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,13 +72,13 @@ public class InitNotFilterAction extends GrammarAction
             throw new DecoderException( msg );
         }
 
-        SearchRequestDecorator searchRequest = ldapMessageContainer.getSearchRequestDecorator();
+        SearchRequestDecorator searchRequestDecorator = ldapMessageContainer.getSearchRequestDecorator();
 
         // We can allocate the SearchRequest
         Filter notFilter = new NotFilter( ldapMessageContainer.getTlvId() );
 
         // Set the filter
-        searchRequest.addCurrentFilter( notFilter );
+        searchRequestDecorator.addCurrentFilter( notFilter );
 
         if ( IS_DEBUG )
         {

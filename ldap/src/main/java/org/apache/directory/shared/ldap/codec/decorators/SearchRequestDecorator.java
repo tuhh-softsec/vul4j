@@ -20,20 +20,42 @@
 package org.apache.directory.shared.ldap.codec.decorators;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.search.*;
+import org.apache.directory.shared.ldap.codec.search.AndFilter;
+import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilter;
+import org.apache.directory.shared.ldap.codec.search.ConnectorFilter;
+import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
+import org.apache.directory.shared.ldap.codec.search.Filter;
+import org.apache.directory.shared.ldap.codec.search.NotFilter;
+import org.apache.directory.shared.ldap.codec.search.OrFilter;
+import org.apache.directory.shared.ldap.codec.search.PresentFilter;
+import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
 import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
-import org.apache.directory.shared.ldap.model.filter.*;
+import org.apache.directory.shared.ldap.model.filter.AndNode;
+import org.apache.directory.shared.ldap.model.filter.ApproximateNode;
+import org.apache.directory.shared.ldap.model.filter.BranchNode;
+import org.apache.directory.shared.ldap.model.filter.BranchNormalizedVisitor;
+import org.apache.directory.shared.ldap.model.filter.EqualityNode;
+import org.apache.directory.shared.ldap.model.filter.ExprNode;
+import org.apache.directory.shared.ldap.model.filter.ExtensibleNode;
+import org.apache.directory.shared.ldap.model.filter.GreaterEqNode;
+import org.apache.directory.shared.ldap.model.filter.LeafNode;
+import org.apache.directory.shared.ldap.model.filter.LessEqNode;
+import org.apache.directory.shared.ldap.model.filter.NotNode;
+import org.apache.directory.shared.ldap.model.filter.OrNode;
+import org.apache.directory.shared.ldap.model.filter.PresenceNode;
+import org.apache.directory.shared.ldap.model.filter.SimpleNode;
+import org.apache.directory.shared.ldap.model.filter.SubstringNode;
 import org.apache.directory.shared.ldap.model.message.SearchRequest;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -141,14 +163,9 @@ public class SearchRequestDecorator extends MessageDecorator
      *
      * @return the expression node for the root of the filter expression tree.
      */
-    public ExprNode getFilter()
+    public Filter getFilter()
     {
-        if ( getSearchRequest().getFilter() == null )
-        {
-            getSearchRequest().setFilter( transform( topFilter ) );
-        }
-
-        return getSearchRequest().getFilter();
+        return transform( getSearchRequest().getFilter() );
     }
 
 

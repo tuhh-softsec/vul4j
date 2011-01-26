@@ -61,13 +61,13 @@ public class InitExtensibleMatchFilterAction extends GrammarAction
     public void action( Asn1Container container ) throws DecoderException
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        SearchRequestDecorator searchRequest = ldapMessageContainer.getSearchRequestDecorator();
+        SearchRequestDecorator searchRequestDecorator = ldapMessageContainer.getSearchRequestDecorator();
 
         // We can allocate the ExtensibleMatch Filter
         Filter extensibleMatchFilter = new ExtensibleMatchFilter( ldapMessageContainer.getTlvId() );
 
-        searchRequest.addCurrentFilter( extensibleMatchFilter );
-        searchRequest.setTerminalFilter( extensibleMatchFilter );
+        searchRequestDecorator.addCurrentFilter( extensibleMatchFilter );
+        searchRequestDecorator.setTerminalFilter( extensibleMatchFilter );
 
         if ( IS_DEBUG )
         {

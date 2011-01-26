@@ -1166,7 +1166,7 @@ public class LdapEncoder
         searchRequestLength += 1 + 1 + 1;
 
         // The filter
-        searchRequestLength += searchRequestDecorator.getCurrentFilter().computeLength();
+        searchRequestLength += searchRequestDecorator.getFilter().computeLength();
 
         // The attributes description list
         int attributeDescriptionListLength = 0;

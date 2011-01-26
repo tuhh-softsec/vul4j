@@ -61,17 +61,17 @@ public class InitEqualityMatchFilterAction extends GrammarAction
     public void action( Asn1Container container ) throws DecoderException
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        SearchRequestDecorator searchRequest = ldapMessageContainer.getSearchRequestDecorator();
+        SearchRequestDecorator searchRequestDecorator = ldapMessageContainer.getSearchRequestDecorator();
 
         // We can allocate the Attribute Value Assertion
         Filter filter = new AttributeValueAssertionFilter( ldapMessageContainer.getTlvId(),
             LdapConstants.EQUALITY_MATCH_FILTER );
 
-        searchRequest.addCurrentFilter( filter );
+        searchRequestDecorator.addCurrentFilter( filter );
 
         // Store the filter structure that still has to be
         // fulfilled
-        searchRequest.setTerminalFilter( filter );
+        searchRequestDecorator.setTerminalFilter( filter );
 
         if ( IS_DEBUG )
         {

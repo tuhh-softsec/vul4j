@@ -63,7 +63,7 @@ public class InitAttributeDescFilterAction extends GrammarAction
     public void action( Asn1Container container ) throws DecoderException
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        SearchRequestDecorator searchRequest = ldapMessageContainer.getSearchRequestDecorator();
+        SearchRequestDecorator searchRequestDecorator = ldapMessageContainer.getSearchRequestDecorator();
 
         TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -81,7 +81,7 @@ public class InitAttributeDescFilterAction extends GrammarAction
             assertion.setAttributeDesc( type );
 
             AttributeValueAssertionFilter terminalFilter = ( AttributeValueAssertionFilter )
-                    searchRequest.getTerminalFilter();
+                    searchRequestDecorator.getTerminalFilter();
             terminalFilter.setAssertion( assertion );
         }
 

@@ -20,16 +20,15 @@
 package org.apache.directory.shared.ldap.codec.actions;
 
 
+import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
-import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
 import org.apache.directory.shared.ldap.codec.search.Filter;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,7 +62,7 @@ public class InitSubstringsFilterAction extends GrammarAction
     public void action( Asn1Container container ) throws DecoderException
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        SearchRequestDecorator searchRequest = ldapMessageContainer.getSearchRequestDecorator();
+        SearchRequestDecorator searchRequestDecorator = ldapMessageContainer.getSearchRequestDecorator();
 
         TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -79,8 +78,8 @@ public class InitSubstringsFilterAction extends GrammarAction
         // We can allocate the SearchRequest
         Filter substringFilter = new SubstringFilter( ldapMessageContainer.getTlvId() );
 
-        searchRequest.addCurrentFilter( substringFilter );
-        searchRequest.setTerminalFilter( substringFilter );
+        searchRequestDecorator.addCurrentFilter( substringFilter );
+        searchRequestDecorator.setTerminalFilter( substringFilter );
 
         if ( IS_DEBUG )
         {
