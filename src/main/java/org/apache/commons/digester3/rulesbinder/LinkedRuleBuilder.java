@@ -17,7 +17,7 @@
  */
 package org.apache.commons.digester3.rulesbinder;
 
-import org.apache.commons.digester3.ObjectCreationFactory;
+import org.apache.commons.digester3.spi.ObjectCreationFactory;
 
 /**
  * Builder invoked to bind one or more rules to a pattern.
