@@ -142,6 +142,7 @@
             <Export-Package>org.apache.directory.shared.ldap.schema*</Export-Package>
             <Import-Package>
               *,
+              org.apache.directory.shared.ldap.aci,
               org.apache.directory.shared.ldap.model.schema.comparators,
               org.apache.directory.shared.ldap.model.schema.normalizers,
               org.apache.directory.shared.ldap.model.schema.parsers,
