@@ -336,6 +336,8 @@ public abstract class AbstractSchemaObject implements SchemaObject
 
         if ( !isReadOnly )
         {
+            this.names.clear();
+            
             for ( String name : names )
             {
                 if ( name != null )
