@@ -47,7 +47,6 @@ public class EntryChangeDecoder extends Asn1Decoder implements ControlDecoder
      * @return A valid EntryChange object
      * 
      * @throws DecoderException If the decoding found an error
-     * @throws NamingException It will never be throw by this method
      */
     
     public Asn1Object decode( byte[] controlBytes, Control control ) throws DecoderException

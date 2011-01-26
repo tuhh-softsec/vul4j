@@ -27,9 +27,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
-import org.apache.directory.shared.ldap.codec.search.controls.ChangeType;
-import org.apache.directory.shared.ldap.model.name.Dn;
+import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 import org.apache.directory.shared.util.Strings;
 
 
@@ -80,17 +78,10 @@ import org.apache.directory.shared.util.Strings;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class EntryChangeDecorator extends AbstractControl
+public class EntryChangeDecorator extends ControlDecorator
 {
 
     public static final int UNDEFINED_CHANGE_NUMBER = -1;
-
-    private ChangeType changeType = ChangeType.ADD;
-
-    private long changeNumber = UNDEFINED_CHANGE_NUMBER;
-
-    /** The previous Dn */
-    private Dn previousDn = null;
 
     /** A temporary storage for the previous Dn */
     private byte[] previousDnBytes = null;
@@ -106,9 +97,13 @@ public class EntryChangeDecorator extends AbstractControl
      */
     public EntryChangeDecorator()
     {
-        super( EntryChange.OID );
+        super( new EntryChange(), new EntryChangeDecoder() );
+    }
 
-        decoder = new EntryChangeDecoder();
+
+    private EntryChange getEntryChange()
+    {
+        return ( EntryChange ) getDecorated();
     }
 
 
@@ -128,15 +123,15 @@ public class EntryChangeDecorator extends AbstractControl
         int previousDnLength = 0;
         int changeNumberLength = 0;
 
-        if ( previousDn != null )
+        if ( getEntryChange().getPreviousDn() != null )
         {
-            previousDnBytes = Strings.getBytesUtf8(previousDn.getName());
+            previousDnBytes = Strings.getBytesUtf8( getEntryChange().getPreviousDn().getName() );
             previousDnLength = 1 + TLV.getNbBytes( previousDnBytes.length ) + previousDnBytes.length;
         }
 
-        if ( changeNumber != UNDEFINED_CHANGE_NUMBER )
+        if ( getEntryChange().getChangeNumber() != UNDEFINED_CHANGE_NUMBER )
         {
-            changeNumberLength = 1 + 1 + Value.getNbBytes( changeNumber );
+            changeNumberLength = 1 + 1 + Value.getNbBytes( getEntryChange().getChangeNumber() );
         }
 
         eccSeqLength = changeTypesLength + previousDnLength + changeNumberLength;
@@ -173,16 +168,16 @@ public class EntryChangeDecorator extends AbstractControl
 
         buffer.put( UniversalTag.ENUMERATED.getValue() );
         buffer.put( ( byte ) 1 );
-        buffer.put( Value.getBytes( changeType.getValue() ) );
+        buffer.put( Value.getBytes( getEntryChange().getChangeType().getValue() ) );
 
-        if ( previousDn != null )
+        if ( getEntryChange().getPreviousDn() != null )
         {
             Value.encode( buffer, previousDnBytes );
         }
 
-        if ( changeNumber != UNDEFINED_CHANGE_NUMBER )
+        if ( getEntryChange().getChangeNumber() != UNDEFINED_CHANGE_NUMBER )
         {
-            Value.encode( buffer, changeNumber );
+            Value.encode( buffer, getEntryChange().getChangeNumber() );
         }
 
         return buffer;
@@ -194,7 +189,7 @@ public class EntryChangeDecorator extends AbstractControl
      */
     public byte[] getValue()
     {
-        if ( value == null )
+        if ( getDecorated().getValue() == null )
         {
             try
             {
@@ -206,19 +201,19 @@ public class EntryChangeDecorator extends AbstractControl
 
                 buffer.put( UniversalTag.ENUMERATED.getValue() );
                 buffer.put( ( byte ) 1 );
-                buffer.put( Value.getBytes( changeType.getValue() ) );
+                buffer.put( Value.getBytes( getEntryChange().getChangeType().getValue() ) );
 
-                if ( previousDn != null )
+                if ( getEntryChange().getPreviousDn() != null )
                 {
                     Value.encode( buffer, previousDnBytes );
                 }
 
-                if ( changeNumber != UNDEFINED_CHANGE_NUMBER )
+                if ( getEntryChange().getChangeNumber() != UNDEFINED_CHANGE_NUMBER )
                 {
-                    Value.encode( buffer, changeNumber );
+                    Value.encode( buffer, getEntryChange().getChangeNumber() );
                 }
 
-                value = buffer.array();
+                getDecorated().setValue( buffer.array() );
             }
             catch ( Exception e )
             {
@@ -226,94 +221,6 @@ public class EntryChangeDecorator extends AbstractControl
             }
         }
 
-        return value;
-    }
-
-
-    /**
-     * @return The ChangeType
-     */
-    public ChangeType getChangeType()
-    {
-        return changeType;
-    }
-
-
-    /**
-     * Set the ChangeType
-     *
-     * @param changeType Add, Delete; Modify or ModifyDN
-     */
-    public void setChangeType( ChangeType changeType )
-    {
-        this.changeType = changeType;
-    }
-
-
-    public Dn getPreviousDn()
-    {
-        return previousDn;
-    }
-
-
-    public void setPreviousDn( Dn previousDn )
-    {
-        this.previousDn = previousDn;
-    }
-
-
-    public long getChangeNumber()
-    {
-        return changeNumber;
-    }
-
-
-    public void setChangeNumber( long changeNumber )
-    {
-        this.changeNumber = changeNumber;
-    }
-
-
-    /**
-     * @see Object#equals(Object)
-     */
-    public boolean equals( Object o )
-    {
-        if ( !super.equals( o ) )
-        {
-            return false;
-        }
-
-        EntryChangeDecorator otherControl = ( EntryChangeDecorator ) o;
-
-        return ( changeNumber == otherControl.changeNumber ) &&
-             ( changeType == otherControl.changeType ) &&
-             ( previousDn.equals( otherControl.previousDn ) );
-    }
-
-    
-    /**
-     * Return a String representing this EntryChangeControl.
-     */
-    public String toString()
-    {
-        StringBuffer sb = new StringBuffer();
-
-        sb.append( "    Entry Change Control\n" );
-        sb.append( "        oid : " ).append( getOid() ).append( '\n' );
-        sb.append( "        critical : " ).append( isCritical() ).append( '\n' );
-        sb.append( "        changeType   : '" ).append( changeType ).append( "'\n" );
-        sb.append( "        previousDN   : '" ).append( previousDn ).append( "'\n" );
-
-        if ( changeNumber == UNDEFINED_CHANGE_NUMBER )
-        {
-            sb.append( "        changeNumber : '" ).append( "UNDEFINED" ).append( "'\n" );
-        }
-        else
-        {
-            sb.append( "        changeNumber : '" ).append( changeNumber ).append( "'\n" );
-        }
-
-        return sb.toString();
+        return getDecorated().getValue();
     }
 }
