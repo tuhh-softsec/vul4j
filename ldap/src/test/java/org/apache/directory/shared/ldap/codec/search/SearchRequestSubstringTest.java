@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.codec.search;
 
 
-import  static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -34,14 +34,15 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
-import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
-import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
-import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
-import org.apache.directory.shared.ldap.model.filter.SearchScope;
-import org.apache.directory.shared.ldap.model.message.AliasDerefMode;
+import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.ldap.codec.LdapEncoder;
+import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
+import org.apache.directory.shared.ldap.model.filter.ExprNode;
+import org.apache.directory.shared.ldap.model.filter.SearchScope;
+import org.apache.directory.shared.ldap.model.filter.SubstringNode;
+import org.apache.directory.shared.ldap.model.message.AliasDerefMode;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.SearchRequest;
 import org.apache.directory.shared.ldap.model.schema.normalizers.DeepTrimToLowerNormalizer;
@@ -164,8 +165,7 @@ public class SearchRequestSubstringTest
             fail( de.getMessage() );
         }
 
-        SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
-        SearchRequest searchRequest = decorator.getSearchRequest();
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -176,12 +176,12 @@ public class SearchRequestSubstringTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (objectclass=t*)
-        Filter filter = decorator.getCurrentFilter();
-        SubstringFilter substringFilter = ( SubstringFilter ) filter;
-        assertNotNull( substringFilter );
+        ExprNode node = searchRequest.getFilter();
+        SubstringNode substringNode = ( SubstringNode ) node;
+        assertNotNull( substringNode );
 
-        assertEquals( "objectclass", substringFilter.getType() );
-        assertEquals( "t", substringFilter.getInitialSubstrings() );
+        assertEquals( "objectclass", substringNode.getAttribute() );
+        assertEquals( "t", substringNode.getInitial() );
 
         // The attributes
         List<String> attributes = searchRequest.getAttributes();
@@ -311,8 +311,7 @@ public class SearchRequestSubstringTest
             fail( de.getMessage() );
         }
 
-        SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
-        SearchRequest searchRequest = decorator.getSearchRequest();
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -323,12 +322,12 @@ public class SearchRequestSubstringTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (objectclass=t*)
-        Filter filter = decorator.getCurrentFilter();
-        SubstringFilter substringFilter = ( SubstringFilter ) filter;
-        assertNotNull( substringFilter );
+        ExprNode node = searchRequest.getFilter();
+        SubstringNode substringNode = ( SubstringNode ) node;
+        assertNotNull( substringNode );
 
-        assertEquals( "objectclass", substringFilter.getType() );
-        assertEquals( "t", substringFilter.getInitialSubstrings() );
+        assertEquals( "objectclass", substringNode.getAttribute() );
+        assertEquals( "t", substringNode.getInitial() );
 
         // The attributes
         List<String> attributes = searchRequest.getAttributes();
@@ -440,8 +439,7 @@ public class SearchRequestSubstringTest
             fail( de.getMessage() );
         }
 
-        SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
-        SearchRequest searchRequest = decorator.getSearchRequest();
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -452,14 +450,14 @@ public class SearchRequestSubstringTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (objectclass=t*)
-        Filter filter = decorator.getCurrentFilter();
-        SubstringFilter substringFilter = ( SubstringFilter ) filter;
-        assertNotNull( substringFilter );
+        ExprNode node = searchRequest.getFilter();
+        SubstringNode substringNode = ( SubstringNode ) node;
+        assertNotNull( substringNode );
 
-        assertEquals( "objectclass", substringFilter.getType() );
-        assertEquals( null, substringFilter.getInitialSubstrings() );
-        assertEquals( "t", substringFilter.getAnySubstrings().get( 0 ) );
-        assertEquals( null, substringFilter.getFinalSubstrings() );
+        assertEquals( "objectclass", substringNode.getAttribute() );
+        assertEquals( null, substringNode.getInitial() );
+        assertEquals( "t", substringNode.getAny().get( 0 ) );
+        assertEquals( null, substringNode.getFinal() );
 
         // The attributes
         List<String> attributes = searchRequest.getAttributes();
@@ -563,8 +561,7 @@ public class SearchRequestSubstringTest
             fail( de.getMessage() );
         }
 
-        SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
-        SearchRequest searchRequest = decorator.getSearchRequest();
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -575,14 +572,14 @@ public class SearchRequestSubstringTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (objectclass=t*)
-        Filter filter = decorator.getCurrentFilter();
-        SubstringFilter substringFilter = ( SubstringFilter ) filter;
-        assertNotNull( substringFilter );
+        ExprNode node = searchRequest.getFilter();
+        SubstringNode substringNode = ( SubstringNode ) node;
+        assertNotNull( substringNode );
 
-        assertEquals( "objectclass", substringFilter.getType() );
-        assertEquals( null, substringFilter.getInitialSubstrings() );
-        assertEquals( "t", substringFilter.getAnySubstrings().get( 0 ) );
-        assertEquals( "t", substringFilter.getFinalSubstrings() );
+        assertEquals( "objectclass", substringNode.getAttribute() );
+        assertEquals( null, substringNode.getInitial() );
+        assertEquals( "t", substringNode.getAny().get( 0 ) );
+        assertEquals( "t", substringNode.getFinal() );
 
         // The attributes
         List<String> attributes = searchRequest.getAttributes();
@@ -687,8 +684,7 @@ public class SearchRequestSubstringTest
             fail( de.getMessage() );
         }
 
-        SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
-        SearchRequest searchRequest = decorator.getSearchRequest();
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -699,14 +695,14 @@ public class SearchRequestSubstringTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (objectclass=t*)
-        Filter filter = decorator.getCurrentFilter();
-        SubstringFilter substringFilter = ( SubstringFilter ) filter;
-        assertNotNull( substringFilter );
+        ExprNode node = searchRequest.getFilter();
+        SubstringNode substringNode = ( SubstringNode ) node;
+        assertNotNull( substringNode );
 
-        assertEquals( "objectclass", substringFilter.getType() );
-        assertEquals( "t", substringFilter.getInitialSubstrings() );
-        assertEquals( "t", substringFilter.getAnySubstrings().get( 0 ) );
-        assertEquals( "t", substringFilter.getFinalSubstrings() );
+        assertEquals( "objectclass", substringNode.getAttribute() );
+        assertEquals( "t", substringNode.getInitial() );
+        assertEquals( "t", substringNode.getAny().get( 0 ) );
+        assertEquals( "t", substringNode.getFinal() );
 
         // The attributes
         List<String> attributes = searchRequest.getAttributes();
@@ -810,8 +806,7 @@ public class SearchRequestSubstringTest
             fail( de.getMessage() );
         }
 
-        SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
-        SearchRequest searchRequest = decorator.getSearchRequest();
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -822,13 +817,13 @@ public class SearchRequestSubstringTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (objectclass=t*)
-        Filter filter = decorator.getCurrentFilter();
-        SubstringFilter substringFilter = ( SubstringFilter ) filter;
-        assertNotNull( substringFilter );
+        ExprNode node = searchRequest.getFilter();
+        SubstringNode substringNode = ( SubstringNode ) node;
+        assertNotNull( substringNode );
 
-        assertEquals( "objectclass", substringFilter.getType() );
-        assertEquals( "t", substringFilter.getInitialSubstrings() );
-        assertEquals( "t", substringFilter.getAnySubstrings().get( 0 ) );
+        assertEquals( "objectclass", substringNode.getAttribute() );
+        assertEquals( "t", substringNode.getInitial() );
+        assertEquals( "t", substringNode.getAny().get( 0 ) );
 
         // The attributes
         List<String> attributes = searchRequest.getAttributes();
@@ -936,8 +931,7 @@ public class SearchRequestSubstringTest
             fail( de.getMessage() );
         }
 
-        SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
-        SearchRequest searchRequest = decorator.getSearchRequest();
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -948,15 +942,15 @@ public class SearchRequestSubstringTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (objectclass=t*)
-        Filter filter = decorator.getCurrentFilter();
-        SubstringFilter substringFilter = ( SubstringFilter ) filter;
-        assertNotNull( substringFilter );
+        ExprNode node = searchRequest.getFilter();
+        SubstringNode substringNode = ( SubstringNode ) node;
+        assertNotNull( substringNode );
 
-        assertEquals( "objectclass", substringFilter.getType() );
-        assertEquals( null, substringFilter.getInitialSubstrings() );
-        assertEquals( "t", substringFilter.getAnySubstrings().get( 0 ) );
-        assertEquals( "t", substringFilter.getAnySubstrings().get( 1 ) );
-        assertEquals( "t", substringFilter.getFinalSubstrings() );
+        assertEquals( "objectclass", substringNode.getAttribute() );
+        assertEquals( null, substringNode.getInitial() );
+        assertEquals( "t", substringNode.getAny().get( 0 ) );
+        assertEquals( "t", substringNode.getAny().get( 1 ) );
+        assertEquals( "t", substringNode.getFinal() );
 
         // The attributes
         List<String> attributes = searchRequest.getAttributes();
@@ -1060,8 +1054,7 @@ public class SearchRequestSubstringTest
             fail( de.getMessage() );
         }
 
-        SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
-        SearchRequest searchRequest = decorator.getSearchRequest();
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -1072,13 +1065,13 @@ public class SearchRequestSubstringTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (objectclass=t*)
-        Filter filter = decorator.getCurrentFilter();
-        SubstringFilter substringFilter = ( SubstringFilter ) filter;
-        assertNotNull( substringFilter );
+        ExprNode node = searchRequest.getFilter();
+        SubstringNode substringNode = ( SubstringNode ) node;
+        assertNotNull( substringNode );
 
-        assertEquals( "objectclass", substringFilter.getType() );
-        assertEquals( "t", substringFilter.getInitialSubstrings() );
-        assertEquals( "*", substringFilter.getAnySubstrings().get( 0 ) );
+        assertEquals( "objectclass", substringNode.getAttribute() );
+        assertEquals( "t", substringNode.getInitial() );
+        assertEquals( "*", substringNode.getAny().get( 0 ) );
 
         // The attributes
         List<String> attributes = searchRequest.getAttributes();
@@ -1183,8 +1176,7 @@ public class SearchRequestSubstringTest
             fail( de.getMessage() );
         }
 
-        SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
-        SearchRequest searchRequest = decorator.getSearchRequest();
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -1195,16 +1187,16 @@ public class SearchRequestSubstringTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (objectclass=t*)
-        Filter filter = decorator.getCurrentFilter();
-        SubstringFilter substringFilter = ( SubstringFilter ) filter;
-        assertNotNull( substringFilter );
+        ExprNode node = searchRequest.getFilter();
+        SubstringNode substringNode = ( SubstringNode ) node;
+        assertNotNull( substringNode );
 
-        assertEquals( "objectclass", substringFilter.getType() );
-        assertEquals( null, substringFilter.getInitialSubstrings() );
-        assertEquals( "t", substringFilter.getAnySubstrings().get( 0 ) );
-        assertEquals( "t", substringFilter.getAnySubstrings().get( 1 ) );
-        assertEquals( "t", substringFilter.getAnySubstrings().get( 2 ) );
-        assertEquals( null, substringFilter.getFinalSubstrings() );
+        assertEquals( "objectclass", substringNode.getAttribute() );
+        assertEquals( null, substringNode.getInitial() );
+        assertEquals( "t", substringNode.getAny().get( 0 ) );
+        assertEquals( "t", substringNode.getAny().get( 1 ) );
+        assertEquals( "t", substringNode.getAny().get( 2 ) );
+        assertEquals( null, substringNode.getFinal() );
 
         // The attributes
         List<String> attributes = searchRequest.getAttributes();
@@ -1327,8 +1319,7 @@ public class SearchRequestSubstringTest
             fail( de.getMessage() );
         }
 
-        SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
-        SearchRequest searchRequest = decorator.getSearchRequest();
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -1339,14 +1330,14 @@ public class SearchRequestSubstringTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (objectclass=t*)
-        Filter filter = decorator.getCurrentFilter();
-        SubstringFilter substringFilter = ( SubstringFilter ) filter;
-        assertNotNull( substringFilter );
+        ExprNode node = searchRequest.getFilter();
+        SubstringNode substringNode = ( SubstringNode ) node;
+        assertNotNull( substringNode );
 
-        assertEquals( "objectclass", substringFilter.getType() );
-        assertEquals( null, substringFilter.getInitialSubstrings() );
-        assertEquals( 0, substringFilter.getAnySubstrings().size() );
-        assertEquals( "Amos", substringFilter.getFinalSubstrings() );
+        assertEquals( "objectclass", substringNode.getAttribute() );
+        assertEquals( null, substringNode.getInitial() );
+        assertEquals( 0, substringNode.getAny().size() );
+        assertEquals( "Amos", substringNode.getFinal() );
 
         // The attributes
         List<String> attributes = searchRequest.getAttributes();
