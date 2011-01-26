@@ -52,7 +52,6 @@ import org.apache.directory.shared.ldap.codec.search.NotFilter;
 import org.apache.directory.shared.ldap.codec.search.OrFilter;
 import org.apache.directory.shared.ldap.codec.search.PresentFilter;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
-import org.apache.directory.shared.ldap.message.SearchRequestImpl;
 import org.apache.directory.shared.ldap.model.entry.BinaryValue;
 import org.apache.directory.shared.ldap.model.entry.StringValue;
 import org.apache.directory.shared.ldap.model.entry.Value;
@@ -1881,7 +1880,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            SearchRequest searchRequest = new SearchRequestImpl();
+            SearchRequest searchRequest = new org.apache.directory.shared.ldap.model.message.SearchRequestImpl();
             container.getBatchRequest().addRequest( searchRequest );
 
             XmlPullParser xpp = container.getParser();
