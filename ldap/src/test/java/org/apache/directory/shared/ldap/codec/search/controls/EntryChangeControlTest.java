@@ -354,7 +354,7 @@ public class EntryChangeControlTest
         entry.setChangeNumber( 16 );
         entry.setPreviousDn( new Dn( "a=b" ) );
         bb = decorator.encode( ByteBuffer.allocate( decorator.computeLength() ) );
-        String decoded = Strings.dumpBytes(bb.array());
+        String decoded = Strings.dumpBytes( bb.array() );
         assertEquals( expected, decoded );
     }
 

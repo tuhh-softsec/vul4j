@@ -94,7 +94,7 @@ public class EntryChange extends BasicControlImpl
      */
     public EntryChange()
     {
-        super( "" );
+        super( OID );
     }
 
 
