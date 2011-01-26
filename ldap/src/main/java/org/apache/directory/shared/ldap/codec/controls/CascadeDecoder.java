@@ -30,10 +30,10 @@ import org.apache.directory.shared.ldap.model.message.Control;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class CascadeControlDecoder implements ControlDecoder
+public class CascadeDecoder implements ControlDecoder
 {
     public Asn1Object decode( byte[] controlBytes, Control control ) throws DecoderException
     {
-        return new CascadeControl();
+        return new CascadeDecorator();
     }
 }

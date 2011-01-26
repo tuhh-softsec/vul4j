@@ -17,10 +17,10 @@
  *   under the License.
  *
  */
-
 package org.apache.directory.shared.ldap.codec.controls.ppolicy;
 
-import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
+
+import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
 
 
 /**
@@ -28,7 +28,7 @@ import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class PasswordPolicyRequestControl extends AbstractControl
+public class PasswordPolicyRequestControl extends ControlImpl
 {
     /** the password policy request control */
     public static final String CONTROL_OID = "1.3.6.1.4.1.42.2.27.8.5.1";
@@ -40,9 +40,8 @@ public class PasswordPolicyRequestControl extends AbstractControl
     }
 
 
-    @Override
     public int computeLength()
     {
-        return super.computeLength( 0 );
+        return 0;
     }
 }

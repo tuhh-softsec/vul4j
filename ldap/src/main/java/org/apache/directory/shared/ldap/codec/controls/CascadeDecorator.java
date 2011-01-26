@@ -25,20 +25,16 @@ package org.apache.directory.shared.ldap.codec.controls;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class CascadeControl  extends AbstractControl
+public class CascadeDecorator extends ControlDecorator
 {
-    /** The cascade control OID */
-    public static final String CONTROL_OID = "1.3.6.1.4.1.18060.0.0.1";
+
 
     /**
      * Default constructor
-     *
      */
-    public CascadeControl()
+    public CascadeDecorator()
     {
-        super( CONTROL_OID );
-        
-        decoder = new CascadeControlDecoder();
+        super( Cascade.INSTANCE, new CascadeDecoder() );
     }
 
     
@@ -49,20 +45,5 @@ public class CascadeControl  extends AbstractControl
     {
         // Call the super class to compute the global control length
         return super.computeLength( 0 );
-    }
-
-    
-    /**
-     * Return a String representing this Cascade Control.
-     */
-    public String toString()
-    {
-        StringBuffer sb = new StringBuffer();
-
-        sb.append( "    Cascade Control\n" );
-        sb.append( "        oid : " ).append( getOid() ).append( '\n' );
-        sb.append( "        critical : " ).append( isCritical() ).append( '\n' );
-        
-        return sb.toString();
     }
 }

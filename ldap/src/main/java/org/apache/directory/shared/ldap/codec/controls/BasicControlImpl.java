@@ -29,7 +29,7 @@ import org.apache.directory.shared.util.Strings;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class DefaultControl implements Control
+public class BasicControlImpl implements Control
 {
     /** The control type */
     private String oid;
@@ -46,7 +46,7 @@ public class DefaultControl implements Control
      *
      * @param oid The OID of this Control.
      */
-    public DefaultControl( String oid )
+    public BasicControlImpl( String oid )
     {
         this.oid = oid;
     }

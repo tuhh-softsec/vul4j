@@ -40,7 +40,7 @@ import java.nio.ByteBuffer;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class CodecControlDecorator extends AbstractAsn1Object implements Control, CodecControl
+public class ControlDecorator extends AbstractAsn1Object implements Control, CodecControl
 {
     /** The decorated Control */
     private final Control decorated;
@@ -52,7 +52,7 @@ public class CodecControlDecorator extends AbstractAsn1Object implements Control
     private int controlLength;
 
     /** The control decoder */
-    protected ControlDecoder decoder;
+    private ControlDecoder decoder;
 
 
     /**
@@ -60,7 +60,7 @@ public class CodecControlDecorator extends AbstractAsn1Object implements Control
      *
      * @param decoratedControl The Control to decorate.
      */
-    public CodecControlDecorator( Control decoratedControl )
+    public ControlDecorator( Control decoratedControl )
     {
         this.decorated = decoratedControl;
     }
@@ -72,7 +72,7 @@ public class CodecControlDecorator extends AbstractAsn1Object implements Control
      * @param decoratedControl The Control to decorate.
      * @param decoder The Control's decoder.
      */
-    public CodecControlDecorator( Control decoratedControl, ControlDecoder decoder )
+    public ControlDecorator( Control decoratedControl, ControlDecoder decoder )
     {
         this.decorated = decoratedControl;
         this.decoder = decoder;

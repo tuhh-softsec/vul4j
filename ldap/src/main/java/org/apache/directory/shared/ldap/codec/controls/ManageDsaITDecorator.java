@@ -57,19 +57,19 @@ package org.apache.directory.shared.ldap.codec.controls;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ManageDsaITDecorator extends CodecControlDecorator
+public class ManageDsaITDecorator extends ControlDecorator
 {
     // @TODO We should not bother encoding and decoding marker controls that always
     // encode and decode into the same TLV/byte sequence. Can't the control just
     // supply the canned PDU element?
+
 
     /**
      * Default constructor
      */
     public ManageDsaITDecorator()
     {
-        super( ManageDsaIT.INSTANCE );
-        decoder = new ManageDsaITDecoder();
+        super( ManageDsaIT.INSTANCE, new ManageDsaITDecoder() );
     }
 
 

@@ -21,7 +21,7 @@ package org.apache.directory.shared.ldap.codec;
 
 
 import org.apache.directory.shared.asn1.ber.AbstractContainer;
-import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
+import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.ModifyRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
@@ -72,7 +72,7 @@ public class LdapMessageContainer extends AbstractContainer
     private int messageId;
 
     /** The current control */
-    private AbstractControl currentControl;
+    private ControlDecorator currentControl;
 
 
     /**
@@ -392,7 +392,7 @@ public class LdapMessageContainer extends AbstractContainer
     /**
      * @return the current control being created
      */
-    public AbstractControl getCurrentControl()
+    public ControlDecorator getCurrentControl()
     {
         return currentControl;
     }
@@ -402,7 +402,7 @@ public class LdapMessageContainer extends AbstractContainer
      * Store a newly created control
      * @param currentControl The control to store
      */
-    public void setCurrentControl( AbstractControl currentControl )
+    public void setCurrentControl( ControlDecorator currentControl )
     {
         this.currentControl = currentControl;
     }

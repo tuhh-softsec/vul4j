@@ -38,7 +38,7 @@ import org.apache.directory.shared.ldap.codec.search.controls.subentries.Subentr
  */
 public enum ControlEnum
 {
-    CASCADE_CONTROL( CascadeControl.CONTROL_OID ),
+    CASCADE_CONTROL( Cascade.OID ),
     ENTRY_CHANGE_CONTROL( EntryChangeControl.CONTROL_OID ),
     MANAGE_DSA_IT_CONTROL( ManageDsaIT.OID ),
     PAGED_RESULTS_CONTROL( PagedResultsControl.CONTROL_OID ),
