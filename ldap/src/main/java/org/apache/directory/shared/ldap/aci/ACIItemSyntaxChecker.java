@@ -17,11 +17,10 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.model.schema.syntaxCheckers;
+package org.apache.directory.shared.ldap.aci;
 
 import java.text.ParseException;
 
-import org.apache.directory.shared.ldap.aci.ACIItemChecker;
 import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.model.schema.SchemaManager;
 import org.apache.directory.shared.ldap.model.schema.SyntaxChecker;
