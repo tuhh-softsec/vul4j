@@ -28,8 +28,8 @@ import java.nio.ByteBuffer;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.DecoderException;
+import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearch;
 import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearchContainer;
 import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearchDecoder;
@@ -111,8 +111,7 @@ public class PSearchControlTest
             fail( de.getMessage() );
         }
 
-        PersistentSearchDecorator decorator = new PersistentSearchDecorator();
-        PersistentSearch ctrl = ( PersistentSearch ) decorator.getDecorated();
+        PersistentSearch ctrl = ( PersistentSearch ) container.getPSearchDecorator().getDecorated();
         int changeTypes = ctrl.getChangeTypes();
         assertEquals( PersistentSearch.CHANGE_TYPE_ADD, changeTypes & PersistentSearch.CHANGE_TYPE_ADD );
         assertEquals( PersistentSearch.CHANGE_TYPE_MODDN, changeTypes & PersistentSearch.CHANGE_TYPE_MODDN );

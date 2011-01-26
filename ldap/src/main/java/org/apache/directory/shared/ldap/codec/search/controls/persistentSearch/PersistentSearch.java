@@ -80,7 +80,7 @@ public class PersistentSearch extends BasicControlImpl
      */
     public PersistentSearch()
     {
-        super( "" );
+        super( OID );
     }
 
 
