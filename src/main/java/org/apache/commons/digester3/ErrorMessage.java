@@ -42,10 +42,11 @@ final class ErrorMessage {
     /**
      * Create a new {@link ErrorMessage} instance from the error message text.
      *
-     * @param message The error message text
+     * @param messagePattern The error message text pattern
+     * @param arguments  Arguments referenced by the format specifiers in the format string
      */
-    public ErrorMessage(String message) {
-        this(message, null);
+    public ErrorMessage(String messagePattern, Object... arguments) {
+        this(String.format(messagePattern, arguments), (Throwable) null);
     }
 
     /**
