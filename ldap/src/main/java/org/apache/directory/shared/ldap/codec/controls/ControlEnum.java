@@ -44,7 +44,7 @@ public enum ControlEnum
     MANAGE_DSA_IT_CONTROL( ManageDsaIT.OID ),
     PAGED_RESULTS_CONTROL( PagedResults.OID ),
     PASSWORD_POLICY_REQUEST_CONTROL( PasswordPolicyRequestControl.CONTROL_OID ),
-    PERSISTENT_SEARCH_CONTROL( PersistentSearch.CONTROL_OID),
+    PERSISTENT_SEARCH_CONTROL( PersistentSearch.OID ),
     SUBENTRIES_CONTROL( Subentries.OID ),
     SYNC_DONE_VALUE_CONTROL( SyncDoneValueControl.CONTROL_OID ),
     SYNC_INFO_VALUE_CONTROL( SyncInfoValueControl.CONTROL_OID ),

@@ -32,7 +32,7 @@ import org.apache.directory.shared.ldap.codec.search.controls.ChangeType;
 public class PersistentSearch extends BasicControlImpl
 {
     /** This control OID */
-    public static final String CONTROL_OID = "2.16.840.1.113730.3.4.3";
+    public static final String OID = "2.16.840.1.113730.3.4.3";
 
     /** Definition of the change types */
     public static final int CHANGE_TYPE_ADD     = 1;

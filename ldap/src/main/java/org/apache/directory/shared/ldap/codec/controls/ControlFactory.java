@@ -74,7 +74,7 @@ public class ControlFactory
             return new PagedResultsDecorator();
         }
 
-        if ( PersistentSearch.CONTROL_OID.equals( oid ) )
+        if ( PersistentSearch.OID.equals( oid ) )
         {
             return new PersistentSearchDecorator();
         }
