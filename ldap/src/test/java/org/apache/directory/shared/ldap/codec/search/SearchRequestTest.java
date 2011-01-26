@@ -39,15 +39,23 @@ import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.tlv.TLVStateEnum;
-import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
 import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
-import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
 import org.apache.directory.shared.ldap.codec.search.controls.subentries.Subentries;
 import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesDecorator;
 import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
+import org.apache.directory.shared.ldap.model.filter.AndNode;
+import org.apache.directory.shared.ldap.model.filter.ApproximateNode;
+import org.apache.directory.shared.ldap.model.filter.EqualityNode;
+import org.apache.directory.shared.ldap.model.filter.ExprNode;
+import org.apache.directory.shared.ldap.model.filter.GreaterEqNode;
+import org.apache.directory.shared.ldap.model.filter.LessEqNode;
+import org.apache.directory.shared.ldap.model.filter.NotNode;
+import org.apache.directory.shared.ldap.model.filter.OrNode;
+import org.apache.directory.shared.ldap.model.filter.PresenceNode;
 import org.apache.directory.shared.ldap.model.filter.SearchScope;
+import org.apache.directory.shared.ldap.model.filter.SubstringNode;
 import org.apache.directory.shared.ldap.model.message.AliasDerefMode;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.Message;
@@ -145,18 +153,18 @@ public class SearchRequestTest
                 // and [0] SET OF Filter,
                 ( byte ) 0xA1, 0x24, // or [1] SET of Filter,
                 ( byte ) 0xA3, 0x12, // equalityMatch [3]
-                // AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                // Assertion,
+                // Assertion ::= SEQUENCE {
                 // attributeDesc AttributeDescription (LDAPString),
                 0x04, 0x0B, 'o', 'b', 'j', 'e', 'c', 't', 'c', 'l', 'a', 's', 's',
                 // assertionValue AssertionValue (OCTET STRING) }
-                0x04, 0x03, 't', 'o', 'p', ( byte ) 0xA3, 0x0E, // equalityMatch [3] AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                0x04, 0x03, 't', 'o', 'p', ( byte ) 0xA3, 0x0E, // equalityMatch [3] Assertion,
+                // Assertion ::= SEQUENCE {
                 0x04, 0x02, 'o', 'u', // attributeDesc AttributeDescription (LDAPString),
                 // assertionValue AssertionValue (OCTET STRING) }
                 0x04, 0x08, 'c', 'o', 'n', 't', 'a', 'c', 't', 's', ( byte ) 0xA2, 0x14, // not [2] Filter,
-                ( byte ) 0xA3, 0x12, // equalityMatch [3] AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                ( byte ) 0xA3, 0x12, // equalityMatch [3] Assertion,
+                // Assertion ::= SEQUENCE {
                 // attributeDesc AttributeDescription (LDAPString),
                 0x04, 0x0B, 'o', 'b', 'j', 'e', 'c', 't', 'c', 'l', 'a', 's', 's',
                 // assertionValue AssertionValue (OCTET STRING) }
@@ -187,8 +195,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
-        SearchRequest searchRequest = decorator.getSearchRequest();
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -199,52 +206,44 @@ public class SearchRequestTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (& (...
-        Filter filter = decorator.getCurrentFilter();
-        AndFilter andFilter = ( AndFilter ) filter;
-        assertNotNull( andFilter );
+        ExprNode node = searchRequest.getFilter();
 
-        List<Filter> andFilters = andFilter.getAndFilter();
+        AndNode andNode = ( AndNode ) node;
+        assertNotNull( andNode );
+
+        List<ExprNode> andNodes = andNode.getChildren();
 
         // (& (| (...
-        assertEquals( 2, andFilters.size() );
-        OrFilter orFilter = ( OrFilter ) andFilters.get( 0 );
+        assertEquals( 2, andNodes.size() );
+        OrNode orFilter = ( OrNode ) andNodes.get( 0 );
         assertNotNull( orFilter );
 
         // (& (| (obectclass=top) (...
-        List<Filter> orFilters = orFilter.getOrFilter();
-        assertEquals( 2, orFilters.size() );
-        AttributeValueAssertionFilter equalityMatch = ( AttributeValueAssertionFilter ) orFilters.get( 0 );
-        assertNotNull( equalityMatch );
+        List<ExprNode> orNodes = orFilter.getChildren();
+        assertEquals( 2, orNodes.size() );
+        EqualityNode<?> equalityNode = ( EqualityNode<?> ) orNodes.get( 0 );
+        assertNotNull( equalityNode );
 
-        AttributeValueAssertion assertion = equalityMatch.getAssertion();
-        assertNotNull( assertion );
-
-        assertEquals( "objectclass", assertion.getAttributeDesc() );
-        assertEquals( "top", assertion.getAssertionValue().getString() );
+        assertEquals( "objectclass", equalityNode.getAttribute() );
+        assertEquals( "top", equalityNode.getValue().getString() );
 
         // (& (| (objectclass=top) (ou=contacts) ) (...
-        equalityMatch = ( AttributeValueAssertionFilter ) orFilters.get( 1 );
-        assertNotNull( equalityMatch );
+        equalityNode = ( EqualityNode<?> ) orNodes.get( 1 );
+        assertNotNull( equalityNode );
 
-        assertion = equalityMatch.getAssertion();
-        assertNotNull( assertion );
-
-        assertEquals( "ou", assertion.getAttributeDesc() );
-        assertEquals( "contacts", assertion.getAssertionValue().getString() );
+        assertEquals( "ou", equalityNode.getAttribute() );
+        assertEquals( "contacts", equalityNode.getValue().getString() );
 
         // (& (| (objectclass=top) (ou=contacts) ) (! ...
-        NotFilter notFilter = ( NotFilter ) andFilters.get( 1 );
-        assertNotNull( notFilter );
+        NotNode notNode = ( NotNode ) andNodes.get( 1 );
+        assertNotNull( notNode );
 
         // (& (| (objectclass=top) (ou=contacts) ) (! (objectclass=ttt) ) )
-        equalityMatch = ( AttributeValueAssertionFilter ) notFilter.getNotFilter();
-        assertNotNull( equalityMatch );
+        equalityNode = ( EqualityNode<?> ) notNode.getFirstChild();
+        assertNotNull( equalityNode );
 
-        assertion = equalityMatch.getAssertion();
-        assertNotNull( assertion );
-
-        assertEquals( "objectclass", assertion.getAttributeDesc() );
-        assertEquals( "ttt", assertion.getAssertionValue().getString() );
+        assertEquals( "objectclass", equalityNode.getAttribute() );
+        assertEquals( "ttt", equalityNode.getValue().getString() );
 
         List<String> attributes = searchRequest.getAttributes();
 
@@ -316,17 +315,17 @@ public class SearchRequestTest
                 //      and [0] SET OF Filter,
                 ( byte ) 0xA1, 0x24, //      or [1] SET of Filter,
                 ( byte ) 0xA8, 0x12, //      approxMatch [8]
-                // AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                // Assertion,
+                // Assertion ::= SEQUENCE {
                 0x04, 0x0B, // attributeDesc AttributeDescription (LDAPString),
                 'o', 'b', 'j', 'e', 'c', 't', 'c', 'l', 'a', 's', 's', 0x04, 0x03, // attributeDesc AttributeDescription (LDAPString), 
-                't', 'o', 'p', ( byte ) 0xA6, 0x0E, // lessOrEqual [3] AttributeValueAssertion,
-                0x04, 0x02, // AttributeValueAssertion ::= SEQUENCE {
+                't', 'o', 'p', ( byte ) 0xA6, 0x0E, // lessOrEqual [3] Assertion,
+                0x04, 0x02, // Assertion ::= SEQUENCE {
                 'o', 'u', // attributeDesc AttributeDescription (LDAPString),
                 0x04, 0x08, // assertionValue AssertionValue (OCTET STRING) } 
                 'c', 'o', 'n', 't', 'a', 'c', 't', 's', ( byte ) 0xA2, 0x14, // not [2] Filter,
-                ( byte ) 0xA5, 0x12, // greaterOrEqual [5] AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                ( byte ) 0xA5, 0x12, // greaterOrEqual [5] Assertion,
+                // Assertion ::= SEQUENCE {
                 0x04, 0x0B, // attributeDesc AttributeDescription (LDAPString), 
                 'o', 'b', 'j', 'e', 'c', 't', 'c', 'l', 'a', 's', 's', 0x04, 0x03, 't', 't', 't', // assertionValue AssertionValue (OCTET STRING) }
                 // attributes AttributeDescriptionList }
@@ -355,9 +354,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
-        SearchRequest searchRequest = decorator.getSearchRequest();
-
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -368,52 +365,44 @@ public class SearchRequestTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (& (...
-        Filter filter = decorator.getCurrentFilter();
-        AndFilter andFilter = ( AndFilter ) filter;
-        assertNotNull( andFilter );
+        ExprNode filter = searchRequest.getFilter();
 
-        List<Filter> andFilters = andFilter.getAndFilter();
+        AndNode andNode = ( AndNode ) filter;
+        assertNotNull( andNode );
+
+        List<ExprNode> andNodes = andNode.getChildren();
 
         // (& (| (...
-        assertEquals( 2, andFilters.size() );
-        OrFilter orFilter = ( OrFilter ) andFilters.get( 0 );
+        assertEquals( 2, andNodes.size() );
+        OrNode orFilter = ( OrNode ) andNodes.get( 0 );
         assertNotNull( orFilter );
 
         // (& (| (objectclass~=top) (...
-        List<Filter> orFilters = orFilter.getOrFilter();
-        assertEquals( 2, orFilters.size() );
-        AttributeValueAssertionFilter approxMatch = ( AttributeValueAssertionFilter ) orFilters.get( 0 );
-        assertNotNull( approxMatch );
+        List<ExprNode> orNodes = orFilter.getChildren();
+        assertEquals( 2, orNodes.size() );
+        ApproximateNode<?> approxNode = ( ApproximateNode<?> ) orNodes.get( 0 );
+        assertNotNull( approxNode );
 
-        AttributeValueAssertion assertion = approxMatch.getAssertion();
-        assertNotNull( assertion );
-
-        assertEquals( "objectclass", assertion.getAttributeDesc() );
-        assertEquals( "top", assertion.getAssertionValue().getString() );
+        assertEquals( "objectclass", approxNode.getAttribute() );
+        assertEquals( "top", approxNode.getValue().getString() );
 
         // (& (| (objectclass~=top) (ou<=contacts) ) (...
-        AttributeValueAssertionFilter lessOrEqual = ( AttributeValueAssertionFilter ) orFilters.get( 1 );
-        assertNotNull( lessOrEqual );
+        LessEqNode<?> lessOrEqualNode = ( LessEqNode<?> ) orNodes.get( 1 );
+        assertNotNull( lessOrEqualNode );
 
-        assertion = lessOrEqual.getAssertion();
-        assertNotNull( assertion );
-
-        assertEquals( "ou", assertion.getAttributeDesc() );
-        assertEquals( "contacts", assertion.getAssertionValue().getString() );
+        assertEquals( "ou", lessOrEqualNode.getAttribute() );
+        assertEquals( "contacts", lessOrEqualNode.getValue().getString() );
 
         // (& (| (objectclass~=top) (ou<=contacts) ) (! ...
-        NotFilter notFilter = ( NotFilter ) andFilters.get( 1 );
-        assertNotNull( notFilter );
+        NotNode notNode = ( NotNode ) andNodes.get( 1 );
+        assertNotNull( notNode );
 
         // (& (| (objectclass~=top) (ou<=contacts) ) (! (objectclass>=ttt) ) )
-        AttributeValueAssertionFilter greaterOrEqual = ( AttributeValueAssertionFilter ) notFilter.getNotFilter();
+        GreaterEqNode<?> greaterOrEqual = ( GreaterEqNode<?> ) notNode.getFirstChild();
         assertNotNull( greaterOrEqual );
 
-        assertion = greaterOrEqual.getAssertion();
-        assertNotNull( assertion );
-
-        assertEquals( "objectclass", assertion.getAttributeDesc() );
-        assertEquals( "ttt", assertion.getAssertionValue().getString() );
+        assertEquals( "objectclass", greaterOrEqual.getAttribute() );
+        assertEquals( "ttt", greaterOrEqual.getValue().getString() );
 
         // The attributes
         List<String> attributes = searchRequest.getAttributes();
@@ -497,8 +486,8 @@ public class SearchRequestTest
                 // AttributeDescription ::= LDAPString
                 ( byte ) 0xA2, 0x14, // not [2] Filter,
                 ( byte ) 0xA5, 0x12, // greaterOrEqual [5]
-                // AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                // Assertion,
+                // Assertion ::= SEQUENCE {
                 // attributeDesc AttributeDescription (LDAPString),
                 0x04, 0x0B, 'o', 'b', 'j', 'e', 'c', 't', 'c', 'l', 'a', 's', 's',
                 // assertionValue AssertionValue (OCTET STRING) }
@@ -532,9 +521,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
-        SearchRequest searchRequest = decorator.getSearchRequest();
-
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -545,45 +532,43 @@ public class SearchRequestTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (& (...
-        Filter filter = decorator.getCurrentFilter();
-        AndFilter andFilter = ( AndFilter ) filter;
-        assertNotNull( andFilter );
+        ExprNode filter = searchRequest.getFilter();
 
-        List<Filter> andFilters = andFilter.getAndFilter();
+        AndNode andNode = ( AndNode ) filter;
+        assertNotNull( andNode );
+
+        List<ExprNode> andNodes = andNode.getChildren();
 
         // (& (| (...
-        assertEquals( 2, andFilters.size() );
-        OrFilter orFilter = ( OrFilter ) andFilters.get( 0 );
+        assertEquals( 2, andNodes.size() );
+        OrNode orFilter = ( OrNode ) andNodes.get( 0 );
         assertNotNull( orFilter );
 
         // (& (| (objectclass=*) (...
-        List<Filter> orFilters = orFilter.getOrFilter();
-        assertEquals( 2, orFilters.size() );
+        List<ExprNode> orNodes = orFilter.getChildren();
+        assertEquals( 2, orNodes.size() );
 
-        PresentFilter presentFilter = ( PresentFilter ) orFilters.get( 0 );
-        assertNotNull( presentFilter );
+        PresenceNode presenceNode = ( PresenceNode ) orNodes.get( 0 );
+        assertNotNull( presenceNode );
 
-        assertEquals( "objectclass", presentFilter.getAttributeDescription() );
+        assertEquals( "objectclass", presenceNode.getAttribute() );
 
         // (& (| (objectclass=*) (ou=*) ) (...
-        presentFilter = ( PresentFilter ) orFilters.get( 1 );
-        assertNotNull( presentFilter );
+        presenceNode = ( PresenceNode ) orNodes.get( 1 );
+        assertNotNull( presenceNode );
 
-        assertEquals( "ou", presentFilter.getAttributeDescription() );
+        assertEquals( "ou", presenceNode.getAttribute() );
 
         // (& (| (objectclass=*) (ou=*) ) (! ...
-        NotFilter notFilter = ( NotFilter ) andFilters.get( 1 );
-        assertNotNull( notFilter );
+        NotNode notNode = ( NotNode ) andNodes.get( 1 );
+        assertNotNull( notNode );
 
         // (& (| (objectclass=*) (ou=*) ) (! (objectclass>=ttt) ) )
-        AttributeValueAssertionFilter greaterOrEqual = ( AttributeValueAssertionFilter ) notFilter.getNotFilter();
+        GreaterEqNode<?> greaterOrEqual = ( GreaterEqNode<?> ) notNode.getFirstChild();
         assertNotNull( greaterOrEqual );
 
-        AttributeValueAssertion assertion = greaterOrEqual.getAssertion();
-        assertNotNull( assertion );
-
-        assertEquals( "objectclass", assertion.getAttributeDesc() );
-        assertEquals( "ttt", assertion.getAssertionValue().getString() );
+        assertEquals( "objectclass", greaterOrEqual.getAttribute() );
+        assertEquals( "ttt", greaterOrEqual.getValue().getString() );
 
         // The attributes
         List<String> attributes = searchRequest.getAttributes();
@@ -679,9 +664,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
-        SearchRequest searchRequest = decorator.getSearchRequest();
-
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 3, searchRequest.getMessageId() );
         assertEquals( "ou=users,ou=system", searchRequest.getBase().toString() );
@@ -692,10 +675,11 @@ public class SearchRequestTest
         assertEquals( false, searchRequest.getTypesOnly() );
 
         // (objectClass = *)
-        Filter filter = decorator.getCurrentFilter();
-        PresentFilter presentFilter = ( PresentFilter ) filter;
-        assertNotNull( presentFilter );
-        assertEquals( "objectClass", presentFilter.getAttributeDescription() );
+        ExprNode filter = searchRequest.getFilter();
+
+        PresenceNode presenceNode = ( PresenceNode ) filter;
+        assertNotNull( presenceNode );
+        assertEquals( "objectClass", presenceNode.getAttribute() );
 
         // The attributes
         List<String> attributes = searchRequest.getAttributes();
@@ -785,9 +769,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
-        SearchRequest searchRequest = decorator.getSearchRequest();
-
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 3, searchRequest.getMessageId() );
         assertEquals( "ou=users,ou=system", searchRequest.getBase().toString() );
@@ -798,10 +780,11 @@ public class SearchRequestTest
         assertEquals( false, searchRequest.getTypesOnly() );
 
         // (objectClass = *)
-        Filter filter = decorator.getCurrentFilter();
-        PresentFilter presentFilter = ( PresentFilter ) filter;
-        assertNotNull( presentFilter );
-        assertEquals( "objectClass", presentFilter.getAttributeDescription() );
+        ExprNode filter = searchRequest.getFilter();
+
+        PresenceNode presenceNode = ( PresenceNode ) filter;
+        assertNotNull( presenceNode );
+        assertEquals( "objectClass", presenceNode.getAttribute() );
 
         // The attributes
         List<String> attributes = searchRequest.getAttributes();
@@ -873,9 +856,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
-        SearchRequest searchRequest = decorator.getSearchRequest();
-
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 3, searchRequest.getMessageId() );
         assertEquals( "ou=users,ou=system", searchRequest.getBase().toString() );
@@ -886,10 +867,11 @@ public class SearchRequestTest
         assertEquals( false, searchRequest.getTypesOnly() );
 
         // (objectClass = *)
-        Filter filter = decorator.getCurrentFilter();
-        PresentFilter presentFilter = ( PresentFilter ) filter;
-        assertNotNull( presentFilter );
-        assertEquals( "objectClass", presentFilter.getAttributeDescription() );
+        ExprNode filter = searchRequest.getFilter();
+
+        PresenceNode presenceNode = ( PresenceNode ) filter;
+        assertNotNull( presenceNode );
+        assertEquals( "objectClass", presenceNode.getAttribute() );
 
         // The attributes
         List<String> attributes = searchRequest.getAttributes();
@@ -963,9 +945,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
-        SearchRequest searchRequest = decorator.getSearchRequest();
-
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 33, searchRequest.getMessageId() );
         assertEquals( "dc=example,dc=com", searchRequest.getBase().toString() );
@@ -976,40 +956,39 @@ public class SearchRequestTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (objectclass=t*)
-        OrFilter orFilter = ( OrFilter ) decorator.getCurrentFilter();
-        assertNotNull( orFilter );
-        assertEquals( 5, orFilter.getFilterSet().size() );
+        OrNode orNode = ( OrNode ) searchRequest.getFilter();
+        assertNotNull( orNode );
+        assertEquals( 5, orNode.getChildren().size() );
 
         // uid=akarasulu
-        AttributeValueAssertion assertion = ( ( AttributeValueAssertionFilter ) orFilter.getOrFilter().get( 0 ) )
-            .getAssertion();
+        EqualityNode<?> equalityNode = ( EqualityNode<?> ) orNode.getChildren().get( 0 );
 
-        assertEquals( "uid", assertion.getAttributeDesc() );
-        assertEquals( "akarasulu", assertion.getAssertionValue().getString() );
+        assertEquals( "uid", equalityNode.getAttribute() );
+        assertEquals( "akarasulu", equalityNode.getValue().getString() );
 
         // cn=aok
-        assertion = ( ( AttributeValueAssertionFilter ) orFilter.getOrFilter().get( 1 ) ).getAssertion();
+        equalityNode = ( EqualityNode<?> ) orNode.getChildren().get( 1 );
 
-        assertEquals( "cn", assertion.getAttributeDesc() );
-        assertEquals( "aok", assertion.getAssertionValue().getString() );
+        assertEquals( "cn", equalityNode.getAttribute() );
+        assertEquals( "aok", equalityNode.getValue().getString() );
 
         // ou = Human Resources
-        assertion = ( ( AttributeValueAssertionFilter ) orFilter.getOrFilter().get( 2 ) ).getAssertion();
+        equalityNode = ( EqualityNode<?> ) orNode.getChildren().get( 2 );
 
-        assertEquals( "ou", assertion.getAttributeDesc() );
-        assertEquals( "Human Resources", assertion.getAssertionValue().getString() );
+        assertEquals( "ou", equalityNode.getAttribute() );
+        assertEquals( "Human Resources", equalityNode.getValue().getString() );
 
         // l=Santa Clara
-        assertion = ( ( AttributeValueAssertionFilter ) orFilter.getOrFilter().get( 3 ) ).getAssertion();
+        equalityNode = ( EqualityNode<?> ) orNode.getChildren().get( 3 );
 
-        assertEquals( "l", assertion.getAttributeDesc() );
-        assertEquals( "Santa Clara", assertion.getAssertionValue().getString() );
+        assertEquals( "l", equalityNode.getAttribute() );
+        assertEquals( "Santa Clara", equalityNode.getValue().getString() );
 
         // cn=abok
-        assertion = ( ( AttributeValueAssertionFilter ) orFilter.getOrFilter().get( 4 ) ).getAssertion();
+        equalityNode = ( EqualityNode<?> ) orNode.getChildren().get( 4 );
 
-        assertEquals( "cn", assertion.getAttributeDesc() );
-        assertEquals( "abok", assertion.getAssertionValue().getString() );
+        assertEquals( "cn", equalityNode.getAttribute() );
+        assertEquals( "abok", equalityNode.getValue().getString() );
 
         // The attributes
         List<String> attributes = searchRequest.getAttributes();
@@ -1137,9 +1116,8 @@ public class SearchRequestTest
         }
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
-                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
-        SearchRequest searchRequest = decorator.getSearchRequest();
 
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 4, searchRequest.getMessageId() );
         assertEquals( 2, searchRequest.getControls().size() );
@@ -1162,9 +1140,10 @@ public class SearchRequestTest
         assertEquals( 0, searchRequest.getTimeLimit() );
         assertEquals( false, searchRequest.getTypesOnly() );
 
-        Filter filter = decorator.getCurrentFilter();
-        assertTrue( filter instanceof PresentFilter );
-        assertEquals( "objectClass", ( ( PresentFilter ) filter ).getAttributeDescription() );
+        ExprNode filter = searchRequest.getFilter();
+
+        assertTrue( filter instanceof PresenceNode );
+        assertEquals( "objectClass", ( ( PresenceNode ) filter ).getAttribute() );
 
         // Check the encoding
         try
@@ -1253,8 +1232,8 @@ public class SearchRequestTest
                 0x2A, // or [1] SET of Filter,
                 ( byte ) 0xA3,
                 0x12, // equalityMatch [3]
-                // AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                // Assertion,
+                // Assertion ::= SEQUENCE {
                 // attributeDesc AttributeDescription (LDAPString),
                 0x04, 0x0B, 'o', 'b', 'j', 'e', 'c', 't', 'c', 'l', 'a', 's', 's',
                 // assertionValue AssertionValue (OCTET STRING) }
@@ -1263,8 +1242,8 @@ public class SearchRequestTest
                 ( byte ) 0xA3,
                 0x14, // equalityMatch
                 // [3]
-                // AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                // Assertion,
+                // Assertion ::= SEQUENCE {
                 0x04, 0x08, '2', '.', '5', '.', '4',
                 '.',
                 '1',
@@ -1281,8 +1260,8 @@ public class SearchRequestTest
                 // Filter,
                 ( byte ) 0xA3,
                 0x1D, // equalityMatch [3]
-                // AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                // Assertion,
+                // Assertion ::= SEQUENCE {
                 // attributeDesc AttributeDescription (LDAPString),
                 0x04, 0x16, 'o', 'r', 'g', 'a', 'n', 'i', 'z', 'a', 't', 'i', 'o', 'n', 'a', 'l', 'U', 'n', 'i', 't',
                 'N', 'a', 'm', 'e',
@@ -1316,9 +1295,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
-        SearchRequest searchRequest = decorator.getSearchRequest();
-
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -1329,52 +1306,45 @@ public class SearchRequestTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (& (...
-        Filter filter = decorator.getCurrentFilter();
-        AndFilter andFilter = ( AndFilter ) filter;
-        assertNotNull( andFilter );
+        ExprNode filter = searchRequest.getFilter();
 
-        List<Filter> andFilters = andFilter.getAndFilter();
+        AndNode andNode = ( AndNode ) filter;
+        assertNotNull( andNode );
+
+        List<ExprNode> andNodes = andNode.getChildren();
 
         // (& (| (...
-        assertEquals( 2, andFilters.size() );
-        OrFilter orFilter = ( OrFilter ) andFilters.get( 0 );
+        assertEquals( 2, andNodes.size() );
+        OrNode orFilter = ( OrNode ) andNodes.get( 0 );
         assertNotNull( orFilter );
 
         // (& (| (obectclass=top) (...
-        List<Filter> orFilters = orFilter.getOrFilter();
-        assertEquals( 2, orFilters.size() );
-        AttributeValueAssertionFilter equalityMatch = ( AttributeValueAssertionFilter ) orFilters.get( 0 );
-        assertNotNull( equalityMatch );
+        List<ExprNode> orNodes = orFilter.getChildren();
+        assertEquals( 2, orNodes.size() );
+        
+        EqualityNode<?> equalityNode = ( EqualityNode<?> ) orNodes.get( 0 );
+        assertNotNull( equalityNode );
 
-        AttributeValueAssertion assertion = equalityMatch.getAssertion();
-        assertNotNull( assertion );
-
-        assertEquals( "objectclass", assertion.getAttributeDesc() );
-        assertEquals( "top", assertion.getAssertionValue().getString() );
+        assertEquals( "objectclass", equalityNode.getAttribute() );
+        assertEquals( "top", equalityNode.getValue().getString() );
 
         // (& (| (objectclass=top) (ou=contacts) ) (...
-        equalityMatch = ( AttributeValueAssertionFilter ) orFilters.get( 1 );
-        assertNotNull( equalityMatch );
+        equalityNode = ( EqualityNode<?> ) orNodes.get( 1 );
+        assertNotNull( equalityNode );
 
-        assertion = equalityMatch.getAssertion();
-        assertNotNull( assertion );
-
-        assertEquals( "2.5.4.11", assertion.getAttributeDesc() );
-        assertEquals( "contacts", assertion.getAssertionValue().getString() );
+        assertEquals( "2.5.4.11", equalityNode.getAttribute() );
+        assertEquals( "contacts", equalityNode.getValue().getString() );
 
         // (& (| (objectclass=top) (ou=contacts) ) (! ...
-        NotFilter notFilter = ( NotFilter ) andFilters.get( 1 );
-        assertNotNull( notFilter );
+        NotNode notNode = ( NotNode ) andNodes.get( 1 );
+        assertNotNull( notNode );
 
         // (& (| (objectclass=top) (ou=contacts) ) (! (objectclass=ttt) ) )
-        equalityMatch = ( AttributeValueAssertionFilter ) notFilter.getNotFilter();
-        assertNotNull( equalityMatch );
+        equalityNode = ( EqualityNode<?> ) notNode.getFirstChild();
+        assertNotNull( equalityNode );
 
-        assertion = equalityMatch.getAssertion();
-        assertNotNull( assertion );
-
-        assertEquals( "organizationalUnitName", assertion.getAttributeDesc() );
-        assertEquals( "ttt", assertion.getAssertionValue().getString() );
+        assertEquals( "organizationalUnitName", equalityNode.getAttribute() );
+        assertEquals( "ttt", equalityNode.getValue().getString() );
 
         List<String> attributes = searchRequest.getAttributes();
 
@@ -1442,9 +1412,8 @@ public class SearchRequestTest
         }
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
-                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
-        SearchRequest searchRequest = decorator.getSearchRequest();
 
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 4, searchRequest.getMessageId() );
         assertEquals( 1, searchRequest.getControls().size() );
@@ -1464,9 +1433,10 @@ public class SearchRequestTest
         assertEquals( 0, searchRequest.getTimeLimit() );
         assertEquals( false, searchRequest.getTypesOnly() );
 
-        Filter filter = decorator.getCurrentFilter();
-        assertTrue( filter instanceof PresentFilter );
-        assertEquals( "objectClass", ( ( PresentFilter ) filter ).getAttributeDescription() );
+        ExprNode filter = searchRequest.getFilter();
+
+        assertTrue( filter instanceof PresenceNode );
+        assertEquals( "objectClass", ( ( PresenceNode ) filter ).getAttribute() );
 
         // Check the encoding
         try
@@ -1590,18 +1560,18 @@ public class SearchRequestTest
                 // and [0] SET OF Filter,
                 ( byte ) 0xA1, 0x24, // or [1] SET of Filter,
                 ( byte ) 0xA3, 0x12, // equalityMatch [3]
-                // AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                // Assertion,
+                // Assertion ::= SEQUENCE {
                 // attributeDesc AttributeDescription (LDAPString),
                 0x04, 0x0B, 'o', 'b', 'j', 'e', 'c', 't', 'c', 'l', 'a', 's', 's',
                 // assertionValue AssertionValue (OCTET STRING) }
-                0x04, 0x03, 't', 'o', 'p', ( byte ) 0xA3, 0x0E, // equalityMatch [3] AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                0x04, 0x03, 't', 'o', 'p', ( byte ) 0xA3, 0x0E, // equalityMatch [3] Assertion,
+                // Assertion ::= SEQUENCE {
                 0x04, 0x02, 'o', 'u', // attributeDesc AttributeDescription (LDAPString),
                 // assertionValue AssertionValue (OCTET STRING) }
                 0x04, 0x08, 'c', 'o', 'n', 't', 'a', 'c', 't', 's', ( byte ) 0xA2, 0x14, // not [2] Filter,
-                ( byte ) 0xA3, 0x12, // equalityMatch [3] AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                ( byte ) 0xA3, 0x12, // equalityMatch [3] Assertion,
+                // Assertion ::= SEQUENCE {
                 // attributeDesc AttributeDescription (LDAPString),
                 0x04, 0x0B, 'o', 'b', 'j', 'e', 'c', 't', 'c', 'l', 'a', 's', 's',
                 // assertionValue AssertionValue (OCTET STRING) }
@@ -1632,9 +1602,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
-        SearchRequest searchRequest = decorator.getSearchRequest();
-
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "", searchRequest.getBase().toString() );
@@ -1645,52 +1613,45 @@ public class SearchRequestTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (& (...
-        Filter filter = decorator.getCurrentFilter();
-        AndFilter andFilter = ( AndFilter ) filter;
-        assertNotNull( andFilter );
+        ExprNode filter = searchRequest.getFilter();
 
-        List<Filter> andFilters = andFilter.getAndFilter();
+        AndNode andNode = ( AndNode ) filter;
+        assertNotNull( andNode );
+
+        List<ExprNode> andNodes = andNode.getChildren();
 
         // (& (| (...
-        assertEquals( 2, andFilters.size() );
-        OrFilter orFilter = ( OrFilter ) andFilters.get( 0 );
+        assertEquals( 2, andNodes.size() );
+        OrNode orFilter = ( OrNode ) andNodes.get( 0 );
         assertNotNull( orFilter );
 
         // (& (| (obectclass=top) (...
-        List<Filter> orFilters = orFilter.getOrFilter();
-        assertEquals( 2, orFilters.size() );
-        AttributeValueAssertionFilter equalityMatch = ( AttributeValueAssertionFilter ) orFilters.get( 0 );
-        assertNotNull( equalityMatch );
+        List<ExprNode> orNodes = orFilter.getChildren();
+        assertEquals( 2, orNodes.size() );
+        
+        EqualityNode<?> equalityNode = ( EqualityNode<?> ) orNodes.get( 0 );
+        assertNotNull( equalityNode );
 
-        AttributeValueAssertion assertion = equalityMatch.getAssertion();
-        assertNotNull( assertion );
-
-        assertEquals( "objectclass", assertion.getAttributeDesc() );
-        assertEquals( "top", assertion.getAssertionValue().getString() );
+        assertEquals( "objectclass", equalityNode.getAttribute() );
+        assertEquals( "top", equalityNode.getValue().getString() );
 
         // (& (| (objectclass=top) (ou=contacts) ) (...
-        equalityMatch = ( AttributeValueAssertionFilter ) orFilters.get( 1 );
-        assertNotNull( equalityMatch );
+        equalityNode = ( EqualityNode<?> ) orNodes.get( 1 );
+        assertNotNull( equalityNode );
 
-        assertion = equalityMatch.getAssertion();
-        assertNotNull( assertion );
-
-        assertEquals( "ou", assertion.getAttributeDesc() );
-        assertEquals( "contacts", assertion.getAssertionValue().getString() );
+        assertEquals( "ou", equalityNode.getAttribute() );
+        assertEquals( "contacts", equalityNode.getValue().getString() );
 
         // (& (| (objectclass=top) (ou=contacts) ) (! ...
-        NotFilter notFilter = ( NotFilter ) andFilters.get( 1 );
-        assertNotNull( notFilter );
+        NotNode notNode = ( NotNode ) andNodes.get( 1 );
+        assertNotNull( notNode );
 
         // (& (| (objectclass=top) (ou=contacts) ) (! (objectclass=ttt) ) )
-        equalityMatch = ( AttributeValueAssertionFilter ) notFilter.getNotFilter();
-        assertNotNull( equalityMatch );
+        equalityNode = ( EqualityNode<?> ) notNode.getFirstChild();
+        assertNotNull( equalityNode );
 
-        assertion = equalityMatch.getAssertion();
-        assertNotNull( assertion );
-
-        assertEquals( "objectclass", assertion.getAttributeDesc() );
-        assertEquals( "ttt", assertion.getAssertionValue().getString() );
+        assertEquals( "objectclass", equalityNode.getAttribute() );
+        assertEquals( "ttt", equalityNode.getValue().getString() );
 
         List<String> attributes = searchRequest.getAttributes();
 
@@ -1760,18 +1721,18 @@ public class SearchRequestTest
                 // and [0] SET OF Filter,
                 ( byte ) 0xA1, 0x24, // or [1] SET of Filter,
                 ( byte ) 0xA3, 0x12, // equalityMatch [3]
-                // AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                // Assertion,
+                // Assertion ::= SEQUENCE {
                 // attributeDesc AttributeDescription (LDAPString),
                 0x04, 0x0B, 'o', 'b', 'j', 'e', 'c', 't', 'c', 'l', 'a', 's', 's',
                 // assertionValue AssertionValue (OCTET STRING) }
-                0x04, 0x03, 't', 'o', 'p', ( byte ) 0xA3, 0x0E, // equalityMatch [3] AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                0x04, 0x03, 't', 'o', 'p', ( byte ) 0xA3, 0x0E, // equalityMatch [3] Assertion,
+                // Assertion ::= SEQUENCE {
                 0x04, 0x02, 'o', 'u', // attributeDesc AttributeDescription (LDAPString),
                 // assertionValue AssertionValue (OCTET STRING) }
                 0x04, 0x08, 'c', 'o', 'n', 't', 'a', 'c', 't', 's', ( byte ) 0xA2, 0x14, // not [2] Filter,
-                ( byte ) 0xA3, 0x12, // equalityMatch [3] AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                ( byte ) 0xA3, 0x12, // equalityMatch [3] Assertion,
+                // Assertion ::= SEQUENCE {
                 // attributeDesc AttributeDescription (LDAPString),
                 0x04, 0x0B, 'o', 'b', 'j', 'e', 'c', 't', 'c', 'l', 'a', 's', 's',
                 // assertionValue AssertionValue (OCTET STRING) }
@@ -1884,18 +1845,18 @@ public class SearchRequestTest
                 // and [0] SET OF Filter,
                 ( byte ) 0xA1, 0x24, // or [1] SET of Filter,
                 ( byte ) 0xA3, 0x12, // equalityMatch [3]
-                // AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                // Assertion,
+                // Assertion ::= SEQUENCE {
                 // attributeDesc AttributeDescription (LDAPString),
                 0x04, 0x0B, 'o', 'b', 'j', 'e', 'c', 't', 'c', 'l', 'a', 's', 's',
                 // assertionValue AssertionValue (OCTET STRING) }
-                0x04, 0x03, 't', 'o', 'p', ( byte ) 0xA3, 0x0E, // equalityMatch [3] AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                0x04, 0x03, 't', 'o', 'p', ( byte ) 0xA3, 0x0E, // equalityMatch [3] Assertion,
+                // Assertion ::= SEQUENCE {
                 0x04, 0x02, 'o', 'u', // attributeDesc AttributeDescription (LDAPString),
                 // assertionValue AssertionValue (OCTET STRING) }
                 0x04, 0x08, 'c', 'o', 'n', 't', 'a', 'c', 't', 's', ( byte ) 0xA2, 0x14, // not [2] Filter,
-                ( byte ) 0xA3, 0x12, // equalityMatch [3] AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                ( byte ) 0xA3, 0x12, // equalityMatch [3] Assertion,
+                // Assertion ::= SEQUENCE {
                 // attributeDesc AttributeDescription (LDAPString),
                 0x04, 0x0B, 'o', 'b', 'j', 'e', 'c', 't', 'c', 'l', 'a', 's', 's',
                 // assertionValue AssertionValue (OCTET STRING) }
@@ -2004,18 +1965,18 @@ public class SearchRequestTest
                 // and [0] SET OF Filter,
                 ( byte ) 0xA1, 0x24, // or [1] SET of Filter,
                 ( byte ) 0xA3, 0x12, // equalityMatch [3]
-                // AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                // Assertion,
+                // Assertion ::= SEQUENCE {
                 // attributeDesc AttributeDescription (LDAPString),
                 0x04, 0x0B, 'o', 'b', 'j', 'e', 'c', 't', 'c', 'l', 'a', 's', 's',
                 // assertionValue AssertionValue (OCTET STRING) }
-                0x04, 0x03, 't', 'o', 'p', ( byte ) 0xA3, 0x0E, // equalityMatch [3] AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                0x04, 0x03, 't', 'o', 'p', ( byte ) 0xA3, 0x0E, // equalityMatch [3] Assertion,
+                // Assertion ::= SEQUENCE {
                 0x04, 0x02, 'o', 'u', // attributeDesc AttributeDescription (LDAPString),
                 // assertionValue AssertionValue (OCTET STRING) }
                 0x04, 0x08, 'c', 'o', 'n', 't', 'a', 'c', 't', 's', ( byte ) 0xA2, 0x14, // not [2] Filter,
-                ( byte ) 0xA3, 0x12, // equalityMatch [3] AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                ( byte ) 0xA3, 0x12, // equalityMatch [3] Assertion,
+                // Assertion ::= SEQUENCE {
                 // attributeDesc AttributeDescription (LDAPString),
                 0x04, 0x0B, 'o', 'b', 'j', 'e', 'c', 't', 'c', 'l', 'a', 's', 's',
                 // assertionValue AssertionValue (OCTET STRING) }
@@ -2124,18 +2085,18 @@ public class SearchRequestTest
                 // and [0] SET OF Filter,
                 ( byte ) 0xA1, 0x24, // or [1] SET of Filter,
                 ( byte ) 0xA3, 0x12, // equalityMatch [3]
-                // AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                // Assertion,
+                // Assertion ::= SEQUENCE {
                 // attributeDesc AttributeDescription (LDAPString),
                 0x04, 0x0B, 'o', 'b', 'j', 'e', 'c', 't', 'c', 'l', 'a', 's', 's',
                 // assertionValue AssertionValue (OCTET STRING) }
-                0x04, 0x03, 't', 'o', 'p', ( byte ) 0xA3, 0x0E, // equalityMatch [3] AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                0x04, 0x03, 't', 'o', 'p', ( byte ) 0xA3, 0x0E, // equalityMatch [3] Assertion,
+                // Assertion ::= SEQUENCE {
                 0x04, 0x02, 'o', 'u', // attributeDesc AttributeDescription (LDAPString),
                 // assertionValue AssertionValue (OCTET STRING) }
                 0x04, 0x08, 'c', 'o', 'n', 't', 'a', 'c', 't', 's', ( byte ) 0xA2, 0x14, // not [2] Filter,
-                ( byte ) 0xA3, 0x12, // equalityMatch [3] AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                ( byte ) 0xA3, 0x12, // equalityMatch [3] Assertion,
+                // Assertion ::= SEQUENCE {
                 // attributeDesc AttributeDescription (LDAPString),
                 0x04, 0x0B, 'o', 'b', 'j', 'e', 'c', 't', 'c', 'l', 'a', 's', 's',
                 // assertionValue AssertionValue (OCTET STRING) }
@@ -2247,18 +2208,18 @@ public class SearchRequestTest
                 // and [0] SET OF Filter,
                 ( byte ) 0xA1, 0x24, // or [1] SET of Filter,
                 ( byte ) 0xA3, 0x12, // equalityMatch [3]
-                // AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                // Assertion,
+                // Assertion ::= SEQUENCE {
                 // attributeDesc AttributeDescription (LDAPString),
                 0x04, 0x0B, 'o', 'b', 'j', 'e', 'c', 't', 'c', 'l', 'a', 's', 's',
                 // assertionValue AssertionValue (OCTET STRING) }
-                0x04, 0x03, 't', 'o', 'p', ( byte ) 0xA3, 0x0E, // equalityMatch [3] AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                0x04, 0x03, 't', 'o', 'p', ( byte ) 0xA3, 0x0E, // equalityMatch [3] Assertion,
+                // Assertion ::= SEQUENCE {
                 0x04, 0x02, 'o', 'u', // attributeDesc AttributeDescription (LDAPString),
                 // assertionValue AssertionValue (OCTET STRING) }
                 0x04, 0x08, 'c', 'o', 'n', 't', 'a', 'c', 't', 's', ( byte ) 0xA2, 0x14, // not [2] Filter,
-                ( byte ) 0xA3, 0x12, // equalityMatch [3] AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                ( byte ) 0xA3, 0x12, // equalityMatch [3] Assertion,
+                // Assertion ::= SEQUENCE {
                 // attributeDesc AttributeDescription (LDAPString),
                 0x04, 0x0B, 'o', 'b', 'j', 'e', 'c', 't', 'c', 'l', 'a', 's', 's',
                 // assertionValue AssertionValue (OCTET STRING) }
@@ -2665,9 +2626,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
-        SearchRequest searchRequest = decorator.getSearchRequest();
-
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 4, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -2678,14 +2637,12 @@ public class SearchRequestTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // >=
-        Filter filter = decorator.getCurrentFilter();
-        AttributeValueAssertionFilter greaterThanFilter = ( AttributeValueAssertionFilter ) filter;
-        assertNotNull( greaterThanFilter );
+        GreaterEqNode<?> greaterOrEqual = (GreaterEqNode<?>)searchRequest.getFilter();
 
-        AttributeValueAssertion assertion = greaterThanFilter.getAssertion();
+        assertNotNull( greaterOrEqual );
 
-        assertEquals( "test", assertion.getAttributeDesc() );
-        assertEquals( "", assertion.getAssertionValue().getString() );
+        assertEquals( "test", greaterOrEqual.getAttribute() );
+        assertEquals( "", greaterOrEqual.getValue().getString() );
 
         List<String> attributes = searchRequest.getAttributes();
 
@@ -2759,9 +2716,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
-        SearchRequest searchRequest = decorator.getSearchRequest();
-
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 4, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -2772,14 +2727,12 @@ public class SearchRequestTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // >=
-        Filter filter = decorator.getCurrentFilter();
-        AttributeValueAssertionFilter greaterThanFilter = ( AttributeValueAssertionFilter ) filter;
-        assertNotNull( greaterThanFilter );
+        GreaterEqNode<?> greaterOrEqual = (GreaterEqNode<?>)searchRequest.getFilter();
 
-        AttributeValueAssertion assertion = greaterThanFilter.getAssertion();
+        assertNotNull( greaterOrEqual );
 
-        assertEquals( "test", assertion.getAttributeDesc() );
-        assertEquals( "", assertion.getAssertionValue().getString() );
+        assertEquals( "test", greaterOrEqual.getAttribute() );
+        assertEquals( "", greaterOrEqual.getValue().getString() );
 
         List<String> attributes = searchRequest.getAttributes();
 
@@ -2853,9 +2806,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
-        SearchRequest searchRequest = decorator.getSearchRequest();
-
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 4, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -2866,14 +2817,12 @@ public class SearchRequestTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // >=
-        Filter filter = decorator.getCurrentFilter();
-        AttributeValueAssertionFilter greaterThanFilter = ( AttributeValueAssertionFilter ) filter;
-        assertNotNull( greaterThanFilter );
+        GreaterEqNode<?> greaterOrEqual = (GreaterEqNode<?>)searchRequest.getFilter();
 
-        AttributeValueAssertion assertion = greaterThanFilter.getAssertion();
+        assertNotNull( greaterOrEqual );
 
-        assertEquals( "test", assertion.getAttributeDesc() );
-        assertEquals( "", assertion.getAssertionValue().getString() );
+        assertEquals( "test", greaterOrEqual.getAttribute() );
+        assertEquals( "", greaterOrEqual.getValue().getString() );
 
         List<String> attributes = searchRequest.getAttributes();
 
@@ -3104,9 +3053,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
-        SearchRequest searchRequest = decorator.getSearchRequest();
-
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 2, searchRequest.getMessageId() );
         assertEquals( "dc=pgpkeys", searchRequest.getBase().toString() );
@@ -3117,29 +3064,27 @@ public class SearchRequestTest
         assertEquals( false, searchRequest.getTypesOnly() );
 
         // And 
-        Filter filter = decorator.getCurrentFilter();
-        AndFilter andFilter = ( AndFilter ) filter;
-        assertNotNull( andFilter );
+        ExprNode filter = searchRequest.getFilter();
 
-        List<Filter> andFilters = andFilter.getAndFilter();
-        assertEquals( 2, andFilters.size() );
+        AndNode andNode = ( AndNode ) filter;
+        assertNotNull( andNode );
 
-        SubstringFilter substringFilter = ( SubstringFilter ) andFilters.get( 0 );
-        assertNotNull( substringFilter );
+        List<ExprNode> andNodes = andNode.getChildren();
+        assertEquals( 2, andNodes.size() );
 
-        assertEquals( "pgpuserid", substringFilter.getType() );
-        assertEquals( "vgjokjev@netcetera.com.mk", substringFilter.getInitialSubstrings() );
-        assertEquals( 0, substringFilter.getAnySubstrings().size() );
-        assertEquals( null, substringFilter.getFinalSubstrings() );
+        SubstringNode substringNode = ( SubstringNode ) andNodes.get( 0 );
+        assertNotNull( substringNode );
 
-        AttributeValueAssertionFilter equalityMatch = ( AttributeValueAssertionFilter ) andFilters.get( 1 );
-        assertNotNull( equalityMatch );
+        assertEquals( "pgpuserid", substringNode.getAttribute() );
+        assertEquals( "vgjokjev@netcetera.com.mk", substringNode.getInitial() );
+        assertEquals( 0, substringNode.getAny().size() );
+        assertEquals( null, substringNode.getFinal() );
 
-        AttributeValueAssertion assertion = equalityMatch.getAssertion();
-        assertNotNull( assertion );
+        EqualityNode<?> equalityNode = ( EqualityNode<?> ) andNodes.get( 1 );
+        assertNotNull( equalityNode );
 
-        assertEquals( "pgpdisabled", assertion.getAttributeDesc() );
-        assertEquals( "0", assertion.getAssertionValue().getString() );
+        assertEquals( "pgpdisabled", equalityNode.getAttribute() );
+        assertEquals( "0", equalityNode.getValue().getString() );
 
         // Check the encoding
         // We won't check the whole PDU, as it may differs because
@@ -3194,8 +3139,8 @@ public class SearchRequestTest
                 0x01, 0x01, ( byte ) 0xFF,// typesOnly BOOLEAN, (TRUE)
                 // filter Filter,
                 ( byte ) 0xA3, 0x06, // Filter ::= CHOICE {
-                //      equalityMatch [3] AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                //      equalityMatch [3] Assertion,
+                // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'a', //      attributeDesc AttributeDescription (LDAPString),
                 0x04, 0x01, 'b', //      assertionValue AssertionValue (OCTET STRING) } 
                 // attributes AttributeDescriptionList }
@@ -3220,9 +3165,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
-        SearchRequest searchRequest = decorator.getSearchRequest();
-
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "a=b", searchRequest.getBase().toString() );
@@ -3233,15 +3176,12 @@ public class SearchRequestTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (a=b)
-        Filter filter = decorator.getCurrentFilter();
-        AttributeValueAssertionFilter equalityMatch = ( AttributeValueAssertionFilter ) filter;
-        assertNotNull( equalityMatch );
+        EqualityNode<?> equalityNode = (EqualityNode<?>)searchRequest.getFilter();
 
-        AttributeValueAssertion assertion = equalityMatch.getAssertion();
-        assertNotNull( assertion );
+        assertNotNull( equalityNode );
 
-        assertEquals( "a", assertion.getAttributeDesc() );
-        assertEquals( "b", assertion.getAssertionValue().getString() );
+        assertEquals( "a", equalityNode.getAttribute() );
+        assertEquals( "b", equalityNode.getValue().getString() );
 
         List<String> attributes = searchRequest.getAttributes();
         assertEquals( 0, attributes.size() );
@@ -3300,8 +3240,8 @@ public class SearchRequestTest
                 // filter Filter,
                 ( byte ) 0xA0, 0x08, // Filter ::= CHOICE {
                 ( byte ) 0xA3, 0x06,
-                //      equalityMatch [3] AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                //      equalityMatch [3] Assertion,
+                // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'a', //      attributeDesc AttributeDescription (LDAPString),
                 0x04, 0x01, 'b', //      assertionValue AssertionValue (OCTET STRING) } 
                 // attributes AttributeDescriptionList }
@@ -3326,9 +3266,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
-        SearchRequest searchRequest = decorator.getSearchRequest();
-
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "a=b", searchRequest.getBase().toString() );
@@ -3339,22 +3277,20 @@ public class SearchRequestTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (&(...
-        Filter filter = decorator.getCurrentFilter();
-        AndFilter andFilter = ( AndFilter ) filter;
-        assertNotNull( andFilter );
+        ExprNode filter = searchRequest.getFilter();
 
-        List<Filter> andFilters = andFilter.getAndFilter();
-        assertEquals( 1, andFilters.size() );
+        AndNode andNode = ( AndNode ) filter;
+        assertNotNull( andNode );
+
+        List<ExprNode> andNodes = andNode.getChildren();
+        assertEquals( 1, andNodes.size() );
 
         // (&(a=b))
-        AttributeValueAssertionFilter equalityMatch = ( AttributeValueAssertionFilter ) andFilters.get( 0 );
-        assertNotNull( equalityMatch );
+        EqualityNode<?> equalityNode = (EqualityNode<?>)andNodes.get( 0 );
+        assertNotNull( equalityNode );
 
-        AttributeValueAssertion assertion = equalityMatch.getAssertion();
-        assertNotNull( assertion );
-
-        assertEquals( "a", assertion.getAttributeDesc() );
-        assertEquals( "b", assertion.getAssertionValue().getString() );
+        assertEquals( "a", equalityNode.getAttribute() );
+        assertEquals( "b", equalityNode.getValue().getString() );
 
         List<String> attributes = searchRequest.getAttributes();
         assertEquals( 0, attributes.size() );
@@ -3413,13 +3349,13 @@ public class SearchRequestTest
                 // filter Filter,
                 ( byte ) 0xA0, 0x10, // Filter ::= CHOICE {
                 ( byte ) 0xA3, 0x06,
-                //      equalityMatch [3] AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                //      equalityMatch [3] Assertion,
+                // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'a', //      attributeDesc AttributeDescription (LDAPString),
                 0x04, 0x01, 'b', //      assertionValue AssertionValue (OCTET STRING) } 
                 ( byte ) 0xA3, 0x06,
-                //      equalityMatch [3] AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                //      equalityMatch [3] Assertion,
+                // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'c', //      attributeDesc AttributeDescription (LDAPString),
                 0x04, 0x01, 'd', //      assertionValue AssertionValue (OCTET STRING) } 
                 // attributes AttributeDescriptionList }
@@ -3444,9 +3380,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
-        SearchRequest searchRequest = decorator.getSearchRequest();
-
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "a=b", searchRequest.getBase().toString() );
@@ -3457,32 +3391,27 @@ public class SearchRequestTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (&(...
-        Filter filter = decorator.getCurrentFilter();
-        AndFilter andFilter = ( AndFilter ) filter;
-        assertNotNull( andFilter );
+        ExprNode filter = searchRequest.getFilter();
 
-        List<Filter> andFilters = andFilter.getAndFilter();
-        assertEquals( 2, andFilters.size() );
+        AndNode andNode = ( AndNode ) filter;
+        assertNotNull( andNode );
+
+        List<ExprNode> andNodes = andNode.getChildren();
+        assertEquals( 2, andNodes.size() );
 
         // (&(a=b)...
-        AttributeValueAssertionFilter equalityMatch = ( AttributeValueAssertionFilter ) andFilters.get( 0 );
-        assertNotNull( equalityMatch );
+        EqualityNode<?> equalityNode = (EqualityNode<?>)andNodes.get( 0 );
+        assertNotNull( equalityNode );
 
-        AttributeValueAssertion assertion = equalityMatch.getAssertion();
-        assertNotNull( assertion );
-
-        assertEquals( "a", assertion.getAttributeDesc() );
-        assertEquals( "b", assertion.getAssertionValue().getString() );
+        assertEquals( "a", equalityNode.getAttribute() );
+        assertEquals( "b", equalityNode.getValue().getString() );
 
         // (&(a=b)(c=d))
-        equalityMatch = ( AttributeValueAssertionFilter ) andFilters.get( 1 );
-        assertNotNull( equalityMatch );
+        equalityNode = ( EqualityNode<?> ) andNodes.get( 1 );
+        assertNotNull( equalityNode );
 
-        assertion = equalityMatch.getAssertion();
-        assertNotNull( assertion );
-
-        assertEquals( "c", assertion.getAttributeDesc() );
-        assertEquals( "d", assertion.getAssertionValue().getString() );
+        assertEquals( "c", equalityNode.getAttribute() );
+        assertEquals( "d", equalityNode.getValue().getString() );
 
         List<String> attributes = searchRequest.getAttributes();
         assertEquals( 0, attributes.size() );
@@ -3541,8 +3470,8 @@ public class SearchRequestTest
                 // filter Filter,
                 ( byte ) 0xA0, 0x0A, // Filter ::= CHOICE { and             [0] SET OF Filter,
                 ( byte ) 0xA0, 0x08, // Filter ::= CHOICE { and             [0] SET OF Filter,
-                ( byte ) 0xA3, 0x06,//      equalityMatch [3] AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                ( byte ) 0xA3, 0x06,//      equalityMatch [3] Assertion,
+                // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'a', //      attributeDesc AttributeDescription (LDAPString),
                 0x04, 0x01, 'b', //      assertionValue AssertionValue (OCTET STRING) } 
                 0x30, 0x00, // AttributeDescriptionList ::= SEQUENCE OF AttributeDescription
@@ -3566,9 +3495,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
-        SearchRequest searchRequest = decorator.getSearchRequest();
-
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "a=b", searchRequest.getBase().toString() );
@@ -3579,29 +3506,27 @@ public class SearchRequestTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (&(...
-        Filter filter = decorator.getCurrentFilter();
-        AndFilter andFilter = ( AndFilter ) filter;
-        assertNotNull( andFilter );
+        ExprNode filter = searchRequest.getFilter();
 
-        List<Filter> andFilters = andFilter.getAndFilter();
-        assertEquals( 1, andFilters.size() );
+        AndNode andNode = ( AndNode ) filter;
+        assertNotNull( andNode );
+
+        List<ExprNode> andNodes = andNode.getChildren();
+        assertEquals( 1, andNodes.size() );
 
         // (&(&(..
-        AndFilter andFilter2 = ( AndFilter ) andFilters.get( 0 );
-        assertNotNull( andFilter2 );
+        AndNode andNode2 = ( AndNode ) andNodes.get( 0 );
+        assertNotNull( andNode2 );
 
-        List<Filter> andFilters2 = andFilter2.getAndFilter();
-        assertEquals( 1, andFilters2.size() );
+        List<ExprNode> andNodes2 = andNode2.getChildren();
+        assertEquals( 1, andNodes2.size() );
 
         // (&(&(a=b)))
-        AttributeValueAssertionFilter equalityMatch = ( AttributeValueAssertionFilter ) andFilters2.get( 0 );
-        assertNotNull( equalityMatch );
+        EqualityNode<?> equalityNode = ( EqualityNode<?> ) andNodes2.get( 0 );
+        assertNotNull( equalityNode );
 
-        AttributeValueAssertion assertion = equalityMatch.getAssertion();
-        assertNotNull( assertion );
-
-        assertEquals( "a", assertion.getAttributeDesc() );
-        assertEquals( "b", assertion.getAssertionValue().getString() );
+        assertEquals( "a", equalityNode.getAttribute() );
+        assertEquals( "b", equalityNode.getValue().getString() );
 
         List<String> attributes = searchRequest.getAttributes();
         assertEquals( 0, attributes.size() );
@@ -3661,13 +3586,13 @@ public class SearchRequestTest
                 ( byte ) 0xA0, 0x12, // Filter ::= CHOICE { and             [0] SET OF Filter,
                 ( byte ) 0xA0, 0x10, // Filter ::= CHOICE { and             [0] SET OF Filter,
                 ( byte ) 0xA3, 0x06,
-                //      equalityMatch [3] AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                //      equalityMatch [3] Assertion,
+                // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'a', //      attributeDesc AttributeDescription (LDAPString),
                 0x04, 0x01, 'b', //      assertionValue AssertionValue (OCTET STRING) } 
                 ( byte ) 0xA3, 0x06,
-                //      equalityMatch [3] AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                //      equalityMatch [3] Assertion,
+                // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'c', //      attributeDesc AttributeDescription (LDAPString),
                 0x04, 0x01, 'd', //      assertionValue AssertionValue (OCTET STRING) } 
                 0x30, 0x00, // AttributeDescriptionList ::= SEQUENCE OF AttributeDescription
@@ -3691,9 +3616,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
-        SearchRequest searchRequest = decorator.getSearchRequest();
-
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "a=b", searchRequest.getBase().toString() );
@@ -3704,39 +3627,34 @@ public class SearchRequestTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (&(...
-        Filter filter = decorator.getCurrentFilter();
-        AndFilter andFilter = ( AndFilter ) filter;
-        assertNotNull( andFilter );
+        ExprNode filter = searchRequest.getFilter();
 
-        List<Filter> andFilters = andFilter.getAndFilter();
-        assertEquals( 1, andFilters.size() );
+        AndNode andNode = ( AndNode ) filter;
+        assertNotNull( andNode );
+
+        List<ExprNode> andNodes = andNode.getChildren();
+        assertEquals( 1, andNodes.size() );
 
         // (&(&(..
-        AndFilter andFilter2 = ( AndFilter ) andFilters.get( 0 );
-        assertNotNull( andFilter2 );
+        AndNode andNode2 = ( AndNode ) andNodes.get( 0 );
+        assertNotNull( andNode2 );
 
-        List<Filter> andFilters2 = andFilter2.getAndFilter();
-        assertEquals( 2, andFilters2.size() );
+        List<ExprNode> andNodes2 = andNode2.getChildren();
+        assertEquals( 2, andNodes2.size() );
 
         // (&(&(a=b)...
-        AttributeValueAssertionFilter equalityMatch = ( AttributeValueAssertionFilter ) andFilters2.get( 0 );
-        assertNotNull( equalityMatch );
+        EqualityNode<?> equalityNode = ( EqualityNode<?> ) andNodes2.get( 0 );
+        assertNotNull( equalityNode );
 
-        AttributeValueAssertion assertion = equalityMatch.getAssertion();
-        assertNotNull( assertion );
-
-        assertEquals( "a", assertion.getAttributeDesc() );
-        assertEquals( "b", assertion.getAssertionValue().getString() );
+        assertEquals( "a", equalityNode.getAttribute() );
+        assertEquals( "b", equalityNode.getValue().getString() );
 
         // (&(&(a=b)(c=d)
-        equalityMatch = ( AttributeValueAssertionFilter ) andFilters2.get( 1 );
-        assertNotNull( equalityMatch );
+        equalityNode = ( EqualityNode<?> ) andNodes2.get( 1 );
+        assertNotNull( equalityNode );
 
-        assertion = equalityMatch.getAssertion();
-        assertNotNull( assertion );
-
-        assertEquals( "c", assertion.getAttributeDesc() );
-        assertEquals( "d", assertion.getAssertionValue().getString() );
+        assertEquals( "c", equalityNode.getAttribute() );
+        assertEquals( "d", equalityNode.getValue().getString() );
 
         List<String> attributes = searchRequest.getAttributes();
         assertEquals( 0, attributes.size() );
@@ -3795,13 +3713,13 @@ public class SearchRequestTest
                 // filter Filter,
                 ( byte ) 0xA0, 0x12, // Filter ::= CHOICE { and             [0] SET OF Filter,
                 ( byte ) 0xA0, 0x08, // Filter ::= CHOICE { and             [0] SET OF Filter,
-                ( byte ) 0xA3, 0x06,//      equalityMatch [3] AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                ( byte ) 0xA3, 0x06,//      equalityMatch [3] Assertion,
+                // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'a', //      attributeDesc AttributeDescription (LDAPString),
                 0x04, 0x01, 'b', //      assertionValue AssertionValue (OCTET STRING) } 
-                ( byte ) 0xA3, 0x06, //      equalityMatch [3] AttributeValueAssertion,
-                //      equalityMatch [3] AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                ( byte ) 0xA3, 0x06, //      equalityMatch [3] Assertion,
+                //      equalityMatch [3] Assertion,
+                // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'c', //      attributeDesc AttributeDescription (LDAPString),
                 0x04, 0x01, 'd', //      assertionValue AssertionValue (OCTET STRING) } 
                 0x30, 0x00, // AttributeDescriptionList ::= SEQUENCE OF AttributeDescription
@@ -3825,9 +3743,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
-        SearchRequest searchRequest = decorator.getSearchRequest();
-
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "a=b", searchRequest.getBase().toString() );
@@ -3838,39 +3754,34 @@ public class SearchRequestTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (&(...
-        Filter filter = decorator.getCurrentFilter();
-        AndFilter andFilter = ( AndFilter ) filter;
-        assertNotNull( andFilter );
+        ExprNode filter = searchRequest.getFilter();
 
-        List<Filter> andFilters = andFilter.getAndFilter();
-        assertEquals( 2, andFilters.size() );
+        AndNode andNode = ( AndNode ) filter;
+        assertNotNull( andNode );
+
+        List<ExprNode> andNodes = andNode.getChildren();
+        assertEquals( 2, andNodes.size() );
 
         // (&(&(..
-        AndFilter andFilter2 = ( AndFilter ) andFilters.get( 0 );
-        assertNotNull( andFilter2 );
+        AndNode andNode2 = ( AndNode ) andNodes.get( 0 );
+        assertNotNull( andNode2 );
 
-        List<Filter> andFilters2 = andFilter2.getAndFilter();
-        assertEquals( 1, andFilters2.size() );
+        List<ExprNode> andNodes2 = andNode2.getChildren();
+        assertEquals( 1, andNodes2.size() );
 
         // (&(&(a=b))...
-        AttributeValueAssertionFilter equalityMatch = ( AttributeValueAssertionFilter ) andFilters2.get( 0 );
-        assertNotNull( equalityMatch );
+        EqualityNode<?> equalityNode = ( EqualityNode<?> ) andNodes2.get( 0 );
+        assertNotNull( equalityNode );
 
-        AttributeValueAssertion assertion = equalityMatch.getAssertion();
-        assertNotNull( assertion );
-
-        assertEquals( "a", assertion.getAttributeDesc() );
-        assertEquals( "b", assertion.getAssertionValue().getString() );
+        assertEquals( "a", equalityNode.getAttribute() );
+        assertEquals( "b", equalityNode.getValue().getString() );
 
         // (&(&(a=b))(c=d))
-        equalityMatch = ( AttributeValueAssertionFilter ) andFilters.get( 1 );
-        assertNotNull( equalityMatch );
+        equalityNode = ( EqualityNode<?> ) andNodes.get( 1 );
+        assertNotNull( equalityNode );
 
-        assertion = equalityMatch.getAssertion();
-        assertNotNull( assertion );
-
-        assertEquals( "c", assertion.getAttributeDesc() );
-        assertEquals( "d", assertion.getAssertionValue().getString() );
+        assertEquals( "c", equalityNode.getAttribute() );
+        assertEquals( "d", equalityNode.getValue().getString() );
 
         List<String> attributes = searchRequest.getAttributes();
         assertEquals( 0, attributes.size() );
@@ -3929,17 +3840,17 @@ public class SearchRequestTest
                 // filter Filter,
                 ( byte ) 0xA0, 0x1A, // Filter ::= CHOICE { and             [0] SET OF Filter,
                 ( byte ) 0xA0, 0x10, // Filter ::= CHOICE { and             [0] SET OF Filter,
-                ( byte ) 0xA3, 0x06,//      equalityMatch [3] AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                ( byte ) 0xA3, 0x06,//      equalityMatch [3] Assertion,
+                // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'a', //      attributeDesc AttributeDescription (LDAPString),
                 0x04, 0x01, 'b', //      assertionValue AssertionValue (OCTET STRING) } 
-                ( byte ) 0xA3, 0x06,//      equalityMatch [3] AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                ( byte ) 0xA3, 0x06,//      equalityMatch [3] Assertion,
+                // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'c', //      attributeDesc AttributeDescription (LDAPString),
                 0x04, 0x01, 'd', //      assertionValue AssertionValue (OCTET STRING) } 
-                ( byte ) 0xA3, 0x06, //      equalityMatch [3] AttributeValueAssertion,
-                //      equalityMatch [3] AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                ( byte ) 0xA3, 0x06, //      equalityMatch [3] Assertion,
+                //      equalityMatch [3] Assertion,
+                // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'e', //      attributeDesc AttributeDescription (LDAPString),
                 0x04, 0x01, 'f', //      assertionValue AssertionValue (OCTET STRING) } 
                 0x30, 0x00, // AttributeDescriptionList ::= SEQUENCE OF AttributeDescription
@@ -3963,9 +3874,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
-        SearchRequest searchRequest = decorator.getSearchRequest();
-
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "a=b", searchRequest.getBase().toString() );
@@ -3976,49 +3885,42 @@ public class SearchRequestTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (&(...
-        Filter filter = decorator.getCurrentFilter();
-        AndFilter andFilter = ( AndFilter ) filter;
-        assertNotNull( andFilter );
+        ExprNode filter = searchRequest.getFilter();
 
-        List<Filter> andFilters = andFilter.getAndFilter();
-        assertEquals( 2, andFilters.size() );
+        AndNode andNode = ( AndNode ) filter;
+        assertNotNull( andNode );
+
+        List<ExprNode> andNodes = andNode.getChildren();
+        assertEquals( 2, andNodes.size() );
 
         // (&(&(..
-        AndFilter andFilter2 = ( AndFilter ) andFilters.get( 0 );
-        assertNotNull( andFilter2 );
+        AndNode andNode2 = ( AndNode ) andNodes.get( 0 );
+        assertNotNull( andNode2 );
 
-        List<Filter> andFilters2 = andFilter2.getAndFilter();
-        assertEquals( 2, andFilters2.size() );
+        List<ExprNode> andNodes2 = andNode2.getChildren();
+        assertEquals( 2, andNodes2.size() );
 
         // (&(&(a=b)...
-        AttributeValueAssertionFilter equalityMatch = ( AttributeValueAssertionFilter ) andFilters2.get( 0 );
-        assertNotNull( equalityMatch );
+        EqualityNode<?> equalityNode = ( EqualityNode<?> ) andNodes2.get( 0 );
+        assertNotNull( equalityNode );
 
-        AttributeValueAssertion assertion = equalityMatch.getAssertion();
-        assertNotNull( assertion );
-
-        assertEquals( "a", assertion.getAttributeDesc() );
-        assertEquals( "b", assertion.getAssertionValue().getString() );
+        assertEquals( "a", equalityNode.getAttribute() );
+        assertEquals( "b", equalityNode.getValue().getString() );
 
         // (&(&(a=b)(c=d)...
-        equalityMatch = ( AttributeValueAssertionFilter ) andFilters2.get( 1 );
-        assertNotNull( equalityMatch );
+        equalityNode = ( EqualityNode<?> ) andNodes2.get( 1 );
+        assertNotNull( equalityNode );
 
-        assertion = equalityMatch.getAssertion();
-        assertNotNull( assertion );
-
-        assertEquals( "c", assertion.getAttributeDesc() );
-        assertEquals( "d", assertion.getAssertionValue().getString() );
+        assertEquals( "c", equalityNode.getAttribute() );
+        assertEquals( "d", equalityNode.getValue().getString() );
 
         // (&(&(a=b)(c=d))(e=f))
-        equalityMatch = ( AttributeValueAssertionFilter ) andFilters.get( 1 );
-        assertNotNull( equalityMatch );
+        equalityNode = ( EqualityNode<?> ) andNodes.get( 1 );
+        assertNotNull( equalityNode );
 
-        assertion = equalityMatch.getAssertion();
-        assertNotNull( assertion );
 
-        assertEquals( "e", assertion.getAttributeDesc() );
-        assertEquals( "f", assertion.getAssertionValue().getString() );
+        assertEquals( "e", equalityNode.getAttribute() );
+        assertEquals( "f", equalityNode.getValue().getString() );
 
         List<String> attributes = searchRequest.getAttributes();
         assertEquals( 0, attributes.size() );
@@ -4076,18 +3978,18 @@ public class SearchRequestTest
                 0x01, 0x01, ( byte ) 0xFF,// typesOnly BOOLEAN, (TRUE)
                 // filter Filter,
                 ( byte ) 0xA0, 0x1A, // Filter ::= CHOICE { and             [0] SET OF Filter,
-                ( byte ) 0xA3, 0x06, //      equalityMatch [3] AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                ( byte ) 0xA3, 0x06, //      equalityMatch [3] Assertion,
+                // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'a', //      attributeDesc AttributeDescription (LDAPString),
                 0x04, 0x01, 'b', //      assertionValue AssertionValue (OCTET STRING) } 
                 ( byte ) 0xA1, 0x10, // Filter ::= CHOICE { or             [1] SET OF Filter,
-                ( byte ) 0xA3, 0x06,//      equalityMatch [3] AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                ( byte ) 0xA3, 0x06,//      equalityMatch [3] Assertion,
+                // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'c', //      attributeDesc AttributeDescription (LDAPString),
                 0x04, 0x01, 'd', //      assertionValue AssertionValue (OCTET STRING) } 
-                ( byte ) 0xA3, 0x06,//      equalityMatch [3] AttributeValueAssertion,
-                //      equalityMatch [3] AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                ( byte ) 0xA3, 0x06,//      equalityMatch [3] Assertion,
+                //      equalityMatch [3] Assertion,
+                // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'e', //      attributeDesc AttributeDescription (LDAPString),
                 0x04, 0x01, 'f', //      assertionValue AssertionValue (OCTET STRING) } 
                 0x30, 0x00, // AttributeDescriptionList ::= SEQUENCE OF AttributeDescription
@@ -4111,9 +4013,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
-        SearchRequest searchRequest = decorator.getSearchRequest();
-
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "a=b", searchRequest.getBase().toString() );
@@ -4124,49 +4024,41 @@ public class SearchRequestTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (&(...
-        Filter filter = decorator.getCurrentFilter();
-        AndFilter andFilter = ( AndFilter ) filter;
-        assertNotNull( andFilter );
+        ExprNode exprNode = searchRequest.getFilter();
 
-        List<Filter> andFilters = andFilter.getAndFilter();
-        assertEquals( 2, andFilters.size() );
+        AndNode andNode = ( AndNode ) exprNode;
+        assertNotNull( andNode );
+
+        List<ExprNode> andNodes = andNode.getChildren();
+        assertEquals( 2, andNodes.size() );
 
         // (&(a=b)..
-        AttributeValueAssertionFilter equalityMatch = ( AttributeValueAssertionFilter ) andFilters.get( 0 );
-        assertNotNull( equalityMatch );
+        EqualityNode<?> equalityNode = ( EqualityNode<?> ) andNodes.get( 0 );
+        assertNotNull( equalityNode );
 
-        AttributeValueAssertion assertion = equalityMatch.getAssertion();
-        assertNotNull( assertion );
-
-        assertEquals( "a", assertion.getAttributeDesc() );
-        assertEquals( "b", assertion.getAssertionValue().getString() );
+        assertEquals( "a", equalityNode.getAttribute() );
+        assertEquals( "b", equalityNode.getValue().getString() );
 
         // (&(a=b)(|(...
-        OrFilter orFilter = ( OrFilter ) andFilters.get( 1 );
-        assertNotNull( orFilter );
+        OrNode orNode = ( OrNode ) andNodes.get( 1 );
+        assertNotNull( orNode );
 
-        List<Filter> orFilters = orFilter.getOrFilter();
-        assertEquals( 2, orFilters.size() );
+        List<ExprNode> orNodes = orNode.getChildren();
+        assertEquals( 2, orNodes.size() );
 
         // (&(a=b)(|(c=d)...
-        equalityMatch = ( AttributeValueAssertionFilter ) orFilters.get( 0 );
-        assertNotNull( equalityMatch );
+        equalityNode = ( EqualityNode<?> ) orNodes.get( 0 );
+        assertNotNull( equalityNode );
 
-        assertion = equalityMatch.getAssertion();
-        assertNotNull( assertion );
-
-        assertEquals( "c", assertion.getAttributeDesc() );
-        assertEquals( "d", assertion.getAssertionValue().getString() );
+        assertEquals( "c", equalityNode.getAttribute() );
+        assertEquals( "d", equalityNode.getValue().getString() );
 
         // (&(a=b)(|(c=d)(e=f)))
-        equalityMatch = ( AttributeValueAssertionFilter ) orFilters.get( 1 );
-        assertNotNull( equalityMatch );
+        equalityNode = ( EqualityNode<?> ) orNodes.get( 1 );
+        assertNotNull( equalityNode );
 
-        assertion = equalityMatch.getAssertion();
-        assertNotNull( assertion );
-
-        assertEquals( "e", assertion.getAttributeDesc() );
-        assertEquals( "f", assertion.getAssertionValue().getString() );
+        assertEquals( "e", equalityNode.getAttribute() );
+        assertEquals( "f", equalityNode.getValue().getString() );
 
         List<String> attributes = searchRequest.getAttributes();
         assertEquals( 0, attributes.size() );
@@ -4225,14 +4117,14 @@ public class SearchRequestTest
                 // filter Filter,
                 ( byte ) 0xA0, 0x14, // Filter ::= CHOICE { and             [0] SET OF Filter,
                 ( byte ) 0xA0, 0x08, // Filter ::= CHOICE { and             [0] SET OF Filter,
-                ( byte ) 0xA3, 0x06,//      equalityMatch [3] AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                ( byte ) 0xA3, 0x06,//      equalityMatch [3] Assertion,
+                // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'a', //      attributeDesc AttributeDescription (LDAPString),
                 0x04, 0x01, 'b', //      assertionValue AssertionValue (OCTET STRING) } 
                 ( byte ) 0xA0, 0x08, // Filter ::= CHOICE { and             [0] SET OF Filter,
-                ( byte ) 0xA3, 0x06,//      equalityMatch [3] AttributeValueAssertion,
-                //      equalityMatch [3] AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                ( byte ) 0xA3, 0x06,//      equalityMatch [3] Assertion,
+                //      equalityMatch [3] Assertion,
+                // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'c', //      attributeDesc AttributeDescription (LDAPString),
                 0x04, 0x01, 'd', //      assertionValue AssertionValue (OCTET STRING) } 
                 0x30, 0x00 // AttributeDescriptionList ::= SEQUENCE OF AttributeDescription
@@ -4256,9 +4148,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
-        SearchRequest searchRequest = decorator.getSearchRequest();
-
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "a=b", searchRequest.getBase().toString() );
@@ -4269,46 +4159,41 @@ public class SearchRequestTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (&(...
-        Filter filter = decorator.getCurrentFilter();
-        AndFilter andFilter = ( AndFilter ) filter;
-        assertNotNull( andFilter );
+        ExprNode filter = searchRequest.getFilter();
 
-        List<Filter> andFilters = andFilter.getAndFilter();
-        assertEquals( 2, andFilters.size() );
+        AndNode andNode = ( AndNode ) filter;
+        assertNotNull( andNode );
+
+        List<ExprNode> andNodes = andNode.getChildren();
+        assertEquals( 2, andNodes.size() );
 
         // (&(&(..
-        AndFilter andFilter2 = ( AndFilter ) andFilters.get( 0 );
-        assertNotNull( andFilter2 );
+        AndNode andNode2 = ( AndNode ) andNodes.get( 0 );
+        assertNotNull( andNode2 );
 
-        List<Filter> andFilters2 = andFilter2.getAndFilter();
-        assertEquals( 1, andFilters2.size() );
+        List<ExprNode> andNodes2 = andNode2.getChildren();
+        assertEquals( 1, andNodes2.size() );
 
         // (&(&(a=b)...
-        AttributeValueAssertionFilter equalityMatch = ( AttributeValueAssertionFilter ) andFilters2.get( 0 );
-        assertNotNull( equalityMatch );
+        EqualityNode<?> equalityNode = ( EqualityNode<?> ) andNodes2.get( 0 );
+        assertNotNull( equalityNode );
 
-        AttributeValueAssertion assertion = equalityMatch.getAssertion();
-        assertNotNull( assertion );
-
-        assertEquals( "a", assertion.getAttributeDesc() );
-        assertEquals( "b", assertion.getAssertionValue().getString() );
+        assertEquals( "a", equalityNode.getAttribute() );
+        assertEquals( "b", equalityNode.getValue().getString() );
 
         // (&(&(a=b))(&...
-        andFilter2 = ( AndFilter ) andFilters.get( 1 );
-        assertNotNull( andFilter2 );
+        andNode2 = ( AndNode ) andNodes.get( 1 );
+        assertNotNull( andNode2 );
 
-        andFilters2 = andFilter2.getAndFilter();
-        assertEquals( 1, andFilters2.size() );
+        andNodes2 = andNode2.getChildren();
+        assertEquals( 1, andNodes2.size() );
 
         // (&(&(a=b))(&(c=d)))
-        equalityMatch = ( AttributeValueAssertionFilter ) andFilters2.get( 0 );
-        assertNotNull( equalityMatch );
+        equalityNode = ( EqualityNode<?> ) andNodes2.get( 0 );
+        assertNotNull( equalityNode );
 
-        assertion = equalityMatch.getAssertion();
-        assertNotNull( assertion );
-
-        assertEquals( "c", assertion.getAttributeDesc() );
-        assertEquals( "d", assertion.getAssertionValue().getString() );
+        assertEquals( "c", equalityNode.getAttribute() );
+        assertEquals( "d", equalityNode.getValue().getString() );
 
         List<String> attributes = searchRequest.getAttributes();
         assertEquals( 0, attributes.size() );
@@ -4367,18 +4252,18 @@ public class SearchRequestTest
                 // filter Filter,
                 ( byte ) 0xA0, 0x1C, // Filter ::= CHOICE { and             [0] SET OF Filter,
                 ( byte ) 0xA0, 0x10, // Filter ::= CHOICE { and             [0] SET OF Filter,
-                ( byte ) 0xA3, 0x06,//      equalityMatch [3] AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                ( byte ) 0xA3, 0x06,//      equalityMatch [3] Assertion,
+                // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'a', //      attributeDesc AttributeDescription (LDAPString),
                 0x04, 0x01, 'b', //      assertionValue AssertionValue (OCTET STRING) } 
-                ( byte ) 0xA3, 0x06,//      equalityMatch [3] AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                ( byte ) 0xA3, 0x06,//      equalityMatch [3] Assertion,
+                // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'c', //      attributeDesc AttributeDescription (LDAPString),
                 0x04, 0x01, 'd', //      assertionValue AssertionValue (OCTET STRING) } 
                 ( byte ) 0xA0, 0x08, // Filter ::= CHOICE { and             [0] SET OF Filter,
-                ( byte ) 0xA3, 0x06,//      equalityMatch [3] AttributeValueAssertion,
-                //      equalityMatch [3] AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                ( byte ) 0xA3, 0x06,//      equalityMatch [3] Assertion,
+                //      equalityMatch [3] Assertion,
+                // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'e', //      attributeDesc AttributeDescription (LDAPString),
                 0x04, 0x01, 'f', //      assertionValue AssertionValue (OCTET STRING) } 
                 0x30, 0x00 // AttributeDescriptionList ::= SEQUENCE OF AttributeDescription
@@ -4402,9 +4287,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
-        SearchRequest searchRequest = decorator.getSearchRequest();
-
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "a=b", searchRequest.getBase().toString() );
@@ -4415,56 +4298,48 @@ public class SearchRequestTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (&(...
-        Filter filter = decorator.getCurrentFilter();
-        AndFilter andFilter = ( AndFilter ) filter;
-        assertNotNull( andFilter );
+        ExprNode filter = searchRequest.getFilter();
 
-        List<Filter> andFilters = andFilter.getAndFilter();
-        assertEquals( 2, andFilters.size() );
+        AndNode andNode = ( AndNode ) filter;
+        assertNotNull( andNode );
+
+        List<ExprNode> andNodes = andNode.getChildren();
+        assertEquals( 2, andNodes.size() );
 
         // (&(&(..
-        AndFilter andFilter2 = ( AndFilter ) andFilters.get( 0 );
-        assertNotNull( andFilter2 );
+        AndNode andNode2 = ( AndNode ) andNodes.get( 0 );
+        assertNotNull( andNode2 );
 
-        List<Filter> andFilters2 = andFilter2.getAndFilter();
-        assertEquals( 2, andFilters2.size() );
+        List<ExprNode> andNodes2 = andNode2.getChildren();
+        assertEquals( 2, andNodes2.size() );
 
         // (&(&(a=b)...
-        AttributeValueAssertionFilter equalityMatch = ( AttributeValueAssertionFilter ) andFilters2.get( 0 );
-        assertNotNull( equalityMatch );
+        EqualityNode<?> equalityNode = ( EqualityNode<?> ) andNodes2.get( 0 );
+        assertNotNull( equalityNode );
 
-        AttributeValueAssertion assertion = equalityMatch.getAssertion();
-        assertNotNull( assertion );
-
-        assertEquals( "a", assertion.getAttributeDesc() );
-        assertEquals( "b", assertion.getAssertionValue().getString() );
+        assertEquals( "a", equalityNode.getAttribute() );
+        assertEquals( "b", equalityNode.getValue().getString() );
 
         // (&(&(a=b)(c=d))...
-        equalityMatch = ( AttributeValueAssertionFilter ) andFilters2.get( 1 );
-        assertNotNull( equalityMatch );
+        equalityNode = ( EqualityNode<?> ) andNodes2.get( 1 );
+        assertNotNull( equalityNode );
 
-        assertion = equalityMatch.getAssertion();
-        assertNotNull( assertion );
-
-        assertEquals( "c", assertion.getAttributeDesc() );
-        assertEquals( "d", assertion.getAssertionValue().getString() );
+        assertEquals( "c", equalityNode.getAttribute() );
+        assertEquals( "d", equalityNode.getValue().getString() );
 
         // (&(&(a=b)(c=d))(&...
-        andFilter2 = ( AndFilter ) andFilters.get( 1 );
-        assertNotNull( andFilter2 );
+        andNode2 = ( AndNode ) andNodes.get( 1 );
+        assertNotNull( andNode2 );
 
-        andFilters2 = andFilter2.getAndFilter();
-        assertEquals( 1, andFilters2.size() );
+        andNodes2 = andNode2.getChildren();
+        assertEquals( 1, andNodes2.size() );
 
         // (&(&(a=b)(c=d))(&(e=f)))
-        equalityMatch = ( AttributeValueAssertionFilter ) andFilters2.get( 0 );
-        assertNotNull( equalityMatch );
+        equalityNode = ( EqualityNode<?> ) andNodes2.get( 0 );
+        assertNotNull( equalityNode );
 
-        assertion = equalityMatch.getAssertion();
-        assertNotNull( assertion );
-
-        assertEquals( "e", assertion.getAttributeDesc() );
-        assertEquals( "f", assertion.getAssertionValue().getString() );
+        assertEquals( "e", equalityNode.getAttribute() );
+        assertEquals( "f", equalityNode.getValue().getString() );
 
         List<String> attributes = searchRequest.getAttributes();
         assertEquals( 0, attributes.size() );
@@ -4528,8 +4403,8 @@ public class SearchRequestTest
                 'd', 'e', 'f', ( byte ) 0x87, 0x06,// present [7] AttributeDescription,
                 'g', 'h', 'i', // AttributeDescription ::= LDAPString
                 'j', 'k', 'l', ( byte ) 0xA2, 0x08, // Filter ::= CHOICE { not             Filter,
-                ( byte ) 0xA5, 0x06,//      greaterOrEqual [3] AttributeValueAssertion,
-                // AttributeValueAssertion ::= SEQUENCE {
+                ( byte ) 0xA5, 0x06,//      greaterOrEqual [3] Assertion,
+                // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'e', //      attributeDesc AttributeDescription (LDAPString),
                 0x04, 0x01, 'f', //      assertionValue AssertionValue (OCTET STRING) } 
                 0x30, 0x00 // AttributeDescriptionList ::= SEQUENCE OF AttributeDescription
@@ -4553,9 +4428,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
-        SearchRequest searchRequest = decorator.getSearchRequest();
-
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "a=b", searchRequest.getBase().toString() );
@@ -4566,45 +4439,43 @@ public class SearchRequestTest
         assertEquals( true, searchRequest.getTypesOnly() );
 
         // (&(...
-        Filter filter = decorator.getCurrentFilter();
-        AndFilter andFilter = ( AndFilter ) filter;
-        assertNotNull( andFilter );
+        ExprNode filter = searchRequest.getFilter();
 
-        List<Filter> andFilters = andFilter.getAndFilter();
-        assertEquals( 2, andFilters.size() );
+        AndNode andNode = ( AndNode ) filter;
+        assertNotNull( andNode );
+
+        List<ExprNode> andNodes = andNode.getChildren();
+        assertEquals( 2, andNodes.size() );
 
         // (&(|(..
-        OrFilter orFilter = ( OrFilter ) andFilters.get( 0 );
+        OrNode orFilter = ( OrNode ) andNodes.get( 0 );
         assertNotNull( orFilter );
 
-        List<Filter> orFilters = orFilter.getOrFilter();
-        assertEquals( 2, orFilters.size() );
+        List<ExprNode> orNodes = orFilter.getChildren();
+        assertEquals( 2, orNodes.size() );
 
         // (&(&(abcdef=*)...
-        PresentFilter presentFilter = ( PresentFilter ) orFilters.get( 0 );
-        assertNotNull( presentFilter );
+        PresenceNode presenceNode = ( PresenceNode ) orNodes.get( 0 );
+        assertNotNull( presenceNode );
 
-        assertEquals( "abcdef", presentFilter.getAttributeDescription() );
+        assertEquals( "abcdef", presenceNode.getAttribute() );
 
         // (&(&(abcdef=*)(ghijkl=*))...
-        presentFilter = ( PresentFilter ) orFilters.get( 1 );
-        assertNotNull( presentFilter );
+        presenceNode = ( PresenceNode ) orNodes.get( 1 );
+        assertNotNull( presenceNode );
 
-        assertEquals( "ghijkl", presentFilter.getAttributeDescription() );
+        assertEquals( "ghijkl", presenceNode.getAttribute() );
 
         // (&(&(abcdef=*)(ghijkl=*))(&...
-        NotFilter notFilter = ( NotFilter ) andFilters.get( 1 );
-        assertNotNull( notFilter );
+        NotNode notNode = ( NotNode ) andNodes.get( 1 );
+        assertNotNull( notNode );
 
-        // (&(&(abcdef=*)(ghijkl=*))(&(e=f)))
-        AttributeValueAssertionFilter equalityMatch = ( AttributeValueAssertionFilter ) notFilter.getNotFilter();
-        assertNotNull( equalityMatch );
+        // (&(&(abcdef=*)(ghijkl=*))(&(e>=f)))
+        GreaterEqNode<?> greaterEqNode = ( GreaterEqNode<?> ) notNode.getFirstChild();
+        assertNotNull( greaterEqNode );
 
-        AttributeValueAssertion assertion = equalityMatch.getAssertion();
-        assertNotNull( assertion );
-
-        assertEquals( "e", assertion.getAttributeDesc() );
-        assertEquals( "f", assertion.getAssertionValue().getString() );
+        assertEquals( "e", greaterEqNode.getAttribute() );
+        assertEquals( "f", greaterEqNode.getValue().getString() );
 
         List<String> attributes = searchRequest.getAttributes();
         assertEquals( 0, attributes.size() );
@@ -4664,9 +4535,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
-        SearchRequest searchRequest = decorator.getSearchRequest();
-
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "", searchRequest.getBase().toString() );
@@ -4676,10 +4545,11 @@ public class SearchRequestTest
         assertEquals( 0, searchRequest.getTimeLimit() );
         assertEquals( false, searchRequest.getTypesOnly() );
 
-        Filter filter = decorator.getCurrentFilter();
-        PresentFilter presentFilter = ( PresentFilter ) filter;
-        assertNotNull( presentFilter );
-        assertEquals( "objectClass", presentFilter.getAttributeDescription() );
+        ExprNode filter = searchRequest.getFilter();
+
+        PresenceNode presenceNode = ( PresenceNode ) filter;
+        assertNotNull( presenceNode );
+        assertEquals( "objectClass", presenceNode.getAttribute() );
 
         List<String> attributes = searchRequest.getAttributes();
         assertEquals( 0, attributes.size() );
@@ -4729,9 +4599,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
-        SearchRequest searchRequest = decorator.getSearchRequest();
-
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 3, searchRequest.getMessageId() );
         assertEquals( "ou=users,ou=system", searchRequest.getBase().toString() );
@@ -4741,32 +4609,27 @@ public class SearchRequestTest
         assertEquals( 30, searchRequest.getTimeLimit() );
         assertEquals( true, searchRequest.getTypesOnly() );
 
-        Filter filter = decorator.getCurrentFilter();
-        AndFilter andFilter = ( AndFilter ) filter;
-        assertNotNull( andFilter );
+        ExprNode filter = searchRequest.getFilter();
 
-        List<Filter> andFilters = andFilter.getAndFilter();
-        assertEquals( 2, andFilters.size() );
+        AndNode andNode = ( AndNode ) filter;
+        assertNotNull( andNode );
+
+        List<ExprNode> andNodes = andNode.getChildren();
+        assertEquals( 2, andNodes.size() );
 
         // (&(uid=buster)...
-        AttributeValueAssertionFilter equalityMatch = ( AttributeValueAssertionFilter ) andFilters.get( 0 );
-        assertNotNull( equalityMatch );
+        EqualityNode<?> equalityNode = ( EqualityNode<?> ) andNodes.get( 0 );
+        assertNotNull( equalityNode );
 
-        AttributeValueAssertion assertion = equalityMatch.getAssertion();
-        assertNotNull( assertion );
-
-        assertEquals( "uid", assertion.getAttributeDesc() );
-        assertEquals( "buster ", assertion.getAssertionValue().getString() );
+        assertEquals( "uid", equalityNode.getAttribute() );
+        assertEquals( "buster ", equalityNode.getValue().getString() );
 
         // (&(uid=buster)(sbAttribute=Buy))
-        equalityMatch = ( AttributeValueAssertionFilter ) andFilters.get( 1 );
-        assertNotNull( equalityMatch );
+        equalityNode = ( EqualityNode<?> ) andNodes.get( 1 );
+        assertNotNull( equalityNode );
 
-        assertion = equalityMatch.getAssertion();
-        assertNotNull( assertion );
-
-        assertEquals( "sbAttribute", assertion.getAttributeDesc() );
-        assertEquals( "Buy ", assertion.getAssertionValue().getString() );
+        assertEquals( "sbAttribute", equalityNode.getAttribute() );
+        assertEquals( "Buy ", equalityNode.getValue().getString() );
 
         List<String> attributes = searchRequest.getAttributes();
         assertEquals( 0, attributes.size() );
@@ -4846,9 +4709,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-                SearchRequestDecorator decorator = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequestDecorator();
-        SearchRequest searchRequest = decorator.getSearchRequest();
-
+        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
 
         assertEquals( 6, searchRequest.getMessageId() );
         assertEquals( "ou=system", searchRequest.getBase().toString() );
@@ -4859,47 +4720,42 @@ public class SearchRequestTest
         assertEquals( false, searchRequest.getTypesOnly() );
 
         // (&(...
-        Filter filter = decorator.getCurrentFilter();
-        AndFilter andFilter = ( AndFilter ) filter;
-        assertNotNull( andFilter );
+        ExprNode filter = searchRequest.getFilter();
 
-        List<Filter> andFilters = andFilter.getAndFilter();
-        assertEquals( 2, andFilters.size() );
+        AndNode andNode = ( AndNode ) filter;
+        assertNotNull( andNode );
+
+        List<ExprNode> andNodes = andNode.getChildren();
+        assertEquals( 2, andNodes.size() );
 
         // (&(objectClass=person)..
-        AttributeValueAssertionFilter equalityMatch = ( AttributeValueAssertionFilter ) andFilters.get( 0 );
-        assertNotNull( equalityMatch );
+        EqualityNode<?> equalityNode = ( EqualityNode<?> ) andNodes.get( 0 );
+        assertNotNull( equalityNode );
 
-        AttributeValueAssertion assertion = equalityMatch.getAssertion();
-        assertNotNull( assertion );
-
-        assertEquals( "objectClass", assertion.getAttributeDesc() );
-        assertEquals( "person", assertion.getAssertionValue().getString() );
+        assertEquals( "objectClass", equalityNode.getAttribute() );
+        assertEquals( "person", equalityNode.getValue().getString() );
 
         // (&(a=b)(|
-        OrFilter orFilter = ( OrFilter ) andFilters.get( 1 );
-        assertNotNull( orFilter );
+        OrNode orNode = ( OrNode ) andNodes.get( 1 );
+        assertNotNull( orNode );
 
-        List<Filter> orFilters = orFilter.getOrFilter();
-        assertEquals( 2, orFilters.size() );
+        List<ExprNode> orNodes = orNode.getChildren();
+        assertEquals( 2, orNodes.size() );
 
         // (&(a=b)(|(cn=Tori*
-        SubstringFilter substringFilter = ( SubstringFilter ) orFilters.get( 0 );
-        assertNotNull( substringFilter );
+        SubstringNode substringNode = ( SubstringNode ) orNodes.get( 0 );
+        assertNotNull( substringNode );
 
-        assertEquals( "cn", substringFilter.getType() );
-        assertEquals( "Tori", substringFilter.getInitialSubstrings() );
-        assertEquals( 0, substringFilter.getAnySubstrings().size() );
-        assertEquals( null, substringFilter.getFinalSubstrings() );
+        assertEquals( "cn", substringNode.getAttribute() );
+        assertEquals( "Tori", substringNode.getInitial() );
+        assertEquals( 0, substringNode.getAny().size() );
+        assertEquals( null, substringNode.getFinal() );
 
         // (&(a=b)(|(cn=Tori*)(sn=Jagger)))
-        equalityMatch = ( AttributeValueAssertionFilter ) orFilters.get( 1 );
-        assertNotNull( equalityMatch );
+        equalityNode = ( EqualityNode<?> ) orNodes.get( 1 );
+        assertNotNull( equalityNode );
 
-        assertion = equalityMatch.getAssertion();
-        assertNotNull( assertion );
-
-        assertEquals( "sn", assertion.getAttributeDesc() );
-        assertEquals( "Jagger", assertion.getAssertionValue().getString() );
+        assertEquals( "sn", equalityNode.getAttribute() );
+        assertEquals( "Jagger", equalityNode.getValue().getString() );
     }
 }
