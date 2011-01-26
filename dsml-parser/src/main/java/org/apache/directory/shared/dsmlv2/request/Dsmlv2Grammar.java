@@ -77,6 +77,7 @@ import org.apache.directory.shared.ldap.model.message.ModifyDnRequestImpl;
 import org.apache.directory.shared.ldap.model.message.ModifyRequest;
 import org.apache.directory.shared.ldap.model.message.ModifyRequestImpl;
 import org.apache.directory.shared.ldap.model.message.SearchRequest;
+import org.apache.directory.shared.ldap.model.message.SearchRequestImpl;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.name.Rdn;
 import org.apache.directory.shared.util.Base64;
@@ -972,7 +973,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
         // State: [SEARCH_REQUEST_FILTER_END_TAG] - Tag: </searchRequest>
         super.transitions[Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_END_TAG.ordinal()].put( new Tag( "searchRequest", Tag.END ),
             new GrammarTransition( Dsmlv2StatesEnum.SEARCH_REQUEST_FILTER_END_TAG, Dsmlv2StatesEnum.BATCHREQUEST_LOOP,
-                null ) );
+                storeFilter ) );
 
         //====================================================
         //  Transitions concerning : SUBSTRING FILTER
@@ -1061,12 +1062,14 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             String attributeValue;
             // requestID
             attributeValue = xpp.getAttributeValue( "", "requestID" );
+            
             if ( attributeValue != null )
             {
                 batchRequest.setRequestID( ParserUtils.parseAndVerifyRequestID( attributeValue, xpp ) );
             }
             // processing
             attributeValue = xpp.getAttributeValue( "", "processing" );
+            
             if ( attributeValue != null )
             {
                 if ( "sequential".equals( attributeValue ) )
@@ -1086,8 +1089,10 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             {
                 batchRequest.setProcessing( Processing.SEQUENTIAL );
             }
+            
             // onError
             attributeValue = xpp.getAttributeValue( "", "onError" );
+            
             if ( attributeValue != null )
             {
                 if ( "resume".equals( attributeValue ) )
@@ -1107,8 +1112,10 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             {
                 batchRequest.setOnError( OnError.EXIT );
             }
+            
             // responseOrder
             attributeValue = xpp.getAttributeValue( "", "responseOrder" );
+            
             if ( attributeValue != null )
             {
                 if ( "sequential".equals( attributeValue ) )
@@ -1738,7 +1745,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             ModifyRequest modifyRequest = new ModifyRequestImpl();
             container.getBatchRequest().addRequest( modifyRequest );
             ModifyRequestDecorator modifyRequestDecorator = new ModifyRequestDecorator( modifyRequest );
-            container.setBatchRequestDecorator(  new BatchRequest() );
+            container.setBatchRequestDecorator( new BatchRequest() );
             container.getBatchRequestDecorator().addRequest( modifyRequestDecorator );
 
             XmlPullParser xpp = container.getParser();
@@ -1880,8 +1887,11 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            SearchRequest searchRequest = new org.apache.directory.shared.ldap.model.message.SearchRequestImpl();
+            SearchRequest searchRequest = new SearchRequestImpl();
             container.getBatchRequest().addRequest( searchRequest );
+            SearchRequestDecorator searchRequestDecorator = new SearchRequestDecorator( searchRequest );
+            container.setBatchRequestDecorator( new BatchRequest() );
+            container.getBatchRequestDecorator().addRequest( searchRequestDecorator );
 
             XmlPullParser xpp = container.getParser();
 
@@ -2075,8 +2085,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            SearchRequest searchRequest = ( SearchRequest ) container.getBatchRequest().getCurrentRequest();
-            SearchRequestDecorator decorator = new SearchRequestDecorator( searchRequest );
+            SearchRequestDecorator searchRequestDecorator = ( SearchRequestDecorator ) container.getBatchRequestDecorator().getCurrentRequest();
 
             XmlPullParser xpp = container.getParser();
 
@@ -2085,13 +2094,14 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             // Adding the filter to the Search Filter
             try
             {
-                decorator.addCurrentFilter( filter );
+                searchRequestDecorator.addCurrentFilter( filter );
             }
             catch ( DecoderException e )
             {
                 throw new XmlPullParserException( e.getMessage(), xpp, null );
             }
-            decorator.setTerminalFilter( filter );
+            
+            searchRequestDecorator.setTerminalFilter( filter );
 
             // Checking and adding the filter's attributes
             String attributeValue;
@@ -2116,9 +2126,9 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            SearchRequest searchRequest = ( SearchRequest ) container.getBatchRequest().getCurrentRequest();
-            SearchRequestDecorator decorator = new SearchRequestDecorator( searchRequest );
-            SubstringFilter substringFilter = ( SubstringFilter ) decorator.getTerminalFilter();
+            SearchRequestDecorator searchRequestDecorator = ( SearchRequestDecorator ) container.getBatchRequestDecorator().getCurrentRequest();
+
+            SubstringFilter substringFilter = ( SubstringFilter ) searchRequestDecorator.getTerminalFilter();
 
             XmlPullParser xpp = container.getParser();
 
@@ -2157,9 +2167,9 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            SearchRequest searchRequest = ( SearchRequest ) container.getBatchRequest().getCurrentRequest();
-            SearchRequestDecorator decorator = new SearchRequestDecorator( searchRequest );
-            SubstringFilter substringFilter = ( SubstringFilter ) decorator.getTerminalFilter();
+            SearchRequestDecorator searchRequestDecorator = ( SearchRequestDecorator ) container.getBatchRequestDecorator().getCurrentRequest();
+
+            SubstringFilter substringFilter = ( SubstringFilter ) searchRequestDecorator.getTerminalFilter();
 
             XmlPullParser xpp = container.getParser();
 
@@ -2197,9 +2207,9 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            SearchRequest searchRequest = ( SearchRequest ) container.getBatchRequest().getCurrentRequest();
-            SearchRequestDecorator decorator = new SearchRequestDecorator( searchRequest );
-            SubstringFilter substringFilter = ( SubstringFilter ) decorator.getTerminalFilter();
+            SearchRequestDecorator searchRequestDecorator = ( SearchRequestDecorator ) container.getBatchRequestDecorator().getCurrentRequest();
+
+            SubstringFilter substringFilter = ( SubstringFilter ) searchRequestDecorator.getTerminalFilter();
 
             XmlPullParser xpp = container.getParser();
 
@@ -2238,10 +2248,9 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            SearchRequest searchRequest = ( SearchRequest ) container.getBatchRequest().getCurrentRequest();
-            SearchRequestDecorator decorator = new SearchRequestDecorator( searchRequest );
+            SearchRequestDecorator searchRequestDecorator = ( SearchRequestDecorator ) container.getBatchRequestDecorator().getCurrentRequest();
 
-            decorator.setTerminalFilter( null );
+            searchRequestDecorator.setTerminalFilter( null );
         }
     };
 
@@ -2252,8 +2261,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            SearchRequest searchRequest = ( SearchRequest ) container.getBatchRequest().getCurrentRequest();
-            SearchRequestDecorator decorator = new SearchRequestDecorator( searchRequest );
+            SearchRequestDecorator searchRequestDecorator = ( SearchRequestDecorator ) container.getBatchRequestDecorator().getCurrentRequest();
 
             XmlPullParser xpp = container.getParser();
 
@@ -2262,7 +2270,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             // Adding the filter to the Search Filter
             try
             {
-                decorator.addCurrentFilter( filter );
+                searchRequestDecorator.addCurrentFilter( filter );
             }
             catch ( DecoderException e )
             {
@@ -2278,12 +2286,11 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            SearchRequest searchRequest = ( SearchRequest ) container.getBatchRequest().getCurrentRequest();
-            SearchRequestDecorator decorator = new SearchRequestDecorator( searchRequest );
+            SearchRequestDecorator searchRequestDecorator = ( SearchRequestDecorator ) container.getBatchRequestDecorator().getCurrentRequest();
 
-            Filter filter = decorator.getCurrentFilter().getParent();
+            Filter filter = searchRequestDecorator.getCurrentFilter();
 
-            decorator.setCurrentFilter( filter );
+            searchRequestDecorator.setCurrentFilter( filter );
         }
     };
 
@@ -2294,8 +2301,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            SearchRequest searchRequest = ( SearchRequest ) container.getBatchRequest().getCurrentRequest();
-            SearchRequestDecorator decorator = new SearchRequestDecorator( searchRequest );
+            SearchRequestDecorator searchRequestDecorator = ( SearchRequestDecorator ) container.getBatchRequestDecorator().getCurrentRequest();
 
             XmlPullParser xpp = container.getParser();
 
@@ -2304,7 +2310,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             // Adding the filter to the Search Filter
             try
             {
-                decorator.addCurrentFilter( filter );
+                searchRequestDecorator.addCurrentFilter( filter );
             }
             catch ( DecoderException e )
             {
@@ -2320,8 +2326,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            SearchRequest searchRequest = ( SearchRequest ) container.getBatchRequest().getCurrentRequest();
-            SearchRequestDecorator decorator = new SearchRequestDecorator( searchRequest );
+            SearchRequestDecorator searchRequestDecorator = ( SearchRequestDecorator ) container.getBatchRequestDecorator().getCurrentRequest();
 
             XmlPullParser xpp = container.getParser();
 
@@ -2330,7 +2335,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             // Adding the filter to the Search Filter
             try
             {
-                decorator.addCurrentFilter( filter );
+                searchRequestDecorator.addCurrentFilter( filter );
             }
             catch ( DecoderException e )
             {
@@ -2346,8 +2351,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            SearchRequest searchRequest = ( SearchRequest ) container.getBatchRequest().getCurrentRequest();
-            SearchRequestDecorator decorator = new SearchRequestDecorator( searchRequest );
+            SearchRequestDecorator searchRequestDecorator = ( SearchRequestDecorator ) container.getBatchRequestDecorator().getCurrentRequest();
 
             XmlPullParser xpp = container.getParser();
 
@@ -2373,14 +2377,14 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             // Adding the filter to the Search Filter
             try
             {
-                decorator.addCurrentFilter( filter );
+                searchRequestDecorator.addCurrentFilter( filter );
             }
             catch ( DecoderException e )
             {
                 throw new XmlPullParserException( e.getMessage(), xpp, null );
             }
 
-            decorator.setTerminalFilter( filter );
+            searchRequestDecorator.setTerminalFilter( filter );
         }
     };
 
@@ -2391,8 +2395,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            SearchRequest searchRequest = ( SearchRequest ) container.getBatchRequest().getCurrentRequest();
-            SearchRequestDecorator decorator = new SearchRequestDecorator( searchRequest );
+            SearchRequestDecorator searchRequestDecorator = ( SearchRequestDecorator ) container.getBatchRequestDecorator().getCurrentRequest();
 
             XmlPullParser xpp = container.getParser();
 
@@ -2418,14 +2421,14 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             // Adding the filter to the Search Filter
             try
             {
-                decorator.addCurrentFilter( filter );
+                searchRequestDecorator.addCurrentFilter( filter );
             }
             catch ( DecoderException e )
             {
                 throw new XmlPullParserException( e.getMessage(), xpp, null );
             }
 
-            decorator.setTerminalFilter( filter );
+            searchRequestDecorator.setTerminalFilter( filter );
         }
     };
 
@@ -2436,8 +2439,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            SearchRequest searchRequest = ( SearchRequest ) container.getBatchRequest().getCurrentRequest();
-            SearchRequestDecorator decorator = new SearchRequestDecorator( searchRequest );
+            SearchRequestDecorator searchRequestDecorator = ( SearchRequestDecorator ) container.getBatchRequestDecorator().getCurrentRequest();
 
             XmlPullParser xpp = container.getParser();
 
@@ -2465,14 +2467,14 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             // Adding the filter to the Search Filter
             try
             {
-                decorator.addCurrentFilter( filter );
+                searchRequestDecorator.addCurrentFilter( filter );
             }
             catch ( DecoderException e )
             {
                 throw new XmlPullParserException( e.getMessage(), xpp, null );
             }
 
-            decorator.setTerminalFilter( filter );
+            searchRequestDecorator.setTerminalFilter( filter );
         }
     };
 
@@ -2483,8 +2485,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            SearchRequest searchRequest = ( SearchRequest ) container.getBatchRequest().getCurrentRequest();
-            SearchRequestDecorator decorator = new SearchRequestDecorator( searchRequest );
+            SearchRequestDecorator searchRequestDecorator = ( SearchRequestDecorator ) container.getBatchRequestDecorator().getCurrentRequest();
 
             XmlPullParser xpp = container.getParser();
 
@@ -2509,14 +2510,14 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             // Adding the filter to the Search Filter
             try
             {
-                decorator.addCurrentFilter( filter );
+                searchRequestDecorator.addCurrentFilter( filter );
             }
             catch ( DecoderException e )
             {
                 throw new XmlPullParserException( e.getMessage(), xpp, null );
             }
 
-            decorator.setTerminalFilter( filter );
+            searchRequestDecorator.setTerminalFilter( filter );
         }
     };
 
@@ -2527,9 +2528,8 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            SearchRequest searchRequest = ( SearchRequest ) container.getBatchRequest().getCurrentRequest();
-            SearchRequestDecorator decorator = new SearchRequestDecorator( searchRequest );
-            AttributeValueAssertionFilter filter = ( AttributeValueAssertionFilter ) decorator.getTerminalFilter();
+            SearchRequestDecorator searchRequestDecorator = (SearchRequestDecorator)container.getBatchRequestDecorator().getCurrentRequest();
+            AttributeValueAssertionFilter filter = ( AttributeValueAssertionFilter ) searchRequestDecorator.getTerminalFilter();
             AttributeValueAssertion assertion = filter.getAssertion();
 
             XmlPullParser xpp = container.getParser();
@@ -2575,12 +2575,11 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             XmlPullParser xpp = container.getParser();
 
             // Adding the filter to the Search Filter
-            SearchRequest searchRequest = ( SearchRequest ) container.getBatchRequest().getCurrentRequest();
-            SearchRequestDecorator decorator = new SearchRequestDecorator( searchRequest );
+            SearchRequestDecorator searchRequestDecorator = ( SearchRequestDecorator ) container.getBatchRequestDecorator().getCurrentRequest();
 
             try
             {
-                decorator.addCurrentFilter( presentFilter );
+                searchRequestDecorator.addCurrentFilter( presentFilter );
             }
             catch ( DecoderException e )
             {
@@ -2604,6 +2603,21 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     };
 
     /**
+     * GrammarAction that store the Filter into the searchRequest
+     */
+    private final GrammarAction storeFilter = new GrammarAction( "Store Filter" )
+    {
+        public void action( Dsmlv2Container container ) throws XmlPullParserException
+        {
+            // Adding the filter to the Search Filter
+            SearchRequestDecorator searchRequestDecorator = ( SearchRequestDecorator ) container.getBatchRequestDecorator().getCurrentRequest();
+            SearchRequest searchRequest = searchRequestDecorator.getSearchRequest();
+
+            searchRequest.setFilter( searchRequestDecorator.getFilterNode() );
+        }
+    };
+    
+    /**
      * GrammarAction that creates an Extensible Match Filter
      */
     private final GrammarAction extensibleMatchFilterCreation = new GrammarAction( "Create Extensible Match Filter" )
@@ -2615,19 +2629,18 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             XmlPullParser xpp = container.getParser();
 
             // Adding the filter to the Search Filter
-            SearchRequest searchRequest = ( SearchRequest ) container.getBatchRequest().getCurrentRequest();
-            SearchRequestDecorator decorator = new SearchRequestDecorator( searchRequest );
+            SearchRequestDecorator searchRequestDecorator = ( SearchRequestDecorator ) container.getBatchRequestDecorator().getCurrentRequest();
 
             try
             {
-                decorator.addCurrentFilter( extensibleMatchFilter );
+                searchRequestDecorator.addCurrentFilter( extensibleMatchFilter );
             }
             catch ( DecoderException e )
             {
                 throw new XmlPullParserException( I18n.err( I18n.ERR_03012 ), xpp, null );
             }
 
-            decorator.setTerminalFilter( extensibleMatchFilter );
+            searchRequestDecorator.setTerminalFilter( extensibleMatchFilter );
 
             // Checking and adding the filter's attributes
             String attributeValue;
@@ -2679,9 +2692,8 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            SearchRequest searchRequest = ( SearchRequest ) container.getBatchRequest().getCurrentRequest();
-            SearchRequestDecorator decorator = new SearchRequestDecorator( searchRequest );
-            ExtensibleMatchFilter filter = ( ExtensibleMatchFilter ) decorator.getTerminalFilter();
+            SearchRequestDecorator searchRequestDecorator = ( SearchRequestDecorator ) container.getBatchRequestDecorator().getCurrentRequest();
+            ExtensibleMatchFilter filter = ( ExtensibleMatchFilter ) searchRequestDecorator.getTerminalFilter();
 
             XmlPullParser xpp = container.getParser();
 
