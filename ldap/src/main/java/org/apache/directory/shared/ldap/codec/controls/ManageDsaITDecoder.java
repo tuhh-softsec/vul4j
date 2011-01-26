@@ -26,14 +26,14 @@ import org.apache.directory.shared.ldap.model.message.Control;
 
 
 /**
- * A decoder for EntryChangeControls.
+ * A ControlDecoder for the {@link ManageDsaIT} Control.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ManageDsaITControlDecoder implements ControlDecoder
+public class ManageDsaITDecoder implements ControlDecoder
 {
     public Asn1Object decode( byte[] controlBytes, Control control ) throws DecoderException
     {
-        return new ManageDsaITControl();
+        return new ManageDsaITDecorator();
     }
 }

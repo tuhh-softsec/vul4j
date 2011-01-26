@@ -40,7 +40,7 @@ public enum ControlEnum
 {
     CASCADE_CONTROL( CascadeControl.CONTROL_OID ),
     ENTRY_CHANGE_CONTROL( EntryChangeControl.CONTROL_OID ),
-    MANAGE_DSA_IT_CONTROL( ManageDsaITControl.CONTROL_OID ),
+    MANAGE_DSA_IT_CONTROL( ManageDsaIT.OID ),
     PAGED_RESULTS_CONTROL( PagedResultsControl.CONTROL_OID ),
     PASSWORD_POLICY_REQUEST_CONTROL( PasswordPolicyRequestControl.CONTROL_OID ),
     PERSISTENT_SEARCH_CONTROL(PersistentSearchControl.CONTROL_OID),

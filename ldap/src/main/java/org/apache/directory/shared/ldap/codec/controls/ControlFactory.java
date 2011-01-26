@@ -43,7 +43,7 @@ public class ControlFactory
      * a concrete Control instance is returned, otherwise an instance of 
      * ControlImpl is returned. The following Controls are known:
      * <ul>
-     * <li>ManageDsaITControl</li>
+     * <li>ManageDsaITControlDecorator</li>
      * <li>PagedResultsControl</li>
      * <li>PersistentSearchControl</li>
      * <li>SubentriesControl</li>
@@ -61,9 +61,9 @@ public class ControlFactory
      */
     public static Control createControl( String oid )
     {
-        if ( ManageDsaITControl.CONTROL_OID.equals( oid ) )
+        if ( ManageDsaIT.OID.equals( oid ) )
         {
-            return new ManageDsaITControl();
+            return new ManageDsaITDecorator();
         }
 
         if ( PagedResultsControl.CONTROL_OID.equals( oid ) )

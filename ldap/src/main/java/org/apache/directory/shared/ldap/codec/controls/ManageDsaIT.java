@@ -57,43 +57,31 @@ package org.apache.directory.shared.ldap.codec.controls;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ManageDsaITControl extends AbstractControl
+public class ManageDsaIT extends DefaultControl
 {
     /** This control OID */
-    public static final String CONTROL_OID = "2.16.840.1.113730.3.4.2";
+    public static final String OID = "2.16.840.1.113730.3.4.2";
+
+    /** An instance of this constant control which never changes */
+    public static final ManageDsaIT INSTANCE = new ManageDsaIT();
+
 
     /**
      * Default constructor
-     *
      */
-    public ManageDsaITControl()
+    private ManageDsaIT()
     {
-        super( CONTROL_OID );
-        
-        decoder = new ManageDsaITControlDecoder();
-    }
-
-    /**
-     * Returns 0 every time.
-     */
-    public int computeLength()
-    {
-        // Call the super class to compute the global control length
-        return super.computeLength( 0 );
+        super( OID );
     }
 
 
-    /**
-     * Return a String representing this ManageDsaIt Control.
-     */
-    public String toString()
+    public void setValue( byte [] value )
     {
-        StringBuffer sb = new StringBuffer();
+    }
 
-        sb.append( "    ManageDsaIt Control\n" );
-        sb.append( "        oid : " ).append( getOid() ).append( '\n' );
-        sb.append( "        critical : " ).append( isCritical() ).append( '\n' );
-        
-        return sb.toString();
+
+    public boolean hasValue()
+    {
+        return false;
     }
 }

@@ -26,7 +26,7 @@ import static org.junit.Assert.assertTrue;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.model.schema.SchemaManager;
-import org.apache.directory.shared.ldap.model.schema.syntaxCheckers.ACIItemSyntaxChecker;
+import org.apache.directory.shared.ldap.aci.ACIItemSyntaxChecker;
 import org.apache.directory.shared.ldap.schemaloader.JarLdifSchemaLoader;
 import org.apache.directory.shared.ldap.schemamanager.impl.DefaultSchemaManager;
 import org.junit.BeforeClass;
@@ -51,7 +51,7 @@ public class ACIItemSyntaxCheckerTest
         JarLdifSchemaLoader loader = new JarLdifSchemaLoader();
         SchemaManager schemaManager = new DefaultSchemaManager( loader );
         schemaManager.loadAllEnabled();
-        checker = new ACIItemSyntaxChecker();
+        checker = new org.apache.directory.shared.ldap.aci.ACIItemSyntaxChecker();
         checker.setSchemaManager( schemaManager );
     }
 

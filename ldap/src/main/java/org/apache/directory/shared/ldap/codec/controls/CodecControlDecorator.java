@@ -43,7 +43,7 @@ import java.nio.ByteBuffer;
 public class CodecControlDecorator extends AbstractAsn1Object implements Control, CodecControl
 {
     /** The decorated Control */
-    private final Control decoratedComponent;
+    private final Control decorated;
 
     /** The encoded value length */
     protected int valueLength;
@@ -62,7 +62,7 @@ public class CodecControlDecorator extends AbstractAsn1Object implements Control
      */
     public CodecControlDecorator( Control decoratedControl )
     {
-        this.decoratedComponent = decoratedControl;
+        this.decorated = decoratedControl;
     }
 
 
@@ -74,7 +74,7 @@ public class CodecControlDecorator extends AbstractAsn1Object implements Control
      */
     public CodecControlDecorator( Control decoratedControl, ControlDecoder decoder )
     {
-        this.decoratedComponent = decoratedControl;
+        this.decorated = decoratedControl;
         this.decoder = decoder;
     }
 
@@ -120,7 +120,7 @@ public class CodecControlDecorator extends AbstractAsn1Object implements Control
      */
     public String getOid()
     {
-        return decoratedComponent.getOid();
+        return decorated.getOid();
     }
 
 
@@ -129,7 +129,7 @@ public class CodecControlDecorator extends AbstractAsn1Object implements Control
      */
     public boolean hasValue()
     {
-        return decoratedComponent.hasValue();
+        return decorated.hasValue();
     }
 
 
@@ -140,7 +140,7 @@ public class CodecControlDecorator extends AbstractAsn1Object implements Control
      */
     public byte[] getValue()
     {
-        return decoratedComponent.getValue();
+        return decorated.getValue();
     }
 
 
@@ -155,11 +155,11 @@ public class CodecControlDecorator extends AbstractAsn1Object implements Control
         {
             byte[] copy = new byte[ value.length ];
             System.arraycopy( value, 0, copy, 0, value.length );
-            decoratedComponent.setValue( copy );
+            decorated.setValue( copy );
         } 
         else 
         {
-            decoratedComponent.setValue( null );
+            decorated.setValue( null );
         }
     }
 
@@ -171,7 +171,7 @@ public class CodecControlDecorator extends AbstractAsn1Object implements Control
      */
     public boolean isCritical()
     {
-        return decoratedComponent.isCritical();
+        return decorated.isCritical();
     }
 
 
@@ -182,7 +182,7 @@ public class CodecControlDecorator extends AbstractAsn1Object implements Control
      */
     public void setCritical( boolean criticality )
     {
-        decoratedComponent.setCritical( criticality );
+        decorated.setCritical( criticality );
     }
 
     
@@ -292,18 +292,6 @@ public class CodecControlDecorator extends AbstractAsn1Object implements Control
      */
     public String toString()
     {
-        StringBuffer sb = new StringBuffer();
-
-        sb.append( "    Control\n" );
-        sb.append( "        Control oid : '" ).append( getOid() ).append( "'\n" );
-        sb.append( "        Criticality : '" ).append( isCritical() ).append( "'\n" );
-
-        if ( getValue() != null )
-        {
-            sb.append( "        Control value : '" ).append( Strings.dumpBytes( getValue() ) )
-                .append( "'\n" );
-        }
-
-        return sb.toString();
+        return decorated.toString();
     }
 }
