@@ -75,7 +75,6 @@ import org.apache.directory.shared.ldap.codec.decorators.ModifyRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
 import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
-import org.apache.directory.shared.ldap.model.message.SearchRequestImpl;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.filter.SearchScope;
@@ -120,6 +119,7 @@ import org.apache.directory.shared.ldap.model.message.ReferralImpl;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.model.message.ResultResponse;
 import org.apache.directory.shared.ldap.model.message.SearchRequest;
+import org.apache.directory.shared.ldap.model.message.SearchRequestImpl;
 import org.apache.directory.shared.ldap.model.message.SearchResultDone;
 import org.apache.directory.shared.ldap.model.message.SearchResultDoneImpl;
 import org.apache.directory.shared.ldap.model.message.SearchResultEntry;
@@ -3605,7 +3605,8 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     SearchRequestDecorator searchRequestDecorator = new SearchRequestDecorator( searchRequest );
 
                     searchRequestDecorator.setTlvId( tlv.getId());
-                    ldapMessageContainer.setMessage( searchRequestDecorator );
+                    ldapMessageContainer.setMessage( searchRequest );
+                    ldapMessageContainer.setMessageDecorator( searchRequestDecorator );
 
                     LOG.debug( "Search Request" );
                 }

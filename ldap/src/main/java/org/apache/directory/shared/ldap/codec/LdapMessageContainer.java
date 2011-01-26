@@ -63,7 +63,7 @@ public class LdapMessageContainer extends AbstractContainer
     private Message message;
 
     /** The Message decorator to store various temporary values */
-    private MessageDecorator decorator;
+    private MessageDecorator messageDecorator;
 
     /** checks if attribute is binary */
     private final BinaryAttributeDetector binaryAttributeDetector;
@@ -274,7 +274,7 @@ public class LdapMessageContainer extends AbstractContainer
      */
     public SearchRequest getSearchRequest()
     {
-        return (SearchRequest)(( SearchRequestDecorator ) message).getMessage();
+        return (SearchRequest)message;
     }
 
 
@@ -283,7 +283,7 @@ public class LdapMessageContainer extends AbstractContainer
      */
     public SearchRequestDecorator getSearchRequestDecorator()
     {
-        return ( SearchRequestDecorator ) message;
+        return ( SearchRequestDecorator ) messageDecorator;
     }
 
 
@@ -335,14 +335,21 @@ public class LdapMessageContainer extends AbstractContainer
     }
 
 
+    /**
+     * Set a Message Object decorator into the container. It will be completed by the
+     * ldapDecoder.
+     * 
+     * @param message The message to set.
+     */
+    public void setMessageDecorator( MessageDecorator messageDecorator )
+    {
+        this.messageDecorator = messageDecorator;
+    }
+
+
     public MessageDecorator getMessageDecorator()
     {
-        if ( decorator == null )
-        {
-            decorator = MessageDecorator.getDecorator( message );
-        }
-
-        return decorator;
+        return messageDecorator;
     }
 
 
@@ -354,6 +361,7 @@ public class LdapMessageContainer extends AbstractContainer
         super.clean();
 
         message = null;
+        messageDecorator = null;
         messageId = 0;
         currentControl = null;
         decodeBytes = 0;
