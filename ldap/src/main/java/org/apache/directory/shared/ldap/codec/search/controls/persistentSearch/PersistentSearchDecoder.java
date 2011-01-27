@@ -27,6 +27,7 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecoder;
 import org.apache.directory.shared.ldap.model.message.Control;
+import org.apache.directory.shared.ldap.model.message.controls.PersistentSearch;
 
 
 /**
@@ -52,10 +53,8 @@ public class PersistentSearchDecoder extends Asn1Decoder implements ControlDecod
     public Asn1Object decode( byte[] controlBytes, Control control ) throws DecoderException
     {
         ByteBuffer bb = ByteBuffer.wrap( controlBytes );
-        PersistentSearchContainer container = new PersistentSearchContainer();
-        container.setPSearchDecorator( ( PersistentSearchDecorator ) control );
-
+        PersistentSearchContainer container = new PersistentSearchContainer( ( PersistentSearch ) control );
         decoder.decode( bb, container );
-        return container.getPSearchDecorator();
+        return container.getPersistentSearchDecorator();
     }
 }

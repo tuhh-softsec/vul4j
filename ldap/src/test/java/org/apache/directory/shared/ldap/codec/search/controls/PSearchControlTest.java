@@ -102,7 +102,7 @@ public class PSearchControlTest
         bb.flip();
 
         PersistentSearchContainer container = new PersistentSearchContainer();
-        container.setPSearchDecorator( new PersistentSearchDecorator() );
+        container.setPersistentSearchDecorator( new PersistentSearchDecorator() );
 
         try
         {
@@ -113,7 +113,7 @@ public class PSearchControlTest
             fail( de.getMessage() );
         }
 
-        PersistentSearch ctrl = ( PersistentSearch ) container.getPSearchDecorator().getDecorated();
+        PersistentSearch ctrl = ( PersistentSearch ) container.getPersistentSearchDecorator().getDecorated();
         int changeTypes = ctrl.getChangeTypes();
         assertTrue( ChangeType.ADD.presentIn( changeTypes ) );
         assertTrue( ChangeType.MODDN.presentIn( changeTypes ) );
@@ -140,7 +140,7 @@ public class PSearchControlTest
         bb.flip();
 
         PersistentSearchContainer container = new PersistentSearchContainer();
-        container.setPSearchDecorator( new PersistentSearchDecorator() );
+        container.setPersistentSearchDecorator( new PersistentSearchDecorator() );
         
         try
         {
@@ -172,7 +172,7 @@ public class PSearchControlTest
         bb.flip();
 
         PersistentSearchContainer container = new PersistentSearchContainer();
-        container.setPSearchDecorator( new PersistentSearchDecorator() );
+        container.setPersistentSearchDecorator( new PersistentSearchDecorator() );
 
         try
         {
@@ -200,7 +200,7 @@ public class PSearchControlTest
         bb.flip();
 
         PersistentSearchContainer container = new PersistentSearchContainer();
-        container.setPSearchDecorator( new PersistentSearchDecorator() );
+        container.setPersistentSearchDecorator( new PersistentSearchDecorator() );
 
         try
         {
@@ -230,7 +230,7 @@ public class PSearchControlTest
         bb.flip();
 
         PersistentSearchContainer container = new PersistentSearchContainer();
-        container.setPSearchDecorator( new PersistentSearchDecorator() );
+        container.setPersistentSearchDecorator( new PersistentSearchDecorator() );
 
         try
         {
@@ -260,7 +260,7 @@ public class PSearchControlTest
         bb.flip();
 
         PersistentSearchContainer container = new PersistentSearchContainer();
-        container.setPSearchDecorator( new PersistentSearchDecorator() );
+        container.setPersistentSearchDecorator( new PersistentSearchDecorator() );
 
         try
         {
@@ -290,7 +290,7 @@ public class PSearchControlTest
         bb.flip();
 
         PersistentSearchContainer container = new PersistentSearchContainer();
-        container.setPSearchDecorator( new PersistentSearchDecorator() );
+        container.setPersistentSearchDecorator( new PersistentSearchDecorator() );
 
         try
         {

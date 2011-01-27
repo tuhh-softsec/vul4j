@@ -63,10 +63,9 @@ public enum PersistentSearchStates implements States
     /**
      * Get the grammar name
      * 
-     * @param grammar The grammar code
      * @return The grammar name
      */
-    public String getGrammarName( int grammar )
+    public String getGrammarName()
     {
         return "PSEARCH_GRAMMAR";
     }

@@ -21,6 +21,7 @@ package org.apache.directory.shared.ldap.codec.search.controls.persistentSearch;
 
 
 import org.apache.directory.shared.asn1.ber.AbstractContainer;
+import org.apache.directory.shared.ldap.model.message.controls.PersistentSearch;
 
 
 /**
@@ -46,9 +47,43 @@ public class PersistentSearchContainer extends AbstractContainer
 
 
     /**
+     * Creates a new PSearchControlContainer object pre-populated with a
+     * decorator wrapping the supplied control, or using the supplied control if
+     * it already is a decorator.
+     *
+     * @param control The PersistentSearch Control or a decorating wrapper.
+     */
+    public PersistentSearchContainer( PersistentSearch control )
+    {
+        this();
+        decorate( control );
+    }
+
+
+    /**
+     * Conditionally decorates a control if is not a decorator already.
+     *
+     * @param control The PersistentSearch Control to decorate if it already is not
+     * a decorator, if it is then the object is set as this container's decorator.
+     */
+    public void decorate( PersistentSearch control )
+    {
+        if ( control instanceof PersistentSearchDecorator )
+        {
+            this.decorator = ( PersistentSearchDecorator ) control;
+        }
+        else
+        {
+            this.decorator = new PersistentSearchDecorator( control );
+        }
+    }
+
+
+
+    /**
      * @return Returns the persistent search decorator.
      */
-    public PersistentSearchDecorator getPSearchDecorator()
+    public PersistentSearchDecorator getPersistentSearchDecorator()
     {
 
         return decorator;
@@ -61,10 +96,11 @@ public class PersistentSearchContainer extends AbstractContainer
      * 
      * @param decorator the PSearchControl to set.
      */
-    public void setPSearchDecorator( PersistentSearchDecorator decorator )
+    public void setPersistentSearchDecorator( PersistentSearchDecorator decorator )
     {
         this.decorator = decorator;
     }
+
 
     /**
      * Clean the container

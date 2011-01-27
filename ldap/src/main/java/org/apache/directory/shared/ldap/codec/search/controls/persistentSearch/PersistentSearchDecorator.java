@@ -28,6 +28,7 @@ import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
+import org.apache.directory.shared.ldap.model.message.controls.ChangeType;
 import org.apache.directory.shared.ldap.model.message.controls.PersistentSearch;
 import org.apache.directory.shared.ldap.model.message.controls.SimplePersistentSearch;
 
@@ -37,19 +38,31 @@ import org.apache.directory.shared.ldap.model.message.controls.SimplePersistentS
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class PersistentSearchDecorator extends ControlDecorator
+public class PersistentSearchDecorator extends ControlDecorator implements PersistentSearch
 {
     /** A temporary storage for a psearch length */
     private int psearchSeqLength;
 
 
     /**
-     * Default constructor
-     *
+     * Default constructor creates a PersistentSearch Control automatically
+     * wrapped in a decorator object inside this container.
      */
     public PersistentSearchDecorator()
     {
-        super( new SimplePersistentSearch(), new PersistentSearchDecoder() );
+        this( new SimplePersistentSearch() );
+    }
+
+
+    /**
+     * Creates a PersistentSearch Control wrapping a supplied PersistentSearch
+     * Control.
+     *
+     * @param control The PersistentSearch Control to wrap.
+     */
+    public PersistentSearchDecorator( PersistentSearch control )
+    {
+        super( control, new PersistentSearchDecoder() );
     }
 
 
@@ -69,7 +82,7 @@ public class PersistentSearchDecorator extends ControlDecorator
      */
     public int computeLength()
     {
-        int changeTypesLength = 1 + 1 + Value.getNbBytes( ( ( PersistentSearch ) getDecorated() ).getChangeTypes() );
+        int changeTypesLength = 1 + 1 + Value.getNbBytes( getChangeTypes() );
         int changesOnlyLength = 1 + 1 + 1;
         int returnRCsLength = 1 + 1 + 1;
 
@@ -106,9 +119,9 @@ public class PersistentSearchDecorator extends ControlDecorator
         buffer.put( UniversalTag.SEQUENCE.getValue() );
         buffer.put( TLV.getBytes( psearchSeqLength ) );
 
-        Value.encode( buffer, ( ( PersistentSearch ) getDecorated() ).getChangeTypes() );
-        Value.encode( buffer, ( ( PersistentSearch ) getDecorated() ).isChangesOnly() );
-        Value.encode( buffer, ( ( PersistentSearch ) getDecorated() ).isReturnECs() );
+        Value.encode( buffer, getChangeTypes() );
+        Value.encode( buffer, isChangesOnly() );
+        Value.encode( buffer, isReturnECs() );
         
         return buffer;
     }
@@ -130,9 +143,9 @@ public class PersistentSearchDecorator extends ControlDecorator
                 buffer.put( UniversalTag.SEQUENCE.getValue() );
                 buffer.put( TLV.getBytes( psearchSeqLength ) );
 
-                Value.encode( buffer, ( ( PersistentSearch ) getDecorated() ).getChangeTypes() );
-                Value.encode( buffer, ( ( PersistentSearch ) getDecorated() ).isChangesOnly() );
-                Value.encode( buffer, ( ( PersistentSearch ) getDecorated() ).isReturnECs() );
+                Value.encode( buffer, getChangeTypes() );
+                Value.encode( buffer, isChangesOnly() );
+                Value.encode( buffer, isReturnECs() );
 
                 getDecorated().setValue( buffer.array() );
             }
@@ -143,5 +156,60 @@ public class PersistentSearchDecorator extends ControlDecorator
         }
         
         return getDecorated().getValue();
+    }
+
+
+
+    private PersistentSearch getPersistentSearch()
+    {
+        return ( PersistentSearch ) getDecorated();
+    }
+
+
+    public void setChangesOnly( boolean changesOnly )
+    {
+        getPersistentSearch().setChangesOnly( changesOnly );
+    }
+
+
+    public boolean isChangesOnly()
+    {
+        return getPersistentSearch().isChangesOnly();
+    }
+
+
+    public void setReturnECs( boolean returnECs )
+    {
+        getPersistentSearch().setReturnECs( returnECs );
+    }
+
+
+    public boolean isReturnECs()
+    {
+        return getPersistentSearch().isReturnECs();
+    }
+
+
+    public void setChangeTypes( int changeTypes )
+    {
+        getPersistentSearch().setChangeTypes( changeTypes );
+    }
+
+
+    public int getChangeTypes()
+    {
+        return getPersistentSearch().getChangeTypes();
+    }
+
+
+    public boolean isNotificationEnabled( ChangeType changeType )
+    {
+        return getPersistentSearch().isNotificationEnabled( changeType );
+    }
+
+
+    public void enableNotification( ChangeType changeType )
+    {
+        getPersistentSearch().enableNotification( changeType );
     }
 }

@@ -120,9 +120,7 @@ public final class PersistentSearchGrammar extends AbstractGrammar
                             LOG.debug( "changeTypes = " + changeTypes );
                         }
 
-                        PersistentSearch persistentSearch = ( PersistentSearch )
-                                psearchContainer.getPSearchDecorator().getDecorated();
-                        persistentSearch.setChangeTypes( changeTypes );
+                        psearchContainer.getPersistentSearchDecorator().setChangeTypes( changeTypes );
                     }
                     catch ( IntegerDecoderException e )
                     {
@@ -161,9 +159,7 @@ public final class PersistentSearchGrammar extends AbstractGrammar
                             LOG.debug( "changesOnly = " + changesOnly );
                         }
 
-                        PersistentSearch persistentSearch = ( PersistentSearch )
-                                psearchContainer.getPSearchDecorator().getDecorated();
-                        persistentSearch.setChangesOnly( changesOnly );
+                        psearchContainer.getPersistentSearchDecorator().setChangesOnly( changesOnly );
                     }
                     catch ( BooleanDecoderException e )
                     {
@@ -202,9 +198,7 @@ public final class PersistentSearchGrammar extends AbstractGrammar
                             LOG.debug( "returnECs = " + returnECs );
                         }
 
-                        PersistentSearch persistentSearch = ( PersistentSearch )
-                                psearchContainer.getPSearchDecorator().getDecorated();
-                        persistentSearch.setReturnECs( returnECs );
+                        psearchContainer.getPersistentSearchDecorator().setReturnECs( returnECs );
 
                         // We can have an END transition
                         psearchContainer.setGrammarEndAllowed( true );
