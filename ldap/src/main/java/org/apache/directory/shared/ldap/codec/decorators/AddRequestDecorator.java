@@ -25,10 +25,7 @@ import java.util.List;
 import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
-import org.apache.directory.shared.ldap.model.message.AbandonListener;
 import org.apache.directory.shared.ldap.model.message.AddRequest;
-import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
-import org.apache.directory.shared.ldap.model.message.ResultResponse;
 import org.apache.directory.shared.ldap.model.name.Dn;
 
 
@@ -37,7 +34,7 @@ import org.apache.directory.shared.ldap.model.name.Dn;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class AddRequestDecorator extends RequestDecorator implements AddRequest
+public class AddRequestDecorator extends SingleReplyRequestDecorator implements AddRequest
 {
     /** The add request length */
     private int addRequestLength;
@@ -147,55 +144,7 @@ public class AddRequestDecorator extends RequestDecorator implements AddRequest
         return valuesLength;
     }
 
-
-    //-------------------------------------------------------------------------
-    // The AddRequest methods
-    //-------------------------------------------------------------------------
-    /**
-     * {@inheritDoc}
-     */
-    public MessageTypeEnum getResponseType()
-    {
-        return getAddRequest().getResponseType();
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public ResultResponse getResultResponse()
-    {
-        return getAddRequest().getResultResponse();
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public void abandon()
-    {
-        getAddRequest().abandon();
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isAbandoned()
-    {
-        return getAddRequest().isAbandoned();
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public void addAbandonListener( AbandonListener listener )
-    {
-        getAddRequest().addAbandonListener( listener );
-    }
-
-
+    
     /**
      * {@inheritDoc}
      */
@@ -231,57 +180,40 @@ public class AddRequestDecorator extends RequestDecorator implements AddRequest
         getAddRequest().setEntry( entry );
     }
 
+    
+    // TODO all these must go
 
-    /**
-     * {@inheritDoc}
-     */
     public void addAttributeType( String type ) throws LdapException
     {
-        getAddRequest().addAttributeType( type );
+        // TODO Auto-generated method stub
+        
     }
 
 
-    /**
-     * {@inheritDoc}
-     */
     public String getCurrentAttributeType()
     {
-        return getAddRequest().getCurrentAttributeType();
+        // TODO Auto-generated method stub
+        return null;
     }
 
 
-    /**
-     * {@inheritDoc}
-     */
     public void addAttributeValue( String value )
     {
-        getAddRequest().addAttributeValue( value );
+        // TODO Auto-generated method stub
+        
     }
 
 
-    /**
-     * {@inheritDoc}
-     */
     public void addAttributeValue( Value<?> value )
     {
-        getAddRequest().addAttributeValue( value );
+        // TODO Auto-generated method stub
+        
     }
 
 
-    /**
-     * {@inheritDoc}
-     */
     public void addAttributeValue( byte[] value )
     {
-        getAddRequest().addAttributeValue( value );
-    }
-    
-    
-    /**
-     * {@inheritDoc}
-     */
-    public String toString()
-    {
-        return getAddRequest().toString();
+        // TODO Auto-generated method stub
+        
     }
 }

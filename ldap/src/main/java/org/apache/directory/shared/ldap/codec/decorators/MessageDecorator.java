@@ -63,6 +63,9 @@ public class MessageDecorator implements Message
     /** The length of the controls */
     private int controlsLength;
 
+    /** The current control */
+    private Control currentControl;
+
     
     public static MessageDecorator getDecorator( Message decoratedMessage )
     {
@@ -211,9 +214,14 @@ public class MessageDecorator implements Message
     }
 
 
+    /**
+     * Get the current Control Object
+     * 
+     * @return The current Control Object
+     */
     public Control getCurrentControl()
     {
-        return decoratedMessage.getCurrentControl();
+        return currentControl;
     }
 
 
@@ -226,6 +234,7 @@ public class MessageDecorator implements Message
     public void addControl( Control control ) throws MessageException
     {
         decoratedMessage.addControl( control );
+        currentControl = control;
     }
 
 
@@ -262,5 +271,11 @@ public class MessageDecorator implements Message
     public void setMessageId( int messageId )
     {
         decoratedMessage.setMessageId( messageId );
+    }
+
+
+    public String toString()
+    {
+        return decoratedMessage.toString();
     }
 }

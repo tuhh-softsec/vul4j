@@ -17,45 +17,37 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.model.message;
+package org.apache.directory.shared.ldap.codec.decorators;
+
+
+import org.apache.directory.shared.ldap.model.message.Message;
+import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
+import org.apache.directory.shared.ldap.model.message.SingleReplyRequest;
 
 
 /**
- * An enum to store the Ldap message type.
+ * A decorator for the LdapResultResponse message
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public enum MessageTypeEnum
+public class SingleReplyRequestDecorator extends AbandonableResultResponseRequestDecorator implements SingleReplyRequest
 {
-    ABANDON_REQUEST(0),
-    ADD_REQUEST (1),
-    ADD_RESPONSE(2),
-    BIND_REQUEST(3),
-    BIND_RESPONSE(4),
-    COMPARE_REQUEST(5),
-    COMPARE_RESPONSE(6),
-    DEL_REQUEST(7),
-    DEL_RESPONSE(8),
-    EXTENDED_REQUEST(9),
-    EXTENDED_RESPONSE(10),
-    MODIFYDN_REQUEST(11),
-    MODIFYDN_RESPONSE(12),
-    MODIFY_REQUEST(13),
-    MODIFY_RESPONSE(14),
-    SEARCH_REQUEST(15),
-    SEARCH_RESULT_DONE(16),
-    SEARCH_RESULT_ENTRY(17),
-    SEARCH_RESULT_REFERENCE(18),
-    UNBIND_REQUEST(19),
-    INTERMEDIATE_RESPONSE(20);
-
-    /** The internal value */
-    @SuppressWarnings("unused")
-    private int value;
+    /**
+     * Makes Request a MessageDecorator.
+     *
+     * @param decoratedMessage the decorated message
+     */
+    public SingleReplyRequestDecorator( Message decoratedMessage )
+    {
+        super( decoratedMessage );
+    }
 
     
-    private MessageTypeEnum( int value )
+    /**
+     * {@inheritDoc}
+     */
+    public MessageTypeEnum getResponseType()
     {
-        this.value = value;
+        return ( ( SingleReplyRequest ) getDecoratedMessage() ).getResponseType();
     }
 }

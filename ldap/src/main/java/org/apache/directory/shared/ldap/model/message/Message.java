@@ -54,17 +54,9 @@ public interface Message
      * Gets the control associated with the given OID.
      * 
      * @param oid The Cntrol's OID we are looking for
-     * @return The Control object instance with ths OID.
+     * @return The Control object instance with the OID.
      */
     Control getControl( String oid );
-
-
-    /**
-     * Get the current Control Object
-     * 
-     * @return The current Control Object
-     */
-    Control getCurrentControl();
 
 
     /**

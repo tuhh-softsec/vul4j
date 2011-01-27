@@ -34,7 +34,7 @@ import org.apache.directory.shared.ldap.model.exception.MessageException;
  */
 public abstract class AbstractMessage implements Message
 {
-    static final long serialVersionUID = 7601738291101182094L;
+    private static final long serialVersionUID = 7601738291101182094L;
 
     /** Map of message controls using OID Strings for keys and Control values */
     protected final Map<String, Control> controls;
@@ -47,9 +47,6 @@ public abstract class AbstractMessage implements Message
 
     /** Transient Message Parameter Hash */
     private final Map<Object, Object> parameters;
-
-    /** The current control */
-    private Control currentControl;
 
 
     /**
@@ -106,17 +103,6 @@ public abstract class AbstractMessage implements Message
 
 
     /**
-     * Get the current Control Object
-     * 
-     * @return The current Control Object
-     */
-    public Control getCurrentControl()
-    {
-        return currentControl;
-    }
-
-
-    /**
      * {@inheritDoc}
      */
     public boolean hasControl( String oid )
@@ -131,7 +117,6 @@ public abstract class AbstractMessage implements Message
     public void addControl( Control control ) throws MessageException
     {
         controls.put( control.getOid(), control );
-        currentControl = control;
     }
 
 
@@ -165,7 +150,7 @@ public abstract class AbstractMessage implements Message
      * Gets a message scope parameter. Message scope parameters are temporary
      * variables associated with a message and are set locally to be used to
      * associate housekeeping information with a request or its processing.
-     * These parameters are never transmitted nor recieved, think of them as
+     * These parameters are never transmitted nor received, think of them as
      * transient data associated with the message or its processing. These
      * transient parameters are not locked down so modifications can occur
      * without firing LockExceptions even when this Lockable is in the locked

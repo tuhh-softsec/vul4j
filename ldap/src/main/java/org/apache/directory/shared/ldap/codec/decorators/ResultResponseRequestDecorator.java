@@ -20,55 +20,44 @@
 package org.apache.directory.shared.ldap.codec.decorators;
 
 
-import org.apache.directory.shared.ldap.model.message.AddResponse;
+import org.apache.directory.shared.ldap.model.message.Message;
+import org.apache.directory.shared.ldap.model.message.Request;
+import org.apache.directory.shared.ldap.model.message.ResultResponse;
+import org.apache.directory.shared.ldap.model.message.ResultResponseRequest;
 
 
 /**
- * A decorator for the AddResponse message
+ * A decorator for the LdapResultResponse message
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class AddResponseDecorator extends ResponseDecorator implements AddResponse
+public class ResultResponseRequestDecorator extends RequestDecorator implements ResultResponseRequest
 {
-    /** The encoded addResponse length */
-    private int addResponseLength;
-
-
     /**
-     * Makes a AddResponse a MessageDecorator.
+     * Makes Request a MessageDecorator.
      *
-     * @param decoratedMessage the decorated AddResponse
+     * @param decoratedMessage the decorated message
      */
-    public AddResponseDecorator( AddResponse decoratedMessage)
+    public ResultResponseRequestDecorator( Message decoratedMessage )
     {
         super( decoratedMessage );
     }
-
+    
 
     /**
-     * @return The decorated AddResponse
+     * {@inheritDoc}
      */
-    public AddResponse getAddResponse()
+    public boolean hasResponse()
     {
-        return ( AddResponse ) getDecoratedMessage();
+        return ( ( Request ) getDecoratedMessage() ).hasResponse();
     }
 
 
     /**
-     * Stores the encoded length for the AddResponse
-     * @param addResponseLength The encoded length
+     * {@inheritDoc}
      */
-    public void setAddResponseLength( int addResponseLength )
+    public ResultResponse getResultResponse()
     {
-        this.addResponseLength = addResponseLength;
-    }
-
-
-    /**
-     * @return The encoded AddResponse's length
-     */
-    public int getAddResponseLength()
-    {
-        return addResponseLength;
+        return ( ( ResultResponseRequest ) getDecoratedMessage() ).getResultResponse();
     }
 }

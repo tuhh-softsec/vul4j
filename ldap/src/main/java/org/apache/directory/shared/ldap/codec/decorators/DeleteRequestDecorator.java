@@ -20,10 +20,7 @@
 package org.apache.directory.shared.ldap.codec.decorators;
 
 
-import org.apache.directory.shared.ldap.model.message.AbandonListener;
 import org.apache.directory.shared.ldap.model.message.DeleteRequest;
-import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
-import org.apache.directory.shared.ldap.model.message.ResultResponse;
 import org.apache.directory.shared.ldap.model.name.Dn;
 
 
@@ -32,7 +29,7 @@ import org.apache.directory.shared.ldap.model.name.Dn;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class DeleteRequestDecorator extends RequestDecorator implements DeleteRequest
+public class DeleteRequestDecorator extends SingleReplyRequestDecorator implements DeleteRequest
 {
     /**
      * Makes a DeleteRequest a MessageDecorator.
@@ -57,51 +54,8 @@ public class DeleteRequestDecorator extends RequestDecorator implements DeleteRe
     //-------------------------------------------------------------------------
     // The DeleteRequest methods
     //-------------------------------------------------------------------------
-    /**
-     * {@inheritDoc}
-     */
-    public MessageTypeEnum getResponseType()
-    {
-        return getDeleteRequest().getResponseType();
-    }
 
-
-    /**
-     * {@inheritDoc}
-     */
-    public ResultResponse getResultResponse()
-    {
-        return getDeleteRequest().getResultResponse();
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public void abandon()
-    {
-        getDeleteRequest().abandon();
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isAbandoned()
-    {
-        return getDeleteRequest().isAbandoned();
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public void addAbandonListener( AbandonListener listener )
-    {
-        getDeleteRequest().addAbandonListener( listener );
-    }
-
-
+    
     /**
      * {@inheritDoc}
      */
@@ -117,14 +71,5 @@ public class DeleteRequestDecorator extends RequestDecorator implements DeleteRe
     public void setName( Dn name )
     {
         getDeleteRequest().setName( name );
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public String toString()
-    {
-        return getDeleteRequest().toString();
     }
 }

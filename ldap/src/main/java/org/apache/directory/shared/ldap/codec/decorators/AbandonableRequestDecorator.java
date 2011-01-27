@@ -20,55 +20,63 @@
 package org.apache.directory.shared.ldap.codec.decorators;
 
 
-import org.apache.directory.shared.ldap.model.message.AddResponse;
+import org.apache.directory.shared.ldap.model.message.AbandonListener;
+import org.apache.directory.shared.ldap.model.message.AbandonableRequest;
+import org.apache.directory.shared.ldap.model.message.Message;
 
 
 /**
- * A decorator for the AddResponse message
+ * A decorator for the LdapResultResponse message
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class AddResponseDecorator extends ResponseDecorator implements AddResponse
+public class AbandonableRequestDecorator extends RequestDecorator implements AbandonableRequest
 {
-    /** The encoded addResponse length */
-    private int addResponseLength;
-
-
     /**
-     * Makes a AddResponse a MessageDecorator.
+     * Makes Request a MessageDecorator.
      *
-     * @param decoratedMessage the decorated AddResponse
+     * @param decoratedMessage the decorated message
      */
-    public AddResponseDecorator( AddResponse decoratedMessage)
+    public AbandonableRequestDecorator( Message decoratedMessage )
     {
         super( decoratedMessage );
     }
 
-
+    
     /**
-     * @return The decorated AddResponse
+     * Gets the decorated AbandonableRequest.
+     *
+     * @return The decorated {@link AbandonableRequest}
      */
-    public AddResponse getAddResponse()
+    public AbandonableRequest getAbandonableRequest()
     {
-        return ( AddResponse ) getDecoratedMessage();
+        return ( AbandonableRequest ) getDecoratedMessage();
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void abandon()
+    {
+        getAbandonableRequest().abandon();
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isAbandoned()
+    {
+        return getAbandonableRequest().isAbandoned();
     }
 
 
     /**
-     * Stores the encoded length for the AddResponse
-     * @param addResponseLength The encoded length
+     * {@inheritDoc}
      */
-    public void setAddResponseLength( int addResponseLength )
+    public void addAbandonListener( AbandonListener listener )
     {
-        this.addResponseLength = addResponseLength;
-    }
-
-
-    /**
-     * @return The encoded AddResponse's length
-     */
-    public int getAddResponseLength()
-    {
-        return addResponseLength;
+        getAbandonableRequest().addAbandonListener( listener );
     }
 }
