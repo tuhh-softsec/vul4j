@@ -27,6 +27,7 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecoder;
 import org.apache.directory.shared.ldap.model.message.Control;
+import org.apache.directory.shared.ldap.model.message.controls.PagedResults;
 
 
 /**

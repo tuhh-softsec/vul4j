@@ -32,6 +32,7 @@ import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.ldap.codec.search.controls.entryChange.*;
+import org.apache.directory.shared.ldap.model.message.controls.EntryChange;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
@@ -158,7 +159,7 @@ public class EntryChangeControlTest
             fail( de.getMessage() );
         }
 
-        EntryChange entryChange = (EntryChange) container.getEntryChangeDecorator().getDecorated();
+        EntryChange entryChange = (EntryChange ) container.getEntryChangeDecorator().getDecorated();
         assertEquals( ChangeType.ADD, entryChange.getChangeType() );
         assertNull( entryChange.getPreviousDn() );
         assertEquals( 16, entryChange.getChangeNumber() );
