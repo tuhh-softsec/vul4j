@@ -31,10 +31,7 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
-import org.apache.directory.shared.ldap.codec.search.controls.entryChange.EntryChange;
-import org.apache.directory.shared.ldap.codec.search.controls.entryChange.EntryChangeContainer;
-import org.apache.directory.shared.ldap.codec.search.controls.entryChange.EntryChangeDecoder;
-import org.apache.directory.shared.ldap.codec.search.controls.entryChange.EntryChangeDecorator;
+import org.apache.directory.shared.ldap.codec.search.controls.entryChange.*;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
@@ -82,7 +79,7 @@ public class EntryChangeControlTest
             fail( de.getMessage() );
         }
 
-        EntryChange entryChange = ( EntryChange ) container.getEntryChangeDecorator().getDecorated();
+        EntryChange entryChange = (EntryChange) container.getEntryChangeDecorator().getDecorated();
         assertEquals( ChangeType.MODDN, entryChange.getChangeType() );
         assertEquals( "a=b", entryChange.getPreviousDn().toString() );
         assertEquals( 16, entryChange.getChangeNumber() );
@@ -122,7 +119,7 @@ public class EntryChangeControlTest
             fail( de.getMessage() );
         }
 
-        EntryChange entryChange = ( EntryChange ) container.getEntryChangeDecorator().getDecorated();
+        EntryChange entryChange = (EntryChange) container.getEntryChangeDecorator().getDecorated();
         assertEquals( ChangeType.MODDN, entryChange.getChangeType() );
         assertEquals( "a=b", entryChange.getPreviousDn().toString() );
         assertEquals( 5124095576030430L, entryChange.getChangeNumber() );
@@ -161,7 +158,7 @@ public class EntryChangeControlTest
             fail( de.getMessage() );
         }
 
-        EntryChange entryChange = ( EntryChange ) container.getEntryChangeDecorator().getDecorated();
+        EntryChange entryChange = (EntryChange) container.getEntryChangeDecorator().getDecorated();
         assertEquals( ChangeType.ADD, entryChange.getChangeType() );
         assertNull( entryChange.getPreviousDn() );
         assertEquals( 16, entryChange.getChangeNumber() );
@@ -239,7 +236,7 @@ public class EntryChangeControlTest
             fail( de.getMessage() );
         }
 
-        EntryChange entryChange = ( EntryChange ) container.getEntryChangeDecorator().getDecorated();
+        EntryChange entryChange = (EntryChange) container.getEntryChangeDecorator().getDecorated();
         assertEquals( ChangeType.ADD, entryChange.getChangeType() );
         assertNull( entryChange.getPreviousDn() );
         assertEquals( EntryChangeDecorator.UNDEFINED_CHANGE_NUMBER, entryChange.getChangeNumber() );
@@ -349,10 +346,10 @@ public class EntryChangeControlTest
         bb.flip();
 
         EntryChangeDecorator decorator = new EntryChangeDecorator();
-        EntryChange entry = ( EntryChange ) decorator.getDecorated();
-        entry.setChangeType( ChangeType.MODDN );
-        entry.setChangeNumber( 16 );
-        entry.setPreviousDn( new Dn( "a=b" ) );
+        EntryChange entryChange = (EntryChange) decorator.getDecorated();
+        entryChange.setChangeType( ChangeType.MODDN );
+        entryChange.setChangeNumber( 16 );
+        entryChange.setPreviousDn( new Dn( "a=b" ) );
         bb = decorator.encode( ByteBuffer.allocate( decorator.computeLength() ) );
         String decoded = Strings.dumpBytes( bb.array() );
         assertEquals( expected, decoded );
@@ -387,11 +384,11 @@ public class EntryChangeControlTest
         bb.flip();
 
         EntryChangeDecorator decorator = new EntryChangeDecorator();
-        EntryChange entry = ( EntryChange ) decorator.getDecorated();
+        EntryChange entryChange = (EntryChange) decorator.getDecorated();
 
-        entry.setChangeType( ChangeType.MODDN );
-        entry.setChangeNumber( 5124095576030430L );
-        entry.setPreviousDn( new Dn( "a=b" ) );
+        entryChange.setChangeType( ChangeType.MODDN );
+        entryChange.setChangeNumber( 5124095576030430L );
+        entryChange.setPreviousDn( new Dn( "a=b" ) );
         bb = decorator.encode( ByteBuffer.allocate( decorator.computeLength() ) );
         String decoded = Strings.dumpBytes(bb.array());
         assertEquals( expected, decoded );

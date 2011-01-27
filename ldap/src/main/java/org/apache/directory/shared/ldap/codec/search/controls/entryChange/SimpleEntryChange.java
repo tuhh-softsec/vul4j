@@ -26,58 +26,12 @@ import org.apache.directory.shared.ldap.model.name.Dn;
 
 
 /**
- * A response control that may be returned by Persistent Search entry responses.
- * It contains addition change information to describe the exact change that
- * occurred to an entry. The exact details of this control are covered in section
- * 5 of this (yes) expired draft: <a
- * href="http://www3.ietf.org/proceedings/01aug/I-D/draft-ietf-ldapext-psearch-03.txt">
- * Persistent Search Draft v03</a> which is printed out below for convenience:
- * 
- * <pre>
- *    5.  Entry Change Notification Control
- *    
- *    This control provides additional information about the change the caused
- *    a particular entry to be returned as the result of a persistent search.
- *    The controlType is &quot;2.16.840.1.113730.3.4.7&quot;.  If the client set the
- *    returnECs boolean to TRUE in the PersistentSearch control, servers MUST
- *    include an EntryChangeNotification control in the Controls portion of
- *    each SearchResultEntry that is returned due to an entry being added,
- *    deleted, or modified.
- *    
- *               EntryChangeNotification ::= SEQUENCE 
- *               {
- *                         changeType ENUMERATED 
- *                         {
- *                                 add             (1),
- *                                 delete          (2),
- *                                 modify          (4),
- *                                 modDN           (8)
- *                         },
- *                         previousDN   LDAPDN OPTIONAL,     -- modifyDN ops. only
- *                         changeNumber INTEGER OPTIONAL     -- if supported
- *               }
- *    
- *    changeType indicates what LDAP operation caused the entry to be
- *    returned.
- *    
- *    previousDN is present only for modifyDN operations and gives the Dn of
- *    the entry before it was renamed and/or moved.  Servers MUST include this
- *    optional field only when returning change notifications as a result of
- *    modifyDN operations.
- * 
- *    changeNumber is the change number [CHANGELOG] assigned by a server for
- *    the change.  If a server supports an LDAP Change Log it SHOULD include
- *    this field.
- * </pre>
- * 
+ * A simple implementation of the EntryChange response control.
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class EntryChange extends BasicControlImpl
+public class SimpleEntryChange extends BasicControlImpl implements EntryChange
 {
-    public static final int UNDEFINED_CHANGE_NUMBER = -1;
-
-    /** The EntryChange control */
-    public static final String OID = "2.16.840.1.113730.3.4.7";
 
     private ChangeType changeType = ChangeType.ADD;
 
@@ -92,26 +46,18 @@ public class EntryChange extends BasicControlImpl
      * Creates a new instance of EntryChangeControl.
      *
      */
-    public EntryChange()
+    public SimpleEntryChange()
     {
         super( OID );
     }
 
 
-    /**
-     * @return The ChangeType
-     */
     public ChangeType getChangeType()
     {
         return changeType;
     }
 
 
-    /**
-     * Set the ChangeType
-     *
-     * @param changeType Add, Delete; Modify or ModifyDN
-     */
     public void setChangeType( ChangeType changeType )
     {
         this.changeType = changeType;
@@ -124,7 +70,7 @@ public class EntryChange extends BasicControlImpl
     }
 
 
-    public void setPreviousDn( Dn previousDn )
+    public void setPreviousDn(Dn previousDn)
     {
         this.previousDn = previousDn;
     }
@@ -145,6 +91,8 @@ public class EntryChange extends BasicControlImpl
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings({"EqualsWhichDoesntCheckParameterClass"})
+    @Override
     public boolean equals( Object o )
     {
         if ( !super.equals( o ) )
@@ -154,9 +102,9 @@ public class EntryChange extends BasicControlImpl
 
         EntryChange otherControl = ( EntryChange ) o;
 
-        return ( changeNumber == otherControl.changeNumber ) &&
-             ( changeType == otherControl.changeType ) &&
-             ( previousDn.equals( otherControl.previousDn ) );
+        return ( changeNumber == otherControl.getChangeNumber() ) &&
+             ( changeType == otherControl.getChangeType() ) &&
+             ( previousDn.equals( otherControl.getPreviousDn() ) );
     }
 
     

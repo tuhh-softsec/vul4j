@@ -95,13 +95,13 @@ public class EntryChangeDecorator extends ControlDecorator
      */
     public EntryChangeDecorator()
     {
-        super( new EntryChange(), new EntryChangeDecoder() );
+        super( new SimpleEntryChange(), new EntryChangeDecoder() );
     }
 
 
     private EntryChange getEntryChange()
     {
-        return ( EntryChange ) getDecorated();
+        return (EntryChange) getDecorated();
     }
 
 

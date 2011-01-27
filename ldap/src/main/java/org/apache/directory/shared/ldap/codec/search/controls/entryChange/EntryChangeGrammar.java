@@ -113,7 +113,7 @@ public final class EntryChangeGrammar extends AbstractGrammar
                                 LOG.debug( "changeType = " + changeType );
                             }
 
-                            ( ( EntryChange ) entryChangeContainer.getEntryChangeDecorator().getDecorated() )
+                            ( (EntryChange) entryChangeContainer.getEntryChangeDecorator().getDecorated() )
                                     .setChangeType( changeType );
                             break;
 
@@ -159,7 +159,7 @@ public final class EntryChangeGrammar extends AbstractGrammar
             {
                 EntryChangeContainer entryChangeContainer = ( EntryChangeContainer ) container;
 
-                EntryChange entryChange = ( EntryChange ) entryChangeContainer
+                EntryChange entryChange = (EntryChange) entryChangeContainer
                         .getEntryChangeDecorator().getDecorated();
                 ChangeType changeType = entryChange.getChangeType();
 
@@ -214,7 +214,7 @@ public final class EntryChangeGrammar extends AbstractGrammar
                         LOG.debug( "changeNumber = " + changeNumber );
                     }
 
-                    EntryChange entryChange = ( EntryChange ) entryChangeContainer
+                    EntryChange entryChange = (EntryChange) entryChangeContainer
                             .getEntryChangeDecorator().getDecorated();
                     entryChange.setChangeNumber( changeNumber );
 
