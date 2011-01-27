@@ -22,7 +22,11 @@ package org.apache.directory.shared.ldap.codec.decorators;
 
 import java.util.List;
 
+import org.apache.directory.shared.ldap.model.entry.Entry;
+import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
+import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.message.SearchResultEntry;
+import org.apache.directory.shared.ldap.model.name.Dn;
 
 
 /**
@@ -30,7 +34,7 @@ import org.apache.directory.shared.ldap.model.message.SearchResultEntry;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SearchResultEntryDecorator extends MessageDecorator
+public class SearchResultEntryDecorator extends MessageDecorator implements SearchResultEntry
 {
     /** A temporary storage for the byte[] representing the objectName */
     private byte[] objectNameBytes;
@@ -46,6 +50,9 @@ public class SearchResultEntryDecorator extends MessageDecorator
 
     /** The list of all vals length */
     private List<Integer> valsLength;
+    
+    /** The current attribute being processed */
+    private EntryAttribute currentEntry;
 
 
     /**
@@ -162,5 +169,47 @@ public class SearchResultEntryDecorator extends MessageDecorator
     public void setValsLength( List<Integer> valsLength )
     {
         this.valsLength = valsLength;
+    }
+    
+    
+    public EntryAttribute getCurrentEntry()
+    {
+        return currentEntry;
+    }
+
+
+    public Dn getObjectName()
+    {
+        return getSearchResultEntry().getObjectName();
+    }
+
+
+    public void setObjectName( Dn objectName )
+    {
+        getSearchResultEntry().setObjectName( objectName );
+    }
+
+
+    public Entry getEntry()
+    {
+        return getSearchResultEntry().getEntry();
+    }
+
+
+    public void setEntry( Entry entry )
+    {
+        getSearchResultEntry().setEntry( entry );
+    }
+
+
+    public void addAttribute( String type ) throws LdapException
+    {
+        getSearchResultEntry().addAttribute( type );
+    }
+
+
+    public void addAttributeValue( Object value )
+    {
+        getSearchResultEntry().addAttributeValue( value );
     }
 }

@@ -36,7 +36,7 @@ public class AddResponseDecorator extends ResponseDecorator implements AddRespon
 
 
     /**
-     * Makes a AddResponse encodable.
+     * Makes a AddResponse a MessageDecorator.
      *
      * @param decoratedMessage the decorated AddResponse
      */

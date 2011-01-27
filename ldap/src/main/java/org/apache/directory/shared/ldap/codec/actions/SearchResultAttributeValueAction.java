@@ -24,7 +24,7 @@ import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.model.message.SearchResultEntry;
+import org.apache.directory.shared.ldap.codec.decorators.SearchResultEntryDecorator;
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +59,7 @@ public class SearchResultAttributeValueAction extends GrammarAction
     public void action( Asn1Container container )
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        SearchResultEntry searchResultEntry = ldapMessageContainer.getSearchResultEntry();
+        SearchResultEntryDecorator searchResultEntry = ldapMessageContainer.getSearchResultEntry();
 
         TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -74,7 +74,7 @@ public class SearchResultAttributeValueAction extends GrammarAction
         }
         else
         {
-            if ( ldapMessageContainer.isBinary( searchResultEntry.getCurrentAttribute().getId() ) )
+            if ( ldapMessageContainer.isBinary( searchResultEntry.getCurrentEntry().getId() ) )
             {
                 value = tlv.getValue().getData();
 

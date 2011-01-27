@@ -25,6 +25,7 @@ import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.ModifyRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.SearchResultEntryDecorator;
 import org.apache.directory.shared.ldap.message.spi.BinaryAttributeDetector;
 import org.apache.directory.shared.ldap.model.message.AbandonRequest;
 import org.apache.directory.shared.ldap.model.message.AddRequest;
@@ -45,7 +46,6 @@ import org.apache.directory.shared.ldap.model.message.ModifyRequest;
 import org.apache.directory.shared.ldap.model.message.ModifyResponse;
 import org.apache.directory.shared.ldap.model.message.SearchRequest;
 import org.apache.directory.shared.ldap.model.message.SearchResultDone;
-import org.apache.directory.shared.ldap.model.message.SearchResultEntry;
 import org.apache.directory.shared.ldap.model.message.SearchResultReference;
 import org.apache.directory.shared.ldap.model.message.UnbindRequest;
 
@@ -290,9 +290,9 @@ public class LdapMessageContainer extends AbstractContainer
     /**
      * @return Returns the SearchResultEntry stored in the container
      */
-    public SearchResultEntry getSearchResultEntry()
+    public SearchResultEntryDecorator getSearchResultEntry()
     {
-        return ( SearchResultEntry ) message;
+        return ( SearchResultEntryDecorator ) message;
     }
 
 
