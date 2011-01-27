@@ -96,7 +96,6 @@ public class AbstractAbandonableRequest extends AbstractRequest implements Aband
 
 
     // False positive
-    @SuppressWarnings("PMD.UselessOverridingMethod")
     class RequestObservable extends Observable
     {
         @Override
