@@ -100,45 +100,62 @@ public class ExtendedResponseDecorator extends ResponseDecorator implements Exte
         return extendedResponseLength;
     }
 
-
+    
+    //-------------------------------------------------------------------------
+    // The ExtendedResponse methods
+    //-------------------------------------------------------------------------
+    
+    
+    /**
+     * {@inheritDoc}
+     */
     public byte[] getEncodedValue()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return getExtendedResponse().getEncodedValue();
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public String getID()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return getExtendedResponse().getID();
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public String getResponseName()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return getExtendedResponse().getResponseName();
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void setResponseName( String oid )
     {
-        // TODO Auto-generated method stub
-        
+        getExtendedResponse().setResponseName( oid );
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public byte[] getResponseValue()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return getExtendedResponse().getEncodedValue();
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void setResponseValue( byte[] responseValue )
     {
-        // TODO Auto-generated method stub
-        
+        getExtendedResponse().setResponseValue( responseValue );
     }
 }
