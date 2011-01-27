@@ -47,21 +47,21 @@ public class DSAKeyValueResolver extends KeyResolverSpi {
     */
    public PublicKey engineLookupAndResolvePublicKey(
            Element element, String BaseURI, StorageResolver storage) {
-	    if (element == null) {
-	         return null;
-	    }
-	    Element dsaKeyElement=null;
-	    boolean isKeyValue = XMLUtils.elementIsInSignatureSpace(element,
-	                              Constants._TAG_KEYVALUE);
-	    if (isKeyValue) {         	     
-	        dsaKeyElement =
-	          	XMLUtils.selectDsNode(element.getFirstChild(),Constants._TAG_DSAKEYVALUE,0);                    
+            if (element == null) {
+                 return null;
+            }
+            Element dsaKeyElement=null;
+            boolean isKeyValue = XMLUtils.elementIsInSignatureSpace(element,
+                                      Constants._TAG_KEYVALUE);
+            if (isKeyValue) {         	     
+                dsaKeyElement =
+                        XMLUtils.selectDsNode(element.getFirstChild(),Constants._TAG_DSAKEYVALUE,0);                    
        } else if (XMLUtils.elementIsInSignatureSpace(element,
                Constants._TAG_DSAKEYVALUE)) {
-	         // this trick is needed to allow the RetrievalMethodResolver to eat a
-	         // ds:DSAKeyValue directly (without KeyValue)
-	         dsaKeyElement = element;
-	    }	      
+                 // this trick is needed to allow the RetrievalMethodResolver to eat a
+                 // ds:DSAKeyValue directly (without KeyValue)
+                 dsaKeyElement = element;
+            }	      
 
       if (dsaKeyElement == null) {
                     return null;
@@ -74,7 +74,7 @@ public class DSAKeyValueResolver extends KeyResolverSpi {
 
          return pk;
       } catch (XMLSecurityException ex) {
-		//do nothing
+                //do nothing
       }
 
       return null;

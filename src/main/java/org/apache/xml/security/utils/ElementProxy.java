@@ -85,35 +85,35 @@ public abstract class ElementProxy {
 
       this._doc = doc;
       this._constructionElement = createElementForFamilyLocal(this._doc,
-    		  this.getBaseNamespace(), this.getBaseLocalName());      
+                  this.getBaseNamespace(), this.getBaseLocalName());      
    }       
    protected Element createElementForFamilyLocal(Document doc, String namespace,
            String localName) {	   	  
-	 	  Element result = null;
-	      if (namespace == null) {
-	         result = doc.createElementNS(null, localName);
-	      } else {
-	    	  String baseName=this.getBaseNamespace();
-	    	  String prefix=ElementProxy.getDefaultPrefix(baseName);
-	         if ((prefix == null) || (prefix.length() == 0)) {
-	            result = doc.createElementNS(namespace, localName);
+                  Element result = null;
+              if (namespace == null) {
+                 result = doc.createElementNS(null, localName);
+              } else {
+                  String baseName=this.getBaseNamespace();
+                  String prefix=ElementProxy.getDefaultPrefix(baseName);
+                 if ((prefix == null) || (prefix.length() == 0)) {
+                    result = doc.createElementNS(namespace, localName);
 
-	            result.setAttributeNS(Constants.NamespaceSpecNS, "xmlns",
-	                                  namespace);
-	         } else {
-	        	 String tagName=null;
-	        	 String defaultPrefixNaming=ElementProxy.getDefaultPrefixBindings(baseName);
-	        	 StringBuffer sb=new StringBuffer(prefix);
-	        	 sb.append(':');
-	        	 sb.append(localName);
-	        	 tagName=sb.toString();	        	
-	            result = doc.createElementNS(namespace, tagName );
+                    result.setAttributeNS(Constants.NamespaceSpecNS, "xmlns",
+                                          namespace);
+                 } else {
+                         String tagName=null;
+                         String defaultPrefixNaming=ElementProxy.getDefaultPrefixBindings(baseName);
+                         StringBuffer sb=new StringBuffer(prefix);
+                         sb.append(':');
+                         sb.append(localName);
+                         tagName=sb.toString();	        	
+                    result = doc.createElementNS(namespace, tagName );
 
-	            result.setAttributeNS(Constants.NamespaceSpecNS,  defaultPrefixNaming,
-	                                  namespace);
-	         }
-	      }	      
-	      return result;
+                    result.setAttributeNS(Constants.NamespaceSpecNS,  defaultPrefixNaming,
+                                          namespace);
+                 }
+              }	      
+              return result;
 }
 
 
@@ -169,7 +169,7 @@ public abstract class ElementProxy {
       }
       
       if (log.isDebugEnabled()) {
-      	log.debug("setElement(" + element.getTagName() + ", \"" + BaseURI + "\"");
+        log.debug("setElement(" + element.getTagName() + ", \"" + BaseURI + "\"");
       }
         
       this._doc = element.getOwnerDocument();
@@ -191,7 +191,7 @@ public abstract class ElementProxy {
       }
       
       if (log.isDebugEnabled()) {
-      	log.debug("setElement(\"" + element.getTagName() + "\", \"" + BaseURI
+        log.debug("setElement(\"" + element.getTagName() + "\", \"" + BaseURI
                 + "\")");
       }
 
@@ -252,18 +252,18 @@ public abstract class ElementProxy {
     */
    void guaranteeThatElementInCorrectSpace()
            throws XMLSecurityException {
-	  
-	   String expectedLocalName = this.getBaseLocalName();
-	      String expectedNamespaceUri = this.getBaseNamespace();
-	      
-	      String actualLocalName = this._constructionElement.getLocalName();
-	      String actualNamespaceUri = this._constructionElement.getNamespaceURI();
-	      
-	      if(!expectedNamespaceUri.equals(actualNamespaceUri) && !expectedLocalName.equals(actualLocalName)) {      
-	         Object exArgs[] = { actualNamespaceUri +":"+ actualLocalName, 
-	           expectedNamespaceUri +":"+ expectedLocalName};
-	         throw new XMLSecurityException("xml.WrongElement", exArgs);
-	      }
+          
+           String expectedLocalName = this.getBaseLocalName();
+              String expectedNamespaceUri = this.getBaseNamespace();
+              
+              String actualLocalName = this._constructionElement.getLocalName();
+              String actualNamespaceUri = this._constructionElement.getNamespaceURI();
+              
+              if(!expectedNamespaceUri.equals(actualNamespaceUri) && !expectedLocalName.equals(actualLocalName)) {      
+                 Object exArgs[] = { actualNamespaceUri +":"+ actualLocalName, 
+                   expectedNamespaceUri +":"+ expectedLocalName};
+                 throw new XMLSecurityException("xml.WrongElement", exArgs);
+              }
       
    }
 
@@ -359,10 +359,10 @@ public abstract class ElementProxy {
     */
    public BigInteger getBigIntegerFromChildElement(
            String localname, String namespace) throws Base64DecodingException {
-   	    
-   		return Base64.decodeBigIntegerFromText(
-   				XMLUtils.selectNodeText(this._constructionElement.getFirstChild(),
-   						namespace,localname,0));
+            
+                return Base64.decodeBigIntegerFromText(
+                                XMLUtils.selectNodeText(this._constructionElement.getFirstChild(),
+                                                namespace,localname,0));
 
    }
 
@@ -435,17 +435,17 @@ public abstract class ElementProxy {
     * @return the number of elements {namespace}:localname under this element
     */
    public int length(String namespace, String localname) {
-   	    int number=0;
-   	    Node sibling=this._constructionElement.getFirstChild();
-   	    while (sibling!=null) {        
-   	    	if (localname.equals(sibling.getLocalName())
-   	    			&&  
-					namespace.equals(sibling.getNamespaceURI())) {
-   	    		number++;
-   	    	}
-   	    	sibling=sibling.getNextSibling();
-   	    }
-   	    return number;
+            int number=0;
+            Node sibling=this._constructionElement.getFirstChild();
+            while (sibling!=null) {        
+                if (localname.equals(sibling.getLocalName())
+                                &&  
+                                        namespace.equals(sibling.getNamespaceURI())) {
+                        number++;
+                }
+                sibling=sibling.getNextSibling();
+            }
+            return number;
      }
 
    /**
@@ -510,27 +510,27 @@ public abstract class ElementProxy {
     public static void setDefaultPrefix(String namespace, String prefix)
         throws XMLSecurityException {
     
-	if (ElementProxy._prefixMappings.containsValue(prefix)) {
+        if (ElementProxy._prefixMappings.containsValue(prefix)) {
         
-	    Object storedNamespace=ElementProxy._prefixMappings.get(namespace);
+            Object storedNamespace=ElementProxy._prefixMappings.get(namespace);
             if (!storedNamespace.equals(prefix)) {
-         	Object exArgs[] = { prefix, namespace, storedNamespace };
+                Object exArgs[] = { prefix, namespace, storedNamespace };
 
-         	throw new XMLSecurityException("prefix.AlreadyAssigned", exArgs);
+                throw new XMLSecurityException("prefix.AlreadyAssigned", exArgs);
             }
         }
-   	if (Constants.SignatureSpecNS.equals(namespace)) {
-   	    XMLUtils.dsPrefix=prefix;
-   	}
-   	if (EncryptionConstants.EncryptionSpecNS.equals(namespace)) {
-   	    XMLUtils.xencPrefix=prefix;
-   	}
+        if (Constants.SignatureSpecNS.equals(namespace)) {
+            XMLUtils.dsPrefix=prefix;
+        }
+        if (EncryptionConstants.EncryptionSpecNS.equals(namespace)) {
+            XMLUtils.xencPrefix=prefix;
+        }
         ElementProxy._prefixMappings.put(namespace, prefix.intern());
-	if (prefix.length() == 0) {
+        if (prefix.length() == 0) {
             ElementProxy._prefixMappingsBindings.put(namespace, "xmlns");
-	} else {
+        } else {
             ElementProxy._prefixMappingsBindings.put(namespace, ("xmlns:"+prefix).intern());
-	}
+        }
    }
 
     /**
@@ -544,6 +544,6 @@ public abstract class ElementProxy {
     }
 
     public static String getDefaultPrefixBindings(String namespace) {
-	return (String) ElementProxy._prefixMappingsBindings.get(namespace);
+        return (String) ElementProxy._prefixMappingsBindings.get(namespace);
     }
 }

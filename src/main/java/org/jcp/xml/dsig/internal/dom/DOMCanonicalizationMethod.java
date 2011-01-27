@@ -47,7 +47,7 @@ public class DOMCanonicalizationMethod extends DOMTransform
     public DOMCanonicalizationMethod(TransformService spi)
         throws InvalidAlgorithmParameterException
     {
-	super(spi);
+        super(spi);
     }
 
     /**
@@ -58,10 +58,10 @@ public class DOMCanonicalizationMethod extends DOMTransform
      * @param cmElem a CanonicalizationMethod element
      */
     public DOMCanonicalizationMethod(Element cmElem, XMLCryptoContext context,
-	                             Provider provider)
+                                     Provider provider)
         throws MarshalException
     {
-	super(cmElem, context, provider);
+        super(cmElem, context, provider);
     }
 
     /**
@@ -78,29 +78,29 @@ public class DOMCanonicalizationMethod extends DOMTransform
      *    canonicalizing the data
      */
     public Data canonicalize(Data data, XMLCryptoContext xc)
-	throws TransformException
+        throws TransformException
     {
-	return transform(data, xc);
+        return transform(data, xc);
     }
 
     public Data canonicalize(Data data, XMLCryptoContext xc, OutputStream os)
-	throws TransformException
+        throws TransformException
     {
-	return transform(data, xc, os);
+        return transform(data, xc, os);
     }
 
     @Override
     public boolean equals(Object o) {
-	if (this == o) {
+        if (this == o) {
             return true;
-	}
+        }
 
         if (!(o instanceof CanonicalizationMethod)) {
             return false;
-	}
+        }
         CanonicalizationMethod ocm = (CanonicalizationMethod)o;
 
-	return (getAlgorithm().equals(ocm.getAlgorithm()) &&
-	    DOMUtils.paramsEqual(getParameterSpec(), ocm.getParameterSpec()));
+        return (getAlgorithm().equals(ocm.getAlgorithm()) &&
+            DOMUtils.paramsEqual(getParameterSpec(), ocm.getParameterSpec()));
     }
 }

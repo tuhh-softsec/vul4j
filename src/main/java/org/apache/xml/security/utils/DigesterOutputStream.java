@@ -39,12 +39,12 @@ public class DigesterOutputStream extends ByteArrayOutputStream {
 
     /** @inheritDoc */
     public void write(byte[] arg0) {
-	write(arg0, 0, arg0.length);
+        write(arg0, 0, arg0.length);
     }
     
     /** @inheritDoc */
     public void write(int arg0) {
-	mda.update((byte)arg0);
+        mda.update((byte)arg0);
     }
     
     /** @inheritDoc */
@@ -57,7 +57,7 @@ public class DigesterOutputStream extends ByteArrayOutputStream {
             }
             log.debug(sb.toString());
         }
-	mda.update(arg0, arg1, arg2);
+        mda.update(arg0, arg1, arg2);
     }
     
     /**

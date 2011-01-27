@@ -62,12 +62,12 @@ public interface CipherReference {
      */
     String getURI();
 
-	/**
-	 * Gets the URI as an Attribute node.  Used to meld the CipherREference
-	 * with the XMLSignature ResourceResolvers
+        /**
+         * Gets the URI as an Attribute node.  Used to meld the CipherREference
+         * with the XMLSignature ResourceResolvers
      * @return
-	 */
-	public Attr getURIAsAttr();
+         */
+        public Attr getURIAsAttr();
 
     /**
      * Returns the <code>Transforms</code> that specifies how to transform the

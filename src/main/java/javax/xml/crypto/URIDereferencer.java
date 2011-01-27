@@ -64,5 +64,5 @@ public interface URIDereferencer {
      *    dereferencing the specified <code>uriReference</code>
      */
     Data dereference(URIReference uriReference, XMLCryptoContext context) 
-	throws URIReferenceException;
+        throws URIReferenceException;
 }

@@ -32,9 +32,9 @@ import org.w3c.dom.Attr;
 public class ResourceResolverException extends XMLSecurityException {
 
    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+         * 
+         */
+        private static final long serialVersionUID = 1L;
    /**
     * Constructor ResourceResolverException
     *

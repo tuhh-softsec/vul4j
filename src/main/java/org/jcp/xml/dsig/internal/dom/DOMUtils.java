@@ -73,7 +73,7 @@ public class DOMUtils {
                                         String nsURI, String prefix)
     {
         String qName = (prefix == null || prefix.length() == 0)
-		       ? tag : prefix + ":" + tag;
+                       ? tag : prefix + ":" + tag;
         return doc.createElementNS(nsURI, qName);
     }
 
@@ -86,8 +86,8 @@ public class DOMUtils {
      * @param value the attribute value. If null, no attribute is set. 
      */
     public static void setAttribute(Element elem, String name, String value) {
-	if (value == null) return;
-	elem.setAttributeNS(null, name, value);
+        if (value == null) return;
+        elem.setAttributeNS(null, name, value);
     }
 
     /**
@@ -101,9 +101,9 @@ public class DOMUtils {
      * @param value the attribute value. If null, no attribute is set. 
      */
     public static void setAttributeID(Element elem, String name, String value) {
-	if (value == null) return;
-	elem.setAttributeNS(null, name, value);
-	IdResolver.registerElementById(elem, value);
+        if (value == null) return;
+        elem.setAttributeNS(null, name, value);
+        IdResolver.registerElementById(elem, value);
     }
 
     /**
@@ -184,7 +184,7 @@ public class DOMUtils {
      * @return a Set of Nodes
      */
     public static Set<Node> nodeSet(NodeList nl) {
-	return new NodeSet(nl);
+        return new NodeSet(nl);
     }
 
     static class NodeSet extends AbstractSet<Node> {
@@ -228,7 +228,7 @@ public class DOMUtils {
                 (nsURI, context.getDefaultNamespacePrefix());
         } else {
             return null;
-	}
+        }
     }
 
     /**
@@ -239,7 +239,7 @@ public class DOMUtils {
      *    null if not set
      */
     public static String getSignaturePrefix(XMLCryptoContext context) {
-	return getNSPrefix(context, XMLSignature.XMLNS);
+        return getNSPrefix(context, XMLSignature.XMLNS);
     }
     
     /**
@@ -258,14 +258,14 @@ public class DOMUtils {
      * Compares 2 nodes for equality. Implementation is not complete.
      */
     public static boolean nodesEqual(Node thisNode, Node otherNode) {
-	if (thisNode == otherNode) {
-	    return true;
-	}
-	if (thisNode.getNodeType() != otherNode.getNodeType()) {
-	    return false;
-	}
-	// FIXME - test content, etc
-	return true;
+        if (thisNode == otherNode) {
+            return true;
+        }
+        if (thisNode.getNodeType() != otherNode.getNodeType()) {
+            return false;
+        }
+        // FIXME - test content, etc
+        return true;
     }
 
     /**
@@ -274,40 +274,40 @@ public class DOMUtils {
      * if necessary.
      */
     public static void appendChild(Node parent, Node child) {
-	Document ownerDoc = getOwnerDocument(parent);
-	if (child.getOwnerDocument() != ownerDoc) {
-	    parent.appendChild(ownerDoc.importNode(child, true));
-	} else {
-	    parent.appendChild(child);
-	}
+        Document ownerDoc = getOwnerDocument(parent);
+        if (child.getOwnerDocument() != ownerDoc) {
+            parent.appendChild(ownerDoc.importNode(child, true));
+        } else {
+            parent.appendChild(child);
+        }
     }
 
     public static boolean paramsEqual(AlgorithmParameterSpec spec1,
-	AlgorithmParameterSpec spec2) {
-	if (spec1 == spec2) {
-	    return true;
-	}
-	if (spec1 instanceof XPathFilter2ParameterSpec &&
-	    spec2 instanceof XPathFilter2ParameterSpec) {
-	    return paramsEqual((XPathFilter2ParameterSpec)spec1,
-		               (XPathFilter2ParameterSpec)spec2);
-	}
-	if (spec1 instanceof ExcC14NParameterSpec &&
-	    spec2 instanceof ExcC14NParameterSpec) {
-	    return paramsEqual((ExcC14NParameterSpec) spec1,
-		               (ExcC14NParameterSpec)spec2);
-	}
-	if (spec1 instanceof XPathFilterParameterSpec &&
-	    spec2 instanceof XPathFilterParameterSpec) {
-	    return paramsEqual((XPathFilterParameterSpec)spec1,
-		               (XPathFilterParameterSpec)spec2);
-	}
-	if (spec1 instanceof XSLTTransformParameterSpec &&
-	    spec2 instanceof XSLTTransformParameterSpec) {
-	    return paramsEqual((XSLTTransformParameterSpec)spec1,
-		               (XSLTTransformParameterSpec)spec2);
-	}
-	return false;
+        AlgorithmParameterSpec spec2) {
+        if (spec1 == spec2) {
+            return true;
+        }
+        if (spec1 instanceof XPathFilter2ParameterSpec &&
+            spec2 instanceof XPathFilter2ParameterSpec) {
+            return paramsEqual((XPathFilter2ParameterSpec)spec1,
+                               (XPathFilter2ParameterSpec)spec2);
+        }
+        if (spec1 instanceof ExcC14NParameterSpec &&
+            spec2 instanceof ExcC14NParameterSpec) {
+            return paramsEqual((ExcC14NParameterSpec) spec1,
+                               (ExcC14NParameterSpec)spec2);
+        }
+        if (spec1 instanceof XPathFilterParameterSpec &&
+            spec2 instanceof XPathFilterParameterSpec) {
+            return paramsEqual((XPathFilterParameterSpec)spec1,
+                               (XPathFilterParameterSpec)spec2);
+        }
+        if (spec1 instanceof XSLTTransformParameterSpec &&
+            spec2 instanceof XSLTTransformParameterSpec) {
+            return paramsEqual((XSLTTransformParameterSpec)spec1,
+                               (XSLTTransformParameterSpec)spec2);
+        }
+        return false;
     }
 
     private static boolean paramsEqual(XPathFilter2ParameterSpec spec1,
@@ -317,7 +317,7 @@ public class DOMUtils {
         List<XPathType> types = spec1.getXPathList();
         @SuppressWarnings("unchecked")
         List<XPathType> otypes = spec2.getXPathList();
-	int size = types.size();
+        int size = types.size();
         if (size != otypes.size()) {
             return false;
         }
@@ -325,7 +325,7 @@ public class DOMUtils {
             XPathType type = types.get(i);
             XPathType otype = otypes.get(i);
             if (!type.getExpression().equals(otype.getExpression()) ||
-		!type.getNamespaceMap().equals(otype.getNamespaceMap()) ||
+                !type.getNamespaceMap().equals(otype.getNamespaceMap()) ||
                 type.getFilter() != otype.getFilter()) {
                 return false;
             }
@@ -334,20 +334,20 @@ public class DOMUtils {
     }
 
     private static boolean paramsEqual(ExcC14NParameterSpec spec1,
-	                               ExcC14NParameterSpec spec2)
+                                       ExcC14NParameterSpec spec2)
     {
         return spec1.getPrefixList().equals(spec2.getPrefixList());
     }
 
     private static boolean paramsEqual(XPathFilterParameterSpec spec1,
-	                               XPathFilterParameterSpec spec2)
+                                       XPathFilterParameterSpec spec2)
     {
         return (spec1.getXPath().equals(spec2.getXPath()) && 
-	        spec1.getNamespaceMap().equals(spec2.getNamespaceMap()));
+                spec1.getNamespaceMap().equals(spec2.getNamespaceMap()));
     }
 
     private static boolean paramsEqual(XSLTTransformParameterSpec spec1,
-	                               XSLTTransformParameterSpec spec2)
+                                       XSLTTransformParameterSpec spec2)
     {
 
         XMLStructure ostylesheet = spec2.getStylesheet();
@@ -357,7 +357,7 @@ public class DOMUtils {
         Node ostylesheetElem =
             ((javax.xml.crypto.dom.DOMStructure) ostylesheet).getNode();
         XMLStructure stylesheet = spec1.getStylesheet();        
-	Node stylesheetElem =
+        Node stylesheetElem =
             ((javax.xml.crypto.dom.DOMStructure) stylesheet).getNode();
         return nodesEqual(stylesheetElem, ostylesheetElem);
     }

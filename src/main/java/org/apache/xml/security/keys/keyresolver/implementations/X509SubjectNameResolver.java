@@ -80,25 +80,25 @@ public class X509SubjectNameResolver extends KeyResolverSpi {
    public X509Certificate engineLookupResolveX509Certificate(
            Element element, String BaseURI, StorageResolver storage)
               throws KeyResolverException {
-	   if (log.isDebugEnabled())
-	      	log.debug("Can I resolve " + element.getTagName() + "?");	   
-	   Element[] x509childNodes = null;	   
-	   XMLX509SubjectName x509childObject[] = null;
+           if (log.isDebugEnabled())
+                log.debug("Can I resolve " + element.getTagName() + "?");	   
+           Element[] x509childNodes = null;	   
+           XMLX509SubjectName x509childObject[] = null;
       
-	   if (!XMLUtils.elementIsInSignatureSpace(element,
-	                 Constants._TAG_X509DATA) ) {      
-		   	log.debug("I can't");
-	         return null;
-	   }
+           if (!XMLUtils.elementIsInSignatureSpace(element,
+                         Constants._TAG_X509DATA) ) {      
+                        log.debug("I can't");
+                 return null;
+           }
        x509childNodes = XMLUtils.selectDsNodes(element.getFirstChild(),
                  Constants._TAG_X509SUBJECTNAME);
 
         if (!((x509childNodes != null)
                 && (x509childNodes.length > 0))) {
-	            log.debug("I can't");
-	            return null;
-	    }
-	     
+                    log.debug("I can't");
+                    return null;
+            }
+             
       try {
          if (storage == null) {
             Object exArgs[] = { Constants._TAG_X509SUBJECTNAME };

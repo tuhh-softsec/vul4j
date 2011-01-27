@@ -55,7 +55,7 @@ public final class HMACParameterSpec implements SignatureMethodParameterSpec {
      * @param outputLength the truncation length in number of bits
      */
     public HMACParameterSpec(int outputLength) {
-	this.outputLength = outputLength;
+        this.outputLength = outputLength;
     }
 
     /**
@@ -64,6 +64,6 @@ public final class HMACParameterSpec implements SignatureMethodParameterSpec {
      * @return the truncation length in number of bits
      */
     public int getOutputLength() {
-	return outputLength;
+        return outputLength;
     }
 }

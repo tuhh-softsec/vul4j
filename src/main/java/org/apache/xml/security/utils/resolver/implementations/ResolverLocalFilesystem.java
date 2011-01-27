@@ -98,7 +98,7 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
         }
 
         if (subStr.charAt(1) == ':') {
-      	    // we're running M$ Windows, so this works fine
+            // we're running M$ Windows, so this works fine
             return subStr;
         }
         // we're running some UNIX, so we have to prepend a slash
@@ -116,19 +116,19 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
         String uriNodeValue = uri.getNodeValue();
 
         if (uriNodeValue.equals("") || (uriNodeValue.charAt(0)=='#') ||
-	    uriNodeValue.startsWith("http:")) {
+            uriNodeValue.startsWith("http:")) {
             return false;
         }
 
         try {
-	    if (log.isDebugEnabled()) {
-	        log.debug("I was asked whether I can resolve " + uriNodeValue);
+            if (log.isDebugEnabled()) {
+                log.debug("I was asked whether I can resolve " + uriNodeValue);
             }
 
             if (uriNodeValue.startsWith("file:") ||
-		BaseURI.startsWith("file:")) {
+                BaseURI.startsWith("file:")) {
                 if (log.isDebugEnabled()) {
-	       	    log.debug("I state that I can resolve " + uriNodeValue);
+                    log.debug("I state that I can resolve " + uriNodeValue);
                 }
                 return true;
             }

@@ -46,19 +46,19 @@ public final class DOMXPathTransform extends ApacheTransform {
         throws InvalidAlgorithmParameterException
     {
         if (params == null) {
-	    throw new InvalidAlgorithmParameterException("params are required");
-	} else if (!(params instanceof XPathFilterParameterSpec)) {
-	    throw new InvalidAlgorithmParameterException
-		("params must be of type XPathFilterParameterSpec");
+            throw new InvalidAlgorithmParameterException("params are required");
+        } else if (!(params instanceof XPathFilterParameterSpec)) {
+            throw new InvalidAlgorithmParameterException
+                ("params must be of type XPathFilterParameterSpec");
         }
-	this.params = params;
+        this.params = params;
     }
 
     public void init(XMLStructure parent, XMLCryptoContext context)
         throws InvalidAlgorithmParameterException
     {
-	super.init(parent, context);
-	unmarshalParams(DOMUtils.getFirstChildElement(transformElem));
+        super.init(parent, context);
+        unmarshalParams(DOMUtils.getFirstChildElement(transformElem));
     }
 
     private void unmarshalParams(Element paramsElem) {
@@ -66,42 +66,42 @@ public final class DOMXPathTransform extends ApacheTransform {
         // create a Map of namespace prefixes
         NamedNodeMap attributes = paramsElem.getAttributes();
         if (attributes != null) {
-	    int length = attributes.getLength();
+            int length = attributes.getLength();
             Map<String, String> namespaceMap =
                 new HashMap<String, String>(length);
-	    for (int i = 0; i < length; i++) {
-	        Attr attr = (Attr)attributes.item(i);
-	        String prefix = attr.getPrefix();
-	        if (prefix != null && prefix.equals("xmlns")) {
-	            namespaceMap.put(attr.getLocalName(), attr.getValue());
-	        }
-	    }
-	    this.params = new XPathFilterParameterSpec(xPath, namespaceMap);
-	} else {
-	    this.params = new XPathFilterParameterSpec(xPath);
-	}
+            for (int i = 0; i < length; i++) {
+                Attr attr = (Attr)attributes.item(i);
+                String prefix = attr.getPrefix();
+                if (prefix != null && prefix.equals("xmlns")) {
+                    namespaceMap.put(attr.getLocalName(), attr.getValue());
+                }
+            }
+            this.params = new XPathFilterParameterSpec(xPath, namespaceMap);
+        } else {
+            this.params = new XPathFilterParameterSpec(xPath);
+        }
     }
 
     public void marshalParams(XMLStructure parent, XMLCryptoContext context)
         throws MarshalException
     {
-	super.marshalParams(parent, context);
-	XPathFilterParameterSpec xp = 
-	    (XPathFilterParameterSpec)getParameterSpec();
-	Element xpathElem = DOMUtils.createElement(ownerDoc, "XPath",
+        super.marshalParams(parent, context);
+        XPathFilterParameterSpec xp = 
+            (XPathFilterParameterSpec)getParameterSpec();
+        Element xpathElem = DOMUtils.createElement(ownerDoc, "XPath",
              XMLSignature.XMLNS, DOMUtils.getSignaturePrefix(context));
-	xpathElem.appendChild(ownerDoc.createTextNode(xp.getXPath()));
+        xpathElem.appendChild(ownerDoc.createTextNode(xp.getXPath()));
 
-	// add namespace attributes, if necessary
+        // add namespace attributes, if necessary
         @SuppressWarnings("unchecked")
-	Iterator<Map.Entry> i = xp.getNamespaceMap().entrySet().iterator();
-	while (i.hasNext()) {
-	    Map.Entry entry = i.next();
-	    xpathElem.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:" +
+        Iterator<Map.Entry> i = xp.getNamespaceMap().entrySet().iterator();
+        while (i.hasNext()) {
+            Map.Entry entry = i.next();
+            xpathElem.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:" +
                                      (String)entry.getKey(),
                                      (String)entry.getValue());
-	}
-	    
-	transformElem.appendChild(xpathElem);
+        }
+            
+        transformElem.appendChild(xpathElem);
     }
 }

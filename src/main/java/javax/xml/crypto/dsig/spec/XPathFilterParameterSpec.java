@@ -55,11 +55,11 @@ public final class XPathFilterParameterSpec implements TransformParameterSpec {
      * @throws NullPointerException if <code>xPath</code> is <code>null</code>
      */
     public XPathFilterParameterSpec(String xPath) {
-	if (xPath == null) {
-	    throw new NullPointerException();
-	}
-	this.xPath = xPath;
-	this.nsMap = Collections.EMPTY_MAP;
+        if (xPath == null) {
+            throw new NullPointerException();
+        }
+        this.xPath = xPath;
+        this.nsMap = Collections.EMPTY_MAP;
     }
 
     /**
@@ -81,16 +81,16 @@ public final class XPathFilterParameterSpec implements TransformParameterSpec {
             throw new NullPointerException();
         }
         this.xPath = xPath;
-	nsMap = new HashMap(namespaceMap);
-	Iterator entries = nsMap.entrySet().iterator();
-	while (entries.hasNext()) {
-	    Map.Entry me = (Map.Entry) entries.next();
-	    if (!(me.getKey() instanceof String) || 
-		!(me.getValue() instanceof String)) {
-		throw new ClassCastException("not a String");
-	    }
-	}
-	nsMap = Collections.unmodifiableMap(nsMap);
+        nsMap = new HashMap(namespaceMap);
+        Iterator entries = nsMap.entrySet().iterator();
+        while (entries.hasNext()) {
+            Map.Entry me = (Map.Entry) entries.next();
+            if (!(me.getKey() instanceof String) || 
+                !(me.getValue() instanceof String)) {
+                throw new ClassCastException("not a String");
+            }
+        }
+        nsMap = Collections.unmodifiableMap(nsMap);
     }
 
     /**
@@ -99,7 +99,7 @@ public final class XPathFilterParameterSpec implements TransformParameterSpec {
      * @return the XPath expression to be evaluated
      */
     public String getXPath() {
-	return xPath;
+        return xPath;
     }
 
     /**
@@ -114,6 +114,6 @@ public final class XPathFilterParameterSpec implements TransformParameterSpec {
      *    be empty, but never <code>null</code>)
      */
     public Map getNamespaceMap() {
-	return nsMap;
+        return nsMap;
     }
 }

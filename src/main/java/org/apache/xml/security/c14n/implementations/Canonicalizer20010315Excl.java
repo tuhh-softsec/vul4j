@@ -70,7 +70,7 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
      * @param includeComments
      */
     public Canonicalizer20010315Excl(boolean includeComments) {
-	super(includeComments);
+        super(includeComments);
     }
 
     /**
@@ -81,8 +81,8 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
      * @throws CanonicalizationException
      */
     public byte[] engineCanonicalizeSubTree(Node rootNode)
-	throws CanonicalizationException {
-	return engineCanonicalizeSubTree(rootNode, "", null);
+        throws CanonicalizationException {
+        return engineCanonicalizeSubTree(rootNode, "", null);
     }
 
     /**
@@ -94,8 +94,8 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
      * @throws CanonicalizationException
      */
     public byte[] engineCanonicalizeSubTree(Node rootNode,
-	String inclusiveNamespaces) throws CanonicalizationException {
-	return engineCanonicalizeSubTree(rootNode, inclusiveNamespaces, null);
+        String inclusiveNamespaces) throws CanonicalizationException {
+        return engineCanonicalizeSubTree(rootNode, inclusiveNamespaces, null);
     }
 
     /**
@@ -107,10 +107,10 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
      * @throws CanonicalizationException
      */
     public byte[] engineCanonicalizeSubTree(Node rootNode,
-	String inclusiveNamespaces, Node excl) throws CanonicalizationException{
-	this._inclusiveNSSet = 
+        String inclusiveNamespaces, Node excl) throws CanonicalizationException{
+        this._inclusiveNSSet = 
             (TreeSet) InclusiveNamespaces.prefixStr2Set(inclusiveNamespaces);
-	return super.engineCanonicalizeSubTree(rootNode, excl);
+        return super.engineCanonicalizeSubTree(rootNode, excl);
     }
 
     /**
@@ -121,10 +121,10 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
      * @throws CanonicalizationException
      */
     public byte[] engineCanonicalize(XMLSignatureInput rootNode,
-	String inclusiveNamespaces) throws CanonicalizationException {
-	this._inclusiveNSSet = 
+        String inclusiveNamespaces) throws CanonicalizationException {
+        this._inclusiveNSSet = 
             (TreeSet) InclusiveNamespaces.prefixStr2Set(inclusiveNamespaces);
-	return super.engineCanonicalize(rootNode);
+        return super.engineCanonicalize(rootNode);
     }
  
     /**
@@ -135,77 +135,77 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
      */
     Iterator handleAttributesSubtree(Element E, NameSpaceSymbTable ns)
         throws CanonicalizationException {
-	// System.out.println("During the traversal, I encountered " +
-	// XMLUtils.getXPath(E));
-	// result will contain the attrs which have to be outputted
-	SortedSet result = this.result;       
+        // System.out.println("During the traversal, I encountered " +
+        // XMLUtils.getXPath(E));
+        // result will contain the attrs which have to be outputted
+        SortedSet result = this.result;       
         result.clear();
-	NamedNodeMap attrs = null;
+        NamedNodeMap attrs = null;
 
-	int attrsLength = 0;
+        int attrsLength = 0;
         if (E.hasAttributes()) {
             attrs = E.getAttributes();
-       	    attrsLength = attrs.getLength();
+            attrsLength = attrs.getLength();
         }
-	// The prefix visibly utilized(in the attribute or in the name) in 
+        // The prefix visibly utilized(in the attribute or in the name) in 
         // the element
-	SortedSet visiblyUtilized = (SortedSet) _inclusiveNSSet.clone();
+        SortedSet visiblyUtilized = (SortedSet) _inclusiveNSSet.clone();
 
-	for (int i = 0; i < attrsLength; i++) {
-	    Attr N = (Attr) attrs.item(i);
+        for (int i = 0; i < attrsLength; i++) {
+            Attr N = (Attr) attrs.item(i);
 
-	    if (!XMLNS_URI.equals(N.getNamespaceURI())) {
-		// Not a namespace definition.
-		// The Element is output element, add the prefix (if used) to 
+            if (!XMLNS_URI.equals(N.getNamespaceURI())) {
+                // Not a namespace definition.
+                // The Element is output element, add the prefix (if used) to 
                 // visibyUtilized
-		String prefix = N.getPrefix();
-		if (prefix != null && (!prefix.equals(XML) 
+                String prefix = N.getPrefix();
+                if (prefix != null && (!prefix.equals(XML) 
                     && !prefix.equals(XMLNS))) {
-		    visiblyUtilized.add(prefix);
-		}					
-		// Add to the result.
-		result.add(N);				
-		continue;
-	    }
-	    String NName = N.getLocalName();
-	    String NNodeValue = N.getNodeValue();
+                    visiblyUtilized.add(prefix);
+                }					
+                // Add to the result.
+                result.add(N);				
+                continue;
+            }
+            String NName = N.getLocalName();
+            String NNodeValue = N.getNodeValue();
             if (XML.equals(NName) && XML_LANG_URI.equals(NNodeValue)) {
                 // The default mapping for xml must not be output.
                 continue;
             }
 
-	    if (ns.addMapping(NName, NNodeValue, N)) {
-	        // New definition check if it is relative.
+            if (ns.addMapping(NName, NNodeValue, N)) {
+                // New definition check if it is relative.
                 if (C14nHelper.namespaceIsRelative(NNodeValue)) {
                     Object exArgs[] = {E.getTagName(), NName, N.getNodeValue()};
                     throw new CanonicalizationException(
                         "c14n.Canonicalizer.RelativeNamespace", exArgs);
                 }
             }
-	}		
-	String prefix;
-	if (E.getNamespaceURI() != null) {
-	    prefix = E.getPrefix();
-	    if (prefix == null || prefix.length() == 0) {
-		prefix = XMLNS;
-	    }
-	} else {
-	    prefix = XMLNS;
-	}
-	visiblyUtilized.add(prefix);
+        }		
+        String prefix;
+        if (E.getNamespaceURI() != null) {
+            prefix = E.getPrefix();
+            if (prefix == null || prefix.length() == 0) {
+                prefix = XMLNS;
+            }
+        } else {
+            prefix = XMLNS;
+        }
+        visiblyUtilized.add(prefix);
 
-	// This can be optimezed by I don't have time
-	Iterator it = visiblyUtilized.iterator();
-	while (it.hasNext()) {
-	    String s = (String) it.next();
-	    Attr key = ns.getMapping(s);
-	    if (key == null) {
-		continue;
-	    }
-	    result.add(key);
-	}
+        // This can be optimezed by I don't have time
+        Iterator it = visiblyUtilized.iterator();
+        while (it.hasNext()) {
+            String s = (String) it.next();
+            Attr key = ns.getMapping(s);
+            if (key == null) {
+                continue;
+            }
+            result.add(key);
+        }
 
-	return result.iterator(); 		
+        return result.iterator(); 		
     }
 
     /**
@@ -216,83 +216,83 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
      * @throws CanonicalizationException
      */
     public byte[] engineCanonicalizeXPathNodeSet(Set xpathNodeSet,
-	String inclusiveNamespaces) throws CanonicalizationException {
-		
-	this._inclusiveNSSet = 
+        String inclusiveNamespaces) throws CanonicalizationException {
+                
+        this._inclusiveNSSet = 
             (TreeSet) InclusiveNamespaces.prefixStr2Set(inclusiveNamespaces);
-	return super.engineCanonicalizeXPathNodeSet(xpathNodeSet);
+        return super.engineCanonicalizeXPathNodeSet(xpathNodeSet);
     }
-	
+        
     /**
      * @inheritDoc
      * @param E
      * @throws CanonicalizationException
      */
     final Iterator handleAttributes(Element E, NameSpaceSymbTable ns)
-	throws CanonicalizationException {
-	// result will contain the attrs which have to be outputted
-	SortedSet result = this.result;       
+        throws CanonicalizationException {
+        // result will contain the attrs which have to be outputted
+        SortedSet result = this.result;       
         result.clear();
-	NamedNodeMap attrs = null;
-	int attrsLength = 0;
+        NamedNodeMap attrs = null;
+        int attrsLength = 0;
         if (E.hasAttributes()) {
             attrs = E.getAttributes();           
-       	    attrsLength = attrs.getLength();
+            attrsLength = attrs.getLength();
         }
-	// The prefix visibly utilized (in the attribute or in the name) in 
+        // The prefix visibly utilized (in the attribute or in the name) in 
         // the element
-	Set visiblyUtilized = null;
-	// It's the output selected.
-	boolean isOutputElement = isVisibleDO(E, ns.getLevel()) == 1;
-	if (isOutputElement) {
-	    visiblyUtilized = (Set) this._inclusiveNSSet.clone();
-	}
+        Set visiblyUtilized = null;
+        // It's the output selected.
+        boolean isOutputElement = isVisibleDO(E, ns.getLevel()) == 1;
+        if (isOutputElement) {
+            visiblyUtilized = (Set) this._inclusiveNSSet.clone();
+        }
 
-	for (int i = 0; i < attrsLength; i++) {
-	    Attr N = (Attr) attrs.item(i);
+        for (int i = 0; i < attrsLength; i++) {
+            Attr N = (Attr) attrs.item(i);
 
-	    if (!XMLNS_URI.equals(N.getNamespaceURI())) {
-		if (!isVisible(N)) {
-		    // The node is not in the nodeset(if there is a nodeset)
-		    continue;
-		}
-		// Not a namespace definition.
-		if (isOutputElement) {
-		    // The Element is output element, add the prefix (if used) 
+            if (!XMLNS_URI.equals(N.getNamespaceURI())) {
+                if (!isVisible(N)) {
+                    // The node is not in the nodeset(if there is a nodeset)
+                    continue;
+                }
+                // Not a namespace definition.
+                if (isOutputElement) {
+                    // The Element is output element, add the prefix (if used) 
                     // to visibyUtilized
-		    String prefix = N.getPrefix();
-		    if (prefix != null && (!prefix.equals(XML) 
+                    String prefix = N.getPrefix();
+                    if (prefix != null && (!prefix.equals(XML) 
                         && !prefix.equals(XMLNS))) {
-			visiblyUtilized.add(prefix);
-		    }					
-		    // Add to the result.
-		    result.add(N);
-		}
-		continue;
-	    }
-	    String NName = N.getLocalName();
-	    if (isOutputElement && !isVisible(N) && !XMLNS.equals(NName)) {
-		ns.removeMappingIfNotRender(NName);
-    		continue;
-    	    }
-	    String NNodeValue = N.getNodeValue();
+                        visiblyUtilized.add(prefix);
+                    }					
+                    // Add to the result.
+                    result.add(N);
+                }
+                continue;
+            }
+            String NName = N.getLocalName();
+            if (isOutputElement && !isVisible(N) && !XMLNS.equals(NName)) {
+                ns.removeMappingIfNotRender(NName);
+                continue;
+            }
+            String NNodeValue = N.getNodeValue();
 
-	    if (!isOutputElement && isVisible(N) 
+            if (!isOutputElement && isVisible(N) 
                 && _inclusiveNSSet.contains(NName) 
                 && !ns.removeMappingIfRender(NName)) {
-		Node n = ns.addMappingAndRender(NName, NNodeValue, N);
-	 	if (n != null) {
-		    result.add(n);
-	            if (C14nHelper.namespaceIsRelative(N)) {
-	                Object exArgs[] = 
+                Node n = ns.addMappingAndRender(NName, NNodeValue, N);
+                if (n != null) {
+                    result.add(n);
+                    if (C14nHelper.namespaceIsRelative(N)) {
+                        Object exArgs[] = 
                             { E.getTagName(), NName, N.getNodeValue() };
                         throw new CanonicalizationException(
-	                    "c14n.Canonicalizer.RelativeNamespace", exArgs);
+                            "c14n.Canonicalizer.RelativeNamespace", exArgs);
                     }
-		}
-	    }
+                }
+            }
 
-	    if (ns.addMapping(NName, NNodeValue, N)) {
+            if (ns.addMapping(NName, NNodeValue, N)) {
                 // New definiton check if it is relative
                 if (C14nHelper.namespaceIsRelative(NNodeValue)) {
                     Object exArgs[] = 
@@ -301,9 +301,9 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
                         "c14n.Canonicalizer.RelativeNamespace", exArgs);
                 }    
             }
-	}
+        }
 
-	if (isOutputElement) {	               
+        if (isOutputElement) {	               
             // The element is visible, handle the xmlns definition    
             Attr xmlns = E.getAttributeNodeNS(XMLNS_URI, XMLNS);
             if (xmlns != null && !isVisible(xmlns)) {
@@ -312,44 +312,44 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
                 ns.addMapping(XMLNS, "", nullNode);
             }
 
-	    if (E.getNamespaceURI() != null) {
-		String prefix = E.getPrefix();
-		if (prefix == null || prefix.length() == 0) {
-		    visiblyUtilized.add(XMLNS);
-		} else {
-		    visiblyUtilized.add(prefix);
-		}
-	    } else {
-		visiblyUtilized.add(XMLNS);
-	    }									
-	    // This can be optimezed by I don't have time
-	    // visiblyUtilized.addAll(this._inclusiveNSSet);
-	    Iterator it = visiblyUtilized.iterator();
-	    while (it.hasNext()) {
-		String s = (String) it.next();
-		Attr key = ns.getMapping(s);
-		if (key == null) {
-		    continue;
-		}
-		result.add(key);
-	    }
-	} 
+            if (E.getNamespaceURI() != null) {
+                String prefix = E.getPrefix();
+                if (prefix == null || prefix.length() == 0) {
+                    visiblyUtilized.add(XMLNS);
+                } else {
+                    visiblyUtilized.add(prefix);
+                }
+            } else {
+                visiblyUtilized.add(XMLNS);
+            }									
+            // This can be optimezed by I don't have time
+            // visiblyUtilized.addAll(this._inclusiveNSSet);
+            Iterator it = visiblyUtilized.iterator();
+            while (it.hasNext()) {
+                String s = (String) it.next();
+                Attr key = ns.getMapping(s);
+                if (key == null) {
+                    continue;
+                }
+                result.add(key);
+            }
+        } 
 
-	return result.iterator(); 
+        return result.iterator(); 
     }
 
     void circumventBugIfNeeded(XMLSignatureInput input) 
         throws CanonicalizationException, ParserConfigurationException, 
                IOException, SAXException {
         if (!input.isNeedsToBeExpanded() || _inclusiveNSSet.isEmpty()) {
-	    return;
+            return;
         }
-	Document doc = null;
-	if (input.getSubNode() != null) {
-	    doc = XMLUtils.getOwnerDocument(input.getSubNode());
-	} else {
-	    doc = XMLUtils.getOwnerDocument(input.getNodeSet());
-	}
-	XMLUtils.circumventBug2650(doc);
+        Document doc = null;
+        if (input.getSubNode() != null) {
+            doc = XMLUtils.getOwnerDocument(input.getSubNode());
+        } else {
+            doc = XMLUtils.getOwnerDocument(input.getNodeSet());
+        }
+        XMLUtils.circumventBug2650(doc);
     }
 }

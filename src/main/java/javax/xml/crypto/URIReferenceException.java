@@ -103,12 +103,12 @@ public class URIReferenceException extends Exception {
      *    <code>null</code>
      */
     public URIReferenceException(String message, Throwable cause, 
-	URIReference uriReference) {
-	this(message, cause);
-	if (uriReference == null) {
-	    throw new NullPointerException("uriReference cannot be null");
-	}
-	this.uriReference = uriReference;
+        URIReference uriReference) {
+        this(message, cause);
+        if (uriReference == null) {
+            throw new NullPointerException("uriReference cannot be null");
+        }
+        this.uriReference = uriReference;
     }
 
     /**
@@ -133,7 +133,7 @@ public class URIReferenceException extends Exception {
      * when the exception was thrown, or <code>null</code> if not specified
      */
     public URIReference getURIReference() {
-	return uriReference;
+        return uriReference;
     }
 
     /**
@@ -154,8 +154,8 @@ public class URIReferenceException extends Exception {
      * the cause's backtrace to the standard error stream.
      */
     public void printStackTrace() {
-	super.printStackTrace();
-	//XXX print backtrace of cause
+        super.printStackTrace();
+        //XXX print backtrace of cause
     }
 
     /**
@@ -165,8 +165,8 @@ public class URIReferenceException extends Exception {
      * @param s <code>PrintStream</code> to use for output
      */
     public void printStackTrace(PrintStream s) {
-	super.printStackTrace(s);
-	//XXX print backtrace of cause
+        super.printStackTrace(s);
+        //XXX print backtrace of cause
     }
 
     /**
@@ -177,6 +177,6 @@ public class URIReferenceException extends Exception {
      */
     public void printStackTrace(PrintWriter s) {
         super.printStackTrace(s);
-	//XXX print backtrace of cause
+        //XXX print backtrace of cause
     }
 }

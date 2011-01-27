@@ -51,7 +51,7 @@ import org.jcp.xml.dsig.internal.MacOutputStream;
 public abstract class DOMHMACSignatureMethod extends AbstractDOMSignatureMethod {
 
     private static Logger log = 
-	Logger.getLogger("org.jcp.xml.dsig.internal.dom");
+        Logger.getLogger("org.jcp.xml.dsig.internal.dom");
 
     // see RFC 4051 for these algorithm definitions
     final static String HMAC_SHA256 =
@@ -73,7 +73,7 @@ public abstract class DOMHMACSignatureMethod extends AbstractDOMSignatureMethod 
      * @throws InvalidAlgorithmParameterException if params are inappropriate
      */
     DOMHMACSignatureMethod(AlgorithmParameterSpec params)
-	throws InvalidAlgorithmParameterException
+        throws InvalidAlgorithmParameterException
     {
         checkParams((SignatureMethodParameterSpec)params);
         this.params = (SignatureMethodParameterSpec)params;
@@ -97,20 +97,20 @@ public abstract class DOMHMACSignatureMethod extends AbstractDOMSignatureMethod 
     }
 
     void checkParams(SignatureMethodParameterSpec params) 
-	throws InvalidAlgorithmParameterException
+        throws InvalidAlgorithmParameterException
     {
         if (params != null) {
             if (!(params instanceof HMACParameterSpec)) {
-	        throw new InvalidAlgorithmParameterException
-	            ("params must be of type HMACParameterSpec");
-	    }
-	    outputLength = ((HMACParameterSpec)params).getOutputLength();
+                throw new InvalidAlgorithmParameterException
+                    ("params must be of type HMACParameterSpec");
+            }
+            outputLength = ((HMACParameterSpec)params).getOutputLength();
             outputLengthSet = true;
-	    if (log.isLoggable(Level.FINE)) {
-	        log.log(Level.FINE,
-		        "Setting outputLength from HMACParameterSpec to: " +
+            if (log.isLoggable(Level.FINE)) {
+                log.log(Level.FINE,
+                        "Setting outputLength from HMACParameterSpec to: " +
                         outputLength);
-	    }
+            }
         }
     }
 
@@ -119,32 +119,32 @@ public abstract class DOMHMACSignatureMethod extends AbstractDOMSignatureMethod 
     }
 
     SignatureMethodParameterSpec unmarshalParams(Element paramsElem)
-	throws MarshalException
+        throws MarshalException
     {
         outputLength = new Integer
-	    (paramsElem.getFirstChild().getNodeValue()).intValue();
+            (paramsElem.getFirstChild().getNodeValue()).intValue();
         outputLengthSet = true;
         if (log.isLoggable(Level.FINE)) {
             log.log(Level.FINE, "unmarshalled outputLength: " + outputLength);
-	}
-	return new HMACParameterSpec(outputLength);
+        }
+        return new HMACParameterSpec(outputLength);
     }
 
     void marshalParams(Element parent, String prefix)
-	throws MarshalException
+        throws MarshalException
     {
-	Document ownerDoc = DOMUtils.getOwnerDocument(parent);
+        Document ownerDoc = DOMUtils.getOwnerDocument(parent);
         Element hmacElem = DOMUtils.createElement(ownerDoc, "HMACOutputLength",
-	                                          XMLSignature.XMLNS, prefix);
+                                                  XMLSignature.XMLNS, prefix);
         hmacElem.appendChild(ownerDoc.createTextNode
-	   (String.valueOf(outputLength)));
+           (String.valueOf(outputLength)));
 
         parent.appendChild(hmacElem);
     }
 
     boolean verify(Key key, SignedInfo si, byte[] sig,
-	           XMLValidateContext context)
-	throws InvalidKeyException, SignatureException, XMLSignatureException
+                   XMLValidateContext context)
+        throws InvalidKeyException, SignatureException, XMLSignatureException
     {
         if (key == null || si == null || sig == null) {
             throw new NullPointerException();
@@ -171,7 +171,7 @@ public abstract class DOMHMACSignatureMethod extends AbstractDOMSignatureMethod 
     }
 
     byte[] sign(Key key, SignedInfo si, XMLSignContext context)
-	throws InvalidKeyException, XMLSignatureException
+        throws InvalidKeyException, XMLSignatureException
     {
         if (key == null || si == null) {
             throw new NullPointerException();
@@ -196,15 +196,15 @@ public abstract class DOMHMACSignatureMethod extends AbstractDOMSignatureMethod 
     }
 
     boolean paramsEqual(AlgorithmParameterSpec spec) {
-	if (getParameterSpec() == spec) {
-	    return true;
-	}
+        if (getParameterSpec() == spec) {
+            return true;
+        }
         if (!(spec instanceof HMACParameterSpec)) {
-	    return false;
-	}
-	HMACParameterSpec ospec = (HMACParameterSpec)spec;
+            return false;
+        }
+        HMACParameterSpec ospec = (HMACParameterSpec)spec;
 
-	return (outputLength == ospec.getOutputLength());
+        return (outputLength == ospec.getOutputLength());
     }
 
     Type getAlgorithmType() {

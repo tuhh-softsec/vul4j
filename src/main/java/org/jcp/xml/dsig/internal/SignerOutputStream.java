@@ -43,7 +43,7 @@ public class SignerOutputStream extends ByteArrayOutputStream {
 
     @Override
     public void write(int arg0) {
-	super.write(arg0);
+        super.write(arg0);
         try {
             sig.update((byte)arg0);
         } catch (SignatureException e) {
@@ -53,7 +53,7 @@ public class SignerOutputStream extends ByteArrayOutputStream {
 
     @Override
     public void write(byte[] arg0, int arg1, int arg2) {
-	super.write(arg0, arg1, arg2);
+        super.write(arg0, arg1, arg2);
         try {
             sig.update(arg0, arg1, arg2);
         } catch (SignatureException e) {

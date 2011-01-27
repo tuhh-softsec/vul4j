@@ -59,9 +59,9 @@ public abstract class ResourceResolverSpi {
     * @param value
     */
    public void engineSetProperty(String key, String value) {
-	  if (_properties==null) {
-		  _properties=new HashMap();
-	  }
+          if (_properties==null) {
+                  _properties=new HashMap();
+          }
       this._properties.put(key, value);
    }
 
@@ -72,9 +72,9 @@ public abstract class ResourceResolverSpi {
     * @return the value of the property
     */
    public String engineGetProperty(String key) {
-	  if (_properties==null) {
-			return null;
-	  }
+          if (_properties==null) {
+                        return null;
+          }
       return (String) this._properties.get(key);
    }
 
@@ -83,12 +83,12 @@ public abstract class ResourceResolverSpi {
     * @param properties
     */
    public void engineAddProperies(Map properties) {
-	  if (properties!=null) {
-		  if (_properties==null) {
-			  _properties=new HashMap();
-		  }
-		  this._properties.putAll(properties);
-	  }
+          if (properties!=null) {
+                  if (_properties==null) {
+                          _properties=new HashMap();
+                  }
+                  this._properties.putAll(properties);
+          }
    }
    /**
     * Tells if the implementation does can be reused by several threads safely.
@@ -97,7 +97,7 @@ public abstract class ResourceResolverSpi {
     * member info in ThreadLocal methods.
     */
    public boolean engineIsThreadSafe() {
-	   return false;
+           return false;
    }
    /**
     * This method helps the {@link ResourceResolver} to decide whether a
@@ -165,7 +165,7 @@ public abstract class ResourceResolverSpi {
 
          if (isDosFilename) {
             if (log.isDebugEnabled())
-            	log.debug("Found DOS filename: " + str);
+                log.debug("Found DOS filename: " + str);
          }
       }
 

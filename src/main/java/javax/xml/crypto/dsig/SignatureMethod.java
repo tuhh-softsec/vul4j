@@ -60,21 +60,21 @@ public interface SignatureMethod extends XMLStructure, AlgorithmMethod {
      * (DSS) signature method algorithm URI.
      */
     static final String DSA_SHA1 =
-	"http://www.w3.org/2000/09/xmldsig#dsa-sha1";
+        "http://www.w3.org/2000/09/xmldsig#dsa-sha1";
 
     /**
      * The <a href="http://www.w3.org/2000/09/xmldsig#rsa-sha1">RSAwithSHA1</a>
      * (PKCS #1) signature method algorithm URI.
      */
     static final String RSA_SHA1 = 
-	"http://www.w3.org/2000/09/xmldsig#rsa-sha1";
+        "http://www.w3.org/2000/09/xmldsig#rsa-sha1";
 
     /**
      * The <a href="http://www.w3.org/2000/09/xmldsig#hmac-sha1">HMAC-SHA1</a>
      * MAC signature method algorithm URI 
      */
     static final String HMAC_SHA1 =
-	"http://www.w3.org/2000/09/xmldsig#hmac-sha1";
+        "http://www.w3.org/2000/09/xmldsig#hmac-sha1";
 
     /**
      * Returns the algorithm-specific input parameters of this  

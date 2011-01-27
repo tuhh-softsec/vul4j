@@ -63,12 +63,12 @@ public class DOMCryptoContext implements XMLCryptoContext {
      * @throws NullPointerException {@inheritDoc}
      */
     public String getNamespacePrefix(String namespaceURI, 
-	String defaultPrefix) {
+        String defaultPrefix) {
         if (namespaceURI == null) {
             throw new NullPointerException("namespaceURI cannot be null");
         }
-	String prefix = (String) nsMap.get(namespaceURI);
-	return (prefix != null ? prefix : defaultPrefix);
+        String prefix = (String) nsMap.get(namespaceURI);
+        return (prefix != null ? prefix : defaultPrefix);
     }
 
     /**
@@ -85,11 +85,11 @@ public class DOMCryptoContext implements XMLCryptoContext {
     }
 
     public String getDefaultNamespacePrefix() {
-	return defaultPrefix;
+        return defaultPrefix;
     }
 
     public void setDefaultNamespacePrefix(String defaultPrefix) {
-	this.defaultPrefix = defaultPrefix;
+        this.defaultPrefix = defaultPrefix;
     }
 
     public String getBaseURI() {
@@ -100,9 +100,9 @@ public class DOMCryptoContext implements XMLCryptoContext {
      * @throws IllegalArgumentException {@inheritDoc}
      */
     public void setBaseURI(String baseURI) {
-	if (baseURI != null) {
-	    java.net.URI.create(baseURI);
-	}
+        if (baseURI != null) {
+            java.net.URI.create(baseURI);
+        }
         this.baseURI = baseURI;
     }
 
@@ -186,19 +186,19 @@ public class DOMCryptoContext implements XMLCryptoContext {
      * @see #getElementById
      */
     public void setIdAttributeNS(Element element, String namespaceURI, 
-	String localName) {
-	if (element == null) {
-	    throw new NullPointerException("element is null");
-	}
-	if (localName == null) {
-	    throw new NullPointerException("localName is null");
-	}
-	String idValue = element.getAttributeNS(namespaceURI, localName);
-	if (idValue == null || idValue.length() == 0) {
-	    throw new IllegalArgumentException(localName + " is not an " +
-		"attribute");
-	}
-	idMap.put(idValue, element);
+        String localName) {
+        if (element == null) {
+            throw new NullPointerException("element is null");
+        }
+        if (localName == null) {
+            throw new NullPointerException("localName is null");
+        }
+        String idValue = element.getAttributeNS(namespaceURI, localName);
+        if (idValue == null || idValue.length() == 0) {
+            throw new IllegalArgumentException(localName + " is not an " +
+                "attribute");
+        }
+        idMap.put(idValue, element);
     }
 
     /**
@@ -214,7 +214,7 @@ public class DOMCryptoContext implements XMLCryptoContext {
      * @return a read-only iterator over the set of mappings
      */
     public Iterator iterator() {
-	return Collections.unmodifiableMap(idMap).entrySet().iterator();
+        return Collections.unmodifiableMap(idMap).entrySet().iterator();
     }
 
     /**
@@ -222,7 +222,7 @@ public class DOMCryptoContext implements XMLCryptoContext {
      * that the specified key maps to. 
      */
     public Object get(Object key) {
-	return objMap.get(key);
+        return objMap.get(key);
     }
 
     /**
@@ -232,6 +232,6 @@ public class DOMCryptoContext implements XMLCryptoContext {
      * @throws IllegalArgumentException {@inheritDoc}
      */
     public Object put(Object key, Object value) {
-	return objMap.put(key, value);
+        return objMap.put(key, value);
     }
 }

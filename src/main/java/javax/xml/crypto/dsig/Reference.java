@@ -134,7 +134,7 @@ public interface Reference extends URIReference, XMLStructure {
      *    validating the reference 
      */
     boolean validate(XMLValidateContext validateContext) 
-	throws XMLSignatureException;
+        throws XMLSignatureException;
 
     /**
      * Returns the dereferenced data, if 

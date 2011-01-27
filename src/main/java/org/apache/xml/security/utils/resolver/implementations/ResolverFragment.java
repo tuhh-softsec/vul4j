@@ -42,7 +42,7 @@ public class ResolverFragment extends ResourceResolverSpi {
         org.apache.commons.logging.LogFactory.getLog(
                             ResolverFragment.class.getName());
    public boolean engineIsThreadSafe() {
- 	   return true;
+           return true;
    }
    /**
     * Method engineResolve
@@ -71,7 +71,7 @@ public class ResolverFragment extends ResourceResolverSpi {
           */
 
          log.debug("ResolverFragment with empty URI (means complete document)");
-	 selectedElem = doc;
+         selectedElem = doc;
       } else {
 
          /*
@@ -87,12 +87,12 @@ public class ResolverFragment extends ResourceResolverSpi {
          // Element selectedElem = doc.getElementById(id);
          selectedElem = IdResolver.getElementById(doc, id);
          if (selectedElem==null) {
-         	Object exArgs[] = { id };
+                Object exArgs[] = { id };
             throw new ResourceResolverException(
                "signature.Verification.MissingID", exArgs, uri, BaseURI);
          }
          if (log.isDebugEnabled())
-         	log.debug("Try to catch an Element with ID " + id + " and Element was " + selectedElem);
+                log.debug("Try to catch an Element with ID " + id + " and Element was " + selectedElem);
       }
 
       XMLSignatureInput result = new XMLSignatureInput(selectedElem);
@@ -100,8 +100,8 @@ public class ResolverFragment extends ResourceResolverSpi {
 
       //log.debug("We return a nodeset with " + resultSet.size() + " nodes");
       result.setMIMEType("text/xml");	  
-	  result.setSourceURI((BaseURI != null) ? BaseURI.concat(uri.getNodeValue()) :
-		  uri.getNodeValue());      
+          result.setSourceURI((BaseURI != null) ? BaseURI.concat(uri.getNodeValue()) :
+                  uri.getNodeValue());      
       return result;
    }
 
@@ -128,11 +128,11 @@ public class ResolverFragment extends ResourceResolverSpi {
               )
            ){
          if (log.isDebugEnabled())
-         	log.debug("State I can resolve reference: \"" + uriNodeValue + "\"");
+                log.debug("State I can resolve reference: \"" + uriNodeValue + "\"");
          return true;
       }
       if (log.isDebugEnabled())
-      	log.debug("Do not seem to be able to resolve reference: \"" + uriNodeValue + "\"");
+        log.debug("Do not seem to be able to resolve reference: \"" + uriNodeValue + "\"");
       return false;
    }
 

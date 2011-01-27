@@ -116,10 +116,10 @@ public class TransformException extends Exception {
      * the cause's backtrace to the standard error stream.
      */
     public void printStackTrace() {
-	super.printStackTrace();
-	if (cause != null) {
-	    cause.printStackTrace();
-	}
+        super.printStackTrace();
+        if (cause != null) {
+            cause.printStackTrace();
+        }
     }
 
     /**
@@ -129,10 +129,10 @@ public class TransformException extends Exception {
      * @param s <code>PrintStream</code> to use for output
      */
     public void printStackTrace(PrintStream s) {
-	super.printStackTrace(s);
-	if (cause != null) {
-	    cause.printStackTrace(s);
-	}
+        super.printStackTrace(s);
+        if (cause != null) {
+            cause.printStackTrace(s);
+        }
     }
 
     /**
@@ -143,8 +143,8 @@ public class TransformException extends Exception {
      */
     public void printStackTrace(PrintWriter s) {
         super.printStackTrace(s);
-	if (cause != null) {
-	    cause.printStackTrace(s);
-	}
+        if (cause != null) {
+            cause.printStackTrace(s);
+        }
     }
 }

@@ -70,11 +70,11 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
       super(element, BaseURI);
       Node sibling=this._constructionElement.getFirstChild();
       while (sibling!=null) {
-      	 if (sibling.getNodeType()!=Node.ELEMENT_NODE) {
-      	 	sibling=sibling.getNextSibling();
+         if (sibling.getNodeType()!=Node.ELEMENT_NODE) {
+                sibling=sibling.getNextSibling();
             continue;
          }
-      	 return;
+         return;
       }
       /* No Elements found */
       Object exArgs[] = { "Elements", Constants._TAG_X509DATA };
@@ -415,7 +415,7 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
     * TODO implement
     **/
    public Element itemUnknownElement(int i) {
-	  log.debug("itemUnknownElement not implemented:"+i);
+          log.debug("itemUnknownElement not implemented:"+i);
       return null;
    }
 

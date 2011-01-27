@@ -64,7 +64,7 @@ public class SignedInfo extends Manifest {
      */
     public SignedInfo(Document doc) throws XMLSecurityException {
         this(doc, XMLSignature.ALGO_ID_SIGNATURE_DSA, 
-	     Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
+             Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
     }
 
     /**
@@ -79,7 +79,7 @@ public class SignedInfo extends Manifest {
      * @throws XMLSecurityException
      */
     public SignedInfo(Document doc, String signatureMethodURI, 
-	String canonicalizationMethodURI) throws XMLSecurityException {
+        String canonicalizationMethodURI) throws XMLSecurityException {
         this(doc, signatureMethodURI, 0, canonicalizationMethodURI);
     }
 
@@ -95,7 +95,7 @@ public class SignedInfo extends Manifest {
      * @throws XMLSecurityException
      */
     public SignedInfo(Document doc, String signatureMethodURI, 
-	int hMACOutputLength, String canonicalizationMethodURI)
+        int hMACOutputLength, String canonicalizationMethodURI)
               throws XMLSecurityException {
 
         super(doc);
@@ -128,7 +128,7 @@ public class SignedInfo extends Manifest {
      * @throws XMLSecurityException
      */
     public SignedInfo(Document doc, Element signatureMethodElem, 
-	Element canonicalizationMethodElem) throws XMLSecurityException {
+        Element canonicalizationMethodElem) throws XMLSecurityException {
 
         super(doc);
         // Check this?
@@ -137,7 +137,7 @@ public class SignedInfo extends Manifest {
         XMLUtils.addReturnToElement(this._constructionElement);
    
         this._signatureAlgorithm = 
-	    new SignatureAlgorithm(signatureMethodElem, null);
+            new SignatureAlgorithm(signatureMethodElem, null);
 
         signatureMethod = this._signatureAlgorithm.getElement();
         this._constructionElement.appendChild(signatureMethod);
@@ -180,12 +180,12 @@ public class SignedInfo extends Manifest {
             c14nMethod.getAttributeNS(null, Constants._ATT_ALGORITHM);    
         if (!(c14nMethodURI.equals(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS) ||
             c14nMethodURI.equals(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS) ||
-	    c14nMethodURI.equals(Canonicalizer.ALGO_ID_C14N_EXCL_OMIT_COMMENTS) ||
-	    c14nMethodURI.equals(Canonicalizer.ALGO_ID_C14N_EXCL_WITH_COMMENTS) ||
-	    c14nMethodURI.equals(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS) ||
-	    c14nMethodURI.equals(Canonicalizer.ALGO_ID_C14N11_WITH_COMMENTS))) {
-      	    // the c14n is not a secure one and can rewrite the URIs or like 
-	    // so reparse the SignedInfo to be sure    
+            c14nMethodURI.equals(Canonicalizer.ALGO_ID_C14N_EXCL_OMIT_COMMENTS) ||
+            c14nMethodURI.equals(Canonicalizer.ALGO_ID_C14N_EXCL_WITH_COMMENTS) ||
+            c14nMethodURI.equals(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS) ||
+            c14nMethodURI.equals(Canonicalizer.ALGO_ID_C14N11_WITH_COMMENTS))) {
+            // the c14n is not a secure one and can rewrite the URIs or like 
+            // so reparse the SignedInfo to be sure    
             try {
                 Canonicalizer c14nizer =
                     Canonicalizer.getInstance(c14nMethodURI);
@@ -211,7 +211,7 @@ public class SignedInfo extends Manifest {
                 throw new XMLSecurityException("empty", ex);
             }
         }
-	return element;
+        return element;
     }
 
     /**
@@ -274,7 +274,7 @@ public class SignedInfo extends Manifest {
         throws CanonicalizationException, InvalidCanonicalizerException,
             XMLSecurityException {
 
-   	if (this._c14nizedBytes == null) {
+        if (this._c14nizedBytes == null) {
             Canonicalizer c14nizer =
                 Canonicalizer.getInstance(this.getCanonicalizationMethodURI());
             c14nizer.setWriter(os);
@@ -288,10 +288,10 @@ public class SignedInfo extends Manifest {
             }
         } else {
             try {
-		os.write(this._c14nizedBytes);
-	    } catch (IOException e) {
-		throw new RuntimeException(e);
-	    }  
+                os.write(this._c14nizedBytes);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }  
         }    
     }
 
@@ -360,7 +360,7 @@ public class SignedInfo extends Manifest {
 
         String c14nMethodURI = c14nMethod.getAttributeNS(null, Constants._ATT_ALGORITHM);
         if (!(c14nMethodURI.equals("http://www.w3.org/2001/10/xml-exc-c14n#") ||
-	    c14nMethodURI.equals("http://www.w3.org/2001/10/xml-exc-c14n#WithComments"))) {
+            c14nMethodURI.equals("http://www.w3.org/2001/10/xml-exc-c14n#WithComments"))) {
             return null;
         }
 

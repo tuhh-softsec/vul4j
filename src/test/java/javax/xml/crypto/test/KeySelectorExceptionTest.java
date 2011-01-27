@@ -54,7 +54,7 @@ public class KeySelectorExceptionTest extends org.junit.Assert {
         assertEquals(iae.toString(), kse.getMessage());
         assertTrue(compareThrowable(iae, kse.getCause()));
     }
-	
+        
     private static boolean compareThrowable(Throwable t1, Throwable t2) {
         boolean result = false;
         // first compare their toString presentation

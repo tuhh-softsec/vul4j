@@ -65,28 +65,28 @@ public class X509IssuerSerialResolver extends KeyResolverSpi {
    public X509Certificate engineLookupResolveX509Certificate(
            Element element, String BaseURI, StorageResolver storage)
               throws KeyResolverException {
-	 if (log.isDebugEnabled())
-	   	log.debug("Can I resolve " + element.getTagName() + "?");
+         if (log.isDebugEnabled())
+                log.debug("Can I resolve " + element.getTagName() + "?");
 
-	  X509Data x509data = null;
-	  try {
-	     x509data = new X509Data(element, BaseURI);
-	   } catch (XMLSignatureException ex) {
-	      log.debug("I can't");
+          X509Data x509data = null;
+          try {
+             x509data = new X509Data(element, BaseURI);
+           } catch (XMLSignatureException ex) {
+              log.debug("I can't");
          return null;
-	   } catch (XMLSecurityException ex) {
-	      log.debug("I can't");
+           } catch (XMLSecurityException ex) {
+              log.debug("I can't");
           return null;
-	   }
+           }
 
-	   if (x509data == null) {
-	      log.debug("I can't");
-	      return null;
-	   }
+           if (x509data == null) {
+              log.debug("I can't");
+              return null;
+           }
 
-	   if (!x509data.containsIssuerSerial()) {
-	            return null;
-	   }
+           if (!x509data.containsIssuerSerial()) {
+                    return null;
+           }
       try {
          if (storage == null) {
             Object exArgs[] = { Constants._TAG_X509ISSUERSERIAL };
@@ -106,9 +106,9 @@ public class X509IssuerSerialResolver extends KeyResolverSpi {
             XMLX509IssuerSerial certSerial = new XMLX509IssuerSerial(element.getOwnerDocument(), cert);
 
             if (log.isDebugEnabled()) {
-            	log.debug("Found Certificate Issuer: "
+                log.debug("Found Certificate Issuer: "
                       + certSerial.getIssuerName());
-            	log.debug("Found Certificate Serial: "
+                log.debug("Found Certificate Serial: "
                       + certSerial.getSerialNumber().toString());
             }
 
@@ -116,9 +116,9 @@ public class X509IssuerSerialResolver extends KeyResolverSpi {
                XMLX509IssuerSerial xmliss = x509data.itemIssuerSerial(i);
 
                if (log.isDebugEnabled()) {
-               	    log.debug("Found Element Issuer:     "
+                    log.debug("Found Element Issuer:     "
                          + xmliss.getIssuerName());
-               	    log.debug("Found Element Serial:     "
+                    log.debug("Found Element Serial:     "
                          + xmliss.getSerialNumber().toString());
                }
 

@@ -72,7 +72,7 @@ public class JCEMapper {
    }
 
    static Algorithm getAlgorithmMapping(String algoURI) {
-   	   return ((Algorithm)algorithmsMap.get(algoURI));
+           return ((Algorithm)algorithmsMap.get(algoURI));
    }
 
    /**
@@ -133,7 +133,7 @@ public class JCEMapper {
     * @return the default providerId.  
     */
    public static String getProviderId() {
-   		return providerName;
+                return providerName;
    }
    
    /**
@@ -141,22 +141,22 @@ public class JCEMapper {
     * @param provider the default providerId.  
     */
    public static void setProviderId(String provider) {
-   		providerName=provider;
+                providerName=provider;
    }
    
    /**
     * Represents the Algorithm xml element
     */   
    public static class Algorithm {
-   	    String algorithmClass;
-   	    String keyLength;
+            String algorithmClass;
+            String keyLength;
             String requiredKey;
         /**
          * Gets data from element
          * @param el
          */
         public Algorithm(Element el) {
-        	algorithmClass=el.getAttribute("AlgorithmClass");
+                algorithmClass=el.getAttribute("AlgorithmClass");
             keyLength=el.getAttribute("KeyLength");
             requiredKey=el.getAttribute("RequiredKey");
         }

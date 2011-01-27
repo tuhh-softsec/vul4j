@@ -164,7 +164,7 @@ private Element digestValueElement;
       // this._manifest.appendChild(this._doc.createTextNode("\n"));
 
       if (transforms != null) {
-    	  this.transforms=transforms;
+          this.transforms=transforms;
          this._constructionElement.appendChild(transforms.getElement());
          XMLUtils.addReturnToElement(this._constructionElement);
       }
@@ -203,9 +203,9 @@ private Element digestValueElement;
       this._baseURI=BaseURI;
       Element el=XMLUtils.getNextElement(element.getFirstChild());
       if (Constants._TAG_TRANSFORMS.equals(el.getLocalName()) && 
-    		  Constants.SignatureSpecNS.equals(el.getNamespaceURI())) {
-    	  transforms = new Transforms(el,this._baseURI);
-    	  el=XMLUtils.getNextElement(el.getNextSibling());
+                  Constants.SignatureSpecNS.equals(el.getNamespaceURI())) {
+          transforms = new Transforms(el,this._baseURI);
+          el=XMLUtils.getNextElement(el.getNextSibling());
       }
       digestMethodElem = el;
       digestValueElement =XMLUtils.getNextElement(digestMethodElem.getNextSibling());;
@@ -230,9 +230,9 @@ private Element digestValueElement;
       String uri = digestMethodElem.getAttributeNS(null,
          Constants._ATT_ALGORITHM);
 
-	  if (uri == null) {
-		  return null;
-	  }
+          if (uri == null) {
+                  return null;
+          }
 
       return MessageDigestAlgorithm.getInstance(this._doc, uri);
    }
@@ -420,19 +420,19 @@ private Element digestValueElement;
     * @deprecated use getContentsBeforeTransformation
     */
    public XMLSignatureInput getTransformsInput() throws ReferenceNotInitializedException   
-	{  
-   		XMLSignatureInput input=getContentsBeforeTransformation();
-   		XMLSignatureInput result;
-		try {
-			result = new XMLSignatureInput(input.getBytes());
-		} catch (CanonicalizationException ex) {
-			 throw new ReferenceNotInitializedException("empty", ex);
-		} catch (IOException ex) {
-			 throw new ReferenceNotInitializedException("empty", ex);
-		}
-		result.setSourceURI(input.getSourceURI());   
-		return result;
-	
+        {  
+                XMLSignatureInput input=getContentsBeforeTransformation();
+                XMLSignatureInput result;
+                try {
+                        result = new XMLSignatureInput(input.getBytes());
+                } catch (CanonicalizationException ex) {
+                         throw new ReferenceNotInitializedException("empty", ex);
+                } catch (IOException ex) {
+                         throw new ReferenceNotInitializedException("empty", ex);
+                }
+                result.setSourceURI(input.getSourceURI());   
+                return result;
+        
    }
 
    private XMLSignatureInput getContentsAfterTransformation(XMLSignatureInput input, OutputStream os)
@@ -572,7 +572,7 @@ private Element digestValueElement;
                   InclusiveNamespaces in = new InclusiveNamespaces(
                         XMLUtils.selectNode(
                         c14nTransform.getElement().getFirstChild(),
-						InclusiveNamespaces.ExclusiveCanonicalizationNamespace, 
+                                                InclusiveNamespaces.ExclusiveCanonicalizationNamespace, 
                         InclusiveNamespaces._TAG_EC_INCLUSIVENAMESPACES,0), this.getBaseURI());
 
                   inclusiveNamespaces = InclusiveNamespaces.prefixStr2Set(
@@ -691,20 +691,20 @@ private Element digestValueElement;
          DigesterOutputStream diOs=new DigesterOutputStream(mda);
          OutputStream os=new UnsyncBufferedOutputStream(diOs);
          XMLSignatureInput output=this.dereferenceURIandPerformTransforms(os);         
-	 // if signing and c14n11 property == true explicitly add
-	 // C14N11 transform if needed
-	 if (Reference.useC14N11 && !validating &&
-	     !output.isOutputStreamSet() && !output.isOctetStream()) {
-	     if (transforms == null) {
-		 transforms = new Transforms(this._doc);
+         // if signing and c14n11 property == true explicitly add
+         // C14N11 transform if needed
+         if (Reference.useC14N11 && !validating &&
+             !output.isOutputStreamSet() && !output.isOctetStream()) {
+             if (transforms == null) {
+                 transforms = new Transforms(this._doc);
                  this._constructionElement.insertBefore
-		     (transforms.getElement(), digestMethodElem);
-	     }
-	     transforms.addTransform(Transforms.TRANSFORM_C14N11_OMIT_COMMENTS);
+                     (transforms.getElement(), digestMethodElem);
+             }
+             transforms.addTransform(Transforms.TRANSFORM_C14N11_OMIT_COMMENTS);
              output.updateOutputStream(os, true);
-	 } else {
+         } else {
              output.updateOutputStream(os);
-	 }
+         }
          os.flush();
          //this.getReferencedBytes(diOs);
          //mda.update(data);
@@ -713,7 +713,7 @@ private Element digestValueElement;
       } catch (XMLSecurityException ex) {
          throw new ReferenceNotInitializedException("empty", ex);
       } catch (IOException ex) {
-      	 throw new ReferenceNotInitializedException("empty", ex);
+         throw new ReferenceNotInitializedException("empty", ex);
       }
    }
 
@@ -726,13 +726,13 @@ private Element digestValueElement;
     */
    public byte[] getDigestValue() throws Base64DecodingException, XMLSecurityException {
       if (digestValueElement == null) {
-		  // The required element is not in the XML!
-		  Object[] exArgs ={ Constants._TAG_DIGESTVALUE, 
-							 Constants.SignatureSpecNS };
-		  throw new XMLSecurityException(
-					"signature.Verification.NoSignatureElement", 
-					exArgs);
-	  }
+                  // The required element is not in the XML!
+                  Object[] exArgs ={ Constants._TAG_DIGESTVALUE, 
+                                                         Constants.SignatureSpecNS };
+                  throw new XMLSecurityException(
+                                        "signature.Verification.NoSignatureElement", 
+                                        exArgs);
+          }
       byte[] elemDig = Base64.decode(digestValueElement);
       return elemDig;
    }

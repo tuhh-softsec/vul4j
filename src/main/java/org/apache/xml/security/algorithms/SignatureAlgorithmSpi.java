@@ -175,5 +175,5 @@ public abstract class SignatureAlgorithmSpi {
       throws XMLSignatureException;
 
     public void reset() {
-	}
+        }
 }

@@ -51,25 +51,25 @@ public class SignatureAlgorithm extends Algorithm {
    
     static ThreadLocal instancesSigning=new ThreadLocal() {
         protected Object initialValue() {
-	    return new HashMap();
+            return new HashMap();
         };
     };
    
     static ThreadLocal instancesVerify=new ThreadLocal() {
         protected Object initialValue() {
-	    return new HashMap();
+            return new HashMap();
         };
     };
    
     static ThreadLocal keysSigning=new ThreadLocal() {
         protected Object initialValue() {
- 	    return new HashMap();
+            return new HashMap();
         };
     };
 
     static ThreadLocal keysVerify=new ThreadLocal() {
         protected Object initialValue() {
- 	    return new HashMap();
+            return new HashMap();
         };
     };
 
@@ -95,7 +95,7 @@ public class SignatureAlgorithm extends Algorithm {
         throws XMLSignatureException {
         _signatureAlgorithm=isForSigning ? getInstanceForSigning(algorithmURI) :
             getInstanceForVerify(algorithmURI);	   
-	this._signatureAlgorithm
+        this._signatureAlgorithm
             .engineGetContextFromElement(this._constructionElement);
     }
 
@@ -117,12 +117,12 @@ public class SignatureAlgorithm extends Algorithm {
         SignatureAlgorithmSpi result=(SignatureAlgorithmSpi) 
             ((Map)instancesVerify.get()).get(algorithmURI);
         if (result!=null) {
-	    result.reset();
-	    return result;
-	}
-	result=buildSigner(algorithmURI);
-	((Map)instancesVerify.get()).put(algorithmURI,result);
-	return result;
+            result.reset();
+            return result;
+        }
+        result=buildSigner(algorithmURI);
+        ((Map)instancesVerify.get()).put(algorithmURI,result);
+        return result;
     }
 
     private static SignatureAlgorithmSpi buildSigner(String algorithmURI) 
@@ -131,7 +131,7 @@ public class SignatureAlgorithm extends Algorithm {
             Class implementingClass =
                 SignatureAlgorithm.getImplementingClass(algorithmURI);
             if (log.isDebugEnabled())
-         	log.debug("Create URI \"" + algorithmURI + "\" class \""
+                log.debug("Create URI \"" + algorithmURI + "\" class \""
                    + implementingClass + "\"");
             return (SignatureAlgorithmSpi) implementingClass.newInstance();   
         }  catch (IllegalAccessException ex) {
@@ -203,11 +203,11 @@ public class SignatureAlgorithm extends Algorithm {
      */
     public String getJCEAlgorithmString() {
         try {
-	    return getInstanceForVerify(algorithmURI).engineGetJCEAlgorithmString();
-	} catch (XMLSignatureException e) {
-	    //Ignore.
-	    return null;
-	}
+            return getInstanceForVerify(algorithmURI).engineGetJCEAlgorithmString();
+        } catch (XMLSignatureException e) {
+            //Ignore.
+            return null;
+        }
     }
 
     /**
@@ -217,10 +217,10 @@ public class SignatureAlgorithm extends Algorithm {
      */
     public String getJCEProviderName() {
         try {
-	    return getInstanceForVerify(algorithmURI).engineGetJCEProviderName();
-	} catch (XMLSignatureException e) {
-	    return null;
-	}
+            return getInstanceForVerify(algorithmURI).engineGetJCEProviderName();
+        } catch (XMLSignatureException e) {
+            return null;
+        }
     }
 
     /**
@@ -270,7 +270,7 @@ public class SignatureAlgorithm extends Algorithm {
         initializeAlgorithm(true);
         Map map=(Map)keysSigning.get();
         if (map.get(this.algorithmURI)==signingKey) {
-    	    return;
+            return;
         }
         map.put(this.algorithmURI,signingKey);
         this._signatureAlgorithm.engineInitSign(signingKey);
@@ -408,7 +408,7 @@ public class SignatureAlgorithm extends Algorithm {
            throws AlgorithmAlreadyRegisteredException,XMLSignatureException {
 
         if (log.isDebugEnabled())
-       	    log.debug("Try to register " + algorithmURI + " " + implementingClass);
+            log.debug("Try to register " + algorithmURI + " " + implementingClass);
 
         // are we already registered?
         Class registeredClassClass =
@@ -416,11 +416,11 @@ public class SignatureAlgorithm extends Algorithm {
         if (registeredClassClass!=null) {
             String registeredClass = registeredClassClass.getName();
 
-	    if ((registeredClass != null) && (registeredClass.length() != 0)) {
-	        Object exArgs[] = { algorithmURI, registeredClass };
+            if ((registeredClass != null) && (registeredClass.length() != 0)) {
+                Object exArgs[] = { algorithmURI, registeredClass };
 
-	        throw new AlgorithmAlreadyRegisteredException(
-	            "algorithm.alreadyRegistered", exArgs);
+                throw new AlgorithmAlreadyRegisteredException(
+                    "algorithm.alreadyRegistered", exArgs);
             }
         }
         try {	         	   			 
@@ -428,11 +428,11 @@ public class SignatureAlgorithm extends Algorithm {
                 (algorithmURI, Class.forName(implementingClass));
         } catch (ClassNotFoundException ex) {
             Object exArgs[] = { algorithmURI, ex.getMessage() };
-	    throw new XMLSignatureException
+            throw new XMLSignatureException
                 ("algorithms.NoSuchAlgorithm", exArgs, ex);
         } catch (NullPointerException ex) {
             Object exArgs[] = { algorithmURI, ex.getMessage() };
-	    throw new XMLSignatureException
+            throw new XMLSignatureException
                 ("algorithms.NoSuchAlgorithm", exArgs, ex);
         }
     }

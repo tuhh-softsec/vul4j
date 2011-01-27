@@ -277,8 +277,8 @@ public class Manifest extends SignatureElementProxy {
             XMLUtils.selectDsNodes(this._constructionElement.getFirstChild(),
                          Constants._TAG_REFERENCE);
       }
-   	  if (log.isDebugEnabled()) {
-   	  	log.debug("verify " +_referencesEl.length + " References");
+          if (log.isDebugEnabled()) {
+                log.debug("verify " +_referencesEl.length + " References");
         log.debug("I am " + (followManifests
                            ? ""
                            : "not") + " requested to follow nested Manifests");
@@ -309,7 +309,7 @@ public class Manifest extends SignatureElementProxy {
                verify = false;
             }
             if (log.isDebugEnabled())
-            	log.debug("The Reference has Type " + currentRef.getType());
+                log.debug("The Reference has Type " + currentRef.getType());
 
             // was verification successful till now and do we want to verify the Manifest?
             if (verify && followManifests
@@ -442,10 +442,10 @@ public class Manifest extends SignatureElementProxy {
    public void addResourceResolver(ResourceResolver resolver) {
 
       if (resolver == null) {
-    	  return;
+          return;
       }
       if (_perManifestResolvers==null)
-    	  _perManifestResolvers = new ArrayList();
+          _perManifestResolvers = new ArrayList();
       this._perManifestResolvers.add(resolver);
       
    }
@@ -458,10 +458,10 @@ public class Manifest extends SignatureElementProxy {
    public void addResourceResolver(ResourceResolverSpi resolverSpi) {
 
       if (resolverSpi == null) {
-    	  return;
+          return;
       }
       if (_perManifestResolvers==null)
-        	  _perManifestResolvers = new ArrayList();
+                  _perManifestResolvers = new ArrayList();
       this._perManifestResolvers.add(new ResourceResolver(resolverSpi));
       
    }
@@ -474,9 +474,9 @@ public class Manifest extends SignatureElementProxy {
     * @param value the value
     */
    public void setResolverProperty(String key, String value) {
-	   if (_resolverProperties==null) {
-		   _resolverProperties=new HashMap(10);
-	   }
+           if (_resolverProperties==null) {
+                   _resolverProperties=new HashMap(10);
+           }
       this._resolverProperties.put(key, value);
    }
 

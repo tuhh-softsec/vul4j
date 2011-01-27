@@ -102,21 +102,21 @@ public class AttrCompare implements Comparator, Serializable {
 
         // none is a namespace
         if (namespaceURI0 == null) {
-      	    if (namespaceURI1 == null) {
-      		String name0 = attr0.getName();
-      		String name1 = attr1.getName();
-      		return name0.compareTo(name1);
-      	    }
-      	    return ATTR0_BEFORE_ATTR1;
+            if (namespaceURI1 == null) {
+                String name0 = attr0.getName();
+                String name1 = attr1.getName();
+                return name0.compareTo(name1);
+            }
+            return ATTR0_BEFORE_ATTR1;
         } 
 
         if (namespaceURI1 == null) {
-	    return ATTR1_BEFORE_ATTR0;
+            return ATTR1_BEFORE_ATTR0;
         } 
 
         int a = namespaceURI0.compareTo(namespaceURI1);
         if (a != 0) {
-      	    return a;
+            return a;
         }
       
         return (attr0.getLocalName()).compareTo(attr1.getLocalName());

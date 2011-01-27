@@ -58,10 +58,10 @@ public final class DOMSignatureProperties extends DOMStructure
      */
     public DOMSignatureProperties(List<SignatureProperty> properties, String id)
     {
-	if (properties == null) {
-	    throw new NullPointerException("properties cannot be null");
-	} else if (properties.isEmpty()) {
-	    throw new IllegalArgumentException("properties cannot be empty");
+        if (properties == null) {
+            throw new NullPointerException("properties cannot be null");
+        } else if (properties.isEmpty()) {
+            throw new IllegalArgumentException("properties cannot be empty");
         } else {
             List<SignatureProperty> propsCopy =
                 new ArrayList<SignatureProperty>(properties);
@@ -73,7 +73,7 @@ public final class DOMSignatureProperties extends DOMStructure
             }
             this.properties = Collections.unmodifiableList(propsCopy);
         }
-	this.id = id;
+        this.id = id;
     }
 
     /**
@@ -83,21 +83,21 @@ public final class DOMSignatureProperties extends DOMStructure
      * @throws MarshalException if a marshalling error occurs
      */
     public DOMSignatureProperties(Element propsElem) throws MarshalException {
-	// unmarshal attributes
+        // unmarshal attributes
         id = DOMUtils.getAttributeValue(propsElem, "Id");
 
-	NodeList nodes = propsElem.getChildNodes();
-	int length = nodes.getLength();
-	List<SignatureProperty> properties =
+        NodeList nodes = propsElem.getChildNodes();
+        int length = nodes.getLength();
+        List<SignatureProperty> properties =
             new ArrayList<SignatureProperty>(length);
-	for (int i = 0; i < length; i++) {
-	    Node child = nodes.item(i);
-	    if (child.getNodeType() == Node.ELEMENT_NODE) {
-	        properties.add(new DOMSignatureProperty((Element)child));
-	    }
-	}
+        for (int i = 0; i < length; i++) {
+            Node child = nodes.item(i);
+            if (child.getNodeType() == Node.ELEMENT_NODE) {
+                properties.add(new DOMSignatureProperty((Element)child));
+            }
+        }
         if (properties.isEmpty()) {
-	    throw new MarshalException("properties cannot be empty");
+            throw new MarshalException("properties cannot be empty");
         } else {
             this.properties = Collections.unmodifiableList(properties);
         }
@@ -112,7 +112,7 @@ public final class DOMSignatureProperties extends DOMStructure
     }
 
     public void marshal(Node parent, String dsPrefix, DOMCryptoContext context)
-	throws MarshalException
+        throws MarshalException
     {
         Document ownerDoc = DOMUtils.getOwnerDocument(parent);
         Element propsElem = DOMUtils.createElement(ownerDoc,
@@ -120,32 +120,32 @@ public final class DOMSignatureProperties extends DOMStructure
                                                    XMLSignature.XMLNS,
                                                    dsPrefix);
 
-	// set attributes
+        // set attributes
         DOMUtils.setAttributeID(propsElem, "Id", id);
 
         // create and append any properties
         for (SignatureProperty property : properties) {
-	    ((DOMSignatureProperty)property).marshal(propsElem, dsPrefix,
+            ((DOMSignatureProperty)property).marshal(propsElem, dsPrefix,
                                                      context);
         }
-	    
-	parent.appendChild(propsElem);
+            
+        parent.appendChild(propsElem);
     }
 
     @Override
     public boolean equals(Object o) {
-	if (this == o) {
+        if (this == o) {
             return true;
-	}
+        }
 
         if (!(o instanceof SignatureProperties)) {
             return false;
-	}
+        }
         SignatureProperties osp = (SignatureProperties)o;
 
-	boolean idsEqual = (id == null ? osp.getId() == null
+        boolean idsEqual = (id == null ? osp.getId() == null
                                        : id.equals(osp.getId()));
 
-	return (properties.equals(osp.getProperties()) && idsEqual);
+        return (properties.equals(osp.getProperties()) && idsEqual);
     }
 }

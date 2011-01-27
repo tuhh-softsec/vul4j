@@ -92,16 +92,16 @@ public abstract class TransformSpi {
                CanonicalizationException, InvalidCanonicalizerException,
                TransformationException, ParserConfigurationException,
                SAXException {
-	//Default implementation overide with a much better
-	try {
-		TransformSpi tmp = (TransformSpi) getClass().newInstance();
-	    tmp.setTransform(_transformObject);
-	    return tmp.enginePerformTransform(input);
-	} catch (InstantiationException e) {
-	    throw new TransformationException("",e);
-	} catch (IllegalAccessException e) {
-	    throw new TransformationException("",e);
-	}
+        //Default implementation overide with a much better
+        try {
+                TransformSpi tmp = (TransformSpi) getClass().newInstance();
+            tmp.setTransform(_transformObject);
+            return tmp.enginePerformTransform(input);
+        } catch (InstantiationException e) {
+            throw new TransformationException("",e);
+        } catch (IllegalAccessException e) {
+            throw new TransformationException("",e);
+        }
     }
 
     /**
@@ -122,7 +122,7 @@ public abstract class TransformSpi {
                CanonicalizationException, InvalidCanonicalizerException,
                TransformationException, ParserConfigurationException,
                SAXException {
-	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
     /**
      * Returns the URI representation of <code>Transformation algorithm</code>

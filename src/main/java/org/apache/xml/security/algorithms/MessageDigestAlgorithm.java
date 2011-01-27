@@ -68,9 +68,9 @@ public class MessageDigestAlgorithm extends Algorithm {
    }
    
    static ThreadLocal instances=new ThreadLocal() {
-	   protected Object initialValue() {
-		   return new HashMap();
-	   };
+           protected Object initialValue() {
+                   return new HashMap();
+           };
    };
 
    /**
@@ -83,42 +83,42 @@ public class MessageDigestAlgorithm extends Algorithm {
     */
    public static MessageDigestAlgorithm getInstance(
            Document doc, String algorithmURI) throws XMLSignatureException {
-	  MessageDigest md = getDigestInstance(algorithmURI);
+          MessageDigest md = getDigestInstance(algorithmURI);
       return new MessageDigestAlgorithm(doc, md, algorithmURI);
    }
 
 private static MessageDigest getDigestInstance(String algorithmURI) throws XMLSignatureException {
-	MessageDigest result=(MessageDigest) ((Map)instances.get()).get(algorithmURI);
-	if (result!=null)
-		return result;
+        MessageDigest result=(MessageDigest) ((Map)instances.get()).get(algorithmURI);
+        if (result!=null)
+                return result;
     String algorithmID = JCEMapper.translateURItoJCEID(algorithmURI);
 
-	  if (algorithmID == null) {
-		  Object[] exArgs = { algorithmURI };
-		  throw new XMLSignatureException("algorithms.NoSuchMap", exArgs);
-	  }
+          if (algorithmID == null) {
+                  Object[] exArgs = { algorithmURI };
+                  throw new XMLSignatureException("algorithms.NoSuchMap", exArgs);
+          }
 
       MessageDigest md;
       String provider=JCEMapper.getProviderId();
       try {      	
-      	 if (provider==null) {
-      	 	md = MessageDigest.getInstance(algorithmID);
-      	 } else {
-      	 	md = MessageDigest.getInstance(algorithmID,provider);
-      	 }
+         if (provider==null) {
+                md = MessageDigest.getInstance(algorithmID);
+         } else {
+                md = MessageDigest.getInstance(algorithmID,provider);
+         }
       } catch (java.security.NoSuchAlgorithmException ex) {
          Object[] exArgs = { algorithmID,
                              ex.getLocalizedMessage() };
 
          throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs);
       } catch (NoSuchProviderException ex) {
-      	Object[] exArgs = { algorithmID,
-      						ex.getLocalizedMessage() };
-      	
-      	throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs);
-	}
+        Object[] exArgs = { algorithmID,
+                                                ex.getLocalizedMessage() };
+        
+        throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs);
+        }
       ((Map)instances.get()).put(algorithmURI, md);  
-	return md;
+        return md;
 }
 
    /**

@@ -107,14 +107,14 @@ public class Init {
             DocumentBuilder db = dbf.newDocumentBuilder();
             // InputStream is = Class.forName("org.apache.xml.security.Init").getResourceAsStream("resource/config.xml");
             InputStream is = (InputStream) AccessController.doPrivileged(
-		new PrivilegedAction() {
-		    public Object run() {
-            		String cfile = System.getProperty
-			    ("org.apache.xml.security.resource.config");
-               		return getClass().getResourceAsStream
-			    (cfile != null ? cfile : "resource/config.xml");
-		    }
-		});
+                new PrivilegedAction() {
+                    public Object run() {
+                        String cfile = System.getProperty
+                            ("org.apache.xml.security.resource.config");
+                        return getClass().getResourceAsStream
+                            (cfile != null ? cfile : "resource/config.xml");
+                    }
+                });
 
             Document doc = db.parse(is);
             long XX_parsing_end = System.currentTimeMillis();                       
@@ -132,25 +132,25 @@ public class Init {
                XX_configure_reg_keyInfo_end = System.currentTimeMillis();
             }
             
-			long XX_configure_reg_transforms_start=0;
-			long XX_configure_reg_jcemapper_start=0;
-			long XX_configure_reg_sigalgos_start=0;
-			long XX_configure_reg_resourceresolver_end=0;
-			long XX_configure_reg_prefixes_end=0;
+                        long XX_configure_reg_transforms_start=0;
+                        long XX_configure_reg_jcemapper_start=0;
+                        long XX_configure_reg_sigalgos_start=0;
+                        long XX_configure_reg_resourceresolver_end=0;
+                        long XX_configure_reg_prefixes_end=0;
             Node config=doc.getFirstChild();
             for (;config!=null;config=config.getNextSibling()) {
-            	if ("Configuration".equals(config.getLocalName())) {
-            		break;
+                if ("Configuration".equals(config.getLocalName())) {
+                        break;
                 }
             }
-			for (Node el=config.getFirstChild();el!=null;el=el.getNextSibling()) {
+                        for (Node el=config.getFirstChild();el!=null;el=el.getNextSibling()) {
                 if (el == null || Node.ELEMENT_NODE != el.getNodeType()) {
-                	continue;
+                        continue;
                 }
                 String tag=el.getLocalName();
             if (tag.equals("ResourceBundles")){
                 XX_configure_i18n_start = System.currentTimeMillis();
-            	Element resource=(Element)el;
+                Element resource=(Element)el;
                /* configure internationalization */
                Attr langAttr = resource.getAttributeNode("defaultLanguageCode");
                Attr countryAttr = resource.getAttributeNode("defaultCountryCode");
@@ -189,7 +189,7 @@ public class Init {
                         }
                      }*/
                       if (log.isDebugEnabled())
-                      	log.debug("Canonicalizer.register(" + URI + ", "
+                        log.debug("Canonicalizer.register(" + URI + ", "
                             + JAVACLASS + ")");
                      Canonicalizer.register(URI, JAVACLASS);
                   } catch (ClassNotFoundException e) {
@@ -217,7 +217,7 @@ public class Init {
                   try {
                      Class.forName(JAVACLASS);
                      if (log.isDebugEnabled())
-                     	log.debug("Transform.register(" + URI + ", " + JAVACLASS
+                        log.debug("Transform.register(" + URI + ", " + JAVACLASS
                             + ")");
                      Transform.register(URI, JAVACLASS);
                   } catch (ClassNotFoundException e) {
@@ -227,7 +227,7 @@ public class Init {
                                               exArgs));
 
                   } catch (NoClassDefFoundError ex) {
-					  log.warn("Not able to found dependecies for algorithm, I'm keep working.");
+                                          log.warn("Not able to found dependecies for algorithm, I'm keep working.");
                   }
                }
                XX_configure_reg_transforms_end = System.currentTimeMillis();
@@ -271,7 +271,7 @@ public class Init {
 //                        }
 //                     }
                       if (log.isDebugEnabled())
-                      	log.debug("SignatureAlgorithm.register(" + URI + ", "
+                        log.debug("SignatureAlgorithm.register(" + URI + ", "
                             + JAVACLASS + ")");
                      SignatureAlgorithm.register(URI, JAVACLASS);
                   } catch (ClassNotFoundException e) {
@@ -304,18 +304,18 @@ public class Init {
 
                   if ((Description != null) && (Description.length() > 0)) {
                     if (log.isDebugEnabled())
-                    	log.debug("Register Resolver: " + JAVACLASS + ": "
+                        log.debug("Register Resolver: " + JAVACLASS + ": "
                                + Description);
                   } else {
                     if (log.isDebugEnabled())
-                    	log.debug("Register Resolver: " + JAVACLASS
+                        log.debug("Register Resolver: " + JAVACLASS
                                + ": For unknown purposes");
                   }
-				  try {
-					  ResourceResolver.register(JAVACLASS);
-				  } catch (Throwable e) {
-					  log.warn("Cannot register:"+JAVACLASS+" perhaps some needed jars are not installed",e);
-				  }
+                                  try {
+                                          ResourceResolver.register(JAVACLASS);
+                                  } catch (Throwable e) {
+                                          log.warn("Cannot register:"+JAVACLASS+" perhaps some needed jars are not installed",e);
+                                  }
                   XX_configure_reg_resourceresolver_end =
                     System.currentTimeMillis();
                }               
@@ -343,11 +343,11 @@ public class Init {
 
                   if ((Description != null) && (Description.length() > 0)) {
                     if (log.isDebugEnabled())
-                    	log.debug("Register Resolver: " + JAVACLASS + ": "
+                        log.debug("Register Resolver: " + JAVACLASS + ": "
                                + Description);
                   } else {
                     if (log.isDebugEnabled())
-                    	log.debug("Register Resolver: " + JAVACLASS
+                        log.debug("Register Resolver: " + JAVACLASS
                                + ": For unknown purposes");
                   }
 
@@ -360,7 +360,7 @@ public class Init {
             if (tag.equals("PrefixMappings")){
                 XX_configure_reg_prefixes_start = System.currentTimeMillis();
                 if (log.isDebugEnabled())
-                	log.debug("Now I try to bind prefixes:");
+                        log.debug("Now I try to bind prefixes:");
 
                Element[] nl = XMLUtils.selectNodes(el.getFirstChild(), CONF_NS,"PrefixMapping");
 
@@ -370,7 +370,7 @@ public class Init {
                   String prefix = nl[i].getAttributeNS(null,
                                      "prefix");
                   if (log.isDebugEnabled())
-                  	log.debug("Now I try to bind " + prefix + " to " + namespace);
+                        log.debug("Now I try to bind " + prefix + " to " + namespace);
                   org.apache.xml.security.utils.ElementProxy
                      .setDefaultPrefix(namespace, prefix);
                }
@@ -382,7 +382,7 @@ public class Init {
 
             //J-
             if (log.isDebugEnabled()) {
-            	log.debug("XX_init                             " + ((int)(XX_init_end - XX_init_start)) + " ms");
+                log.debug("XX_init                             " + ((int)(XX_init_end - XX_init_start)) + " ms");
                 log.debug("  XX_prng                           " + ((int)(XX_prng_end - XX_prng_start)) + " ms");
                 log.debug("  XX_parsing                        " + ((int)(XX_parsing_end - XX_parsing_start)) + " ms");            
                 log.debug("  XX_configure_i18n                 " + ((int)(XX_configure_i18n_end- XX_configure_i18n_start)) + " ms");

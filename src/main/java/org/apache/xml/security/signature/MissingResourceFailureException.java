@@ -32,9 +32,9 @@ package org.apache.xml.security.signature;
 public class MissingResourceFailureException extends XMLSignatureException {
 
    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+         * 
+         */
+        private static final long serialVersionUID = 1L;
    /** Field uninitializedReference */
    Reference uninitializedReference = null;
 

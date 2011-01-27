@@ -52,46 +52,46 @@ public class Transforms extends SignatureElementProxy {
         org.apache.commons.logging.LogFactory.getLog(Transforms.class.getName());
     /** Canonicalization - Required Canonical XML (omits comments) */
     public static final String TRANSFORM_C14N_OMIT_COMMENTS 
-	= Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS;
+        = Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS;
     /** Canonicalization - Recommended Canonical XML with Comments */
     public static final String TRANSFORM_C14N_WITH_COMMENTS 
-	= Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS;
+        = Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS;
     /** Canonicalization - Required Canonical XML 1.1 (omits comments) */
     public static final String TRANSFORM_C14N11_OMIT_COMMENTS 
-	= Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS;
+        = Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS;
     /** Canonicalization - Recommended Canonical XML 1.1 with Comments */
     public static final String TRANSFORM_C14N11_WITH_COMMENTS 
-	= Canonicalizer.ALGO_ID_C14N11_WITH_COMMENTS;
+        = Canonicalizer.ALGO_ID_C14N11_WITH_COMMENTS;
     /** Canonicalization - Required Exclusive Canonicalization (omits comments) */
     public static final String TRANSFORM_C14N_EXCL_OMIT_COMMENTS 
-	= Canonicalizer.ALGO_ID_C14N_EXCL_OMIT_COMMENTS;
+        = Canonicalizer.ALGO_ID_C14N_EXCL_OMIT_COMMENTS;
     /** Canonicalization - Recommended Exclusive Canonicalization with Comments */
     public static final String TRANSFORM_C14N_EXCL_WITH_COMMENTS 
-	= Canonicalizer.ALGO_ID_C14N_EXCL_WITH_COMMENTS;
+        = Canonicalizer.ALGO_ID_C14N_EXCL_WITH_COMMENTS;
     /** Transform - Optional XSLT */
     public static final String TRANSFORM_XSLT 
-	= "http://www.w3.org/TR/1999/REC-xslt-19991116";
+        = "http://www.w3.org/TR/1999/REC-xslt-19991116";
     /** Transform - Required base64 decoding */
     public static final String TRANSFORM_BASE64_DECODE 
-	= Constants.SignatureSpecNS + "base64";
+        = Constants.SignatureSpecNS + "base64";
     /** Transform - Recommended XPath */
     public static final String TRANSFORM_XPATH 
-	= "http://www.w3.org/TR/1999/REC-xpath-19991116";
+        = "http://www.w3.org/TR/1999/REC-xpath-19991116";
     /** Transform - Required Enveloped Signature */
     public static final String TRANSFORM_ENVELOPED_SIGNATURE 
-	= Constants.SignatureSpecNS + "enveloped-signature";
+        = Constants.SignatureSpecNS + "enveloped-signature";
     /** Transform - XPointer */
     public static final String TRANSFORM_XPOINTER 
-	= "http://www.w3.org/TR/2001/WD-xptr-20010108";
+        = "http://www.w3.org/TR/2001/WD-xptr-20010108";
     /** Transform - XPath Filter v2.0 */
     public static final String TRANSFORM_XPATH2FILTER04 
-	= "http://www.w3.org/2002/04/xmldsig-filter2";
+        = "http://www.w3.org/2002/04/xmldsig-filter2";
     /** Transform - XPath Filter */
     public static final String TRANSFORM_XPATH2FILTER 
-	= "http://www.w3.org/2002/06/xmldsig-filter2";
+        = "http://www.w3.org/2002/06/xmldsig-filter2";
     /** Transform - XPath Filter  CHGP private */
     public static final String TRANSFORM_XPATHFILTERCHGP 
-	= "http://www.nue.et-inf.uni-siegen.de/~geuer-pollmann/#xpathFilter";
+        = "http://www.nue.et-inf.uni-siegen.de/~geuer-pollmann/#xpathFilter";
 
     Element []transforms;
 
@@ -152,10 +152,10 @@ public class Transforms extends SignatureElementProxy {
 
         try {
             if (log.isDebugEnabled())
-         	log.debug("Transforms.addTransform(" + transformURI + ")");
+                log.debug("Transforms.addTransform(" + transformURI + ")");
 
             Transform transform = 
-		Transform.getInstance(this._doc, transformURI);
+                Transform.getInstance(this._doc, transformURI);
 
             this.addTransform(transform);
         } catch (InvalidTransformException ex) {
@@ -178,10 +178,10 @@ public class Transforms extends SignatureElementProxy {
 
         try {
             if (log.isDebugEnabled())
-        	log.debug("Transforms.addTransform(" + transformURI + ")");
+                log.debug("Transforms.addTransform(" + transformURI + ")");
 
             Transform transform = 
-		Transform.getInstance(this._doc, transformURI, contextElement);
+                Transform.getInstance(this._doc, transformURI, contextElement);
 
             this.addTransform(transform);
         } catch (InvalidTransformException ex) {
@@ -204,7 +204,7 @@ public class Transforms extends SignatureElementProxy {
 
         try {
             Transform transform = 
-		Transform.getInstance(this._doc, transformURI, contextNodes);
+                Transform.getInstance(this._doc, transformURI, contextNodes);
             this.addTransform(transform);
         } catch (InvalidTransformException ex) {
             throw new TransformationException("empty", ex);
@@ -218,7 +218,7 @@ public class Transforms extends SignatureElementProxy {
      */
     private void addTransform(Transform transform) {
         if (log.isDebugEnabled())
-      	    log.debug("Transforms.addTransform(" + transform.getURI() + ")");
+            log.debug("Transforms.addTransform(" + transform.getURI() + ")");
 
         Element transformElement = transform.getElement();
 
@@ -250,25 +250,25 @@ public class Transforms extends SignatureElementProxy {
      */
     public XMLSignatureInput performTransforms(
         XMLSignatureInput xmlSignatureInput, OutputStream os) 
-    	throws TransformationException {
+        throws TransformationException {
 
-	try {
+        try {
             int last=this.getLength()-1;
             for (int i = 0; i < last; i++) {
                 Transform t = this.item(i);
                 if (log.isDebugEnabled()) {
-		    log.debug("Perform the (" + i + ")th " + t.getURI() 
-			+ " transform");
+                    log.debug("Perform the (" + i + ")th " + t.getURI() 
+                        + " transform");
                 }
-		xmlSignatureInput = t.performTransform(xmlSignatureInput);
+                xmlSignatureInput = t.performTransform(xmlSignatureInput);
             }
             if (last>=0) {
-		Transform t = this.item(last);
+                Transform t = this.item(last);
                 xmlSignatureInput = t.performTransform(xmlSignatureInput, os);
             }
 
             return xmlSignatureInput;
-	} catch (IOException ex) {
+        } catch (IOException ex) {
             throw new TransformationException("empty", ex);
         } catch (CanonicalizationException ex) {
             throw new TransformationException("empty", ex);
@@ -286,7 +286,7 @@ public class Transforms extends SignatureElementProxy {
     {
         if (transforms == null) {
             transforms = XMLUtils.selectDsNodes
-		(this._constructionElement.getFirstChild(), "Transform");
+                (this._constructionElement.getFirstChild(), "Transform");
         }
         return transforms.length;       
     }
@@ -300,16 +300,16 @@ public class Transforms extends SignatureElementProxy {
      * @throws TransformationException
      */
     public Transform item(int i) throws TransformationException {
-   	
-   	try {
-	    if (transforms == null) {
-   		transforms = XMLUtils.selectDsNodes
-		    (this._constructionElement.getFirstChild(), "Transform");
-	    }
-   	    return new Transform(transforms[i], this._baseURI);
-   	} catch (XMLSecurityException ex) {
-	    throw new TransformationException("empty", ex);
-   	}
+        
+        try {
+            if (transforms == null) {
+                transforms = XMLUtils.selectDsNodes
+                    (this._constructionElement.getFirstChild(), "Transform");
+            }
+            return new Transform(transforms[i], this._baseURI);
+        } catch (XMLSecurityException ex) {
+            throw new TransformationException("empty", ex);
+        }
     }
 
     /** @inheritDoc */

@@ -266,7 +266,7 @@ public class Base64 {
    public static final String encode(byte[] binaryData) {
       return XMLUtils.ignoreLineBreaks()
          ? encode(binaryData, Integer.MAX_VALUE) 
-	 : encode(binaryData, BASE64DEFAULTLENGTH);
+         : encode(binaryData, BASE64DEFAULTLENGTH);
    }
    
    /**
@@ -361,8 +361,8 @@ public class Base64 {
     */
     public static final String  encode(byte[] binaryData,int length) {
         
-    	if (length<4) {
-    		length=Integer.MAX_VALUE;
+        if (length<4) {
+                length=Integer.MAX_VALUE;
         }
 
        if (binaryData == null)
@@ -412,7 +412,7 @@ public class Base64 {
 
                i++;
            }           
-           	encodedData[encodedIndex++] = 0xa;           
+                encodedData[encodedIndex++] = 0xa;           
        }
 
        for (; i<numberTriplets; i++) {
@@ -474,23 +474,23 @@ public class Base64 {
      */
     public final static byte[] decode(String encoded) throws Base64DecodingException {
 
-    	if (encoded == null)
-   	    return null;
-    	byte []bytes=new byte[encoded.length()];
-    	int len=getBytesInternal(encoded, bytes);
-    	return decodeInternal(bytes, len);
+        if (encoded == null)
+            return null;
+        byte []bytes=new byte[encoded.length()];
+        int len=getBytesInternal(encoded, bytes);
+        return decodeInternal(bytes, len);
     }
 
     protected static final int getBytesInternal(String s,byte[] result) {
-    	int length=s.length();
-    	
-    	int newSize=0;
-    	for (int i = 0; i < length; i++) {
+        int length=s.length();
+        
+        int newSize=0;
+        for (int i = 0; i < length; i++) {
             byte dataS=(byte)s.charAt(i);
             if (!isWhiteSpace(dataS))
                 result[newSize++] = dataS;
         }
-    	return newSize;
+        return newSize;
     }
 
     protected final static byte[] decodeInternal(byte[] base64Data, int len) throws Base64DecodingException {
@@ -531,7 +531,7 @@ public class Base64 {
         b3 = base64Alphabet[d3=base64Data[dataIndex++]];
         b4 = base64Alphabet[d4=base64Data[dataIndex++]];
         if ((b3==-1 ) || (b4==-1) ) {
-        	//Check if they are PAD characters
+                //Check if they are PAD characters
             if (isPad( d3 ) && isPad( d4)) {               //Two PAD e.g. 3c[Pad][Pad]
                 if ((b2 & 0xf) != 0)//last 4 bits should be zero
                         throw new Base64DecodingException("decoding.general");
@@ -557,16 +557,16 @@ public class Base64 {
         dataIndex=0;
        //the begin
        for (i=numberQuadruple-1; i>0; i--) {
-    	   b1 = base64Alphabet[base64Data[dataIndex++]];
+           b1 = base64Alphabet[base64Data[dataIndex++]];
            b2 = base64Alphabet[base64Data[dataIndex++]];
            b3 = base64Alphabet[base64Data[dataIndex++]];
            b4 = base64Alphabet[base64Data[dataIndex++]];
 
            if ( (b1==-1) ||
-        		(b2==-1) ||
-        		(b3==-1) ||
-        		(b4==-1) ) {        	  
-        	   throw new Base64DecodingException("decoding.general");//if found "no data" just return null   
+                        (b2==-1) ||
+                        (b3==-1) ||
+                        (b4==-1) ) {        	  
+                   throw new Base64DecodingException("decoding.general");//if found "no data" just return null   
            }
                        
            decodedData[encodedIndex++] = (byte)(  b1 <<2 | b2>>4 ) ;
@@ -586,9 +586,9 @@ public class Base64 {
     */
    public final static void decode(String base64Data,
         OutputStream os) throws Base64DecodingException, IOException {
-	   byte[] bytes=new byte[base64Data.length()];
-	   int len=getBytesInternal(base64Data, bytes);
-	   decode(bytes,os,len);
+           byte[] bytes=new byte[base64Data.length()];
+           int len=getBytesInternal(base64Data, bytes);
+           decode(bytes,os,len);
    }
 
    /**
@@ -601,13 +601,13 @@ public class Base64 {
     */
    public final static void decode(byte[] base64Data,
         OutputStream os) throws Base64DecodingException, IOException {	    
-	    decode(base64Data,os,-1);
+            decode(base64Data,os,-1);
    }
 
    protected final static void decode(byte[] base64Data,
-		        OutputStream os,int len) throws Base64DecodingException, IOException {	    
-		   
-	// remove white spaces
+                        OutputStream os,int len) throws Base64DecodingException, IOException {	    
+                   
+        // remove white spaces
     if (len==-1)
        len = removeWhiteSpace(base64Data);
     
@@ -630,14 +630,14 @@ public class Base64 {
     
     //the begin
     for (i=numberQuadruple-1; i>0; i--) {
-    	b1 = base64Alphabet[base64Data[dataIndex++]];
+        b1 = base64Alphabet[base64Data[dataIndex++]];
         b2 = base64Alphabet[base64Data[dataIndex++]];
         b3 = base64Alphabet[base64Data[dataIndex++]];
         b4 = base64Alphabet[base64Data[dataIndex++]];
         if ( (b1==-1) ||
-        	(b2==-1) ||
-        	(b3==-1) ||
-        	(b4==-1) )
+                (b2==-1) ||
+                (b3==-1) ||
+                (b4==-1) )
          throw new Base64DecodingException("decoding.general");//if found "no data" just return null
 
         
@@ -691,7 +691,7 @@ public class Base64 {
     */
    public final static void decode(InputStream is,
         OutputStream os) throws Base64DecodingException, IOException {
-	//byte     decodedData[]      = null;
+        //byte     decodedData[]      = null;
     byte     b1=0,b2=0,b3=0, b4=0;    
 
     int index=0;
@@ -700,8 +700,8 @@ public class Base64 {
     //the begin
     while ((read=is.read())>0) {
         byte readed=(byte)read;
-    	if (isWhiteSpace(readed)) {
-    		continue;
+        if (isWhiteSpace(readed)) {
+                continue;
         }
         if (isPad(readed)) {
             data[index++]=readed;
@@ -716,7 +716,7 @@ public class Base64 {
            } 
         
         if (index!=4) {
-        	continue;
+                continue;
         }
         index=0;
         b1 = base64Alphabet[data[0]];

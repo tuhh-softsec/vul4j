@@ -49,24 +49,24 @@ public class RSAKeyValueResolver extends KeyResolverSpi {
    /** @inheritDoc */
    public PublicKey engineLookupAndResolvePublicKey(
            Element element, String BaseURI, StorageResolver storage) {
-	   if (log.isDebugEnabled())
-		 	log.debug("Can I resolve " + element.getTagName());
+           if (log.isDebugEnabled())
+                        log.debug("Can I resolve " + element.getTagName());
       if (element == null) {
          return null;
       }
 
-	  boolean isKeyValue = XMLUtils.elementIsInSignatureSpace(element,
-		                              Constants._TAG_KEYVALUE);
-	  Element rsaKeyElement=null;
-	  if (isKeyValue) {                  
-		   rsaKeyElement = XMLUtils.selectDsNode(element.getFirstChild(),
-		                    Constants._TAG_RSAKEYVALUE, 0);
-	  } else if (XMLUtils.elementIsInSignatureSpace(element,
+          boolean isKeyValue = XMLUtils.elementIsInSignatureSpace(element,
+                                              Constants._TAG_KEYVALUE);
+          Element rsaKeyElement=null;
+          if (isKeyValue) {                  
+                   rsaKeyElement = XMLUtils.selectDsNode(element.getFirstChild(),
+                                    Constants._TAG_RSAKEYVALUE, 0);
+          } else if (XMLUtils.elementIsInSignatureSpace(element,
               Constants._TAG_RSAKEYVALUE)) {
          // this trick is needed to allow the RetrievalMethodResolver to eat a
          // ds:RSAKeyValue directly (without KeyValue)
          rsaKeyElement = element;		  
-	  }
+          }
 
       
       if (rsaKeyElement == null) {

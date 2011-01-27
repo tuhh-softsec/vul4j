@@ -79,9 +79,9 @@ public final class DOMRetrievalMethod extends DOMStructure
     public DOMRetrievalMethod(String uri, String type,
                               List<Transform> transforms)
     {
-	if (uri == null) {
-	    throw new NullPointerException("uri cannot be null");
-	}
+        if (uri == null) {
+            throw new NullPointerException("uri cannot be null");
+        }
         if (transforms == null || transforms.isEmpty()) {
             this.transforms = Collections.emptyList();
         } else {
@@ -95,7 +95,7 @@ public final class DOMRetrievalMethod extends DOMStructure
             }
             this.transforms = Collections.unmodifiableList(transformsCopy);
         }
-	this.uri = uri;
+        this.uri = uri;
         if ((uri != null) && (!uri.equals(""))) {
             try {
                 new URI(uri);
@@ -104,58 +104,58 @@ public final class DOMRetrievalMethod extends DOMStructure
             }
         }
 
-	this.type = type;
+        this.type = type;
     }
-	
+        
     /**
      * Creates a <code>DOMRetrievalMethod</code> from an element.
      *
      * @param rmElem a RetrievalMethod element
      */
     public DOMRetrievalMethod(Element rmElem, XMLCryptoContext context,
-	                      Provider provider)
+                              Provider provider)
         throws MarshalException
     {
         // get URI and Type attributes
         uri = DOMUtils.getAttributeValue(rmElem, "URI");
         type = DOMUtils.getAttributeValue(rmElem, "Type");
 
-	// get here node
-	here = rmElem.getAttributeNodeNS(null, "URI");
+        // get here node
+        here = rmElem.getAttributeNodeNS(null, "URI");
 
         // get Transforms, if specified
         List<Transform> transforms = new ArrayList<Transform>();
         Element transformsElem = DOMUtils.getFirstChildElement(rmElem);
         if (transformsElem != null) {
             Element transformElem =
-		DOMUtils.getFirstChildElement(transformsElem);
+                DOMUtils.getFirstChildElement(transformsElem);
             while (transformElem != null) {
                 transforms.add
-		    (new DOMTransform(transformElem, context, provider));
+                    (new DOMTransform(transformElem, context, provider));
                 transformElem = DOMUtils.getNextSiblingElement(transformElem);
-	    }
+            }
         }
-	if (transforms.isEmpty()) {
+        if (transforms.isEmpty()) {
             this.transforms = Collections.emptyList();
-	} else {
+        } else {
             this.transforms = Collections.unmodifiableList(transforms);
-	}
+        }
     }
 
     public String getURI() {
-	return uri;
+        return uri;
     }
 
     public String getType() {
-	return type;
+        return type;
     }
 
     public List getTransforms() {
-	return transforms;
+        return transforms;
     }
 
     public void marshal(Node parent, String dsPrefix, DOMCryptoContext context)
-	throws MarshalException
+        throws MarshalException
     {
         Document ownerDoc = DOMUtils.getOwnerDocument(parent);
         Element rmElem = DOMUtils.createElement(ownerDoc, "RetrievalMethod",
@@ -166,92 +166,92 @@ public final class DOMRetrievalMethod extends DOMStructure
         DOMUtils.setAttribute(rmElem, "Type", type);
 
         // add Transforms elements
-	if (!transforms.isEmpty()) {
-	    Element transformsElem = DOMUtils.createElement(ownerDoc,
+        if (!transforms.isEmpty()) {
+            Element transformsElem = DOMUtils.createElement(ownerDoc,
                                                             "Transforms",
                                                             XMLSignature.XMLNS,
                                                             dsPrefix);
-	    rmElem.appendChild(transformsElem);
+            rmElem.appendChild(transformsElem);
             for (Transform transform : transforms) {
-	        ((DOMTransform)transform).marshal(transformsElem,
+                ((DOMTransform)transform).marshal(transformsElem,
                                                    dsPrefix, context);
             }
-	}
+        }
 
         parent.appendChild(rmElem);
 
-	// save here node
-	here = rmElem.getAttributeNodeNS(null, "URI");
+        // save here node
+        here = rmElem.getAttributeNodeNS(null, "URI");
     }
 
     public Node getHere() {
-	return here;
+        return here;
     }
 
     public Data dereference(XMLCryptoContext context)
         throws URIReferenceException
     {
-	if (context == null) {
-	    throw new NullPointerException("context cannot be null");
-	}
+        if (context == null) {
+            throw new NullPointerException("context cannot be null");
+        }
 
-	/*
+        /*
          * If URIDereferencer is specified in context; use it, otherwise use 
-	 * built-in.
-	 */
+         * built-in.
+         */
         URIDereferencer deref = context.getURIDereferencer();
         if (deref == null) {
-	    deref = DOMURIDereferencer.INSTANCE;
-	}
+            deref = DOMURIDereferencer.INSTANCE;
+        }
 
-	Data data = deref.dereference(this, context);
+        Data data = deref.dereference(this, context);
 
         // pass dereferenced data through Transforms
-	try {
+        try {
             for (Transform transform : transforms) {
                 data = ((DOMTransform)transform).transform(data, context);
             }
-	} catch (Exception e) {
-	    throw new URIReferenceException(e);
-	}
-	return data;
+        } catch (Exception e) {
+            throw new URIReferenceException(e);
+        }
+        return data;
     }
 
     public XMLStructure dereferenceAsXMLStructure(XMLCryptoContext context)
-	throws URIReferenceException
+        throws URIReferenceException
     {
-	try {
-	    ApacheData data = (ApacheData)dereference(context);
-	    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-	    dbf.setNamespaceAware(true);
-	    DocumentBuilder db = dbf.newDocumentBuilder();
-	    Document doc = db.parse(new ByteArrayInputStream
-		(data.getXMLSignatureInput().getBytes()));
-	    Element kiElem = doc.getDocumentElement();
+        try {
+            ApacheData data = (ApacheData)dereference(context);
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            dbf.setNamespaceAware(true);
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            Document doc = db.parse(new ByteArrayInputStream
+                (data.getXMLSignatureInput().getBytes()));
+            Element kiElem = doc.getDocumentElement();
             if (kiElem.getLocalName().equals("X509Data")) {
-		return new DOMX509Data(kiElem);
-	    } else {
-		return null; // unsupported
-	    }
-	} catch (Exception e) {
-	    throw new URIReferenceException(e);
-	}
+                return new DOMX509Data(kiElem);
+            } else {
+                return null; // unsupported
+            }
+        } catch (Exception e) {
+            throw new URIReferenceException(e);
+        }
     }
 
     @Override
     public boolean equals(Object obj) {
-	if (this == obj) {
+        if (this == obj) {
             return true;
-	}
+        }
         if (!(obj instanceof RetrievalMethod)) {
             return false;
-	}
+        }
         RetrievalMethod orm = (RetrievalMethod)obj;
 
-	boolean typesEqual = (type == null ? orm.getType() == null
+        boolean typesEqual = (type == null ? orm.getType() == null
                                            : type.equals(orm.getType()));
 
-	return (uri.equals(orm.getURI()) &&
-	    transforms.equals(orm.getTransforms()) && typesEqual);
+        return (uri.equals(orm.getURI()) &&
+            transforms.equals(orm.getTransforms()) && typesEqual);
     }
 }

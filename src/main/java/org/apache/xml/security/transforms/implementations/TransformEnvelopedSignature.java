@@ -69,9 +69,9 @@ public class TransformEnvelopedSignature extends TransformSpi {
         Node signatureElement = _transformObject.getElement();
 
         signatureElement = searchSignatureElement(signatureElement);        
-       	input.setExcludeNode(signatureElement);   
-       	input.addNodeFilter(new EnvelopedNodeFilter(signatureElement));
-       	return input;
+        input.setExcludeNode(signatureElement);   
+        input.addNodeFilter(new EnvelopedNodeFilter(signatureElement));
+        return input;
     }
 
     /**
@@ -84,45 +84,45 @@ public class TransformEnvelopedSignature extends TransformSpi {
         boolean found = false;
         
         while (true) {
-	    if (signatureElement == null
+            if (signatureElement == null
                 || signatureElement.getNodeType() == Node.DOCUMENT_NODE) {
-    		break;
-    	    }
-	    Element el = (Element) signatureElement;
-    	    if (el.getNamespaceURI().equals(Constants.SignatureSpecNS)
+                break;
+            }
+            Element el = (Element) signatureElement;
+            if (el.getNamespaceURI().equals(Constants.SignatureSpecNS)
                 && el.getLocalName().equals(Constants._TAG_SIGNATURE)) {
-    		found = true;
-    		break;
-    	    }
+                found = true;
+                break;
+            }
 
-	    signatureElement = signatureElement.getParentNode();
+            signatureElement = signatureElement.getParentNode();
         }
 
         if (!found) {
             throw new TransformationException(
-	        "transform.envelopedSignatureTransformNotInSignatureElement");
+                "transform.envelopedSignatureTransformNotInSignatureElement");
         }
         return signatureElement;
     }
 
     static class EnvelopedNodeFilter implements NodeFilter {
-    	Node exclude;    	
-    	EnvelopedNodeFilter(Node n) {
-	    exclude=n;
-    	}
+        Node exclude;    	
+        EnvelopedNodeFilter(Node n) {
+            exclude=n;
+        }
     public int isNodeIncludeDO(Node n, int level) {
-    	if ((n==exclude))
-			return -1;
-    	return 1;
+        if ((n==exclude))
+                        return -1;
+        return 1;
     }
-	/**
-	 * @see org.apache.xml.security.signature.NodeFilter#isNodeInclude(org.w3c.dom.Node)
-	 */
-	public int isNodeInclude(Node n) {
-		if ((n==exclude) || XMLUtils.isDescendantOrSelf(exclude,n)) 
-			return -1;
-		return 1;
-	    //return !XMLUtils.isDescendantOrSelf(exclude,n);
-	}
+        /**
+         * @see org.apache.xml.security.signature.NodeFilter#isNodeInclude(org.w3c.dom.Node)
+         */
+        public int isNodeInclude(Node n) {
+                if ((n==exclude) || XMLUtils.isDescendantOrSelf(exclude,n)) 
+                        return -1;
+                return 1;
+            //return !XMLUtils.isDescendantOrSelf(exclude,n);
+        }
     }
 }

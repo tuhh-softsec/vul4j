@@ -145,14 +145,14 @@ public class XMLX509Certificate extends SignatureElementProxy
         XMLX509Certificate other = (XMLX509Certificate) obj;
         try {
             return Arrays.equals
-		(other.getCertificateBytes(), this.getCertificateBytes());
+                (other.getCertificateBytes(), this.getCertificateBytes());
         } catch (XMLSecurityException ex) {
             return false;
         }
     }
 
     public int hashCode() {
-	int result = 17;
+        int result = 17;
         try {
             byte[] bytes = getCertificateBytes();
             for (int i = 0; i < bytes.length; i++) {

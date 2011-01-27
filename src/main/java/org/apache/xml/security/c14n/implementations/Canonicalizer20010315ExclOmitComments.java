@@ -29,7 +29,7 @@ public class Canonicalizer20010315ExclOmitComments
    /**
     * 
     */
-	public Canonicalizer20010315ExclOmitComments() {
+        public Canonicalizer20010315ExclOmitComments() {
       super(false);
    }
  

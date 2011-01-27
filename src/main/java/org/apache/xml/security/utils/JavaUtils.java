@@ -63,7 +63,7 @@ public class JavaUtils {
 
             refBytes = baos.toByteArray();
         } finally {
-	    fisRef.close();
+            fisRef.close();
         }
 
         return refBytes;
@@ -77,7 +77,7 @@ public class JavaUtils {
      */
     public static void writeBytesToFilename(String filename, byte[] bytes) {
 
-	FileOutputStream fos = null;
+        FileOutputStream fos = null;
         try {
             if (filename != null && bytes != null) {
                 File f = new File(filename);
@@ -90,12 +90,12 @@ public class JavaUtils {
                 log.debug("writeBytesToFilename got null byte[] pointed");
             }
         } catch (IOException ex) {
-	    if (fos != null) {
-		try {
-	    	    fos.close();
-		} catch (IOException ioe) {}
-	    }
- 	}
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException ioe) {}
+            }
+        }
     }
 
     /**

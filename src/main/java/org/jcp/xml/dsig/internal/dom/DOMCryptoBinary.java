@@ -86,12 +86,12 @@ public final class DOMCryptoBinary extends DOMStructure {
      * @return the <code>BigInteger</code> that this object contains
      */
     public BigInteger getBigNum() {
-	return bigNum;
+        return bigNum;
     }
 
     public void marshal(Node parent, String prefix, DOMCryptoContext context) 
-	throws MarshalException {
+        throws MarshalException {
         parent.appendChild
-	    (DOMUtils.getOwnerDocument(parent).createTextNode(value));
+            (DOMUtils.getOwnerDocument(parent).createTextNode(value));
     }
 }

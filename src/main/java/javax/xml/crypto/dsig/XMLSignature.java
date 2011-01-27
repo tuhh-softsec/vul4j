@@ -106,7 +106,7 @@ public interface XMLSignature extends XMLStructure {
      *    validation that prevented the validation operation from completing
      */
     boolean validate(XMLValidateContext validateContext) 
-	throws XMLSignatureException;
+        throws XMLSignatureException;
 
     /**
      * Returns the key info of this <code>XMLSignature</code>.
@@ -162,7 +162,7 @@ public interface XMLSignature extends XMLStructure {
      *    generating the signature
      */
     void sign(XMLSignContext signContext) throws MarshalException, 
-	XMLSignatureException;
+        XMLSignatureException;
 
     /**
      * Returns the result of the {@link KeySelector}, if specified, after
@@ -201,7 +201,7 @@ public interface XMLSignature extends XMLStructure {
          * referenced from elsewhere.
          *
          * @return the <code>Id</code> attribute (may be <code>null</code> if 
-	 *    not specified)
+         *    not specified)
          */
         String getId();
 
@@ -210,8 +210,8 @@ public interface XMLSignature extends XMLStructure {
          *
          * @return the signature value (may be <code>null</code> if the
          *    <code>XMLSignature</code> has not been signed yet). Each 
-	 *    invocation of this method returns a new clone of the array to 
-	 *    prevent subsequent modification.
+         *    invocation of this method returns a new clone of the array to 
+         *    prevent subsequent modification.
          */
         byte[] getValue();
 

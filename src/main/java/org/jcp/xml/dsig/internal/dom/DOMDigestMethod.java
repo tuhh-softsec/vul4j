@@ -53,14 +53,14 @@ public abstract class DOMDigestMethod extends DOMStructure
      *    appropriate for this digest method
      */
     DOMDigestMethod(AlgorithmParameterSpec params)
-	throws InvalidAlgorithmParameterException
+        throws InvalidAlgorithmParameterException
     {
-	if (params != null && !(params instanceof DigestMethodParameterSpec)) {
-	    throw new InvalidAlgorithmParameterException
-		("params must be of type DigestMethodParameterSpec");
-	}
-	checkParams((DigestMethodParameterSpec)params);
-	this.params = (DigestMethodParameterSpec)params;
+        if (params != null && !(params instanceof DigestMethodParameterSpec)) {
+            throw new InvalidAlgorithmParameterException
+                ("params must be of type DigestMethodParameterSpec");
+        }
+        checkParams((DigestMethodParameterSpec)params);
+        this.params = (DigestMethodParameterSpec)params;
     }
 
     /**
@@ -71,15 +71,15 @@ public abstract class DOMDigestMethod extends DOMStructure
      * @param dmElem a DigestMethod element
      */
     DOMDigestMethod(Element dmElem) throws MarshalException {
-	Element paramsElem = DOMUtils.getFirstChildElement(dmElem);
-	if (paramsElem != null) {
-	    params = unmarshalParams(paramsElem);
-	}
-	try {
-	    checkParams(params);
-	} catch (InvalidAlgorithmParameterException iape) {
-	    throw new MarshalException(iape);
-	}
+        Element paramsElem = DOMUtils.getFirstChildElement(dmElem);
+        if (paramsElem != null) {
+            params = unmarshalParams(paramsElem);
+        }
+        try {
+            checkParams(params);
+        } catch (InvalidAlgorithmParameterException iape) {
+            throw new MarshalException(iape);
+        }
     }
 
     static DigestMethod unmarshal(Element dmElem) throws MarshalException {
@@ -109,7 +109,7 @@ public abstract class DOMDigestMethod extends DOMStructure
      *    appropriate for this digest method
      */
     void checkParams(DigestMethodParameterSpec params)
-	throws InvalidAlgorithmParameterException
+        throws InvalidAlgorithmParameterException
     {
         if (params != null) {
             throw new InvalidAlgorithmParameterException("no parameters " +
@@ -119,7 +119,7 @@ public abstract class DOMDigestMethod extends DOMStructure
     }
 
     public final AlgorithmParameterSpec getParameterSpec() {
-	return params;
+        return params;
     }
 
     /**
@@ -146,7 +146,7 @@ public abstract class DOMDigestMethod extends DOMStructure
      * method to marshal any algorithm-specific parameters.
      */
     public void marshal(Node parent, String prefix, DOMCryptoContext context)
-	throws MarshalException
+        throws MarshalException
     {
         Document ownerDoc = DOMUtils.getOwnerDocument(parent);
 
@@ -155,7 +155,7 @@ public abstract class DOMDigestMethod extends DOMStructure
         DOMUtils.setAttribute(dmElem, "Algorithm", getAlgorithm());
 
         if (params != null) {
-	    marshalParams(dmElem, prefix);
+            marshalParams(dmElem, prefix);
         }
 
         parent.appendChild(dmElem);
@@ -163,19 +163,19 @@ public abstract class DOMDigestMethod extends DOMStructure
 
     @Override
     public boolean equals(Object o) {
-	if (this == o) {
+        if (this == o) {
             return true;
-	}
+        }
 
         if (!(o instanceof DigestMethod)) {
             return false;
-	}
+        }
         DigestMethod odm = (DigestMethod)o;
 
-	boolean paramsEqual = (params == null ? odm.getParameterSpec() == null :
-	    params.equals(odm.getParameterSpec()));
+        boolean paramsEqual = (params == null ? odm.getParameterSpec() == null :
+            params.equals(odm.getParameterSpec()));
 
-	return (getAlgorithm().equals(odm.getAlgorithm()) && paramsEqual);
+        return (getAlgorithm().equals(odm.getAlgorithm()) && paramsEqual);
     }
 
     /**
@@ -189,7 +189,7 @@ public abstract class DOMDigestMethod extends DOMStructure
      * @throws MarshalException if the parameters cannot be marshalled
      */
     void marshalParams(Element parent, String prefix)
-	throws MarshalException
+        throws MarshalException
     {
         throw new MarshalException("no parameters should " +
                                    "be specified for the " +

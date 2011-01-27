@@ -81,24 +81,24 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
     {
         if (!XMLUtils.elementIsInSignatureSpace(element,
                Constants._TAG_RETRIEVALMETHOD)) {      
-	    return null;
+            return null;
         }
 
         try {
-	    // Create a retrieval method over the given element
-	    RetrievalMethod rm = new RetrievalMethod(element, BaseURI);
-	    String type = rm.getType();		   
-	    XMLSignatureInput resource = resolveInput(rm,BaseURI);
+            // Create a retrieval method over the given element
+            RetrievalMethod rm = new RetrievalMethod(element, BaseURI);
+            String type = rm.getType();		   
+            XMLSignatureInput resource = resolveInput(rm,BaseURI);
             if (RetrievalMethod.TYPE_RAWX509.equals(type)) {
                 // a raw certificate, direct parsing is done!
-            	X509Certificate cert = getRawCertificate(resource);
-		if (cert != null) {
-	            return cert.getPublicKey();
-		}
-		return null;
+                X509Certificate cert = getRawCertificate(resource);
+                if (cert != null) {
+                    return cert.getPublicKey();
+                }
+                return null;
              }
-	     Element e = obtainReferenceElement(resource); 
-	     return resolveKey(e, BaseURI, storage);
+             Element e = obtainReferenceElement(resource); 
+             return resolveKey(e, BaseURI, storage);
          } catch (XMLSecurityException ex) {
              log.debug("XMLSecurityException", ex);
          } catch (CertificateException ex) {
@@ -106,9 +106,9 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
          } catch (IOException ex) {
              log.debug("IOException", ex);
          } catch (ParserConfigurationException e) {
-	     log.debug("ParserConfigurationException", e);
+             log.debug("ParserConfigurationException", e);
          } catch (SAXException e) {
-	     log.debug("SAXException", e);
+             log.debug("SAXException", e);
          } 
          return null;
     }
@@ -120,15 +120,15 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
         if (resource.isElement()){
             e = (Element) resource.getSubNode();
         } else if (resource.isNodeSet()) {
-	    // Retrieved resource is a nodeSet
-	    e = getDocumentElement(resource.getNodeSet());
+            // Retrieved resource is a nodeSet
+            e = getDocumentElement(resource.getNodeSet());
         } else {
-	    // Retrieved resource is an inputStream
-	    byte inputBytes[] = resource.getBytes();
-	    e = getDocFromBytes(inputBytes);
-	    // otherwise, we parse the resource, create an Element and delegate
-	    if (log.isDebugEnabled()) 
-	        log.debug("we have to parse " + inputBytes.length + " bytes");
+            // Retrieved resource is an inputStream
+            byte inputBytes[] = resource.getBytes();
+            e = getDocFromBytes(inputBytes);
+            // otherwise, we parse the resource, create an Element and delegate
+            if (log.isDebugEnabled()) 
+                log.debug("we have to parse " + inputBytes.length + " bytes");
         }
         return e;
     }
@@ -144,19 +144,19 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
         Element element, String BaseURI, StorageResolver storage) {
         if (!XMLUtils.elementIsInSignatureSpace(element,
                Constants._TAG_RETRIEVALMETHOD)) {      
-	     return null;
+             return null;
         }
 
         try {
             RetrievalMethod rm = new RetrievalMethod(element, BaseURI);
-	    String type = rm.getType();		   
-	    XMLSignatureInput resource = resolveInput(rm, BaseURI);
-	    if (RetrievalMethod.TYPE_RAWX509.equals(type)) {
-        	X509Certificate cert = getRawCertificate(resource);
+            String type = rm.getType();		   
+            XMLSignatureInput resource = resolveInput(rm, BaseURI);
+            if (RetrievalMethod.TYPE_RAWX509.equals(type)) {
+                X509Certificate cert = getRawCertificate(resource);
                 return cert;
-	    } 
-	    Element e = obtainReferenceElement(resource);
-	    return resolveCertificate(e, BaseURI, storage);
+            } 
+            Element e = obtainReferenceElement(resource);
+            return resolveCertificate(e, BaseURI, storage);
         } catch (XMLSecurityException ex) {
             log.debug("XMLSecurityException", ex);
         } catch (CertificateException ex) {
@@ -164,9 +164,9 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
         } catch (IOException ex) {
             log.debug("IOException", ex);
         } catch (ParserConfigurationException e) {
-	    log.debug("ParserConfigurationException", e);
+            log.debug("ParserConfigurationException", e);
         } catch (SAXException e) {
-	    log.debug("SAXException", e);
+            log.debug("SAXException", e);
         } 
         return null;
     }
@@ -182,14 +182,14 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
     static private X509Certificate resolveCertificate(Element e,
         String BaseURI, StorageResolver storage) throws KeyResolverException {
         if (log.isDebugEnabled()) {
-	    log.debug("Now we have a {" + e.getNamespaceURI() + "}"
+            log.debug("Now we have a {" + e.getNamespaceURI() + "}"
                 + e.getLocalName() + " Element");
         }
         // An element has been provided
         if (e != null) { 
-	    return KeyResolver.getX509Certificate(e, BaseURI, storage);
+            return KeyResolver.getX509Certificate(e, BaseURI, storage);
         }
-	return null;
+        return null;
     } 
    
     /**
@@ -203,12 +203,12 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
     static private PublicKey resolveKey(Element e, String BaseURI, 
         StorageResolver storage) throws KeyResolverException {
         if (log.isDebugEnabled()) {
-	    log.debug("Now we have a {" + e.getNamespaceURI() + "}"
+            log.debug("Now we have a {" + e.getNamespaceURI() + "}"
                 + e.getLocalName() + " Element");
         }
         // An element has been provided
-       	if (e != null) { 
-	    return KeyResolver.getPublicKey(e, BaseURI, storage);
+        if (e != null) { 
+            return KeyResolver.getPublicKey(e, BaseURI, storage);
         }
         return null;
     }
@@ -239,9 +239,9 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
             XMLSignatureInput resource = resRes.resolve(uri, BaseURI);
             if (transforms != null) {
                 log.debug("We have Transforms");
-	        resource = transforms.performTransforms(resource);
+                resource = transforms.performTransforms(resource);
             }		  
-	    return resource;
+            return resource;
         }
         return null;
     }
@@ -286,32 +286,32 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
         Iterator it = set.iterator();
         Element e = null;
         while (it.hasNext()) {
-	    Node currentNode = (Node) it.next();
-	    if (currentNode != null && Node.ELEMENT_NODE == currentNode.getNodeType()) {
-	        e = (Element) currentNode;
-	        break;
-	    }
+            Node currentNode = (Node) it.next();
+            if (currentNode != null && Node.ELEMENT_NODE == currentNode.getNodeType()) {
+                e = (Element) currentNode;
+                break;
+            }
         }
         List parents = new ArrayList(10);
-  		
-  	// Obtain all the parents of the elemnt
-  	while (e != null) {
-  	    parents.add(e);
-  	    Node n = e.getParentNode();
-  	    if (n == null || Node.ELEMENT_NODE != n.getNodeType()) {
-  		break;
-  	    }
-  	    e = (Element) n;
-  	}
-  	// Visit them in reverse order.
-  	ListIterator it2 = parents.listIterator(parents.size()-1);
-  	Element ele = null;
-  	while (it2.hasPrevious()) {
-  	    ele = (Element) it2.previous();
-  	    if (set.contains(ele)) {
-  		return ele;
-  	    }
-     	}
-	return null;
+                
+        // Obtain all the parents of the elemnt
+        while (e != null) {
+            parents.add(e);
+            Node n = e.getParentNode();
+            if (n == null || Node.ELEMENT_NODE != n.getNodeType()) {
+                break;
+            }
+            e = (Element) n;
+        }
+        // Visit them in reverse order.
+        ListIterator it2 = parents.listIterator(parents.size()-1);
+        Element ele = null;
+        while (it2.hasPrevious()) {
+            ele = (Element) it2.previous();
+            if (set.contains(ele)) {
+                return ele;
+            }
+        }
+        return null;
     }
 }

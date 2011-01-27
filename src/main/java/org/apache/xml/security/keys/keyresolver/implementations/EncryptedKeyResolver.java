@@ -60,7 +60,7 @@ public class EncryptedKeyResolver extends KeyResolverSpi {
      * @param algorithm
      */
     public EncryptedKeyResolver(String algorithm) {		
-	_kek = null;
+        _kek = null;
         _algorithm=algorithm;
     }
 
@@ -70,10 +70,10 @@ public class EncryptedKeyResolver extends KeyResolverSpi {
      * @param kek
      */
     public EncryptedKeyResolver(String algorithm, Key kek) {		
-	_algorithm = algorithm;
-	_kek = kek;
+        _algorithm = algorithm;
+        _kek = kek;
     }
-	
+        
     /** @inheritDoc */
     public PublicKey engineLookupAndResolvePublicKey(
            Element element, String BaseURI, StorageResolver storage) {
@@ -90,7 +90,7 @@ public class EncryptedKeyResolver extends KeyResolverSpi {
     public javax.crypto.SecretKey engineLookupAndResolveSecretKey(
         Element element, String BaseURI, StorageResolver storage) {
         if (log.isDebugEnabled()) {
-  	    log.debug("EncryptedKeyResolver - Can I resolve " + element.getTagName());
+            log.debug("EncryptedKeyResolver - Can I resolve " + element.getTagName());
         }
 
         if (element == null) {
@@ -101,15 +101,15 @@ public class EncryptedKeyResolver extends KeyResolverSpi {
         boolean isEncryptedKey = XMLUtils.elementIsInEncryptionSpace(element,
                                  EncryptionConstants._TAG_ENCRYPTEDKEY);
         if (isEncryptedKey) {
-	    log.debug("Passed an Encrypted Key");
-	    try {
-	        XMLCipher cipher = XMLCipher.getInstance();
-	        cipher.init(XMLCipher.UNWRAP_MODE, _kek);
-	        EncryptedKey ek = cipher.loadEncryptedKey(element);
-	        key = (SecretKey) cipher.decryptKey(ek, _algorithm);
-	    } catch (XMLEncryptionException e) {}
+            log.debug("Passed an Encrypted Key");
+            try {
+                XMLCipher cipher = XMLCipher.getInstance();
+                cipher.init(XMLCipher.UNWRAP_MODE, _kek);
+                EncryptedKey ek = cipher.loadEncryptedKey(element);
+                key = (SecretKey) cipher.decryptKey(ek, _algorithm);
+            } catch (XMLEncryptionException e) {}
         }
-		  	      
+                              
         return key;
    }
 }

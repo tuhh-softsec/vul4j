@@ -55,9 +55,9 @@ public class DOMStructure implements XMLStructure {
      */
     public DOMStructure(Node node) {
         if (node == null) {
-	    throw new NullPointerException("node cannot be null");
-	}
-	this.node = node;
+            throw new NullPointerException("node cannot be null");
+        }
+        this.node = node;
     }
 
     /**
@@ -66,7 +66,7 @@ public class DOMStructure implements XMLStructure {
      * @return the node
      */
     public Node getNode() {
-	return node;
+        return node;
     }
 
     /**

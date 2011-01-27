@@ -74,7 +74,7 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
 
       String algorithmID = JCEMapper.translateURItoJCEID(this.engineGetURI());
       if (log.isDebugEnabled())
-      	log.debug("Created IntegrityHmacSHA1 using " + algorithmID);
+        log.debug("Created IntegrityHmacSHA1 using " + algorithmID);
 
       try {
          this._macAlgorithm = Mac.getInstance(algorithmID);

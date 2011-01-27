@@ -88,10 +88,10 @@ public class TransformXSLT extends TransformSpi {
     * @throws TransformationException
     */
    protected XMLSignatureInput enginePerformTransform
-	(XMLSignatureInput input, Transform _transformObject)
+        (XMLSignatureInput input, Transform _transformObject)
            throws IOException,
                   TransformationException {
-   	return enginePerformTransform(input, null, _transformObject);
+        return enginePerformTransform(input, null, _transformObject);
    }
 
     protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input,OutputStream baos, Transform _transformObject)
@@ -152,18 +152,18 @@ public class TransformXSLT extends TransformSpi {
 
          Transformer transformer = tFactory.newTransformer(stylesheet);
 
-	 // Force Xalan to use \n as line separator on all OSes. This 
-	 // avoids OS specific signature validation failures due to line
-	 // separator differences in the transformed output. Unfortunately,
-	 // this is not a standard JAXP property so will not work with non-Xalan
-	 // implementations.
-	 try {
-	    transformer.setOutputProperty
-	       ("{http://xml.apache.org/xalan}line-separator", "\n");
-	 } catch (Exception e) {
-	    log.warn("Unable to set Xalan line-separator property: " 
-	       + e.getMessage());
-	 }
+         // Force Xalan to use \n as line separator on all OSes. This 
+         // avoids OS specific signature validation failures due to line
+         // separator differences in the transformed output. Unfortunately,
+         // this is not a standard JAXP property so will not work with non-Xalan
+         // implementations.
+         try {
+            transformer.setOutputProperty
+               ("{http://xml.apache.org/xalan}line-separator", "\n");
+         } catch (Exception e) {
+            log.warn("Unable to set Xalan line-separator property: " 
+               + e.getMessage());
+         }
 
          if (baos==null) {
             ByteArrayOutputStream baos1 = new ByteArrayOutputStream();

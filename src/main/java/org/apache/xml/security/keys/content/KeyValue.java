@@ -129,25 +129,25 @@ public class KeyValue extends SignatureElementProxy implements KeyInfoContent {
      */
     public PublicKey getPublicKey() throws XMLSecurityException {
 
-	Element rsa = XMLUtils.selectDsNode
-	    (this._constructionElement.getFirstChild(),
-	     Constants._TAG_RSAKEYVALUE,0);
+        Element rsa = XMLUtils.selectDsNode
+            (this._constructionElement.getFirstChild(),
+             Constants._TAG_RSAKEYVALUE,0);
          
-	if (rsa != null) {
+        if (rsa != null) {
             RSAKeyValue kv = new RSAKeyValue(rsa, this._baseURI);
             return kv.getPublicKey();
-	}
+        }
 
-	Element dsa = XMLUtils.selectDsNode
-	    (this._constructionElement.getFirstChild(),
-	     Constants._TAG_DSAKEYVALUE,0);
+        Element dsa = XMLUtils.selectDsNode
+            (this._constructionElement.getFirstChild(),
+             Constants._TAG_DSAKEYVALUE,0);
 
-	if (dsa != null) {
+        if (dsa != null) {
             DSAKeyValue kv = new DSAKeyValue(dsa, this._baseURI);
             return kv.getPublicKey();
-	}
+        }
 
-	return null;
+        return null;
     }
 
     /** @inheritDoc */

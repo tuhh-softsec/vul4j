@@ -55,10 +55,10 @@ public final class XSLTTransformParameterSpec implements TransformParameterSpec{
      *    <code>null</code>
      */
     public XSLTTransformParameterSpec(XMLStructure stylesheet) {
-	if (stylesheet == null) {
-	    throw new NullPointerException();
-	}
-	this.stylesheet = stylesheet;
+        if (stylesheet == null) {
+            throw new NullPointerException();
+        }
+        this.stylesheet = stylesheet;
     }
 
     /**
@@ -67,6 +67,6 @@ public final class XSLTTransformParameterSpec implements TransformParameterSpec{
      * @return the stylesheet
      */
     public XMLStructure getStylesheet() {
-	return stylesheet;
+        return stylesheet;
     }
 }

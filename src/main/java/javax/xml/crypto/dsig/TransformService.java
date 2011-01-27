@@ -138,12 +138,12 @@ public abstract class TransformService implements Transform {
      * @see Provider
      */
     public static TransformService getInstance
-	(String algorithm, String mechanismType) 
-	throws NoSuchAlgorithmException {
-	if (mechanismType == null || algorithm == null) {
-	    throw new NullPointerException();
-	}
-	return findInstance(algorithm, mechanismType, null);
+        (String algorithm, String mechanismType) 
+        throws NoSuchAlgorithmException {
+        if (mechanismType == null || algorithm == null) {
+            throw new NullPointerException();
+        }
+        return findInstance(algorithm, mechanismType, null);
     }
 
     /**
@@ -167,12 +167,12 @@ public abstract class TransformService implements Transform {
      * @see Provider
      */
     public static TransformService getInstance
-	(String algorithm, String mechanismType, Provider provider) 
-	throws NoSuchAlgorithmException {
-	if (mechanismType == null || algorithm == null || provider == null) {
-	    throw new NullPointerException();
-	}
-	return findInstance(algorithm, mechanismType, provider);
+        (String algorithm, String mechanismType, Provider provider) 
+        throws NoSuchAlgorithmException {
+        if (mechanismType == null || algorithm == null || provider == null) {
+            throw new NullPointerException();
+        }
+        return findInstance(algorithm, mechanismType, provider);
     }
 
     /**
@@ -200,26 +200,26 @@ public abstract class TransformService implements Transform {
      * @see Provider
      */
     public static TransformService getInstance
-	(String algorithm, String mechanismType, String provider) 
-	throws NoSuchAlgorithmException, NoSuchProviderException {
-	if (mechanismType == null || algorithm == null || provider == null) {
-	    throw new NullPointerException();
-	}
-	Provider prov = Security.getProvider(provider);
-	if (prov == null) {
-	    throw new NoSuchProviderException("cannot find provider named "
-		+ provider);
-	}
-	return findInstance(algorithm, mechanismType, prov);
+        (String algorithm, String mechanismType, String provider) 
+        throws NoSuchAlgorithmException, NoSuchProviderException {
+        if (mechanismType == null || algorithm == null || provider == null) {
+            throw new NullPointerException();
+        }
+        Provider prov = Security.getProvider(provider);
+        if (prov == null) {
+            throw new NoSuchProviderException("cannot find provider named "
+                + provider);
+        }
+        return findInstance(algorithm, mechanismType, prov);
     }
 
     private static TransformService findInstance(String algorithm, 
-	String mechanismType, Provider provider) 
-	throws NoSuchAlgorithmException {
+        String mechanismType, Provider provider) 
+        throws NoSuchAlgorithmException {
 
-	Object[] objs = (Object[]) XMLDSigSecurity.getImpl
-	    (algorithm, new MechanismMapEntry(algorithm, mechanismType),
-	    "TransformService", provider);
+        Object[] objs = (Object[]) XMLDSigSecurity.getImpl
+            (algorithm, new MechanismMapEntry(algorithm, mechanismType),
+            "TransformService", provider);
 
         TransformService spi = (TransformService) objs[0];
         spi.mechanism = mechanismType;
@@ -229,35 +229,35 @@ public abstract class TransformService implements Transform {
     }
 
     private static class MechanismMapEntry implements Map.Entry {
-	private final String mechanism;
-	private final String key;
-	MechanismMapEntry(String algorithm, String mechanism) {
-	    this.mechanism = mechanism;
-	    this.key = "TransformService." + algorithm + " MechanismType";
-	}
-	public boolean equals(Object o) {
-	    if (!(o instanceof Map.Entry)) {
-		return false;
-	    }
-	    Map.Entry e = (Map.Entry) o;
-	    return (getKey()==null ? 
-		    e.getKey()==null : getKey().equals(e.getKey())) &&
-     		   (getValue()==null ?
-      		    e.getValue()==null : getValue().equals(e.getValue()));
-	}
-	public Object getKey() {
-	    return key;
-	}
-	public Object getValue() {
-	    return mechanism;
-	}
-	public Object setValue(Object value) {
-	    throw new UnsupportedOperationException();
-	}
-	public int hashCode() {
-	    return (getKey()==null ? 0 : getKey().hashCode()) ^
-     		   (getValue()==null ? 0 : getValue().hashCode());
-	}
+        private final String mechanism;
+        private final String key;
+        MechanismMapEntry(String algorithm, String mechanism) {
+            this.mechanism = mechanism;
+            this.key = "TransformService." + algorithm + " MechanismType";
+        }
+        public boolean equals(Object o) {
+            if (!(o instanceof Map.Entry)) {
+                return false;
+            }
+            Map.Entry e = (Map.Entry) o;
+            return (getKey()==null ? 
+                    e.getKey()==null : getKey().equals(e.getKey())) &&
+                   (getValue()==null ?
+                    e.getValue()==null : getValue().equals(e.getValue()));
+        }
+        public Object getKey() {
+            return key;
+        }
+        public Object getValue() {
+            return mechanism;
+        }
+        public Object setValue(Object value) {
+            throw new UnsupportedOperationException();
+        }
+        public int hashCode() {
+            return (getKey()==null ? 0 : getKey().hashCode()) ^
+                   (getValue()==null ? 0 : getValue().hashCode());
+        }
     }
 
     /**
@@ -266,7 +266,7 @@ public abstract class TransformService implements Transform {
      * @return the mechanism type
      */
     public final String getMechanismType() {
-	return mechanism;
+        return mechanism;
     }
 
     /**
@@ -276,7 +276,7 @@ public abstract class TransformService implements Transform {
      * @return the algorithm URI
      */
     public final String getAlgorithm() {
-	return algorithm;
+        return algorithm;
     }
 
     /**
@@ -285,7 +285,7 @@ public abstract class TransformService implements Transform {
      * @return the provider
      */
     public final Provider getProvider() {
-	return provider;
+        return provider;
     }
 
     /**
@@ -302,7 +302,7 @@ public abstract class TransformService implements Transform {
      *   are invalid for this algorithm
      */
     public abstract void init(TransformParameterSpec params)
-	throws InvalidAlgorithmParameterException;
+        throws InvalidAlgorithmParameterException;
 
     /**
      * Marshals the algorithm-specific parameters. If there are no parameters
@@ -319,8 +319,8 @@ public abstract class TransformService implements Transform {
      * @throws MarshalException if the parameters cannot be marshalled
      */
     public abstract void marshalParams
-	(XMLStructure parent, XMLCryptoContext context)
-	throws MarshalException;
+        (XMLStructure parent, XMLCryptoContext context)
+        throws MarshalException;
 
     /**
      * Initializes this <code>TransformService</code> with the specified 
@@ -338,5 +338,5 @@ public abstract class TransformService implements Transform {
      *   are invalid for this algorithm
      */
     public abstract void init(XMLStructure parent, XMLCryptoContext context)
- 	throws InvalidAlgorithmParameterException;
+        throws InvalidAlgorithmParameterException;
 }

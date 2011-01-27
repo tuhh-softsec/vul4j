@@ -65,14 +65,14 @@ public class DOMValidateContext extends DOMCryptoContext
      *    <code>null</code>
      */
     public DOMValidateContext(KeySelector ks, Node node) { 
-	if (ks == null) {
-	    throw new NullPointerException("key selector is null");
-	} 
-	if (node == null) {
-	    throw new NullPointerException("node is null");
-	}
-	setKeySelector(ks);
-	this.node = node;
+        if (ks == null) {
+            throw new NullPointerException("key selector is null");
+        } 
+        if (node == null) {
+            throw new NullPointerException("node is null");
+        }
+        setKeySelector(ks);
+        this.node = node;
     }
 
     /**
@@ -88,14 +88,14 @@ public class DOMValidateContext extends DOMCryptoContext
      *    <code>node</code> is <code>null</code>
      */
     public DOMValidateContext(Key validatingKey, Node node) { 
-	if (validatingKey == null) {
-	    throw new NullPointerException("validatingKey is null");
-	}
-	if (node == null) {
-	    throw new NullPointerException("node is null");
-	}
-	setKeySelector(KeySelector.singletonKeySelector(validatingKey));
-	this.node = node;
+        if (validatingKey == null) {
+            throw new NullPointerException("validatingKey is null");
+        }
+        if (node == null) {
+            throw new NullPointerException("node is null");
+        }
+        setKeySelector(KeySelector.singletonKeySelector(validatingKey));
+        this.node = node;
     }
 
     /**
@@ -106,10 +106,10 @@ public class DOMValidateContext extends DOMCryptoContext
      * @see #getNode
      */
     public void setNode(Node node) {
-	if (node == null) {
-	    throw new NullPointerException();
-	}
-	this.node = node;
+        if (node == null) {
+            throw new NullPointerException();
+        }
+        this.node = node;
     }
 
     /**
@@ -119,6 +119,6 @@ public class DOMValidateContext extends DOMCryptoContext
      * @see #setNode(Node)
      */
     public Node getNode() {
-	return node;
+        return node;
     }
 }

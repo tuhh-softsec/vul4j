@@ -132,7 +132,7 @@ public class IdResolver {
         result = IdResolver.getElementBySearching(doc, id);
 
         if (result != null) {
-	    IdResolver.registerElementById(result, id);
+            IdResolver.registerElementById(result, id);
 
             return result;
         }
@@ -150,7 +150,7 @@ public class IdResolver {
      */
     private static Element getElementByIdUsingDOM(Document doc, String id) {
         if (log.isDebugEnabled())
-       	    log.debug("getElementByIdUsingDOM() Search for ID " + id);
+            log.debug("getElementByIdUsingDOM() Search for ID " + id);
         return doc.getElementById(id);
     }
 
@@ -163,7 +163,7 @@ public class IdResolver {
      */
     private static Element getElementByIdType(Document doc, String id) {
         if (log.isDebugEnabled())
-	    log.debug("getElementByIdType() Search for ID " + id);
+            log.debug("getElementByIdType() Search for ID " + id);
         WeakHashMap elementMap;
         synchronized (docMap) {
             elementMap = (WeakHashMap) docMap.get(doc);
@@ -180,122 +180,122 @@ public class IdResolver {
     private static java.util.List names;
     private static int namesLength;
     static {
-	String namespaces[]={ 
-	    Constants.SignatureSpecNS,
-	    EncryptionConstants.EncryptionSpecNS,
-	    "http://schemas.xmlsoap.org/soap/security/2000-12",
-	    "http://www.w3.org/2002/03/xkms#",
-	    "urn:oasis:names:tc:SAML:1.0:assertion",
-	    "urn:oasis:names:tc:SAML:1.0:protocol"
-	};
-	names = Arrays.asList(namespaces);
-	namesLength = names.size();
+        String namespaces[]={ 
+            Constants.SignatureSpecNS,
+            EncryptionConstants.EncryptionSpecNS,
+            "http://schemas.xmlsoap.org/soap/security/2000-12",
+            "http://www.w3.org/2002/03/xkms#",
+            "urn:oasis:names:tc:SAML:1.0:assertion",
+            "urn:oasis:names:tc:SAML:1.0:protocol"
+        };
+        names = Arrays.asList(namespaces);
+        namesLength = names.size();
     }
    
 
     private static Element getElementBySearching(Node root,String id) {
         Element []els=new Element[namesLength + 1];
-	getEl(root,id,els);
-	for (int i=0;i<els.length;i++) {
-	    if (els[i]!=null) {
-		return els[i];
-	    }
-	}
-	return null;
+        getEl(root,id,els);
+        for (int i=0;i<els.length;i++) {
+            if (els[i]!=null) {
+                return els[i];
+            }
+        }
+        return null;
     }
 
     private static int getEl(Node currentNode,String id,Element []els) {
-    	Node sibling=null;
-    	Node parentNode=null;    	
-    	do {
-    		switch (currentNode.getNodeType()) {    		
-    		case Node.DOCUMENT_FRAGMENT_NODE :
-    		case Node.DOCUMENT_NODE :
-    			sibling= currentNode.getFirstChild();
-    			break;
-    			
-    			
-    		case Node.ELEMENT_NODE :
-    			Element currentElement = (Element) currentNode;
-    			if (isElement(currentElement, id, els)==1)
-    				return 1;
-    			sibling= currentNode.getFirstChild(); 
-    			if (sibling==null) {
-    			    if (parentNode != null) {
-       			    		sibling= currentNode.getNextSibling();
-				    }
-    			} else {
-    				parentNode=currentElement;
-    			}
-    			break;
-    	} while (sibling==null  && parentNode!=null) {    		      		      			
-    			sibling=parentNode.getNextSibling();
-    			parentNode=parentNode.getParentNode();   
-    			if (parentNode != null && Node.ELEMENT_NODE != parentNode.getNodeType()) {
-    				parentNode=null;
-    			}    			
-    		}      
-    		if (sibling==null)
-    			return 1;
-    		currentNode=sibling;      
-    		sibling=currentNode.getNextSibling();  
-    	} while(true);
+        Node sibling=null;
+        Node parentNode=null;    	
+        do {
+                switch (currentNode.getNodeType()) {    		
+                case Node.DOCUMENT_FRAGMENT_NODE :
+                case Node.DOCUMENT_NODE :
+                        sibling= currentNode.getFirstChild();
+                        break;
+                        
+                        
+                case Node.ELEMENT_NODE :
+                        Element currentElement = (Element) currentNode;
+                        if (isElement(currentElement, id, els)==1)
+                                return 1;
+                        sibling= currentNode.getFirstChild(); 
+                        if (sibling==null) {
+                            if (parentNode != null) {
+                                        sibling= currentNode.getNextSibling();
+                                    }
+                        } else {
+                                parentNode=currentElement;
+                        }
+                        break;
+        } while (sibling==null  && parentNode!=null) {    		      		      			
+                        sibling=parentNode.getNextSibling();
+                        parentNode=parentNode.getParentNode();   
+                        if (parentNode != null && Node.ELEMENT_NODE != parentNode.getNodeType()) {
+                                parentNode=null;
+                        }    			
+                }      
+                if (sibling==null)
+                        return 1;
+                currentNode=sibling;      
+                sibling=currentNode.getNextSibling();  
+        } while(true);
 
     }
     public static int isElement(Element el, String id,Element[] els) {
-    	if (!el.hasAttributes()) {
-    		return 0;
-    	}
-    	NamedNodeMap ns=el.getAttributes();
-    	int elementIndex=names.indexOf(el.getNamespaceURI());
-	    elementIndex=(elementIndex<0) ? namesLength : elementIndex;
-    	for (int length=ns.getLength(), i=0; i<length; i++) {
-    		Attr n=(Attr)ns.item(i);
-    		String s=n.getNamespaceURI();
-    		
-		    int index=s==null ? elementIndex : names.indexOf(n.getNamespaceURI());
-		    index=(index<0) ? namesLength : index;
-		    String name=n.getLocalName();
-		    if (name == null) { 
-		        name = n.getName();
-		    } 
-		    if (name.length()>2)
-		    	continue;
-		    String value=n.getNodeValue();
-		    if (name.charAt(0)=='I') {
-		    	char ch=name.charAt(1);		    
-		    	if (ch=='d' && value.equals(id)) {				   		    
-		    		els[index]=el;
-		        	if (index==0) {
-		        		return 1;
-		        	}
-		    	} else if (ch=='D' &&value.endsWith(id)) {
-		    		if (index!=3) {
-			            index=namesLength;
-			        }
-			        els[index]=el;
-		    	}
-		    } else if ( "id".equals(name) && value.equals(id) ) {
-		    	if (index!=2) {
-		    		index=namesLength;
-		        }			    				   
-		        els[index]=el;
-		    } 
-    	}
-    	//For an element namespace search for importants
-    	if ((elementIndex==3)&&(
-		    el.getAttribute("OriginalRequestID").equals(id) ||
-		    el.getAttribute("RequestID").equals(id) ||
-		    el.getAttribute("ResponseID").equals(id))) {
-		    els[3]=el;				   		    
-    	} else if ((elementIndex==4)&&(
-		    el.getAttribute("AssertionID").equals(id))) {
-		    els[4]=el;				   
-    	} else if ((elementIndex==5)&&(
-		    el.getAttribute("RequestID").equals(id) ||
-		    el.getAttribute("ResponseID").equals(id))) {
-		    els[5]=el;				   
-		 }		
-    	return 0;
+        if (!el.hasAttributes()) {
+                return 0;
+        }
+        NamedNodeMap ns=el.getAttributes();
+        int elementIndex=names.indexOf(el.getNamespaceURI());
+            elementIndex=(elementIndex<0) ? namesLength : elementIndex;
+        for (int length=ns.getLength(), i=0; i<length; i++) {
+                Attr n=(Attr)ns.item(i);
+                String s=n.getNamespaceURI();
+                
+                    int index=s==null ? elementIndex : names.indexOf(n.getNamespaceURI());
+                    index=(index<0) ? namesLength : index;
+                    String name=n.getLocalName();
+                    if (name == null) { 
+                        name = n.getName();
+                    } 
+                    if (name.length()>2)
+                        continue;
+                    String value=n.getNodeValue();
+                    if (name.charAt(0)=='I') {
+                        char ch=name.charAt(1);		    
+                        if (ch=='d' && value.equals(id)) {				   		    
+                                els[index]=el;
+                                if (index==0) {
+                                        return 1;
+                                }
+                        } else if (ch=='D' &&value.endsWith(id)) {
+                                if (index!=3) {
+                                    index=namesLength;
+                                }
+                                els[index]=el;
+                        }
+                    } else if ( "id".equals(name) && value.equals(id) ) {
+                        if (index!=2) {
+                                index=namesLength;
+                        }			    				   
+                        els[index]=el;
+                    } 
+        }
+        //For an element namespace search for importants
+        if ((elementIndex==3)&&(
+                    el.getAttribute("OriginalRequestID").equals(id) ||
+                    el.getAttribute("RequestID").equals(id) ||
+                    el.getAttribute("ResponseID").equals(id))) {
+                    els[3]=el;				   		    
+        } else if ((elementIndex==4)&&(
+                    el.getAttribute("AssertionID").equals(id))) {
+                    els[4]=el;				   
+        } else if ((elementIndex==5)&&(
+                    el.getAttribute("RequestID").equals(id) ||
+                    el.getAttribute("ResponseID").equals(id))) {
+                    els[5]=el;				   
+                 }		
+        return 0;
     }
 }

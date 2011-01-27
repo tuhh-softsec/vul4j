@@ -84,9 +84,9 @@ public class XPath2FilterContainer04 extends ElementProxy
 
       if ((xpath2filter.length() > 2)
               && (!Character.isWhitespace(xpath2filter.charAt(0)))) {
-	 XMLUtils.addReturnToElement(this._constructionElement);
-	 this._constructionElement.appendChild(doc.createTextNode(xpath2filter));
-	 XMLUtils.addReturnToElement(this._constructionElement);
+         XMLUtils.addReturnToElement(this._constructionElement);
+         this._constructionElement.appendChild(doc.createTextNode(xpath2filter));
+         XMLUtils.addReturnToElement(this._constructionElement);
       } else {
          this._constructionElement
             .appendChild(doc.createTextNode(xpath2filter));

@@ -22,14 +22,14 @@ import org.apache.xml.security.exceptions.XMLSecurityException;
  * 
  */
 public class XMLEncryptionException extends XMLSecurityException {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	/**
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 1L;
+        /**
      * 
-	 *
-	 */
+         *
+         */
    public XMLEncryptionException() {
       super();
    }

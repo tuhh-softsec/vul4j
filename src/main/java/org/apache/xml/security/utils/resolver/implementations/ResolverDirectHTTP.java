@@ -64,7 +64,7 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
 
    /** Field properties[] */
    private static final String properties[] = 
-	{ "http.proxy.host", "http.proxy.port",
+        { "http.proxy.host", "http.proxy.port",
           "http.proxy.username",
           "http.proxy.password",
           "http.basic.username",
@@ -89,7 +89,7 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
    private static final int HttpBasicPass = 5;
 
    public boolean engineIsThreadSafe() {
-	   return true;
+           return true;
    }
    /**
     * Method resolve
@@ -117,15 +117,15 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
             useProxy = true;
          }
 
-	 String oldProxySet = null;
-	 String oldProxyHost = null;
-	 String oldProxyPort = null;
+         String oldProxySet = null;
+         String oldProxyHost = null;
+         String oldProxyPort = null;
          // switch on proxy usage
          if (useProxy) {
             if (log.isDebugEnabled()) {
-            	log.debug("Use of HTTP proxy enabled: " + proxyHost + ":"
+                log.debug("Use of HTTP proxy enabled: " + proxyHost + ":"
                       + proxyPort);
-	    }
+            }
             oldProxySet = System.getProperty("http.proxySet");
             oldProxyHost = System.getProperty("http.proxyHost");
             oldProxyPort = System.getProperty("http.proxyPort");
@@ -263,20 +263,20 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
       }
 
       if (log.isDebugEnabled()) {
-      	 log.debug("I was asked whether I can resolve " + uriNodeValue);
+         log.debug("I was asked whether I can resolve " + uriNodeValue);
       }
 
       if ( uriNodeValue.startsWith("http:") ||
-				(BaseURI!=null && BaseURI.startsWith("http:") )) {
+                                (BaseURI!=null && BaseURI.startsWith("http:") )) {
          if (log.isDebugEnabled()) {
-       	    log.debug("I state that I can resolve " + uriNodeValue);
-	 }
+            log.debug("I state that I can resolve " + uriNodeValue);
+         }
 
          return true;
       }
 
       if (log.isDebugEnabled()) {
-      	 log.debug("I state that I can't resolve " + uriNodeValue);
+         log.debug("I state that I can't resolve " + uriNodeValue);
       }
 
       return false;

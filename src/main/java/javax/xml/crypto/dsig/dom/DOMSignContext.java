@@ -163,10 +163,10 @@ public class DOMSignContext extends DOMCryptoContext implements XMLSignContext {
      * @see #getParent
      */
     public void setParent(Node parent) {
-	if (parent == null) {
-	    throw new NullPointerException("parent is null");
-	}
-	this.parent = parent;
+        if (parent == null) {
+            throw new NullPointerException("parent is null");
+        }
+        this.parent = parent;
     }
 
     /**
@@ -178,7 +178,7 @@ public class DOMSignContext extends DOMCryptoContext implements XMLSignContext {
      * @see #getNextSibling
      */
     public void setNextSibling(Node nextSibling) {
-	this.nextSibling = nextSibling;
+        this.nextSibling = nextSibling;
     }
 
     /**
@@ -188,7 +188,7 @@ public class DOMSignContext extends DOMCryptoContext implements XMLSignContext {
      * @see #setParent(Node)
      */
     public Node getParent() {
-	return parent;
+        return parent;
     }
 
     /**
@@ -198,6 +198,6 @@ public class DOMSignContext extends DOMCryptoContext implements XMLSignContext {
      * @see #setNextSibling(Node)
      */
     public Node getNextSibling() {
-	return nextSibling;
+        return nextSibling;
     }
 }

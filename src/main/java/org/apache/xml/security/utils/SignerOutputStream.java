@@ -41,10 +41,10 @@ public class SignerOutputStream extends ByteArrayOutputStream {
     /** @inheritDoc */
     public void write(byte[] arg0)  {
         try {
-	    sa.update(arg0);
-	} catch (XMLSignatureException e) {
+            sa.update(arg0);
+        } catch (XMLSignatureException e) {
             throw new RuntimeException(""+e);
-	}
+        }
     }
     
     /** @inheritDoc */

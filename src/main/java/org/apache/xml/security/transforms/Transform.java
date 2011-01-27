@@ -92,9 +92,9 @@ public final class Transform extends SignatureElementProxy {
         }
 
         if (log.isDebugEnabled()) {
-       	    log.debug("Create URI \"" + algorithmURI + "\" class \""
+            log.debug("Create URI \"" + algorithmURI + "\" class \""
                    + transformSpi.getClass() + "\"");
-       	    log.debug("The NodeList is " + contextNodes);
+            log.debug("The NodeList is " + contextNodes);
         }
 
         // give it to the current document
@@ -136,7 +136,7 @@ public final class Transform extends SignatureElementProxy {
         if (transformSpi == null) {
             Object exArgs[] = { algorithmURI };
             throw new InvalidTransformException(
-	        "signature.Transform.UnknownTransform", exArgs);
+                "signature.Transform.UnknownTransform", exArgs);
         }
     }
 
@@ -236,9 +236,9 @@ public final class Transform extends SignatureElementProxy {
         }
 
         try {
-	    transformClassHash.put
+            transformClassHash.put
                 (algorithmURI, ClassLoaderUtils.loadClass(implementingClass, Transform.class));
-	} catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
@@ -306,15 +306,15 @@ public final class Transform extends SignatureElementProxy {
         XMLSignatureInput result = null;
 
         try {
-       	    result = transformSpi.enginePerformTransform(input, os, this);
+            result = transformSpi.enginePerformTransform(input, os, this);
         } catch (ParserConfigurationException ex) {
-       	    Object exArgs[] = { this.getURI(), "ParserConfigurationException" };
-   	    throw new CanonicalizationException(
-   	   	"signature.Transform.ErrorDuringTransform", exArgs, ex);
+            Object exArgs[] = { this.getURI(), "ParserConfigurationException" };
+            throw new CanonicalizationException(
+                "signature.Transform.ErrorDuringTransform", exArgs, ex);
         } catch (SAXException ex) {
-       	    Object exArgs[] = { this.getURI(), "SAXException" };
-   	    throw new CanonicalizationException(
-   	   	"signature.Transform.ErrorDuringTransform", exArgs, ex);
+            Object exArgs[] = { this.getURI(), "SAXException" };
+            throw new CanonicalizationException(
+                "signature.Transform.ErrorDuringTransform", exArgs, ex);
         }
 
         return result;
@@ -333,26 +333,26 @@ public final class Transform extends SignatureElementProxy {
     private static TransformSpi getTransformSpi(String URI) 
         throws InvalidTransformException {
         try {
-    	    Object value = transformSpiHash.get(URI);
-    	    if (value != null) {
-	        return (TransformSpi) value;
-    	    }
-    	    Class cl = (Class) transformClassHash.get(URI);
-    	    if (cl != null) {
-    	        TransformSpi tr = (TransformSpi) cl.newInstance();
-    	        transformSpiHash.put(URI, tr);
-    	        return tr;
-    	    } 
-	} catch (InstantiationException ex) {
-	    Object exArgs[] = { URI };
+            Object value = transformSpiHash.get(URI);
+            if (value != null) {
+                return (TransformSpi) value;
+            }
+            Class cl = (Class) transformClassHash.get(URI);
+            if (cl != null) {
+                TransformSpi tr = (TransformSpi) cl.newInstance();
+                transformSpiHash.put(URI, tr);
+                return tr;
+            } 
+        } catch (InstantiationException ex) {
+            Object exArgs[] = { URI };
             throw new InvalidTransformException(
                 "signature.Transform.UnknownTransform", exArgs, ex);      
-	} catch (IllegalAccessException ex) {
-	    Object exArgs[] = { URI };
+        } catch (IllegalAccessException ex) {
+            Object exArgs[] = { URI };
             throw new InvalidTransformException(
                 "signature.Transform.UnknownTransform", exArgs, ex);      
-	}
-	return null;	
+        }
+        return null;	
     }
    
     /** @inheritDoc */

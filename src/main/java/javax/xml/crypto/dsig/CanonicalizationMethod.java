@@ -58,7 +58,7 @@ public interface CanonicalizationMethod extends Transform {
      * XML (without comments)</a> canonicalization method algorithm URI.
      */
     final static String INCLUSIVE = 
-	"http://www.w3.org/TR/2001/REC-xml-c14n-20010315";
+        "http://www.w3.org/TR/2001/REC-xml-c14n-20010315";
 
     /**
      * The 

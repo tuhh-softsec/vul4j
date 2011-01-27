@@ -58,9 +58,9 @@ public class TransformC14NExclusive extends TransformSpi {
     * @throws CanonicalizationException
     */
    protected XMLSignatureInput enginePerformTransform
-	(XMLSignatureInput input, Transform _transformObject)
+        (XMLSignatureInput input, Transform _transformObject)
            throws CanonicalizationException {
-   	    return enginePerformTransform(input, null, _transformObject);
+            return enginePerformTransform(input, null, _transformObject);
    }
 
     protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input,OutputStream os, Transform _transformObject)

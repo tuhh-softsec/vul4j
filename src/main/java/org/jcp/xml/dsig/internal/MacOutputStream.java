@@ -36,13 +36,13 @@ public class MacOutputStream extends ByteArrayOutputStream {
 
     @Override
     public void write(int arg0) {
-	super.write(arg0);
+        super.write(arg0);
         mac.update((byte) arg0);
     }
     
     @Override
     public void write(byte[] arg0, int arg1, int arg2) {
-	super.write(arg0, arg1, arg2);
+        super.write(arg0, arg1, arg2);
         mac.update(arg0, arg1, arg2);
     }
 }

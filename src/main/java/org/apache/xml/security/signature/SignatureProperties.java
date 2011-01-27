@@ -83,7 +83,7 @@ public class SignatureProperties extends SignatureElementProxy {
     * @throws XMLSignatureException
     */
    public SignatureProperty item(int i) throws XMLSignatureException {
-   	  try {
+          try {
          Element propertyElem =
             XMLUtils.selectDsNode(this._constructionElement, 
                                  Constants._TAG_SIGNATUREPROPERTY, 

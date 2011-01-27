@@ -45,33 +45,33 @@ public abstract class KeySelector {
      */
     public static class Purpose {
 
-	private final String name;
+        private final String name;
 
-	private Purpose(String name) 	{ this.name = name; }
+        private Purpose(String name) 	{ this.name = name; }
 
-	/**
-	 * Returns a string representation of this purpose ("sign",
-	 * "verify", "encrypt", or "decrypt").
-	 *
-	 * @return a string representation of this purpose
-	 */
-	public String toString()	{ return name; } 	
+        /**
+         * Returns a string representation of this purpose ("sign",
+         * "verify", "encrypt", or "decrypt").
+         *
+         * @return a string representation of this purpose
+         */
+        public String toString()	{ return name; } 	
 
-	/**
-	 * A key for signing.
-	 */
+        /**
+         * A key for signing.
+         */
         public static final Purpose SIGN = new Purpose("sign");
-	/**
-	 * A key for verifying.
-	 */
+        /**
+         * A key for verifying.
+         */
         public static final Purpose VERIFY = new Purpose("verify");
-	/**
-	 * A key for encrypting.
-	 */
+        /**
+         * A key for encrypting.
+         */
         public static final Purpose ENCRYPT = new Purpose("encrypt");
-	/**
-	 * A key for decrypting.
-	 */
+        /**
+         * A key for decrypting.
+         */
         public static final Purpose DECRYPT = new Purpose("decrypt");
     }
 
@@ -107,8 +107,8 @@ public abstract class KeySelector {
      *    is not supported by this key selector
      */
     public abstract KeySelectorResult select(KeyInfo keyInfo, Purpose purpose, 
-	AlgorithmMethod method, XMLCryptoContext context) 
-	throws KeySelectorException;
+        AlgorithmMethod method, XMLCryptoContext context) 
+        throws KeySelectorException;
 
     /**
      * Returns a <code>KeySelector</code> that always selects the specified
@@ -133,14 +133,14 @@ public abstract class KeySelector {
         }
 
         public KeySelectorResult select(KeyInfo keyInfo, Purpose purpose,
-	    AlgorithmMethod method, XMLCryptoContext context) 
-	    throws KeySelectorException {
+            AlgorithmMethod method, XMLCryptoContext context) 
+            throws KeySelectorException {
 
             return new KeySelectorResult() {
-		public Key getKey() {
-		    return key;
-		}
-	    };
+                public Key getKey() {
+                    return key;
+                }
+            };
         }
     }
 }

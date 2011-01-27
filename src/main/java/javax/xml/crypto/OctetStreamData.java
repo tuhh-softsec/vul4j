@@ -44,10 +44,10 @@ public class OctetStreamData implements Data {
      *    <code>null</code>
      */
     public OctetStreamData(InputStream octetStream) {
-	if (octetStream == null) {
-	    throw new NullPointerException("octetStream is null");
-	}
-	this.octetStream = octetStream;
+        if (octetStream == null) {
+            throw new NullPointerException("octetStream is null");
+        }
+        this.octetStream = octetStream;
     }
 
     /**
@@ -62,13 +62,13 @@ public class OctetStreamData implements Data {
      *    <code>null</code>
      */
     public OctetStreamData(InputStream octetStream, String uri, 
-	String mimeType) {
-	if (octetStream == null) {
-	    throw new NullPointerException("octetStream is null");
-	}
-	this.octetStream = octetStream;
-	this.uri = uri;
-	this.mimeType = mimeType;
+        String mimeType) {
+        if (octetStream == null) {
+            throw new NullPointerException("octetStream is null");
+        }
+        this.octetStream = octetStream;
+        this.uri = uri;
+        this.mimeType = mimeType;
     }
 
     /**
@@ -77,7 +77,7 @@ public class OctetStreamData implements Data {
      * @return the input stream of this <code>OctetStreamData</code>.
      */
     public InputStream getOctetStream() {
-	return octetStream;
+        return octetStream;
     }
 
     /**
@@ -87,7 +87,7 @@ public class OctetStreamData implements Data {
      * @return the URI String or <code>null</code> if not applicable
      */
     public String getURI() {
-	return uri;
+        return uri;
     }
 
     /**
@@ -97,6 +97,6 @@ public class OctetStreamData implements Data {
      * @return the MIME type or <code>null</code> if not applicable
      */
     public String getMimeType() {
-	return mimeType;
+        return mimeType;
     }
 }

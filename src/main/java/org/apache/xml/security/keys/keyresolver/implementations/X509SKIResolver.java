@@ -81,27 +81,27 @@ public class X509SKIResolver extends KeyResolverSpi {
    public X509Certificate engineLookupResolveX509Certificate(
            Element element, String BaseURI, StorageResolver storage)
               throws KeyResolverException {
-	   if (log.isDebugEnabled()) {
-	     log.debug("Can I resolve " + element.getTagName() + "?");
-	   }	      
-	   if (!XMLUtils.elementIsInSignatureSpace(element,
+           if (log.isDebugEnabled()) {
+             log.debug("Can I resolve " + element.getTagName() + "?");
+           }	      
+           if (!XMLUtils.elementIsInSignatureSpace(element,
               Constants._TAG_X509DATA)) {
-	         log.debug("I can't");
-	         return null;
-	   }
-	   /** Field _x509childObject[] */
-	   XMLX509SKI x509childObject[] = null;
-	   
-	   Element x509childNodes[] = null;
-	   x509childNodes = XMLUtils.selectDsNodes(element.getFirstChild(),
-	                  Constants._TAG_X509SKI);
+                 log.debug("I can't");
+                 return null;
+           }
+           /** Field _x509childObject[] */
+           XMLX509SKI x509childObject[] = null;
+           
+           Element x509childNodes[] = null;
+           x509childNodes = XMLUtils.selectDsNodes(element.getFirstChild(),
+                          Constants._TAG_X509SKI);
 
-	   if (!((x509childNodes != null)
-	                 && (x509childNodes.length > 0))) {
-		   log.debug("I can't");
-	        return null;
-	   }
-	   try {         
+           if (!((x509childNodes != null)
+                         && (x509childNodes.length > 0))) {
+                   log.debug("I can't");
+                return null;
+           }
+           try {         
          if (storage == null) {
             Object exArgs[] = { Constants._TAG_X509SKI };
             KeyResolverException ex =

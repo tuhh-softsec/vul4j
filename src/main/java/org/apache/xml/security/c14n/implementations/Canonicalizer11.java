@@ -62,114 +62,114 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
     static Log log = LogFactory.getLog(Canonicalizer11.class.getName());
 
     static class XmlAttrStack {
-    	int currentLevel = 0;
-    	int lastlevel = 0;
-    	XmlsStackElement cur;
-    	static class XmlsStackElement {
-	    int level;
-    	    boolean rendered = false;
-	    List nodes = new ArrayList();
-    	};
-    	List levels = new ArrayList();    	
-    	void push(int level) {
-	    currentLevel = level;
-	    if (currentLevel == -1)
-    		return;
-	    cur = null;
-	    while (lastlevel >= currentLevel) {
-		levels.remove(levels.size() - 1);
-		if (levels.size() == 0) {
-		    lastlevel = 0;
-		    return;    				
-		}
-    		lastlevel=((XmlsStackElement)levels.get(levels.size()-1)).level;
-	    }
-    	}
-    	void addXmlnsAttr(Attr n) {
-	    if (cur == null) {
-		cur = new XmlsStackElement();
-		cur.level = currentLevel;
-		levels.add(cur);
-    		lastlevel = currentLevel;
-	    }
-    	    cur.nodes.add(n);
-    	}
-    	void getXmlnsAttr(Collection col) {
-	    if (cur == null) {
-		cur = new XmlsStackElement();
-    		cur.level = currentLevel;
-    		lastlevel = currentLevel;
-    		levels.add(cur);
-    	    }
-	    int size = levels.size() - 2;
-	    boolean parentRendered = false;
-	    XmlsStackElement e = null;
-	    if (size == -1) {
-		parentRendered = true;
-	    } else {
-    		e = (XmlsStackElement) levels.get(size);
-		if (e.rendered && e.level+1 == currentLevel)
-    		    parentRendered = true;
-	    }
-    	    if (parentRendered) {
-	        col.addAll(cur.nodes);
-	        cur.rendered = true;
-	        return;
-	    }
-    		
-	    Map loa = new HashMap();    		
-	    List baseAttrs = new ArrayList();
-	    boolean successiveOmitted = true;
-    	    for (;size>=0;size--) {
-    	        e = (XmlsStackElement) levels.get(size);
-		if (e.rendered) {
-		    successiveOmitted = false;
-		}
-    	        Iterator it = e.nodes.iterator();
-    	        while (it.hasNext() && successiveOmitted) {
-    		    Attr n = (Attr) it.next();
-		    if (n.getLocalName().equals("base")) {
-			if (!e.rendered) {
-			    baseAttrs.add(n);
-			} 
-    		    } else if (!loa.containsKey(n.getName()))
-		        loa.put(n.getName(), n);
-	        }
-	    }
-	    if (!baseAttrs.isEmpty()) {
-    	        Iterator it = cur.nodes.iterator();
-		String base = null;
-		Attr baseAttr = null;
-    	        while (it.hasNext()) {
-    		    Attr n = (Attr) it.next();
-		    if (n.getLocalName().equals("base")) {
-			base = n.getValue();
-			baseAttr = n;
-			break;
-		    }
-		}
-	        it = baseAttrs.iterator();
-	        while (it.hasNext()) {
-		    Attr n = (Attr) it.next();
-		    if (base == null) {
-			base = n.getValue();
-			baseAttr = n;
-		    } else {
-		        try {
-		            base = joinURI(n.getValue(), base);
-		        } catch (URISyntaxException ue) {
-			    ue.printStackTrace();
-		        }
-		    }
-		}
-		if (base != null && base.length() != 0) {
-		    baseAttr.setValue(base);
-		    col.add(baseAttr);
-		}
-	    }
-		
-	    cur.rendered = true;
-    	    col.addAll(loa.values());
+        int currentLevel = 0;
+        int lastlevel = 0;
+        XmlsStackElement cur;
+        static class XmlsStackElement {
+            int level;
+            boolean rendered = false;
+            List nodes = new ArrayList();
+        };
+        List levels = new ArrayList();    	
+        void push(int level) {
+            currentLevel = level;
+            if (currentLevel == -1)
+                return;
+            cur = null;
+            while (lastlevel >= currentLevel) {
+                levels.remove(levels.size() - 1);
+                if (levels.size() == 0) {
+                    lastlevel = 0;
+                    return;    				
+                }
+                lastlevel=((XmlsStackElement)levels.get(levels.size()-1)).level;
+            }
+        }
+        void addXmlnsAttr(Attr n) {
+            if (cur == null) {
+                cur = new XmlsStackElement();
+                cur.level = currentLevel;
+                levels.add(cur);
+                lastlevel = currentLevel;
+            }
+            cur.nodes.add(n);
+        }
+        void getXmlnsAttr(Collection col) {
+            if (cur == null) {
+                cur = new XmlsStackElement();
+                cur.level = currentLevel;
+                lastlevel = currentLevel;
+                levels.add(cur);
+            }
+            int size = levels.size() - 2;
+            boolean parentRendered = false;
+            XmlsStackElement e = null;
+            if (size == -1) {
+                parentRendered = true;
+            } else {
+                e = (XmlsStackElement) levels.get(size);
+                if (e.rendered && e.level+1 == currentLevel)
+                    parentRendered = true;
+            }
+            if (parentRendered) {
+                col.addAll(cur.nodes);
+                cur.rendered = true;
+                return;
+            }
+                
+            Map loa = new HashMap();    		
+            List baseAttrs = new ArrayList();
+            boolean successiveOmitted = true;
+            for (;size>=0;size--) {
+                e = (XmlsStackElement) levels.get(size);
+                if (e.rendered) {
+                    successiveOmitted = false;
+                }
+                Iterator it = e.nodes.iterator();
+                while (it.hasNext() && successiveOmitted) {
+                    Attr n = (Attr) it.next();
+                    if (n.getLocalName().equals("base")) {
+                        if (!e.rendered) {
+                            baseAttrs.add(n);
+                        } 
+                    } else if (!loa.containsKey(n.getName()))
+                        loa.put(n.getName(), n);
+                }
+            }
+            if (!baseAttrs.isEmpty()) {
+                Iterator it = cur.nodes.iterator();
+                String base = null;
+                Attr baseAttr = null;
+                while (it.hasNext()) {
+                    Attr n = (Attr) it.next();
+                    if (n.getLocalName().equals("base")) {
+                        base = n.getValue();
+                        baseAttr = n;
+                        break;
+                    }
+                }
+                it = baseAttrs.iterator();
+                while (it.hasNext()) {
+                    Attr n = (Attr) it.next();
+                    if (base == null) {
+                        base = n.getValue();
+                        baseAttr = n;
+                    } else {
+                        try {
+                            base = joinURI(n.getValue(), base);
+                        } catch (URISyntaxException ue) {
+                            ue.printStackTrace();
+                        }
+                    }
+                }
+                if (base != null && base.length() != 0) {
+                    baseAttr.setValue(base);
+                    col.add(baseAttr);
+                }
+            }
+                
+            cur.rendered = true;
+            col.addAll(loa.values());
         }
     };
     XmlAttrStack xmlattrStack = new XmlAttrStack();
@@ -180,7 +180,7 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
      * @param includeComments
      */
     public Canonicalizer11(boolean includeComments) {
-	super(includeComments);
+        super(includeComments);
     }
 
     /**
@@ -199,59 +199,59 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
      * @throws CanonicalizationException
      */
     Iterator handleAttributesSubtree(Element E, NameSpaceSymbTable ns)
-	throws CanonicalizationException {
-	if (!E.hasAttributes() && !firstCall) {
-	    return null; 
-	}
-	// result will contain the attrs which have to be outputted   	  
-	final SortedSet result = this.result;       
-	result.clear();
-	NamedNodeMap attrs = E.getAttributes();
-	int attrsLength = attrs.getLength();      
+        throws CanonicalizationException {
+        if (!E.hasAttributes() && !firstCall) {
+            return null; 
+        }
+        // result will contain the attrs which have to be outputted   	  
+        final SortedSet result = this.result;       
+        result.clear();
+        NamedNodeMap attrs = E.getAttributes();
+        int attrsLength = attrs.getLength();      
             
-	for (int i = 0; i < attrsLength; i++) {
-	    Attr N = (Attr) attrs.item(i);
-	    String NUri = N.getNamespaceURI();
+        for (int i = 0; i < attrsLength; i++) {
+            Attr N = (Attr) attrs.item(i);
+            String NUri = N.getNamespaceURI();
 
-	    if (!XMLNS_URI.equals(NUri)) {
-		// It's not a namespace attr node. Add to the result and 
-		// continue.
-		result.add(N);
-            	continue;
-	    }
+            if (!XMLNS_URI.equals(NUri)) {
+                // It's not a namespace attr node. Add to the result and 
+                // continue.
+                result.add(N);
+                continue;
+            }
 
-	    String NName = N.getLocalName();
-	    String NValue = N.getValue();        
-	    if (XML.equals(NName)
-		&& XML_LANG_URI.equals(NValue)) {
-         	// The default mapping for xml must not be output.
-         	continue;
-	    }
+            String NName = N.getLocalName();
+            String NValue = N.getValue();        
+            if (XML.equals(NName)
+                && XML_LANG_URI.equals(NValue)) {
+                // The default mapping for xml must not be output.
+                continue;
+            }
          
-	    Node n = ns.addMappingAndRender(NName, NValue, N);
-		 	 
-	    if (n != null) {
-		// Render the ns definition
-		result.add(n);
-		if (C14nHelper.namespaceIsRelative(N)) {
+            Node n = ns.addMappingAndRender(NName, NValue, N);
+                         
+            if (n != null) {
+                // Render the ns definition
+                result.add(n);
+                if (C14nHelper.namespaceIsRelative(N)) {
                     Object exArgs[] = {E.getTagName(), NName, N.getNodeValue()};
                     throw new CanonicalizationException(
-			"c14n.Canonicalizer.RelativeNamespace", exArgs);
-		}
-	    }
-	}
-            	   
-	if (firstCall) {
-	    // It is the first node of the subtree
-	    // Obtain all the namespaces defined in the parents, and added 
-	    // to the output.
-	    ns.getUnrenderedNodes(result);          	      		            
-	    // output the attributes in the xml namespace.
-	    xmlattrStack.getXmlnsAttr(result);
-	    firstCall = false;
-	} 
+                        "c14n.Canonicalizer.RelativeNamespace", exArgs);
+                }
+            }
+        }
+                   
+        if (firstCall) {
+            // It is the first node of the subtree
+            // Obtain all the namespaces defined in the parents, and added 
+            // to the output.
+            ns.getUnrenderedNodes(result);          	      		            
+            // output the attributes in the xml namespace.
+            xmlattrStack.getXmlnsAttr(result);
+            firstCall = false;
+        } 
       
-	return result.iterator();
+        return result.iterator();
     }
 
     /**
@@ -268,9 +268,9 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
      * @throws CanonicalizationException
      */
     Iterator handleAttributes(Element E, NameSpaceSymbTable ns) 
-	throws CanonicalizationException {    
+        throws CanonicalizationException {    
         // result will contain the attrs which have to be output
-	xmlattrStack.push(ns.getLevel());
+        xmlattrStack.push(ns.getLevel());
         boolean isRealVisible = isVisibleDO(E, ns.getLevel()) == 1;    
         NamedNodeMap attrs = null;
         int attrsLength = 0;
@@ -279,94 +279,94 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
             attrsLength = attrs.getLength();
         }
     
-	SortedSet result = this.result;       
-	result.clear();
+        SortedSet result = this.result;       
+        result.clear();
             
-	for (int i = 0; i < attrsLength; i++) {
-	    Attr N = (Attr) attrs.item(i);
-	    String NUri = N.getNamespaceURI();
+        for (int i = 0; i < attrsLength; i++) {
+            Attr N = (Attr) attrs.item(i);
+            String NUri = N.getNamespaceURI();
        
-	    if (!XMLNS_URI.equals(NUri)) {
-		// A non namespace definition node.
-		if (XML_LANG_URI.equals(NUri)) {
-		    if (N.getLocalName().equals("id")) {
-			if (isRealVisible) {
-			    // treat xml:id like any other attribute 
-		 	    // (emit it, but don't inherit it)
-			    result.add(N);
-			}
-		    } else {
-		        xmlattrStack.addXmlnsAttr(N);
-		    }
+            if (!XMLNS_URI.equals(NUri)) {
+                // A non namespace definition node.
+                if (XML_LANG_URI.equals(NUri)) {
+                    if (N.getLocalName().equals("id")) {
+                        if (isRealVisible) {
+                            // treat xml:id like any other attribute 
+                            // (emit it, but don't inherit it)
+                            result.add(N);
+                        }
+                    } else {
+                        xmlattrStack.addXmlnsAttr(N);
+                    }
                 } else if (isRealVisible) {
-       		    // The node is visible add the attribute to the list of 
-		    // output attributes.
-           	    result.add(N);
-          	} 
-       	  	// keep working
-          	continue;
-	    }
+                    // The node is visible add the attribute to the list of 
+                    // output attributes.
+                    result.add(N);
+                } 
+                // keep working
+                continue;
+            }
 
-	    String NName = N.getLocalName();
-	    String NValue = N.getValue();              
-	    if ("xml".equals(NName)
+            String NName = N.getLocalName();
+            String NValue = N.getValue();              
+            if ("xml".equals(NName)
                 && XML_LANG_URI.equals(NValue)) {
-		/* except omit namespace node with local name xml, which defines
-		 * the xml prefix, if its string value is 
-		 * http://www.w3.org/XML/1998/namespace.
-           	 */
-          	continue;
-	    }
-	    // add the prefix binding to the ns symb table.
-	    // ns.addInclusiveMapping(NName,NValue,N,isRealVisible);          
-	    if (isVisible(N))  {
-	    	if (!isRealVisible && ns.removeMappingIfRender(NName)) {
-    		    continue;
-	    	} 
-		// The xpath select this node output it if needed.
-	    	// Node n = ns.addMappingAndRenderXNodeSet
-		//	(NName, NValue, N, isRealVisible);
-	    	Node n = ns.addMappingAndRender(NName, NValue, N);
-	 	if (n != null) {
-	 	    result.add(n);
+                /* except omit namespace node with local name xml, which defines
+                 * the xml prefix, if its string value is 
+                 * http://www.w3.org/XML/1998/namespace.
+                 */
+                continue;
+            }
+            // add the prefix binding to the ns symb table.
+            // ns.addInclusiveMapping(NName,NValue,N,isRealVisible);          
+            if (isVisible(N))  {
+                if (!isRealVisible && ns.removeMappingIfRender(NName)) {
+                    continue;
+                } 
+                // The xpath select this node output it if needed.
+                // Node n = ns.addMappingAndRenderXNodeSet
+                //	(NName, NValue, N, isRealVisible);
+                Node n = ns.addMappingAndRender(NName, NValue, N);
+                if (n != null) {
+                    result.add(n);
                     if (C14nHelper.namespaceIsRelative(N)) {
-			Object exArgs[] = 
-			    { E.getTagName(), NName, N.getNodeValue() };
-			throw new CanonicalizationException(
+                        Object exArgs[] = 
+                            { E.getTagName(), NName, N.getNodeValue() };
+                        throw new CanonicalizationException(
                             "c14n.Canonicalizer.RelativeNamespace", exArgs);
-		    }
-		}
-	    } else {
-    		if (isRealVisible && !XMLNS.equals(NName)) {
-		    ns.removeMapping(NName);	
-		} else {
-    		    ns.addMapping(NName, NValue, N);
-    		}
-	    }
-	}
-	if (isRealVisible) {    	           
-    	    // The element is visible, handle the xmlns definition        
+                    }
+                }
+            } else {
+                if (isRealVisible && !XMLNS.equals(NName)) {
+                    ns.removeMapping(NName);	
+                } else {
+                    ns.addMapping(NName, NValue, N);
+                }
+            }
+        }
+        if (isRealVisible) {    	           
+            // The element is visible, handle the xmlns definition        
             Attr xmlns = E.getAttributeNodeNS(XMLNS_URI, XMLNS);
             Node n = null;
             if (xmlns == null) {
-        	// No xmlns def just get the already defined.
-        	n = ns.getMapping(XMLNS);        		
-	    } else if (!isVisible(xmlns)) {
-		// There is a defn but the xmlns is not selected by the xpath.
-        	// then xmlns=""
-        	n = ns.addMappingAndRender(XMLNS, "", nullNode);
-	    }
+                // No xmlns def just get the already defined.
+                n = ns.getMapping(XMLNS);        		
+            } else if (!isVisible(xmlns)) {
+                // There is a defn but the xmlns is not selected by the xpath.
+                // then xmlns=""
+                n = ns.addMappingAndRender(XMLNS, "", nullNode);
+            }
             // output the xmlns def if needed.
             if (n != null) {
-		result.add(n);
-	    }
-	    // Float all xml:* attributes of the unselected parent elements to 
-	    // this one. addXmlAttributes(E,result);
+                result.add(n);
+            }
+            // Float all xml:* attributes of the unselected parent elements to 
+            // this one. addXmlAttributes(E,result);
             xmlattrStack.getXmlnsAttr(result);
-    	    ns.getUnrenderedNodes(result);
+            ns.getUnrenderedNodes(result);
         }
     
-	return result.iterator();
+        return result.iterator();
     }
 
     /**
@@ -378,7 +378,7 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
      * @throws CanonicalizationException always
      */
     public byte[] engineCanonicalizeXPathNodeSet(Set xpathNodeSet, 
-	String inclusiveNamespaces) throws CanonicalizationException {
+        String inclusiveNamespaces) throws CanonicalizationException {
         throw new CanonicalizationException(
          "c14n.Canonicalizer.UnsupportedOperation");
     }
@@ -392,126 +392,126 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
      * @throws CanonicalizationException
      */
     public byte[] engineCanonicalizeSubTree(Node rootNode, 
-	String inclusiveNamespaces) throws CanonicalizationException {
+        String inclusiveNamespaces) throws CanonicalizationException {
         throw new CanonicalizationException(
-	    "c14n.Canonicalizer.UnsupportedOperation");
+            "c14n.Canonicalizer.UnsupportedOperation");
     }
 
     void circumventBugIfNeeded(XMLSignatureInput input) 
-	throws CanonicalizationException, ParserConfigurationException, 
+        throws CanonicalizationException, ParserConfigurationException, 
         IOException, SAXException {
-	if (!input.isNeedsToBeExpanded()) 
-	    return;
-	Document doc = null;
-	if (input.getSubNode() != null) {
-	    doc = XMLUtils.getOwnerDocument(input.getSubNode());
-	} else {
-	    doc = XMLUtils.getOwnerDocument(input.getNodeSet());
-	}
-	XMLUtils.circumventBug2650(doc);
+        if (!input.isNeedsToBeExpanded()) 
+            return;
+        Document doc = null;
+        if (input.getSubNode() != null) {
+            doc = XMLUtils.getOwnerDocument(input.getSubNode());
+        } else {
+            doc = XMLUtils.getOwnerDocument(input.getNodeSet());
+        }
+        XMLUtils.circumventBug2650(doc);
     }
    
     void handleParent(Element e, NameSpaceSymbTable ns) {
-	if (!e.hasAttributes()) {
-	    return;
-	}
-	xmlattrStack.push(-1);
-	NamedNodeMap attrs = e.getAttributes();
-	int attrsLength = attrs.getLength();
-	for (int i = 0; i < attrsLength; i++) {
-	    Attr N = (Attr) attrs.item(i);
-	    if (!Constants.NamespaceSpecNS.equals(N.getNamespaceURI())) {
-		// Not a namespace definition, ignore.
-		if (!XML_LANG_URI.equals(N.getNamespaceURI())) {
-		    xmlattrStack.addXmlnsAttr(N);
-		}
-		continue;
-	    }
+        if (!e.hasAttributes()) {
+            return;
+        }
+        xmlattrStack.push(-1);
+        NamedNodeMap attrs = e.getAttributes();
+        int attrsLength = attrs.getLength();
+        for (int i = 0; i < attrsLength; i++) {
+            Attr N = (Attr) attrs.item(i);
+            if (!Constants.NamespaceSpecNS.equals(N.getNamespaceURI())) {
+                // Not a namespace definition, ignore.
+                if (!XML_LANG_URI.equals(N.getNamespaceURI())) {
+                    xmlattrStack.addXmlnsAttr(N);
+                }
+                continue;
+            }
 
-	    String NName = N.getLocalName();
-	    String NValue = N.getNodeValue();
-	    if (XML.equals(NName)
-	        && Constants.XML_LANG_SPACE_SpecNS.equals(NValue)) {
-	        continue;
-	    }            
-	    ns.addMapping(NName,NValue,N);             
-	}
+            String NName = N.getLocalName();
+            String NValue = N.getNodeValue();
+            if (XML.equals(NName)
+                && Constants.XML_LANG_SPACE_SpecNS.equals(NValue)) {
+                continue;
+            }            
+            ns.addMapping(NName,NValue,N);             
+        }
     }
 
     private static String joinURI(String baseURI, String relativeURI) 
         throws URISyntaxException {
-	String bscheme = null;
-	String bauthority = null;
-	String bpath = "";
-	String bquery = null;
-	String bfragment = null; // Is this correct?
+        String bscheme = null;
+        String bauthority = null;
+        String bpath = "";
+        String bquery = null;
+        String bfragment = null; // Is this correct?
 
-	// pre-parse the baseURI
-	if (baseURI != null) {
-	    if (baseURI.endsWith("..")) {
-		baseURI = baseURI + "/";
-	    }
-	    URI base = new URI(baseURI);
-	    bscheme = base.getScheme();
-	    bauthority = base.getAuthority();
-	    bpath = base.getPath();
-	    bquery = base.getQuery();
-	    bfragment = base.getFragment();
-	}
+        // pre-parse the baseURI
+        if (baseURI != null) {
+            if (baseURI.endsWith("..")) {
+                baseURI = baseURI + "/";
+            }
+            URI base = new URI(baseURI);
+            bscheme = base.getScheme();
+            bauthority = base.getAuthority();
+            bpath = base.getPath();
+            bquery = base.getQuery();
+            bfragment = base.getFragment();
+        }
 
-	URI r = new URI(relativeURI);
-	String rscheme = r.getScheme();
-	String rauthority = r.getAuthority();
-	String rpath = r.getPath();
-	String rquery = r.getQuery();
-	String rfragment = null;
+        URI r = new URI(relativeURI);
+        String rscheme = r.getScheme();
+        String rauthority = r.getAuthority();
+        String rpath = r.getPath();
+        String rquery = r.getQuery();
+        String rfragment = null;
 
-	String tscheme, tauthority, tpath, tquery, tfragment;
-	if (rscheme != null && rscheme.equals(bscheme)) {
-	    rscheme = null;
-	}
-	if (rscheme != null) {
-	    tscheme = rscheme;
-	    tauthority = rauthority;
-	    tpath = removeDotSegments(rpath);
-	    tquery = rquery;
-	} else {
-	    if (rauthority != null) {
-		tauthority = rauthority;
-		tpath = removeDotSegments(rpath);
-		tquery = rquery;
-	    } else {
-	        if (rpath.length() == 0) {
-		    tpath = bpath;
-		    if (rquery != null) {
-		        tquery = rquery;
-		    } else {
-		        tquery = bquery;
-		    }
-	        } else {
-		    if (rpath.startsWith("/")) {
-		        tpath = removeDotSegments(rpath);
-		    } else {
-		        if (bauthority != null && bpath.length() == 0) {
-			    tpath = "/" + rpath;
-		        } else { 
-			    int last = bpath.lastIndexOf('/');
-			    if (last == -1) {
-			        tpath = rpath;
-			    } else {
-			        tpath = bpath.substring(0, last+1) + rpath;
-			    }
-		        }
-		        tpath = removeDotSegments(tpath);
-		    }
-		    tquery = rquery;
-	        }
-	        tauthority = bauthority;
-	    }
-	    tscheme = bscheme;
-	}
-	tfragment = rfragment;
-	return new URI(tscheme, tauthority, tpath, tquery, tfragment).toString();
+        String tscheme, tauthority, tpath, tquery, tfragment;
+        if (rscheme != null && rscheme.equals(bscheme)) {
+            rscheme = null;
+        }
+        if (rscheme != null) {
+            tscheme = rscheme;
+            tauthority = rauthority;
+            tpath = removeDotSegments(rpath);
+            tquery = rquery;
+        } else {
+            if (rauthority != null) {
+                tauthority = rauthority;
+                tpath = removeDotSegments(rpath);
+                tquery = rquery;
+            } else {
+                if (rpath.length() == 0) {
+                    tpath = bpath;
+                    if (rquery != null) {
+                        tquery = rquery;
+                    } else {
+                        tquery = bquery;
+                    }
+                } else {
+                    if (rpath.startsWith("/")) {
+                        tpath = removeDotSegments(rpath);
+                    } else {
+                        if (bauthority != null && bpath.length() == 0) {
+                            tpath = "/" + rpath;
+                        } else { 
+                            int last = bpath.lastIndexOf('/');
+                            if (last == -1) {
+                                tpath = rpath;
+                            } else {
+                                tpath = bpath.substring(0, last+1) + rpath;
+                            }
+                        }
+                        tpath = removeDotSegments(tpath);
+                    }
+                    tquery = rquery;
+                }
+                tauthority = bauthority;
+            }
+            tscheme = bscheme;
+        }
+        tfragment = rfragment;
+        return new URI(tscheme, tauthority, tpath, tquery, tfragment).toString();
     }
 
     private static String removeDotSegments(String path) {
@@ -668,7 +668,7 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
     }
 
     private static void printStep(String step, String output, String input) {
-	if (log.isDebugEnabled()) {
+        if (log.isDebugEnabled()) {
             log.debug(" " + step + ":   " + output);
             if (output.length() == 0) {
                 log.debug("\t\t\t\t" + input);

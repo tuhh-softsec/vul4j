@@ -86,17 +86,17 @@ public class KeyResolver {
     * @param hintI
     */
    public static void hit(Iterator hintI) {
-	   // Move the successful KeyResolver to the beginning of the list
-	   ResolverIterator hint = (ResolverIterator) hintI;
-	   int i = hint.i;
-	   if (i!=1 && hint.res ==_resolverVector) {
-		   List resolverVector=(List)((ArrayList)_resolverVector).clone();        		   		 
-  		Object ob=resolverVector.remove(i-1);
-  		resolverVector.add(0,ob);
-  		 _resolverVector=resolverVector; 
-  	 } else {
-  		 //System.out.println("KeyResolver hitting");
-  	 }
+           // Move the successful KeyResolver to the beginning of the list
+           ResolverIterator hint = (ResolverIterator) hintI;
+           int i = hint.i;
+           if (i!=1 && hint.res ==_resolverVector) {
+                   List resolverVector=(List)((ArrayList)_resolverVector).clone();        		   		 
+                Object ob=resolverVector.remove(i-1);
+                resolverVector.add(0,ob);
+                 _resolverVector=resolverVector; 
+         } else {
+                 //System.out.println("KeyResolver hitting");
+         }
    }
 
    /**
@@ -113,13 +113,13 @@ public class KeyResolver {
            Element element, String BaseURI, StorageResolver storage)
               throws KeyResolverException {
 
-	  // use the old vector to not be hit by updates
-	  List resolverVector = KeyResolver._resolverVector;
+          // use the old vector to not be hit by updates
+          List resolverVector = KeyResolver._resolverVector;
       for (int i = 0; i < resolverVector.size(); i++) {
-		  KeyResolver resolver=
+                  KeyResolver resolver=
             (KeyResolver) resolverVector.get(i);
 
-		  if (resolver==null) {
+                  if (resolver==null) {
             Object exArgs[] = {
                (((element != null)
                  && (element.getNodeType() == Node.ELEMENT_NODE))
@@ -129,7 +129,7 @@ public class KeyResolver {
             throw new KeyResolverException("utils.resolver.noClass", exArgs);
          }
          if (log.isDebugEnabled())
-         	log.debug("check resolvability by class " + resolver.getClass());
+                log.debug("check resolvability by class " + resolver.getClass());
 
          X509Certificate cert=resolver.resolveX509Certificate(element, BaseURI, storage);
          if (cert!=null) {
@@ -158,14 +158,14 @@ public class KeyResolver {
    public static final PublicKey getPublicKey(
            Element element, String BaseURI, StorageResolver storage)
               throws KeyResolverException {
-	  
+          
       // use the old vector to not be hit by updates
-	  List resolverVector = KeyResolver._resolverVector;
+          List resolverVector = KeyResolver._resolverVector;
       for (int i = 0; i < resolverVector.size(); i++) {
-		  KeyResolver resolver=
+                  KeyResolver resolver=
             (KeyResolver) resolverVector.get(i);
 
-		  if (resolver==null) {
+                  if (resolver==null) {
             Object exArgs[] = {
                (((element != null)
                  && (element.getNodeType() == Node.ELEMENT_NODE))
@@ -175,18 +175,18 @@ public class KeyResolver {
             throw new KeyResolverException("utils.resolver.noClass", exArgs);
          }
          if (log.isDebugEnabled())
-         	log.debug("check resolvability by class " + resolver.getClass());
+                log.debug("check resolvability by class " + resolver.getClass());
 
          PublicKey cert=resolver.resolvePublicKey(element, BaseURI, storage);
          if (cert!=null) {
-        	 if (i!=0 && resolverVector==_resolverVector) {
-        		 //update resolver.        		 
-        		 resolverVector=(List)((ArrayList)_resolverVector).clone();        		   		 
-		  		 Object ob=resolverVector.remove(i);
-		  		 resolverVector.add(0,ob);
-   		 		 _resolverVector=resolverVector;
-        	 } 
-        	 return cert;
+                 if (i!=0 && resolverVector==_resolverVector) {
+                         //update resolver.        		 
+                         resolverVector=(List)((ArrayList)_resolverVector).clone();        		   		 
+                                 Object ob=resolverVector.remove(i);
+                                 resolverVector.add(0,ob);
+                                 _resolverVector=resolverVector;
+                 } 
+                 return cert;
          }
       }
 
@@ -375,9 +375,9 @@ public class KeyResolver {
             throw new UnsupportedOperationException(
                     "Can't remove resolvers using the iterator");
         }
-	};
-	
-	public static Iterator iterator() {
-		return new ResolverIterator(_resolverVector);
+        };
+        
+        public static Iterator iterator() {
+                return new ResolverIterator(_resolverVector);
    }
 }

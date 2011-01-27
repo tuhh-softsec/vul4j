@@ -56,6 +56,6 @@ public class CachedXPathAPIHolder {
             local.set(cx);
             localDoc.set(null);            
         }
-    	return cx;
+        return cx;
     }
 }

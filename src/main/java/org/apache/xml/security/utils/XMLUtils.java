@@ -53,10 +53,10 @@ public class XMLUtils {
       AccessController.doPrivileged(new PrivilegedAction() {
          public Object run() {
             return Boolean.valueOf(Boolean.getBoolean
-	       ("org.apache.xml.security.ignoreLineBreaks"));
+               ("org.apache.xml.security.ignoreLineBreaks"));
          }
       })).booleanValue();
-	
+        
    /**
     * Constructor XMLUtils
     *
@@ -66,11 +66,11 @@ public class XMLUtils {
       // we don't allow instantiation
    }
    public static Element getNextElement(Node el) {
-	   while ((el!=null) && (el.getNodeType()!=Node.ELEMENT_NODE)) {
-		   el=el.getNextSibling();
-	   }
-	   return (Element)el;
-	   
+           while ((el!=null) && (el.getNodeType()!=Node.ELEMENT_NODE)) {
+                   el=el.getNextSibling();
+           }
+           return (Element)el;
+           
    }
    
    /**
@@ -80,52 +80,52 @@ public class XMLUtils {
     * @param com wheather comments or not
     */   
    public static void getSet(Node rootNode,Set result,Node exclude ,boolean com) {
-   	  if ((exclude!=null) && isDescendantOrSelf(exclude,rootNode)){
-   	  	return;
+          if ((exclude!=null) && isDescendantOrSelf(exclude,rootNode)){
+                return;
       }
       getSetRec(rootNode,result,exclude,com);
    }
    static final void getSetRec(final Node rootNode,final Set result,
         final Node exclude ,final boolean com) {
-   	   //Set result = new HashSet();
+           //Set result = new HashSet();
        if (rootNode==exclude) {
           return;
        }
-   	   switch (rootNode.getNodeType()) {   	   		   	   			
-   	   	case Node.ELEMENT_NODE:
-   	   			result.add(rootNode);
-   	   	        Element el=(Element)rootNode;
+           switch (rootNode.getNodeType()) {   	   		   	   			
+                case Node.ELEMENT_NODE:
+                                result.add(rootNode);
+                        Element el=(Element)rootNode;
                 if (el.hasAttributes()) {
-   	   		        NamedNodeMap nl = ((Element)rootNode).getAttributes();
-   	   		        for (int i=0;i<nl.getLength();i++) {
-   	   		        	result.add(nl.item(i));
-   	   		        }
+                                NamedNodeMap nl = ((Element)rootNode).getAttributes();
+                                for (int i=0;i<nl.getLength();i++) {
+                                        result.add(nl.item(i));
+                                }
                 }
                 //no return keep working
-   	   	case Node.DOCUMENT_NODE:   	   			
-   	   			for (Node r=rootNode.getFirstChild();r!=null;r=r.getNextSibling()){                                    
-   	   				if (r.getNodeType()==Node.TEXT_NODE) {
-   	   					result.add(r); 
-   	   					while ((r!=null) && (r.getNodeType()==Node.TEXT_NODE)) {
-   	   						r=r.getNextSibling();
-   	   					}
-   	   					if (r==null)
-   	   						return;
-   	   				}  
-   	   				getSetRec(r,result,exclude,com);                
-   	   			}
-   	   			return;
-   	   		case Node.COMMENT_NODE:
-   	   			if (com) {
-   	   				result.add(rootNode);
-   	   			}
-   	   		    return;
-   	   		case Node.DOCUMENT_TYPE_NODE:
-   	   			return;
-   	   		default:
-   	   			result.add(rootNode);
-   	   }
-   	   return;
+                case Node.DOCUMENT_NODE:   	   			
+                                for (Node r=rootNode.getFirstChild();r!=null;r=r.getNextSibling()){                                    
+                                        if (r.getNodeType()==Node.TEXT_NODE) {
+                                                result.add(r); 
+                                                while ((r!=null) && (r.getNodeType()==Node.TEXT_NODE)) {
+                                                        r=r.getNextSibling();
+                                                }
+                                                if (r==null)
+                                                        return;
+                                        }  
+                                        getSetRec(r,result,exclude,com);                
+                                }
+                                return;
+                        case Node.COMMENT_NODE:
+                                if (com) {
+                                        result.add(rootNode);
+                                }
+                            return;
+                        case Node.DOCUMENT_TYPE_NODE:
+                                return;
+                        default:
+                                result.add(rootNode);
+           }
+           return;
    }
 
 
@@ -248,11 +248,11 @@ public class XMLUtils {
       } 
       String namePrefix=(String) namePrefixes.get(elementName);
       if (namePrefix==null) {
-    	  StringBuffer tag=new StringBuffer(dsPrefix);
-    	  tag.append(':');
-    	  tag.append(elementName);
-    	  namePrefix=tag.toString();
-    	  namePrefixes.put(elementName,namePrefix);
+          StringBuffer tag=new StringBuffer(dsPrefix);
+          tag.append(':');
+          tag.append(elementName);
+          namePrefix=tag.toString();
+          namePrefixes.put(elementName,namePrefix);
       }
       return doc.createElementNS(Constants.SignatureSpecNS, namePrefix);
    }
@@ -277,11 +277,11 @@ public class XMLUtils {
       } 
       String namePrefix=(String) namePrefixes.get(elementName);
       if (namePrefix==null) {
-    	  StringBuffer tag=new StringBuffer(xencPrefix);
-    	  tag.append(':');
-    	  tag.append(elementName);
-    	  namePrefix=tag.toString();
-    	  namePrefixes.put(elementName,namePrefix);
+          StringBuffer tag=new StringBuffer(xencPrefix);
+          tag.append(':');
+          tag.append(elementName);
+          namePrefix=tag.toString();
+          namePrefixes.put(elementName,namePrefix);
       }
       return doc.createElementNS(EncryptionConstants.EncryptionSpecNS, namePrefix);
    }
@@ -296,11 +296,11 @@ public class XMLUtils {
     */
    public static boolean elementIsInSignatureSpace(Element element,
            String localName) {
-	   if(element == null){
-		   return false;
-	   }
-	   
-	   return Constants.SignatureSpecNS.equals(element.getNamespaceURI()) && element.getLocalName().equals(localName);
+           if(element == null){
+                   return false;
+           }
+           
+           return Constants.SignatureSpecNS.equals(element.getNamespaceURI()) && element.getLocalName().equals(localName);
    }
 
    /**
@@ -313,10 +313,10 @@ public class XMLUtils {
     */
    public static boolean elementIsInEncryptionSpace(Element element,
            String localName) {
-	   if(element == null){
-		   return false;
-	   }
-	   return EncryptionConstants.EncryptionSpecNS.equals(element.getNamespaceURI()) && element.getLocalName().equals(localName);
+           if(element == null){
+                   return false;
+           }
+           return EncryptionConstants.EncryptionSpecNS.equals(element.getNamespaceURI()) && element.getLocalName().equals(localName);
    }
 
    /**
@@ -481,60 +481,60 @@ public class XMLUtils {
     * @see <A HREF="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=2650">Namespace axis resolution is not XPath compliant </A>
     */
    private static void circumventBug2650internal(Node node) {
-	   Node parent=null;
-	   Node sibling=null;
-	   final String namespaceNs=Constants.NamespaceSpecNS;
-	   do {
+           Node parent=null;
+           Node sibling=null;
+           final String namespaceNs=Constants.NamespaceSpecNS;
+           do {
          switch (node.getNodeType()) {
          case Node.ELEMENT_NODE :
-        	 Element element = (Element) node;
+                 Element element = (Element) node;
              if (!element.hasChildNodes())
-            	 break;
+                 break;
              if (element.hasAttributes()) {            	 
              NamedNodeMap attributes = element.getAttributes();         	
              int attributesLength = attributes.getLength();    
              
              for (Node child = element.getFirstChild(); child!=null; 
-             	child=child.getNextSibling()) {            
+                child=child.getNextSibling()) {            
 
-             	if (child.getNodeType() != Node.ELEMENT_NODE) {
-             		continue;
-             	}
-             	Element childElement = (Element) child;
+                if (child.getNodeType() != Node.ELEMENT_NODE) {
+                        continue;
+                }
+                Element childElement = (Element) child;
 
-             	for (int i = 0; i < attributesLength; i++) {
-             		Attr currentAttr = (Attr) attributes.item(i); 
-             		if (!namespaceNs.equals(currentAttr.getNamespaceURI()))
-             			continue;
-             		if (childElement.hasAttributeNS(namespaceNs,
-    							currentAttr.getLocalName())) {
-             				continue;
-             		}
-             		childElement.setAttributeNS(namespaceNs,
+                for (int i = 0; i < attributesLength; i++) {
+                        Attr currentAttr = (Attr) attributes.item(i); 
+                        if (!namespaceNs.equals(currentAttr.getNamespaceURI()))
+                                continue;
+                        if (childElement.hasAttributeNS(namespaceNs,
+                                                        currentAttr.getLocalName())) {
+                                        continue;
+                        }
+                        childElement.setAttributeNS(namespaceNs,
                                                 currentAttr.getName(),
                                                 currentAttr.getNodeValue());         					
-             				
-             			
-             	}
+                                        
+                                
+                }
              }            
              }
          case Node.ENTITY_REFERENCE_NODE :
          case Node.DOCUMENT_NODE :
-        	 parent=node;
-        	 sibling=node.getFirstChild();
+                 parent=node;
+                 sibling=node.getFirstChild();
              break;
          }
          while ((sibling==null) && (parent!=null)) {
-        		 sibling=parent.getNextSibling();
-        		 parent=parent.getParentNode();
-        	 };
+                         sibling=parent.getNextSibling();
+                         parent=parent.getParentNode();
+                 };
        if (sibling==null) {
-        		 return;
-        	 }
-       	
+                         return;
+                 }
+        
          node=sibling;
          sibling=node.getNextSibling();
-	   } while (true);
+           } while (true);
    }
 
    /**
@@ -544,16 +544,16 @@ public class XMLUtils {
     * @return nodes with the constrain
     */
    public static Element selectDsNode(Node sibling, String nodeName, int number) {
-	while (sibling!=null) {
-		if (Constants.SignatureSpecNS.equals(sibling.getNamespaceURI()) && sibling.getLocalName().equals(nodeName)) {
-			if (number==0){
-				return (Element)sibling;
-			}
-			number--;
-		}
-		sibling=sibling.getNextSibling();
-	}
-	return null;
+        while (sibling!=null) {
+                if (Constants.SignatureSpecNS.equals(sibling.getNamespaceURI()) && sibling.getLocalName().equals(nodeName)) {
+                        if (number==0){
+                                return (Element)sibling;
+                        }
+                        number--;
+                }
+                sibling=sibling.getNextSibling();
+        }
+        return null;
    }
    
    /**
@@ -564,16 +564,16 @@ public class XMLUtils {
     */
 
    public static Element selectXencNode(Node sibling, String nodeName, int number) {
-	while (sibling!=null) {
-		if (EncryptionConstants.EncryptionSpecNS.equals(sibling.getNamespaceURI()) && sibling.getLocalName().equals(nodeName)) {
-			if (number==0){
-				return (Element)sibling;
-			}
-			number--;
-		}
-		sibling=sibling.getNextSibling();
-	}
-	return null;
+        while (sibling!=null) {
+                if (EncryptionConstants.EncryptionSpecNS.equals(sibling.getNamespaceURI()) && sibling.getLocalName().equals(nodeName)) {
+                        if (number==0){
+                                return (Element)sibling;
+                        }
+                        number--;
+                }
+                sibling=sibling.getNextSibling();
+        }
+        return null;
    }
    
 
@@ -584,13 +584,13 @@ public class XMLUtils {
     * @return nodes with the constrain
     */
    public static Text selectDsNodeText(Node sibling, String nodeName, int number) {
-   	    Node n=selectDsNode(sibling,nodeName,number);
+            Node n=selectDsNode(sibling,nodeName,number);
         if (n==null) {
-        	return null;
+                return null;
         }
         n=n.getFirstChild();
         while (n!=null && n.getNodeType()!=Node.TEXT_NODE) {
-        	n=n.getNextSibling();
+                n=n.getNextSibling();
         }
         return (Text)n;
    }
@@ -622,16 +622,16 @@ public class XMLUtils {
     * @return nodes with the constrain
     */
    public static Element selectNode(Node sibling, String uri,String nodeName, int number) {
-	while (sibling!=null) {
-		if (sibling.getNamespaceURI() != null && sibling.getNamespaceURI().equals(uri) && sibling.getLocalName().equals(nodeName)) {
-			if (number==0){
-				return (Element)sibling;
-			}
-			number--;
-		}
-		sibling=sibling.getNextSibling();
-	}
-	return null;
+        while (sibling!=null) {
+                if (sibling.getNamespaceURI() != null && sibling.getNamespaceURI().equals(uri) && sibling.getLocalName().equals(nodeName)) {
+                        if (number==0){
+                                return (Element)sibling;
+                        }
+                        number--;
+                }
+                sibling=sibling.getNextSibling();
+        }
+        return null;
    }
    
    /**
@@ -649,26 +649,26 @@ public class XMLUtils {
     * @return nodes with the constrain
     */
     public static Element[] selectNodes(Node sibling,String uri,String nodeName) {
-    	int size=20;
-    	Element[] a= new Element[size];
-    	int curr=0;
-    	//List list=new ArrayList();
-    	while (sibling!=null) {
-    		if (sibling.getNamespaceURI() != null && sibling.getNamespaceURI().equals(uri) && sibling.getLocalName().equals(nodeName)) {
-    			a[curr++]=(Element)sibling;
-    			if (size<=curr) {
-    				int cursize= size<<2;
-    				Element []cp=new Element[cursize];
-    				System.arraycopy(a,0,cp,0,size);
-    				a=cp;
-    				size=cursize;
-    			}   
-    		}
-    		sibling=sibling.getNextSibling();
-    	}
-    	Element []af=new Element[curr];
-    	System.arraycopy(a,0,af,0,curr);
-    	return af;
+        int size=20;
+        Element[] a= new Element[size];
+        int curr=0;
+        //List list=new ArrayList();
+        while (sibling!=null) {
+                if (sibling.getNamespaceURI() != null && sibling.getNamespaceURI().equals(uri) && sibling.getLocalName().equals(nodeName)) {
+                        a[curr++]=(Element)sibling;
+                        if (size<=curr) {
+                                int cursize= size<<2;
+                                Element []cp=new Element[cursize];
+                                System.arraycopy(a,0,cp,0,size);
+                                a=cp;
+                                size=cursize;
+                        }   
+                }
+                sibling=sibling.getNextSibling();
+        }
+        Element []af=new Element[curr];
+        System.arraycopy(a,0,af,0,curr);
+        return af;
    }
 
    /**
@@ -677,18 +677,18 @@ public class XMLUtils {
     * @return nodes with the constrain
     */
     public static Set excludeNodeFromSet(Node signatureElement, Set inputSet) {
-	  Set resultSet = new HashSet();
-	  Iterator iterator = inputSet.iterator();
+          Set resultSet = new HashSet();
+          Iterator iterator = inputSet.iterator();
 
-	  while (iterator.hasNext()) {
-	    Node inputNode = (Node) iterator.next();
+          while (iterator.hasNext()) {
+            Node inputNode = (Node) iterator.next();
 
-	    if (!XMLUtils
-	            .isDescendantOrSelf(signatureElement, inputNode)) {
-	       resultSet.add(inputNode);
-	    }
-	 }
-	 return resultSet;
+            if (!XMLUtils
+                    .isDescendantOrSelf(signatureElement, inputNode)) {
+               resultSet.add(inputNode);
+            }
+         }
+         return resultSet;
      }
 
    /**

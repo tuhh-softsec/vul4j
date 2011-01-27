@@ -132,7 +132,7 @@ public class CertsInFilesystemDirectoryResolver extends StorageResolverSpi {
 
          if (added) {
             if (log.isDebugEnabled())
-            	log.debug("Added certificate: " + dn);
+                log.debug("Added certificate: " + dn);
          }
       }
    }

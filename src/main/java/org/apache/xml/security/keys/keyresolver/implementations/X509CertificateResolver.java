@@ -84,23 +84,23 @@ public class X509CertificateResolver extends KeyResolverSpi {
               throws KeyResolverException {
 
       try {
-    	  Element[] els=XMLUtils.selectDsNodes(element.getFirstChild(),
+          Element[] els=XMLUtils.selectDsNodes(element.getFirstChild(),
                   Constants._TAG_X509CERTIFICATE);
          if ((els == null) || (els.length == 0)) {  
-        	 Element el=XMLUtils.selectDsNode(element.getFirstChild(),
+                 Element el=XMLUtils.selectDsNode(element.getFirstChild(),
                      Constants._TAG_X509DATA,0);
              if (el!=null) {
-            	 return engineLookupResolveX509Certificate(el, BaseURI, storage);
+                 return engineLookupResolveX509Certificate(el, BaseURI, storage);
              }        	 
-        	 return null;            
+                 return null;            
          }
 
          // populate Object array
          for (int i = 0; i < els.length; i++) {
-        	 XMLX509Certificate xmlCert=new XMLX509Certificate(els[i], BaseURI);
-        	 X509Certificate cert = xmlCert.getX509Certificate();
+                 XMLX509Certificate xmlCert=new XMLX509Certificate(els[i], BaseURI);
+                 X509Certificate cert = xmlCert.getX509Certificate();
             if (cert!=null) {
-            	return cert;
+                return cert;
             }
          }
          return null;

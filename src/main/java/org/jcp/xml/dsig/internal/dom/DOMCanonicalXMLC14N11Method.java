@@ -41,7 +41,7 @@ public final class DOMCanonicalXMLC14N11Method extends ApacheCanonicalizer {
 
     public static final String C14N_11 = "http://www.w3.org/2006/12/xml-c14n11";
     public static final String C14N_11_WITH_COMMENTS 
-	= "http://www.w3.org/2006/12/xml-c14n11#WithComments";
+        = "http://www.w3.org/2006/12/xml-c14n11#WithComments";
 
     public void init(TransformParameterSpec params)
         throws InvalidAlgorithmParameterException {
@@ -52,24 +52,24 @@ public final class DOMCanonicalXMLC14N11Method extends ApacheCanonicalizer {
     }
 
     public Data transform(Data data, XMLCryptoContext xc)
-	throws TransformException {
+        throws TransformException {
 
         // ignore comments if dereferencing same-document URI that requires
-	// you to omit comments, even if the Transform says otherwise -
+        // you to omit comments, even if the Transform says otherwise -
         // this is to be compliant with section 4.3.3.3 of W3C Rec.
-	if (data instanceof DOMSubTreeData) {
-	    DOMSubTreeData subTree = (DOMSubTreeData) data;
-	    if (subTree.excludeComments()) {
+        if (data instanceof DOMSubTreeData) {
+            DOMSubTreeData subTree = (DOMSubTreeData) data;
+            if (subTree.excludeComments()) {
                 try {
                     apacheCanonicalizer = Canonicalizer.getInstance(C14N_11);
                 } catch (InvalidCanonicalizerException ice) {
-		    throw new TransformException
+                    throw new TransformException
                         ("Couldn't find Canonicalizer for: " +
-		         C14N_11 + ": " + ice.getMessage(), ice);
+                         C14N_11 + ": " + ice.getMessage(), ice);
                 }
-	    }
-	}
+            }
+        }
 
-	return canonicalize(data, xc);
+        return canonicalize(data, xc);
     }
 }

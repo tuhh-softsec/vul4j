@@ -52,7 +52,7 @@ public class DigesterOutputStream extends OutputStream {
      * @param md the MessageDigest
      */
     public DigesterOutputStream(MessageDigest md) {
-	this(md, false);
+        this(md, false);
     }
 
     /**
@@ -63,33 +63,33 @@ public class DigesterOutputStream extends OutputStream {
      */
     public DigesterOutputStream(MessageDigest md, boolean buffer) {
         this.md = md;
-	this.buffer = buffer;
-	if (buffer) {
-	    bos = new UnsyncByteArrayOutputStream();
-	}
+        this.buffer = buffer;
+        if (buffer) {
+            bos = new UnsyncByteArrayOutputStream();
+        }
     }
 
     public void write(int input) {
-	if (buffer) {
-	    bos.write(input);
-	}
-	md.update((byte)input);
+        if (buffer) {
+            bos.write(input);
+        }
+        md.update((byte)input);
     }
     
     @Override
     public void write(byte[] input, int offset, int len) {
-	if (buffer) {
-	    bos.write(input, offset, len);
-	}
+        if (buffer) {
+            bos.write(input, offset, len);
+        }
         if (log.isLoggable(Level.FINER)) {
-	    log.log(Level.FINER, "Pre-digested input:");
-	    StringBuffer sb = new StringBuffer(len);
+            log.log(Level.FINER, "Pre-digested input:");
+            StringBuffer sb = new StringBuffer(len);
             for (int i=offset; i<(offset+len); i++) {
-		sb.append((char)input[i]);
+                sb.append((char)input[i]);
             }
-	    log.log(Level.FINER, sb.toString());
-	}
-	md.update(input, offset, len);
+            log.log(Level.FINER, sb.toString());
+        }
+        md.update(input, offset, len);
     }
     
     /**
@@ -104,10 +104,10 @@ public class DigesterOutputStream extends OutputStream {
      *    null if not cached
      */
     public InputStream getInputStream() {
-	if (buffer) {
-	    return new ByteArrayInputStream(bos.toByteArray());
-	} else {
-	    return null;
-	}
+        if (buffer) {
+            return new ByteArrayInputStream(bos.toByteArray());
+        } else {
+            return null;
+        }
     }
 }

@@ -49,8 +49,8 @@ public abstract class KeyResolverSpi {
     * @return
     */
    public boolean engineCanResolve(Element element, String BaseURI,
-	                                            StorageResolver storage) {
-	   throw new UnsupportedOperationException();
+                                                    StorageResolver storage) {
+           throw new UnsupportedOperationException();
    }
 
    /**
@@ -66,7 +66,7 @@ public abstract class KeyResolverSpi {
    public PublicKey engineResolvePublicKey(
       Element element, String BaseURI, StorageResolver storage)
          throws KeyResolverException {
-      	   throw new UnsupportedOperationException();
+           throw new UnsupportedOperationException();
     };
        
    /**
@@ -82,24 +82,24 @@ public abstract class KeyResolverSpi {
     public PublicKey engineLookupAndResolvePublicKey(
       Element element, String BaseURI, StorageResolver storage)
          throws KeyResolverException {
-    	KeyResolverSpi tmp = cloneIfNeeded();
-    	if (!tmp.engineCanResolve(element, BaseURI, storage))
-	    	return null;
-	    return tmp.engineResolvePublicKey(element, BaseURI, storage);
+        KeyResolverSpi tmp = cloneIfNeeded();
+        if (!tmp.engineCanResolve(element, BaseURI, storage))
+                return null;
+            return tmp.engineResolvePublicKey(element, BaseURI, storage);
     }
 
     private KeyResolverSpi cloneIfNeeded() throws KeyResolverException {
-    	KeyResolverSpi tmp=this;    
-    	if (globalResolver) {
-    		try {
-    			tmp = (KeyResolverSpi) getClass().newInstance();    	    
-    		} catch (InstantiationException e) {
-    			throw new KeyResolverException("",e);
-    		} catch (IllegalAccessException e) {
-    			throw new KeyResolverException("",e);
-    		}
-    	}
-    	return tmp;
+        KeyResolverSpi tmp=this;    
+        if (globalResolver) {
+                try {
+                        tmp = (KeyResolverSpi) getClass().newInstance();    	    
+                } catch (InstantiationException e) {
+                        throw new KeyResolverException("",e);
+                } catch (IllegalAccessException e) {
+                        throw new KeyResolverException("",e);
+                }
+        }
+        return tmp;
     }
 
     /**
@@ -115,7 +115,7 @@ public abstract class KeyResolverSpi {
     public X509Certificate engineResolveX509Certificate(
        Element element, String BaseURI, StorageResolver storage)
           throws KeyResolverException{
-         	   throw new UnsupportedOperationException();
+                   throw new UnsupportedOperationException();
     };
     
    /**
@@ -131,11 +131,11 @@ public abstract class KeyResolverSpi {
     public X509Certificate engineLookupResolveX509Certificate(
       Element element, String BaseURI, StorageResolver storage)
          throws KeyResolverException {
-    	KeyResolverSpi tmp = cloneIfNeeded();
-    	if (!tmp.engineCanResolve(element, BaseURI, storage))
-    		return null;
-    	return tmp.engineResolveX509Certificate(element, BaseURI, storage);
-    	
+        KeyResolverSpi tmp = cloneIfNeeded();
+        if (!tmp.engineCanResolve(element, BaseURI, storage))
+                return null;
+        return tmp.engineResolveX509Certificate(element, BaseURI, storage);
+        
     }
     /**
      * Method engineResolveSecretKey
@@ -150,7 +150,7 @@ public abstract class KeyResolverSpi {
     public SecretKey engineResolveSecretKey(
        Element element, String BaseURI, StorageResolver storage)
           throws KeyResolverException{
-        	   throw new UnsupportedOperationException();
+                   throw new UnsupportedOperationException();
     }; 
     
    /**
@@ -166,10 +166,10 @@ public abstract class KeyResolverSpi {
    public SecretKey engineLookupAndResolveSecretKey(
       Element element, String BaseURI, StorageResolver storage)
          throws KeyResolverException {
-	   KeyResolverSpi tmp = cloneIfNeeded();
-	   if (!tmp.engineCanResolve(element, BaseURI, storage))
-		   return null;
-   		return tmp.engineResolveSecretKey(element, BaseURI, storage);   		
+           KeyResolverSpi tmp = cloneIfNeeded();
+           if (!tmp.engineCanResolve(element, BaseURI, storage))
+                   return null;
+                return tmp.engineResolveSecretKey(element, BaseURI, storage);   		
    }
    
    /**
@@ -205,8 +205,8 @@ public abstract class KeyResolverSpi {
     * @param value
     */
    public void engineSetProperty(String key, String value) {     
-	   if (_properties==null)
-		   _properties=new HashMap();
+           if (_properties==null)
+                   _properties=new HashMap();
       this._properties.put(key, value);
    }
 
@@ -217,8 +217,8 @@ public abstract class KeyResolverSpi {
     * @return obtain the property appointed by key
     */
    public String engineGetProperty(String key) {
-	   if (_properties==null)
-		   return null;
+           if (_properties==null)
+                   return null;
       
       return (String) this._properties.get(key);
    }
@@ -230,13 +230,13 @@ public abstract class KeyResolverSpi {
     * @return true if understood the property
     */
    public boolean understandsProperty(String propertyToTest) {
-	   if (_properties==null)
-		   return false;
+           if (_properties==null)
+                   return false;
       
       return  this._properties.get(propertyToTest)!=null;
    }
    public void setGlobalResolver(boolean globalResolver) {
-	this.globalResolver = globalResolver;
+        this.globalResolver = globalResolver;
    }
       
 }

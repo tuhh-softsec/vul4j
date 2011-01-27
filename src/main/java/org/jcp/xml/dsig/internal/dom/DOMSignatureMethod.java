@@ -73,15 +73,15 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
      *    appropriate for this signature method
      */
     DOMSignatureMethod(AlgorithmParameterSpec params) 
-	throws InvalidAlgorithmParameterException
+        throws InvalidAlgorithmParameterException
     {
-	if (params != null && 
-	    !(params instanceof SignatureMethodParameterSpec)) {
-	    throw new InvalidAlgorithmParameterException
-		("params must be of type SignatureMethodParameterSpec");
-	}
+        if (params != null && 
+            !(params instanceof SignatureMethodParameterSpec)) {
+            throw new InvalidAlgorithmParameterException
+                ("params must be of type SignatureMethodParameterSpec");
+        }
         checkParams((SignatureMethodParameterSpec)params);
-	this.params = (SignatureMethodParameterSpec)params;
+        this.params = (SignatureMethodParameterSpec)params;
     }
 
     /**
@@ -92,15 +92,15 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
      * @param smElem a SignatureMethod element
      */
     DOMSignatureMethod(Element smElem) throws MarshalException {
-	Element paramsElem = DOMUtils.getFirstChildElement(smElem);
-	if (paramsElem != null) {
-	    params = unmarshalParams(paramsElem);
-	}
-	try {
-	    checkParams(params);
-	} catch (InvalidAlgorithmParameterException iape) {
-	    throw new MarshalException(iape);
-	}
+        Element paramsElem = DOMUtils.getFirstChildElement(smElem);
+        if (paramsElem != null) {
+            params = unmarshalParams(paramsElem);
+        }
+        try {
+            checkParams(params);
+        } catch (InvalidAlgorithmParameterException iape) {
+            throw new MarshalException(iape);
+        }
     }
 
     static SignatureMethod unmarshal(Element smElem) throws MarshalException {
@@ -138,11 +138,11 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
     }
 
     public final AlgorithmParameterSpec getParameterSpec() {
-	return params;
+        return params;
     }
 
     boolean verify(Key key, SignedInfo si, byte[] sig,
-	           XMLValidateContext context)
+                   XMLValidateContext context)
         throws InvalidKeyException, SignatureException, XMLSignatureException
     {
         if (key == null || si == null || sig == null) {

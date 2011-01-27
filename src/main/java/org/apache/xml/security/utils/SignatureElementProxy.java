@@ -30,21 +30,21 @@ import org.w3c.dom.Element;
  * @version $Revision$
  */
 public abstract class SignatureElementProxy extends ElementProxy {
-	protected SignatureElementProxy() {
-	};
+        protected SignatureElementProxy() {
+        };
    /**
     * Constructor SignatureElementProxy
     *
     * @param doc
     */
    public SignatureElementProxy(Document doc) {
-	      if (doc == null) {
-	         throw new RuntimeException("Document is null");
-	      }
+              if (doc == null) {
+                 throw new RuntimeException("Document is null");
+              }
 
-	      this._doc = doc;
-	      this._constructionElement =  XMLUtils.createElementInSignatureSpace(this._doc,
-	    		   this.getBaseLocalName());
+              this._doc = doc;
+              this._constructionElement =  XMLUtils.createElementInSignatureSpace(this._doc,
+                           this.getBaseLocalName());
    }
 
    /**

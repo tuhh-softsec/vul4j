@@ -106,7 +106,7 @@ public class XMLX509SKI extends SignatureElementProxy
      * @see java.security.cert.X509Extension#getExtensionValue(java.lang.String)
      */
     public static byte[] getSKIBytesFromCert(X509Certificate cert)
-	throws XMLSecurityException {
+        throws XMLSecurityException {
 
         if (cert.getVersion() < 3) {
             Object exArgs[] = { new Integer(cert.getVersion()) };
@@ -116,9 +116,9 @@ public class XMLX509SKI extends SignatureElementProxy
 
         /*
          * Gets the DER-encoded OCTET string for the extension value 
-	 * (extnValue) identified by the passed-in oid String. The oid 
-	 * string is represented by a set of positive whole numbers 
- 	 * separated by periods.
+         * (extnValue) identified by the passed-in oid String. The oid 
+         * string is represented by a set of positive whole numbers 
+         * separated by periods.
          */
         byte[] extensionValue = cert.getExtensionValue(XMLX509SKI.SKI_OID);
         if (extensionValue == null) {
@@ -127,9 +127,9 @@ public class XMLX509SKI extends SignatureElementProxy
           
         /**
          * Strip away first four bytes from the extensionValue 
-	 * The first two bytes are the tag and length of the extensionValue
-	 * OCTET STRING, and the next two bytes are the tag and length of
-	 * the skid OCTET STRING.
+         * The first two bytes are the tag and length of the extensionValue
+         * OCTET STRING, and the next two bytes are the tag and length of
+         * the skid OCTET STRING.
          */
         byte skidValue[] = new byte[extensionValue.length - 4];
 
@@ -137,7 +137,7 @@ public class XMLX509SKI extends SignatureElementProxy
 
         if (log.isDebugEnabled()) {
             log.debug("Base64 of SKI is " + Base64.encode(skidValue));
-	}
+        }
 
         return skidValue;
     }

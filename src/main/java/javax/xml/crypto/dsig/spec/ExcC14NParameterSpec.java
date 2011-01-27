@@ -65,7 +65,7 @@ public final class ExcC14NParameterSpec implements C14NMethodParameterSpec {
      * list.
      */
     public ExcC14NParameterSpec() {
-	preList = Collections.EMPTY_LIST;
+        preList = Collections.EMPTY_LIST;
     }
 
     /**
@@ -81,16 +81,16 @@ public final class ExcC14NParameterSpec implements C14NMethodParameterSpec {
      *    of type <code>String</code>
      */
     public ExcC14NParameterSpec(List prefixList) {
-	if (prefixList == null) {
-	    throw new NullPointerException("prefixList cannot be null");
-	}
-	this.preList = new ArrayList(prefixList);
+        if (prefixList == null) {
+            throw new NullPointerException("prefixList cannot be null");
+        }
+        this.preList = new ArrayList(prefixList);
         for (int i = 0, size = preList.size(); i < size; i++) {
             if (!(preList.get(i) instanceof String)) {
-		throw new ClassCastException("not a String");
-	    }
-	}
-	preList = Collections.unmodifiableList(preList);
+                throw new ClassCastException("not a String");
+            }
+        }
+        preList = Collections.unmodifiableList(preList);
     }
 
     /**
@@ -104,6 +104,6 @@ public final class ExcC14NParameterSpec implements C14NMethodParameterSpec {
      *    <code>null</code>)
      */
     public List getPrefixList() {
-	return preList;
+        return preList;
     }
 }

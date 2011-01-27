@@ -178,29 +178,29 @@ public abstract class XMLSignatureFactory {
      * @see Provider
      */
     public static XMLSignatureFactory getInstance(String mechanismType) {
-	if (mechanismType == null) {
-	    throw new NullPointerException("mechanismType cannot be null");
-	}
+        if (mechanismType == null) {
+            throw new NullPointerException("mechanismType cannot be null");
+        }
 
-	return findInstance(mechanismType, null);
+        return findInstance(mechanismType, null);
     }
 
     private static XMLSignatureFactory findInstance(String mechanismType,
-	Provider provider) {
+        Provider provider) {
 
-	Object[] objs = null;
-	try {
-	    objs = (Object[]) XMLDSigSecurity.getImpl
-		(mechanismType, "XMLSignatureFactory", provider);
-	} catch (NoSuchAlgorithmException nsae) {
-	    throw new NoSuchMechanismException
-		("Cannot find " + mechanismType + " mechanism type", nsae);
-	}
+        Object[] objs = null;
+        try {
+            objs = (Object[]) XMLDSigSecurity.getImpl
+                (mechanismType, "XMLSignatureFactory", provider);
+        } catch (NoSuchAlgorithmException nsae) {
+            throw new NoSuchMechanismException
+                ("Cannot find " + mechanismType + " mechanism type", nsae);
+        }
 
-	XMLSignatureFactory factory = (XMLSignatureFactory) objs[0];
-	factory.mechanismType = mechanismType;
-	factory.provider = (Provider) objs[1];
-	return factory;
+        XMLSignatureFactory factory = (XMLSignatureFactory) objs[0];
+        factory.mechanismType = mechanismType;
+        factory.provider = (Provider) objs[1];
+        return factory;
     }
 
     /**
@@ -225,14 +225,14 @@ public abstract class XMLSignatureFactory {
      * @see Provider
      */
     public static XMLSignatureFactory getInstance(String mechanismType,
-	Provider provider) { 
-	if (mechanismType == null) {
-	    throw new NullPointerException("mechanismType cannot be null");
-	} else if (provider == null) {
-	    throw new NullPointerException("provider cannot be null");
-	}
+        Provider provider) { 
+        if (mechanismType == null) {
+            throw new NullPointerException("mechanismType cannot be null");
+        } else if (provider == null) {
+            throw new NullPointerException("provider cannot be null");
+        }
 
-	return findInstance(mechanismType, provider);
+        return findInstance(mechanismType, provider);
     }    
 
     /**
@@ -261,20 +261,20 @@ public abstract class XMLSignatureFactory {
      * @see Provider
      */
     public static XMLSignatureFactory getInstance(String mechanismType,
-	String provider) throws NoSuchProviderException {
-	if (mechanismType == null) {
-	    throw new NullPointerException("mechanismType cannot be null");
-	} else if (provider == null) {
-	    throw new NullPointerException("provider cannot be null");
-	}
+        String provider) throws NoSuchProviderException {
+        if (mechanismType == null) {
+            throw new NullPointerException("mechanismType cannot be null");
+        } else if (provider == null) {
+            throw new NullPointerException("provider cannot be null");
+        }
 
-	Provider prov = Security.getProvider(provider);
-	if (prov == null) {
-	    throw new NoSuchProviderException("cannot find provider named "
-		+ provider);
-	}
+        Provider prov = Security.getProvider(provider);
+        if (prov == null) {
+            throw new NoSuchProviderException("cannot find provider named "
+                + provider);
+        }
 
-	return findInstance(mechanismType, prov);
+        return findInstance(mechanismType, prov);
     }
 
     /**
@@ -299,7 +299,7 @@ public abstract class XMLSignatureFactory {
      * @see Provider
      */
     public static XMLSignatureFactory getInstance() {
-	return getInstance("DOM");
+        return getInstance("DOM");
     }
 
     /**
@@ -319,7 +319,7 @@ public abstract class XMLSignatureFactory {
      * @return the provider of this <code>XMLSignatureFactory</code>
      */
     public final Provider getProvider() {
-	return provider;
+        return provider;
     }
 
     /**
@@ -350,7 +350,7 @@ public abstract class XMLSignatureFactory {
      *    type <code>XMLObject</code> 
      */ 
     public abstract XMLSignature newXMLSignature(SignedInfo si, KeyInfo ki,
-	List objects, String id, String signatureValueId);
+        List objects, String id, String signatureValueId);
 
     /**
      * Creates a <code>Reference</code> with the specified URI and digest
@@ -383,7 +383,7 @@ public abstract class XMLSignatureFactory {
      * @throws NullPointerException if <code>dm</code> is <code>null</code>
      */
     public abstract Reference newReference(String uri, DigestMethod dm, 
-	List transforms, String type, String id);
+        List transforms, String type, String id);
 
     /**
      * Creates a <code>Reference</code> with the specified parameters and
@@ -413,7 +413,7 @@ public abstract class XMLSignatureFactory {
      *    <code>digestValue</code> is <code>null</code>
      */
     public abstract Reference newReference(String uri, DigestMethod dm, 
-	List transforms, String type, String id, byte[] digestValue);
+        List transforms, String type, String id, byte[] digestValue);
 
     /**
      * Creates a <code>Reference</code> with the specified parameters.
@@ -455,8 +455,8 @@ public abstract class XMLSignatureFactory {
      *    <code>null</code>
      */
     public abstract Reference newReference(String uri, DigestMethod dm, 
-	List appliedTransforms, Data result, List transforms, String type, 
-	String id);
+        List appliedTransforms, Data result, List transforms, String type, 
+        String id);
 
     /**
      * Creates a <code>SignedInfo</code> with the specified canonicalization
@@ -474,7 +474,7 @@ public abstract class XMLSignatureFactory {
      *    are <code>null</code>
      */
     public abstract SignedInfo newSignedInfo(CanonicalizationMethod cm,
-	SignatureMethod sm, List references);
+        SignatureMethod sm, List references);
 
     /**
      * Creates a <code>SignedInfo</code> with the specified parameters.
@@ -492,7 +492,7 @@ public abstract class XMLSignatureFactory {
      *    <code>references</code> are <code>null</code>
      */
     public abstract SignedInfo newSignedInfo(CanonicalizationMethod cm,
-	SignatureMethod sm, List references, String id);
+        SignatureMethod sm, List references, String id);
 
     // Object factory methods
     /**
@@ -509,7 +509,7 @@ public abstract class XMLSignatureFactory {
      *    entries that are not of type {@link XMLStructure}
      */
     public abstract XMLObject newXMLObject(List content, String id, 
-	String mimeType, String encoding);
+        String mimeType, String encoding);
 
     /**
      * Creates a <code>Manifest</code> containing the specified 
@@ -559,7 +559,7 @@ public abstract class XMLSignatureFactory {
      *    entries that are not of type {@link XMLStructure}
      */
     public abstract SignatureProperty newSignatureProperty
-	(List content, String target, String id);
+        (List content, String target, String id);
 
     /**
      * Creates a <code>SignatureProperties</code> containing the specified 
@@ -577,7 +577,7 @@ public abstract class XMLSignatureFactory {
      *    entries that are not of type {@link SignatureProperty}
      */
     public abstract SignatureProperties newSignatureProperties
-	(List properties, String id);
+        (List properties, String id);
 
     // Algorithm factory methods
     /**
@@ -596,8 +596,8 @@ public abstract class XMLSignatureFactory {
      *    <code>null</code>
      */
     public abstract DigestMethod newDigestMethod(String algorithm, 
-	DigestMethodParameterSpec params) throws NoSuchAlgorithmException,
-	InvalidAlgorithmParameterException;
+        DigestMethodParameterSpec params) throws NoSuchAlgorithmException,
+        InvalidAlgorithmParameterException;
 
     /**
      * Creates a <code>SignatureMethod</code> for the specified algorithm URI 
@@ -615,8 +615,8 @@ public abstract class XMLSignatureFactory {
      *    <code>null</code>
      */
     public abstract SignatureMethod newSignatureMethod(String algorithm, 
-	SignatureMethodParameterSpec params) throws NoSuchAlgorithmException,
-	InvalidAlgorithmParameterException;
+        SignatureMethodParameterSpec params) throws NoSuchAlgorithmException,
+        InvalidAlgorithmParameterException;
 
     /**
      * Creates a <code>Transform</code> for the specified algorithm URI 
@@ -634,8 +634,8 @@ public abstract class XMLSignatureFactory {
      *    <code>null</code>
      */
     public abstract Transform newTransform(String algorithm, 
-	TransformParameterSpec params) throws NoSuchAlgorithmException,
-	InvalidAlgorithmParameterException;
+        TransformParameterSpec params) throws NoSuchAlgorithmException,
+        InvalidAlgorithmParameterException;
 
     /**
      * Creates a <code>Transform</code> for the specified algorithm URI 
@@ -659,8 +659,8 @@ public abstract class XMLSignatureFactory {
      *    <code>null</code>
      */
     public abstract Transform newTransform(String algorithm, 
-	XMLStructure params) throws NoSuchAlgorithmException,
-	InvalidAlgorithmParameterException;
+        XMLStructure params) throws NoSuchAlgorithmException,
+        InvalidAlgorithmParameterException;
 
     /**
      * Creates a <code>CanonicalizationMethod</code> for the specified 
@@ -678,8 +678,8 @@ public abstract class XMLSignatureFactory {
      *    <code>null</code>
      */
     public abstract CanonicalizationMethod newCanonicalizationMethod(
-	String algorithm, C14NMethodParameterSpec params) 
-	throws NoSuchAlgorithmException, InvalidAlgorithmParameterException;
+        String algorithm, C14NMethodParameterSpec params) 
+        throws NoSuchAlgorithmException, InvalidAlgorithmParameterException;
 
     /**
      * Creates a <code>CanonicalizationMethod</code> for the specified 
@@ -703,8 +703,8 @@ public abstract class XMLSignatureFactory {
      *    <code>null</code>
      */
     public abstract CanonicalizationMethod newCanonicalizationMethod(
-	String algorithm, XMLStructure params) 
-	throws NoSuchAlgorithmException, InvalidAlgorithmParameterException;
+        String algorithm, XMLStructure params) 
+        throws NoSuchAlgorithmException, InvalidAlgorithmParameterException;
 
     /**
      * Returns a <code>KeyInfoFactory</code> that creates <code>KeyInfo</code>
@@ -717,7 +717,7 @@ public abstract class XMLSignatureFactory {
      *    is not available
      */
     public final KeyInfoFactory getKeyInfoFactory() {
-	return KeyInfoFactory.getInstance(getMechanismType(), getProvider());
+        return KeyInfoFactory.getInstance(getMechanismType(), getProvider());
     }
 
     /**
@@ -735,7 +735,7 @@ public abstract class XMLSignatureFactory {
      *    during unmarshalling
      */
     public abstract XMLSignature unmarshalXMLSignature
-	(XMLValidateContext context) throws MarshalException;
+        (XMLValidateContext context) throws MarshalException;
 
     /**
      * Unmarshals a new <code>XMLSignature</code> instance from a
@@ -754,7 +754,7 @@ public abstract class XMLSignatureFactory {
      *    during unmarshalling
      */
     public abstract XMLSignature unmarshalXMLSignature
-	(XMLStructure xmlStructure) throws MarshalException;
+        (XMLStructure xmlStructure) throws MarshalException;
 
     /**
      * Indicates whether a specified feature is supported.

@@ -92,17 +92,17 @@ public class TransformBase64Decode extends TransformSpi {
     * @throws TransformationException
     */
    protected XMLSignatureInput enginePerformTransform
-	(XMLSignatureInput input, Transform _transformObject)
+        (XMLSignatureInput input, Transform _transformObject)
            throws IOException, CanonicalizationException,
                   TransformationException {
-   	return enginePerformTransform(input, null, _transformObject);
+        return enginePerformTransform(input, null, _transformObject);
    }
 
     protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input,
             OutputStream os, Transform _transformObject)
     throws IOException, CanonicalizationException,
            TransformationException {
-	 try {
+         try {
       if (input.isElement()) {
          Node el=input.getSubNode();
          if (input.getSubNode().getNodeType()==Node.TEXT_NODE) {         	
@@ -111,10 +111,10 @@ public class TransformBase64Decode extends TransformSpi {
          StringBuffer sb=new StringBuffer();
          traverseElement((Element)el,sb);
          if (os==null) {
-         	byte[] decodedBytes = Base64.decode(sb.toString());            
-         	return new XMLSignatureInput(decodedBytes);
+                byte[] decodedBytes = Base64.decode(sb.toString());            
+                return new XMLSignatureInput(decodedBytes);
          } 
-         	Base64.decode(sb.toString(),os);
+                Base64.decode(sb.toString(),os);
             XMLSignatureInput output=new XMLSignatureInput((byte[])null);
             output.setOutputStream(os);
             return output;
@@ -141,9 +141,9 @@ public class TransformBase64Decode extends TransformSpi {
         
       } 
        
-	 try {
+         try {
             //Exceptional case there is current not text case testing this(Before it was a
-	 	    //a common case).
+                    //a common case).
             Document doc =
                DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(
                   input.getOctetStream());
@@ -152,27 +152,27 @@ public class TransformBase64Decode extends TransformSpi {
             StringBuffer sb = new StringBuffer();
             traverseElement(rootNode,sb);
             byte[] decodedBytes = Base64.decode(sb.toString());
-			
+                        
             return new XMLSignatureInput(decodedBytes);
-		  } catch (ParserConfigurationException e) {
-			  throw new TransformationException("c14n.Canonicalizer.Exception",e);
-		  } catch (SAXException e) {
-			  throw new TransformationException("SAX exception", e);
-		  }      
-	} catch (Base64DecodingException e) {
+                  } catch (ParserConfigurationException e) {
+                          throw new TransformationException("c14n.Canonicalizer.Exception",e);
+                  } catch (SAXException e) {
+                          throw new TransformationException("SAX exception", e);
+                  }      
+        } catch (Base64DecodingException e) {
         throw new TransformationException("Base64Decoding", e);
-	}
+        }
    }
 
    void traverseElement(org.w3c.dom.Element node,StringBuffer sb) {
-   	    Node sibling=node.getFirstChild();
+            Node sibling=node.getFirstChild();
         while (sibling!=null) {
-        	switch (sibling.getNodeType()) {
-        		case Node.ELEMENT_NODE:
+                switch (sibling.getNodeType()) {
+                        case Node.ELEMENT_NODE:
                     traverseElement((Element)sibling,sb);
                     break;
                case Node.TEXT_NODE:
-               	    sb.append(((Text)sibling).getData());
+                    sb.append(((Text)sibling).getData());
             }
             sibling=sibling.getNextSibling();
         }

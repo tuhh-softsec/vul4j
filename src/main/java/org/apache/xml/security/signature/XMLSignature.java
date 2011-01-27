@@ -201,10 +201,10 @@ public final class XMLSignature extends SignatureElementProxy {
             getDefaultPrefixBindings(Constants.SignatureSpecNS);
         if (xmlnsDsPrefix == null) {
             this._constructionElement.setAttributeNS
-	    (Constants.NamespaceSpecNS, "xmlns", Constants.SignatureSpecNS);
+            (Constants.NamespaceSpecNS, "xmlns", Constants.SignatureSpecNS);
         } else {
             this._constructionElement.setAttributeNS
-	    (Constants.NamespaceSpecNS, xmlnsDsPrefix, Constants.SignatureSpecNS);
+            (Constants.NamespaceSpecNS, xmlnsDsPrefix, Constants.SignatureSpecNS);
         }
         XMLUtils.addReturnToElement(this._constructionElement);
 
@@ -242,10 +242,10 @@ public final class XMLSignature extends SignatureElementProxy {
             getDefaultPrefixBindings(Constants.SignatureSpecNS);
         if (xmlnsDsPrefix == null) {
             this._constructionElement.setAttributeNS
-	    (Constants.NamespaceSpecNS, "xmlns", Constants.SignatureSpecNS);
+            (Constants.NamespaceSpecNS, "xmlns", Constants.SignatureSpecNS);
         } else {
             this._constructionElement.setAttributeNS
-	    (Constants.NamespaceSpecNS, xmlnsDsPrefix, Constants.SignatureSpecNS);
+            (Constants.NamespaceSpecNS, xmlnsDsPrefix, Constants.SignatureSpecNS);
         }
         XMLUtils.addReturnToElement(this._constructionElement);
 
@@ -291,7 +291,7 @@ public final class XMLSignature extends SignatureElementProxy {
 
         // create a SignedInfo object from that element
         this._signedInfo = new SignedInfo(signedInfoElem, BaseURI);
-	// get signedInfoElem again in case it has changed
+        // get signedInfoElem again in case it has changed
         signedInfoElem = XMLUtils.getNextElement(element.getFirstChild());
 
         // check out SignatureValue child
@@ -375,13 +375,13 @@ public final class XMLSignature extends SignatureElementProxy {
 
         while (signatureValueElement.hasChildNodes()) {
             signatureValueElement.removeChild
-		(signatureValueElement.getFirstChild());
+                (signatureValueElement.getFirstChild());
         }
 
         String base64codedValue = Base64.encode(bytes);
 
         if (base64codedValue.length() > 76 && !XMLUtils.ignoreLineBreaks()) {
-	    base64codedValue = "\n" + base64codedValue + "\n";
+            base64codedValue = "\n" + base64codedValue + "\n";
         }
 
         Text t = this._doc.createTextNode(base64codedValue);
@@ -409,12 +409,12 @@ public final class XMLSignature extends SignatureElementProxy {
             Element firstObject = XMLUtils.selectDsNode
                 (this._constructionElement.getFirstChild(), 
                  Constants._TAG_OBJECT, 0);
-	   	     
+                     
             if (firstObject != null) {
                  // add it before the object
                  this._constructionElement.insertBefore(keyInfoElement,
                                                         firstObject);
-	         XMLUtils.addReturnBeforeChild
+                 XMLUtils.addReturnBeforeChild
                      (this._constructionElement, firstObject);
             } else {
                  // add it as the last element to the signature
@@ -496,7 +496,7 @@ public final class XMLSignature extends SignatureElementProxy {
 
         try {
             //Create a SignatureAlgorithm object
-       	    SignedInfo si = this.getSignedInfo();
+            SignedInfo si = this.getSignedInfo();
             SignatureAlgorithm sa = si.getSignatureAlgorithm();               
             try {
                 // initialize SignatureAlgorithm for signing
@@ -615,16 +615,16 @@ public final class XMLSignature extends SignatureElementProxy {
                 OutputStream bos = new UnsyncBufferedOutputStream(so);
                 
                 si.signInOctectStream(bos);
-    		    bos.close();
-    		    // retrieve the byte[] from the stored signature
-    		    sigBytes = this.getSignatureValue();
-    	    } catch (IOException ex) {
-     	        // Impossible...but clear the verification cache anyway
-    	        sa.clearVerificationCache();
-    	    } catch (XMLSecurityException ex) {
-    	        sa.clearVerificationCache();
-    	        throw ex;
-    	    }
+                    bos.close();
+                    // retrieve the byte[] from the stored signature
+                    sigBytes = this.getSignatureValue();
+            } catch (IOException ex) {
+                // Impossible...but clear the verification cache anyway
+                sa.clearVerificationCache();
+            } catch (XMLSecurityException ex) {
+                sa.clearVerificationCache();
+                throw ex;
+            }
 
             // have SignatureAlgorithm sign the input bytes and compare them to 
             // the bytes that were stored in the signature.

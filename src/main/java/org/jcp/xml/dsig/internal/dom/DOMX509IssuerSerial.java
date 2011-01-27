@@ -57,16 +57,16 @@ public final class DOMX509IssuerSerial extends DOMStructure
      *    <code>serialNumber</code> is <code>null</code> 
      */
     public DOMX509IssuerSerial(String issuerName, BigInteger serialNumber) {
-	if (issuerName == null) {
-	    throw new NullPointerException("issuerName cannot be null");
-	}
-	if (serialNumber == null) {
-	    throw new NullPointerException("serialNumber cannot be null");
-	}
-	// check that issuer distinguished name conforms to RFC 2253
-	new X500Principal(issuerName);
-	this.issuerName = issuerName;
-	this.serialNumber = serialNumber;
+        if (issuerName == null) {
+            throw new NullPointerException("issuerName cannot be null");
+        }
+        if (serialNumber == null) {
+            throw new NullPointerException("serialNumber cannot be null");
+        }
+        // check that issuer distinguished name conforms to RFC 2253
+        new X500Principal(issuerName);
+        this.issuerName = issuerName;
+        this.serialNumber = serialNumber;
     }
 
     /**
@@ -78,19 +78,19 @@ public final class DOMX509IssuerSerial extends DOMStructure
         Element iNElem = DOMUtils.getFirstChildElement(isElem);
         Element sNElem = DOMUtils.getNextSiblingElement(iNElem);
         issuerName = iNElem.getFirstChild().getNodeValue();
-	serialNumber = new BigInteger(sNElem.getFirstChild().getNodeValue());
+        serialNumber = new BigInteger(sNElem.getFirstChild().getNodeValue());
     }
 
     public String getIssuerName() {
-	return issuerName;
+        return issuerName;
     }
 
     public BigInteger getSerialNumber() {
-	return serialNumber;
+        return serialNumber;
     }
 
     public void marshal(Node parent, String dsPrefix, DOMCryptoContext context)
-	throws MarshalException
+        throws MarshalException
     {
         Document ownerDoc = DOMUtils.getOwnerDocument(parent);
 
@@ -109,14 +109,14 @@ public final class DOMX509IssuerSerial extends DOMStructure
 
     @Override
     public boolean equals(Object obj) {
-	if (this == obj) {
+        if (this == obj) {
             return true;
-	}
+        }
         if (!(obj instanceof X509IssuerSerial)) {
             return false;
-	}
+        }
         X509IssuerSerial ois = (X509IssuerSerial)obj;
-	return (issuerName.equals(ois.getIssuerName()) &&
-	        serialNumber.equals(ois.getSerialNumber()));
+        return (issuerName.equals(ois.getIssuerName()) &&
+                serialNumber.equals(ois.getSerialNumber()));
     }
 }

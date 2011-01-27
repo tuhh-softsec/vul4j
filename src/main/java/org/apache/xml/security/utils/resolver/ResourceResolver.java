@@ -97,33 +97,33 @@ public class ResourceResolver {
            throws ResourceResolverException {
       int length=ResourceResolver._resolverVector.size();
       for (int i = 0; i < length; i++) {
-		  ResourceResolver resolver =
+                  ResourceResolver resolver =
             (ResourceResolver) ResourceResolver._resolverVector.get(i);
-		  ResourceResolver resolverTmp=null;
-		  try {
-			resolverTmp =  allThreadSafeInList || resolver._resolverSpi.engineIsThreadSafe() ? resolver : 
-				  	new ResourceResolver((ResourceResolverSpi)resolver._resolverSpi.getClass().newInstance());
-		  } catch (InstantiationException e) {
-			  throw new ResourceResolverException("",e,uri,BaseURI);
-		  } catch (IllegalAccessException e) {
-			  throw new ResourceResolverException("",e,uri,BaseURI);			
-		  }
+                  ResourceResolver resolverTmp=null;
+                  try {
+                        resolverTmp =  allThreadSafeInList || resolver._resolverSpi.engineIsThreadSafe() ? resolver : 
+                                        new ResourceResolver((ResourceResolverSpi)resolver._resolverSpi.getClass().newInstance());
+                  } catch (InstantiationException e) {
+                          throw new ResourceResolverException("",e,uri,BaseURI);
+                  } catch (IllegalAccessException e) {
+                          throw new ResourceResolverException("",e,uri,BaseURI);			
+                  }
 
          if (log.isDebugEnabled())
-         	log.debug("check resolvability by class " + resolver._resolverSpi.getClass().getName());
+                log.debug("check resolvability by class " + resolver._resolverSpi.getClass().getName());
 
          if ((resolver != null) && resolverTmp.canResolve(uri, BaseURI)) {
-        	 if (i!=0) {
-            	 //update resolver.
-        		 //System.out.println("Swaping");
-        		 List resolverVector=(List)((ArrayList)_resolverVector).clone();
-        		 resolverVector.remove(i);
-        		 resolverVector.add(0,resolver);        		 
-        		 _resolverVector=resolverVector;        		 
-        	 } else {
-        		 //System.out.println("hitting");
-        	 }
-        	 
+                 if (i!=0) {
+                 //update resolver.
+                         //System.out.println("Swaping");
+                         List resolverVector=(List)((ArrayList)_resolverVector).clone();
+                         resolverVector.remove(i);
+                         resolverVector.add(0,resolver);        		 
+                         _resolverVector=resolverVector;        		 
+                 } else {
+                         //System.out.println("hitting");
+                 }
+                 
             return resolverTmp;
          }
       }
@@ -149,13 +149,13 @@ public class ResourceResolver {
            Attr uri, String BaseURI, List individualResolvers)
               throws ResourceResolverException {
       if (log.isDebugEnabled()) {
-    	  
-      	log.debug("I was asked to create a ResourceResolver and got " + (individualResolvers==null? 0 : individualResolvers.size()) );
-      	log.debug(" extra resolvers to my existing " + ResourceResolver._resolverVector.size() + " system-wide resolvers");
+          
+        log.debug("I was asked to create a ResourceResolver and got " + (individualResolvers==null? 0 : individualResolvers.size()) );
+        log.debug(" extra resolvers to my existing " + ResourceResolver._resolverVector.size() + " system-wide resolvers");
       }
 
       // first check the individual Resolvers
-	  int size=0;
+          int size=0;
       if ((individualResolvers != null) && ((size=individualResolvers.size()) > 0)) {
          for (int i = 0; i < size; i++) {
             ResourceResolver resolver =
@@ -164,7 +164,7 @@ public class ResourceResolver {
             if (resolver != null) {
                String currentClass = resolver._resolverSpi.getClass().getName();
                if (log.isDebugEnabled())
-               	log.debug("check resolvability by class " + currentClass);
+                log.debug("check resolvability by class " + currentClass);
 
                if (resolver.canResolve(uri, BaseURI)) {
                   return resolver;
@@ -173,7 +173,7 @@ public class ResourceResolver {
          }
       }
 
-	  return getInstance(uri,BaseURI);
+          return getInstance(uri,BaseURI);
    }
 
    /**
@@ -195,7 +195,7 @@ public class ResourceResolver {
      *    registered
      */
     public static void register(String className) {
- 	register(className, false);
+        register(className, false);
     }
 
     /**
@@ -206,25 +206,25 @@ public class ResourceResolver {
      *    registered
      */
     public static void registerAtStart(String className) {
-	register(className, true);
+        register(className, true);
     }
 
     private static void register(String className, boolean start) {
         try {
             ResourceResolver resolver = new ResourceResolver(className);
-	    if (start) {
-	        ResourceResolver._resolverVector.add(0, resolver);
-	        log.debug("registered resolver");
-	    } else {	       
-	        ResourceResolver._resolverVector.add(resolver);
-	    }
-	    if (!resolver._resolverSpi.engineIsThreadSafe()) {
-        	allThreadSafeInList=false; 
+            if (start) {
+                ResourceResolver._resolverVector.add(0, resolver);
+                log.debug("registered resolver");
+            } else {	       
+                ResourceResolver._resolverVector.add(resolver);
+            }
+            if (!resolver._resolverSpi.engineIsThreadSafe()) {
+                allThreadSafeInList=false; 
         }
         } catch (Exception e) {
-	    log.warn("Error loading resolver " + className +" disabling it");
+            log.warn("Error loading resolver " + className +" disabling it");
         } catch (NoClassDefFoundError e) {
-	    log.warn("Error loading resolver " + className +" disabling it");
+            log.warn("Error loading resolver " + className +" disabling it");
         }
     }
 

@@ -67,16 +67,16 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
 
         String algorithmID = JCEMapper.translateURItoJCEID(SignatureDSA._URI);
         if (log.isDebugEnabled())
-      	    log.debug("Created SignatureDSA using " + algorithmID);
+            log.debug("Created SignatureDSA using " + algorithmID);
 
-	String provider = JCEMapper.getProviderId();
+        String provider = JCEMapper.getProviderId();
         try {
-	    if (provider == null) {
+            if (provider == null) {
                 this._signatureAlgorithm = Signature.getInstance(algorithmID);
-	    } else {
+            } else {
                 this._signatureAlgorithm = 
-		    Signature.getInstance(algorithmID, provider);
-	    }
+                    Signature.getInstance(algorithmID, provider);
+            }
         } catch (java.security.NoSuchAlgorithmException ex) {
             Object[] exArgs = { algorithmID, ex.getLocalizedMessage() };
             throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs);
@@ -95,7 +95,7 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
         try {
             this._signatureAlgorithm.setParameter(params);
         } catch (InvalidAlgorithmParameterException ex) {
-	    throw new XMLSignatureException("empty", ex);
+            throw new XMLSignatureException("empty", ex);
         }
     }
 
@@ -107,7 +107,7 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
 
         try {
             if (log.isDebugEnabled())
-         	log.debug("Called DSA.verify() on " + Base64.encode(signature));
+                log.debug("Called DSA.verify() on " + Base64.encode(signature));
 
             byte[] jcebytes = SignatureDSA.convertXMLDSIGtoASN1(signature);
 
@@ -130,7 +130,7 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
             Object exArgs[] = { supplied, needed };
 
             throw new XMLSignatureException
-		("algorithms.WrongKeyForThisOperation", exArgs);
+                ("algorithms.WrongKeyForThisOperation", exArgs);
         }
 
         try {
@@ -182,7 +182,7 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
             Object exArgs[] = { supplied, needed };
 
             throw new XMLSignatureException
-		("algorithms.WrongKeyForThisOperation", exArgs);
+                ("algorithms.WrongKeyForThisOperation", exArgs);
         }
 
         try {
@@ -204,7 +204,7 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
             Object exArgs[] = { supplied, needed };
 
             throw new XMLSignatureException
-		("algorithms.WrongKeyForThisOperation", exArgs);
+                ("algorithms.WrongKeyForThisOperation", exArgs);
         }
 
         try {
@@ -372,7 +372,7 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
     protected void engineSetHMACOutputLength(int HMACOutputLength)
             throws XMLSignatureException {
         throw new XMLSignatureException(
-	    "algorithms.HMACOutputLengthOnlyForHMAC");
+            "algorithms.HMACOutputLengthOnlyForHMAC");
     }
 
     /**

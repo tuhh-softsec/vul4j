@@ -29,8 +29,8 @@ public interface CipherValue {
      *
      * @return cipher value.
      */
-	String getValue();
-	// byte[] getValue();
+        String getValue();
+        // byte[] getValue();
     
     /**
      * Sets the Base 64 encoded, encrypted octets that is the
@@ -38,6 +38,6 @@ public interface CipherValue {
      *
      * @param value the cipher value.
      */
-	void setValue(String value);
-	// void setValue(byte[] value);
+        void setValue(String value);
+        // void setValue(byte[] value);
 }

@@ -105,24 +105,24 @@ public abstract class KeyInfoFactory {
 
     private static Class cl; 
     private static final Class[] getImplParams = 
-	{ String.class, String.class, Provider.class };
+        { String.class, String.class, Provider.class };
     private static Method getImplMethod;
     static {
-	try {
-	    cl = Class.forName("javax.xml.crypto.dsig.XMLDSigSecurity");
-	} catch (ClassNotFoundException cnfe) { }
-	getImplMethod = (Method)
+        try {
+            cl = Class.forName("javax.xml.crypto.dsig.XMLDSigSecurity");
+        } catch (ClassNotFoundException cnfe) { }
+        getImplMethod = (Method)
             AccessController.doPrivileged(new PrivilegedAction() {
             public Object run() {
-		Method m = null;
-		try {
+                Method m = null;
+                try {
                     m = cl.getDeclaredMethod("getImpl", getImplParams);
                     if (m != null)
-			m.setAccessible(true);
-		} catch (NoSuchMethodException nsme) { }
+                        m.setAccessible(true);
+                } catch (NoSuchMethodException nsme) { }
                 return m;
             }
-	});
+        });
     }
 
     /**
@@ -158,32 +158,32 @@ public abstract class KeyInfoFactory {
      * @see Provider
      */
     public static KeyInfoFactory getInstance(String mechanismType) {
-	if (mechanismType == null) {
+        if (mechanismType == null) {
             throw new NullPointerException("mechanismType cannot be null");
-	}
+        }
 
-	return findInstance(mechanismType, null);
+        return findInstance(mechanismType, null);
     }
 
     private static KeyInfoFactory findInstance(String mechanismType, 
-	Provider provider) {
+        Provider provider) {
 
-	if (getImplMethod == null) {
-	    throw new NoSuchMechanismException
-		("Cannot find " + mechanismType + " mechanism type");
-	}
+        if (getImplMethod == null) {
+            throw new NoSuchMechanismException
+                ("Cannot find " + mechanismType + " mechanism type");
+        }
 
         Object[] objs = null;
-	try {
+        try {
             objs = (Object[]) getImplMethod.invoke(null, new Object[] 
-	        {mechanismType, "KeyInfoFactory", provider});
-	} catch (IllegalAccessException iae) {
+                {mechanismType, "KeyInfoFactory", provider});
+        } catch (IllegalAccessException iae) {
             throw new NoSuchMechanismException
-		("Cannot find " + mechanismType + " mechanism type", iae);
-	} catch (InvocationTargetException ite) {
+                ("Cannot find " + mechanismType + " mechanism type", iae);
+        } catch (InvocationTargetException ite) {
             throw new NoSuchMechanismException
-		("Cannot find " + mechanismType + " mechanism type", ite);
-	}
+                ("Cannot find " + mechanismType + " mechanism type", ite);
+        }
 
         KeyInfoFactory factory = (KeyInfoFactory) objs[0];
         factory.mechanismType = mechanismType;
@@ -213,14 +213,14 @@ public abstract class KeyInfoFactory {
      * @see Provider
      */
     public static KeyInfoFactory getInstance(String mechanismType,
-	Provider provider) {
-	if (mechanismType == null) {
+        Provider provider) {
+        if (mechanismType == null) {
             throw new NullPointerException("mechanismType cannot be null");
-	} else if (provider == null) {
-	    throw new NullPointerException("provider cannot be null");
-	}
+        } else if (provider == null) {
+            throw new NullPointerException("provider cannot be null");
+        }
 
-	return findInstance(mechanismType, provider);
+        return findInstance(mechanismType, provider);
     }
 
     /**
@@ -249,20 +249,20 @@ public abstract class KeyInfoFactory {
      * @see Provider
      */
     public static KeyInfoFactory getInstance(String mechanismType,
-	String provider) throws NoSuchProviderException {
-	if (mechanismType == null) {
+        String provider) throws NoSuchProviderException {
+        if (mechanismType == null) {
             throw new NullPointerException("mechanismType cannot be null");
-	} else if (provider == null) {
+        } else if (provider == null) {
             throw new NullPointerException("provider cannot be null");
-	}
+        }
 
-	Provider prov = Security.getProvider(provider);
-	if (prov == null) {
-	    throw new NoSuchProviderException("cannot find provider named " 
-		+ provider);
-	}
+        Provider prov = Security.getProvider(provider);
+        if (prov == null) {
+            throw new NoSuchProviderException("cannot find provider named " 
+                + provider);
+        }
 
-	return findInstance(mechanismType, prov);
+        return findInstance(mechanismType, prov);
     }
 
     /**
@@ -306,7 +306,7 @@ public abstract class KeyInfoFactory {
      * @return the provider of this <code>KeyInfoFactory</code>
      */
     public final Provider getProvider() {
-	return provider;
+        return provider;
     }
 
     /**
@@ -403,7 +403,7 @@ public abstract class KeyInfoFactory {
      *    entries that are not of type {@link XMLStructure}
      */
     public abstract PGPData newPGPData(byte[] keyId, byte[] keyPacket,
-	List other);
+        List other);
 
     /**
      * Creates a <code>PGPData</code> from the specified PGP key material
@@ -457,7 +457,7 @@ public abstract class KeyInfoFactory {
      *    entries that are not of type {@link Transform}
      */
     public abstract RetrievalMethod newRetrievalMethod(String uri, String type,
-	List transforms);
+        List transforms);
 
     /**
      * Creates a <code>X509Data</code> containing the specified list of
@@ -535,5 +535,5 @@ public abstract class KeyInfoFactory {
      *   unmarshalling
      */
     public abstract KeyInfo unmarshalKeyInfo(XMLStructure xmlStructure)
-	throws MarshalException;
+        throws MarshalException;
 }

@@ -45,38 +45,38 @@ public class Canonicalizer {
      * in only one node 
      */
     public static final String XPATH_C14N_WITH_COMMENTS_SINGLE_NODE = 
-	"(.//. | .//@* | .//namespace::*)";
+        "(.//. | .//@* | .//namespace::*)";
    
     /**
      * The URL defined in XML-SEC Rec for inclusive c14n <b>without</b> comments.
      */
     public static final String ALGO_ID_C14N_OMIT_COMMENTS = 
-	"http://www.w3.org/TR/2001/REC-xml-c14n-20010315";
+        "http://www.w3.org/TR/2001/REC-xml-c14n-20010315";
     /**
      * The URL defined in XML-SEC Rec for inclusive c14n <b>with</b> comments.
      */
     public static final String ALGO_ID_C14N_WITH_COMMENTS = 
-	ALGO_ID_C14N_OMIT_COMMENTS + "#WithComments";
+        ALGO_ID_C14N_OMIT_COMMENTS + "#WithComments";
     /**
      * The URL defined in XML-SEC Rec for exclusive c14n <b>without</b> comments.
      */
     public static final String ALGO_ID_C14N_EXCL_OMIT_COMMENTS = 
-	"http://www.w3.org/2001/10/xml-exc-c14n#";
+        "http://www.w3.org/2001/10/xml-exc-c14n#";
     /**
      * The URL defined in XML-SEC Rec for exclusive c14n <b>with</b> comments.
      */
     public static final String ALGO_ID_C14N_EXCL_WITH_COMMENTS = 
-	ALGO_ID_C14N_EXCL_OMIT_COMMENTS + "WithComments";
+        ALGO_ID_C14N_EXCL_OMIT_COMMENTS + "WithComments";
     /**
      * The URI for inclusive c14n 1.1 <b>without</b> comments.
      */
     public static final String ALGO_ID_C14N11_OMIT_COMMENTS = 
-	"http://www.w3.org/2006/12/xml-c14n11";
+        "http://www.w3.org/2006/12/xml-c14n11";
     /**
      * The URI for inclusive c14n 1.1 <b>with</b> comments.
      */
     public static final String ALGO_ID_C14N11_WITH_COMMENTS = 
-	ALGO_ID_C14N11_OMIT_COMMENTS + "#WithComments";
+        ALGO_ID_C14N11_OMIT_COMMENTS + "#WithComments";
 
     static boolean _alreadyInitialized = false;
     static Map _canonicalizerHash = null;
@@ -154,10 +154,10 @@ public class Canonicalizer {
         }
 
         try {
-	    _canonicalizerHash.put(algorithmURI, Class.forName(implementingClass));
-	} catch (ClassNotFoundException e) {
-	    throw new RuntimeException("c14n class not found");
-	}
+            _canonicalizerHash.put(algorithmURI, Class.forName(implementingClass));
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("c14n class not found");
+        }
     }
 
     /**
@@ -314,7 +314,7 @@ public class Canonicalizer {
      * @throws CanonicalizationException
      */
     public byte[] canonicalizeXPathNodeSet(Set xpathNodeSet, 
-	String inclusiveNamespaces) throws CanonicalizationException {
+        String inclusiveNamespaces) throws CanonicalizationException {
         return this.canonicalizerSpi.engineCanonicalizeXPathNodeSet(xpathNodeSet,
             inclusiveNamespaces);
     }

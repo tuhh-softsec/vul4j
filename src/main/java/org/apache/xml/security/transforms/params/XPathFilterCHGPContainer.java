@@ -100,7 +100,7 @@ public class XPathFilterCHGPContainer extends ElementProxy
          includeButSearchElem
             .appendChild(this._doc
                .createTextNode(indentXPathText(includeButSearch)));
-	 XMLUtils.addReturnToElement(this._constructionElement);
+         XMLUtils.addReturnToElement(this._constructionElement);
          this._constructionElement.appendChild(includeButSearchElem);
       }
 
@@ -114,7 +114,7 @@ public class XPathFilterCHGPContainer extends ElementProxy
          excludeButSearchElem
             .appendChild(this._doc
                .createTextNode(indentXPathText(excludeButSearch)));
-	 XMLUtils.addReturnToElement(this._constructionElement);
+         XMLUtils.addReturnToElement(this._constructionElement);
          this._constructionElement.appendChild(excludeButSearchElem);
       }
 
@@ -125,7 +125,7 @@ public class XPathFilterCHGPContainer extends ElementProxy
 
          excludeElem
             .appendChild(this._doc.createTextNode(indentXPathText(exclude)));
-	 XMLUtils.addReturnToElement(this._constructionElement);
+         XMLUtils.addReturnToElement(this._constructionElement);
          this._constructionElement.appendChild(excludeElem);
       }
 
