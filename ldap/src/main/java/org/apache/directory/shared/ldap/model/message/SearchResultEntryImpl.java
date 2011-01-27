@@ -20,8 +20,6 @@
 package org.apache.directory.shared.ldap.model.message;
 
 
-import java.util.List;
-
 import org.apache.directory.shared.ldap.model.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.model.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.model.entry.Entry;

@@ -25,7 +25,6 @@ import java.util.*;
 
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapProtocolErrorException;
-import org.apache.directory.shared.ldap.model.message.*;
 import org.apache.directory.shared.ldap.model.filter.BranchNormalizedVisitor;
 import org.apache.directory.shared.ldap.model.filter.ExprNode;
 import org.apache.directory.shared.ldap.model.filter.FilterParser;
