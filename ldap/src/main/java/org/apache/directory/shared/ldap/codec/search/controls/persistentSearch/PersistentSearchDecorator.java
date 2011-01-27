@@ -30,7 +30,7 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 import org.apache.directory.shared.ldap.model.message.controls.ChangeType;
 import org.apache.directory.shared.ldap.model.message.controls.PersistentSearch;
-import org.apache.directory.shared.ldap.model.message.controls.SimplePersistentSearch;
+import org.apache.directory.shared.ldap.model.message.controls.PersistentSearchImpl;
 
 
 /**
@@ -50,7 +50,7 @@ public class PersistentSearchDecorator extends ControlDecorator implements Persi
      */
     public PersistentSearchDecorator()
     {
-        this( new SimplePersistentSearch() );
+        this( new PersistentSearchImpl() );
     }
 
 

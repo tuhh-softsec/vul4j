@@ -28,7 +28,7 @@ import org.apache.directory.shared.ldap.codec.controls.BasicControlImpl;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SimplePersistentSearch extends BasicControlImpl implements PersistentSearch
+public class PersistentSearchImpl extends BasicControlImpl implements PersistentSearch
 {
 
     /**
@@ -61,7 +61,7 @@ public class SimplePersistentSearch extends BasicControlImpl implements Persiste
      * Default constructor
      *
      */
-    public SimplePersistentSearch()
+    public PersistentSearchImpl()
     {
         super( OID );
     }

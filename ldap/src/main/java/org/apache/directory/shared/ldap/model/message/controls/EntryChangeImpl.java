@@ -29,7 +29,7 @@ import org.apache.directory.shared.ldap.model.name.Dn;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SimpleEntryChange extends BasicControlImpl implements EntryChange
+public class EntryChangeImpl extends BasicControlImpl implements EntryChange
 {
 
     private ChangeType changeType = ChangeType.ADD;
@@ -45,7 +45,7 @@ public class SimpleEntryChange extends BasicControlImpl implements EntryChange
      * Creates a new instance of EntryChangeControl.
      *
      */
-    public SimpleEntryChange()
+    public EntryChangeImpl()
     {
         super( OID );
     }

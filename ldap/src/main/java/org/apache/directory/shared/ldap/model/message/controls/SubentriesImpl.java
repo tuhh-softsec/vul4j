@@ -28,7 +28,7 @@ import org.apache.directory.shared.ldap.codec.controls.BasicControlImpl;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SimpleSubentries extends BasicControlImpl implements Subentries
+public class SubentriesImpl extends BasicControlImpl implements Subentries
 {
     private boolean visibility = false;
 
@@ -36,7 +36,7 @@ public class SimpleSubentries extends BasicControlImpl implements Subentries
     /**
      * Default constructor
      */
-    public SimpleSubentries()
+    public SubentriesImpl()
     {
         super( OID );
     }

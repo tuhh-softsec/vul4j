@@ -30,12 +30,12 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 import org.apache.directory.shared.ldap.model.message.controls.PagedResults;
-import org.apache.directory.shared.ldap.model.message.controls.SimplePagedResults;
+import org.apache.directory.shared.ldap.model.message.controls.PagedResultsImpl;
 import org.apache.directory.shared.util.Strings;
 
 
 /**
- * A codec decorator for the {@link SimplePagedResults}.
+ * A codec decorator for the {@link PagedResultsImpl}.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
@@ -51,7 +51,7 @@ public class PagedResultsDecorator extends ControlDecorator implements PagedResu
      */
     public PagedResultsDecorator()
     {
-        this( new SimplePagedResults() );
+        this( new PagedResultsImpl() );
     }
 
 

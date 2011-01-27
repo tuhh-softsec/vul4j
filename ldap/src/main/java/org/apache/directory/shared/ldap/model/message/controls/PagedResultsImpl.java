@@ -58,7 +58,7 @@ import java.util.Arrays;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SimplePagedResults extends BasicControlImpl implements PagedResults
+public class PagedResultsImpl extends BasicControlImpl implements PagedResults
 {
 
     /** The number of entries to return, or returned */
@@ -71,7 +71,7 @@ public class SimplePagedResults extends BasicControlImpl implements PagedResults
     /**
      * Creates a new instance of PagedResultsDecorator.
      */
-    public SimplePagedResults()
+    public PagedResultsImpl()
     {
         super( OID );
     }

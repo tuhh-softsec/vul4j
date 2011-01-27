@@ -30,7 +30,7 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 import org.apache.directory.shared.ldap.model.message.controls.ChangeType;
 import org.apache.directory.shared.ldap.model.message.controls.EntryChange;
-import org.apache.directory.shared.ldap.model.message.controls.SimpleEntryChange;
+import org.apache.directory.shared.ldap.model.message.controls.EntryChangeImpl;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.util.Strings;
 
@@ -60,7 +60,7 @@ public class EntryChangeDecorator extends ControlDecorator implements EntryChang
      */
     public EntryChangeDecorator()
     {
-        super( new SimpleEntryChange(), new EntryChangeDecoder() );
+        super( new EntryChangeImpl(), new EntryChangeDecoder() );
     }
 
 
