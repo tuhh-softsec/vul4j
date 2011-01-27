@@ -149,7 +149,8 @@ public class DOMSubTreeData implements NodeSetData {
                     // contiguous text/cdata nodes
                     if (prevSibling != null &&
                         (prevSibling.getNodeType() == Node.TEXT_NODE ||
-                         prevSibling.getNodeType() == Node.CDATA_SECTION_NODE)){			return;
+                         prevSibling.getNodeType() == Node.CDATA_SECTION_NODE)) {
+                        return;
                     }
                 case Node.PROCESSING_INSTRUCTION_NODE :
                     nodeSet.add(node);

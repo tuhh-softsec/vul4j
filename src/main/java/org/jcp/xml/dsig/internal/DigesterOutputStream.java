@@ -84,7 +84,7 @@ public class DigesterOutputStream extends OutputStream {
         if (log.isLoggable(Level.FINER)) {
             log.log(Level.FINER, "Pre-digested input:");
             StringBuffer sb = new StringBuffer(len);
-            for (int i=offset; i<(offset+len); i++) {
+            for (int i = offset; i < (offset + len); i++) {
                 sb.append((char)input[i]);
             }
             log.log(Level.FINER, sb.toString());
