@@ -21,6 +21,7 @@ package org.apache.directory.shared.ldap.codec.decorators;
 
 
 import org.apache.directory.shared.ldap.model.message.LdapResult;
+import org.apache.directory.shared.ldap.model.message.LdapResultImpl;
 import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.model.message.ResultResponse;
 
@@ -33,7 +34,7 @@ import org.apache.directory.shared.ldap.model.message.ResultResponse;
 public abstract class ResponseDecorator extends MessageDecorator implements ResultResponse
 {
     /** The LdapResult decorator */
-    private LdapResultDecorator ldapResultDecorator;
+    private LdapResultDecorator ldapResultDecorator = new LdapResultDecorator( new LdapResultImpl() );
 
 
     /**

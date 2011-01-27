@@ -30,6 +30,7 @@ import org.apache.directory.shared.ldap.model.message.BindResponse;
 import org.apache.directory.shared.ldap.model.message.CompareRequest;
 import org.apache.directory.shared.ldap.model.message.CompareResponse;
 import org.apache.directory.shared.ldap.model.message.Control;
+import org.apache.directory.shared.ldap.model.message.DeleteRequest;
 import org.apache.directory.shared.ldap.model.message.DeleteResponse;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
@@ -93,7 +94,7 @@ public class MessageDecorator implements Message
                 return new CompareResponseDecorator( ( CompareResponse ) decoratedMessage );
                 
             case DEL_REQUEST:
-                return new MessageDecorator( decoratedMessage );
+                return new DeleteRequestDecorator( ( DeleteRequest ) decoratedMessage );
 
             case DEL_RESPONSE:
                 return new DeleteResponseDecorator( ( DeleteResponse ) decoratedMessage );

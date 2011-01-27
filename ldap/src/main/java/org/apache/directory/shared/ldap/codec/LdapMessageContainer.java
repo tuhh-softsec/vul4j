@@ -59,9 +59,6 @@ import org.apache.directory.shared.ldap.model.message.UnbindRequest;
  */
 public class LdapMessageContainer extends AbstractContainer
 {
-    /** The internal ldap message */
-    private Message message;
-
     /** The Message decorator to store various temporary values */
     private MessageDecorator messageDecorator;
 
@@ -121,7 +118,7 @@ public class LdapMessageContainer extends AbstractContainer
      */
     public AbandonRequest getAbandonRequest()
     {
-        return ( AbandonRequest ) message;
+        return ( AbandonRequest ) messageDecorator;
     }
 
 
@@ -130,7 +127,7 @@ public class LdapMessageContainer extends AbstractContainer
      */
     public AddRequest getAddRequest()
     {
-        return ( AddRequest ) message;
+        return ( AddRequest ) messageDecorator;
     }
 
 
@@ -139,7 +136,7 @@ public class LdapMessageContainer extends AbstractContainer
      */
     public AddResponse getAddResponse()
     {
-        return ( AddResponse ) message;
+        return ( AddResponse ) messageDecorator;
     }
 
 
@@ -148,7 +145,7 @@ public class LdapMessageContainer extends AbstractContainer
      */
     public BindRequest getBindRequest()
     {
-        return ( BindRequest ) message;
+        return ( BindRequest ) messageDecorator;
     }
 
 
@@ -157,7 +154,7 @@ public class LdapMessageContainer extends AbstractContainer
      */
     public BindResponse getBindResponse()
     {
-        return ( BindResponse ) message;
+        return ( BindResponse ) messageDecorator;
     }
 
 
@@ -166,7 +163,7 @@ public class LdapMessageContainer extends AbstractContainer
      */
     public CompareRequest getCompareRequest()
     {
-        return ( CompareRequest ) message;
+        return ( CompareRequest ) messageDecorator;
     }
 
 
@@ -175,7 +172,7 @@ public class LdapMessageContainer extends AbstractContainer
      */
     public CompareResponse getCompareResponse()
     {
-        return ( CompareResponse ) message;
+        return ( CompareResponse ) messageDecorator;
     }
 
 
@@ -184,7 +181,7 @@ public class LdapMessageContainer extends AbstractContainer
      */
     public DeleteRequest getDeleteRequest()
     {
-        return ( DeleteRequest ) message;
+        return ( DeleteRequest ) messageDecorator;
     }
 
 
@@ -193,7 +190,7 @@ public class LdapMessageContainer extends AbstractContainer
      */
     public DeleteResponse getDeleteResponse()
     {
-        return ( DeleteResponse ) message;
+        return ( DeleteResponse ) messageDecorator;
     }
 
 
@@ -202,7 +199,7 @@ public class LdapMessageContainer extends AbstractContainer
      */
     public ExtendedRequest getExtendedRequest()
     {
-        return (ExtendedRequest) message;
+        return (ExtendedRequest) messageDecorator;
     }
 
 
@@ -211,7 +208,7 @@ public class LdapMessageContainer extends AbstractContainer
      */
     public ExtendedResponse getExtendedResponse()
     {
-        return ( ExtendedResponse ) message;
+        return ( ExtendedResponse ) messageDecorator;
     }
 
 
@@ -220,7 +217,7 @@ public class LdapMessageContainer extends AbstractContainer
      */
     public IntermediateResponse getIntermediateResponse()
     {
-        return ( IntermediateResponse ) message;
+        return ( IntermediateResponse ) messageDecorator;
     }
 
 
@@ -229,7 +226,7 @@ public class LdapMessageContainer extends AbstractContainer
      */
     public ModifyRequestDecorator getModifyRequestDecorator()
     {
-        return ( ModifyRequestDecorator ) message;
+        return ( ModifyRequestDecorator ) messageDecorator;
     }
 
 
@@ -238,7 +235,7 @@ public class LdapMessageContainer extends AbstractContainer
      */
     public ModifyRequest getModifyRequest()
     {
-        return (ModifyRequest)(( ModifyRequestDecorator ) message).getDecoratedMessage();
+        return ( ModifyRequest ) messageDecorator;
     }
 
 
@@ -247,7 +244,7 @@ public class LdapMessageContainer extends AbstractContainer
      */
     public ModifyResponse getModifyResponse()
     {
-        return ( ModifyResponse ) message;
+        return ( ModifyResponse ) messageDecorator;
     }
 
 
@@ -256,7 +253,7 @@ public class LdapMessageContainer extends AbstractContainer
      */
     public ModifyDnRequest getModifyDnRequest()
     {
-        return ( ModifyDnRequest ) message;
+        return ( ModifyDnRequest ) messageDecorator;
     }
 
 
@@ -265,7 +262,7 @@ public class LdapMessageContainer extends AbstractContainer
      */
     public ModifyDnResponse getModifyDnResponse()
     {
-        return ( ModifyDnResponse ) message;
+        return ( ModifyDnResponse ) messageDecorator;
     }
 
 
@@ -274,7 +271,7 @@ public class LdapMessageContainer extends AbstractContainer
      */
     public SearchRequest getSearchRequest()
     {
-        return ( SearchRequest ) message;
+        return ( SearchRequest ) messageDecorator;
     }
 
 
@@ -292,7 +289,7 @@ public class LdapMessageContainer extends AbstractContainer
      */
     public SearchResultEntryDecorator getSearchResultEntry()
     {
-        return ( SearchResultEntryDecorator ) message;
+        return ( SearchResultEntryDecorator ) messageDecorator;
     }
 
 
@@ -301,7 +298,7 @@ public class LdapMessageContainer extends AbstractContainer
      */
     public SearchResultReference getSearchResultReference()
     {
-        return ( SearchResultReference ) message;
+        return ( SearchResultReference ) messageDecorator;
     }
 
 
@@ -310,7 +307,7 @@ public class LdapMessageContainer extends AbstractContainer
      */
     public SearchResultDone getSearchResultDone()
     {
-        return ( SearchResultDone ) message;
+        return ( SearchResultDone ) messageDecorator;
     }
 
 
@@ -319,7 +316,7 @@ public class LdapMessageContainer extends AbstractContainer
      */
     public UnbindRequest getUnbindRequest()
     {
-        return ( UnbindRequest ) message;
+        return ( UnbindRequest ) messageDecorator.getDecoratedMessage();
     }
 
 
@@ -331,7 +328,14 @@ public class LdapMessageContainer extends AbstractContainer
      */
     public void setMessage( Message message )
     {
-        this.message = message;
+        if ( message instanceof MessageDecorator )
+        {
+            messageDecorator = ( MessageDecorator ) message;
+        }
+        else
+        {
+            messageDecorator = MessageDecorator.getDecorator( message );
+        }
     }
 
 
@@ -360,7 +364,6 @@ public class LdapMessageContainer extends AbstractContainer
     {
         super.clean();
 
-        message = null;
         messageDecorator = null;
         messageId = 0;
         currentControl = null;
