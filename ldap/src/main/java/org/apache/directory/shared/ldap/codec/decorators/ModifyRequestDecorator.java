@@ -20,6 +20,7 @@
 package org.apache.directory.shared.ldap.codec.decorators;
 
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -29,6 +30,7 @@ import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.model.entry.Modification;
 import org.apache.directory.shared.ldap.model.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.model.message.ModifyRequest;
+import org.apache.directory.shared.ldap.model.name.Dn;
 
 
 /**
@@ -36,7 +38,7 @@ import org.apache.directory.shared.ldap.model.message.ModifyRequest;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ModifyRequestDecorator extends MessageDecorator
+public class ModifyRequestDecorator extends SingleReplyRequestDecorator implements ModifyRequest
 {
     /** The modify request length */
     private int modifyRequestLength;
@@ -224,5 +226,154 @@ public class ModifyRequestDecorator extends MessageDecorator
     public void addAttributeValue( String value )
     {
         currentAttribute.add( value );
+    }
+
+
+    //-------------------------------------------------------------------------
+    // The SearchResultReference methods
+    //-------------------------------------------------------------------------
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public Dn getName()
+    {
+        return getModifyRequest().getName();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setName( Dn name )
+    {
+        getModifyRequest().setName( name );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Collection<Modification> getModifications()
+    {
+        return getModifyRequest().getModifications();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void addModification( Modification mod )
+    {
+        getModifyRequest().addModification( mod );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void removeModification( Modification mod )
+    {
+        getModifyRequest().removeModification( mod );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void remove( String attributeName, String... attributeValue )
+    {
+        getModifyRequest().remove( attributeName, attributeValue );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void remove( String attributeName, byte[]... attributeValue )
+    {
+        getModifyRequest().remove( attributeName, attributeValue );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void remove( EntryAttribute attr )
+    {
+        getModifyRequest().remove( attr );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void addModification( EntryAttribute attr, ModificationOperation modOp )
+    {
+        getModifyRequest().addModification( attr, modOp );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void add( String attributeName, String... attributeValue )
+    {
+        getModifyRequest().add( attributeName, attributeValue );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void add( String attributeName, byte[]... attributeValue )
+    {
+        getModifyRequest().add( attributeName, attributeValue );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void add( EntryAttribute attr )
+    {
+        getModifyRequest().add( attr );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void replace( String attributeName )
+    {
+        getModifyRequest().replace( attributeName );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void replace( String attributeName, String... attributeValue )
+    {
+        getModifyRequest().replace( attributeName, attributeValue );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void replace( String attributeName, byte[]... attributeValue )
+    {
+        getModifyRequest().replace( attributeName, attributeValue );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void replace( EntryAttribute attr )
+    {
+        getModifyRequest().replace( attr );
     }
 }

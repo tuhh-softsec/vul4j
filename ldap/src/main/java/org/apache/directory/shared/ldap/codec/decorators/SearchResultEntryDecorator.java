@@ -228,9 +228,6 @@ public class SearchResultEntryDecorator extends MessageDecorator implements Sear
     }
 
 
-    /**
-     * {@inheritDoc}
-     */
     public void addAttributeValue( Object value )
     {
         getSearchResultEntry().addAttributeValue( value );
