@@ -57,7 +57,7 @@ public class BindRequestDecorator extends SingleReplyRequestDecorator implements
      */
     public BindRequest getBindRequest()
     {
-        return getBindRequest();
+        return ( BindRequest ) getDecoratedMessage();
     }
 
 
