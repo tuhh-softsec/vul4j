@@ -21,6 +21,8 @@ package org.apache.directory.shared.ldap.codec.decorators;
 
 
 import org.apache.directory.shared.ldap.model.message.BindResponse;
+import org.apache.directory.shared.ldap.model.message.BindResponseImpl;
+import org.apache.directory.shared.ldap.model.message.LdapResult;
 
 
 /**
@@ -28,7 +30,7 @@ import org.apache.directory.shared.ldap.model.message.BindResponse;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class BindResponseDecorator extends ResponseDecorator
+public class BindResponseDecorator extends ResponseDecorator implements BindResponse
 {
     /** The encoded bindResponse length */
     private int bindResponseLength;
@@ -70,5 +72,44 @@ public class BindResponseDecorator extends ResponseDecorator
     public int getBindResponseLength()
     {
         return bindResponseLength;
+    }
+
+
+    //-------------------------------------------------------------------------
+    // The BindResponse methods
+    //-------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
+    public LdapResult getLdapResult()
+    {
+        return ((BindResponseImpl)decoratedMessage).getLdapResult();
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public byte[] getServerSaslCreds()
+    {
+        return ((BindResponseImpl)decoratedMessage).getServerSaslCreds();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setServerSaslCreds( byte[] serverSaslCreds )
+    {
+        ((BindResponseImpl)decoratedMessage).setServerSaslCreds( serverSaslCreds );
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String toString()
+    {
+        return ((BindResponseImpl)decoratedMessage).toString();
     }
 }
