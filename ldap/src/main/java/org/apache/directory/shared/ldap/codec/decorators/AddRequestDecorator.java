@@ -22,7 +22,15 @@ package org.apache.directory.shared.ldap.codec.decorators;
 
 import java.util.List;
 
+import org.apache.directory.shared.ldap.model.entry.Entry;
+import org.apache.directory.shared.ldap.model.entry.Value;
+import org.apache.directory.shared.ldap.model.exception.LdapException;
+import org.apache.directory.shared.ldap.model.message.AbandonListener;
 import org.apache.directory.shared.ldap.model.message.AddRequest;
+import org.apache.directory.shared.ldap.model.message.AddRequestImpl;
+import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
+import org.apache.directory.shared.ldap.model.message.ResultResponse;
+import org.apache.directory.shared.ldap.model.name.Dn;
 
 
 /**
@@ -30,7 +38,7 @@ import org.apache.directory.shared.ldap.model.message.AddRequest;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class AddRequestDecorator extends MessageDecorator
+public class AddRequestDecorator extends MessageDecorator implements AddRequest
 {
     /** The add request length */
     private int addRequestLength;
@@ -138,5 +146,152 @@ public class AddRequestDecorator extends MessageDecorator
     public List<Integer> getValuesLength()
     {
         return valuesLength;
+    }
+
+
+    //-------------------------------------------------------------------------
+    // The AddRequest methods
+    //-------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
+    public MessageTypeEnum getResponseType()
+    {
+        return ((AddRequestImpl)decoratedMessage).getResponseType();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public ResultResponse getResultResponse()
+    {
+        return ((AddRequestImpl)decoratedMessage).getResultResponse();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean hasResponse()
+    {
+        return ((AddRequestImpl)decoratedMessage).hasResponse();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void abandon()
+    {
+        ((AddRequestImpl)decoratedMessage).abandon();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isAbandoned()
+    {
+        return ((AddRequestImpl)decoratedMessage).isAbandoned();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void addAbandonListener( AbandonListener listener )
+    {
+        ((AddRequestImpl)decoratedMessage).addAbandonListener( listener );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Dn getEntryDn()
+    {
+        return ((AddRequestImpl)decoratedMessage).getEntryDn();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setEntryDn( Dn entry )
+    {
+        ((AddRequestImpl)decoratedMessage).setEntryDn( entry );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Entry getEntry()
+    {
+        return ((AddRequestImpl)decoratedMessage).getEntry();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setEntry( Entry entry )
+    {
+        ((AddRequestImpl)decoratedMessage).setEntry( entry );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void addAttributeType( String type ) throws LdapException
+    {
+        ((AddRequestImpl)decoratedMessage).addAttributeType( type );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getCurrentAttributeType()
+    {
+        return ((AddRequestImpl)decoratedMessage).getCurrentAttributeType();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void addAttributeValue( String value )
+    {
+        ((AddRequestImpl)decoratedMessage).addAttributeValue( value );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void addAttributeValue( Value<?> value )
+    {
+        ((AddRequestImpl)decoratedMessage).addAttributeValue( value );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void addAttributeValue( byte[] value )
+    {
+        ((AddRequestImpl)decoratedMessage).addAttributeValue( value );
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String toString()
+    {
+        return ((AddRequestImpl)decoratedMessage).toString();
     }
 }

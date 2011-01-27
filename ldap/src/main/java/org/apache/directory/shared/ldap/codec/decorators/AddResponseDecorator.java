@@ -21,6 +21,8 @@ package org.apache.directory.shared.ldap.codec.decorators;
 
 
 import org.apache.directory.shared.ldap.model.message.AddResponse;
+import org.apache.directory.shared.ldap.model.message.AddResponseImpl;
+import org.apache.directory.shared.ldap.model.message.LdapResult;
 
 
 /**
@@ -28,7 +30,7 @@ import org.apache.directory.shared.ldap.model.message.AddResponse;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class AddResponseDecorator extends ResponseDecorator
+public class AddResponseDecorator extends ResponseDecorator implements AddResponse
 {
     /** The encoded addResponse length */
     private int addResponseLength;
@@ -70,5 +72,26 @@ public class AddResponseDecorator extends ResponseDecorator
     public int getAddResponseLength()
     {
         return addResponseLength;
+    }
+
+
+    //-------------------------------------------------------------------------
+    // The AddResponse methods
+    //-------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
+    public LdapResult getLdapResult()
+    {
+        return ((AddResponseImpl)decoratedMessage).getLdapResult();
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String toString()
+    {
+        return ((AddResponseImpl)decoratedMessage).toString();
     }
 }
