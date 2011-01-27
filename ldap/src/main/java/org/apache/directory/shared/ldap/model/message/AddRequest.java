@@ -22,8 +22,6 @@ package org.apache.directory.shared.ldap.model.message;
 
 
 import org.apache.directory.shared.ldap.model.entry.Entry;
-import org.apache.directory.shared.ldap.model.entry.Value;
-import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.name.Dn;
 
 
@@ -71,42 +69,4 @@ public interface AddRequest extends SingleReplyRequest, AbandonableRequest
      * @param entry the added Entry
      */
     void setEntry( Entry entry );
-
-
-    /**
-     * Create a new attributeValue
-     * 
-     * @param type The attribute's name (called 'type' in the grammar)
-     */
-    void addAttributeType( String type ) throws LdapException;
-
-
-    /**
-     * @return Returns the currentAttribute type.
-     */
-    String getCurrentAttributeType();
-
-
-    /**
-     * Add a new value to the current attribute
-     * 
-     * @param value The value to add
-     */
-    void addAttributeValue( String value );
-
-
-    /**
-     * Add a new value to the current attribute
-     * 
-     * @param value The value to add
-     */
-    void addAttributeValue( Value<?> value );
-
-
-    /**
-     * Add a new value to the current attribute
-     * 
-     * @param value The value to add
-     */
-    void addAttributeValue( byte[] value );
 }

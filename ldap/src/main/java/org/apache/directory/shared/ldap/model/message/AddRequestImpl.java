@@ -22,12 +22,11 @@ package org.apache.directory.shared.ldap.model.message;
 
 import org.apache.directory.shared.ldap.model.entry.*;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
-import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.name.Dn;
 
 
 /**
- * Lockable add request implemenation.
+ * Lockable add request implementation.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
@@ -48,6 +47,7 @@ public class AddRequestImpl extends AbstractAbandonableRequest implements AddReq
     // Constructors
     // ------------------------------------------------------------------------
 
+    
     /**
      * Creates an AddRequest implementation to create a new entry.
      */
@@ -67,55 +67,6 @@ public class AddRequestImpl extends AbstractAbandonableRequest implements AddReq
     {
         super( id, TYPE );
         entry = new DefaultEntry();
-    }
-
-
-    // ------------------------------------------------------------------------
-    // AddRequest Interface Method Implementations
-    // ------------------------------------------------------------------------
-
-    
-    /**
-     * Gets the distinguished name of the entry to add.
-     * 
-     * @return the Dn of the added entry.
-     */
-    public Dn getEntryDn()
-    {
-        return entry.getDn();
-    }
-
-
-    /**
-     * Sets the distinguished name of the entry to add.
-     * 
-     * @param dn the Dn of the added entry.
-     */
-    public void setEntryDn( Dn dn )
-    {
-        entry.setDn( dn );
-    }
-
-
-    /**
-     * Gets the entry to add.
-     * 
-     * @return the added Entry
-     */
-    public Entry getEntry()
-    {
-        return entry;
-    }
-
-
-    /**
-     * Sets the Entry to add.
-     * 
-     * @param entry the added Entry
-     */
-    public void setEntry( Entry entry )
-    {
-        this.entry = entry;
     }
 
 
@@ -181,6 +132,55 @@ public class AddRequestImpl extends AbstractAbandonableRequest implements AddReq
     }
 
 
+    // ------------------------------------------------------------------------
+    // AddRequest Interface Method Implementations
+    // ------------------------------------------------------------------------
+
+    
+    /**
+     * Gets the distinguished name of the entry to add.
+     * 
+     * @return the Dn of the added entry.
+     */
+    public Dn getEntryDn()
+    {
+        return entry.getDn();
+    }
+
+
+    /**
+     * Sets the distinguished name of the entry to add.
+     * 
+     * @param dn the Dn of the added entry.
+     */
+    public void setEntryDn( Dn dn )
+    {
+        entry.setDn( dn );
+    }
+
+
+    /**
+     * Gets the entry to add.
+     * 
+     * @return the added Entry
+     */
+    public Entry getEntry()
+    {
+        return entry;
+    }
+
+
+    /**
+     * Sets the Entry to add.
+     * 
+     * @param entry the added Entry
+     */
+    public void setEntry( Entry entry )
+    {
+        this.entry = entry;
+    }
+    
+    
     // ------------------------------------------------------------------------
     // SingleReplyRequest Interface Method Implementations
     // ------------------------------------------------------------------------

@@ -22,15 +22,15 @@ package org.apache.directory.shared.ldap.codec;
 
 import org.apache.directory.shared.asn1.ber.AbstractContainer;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.AddRequestDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.AddResponseDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.BindRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.ModifyRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.SearchResultEntryDecorator;
 import org.apache.directory.shared.ldap.message.spi.BinaryAttributeDetector;
 import org.apache.directory.shared.ldap.model.message.AbandonRequest;
-import org.apache.directory.shared.ldap.model.message.AddRequest;
-import org.apache.directory.shared.ldap.model.message.AddResponse;
-import org.apache.directory.shared.ldap.model.message.BindRequest;
 import org.apache.directory.shared.ldap.model.message.BindResponse;
 import org.apache.directory.shared.ldap.model.message.CompareRequest;
 import org.apache.directory.shared.ldap.model.message.CompareResponse;
@@ -52,7 +52,7 @@ import org.apache.directory.shared.ldap.model.message.UnbindRequest;
 
 /**
  * The LdapMessage container stores all the messages decoded by the Asn1Decoder.
- * When dealing with an incoding PDU, we will obtain a LdapMessage in the
+ * When dealing with an encoding PDU, we will obtain a LdapMessage in the
  * container.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
@@ -125,27 +125,27 @@ public class LdapMessageContainer extends AbstractContainer
     /**
      * @return Returns the AddRequest stored in the container
      */
-    public AddRequest getAddRequest()
+    public AddRequestDecorator getAddRequest()
     {
-        return ( AddRequest ) messageDecorator;
+        return ( AddRequestDecorator ) messageDecorator;
     }
 
 
     /**
      * @return Returns the AddResponse stored in the container
      */
-    public AddResponse getAddResponse()
+    public AddResponseDecorator getAddResponse()
     {
-        return ( AddResponse ) messageDecorator;
+        return ( AddResponseDecorator ) messageDecorator;
     }
 
 
     /**
      * @return Returns the BindRequest stored in the container
      */
-    public BindRequest getBindRequest()
+    public BindRequestDecorator getBindRequest()
     {
-        return ( BindRequest ) messageDecorator;
+        return ( BindRequestDecorator ) messageDecorator;
     }
 
 

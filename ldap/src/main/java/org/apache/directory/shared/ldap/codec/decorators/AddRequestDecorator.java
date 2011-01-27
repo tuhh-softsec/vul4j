@@ -22,7 +22,9 @@ package org.apache.directory.shared.ldap.codec.decorators;
 
 import java.util.List;
 
+import org.apache.directory.shared.ldap.model.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.model.entry.Entry;
+import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.message.AddRequest;
@@ -48,7 +50,10 @@ public class AddRequestDecorator extends SingleReplyRequestDecorator implements 
     /** The list of all vals length */
     private List<Integer> valuesLength;
 
+    /** The current attribute being decoded */
+    private EntryAttribute currentAttribute;
 
+    
     /**
      * Makes a AddRequest a MessageDecorator.
      *
@@ -186,42 +191,64 @@ public class AddRequestDecorator extends SingleReplyRequestDecorator implements 
     }
 
     
-    //-------------------------------------------------------------------------
-    // @TODO ALL THESE MUST BE REMOVED
-    //-------------------------------------------------------------------------
-
-
+    /**
+     * Create a new attributeValue
+     * 
+     * @param type The attribute's name (called 'type' in the grammar)
+     */
     public void addAttributeType( String type ) throws LdapException
     {
-        // TODO Auto-generated method stub
-        
+        // do not create a new attribute if we have seen this attributeType before
+        if ( getAddRequest().getEntry().get( type ) != null )
+        {
+            currentAttribute = getAddRequest().getEntry().get( type );
+            return;
+        }
+
+        // fix this to use AttributeImpl(type.getString().toLowerCase())
+        currentAttribute = new DefaultEntryAttribute( type );
+        getAddRequest().getEntry().put( currentAttribute );
     }
 
 
+    /**
+     * @return Returns the currentAttribute type.
+     */
     public String getCurrentAttributeType()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return currentAttribute.getId();
     }
 
 
+    /**
+     * Add a new value to the current attribute
+     * 
+     * @param value The value to add
+     */
     public void addAttributeValue( String value )
     {
-        // TODO Auto-generated method stub
-        
+        currentAttribute.add( value );
     }
 
 
+    /**
+     * Add a new value to the current attribute
+     * 
+     * @param value The value to add
+     */
     public void addAttributeValue( Value<?> value )
     {
-        // TODO Auto-generated method stub
-        
+        currentAttribute.add( value );
     }
 
 
+    /**
+     * Add a new value to the current attribute
+     * 
+     * @param value The value to add
+     */
     public void addAttributeValue( byte[] value )
     {
-        // TODO Auto-generated method stub
-        
+        currentAttribute.add( value );
     }
 }

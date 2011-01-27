@@ -71,6 +71,7 @@ import org.apache.directory.shared.ldap.codec.actions.StoreReferenceAction;
 import org.apache.directory.shared.ldap.codec.actions.StoreTypeMatchingRuleAction;
 import org.apache.directory.shared.ldap.codec.actions.ValueAction;
 import org.apache.directory.shared.ldap.codec.controls.ControlFactory;
+import org.apache.directory.shared.ldap.codec.decorators.AddRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.ModifyRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
@@ -1954,7 +1955,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                 {
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    AddRequest addRequest = ldapMessageContainer.getAddRequest();
+                    AddRequestDecorator addRequest = ldapMessageContainer.getAddRequest();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
