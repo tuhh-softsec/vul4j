@@ -20,12 +20,15 @@
 package org.apache.directory.shared.ldap.codec.controls;
 
 
+import org.apache.directory.shared.ldap.model.message.controls.Cascade;
+
+
 /**
- * The Cascade control
+ * The Cascade control decorator.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class CascadeDecorator extends ControlDecorator
+public class CascadeDecorator extends ControlDecorator implements Cascade
 {
 
 

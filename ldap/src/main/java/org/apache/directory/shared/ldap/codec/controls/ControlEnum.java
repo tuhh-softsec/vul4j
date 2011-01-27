@@ -25,6 +25,7 @@ import org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValue
 import org.apache.directory.shared.ldap.codec.controls.replication.syncRequestValue.SyncRequestValueControl;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncStateValue.SyncStateValueControl;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn.SyncModifyDnControl;
+import org.apache.directory.shared.ldap.model.message.controls.Cascade;
 import org.apache.directory.shared.ldap.model.message.controls.EntryChange;
 import org.apache.directory.shared.ldap.model.message.controls.ManageDsaIT;
 import org.apache.directory.shared.ldap.model.message.controls.PagedResults;
