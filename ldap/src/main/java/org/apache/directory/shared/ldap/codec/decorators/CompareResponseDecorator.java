@@ -76,20 +76,13 @@ public class CompareResponseDecorator extends ResponseDecorator implements Compa
     //-------------------------------------------------------------------------
     // The CompareResponse methods
     //-------------------------------------------------------------------------
+    
+    
     /**
      * {@inheritDoc}
      */
     public boolean isTrue()
     {
         return getCompareResponse().isTrue();
-    }
-
-    
-    /**
-     * {@inheritDoc}
-     */
-    public String toString()
-    {
-        return getCompareResponse().toString();
     }
 }

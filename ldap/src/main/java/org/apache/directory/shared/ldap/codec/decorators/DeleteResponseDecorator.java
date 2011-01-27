@@ -71,16 +71,4 @@ public class DeleteResponseDecorator extends ResponseDecorator implements Delete
     {
         return deleteResponseLength;
     }
-
-
-    //-------------------------------------------------------------------------
-    // The DeleteResponse methods
-    //-------------------------------------------------------------------------
-    /**
-     * {@inheritDoc}
-     */
-    public String toString()
-    {
-        return getDeleteResponse().toString();
-    }
 }

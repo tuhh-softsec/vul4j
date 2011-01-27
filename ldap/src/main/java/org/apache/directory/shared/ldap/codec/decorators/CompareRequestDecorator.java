@@ -21,10 +21,7 @@ package org.apache.directory.shared.ldap.codec.decorators;
 
 
 import org.apache.directory.shared.ldap.model.entry.Value;
-import org.apache.directory.shared.ldap.model.message.AbandonListener;
 import org.apache.directory.shared.ldap.model.message.CompareRequest;
-import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
-import org.apache.directory.shared.ldap.model.message.ResultResponse;
 import org.apache.directory.shared.ldap.model.name.Dn;
 
 
@@ -33,7 +30,7 @@ import org.apache.directory.shared.ldap.model.name.Dn;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class CompareRequestDecorator extends RequestDecorator implements CompareRequest
+public class CompareRequestDecorator extends SingleReplyRequestDecorator implements CompareRequest
 {
     /** The bytes of the attribute id used in the comparison */
     private byte[] attrIdBytes;
@@ -153,51 +150,8 @@ public class CompareRequestDecorator extends RequestDecorator implements Compare
     //-------------------------------------------------------------------------
     // The CompareRequest methods
     //-------------------------------------------------------------------------
-    /**
-     * {@inheritDoc}
-     */
-    public MessageTypeEnum getResponseType()
-    {
-        return getCompareRequest().getResponseType();
-    }
 
-
-    /**
-     * {@inheritDoc}
-     */
-    public ResultResponse getResultResponse()
-    {
-        return getCompareRequest().getResultResponse();
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public void abandon()
-    {
-        getCompareRequest().abandon();
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isAbandoned()
-    {
-        return getCompareRequest().isAbandoned();
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public void addAbandonListener( AbandonListener listener )
-    {
-        getCompareRequest().addAbandonListener( listener );
-    }
-
-
+    
     /**
      * {@inheritDoc}
      */
@@ -258,14 +212,5 @@ public class CompareRequestDecorator extends RequestDecorator implements Compare
     public void setAttributeId( String attrId )
     {
         getCompareRequest().setAttributeId( attrId );
-    }
-
-    
-    /**
-     * {@inheritDoc}
-     */
-    public String toString()
-    {
-        return getCompareRequest().toString();
     }
 }
