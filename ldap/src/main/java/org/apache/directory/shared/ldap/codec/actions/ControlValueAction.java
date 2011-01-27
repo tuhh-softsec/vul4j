@@ -28,7 +28,7 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.controls.CodecControl;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecoder;
-import org.apache.directory.shared.ldap.model.message.Message;
+import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.util.StringConstants;
 import org.apache.directory.shared.util.Strings;
@@ -61,7 +61,7 @@ public class ControlValueAction extends GrammarAction
         TLV tlv = ldapMessageContainer.getCurrentTLV();
         Control control;
 
-        Message message = ldapMessageContainer.getMessage();
+        MessageDecorator message = ldapMessageContainer.getMessage();
         control = message.getCurrentControl();
 
         // Get the current control

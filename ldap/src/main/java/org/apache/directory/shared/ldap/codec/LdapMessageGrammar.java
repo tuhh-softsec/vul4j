@@ -71,6 +71,7 @@ import org.apache.directory.shared.ldap.codec.actions.StoreReferenceAction;
 import org.apache.directory.shared.ldap.codec.actions.StoreTypeMatchingRuleAction;
 import org.apache.directory.shared.ldap.codec.actions.ValueAction;
 import org.apache.directory.shared.ldap.codec.controls.ControlFactory;
+import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.ModifyRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
 import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
@@ -3491,7 +3492,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     // Get the current control
                     Control control = null;
 
-                    Message message = ldapMessageContainer.getMessage();
+                    MessageDecorator message = ldapMessageContainer.getMessage();
                     control = message.getCurrentControl();
 
                     // Store the criticality

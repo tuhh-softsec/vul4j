@@ -110,9 +110,9 @@ public class LdapMessageContainer extends AbstractContainer
     /**
      * @return Returns the ldapMessage.
      */
-    public Message getMessage()
+    public MessageDecorator getMessage()
     {
-        return message;
+        return messageDecorator;
     }
 
 
