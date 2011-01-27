@@ -28,57 +28,19 @@ import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
+import org.apache.directory.shared.ldap.codec.search.controls.ChangeType;
+import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.util.Strings;
 
 
 /**
- * A response control that may be returned by Persistent Search entry responses.
- * It contains addition change information to describe the exact change that
- * occurred to an entry. The exact details of this control are covered in section
- * 5 of this (yes) expired draft: <a
- * href="http://www3.ietf.org/proceedings/01aug/I-D/draft-ietf-ldapext-psearch-03.txt">
- * Persistent Search Draft v03</a> which is printed out below for convenience:
- * 
- * <pre>
- *    5.  Entry Change Notification Control
- *    
- *    This control provides additional information about the change the caused
- *    a particular entry to be returned as the result of a persistent search.
- *    The controlType is &quot;2.16.840.1.113730.3.4.7&quot;.  If the client set the
- *    returnECs boolean to TRUE in the PersistentSearch control, servers MUST
- *    include an EntryChangeNotification control in the Controls portion of
- *    each SearchResultEntry that is returned due to an entry being added,
- *    deleted, or modified.
- *    
- *               EntryChangeNotification ::= SEQUENCE 
- *               {
- *                         changeType ENUMERATED 
- *                         {
- *                                 add             (1),
- *                                 delete          (2),
- *                                 modify          (4),
- *                                 modDN           (8)
- *                         },
- *                         previousDN   LDAPDN OPTIONAL,     -- modifyDN ops. only
- *                         changeNumber INTEGER OPTIONAL     -- if supported
- *               }
- *    
- *    changeType indicates what LDAP operation caused the entry to be
- *    returned.
- *    
- *    previousDN is present only for modifyDN operations and gives the Dn of
- *    the entry before it was renamed and/or moved.  Servers MUST include this
- *    optional field only when returning change notifications as a result of
- *    modifyDN operations.
- * 
- *    changeNumber is the change number [CHANGELOG] assigned by a server for
- *    the change.  If a server supports an LDAP Change Log it SHOULD include
- *    this field.
- * </pre>
- * 
+ * An EntryChange implementation, that wraps and decorates the Control with codec
+ * specific functionality.
+ *
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class EntryChangeDecorator extends ControlDecorator
+public class EntryChangeDecorator extends ControlDecorator implements EntryChange
 {
 
     public static final int UNDEFINED_CHANGE_NUMBER = -1;
@@ -101,7 +63,7 @@ public class EntryChangeDecorator extends ControlDecorator
 
     private EntryChange getEntryChange()
     {
-        return (EntryChange) getDecorated();
+        return ( EntryChange ) getDecorated();
     }
 
 
@@ -220,5 +182,41 @@ public class EntryChangeDecorator extends ControlDecorator
         }
 
         return getDecorated().getValue();
+    }
+
+
+    public ChangeType getChangeType ()
+    {
+        return getEntryChange().getChangeType();
+    }
+
+
+    public void setChangeType ( ChangeType changeType )
+    {
+        getEntryChange().setChangeType( changeType );
+    }
+
+
+    public Dn getPreviousDn ()
+    {
+        return getEntryChange().getPreviousDn();
+    }
+
+
+    public void setPreviousDn ( Dn previousDn )
+    {
+        getEntryChange().setPreviousDn( previousDn );
+    }
+
+
+    public long getChangeNumber ()
+    {
+        return getEntryChange().getChangeNumber();
+    }
+
+
+    public void setChangeNumber ( long changeNumber )
+    {
+        setChangeNumber( changeNumber );
     }
 }
