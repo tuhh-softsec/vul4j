@@ -24,44 +24,30 @@ import org.apache.directory.shared.ldap.codec.controls.BasicControlImpl;
 
 
 /**
- * A searchRequest control : Subentries
+ * A simple Subentries Control implementation.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class Subentries extends BasicControlImpl
+public class SimpleSubentries extends BasicControlImpl implements Subentries
 {
-    /** Ths control OID */
-    public static final String OID = "1.3.6.1.4.1.4203.1.10.1";
-
     private boolean visibility = false;
 
 
     /**
      * Default constructor
-     *
      */
-    public Subentries()
+    public SimpleSubentries()
     {
         super( OID );
     }
 
 
-    /**
-     * Check if the subEntry is visible
-     *
-     * @return true or false.
-     */
     public boolean isVisible()
     {
         return visibility;
     }
 
 
-    /**
-     * Set the visibility flag
-     *
-     * @param visibility The visibility flag : true or false
-     */
     public void setVisibility( boolean visibility )
     {
         this.visibility = visibility;
@@ -80,7 +66,7 @@ public class Subentries extends BasicControlImpl
 
         Subentries otherDecorator = ( Subentries ) o;
 
-        return ( visibility == otherDecorator.visibility );
+        return ( visibility == otherDecorator.isVisible() );
     }
 
 

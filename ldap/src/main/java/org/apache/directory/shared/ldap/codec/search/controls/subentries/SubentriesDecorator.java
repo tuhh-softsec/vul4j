@@ -27,7 +27,6 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 
 
@@ -44,7 +43,7 @@ public class SubentriesDecorator extends ControlDecorator
      */
     public SubentriesDecorator()
     {
-        super( new Subentries(), new SubentriesDecoder() );
+        super( new SimpleSubentries(), new SubentriesDecoder() );
     }
 
 
