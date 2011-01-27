@@ -59,7 +59,7 @@ public class ControlValueAction extends GrammarAction
     {
         LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
         TLV tlv = ldapMessageContainer.getCurrentTLV();
-        Control control = null;
+        Control control;
 
         Message message = ldapMessageContainer.getMessage();
         control = message.getCurrentControl();

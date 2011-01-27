@@ -274,7 +274,7 @@ public class LdapMessageContainer extends AbstractContainer
      */
     public SearchRequest getSearchRequest()
     {
-        return (SearchRequest)message;
+        return ( SearchRequest ) message;
     }
 
 
@@ -339,7 +339,7 @@ public class LdapMessageContainer extends AbstractContainer
      * Set a Message Object decorator into the container. It will be completed by the
      * ldapDecoder.
      * 
-     * @param message The message to set.
+     * @param messageDecorator The message to set.
      */
     public void setMessageDecorator( MessageDecorator messageDecorator )
     {

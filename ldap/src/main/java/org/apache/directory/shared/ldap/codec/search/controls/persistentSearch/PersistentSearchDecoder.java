@@ -47,7 +47,7 @@ public class PersistentSearchDecoder extends Asn1Decoder implements ControlDecod
      * @return A valid PersistenceSearch object
      * 
      * @throws DecoderException If the decoding found an error
-     * @throws NamingException It will never be throw by this method
+     * @throws DecoderException It will never be throw by this method
      */
     public Asn1Object decode( byte[] controlBytes, Control control ) throws DecoderException
     {
