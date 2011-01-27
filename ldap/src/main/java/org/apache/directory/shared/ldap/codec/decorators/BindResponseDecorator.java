@@ -21,7 +21,6 @@ package org.apache.directory.shared.ldap.codec.decorators;
 
 
 import org.apache.directory.shared.ldap.model.message.BindResponse;
-import org.apache.directory.shared.ldap.model.message.BindResponseImpl;
 import org.apache.directory.shared.ldap.model.message.LdapResult;
 
 
@@ -83,7 +82,7 @@ public class BindResponseDecorator extends ResponseDecorator implements BindResp
      */
     public LdapResult getLdapResult()
     {
-        return ((BindResponseImpl)decoratedMessage).getLdapResult();
+        return getBindResponse().getLdapResult();
     }
     
     
@@ -92,7 +91,7 @@ public class BindResponseDecorator extends ResponseDecorator implements BindResp
      */
     public byte[] getServerSaslCreds()
     {
-        return ((BindResponseImpl)decoratedMessage).getServerSaslCreds();
+        return getBindResponse().getServerSaslCreds();
     }
 
 
@@ -101,7 +100,7 @@ public class BindResponseDecorator extends ResponseDecorator implements BindResp
      */
     public void setServerSaslCreds( byte[] serverSaslCreds )
     {
-        ((BindResponseImpl)decoratedMessage).setServerSaslCreds( serverSaslCreds );
+        getBindResponse().setServerSaslCreds( serverSaslCreds );
     }
 
     
@@ -110,6 +109,6 @@ public class BindResponseDecorator extends ResponseDecorator implements BindResp
      */
     public String toString()
     {
-        return ((BindResponseImpl)decoratedMessage).toString();
+        return getBindResponse().toString();
     }
 }

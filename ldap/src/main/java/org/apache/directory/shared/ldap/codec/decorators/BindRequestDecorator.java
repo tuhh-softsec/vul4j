@@ -20,7 +20,11 @@
 package org.apache.directory.shared.ldap.codec.decorators;
 
 
+import org.apache.directory.shared.ldap.model.message.AbandonListener;
 import org.apache.directory.shared.ldap.model.message.BindRequest;
+import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
+import org.apache.directory.shared.ldap.model.message.ResultResponse;
+import org.apache.directory.shared.ldap.model.name.Dn;
 
 
 /**
@@ -28,7 +32,7 @@ import org.apache.directory.shared.ldap.model.message.BindRequest;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class BindRequestDecorator extends MessageDecorator
+public class BindRequestDecorator extends MessageDecorator implements BindRequest
 {
     /** The bind request length */
     private int bindRequestLength;
@@ -56,7 +60,7 @@ public class BindRequestDecorator extends MessageDecorator
      */
     public BindRequest getBindRequest()
     {
-        return ( BindRequest ) getDecoratedMessage();
+        return getBindRequest();
     }
 
 
@@ -114,5 +118,188 @@ public class BindRequestDecorator extends MessageDecorator
     public int getSaslMechanismLength()
     {
         return saslMechanismLength;
+    }
+    
+    
+    //-------------------------------------------------------------------------
+    // The BindRequest methods
+    //-------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
+    public MessageTypeEnum getResponseType()
+    {
+        return getBindRequest().getResponseType();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public ResultResponse getResultResponse()
+    {
+        return getBindRequest().getResultResponse();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean hasResponse()
+    {
+        return getBindRequest().hasResponse();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void abandon()
+    {
+        getBindRequest().abandon();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isAbandoned()
+    {
+        return getBindRequest().isAbandoned();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void addAbandonListener( AbandonListener listener )
+    {
+        getBindRequest().addAbandonListener( listener );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isSimple()
+    {
+        return getBindRequest().isSimple();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean getSimple()
+    {
+        return getBindRequest().getSimple();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setSimple( boolean isSimple )
+    {
+        getBindRequest().setSimple( isSimple );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public byte[] getCredentials()
+    {
+        return getBindRequest().getCredentials();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setCredentials( String credentials )
+    {
+        getBindRequest().setCredentials( credentials );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setCredentials( byte[] credentials )
+    {
+        getBindRequest().setCredentials( credentials );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Dn getName()
+    {
+        return getBindRequest().getName();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setName( Dn name )
+    {
+        getBindRequest().setName( name );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isVersion3()
+    {
+        return getBindRequest().isVersion3();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean getVersion3()
+    {
+        return getBindRequest().getVersion3();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setVersion3( boolean isVersion3 )
+    {
+        getBindRequest().setVersion3( isVersion3 );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getSaslMechanism()
+    {
+        return getBindRequest().getSaslMechanism();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setSaslMechanism( String saslMechanism )
+    {
+        getBindRequest().setSaslMechanism( saslMechanism );
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String toString()
+    {
+        return getBindRequest().toString();
     }
 }
