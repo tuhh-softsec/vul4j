@@ -144,6 +144,11 @@ public class AddRequestDecorator extends SingleReplyRequestDecorator implements 
         return valuesLength;
     }
 
+
+    //-------------------------------------------------------------------------
+    // The AddRequest methods
+    //-------------------------------------------------------------------------
+
     
     /**
      * {@inheritDoc}
@@ -181,7 +186,10 @@ public class AddRequestDecorator extends SingleReplyRequestDecorator implements 
     }
 
     
-    // TODO all these must go
+    //-------------------------------------------------------------------------
+    // @TODO ALL THESE MUST BE REMOVED
+    //-------------------------------------------------------------------------
+
 
     public void addAttributeType( String type ) throws LdapException
     {

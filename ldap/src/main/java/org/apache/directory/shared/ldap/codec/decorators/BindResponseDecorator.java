@@ -76,6 +76,8 @@ public class BindResponseDecorator extends ResponseDecorator implements BindResp
     //-------------------------------------------------------------------------
     // The BindResponse methods
     //-------------------------------------------------------------------------
+    
+    
     /**
      * {@inheritDoc}
      */
@@ -91,14 +93,5 @@ public class BindResponseDecorator extends ResponseDecorator implements BindResp
     public void setServerSaslCreds( byte[] serverSaslCreds )
     {
         getBindResponse().setServerSaslCreds( serverSaslCreds );
-    }
-
-    
-    /**
-     * {@inheritDoc}
-     */
-    public String toString()
-    {
-        return getBindResponse().toString();
     }
 }

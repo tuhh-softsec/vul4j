@@ -20,10 +20,7 @@
 package org.apache.directory.shared.ldap.codec.decorators;
 
 
-import org.apache.directory.shared.ldap.model.message.AbandonListener;
 import org.apache.directory.shared.ldap.model.message.BindRequest;
-import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
-import org.apache.directory.shared.ldap.model.message.ResultResponse;
 import org.apache.directory.shared.ldap.model.name.Dn;
 
 
@@ -32,7 +29,7 @@ import org.apache.directory.shared.ldap.model.name.Dn;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class BindRequestDecorator extends RequestDecorator implements BindRequest
+public class BindRequestDecorator extends SingleReplyRequestDecorator implements BindRequest
 {
     /** The bind request length */
     private int bindRequestLength;
@@ -124,49 +121,6 @@ public class BindRequestDecorator extends RequestDecorator implements BindReques
     //-------------------------------------------------------------------------
     // The BindRequest methods
     //-------------------------------------------------------------------------
-    /**
-     * {@inheritDoc}
-     */
-    public MessageTypeEnum getResponseType()
-    {
-        return getBindRequest().getResponseType();
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public ResultResponse getResultResponse()
-    {
-        return getBindRequest().getResultResponse();
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public void abandon()
-    {
-        getBindRequest().abandon();
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isAbandoned()
-    {
-        return getBindRequest().isAbandoned();
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public void addAbandonListener( AbandonListener listener )
-    {
-        getBindRequest().addAbandonListener( listener );
-    }
 
 
     /**
@@ -283,14 +237,5 @@ public class BindRequestDecorator extends RequestDecorator implements BindReques
     public void setSaslMechanism( String saslMechanism )
     {
         getBindRequest().setSaslMechanism( saslMechanism );
-    }
-
-    
-    /**
-     * {@inheritDoc}
-     */
-    public String toString()
-    {
-        return getBindRequest().toString();
     }
 }
