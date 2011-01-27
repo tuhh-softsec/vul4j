@@ -33,7 +33,7 @@ import org.apache.directory.shared.ldap.model.name.Dn;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class CompareRequestDecorator extends MessageDecorator implements CompareRequest
+public class CompareRequestDecorator extends RequestDecorator implements CompareRequest
 {
     /** The bytes of the attribute id used in the comparison */
     private byte[] attrIdBytes;
@@ -168,15 +168,6 @@ public class CompareRequestDecorator extends MessageDecorator implements Compare
     public ResultResponse getResultResponse()
     {
         return getCompareRequest().getResultResponse();
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean hasResponse()
-    {
-        return getCompareRequest().hasResponse();
     }
 
 

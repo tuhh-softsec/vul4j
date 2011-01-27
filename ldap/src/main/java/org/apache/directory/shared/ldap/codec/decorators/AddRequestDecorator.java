@@ -37,7 +37,7 @@ import org.apache.directory.shared.ldap.model.name.Dn;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class AddRequestDecorator extends MessageDecorator implements AddRequest
+public class AddRequestDecorator extends RequestDecorator implements AddRequest
 {
     /** The add request length */
     private int addRequestLength;
@@ -166,15 +166,6 @@ public class AddRequestDecorator extends MessageDecorator implements AddRequest
     public ResultResponse getResultResponse()
     {
         return getAddRequest().getResultResponse();
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean hasResponse()
-    {
-        return getAddRequest().hasResponse();
     }
 
 

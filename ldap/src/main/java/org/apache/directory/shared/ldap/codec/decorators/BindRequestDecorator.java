@@ -32,7 +32,7 @@ import org.apache.directory.shared.ldap.model.name.Dn;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class BindRequestDecorator extends MessageDecorator implements BindRequest
+public class BindRequestDecorator extends RequestDecorator implements BindRequest
 {
     /** The bind request length */
     private int bindRequestLength;
@@ -139,15 +139,6 @@ public class BindRequestDecorator extends MessageDecorator implements BindReques
     public ResultResponse getResultResponse()
     {
         return getBindRequest().getResultResponse();
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean hasResponse()
-    {
-        return getBindRequest().hasResponse();
     }
 
 

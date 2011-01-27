@@ -32,7 +32,7 @@ import org.apache.directory.shared.ldap.model.name.Dn;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class DeleteRequestDecorator extends MessageDecorator implements DeleteRequest
+public class DeleteRequestDecorator extends RequestDecorator implements DeleteRequest
 {
     /**
      * Makes a DeleteRequest a MessageDecorator.
@@ -72,15 +72,6 @@ public class DeleteRequestDecorator extends MessageDecorator implements DeleteRe
     public ResultResponse getResultResponse()
     {
         return getDeleteRequest().getResultResponse();
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean hasResponse()
-    {
-        return getDeleteRequest().hasResponse();
     }
 
 
