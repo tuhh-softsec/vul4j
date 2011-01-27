@@ -21,8 +21,6 @@ package org.apache.directory.shared.ldap.codec.decorators;
 
 
 import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
-import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
-import org.apache.directory.shared.ldap.model.message.ResultResponse;
 
 
 /**
@@ -30,7 +28,7 @@ import org.apache.directory.shared.ldap.model.message.ResultResponse;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ExtendedRequestDecorator extends RequestDecorator implements ExtendedRequest
+public class ExtendedRequestDecorator extends SingleReplyRequestDecorator implements ExtendedRequest
 {
     /** The extended request length */
     private int extendedRequestLength;
@@ -104,24 +102,8 @@ public class ExtendedRequestDecorator extends RequestDecorator implements Extend
     //-------------------------------------------------------------------------
     // The ExtendedRequest methods
     //-------------------------------------------------------------------------
-    /**
-     * {@inheritDoc}
-     */
-    public MessageTypeEnum getResponseType()
-    {
-        return getExtendedRequest().getResponseType();
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public ResultResponse getResultResponse()
-    {
-        return getExtendedRequest().getResultResponse();
-    }
-
-
+    
+    
     /**
      * {@inheritDoc}
      */
@@ -155,14 +137,5 @@ public class ExtendedRequestDecorator extends RequestDecorator implements Extend
     public void setRequestValue( byte[] requestValue )
     {
         getExtendedRequest().setRequestValue( requestValue );
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public String toString()
-    {
-        return getExtendedRequest().toString();
     }
 }

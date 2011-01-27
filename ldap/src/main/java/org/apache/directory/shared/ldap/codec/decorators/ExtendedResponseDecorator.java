@@ -28,8 +28,10 @@ import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ExtendedResponseDecorator extends ResponseDecorator
+public class ExtendedResponseDecorator extends ResponseDecorator implements ExtendedResponse
 {
+    private static final long serialVersionUID = -9029282485890195506L;
+
     /** The response name as a byte[] */
     private byte[] responseNameBytes;
 
@@ -96,5 +98,47 @@ public class ExtendedResponseDecorator extends ResponseDecorator
     public int getExtendedResponseLength()
     {
         return extendedResponseLength;
+    }
+
+
+    public byte[] getEncodedValue()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+
+    public String getID()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+
+    public String getResponseName()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+
+    public void setResponseName( String oid )
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+
+    public byte[] getResponseValue()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+
+    public void setResponseValue( byte[] responseValue )
+    {
+        // TODO Auto-generated method stub
+        
     }
 }
