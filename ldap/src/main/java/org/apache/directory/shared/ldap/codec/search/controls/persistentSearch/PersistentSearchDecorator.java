@@ -47,7 +47,7 @@ public class PersistentSearchDecorator extends ControlDecorator
      */
     public PersistentSearchDecorator()
     {
-        super( new PersistentSearch(), new PersistentSearchDecoder() );
+        super( new SimplePersistentSearch(), new PersistentSearchDecoder() );
     }
 
 

@@ -57,9 +57,9 @@ public enum ChangeType
      * 
      * Creates a new instance of ChangeType.
      *
-     * @param value
+     * @param value The value for the ChangeType.
      */
-    private ChangeType(int value)
+    private ChangeType( int value )
     {
         this.value = value;
     }
@@ -71,6 +71,19 @@ public enum ChangeType
     public int getValue()
     {
         return value;
+    }
+
+
+    /**
+     * Checks via bitwise AND to see if this ChangeType value is within the
+     * supplied changeTypes.
+     *
+     * @param changeTypes The supplied changeTypes.
+     * @return true, if this ChangeType is present in the supplied changeTypes.
+     */
+    public boolean presentIn( int changeTypes )
+    {
+        return value == ( value & changeTypes );
     }
 
 

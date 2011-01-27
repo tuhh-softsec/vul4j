@@ -34,6 +34,7 @@ import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.P
 import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearchContainer;
 import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearchDecoder;
 import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearchDecorator;
+import org.apache.directory.shared.ldap.model.message.controls.ChangeType;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,6 +51,7 @@ public class PSearchControlTest
 {
     /**
      * Test encoding of a PSearchControl.
+     * @throws Exception on error
      */
     @Test
     public void testEncodePSearchControl() throws Exception
@@ -113,8 +115,8 @@ public class PSearchControlTest
 
         PersistentSearch ctrl = ( PersistentSearch ) container.getPSearchDecorator().getDecorated();
         int changeTypes = ctrl.getChangeTypes();
-        assertEquals( PersistentSearch.CHANGE_TYPE_ADD, changeTypes & PersistentSearch.CHANGE_TYPE_ADD );
-        assertEquals( PersistentSearch.CHANGE_TYPE_MODDN, changeTypes & PersistentSearch.CHANGE_TYPE_MODDN );
+        assertTrue( ChangeType.ADD.presentIn( changeTypes ) );
+        assertTrue( ChangeType.MODDN.presentIn( changeTypes ) );
         assertEquals( false, ctrl.isChangesOnly() );
         assertEquals( false, ctrl.isReturnECs() );
     }

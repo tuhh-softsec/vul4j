@@ -29,24 +29,8 @@ import org.apache.directory.shared.ldap.model.message.controls.ChangeType;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class PersistentSearch extends BasicControlImpl
+public class SimplePersistentSearch extends BasicControlImpl implements PersistentSearch
 {
-    /** This control OID */
-    public static final String OID = "2.16.840.1.113730.3.4.3";
-
-    /** Definition of the change types */
-    public static final int CHANGE_TYPE_ADD     = 1;
-
-    public static final int CHANGE_TYPE_DELETE  = 2;
-
-    public static final int CHANGE_TYPE_MODIFY  = 4;
-
-    public static final int CHANGE_TYPE_MODDN   = 8;
-
-    /** Min and Max values for the possible combined change types */
-    public static final int CHANGE_TYPES_MIN = CHANGE_TYPE_ADD;
-
-    public static final int CHANGE_TYPES_MAX = CHANGE_TYPE_ADD | CHANGE_TYPE_DELETE | CHANGE_TYPE_MODIFY | CHANGE_TYPE_MODDN;
 
     /**
      * If changesOnly is TRUE, the server MUST NOT return any existing entries
@@ -78,7 +62,7 @@ public class PersistentSearch extends BasicControlImpl
      * Default constructor
      *
      */
-    public PersistentSearch()
+    public SimplePersistentSearch()
     {
         super( OID );
     }
