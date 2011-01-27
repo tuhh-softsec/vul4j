@@ -102,13 +102,11 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
-        <version>3.0-beta-3</version>
         <configuration>
           <reportPlugins>
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-surefire-report-plugin</artifactId>
-              <version>2.5</version>
               <configuration>
                 <aggregate>true</aggregate>
               </configuration>
@@ -117,7 +115,6 @@
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-jxr-plugin</artifactId>
-              <version>2.2</version>
               <configuration>
                   <aggregate>true</aggregate>
               </configuration>
@@ -126,7 +123,6 @@
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-pmd-plugin</artifactId>
-              <version>2.5</version>
               <configuration>
                 <linkXref>true</linkXref>
                 <sourceEncoding>utf-8</sourceEncoding>
@@ -139,13 +135,11 @@
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-project-info-reports-plugin</artifactId>
-              <version>2.2</version>
             </plugin>
       
             <plugin>
               <groupId>org.codehaus.mojo</groupId>
               <artifactId>taglist-maven-plugin</artifactId>
-              <version>2.4</version>
               <configuration>
                 <tags>
                   <tag>TODO</tag>
@@ -159,7 +153,6 @@
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-javadoc-plugin</artifactId>
-              <version>2.7</version>
               <configuration>
                 <minmemory>512m</minmemory>
                 <maxmemory>1g</maxmemory>
@@ -187,7 +180,6 @@
             <plugin>
               <groupId>org.codehaus.mojo</groupId>
               <artifactId>findbugs-maven-plugin</artifactId>
-              <version>2.3.1</version>
               <configuration>
                 <xrefLocation>${project.reporting.outputDirectory}/../xref</xrefLocation>
                 <xrefTestLocation>${project.reporting.outputDirectory}/../xref-test</xrefTestLocation>
@@ -202,7 +194,6 @@
             <plugin>
               <groupId>org.codehaus.mojo</groupId>
               <artifactId>cobertura-maven-plugin</artifactId>
-              <version>2.4</version>
               <configuration>
                 <instrumentation>
                   <excludes>
@@ -215,7 +206,6 @@
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-checkstyle-plugin</artifactId>
-              <version>2.6</version>
               <configuration>
                 <configLocation>directory-checks.xml</configLocation>
                 <suppressionsLocation>${basedir}/src/checkstyle/suppressions.xml</suppressionsLocation>
@@ -227,7 +217,6 @@
             <plugin>
               <groupId>org.codehaus.mojo</groupId>
               <artifactId>versions-maven-plugin</artifactId>
-              <version>1.2</version>
               <reportSets>
                 <reportSet>
                   <reports>
@@ -242,7 +231,6 @@
             <plugin>
               <groupId>org.apache.rat</groupId>
               <artifactId>apache-rat-plugin</artifactId>
-              <version>0.7</version>
               <configuration>
                 <excludeSubProjects>false</excludeSubProjects>
                 <excludes>
@@ -274,20 +262,17 @@
             <plugin>
               <groupId>org.codehaus.mojo</groupId>
               <artifactId>javancss-maven-plugin</artifactId>
-              <version>2.0</version>
             </plugin>
       
             <plugin>
               <groupId>org.codehaus.mojo</groupId>
               <artifactId>jdepend-maven-plugin</artifactId>
-              <version>2.0-beta-2</version>
             </plugin>
       
 <!--
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-changes-plugin</artifactId>
-              <version>2.3</version>
               <configuration>
                 <onlyCurrentVersion>true</onlyCurrentVersion>
                 <resolutionIds>Fixed</resolutionIds>
