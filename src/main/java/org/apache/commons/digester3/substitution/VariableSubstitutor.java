@@ -24,6 +24,7 @@ import org.xml.sax.Attributes;
 /**
  * Substitutor implementation that support variable replacement
  * for both attributes and body text.
+ *
  * The actual expansion of variables into text is delegated to {@link VariableExpander}
  * implementations.
  * Supports setting an expander just for body text or just for attributes.
@@ -91,7 +92,7 @@ public class VariableSubstitutor implements Substitutor {
      */
     public String substitute(String bodyText) {
         String result = bodyText;
-        if (bodyTextExpander != null) {
+        if (this.bodyTextExpander != null) {
             result = bodyTextExpander.expand(bodyText);
         }
         return result;
