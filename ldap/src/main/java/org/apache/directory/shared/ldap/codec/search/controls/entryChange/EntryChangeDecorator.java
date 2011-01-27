@@ -53,7 +53,8 @@ public class EntryChangeDecorator extends ControlDecorator implements EntryChang
 
 
     /**
-     * Creates a new instance of EntryChangeControl.
+     * Creates a new instance of EntryChangeDecoder wrapping a newly created
+     * EntryChange Control object.
      */
     public EntryChangeDecorator()
     {
@@ -61,6 +62,23 @@ public class EntryChangeDecorator extends ControlDecorator implements EntryChang
     }
 
 
+    /**
+     * Creates a new instance of EntryChangeDecorator wrapping the supplied
+     * EntryChange Control.
+     *
+     * @param control The EntryChange Control to be decorated.
+     */
+    public EntryChangeDecorator( EntryChange control )
+    {
+        super( control, new EntryChangeDecoder() );
+    }
+
+
+    /**
+     * Internally used to not have to cast the decorated Control.
+     *
+     * @return the decorated Control.
+     */
     private EntryChange getEntryChange()
     {
         return ( EntryChange ) getDecorated();
@@ -83,15 +101,15 @@ public class EntryChangeDecorator extends ControlDecorator implements EntryChang
         int previousDnLength = 0;
         int changeNumberLength = 0;
 
-        if ( getEntryChange().getPreviousDn() != null )
+        if ( getPreviousDn() != null )
         {
-            previousDnBytes = Strings.getBytesUtf8( getEntryChange().getPreviousDn().getName() );
+            previousDnBytes = Strings.getBytesUtf8( getPreviousDn().getName() );
             previousDnLength = 1 + TLV.getNbBytes( previousDnBytes.length ) + previousDnBytes.length;
         }
 
-        if ( getEntryChange().getChangeNumber() != UNDEFINED_CHANGE_NUMBER )
+        if ( getChangeNumber() != UNDEFINED_CHANGE_NUMBER )
         {
-            changeNumberLength = 1 + 1 + Value.getNbBytes( getEntryChange().getChangeNumber() );
+            changeNumberLength = 1 + 1 + Value.getNbBytes( getChangeNumber() );
         }
 
         eccSeqLength = changeTypesLength + previousDnLength + changeNumberLength;
@@ -128,16 +146,16 @@ public class EntryChangeDecorator extends ControlDecorator implements EntryChang
 
         buffer.put( UniversalTag.ENUMERATED.getValue() );
         buffer.put( ( byte ) 1 );
-        buffer.put( Value.getBytes( getEntryChange().getChangeType().getValue() ) );
+        buffer.put( Value.getBytes( getChangeType().getValue() ) );
 
-        if ( getEntryChange().getPreviousDn() != null )
+        if ( getPreviousDn() != null )
         {
             Value.encode( buffer, previousDnBytes );
         }
 
-        if ( getEntryChange().getChangeNumber() != UNDEFINED_CHANGE_NUMBER )
+        if ( getChangeNumber() != UNDEFINED_CHANGE_NUMBER )
         {
-            Value.encode( buffer, getEntryChange().getChangeNumber() );
+            Value.encode( buffer, getChangeNumber() );
         }
 
         return buffer;
@@ -161,16 +179,16 @@ public class EntryChangeDecorator extends ControlDecorator implements EntryChang
 
                 buffer.put( UniversalTag.ENUMERATED.getValue() );
                 buffer.put( ( byte ) 1 );
-                buffer.put( Value.getBytes( getEntryChange().getChangeType().getValue() ) );
+                buffer.put( Value.getBytes( getChangeType().getValue() ) );
 
-                if ( getEntryChange().getPreviousDn() != null )
+                if ( getPreviousDn() != null )
                 {
                     Value.encode( buffer, previousDnBytes );
                 }
 
-                if ( getEntryChange().getChangeNumber() != UNDEFINED_CHANGE_NUMBER )
+                if ( getChangeNumber() != UNDEFINED_CHANGE_NUMBER )
                 {
-                    Value.encode( buffer, getEntryChange().getChangeNumber() );
+                    Value.encode( buffer, getChangeNumber() );
                 }
 
                 getDecorated().setValue( buffer.array() );
@@ -185,38 +203,56 @@ public class EntryChangeDecorator extends ControlDecorator implements EntryChang
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public ChangeType getChangeType ()
     {
         return getEntryChange().getChangeType();
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void setChangeType ( ChangeType changeType )
     {
         getEntryChange().setChangeType( changeType );
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public Dn getPreviousDn ()
     {
         return getEntryChange().getPreviousDn();
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void setPreviousDn ( Dn previousDn )
     {
         getEntryChange().setPreviousDn( previousDn );
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public long getChangeNumber ()
     {
         return getEntryChange().getChangeNumber();
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void setChangeNumber ( long changeNumber )
     {
-        setChangeNumber( changeNumber );
+        getEntryChange().setChangeNumber( changeNumber );
     }
 }

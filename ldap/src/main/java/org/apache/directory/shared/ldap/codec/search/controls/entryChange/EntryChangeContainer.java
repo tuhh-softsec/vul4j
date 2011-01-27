@@ -46,11 +46,46 @@ public class EntryChangeContainer extends AbstractContainer
 
 
     /**
+     * Creates a container with decorator, optionally decorating the supplied
+     * Control if it is not a decorator implementation.
+     *
+     * @param control The EntryChange ControlDecorator, or a Control to be
+     * wrapped by a new decorator.
+     */
+    public EntryChangeContainer( EntryChange control )
+    {
+        this();
+        decorate( control );
+    }
+
+
+    /**
      * @return Returns the EntryChangeControl.
      */
     public EntryChangeDecorator getEntryChangeDecorator()
     {
         return control;
+    }
+
+
+    /**
+     * Checks to see if the supplied EntryChange implementation is a decorator
+     * and if so just sets the EntryChangeDecorator to it. Otherwise the supplied
+     * control is decorated by creating a new EntryChangeDecorator to wrap the
+     * object.
+     *
+     * @param control The EntryChange Control to wrap, if it is not a decorator.
+     */
+    public void decorate( EntryChange control )
+    {
+        if ( control instanceof EntryChangeDecorator )
+        {
+            this.control = ( EntryChangeDecorator ) control;
+        }
+        else
+        {
+            this.control = new EntryChangeDecorator( control );
+        }
     }
 
 
@@ -64,6 +99,7 @@ public class EntryChangeContainer extends AbstractContainer
     {
         this.control = control;
     }
+
 
     /**
      * Clean the container

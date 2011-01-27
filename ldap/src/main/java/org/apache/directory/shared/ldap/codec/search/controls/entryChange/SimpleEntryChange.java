@@ -70,7 +70,7 @@ public class SimpleEntryChange extends BasicControlImpl implements EntryChange
     }
 
 
-    public void setPreviousDn(Dn previousDn)
+    public void setPreviousDn( Dn previousDn )
     {
         this.previousDn = previousDn;
     }

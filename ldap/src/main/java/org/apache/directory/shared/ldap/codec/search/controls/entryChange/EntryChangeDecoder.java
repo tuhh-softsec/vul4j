@@ -39,6 +39,7 @@ public class EntryChangeDecoder extends Asn1Decoder implements ControlDecoder
     /** An instance of this decoder */
     private static final Asn1Decoder decoder = new Asn1Decoder();
 
+
     /**
      * Decode the entry change control
      * 
@@ -48,12 +49,10 @@ public class EntryChangeDecoder extends Asn1Decoder implements ControlDecoder
      * 
      * @throws DecoderException If the decoding found an error
      */
-    
     public Asn1Object decode( byte[] controlBytes, Control control ) throws DecoderException
     {
         ByteBuffer bb = ByteBuffer.wrap( controlBytes );
-        EntryChangeContainer container = new EntryChangeContainer();
-        container.setEntryChangeDecorator( ( EntryChangeDecorator ) control );
+        EntryChangeContainer container = new EntryChangeContainer( ( EntryChangeDecorator ) control );
         decoder.decode( bb, container );
         return container.getEntryChangeDecorator();
     }
