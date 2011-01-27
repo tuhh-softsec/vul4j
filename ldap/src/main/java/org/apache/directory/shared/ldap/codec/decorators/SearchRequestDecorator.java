@@ -100,7 +100,7 @@ public class SearchRequestDecorator extends MessageDecorator
      */
     public SearchRequest getSearchRequest()
     {
-        return ( SearchRequest ) getMessage();
+        return ( SearchRequest ) getDecoratedMessage();
     }
 
 

@@ -77,7 +77,7 @@ public class ModifyRequestDecorator extends MessageDecorator
      */
     public ModifyRequest getModifyRequest()
     {
-        return ( ModifyRequest ) getMessage();
+        return ( ModifyRequest ) getDecoratedMessage();
     }
 
 
@@ -192,7 +192,7 @@ public class ModifyRequestDecorator extends MessageDecorator
         currentAttribute = new DefaultEntryAttribute( type );
 
         Modification modification = new DefaultModification( currentOperation, currentAttribute );
-        ((ModifyRequest)getMessage()).addModification( modification );
+        ((ModifyRequest)getDecoratedMessage()).addModification( modification );
     }
 
 

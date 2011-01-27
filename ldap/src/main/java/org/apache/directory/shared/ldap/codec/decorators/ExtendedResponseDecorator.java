@@ -53,7 +53,7 @@ public class ExtendedResponseDecorator extends ResponseDecorator
      */
     public ExtendedResponse getExtendedResponse()
     {
-        return ( ExtendedResponse ) getMessage();
+        return ( ExtendedResponse ) getDecoratedMessage();
     }
 
 

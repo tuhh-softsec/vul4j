@@ -66,7 +66,7 @@ public class AddRequestDecorator extends MessageDecorator implements AddRequest
     /**
      * @return The decorated AddRequest
      */
-    public AddRequest getDecoratedAddRequest()
+    public AddRequest getAddRequest()
     {
         return ( AddRequest ) getDecoratedMessage();
     }
@@ -156,7 +156,7 @@ public class AddRequestDecorator extends MessageDecorator implements AddRequest
      */
     public MessageTypeEnum getResponseType()
     {
-        return getDecoratedAddRequest().getResponseType();
+        return getAddRequest().getResponseType();
     }
 
 
@@ -165,7 +165,7 @@ public class AddRequestDecorator extends MessageDecorator implements AddRequest
      */
     public ResultResponse getResultResponse()
     {
-        return getDecoratedAddRequest().getResultResponse();
+        return getAddRequest().getResultResponse();
     }
 
 
@@ -174,7 +174,7 @@ public class AddRequestDecorator extends MessageDecorator implements AddRequest
      */
     public boolean hasResponse()
     {
-        return getDecoratedAddRequest().hasResponse();
+        return getAddRequest().hasResponse();
     }
 
 
@@ -183,7 +183,7 @@ public class AddRequestDecorator extends MessageDecorator implements AddRequest
      */
     public void abandon()
     {
-        getDecoratedAddRequest().abandon();
+        getAddRequest().abandon();
     }
 
 
@@ -192,7 +192,7 @@ public class AddRequestDecorator extends MessageDecorator implements AddRequest
      */
     public boolean isAbandoned()
     {
-        return getDecoratedAddRequest().isAbandoned();
+        return getAddRequest().isAbandoned();
     }
 
 
@@ -201,7 +201,7 @@ public class AddRequestDecorator extends MessageDecorator implements AddRequest
      */
     public void addAbandonListener( AbandonListener listener )
     {
-        getDecoratedAddRequest().addAbandonListener( listener );
+        getAddRequest().addAbandonListener( listener );
     }
 
 
@@ -210,7 +210,7 @@ public class AddRequestDecorator extends MessageDecorator implements AddRequest
      */
     public Dn getEntryDn()
     {
-        return getDecoratedAddRequest().getEntryDn();
+        return getAddRequest().getEntryDn();
     }
 
 
@@ -219,7 +219,7 @@ public class AddRequestDecorator extends MessageDecorator implements AddRequest
      */
     public void setEntryDn( Dn entry )
     {
-        getDecoratedAddRequest().setEntryDn( entry );
+        getAddRequest().setEntryDn( entry );
     }
 
 
@@ -228,7 +228,7 @@ public class AddRequestDecorator extends MessageDecorator implements AddRequest
      */
     public Entry getEntry()
     {
-        return getDecoratedAddRequest().getEntry();
+        return getAddRequest().getEntry();
     }
 
 
@@ -237,7 +237,7 @@ public class AddRequestDecorator extends MessageDecorator implements AddRequest
      */
     public void setEntry( Entry entry )
     {
-        getDecoratedAddRequest().setEntry( entry );
+        getAddRequest().setEntry( entry );
     }
 
 
@@ -246,7 +246,7 @@ public class AddRequestDecorator extends MessageDecorator implements AddRequest
      */
     public void addAttributeType( String type ) throws LdapException
     {
-        getDecoratedAddRequest().addAttributeType( type );
+        getAddRequest().addAttributeType( type );
     }
 
 
@@ -255,7 +255,7 @@ public class AddRequestDecorator extends MessageDecorator implements AddRequest
      */
     public String getCurrentAttributeType()
     {
-        return getDecoratedAddRequest().getCurrentAttributeType();
+        return getAddRequest().getCurrentAttributeType();
     }
 
 
@@ -264,7 +264,7 @@ public class AddRequestDecorator extends MessageDecorator implements AddRequest
      */
     public void addAttributeValue( String value )
     {
-        getDecoratedAddRequest().addAttributeValue( value );
+        getAddRequest().addAttributeValue( value );
     }
 
 
@@ -273,7 +273,7 @@ public class AddRequestDecorator extends MessageDecorator implements AddRequest
      */
     public void addAttributeValue( Value<?> value )
     {
-        getDecoratedAddRequest().addAttributeValue( value );
+        getAddRequest().addAttributeValue( value );
     }
 
 
@@ -282,7 +282,7 @@ public class AddRequestDecorator extends MessageDecorator implements AddRequest
      */
     public void addAttributeValue( byte[] value )
     {
-        getDecoratedAddRequest().addAttributeValue( value );
+        getAddRequest().addAttributeValue( value );
     }
     
     
@@ -291,6 +291,6 @@ public class AddRequestDecorator extends MessageDecorator implements AddRequest
      */
     public String toString()
     {
-        return getDecoratedAddRequest().toString();
+        return getAddRequest().toString();
     }
 }

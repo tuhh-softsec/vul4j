@@ -64,7 +64,7 @@ public class SearchResultEntryDecorator extends MessageDecorator
      */
     public SearchResultEntry getSearchResultEntry()
     {
-        return ( SearchResultEntry ) getMessage();
+        return ( SearchResultEntry ) getDecoratedMessage();
     }
 
 

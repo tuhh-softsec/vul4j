@@ -50,7 +50,7 @@ public class ModifyResponseDecorator extends ResponseDecorator
      */
     public ModifyResponse getModifyResponse()
     {
-        return ( ModifyResponse ) getMessage();
+        return ( ModifyResponse ) getDecoratedMessage();
     }
 
 

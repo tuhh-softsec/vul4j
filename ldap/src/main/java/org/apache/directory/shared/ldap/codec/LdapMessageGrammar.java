@@ -1443,7 +1443,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
                     ModifyRequestDecorator modifyRequestDecorator = ldapMessageContainer.getModifyRequestDecorator();
-                    ModifyRequest modifyRequest = (ModifyRequest)modifyRequestDecorator.getMessage();
+                    ModifyRequest modifyRequest = (ModifyRequest)modifyRequestDecorator.getDecoratedMessage();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
@@ -1452,7 +1452,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     // Store the value.
                     if ( tlv.getLength() == 0 )
                     {
-                        ((ModifyRequest)modifyRequestDecorator.getMessage()).setName( object );
+                        ((ModifyRequest)modifyRequestDecorator.getDecoratedMessage()).setName( object );
                     }
                     else
                     {
@@ -1609,7 +1609,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
 
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
                     ModifyRequestDecorator modifyRequestDecorator = ldapMessageContainer.getModifyRequestDecorator();
-                    ModifyRequest modifyRequest = (ModifyRequest)modifyRequestDecorator.getMessage();
+                    ModifyRequest modifyRequest = (ModifyRequest)modifyRequestDecorator.getDecoratedMessage();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 

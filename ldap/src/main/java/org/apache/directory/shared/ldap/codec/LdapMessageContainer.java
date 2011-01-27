@@ -238,7 +238,7 @@ public class LdapMessageContainer extends AbstractContainer
      */
     public ModifyRequest getModifyRequest()
     {
-        return (ModifyRequest)(( ModifyRequestDecorator ) message).getMessage();
+        return (ModifyRequest)(( ModifyRequestDecorator ) message).getDecoratedMessage();
     }
 
 

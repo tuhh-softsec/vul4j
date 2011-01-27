@@ -56,7 +56,7 @@ public class BindRequestDecorator extends MessageDecorator
      */
     public BindRequest getBindRequest()
     {
-        return ( BindRequest ) getMessage();
+        return ( BindRequest ) getDecoratedMessage();
     }
 
 

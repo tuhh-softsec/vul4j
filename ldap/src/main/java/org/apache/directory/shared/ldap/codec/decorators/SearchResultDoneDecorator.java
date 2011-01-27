@@ -50,7 +50,7 @@ public class SearchResultDoneDecorator extends ResponseDecorator
      */
     public SearchResultDone getSearchResultDone()
     {
-        return ( SearchResultDone ) getMessage();
+        return ( SearchResultDone ) getDecoratedMessage();
     }
 
 

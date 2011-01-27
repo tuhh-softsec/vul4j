@@ -52,7 +52,7 @@ public class AddResponseDecorator extends ResponseDecorator implements AddRespon
      */
     public AddResponse getAddResponse()
     {
-        return ( AddResponse ) getMessage();
+        return ( AddResponse ) getDecoratedMessage();
     }
 
 
@@ -83,7 +83,7 @@ public class AddResponseDecorator extends ResponseDecorator implements AddRespon
      */
     public LdapResult getLdapResult()
     {
-        return ((AddResponseImpl)decoratedMessage).getLdapResult();
+        return getAddResponse().getLdapResult();
     }
     
     
@@ -92,6 +92,6 @@ public class AddResponseDecorator extends ResponseDecorator implements AddRespon
      */
     public String toString()
     {
-        return ((AddResponseImpl)decoratedMessage).toString();
+        return getAddResponse().toString();
     }
 }

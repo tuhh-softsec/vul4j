@@ -60,7 +60,7 @@ public class InitAttributeDescListAction extends GrammarAction
         
         // Here, we have to inject the decoded filter into the SearchRequest
         SearchRequestDecorator searchRequestDecorator = ldapMessageContainer.getSearchRequestDecorator();
-        SearchRequest searchRequest = (SearchRequest)searchRequestDecorator.getMessage();
+        SearchRequest searchRequest = (SearchRequest)searchRequestDecorator.getDecoratedMessage();
         
         searchRequest.setFilter( searchRequestDecorator.getFilterNode() );
         

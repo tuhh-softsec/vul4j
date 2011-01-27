@@ -53,7 +53,7 @@ public class IntermediateResponseDecorator extends ResponseDecorator
      */
     public IntermediateResponse getIntermediateResponse()
     {
-        return ( IntermediateResponse ) getMessage();
+        return ( IntermediateResponse ) getDecoratedMessage();
     }
 
 

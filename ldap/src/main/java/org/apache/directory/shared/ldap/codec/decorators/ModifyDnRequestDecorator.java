@@ -50,7 +50,7 @@ public class ModifyDnRequestDecorator extends MessageDecorator
      */
     public ModifyDnRequest getModifyDnRequest()
     {
-        return ( ModifyDnRequest ) getMessage();
+        return ( ModifyDnRequest ) getDecoratedMessage();
     }
 
 

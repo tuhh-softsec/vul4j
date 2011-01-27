@@ -50,7 +50,7 @@ public class BindResponseDecorator extends ResponseDecorator
      */
     public BindResponse getBindResponse()
     {
-        return ( BindResponse ) getMessage();
+        return ( BindResponse ) getDecoratedMessage();
     }
 
 

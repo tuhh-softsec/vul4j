@@ -50,7 +50,7 @@ public class CompareResponseDecorator extends ResponseDecorator
      */
     public CompareResponse getCompareResponse()
     {
-        return ( CompareResponse ) getMessage();
+        return ( CompareResponse ) getDecoratedMessage();
     }
 
 

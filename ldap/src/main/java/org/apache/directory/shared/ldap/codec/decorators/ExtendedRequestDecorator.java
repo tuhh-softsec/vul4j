@@ -53,7 +53,7 @@ public class ExtendedRequestDecorator extends MessageDecorator
      */
     public ExtendedRequest getExtendedRequest()
     {
-        return ( ExtendedRequest ) getMessage();
+        return ( ExtendedRequest ) getDecoratedMessage();
     }
 
 

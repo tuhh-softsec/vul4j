@@ -59,7 +59,7 @@ public class CompareRequestDecorator extends MessageDecorator
      */
     public CompareRequest getCompareRequest()
     {
-        return ( CompareRequest ) getMessage();
+        return ( CompareRequest ) getDecoratedMessage();
     }
 
 

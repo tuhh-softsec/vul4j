@@ -193,12 +193,12 @@ public class LdapEncoder
         // - the tag (0x02), 1 byte
         // - the length of the Id length, 1 byte
         // - the Id length, 1 to 4 bytes
-        int ldapMessageLength = 1 + 1 + Value.getNbBytes( messageDecorator.getMessage().getMessageId());
+        int ldapMessageLength = 1 + 1 + Value.getNbBytes( messageDecorator.getDecoratedMessage().getMessageId());
 
         // Get the protocolOp length
         ldapMessageLength += computeProtocolOpLength( messageDecorator );
 
-        Map<String, Control> controls = messageDecorator.getMessage().getControls();
+        Map<String, Control> controls = messageDecorator.getDecoratedMessage().getControls();
 
         // Do the same thing for Controls, if any.
         if ( controls.size() > 0 )
@@ -2439,7 +2439,7 @@ public class LdapEncoder
      */
     private int computeProtocolOpLength( MessageDecorator messageDecorator )
     {
-        Message message = messageDecorator.getMessage();
+        Message message = messageDecorator.getDecoratedMessage();
 
         switch ( message.getType() )
         {
@@ -2514,7 +2514,7 @@ public class LdapEncoder
 
     private void encodeProtocolOp( ByteBuffer bb, MessageDecorator decorator ) throws EncoderException
     {
-        Message message = decorator.getMessage();
+        Message message = decorator.getDecoratedMessage();
 
         switch ( message.getType() )
         {

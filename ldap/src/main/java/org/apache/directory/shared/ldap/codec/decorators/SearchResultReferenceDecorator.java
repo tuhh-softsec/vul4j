@@ -53,7 +53,7 @@ public class SearchResultReferenceDecorator extends MessageDecorator
      */
     public SearchResultReference getSearchResultReference()
     {
-        return ( SearchResultReference ) getMessage();
+        return ( SearchResultReference ) getDecoratedMessage();
     }
 
 

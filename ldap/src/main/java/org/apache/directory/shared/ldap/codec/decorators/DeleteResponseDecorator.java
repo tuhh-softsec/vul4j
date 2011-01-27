@@ -50,7 +50,7 @@ public class DeleteResponseDecorator extends ResponseDecorator
      */
     public DeleteResponse getDeleteResponse()
     {
-        return ( DeleteResponse ) getMessage();
+        return ( DeleteResponse ) getDecoratedMessage();
     }
 
 
