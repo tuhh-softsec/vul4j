@@ -17,7 +17,8 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.search.controls;
+package org.apache.directory.shared.ldap.model.message.controls;
+
 
 import org.apache.directory.shared.i18n.I18n;
 

@@ -21,7 +21,6 @@ package org.apache.directory.shared.ldap.model.message.controls;
 
 
 import org.apache.directory.shared.ldap.codec.controls.BasicControlImpl;
-import org.apache.directory.shared.ldap.codec.search.controls.ChangeType;
 import org.apache.directory.shared.ldap.model.name.Dn;
 
 
