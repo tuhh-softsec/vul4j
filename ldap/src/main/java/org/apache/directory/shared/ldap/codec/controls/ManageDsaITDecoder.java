@@ -23,10 +23,11 @@ package org.apache.directory.shared.ldap.codec.controls;
 import org.apache.directory.shared.asn1.Asn1Object;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.ldap.model.message.Control;
+import org.apache.directory.shared.ldap.model.message.controls.ManageDsaIT;
 
 
 /**
- * A ControlDecoder for the {@link ManageDsaIT} Control.
+ * A ControlDecoder for the {@link ManageDsaIT.SimpleManageDsaIT} Control.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
