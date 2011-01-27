@@ -25,7 +25,7 @@ import java.util.Observer;
 
 
 /**
- * The base abandonable request message class. All such requests have a reponse
+ * The base abandonable request message class. All such requests have a response
  * type.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
