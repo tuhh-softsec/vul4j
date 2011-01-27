@@ -34,7 +34,7 @@ import org.apache.directory.shared.util.Strings;
 
 
 /**
- * A codec decorator for the {@link PagedResults}.
+ * A codec decorator for the {@link SimplePagedResults}.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
@@ -58,7 +58,7 @@ public class PagedResultsDecorator extends ControlDecorator
      */
     public PagedResultsDecorator()
     {
-        super( new PagedResults(), new PagedResultsDecoder() );
+        super( new SimplePagedResults(), new PagedResultsDecoder() );
         cookie = StringConstants.EMPTY_BYTES;
     }
 

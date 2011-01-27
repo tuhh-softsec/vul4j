@@ -58,10 +58,8 @@ import java.util.Arrays;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class PagedResults extends BasicControlImpl
+public class SimplePagedResults extends BasicControlImpl implements PagedResults
 {
-    /** The Paged Search Control OID */
-    public static final String OID = "1.2.840.113556.1.4.319";
 
     /** The number of entries to return, or returned */
     private int size;
@@ -71,11 +69,9 @@ public class PagedResults extends BasicControlImpl
 
 
     /**
-     *
      * Creates a new instance of PagedResultsDecorator.
-     *
      */
-    public PagedResults()
+    public SimplePagedResults()
     {
         super( OID );
 
@@ -83,49 +79,30 @@ public class PagedResults extends BasicControlImpl
     }
 
 
-    /**
-     * @return The requested or returned number of entries
-     */
     public int getSize()
     {
         return size;
     }
 
 
-    /**
-     * Set the number of entry requested or returned
-     *
-     * @param size The number of entries 
-     */
     public void setSize( int size )
     {
         this.size = size;
     }
 
 
-    /**
-     * @return The stored cookie
-     */
     public byte[] getCookie()
     {
         return cookie;
     }
 
 
-    /**
-     * Set the cookie
-     *
-     * @param cookie The cookie to store in this control
-     */
     public void setCookie( byte[] cookie )
     {
         this.cookie = cookie;
     }
 
 
-    /**
-     * @return The integer value for the current cookie
-     */
     public int getCookieValue()
     {
         int value = 0;
@@ -165,7 +142,7 @@ public class PagedResults extends BasicControlImpl
             return false;
         }
 
-        PagedResults otherControl = ( PagedResults ) o;
+        SimplePagedResults otherControl = ( SimplePagedResults ) o;
 
         return ( size == otherControl.size ) && Arrays.equals( cookie, otherControl.cookie );
     }
