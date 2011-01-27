@@ -20,6 +20,7 @@
 package org.apache.directory.shared.ldap.codec.decorators;
 
 
+import org.apache.directory.shared.ldap.model.message.Referral;
 import org.apache.directory.shared.ldap.model.message.SearchResultReference;
 
 
@@ -28,7 +29,7 @@ import org.apache.directory.shared.ldap.model.message.SearchResultReference;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SearchResultReferenceDecorator extends MessageDecorator
+public class SearchResultReferenceDecorator extends MessageDecorator implements SearchResultReference
 {
     /** The length of the referral */
     private int referralLength;
@@ -92,5 +93,17 @@ public class SearchResultReferenceDecorator extends MessageDecorator
     public void setSearchResultReferenceLength( int searchResultReferenceLength )
     {
         this.searchResultReferenceLength = searchResultReferenceLength;
+    }
+
+
+    public Referral getReferral()
+    {
+        return getSearchResultReference().getReferral();
+    }
+
+
+    public void setReferral( Referral referral )
+    {
+        getSearchResultReference().setReferral( referral );        
     }
 }
