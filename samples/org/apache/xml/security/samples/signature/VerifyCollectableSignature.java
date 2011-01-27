@@ -17,7 +17,6 @@
 package org.apache.xml.security.samples.signature;
 
 
-
 import java.io.File;
 
 import javax.xml.xpath.XPath;
@@ -33,83 +32,81 @@ import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-
 /**
  *
  * @author $Author$
  */
 public class VerifyCollectableSignature {
 
-   /** {@link org.apache.commons.logging} logging facility */
+    /** {@link org.apache.commons.logging} logging facility */
     static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(VerifyCollectableSignature.class.getName());
 
-   /**
-    * Method main
-    *
-    * @param unused
-    * @throws Exception
-    */
-   public static void main(String unused[]) throws Exception {
+    static {
+        org.apache.xml.security.Init.init();
+    }
+    
+    /**
+     * Method main
+     *
+     * @param unused
+     * @throws Exception
+     */
+    public static void main(String unused[]) throws Exception {
 
-      javax.xml.parsers.DocumentBuilderFactory dbf =
-         javax.xml.parsers.DocumentBuilderFactory.newInstance();
+        javax.xml.parsers.DocumentBuilderFactory dbf =
+            javax.xml.parsers.DocumentBuilderFactory.newInstance();
 
-      dbf.setNamespaceAware(true);
-      dbf.setAttribute("http://xml.org/sax/features/namespaces", Boolean.TRUE);
+        dbf.setNamespaceAware(true);
+        dbf.setAttribute("http://xml.org/sax/features/namespaces", Boolean.TRUE);
 
-      try {
-         File signatureFile = new File("collectableSignature.xml");
-         String BaseURI = signatureFile.toURL().toString();
+        try {
+            File signatureFile = new File("collectableSignature.xml");
+            String BaseURI = signatureFile.toURI().toURL().toString();
 
-         System.out.println("Try to verify "
-                            + signatureFile.toURL().toString());
+            System.out.println("Try to verify "
+                               + signatureFile.toURI().toURL().toString());
 
-         javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
+            javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
 
-         db.setErrorHandler(new org.apache.xml.security.utils
-            .IgnoreAllErrorHandler());
+            db.setErrorHandler(new org.apache.xml.security.utils.IgnoreAllErrorHandler());
 
-         org.w3c.dom.Document doc =
-            db.parse(new java.io.FileInputStream(signatureFile));
+            org.w3c.dom.Document doc =
+                db.parse(new java.io.FileInputStream(signatureFile));
 
-         XPathFactory xpf = XPathFactory.newInstance();
-         XPath xpath = xpf.newXPath();
-         xpath.setNamespaceContext(new DSNamespaceContext());
+            XPathFactory xpf = XPathFactory.newInstance();
+            XPath xpath = xpf.newXPath();
+            xpath.setNamespaceContext(new DSNamespaceContext());
 
-         String expression = "//ds:Signature[1]";
-         NodeList signatureElems = 
-             (NodeList) xpath.evaluate(expression, doc, XPathConstants.NODESET);
-         
-         for (int i = 0; i < signatureElems.getLength(); i++) {
-            Element sigElement = (Element) signatureElems.item(i);
-            XMLSignature signature = new XMLSignature(sigElement, BaseURI);
-            byte[] secretKey = "secretValue".getBytes();
+            String expression = "//ds:Signature[1]";
+            NodeList signatureElems = 
+                (NodeList) xpath.evaluate(expression, doc, XPathConstants.NODESET);
 
-            System.out
-               .println("The XML signature number " + i + " in file " + BaseURI + " is "
-                        + (signature
-                           .checkSignatureValue(signature
-                              .createSecretKey(CreateCollectableSignature
-                                 .passphrase.getBytes()))
-                           ? "valid (good)"
-                           : "invalid !!!!! (bad)"));
+            for (int i = 0; i < signatureElems.getLength(); i++) {
+                Element sigElement = (Element) signatureElems.item(i);
+                XMLSignature signature = new XMLSignature(sigElement, BaseURI);
+                byte[] secretKey = "secretValue".getBytes();
 
-            SignedInfo s = signature.getSignedInfo();
+                System.out.println(
+                    "The XML signature number " + i + " in file " + BaseURI + " is "
+                    + (signature.checkSignatureValue(
+                        signature.createSecretKey(
+                            CreateCollectableSignature.passphrase.getBytes()
+                        )
+                    ) ? "valid (good)" : "invalid !!!!! (bad)"));
 
-            for (int j = 0; j < s.getSignedContentLength(); j++) {
-               System.out.println("################ Signed Resource " + i + "/" + j
-                                  + " ################");
-               System.out.println(new String(s.getSignedContentItem(j)));
-               System.out.println();
+                SignedInfo s = signature.getSignedInfo();
+
+                for (int j = 0; j < s.getSignedContentLength(); j++) {
+                    System.out.println("################ Signed Resource " + i + "/" + j
+                                       + " ################");
+                    System.out.println(new String(s.getSignedContentItem(j)));
+                    System.out.println();
+                }
             }
-         }
-      } catch (Exception ex) {
-         ex.printStackTrace();
-      }
-   }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
 
-   static {
-      org.apache.xml.security.Init.init();
-   }
 }

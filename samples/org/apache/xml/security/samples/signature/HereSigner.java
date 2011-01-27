@@ -16,8 +16,6 @@
  */
 package org.apache.xml.security.samples.signature;
 
-
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -35,10 +33,7 @@ import org.apache.xml.security.utils.HelperNodeList;
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Element;
 
-
 /**
- *
- *
  * @author $Author$
  */
 public class HereSigner {
@@ -47,108 +42,104 @@ public class HereSigner {
     static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(HereSigner.class.getName());
 
-   /**
-    * Method main
-    *
-    * @param unused
-    * @throws Exception
-    */
-   public static void main(String unused[]) throws Exception {
-      //J-
-      String keystoreType = "JKS";
-      String keystoreFile = "data/org/apache/xml/security/samples/input/keystore.jks";
-      String keystorePass = "xmlsecurity";
-      String privateKeyAlias = "test";
-      String privateKeyPass = "xmlsecurity";
-      String certificateAlias = "test";
-      File signatureFile = new File("hereSignature.xml");
-      //J+
-      KeyStore ks = KeyStore.getInstance(keystoreType);
-      FileInputStream fis = new FileInputStream(keystoreFile);
+    static {
+        org.apache.xml.security.Init.init();
+    }
+    
+    /**
+     * Method main
+     *
+     * @param unused
+     * @throws Exception
+     */
+    public static void main(String unused[]) throws Exception {
+        String keystoreType = "JKS";
+        String keystoreFile = "samples/data/keystore.jks";
+        String keystorePass = "xmlsecurity";
+        String privateKeyAlias = "test";
+        String privateKeyPass = "xmlsecurity";
+        String certificateAlias = "test";
+        File signatureFile = new File("hereSignature.xml");
 
-      ks.load(fis, keystorePass.toCharArray());
+        KeyStore ks = KeyStore.getInstance(keystoreType);
+        FileInputStream fis = new FileInputStream(keystoreFile);
 
-      PrivateKey privateKey = (PrivateKey) ks.getKey(privateKeyAlias,
-                                             privateKeyPass.toCharArray());
-      javax.xml.parsers.DocumentBuilderFactory dbf =
-         javax.xml.parsers.DocumentBuilderFactory.newInstance();
+        ks.load(fis, keystorePass.toCharArray());
 
-      dbf.setNamespaceAware(true);
+        PrivateKey privateKey = 
+            (PrivateKey) ks.getKey(privateKeyAlias, privateKeyPass.toCharArray());
+        javax.xml.parsers.DocumentBuilderFactory dbf =
+            javax.xml.parsers.DocumentBuilderFactory.newInstance();
 
-      javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
-      org.w3c.dom.Document doc = db.newDocument();
+        dbf.setNamespaceAware(true);
 
+        javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
+        org.w3c.dom.Document doc = db.newDocument();
 
-      String BaseURI = signatureFile.toURL().toString();
-      Constants.setSignatureSpecNSprefix("prof");
-      XMLSignature sig = new XMLSignature(doc, BaseURI,
-                                          XMLSignature.ALGO_ID_SIGNATURE_DSA);
+        String BaseURI = signatureFile.toURI().toURL().toString();
+        Constants.setSignatureSpecNSprefix("prof");
+        XMLSignature sig = 
+            new XMLSignature(doc, BaseURI, XMLSignature.ALGO_ID_SIGNATURE_DSA);
 
-      doc.appendChild(sig.getElement());
-      sig.getSignedInfo()
-         .addResourceResolver(new org.apache.xml.security.samples.utils.resolver
-            .OfflineResolver());
+        doc.appendChild(sig.getElement());
+        sig.getSignedInfo()
+            .addResourceResolver(new org.apache.xml.security.samples.utils.resolver.OfflineResolver());
 
-      {
-         ObjectContainer ob1 = new ObjectContainer(doc);
-         ob1.setId("object-1");
-         ob1.appendChild(doc.createTextNode("\nSigned Text\n"));
-         Element c = doc.createElementNS(null, "element");
-         c.setAttributeNS(null, "name", "val");
-         ob1.appendChild(c);
-         sig.appendObject(ob1);
+        {
+            ObjectContainer ob1 = new ObjectContainer(doc);
+            ob1.setId("object-1");
+            ob1.appendChild(doc.createTextNode("\nSigned Text\n"));
+            Element c = doc.createElementNS(null, "element");
+            c.setAttributeNS(null, "name", "val");
+            ob1.appendChild(c);
+            sig.appendObject(ob1);
 
-         Transforms transforms = new Transforms(doc);
-         XPathContainer xc = new XPathContainer(doc);
-         xc.setXPathNamespaceContext("prof", Constants.SignatureSpecNS);
+            Transforms transforms = new Transforms(doc);
+            XPathContainer xc = new XPathContainer(doc);
+            xc.setXPathNamespaceContext("prof", Constants.SignatureSpecNS);
 
-         //J-
-         String xpath = "\n"
-          + "count(" + "\n"
-          + " ancestor-or-self::prof:Object " + "\n"
-          + " | " + "\n"
-          + " here()/ancestor::prof:Signature[1]/child::prof:Object[@Id='object-1']" + "\n"
-          + ") <= count(" + "\n"
-          + " ancestor-or-self::prof:Object" + "\n"
-          + ") " + "\n";
-         //J+
+            String xpath = "\n"
+                + "count(" + "\n"
+                + " ancestor-or-self::prof:Object " + "\n"
+                + " | " + "\n"
+                + " here()/ancestor::prof:Signature[1]/child::prof:Object[@Id='object-1']" + "\n"
+                + ") <= count(" + "\n"
+                + " ancestor-or-self::prof:Object" + "\n"
+                + ") " + "\n";
 
-         xc.setXPath(xpath);
-         HelperNodeList nl = new HelperNodeList();
-         nl.appendChild(doc.createTextNode("\n"));
-         nl.appendChild(xc.getElement());
-         nl.appendChild(doc.createTextNode("\n"));
+            xc.setXPath(xpath);
+            HelperNodeList nl = new HelperNodeList();
+            nl.appendChild(doc.createTextNode("\n"));
+            nl.appendChild(xc.getElement());
+            nl.appendChild(doc.createTextNode("\n"));
 
-         transforms.addTransform(Transforms.TRANSFORM_XPATH, nl);
-         transforms.addTransform(Transforms.TRANSFORM_C14N_WITH_COMMENTS);
-         sig.addDocument("", transforms, Constants.ALGO_ID_DIGEST_SHA1);
-      }
+            transforms.addTransform(Transforms.TRANSFORM_XPATH, nl);
+            transforms.addTransform(Transforms.TRANSFORM_C14N_WITH_COMMENTS);
+            sig.addDocument("", transforms, Constants.ALGO_ID_DIGEST_SHA1);
+        }
 
-      {
-         X509Certificate cert =
-            (X509Certificate) ks.getCertificate(certificateAlias);
+        {
+            X509Certificate cert =
+                (X509Certificate) ks.getCertificate(certificateAlias);
 
-         sig.addKeyInfo(cert);
-         sig.addKeyInfo(cert.getPublicKey());
-         System.out.println("Start signing");
-         sig.sign(privateKey);
-         System.out.println("Finished signing");
-      }
+            sig.addKeyInfo(cert);
+            sig.addKeyInfo(cert.getPublicKey());
+            System.out.println("Start signing");
+            sig.sign(privateKey);
+            System.out.println("Finished signing");
+        }
 
-      SignedInfo s = sig.getSignedInfo();
-      for (int i=0; i<s.getSignedContentLength(); i++) {
-         System.out.println(new String(s.getSignedContentItem(i)));
-      }
+        SignedInfo s = sig.getSignedInfo();
+        for (int i = 0; i < s.getSignedContentLength(); i++) {
+            System.out.println(new String(s.getSignedContentItem(i)));
+        }
 
-      FileOutputStream f = new FileOutputStream(signatureFile);
+        FileOutputStream f = new FileOutputStream(signatureFile);
 
-      XMLUtils.outputDOMc14nWithComments(doc, f);
+        XMLUtils.outputDOMc14nWithComments(doc, f);
 
-      f.close();
-      System.out.println("Wrote signature to " + BaseURI);
-   }
+        f.close();
+        System.out.println("Wrote signature to " + BaseURI);
+    }
 
-   static {
-      org.apache.xml.security.Init.init();
-   }
 }

@@ -16,13 +16,10 @@
  */
 package org.apache.xml.security.samples.signature;
 
-
-
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
 import org.w3c.dom.Attr;
-
 
 /**
  * This is a sample ResourceResolver who demonstrated how References without
@@ -32,111 +29,110 @@ import org.w3c.dom.Attr;
  */
 public class NullURIReferenceResolver extends ResourceResolverSpi {
 
-   /** {@link org.apache.commons.logging} logging facility */
+    /** {@link org.apache.commons.logging} logging facility */
     static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(
-                NullURIReferenceResolver.class.getName());
+        org.apache.commons.logging.LogFactory.getLog(NullURIReferenceResolver.class.getName());
 
-   /** Field _data[] */
-   byte _data[] = null;
+    /** Field _data[] */
+    byte _data[] = null;
 
-   /** Field _data2[][] */
-   byte _data2[][] = null;
+    /** Field _data2[][] */
+    byte _data2[][] = null;
 
-   /** Field _count */
-   int _count = -1;
+    /** Field _count */
+    int _count = -1;
 
-   /**
-    * Constructor NullURIReferenceResolver
-    *
-    * @param data
-    */
-   public NullURIReferenceResolver(byte[] data) {
-      _data = data;
-      _count = -1;
-   }
+    /**
+     * Constructor NullURIReferenceResolver
+     *
+     * @param data
+     */
+    public NullURIReferenceResolver(byte[] data) {
+        _data = data;
+        _count = -1;
+    }
 
-   /**
-    * Constructor NullURIReferenceResolver
-    *
-    * @param data
-    */
-   public NullURIReferenceResolver(byte[][] data) {
-      _data2 = data;
-      _count = 0;
-   }
+    /**
+     * Constructor NullURIReferenceResolver
+     *
+     * @param data
+     */
+    public NullURIReferenceResolver(byte[][] data) {
+        _data2 = data;
+        _count = 0;
+    }
 
-   /**
-    * Method engineResolve
-    *
-    * @param uri
-    * @param BaseURI
-    *
-    * @throws ResourceResolverException
-    */
-   public XMLSignatureInput engineResolve(Attr uri, String BaseURI)
-           throws ResourceResolverException {
+    /**
+     * Method engineResolve
+     *
+     * @param uri
+     * @param BaseURI
+     *
+     * @throws ResourceResolverException
+     */
+    public XMLSignatureInput engineResolve(Attr uri, String BaseURI)
+        throws ResourceResolverException {
 
-      XMLSignatureInput result = null;
+        XMLSignatureInput result = null;
 
-      if ((this._data != null) && (this._count == -1)) {
+        if ((this._data != null) && (this._count == -1)) {
 
-         // we always return the same stuff;
-         result = new XMLSignatureInput(this._data);
+            // we always return the same stuff;
+            result = new XMLSignatureInput(this._data);
 
-         result.setSourceURI("memory://null");
-         result.setMIMEType("text/txt");
-      } else if ((this._data == null) && (this._count != -1)) {
-         if (this._count < this._data2.length) {
-            result = new XMLSignatureInput(this._data2[this._count]);
-
-            result.setSourceURI("memory://" + this._count);
-
-            this._count++;
-
+            result.setSourceURI("memory://null");
             result.setMIMEType("text/txt");
-         } else {
-            String errMsg = "You did not supply enough data!!! There are only "
-                            + (this._data2.length) + " byte[] arrays";
-            Object exArgs[] = { errMsg };
+        } else if ((this._data == null) && (this._count != -1)) {
+            if (this._count < this._data2.length) {
+                result = new XMLSignatureInput(this._data2[this._count]);
+
+                result.setSourceURI("memory://" + this._count);
+
+                this._count++;
+
+                result.setMIMEType("text/txt");
+            } else {
+                String errMsg = "You did not supply enough data!!! There are only "
+                    + (this._data2.length) + " byte[] arrays";
+                Object exArgs[] = { errMsg };
+
+                throw new ResourceResolverException("empty", exArgs, uri, BaseURI);
+            }
+        } else {
+            Object exArgs[] = { "You did not supply data !!!" };
 
             throw new ResourceResolverException("empty", exArgs, uri, BaseURI);
-         }
-      } else {
-         Object exArgs[] = { "You did not supply data !!!" };
+        }
 
-         throw new ResourceResolverException("empty", exArgs, uri, BaseURI);
-      }
+        return result;
+    }
 
-      return result;
-   }
+    /**
+     * Method engineCanResolve
+     *
+     * @param uri
+     * @param BaseURI
+     *
+     */
+    public boolean engineCanResolve(Attr uri, String BaseURI) {
 
-   /**
-    * Method engineCanResolve
-    *
-    * @param uri
-    * @param BaseURI
-    *
-    */
-   public boolean engineCanResolve(Attr uri, String BaseURI) {
+        if (uri == null) {
+            if ((this._data != null) && (this._count == -1)) {
+                return true;
+            } else if ((this._data == null) && (this._count != -1)) {
+                return true;
+            }
+        }
 
-      if (uri == null) {
-         if ((this._data != null) && (this._count == -1)) {
-            return true;
-         } else if ((this._data == null) && (this._count != -1)) {
-            return true;
-         }
-      }
+        return false;
+    }
 
-      return false;
-   }
-
-   /**
-    * Method engineGetPropertyKeys
-    *
-    *
-    */
-   public String[] engineGetPropertyKeys() {
-      return null;
-   }
+    /**
+     * Method engineGetPropertyKeys
+     *
+     *
+     */
+    public String[] engineGetPropertyKeys() {
+        return null;
+    }
 }

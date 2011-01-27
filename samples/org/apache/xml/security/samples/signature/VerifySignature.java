@@ -39,145 +39,127 @@ import org.w3c.dom.Element;
  * @author $Author$
  */
 public class VerifySignature {
+    
+    static {
+        org.apache.xml.security.Init.init();
+    }
 
-   /**
-    * Method main
-    *
-    * @param unused
-    */
-   public static void main(String unused[]) {
+    /**
+     * Method main
+     *
+     * @param unused
+     */
+    public static void main(String unused[]) {
 
-      boolean schemaValidate = false;
-      final String signatureSchemaFile = "samples/data/xmldsig-core-schema.xsd";
-      // String signatureFileName = "samples/data/ie/baltimore/merlin-examples/merlin-xmldsig-fifteen/signature-enveloping-rsa.xml";
-      String signatureFileName = "signature.xml";
+        boolean schemaValidate = false;
+        final String signatureSchemaFile = "samples/data/xmldsig-core-schema.xsd";
+        String signatureFileName = "signature.xml";
 
-      if (schemaValidate) {
-         System.out.println("We do schema-validation");
-      }
+        if (schemaValidate) {
+            System.out.println("We do schema-validation");
+        }
 
-      javax.xml.parsers.DocumentBuilderFactory dbf =
-         javax.xml.parsers.DocumentBuilderFactory.newInstance();
+        javax.xml.parsers.DocumentBuilderFactory dbf =
+            javax.xml.parsers.DocumentBuilderFactory.newInstance();
 
-      if (schemaValidate) {
-         dbf.setAttribute("http://apache.org/xml/features/validation/schema",
-                          Boolean.TRUE);
-         dbf.setAttribute(
-            "http://apache.org/xml/features/dom/defer-node-expansion",
-            Boolean.TRUE);
-         dbf.setValidating(true);
-         dbf.setAttribute("http://xml.org/sax/features/validation",
-                          Boolean.TRUE);
-      }
+        if (schemaValidate) {
+            dbf.setAttribute("http://apache.org/xml/features/validation/schema",
+                             Boolean.TRUE);
+            dbf.setAttribute("http://apache.org/xml/features/dom/defer-node-expansion",
+                             Boolean.TRUE);
+            dbf.setValidating(true);
+            dbf.setAttribute("http://xml.org/sax/features/validation",
+                             Boolean.TRUE);
+        }
 
-      dbf.setNamespaceAware(true);
-      dbf.setAttribute("http://xml.org/sax/features/namespaces", Boolean.TRUE);
+        dbf.setNamespaceAware(true);
+        dbf.setAttribute("http://xml.org/sax/features/namespaces", Boolean.TRUE);
 
-      if (schemaValidate) {
-         dbf.setAttribute(
-            "http://apache.org/xml/properties/schema/external-schemaLocation",
-            Constants.SignatureSpecNS + " " + signatureSchemaFile);
-      }
+        if (schemaValidate) {
+            dbf.setAttribute("http://apache.org/xml/properties/schema/external-schemaLocation",
+                             Constants.SignatureSpecNS + " " + signatureSchemaFile);
+        }
 
-      try {
+        try {
 
-         // File f = new File("signature.xml");
-         File f = new File(signatureFileName);
+            File f = new File(signatureFileName);
 
-         System.out.println("Try to verify " + f.toURL().toString());
+            System.out.println("Try to verify " + f.toURI().toURL().toString());
 
-         javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
+            javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
 
-         db.setErrorHandler(new org.apache.xml.security.utils
-            .IgnoreAllErrorHandler());
+            db.setErrorHandler(new org.apache.xml.security.utils.IgnoreAllErrorHandler());
 
-         if (schemaValidate) {
-            db.setEntityResolver(new org.xml.sax.EntityResolver() {
+            if (schemaValidate) {
+                db.setEntityResolver(new org.xml.sax.EntityResolver() {
 
-               public org.xml.sax.InputSource resolveEntity(
-                       String publicId, String systemId)
-                          throws org.xml.sax.SAXException {
+                    public org.xml.sax.InputSource resolveEntity(
+                        String publicId, String systemId
+                    ) throws org.xml.sax.SAXException {
 
-                  if (systemId.endsWith("xmldsig-core-schema.xsd")) {
-                     try {
-                        return new org.xml.sax.InputSource(
-                           new FileInputStream(signatureSchemaFile));
-                     } catch (FileNotFoundException ex) {
-                        throw new org.xml.sax.SAXException(ex);
-                     }
-                  } else {
-                     return null;
-                  }
-               }
-            });
-         }
-
-         org.w3c.dom.Document doc = db.parse(new java.io.FileInputStream(f));
-
-         XPathFactory xpf = XPathFactory.newInstance();
-         XPath xpath = xpf.newXPath();
-         xpath.setNamespaceContext(new DSNamespaceContext());
-
-         String expression = "//ds:Signature[1]";
-         Element sigElement = 
-             (Element) xpath.evaluate(expression, doc, XPathConstants.NODE);
-         XMLSignature signature = new XMLSignature(sigElement,
-                                                   f.toURI().toURL().toString());
-
-         signature.addResourceResolver(new OfflineResolver());
-
-         // XMLUtils.outputDOMc14nWithComments(signature.getElement(), System.out);
-         KeyInfo ki = signature.getKeyInfo();
-
-         if (ki != null) {
-            if (ki.containsX509Data()) {
-               System.out
-                  .println("Could find a X509Data element in the KeyInfo");
+                        if (systemId.endsWith("xmldsig-core-schema.xsd")) {
+                            try {
+                                return new org.xml.sax.InputSource(
+                                    new FileInputStream(signatureSchemaFile));
+                            } catch (FileNotFoundException ex) {
+                                throw new org.xml.sax.SAXException(ex);
+                            }
+                        } else {
+                            return null;
+                        }
+                    }
+                });
             }
 
-            X509Certificate cert = signature.getKeyInfo().getX509Certificate();
+            org.w3c.dom.Document doc = db.parse(new java.io.FileInputStream(f));
 
-            if (cert != null) {
-               /*
-               System.out.println(
-                  "I try to verify the signature using the X509 Certificate: "
-                  + cert);
-               */
-               System.out.println("The XML signature in file "
-                                  + f.toURL().toString() + " is "
-                                  + (signature.checkSignatureValue(cert)
-                                     ? "valid (good)"
-                                     : "invalid !!!!! (bad)"));
+            XPathFactory xpf = XPathFactory.newInstance();
+            XPath xpath = xpf.newXPath();
+            xpath.setNamespaceContext(new DSNamespaceContext());
+
+            String expression = "//ds:Signature[1]";
+            Element sigElement = 
+                (Element) xpath.evaluate(expression, doc, XPathConstants.NODE);
+            XMLSignature signature = 
+                new XMLSignature(sigElement, f.toURI().toURL().toString());
+
+            signature.addResourceResolver(new OfflineResolver());
+
+            KeyInfo ki = signature.getKeyInfo();
+
+            if (ki != null) {
+                if (ki.containsX509Data()) {
+                    System.out.println("Could find a X509Data element in the KeyInfo");
+                }
+
+                X509Certificate cert = signature.getKeyInfo().getX509Certificate();
+
+                if (cert != null) {
+                    System.out.println("The XML signature in file "
+                                       + f.toURI().toURL().toString() + " is "
+                                       + (signature.checkSignatureValue(cert)
+                                           ? "valid (good)"  : "invalid !!!!! (bad)"));
+                } else {
+                    System.out.println("Did not find a Certificate");
+
+                    PublicKey pk = signature.getKeyInfo().getPublicKey();
+
+                    if (pk != null) {
+                        System.out.println("The XML signature in file "
+                                           + f.toURI().toURL().toString() + " is "
+                                           + (signature.checkSignatureValue(pk)
+                                               ? "valid (good)" : "invalid !!!!! (bad)"));
+                    } else {
+                        System.out.println(
+                            "Did not find a public key, so I can't check the signature");
+                    }
+                }
             } else {
-               System.out.println("Did not find a Certificate");
-
-               PublicKey pk = signature.getKeyInfo().getPublicKey();
-
-               if (pk != null) {
-                  /*
-                  System.out.println(
-                     "I try to verify the signature using the public key: "
-                     + pk);
-                  */
-                  System.out.println("The XML signature in file "
-                                     + f.toURL().toString() + " is "
-                                     + (signature.checkSignatureValue(pk)
-                                        ? "valid (good)"
-                                        : "invalid !!!!! (bad)"));
-               } else {
-                  System.out.println(
-                     "Did not find a public key, so I can't check the signature");
-               }
+                System.out.println("Did not find a KeyInfo");
             }
-         } else {
-            System.out.println("Did not find a KeyInfo");
-         }
-      } catch (Exception ex) {
-         ex.printStackTrace();
-      }
-   }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
 
-   static {
-      org.apache.xml.security.Init.init();
-   }
 }
