@@ -21,7 +21,6 @@ package org.apache.directory.shared.ldap.codec.decorators;
 
 
 import org.apache.directory.shared.ldap.model.message.AddResponse;
-import org.apache.directory.shared.ldap.model.message.LdapResult;
 
 
 /**
@@ -77,15 +76,6 @@ public class AddResponseDecorator extends ResponseDecorator implements AddRespon
     //-------------------------------------------------------------------------
     // The AddResponse methods
     //-------------------------------------------------------------------------
-    /**
-     * {@inheritDoc}
-     */
-    public LdapResult getLdapResult()
-    {
-        return getAddResponse().getLdapResult();
-    }
-    
-    
     /**
      * {@inheritDoc}
      */

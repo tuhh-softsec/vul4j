@@ -20,7 +20,12 @@
 package org.apache.directory.shared.ldap.codec.decorators;
 
 
+import org.apache.directory.shared.ldap.model.entry.Value;
+import org.apache.directory.shared.ldap.model.message.AbandonListener;
 import org.apache.directory.shared.ldap.model.message.CompareRequest;
+import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
+import org.apache.directory.shared.ldap.model.message.ResultResponse;
+import org.apache.directory.shared.ldap.model.name.Dn;
 
 
 /**
@@ -28,7 +33,7 @@ import org.apache.directory.shared.ldap.model.message.CompareRequest;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class CompareRequestDecorator extends MessageDecorator
+public class CompareRequestDecorator extends MessageDecorator implements CompareRequest
 {
     /** The bytes of the attribute id used in the comparison */
     private byte[] attrIdBytes;
@@ -142,5 +147,134 @@ public class CompareRequestDecorator extends MessageDecorator
     public void setAttrValBytes( byte[] attrValBytes )
     {
         this.attrValBytes = attrValBytes;
+    }
+
+
+    //-------------------------------------------------------------------------
+    // The CompareRequest methods
+    //-------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
+    public MessageTypeEnum getResponseType()
+    {
+        return getCompareRequest().getResponseType();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public ResultResponse getResultResponse()
+    {
+        return getCompareRequest().getResultResponse();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean hasResponse()
+    {
+        return getCompareRequest().hasResponse();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void abandon()
+    {
+        getCompareRequest().abandon();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isAbandoned()
+    {
+        return getCompareRequest().isAbandoned();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void addAbandonListener( AbandonListener listener )
+    {
+        getCompareRequest().addAbandonListener( listener );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Dn getName()
+    {
+        return getCompareRequest().getName();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setName( Dn name )
+    {
+        getCompareRequest().setName( name );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Value<?> getAssertionValue()
+    {
+        return getCompareRequest().getAssertionValue();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setAssertionValue( String value )
+    {
+        getCompareRequest().setAssertionValue( value );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setAssertionValue( byte[] value )
+    {
+        getCompareRequest().setAssertionValue( value );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getAttributeId()
+    {
+        return getCompareRequest().getAttributeId();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setAttributeId( String attrId )
+    {
+        getCompareRequest().setAttributeId( attrId );
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String toString()
+    {
+        return getCompareRequest().toString();
     }
 }

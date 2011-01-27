@@ -20,7 +20,9 @@
 package org.apache.directory.shared.ldap.codec.decorators;
 
 
+import org.apache.directory.shared.ldap.model.message.LdapResult;
 import org.apache.directory.shared.ldap.model.message.Message;
+import org.apache.directory.shared.ldap.model.message.ResultResponse;
 
 
 /**
@@ -28,7 +30,7 @@ import org.apache.directory.shared.ldap.model.message.Message;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public abstract class ResponseDecorator extends MessageDecorator
+public abstract class ResponseDecorator extends MessageDecorator implements ResultResponse
 {
     /** The LdapResult decorator */
     private LdapResultDecorator ldapResultDecorator;
@@ -48,7 +50,7 @@ public abstract class ResponseDecorator extends MessageDecorator
     /**
      * @return the ldapResultDecorator
      */
-    public LdapResultDecorator getLdapResultDecorator()
+    public LdapResult getLdapResult()
     {
         return ldapResultDecorator;
     }

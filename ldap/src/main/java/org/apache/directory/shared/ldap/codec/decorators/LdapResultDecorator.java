@@ -21,6 +21,9 @@ package org.apache.directory.shared.ldap.codec.decorators;
 
 
 import org.apache.directory.shared.ldap.model.message.LdapResult;
+import org.apache.directory.shared.ldap.model.message.Referral;
+import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
+import org.apache.directory.shared.ldap.model.name.Dn;
 
 
 /**
@@ -28,7 +31,7 @@ import org.apache.directory.shared.ldap.model.message.LdapResult;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class LdapResultDecorator
+public class LdapResultDecorator implements LdapResult
 {
     /** The decorated LdapResult */
     private final LdapResult decoratedLdapResult;
@@ -96,5 +99,98 @@ public class LdapResultDecorator
     public byte[] getMatchedDnBytes()
     {
         return matchedDnBytes;
+    }
+
+
+    //-------------------------------------------------------------------------
+    // The LdapResult methods
+    //-------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
+    public ResultCodeEnum getResultCode()
+    {
+        return decoratedLdapResult.getResultCode();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setResultCode( ResultCodeEnum resultCode )
+    {
+        decoratedLdapResult.setResultCode( resultCode );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Dn getMatchedDn()
+    {
+        return decoratedLdapResult.getMatchedDn();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setMatchedDn( Dn dn )
+    {
+        decoratedLdapResult.setMatchedDn( dn );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getErrorMessage()
+    {
+        return decoratedLdapResult.getErrorMessage();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setErrorMessage( String errorMessage )
+    {
+        decoratedLdapResult.setErrorMessage( errorMessage );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isReferral()
+    {
+        return decoratedLdapResult.isReferral();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Referral getReferral()
+    {
+        return decoratedLdapResult.getReferral();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setReferral( Referral referral )
+    {
+        decoratedLdapResult.setReferral( referral );
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String toString()
+    {
+        return decoratedLdapResult.toString();
     }
 }

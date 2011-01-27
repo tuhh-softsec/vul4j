@@ -21,7 +21,6 @@ package org.apache.directory.shared.ldap.codec.decorators;
 
 
 import org.apache.directory.shared.ldap.model.message.BindResponse;
-import org.apache.directory.shared.ldap.model.message.LdapResult;
 
 
 /**
@@ -77,15 +76,6 @@ public class BindResponseDecorator extends ResponseDecorator implements BindResp
     //-------------------------------------------------------------------------
     // The BindResponse methods
     //-------------------------------------------------------------------------
-    /**
-     * {@inheritDoc}
-     */
-    public LdapResult getLdapResult()
-    {
-        return getBindResponse().getLdapResult();
-    }
-    
-    
     /**
      * {@inheritDoc}
      */
