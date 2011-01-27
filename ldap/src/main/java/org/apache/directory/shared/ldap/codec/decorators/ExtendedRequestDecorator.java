@@ -21,6 +21,8 @@ package org.apache.directory.shared.ldap.codec.decorators;
 
 
 import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
+import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
+import org.apache.directory.shared.ldap.model.message.ResultResponse;
 
 
 /**
@@ -28,7 +30,7 @@ import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ExtendedRequestDecorator extends MessageDecorator
+public class ExtendedRequestDecorator extends RequestDecorator implements ExtendedRequest
 {
     /** The extended request length */
     private int extendedRequestLength;
@@ -38,7 +40,7 @@ public class ExtendedRequestDecorator extends MessageDecorator
 
 
     /**
-     * Makes a ExtendedRequest encodable.
+     * Makes a ExtendedRequest a MessageDecorator.
      *
      * @param decoratedMessage the decorated ExtendedRequest
      */
@@ -96,5 +98,71 @@ public class ExtendedRequestDecorator extends MessageDecorator
     public void setRequestNameBytes( byte[] requestNameBytes )
     {
         this.requestNameBytes = requestNameBytes;
+    }
+
+
+    //-------------------------------------------------------------------------
+    // The ExtendedRequest methods
+    //-------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
+    public MessageTypeEnum getResponseType()
+    {
+        return getExtendedRequest().getResponseType();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public ResultResponse getResultResponse()
+    {
+        return getExtendedRequest().getResultResponse();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getRequestName()
+    {
+        return getExtendedRequest().getRequestName();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setRequestName( String oid )
+    {
+        getExtendedRequest().setRequestName( oid );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public byte[] getRequestValue()
+    {
+        return getExtendedRequest().getRequestValue();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setRequestValue( byte[] requestValue )
+    {
+        getExtendedRequest().setRequestValue( requestValue );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public String toString()
+    {
+        return getExtendedRequest().toString();
     }
 }
