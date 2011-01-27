@@ -63,7 +63,7 @@ public class MessageDecorator implements Message
     /** The length of the controls */
     private int controlsLength;
 
-
+    
     public static MessageDecorator getDecorator( Message decoratedMessage )
     {
         switch ( decoratedMessage.getType() )
@@ -151,7 +151,7 @@ public class MessageDecorator implements Message
     /**
      * @return The decorated LDAP Message
      */
-    public Message getMessage()
+    public Message getDecoratedMessage()
     {
         return decoratedMessage;
     }
