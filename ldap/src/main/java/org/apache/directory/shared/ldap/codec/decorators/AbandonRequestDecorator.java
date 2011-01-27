@@ -21,7 +21,6 @@ package org.apache.directory.shared.ldap.codec.decorators;
 
 
 import org.apache.directory.shared.ldap.model.message.AbandonRequest;
-import org.apache.directory.shared.ldap.model.message.AddRequest;
 
 
 /**
@@ -36,7 +35,7 @@ public class AbandonRequestDecorator extends RequestDecorator implements Abandon
      *
      * @param decoratedMessage the decorated AddRequest
      */
-    public AbandonRequestDecorator( AddRequest decoratedMessage )
+    public AbandonRequestDecorator( AbandonRequest decoratedMessage )
     {
         super( decoratedMessage );
     }

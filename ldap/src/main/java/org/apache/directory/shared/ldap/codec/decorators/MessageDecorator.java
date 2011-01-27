@@ -23,6 +23,7 @@ package org.apache.directory.shared.ldap.codec.decorators;
 import java.util.Map;
 
 import org.apache.directory.shared.ldap.model.exception.MessageException;
+import org.apache.directory.shared.ldap.model.message.AbandonRequest;
 import org.apache.directory.shared.ldap.model.message.AddRequest;
 import org.apache.directory.shared.ldap.model.message.AddResponse;
 import org.apache.directory.shared.ldap.model.message.BindRequest;
@@ -73,7 +74,7 @@ public class MessageDecorator implements Message
         switch ( decoratedMessage.getType() )
         {
             case ABANDON_REQUEST:
-                return new MessageDecorator( decoratedMessage );
+                return new AbandonRequestDecorator( ( AbandonRequest ) decoratedMessage );
 
             case ADD_REQUEST:
                 return new AddRequestDecorator( ( AddRequest ) decoratedMessage );
