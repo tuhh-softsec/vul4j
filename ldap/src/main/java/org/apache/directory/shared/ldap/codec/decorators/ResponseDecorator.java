@@ -57,6 +57,15 @@ public abstract class ResponseDecorator extends MessageDecorator implements Resu
 
 
     /**
+     * @return the ldapResultDecorator as a decorator to reduce casting.
+     */
+    public LdapResultDecorator getLdapResultDecorator()
+    {
+        return ldapResultDecorator;
+    }
+
+
+    /**
      * @param ldapResultDecorator the ldapResultDecorator to set
      */
     public void setLdapResultDecorator( LdapResultDecorator ldapResultDecorator )

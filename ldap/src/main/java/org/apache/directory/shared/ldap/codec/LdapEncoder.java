@@ -316,10 +316,8 @@ public class LdapEncoder
      * @param buffer The buffer where to put the PDU
      * @return The PDU.
      */
-    private ByteBuffer encodeLdapResult( ByteBuffer buffer, LdapResultDecorator decorator ) throws EncoderException
+    private ByteBuffer encodeLdapResult( ByteBuffer buffer, LdapResultDecorator ldapResult ) throws EncoderException
     {
-        LdapResult ldapResult = decorator.getLdapResult();
-
         if ( buffer == null )
         {
             throw new EncoderException( I18n.err( I18n.ERR_04023 ) );
@@ -338,10 +336,10 @@ public class LdapEncoder
         }
 
         // The matchedDN
-        Value.encode( buffer, decorator.getMatchedDnBytes() );
+        Value.encode( buffer, ldapResult.getMatchedDnBytes() );
 
         // The error message
-        Value.encode( buffer, decorator.getErrorMessageBytes() );
+        Value.encode( buffer, ldapResult.getErrorMessageBytes() );
 
         // The referrals, if any
         Referral referral = ldapResult.getReferral();

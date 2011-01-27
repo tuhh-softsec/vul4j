@@ -19,7 +19,9 @@
  */
 package org.apache.directory.shared.ldap.codec;
 
+
 import org.apache.directory.shared.asn1.EncoderException;
+
 
 /**
  * Create an exception containing the messageId
@@ -29,6 +31,8 @@ import org.apache.directory.shared.asn1.EncoderException;
  */
 public class MessageEncoderException extends EncoderException
 {
+    private static final long serialVersionUID = -4634398228257729537L;
+
     /** The message ID */
     private int messageId;
 
