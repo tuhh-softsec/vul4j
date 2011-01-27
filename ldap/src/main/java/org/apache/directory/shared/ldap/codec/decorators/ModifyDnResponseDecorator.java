@@ -28,7 +28,7 @@ import org.apache.directory.shared.ldap.model.message.ModifyDnResponse;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ModifyDnResponseDecorator extends ResponseDecorator
+public class ModifyDnResponseDecorator extends ResponseDecorator implements ModifyDnResponse
 {
     /** The encoded modifyDnResponse length */
     private int modifyDnResponseLength;

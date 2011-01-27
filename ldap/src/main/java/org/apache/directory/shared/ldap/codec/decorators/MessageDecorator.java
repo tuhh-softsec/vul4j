@@ -196,24 +196,6 @@ public class MessageDecorator implements Message
     }
 
 
-    public MessageTypeEnum getType()
-    {
-        return decoratedMessage.getType();
-    }
-
-
-    public Map<String, Control> getControls()
-    {
-        return decoratedMessage.getControls();
-    }
-
-
-    public Control getControl( String oid )
-    {
-        return decoratedMessage.getControl( oid );
-    }
-
-
     /**
      * Get the current Control Object
      * 
@@ -224,13 +206,51 @@ public class MessageDecorator implements Message
         return currentControl;
     }
 
+    
+    //-------------------------------------------------------------------------
+    // The Message methods
+    //-------------------------------------------------------------------------
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public MessageTypeEnum getType()
+    {
+        return decoratedMessage.getType();
+    }
 
+
+    /**
+     * {@inheritDoc}
+     */
+    public Map<String, Control> getControls()
+    {
+        return decoratedMessage.getControls();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Control getControl( String oid )
+    {
+        return decoratedMessage.getControl( oid );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
     public boolean hasControl( String oid )
     {
         return decoratedMessage.hasControl( oid );
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void addControl( Control control ) throws MessageException
     {
         decoratedMessage.addControl( control );
@@ -238,42 +258,63 @@ public class MessageDecorator implements Message
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void addAllControls( Control[] controls ) throws MessageException
     {
         decoratedMessage.addAllControls( controls );
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void removeControl( Control control ) throws MessageException
     {
         decoratedMessage.removeControl( control );
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public int getMessageId()
     {
         return decoratedMessage.getMessageId();
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public Object get( Object key )
     {
         return decoratedMessage.get( key );
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public Object put( Object key, Object value )
     {
         return decoratedMessage.put( key, value );
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void setMessageId( int messageId )
     {
         decoratedMessage.setMessageId( messageId );
     }
 
 
+    /**
+     * Delegates to the toString() method of the decorated Message.
+     */
     public String toString()
     {
         return decoratedMessage.toString();

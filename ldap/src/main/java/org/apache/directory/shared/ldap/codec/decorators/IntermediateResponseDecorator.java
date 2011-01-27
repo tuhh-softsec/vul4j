@@ -28,7 +28,7 @@ import org.apache.directory.shared.ldap.model.message.IntermediateResponse;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class IntermediateResponseDecorator extends ResponseDecorator
+public class IntermediateResponseDecorator extends ResponseDecorator implements IntermediateResponse
 {
     /** The response name as a byte[] */
     private byte[] responseNameBytes;
@@ -96,5 +96,46 @@ public class IntermediateResponseDecorator extends ResponseDecorator
     public void setResponseNameBytes( byte[] responseNameBytes )
     {
         this.responseNameBytes = responseNameBytes;
+    }
+
+    
+    //-------------------------------------------------------------------------
+    // The IntermediateResponse methods
+    //-------------------------------------------------------------------------
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getResponseName()
+    {
+        return getIntermediateResponse().getResponseName();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setResponseName( String oid )
+    {
+        getIntermediateResponse().setResponseName( oid );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public byte[] getResponseValue()
+    {
+        return getIntermediateResponse().getResponseValue();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setResponseValue( byte[] value )
+    {
+        getIntermediateResponse().setResponseValue( value );
     }
 }

@@ -105,6 +105,8 @@ public class LdapResultDecorator implements LdapResult
     //-------------------------------------------------------------------------
     // The LdapResult methods
     //-------------------------------------------------------------------------
+    
+    
     /**
      * {@inheritDoc}
      */

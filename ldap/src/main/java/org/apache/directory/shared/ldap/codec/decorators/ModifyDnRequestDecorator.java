@@ -21,6 +21,8 @@ package org.apache.directory.shared.ldap.codec.decorators;
 
 
 import org.apache.directory.shared.ldap.model.message.ModifyDnRequest;
+import org.apache.directory.shared.ldap.model.name.Dn;
+import org.apache.directory.shared.ldap.model.name.Rdn;
 
 
 /**
@@ -28,7 +30,7 @@ import org.apache.directory.shared.ldap.model.message.ModifyDnRequest;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ModifyDnRequestDecorator extends MessageDecorator
+public class ModifyDnRequestDecorator extends SingleReplyRequestDecorator implements ModifyDnRequest
 {
     /** The modify Dn request length */
     private int modifyDnRequestLength;
@@ -70,5 +72,91 @@ public class ModifyDnRequestDecorator extends MessageDecorator
     public int getModifyDnResponseLength()
     {
         return modifyDnRequestLength;
+    }
+
+
+    //-------------------------------------------------------------------------
+    // The ModifyDnResponse methods
+    //-------------------------------------------------------------------------
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public Dn getName()
+    {
+        return getModifyDnRequest().getName();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setName( Dn name )
+    {
+        getModifyDnRequest().setName( name );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Rdn getNewRdn()
+    {
+        return getModifyDnRequest().getNewRdn();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setNewRdn( Rdn newRdn )
+    {
+        getModifyDnRequest().setNewRdn( newRdn );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean getDeleteOldRdn()
+    {
+        return getModifyDnRequest().getDeleteOldRdn();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setDeleteOldRdn( boolean deleteOldRdn )
+    {
+        getModifyDnRequest().setDeleteOldRdn( deleteOldRdn );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Dn getNewSuperior()
+    {
+        return getModifyDnRequest().getNewSuperior();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setNewSuperior( Dn newSuperior )
+    {
+        getModifyDnRequest().setNewSuperior( newSuperior );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isMove()
+    {
+        return getModifyDnRequest().isMove();
     }
 }
