@@ -33,19 +33,37 @@ import org.apache.directory.shared.ldap.model.message.controls.Subentries;
 
 
 /**
- * A searchRequest control : Subentries
+ * A Subentries Control implementation which wraps and decorates Subentries
+ * Controls to enable them to be encoded and decoded by the codec.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SubentriesDecorator extends ControlDecorator
+public class SubentriesDecorator extends ControlDecorator implements Subentries
 {
     /**
      * Default constructor
-     *
      */
     public SubentriesDecorator()
     {
-        super( new SimpleSubentries(), new SubentriesDecoder() );
+        this( new SimpleSubentries() );
+    }
+
+
+    /**
+     * Creates a Subentries decorating implementation for use with the codec,
+     * while decorating the supplied Subentries control.
+     *
+     * @param control The Subentries Control to wrap with this decorator.
+     */
+    public SubentriesDecorator( Subentries control )
+    {
+        super( control, new SubentriesDecoder() );
+    }
+
+
+    public Subentries getSubentries()
+    {
+        return ( Subentries ) getDecorated();
     }
 
 
@@ -84,7 +102,7 @@ public class SubentriesDecorator extends ControlDecorator
         buffer.put( TLV.getBytes( valueLength ) );
 
         // Now encode the Subentries specific part
-        Value.encode( buffer, ( ( Subentries ) getDecorated() ).isVisible() );
+        Value.encode( buffer, isVisible() );
 
         return buffer;
     }
@@ -103,7 +121,7 @@ public class SubentriesDecorator extends ControlDecorator
                 ByteBuffer buffer = ByteBuffer.allocate( valueLength );
                 
                 // Now encode the Subentries specific part
-                Value.encode( buffer, ( ( Subentries ) getDecorated() ).isVisible() );
+                Value.encode( buffer, isVisible() );
                 
                 getDecorated().setValue( buffer.array() );
             }
@@ -114,5 +132,17 @@ public class SubentriesDecorator extends ControlDecorator
         }
         
         return getDecorated().getValue();
+    }
+
+
+    public boolean isVisible()
+    {
+        return getSubentries().isVisible();
+    }
+
+
+    public void setVisibility( boolean visibility )
+    {
+        getSubentries().setVisibility( visibility );
     }
 }

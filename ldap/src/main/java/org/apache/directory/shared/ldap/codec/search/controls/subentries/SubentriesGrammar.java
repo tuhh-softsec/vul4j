@@ -32,7 +32,6 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.ber.tlv.BooleanDecoder;
 import org.apache.directory.shared.asn1.ber.tlv.BooleanDecoderException;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.model.message.controls.Subentries;
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,7 +70,6 @@ public final class SubentriesGrammar extends AbstractGrammar
                 public void action( Asn1Container container ) throws DecoderException
                 {
                     SubentriesContainer subEntryContainer = ( SubentriesContainer ) container;
-                    SubentriesDecorator decorator = subEntryContainer.getSubEntryControl();
 
                     TLV tlv = subEntryContainer.getCurrentTLV();
 
@@ -85,14 +83,14 @@ public final class SubentriesGrammar extends AbstractGrammar
 
                     try
                     {
-                        ( ( Subentries ) decorator.getDecorated() ).setVisibility( BooleanDecoder.parse( value ) );
+                        subEntryContainer.getSubentriesControl().setVisibility( BooleanDecoder.parse( value ) );
 
                         // We can have an END transition
                         container.setGrammarEndAllowed( true );
                     }
                     catch ( BooleanDecoderException bde )
                     {
-                        LOG.error( I18n.err( I18n.ERR_04054, Strings.dumpBytes(value.getData()), bde.getMessage() ) );
+                        LOG.error( I18n.err( I18n.ERR_04054, Strings.dumpBytes( value.getData()), bde.getMessage() ) );
 
                         // This will generate a PROTOCOL_ERROR
                         throw new DecoderException( bde.getMessage() );

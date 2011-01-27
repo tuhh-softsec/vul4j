@@ -27,6 +27,7 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecoder;
 import org.apache.directory.shared.ldap.model.message.Control;
+import org.apache.directory.shared.ldap.model.message.controls.Subentries;
 
 
 /**
@@ -52,10 +53,8 @@ public class SubentriesDecoder extends Asn1Decoder implements ControlDecoder
     public Asn1Object decode( byte[] controlBytes, Control control ) throws DecoderException
     {
         ByteBuffer bb = ByteBuffer.wrap( controlBytes );
-        SubentriesContainer container = new SubentriesContainer();
-        container.setSubEntryControl( (SubentriesDecorator )control );
-
+        SubentriesContainer container = new SubentriesContainer( ( Subentries ) control );
         decoder.decode( bb, container );
-        return container.getSubEntryControl();
+        return container.getSubentriesControl();
     }
 }

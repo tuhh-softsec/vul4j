@@ -65,7 +65,7 @@ public class SubEntryControlTest
         bb.flip();
 
         SubentriesContainer container = new SubentriesContainer();
-        container.setSubEntryControl( new SubentriesDecorator() );
+        container.setSubentriesDecorator( new SubentriesDecorator() );
         
         try
         {
@@ -77,7 +77,7 @@ public class SubEntryControlTest
             fail( de.getMessage() );
         }
 
-        SubentriesDecorator decorator = container.getSubEntryControl();
+        SubentriesDecorator decorator = container.getSubentriesControl();
         assertTrue( ( ( Subentries ) decorator.getDecorated() ).isVisible() );
         // test encoding
         try
@@ -123,7 +123,7 @@ public class SubEntryControlTest
         bb.flip();
 
         SubentriesContainer container = new SubentriesContainer();
-        container.setSubEntryControl( new SubentriesDecorator() );
+        container.setSubentriesDecorator( new SubentriesDecorator() );
 
         try
         {
@@ -135,7 +135,7 @@ public class SubEntryControlTest
             fail( de.getMessage() );
         }
 
-        SubentriesDecorator decorator = container.getSubEntryControl();
+        SubentriesDecorator decorator = container.getSubentriesControl();
         assertFalse( ( ( Subentries ) decorator.getDecorated() ).isVisible() );
         
         // test encoding
@@ -185,7 +185,7 @@ public class SubEntryControlTest
 
         // Allocate a LdapMessage Container
         SubentriesContainer container = new SubentriesContainer();
-        container.setSubEntryControl( new SubentriesDecorator() );
+        container.setSubentriesDecorator( new SubentriesDecorator() );
 
         // Decode a SubEntryControl PDU
         try
@@ -218,7 +218,7 @@ public class SubEntryControlTest
 
         // Allocate a LdapMessage Container
         SubentriesContainer container = new SubentriesContainer();
-        container.setSubEntryControl( new SubentriesDecorator() );
+        container.setSubentriesDecorator( new SubentriesDecorator() );
 
         // Decode a SubEntryControl PDU
         try
