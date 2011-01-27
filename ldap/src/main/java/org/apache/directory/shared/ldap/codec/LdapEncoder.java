@@ -1165,7 +1165,7 @@ public class LdapEncoder
 
         // The filter
         searchRequestDecorator.setFilter( searchRequest.getFilter() );
-        searchRequestLength += searchRequestDecorator.getFilter().computeLength();
+        searchRequestLength += searchRequestDecorator.getCodecFilter().computeLength();
 
         // The attributes description list
         int attributeDescriptionListLength = 0;
@@ -2227,7 +2227,7 @@ public class LdapEncoder
             Value.encode( buffer, searchRequest.getTypesOnly() );
 
             // The filter
-            decorator.getFilter().encode( buffer );
+            decorator.getCodecFilter().encode( buffer );
 
             // The attributeDescriptionList
             buffer.put( UniversalTag.SEQUENCE.getValue() );

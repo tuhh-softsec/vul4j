@@ -53,9 +53,13 @@ import org.apache.directory.shared.ldap.model.filter.LessEqNode;
 import org.apache.directory.shared.ldap.model.filter.NotNode;
 import org.apache.directory.shared.ldap.model.filter.OrNode;
 import org.apache.directory.shared.ldap.model.filter.PresenceNode;
+import org.apache.directory.shared.ldap.model.filter.SearchScope;
 import org.apache.directory.shared.ldap.model.filter.SimpleNode;
 import org.apache.directory.shared.ldap.model.filter.SubstringNode;
+import org.apache.directory.shared.ldap.model.message.AliasDerefMode;
+import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.message.SearchRequest;
+import org.apache.directory.shared.ldap.model.name.Dn;
 
 
 /**
@@ -63,7 +67,7 @@ import org.apache.directory.shared.ldap.model.message.SearchRequest;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SearchRequestDecorator extends MessageDecorator
+public class SearchRequestDecorator extends AbandonableResultResponseRequestDecorator implements SearchRequest
 {
     /** The searchRequest length */
     private int searchRequestLength;
@@ -163,7 +167,7 @@ public class SearchRequestDecorator extends MessageDecorator
      *
      * @return the expression node for the root of the filter expression tree.
      */
-    public Filter getFilter()
+    public Filter getCodecFilter()
     {
         return topFilter;
     }
@@ -871,5 +875,163 @@ public class SearchRequestDecorator extends MessageDecorator
         sb.append( super.toString() );
 
         return sb.toString();
+    }
+
+
+    //-------------------------------------------------------------------------
+    // The SearchRequest methods
+    //-------------------------------------------------------------------------
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public MessageTypeEnum[] getResponseTypes()
+    {
+        return getSearchRequest().getResponseTypes();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Dn getBase()
+    {
+        return getSearchRequest().getBase();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setBase( Dn baseDn )
+    {
+        getSearchRequest().setBase( baseDn );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public SearchScope getScope()
+    {
+        return getSearchRequest().getScope();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setScope( SearchScope scope )
+    {
+        getSearchRequest().setScope( scope );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public AliasDerefMode getDerefAliases()
+    {
+        return getSearchRequest().getDerefAliases();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setDerefAliases( AliasDerefMode aliasDerefAliases )
+    {
+        getSearchRequest().setDerefAliases( aliasDerefAliases );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public long getSizeLimit()
+    {
+        return getSearchRequest().getSizeLimit();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setSizeLimit( long entriesMax )
+    {
+        getSearchRequest().setSizeLimit( entriesMax );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public int getTimeLimit()
+    {
+        return getSearchRequest().getTimeLimit();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setTimeLimit( int secondsMax )
+    {
+        getSearchRequest().setTimeLimit( secondsMax );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean getTypesOnly()
+    {
+        return getSearchRequest().getTypesOnly();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setTypesOnly( boolean typesOnly )
+    {
+        getSearchRequest().setTypesOnly( typesOnly );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public ExprNode getFilter()
+    {
+        return getSearchRequest().getFilter();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<String> getAttributes()
+    {
+        return getSearchRequest().getAttributes();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void addAttributes( String... attributes )
+    {
+        getSearchRequest().addAttributes( attributes );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void removeAttribute( String attribute )
+    {
+        getSearchRequest().removeAttribute( attribute );
     }
 }
