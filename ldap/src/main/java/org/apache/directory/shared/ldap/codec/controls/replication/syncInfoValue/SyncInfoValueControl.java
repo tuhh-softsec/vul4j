@@ -550,7 +550,7 @@ public class SyncInfoValueControl extends AbstractControl
             }
             
             // @TODO : check the UUIDs
-            for ( byte[] syncUuid : syncUUIDs )
+            for ( @SuppressWarnings("unused") byte[] syncUuid : syncUUIDs )
             {
             }
         }

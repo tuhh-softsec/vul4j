@@ -339,6 +339,7 @@ public class SearchRequestDecorator extends MessageDecorator
      * @param filter The filter to be transformed
      * @return An ExprNode
      */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private ExprNode transform( Filter filter )
     {
         if ( filter != null )

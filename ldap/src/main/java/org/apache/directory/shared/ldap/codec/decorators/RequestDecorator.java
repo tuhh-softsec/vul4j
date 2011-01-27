@@ -47,6 +47,6 @@ public class RequestDecorator extends MessageDecorator implements Request
      */
     public boolean hasResponse()
     {
-        return ((Request)getDecoratedMessage()).hasResponse();
+        return ( ( Request ) getDecoratedMessage() ).hasResponse();
     }
 }
