@@ -22,6 +22,7 @@ package org.apache.directory.shared.ldap.codec.decorators;
 
 import java.util.List;
 
+import org.apache.directory.shared.ldap.model.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
@@ -52,7 +53,7 @@ public class SearchResultEntryDecorator extends MessageDecorator implements Sear
     private List<Integer> valsLength;
     
     /** The current attribute being processed */
-    private EntryAttribute currentEntry;
+    private EntryAttribute currentAttribute;
 
 
     /**
@@ -172,9 +173,40 @@ public class SearchResultEntryDecorator extends MessageDecorator implements Sear
     }
     
     
-    public EntryAttribute getCurrentEntry()
+    public EntryAttribute getCurrentAttribute()
     {
-        return currentEntry;
+        return currentAttribute;
+    }
+
+
+    /**
+     * Create a new attribute
+     * 
+     * @param type The attribute's type
+     */
+    public void addAttribute( String type ) throws LdapException
+    {
+        currentAttribute = new DefaultEntryAttribute( type );
+
+        getSearchResultEntry().getEntry().put( currentAttribute );
+    }
+
+
+    /**
+     * Add a new value to the current attribute
+     * 
+     * @param value The added value
+     */
+    public void addAttributeValue( Object value )
+    {
+        if ( value instanceof String )
+        {
+            currentAttribute.add( ( String ) value );
+        }
+        else
+        {
+            currentAttribute.add( ( byte[] ) value );
+        }
     }
 
 
@@ -216,20 +248,5 @@ public class SearchResultEntryDecorator extends MessageDecorator implements Sear
     public void setEntry( Entry entry )
     {
         getSearchResultEntry().setEntry( entry );
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public void addAttribute( String type ) throws LdapException
-    {
-        getSearchResultEntry().addAttribute( type );
-    }
-
-
-    public void addAttributeValue( Object value )
-    {
-        getSearchResultEntry().addAttributeValue( value );
     }
 }

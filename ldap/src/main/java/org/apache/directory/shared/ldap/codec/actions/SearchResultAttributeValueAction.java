@@ -74,7 +74,7 @@ public class SearchResultAttributeValueAction extends GrammarAction
         }
         else
         {
-            if ( ldapMessageContainer.isBinary( searchResultEntry.getCurrentEntry().getId() ) )
+            if ( ldapMessageContainer.isBinary( searchResultEntry.getCurrentAttribute().getId() ) )
             {
                 value = tlv.getValue().getData();
 

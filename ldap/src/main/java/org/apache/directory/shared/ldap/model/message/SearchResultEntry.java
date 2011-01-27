@@ -22,7 +22,6 @@ package org.apache.directory.shared.ldap.model.message;
 
 
 import org.apache.directory.shared.ldap.model.entry.Entry;
-import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.name.Dn;
 
 
@@ -68,20 +67,4 @@ public interface SearchResultEntry extends Response
      * @param entry the entry
      */
     void setEntry( Entry entry );
-
-
-    /**
-     * Create a new attribute
-     * 
-     * @param type The attribute's type
-     */
-    void addAttribute( String type ) throws LdapException;
-
-
-    /**
-     * Add a new value to the current attribute
-     * 
-     * @param value The added value
-     */
-    void addAttributeValue( Object value );
 }

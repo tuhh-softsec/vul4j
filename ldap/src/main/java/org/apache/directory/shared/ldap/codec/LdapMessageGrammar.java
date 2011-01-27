@@ -74,6 +74,7 @@ import org.apache.directory.shared.ldap.codec.controls.ControlFactory;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.ModifyRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.SearchResultEntryDecorator;
 import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
@@ -1233,7 +1234,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                 public void action( Asn1Container container ) throws DecoderException
                 {
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-                    SearchResultEntry searchResultEntry = ldapMessageContainer.getSearchResultEntry();
+                    SearchResultEntryDecorator searchResultEntry = ldapMessageContainer.getSearchResultEntry();
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 

@@ -43,9 +43,6 @@ public class SearchResultEntryImpl extends AbstractResponse implements SearchRes
     /** Entry returned in response to search */
     private Entry entry = new DefaultEntry();
 
-    /** The current attribute being decoded */
-    private EntryAttribute currentAttribute;
-
 
     /**
      * Creates a SearchResponseEntry as a reply to an SearchRequest to
@@ -81,46 +78,6 @@ public class SearchResultEntryImpl extends AbstractResponse implements SearchRes
     public Entry getEntry()
     {
         return entry;
-    }
-
-
-    /**
-     * Create a new attribute
-     * 
-     * @param type The attribute's type
-     */
-    public void addAttribute( String type ) throws LdapException
-    {
-        currentAttribute = new DefaultEntryAttribute( type );
-
-        entry.put( currentAttribute );
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public EntryAttribute getCurrentAttribute()
-    {
-        return currentAttribute;
-    }
-
-
-    /**
-     * Add a new value to the current attribute
-     * 
-     * @param value The added value
-     */
-    public void addAttributeValue( Object value )
-    {
-        if ( value instanceof String )
-        {
-            currentAttribute.add( ( String ) value );
-        }
-        else
-        {
-            currentAttribute.add( ( byte[] ) value );
-        }
     }
 
 
