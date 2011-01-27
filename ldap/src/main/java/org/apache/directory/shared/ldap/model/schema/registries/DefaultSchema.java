@@ -37,22 +37,22 @@ import org.apache.directory.shared.util.StringConstants;
 public class DefaultSchema implements Schema
 {
     /** The default schema's owner */
-    private static final String DEFAULT_OWNER = "uid=admin,ou=system";
+    protected static final String DEFAULT_OWNER = "uid=admin,ou=system";
     
     /** Tells if this schema is disabled */
-    private boolean disabled;
+    protected boolean disabled;
     
     /** Contains the list of schema it depends on */
-    private String[] dependencies;
+    protected String[] dependencies;
     
     /** The schema owner */
-    private String owner;
+    protected String owner;
     
     /** The schema name */
-    private String name;
+    protected String name;
     
     /** The set of SchemaObjects declared in this schema */
-    private Set<SchemaObjectWrapper> content;
+    protected Set<SchemaObjectWrapper> content;
     
     
     /**
