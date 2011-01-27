@@ -39,6 +39,7 @@ public class PagedResultsDecoder extends Asn1Decoder implements ControlDecoder
     /** An instance of this decoder */
     private static final Asn1Decoder decoder = new Asn1Decoder();
 
+
     /**
      * Decode the paged search control
      * 
@@ -46,15 +47,13 @@ public class PagedResultsDecoder extends Asn1Decoder implements ControlDecoder
      * 
      * @return A valid PagedSearch object
      * 
-     * @throws org.apache.directory.shared.asn1.DecoderException If the decoding found an error
-     * @throws NamingException It will never be throw by this method
+     * @throws DecoderException It will never be throw by this method
      */
     public Asn1Object decode( byte[] controlBytes, Control control ) throws DecoderException
     {
         ByteBuffer bb = ByteBuffer.wrap( controlBytes );
-        PagedResultsContainer container = new PagedResultsContainer();
-        container.setPagedSearchControl( (PagedResultsDecorator )control );
+        PagedResultsContainer container = new PagedResultsContainer( (PagedResults ) control );
         decoder.decode( bb, container );
-        return container.getPagedSearchControl();
+        return container.getDecorator();
     }
 }

@@ -79,7 +79,7 @@ public class PagedSearchControlTest
             fail( de.getMessage() );
         }
 
-        PagedResultsDecorator pagedSearch = container.getPagedSearchControl();
+        PagedResultsDecorator pagedSearch = container.getDecorator();
         assertEquals( 32, pagedSearch.getSize() );
         assertTrue( Arrays.equals( Strings.getBytesUtf8("test"),
             pagedSearch.getCookie() ) );
@@ -230,7 +230,7 @@ public class PagedSearchControlTest
             fail( de.getMessage() );
         }
 
-        PagedResultsDecorator pagedSearch = container.getPagedSearchControl();
+        PagedResultsDecorator pagedSearch = container.getDecorator();
         assertEquals( Integer.MAX_VALUE, pagedSearch.getSize() );
         assertTrue( Arrays.equals( Strings.getBytesUtf8("test"),
             pagedSearch.getCookie() ) );
@@ -324,7 +324,7 @@ public class PagedSearchControlTest
             fail( de.getMessage() );
         }
 
-        PagedResultsDecorator pagedSearch = container.getPagedSearchControl();
+        PagedResultsDecorator pagedSearch = container.getDecorator();
         assertEquals( 32, pagedSearch.getSize() );
         assertNotNull( pagedSearch.getCookie() );
         assertEquals( StringConstants.EMPTY_BYTES, pagedSearch.getCookie() );

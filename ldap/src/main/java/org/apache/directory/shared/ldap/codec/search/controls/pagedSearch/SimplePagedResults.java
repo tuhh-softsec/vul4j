@@ -65,7 +65,7 @@ public class SimplePagedResults extends BasicControlImpl implements PagedResults
     private int size;
 
     /** The exchanged cookie */
-    private byte[] cookie;
+    private byte[] cookie = StringConstants.EMPTY_BYTES;
 
 
     /**
@@ -74,8 +74,6 @@ public class SimplePagedResults extends BasicControlImpl implements PagedResults
     public SimplePagedResults()
     {
         super( OID );
-
-        cookie = StringConstants.EMPTY_BYTES;
     }
 
 
@@ -135,6 +133,8 @@ public class SimplePagedResults extends BasicControlImpl implements PagedResults
     /**
      * @see Object#equals(Object)
      */
+    @SuppressWarnings( { "EqualsWhichDoesntCheckParameterClass" } )
+    @Override
     public boolean equals( Object o )
     {
         if ( !super.equals( o ) )
@@ -142,9 +142,9 @@ public class SimplePagedResults extends BasicControlImpl implements PagedResults
             return false;
         }
 
-        SimplePagedResults otherControl = ( SimplePagedResults ) o;
+        PagedResults otherControl = ( PagedResults ) o;
 
-        return ( size == otherControl.size ) && Arrays.equals( cookie, otherControl.cookie );
+        return ( size == otherControl.getSize() ) && Arrays.equals( cookie, otherControl.getCookie() );
     }
 
 

@@ -29,7 +29,6 @@ import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
-import org.apache.directory.shared.util.StringConstants;
 import org.apache.directory.shared.util.Strings;
 
 
@@ -38,28 +37,31 @@ import org.apache.directory.shared.util.Strings;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class PagedResultsDecorator extends ControlDecorator
+public class PagedResultsDecorator extends ControlDecorator implements PagedResults
 {
-
-    /** The number of entries to return, or returned */
-    private int size;
-
-    /** The exchanged cookie */
-    private byte[] cookie;
-
     /** The entry change global length */
     private int pscSeqLength;
 
 
     /**
-     * 
-     * Creates a new instance of PagedResultsDecorator.
-     *
+     * Creates a new instance of PagedResultsDecorator with a newly created decorated
+     * PagedResults Control.
      */
     public PagedResultsDecorator()
     {
-        super( new SimplePagedResults(), new PagedResultsDecoder() );
-        cookie = StringConstants.EMPTY_BYTES;
+        this( new SimplePagedResults() );
+    }
+
+
+    /**
+     * Creates a new instance of PagedResultsDecorator using the supplied PagedResults
+     * Control to be decorated.
+     *
+     * @param  pagedResults The PagedResults Control to be decorated.
+     */
+    public PagedResultsDecorator( PagedResults pagedResults )
+    {
+        super( pagedResults, new PagedResultsDecoder() );
     }
 
 
@@ -78,13 +80,13 @@ public class PagedResultsDecorator extends ControlDecorator
      */
     public int computeLength()
     {
-        int sizeLength = 1 + 1 + Value.getNbBytes( size );
+        int sizeLength = 1 + 1 + Value.getNbBytes( getSize() );
 
         int cookieLength;
 
-        if ( cookie != null )
+        if ( getCookie() != null )
         {
-            cookieLength = 1 + TLV.getNbBytes( cookie.length ) + cookie.length;
+            cookieLength = 1 + TLV.getNbBytes( getCookie().length ) + getCookie().length;
         }
         else
         {
@@ -124,8 +126,8 @@ public class PagedResultsDecorator extends ControlDecorator
         buffer.put( UniversalTag.SEQUENCE.getValue() );
         buffer.put( TLV.getBytes( pscSeqLength ) );
 
-        Value.encode( buffer, size );
-        Value.encode( buffer, cookie );
+        Value.encode( buffer, getSize() );
+        Value.encode( buffer, getCookie() );
 
         return buffer;
     }
@@ -147,8 +149,8 @@ public class PagedResultsDecorator extends ControlDecorator
                 buffer.put( UniversalTag.SEQUENCE.getValue() );
                 buffer.put( TLV.getBytes( pscSeqLength ) );
 
-                Value.encode( buffer, size );
-                Value.encode( buffer, cookie );
+                Value.encode( buffer, getSize() );
+                Value.encode( buffer, getCookie() );
 
                 getDecorated().setValue( buffer.array() );
             }
@@ -162,12 +164,19 @@ public class PagedResultsDecorator extends ControlDecorator
     }
 
 
+    private PagedResults getPagedResults()
+    {
+        return ( PagedResults ) getDecorated();
+    }
+
+
+
     /**
      * @return The requested or returned number of entries
      */
     public int getSize()
     {
-        return size;
+        return getPagedResults().getSize();
     }
 
 
@@ -178,7 +187,7 @@ public class PagedResultsDecorator extends ControlDecorator
      */
     public void setSize( int size )
     {
-        this.size = size;
+        getPagedResults().setSize( size );
     }
 
 
@@ -187,7 +196,7 @@ public class PagedResultsDecorator extends ControlDecorator
      */
     public byte[] getCookie()
     {
-        return cookie;
+        return getPagedResults().getCookie();
     }
 
 
@@ -198,7 +207,7 @@ public class PagedResultsDecorator extends ControlDecorator
      */
     public void setCookie( byte[] cookie )
     {
-        this.cookie = cookie;
+        getPagedResults().setCookie( cookie );
     }
 
 
@@ -209,23 +218,24 @@ public class PagedResultsDecorator extends ControlDecorator
     {
         int value = 0;
 
-        switch ( cookie.length )
+        switch ( getCookie().length )
         {
             case 1:
-                value = cookie[0] & 0x00FF;
+                value = getCookie()[0] & 0x00FF;
                 break;
 
             case 2:
-                value = ( ( cookie[0] & 0x00FF ) << 8 ) + ( cookie[1] & 0x00FF );
+                value = ( ( getCookie()[0] & 0x00FF ) << 8 ) + ( getCookie()[1] & 0x00FF );
                 break;
 
             case 3:
-                value = ( ( cookie[0] & 0x00FF ) << 16 ) + ( ( cookie[1] & 0x00FF ) << 8 ) + ( cookie[2] & 0x00FF );
+                value = ( ( getCookie()[0] & 0x00FF ) << 16 ) + ( ( getCookie()[1] & 0x00FF ) << 8 )
+                        + ( getCookie()[2] & 0x00FF );
                 break;
 
             case 4:
-                value = ( ( cookie[0] & 0x00FF ) << 24 ) + ( ( cookie[1] & 0x00FF ) << 16 )
-                    + ( ( cookie[2] & 0x00FF ) << 8 ) + ( cookie[3] & 0x00FF );
+                value = ( ( getCookie()[0] & 0x00FF ) << 24 ) + ( ( getCookie()[1] & 0x00FF ) << 16 )
+                        + ( ( getCookie()[2] & 0x00FF ) << 8 ) + ( getCookie()[3] & 0x00FF );
                 break;
 
         }
@@ -246,9 +256,9 @@ public class PagedResultsDecorator extends ControlDecorator
             return false;
         }
 
-        PagedResultsDecorator otherControl = ( PagedResultsDecorator ) o;
+        PagedResults otherControl = ( PagedResults ) o;
 
-        return ( size == otherControl.size ) && Arrays.equals( cookie, otherControl.cookie );
+        return ( getSize() == otherControl.getSize() ) && Arrays.equals( getCookie(), otherControl.getCookie() );
     }
 
 
@@ -262,8 +272,8 @@ public class PagedResultsDecorator extends ControlDecorator
         sb.append( "    Paged Search Control\n" );
         sb.append( "        oid : " ).append( getOid() ).append( '\n' );
         sb.append( "        critical : " ).append( isCritical() ).append( '\n' );
-        sb.append( "        size   : '" ).append( size ).append( "'\n" );
-        sb.append( "        cookie   : '" ).append( Strings.dumpBytes(cookie) ).append( "'\n" );
+        sb.append( "        size   : '" ).append( getSize() ).append( "'\n" );
+        sb.append( "        cookie   : '" ).append( Strings.dumpBytes( getCookie() ) ).append( "'\n" );
 
         return sb.toString();
     }

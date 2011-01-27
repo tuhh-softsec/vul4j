@@ -48,12 +48,39 @@ public class PagedResultsContainer extends AbstractContainer
 
 
     /**
+     * Creates a new PagedSearchControl container object to contain a PagedResults
+     * Control, which is optionally decorated if is not a decorator already. If it
+     * is a decorator then it is used as the decorator for this container.
+     *
+     * @param control A PagedResults Control to optionally be wrapped.
+     */
+    public PagedResultsContainer( PagedResults control )
+    {
+        this();
+        decorate( control );
+    }
+
+
+    /**
      * @return Returns the paged search control.
      */
-    public PagedResultsDecorator getPagedSearchControl()
+    public PagedResultsDecorator getDecorator()
     {
 
         return control;
+    }
+
+
+    public void decorate( PagedResults control )
+    {
+        if ( control instanceof PagedResultsDecorator )
+        {
+            this.control = ( PagedResultsDecorator ) control;
+        }
+        else
+        {
+            this.control = new PagedResultsDecorator( control );
+        }
     }
 
 

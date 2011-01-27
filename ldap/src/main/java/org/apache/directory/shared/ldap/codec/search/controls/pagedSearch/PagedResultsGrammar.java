@@ -121,7 +121,7 @@ public final class PagedResultsGrammar extends AbstractGrammar
                             LOG.debug( "size = " + size );
                         }
 
-                        pagedSearchContainer.getPagedSearchControl().setSize( size );
+                        pagedSearchContainer.getDecorator().setSize( size );
                     }
                     catch ( IntegerDecoderException e )
                     {
@@ -153,11 +153,11 @@ public final class PagedResultsGrammar extends AbstractGrammar
 
                     if ( pagedSearchContainer.getCurrentTLV().getLength() == 0 )
                     {
-                        pagedSearchContainer.getPagedSearchControl().setCookie( StringConstants.EMPTY_BYTES );
+                        pagedSearchContainer.getDecorator().setCookie( StringConstants.EMPTY_BYTES );
                     }
                     else
                     {
-                        pagedSearchContainer.getPagedSearchControl().setCookie( value.getData() );
+                        pagedSearchContainer.getDecorator().setCookie( value.getData() );
                     }
 
                     // We can have an END transition
