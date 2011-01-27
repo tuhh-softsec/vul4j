@@ -35,7 +35,7 @@ public class CompareResponseDecorator extends ResponseDecorator implements Compa
 
 
     /**
-     * Makes a CompareResponse encodable.
+     * Makes a CompareResponse a MessageDecorator.
      *
      * @param decoratedMessage the decorated CompareResponse
      */

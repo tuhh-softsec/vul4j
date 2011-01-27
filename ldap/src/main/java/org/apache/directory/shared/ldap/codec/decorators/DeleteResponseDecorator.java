@@ -28,14 +28,14 @@ import org.apache.directory.shared.ldap.model.message.DeleteResponse;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class DeleteResponseDecorator extends ResponseDecorator
+public class DeleteResponseDecorator extends ResponseDecorator implements DeleteResponse
 {
     /** The encoded deleteResponse length */
     private int deleteResponseLength;
 
 
     /**
-     * Makes a DeleteResponse encodable.
+     * Makes a DeleteResponse a MessageDecorator.
      *
      * @param decoratedMessage the decorated DeleteResponse
      */
@@ -70,5 +70,17 @@ public class DeleteResponseDecorator extends ResponseDecorator
     public int getDeleteResponseLength()
     {
         return deleteResponseLength;
+    }
+
+
+    //-------------------------------------------------------------------------
+    // The DeleteResponse methods
+    //-------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
+    public String toString()
+    {
+        return getDeleteResponse().toString();
     }
 }

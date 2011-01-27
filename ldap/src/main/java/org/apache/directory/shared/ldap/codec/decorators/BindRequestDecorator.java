@@ -45,7 +45,7 @@ public class BindRequestDecorator extends MessageDecorator implements BindReques
 
 
     /**
-     * Makes a BindRequest encodable.
+     * Makes a BindRequest a MessageDecorator.
      *
      * @param decoratedMessage the decorated BindRequests.
      */

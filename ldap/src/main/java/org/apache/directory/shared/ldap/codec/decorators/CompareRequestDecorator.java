@@ -49,7 +49,7 @@ public class CompareRequestDecorator extends MessageDecorator implements Compare
 
 
     /**
-     * Makes a CompareRequest encodable.
+     * Makes a CompareRequest a MessageDecorator.
      *
      * @param decoratedMessage the decorated CompareRequest
      */

@@ -35,7 +35,7 @@ public class BindResponseDecorator extends ResponseDecorator implements BindResp
 
 
     /**
-     * Makes a BindResponse encodable.
+     * Makes a BindResponse a MessageDecorator.
      *
      * @param decoratedMessage the decorated BindResponse
      */

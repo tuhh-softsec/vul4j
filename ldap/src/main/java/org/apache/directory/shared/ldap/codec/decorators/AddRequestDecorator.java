@@ -53,7 +53,7 @@ public class AddRequestDecorator extends MessageDecorator implements AddRequest
 
 
     /**
-     * Makes a AddRequest encodable.
+     * Makes a AddRequest a MessageDecorator.
      *
      * @param decoratedMessage the decorated AddRequest
      */
