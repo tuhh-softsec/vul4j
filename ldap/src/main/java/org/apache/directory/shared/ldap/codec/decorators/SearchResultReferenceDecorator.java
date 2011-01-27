@@ -96,12 +96,23 @@ public class SearchResultReferenceDecorator extends MessageDecorator implements 
     }
 
 
+    //-------------------------------------------------------------------------
+    // The SearchResultReference methods
+    //-------------------------------------------------------------------------
+    
+    
+    /**
+     * {@inheritDoc}
+     */
     public Referral getReferral()
     {
         return getSearchResultReference().getReferral();
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void setReferral( Referral referral )
     {
         getSearchResultReference().setReferral( referral );        

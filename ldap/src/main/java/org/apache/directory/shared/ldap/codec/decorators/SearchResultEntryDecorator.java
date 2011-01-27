@@ -178,36 +178,59 @@ public class SearchResultEntryDecorator extends MessageDecorator implements Sear
     }
 
 
+    //-------------------------------------------------------------------------
+    // The IntermediateResponse methods
+    //-------------------------------------------------------------------------
+    
+    
+    /**
+     * {@inheritDoc}
+     */
     public Dn getObjectName()
     {
         return getSearchResultEntry().getObjectName();
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void setObjectName( Dn objectName )
     {
         getSearchResultEntry().setObjectName( objectName );
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public Entry getEntry()
     {
         return getSearchResultEntry().getEntry();
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void setEntry( Entry entry )
     {
         getSearchResultEntry().setEntry( entry );
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void addAttribute( String type ) throws LdapException
     {
         getSearchResultEntry().addAttribute( type );
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void addAttributeValue( Object value )
     {
         getSearchResultEntry().addAttributeValue( value );
