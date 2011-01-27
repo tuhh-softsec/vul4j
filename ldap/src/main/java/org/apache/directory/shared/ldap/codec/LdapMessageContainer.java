@@ -118,7 +118,7 @@ public class LdapMessageContainer extends AbstractContainer
      */
     public AbandonRequest getAbandonRequest()
     {
-        return ( AbandonRequest ) messageDecorator;
+        return ( AbandonRequest ) messageDecorator.getDecoratedMessage();
     }
 
 
