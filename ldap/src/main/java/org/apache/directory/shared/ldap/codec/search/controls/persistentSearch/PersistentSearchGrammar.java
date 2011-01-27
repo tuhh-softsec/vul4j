@@ -29,6 +29,7 @@ import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
 import org.apache.directory.shared.asn1.ber.tlv.*;
 import org.apache.directory.shared.asn1.ber.tlv.IntegerDecoderException;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.model.message.controls.PersistentSearch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

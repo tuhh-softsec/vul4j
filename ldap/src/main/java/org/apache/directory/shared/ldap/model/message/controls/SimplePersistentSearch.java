@@ -17,11 +17,10 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.search.controls.persistentSearch;
+package org.apache.directory.shared.ldap.model.message.controls;
 
 
 import org.apache.directory.shared.ldap.codec.controls.BasicControlImpl;
-import org.apache.directory.shared.ldap.model.message.controls.ChangeType;
 
 
 /**
