@@ -46,6 +46,7 @@ import org.apache.directory.shared.ldap.model.message.SearchRequest;
 import org.apache.directory.shared.ldap.model.message.SearchResultDone;
 import org.apache.directory.shared.ldap.model.message.SearchResultEntry;
 import org.apache.directory.shared.ldap.model.message.SearchResultReference;
+import org.apache.directory.shared.ldap.model.message.UnbindRequest;
 
 
 /**
@@ -134,7 +135,7 @@ public class MessageDecorator implements Message
                 return new SearchResultReferenceDecorator( ( SearchResultReference ) decoratedMessage );
             
             case UNBIND_REQUEST:
-                return new MessageDecorator( decoratedMessage );
+                return new UnbindRequestDecorator( ( UnbindRequest ) decoratedMessage );
                 
             default:
                 return new MessageDecorator( decoratedMessage );
