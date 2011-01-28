@@ -43,6 +43,7 @@ import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
+import org.apache.directory.shared.ldap.codec.decorators.AbandonRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.AddRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.ModifyRequestDecorator;
@@ -61,7 +62,6 @@ import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.filter.SearchScope;
-import org.apache.directory.shared.ldap.model.message.AbandonRequest;
 import org.apache.directory.shared.ldap.model.message.AbandonRequestImpl;
 import org.apache.directory.shared.ldap.model.message.AddRequestImpl;
 import org.apache.directory.shared.ldap.model.message.AliasDerefMode;
@@ -1146,7 +1146,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            AbandonRequest abandonRequest = new AbandonRequestImpl();
+            AbandonRequestDecorator abandonRequest = new AbandonRequestDecorator( new AbandonRequestImpl() );
             container.getBatchRequest().addRequest( abandonRequest );
 
             XmlPullParser xpp = container.getParser();
@@ -1193,8 +1193,8 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            AddRequestDecorator addRequestDecorator = new AddRequestDecorator( new AddRequestImpl() );
-            container.getBatchRequest().addRequest( addRequestDecorator );
+            AddRequestDecorator addRequest = new AddRequestDecorator( new AddRequestImpl() );
+            container.getBatchRequest().addRequest( addRequest );
 
             XmlPullParser xpp = container.getParser();
 
@@ -1204,7 +1204,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             attributeValue = xpp.getAttributeValue( "", "requestID" );
             if ( attributeValue != null )
             {
-                addRequestDecorator.setMessageId( ParserUtils.parseAndVerifyRequestID( attributeValue, xpp ) );
+                addRequest.setMessageId( ParserUtils.parseAndVerifyRequestID( attributeValue, xpp ) );
             }
             else
             {
@@ -1219,7 +1219,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             {
                 try
                 {
-                    addRequestDecorator.setEntryDn( new Dn( attributeValue ) );
+                    addRequest.setEntryDn( new Dn( attributeValue ) );
                 }
                 catch ( LdapInvalidDnException e )
                 {
