@@ -24,23 +24,23 @@ public interface LinkedCallMethodBuilder extends LinkedRuleBuilder {
 
     /**
      * Sets the location of the target object.
-     * 
+     *
      * Positive numbers are relative to the top of the digester object stack.
      * Negative numbers are relative to the bottom of the stack. Zero implies the top object on the stack.
      *
      * @param targetOffset location of the target object.
-     * @return
+     * @return this builder instance
      */
     LinkedCallMethodBuilder withTargetOffset(int targetOffset);
 
     /**
      * Sets the Java classes that represent the parameter types of the method arguments.
-     * 
+     *
      * If you wish to use a primitive type, specify the corresonding Java wrapper class instead,
      * such as {@code java.lang.Boolean.TYPE} for a {@code boolean} parameter.
      *
      * @param paramTypes The Java classes that represent the parameter types of the method arguments
-     * @return
+     * @return this builder instance
      */
     LinkedCallMethodBuilder withParamTypes(Class<?>...paramTypes);
 
