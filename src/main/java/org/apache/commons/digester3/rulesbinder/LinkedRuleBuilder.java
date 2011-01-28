@@ -97,14 +97,14 @@ public interface LinkedRuleBuilder {
      *
      * @param className Java class name of the object to be created
      */
-    void objectCreate(String className);
+    LinkedAttributeOverrideBuilder objectCreate(String className);
 
     /**
      * Construct an object with the specified class.
      *
      * @param clazz Java class of the object to be created.
      */
-    void objectCreate(Class<?> clazz);
+    LinkedAttributeOverrideBuilder objectCreate(Class<?> clazz);
 
     /**
      * Saves a parameter for use by a surrounding {@link #callMethod(String)}.
