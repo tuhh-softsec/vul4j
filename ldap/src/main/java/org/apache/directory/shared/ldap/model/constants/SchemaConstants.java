@@ -106,11 +106,11 @@ public final class SchemaConstants
     public final static String DC_OBJECT_OC_OID                     = "1.3.6.1.4.1.1466.344";
 
     // Apache Meta Schema
-    // MetaTopObject
+    // MetaTop
     public final static String META_TOP_OC                          = "metaTop";
     public final static String META_TOP_OC_OID                      = "1.3.6.1.4.1.18060.0.4.0.3.1";
 
-    // MetaTopObject
+    // MetaObjectClass
     public final static String META_OBJECT_CLASS_OC                 = "metaObjectClass";
     public final static String META_OBJECT_CLASS_OC_OID             = "1.3.6.1.4.1.18060.0.4.0.3.2";
 
