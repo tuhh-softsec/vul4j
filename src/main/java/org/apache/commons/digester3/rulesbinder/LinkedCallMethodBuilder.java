@@ -20,7 +20,7 @@ package org.apache.commons.digester3.rulesbinder;
 /**
  * Builder chained when invoking {@link LinkedRuleBuilder#callMethod(String)}.
  */
-public interface LinkedCallMethodBuilder extends LinkedRuleBuilder {
+public interface LinkedCallMethodBuilder extends BackToLinkedRuleBuilder {
 
     /**
      * Sets the location of the target object.
