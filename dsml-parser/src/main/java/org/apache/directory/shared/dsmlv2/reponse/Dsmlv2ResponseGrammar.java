@@ -39,36 +39,41 @@ import org.apache.directory.shared.dsmlv2.ParserUtils;
 import org.apache.directory.shared.dsmlv2.Tag;
 import org.apache.directory.shared.dsmlv2.reponse.ErrorResponse.ErrorResponseType;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
-import org.apache.directory.shared.ldap.model.exception.LdapURLEncodingException;
+import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.SearchResultDoneDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.SearchResultEntryDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.SearchResultReferenceDecorator;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
+import org.apache.directory.shared.ldap.model.exception.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.model.filter.LdapURL;
-import org.apache.directory.shared.ldap.model.message.*;
+import org.apache.directory.shared.ldap.model.message.AddResponse;
 import org.apache.directory.shared.ldap.model.message.AddResponseImpl;
 import org.apache.directory.shared.ldap.model.message.BindResponse;
 import org.apache.directory.shared.ldap.model.message.BindResponseImpl;
 import org.apache.directory.shared.ldap.model.message.CompareResponse;
 import org.apache.directory.shared.ldap.model.message.CompareResponseImpl;
+import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.DeleteResponse;
 import org.apache.directory.shared.ldap.model.message.DeleteResponseImpl;
 import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
 import org.apache.directory.shared.ldap.model.message.ExtendedResponseImpl;
 import org.apache.directory.shared.ldap.model.message.LdapResult;
+import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.model.message.ModifyDnResponse;
 import org.apache.directory.shared.ldap.model.message.ModifyDnResponseImpl;
 import org.apache.directory.shared.ldap.model.message.ModifyResponse;
 import org.apache.directory.shared.ldap.model.message.ModifyResponseImpl;
 import org.apache.directory.shared.ldap.model.message.ReferralImpl;
 import org.apache.directory.shared.ldap.model.message.Response;
+import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.model.message.ResultResponse;
-import org.apache.directory.shared.ldap.model.message.SearchResultDone;
 import org.apache.directory.shared.ldap.model.message.SearchResultDoneImpl;
-import org.apache.directory.shared.ldap.model.message.SearchResultEntry;
 import org.apache.directory.shared.ldap.model.message.SearchResultEntryImpl;
 import org.apache.directory.shared.ldap.model.message.SearchResultReference;
 import org.apache.directory.shared.ldap.model.message.SearchResultReferenceImpl;
-import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.util.Base64;
 import org.apache.directory.shared.util.Strings;
@@ -1289,7 +1294,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
      */
     private void createAndAddControlValue( Dsmlv2Container container, Message parent ) throws XmlPullParserException
     {
-        Control control = parent.getCurrentControl();
+        ControlDecorator control = (ControlDecorator)((MessageDecorator)parent).getCurrentControl();
 
         XmlPullParser xpp = container.getParser();
         try
@@ -1552,7 +1557,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            SearchResultEntry searchResultEntry = new SearchResultEntryImpl();
+            SearchResultEntryDecorator searchResultEntry = new SearchResultEntryDecorator( new SearchResultEntryImpl() );
 
             SearchResponse searchResponse = ( SearchResponse ) container.getBatchResponse().getCurrentResponse();
 
@@ -1599,7 +1604,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            SearchResultReference searchResultReference = new SearchResultReferenceImpl();
+            SearchResultReferenceDecorator searchResultReference = new SearchResultReferenceDecorator( new SearchResultReferenceImpl() );
 
             SearchResponse searchResponse = ( SearchResponse ) container.getBatchResponse().getCurrentResponse();
 
@@ -1627,7 +1632,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            SearchResultDone searchResultDone = new SearchResultDoneImpl();
+            SearchResultDoneDecorator searchResultDone = new SearchResultDoneDecorator( new SearchResultDoneImpl() );
 
             searchResultDone.getLdapResult();
 
@@ -1673,7 +1678,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
         {
             SearchResponse searchResponse = ( SearchResponse ) container.getBatchResponse().getCurrentResponse();
 
-            SearchResultEntry searchResultEntry = searchResponse.getCurrentSearchResultEntry();
+            SearchResultEntryDecorator searchResultEntry = (SearchResultEntryDecorator)searchResponse.getCurrentSearchResultEntry();
 
             XmlPullParser xpp = container.getParser();
 
@@ -1709,7 +1714,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
             SearchResponse searchResponse = ( SearchResponse ) container.getBatchResponse().getCurrentResponse();
-            SearchResultEntry searchResultEntry = searchResponse.getCurrentSearchResultEntry();
+            SearchResultEntryDecorator searchResultEntry = (SearchResultEntryDecorator)searchResponse.getCurrentSearchResultEntry();
 
             XmlPullParser xpp = container.getParser();
 

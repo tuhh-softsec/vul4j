@@ -22,6 +22,7 @@ package org.apache.directory.shared.dsmlv2.reponse;
 
 
 import org.apache.directory.shared.dsmlv2.ParserUtils;
+import org.apache.directory.shared.ldap.codec.decorators.SearchResultEntryDecorator;
 import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.model.entry.Value;
@@ -165,7 +166,7 @@ public class SearchResultEntryDsml extends AbstractResponseDsml
      */
     public void addAttributeType( String type ) throws LdapException
     {
-        ( ( SearchResultEntry ) instance ).addAttribute( type );
+        ( ( SearchResultEntryDecorator ) instance ).addAttribute( type );
     }
 
 
@@ -176,6 +177,6 @@ public class SearchResultEntryDsml extends AbstractResponseDsml
      */
     public void addAttributeValue( Object value )
     {
-        ( ( SearchResultEntry ) instance ).addAttributeValue( value );
+        ( ( SearchResultEntryDecorator ) instance ).addAttributeValue( value );
     }
 }

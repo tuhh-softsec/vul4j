@@ -45,7 +45,12 @@ import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
 import org.apache.directory.shared.ldap.codec.decorators.AbandonRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.AddRequestDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.BindRequestDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.CompareRequestDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.DeleteRequestDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.ExtendedRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.ModifyDnRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.ModifyRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
 import org.apache.directory.shared.ldap.codec.search.AndFilter;
@@ -65,17 +70,13 @@ import org.apache.directory.shared.ldap.model.filter.SearchScope;
 import org.apache.directory.shared.ldap.model.message.AbandonRequestImpl;
 import org.apache.directory.shared.ldap.model.message.AddRequestImpl;
 import org.apache.directory.shared.ldap.model.message.AliasDerefMode;
-import org.apache.directory.shared.ldap.model.message.BindRequest;
 import org.apache.directory.shared.ldap.model.message.BindRequestImpl;
 import org.apache.directory.shared.ldap.model.message.CompareRequest;
 import org.apache.directory.shared.ldap.model.message.CompareRequestImpl;
-import org.apache.directory.shared.ldap.model.message.DeleteRequest;
 import org.apache.directory.shared.ldap.model.message.DeleteRequestImpl;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequestImpl;
-import org.apache.directory.shared.ldap.model.message.ModifyDnRequest;
 import org.apache.directory.shared.ldap.model.message.ModifyDnRequestImpl;
-import org.apache.directory.shared.ldap.model.message.ModifyRequest;
 import org.apache.directory.shared.ldap.model.message.ModifyRequestImpl;
 import org.apache.directory.shared.ldap.model.message.SearchRequest;
 import org.apache.directory.shared.ldap.model.message.SearchRequestImpl;
@@ -1311,7 +1312,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            BindRequest authRequest = new BindRequestImpl();
+            BindRequestDecorator authRequest = new BindRequestDecorator( new BindRequestImpl() );
             container.getBatchRequest().addRequest( authRequest );
 
             authRequest.setSimple( true );
@@ -1363,7 +1364,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            CompareRequest compareRequest = new CompareRequestImpl();
+            CompareRequestDecorator compareRequest = new CompareRequestDecorator( new CompareRequestImpl() );
             container.getBatchRequest().addRequest( compareRequest );
 
             XmlPullParser xpp = container.getParser();
@@ -1479,7 +1480,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            DeleteRequest delRequest = new DeleteRequestImpl();
+            DeleteRequestDecorator delRequest = new DeleteRequestDecorator( new DeleteRequestImpl() );
             container.getBatchRequest().addRequest( delRequest );
 
             XmlPullParser xpp = container.getParser();
@@ -1529,7 +1530,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            ExtendedRequest extendedRequest = new ExtendedRequestImpl();
+            ExtendedRequestDecorator extendedRequest = new ExtendedRequestDecorator( new ExtendedRequestImpl() );
             container.getBatchRequest().addRequest( extendedRequest );
 
             XmlPullParser xpp = container.getParser();
@@ -1638,7 +1639,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            ModifyDnRequest modifyDNRequest = new ModifyDnRequestImpl();
+            ModifyDnRequestDecorator modifyDNRequest = new ModifyDnRequestDecorator( new ModifyDnRequestImpl() );
             container.getBatchRequest().addRequest( modifyDNRequest );
 
             XmlPullParser xpp = container.getParser();
@@ -1745,9 +1746,8 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            ModifyRequest modifyRequest = new ModifyRequestImpl();
-            ModifyRequestDecorator modifyRequestDecorator = new ModifyRequestDecorator( modifyRequest );
-            container.getBatchRequest().addRequest( modifyRequestDecorator );
+            ModifyRequestDecorator modifyRequest = new ModifyRequestDecorator( new ModifyRequestImpl() );
+            container.getBatchRequest().addRequest( modifyRequest );
 
             XmlPullParser xpp = container.getParser();
 
@@ -1888,9 +1888,8 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            SearchRequest searchRequest = new SearchRequestImpl();
-            SearchRequestDecorator searchRequestDecorator = new SearchRequestDecorator( searchRequest );
-            container.getBatchRequest().addRequest( searchRequestDecorator );
+            SearchRequestDecorator searchRequest = new SearchRequestDecorator( new SearchRequestImpl() );
+            container.getBatchRequest().addRequest( searchRequest );
 
             XmlPullParser xpp = container.getParser();
 
