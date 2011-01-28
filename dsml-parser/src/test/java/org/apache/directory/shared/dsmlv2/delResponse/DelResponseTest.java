@@ -23,11 +23,13 @@ package org.apache.directory.shared.dsmlv2.delResponse;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
@@ -112,15 +114,15 @@ public class DelResponseTest extends AbstractResponseTest
         }
 
         DeleteResponse delResponse = ( DeleteResponse ) parser.getBatchResponse().getCurrentResponse();
+        Map<String, Control> controls = delResponse.getControls();
 
         assertEquals( 1, delResponse.getControls().size() );
 
-        Control control = delResponse.getCurrentControl();
+        Control control = controls.get( "1.2.840.113556.1.4.643" );
 
+        assertNotNull( control );
         assertTrue( control.isCritical() );
-
         assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
-
         assertEquals( "Some text", Strings.utf8ToString((byte[]) control.getValue()) );
     }
 
@@ -147,9 +149,13 @@ public class DelResponseTest extends AbstractResponseTest
         }
 
         DeleteResponse delResponse = ( DeleteResponse ) parser.getBatchResponse().getCurrentResponse();
-        Control control = delResponse.getCurrentControl();
+        Map<String, Control> controls = delResponse.getControls();
 
         assertEquals( 1, delResponse.getControls().size() );
+
+        Control control = controls.get( "1.2.840.113556.1.4.643" );
+
+        assertNotNull( control );
         assertTrue( control.isCritical() );
         assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
         assertFalse( control.hasValue() );
@@ -177,15 +183,15 @@ public class DelResponseTest extends AbstractResponseTest
         }
 
         DeleteResponse delResponse = ( DeleteResponse ) parser.getBatchResponse().getCurrentResponse();
+        Map<String, Control> controls = delResponse.getControls();
 
         assertEquals( 2, delResponse.getControls().size() );
 
-        Control control = delResponse.getCurrentControl();
+        Control control = controls.get( "1.2.840.113556.1.4.789" );
 
+        assertNotNull( control );
         assertFalse( control.isCritical() );
-
         assertEquals( "1.2.840.113556.1.4.789", control.getOid() );
-
         assertEquals( "Some other text", Strings.utf8ToString((byte[]) control.getValue()) );
     }
 
@@ -212,15 +218,15 @@ public class DelResponseTest extends AbstractResponseTest
         }
 
         DeleteResponse delResponse = ( DeleteResponse ) parser.getBatchResponse().getCurrentResponse();
+        Map<String, Control> controls = delResponse.getControls();
 
         assertEquals( 3, delResponse.getControls().size() );
 
-        Control control = delResponse.getCurrentControl();
+        Control control = controls.get( "1.2.840.113556.1.4.456" );
 
+        assertNotNull( control );
         assertTrue( control.isCritical() );
-
         assertEquals( "1.2.840.113556.1.4.456", control.getOid() );
-
         assertFalse( control.hasValue() );
     }
 

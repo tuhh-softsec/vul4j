@@ -23,8 +23,11 @@ package org.apache.directory.shared.dsmlv2.delRequest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import java.util.Map;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
@@ -140,9 +143,13 @@ public class DelRequestTest extends AbstractTest
         }
 
         DeleteRequest delRequest = ( DeleteRequest ) parser.getBatchRequest().getCurrentRequest();
-        Control control = delRequest.getCurrentControl();
+        Map<String, Control> controls = delRequest.getControls();
 
         assertEquals( 1, delRequest.getControls().size() );
+
+        Control control = controls.get( "1.2.840.113556.1.4.643" );
+
+        assertNotNull( control );
         assertTrue( control.isCritical() );
         assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
         assertEquals( "Some text", Strings.utf8ToString((byte[]) control.getValue()) );
@@ -171,9 +178,13 @@ public class DelRequestTest extends AbstractTest
         }
 
         DeleteRequest delRequest = ( DeleteRequest ) parser.getBatchRequest().getCurrentRequest();
-        Control control = delRequest.getCurrentControl();
+        Map<String, Control> controls = delRequest.getControls();
 
         assertEquals( 1, delRequest.getControls().size() );
+
+        Control control = controls.get( "1.2.840.113556.1.4.643" );
+
+        assertNotNull( control );
         assertTrue( control.isCritical() );
         assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
         assertEquals( "DSMLv2.0 rocks!!", Strings.utf8ToString((byte[]) control.getValue()) );
@@ -202,9 +213,13 @@ public class DelRequestTest extends AbstractTest
         }
 
         DeleteRequest delRequest = ( DeleteRequest ) parser.getBatchRequest().getCurrentRequest();
-        Control control = delRequest.getCurrentControl();
+        Map<String, Control> controls = delRequest.getControls();
 
         assertEquals( 1, delRequest.getControls().size() );
+
+        Control control = controls.get( "1.2.840.113556.1.4.643" );
+
+        assertNotNull( control );
         assertTrue( control.isCritical() );
         assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
         assertFalse( control.hasValue() );
@@ -232,9 +247,13 @@ public class DelRequestTest extends AbstractTest
         }
 
         DeleteRequest delRequest = ( DeleteRequest ) parser.getBatchRequest().getCurrentRequest();
-        Control control = delRequest.getCurrentControl();
+        Map<String, Control> controls = delRequest.getControls();
 
         assertEquals( 2, delRequest.getControls().size() );
+
+        Control control = controls.get( "1.2.840.113556.1.4.789" );
+
+        assertNotNull( control );
         assertFalse( control.isCritical() );
         assertEquals( "1.2.840.113556.1.4.789", control.getOid() );
         assertEquals( "Some other text", Strings.utf8ToString((byte[]) control.getValue()) );
@@ -263,9 +282,13 @@ public class DelRequestTest extends AbstractTest
         }
 
         DeleteRequest delRequest = ( DeleteRequest ) parser.getBatchRequest().getCurrentRequest();
-        Control control = delRequest.getCurrentControl();
+        Map<String, Control> controls = delRequest.getControls();
 
         assertEquals( 3, delRequest.getControls().size() );
+
+        Control control = controls.get( "1.2.840.113556.1.4.456" );
+
+        assertNotNull( control );
         assertTrue( control.isCritical() );
         assertEquals( "1.2.840.113556.1.4.456", control.getOid() );
         assertFalse( control.hasValue() );
