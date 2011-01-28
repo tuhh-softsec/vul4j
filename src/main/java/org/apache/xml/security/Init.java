@@ -289,7 +289,6 @@ public class Init {
             
             if (tag.equals("ResourceResolvers")){
                XX_configure_reg_resourceresolver_start = System.currentTimeMillis();
-               ResourceResolver.init();
 
                Element[]resolverElem = XMLUtils.selectNodes(el.getFirstChild(),CONF_NS,
                   "Resolver");
