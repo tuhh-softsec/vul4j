@@ -39,7 +39,6 @@ import org.apache.directory.shared.ldap.model.message.DeleteResponse;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
 import org.apache.directory.shared.ldap.model.message.IntermediateResponse;
-import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.model.message.ModifyDnRequest;
 import org.apache.directory.shared.ldap.model.message.ModifyDnResponse;
 import org.apache.directory.shared.ldap.model.message.ModifyRequest;
@@ -326,34 +325,9 @@ public class LdapMessageContainer extends AbstractContainer
      * 
      * @param message The message to set.
      */
-    public void setMessage( Message message )
+    public void setMessage( MessageDecorator message )
     {
-        if ( message instanceof MessageDecorator )
-        {
-            messageDecorator = ( MessageDecorator ) message;
-        }
-        else
-        {
-            messageDecorator = MessageDecorator.getDecorator( message );
-        }
-    }
-
-
-    /**
-     * Set a Message Object decorator into the container. It will be completed by the
-     * ldapDecoder.
-     * 
-     * @param messageDecorator The message to set.
-     */
-    public void setMessageDecorator( MessageDecorator messageDecorator )
-    {
-        this.messageDecorator = messageDecorator;
-    }
-
-
-    public MessageDecorator getMessageDecorator()
-    {
-        return messageDecorator;
+        messageDecorator = message;
     }
 
 

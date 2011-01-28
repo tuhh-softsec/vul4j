@@ -64,22 +64,17 @@ import org.apache.directory.shared.ldap.model.message.AddResponse;
 import org.apache.directory.shared.ldap.model.message.BindRequest;
 import org.apache.directory.shared.ldap.model.message.BindResponse;
 import org.apache.directory.shared.ldap.model.message.CompareRequest;
-import org.apache.directory.shared.ldap.model.message.CompareResponse;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.DeleteRequestImpl;
-import org.apache.directory.shared.ldap.model.message.DeleteResponse;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
 import org.apache.directory.shared.ldap.model.message.IntermediateResponse;
 import org.apache.directory.shared.ldap.model.message.LdapResult;
 import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.model.message.ModifyDnRequest;
-import org.apache.directory.shared.ldap.model.message.ModifyDnResponse;
 import org.apache.directory.shared.ldap.model.message.ModifyRequest;
-import org.apache.directory.shared.ldap.model.message.ModifyResponse;
 import org.apache.directory.shared.ldap.model.message.Referral;
 import org.apache.directory.shared.ldap.model.message.SearchRequest;
-import org.apache.directory.shared.ldap.model.message.SearchResultDone;
 import org.apache.directory.shared.ldap.model.message.SearchResultEntry;
 import org.apache.directory.shared.ldap.model.message.SearchResultReference;
 import org.apache.directory.shared.ldap.model.name.Dn;
@@ -272,9 +267,9 @@ public class LdapEncoder
      *      Length(0x01) + 1 + Length(0x04) + Length(L1) + L1 + Length(0x04) +
      *      Length(L2) + L2 + Length(0x83) + Length(L3) + L3
      */
-    private int computeLdapResultLength( LdapResultDecorator ldapResultDecorator )
+    private int computeLdapResultLength( LdapResult ldapResult )
     {
-        LdapResult ldapResult = ldapResultDecorator.getLdapResult();
+        LdapResultDecorator ldapResultDecorator = (LdapResultDecorator)ldapResult;
         int ldapResultLength = 0;
 
         // The result code : always 3 bytes
@@ -516,8 +511,8 @@ public class LdapEncoder
     private int computeAddResponseLength( AddResponseDecorator addResponseDecorator )
     {
         AddResponse addResponse = addResponseDecorator.getAddResponse();
-        addResponseDecorator.setLdapResultDecorator( new LdapResultDecorator( addResponse.getLdapResult() ) );
-        int addResponseLength = computeLdapResultLength( addResponseDecorator.getLdapResultDecorator() );
+        addResponseDecorator.setLdapResult( new LdapResultDecorator( addResponse.getLdapResult() ) );
+        int addResponseLength = computeLdapResultLength( addResponseDecorator.getLdapResult() );
 
         addResponseDecorator.setAddResponseLength( addResponseLength );
 
@@ -611,8 +606,7 @@ public class LdapEncoder
     private int computeBindResponseLength( BindResponseDecorator bindResponseDecorator )
     {
         BindResponse bindResponse = bindResponseDecorator.getBindResponse();
-        bindResponseDecorator.setLdapResultDecorator( new LdapResultDecorator( bindResponse.getLdapResult() ) );
-        int ldapResultLength = computeLdapResultLength( bindResponseDecorator.getLdapResultDecorator() );
+        int ldapResultLength = computeLdapResultLength( bindResponseDecorator.getLdapResult() );
 
         int bindResponseLength = ldapResultLength;
 
@@ -699,9 +693,7 @@ public class LdapEncoder
      */
     private int computeCompareResponseLength( CompareResponseDecorator compareResponseDecorator )
     {
-        CompareResponse compareResponse = compareResponseDecorator.getCompareResponse();
-        compareResponseDecorator.setLdapResultDecorator( new LdapResultDecorator( compareResponse.getLdapResult() ) );
-        int compareResponseLength = computeLdapResultLength( compareResponseDecorator.getLdapResultDecorator() );
+        int compareResponseLength = computeLdapResultLength( compareResponseDecorator.getLdapResult() );
 
         compareResponseDecorator.setCompareResponseLength( compareResponseLength );
 
@@ -740,9 +732,7 @@ public class LdapEncoder
      */
     private int computeDeleteResponseLength( DeleteResponseDecorator deleteResponseDecorator )
     {
-        DeleteResponse deleteResponse = deleteResponseDecorator.getDeleteResponse();
-        deleteResponseDecorator.setLdapResultDecorator( new LdapResultDecorator( deleteResponse.getLdapResult() ) );
-        int deleteResponseLength = computeLdapResultLength( deleteResponseDecorator.getLdapResultDecorator() );
+        int deleteResponseLength = computeLdapResultLength( deleteResponseDecorator.getLdapResult() );
 
         deleteResponseDecorator.setDeleteResponseLength( deleteResponseLength );
 
@@ -808,8 +798,7 @@ public class LdapEncoder
     private int computeExtendedResponseLength( ExtendedResponseDecorator extendedResponseDecorator )
     {
         ExtendedResponse extendedResponse = extendedResponseDecorator.getExtendedResponse();
-        extendedResponseDecorator.setLdapResultDecorator( new LdapResultDecorator( extendedResponse.getLdapResult() ) );
-        int ldapResultLength = computeLdapResultLength( extendedResponseDecorator.getLdapResultDecorator() );
+        int ldapResultLength = computeLdapResultLength( extendedResponseDecorator.getLdapResult() );
 
         int extendedResponseLength = ldapResultLength;
 
@@ -1003,9 +992,7 @@ public class LdapEncoder
      */
     private int computeModifyResponseLength( ModifyResponseDecorator modifyResponseDecorator )
     {
-        ModifyResponse modifyResponse = modifyResponseDecorator.getModifyResponse();
-        modifyResponseDecorator.setLdapResultDecorator( new LdapResultDecorator( modifyResponse.getLdapResult() ) );
-        int modifyResponseLength = computeLdapResultLength( modifyResponseDecorator.getLdapResultDecorator() );
+        int modifyResponseLength = computeLdapResultLength( modifyResponseDecorator.getLdapResult() );
 
         modifyResponseDecorator.setModifyResponseLength( modifyResponseLength );
 
@@ -1071,9 +1058,7 @@ public class LdapEncoder
      */
     private int computeModifyDnResponseLength( ModifyDnResponseDecorator modifyDnResponseDecorator )
     {
-        ModifyDnResponse modifyDnResponse = modifyDnResponseDecorator.getModifyDnResponse();
-        modifyDnResponseDecorator.setLdapResultDecorator( new LdapResultDecorator( modifyDnResponse.getLdapResult() ) );
-        int modifyDnResponseLength = computeLdapResultLength( modifyDnResponseDecorator.getLdapResultDecorator() );
+        int modifyDnResponseLength = computeLdapResultLength( modifyDnResponseDecorator.getLdapResult() );
 
         modifyDnResponseDecorator.setModifyDnResponseLength( modifyDnResponseLength );
 
@@ -1206,9 +1191,7 @@ public class LdapEncoder
      */
     private int computeSearchResultDoneLength( SearchResultDoneDecorator searchResultDoneDecorator )
     {
-        SearchResultDone searchResultDone = searchResultDoneDecorator.getSearchResultDone();
-        searchResultDoneDecorator.setLdapResultDecorator( new LdapResultDecorator( searchResultDone.getLdapResult() ) );
-        int searchResultDoneLength = computeLdapResultLength( searchResultDoneDecorator.getLdapResultDecorator() );
+        int searchResultDoneLength = computeLdapResultLength( searchResultDoneDecorator.getLdapResult() );
 
         searchResultDoneDecorator.setSearchResultDoneLength( searchResultDoneLength );
 
@@ -1530,7 +1513,7 @@ public class LdapEncoder
             buffer.put( TLV.getBytes( addResponseDecorator.getAddResponseLength() ) );
 
             // The LdapResult
-            encodeLdapResult( buffer, addResponseDecorator.getLdapResultDecorator() );
+            encodeLdapResult( buffer, (LdapResultDecorator)addResponseDecorator.getLdapResult() );
         }
         catch ( BufferOverflowException boe )
         {
@@ -1660,7 +1643,7 @@ public class LdapEncoder
             bb.put( TLV.getBytes( bindResponseDecorator.getBindResponseLength() ) );
 
             // The LdapResult
-            encodeLdapResult( bb,bindResponseDecorator.getLdapResultDecorator() );
+            encodeLdapResult( bb, (LdapResultDecorator)bindResponseDecorator.getLdapResult() );
 
             // The serverSaslCredential, if any
             byte[] serverSaslCreds = bindResponse.getServerSaslCreds();
@@ -1740,7 +1723,7 @@ public class LdapEncoder
             buffer.put( TLV.getBytes( compareResponseDecorator.getCompareResponseLength() ) );
 
             // The LdapResult
-            encodeLdapResult( buffer, compareResponseDecorator.getLdapResultDecorator() );
+            encodeLdapResult( buffer, (LdapResultDecorator)compareResponseDecorator.getLdapResult() );
         }
         catch ( BufferOverflowException boe )
         {
@@ -1789,7 +1772,7 @@ public class LdapEncoder
             buffer.put( TLV.getBytes( deleteResponseDecorator.getDeleteResponseLength() ) );
 
             // The LdapResult
-            encodeLdapResult( buffer, deleteResponseDecorator.getLdapResultDecorator() );
+            encodeLdapResult( buffer, (LdapResultDecorator)deleteResponseDecorator.getLdapResult() );
         }
         catch ( BufferOverflowException boe )
         {
@@ -1876,7 +1859,7 @@ public class LdapEncoder
             buffer.put( TLV.getBytes( extendedResponseDecorator.getExtendedResponseLength() ) );
 
             // The LdapResult
-            encodeLdapResult( buffer, extendedResponseDecorator.getLdapResultDecorator() );
+            encodeLdapResult( buffer, (LdapResultDecorator)extendedResponseDecorator.getLdapResult() );
 
             // The ID, if any
             byte[] idBytes = extendedResponseDecorator.getResponseNameBytes();
@@ -2087,7 +2070,7 @@ public class LdapEncoder
             buffer.put( TLV.getBytes( modifyDecorator.getModifyResponseLength() ) );
 
             // The LdapResult
-            encodeLdapResult( buffer, modifyDecorator.getLdapResultDecorator() );
+            encodeLdapResult( buffer, (LdapResultDecorator)modifyDecorator.getLdapResult() );
         }
         catch ( BufferOverflowException boe )
         {
@@ -2169,7 +2152,7 @@ public class LdapEncoder
             buffer.put( TLV.getBytes( modifyDnDecorator.getModifyDnResponseLength() ) );
 
             // The LdapResult
-            encodeLdapResult( buffer, modifyDnDecorator.getLdapResultDecorator() );
+            encodeLdapResult( buffer, (LdapResultDecorator)modifyDnDecorator.getLdapResult() );
         }
         catch ( BufferOverflowException boe )
         {
@@ -2266,7 +2249,7 @@ public class LdapEncoder
             buffer.put( TLV.getBytes( searchResultDoneDecorator.getSearchResultDoneLength() ) );
 
             // The LdapResult
-            encodeLdapResult( buffer, searchResultDoneDecorator.getLdapResultDecorator() );
+            encodeLdapResult( buffer, (LdapResultDecorator)searchResultDoneDecorator.getLdapResult() );
         }
         catch ( BufferOverflowException boe )
         {

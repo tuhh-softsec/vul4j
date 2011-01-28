@@ -21,7 +21,6 @@ package org.apache.directory.shared.ldap.codec.decorators;
 
 
 import org.apache.directory.shared.ldap.model.message.LdapResult;
-import org.apache.directory.shared.ldap.model.message.LdapResultImpl;
 import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.model.message.ResultResponse;
 
@@ -34,7 +33,7 @@ import org.apache.directory.shared.ldap.model.message.ResultResponse;
 public abstract class ResponseDecorator extends MessageDecorator implements ResultResponse
 {
     /** The LdapResult decorator */
-    private LdapResultDecorator ldapResultDecorator = new LdapResultDecorator( new LdapResultImpl() );
+    private LdapResultDecorator ldapResultDecorator;
 
 
     /**
@@ -45,6 +44,8 @@ public abstract class ResponseDecorator extends MessageDecorator implements Resu
     public ResponseDecorator( Message decoratedMessage )
     {
         super( decoratedMessage );
+        
+        ldapResultDecorator = new LdapResultDecorator( ((ResultResponse)decoratedMessage).getLdapResult() );
     }
 
 
@@ -58,18 +59,9 @@ public abstract class ResponseDecorator extends MessageDecorator implements Resu
 
 
     /**
-     * @return the ldapResultDecorator as a decorator to reduce casting.
-     */
-    public LdapResultDecorator getLdapResultDecorator()
-    {
-        return ldapResultDecorator;
-    }
-
-
-    /**
      * @param ldapResultDecorator the ldapResultDecorator to set
      */
-    public void setLdapResultDecorator( LdapResultDecorator ldapResultDecorator )
+    public void setLdapResult( LdapResultDecorator ldapResultDecorator )
     {
         this.ldapResultDecorator = ldapResultDecorator;
     }

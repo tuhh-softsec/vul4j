@@ -71,39 +71,49 @@ import org.apache.directory.shared.ldap.codec.actions.StoreReferenceAction;
 import org.apache.directory.shared.ldap.codec.actions.StoreTypeMatchingRuleAction;
 import org.apache.directory.shared.ldap.codec.actions.ValueAction;
 import org.apache.directory.shared.ldap.codec.controls.ControlFactory;
+import org.apache.directory.shared.ldap.codec.decorators.AbandonRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.AddRequestDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.AddResponseDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.BindRequestDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.BindResponseDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.CompareRequestDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.CompareResponseDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.DeleteRequestDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.DeleteResponseDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.ExtendedRequestDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.ExtendedResponseDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.IntermediateResponseDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.ModifyDnRequestDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.ModifyDnResponseDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.ModifyRequestDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.ModifyResponseDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.SearchResultDoneDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.SearchResultEntryDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.SearchResultReferenceDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.UnbindRequestDecorator;
 import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.filter.SearchScope;
-import org.apache.directory.shared.ldap.model.message.AbandonRequest;
 import org.apache.directory.shared.ldap.model.message.AbandonRequestImpl;
 import org.apache.directory.shared.ldap.model.message.AddRequest;
 import org.apache.directory.shared.ldap.model.message.AddRequestImpl;
-import org.apache.directory.shared.ldap.model.message.AddResponse;
 import org.apache.directory.shared.ldap.model.message.AddResponseImpl;
 import org.apache.directory.shared.ldap.model.message.AliasDerefMode;
 import org.apache.directory.shared.ldap.model.message.BindRequest;
 import org.apache.directory.shared.ldap.model.message.BindRequestImpl;
-import org.apache.directory.shared.ldap.model.message.BindResponse;
 import org.apache.directory.shared.ldap.model.message.BindResponseImpl;
 import org.apache.directory.shared.ldap.model.message.CompareRequest;
 import org.apache.directory.shared.ldap.model.message.CompareRequestImpl;
-import org.apache.directory.shared.ldap.model.message.CompareResponse;
 import org.apache.directory.shared.ldap.model.message.CompareResponseImpl;
 import org.apache.directory.shared.ldap.model.message.Control;
-import org.apache.directory.shared.ldap.model.message.DeleteRequest;
 import org.apache.directory.shared.ldap.model.message.DeleteRequestImpl;
-import org.apache.directory.shared.ldap.model.message.DeleteResponse;
 import org.apache.directory.shared.ldap.model.message.DeleteResponseImpl;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequestImpl;
-import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
 import org.apache.directory.shared.ldap.model.message.ExtendedResponseImpl;
 import org.apache.directory.shared.ldap.model.message.IntermediateResponse;
 import org.apache.directory.shared.ldap.model.message.IntermediateResponseImpl;
@@ -111,11 +121,9 @@ import org.apache.directory.shared.ldap.model.message.LdapResult;
 import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.model.message.ModifyDnRequest;
 import org.apache.directory.shared.ldap.model.message.ModifyDnRequestImpl;
-import org.apache.directory.shared.ldap.model.message.ModifyDnResponse;
 import org.apache.directory.shared.ldap.model.message.ModifyDnResponseImpl;
 import org.apache.directory.shared.ldap.model.message.ModifyRequest;
 import org.apache.directory.shared.ldap.model.message.ModifyRequestImpl;
-import org.apache.directory.shared.ldap.model.message.ModifyResponse;
 import org.apache.directory.shared.ldap.model.message.ModifyResponseImpl;
 import org.apache.directory.shared.ldap.model.message.Referral;
 import org.apache.directory.shared.ldap.model.message.ReferralImpl;
@@ -123,13 +131,10 @@ import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.model.message.ResultResponse;
 import org.apache.directory.shared.ldap.model.message.SearchRequest;
 import org.apache.directory.shared.ldap.model.message.SearchRequestImpl;
-import org.apache.directory.shared.ldap.model.message.SearchResultDone;
 import org.apache.directory.shared.ldap.model.message.SearchResultDoneImpl;
 import org.apache.directory.shared.ldap.model.message.SearchResultEntry;
 import org.apache.directory.shared.ldap.model.message.SearchResultEntryImpl;
-import org.apache.directory.shared.ldap.model.message.SearchResultReference;
 import org.apache.directory.shared.ldap.model.message.SearchResultReferenceImpl;
-import org.apache.directory.shared.ldap.model.message.UnbindRequest;
 import org.apache.directory.shared.ldap.model.message.UnbindRequestImpl;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.name.Rdn;
@@ -307,7 +312,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Create the UnbindRequest LdapMessage instance and store it in the container
-                    UnbindRequest unbindRequest = new UnbindRequestImpl( ldapMessageContainer.getMessageId() );
+                    UnbindRequestDecorator unbindRequest = new UnbindRequestDecorator( new UnbindRequestImpl( ldapMessageContainer.getMessageId() ) );
                     ldapMessageContainer.setMessage( unbindRequest );
 
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
@@ -354,7 +359,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Create the DeleteRequest LdapMessage instance and store it in the container
-                    DeleteRequest delRequest = new DeleteRequestImpl( ldapMessageContainer.getMessageId() );
+                    DeleteRequestDecorator delRequest = new DeleteRequestDecorator( new DeleteRequestImpl( ldapMessageContainer.getMessageId() ) );
                     ldapMessageContainer.setMessage( delRequest );
 
                     // And store the Dn into it
@@ -430,7 +435,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Create the AbandonRequest LdapMessage instance and store it in the container
-                    AbandonRequest abandonRequest = new AbandonRequestImpl( ldapMessageContainer.getMessageId() );
+                    AbandonRequestDecorator abandonRequest = new AbandonRequestDecorator( new AbandonRequestImpl( ldapMessageContainer.getMessageId() ) );
                     ldapMessageContainer.setMessage( abandonRequest );
 
                     // The current TLV should be a integer
@@ -503,7 +508,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Create the BindRequest LdapMessage instance and store it in the container
-                    BindRequest bindRequest = new BindRequestImpl( ldapMessageContainer.getMessageId() );
+                    BindRequestDecorator bindRequest = new BindRequestDecorator( new BindRequestImpl( ldapMessageContainer.getMessageId() ) );
                     ldapMessageContainer.setMessage( bindRequest );
 
                     // We will check that the request is not null
@@ -842,7 +847,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Now, we can allocate the BindResponse Object
-                    BindResponse bindResponse = new BindResponseImpl( ldapMessageContainer.getMessageId() );
+                    BindResponseDecorator bindResponse = new BindResponseDecorator( new BindResponseImpl( ldapMessageContainer.getMessageId() ) );
                     ldapMessageContainer.setMessage( bindResponse );
                 }
             } );
@@ -1107,8 +1112,8 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Now, we can allocate the SearchResultEntry Object
-                    SearchResultEntry searchResultEntry = new SearchResultEntryImpl( ldapMessageContainer
-                        .getMessageId() );
+                    SearchResultEntryDecorator searchResultEntry = new SearchResultEntryDecorator( new SearchResultEntryImpl( ldapMessageContainer
+                        .getMessageId() ) );
                     ldapMessageContainer.setMessage( searchResultEntry );
                 }
             } );
@@ -1385,7 +1390,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Now, we can allocate the SearchResultDone Object
-                    SearchResultDone searchResultDone = new SearchResultDoneImpl( ldapMessageContainer.getMessageId() );
+                    SearchResultDoneDecorator searchResultDone = new SearchResultDoneDecorator( new SearchResultDoneImpl( ldapMessageContainer.getMessageId() ) );
                     ldapMessageContainer.setMessage( searchResultDone );
 
                     LOG.debug( "Search Result Done found" );
@@ -1797,7 +1802,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Now, we can allocate the ModifyResponse Object
-                    ModifyResponse modifyResponse = new ModifyResponseImpl( ldapMessageContainer.getMessageId() );
+                    ModifyResponseDecorator modifyResponse = new ModifyResponseDecorator( new ModifyResponseImpl( ldapMessageContainer.getMessageId() ) );
                     ldapMessageContainer.setMessage( modifyResponse );
 
                     LOG.debug( "Modify response" );
@@ -1837,7 +1842,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
 
                     // Now, we can allocate the AddRequest Object
                     int messageId = ldapMessageContainer.getMessageId();
-                    AddRequest addRequest = new AddRequestImpl( messageId );
+                    AddRequestDecorator addRequest = new AddRequestDecorator( new AddRequestImpl( messageId ) );
                     ldapMessageContainer.setMessage( addRequest );
 
                     // We will check that the request is not null
@@ -2065,7 +2070,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Now, we can allocate the AddResponse Object
-                    AddResponse addResponse = new AddResponseImpl( ldapMessageContainer.getMessageId() );
+                    AddResponseDecorator addResponse = new AddResponseDecorator( new AddResponseImpl( ldapMessageContainer.getMessageId() ) );
                     ldapMessageContainer.setMessage( addResponse );
 
                     // We will check that the request is not null
@@ -2114,7 +2119,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Now, we can allocate the DelResponse Object
-                    DeleteResponse delResponse = new DeleteResponseImpl( ldapMessageContainer.getMessageId() );
+                    DeleteResponseDecorator delResponse = new DeleteResponseDecorator( new DeleteResponseImpl( ldapMessageContainer.getMessageId() ) );
                     ldapMessageContainer.setMessage( delResponse );
 
                     LOG.debug( "Del response " );
@@ -2152,8 +2157,8 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Now, we can allocate the ModifyDNRequest Object
-                    ModifyDnRequest modifyDnRequest = new ModifyDnRequestImpl( ldapMessageContainer
-                        .getMessageId() );
+                    ModifyDnRequestDecorator modifyDnRequest = new ModifyDnRequestDecorator( new ModifyDnRequestImpl( ldapMessageContainer
+                        .getMessageId() ) );
                     ldapMessageContainer.setMessage( modifyDnRequest );
 
                     LOG.debug( "ModifyDn request" );
@@ -2459,7 +2464,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Now, we can allocate the ModifyDnResponse Object
-                    ModifyDnResponse modifyDnResponse = new ModifyDnResponseImpl( ldapMessageContainer.getMessageId() );
+                    ModifyDnResponseDecorator modifyDnResponse = new ModifyDnResponseDecorator( new ModifyDnResponseImpl( ldapMessageContainer.getMessageId() ) );
                     ldapMessageContainer.setMessage( modifyDnResponse );
 
                     LOG.debug( "Modify Dn response " );
@@ -2501,7 +2506,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Now, we can allocate the CompareRequest Object
-                    CompareRequest compareRequest = new CompareRequestImpl( ldapMessageContainer.getMessageId() );
+                    CompareRequestDecorator compareRequest = new CompareRequestDecorator( new CompareRequestImpl( ldapMessageContainer.getMessageId() ) );
                     ldapMessageContainer.setMessage( compareRequest );
 
                     LOG.debug( "Compare Request" );
@@ -2715,7 +2720,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Now, we can allocate the CompareResponse Object
-                    CompareResponse compareResponse = new CompareResponseImpl( ldapMessageContainer.getMessageId() );
+                    CompareResponseDecorator compareResponse = new CompareResponseDecorator( new CompareResponseImpl( ldapMessageContainer.getMessageId() ) );
                     ldapMessageContainer.setMessage( compareResponse );
 
                     // We will check that the request is not null
@@ -2763,8 +2768,8 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Now, we can allocate the SearchResultReference Object
-                    SearchResultReference searchResultReference = new SearchResultReferenceImpl( ldapMessageContainer
-                        .getMessageId() );
+                    SearchResultReferenceDecorator searchResultReference = new SearchResultReferenceDecorator( new SearchResultReferenceImpl( ldapMessageContainer
+                        .getMessageId() ) );
                     ldapMessageContainer.setMessage( searchResultReference );
 
                     LOG.debug( "SearchResultReference response " );
@@ -2821,8 +2826,8 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Now, we can allocate the ExtendedRequest Object
-                    ExtendedRequest extendedRequest = new ExtendedRequestImpl( ldapMessageContainer
-                        .getMessageId() );
+                    ExtendedRequestDecorator extendedRequest = new ExtendedRequestDecorator( new ExtendedRequestImpl( ldapMessageContainer
+                        .getMessageId() ) );
                     ldapMessageContainer.setMessage( extendedRequest );
 
                     LOG.debug( "Extended request" );
@@ -2987,7 +2992,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Now, we can allocate the ExtendedResponse Object
-                    ExtendedResponse extendedResponse = new ExtendedResponseImpl( ldapMessageContainer.getMessageId() );
+                    ExtendedResponseDecorator extendedResponse = new ExtendedResponseDecorator( new ExtendedResponseImpl( ldapMessageContainer.getMessageId() ) );
                     ldapMessageContainer.setMessage( extendedResponse );
 
                     LOG.debug( "Extended Response" );
@@ -3197,8 +3202,8 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
 
                     // Now, we can allocate the IntermediateResponse Object
-                    IntermediateResponse intermediateResponse = new IntermediateResponseImpl( ldapMessageContainer
-                        .getMessageId() );
+                    IntermediateResponseDecorator intermediateResponse = new IntermediateResponseDecorator( new IntermediateResponseImpl( ldapMessageContainer
+                        .getMessageId() ) );
                     ldapMessageContainer.setMessage( intermediateResponse );
 
                     LOG.debug( "Intermediate Response" );
@@ -3604,12 +3609,10 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     // Now, we can allocate the SearchRequest Object
                     TLV tlv = ldapMessageContainer.getCurrentTLV();
 
-                    SearchRequest searchRequest = new SearchRequestImpl( ldapMessageContainer.getMessageId() );
-                    SearchRequestDecorator searchRequestDecorator = new SearchRequestDecorator( searchRequest );
+                    SearchRequestDecorator searchRequest = new SearchRequestDecorator( new SearchRequestImpl( ldapMessageContainer.getMessageId() ) );
 
-                    searchRequestDecorator.setTlvId( tlv.getId());
+                    searchRequest.setTlvId( tlv.getId());
                     ldapMessageContainer.setMessage( searchRequest );
-                    ldapMessageContainer.setMessageDecorator( searchRequestDecorator );
 
                     LOG.debug( "Search Request" );
                 }
