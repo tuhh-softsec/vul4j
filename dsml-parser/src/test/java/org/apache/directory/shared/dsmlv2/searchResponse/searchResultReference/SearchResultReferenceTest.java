@@ -23,10 +23,12 @@ package org.apache.directory.shared.dsmlv2.searchResponse.searchResultReference;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
@@ -35,8 +37,8 @@ import org.apache.directory.shared.dsmlv2.Dsmlv2ResponseParser;
 import org.apache.directory.shared.dsmlv2.reponse.SearchResponse;
 import org.apache.directory.shared.ldap.model.exception.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.model.filter.LdapURL;
-import org.apache.directory.shared.ldap.model.message.SearchResultReference;
 import org.apache.directory.shared.ldap.model.message.Control;
+import org.apache.directory.shared.ldap.model.message.SearchResultReference;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -74,15 +76,15 @@ public class SearchResultReferenceTest extends AbstractResponseTest
 
         SearchResultReference searchResultReference = ( ( SearchResponse ) parser.getBatchResponse()
             .getCurrentResponse() ).getCurrentSearchResultReference();
+        Map<String, Control> controls = searchResultReference.getControls();
 
         assertEquals( 1, searchResultReference.getControls().size() );
 
-        Control control = searchResultReference.getCurrentControl();
+        Control control = controls.get( "1.2.840.113556.1.4.643" );
 
+        assertNotNull( control );
         assertTrue( control.isCritical() );
-
         assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
-
         assertEquals( "Some text", Strings.utf8ToString((byte[]) control.getValue()) );
     }
 
@@ -110,15 +112,15 @@ public class SearchResultReferenceTest extends AbstractResponseTest
 
         SearchResultReference searchResultReference = ( ( SearchResponse ) parser.getBatchResponse()
             .getCurrentResponse() ).getCurrentSearchResultReference();
+        Map<String, Control> controls = searchResultReference.getControls();
 
         assertEquals( 1, searchResultReference.getControls().size() );
 
-        Control control = searchResultReference.getCurrentControl();
+        Control control = controls.get( "1.2.840.113556.1.4.643" );
 
+        assertNotNull( control );
         assertTrue( control.isCritical() );
-
         assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
-
         assertFalse( control.hasValue() );
     }
 
@@ -146,15 +148,14 @@ public class SearchResultReferenceTest extends AbstractResponseTest
 
         SearchResultReference searchResultReference = ( ( SearchResponse ) parser.getBatchResponse()
             .getCurrentResponse() ).getCurrentSearchResultReference();
+        Map<String, Control> controls = searchResultReference.getControls();
 
         assertEquals( 2, searchResultReference.getControls().size() );
 
-        Control control = searchResultReference.getCurrentControl();
+        Control control = controls.get( "1.2.840.113556.1.4.789" );
 
-        assertFalse( control.isCritical() );
-
+        assertNotNull( control );
         assertEquals( "1.2.840.113556.1.4.789", control.getOid() );
-
         assertEquals( "Some other text", Strings.utf8ToString((byte[]) control.getValue()) );
     }
 
@@ -182,15 +183,15 @@ public class SearchResultReferenceTest extends AbstractResponseTest
 
         SearchResultReference searchResultReference = ( ( SearchResponse ) parser.getBatchResponse()
             .getCurrentResponse() ).getCurrentSearchResultReference();
+        Map<String, Control> controls = searchResultReference.getControls();
 
         assertEquals( 3, searchResultReference.getControls().size() );
 
-        Control control = searchResultReference.getCurrentControl();
+        Control control = controls.get( "1.2.840.113556.1.4.456" );
 
+        assertNotNull( control );
         assertTrue( control.isCritical() );
-
         assertEquals( "1.2.840.113556.1.4.456", control.getOid() );
-
         assertFalse( control.hasValue() );
     }
 

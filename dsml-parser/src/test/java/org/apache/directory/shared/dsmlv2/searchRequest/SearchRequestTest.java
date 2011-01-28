@@ -23,11 +23,13 @@ package org.apache.directory.shared.dsmlv2.searchRequest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.naming.NamingException;
 
@@ -159,9 +161,13 @@ public class SearchRequestTest extends AbstractTest
         }
 
         SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
-        Control control = searchRequest.getCurrentControl();
+        Map<String, Control> controls = searchRequest.getControls();
 
         assertEquals( 1, searchRequest.getControls().size() );
+
+        Control control = controls.get( "1.2.840.113556.1.4.643" );
+
+        assertNotNull( control );
         assertTrue( control.isCritical() );
         assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
         assertEquals( "Some text", Strings.utf8ToString((byte[]) control.getValue()) );
@@ -190,9 +196,13 @@ public class SearchRequestTest extends AbstractTest
         }
 
         SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
-        Control control = searchRequest.getCurrentControl();
+        Map<String, Control> controls = searchRequest.getControls();
 
         assertEquals( 1, searchRequest.getControls().size() );
+
+        Control control = controls.get( "1.2.840.113556.1.4.643" );
+
+        assertNotNull( control );
         assertTrue( control.isCritical() );
         assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
         assertEquals( "DSMLv2.0 rocks!!", Strings.utf8ToString((byte[]) control.getValue()) );
@@ -221,9 +231,13 @@ public class SearchRequestTest extends AbstractTest
         }
 
         SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
-        Control control = searchRequest.getCurrentControl();
+        Map<String, Control> controls = searchRequest.getControls();
 
         assertEquals( 1, searchRequest.getControls().size() );
+
+        Control control = controls.get( "1.2.840.113556.1.4.643" );
+
+        assertNotNull( control );
         assertTrue( control.isCritical() );
         assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
         assertFalse( control.hasValue() );
@@ -252,9 +266,13 @@ public class SearchRequestTest extends AbstractTest
         }
 
         SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
-        Control control = searchRequest.getCurrentControl();
+        Map<String, Control> controls = searchRequest.getControls();
 
         assertEquals( 2, searchRequest.getControls().size() );
+
+        Control control = controls.get( "1.2.840.113556.1.4.789" );
+
+        assertNotNull( control );
         assertFalse( control.isCritical() );
         assertEquals( "1.2.840.113556.1.4.789", control.getOid() );
         assertEquals( "Some other text", Strings.utf8ToString((byte[]) control.getValue()) );
@@ -283,9 +301,13 @@ public class SearchRequestTest extends AbstractTest
         }
 
         SearchRequest searchRequest = ( SearchRequest ) parser.getBatchRequest().getCurrentRequest();
-        Control control = searchRequest.getCurrentControl();
+        Map<String, Control> controls = searchRequest.getControls();
 
         assertEquals( 3, searchRequest.getControls().size() );
+
+        Control control = controls.get( "1.2.840.113556.1.4.456" );
+
+        assertNotNull( control );
         assertTrue( control.isCritical() );
         assertEquals( "1.2.840.113556.1.4.456", control.getOid() );
         assertFalse( control.hasValue() );
@@ -992,7 +1014,7 @@ public class SearchRequestTest extends AbstractTest
 
         assertTrue( filter instanceof ApproximateNode );
 
-        ApproximateNode approxMatchFilter = ( ApproximateNode ) filter;
+        ApproximateNode<?> approxMatchFilter = ( ApproximateNode<?> ) filter;
 
         assertEquals( "sn", approxMatchFilter.getAttribute() );
 
@@ -1027,7 +1049,7 @@ public class SearchRequestTest extends AbstractTest
 
         assertTrue( filter instanceof ApproximateNode );
 
-        ApproximateNode approxMatchFilter = ( ApproximateNode ) filter;
+        ApproximateNode<?> approxMatchFilter = ( ApproximateNode<?> ) filter;
 
         assertEquals( "sn", approxMatchFilter.getAttribute() );
 
@@ -1062,7 +1084,7 @@ public class SearchRequestTest extends AbstractTest
 
         assertTrue( filter instanceof ApproximateNode );
 
-        ApproximateNode approxMatchFilter = ( ApproximateNode ) filter;
+        ApproximateNode<?> approxMatchFilter = ( ApproximateNode<?> ) filter;
 
         assertEquals( "sn", approxMatchFilter.getAttribute() );
 
@@ -1127,7 +1149,7 @@ public class SearchRequestTest extends AbstractTest
 
         assertTrue( filter instanceof GreaterEqNode );
 
-        GreaterEqNode greaterEqFilter = ( GreaterEqNode ) filter;
+        GreaterEqNode<?> greaterEqFilter = ( GreaterEqNode<?> ) filter;
 
         assertEquals( "sn", greaterEqFilter.getAttribute() );
 
@@ -1162,7 +1184,7 @@ public class SearchRequestTest extends AbstractTest
 
         assertTrue( filter instanceof GreaterEqNode );
 
-        GreaterEqNode greaterEqFilter = ( GreaterEqNode ) filter;
+        GreaterEqNode<?> greaterEqFilter = ( GreaterEqNode<?> ) filter;
 
         assertEquals( "sn", greaterEqFilter.getAttribute() );
 
@@ -1197,7 +1219,7 @@ public class SearchRequestTest extends AbstractTest
 
         assertTrue( filter instanceof GreaterEqNode );
 
-        GreaterEqNode greaterEqFilter = ( GreaterEqNode ) filter;
+        GreaterEqNode<?> greaterEqFilter = ( GreaterEqNode<?> ) filter;
 
         assertEquals( "sn", greaterEqFilter.getAttribute() );
 
@@ -1262,7 +1284,7 @@ public class SearchRequestTest extends AbstractTest
 
         assertTrue( filter instanceof LessEqNode );
 
-        LessEqNode lessOrEqFilter = (LessEqNode) filter;
+        LessEqNode<?> lessOrEqFilter = (LessEqNode<?>) filter;
 
         assertEquals( "sn", lessOrEqFilter.getAttribute() );
 
@@ -1297,7 +1319,7 @@ public class SearchRequestTest extends AbstractTest
 
         assertTrue( filter instanceof LessEqNode );
 
-        LessEqNode lessOrEqFilter = ( LessEqNode ) filter;
+        LessEqNode<?> lessOrEqFilter = ( LessEqNode<?> ) filter;
 
         assertEquals( "sn", lessOrEqFilter.getAttribute() );
 
@@ -1332,7 +1354,7 @@ public class SearchRequestTest extends AbstractTest
 
         assertTrue( filter instanceof LessEqNode );
 
-        LessEqNode lessOrEqFilter = ( LessEqNode ) filter;
+        LessEqNode<?> lessOrEqFilter = ( LessEqNode<?> ) filter;
 
         assertEquals( "sn", lessOrEqFilter.getAttribute() );
 
@@ -1397,7 +1419,7 @@ public class SearchRequestTest extends AbstractTest
 
         assertTrue( filter instanceof EqualityNode );
 
-        EqualityNode equalityFilter = ( EqualityNode ) filter;
+        EqualityNode<?> equalityFilter = ( EqualityNode<?> ) filter;
 
         assertEquals( "sn", equalityFilter.getAttribute() );
         assertEquals( "foobar", equalityFilter.getValue().getString() );
@@ -1431,7 +1453,7 @@ public class SearchRequestTest extends AbstractTest
 
         assertTrue( filter instanceof EqualityNode );
 
-        EqualityNode equalityFilter = ( EqualityNode ) filter;
+        EqualityNode<?> equalityFilter = ( EqualityNode<?> ) filter;
 
         assertEquals( "sn", equalityFilter.getAttribute() );
 
@@ -1466,7 +1488,7 @@ public class SearchRequestTest extends AbstractTest
 
         assertTrue( filter instanceof EqualityNode );
 
-        EqualityNode equalityFilter = (EqualityNode) filter;
+        EqualityNode<?> equalityFilter = (EqualityNode<?>) filter;
 
         assertEquals( "sn", equalityFilter.getAttribute() );
 
