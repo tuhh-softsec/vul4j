@@ -20,6 +20,13 @@
 package org.apache.directory.shared.ldap.codec.decorators;
 
 
+import java.nio.BufferOverflowException;
+import java.nio.ByteBuffer;
+
+import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.asn1.ber.tlv.TLV;
+import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.model.message.BindResponse;
 
 
@@ -93,5 +100,92 @@ public class BindResponseDecorator extends ResponseDecorator implements BindResp
     public void setServerSaslCreds( byte[] serverSaslCreds )
     {
         getBindResponse().setServerSaslCreds( serverSaslCreds );
+    }
+    
+    
+    //-------------------------------------------------------------------------
+    // The Decorator methods
+    //-------------------------------------------------------------------------
+    /**
+     * Compute the BindResponse length 
+     * 
+     * BindResponse : 
+     * <pre>
+     * 0x61 L1 
+     *   | 
+     *   +--> LdapResult
+     *   +--> [serverSaslCreds] 
+     *   
+     * L1 = Length(LdapResult) [ + Length(serverSaslCreds) ] 
+     * Length(BindResponse) = Length(0x61) + Length(L1) + L1
+     * </pre>
+     */
+    public int computeLength()
+    {
+        BindResponse bindResponse = getBindResponse();
+        int ldapResultLength = ((LdapResultDecorator)getLdapResult()).computeLength();
+
+        int bindResponseLength = ldapResultLength;
+
+        byte[] serverSaslCreds = bindResponse.getServerSaslCreds();
+
+        if ( serverSaslCreds != null )
+        {
+            bindResponseLength += 1 + TLV.getNbBytes( serverSaslCreds.length ) + serverSaslCreds.length;
+        }
+
+        setBindResponseLength( bindResponseLength );
+
+        return 1 + TLV.getNbBytes( bindResponseLength ) + bindResponseLength;
+    }
+
+
+    /**
+     * Encode the BindResponse message to a PDU.
+     * 
+     * BindResponse :
+     * <pre>
+     * LdapResult.encode 
+     * [0x87 LL serverSaslCreds]
+     * </pre>
+     * 
+     * @param bb The buffer where to put the PDU
+     * @param bindResponseDecorator The decorated BindResponse to encode
+     * @throws EncoderException when encoding operations fail
+     */
+    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    {
+        BindResponse bindResponse = getBindResponse();
+
+        try
+        {
+            // The BindResponse Tag
+            buffer.put( LdapConstants.BIND_RESPONSE_TAG );
+            buffer.put( TLV.getBytes( getBindResponseLength() ) );
+
+            // The LdapResult
+            ((LdapResultDecorator)getLdapResult()).encode( buffer );
+
+            // The serverSaslCredential, if any
+            byte[] serverSaslCreds = bindResponse.getServerSaslCreds();
+
+            if ( serverSaslCreds != null )
+            {
+                buffer.put( ( byte ) LdapConstants.SERVER_SASL_CREDENTIAL_TAG );
+
+                buffer.put( TLV.getBytes( serverSaslCreds.length ) );
+
+                if ( serverSaslCreds.length != 0 )
+                {
+                    buffer.put( serverSaslCreds );
+                }
+            }
+        }
+        catch ( BufferOverflowException boe )
+        {
+            throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
+        }
+        
+        return buffer;
     }
 }

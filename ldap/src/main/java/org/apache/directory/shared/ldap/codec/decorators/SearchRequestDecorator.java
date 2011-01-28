@@ -20,12 +20,17 @@
 package org.apache.directory.shared.ldap.codec.decorators;
 
 
+import java.nio.BufferOverflowException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.directory.shared.asn1.DecoderException;
+import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
+import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
@@ -60,6 +65,7 @@ import org.apache.directory.shared.ldap.model.message.AliasDerefMode;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.message.SearchRequest;
 import org.apache.directory.shared.ldap.model.name.Dn;
+import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -1033,5 +1039,155 @@ public class SearchRequestDecorator extends AbandonableResultResponseRequestDeco
     public void removeAttribute( String attribute )
     {
         getSearchRequest().removeAttribute( attribute );
+    }
+
+
+    //-------------------------------------------------------------------------
+    // The Decorator methods
+    //-------------------------------------------------------------------------
+    /**
+     * Compute the SearchRequest length
+     * 
+     * SearchRequest :
+     * <pre>
+     * 0x63 L1
+     *  |
+     *  +--> 0x04 L2 baseObject
+     *  +--> 0x0A 0x01 scope
+     *  +--> 0x0A 0x01 derefAliases
+     *  +--> 0x02 0x0(1..4) sizeLimit
+     *  +--> 0x02 0x0(1..4) timeLimit
+     *  +--> 0x01 0x01 typesOnly
+     *  +--> filter.computeLength()
+     *  +--> 0x30 L3 (Attribute description list)
+     *        |
+     *        +--> 0x04 L4-1 Attribute description 
+     *        +--> 0x04 L4-2 Attribute description 
+     *        +--> ... 
+     *        +--> 0x04 L4-i Attribute description 
+     *        +--> ... 
+     *        +--> 0x04 L4-n Attribute description 
+     *        </pre>
+     */
+    public int computeLength()
+    {
+        int searchRequestLength = 0;
+
+        // The baseObject
+        searchRequestLength += 1 + TLV.getNbBytes( Dn.getNbBytes( getBase() ) ) + Dn.getNbBytes( getBase() );
+
+        // The scope
+        searchRequestLength += 1 + 1 + 1;
+
+        // The derefAliases
+        searchRequestLength += 1 + 1 + 1;
+
+        // The sizeLimit
+        searchRequestLength += 1 + 1 + org.apache.directory.shared.asn1.ber.tlv.Value.getNbBytes( getSizeLimit() );
+
+        // The timeLimit
+        searchRequestLength += 1 + 1 + org.apache.directory.shared.asn1.ber.tlv.Value.getNbBytes( getTimeLimit() );
+
+        // The typesOnly
+        searchRequestLength += 1 + 1 + 1;
+
+        // The filter
+        setFilter( getFilter() );
+        searchRequestLength += 
+            getCodecFilter().computeLength();
+
+        // The attributes description list
+        int attributeDescriptionListLength = 0;
+
+        if ( ( getAttributes() != null ) && ( getAttributes().size() != 0 ) )
+        {
+            // Compute the attributes length
+            for ( String attribute : getAttributes() )
+            {
+                // add the attribute length to the attributes length
+                int idLength = Strings.getBytesUtf8(attribute).length;
+                attributeDescriptionListLength += 1 + TLV.getNbBytes( idLength ) + idLength;
+            }
+        }
+
+        setAttributeDescriptionListLength( attributeDescriptionListLength );
+
+        searchRequestLength += 1 + TLV.getNbBytes( attributeDescriptionListLength ) + attributeDescriptionListLength;
+
+        setSearchRequestLength( searchRequestLength );
+        // Return the result.
+        return 1 + TLV.getNbBytes( searchRequestLength ) + searchRequestLength;
+    }
+    
+    
+    /**
+     * Encode the SearchRequest message to a PDU.
+     * 
+     * SearchRequest :
+     * <pre>
+     * 0x63 LL
+     *   0x04 LL baseObject
+     *   0x0A 01 scope
+     *   0x0A 01 derefAliases
+     *   0x02 0N sizeLimit
+     *   0x02 0N timeLimit
+     *   0x01 0x01 typesOnly
+     *   filter.encode()
+     *   0x30 LL attributeDescriptionList
+     *     0x04 LL attributeDescription
+     *     ... 
+     *     0x04 LL attributeDescription
+     * </pre>
+     * @param buffer The buffer where to put the PDU
+     * @return The PDU.
+     */
+    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    {
+        try
+        {
+            // The SearchRequest Tag
+            buffer.put( LdapConstants.SEARCH_REQUEST_TAG );
+            buffer.put( TLV.getBytes( getSearchRequestLength() ) );
+
+            // The baseObject
+            org.apache.directory.shared.asn1.ber.tlv.Value.encode( buffer, Dn.getBytes( getBase()) );
+
+            // The scope
+            org.apache.directory.shared.asn1.ber.tlv.Value.encodeEnumerated( buffer, getScope().getScope() );
+
+            // The derefAliases
+            org.apache.directory.shared.asn1.ber.tlv.Value.encodeEnumerated( buffer, getDerefAliases().getValue() );
+
+            // The sizeLimit
+            org.apache.directory.shared.asn1.ber.tlv.Value.encode( buffer, getSizeLimit() );
+
+            // The timeLimit
+            org.apache.directory.shared.asn1.ber.tlv.Value.encode( buffer, getTimeLimit() );
+
+            // The typesOnly
+            org.apache.directory.shared.asn1.ber.tlv.Value.encode( buffer, getTypesOnly() );
+
+            // The filter
+            getCodecFilter().encode( buffer );
+
+            // The attributeDescriptionList
+            buffer.put( UniversalTag.SEQUENCE.getValue() );
+            buffer.put( TLV.getBytes( getAttributeDescriptionListLength() ) );
+
+            if ( ( getAttributes() != null ) && ( getAttributes().size() != 0 ) )
+            {
+                // encode each attribute
+                for ( String attribute : getAttributes() )
+                {
+                    org.apache.directory.shared.asn1.ber.tlv.Value.encode( buffer, attribute );
+                }
+            }
+        }
+        catch ( BufferOverflowException boe )
+        {
+            throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
+        }
+
+        return buffer;
     }
 }

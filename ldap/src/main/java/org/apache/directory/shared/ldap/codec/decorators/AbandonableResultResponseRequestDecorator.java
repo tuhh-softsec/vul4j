@@ -31,7 +31,7 @@ import org.apache.directory.shared.ldap.model.message.ResultResponseRequest;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class AbandonableResultResponseRequestDecorator extends AbandonableRequestDecorator implements ResultResponseRequest
+public abstract class AbandonableResultResponseRequestDecorator extends AbandonableRequestDecorator implements ResultResponseRequest
 {
     /**
      * Makes Request a MessageDecorator.

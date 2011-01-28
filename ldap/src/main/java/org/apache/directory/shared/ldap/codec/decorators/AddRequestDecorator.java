@@ -20,8 +20,16 @@
 package org.apache.directory.shared.ldap.codec.decorators;
 
 
+import java.nio.BufferOverflowException;
+import java.nio.ByteBuffer;
+import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.asn1.ber.tlv.TLV;
+import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
+import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.model.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
@@ -250,5 +258,203 @@ public class AddRequestDecorator extends SingleReplyRequestDecorator implements 
     public void addAttributeValue( byte[] value )
     {
         currentAttribute.add( value );
+    }
+    
+    
+    //-------------------------------------------------------------------------
+    // The Decorator methods
+    //-------------------------------------------------------------------------
+    /**
+     * Compute the AddRequest length
+     * 
+     * AddRequest :
+     * 
+     * 0x68 L1
+     *  |
+     *  +--> 0x04 L2 entry
+     *  +--> 0x30 L3 (attributes)
+     *        |
+     *        +--> 0x30 L4-1 (attribute)
+     *        |     |
+     *        |     +--> 0x04 L5-1 type
+     *        |     +--> 0x31 L6-1 (values)
+     *        |           |
+     *        |           +--> 0x04 L7-1-1 value
+     *        |           +--> ...
+     *        |           +--> 0x04 L7-1-n value
+     *        |
+     *        +--> 0x30 L4-2 (attribute)
+     *        |     |
+     *        |     +--> 0x04 L5-2 type
+     *        |     +--> 0x31 L6-2 (values)
+     *        |           |
+     *        |           +--> 0x04 L7-2-1 value
+     *        |           +--> ...
+     *        |           +--> 0x04 L7-2-n value
+     *        |
+     *        +--> ...
+     *        |
+     *        +--> 0x30 L4-m (attribute)
+     *              |
+     *              +--> 0x04 L5-m type
+     *              +--> 0x31 L6-m (values)
+     *                    |
+     *                    +--> 0x04 L7-m-1 value
+     *                    +--> ...
+     *                    +--> 0x04 L7-m-n value
+     */
+    public int computeLength()
+    {
+        AddRequest addRequest = getAddRequest();
+        Entry entry = addRequest.getEntry();
+
+        if ( entry == null )
+        {
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04481_ENTRY_NULL_VALUE ) );
+        }
+
+        // The entry Dn
+        int addRequestLength = 1 + TLV.getNbBytes( Dn.getNbBytes(entry.getDn()) ) + Dn.getNbBytes(entry.getDn());
+
+        // The attributes sequence
+        int entryLength = 0;
+
+        if ( entry.size() != 0 )
+        {
+            List<Integer> attributesLength = new LinkedList<Integer>();
+            List<Integer> valuesLength = new LinkedList<Integer>();
+
+            // Compute the attributes length
+            for ( EntryAttribute attribute : entry )
+            {
+                int localAttributeLength = 0;
+                int localValuesLength = 0;
+
+                // Get the type length
+                int idLength = attribute.getId().getBytes().length;
+                localAttributeLength = 1 + TLV.getNbBytes( idLength ) + idLength;
+
+                // The values
+                if ( attribute.size() != 0 )
+                {
+                    localValuesLength = 0;
+
+                    for ( org.apache.directory.shared.ldap.model.entry.Value<?> value : attribute )
+                    {
+                        int valueLength = value.getBytes().length;
+                        localValuesLength += 1 + TLV.getNbBytes( valueLength ) + valueLength;
+                    }
+
+                    localAttributeLength += 1 + TLV.getNbBytes( localValuesLength ) + localValuesLength;
+                }
+
+                // add the attribute length to the attributes length
+                entryLength += 1 + TLV.getNbBytes( localAttributeLength ) + localAttributeLength;
+
+                attributesLength.add( localAttributeLength );
+                valuesLength.add( localValuesLength );
+            }
+
+            setAttributesLength( attributesLength );
+            setValuesLength( valuesLength );
+            setEntryLength( entryLength );
+        }
+
+        addRequestLength += 1 + TLV.getNbBytes( entryLength ) + entryLength;
+        setAddRequestLength( addRequestLength );
+
+        // Return the result.
+        return 1 + TLV.getNbBytes( addRequestLength ) + addRequestLength;
+    }
+
+
+    /**
+     * Encode the AddRequest message to a PDU. 
+     * 
+     * AddRequest :
+     * 
+     * 0x68 LL
+     *   0x04 LL entry
+     *   0x30 LL attributesList
+     *     0x30 LL attributeList
+     *       0x04 LL attributeDescription
+     *       0x31 LL attributeValues
+     *         0x04 LL attributeValue
+     *         ... 
+     *         0x04 LL attributeValue
+     *     ... 
+     *     0x30 LL attributeList
+     *       0x04 LL attributeDescription
+     *       0x31 LL attributeValue
+     *         0x04 LL attributeValue
+     *         ... 
+     *         0x04 LL attributeValue 
+     * 
+     * @param buffer The buffer where to put the PDU
+     */
+    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    {
+        try
+        {
+            // The AddRequest Tag
+            buffer.put( LdapConstants.ADD_REQUEST_TAG );
+            buffer.put( TLV.getBytes( getAddRequestLength() ) );
+
+            // The entry
+            org.apache.directory.shared.asn1.ber.tlv.Value.encode( buffer, Dn.getBytes( getEntryDn() ) );
+
+            // The attributes sequence
+            buffer.put( UniversalTag.SEQUENCE.getValue() );
+            buffer.put( TLV.getBytes( getEntryLength() ) );
+
+            // The partial attribute list
+            Entry entry = getEntry();
+
+            if ( entry.size() != 0 )
+            {
+                int attributeNumber = 0;
+
+                // Compute the attributes length
+                for ( EntryAttribute attribute : entry )
+                {
+                    // The attributes list sequence
+                    buffer.put( UniversalTag.SEQUENCE.getValue() );
+                    int localAttributeLength = getAttributesLength().get( attributeNumber );
+                    buffer.put( TLV.getBytes( localAttributeLength ) );
+
+                    // The attribute type
+                    org.apache.directory.shared.asn1.ber.tlv.Value.encode( buffer, attribute.getId() );
+
+                    // The values
+                    buffer.put( UniversalTag.SET.getValue() );
+                    int localValuesLength = getValuesLength().get( attributeNumber );
+                    buffer.put( TLV.getBytes( localValuesLength ) );
+
+                    if ( attribute.size() != 0 )
+                    {
+                        for ( org.apache.directory.shared.ldap.model.entry.Value<?> value : attribute )
+                        {
+                            if ( value.isBinary() )
+                            {
+                                org.apache.directory.shared.asn1.ber.tlv.Value.encode( buffer, value.getBytes() );
+                            }
+                            else
+                            {
+                                org.apache.directory.shared.asn1.ber.tlv.Value.encode( buffer, value.getString() );
+                            }
+                        }
+                    }
+
+                    // Go to the next attribute number;
+                    attributeNumber++;
+                }
+            }
+            
+            return buffer;
+        }
+        catch ( BufferOverflowException boe )
+        {
+            throw new EncoderException( "The PDU buffer size is too small !" );
+        }
     }
 }

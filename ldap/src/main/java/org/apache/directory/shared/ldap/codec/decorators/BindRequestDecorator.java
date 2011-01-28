@@ -20,8 +20,17 @@
 package org.apache.directory.shared.ldap.codec.decorators;
 
 
+import java.nio.BufferOverflowException;
+import java.nio.ByteBuffer;
+
+import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.asn1.ber.tlv.TLV;
+import org.apache.directory.shared.asn1.ber.tlv.Value;
+import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.model.message.BindRequest;
 import org.apache.directory.shared.ldap.model.name.Dn;
+import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -237,5 +246,173 @@ public class BindRequestDecorator extends SingleReplyRequestDecorator implements
     public void setSaslMechanism( String saslMechanism )
     {
         getBindRequest().setSaslMechanism( saslMechanism );
+    }
+
+
+    //-------------------------------------------------------------------------
+    // The Decorator methods
+    //-------------------------------------------------------------------------
+    /**
+     * Compute the BindRequest length 
+     * 
+     * BindRequest : 
+     * <pre>
+     * 0x60 L1 
+     *   | 
+     *   +--> 0x02 0x01 (1..127) version 
+     *   +--> 0x04 L2 name 
+     *   +--> authentication 
+     *   
+     * L2 = Length(name)
+     * L3/4 = Length(authentication) 
+     * Length(BindRequest) = Length(0x60) + Length(L1) + L1 + Length(0x02) + 1 + 1 + 
+     *      Length(0x04) + Length(L2) + L2 + Length(authentication)
+     * </pre>
+     */
+    public int computeLength()
+    {
+        int bindRequestLength = 1 + 1 + 1; // Initialized with version
+
+        // The name
+        bindRequestLength += 1 + TLV.getNbBytes( Dn.getNbBytes( getName() ) )
+            + Dn.getNbBytes( getName() );
+
+        byte[] credentials = getCredentials();
+
+        // The authentication
+        if ( isSimple() )
+        {
+            // Compute a SimpleBind operation
+            if ( credentials != null )
+            {
+                bindRequestLength += 1 + TLV.getNbBytes( credentials.length ) + credentials.length;
+            }
+            else
+            {
+                bindRequestLength += 1 + 1;
+            }
+        }
+        else
+        {
+            byte[] mechanismBytes = Strings.getBytesUtf8( getSaslMechanism() );
+            int saslMechanismLength = 1 + TLV.getNbBytes( mechanismBytes.length ) + mechanismBytes.length;
+            int saslCredentialsLength = 0;
+
+            if ( credentials != null )
+            {
+                saslCredentialsLength = 1 + TLV.getNbBytes( credentials.length ) + credentials.length;
+            }
+
+            int saslLength = 1 + TLV.getNbBytes( saslMechanismLength + saslCredentialsLength ) + saslMechanismLength
+                + saslCredentialsLength;
+
+            bindRequestLength += saslLength;
+
+            // Store the mechanism and credentials lengths
+            setSaslMechanismLength( saslMechanismLength );
+            setSaslCredentialsLength( saslCredentialsLength );
+        }
+
+        setBindRequestLength( bindRequestLength );
+
+        // Return the result.
+        return 1 + TLV.getNbBytes( bindRequestLength ) + bindRequestLength;
+    }
+
+
+    /**
+     * Encode the BindRequest message to a PDU. 
+     * 
+     * BindRequest : 
+     * <pre>
+     * 0x60 LL 
+     *   0x02 LL version         0x80 LL simple 
+     *   0x04 LL name           /   
+     *   authentication.encode() 
+     *                          \ 0x83 LL mechanism [0x04 LL credential]
+     * </pre>
+     * 
+     * @param buffer The buffer where to put the PDU
+     * @return The PDU.
+     */
+    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    {
+        try
+        {
+            // The BindRequest Tag
+            buffer.put( LdapConstants.BIND_REQUEST_TAG );
+            buffer.put( TLV.getBytes( getBindRequestLength() ) );
+
+        }
+        catch ( BufferOverflowException boe )
+        {
+            throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
+        }
+
+        // The version (LDAP V3 only)
+        Value.encode( buffer, 3 );
+
+        // The name
+        Value.encode( buffer, Dn.getBytes( getName() ) );
+
+        byte[] credentials = getCredentials();
+
+        // The authentication
+        if ( isSimple() )
+        {
+            // Simple authentication
+            try
+            {
+                // The simpleAuthentication Tag
+                buffer.put( ( byte ) LdapConstants.BIND_REQUEST_SIMPLE_TAG );
+
+                if ( credentials != null )
+                {
+                    buffer.put( TLV.getBytes( credentials.length ) );
+
+                    if ( credentials.length != 0 )
+                    {
+                        buffer.put( credentials );
+                    }
+                }
+                else
+                {
+                    buffer.put( ( byte ) 0 );
+                }
+            }
+            catch ( BufferOverflowException boe )
+            {
+                String msg = I18n.err( I18n.ERR_04005 );
+                throw new EncoderException( msg );
+            }
+        }
+        else
+        {
+            // SASL Bind
+            try
+            {
+                // The saslAuthentication Tag
+                buffer.put( ( byte ) LdapConstants.BIND_REQUEST_SASL_TAG );
+
+                byte[] mechanismBytes = Strings.getBytesUtf8( getSaslMechanism() );
+
+                buffer.put( TLV
+                    .getBytes( getSaslMechanismLength() + getSaslCredentialsLength() ) );
+
+                Value.encode( buffer, mechanismBytes );
+
+                if ( credentials != null )
+                {
+                    Value.encode( buffer, credentials );
+                }
+            }
+            catch ( BufferOverflowException boe )
+            {
+                String msg = I18n.err( I18n.ERR_04005 );
+                throw new EncoderException( msg );
+            }
+        }
+        
+        return buffer;
     }
 }

@@ -20,6 +20,13 @@
 package org.apache.directory.shared.ldap.codec.decorators;
 
 
+import java.nio.BufferOverflowException;
+import java.nio.ByteBuffer;
+
+import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.asn1.ber.tlv.TLV;
+import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.model.message.ModifyResponse;
 
 
@@ -70,5 +77,56 @@ public class ModifyResponseDecorator extends ResponseDecorator implements Modify
     public int getModifyResponseLength()
     {
         return modifyResponseLength;
+    }
+
+    
+    //-------------------------------------------------------------------------
+    // The Decorator methods
+    //-------------------------------------------------------------------------
+    /**
+     * Compute the ModifyResponse length 
+     * 
+     * ModifyResponse : 
+     * <pre>
+     * 0x67 L1 
+     *   | 
+     *   +--> LdapResult 
+     *   
+     * L1 = Length(LdapResult) 
+     * Length(ModifyResponse) = Length(0x67) + Length(L1) + L1
+     * </pre>
+     */
+    public int computeLength()
+    {
+        int modifyResponseLength = ((LdapResultDecorator)getLdapResult()).computeLength();
+
+        setModifyResponseLength( modifyResponseLength );
+
+        return 1 + TLV.getNbBytes( modifyResponseLength ) + modifyResponseLength;
+    }
+
+
+    /**
+     * Encode the ModifyResponse message to a PDU.
+     * 
+     * @param buffer The buffer where to put the PDU
+     */
+    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    {
+        try
+        {
+            // The ModifyResponse Tag
+            buffer.put( LdapConstants.MODIFY_RESPONSE_TAG );
+            buffer.put( TLV.getBytes( getModifyResponseLength() ) );
+
+            // The LdapResult
+            ((LdapResultDecorator)getLdapResult()).encode( buffer );
+        }
+        catch ( BufferOverflowException boe )
+        {
+            throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
+        }
+        
+        return buffer;
     }
 }

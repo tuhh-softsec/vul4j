@@ -20,8 +20,10 @@
 package org.apache.directory.shared.ldap.codec.decorators;
 
 
+import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 import org.apache.directory.shared.ldap.model.exception.MessageException;
 import org.apache.directory.shared.ldap.model.message.AbandonRequest;
 import org.apache.directory.shared.ldap.model.message.AddRequest;
@@ -55,10 +57,13 @@ import org.apache.directory.shared.ldap.model.message.UnbindRequest;
  * @TODO make this class abstract, after finishing switch and all types and make default blow an EncoderException
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class MessageDecorator implements Message
+public abstract class MessageDecorator implements Message, Decorator
 {
     /** The decorated Control */
     private final Message decoratedMessage;
+
+    /** Map of message controls using OID Strings for keys and Control values */
+    private final Map<String, Control> controls;
 
     /** The encoded Message length */
     protected int messageLength;
@@ -72,85 +77,126 @@ public class MessageDecorator implements Message
     
     public static MessageDecorator getDecorator( Message decoratedMessage )
     {
+        if ( decoratedMessage instanceof MessageDecorator )
+        {
+            return (MessageDecorator)decoratedMessage;
+        }
+        
+        MessageDecorator decorator = null;
+        
         switch ( decoratedMessage.getType() )
         {
             case ABANDON_REQUEST:
-                return new AbandonRequestDecorator( ( AbandonRequest ) decoratedMessage );
+                decorator = new AbandonRequestDecorator( ( AbandonRequest ) decoratedMessage );
+                break;
 
             case ADD_REQUEST:
-                return new AddRequestDecorator( ( AddRequest ) decoratedMessage );
+                decorator = new AddRequestDecorator( ( AddRequest ) decoratedMessage );
+                break;
                 
             case ADD_RESPONSE:
-                return new AddResponseDecorator( ( AddResponse ) decoratedMessage );
+                decorator = new AddResponseDecorator( ( AddResponse ) decoratedMessage );
+                break;
                 
             case BIND_REQUEST:
-                return new BindRequestDecorator( ( BindRequest ) decoratedMessage );
+                decorator = new BindRequestDecorator( ( BindRequest ) decoratedMessage );
+                break;
                 
             case BIND_RESPONSE:
-                return new BindResponseDecorator( ( BindResponse ) decoratedMessage );
+                decorator = new BindResponseDecorator( ( BindResponse ) decoratedMessage );
+                break;
                 
             case COMPARE_REQUEST:
-                return new CompareRequestDecorator( ( CompareRequest ) decoratedMessage );
+                decorator = new CompareRequestDecorator( ( CompareRequest ) decoratedMessage );
+                break;
                 
             case COMPARE_RESPONSE:
-                return new CompareResponseDecorator( ( CompareResponse ) decoratedMessage );
+                decorator = new CompareResponseDecorator( ( CompareResponse ) decoratedMessage );
+                break;
                 
             case DEL_REQUEST:
-                return new DeleteRequestDecorator( ( DeleteRequest ) decoratedMessage );
+                decorator = new DeleteRequestDecorator( ( DeleteRequest ) decoratedMessage );
+                break;
 
             case DEL_RESPONSE:
-                return new DeleteResponseDecorator( ( DeleteResponse ) decoratedMessage );
+                decorator = new DeleteResponseDecorator( ( DeleteResponse ) decoratedMessage );
+                break;
                 
             case EXTENDED_REQUEST:
-                return new ExtendedRequestDecorator( ( ExtendedRequest ) decoratedMessage );
+                decorator = new ExtendedRequestDecorator( ( ExtendedRequest ) decoratedMessage );
+                break;
                 
             case EXTENDED_RESPONSE:
-                return new ExtendedResponseDecorator( ( ExtendedResponse ) decoratedMessage );
+                decorator = new ExtendedResponseDecorator( ( ExtendedResponse ) decoratedMessage );
+                break;
                 
             case INTERMEDIATE_RESPONSE:
-                return new IntermediateResponseDecorator( ( IntermediateResponse ) decoratedMessage );
+                decorator = new IntermediateResponseDecorator( ( IntermediateResponse ) decoratedMessage );
+                break;
                 
             case MODIFY_REQUEST:
-                return new ModifyRequestDecorator( ( ModifyRequest ) decoratedMessage );
+                decorator = new ModifyRequestDecorator( ( ModifyRequest ) decoratedMessage );
+                break;
                 
             case MODIFY_RESPONSE:
-                return new ModifyResponseDecorator( ( ModifyResponse ) decoratedMessage );
+                decorator = new ModifyResponseDecorator( ( ModifyResponse ) decoratedMessage );
+                break;
                 
             case MODIFYDN_REQUEST:
-                return new ModifyDnRequestDecorator( ( ModifyDnRequest ) decoratedMessage );
+                decorator = new ModifyDnRequestDecorator( ( ModifyDnRequest ) decoratedMessage );
+                break;
                 
             case MODIFYDN_RESPONSE:
-                return new ModifyDnResponseDecorator( ( ModifyDnResponse ) decoratedMessage );
+                decorator = new ModifyDnResponseDecorator( ( ModifyDnResponse ) decoratedMessage );
+                break;
                 
             case SEARCH_REQUEST:
-                return new SearchRequestDecorator( ( SearchRequest ) decoratedMessage );
+                decorator = new SearchRequestDecorator( ( SearchRequest ) decoratedMessage );
+                break;
                 
             case SEARCH_RESULT_DONE:
-                return new SearchResultDoneDecorator( ( SearchResultDone ) decoratedMessage );
+                decorator = new SearchResultDoneDecorator( ( SearchResultDone ) decoratedMessage );
+                break;
                 
             case SEARCH_RESULT_ENTRY:
-                return new SearchResultEntryDecorator( ( SearchResultEntry ) decoratedMessage );
+                decorator = new SearchResultEntryDecorator( ( SearchResultEntry ) decoratedMessage );
+                break;
                 
             case SEARCH_RESULT_REFERENCE:
-                return new SearchResultReferenceDecorator( ( SearchResultReference ) decoratedMessage );
+                decorator = new SearchResultReferenceDecorator( ( SearchResultReference ) decoratedMessage );
+                break;
             
             case UNBIND_REQUEST:
-                return new UnbindRequestDecorator( ( UnbindRequest ) decoratedMessage );
+                decorator = new UnbindRequestDecorator( ( UnbindRequest ) decoratedMessage );
+                break;
                 
-            default:
-                return new MessageDecorator( decoratedMessage );
+            default :
+                return null;
         }
+        
+        Map<String, Control> controls = decoratedMessage.getControls();
+        
+        if ( controls != null )
+        {
+            for ( Control control : controls.values() )
+            {
+                Control controlDecorator = ControlDecorator.getDecorator( control );
+                
+                decorator.addControl( controlDecorator );
+            }
+        }
+        
+        return decorator;
     }
 
 
     /**
-     * Makes a Message an Encodeable object.
-     *
-     * @TODO make me protected after making this class abstract
+     * Makes a Message an Decorator object.
      */
-    public MessageDecorator( Message decoratedMessage )
+    protected MessageDecorator( Message decoratedMessage )
     {
         this.decoratedMessage = decoratedMessage;
+        controls = new HashMap<String, Control>();
     }
 
 
@@ -213,8 +259,6 @@ public class MessageDecorator implements Message
     //-------------------------------------------------------------------------
     // The Message methods
     //-------------------------------------------------------------------------
-    
-    
     /**
      * {@inheritDoc}
      */
@@ -229,7 +273,7 @@ public class MessageDecorator implements Message
      */
     public Map<String, Control> getControls()
     {
-        return decoratedMessage.getControls();
+        return controls;
     }
 
 
@@ -238,7 +282,7 @@ public class MessageDecorator implements Message
      */
     public Control getControl( String oid )
     {
-        return decoratedMessage.getControl( oid );
+        return controls.get( oid );
     }
 
 
@@ -247,7 +291,7 @@ public class MessageDecorator implements Message
      */
     public boolean hasControl( String oid )
     {
-        return decoratedMessage.hasControl( oid );
+        return controls.containsKey( oid );
     }
 
 
@@ -256,7 +300,10 @@ public class MessageDecorator implements Message
      */
     public void addControl( Control control ) throws MessageException
     {
-        decoratedMessage.addControl( control );
+        ControlDecorator controlDecorator = (ControlDecorator)control;
+        Control decoratedControl = controlDecorator.getDecorated();
+        decoratedMessage.addControl( decoratedControl );
+        controls.put( control.getOid(), control );
         currentControl = control;
     }
 
@@ -266,7 +313,11 @@ public class MessageDecorator implements Message
      */
     public void addAllControls( Control[] controls ) throws MessageException
     {
-        decoratedMessage.addAllControls( controls );
+        for ( Control control : controls )
+        {
+            decoratedMessage.addControl( ((ControlDecorator)control).getDecorated() );
+            this.controls.put( control.getOid(), control );
+        }
     }
 
 
@@ -276,6 +327,7 @@ public class MessageDecorator implements Message
     public void removeControl( Control control ) throws MessageException
     {
         decoratedMessage.removeControl( control );
+        controls.remove( control.getOid() );
     }
 
 

@@ -20,9 +20,19 @@
 package org.apache.directory.shared.ldap.codec.decorators;
 
 
+import java.nio.BufferOverflowException;
+import java.nio.ByteBuffer;
+
+import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.asn1.ber.tlv.TLV;
+import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
+import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.LdapConstants;
+import org.apache.directory.shared.ldap.model.entry.BinaryValue;
 import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.model.message.CompareRequest;
 import org.apache.directory.shared.ldap.model.name.Dn;
+import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -213,4 +223,102 @@ public class CompareRequestDecorator extends SingleReplyRequestDecorator impleme
     {
         getCompareRequest().setAttributeId( attrId );
     }
-}
+
+    
+    //-------------------------------------------------------------------------
+    // The Decorator methods
+    //-------------------------------------------------------------------------
+    /**
+     * Compute the CompareRequest length 
+     * 
+     * CompareRequest : 
+     * 0x6E L1 
+     *   | 
+     *   +--> 0x04 L2 entry 
+     *   +--> 0x30 L3 (ava) 
+     *         | 
+     *         +--> 0x04 L4 attributeDesc 
+     *         +--> 0x04 L5 assertionValue 
+     *         
+     * L3 = Length(0x04) + Length(L4) + L4 + Length(0x04) +
+     *      Length(L5) + L5 
+     * Length(CompareRequest) = Length(0x6E) + Length(L1) + L1 +
+     *      Length(0x04) + Length(L2) + L2 + Length(0x30) + Length(L3) + L3
+     * 
+     * @return The CompareRequest PDU's length
+     */
+    public int computeLength()
+    {
+        // The entry Dn
+        Dn entry = getName();
+        int compareRequestLength = 1 + TLV.getNbBytes( Dn.getNbBytes( entry ) ) + Dn.getNbBytes( entry );
+
+        // The attribute value assertion
+        byte[] attributeIdBytes = Strings.getBytesUtf8( getAttributeId() );
+        int avaLength = 1 + TLV.getNbBytes( attributeIdBytes.length ) + attributeIdBytes.length;
+        setAttrIdBytes( attributeIdBytes );
+
+        org.apache.directory.shared.ldap.model.entry.Value<?> assertionValue = getAssertionValue();
+
+        if ( assertionValue instanceof BinaryValue )
+        {
+            byte[] value = getAssertionValue().getBytes();
+            avaLength += 1 + TLV.getNbBytes( value.length ) + value.length;
+            setAttrValBytes( value );
+        }
+        else
+        {
+            byte[] value = Strings.getBytesUtf8( getAssertionValue().getString() );
+            avaLength += 1 + TLV.getNbBytes( value.length ) + value.length;
+            setAttrValBytes( value );
+        }
+
+        setAvaLength( avaLength );
+        compareRequestLength += 1 + TLV.getNbBytes( avaLength ) + avaLength;
+        setCompareRequestLength( compareRequestLength );
+
+        return 1 + TLV.getNbBytes( compareRequestLength ) + compareRequestLength;
+    }
+
+
+    /**
+     * Encode the CompareRequest message to a PDU. 
+     * 
+     * CompareRequest : 
+     *   0x6E LL 
+     *     0x04 LL entry 
+     *     0x30 LL attributeValueAssertion 
+     *       0x04 LL attributeDesc 
+     *       0x04 LL assertionValue
+     * 
+     * @param buffer The buffer where to put the PDU
+     */
+    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    {
+        try
+        {
+            // The CompareRequest Tag
+            buffer.put( LdapConstants.COMPARE_REQUEST_TAG );
+            buffer.put( TLV.getBytes( getCompareRequestLength() ) );
+
+            // The entry
+            org.apache.directory.shared.asn1.ber.tlv.Value.encode( buffer, Dn.getBytes( getName() ) );
+
+            // The attributeValueAssertion sequence Tag
+            buffer.put( UniversalTag.SEQUENCE.getValue() );
+            buffer.put( TLV.getBytes( getAvaLength() ) );
+        }
+        catch ( BufferOverflowException boe )
+        {
+            throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
+        }
+
+        // The attributeDesc
+        org.apache.directory.shared.asn1.ber.tlv.Value.encode( buffer, getAttrIdBytes() );
+
+        // The assertionValue
+        org.apache.directory.shared.asn1.ber.tlv.Value.encode( buffer, ( byte[] ) getAttrValBytes() );
+        
+        return buffer;
+    }
+ }

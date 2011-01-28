@@ -29,7 +29,7 @@ import org.apache.directory.shared.ldap.model.message.Request;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class RequestDecorator extends MessageDecorator implements Request
+public abstract class RequestDecorator extends MessageDecorator implements Request
 {
     /**
      * Makes Request a MessageDecorator.

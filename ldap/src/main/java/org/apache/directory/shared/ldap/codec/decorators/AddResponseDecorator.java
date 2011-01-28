@@ -20,6 +20,13 @@
 package org.apache.directory.shared.ldap.codec.decorators;
 
 
+import java.nio.BufferOverflowException;
+import java.nio.ByteBuffer;
+
+import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.asn1.ber.tlv.TLV;
+import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.model.message.AddResponse;
 
 
@@ -70,5 +77,59 @@ public class AddResponseDecorator extends ResponseDecorator implements AddRespon
     public int getAddResponseLength()
     {
         return addResponseLength;
+    }
+
+    
+    //-------------------------------------------------------------------------
+    // The Decorator methods
+    //-------------------------------------------------------------------------
+    /**
+     * Compute the AddResponse length 
+     * 
+     * AddResponse : 
+     * 
+     * 0x69 L1
+     *  |
+     *  +--> LdapResult
+     * 
+     * L1 = Length(LdapResult)
+     * 
+     * Length(AddResponse) = Length(0x69) + Length(L1) + L1
+     */
+    public int computeLength()
+    {
+        AddResponse addResponse = getAddResponse();
+        setLdapResult( new LdapResultDecorator( addResponse.getLdapResult() ) );
+        int addResponseLength = ((LdapResultDecorator)getLdapResult()).computeLength();
+
+        setAddResponseLength( addResponseLength );
+
+        return 1 + TLV.getNbBytes( addResponseLength ) + addResponseLength;
+    }
+
+
+    /**
+     * Encode the AddResponse message to a PDU.
+     * 
+     * @param buffer The buffer where to put the PDU
+     * @param addResponseDecorator the AddResponse decorator
+     */
+    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    {
+        try
+        {
+            // The AddResponse Tag
+            buffer.put( LdapConstants.ADD_RESPONSE_TAG );
+            buffer.put( TLV.getBytes( getAddResponseLength() ) );
+
+            // The LdapResult
+            ((LdapResultDecorator)getLdapResult()).encode( buffer );
+            
+            return buffer;
+        }
+        catch ( BufferOverflowException boe )
+        {
+            throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
+        }
     }
 }

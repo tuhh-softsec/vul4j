@@ -20,6 +20,15 @@
 package org.apache.directory.shared.ldap.codec.decorators;
 
 
+import java.nio.BufferOverflowException;
+import java.nio.ByteBuffer;
+
+import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.asn1.ber.tlv.TLV;
+import org.apache.directory.shared.asn1.ber.tlv.Value;
+import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.LdapConstants;
+import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.model.message.Referral;
 import org.apache.directory.shared.ldap.model.message.SearchResultReference;
 
@@ -116,5 +125,94 @@ public class SearchResultReferenceDecorator extends MessageDecorator implements 
     public void setReferral( Referral referral )
     {
         getSearchResultReference().setReferral( referral );        
+    }
+
+
+    //-------------------------------------------------------------------------
+    // The Decorator methods
+    //-------------------------------------------------------------------------
+    /**
+     * Compute the SearchResultReference length
+     * 
+     * SearchResultReference :
+     * <pre>
+     * 0x73 L1
+     *  |
+     *  +--> 0x04 L2 reference
+     *  +--> 0x04 L3 reference
+     *  +--> ...
+     *  +--> 0x04 Li reference
+     *  +--> ...
+     *  +--> 0x04 Ln reference
+     * 
+     * L1 = n*Length(0x04) + sum(Length(Li)) + sum(Length(reference[i]))
+     * 
+     * Length(SearchResultReference) = Length(0x73 + Length(L1) + L1
+     * </pre>
+     */
+    public int computeLength()
+    {
+        int searchResultReferenceLength = 0;
+
+        // We may have more than one reference.
+        Referral referral = getReferral();
+
+        int referralLength = LdapEncoder.computeReferralLength( referral );
+
+        if ( referralLength != 0 )
+        {
+            setReferral( referral );
+
+            searchResultReferenceLength = referralLength;
+        }
+
+        // Store the length of the response 
+        setSearchResultReferenceLength( searchResultReferenceLength );
+
+        return 1 + TLV.getNbBytes( searchResultReferenceLength ) + searchResultReferenceLength;
+    }
+
+
+    /**
+     * Encode the SearchResultReference message to a PDU.
+     * 
+     * SearchResultReference :
+     * <pre>
+     * 0x73 LL
+     *   0x04 LL reference
+     *   [0x04 LL reference]*
+     * </pre>
+     * @param buffer The buffer where to put the PDU
+     * @param searchResultReferenceDecorator The SearchResultReference decorator
+     * @return The PDU.
+     */
+    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    {
+        SearchResultReference searchResultReference = getSearchResultReference();
+        try
+        {
+            // The SearchResultReference Tag
+            buffer.put( LdapConstants.SEARCH_RESULT_REFERENCE_TAG );
+            buffer.put( TLV.getBytes( getSearchResultReferenceLength() ) );
+
+            // The referrals, if any
+            Referral referral = searchResultReference.getReferral();
+
+            if ( referral != null )
+            {
+                // Each referral
+                for ( byte[] ldapUrlBytes : referral.getLdapUrlsBytes() )
+                {
+                    // Encode the current referral
+                    Value.encode( buffer, ldapUrlBytes );
+                }
+            }
+        }
+        catch ( BufferOverflowException boe )
+        {
+            throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
+        }
+        
+        return buffer;
     }
 }

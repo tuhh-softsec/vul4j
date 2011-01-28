@@ -20,9 +20,18 @@
 package org.apache.directory.shared.ldap.codec.decorators;
 
 
+import java.nio.BufferOverflowException;
+import java.nio.ByteBuffer;
+
+import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.asn1.ber.tlv.TLV;
+import org.apache.directory.shared.asn1.ber.tlv.Value;
+import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.model.message.ModifyDnRequest;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.name.Rdn;
+import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -158,5 +167,107 @@ public class ModifyDnRequestDecorator extends SingleReplyRequestDecorator implem
     public boolean isMove()
     {
         return getModifyDnRequest().isMove();
+    }
+
+    
+    //-------------------------------------------------------------------------
+    // The Decorator methods
+    //-------------------------------------------------------------------------
+    /**
+     * Compute the ModifyDNRequest length
+     * 
+     * ModifyDNRequest :
+     * <pre>
+     * 0x6C L1
+     *  |
+     *  +--> 0x04 L2 entry
+     *  +--> 0x04 L3 newRDN
+     *  +--> 0x01 0x01 (true/false) deleteOldRDN (3 bytes)
+     * [+--> 0x80 L4 newSuperior ] 
+     * 
+     * L2 = Length(0x04) + Length(Length(entry)) + Length(entry) 
+     * L3 = Length(0x04) + Length(Length(newRDN)) + Length(newRDN) 
+     * L4 = Length(0x80) + Length(Length(newSuperior)) + Length(newSuperior)
+     * L1 = L2 + L3 + 3 [+ L4] 
+     * 
+     * Length(ModifyDNRequest) = Length(0x6C) + Length(L1) + L1
+     * </pre>
+     * 
+     * @return The PDU's length of a ModifyDN Request
+     */
+    public int computeLength()
+    {
+        int newRdnlength = Strings.getBytesUtf8( getNewRdn().getName() ).length;
+
+        int modifyDNRequestLength = 1 + TLV.getNbBytes( Dn.getNbBytes( getName() ) )
+            + Dn.getNbBytes( getName() ) + 1 + TLV.getNbBytes( newRdnlength ) + newRdnlength + 1 + 1
+            + 1; // deleteOldRDN
+
+        if ( getNewSuperior() != null )
+        {
+            modifyDNRequestLength += 1 + TLV.getNbBytes( Dn.getNbBytes( getNewSuperior() ) )
+                + Dn.getNbBytes( getNewSuperior() );
+        }
+
+        setModifyDnRequestLength( modifyDNRequestLength );
+
+        return 1 + TLV.getNbBytes( modifyDNRequestLength ) + modifyDNRequestLength;
+    }
+
+
+    /**
+     * Encode the ModifyDNRequest message to a PDU. 
+     * 
+     * ModifyDNRequest :
+     * <pre>
+     * 0x6C LL
+     *   0x04 LL entry
+     *   0x04 LL newRDN
+     *   0x01 0x01 deleteOldRDN
+     *   [0x80 LL newSuperior]
+     * </pre>
+     * @param buffer The buffer where to put the PDU
+     * @return The PDU.
+     */
+    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    {
+        try
+        {
+            // The ModifyDNRequest Tag
+            buffer.put( LdapConstants.MODIFY_DN_REQUEST_TAG );
+            buffer.put( TLV.getBytes( getModifyDnResponseLength() ) );
+
+            // The entry
+
+            Value.encode( buffer, Dn.getBytes( getName() ) );
+
+            // The newRDN
+            Value.encode( buffer, getNewRdn().getName() );
+
+            // The flag deleteOldRdn
+            Value.encode( buffer, getDeleteOldRdn() );
+
+            // The new superior, if any
+            if ( getNewSuperior() != null )
+            {
+                // Encode the reference
+                buffer.put( ( byte ) LdapConstants.MODIFY_DN_REQUEST_NEW_SUPERIOR_TAG );
+
+                int newSuperiorLength = Dn.getNbBytes( getNewSuperior() );
+
+                buffer.put( TLV.getBytes( newSuperiorLength ) );
+
+                if ( newSuperiorLength != 0 )
+                {
+                    buffer.put( Dn.getBytes( getNewSuperior() ) );
+                }
+            }
+        }
+        catch ( BufferOverflowException boe )
+        {
+            throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
+        }
+
+        return buffer;
     }
 }

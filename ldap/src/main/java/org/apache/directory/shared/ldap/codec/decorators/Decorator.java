@@ -19,45 +19,34 @@
  */
 package org.apache.directory.shared.ldap.codec.decorators;
 
+import java.nio.ByteBuffer;
 
-import org.apache.directory.shared.ldap.model.message.Message;
-import org.apache.directory.shared.ldap.model.message.Request;
-import org.apache.directory.shared.ldap.model.message.ResultResponse;
-import org.apache.directory.shared.ldap.model.message.ResultResponseRequest;
+import org.apache.directory.shared.asn1.EncoderException;
+
+
 
 
 /**
- * A decorator for the LdapResultResponse message
- *
+ * A decorator interface exposing the ComputeLength and encode methods.
+ * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public abstract class ResultResponseRequestDecorator extends RequestDecorator implements ResultResponseRequest
+public interface Decorator
 {
     /**
-     * Makes Request a MessageDecorator.
-     *
-     * @param decoratedMessage the decorated message
+     * Compute the object length, which is the sum of all inner length.
+     * 
+     * @return The object's computed length
      */
-    public ResultResponseRequestDecorator( Message decoratedMessage )
-    {
-        super( decoratedMessage );
-    }
-    
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean hasResponse()
-    {
-        return ( ( Request ) getDecoratedMessage() ).hasResponse();
-    }
+    int computeLength();
 
 
     /**
-     * {@inheritDoc}
+     * Encode the object to a PDU.
+     * 
+     * @param buffer The buffer where to put the PDU
+     * @return The PDU.
+     * @throws EncoderException if the buffer can't be encoded
      */
-    public ResultResponse getResultResponse()
-    {
-        return ( ( ResultResponseRequest ) getDecoratedMessage() ).getResultResponse();
-    }
+    ByteBuffer encode( ByteBuffer buffer ) throws EncoderException;
 }

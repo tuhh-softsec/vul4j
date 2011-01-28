@@ -20,6 +20,13 @@
 package org.apache.directory.shared.ldap.codec.decorators;
 
 
+import java.nio.BufferOverflowException;
+import java.nio.ByteBuffer;
+
+import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.asn1.ber.tlv.TLV;
+import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.model.message.DeleteResponse;
 
 
@@ -70,5 +77,56 @@ public class DeleteResponseDecorator extends ResponseDecorator implements Delete
     public int getDeleteResponseLength()
     {
         return deleteResponseLength;
+    }
+
+    
+    //-------------------------------------------------------------------------
+    // The Decorator methods
+    //-------------------------------------------------------------------------
+    /**
+     * Compute the DelResponse length 
+     * 
+     * DelResponse :
+     * 
+     * 0x6B L1
+     *  |
+     *  +--> LdapResult
+     * 
+     * L1 = Length(LdapResult)
+     * 
+     * Length(DelResponse) = Length(0x6B) + Length(L1) + L1
+     */
+    public int computeLength()
+    {
+        int deleteResponseLength = ((LdapResultDecorator)getLdapResult()).computeLength();
+
+        setDeleteResponseLength( deleteResponseLength );
+
+        return 1 + TLV.getNbBytes( deleteResponseLength ) + deleteResponseLength;
+    }
+
+
+    /**
+     * Encode the DelResponse message to a PDU.
+     * 
+     * @param buffer The buffer where to put the PDU
+     */
+    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    {
+        try
+        {
+            // The DelResponse Tag
+            buffer.put( LdapConstants.DEL_RESPONSE_TAG );
+            buffer.put( TLV.getBytes( getDeleteResponseLength() ) );
+
+            // The LdapResult
+            ((LdapResultDecorator)getLdapResult()).encode( buffer );
+        }
+        catch ( BufferOverflowException boe )
+        {
+            throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
+        }
+        
+        return buffer;
     }
 }

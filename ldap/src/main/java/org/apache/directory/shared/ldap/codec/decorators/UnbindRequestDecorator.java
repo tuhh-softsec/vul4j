@@ -20,6 +20,12 @@
 package org.apache.directory.shared.ldap.codec.decorators;
 
 
+import java.nio.BufferOverflowException;
+import java.nio.ByteBuffer;
+
+import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.model.message.UnbindRequest;
 
 
@@ -49,5 +55,43 @@ public class UnbindRequestDecorator extends RequestDecorator implements UnbindRe
     public UnbindRequest getUnbindRequest()
     {
         return ( UnbindRequest ) getDecoratedMessage();
+    }
+
+
+    //-------------------------------------------------------------------------
+    // The Decorator methods
+    //-------------------------------------------------------------------------
+    /**
+     * Compute the UnBindRequest length 
+     * 
+     * UnBindRequest : 
+     * 0x42 00
+     */
+    public int computeLength()
+    {
+        return 2; // Always 2
+    }
+    
+    
+    /**
+     * Encode the Unbind protocolOp part
+     */
+    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    {
+        try
+        {
+            // The tag
+            buffer.put( LdapConstants.UNBIND_REQUEST_TAG );
+
+            // The length is always null.
+            buffer.put( ( byte ) 0 );
+        }
+        catch ( BufferOverflowException boe )
+        {
+            String msg = I18n.err( I18n.ERR_04005 );
+            throw new EncoderException( msg );
+        }
+        
+        return buffer;
     }
 }

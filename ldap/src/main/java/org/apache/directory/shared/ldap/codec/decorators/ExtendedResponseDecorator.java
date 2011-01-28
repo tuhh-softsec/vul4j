@@ -20,7 +20,15 @@
 package org.apache.directory.shared.ldap.codec.decorators;
 
 
+import java.nio.BufferOverflowException;
+import java.nio.ByteBuffer;
+
+import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.asn1.ber.tlv.TLV;
+import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
+import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -157,5 +165,115 @@ public class ExtendedResponseDecorator extends ResponseDecorator implements Exte
     public void setResponseValue( byte[] responseValue )
     {
         getExtendedResponse().setResponseValue( responseValue );
+    }
+
+    
+    //-------------------------------------------------------------------------
+    // The Decorator methods
+    //-------------------------------------------------------------------------
+    /**
+     * Compute the ExtendedResponse length
+     * 
+     * ExtendedResponse :
+     * 
+     * 0x78 L1
+     *  |
+     *  +--> LdapResult
+     * [+--> 0x8A L2 name
+     * [+--> 0x8B L3 response]]
+     * 
+     * L1 = Length(LdapResult)
+     *      [ + Length(0x8A) + Length(L2) + L2
+     *       [ + Length(0x8B) + Length(L3) + L3]]
+     * 
+     * Length(ExtendedResponse) = Length(0x78) + Length(L1) + L1
+     * 
+     * @return The ExtendedResponse length
+     */
+    public int computeLength()
+    {
+        int ldapResultLength = ((LdapResultDecorator)getLdapResult()).computeLength();
+
+        int extendedResponseLength = ldapResultLength;
+
+        String id = getResponseName();
+
+        if ( !Strings.isEmpty(id) )
+        {
+            byte[] idBytes = Strings.getBytesUtf8(id);
+            setResponseNameBytes( idBytes );
+            int idLength = idBytes.length;
+            extendedResponseLength += 1 + TLV.getNbBytes( idLength ) + idLength;
+        }
+
+        byte[] encodedValue = getResponseValue();
+
+        if ( encodedValue != null )
+        {
+            extendedResponseLength += 1 + TLV.getNbBytes( encodedValue.length ) + encodedValue.length;
+        }
+
+        setExtendedResponseLength( extendedResponseLength );
+
+        return 1 + TLV.getNbBytes( extendedResponseLength ) + extendedResponseLength;
+    }
+
+
+    /**
+     * Encode the ExtendedResponse message to a PDU. 
+     * ExtendedResponse :
+     * LdapResult.encode()
+     * [0x8A LL response name]
+     * [0x8B LL response]
+     * 
+     * @param buffer The buffer where to put the PDU
+     * @return The PDU.
+     */
+    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    {
+        try
+        {
+            // The ExtendedResponse Tag
+            buffer.put( LdapConstants.EXTENDED_RESPONSE_TAG );
+            buffer.put( TLV.getBytes( getExtendedResponseLength() ) );
+
+            // The LdapResult
+            ((LdapResultDecorator)getLdapResult()).encode( buffer );
+
+            // The ID, if any
+            byte[] idBytes = getResponseNameBytes();
+
+            if ( idBytes != null )
+            {
+                buffer.put( ( byte ) LdapConstants.EXTENDED_RESPONSE_RESPONSE_NAME_TAG );
+                buffer.put( TLV.getBytes( idBytes.length ) );
+
+                if ( idBytes.length != 0 )
+                {
+                    buffer.put( idBytes );
+                }
+            }
+
+            // The encodedValue, if any
+            byte[] encodedValue = getResponseValue();
+
+            if ( encodedValue != null )
+            {
+                buffer.put( ( byte ) LdapConstants.EXTENDED_RESPONSE_RESPONSE_TAG );
+
+                buffer.put( TLV.getBytes( encodedValue.length ) );
+
+                if ( encodedValue.length != 0 )
+                {
+                    buffer.put( encodedValue );
+                }
+            }
+        }
+        catch ( BufferOverflowException boe )
+        {
+            throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
+        }
+        
+        return buffer;
     }
 }

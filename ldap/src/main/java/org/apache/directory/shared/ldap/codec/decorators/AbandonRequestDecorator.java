@@ -20,6 +20,13 @@
 package org.apache.directory.shared.ldap.codec.decorators;
 
 
+import java.nio.BufferOverflowException;
+import java.nio.ByteBuffer;
+
+import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.asn1.ber.tlv.Value;
+import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.model.message.AbandonRequest;
 
 
@@ -51,10 +58,8 @@ public class AbandonRequestDecorator extends RequestDecorator implements Abandon
 
 
     //-------------------------------------------------------------------------
-    // The SearchResultReference methods
+    // The AbandonRequest methods
     //-------------------------------------------------------------------------
-    
-    
     /**
      * {@inheritDoc}
      */
@@ -70,5 +75,51 @@ public class AbandonRequestDecorator extends RequestDecorator implements Abandon
     public void setAbandoned( int requestId )
     {
         getAbandonRequest().setAbandoned( requestId );
+    }
+
+    
+    //-------------------------------------------------------------------------
+    // The Decorator methods
+    //-------------------------------------------------------------------------
+    /**
+     * Encode the Abandon protocolOp part
+     */
+    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    {
+        try
+        {
+            // The tag
+            buffer.put( LdapConstants.ABANDON_REQUEST_TAG );
+
+            // The length. It has to be evaluated depending on
+            // the abandoned messageId value.
+            buffer.put( ( byte ) Value.getNbBytes( getAbandoned() ) );
+
+            // The abandoned messageId
+            buffer.put( Value.getBytes( getAbandoned() ) );
+        }
+        catch ( BufferOverflowException boe )
+        {
+            String msg = I18n.err( I18n.ERR_04005 );
+            throw new EncoderException( msg );
+        }
+        
+        return buffer;
+    }
+
+
+    /**
+     * Compute the AbandonRequest length 
+     * 
+     * AbandonRequest : 
+     * 0x50 0x0(1..4) abandoned MessageId 
+     * 
+     * Length(AbandonRequest) = Length(0x50) + 1 + Length(abandoned MessageId)
+     */
+    public int computeLength()
+    {
+        int length = 1 + 1 + Value.getNbBytes( getAbandoned() );
+
+        return length;
     }
 }

@@ -20,7 +20,15 @@
 package org.apache.directory.shared.ldap.codec.decorators;
 
 
+import java.nio.BufferOverflowException;
+import java.nio.ByteBuffer;
+
+import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.asn1.ber.tlv.TLV;
+import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
+import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -137,5 +145,98 @@ public class ExtendedRequestDecorator extends SingleReplyRequestDecorator implem
     public void setRequestValue( byte[] requestValue )
     {
         getExtendedRequest().setRequestValue( requestValue );
+    }
+
+    
+    //-------------------------------------------------------------------------
+    // The Decorator methods
+    //-------------------------------------------------------------------------
+    /**
+     * Compute the ExtendedRequest length
+     * 
+     * ExtendedRequest :
+     * 
+     * 0x77 L1
+     *  |
+     *  +--> 0x80 L2 name
+     *  [+--> 0x81 L3 value]
+     * 
+     * L1 = Length(0x80) + Length(L2) + L2
+     *      [+ Length(0x81) + Length(L3) + L3]
+     * 
+     * Length(ExtendedRequest) = Length(0x77) + Length(L1) + L1
+     */
+    public int computeLength()
+    {
+        byte[] requestNameBytes = Strings.getBytesUtf8( getRequestName() );
+
+        setRequestNameBytes( requestNameBytes );
+
+        int extendedRequestLength = 1 + TLV.getNbBytes( requestNameBytes.length ) + requestNameBytes.length;
+
+        if ( getRequestValue() != null )
+        {
+            extendedRequestLength += 1 + TLV.getNbBytes( getRequestValue().length )
+                + getRequestValue().length;
+        }
+
+        setExtendedRequestLength( extendedRequestLength );
+
+        return 1 + TLV.getNbBytes( extendedRequestLength ) + extendedRequestLength;
+    }
+
+
+    /**
+     * Encode the ExtendedRequest message to a PDU. 
+     * 
+     * ExtendedRequest :
+     * 
+     * 0x80 LL resquest name
+     * [0x81 LL request value]
+     * 
+     * @param buffer The buffer where to put the PDU
+     * @return The PDU.
+     */
+    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    {
+        try
+        {
+            // The BindResponse Tag
+            buffer.put( LdapConstants.EXTENDED_REQUEST_TAG );
+            buffer.put( TLV.getBytes( getExtendedRequestLength() ) );
+
+            // The requestName, if any
+            if ( getRequestNameBytes() == null )
+            {
+                throw new EncoderException( I18n.err( I18n.ERR_04043 ) );
+            }
+
+            buffer.put( ( byte ) LdapConstants.EXTENDED_REQUEST_NAME_TAG );
+            buffer.put( TLV.getBytes( getRequestNameBytes().length ) );
+
+            if ( getRequestNameBytes().length != 0 )
+            {
+                buffer.put( getRequestNameBytes() );
+            }
+
+            // The requestValue, if any
+            if ( getRequestValue() != null )
+            {
+                buffer.put( ( byte ) LdapConstants.EXTENDED_REQUEST_VALUE_TAG );
+
+                buffer.put( TLV.getBytes( getRequestValue().length ) );
+
+                if ( getRequestValue().length != 0 )
+                {
+                    buffer.put( getRequestValue() );
+                }
+            }
+        }
+        catch ( BufferOverflowException boe )
+        {
+            throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
+        }
+
+        return buffer;
     }
 }

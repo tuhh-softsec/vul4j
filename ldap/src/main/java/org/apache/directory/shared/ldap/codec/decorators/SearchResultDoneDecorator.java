@@ -20,6 +20,13 @@
 package org.apache.directory.shared.ldap.codec.decorators;
 
 
+import java.nio.BufferOverflowException;
+import java.nio.ByteBuffer;
+
+import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.asn1.ber.tlv.TLV;
+import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.model.message.SearchResultDone;
 
 
@@ -70,5 +77,57 @@ public class SearchResultDoneDecorator extends ResponseDecorator implements Sear
     public int getSearchResultDoneLength()
     {
         return searchResultDoneLength;
+    }
+
+
+    //-------------------------------------------------------------------------
+    // The Decorator methods
+    //-------------------------------------------------------------------------
+    /**
+     * Compute the SearchResultDone length 
+     * 
+     * SearchResultDone : 
+     * <pre>
+     * 0x65 L1 
+     *   | 
+     *   +--> LdapResult 
+     *   
+     * L1 = Length(LdapResult) 
+     * Length(SearchResultDone) = Length(0x65) + Length(L1) + L1
+     * </pre>
+     */
+    public int computeLength()
+    {
+        int searchResultDoneLength = ((LdapResultDecorator)getLdapResult()).computeLength();
+
+        setSearchResultDoneLength( searchResultDoneLength );
+
+        return 1 + TLV.getNbBytes( searchResultDoneLength ) + searchResultDoneLength;
+    }
+
+
+    /**
+     * Encode the SearchResultDone message to a PDU.
+     * 
+     * @param buffer The buffer where to put the PDU
+     * @param searchResultDoneDecorator The SearchResultDone decorator
+     */
+    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    {
+        try
+        {
+            // The searchResultDone Tag
+            buffer.put( LdapConstants.SEARCH_RESULT_DONE_TAG );
+            buffer.put( TLV.getBytes( getSearchResultDoneLength() ) );
+
+            // The LdapResult
+            ((LdapResultDecorator)getLdapResult()).encode( buffer );
+        }
+        catch ( BufferOverflowException boe )
+        {
+            throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
+        }
+        
+        return buffer;
     }
 }

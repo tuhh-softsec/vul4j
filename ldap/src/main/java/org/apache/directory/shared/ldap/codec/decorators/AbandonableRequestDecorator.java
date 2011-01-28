@@ -30,7 +30,7 @@ import org.apache.directory.shared.ldap.model.message.Message;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class AbandonableRequestDecorator extends RequestDecorator implements AbandonableRequest
+public abstract class AbandonableRequestDecorator extends RequestDecorator implements AbandonableRequest
 {
     /**
      * Makes Request a MessageDecorator.

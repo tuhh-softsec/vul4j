@@ -20,6 +20,13 @@
 package org.apache.directory.shared.ldap.codec.decorators;
 
 
+import java.nio.BufferOverflowException;
+import java.nio.ByteBuffer;
+
+import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.asn1.ber.tlv.TLV;
+import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.model.message.DeleteRequest;
 import org.apache.directory.shared.ldap.model.name.Dn;
 
@@ -54,8 +61,6 @@ public class DeleteRequestDecorator extends SingleReplyRequestDecorator implemen
     //-------------------------------------------------------------------------
     // The DeleteRequest methods
     //-------------------------------------------------------------------------
-
-    
     /**
      * {@inheritDoc}
      */
@@ -71,5 +76,52 @@ public class DeleteRequestDecorator extends SingleReplyRequestDecorator implemen
     public void setName( Dn name )
     {
         getDeleteRequest().setName( name );
+    }
+
+    
+    //-------------------------------------------------------------------------
+    // The Decorator methods
+    //-------------------------------------------------------------------------
+    /**
+     * Compute the DelRequest length 
+     * 
+     * DelRequest : 
+     * 0x4A L1 entry 
+     * 
+     * L1 = Length(entry) 
+     * Length(DelRequest) = Length(0x4A) + Length(L1) + L1
+     */
+    public int computeLength()
+    {
+        // The entry
+        return 1 + TLV.getNbBytes( Dn.getNbBytes( getName() ) ) + Dn.getNbBytes( getName() );
+    }
+
+
+    /**
+     * Encode the DelRequest message to a PDU. 
+     * 
+     * DelRequest : 
+     * 0x4A LL entry
+     * 
+     * @param buffer The buffer where to put the PDU
+     */
+    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    {
+        try
+        {
+            // The DelRequest Tag
+            buffer.put( LdapConstants.DEL_REQUEST_TAG );
+
+            // The entry
+            buffer.put( TLV.getBytes( Dn.getNbBytes( getName() ) ) );
+            buffer.put( Dn.getBytes( getName() ) );
+        }
+        catch ( BufferOverflowException boe )
+        {
+            throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
+        }
+        
+        return buffer;
     }
 }
