@@ -23,10 +23,12 @@ package org.apache.directory.shared.dsmlv2.addRequest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
@@ -141,19 +143,20 @@ public class AddRequestTest extends AbstractTest
         }
         catch ( Exception e )
         {
+            e.printStackTrace();
             fail( e.getMessage() );
         }
 
         AddRequest addRequest = ( AddRequest ) parser.getBatchRequest().getCurrentRequest();
+        Map<String, Control> controls = addRequest.getControls();
 
         assertEquals( 1, addRequest.getControls().size() );
 
-        Control control = addRequest.getCurrentControl();
+        Control control = controls.get( "1.2.840.113556.1.4.643" );
 
+        assertNotNull( control );
         assertTrue( control.isCritical() );
-
         assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
-
         assertEquals( "Some text", Strings.utf8ToString((byte[]) control.getValue()) );
     }
 
@@ -180,9 +183,13 @@ public class AddRequestTest extends AbstractTest
         }
 
         AddRequest addRequest = ( AddRequest ) parser.getBatchRequest().getCurrentRequest();
-        Control control = addRequest.getCurrentControl();
+        Map<String, Control> controls = addRequest.getControls();
 
         assertEquals( 1, addRequest.getControls().size() );
+        
+        Control control = controls.get( "1.2.840.113556.1.4.643" );
+
+        assertNotNull( control );
         assertTrue( control.isCritical() );
         assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
         assertEquals( "DSMLv2.0 rocks!!", Strings.utf8ToString((byte[]) control.getValue()) );
@@ -211,9 +218,13 @@ public class AddRequestTest extends AbstractTest
         }
 
         AddRequest addRequest = ( AddRequest ) parser.getBatchRequest().getCurrentRequest();
-        Control control = addRequest.getCurrentControl();
+        Map<String, Control> controls = addRequest.getControls();
 
         assertEquals( 1, addRequest.getControls().size() );
+        
+        Control control = controls.get( "1.2.840.113556.1.4.643" );
+
+        assertNotNull( control );
         assertTrue( control.isCritical() );
         assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
         assertFalse( control.hasValue() );
@@ -241,9 +252,13 @@ public class AddRequestTest extends AbstractTest
         }
 
         AddRequest addRequest = ( AddRequest ) parser.getBatchRequest().getCurrentRequest();
-        Control control = addRequest.getCurrentControl();
+        Map<String, Control> controls = addRequest.getControls();
 
         assertEquals( 2, addRequest.getControls().size() );
+        
+        Control control = controls.get( "1.2.840.113556.1.4.789" );
+
+        assertNotNull( control );
         assertFalse( control.isCritical() );
         assertEquals( "1.2.840.113556.1.4.789", control.getOid() );
         assertEquals( "Some other text", Strings.utf8ToString((byte[]) control.getValue()) );
@@ -272,9 +287,13 @@ public class AddRequestTest extends AbstractTest
         }
 
         AddRequest addRequest = ( AddRequest ) parser.getBatchRequest().getCurrentRequest();
-        Control control = addRequest.getCurrentControl();
+        Map<String, Control> controls = addRequest.getControls();
 
         assertEquals( 3, addRequest.getControls().size() );
+        
+        Control control = controls.get( "1.2.840.113556.1.4.456" );
+
+        assertNotNull( control );
         assertTrue( control.isCritical() );
         assertEquals( "1.2.840.113556.1.4.456", control.getOid() );
         assertFalse( control.hasValue() );

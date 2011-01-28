@@ -49,9 +49,6 @@ public class Dsmlv2Container implements Container
     /** The BatchRequest of the parsing */
     private BatchRequest batchRequest;
 
-    /** The BatchRequestDecorator of the parsing */
-    private BatchRequest batchRequestDecorator;
-
     /** The BatchResponse of the parsing */
     private BatchResponse batchResponse;
 
@@ -72,18 +69,6 @@ public class Dsmlv2Container implements Container
 
 
     /**
-     * Gets the DSML Batch Request decorator
-     * 
-     * @return
-     *      Returns the Batch Request decorator
-     */
-    public BatchRequest getBatchRequestDecorator()
-    {
-        return batchRequestDecorator;
-    }
-
-
-    /**
      * Sets the DSML Batch Request
      * 
      * @param batchRequest
@@ -92,18 +77,6 @@ public class Dsmlv2Container implements Container
     public void setBatchRequest( BatchRequest batchRequest )
     {
         this.batchRequest = batchRequest;
-    }
-
-
-    /**
-     * Sets the DSML Batch Request decorator
-     * 
-     * @param batchRequest decorator
-     *      the Batch Request decorator to set
-     */
-    public void setBatchRequestDecorator( BatchRequest batchRequest )
-    {
-        this.batchRequestDecorator = batchRequest;
     }
 
 

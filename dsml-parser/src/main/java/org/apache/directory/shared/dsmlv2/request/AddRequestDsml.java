@@ -21,13 +21,14 @@ package org.apache.directory.shared.dsmlv2.request;
 
 
 import org.apache.directory.shared.dsmlv2.ParserUtils;
+import org.apache.directory.shared.ldap.codec.decorators.AddRequestDecorator;
+import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.model.entry.Value;
-import org.apache.directory.shared.ldap.model.message.AddRequestImpl;
-import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
-import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.message.AddRequest;
+import org.apache.directory.shared.ldap.model.message.AddRequestImpl;
+import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
@@ -149,7 +150,7 @@ public class AddRequestDsml extends AbstractRequestDsml
      */
     public void addAttributeType( String type ) throws LdapException
     {
-        ( ( AddRequest ) instance ).addAttributeType( type );
+        ( ( AddRequestDecorator ) instance ).addAttributeType( type );
     }
 
 
@@ -162,15 +163,15 @@ public class AddRequestDsml extends AbstractRequestDsml
     {
         if ( value instanceof Value<?> )
         {
-            ( ( AddRequest ) instance ).addAttributeValue( (Value<?>) value );
+            ( ( AddRequestDecorator ) instance ).addAttributeValue( (Value<?>) value );
         }
         else if ( value instanceof String )
         {
-            ( ( AddRequest ) instance ).addAttributeValue( ( String ) value );
+            ( ( AddRequestDecorator ) instance ).addAttributeValue( ( String ) value );
         }
         else if ( value instanceof byte[] )
         {
-            ( ( AddRequest ) instance ).addAttributeValue( ( byte[] ) value );
+            ( ( AddRequestDecorator ) instance ).addAttributeValue( ( byte[] ) value );
         }
     }
 
@@ -214,6 +215,6 @@ public class AddRequestDsml extends AbstractRequestDsml
      */
     public String getCurrentAttributeType()
     {
-        return ( ( AddRequest ) instance ).getCurrentAttributeType();
+        return ( ( AddRequestDecorator ) instance ).getCurrentAttributeType();
     }
 }
