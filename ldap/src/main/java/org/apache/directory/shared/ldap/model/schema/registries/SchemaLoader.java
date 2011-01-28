@@ -29,7 +29,7 @@ import org.apache.directory.shared.ldap.model.exception.LdapException;
 
 
 /**
- * Loads schemas into registres.
+ * Loads schemas into registries.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
@@ -51,41 +51,6 @@ public interface SchemaLoader
      */
     Schema getSchema( String schemaName );
 
-
-    /*
-     * Loads a set of schemas.  A best effort should be made to load the dependended 
-     * schemas that these schemas may rely on even if they are not included in the collection.
-     * 
-     * @param registries the registries to populate with these schemas
-     * @param check tells if the Registries must be checked after having been loaded
-     * @param schemas the set of schemas to load
-     * @return the list of erros we met during the loading of schemas
-     * @throws Exception if any kind of problems are encountered during the load
-     *
-    List<Throwable> loadWithDependencies( Registries registries, boolean check, Schema... schemas ) throws Exception;
-    
-    
-    /**
-     * Loads all available enabled schemas.
-     *
-     * @param registries the registry to load all enabled schemas into
-     * @param check tells if the Registries must be checked after having been loaded
-     * @return the list of erros we met during the loading of schemas
-     * @throws Exception if there are any failures
-     *
-    List<Throwable> loadAllEnabled( Registries registries, boolean check ) throws Exception;
-    
-    
-    /**
-     * Loads a single schema.  Do not try to resolve dependencies while implementing this method.
-     * 
-     * @param schema the schema to load
-     * @param registries the registries to populate with these schemas
-     * @param isDepLoad tells the loader if this load request is to satisfy a dependency
-     * @throws Exception if any kind of problems are encountered during the load
-     *
-    void load( Schema schema, Registries registries, boolean isDepLoad ) throws Exception;
-    */
     
     /**
      * Build a list of AttributeTypes read from the underlying storage for

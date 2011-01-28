@@ -18,6 +18,7 @@
  */
 package org.apache.directory.shared.ldap.model.entry;
 
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -27,6 +28,7 @@ import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidAttributeValueException;
 import org.apache.directory.shared.ldap.model.schema.AttributeType;
 import org.apache.directory.shared.ldap.model.schema.SyntaxChecker;
+
 
 /**
  * A generic interface mocking the Attribute JNDI interface. This interface
@@ -367,69 +369,6 @@ public interface EntryAttribute extends Iterable<Value<?>>, Cloneable, Externali
     String getString() throws LdapInvalidAttributeValueException;
 
     
-    /*
-     * Puts some values to this attribute.
-     * <p>
-     * The new values will replace the previous values.
-     * </p>
-     * <p>
-     * This method returns the number of values that were put.
-     * </p>
-     *
-     * @param val some values to be put which may be null
-     * @return the number of added values, or 0 if none has been added
-     *
-    int put( String... vals );
-
-
-    /**
-     * Puts some values to this attribute.
-     * <p>
-     * The new values will replace the previous values.
-     * </p>
-     * <p>
-     * This method returns the number of values that were put.
-     * </p>
-     *
-     * @param val some values to be put which may be null
-     * @return the number of added values, or 0 if none has been added
-     *
-    int put( byte[]... vals );
-
-    
-    /**
-     * Puts some values to this attribute.
-     * <p>
-     * The new values are replace the previous values.
-     * </p>
-     * <p>
-     * This method returns the number of values that were put.
-     * </p>
-     *
-     * @param val some values to be put which may be null
-     * @return the number of added values, or 0 if none has been added
-     *
-    int put( Value<?>... vals );
-
-
-    /**
-     * <p>
-     * Puts a list of values into this attribute.
-     * </p>
-     * <p>
-     * The new values will replace the previous values.
-     * </p>
-     * <p>
-     * This method returns the number of values that were put.
-     * </p>
-     *
-     * @param vals the values to be put
-     * @return the number of added values, or 0 if none has been added
-     *
-    int put( List<Value<?>> vals );
-    */
-
-
     /**
      * <p>
      * Removes all the  values that are equal to the given values.
@@ -495,7 +434,7 @@ public interface EntryAttribute extends Iterable<Value<?>>, Cloneable, Externali
 
     
     /**
-     * Set the normalized ID. The ID will be lowercased, and spaces
+     * Set the normalized ID. The ID will be lower cased, and spaces
      * will be trimmed. 
      *
      * @param id The attribute ID
@@ -507,7 +446,7 @@ public interface EntryAttribute extends Iterable<Value<?>>, Cloneable, Externali
     
     /**
      * Set the user provided ID. It will also set the ID, normalizing
-     * the upId (removing spaces before and after, and lowercasing it)
+     * the upId (removing spaces before and after, and lower casing it)
      *
      * @param upId The attribute ID
      * @throws IllegalArgumentException If the ID is empty or null or
@@ -530,7 +469,7 @@ public interface EntryAttribute extends Iterable<Value<?>>, Cloneable, Externali
      * </p>
      * <p>
      * In any case, the ATtributeType will be changed. The caller is responsible for
-     * the present values to be compatoble with the new AttributeType.
+     * the present values to be compatible with the new AttributeType.
      * </p>
      * 
      * @param upId The attribute ID

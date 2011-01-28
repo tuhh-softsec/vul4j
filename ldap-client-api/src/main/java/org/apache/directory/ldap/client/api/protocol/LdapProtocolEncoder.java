@@ -46,7 +46,7 @@ public class LdapProtocolEncoder implements ProtocolEncoder
      */
     public void encode( IoSession session, Object message, ProtocolEncoderOutput out ) throws Exception
     {
-        ByteBuffer buffer = ENCODER.encodeMessage( (Message) message );
+        ByteBuffer buffer = ENCODER.encodeMessage( ( Message ) message );
 
         IoBuffer ioBuffer = IoBuffer.wrap( buffer );
 

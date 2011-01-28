@@ -130,7 +130,7 @@ public interface SchemaObject extends Serializable
 
     /**
      * Add a new name to the list of names for this SchemaObject. The name
-     * is lowercased and trimmed.
+     * is lower cased and trimmed.
      *  
      * @param names The names to add
      */
@@ -139,7 +139,7 @@ public interface SchemaObject extends Serializable
 
     /**
      * Sets the list of names for this SchemaObject. The names are
-     * lowercased and trimmed.
+     * lower cased and trimmed.
      *  
      * @param names The list of names. Can be empty
      */

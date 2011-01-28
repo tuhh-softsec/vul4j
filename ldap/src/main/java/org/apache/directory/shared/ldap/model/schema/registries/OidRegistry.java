@@ -57,7 +57,7 @@ public class OidRegistry implements Iterable<SchemaObject>
      * Tells if the given OID is present on this registry
      * 
      * @param oid The OID to lookup
-     * @return true if the OID alreadyexists
+     * @return true if the OID already exists
      */
     public boolean contains( String oid )
     {
