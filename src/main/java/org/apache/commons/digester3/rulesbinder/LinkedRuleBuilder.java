@@ -58,7 +58,7 @@ public interface LinkedRuleBuilder {
      *
      * @param paramIndex The zero-relative parameter number
      */
-    void callParam(int paramIndex);
+    LinkedCallParamBuilder callParam(int paramIndex);
 
     /**
      * Construct a "call parameter" rule that will save the body text of this element as the parameter value.
