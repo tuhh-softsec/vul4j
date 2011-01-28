@@ -41,7 +41,14 @@ import org.apache.directory.shared.dsmlv2.reponse.ErrorResponse.ErrorResponseTyp
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
+import org.apache.directory.shared.ldap.codec.decorators.AddResponseDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.BindResponseDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.CompareResponseDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.DeleteResponseDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.ExtendedResponseDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.ModifyDnResponseDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.ModifyResponseDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.SearchResultDoneDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.SearchResultEntryDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.SearchResultReferenceDecorator;
@@ -49,22 +56,15 @@ import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.exception.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.model.filter.LdapURL;
-import org.apache.directory.shared.ldap.model.message.AddResponse;
 import org.apache.directory.shared.ldap.model.message.AddResponseImpl;
-import org.apache.directory.shared.ldap.model.message.BindResponse;
 import org.apache.directory.shared.ldap.model.message.BindResponseImpl;
-import org.apache.directory.shared.ldap.model.message.CompareResponse;
 import org.apache.directory.shared.ldap.model.message.CompareResponseImpl;
-import org.apache.directory.shared.ldap.model.message.Control;
-import org.apache.directory.shared.ldap.model.message.DeleteResponse;
 import org.apache.directory.shared.ldap.model.message.DeleteResponseImpl;
 import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
 import org.apache.directory.shared.ldap.model.message.ExtendedResponseImpl;
 import org.apache.directory.shared.ldap.model.message.LdapResult;
 import org.apache.directory.shared.ldap.model.message.Message;
-import org.apache.directory.shared.ldap.model.message.ModifyDnResponse;
 import org.apache.directory.shared.ldap.model.message.ModifyDnResponseImpl;
-import org.apache.directory.shared.ldap.model.message.ModifyResponse;
 import org.apache.directory.shared.ldap.model.message.ModifyResponseImpl;
 import org.apache.directory.shared.ldap.model.message.ReferralImpl;
 import org.apache.directory.shared.ldap.model.message.Response;
@@ -794,7 +794,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            AddResponse addResponse = new AddResponseImpl();
+            AddResponseDecorator addResponse = new AddResponseDecorator( new AddResponseImpl() );
 
             container.getBatchResponse().addResponse( addResponse );
 
@@ -836,7 +836,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            BindResponse bindResponse = new BindResponseImpl();
+            BindResponseDecorator bindResponse = new BindResponseDecorator( new BindResponseImpl() );
 
             container.getBatchResponse().addResponse( bindResponse );
 
@@ -879,7 +879,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            CompareResponse compareResponse = new CompareResponseImpl();
+            CompareResponseDecorator compareResponse = new CompareResponseDecorator( new CompareResponseImpl() );
 
             container.getBatchResponse().addResponse( compareResponse );
 
@@ -921,7 +921,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            DeleteResponse delResponse = new DeleteResponseImpl();
+            DeleteResponseDecorator delResponse = new DeleteResponseDecorator( new DeleteResponseImpl() );
 
             container.getBatchResponse().addResponse( delResponse );
 
@@ -963,7 +963,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            ModifyResponse modifyResponse = new ModifyResponseImpl();
+            ModifyResponseDecorator modifyResponse = new ModifyResponseDecorator( new ModifyResponseImpl() );
 
             container.getBatchResponse().addResponse( modifyResponse );
 
@@ -1005,7 +1005,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            ModifyDnResponse modifyDNResponse = new ModifyDnResponseImpl();
+            ModifyDnResponseDecorator modifyDNResponse = new ModifyDnResponseDecorator( new ModifyDnResponseImpl() );
 
             container.getBatchResponse().addResponse( modifyDNResponse );
 
@@ -1047,7 +1047,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            ExtendedResponse extendedResponse = null;
+            ExtendedResponseDecorator extendedResponse = null;
 
             // Checking and adding the batchRequest's attributes
             String attributeValue;
@@ -1059,11 +1059,11 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
 
             if ( attributeValue != null )
             {
-                extendedResponse = new ExtendedResponseImpl( ParserUtils.parseAndVerifyRequestID( attributeValue, xpp ) );
+                extendedResponse = new ExtendedResponseDecorator( new ExtendedResponseImpl( ParserUtils.parseAndVerifyRequestID( attributeValue, xpp ) ) );
             }
             else
             {
-                extendedResponse = new ExtendedResponseImpl( -1 );
+                extendedResponse = new ExtendedResponseDecorator( new ExtendedResponseImpl( -1 ) );
             }
 
             container.getBatchResponse().addResponse( extendedResponse );
@@ -1196,7 +1196,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
      */
     private void createAndAddControl( Dsmlv2Container container, Message parent ) throws XmlPullParserException
     {
-        Control control = null;
+        ControlDecorator control = null;
 
         XmlPullParser xpp = container.getParser();
 
@@ -1212,7 +1212,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
                 throw new XmlPullParserException( I18n.err( I18n.ERR_03006 ), xpp, null );
             }
 
-            control = new ControlImpl( attributeValue );
+            control = new ControlDecorator( new ControlImpl( attributeValue ) );
             parent.addControl( control );
         }
         else
@@ -1247,6 +1247,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
             Response ldapResponse = container.getBatchResponse().getCurrentResponse();
+            
             // Search Response is a special case
             if ( ldapResponse instanceof SearchResponse )
             {

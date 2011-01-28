@@ -23,11 +23,13 @@ package org.apache.directory.shared.dsmlv2.addResponse;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
@@ -36,9 +38,9 @@ import org.apache.directory.shared.dsmlv2.Dsmlv2ResponseParser;
 import org.apache.directory.shared.ldap.model.exception.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.model.filter.LdapURL;
 import org.apache.directory.shared.ldap.model.message.AddResponse;
+import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.LdapResult;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
-import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -112,15 +114,15 @@ public class AddResponseTest extends AbstractResponseTest
         }
 
         AddResponse addResponse = ( AddResponse ) parser.getBatchResponse().getCurrentResponse();
+        Map<String, Control> controls = addResponse.getControls();
 
         assertEquals( 1, addResponse.getControls().size() );
 
-        Control control = addResponse.getCurrentControl();
+        Control control = controls.get( "1.2.840.113556.1.4.643" );
 
+        assertNotNull( control );
         assertTrue( control.isCritical() );
-
         assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
-
         assertEquals( "Some text", Strings.utf8ToString((byte[]) control.getValue()) );
     }
 
@@ -147,9 +149,13 @@ public class AddResponseTest extends AbstractResponseTest
         }
 
         AddResponse addResponse = ( AddResponse ) parser.getBatchResponse().getCurrentResponse();
-        Control control = addResponse.getCurrentControl();
+        Map<String, Control> controls = addResponse.getControls();
 
         assertEquals( 1, addResponse.getControls().size() );
+
+        Control control = controls.get( "1.2.840.113556.1.4.643" );
+
+        assertNotNull( control );
         assertTrue( control.isCritical() );
         assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
         assertFalse( control.hasValue() );
@@ -177,15 +183,15 @@ public class AddResponseTest extends AbstractResponseTest
         }
 
         AddResponse addResponse = ( AddResponse ) parser.getBatchResponse().getCurrentResponse();
+        Map<String, Control> controls = addResponse.getControls();
 
         assertEquals( 2, addResponse.getControls().size() );
 
-        Control control = addResponse.getCurrentControl();
+        Control control = controls.get( "1.2.840.113556.1.4.789" );
 
+        assertNotNull( control );
         assertFalse( control.isCritical() );
-
         assertEquals( "1.2.840.113556.1.4.789", control.getOid() );
-
         assertEquals( "Some other text", Strings.utf8ToString((byte[]) control.getValue()) );
     }
 
@@ -212,15 +218,15 @@ public class AddResponseTest extends AbstractResponseTest
         }
 
         AddResponse addResponse = ( AddResponse ) parser.getBatchResponse().getCurrentResponse();
+        Map<String, Control> controls = addResponse.getControls();
 
         assertEquals( 3, addResponse.getControls().size() );
 
-        Control control = addResponse.getCurrentControl();
+        Control control = controls.get( "1.2.840.113556.1.4.456" );
 
+        assertNotNull( control );
         assertTrue( control.isCritical() );
-
         assertEquals( "1.2.840.113556.1.4.456", control.getOid() );
-
         assertFalse( control.hasValue() );
     }
 
