@@ -51,7 +51,7 @@ public interface LinkedRuleBuilder {
      *
      * @param methodName Method name of the parent object to call
      */
-    void callMethod(String methodName);
+    LinkedCallMethodBuilder callMethod(String methodName);
 
     /**
      * Saves a parameter for use by a surrounding {@link #callMethod(String)}.
