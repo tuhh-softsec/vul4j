@@ -20,7 +20,7 @@ package org.apache.commons.digester3.rulesbinder;
 /**
  * Builder invoked to back to .
  */
-interface BackToLinkedRuleBuilder {
+public interface BackToLinkedRuleBuilder {
 
     LinkedRuleBuilder then();
 
