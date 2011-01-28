@@ -18,7 +18,7 @@
 package org.apache.commons.digester3.rulesbinder;
 
 /**
- * Builder chained when invoking {@link LinkedRuleBuilder#objectCreate(String)}.
+ * Builder chained when invoking {@link LinkedRuleBuilder#callMethod(String)}.
  */
 public interface LinkedCallMethodBuilder extends LinkedRuleBuilder {
 
