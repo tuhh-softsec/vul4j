@@ -1065,7 +1065,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
         }
         else
         {
-            return null;
+            return syntaxOid;
         }
     }
 
