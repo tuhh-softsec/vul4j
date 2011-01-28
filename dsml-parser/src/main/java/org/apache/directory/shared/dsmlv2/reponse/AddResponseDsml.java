@@ -35,7 +35,7 @@ import org.dom4j.Element;
 public class AddResponseDsml extends AbstractResponseDsml
 {
     /**
-     * Creates a new instance of AddResponseDsml.
+     * Creates a new getDecoratedMessage() of AddResponseDsml.
      */
     public AddResponseDsml()
     {
@@ -44,7 +44,7 @@ public class AddResponseDsml extends AbstractResponseDsml
 
 
     /**
-     * Creates a new instance of AddResponseDsml.
+     * Creates a new getDecoratedMessage() of AddResponseDsml.
      *
      * @param ldapMessage
      *      the message to decorate
@@ -60,7 +60,7 @@ public class AddResponseDsml extends AbstractResponseDsml
      */
     public MessageTypeEnum getType()
     {
-        return instance.getType();
+        return getDecoratedMessage().getType();
     }
 
 
@@ -71,7 +71,7 @@ public class AddResponseDsml extends AbstractResponseDsml
     {
         Element element = root.addElement( "addResponse" );
 
-        LdapResultDsml ldapResultDsml = new LdapResultDsml( ( ( AddResponse ) instance ).getLdapResult(), instance );
+        LdapResultDsml ldapResultDsml = new LdapResultDsml( ( ( AddResponse ) getDecoratedMessage() ).getLdapResult(), getDecoratedMessage() );
         ldapResultDsml.toDsml( element );
         return element;
     }

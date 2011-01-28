@@ -35,7 +35,7 @@ import org.dom4j.Element;
 public class DelRequestDsml extends AbstractRequestDsml
 {
     /**
-     * Creates a new instance of DelRequestDsml.
+     * Creates a new getDecoratedMessage() of DelRequestDsml.
      */
     public DelRequestDsml()
     {
@@ -44,7 +44,7 @@ public class DelRequestDsml extends AbstractRequestDsml
 
 
     /**
-     * Creates a new instance of DelRequestDsml.
+     * Creates a new getDecoratedMessage() of DelRequestDsml.
      *
      * @param ldapMessage
      *      the message to decorate
@@ -60,7 +60,7 @@ public class DelRequestDsml extends AbstractRequestDsml
      */
     public MessageTypeEnum getType()
     {
-        return instance.getType();
+        return getDecoratedMessage().getType();
     }
 
 
@@ -71,7 +71,7 @@ public class DelRequestDsml extends AbstractRequestDsml
     {
         Element element = super.toDsml( root );
 
-        DeleteRequest request = ( DeleteRequest ) instance;
+        DeleteRequest request = ( DeleteRequest ) getDecoratedMessage();
 
         // Dn
         if ( request.getName() != null )
@@ -90,7 +90,7 @@ public class DelRequestDsml extends AbstractRequestDsml
      */
     public Dn getEntry()
     {
-        return ( ( DeleteRequest ) instance ).getName();
+        return ( ( DeleteRequest ) getDecoratedMessage() ).getName();
     }
 
 
@@ -101,6 +101,6 @@ public class DelRequestDsml extends AbstractRequestDsml
      */
     public void setEntry( Dn entry )
     {
-        ( (DeleteRequest) instance ).setName( entry );
+        ( (DeleteRequest) getDecoratedMessage() ).setName( entry );
     }
 }

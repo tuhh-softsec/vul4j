@@ -36,7 +36,7 @@ import org.dom4j.Element;
 public class ModifyDNRequestDsml extends AbstractRequestDsml
 {
     /**
-     * Creates a new instance of ModifyDNRequestDsml.
+     * Creates a new getDecoratedMessage() of ModifyDNRequestDsml.
      */
     public ModifyDNRequestDsml()
     {
@@ -45,7 +45,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
 
 
     /**
-     * Creates a new instance of ModifyDNRequestDsml.
+     * Creates a new getDecoratedMessage() of ModifyDNRequestDsml.
      *
      * @param ldapMessage
      *      the message to decorate
@@ -61,7 +61,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
      */
     public MessageTypeEnum getType()
     {
-        return instance.getType();
+        return getDecoratedMessage().getType();
     }
 
 
@@ -72,7 +72,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
     {
         Element element = super.toDsml( root );
 
-        ModifyDnRequest request = ( ModifyDnRequest ) instance;
+        ModifyDnRequest request = ( ModifyDnRequest ) getDecoratedMessage();
 
         // Dn
         if ( request.getName() != null )
@@ -106,7 +106,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
      */
     public Dn getName()
     {
-        return ( ( ModifyDnRequest ) instance ).getName();
+        return ( ( ModifyDnRequest ) getDecoratedMessage() ).getName();
     }
 
 
@@ -117,7 +117,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
      */
     public void setEntry( Dn name )
     {
-        ( ( ModifyDnRequest ) instance ).setName( name );
+        ( ( ModifyDnRequest ) getDecoratedMessage() ).setName( name );
     }
 
 
@@ -128,7 +128,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
      */
     public boolean isDeleteOldRDN()
     {
-        return ( ( ModifyDnRequest ) instance ).getDeleteOldRdn();
+        return ( ( ModifyDnRequest ) getDecoratedMessage() ).getDeleteOldRdn();
     }
 
 
@@ -139,7 +139,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
      */
     public void setDeleteOldRDN( boolean deleteOldRDN )
     {
-        ( ( ModifyDnRequest ) instance ).setDeleteOldRdn( deleteOldRDN );
+        ( ( ModifyDnRequest ) getDecoratedMessage() ).setDeleteOldRdn( deleteOldRDN );
     }
 
 
@@ -150,7 +150,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
      */
     public Rdn getNewRDN()
     {
-        return ( ( ModifyDnRequest ) instance ).getNewRdn();
+        return ( ( ModifyDnRequest ) getDecoratedMessage() ).getNewRdn();
     }
 
 
@@ -161,7 +161,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
      */
     public void setNewRDN( Rdn newRdn)
     {
-        ( ( ModifyDnRequest ) instance ).setNewRdn(newRdn);
+        ( ( ModifyDnRequest ) getDecoratedMessage() ).setNewRdn(newRdn);
     }
 
 
@@ -172,7 +172,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
      */
     public Dn getNewSuperior()
     {
-        return ( (ModifyDnRequest) instance ).getNewSuperior();
+        return ( (ModifyDnRequest) getDecoratedMessage() ).getNewSuperior();
     }
 
 
@@ -183,6 +183,6 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
      */
     public void setNewSuperior( Dn newSuperior )
     {
-        ( ( ModifyDnRequest ) instance ).setNewSuperior( newSuperior );
+        ( ( ModifyDnRequest ) getDecoratedMessage() ).setNewSuperior( newSuperior );
     }
 }

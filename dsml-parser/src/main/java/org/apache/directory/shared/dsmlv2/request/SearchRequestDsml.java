@@ -25,17 +25,18 @@ import java.util.List;
 import org.apache.directory.shared.dsmlv2.ParserUtils;
 import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
-import org.apache.directory.shared.ldap.model.filter.*;
-import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilter;
 import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
 import org.apache.directory.shared.ldap.codec.search.PresentFilter;
 import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.model.filter.AndNode;
 import org.apache.directory.shared.ldap.model.filter.ExprNode;
+import org.apache.directory.shared.ldap.model.filter.NotNode;
+import org.apache.directory.shared.ldap.model.filter.OrNode;
 import org.apache.directory.shared.ldap.model.filter.SearchScope;
 import org.apache.directory.shared.ldap.model.filter.SubstringNode;
 import org.apache.directory.shared.ldap.model.message.AliasDerefMode;
+import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.message.SearchRequest;
 import org.apache.directory.shared.ldap.model.message.SearchRequestImpl;
 import org.dom4j.Element;
@@ -51,7 +52,7 @@ import org.dom4j.QName;
 public class SearchRequestDsml extends AbstractRequestDsml
 {
     /**
-     * Creates a new instance of SearchRequestDsml.
+     * Creates a new getDecoratedMessage() of SearchRequestDsml.
      */
     public SearchRequestDsml()
     {
@@ -60,7 +61,7 @@ public class SearchRequestDsml extends AbstractRequestDsml
 
 
     /**
-     * Creates a new instance of SearchRequestDsml.
+     * Creates a new getDecoratedMessage() of SearchRequestDsml.
      *
      * @param ldapMessage
      *      the message to decorate
@@ -76,7 +77,7 @@ public class SearchRequestDsml extends AbstractRequestDsml
      */
     public MessageTypeEnum getType()
     {
-        return instance.getType();
+        return getDecoratedMessage().getType();
     }
 
 
@@ -87,7 +88,7 @@ public class SearchRequestDsml extends AbstractRequestDsml
     {
         Element element = super.toDsml( root );
 
-        SearchRequest request = ( SearchRequest ) instance;
+        SearchRequest request = ( SearchRequest ) getDecoratedMessage();
 
         // Dn
         if ( request.getBase() != null )

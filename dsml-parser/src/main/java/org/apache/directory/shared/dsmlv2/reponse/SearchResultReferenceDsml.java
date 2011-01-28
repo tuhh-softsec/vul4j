@@ -39,7 +39,7 @@ import org.dom4j.Element;
 public class SearchResultReferenceDsml extends AbstractResponseDsml
 {
     /**
-     * Creates a new instance of SearchResultReferenceDsml.
+     * Creates a new getDecoratedMessage() of SearchResultReferenceDsml.
      */
     public SearchResultReferenceDsml()
     {
@@ -48,7 +48,7 @@ public class SearchResultReferenceDsml extends AbstractResponseDsml
 
 
     /**
-     * Creates a new instance of SearchResultReferenceDsml.
+     * Creates a new getDecoratedMessage() of SearchResultReferenceDsml.
      *
      * @param ldapMessage
      *      the message to decorate
@@ -64,7 +64,7 @@ public class SearchResultReferenceDsml extends AbstractResponseDsml
      */
     public MessageTypeEnum getType()
     {
-        return instance.getType();
+        return getDecoratedMessage().getType();
     }
 
 
@@ -74,7 +74,7 @@ public class SearchResultReferenceDsml extends AbstractResponseDsml
     public Element toDsml( Element root )
     {
         Element element = root.addElement( "searchResultReference" );
-        SearchResultReference searchResultReference = ( SearchResultReference ) instance;
+        SearchResultReference searchResultReference = ( SearchResultReference ) getDecoratedMessage();
 
         // Adding References
         List<String> refsList = ( List<String> ) searchResultReference.getReferral().getLdapUrls();
@@ -95,7 +95,7 @@ public class SearchResultReferenceDsml extends AbstractResponseDsml
      */
     public void addSearchResultReference( LdapURL searchResultReference )
     {
-        ( ( SearchResultReference ) instance ).getReferral().addLdapUrl( searchResultReference.toString() );
+        ( ( SearchResultReference ) getDecoratedMessage() ).getReferral().addLdapUrl( searchResultReference.toString() );
     }
 
 
@@ -106,6 +106,6 @@ public class SearchResultReferenceDsml extends AbstractResponseDsml
      */
     public List<String> getSearchResultReferences()
     {
-        return ( List<String> ) ( ( SearchResultReference ) instance ).getReferral().getLdapUrls();
+        return ( List<String> ) ( ( SearchResultReference ) getDecoratedMessage() ).getReferral().getLdapUrls();
     }
 }

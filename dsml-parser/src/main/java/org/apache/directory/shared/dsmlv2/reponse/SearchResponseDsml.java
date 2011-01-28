@@ -42,7 +42,7 @@ public class SearchResponseDsml extends AbstractResponseDsml
 
 
     /**
-     * Creates a new instance of SearchResponseDsml.
+     * Creates a new getDecoratedMessage() of SearchResponseDsml.
      */
     public SearchResponseDsml()
     {
@@ -51,7 +51,7 @@ public class SearchResponseDsml extends AbstractResponseDsml
 
 
     /**
-     * Creates a new instance of SearchResponseDsml.
+     * Creates a new getDecoratedMessage() of SearchResponseDsml.
      *
      * @param response the LDAP response message to decorate
      */
@@ -97,9 +97,9 @@ public class SearchResponseDsml extends AbstractResponseDsml
         Element element = root.addElement( "searchResponse" );
 
         // RequestID
-        if ( instance != null )
+        if ( getDecoratedMessage() != null )
         {
-            int requestID = instance.getMessageId();
+            int requestID = getDecoratedMessage().getMessageId();
             if ( requestID > 0 )
             {
                 element.addAttribute( "requestID", "" + requestID );

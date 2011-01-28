@@ -22,6 +22,7 @@ package org.apache.directory.shared.dsmlv2.request;
 
 import org.apache.directory.shared.dsmlv2.DsmlDecorator;
 import org.apache.directory.shared.dsmlv2.ParserUtils;
+import org.apache.directory.shared.ldap.codec.decorators.RequestDecorator;
 import org.apache.directory.shared.ldap.model.message.Message;
 import org.dom4j.Element;
 
@@ -31,7 +32,7 @@ import org.dom4j.Element;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public abstract class AbstractRequestDsml extends LdapRequestDecorator implements DsmlDecorator
+public abstract class AbstractRequestDsml extends RequestDecorator implements DsmlDecorator
 {
     /**
      * Creates a new instance of AbstractRequestDsml.
@@ -58,14 +59,14 @@ public abstract class AbstractRequestDsml extends LdapRequestDecorator implement
         Element element = root.addElement( getRequestName() );
 
         // Request ID
-        int requestID = instance.getMessageId();
+        int requestID = getDecoratedMessage().getMessageId();
         if ( requestID > 0 )
         {
             element.addAttribute( "requestID", "" + requestID );
         }
 
         // Controls
-        ParserUtils.addControls( element, instance.getControls().values() );
+        ParserUtils.addControls( element, getDecoratedMessage().getControls().values() );
 
         return element;
     }
@@ -79,7 +80,7 @@ public abstract class AbstractRequestDsml extends LdapRequestDecorator implement
      */
     private String getRequestName()
     {
-        switch ( instance.getType() )
+        switch ( getDecoratedMessage().getType() )
         {
             case ABANDON_REQUEST:
                 return "abandonRequest";

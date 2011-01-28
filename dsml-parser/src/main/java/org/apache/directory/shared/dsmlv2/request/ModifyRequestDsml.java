@@ -24,10 +24,10 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.apache.directory.shared.dsmlv2.ParserUtils;
+import org.apache.directory.shared.ldap.model.entry.Modification;
 import org.apache.directory.shared.ldap.model.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
-import org.apache.directory.shared.ldap.model.entry.Modification;
 import org.apache.directory.shared.ldap.model.message.ModifyRequest;
 import org.apache.directory.shared.ldap.model.message.ModifyRequestImpl;
 import org.dom4j.Element;
@@ -43,7 +43,7 @@ import org.dom4j.QName;
 public class ModifyRequestDsml extends AbstractRequestDsml
 {
     /**
-     * Creates a new instance of ModifyRequestDsml.
+     * Creates a new getDecoratedMessage() of ModifyRequestDsml.
      */
     public ModifyRequestDsml()
     {
@@ -52,7 +52,7 @@ public class ModifyRequestDsml extends AbstractRequestDsml
 
 
     /**
-     * Creates a new instance of ModifyRequestDsml.
+     * Creates a new getDecoratedMessage() of ModifyRequestDsml.
      *
      * @param ldapMessage
      *      the message to decorate
@@ -68,7 +68,7 @@ public class ModifyRequestDsml extends AbstractRequestDsml
      */
     public MessageTypeEnum getType()
     {
-        return instance.getType();
+        return getDecoratedMessage().getType();
     }
 
 
@@ -79,7 +79,7 @@ public class ModifyRequestDsml extends AbstractRequestDsml
     {
         Element element = super.toDsml( root );
 
-        ModifyRequest request = ( ModifyRequest ) instance;
+        ModifyRequest request = ( ModifyRequest ) getDecoratedMessage();
 
         // Dn
         if ( request.getName() != null )

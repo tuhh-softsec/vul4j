@@ -34,7 +34,7 @@ import org.dom4j.Element;
 public class AuthRequestDsml extends AbstractRequestDsml
 {
     /**
-     * Creates a new instance of AuthRequestDsml.
+     * Creates a new getDecoratedMessage() of AuthRequestDsml.
      */
     public AuthRequestDsml()
     {
@@ -43,7 +43,7 @@ public class AuthRequestDsml extends AbstractRequestDsml
 
 
     /**
-     * Creates a new instance of AuthRequestDsml.
+     * Creates a new getDecoratedMessage() of AuthRequestDsml.
      *
      * @param ldapMessage
      *      the message to decorate
@@ -59,7 +59,7 @@ public class AuthRequestDsml extends AbstractRequestDsml
      */
     public MessageTypeEnum getType()
     {
-        return instance.getType();
+        return getDecoratedMessage().getType();
     }
 
 
@@ -70,7 +70,7 @@ public class AuthRequestDsml extends AbstractRequestDsml
     {
         Element element = super.toDsml( root );
 
-        BindRequest request = ( BindRequest ) instance;
+        BindRequest request = ( BindRequest ) getDecoratedMessage();
 
         // AbandonID
         String name = request.getName().getName();

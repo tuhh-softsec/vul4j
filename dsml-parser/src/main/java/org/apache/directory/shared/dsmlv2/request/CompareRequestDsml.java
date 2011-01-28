@@ -21,8 +21,8 @@ package org.apache.directory.shared.dsmlv2.request;
 
 
 import org.apache.directory.shared.ldap.model.message.CompareRequest;
-import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.message.CompareRequestImpl;
+import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.dom4j.Element;
 
@@ -35,7 +35,7 @@ import org.dom4j.Element;
 public class CompareRequestDsml extends AbstractRequestDsml
 {
     /**
-     * Creates a new instance of CompareRequestDsml.
+     * Creates a new getDecoratedMessage() of CompareRequestDsml.
      */
     public CompareRequestDsml()
     {
@@ -44,7 +44,7 @@ public class CompareRequestDsml extends AbstractRequestDsml
 
 
     /**
-     * Creates a new instance of CompareRequestDsml.
+     * Creates a new getDecoratedMessage() of CompareRequestDsml.
      *
      * @param ldapMessage
      *      the message to decorate
@@ -60,7 +60,7 @@ public class CompareRequestDsml extends AbstractRequestDsml
      */
     public MessageTypeEnum getType()
     {
-        return instance.getType();
+        return getDecoratedMessage().getType();
     }
 
 
@@ -71,7 +71,7 @@ public class CompareRequestDsml extends AbstractRequestDsml
     {
         Element element = super.toDsml( root );
 
-        CompareRequest request = ( CompareRequest ) instance;
+        CompareRequest request = ( CompareRequest ) getDecoratedMessage();
 
         // Dn
         if ( request.getName() != null )
@@ -101,7 +101,7 @@ public class CompareRequestDsml extends AbstractRequestDsml
      */
     public Dn getName()
     {
-        return ( (CompareRequest) instance ).getName();
+        return ( (CompareRequest) getDecoratedMessage() ).getName();
     }
 
 
@@ -112,7 +112,7 @@ public class CompareRequestDsml extends AbstractRequestDsml
      */
     public void setName( Dn entry )
     {
-        ( ( CompareRequest ) instance ).setName( entry );
+        ( ( CompareRequest ) getDecoratedMessage() ).setName( entry );
     }
 
 
@@ -123,7 +123,7 @@ public class CompareRequestDsml extends AbstractRequestDsml
      */
     public Object getAssertionValue()
     {
-        return ( ( CompareRequest ) instance ).getAssertionValue();
+        return ( ( CompareRequest ) getDecoratedMessage() ).getAssertionValue();
     }
 
 
@@ -136,11 +136,11 @@ public class CompareRequestDsml extends AbstractRequestDsml
     {
         if ( assertionValue instanceof String )
         {
-            ( ( CompareRequest ) instance ).setAssertionValue( ( String ) assertionValue );
+            ( ( CompareRequest ) getDecoratedMessage() ).setAssertionValue( ( String ) assertionValue );
         }
         else
         {
-            ( ( CompareRequest ) instance ).setAssertionValue( ( byte[] ) assertionValue );
+            ( ( CompareRequest ) getDecoratedMessage() ).setAssertionValue( ( byte[] ) assertionValue );
         }
     }
 
@@ -152,7 +152,7 @@ public class CompareRequestDsml extends AbstractRequestDsml
      */
     public String getAttributeDesc()
     {
-        return ( ( CompareRequest ) instance ).getAttributeId();
+        return ( ( CompareRequest ) getDecoratedMessage() ).getAttributeId();
     }
 
 
@@ -163,6 +163,6 @@ public class CompareRequestDsml extends AbstractRequestDsml
      */
     public void setAttributeDesc( String attributeDesc )
     {
-        ( ( CompareRequest ) instance ).setAttributeId( attributeDesc );
+        ( ( CompareRequest ) getDecoratedMessage() ).setAttributeId( attributeDesc );
     }
 }

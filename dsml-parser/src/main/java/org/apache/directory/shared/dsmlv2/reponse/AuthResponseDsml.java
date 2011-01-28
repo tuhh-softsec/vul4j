@@ -22,8 +22,8 @@ package org.apache.directory.shared.dsmlv2.reponse;
 
 
 import org.apache.directory.shared.ldap.model.message.BindResponse;
-import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.message.BindResponseImpl;
+import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.dom4j.Element;
 
 
@@ -35,7 +35,7 @@ import org.dom4j.Element;
 public class AuthResponseDsml extends AbstractResponseDsml
 {
     /**
-     * Creates a new instance of AuthResponseDsml.
+     * Creates a new getDecoratedMessage() of AuthResponseDsml.
      */
     public AuthResponseDsml()
     {
@@ -44,7 +44,7 @@ public class AuthResponseDsml extends AbstractResponseDsml
 
 
     /**
-     * Creates a new instance of AuthResponseDsml.
+     * Creates a new getDecoratedMessage() of AuthResponseDsml.
      *
      * @param ldapMessage
      *      the message to decorate
@@ -60,7 +60,7 @@ public class AuthResponseDsml extends AbstractResponseDsml
      */
     public MessageTypeEnum getType()
     {
-        return instance.getType();
+        return getDecoratedMessage().getType();
     }
 
 
@@ -71,7 +71,7 @@ public class AuthResponseDsml extends AbstractResponseDsml
     {
         Element element = root.addElement( "authResponse" );
 
-        LdapResultDsml ldapResultDsml = new LdapResultDsml( ( ( BindResponse ) instance ).getLdapResult(), instance );
+        LdapResultDsml ldapResultDsml = new LdapResultDsml( ( ( BindResponse ) getDecoratedMessage() ).getLdapResult(), getDecoratedMessage() );
         ldapResultDsml.toDsml( element );
         return element;
     }

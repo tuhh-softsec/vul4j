@@ -21,9 +21,9 @@
 package org.apache.directory.shared.dsmlv2.reponse;
 
 
+import org.apache.directory.shared.ldap.model.message.CompareResponse;
 import org.apache.directory.shared.ldap.model.message.CompareResponseImpl;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
-import org.apache.directory.shared.ldap.model.message.CompareResponse;
 import org.dom4j.Element;
 
 
@@ -35,7 +35,7 @@ import org.dom4j.Element;
 public class CompareResponseDsml extends AbstractResponseDsml
 {
     /**
-     * Creates a new instance of CompareResponseDsml.
+     * Creates a new getDecoratedMessage() of CompareResponseDsml.
      */
     public CompareResponseDsml()
     {
@@ -44,7 +44,7 @@ public class CompareResponseDsml extends AbstractResponseDsml
 
 
     /**
-     * Creates a new instance of CompareResponseDsml.
+     * Creates a new getDecoratedMessage() of CompareResponseDsml.
      *
      * @param ldapMessage
      *      the message to decorate
@@ -60,7 +60,7 @@ public class CompareResponseDsml extends AbstractResponseDsml
      */
     public MessageTypeEnum getType()
     {
-        return instance.getType();
+        return getDecoratedMessage().getType();
     }
 
 
@@ -71,7 +71,7 @@ public class CompareResponseDsml extends AbstractResponseDsml
     {
         Element element = root.addElement( "compareResponse" );
 
-        LdapResultDsml ldapResultDsml = new LdapResultDsml( ( ( CompareResponse ) instance ).getLdapResult(), instance );
+        LdapResultDsml ldapResultDsml = new LdapResultDsml( ( ( CompareResponse ) getDecoratedMessage() ).getLdapResult(), getDecoratedMessage() );
         ldapResultDsml.toDsml( element );
         return element;
     }

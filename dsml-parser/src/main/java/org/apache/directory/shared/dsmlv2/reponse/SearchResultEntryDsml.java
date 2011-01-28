@@ -44,7 +44,7 @@ import org.dom4j.QName;
 public class SearchResultEntryDsml extends AbstractResponseDsml
 {
     /**
-     * Creates a new instance of SearchResultEntryDsml.
+     * Creates a new getDecoratedMessage() of SearchResultEntryDsml.
      */
     public SearchResultEntryDsml()
     {
@@ -53,7 +53,7 @@ public class SearchResultEntryDsml extends AbstractResponseDsml
 
 
     /**
-     * Creates a new instance of SearchResultEntryDsml.
+     * Creates a new getDecoratedMessage() of SearchResultEntryDsml.
      *
      * @param ldapMessage
      *      the message to decorate
@@ -69,7 +69,7 @@ public class SearchResultEntryDsml extends AbstractResponseDsml
      */
     public MessageTypeEnum getType()
     {
-        return instance.getType();
+        return getDecoratedMessage().getType();
     }
 
 
@@ -79,7 +79,7 @@ public class SearchResultEntryDsml extends AbstractResponseDsml
     public Element toDsml( Element root )
     {
         Element element = root.addElement( "searchResultEntry" );
-        SearchResultEntry searchResultEntry = ( SearchResultEntry ) instance;
+        SearchResultEntry searchResultEntry = ( SearchResultEntry ) getDecoratedMessage();
         element.addAttribute( "dn", searchResultEntry.getObjectName().getName() );
 
         Entry entry = searchResultEntry.getEntry();
@@ -121,7 +121,7 @@ public class SearchResultEntryDsml extends AbstractResponseDsml
      */
     public Dn getObjectName()
     {
-        return ( ( SearchResultEntry ) instance ).getObjectName();
+        return ( ( SearchResultEntry ) getDecoratedMessage() ).getObjectName();
     }
 
 
@@ -132,7 +132,7 @@ public class SearchResultEntryDsml extends AbstractResponseDsml
      */
     public void setObjectName( Dn objectName )
     {
-        ( ( SearchResultEntry ) instance ).setObjectName( objectName );
+        ( ( SearchResultEntry ) getDecoratedMessage() ).setObjectName( objectName );
     }
 
 
@@ -143,7 +143,7 @@ public class SearchResultEntryDsml extends AbstractResponseDsml
      */
     public Entry getEntry()
     {
-        return ( ( SearchResultEntry ) instance ).getEntry();
+        return ( ( SearchResultEntry ) getDecoratedMessage() ).getEntry();
     }
 
 
@@ -154,7 +154,7 @@ public class SearchResultEntryDsml extends AbstractResponseDsml
      */
     public void setEntry( Entry entry )
     {
-        ( ( SearchResultEntry ) instance ).setEntry( entry );
+        ( ( SearchResultEntry ) getDecoratedMessage() ).setEntry( entry );
     }
 
 
@@ -166,7 +166,7 @@ public class SearchResultEntryDsml extends AbstractResponseDsml
      */
     public void addAttributeType( String type ) throws LdapException
     {
-        ( ( SearchResultEntryDecorator ) instance ).addAttribute( type );
+        ( ( SearchResultEntryDecorator ) getDecoratedMessage() ).addAttribute( type );
     }
 
 
@@ -177,6 +177,6 @@ public class SearchResultEntryDsml extends AbstractResponseDsml
      */
     public void addAttributeValue( Object value )
     {
-        ( ( SearchResultEntryDecorator ) instance ).addAttributeValue( value );
+        ( ( SearchResultEntryDecorator ) getDecoratedMessage() ).addAttributeValue( value );
     }
 }

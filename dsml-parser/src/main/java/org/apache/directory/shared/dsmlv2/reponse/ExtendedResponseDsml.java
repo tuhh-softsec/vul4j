@@ -24,8 +24,8 @@ package org.apache.directory.shared.dsmlv2.reponse;
 import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.dsmlv2.ParserUtils;
 import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
-import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.message.ExtendedResponseImpl;
+import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.util.Strings;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
@@ -40,7 +40,7 @@ import org.dom4j.QName;
 public class ExtendedResponseDsml extends AbstractResponseDsml
 {
     /**
-     * Creates a new instance of ExtendedResponseDsml.
+     * Creates a new getDecoratedMessage() of ExtendedResponseDsml.
      */
     public ExtendedResponseDsml()
     {
@@ -49,7 +49,7 @@ public class ExtendedResponseDsml extends AbstractResponseDsml
 
 
     /**
-     * Creates a new instance of ExtendedResponseDsml.
+     * Creates a new getDecoratedMessage() of ExtendedResponseDsml.
      *
      * @param ldapMessage
      *      the message to decorate
@@ -65,7 +65,7 @@ public class ExtendedResponseDsml extends AbstractResponseDsml
      */
     public MessageTypeEnum getType()
     {
-        return instance.getType();
+        return getDecoratedMessage().getType();
     }
 
 
@@ -75,10 +75,10 @@ public class ExtendedResponseDsml extends AbstractResponseDsml
     public Element toDsml( Element root )
     {
         Element element = root.addElement( "extendedResponse" );
-        ExtendedResponse extendedResponse = ( ExtendedResponse ) instance;
+        ExtendedResponse extendedResponse = ( ExtendedResponse ) getDecoratedMessage();
 
         // LDAP Result
-        LdapResultDsml ldapResultDsml = new LdapResultDsml( extendedResponse.getLdapResult(), instance );
+        LdapResultDsml ldapResultDsml = new LdapResultDsml( extendedResponse.getLdapResult(), getDecoratedMessage() );
         ldapResultDsml.toDsml( element );
 
         // ResponseName
@@ -122,7 +122,7 @@ public class ExtendedResponseDsml extends AbstractResponseDsml
      */
     public String getResponseName()
     {
-        return ( ( ExtendedResponse ) instance ).getResponseName();
+        return ( ( ExtendedResponse ) getDecoratedMessage() ).getResponseName();
     }
 
 
@@ -133,7 +133,7 @@ public class ExtendedResponseDsml extends AbstractResponseDsml
      */
     public void setResponseName( OID responseName )
     {
-        ( ( ExtendedResponse ) instance ).setResponseName( responseName.toString() );
+        ( ( ExtendedResponse ) getDecoratedMessage() ).setResponseName( responseName.toString() );
     }
 
 
@@ -144,7 +144,7 @@ public class ExtendedResponseDsml extends AbstractResponseDsml
      */
     public Object getResponseValue()
     {
-        return ( ( ExtendedResponse ) instance ).getResponseValue();
+        return ( ( ExtendedResponse ) getDecoratedMessage() ).getResponseValue();
     }
 
 
@@ -155,6 +155,6 @@ public class ExtendedResponseDsml extends AbstractResponseDsml
      */
     public void setResponseValue( byte[] response )
     {
-        ( ( ExtendedResponse ) instance ).setResponseValue( response );
+        ( ( ExtendedResponse ) getDecoratedMessage() ).setResponseValue( response );
     }
 }

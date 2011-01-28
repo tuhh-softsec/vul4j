@@ -35,7 +35,7 @@ import org.dom4j.Element;
 public class SearchResultDoneDsml extends AbstractResponseDsml
 {
     /**
-     * Creates a new instance of SearchResultDoneDsml.
+     * Creates a new getDecoratedMessage() of SearchResultDoneDsml.
      */
     public SearchResultDoneDsml()
     {
@@ -44,7 +44,7 @@ public class SearchResultDoneDsml extends AbstractResponseDsml
 
 
     /**
-     * Creates a new instance of SearchResultDoneDsml.
+     * Creates a new getDecoratedMessage() of SearchResultDoneDsml.
      *
      * @param ldapMessage
      *      the message to decorate
@@ -60,7 +60,7 @@ public class SearchResultDoneDsml extends AbstractResponseDsml
      */
     public MessageTypeEnum getType()
     {
-        return instance.getType();
+        return getDecoratedMessage().getType();
     }
 
 
@@ -71,7 +71,7 @@ public class SearchResultDoneDsml extends AbstractResponseDsml
     {
         Element element = root.addElement( "searchResultDone" );
 
-        LdapResultDsml ldapResultDsml = new LdapResultDsml( ( ( SearchResultDone ) instance ).getLdapResult(), instance );
+        LdapResultDsml ldapResultDsml = new LdapResultDsml( ( ( SearchResultDone ) getDecoratedMessage() ).getLdapResult(), getDecoratedMessage() );
         if ( ldapResultDsml != null )
         {
             ldapResultDsml.toDsml( element );

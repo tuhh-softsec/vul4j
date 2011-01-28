@@ -22,8 +22,8 @@ package org.apache.directory.shared.dsmlv2.reponse;
 
 
 import org.apache.directory.shared.ldap.model.message.DeleteResponse;
-import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.message.DeleteResponseImpl;
+import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.dom4j.Element;
 
 
@@ -35,7 +35,7 @@ import org.dom4j.Element;
 public class DelResponseDsml extends AbstractResponseDsml
 {
     /**
-     * Creates a new instance of DelResponseDsml.
+     * Creates a new getDecoratedMessage() of DelResponseDsml.
      */
     public DelResponseDsml()
     {
@@ -44,7 +44,7 @@ public class DelResponseDsml extends AbstractResponseDsml
 
 
     /**
-     * Creates a new instance of DelResponseDsml.
+     * Creates a new getDecoratedMessage() of DelResponseDsml.
      *
      * @param ldapMessage
      *      the message to decorate
@@ -60,7 +60,7 @@ public class DelResponseDsml extends AbstractResponseDsml
      */
     public MessageTypeEnum getType()
     {
-        return instance.getType();
+        return getDecoratedMessage().getType();
     }
 
 
@@ -71,7 +71,7 @@ public class DelResponseDsml extends AbstractResponseDsml
     {
         Element element = root.addElement( "delResponse" );
 
-        LdapResultDsml ldapResultDsml = new LdapResultDsml( ( (DeleteResponse) instance ).getLdapResult(), instance );
+        LdapResultDsml ldapResultDsml = new LdapResultDsml( ( (DeleteResponse) getDecoratedMessage() ).getLdapResult(), getDecoratedMessage() );
         ldapResultDsml.toDsml( element );
         return element;
     }

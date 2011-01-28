@@ -38,7 +38,7 @@ import org.dom4j.QName;
 public class ExtendedRequestDsml extends AbstractRequestDsml
 {
     /**
-     * Creates a new instance of ExtendedRequestDsml.
+     * Creates a new getDecoratedMessage() of ExtendedRequestDsml.
      */
     public ExtendedRequestDsml()
     {
@@ -47,7 +47,7 @@ public class ExtendedRequestDsml extends AbstractRequestDsml
 
 
     /**
-     * Creates a new instance of ExtendedRequestDsml.
+     * Creates a new getDecoratedMessage() of ExtendedRequestDsml.
      *
      * @param ldapMessage
      *      the message to decorate
@@ -63,7 +63,7 @@ public class ExtendedRequestDsml extends AbstractRequestDsml
      */
     public MessageTypeEnum getType()
     {
-        return instance.getType();
+        return getDecoratedMessage().getType();
     }
 
 
@@ -74,7 +74,7 @@ public class ExtendedRequestDsml extends AbstractRequestDsml
     {
         Element element = super.toDsml( root );
 
-        ExtendedRequest request = ( ExtendedRequest ) instance;
+        ExtendedRequest request = ( ExtendedRequest ) getDecoratedMessage();
 
         // Request Name
         if ( request.getRequestName() != null )
@@ -103,7 +103,7 @@ public class ExtendedRequestDsml extends AbstractRequestDsml
      */
     public String getRequestName()
     {
-        return ( (ExtendedRequest) instance ).getRequestName();
+        return ( (ExtendedRequest) getDecoratedMessage() ).getRequestName();
     }
 
 
@@ -114,7 +114,7 @@ public class ExtendedRequestDsml extends AbstractRequestDsml
      */
     public void setRequestName( OID requestName )
     {
-        ( ( ExtendedRequest ) instance ).setRequestName( requestName.toString() );
+        ( ( ExtendedRequest ) getDecoratedMessage() ).setRequestName( requestName.toString() );
     }
 
 
@@ -125,7 +125,7 @@ public class ExtendedRequestDsml extends AbstractRequestDsml
      */
     public byte[] getRequestValue()
     {
-        return ( ( ExtendedRequest ) instance ).getRequestValue();
+        return ( ( ExtendedRequest ) getDecoratedMessage() ).getRequestValue();
     }
 
 
@@ -136,6 +136,6 @@ public class ExtendedRequestDsml extends AbstractRequestDsml
      */
     public void setRequestValue( byte[] requestValue )
     {
-        ( ( ExtendedRequest ) instance ).getRequestValue();
+        ( ( ExtendedRequest ) getDecoratedMessage() ).getRequestValue();
     }
 }

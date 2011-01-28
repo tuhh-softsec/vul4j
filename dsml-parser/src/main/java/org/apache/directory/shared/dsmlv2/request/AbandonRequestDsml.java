@@ -58,7 +58,7 @@ public class AbandonRequestDsml extends AbstractRequestDsml
      */
     public MessageTypeEnum getType()
     {
-        return instance.getType();
+        return getDecoratedMessage().getType();
     }
 
 
@@ -69,7 +69,7 @@ public class AbandonRequestDsml extends AbstractRequestDsml
     {
         Element element = super.toDsml( root );
 
-        AbandonRequest request = (AbandonRequest) instance;
+        AbandonRequest request = (AbandonRequest) getDecoratedMessage();
 
         // AbandonID
         if ( request.getAbandoned() != 0 )
@@ -88,7 +88,7 @@ public class AbandonRequestDsml extends AbstractRequestDsml
      */
     public int getAbandonedMessageId()
     {
-        return ( ( AbandonRequest ) instance ).getAbandoned();
+        return ( ( AbandonRequest ) getDecoratedMessage() ).getAbandoned();
     }
 
 
@@ -99,6 +99,6 @@ public class AbandonRequestDsml extends AbstractRequestDsml
      */
     public void setAbandonedMessageId( int abandonedMessageId )
     {
-        ( ( AbandonRequest ) instance ).setAbandoned( abandonedMessageId );
+        ( ( AbandonRequest ) getDecoratedMessage() ).setAbandoned( abandonedMessageId );
     }
 }
