@@ -907,7 +907,6 @@ public class SearchRequestTest extends AbstractTest
         }
         catch ( Exception e )
         {
-            e.printStackTrace();
             fail( e.getMessage() );
         }
 
