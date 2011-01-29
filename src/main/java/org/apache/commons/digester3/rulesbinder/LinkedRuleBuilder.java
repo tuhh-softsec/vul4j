@@ -131,7 +131,7 @@ public interface LinkedRuleBuilder {
     /**
      * Sets properties on the object at the top of the stack, based on attributes with corresponding names.
      */
-    void setProperties();
+    LinkedSetPropertiesBuilder setProperties();
 
     /**
      * Sets an individual property on the object at the top of the stack, based on attributes with specified names.
