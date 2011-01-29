@@ -3,6 +3,8 @@ package org.apache.directory.shared.ldap.codec;
 
 import java.nio.ByteBuffer;
 
+import org.apache.directory.shared.asn1.Asn1Object;
+import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 
 
@@ -48,5 +50,24 @@ public class TestCodecControl implements ITestCodecControl
     public void setFoo( int foo )
     {
         decorated.setFoo( foo );
+    }
+
+    public Asn1Object decode( byte[] controlBytes ) throws DecoderException
+    {
+        return null;
+    }
+
+    public boolean hasValue()
+    {
+        return false;
+    }
+
+    public byte[] getValue()
+    {
+        return null;
+    }
+
+    public void setValue( byte[] value )
+    {
     }
 }
