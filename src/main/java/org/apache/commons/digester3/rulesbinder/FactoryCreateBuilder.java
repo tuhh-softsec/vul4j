@@ -22,7 +22,7 @@ import org.apache.commons.digester3.spi.ObjectCreationFactory;
 /**
  * Builder chained when invoking {@link LinkedRuleBuilder#factoryCreate(String)}.
  */
-public interface LinkedFactoryCreateBuilder extends BackToLinkedRuleBuilder {
+public interface FactoryCreateBuilder extends BackToLinkedRuleBuilder {
 
     /**
      * Construct a factory create rule that will use the specified class name to create an {@link ObjectCreationFactory}
@@ -31,7 +31,7 @@ public interface LinkedFactoryCreateBuilder extends BackToLinkedRuleBuilder {
      * @param className Java class name of the object creation factory class
      * @return this builder instance
      */
-    LinkedFactoryCreateBuilder ofType(String className);
+    FactoryCreateBuilder ofType(String className);
 
     /**
      * Construct a factory create rule that will use the specified class to create an {@link ObjectCreationFactory}
@@ -40,7 +40,7 @@ public interface LinkedFactoryCreateBuilder extends BackToLinkedRuleBuilder {
      * @param type Java class of the object creation factory class
      * @return this builder instance
      */
-    LinkedFactoryCreateBuilder ofType(Class<?> type);
+    FactoryCreateBuilder ofType(Class<?> type);
 
     /**
      * Construct a factory create rule using the given, already instantiated, {@link ObjectCreationFactory}.
@@ -49,7 +49,7 @@ public interface LinkedFactoryCreateBuilder extends BackToLinkedRuleBuilder {
      * @param creationFactory called on to create the object
      * @return this builder instance
      */
-    <T> LinkedFactoryCreateBuilder usingFactory(ObjectCreationFactory<T> creationFactory);
+    <T> FactoryCreateBuilder usingFactory(ObjectCreationFactory<T> creationFactory);
 
     /**
      * Allows specify the attribute containing an override class name if it is present.
@@ -57,7 +57,7 @@ public interface LinkedFactoryCreateBuilder extends BackToLinkedRuleBuilder {
      * @param attributeName The attribute containing an override class name if it is present
      * @return this builder instance
      */
-    LinkedFactoryCreateBuilder overriddenByAttribute(String attributeName);
+    FactoryCreateBuilder overriddenByAttribute(String attributeName);
 
     /**
      * Exceptions thrown by the object creation factory will be ignored or not.
@@ -65,6 +65,6 @@ public interface LinkedFactoryCreateBuilder extends BackToLinkedRuleBuilder {
      * @param ignoreCreateExceptions if true, exceptions thrown by the object creation factory will be ignored
      * @return this builder instance
      */
-    LinkedFactoryCreateBuilder ignoreCreateExceptions(boolean ignoreCreateExceptions);
+    FactoryCreateBuilder ignoreCreateExceptions(boolean ignoreCreateExceptions);
 
 }

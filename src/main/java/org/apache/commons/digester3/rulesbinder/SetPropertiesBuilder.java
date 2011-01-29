@@ -18,24 +18,29 @@
 package org.apache.commons.digester3.rulesbinder;
 
 /**
- * Builder chained when invoking {@link LinkedRuleBuilder#objectCreate(String)}.
+ * Builder chained when invoking {@link LinkedRuleBuilder#setNestedProperties()}.
  */
-public interface LinkedObjectParamBuilder extends BackToLinkedRuleBuilder {
+public interface SetPropertiesBuilder extends BackToLinkedRuleBuilder {
 
     /**
-     * The zero-relative index of the parameter we are saving.
+     * Add an additional attribute name to property name mapping.
      *
-     * @param paramIndex The zero-relative index of the parameter we are saving
+     * @param attributeName The attribute to match
+     * @param propertyName The java bean property to be assigned the value
      * @return this builder instance
      */
-    LinkedObjectParamBuilder ofIndex(int paramIndex);
+    SetPropertiesBuilder addAlias(String attributeName, String propertyName);
 
     /**
-     * The attribute which we are attempting to match.
+     * Sets whether attributes found in the XML without matching properties should be ignored.
+     * 
+     * If set to false, the parsing will throw an {@code NoSuchMethodException}
+     * if an unmatched attribute is found.
+     * This allows to trap misspellings in the XML file.
      *
-     * @param attributeName The attribute which we are attempting to match
+     * @param ignoreMissingProperty false to stop the parsing on unmatched attributes
      * @return this builder instance
      */
-    LinkedObjectParamBuilder matchingAttribute(String attributeName);
+    SetPropertiesBuilder ignoreMissingProperty(boolean ignoreMissingProperty);
 
 }

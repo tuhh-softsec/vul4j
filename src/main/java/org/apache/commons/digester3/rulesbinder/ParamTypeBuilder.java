@@ -21,7 +21,7 @@ package org.apache.commons.digester3.rulesbinder;
  * Builder chained when invoking {@link LinkedRuleBuilder#setNext(String)},
  * {@link LinkedRuleBuilder#setRoot(String)} or {@link LinkedRuleBuilder#setTop(String)}.
  */
-public interface LinkedParamTypeBuilder extends BackToLinkedRuleBuilder {
+public interface ParamTypeBuilder extends BackToLinkedRuleBuilder {
 
     /**
      * Sets the Java class of the method's argument.
@@ -33,7 +33,7 @@ public interface LinkedParamTypeBuilder extends BackToLinkedRuleBuilder {
      * @param paramType The Java class of the method's argument
      * @return this builder instance
      */
-    LinkedParamTypeBuilder withParameterType(Class<?> paramType);
+    ParamTypeBuilder withParameterType(Class<?> paramType);
 
     /**
      * Sets the Java class name of the method's argument.
@@ -45,7 +45,7 @@ public interface LinkedParamTypeBuilder extends BackToLinkedRuleBuilder {
      * @param paramType The Java class name of the method's argument
      * @return this builder instance
      */
-    LinkedParamTypeBuilder withParameterType(String paramType);
+    ParamTypeBuilder withParameterType(String paramType);
 
     /**
      * Sets exact matching being used.
@@ -53,6 +53,6 @@ public interface LinkedParamTypeBuilder extends BackToLinkedRuleBuilder {
      * @param useExactMatch The exact matching being used
      * @return this builder instance
      */
-    LinkedParamTypeBuilder useExactMatch(boolean useExactMatch);
+    ParamTypeBuilder useExactMatch(boolean useExactMatch);
 
 }

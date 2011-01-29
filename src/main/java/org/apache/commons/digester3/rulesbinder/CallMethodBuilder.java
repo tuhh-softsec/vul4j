@@ -18,32 +18,30 @@
 package org.apache.commons.digester3.rulesbinder;
 
 /**
- * Builder chained when invoking {@link LinkedRuleBuilder#objectCreate(String)}.
+ * Builder chained when invoking {@link LinkedRuleBuilder#callMethod(String)}.
  */
-public interface LinkedObjectCreateBuilder extends BackToLinkedRuleBuilder {
+public interface CallMethodBuilder extends BackToLinkedRuleBuilder {
 
     /**
-     * Construct an object with the specified class name.
+     * Sets the location of the target object.
      *
-     * @param className Java class name of the object to be created
+     * Positive numbers are relative to the top of the digester object stack.
+     * Negative numbers are relative to the bottom of the stack. Zero implies the top object on the stack.
+     *
+     * @param targetOffset location of the target object.
      * @return this builder instance
      */
-    LinkedObjectCreateBuilder ofType(String className);
+    CallMethodBuilder withTargetOffset(int targetOffset);
 
     /**
-     * Construct an object with the specified class.
+     * Sets the Java classes that represent the parameter types of the method arguments.
      *
-     * @param type Java class of the object to be created
+     * If you wish to use a primitive type, specify the corresonding Java wrapper class instead,
+     * such as {@code java.lang.Boolean.TYPE} for a {@code boolean} parameter.
+     *
+     * @param paramTypes The Java classes that represent the parameter types of the method arguments
      * @return this builder instance
      */
-    LinkedObjectCreateBuilder ofType(Class<?> type);
-
-    /**
-     * Allows specify the attribute containing an override class name if it is present.
-     *
-     * @param attributeName The attribute containing an override class name if it is present
-     * @return this builder instance
-     */
-    LinkedObjectCreateBuilder overriddenByAttribute(String attributeName);
+    CallMethodBuilder withParamTypes(Class<?>...paramTypes);
 
 }

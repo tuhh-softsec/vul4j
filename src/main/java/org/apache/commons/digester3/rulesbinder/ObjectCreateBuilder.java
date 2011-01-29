@@ -18,40 +18,32 @@
 package org.apache.commons.digester3.rulesbinder;
 
 /**
- * Builder chained when invoking {@link LinkedRuleBuilder#callParam(int)}.
+ * Builder chained when invoking {@link LinkedRuleBuilder#objectCreate(String)}.
  */
-public interface LinkedCallParamBuilder extends BackToLinkedRuleBuilder {
+public interface ObjectCreateBuilder extends BackToLinkedRuleBuilder {
 
     /**
-     * Sets the zero-relative parameter number.
+     * Construct an object with the specified class name.
      *
-     * @param paramIndex The zero-relative parameter number
+     * @param className Java class name of the object to be created
      * @return this builder instance
      */
-    LinkedCallParamBuilder ofIndex(int paramIndex);
+    ObjectCreateBuilder ofType(String className);
 
     /**
-     * Sets the attribute from which to save the parameter value.
+     * Construct an object with the specified class.
      *
-     * @param attributeName The attribute from which to save the parameter value
+     * @param type Java class of the object to be created
      * @return this builder instance
      */
-    LinkedCallParamBuilder fromAttribute(String attributeName);
+    ObjectCreateBuilder ofType(Class<?> type);
 
     /**
-     * Flags the parameter to be set from the stack.
+     * Allows specify the attribute containing an override class name if it is present.
      *
-     * @param fromStack the parameter flag to be set from the stack
+     * @param attributeName The attribute containing an override class name if it is present
      * @return this builder instance
      */
-    LinkedCallParamBuilder fromStack(boolean fromStack);
-
-    /**
-     * Sets the position of the object from the top of the stack.
-     *
-     * @param stackIndex The position of the object from the top of the stack
-     * @return this builder instance
-     */
-    LinkedCallParamBuilder withStackIndex(int stackIndex);
+    ObjectCreateBuilder overriddenByAttribute(String attributeName);
 
 }

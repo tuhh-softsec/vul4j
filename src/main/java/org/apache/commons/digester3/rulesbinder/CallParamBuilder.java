@@ -18,29 +18,40 @@
 package org.apache.commons.digester3.rulesbinder;
 
 /**
- * Builder chained when invoking {@link LinkedRuleBuilder#setNestedProperties()}.
+ * Builder chained when invoking {@link LinkedRuleBuilder#callParam(int)}.
  */
-public interface LinkedSetPropertiesBuilder extends BackToLinkedRuleBuilder {
+public interface CallParamBuilder extends BackToLinkedRuleBuilder {
 
     /**
-     * Add an additional attribute name to property name mapping.
+     * Sets the zero-relative parameter number.
      *
-     * @param attributeName The attribute to match
-     * @param propertyName The java bean property to be assigned the value
+     * @param paramIndex The zero-relative parameter number
      * @return this builder instance
      */
-    LinkedSetPropertiesBuilder addAlias(String attributeName, String propertyName);
+    CallParamBuilder ofIndex(int paramIndex);
 
     /**
-     * Sets whether attributes found in the XML without matching properties should be ignored.
-     * 
-     * If set to false, the parsing will throw an {@code NoSuchMethodException}
-     * if an unmatched attribute is found.
-     * This allows to trap misspellings in the XML file.
+     * Sets the attribute from which to save the parameter value.
      *
-     * @param ignoreMissingProperty false to stop the parsing on unmatched attributes
+     * @param attributeName The attribute from which to save the parameter value
      * @return this builder instance
      */
-    LinkedSetPropertiesBuilder ignoreMissingProperty(boolean ignoreMissingProperty);
+    CallParamBuilder fromAttribute(String attributeName);
+
+    /**
+     * Flags the parameter to be set from the stack.
+     *
+     * @param fromStack the parameter flag to be set from the stack
+     * @return this builder instance
+     */
+    CallParamBuilder fromStack(boolean fromStack);
+
+    /**
+     * Sets the position of the object from the top of the stack.
+     *
+     * @param stackIndex The position of the object from the top of the stack
+     * @return this builder instance
+     */
+    CallParamBuilder withStackIndex(int stackIndex);
 
 }

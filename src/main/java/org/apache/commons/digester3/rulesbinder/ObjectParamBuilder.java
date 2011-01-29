@@ -18,16 +18,24 @@
 package org.apache.commons.digester3.rulesbinder;
 
 /**
- * Builder chained when invoking {@link LinkedRuleBuilder#callParam(int)}.
+ * Builder chained when invoking {@link LinkedRuleBuilder#objectCreate(String)}.
  */
-public interface LinkedPathCallParamBuilder extends BackToLinkedRuleBuilder {
+public interface ObjectParamBuilder extends BackToLinkedRuleBuilder {
 
     /**
-     * Sets the zero-relative parameter number.
+     * The zero-relative index of the parameter we are saving.
      *
-     * @param paramIndex The zero-relative parameter number
+     * @param paramIndex The zero-relative index of the parameter we are saving
      * @return this builder instance
      */
-    LinkedPathCallParamBuilder ofIndex(int paramIndex);
+    ObjectParamBuilder ofIndex(int paramIndex);
+
+    /**
+     * The attribute which we are attempting to match.
+     *
+     * @param attributeName The attribute which we are attempting to match
+     * @return this builder instance
+     */
+    ObjectParamBuilder matchingAttribute(String attributeName);
 
 }

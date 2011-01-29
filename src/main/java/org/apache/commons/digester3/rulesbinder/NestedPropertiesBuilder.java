@@ -18,30 +18,27 @@
 package org.apache.commons.digester3.rulesbinder;
 
 /**
- * Builder chained when invoking {@link LinkedRuleBuilder#callMethod(String)}.
+ * Builder chained when invoking {@link LinkedRuleBuilder#setNestedProperties()}.
  */
-public interface LinkedCallMethodBuilder extends BackToLinkedRuleBuilder {
+public interface NestedPropertiesBuilder extends BackToLinkedRuleBuilder {
 
     /**
-     * Sets the location of the target object.
+     * Allows element2property mapping to be overridden.
      *
-     * Positive numbers are relative to the top of the digester object stack.
-     * Negative numbers are relative to the bottom of the stack. Zero implies the top object on the stack.
-     *
-     * @param targetOffset location of the target object.
+     * @param elementName The child xml element to match
+     * @param propertyName The java bean property to be assigned the value
      * @return this builder instance
      */
-    LinkedCallMethodBuilder withTargetOffset(int targetOffset);
+    NestedPropertiesBuilder addAlias(String elementName, String propertyName);
 
     /**
-     * Sets the Java classes that represent the parameter types of the method arguments.
+     * When set to true, any text within child elements will have leading
+     * and trailing whitespace removed before assignment to the target
+     * object.
      *
-     * If you wish to use a primitive type, specify the corresonding Java wrapper class instead,
-     * such as {@code java.lang.Boolean.TYPE} for a {@code boolean} parameter.
-     *
-     * @param paramTypes The Java classes that represent the parameter types of the method arguments
+     * @param trimData
      * @return this builder instance
      */
-    LinkedCallMethodBuilder withParamTypes(Class<?>...paramTypes);
+    NestedPropertiesBuilder trimData(boolean trimData);
 
 }

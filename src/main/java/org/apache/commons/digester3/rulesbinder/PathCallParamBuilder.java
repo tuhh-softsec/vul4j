@@ -18,27 +18,16 @@
 package org.apache.commons.digester3.rulesbinder;
 
 /**
- * Builder chained when invoking {@link LinkedRuleBuilder#setNestedProperties()}.
+ * Builder chained when invoking {@link LinkedRuleBuilder#callParam(int)}.
  */
-public interface LinkedNestedPropertiesBuilder extends BackToLinkedRuleBuilder {
+public interface PathCallParamBuilder extends BackToLinkedRuleBuilder {
 
     /**
-     * Allows element2property mapping to be overridden.
+     * Sets the zero-relative parameter number.
      *
-     * @param elementName The child xml element to match
-     * @param propertyName The java bean property to be assigned the value
+     * @param paramIndex The zero-relative parameter number
      * @return this builder instance
      */
-    LinkedNestedPropertiesBuilder addAlias(String elementName, String propertyName);
-
-    /**
-     * When set to true, any text within child elements will have leading
-     * and trailing whitespace removed before assignment to the target
-     * object.
-     *
-     * @param trimData
-     * @return this builder instance
-     */
-    LinkedNestedPropertiesBuilder trimData(boolean trimData);
+    PathCallParamBuilder ofIndex(int paramIndex);
 
 }
