@@ -64,18 +64,9 @@ public interface LinkedRuleBuilder {
     LinkedFactoryCreateBuilder factoryCreate();
 
     /**
-     * Construct an object with the specified class name.
-     *
-     * @param className Java class name of the object to be created
+     * Construct an object.
      */
-    LinkedObjectCreateBuilder objectCreate(String className);
-
-    /**
-     * Construct an object with the specified class.
-     *
-     * @param clazz Java class of the object to be created.
-     */
-    LinkedObjectCreateBuilder objectCreate(Class<?> clazz);
+    LinkedObjectCreateBuilder objectCreate();
 
     /**
      * Saves a parameter for use by a surrounding {@link #callMethod(String)}.

@@ -23,10 +23,26 @@ package org.apache.commons.digester3.rulesbinder;
 public interface LinkedObjectCreateBuilder extends BackToLinkedRuleBuilder {
 
     /**
+     * Construct an object with the specified class name.
+     *
+     * @param className Java class name of the object to be created
+     * @return this builder instance
+     */
+    LinkedObjectCreateBuilder ofType(String className);
+
+    /**
+     * Construct an object with the specified class.
+     *
+     * @param type Java class of the object to be created
+     * @return this builder instance
+     */
+    LinkedObjectCreateBuilder ofType(Class<?> type);
+
+    /**
      * Allows specify the attribute containing an override class name if it is present.
      *
      * @param attributeName The attribute containing an override class name if it is present
-     * @return The main builder
+     * @return this builder instance
      */
     LinkedObjectCreateBuilder overriddenByAttribute(String attributeName);
 
