@@ -33,10 +33,16 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
+import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
+import org.apache.directory.shared.ldap.codec.ICodecControl;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.decorators.AddResponseDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
 import org.apache.directory.shared.ldap.model.message.AddResponse;
 import org.apache.directory.shared.ldap.model.message.Control;
+import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
@@ -53,6 +59,8 @@ public class AddResponseTest
     /** The encoder instance */
     LdapEncoder encoder = new LdapEncoder();
 
+    ILdapCodecService codec = new DefaultLdapCodecService();
+    
 
     /**
      * Test the decoding of a AddResponse
@@ -83,12 +91,12 @@ public class AddResponseTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<AddResponseDecorator> container = new LdapMessageContainer<AddResponseDecorator>( codec );
 
         // Decode the AddResponse PDU
         try
         {
-            ldapDecoder.decode( stream, ldapMessageContainer );
+            ldapDecoder.decode( stream, container );
         }
         catch ( DecoderException de )
         {
@@ -97,7 +105,7 @@ public class AddResponseTest
         }
 
         // Check the decoded AddResponse
-        AddResponse addResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddResponse();
+        AddResponse addResponse = container.getMessage();
 
         assertEquals( 1, addResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, addResponse.getLdapResult().getResultCode() );
@@ -142,7 +150,7 @@ public class AddResponseTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer<MessageDecorator<? extends Message>>( codec );
 
         // Decode a AddResponse message
         try
@@ -198,12 +206,13 @@ public class AddResponseTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<AddResponseDecorator> container 
+            = new LdapMessageContainer<AddResponseDecorator>( codec );
 
         // Decode the AddResponse PDU
         try
         {
-            ldapDecoder.decode( stream, ldapMessageContainer );
+            ldapDecoder.decode( stream, container );
         }
         catch ( DecoderException de )
         {
@@ -212,7 +221,7 @@ public class AddResponseTest
         }
 
         // Check the decoded AddResponse
-        AddResponse addResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddResponse();
+        AddResponse addResponse = container.getMessage();
 
         assertEquals( 1, addResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, addResponse.getLdapResult().getResultCode() );
@@ -224,9 +233,10 @@ public class AddResponseTest
 
         assertEquals( 1, controls.size() );
 
-        Control control = controls.get( "2.16.840.1.113730.3.4.2" );
+        @SuppressWarnings("unchecked")
+        ICodecControl<Control> control = ( ICodecControl<Control> ) controls.get( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
-        assertEquals( "", Strings.dumpBytes((byte[]) control.getValue()) );
+        assertEquals( "", Strings.dumpBytes( ( byte[] ) control.getValue()) );
 
         try
         {

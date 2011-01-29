@@ -31,14 +31,17 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
-import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.DecoderException;
+import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
+import org.apache.directory.shared.ldap.codec.ICodecControl;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
+import org.apache.directory.shared.ldap.codec.decorators.BindRequestDecorator;
 import org.apache.directory.shared.ldap.model.message.BindRequest;
 import org.apache.directory.shared.ldap.model.message.BindRequestImpl;
 import org.apache.directory.shared.ldap.model.message.Control;
+import org.apache.directory.shared.ldap.model.message.controls.BasicControl;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Ignore;
@@ -56,6 +59,7 @@ public class BindRequestPerfTest
     /** The encoder instance */
     LdapEncoder encoder = new LdapEncoder();
 
+    ILdapCodecService codec = new DefaultLdapCodecService();
 
     /**
      * Test the decoding of a BindRequest with Simple authentication and no
@@ -98,7 +102,7 @@ public class BindRequestPerfTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<BindRequestDecorator> container = new LdapMessageContainer<BindRequestDecorator>( codec );
 
         // Decode the BindRequest PDU
         try
@@ -108,8 +112,8 @@ public class BindRequestPerfTest
 
             for ( int i = 0; i < nbLoops; i++ )
             {
-                ldapDecoder.decode( stream, ldapMessageContainer );
-                ( ( LdapMessageContainer ) ldapMessageContainer ).clean();
+                ldapDecoder.decode( stream, container );
+                container.clean();
                 stream.flip();
             }
 
@@ -117,7 +121,7 @@ public class BindRequestPerfTest
             System.out.println( "testDecodeBindRequestSimpleNoControlsPerf, " + nbLoops + " loops, Delta = "
                 + ( t1 - t0 ) );
 
-            ldapDecoder.decode( stream, ldapMessageContainer );
+            ldapDecoder.decode( stream, container );
         }
         catch ( DecoderException de )
         {
@@ -126,7 +130,7 @@ public class BindRequestPerfTest
         }
 
         // Check the decoded BindRequest
-        BindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
+        BindRequest bindRequest = container.getMessage();
 
         assertEquals( 1, bindRequest.getMessageId() );
         assertTrue( bindRequest.isVersion3() );
@@ -139,9 +143,10 @@ public class BindRequestPerfTest
 
         assertEquals( 1, controls.size() );
 
-        Control control = controls.get( "2.16.840.1.113730.3.4.2" );
+        @SuppressWarnings("unchecked")
+        ICodecControl<Control> control = ( ICodecControl<Control> ) controls.get( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
-        assertEquals( "", Strings.dumpBytes((byte[]) control.getValue()) );
+        assertEquals( "", Strings.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the encoding
         try
@@ -183,14 +188,14 @@ public class BindRequestPerfTest
             bindRequest.setSimple( true );
             bindRequest.setName( name );
             bindRequest.setCredentials( Strings.getBytesUtf8("password") );
-            Control control = new ControlImpl( "2.16.840.1.113730.3.4.2" );
+            Control control = new BasicControl( "2.16.840.1.113730.3.4.2" );
 
             bindRequest.addControl( control );
 
             // Check the encoding
             try
             {
-                ByteBuffer bb = encoder.encodeMessage( bindRequest );
+                encoder.encodeMessage( bindRequest );
             }
             catch ( EncoderException ee )
             {
