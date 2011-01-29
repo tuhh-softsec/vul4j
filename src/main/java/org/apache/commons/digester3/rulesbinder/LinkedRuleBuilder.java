@@ -118,7 +118,7 @@ public interface LinkedRuleBuilder {
      * Sets properties on the object at the top of the stack,
      * based on child elements with names matching properties on that  object.
      */
-    void setNestedProperties();
+    LinkedNestedPropertiesBuilder setNestedProperties();
 
     /**
      * Calls a method on the (top-1) (parent) object, passing the top object (child) as an argument,
