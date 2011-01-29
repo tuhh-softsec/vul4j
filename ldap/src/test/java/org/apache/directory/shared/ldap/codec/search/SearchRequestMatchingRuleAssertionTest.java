@@ -36,10 +36,12 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
-import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
+import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
 import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.model.filter.ExprNode;
 import org.apache.directory.shared.ldap.model.filter.ExtensibleNode;
@@ -66,6 +68,10 @@ public class SearchRequestMatchingRuleAssertionTest
     /** The encoder instance */
     LdapEncoder encoder = new LdapEncoder();
 
+    /** The codec service */
+    ILdapCodecService codec = new DefaultLdapCodecService();
+
+    /** An oid normalizer map */
     static Map<String, OidNormalizer> oids = new HashMap<String, OidNormalizer>();
 
 
@@ -173,7 +179,8 @@ public class SearchRequestMatchingRuleAssertionTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
         {
@@ -185,7 +192,7 @@ public class SearchRequestMatchingRuleAssertionTest
             fail( de.getMessage() );
         }
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getMessage();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "dc=example,dc=com", searchRequest.getBase().toString() );
@@ -249,7 +256,8 @@ public class SearchRequestMatchingRuleAssertionTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
         try
@@ -293,7 +301,8 @@ public class SearchRequestMatchingRuleAssertionTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
         try
@@ -337,7 +346,8 @@ public class SearchRequestMatchingRuleAssertionTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
         try
@@ -384,7 +394,8 @@ public class SearchRequestMatchingRuleAssertionTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
         try
@@ -397,7 +408,7 @@ public class SearchRequestMatchingRuleAssertionTest
             fail( de.getMessage() );
         }
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getMessage();
 
         assertEquals( 4, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -453,7 +464,8 @@ public class SearchRequestMatchingRuleAssertionTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
         try
@@ -547,7 +559,8 @@ public class SearchRequestMatchingRuleAssertionTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
         try
@@ -593,7 +606,8 @@ public class SearchRequestMatchingRuleAssertionTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
         try
@@ -639,7 +653,8 @@ public class SearchRequestMatchingRuleAssertionTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
         try
@@ -685,7 +700,8 @@ public class SearchRequestMatchingRuleAssertionTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
         try
@@ -697,7 +713,7 @@ public class SearchRequestMatchingRuleAssertionTest
             fail( de.getMessage() );
         }
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getMessage();
 
         assertEquals( 4, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
