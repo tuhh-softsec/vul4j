@@ -30,7 +30,7 @@ import org.apache.directory.shared.ldap.model.name.Dn;
  */
 public class EntryChangeImpl extends BasicControl implements EntryChange
 {
-
+    /** The changeType */
     private ChangeType changeType = ChangeType.ADD;
 
     private long changeNumber = UNDEFINED_CHANGE_NUMBER;
