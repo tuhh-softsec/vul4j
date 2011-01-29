@@ -20,6 +20,7 @@
 package org.apache.directory.shared.ldap.util;
 
 
+import java.nio.ByteBuffer;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -50,10 +51,13 @@ import javax.naming.ldap.ExtendedRequest;
 import javax.naming.ldap.ExtendedResponse;
 import javax.naming.ldap.LdapName;
 
+import org.apache.directory.shared.asn1.DecoderException;
+import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.model.exception.*;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
-import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
+import org.apache.directory.shared.ldap.codec.ICodecControl;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.model.exception.LdapAffectMultipleDsaException;
 import org.apache.directory.shared.ldap.model.exception.LdapAliasDereferencingException;
 import org.apache.directory.shared.ldap.model.exception.LdapAliasException;
@@ -101,16 +105,22 @@ public final class JndiUtils
     }
 
 
-    public static javax.naming.ldap.Control toJndiControl( Control control )
+    public static javax.naming.ldap.Control toJndiControl( ILdapCodecService codec, Control control ) 
+        throws EncoderException
     {
-        byte[] value = control.getValue();
-        javax.naming.ldap.Control jndiControl = new BasicControl( control.getOid(), control.isCritical(), value );
-
+        ICodecControl<? extends Control> codecControl = codec.decorate( control );
+        int length = codecControl.computeLength();
+        ByteBuffer buffer = ByteBuffer.allocate( length );
+        codecControl.encode( buffer );
+        buffer.flip();
+        javax.naming.ldap.Control jndiControl = new BasicControl( control.getOid(), 
+            control.isCritical(), buffer.array() );
         return jndiControl;
     }
 
 
-    public static javax.naming.ldap.Control[] toJndiControls( Control... controls )
+    public static javax.naming.ldap.Control[] toJndiControls( ILdapCodecService codec, Control... controls ) 
+         throws EncoderException
     {
         if ( controls != null )
         {
@@ -119,7 +129,7 @@ public final class JndiUtils
 
             for ( Control control : controls )
             {
-                jndiControls[i++] = toJndiControl( control );
+                jndiControls[i++] = toJndiControl( codec, control );
             }
 
             return jndiControls;
@@ -131,17 +141,17 @@ public final class JndiUtils
     }
 
 
-    public static Control fromJndiControl( javax.naming.ldap.Control jndiControl )
+    public static Control fromJndiControl( ILdapCodecService codec, javax.naming.ldap.Control jndiControl ) 
+        throws DecoderException
     {
-        Control control = new ControlImpl( jndiControl.getID() );
-
-        control.setValue( jndiControl.getEncodedValue() );
-
-        return control;
+        ICodecControl<Control> control = codec.newControl( jndiControl.getID() );
+        control.decode( jndiControl.getEncodedValue() );
+        return control.getDecorated();
     }
 
 
-    public static Control[] fromJndiControls( javax.naming.ldap.Control... jndiControls )
+    public static Control[] fromJndiControls( ILdapCodecService codec, javax.naming.ldap.Control... jndiControls )
+        throws DecoderException
     {
         if ( jndiControls != null )
         {
@@ -150,7 +160,7 @@ public final class JndiUtils
 
             for ( javax.naming.ldap.Control jndiControl : jndiControls )
             {
-                controls[i++] = fromJndiControl( jndiControl );
+                controls[i++] = fromJndiControl( codec, jndiControl );
             }
 
             return controls;
@@ -173,6 +183,9 @@ public final class JndiUtils
     {
         class JndiExtendedResponse implements ExtendedResponse
         {
+            private static final long serialVersionUID = 1L;
+
+            
             public byte[] getEncodedValue()
             {
                 return response.getEncodedValue();
@@ -194,6 +207,7 @@ public final class JndiUtils
     {
         class JndiExtendedRequest implements ExtendedRequest
         {
+            private static final long serialVersionUID = 1L;
             private ExtendedResponse response;
 
 
@@ -239,6 +253,8 @@ public final class JndiUtils
     {
         class ServerExtendedResponse implements org.apache.directory.shared.ldap.model.message.ExtendedResponse
         {
+            private static final long serialVersionUID = 1L;
+
             public String getResponseName()
             {
                 return response.getID();
@@ -295,12 +311,14 @@ public final class JndiUtils
             }
 
 
+            @SuppressWarnings("unused")
             public int getControlsLength()
             {
                 return 0;
             }
 
 
+            @SuppressWarnings("unused")
             public Control getCurrentControl()
             {
                 return null;
@@ -313,6 +331,7 @@ public final class JndiUtils
             }
 
 
+            @SuppressWarnings("unused")
             public int getMessageLength()
             {
                 return 0;
@@ -342,6 +361,7 @@ public final class JndiUtils
             }
 
 
+            @SuppressWarnings("unused")
             public void setControlsLength( int controlsLength )
             {
             }
@@ -352,6 +372,7 @@ public final class JndiUtils
             }
 
 
+            @SuppressWarnings("unused")
             public void setMessageLength( int messageLength )
             {
             }
@@ -448,12 +469,14 @@ public final class JndiUtils
             }
 
 
+            @SuppressWarnings("unused")
             public int getControlsLength()
             {
                 return 0;
             }
 
 
+            @SuppressWarnings("unused")
             public Control getCurrentControl()
             {
                 return null;
@@ -466,6 +489,7 @@ public final class JndiUtils
             }
 
 
+            @SuppressWarnings("unused")
             public int getMessageLength()
             {
                 return 0;
@@ -495,6 +519,7 @@ public final class JndiUtils
             }
 
 
+            @SuppressWarnings("unused")
             public void setControlsLength( int controlsLength )
             {
             }
@@ -505,6 +530,7 @@ public final class JndiUtils
             }
 
 
+            @SuppressWarnings("unused")
             public void setMessageLength( int messageLength )
             {
             }
