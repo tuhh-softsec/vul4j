@@ -17,6 +17,8 @@
  */
 package org.apache.commons.digester3.spi;
 
+import org.apache.commons.digester3.Digester;
+import org.apache.commons.digester3.FactoryCreateRule;
 import org.xml.sax.Attributes;
 
 /**
@@ -33,5 +35,13 @@ public interface ObjectCreationFactory<T> {
      * @throws Exception any exception thrown will be propagated upwards
      */
     T createObject(Attributes attributes) throws Exception;
+
+    /**
+     * <p>Set the {@link Digester} to allow the implementation to do logging,
+     * classloading based on the digester's classloader, etc.
+     *
+     * @param digester parent Digester object
+     */
+    void setDigester(Digester digester);
 
 }
