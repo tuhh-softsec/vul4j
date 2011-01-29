@@ -23,6 +23,14 @@ package org.apache.commons.digester3.rulesbinder;
 public interface LinkedCallParamBuilder extends BackToLinkedRuleBuilder {
 
     /**
+     * Sets the zero-relative parameter number.
+     *
+     * @param paramIndex The zero-relative parameter number
+     * @return this builder instance
+     */
+    LinkedCallParamBuilder ofIndex(int paramIndex); // The zero-relative parameter number
+
+    /**
      * Sets the attribute from which to save the parameter value.
      *
      * @param attributeName The attribute from which to save the parameter value

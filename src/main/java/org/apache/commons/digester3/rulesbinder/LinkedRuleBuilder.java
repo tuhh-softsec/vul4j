@@ -55,10 +55,8 @@ public interface LinkedRuleBuilder {
 
     /**
      * Saves a parameter for use by a surrounding {@link #callMethod(String)}.
-     *
-     * @param paramIndex The zero-relative parameter number
      */
-    LinkedCallParamBuilder callParam(int paramIndex);
+    LinkedCallParamBuilder callParam();
 
     /**
      * Construct a "call parameter" rule that will save the body text of this element as the parameter value.
