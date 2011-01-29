@@ -25,6 +25,7 @@ import java.net.URL;
 import java.util.EmptyStackException;
 import java.util.Map;
 
+import org.apache.commons.digester3.spi.Rules;
 import org.apache.commons.logging.Log;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.DTDHandler;
@@ -136,6 +137,12 @@ public interface Digester extends ContentHandler, DTDHandler, EntityResolver, Er
      * @exception SAXException if a parsing exception occurs
      */
     Object parse(URL url) throws IOException, SAXException;
+
+    /**
+     * Return the <code>Rules</code> implementation object containing our
+     * rules collection and associated matching policy.
+     */
+    Rules getRules();
 
     /**
      * Clear the current contents of the default object stack, the param stack,
