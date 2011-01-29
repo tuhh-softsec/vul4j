@@ -34,7 +34,10 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
+import org.apache.directory.shared.ldap.codec.decorators.AddResponseDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
 import org.apache.directory.shared.ldap.model.message.AddResponse;
+import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.model.message.Referral;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.shared.util.Strings;
@@ -54,6 +57,8 @@ public class LdapResultTest
 {
     /** The encoder instance */
     LdapEncoder encoder = new LdapEncoder();
+    
+    ILdapCodecService codec = new DefaultLdapCodecService();
 
 
     // ~ Methods
@@ -79,7 +84,7 @@ public class LdapResultTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer<MessageDecorator<? extends Message>>( codec );
 
         // Decode a AddResponse message
         try
@@ -116,7 +121,7 @@ public class LdapResultTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer<MessageDecorator<? extends Message>>( codec );
 
         // Decode a AddResponse message
         try
@@ -159,7 +164,7 @@ public class LdapResultTest
             stream.flip();
 
             // Allocate a LdapMessage Container
-            Asn1Container ldapMessageContainer = new LdapMessageContainer();
+            Asn1Container ldapMessageContainer = new LdapMessageContainer<MessageDecorator<? extends Message>>( codec );
 
             // Decode a AddResponse PDU
             try
@@ -198,7 +203,7 @@ public class LdapResultTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer<MessageDecorator<? extends Message>>( codec );
 
         // Decode a AddResponse message
         try
@@ -236,7 +241,7 @@ public class LdapResultTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer<MessageDecorator<? extends Message>>( codec );
 
         // Decode a AddResponse message
         try
@@ -276,12 +281,13 @@ public class LdapResultTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<AddResponseDecorator> container = 
+            new LdapMessageContainer<AddResponseDecorator>( codec );
 
         // Decode the AddResponse PDU
         try
         {
-            ldapDecoder.decode( stream, ldapMessageContainer );
+            ldapDecoder.decode( stream, container );
         }
         catch ( DecoderException de )
         {
@@ -290,7 +296,7 @@ public class LdapResultTest
         }
 
         // Check the decoded AddResponse
-        AddResponse addResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddResponse();
+        AddResponse addResponse = container.getMessage();
 
         assertEquals( 1, addResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, addResponse.getLdapResult().getResultCode() );
@@ -339,12 +345,12 @@ public class LdapResultTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<AddResponseDecorator> container = new LdapMessageContainer<AddResponseDecorator>( codec );
 
         // Decode the AddResponse PDU
         try
         {
-            ldapDecoder.decode( stream, ldapMessageContainer );
+            ldapDecoder.decode( stream, container );
         }
         catch ( DecoderException de )
         {
@@ -353,7 +359,7 @@ public class LdapResultTest
         }
 
         // Check the decoded AddResponse
-        AddResponse addResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddResponse();
+        AddResponse addResponse = container.getMessage();
 
         assertEquals( 1, addResponse.getMessageId() );
         assertEquals( ResultCodeEnum.REFERRAL, addResponse.getLdapResult().getResultCode() );
@@ -417,12 +423,12 @@ public class LdapResultTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<AddResponseDecorator> container = new LdapMessageContainer<AddResponseDecorator>( codec );
 
         // Decode the AddResponse PDU
         try
         {
-            ldapDecoder.decode( stream, ldapMessageContainer );
+            ldapDecoder.decode( stream, container );
         }
         catch ( DecoderException de )
         {
@@ -431,7 +437,7 @@ public class LdapResultTest
         }
 
         // Check the decoded AddResponse
-        AddResponse addResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddResponse();
+        AddResponse addResponse = container.getMessage();
 
         assertEquals( 1, addResponse.getMessageId() );
         assertEquals( ResultCodeEnum.REFERRAL, addResponse.getLdapResult().getResultCode() );
@@ -494,12 +500,12 @@ public class LdapResultTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<AddResponseDecorator> container = new LdapMessageContainer<AddResponseDecorator>( codec );
 
         // Decode the AddResponse PDU
         try
         {
-            ldapDecoder.decode( stream, ldapMessageContainer );
+            ldapDecoder.decode( stream, container );
         }
         catch ( DecoderException de )
         {
@@ -508,7 +514,7 @@ public class LdapResultTest
         }
 
         // Check the decoded AddResponse
-        AddResponse addResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddResponse();
+        AddResponse addResponse = container.getMessage();
 
         assertEquals( 1, addResponse.getMessageId() );
         assertEquals( ResultCodeEnum.REFERRAL, addResponse.getLdapResult().getResultCode() );
@@ -575,12 +581,13 @@ public class LdapResultTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<MessageDecorator<? extends Message>> container = 
+            new LdapMessageContainer<MessageDecorator<? extends Message>>( codec );
 
         // Decode the AddResponse PDU
         try
         {
-            ldapDecoder.decode( stream, ldapMessageContainer );
+            ldapDecoder.decode( stream, container );
         }
         catch ( DecoderException de )
         {
