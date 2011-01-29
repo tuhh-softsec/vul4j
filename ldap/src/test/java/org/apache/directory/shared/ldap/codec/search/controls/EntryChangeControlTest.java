@@ -30,7 +30,6 @@ import java.nio.ByteBuffer;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.ldap.codec.search.controls.entryChange.*;
 import org.apache.directory.shared.ldap.model.message.controls.ChangeType;
 import org.apache.directory.shared.ldap.model.message.controls.EntryChange;
@@ -55,7 +54,6 @@ public class EntryChangeControlTest
     @Test
     public void testDecodeEntryChangeControlSuccess()
     {
-        Asn1Decoder decoder = new EntryChangeDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x0D );
         bb.put( new byte[]
             { 
@@ -69,11 +67,11 @@ public class EntryChangeControlTest
         bb.flip();
 
         EntryChangeContainer container = new EntryChangeContainer();
-        container.setEntryChangeDecorator( new EntryChangeDecorator() );
+        EntryChangeDecorator decorator = container.getEntryChangeDecorator();
         
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
         }
         catch ( DecoderException de )
         {
@@ -94,7 +92,6 @@ public class EntryChangeControlTest
     @Test
     public void testDecodeEntryChangeControlSuccessLongChangeNumber()
     {
-        Asn1Decoder decoder = new EntryChangeDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x13 );
         bb.put( new byte[]
             { 
@@ -109,11 +106,11 @@ public class EntryChangeControlTest
         bb.flip();
 
         EntryChangeContainer container = new EntryChangeContainer();
-        container.setEntryChangeDecorator( new EntryChangeDecorator() );
+        EntryChangeDecorator decorator = container.getEntryChangeDecorator();
         
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
         }
         catch ( DecoderException de )
         {
@@ -134,7 +131,6 @@ public class EntryChangeControlTest
     @Test
     public void testDecodeEntryChangeControlWithADDAndChangeNumber()
     {
-        Asn1Decoder decoder = new EntryChangeDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x08 );
         bb.put( new byte[]
             { 
@@ -148,11 +144,11 @@ public class EntryChangeControlTest
         bb.flip();
 
         EntryChangeContainer container = new EntryChangeContainer();
-        container.setEntryChangeDecorator( new EntryChangeDecorator() );
+        EntryChangeDecorator decorator = container.getEntryChangeDecorator();
         
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
         }
         catch ( DecoderException de )
         {
@@ -174,7 +170,6 @@ public class EntryChangeControlTest
     @Test
     public void testDecodeEntryChangeControlWithADDAndPreviousDNBad()
     {
-        Asn1Decoder decoder = new EntryChangeDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x0D );
         bb.put( new byte[]
             { 
@@ -190,11 +185,11 @@ public class EntryChangeControlTest
         bb.flip();
 
         EntryChangeContainer container = new EntryChangeContainer();
-        container.setEntryChangeDecorator( new EntryChangeDecorator() );
+        EntryChangeDecorator decorator = container.getEntryChangeDecorator();
         
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
         }
         catch ( DecoderException de )
         {
@@ -213,7 +208,6 @@ public class EntryChangeControlTest
     @Test
     public void testDecodeEntryChangeControlWithADD()
     {
-        Asn1Decoder decoder = new EntryChangeDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x05 );
         bb.put( new byte[]
             { 
@@ -226,11 +220,11 @@ public class EntryChangeControlTest
         bb.flip();
 
         EntryChangeContainer container = new EntryChangeContainer();
-        container.setEntryChangeDecorator( new EntryChangeDecorator() );
+        EntryChangeDecorator decorator = container.getEntryChangeDecorator();
         
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
         }
         catch ( DecoderException de )
         {
@@ -252,7 +246,6 @@ public class EntryChangeControlTest
     @Test
     public void testDecodeEntryChangeControlWithWrongChangeType()
     {
-        Asn1Decoder decoder = new EntryChangeDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x05 );
         bb.put( new byte[]
             { 
@@ -265,11 +258,11 @@ public class EntryChangeControlTest
         bb.flip();
 
         EntryChangeContainer container = new EntryChangeContainer();
-        container.setEntryChangeDecorator( new EntryChangeDecorator() );
+        EntryChangeDecorator decorator = container.getEntryChangeDecorator();
         
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
         }
         catch ( DecoderException de )
         {
@@ -288,7 +281,6 @@ public class EntryChangeControlTest
     @Test
     public void testDecodeEntryChangeControlWithWrongChangeNumber()
     {
-        Asn1Decoder decoder = new EntryChangeDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x1C );
         bb.put( new byte[]
             { 
@@ -304,11 +296,11 @@ public class EntryChangeControlTest
         bb.flip();
 
         EntryChangeContainer container = new EntryChangeContainer();
-        container.setEntryChangeDecorator( new EntryChangeDecorator() );
+        EntryChangeDecorator decorator = container.getEntryChangeDecorator();
         
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
         }
         catch ( DecoderException de )
         {
