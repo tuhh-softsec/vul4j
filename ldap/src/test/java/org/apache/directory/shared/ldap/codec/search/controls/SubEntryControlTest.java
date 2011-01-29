@@ -31,9 +31,7 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
-import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.ldap.model.message.controls.Subentries;
-import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesDecoder;
 import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesDecorator;
 import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesContainer;
 import org.apache.directory.shared.util.Strings;
@@ -56,7 +54,6 @@ public class SubEntryControlTest
     @Test
     public void testDecodeSubEntryVisibilityTrue()
     {
-        Asn1Decoder decoder = new SubentriesDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x03 );
         bb.put( new byte[]
             { 
@@ -65,11 +62,11 @@ public class SubEntryControlTest
         bb.flip();
 
         SubentriesContainer container = new SubentriesContainer();
-        container.setSubentriesDecorator( new SubentriesDecorator() );
+        SubentriesDecorator decorator = container.getSubentriesControl();
         
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
         }
         catch ( DecoderException de )
         {
@@ -77,7 +74,6 @@ public class SubEntryControlTest
             fail( de.getMessage() );
         }
 
-        SubentriesDecorator decorator = container.getSubentriesControl();
         assertTrue( ( ( Subentries ) decorator.getDecorated() ).isVisible() );
         // test encoding
         try
@@ -114,7 +110,6 @@ public class SubEntryControlTest
     @Test
     public void testDecodeSubEntryVisibilityFalse()
     {
-        Asn1Decoder decoder = new SubentriesDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x03 );
         bb.put( new byte[]
             { 
@@ -123,11 +118,11 @@ public class SubEntryControlTest
         bb.flip();
 
         SubentriesContainer container = new SubentriesContainer();
-        container.setSubentriesDecorator( new SubentriesDecorator() );
-
+        SubentriesDecorator decorator = container.getSubentriesControl();
+        
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
         }
         catch ( DecoderException de )
         {
@@ -135,7 +130,6 @@ public class SubEntryControlTest
             fail( de.getMessage() );
         }
 
-        SubentriesDecorator decorator = container.getSubentriesControl();
         assertFalse( ( ( Subentries ) decorator.getDecorated() ).isVisible() );
         
         // test encoding
@@ -173,7 +167,6 @@ public class SubEntryControlTest
     @Test
     public void testDecodeSubEntryEmptyVisibility()
     {
-        Asn1Decoder decoder = new SubentriesDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x02 );
 
         bb.put( new byte[]
@@ -185,12 +178,11 @@ public class SubEntryControlTest
 
         // Allocate a LdapMessage Container
         SubentriesContainer container = new SubentriesContainer();
-        container.setSubentriesDecorator( new SubentriesDecorator() );
-
-        // Decode a SubEntryControl PDU
+        SubentriesDecorator decorator = container.getSubentriesControl();
+        
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
             fail( "We should never reach this point !!!" );
         }
         catch ( DecoderException de )
@@ -206,7 +198,6 @@ public class SubEntryControlTest
     @Test
     public void testDecodeSubEntryBad()
     {
-        Asn1Decoder decoder = new SubentriesDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x03 );
 
         bb.put( new byte[]
@@ -218,12 +209,11 @@ public class SubEntryControlTest
 
         // Allocate a LdapMessage Container
         SubentriesContainer container = new SubentriesContainer();
-        container.setSubentriesDecorator( new SubentriesDecorator() );
-
-        // Decode a SubEntryControl PDU
+        SubentriesDecorator decorator = container.getSubentriesControl();
+        
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
             fail( "We should never reach this point !!!" );
         }
         catch ( DecoderException de )
