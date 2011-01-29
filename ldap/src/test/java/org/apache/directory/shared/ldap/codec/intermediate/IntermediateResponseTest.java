@@ -30,11 +30,14 @@ import java.util.Map;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.ber.Asn1Decoder;
-import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.asn1.ber.Asn1Decoder;
+import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
+import org.apache.directory.shared.ldap.codec.ICodecControl;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.decorators.IntermediateResponseDecorator;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.IntermediateResponse;
 import org.apache.directory.shared.util.Strings;
@@ -53,6 +56,9 @@ public class IntermediateResponseTest
 {
     /** The encoder instance */
     LdapEncoder encoder = new LdapEncoder();
+
+    /** The codec service */
+    ILdapCodecService codec = new DefaultLdapCodecService();
 
 
     /**
@@ -79,7 +85,8 @@ public class IntermediateResponseTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<IntermediateResponseDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<IntermediateResponseDecorator>( codec );
 
         // Decode the IntermediateResponse PDU
         try
@@ -93,8 +100,7 @@ public class IntermediateResponseTest
         }
 
         // Check the decoded IntermediateResponse PDU
-        IntermediateResponse intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getIntermediateResponse();
+        IntermediateResponse intermediateResponse = ldapMessageContainer.getMessage();
 
         assertEquals( 1, intermediateResponse.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", intermediateResponse.getResponseName() );
@@ -150,7 +156,8 @@ public class IntermediateResponseTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<IntermediateResponseDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<IntermediateResponseDecorator>( codec );
 
         // Decode the IntermediateResponse PDU
         try
@@ -164,8 +171,7 @@ public class IntermediateResponseTest
         }
 
         // Check the decoded IntermediateResponse PDU
-        IntermediateResponse intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getIntermediateResponse();
+        IntermediateResponse intermediateResponse = ldapMessageContainer.getMessage();
 
         assertEquals( 1, intermediateResponse.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", intermediateResponse.getResponseName() );
@@ -176,7 +182,7 @@ public class IntermediateResponseTest
 
         assertEquals( 1, controls.size() );
 
-        Control control = controls.get( "2.16.840.1.113730.3.4.2" );
+        ICodecControl<Control> control = ( ICodecControl<Control> )controls.get( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", Strings.dumpBytes((byte[]) control.getValue()) );
 
@@ -231,7 +237,8 @@ public class IntermediateResponseTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<IntermediateResponseDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<IntermediateResponseDecorator>( codec );
 
         // Decode the IntermediateResponse PDU
         try
@@ -245,8 +252,7 @@ public class IntermediateResponseTest
         }
 
         // Check the decoded IntermediateResponse PDU
-        IntermediateResponse intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getIntermediateResponse();
+        IntermediateResponse intermediateResponse = ldapMessageContainer.getMessage();
 
         assertEquals( 1, intermediateResponse.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", intermediateResponse.getResponseName() );
@@ -257,7 +263,7 @@ public class IntermediateResponseTest
 
         assertEquals( 1, controls.size() );
 
-        Control control = controls.get( "2.16.840.1.113730.3.4.2" );
+        ICodecControl<Control> control = ( ICodecControl<Control> )controls.get( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", Strings.dumpBytes((byte[]) control.getValue()) );
 
@@ -301,7 +307,8 @@ public class IntermediateResponseTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<IntermediateResponseDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<IntermediateResponseDecorator>( codec );
 
         // Decode a IntermediateResponse PDU
         try
@@ -336,7 +343,8 @@ public class IntermediateResponseTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<IntermediateResponseDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<IntermediateResponseDecorator>( codec );
 
         // Decode a IntermediateResponse PDU
         try
@@ -372,7 +380,8 @@ public class IntermediateResponseTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<IntermediateResponseDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<IntermediateResponseDecorator>( codec );
 
         // Decode a IntermediateResponse PDU
         try
@@ -409,7 +418,8 @@ public class IntermediateResponseTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<IntermediateResponseDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<IntermediateResponseDecorator>( codec );
 
         // Decode the IntermediateResponse PDU
         try
@@ -423,8 +433,7 @@ public class IntermediateResponseTest
         }
 
         // Check the decoded IntermediateResponse PDU
-        IntermediateResponse intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getIntermediateResponse();
+        IntermediateResponse intermediateResponse = ldapMessageContainer.getMessage();
 
         assertEquals( 1, intermediateResponse.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", intermediateResponse.getResponseName() );
@@ -475,7 +484,8 @@ public class IntermediateResponseTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<IntermediateResponseDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<IntermediateResponseDecorator>( codec );
 
         // Decode the IntermediateResponse PDU
         try
@@ -489,8 +499,7 @@ public class IntermediateResponseTest
         }
 
         // Check the decoded IntermediateResponse PDU
-        IntermediateResponse intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getIntermediateResponse();
+        IntermediateResponse intermediateResponse = ldapMessageContainer.getMessage();
 
         assertEquals( 1, intermediateResponse.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", intermediateResponse.getResponseName() );
@@ -538,7 +547,8 @@ public class IntermediateResponseTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<IntermediateResponseDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<IntermediateResponseDecorator>( codec );
 
         // Decode the IntermediateResponse PDU
         try
@@ -552,8 +562,7 @@ public class IntermediateResponseTest
         }
 
         // Check the decoded IntermediateResponse PDU
-        IntermediateResponse intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getIntermediateResponse();
+        IntermediateResponse intermediateResponse = ldapMessageContainer.getMessage();
 
         assertEquals( 1, intermediateResponse.getMessageId() );
         assertEquals( "", intermediateResponse.getResponseName() );
@@ -601,7 +610,8 @@ public class IntermediateResponseTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<IntermediateResponseDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<IntermediateResponseDecorator>( codec );
 
         // Decode the IntermediateResponse PDU
         try
@@ -615,8 +625,7 @@ public class IntermediateResponseTest
         }
 
         // Check the decoded IntermediateResponse PDU
-        IntermediateResponse intermediateResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getIntermediateResponse();
+        IntermediateResponse intermediateResponse = ldapMessageContainer.getMessage();
 
         assertEquals( 1, intermediateResponse.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", intermediateResponse.getResponseName() );
