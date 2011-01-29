@@ -34,9 +34,12 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.ldap.codec.decorators.AbandonRequestDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
 import org.apache.directory.shared.ldap.model.message.AbandonRequest;
 import org.apache.directory.shared.ldap.model.message.AbandonRequestImpl;
 import org.apache.directory.shared.ldap.model.message.Control;
+import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,11 +51,13 @@ public class LdapControlTest
 {
     /** The encoder instance */
     LdapEncoder encoder = new LdapEncoder();
+    ILdapCodecService codec = new DefaultLdapCodecService();
 
 
     /**
      * Test the decoding of a Request with controls
      */
+    @SuppressWarnings("unchecked")
     @Test
     public void testDecodeRequestWithControls()
     {
@@ -86,7 +91,8 @@ public class LdapControlTest
         stream.flip();
 
         // Allocate a LdapMessageContainer Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<AbandonRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<AbandonRequestDecorator>( codec );
 
         // Decode the PDU
         try
@@ -100,7 +106,7 @@ public class LdapControlTest
         }
 
         // Check that everything is OK
-        AbandonRequest abandonRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getAbandonRequest();
+        AbandonRequestDecorator abandonRequest = ldapMessageContainer.getMessage();
 
         // Copy the message
         AbandonRequest internalAbandonRequest = new AbandonRequestImpl( abandonRequest.getMessageId() );
@@ -114,25 +120,25 @@ public class LdapControlTest
 
         assertEquals( 4, controls.size() );
 
-        Control control = controls.get( "1.3.6.1.5.5.1" );
+        ICodecControl<Control> control = ( ICodecControl<Control> ) controls.get( "1.3.6.1.5.5.1" );
         assertEquals( "1.3.6.1.5.5.1", control.getOid() );
-        assertEquals( "0x61 0x62 0x63 0x64 0x65 0x66 ", Strings.dumpBytes((byte[]) control.getValue()) );
+        assertEquals( "0x61 0x62 0x63 0x64 0x65 0x66 ", Strings.dumpBytes( ( byte[] ) control.getValue() ) );
         assertTrue( control.isCritical() );
         internalAbandonRequest.addControl( control );
 
-        control = controls.get( "1.3.6.1.5.5.2" );
+        control = ( ICodecControl<Control> ) controls.get( "1.3.6.1.5.5.2" );
         assertEquals( "1.3.6.1.5.5.2", control.getOid() );
         assertEquals( "0x67 0x68 0x69 0x6A 0x6B 0x6C ", Strings.dumpBytes((byte[]) control.getValue()) );
         assertFalse( control.isCritical() );
         internalAbandonRequest.addControl( control );
 
-        control = controls.get( "1.3.6.1.5.5.3" );
+        control = ( ICodecControl<Control> ) controls.get( "1.3.6.1.5.5.3" );
         assertEquals( "1.3.6.1.5.5.3", control.getOid() );
         assertEquals( "", Strings.dumpBytes((byte[]) control.getValue()) );
         assertTrue( control.isCritical() );
         internalAbandonRequest.addControl( control );
 
-        control = controls.get( "1.3.6.1.5.5.4" );
+        control = ( ICodecControl<Control> ) controls.get( "1.3.6.1.5.5.4" );
         assertEquals( "1.3.6.1.5.5.4", control.getOid() );
         assertEquals( "", Strings.dumpBytes((byte[]) control.getValue()) );
         assertFalse( control.isCritical() );
@@ -158,8 +164,7 @@ public class LdapControlTest
                 fail( de.getMessage() );
             }
 
-            AbandonRequest abandonRequest2 = ( ( LdapMessageContainer ) ldapMessageContainer )
-                .getAbandonRequest();
+            AbandonRequest abandonRequest2 = ldapMessageContainer.getMessage();
 
             assertEquals( abandonRequest, abandonRequest2 );
         }
@@ -197,7 +202,8 @@ public class LdapControlTest
         stream.flip();
 
         // Allocate a LdapMessageContainer Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = 
+            new LdapMessageContainer<MessageDecorator<? extends Message>>( codec );
 
         // Decode the PDU
         try
@@ -240,7 +246,8 @@ public class LdapControlTest
         stream.flip();
 
         // Allocate a LdapMessageContainer Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = 
+            new LdapMessageContainer<MessageDecorator<? extends Message>>( codec );
 
         // Decode the PDU
         try
@@ -283,7 +290,8 @@ public class LdapControlTest
         stream.flip();
 
         // Allocate a LdapMessageContainer Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = 
+            new LdapMessageContainer<MessageDecorator<? extends Message>>( codec );
 
         // Decode the PDU
         try

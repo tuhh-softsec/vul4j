@@ -35,7 +35,10 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.tlv.TLVStateEnum;
+import org.apache.directory.shared.ldap.codec.decorators.BindRequestDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
 import org.apache.directory.shared.ldap.model.message.BindRequest;
+import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.util.Strings;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.filterchain.IoFilter.NextFilter;
@@ -56,6 +59,8 @@ import org.junit.runner.RunWith;
 @Concurrent()
 public class LdapDecoderTest
 {
+    ILdapCodecService codec = new DefaultLdapCodecService();
+    
     private static class LdapProtocolDecoderOutput extends AbstractProtocolDecoderOutput 
     {
         public LdapProtocolDecoderOutput()
@@ -97,8 +102,9 @@ public class LdapDecoderTest
     public void testDecodeFull()
     {
         LdapDecoder ldapDecoder = new LdapDecoder();
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
-        ldapDecoder.setLdapMessageContainer( (LdapMessageContainer)ldapMessageContainer );
+        LdapMessageContainer<MessageDecorator<? extends Message>> container = 
+            new LdapMessageContainer<MessageDecorator<? extends Message>>( codec );
+        ldapDecoder.setLdapMessageContainer( container );
 
         ByteBuffer stream = ByteBuffer.allocate( 0x35 );
         stream.put( new byte[]
@@ -152,11 +158,12 @@ public class LdapDecoderTest
     public void testDecode2Messages() throws Exception
     {
         LdapDecoder ldapDecoder = new LdapDecoder();
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
-        ldapDecoder.setLdapMessageContainer( (LdapMessageContainer)ldapMessageContainer );
+        LdapMessageContainer<MessageDecorator<? extends Message>> container = 
+            new LdapMessageContainer<MessageDecorator<? extends Message>>( codec );
+        ldapDecoder.setLdapMessageContainer( container );
 
         IoSession dummySession = new DummySession();
-        dummySession.setAttribute( "messageContainer", ldapMessageContainer );
+        dummySession.setAttribute( "messageContainer", container );
 
         IoBuffer stream = IoBuffer.allocate( 0x6A );
         stream.put( new byte[]
@@ -246,12 +253,12 @@ public class LdapDecoderTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<BindRequestDecorator> container = new LdapMessageContainer<BindRequestDecorator>( codec );
 
         // Decode a BindRequest PDU
         try
         {
-            ldapDecoder.decode( stream, ldapMessageContainer );
+            ldapDecoder.decode( stream, container );
         }
         catch ( DecoderException de )
         {
@@ -259,10 +266,10 @@ public class LdapDecoderTest
             fail( de.getMessage() );
         }
 
-        assertEquals( TLVStateEnum.VALUE_STATE_PENDING, ldapMessageContainer.getState() );
+        assertEquals( TLVStateEnum.VALUE_STATE_PENDING, container.getState() );
 
         // Check the decoded PDU
-        BindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
+        BindRequest bindRequest = container.getMessage();
 
         assertEquals( 1, bindRequest.getMessageId() );
         assertTrue( bindRequest.isVersion3() );
@@ -293,12 +300,12 @@ public class LdapDecoderTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<BindRequestDecorator> container = new LdapMessageContainer<BindRequestDecorator>( codec );
 
         // Decode a BindRequest PDU first block of data
         try
         {
-            ldapDecoder.decode( stream, ldapMessageContainer );
+            ldapDecoder.decode( stream, container );
         }
         catch ( DecoderException de )
         {
@@ -306,7 +313,7 @@ public class LdapDecoderTest
             fail( de.getMessage() );
         }
 
-        assertEquals( TLVStateEnum.VALUE_STATE_PENDING, ldapMessageContainer.getState() );
+        assertEquals( TLVStateEnum.VALUE_STATE_PENDING, container.getState() );
 
         // Second block of data
         stream = ByteBuffer.allocate( 37 );
@@ -323,7 +330,7 @@ public class LdapDecoderTest
         // Decode a BindRequest PDU second block of data
         try
         {
-            ldapDecoder.decode( stream, ldapMessageContainer );
+            ldapDecoder.decode( stream, container );
         }
         catch ( DecoderException de )
         {
@@ -331,10 +338,10 @@ public class LdapDecoderTest
             fail( de.getMessage() );
         }
 
-        assertEquals( ldapMessageContainer.getState(), TLVStateEnum.PDU_DECODED );
+        assertEquals( container.getState(), TLVStateEnum.PDU_DECODED );
 
         // Check the decoded PDU
-        BindRequest bindRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindRequest();
+        BindRequest bindRequest = container.getMessage();
 
         assertEquals( 1, bindRequest.getMessageId() );
         assertTrue( bindRequest.isVersion3() );
@@ -379,7 +386,8 @@ public class LdapDecoderTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<MessageDecorator<? extends Message>> ldapMessageContainer = 
+            new LdapMessageContainer<MessageDecorator<? extends Message>>( codec );
 
         // Decode a BindRequest PDU
         try
@@ -431,7 +439,8 @@ public class LdapDecoderTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = 
+            new LdapMessageContainer<MessageDecorator<? extends Message>>( codec );
 
         // Decode a BindRequest PDU
         try
@@ -482,7 +491,7 @@ public class LdapDecoderTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer<MessageDecorator<? extends Message>>( codec );
 
         // Decode a BindRequest PDU
         try
@@ -500,9 +509,9 @@ public class LdapDecoderTest
 
 
     /**
-     * Test the decoding of a splitted Length.
+     * Test the decoding of a split Length.
      * 
-     * The length is 3 bytes long, but the PDU has been splitted 
+     * The length is 3 bytes long, but the PDU has been split
      * just after the first byte 
      */
     @Test
@@ -519,7 +528,7 @@ public class LdapDecoderTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer<MessageDecorator<? extends Message>>( codec );
 
         // Decode a BindRequest PDU first block of data
         try
