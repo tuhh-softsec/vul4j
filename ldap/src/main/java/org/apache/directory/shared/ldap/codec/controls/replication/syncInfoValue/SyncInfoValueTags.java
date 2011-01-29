@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValue;
 
+
 /**
  * An enumeration to store the tags used to encode and decode the syncInfoValue control.
  * 

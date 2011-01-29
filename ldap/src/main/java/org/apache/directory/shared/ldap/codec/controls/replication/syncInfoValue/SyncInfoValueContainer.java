@@ -28,29 +28,44 @@ import org.apache.directory.shared.asn1.ber.AbstractContainer;
  *  
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SyncInfoValueControlContainer extends AbstractContainer
+public class SyncInfoValueContainer extends AbstractContainer
 {
     /** SyncInfoValueControl */
-    private SyncInfoValueControl control;
+    private SyncInfoValueDecorator control;
 
 
     /**
      * Creates a new SyncInfoValueControlContainer object. We will store one grammar,
      * it's enough ...
      */
-    public SyncInfoValueControlContainer()
+    public SyncInfoValueContainer()
     {
         super();
+        this.control = new SyncInfoValueDecorator();
         stateStack = new int[1];
-        grammar = SyncInfoValueControlGrammar.getInstance();
-        setTransition( SyncInfoValueControlStatesEnum.START_STATE );
+        grammar = SyncInfoValueGrammar.getInstance();
+        setTransition( SyncInfoValueStatesEnum.START_STATE );
+    }
+
+
+    /**
+     * Creates a new SyncInfoValueControlContainer object. We will store one grammar,
+     * it's enough ...
+     */
+    public SyncInfoValueContainer( SyncInfoValueDecorator control )
+    {
+        super();
+        this.control = control;
+        stateStack = new int[1];
+        grammar = SyncInfoValueGrammar.getInstance();
+        setTransition( SyncInfoValueStatesEnum.START_STATE );
     }
 
 
     /**
      * @return Returns the syncInfoValue control.
      */
-    public SyncInfoValueControl getSyncInfoValueControl()
+    public SyncInfoValueDecorator getSyncInfoValueControl()
     {
         return control;
     }
@@ -62,11 +77,12 @@ public class SyncInfoValueControlContainer extends AbstractContainer
      * 
      * @param control the SyncInfoValueControlCodec to set.
      */
-    public void setSyncInfoValueControl( SyncInfoValueControl control )
+    public void setSyncInfoValueControl( SyncInfoValueDecorator control )
     {
         this.control = control;
     }
 
+    
     /**
      * Clean the container
      */
