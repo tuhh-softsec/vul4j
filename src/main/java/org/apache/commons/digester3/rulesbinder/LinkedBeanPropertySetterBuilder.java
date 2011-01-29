@@ -18,7 +18,7 @@
 package org.apache.commons.digester3.rulesbinder;
 
 /**
- * Builder chained when invoking {@link LinkedRuleBuilder#beanPropertySetter()}.
+ * Builder chained when invoking {@link LinkedRuleBuilder#setBeanProperty()}.
  */
 public interface LinkedBeanPropertySetterBuilder extends BackToLinkedRuleBuilder {
 
@@ -28,6 +28,6 @@ public interface LinkedBeanPropertySetterBuilder extends BackToLinkedRuleBuilder
      * @param propertyName The name of property to set
      * @return this builder instance
      */
-    LinkedBeanPropertySetterBuilder ofPropertyName(String propertyName);
+    LinkedBeanPropertySetterBuilder withName(String propertyName);
 
 }
