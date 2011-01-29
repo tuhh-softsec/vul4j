@@ -31,13 +31,16 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
-import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
+import org.apache.directory.shared.ldap.codec.ICodecControl;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
 import org.apache.directory.shared.ldap.model.message.CompareRequest;
 import org.apache.directory.shared.ldap.model.message.CompareResponseImpl;
 import org.apache.directory.shared.ldap.codec.LdapEncoder;
+import org.apache.directory.shared.ldap.codec.decorators.CompareRequestDecorator;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
@@ -57,6 +60,8 @@ public class CompareRequestTest
 {
     /** The encoder instance */
     LdapEncoder encoder = new LdapEncoder();
+    
+    ILdapCodecService codec = new DefaultLdapCodecService();
 
 
     /**
@@ -91,12 +96,13 @@ public class CompareRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<CompareRequestDecorator> container 
+            = new LdapMessageContainer<CompareRequestDecorator>( codec );
 
         // Decode the CompareRequest PDU
         try
         {
-            ldapDecoder.decode( stream, ldapMessageContainer );
+            ldapDecoder.decode( stream, container );
         }
         catch ( DecoderException de )
         {
@@ -104,8 +110,8 @@ public class CompareRequestTest
             fail( de.getMessage() );
         }
 
-        // Ceck the decoded CompareRequest PDU
-        CompareRequest compareRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getCompareRequest();
+        // Check the decoded CompareRequest PDU
+        CompareRequest compareRequest = container.getMessage();
 
         assertEquals( 1, compareRequest.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", compareRequest.getName().toString() );
@@ -152,12 +158,13 @@ public class CompareRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<CompareRequestDecorator> container 
+        = new LdapMessageContainer<CompareRequestDecorator>( codec );
 
         // Decode the CompareRequest PDU
         try
         {
-            ldapDecoder.decode( stream, ldapMessageContainer );
+            ldapDecoder.decode( stream, container );
             fail( "We should never reach this point !!!" );
         }
         catch ( DecoderException de )
@@ -193,12 +200,13 @@ public class CompareRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<CompareRequestDecorator> container 
+            = new LdapMessageContainer<CompareRequestDecorator>( codec );
 
         // Decode the CompareRequest PDU
         try
         {
-            ldapDecoder.decode( stream, ldapMessageContainer );
+            ldapDecoder.decode( stream, container );
             fail( "We should never reach this point !!!" );
         }
         catch ( DecoderException de )
@@ -236,12 +244,13 @@ public class CompareRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<CompareRequestDecorator> container 
+            = new LdapMessageContainer<CompareRequestDecorator>( codec );
 
         // Decode the CompareRequest PDU
         try
         {
-            ldapDecoder.decode( stream, ldapMessageContainer );
+            ldapDecoder.decode( stream, container );
             fail( "We should never reach this point !!!" );
         }
         catch ( DecoderException de )
@@ -279,12 +288,13 @@ public class CompareRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<CompareRequestDecorator> container 
+            = new LdapMessageContainer<CompareRequestDecorator>( codec );
 
         // Decode the CompareRequest PDU
         try
         {
-            ldapDecoder.decode( stream, ldapMessageContainer );
+            ldapDecoder.decode( stream, container );
             fail( "We should never reach this point !!!" );
         }
         catch ( DecoderException de )
@@ -327,12 +337,13 @@ public class CompareRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<CompareRequestDecorator> container 
+            = new LdapMessageContainer<CompareRequestDecorator>( codec );
 
         // Decode the CompareRequest PDU
         try
         {
-            ldapDecoder.decode( stream, ldapMessageContainer );
+            ldapDecoder.decode( stream, container );
             fail( "We should never reach this point !!!" );
         }
         catch ( DecoderException de )
@@ -379,12 +390,13 @@ public class CompareRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<CompareRequestDecorator> container 
+            = new LdapMessageContainer<CompareRequestDecorator>( codec );
 
         // Decode the CompareRequest PDU
         try
         {
-            ldapDecoder.decode( stream, ldapMessageContainer );
+            ldapDecoder.decode( stream, container );
         }
         catch ( DecoderException de )
         {
@@ -393,7 +405,7 @@ public class CompareRequestTest
         }
 
         // Check the decoded CompareRequest PDU
-        CompareRequest compareRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getCompareRequest();
+        CompareRequest compareRequest = container.getMessage();
 
         assertEquals( 1, compareRequest.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", compareRequest.getName().toString() );
@@ -458,12 +470,13 @@ public class CompareRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<CompareRequestDecorator> container 
+            = new LdapMessageContainer<CompareRequestDecorator>( codec );
 
         // Decode the CompareRequest PDU
         try
         {
-            ldapDecoder.decode( stream, ldapMessageContainer );
+            ldapDecoder.decode( stream, container );
         }
         catch ( DecoderException de )
         {
@@ -472,7 +485,7 @@ public class CompareRequestTest
         }
 
         // Ceck the decoded CompareRequest PDU
-        CompareRequest compareRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getCompareRequest();
+        CompareRequest compareRequest = container.getMessage();
 
         assertEquals( 1, compareRequest.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", compareRequest.getName().toString() );
@@ -484,9 +497,10 @@ public class CompareRequestTest
 
         assertEquals( 1, controls.size() );
 
-        Control control = controls.get( "2.16.840.1.113730.3.4.2" );
+        @SuppressWarnings("unchecked")
+        ICodecControl<Control> control = ( ICodecControl<Control> ) controls.get( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
-        assertEquals( "", Strings.dumpBytes((byte[]) control.getValue()) );
+        assertEquals( "", Strings.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the encoding
         try
