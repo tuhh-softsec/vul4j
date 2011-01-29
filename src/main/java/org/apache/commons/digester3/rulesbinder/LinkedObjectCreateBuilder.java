@@ -20,7 +20,7 @@ package org.apache.commons.digester3.rulesbinder;
 /**
  * Builder chained when invoking {@link LinkedRuleBuilder#objectCreate(String)}.
  */
-public interface LinkedAttributeOverrideBuilder extends BackToLinkedRuleBuilder {
+public interface LinkedObjectCreateBuilder extends BackToLinkedRuleBuilder {
 
     /**
      * Allows specify the attribute containing an override class name if it is present.
@@ -28,6 +28,6 @@ public interface LinkedAttributeOverrideBuilder extends BackToLinkedRuleBuilder 
      * @param attributeName The attribute containing an override class name if it is present
      * @return The main builder
      */
-    LinkedAttributeOverrideBuilder overriddenByAttribute(String attributeName);
+    LinkedObjectCreateBuilder overriddenByAttribute(String attributeName);
 
 }
