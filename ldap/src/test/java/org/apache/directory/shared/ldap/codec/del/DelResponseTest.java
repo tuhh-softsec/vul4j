@@ -31,10 +31,13 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
-import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.DecoderException;
+import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
+import org.apache.directory.shared.ldap.codec.ICodecControl;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.decorators.DeleteResponseDecorator;
 import org.apache.directory.shared.ldap.model.message.DeleteResponse;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.model.message.Control;
@@ -55,6 +58,7 @@ public class DelResponseTest
     /** The encoder instance */
     LdapEncoder encoder = new LdapEncoder();
 
+    ILdapCodecService codec = new DefaultLdapCodecService();
 
     /**
      * Test the decoding of a DelResponse
@@ -93,12 +97,13 @@ public class DelResponseTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<DeleteResponseDecorator> container = 
+            new LdapMessageContainer<DeleteResponseDecorator>( codec );
 
         // Decode the DelResponse PDU
         try
         {
-            ldapDecoder.decode( stream, ldapMessageContainer );
+            ldapDecoder.decode( stream, container );
         }
         catch ( DecoderException de )
         {
@@ -107,7 +112,7 @@ public class DelResponseTest
         }
 
         // Check the decoded DelResponse PDU
-        DeleteResponse delResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getDeleteResponse();
+        DeleteResponse delResponse = container.getMessage();
 
         assertEquals( 1, delResponse.getMessageId() );
         assertEquals( ResultCodeEnum.ALIAS_PROBLEM, delResponse.getLdapResult().getResultCode() );
@@ -153,12 +158,14 @@ public class DelResponseTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<DeleteResponseDecorator> container = 
+            new LdapMessageContainer<DeleteResponseDecorator>( codec );
+
 
         // Decode a DelResponse message
         try
         {
-            ldapDecoder.decode( stream, ldapMessageContainer );
+            ldapDecoder.decode( stream, container );
         }
         catch ( DecoderException de )
         {
@@ -217,12 +224,13 @@ public class DelResponseTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<DeleteResponseDecorator> container = 
+            new LdapMessageContainer<DeleteResponseDecorator>( codec );
 
         // Decode the DelResponse PDU
         try
         {
-            ldapDecoder.decode( stream, ldapMessageContainer );
+            ldapDecoder.decode( stream, container );
         }
         catch ( DecoderException de )
         {
@@ -231,7 +239,7 @@ public class DelResponseTest
         }
 
         // Check the decoded DelResponse PDU
-        DeleteResponse delResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getDeleteResponse();
+        DeleteResponse delResponse = container.getMessage();
 
         assertEquals( 1, delResponse.getMessageId() );
         assertEquals( ResultCodeEnum.ALIAS_PROBLEM, delResponse.getLdapResult().getResultCode() );
@@ -243,9 +251,10 @@ public class DelResponseTest
 
         assertEquals( 1, controls.size() );
 
-        Control control = controls.get( "2.16.840.1.113730.3.4.2" );
+        @SuppressWarnings("unchecked")
+        ICodecControl<Control> control = ( ICodecControl<Control> ) controls.get( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
-        assertEquals( "", Strings.dumpBytes((byte[]) control.getValue()) );
+        assertEquals( "", Strings.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the encoding
         try
@@ -255,7 +264,7 @@ public class DelResponseTest
             // Check the length
             assertEquals( 0x4A, bb.limit() );
 
-            String encodedPdu = Strings.dumpBytes(bb.array());
+            String encodedPdu = Strings.dumpBytes( bb.array() );
 
             assertEquals( encodedPdu, decodedPdu );
         }

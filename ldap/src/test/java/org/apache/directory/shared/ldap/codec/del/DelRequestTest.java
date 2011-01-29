@@ -32,13 +32,14 @@ import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
-import org.apache.directory.shared.asn1.ber.Asn1Container;
+import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
+import org.apache.directory.shared.ldap.codec.ICodecControl;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
+import org.apache.directory.shared.ldap.codec.decorators.DeleteRequestDecorator;
 import org.apache.directory.shared.ldap.model.message.*;
-import org.apache.directory.shared.ldap.model.message.DeleteRequestImpl;
-import org.apache.directory.shared.ldap.model.message.DeleteResponseImpl;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,6 +57,8 @@ public class DelRequestTest
     /** The encoder instance */
     LdapEncoder encoder = new LdapEncoder();
 
+    ILdapCodecService codec = new DefaultLdapCodecService();
+    
 
     /**
      * Test the decoding of a full DelRequest
@@ -82,12 +85,12 @@ public class DelRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<DeleteRequestDecorator> container = new LdapMessageContainer<DeleteRequestDecorator>( codec );
 
         // Decode a DelRequest PDU
         try
         {
-            ldapDecoder.decode( stream, ldapMessageContainer );
+            ldapDecoder.decode( stream, container );
         }
         catch ( DecoderException de )
         {
@@ -96,7 +99,7 @@ public class DelRequestTest
         }
 
         // Check the decoded DelRequest PDU
-        DeleteRequest delRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getDeleteRequest();
+        DeleteRequest delRequest = container.getMessage();
 
         assertEquals( 1, delRequest.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", delRequest.getName().toString() );
@@ -149,12 +152,12 @@ public class DelRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<DeleteRequestDecorator> container = new LdapMessageContainer<DeleteRequestDecorator>( codec );
 
         // Decode a DelRequest PDU
         try
         {
-            ldapDecoder.decode( stream, ldapMessageContainer );
+            ldapDecoder.decode( stream, container );
         }
         catch ( DecoderException de )
         {
@@ -191,12 +194,12 @@ public class DelRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<DeleteRequestDecorator> container = new LdapMessageContainer<DeleteRequestDecorator>( codec );
 
         // Decode a DelRequest PDU
         try
         {
-            ldapDecoder.decode( stream, ldapMessageContainer );
+            ldapDecoder.decode( stream, container );
             fail( "We should never reach this point !!!" );
         }
         catch ( DecoderException de )
@@ -235,12 +238,12 @@ public class DelRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<DeleteRequestDecorator> container = new LdapMessageContainer<DeleteRequestDecorator>( codec );
 
         // Decode a DelRequest PDU
         try
         {
-            ldapDecoder.decode( stream, ldapMessageContainer );
+            ldapDecoder.decode( stream, container );
         }
         catch ( DecoderException de )
         {
@@ -249,7 +252,7 @@ public class DelRequestTest
         }
 
         // Check the decoded DelRequest PDU
-        DeleteRequest delRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getDeleteRequest();
+        DeleteRequest delRequest = container.getMessage();
 
         assertEquals( 1, delRequest.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", delRequest.getName().toString() );
@@ -259,9 +262,10 @@ public class DelRequestTest
 
         assertEquals( 1, controls.size() );
 
-        Control control = controls.get( "2.16.840.1.113730.3.4.2" );
+        @SuppressWarnings("unchecked")
+        ICodecControl<Control> control = ( ICodecControl<Control> ) controls.get( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
-        assertEquals( "", Strings.dumpBytes((byte[]) control.getValue()) );
+        assertEquals( "", Strings.dumpBytes( ( byte[] ) control.getValue() ) );
 
         DeleteRequest internalDeleteRequest = new DeleteRequestImpl( delRequest.getMessageId() );
         internalDeleteRequest.setName( delRequest.getName() );
