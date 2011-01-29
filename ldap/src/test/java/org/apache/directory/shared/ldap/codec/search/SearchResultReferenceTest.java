@@ -35,12 +35,15 @@ import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
-import org.apache.directory.shared.asn1.ber.Asn1Container;
+import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
+import org.apache.directory.shared.ldap.codec.ICodecControl;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.decorators.SearchResultReferenceDecorator;
+import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.Referral;
 import org.apache.directory.shared.ldap.model.message.SearchResultReference;
-import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,6 +60,9 @@ public class SearchResultReferenceTest
 {
     /** The encoder instance */
     LdapEncoder encoder = new LdapEncoder();
+
+    /** The codec service */
+    ILdapCodecService codec = new DefaultLdapCodecService();
 
 
     /**
@@ -114,7 +120,7 @@ public class SearchResultReferenceTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchResultReferenceDecorator> ldapMessageContainer = new LdapMessageContainer<SearchResultReferenceDecorator>( codec );
 
         try
         {
@@ -126,8 +132,7 @@ public class SearchResultReferenceTest
             fail( de.getMessage() );
         }
 
-        SearchResultReference searchResultReference = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getSearchResultReference();
+        SearchResultReference searchResultReference = ldapMessageContainer.getMessage();
 
         assertEquals( 1, searchResultReference.getMessageId() );
 
@@ -242,11 +247,11 @@ public class SearchResultReferenceTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchResultReferenceDecorator> ldapMessageContainer = new LdapMessageContainer<SearchResultReferenceDecorator>( codec );
 
         try
         {
-            ( ( LdapMessageContainer ) ldapMessageContainer ).clean();
+            ldapMessageContainer.clean();
             ldapDecoder.decode( stream, ldapMessageContainer );
         }
         catch ( DecoderException de )
@@ -257,8 +262,7 @@ public class SearchResultReferenceTest
 
         stream.flip();
 
-        SearchResultReference searchResultReference = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getSearchResultReference();
+        SearchResultReference searchResultReference = ldapMessageContainer.getMessage();
 
         assertEquals( 1, searchResultReference.getMessageId() );
 
@@ -292,7 +296,7 @@ public class SearchResultReferenceTest
 
         assertEquals( 1, controls.size() );
 
-        Control control = controls.get( "2.16.840.1.113730.3.4.2" );
+        ICodecControl<Control> control = ( ICodecControl<Control> )controls.get( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", Strings.dumpBytes((byte[]) control.getValue()) );
 
@@ -339,7 +343,7 @@ public class SearchResultReferenceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchResultReferenceDecorator> ldapMessageContainer = new LdapMessageContainer<SearchResultReferenceDecorator>( codec );
 
         // Decode a SearchResultReference message
         try
@@ -386,7 +390,7 @@ public class SearchResultReferenceTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchResultReferenceDecorator> ldapMessageContainer = new LdapMessageContainer<SearchResultReferenceDecorator>( codec );
 
         try
         {
@@ -398,8 +402,7 @@ public class SearchResultReferenceTest
             fail( de.getMessage() );
         }
 
-        SearchResultReference searchResultReference = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getSearchResultReference();
+        SearchResultReference searchResultReference = ldapMessageContainer.getMessage();
 
         assertEquals( 1, searchResultReference.getMessageId() );
 

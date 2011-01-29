@@ -32,9 +32,12 @@ import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
-import org.apache.directory.shared.asn1.ber.Asn1Container;
+import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
+import org.apache.directory.shared.ldap.codec.ICodecControl;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.decorators.SearchResultDoneDecorator;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.model.message.SearchResultDone;
@@ -55,6 +58,9 @@ public class SearchResultDoneTest
     /** The encoder instance */
     LdapEncoder encoder = new LdapEncoder();
 
+    /** The codec service */
+    ILdapCodecService codec = new DefaultLdapCodecService();
+
 
     /**
      * Test the decoding of a SearchResultDone
@@ -69,7 +75,7 @@ public class SearchResultDoneTest
         stream.put( new byte[]
             { 0x30, 0x0C, // LDAPMessage ::=SEQUENCE {
                 0x02, 0x01, 0x01, // messageID MessageID
-                0x65, 0x07, // CHOICE { ..., delResponse DelResponse, ...
+                0x65, 0x07, // CHOICE { ..., searchResDone SearchResultDone, ...
                 // SearchResultDone ::= [APPLICATION 5] LDAPResult
                 0x0A, 0x01, 0x00, // LDAPResult ::= SEQUENCE {
                 // resultCode ENUMERATED {
@@ -84,8 +90,9 @@ public class SearchResultDoneTest
         String decodedPdu = Strings.dumpBytes(stream.array());
         stream.flip();
 
-        // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        // Allocate a SearchResultDone Container
+        LdapMessageContainer<SearchResultDoneDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchResultDoneDecorator>( codec );
 
         try
         {
@@ -97,7 +104,7 @@ public class SearchResultDoneTest
             fail( de.getMessage() );
         }
 
-        SearchResultDone searchResultDone = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchResultDone();
+        SearchResultDone searchResultDone = ldapMessageContainer.getMessage();
 
         assertEquals( 1, searchResultDone.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, searchResultDone.getLdapResult().getResultCode() );
@@ -140,7 +147,7 @@ public class SearchResultDoneTest
                 0x02, 0x01,
                 0x01, // messageID MessageID
                 0x65,
-                0x07, // CHOICE { ..., delResponse DelResponse, ...
+                0x07, // CHOICE { ..., searchResDone SearchResultDone, ...
                 // SearchResultDone ::= [APPLICATION 5] LDAPResult
                 0x0A,
                 0x01,
@@ -165,7 +172,8 @@ public class SearchResultDoneTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchResultDoneDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchResultDoneDecorator>( codec );
 
         try
         {
@@ -177,7 +185,7 @@ public class SearchResultDoneTest
             fail( de.getMessage() );
         }
 
-        SearchResultDone searchResultDone = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchResultDone();
+        SearchResultDone searchResultDone = ldapMessageContainer.getMessage();
 
         assertEquals( 1, searchResultDone.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, searchResultDone.getLdapResult().getResultCode() );
@@ -189,7 +197,7 @@ public class SearchResultDoneTest
 
         assertEquals( 1, controls.size() );
 
-        Control control = controls.get( "2.16.840.1.113730.3.4.2" );
+        ICodecControl<Control> control = ( ICodecControl<Control> )controls.get( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", Strings.dumpBytes((byte[]) control.getValue()) );
 
@@ -226,13 +234,14 @@ public class SearchResultDoneTest
         stream.put( new byte[]
             { 0x30, 0x05, // LDAPMessage ::=SEQUENCE {
                 0x02, 0x01, 0x01, // messageID MessageID
-                0x65, 0x00 // CHOICE { ..., delResponse DelResponse, ...
+                0x65, 0x00 // CHOICE { ..., searchResDone SearchResultDone, ...
             } );
 
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchResultDoneDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchResultDoneDecorator>( codec );
 
         // Decode a SearchResultDone message
         try

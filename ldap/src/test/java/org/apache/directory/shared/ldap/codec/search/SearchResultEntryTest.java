@@ -34,9 +34,12 @@ import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
-import org.apache.directory.shared.asn1.ber.Asn1Container;
+import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
+import org.apache.directory.shared.ldap.codec.ICodecControl;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.decorators.SearchResultEntryDecorator;
 import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.model.message.Control;
@@ -57,6 +60,9 @@ public class SearchResultEntryTest
 {
     /** The encoder instance */
     LdapEncoder encoder = new LdapEncoder();
+
+    /** The codec service */
+    ILdapCodecService codec = new DefaultLdapCodecService();
 
 
     /**
@@ -100,7 +106,8 @@ public class SearchResultEntryTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchResultEntryDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchResultEntryDecorator>( codec );
 
         try
         {
@@ -112,8 +119,7 @@ public class SearchResultEntryTest
             fail( de.getMessage() );
         }
 
-        SearchResultEntry searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getSearchResultEntry();
+        SearchResultEntry searchResultEntry = ldapMessageContainer.getMessage();
 
         assertEquals( 1, searchResultEntry.getMessageId() );
         assertEquals( "ou=contacts,dc=iktek,dc=com", searchResultEntry.getObjectName().toString() );
@@ -201,7 +207,8 @@ public class SearchResultEntryTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchResultEntryDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchResultEntryDecorator>( codec );
 
         try
         {
@@ -213,8 +220,7 @@ public class SearchResultEntryTest
             fail( de.getMessage() );
         }
 
-        SearchResultEntry searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getSearchResultEntry();
+        SearchResultEntry searchResultEntry = ldapMessageContainer.getMessage();
 
         assertEquals( 1, searchResultEntry.getMessageId() );
         assertEquals( "ou=contacts,dc=iktek,dc=com", searchResultEntry.getObjectName().toString() );
@@ -312,7 +318,8 @@ public class SearchResultEntryTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchResultEntryDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchResultEntryDecorator>( codec );
 
         try
         {
@@ -324,8 +331,7 @@ public class SearchResultEntryTest
             fail( de.getMessage() );
         }
 
-        SearchResultEntry searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getSearchResultEntry();
+        SearchResultEntry searchResultEntry = ldapMessageContainer.getMessage();
 
         assertEquals( 2, searchResultEntry.getMessageId() );
         assertEquals( "uid=admin,ou=system", searchResultEntry.getObjectName().toString() );
@@ -399,7 +405,8 @@ public class SearchResultEntryTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchResultEntryDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchResultEntryDecorator>( codec );
 
         try
         {
@@ -439,7 +446,8 @@ public class SearchResultEntryTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchResultEntryDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchResultEntryDecorator>( codec );
 
         try
         {
@@ -484,7 +492,8 @@ public class SearchResultEntryTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchResultEntryDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchResultEntryDecorator>( codec );
 
         try
         {
@@ -531,7 +540,8 @@ public class SearchResultEntryTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchResultEntryDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchResultEntryDecorator>( codec );
 
         try
         {
@@ -543,8 +553,7 @@ public class SearchResultEntryTest
             fail( de.getMessage() );
         }
 
-        SearchResultEntry searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getSearchResultEntry();
+        SearchResultEntry searchResultEntry = ldapMessageContainer.getMessage();
 
         assertEquals( 1, searchResultEntry.getMessageId() );
         assertEquals( "ou=contacts,dc=iktek,dc=com", searchResultEntry.getObjectName().toString() );
@@ -603,7 +612,8 @@ public class SearchResultEntryTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchResultEntryDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchResultEntryDecorator>( codec );
 
         try
         {
@@ -655,7 +665,8 @@ public class SearchResultEntryTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchResultEntryDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchResultEntryDecorator>( codec );
 
         try
         {
@@ -705,7 +716,8 @@ public class SearchResultEntryTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchResultEntryDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchResultEntryDecorator>( codec );
 
         try
         {
@@ -755,7 +767,8 @@ public class SearchResultEntryTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchResultEntryDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchResultEntryDecorator>( codec );
 
         try
         {
@@ -806,7 +819,8 @@ public class SearchResultEntryTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchResultEntryDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchResultEntryDecorator>( codec );
 
         try
         {
@@ -818,8 +832,7 @@ public class SearchResultEntryTest
             fail( de.getMessage() );
         }
 
-        SearchResultEntry searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getSearchResultEntry();
+        SearchResultEntry searchResultEntry = ldapMessageContainer.getMessage();
 
         assertEquals( 1, searchResultEntry.getMessageId() );
         assertEquals( "ou=contacts,dc=iktek,dc=com", searchResultEntry.getObjectName().toString() );
@@ -893,7 +906,8 @@ public class SearchResultEntryTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchResultEntryDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchResultEntryDecorator>( codec );
 
         try
         {
@@ -905,8 +919,7 @@ public class SearchResultEntryTest
             fail( de.getMessage() );
         }
 
-        SearchResultEntry searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getSearchResultEntry();
+        SearchResultEntry searchResultEntry = ldapMessageContainer.getMessage();
 
         assertEquals( 1, searchResultEntry.getMessageId() );
         assertEquals( "ou=contacts,dc=iktek,dc=com", searchResultEntry.getObjectName().toString() );
@@ -983,7 +996,8 @@ public class SearchResultEntryTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchResultEntryDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchResultEntryDecorator>( codec );
 
         try
         {
@@ -995,8 +1009,7 @@ public class SearchResultEntryTest
             fail( de.getMessage() );
         }
 
-        SearchResultEntry searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getSearchResultEntry();
+        SearchResultEntry searchResultEntry = ldapMessageContainer.getMessage();
 
         assertEquals( 1, searchResultEntry.getMessageId() );
         assertEquals( "ou=contacts,dc=iktek,dc=com", searchResultEntry.getObjectName().toString() );
@@ -1019,7 +1032,7 @@ public class SearchResultEntryTest
 
         assertEquals( 1, controls.size() );
 
-        Control control = controls.get( "2.16.840.1.113730.3.4.2" );
+        ICodecControl<Control> control = ( ICodecControl<Control> )controls.get( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", Strings.dumpBytes((byte[]) control.getValue()) );
 
@@ -1080,7 +1093,8 @@ public class SearchResultEntryTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchResultEntryDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchResultEntryDecorator>( codec );
 
         try
         {
@@ -1092,8 +1106,7 @@ public class SearchResultEntryTest
             fail( de.getMessage() );
         }
 
-        SearchResultEntry searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getSearchResultEntry();
+        SearchResultEntry searchResultEntry = ldapMessageContainer.getMessage();
 
         assertEquals( 1, searchResultEntry.getMessageId() );
         assertEquals( "ou=contacts,dc=iktek,dc=com", searchResultEntry.getObjectName().toString() );
@@ -1174,7 +1187,8 @@ public class SearchResultEntryTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchResultEntryDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchResultEntryDecorator>( codec );
 
         try
         {
@@ -1186,8 +1200,7 @@ public class SearchResultEntryTest
             fail( de.getMessage() );
         }
 
-        SearchResultEntry searchResultEntry = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getSearchResultEntry();
+        SearchResultEntry searchResultEntry = ldapMessageContainer.getMessage();
 
         assertEquals( 1, searchResultEntry.getMessageId() );
         assertEquals( "ou=contacts,dc=iktek,dc=com", searchResultEntry.getObjectName().toString() );
@@ -1210,7 +1223,7 @@ public class SearchResultEntryTest
 
         assertEquals( 1, controls.size() );
 
-        Control control = controls.get( "2.16.840.1.113730.3.4.2" );
+        ICodecControl<Control> control = ( ICodecControl<Control> )controls.get( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", Strings.dumpBytes((byte[]) control.getValue()) );
 

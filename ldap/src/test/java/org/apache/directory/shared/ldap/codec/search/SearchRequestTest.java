@@ -36,13 +36,14 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
-import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.tlv.TLVStateEnum;
+import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
-import org.apache.directory.shared.ldap.model.message.controls.Subentries;
+import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
 import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesDecorator;
 import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.model.filter.AndNode;
@@ -62,6 +63,7 @@ import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.model.message.SearchRequest;
 import org.apache.directory.shared.ldap.model.message.SearchResultDoneImpl;
+import org.apache.directory.shared.ldap.model.message.controls.Subentries;
 import org.apache.directory.shared.ldap.model.schema.normalizers.DeepTrimToLowerNormalizer;
 import org.apache.directory.shared.ldap.model.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.util.Strings;
@@ -82,6 +84,10 @@ public class SearchRequestTest
     /** The encoder instance */
     LdapEncoder encoder = new LdapEncoder();
 
+    /** The codec service */
+    ILdapCodecService codec = new DefaultLdapCodecService();
+
+    /** An oid normalizer map */
     static Map<String, OidNormalizer> oids = new HashMap<String, OidNormalizer>();
 
 
@@ -181,7 +187,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
         {
@@ -195,7 +202,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getMessage();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -340,7 +347,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
         {
@@ -354,7 +362,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getMessage();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -507,7 +515,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
         {
@@ -521,7 +530,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getMessage();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -650,7 +659,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
         {
@@ -664,7 +674,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getMessage();
 
         assertEquals( 3, searchRequest.getMessageId() );
         assertEquals( "ou=users,ou=system", searchRequest.getBase().toString() );
@@ -755,7 +765,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
         {
@@ -769,7 +780,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getMessage();
 
         assertEquals( 3, searchRequest.getMessageId() );
         assertEquals( "ou=users,ou=system", searchRequest.getBase().toString() );
@@ -842,7 +853,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
         {
@@ -856,7 +868,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getMessage();
 
         assertEquals( 3, searchRequest.getMessageId() );
         assertEquals( "ou=users,ou=system", searchRequest.getBase().toString() );
@@ -931,7 +943,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
         {
@@ -945,7 +958,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getMessage();
 
         assertEquals( 33, searchRequest.getMessageId() );
         assertEquals( "dc=example,dc=com", searchRequest.getBase().toString() );
@@ -1103,7 +1116,8 @@ public class SearchRequestTest
         streamJava5.put( asn1BERJava5 );
         String decodedPduJava5 = Strings.dumpBytes(streamJava5.array());
 
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
         {
@@ -1117,7 +1131,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getMessage();
 
         assertEquals( 4, searchRequest.getMessageId() );
         assertEquals( 2, searchRequest.getControls().size() );
@@ -1281,7 +1295,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
         {
@@ -1295,7 +1310,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getMessage();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -1399,7 +1414,8 @@ public class SearchRequestTest
         String decodedPdu = Strings.dumpBytes(stream.array());
         stream.flip();
 
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
         {
@@ -1413,7 +1429,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getMessage();
 
         assertEquals( 4, searchRequest.getMessageId() );
         assertEquals( 1, searchRequest.getControls().size() );
@@ -1475,7 +1491,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
         try
@@ -1509,7 +1526,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
         try
@@ -1588,7 +1606,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
         {
@@ -1602,7 +1621,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getMessage();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "", searchRequest.getBase().toString() );
@@ -1748,7 +1767,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
         {
@@ -1789,7 +1809,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
         try
@@ -1872,7 +1893,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
         {
@@ -1909,7 +1931,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
         try
@@ -1992,7 +2015,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
         {
@@ -2029,7 +2053,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
         try
@@ -2112,7 +2137,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
         {
@@ -2152,7 +2178,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
         try
@@ -2235,7 +2262,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
         {
@@ -2275,7 +2303,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
         try
@@ -2316,7 +2345,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
         try
@@ -2357,7 +2387,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
         try
@@ -2398,7 +2429,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
         try
@@ -2439,7 +2471,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
         try
@@ -2480,7 +2513,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
         try
@@ -2521,7 +2555,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
         try
@@ -2563,7 +2598,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
         try
@@ -2611,7 +2647,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
         try
@@ -2626,7 +2663,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getMessage();
 
         assertEquals( 4, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -2701,7 +2738,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
         try
@@ -2716,7 +2754,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getMessage();
 
         assertEquals( 4, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -2791,7 +2829,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
         try
@@ -2806,7 +2845,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getMessage();
 
         assertEquals( 4, searchRequest.getMessageId() );
         assertEquals( "uid=akarasulu,dc=example,dc=com", searchRequest.getBase().toString() );
@@ -2859,7 +2898,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
         try
@@ -2905,7 +2945,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
         try
@@ -2951,7 +2992,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
         try
@@ -2998,7 +3040,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
         try
@@ -3038,7 +3081,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
         try
@@ -3053,7 +3097,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getMessage();
 
         assertEquals( 2, searchRequest.getMessageId() );
         assertEquals( "dc=pgpkeys", searchRequest.getBase().toString() );
@@ -3151,7 +3195,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
         {
@@ -3165,7 +3210,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getMessage();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "a=b", searchRequest.getBase().toString() );
@@ -3252,7 +3297,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
         {
@@ -3266,7 +3312,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getMessage();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "a=b", searchRequest.getBase().toString() );
@@ -3366,7 +3412,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
         {
@@ -3380,7 +3427,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getMessage();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "a=b", searchRequest.getBase().toString() );
@@ -3481,7 +3528,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
         {
@@ -3495,7 +3543,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getMessage();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "a=b", searchRequest.getBase().toString() );
@@ -3602,7 +3650,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
         {
@@ -3616,7 +3665,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getMessage();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "a=b", searchRequest.getBase().toString() );
@@ -3729,7 +3778,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
         {
@@ -3743,7 +3793,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getMessage();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "a=b", searchRequest.getBase().toString() );
@@ -3860,7 +3910,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
         {
@@ -3874,7 +3925,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getMessage();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "a=b", searchRequest.getBase().toString() );
@@ -3999,7 +4050,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
         {
@@ -4013,7 +4065,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getMessage();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "a=b", searchRequest.getBase().toString() );
@@ -4134,7 +4186,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
         {
@@ -4148,7 +4201,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getMessage();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "a=b", searchRequest.getBase().toString() );
@@ -4273,7 +4326,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
         {
@@ -4287,7 +4341,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getMessage();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "a=b", searchRequest.getBase().toString() );
@@ -4414,7 +4468,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
         {
@@ -4428,7 +4483,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getMessage();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "a=b", searchRequest.getBase().toString() );
@@ -4521,7 +4576,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
         {
@@ -4535,7 +4591,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getMessage();
 
         assertEquals( 1, searchRequest.getMessageId() );
         assertEquals( "", searchRequest.getBase().toString() );
@@ -4585,7 +4641,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
         {
@@ -4599,7 +4656,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getMessage();
 
         assertEquals( 3, searchRequest.getMessageId() );
         assertEquals( "ou=users,ou=system", searchRequest.getBase().toString() );
@@ -4641,7 +4698,7 @@ public class SearchRequestTest
      * (&(objectClass=person)(|(cn=Tori*)(sn=Jagger)))
      */
     @Test
-    public void testDecodeSearchRequestComplexFilter()
+    public void testDecodeSearchRequestComplexFilterWithControl()
     {
         Asn1Decoder ldapDecoder = new Asn1Decoder();
 
@@ -4695,7 +4752,8 @@ public class SearchRequestTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
         {
@@ -4709,7 +4767,7 @@ public class SearchRequestTest
 
         assertEquals( TLVStateEnum.PDU_DECODED, ldapMessageContainer.getState() );
 
-        SearchRequest searchRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getSearchRequest();
+        SearchRequest searchRequest = ldapMessageContainer.getMessage();
 
         assertEquals( 6, searchRequest.getMessageId() );
         assertEquals( "ou=system", searchRequest.getBase().toString() );
