@@ -28,7 +28,7 @@ public interface LinkedCallParamBuilder extends BackToLinkedRuleBuilder {
      * @param paramIndex The zero-relative parameter number
      * @return this builder instance
      */
-    LinkedCallParamBuilder ofIndex(int paramIndex); // The zero-relative parameter number
+    LinkedCallParamBuilder ofIndex(int paramIndex);
 
     /**
      * Sets the attribute from which to save the parameter value.
