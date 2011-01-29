@@ -18,10 +18,15 @@
 package org.apache.commons.digester3.rulesbinder;
 
 /**
- * Builder invoked to back to .
+ * Builder invoked to back to main {@link LinkedRuleBuilder}.
  */
-public interface BackToLinkedRuleBuilder {
+interface BackToLinkedRuleBuilder {
 
+    /**
+     * Come back to the main {@link LinkedRuleBuilder}.
+     *
+     * @return the main {@link LinkedRuleBuilder}
+     */
     LinkedRuleBuilder then();
 
 }
