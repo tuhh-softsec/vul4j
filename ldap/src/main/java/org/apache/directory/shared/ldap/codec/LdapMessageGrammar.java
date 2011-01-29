@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.codec;
 
 
-import org.apache.directory.shared.asn1.DecoderException; 
+import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.Action;
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
@@ -131,6 +131,7 @@ import org.apache.directory.shared.ldap.model.message.SearchRequestImpl;
 import org.apache.directory.shared.ldap.model.message.SearchResultDoneImpl;
 import org.apache.directory.shared.ldap.model.message.SearchResultEntryImpl;
 import org.apache.directory.shared.ldap.model.message.SearchResultReferenceImpl;
+import org.apache.directory.shared.ldap.model.message.UnbindRequestImpl;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.name.Rdn;
 import org.apache.directory.shared.util.StringConstants;
@@ -300,7 +301,8 @@ public final class LdapMessageGrammar extends AbstractGrammar
                 public void action( LdapMessageContainer<UnbindRequestDecorator> container ) throws DecoderException
                 {
                     // Create the UnbindRequest LdapMessage instance and store it in the container
-                    UnbindRequestDecorator unbindRequest = container.getMessage();
+                    UnbindRequestDecorator unbindRequest = new UnbindRequestDecorator( 
+                        container.getLdapCodecService(), new UnbindRequestImpl( container.getMessageId() ) );
                     container.setMessage( unbindRequest );
 
                     TLV tlv = container.getCurrentTLV();
