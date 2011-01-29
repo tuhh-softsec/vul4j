@@ -31,10 +31,8 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
-import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncStateValue.SyncStateValueDecorator;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncStateValue.SyncStateValueContainer;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncStateValue.SyncStateValueControlDecoder;
 import org.apache.directory.shared.ldap.message.control.replication.SyncStateTypeEnum;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
@@ -56,7 +54,6 @@ public class SyncStateValueControlTest
     @Test
     public void testDecodeSyncStateValueControlWithStateType()
     {
-        Asn1Decoder decoder = new SyncStateValueControlDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 16 );
         bb.put( new byte[]
             { 
@@ -70,11 +67,11 @@ public class SyncStateValueControlTest
         bb.flip();
 
         SyncStateValueContainer container = new SyncStateValueContainer();
-        container.setSyncStateValueControl( new SyncStateValueDecorator() );
+        SyncStateValueDecorator decorator = container.getSyncStateValueControl();
 
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
         }
         catch ( DecoderException de )
         {
@@ -124,7 +121,6 @@ public class SyncStateValueControlTest
     @Test
     public void testDecodeSyncStateValueControlNoCookie()
     {
-        Asn1Decoder decoder = new SyncStateValueControlDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 10 );
         bb.put( new byte[]
             { 0x30, 0x08,                 // SyncStateValue ::= SEQUENCE {
@@ -136,11 +132,11 @@ public class SyncStateValueControlTest
         bb.flip();
 
         SyncStateValueContainer container = new SyncStateValueContainer();
-        container.setSyncStateValueControl( new SyncStateValueDecorator() );
+        SyncStateValueDecorator decorator = container.getSyncStateValueControl();
 
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
         }
         catch ( DecoderException de )
         {
@@ -188,7 +184,6 @@ public class SyncStateValueControlTest
     @Test
     public void testDecodeSyncStateValueControlEmptyCookie()
     {
-        Asn1Decoder decoder = new SyncStateValueControlDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x0C );
         bb.put( new byte[]
             { 0x30, 0x0A,                  // SyncStateValue ::= SEQUENCE {
@@ -201,11 +196,11 @@ public class SyncStateValueControlTest
         bb.flip();
 
         SyncStateValueContainer container = new SyncStateValueContainer();
-        container.setSyncStateValueControl( new SyncStateValueDecorator() );
+        SyncStateValueDecorator decorator = container.getSyncStateValueControl();
 
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
         }
         catch ( DecoderException de )
         {
@@ -254,7 +249,6 @@ public class SyncStateValueControlTest
     @Test
     public void testDecodeSyncStateValueControlEmptySequence()
     {
-        Asn1Decoder decoder = new SyncStateValueControlDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x02 );
         bb.put( new byte[]
             { 0x30, 0x00 // SyncStateValue ::= SEQUENCE {
@@ -262,11 +256,11 @@ public class SyncStateValueControlTest
         bb.flip();
 
         SyncStateValueContainer container = new SyncStateValueContainer();
-        container.setSyncStateValueControl( new SyncStateValueDecorator() );
+        SyncStateValueDecorator decorator = container.getSyncStateValueControl();
 
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
             fail( "we should not get there" );
         }
         catch ( DecoderException de )
@@ -282,7 +276,6 @@ public class SyncStateValueControlTest
     @Test
     public void testDecodeSyncStateValueControlNoSyancState()
     {
-        Asn1Decoder decoder = new SyncStateValueControlDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x07 );
         bb.put( new byte[]
             { 0x30, 0x05,                 // SyncStateValue ::= SEQUENCE {
@@ -291,11 +284,11 @@ public class SyncStateValueControlTest
         bb.flip();
 
         SyncStateValueContainer container = new SyncStateValueContainer();
-        container.setSyncStateValueControl( new SyncStateValueDecorator() );
+        SyncStateValueDecorator decorator = container.getSyncStateValueControl();
 
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
             fail( "we should not get there" );
         }
         catch ( DecoderException de )
@@ -311,7 +304,6 @@ public class SyncStateValueControlTest
     @Test
     public void testDecodeSyncStateValueControlNoSyncUUID()
     {
-        Asn1Decoder decoder = new SyncStateValueControlDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x05 );
         bb.put( new byte[]
             { 0x30, 0x03,                  // SyncStateValue ::= SEQUENCE {
@@ -322,11 +314,11 @@ public class SyncStateValueControlTest
         bb.flip();
 
         SyncStateValueContainer container = new SyncStateValueContainer();
-        container.setSyncStateValueControl( new SyncStateValueDecorator() );
+        SyncStateValueDecorator decorator = container.getSyncStateValueControl();
 
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
             fail( "we should not get there" );
         }
         catch ( DecoderException de )
@@ -343,7 +335,6 @@ public class SyncStateValueControlTest
     @Test
     public void testDecodeSyncStateValueControlWithModDnStateType()
     {
-        Asn1Decoder decoder = new SyncStateValueControlDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 16 );
         bb.put( new byte[]
             { 
@@ -357,11 +348,11 @@ public class SyncStateValueControlTest
         bb.flip();
 
         SyncStateValueContainer container = new SyncStateValueContainer();
-        container.setSyncStateValueControl( new SyncStateValueDecorator() );
+        SyncStateValueDecorator decorator = container.getSyncStateValueControl();
 
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
         }
         catch ( DecoderException de )
         {
