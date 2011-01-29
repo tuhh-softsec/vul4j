@@ -53,10 +53,8 @@ public interface LinkedRuleBuilder {
 
     /**
      * Construct a "call parameter" rule that will save the body text of this element as the parameter value.
-     *
-     * @param paramIndex The zero-relative parameter number
      */
-    BackToLinkedRuleBuilder callParamPath(int paramIndex);
+    LinkedPathCallParamBuilder callParamPath();
 
     /**
      * Uses an {@link ObjectCreationFactory} to create a new object which it pushes onto the object stack.
