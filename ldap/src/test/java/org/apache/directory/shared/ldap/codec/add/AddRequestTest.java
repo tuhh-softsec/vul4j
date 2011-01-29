@@ -38,14 +38,18 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
+import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
+import org.apache.directory.shared.ldap.codec.ICodecControl;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
+import org.apache.directory.shared.ldap.codec.decorators.AddRequestDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
 import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.model.message.*;
-import org.apache.directory.shared.ldap.model.message.AddResponseImpl;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -63,6 +67,7 @@ public class AddRequestTest
     /** The encoder instance */
     LdapEncoder encoder = new LdapEncoder();
 
+    ILdapCodecService codec = new DefaultLdapCodecService();
 
     /**
      * Test the decoding of a AddRequest
@@ -111,16 +116,17 @@ public class AddRequestTest
                 0x04, 0x05, 't', 'e', 's', 't', '1', 0x04, 0x05, 't', 'e', 's', 't', '2', 0x04, 0x05, 't', 'e', 's',
                 't', '3', } );
 
-        String decodedPdu = Strings.dumpBytes(stream.array());
+        Strings.dumpBytes( stream.array() );
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<AddRequestDecorator> container = 
+            new LdapMessageContainer<AddRequestDecorator>( codec );
 
         // Decode a AddRequest message
         try
         {
-            ldapDecoder.decode( stream, ldapMessageContainer );
+            ldapDecoder.decode( stream, container );
         }
         catch ( DecoderException de )
         {
@@ -128,7 +134,7 @@ public class AddRequestTest
             fail( de.getMessage() );
         }
 
-        AddRequest addRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddRequest();
+        AddRequest addRequest = container.getMessage();
 
         // Check the decoded message
         assertEquals( 1, addRequest.getMessageId() );
@@ -193,7 +199,7 @@ public class AddRequestTest
             // kept. Let's decode again and compare the resulting AddRequest
             try
             {
-                ldapDecoder.decode( bb, ldapMessageContainer );
+                ldapDecoder.decode( bb, container );
             }
             catch ( DecoderException de )
             {
@@ -201,7 +207,7 @@ public class AddRequestTest
                 fail( de.getMessage() );
             }
 
-            AddRequest addRequest2 = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddRequest();
+            AddRequest addRequest2 = container.getMessage();
             assertEquals( addRequest, addRequest2 );
         }
         catch ( EncoderException ee )
@@ -231,7 +237,7 @@ public class AddRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer<MessageDecorator<? extends Message>>( codec );
 
         // Decode a AddRequest message
         try
@@ -295,7 +301,7 @@ public class AddRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer<MessageDecorator<? extends Message>>( codec );
 
         // Decode a AddRequest message
         try
@@ -366,8 +372,8 @@ public class AddRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
-
+        Asn1Container ldapMessageContainer = new LdapMessageContainer<MessageDecorator<? extends Message>>( codec );
+ 
         // Decode a AddRequest message
         try
         {
@@ -378,7 +384,7 @@ public class AddRequestTest
             assertTrue( de instanceof ResponseCarryingException );
             Message response = ( ( ResponseCarryingException ) de ).getResponse();
             assertTrue( response instanceof AddResponseImpl );
-            assertEquals( ResultCodeEnum.INVALID_DN_SYNTAX, ( (AddResponseImpl) response ).getLdapResult()
+            assertEquals( ResultCodeEnum.INVALID_DN_SYNTAX, ( ( AddResponseImpl ) response ).getLdapResult()
                 .getResultCode() );
             return;
         }
@@ -415,7 +421,7 @@ public class AddRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer<MessageDecorator<? extends Message>>( codec );
 
         // Decode a AddRequest message
         try
@@ -461,7 +467,7 @@ public class AddRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer<MessageDecorator<? extends Message>>( codec );
 
         // Decode a AddRequest message
         try
@@ -508,7 +514,7 @@ public class AddRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer<MessageDecorator<? extends Message>>( codec );
 
         // Decode a AddRequest message
         try
@@ -559,7 +565,7 @@ public class AddRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer<MessageDecorator<? extends Message>>( codec );
 
         // Decode a AddRequest message
         try
@@ -606,7 +612,7 @@ public class AddRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer<MessageDecorator<? extends Message>>( codec );
 
         // Decode a AddRequest message
         try
@@ -654,12 +660,12 @@ public class AddRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<AddRequestDecorator> container = new LdapMessageContainer<AddRequestDecorator>( codec );
 
         // Decode a AddRequest message
         try
         {
-            ldapDecoder.decode( stream, ldapMessageContainer );
+            ldapDecoder.decode( stream, container );
         }
         catch ( DecoderException de )
         {
@@ -667,7 +673,7 @@ public class AddRequestTest
             fail( de.getMessage() );
         }
 
-        AddRequest addRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddRequest();
+        AddRequest addRequest = container.getMessage();
 
         // Check the decoded message
         assertEquals( 1, addRequest.getMessageId() );
@@ -746,12 +752,12 @@ public class AddRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<AddRequestDecorator> container = new LdapMessageContainer<AddRequestDecorator>( codec );
 
         // Decode a AddRequest message
         try
         {
-            ldapDecoder.decode( stream, ldapMessageContainer );
+            ldapDecoder.decode( stream, container );
         }
         catch ( DecoderException de )
         {
@@ -759,7 +765,7 @@ public class AddRequestTest
             fail( de.getMessage() );
         }
 
-        AddRequest addRequest = ( ( LdapMessageContainer ) ldapMessageContainer ).getAddRequest();
+        AddRequest addRequest = container.getMessage();
 
         // Check the decoded message
         assertEquals( 1, addRequest.getMessageId() );
@@ -785,9 +791,10 @@ public class AddRequestTest
 
         assertTrue( addRequest.hasControl( "2.16.840.1.113730.3.4.2" ) );
 
-        Control control = controls.get( "2.16.840.1.113730.3.4.2" );
+        @SuppressWarnings("unchecked")
+        ICodecControl<Control> control = ( ICodecControl<Control> ) controls.get( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
-        assertEquals( "", Strings.dumpBytes((byte[]) control.getValue()) );
+        assertEquals( "", Strings.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the encoding
         try
