@@ -60,26 +60,8 @@ public interface LinkedRuleBuilder {
      * Uses an {@link ObjectCreationFactory} to create a new object which it pushes onto the object stack.
      *
      * When the element is complete, the object will be popped.
-     *
-     * @param className Java class name of the object creation factory class
      */
-    LinkedFactoryCreateBuilder factoryCreate(String className);
-
-    /**
-     * Construct a factory create rule that will use the specified class to create an {@link ObjectCreationFactory}
-     * which will then be used to create an object and push it on the stack.
-     *
-     * @param clazz Java class of the object creation factory class
-     */
-    LinkedFactoryCreateBuilder factoryCreate(Class<?> clazz);
-
-    /**
-     * Construct a factory create rule using the given, already instantiated, {@link ObjectCreationFactory}.
-     *
-     * @param <T> the type of created object by the given factory
-     * @param creationFactory called on to create the object
-     */
-    <T> LinkedFactoryCreateBuilder factoryCreate(ObjectCreationFactory<T> creationFactory);
+    LinkedFactoryCreateBuilder factoryCreate();
 
     /**
      * Construct an object with the specified class name.
