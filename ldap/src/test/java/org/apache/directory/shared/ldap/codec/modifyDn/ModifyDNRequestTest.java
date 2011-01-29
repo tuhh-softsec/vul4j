@@ -30,14 +30,20 @@ import java.util.Map;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.ber.Asn1Decoder;
-import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.asn1.ber.Asn1Decoder;
+import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
+import org.apache.directory.shared.ldap.codec.ICodecControl;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.ResponseCarryingException;
-import org.apache.directory.shared.ldap.model.message.*;
+import org.apache.directory.shared.ldap.codec.decorators.ModifyDnRequestDecorator;
+import org.apache.directory.shared.ldap.model.message.Control;
+import org.apache.directory.shared.ldap.model.message.Message;
+import org.apache.directory.shared.ldap.model.message.ModifyDnRequest;
 import org.apache.directory.shared.ldap.model.message.ModifyDnResponseImpl;
+import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,6 +60,9 @@ public class ModifyDNRequestTest
 {
     /** The encoder instance */
     LdapEncoder encoder = new LdapEncoder();
+
+    /** The codec service */
+    ILdapCodecService codec = new DefaultLdapCodecService();
 
 
     /**
@@ -90,7 +99,8 @@ public class ModifyDNRequestTest
         stream.flip();
 
         // Allocate a ModifyRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<ModifyDnRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<ModifyDnRequestDecorator>( codec );
 
         try
         {
@@ -102,8 +112,7 @@ public class ModifyDNRequestTest
             fail( de.getMessage() );
         }
 
-        ModifyDnRequest modifyDnRequest = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getModifyDnRequest();
+        ModifyDnRequest modifyDnRequest = ldapMessageContainer.getMessage();
 
         assertEquals( 1, modifyDnRequest.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", modifyDnRequest.getName().toString() );
@@ -164,7 +173,8 @@ public class ModifyDNRequestTest
         stream.flip();
 
         // Allocate a ModifyRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<ModifyDnRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<ModifyDnRequestDecorator>( codec );
 
         try
         {
@@ -217,7 +227,8 @@ public class ModifyDNRequestTest
         stream.flip();
 
         // Allocate a ModifyRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<ModifyDnRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<ModifyDnRequestDecorator>( codec );
 
         try
         {
@@ -270,7 +281,8 @@ public class ModifyDNRequestTest
         stream.flip();
 
         // Allocate a ModifyRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<ModifyDnRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<ModifyDnRequestDecorator>( codec );
 
         try
         {
@@ -329,7 +341,8 @@ public class ModifyDNRequestTest
         stream.flip();
 
         // Allocate a ModifyRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<ModifyDnRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<ModifyDnRequestDecorator>( codec );
 
         try
         {
@@ -341,8 +354,7 @@ public class ModifyDNRequestTest
             fail( de.getMessage() );
         }
 
-        ModifyDnRequest modifyDnRequest = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getModifyDnRequest();
+        ModifyDnRequest modifyDnRequest = ldapMessageContainer.getMessage();
 
         assertEquals( 1, modifyDnRequest.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", modifyDnRequest.getName().toString() );
@@ -355,7 +367,7 @@ public class ModifyDNRequestTest
 
         assertEquals( 1, controls.size() );
 
-        Control control = modifyDnRequest.getControl( "2.16.840.1.113730.3.4.2" );
+        ICodecControl<Control> control = ( ICodecControl<Control> )modifyDnRequest.getControl( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", Strings.dumpBytes((byte[]) control.getValue()) );
 
@@ -411,7 +423,8 @@ public class ModifyDNRequestTest
         stream.flip();
 
         // Allocate a ModifyRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<ModifyDnRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<ModifyDnRequestDecorator>( codec );
 
         try
         {
@@ -423,8 +436,7 @@ public class ModifyDNRequestTest
             fail( de.getMessage() );
         }
 
-        ModifyDnRequest modifyDnRequest = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getModifyDnRequest();
+        ModifyDnRequest modifyDnRequest = ldapMessageContainer.getMessage();
 
         assertEquals( 1, modifyDnRequest.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", modifyDnRequest.getName().toString() );
@@ -490,7 +502,8 @@ public class ModifyDNRequestTest
         stream.flip();
 
         // Allocate a ModifyRequest Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<ModifyDnRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<ModifyDnRequestDecorator>( codec );
 
         try
         {
@@ -502,8 +515,7 @@ public class ModifyDNRequestTest
             fail( de.getMessage() );
         }
 
-        ModifyDnRequest modifyDnRequest = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getModifyDnRequest();
+        ModifyDnRequest modifyDnRequest = ldapMessageContainer.getMessage();
 
         assertEquals( 1, modifyDnRequest.getMessageId() );
         assertEquals( "cn=testModify,ou=users,ou=system", modifyDnRequest.getName().toString() );
@@ -517,7 +529,7 @@ public class ModifyDNRequestTest
 
         assertTrue( modifyDnRequest.hasControl( "2.16.840.1.113730.3.4.2" ) );
 
-        Control control = modifyDnRequest.getControl( "2.16.840.1.113730.3.4.2" );
+        ICodecControl<Control> control = ( ICodecControl<Control> )modifyDnRequest.getControl( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", Strings.dumpBytes((byte[]) control.getValue()) );
 
@@ -563,7 +575,8 @@ public class ModifyDNRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<ModifyDnRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<ModifyDnRequestDecorator>( codec );
 
         // Decode a ModifyDNRequest PDU
         try
@@ -598,7 +611,8 @@ public class ModifyDNRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<ModifyDnRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<ModifyDnRequestDecorator>( codec );
 
         // Decode a ModifyDNRequest PDU
         try
@@ -637,7 +651,8 @@ public class ModifyDNRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<ModifyDnRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<ModifyDnRequestDecorator>( codec );
 
         // Decode a ModifyDNRequest PDU
         try
@@ -680,7 +695,8 @@ public class ModifyDNRequestTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<ModifyDnRequestDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<ModifyDnRequestDecorator>( codec );
 
         // Decode a ModifyDNRequest PDU
         try
