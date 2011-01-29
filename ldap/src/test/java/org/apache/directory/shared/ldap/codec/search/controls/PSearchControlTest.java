@@ -29,10 +29,8 @@ import java.nio.ByteBuffer;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.ldap.model.message.controls.PersistentSearch;
 import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearchContainer;
-import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearchDecoder;
 import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearchDecorator;
 import org.apache.directory.shared.ldap.model.message.controls.ChangeType;
 import org.apache.directory.shared.util.Strings;
@@ -90,7 +88,6 @@ public class PSearchControlTest
     @Test
     public void testDecodeModifyDNRequestSuccessChangeTypesAddModDN()
     {
-        Asn1Decoder decoder = new PersistentSearchDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x0b );
         bb.put( new byte[]
             { 
@@ -102,11 +99,11 @@ public class PSearchControlTest
         bb.flip();
 
         PersistentSearchContainer container = new PersistentSearchContainer();
-        container.setPersistentSearchDecorator( new PersistentSearchDecorator() );
+        PersistentSearchDecorator decorator = container.getPersistentSearchDecorator();
 
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
         }
         catch ( DecoderException de )
         {
@@ -121,6 +118,7 @@ public class PSearchControlTest
         assertEquals( false, ctrl.isReturnECs() );
     }
 
+    
     /**
      * Test the decoding of a PSearchControl with a changes types which
      * value is 0
@@ -128,7 +126,6 @@ public class PSearchControlTest
     @Test
     public void testDecodeModifyDNRequestSuccessChangeTypes0()
     {
-        Asn1Decoder decoder = new PersistentSearchDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x0b );
         bb.put( new byte[]
             { 
@@ -140,11 +137,11 @@ public class PSearchControlTest
         bb.flip();
 
         PersistentSearchContainer container = new PersistentSearchContainer();
-        container.setPersistentSearchDecorator( new PersistentSearchDecorator() );
-        
+        PersistentSearchDecorator decorator = container.getPersistentSearchDecorator();
+
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
             fail( "We should never reach this point" );
         }
         catch ( DecoderException de )
@@ -160,7 +157,6 @@ public class PSearchControlTest
     @Test
     public void testDecodeModifyDNRequestSuccessChangeTypes22()
     {
-        Asn1Decoder decoder = new PersistentSearchDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x0b );
         bb.put( new byte[]
             { 
@@ -172,11 +168,11 @@ public class PSearchControlTest
         bb.flip();
 
         PersistentSearchContainer container = new PersistentSearchContainer();
-        container.setPersistentSearchDecorator( new PersistentSearchDecorator() );
+        PersistentSearchDecorator decorator = container.getPersistentSearchDecorator();
 
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
             fail( "We should never reach this point" );
         }
         catch ( DecoderException de )
@@ -185,13 +181,13 @@ public class PSearchControlTest
         }
     }
 
+    
     /**
      * Test the decoding of a PSearchControl with a null sequence
      */
     @Test
     public void testDecodeModifyDNRequestSuccessNullSequence()
     {
-        Asn1Decoder decoder = new PersistentSearchDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x02 );
         bb.put( new byte[]
             { 
@@ -200,11 +196,11 @@ public class PSearchControlTest
         bb.flip();
 
         PersistentSearchContainer container = new PersistentSearchContainer();
-        container.setPersistentSearchDecorator( new PersistentSearchDecorator() );
+        PersistentSearchDecorator decorator = container.getPersistentSearchDecorator();
 
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
             fail( "We should never reach this point" );
         }
         catch ( DecoderException de )
@@ -213,13 +209,13 @@ public class PSearchControlTest
         }
     }
 
+    
     /**
      * Test the decoding of a PSearchControl without changeTypes
      */
     @Test
     public void testDecodeModifyDNRequestSuccessWithoutChangeTypes()
     {
-        Asn1Decoder decoder = new PersistentSearchDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x08 );
         bb.put( new byte[]
             { 
@@ -230,11 +226,11 @@ public class PSearchControlTest
         bb.flip();
 
         PersistentSearchContainer container = new PersistentSearchContainer();
-        container.setPersistentSearchDecorator( new PersistentSearchDecorator() );
+        PersistentSearchDecorator decorator = container.getPersistentSearchDecorator();
 
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
             fail( "We should never reach this point" );
         }
         catch ( DecoderException de )
@@ -243,13 +239,13 @@ public class PSearchControlTest
         }
     }
 
+    
     /**
      * Test the decoding of a PSearchControl without changeOnly
      */
     @Test
     public void testDecodeModifyDNRequestSuccessWithoutChangesOnly()
     {
-        Asn1Decoder decoder = new PersistentSearchDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x08 );
         bb.put( new byte[]
             { 
@@ -260,11 +256,11 @@ public class PSearchControlTest
         bb.flip();
 
         PersistentSearchContainer container = new PersistentSearchContainer();
-        container.setPersistentSearchDecorator( new PersistentSearchDecorator() );
+        PersistentSearchDecorator decorator = container.getPersistentSearchDecorator();
 
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
             fail( "We should never reach this point" );
         }
         catch ( DecoderException de )
@@ -273,13 +269,13 @@ public class PSearchControlTest
         }
     }
 
+    
     /**
      * Test the decoding of a PSearchControl without returnECs
      */
     @Test
     public void testDecodeModifyDNRequestSuccessWithoutReturnECs()
     {
-        Asn1Decoder decoder = new PersistentSearchDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x08 );
         bb.put( new byte[]
             { 
@@ -290,11 +286,11 @@ public class PSearchControlTest
         bb.flip();
 
         PersistentSearchContainer container = new PersistentSearchContainer();
-        container.setPersistentSearchDecorator( new PersistentSearchDecorator() );
+        PersistentSearchDecorator decorator = container.getPersistentSearchDecorator();
 
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
             fail( "We should never reach this point" );
         }
         catch ( DecoderException de )
