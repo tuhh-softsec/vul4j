@@ -36,14 +36,7 @@ public interface LinkedRuleBuilder {
      * Construct rule that automatically sets a property from the body text, taking the property
      * name the same as the current element.
      */
-    LinkedRuleBuilder beanPropertySetter();
-
-    /**
-     * Construct rule that sets the given property from the body text.
-     *
-     * @param propertyName The name of property to set.
-     */
-    LinkedRuleBuilder beanPropertySetter(String propertyName);
+    LinkedBeanPropertySetterBuilder beanPropertySetter();
 
     /**
      * Calls a method on an object on the stack (normally the top/parent object), passing arguments collected from
