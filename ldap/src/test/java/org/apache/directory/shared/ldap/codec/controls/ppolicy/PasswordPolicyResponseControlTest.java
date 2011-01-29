@@ -42,8 +42,6 @@ public class PasswordPolicyResponseControlTest
     @Test
     public void testDecodeRespWithExpiryWarningAndError() throws Exception
     {
-        Asn1Decoder decoder = new PasswordPolicyResponseDecoder();
-
         ByteBuffer bb = ByteBuffer.allocate( 0xA );
 
         bb.put( new byte[]
@@ -59,9 +57,8 @@ public class PasswordPolicyResponseControlTest
         PasswordPolicyResponseContainer container = new PasswordPolicyResponseContainer();
         container.setPasswordPolicyResponseControl( new PasswordPolicyResponseDecorator() );
 
-        decoder.decode( bb, container );
-
         PasswordPolicyResponseDecorator control = container.getPasswordPolicyResponseControl();
+        control.decode( bb.array() );
         assertEquals( 1, control.getTimeBeforeExpiration() );
         assertEquals( 1, control.getPasswordPolicyError().getValue() );
         
