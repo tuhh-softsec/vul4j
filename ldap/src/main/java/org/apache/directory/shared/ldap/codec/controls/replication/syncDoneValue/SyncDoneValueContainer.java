@@ -29,10 +29,10 @@ import org.apache.directory.shared.asn1.ber.AbstractContainer;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SyncDoneValueControlContainer extends AbstractContainer
+public class SyncDoneValueContainer extends AbstractContainer
 {
     /** syncDoneValue*/
-    private SyncDoneValueControl control;
+    private SyncDoneValueDecorator control;
 
 
     /**
@@ -40,19 +40,35 @@ public class SyncDoneValueControlContainer extends AbstractContainer
      * Creates a new SyncDoneValueControlContainer object.
      *
      */
-    public SyncDoneValueControlContainer()
+    public SyncDoneValueContainer()
     {
         super();
+        this.control = new SyncDoneValueDecorator();
         stateStack = new int[1];
-        grammar = SyncDoneValueControlGrammar.getInstance();
-        setTransition( SyncDoneValueControlStatesEnum.START_STATE );
+        grammar = SyncDoneValueGrammar.getInstance();
+        setTransition( SyncDoneValueStatesEnum.START_STATE );
+    }
+
+
+    /**
+     * 
+     * Creates a new SyncDoneValueControlContainer object.
+     *
+     */
+    public SyncDoneValueContainer( SyncDoneValueDecorator control )
+    {
+        super();
+        this.control = control;
+        stateStack = new int[1];
+        grammar = SyncDoneValueGrammar.getInstance();
+        setTransition( SyncDoneValueStatesEnum.START_STATE );
     }
 
 
     /**
      * @return the SyncDoneValueControlCodec object
      */
-    public SyncDoneValueControl getSyncDoneValueControl()
+    public SyncDoneValueDecorator getSyncDoneValueControl()
     {
         return control;
     }
@@ -64,7 +80,7 @@ public class SyncDoneValueControlContainer extends AbstractContainer
      * 
      * @param control the SyncDoneValueControlCodec to set.
      */
-    public void setSyncDoneValueControl( SyncDoneValueControl control )
+    public void setSyncDoneValueControl( SyncDoneValueDecorator control )
     {
         this.control = control;
     }

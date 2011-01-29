@@ -21,7 +21,6 @@ package org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValu
 
 
 import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
@@ -51,17 +50,17 @@ import org.slf4j.LoggerFactory;
  *  
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public final class SyncDoneValueControlGrammar extends AbstractGrammar
+public final class SyncDoneValueGrammar extends AbstractGrammar
 {
 
     /** the logger */
-    private static final Logger LOG = LoggerFactory.getLogger( SyncDoneValueControlGrammar.class );
+    private static final Logger LOG = LoggerFactory.getLogger( SyncDoneValueGrammar.class );
 
     /** speedup for logger */
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
     /** SyncDoneValueControlGrammar singleton instance */
-    private static final SyncDoneValueControlGrammar INSTANCE = new SyncDoneValueControlGrammar();
+    private static final SyncDoneValueGrammar INSTANCE = new SyncDoneValueGrammar();
 
 
     /**
@@ -69,11 +68,11 @@ public final class SyncDoneValueControlGrammar extends AbstractGrammar
      * Creates a new instance of SyncDoneValueControlGrammar.
      *
      */
-    private SyncDoneValueControlGrammar()
+    private SyncDoneValueGrammar()
     {
-        setName( SyncDoneValueControlGrammar.class.getName() );
+        setName( SyncDoneValueGrammar.class.getName() );
 
-        super.transitions = new GrammarTransition[SyncDoneValueControlStatesEnum.LAST_SYNC_DONE_VALUE_STATE.ordinal()][256];
+        super.transitions = new GrammarTransition[SyncDoneValueStatesEnum.LAST_SYNC_DONE_VALUE_STATE.ordinal()][256];
 
         /** 
          * Transition from initial state to SyncDoneValue sequence
@@ -82,16 +81,14 @@ public final class SyncDoneValueControlGrammar extends AbstractGrammar
          *     
          * Initialize the syncDoneValue object
          */
-        super.transitions[SyncDoneValueControlStatesEnum.START_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
-            SyncDoneValueControlStatesEnum.START_STATE, SyncDoneValueControlStatesEnum.SYNC_DONE_VALUE_SEQUENCE_STATE, UniversalTag.SEQUENCE.getValue(),
-            new GrammarAction( "Initialization" )
+        super.transitions[SyncDoneValueStatesEnum.START_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
+            SyncDoneValueStatesEnum.START_STATE, SyncDoneValueStatesEnum.SYNC_DONE_VALUE_SEQUENCE_STATE, UniversalTag.SEQUENCE.getValue(),
+            new GrammarAction<SyncDoneValueContainer>( "Initialization" )
             {
-                public void action( Asn1Container container ) throws DecoderException
+                public void action( SyncDoneValueContainer container ) throws DecoderException
                 {
-                    SyncDoneValueControlContainer syncDoneValueContainer = ( SyncDoneValueControlContainer ) container;
-
                     // As all the values are optional or defaulted, we can end here
-                    syncDoneValueContainer.setGrammarEndAllowed( true );
+                    container.setGrammarEndAllowed( true );
                 }
             }  );
 
@@ -102,14 +99,14 @@ public final class SyncDoneValueControlGrammar extends AbstractGrammar
          *    ....
          * }
          */
-        super.transitions[SyncDoneValueControlStatesEnum.SYNC_DONE_VALUE_SEQUENCE_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            SyncDoneValueControlStatesEnum.SYNC_DONE_VALUE_SEQUENCE_STATE, SyncDoneValueControlStatesEnum.COOKIE_STATE,
-            UniversalTag.OCTET_STRING.getValue(), new GrammarAction( "Set SyncDoneValueControl cookie" )
+        super.transitions[SyncDoneValueStatesEnum.SYNC_DONE_VALUE_SEQUENCE_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+            SyncDoneValueStatesEnum.SYNC_DONE_VALUE_SEQUENCE_STATE, SyncDoneValueStatesEnum.COOKIE_STATE,
+            UniversalTag.OCTET_STRING.getValue(), 
+            new GrammarAction<SyncDoneValueContainer>( "Set SyncDoneValueControl cookie" )
             {
-                public void action( Asn1Container container ) throws DecoderException
+                public void action( SyncDoneValueContainer container ) throws DecoderException
                 {
-                    SyncDoneValueControlContainer syncDoneValueContainer = ( SyncDoneValueControlContainer ) container;
-                    Value value = syncDoneValueContainer.getCurrentTLV().getValue();
+                    Value value = container.getCurrentTLV().getValue();
 
                     byte[] cookie = value.getData();
 
@@ -118,18 +115,18 @@ public final class SyncDoneValueControlGrammar extends AbstractGrammar
                         LOG.debug( "cookie = {}", Strings.dumpBytes(cookie) );
                     }
 
-                    syncDoneValueContainer.getSyncDoneValueControl().setCookie( cookie );
+                    container.getSyncDoneValueControl().setCookie( cookie );
 
-                    syncDoneValueContainer.setGrammarEndAllowed( true );
+                    container.setGrammarEndAllowed( true );
                 }
             } );
 
-        GrammarAction refreshDeletesTagAction = new GrammarAction( "set SyncDoneValueControl refreshDeletes flag" )
+        GrammarAction<SyncDoneValueContainer> refreshDeletesTagAction = 
+            new GrammarAction<SyncDoneValueContainer>( "set SyncDoneValueControl refreshDeletes flag" )
         {
-            public void action( Asn1Container container ) throws DecoderException
+            public void action( SyncDoneValueContainer container ) throws DecoderException
             {
-                SyncDoneValueControlContainer syncDoneValueContainer = ( SyncDoneValueControlContainer ) container;
-                Value value = syncDoneValueContainer.getCurrentTLV().getValue();
+                Value value = container.getCurrentTLV().getValue();
 
                 try
                 {
@@ -140,10 +137,10 @@ public final class SyncDoneValueControlGrammar extends AbstractGrammar
                         LOG.debug( "refreshDeletes = {}", refreshDeletes );
                     }
 
-                    syncDoneValueContainer.getSyncDoneValueControl().setRefreshDeletes( refreshDeletes );
+                    container.getSyncDoneValueControl().setRefreshDeletes( refreshDeletes );
 
                     // the END transition for grammar
-                    syncDoneValueContainer.setGrammarEndAllowed( true );
+                    container.setGrammarEndAllowed( true );
                 }
                 catch ( BooleanDecoderException be )
                 {
@@ -161,8 +158,8 @@ public final class SyncDoneValueControlGrammar extends AbstractGrammar
          *    refreshDeletes BOOLEAN DEFAULT FALSE
          * }
          */
-        super.transitions[SyncDoneValueControlStatesEnum.COOKIE_STATE.ordinal()][UniversalTag.BOOLEAN.getValue()] = new GrammarTransition(
-            SyncDoneValueControlStatesEnum.COOKIE_STATE, SyncDoneValueControlStatesEnum.REFRESH_DELETES_STATE,
+        super.transitions[SyncDoneValueStatesEnum.COOKIE_STATE.ordinal()][UniversalTag.BOOLEAN.getValue()] = new GrammarTransition(
+            SyncDoneValueStatesEnum.COOKIE_STATE, SyncDoneValueStatesEnum.REFRESH_DELETES_STATE,
             UniversalTag.BOOLEAN.getValue(), refreshDeletesTagAction );
         
         /**
@@ -172,8 +169,8 @@ public final class SyncDoneValueControlGrammar extends AbstractGrammar
          *    refreshDeletes BOOLEAN DEFAULT FALSE
          * }
          */
-        super.transitions[SyncDoneValueControlStatesEnum.SYNC_DONE_VALUE_SEQUENCE_STATE.ordinal()][UniversalTag.BOOLEAN.getValue()] = new GrammarTransition(
-            SyncDoneValueControlStatesEnum.SYNC_DONE_VALUE_SEQUENCE_STATE, SyncDoneValueControlStatesEnum.REFRESH_DELETES_STATE,
+        super.transitions[SyncDoneValueStatesEnum.SYNC_DONE_VALUE_SEQUENCE_STATE.ordinal()][UniversalTag.BOOLEAN.getValue()] = new GrammarTransition(
+            SyncDoneValueStatesEnum.SYNC_DONE_VALUE_SEQUENCE_STATE, SyncDoneValueStatesEnum.REFRESH_DELETES_STATE,
             UniversalTag.BOOLEAN.getValue(), refreshDeletesTagAction );
 
     }

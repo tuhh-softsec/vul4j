@@ -32,8 +32,9 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.EncoderException;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.SyncDoneValueControl;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.SyncDoneValueControlContainer;
+import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.ISyncDoneValue;
+import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.SyncDoneValueDecorator;
+import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.SyncDoneValueContainer;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.SyncDoneValueControlDecoder;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
@@ -66,8 +67,8 @@ public class SyncDoneValueControlTest
 
         bb.flip();
 
-        SyncDoneValueControlContainer container = new SyncDoneValueControlContainer();
-        container.setSyncDoneValueControl( new SyncDoneValueControl() );
+        SyncDoneValueContainer container = new SyncDoneValueContainer();
+        container.setSyncDoneValueControl( new SyncDoneValueDecorator() );
 
         try
         {
@@ -78,7 +79,7 @@ public class SyncDoneValueControlTest
             fail( e.getMessage() );
         }
 
-        SyncDoneValueControl control = container.getSyncDoneValueControl();
+        SyncDoneValueDecorator control = container.getSyncDoneValueControl();
         assertEquals( "xkcd", Strings.utf8ToString(control.getCookie()) );
         assertTrue( control.isRefreshDeletes() );
         
@@ -128,8 +129,8 @@ public class SyncDoneValueControlTest
 
         bb.flip();
 
-        SyncDoneValueControlContainer container = new SyncDoneValueControlContainer();
-        container.setSyncDoneValueControl( new SyncDoneValueControl() );
+        SyncDoneValueContainer container = new SyncDoneValueContainer();
+        container.setSyncDoneValueControl( new SyncDoneValueDecorator() );
 
         try
         {
@@ -140,7 +141,7 @@ public class SyncDoneValueControlTest
             fail( e.getMessage() );
         }
 
-        SyncDoneValueControl control = container.getSyncDoneValueControl();
+        SyncDoneValueDecorator control = container.getSyncDoneValueControl();
         assertNull( control.getCookie() );
         assertTrue( control.isRefreshDeletes() );
 
@@ -187,8 +188,8 @@ public class SyncDoneValueControlTest
 
         bb.flip();
 
-        SyncDoneValueControlContainer container = new SyncDoneValueControlContainer();
-        container.setSyncDoneValueControl( new SyncDoneValueControl() );
+        SyncDoneValueContainer container = new SyncDoneValueContainer();
+        container.setSyncDoneValueControl( new SyncDoneValueDecorator() );
 
         try
         {
@@ -199,7 +200,7 @@ public class SyncDoneValueControlTest
             fail( "shouldn't reach this" );
         }
 
-        SyncDoneValueControl control = container.getSyncDoneValueControl();
+        ISyncDoneValue control = container.getSyncDoneValueControl();
         assertNull( control.getCookie() );
         assertFalse( control.isRefreshDeletes() );
     }
@@ -220,8 +221,8 @@ public class SyncDoneValueControlTest
 
         bb.flip();
 
-        SyncDoneValueControlContainer container = new SyncDoneValueControlContainer();
-        container.setSyncDoneValueControl( new SyncDoneValueControl() );
+        SyncDoneValueContainer container = new SyncDoneValueContainer();
+        container.setSyncDoneValueControl( new SyncDoneValueDecorator() );
 
         try
         {
@@ -232,7 +233,7 @@ public class SyncDoneValueControlTest
             fail( e.getMessage() );
         }
 
-        SyncDoneValueControl control = container.getSyncDoneValueControl();
+        SyncDoneValueDecorator control = container.getSyncDoneValueControl();
         assertEquals( "", Strings.utf8ToString(control.getCookie()) );
         assertFalse( control.isRefreshDeletes() );
 

@@ -29,7 +29,7 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public enum SyncDoneValueControlStatesEnum implements States
+public enum SyncDoneValueStatesEnum implements States
 {
 
     /** The END_STATE */
@@ -70,7 +70,7 @@ public enum SyncDoneValueControlStatesEnum implements States
      */
     public String getGrammarName( Grammar grammar )
     {
-        if ( grammar instanceof SyncDoneValueControlGrammar )
+        if ( grammar instanceof SyncDoneValueGrammar )
         {
             return "SYNC_DONE_VALUE_GRAMMAR";
         }
@@ -103,7 +103,7 @@ public enum SyncDoneValueControlStatesEnum implements States
     /**
      * {@inheritDoc}
      */
-    public SyncDoneValueControlStatesEnum getStartState()
+    public SyncDoneValueStatesEnum getStartState()
     {
         return START_STATE;
     }

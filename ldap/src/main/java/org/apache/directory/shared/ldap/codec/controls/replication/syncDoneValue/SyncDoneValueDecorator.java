@@ -23,43 +23,40 @@ package org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValu
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
+import org.apache.directory.shared.asn1.Asn1Object;
+import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
+import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 import org.apache.directory.shared.util.Strings;
 
 
 /**
- * 
  * A syncDoneValue object as described in rfc4533.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SyncDoneValueControl extends AbstractControl
+public class SyncDoneValueDecorator extends ControlDecorator<ISyncDoneValue> implements ISyncDoneValue
 {
-    /** This control OID */
-    public static final String CONTROL_OID = "1.3.6.1.4.1.4203.1.9.1.3";
-
-    /** The Sync cookie */
-    private byte[] cookie;
-
-    /** the refreshDeletes flag */
-    private boolean refreshDeletes;
-
     /** The global length for this control */
     private int syncDoneValueLength;
+    
+    private byte[] value;
 
+    /** An instance of this decoder */
+    private static final Asn1Decoder decoder = new Asn1Decoder();
+
+    
     /**
      * Creates a new instance of SyncDoneValueControlCodec.
      */
-    public SyncDoneValueControl()
+    public SyncDoneValueDecorator()
     {
-        super( CONTROL_OID );
-
-        decoder = new SyncDoneValueControlDecoder();
+        super( new SyncDoneValue() );
     }
     
 
@@ -74,13 +71,13 @@ public class SyncDoneValueControl extends AbstractControl
     public int computeLength()
     {
         // cookie's length
-        if ( cookie != null )
+        if ( getCookie() != null )
         {
-            syncDoneValueLength = 1 + TLV.getNbBytes( cookie.length ) + cookie.length;
+            syncDoneValueLength = 1 + TLV.getNbBytes( getCookie().length ) + getCookie().length;
         }
 
         // the refreshDeletes flag length
-        if ( refreshDeletes )
+        if ( isRefreshDeletes() )
         {
             syncDoneValueLength += 1 + 1 + 1;
         }
@@ -118,14 +115,14 @@ public class SyncDoneValueControl extends AbstractControl
         buffer.put( UniversalTag.SEQUENCE.getValue() );
         buffer.put( TLV.getBytes( syncDoneValueLength ) );
 
-        if ( cookie != null )
+        if ( getCookie() != null )
         {
-            Value.encode( buffer, cookie );
+            Value.encode( buffer, getCookie() );
         }
 
-        if ( refreshDeletes )
+        if ( isRefreshDeletes() )
         {  
-            Value.encode( buffer, refreshDeletes );
+            Value.encode( buffer, isRefreshDeletes() );
         }
 
         return buffer;
@@ -148,14 +145,14 @@ public class SyncDoneValueControl extends AbstractControl
                 buffer.put( UniversalTag.SEQUENCE.getValue() );
                 buffer.put( TLV.getBytes( syncDoneValueLength ) );
 
-                if ( cookie != null )
+                if ( getCookie() != null )
                 {
-                    Value.encode( buffer, cookie );
+                    Value.encode( buffer, getCookie() );
                 }
 
-                if ( refreshDeletes )
+                if ( isRefreshDeletes() )
                 {  
-                    Value.encode( buffer, refreshDeletes );
+                    Value.encode( buffer, isRefreshDeletes() );
                 }
                 
                 value = buffer.array();
@@ -171,47 +168,48 @@ public class SyncDoneValueControl extends AbstractControl
 
 
     /**
-     * @return the cookie
+     * {@inheritDoc}
      */
     public byte[] getCookie()
     {
-        return cookie;
+        return getDecorated().getCookie();
     }
 
 
     /**
-     * @param cookie cookie to be set
+     * {@inheritDoc}
      */
     public void setCookie( byte[] cookie )
     {
         // Copy the bytes
         if ( cookie != null )
         {
-            this.cookie = new byte[cookie.length];
-            System.arraycopy( cookie, 0, this.cookie, 0, cookie.length );
+            byte[] copy = new byte[getCookie().length];
+            System.arraycopy( cookie, 0, copy, 0, cookie.length );
+            setCookie( copy );
         }
         else
         {
-            this.cookie = null;
+            setCookie( null );
         }
     }
 
 
     /**
-     * @return true, if refreshDeletes flag is set, false otherwise
+     * {@inheritDoc}
      */
     public boolean isRefreshDeletes()
     {
-        return refreshDeletes;
+        return getDecorated().isRefreshDeletes();
     }
 
 
     /**
-     * @param refreshDeletes set the refreshDeletes flag 
+     * {@inheritDoc}
      */
     public void setRefreshDeletes( boolean refreshDeletes )
     {
-        this.refreshDeletes = refreshDeletes;
+        getDecorated().setRefreshDeletes( refreshDeletes );
     }
 
 
@@ -220,14 +218,16 @@ public class SyncDoneValueControl extends AbstractControl
      */
     public boolean equals( Object o )
     {
-        if ( !super.equals( o ) )
+        if ( ! super.equals( o ) )
         {
             return false;
         }
 
-        SyncDoneValueControl otherControl = ( SyncDoneValueControl ) o;
+        SyncDoneValueDecorator otherControl = ( SyncDoneValueDecorator ) o;
 
-        return ( refreshDeletes == otherControl.refreshDeletes ) && ( Arrays.equals( cookie, otherControl.cookie ) );
+        return  ( isRefreshDeletes() == otherControl.isRefreshDeletes() ) 
+                && 
+                ( Arrays.equals( getCookie(), otherControl.getCookie() ) );
     }
 
 
@@ -241,9 +241,19 @@ public class SyncDoneValueControl extends AbstractControl
         sb.append( "    SyncDoneValue control :\n" );
         sb.append( "        oid : " ).append( getOid() ).append( '\n' );
         sb.append( "        critical : " ).append( isCritical() ).append( '\n' );
-        sb.append( "        cookie            : '" ).append( Strings.dumpBytes(cookie) ).append( "'\n" );
-        sb.append( "        refreshDeletes : '" ).append( refreshDeletes ).append( "'\n" );
+        sb.append( "        cookie            : '" ).append( Strings.dumpBytes( getCookie() ) ).append( "'\n" );
+        sb.append( "        refreshDeletes : '" ).append( isRefreshDeletes() ).append( "'\n" );
 
         return sb.toString();
+    }
+
+
+    @Override
+    public Asn1Object decode( byte[] controlBytes ) throws DecoderException
+    {
+        ByteBuffer bb = ByteBuffer.wrap( controlBytes );
+        SyncDoneValueContainer container = new SyncDoneValueContainer( this );
+        decoder.decode( bb, container );
+        return this;
     }
 }
