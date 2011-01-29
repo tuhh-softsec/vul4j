@@ -66,7 +66,7 @@ public interface LinkedRuleBuilder {
     /**
      * Construct an object.
      */
-    LinkedObjectCreateBuilder objectCreate();
+    LinkedObjectCreateBuilder createObject();
 
     /**
      * Saves a parameter for use by a surrounding {@link #callMethod(String)}.
