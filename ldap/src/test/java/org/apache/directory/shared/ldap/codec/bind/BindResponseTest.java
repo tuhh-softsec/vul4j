@@ -34,11 +34,17 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
+import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
+import org.apache.directory.shared.ldap.codec.ICodecControl;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.decorators.BindResponseDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
 import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedResultsDecorator;
 import org.apache.directory.shared.ldap.model.message.BindResponse;
 import org.apache.directory.shared.ldap.model.message.Control;
+import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
@@ -55,6 +61,7 @@ public class BindResponseTest
     /** The encoder instance */
     LdapEncoder encoder = new LdapEncoder();
 
+    ILdapCodecService codec = new DefaultLdapCodecService();
 
     /**
      * Test the decoding of a BindResponse
@@ -86,12 +93,12 @@ public class BindResponseTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<BindResponseDecorator> container = new LdapMessageContainer<BindResponseDecorator>( codec );
 
         // Decode the BindResponse PDU
         try
         {
-            ldapDecoder.decode( stream, ldapMessageContainer );
+            ldapDecoder.decode( stream, container );
         }
         catch ( DecoderException de )
         {
@@ -100,7 +107,7 @@ public class BindResponseTest
         }
 
         // Check the decoded BindResponse
-        BindResponse bindResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindResponse();
+        BindResponse bindResponse = container.getMessage();
 
         assertEquals( 1, bindResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, bindResponse.getLdapResult().getResultCode() );
@@ -175,12 +182,12 @@ public class BindResponseTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<BindResponseDecorator> container = new LdapMessageContainer<BindResponseDecorator>( codec );
 
         // Decode the BindResponse PDU
         try
         {
-            ldapDecoder.decode( stream, ldapMessageContainer );
+            ldapDecoder.decode( stream, container );
         }
         catch ( DecoderException de )
         {
@@ -189,7 +196,7 @@ public class BindResponseTest
         }
 
         // Check the decoded BindResponse
-        BindResponse bindResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindResponse();
+        BindResponse bindResponse = container.getMessage();
 
         assertEquals( 1, bindResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, bindResponse.getLdapResult().getResultCode() );
@@ -261,12 +268,12 @@ public class BindResponseTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<BindResponseDecorator> container = new LdapMessageContainer<BindResponseDecorator>( codec );
 
         // Decode the BindResponse PDU
         try
         {
-            ldapDecoder.decode( stream, ldapMessageContainer );
+            ldapDecoder.decode( stream, container );
         }
         catch ( DecoderException de )
         {
@@ -275,7 +282,7 @@ public class BindResponseTest
         }
 
         // Check the decoded BindResponse
-        BindResponse bindResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindResponse();
+        BindResponse bindResponse = container.getMessage();
 
         assertEquals( 1, bindResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, bindResponse.getLdapResult().getResultCode() );
@@ -347,12 +354,12 @@ public class BindResponseTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<BindResponseDecorator> container = new LdapMessageContainer<BindResponseDecorator>( codec );
 
         // Decode the BindResponse PDU
         try
         {
-            ldapDecoder.decode( stream, ldapMessageContainer );
+            ldapDecoder.decode( stream, container );
         }
         catch ( DecoderException de )
         {
@@ -361,7 +368,7 @@ public class BindResponseTest
         }
 
         // Check the decoded BindResponse
-        BindResponse bindResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindResponse();
+        BindResponse bindResponse = container.getMessage();
 
         assertEquals( 1, bindResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, bindResponse.getLdapResult().getResultCode() );
@@ -374,9 +381,10 @@ public class BindResponseTest
 
         assertEquals( 1, controls.size() );
 
-        Control control = controls.get( "2.16.840.1.113730.3.4.2" );
+        @SuppressWarnings("unchecked")
+        ICodecControl<Control> control = ( ICodecControl<Control> ) controls.get( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
-        assertEquals( "", Strings.dumpBytes((byte[]) control.getValue()) );
+        assertEquals( "", Strings.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the encoding
         try
@@ -429,12 +437,13 @@ public class BindResponseTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<BindResponseDecorator> container = 
+            new LdapMessageContainer<BindResponseDecorator>( codec );
 
         // Decode the BindResponse PDU
         try
         {
-            ldapDecoder.decode( stream, ldapMessageContainer );
+            ldapDecoder.decode( stream, container );
         }
         catch ( DecoderException de )
         {
@@ -443,7 +452,7 @@ public class BindResponseTest
         }
 
         // Check the decoded BindResponse
-        BindResponse bindResponse = ( ( LdapMessageContainer ) ldapMessageContainer ).getBindResponse();
+        BindResponse bindResponse = container.getMessage();
 
         assertEquals( 1, bindResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, bindResponse.getLdapResult().getResultCode() );
@@ -490,12 +499,12 @@ public class BindResponseTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container container = new LdapMessageContainer<MessageDecorator<? extends Message>>( codec );
 
         // Decode a BindResponse message
         try
         {
-            ldapDecoder.decode( stream, ldapMessageContainer );
+            ldapDecoder.decode( stream, container );
         }
         catch ( DecoderException de )
         {
