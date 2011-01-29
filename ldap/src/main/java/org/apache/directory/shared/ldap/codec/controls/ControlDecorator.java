@@ -20,6 +20,9 @@
 package org.apache.directory.shared.ldap.codec.controls;
 
 
+import java.nio.BufferOverflowException;
+import java.nio.ByteBuffer;
+
 import org.apache.directory.shared.asn1.AbstractAsn1Object;
 import org.apache.directory.shared.asn1.Asn1Object;
 import org.apache.directory.shared.asn1.DecoderException;
@@ -31,9 +34,6 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.ICodecControl;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.util.Strings;
-
-import java.nio.BufferOverflowException;
-import java.nio.ByteBuffer;
 
 
 /**
