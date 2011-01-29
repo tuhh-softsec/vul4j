@@ -98,10 +98,9 @@ public interface LinkedRuleBuilder {
     /**
      * Sets an individual property on the object at the top of the stack, based on attributes with specified names.
      *
-     * @param name Name of the attribute that will contain the name of the property to be set
-     * @param value Name of the attribute that will contain the value to which the property should be set
+     * @param attributePropertyName Name of the attribute that will contain the name of the property to be set
      */
-    BackToLinkedRuleBuilder setProperty(String name, String value);
+    SetPropertyBuilder setProperty(String attributePropertyName);
 
     /**
      * Calls a method on the root object on the stack, passing the top object (child) as an argument.
