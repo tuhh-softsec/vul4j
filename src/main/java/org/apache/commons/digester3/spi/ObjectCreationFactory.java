@@ -37,6 +37,12 @@ public interface ObjectCreationFactory<T> {
     T createObject(Attributes attributes) throws Exception;
 
     /**
+     * <p>Returns the {@link Digester} that was set by the
+     * {@link FactoryCreateRule} upon initialization.
+     */
+    Digester getDigester();
+
+    /**
      * <p>Set the {@link Digester} to allow the implementation to do logging,
      * classloading based on the digester's classloader, etc.
      *
