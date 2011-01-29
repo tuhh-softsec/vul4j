@@ -30,12 +30,10 @@ import java.nio.ByteBuffer;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.ISyncDoneValue;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.SyncDoneValueDecorator;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.SyncDoneValueContainer;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.SyncDoneValueControlDecoder;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,7 +53,6 @@ public class SyncDoneValueControlTest
     @Test
     public void testSyncDoneValueControl()
     {
-        Asn1Decoder decoder = new SyncDoneValueControlDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 11 );
 
         bb.put( new byte[]
@@ -68,11 +65,11 @@ public class SyncDoneValueControlTest
         bb.flip();
 
         SyncDoneValueContainer container = new SyncDoneValueContainer();
-        container.setSyncDoneValueControl( new SyncDoneValueDecorator() );
+        SyncDoneValueDecorator decorator = container.getSyncDoneValueControl();
 
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
         }
         catch ( Exception e )
         {
@@ -117,7 +114,6 @@ public class SyncDoneValueControlTest
     @Test
     public void testSyncDoneValueControlWithoutCookie()
     {
-        Asn1Decoder decoder = new SyncDoneValueControlDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 5 );
 
         bb.put( new byte[]
@@ -130,11 +126,11 @@ public class SyncDoneValueControlTest
         bb.flip();
 
         SyncDoneValueContainer container = new SyncDoneValueContainer();
-        container.setSyncDoneValueControl( new SyncDoneValueDecorator() );
+        SyncDoneValueDecorator decorator = container.getSyncDoneValueControl();
 
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
         }
         catch ( Exception e )
         {
@@ -178,7 +174,6 @@ public class SyncDoneValueControlTest
     @Test
     public void testSyncDoneValueWithSequenceOnly()
     {
-        Asn1Decoder decoder = new SyncDoneValueControlDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 2 );
 
         bb.put( new byte[]
@@ -189,11 +184,11 @@ public class SyncDoneValueControlTest
         bb.flip();
 
         SyncDoneValueContainer container = new SyncDoneValueContainer();
-        container.setSyncDoneValueControl( new SyncDoneValueDecorator() );
+        SyncDoneValueDecorator decorator = container.getSyncDoneValueControl();
 
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
         }
         catch ( Exception e )
         {
@@ -209,7 +204,6 @@ public class SyncDoneValueControlTest
     @Test
     public void testSyncDoneValueControlWithEmptyCookie()
     {
-        Asn1Decoder decoder = new SyncDoneValueControlDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 7 );
 
         bb.put( new byte[]
@@ -222,11 +216,11 @@ public class SyncDoneValueControlTest
         bb.flip();
 
         SyncDoneValueContainer container = new SyncDoneValueContainer();
-        container.setSyncDoneValueControl( new SyncDoneValueDecorator() );
+        SyncDoneValueDecorator decorator = container.getSyncDoneValueControl();
 
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
         }
         catch ( Exception e )
         {
