@@ -26,6 +26,7 @@ import java.nio.ByteBuffer;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.model.message.BindResponse;
 
@@ -35,7 +36,7 @@ import org.apache.directory.shared.ldap.model.message.BindResponse;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class BindResponseDecorator extends ResponseDecorator implements BindResponse
+public class BindResponseDecorator extends ResponseDecorator<BindResponse> implements BindResponse
 {
     /** The encoded bindResponse length */
     private int bindResponseLength;
@@ -46,18 +47,9 @@ public class BindResponseDecorator extends ResponseDecorator implements BindResp
      *
      * @param decoratedMessage the decorated BindResponse
      */
-    public BindResponseDecorator( BindResponse decoratedMessage )
+    public BindResponseDecorator( ILdapCodecService codec, BindResponse decoratedMessage )
     {
-        super( decoratedMessage );
-    }
-
-
-    /**
-     * @return The decorated BindResponse
-     */
-    public BindResponse getBindResponse()
-    {
-        return ( BindResponse ) getDecoratedMessage();
+        super( codec, decoratedMessage );
     }
 
 
@@ -90,7 +82,7 @@ public class BindResponseDecorator extends ResponseDecorator implements BindResp
      */
     public byte[] getServerSaslCreds()
     {
-        return getBindResponse().getServerSaslCreds();
+        return getDecorated().getServerSaslCreds();
     }
 
 
@@ -99,7 +91,7 @@ public class BindResponseDecorator extends ResponseDecorator implements BindResp
      */
     public void setServerSaslCreds( byte[] serverSaslCreds )
     {
-        getBindResponse().setServerSaslCreds( serverSaslCreds );
+        getDecorated().setServerSaslCreds( serverSaslCreds );
     }
     
     
@@ -122,7 +114,7 @@ public class BindResponseDecorator extends ResponseDecorator implements BindResp
      */
     public int computeLength()
     {
-        BindResponse bindResponse = getBindResponse();
+        BindResponse bindResponse = getDecorated();
         int ldapResultLength = ((LdapResultDecorator)getLdapResult()).computeLength();
 
         int bindResponseLength = ldapResultLength;
@@ -155,7 +147,7 @@ public class BindResponseDecorator extends ResponseDecorator implements BindResp
      */
     public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
     {
-        BindResponse bindResponse = getBindResponse();
+        BindResponse bindResponse = getDecorated();
 
         try
         {

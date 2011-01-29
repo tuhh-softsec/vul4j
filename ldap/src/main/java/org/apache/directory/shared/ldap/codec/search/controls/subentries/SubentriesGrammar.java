@@ -21,7 +21,6 @@ package org.apache.directory.shared.ldap.codec.search.controls.subentries;
 
 
 import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
@@ -65,13 +64,11 @@ public final class SubentriesGrammar extends AbstractGrammar
         super.transitions[ SubentriesStates.START_STATE.ordinal()][UniversalTag.BOOLEAN.getValue()] =
             new GrammarTransition( SubentriesStates.START_STATE,
                                     SubentriesStates.SUB_ENTRY_VISIBILITY_STATE, UniversalTag.BOOLEAN.getValue(),
-                new GrammarAction( "SubEntryControl visibility" )
+                new GrammarAction<SubentriesContainer>( "SubEntryControl visibility" )
             {
-                public void action( Asn1Container container ) throws DecoderException
+                public void action( SubentriesContainer container ) throws DecoderException
                 {
-                    SubentriesContainer subEntryContainer = ( SubentriesContainer ) container;
-
-                    TLV tlv = subEntryContainer.getCurrentTLV();
+                    TLV tlv = container.getCurrentTLV();
 
                     // We get the value. If it's a 0, it's a FALSE. If it's
                     // a FF, it's a TRUE. Any other value should be an error,
@@ -83,7 +80,7 @@ public final class SubentriesGrammar extends AbstractGrammar
 
                     try
                     {
-                        subEntryContainer.getSubentriesControl().setVisibility( BooleanDecoder.parse( value ) );
+                        container.getSubentriesControl().setVisibility( BooleanDecoder.parse( value ) );
 
                         // We can have an END transition
                         container.setGrammarEndAllowed( true );

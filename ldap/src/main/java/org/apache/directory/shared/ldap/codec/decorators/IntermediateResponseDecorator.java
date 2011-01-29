@@ -26,6 +26,7 @@ import java.nio.ByteBuffer;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.model.message.IntermediateResponse;
 import org.apache.directory.shared.util.Strings;
@@ -36,7 +37,8 @@ import org.apache.directory.shared.util.Strings;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class IntermediateResponseDecorator extends ResponseDecorator implements IntermediateResponse
+public class IntermediateResponseDecorator extends MessageDecorator<IntermediateResponse> 
+    implements IntermediateResponse
 {
     /** The response name as a byte[] */
     private byte[] responseNameBytes;
@@ -50,18 +52,9 @@ public class IntermediateResponseDecorator extends ResponseDecorator implements 
      *
      * @param decoratedMessage the decorated IntermediateResponse
      */
-    public IntermediateResponseDecorator( IntermediateResponse decoratedMessage )
+    public IntermediateResponseDecorator( ILdapCodecService codec, IntermediateResponse decoratedMessage )
     {
-        super( decoratedMessage );
-    }
-
-
-    /**
-     * @return The decorated IntermediateResponse
-     */
-    public IntermediateResponse getIntermediateResponse()
-    {
-        return ( IntermediateResponse ) getDecoratedMessage();
+        super( codec, decoratedMessage );
     }
 
 
@@ -117,7 +110,7 @@ public class IntermediateResponseDecorator extends ResponseDecorator implements 
      */
     public String getResponseName()
     {
-        return getIntermediateResponse().getResponseName();
+        return getDecorated().getResponseName();
     }
 
 
@@ -126,7 +119,7 @@ public class IntermediateResponseDecorator extends ResponseDecorator implements 
      */
     public void setResponseName( String oid )
     {
-        getIntermediateResponse().setResponseName( oid );
+        getDecorated().setResponseName( oid );
     }
 
 
@@ -135,7 +128,7 @@ public class IntermediateResponseDecorator extends ResponseDecorator implements 
      */
     public byte[] getResponseValue()
     {
-        return getIntermediateResponse().getResponseValue();
+        return getDecorated().getResponseValue();
     }
 
 
@@ -144,7 +137,7 @@ public class IntermediateResponseDecorator extends ResponseDecorator implements 
      */
     public void setResponseValue( byte[] value )
     {
-        getIntermediateResponse().setResponseValue( value );
+        getDecorated().setResponseValue( value );
     }
     
     

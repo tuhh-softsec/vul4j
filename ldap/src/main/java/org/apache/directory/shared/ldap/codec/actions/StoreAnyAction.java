@@ -20,7 +20,6 @@
 package org.apache.directory.shared.ldap.codec.actions;
 
 
-import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.DecoderException;
@@ -38,7 +37,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class StoreAnyAction extends GrammarAction
+public class StoreAnyAction extends GrammarAction<LdapMessageContainer<SearchRequestDecorator>>
 {
     /** The logger */
     private static final Logger LOG = LoggerFactory.getLogger( StoreAnyAction.class );
@@ -59,12 +58,11 @@ public class StoreAnyAction extends GrammarAction
     /**
      * {@inheritDoc}
      */
-    public void action( Asn1Container container ) throws DecoderException
+    public void action( LdapMessageContainer<SearchRequestDecorator> container ) throws DecoderException
     {
-        LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        SearchRequestDecorator decorator = ldapMessageContainer.getSearchRequestDecorator();
+        SearchRequestDecorator decorator = container.getMessage();
 
-        TLV tlv = ldapMessageContainer.getCurrentTLV();
+        TLV tlv = container.getCurrentTLV();
 
         // Store the value.
         SubstringFilter substringFilter = ( SubstringFilter ) decorator.getTerminalFilter();

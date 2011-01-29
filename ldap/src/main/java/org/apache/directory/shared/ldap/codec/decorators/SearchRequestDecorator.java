@@ -32,6 +32,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.search.AndFilter;
@@ -61,8 +62,11 @@ import org.apache.directory.shared.ldap.model.filter.PresenceNode;
 import org.apache.directory.shared.ldap.model.filter.SearchScope;
 import org.apache.directory.shared.ldap.model.filter.SimpleNode;
 import org.apache.directory.shared.ldap.model.filter.SubstringNode;
+import org.apache.directory.shared.ldap.model.message.AbandonListener;
 import org.apache.directory.shared.ldap.model.message.AliasDerefMode;
+import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
+import org.apache.directory.shared.ldap.model.message.ResultResponse;
 import org.apache.directory.shared.ldap.model.message.SearchRequest;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.util.Strings;
@@ -73,7 +77,7 @@ import org.apache.directory.shared.util.Strings;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SearchRequestDecorator extends AbandonableResultResponseRequestDecorator implements SearchRequest
+public class SearchRequestDecorator extends MessageDecorator<SearchRequest> implements SearchRequest
 {
     /** The searchRequest length */
     private int searchRequestLength;
@@ -99,18 +103,9 @@ public class SearchRequestDecorator extends AbandonableResultResponseRequestDeco
      *
      * @param decoratedMessage the decorated SearchRequest
      */
-    public SearchRequestDecorator( SearchRequest decoratedMessage )
+    public SearchRequestDecorator( ILdapCodecService codec, SearchRequest decoratedMessage )
     {
-        super( decoratedMessage );
-    }
-
-
-    /**
-     * @return The decorated SearchRequest
-     */
-    public SearchRequest getSearchRequest()
-    {
-        return ( SearchRequest ) getDecoratedMessage();
+        super( codec, decoratedMessage );
     }
 
 
@@ -226,8 +221,8 @@ public class SearchRequestDecorator extends AbandonableResultResponseRequestDeco
      */
     public void setFilter( String filter ) throws LdapException
     {
-        getSearchRequest().setFilter( filter );
-        this.currentFilter = transform( getSearchRequest().getFilter() );
+        getDecorated().setFilter( filter );
+        this.currentFilter = transform( getDecorated().getFilter() );
     }
 
 
@@ -286,9 +281,11 @@ public class SearchRequestDecorator extends AbandonableResultResponseRequestDeco
      *
      * @param container The container being decoded
      */
+    @SuppressWarnings("unchecked")
     public void unstackFilters( Asn1Container container )
     {
-        LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
+        LdapMessageContainer<MessageDecorator<Message>> ldapMessageContainer = 
+            ( LdapMessageContainer<MessageDecorator<Message>> ) container;
 
         TLV tlv = ldapMessageContainer.getCurrentTLV();
         TLV localParent = tlv.getParent();
@@ -640,18 +637,18 @@ public class SearchRequestDecorator extends AbandonableResultResponseRequestDeco
     {
         int hash = 37;
 
-        if ( getSearchRequest().getBase() != null )
+        if ( getDecorated().getBase() != null )
         {
-            hash = hash * 17 + getSearchRequest().getBase().hashCode();
+            hash = hash * 17 + getDecorated().getBase().hashCode();
         }
 
-        hash = hash * 17 + getSearchRequest().getDerefAliases().hashCode();
-        hash = hash * 17 + getSearchRequest().getScope().hashCode();
-        hash = hash * 17 + Long.valueOf( getSearchRequest().getSizeLimit() ).hashCode();
-        hash = hash * 17 + getSearchRequest().getTimeLimit();
-        hash = hash * 17 + ( getSearchRequest().getTypesOnly() ? 0 : 1 );
+        hash = hash * 17 + getDecorated().getDerefAliases().hashCode();
+        hash = hash * 17 + getDecorated().getScope().hashCode();
+        hash = hash * 17 + Long.valueOf( getDecorated().getSizeLimit() ).hashCode();
+        hash = hash * 17 + getDecorated().getTimeLimit();
+        hash = hash * 17 + ( getDecorated().getTypesOnly() ? 0 : 1 );
 
-        List<String> attributes = getSearchRequest().getAttributes();
+        List<String> attributes = getDecorated().getAttributes();
         if ( attributes != null )
         {
             hash = hash * 17 + attributes.size();
@@ -664,7 +661,7 @@ public class SearchRequestDecorator extends AbandonableResultResponseRequestDeco
         }
 
         BranchNormalizedVisitor visitor = new BranchNormalizedVisitor();
-        getSearchRequest().getFilter().accept( visitor );
+        getDecorated().getFilter().accept( visitor );
         hash = hash * 17 + currentFilter.toString().hashCode();
         hash = hash * 17 + super.hashCode();
 
@@ -698,37 +695,37 @@ public class SearchRequestDecorator extends AbandonableResultResponseRequestDeco
 
         SearchRequest req = ( SearchRequest ) obj;
 
-        if ( !req.getBase().equals( getSearchRequest().getBase() ) )
+        if ( !req.getBase().equals( getDecorated().getBase() ) )
         {
             return false;
         }
 
-        if ( req.getDerefAliases() != getSearchRequest().getDerefAliases() )
+        if ( req.getDerefAliases() != getDecorated().getDerefAliases() )
         {
             return false;
         }
 
-        if ( req.getScope() != getSearchRequest().getScope() )
+        if ( req.getScope() != getDecorated().getScope() )
         {
             return false;
         }
 
-        if ( req.getSizeLimit() != getSearchRequest().getSizeLimit() )
+        if ( req.getSizeLimit() != getDecorated().getSizeLimit() )
         {
             return false;
         }
 
-        if ( req.getTimeLimit() != getSearchRequest().getTimeLimit() )
+        if ( req.getTimeLimit() != getDecorated().getTimeLimit() )
         {
             return false;
         }
 
-        if ( req.getTypesOnly() != getSearchRequest().getTypesOnly() )
+        if ( req.getTypesOnly() != getDecorated().getTypesOnly() )
         {
             return false;
         }
 
-        List<String> attributes = getSearchRequest().getAttributes();
+        List<String> attributes = getDecorated().getAttributes();
         if ( req.getAttributes() == null && attributes != null && attributes.size() > 0 )
         {
             return false;
@@ -757,7 +754,7 @@ public class SearchRequestDecorator extends AbandonableResultResponseRequestDeco
 
         BranchNormalizedVisitor visitor = new BranchNormalizedVisitor();
         req.getFilter().accept( visitor );
-        getSearchRequest().getFilter().accept( visitor );
+        getDecorated().getFilter().accept( visitor );
 
         String myFilterString = currentFilter.toString();
         String reqFilterString = req.getFilter().toString();
@@ -775,7 +772,7 @@ public class SearchRequestDecorator extends AbandonableResultResponseRequestDeco
         StringBuilder sb = new StringBuilder();
 
         sb.append( "    SearchRequest\n" );
-        sb.append( "        baseDn : '" ).append( getSearchRequest().getBase() ).append( "'\n" );
+        sb.append( "        baseDn : '" ).append( getDecorated().getBase() ).append( "'\n" );
 
         if ( currentFilter != null )
         {
@@ -786,7 +783,7 @@ public class SearchRequestDecorator extends AbandonableResultResponseRequestDeco
 
         sb.append( "        scope : " );
 
-        switch ( getSearchRequest().getScope() )
+        switch ( getDecorated().getScope() )
         {
             case OBJECT:
                 sb.append( "base object" );
@@ -803,37 +800,37 @@ public class SearchRequestDecorator extends AbandonableResultResponseRequestDeco
 
         sb.append( '\n' );
 
-        sb.append( "        typesOnly : " ).append( getSearchRequest().getTypesOnly() ).append( '\n' );
+        sb.append( "        typesOnly : " ).append( getDecorated().getTypesOnly() ).append( '\n' );
 
         sb.append( "        Size Limit : " );
 
-        if ( getSearchRequest().getSizeLimit() == 0L )
+        if ( getDecorated().getSizeLimit() == 0L )
         {
             sb.append( "no limit" );
         }
         else
         {
-            sb.append( getSearchRequest().getSizeLimit() );
+            sb.append( getDecorated().getSizeLimit() );
         }
 
         sb.append( '\n' );
 
         sb.append( "        Time Limit : " );
 
-        if ( getSearchRequest().getTimeLimit() == 0 )
+        if ( getDecorated().getTimeLimit() == 0 )
         {
             sb.append( "no limit" );
         }
         else
         {
-            sb.append( getSearchRequest().getTimeLimit() );
+            sb.append( getDecorated().getTimeLimit() );
         }
 
         sb.append( '\n' );
 
         sb.append( "        Deref Aliases : " );
 
-        switch ( getSearchRequest().getDerefAliases() )
+        switch ( getDecorated().getDerefAliases() )
         {
             case NEVER_DEREF_ALIASES:
                 sb.append( "never Deref Aliases" );
@@ -857,7 +854,7 @@ public class SearchRequestDecorator extends AbandonableResultResponseRequestDeco
 
         boolean isFirst = true;
 
-        List<String> attributes = getSearchRequest().getAttributes();
+        List<String> attributes = getDecorated().getAttributes();
         if ( attributes != null )
         {
             for ( String attribute : attributes )
@@ -894,7 +891,7 @@ public class SearchRequestDecorator extends AbandonableResultResponseRequestDeco
      */
     public MessageTypeEnum[] getResponseTypes()
     {
-        return getSearchRequest().getResponseTypes();
+        return getDecorated().getResponseTypes();
     }
 
 
@@ -903,7 +900,7 @@ public class SearchRequestDecorator extends AbandonableResultResponseRequestDeco
      */
     public Dn getBase()
     {
-        return getSearchRequest().getBase();
+        return getDecorated().getBase();
     }
 
 
@@ -912,7 +909,7 @@ public class SearchRequestDecorator extends AbandonableResultResponseRequestDeco
      */
     public void setBase( Dn baseDn )
     {
-        getSearchRequest().setBase( baseDn );
+        getDecorated().setBase( baseDn );
     }
 
 
@@ -921,7 +918,7 @@ public class SearchRequestDecorator extends AbandonableResultResponseRequestDeco
      */
     public SearchScope getScope()
     {
-        return getSearchRequest().getScope();
+        return getDecorated().getScope();
     }
 
 
@@ -930,7 +927,7 @@ public class SearchRequestDecorator extends AbandonableResultResponseRequestDeco
      */
     public void setScope( SearchScope scope )
     {
-        getSearchRequest().setScope( scope );
+        getDecorated().setScope( scope );
     }
 
 
@@ -939,7 +936,7 @@ public class SearchRequestDecorator extends AbandonableResultResponseRequestDeco
      */
     public AliasDerefMode getDerefAliases()
     {
-        return getSearchRequest().getDerefAliases();
+        return getDecorated().getDerefAliases();
     }
 
 
@@ -948,7 +945,7 @@ public class SearchRequestDecorator extends AbandonableResultResponseRequestDeco
      */
     public void setDerefAliases( AliasDerefMode aliasDerefAliases )
     {
-        getSearchRequest().setDerefAliases( aliasDerefAliases );
+        getDecorated().setDerefAliases( aliasDerefAliases );
     }
 
 
@@ -957,7 +954,7 @@ public class SearchRequestDecorator extends AbandonableResultResponseRequestDeco
      */
     public long getSizeLimit()
     {
-        return getSearchRequest().getSizeLimit();
+        return getDecorated().getSizeLimit();
     }
 
 
@@ -966,7 +963,7 @@ public class SearchRequestDecorator extends AbandonableResultResponseRequestDeco
      */
     public void setSizeLimit( long entriesMax )
     {
-        getSearchRequest().setSizeLimit( entriesMax );
+        getDecorated().setSizeLimit( entriesMax );
     }
 
 
@@ -975,7 +972,7 @@ public class SearchRequestDecorator extends AbandonableResultResponseRequestDeco
      */
     public int getTimeLimit()
     {
-        return getSearchRequest().getTimeLimit();
+        return getDecorated().getTimeLimit();
     }
 
 
@@ -984,7 +981,7 @@ public class SearchRequestDecorator extends AbandonableResultResponseRequestDeco
      */
     public void setTimeLimit( int secondsMax )
     {
-        getSearchRequest().setTimeLimit( secondsMax );
+        getDecorated().setTimeLimit( secondsMax );
     }
 
 
@@ -993,7 +990,7 @@ public class SearchRequestDecorator extends AbandonableResultResponseRequestDeco
      */
     public boolean getTypesOnly()
     {
-        return getSearchRequest().getTypesOnly();
+        return getDecorated().getTypesOnly();
     }
 
 
@@ -1002,7 +999,7 @@ public class SearchRequestDecorator extends AbandonableResultResponseRequestDeco
      */
     public void setTypesOnly( boolean typesOnly )
     {
-        getSearchRequest().setTypesOnly( typesOnly );
+        getDecorated().setTypesOnly( typesOnly );
     }
 
 
@@ -1011,7 +1008,7 @@ public class SearchRequestDecorator extends AbandonableResultResponseRequestDeco
      */
     public ExprNode getFilter()
     {
-        return getSearchRequest().getFilter();
+        return getDecorated().getFilter();
     }
 
 
@@ -1020,7 +1017,7 @@ public class SearchRequestDecorator extends AbandonableResultResponseRequestDeco
      */
     public List<String> getAttributes()
     {
-        return getSearchRequest().getAttributes();
+        return getDecorated().getAttributes();
     }
 
 
@@ -1029,7 +1026,7 @@ public class SearchRequestDecorator extends AbandonableResultResponseRequestDeco
      */
     public void addAttributes( String... attributes )
     {
-        getSearchRequest().addAttributes( attributes );
+        getDecorated().addAttributes( attributes );
     }
 
 
@@ -1038,13 +1035,15 @@ public class SearchRequestDecorator extends AbandonableResultResponseRequestDeco
      */
     public void removeAttribute( String attribute )
     {
-        getSearchRequest().removeAttribute( attribute );
+        getDecorated().removeAttribute( attribute );
     }
 
 
     //-------------------------------------------------------------------------
     // The Decorator methods
     //-------------------------------------------------------------------------
+    
+    
     /**
      * Compute the SearchRequest length
      * 
@@ -1189,5 +1188,35 @@ public class SearchRequestDecorator extends AbandonableResultResponseRequestDeco
         }
 
         return buffer;
+    }
+
+
+    public ResultResponse getResultResponse()
+    {
+        return getDecorated().getResultResponse();
+    }
+
+
+    public boolean hasResponse()
+    {
+        return getDecorated().hasResponse();
+    }
+
+
+    public void abandon()
+    {
+        getDecorated().abandon();
+    }
+
+
+    public boolean isAbandoned()
+    {
+        return getDecorated().isAbandoned();
+    }
+
+
+    public void addAbandonListener( AbandonListener listener )
+    {
+        getDecorated().addAbandonListener( listener );
     }
 }

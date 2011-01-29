@@ -22,7 +22,10 @@ package org.apache.directory.shared.ldap.codec.search.controls.persistentSearch;
 
 import java.nio.ByteBuffer;
 
+import org.apache.directory.shared.asn1.Asn1Object;
+import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
@@ -38,12 +41,18 @@ import org.apache.directory.shared.ldap.model.message.controls.PersistentSearchI
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class PersistentSearchDecorator extends ControlDecorator implements PersistentSearch
+public class PersistentSearchDecorator extends ControlDecorator<PersistentSearch> implements PersistentSearch
 {
     /** A temporary storage for a psearch length */
     private int psearchSeqLength;
 
+    /** The encoded value of the control. */
+    private byte[] value;
+    
+    /** An instance of this decoder */
+    private static final Asn1Decoder decoder = new Asn1Decoder();
 
+    
     /**
      * Default constructor creates a PersistentSearch Control automatically
      * wrapped in a decorator object inside this container.
@@ -62,7 +71,7 @@ public class PersistentSearchDecorator extends ControlDecorator implements Persi
      */
     public PersistentSearchDecorator( PersistentSearch control )
     {
-        super( control, new PersistentSearchDecoder() );
+        super( control );
     }
 
 
@@ -132,7 +141,7 @@ public class PersistentSearchDecorator extends ControlDecorator implements Persi
      */
     public byte[] getValue()
     {
-        if ( getDecorated().getValue() == null )
+        if ( value == null )
         {
             try
             { 
@@ -147,7 +156,7 @@ public class PersistentSearchDecorator extends ControlDecorator implements Persi
                 Value.encode( buffer, isChangesOnly() );
                 Value.encode( buffer, isReturnECs() );
 
-                getDecorated().setValue( buffer.array() );
+                value = buffer.array();
             }
             catch ( Exception e )
             {
@@ -155,7 +164,7 @@ public class PersistentSearchDecorator extends ControlDecorator implements Persi
             }
         }
         
-        return getDecorated().getValue();
+        return value;
     }
 
 
@@ -211,5 +220,15 @@ public class PersistentSearchDecorator extends ControlDecorator implements Persi
     public void enableNotification( ChangeType changeType )
     {
         getPersistentSearch().enableNotification( changeType );
+    }
+
+
+    @Override
+    public Asn1Object decode( byte[] controlBytes ) throws DecoderException
+    {
+        ByteBuffer bb = ByteBuffer.wrap( controlBytes );
+        PersistentSearchContainer container = new PersistentSearchContainer( this );
+        decoder.decode( bb, container );
+        return this;
     }
 }

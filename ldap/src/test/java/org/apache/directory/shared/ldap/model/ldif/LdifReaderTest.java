@@ -1525,11 +1525,11 @@ public class LdifReaderTest
         assertTrue( entry.isChangeDelete() );
 
         // Check the control
-        Control control = entry.getControl( "1.2.840.113556.1.4.805" );
+        LdifControl control = entry.getControl( "1.2.840.113556.1.4.805" );
 
         assertEquals( "1.2.840.113556.1.4.805", control.getOid() );
         assertFalse( control.isCritical() );
-        assertEquals( "control-value", Strings.utf8ToString(control.getValue()) );
+        assertEquals( "control-value", Strings.utf8ToString( control.getValue() ) );
     }
 
 
@@ -1893,7 +1893,7 @@ public class LdifReaderTest
         assertTrue( entry.hasControls() );
         assertEquals( 1, entry.getControls().size() );
         
-        Control control = entry.getControl( "1.1.1" );
+        LdifControl control = entry.getControl( "1.1.1" );
         
         assertEquals( "1.1.1", control.getOid() );
         assertFalse( control.isCritical() );
@@ -1933,7 +1933,7 @@ public class LdifReaderTest
         assertEquals( 6, entry.getControls().size() );
         
         // First control
-        Control control = entry.getControl( "1.1.1" );
+        LdifControl control = entry.getControl( "1.1.1" );
         
         assertEquals( "1.1.1", control.getOid() );
         assertFalse( control.isCritical() );

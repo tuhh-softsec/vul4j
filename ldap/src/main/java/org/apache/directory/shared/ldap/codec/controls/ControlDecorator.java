@@ -21,11 +21,14 @@ package org.apache.directory.shared.ldap.codec.controls;
 
 
 import org.apache.directory.shared.asn1.AbstractAsn1Object;
+import org.apache.directory.shared.asn1.Asn1Object;
+import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.ICodecControl;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.util.Strings;
 
@@ -39,11 +42,12 @@ import java.nio.ByteBuffer;
  * decorator while processing.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
+ * @param <E>
  */
-public class ControlDecorator extends AbstractAsn1Object implements Control, CodecControl
+public abstract class ControlDecorator<E extends Control> extends AbstractAsn1Object implements Control, ICodecControl<E>
 {
     /** The decorated Control */
-    private final Control decorated;
+    private E decorated;
 
     /** The encoded value length */
     protected int valueLength;
@@ -51,31 +55,18 @@ public class ControlDecorator extends AbstractAsn1Object implements Control, Cod
     /** The control length */
     private int controlLength;
 
-    /** The control decoder */
-    private ControlDecoder decoder;
+    /** The encoded value of the control. */
+    private byte[] value;
 
-
+    
     /**
      * Creates a ControlDecorator to codec enable it.
      *
      * @param decoratedControl The Control to decorate.
      */
-    public ControlDecorator( Control decoratedControl )
+    public ControlDecorator( E decoratedControl )
     {
         this.decorated = decoratedControl;
-    }
-
-
-    /**
-     * Creates a ControlDecorator to codec enable it.
-     *
-     * @param decoratedControl The Control to decorate.
-     * @param decoder The Control's decoder.
-     */
-    public ControlDecorator( Control decoratedControl, ControlDecoder decoder )
-    {
-        this.decorated = decoratedControl;
-        this.decoder = decoder;
     }
 
 
@@ -108,7 +99,7 @@ public class ControlDecorator extends AbstractAsn1Object implements Control, Cod
     }
 
 
-    public Control getDecorated()
+    public E getDecorated()
     {
         return decorated;
     }
@@ -135,7 +126,7 @@ public class ControlDecorator extends AbstractAsn1Object implements Control, Cod
      */
     public boolean hasValue()
     {
-        return decorated.hasValue();
+        return value != null;
     }
 
 
@@ -146,7 +137,7 @@ public class ControlDecorator extends AbstractAsn1Object implements Control, Cod
      */
     public byte[] getValue()
     {
-        return decorated.getValue();
+        return value;
     }
 
 
@@ -161,11 +152,11 @@ public class ControlDecorator extends AbstractAsn1Object implements Control, Cod
         {
             byte[] copy = new byte[ value.length ];
             System.arraycopy( value, 0, copy, 0, value.length );
-            decorated.setValue( copy );
+            value = copy;
         } 
         else 
         {
-            decorated.setValue( null );
+            value = null;
         }
     }
 
@@ -242,15 +233,6 @@ public class ControlDecorator extends AbstractAsn1Object implements Control, Cod
     }
 
 
-    /**
-     * {@inheritDoc}
-     */
-    public ControlDecoder getDecoder()
-    {
-        return decoder;
-    }
-
-
     // ------------------------------------------------------------------------
     // Object Method Overrides
     // ------------------------------------------------------------------------
@@ -284,12 +266,7 @@ public class ControlDecorator extends AbstractAsn1Object implements Control, Cod
         }
 
         //noinspection SimplifiableIfStatement
-        if ( otherControl.isCritical() != isCritical() )
-        {
-            return false;
-        }
-
-        return hasValue() == otherControl.hasValue();
+        return otherControl.isCritical() == isCritical();
     }
 
 
@@ -300,4 +277,7 @@ public class ControlDecorator extends AbstractAsn1Object implements Control, Cod
     {
         return decorated.toString();
     }
+
+    
+    public abstract Asn1Object decode( byte[] controlBytes ) throws DecoderException;
 }

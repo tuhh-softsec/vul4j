@@ -29,6 +29,7 @@ import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.model.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.model.entry.Entry;
@@ -44,7 +45,7 @@ import org.apache.directory.shared.ldap.model.name.Dn;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class AddRequestDecorator extends SingleReplyRequestDecorator implements AddRequest
+public final class AddRequestDecorator extends SingleReplyRequestDecorator<AddRequest> implements AddRequest
 {
     /** The add request length */
     private int addRequestLength;
@@ -67,18 +68,9 @@ public class AddRequestDecorator extends SingleReplyRequestDecorator implements 
      *
      * @param decoratedMessage the decorated AddRequest
      */
-    public AddRequestDecorator( AddRequest decoratedMessage )
+    public AddRequestDecorator( ILdapCodecService codec, AddRequest decoratedMessage )
     {
-        super( decoratedMessage );
-    }
-
-
-    /**
-     * @return The decorated AddRequest
-     */
-    public AddRequest getAddRequest()
-    {
-        return ( AddRequest ) getDecoratedMessage();
+        super( codec, decoratedMessage );
     }
 
 
@@ -168,7 +160,7 @@ public class AddRequestDecorator extends SingleReplyRequestDecorator implements 
      */
     public Dn getEntryDn()
     {
-        return getAddRequest().getEntryDn();
+        return getDecorated().getEntryDn();
     }
 
 
@@ -177,7 +169,7 @@ public class AddRequestDecorator extends SingleReplyRequestDecorator implements 
      */
     public void setEntryDn( Dn entry )
     {
-        getAddRequest().setEntryDn( entry );
+        getDecorated().setEntryDn( entry );
     }
 
 
@@ -186,7 +178,7 @@ public class AddRequestDecorator extends SingleReplyRequestDecorator implements 
      */
     public Entry getEntry()
     {
-        return getAddRequest().getEntry();
+        return getDecorated().getEntry();
     }
 
 
@@ -195,7 +187,7 @@ public class AddRequestDecorator extends SingleReplyRequestDecorator implements 
      */
     public void setEntry( Entry entry )
     {
-        getAddRequest().setEntry( entry );
+        getDecorated().setEntry( entry );
     }
 
     
@@ -207,15 +199,15 @@ public class AddRequestDecorator extends SingleReplyRequestDecorator implements 
     public void addAttributeType( String type ) throws LdapException
     {
         // do not create a new attribute if we have seen this attributeType before
-        if ( getAddRequest().getEntry().get( type ) != null )
+        if ( getDecorated().getEntry().get( type ) != null )
         {
-            currentAttribute = getAddRequest().getEntry().get( type );
+            currentAttribute = getDecorated().getEntry().get( type );
             return;
         }
 
         // fix this to use AttributeImpl(type.getString().toLowerCase())
         currentAttribute = new DefaultEntryAttribute( type );
-        getAddRequest().getEntry().put( currentAttribute );
+        getDecorated().getEntry().put( currentAttribute );
     }
 
 
@@ -305,7 +297,7 @@ public class AddRequestDecorator extends SingleReplyRequestDecorator implements 
      */
     public int computeLength()
     {
-        AddRequest addRequest = getAddRequest();
+        AddRequest addRequest = getDecorated();
         Entry entry = addRequest.getEntry();
 
         if ( entry == null )

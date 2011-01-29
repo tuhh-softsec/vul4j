@@ -20,8 +20,7 @@
 package org.apache.directory.shared.ldap.codec.search.controls.persistentSearch;
 
 
-import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.ber.Asn1Container;
+import org.apache.directory.shared.asn1.DecoderException; 
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
@@ -101,12 +100,11 @@ public final class PersistentSearchGrammar extends AbstractGrammar
             new GrammarTransition( PersistentSearchStates.PSEARCH_SEQUENCE_STATE,
                 PersistentSearchStates.CHANGE_TYPES_STATE,
                 UniversalTag.INTEGER.getValue(),
-                new GrammarAction( "Set PSearchControl changeTypes" )
+                new GrammarAction<PersistentSearchContainer>( "Set PSearchControl changeTypes" )
             {
-                public void action( Asn1Container container ) throws DecoderException
+                public void action( PersistentSearchContainer container ) throws DecoderException
                 {
-                    PersistentSearchContainer psearchContainer = ( PersistentSearchContainer ) container;
-                    Value value = psearchContainer.getCurrentTLV().getValue();
+                    Value value = container.getCurrentTLV().getValue();
 
                     try
                     {
@@ -120,7 +118,7 @@ public final class PersistentSearchGrammar extends AbstractGrammar
                             LOG.debug( "changeTypes = " + changeTypes );
                         }
 
-                        psearchContainer.getPersistentSearchDecorator().setChangeTypes( changeTypes );
+                        container.getPersistentSearchDecorator().setChangeTypes( changeTypes );
                     }
                     catch ( IntegerDecoderException e )
                     {
@@ -143,12 +141,11 @@ public final class PersistentSearchGrammar extends AbstractGrammar
         super.transitions[ PersistentSearchStates.CHANGE_TYPES_STATE.ordinal()][UniversalTag.BOOLEAN.getValue()] =
             new GrammarTransition( PersistentSearchStates.CHANGE_TYPES_STATE,
                                     PersistentSearchStates.CHANGES_ONLY_STATE, UniversalTag.BOOLEAN.getValue(),
-                new GrammarAction( "Set PSearchControl changesOnly" )
+                new GrammarAction<PersistentSearchContainer>( "Set PSearchControl changesOnly" )
             {
-                public void action( Asn1Container container ) throws DecoderException
+                public void action( PersistentSearchContainer container ) throws DecoderException
                 {
-                    PersistentSearchContainer psearchContainer = ( PersistentSearchContainer ) container;
-                    Value value = psearchContainer.getCurrentTLV().getValue();
+                    Value value = container.getCurrentTLV().getValue();
 
                     try
                     {
@@ -159,7 +156,7 @@ public final class PersistentSearchGrammar extends AbstractGrammar
                             LOG.debug( "changesOnly = " + changesOnly );
                         }
 
-                        psearchContainer.getPersistentSearchDecorator().setChangesOnly( changesOnly );
+                        container.getPersistentSearchDecorator().setChangesOnly( changesOnly );
                     }
                     catch ( BooleanDecoderException e )
                     {
@@ -182,12 +179,11 @@ public final class PersistentSearchGrammar extends AbstractGrammar
         super.transitions[ PersistentSearchStates.CHANGES_ONLY_STATE.ordinal()][UniversalTag.BOOLEAN.getValue()] =
             new GrammarTransition( PersistentSearchStates.CHANGES_ONLY_STATE,
                                     PersistentSearchStates.RETURN_ECS_STATE, UniversalTag.BOOLEAN.getValue(),
-                new GrammarAction( "Set PSearchControl returnECs" )
+                new GrammarAction<PersistentSearchContainer>( "Set PSearchControl returnECs" )
             {
-                public void action( Asn1Container container ) throws DecoderException
+                public void action( PersistentSearchContainer container ) throws DecoderException
                 {
-                    PersistentSearchContainer psearchContainer = ( PersistentSearchContainer ) container;
-                    Value value = psearchContainer.getCurrentTLV().getValue();
+                    Value value = container.getCurrentTLV().getValue();
 
                     try
                     {
@@ -198,10 +194,10 @@ public final class PersistentSearchGrammar extends AbstractGrammar
                             LOG.debug( "returnECs = " + returnECs );
                         }
 
-                        psearchContainer.getPersistentSearchDecorator().setReturnECs( returnECs );
+                        container.getPersistentSearchDecorator().setReturnECs( returnECs );
 
                         // We can have an END transition
-                        psearchContainer.setGrammarEndAllowed( true );
+                        container.setGrammarEndAllowed( true );
                     }
                     catch ( BooleanDecoderException e )
                     {

@@ -20,7 +20,6 @@
 package org.apache.directory.shared.ldap.model.message.controls;
 
 
-import org.apache.directory.shared.ldap.codec.controls.BasicControlImpl;
 import org.apache.directory.shared.ldap.model.name.Dn;
 
 
@@ -29,7 +28,7 @@ import org.apache.directory.shared.ldap.model.name.Dn;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class EntryChangeImpl extends BasicControlImpl implements EntryChange
+public class EntryChangeImpl extends BasicControl implements EntryChange
 {
 
     private ChangeType changeType = ChangeType.ADD;
@@ -90,7 +89,6 @@ public class EntryChangeImpl extends BasicControlImpl implements EntryChange
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings({"EqualsWhichDoesntCheckParameterClass"})
     @Override
     public boolean equals( Object o )
     {

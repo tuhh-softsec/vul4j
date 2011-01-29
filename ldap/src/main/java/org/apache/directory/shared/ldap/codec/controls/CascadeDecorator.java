@@ -20,6 +20,8 @@
 package org.apache.directory.shared.ldap.codec.controls;
 
 
+import org.apache.directory.shared.asn1.Asn1Object;
+import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.ldap.model.message.controls.Cascade;
 
 
@@ -28,16 +30,14 @@ import org.apache.directory.shared.ldap.model.message.controls.Cascade;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class CascadeDecorator extends ControlDecorator implements Cascade
+public class CascadeDecorator extends ControlDecorator<Cascade> implements CascadeCodecControl
 {
-
-
     /**
      * Default constructor
      */
     public CascadeDecorator()
     {
-        super( Cascade.INSTANCE, new CascadeDecoder() );
+        super( Cascade.INSTANCE );
     }
 
     
@@ -48,5 +48,11 @@ public class CascadeDecorator extends ControlDecorator implements Cascade
     {
         // Call the super class to compute the global control length
         return super.computeLength( 0 );
+    }
+
+    
+    public Asn1Object decode( byte[] controlBytes ) throws DecoderException
+    {
+        return this;
     }
 }

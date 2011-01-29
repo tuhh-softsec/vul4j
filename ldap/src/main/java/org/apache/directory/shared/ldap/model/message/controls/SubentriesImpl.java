@@ -20,7 +20,6 @@
 package org.apache.directory.shared.ldap.model.message.controls;
 
 
-import org.apache.directory.shared.ldap.codec.controls.BasicControlImpl;
 
 
 /**
@@ -28,7 +27,7 @@ import org.apache.directory.shared.ldap.codec.controls.BasicControlImpl;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SubentriesImpl extends BasicControlImpl implements Subentries
+public class SubentriesImpl extends BasicControl implements Subentries
 {
     private boolean visibility = false;
 

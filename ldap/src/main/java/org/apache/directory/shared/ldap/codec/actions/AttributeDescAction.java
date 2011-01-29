@@ -21,7 +21,6 @@ package org.apache.directory.shared.ldap.codec.actions;
 
 
 import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
@@ -36,7 +35,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class AttributeDescAction extends GrammarAction
+public class AttributeDescAction extends GrammarAction<LdapMessageContainer<SearchRequestDecorator>>
 {
     /** The logger */
     private static final Logger LOG = LoggerFactory.getLogger( AttributeDescAction.class );
@@ -57,12 +56,10 @@ public class AttributeDescAction extends GrammarAction
     /**
      * {@inheritDoc}
      */
-    public void action( Asn1Container container ) throws DecoderException
+    public void action( LdapMessageContainer<SearchRequestDecorator> container ) throws DecoderException
     {
-        LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-
-        SearchRequestDecorator searchRequestDecorator = ldapMessageContainer.getSearchRequestDecorator();
-        TLV tlv = ldapMessageContainer.getCurrentTLV();
+        SearchRequestDecorator searchRequestDecorator = container.getMessage();
+        TLV tlv = container.getCurrentTLV();
         String attributeDescription = null;
 
         if ( tlv.getLength() != 0 )
@@ -72,12 +69,12 @@ public class AttributeDescAction extends GrammarAction
             // If the attributeDescription is empty, we won't add it
             if ( !Strings.isEmpty(attributeDescription.trim()) )
             {
-                searchRequestDecorator.getSearchRequest().addAttributes( attributeDescription );
+                searchRequestDecorator.getDecorated().addAttributes( attributeDescription );
             }
         }
 
         // We can have an END transition
-        ldapMessageContainer.setGrammarEndAllowed( true );
+        container.setGrammarEndAllowed( true );
 
         if ( IS_DEBUG )
         {

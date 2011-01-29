@@ -20,13 +20,14 @@
 package org.apache.directory.shared.ldap.codec.actions;
 
 
-import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
 import org.apache.directory.shared.ldap.model.message.LdapResult;
+import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.model.message.Referral;
 import org.apache.directory.shared.ldap.model.message.ReferralImpl;
 import org.apache.directory.shared.ldap.model.message.ResultResponse;
@@ -39,7 +40,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class InitReferralsAction extends GrammarAction
+public class InitReferralsAction extends GrammarAction<LdapMessageContainer<MessageDecorator<? extends Message>>>
 {
     /** The logger */
     private static final Logger LOG = LoggerFactory.getLogger( InitReferralsAction.class );
@@ -60,11 +61,9 @@ public class InitReferralsAction extends GrammarAction
     /**
      * {@inheritDoc}
      */
-    public void action( Asn1Container container ) throws DecoderException
+    public void action( LdapMessageContainer<MessageDecorator<? extends Message>> container ) throws DecoderException
     {
-        LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-
-        TLV tlv = ldapMessageContainer.getCurrentTLV();
+        TLV tlv = container.getCurrentTLV();
 
         // If we hae a Referrals sequence, then it should not be empty
         if ( tlv.getLength() == 0 )
@@ -76,7 +75,7 @@ public class InitReferralsAction extends GrammarAction
             throw new DecoderException( msg );
         }
 
-        ResultResponse response = ( ResultResponse ) ldapMessageContainer.getMessage();
+        ResultResponse response = ( ResultResponse ) container.getMessage();
         LdapResult ldapResult = response.getLdapResult();
 
         Referral referral = new ReferralImpl();

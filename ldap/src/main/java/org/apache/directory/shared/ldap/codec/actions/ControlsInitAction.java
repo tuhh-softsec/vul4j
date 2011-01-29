@@ -21,10 +21,11 @@ package org.apache.directory.shared.ldap.codec.actions;
 
 
 import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
+import org.apache.directory.shared.ldap.model.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +35,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ControlsInitAction extends GrammarAction
+public class ControlsInitAction extends GrammarAction<LdapMessageContainer<MessageDecorator<? extends Message>>>
 {
     /** The logger */
     private static final Logger LOG = LoggerFactory.getLogger( ControlsInitAction.class );
@@ -55,12 +56,9 @@ public class ControlsInitAction extends GrammarAction
     /**
      * {@inheritDoc}
      */
-    public void action( Asn1Container container ) throws DecoderException
+    public void action( LdapMessageContainer<MessageDecorator<? extends Message>> container ) throws DecoderException
     {
-
-        LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-
-        TLV tlv = ldapMessageContainer.getCurrentTLV();
+        TLV tlv = container.getCurrentTLV();
         int expectedLength = tlv.getLength();
 
         // The Length should be null

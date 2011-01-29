@@ -83,16 +83,19 @@ public abstract class AbstractContainer implements Asn1Container
         state = TLVStateEnum.TAG_STATE_START;
     }
 
+    
     /**
      * Creates a new instance of AbstractContainer with a starting state.
      * 
      * @param stream the buffer containing the data to decode
      */
-    protected AbstractContainer(ByteBuffer stream) {
+    protected AbstractContainer( ByteBuffer stream ) 
+    {
         state = TLVStateEnum.TAG_STATE_START;
         this.stream = stream;
     }
 
+    
     /**
      * Get the current grammar
      * 
@@ -222,7 +225,7 @@ public abstract class AbstractContainer implements Asn1Container
     {
         tlv = null;
         parentTLV = null;
-        transition = ((States)transition).getStartState();
+        transition = ( ( States ) transition ).getStartState();
         state = TLVStateEnum.TAG_STATE_START;
     }
 

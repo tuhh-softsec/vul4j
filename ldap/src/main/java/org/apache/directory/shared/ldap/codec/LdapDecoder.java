@@ -29,6 +29,7 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.tlv.TLVStateEnum;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
 import org.apache.directory.shared.ldap.model.exception.ResponseCarryingMessageException;
 import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.util.Strings;
@@ -54,7 +55,7 @@ public class LdapDecoder implements ProtocolDecoder
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
     /** The message container for this instance */
-    private LdapMessageContainer ldapMessageContainer;
+    private LdapMessageContainer<MessageDecorator<? extends Message>> ldapMessageContainer;
 
     /** The callback to call when the decoding is done */
     private DecoderCallback decoderCallback;
@@ -196,11 +197,12 @@ public class LdapDecoder implements ProtocolDecoder
     }
 
 
+    @SuppressWarnings("unchecked")
     public void decode( IoSession session, IoBuffer in, ProtocolDecoderOutput out ) throws Exception
     {
         ByteBuffer buf = in.buf();
-        LdapMessageContainer messageContainer = ( LdapMessageContainer ) session
-            .getAttribute( "messageContainer" );
+        LdapMessageContainer<MessageDecorator<? extends Message>> messageContainer = 
+            ( LdapMessageContainer<MessageDecorator<? extends Message>> ) session.getAttribute( "messageContainer" );
 
         if ( session.containsAttribute( "maxPDUSize" ) )
         {
@@ -294,7 +296,7 @@ public class LdapDecoder implements ProtocolDecoder
     /**
      * @param ldapMessageContainer the ldapMessageContainer to set
      */
-    public void setLdapMessageContainer( LdapMessageContainer ldapMessageContainer )
+    public void setLdapMessageContainer( LdapMessageContainer<MessageDecorator<? extends Message>> ldapMessageContainer )
     {
         this.ldapMessageContainer = ldapMessageContainer;
     }

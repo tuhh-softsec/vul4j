@@ -26,6 +26,7 @@ import java.nio.ByteBuffer;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.model.message.AddResponse;
 
@@ -35,7 +36,7 @@ import org.apache.directory.shared.ldap.model.message.AddResponse;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class AddResponseDecorator extends ResponseDecorator implements AddResponse
+public class AddResponseDecorator extends ResponseDecorator<AddResponse> implements AddResponse
 {
     /** The encoded addResponse length */
     private int addResponseLength;
@@ -46,9 +47,9 @@ public class AddResponseDecorator extends ResponseDecorator implements AddRespon
      *
      * @param decoratedMessage the decorated AddResponse
      */
-    public AddResponseDecorator( AddResponse decoratedMessage)
+    public AddResponseDecorator( ILdapCodecService codec, AddResponse decoratedMessage )
     {
-        super( decoratedMessage );
+        super( codec, decoratedMessage );
     }
 
 
@@ -57,7 +58,7 @@ public class AddResponseDecorator extends ResponseDecorator implements AddRespon
      */
     public AddResponse getAddResponse()
     {
-        return ( AddResponse ) getDecoratedMessage();
+        return ( AddResponse ) getDecorated();
     }
 
 

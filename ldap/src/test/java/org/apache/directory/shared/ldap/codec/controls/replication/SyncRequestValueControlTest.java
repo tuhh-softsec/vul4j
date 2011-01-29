@@ -31,9 +31,9 @@ import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncRequestValue.SyncRequestValueControl;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncRequestValue.SyncRequestValueControlContainer;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncRequestValue.SyncRequestValueControlDecoder;
+import org.apache.directory.shared.ldap.codec.controls.replication.syncRequestValue.SyncRequestValueDecorator;
+import org.apache.directory.shared.ldap.codec.controls.replication.syncRequestValue.SyncRequestValueContainer;
+import org.apache.directory.shared.ldap.codec.controls.replication.syncRequestValue.SyncRequestValueDecorator;
 import org.apache.directory.shared.ldap.message.control.replication.SynchronizationModeEnum;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
@@ -67,8 +67,8 @@ public class SyncRequestValueControlTest
             } );
         bb.flip();
 
-        SyncRequestValueControlContainer container = new SyncRequestValueControlContainer();
-        container.setSyncRequestValueControl( new SyncRequestValueControl() );
+        SyncRequestValueContainer container = new SyncRequestValueContainer();
+        container.setSyncRequestValueControl( new SyncRequestValueDecorator() );
         
         try
         {
@@ -80,7 +80,7 @@ public class SyncRequestValueControlTest
             fail( de.getMessage() );
         }
 
-        SyncRequestValueControl syncRequestValue = container.getSyncRequestValueControl();
+        SyncRequestValueDecorator syncRequestValue = container.getSyncRequestValueControl();
         assertEquals( SynchronizationModeEnum.REFRESH_ONLY, syncRequestValue.getMode() );
         assertEquals( "abc", Strings.utf8ToString(syncRequestValue.getCookie()) );
         assertEquals( false, syncRequestValue.isReloadHint() );
@@ -136,8 +136,8 @@ public class SyncRequestValueControlTest
             } );
         bb.flip();
 
-        SyncRequestValueControlContainer container = new SyncRequestValueControlContainer();
-        container.setSyncRequestValueControl( new SyncRequestValueControl() );
+        SyncRequestValueContainer container = new SyncRequestValueContainer();
+        container.setSyncRequestValueControl( new SyncRequestValueDecorator() );
 
         try
         {
@@ -149,7 +149,7 @@ public class SyncRequestValueControlTest
             fail( de.getMessage() );
         }
 
-        SyncRequestValueControl syncRequestValue = container.getSyncRequestValueControl();
+        SyncRequestValueDecorator syncRequestValue = container.getSyncRequestValueControl();
         assertEquals( SynchronizationModeEnum.REFRESH_AND_PERSIST, syncRequestValue.getMode() );
         assertEquals( "abc", Strings.utf8ToString(syncRequestValue.getCookie()) );
         assertEquals( false, syncRequestValue.isReloadHint() );
@@ -204,8 +204,8 @@ public class SyncRequestValueControlTest
             } );
         bb.flip();
 
-        SyncRequestValueControlContainer container = new SyncRequestValueControlContainer();
-        container.setSyncRequestValueControl( new SyncRequestValueControl() );
+        SyncRequestValueContainer container = new SyncRequestValueContainer();
+        container.setSyncRequestValueControl( new SyncRequestValueDecorator() );
 
         try
         {
@@ -217,7 +217,7 @@ public class SyncRequestValueControlTest
             fail( de.getMessage() );
         }
 
-        SyncRequestValueControl syncRequestValue = container.getSyncRequestValueControl();
+        SyncRequestValueDecorator syncRequestValue = container.getSyncRequestValueControl();
         assertEquals( SynchronizationModeEnum.REFRESH_AND_PERSIST, syncRequestValue.getMode() );
         assertNull( syncRequestValue.getCookie() );
         assertEquals( false, syncRequestValue.isReloadHint() );
@@ -272,8 +272,8 @@ public class SyncRequestValueControlTest
             } );
         bb.flip();
 
-        SyncRequestValueControlContainer container = new SyncRequestValueControlContainer();
-        container.setSyncRequestValueControl( new SyncRequestValueControl() );
+        SyncRequestValueContainer container = new SyncRequestValueContainer();
+        container.setSyncRequestValueControl( new SyncRequestValueDecorator() );
 
         try
         {
@@ -285,7 +285,7 @@ public class SyncRequestValueControlTest
             fail( de.getMessage() );
         }
 
-        SyncRequestValueControl syncRequestValue = container.getSyncRequestValueControl();
+        SyncRequestValueDecorator syncRequestValue = container.getSyncRequestValueControl();
         assertEquals( SynchronizationModeEnum.REFRESH_AND_PERSIST, syncRequestValue.getMode() );
         assertNull( syncRequestValue.getCookie() );
         assertEquals( true, syncRequestValue.isReloadHint() );
@@ -340,8 +340,8 @@ public class SyncRequestValueControlTest
             } );
         bb.flip();
 
-        SyncRequestValueControlContainer container = new SyncRequestValueControlContainer();
-        container.setSyncRequestValueControl( new SyncRequestValueControl() );
+        SyncRequestValueContainer container = new SyncRequestValueContainer();
+        container.setSyncRequestValueControl( new SyncRequestValueDecorator() );
 
         try
         {
@@ -353,7 +353,7 @@ public class SyncRequestValueControlTest
             fail( de.getMessage() );
         }
 
-        SyncRequestValueControl syncRequestValue = container.getSyncRequestValueControl();
+        SyncRequestValueDecorator syncRequestValue = container.getSyncRequestValueControl();
         assertEquals( SynchronizationModeEnum.REFRESH_AND_PERSIST, syncRequestValue.getMode() );
         assertNull( syncRequestValue.getCookie() );
         assertEquals( false, syncRequestValue.isReloadHint() );
@@ -407,8 +407,8 @@ public class SyncRequestValueControlTest
             } );
         bb.flip();
 
-        SyncRequestValueControlContainer container = new SyncRequestValueControlContainer();
-        container.setSyncRequestValueControl( new SyncRequestValueControl() );
+        SyncRequestValueContainer container = new SyncRequestValueContainer();
+        container.setSyncRequestValueControl( new SyncRequestValueDecorator() );
 
         try
         {
@@ -420,7 +420,7 @@ public class SyncRequestValueControlTest
             fail( de.getMessage() );
         }
 
-        SyncRequestValueControl syncRequestValue = container.getSyncRequestValueControl();
+        SyncRequestValueDecorator syncRequestValue = container.getSyncRequestValueControl();
         assertEquals( SynchronizationModeEnum.REFRESH_AND_PERSIST, syncRequestValue.getMode() );
         assertEquals( "abc", Strings.utf8ToString(syncRequestValue.getCookie()) );
         assertEquals( false, syncRequestValue.isReloadHint() );
@@ -475,8 +475,8 @@ public class SyncRequestValueControlTest
             } );
         bb.flip();
 
-        SyncRequestValueControlContainer container = new SyncRequestValueControlContainer();
-        container.setSyncRequestValueControl( new SyncRequestValueControl() );
+        SyncRequestValueContainer container = new SyncRequestValueContainer();
+        container.setSyncRequestValueControl( new SyncRequestValueDecorator() );
 
         try
         {
@@ -488,7 +488,7 @@ public class SyncRequestValueControlTest
             fail( de.getMessage() );
         }
 
-        SyncRequestValueControl syncRequestValue = container.getSyncRequestValueControl();
+        SyncRequestValueDecorator syncRequestValue = container.getSyncRequestValueControl();
         assertEquals( SynchronizationModeEnum.REFRESH_AND_PERSIST, syncRequestValue.getMode() );
         assertEquals( "", Strings.utf8ToString(syncRequestValue.getCookie()) );
         assertEquals( false, syncRequestValue.isReloadHint() );
@@ -538,8 +538,8 @@ public class SyncRequestValueControlTest
             } );
         bb.flip();
 
-        SyncRequestValueControlContainer container = new SyncRequestValueControlContainer();
-        container.setSyncRequestValueControl( new SyncRequestValueControl() );
+        SyncRequestValueContainer container = new SyncRequestValueContainer();
+        container.setSyncRequestValueControl( new SyncRequestValueDecorator() );
 
         try
         {
@@ -568,8 +568,8 @@ public class SyncRequestValueControlTest
             } );
         bb.flip();
 
-        SyncRequestValueControlContainer container = new SyncRequestValueControlContainer();
-        container.setSyncRequestValueControl( new SyncRequestValueControl() );
+        SyncRequestValueContainer container = new SyncRequestValueContainer();
+        container.setSyncRequestValueControl( new SyncRequestValueDecorator() );
 
         try
         {

@@ -22,7 +22,10 @@ package org.apache.directory.shared.ldap.codec.search.controls.subentries;
 
 import java.nio.ByteBuffer;
 
+import org.apache.directory.shared.asn1.Asn1Object;
+import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
@@ -38,8 +41,15 @@ import org.apache.directory.shared.ldap.model.message.controls.Subentries;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SubentriesDecorator extends ControlDecorator implements Subentries
+public class SubentriesDecorator extends ControlDecorator<Subentries> implements Subentries
 {
+    /** The encoded value of the control. */
+    private byte[] value;
+    
+    /** The sub entry decoder */
+    private static final Asn1Decoder decoder = new Asn1Decoder();
+
+    
     /**
      * Default constructor
      */
@@ -57,13 +67,7 @@ public class SubentriesDecorator extends ControlDecorator implements Subentries
      */
     public SubentriesDecorator( Subentries control )
     {
-        super( control, new SubentriesDecoder() );
-    }
-
-
-    public Subentries getSubentries()
-    {
-        return ( Subentries ) getDecorated();
+        super( control );
     }
 
 
@@ -113,7 +117,7 @@ public class SubentriesDecorator extends ControlDecorator implements Subentries
      */
     public byte[] getValue()
     {
-        if ( getDecorated().getValue() == null )
+        if ( value == null )
         {
             try
             { 
@@ -123,7 +127,7 @@ public class SubentriesDecorator extends ControlDecorator implements Subentries
                 // Now encode the Subentries specific part
                 Value.encode( buffer, isVisible() );
                 
-                getDecorated().setValue( buffer.array() );
+                value = buffer.array();
             }
             catch ( Exception e )
             {
@@ -131,18 +135,28 @@ public class SubentriesDecorator extends ControlDecorator implements Subentries
             }
         }
         
-        return getDecorated().getValue();
+        return value;
     }
 
 
     public boolean isVisible()
     {
-        return getSubentries().isVisible();
+        return getDecorated().isVisible();
     }
 
 
     public void setVisibility( boolean visibility )
     {
-        getSubentries().setVisibility( visibility );
+        getDecorated().setVisibility( visibility );
+    }
+
+
+    @Override
+    public Asn1Object decode( byte[] controlBytes ) throws DecoderException
+    {
+        ByteBuffer bb = ByteBuffer.wrap( controlBytes );
+        SubentriesContainer container = new SubentriesContainer( this );
+        decoder.decode( bb, container );
+        return this;
     }
 }

@@ -22,7 +22,10 @@ package org.apache.directory.shared.ldap.codec.search.controls.entryChange;
 
 import java.nio.ByteBuffer;
 
+import org.apache.directory.shared.asn1.Asn1Object;
+import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
@@ -42,7 +45,7 @@ import org.apache.directory.shared.util.Strings;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class EntryChangeDecorator extends ControlDecorator implements EntryChange
+public class EntryChangeDecorator extends ControlDecorator<EntryChange> implements EntryChange
 {
 
     public static final int UNDEFINED_CHANGE_NUMBER = -1;
@@ -53,14 +56,20 @@ public class EntryChangeDecorator extends ControlDecorator implements EntryChang
     /** The entry change global length */
     private int eccSeqLength;
 
+    /** The encoded value of the control. */
+    private byte[] value;
+    
+    /** An instance of this decoder */
+    private static final Asn1Decoder decoder = new Asn1Decoder();
 
+    
     /**
      * Creates a new instance of EntryChangeDecoder wrapping a newly created
      * EntryChange Control object.
      */
     public EntryChangeDecorator()
     {
-        super( new EntryChangeImpl(), new EntryChangeDecoder() );
+        super( new EntryChangeImpl() );
     }
 
 
@@ -72,7 +81,7 @@ public class EntryChangeDecorator extends ControlDecorator implements EntryChang
      */
     public EntryChangeDecorator( EntryChange control )
     {
-        super( control, new EntryChangeDecoder() );
+        super( control );
     }
 
 
@@ -169,7 +178,7 @@ public class EntryChangeDecorator extends ControlDecorator implements EntryChang
      */
     public byte[] getValue()
     {
-        if ( getDecorated().getValue() == null )
+        if ( value == null )
         {
             try
             {
@@ -193,7 +202,7 @@ public class EntryChangeDecorator extends ControlDecorator implements EntryChang
                     Value.encode( buffer, getChangeNumber() );
                 }
 
-                getDecorated().setValue( buffer.array() );
+                value = buffer.array();
             }
             catch ( Exception e )
             {
@@ -201,7 +210,7 @@ public class EntryChangeDecorator extends ControlDecorator implements EntryChang
             }
         }
 
-        return getDecorated().getValue();
+        return value;
     }
 
 
@@ -256,5 +265,15 @@ public class EntryChangeDecorator extends ControlDecorator implements EntryChang
     public void setChangeNumber ( long changeNumber )
     {
         getEntryChange().setChangeNumber( changeNumber );
+    }
+
+
+    @Override
+    public Asn1Object decode( byte[] controlBytes ) throws DecoderException
+    {
+        ByteBuffer bb = ByteBuffer.wrap( controlBytes );
+        EntryChangeContainer container = new EntryChangeContainer( this );
+        decoder.decode( bb, container );
+        return this;
     }
 }

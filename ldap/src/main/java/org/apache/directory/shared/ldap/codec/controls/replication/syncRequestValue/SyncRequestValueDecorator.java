@@ -19,28 +19,30 @@
  */
 package org.apache.directory.shared.ldap.codec.controls.replication.syncRequestValue;
 
+
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
+import org.apache.directory.shared.asn1.Asn1Object;
+import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
+import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 import org.apache.directory.shared.ldap.message.control.replication.SynchronizationModeEnum;
 import org.apache.directory.shared.util.Strings;
+
 
 /**
  * A syncRequestValue object, as defined in RFC 4533
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SyncRequestValueControl  extends AbstractControl
+public class SyncRequestValueDecorator  extends ControlDecorator<ISyncRequestValue> implements ISyncRequestValue
 {
-    /** This control OID */
-    public static final String CONTROL_OID = "1.3.6.1.4.1.4203.1.9.1.1";
-
     /** The synchronization type */
     private SynchronizationModeEnum mode;
     
@@ -53,15 +55,27 @@ public class SyncRequestValueControl  extends AbstractControl
     /** The global length for this control */
     private int syncRequestValueLength;
     
-    public SyncRequestValueControl()
-    {
-        super( CONTROL_OID );
+    /** The opaque value of the control */
+    private byte[] value;
 
-        decoder = new SyncRequestValueControlDecoder();
+    /** An instance of this decoder */
+    private static final Asn1Decoder decoder = new Asn1Decoder();
+
+    
+    public SyncRequestValueDecorator()
+    {
+        super( new SyncRequestValue() );
     }
 
+    
+    public SyncRequestValueDecorator( ISyncRequestValue control )
+    {
+        super( control );
+    }
+
+    
     /**
-     * @return the mode
+     * {@inheritDoc}
      */
     public SynchronizationModeEnum getMode()
     {
@@ -70,7 +84,7 @@ public class SyncRequestValueControl  extends AbstractControl
 
     
     /**
-     * @param syncMode the syncMode to set
+     * {@inheritDoc}
      */
     public void setMode( SynchronizationModeEnum mode )
     {
@@ -79,7 +93,7 @@ public class SyncRequestValueControl  extends AbstractControl
 
     
     /**
-     * @return the cookie
+     * {@inheritDoc}
      */
     public byte[] getCookie()
     {
@@ -88,7 +102,7 @@ public class SyncRequestValueControl  extends AbstractControl
 
     
     /**
-     * @param cookie the cookie to set
+     * {@inheritDoc}
      */
     public void setCookie( byte[] cookie )
     {
@@ -97,7 +111,7 @@ public class SyncRequestValueControl  extends AbstractControl
 
     
     /**
-     * @return the reloadHint
+     * {@inheritDoc}
      */
     public boolean isReloadHint()
     {
@@ -106,7 +120,7 @@ public class SyncRequestValueControl  extends AbstractControl
 
     
     /**
-     * @param reloadHint the reloadHint to set
+     * {@inheritDoc}
      */
     public void setReloadHint( boolean reloadHint )
     {
@@ -251,7 +265,7 @@ public class SyncRequestValueControl  extends AbstractControl
             return false;
         }
 
-        SyncRequestValueControl otherControl = ( SyncRequestValueControl ) o;
+        SyncRequestValueDecorator otherControl = ( SyncRequestValueDecorator ) o;
         
         return ( mode == otherControl.mode ) && 
             ( reloadHint == otherControl.reloadHint ) &&
@@ -275,5 +289,15 @@ public class SyncRequestValueControl  extends AbstractControl
         sb.append( "        refreshAndPersist : '" ).append( reloadHint ).append( "'\n" );
 
         return sb.toString();
+    }
+    
+
+    @Override
+    public Asn1Object decode( byte[] controlBytes ) throws DecoderException
+    {
+        ByteBuffer bb = ByteBuffer.wrap( controlBytes );
+        SyncRequestValueContainer container = new SyncRequestValueContainer( this );
+        decoder.decode( bb, container );
+        return this;
     }
 }

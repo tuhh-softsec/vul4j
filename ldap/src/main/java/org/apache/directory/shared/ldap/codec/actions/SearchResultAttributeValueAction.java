@@ -20,7 +20,6 @@
 package org.apache.directory.shared.ldap.codec.actions;
 
 
-import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
@@ -35,7 +34,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SearchResultAttributeValueAction extends GrammarAction
+public class SearchResultAttributeValueAction extends GrammarAction<LdapMessageContainer<SearchResultEntryDecorator>>
 {
     /** The logger */
     private static final Logger LOG = LoggerFactory.getLogger( SearchResultAttributeValueAction.class );
@@ -56,12 +55,11 @@ public class SearchResultAttributeValueAction extends GrammarAction
     /**
      * {@inheritDoc}
      */
-    public void action( Asn1Container container )
+    public void action( LdapMessageContainer<SearchResultEntryDecorator> container )
     {
-        LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        SearchResultEntryDecorator searchResultEntry = ldapMessageContainer.getSearchResultEntry();
+        SearchResultEntryDecorator searchResultEntry = container.getMessage();
 
-        TLV tlv = ldapMessageContainer.getCurrentTLV();
+        TLV tlv = container.getCurrentTLV();
 
         // Store the value
         Object value = null;
@@ -74,7 +72,7 @@ public class SearchResultAttributeValueAction extends GrammarAction
         }
         else
         {
-            if ( ldapMessageContainer.isBinary( searchResultEntry.getCurrentAttribute().getId() ) )
+            if ( container.isBinary( searchResultEntry.getCurrentAttribute().getId() ) )
             {
                 value = tlv.getValue().getData();
 
@@ -94,6 +92,6 @@ public class SearchResultAttributeValueAction extends GrammarAction
         }
 
         // We can have an END transition
-        ldapMessageContainer.setGrammarEndAllowed( true );
+        container.setGrammarEndAllowed( true );
     }
 }

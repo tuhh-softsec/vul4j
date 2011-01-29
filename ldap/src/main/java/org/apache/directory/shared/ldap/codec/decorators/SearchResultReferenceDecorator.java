@@ -27,6 +27,7 @@ import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.model.message.Referral;
@@ -38,7 +39,8 @@ import org.apache.directory.shared.ldap.model.message.SearchResultReference;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SearchResultReferenceDecorator extends MessageDecorator implements SearchResultReference
+public class SearchResultReferenceDecorator extends MessageDecorator<SearchResultReference> 
+    implements SearchResultReference
 {
     /** The length of the referral */
     private int referralLength;
@@ -52,18 +54,9 @@ public class SearchResultReferenceDecorator extends MessageDecorator implements 
      *
      * @param decoratedMessage the decorated SearchResultReference
      */
-    public SearchResultReferenceDecorator( SearchResultReference decoratedMessage )
+    public SearchResultReferenceDecorator( ILdapCodecService codec, SearchResultReference decoratedMessage )
     {
-        super( decoratedMessage );
-    }
-
-
-    /**
-     * @return The decorated SearchResultReference
-     */
-    public SearchResultReference getSearchResultReference()
-    {
-        return ( SearchResultReference ) getDecoratedMessage();
+        super( codec, decoratedMessage );
     }
 
 
@@ -115,7 +108,7 @@ public class SearchResultReferenceDecorator extends MessageDecorator implements 
      */
     public Referral getReferral()
     {
-        return getSearchResultReference().getReferral();
+        return getDecorated().getReferral();
     }
 
 
@@ -124,13 +117,15 @@ public class SearchResultReferenceDecorator extends MessageDecorator implements 
      */
     public void setReferral( Referral referral )
     {
-        getSearchResultReference().setReferral( referral );        
+        getDecorated().setReferral( referral );        
     }
 
 
     //-------------------------------------------------------------------------
     // The Decorator methods
     //-------------------------------------------------------------------------
+    
+    
     /**
      * Compute the SearchResultReference length
      * 
@@ -188,7 +183,7 @@ public class SearchResultReferenceDecorator extends MessageDecorator implements 
      */
     public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
     {
-        SearchResultReference searchResultReference = getSearchResultReference();
+        SearchResultReference searchResultReference = getDecorated();
         try
         {
             // The SearchResultReference Tag

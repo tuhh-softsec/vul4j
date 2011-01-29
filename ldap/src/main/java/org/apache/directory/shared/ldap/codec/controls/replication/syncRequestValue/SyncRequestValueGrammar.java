@@ -21,7 +21,6 @@ package org.apache.directory.shared.ldap.codec.controls.replication.syncRequestV
 
 
 import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
@@ -55,27 +54,27 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public final class SyncRequestValueControlGrammar extends AbstractGrammar
+public final class SyncRequestValueGrammar extends AbstractGrammar
 {
     /** The logger */
-    static final Logger LOG = LoggerFactory.getLogger( SyncRequestValueControlGrammar.class );
+    static final Logger LOG = LoggerFactory.getLogger( SyncRequestValueGrammar.class );
 
     /** Speedup for logs */
     static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
     /** The instance of grammar. SyncRequestValueControlGrammar is a singleton */
-    private static Grammar instance = new SyncRequestValueControlGrammar();
+    private static Grammar instance = new SyncRequestValueGrammar();
 
 
     /**
      * Creates a new SyncRequestValueControlGrammar object.
      */
-    private SyncRequestValueControlGrammar()
+    private SyncRequestValueGrammar()
     {
-        setName( SyncRequestValueControlGrammar.class.getName() );
+        setName( SyncRequestValueGrammar.class.getName() );
 
         // Create the transitions table
-        super.transitions = new GrammarTransition[SyncRequestValueControlStatesEnum.LAST_SYNC_REQUEST_VALUE_STATE.ordinal()][256];
+        super.transitions = new GrammarTransition[SyncRequestValueStatesEnum.LAST_SYNC_REQUEST_VALUE_STATE.ordinal()][256];
 
         /** 
          * Transition from initial state to SyncRequestValue sequence
@@ -84,9 +83,9 @@ public final class SyncRequestValueControlGrammar extends AbstractGrammar
          *     
          * Initialize the syncRequestValue object
          */
-        super.transitions[SyncRequestValueControlStatesEnum.START_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = 
-            new GrammarTransition( SyncRequestValueControlStatesEnum.START_STATE, 
-                                    SyncRequestValueControlStatesEnum.SYNC_REQUEST_VALUE_SEQUENCE_STATE, 
+        super.transitions[SyncRequestValueStatesEnum.START_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = 
+            new GrammarTransition( SyncRequestValueStatesEnum.START_STATE, 
+                                    SyncRequestValueStatesEnum.SYNC_REQUEST_VALUE_SEQUENCE_STATE, 
                                     UniversalTag.SEQUENCE.getValue(), 
                 null );
 
@@ -104,16 +103,15 @@ public final class SyncRequestValueControlGrammar extends AbstractGrammar
          *     
          * Stores the mode value
          */
-        super.transitions[SyncRequestValueControlStatesEnum.SYNC_REQUEST_VALUE_SEQUENCE_STATE.ordinal()][UniversalTag.ENUMERATED.getValue()] = 
-            new GrammarTransition( SyncRequestValueControlStatesEnum.SYNC_REQUEST_VALUE_SEQUENCE_STATE, 
-                SyncRequestValueControlStatesEnum.MODE_STATE, 
+        super.transitions[SyncRequestValueStatesEnum.SYNC_REQUEST_VALUE_SEQUENCE_STATE.ordinal()][UniversalTag.ENUMERATED.getValue()] = 
+            new GrammarTransition( SyncRequestValueStatesEnum.SYNC_REQUEST_VALUE_SEQUENCE_STATE, 
+                SyncRequestValueStatesEnum.MODE_STATE, 
                 UniversalTag.ENUMERATED.getValue(),
-                new GrammarAction( "Set SyncRequestValueControl mode" )
+                new GrammarAction<SyncRequestValueContainer>( "Set SyncRequestValueControl mode" )
             {
-                public void action( Asn1Container container ) throws DecoderException
+                public void action( SyncRequestValueContainer container ) throws DecoderException
                 {
-                    SyncRequestValueControlContainer syncRequestValueContainer = ( SyncRequestValueControlContainer ) container;
-                    Value value = syncRequestValueContainer.getCurrentTLV().getValue();
+                    Value value = container.getCurrentTLV().getValue();
 
                     try
                     {
@@ -129,10 +127,10 @@ public final class SyncRequestValueControlGrammar extends AbstractGrammar
                             LOG.debug( "Mode = " + modeEnum );
                         }
 
-                        syncRequestValueContainer.getSyncRequestValueControl().setMode( modeEnum );
+                        container.getSyncRequestValueControl().setMode( modeEnum );
 
                         // We can have an END transition
-                        syncRequestValueContainer.setGrammarEndAllowed( true );
+                        container.setGrammarEndAllowed( true );
                     }
                     catch ( IntegerDecoderException e )
                     {
@@ -153,15 +151,14 @@ public final class SyncRequestValueControlGrammar extends AbstractGrammar
          *     
          * Stores the cookie
          */
-        super.transitions[SyncRequestValueControlStatesEnum.MODE_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = 
-            new GrammarTransition( SyncRequestValueControlStatesEnum.MODE_STATE,
-                                    SyncRequestValueControlStatesEnum.COOKIE_STATE, UniversalTag.OCTET_STRING.getValue(),
-                new GrammarAction( "Set SyncRequestValueControl cookie" )
+        super.transitions[SyncRequestValueStatesEnum.MODE_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = 
+            new GrammarTransition( SyncRequestValueStatesEnum.MODE_STATE,
+                                    SyncRequestValueStatesEnum.COOKIE_STATE, UniversalTag.OCTET_STRING.getValue(),
+                new GrammarAction<SyncRequestValueContainer>( "Set SyncRequestValueControl cookie" )
             {
-                public void action( Asn1Container container ) throws DecoderException
+                public void action( SyncRequestValueContainer container ) throws DecoderException
                 {
-                    SyncRequestValueControlContainer syncRequestValueContainer = ( SyncRequestValueControlContainer ) container;
-                    Value value = syncRequestValueContainer.getCurrentTLV().getValue();
+                    Value value = container.getCurrentTLV().getValue();
 
                     byte[] cookie = value.getData();
 
@@ -170,10 +167,10 @@ public final class SyncRequestValueControlGrammar extends AbstractGrammar
                         LOG.debug( "cookie = " + Strings.dumpBytes(cookie) );
                     }
 
-                    syncRequestValueContainer.getSyncRequestValueControl().setCookie( cookie );
+                    container.getSyncRequestValueControl().setCookie( cookie );
 
                     // We can have an END transition
-                    syncRequestValueContainer.setGrammarEndAllowed( true );
+                    container.setGrammarEndAllowed( true );
                 }
             } );
 
@@ -187,15 +184,14 @@ public final class SyncRequestValueControlGrammar extends AbstractGrammar
          *     
          * Stores the reloadHint flag
          */
-        super.transitions[SyncRequestValueControlStatesEnum.MODE_STATE.ordinal()][UniversalTag.BOOLEAN.getValue()] = 
-            new GrammarTransition( SyncRequestValueControlStatesEnum.MODE_STATE,
-                                    SyncRequestValueControlStatesEnum.RELOAD_HINT_STATE, UniversalTag.BOOLEAN.getValue(),
-                new GrammarAction( "Set SyncRequestValueControl reloadHint flag" )
+        super.transitions[SyncRequestValueStatesEnum.MODE_STATE.ordinal()][UniversalTag.BOOLEAN.getValue()] = 
+            new GrammarTransition( SyncRequestValueStatesEnum.MODE_STATE,
+                                    SyncRequestValueStatesEnum.RELOAD_HINT_STATE, UniversalTag.BOOLEAN.getValue(),
+                new GrammarAction<SyncRequestValueContainer>( "Set SyncRequestValueControl reloadHint flag" )
             {
-                public void action( Asn1Container container ) throws DecoderException
+                public void action( SyncRequestValueContainer container ) throws DecoderException
                 {
-                    SyncRequestValueControlContainer syncRequestValueContainer = ( SyncRequestValueControlContainer ) container;
-                    Value value = syncRequestValueContainer.getCurrentTLV().getValue();
+                    Value value = container.getCurrentTLV().getValue();
 
                     try
                     {
@@ -206,10 +202,10 @@ public final class SyncRequestValueControlGrammar extends AbstractGrammar
                             LOG.debug( "reloadHint = " + reloadHint );
                         }
 
-                        syncRequestValueContainer.getSyncRequestValueControl().setReloadHint( reloadHint );
+                        container.getSyncRequestValueControl().setReloadHint( reloadHint );
 
                         // We can have an END transition
-                        syncRequestValueContainer.setGrammarEndAllowed( true );
+                        container.setGrammarEndAllowed( true );
                     }
                     catch ( BooleanDecoderException e )
                     {
@@ -230,15 +226,14 @@ public final class SyncRequestValueControlGrammar extends AbstractGrammar
          *     
          * Stores the reloadHint flag
          */
-        super.transitions[SyncRequestValueControlStatesEnum.COOKIE_STATE.ordinal()][UniversalTag.BOOLEAN.getValue()] = 
-            new GrammarTransition( SyncRequestValueControlStatesEnum.COOKIE_STATE,
-                                    SyncRequestValueControlStatesEnum.RELOAD_HINT_STATE, UniversalTag.BOOLEAN.getValue(),
-                new GrammarAction( "Set SyncRequestValueControl reloadHint flag" )
+        super.transitions[SyncRequestValueStatesEnum.COOKIE_STATE.ordinal()][UniversalTag.BOOLEAN.getValue()] = 
+            new GrammarTransition( SyncRequestValueStatesEnum.COOKIE_STATE,
+                                    SyncRequestValueStatesEnum.RELOAD_HINT_STATE, UniversalTag.BOOLEAN.getValue(),
+                new GrammarAction<SyncRequestValueContainer>( "Set SyncRequestValueControl reloadHint flag" )
             {
-                public void action( Asn1Container container ) throws DecoderException
+                public void action( SyncRequestValueContainer container ) throws DecoderException
                 {
-                    SyncRequestValueControlContainer syncRequestValueContainer = ( SyncRequestValueControlContainer ) container;
-                    Value value = syncRequestValueContainer.getCurrentTLV().getValue();
+                    Value value = container.getCurrentTLV().getValue();
 
                     try
                     {
@@ -249,10 +244,10 @@ public final class SyncRequestValueControlGrammar extends AbstractGrammar
                             LOG.debug( "reloadHint = " + reloadHint );
                         }
 
-                        syncRequestValueContainer.getSyncRequestValueControl().setReloadHint( reloadHint );
+                        container.getSyncRequestValueControl().setReloadHint( reloadHint );
 
                         // We can have an END transition
-                        syncRequestValueContainer.setGrammarEndAllowed( true );
+                        container.setGrammarEndAllowed( true );
                     }
                     catch ( BooleanDecoderException e )
                     {

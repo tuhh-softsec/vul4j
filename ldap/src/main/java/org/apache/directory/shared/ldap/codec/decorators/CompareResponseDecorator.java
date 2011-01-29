@@ -26,6 +26,7 @@ import java.nio.ByteBuffer;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.model.message.CompareResponse;
 
@@ -35,7 +36,8 @@ import org.apache.directory.shared.ldap.model.message.CompareResponse;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class CompareResponseDecorator extends ResponseDecorator implements CompareResponse
+public class CompareResponseDecorator extends ResponseDecorator<CompareResponse> 
+    implements CompareResponse
 {
     /** The encoded compareResponse length */
     private int compareResponseLength;
@@ -46,18 +48,9 @@ public class CompareResponseDecorator extends ResponseDecorator implements Compa
      *
      * @param decoratedMessage the decorated CompareResponse
      */
-    public CompareResponseDecorator( CompareResponse decoratedMessage )
+    public CompareResponseDecorator( ILdapCodecService codec, CompareResponse decoratedMessage )
     {
-        super( decoratedMessage );
-    }
-
-
-    /**
-     * @return The decorated CompareResponse
-     */
-    public CompareResponse getCompareResponse()
-    {
-        return ( CompareResponse ) getDecoratedMessage();
+        super( codec, decoratedMessage );
     }
 
 
@@ -83,18 +76,22 @@ public class CompareResponseDecorator extends ResponseDecorator implements Compa
     //-------------------------------------------------------------------------
     // The CompareResponse methods
     //-------------------------------------------------------------------------
+
+    
     /**
      * {@inheritDoc}
      */
     public boolean isTrue()
     {
-        return getCompareResponse().isTrue();
+        return getDecorated().isTrue();
     }
 
     
     //-------------------------------------------------------------------------
     // The Decorator methods
     //-------------------------------------------------------------------------
+    
+
     /**
      * Compute the CompareResponse length 
      * 

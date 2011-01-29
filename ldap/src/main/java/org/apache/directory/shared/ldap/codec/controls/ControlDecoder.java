@@ -30,15 +30,14 @@ import org.apache.directory.shared.ldap.model.message.Control;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface ControlDecoder
+public interface ControlDecoder<E extends Control>
 {
     /**
      * Decodes raw ASN.1 encoded bytes into an Asn1Object for the control.
      * 
      * @param controlBytes the encoded control bytes
-     * @param control The control to feed
      * @return the decoded Asn1Object for the control
      * @throws DecoderException if anything goes wrong
      */
-    Asn1Object decode( byte[] controlBytes, Control control ) throws DecoderException;
+    Asn1Object decode( byte[] controlBytes ) throws DecoderException;
 }

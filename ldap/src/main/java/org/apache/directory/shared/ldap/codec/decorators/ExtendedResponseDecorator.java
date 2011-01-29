@@ -26,6 +26,7 @@ import java.nio.ByteBuffer;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
 import org.apache.directory.shared.util.Strings;
@@ -36,7 +37,8 @@ import org.apache.directory.shared.util.Strings;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ExtendedResponseDecorator extends ResponseDecorator implements ExtendedResponse
+public class ExtendedResponseDecorator extends ResponseDecorator<ExtendedResponse> 
+    implements ExtendedResponse
 {
     private static final long serialVersionUID = -9029282485890195506L;
 
@@ -52,18 +54,9 @@ public class ExtendedResponseDecorator extends ResponseDecorator implements Exte
      *
      * @param decoratedMessage the decorated ExtendedResponse
      */
-    public ExtendedResponseDecorator( ExtendedResponse decoratedMessage )
+    public ExtendedResponseDecorator( ILdapCodecService codec, ExtendedResponse decoratedMessage )
     {
-        super( decoratedMessage );
-    }
-
-
-    /**
-     * @return The decorated ExtendedResponse
-     */
-    public ExtendedResponse getExtendedResponse()
-    {
-        return ( ExtendedResponse ) getDecoratedMessage();
+        super( codec, decoratedMessage );
     }
 
 
@@ -119,7 +112,7 @@ public class ExtendedResponseDecorator extends ResponseDecorator implements Exte
      */
     public byte[] getEncodedValue()
     {
-        return getExtendedResponse().getEncodedValue();
+        return getDecorated().getEncodedValue();
     }
 
 
@@ -128,7 +121,7 @@ public class ExtendedResponseDecorator extends ResponseDecorator implements Exte
      */
     public String getID()
     {
-        return getExtendedResponse().getID();
+        return getDecorated().getID();
     }
 
 
@@ -137,7 +130,7 @@ public class ExtendedResponseDecorator extends ResponseDecorator implements Exte
      */
     public String getResponseName()
     {
-        return getExtendedResponse().getResponseName();
+        return getDecorated().getResponseName();
     }
 
 
@@ -146,7 +139,7 @@ public class ExtendedResponseDecorator extends ResponseDecorator implements Exte
      */
     public void setResponseName( String oid )
     {
-        getExtendedResponse().setResponseName( oid );
+        getDecorated().setResponseName( oid );
     }
 
 
@@ -155,7 +148,7 @@ public class ExtendedResponseDecorator extends ResponseDecorator implements Exte
      */
     public byte[] getResponseValue()
     {
-        return getExtendedResponse().getEncodedValue();
+        return getDecorated().getEncodedValue();
     }
 
 
@@ -164,7 +157,7 @@ public class ExtendedResponseDecorator extends ResponseDecorator implements Exte
      */
     public void setResponseValue( byte[] responseValue )
     {
-        getExtendedResponse().setResponseValue( responseValue );
+        getDecorated().setResponseValue( responseValue );
     }
 
     
@@ -192,7 +185,7 @@ public class ExtendedResponseDecorator extends ResponseDecorator implements Exte
      */
     public int computeLength()
     {
-        int ldapResultLength = ((LdapResultDecorator)getLdapResult()).computeLength();
+        int ldapResultLength = ( (LdapResultDecorator) getLdapResult() ).computeLength();
 
         int extendedResponseLength = ldapResultLength;
 

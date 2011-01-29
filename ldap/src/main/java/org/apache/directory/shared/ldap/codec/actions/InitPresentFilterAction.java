@@ -20,7 +20,6 @@
 package org.apache.directory.shared.ldap.codec.actions;
 
 
-import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.DecoderException;
@@ -38,7 +37,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class InitPresentFilterAction extends GrammarAction
+public class InitPresentFilterAction extends GrammarAction<LdapMessageContainer<SearchRequestDecorator>>
 {
     /** The logger */
     private static final Logger LOG = LoggerFactory.getLogger( InitPresentFilterAction.class );
@@ -59,15 +58,14 @@ public class InitPresentFilterAction extends GrammarAction
     /**
      * {@inheritDoc}
      */
-    public void action( Asn1Container container ) throws DecoderException
+    public void action( LdapMessageContainer<SearchRequestDecorator> container ) throws DecoderException
     {
-        LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        SearchRequestDecorator searchRequestDecorator = ldapMessageContainer.getSearchRequestDecorator();
+        SearchRequestDecorator searchRequestDecorator = container.getMessage();
 
-        TLV tlv = ldapMessageContainer.getCurrentTLV();
+        TLV tlv = container.getCurrentTLV();
 
         // We can allocate the Attribute Value Assertion
-        PresentFilter presentFilter = new PresentFilter( ldapMessageContainer.getTlvId() );
+        PresentFilter presentFilter = new PresentFilter( container.getTlvId() );
 
         // add the filter to the request filter
         searchRequestDecorator.addCurrentFilter( presentFilter );

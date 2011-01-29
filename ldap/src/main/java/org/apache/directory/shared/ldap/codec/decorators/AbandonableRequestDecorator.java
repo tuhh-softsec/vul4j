@@ -20,9 +20,9 @@
 package org.apache.directory.shared.ldap.codec.decorators;
 
 
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.model.message.AbandonListener;
 import org.apache.directory.shared.ldap.model.message.AbandonableRequest;
-import org.apache.directory.shared.ldap.model.message.Message;
 
 
 /**
@@ -30,16 +30,18 @@ import org.apache.directory.shared.ldap.model.message.Message;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public abstract class AbandonableRequestDecorator extends RequestDecorator implements AbandonableRequest
+public abstract class AbandonableRequestDecorator<M extends AbandonableResultResponseRequest> 
+    extends ResultResponseRequestDecorator<M> 
+    implements AbandonableRequest
 {
     /**
      * Makes Request a MessageDecorator.
      *
      * @param decoratedMessage the decorated message
      */
-    public AbandonableRequestDecorator( Message decoratedMessage )
+    public AbandonableRequestDecorator( ILdapCodecService codec, M decoratedMessage )
     {
-        super( decoratedMessage );
+        super( codec, decoratedMessage );
     }
 
     
@@ -50,7 +52,7 @@ public abstract class AbandonableRequestDecorator extends RequestDecorator imple
      */
     public AbandonableRequest getAbandonableRequest()
     {
-        return ( AbandonableRequest ) getDecoratedMessage();
+        return getDecorated();
     }
     
     

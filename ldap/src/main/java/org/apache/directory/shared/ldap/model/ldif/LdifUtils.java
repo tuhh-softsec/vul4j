@@ -28,7 +28,6 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.model.entry.*;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidAttributeValueException;
-import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.schema.SchemaManager;
@@ -375,7 +374,7 @@ public final class LdifUtils
             // First dump the controls if any
             if ( entry.hasControls() )
             {
-                for ( Control control : entry.getControls().values() )
+                for ( LdifControl control : entry.getControls().values() )
                 {
                     StringBuilder controlStr = new StringBuilder();
 

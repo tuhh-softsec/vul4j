@@ -27,6 +27,7 @@ import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.model.message.ModifyDnRequest;
 import org.apache.directory.shared.ldap.model.name.Dn;
@@ -39,7 +40,8 @@ import org.apache.directory.shared.util.Strings;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ModifyDnRequestDecorator extends SingleReplyRequestDecorator implements ModifyDnRequest
+public class ModifyDnRequestDecorator extends SingleReplyRequestDecorator<ModifyDnRequest> 
+    implements ModifyDnRequest
 {
     /** The modify Dn request length */
     private int modifyDnRequestLength;
@@ -50,18 +52,9 @@ public class ModifyDnRequestDecorator extends SingleReplyRequestDecorator implem
      *
      * @param decoratedMessage the decorated ModifyDnRequest
      */
-    public ModifyDnRequestDecorator( ModifyDnRequest decoratedMessage )
+    public ModifyDnRequestDecorator( ILdapCodecService codec, ModifyDnRequest decoratedMessage )
     {
-        super( decoratedMessage );
-    }
-
-
-    /**
-     * @return The decorated ModifyDnRequest
-     */
-    public ModifyDnRequest getModifyDnRequest()
-    {
-        return ( ModifyDnRequest ) getDecoratedMessage();
+        super( codec, decoratedMessage );
     }
 
 
@@ -94,7 +87,7 @@ public class ModifyDnRequestDecorator extends SingleReplyRequestDecorator implem
      */
     public Dn getName()
     {
-        return getModifyDnRequest().getName();
+        return getDecorated().getName();
     }
 
 
@@ -103,7 +96,7 @@ public class ModifyDnRequestDecorator extends SingleReplyRequestDecorator implem
      */
     public void setName( Dn name )
     {
-        getModifyDnRequest().setName( name );
+        getDecorated().setName( name );
     }
 
 
@@ -112,7 +105,7 @@ public class ModifyDnRequestDecorator extends SingleReplyRequestDecorator implem
      */
     public Rdn getNewRdn()
     {
-        return getModifyDnRequest().getNewRdn();
+        return getDecorated().getNewRdn();
     }
 
 
@@ -121,7 +114,7 @@ public class ModifyDnRequestDecorator extends SingleReplyRequestDecorator implem
      */
     public void setNewRdn( Rdn newRdn )
     {
-        getModifyDnRequest().setNewRdn( newRdn );
+        getDecorated().setNewRdn( newRdn );
     }
 
 
@@ -130,7 +123,7 @@ public class ModifyDnRequestDecorator extends SingleReplyRequestDecorator implem
      */
     public boolean getDeleteOldRdn()
     {
-        return getModifyDnRequest().getDeleteOldRdn();
+        return getDecorated().getDeleteOldRdn();
     }
 
 
@@ -139,7 +132,7 @@ public class ModifyDnRequestDecorator extends SingleReplyRequestDecorator implem
      */
     public void setDeleteOldRdn( boolean deleteOldRdn )
     {
-        getModifyDnRequest().setDeleteOldRdn( deleteOldRdn );
+        getDecorated().setDeleteOldRdn( deleteOldRdn );
     }
 
 
@@ -148,7 +141,7 @@ public class ModifyDnRequestDecorator extends SingleReplyRequestDecorator implem
      */
     public Dn getNewSuperior()
     {
-        return getModifyDnRequest().getNewSuperior();
+        return getDecorated().getNewSuperior();
     }
 
 
@@ -157,7 +150,7 @@ public class ModifyDnRequestDecorator extends SingleReplyRequestDecorator implem
      */
     public void setNewSuperior( Dn newSuperior )
     {
-        getModifyDnRequest().setNewSuperior( newSuperior );
+        getDecorated().setNewSuperior( newSuperior );
     }
 
 
@@ -166,13 +159,15 @@ public class ModifyDnRequestDecorator extends SingleReplyRequestDecorator implem
      */
     public boolean isMove()
     {
-        return getModifyDnRequest().isMove();
+        return getDecorated().isMove();
     }
 
     
     //-------------------------------------------------------------------------
     // The Decorator methods
     //-------------------------------------------------------------------------
+    
+    
     /**
      * Compute the ModifyDNRequest length
      * 

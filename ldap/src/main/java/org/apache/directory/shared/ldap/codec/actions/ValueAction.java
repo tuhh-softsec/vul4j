@@ -20,7 +20,6 @@
 package org.apache.directory.shared.ldap.codec.actions;
 
 
-import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
@@ -35,7 +34,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ValueAction extends GrammarAction
+public class ValueAction extends GrammarAction<LdapMessageContainer<AddRequestDecorator>>
 {
     /** The logger */
     private static final Logger LOG = LoggerFactory.getLogger( ValueAction.class );
@@ -56,13 +55,11 @@ public class ValueAction extends GrammarAction
     /**
      * {@inheritDoc}
      */
-    public void action( Asn1Container container )
+    public void action( LdapMessageContainer<AddRequestDecorator> container )
     {
+        AddRequestDecorator addRequest = container.getMessage();
 
-        LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        AddRequestDecorator addRequest = ( AddRequestDecorator ) ldapMessageContainer.getAddRequest();
-
-        TLV tlv = ldapMessageContainer.getCurrentTLV();
+        TLV tlv = container.getCurrentTLV();
 
         // Store the value. It can't be null
         Object value = null;
@@ -73,7 +70,7 @@ public class ValueAction extends GrammarAction
         }
         else
         {
-            if ( ldapMessageContainer.isBinary( addRequest.getCurrentAttributeType() ) )
+            if ( container.isBinary( addRequest.getCurrentAttributeType() ) )
             {
                 value = tlv.getValue().getData();
 
@@ -99,6 +96,6 @@ public class ValueAction extends GrammarAction
         }
 
         // We can have an END transition
-        ldapMessageContainer.setGrammarEndAllowed( true );
+        container.setGrammarEndAllowed( true );
     }
 }

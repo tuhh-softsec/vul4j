@@ -21,10 +21,10 @@ package org.apache.directory.shared.ldap.codec.actions;
 
 
 import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.decorators.BindResponseDecorator;
 import org.apache.directory.shared.ldap.model.message.BindResponse;
 import org.apache.directory.shared.util.StringConstants;
 import org.apache.directory.shared.util.Strings;
@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ServerSASLCredsAction extends GrammarAction
+public class ServerSASLCredsAction extends GrammarAction<LdapMessageContainer<BindResponseDecorator>>
 {
     /** The logger */
     private static final Logger LOG = LoggerFactory.getLogger( ServerSASLCredsAction.class );
@@ -58,12 +58,10 @@ public class ServerSASLCredsAction extends GrammarAction
     /**
      * {@inheritDoc}
      */
-    public void action( Asn1Container container ) throws DecoderException
+    public void action( LdapMessageContainer<BindResponseDecorator> container ) throws DecoderException
     {
-        LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-
         // Get the Value and store it in the BindRequest
-        TLV tlv = ldapMessageContainer.getCurrentTLV();
+        TLV tlv = container.getCurrentTLV();
 
         // We have to handle the special case of a 0 length server
         // sasl credentials
@@ -78,11 +76,11 @@ public class ServerSASLCredsAction extends GrammarAction
             serverSaslCreds = tlv.getValue().getData();
         }
 
-        BindResponse response = ( BindResponse ) ldapMessageContainer.getMessage();
+        BindResponse response = container.getMessage();
         response.setServerSaslCreds( serverSaslCreds );
 
         // We can have an END transition
-        ldapMessageContainer.setGrammarEndAllowed( true );
+        container.setGrammarEndAllowed( true );
 
         if ( IS_DEBUG )
         {

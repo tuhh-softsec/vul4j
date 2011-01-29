@@ -20,7 +20,6 @@
 package org.apache.directory.shared.ldap.codec.actions;
 
 
-import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.DecoderException;
@@ -39,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class InitOrFilterAction extends GrammarAction
+public class InitOrFilterAction extends GrammarAction<LdapMessageContainer<SearchRequestDecorator>>
 {
     /** The logger */
     private static final Logger LOG = LoggerFactory.getLogger( InitOrFilterAction.class );
@@ -60,11 +59,9 @@ public class InitOrFilterAction extends GrammarAction
     /**
      * {@inheritDoc}
      */
-    public void action( Asn1Container container ) throws DecoderException
+    public void action( LdapMessageContainer<SearchRequestDecorator> container ) throws DecoderException
     {
-        LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-
-        TLV tlv = ldapMessageContainer.getCurrentTLV();
+        TLV tlv = container.getCurrentTLV();
 
         if ( tlv.getLength() == 0 )
         {
@@ -73,10 +70,10 @@ public class InitOrFilterAction extends GrammarAction
             throw new DecoderException( msg );
         }
 
-        SearchRequestDecorator searchRequestDecorator = ldapMessageContainer.getSearchRequestDecorator();
+        SearchRequestDecorator searchRequestDecorator = container.getMessage();
 
         // We can allocate the SearchRequest
-        Filter orFilter = new OrFilter( ldapMessageContainer.getTlvId() );
+        Filter orFilter = new OrFilter( container.getTlvId() );
 
         // Set the filter
         searchRequestDecorator.addCurrentFilter( orFilter );

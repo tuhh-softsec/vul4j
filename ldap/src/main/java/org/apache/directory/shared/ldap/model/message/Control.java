@@ -50,28 +50,4 @@ public interface Control
      * @param isCritical true if the control is critical false otherwise.
      */
     void setCritical( boolean isCritical );
-    
-    
-    /**
-     * Returns the encoded value for this Control
-     *
-     * @return The encoded value
-     */
-    byte[] getValue();
-    
-    
-    /**
-     * Stores the encoded value for this Control
-     *
-     * @param value The encoded value
-     */
-    void setValue( byte[] value );
-    
-    
-    /**
-     * Tells if the Control has a value or not
-     *
-     * @return <code>true</code> if th Control has a value, even containing no bytes.
-     */
-    boolean hasValue();
 }

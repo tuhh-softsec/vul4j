@@ -20,7 +20,6 @@
 package org.apache.directory.shared.ldap.codec.controls.replication.syncStateValue;
 
 
-import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
@@ -56,27 +55,27 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public final class SyncStateValueControlGrammar extends AbstractGrammar
+public final class SyncStateValueGrammar extends AbstractGrammar
 {
     /** The logger */
-    static final Logger LOG = LoggerFactory.getLogger( SyncStateValueControlGrammar.class );
+    static final Logger LOG = LoggerFactory.getLogger( SyncStateValueGrammar.class );
 
     /** Speedup for logs */
     static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
     /** The instance of grammar. SyncStateValueControlGrammar is a singleton */
-    private static Grammar instance = new SyncStateValueControlGrammar();
+    private static Grammar instance = new SyncStateValueGrammar();
 
 
     /**
      * Creates a new SyncStateValueControlGrammar object.
      */
-    private SyncStateValueControlGrammar()
+    private SyncStateValueGrammar()
     {
-        setName( SyncStateValueControlGrammar.class.getName() );
+        setName( SyncStateValueGrammar.class.getName() );
 
         // Create the transitions table
-        super.transitions = new GrammarTransition[SyncStateValueControlStatesEnum.LAST_SYNC_STATE_VALUE_STATE.ordinal()][256];
+        super.transitions = new GrammarTransition[SyncStateValueStatesEnum.LAST_SYNC_STATE_VALUE_STATE.ordinal()][256];
 
         /** 
          * Transition from initial state to SyncStateValue sequence
@@ -85,8 +84,8 @@ public final class SyncStateValueControlGrammar extends AbstractGrammar
          *     
          * Initialize the syncStateValue object
          */
-        super.transitions[SyncStateValueControlStatesEnum.START_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
-            SyncStateValueControlStatesEnum.START_STATE, SyncStateValueControlStatesEnum.SYNC_STATE_VALUE_SEQUENCE_STATE,
+        super.transitions[SyncStateValueStatesEnum.START_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
+            SyncStateValueStatesEnum.START_STATE, SyncStateValueStatesEnum.SYNC_STATE_VALUE_SEQUENCE_STATE,
             UniversalTag.SEQUENCE.getValue(), null );
 
         /** 
@@ -102,15 +101,14 @@ public final class SyncStateValueControlGrammar extends AbstractGrammar
          *     
          * Stores the sync state type value
          */
-        super.transitions[SyncStateValueControlStatesEnum.SYNC_STATE_VALUE_SEQUENCE_STATE.ordinal()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
-            SyncStateValueControlStatesEnum.SYNC_STATE_VALUE_SEQUENCE_STATE,
-            SyncStateValueControlStatesEnum.SYNC_TYPE_STATE, UniversalTag.ENUMERATED.getValue(), new GrammarAction(
-                "Set SyncStateValueControl state type" )
+        super.transitions[SyncStateValueStatesEnum.SYNC_STATE_VALUE_SEQUENCE_STATE.ordinal()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
+            SyncStateValueStatesEnum.SYNC_STATE_VALUE_SEQUENCE_STATE,
+            SyncStateValueStatesEnum.SYNC_TYPE_STATE, UniversalTag.ENUMERATED.getValue(), 
+            new GrammarAction<SyncStateValueContainer>( "Set SyncStateValueControl state type" )
             {
-                public void action( Asn1Container container ) throws DecoderException
+                public void action( SyncStateValueContainer container ) throws DecoderException
                 {
-                    SyncStateValueControlContainer syncStateValueContainer = ( SyncStateValueControlContainer ) container;
-                    Value value = syncStateValueContainer.getCurrentTLV().getValue();
+                    Value value = container.getCurrentTLV().getValue();
 
                     try
                     {
@@ -125,10 +123,10 @@ public final class SyncStateValueControlGrammar extends AbstractGrammar
                             LOG.debug( "SyncStateType = {}", syncStateTypeEnum );
                         }
 
-                        syncStateValueContainer.getSyncStateValueControl().setSyncStateType( syncStateTypeEnum );
+                        container.getSyncStateValueControl().setSyncStateType( syncStateTypeEnum );
 
-                        // move on to the entryUUID transistion
-                        syncStateValueContainer.setGrammarEndAllowed( false );
+                        // move on to the entryUUID transition
+                        container.setGrammarEndAllowed( false );
                     }
                     catch ( IntegerDecoderException e )
                     {
@@ -148,14 +146,14 @@ public final class SyncStateValueControlGrammar extends AbstractGrammar
          *     
          * Stores the entryUUID
          */
-        super.transitions[SyncStateValueControlStatesEnum.SYNC_TYPE_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            SyncStateValueControlStatesEnum.SYNC_TYPE_STATE, SyncStateValueControlStatesEnum.SYNC_UUID_STATE,
-            UniversalTag.OCTET_STRING.getValue(), new GrammarAction( "Set SyncStateValueControl entryUUID" )
+        super.transitions[SyncStateValueStatesEnum.SYNC_TYPE_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+            SyncStateValueStatesEnum.SYNC_TYPE_STATE, SyncStateValueStatesEnum.SYNC_UUID_STATE,
+            UniversalTag.OCTET_STRING.getValue(), 
+            new GrammarAction<SyncStateValueContainer>( "Set SyncStateValueControl entryUUID" )
             {
-                public void action( Asn1Container container ) throws DecoderException
+                public void action( SyncStateValueContainer container ) throws DecoderException
                 {
-                    SyncStateValueControlContainer syncStateValueContainer = ( SyncStateValueControlContainer ) container;
-                    Value value = syncStateValueContainer.getCurrentTLV().getValue();
+                    Value value = container.getCurrentTLV().getValue();
 
                     byte[] entryUUID = value.getData();
 
@@ -164,10 +162,10 @@ public final class SyncStateValueControlGrammar extends AbstractGrammar
                         LOG.debug( "entryUUID = {}", Strings.dumpBytes(entryUUID) );
                     }
 
-                    syncStateValueContainer.getSyncStateValueControl().setEntryUUID( entryUUID );
+                    container.getSyncStateValueControl().setEntryUUID( entryUUID );
 
                     // We can have an END transition
-                    syncStateValueContainer.setGrammarEndAllowed( true );
+                    container.setGrammarEndAllowed( true );
                 }
             } );
 
@@ -180,14 +178,14 @@ public final class SyncStateValueControlGrammar extends AbstractGrammar
          *     
          * Stores the reloadHint flag
          */
-        super.transitions[SyncStateValueControlStatesEnum.SYNC_UUID_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            SyncStateValueControlStatesEnum.SYNC_UUID_STATE, SyncStateValueControlStatesEnum.COOKIE_STATE,
-            UniversalTag.OCTET_STRING.getValue(), new GrammarAction( "Set SyncStateValueControl cookie value" )
+        super.transitions[SyncStateValueStatesEnum.SYNC_UUID_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+            SyncStateValueStatesEnum.SYNC_UUID_STATE, SyncStateValueStatesEnum.COOKIE_STATE,
+            UniversalTag.OCTET_STRING.getValue(), 
+            new GrammarAction<SyncStateValueContainer>( "Set SyncStateValueControl cookie value" )
             {
-                public void action( Asn1Container container ) throws DecoderException
+                public void action( SyncStateValueContainer container ) throws DecoderException
                 {
-                    SyncStateValueControlContainer syncStateValueContainer = ( SyncStateValueControlContainer ) container;
-                    Value value = syncStateValueContainer.getCurrentTLV().getValue();
+                    Value value = container.getCurrentTLV().getValue();
 
                     byte[] cookie = value.getData();
 
@@ -196,10 +194,10 @@ public final class SyncStateValueControlGrammar extends AbstractGrammar
                         LOG.debug( "cookie = {}", cookie );
                     }
 
-                    syncStateValueContainer.getSyncStateValueControl().setCookie( cookie );
+                    container.getSyncStateValueControl().setCookie( cookie );
 
                     // terminal state
-                    syncStateValueContainer.setGrammarEndAllowed( true );
+                    container.setGrammarEndAllowed( true );
                 }
             } );
     }

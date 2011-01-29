@@ -31,6 +31,7 @@ import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.util.Asn1StringUtils;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.model.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.model.entry.Entry;
@@ -46,7 +47,7 @@ import org.apache.directory.shared.util.Strings;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SearchResultEntryDecorator extends MessageDecorator implements SearchResultEntry
+public class SearchResultEntryDecorator extends MessageDecorator<SearchResultEntry> implements SearchResultEntry
 {
     /** A temporary storage for the byte[] representing the objectName */
     private byte[] objectNameBytes;
@@ -72,18 +73,9 @@ public class SearchResultEntryDecorator extends MessageDecorator implements Sear
      *
      * @param decoratedMessage the decorated SearchResultEntry
      */
-    public SearchResultEntryDecorator( SearchResultEntry decoratedMessage )
+    public SearchResultEntryDecorator( ILdapCodecService codec, SearchResultEntry decoratedMessage )
     {
-        super( decoratedMessage );
-    }
-
-
-    /**
-     * @return The decorated SearchResultEntry
-     */
-    public SearchResultEntry getSearchResultEntry()
-    {
-        return ( SearchResultEntry ) getDecoratedMessage();
+        super( codec, decoratedMessage );
     }
 
 
@@ -199,7 +191,7 @@ public class SearchResultEntryDecorator extends MessageDecorator implements Sear
     {
         currentAttribute = new DefaultEntryAttribute( type );
 
-        getSearchResultEntry().getEntry().put( currentAttribute );
+        getDecorated().getEntry().put( currentAttribute );
     }
 
 
@@ -231,7 +223,7 @@ public class SearchResultEntryDecorator extends MessageDecorator implements Sear
      */
     public Dn getObjectName()
     {
-        return getSearchResultEntry().getObjectName();
+        return getDecorated().getObjectName();
     }
 
 
@@ -240,7 +232,7 @@ public class SearchResultEntryDecorator extends MessageDecorator implements Sear
      */
     public void setObjectName( Dn objectName )
     {
-        getSearchResultEntry().setObjectName( objectName );
+        getDecorated().setObjectName( objectName );
     }
 
 
@@ -249,7 +241,7 @@ public class SearchResultEntryDecorator extends MessageDecorator implements Sear
      */
     public Entry getEntry()
     {
-        return getSearchResultEntry().getEntry();
+        return getDecorated().getEntry();
     }
 
 
@@ -258,13 +250,15 @@ public class SearchResultEntryDecorator extends MessageDecorator implements Sear
      */
     public void setEntry( Entry entry )
     {
-        getSearchResultEntry().setEntry( entry );
+        getDecorated().setEntry( entry );
     }
 
 
     //-------------------------------------------------------------------------
     // The Decorator methods
     //-------------------------------------------------------------------------
+    
+    
     /**
      * Compute the SearchResultEntry length
      * 

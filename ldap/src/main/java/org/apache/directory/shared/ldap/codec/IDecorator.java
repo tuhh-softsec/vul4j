@@ -17,24 +17,38 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.controls;
+package org.apache.directory.shared.ldap.codec;
 
 
-import org.apache.directory.shared.asn1.Asn1Object;
-import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.ldap.model.message.Control;
-import org.apache.directory.shared.ldap.model.message.controls.ManageDsaIT;
+import java.nio.ByteBuffer;
+
+import org.apache.directory.shared.asn1.EncoderException;
 
 
 /**
- * A ControlDecoder for the {@link ManageDsaIT.SimpleManageDsaIT} Control.
+ * A decorator interface exposing the ComputeLength and encode methods.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ManageDsaITDecoder implements ControlDecoder
+public interface IDecorator<E>
 {
-    public Asn1Object decode( byte[] controlBytes, Control control ) throws DecoderException
-    {
-        return new ManageDsaITDecorator();
-    }
+    E getDecorated();
+    
+    
+    /**
+     * Compute the object length, which is the sum of all inner length.
+     * 
+     * @return The object's computed length
+     */
+    int computeLength();
+
+
+    /**
+     * Encode the object to a PDU.
+     * 
+     * @param buffer The buffer where to put the PDU
+     * @return The PDU.
+     * @throws EncoderException if the buffer can't be encoded
+     */
+    ByteBuffer encode( ByteBuffer buffer ) throws EncoderException;
 }

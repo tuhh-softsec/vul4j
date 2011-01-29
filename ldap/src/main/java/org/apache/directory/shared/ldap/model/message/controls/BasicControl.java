@@ -17,11 +17,10 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.controls;
+package org.apache.directory.shared.ldap.model.message.controls;
 
 
 import org.apache.directory.shared.ldap.model.message.Control;
-import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -29,7 +28,7 @@ import org.apache.directory.shared.util.Strings;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class BasicControlImpl implements Control
+public class BasicControl implements Control
 {
     /** The control type */
     private String oid;
@@ -37,16 +36,13 @@ public class BasicControlImpl implements Control
     /** The criticality (default value is false) */
     private boolean criticality = false;
 
-    /** Optional control value */
-    protected byte[] value;
-
 
     /**
      * Creates a Control with a specific OID.
      *
      * @param oid The OID of this Control.
      */
-    public BasicControlImpl( String oid )
+    public BasicControl( String oid )
     {
         this.oid = oid;
     }
@@ -62,37 +58,7 @@ public class BasicControlImpl implements Control
         return oid == null ? "" : oid;
     }
 
-
-    /**
-     * Get the control value
-     * 
-     * @return The control value
-     */
-    public byte[] getValue()
-    {
-        return value;
-    }
-
-
-    /**
-     * Set the encoded control value
-     * 
-     * @param value The encoded control value to store
-     */
-    public void setValue( byte[] value )
-    {
-        if ( value != null )
-        {
-            this.value = new byte[ value.length ];
-            System.arraycopy( value, 0, this.value, 0, value.length );
-        } 
-        else 
-        {
-            this.value = null;
-        }
-    }
-
-
+    
     /**
      * Get the criticality
      * 
@@ -115,15 +81,6 @@ public class BasicControlImpl implements Control
     }
 
     
-    /**
-     * {@inheritDoc}
-     */
-    public boolean hasValue()
-    {
-        return value != null;
-    }
-
-
     /**
      * @see Object#equals(Object)
      */
@@ -152,12 +109,7 @@ public class BasicControlImpl implements Control
         }
 
         //noinspection SimplifiableIfStatement
-        if ( criticality != otherControl.isCritical() )
-        {
-            return false;
-        }
-
-        return hasValue() == otherControl.hasValue();
+        return criticality == otherControl.isCritical();
     }
 
 
@@ -173,11 +125,7 @@ public class BasicControlImpl implements Control
         sb.append( "        Type OID    : '" ).append( oid ).append( "'\n" );
         sb.append( "        Criticality : '" ).append( criticality ).append( "'\n" );
 
-        if ( value != null )
-        {
-            sb.append( "        Value (HEX) : '" ).append( Strings.dumpBytes(value) )
-                .append( "'\n" );
-        }
+        sb.append( "'\n" );
 
         return sb.toString();
     }

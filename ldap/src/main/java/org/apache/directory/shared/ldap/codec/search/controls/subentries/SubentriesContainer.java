@@ -21,7 +21,6 @@ package org.apache.directory.shared.ldap.codec.search.controls.subentries;
 
 
 import org.apache.directory.shared.asn1.ber.AbstractContainer;
-import org.apache.directory.shared.ldap.model.message.controls.Subentries;
 
 
 /**
@@ -54,32 +53,10 @@ public class SubentriesContainer extends AbstractContainer
      * container, or if the Control already is a ControlDecorator it is directly
      * added.
      */
-    public SubentriesContainer( Subentries control )
+    public SubentriesContainer( SubentriesDecorator control )
     {
         this();
-        decorate( control );
-
-    }
-
-
-    /**
-     * Conditionally decorates the supplied Subentries Control if it is not already
-     * a decorator, and if already a decorator, then it is set as this container's
-     * ControlDecorator.
-     *
-     * @param control The Subentries Control to set if it is already a decorator, or
-     * if it is not already, the Control is decorated and set.
-     */
-    public void decorate( Subentries control )
-    {
-        if ( control instanceof SubentriesDecorator )
-        {
-            this.decorator = ( SubentriesDecorator ) control;
-        }
-        else
-        {
-            this.decorator = new SubentriesDecorator( control );
-        }
+        this.decorator = control;
     }
 
 

@@ -26,7 +26,6 @@ import static org.junit.Assert.assertTrue;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
-import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -190,7 +189,7 @@ public class AbstractResultResponseTest
             private static final long serialVersionUID = 1L;
         };
 
-        msg0.addControl( new ControlImpl( "0.0" )
+        msg0.addControl( new Control()
         {
             private static final long serialVersionUID = 1L;
 
@@ -206,15 +205,9 @@ public class AbstractResultResponseTest
             }
 
 
-            public byte[] getValue()
-            {
-                return null;
-            }
-
-
             public String getOid()
             {
-                return null;
+                return "0.0";
             }
         } );
 

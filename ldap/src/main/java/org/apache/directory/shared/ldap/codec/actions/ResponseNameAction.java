@@ -21,12 +21,12 @@ package org.apache.directory.shared.ldap.codec.actions;
 
 
 import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.decorators.ExtendedResponseDecorator;
 import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ResponseNameAction extends GrammarAction
+public class ResponseNameAction extends GrammarAction<LdapMessageContainer<ExtendedResponseDecorator>>
 {
     /** The logger */
     private static final Logger LOG = LoggerFactory.getLogger( ResponseNameAction.class );
@@ -59,15 +59,13 @@ public class ResponseNameAction extends GrammarAction
     /**
      * {@inheritDoc}
      */
-    public void action( Asn1Container container ) throws DecoderException
+    public void action( LdapMessageContainer<ExtendedResponseDecorator> container ) throws DecoderException
     {
-        LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-
         // We can allocate the ExtendedResponse Object
-        ExtendedResponse extendedResponse = ldapMessageContainer.getExtendedResponse();
+        ExtendedResponse extendedResponse = container.getMessage();
 
         // Get the Value and store it in the ExtendedResponse
-        TLV tlv = ldapMessageContainer.getCurrentTLV();
+        TLV tlv = container.getCurrentTLV();
 
         // We have to handle the special case of a 0 length matched
         // OID
@@ -84,7 +82,7 @@ public class ResponseNameAction extends GrammarAction
         }
 
         // We can have an END transition
-        ldapMessageContainer.setGrammarEndAllowed( true );
+        container.setGrammarEndAllowed( true );
 
         if ( IS_DEBUG )
         {

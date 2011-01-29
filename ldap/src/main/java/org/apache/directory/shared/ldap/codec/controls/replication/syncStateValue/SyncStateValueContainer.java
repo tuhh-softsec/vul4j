@@ -17,52 +17,66 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.controls.replication.syncRequestValue;
+package org.apache.directory.shared.ldap.codec.controls.replication.syncStateValue;
 
 
 import org.apache.directory.shared.asn1.ber.AbstractContainer;
 
 
 /**
- * A container for the SyncRequestValue control
+ * A container for the SyncStateValue control
  *  
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SyncRequestValueControlContainer extends AbstractContainer
+public class SyncStateValueContainer extends AbstractContainer
 {
-    /** SyncRequestValueControl */
-    private SyncRequestValueControl control;
+    /** SyncStateValueControl */
+    private SyncStateValueDecorator control;
 
 
     /**
-     * Creates a new SyncRequestValueControlContainer object. We will store one grammar,
+     * Creates a new SyncStateValueControlContainer object. We will store one grammar,
      * it's enough ...
      */
-    public SyncRequestValueControlContainer()
+    public SyncStateValueContainer()
     {
         super();
         stateStack = new int[1];
-        grammar = SyncRequestValueControlGrammar.getInstance();
-        setTransition( SyncRequestValueControlStatesEnum.START_STATE );
+        grammar = SyncStateValueGrammar.getInstance();
+        setTransition( SyncStateValueStatesEnum.START_STATE );
     }
 
 
     /**
-     * @return Returns the syncRequestValue control.
+     * Creates a new SyncStateValueControlContainer object. We will store one grammar,
+     * it's enough ...
      */
-    public SyncRequestValueControl getSyncRequestValueControl()
+    public SyncStateValueContainer( SyncStateValueDecorator control )
+    {
+        super();
+        this.control = control;
+        stateStack = new int[1];
+        grammar = SyncStateValueGrammar.getInstance();
+        setTransition( SyncStateValueStatesEnum.START_STATE );
+    }
+
+
+    /**
+     * @return Returns the syncStateValue control.
+     */
+    public SyncStateValueDecorator getSyncStateValueControl()
     {
         return control;
     }
 
 
     /**
-     * Set a SyncRequestValueControl Object into the container. It will be completed by
+     * Set a SyncStateValueControl Object into the container. It will be completed by
      * the ldapDecoder.
      * 
-     * @param control the SyncRequestValueControl to set.
+     * @param control the SyncStateValueControl to set.
      */
-    public void setSyncRequestValueControl( SyncRequestValueControl control )
+    public void setSyncStateValueControl( SyncStateValueDecorator control )
     {
         this.control = control;
     }

@@ -26,11 +26,11 @@ import org.apache.directory.shared.asn1.DecoderException;
 
 /**
  * Action interface just contains the method 'action' which must be implemented
- * in all the implementong classes.
+ * in all the implementing classes.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface Action
+public interface Action<E extends Asn1Container>
 {
     /**
      * The action to be executed.
@@ -38,5 +38,5 @@ public interface Action
      * @param container The container which stores the current data
      * @throws DecoderException Thrown if something went wrong.
      */
-    void action( Asn1Container container ) throws DecoderException;
+    void action( E container ) throws DecoderException;
 }

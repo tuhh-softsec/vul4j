@@ -20,8 +20,7 @@
 package org.apache.directory.shared.ldap.codec.decorators;
 
 
-import org.apache.directory.shared.ldap.model.message.Message;
-import org.apache.directory.shared.ldap.model.message.Request;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.model.message.ResultResponse;
 import org.apache.directory.shared.ldap.model.message.ResultResponseRequest;
 
@@ -31,16 +30,17 @@ import org.apache.directory.shared.ldap.model.message.ResultResponseRequest;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public abstract class ResultResponseRequestDecorator extends RequestDecorator implements ResultResponseRequest
+public abstract class ResultResponseRequestDecorator<M extends ResultResponseRequest> 
+    extends RequestDecorator<M> implements ResultResponseRequest
 {
     /**
      * Makes Request a MessageDecorator.
      *
      * @param decoratedMessage the decorated message
      */
-    public ResultResponseRequestDecorator( Message decoratedMessage )
+    public ResultResponseRequestDecorator( ILdapCodecService codec, M decoratedMessage )
     {
-        super( decoratedMessage );
+        super( codec, decoratedMessage );
     }
     
 
@@ -49,7 +49,7 @@ public abstract class ResultResponseRequestDecorator extends RequestDecorator im
      */
     public boolean hasResponse()
     {
-        return ( ( Request ) getDecoratedMessage() ).hasResponse();
+        return getDecorated().hasResponse();
     }
 
 
@@ -58,6 +58,6 @@ public abstract class ResultResponseRequestDecorator extends RequestDecorator im
      */
     public ResultResponse getResultResponse()
     {
-        return ( ( ResultResponseRequest ) getDecoratedMessage() ).getResultResponse();
+        return getDecorated().getResultResponse();
     }
 }

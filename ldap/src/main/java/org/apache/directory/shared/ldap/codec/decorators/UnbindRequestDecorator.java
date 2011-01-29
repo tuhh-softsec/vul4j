@@ -25,6 +25,7 @@ import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.model.message.UnbindRequest;
 
@@ -34,33 +35,24 @@ import org.apache.directory.shared.ldap.model.message.UnbindRequest;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class UnbindRequestDecorator extends RequestDecorator implements UnbindRequest
+public class UnbindRequestDecorator extends RequestDecorator<UnbindRequest> implements UnbindRequest
 {
     /**
      * Makes Request a MessageDecorator.
      *
      * @param decoratedMessage the decorated message
      */
-    public UnbindRequestDecorator( UnbindRequest decoratedMessage )
+    public UnbindRequestDecorator( ILdapCodecService codec, UnbindRequest decoratedMessage )
     {
-        super( decoratedMessage );
-    }
-
-    
-    /**
-     * Gets the decorated UnbindRequest.
-     *
-     * @return The decorated {@link UnbindRequest}
-     */
-    public UnbindRequest getUnbindRequest()
-    {
-        return ( UnbindRequest ) getDecoratedMessage();
+        super( codec, decoratedMessage );
     }
 
 
     //-------------------------------------------------------------------------
     // The Decorator methods
     //-------------------------------------------------------------------------
+
+    
     /**
      * Compute the UnBindRequest length 
      * 

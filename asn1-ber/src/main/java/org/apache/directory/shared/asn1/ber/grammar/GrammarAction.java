@@ -19,14 +19,16 @@
  */
 package org.apache.directory.shared.asn1.ber.grammar;
 
+import org.apache.directory.shared.asn1.ber.Asn1Container;
+
 
 /**
  * A top level grammar class that store meta informations about the actions.
- * Those informations are not mandatory, but they can be usefull for debugging.
+ * Those informations are not mandatory, but they can be useful for debugging.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public abstract class GrammarAction implements Action
+public abstract class GrammarAction<E extends Asn1Container> implements Action<E>
 {
     /** The action's name */
     protected String name;
@@ -41,7 +43,7 @@ public abstract class GrammarAction implements Action
     /**
      * Creates a new GrammarAction object.
      * 
-     * @param name The name of the create daction
+     * @param name The name of the create action
      */
     public GrammarAction( String name )
     {

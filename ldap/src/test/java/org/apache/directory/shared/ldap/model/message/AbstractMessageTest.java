@@ -27,7 +27,6 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.model.message.AbstractMessage;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
-import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -134,7 +133,7 @@ public class AbstractMessageTest
             private static final long serialVersionUID = 1L;
         };
 
-        msg0.addControl( new ControlImpl( "0.0" )
+        msg0.addControl( new Control()
         {
             private static final long serialVersionUID = 1L;
 
@@ -150,15 +149,9 @@ public class AbstractMessageTest
             }
 
 
-            public byte[] getValue()
-            {
-                return null;
-            }
-
-
             public String getOid()
             {
-                return null;
+                return "0.0";
             }
         } );
 

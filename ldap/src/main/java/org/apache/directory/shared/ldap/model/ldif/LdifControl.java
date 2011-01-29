@@ -148,11 +148,6 @@ public class LdifControl implements Control
             return false;
         }
 
-        if ( criticality != otherControl.isCritical() )
-        {
-            return false;
-        }
-
-        return hasValue() == otherControl.hasValue();
+        return criticality == otherControl.isCritical();
     }
 }

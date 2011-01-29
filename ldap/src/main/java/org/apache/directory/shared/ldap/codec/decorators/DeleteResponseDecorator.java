@@ -26,6 +26,7 @@ import java.nio.ByteBuffer;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.model.message.DeleteResponse;
 
@@ -35,7 +36,8 @@ import org.apache.directory.shared.ldap.model.message.DeleteResponse;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class DeleteResponseDecorator extends ResponseDecorator implements DeleteResponse
+public class DeleteResponseDecorator extends ResponseDecorator<DeleteResponse> 
+    implements DeleteResponse
 {
     /** The encoded deleteResponse length */
     private int deleteResponseLength;
@@ -46,18 +48,9 @@ public class DeleteResponseDecorator extends ResponseDecorator implements Delete
      *
      * @param decoratedMessage the decorated DeleteResponse
      */
-    public DeleteResponseDecorator( DeleteResponse decoratedMessage )
+    public DeleteResponseDecorator( ILdapCodecService codec, DeleteResponse decoratedMessage )
     {
-        super( decoratedMessage );
-    }
-
-
-    /**
-     * @return The decorated DeleteResponse
-     */
-    public DeleteResponse getDeleteResponse()
-    {
-        return ( DeleteResponse ) getDecoratedMessage();
+        super( codec, decoratedMessage );
     }
 
 
@@ -83,6 +76,8 @@ public class DeleteResponseDecorator extends ResponseDecorator implements Delete
     //-------------------------------------------------------------------------
     // The Decorator methods
     //-------------------------------------------------------------------------
+    
+    
     /**
      * Compute the DelResponse length 
      * 

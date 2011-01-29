@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.controls.replication.syncRequestValue;
+package org.apache.directory.shared.ldap.codec.controls.replication.syncStateValue;
 
 
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
@@ -25,12 +25,12 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
 
 
 /**
- * This class store the SyncRequestValueControl's grammar constants. It is also used for
+ * This class store the SyncStateValueControl's grammar constants. It is also used for
  * debugging purposes.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public enum SyncRequestValueControlStatesEnum implements States
+public enum SyncStateValueStatesEnum implements States
 {
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
@@ -39,25 +39,25 @@ public enum SyncRequestValueControlStatesEnum implements States
     END_STATE,
 
     // =========================================================================
-    // SyncRequestValue control grammar states
+    // SyncStateValue control grammar states
     // =========================================================================
     /** Initial state */
     START_STATE,
 
     /** Sequence Value */
-    SYNC_REQUEST_VALUE_SEQUENCE_STATE,
+    SYNC_STATE_VALUE_SEQUENCE_STATE,
 
-    /** mode Value */
-    MODE_STATE,
+    /** sync state type Value */
+    SYNC_TYPE_STATE,
     
+    /** syncUUID Value */
+    SYNC_UUID_STATE,
+
     /** cookie Value */
     COOKIE_STATE,
 
-    /** reloadHint Value */
-    RELOAD_HINT_STATE,
-
     /** terminal state */
-    LAST_SYNC_REQUEST_VALUE_STATE;
+    LAST_SYNC_STATE_VALUE_STATE;
 
     /**
      * Get the grammar name
@@ -79,9 +79,9 @@ public enum SyncRequestValueControlStatesEnum implements States
      */
     public String getGrammarName( Grammar grammar )
     {
-        if ( grammar instanceof SyncRequestValueControlGrammar )
+        if ( grammar instanceof SyncStateValueGrammar )
         {
-            return "SYNC_REQUEST_VALUE_GRAMMAR";
+            return "SYNC_STATE_VALUE_GRAMMAR";
         }
 
         return "UNKNOWN GRAMMAR";
@@ -96,7 +96,7 @@ public enum SyncRequestValueControlStatesEnum implements States
      */
     public String getState( int state )
     {
-        return ( ( state == END_STATE.ordinal() ) ? "SYNC_REQUEST_VALUE_END_STATE" : this.name() );
+        return ( ( state == END_STATE.ordinal() ) ? "SYNC_STATE_VALUE_END_STATE" : this.name() );
     }
 
     
@@ -112,7 +112,7 @@ public enum SyncRequestValueControlStatesEnum implements States
     /**
      * {@inheritDoc}
      */
-    public SyncRequestValueControlStatesEnum getStartState()
+    public SyncStateValueStatesEnum getStartState()
     {
         return START_STATE;
     }

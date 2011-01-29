@@ -20,7 +20,6 @@
 package org.apache.directory.shared.ldap.model.message.controls;
 
 
-import org.apache.directory.shared.ldap.codec.controls.BasicControlImpl;
 import org.apache.directory.shared.util.StringConstants;
 import org.apache.directory.shared.util.Strings;
 
@@ -58,7 +57,7 @@ import java.util.Arrays;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class PagedResultsImpl extends BasicControlImpl implements PagedResults
+public class PagedResultsImpl extends BasicControl implements PagedResults
 {
 
     /** The number of entries to return, or returned */
@@ -133,7 +132,6 @@ public class PagedResultsImpl extends BasicControlImpl implements PagedResults
     /**
      * @see Object#equals(Object)
      */
-    @SuppressWarnings( { "EqualsWhichDoesntCheckParameterClass" } )
     @Override
     public boolean equals( Object o )
     {

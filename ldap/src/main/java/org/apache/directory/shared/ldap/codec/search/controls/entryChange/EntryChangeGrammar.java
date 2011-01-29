@@ -20,7 +20,6 @@
 package org.apache.directory.shared.ldap.codec.search.controls.entryChange;
 
 
-import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
@@ -89,12 +88,11 @@ public final class EntryChangeGrammar extends AbstractGrammar
             new GrammarTransition( EntryChangeStates.EC_SEQUENCE_STATE,
                                     EntryChangeStates.CHANGE_TYPE_STATE,
                                     UniversalTag.ENUMERATED.getValue(),
-            new GrammarAction( "Set EntryChangeControl changeType" )
+            new GrammarAction<EntryChangeContainer>( "Set EntryChangeControl changeType" )
         {
-            public void action( Asn1Container container ) throws DecoderException
+            public void action( EntryChangeContainer container ) throws DecoderException
             {
-                EntryChangeContainer entryChangeContainer = ( EntryChangeContainer ) container;
-                Value value = entryChangeContainer.getCurrentTLV().getValue();
+                Value value = container.getCurrentTLV().getValue();
 
                 try
                 {
@@ -113,7 +111,7 @@ public final class EntryChangeGrammar extends AbstractGrammar
                                 LOG.debug( "changeType = " + changeType );
                             }
 
-                            entryChangeContainer.getEntryChangeDecorator().setChangeType( changeType );
+                            container.getEntryChangeDecorator().setChangeType( changeType );
                             break;
 
                         default:
@@ -123,7 +121,7 @@ public final class EntryChangeGrammar extends AbstractGrammar
                     }
 
                     // We can have an END transition
-                    entryChangeContainer.setGrammarEndAllowed( true );
+                    container.setGrammarEndAllowed( true );
                 }
                 catch ( IntegerDecoderException e )
                 {
@@ -152,13 +150,11 @@ public final class EntryChangeGrammar extends AbstractGrammar
             new GrammarTransition( EntryChangeStates.CHANGE_TYPE_STATE,
                                     EntryChangeStates.PREVIOUS_DN_STATE,
                                     UniversalTag.OCTET_STRING.getValue(),
-            new GrammarAction( "Set EntryChangeControl previousDN" )
+            new GrammarAction<EntryChangeContainer>( "Set EntryChangeControl previousDN" )
         {
-            public void action( Asn1Container container ) throws DecoderException
+            public void action( EntryChangeContainer container ) throws DecoderException
             {
-                EntryChangeContainer entryChangeContainer = ( EntryChangeContainer ) container;
-
-                ChangeType changeType = entryChangeContainer.getEntryChangeDecorator().getChangeType();
+                ChangeType changeType = container.getEntryChangeDecorator().getChangeType();
 
 
                 if ( changeType != ChangeType.MODDN )
@@ -168,7 +164,7 @@ public final class EntryChangeGrammar extends AbstractGrammar
                 }
                 else
                 {
-                    Value value = entryChangeContainer.getCurrentTLV().getValue();
+                    Value value = container.getCurrentTLV().getValue();
                     Dn previousDn;
 
                     try
@@ -186,21 +182,20 @@ public final class EntryChangeGrammar extends AbstractGrammar
                         LOG.debug( "previousDN = " + previousDn );
                     }
 
-                    entryChangeContainer.getEntryChangeDecorator().setPreviousDn( previousDn );
+                    container.getEntryChangeDecorator().setPreviousDn( previousDn );
 
                     // We can have an END transition
-                    entryChangeContainer.setGrammarEndAllowed( true );
+                    container.setGrammarEndAllowed( true );
                 }
             }
         } );
 
         // Change Number action
-        GrammarAction setChangeNumberAction = new GrammarAction( "Set EntryChangeControl changeNumber" )
+        GrammarAction<EntryChangeContainer> setChangeNumberAction = new GrammarAction<EntryChangeContainer>( "Set EntryChangeControl changeNumber" )
         {
-            public void action( Asn1Container container ) throws DecoderException
+            public void action( EntryChangeContainer container ) throws DecoderException
             {
-                EntryChangeContainer entryChangeContainer = ( EntryChangeContainer ) container;
-                Value value = entryChangeContainer.getCurrentTLV().getValue();
+                Value value = container.getCurrentTLV().getValue();
 
                 try
                 {
@@ -211,10 +206,10 @@ public final class EntryChangeGrammar extends AbstractGrammar
                         LOG.debug( "changeNumber = " + changeNumber );
                     }
 
-                    entryChangeContainer.getEntryChangeDecorator().setChangeNumber( changeNumber );
+                    container.getEntryChangeDecorator().setChangeNumber( changeNumber );
 
                     // We can have an END transition
-                    entryChangeContainer.setGrammarEndAllowed( true );
+                    container.setGrammarEndAllowed( true );
                 }
                 catch ( LongDecoderException e )
                 {

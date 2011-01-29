@@ -26,6 +26,7 @@ import java.nio.ByteBuffer;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 import org.apache.directory.shared.util.Strings;
@@ -36,7 +37,8 @@ import org.apache.directory.shared.util.Strings;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ExtendedRequestDecorator extends SingleReplyRequestDecorator implements ExtendedRequest
+public class ExtendedRequestDecorator extends SingleReplyRequestDecorator<ExtendedRequest> 
+    implements ExtendedRequest
 {
     /** The extended request length */
     private int extendedRequestLength;
@@ -50,18 +52,9 @@ public class ExtendedRequestDecorator extends SingleReplyRequestDecorator implem
      *
      * @param decoratedMessage the decorated ExtendedRequest
      */
-    public ExtendedRequestDecorator( ExtendedRequest decoratedMessage )
+    public ExtendedRequestDecorator( ILdapCodecService codec, ExtendedRequest decoratedMessage )
     {
-        super( decoratedMessage );
-    }
-
-
-    /**
-     * @return The decorated ExtendedRequest
-     */
-    public ExtendedRequest getExtendedRequest()
-    {
-        return ( ExtendedRequest ) getDecoratedMessage();
+        super( codec, decoratedMessage );
     }
 
 
@@ -117,7 +110,7 @@ public class ExtendedRequestDecorator extends SingleReplyRequestDecorator implem
      */
     public String getRequestName()
     {
-        return getExtendedRequest().getRequestName();
+        return getDecorated().getRequestName();
     }
 
 
@@ -126,7 +119,7 @@ public class ExtendedRequestDecorator extends SingleReplyRequestDecorator implem
      */
     public void setRequestName( String oid )
     {
-        getExtendedRequest().setRequestName( oid );
+        getDecorated().setRequestName( oid );
     }
 
 
@@ -135,7 +128,7 @@ public class ExtendedRequestDecorator extends SingleReplyRequestDecorator implem
      */
     public byte[] getRequestValue()
     {
-        return getExtendedRequest().getRequestValue();
+        return getDecorated().getRequestValue();
     }
 
 
@@ -144,13 +137,15 @@ public class ExtendedRequestDecorator extends SingleReplyRequestDecorator implem
      */
     public void setRequestValue( byte[] requestValue )
     {
-        getExtendedRequest().setRequestValue( requestValue );
+        getDecorated().setRequestValue( requestValue );
     }
 
     
     //-------------------------------------------------------------------------
     // The Decorator methods
     //-------------------------------------------------------------------------
+    
+    
     /**
      * Compute the ExtendedRequest length
      * 

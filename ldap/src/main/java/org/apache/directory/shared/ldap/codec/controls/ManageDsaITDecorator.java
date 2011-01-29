@@ -20,6 +20,8 @@
 package org.apache.directory.shared.ldap.codec.controls;
 
 
+import org.apache.directory.shared.asn1.Asn1Object;
+import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.ldap.model.message.controls.ManageDsaIT;
 
 
@@ -28,11 +30,13 @@ import org.apache.directory.shared.ldap.model.message.controls.ManageDsaIT;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ManageDsaITDecorator extends ControlDecorator implements ManageDsaIT
+public class ManageDsaITDecorator extends ControlDecorator<ManageDsaIT> implements ManageDsaIT
 {
     // @TODO We should not bother encoding and decoding marker controls that always
     // encode and decode into the same TLV/byte sequence. Can't the control just
     // supply the canned PDU element?
+    //
+    // override the decorator component to hard code this control?
 
 
     /**
@@ -40,7 +44,7 @@ public class ManageDsaITDecorator extends ControlDecorator implements ManageDsaI
      */
     public ManageDsaITDecorator()
     {
-        super( ManageDsaIT.INSTANCE, new ManageDsaITDecoder() );
+        super( ManageDsaIT.INSTANCE );
     }
 
 
@@ -51,5 +55,11 @@ public class ManageDsaITDecorator extends ControlDecorator implements ManageDsaI
     {
         // Call the super class to compute the global control length
         return super.computeLength( 0 );
+    }
+    
+
+    public Asn1Object decode( byte[] controlBytes ) throws DecoderException  
+    {
+        return this;
     }
 }

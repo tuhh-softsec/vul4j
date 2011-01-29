@@ -26,6 +26,7 @@ import java.nio.ByteBuffer;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.model.message.DeleteRequest;
 import org.apache.directory.shared.ldap.model.name.Dn;
@@ -36,37 +37,31 @@ import org.apache.directory.shared.ldap.model.name.Dn;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class DeleteRequestDecorator extends SingleReplyRequestDecorator implements DeleteRequest
+public class DeleteRequestDecorator extends SingleReplyRequestDecorator<DeleteRequest> 
+    implements DeleteRequest
 {
     /**
      * Makes a DeleteRequest a MessageDecorator.
      *
      * @param decoratedMessage the decorated DeleteRequest
      */
-    public DeleteRequestDecorator( DeleteRequest decoratedMessage )
+    public DeleteRequestDecorator( ILdapCodecService codec, DeleteRequest decoratedMessage )
     {
-        super( decoratedMessage );
-    }
-
-
-    /**
-     * @return The decorated DeleteRequest
-     */
-    public DeleteRequest getDeleteRequest()
-    {
-        return ( DeleteRequest ) getDecoratedMessage();
+        super( codec, decoratedMessage );
     }
 
 
     //-------------------------------------------------------------------------
     // The DeleteRequest methods
     //-------------------------------------------------------------------------
+
+    
     /**
      * {@inheritDoc}
      */
     public Dn getName()
     {
-        return getDeleteRequest().getName();
+        return getDecorated().getName();
     }
 
 
@@ -75,7 +70,7 @@ public class DeleteRequestDecorator extends SingleReplyRequestDecorator implemen
      */
     public void setName( Dn name )
     {
-        getDeleteRequest().setName( name );
+        getDecorated().setName( name );
     }
 
     

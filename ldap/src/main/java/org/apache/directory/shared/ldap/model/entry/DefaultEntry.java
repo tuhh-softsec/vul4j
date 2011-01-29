@@ -42,7 +42,6 @@ import org.apache.directory.shared.ldap.model.schema.AttributeType;
 import org.apache.directory.shared.ldap.model.schema.SchemaManager;
 import org.apache.directory.shared.util.Strings;
 import org.apache.directory.shared.util.Unicode;
-import org.apache.directory.shared.util.exception.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -445,8 +444,6 @@ public class DefaultEntry implements Entry
      * We can't do it once as a static part in the body of this class, because
      * the access to the registries is mandatory to get back the AttributeType.
      */
-    // This will suppress PMD.EmptyCatchBlock warnings in this method
-    @SuppressWarnings("PMD.EmptyCatchBlock")
     private void initObjectClassAT()
     {
         try
@@ -963,6 +960,7 @@ public class DefaultEntry implements Entry
      * the original object won't affect the cloned object, as a modification
      * on the cloned object has no impact on the original object
      */
+    @SuppressWarnings("unchecked")
     public Entry clone()
     {
         try

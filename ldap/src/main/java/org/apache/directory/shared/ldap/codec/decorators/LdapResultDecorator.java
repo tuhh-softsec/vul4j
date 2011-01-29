@@ -28,6 +28,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.IDecorator;
 import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.model.message.LdapResult;
 import org.apache.directory.shared.ldap.model.message.Referral;
@@ -41,7 +42,7 @@ import org.apache.directory.shared.util.Strings;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class LdapResultDecorator implements LdapResult, Decorator
+public class LdapResultDecorator implements LdapResult, IDecorator<LdapResult>
 {
     /** The decorated LdapResult */
     private final LdapResult decoratedLdapResult;
@@ -61,15 +62,6 @@ public class LdapResultDecorator implements LdapResult, Decorator
     public LdapResultDecorator( LdapResult decoratedLdapResult )
     {
         this.decoratedLdapResult = decoratedLdapResult;
-    }
-
-
-    /**
-     * @return The decorated LdapResult
-     */
-    public LdapResult getLdapResult()
-    {
-        return decoratedLdapResult;
     }
 
 
@@ -310,5 +302,12 @@ public class LdapResultDecorator implements LdapResult, Decorator
         }
 
         return buffer;
+    }
+
+
+    
+    public LdapResult getDecorated()
+    {
+        return decoratedLdapResult;
     }
 }

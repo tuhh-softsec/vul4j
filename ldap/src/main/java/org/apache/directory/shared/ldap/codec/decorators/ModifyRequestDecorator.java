@@ -31,6 +31,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.model.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.model.entry.DefaultModification;
@@ -46,7 +47,8 @@ import org.apache.directory.shared.ldap.model.name.Dn;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ModifyRequestDecorator extends SingleReplyRequestDecorator implements ModifyRequest
+public class ModifyRequestDecorator extends SingleReplyRequestDecorator<ModifyRequest>
+    implements ModifyRequest
 {
     /** The modify request length */
     private int modifyRequestLength;
@@ -76,18 +78,9 @@ public class ModifyRequestDecorator extends SingleReplyRequestDecorator implemen
      *
      * @param decoratedMessage the decorated ModifyRequest
      */
-    public ModifyRequestDecorator( ModifyRequest decoratedMessage )
+    public ModifyRequestDecorator( ILdapCodecService codec, ModifyRequest decoratedMessage )
     {
-        super( decoratedMessage );
-    }
-
-
-    /**
-     * @return The decorated ModifyRequest
-     */
-    public ModifyRequest getModifyRequest()
-    {
-        return ( ModifyRequest ) getDecoratedMessage();
+        super( codec, decoratedMessage );
     }
 
 
@@ -202,7 +195,7 @@ public class ModifyRequestDecorator extends SingleReplyRequestDecorator implemen
         currentAttribute = new DefaultEntryAttribute( type );
 
         Modification modification = new DefaultModification( currentOperation, currentAttribute );
-        ((ModifyRequest)getDecoratedMessage()).addModification( modification );
+        getDecorated().addModification( modification );
     }
 
 
@@ -247,7 +240,7 @@ public class ModifyRequestDecorator extends SingleReplyRequestDecorator implemen
      */
     public Dn getName()
     {
-        return getModifyRequest().getName();
+        return getDecorated().getName();
     }
 
 
@@ -256,7 +249,7 @@ public class ModifyRequestDecorator extends SingleReplyRequestDecorator implemen
      */
     public void setName( Dn name )
     {
-        getModifyRequest().setName( name );
+        getDecorated().setName( name );
     }
 
 
@@ -265,7 +258,7 @@ public class ModifyRequestDecorator extends SingleReplyRequestDecorator implemen
      */
     public Collection<Modification> getModifications()
     {
-        return getModifyRequest().getModifications();
+        return getDecorated().getModifications();
     }
 
 
@@ -274,7 +267,7 @@ public class ModifyRequestDecorator extends SingleReplyRequestDecorator implemen
      */
     public void addModification( Modification mod )
     {
-        getModifyRequest().addModification( mod );
+        getDecorated().addModification( mod );
     }
 
 
@@ -283,7 +276,7 @@ public class ModifyRequestDecorator extends SingleReplyRequestDecorator implemen
      */
     public void removeModification( Modification mod )
     {
-        getModifyRequest().removeModification( mod );
+        getDecorated().removeModification( mod );
     }
 
 
@@ -292,7 +285,7 @@ public class ModifyRequestDecorator extends SingleReplyRequestDecorator implemen
      */
     public void remove( String attributeName, String... attributeValue )
     {
-        getModifyRequest().remove( attributeName, attributeValue );
+        getDecorated().remove( attributeName, attributeValue );
     }
 
 
@@ -301,7 +294,7 @@ public class ModifyRequestDecorator extends SingleReplyRequestDecorator implemen
      */
     public void remove( String attributeName, byte[]... attributeValue )
     {
-        getModifyRequest().remove( attributeName, attributeValue );
+        getDecorated().remove( attributeName, attributeValue );
     }
 
 
@@ -310,7 +303,7 @@ public class ModifyRequestDecorator extends SingleReplyRequestDecorator implemen
      */
     public void remove( EntryAttribute attr )
     {
-        getModifyRequest().remove( attr );
+        getDecorated().remove( attr );
     }
 
 
@@ -319,7 +312,7 @@ public class ModifyRequestDecorator extends SingleReplyRequestDecorator implemen
      */
     public void addModification( EntryAttribute attr, ModificationOperation modOp )
     {
-        getModifyRequest().addModification( attr, modOp );
+        getDecorated().addModification( attr, modOp );
     }
 
 
@@ -328,7 +321,7 @@ public class ModifyRequestDecorator extends SingleReplyRequestDecorator implemen
      */
     public void add( String attributeName, String... attributeValue )
     {
-        getModifyRequest().add( attributeName, attributeValue );
+        getDecorated().add( attributeName, attributeValue );
     }
 
 
@@ -337,7 +330,7 @@ public class ModifyRequestDecorator extends SingleReplyRequestDecorator implemen
      */
     public void add( String attributeName, byte[]... attributeValue )
     {
-        getModifyRequest().add( attributeName, attributeValue );
+        getDecorated().add( attributeName, attributeValue );
     }
 
 
@@ -346,7 +339,7 @@ public class ModifyRequestDecorator extends SingleReplyRequestDecorator implemen
      */
     public void add( EntryAttribute attr )
     {
-        getModifyRequest().add( attr );
+        getDecorated().add( attr );
     }
 
 
@@ -355,7 +348,7 @@ public class ModifyRequestDecorator extends SingleReplyRequestDecorator implemen
      */
     public void replace( String attributeName )
     {
-        getModifyRequest().replace( attributeName );
+        getDecorated().replace( attributeName );
     }
 
 
@@ -364,7 +357,7 @@ public class ModifyRequestDecorator extends SingleReplyRequestDecorator implemen
      */
     public void replace( String attributeName, String... attributeValue )
     {
-        getModifyRequest().replace( attributeName, attributeValue );
+        getDecorated().replace( attributeName, attributeValue );
     }
 
 
@@ -373,7 +366,7 @@ public class ModifyRequestDecorator extends SingleReplyRequestDecorator implemen
      */
     public void replace( String attributeName, byte[]... attributeValue )
     {
-        getModifyRequest().replace( attributeName, attributeValue );
+        getDecorated().replace( attributeName, attributeValue );
     }
 
 
@@ -382,13 +375,15 @@ public class ModifyRequestDecorator extends SingleReplyRequestDecorator implemen
      */
     public void replace( EntryAttribute attr )
     {
-        getModifyRequest().replace( attr );
+        getDecorated().replace( attr );
     }
 
 
     //-------------------------------------------------------------------------
     // The Decorator methods
     //-------------------------------------------------------------------------
+    
+    
     /**
      * Compute the ModifyRequest length 
      * 

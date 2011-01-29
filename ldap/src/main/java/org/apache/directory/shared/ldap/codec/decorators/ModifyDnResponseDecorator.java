@@ -26,6 +26,7 @@ import java.nio.ByteBuffer;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.model.message.ModifyDnResponse;
 
@@ -35,7 +36,8 @@ import org.apache.directory.shared.ldap.model.message.ModifyDnResponse;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ModifyDnResponseDecorator extends ResponseDecorator implements ModifyDnResponse
+public class ModifyDnResponseDecorator extends ResponseDecorator<ModifyDnResponse> 
+    implements ModifyDnResponse
 {
     /** The encoded modifyDnResponse length */
     private int modifyDnResponseLength;
@@ -46,18 +48,9 @@ public class ModifyDnResponseDecorator extends ResponseDecorator implements Modi
      *
      * @param decoratedMessage the decorated ModifyDnResponse
      */
-    public ModifyDnResponseDecorator( ModifyDnResponse decoratedMessage )
+    public ModifyDnResponseDecorator( ILdapCodecService codec, ModifyDnResponse decoratedMessage )
     {
-        super( decoratedMessage );
-    }
-
-
-    /**
-     * @return The decorated ModifyDnResponse
-     */
-    public ModifyDnResponse getModifyDnResponse()
-    {
-        return ( ModifyDnResponse ) getDecoratedMessage();
+        super( codec, decoratedMessage );
     }
 
 

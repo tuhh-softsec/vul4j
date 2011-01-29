@@ -19,7 +19,6 @@
 package org.apache.directory.shared.ldap.model.message.controls;
 
 
-import org.apache.directory.shared.ldap.codec.controls.BasicControlImpl;
 import org.apache.directory.shared.ldap.model.message.Control;
 
 
@@ -69,7 +68,7 @@ public interface ManageDsaIT extends Control
     ManageDsaIT INSTANCE = new SimpleManageDsaIT();
 
 
-    class SimpleManageDsaIT extends BasicControlImpl implements ManageDsaIT
+    class SimpleManageDsaIT extends BasicControl implements ManageDsaIT
     {
         /**
          * Default constructor.

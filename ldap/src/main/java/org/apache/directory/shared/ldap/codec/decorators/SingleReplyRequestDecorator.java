@@ -20,7 +20,9 @@
 package org.apache.directory.shared.ldap.codec.decorators;
 
 
-import org.apache.directory.shared.ldap.model.message.Message;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.model.message.AbandonListener;
+import org.apache.directory.shared.ldap.model.message.AbandonableRequest;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.message.SingleReplyRequest;
 
@@ -30,16 +32,17 @@ import org.apache.directory.shared.ldap.model.message.SingleReplyRequest;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public abstract class SingleReplyRequestDecorator extends AbandonableResultResponseRequestDecorator implements SingleReplyRequest
+public abstract class SingleReplyRequestDecorator<M extends SingleReplyRequest> 
+    extends ResultResponseRequestDecorator<M> implements SingleReplyRequest, AbandonableRequest
 {
     /**
      * Makes Request a MessageDecorator.
      *
      * @param decoratedMessage the decorated message
      */
-    public SingleReplyRequestDecorator( Message decoratedMessage )
+    public SingleReplyRequestDecorator( ILdapCodecService codec, M decoratedMessage )
     {
-        super( decoratedMessage );
+        super( codec, decoratedMessage );
     }
 
     
@@ -48,6 +51,24 @@ public abstract class SingleReplyRequestDecorator extends AbandonableResultRespo
      */
     public MessageTypeEnum getResponseType()
     {
-        return ( ( SingleReplyRequest ) getDecoratedMessage() ).getResponseType();
+        return getDecorated().getResponseType();
+    }
+
+
+    public void abandon()
+    {
+        ( ( AbandonableRequest ) getDecorated() ).abandon();
+    }
+
+
+    public boolean isAbandoned()
+    {
+        return ( ( AbandonableRequest ) getDecorated() ).isAbandoned();
+    }
+
+
+    public void addAbandonListener( AbandonListener listener )
+    {
+        ( ( AbandonableRequest ) getDecorated() ).addAbandonListener( listener );
     }
 }

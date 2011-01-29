@@ -30,13 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.directory.shared.ldap.model.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.model.entry.*;
-import org.apache.directory.shared.ldap.model.entry.DefaultModification;
-import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
-import org.apache.directory.shared.ldap.model.entry.Modification;
 import org.apache.directory.shared.ldap.model.entry.StringValue;
-import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.message.Control;
@@ -89,7 +84,7 @@ public class LdifEntry implements Cloneable, Externalizable
     private Entry entry;
 
     /** The controls */
-    private Map<String, Control> controls;
+    private Map<String, LdifControl> controls;
 
 
     /**
@@ -566,7 +561,7 @@ public class LdifEntry implements Cloneable, Externalizable
     /**
      * @return The set of controls for this entry
      */
-    public Map<String, Control> getControls()
+    public Map<String, LdifControl> getControls()
     {
         return controls;
     }
@@ -576,7 +571,7 @@ public class LdifEntry implements Cloneable, Externalizable
      * @param oid The control's OID
      * @return The associated control, if any
      */
-    public Control getControl( String oid )
+    public LdifControl getControl( String oid )
     {
         if ( controls != null )
         {
@@ -608,10 +603,10 @@ public class LdifEntry implements Cloneable, Externalizable
     
             if ( this.controls == null )
             {
-                this.controls = new ConcurrentHashMap<String, Control>();
+                this.controls = new ConcurrentHashMap<String, LdifControl>();
             }
     
-            this.controls.put( control.getOid(), control );
+            this.controls.put( control.getOid(), ( LdifControl ) control );
         }
     }
 
@@ -909,7 +904,7 @@ public class LdifEntry implements Cloneable, Externalizable
 
         if ( controls != null )
         {
-            Map<String, Control> otherControls = otherEntry.controls;
+            Map<String, LdifControl> otherControls = otherEntry.controls;
 
             if ( otherControls == null )
             {
@@ -1022,14 +1017,14 @@ public class LdifEntry implements Cloneable, Externalizable
 
             if ( nbControls > 0 )
             {
-                controls = new ConcurrentHashMap<String, Control>( nbControls );
+                controls = new ConcurrentHashMap<String, LdifControl>( nbControls );
 
                 for ( int i = 0; i < nbControls; i++ )
                 {
                     String controlOid = in.readUTF();
                     boolean isCritical = in.readBoolean();
                     boolean hasValue = in.readBoolean();
-                    Control control = new LdifControl( controlOid );
+                    LdifControl control = new LdifControl( controlOid );
                     control.setCritical( isCritical );
 
                     if ( hasValue )
@@ -1126,7 +1121,7 @@ public class LdifEntry implements Cloneable, Externalizable
             // Write the control
             out.writeInt( controls.size() );
 
-            for ( Control control : controls.values() )
+            for ( LdifControl control : controls.values() )
             {
                 Unicode.writeUTF(out, control.getOid());
                 out.writeBoolean( control.isCritical() );

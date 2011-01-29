@@ -23,12 +23,15 @@ package org.apache.directory.shared.ldap.codec.controls.replication.syncStateVal
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
+import org.apache.directory.shared.asn1.Asn1Object;
+import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
+import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 import org.apache.directory.shared.ldap.message.control.replication.SyncStateTypeEnum;
 import org.apache.directory.shared.util.Strings;
 
@@ -38,11 +41,8 @@ import org.apache.directory.shared.util.Strings;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SyncStateValueControl  extends AbstractControl
+public class SyncStateValueDecorator extends ControlDecorator<ISyncStateValue> implements ISyncStateValue
 {
-    /** This control OID */
-    public static final String CONTROL_OID = "1.3.6.1.4.1.4203.1.9.1.2";
-
     /** The syncStateEnum type */
     private SyncStateTypeEnum syncStateType;
 
@@ -52,18 +52,30 @@ public class SyncStateValueControl  extends AbstractControl
     /** The entryUUID */
     private byte[] entryUUID;
 
-    /** global length for the control */
+    /** Global length for the control */
     private int syncStateSeqLength;
 
-    public SyncStateValueControl()
+    /** The opaque ASN.1 encoded value for this control */
+    private byte[] value;
+    
+    /** An instance of this decoder */
+    private static final Asn1Decoder decoder = new Asn1Decoder();
+
+    
+    public SyncStateValueDecorator()
     {
-        super( CONTROL_OID );
-        
-        decoder = new SyncStateValueControlDecoder();
+        super( new SyncStateValue() );
     }
 
+    
+    public SyncStateValueDecorator( ISyncStateValue value )
+    {
+        super( value );
+    }
+
+
     /**
-     * @return the cookie
+     * {@inheritDoc}
      */
     public byte[] getCookie()
     {
@@ -72,7 +84,7 @@ public class SyncStateValueControl  extends AbstractControl
 
 
     /**
-     * @param cookie the cookie to set
+     * {@inheritDoc}
      */
     public void setCookie( byte[] cookie )
     {
@@ -81,7 +93,7 @@ public class SyncStateValueControl  extends AbstractControl
 
 
     /**
-     * @return the syncState's type
+     * {@inheritDoc}
      */
     public SyncStateTypeEnum getSyncStateType()
     {
@@ -90,9 +102,7 @@ public class SyncStateValueControl  extends AbstractControl
 
 
     /**
-     * set the syncState's type
-     * 
-     * @param syncStateType the syncState's type
+     * {@inheritDoc}
      */
     public void setSyncStateType( SyncStateTypeEnum syncStateType )
     {
@@ -101,7 +111,7 @@ public class SyncStateValueControl  extends AbstractControl
 
 
     /**
-     * @return the entryUUID
+     * {@inheritDoc}
      */
     public byte[] getEntryUUID()
     {
@@ -110,9 +120,7 @@ public class SyncStateValueControl  extends AbstractControl
 
 
     /**
-     * set the entryUUID
-     * 
-     * @param entryUUID the entryUUID
+     * {@inheritDoc}
      */
     public void setEntryUUID( byte[] entryUUID )
     {
@@ -245,7 +253,7 @@ public class SyncStateValueControl  extends AbstractControl
             return false;
         }
 
-        SyncStateValueControl otherControl = ( SyncStateValueControl ) o;
+        SyncStateValueDecorator otherControl = ( SyncStateValueDecorator ) o;
         
         return ( syncStateType == otherControl.syncStateType ) && 
             ( Arrays.equals( entryUUID, otherControl.entryUUID ) ) &&
@@ -268,5 +276,14 @@ public class SyncStateValueControl  extends AbstractControl
         sb.append( "        cookie            : '" ).append( Strings.dumpBytes(cookie) ).append( "'\n" );
 
         return sb.toString();
+    }
+
+    @Override
+    public Asn1Object decode( byte[] controlBytes ) throws DecoderException
+    {
+        ByteBuffer bb = ByteBuffer.wrap( controlBytes );
+        SyncStateValueContainer container = new SyncStateValueContainer( this );
+        decoder.decode( bb, container );
+        return this;
     }
 }

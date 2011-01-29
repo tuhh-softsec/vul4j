@@ -32,8 +32,8 @@ import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncStateValue.SyncStateValueControl;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncStateValue.SyncStateValueControlContainer;
+import org.apache.directory.shared.ldap.codec.controls.replication.syncStateValue.SyncStateValueDecorator;
+import org.apache.directory.shared.ldap.codec.controls.replication.syncStateValue.SyncStateValueContainer;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncStateValue.SyncStateValueControlDecoder;
 import org.apache.directory.shared.ldap.message.control.replication.SyncStateTypeEnum;
 import org.apache.directory.shared.util.Strings;
@@ -69,8 +69,8 @@ public class SyncStateValueControlTest
             } );
         bb.flip();
 
-        SyncStateValueControlContainer container = new SyncStateValueControlContainer();
-        container.setSyncStateValueControl( new SyncStateValueControl() );
+        SyncStateValueContainer container = new SyncStateValueContainer();
+        container.setSyncStateValueControl( new SyncStateValueDecorator() );
 
         try
         {
@@ -82,7 +82,7 @@ public class SyncStateValueControlTest
             fail( de.getMessage() );
         }
 
-        SyncStateValueControl syncStateValue = container.getSyncStateValueControl();
+        SyncStateValueDecorator syncStateValue = container.getSyncStateValueControl();
         assertEquals( SyncStateTypeEnum.PRESENT, syncStateValue.getSyncStateType() );
         assertEquals( "abc", Strings.utf8ToString(syncStateValue.getEntryUUID()) );
         assertEquals( "xkcd", Strings.utf8ToString(syncStateValue.getCookie()) );
@@ -135,8 +135,8 @@ public class SyncStateValueControlTest
             } );
         bb.flip();
 
-        SyncStateValueControlContainer container = new SyncStateValueControlContainer();
-        container.setSyncStateValueControl( new SyncStateValueControl() );
+        SyncStateValueContainer container = new SyncStateValueContainer();
+        container.setSyncStateValueControl( new SyncStateValueDecorator() );
 
         try
         {
@@ -147,7 +147,7 @@ public class SyncStateValueControlTest
             fail( de.getMessage() );
         }
 
-        SyncStateValueControl syncStateValue = container.getSyncStateValueControl();
+        SyncStateValueDecorator syncStateValue = container.getSyncStateValueControl();
         assertEquals( SyncStateTypeEnum.ADD, syncStateValue.getSyncStateType() );
         assertEquals( "abc", Strings.utf8ToString(syncStateValue.getEntryUUID()) );
         assertNull( syncStateValue.getCookie() );
@@ -200,8 +200,8 @@ public class SyncStateValueControlTest
             } );
         bb.flip();
 
-        SyncStateValueControlContainer container = new SyncStateValueControlContainer();
-        container.setSyncStateValueControl( new SyncStateValueControl() );
+        SyncStateValueContainer container = new SyncStateValueContainer();
+        container.setSyncStateValueControl( new SyncStateValueDecorator() );
 
         try
         {
@@ -213,7 +213,7 @@ public class SyncStateValueControlTest
             fail( de.getMessage() );
         }
 
-        SyncStateValueControl syncStateValue = container.getSyncStateValueControl();
+        SyncStateValueDecorator syncStateValue = container.getSyncStateValueControl();
         assertEquals( SyncStateTypeEnum.MODIFY, syncStateValue.getSyncStateType() );
         assertEquals( "abc", Strings.utf8ToString(syncStateValue.getEntryUUID()) );
         assertEquals( "", Strings.utf8ToString(syncStateValue.getCookie()) );
@@ -261,8 +261,8 @@ public class SyncStateValueControlTest
             } );
         bb.flip();
 
-        SyncStateValueControlContainer container = new SyncStateValueControlContainer();
-        container.setSyncStateValueControl( new SyncStateValueControl() );
+        SyncStateValueContainer container = new SyncStateValueContainer();
+        container.setSyncStateValueControl( new SyncStateValueDecorator() );
 
         try
         {
@@ -290,8 +290,8 @@ public class SyncStateValueControlTest
             } );
         bb.flip();
 
-        SyncStateValueControlContainer container = new SyncStateValueControlContainer();
-        container.setSyncStateValueControl( new SyncStateValueControl() );
+        SyncStateValueContainer container = new SyncStateValueContainer();
+        container.setSyncStateValueControl( new SyncStateValueDecorator() );
 
         try
         {
@@ -321,8 +321,8 @@ public class SyncStateValueControlTest
             } );
         bb.flip();
 
-        SyncStateValueControlContainer container = new SyncStateValueControlContainer();
-        container.setSyncStateValueControl( new SyncStateValueControl() );
+        SyncStateValueContainer container = new SyncStateValueContainer();
+        container.setSyncStateValueControl( new SyncStateValueDecorator() );
 
         try
         {
@@ -356,8 +356,8 @@ public class SyncStateValueControlTest
             } );
         bb.flip();
 
-        SyncStateValueControlContainer container = new SyncStateValueControlContainer();
-        container.setSyncStateValueControl( new SyncStateValueControl() );
+        SyncStateValueContainer container = new SyncStateValueContainer();
+        container.setSyncStateValueControl( new SyncStateValueDecorator() );
 
         try
         {
@@ -369,7 +369,7 @@ public class SyncStateValueControlTest
             fail( de.getMessage() );
         }
 
-        SyncStateValueControl syncStateValue = container.getSyncStateValueControl();
+        SyncStateValueDecorator syncStateValue = container.getSyncStateValueControl();
         assertEquals( SyncStateTypeEnum.MODDN, syncStateValue.getSyncStateType() );
         assertEquals( "abc", Strings.utf8ToString(syncStateValue.getEntryUUID()) );
         assertEquals( "xkcd", Strings.utf8ToString(syncStateValue.getCookie()) );

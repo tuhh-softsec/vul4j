@@ -21,7 +21,6 @@ package org.apache.directory.shared.ldap.codec.actions;
 
 
 import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.i18n.I18n;
@@ -39,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class InitAttributeDescFilterAction extends GrammarAction
+public class InitAttributeDescFilterAction extends GrammarAction<LdapMessageContainer<SearchRequestDecorator>>
 {
     /** The logger */
     private static final Logger LOG = LoggerFactory.getLogger( InitAttributeDescFilterAction.class );
@@ -60,12 +59,11 @@ public class InitAttributeDescFilterAction extends GrammarAction
     /**
      * {@inheritDoc}
      */
-    public void action( Asn1Container container ) throws DecoderException
+    public void action( LdapMessageContainer<SearchRequestDecorator> container ) throws DecoderException
     {
-        LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        SearchRequestDecorator searchRequestDecorator = ldapMessageContainer.getSearchRequestDecorator();
+        SearchRequestDecorator searchRequestDecorator = container.getMessage();
 
-        TLV tlv = ldapMessageContainer.getCurrentTLV();
+        TLV tlv = container.getCurrentTLV();
 
         AttributeValueAssertion assertion = new AttributeValueAssertion();
 

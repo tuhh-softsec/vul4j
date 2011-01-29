@@ -20,7 +20,6 @@
 package org.apache.directory.shared.ldap.codec.actions;
 
 
-import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
@@ -37,7 +36,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class InitExtensibleMatchFilterAction extends GrammarAction
+public class InitExtensibleMatchFilterAction extends GrammarAction<LdapMessageContainer<SearchRequestDecorator>>
 {
     /** The logger */
     private static final Logger LOG = LoggerFactory.getLogger( InitExtensibleMatchFilterAction.class );
@@ -58,13 +57,12 @@ public class InitExtensibleMatchFilterAction extends GrammarAction
     /**
      * {@inheritDoc}
      */
-    public void action( Asn1Container container ) throws DecoderException
+    public void action( LdapMessageContainer<SearchRequestDecorator> container ) throws DecoderException
     {
-        LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        SearchRequestDecorator searchRequestDecorator = ldapMessageContainer.getSearchRequestDecorator();
+        SearchRequestDecorator searchRequestDecorator = container.getMessage();
 
         // We can allocate the ExtensibleMatch Filter
-        Filter extensibleMatchFilter = new ExtensibleMatchFilter( ldapMessageContainer.getTlvId() );
+        Filter extensibleMatchFilter = new ExtensibleMatchFilter( container.getTlvId() );
 
         searchRequestDecorator.addCurrentFilter( extensibleMatchFilter );
         searchRequestDecorator.setTerminalFilter( extensibleMatchFilter );

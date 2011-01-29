@@ -21,11 +21,11 @@ package org.apache.directory.shared.ldap.codec.actions;
 
 
 import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.decorators.SearchResultReferenceDecorator;
 import org.apache.directory.shared.ldap.model.exception.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.model.filter.LdapURL;
 import org.apache.directory.shared.ldap.model.message.Referral;
@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class StoreReferenceAction extends GrammarAction
+public class StoreReferenceAction extends GrammarAction<LdapMessageContainer<SearchResultReferenceDecorator>>
 {
     /** The logger */
     private static final Logger LOG = LoggerFactory.getLogger( StoreReferenceAction.class );
@@ -62,15 +62,12 @@ public class StoreReferenceAction extends GrammarAction
     /**
      * {@inheritDoc}
      */
-    public void action( Asn1Container container ) throws DecoderException
+    public void action( LdapMessageContainer<SearchResultReferenceDecorator> container ) throws DecoderException
     {
-
-        LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-
-        SearchResultReference searchResultReference = ldapMessageContainer.getSearchResultReference();
+        SearchResultReference searchResultReference = container.getMessage();
 
         // Get the Value and store it in the BindRequest
-        TLV tlv = ldapMessageContainer.getCurrentTLV();
+        TLV tlv = container.getCurrentTLV();
 
         // Get the referral, or create it if not existing
         Referral referral = searchResultReference.getReferral();
@@ -110,6 +107,6 @@ public class StoreReferenceAction extends GrammarAction
         }
 
         // We can have an END transition
-        ldapMessageContainer.setGrammarEndAllowed( true );
+        container.setGrammarEndAllowed( true );
     }
 }

@@ -19,7 +19,6 @@
 package org.apache.directory.shared.ldap.model.message.controls;
 
 
-import org.apache.directory.shared.ldap.codec.controls.BasicControlImpl;
 import org.apache.directory.shared.ldap.model.message.Control;
 
 
@@ -41,7 +40,7 @@ public interface Cascade extends Control
      *
      * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
      */
-    class SimpleCascade extends BasicControlImpl implements Cascade
+    class SimpleCascade extends BasicControl implements Cascade
     {
 
 

@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.codec;
 
 
-import java.nio.BufferOverflowException;
+import java.nio.BufferOverflowException; 
 import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -33,7 +33,7 @@ import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.util.Asn1StringUtils;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.controls.CodecControl;
+import org.apache.directory.shared.ldap.codec.decorators.AbandonRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.AddRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.AddResponseDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.BindRequestDecorator;
@@ -88,6 +88,10 @@ import org.apache.directory.shared.util.Strings;
  */
 public class LdapEncoder
 {
+    /** The LdapCodecService */
+    private ILdapCodecService codec;
+    
+    
     /**
      * Generate the PDU which contains the encoded object. 
      * 
@@ -114,7 +118,7 @@ public class LdapEncoder
      */
     public ByteBuffer encodeMessage( Message message ) throws EncoderException
     {
-        MessageDecorator decorator = MessageDecorator.getDecorator( message );
+        MessageDecorator<? extends Message> decorator = MessageDecorator.getDecorator( codec, message );
         int length = computeMessageLength( decorator );
         ByteBuffer buffer = ByteBuffer.allocate( length );
 
@@ -151,7 +155,7 @@ public class LdapEncoder
                 // Encode each control
                 for ( Control control : controls.values() )
                 {
-                    ( ( CodecControl ) control ).encode( buffer );
+                    ( ( ICodecControl<?> ) control ).encode( buffer );
                 }
             }
         }
@@ -182,18 +186,18 @@ public class LdapEncoder
      *
      * @param messageDecorator the decorated Message who's length is to be encoded
      */
-    private int computeMessageLength( MessageDecorator messageDecorator )
+    private int computeMessageLength( MessageDecorator<? extends Message> messageDecorator )
     {
         // The length of the MessageId. It's the sum of
         // - the tag (0x02), 1 byte
         // - the length of the Id length, 1 byte
         // - the Id length, 1 to 4 bytes
-        int ldapMessageLength = 1 + 1 + Value.getNbBytes( messageDecorator.getDecoratedMessage().getMessageId());
+        int ldapMessageLength = 1 + 1 + Value.getNbBytes( messageDecorator.getDecorated().getMessageId());
 
         // Get the protocolOp length
         ldapMessageLength += computeProtocolOpLength( messageDecorator );
 
-        Map<String, Control> controls = messageDecorator.getDecoratedMessage().getControls();
+        Map<String, Control> controls = messageDecorator.getDecorated().getControls();
 
         // Do the same thing for Controls, if any.
         if ( controls.size() > 0 )
@@ -222,7 +226,7 @@ public class LdapEncoder
             // We may have more than one control. ControlsLength is L4.
             for ( Control control : controls.values() )
             {
-                controlsSequenceLength += ( ( CodecControl ) control ).computeLength();
+                controlsSequenceLength += ( ( ICodecControl<?> ) control ).computeLength();
             }
 
             // Computes the controls length
@@ -354,7 +358,7 @@ public class LdapEncoder
      * @param buffer The buffer where to put the PDU
      * @return The PDU.
      */
-    private void encodeReferral( ByteBuffer buffer, Referral referral ) throws EncoderException
+    public static void encodeReferral( ByteBuffer buffer, Referral referral ) throws EncoderException
     {
         Collection<byte[]> ldapUrlsBytes = referral.getLdapUrlsBytes();
 
@@ -383,9 +387,9 @@ public class LdapEncoder
      * 
      * Length(AbandonRequest) = Length(0x50) + 1 + Length(abandoned MessageId)
      */
-    private int computeAbandonRequestLength( AbandonRequestImpl abandonRequest )
+    private int computeAbandonRequestLength( AbandonRequestDecorator message )
     {
-        int length = 1 + 1 + Value.getNbBytes( abandonRequest.getAbandoned() );
+        int length = 1 + 1 + Value.getNbBytes( message.getAbandoned() );
 
         return length;
     }
@@ -432,7 +436,7 @@ public class LdapEncoder
      */
     private int computeAddRequestLength( AddRequestDecorator addRequestDecorator )
     {
-        AddRequest addRequest = addRequestDecorator.getAddRequest();
+        AddRequest addRequest = addRequestDecorator.getDecorated();
         Entry entry = addRequest.getEntry();
 
         if ( entry == null )
@@ -539,7 +543,7 @@ public class LdapEncoder
      */
     private int computeBindRequestLength( BindRequestDecorator bindRequestDecorator )
     {
-        BindRequest bindRequest = bindRequestDecorator.getBindRequest();
+        BindRequest bindRequest = bindRequestDecorator.getDecorated();
         int bindRequestLength = 1 + 1 + 1; // Initialized with version
 
         // The name
@@ -605,7 +609,7 @@ public class LdapEncoder
      */
     private int computeBindResponseLength( BindResponseDecorator bindResponseDecorator )
     {
-        BindResponse bindResponse = bindResponseDecorator.getBindResponse();
+        BindResponse bindResponse = bindResponseDecorator.getDecorated();
         int ldapResultLength = computeLdapResultLength( bindResponseDecorator.getLdapResult() );
 
         int bindResponseLength = ldapResultLength;
@@ -644,7 +648,7 @@ public class LdapEncoder
      */
     private int computeCompareRequestLength( CompareRequestDecorator compareRequestDecorator )
     {
-        CompareRequest compareRequest = compareRequestDecorator.getCompareRequest();
+        CompareRequest compareRequest = compareRequestDecorator.getDecorated();
         // The entry Dn
         Dn entry = compareRequest.getName();
         int compareRequestLength = 1 + TLV.getNbBytes( Dn.getNbBytes(entry) ) + Dn.getNbBytes(entry);
@@ -757,7 +761,7 @@ public class LdapEncoder
      */
     private int computeExtendedRequestLength( ExtendedRequestDecorator extendedRequestDecorator )
     {
-        ExtendedRequest extendedRequest = extendedRequestDecorator.getExtendedRequest();
+        ExtendedRequest extendedRequest = extendedRequestDecorator.getDecorated();
         byte[] requestNameBytes = Strings.getBytesUtf8(extendedRequest.getRequestName());
 
         extendedRequestDecorator.setRequestNameBytes( requestNameBytes );
@@ -797,7 +801,7 @@ public class LdapEncoder
      */
     private int computeExtendedResponseLength( ExtendedResponseDecorator extendedResponseDecorator )
     {
-        ExtendedResponse extendedResponse = extendedResponseDecorator.getExtendedResponse();
+        ExtendedResponse extendedResponse = extendedResponseDecorator.getDecorated();
         int ldapResultLength = computeLdapResultLength( extendedResponseDecorator.getLdapResult() );
 
         int extendedResponseLength = ldapResultLength;
@@ -844,7 +848,7 @@ public class LdapEncoder
      */
     private int computeIntermediateResponseLength( IntermediateResponseDecorator intermediateResponseDecorator )
     {
-        IntermediateResponse intermediateResponse = intermediateResponseDecorator.getIntermediateResponse();
+        IntermediateResponse intermediateResponse = intermediateResponseDecorator.getDecorated();
         int intermediateResponseLength = 0;
 
         if ( !Strings.isEmpty(intermediateResponse.getResponseName()) )
@@ -911,7 +915,7 @@ public class LdapEncoder
      */
     private int computeModifyRequestLength( ModifyRequestDecorator modifyRequestDecorator )
     {
-        ModifyRequest modifyRequest = modifyRequestDecorator.getModifyRequest();
+        ModifyRequest modifyRequest = modifyRequestDecorator.getDecorated();
         // Initialized with name
         int modifyRequestLength = 1 + TLV.getNbBytes( Dn.getNbBytes( modifyRequest.getName() ) )
             + Dn.getNbBytes(modifyRequest.getName() );
@@ -1024,7 +1028,7 @@ public class LdapEncoder
      */
     private int computeModifyDnRequestLength( ModifyDnRequestDecorator modifyDnRequestDecorator )
     {
-        ModifyDnRequest modifyDnRequest = modifyDnRequestDecorator.getModifyDnRequest();
+        ModifyDnRequest modifyDnRequest = modifyDnRequestDecorator.getDecorated();
         int newRdnlength = Strings.getBytesUtf8(modifyDnRequest.getNewRdn().getName()).length;
 
         int modifyDNRequestLength = 1 + TLV.getNbBytes( Dn.getNbBytes(modifyDnRequest.getName()) )
@@ -1066,7 +1070,7 @@ public class LdapEncoder
     }
 
 
-    private int computeReferralLength( Referral referral )
+    public static int computeReferralLength( Referral referral )
     {
         if ( referral != null )
         {
@@ -1126,7 +1130,7 @@ public class LdapEncoder
      */
     private int computeSearchRequestLength( SearchRequestDecorator searchRequestDecorator )
     {
-        SearchRequest searchRequest = searchRequestDecorator.getSearchRequest();
+        SearchRequest searchRequest = searchRequestDecorator.getDecorated();
         int searchRequestLength = 0;
 
         // The baseObject
@@ -1241,7 +1245,7 @@ public class LdapEncoder
      */
     private int computeSearchResultEntryLength( SearchResultEntryDecorator searchResultEntryDecorator )
     {
-        SearchResultEntry searchResultEntry = searchResultEntryDecorator.getSearchResultEntry();
+        SearchResultEntry searchResultEntry = searchResultEntryDecorator.getDecorated();
         Dn dn = searchResultEntry.getObjectName();
 
         byte[] dnBytes = Strings.getBytesUtf8(dn.getName());
@@ -1348,7 +1352,7 @@ public class LdapEncoder
      */
     private int computeSearchResultReferenceLength( SearchResultReferenceDecorator searchResultReferenceDecorator )
     {
-        SearchResultReference searchResultReference = searchResultReferenceDecorator.getSearchResultReference();
+        SearchResultReference searchResultReference = searchResultReferenceDecorator.getDecorated();
         int searchResultReferenceLength = 0;
 
         // We may have more than one reference.
@@ -1433,7 +1437,7 @@ public class LdapEncoder
      */
     private void encodeAddRequest( ByteBuffer buffer, AddRequestDecorator decorator ) throws EncoderException
     {
-        AddRequest addRequest = decorator.getAddRequest();
+        AddRequest addRequest = decorator.getDecorated();
 
         try
         {
@@ -1539,7 +1543,7 @@ public class LdapEncoder
      */
     private void encodeBindRequest( ByteBuffer buffer, BindRequestDecorator decorator ) throws EncoderException
     {
-        BindRequest bindRequest = decorator.getBindRequest();
+        BindRequest bindRequest = decorator.getDecorated();
 
         try
         {
@@ -1634,7 +1638,7 @@ public class LdapEncoder
      */
     private void encodeBindResponse( ByteBuffer bb, BindResponseDecorator bindResponseDecorator ) throws EncoderException
     {
-        BindResponse bindResponse = bindResponseDecorator.getBindResponse();
+        BindResponse bindResponse = bindResponseDecorator.getDecorated();
 
         try
         {
@@ -1681,7 +1685,7 @@ public class LdapEncoder
      */
     private void encodeCompareRequest( ByteBuffer buffer, CompareRequestDecorator decorator ) throws EncoderException
     {
-        CompareRequest compareRequest = decorator.getCompareRequest();
+        CompareRequest compareRequest = decorator.getDecorated();
         try
         {
             // The CompareRequest Tag
@@ -1795,7 +1799,7 @@ public class LdapEncoder
     private void encodeExtendedRequest( ByteBuffer buffer, ExtendedRequestDecorator decorator )
         throws EncoderException
     {
-        ExtendedRequest extendedRequest = decorator.getExtendedRequest();
+        ExtendedRequest extendedRequest = decorator.getDecorated();
         try
         {
             // The BindResponse Tag
@@ -1850,7 +1854,7 @@ public class LdapEncoder
     private void encodeExtendedResponse( ByteBuffer buffer, ExtendedResponseDecorator extendedResponseDecorator )
         throws EncoderException
     {
-        ExtendedResponse extendedResponse = extendedResponseDecorator.getExtendedResponse();
+        ExtendedResponse extendedResponse = extendedResponseDecorator.getDecorated();
         
         try
         {
@@ -1909,7 +1913,7 @@ public class LdapEncoder
     private void encodeIntermediateResponse( ByteBuffer buffer, IntermediateResponseDecorator decorator )
         throws EncoderException
     {
-        IntermediateResponse intermediateResponse = decorator.getIntermediateResponse();
+        IntermediateResponse intermediateResponse = decorator.getDecorated();
         try
         {
             // The ExtendedResponse Tag
@@ -1955,7 +1959,7 @@ public class LdapEncoder
      * <pre>
      * 0x66 LL
      *   0x04 LL object
-     *   0x30 LL modifiations
+     *   0x30 LL modifications
      *     0x30 LL modification sequence
      *       0x0A 0x01 operation
      *       0x30 LL modification
@@ -1978,10 +1982,9 @@ public class LdapEncoder
      * @param buffer The buffer where to put the PDU
      * @return The PDU.
      */
-    private void encodeModifyRequest( ByteBuffer buffer, ModifyRequestDecorator decorator )
-            throws EncoderException
+    private void encodeModifyRequest( ByteBuffer buffer, ModifyRequestDecorator decorator ) throws EncoderException
     {
-        ModifyRequest modifyRequest = decorator.getModifyRequest();
+        ModifyRequest modifyRequest = decorator.getDecorated();
         try
         {
             // The AddRequest Tag
@@ -2096,7 +2099,7 @@ public class LdapEncoder
     private void encodeModifyDnRequest( ByteBuffer buffer, ModifyDnRequestDecorator decorator )
         throws EncoderException
     {
-        ModifyDnRequest modifyDnRequest = decorator.getModifyDnRequest();
+        ModifyDnRequest modifyDnRequest = decorator.getDecorated();
         try
         {
             // The ModifyDNRequest Tag
@@ -2184,7 +2187,7 @@ public class LdapEncoder
      */
     private void encodeSearchRequest( ByteBuffer buffer, SearchRequestDecorator decorator ) throws EncoderException
     {
-        SearchRequest searchRequest = decorator.getSearchRequest();
+        SearchRequest searchRequest = decorator.getDecorated();
         try
         {
             // The SearchRequest Tag
@@ -2287,7 +2290,7 @@ public class LdapEncoder
     private void encodeSearchResultEntry( ByteBuffer buffer, SearchResultEntryDecorator searchResultEntryDecorator )
         throws EncoderException
     {
-        SearchResultEntry searchResultEntry = searchResultEntryDecorator.getSearchResultEntry();
+        SearchResultEntry searchResultEntry = searchResultEntryDecorator.getDecorated();
         try
         {
             // The SearchResultEntry Tag
@@ -2388,7 +2391,7 @@ public class LdapEncoder
     private void encodeSearchResultReference( ByteBuffer buffer, SearchResultReferenceDecorator searchResultReferenceDecorator )
         throws EncoderException
     {
-        SearchResultReference searchResultReference = searchResultReferenceDecorator.getSearchResultReference();
+        SearchResultReference searchResultReference = searchResultReferenceDecorator.getDecorated();
         try
         {
             // The SearchResultReference Tag
@@ -2418,14 +2421,14 @@ public class LdapEncoder
     /**
      * Compute the protocolOp length 
      */
-    private int computeProtocolOpLength( MessageDecorator messageDecorator )
+    private int computeProtocolOpLength( MessageDecorator<? extends Message> messageDecorator )
     {
-        Message message = messageDecorator.getDecoratedMessage();
+        Message message = messageDecorator.getDecorated();
 
         switch ( message.getType() )
         {
             case ABANDON_REQUEST:
-                return computeAbandonRequestLength( ( AbandonRequestImpl ) message );
+                return computeAbandonRequestLength( ( AbandonRequestDecorator ) message );
 
             case ADD_REQUEST:
                 return computeAddRequestLength( ( AddRequestDecorator ) messageDecorator );
@@ -2493,9 +2496,9 @@ public class LdapEncoder
     }
 
 
-    private void encodeProtocolOp( ByteBuffer bb, MessageDecorator decorator ) throws EncoderException
+    private void encodeProtocolOp( ByteBuffer bb, MessageDecorator<? extends Message> decorator ) throws EncoderException
     {
-        Message message = decorator.getDecoratedMessage();
+        Message message = decorator.getDecorated();
 
         switch ( message.getType() )
         {

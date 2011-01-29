@@ -21,7 +21,6 @@ package org.apache.directory.shared.ldap.codec.actions;
 
 
 import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
@@ -35,7 +34,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class InitAttributeDescListAction extends GrammarAction
+public class InitAttributeDescListAction extends GrammarAction<LdapMessageContainer<SearchRequestDecorator>>
 {
     /** The logger */
     private static final Logger LOG = LoggerFactory.getLogger( InitAttributeDescListAction.class );
@@ -54,18 +53,16 @@ public class InitAttributeDescListAction extends GrammarAction
     /**
      * {@inheritDoc}
      */
-    public void action( Asn1Container container ) throws DecoderException
+    public void action( LdapMessageContainer<SearchRequestDecorator> container ) throws DecoderException
     {
-        LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        
         // Here, we have to inject the decoded filter into the SearchRequest
-        SearchRequestDecorator searchRequestDecorator = ldapMessageContainer.getSearchRequestDecorator();
-        SearchRequest searchRequest = (SearchRequest)searchRequestDecorator.getDecoratedMessage();
+        SearchRequestDecorator searchRequestDecorator = container.getMessage();
+        SearchRequest searchRequest = searchRequestDecorator.getDecorated();
         
         searchRequest.setFilter( searchRequestDecorator.getFilterNode() );
         
         // We can have an END transition
-        ldapMessageContainer.setGrammarEndAllowed( true );
+        container.setGrammarEndAllowed( true );
 
         if ( IS_DEBUG )
         {

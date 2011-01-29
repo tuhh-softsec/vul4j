@@ -20,7 +20,6 @@
 package org.apache.directory.shared.ldap.codec.actions;
 
 
-import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
@@ -36,7 +35,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ModifyAttributeValueAction extends GrammarAction
+public class ModifyAttributeValueAction extends GrammarAction<LdapMessageContainer<ModifyRequestDecorator>>
 {
     /** The logger */
     private static final Logger LOG = LoggerFactory.getLogger( ModifyAttributeValueAction.class );
@@ -57,12 +56,11 @@ public class ModifyAttributeValueAction extends GrammarAction
     /**
      * {@inheritDoc}
      */
-    public void action( Asn1Container container )
+    public void action( LdapMessageContainer<ModifyRequestDecorator> container )
     {
-        LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        ModifyRequestDecorator modifyRequestDecorator = ldapMessageContainer.getModifyRequestDecorator();
+        ModifyRequestDecorator modifyRequestDecorator = container.getMessage();
 
-        TLV tlv = ldapMessageContainer.getCurrentTLV();
+        TLV tlv = container.getCurrentTLV();
 
         // Store the value. It can't be null
         byte[] value = StringConstants.EMPTY_BYTES;
@@ -75,7 +73,7 @@ public class ModifyAttributeValueAction extends GrammarAction
         {
             value = tlv.getValue().getData();
 
-            if ( ldapMessageContainer.isBinary( modifyRequestDecorator.getCurrentAttributeType() ) )
+            if ( container.isBinary( modifyRequestDecorator.getCurrentAttributeType() ) )
             {
                 modifyRequestDecorator.addAttributeValue( value );
             }
@@ -86,7 +84,7 @@ public class ModifyAttributeValueAction extends GrammarAction
         }
 
         // We can have an END transition
-        ldapMessageContainer.setGrammarEndAllowed( true );
+        container.setGrammarEndAllowed( true );
 
         if ( IS_DEBUG )
         {

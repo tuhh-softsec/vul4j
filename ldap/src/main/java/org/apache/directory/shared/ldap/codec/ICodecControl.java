@@ -17,43 +17,49 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.search.controls.entryChange;
+package org.apache.directory.shared.ldap.codec;
 
-
-import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.asn1.Asn1Object;
 import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.ber.Asn1Decoder;
-import org.apache.directory.shared.ldap.codec.controls.ControlDecoder;
 import org.apache.directory.shared.ldap.model.message.Control;
 
 
 /**
- * A decoder for EntryChangeControls.
- * 
+ * Define the transform method to be implemented by all the codec Controls
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class EntryChangeDecoder extends Asn1Decoder implements ControlDecoder
+public interface ICodecControl<E extends Control> extends Control, IDecorator<E>
 {
-    /** An instance of this decoder */
-    private static final Asn1Decoder decoder = new Asn1Decoder();
+    /**
+     * Decodes raw ASN.1 encoded bytes into an Asn1Object for the control.
+     * 
+     * @param controlBytes the encoded control bytes
+     * @return the decoded Asn1Object for the control
+     * @throws DecoderException if anything goes wrong
+     */
+    Asn1Object decode( byte[] controlBytes ) throws DecoderException;
 
 
     /**
-     * Decode the entry change control
-     * 
-     * @param controlBytes The bytes array which contains the encoded entry change
-     * 
-     * @return A valid EntryChange object
-     * 
-     * @throws DecoderException If the decoding found an error
+     * Checks to see if a value is set for this {@link ICodecControl}.
      */
-    public Asn1Object decode( byte[] controlBytes, Control control ) throws DecoderException
-    {
-        ByteBuffer bb = ByteBuffer.wrap( controlBytes );
-        EntryChangeContainer container = new EntryChangeContainer( ( EntryChangeDecorator ) control );
-        decoder.decode( bb, container );
-        return container.getEntryChangeDecorator();
-    }
+    boolean hasValue();
+
+
+    /**
+     * Get the control value
+     * 
+     * @return The control value
+     */
+    byte[] getValue();
+
+
+    /**
+     * Set the encoded control value
+     * 
+     * @param value The encoded control value to store
+     */
+    void setValue( byte[] value );
 }

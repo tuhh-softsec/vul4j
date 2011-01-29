@@ -21,7 +21,6 @@ package org.apache.directory.shared.ldap.codec.actions;
 
 
 import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.i18n.I18n;
@@ -38,7 +37,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class InitSubstringsFilterAction extends GrammarAction
+public class InitSubstringsFilterAction extends GrammarAction<LdapMessageContainer<SearchRequestDecorator>>
 {
     /** The logger */
     private static final Logger LOG = LoggerFactory.getLogger( InitSubstringsFilterAction.class );
@@ -59,12 +58,11 @@ public class InitSubstringsFilterAction extends GrammarAction
     /**
      * {@inheritDoc}
      */
-    public void action( Asn1Container container ) throws DecoderException
+    public void action( LdapMessageContainer<SearchRequestDecorator> container ) throws DecoderException
     {
-        LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        SearchRequestDecorator searchRequestDecorator = ldapMessageContainer.getSearchRequestDecorator();
+        SearchRequestDecorator searchRequestDecorator = container.getMessage();
 
-        TLV tlv = ldapMessageContainer.getCurrentTLV();
+        TLV tlv = container.getCurrentTLV();
 
         int expectedLength = tlv.getLength();
 
@@ -76,7 +74,7 @@ public class InitSubstringsFilterAction extends GrammarAction
         }
 
         // We can allocate the SearchRequest
-        Filter substringFilter = new SubstringFilter( ldapMessageContainer.getTlvId() );
+        Filter substringFilter = new SubstringFilter( container.getTlvId() );
 
         searchRequestDecorator.addCurrentFilter( substringFilter );
         searchRequestDecorator.setTerminalFilter( substringFilter );

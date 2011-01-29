@@ -26,6 +26,7 @@ import java.nio.ByteBuffer;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.model.message.AbandonRequest;
 
@@ -35,37 +36,31 @@ import org.apache.directory.shared.ldap.model.message.AbandonRequest;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class AbandonRequestDecorator extends RequestDecorator implements AbandonRequest
+public final class AbandonRequestDecorator extends RequestDecorator<AbandonRequest>
+    implements AbandonRequest
 {
     /**
      * Makes a AddRequest a MessageDecorator.
      *
      * @param decoratedMessage the decorated AddRequest
      */
-    public AbandonRequestDecorator( AbandonRequest decoratedMessage )
+    public AbandonRequestDecorator( ILdapCodecService codec, AbandonRequest decoratedMessage )
     {
-        super( decoratedMessage );
-    }
-
-
-    /**
-     * @return The decorated AddRequest
-     */
-    public AbandonRequest getAbandonRequest()
-    {
-        return ( AbandonRequest ) getDecoratedMessage();
+        super( codec, decoratedMessage );
     }
 
 
     //-------------------------------------------------------------------------
     // The AbandonRequest methods
     //-------------------------------------------------------------------------
+    
+    
     /**
      * {@inheritDoc}
      */
     public int getAbandoned()
     {
-        return getAbandonRequest().getAbandoned();
+        return getDecorated().getAbandoned();
     }
 
 
@@ -74,13 +69,15 @@ public class AbandonRequestDecorator extends RequestDecorator implements Abandon
      */
     public void setAbandoned( int requestId )
     {
-        getAbandonRequest().setAbandoned( requestId );
+        getDecorated().setAbandoned( requestId );
     }
 
     
     //-------------------------------------------------------------------------
     // The Decorator methods
     //-------------------------------------------------------------------------
+    
+    
     /**
      * Encode the Abandon protocolOp part
      */

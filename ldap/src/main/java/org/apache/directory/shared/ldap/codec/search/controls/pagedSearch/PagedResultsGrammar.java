@@ -21,7 +21,6 @@ package org.apache.directory.shared.ldap.codec.search.controls.pagedSearch;
 
 
 import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
@@ -97,12 +96,11 @@ public final class PagedResultsGrammar extends AbstractGrammar
             new GrammarTransition( PagedResultsStates.PAGED_SEARCH_SEQUENCE_STATE,
                 PagedResultsStates.SIZE_STATE,
                 UniversalTag.INTEGER.getValue(),
-                new GrammarAction( "Set PagedSearchControl size" )
+                new GrammarAction<PagedResultsContainer>( "Set PagedSearchControl size" )
             {
-                public void action( Asn1Container container ) throws DecoderException
+                public void action( PagedResultsContainer container ) throws DecoderException
                 {
-                    PagedResultsContainer pagedSearchContainer = ( PagedResultsContainer ) container;
-                    Value value = pagedSearchContainer.getCurrentTLV().getValue();
+                    Value value = container.getCurrentTLV().getValue();
 
                     try
                     {
@@ -121,7 +119,7 @@ public final class PagedResultsGrammar extends AbstractGrammar
                             LOG.debug( "size = " + size );
                         }
 
-                        pagedSearchContainer.getDecorator().setSize( size );
+                        container.getDecorator().setSize( size );
                     }
                     catch ( IntegerDecoderException e )
                     {
@@ -144,24 +142,23 @@ public final class PagedResultsGrammar extends AbstractGrammar
         super.transitions[ PagedResultsStates.SIZE_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] =
             new GrammarTransition( PagedResultsStates.SIZE_STATE,
                                     PagedResultsStates.COOKIE_STATE, UniversalTag.OCTET_STRING.getValue(),
-                new GrammarAction( "Set PagedSearchControl cookie" )
+                new GrammarAction<PagedResultsContainer>( "Set PagedSearchControl cookie" )
             {
-                public void action( Asn1Container container ) throws DecoderException
+                public void action( PagedResultsContainer container ) throws DecoderException
                 {
-                    PagedResultsContainer pagedSearchContainer = ( PagedResultsContainer ) container;
-                    Value value = pagedSearchContainer.getCurrentTLV().getValue();
+                    Value value = container.getCurrentTLV().getValue();
 
-                    if ( pagedSearchContainer.getCurrentTLV().getLength() == 0 )
+                    if ( container.getCurrentTLV().getLength() == 0 )
                     {
-                        pagedSearchContainer.getDecorator().setCookie( StringConstants.EMPTY_BYTES );
+                        container.getDecorator().setCookie( StringConstants.EMPTY_BYTES );
                     }
                     else
                     {
-                        pagedSearchContainer.getDecorator().setCookie( value.getData() );
+                        container.getDecorator().setCookie( value.getData() );
                     }
 
                     // We can have an END transition
-                    pagedSearchContainer.setGrammarEndAllowed( true );
+                    container.setGrammarEndAllowed( true );
                 }
             } );
     }

@@ -20,16 +20,15 @@
 package org.apache.directory.shared.ldap.codec.actions;
 
 
-import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.DecoderException;
+import org.apache.directory.shared.ldap.codec.ICodecControl;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.controls.CodecControl;
-import org.apache.directory.shared.ldap.codec.controls.ControlDecoder;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
 import org.apache.directory.shared.ldap.model.message.Control;
+import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.util.StringConstants;
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
@@ -43,7 +42,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ControlValueAction extends GrammarAction
+public class ControlValueAction extends GrammarAction<LdapMessageContainer<MessageDecorator<? extends Message>>>
 {
     /** The logger */
     private static final Logger LOG = LoggerFactory.getLogger( ControlValueAction.class );
@@ -55,19 +54,15 @@ public class ControlValueAction extends GrammarAction
     /**
      * {@inheritDoc}
      */
-    public void action( Asn1Container container ) throws DecoderException
+    public void action( LdapMessageContainer<MessageDecorator<? extends Message>> container ) throws DecoderException
     {
-        LdapMessageContainer ldapMessageContainer = ( LdapMessageContainer ) container;
-        TLV tlv = ldapMessageContainer.getCurrentTLV();
-        Control control;
+        TLV tlv = container.getCurrentTLV();
 
-        MessageDecorator message = ldapMessageContainer.getMessage();
-        control = message.getCurrentControl();
+        MessageDecorator<?> message = container.getMessage();
+        ICodecControl<? extends Control> control = message.getCurrentControl();
 
         // Get the current control
         Value value = tlv.getValue();
-
-        ControlDecoder decoder = ( ( CodecControl ) control ).getDecoder();
 
         // Store the value - have to handle the special case of a 0 length value
         if ( tlv.getLength() == 0 )
@@ -78,14 +73,14 @@ public class ControlValueAction extends GrammarAction
         {
             control.setValue( value.getData() );
 
-            if ( decoder != null )
+            if ( control != null )
             {
-                decoder.decode( value.getData(), control );
+                control.decode( value.getData() );
             }
         }
 
         // We can have an END transition
-        ldapMessageContainer.setGrammarEndAllowed( true );
+        container.setGrammarEndAllowed( true );
 
         if ( IS_DEBUG )
         {

@@ -27,6 +27,7 @@ import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.model.message.BindRequest;
 import org.apache.directory.shared.ldap.model.name.Dn;
@@ -38,7 +39,8 @@ import org.apache.directory.shared.util.Strings;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class BindRequestDecorator extends SingleReplyRequestDecorator implements BindRequest
+public class BindRequestDecorator extends SingleReplyRequestDecorator<BindRequest> 
+    implements BindRequest
 {
     /** The bind request length */
     private int bindRequestLength;
@@ -55,18 +57,9 @@ public class BindRequestDecorator extends SingleReplyRequestDecorator implements
      *
      * @param decoratedMessage the decorated BindRequests.
      */
-    public BindRequestDecorator( BindRequest decoratedMessage )
+    public BindRequestDecorator( ILdapCodecService codec, BindRequest decoratedMessage )
     {
-        super( decoratedMessage );
-    }
-
-
-    /**
-     * @return The decorated BindRequest
-     */
-    public BindRequest getBindRequest()
-    {
-        return ( BindRequest ) getDecoratedMessage();
+        super( codec, decoratedMessage );
     }
 
 
@@ -137,7 +130,7 @@ public class BindRequestDecorator extends SingleReplyRequestDecorator implements
      */
     public boolean isSimple()
     {
-        return getBindRequest().isSimple();
+        return getDecorated().isSimple();
     }
 
 
@@ -146,7 +139,7 @@ public class BindRequestDecorator extends SingleReplyRequestDecorator implements
      */
     public boolean getSimple()
     {
-        return getBindRequest().getSimple();
+        return getDecorated().getSimple();
     }
 
 
@@ -155,7 +148,7 @@ public class BindRequestDecorator extends SingleReplyRequestDecorator implements
      */
     public void setSimple( boolean isSimple )
     {
-        getBindRequest().setSimple( isSimple );
+        getDecorated().setSimple( isSimple );
     }
 
 
@@ -164,7 +157,7 @@ public class BindRequestDecorator extends SingleReplyRequestDecorator implements
      */
     public byte[] getCredentials()
     {
-        return getBindRequest().getCredentials();
+        return getDecorated().getCredentials();
     }
 
 
@@ -173,7 +166,7 @@ public class BindRequestDecorator extends SingleReplyRequestDecorator implements
      */
     public void setCredentials( String credentials )
     {
-        getBindRequest().setCredentials( credentials );
+        getDecorated().setCredentials( credentials );
     }
 
 
@@ -182,7 +175,7 @@ public class BindRequestDecorator extends SingleReplyRequestDecorator implements
      */
     public void setCredentials( byte[] credentials )
     {
-        getBindRequest().setCredentials( credentials );
+        getDecorated().setCredentials( credentials );
     }
 
 
@@ -191,7 +184,7 @@ public class BindRequestDecorator extends SingleReplyRequestDecorator implements
      */
     public Dn getName()
     {
-        return getBindRequest().getName();
+        return getDecorated().getName();
     }
 
 
@@ -200,7 +193,7 @@ public class BindRequestDecorator extends SingleReplyRequestDecorator implements
      */
     public void setName( Dn name )
     {
-        getBindRequest().setName( name );
+        getDecorated().setName( name );
     }
 
 
@@ -209,7 +202,7 @@ public class BindRequestDecorator extends SingleReplyRequestDecorator implements
      */
     public boolean isVersion3()
     {
-        return getBindRequest().isVersion3();
+        return getDecorated().isVersion3();
     }
 
 
@@ -218,7 +211,7 @@ public class BindRequestDecorator extends SingleReplyRequestDecorator implements
      */
     public boolean getVersion3()
     {
-        return getBindRequest().getVersion3();
+        return getDecorated().getVersion3();
     }
 
 
@@ -227,7 +220,7 @@ public class BindRequestDecorator extends SingleReplyRequestDecorator implements
      */
     public void setVersion3( boolean isVersion3 )
     {
-        getBindRequest().setVersion3( isVersion3 );
+        getDecorated().setVersion3( isVersion3 );
     }
 
 
@@ -236,7 +229,7 @@ public class BindRequestDecorator extends SingleReplyRequestDecorator implements
      */
     public String getSaslMechanism()
     {
-        return getBindRequest().getSaslMechanism();
+        return getDecorated().getSaslMechanism();
     }
 
 
@@ -245,7 +238,7 @@ public class BindRequestDecorator extends SingleReplyRequestDecorator implements
      */
     public void setSaslMechanism( String saslMechanism )
     {
-        getBindRequest().setSaslMechanism( saslMechanism );
+        getDecorated().setSaslMechanism( saslMechanism );
     }
 
 

@@ -26,6 +26,7 @@ import java.nio.ByteBuffer;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.model.message.SearchResultDone;
 
@@ -35,7 +36,7 @@ import org.apache.directory.shared.ldap.model.message.SearchResultDone;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SearchResultDoneDecorator extends ResponseDecorator implements SearchResultDone
+public class SearchResultDoneDecorator extends ResponseDecorator<SearchResultDone> implements SearchResultDone
 {
     /** The encoded searchResultDone length */
     private int searchResultDoneLength;
@@ -46,18 +47,9 @@ public class SearchResultDoneDecorator extends ResponseDecorator implements Sear
      *
      * @param decoratedMessage the decorated SearchResultDone
      */
-    public SearchResultDoneDecorator( SearchResultDone decoratedMessage )
+    public SearchResultDoneDecorator( ILdapCodecService codec, SearchResultDone decoratedMessage )
     {
-        super( decoratedMessage );
-    }
-
-
-    /**
-     * @return The decorated SearchResultDone
-     */
-    public SearchResultDone getSearchResultDone()
-    {
-        return ( SearchResultDone ) getDecoratedMessage();
+        super( codec, decoratedMessage );
     }
 
 
@@ -83,6 +75,8 @@ public class SearchResultDoneDecorator extends ResponseDecorator implements Sear
     //-------------------------------------------------------------------------
     // The Decorator methods
     //-------------------------------------------------------------------------
+    
+    
     /**
      * Compute the SearchResultDone length 
      * 

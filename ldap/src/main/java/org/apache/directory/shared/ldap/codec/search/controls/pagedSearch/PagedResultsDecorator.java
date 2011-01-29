@@ -23,7 +23,10 @@ package org.apache.directory.shared.ldap.codec.search.controls.pagedSearch;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
+import org.apache.directory.shared.asn1.Asn1Object;
+import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
@@ -39,10 +42,16 @@ import org.apache.directory.shared.util.Strings;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class PagedResultsDecorator extends ControlDecorator implements PagedResults
+public class PagedResultsDecorator extends ControlDecorator<PagedResults> implements PagedResults
 {
     /** The entry change global length */
     private int pscSeqLength;
+
+    /** The encoded value of the control. */
+    private byte[] value;
+    
+    /** An instance of this decoder */
+    private static final Asn1Decoder decoder = new Asn1Decoder();
 
 
     /**
@@ -63,7 +72,7 @@ public class PagedResultsDecorator extends ControlDecorator implements PagedResu
      */
     public PagedResultsDecorator( PagedResults pagedResults )
     {
-        super( pagedResults, new PagedResultsDecoder() );
+        super( pagedResults );
     }
 
 
@@ -140,7 +149,7 @@ public class PagedResultsDecorator extends ControlDecorator implements PagedResu
      */
     public byte[] getValue()
     {
-        if ( getDecorated().getValue() == null )
+        if ( value == null )
         {
             try
             {
@@ -154,7 +163,7 @@ public class PagedResultsDecorator extends ControlDecorator implements PagedResu
                 Value.encode( buffer, getSize() );
                 Value.encode( buffer, getCookie() );
 
-                getDecorated().setValue( buffer.array() );
+                value = buffer.array();
             }
             catch ( Exception e )
             {
@@ -162,7 +171,7 @@ public class PagedResultsDecorator extends ControlDecorator implements PagedResu
             }
         }
 
-        return getDecorated().getValue();
+        return value;
     }
 
 
@@ -249,7 +258,6 @@ public class PagedResultsDecorator extends ControlDecorator implements PagedResu
     /**
      * @see Object#equals(Object)
      */
-    @SuppressWarnings( { "EqualsWhichDoesntCheckParameterClass" } )
     @Override
     public boolean equals( Object o )
     {
@@ -278,5 +286,15 @@ public class PagedResultsDecorator extends ControlDecorator implements PagedResu
         sb.append( "        cookie   : '" ).append( Strings.dumpBytes( getCookie() ) ).append( "'\n" );
 
         return sb.toString();
+    }
+
+
+    @Override
+    public Asn1Object decode( byte[] controlBytes ) throws DecoderException
+    {
+        ByteBuffer bb = ByteBuffer.wrap( controlBytes );
+        PagedResultsContainer container = new PagedResultsContainer( this );
+        decoder.decode( bb, container );
+        return this;
     }
 }
