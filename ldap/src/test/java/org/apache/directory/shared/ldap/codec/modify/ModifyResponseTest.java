@@ -32,9 +32,12 @@ import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
-import org.apache.directory.shared.asn1.ber.Asn1Container;
+import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
+import org.apache.directory.shared.ldap.codec.ICodecControl;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.decorators.ModifyResponseDecorator;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.ModifyResponse;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
@@ -54,6 +57,9 @@ public class ModifyResponseTest
 {
     /** The encoder instance */
     LdapEncoder encoder = new LdapEncoder();
+
+    /** The codec service */
+    ILdapCodecService codec = new DefaultLdapCodecService();
 
 
     /**
@@ -85,7 +91,8 @@ public class ModifyResponseTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<ModifyResponseDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<ModifyResponseDecorator>( codec );
 
         // Decode a ModifyResponse PDU
         try
@@ -99,8 +106,7 @@ public class ModifyResponseTest
         }
 
         // Check the decoded ModifyResponse PDU
-        ModifyResponse modifyResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getModifyResponse();
+        ModifyResponse modifyResponse = ldapMessageContainer.getMessage();
 
         assertEquals( 1, modifyResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, modifyResponse.getLdapResult().getResultCode() );
@@ -166,7 +172,8 @@ public class ModifyResponseTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<ModifyResponseDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<ModifyResponseDecorator>( codec );
 
         // Decode a ModifyResponse PDU
         try
@@ -180,8 +187,7 @@ public class ModifyResponseTest
         }
 
         // Check the decoded ModifyResponse PDU
-        ModifyResponse modifyResponse = ( ( LdapMessageContainer ) ldapMessageContainer )
-            .getModifyResponse();
+        ModifyResponse modifyResponse = ldapMessageContainer.getMessage();
 
         assertEquals( 1, modifyResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, modifyResponse.getLdapResult().getResultCode() );
@@ -193,7 +199,7 @@ public class ModifyResponseTest
 
         assertEquals( 1, controls.size() );
 
-        Control control = controls.get( "2.16.840.1.113730.3.4.2" );
+        ICodecControl<Control> control = ( ICodecControl<Control> )controls.get( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", Strings.dumpBytes((byte[]) control.getValue()) );
 
@@ -236,7 +242,8 @@ public class ModifyResponseTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        LdapMessageContainer<ModifyResponseDecorator> ldapMessageContainer = 
+            new LdapMessageContainer<ModifyResponseDecorator>( codec );
 
         // Decode a ModifyResponse message
         try
