@@ -126,7 +126,7 @@ public interface LinkedRuleBuilder {
      *
      * @param methodName Method name of the parent method to call
      */
-    void setNext(String methodName);
+    LinkedParamTypeBuilder setNext(String methodName);
 
     /**
      * Sets properties on the object at the top of the stack, based on attributes with corresponding names.
@@ -146,13 +146,13 @@ public interface LinkedRuleBuilder {
      *
      * @param methodName Method name of the parent method to call
      */
-    void setRoot(String methodName);
+    LinkedParamTypeBuilder setRoot(String methodName);
 
     /**
      * Calls a "set parent" method on the top (child) object, passing the (top-1) (parent) object as an argument.
      *
      * @param methodName Method name of the "set parent" method to call
      */
-    void setTop(String methodName);
+    LinkedParamTypeBuilder setTop(String methodName);
 
 }
