@@ -29,27 +29,38 @@ import org.apache.directory.shared.asn1.ber.AbstractContainer;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class PasswordPolicyResponseControlContainer extends AbstractContainer
+public class PasswordPolicyResponseContainer extends AbstractContainer
 {
-    private PasswordPolicyResponseControl control;
+    private PasswordPolicyResponseDecorator control;
 
 
-    public PasswordPolicyResponseControlContainer()
+    public PasswordPolicyResponseContainer()
     {
         super();
+        control = new PasswordPolicyResponseDecorator( new PasswordPolicyResponseDecorator() );
         stateStack = new int[1];
-        grammar = PasswordPolicyResponseControlGrammar.getInstance();
-        setTransition( PasswordPolicyResponseControlStates.START_STATE );
+        grammar = PasswordPolicyResponseGrammar.getInstance();
+        setTransition( PasswordPolicyResponseStates.START_STATE );
     }
 
 
-    public PasswordPolicyResponseControl getPasswordPolicyResponseControl()
+    public PasswordPolicyResponseContainer( IPasswordPolicyResponse ppolicyResponse )
+    {
+        super();
+        control = new PasswordPolicyResponseDecorator( ppolicyResponse );
+        stateStack = new int[1];
+        grammar = PasswordPolicyResponseGrammar.getInstance();
+        setTransition( PasswordPolicyResponseStates.START_STATE );
+    }
+
+
+    public PasswordPolicyResponseDecorator getPasswordPolicyResponseControl()
     {
         return control;
     }
 
 
-    public void setPasswordPolicyResponseControl( PasswordPolicyResponseControl control )
+    public void setPasswordPolicyResponseControl( PasswordPolicyResponseDecorator control )
     {
         this.control = control;
     }

@@ -17,38 +17,24 @@
  *   under the License.
  *
  */
-
 package org.apache.directory.shared.ldap.codec.controls.ppolicy;
 
 
-import java.nio.ByteBuffer;
-
-import org.apache.directory.shared.asn1.Asn1Object;
-import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.ber.Asn1Decoder;
-import org.apache.directory.shared.ldap.codec.controls.ControlDecoder;
 import org.apache.directory.shared.ldap.model.message.Control;
 
 
 /**
- * Decoder for PasswordPolicyResponseControl.
+ * The password policy control.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
+ * @version $Rev$, $Date$
  */
-public class PasswordPolicyResponseControlDecoder extends Asn1Decoder implements ControlDecoder
+public interface IPasswordPolicyRequest extends Control
 {
-    /** An instance of this decoder */
-    private static final Asn1Decoder decoder = new Asn1Decoder();
 
+    /** the password policy request control */
+    public static final String OID = "1.3.6.1.4.1.42.2.27.8.5.1";
 
-    public Asn1Object decode( byte[] controlBytes, Control control ) throws DecoderException
-    {
-        ByteBuffer bb = ByteBuffer.wrap( controlBytes );
-        PasswordPolicyResponseControlContainer container = new PasswordPolicyResponseControlContainer();
-        container.setPasswordPolicyResponseControl( ( PasswordPolicyResponseControl )control );
-
-        decoder.decode( bb, container );
-        return container.getPasswordPolicyResponseControl();
-    }
-
+    /** an instance that can be repeatedly reused */
+    public static final IPasswordPolicyRequest INSTANCE = new PasswordPolicyRequest(); 
 }

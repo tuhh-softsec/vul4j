@@ -17,33 +17,43 @@
  *   under the License.
  *
  */
-
 package org.apache.directory.shared.ldap.codec.controls.ppolicy;
 
+
 /**
- * Tags used for decoding PasswordPolicyResponseControl.
+ * A simple {@link IPasswordPolicyRequest} implementation to hold properties.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
+ * @version $Rev$, $Date$
  */
-public enum PasswordPolicyResponseControlTags
+public class PasswordPolicyRequest implements IPasswordPolicyRequest
 {
-    PPOLICY_WARNING_TAG(0xA0),          // warning [0]
-    PPOLICY_ERROR_TAG(0x81),            // error [1]
-    TIME_BEFORE_EXPIRATION_TAG(0x80),   // timeBeforeExpiration [0]
-    GRACE_AUTHNS_REMAINING_TAG(0x81);   // graceAuthNsRemaining [1]
+    private boolean critical;
 
-    /** Internal value for each tag */
-    private int value;
-
-
-    private PasswordPolicyResponseControlTags( int value )
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getOid()
     {
-        this.value = value;
+        return OID;
     }
 
 
-    public int getValue()
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isCritical()
     {
-        return value;
+        return critical;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setCritical( boolean critical )
+    {
+        this.critical = critical;
     }
 }

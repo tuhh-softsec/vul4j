@@ -53,65 +53,65 @@ import org.apache.directory.shared.ldap.codec.controls.ppolicy.actions.StoreTime
  *          
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class PasswordPolicyResponseControlGrammar extends AbstractGrammar
+public class PasswordPolicyResponseGrammar extends AbstractGrammar
 {
     /** PasswordPolicyResponseControlGrammar singleton instance */
-    private static final PasswordPolicyResponseControlGrammar INSTANCE = new PasswordPolicyResponseControlGrammar();
+    private static final PasswordPolicyResponseGrammar INSTANCE = new PasswordPolicyResponseGrammar();
 
 
-    private PasswordPolicyResponseControlGrammar()
+    private PasswordPolicyResponseGrammar()
     {
-        setName( PasswordPolicyResponseControlGrammar.class.getName() );
+        setName( PasswordPolicyResponseGrammar.class.getName() );
 
-        super.transitions = new GrammarTransition[PasswordPolicyResponseControlStates.END_STATE.ordinal()][256];
+        super.transitions = new GrammarTransition[PasswordPolicyResponseStates.END_STATE.ordinal()][256];
 
 
         // PasswordPolicyResponseValue ::= SEQUENCE {
         // ...
-        super.transitions[PasswordPolicyResponseControlStates.START_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
-            PasswordPolicyResponseControlStates.START_STATE, PasswordPolicyResponseControlStates.PPOLICY_SEQ_STATE, UniversalTag.SEQUENCE.getValue(),
+        super.transitions[PasswordPolicyResponseStates.START_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
+            PasswordPolicyResponseStates.START_STATE, PasswordPolicyResponseStates.PPOLICY_SEQ_STATE, UniversalTag.SEQUENCE.getValue(),
             new PPolicyInit());
         
         // PasswordPolicyResponseValue ::= SEQUENCE {
         //              warning [0] CHOICE {
-        super.transitions[PasswordPolicyResponseControlStates.PPOLICY_SEQ_STATE.ordinal()][PasswordPolicyResponseControlTags.PPOLICY_WARNING_TAG.getValue()] = new GrammarTransition(
-            PasswordPolicyResponseControlStates.PPOLICY_SEQ_STATE, PasswordPolicyResponseControlStates.PPOLICY_WARNING_TAG_STATE, PasswordPolicyResponseControlTags.PPOLICY_WARNING_TAG.getValue(),
+        super.transitions[PasswordPolicyResponseStates.PPOLICY_SEQ_STATE.ordinal()][PasswordPolicyResponseTags.PPOLICY_WARNING_TAG.getValue()] = new GrammarTransition(
+            PasswordPolicyResponseStates.PPOLICY_SEQ_STATE, PasswordPolicyResponseStates.PPOLICY_WARNING_TAG_STATE, PasswordPolicyResponseTags.PPOLICY_WARNING_TAG.getValue(),
             new CheckNotNullLength());
         
         // PasswordPolicyResponseValue ::= SEQUENCE {
         //              ...
         //              error   [1] ENUMERATED {
-        super.transitions[PasswordPolicyResponseControlStates.PPOLICY_SEQ_STATE.ordinal()][PasswordPolicyResponseControlTags.PPOLICY_ERROR_TAG.getValue()] = new GrammarTransition(
-            PasswordPolicyResponseControlStates.PPOLICY_SEQ_STATE, PasswordPolicyResponseControlStates.PPOLICY_ERROR_TAG_STATE, PasswordPolicyResponseControlTags.PPOLICY_ERROR_TAG.getValue(),
+        super.transitions[PasswordPolicyResponseStates.PPOLICY_SEQ_STATE.ordinal()][PasswordPolicyResponseTags.PPOLICY_ERROR_TAG.getValue()] = new GrammarTransition(
+            PasswordPolicyResponseStates.PPOLICY_SEQ_STATE, PasswordPolicyResponseStates.PPOLICY_ERROR_TAG_STATE, PasswordPolicyResponseTags.PPOLICY_ERROR_TAG.getValue(),
             new StoreError());
         
         // PasswordPolicyResponseValue ::= SEQUENCE {
         //              warning [0] CHOICE {
         //                      timeBeforeExpiration [0] INTEGER (0 .. maxInt),
-        super.transitions[PasswordPolicyResponseControlStates.PPOLICY_WARNING_TAG_STATE.ordinal()][PasswordPolicyResponseControlTags.TIME_BEFORE_EXPIRATION_TAG.getValue()] = new GrammarTransition(
-            PasswordPolicyResponseControlStates.PPOLICY_WARNING_TAG_STATE, PasswordPolicyResponseControlStates.PPOLICY_TIME_BEFORE_EXPIRATION_STATE, PasswordPolicyResponseControlTags.TIME_BEFORE_EXPIRATION_TAG.getValue(),
+        super.transitions[PasswordPolicyResponseStates.PPOLICY_WARNING_TAG_STATE.ordinal()][PasswordPolicyResponseTags.TIME_BEFORE_EXPIRATION_TAG.getValue()] = new GrammarTransition(
+            PasswordPolicyResponseStates.PPOLICY_WARNING_TAG_STATE, PasswordPolicyResponseStates.PPOLICY_TIME_BEFORE_EXPIRATION_STATE, PasswordPolicyResponseTags.TIME_BEFORE_EXPIRATION_TAG.getValue(),
             new StoreTimeBeforeExpiration());
         
         // PasswordPolicyResponseValue ::= SEQUENCE {
         //              warning [0] CHOICE {
         //                      ...
         //                      graceAuthNsRemaining [1] INTEGER (0 .. maxInt) } OPTIONAL,
-        super.transitions[PasswordPolicyResponseControlStates.PPOLICY_WARNING_TAG_STATE.ordinal()][PasswordPolicyResponseControlTags.GRACE_AUTHNS_REMAINING_TAG.getValue()] = new GrammarTransition(
-            PasswordPolicyResponseControlStates.PPOLICY_WARNING_TAG_STATE, PasswordPolicyResponseControlStates.PPOLICY_GRACE_AUTHNS_REMAINING_STATE, PasswordPolicyResponseControlTags.GRACE_AUTHNS_REMAINING_TAG.getValue(),
+        super.transitions[PasswordPolicyResponseStates.PPOLICY_WARNING_TAG_STATE.ordinal()][PasswordPolicyResponseTags.GRACE_AUTHNS_REMAINING_TAG.getValue()] = new GrammarTransition(
+            PasswordPolicyResponseStates.PPOLICY_WARNING_TAG_STATE, PasswordPolicyResponseStates.PPOLICY_GRACE_AUTHNS_REMAINING_STATE, PasswordPolicyResponseTags.GRACE_AUTHNS_REMAINING_TAG.getValue(),
             new StoreGraceAuthsRemaining());
         
         // PasswordPolicyResponseValue ::= SEQUENCE {
         //              ...
         //              error   [1] ENUMERATED {
-        super.transitions[PasswordPolicyResponseControlStates.PPOLICY_TIME_BEFORE_EXPIRATION_STATE.ordinal()][PasswordPolicyResponseControlTags.PPOLICY_ERROR_TAG.getValue()] = new GrammarTransition(
-            PasswordPolicyResponseControlStates.PPOLICY_TIME_BEFORE_EXPIRATION_STATE, PasswordPolicyResponseControlStates.PPOLICY_ERROR_TAG_STATE, PasswordPolicyResponseControlTags.PPOLICY_ERROR_TAG.getValue(),
+        super.transitions[PasswordPolicyResponseStates.PPOLICY_TIME_BEFORE_EXPIRATION_STATE.ordinal()][PasswordPolicyResponseTags.PPOLICY_ERROR_TAG.getValue()] = new GrammarTransition(
+            PasswordPolicyResponseStates.PPOLICY_TIME_BEFORE_EXPIRATION_STATE, PasswordPolicyResponseStates.PPOLICY_ERROR_TAG_STATE, PasswordPolicyResponseTags.PPOLICY_ERROR_TAG.getValue(),
             new StoreError());
         
         // PasswordPolicyResponseValue ::= SEQUENCE {
         //              ...
         //              error   [1] ENUMERATED {
-        super.transitions[PasswordPolicyResponseControlStates.PPOLICY_GRACE_AUTHNS_REMAINING_STATE.ordinal()][PasswordPolicyResponseControlTags.GRACE_AUTHNS_REMAINING_TAG.getValue()] = new GrammarTransition(
-            PasswordPolicyResponseControlStates.PPOLICY_GRACE_AUTHNS_REMAINING_STATE, PasswordPolicyResponseControlStates.PPOLICY_ERROR_TAG_STATE, PasswordPolicyResponseControlTags.GRACE_AUTHNS_REMAINING_TAG.getValue(),
+        super.transitions[PasswordPolicyResponseStates.PPOLICY_GRACE_AUTHNS_REMAINING_STATE.ordinal()][PasswordPolicyResponseTags.GRACE_AUTHNS_REMAINING_TAG.getValue()] = new GrammarTransition(
+            PasswordPolicyResponseStates.PPOLICY_GRACE_AUTHNS_REMAINING_STATE, PasswordPolicyResponseStates.PPOLICY_ERROR_TAG_STATE, PasswordPolicyResponseTags.GRACE_AUTHNS_REMAINING_TAG.getValue(),
             new StoreError());
     }
 

@@ -26,11 +26,11 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
 
 
 /**
- * various states used in {@link PasswordPolicyResponseControlGrammar}.
+ * various states used in {@link PasswordPolicyResponseGrammar}.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public enum PasswordPolicyResponseControlStates implements States
+public enum PasswordPolicyResponseStates implements States
 {
 
     START_STATE,                            // 0
@@ -52,7 +52,7 @@ public enum PasswordPolicyResponseControlStates implements States
      */
     public String getGrammarName( Grammar grammar )
     {
-        if( grammar instanceof PasswordPolicyResponseControlGrammar )
+        if( grammar instanceof PasswordPolicyResponseGrammar )
         {
             return "PASSWORD_POLICY_RESPONSE_CONTROL_GRAMMAR";
         }
@@ -90,7 +90,7 @@ public enum PasswordPolicyResponseControlStates implements States
     /**
      * {@inheritDoc}
      */
-    public PasswordPolicyResponseControlStates getStartState()
+    public PasswordPolicyResponseStates getStartState()
     {
         return START_STATE;
     }

@@ -20,7 +20,9 @@
 package org.apache.directory.shared.ldap.codec.controls.ppolicy;
 
 
-import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
+import org.apache.directory.shared.asn1.Asn1Object;
+import org.apache.directory.shared.asn1.DecoderException;
+import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 
 
 /**
@@ -28,20 +30,24 @@ import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class PasswordPolicyRequestControl extends ControlImpl
+public class PasswordPolicyRequestDecorator extends ControlDecorator<IPasswordPolicyRequest> 
+    implements IPasswordPolicyRequest
 {
-    /** the password policy request control */
-    public static final String CONTROL_OID = "1.3.6.1.4.1.42.2.27.8.5.1";
-
-
-    public PasswordPolicyRequestControl()
+    public PasswordPolicyRequestDecorator()
     {
-        super( CONTROL_OID );
+        super( IPasswordPolicyRequest.INSTANCE );
     }
 
 
     public int computeLength()
     {
         return 0;
+    }
+
+
+    @Override
+    public Asn1Object decode( byte[] controlBytes ) throws DecoderException
+    {
+        return this;
     }
 }

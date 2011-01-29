@@ -20,22 +20,30 @@
 
 package org.apache.directory.shared.ldap.codec.controls.ppolicy;
 
-import org.apache.directory.shared.asn1.Asn1Object;
-import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.ldap.codec.controls.ControlDecoder;
-import org.apache.directory.shared.ldap.model.message.Control;
-
 /**
- * A decoder for PasswordPolicyRequestControl.
+ * Tags used for decoding PasswordPolicyResponseControl.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class PasswordPolicyRequestControlDecoder  implements ControlDecoder
+public enum PasswordPolicyResponseTags
 {
+    PPOLICY_WARNING_TAG(0xA0),          // warning [0]
+    PPOLICY_ERROR_TAG(0x81),            // error [1]
+    TIME_BEFORE_EXPIRATION_TAG(0x80),   // timeBeforeExpiration [0]
+    GRACE_AUTHNS_REMAINING_TAG(0x81);   // graceAuthNsRemaining [1]
 
-    public Asn1Object decode( byte[] controlBytes, Control control ) throws DecoderException
+    /** Internal value for each tag */
+    private int value;
+
+
+    private PasswordPolicyResponseTags( int value )
     {
-        return new PasswordPolicyRequestControl();
+        this.value = value;
     }
 
+
+    public int getValue()
+    {
+        return value;
+    }
 }

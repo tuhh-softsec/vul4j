@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.codec.controls.ppolicy.actions;
 
 import org.apache.directory.shared.asn1.actions.AbstractReadInteger;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
-import org.apache.directory.shared.ldap.codec.controls.ppolicy.PasswordPolicyResponseControlContainer;
+import org.apache.directory.shared.ldap.codec.controls.ppolicy.PasswordPolicyResponseContainer;
 
 
 /**
@@ -48,7 +48,7 @@ public class StoreGraceAuthsRemaining extends AbstractReadInteger
     @Override
     protected void setIntegerValue( int value, Asn1Container container )
     {
-        PasswordPolicyResponseControlContainer ppolicyContainer = ( PasswordPolicyResponseControlContainer ) container;
+        PasswordPolicyResponseContainer ppolicyContainer = ( PasswordPolicyResponseContainer ) container;
         
         ppolicyContainer.getPasswordPolicyResponseControl().setGraceAuthNsRemaining( value );
 

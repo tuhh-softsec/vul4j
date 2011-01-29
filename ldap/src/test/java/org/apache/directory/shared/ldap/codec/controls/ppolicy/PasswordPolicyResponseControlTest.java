@@ -42,7 +42,7 @@ public class PasswordPolicyResponseControlTest
     @Test
     public void testDecodeRespWithExpiryWarningAndError() throws Exception
     {
-        Asn1Decoder decoder = new PasswordPolicyResponseControlDecoder();
+        Asn1Decoder decoder = new PasswordPolicyResponseDecoder();
 
         ByteBuffer bb = ByteBuffer.allocate( 0xA );
 
@@ -56,12 +56,12 @@ public class PasswordPolicyResponseControlTest
 
         bb.flip();
 
-        PasswordPolicyResponseControlContainer container = new PasswordPolicyResponseControlContainer();
-        container.setPasswordPolicyResponseControl( new PasswordPolicyResponseControl() );
+        PasswordPolicyResponseContainer container = new PasswordPolicyResponseContainer();
+        container.setPasswordPolicyResponseControl( new PasswordPolicyResponseDecorator() );
 
         decoder.decode( bb, container );
 
-        PasswordPolicyResponseControl control = container.getPasswordPolicyResponseControl();
+        PasswordPolicyResponseDecorator control = container.getPasswordPolicyResponseControl();
         assertEquals( 1, control.getTimeBeforeExpiration() );
         assertEquals( 1, control.getPasswordPolicyError().getValue() );
         
@@ -89,7 +89,7 @@ public class PasswordPolicyResponseControlTest
     @Test
     public void testDecodeRespWithGraceAuthWarningAndError() throws Exception
     {
-        Asn1Decoder decoder = new PasswordPolicyResponseControlDecoder();
+        Asn1Decoder decoder = new PasswordPolicyResponseDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0xA );
 
         bb.put( new byte[]
@@ -102,12 +102,12 @@ public class PasswordPolicyResponseControlTest
 
         bb.flip();
 
-        PasswordPolicyResponseControlContainer container = new PasswordPolicyResponseControlContainer();
-        container.setPasswordPolicyResponseControl( new PasswordPolicyResponseControl() );
+        PasswordPolicyResponseContainer container = new PasswordPolicyResponseContainer();
+        container.setPasswordPolicyResponseControl( new PasswordPolicyResponseDecorator() );
 
         decoder.decode( bb, container );
 
-        PasswordPolicyResponseControl control = container.getPasswordPolicyResponseControl();
+        PasswordPolicyResponseDecorator control = container.getPasswordPolicyResponseControl();
         assertEquals( 1, control.getGraceAuthNsRemaining() );
         assertEquals( 1, control.getPasswordPolicyError().getValue() );
         
@@ -135,7 +135,7 @@ public class PasswordPolicyResponseControlTest
     @Test
     public void testDecodeRespWithTimeBeforeExpiryWarningOnly() throws Exception
     {
-        Asn1Decoder decoder = new PasswordPolicyResponseControlDecoder();
+        Asn1Decoder decoder = new PasswordPolicyResponseDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 7 );
 
         bb.put( new byte[]
@@ -147,12 +147,12 @@ public class PasswordPolicyResponseControlTest
 
         bb.flip();
 
-        PasswordPolicyResponseControlContainer container = new PasswordPolicyResponseControlContainer();
-        container.setPasswordPolicyResponseControl( new PasswordPolicyResponseControl() );
+        PasswordPolicyResponseContainer container = new PasswordPolicyResponseContainer();
+        container.setPasswordPolicyResponseControl( new PasswordPolicyResponseDecorator() );
 
         decoder.decode( bb, container );
 
-        PasswordPolicyResponseControl control = container.getPasswordPolicyResponseControl();
+        PasswordPolicyResponseDecorator control = container.getPasswordPolicyResponseControl();
         assertEquals( 1, control.getTimeBeforeExpiration() );
         
         ByteBuffer buffer = ByteBuffer.allocate( 0x26 );
@@ -178,7 +178,7 @@ public class PasswordPolicyResponseControlTest
     @Test
     public void testDecodeRespWithGraceAuthWarningOnly() throws Exception
     {
-        Asn1Decoder decoder = new PasswordPolicyResponseControlDecoder();
+        Asn1Decoder decoder = new PasswordPolicyResponseDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 7 );
 
         bb.put( new byte[]
@@ -190,12 +190,12 @@ public class PasswordPolicyResponseControlTest
 
         bb.flip();
 
-        PasswordPolicyResponseControlContainer container = new PasswordPolicyResponseControlContainer();
-        container.setPasswordPolicyResponseControl( new PasswordPolicyResponseControl() );
+        PasswordPolicyResponseContainer container = new PasswordPolicyResponseContainer();
+        container.setPasswordPolicyResponseControl( new PasswordPolicyResponseDecorator() );
 
         decoder.decode( bb, container );
 
-        PasswordPolicyResponseControl control = container.getPasswordPolicyResponseControl();
+        PasswordPolicyResponseDecorator control = container.getPasswordPolicyResponseControl();
         assertEquals( 1, control.getGraceAuthNsRemaining() );
         
         ByteBuffer buffer = ByteBuffer.allocate( 0x26 );
@@ -221,7 +221,7 @@ public class PasswordPolicyResponseControlTest
     @Test
     public void testDecodeRespWithErrorOnly() throws Exception
     {
-        Asn1Decoder decoder = new PasswordPolicyResponseControlDecoder();
+        Asn1Decoder decoder = new PasswordPolicyResponseDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 5 );
 
         bb.put( new byte[]
@@ -232,12 +232,12 @@ public class PasswordPolicyResponseControlTest
 
         bb.flip();
 
-        PasswordPolicyResponseControlContainer container = new PasswordPolicyResponseControlContainer();
-        container.setPasswordPolicyResponseControl( new PasswordPolicyResponseControl() );
+        PasswordPolicyResponseContainer container = new PasswordPolicyResponseContainer();
+        container.setPasswordPolicyResponseControl( new PasswordPolicyResponseDecorator() );
 
         decoder.decode( bb, container );
 
-        PasswordPolicyResponseControl control = container.getPasswordPolicyResponseControl();
+        PasswordPolicyResponseDecorator control = container.getPasswordPolicyResponseControl();
         assertEquals( 1, control.getPasswordPolicyError().getValue() );
         
         ByteBuffer buffer = ByteBuffer.allocate( 0x24 );
@@ -262,7 +262,7 @@ public class PasswordPolicyResponseControlTest
     @Test
     public void testDecodeRespWithoutWarningAndError() throws Exception
     {
-        Asn1Decoder decoder = new PasswordPolicyResponseControlDecoder();
+        Asn1Decoder decoder = new PasswordPolicyResponseDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 2 );
 
         bb.put( new byte[]
@@ -272,12 +272,12 @@ public class PasswordPolicyResponseControlTest
 
         bb.flip();
 
-        PasswordPolicyResponseControlContainer container = new PasswordPolicyResponseControlContainer();
-        container.setPasswordPolicyResponseControl( new PasswordPolicyResponseControl() );
+        PasswordPolicyResponseContainer container = new PasswordPolicyResponseContainer();
+        container.setPasswordPolicyResponseControl( new PasswordPolicyResponseDecorator() );
 
         decoder.decode( bb, container );
 
-        PasswordPolicyResponseControl control = container.getPasswordPolicyResponseControl();
+        PasswordPolicyResponseDecorator control = container.getPasswordPolicyResponseControl();
         assertNotNull( control );
         
         ByteBuffer buffer = ByteBuffer.allocate( 0x1D );
