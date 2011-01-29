@@ -28,29 +28,44 @@ import org.apache.directory.shared.asn1.ber.AbstractContainer;
  *  
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SyncModifyDnControlContainer extends AbstractContainer
+public class SyncModifyDnContainer extends AbstractContainer
 {
     /** SyncModifyDnControl */
-    private SyncModifyDnControl control;
+    private SyncModifyDnDecorator control;
 
 
     /**
      * Creates a new SyncStateValueControlContainer object. We will store one grammar,
      * it's enough ...
      */
-    public SyncModifyDnControlContainer()
+    public SyncModifyDnContainer()
     {
         super();
+        this.control = new SyncModifyDnDecorator();
         stateStack = new int[1];
-        grammar = SyncModifyDnControlGrammar.getInstance();
-        setTransition( SyncModifyDnControlStatesEnum.START_SYNC_MODDN );
+        grammar = SyncModifyDnGrammar.getInstance();
+        setTransition( SyncModifyDnStatesEnum.START_SYNC_MODDN );
+    }
+
+
+    /**
+     * Creates a new SyncStateValueControlContainer object. We will store one grammar,
+     * it's enough ...
+     */
+    public SyncModifyDnContainer( SyncModifyDnDecorator control )
+    {
+        super();
+        this.control = control;
+        stateStack = new int[1];
+        grammar = SyncModifyDnGrammar.getInstance();
+        setTransition( SyncModifyDnStatesEnum.START_SYNC_MODDN );
     }
 
 
     /**
      * @return Returns the SyncModifyDnControl control.
      */
-    public SyncModifyDnControl getSyncModifyDnControl()
+    public SyncModifyDnDecorator getSyncModifyDnControl()
     {
         return control;
     }
@@ -62,10 +77,11 @@ public class SyncModifyDnControlContainer extends AbstractContainer
      * 
      * @param control the SyncStateValueControl to set.
      */
-    public void setSyncModifyDnControl( SyncModifyDnControl control )
+    public void setSyncModifyDnDecorator( SyncModifyDnDecorator control )
     {
         this.control = control;
     }
+    
 
     /**
      * Clean the container

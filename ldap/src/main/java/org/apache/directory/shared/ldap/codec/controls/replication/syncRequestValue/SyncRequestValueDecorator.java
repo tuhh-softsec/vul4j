@@ -43,15 +43,6 @@ import org.apache.directory.shared.util.Strings;
  */
 public class SyncRequestValueDecorator  extends ControlDecorator<ISyncRequestValue> implements ISyncRequestValue
 {
-    /** The synchronization type */
-    private SynchronizationModeEnum mode;
-    
-    /** The Sync cookie */
-    private byte[] cookie;
-    
-    /** The reloadHint flag */
-    private boolean reloadHint;
-    
     /** The global length for this control */
     private int syncRequestValueLength;
     
@@ -79,7 +70,7 @@ public class SyncRequestValueDecorator  extends ControlDecorator<ISyncRequestVal
      */
     public SynchronizationModeEnum getMode()
     {
-        return mode;
+        return getDecorated().getMode();
     }
 
     
@@ -88,7 +79,7 @@ public class SyncRequestValueDecorator  extends ControlDecorator<ISyncRequestVal
      */
     public void setMode( SynchronizationModeEnum mode )
     {
-        this.mode = mode;
+        getDecorated().setMode( mode );
     }
 
     
@@ -97,7 +88,7 @@ public class SyncRequestValueDecorator  extends ControlDecorator<ISyncRequestVal
      */
     public byte[] getCookie()
     {
-        return cookie;
+        return getDecorated().getCookie();
     }
 
     
@@ -106,7 +97,7 @@ public class SyncRequestValueDecorator  extends ControlDecorator<ISyncRequestVal
      */
     public void setCookie( byte[] cookie )
     {
-        this.cookie = cookie;
+        getDecorated().setCookie( cookie );
     }
 
     
@@ -115,7 +106,7 @@ public class SyncRequestValueDecorator  extends ControlDecorator<ISyncRequestVal
      */
     public boolean isReloadHint()
     {
-        return reloadHint;
+        return getDecorated().isReloadHint();
     }
 
     
@@ -124,9 +115,10 @@ public class SyncRequestValueDecorator  extends ControlDecorator<ISyncRequestVal
      */
     public void setReloadHint( boolean reloadHint )
     {
-        this.reloadHint = reloadHint;
+        getDecorated().setReloadHint( reloadHint );
     }
-
+    
+    
     /**
      * Compute the SyncRequestValue length.
      * 
@@ -144,13 +136,13 @@ public class SyncRequestValueDecorator  extends ControlDecorator<ISyncRequestVal
         syncRequestValueLength = 1 + 1 + 1;
         
         // The cookie length, if we have a cookie
-        if ( cookie != null )
+        if ( getCookie() != null )
         {
-            syncRequestValueLength += 1 + TLV.getNbBytes( cookie.length ) + cookie.length;
+            syncRequestValueLength += 1 + TLV.getNbBytes( getCookie().length ) + getCookie().length;
         }
         
         // The reloadHint length, default to false
-        if ( reloadHint )
+        if ( isReloadHint() )
         {
             syncRequestValueLength += 1 + 1 + 1;
         }
@@ -189,19 +181,19 @@ public class SyncRequestValueDecorator  extends ControlDecorator<ISyncRequestVal
 
         // The mode
         buffer.put(  UniversalTag.ENUMERATED.getValue() );
-        buffer.put( (byte)0x01 );
-        buffer.put( Value.getBytes( mode.getValue() ) );
+        buffer.put( ( byte )0x01 );
+        buffer.put( Value.getBytes( getMode().getValue() ) );
 
         // The cookie
-        if ( cookie != null )
+        if ( getCookie() != null )
         {
-            Value.encode( buffer, cookie );
+            Value.encode( buffer, getCookie() );
         }
         
         // The reloadHint if not false
-        if ( reloadHint )
+        if ( isReloadHint() )
         {
-            Value.encode( buffer, reloadHint );
+            Value.encode( buffer, isReloadHint() );
         }
         
         return buffer;
@@ -226,19 +218,19 @@ public class SyncRequestValueDecorator  extends ControlDecorator<ISyncRequestVal
 
                 // The mode
                 buffer.put(  UniversalTag.ENUMERATED.getValue() );
-                buffer.put( (byte)0x01 );
-                buffer.put( Value.getBytes( mode.getValue() ) );
+                buffer.put( ( byte ) 0x01 );
+                buffer.put( Value.getBytes( getMode().getValue() ) );
 
                 // The cookie
-                if ( cookie != null )
+                if ( getCookie() != null )
                 {
-                    Value.encode( buffer, cookie );
+                    Value.encode( buffer, getCookie() );
                 }
                 
                 // The reloadHint if not false
-                if ( reloadHint )
+                if ( isReloadHint() )
                 {
-                    Value.encode( buffer, reloadHint );
+                    Value.encode( buffer, isReloadHint() );
                 }
 
                 value = buffer.array();
@@ -267,9 +259,9 @@ public class SyncRequestValueDecorator  extends ControlDecorator<ISyncRequestVal
 
         SyncRequestValueDecorator otherControl = ( SyncRequestValueDecorator ) o;
         
-        return ( mode == otherControl.mode ) && 
-            ( reloadHint == otherControl.reloadHint ) &&
-            ( Arrays.equals( cookie, otherControl.cookie ) );
+        return ( getMode() == otherControl.getMode() ) && 
+            ( isReloadHint() == otherControl.isReloadHint() ) &&
+            ( Arrays.equals( getCookie(), otherControl.getCookie() ) );
     }
 
 
@@ -283,10 +275,10 @@ public class SyncRequestValueDecorator  extends ControlDecorator<ISyncRequestVal
         sb.append( "    SyncRequestValue control :\n" );
         sb.append( "        oid : " ).append( getOid() ).append( '\n' );
         sb.append( "        critical : " ).append( isCritical() ).append( '\n' );
-        sb.append( "        mode              : '" ).append( mode ).append( "'\n" );
+        sb.append( "        mode              : '" ).append( getMode() ).append( "'\n" );
         sb.append( "        cookie            : '" ).
-            append( Strings.dumpBytes(cookie) ).append( "'\n" );
-        sb.append( "        refreshAndPersist : '" ).append( reloadHint ).append( "'\n" );
+            append( Strings.dumpBytes( getCookie() ) ).append( "'\n" );
+        sb.append( "        refreshAndPersist : '" ).append( isReloadHint() ).append( "'\n" );
 
         return sb.toString();
     }

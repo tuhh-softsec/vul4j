@@ -43,15 +43,6 @@ import org.apache.directory.shared.util.Strings;
  */
 public class SyncStateValueDecorator extends ControlDecorator<ISyncStateValue> implements ISyncStateValue
 {
-    /** The syncStateEnum type */
-    private SyncStateTypeEnum syncStateType;
-
-    /** The Sync cookie */
-    private byte[] cookie;
-
-    /** The entryUUID */
-    private byte[] entryUUID;
-
     /** Global length for the control */
     private int syncStateSeqLength;
 
@@ -79,7 +70,7 @@ public class SyncStateValueDecorator extends ControlDecorator<ISyncStateValue> i
      */
     public byte[] getCookie()
     {
-        return cookie;
+        return getDecorated().getCookie();
     }
 
 
@@ -88,7 +79,7 @@ public class SyncStateValueDecorator extends ControlDecorator<ISyncStateValue> i
      */
     public void setCookie( byte[] cookie )
     {
-        this.cookie = cookie;
+        getDecorated().setCookie( cookie );
     }
 
 
@@ -97,7 +88,7 @@ public class SyncStateValueDecorator extends ControlDecorator<ISyncStateValue> i
      */
     public SyncStateTypeEnum getSyncStateType()
     {
-        return syncStateType;
+        return getDecorated().getSyncStateType();
     }
 
 
@@ -106,7 +97,7 @@ public class SyncStateValueDecorator extends ControlDecorator<ISyncStateValue> i
      */
     public void setSyncStateType( SyncStateTypeEnum syncStateType )
     {
-        this.syncStateType = syncStateType;
+        getDecorated().setSyncStateType( syncStateType );
     }
 
 
@@ -115,7 +106,7 @@ public class SyncStateValueDecorator extends ControlDecorator<ISyncStateValue> i
      */
     public byte[] getEntryUUID()
     {
-        return entryUUID;
+        return getDecorated().getEntryUUID();
     }
 
 
@@ -124,7 +115,7 @@ public class SyncStateValueDecorator extends ControlDecorator<ISyncStateValue> i
      */
     public void setEntryUUID( byte[] entryUUID )
     {
-        this.entryUUID = entryUUID;
+        getDecorated().setEntryUUID( entryUUID );
     }
 
 
@@ -144,12 +135,12 @@ public class SyncStateValueDecorator extends ControlDecorator<ISyncStateValue> i
         // The sync state type length
         syncStateSeqLength = 1 + 1 + 1;
 
-        syncStateSeqLength += 1 + TLV.getNbBytes( entryUUID.length ) + entryUUID.length;
+        syncStateSeqLength += 1 + TLV.getNbBytes( getEntryUUID().length ) + getEntryUUID().length;
 
         // The cookie length, if we have a cookie
-        if ( cookie != null )
+        if ( getCookie() != null )
         {
-            syncStateSeqLength += 1 + TLV.getNbBytes( cookie.length ) + cookie.length;
+            syncStateSeqLength += 1 + TLV.getNbBytes( getCookie().length ) + getCookie().length;
         }
         
         valueLength = 1 + TLV.getNbBytes( syncStateSeqLength ) + syncStateSeqLength;
@@ -186,15 +177,15 @@ public class SyncStateValueDecorator extends ControlDecorator<ISyncStateValue> i
         // The mode
         buffer.put( UniversalTag.ENUMERATED.getValue() );
         buffer.put( ( byte ) 0x01 );
-        buffer.put( Value.getBytes( syncStateType.getValue() ) );
+        buffer.put( Value.getBytes( getSyncStateType().getValue() ) );
 
         // the entryUUID
-        Value.encode( buffer, entryUUID );
+        Value.encode( buffer, getEntryUUID() );
 
         // The cookie
-        if ( cookie != null )
+        if ( getCookie() != null )
         {
-            Value.encode( buffer, cookie );
+            Value.encode( buffer, getCookie() );
         }
 
         return buffer;
@@ -220,15 +211,15 @@ public class SyncStateValueDecorator extends ControlDecorator<ISyncStateValue> i
                 // The mode
                 buffer.put( UniversalTag.ENUMERATED.getValue() );
                 buffer.put( ( byte ) 0x01 );
-                buffer.put( Value.getBytes( syncStateType.getValue() ) );
+                buffer.put( Value.getBytes( getSyncStateType().getValue() ) );
 
                 // the entryUUID
-                Value.encode( buffer, entryUUID );
+                Value.encode( buffer, getEntryUUID() );
 
                 // The cookie
-                if ( cookie != null )
+                if ( getCookie() != null )
                 {
-                    Value.encode( buffer, cookie );
+                    Value.encode( buffer, getCookie() );
                 }
 
                 value = buffer.array();
@@ -255,9 +246,9 @@ public class SyncStateValueDecorator extends ControlDecorator<ISyncStateValue> i
 
         SyncStateValueDecorator otherControl = ( SyncStateValueDecorator ) o;
         
-        return ( syncStateType == otherControl.syncStateType ) && 
-            ( Arrays.equals( entryUUID, otherControl.entryUUID ) ) &&
-            ( Arrays.equals( cookie, otherControl.cookie ) );
+        return ( getSyncStateType() == otherControl.getSyncStateType() ) && 
+            ( Arrays.equals( getEntryUUID(), otherControl.getEntryUUID() ) ) &&
+            ( Arrays.equals( getCookie(), otherControl.getCookie() ) );
     }
 
 
@@ -271,9 +262,9 @@ public class SyncStateValueDecorator extends ControlDecorator<ISyncStateValue> i
         sb.append( "    SyncStateValue control :\n" );
         sb.append( "        oid : " ).append( getOid() ).append( '\n' );
         sb.append( "        critical : " ).append( isCritical() ).append( '\n' );
-        sb.append( "        syncStateType     : '" ).append( syncStateType ).append( "'\n" );
-        sb.append( "        entryUUID         : '" ).append( Strings.dumpBytes(entryUUID) ).append( "'\n" );
-        sb.append( "        cookie            : '" ).append( Strings.dumpBytes(cookie) ).append( "'\n" );
+        sb.append( "        syncStateType     : '" ).append( getSyncStateType() ).append( "'\n" );
+        sb.append( "        entryUUID         : '" ).append( Strings.dumpBytes( getEntryUUID() ) ).append( "'\n" );
+        sb.append( "        cookie            : '" ).append( Strings.dumpBytes( getCookie()) ).append( "'\n" );
 
         return sb.toString();
     }

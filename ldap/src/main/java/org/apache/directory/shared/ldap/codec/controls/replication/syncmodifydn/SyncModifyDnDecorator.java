@@ -22,13 +22,16 @@ package org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn
 
 import java.nio.ByteBuffer;
 
+import org.apache.directory.shared.asn1.Asn1Object;
+import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.util.Asn1StringUtils;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.controls.AbstractControl;
+import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 import org.apache.directory.shared.ldap.message.control.replication.SyncModifyDnType;
 
 
@@ -44,11 +47,8 @@ import org.apache.directory.shared.ldap.message.control.replication.SyncModifyDn
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SyncModifyDnControl extends AbstractControl
+public class SyncModifyDnDecorator extends ControlDecorator<ISyncModifyDn> implements ISyncModifyDn
 {
-    /** This control OID */
-    public static final String CONTROL_OID = "1.3.6.1.4.1.4203.1.9.1.5";
-
     /** the entry's Dn to be changed */
     private String entryDn;
 
@@ -68,16 +68,20 @@ public class SyncModifyDnControl extends AbstractControl
 
     private int renameLen = 0;
     private int moveAndRenameLen = 0;
+    
+    private byte[] value;
 
+    /** An instance of this decoder */
+    private Asn1Decoder decoder = new Asn1Decoder();
 
-    public SyncModifyDnControl()
+    
+    public SyncModifyDnDecorator()
     {
-        super( CONTROL_OID );
-        decoder = new SyncModifyDnControlDecoder();
+        super( new SyncModifyDn() );
     }
 
     
-    public SyncModifyDnControl( SyncModifyDnType type )
+    public SyncModifyDnDecorator( SyncModifyDnType type )
     {
         this();
         this.modDnType = type;
@@ -163,20 +167,20 @@ public class SyncModifyDnControl extends AbstractControl
         switch ( modDnType )
         {
             case MOVE:
-                buffer.put( ( byte ) SyncModifyDnControlTags.MOVE_TAG.getValue() );
+                buffer.put( ( byte ) SyncModifyDnTags.MOVE_TAG.getValue() );
                 buffer.put( TLV.getBytes( newSuperiorDn.length() ) );
                 buffer.put( Asn1StringUtils.getBytesUtf8( newSuperiorDn ) );
                 break;
 
             case RENAME:
-                buffer.put( ( byte ) SyncModifyDnControlTags.RENAME_TAG.getValue() );
+                buffer.put( ( byte ) SyncModifyDnTags.RENAME_TAG.getValue() );
                 buffer.put( TLV.getBytes( renameLen ) );
                 Value.encode( buffer, newRdn );
                 Value.encode( buffer, deleteOldRdn );
                 break;
 
             case MOVEANDRENAME:
-                buffer.put( ( byte ) SyncModifyDnControlTags.MOVEANDRENAME_TAG.getValue() );
+                buffer.put( ( byte ) SyncModifyDnTags.MOVEANDRENAME_TAG.getValue() );
                 buffer.put( TLV.getBytes( moveAndRenameLen ) );
                 Value.encode( buffer, newSuperiorDn );
                 Value.encode( buffer, newRdn );
@@ -210,20 +214,20 @@ public class SyncModifyDnControl extends AbstractControl
                 switch ( modDnType )
                 {
                     case MOVE:
-                        buffer.put( ( byte ) SyncModifyDnControlTags.MOVE_TAG.getValue() );
+                        buffer.put( ( byte ) SyncModifyDnTags.MOVE_TAG.getValue() );
                         buffer.put( TLV.getBytes( newSuperiorDn.length() ) );
                         buffer.put( Asn1StringUtils.getBytesUtf8( newSuperiorDn ) );
                         break;
 
                     case RENAME:
-                        buffer.put( ( byte ) SyncModifyDnControlTags.RENAME_TAG.getValue() );
+                        buffer.put( ( byte ) SyncModifyDnTags.RENAME_TAG.getValue() );
                         buffer.put( TLV.getBytes( renameLen ) );
                         Value.encode( buffer, newRdn );
                         Value.encode( buffer, deleteOldRdn );
                         break;
 
                     case MOVEANDRENAME:
-                        buffer.put( ( byte ) SyncModifyDnControlTags.MOVEANDRENAME_TAG.getValue() );
+                        buffer.put( ( byte ) SyncModifyDnTags.MOVEANDRENAME_TAG.getValue() );
                         buffer.put( TLV.getBytes( moveAndRenameLen ) );
                         Value.encode( buffer, newSuperiorDn );
                         Value.encode( buffer, newRdn );
@@ -243,60 +247,90 @@ public class SyncModifyDnControl extends AbstractControl
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public String getEntryDn()
     {
         return entryDn;
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void setEntryDn( String entryDn )
     {
         this.entryDn = entryDn;
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public String getNewSuperiorDn()
     {
         return newSuperiorDn;
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void setNewSuperiorDn( String newSuperiorDn )
     {
         this.newSuperiorDn = newSuperiorDn;
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public String getNewRdn()
     {
         return newRdn;
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void setNewRdn( String newRdn )
     {
         this.newRdn = newRdn;
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean isDeleteOldRdn()
     {
         return deleteOldRdn;
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void setDeleteOldRdn( boolean deleteOldRdn )
     {
         this.deleteOldRdn = deleteOldRdn;
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public SyncModifyDnType getModDnType()
     {
         return modDnType;
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void setModDnType( SyncModifyDnType modDnType )
     {
         if( this.modDnType != null )
@@ -317,7 +351,7 @@ public class SyncModifyDnControl extends AbstractControl
             return false;
         }
 
-        SyncModifyDnControl otherControl = ( SyncModifyDnControl ) o;
+        SyncModifyDnDecorator otherControl = ( SyncModifyDnDecorator ) o;
         
         if ( newRdn != null )
         {
@@ -371,5 +405,15 @@ public class SyncModifyDnControl extends AbstractControl
         sb.append( "   deleteOldRdn : '" ).append( deleteOldRdn ).append( "'\n" );
 
         return sb.toString();
+    }
+
+
+    @Override
+    public Asn1Object decode( byte[] controlBytes ) throws DecoderException
+    {
+        ByteBuffer bb = ByteBuffer.wrap( controlBytes );
+        SyncModifyDnContainer container = new SyncModifyDnContainer( this );
+        decoder.decode( bb, container );
+        return this;
     }
 }

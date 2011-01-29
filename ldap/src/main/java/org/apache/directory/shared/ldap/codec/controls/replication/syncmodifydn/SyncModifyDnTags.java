@@ -26,7 +26,7 @@ package org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public enum SyncModifyDnControlTags
+public enum SyncModifyDnTags
 {
     MOVE_TAG(0x0080), RENAME_TAG(0x00A1), MOVEANDRENAME_TAG(0x00A2);
 
@@ -34,7 +34,7 @@ public enum SyncModifyDnControlTags
     private int value;
 
 
-    private SyncModifyDnControlTags( int value )
+    private SyncModifyDnTags( int value )
     {
         this.value = value;
     }

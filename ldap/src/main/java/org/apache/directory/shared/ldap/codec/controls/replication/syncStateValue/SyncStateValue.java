@@ -32,10 +32,16 @@ import org.apache.directory.shared.ldap.model.message.Control;
  */
 public class SyncStateValue implements ISyncStateValue
 {
-    private boolean critical;
-    private byte[] cookie;
-    private byte[] entryUuid;
+    /** The syncStateEnum type */
     private SyncStateTypeEnum type;
+
+    /** The Sync cookie */
+    private byte[] cookie;
+
+    /** The entryUUID */
+    private byte[] entryUuid;
+
+    private boolean critical;
     
     
     /**

@@ -32,9 +32,9 @@ import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.EncoderException;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn.SyncModifyDnControl;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn.SyncModifyDnControlContainer;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn.SyncModifyDnControlDecoder;
+import org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn.SyncModifyDnDecorator;
+import org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn.SyncModifyDnContainer;
+import org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn.SyncModifyDnDecorator;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -63,8 +63,8 @@ public class SyncModifyDnControlTest
             } );
         bb.flip();
 
-        SyncModifyDnControlContainer container = new SyncModifyDnControlContainer();
-        container.setSyncModifyDnControl( new SyncModifyDnControl() );
+        SyncModifyDnContainer container = new SyncModifyDnContainer();
+        container.setSyncModifyDnDecorator( new SyncModifyDnDecorator() );
 
         try
         {
@@ -76,7 +76,7 @@ public class SyncModifyDnControlTest
             fail( de.getMessage() );
         }
 
-        SyncModifyDnControl syncmodDnControl = container.getSyncModifyDnControl();
+        SyncModifyDnDecorator syncmodDnControl = container.getSyncModifyDnControl();
         assertEquals( "uid=jim", syncmodDnControl.getEntryDn() );
         assertEquals( "ou=dc", syncmodDnControl.getNewSuperiorDn() );
         assertFalse( syncmodDnControl.isDeleteOldRdn() );
@@ -126,8 +126,8 @@ public class SyncModifyDnControlTest
             } );
         bb.flip();
 
-        SyncModifyDnControlContainer container = new SyncModifyDnControlContainer();
-        container.setSyncModifyDnControl( new SyncModifyDnControl() );
+        SyncModifyDnContainer container = new SyncModifyDnContainer();
+        container.setSyncModifyDnDecorator( new SyncModifyDnDecorator() );
 
         try
         {
@@ -139,7 +139,7 @@ public class SyncModifyDnControlTest
             fail( de.getMessage() );
         }
 
-        SyncModifyDnControl syncmodDnControl = container.getSyncModifyDnControl();
+        SyncModifyDnDecorator syncmodDnControl = container.getSyncModifyDnControl();
         assertEquals( "uid=jim", syncmodDnControl.getEntryDn() );
         assertEquals( "uid=j", syncmodDnControl.getNewRdn() );
         assertTrue( syncmodDnControl.isDeleteOldRdn() );
@@ -191,8 +191,8 @@ public class SyncModifyDnControlTest
             } );
         bb.flip();
 
-        SyncModifyDnControlContainer container = new SyncModifyDnControlContainer();
-        container.setSyncModifyDnControl( new SyncModifyDnControl() );
+        SyncModifyDnContainer container = new SyncModifyDnContainer();
+        container.setSyncModifyDnDecorator( new SyncModifyDnDecorator() );
 
         try
         {
@@ -204,7 +204,7 @@ public class SyncModifyDnControlTest
             fail( de.getMessage() );
         }
 
-        SyncModifyDnControl syncmodDnControl = container.getSyncModifyDnControl();
+        SyncModifyDnDecorator syncmodDnControl = container.getSyncModifyDnControl();
         assertEquals( "uid=jim", syncmodDnControl.getEntryDn() );
         assertEquals( "ou=dc", syncmodDnControl.getNewSuperiorDn() );
         assertEquals( "uid=j", syncmodDnControl.getNewRdn() );
@@ -255,8 +255,8 @@ public class SyncModifyDnControlTest
             } );
         bb.flip();
 
-        SyncModifyDnControlContainer container = new SyncModifyDnControlContainer();
-        container.setSyncModifyDnControl( new SyncModifyDnControl() );
+        SyncModifyDnContainer container = new SyncModifyDnContainer();
+        container.setSyncModifyDnDecorator( new SyncModifyDnDecorator() );
 
         decoder.decode( bb, container );
     }

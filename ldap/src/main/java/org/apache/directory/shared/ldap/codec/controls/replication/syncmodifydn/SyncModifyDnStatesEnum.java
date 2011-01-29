@@ -30,7 +30,7 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public enum SyncModifyDnControlStatesEnum implements States
+public enum SyncModifyDnStatesEnum implements States
 {
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
@@ -97,7 +97,7 @@ public enum SyncModifyDnControlStatesEnum implements States
      */
     public String getGrammarName( Grammar grammar )
     {
-        if ( grammar instanceof SyncModifyDnControlGrammar )
+        if ( grammar instanceof SyncModifyDnGrammar )
         {
             return "SYNC_MODIFYDN_GRAMMAR";
         }
@@ -130,7 +130,7 @@ public enum SyncModifyDnControlStatesEnum implements States
     /**
      * {@inheritDoc}
      */
-    public SyncModifyDnControlStatesEnum getStartState()
+    public SyncModifyDnStatesEnum getStartState()
     {
         return START_SYNC_MODDN;
     }

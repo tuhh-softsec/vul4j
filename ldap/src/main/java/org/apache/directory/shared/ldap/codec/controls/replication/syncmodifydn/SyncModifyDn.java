@@ -17,38 +17,42 @@
  *   under the License.
  *
  */
-package org.apache.directory.shared.ldap.codec.controls.replication.syncRequestValue;
+package org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn;
 
 
-import org.apache.directory.shared.ldap.message.control.replication.SynchronizationModeEnum;
+import org.apache.directory.shared.ldap.message.control.replication.SyncModifyDnType;
 
 
 /**
- * A syncRequestValue object, as defined in RFC 4533
- * 
+ * A simple {@link ISyncModifyDn} implementation to hold properties.
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class SyncRequestValue implements ISyncRequestValue
+public class SyncModifyDn implements ISyncModifyDn
 {
-    private boolean isCritical;
+    /** the entry's Dn to be changed */
+    private String entryDn;
+
+    /** target entry's new parent Dn */
+    private String newSuperiorDn;
+
+    /** the new Rdn */
+    private String newRdn;
+
+    /** flag to indicate whether to delete the old Rdn */
+    private boolean deleteOldRdn = false;
+
+    private SyncModifyDnType modDnType;
     
-    /** The synchronization type */
-    private SynchronizationModeEnum mode;
     
-    /** The Sync cookie */
-    private byte[] cookie;
-    
-    /** The reloadHint flag */
-    private boolean isReloadHint;
-    
-    
+
     /**
      * {@inheritDoc}
      */
     public String getOid()
     {
-        return OID;
+        return null;
     }
 
 
@@ -57,7 +61,7 @@ public class SyncRequestValue implements ISyncRequestValue
      */
     public boolean isCritical()
     {
-        return isCritical;
+        return false;
     }
 
 
@@ -66,60 +70,91 @@ public class SyncRequestValue implements ISyncRequestValue
      */
     public void setCritical( boolean isCritical )
     {
-        this.isCritical = isCritical;
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public byte[] getCookie()
+    public String getEntryDn()
     {
-        return this.cookie;
+        return null;
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public void setCookie( byte[] cookie )
+    public void setEntryDn( String entryDn )
     {
-        this.cookie = cookie;
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public SynchronizationModeEnum getMode()
+    public String getNewSuperiorDn()
     {
-        return mode;
+        return null;
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public void setMode( SynchronizationModeEnum mode )
+    public void setNewSuperiorDn( String newSuperiorDn )
     {
-        this.mode = mode;
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public boolean isReloadHint()
+    public String getNewRdn()
     {
-        return isReloadHint;
+        return null;
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public void setReloadHint( boolean reloadHint )
+    public void setNewRdn( String newRdn )
     {
-        this.isReloadHint = reloadHint;
     }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isDeleteOldRdn()
+    {
+        return false;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setDeleteOldRdn( boolean deleteOldRdn )
+    {
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public SyncModifyDnType getModDnType()
+    {
+        return null;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setModDnType( SyncModifyDnType modDnType )
+    {
+    }
+
 }
