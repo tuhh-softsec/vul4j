@@ -59,44 +59,19 @@ import org.apache.directory.ldap.client.api.protocol.LdapProtocolCodecFactory;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.util.OID;
+import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.MessageEncoderException;
-import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
+import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
 import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.model.constants.SupportedSaslMechanisms;
 import org.apache.directory.shared.ldap.model.cursor.Cursor;
 import org.apache.directory.shared.ldap.model.cursor.SearchCursor;
-import org.apache.directory.shared.ldap.model.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.model.entry.*;
-import org.apache.directory.shared.ldap.model.entry.Modification;
-import org.apache.directory.shared.ldap.model.entry.ModificationOperation;
-import org.apache.directory.shared.ldap.model.entry.Entry;
-import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.model.exception.*;
-import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
-import org.apache.directory.shared.ldap.model.exception.LdapOperationException;
 import org.apache.directory.shared.ldap.model.filter.SearchScope;
-import org.apache.directory.shared.ldap.model.message.AbandonRequest;
-import org.apache.directory.shared.ldap.model.message.AbandonRequestImpl;
-import org.apache.directory.shared.ldap.model.message.AddRequest;
-import org.apache.directory.shared.ldap.model.message.AddRequestImpl;
-import org.apache.directory.shared.ldap.model.message.AddResponse;
 import org.apache.directory.shared.ldap.model.message.*;
-import org.apache.directory.shared.ldap.model.message.BindRequest;
-import org.apache.directory.shared.ldap.model.message.BindRequestImpl;
-import org.apache.directory.shared.ldap.model.message.BindResponse;
-import org.apache.directory.shared.ldap.model.message.CompareRequest;
-import org.apache.directory.shared.ldap.model.message.CompareRequestImpl;
-import org.apache.directory.shared.ldap.model.message.CompareResponse;
-import org.apache.directory.shared.ldap.model.message.DeleteRequest;
-import org.apache.directory.shared.ldap.model.message.DeleteRequestImpl;
-import org.apache.directory.shared.ldap.model.message.DeleteResponse;
-import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
-import org.apache.directory.shared.ldap.model.message.ExtendedRequestImpl;
-import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
-import org.apache.directory.shared.ldap.model.message.IntermediateResponse;
-import org.apache.directory.shared.ldap.model.message.IntermediateResponseImpl;
-import org.apache.directory.shared.ldap.model.message.LdapResult;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.message.ModifyDnRequest;
 import org.apache.directory.shared.ldap.model.message.ModifyDnRequestImpl;
@@ -113,6 +88,7 @@ import org.apache.directory.shared.ldap.model.message.SearchResultReference;
 import org.apache.directory.shared.ldap.model.message.UnbindRequest;
 import org.apache.directory.shared.ldap.model.message.UnbindRequestImpl;
 import org.apache.directory.shared.ldap.model.message.Control;
+import org.apache.directory.shared.ldap.model.message.controls.BasicControl;
 import org.apache.directory.shared.ldap.message.extended.NoticeOfDisconnect;
 import org.apache.directory.shared.ldap.message.extended.nod.AddNoDResponse;
 import org.apache.directory.shared.ldap.message.extended.nod.BindNoDResponse;
@@ -214,6 +190,9 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
     /** the schema manager */
     private SchemaManager schemaManager;
 
+    /** the ldap codec service */
+    ILdapCodecService codec = new DefaultLdapCodecService();
+    
     /** the SslFilter key */
     private static final String SSL_FILTER_KEY = "sslFilter";
 
@@ -597,7 +576,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         connected.set( true );
 
         // And inject the current Ldap container into the session
-        Asn1Container ldapMessageContainer = new LdapMessageContainer();
+        Asn1Container ldapMessageContainer = new LdapMessageContainer<MessageDecorator<Message>>( codec );
 
         // Store the container into the session
         ldapSession.setAttribute( "LDAP-Container", ldapMessageContainer );
@@ -2488,7 +2467,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         {
             DeleteRequest deleteRequest = new DeleteRequestImpl();
             deleteRequest.setName( dn );
-            deleteRequest.addControl( new ControlImpl( treeDeleteOid ) );
+            deleteRequest.addControl( new BasicControl( treeDeleteOid ) );
             return delete( deleteRequest );
         }
         else
@@ -2519,7 +2498,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
             {
                 DeleteRequest deleteRequest = new DeleteRequestImpl();
                 deleteRequest.setName( newDn );
-                deleteRequest.addControl( new ControlImpl( treeDeleteOid ) );
+                deleteRequest.addControl( new BasicControl( treeDeleteOid ) );
                 return delete( deleteRequest );
             }
             else
@@ -3342,11 +3321,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
                     continue;
                 }
 
-                Control control = new ControlImpl( cc.getOid() );
-                control.setValue( cc.getValue() );
-                control.setCritical( cc.isCritical() );
-
-                message.addControl( control );
+                message.addControl( cc );
             }
         }
     }
