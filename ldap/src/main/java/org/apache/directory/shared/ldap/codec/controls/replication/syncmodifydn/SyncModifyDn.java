@@ -45,6 +45,7 @@ public class SyncModifyDn implements ISyncModifyDn
 
     private SyncModifyDnType modDnType;
     
+    private boolean isCritical;
     
 
     /**
@@ -52,7 +53,7 @@ public class SyncModifyDn implements ISyncModifyDn
      */
     public String getOid()
     {
-        return null;
+        return OID;
     }
 
 
@@ -61,7 +62,7 @@ public class SyncModifyDn implements ISyncModifyDn
      */
     public boolean isCritical()
     {
-        return false;
+        return isCritical;
     }
 
 
@@ -70,6 +71,7 @@ public class SyncModifyDn implements ISyncModifyDn
      */
     public void setCritical( boolean isCritical )
     {
+        this.isCritical = isCritical;
     }
 
 
@@ -78,7 +80,7 @@ public class SyncModifyDn implements ISyncModifyDn
      */
     public String getEntryDn()
     {
-        return null;
+        return entryDn;
     }
 
 
@@ -87,6 +89,7 @@ public class SyncModifyDn implements ISyncModifyDn
      */
     public void setEntryDn( String entryDn )
     {
+        this.entryDn = entryDn;
     }
 
 
@@ -95,7 +98,7 @@ public class SyncModifyDn implements ISyncModifyDn
      */
     public String getNewSuperiorDn()
     {
-        return null;
+        return newSuperiorDn;
     }
 
 
@@ -104,6 +107,7 @@ public class SyncModifyDn implements ISyncModifyDn
      */
     public void setNewSuperiorDn( String newSuperiorDn )
     {
+        this.newSuperiorDn = newSuperiorDn;
     }
 
 
@@ -112,7 +116,7 @@ public class SyncModifyDn implements ISyncModifyDn
      */
     public String getNewRdn()
     {
-        return null;
+        return newRdn;
     }
 
 
@@ -121,6 +125,7 @@ public class SyncModifyDn implements ISyncModifyDn
      */
     public void setNewRdn( String newRdn )
     {
+        this.newRdn = newRdn;
     }
 
 
@@ -129,7 +134,7 @@ public class SyncModifyDn implements ISyncModifyDn
      */
     public boolean isDeleteOldRdn()
     {
-        return false;
+        return deleteOldRdn;
     }
 
 
@@ -138,6 +143,7 @@ public class SyncModifyDn implements ISyncModifyDn
      */
     public void setDeleteOldRdn( boolean deleteOldRdn )
     {
+        this.deleteOldRdn = deleteOldRdn;
     }
 
 
@@ -146,7 +152,7 @@ public class SyncModifyDn implements ISyncModifyDn
      */
     public SyncModifyDnType getModDnType()
     {
-        return null;
+        return modDnType;
     }
 
 
@@ -155,6 +161,6 @@ public class SyncModifyDn implements ISyncModifyDn
      */
     public void setModDnType( SyncModifyDnType modDnType )
     {
+        this.modDnType = modDnType;
     }
-
 }
