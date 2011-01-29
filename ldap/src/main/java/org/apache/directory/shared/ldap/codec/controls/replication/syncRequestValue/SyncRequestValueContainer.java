@@ -64,7 +64,7 @@ public class SyncRequestValueContainer extends AbstractContainer
     /**
      * @return Returns the syncRequestValue control.
      */
-    public ISyncRequestValue getSyncRequestValueControl()
+    public SyncRequestValueDecorator getSyncRequestValueControl()
     {
         return control;
     }

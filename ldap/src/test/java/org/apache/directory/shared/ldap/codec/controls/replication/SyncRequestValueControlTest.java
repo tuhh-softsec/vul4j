@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.codec.controls.replication;
 
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -30,14 +31,13 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
-import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncRequestValue.SyncRequestValueDecorator;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncRequestValue.SyncRequestValueContainer;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncRequestValue.SyncRequestValueDecorator;
 import org.apache.directory.shared.ldap.message.control.replication.SynchronizationModeEnum;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 
 /**
  * Test the SyncRequestControlValue codec
@@ -54,7 +54,6 @@ public class SyncRequestValueControlTest
     @Test
     public void testDecodeSyncRequestValueControlRefreshOnlySuccess()
     {
-        Asn1Decoder decoder = new SyncRequestValueControlDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x0D );
         bb.put( new byte[]
             { 
@@ -68,11 +67,11 @@ public class SyncRequestValueControlTest
         bb.flip();
 
         SyncRequestValueContainer container = new SyncRequestValueContainer();
-        container.setSyncRequestValueControl( new SyncRequestValueDecorator() );
+        SyncRequestValueDecorator decorator = container.getSyncRequestValueControl();
         
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
         }
         catch ( DecoderException de )
         {
@@ -123,7 +122,6 @@ public class SyncRequestValueControlTest
     @Test
     public void testDecodeSyncRequestValueControlRefreshAndPersistSuccess()
     {
-        Asn1Decoder decoder = new SyncRequestValueControlDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x0D );
         bb.put( new byte[]
             { 
@@ -137,11 +135,11 @@ public class SyncRequestValueControlTest
         bb.flip();
 
         SyncRequestValueContainer container = new SyncRequestValueContainer();
-        container.setSyncRequestValueControl( new SyncRequestValueDecorator() );
-
+        SyncRequestValueDecorator decorator = container.getSyncRequestValueControl();
+        
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
         }
         catch ( DecoderException de )
         {
@@ -192,7 +190,6 @@ public class SyncRequestValueControlTest
     @Test
     public void testDecodeSyncRequestValueControlNoCookie()
     {
-        Asn1Decoder decoder = new SyncRequestValueControlDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x08 );
         bb.put( new byte[]
             { 
@@ -205,11 +202,11 @@ public class SyncRequestValueControlTest
         bb.flip();
 
         SyncRequestValueContainer container = new SyncRequestValueContainer();
-        container.setSyncRequestValueControl( new SyncRequestValueDecorator() );
-
+        SyncRequestValueDecorator decorator = container.getSyncRequestValueControl();
+        
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
         }
         catch ( DecoderException de )
         {
@@ -260,7 +257,6 @@ public class SyncRequestValueControlTest
     @Test
     public void testDecodeSyncRequestValueControlNoCookieReloadHintTrue()
     {
-        Asn1Decoder decoder = new SyncRequestValueControlDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x08 );
         bb.put( new byte[]
             { 
@@ -273,11 +269,11 @@ public class SyncRequestValueControlTest
         bb.flip();
 
         SyncRequestValueContainer container = new SyncRequestValueContainer();
-        container.setSyncRequestValueControl( new SyncRequestValueDecorator() );
-
+        SyncRequestValueDecorator decorator = container.getSyncRequestValueControl();
+        
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
         }
         catch ( DecoderException de )
         {
@@ -329,7 +325,6 @@ public class SyncRequestValueControlTest
     @Test
     public void testDecodeSyncRequestValueControlNoCookieNoReloadHint()
     {
-        Asn1Decoder decoder = new SyncRequestValueControlDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x05 );
         bb.put( new byte[]
             { 
@@ -341,11 +336,11 @@ public class SyncRequestValueControlTest
         bb.flip();
 
         SyncRequestValueContainer container = new SyncRequestValueContainer();
-        container.setSyncRequestValueControl( new SyncRequestValueDecorator() );
-
+        SyncRequestValueDecorator decorator = container.getSyncRequestValueControl();
+        
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
         }
         catch ( DecoderException de )
         {
@@ -395,7 +390,6 @@ public class SyncRequestValueControlTest
     @Test
     public void testDecodeSyncRequestValueControlNoReloadHintSuccess()
     {
-        Asn1Decoder decoder = new SyncRequestValueControlDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x0D );
         bb.put( new byte[]
             { 
@@ -408,11 +402,11 @@ public class SyncRequestValueControlTest
         bb.flip();
 
         SyncRequestValueContainer container = new SyncRequestValueContainer();
-        container.setSyncRequestValueControl( new SyncRequestValueDecorator() );
-
+        SyncRequestValueDecorator decorator = container.getSyncRequestValueControl();
+        
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
         }
         catch ( DecoderException de )
         {
@@ -463,7 +457,6 @@ public class SyncRequestValueControlTest
     @Test
     public void testDecodeSyncRequestValueControlEmptyCookie()
     {
-        Asn1Decoder decoder = new SyncRequestValueControlDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x07 );
         bb.put( new byte[]
             { 
@@ -476,11 +469,11 @@ public class SyncRequestValueControlTest
         bb.flip();
 
         SyncRequestValueContainer container = new SyncRequestValueContainer();
-        container.setSyncRequestValueControl( new SyncRequestValueDecorator() );
-
+        SyncRequestValueDecorator decorator = container.getSyncRequestValueControl();
+        
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
         }
         catch ( DecoderException de )
         {
@@ -530,7 +523,6 @@ public class SyncRequestValueControlTest
     @Test
     public void testDecodeSyncRequestValueControlEmptySequence()
     {
-        Asn1Decoder decoder = new SyncRequestValueControlDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x02 );
         bb.put( new byte[]
             { 
@@ -539,11 +531,11 @@ public class SyncRequestValueControlTest
         bb.flip();
 
         SyncRequestValueContainer container = new SyncRequestValueContainer();
-        container.setSyncRequestValueControl( new SyncRequestValueDecorator() );
-
+        SyncRequestValueDecorator decorator = container.getSyncRequestValueControl();
+        
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
             fail( "we should not get there" );
         }
         catch ( DecoderException de )
@@ -559,7 +551,6 @@ public class SyncRequestValueControlTest
     @Test
     public void testDecodeSyncRequestValueControlNoMode()
     {
-        Asn1Decoder decoder = new SyncRequestValueControlDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x07 );
         bb.put( new byte[]
             { 
@@ -569,11 +560,11 @@ public class SyncRequestValueControlTest
         bb.flip();
 
         SyncRequestValueContainer container = new SyncRequestValueContainer();
-        container.setSyncRequestValueControl( new SyncRequestValueDecorator() );
-
+        SyncRequestValueDecorator decorator = container.getSyncRequestValueControl();
+        
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
             fail( "we should not get there" );
         }
         catch ( DecoderException de )
