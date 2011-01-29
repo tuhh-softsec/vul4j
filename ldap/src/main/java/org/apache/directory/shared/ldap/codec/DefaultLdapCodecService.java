@@ -95,6 +95,7 @@ public class DefaultLdapCodecService implements ILdapCodecService
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
     public <E> E newCodecControl( Class<? extends ICodecControl<? extends Control>> clazz )
     {
         try
@@ -102,7 +103,7 @@ public class DefaultLdapCodecService implements ILdapCodecService
             Field f = clazz.getField( "OID" );
             String oid = ( String ) f.get( null );
             IControlFactory<?,?> factory = controlFactories.get( oid );
-            return extracted2( factory );
+            return ( E ) factory.newCodecControl();
         }
         catch ( IllegalAccessException e )
         {
@@ -124,6 +125,7 @@ public class DefaultLdapCodecService implements ILdapCodecService
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
     public <E> E newControl( Class<? extends Control> clazz )
     {
         try
@@ -131,7 +133,7 @@ public class DefaultLdapCodecService implements ILdapCodecService
             Field f = clazz.getField( "OID" );
             String oid = ( String ) f.get( null );
             IControlFactory<?,?> factory = controlFactories.get( oid );
-            return extracted( factory );
+            return ( E ) factory.newControl();
         }
         catch ( IllegalAccessException e )
         {
@@ -160,25 +162,12 @@ public class DefaultLdapCodecService implements ILdapCodecService
 
     
     @SuppressWarnings("unchecked")
-    private <E> E extracted( IControlFactory<?,?> factory )
-    {
-        return ( E ) factory.newControl();
-    }
-
-    
-    @SuppressWarnings("unchecked")
-    private <E> E extracted2( IControlFactory<?,?> factory )
-    {
-        return ( E ) factory.newCodecControl();
-    }
-
-
     public <E> E newControl( String oid )
     {
         try
         {
             IControlFactory<?,?> factory = controlFactories.get( oid );
-            return extracted( factory );
+            return ( E ) factory.newControl();
         }
         catch ( SecurityException e )
         {
