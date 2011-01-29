@@ -20,7 +20,15 @@ package org.apache.commons.digester3.rulesbinder;
 /**
  * Builder chained when invoking {@link LinkedRuleBuilder#factoryCreate(String)}.
  */
-public interface LinkedFactoryCreateBuilder extends BackToLinkedRuleBuilder, LinkedAttributeOverrideBuilder {
+public interface LinkedFactoryCreateBuilder extends BackToLinkedRuleBuilder {
+
+    /**
+     * Allows specify the attribute containing an override class name if it is present.
+     *
+     * @param attributeName The attribute containing an override class name if it is present
+     * @return this builder instance
+     */
+    LinkedFactoryCreateBuilder overriddenByAttribute(String attributeName);
 
     /**
      * Exceptions thrown by the object creation factory will be ignored or not.
