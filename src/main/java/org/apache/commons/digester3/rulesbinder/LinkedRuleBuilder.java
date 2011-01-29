@@ -65,7 +65,7 @@ public interface LinkedRuleBuilder {
      *
      * @param paramIndex The zero-relative parameter number
      */
-    void callParamPath(int paramIndex);
+    BackToLinkedRuleBuilder callParamPath(int paramIndex);
 
     /**
      * Uses an {@link ObjectCreationFactory} to create a new object which it pushes onto the object stack.
@@ -139,7 +139,7 @@ public interface LinkedRuleBuilder {
      * @param name Name of the attribute that will contain the name of the property to be set
      * @param value Name of the attribute that will contain the value to which the property should be set
      */
-    void setProperty(String name, String value);
+    BackToLinkedRuleBuilder setProperty(String name, String value);
 
     /**
      * Calls a method on the root object on the stack, passing the top object (child) as an argument.
