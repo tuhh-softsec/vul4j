@@ -31,9 +31,7 @@ import java.util.Arrays;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedResultsContainer;
-import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedResultsDecoder;
 import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedResultsDecorator;
 import org.apache.directory.shared.util.StringConstants;
 import org.apache.directory.shared.util.Strings;
@@ -56,7 +54,6 @@ public class PagedSearchControlTest
     @Test
     public void testEncodePagedSearchControl() throws Exception
     {
-        Asn1Decoder decoder = new PagedResultsDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x2A );
         bb.put( new byte[]
             { 
@@ -67,11 +64,11 @@ public class PagedSearchControlTest
         bb.flip();
 
         PagedResultsContainer container = new PagedResultsContainer();
-        container.setPagedSearchControl( new PagedResultsDecorator() );
+        PagedResultsDecorator decorator = container.getDecorator();
         
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
         }
         catch ( DecoderException de )
         {
@@ -118,7 +115,6 @@ public class PagedSearchControlTest
     @Test
     public void testDecodePagedSearchRequestNoCookie()
     {
-        Asn1Decoder decoder = new PagedResultsDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x05 );
         bb.put( new byte[]
             { 
@@ -128,11 +124,11 @@ public class PagedSearchControlTest
         bb.flip();
 
         PagedResultsContainer container = new PagedResultsContainer();
-        container.setPagedSearchControl( new PagedResultsDecorator() );
+        PagedResultsDecorator decorator = container.getDecorator();
         
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
             fail();
         }
         catch ( DecoderException de )
@@ -148,7 +144,6 @@ public class PagedSearchControlTest
     @Test
     public void testDecodePagedSearchRequestNoSize()
     {
-        Asn1Decoder decoder = new PagedResultsDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x08 );
         bb.put( new byte[]
             { 
@@ -158,11 +153,11 @@ public class PagedSearchControlTest
         bb.flip();
 
         PagedResultsContainer container = new PagedResultsContainer();
-        container.setPagedSearchControl( new PagedResultsDecorator() );
+        PagedResultsDecorator decorator = container.getDecorator();
         
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
             fail();
         }
         catch ( DecoderException de )
@@ -178,7 +173,6 @@ public class PagedSearchControlTest
     @Test
     public void testDecodePagedSearchRequestNoSizeNoCookie()
     {
-        Asn1Decoder decoder = new PagedResultsDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x02 );
         bb.put( new byte[]
             { 
@@ -187,11 +181,11 @@ public class PagedSearchControlTest
         bb.flip();
 
         PagedResultsContainer container = new PagedResultsContainer();
-        container.setPagedSearchControl( new PagedResultsDecorator() );
+        PagedResultsDecorator decorator = container.getDecorator();
         
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
             fail();
         }
         catch ( DecoderException de )
@@ -207,7 +201,6 @@ public class PagedSearchControlTest
     @Test
     public void testEncodePagedSearchControlNegativeSize() throws Exception
     {
-        Asn1Decoder decoder = new PagedResultsDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x0b );
         bb.put( new byte[]
             { 
@@ -218,11 +211,11 @@ public class PagedSearchControlTest
         bb.flip();
 
         PagedResultsContainer container = new PagedResultsContainer();
-        container.setPagedSearchControl( new PagedResultsDecorator() );
+        PagedResultsDecorator decorator = container.getDecorator();
         
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
         }
         catch ( DecoderException de )
         {
@@ -270,7 +263,6 @@ public class PagedSearchControlTest
     @Test
     public void testEncodePagedSearchControlEmptySize() throws Exception
     {
-        Asn1Decoder decoder = new PagedResultsDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x0a );
         bb.put( new byte[]
             { 
@@ -281,11 +273,11 @@ public class PagedSearchControlTest
         bb.flip();
 
         PagedResultsContainer container = new PagedResultsContainer();
-        container.setPagedSearchControl( new PagedResultsDecorator() );
-
+        PagedResultsDecorator decorator = container.getDecorator();
+        
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
             fail();
         }
         catch ( DecoderException de )
@@ -301,7 +293,6 @@ public class PagedSearchControlTest
     @Test
     public void testEncodePagedSearchControlEmptyCookie() throws Exception
     {
-        Asn1Decoder decoder = new PagedResultsDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x07 );
         bb.put( new byte[]
             { 
@@ -312,11 +303,11 @@ public class PagedSearchControlTest
         bb.flip();
 
         PagedResultsContainer container = new PagedResultsContainer();
-        container.setPagedSearchControl( new PagedResultsDecorator() );
-
+        PagedResultsDecorator decorator = container.getDecorator();
+        
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
         }
         catch ( DecoderException de )
         {
