@@ -47,4 +47,12 @@ public interface LinkedParamTypeBuilder extends BackToLinkedRuleBuilder {
      */
     LinkedParamTypeBuilder withParameterType(String paramType);
 
+    /**
+     * Sets exact matching being used.
+     *
+     * @param useExactMatch The exact matching being used
+     * @return this builder instance
+     */
+    LinkedParamTypeBuilder useExactMatch(boolean useExactMatch);
+
 }
