@@ -74,7 +74,7 @@ public interface LinkedRuleBuilder {
      *
      * @param className Java class name of the object creation factory class
      */
-    void factoryCreate(String className);
+    LinkedFactoryCreateBuilder factoryCreate(String className);
 
     /**
      * Construct a factory create rule that will use the specified class to create an {@link ObjectCreationFactory}
@@ -82,7 +82,7 @@ public interface LinkedRuleBuilder {
      *
      * @param clazz Java class of the object creation factory class
      */
-    void factoryCreate(Class<?> clazz);
+    LinkedFactoryCreateBuilder factoryCreate(Class<?> clazz);
 
     /**
      * Construct a factory create rule using the given, already instantiated, {@link ObjectCreationFactory}.
@@ -90,7 +90,7 @@ public interface LinkedRuleBuilder {
      * @param <T> the type of created object by the given factory
      * @param creationFactory called on to create the object
      */
-    <T> void factoryCreate(ObjectCreationFactory<T> creationFactory);
+    <T> LinkedFactoryCreateBuilder factoryCreate(ObjectCreationFactory<T> creationFactory);
 
     /**
      * Construct an object with the specified class name.
