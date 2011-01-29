@@ -17,8 +17,8 @@
  *   under the License.
  *
  */
-
 package org.apache.directory.shared.ldap.codec.controls.replication;
+
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -30,14 +30,13 @@ import java.nio.ByteBuffer;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn.SyncModifyDnDecorator;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn.SyncModifyDnContainer;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn.SyncModifyDnDecorator;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 
 /**
  * TODO SyncModifyDnControlTest.
@@ -52,7 +51,6 @@ public class SyncModifyDnControlTest
     @Test
     public void testDecodeSyncModifyDnControlWithMoveOperation()
     {
-        Asn1Decoder decoder = new SyncModifyDnControlDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x12 );
         bb.put( new byte[]
             { 
@@ -64,11 +62,11 @@ public class SyncModifyDnControlTest
         bb.flip();
 
         SyncModifyDnContainer container = new SyncModifyDnContainer();
-        container.setSyncModifyDnDecorator( new SyncModifyDnDecorator() );
+        SyncModifyDnDecorator decorator = container.getSyncModifyDnControl();
 
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
         }
         catch ( DecoderException de )
         {
@@ -114,7 +112,6 @@ public class SyncModifyDnControlTest
     @Test
     public void testDecodeSyncModifyDnControlWithRenameOperation()
     {
-        Asn1Decoder decoder = new SyncModifyDnControlDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x17 );
         bb.put( new byte[]
             { 
@@ -127,11 +124,11 @@ public class SyncModifyDnControlTest
         bb.flip();
 
         SyncModifyDnContainer container = new SyncModifyDnContainer();
-        container.setSyncModifyDnDecorator( new SyncModifyDnDecorator() );
+        SyncModifyDnDecorator decorator = container.getSyncModifyDnControl();
 
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
         }
         catch ( DecoderException de )
         {
@@ -178,7 +175,6 @@ public class SyncModifyDnControlTest
     @Test
     public void testDecodeSyncModifyDnControlWithRenameAndMoveOperation()
     {
-        Asn1Decoder decoder = new SyncModifyDnControlDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0x1E );
         bb.put( new byte[]
             { 
@@ -192,11 +188,11 @@ public class SyncModifyDnControlTest
         bb.flip();
 
         SyncModifyDnContainer container = new SyncModifyDnContainer();
-        container.setSyncModifyDnDecorator( new SyncModifyDnDecorator() );
+        SyncModifyDnDecorator decorator = container.getSyncModifyDnControl();
 
         try
         {
-            decoder.decode( bb, container );
+            decorator.decode( bb.array() );
         }
         catch ( DecoderException de )
         {
@@ -245,7 +241,6 @@ public class SyncModifyDnControlTest
     @Test( expected=DecoderException.class)
     public void testDecodeSyncModifyDnControlWithIncorrectRenameOperationData() throws DecoderException
     {
-        Asn1Decoder decoder = new SyncModifyDnControlDecoder();
         ByteBuffer bb = ByteBuffer.allocate( 0xE );
         bb.put( new byte[]
             { 
@@ -256,8 +251,7 @@ public class SyncModifyDnControlTest
         bb.flip();
 
         SyncModifyDnContainer container = new SyncModifyDnContainer();
-        container.setSyncModifyDnDecorator( new SyncModifyDnDecorator() );
-
-        decoder.decode( bb, container );
+        SyncModifyDnDecorator decorator = container.getSyncModifyDnControl();
+        decorator.decode( bb.array() );
     }
 }
