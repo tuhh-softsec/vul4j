@@ -182,7 +182,7 @@ public class SyncDoneValueDecorator extends ControlDecorator<ISyncDoneValue> imp
     public void setCookie( byte[] cookie )
     {
         // Copy the bytes
-        if ( cookie != null )
+        if ( !Strings.isEmpty( cookie ) )
         {
             byte[] copy = new byte[cookie.length];
             System.arraycopy( cookie, 0, copy, 0, cookie.length );

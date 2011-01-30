@@ -97,7 +97,17 @@ public class SyncRequestValueDecorator  extends ControlDecorator<ISyncRequestVal
      */
     public void setCookie( byte[] cookie )
     {
-        getDecorated().setCookie( cookie );
+        // Copy the bytes
+        if ( !Strings.isEmpty( cookie ) )
+        {
+            byte[] copy = new byte[cookie.length];
+            System.arraycopy( cookie, 0, copy, 0, cookie.length );
+            getDecorated().setCookie( copy );
+        }
+        else
+        {
+            getDecorated().setCookie( null );
+        }
     }
 
     
