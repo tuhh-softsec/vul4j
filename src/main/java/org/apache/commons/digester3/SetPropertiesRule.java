@@ -15,10 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package org.apache.commons.digester3;
-
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +23,6 @@ import java.util.Map;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.xml.sax.Attributes;
-
 
 /**
  * <p>Rule implementation that sets properties on the object at the top of the
