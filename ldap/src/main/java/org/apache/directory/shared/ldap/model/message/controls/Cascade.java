@@ -31,33 +31,4 @@ public interface Cascade extends Control
 {
     /** The Cascade control OID */
     String OID = "1.3.6.1.4.1.18060.0.0.1";
-
-    /**
-     * Simple Cascade control implementation.
-     *
-     * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
-     */
-    class SimpleCascade extends BasicControl implements Cascade
-    {
-
-
-        /**
-         * Default constructor
-         */
-        public SimpleCascade()
-        {
-            super( OID );
-        }
-
-
-        public void setValue( byte [] value )
-        {
-        }
-
-
-        public boolean hasValue()
-        {
-            return false;
-        }
-    }
 }

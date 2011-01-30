@@ -20,18 +20,30 @@ package org.apache.directory.shared.ldap.model.message.controls;
 
 
 /**
- * Simple ManageDsaIT implementation class.
+ * Simple Cascade control implementation.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
-public class ManageDsaITImpl extends BasicControl implements ManageDsaIT
+public class CascadeImpl extends BasicControl implements Cascade
 {
+
+
     /**
-     * Default constructor.
+     * Default constructor
      */
-    public ManageDsaITImpl()
+    public CascadeImpl()
     {
         super( OID );
+    }
+
+
+    public void setValue( byte [] value )
+    {
+    }
+
+
+    public boolean hasValue()
+    {
+        return false;
     }
 }
