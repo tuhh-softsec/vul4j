@@ -31,8 +31,8 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn.ISyncModifyDn;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn.SyncModifyDnDecorator;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn.SyncModifyDnContainer;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,7 +49,7 @@ public class SyncModifyDnControlTest
 {
     
     @Test
-    public void testDecodeSyncModifyDnControlWithMoveOperation()
+    public void testDecodeSyncModifyDnControlWithMoveOperation() throws Exception
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x12 );
         bb.put( new byte[]
@@ -61,20 +61,10 @@ public class SyncModifyDnControlTest
             } );
         bb.flip();
 
-        SyncModifyDnContainer container = new SyncModifyDnContainer();
-        SyncModifyDnDecorator decorator = container.getSyncModifyDnControl();
+        SyncModifyDnDecorator decorator = new SyncModifyDnDecorator();
 
-        try
-        {
-            decorator.decode( bb.array() );
-        }
-        catch ( DecoderException de )
-        {
-            de.printStackTrace();
-            fail( de.getMessage() );
-        }
+        ISyncModifyDn syncmodDnControl = (ISyncModifyDn)decorator.decode( bb.array() );
 
-        SyncModifyDnDecorator syncmodDnControl = container.getSyncModifyDnControl();
         assertEquals( "uid=jim", syncmodDnControl.getEntryDn() );
         assertEquals( "ou=dc", syncmodDnControl.getNewSuperiorDn() );
         assertFalse( syncmodDnControl.isDeleteOldRdn() );
@@ -99,9 +89,9 @@ public class SyncModifyDnControlTest
                 } );
             buffer.flip();
 
-            ByteBuffer encoded = syncmodDnControl.encode( ByteBuffer.allocate( syncmodDnControl.computeLength() ) );
+            ByteBuffer encoded = ((SyncModifyDnDecorator)syncmodDnControl).encode( ByteBuffer.allocate( ((SyncModifyDnDecorator)syncmodDnControl).computeLength() ) );
             assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
-                }
+        }
         catch ( EncoderException ee )
         {
             fail( ee.getMessage() );
@@ -110,7 +100,7 @@ public class SyncModifyDnControlTest
 
     
     @Test
-    public void testDecodeSyncModifyDnControlWithRenameOperation()
+    public void testDecodeSyncModifyDnControlWithRenameOperation() throws Exception
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x17 );
         bb.put( new byte[]
@@ -123,20 +113,10 @@ public class SyncModifyDnControlTest
             } );
         bb.flip();
 
-        SyncModifyDnContainer container = new SyncModifyDnContainer();
-        SyncModifyDnDecorator decorator = container.getSyncModifyDnControl();
+        SyncModifyDnDecorator decorator = new SyncModifyDnDecorator();
 
-        try
-        {
-            decorator.decode( bb.array() );
-        }
-        catch ( DecoderException de )
-        {
-            de.printStackTrace();
-            fail( de.getMessage() );
-        }
+        ISyncModifyDn syncmodDnControl = (ISyncModifyDn)decorator.decode( bb.array() );
 
-        SyncModifyDnDecorator syncmodDnControl = container.getSyncModifyDnControl();
         assertEquals( "uid=jim", syncmodDnControl.getEntryDn() );
         assertEquals( "uid=j", syncmodDnControl.getNewRdn() );
         assertTrue( syncmodDnControl.isDeleteOldRdn() );
@@ -162,7 +142,7 @@ public class SyncModifyDnControlTest
                 } );
             buffer.flip();
 
-            ByteBuffer encoded = syncmodDnControl.encode( ByteBuffer.allocate( syncmodDnControl.computeLength() ) );
+            ByteBuffer encoded = ((SyncModifyDnDecorator)syncmodDnControl).encode( ByteBuffer.allocate( ((SyncModifyDnDecorator)syncmodDnControl).computeLength() ) );
             assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
                 }
         catch ( EncoderException ee )
@@ -173,7 +153,7 @@ public class SyncModifyDnControlTest
 
     
     @Test
-    public void testDecodeSyncModifyDnControlWithRenameAndMoveOperation()
+    public void testDecodeSyncModifyDnControlWithRenameAndMoveOperation() throws Exception
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x1E );
         bb.put( new byte[]
@@ -187,20 +167,10 @@ public class SyncModifyDnControlTest
             } );
         bb.flip();
 
-        SyncModifyDnContainer container = new SyncModifyDnContainer();
-        SyncModifyDnDecorator decorator = container.getSyncModifyDnControl();
+        SyncModifyDnDecorator decorator = new SyncModifyDnDecorator();
 
-        try
-        {
-            decorator.decode( bb.array() );
-        }
-        catch ( DecoderException de )
-        {
-            de.printStackTrace();
-            fail( de.getMessage() );
-        }
+        ISyncModifyDn syncmodDnControl = (ISyncModifyDn)decorator.decode( bb.array() );
 
-        SyncModifyDnDecorator syncmodDnControl = container.getSyncModifyDnControl();
         assertEquals( "uid=jim", syncmodDnControl.getEntryDn() );
         assertEquals( "ou=dc", syncmodDnControl.getNewSuperiorDn() );
         assertEquals( "uid=j", syncmodDnControl.getNewRdn() );
@@ -228,7 +198,7 @@ public class SyncModifyDnControlTest
                 } );
             buffer.flip();
 
-            ByteBuffer encoded = syncmodDnControl.encode( ByteBuffer.allocate( syncmodDnControl.computeLength() ) );
+            ByteBuffer encoded = ((SyncModifyDnDecorator)syncmodDnControl).encode( ByteBuffer.allocate( ((SyncModifyDnDecorator)syncmodDnControl).computeLength() ) );
             assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
                 }
         catch ( EncoderException ee )
@@ -250,8 +220,8 @@ public class SyncModifyDnControlTest
             } );
         bb.flip();
 
-        SyncModifyDnContainer container = new SyncModifyDnContainer();
-        SyncModifyDnDecorator decorator = container.getSyncModifyDnControl();
+        SyncModifyDnDecorator decorator = new SyncModifyDnDecorator();
+        
         decorator.decode( bb.array() );
     }
 }
