@@ -146,6 +146,14 @@ public interface Digester extends ContentHandler, DTDHandler, EntityResolver, Er
     Rules getRules();
 
     /**
+     * Set the {@code Rules} implementation object containing our
+     * rules collection and associated matching policy.
+     *
+     * @param rules New Rules implementation
+     */
+    void setRules(Rules rules);
+
+    /**
      * Clear the current contents of the default object stack, the param stack,
      * all named stacks, and other internal variables.
      */
