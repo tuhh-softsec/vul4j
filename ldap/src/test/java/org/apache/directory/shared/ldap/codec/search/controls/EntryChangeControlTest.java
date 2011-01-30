@@ -22,15 +22,13 @@ package org.apache.directory.shared.ldap.codec.search.controls;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.nio.ByteBuffer;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.ldap.codec.search.controls.entryChange.*;
+import org.apache.directory.shared.ldap.codec.search.controls.entryChange.EntryChangeDecorator;
 import org.apache.directory.shared.ldap.model.message.controls.ChangeType;
 import org.apache.directory.shared.ldap.model.message.controls.EntryChange;
 import org.apache.directory.shared.ldap.model.name.Dn;
@@ -52,7 +50,7 @@ public class EntryChangeControlTest
      * Test the decoding of a EntryChangeControl
      */
     @Test
-    public void testDecodeEntryChangeControlSuccess()
+    public void testDecodeEntryChangeControlSuccess() throws Exception
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x0D );
         bb.put( new byte[]
@@ -66,20 +64,10 @@ public class EntryChangeControlTest
             } );
         bb.flip();
 
-        EntryChangeContainer container = new EntryChangeContainer();
-        EntryChangeDecorator decorator = container.getEntryChangeDecorator();
+        EntryChangeDecorator decorator = new EntryChangeDecorator();
         
-        try
-        {
-            decorator.decode( bb.array() );
-        }
-        catch ( DecoderException de )
-        {
-            de.printStackTrace();
-            fail( de.getMessage() );
-        }
+        EntryChange entryChange = (EntryChange)decorator.decode( bb.array() );
 
-        EntryChange entryChange = (EntryChange) container.getEntryChangeDecorator().getDecorated();
         assertEquals( ChangeType.MODDN, entryChange.getChangeType() );
         assertEquals( "a=b", entryChange.getPreviousDn().toString() );
         assertEquals( 16, entryChange.getChangeNumber() );
@@ -90,7 +78,7 @@ public class EntryChangeControlTest
      * Test the decoding of a EntryChangeControl
      */
     @Test
-    public void testDecodeEntryChangeControlSuccessLongChangeNumber()
+    public void testDecodeEntryChangeControlSuccessLongChangeNumber() throws Exception
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x13 );
         bb.put( new byte[]
@@ -105,20 +93,10 @@ public class EntryChangeControlTest
             } );
         bb.flip();
 
-        EntryChangeContainer container = new EntryChangeContainer();
-        EntryChangeDecorator decorator = container.getEntryChangeDecorator();
+        EntryChangeDecorator decorator = new EntryChangeDecorator();
         
-        try
-        {
-            decorator.decode( bb.array() );
-        }
-        catch ( DecoderException de )
-        {
-            de.printStackTrace();
-            fail( de.getMessage() );
-        }
+        EntryChange entryChange = (EntryChange)decorator.decode( bb.array() );
 
-        EntryChange entryChange = (EntryChange) container.getEntryChangeDecorator().getDecorated();
         assertEquals( ChangeType.MODDN, entryChange.getChangeType() );
         assertEquals( "a=b", entryChange.getPreviousDn().toString() );
         assertEquals( 5124095576030430L, entryChange.getChangeNumber() );
@@ -129,7 +107,7 @@ public class EntryChangeControlTest
      * Test the decoding of a EntryChangeControl with a add and a change number
      */
     @Test
-    public void testDecodeEntryChangeControlWithADDAndChangeNumber()
+    public void testDecodeEntryChangeControlWithADDAndChangeNumber() throws Exception
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x08 );
         bb.put( new byte[]
@@ -143,20 +121,10 @@ public class EntryChangeControlTest
             } );
         bb.flip();
 
-        EntryChangeContainer container = new EntryChangeContainer();
-        EntryChangeDecorator decorator = container.getEntryChangeDecorator();
+        EntryChangeDecorator decorator = new EntryChangeDecorator();
         
-        try
-        {
-            decorator.decode( bb.array() );
-        }
-        catch ( DecoderException de )
-        {
-            de.printStackTrace();
-            fail( de.getMessage() );
-        }
+        EntryChange entryChange = (EntryChange)decorator.decode( bb.array() );
 
-        EntryChange entryChange = (EntryChange ) container.getEntryChangeDecorator().getDecorated();
         assertEquals( ChangeType.ADD, entryChange.getChangeType() );
         assertNull( entryChange.getPreviousDn() );
         assertEquals( 16, entryChange.getChangeNumber() );
@@ -167,8 +135,8 @@ public class EntryChangeControlTest
      * Test the decoding of a EntryChangeControl with a add so we should not
      * have a PreviousDN
      */
-    @Test
-    public void testDecodeEntryChangeControlWithADDAndPreviousDNBad()
+    @Test( expected=DecoderException.class )
+    public void testDecodeEntryChangeControlWithADDAndPreviousDNBad() throws Exception
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x0D );
         bb.put( new byte[]
@@ -184,21 +152,9 @@ public class EntryChangeControlTest
             } );
         bb.flip();
 
-        EntryChangeContainer container = new EntryChangeContainer();
-        EntryChangeDecorator decorator = container.getEntryChangeDecorator();
+        EntryChangeDecorator decorator = new EntryChangeDecorator();
         
-        try
-        {
-            decorator.decode( bb.array() );
-        }
-        catch ( DecoderException de )
-        {
-            // We should fail, because we have a previousDN with a ADD
-            assertTrue( true );
-            return;
-        }
-
-        fail( "A ADD operation should not have a PreviousDN" );
+        decorator.decode( bb.array() );
     }
 
 
@@ -206,7 +162,7 @@ public class EntryChangeControlTest
      * Test the decoding of a EntryChangeControl with a add and nothing else
      */
     @Test
-    public void testDecodeEntryChangeControlWithADD()
+    public void testDecodeEntryChangeControlWithADD() throws Exception
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x05 );
         bb.put( new byte[]
@@ -219,20 +175,10 @@ public class EntryChangeControlTest
             } );
         bb.flip();
 
-        EntryChangeContainer container = new EntryChangeContainer();
-        EntryChangeDecorator decorator = container.getEntryChangeDecorator();
+        EntryChangeDecorator decorator = new EntryChangeDecorator();
         
-        try
-        {
-            decorator.decode( bb.array() );
-        }
-        catch ( DecoderException de )
-        {
-            de.printStackTrace();
-            fail( de.getMessage() );
-        }
+        EntryChange entryChange = (EntryChange)decorator.decode( bb.array() );
 
-        EntryChange entryChange = (EntryChange) container.getEntryChangeDecorator().getDecorated();
         assertEquals( ChangeType.ADD, entryChange.getChangeType() );
         assertNull( entryChange.getPreviousDn() );
         assertEquals( EntryChangeDecorator.UNDEFINED_CHANGE_NUMBER, entryChange.getChangeNumber() );
@@ -243,8 +189,8 @@ public class EntryChangeControlTest
      * Test the decoding of a EntryChangeControl with a wrong changeType and
      * nothing else
      */
-    @Test
-    public void testDecodeEntryChangeControlWithWrongChangeType()
+    @Test( expected=DecoderException.class )
+    public void testDecodeEntryChangeControlWithWrongChangeType() throws Exception
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x05 );
         bb.put( new byte[]
@@ -257,29 +203,17 @@ public class EntryChangeControlTest
             } );
         bb.flip();
 
-        EntryChangeContainer container = new EntryChangeContainer();
-        EntryChangeDecorator decorator = container.getEntryChangeDecorator();
+        EntryChangeDecorator decorator = new EntryChangeDecorator();
         
-        try
-        {
-            decorator.decode( bb.array() );
-        }
-        catch ( DecoderException de )
-        {
-            // We should fail because the ChangeType is not known
-            assertTrue( true );
-            return;
-        }
-
-        fail( "The changeType is unknown" );
+        decorator.decode( bb.array() );
     }
 
 
     /**
      * Test the decoding of a EntryChangeControl with a wrong changeNumber
      */
-    @Test
-    public void testDecodeEntryChangeControlWithWrongChangeNumber()
+    @Test( expected=DecoderException.class )
+    public void testDecodeEntryChangeControlWithWrongChangeNumber() throws Exception
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x1C );
         bb.put( new byte[]
@@ -295,21 +229,9 @@ public class EntryChangeControlTest
             } );
         bb.flip();
 
-        EntryChangeContainer container = new EntryChangeContainer();
-        EntryChangeDecorator decorator = container.getEntryChangeDecorator();
+        EntryChangeDecorator decorator = new EntryChangeDecorator();
         
-        try
-        {
-            decorator.decode( bb.array() );
-        }
-        catch ( DecoderException de )
-        {
-            // We should fail because the ChangeType is not known
-            assertTrue( true );
-            return;
-        }
-
-        fail( "The changeNumber is incorrect" );
+        decorator.decode( bb.array() );
     }
 
 
@@ -340,6 +262,7 @@ public class EntryChangeControlTest
         bb.flip();
 
         EntryChangeDecorator decorator = new EntryChangeDecorator();
+
         EntryChange entryChange = (EntryChange) decorator.getDecorated();
         entryChange.setChangeType( ChangeType.MODDN );
         entryChange.setChangeNumber( 16 );
@@ -378,6 +301,7 @@ public class EntryChangeControlTest
         bb.flip();
 
         EntryChangeDecorator decorator = new EntryChangeDecorator();
+        
         EntryChange entryChange = (EntryChange) decorator.getDecorated();
 
         entryChange.setChangeType( ChangeType.MODDN );
