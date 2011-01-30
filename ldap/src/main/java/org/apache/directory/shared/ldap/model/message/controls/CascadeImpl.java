@@ -26,14 +26,24 @@ package org.apache.directory.shared.ldap.model.message.controls;
  */
 public class CascadeImpl extends BasicControl implements Cascade
 {
-
-
     /**
      * Default constructor
      */
     public CascadeImpl()
     {
         super( OID );
+    }
+
+
+    /**
+     * Sets criticality when creating.
+     * 
+     * @param isCritical true if critical, false otherwise.
+     */
+    public CascadeImpl( boolean isCritical )
+    {
+        super( OID );
+        setCritical( isCritical );
     }
 
 

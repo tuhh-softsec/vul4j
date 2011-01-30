@@ -34,4 +34,16 @@ public class ManageDsaITImpl extends BasicControl implements ManageDsaIT
     {
         super( OID );
     }
+
+
+    /**
+     * Creates instance and sets criticality at same time.
+     * 
+     * @param isCritical true if critical, false otherwise
+     */
+    public ManageDsaITImpl( boolean isCritical )
+    {
+        super( OID );
+        setCritical( isCritical );
+    }
 }

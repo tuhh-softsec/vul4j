@@ -27,8 +27,12 @@ import java.util.Map;
 
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.ldap.codec.controls.CascadeFactory;
+import org.apache.directory.shared.ldap.codec.controls.ManageDsaITFactory;
 import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesFactory;
 import org.apache.directory.shared.ldap.model.message.Control;
+import org.apache.directory.shared.ldap.model.message.controls.Cascade;
+import org.apache.directory.shared.ldap.model.message.controls.ManageDsaIT;
 import org.apache.directory.shared.ldap.model.message.controls.Subentries;
 import org.apache.mina.filter.codec.ProtocolCodecFactory;
 
@@ -60,8 +64,11 @@ public class DefaultLdapCodecService implements ILdapCodecService
         SubentriesFactory subentriesFactory = new SubentriesFactory( this );
         controlFactories.put( Subentries.OID, subentriesFactory );
 
+        CascadeFactory cascadeFactory = new CascadeFactory( this );
+        controlFactories.put( Cascade.OID, cascadeFactory );
         
-        
+        ManageDsaITFactory manageDsaITFactory = new ManageDsaITFactory( this );
+        controlFactories.put( ManageDsaIT.OID, manageDsaITFactory );
     }
     
 

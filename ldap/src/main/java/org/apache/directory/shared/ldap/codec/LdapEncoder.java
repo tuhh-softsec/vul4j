@@ -153,7 +153,7 @@ public class LdapEncoder
         // Get the protocolOp length
         ldapMessageLength += messageDecorator.computeLength();
 
-        Map<String, Control> controls = messageDecorator.getDecorated().getControls();
+        Map<String, Control> controls = messageDecorator.getControls();
 
         // Do the same thing for Controls, if any.
         if ( controls.size() > 0 )
