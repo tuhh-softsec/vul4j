@@ -44,6 +44,6 @@ public interface ObjectCreateBuilder extends BackToLinkedRuleBuilder {
      * @param attributeName The attribute containing an override class name if it is present
      * @return this builder instance
      */
-    ObjectCreateBuilder overriddenByAttribute(String attributeName);
+    ObjectCreateBuilder ofTypeSpecifiedByAttribute(String attributeName);
 
 }
