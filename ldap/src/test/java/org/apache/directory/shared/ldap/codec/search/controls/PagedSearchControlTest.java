@@ -32,7 +32,6 @@ import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
-import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedResultsContainer;
 import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedResultsDecorator;
 import org.apache.directory.shared.ldap.model.message.controls.PagedResults;
 import org.apache.directory.shared.util.Strings;
@@ -50,8 +49,7 @@ import org.junit.runner.RunWith;
 public class PagedSearchControlTest
 {
     private ILdapCodecService codec = new DefaultLdapCodecService();
-    
-    
+
     /**
      * Test encoding of a PagedSearchControl.
      */
@@ -67,8 +65,7 @@ public class PagedSearchControlTest
             } );
         bb.flip();
 
-        PagedResultsContainer container = new PagedResultsContainer( codec );
-        PagedResultsDecorator decorator = container.getDecorator();
+        PagedResultsDecorator decorator = new PagedResultsDecorator( codec );
         
         PagedResults pagedSearch = (PagedResults)decorator.decode( bb.array() );
 
@@ -118,8 +115,7 @@ public class PagedSearchControlTest
             } );
         bb.flip();
 
-        PagedResultsContainer container = new PagedResultsContainer( codec );
-        PagedResultsDecorator decorator = container.getDecorator();
+        PagedResultsDecorator decorator = new PagedResultsDecorator( codec );
         
         decorator.decode( bb.array() );
     }
@@ -139,8 +135,7 @@ public class PagedSearchControlTest
             } );
         bb.flip();
 
-        PagedResultsContainer container = new PagedResultsContainer( codec );
-        PagedResultsDecorator decorator = container.getDecorator();
+        PagedResultsDecorator decorator = new PagedResultsDecorator( codec );
         
         decorator.decode( bb.array() );
     }
@@ -159,8 +154,7 @@ public class PagedSearchControlTest
             } );
         bb.flip();
 
-        PagedResultsContainer container = new PagedResultsContainer( codec );
-        PagedResultsDecorator decorator = container.getDecorator();
+        PagedResultsDecorator decorator = new PagedResultsDecorator( codec );
         
         decorator.decode( bb.array() );
     }
@@ -181,8 +175,7 @@ public class PagedSearchControlTest
             } );
         bb.flip();
 
-        PagedResultsContainer container = new PagedResultsContainer( codec );
-        PagedResultsDecorator decorator = container.getDecorator();
+        PagedResultsDecorator decorator = new PagedResultsDecorator( codec );
         
         PagedResults pagedSearch = (PagedResults)decorator.decode( bb.array() );
 
@@ -234,8 +227,7 @@ public class PagedSearchControlTest
             } );
         bb.flip();
 
-        PagedResultsContainer container = new PagedResultsContainer( codec );
-        PagedResultsDecorator decorator = container.getDecorator();
+        PagedResultsDecorator decorator = new PagedResultsDecorator( codec );
         
         decorator.decode( bb.array() );
     }
@@ -256,8 +248,7 @@ public class PagedSearchControlTest
             } );
         bb.flip();
 
-        PagedResultsContainer container = new PagedResultsContainer( codec );
-        PagedResultsDecorator decorator = container.getDecorator();
+        PagedResultsDecorator decorator = new PagedResultsDecorator( codec );
         
         PagedResults pagedSearch = (PagedResults)decorator.decode( bb.array() );
 

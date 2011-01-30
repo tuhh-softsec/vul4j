@@ -30,7 +30,7 @@ import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
-import org.apache.directory.shared.ldap.codec.search.controls.entryChange.*;
+import org.apache.directory.shared.ldap.codec.search.controls.entryChange.EntryChangeDecorator;
 import org.apache.directory.shared.ldap.model.message.controls.ChangeType;
 import org.apache.directory.shared.ldap.model.message.controls.EntryChange;
 import org.apache.directory.shared.ldap.model.name.Dn;
@@ -49,8 +49,7 @@ import org.junit.runner.RunWith;
 public class EntryChangeControlTest
 {
     private ILdapCodecService codec = new DefaultLdapCodecService();
-    
-    
+
     /**
      * Test the decoding of a EntryChangeControl
      */
@@ -69,8 +68,7 @@ public class EntryChangeControlTest
             } );
         bb.flip();
 
-        EntryChangeContainer container = new EntryChangeContainer( codec );
-        EntryChangeDecorator decorator = container.getEntryChangeDecorator();
+        EntryChangeDecorator decorator = new EntryChangeDecorator( codec );
         
         EntryChange entryChange = (EntryChange)decorator.decode( bb.array() );
 
@@ -99,8 +97,7 @@ public class EntryChangeControlTest
             } );
         bb.flip();
 
-        EntryChangeContainer container = new EntryChangeContainer( codec );
-        EntryChangeDecorator decorator = container.getEntryChangeDecorator();
+        EntryChangeDecorator decorator = new EntryChangeDecorator( codec );
         
         EntryChange entryChange = (EntryChange)decorator.decode( bb.array() );
 
@@ -128,8 +125,7 @@ public class EntryChangeControlTest
             } );
         bb.flip();
 
-        EntryChangeContainer container = new EntryChangeContainer( codec );
-        EntryChangeDecorator decorator = container.getEntryChangeDecorator();
+        EntryChangeDecorator decorator = new EntryChangeDecorator( codec );
         
         EntryChange entryChange = (EntryChange)decorator.decode( bb.array() );
 
@@ -160,8 +156,7 @@ public class EntryChangeControlTest
             } );
         bb.flip();
 
-        EntryChangeContainer container = new EntryChangeContainer( codec );
-        EntryChangeDecorator decorator = container.getEntryChangeDecorator();
+        EntryChangeDecorator decorator = new EntryChangeDecorator( codec );
         
         decorator.decode( bb.array() );
     }
@@ -184,8 +179,7 @@ public class EntryChangeControlTest
             } );
         bb.flip();
 
-        EntryChangeContainer container = new EntryChangeContainer( codec );
-        EntryChangeDecorator decorator = container.getEntryChangeDecorator();
+        EntryChangeDecorator decorator = new EntryChangeDecorator( codec );
         
         EntryChange entryChange = (EntryChange)decorator.decode( bb.array() );
 
@@ -213,8 +207,7 @@ public class EntryChangeControlTest
             } );
         bb.flip();
 
-        EntryChangeContainer container = new EntryChangeContainer( codec );
-        EntryChangeDecorator decorator = container.getEntryChangeDecorator();
+        EntryChangeDecorator decorator = new EntryChangeDecorator( codec );
         
         decorator.decode( bb.array() );
     }
@@ -240,8 +233,7 @@ public class EntryChangeControlTest
             } );
         bb.flip();
 
-        EntryChangeContainer container = new EntryChangeContainer( codec );
-        EntryChangeDecorator decorator = container.getEntryChangeDecorator();
+        EntryChangeDecorator decorator = new EntryChangeDecorator( codec );
         
         decorator.decode( bb.array() );
     }

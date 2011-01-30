@@ -50,8 +50,7 @@ import org.junit.runner.RunWith;
 public class SubEntryControlTest
 {
     private ILdapCodecService codec = new DefaultLdapCodecService();
-    
-    
+
     /**
      * Test the decoding of a SubEntryControl with a true visibility
      */
