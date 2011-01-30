@@ -19,7 +19,6 @@ package org.apache.commons.digester3;
 
 import java.util.Formatter;
 
-import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.MethodUtils;
 import org.xml.sax.Attributes;
 
@@ -250,10 +249,9 @@ public class CallMethodRule extends Rule {
             // convert nulls and convert stringy parameters 
             // for non-stringy param types
             if (parameters[i] == null
-                    || (parameters[i] instanceof String
-                         && !String.class.isAssignableFrom(this.paramTypes[i]))) {
+                    || (parameters[i] instanceof String && !String.class.isAssignableFrom(this.paramTypes[i]))) {
 
-                paramValues[i] = ConvertUtils.convert((String) parameters[i], this.paramTypes[i]);
+                paramValues[i] = this.getDigester().lookupConverter(this.paramTypes[i]).convert((String) parameters[i]);
             } else {
                 paramValues[i] = parameters[i];
             }
@@ -268,7 +266,7 @@ public class CallMethodRule extends Rule {
         }
 
         if (target == null) {
-            throw new org.xml.sax.SAXException(
+            throw this.getDigester().createSAXException(
                     String.format("[CallMethodRule]{%s} Call target is null (targetOffset=%s, stackdepth=%s)",
                     this.getDigester().getMatch(),
                     this.targetOffset,

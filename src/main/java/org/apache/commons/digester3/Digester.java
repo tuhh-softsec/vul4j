@@ -26,6 +26,7 @@ import java.util.EmptyStackException;
 import java.util.Map;
 
 import org.apache.commons.digester3.spi.Rules;
+import org.apache.commons.digester3.spi.TypeConverter;
 import org.apache.commons.logging.Log;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.DTDHandler;
@@ -366,5 +367,16 @@ public interface Digester extends ContentHandler, DTDHandler, EntityResolver, Er
      * @return the new exception
      */
     SAXException createSAXException(String message);
+
+    /**
+     * Allows retrieve the bound converter for the given type.
+     *
+     * NOTE: the first version will be a commons-beanutils Converter façade.
+     *
+     * @param <T>
+     * @param type
+     * @return
+     */
+    <T> TypeConverter<T> lookupConverter(Class<T> type);
 
 }
