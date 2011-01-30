@@ -30,8 +30,8 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValue.ISyncInfoValue;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValue.SyncInfoValueDecorator;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValue.SyncInfoValueContainer;
 import org.apache.directory.shared.ldap.message.control.replication.SynchronizationInfoEnum;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
@@ -53,7 +53,7 @@ public class SyncInfoValueControlTest
      * Test the decoding of a SyncInfoValue control, newCookie choice
      */
     @Test
-    public void testDecodeSyncInfoValueControlNewCookie()
+    public void testDecodeSyncInfoValueControlNewCookie() throws Exception
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x05 );
         bb.put( new byte[]
@@ -63,21 +63,11 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueContainer container = new SyncInfoValueContainer();
-        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
+        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
         decorator.setType( SynchronizationInfoEnum.NEW_COOKIE );
 
-        try
-        {
-            decorator.decode( bb.array() );
-        }
-        catch ( DecoderException de )
-        {
-            de.printStackTrace();
-            fail( de.getMessage() );
-        }
+        ISyncInfoValue syncInfoValue = (ISyncInfoValue)decorator.decode( bb.array() );
 
-        SyncInfoValueDecorator syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.NEW_COOKIE, syncInfoValue.getType() );
         assertEquals( "abc", Strings.utf8ToString(syncInfoValue.getCookie()) );
         
@@ -98,7 +88,7 @@ public class SyncInfoValueControlTest
                 } );
             buffer.flip();
 
-            ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
+            ByteBuffer encoded = ((SyncInfoValueDecorator)syncInfoValue).encode( ByteBuffer.allocate( ((SyncInfoValueDecorator)syncInfoValue).computeLength() ) );
             assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
@@ -112,7 +102,7 @@ public class SyncInfoValueControlTest
      * Test the decoding of a SyncInfoValue control, empty newCookie choice
      */
     @Test
-    public void testDecodeSyncInfoValueControlEmptyNewCookie()
+    public void testDecodeSyncInfoValueControlEmptyNewCookie() throws Exception
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x02 );
         bb.put( new byte[]
@@ -122,21 +112,11 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueContainer container = new SyncInfoValueContainer();
-        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
+        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
         decorator.setType( SynchronizationInfoEnum.NEW_COOKIE );
 
-        try
-        {
-            decorator.decode( bb.array() );
-        }
-        catch ( DecoderException de )
-        {
-            de.printStackTrace();
-            fail( de.getMessage() );
-        }
+        ISyncInfoValue syncInfoValue = (ISyncInfoValue)decorator.decode( bb.array() );
 
-        SyncInfoValueDecorator syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.NEW_COOKIE, syncInfoValue.getType() );
         assertEquals( "", Strings.utf8ToString(syncInfoValue.getCookie()) );
         
@@ -156,7 +136,7 @@ public class SyncInfoValueControlTest
                 } );
             buffer.flip();
 
-            ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
+            ByteBuffer encoded = ((SyncInfoValueDecorator)syncInfoValue).encode( ByteBuffer.allocate( ((SyncInfoValueDecorator)syncInfoValue).computeLength() ) );
             assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
@@ -174,7 +154,7 @@ public class SyncInfoValueControlTest
      * refreshDone = true
      */
     @Test
-    public void testDecodeSyncInfoValueControlRefreshDelete()
+    public void testDecodeSyncInfoValueControlRefreshDelete() throws Exception
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x0A );
         bb.put( new byte[]
@@ -186,21 +166,12 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueContainer container = new SyncInfoValueContainer();
-        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
+        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
+        
         decorator.setType( SynchronizationInfoEnum.REFRESH_DELETE );
 
-        try
-        {
-            decorator.decode( bb.array() );
-        }
-        catch ( DecoderException de )
-        {
-            de.printStackTrace();
-            fail( de.getMessage() );
-        }
+        ISyncInfoValue syncInfoValue = (ISyncInfoValue)decorator.decode( bb.array() );
 
-        SyncInfoValueDecorator syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.REFRESH_DELETE, syncInfoValue.getType() );
         assertEquals( "abc", Strings.utf8ToString(syncInfoValue.getCookie()) );
         assertTrue( syncInfoValue.isRefreshDone() );
@@ -223,7 +194,7 @@ public class SyncInfoValueControlTest
                 } );
             buffer.flip();
 
-            ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
+            ByteBuffer encoded = ((SyncInfoValueDecorator)syncInfoValue).encode( ByteBuffer.allocate( ((SyncInfoValueDecorator)syncInfoValue).computeLength() ) );
             assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
@@ -238,7 +209,7 @@ public class SyncInfoValueControlTest
      * refreshDone = false
      */
     @Test
-    public void testDecodeSyncInfoValueControlRefreshDeleteRefreshDoneFalse()
+    public void testDecodeSyncInfoValueControlRefreshDeleteRefreshDoneFalse() throws Exception
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x0A );
         bb.put( new byte[]
@@ -250,21 +221,12 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueContainer container = new SyncInfoValueContainer();
-        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
+        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
+        
         decorator.setType( SynchronizationInfoEnum.REFRESH_DELETE );
 
-        try
-        {
-            decorator.decode( bb.array() );
-        }
-        catch ( DecoderException de )
-        {
-            de.printStackTrace();
-            fail( de.getMessage() );
-        }
+        ISyncInfoValue syncInfoValue = (ISyncInfoValue)decorator.decode( bb.array() );
 
-        SyncInfoValueDecorator syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.REFRESH_DELETE, syncInfoValue.getType() );
         assertEquals( "abc", Strings.utf8ToString(syncInfoValue.getCookie()) );
         assertFalse( syncInfoValue.isRefreshDone() );
@@ -288,7 +250,7 @@ public class SyncInfoValueControlTest
                 } );
             buffer.flip();
 
-            ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
+            ByteBuffer encoded = ((SyncInfoValueDecorator)syncInfoValue).encode( ByteBuffer.allocate( ((SyncInfoValueDecorator)syncInfoValue).computeLength() ) );
             assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
@@ -303,7 +265,7 @@ public class SyncInfoValueControlTest
      * no refreshDone
      */
     @Test
-    public void testDecodeSyncInfoValueControlRefreshDeleteNoRefreshDone()
+    public void testDecodeSyncInfoValueControlRefreshDeleteNoRefreshDone() throws Exception
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x07 );
         bb.put( new byte[]
@@ -314,21 +276,12 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueContainer container = new SyncInfoValueContainer();
-        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
+        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
+        
         decorator.setType( SynchronizationInfoEnum.REFRESH_DELETE );
 
-        try
-        {
-            decorator.decode( bb.array() );
-        }
-        catch ( DecoderException de )
-        {
-            de.printStackTrace();
-            fail( de.getMessage() );
-        }
+        ISyncInfoValue syncInfoValue = (ISyncInfoValue)decorator.decode( bb.array() );
 
-        SyncInfoValueDecorator syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.REFRESH_DELETE, syncInfoValue.getType() );
         assertEquals( "abc", Strings.utf8ToString(syncInfoValue.getCookie()) );
         assertTrue( syncInfoValue.isRefreshDone() );
@@ -351,7 +304,7 @@ public class SyncInfoValueControlTest
                 } );
             buffer.flip();
 
-            ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
+            ByteBuffer encoded = ((SyncInfoValueDecorator)syncInfoValue).encode( ByteBuffer.allocate( ((SyncInfoValueDecorator)syncInfoValue).computeLength() ) );
             assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
@@ -366,7 +319,7 @@ public class SyncInfoValueControlTest
      * no cookie
      */
     @Test
-    public void testDecodeSyncInfoValueControlRefreshDeleteNoCookie()
+    public void testDecodeSyncInfoValueControlRefreshDeleteNoCookie() throws Exception
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x05 );
         bb.put( new byte[]
@@ -377,21 +330,12 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueContainer container = new SyncInfoValueContainer();
-        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
+        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
+        
         decorator.setType( SynchronizationInfoEnum.REFRESH_DELETE );
 
-        try
-        {
-            decorator.decode( bb.array() );
-        }
-        catch ( DecoderException de )
-        {
-            de.printStackTrace();
-            fail( de.getMessage() );
-        }
+        ISyncInfoValue syncInfoValue = (ISyncInfoValue)decorator.decode( bb.array() );
 
-        SyncInfoValueDecorator syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.REFRESH_DELETE, syncInfoValue.getType() );
         assertEquals( "", Strings.utf8ToString(syncInfoValue.getCookie()) );
         assertFalse( syncInfoValue.isRefreshDone() );
@@ -414,7 +358,7 @@ public class SyncInfoValueControlTest
                 } );
             buffer.flip();
 
-            ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
+            ByteBuffer encoded = ((SyncInfoValueDecorator)syncInfoValue).encode( ByteBuffer.allocate( ((SyncInfoValueDecorator)syncInfoValue).computeLength() ) );
             assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
@@ -429,7 +373,7 @@ public class SyncInfoValueControlTest
      * no cookie, no refreshDone
      */
     @Test
-    public void testDecodeSyncInfoValueControlRefreshDeleteNoCookieNoRefreshDone()
+    public void testDecodeSyncInfoValueControlRefreshDeleteNoCookieNoRefreshDone() throws Exception
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x02 );
         bb.put( new byte[]
@@ -438,21 +382,12 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueContainer container = new SyncInfoValueContainer();
-        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
+        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
+        
         decorator.setType( SynchronizationInfoEnum.REFRESH_DELETE );
 
-        try
-        {
-            decorator.decode( bb.array() );
-        }
-        catch ( DecoderException de )
-        {
-            de.printStackTrace();
-            fail( de.getMessage() );
-        }
+        ISyncInfoValue syncInfoValue = (ISyncInfoValue)decorator.decode( bb.array() );
 
-        SyncInfoValueDecorator syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.REFRESH_DELETE, syncInfoValue.getType() );
         assertEquals( "", Strings.utf8ToString(syncInfoValue.getCookie()) );
         assertTrue( syncInfoValue.isRefreshDone() );
@@ -473,7 +408,7 @@ public class SyncInfoValueControlTest
                 } );
             buffer.flip();
 
-            ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
+            ByteBuffer encoded = ((SyncInfoValueDecorator)syncInfoValue).encode( ByteBuffer.allocate( ((SyncInfoValueDecorator)syncInfoValue).computeLength() ) );
             assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
@@ -491,7 +426,7 @@ public class SyncInfoValueControlTest
      * refreshDone = true
      */
     @Test
-    public void testDecodeSyncInfoValueControlRefreshPresent()
+    public void testDecodeSyncInfoValueControlRefreshPresent() throws Exception
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x0A );
         bb.put( new byte[]
@@ -503,21 +438,12 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueContainer container = new SyncInfoValueContainer();
-        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
+        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
+        
         decorator.setType( SynchronizationInfoEnum.REFRESH_PRESENT );
 
-        try
-        {
-            decorator.decode( bb.array() );
-        }
-        catch ( DecoderException de )
-        {
-            de.printStackTrace();
-            fail( de.getMessage() );
-        }
+        ISyncInfoValue syncInfoValue = (ISyncInfoValue)decorator.decode( bb.array() );
 
-        SyncInfoValueDecorator syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.REFRESH_PRESENT, syncInfoValue.getType() );
         assertEquals( "abc", Strings.utf8ToString(syncInfoValue.getCookie()) );
         assertTrue( syncInfoValue.isRefreshDone() );
@@ -540,7 +466,7 @@ public class SyncInfoValueControlTest
                 } );
             buffer.flip();
 
-            ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
+            ByteBuffer encoded = ((SyncInfoValueDecorator)syncInfoValue).encode( ByteBuffer.allocate( ((SyncInfoValueDecorator)syncInfoValue).computeLength() ) );
             assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
@@ -555,7 +481,7 @@ public class SyncInfoValueControlTest
      * refreshDone = false
      */
     @Test
-    public void testDecodeSyncInfoValueControlRefreshPresentRefreshDoneFalse()
+    public void testDecodeSyncInfoValueControlRefreshPresentRefreshDoneFalse() throws Exception
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x0A );
         bb.put( new byte[]
@@ -567,21 +493,12 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueContainer container = new SyncInfoValueContainer();
-        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
+        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
+        
         decorator.setType( SynchronizationInfoEnum.REFRESH_PRESENT );
 
-        try
-        {
-            decorator.decode( bb.array() );
-        }
-        catch ( DecoderException de )
-        {
-            de.printStackTrace();
-            fail( de.getMessage() );
-        }
+        ISyncInfoValue syncInfoValue = (ISyncInfoValue)decorator.decode( bb.array() );
 
-        SyncInfoValueDecorator syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.REFRESH_PRESENT, syncInfoValue.getType() );
         assertEquals( "abc", Strings.utf8ToString(syncInfoValue.getCookie()) );
         assertFalse( syncInfoValue.isRefreshDone() );
@@ -605,7 +522,7 @@ public class SyncInfoValueControlTest
                 } );
             buffer.flip();
 
-            ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
+            ByteBuffer encoded = ((SyncInfoValueDecorator)syncInfoValue).encode( ByteBuffer.allocate( ((SyncInfoValueDecorator)syncInfoValue).computeLength() ) );
             assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
@@ -620,7 +537,7 @@ public class SyncInfoValueControlTest
      * no refreshDone
      */
     @Test
-    public void testDecodeSyncInfoValueControlRefreshPresentNoRefreshDone()
+    public void testDecodeSyncInfoValueControlRefreshPresentNoRefreshDone() throws Exception
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x07 );
         bb.put( new byte[]
@@ -631,21 +548,12 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueContainer container = new SyncInfoValueContainer();
-        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
+        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
+        
         decorator.setType( SynchronizationInfoEnum.REFRESH_PRESENT );
 
-        try
-        {
-            decorator.decode( bb.array() );
-        }
-        catch ( DecoderException de )
-        {
-            de.printStackTrace();
-            fail( de.getMessage() );
-        }
+        ISyncInfoValue syncInfoValue = (ISyncInfoValue)decorator.decode( bb.array() );
 
-        SyncInfoValueDecorator syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.REFRESH_PRESENT, syncInfoValue.getType() );
         assertEquals( "abc", Strings.utf8ToString(syncInfoValue.getCookie()) );
         assertTrue( syncInfoValue.isRefreshDone() );
@@ -668,7 +576,7 @@ public class SyncInfoValueControlTest
                 } );
             buffer.flip();
 
-            ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
+            ByteBuffer encoded = ((SyncInfoValueDecorator)syncInfoValue).encode( ByteBuffer.allocate( ((SyncInfoValueDecorator)syncInfoValue).computeLength() ) );
             assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
@@ -683,7 +591,7 @@ public class SyncInfoValueControlTest
      * no cookie
      */
     @Test
-    public void testDecodeSyncInfoValueControlRefreshPresentNoCookie()
+    public void testDecodeSyncInfoValueControlRefreshPresentNoCookie() throws Exception
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x05 );
         bb.put( new byte[]
@@ -694,21 +602,12 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueContainer container = new SyncInfoValueContainer();
-        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
+        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
+        
         decorator.setType( SynchronizationInfoEnum.REFRESH_PRESENT );
 
-        try
-        {
-            decorator.decode( bb.array() );
-        }
-        catch ( DecoderException de )
-        {
-            de.printStackTrace();
-            fail( de.getMessage() );
-        }
+        ISyncInfoValue syncInfoValue = (ISyncInfoValue)decorator.decode( bb.array() );
 
-        SyncInfoValueDecorator syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.REFRESH_PRESENT, syncInfoValue.getType() );
         assertEquals( "", Strings.utf8ToString(syncInfoValue.getCookie()) );
         assertFalse( syncInfoValue.isRefreshDone() );
@@ -731,7 +630,7 @@ public class SyncInfoValueControlTest
                 } );
             buffer.flip();
 
-            ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
+            ByteBuffer encoded = ((SyncInfoValueDecorator)syncInfoValue).encode( ByteBuffer.allocate( ((SyncInfoValueDecorator)syncInfoValue).computeLength() ) );
             assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
@@ -746,7 +645,7 @@ public class SyncInfoValueControlTest
      * no cookie, no refreshDone
      */
     @Test
-    public void testDecodeSyncInfoValueControlRefreshPresentNoCookieNoRefreshDone()
+    public void testDecodeSyncInfoValueControlRefreshPresentNoCookieNoRefreshDone() throws Exception
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x02 );
         bb.put( new byte[]
@@ -755,21 +654,12 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueContainer container = new SyncInfoValueContainer();
-        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
+        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
+        
         decorator.setType( SynchronizationInfoEnum.REFRESH_PRESENT );
 
-        try
-        {
-            decorator.decode( bb.array() );
-        }
-        catch ( DecoderException de )
-        {
-            de.printStackTrace();
-            fail( de.getMessage() );
-        }
+        ISyncInfoValue syncInfoValue = (ISyncInfoValue)decorator.decode( bb.array() );
 
-        SyncInfoValueDecorator syncInfoValue = container.getSyncInfoValueControl();
         assertEquals( SynchronizationInfoEnum.REFRESH_PRESENT, syncInfoValue.getType() );
         assertEquals( "", Strings.utf8ToString(syncInfoValue.getCookie()) );
         assertTrue( syncInfoValue.isRefreshDone() );
@@ -790,7 +680,7 @@ public class SyncInfoValueControlTest
                 } );
             buffer.flip();
 
-            ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
+            ByteBuffer encoded = ((SyncInfoValueDecorator)syncInfoValue).encode( ByteBuffer.allocate( ((SyncInfoValueDecorator)syncInfoValue).computeLength() ) );
             assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
@@ -817,8 +707,8 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueContainer container = new SyncInfoValueContainer();
-        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
+        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
+        
         decorator.setType( SynchronizationInfoEnum.SYNC_ID_SET );
 
         try
@@ -849,8 +739,8 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueContainer container = new SyncInfoValueContainer();
-        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
+        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
+        
         decorator.setType( SynchronizationInfoEnum.SYNC_ID_SET );
 
         try
@@ -881,8 +771,8 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueContainer container = new SyncInfoValueContainer();
-        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
+        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
+        
         decorator.setType( SynchronizationInfoEnum.SYNC_ID_SET );
 
         try
@@ -914,8 +804,8 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueContainer container = new SyncInfoValueContainer();
-        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
+        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
+        
         decorator.setType( SynchronizationInfoEnum.SYNC_ID_SET );
 
         try
@@ -935,7 +825,7 @@ public class SyncInfoValueControlTest
      * no refreshDeletes flag, an empty UUID set
      */
     @Test
-    public void testDecodeSyncInfoValueControlSyncIdSetNoCookieNoRefreshDeletesEmptySet()
+    public void testDecodeSyncInfoValueControlSyncIdSetNoCookieNoRefreshDeletesEmptySet() throws Exception
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x04 );
         bb.put( new byte[]
@@ -946,21 +836,12 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueContainer container = new SyncInfoValueContainer();
-        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
+        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
+        
         decorator.setType( SynchronizationInfoEnum.SYNC_ID_SET );
 
-        try
-        {
-            decorator.decode( bb.array() );
-        }
-        catch ( DecoderException de )
-        {
-            de.printStackTrace();
-            fail( de.getMessage() );
-        }
-        
-        SyncInfoValueDecorator syncInfoValue = container.getSyncInfoValueControl();
+        ISyncInfoValue syncInfoValue = (ISyncInfoValue)decorator.decode( bb.array() );
+
         assertEquals( SynchronizationInfoEnum.SYNC_ID_SET, syncInfoValue.getType() );
         assertEquals( "", Strings.utf8ToString(syncInfoValue.getCookie()) );
         assertFalse( syncInfoValue.isRefreshDeletes() );
@@ -984,7 +865,7 @@ public class SyncInfoValueControlTest
                 } );
             buffer.flip();
 
-            ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
+            ByteBuffer encoded = ((SyncInfoValueDecorator)syncInfoValue).encode( ByteBuffer.allocate( ((SyncInfoValueDecorator)syncInfoValue).computeLength() ) );
             assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
@@ -999,7 +880,7 @@ public class SyncInfoValueControlTest
      * no refreshDeletes flag, a UUID set with some values
      */
     @Test
-    public void testDecodeSyncInfoValueControlSyncIdSetNoCookieNoRefreshDeletesUUIDsSet()
+    public void testDecodeSyncInfoValueControlSyncIdSetNoCookieNoRefreshDeletesUUIDsSet() throws Exception
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x3A );
         bb.put( new byte[]
@@ -1019,20 +900,12 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueContainer container = new SyncInfoValueContainer();
-        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
+        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
+        
         decorator.setType( SynchronizationInfoEnum.SYNC_ID_SET );
 
-        try
-        {
-            decorator.decode( bb.array() );
-        }
-        catch ( DecoderException de )
-        {
-            de.printStackTrace();
-            fail( de.getMessage() );
-        }
-        SyncInfoValueDecorator syncInfoValue = container.getSyncInfoValueControl();
+        ISyncInfoValue syncInfoValue = (ISyncInfoValue)decorator.decode( bb.array() );
+
         assertEquals( SynchronizationInfoEnum.SYNC_ID_SET, syncInfoValue.getType() );
         assertEquals( "", Strings.utf8ToString(syncInfoValue.getCookie()) );
         assertFalse( syncInfoValue.isRefreshDeletes() );
@@ -1075,7 +948,7 @@ public class SyncInfoValueControlTest
                 } );
             buffer.flip();
 
-            ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
+            ByteBuffer encoded = ((SyncInfoValueDecorator)syncInfoValue).encode( ByteBuffer.allocate( ((SyncInfoValueDecorator)syncInfoValue).computeLength() ) );
             assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
@@ -1090,7 +963,7 @@ public class SyncInfoValueControlTest
      * no refreshDeletes flag, an empty UUID set
      */
     @Test
-    public void testDecodeSyncInfoValueControlSyncIdSetCookieNoRefreshDeletesEmptySet()
+    public void testDecodeSyncInfoValueControlSyncIdSetCookieNoRefreshDeletesEmptySet() throws Exception
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x09 );
         bb.put( new byte[]
@@ -1102,20 +975,12 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueContainer container = new SyncInfoValueContainer();
-        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
+        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
+        
         decorator.setType( SynchronizationInfoEnum.SYNC_ID_SET );
 
-        try
-        {
-            decorator.decode( bb.array() );
-        }
-        catch ( DecoderException de )
-        {
-            de.printStackTrace();
-            fail( de.getMessage() );
-        }
-        SyncInfoValueDecorator syncInfoValue = container.getSyncInfoValueControl();
+        ISyncInfoValue syncInfoValue = (ISyncInfoValue)decorator.decode( bb.array() );
+
         assertEquals( SynchronizationInfoEnum.SYNC_ID_SET, syncInfoValue.getType() );
         assertEquals( "abc", Strings.utf8ToString(syncInfoValue.getCookie()) );
         assertFalse( syncInfoValue.isRefreshDeletes() );
@@ -1140,7 +1005,7 @@ public class SyncInfoValueControlTest
                 } );
             buffer.flip();
 
-            ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
+            ByteBuffer encoded = ((SyncInfoValueDecorator)syncInfoValue).encode( ByteBuffer.allocate( ((SyncInfoValueDecorator)syncInfoValue).computeLength() ) );
             assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
@@ -1155,7 +1020,7 @@ public class SyncInfoValueControlTest
      * no refreshDeletes flag, a UUID set with some values
      */
     @Test
-    public void testDecodeSyncInfoValueControlSyncIdSetCookieNoRefreshDeletesUUIDsSet()
+    public void testDecodeSyncInfoValueControlSyncIdSetCookieNoRefreshDeletesUUIDsSet() throws Exception
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x3F );
         bb.put( new byte[]
@@ -1176,21 +1041,12 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueContainer container = new SyncInfoValueContainer();
-        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
+        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
+        
         decorator.setType( SynchronizationInfoEnum.SYNC_ID_SET );
 
-        try
-        {
-            decorator.decode( bb.array() );
-        }
-        catch ( DecoderException de )
-        {
-            de.printStackTrace();
-            fail( de.getMessage() );
-        }
-        
-        SyncInfoValueDecorator syncInfoValue = container.getSyncInfoValueControl();
+        ISyncInfoValue syncInfoValue = (ISyncInfoValue)decorator.decode( bb.array() );
+
         assertEquals( SynchronizationInfoEnum.SYNC_ID_SET, syncInfoValue.getType() );
         assertEquals( "abc", Strings.utf8ToString(syncInfoValue.getCookie()) );
         assertFalse( syncInfoValue.isRefreshDeletes() );
@@ -1234,7 +1090,7 @@ public class SyncInfoValueControlTest
                 } );
             buffer.flip();
 
-            ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
+            ByteBuffer encoded = ((SyncInfoValueDecorator)syncInfoValue).encode( ByteBuffer.allocate( ((SyncInfoValueDecorator)syncInfoValue).computeLength() ) );
             assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
@@ -1249,7 +1105,7 @@ public class SyncInfoValueControlTest
      * a refreshDeletes flag, an empty UUID set
      */
     @Test
-    public void testDecodeSyncInfoValueControlSyncIdSetNoCookieRefreshDeletesEmptySet()
+    public void testDecodeSyncInfoValueControlSyncIdSetNoCookieRefreshDeletesEmptySet() throws Exception
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x07 );
         bb.put( new byte[]
@@ -1261,20 +1117,12 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueContainer container = new SyncInfoValueContainer();
-        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
+        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
+        
         decorator.setType( SynchronizationInfoEnum.SYNC_ID_SET );
 
-        try
-        {
-            decorator.decode( bb.array() );
-        }
-        catch ( DecoderException de )
-        {
-            de.printStackTrace();
-            fail( de.getMessage() );
-        }
-        SyncInfoValueDecorator syncInfoValue = container.getSyncInfoValueControl();
+        ISyncInfoValue syncInfoValue = (ISyncInfoValue)decorator.decode( bb.array() );
+
         assertEquals( SynchronizationInfoEnum.SYNC_ID_SET, syncInfoValue.getType() );
         assertEquals( "", Strings.utf8ToString(syncInfoValue.getCookie()) );
         assertTrue( syncInfoValue.isRefreshDeletes() );
@@ -1299,7 +1147,7 @@ public class SyncInfoValueControlTest
                 } );
             buffer.flip();
 
-            ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
+            ByteBuffer encoded = ((SyncInfoValueDecorator)syncInfoValue).encode( ByteBuffer.allocate( ((SyncInfoValueDecorator)syncInfoValue).computeLength() ) );
             assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
@@ -1314,7 +1162,7 @@ public class SyncInfoValueControlTest
      * no refreshDeletes flag, a UUID set with some values
      */
     @Test
-    public void testDecodeSyncInfoValueControlSyncIdSetNoCookieRefreshDeletesUUIDsSet()
+    public void testDecodeSyncInfoValueControlSyncIdSetNoCookieRefreshDeletesUUIDsSet() throws Exception
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x3D );
         bb.put( new byte[]
@@ -1335,20 +1183,12 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueContainer container = new SyncInfoValueContainer();
-        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
-        decorator.setType( SynchronizationInfoEnum.NEW_COOKIE );
+        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
+        
+        decorator.setType( SynchronizationInfoEnum.SYNC_ID_SET );
 
-        try
-        {
-            decorator.decode( bb.array() );
-        }
-        catch ( DecoderException de )
-        {
-            de.printStackTrace();
-            fail( de.getMessage() );
-        }
-        SyncInfoValueDecorator syncInfoValue = container.getSyncInfoValueControl();
+        ISyncInfoValue syncInfoValue = (ISyncInfoValue)decorator.decode( bb.array() );
+
         assertEquals( SynchronizationInfoEnum.SYNC_ID_SET, syncInfoValue.getType() );
         assertEquals( "", Strings.utf8ToString(syncInfoValue.getCookie()) );
         assertTrue( syncInfoValue.isRefreshDeletes() );
@@ -1392,7 +1232,7 @@ public class SyncInfoValueControlTest
                 } );
             buffer.flip();
 
-            ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
+            ByteBuffer encoded = ((SyncInfoValueDecorator)syncInfoValue).encode( ByteBuffer.allocate( ((SyncInfoValueDecorator)syncInfoValue).computeLength() ) );
             assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
@@ -1407,7 +1247,7 @@ public class SyncInfoValueControlTest
      * a refreshDeletes flag, an empty UUID set
      */
     @Test
-    public void testDecodeSyncInfoValueControlSyncIdSetCookieRefreshDeletesEmptySet()
+    public void testDecodeSyncInfoValueControlSyncIdSetCookieRefreshDeletesEmptySet() throws Exception
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x0C );
         bb.put( new byte[]
@@ -1420,20 +1260,12 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueContainer container = new SyncInfoValueContainer();
-        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
+        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
+        
         decorator.setType( SynchronizationInfoEnum.SYNC_ID_SET );
 
-        try
-        {
-            decorator.decode( bb.array() );
-        }
-        catch ( DecoderException de )
-        {
-            de.printStackTrace();
-            fail( de.getMessage() );
-        }
-        SyncInfoValueDecorator syncInfoValue = container.getSyncInfoValueControl();
+        ISyncInfoValue syncInfoValue = (ISyncInfoValue)decorator.decode( bb.array() );
+
         assertEquals( SynchronizationInfoEnum.SYNC_ID_SET, syncInfoValue.getType() );
         assertEquals( "abc", Strings.utf8ToString(syncInfoValue.getCookie()) );
         assertTrue( syncInfoValue.isRefreshDeletes() );
@@ -1459,7 +1291,7 @@ public class SyncInfoValueControlTest
                 } );
             buffer.flip();
 
-            ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
+            ByteBuffer encoded = ((SyncInfoValueDecorator)syncInfoValue).encode( ByteBuffer.allocate( ((SyncInfoValueDecorator)syncInfoValue).computeLength() ) );
             assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
@@ -1474,7 +1306,7 @@ public class SyncInfoValueControlTest
      * a refreshDeletes flag, a UUID set with some values
      */
     @Test
-    public void testDecodeSyncInfoValueControlSyncIdSetCookieRefreshDeletesUUIDsSet()
+    public void testDecodeSyncInfoValueControlSyncIdSetCookieRefreshDeletesUUIDsSet() throws Exception
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x42 );
         bb.put( new byte[]
@@ -1496,21 +1328,12 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueContainer container = new SyncInfoValueContainer();
-        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
+        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
+        
         decorator.setType( SynchronizationInfoEnum.SYNC_ID_SET );
 
-        try
-        {
-            decorator.decode( bb.array() );
-        }
-        catch ( DecoderException de )
-        {
-            de.printStackTrace();
-            fail( de.getMessage() );
-        }
-        
-        SyncInfoValueDecorator syncInfoValue = container.getSyncInfoValueControl();
+        ISyncInfoValue syncInfoValue = (ISyncInfoValue)decorator.decode( bb.array() );
+
         assertEquals( SynchronizationInfoEnum.SYNC_ID_SET, syncInfoValue.getType() );
         assertEquals( "abc", Strings.utf8ToString(syncInfoValue.getCookie()) );
         assertTrue( syncInfoValue.isRefreshDeletes() );
@@ -1555,7 +1378,7 @@ public class SyncInfoValueControlTest
                 } );
             buffer.flip();
 
-            ByteBuffer encoded = syncInfoValue.encode( ByteBuffer.allocate( syncInfoValue.computeLength() ) );
+            ByteBuffer encoded = ((SyncInfoValueDecorator)syncInfoValue).encode( ByteBuffer.allocate( ((SyncInfoValueDecorator)syncInfoValue).computeLength() ) );
             assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
@@ -1586,8 +1409,8 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueContainer container = new SyncInfoValueContainer();
-        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
+        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
+        
         decorator.setType( SynchronizationInfoEnum.SYNC_ID_SET );
 
         try
@@ -1624,8 +1447,7 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueContainer container = new SyncInfoValueContainer();
-        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
+        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
         decorator.setType( SynchronizationInfoEnum.SYNC_ID_SET );
 
         try

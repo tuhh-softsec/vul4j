@@ -25,12 +25,11 @@ import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
+import org.apache.directory.shared.asn1.ber.tlv.BooleanDecoder;
 import org.apache.directory.shared.asn1.ber.tlv.BooleanDecoderException;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
-import org.apache.directory.shared.asn1.ber.tlv.BooleanDecoder;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.message.control.replication.SynchronizationInfoEnum;
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,8 +98,7 @@ public final class SyncInfoValueGrammar extends AbstractGrammar
             {
                 public void action( SyncInfoValueContainer container )
                 {
-                    SyncInfoValueDecorator control = 
-                        new SyncInfoValueDecorator( SynchronizationInfoEnum.NEW_COOKIE);
+                    SyncInfoValueDecorator control = container.getSyncInfoValueControl();
                     
                     Value value = container.getCurrentTLV().getValue();
 
@@ -138,11 +136,6 @@ public final class SyncInfoValueGrammar extends AbstractGrammar
             {
                 public void action( SyncInfoValueContainer container )
                 {
-                    SyncInfoValueDecorator control = 
-                        new SyncInfoValueDecorator( SynchronizationInfoEnum.REFRESH_DELETE);
-                    
-                    container.setSyncInfoValueControl( control );
-
                     // We can have an END transition
                     container.setGrammarEndAllowed( true );
                 }
@@ -304,10 +297,7 @@ public final class SyncInfoValueGrammar extends AbstractGrammar
             {
                 public void action( SyncInfoValueContainer container )
                 {
-                    SyncInfoValueDecorator control = 
-                        new SyncInfoValueDecorator( SynchronizationInfoEnum.REFRESH_PRESENT);
-                    
-                    container.setSyncInfoValueControl( control );
+                    SyncInfoValueDecorator control = container.getSyncInfoValueControl();
 
                     // We can have an END transition
                     container.setGrammarEndAllowed( true );
@@ -466,17 +456,7 @@ public final class SyncInfoValueGrammar extends AbstractGrammar
         super.transitions[SyncInfoValueStatesEnum.START_STATE.ordinal()][SyncInfoValueTags.SYNC_ID_SET_TAG.getValue()] = 
             new GrammarTransition( SyncInfoValueStatesEnum.START_STATE, 
                                     SyncInfoValueStatesEnum.SYNC_ID_SET_STATE, 
-                                    SyncInfoValueTags.SYNC_ID_SET_TAG.getValue(), 
-                new GrammarAction<SyncInfoValueContainer>( "SyncIdSet choice for SyncInfoValueControl" )
-            {
-                public void action( SyncInfoValueContainer container )
-                {
-                    SyncInfoValueDecorator control = 
-                        new SyncInfoValueDecorator( SynchronizationInfoEnum.SYNC_ID_SET);
-                    
-                    container.setSyncInfoValueControl( control );
-                }
-            } );
+                                    SyncInfoValueTags.SYNC_ID_SET_TAG.getValue(), null );
         
         
         /** 
@@ -686,7 +666,7 @@ public final class SyncInfoValueGrammar extends AbstractGrammar
             {
                 public void action( SyncInfoValueContainer container ) throws DecoderException
                 {
-                    ISyncInfoValue control = container.getSyncInfoValueControl();
+                    SyncInfoValueDecorator control = container.getSyncInfoValueControl();
                     
                     Value value = container.getCurrentTLV().getValue();
 
@@ -706,7 +686,7 @@ public final class SyncInfoValueGrammar extends AbstractGrammar
                     }
 
                     // Store the UUID in the UUIDs list
-                    control.getSyncUUIDs().add( uuid );
+                    control.addSyncUUID( uuid );
                     
                     // We can have an END transition
                     container.setGrammarEndAllowed( true );
@@ -731,7 +711,7 @@ public final class SyncInfoValueGrammar extends AbstractGrammar
             {
                 public void action( SyncInfoValueContainer container ) throws DecoderException
                 {
-                    ISyncInfoValue control = container.getSyncInfoValueControl();
+                    SyncInfoValueDecorator control = container.getSyncInfoValueControl();
                     
                     Value value = container.getCurrentTLV().getValue();
 

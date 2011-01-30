@@ -20,6 +20,7 @@
 package org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValue;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.directory.shared.ldap.message.control.replication.SynchronizationInfoEnum;
@@ -42,7 +43,7 @@ public class SyncInfoValue implements ISyncInfoValue
     /** The refreshDone flag if we are dealing with refreshXXX syncInfo. Default to true */
     private boolean refreshDone = true;
     
-    /** The refreshDeletes flag if we are dealing with syncIdSet syncInfo. Defaluts to false */
+    /** The refreshDeletes flag if we are dealing with syncIdSet syncInfo. Defaults to false */
     private boolean refreshDeletes = false;
     
     /** The list of UUIDs if we are dealing with syncIdSet syncInfo */
@@ -146,6 +147,11 @@ public class SyncInfoValue implements ISyncInfoValue
      */
     public void addSyncUUID( byte[] syncUUID )
     {
+        if ( syncUUIDs == null )
+        {
+            syncUUIDs = new ArrayList<byte[]>();
+        }
+        
         syncUUIDs.add( syncUUID );
     }
 

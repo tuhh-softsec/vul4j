@@ -117,7 +117,17 @@ public class SyncInfoValueDecorator extends ControlDecorator<ISyncInfoValue> imp
      */
     public void setCookie( byte[] cookie )
     {
-        getDecorated().setCookie( cookie );
+        // Copy the bytes
+        if ( cookie != null )
+        {
+            byte[] copy = new byte[cookie.length];
+            System.arraycopy( cookie, 0, copy, 0, cookie.length );
+            getDecorated().setCookie( copy );
+        }
+        else
+        {
+            getDecorated().setCookie( null );
+        }
     }
 
 

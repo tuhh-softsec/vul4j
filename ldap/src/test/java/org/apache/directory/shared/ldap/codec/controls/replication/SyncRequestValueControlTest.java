@@ -31,8 +31,8 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncRequestValue.SyncRequestValueDecorator;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncRequestValue.SyncRequestValueContainer;
+import org.apache.directory.shared.ldap.codec.controls.replication.syncRequestValue.SyncRequestValueDecorator;
 import org.apache.directory.shared.ldap.message.control.replication.SynchronizationModeEnum;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
@@ -66,8 +66,8 @@ public class SyncRequestValueControlTest
             } );
         bb.flip();
 
-        SyncRequestValueContainer container = new SyncRequestValueContainer();
-        SyncRequestValueDecorator decorator = container.getSyncRequestValueControl();
+        SyncRequestValueDecorator decorator = new SyncRequestValueDecorator();
+        SyncRequestValueContainer container = new SyncRequestValueContainer( decorator );
         
         try
         {

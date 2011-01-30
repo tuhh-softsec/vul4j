@@ -33,7 +33,6 @@ import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.ISyncDoneValue;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.SyncDoneValueDecorator;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.SyncDoneValueContainer;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,7 +50,7 @@ public class SyncDoneValueControlTest
 {
 
     @Test
-    public void testSyncDoneValueControl()
+    public void testSyncDoneValueControl() throws Exception
     {
         ByteBuffer bb = ByteBuffer.allocate( 11 );
 
@@ -64,19 +63,10 @@ public class SyncDoneValueControlTest
 
         bb.flip();
 
-        SyncDoneValueContainer container = new SyncDoneValueContainer();
-        SyncDoneValueDecorator decorator = container.getSyncDoneValueControl();
+        SyncDoneValueDecorator decorator = new SyncDoneValueDecorator();
 
-        try
-        {
-            decorator.decode( bb.array() );
-        }
-        catch ( Exception e )
-        {
-            fail( e.getMessage() );
-        }
-
-        SyncDoneValueDecorator control = container.getSyncDoneValueControl();
+        ISyncDoneValue control = (ISyncDoneValue)decorator.decode( bb.array() );
+        
         assertEquals( "xkcd", Strings.utf8ToString(control.getCookie()) );
         assertTrue( control.isRefreshDeletes() );
         
@@ -99,7 +89,7 @@ public class SyncDoneValueControlTest
 
             buffer.flip();
 
-            bb = control.encode( ByteBuffer.allocate( control.computeLength() ) );
+            bb = ((SyncDoneValueDecorator)control).encode( ByteBuffer.allocate( ((SyncDoneValueDecorator)control).computeLength() ) );
             String expected = Strings.dumpBytes(buffer.array());
             String decoded = Strings.dumpBytes(bb.array());
             assertEquals( expected, decoded );
@@ -112,7 +102,7 @@ public class SyncDoneValueControlTest
 
 
     @Test
-    public void testSyncDoneValueControlWithoutCookie()
+    public void testSyncDoneValueControlWithoutCookie() throws Exception
     {
         ByteBuffer bb = ByteBuffer.allocate( 5 );
 
@@ -125,19 +115,10 @@ public class SyncDoneValueControlTest
 
         bb.flip();
 
-        SyncDoneValueContainer container = new SyncDoneValueContainer();
-        SyncDoneValueDecorator decorator = container.getSyncDoneValueControl();
+        SyncDoneValueDecorator decorator = new SyncDoneValueDecorator();
 
-        try
-        {
-            decorator.decode( bb.array() );
-        }
-        catch ( Exception e )
-        {
-            fail( e.getMessage() );
-        }
+        ISyncDoneValue control = (ISyncDoneValue)decorator.decode( bb.array() );
 
-        SyncDoneValueDecorator control = container.getSyncDoneValueControl();
         assertNull( control.getCookie() );
         assertTrue( control.isRefreshDeletes() );
 
@@ -159,7 +140,7 @@ public class SyncDoneValueControlTest
 
             buffer.flip();
 
-            bb = control.encode( ByteBuffer.allocate( control.computeLength() ) );
+            bb = ((SyncDoneValueDecorator)control).encode( ByteBuffer.allocate( ((SyncDoneValueDecorator)control).computeLength() ) );
             String expected = Strings.dumpBytes(buffer.array());
             String decoded = Strings.dumpBytes(bb.array());
             assertEquals( expected, decoded );
@@ -172,7 +153,7 @@ public class SyncDoneValueControlTest
 
     
     @Test
-    public void testSyncDoneValueWithSequenceOnly()
+    public void testSyncDoneValueWithSequenceOnly() throws Exception
     {
         ByteBuffer bb = ByteBuffer.allocate( 2 );
 
@@ -183,26 +164,17 @@ public class SyncDoneValueControlTest
 
         bb.flip();
 
-        SyncDoneValueContainer container = new SyncDoneValueContainer();
-        SyncDoneValueDecorator decorator = container.getSyncDoneValueControl();
+        SyncDoneValueDecorator decorator = new SyncDoneValueDecorator();
 
-        try
-        {
-            decorator.decode( bb.array() );
-        }
-        catch ( Exception e )
-        {
-            fail( "shouldn't reach this" );
-        }
+        ISyncDoneValue control = (ISyncDoneValue)decorator.decode( bb.array() );
 
-        ISyncDoneValue control = container.getSyncDoneValueControl();
         assertNull( control.getCookie() );
         assertFalse( control.isRefreshDeletes() );
     }
 
     
     @Test
-    public void testSyncDoneValueControlWithEmptyCookie()
+    public void testSyncDoneValueControlWithEmptyCookie() throws Exception
     {
         ByteBuffer bb = ByteBuffer.allocate( 7 );
 
@@ -215,19 +187,10 @@ public class SyncDoneValueControlTest
 
         bb.flip();
 
-        SyncDoneValueContainer container = new SyncDoneValueContainer();
-        SyncDoneValueDecorator decorator = container.getSyncDoneValueControl();
+        SyncDoneValueDecorator decorator = new SyncDoneValueDecorator();
 
-        try
-        {
-            decorator.decode( bb.array() );
-        }
-        catch ( Exception e )
-        {
-            fail( e.getMessage() );
-        }
+        ISyncDoneValue control = (ISyncDoneValue)decorator.decode( bb.array() );
 
-        SyncDoneValueDecorator control = container.getSyncDoneValueControl();
         assertEquals( "", Strings.utf8ToString(control.getCookie()) );
         assertFalse( control.isRefreshDeletes() );
 
@@ -248,7 +211,7 @@ public class SyncDoneValueControlTest
 
             buffer.flip();
 
-            bb = control.encode( ByteBuffer.allocate( control.computeLength() ) );
+            bb = ((SyncDoneValueDecorator)control).encode( ByteBuffer.allocate( ((SyncDoneValueDecorator)control).computeLength() ) );
             String expected = Strings.dumpBytes(buffer.array());
             String decoded = Strings.dumpBytes(bb.array());
             assertEquals( expected, decoded );
