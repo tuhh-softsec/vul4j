@@ -19,7 +19,6 @@ package org.apache.commons.digester3;
 
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
-import java.util.Formatter;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -281,11 +280,9 @@ public class SetNestedPropertiesRule extends Rule {
             // Populate the corresponding properties of the top object
             Object top = this.getDigester().peek();
             if (debug) {
-                Formatter formatter =
-                    new Formatter().format("[SetNestedPropertiesRule]{%s} Set ", this.getDigester().getMatch())
-                                   .format("%s properties", (top != null ? top.getClass().getName() : "NULL"));
-
-                this.getDigester().getLog().debug(formatter.toString());
+                this.getDigester().getLog().debug(String.format("[SetNestedPropertiesRule]{%s} Set %s properties",
+                        this.getDigester().getMatch(),
+                        (top != null ? top.getClass().getName() : "NULL")));
             }
  
             if (trimData) {
