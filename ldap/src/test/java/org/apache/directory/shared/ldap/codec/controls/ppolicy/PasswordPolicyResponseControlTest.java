@@ -56,13 +56,12 @@ public class PasswordPolicyResponseControlTest
 
         bb.flip();
 
-        PasswordPolicyResponseContainer container = new PasswordPolicyResponseContainer( codec );
-        container.setPasswordPolicyResponseControl( new PasswordPolicyResponseDecorator( codec ) );
+        PasswordPolicyResponseDecorator control = new PasswordPolicyResponseDecorator( codec );
 
-        PasswordPolicyResponseDecorator control = container.getPasswordPolicyResponseControl();
-        control.decode( bb.array() );
-        assertEquals( 1, control.getTimeBeforeExpiration() );
-        assertEquals( 1, control.getPasswordPolicyError().getValue() );
+        IPasswordPolicyResponse passwordPolicyResponse = (IPasswordPolicyResponse)control.decode( bb.array() );
+        
+        assertEquals( 1, passwordPolicyResponse.getTimeBeforeExpiration() );
+        assertEquals( 1, passwordPolicyResponse.getPasswordPolicyError().getValue() );
         
         ByteBuffer buffer = ByteBuffer.allocate( 0x29 );
         buffer.put( new byte[]
@@ -80,7 +79,7 @@ public class PasswordPolicyResponseControlTest
                } );
         buffer.flip();
         
-        ByteBuffer encoded = control.encode( ByteBuffer.allocate( control.computeLength() ) );
+        ByteBuffer encoded = ((PasswordPolicyResponseDecorator)passwordPolicyResponse).encode( ByteBuffer.allocate( ((PasswordPolicyResponseDecorator)passwordPolicyResponse).computeLength() ) );
         assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
     }
     
@@ -100,13 +99,12 @@ public class PasswordPolicyResponseControlTest
 
         bb.flip();
 
-        PasswordPolicyResponseContainer container = new PasswordPolicyResponseContainer( codec );
-        container.setPasswordPolicyResponseControl( new PasswordPolicyResponseDecorator( codec ) );
+        PasswordPolicyResponseDecorator control = new PasswordPolicyResponseDecorator( codec );
 
-        PasswordPolicyResponseDecorator control = container.getPasswordPolicyResponseControl();
-        control.decode( bb.array() );
-        assertEquals( 1, control.getGraceAuthNsRemaining() );
-        assertEquals( 1, control.getPasswordPolicyError().getValue() );
+        IPasswordPolicyResponse passwordPolicyResponse = (IPasswordPolicyResponse)control.decode( bb.array() );
+        
+        assertEquals( 1, passwordPolicyResponse.getGraceAuthNsRemaining() );
+        assertEquals( 1, passwordPolicyResponse.getPasswordPolicyError().getValue() );
         
         ByteBuffer buffer = ByteBuffer.allocate( 0x29 );
         buffer.put( new byte[]
@@ -124,7 +122,7 @@ public class PasswordPolicyResponseControlTest
                } );
         buffer.flip();
         
-        ByteBuffer encoded = control.encode( ByteBuffer.allocate( control.computeLength() ) );
+        ByteBuffer encoded = ((PasswordPolicyResponseDecorator)passwordPolicyResponse).encode( ByteBuffer.allocate( ((PasswordPolicyResponseDecorator)passwordPolicyResponse).computeLength() ) );
         assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
     }
 
@@ -143,12 +141,11 @@ public class PasswordPolicyResponseControlTest
 
         bb.flip();
 
-        PasswordPolicyResponseContainer container = new PasswordPolicyResponseContainer( codec );
-        container.setPasswordPolicyResponseControl( new PasswordPolicyResponseDecorator( codec ) );
+        PasswordPolicyResponseDecorator control = new PasswordPolicyResponseDecorator( codec );
 
-        PasswordPolicyResponseDecorator control = container.getPasswordPolicyResponseControl();
-        control.decode( bb.array() );
-        assertEquals( 1, control.getTimeBeforeExpiration() );
+        IPasswordPolicyResponse passwordPolicyResponse = (IPasswordPolicyResponse)control.decode( bb.array() );
+
+        assertEquals( 1, passwordPolicyResponse.getTimeBeforeExpiration() );
         
         ByteBuffer buffer = ByteBuffer.allocate( 0x26 );
         buffer.put( new byte[]
@@ -165,7 +162,7 @@ public class PasswordPolicyResponseControlTest
                } );
         buffer.flip();
         
-        ByteBuffer encoded = control.encode( ByteBuffer.allocate( control.computeLength() ) );
+        ByteBuffer encoded = ((PasswordPolicyResponseDecorator)passwordPolicyResponse).encode( ByteBuffer.allocate( ((PasswordPolicyResponseDecorator)passwordPolicyResponse).computeLength() ) );
         assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
     }
     
@@ -184,12 +181,11 @@ public class PasswordPolicyResponseControlTest
 
         bb.flip();
 
-        PasswordPolicyResponseContainer container = new PasswordPolicyResponseContainer( codec );
-        container.setPasswordPolicyResponseControl( new PasswordPolicyResponseDecorator( codec ) );
-
-        PasswordPolicyResponseDecorator control = container.getPasswordPolicyResponseControl();
+        PasswordPolicyResponseDecorator control = new PasswordPolicyResponseDecorator( codec );
         
-        assertEquals( 1, control.getGraceAuthNsRemaining() );
+        IPasswordPolicyResponse passwordPolicyResponse = (IPasswordPolicyResponse)control.decode( bb.array() );
+
+        assertEquals( 1, passwordPolicyResponse.getGraceAuthNsRemaining() );
         
         ByteBuffer buffer = ByteBuffer.allocate( 0x26 );
         buffer.put( new byte[]
@@ -206,7 +202,7 @@ public class PasswordPolicyResponseControlTest
                } );
         buffer.flip();
         
-        ByteBuffer encoded = control.encode( ByteBuffer.allocate( control.computeLength() ) );
+        ByteBuffer encoded = ((PasswordPolicyResponseDecorator)passwordPolicyResponse).encode( ByteBuffer.allocate( ((PasswordPolicyResponseDecorator)passwordPolicyResponse).computeLength() ) );
         assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
     }
     
@@ -224,12 +220,11 @@ public class PasswordPolicyResponseControlTest
 
         bb.flip();
 
-        PasswordPolicyResponseContainer container = new PasswordPolicyResponseContainer( codec );
-        container.setPasswordPolicyResponseControl( new PasswordPolicyResponseDecorator( codec ) );
-
-        PasswordPolicyResponseDecorator control = container.getPasswordPolicyResponseControl();
-        control.decode( bb.array() );
-        assertEquals( 1, control.getPasswordPolicyError().getValue() );
+        PasswordPolicyResponseDecorator control = new PasswordPolicyResponseDecorator( codec );
+        
+        IPasswordPolicyResponse passwordPolicyResponse = (IPasswordPolicyResponse)control.decode( bb.array() );
+        
+        assertEquals( 1, passwordPolicyResponse.getPasswordPolicyError().getValue() );
         
         ByteBuffer buffer = ByteBuffer.allocate( 0x24 );
         buffer.put( new byte[]
@@ -245,7 +240,7 @@ public class PasswordPolicyResponseControlTest
                } );
         buffer.flip();
         
-        ByteBuffer encoded = control.encode( ByteBuffer.allocate( control.computeLength() ) );
+        ByteBuffer encoded = ((PasswordPolicyResponseDecorator)passwordPolicyResponse).encode( ByteBuffer.allocate( ((PasswordPolicyResponseDecorator)passwordPolicyResponse).computeLength() ) );
         assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
     }
 
@@ -262,12 +257,11 @@ public class PasswordPolicyResponseControlTest
 
         bb.flip();
 
-        PasswordPolicyResponseContainer container = new PasswordPolicyResponseContainer( codec );
-        container.setPasswordPolicyResponseControl( new PasswordPolicyResponseDecorator( codec ) );
+        PasswordPolicyResponseDecorator control = new PasswordPolicyResponseDecorator( codec );
 
-        PasswordPolicyResponseDecorator control = container.getPasswordPolicyResponseControl();
-        control.decode( bb.array() );
-        assertNotNull( control );
+        IPasswordPolicyResponse passwordPolicyResponse = (IPasswordPolicyResponse)control.decode( bb.array() );
+        
+        assertNotNull( passwordPolicyResponse );
         
         ByteBuffer buffer = ByteBuffer.allocate( 0x1D );
         buffer.put( new byte[]
@@ -280,7 +274,7 @@ public class PasswordPolicyResponseControlTest
                } );
         buffer.flip();
         
-        ByteBuffer encoded = control.encode( ByteBuffer.allocate( control.computeLength() ) );
+        ByteBuffer encoded = ((PasswordPolicyResponseDecorator)passwordPolicyResponse).encode( ByteBuffer.allocate( ((PasswordPolicyResponseDecorator)passwordPolicyResponse).computeLength() ) );
         assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
     }
 }
