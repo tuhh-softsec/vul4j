@@ -20,7 +20,6 @@
 package org.apache.directory.shared.ldap.util;
 
 
-import java.nio.ByteBuffer;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -46,7 +45,6 @@ import javax.naming.directory.InvalidAttributeValueException;
 import javax.naming.directory.InvalidSearchFilterException;
 import javax.naming.directory.NoSuchAttributeException;
 import javax.naming.directory.SchemaViolationException;
-import javax.naming.ldap.BasicControl;
 import javax.naming.ldap.ExtendedRequest;
 import javax.naming.ldap.ExtendedResponse;
 import javax.naming.ldap.LdapName;
@@ -56,7 +54,6 @@ import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.model.exception.*;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
-import org.apache.directory.shared.ldap.codec.ICodecControl;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.model.exception.LdapAffectMultipleDsaException;
 import org.apache.directory.shared.ldap.model.exception.LdapAliasDereferencingException;
@@ -103,20 +100,15 @@ public final class JndiUtils
     }
 
 
+    // @TODO not really needed and can be moved out
     public static javax.naming.ldap.Control toJndiControl( ILdapCodecService codec, Control control ) 
         throws EncoderException
     {
-        ICodecControl<? extends Control> codecControl = codec.decorate( control );
-        int length = codecControl.computeLength();
-        ByteBuffer buffer = ByteBuffer.allocate( length );
-        codecControl.encode( buffer );
-        buffer.flip();
-        javax.naming.ldap.Control jndiControl = new BasicControl( control.getOid(), 
-            control.isCritical(), buffer.array() );
-        return jndiControl;
+        return codec.toJndiControl( control );
     }
 
 
+    // @TODO not really needed and can be moved out
     public static javax.naming.ldap.Control[] toJndiControls( ILdapCodecService codec, Control... controls ) 
          throws EncoderException
     {
@@ -139,15 +131,15 @@ public final class JndiUtils
     }
 
 
+    // @TODO not really needed and can be moved out
     public static Control fromJndiControl( ILdapCodecService codec, javax.naming.ldap.Control jndiControl ) 
         throws DecoderException
     {
-        ICodecControl<Control> control = codec.newControl( jndiControl.getID() );
-        control.decode( jndiControl.getEncodedValue() );
-        return control.getDecorated();
+        return codec.fromJndiControl( jndiControl );
     }
 
 
+    // @TODO not really needed and can be moved out
     public static Control[] fromJndiControls( ILdapCodecService codec, javax.naming.ldap.Control... jndiControls )
         throws DecoderException
     {

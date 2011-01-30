@@ -22,6 +22,7 @@ package org.apache.directory.shared.dsmlv2.request;
 
 import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.dsmlv2.ParserUtils;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequestImpl;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
@@ -35,14 +36,14 @@ import org.dom4j.QName;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ExtendedRequestDsml extends AbstractRequestDsml
+public class ExtendedRequestDsml extends AbstractRequestDsml<ExtendedRequest>
 {
     /**
      * Creates a new getDecoratedMessage() of ExtendedRequestDsml.
      */
-    public ExtendedRequestDsml()
+    public ExtendedRequestDsml( ILdapCodecService codec )
     {
-        super( new ExtendedRequestImpl() );
+        super( codec, new ExtendedRequestImpl() );
     }
 
 
@@ -52,9 +53,9 @@ public class ExtendedRequestDsml extends AbstractRequestDsml
      * @param ldapMessage
      *      the message to decorate
      */
-    public ExtendedRequestDsml( ExtendedRequest ldapMessage )
+    public ExtendedRequestDsml( ILdapCodecService codec, ExtendedRequest ldapMessage )
     {
-        super( ldapMessage );
+        super( codec, ldapMessage );
     }
 
 
@@ -63,7 +64,7 @@ public class ExtendedRequestDsml extends AbstractRequestDsml
      */
     public MessageTypeEnum getType()
     {
-        return getDecoratedMessage().getType();
+        return getDecorated().getType();
     }
 
 
@@ -74,7 +75,7 @@ public class ExtendedRequestDsml extends AbstractRequestDsml
     {
         Element element = super.toDsml( root );
 
-        ExtendedRequest request = ( ExtendedRequest ) getDecoratedMessage();
+        ExtendedRequest request = ( ExtendedRequest ) getDecorated();
 
         // Request Name
         if ( request.getRequestName() != null )
@@ -103,7 +104,7 @@ public class ExtendedRequestDsml extends AbstractRequestDsml
      */
     public String getRequestName()
     {
-        return ( (ExtendedRequest) getDecoratedMessage() ).getRequestName();
+        return ( (ExtendedRequest) getDecorated() ).getRequestName();
     }
 
 
@@ -114,7 +115,7 @@ public class ExtendedRequestDsml extends AbstractRequestDsml
      */
     public void setRequestName( OID requestName )
     {
-        ( ( ExtendedRequest ) getDecoratedMessage() ).setRequestName( requestName.toString() );
+        ( ( ExtendedRequest ) getDecorated() ).setRequestName( requestName.toString() );
     }
 
 
@@ -125,7 +126,7 @@ public class ExtendedRequestDsml extends AbstractRequestDsml
      */
     public byte[] getRequestValue()
     {
-        return ( ( ExtendedRequest ) getDecoratedMessage() ).getRequestValue();
+        return ( ( ExtendedRequest ) getDecorated() ).getRequestValue();
     }
 
 
@@ -136,6 +137,6 @@ public class ExtendedRequestDsml extends AbstractRequestDsml
      */
     public void setRequestValue( byte[] requestValue )
     {
-        ( ( ExtendedRequest ) getDecoratedMessage() ).getRequestValue();
+        ( ( ExtendedRequest ) getDecorated() ).getRequestValue();
     }
 }

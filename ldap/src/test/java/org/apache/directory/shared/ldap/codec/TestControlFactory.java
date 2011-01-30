@@ -20,6 +20,8 @@
 package org.apache.directory.shared.ldap.codec;
 
 
+import org.apache.directory.shared.asn1.DecoderException;
+import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.model.message.Control;
 
 
@@ -41,6 +43,21 @@ public class TestControlFactory implements IControlFactory<ITestControl,ITestCod
     }
 
     public ITestCodecControl decorate( Control control )
+    {
+        return null;
+    }
+
+    public ITestCodecControl decorate( ITestControl control )
+    {
+        return null;
+    }
+
+    public javax.naming.ldap.Control toJndiControl( ITestControl control ) throws EncoderException
+    {
+        return null;
+    }
+
+    public ITestControl fromJndiControl( javax.naming.ldap.Control control ) throws DecoderException
     {
         return null;
     }

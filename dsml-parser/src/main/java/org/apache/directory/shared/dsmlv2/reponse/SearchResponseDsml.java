@@ -24,7 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.directory.shared.dsmlv2.DsmlDecorator;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.model.message.Message;
+import org.apache.directory.shared.ldap.model.message.ResultResponse;
 import org.dom4j.Element;
 
 
@@ -35,7 +37,7 @@ import org.dom4j.Element;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SearchResponseDsml extends AbstractResponseDsml
+public class SearchResponseDsml extends AbstractResultResponseDsml<ResultResponse>
 {
     /** The responses */
     private List<DsmlDecorator> responses = new ArrayList<DsmlDecorator>();
@@ -44,9 +46,9 @@ public class SearchResponseDsml extends AbstractResponseDsml
     /**
      * Creates a new getDecoratedMessage() of SearchResponseDsml.
      */
-    public SearchResponseDsml()
+    public SearchResponseDsml( ILdapCodecService codec )
     {
-        super( null );
+        super( codec, null );
     }
 
 
@@ -55,9 +57,9 @@ public class SearchResponseDsml extends AbstractResponseDsml
      *
      * @param response the LDAP response message to decorate
      */
-    public SearchResponseDsml( Message response )
+    public SearchResponseDsml( ILdapCodecService codec, Message response )
     {
-        super( response );
+        super( codec, ( ResultResponse ) response );
     }
 
 
@@ -97,9 +99,9 @@ public class SearchResponseDsml extends AbstractResponseDsml
         Element element = root.addElement( "searchResponse" );
 
         // RequestID
-        if ( getDecoratedMessage() != null )
+        if ( getDecorated() != null )
         {
-            int requestID = getDecoratedMessage().getMessageId();
+            int requestID = getDecorated().getMessageId();
             if ( requestID > 0 )
             {
                 element.addAttribute( "requestID", "" + requestID );

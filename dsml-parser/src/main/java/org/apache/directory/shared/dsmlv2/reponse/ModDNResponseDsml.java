@@ -21,6 +21,7 @@
 package org.apache.directory.shared.dsmlv2.reponse;
 
 
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.message.ModifyDnResponse;
 import org.apache.directory.shared.ldap.model.message.ModifyDnResponseImpl;
@@ -32,14 +33,14 @@ import org.dom4j.Element;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ModDNResponseDsml extends AbstractResponseDsml
+public class ModDNResponseDsml extends AbstractResultResponseDsml<ModifyDnResponse>
 {
     /**
      * Creates a new getDecoratedMessage() of ModDNResponseDsml.
      */
-    public ModDNResponseDsml()
+    public ModDNResponseDsml( ILdapCodecService codec )
     {
-        super( new ModifyDnResponseImpl() );
+        super( codec, new ModifyDnResponseImpl() );
     }
 
 
@@ -49,9 +50,9 @@ public class ModDNResponseDsml extends AbstractResponseDsml
      * @param ldapMessage
      *      the message to decorate
      */
-    public ModDNResponseDsml( ModifyDnResponse ldapMessage )
+    public ModDNResponseDsml( ILdapCodecService codec, ModifyDnResponse ldapMessage )
     {
-        super( ldapMessage );
+        super( codec, ldapMessage );
     }
 
 
@@ -60,7 +61,7 @@ public class ModDNResponseDsml extends AbstractResponseDsml
      */
     public MessageTypeEnum getType()
     {
-        return getDecoratedMessage().getType();
+        return getDecorated().getType();
     }
 
 
@@ -71,7 +72,7 @@ public class ModDNResponseDsml extends AbstractResponseDsml
     {
         Element element = root.addElement( "modDNResponse" );
 
-        LdapResultDsml ldapResultDsml = new LdapResultDsml( ( ( ModifyDnResponse ) getDecoratedMessage() ).getLdapResult(), getDecoratedMessage() );
+        LdapResultDsml ldapResultDsml = new LdapResultDsml( ( ( ModifyDnResponse ) getDecorated() ).getLdapResult(), getDecorated() );
         ldapResultDsml.toDsml( element );
         return element;
     }

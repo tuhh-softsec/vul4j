@@ -56,7 +56,7 @@ public class BatchResponse
 
 
     /**
-     * Adds a reponse
+     * Adds a response
      *
      * @param response
      *      the response to add
@@ -70,7 +70,7 @@ public class BatchResponse
 
 
     /**
-     * Gets the current reponse
+     * Gets the current response
      *
      * @return
      *      the current response
@@ -105,12 +105,12 @@ public class BatchResponse
 
 
     /**
-     * Gets the List of all the reponses
+     * Gets the List of all the responses
      *
      * @return
      *      the List of all the responses
      */
-    public List getResponses()
+    public List<Response> getResponses()
     {
         return responses;
     }

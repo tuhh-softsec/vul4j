@@ -23,9 +23,9 @@ package org.apache.directory.shared.dsmlv2.reponse;
 import org.apache.directory.shared.dsmlv2.DsmlDecorator;
 import org.apache.directory.shared.ldap.codec.ICodecControl;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
-import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.ResponseDecorator;
 import org.apache.directory.shared.ldap.model.message.Control;
-import org.apache.directory.shared.ldap.model.message.Response;
+import org.apache.directory.shared.ldap.model.message.ResultResponse;
 import org.dom4j.Element;
 
 
@@ -34,7 +34,7 @@ import org.dom4j.Element;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public abstract class AbstractResponseDsml<E extends Response> extends MessageDecorator<E> implements DsmlDecorator
+public abstract class AbstractResultResponseDsml<E extends ResultResponse> extends ResponseDecorator<E> implements DsmlDecorator
 {
 
     /**
@@ -42,7 +42,7 @@ public abstract class AbstractResponseDsml<E extends Response> extends MessageDe
      *
      * @param ldapMessage the LDAP message to decorate
      */
-    public AbstractResponseDsml( ILdapCodecService codec, E ldapMessage )
+    public AbstractResultResponseDsml( ILdapCodecService codec, E ldapMessage )
     {
         super( codec, ldapMessage );
     }

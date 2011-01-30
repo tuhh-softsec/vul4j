@@ -82,10 +82,8 @@
     <module>ldap-schema</module>
     <module>ldap-schema-converter</module>
     <module>ldap-client-api</module>
-    <!--
     <module>dsml-parser</module>
     <module>dsml-engine</module>
-    -->
   </modules>
 
   <build>

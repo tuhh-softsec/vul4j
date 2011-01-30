@@ -20,6 +20,8 @@
 package org.apache.directory.shared.ldap.codec;
 
 
+import org.apache.directory.shared.asn1.DecoderException;
+import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.model.message.Control;
 
 
@@ -35,7 +37,11 @@ public interface IControlFactory<C extends Control, D extends ICodecControl<C>>
     
     D newCodecControl();
     
-    D decorate( Control control );
+    D decorate( C control );
     
     C newControl();
+    
+    javax.naming.ldap.Control toJndiControl( C control ) throws EncoderException;
+    
+    C fromJndiControl( javax.naming.ldap.Control control ) throws DecoderException;
 }

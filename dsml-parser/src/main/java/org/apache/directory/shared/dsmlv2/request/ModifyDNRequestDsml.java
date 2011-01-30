@@ -20,6 +20,7 @@
 package org.apache.directory.shared.dsmlv2.request;
 
 
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.message.ModifyDnRequest;
 import org.apache.directory.shared.ldap.model.message.ModifyDnRequestImpl;
@@ -33,14 +34,14 @@ import org.dom4j.Element;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ModifyDNRequestDsml extends AbstractRequestDsml
+public class ModifyDNRequestDsml extends AbstractRequestDsml<ModifyDnRequest>
 {
     /**
      * Creates a new getDecoratedMessage() of ModifyDNRequestDsml.
      */
-    public ModifyDNRequestDsml()
+    public ModifyDNRequestDsml( ILdapCodecService codec )
     {
-        super( new ModifyDnRequestImpl() );
+        super( codec, new ModifyDnRequestImpl() );
     }
 
 
@@ -50,9 +51,9 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
      * @param ldapMessage
      *      the message to decorate
      */
-    public ModifyDNRequestDsml( ModifyDnRequest ldapMessage )
+    public ModifyDNRequestDsml( ILdapCodecService codec, ModifyDnRequest ldapMessage )
     {
-        super( ldapMessage );
+        super( codec, ldapMessage );
     }
 
 
@@ -61,7 +62,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
      */
     public MessageTypeEnum getType()
     {
-        return getDecoratedMessage().getType();
+        return getDecorated().getType();
     }
 
 
@@ -72,7 +73,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
     {
         Element element = super.toDsml( root );
 
-        ModifyDnRequest request = ( ModifyDnRequest ) getDecoratedMessage();
+        ModifyDnRequest request = ( ModifyDnRequest ) getDecorated();
 
         // Dn
         if ( request.getName() != null )
@@ -106,7 +107,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
      */
     public Dn getName()
     {
-        return ( ( ModifyDnRequest ) getDecoratedMessage() ).getName();
+        return ( ( ModifyDnRequest ) getDecorated() ).getName();
     }
 
 
@@ -117,7 +118,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
      */
     public void setEntry( Dn name )
     {
-        ( ( ModifyDnRequest ) getDecoratedMessage() ).setName( name );
+        ( ( ModifyDnRequest ) getDecorated() ).setName( name );
     }
 
 
@@ -128,7 +129,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
      */
     public boolean isDeleteOldRDN()
     {
-        return ( ( ModifyDnRequest ) getDecoratedMessage() ).getDeleteOldRdn();
+        return ( ( ModifyDnRequest ) getDecorated() ).getDeleteOldRdn();
     }
 
 
@@ -139,7 +140,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
      */
     public void setDeleteOldRDN( boolean deleteOldRDN )
     {
-        ( ( ModifyDnRequest ) getDecoratedMessage() ).setDeleteOldRdn( deleteOldRDN );
+        ( ( ModifyDnRequest ) getDecorated() ).setDeleteOldRdn( deleteOldRDN );
     }
 
 
@@ -150,7 +151,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
      */
     public Rdn getNewRDN()
     {
-        return ( ( ModifyDnRequest ) getDecoratedMessage() ).getNewRdn();
+        return ( ( ModifyDnRequest ) getDecorated() ).getNewRdn();
     }
 
 
@@ -161,7 +162,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
      */
     public void setNewRDN( Rdn newRdn)
     {
-        ( ( ModifyDnRequest ) getDecoratedMessage() ).setNewRdn(newRdn);
+        ( ( ModifyDnRequest ) getDecorated() ).setNewRdn(newRdn);
     }
 
 
@@ -172,7 +173,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
      */
     public Dn getNewSuperior()
     {
-        return ( (ModifyDnRequest) getDecoratedMessage() ).getNewSuperior();
+        return ( (ModifyDnRequest) getDecorated() ).getNewSuperior();
     }
 
 
@@ -183,6 +184,6 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml
      */
     public void setNewSuperior( Dn newSuperior )
     {
-        ( ( ModifyDnRequest ) getDecoratedMessage() ).setNewSuperior( newSuperior );
+        ( ( ModifyDnRequest ) getDecorated() ).setNewSuperior( newSuperior );
     }
 }

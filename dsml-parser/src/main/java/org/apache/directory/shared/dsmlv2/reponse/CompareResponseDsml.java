@@ -21,6 +21,7 @@
 package org.apache.directory.shared.dsmlv2.reponse;
 
 
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.model.message.CompareResponse;
 import org.apache.directory.shared.ldap.model.message.CompareResponseImpl;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
@@ -32,14 +33,14 @@ import org.dom4j.Element;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class CompareResponseDsml extends AbstractResponseDsml
+public class CompareResponseDsml extends AbstractResultResponseDsml<CompareResponse>
 {
     /**
      * Creates a new getDecoratedMessage() of CompareResponseDsml.
      */
-    public CompareResponseDsml()
+    public CompareResponseDsml( ILdapCodecService codec )
     {
-        super( new CompareResponseImpl() );
+        super( codec, new CompareResponseImpl() );
     }
 
 
@@ -49,9 +50,9 @@ public class CompareResponseDsml extends AbstractResponseDsml
      * @param ldapMessage
      *      the message to decorate
      */
-    public CompareResponseDsml( CompareResponse ldapMessage )
+    public CompareResponseDsml( ILdapCodecService codec, CompareResponse ldapMessage )
     {
-        super( ldapMessage );
+        super( codec, ldapMessage );
     }
 
 
@@ -60,7 +61,7 @@ public class CompareResponseDsml extends AbstractResponseDsml
      */
     public MessageTypeEnum getType()
     {
-        return getDecoratedMessage().getType();
+        return getDecorated().getType();
     }
 
 
@@ -71,7 +72,7 @@ public class CompareResponseDsml extends AbstractResponseDsml
     {
         Element element = root.addElement( "compareResponse" );
 
-        LdapResultDsml ldapResultDsml = new LdapResultDsml( ( ( CompareResponse ) getDecoratedMessage() ).getLdapResult(), getDecoratedMessage() );
+        LdapResultDsml ldapResultDsml = new LdapResultDsml( ( ( CompareResponse ) getDecorated() ).getLdapResult(), getDecorated() );
         ldapResultDsml.toDsml( element );
         return element;
     }

@@ -25,7 +25,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.directory.shared.asn1.DecoderException;
+import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesDecorator;
+import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesFactory;
 import org.apache.directory.shared.ldap.model.message.Control;
+import org.apache.directory.shared.ldap.model.message.controls.Subentries;
+import org.apache.directory.shared.ldap.model.message.controls.SubentriesImpl;
 import org.apache.mina.filter.codec.ProtocolCodecFactory;
 
 
@@ -40,6 +46,25 @@ public class DefaultLdapCodecService implements ILdapCodecService
     Map<String,IControlFactory<?,?>> controlFactories = new HashMap<String, IControlFactory<?,?>>();
     Map<String,IExtendedOpFactory<?,?>> extReqFactories = new HashMap<String, IExtendedOpFactory<?,?>>();
     Map<String,IExtendedOpFactory<?,?>> extResFactories = new HashMap<String, IExtendedOpFactory<?,?>>();
+    
+    
+    public DefaultLdapCodecService()
+    {
+        loadStockControls();
+    }
+    
+    
+    /**
+     * Loads the Controls implement out of the box in the codec.
+     */
+    private void loadStockControls()
+    {
+        SubentriesFactory subentriesFactory = new SubentriesFactory();
+        controlFactories.put( Subentries.OID, subentriesFactory );
+
+        
+        
+    }
     
 
     //-------------------------------------------------------------------------
@@ -182,7 +207,7 @@ public class DefaultLdapCodecService implements ILdapCodecService
     {
         try
         {
-            IControlFactory<?,?> factory = controlFactories.get( control.getOid() );
+            IControlFactory factory = controlFactories.get( control.getOid() );
             return factory.decorate( control );
         }
         catch ( SecurityException e )
@@ -190,6 +215,18 @@ public class DefaultLdapCodecService implements ILdapCodecService
             e.printStackTrace();
         }
         
+        return null;
+    }
+
+
+    public javax.naming.ldap.Control toJndiControl( Control control ) throws EncoderException
+    {
+        return null;
+    }
+
+
+    public Control fromJndiControl( javax.naming.ldap.Control control ) throws DecoderException
+    {
         return null;
     }
 }

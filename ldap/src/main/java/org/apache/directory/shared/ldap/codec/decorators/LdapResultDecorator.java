@@ -305,7 +305,9 @@ public class LdapResultDecorator implements LdapResult, IDecorator<LdapResult>
     }
 
 
-    
+    /**
+     * {@inheritDoc}
+     */
     public LdapResult getDecorated()
     {
         return decoratedLdapResult;

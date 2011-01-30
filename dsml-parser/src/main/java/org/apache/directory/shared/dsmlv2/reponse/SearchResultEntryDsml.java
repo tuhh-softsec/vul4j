@@ -22,6 +22,7 @@ package org.apache.directory.shared.dsmlv2.reponse;
 
 
 import org.apache.directory.shared.dsmlv2.ParserUtils;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.decorators.SearchResultEntryDecorator;
 import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
@@ -41,14 +42,14 @@ import org.dom4j.QName;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SearchResultEntryDsml extends AbstractResponseDsml
+public class SearchResultEntryDsml extends AbstractResponseDsml<SearchResultEntry>
 {
     /**
      * Creates a new getDecoratedMessage() of SearchResultEntryDsml.
      */
-    public SearchResultEntryDsml()
+    public SearchResultEntryDsml( ILdapCodecService codec )
     {
-        super( new SearchResultEntryImpl() );
+        super( codec, new SearchResultEntryImpl() );
     }
 
 
@@ -58,9 +59,9 @@ public class SearchResultEntryDsml extends AbstractResponseDsml
      * @param ldapMessage
      *      the message to decorate
      */
-    public SearchResultEntryDsml( SearchResultEntry ldapMessage )
+    public SearchResultEntryDsml( ILdapCodecService codec, SearchResultEntry ldapMessage )
     {
-        super( ldapMessage );
+        super( codec, ldapMessage );
     }
 
 
@@ -69,7 +70,7 @@ public class SearchResultEntryDsml extends AbstractResponseDsml
      */
     public MessageTypeEnum getType()
     {
-        return getDecoratedMessage().getType();
+        return getDecorated().getType();
     }
 
 
@@ -79,7 +80,7 @@ public class SearchResultEntryDsml extends AbstractResponseDsml
     public Element toDsml( Element root )
     {
         Element element = root.addElement( "searchResultEntry" );
-        SearchResultEntry searchResultEntry = ( SearchResultEntry ) getDecoratedMessage();
+        SearchResultEntry searchResultEntry = ( SearchResultEntry ) getDecorated();
         element.addAttribute( "dn", searchResultEntry.getObjectName().getName() );
 
         Entry entry = searchResultEntry.getEntry();
@@ -121,7 +122,7 @@ public class SearchResultEntryDsml extends AbstractResponseDsml
      */
     public Dn getObjectName()
     {
-        return ( ( SearchResultEntry ) getDecoratedMessage() ).getObjectName();
+        return ( ( SearchResultEntry ) getDecorated() ).getObjectName();
     }
 
 
@@ -132,7 +133,7 @@ public class SearchResultEntryDsml extends AbstractResponseDsml
      */
     public void setObjectName( Dn objectName )
     {
-        ( ( SearchResultEntry ) getDecoratedMessage() ).setObjectName( objectName );
+        ( ( SearchResultEntry ) getDecorated() ).setObjectName( objectName );
     }
 
 
@@ -143,7 +144,7 @@ public class SearchResultEntryDsml extends AbstractResponseDsml
      */
     public Entry getEntry()
     {
-        return ( ( SearchResultEntry ) getDecoratedMessage() ).getEntry();
+        return ( ( SearchResultEntry ) getDecorated() ).getEntry();
     }
 
 
@@ -154,7 +155,7 @@ public class SearchResultEntryDsml extends AbstractResponseDsml
      */
     public void setEntry( Entry entry )
     {
-        ( ( SearchResultEntry ) getDecoratedMessage() ).setEntry( entry );
+        ( ( SearchResultEntry ) getDecorated() ).setEntry( entry );
     }
 
 
@@ -166,7 +167,7 @@ public class SearchResultEntryDsml extends AbstractResponseDsml
      */
     public void addAttributeType( String type ) throws LdapException
     {
-        ( ( SearchResultEntryDecorator ) getDecoratedMessage() ).addAttribute( type );
+        ( ( SearchResultEntryDecorator ) getDecorated() ).addAttribute( type );
     }
 
 
@@ -177,6 +178,6 @@ public class SearchResultEntryDsml extends AbstractResponseDsml
      */
     public void addAttributeValue( Object value )
     {
-        ( ( SearchResultEntryDecorator ) getDecoratedMessage() ).addAttributeValue( value );
+        ( ( SearchResultEntryDecorator ) getDecorated() ).addAttributeValue( value );
     }
 }

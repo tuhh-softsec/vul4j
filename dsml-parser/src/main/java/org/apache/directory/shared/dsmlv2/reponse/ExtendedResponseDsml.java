@@ -23,6 +23,7 @@ package org.apache.directory.shared.dsmlv2.reponse;
 
 import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.dsmlv2.ParserUtils;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
 import org.apache.directory.shared.ldap.model.message.ExtendedResponseImpl;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
@@ -37,14 +38,14 @@ import org.dom4j.QName;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ExtendedResponseDsml extends AbstractResponseDsml
+public class ExtendedResponseDsml extends AbstractResultResponseDsml<ExtendedResponse>
 {
     /**
      * Creates a new getDecoratedMessage() of ExtendedResponseDsml.
      */
-    public ExtendedResponseDsml()
+    public ExtendedResponseDsml( ILdapCodecService codec )
     {
-        super( new ExtendedResponseImpl( "" ) );
+        super( codec, new ExtendedResponseImpl( "" ) );
     }
 
 
@@ -54,9 +55,9 @@ public class ExtendedResponseDsml extends AbstractResponseDsml
      * @param ldapMessage
      *      the message to decorate
      */
-    public ExtendedResponseDsml( ExtendedResponse ldapMessage )
+    public ExtendedResponseDsml( ILdapCodecService codec, ExtendedResponse ldapMessage )
     {
-        super( ldapMessage );
+        super( codec, ldapMessage );
     }
 
 
@@ -65,7 +66,7 @@ public class ExtendedResponseDsml extends AbstractResponseDsml
      */
     public MessageTypeEnum getType()
     {
-        return getDecoratedMessage().getType();
+        return getDecorated().getType();
     }
 
 
@@ -75,10 +76,10 @@ public class ExtendedResponseDsml extends AbstractResponseDsml
     public Element toDsml( Element root )
     {
         Element element = root.addElement( "extendedResponse" );
-        ExtendedResponse extendedResponse = ( ExtendedResponse ) getDecoratedMessage();
+        ExtendedResponse extendedResponse = ( ExtendedResponse ) getDecorated();
 
         // LDAP Result
-        LdapResultDsml ldapResultDsml = new LdapResultDsml( extendedResponse.getLdapResult(), getDecoratedMessage() );
+        LdapResultDsml ldapResultDsml = new LdapResultDsml( extendedResponse.getLdapResult(), getDecorated() );
         ldapResultDsml.toDsml( element );
 
         // ResponseName
@@ -122,7 +123,7 @@ public class ExtendedResponseDsml extends AbstractResponseDsml
      */
     public String getResponseName()
     {
-        return ( ( ExtendedResponse ) getDecoratedMessage() ).getResponseName();
+        return ( ( ExtendedResponse ) getDecorated() ).getResponseName();
     }
 
 
@@ -133,7 +134,7 @@ public class ExtendedResponseDsml extends AbstractResponseDsml
      */
     public void setResponseName( OID responseName )
     {
-        ( ( ExtendedResponse ) getDecoratedMessage() ).setResponseName( responseName.toString() );
+        ( ( ExtendedResponse ) getDecorated() ).setResponseName( responseName.toString() );
     }
 
 
@@ -144,7 +145,7 @@ public class ExtendedResponseDsml extends AbstractResponseDsml
      */
     public Object getResponseValue()
     {
-        return ( ( ExtendedResponse ) getDecoratedMessage() ).getResponseValue();
+        return ( ( ExtendedResponse ) getDecorated() ).getResponseValue();
     }
 
 
@@ -155,6 +156,6 @@ public class ExtendedResponseDsml extends AbstractResponseDsml
      */
     public void setResponseValue( byte[] response )
     {
-        ( ( ExtendedResponse ) getDecoratedMessage() ).setResponseValue( response );
+        ( ( ExtendedResponse ) getDecorated() ).setResponseValue( response );
     }
 }

@@ -22,6 +22,8 @@ package org.apache.directory.shared.ldap.codec;
 
 import java.util.Iterator;
 
+import org.apache.directory.shared.asn1.DecoderException;
+import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.mina.filter.codec.ProtocolCodecFactory;
 
@@ -69,4 +71,9 @@ public interface ILdapCodecService
      * @return the client or server specific {@link ProtocolCodecFactory}
      */
     ProtocolCodecFactory newProtocolCodecFactory( boolean client );
+    
+    
+    javax.naming.ldap.Control toJndiControl( Control control ) throws EncoderException;
+    
+    Control fromJndiControl( javax.naming.ldap.Control control ) throws DecoderException;
 }

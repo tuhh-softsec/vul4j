@@ -32,6 +32,11 @@ import org.apache.directory.shared.asn1.EncoderException;
  */
 public interface IDecorator<E>
 {
+    /**
+     * Gets the object being decorated by this IDecorator.
+     *
+     * @return The decorated object
+     */
     E getDecorated();
     
     

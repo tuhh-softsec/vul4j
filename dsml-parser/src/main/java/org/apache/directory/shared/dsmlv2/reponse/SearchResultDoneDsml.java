@@ -17,10 +17,10 @@
  *  under the License. 
  *  
  */
-
 package org.apache.directory.shared.dsmlv2.reponse;
 
 
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.message.SearchResultDone;
 import org.apache.directory.shared.ldap.model.message.SearchResultDoneImpl;
@@ -32,14 +32,14 @@ import org.dom4j.Element;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SearchResultDoneDsml extends AbstractResponseDsml
+public class SearchResultDoneDsml extends AbstractResultResponseDsml<SearchResultDone>
 {
     /**
      * Creates a new getDecoratedMessage() of SearchResultDoneDsml.
      */
-    public SearchResultDoneDsml()
+    public SearchResultDoneDsml( ILdapCodecService codec )
     {
-        super( new SearchResultDoneImpl() );
+        super( codec, new SearchResultDoneImpl() );
     }
 
 
@@ -49,9 +49,9 @@ public class SearchResultDoneDsml extends AbstractResponseDsml
      * @param ldapMessage
      *      the message to decorate
      */
-    public SearchResultDoneDsml( SearchResultDone ldapMessage )
+    public SearchResultDoneDsml( ILdapCodecService codec, SearchResultDone ldapMessage )
     {
-        super( ldapMessage );
+        super( codec, ldapMessage );
     }
 
 
@@ -60,7 +60,7 @@ public class SearchResultDoneDsml extends AbstractResponseDsml
      */
     public MessageTypeEnum getType()
     {
-        return getDecoratedMessage().getType();
+        return getDecorated().getType();
     }
 
 
@@ -71,7 +71,7 @@ public class SearchResultDoneDsml extends AbstractResponseDsml
     {
         Element element = root.addElement( "searchResultDone" );
 
-        LdapResultDsml ldapResultDsml = new LdapResultDsml( ( ( SearchResultDone ) getDecoratedMessage() ).getLdapResult(), getDecoratedMessage() );
+        LdapResultDsml ldapResultDsml = new LdapResultDsml( ( ( SearchResultDone ) getDecorated() ).getLdapResult(), getDecorated() );
         if ( ldapResultDsml != null )
         {
             ldapResultDsml.toDsml( element );

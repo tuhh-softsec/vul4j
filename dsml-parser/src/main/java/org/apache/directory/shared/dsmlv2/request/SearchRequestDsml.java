@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.apache.directory.shared.dsmlv2.ParserUtils;
 import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilter;
 import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
@@ -49,14 +50,14 @@ import org.dom4j.QName;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SearchRequestDsml extends AbstractRequestDsml
+public class SearchRequestDsml extends AbstractRequestDsml<SearchRequest>
 {
     /**
      * Creates a new getDecoratedMessage() of SearchRequestDsml.
      */
-    public SearchRequestDsml()
+    public SearchRequestDsml( ILdapCodecService codec )
     {
-        super( new SearchRequestImpl() );
+        super( codec, new SearchRequestImpl() );
     }
 
 
@@ -66,9 +67,9 @@ public class SearchRequestDsml extends AbstractRequestDsml
      * @param ldapMessage
      *      the message to decorate
      */
-    public SearchRequestDsml( SearchRequest ldapMessage )
+    public SearchRequestDsml( ILdapCodecService codec, SearchRequest ldapMessage )
     {
-        super( ldapMessage );
+        super( codec, ldapMessage );
     }
 
 
@@ -77,7 +78,7 @@ public class SearchRequestDsml extends AbstractRequestDsml
      */
     public MessageTypeEnum getType()
     {
-        return getDecoratedMessage().getType();
+        return getDecorated().getType();
     }
 
 
@@ -88,7 +89,7 @@ public class SearchRequestDsml extends AbstractRequestDsml
     {
         Element element = super.toDsml( root );
 
-        SearchRequest request = ( SearchRequest ) getDecoratedMessage();
+        SearchRequest request = ( SearchRequest ) getDecorated();
 
         // Dn
         if ( request.getBase() != null )

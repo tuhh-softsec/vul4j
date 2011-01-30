@@ -21,6 +21,7 @@
 package org.apache.directory.shared.dsmlv2.reponse;
 
 
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.message.ModifyResponse;
 import org.apache.directory.shared.ldap.model.message.ModifyResponseImpl;
@@ -32,14 +33,14 @@ import org.dom4j.Element;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ModifyResponseDsml extends AbstractResponseDsml
+public class ModifyResponseDsml extends AbstractResultResponseDsml<ModifyResponse>
 {
     /**
      * Creates a new getDecoratedMessage() of ModifyResponseDsml.
      */
-    public ModifyResponseDsml()
+    public ModifyResponseDsml( ILdapCodecService codec )
     {
-        super( new ModifyResponseImpl() );
+        super( codec, new ModifyResponseImpl() );
     }
 
 
@@ -49,9 +50,9 @@ public class ModifyResponseDsml extends AbstractResponseDsml
      * @param ldapMessage
      *      the message to decorate
      */
-    public ModifyResponseDsml( ModifyResponse ldapMessage )
+    public ModifyResponseDsml( ILdapCodecService codec, ModifyResponse ldapMessage )
     {
-        super( ldapMessage );
+        super( codec, ldapMessage );
     }
 
 
@@ -60,7 +61,7 @@ public class ModifyResponseDsml extends AbstractResponseDsml
      */
     public MessageTypeEnum getType()
     {
-        return getDecoratedMessage().getType();
+        return getDecorated().getType();
     }
 
 
@@ -71,7 +72,7 @@ public class ModifyResponseDsml extends AbstractResponseDsml
     {
         Element element = root.addElement( "modifyResponse" );
 
-        LdapResultDsml ldapResultDsml = new LdapResultDsml( ( (ModifyResponse) getDecoratedMessage() ).getLdapResult(), getDecoratedMessage() );
+        LdapResultDsml ldapResultDsml = new LdapResultDsml( ( (ModifyResponse) getDecorated() ).getLdapResult(), getDecorated() );
         ldapResultDsml.toDsml( element );
         return element;
     }

@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.directory.shared.asn1.DecoderException;
+import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.mina.filter.codec.ProtocolCodecFactory;
 
@@ -127,6 +129,18 @@ public class TestLdapCodecService implements ILdapCodecService
 
 
     public ICodecControl<? extends Control> decorate( Control control )
+    {
+        return null;
+    }
+
+
+    public javax.naming.ldap.Control toJndiControl( Control control ) throws EncoderException
+    {
+        return null;
+    }
+
+
+    public Control fromJndiControl( javax.naming.ldap.Control control ) throws DecoderException
     {
         return null;
     }

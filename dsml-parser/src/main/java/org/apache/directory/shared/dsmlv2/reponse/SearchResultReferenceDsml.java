@@ -23,8 +23,8 @@ package org.apache.directory.shared.dsmlv2.reponse;
 
 import java.util.List;
 
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.model.filter.LdapURL;
-import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.message.SearchResultReference;
 import org.apache.directory.shared.ldap.model.message.SearchResultReferenceImpl;
@@ -36,14 +36,14 @@ import org.dom4j.Element;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SearchResultReferenceDsml extends AbstractResponseDsml
+public class SearchResultReferenceDsml extends AbstractResponseDsml<SearchResultReference>
 {
     /**
      * Creates a new getDecoratedMessage() of SearchResultReferenceDsml.
      */
-    public SearchResultReferenceDsml()
+    public SearchResultReferenceDsml( ILdapCodecService codec )
     {
-        super( new SearchResultReferenceImpl() );
+        super( codec, new SearchResultReferenceImpl() );
     }
 
 
@@ -53,9 +53,9 @@ public class SearchResultReferenceDsml extends AbstractResponseDsml
      * @param ldapMessage
      *      the message to decorate
      */
-    public SearchResultReferenceDsml( Message ldapMessage )
+    public SearchResultReferenceDsml( ILdapCodecService codec, SearchResultReference ldapMessage )
     {
-        super( ldapMessage );
+        super( codec, ldapMessage );
     }
 
 
@@ -64,7 +64,7 @@ public class SearchResultReferenceDsml extends AbstractResponseDsml
      */
     public MessageTypeEnum getType()
     {
-        return getDecoratedMessage().getType();
+        return getDecorated().getType();
     }
 
 
@@ -74,7 +74,7 @@ public class SearchResultReferenceDsml extends AbstractResponseDsml
     public Element toDsml( Element root )
     {
         Element element = root.addElement( "searchResultReference" );
-        SearchResultReference searchResultReference = ( SearchResultReference ) getDecoratedMessage();
+        SearchResultReference searchResultReference = ( SearchResultReference ) getDecorated();
 
         // Adding References
         List<String> refsList = ( List<String> ) searchResultReference.getReferral().getLdapUrls();
@@ -95,7 +95,7 @@ public class SearchResultReferenceDsml extends AbstractResponseDsml
      */
     public void addSearchResultReference( LdapURL searchResultReference )
     {
-        ( ( SearchResultReference ) getDecoratedMessage() ).getReferral().addLdapUrl( searchResultReference.toString() );
+        ( ( SearchResultReference ) getDecorated() ).getReferral().addLdapUrl( searchResultReference.toString() );
     }
 
 
@@ -106,6 +106,6 @@ public class SearchResultReferenceDsml extends AbstractResponseDsml
      */
     public List<String> getSearchResultReferences()
     {
-        return ( List<String> ) ( ( SearchResultReference ) getDecoratedMessage() ).getReferral().getLdapUrls();
+        return ( List<String> ) ( ( SearchResultReference ) getDecorated() ).getReferral().getLdapUrls();
     }
 }

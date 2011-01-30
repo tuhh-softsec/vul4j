@@ -22,8 +22,9 @@ package org.apache.directory.shared.dsmlv2.request;
 
 import org.apache.directory.shared.dsmlv2.DsmlDecorator;
 import org.apache.directory.shared.dsmlv2.ParserUtils;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.decorators.RequestDecorator;
-import org.apache.directory.shared.ldap.model.message.Message;
+import org.apache.directory.shared.ldap.model.message.Request;
 import org.dom4j.Element;
 
 
@@ -32,7 +33,7 @@ import org.dom4j.Element;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public abstract class AbstractRequestDsml extends RequestDecorator implements DsmlDecorator
+public abstract class AbstractRequestDsml<E extends Request> extends RequestDecorator<E> implements DsmlDecorator
 {
     /**
      * Creates a new instance of AbstractRequestDsml.
@@ -40,9 +41,9 @@ public abstract class AbstractRequestDsml extends RequestDecorator implements Ds
      * @param ldapMessage
      *      the message to decorate
      */
-    public AbstractRequestDsml( Message ldapMessage )
+    public AbstractRequestDsml( ILdapCodecService codec, E ldapMessage )
     {
-        super( ldapMessage );
+        super( codec, ldapMessage );
     }
 
 
@@ -59,14 +60,14 @@ public abstract class AbstractRequestDsml extends RequestDecorator implements Ds
         Element element = root.addElement( getRequestName() );
 
         // Request ID
-        int requestID = getDecoratedMessage().getMessageId();
+        int requestID = getDecorated().getMessageId();
         if ( requestID > 0 )
         {
             element.addAttribute( "requestID", "" + requestID );
         }
 
         // Controls
-        ParserUtils.addControls( element, getDecoratedMessage().getControls().values() );
+        ParserUtils.addControls( element, getDecorated().getControls().values() );
 
         return element;
     }
@@ -80,7 +81,7 @@ public abstract class AbstractRequestDsml extends RequestDecorator implements Ds
      */
     private String getRequestName()
     {
-        switch ( getDecoratedMessage().getType() )
+        switch ( getDecorated().getType() )
         {
             case ABANDON_REQUEST:
                 return "abandonRequest";

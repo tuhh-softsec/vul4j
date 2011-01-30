@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.apache.directory.shared.dsmlv2.ParserUtils;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.model.entry.Modification;
 import org.apache.directory.shared.ldap.model.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.model.entry.Value;
@@ -40,14 +41,14 @@ import org.dom4j.QName;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ModifyRequestDsml extends AbstractRequestDsml
+public class ModifyRequestDsml extends AbstractRequestDsml<ModifyRequest>
 {
     /**
      * Creates a new getDecoratedMessage() of ModifyRequestDsml.
      */
-    public ModifyRequestDsml()
+    public ModifyRequestDsml( ILdapCodecService codec )
     {
-        super( new ModifyRequestImpl() );
+        super( codec, new ModifyRequestImpl() );
     }
 
 
@@ -57,9 +58,9 @@ public class ModifyRequestDsml extends AbstractRequestDsml
      * @param ldapMessage
      *      the message to decorate
      */
-    public ModifyRequestDsml( ModifyRequest ldapMessage )
+    public ModifyRequestDsml( ILdapCodecService codec, ModifyRequest ldapMessage )
     {
-        super( ldapMessage );
+        super( codec, ldapMessage );
     }
 
 
@@ -68,7 +69,7 @@ public class ModifyRequestDsml extends AbstractRequestDsml
      */
     public MessageTypeEnum getType()
     {
-        return getDecoratedMessage().getType();
+        return getDecorated().getType();
     }
 
 
@@ -79,7 +80,7 @@ public class ModifyRequestDsml extends AbstractRequestDsml
     {
         Element element = super.toDsml( root );
 
-        ModifyRequest request = ( ModifyRequest ) getDecoratedMessage();
+        ModifyRequest request = ( ModifyRequest ) getDecorated();
 
         // Dn
         if ( request.getName() != null )

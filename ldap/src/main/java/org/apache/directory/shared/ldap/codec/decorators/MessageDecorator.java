@@ -388,11 +388,14 @@ public abstract class MessageDecorator<E extends Message> implements Message, ID
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public E getDecorated()
     {
         return decoratedMessage;
     }
-
+    
 
     public int computeLength()
     {

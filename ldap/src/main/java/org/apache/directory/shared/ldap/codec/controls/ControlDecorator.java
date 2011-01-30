@@ -44,7 +44,8 @@ import org.apache.directory.shared.util.Strings;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @param <E>
  */
-public abstract class ControlDecorator<E extends Control> extends AbstractAsn1Object implements Control, ICodecControl<E>
+public abstract class ControlDecorator<E extends Control> extends AbstractAsn1Object 
+    implements Control, ICodecControl<E>
 {
     /** The decorated Control */
     private E decorated;
@@ -99,11 +100,23 @@ public abstract class ControlDecorator<E extends Control> extends AbstractAsn1Ob
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public E getDecorated()
     {
         return decorated;
     }
 
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void setDecorated( E decorated )
+    {
+        this.decorated = decorated;
+    }
+    
 
     // ------------------------------------------------------------------------
     // Control Methods
