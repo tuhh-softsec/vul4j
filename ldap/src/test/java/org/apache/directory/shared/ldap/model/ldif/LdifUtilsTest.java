@@ -22,6 +22,8 @@ package org.apache.directory.shared.ldap.model.ldif;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
+import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.controls.ManageDsaITDecorator;
 import org.apache.directory.shared.ldap.model.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.model.entry.Entry;
@@ -540,7 +542,8 @@ public class LdifUtilsTest
         entry.addAttribute( "m-oid", "1.2.3.4" );
         entry.addAttribute( "m-description", "description" );
         
-        ManageDsaITDecorator control = new ManageDsaITDecorator();
+        ILdapCodecService codec = new DefaultLdapCodecService();
+        ManageDsaITDecorator control = new ManageDsaITDecorator( codec );
         
         entry.addControl( control );
         

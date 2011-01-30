@@ -31,7 +31,8 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn.ISyncModifyDn;
+import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn.SyncModifyDnDecorator;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
@@ -47,6 +48,8 @@ import org.junit.runner.RunWith;
 @Concurrent()
 public class SyncModifyDnControlTest
 {
+    private ILdapCodecService codec = new DefaultLdapCodecService();
+    
     
     @Test
     public void testDecodeSyncModifyDnControlWithMoveOperation() throws Exception
@@ -61,7 +64,8 @@ public class SyncModifyDnControlTest
             } );
         bb.flip();
 
-        SyncModifyDnDecorator decorator = new SyncModifyDnDecorator();
+        SyncModifyDnContainer container = new SyncModifyDnContainer( codec );
+        SyncModifyDnDecorator decorator = container.getSyncModifyDnControl();
 
         ISyncModifyDn syncmodDnControl = (ISyncModifyDn)decorator.decode( bb.array() );
 
@@ -113,7 +117,8 @@ public class SyncModifyDnControlTest
             } );
         bb.flip();
 
-        SyncModifyDnDecorator decorator = new SyncModifyDnDecorator();
+        SyncModifyDnContainer container = new SyncModifyDnContainer( codec );
+        SyncModifyDnDecorator decorator = container.getSyncModifyDnControl();
 
         ISyncModifyDn syncmodDnControl = (ISyncModifyDn)decorator.decode( bb.array() );
 
@@ -167,7 +172,8 @@ public class SyncModifyDnControlTest
             } );
         bb.flip();
 
-        SyncModifyDnDecorator decorator = new SyncModifyDnDecorator();
+        SyncModifyDnContainer container = new SyncModifyDnContainer( codec );
+        SyncModifyDnDecorator decorator = container.getSyncModifyDnControl();
 
         ISyncModifyDn syncmodDnControl = (ISyncModifyDn)decorator.decode( bb.array() );
 
@@ -220,8 +226,8 @@ public class SyncModifyDnControlTest
             } );
         bb.flip();
 
-        SyncModifyDnDecorator decorator = new SyncModifyDnDecorator();
-        
+        SyncModifyDnContainer container = new SyncModifyDnContainer( codec );
+        SyncModifyDnDecorator decorator = container.getSyncModifyDnControl();
         decorator.decode( bb.array() );
     }
 }

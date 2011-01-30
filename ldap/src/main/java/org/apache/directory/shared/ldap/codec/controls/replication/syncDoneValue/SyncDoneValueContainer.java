@@ -21,6 +21,7 @@ package org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValu
 
 
 import org.apache.directory.shared.asn1.ber.AbstractContainer;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 
 
 /**
@@ -34,16 +35,19 @@ public class SyncDoneValueContainer extends AbstractContainer
     /** syncDoneValue*/
     private SyncDoneValueDecorator control;
 
-
+    private ILdapCodecService codec;
+    
+    
     /**
      * 
      * Creates a new SyncDoneValueControlContainer object.
      *
      */
-    public SyncDoneValueContainer()
+    public SyncDoneValueContainer( ILdapCodecService codec )
     {
         super();
-        this.control = new SyncDoneValueDecorator();
+        this.codec = codec;
+        this.control = new SyncDoneValueDecorator( codec );
         stateStack = new int[1];
         grammar = SyncDoneValueGrammar.getInstance();
         setTransition( SyncDoneValueStatesEnum.START_STATE );
@@ -55,9 +59,10 @@ public class SyncDoneValueContainer extends AbstractContainer
      * Creates a new SyncDoneValueControlContainer object.
      *
      */
-    public SyncDoneValueContainer( SyncDoneValueDecorator control )
+    public SyncDoneValueContainer( ILdapCodecService codec, SyncDoneValueDecorator control )
     {
         super();
+        this.codec = codec;
         this.control = control;
         stateStack = new int[1];
         grammar = SyncDoneValueGrammar.getInstance();
@@ -85,6 +90,12 @@ public class SyncDoneValueContainer extends AbstractContainer
         this.control = control;
     }
 
+    
+    public ILdapCodecService getCodecService()
+    {
+        return codec;
+    }
+    
 
     /**
      * clean the container

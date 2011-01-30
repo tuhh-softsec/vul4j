@@ -3252,6 +3252,15 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
     /**
      * {@inheritDoc}
      */
+    public ILdapCodecService getCodecService()
+    {
+        return codec;
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
     public SchemaManager getSchemaManager()
     {
         return schemaManager;

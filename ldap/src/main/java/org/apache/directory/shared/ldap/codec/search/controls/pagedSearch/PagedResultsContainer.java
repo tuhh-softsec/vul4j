@@ -21,6 +21,7 @@ package org.apache.directory.shared.ldap.codec.search.controls.pagedSearch;
 
 
 import org.apache.directory.shared.asn1.ber.AbstractContainer;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.model.message.controls.PagedResults;
 
 
@@ -33,15 +34,19 @@ public class PagedResultsContainer extends AbstractContainer
 {
     /** PagedSearchControl */
     private PagedResultsDecorator control;
+    
+    private ILdapCodecService codec;
 
 
     /**
      * Creates a new PagedSearchControl container object. We will store one grammar,
      * it's enough ...
+     * @param codec The encoder decoder for this container
      */
-    public PagedResultsContainer()
+    public PagedResultsContainer( ILdapCodecService codec )
     {
         super();
+        this.codec = codec;
         stateStack = new int[1];
         grammar = PagedResultsGrammar.getInstance();
         setTransition( PagedResultsStates.START_STATE );
@@ -53,11 +58,12 @@ public class PagedResultsContainer extends AbstractContainer
      * Control, which is optionally decorated if is not a decorator already. If it
      * is a decorator then it is used as the decorator for this container.
      *
+     * @param codec The encoder decoder for this container
      * @param control A PagedResults Control to optionally be wrapped.
      */
-    public PagedResultsContainer( PagedResults control )
+    public PagedResultsContainer( ILdapCodecService codec, PagedResults control )
     {
-        this();
+        this( codec );
         decorate( control );
     }
 
@@ -80,7 +86,7 @@ public class PagedResultsContainer extends AbstractContainer
         }
         else
         {
-            this.control = new PagedResultsDecorator( control );
+            this.control = new PagedResultsDecorator( codec, control );
         }
     }
 

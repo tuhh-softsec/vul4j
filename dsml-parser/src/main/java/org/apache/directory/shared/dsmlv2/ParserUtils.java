@@ -34,6 +34,8 @@ import org.apache.directory.shared.dsmlv2.request.BatchRequest;
 import org.apache.directory.shared.dsmlv2.request.BatchRequest.Processing;
 import org.apache.directory.shared.dsmlv2.request.BatchRequest.ResponseOrder;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.ICodecControl;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.model.ldif.LdifUtils;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.util.Base64;
@@ -212,7 +214,7 @@ public final class ParserUtils
      * @param element the element to add the Controls to
      * @param controls a List of Controls
      */
-    public static void addControls( Element element, Collection<Control> controls )
+    public static void addControls( ILdapCodecService codec, Element element, Collection<Control> controls )
     {
         if ( controls != null )
         {
@@ -230,8 +232,16 @@ public final class ParserUtils
                     controlElement.addAttribute( "criticality", "true" );
                 }
 
-                byte[] value = control.getValue();
-
+                byte[] value;
+                if ( control instanceof ICodecControl<?> )
+                {
+                    value = ( ( ICodecControl<?> ) control ).getValue();
+                }
+                else
+                {
+                    value = codec.decorate( control ).getValue();
+                }
+                
                 if ( value != null )
                 {
                     if ( ParserUtils.needsBase64Encoding( value ) )

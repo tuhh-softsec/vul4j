@@ -27,11 +27,9 @@ import java.util.Map;
 
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
-import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesDecorator;
 import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesFactory;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.controls.Subentries;
-import org.apache.directory.shared.ldap.model.message.controls.SubentriesImpl;
 import org.apache.mina.filter.codec.ProtocolCodecFactory;
 
 
@@ -59,7 +57,7 @@ public class DefaultLdapCodecService implements ILdapCodecService
      */
     private void loadStockControls()
     {
-        SubentriesFactory subentriesFactory = new SubentriesFactory();
+        SubentriesFactory subentriesFactory = new SubentriesFactory( this );
         controlFactories.put( Subentries.OID, subentriesFactory );
 
         

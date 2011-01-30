@@ -89,4 +89,9 @@ public class TestCodecControl implements ITestCodecControl
     public void setValue( byte[] value )
     {
     }
+
+    public ILdapCodecService getCodecService()
+    {
+        return null;
+    }
 }

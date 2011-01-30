@@ -32,6 +32,7 @@ import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.ICodecControl;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.util.Strings;
 
@@ -58,6 +59,9 @@ public abstract class ControlDecorator<E extends Control> extends AbstractAsn1Ob
 
     /** The encoded value of the control. */
     private byte[] value;
+    
+    /** The codec service responsible for encoding decoding this object */
+    private ILdapCodecService codec;
 
     
     /**
@@ -65,9 +69,10 @@ public abstract class ControlDecorator<E extends Control> extends AbstractAsn1Ob
      *
      * @param decoratedControl The Control to decorate.
      */
-    public ControlDecorator( E decoratedControl )
+    public ControlDecorator( ILdapCodecService codec, E decoratedControl )
     {
         this.decorated = decoratedControl;
+        this.codec = codec;
     }
 
 
@@ -115,6 +120,15 @@ public abstract class ControlDecorator<E extends Control> extends AbstractAsn1Ob
     public void setDecorated( E decorated )
     {
         this.decorated = decorated;
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public ILdapCodecService getCodecService()
+    {
+        return codec;
     }
     
 

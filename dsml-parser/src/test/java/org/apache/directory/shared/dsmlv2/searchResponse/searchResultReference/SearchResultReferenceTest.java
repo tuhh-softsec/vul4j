@@ -85,7 +85,7 @@ public class SearchResultReferenceTest extends AbstractResponseTest
         assertNotNull( control );
         assertTrue( control.isCritical() );
         assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
-        assertEquals( "Some text", Strings.utf8ToString((byte[]) control.getValue()) );
+        assertEquals( "Some text", Strings.utf8ToString((byte[]) getCodec().decorate( control ).getValue()) );
     }
 
 
@@ -121,7 +121,7 @@ public class SearchResultReferenceTest extends AbstractResponseTest
         assertNotNull( control );
         assertTrue( control.isCritical() );
         assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
-        assertFalse( control.hasValue() );
+        assertFalse( getCodec().decorate( control ).hasValue() );
     }
 
 
@@ -156,7 +156,7 @@ public class SearchResultReferenceTest extends AbstractResponseTest
 
         assertNotNull( control );
         assertEquals( "1.2.840.113556.1.4.789", control.getOid() );
-        assertEquals( "Some other text", Strings.utf8ToString((byte[]) control.getValue()) );
+        assertEquals( "Some other text", Strings.utf8ToString((byte[]) getCodec().decorate( control ).getValue()) );
     }
 
 
@@ -192,7 +192,7 @@ public class SearchResultReferenceTest extends AbstractResponseTest
         assertNotNull( control );
         assertTrue( control.isCritical() );
         assertEquals( "1.2.840.113556.1.4.456", control.getOid() );
-        assertFalse( control.hasValue() );
+        assertFalse( getCodec().decorate( control ).hasValue() );
     }
 
 

@@ -72,7 +72,8 @@ public class AddResponseDsml extends AbstractResultResponseDsml<AddResponse>
     {
         Element element = root.addElement( "addResponse" );
 
-        LdapResultDsml ldapResultDsml = new LdapResultDsml( ( ( AddResponse ) getDecorated() ).getLdapResult(), getDecorated() );
+        LdapResultDsml ldapResultDsml = new LdapResultDsml( getCodecService(), 
+            getDecorated().getLdapResult(), getDecorated() );
         ldapResultDsml.toDsml( element );
         return element;
     }

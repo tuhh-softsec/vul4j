@@ -20,11 +20,9 @@
 package org.apache.directory.shared.ldap.codec.decorators;
 
 
-import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.ICodecControl;
 import org.apache.directory.shared.ldap.codec.IDecorator;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
@@ -397,14 +395,11 @@ public abstract class MessageDecorator<E extends Message> implements Message, ID
     }
     
 
-    public int computeLength()
+    /**
+     * {@inheritDoc}
+     */
+    public ILdapCodecService getCodecService()
     {
-        return 0;
-    }
-
-
-    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
-    {
-        return null;
+        return codec;
     }
 }

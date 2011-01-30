@@ -56,4 +56,13 @@ public interface IDecorator<E>
      * @throws EncoderException if the buffer can't be encoded
      */
     ByteBuffer encode( ByteBuffer buffer ) throws EncoderException;
+    
+    
+    /**
+     * Gets the codec service responsible for managing the encoding and 
+     * decoding of the decorated objects.
+     * 
+     * @return the codec service
+     */
+    ILdapCodecService getCodecService();
 }

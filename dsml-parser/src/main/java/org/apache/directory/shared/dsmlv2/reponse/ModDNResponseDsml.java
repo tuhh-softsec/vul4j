@@ -72,7 +72,8 @@ public class ModDNResponseDsml extends AbstractResultResponseDsml<ModifyDnRespon
     {
         Element element = root.addElement( "modDNResponse" );
 
-        LdapResultDsml ldapResultDsml = new LdapResultDsml( ( ( ModifyDnResponse ) getDecorated() ).getLdapResult(), getDecorated() );
+        LdapResultDsml ldapResultDsml = new LdapResultDsml( getCodecService(), 
+            getDecorated().getLdapResult(), getDecorated() );
         ldapResultDsml.toDsml( element );
         return element;
     }

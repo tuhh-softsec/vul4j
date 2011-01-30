@@ -41,9 +41,9 @@ import org.apache.directory.shared.dsmlv2.request.BatchRequest.ResponseOrder;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
 import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
+import org.apache.directory.shared.ldap.codec.ICodecControl;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
-import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.AbandonRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.AddRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.BindRequestDecorator;
@@ -74,6 +74,7 @@ import org.apache.directory.shared.ldap.model.message.AliasDerefMode;
 import org.apache.directory.shared.ldap.model.message.BindRequestImpl;
 import org.apache.directory.shared.ldap.model.message.CompareRequest;
 import org.apache.directory.shared.ldap.model.message.CompareRequestImpl;
+import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.DeleteRequestImpl;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequestImpl;
@@ -81,6 +82,7 @@ import org.apache.directory.shared.ldap.model.message.ModifyDnRequestImpl;
 import org.apache.directory.shared.ldap.model.message.ModifyRequestImpl;
 import org.apache.directory.shared.ldap.model.message.SearchRequest;
 import org.apache.directory.shared.ldap.model.message.SearchRequestImpl;
+import org.apache.directory.shared.ldap.model.message.controls.BasicControl;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.name.Rdn;
 import org.apache.directory.shared.util.Base64;
@@ -2731,9 +2733,8 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            ControlDecorator control = null;
-
             XmlPullParser xpp = container.getParser();
+            ICodecControl<? extends Control> control;
 
             // Checking and adding the Control's attributes
             String attributeValue;
@@ -2747,7 +2748,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
                     throw new XmlPullParserException( I18n.err( I18n.ERR_03034 ), xpp, null );
                 }
 
-                control = new ControlDecorator( new ControlImpl( attributeValue ) );
+                control = codec.decorate( new BasicControl( attributeValue ) );
                 container.getBatchRequest().getCurrentRequest().addControl( control );
             }
             else
@@ -2783,7 +2784,8 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            ControlDecorator control = (ControlDecorator)((MessageDecorator)container.getBatchRequest().getCurrentRequest()).getCurrentControl();
+            MessageDecorator<?> messageDecorator = ( MessageDecorator<?> ) container.getBatchRequest().getCurrentRequest();
+            ICodecControl<? extends Control> control = messageDecorator.getCurrentControl();
 
             XmlPullParser xpp = container.getParser();
 

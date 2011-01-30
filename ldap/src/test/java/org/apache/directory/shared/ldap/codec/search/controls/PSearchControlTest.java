@@ -28,6 +28,10 @@ import java.nio.ByteBuffer;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
+import org.apache.directory.shared.ldap.model.message.controls.PersistentSearch;
+import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearchContainer;
 import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearchDecorator;
 import org.apache.directory.shared.ldap.model.message.controls.ChangeType;
 import org.apache.directory.shared.ldap.model.message.controls.PersistentSearch;
@@ -45,6 +49,9 @@ import org.junit.runner.RunWith;
 @Concurrent()
 public class PSearchControlTest
 {
+    private ILdapCodecService codec = new DefaultLdapCodecService();
+    
+    
     /**
      * Test encoding of a PSearchControl.
      * @throws Exception on error
@@ -70,7 +77,7 @@ public class PSearchControlTest
         String expected = Strings.dumpBytes(bb.array());
         bb.flip();
 
-        PersistentSearchDecorator decorator = new PersistentSearchDecorator();
+        PersistentSearchDecorator decorator = new PersistentSearchDecorator(  codec );
         PersistentSearch ctrl = ( PersistentSearch ) decorator.getDecorated();
         ctrl.setChangesOnly( false );
         ctrl.setReturnECs( false );
@@ -96,7 +103,8 @@ public class PSearchControlTest
             } );
         bb.flip();
 
-        PersistentSearchDecorator decorator = new PersistentSearchDecorator();
+        PersistentSearchContainer container = new PersistentSearchContainer( codec );
+        PersistentSearchDecorator decorator = container.getPersistentSearchDecorator();
 
         PersistentSearch ctrl = ( PersistentSearch )decorator.decode( bb.array() );
 
@@ -125,7 +133,8 @@ public class PSearchControlTest
             } );
         bb.flip();
 
-        PersistentSearchDecorator decorator = new PersistentSearchDecorator();
+        PersistentSearchContainer container = new PersistentSearchContainer( codec );
+        PersistentSearchDecorator decorator = container.getPersistentSearchDecorator();
 
         decorator.decode( bb.array() );
     }
@@ -147,7 +156,8 @@ public class PSearchControlTest
             } );
         bb.flip();
 
-        PersistentSearchDecorator decorator = new PersistentSearchDecorator();
+        PersistentSearchContainer container = new PersistentSearchContainer( codec );
+        PersistentSearchDecorator decorator = container.getPersistentSearchDecorator();
 
         decorator.decode( bb.array() );
     }
@@ -166,7 +176,8 @@ public class PSearchControlTest
             } );
         bb.flip();
 
-        PersistentSearchDecorator decorator = new PersistentSearchDecorator();
+        PersistentSearchContainer container = new PersistentSearchContainer( codec );
+        PersistentSearchDecorator decorator = container.getPersistentSearchDecorator();
 
         decorator.decode( bb.array() );
     }
@@ -187,7 +198,8 @@ public class PSearchControlTest
             } );
         bb.flip();
 
-        PersistentSearchDecorator decorator = new PersistentSearchDecorator();
+        PersistentSearchContainer container = new PersistentSearchContainer( codec );
+        PersistentSearchDecorator decorator = container.getPersistentSearchDecorator();
 
         decorator.decode( bb.array() );
     }
@@ -208,7 +220,8 @@ public class PSearchControlTest
             } );
         bb.flip();
 
-        PersistentSearchDecorator decorator = new PersistentSearchDecorator();
+        PersistentSearchContainer container = new PersistentSearchContainer( codec );
+        PersistentSearchDecorator decorator = container.getPersistentSearchDecorator();
 
         decorator.decode( bb.array() );
     }
@@ -229,7 +242,8 @@ public class PSearchControlTest
             } );
         bb.flip();
 
-        PersistentSearchDecorator decorator = new PersistentSearchDecorator();
+        PersistentSearchContainer container = new PersistentSearchContainer( codec );
+        PersistentSearchDecorator decorator = container.getPersistentSearchDecorator();
 
         decorator.decode( bb.array() );
     }

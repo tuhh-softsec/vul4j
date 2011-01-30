@@ -28,6 +28,7 @@ import javax.naming.ldap.Control;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.IControlFactory;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.model.message.controls.PersistentSearch;
 import org.apache.directory.shared.ldap.model.message.controls.PersistentSearchImpl;
 
@@ -40,6 +41,14 @@ import org.apache.directory.shared.ldap.model.message.controls.PersistentSearchI
  */
 public class PersistentSearchFactory implements IControlFactory<PersistentSearch, PersistentSearchDecorator>
 {
+    private ILdapCodecService codec;
+    
+    
+    public PersistentSearchFactory( ILdapCodecService codec )
+    {
+        this.codec = codec;
+    }
+    
     public String getOid()
     {
         return PersistentSearch.OID;
@@ -48,7 +57,7 @@ public class PersistentSearchFactory implements IControlFactory<PersistentSearch
     
     public PersistentSearchDecorator newCodecControl()
     {
-        return new PersistentSearchDecorator();
+        return new PersistentSearchDecorator( codec );
     }
 
     
@@ -60,7 +69,7 @@ public class PersistentSearchFactory implements IControlFactory<PersistentSearch
         }
         else 
         {
-            return new PersistentSearchDecorator( control );
+            return new PersistentSearchDecorator( codec, control );
         }
     }
 

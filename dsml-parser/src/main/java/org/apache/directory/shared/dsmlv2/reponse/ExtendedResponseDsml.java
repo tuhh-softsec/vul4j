@@ -79,7 +79,8 @@ public class ExtendedResponseDsml extends AbstractResultResponseDsml<ExtendedRes
         ExtendedResponse extendedResponse = ( ExtendedResponse ) getDecorated();
 
         // LDAP Result
-        LdapResultDsml ldapResultDsml = new LdapResultDsml( extendedResponse.getLdapResult(), getDecorated() );
+        LdapResultDsml ldapResultDsml = new LdapResultDsml( getCodecService(), 
+            getDecorated().getLdapResult(), getDecorated() );
         ldapResultDsml.toDsml( element );
 
         // ResponseName

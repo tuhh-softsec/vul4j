@@ -22,6 +22,7 @@ package org.apache.directory.shared.ldap.codec.controls.ppolicy;
 
 import org.apache.directory.shared.asn1.Asn1Object;
 import org.apache.directory.shared.asn1.DecoderException;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 
 
@@ -33,9 +34,9 @@ import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 public class PasswordPolicyRequestDecorator extends ControlDecorator<IPasswordPolicyRequest> 
     implements IPasswordPolicyRequest
 {
-    public PasswordPolicyRequestDecorator()
+    public PasswordPolicyRequestDecorator( ILdapCodecService codec )
     {
-        super( IPasswordPolicyRequest.INSTANCE );
+        super( codec, IPasswordPolicyRequest.INSTANCE );
     }
 
 

@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.apache.directory.shared.dsmlv2.DsmlDecorator;
 import org.apache.directory.shared.dsmlv2.ParserUtils;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.model.filter.LdapURL;
 import org.apache.directory.shared.ldap.model.message.LdapResult;
 import org.apache.directory.shared.ldap.model.message.Message;
@@ -47,6 +48,9 @@ public class LdapResultDsml implements DsmlDecorator
 
     /** The associated LDAP Message */
     private Message message;
+    
+    /** The ldap codec service */
+    private ILdapCodecService codec;
 
 
     /**
@@ -56,9 +60,11 @@ public class LdapResultDsml implements DsmlDecorator
      *      the LdapResult to decorate
      * @param message
      *      the associated message
+     * @param the ldap codec service 
      */
-    public LdapResultDsml( LdapResult result, Message message )
+    public LdapResultDsml( ILdapCodecService codec, LdapResult result, Message message )
     {
+        this.codec = codec;
         this.result = result;
         this.message = message;
     }
@@ -86,7 +92,7 @@ public class LdapResultDsml implements DsmlDecorator
         }
 
         // Controls
-        ParserUtils.addControls( root, message.getControls().values() );
+        ParserUtils.addControls( codec, root, message.getControls().values() );
 
         // ResultCode
         Element resultCodeElement = root.addElement( "resultCode" );

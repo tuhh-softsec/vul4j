@@ -22,6 +22,8 @@ package org.apache.directory.shared.dsmlv2;
 
 
 import org.apache.directory.shared.dsmlv2.Dsmlv2Parser;
+import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.xmlpull.v1.XmlPullParserException;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -33,6 +35,16 @@ import static org.junit.Assert.fail;
  */
 public abstract class AbstractTest
 {
+    /** The LDAP encoder decoder service */
+    private ILdapCodecService codec = new DefaultLdapCodecService();
+    
+    
+    public ILdapCodecService getCodec()
+    {
+        return codec;
+    }
+    
+    
     /**
      * Asserts that parsing throws a correct XmlPullParserException due to an incorrect file
      *

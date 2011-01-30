@@ -31,7 +31,7 @@ import static org.junit.Assert.fail;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public abstract class AbstractResponseTest
+public abstract class AbstractResponseTest extends AbstractTest
 {
     /**
      * Asserts that parsing throws a correct XmlPullParserException due to an incorrect file

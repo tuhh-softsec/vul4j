@@ -98,7 +98,8 @@ public final class SyncInfoValueGrammar extends AbstractGrammar
             {
                 public void action( SyncInfoValueContainer container )
                 {
-                    SyncInfoValueDecorator control = container.getSyncInfoValueControl();
+                    SyncInfoValueDecorator control = 
+                        new SyncInfoValueDecorator( container.getCodecService(), SynchronizationInfoEnum.NEW_COOKIE);
                     
                     Value value = container.getCurrentTLV().getValue();
 
@@ -136,6 +137,11 @@ public final class SyncInfoValueGrammar extends AbstractGrammar
             {
                 public void action( SyncInfoValueContainer container )
                 {
+                    SyncInfoValueDecorator control = 
+                        new SyncInfoValueDecorator( container.getCodecService(), SynchronizationInfoEnum.REFRESH_DELETE);
+                    
+                    container.setSyncInfoValueControl( control );
+
                     // We can have an END transition
                     container.setGrammarEndAllowed( true );
                 }
@@ -297,7 +303,10 @@ public final class SyncInfoValueGrammar extends AbstractGrammar
             {
                 public void action( SyncInfoValueContainer container )
                 {
-                    SyncInfoValueDecorator control = container.getSyncInfoValueControl();
+                    SyncInfoValueDecorator control = 
+                        new SyncInfoValueDecorator( container.getCodecService(), SynchronizationInfoEnum.REFRESH_PRESENT);
+                    
+                    container.setSyncInfoValueControl( control );
 
                     // We can have an END transition
                     container.setGrammarEndAllowed( true );
@@ -456,7 +465,17 @@ public final class SyncInfoValueGrammar extends AbstractGrammar
         super.transitions[SyncInfoValueStatesEnum.START_STATE.ordinal()][SyncInfoValueTags.SYNC_ID_SET_TAG.getValue()] = 
             new GrammarTransition( SyncInfoValueStatesEnum.START_STATE, 
                                     SyncInfoValueStatesEnum.SYNC_ID_SET_STATE, 
-                                    SyncInfoValueTags.SYNC_ID_SET_TAG.getValue(), null );
+                                    SyncInfoValueTags.SYNC_ID_SET_TAG.getValue(), 
+                new GrammarAction<SyncInfoValueContainer>( "SyncIdSet choice for SyncInfoValueControl" )
+            {
+                public void action( SyncInfoValueContainer container )
+                {
+                    SyncInfoValueDecorator control = 
+                        new SyncInfoValueDecorator( container.getCodecService(), SynchronizationInfoEnum.SYNC_ID_SET);
+                    
+                    container.setSyncInfoValueControl( control );
+                }
+            } );
         
         
         /** 

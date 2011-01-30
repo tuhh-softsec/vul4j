@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apache.directory.shared.asn1.util.OID;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.model.cursor.SearchCursor;
 import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.entry.Modification;
@@ -32,7 +33,6 @@ import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.filter.SearchScope;
 import org.apache.directory.shared.ldap.model.message.*;
-import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.name.Rdn;
 import org.apache.directory.shared.ldap.model.schema.SchemaManager;
@@ -725,7 +725,16 @@ public interface LdapConnection
      */
     SchemaManager getSchemaManager();
 
-
+    
+    /**
+     * Gets the LDAP CODEC service responsible for encoding and decoding 
+     * messages.
+     * 
+     * @return The LDAP CODEC service.
+     */
+    ILdapCodecService getCodecService();
+    
+    
     /**
      * Checks if there is a ResponseFuture associated with the given message ID.
      *

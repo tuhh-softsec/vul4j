@@ -30,7 +30,8 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValue.ISyncInfoValue;
+import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValue.SyncInfoValueDecorator;
 import org.apache.directory.shared.ldap.message.control.replication.SynchronizationInfoEnum;
 import org.apache.directory.shared.util.Strings;
@@ -46,6 +47,9 @@ import org.junit.runner.RunWith;
 @Concurrent()
 public class SyncInfoValueControlTest
 {
+    private ILdapCodecService codec = new DefaultLdapCodecService();
+    
+    
     //--------------------------------------------------------------------------------
     // NewCookie choice tests
     //--------------------------------------------------------------------------------
@@ -63,7 +67,8 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
+        SyncInfoValueContainer container = new SyncInfoValueContainer( codec );
+        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
         decorator.setType( SynchronizationInfoEnum.NEW_COOKIE );
 
         ISyncInfoValue syncInfoValue = (ISyncInfoValue)decorator.decode( bb.array() );
@@ -112,7 +117,8 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
+        SyncInfoValueContainer container = new SyncInfoValueContainer( codec );
+        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
         decorator.setType( SynchronizationInfoEnum.NEW_COOKIE );
 
         ISyncInfoValue syncInfoValue = (ISyncInfoValue)decorator.decode( bb.array() );
@@ -166,8 +172,8 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
-        
+        SyncInfoValueContainer container = new SyncInfoValueContainer( codec );
+        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
         decorator.setType( SynchronizationInfoEnum.REFRESH_DELETE );
 
         ISyncInfoValue syncInfoValue = (ISyncInfoValue)decorator.decode( bb.array() );
@@ -221,8 +227,8 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
-        
+        SyncInfoValueContainer container = new SyncInfoValueContainer( codec );
+        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
         decorator.setType( SynchronizationInfoEnum.REFRESH_DELETE );
 
         ISyncInfoValue syncInfoValue = (ISyncInfoValue)decorator.decode( bb.array() );
@@ -276,8 +282,8 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
-        
+        SyncInfoValueContainer container = new SyncInfoValueContainer( codec );
+        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
         decorator.setType( SynchronizationInfoEnum.REFRESH_DELETE );
 
         ISyncInfoValue syncInfoValue = (ISyncInfoValue)decorator.decode( bb.array() );
@@ -330,8 +336,8 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
-        
+        SyncInfoValueContainer container = new SyncInfoValueContainer( codec );
+        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
         decorator.setType( SynchronizationInfoEnum.REFRESH_DELETE );
 
         ISyncInfoValue syncInfoValue = (ISyncInfoValue)decorator.decode( bb.array() );
@@ -382,8 +388,8 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
-        
+        SyncInfoValueContainer container = new SyncInfoValueContainer( codec );
+        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
         decorator.setType( SynchronizationInfoEnum.REFRESH_DELETE );
 
         ISyncInfoValue syncInfoValue = (ISyncInfoValue)decorator.decode( bb.array() );
@@ -438,8 +444,8 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
-        
+        SyncInfoValueContainer container = new SyncInfoValueContainer( codec );
+        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
         decorator.setType( SynchronizationInfoEnum.REFRESH_PRESENT );
 
         ISyncInfoValue syncInfoValue = (ISyncInfoValue)decorator.decode( bb.array() );
@@ -493,8 +499,8 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
-        
+        SyncInfoValueContainer container = new SyncInfoValueContainer( codec );
+        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
         decorator.setType( SynchronizationInfoEnum.REFRESH_PRESENT );
 
         ISyncInfoValue syncInfoValue = (ISyncInfoValue)decorator.decode( bb.array() );
@@ -548,8 +554,8 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
-        
+        SyncInfoValueContainer container = new SyncInfoValueContainer( codec );
+        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
         decorator.setType( SynchronizationInfoEnum.REFRESH_PRESENT );
 
         ISyncInfoValue syncInfoValue = (ISyncInfoValue)decorator.decode( bb.array() );
@@ -602,8 +608,8 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
-        
+        SyncInfoValueContainer container = new SyncInfoValueContainer( codec );
+        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
         decorator.setType( SynchronizationInfoEnum.REFRESH_PRESENT );
 
         ISyncInfoValue syncInfoValue = (ISyncInfoValue)decorator.decode( bb.array() );
@@ -654,8 +660,8 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
-        
+        SyncInfoValueContainer container = new SyncInfoValueContainer( codec );
+        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
         decorator.setType( SynchronizationInfoEnum.REFRESH_PRESENT );
 
         ISyncInfoValue syncInfoValue = (ISyncInfoValue)decorator.decode( bb.array() );
@@ -707,8 +713,8 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
-        
+        SyncInfoValueContainer container = new SyncInfoValueContainer( codec );
+        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
         decorator.setType( SynchronizationInfoEnum.SYNC_ID_SET );
 
         try
@@ -739,8 +745,8 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
-        
+        SyncInfoValueContainer container = new SyncInfoValueContainer( codec );
+        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
         decorator.setType( SynchronizationInfoEnum.SYNC_ID_SET );
 
         try
@@ -771,8 +777,8 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
-        
+        SyncInfoValueContainer container = new SyncInfoValueContainer( codec );
+        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
         decorator.setType( SynchronizationInfoEnum.SYNC_ID_SET );
 
         try
@@ -804,8 +810,8 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
-        
+        SyncInfoValueContainer container = new SyncInfoValueContainer( codec );
+        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
         decorator.setType( SynchronizationInfoEnum.SYNC_ID_SET );
 
         try
@@ -836,8 +842,8 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
-        
+        SyncInfoValueContainer container = new SyncInfoValueContainer( codec );
+        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
         decorator.setType( SynchronizationInfoEnum.SYNC_ID_SET );
 
         ISyncInfoValue syncInfoValue = (ISyncInfoValue)decorator.decode( bb.array() );
@@ -900,8 +906,8 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
-        
+        SyncInfoValueContainer container = new SyncInfoValueContainer( codec );
+        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
         decorator.setType( SynchronizationInfoEnum.SYNC_ID_SET );
 
         ISyncInfoValue syncInfoValue = (ISyncInfoValue)decorator.decode( bb.array() );
@@ -975,8 +981,8 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
-        
+        SyncInfoValueContainer container = new SyncInfoValueContainer( codec );
+        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
         decorator.setType( SynchronizationInfoEnum.SYNC_ID_SET );
 
         ISyncInfoValue syncInfoValue = (ISyncInfoValue)decorator.decode( bb.array() );
@@ -1041,8 +1047,8 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
-        
+        SyncInfoValueContainer container = new SyncInfoValueContainer( codec );
+        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
         decorator.setType( SynchronizationInfoEnum.SYNC_ID_SET );
 
         ISyncInfoValue syncInfoValue = (ISyncInfoValue)decorator.decode( bb.array() );
@@ -1117,8 +1123,8 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
-        
+        SyncInfoValueContainer container = new SyncInfoValueContainer( codec );
+        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
         decorator.setType( SynchronizationInfoEnum.SYNC_ID_SET );
 
         ISyncInfoValue syncInfoValue = (ISyncInfoValue)decorator.decode( bb.array() );
@@ -1183,9 +1189,9 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
-        
-        decorator.setType( SynchronizationInfoEnum.SYNC_ID_SET );
+        SyncInfoValueContainer container = new SyncInfoValueContainer( codec );
+        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
+        decorator.setType( SynchronizationInfoEnum.NEW_COOKIE );
 
         ISyncInfoValue syncInfoValue = (ISyncInfoValue)decorator.decode( bb.array() );
 
@@ -1260,8 +1266,8 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
-        
+        SyncInfoValueContainer container = new SyncInfoValueContainer( codec );
+        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
         decorator.setType( SynchronizationInfoEnum.SYNC_ID_SET );
 
         ISyncInfoValue syncInfoValue = (ISyncInfoValue)decorator.decode( bb.array() );
@@ -1328,8 +1334,8 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
-        
+        SyncInfoValueContainer container = new SyncInfoValueContainer( codec );
+        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
         decorator.setType( SynchronizationInfoEnum.SYNC_ID_SET );
 
         ISyncInfoValue syncInfoValue = (ISyncInfoValue)decorator.decode( bb.array() );
@@ -1409,8 +1415,8 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
-        
+        SyncInfoValueContainer container = new SyncInfoValueContainer( codec );
+        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
         decorator.setType( SynchronizationInfoEnum.SYNC_ID_SET );
 
         try
@@ -1447,7 +1453,8 @@ public class SyncInfoValueControlTest
             } );
         bb.flip();
 
-        SyncInfoValueDecorator decorator = new SyncInfoValueDecorator();
+        SyncInfoValueContainer container = new SyncInfoValueContainer( codec );
+        SyncInfoValueDecorator decorator = container.getSyncInfoValueControl();
         decorator.setType( SynchronizationInfoEnum.SYNC_ID_SET );
 
         try

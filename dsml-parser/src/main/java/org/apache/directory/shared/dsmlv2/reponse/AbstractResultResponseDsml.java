@@ -20,6 +20,9 @@
 package org.apache.directory.shared.dsmlv2.reponse;
 
 
+import java.nio.ByteBuffer;
+
+import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.dsmlv2.DsmlDecorator;
 import org.apache.directory.shared.ldap.codec.ICodecControl;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
@@ -111,6 +114,18 @@ public abstract class AbstractResultResponseDsml<E extends ResultResponse> exten
     {
         // TODO Auto-generated method stub
 
+    }
+
+
+    public int computeLength()
+    {
+        return 0;
+    }
+
+
+    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    {
+        return null;
     }
 
 }

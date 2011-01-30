@@ -28,7 +28,9 @@ import java.nio.ByteBuffer;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.ldap.codec.search.controls.entryChange.EntryChangeDecorator;
+import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.search.controls.entryChange.*;
 import org.apache.directory.shared.ldap.model.message.controls.ChangeType;
 import org.apache.directory.shared.ldap.model.message.controls.EntryChange;
 import org.apache.directory.shared.ldap.model.name.Dn;
@@ -46,6 +48,9 @@ import org.junit.runner.RunWith;
 @Concurrent()
 public class EntryChangeControlTest
 {
+    private ILdapCodecService codec = new DefaultLdapCodecService();
+    
+    
     /**
      * Test the decoding of a EntryChangeControl
      */
@@ -64,7 +69,8 @@ public class EntryChangeControlTest
             } );
         bb.flip();
 
-        EntryChangeDecorator decorator = new EntryChangeDecorator();
+        EntryChangeContainer container = new EntryChangeContainer( codec );
+        EntryChangeDecorator decorator = container.getEntryChangeDecorator();
         
         EntryChange entryChange = (EntryChange)decorator.decode( bb.array() );
 
@@ -93,7 +99,8 @@ public class EntryChangeControlTest
             } );
         bb.flip();
 
-        EntryChangeDecorator decorator = new EntryChangeDecorator();
+        EntryChangeContainer container = new EntryChangeContainer( codec );
+        EntryChangeDecorator decorator = container.getEntryChangeDecorator();
         
         EntryChange entryChange = (EntryChange)decorator.decode( bb.array() );
 
@@ -121,7 +128,8 @@ public class EntryChangeControlTest
             } );
         bb.flip();
 
-        EntryChangeDecorator decorator = new EntryChangeDecorator();
+        EntryChangeContainer container = new EntryChangeContainer( codec );
+        EntryChangeDecorator decorator = container.getEntryChangeDecorator();
         
         EntryChange entryChange = (EntryChange)decorator.decode( bb.array() );
 
@@ -152,7 +160,8 @@ public class EntryChangeControlTest
             } );
         bb.flip();
 
-        EntryChangeDecorator decorator = new EntryChangeDecorator();
+        EntryChangeContainer container = new EntryChangeContainer( codec );
+        EntryChangeDecorator decorator = container.getEntryChangeDecorator();
         
         decorator.decode( bb.array() );
     }
@@ -175,7 +184,8 @@ public class EntryChangeControlTest
             } );
         bb.flip();
 
-        EntryChangeDecorator decorator = new EntryChangeDecorator();
+        EntryChangeContainer container = new EntryChangeContainer( codec );
+        EntryChangeDecorator decorator = container.getEntryChangeDecorator();
         
         EntryChange entryChange = (EntryChange)decorator.decode( bb.array() );
 
@@ -203,7 +213,8 @@ public class EntryChangeControlTest
             } );
         bb.flip();
 
-        EntryChangeDecorator decorator = new EntryChangeDecorator();
+        EntryChangeContainer container = new EntryChangeContainer( codec );
+        EntryChangeDecorator decorator = container.getEntryChangeDecorator();
         
         decorator.decode( bb.array() );
     }
@@ -229,7 +240,8 @@ public class EntryChangeControlTest
             } );
         bb.flip();
 
-        EntryChangeDecorator decorator = new EntryChangeDecorator();
+        EntryChangeContainer container = new EntryChangeContainer( codec );
+        EntryChangeDecorator decorator = container.getEntryChangeDecorator();
         
         decorator.decode( bb.array() );
     }
@@ -261,7 +273,7 @@ public class EntryChangeControlTest
         String expected = Strings.dumpBytes(bb.array());
         bb.flip();
 
-        EntryChangeDecorator decorator = new EntryChangeDecorator();
+        EntryChangeDecorator decorator = new EntryChangeDecorator( codec );
 
         EntryChange entryChange = (EntryChange) decorator.getDecorated();
         entryChange.setChangeType( ChangeType.MODDN );
@@ -300,7 +312,7 @@ public class EntryChangeControlTest
         String expected = Strings.dumpBytes(bb.array());
         bb.flip();
 
-        EntryChangeDecorator decorator = new EntryChangeDecorator();
+        EntryChangeDecorator decorator = new EntryChangeDecorator( codec );
         
         EntryChange entryChange = (EntryChange) decorator.getDecorated();
 

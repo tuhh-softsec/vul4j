@@ -30,6 +30,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 import org.apache.directory.shared.ldap.model.message.controls.ChangeType;
 import org.apache.directory.shared.ldap.model.message.controls.EntryChange;
@@ -67,9 +68,9 @@ public class EntryChangeDecorator extends ControlDecorator<EntryChange> implemen
      * Creates a new instance of EntryChangeDecoder wrapping a newly created
      * EntryChange Control object.
      */
-    public EntryChangeDecorator()
+    public EntryChangeDecorator( ILdapCodecService codec )
     {
-        super( new EntryChangeImpl() );
+        super( codec, new EntryChangeImpl() );
     }
 
 
@@ -79,9 +80,9 @@ public class EntryChangeDecorator extends ControlDecorator<EntryChange> implemen
      *
      * @param control The EntryChange Control to be decorated.
      */
-    public EntryChangeDecorator( EntryChange control )
+    public EntryChangeDecorator( ILdapCodecService codec, EntryChange control )
     {
-        super( control );
+        super( codec, control );
     }
 
 
@@ -272,7 +273,7 @@ public class EntryChangeDecorator extends ControlDecorator<EntryChange> implemen
     public Asn1Object decode( byte[] controlBytes ) throws DecoderException
     {
         ByteBuffer bb = ByteBuffer.wrap( controlBytes );
-        EntryChangeContainer container = new EntryChangeContainer( this );
+        EntryChangeContainer container = new EntryChangeContainer( getCodecService(), this );
         decoder.decode( bb, container );
         return this;
     }

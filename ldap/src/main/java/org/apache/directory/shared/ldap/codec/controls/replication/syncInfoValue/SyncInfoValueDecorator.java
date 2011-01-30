@@ -33,6 +33,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 import org.apache.directory.shared.ldap.message.control.replication.SynchronizationInfoEnum;
 import org.apache.directory.shared.util.Strings;
@@ -45,7 +46,7 @@ import org.apache.directory.shared.util.Strings;
  */
 public class SyncInfoValueDecorator extends ControlDecorator<ISyncInfoValue> implements ISyncInfoValue
 {
-    /** The syncUUIDs cumulative lentgh */
+    /** The syncUUIDs cumulative length */
     private int syncUUIDsLength;
     
     private byte[] value;
@@ -57,9 +58,9 @@ public class SyncInfoValueDecorator extends ControlDecorator<ISyncInfoValue> imp
     /**
      * The constructor for this codec. Dont't forget to set the type.
      */
-    public SyncInfoValueDecorator()
+    public SyncInfoValueDecorator( ILdapCodecService codec )
     {
-        super( new SyncInfoValue() );
+        super( codec, new SyncInfoValue() );
     }
     
     
@@ -68,9 +69,9 @@ public class SyncInfoValueDecorator extends ControlDecorator<ISyncInfoValue> imp
      * @param type The kind of syncInfo we will store. Can be newCookie, 
      * refreshPresent, refreshDelete or syncIdSet
      */
-    public SyncInfoValueDecorator( SynchronizationInfoEnum type )
+    public SyncInfoValueDecorator( ILdapCodecService codec, SynchronizationInfoEnum type )
     {
-        this();
+        this( codec );
 
         setType( type);
     }
@@ -659,7 +660,7 @@ public class SyncInfoValueDecorator extends ControlDecorator<ISyncInfoValue> imp
     public Asn1Object decode( byte[] controlBytes ) throws DecoderException
     {
         ByteBuffer bb = ByteBuffer.wrap( controlBytes );
-        SyncInfoValueContainer container = new SyncInfoValueContainer( this );
+        SyncInfoValueContainer container = new SyncInfoValueContainer( getCodecService(), this );
         decoder.decode( bb, container );
         return this;
     }

@@ -21,6 +21,7 @@ package org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn
 
 
 import org.apache.directory.shared.asn1.ber.AbstractContainer;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 
 
 /**
@@ -38,10 +39,10 @@ public class SyncModifyDnContainer extends AbstractContainer
      * Creates a new SyncStateValueControlContainer object. We will store one grammar,
      * it's enough ...
      */
-    public SyncModifyDnContainer()
+    public SyncModifyDnContainer( ILdapCodecService codec )
     {
         super();
-        this.control = new SyncModifyDnDecorator();
+        this.control = new SyncModifyDnDecorator( codec );
         stateStack = new int[1];
         grammar = SyncModifyDnGrammar.getInstance();
         setTransition( SyncModifyDnStatesEnum.START_SYNC_MODDN );

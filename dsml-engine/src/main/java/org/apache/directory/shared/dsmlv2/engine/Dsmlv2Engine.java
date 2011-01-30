@@ -308,49 +308,49 @@ public class Dsmlv2Engine
 
             case ADD_REQUEST:
                 AddResponse response = connection.add( ( AddRequest ) request );
-                AddResponseDsml addResponseDsml = new AddResponseDsml( response );
+                AddResponseDsml addResponseDsml = new AddResponseDsml( connection.getCodecService(), response );
                 batchResponse.addResponse( addResponseDsml );
 
                 break;
 
             case BIND_REQUEST:
                 BindResponse bindResponse = connection.bind( ( BindRequest ) request );
-                AuthResponseDsml authResponseDsml = new AuthResponseDsml( bindResponse );
+                AuthResponseDsml authResponseDsml = new AuthResponseDsml( connection.getCodecService(), bindResponse );
                 batchResponse.addResponse( authResponseDsml );
 
                 break;
 
             case COMPARE_REQUEST:
                 CompareResponse compareResponse = connection.compare( ( CompareRequest ) request );
-                CompareResponseDsml compareResponseDsml = new CompareResponseDsml( compareResponse );
+                CompareResponseDsml compareResponseDsml = new CompareResponseDsml( connection.getCodecService(), compareResponse );
                 batchResponse.addResponse( compareResponseDsml );
 
                 break;
 
             case DEL_REQUEST:
                 DeleteResponse delResponse = connection.delete( ( DeleteRequest ) request );
-                DelResponseDsml delResponseDsml = new DelResponseDsml( delResponse );
+                DelResponseDsml delResponseDsml = new DelResponseDsml( connection.getCodecService(), delResponse );
                 batchResponse.addResponse( delResponseDsml );
 
                 break;
 
             case EXTENDED_REQUEST:
                 ExtendedResponse extendedResponse = connection.extended( ( ExtendedRequest ) request );
-                ExtendedResponseDsml extendedResponseDsml = new ExtendedResponseDsml( extendedResponse );
+                ExtendedResponseDsml extendedResponseDsml = new ExtendedResponseDsml( connection.getCodecService(), extendedResponse );
                 batchResponse.addResponse( extendedResponseDsml );
 
                 break;
 
             case MODIFY_REQUEST:
                 ModifyResponse modifyResponse = connection.modify( ( ModifyRequest ) request );
-                ModifyResponseDsml modifyResponseDsml = new ModifyResponseDsml( modifyResponse );
+                ModifyResponseDsml modifyResponseDsml = new ModifyResponseDsml( connection.getCodecService(), modifyResponse );
                 batchResponse.addResponse( modifyResponseDsml );
 
                 break;
 
             case MODIFYDN_REQUEST:
                 ModifyDnResponse modifyDnResponse = connection.modifyDn( ( ModifyDnRequest ) request );
-                ModDNResponseDsml modDNResponseDsml = new ModDNResponseDsml( modifyDnResponse );
+                ModDNResponseDsml modDNResponseDsml = new ModDNResponseDsml( connection.getCodecService(), modifyDnResponse );
                 batchResponse.addResponse( modDNResponseDsml );
 
                 break;
@@ -369,8 +369,9 @@ public class Dsmlv2Engine
                     {
                         SearchResultEntry searchResultEntry = ( SearchResultEntry ) searchResponse;
 
-                        SearchResultEntryDsml searchResultEntryDsml = new SearchResultEntryDsml( searchResultEntry );
-                        searchResponseDsml = new SearchResponseDsml( searchResultEntryDsml );
+                        SearchResultEntryDsml searchResultEntryDsml = new SearchResultEntryDsml( 
+                            connection.getCodecService(), searchResultEntry );
+                        searchResponseDsml = new SearchResponseDsml( connection.getCodecService(), searchResultEntryDsml );
 
                         if ( requestID > 0 )
                         {
@@ -384,8 +385,8 @@ public class Dsmlv2Engine
                         SearchResultReference searchResultReference = ( SearchResultReference ) searchResponse;
 
                         SearchResultReferenceDsml searchResultReferenceDsml = new SearchResultReferenceDsml(
-                            searchResultReference );
-                        searchResponseDsml = new SearchResponseDsml( searchResultReferenceDsml );
+                            connection.getCodecService(), searchResultReference );
+                        searchResponseDsml = new SearchResponseDsml( connection.getCodecService(), searchResultReferenceDsml );
 
                         if ( requestID > 0 )
                         {

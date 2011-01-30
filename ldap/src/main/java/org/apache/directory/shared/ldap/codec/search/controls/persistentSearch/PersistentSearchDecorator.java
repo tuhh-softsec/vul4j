@@ -30,6 +30,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 import org.apache.directory.shared.ldap.model.message.controls.ChangeType;
 import org.apache.directory.shared.ldap.model.message.controls.PersistentSearch;
@@ -57,9 +58,9 @@ public class PersistentSearchDecorator extends ControlDecorator<PersistentSearch
      * Default constructor creates a PersistentSearch Control automatically
      * wrapped in a decorator object inside this container.
      */
-    public PersistentSearchDecorator()
+    public PersistentSearchDecorator( ILdapCodecService codec )
     {
-        this( new PersistentSearchImpl() );
+        this( codec, new PersistentSearchImpl() );
     }
 
 
@@ -69,9 +70,9 @@ public class PersistentSearchDecorator extends ControlDecorator<PersistentSearch
      *
      * @param control The PersistentSearch Control to wrap.
      */
-    public PersistentSearchDecorator( PersistentSearch control )
+    public PersistentSearchDecorator( ILdapCodecService codec, PersistentSearch control )
     {
-        super( control );
+        super( codec, control );
     }
 
 
@@ -227,7 +228,7 @@ public class PersistentSearchDecorator extends ControlDecorator<PersistentSearch
     public Asn1Object decode( byte[] controlBytes ) throws DecoderException
     {
         ByteBuffer bb = ByteBuffer.wrap( controlBytes );
-        PersistentSearchContainer container = new PersistentSearchContainer( this );
+        PersistentSearchContainer container = new PersistentSearchContainer( getCodecService(), this );
         decoder.decode( bb, container );
         return this;
     }

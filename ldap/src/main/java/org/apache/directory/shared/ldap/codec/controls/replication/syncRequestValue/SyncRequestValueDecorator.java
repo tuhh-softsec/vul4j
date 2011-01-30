@@ -31,6 +31,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 import org.apache.directory.shared.ldap.message.control.replication.SynchronizationModeEnum;
 import org.apache.directory.shared.util.Strings;
@@ -53,15 +54,15 @@ public class SyncRequestValueDecorator  extends ControlDecorator<ISyncRequestVal
     private static final Asn1Decoder decoder = new Asn1Decoder();
 
     
-    public SyncRequestValueDecorator()
+    public SyncRequestValueDecorator( ILdapCodecService codec )
     {
-        super( new SyncRequestValue() );
+        super( codec, new SyncRequestValue() );
     }
 
     
-    public SyncRequestValueDecorator( ISyncRequestValue control )
+    public SyncRequestValueDecorator( ILdapCodecService codec, ISyncRequestValue control )
     {
-        super( control );
+        super( codec, control );
     }
 
     

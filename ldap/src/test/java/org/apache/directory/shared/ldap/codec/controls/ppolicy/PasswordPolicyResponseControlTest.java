@@ -26,6 +26,8 @@ import static org.junit.Assert.assertNotNull;
 
 import java.nio.ByteBuffer;
 
+import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 
@@ -37,7 +39,8 @@ import org.junit.Test;
  */
 public class PasswordPolicyResponseControlTest
 {
-
+    ILdapCodecService codec = new DefaultLdapCodecService();
+    
     @Test
     public void testDecodeRespWithExpiryWarningAndError() throws Exception
     {
@@ -53,8 +56,8 @@ public class PasswordPolicyResponseControlTest
 
         bb.flip();
 
-        PasswordPolicyResponseContainer container = new PasswordPolicyResponseContainer();
-        container.setPasswordPolicyResponseControl( new PasswordPolicyResponseDecorator() );
+        PasswordPolicyResponseContainer container = new PasswordPolicyResponseContainer( codec );
+        container.setPasswordPolicyResponseControl( new PasswordPolicyResponseDecorator( codec ) );
 
         PasswordPolicyResponseDecorator control = container.getPasswordPolicyResponseControl();
         control.decode( bb.array() );
@@ -97,8 +100,8 @@ public class PasswordPolicyResponseControlTest
 
         bb.flip();
 
-        PasswordPolicyResponseContainer container = new PasswordPolicyResponseContainer();
-        container.setPasswordPolicyResponseControl( new PasswordPolicyResponseDecorator() );
+        PasswordPolicyResponseContainer container = new PasswordPolicyResponseContainer( codec );
+        container.setPasswordPolicyResponseControl( new PasswordPolicyResponseDecorator( codec ) );
 
         PasswordPolicyResponseDecorator control = container.getPasswordPolicyResponseControl();
         control.decode( bb.array() );
@@ -140,8 +143,8 @@ public class PasswordPolicyResponseControlTest
 
         bb.flip();
 
-        PasswordPolicyResponseContainer container = new PasswordPolicyResponseContainer();
-        container.setPasswordPolicyResponseControl( new PasswordPolicyResponseDecorator() );
+        PasswordPolicyResponseContainer container = new PasswordPolicyResponseContainer( codec );
+        container.setPasswordPolicyResponseControl( new PasswordPolicyResponseDecorator( codec ) );
 
         PasswordPolicyResponseDecorator control = container.getPasswordPolicyResponseControl();
         control.decode( bb.array() );
@@ -181,8 +184,8 @@ public class PasswordPolicyResponseControlTest
 
         bb.flip();
 
-        PasswordPolicyResponseContainer container = new PasswordPolicyResponseContainer();
-        container.setPasswordPolicyResponseControl( new PasswordPolicyResponseDecorator() );
+        PasswordPolicyResponseContainer container = new PasswordPolicyResponseContainer( codec );
+        container.setPasswordPolicyResponseControl( new PasswordPolicyResponseDecorator( codec ) );
 
         PasswordPolicyResponseDecorator control = container.getPasswordPolicyResponseControl();
         
@@ -221,8 +224,8 @@ public class PasswordPolicyResponseControlTest
 
         bb.flip();
 
-        PasswordPolicyResponseContainer container = new PasswordPolicyResponseContainer();
-        container.setPasswordPolicyResponseControl( new PasswordPolicyResponseDecorator() );
+        PasswordPolicyResponseContainer container = new PasswordPolicyResponseContainer( codec );
+        container.setPasswordPolicyResponseControl( new PasswordPolicyResponseDecorator( codec ) );
 
         PasswordPolicyResponseDecorator control = container.getPasswordPolicyResponseControl();
         control.decode( bb.array() );
@@ -259,8 +262,8 @@ public class PasswordPolicyResponseControlTest
 
         bb.flip();
 
-        PasswordPolicyResponseContainer container = new PasswordPolicyResponseContainer();
-        container.setPasswordPolicyResponseControl( new PasswordPolicyResponseDecorator() );
+        PasswordPolicyResponseContainer container = new PasswordPolicyResponseContainer( codec );
+        container.setPasswordPolicyResponseControl( new PasswordPolicyResponseDecorator( codec ) );
 
         PasswordPolicyResponseDecorator control = container.getPasswordPolicyResponseControl();
         control.decode( bb.array() );

@@ -40,9 +40,8 @@ import org.apache.directory.shared.dsmlv2.Tag;
 import org.apache.directory.shared.dsmlv2.reponse.ErrorResponse.ErrorResponseType;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
+import org.apache.directory.shared.ldap.codec.ICodecControl;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
-import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
-import org.apache.directory.shared.ldap.codec.controls.ControlImpl;
 import org.apache.directory.shared.ldap.codec.decorators.AddResponseDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.BindResponseDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.CompareResponseDecorator;
@@ -61,6 +60,7 @@ import org.apache.directory.shared.ldap.model.filter.LdapURL;
 import org.apache.directory.shared.ldap.model.message.AddResponseImpl;
 import org.apache.directory.shared.ldap.model.message.BindResponseImpl;
 import org.apache.directory.shared.ldap.model.message.CompareResponseImpl;
+import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.DeleteResponseImpl;
 import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
 import org.apache.directory.shared.ldap.model.message.ExtendedResponseImpl;
@@ -76,6 +76,7 @@ import org.apache.directory.shared.ldap.model.message.SearchResultDoneImpl;
 import org.apache.directory.shared.ldap.model.message.SearchResultEntryImpl;
 import org.apache.directory.shared.ldap.model.message.SearchResultReference;
 import org.apache.directory.shared.ldap.model.message.SearchResultReferenceImpl;
+import org.apache.directory.shared.ldap.model.message.controls.BasicControl;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.util.Base64;
 import org.apache.directory.shared.util.Strings;
@@ -1200,7 +1201,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
      */
     private void createAndAddControl( Dsmlv2Container container, Message parent ) throws XmlPullParserException
     {
-        ControlDecorator control = null;
+        ICodecControl<? extends Control> control = null;
 
         XmlPullParser xpp = container.getParser();
 
@@ -1216,7 +1217,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
                 throw new XmlPullParserException( I18n.err( I18n.ERR_03006 ), xpp, null );
             }
 
-            control = new ControlDecorator( new ControlImpl( attributeValue ) );
+            control = codec.decorate( new BasicControl( attributeValue ) );
             parent.addControl( control );
         }
         else
@@ -1299,7 +1300,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
      */
     private void createAndAddControlValue( Dsmlv2Container container, Message parent ) throws XmlPullParserException
     {
-        ControlDecorator control = (ControlDecorator)((MessageDecorator)parent).getCurrentControl();
+        ICodecControl<? extends Control> control = ( ( MessageDecorator<?> ) parent ).getCurrentControl();
 
         XmlPullParser xpp = container.getParser();
         try

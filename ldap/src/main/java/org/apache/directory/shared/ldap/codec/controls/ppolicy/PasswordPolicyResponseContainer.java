@@ -22,6 +22,7 @@ package org.apache.directory.shared.ldap.codec.controls.ppolicy;
 
 
 import org.apache.directory.shared.asn1.ber.AbstractContainer;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 
 
 /**
@@ -34,20 +35,20 @@ public class PasswordPolicyResponseContainer extends AbstractContainer
     private PasswordPolicyResponseDecorator control;
 
 
-    public PasswordPolicyResponseContainer()
+    public PasswordPolicyResponseContainer( ILdapCodecService codec )
     {
         super();
-        control = new PasswordPolicyResponseDecorator( new PasswordPolicyResponseDecorator() );
+        control = new PasswordPolicyResponseDecorator( codec, new PasswordPolicyResponseDecorator( codec ) );
         stateStack = new int[1];
         grammar = PasswordPolicyResponseGrammar.getInstance();
         setTransition( PasswordPolicyResponseStates.START_STATE );
     }
 
 
-    public PasswordPolicyResponseContainer( IPasswordPolicyResponse ppolicyResponse )
+    public PasswordPolicyResponseContainer( ILdapCodecService codec, IPasswordPolicyResponse ppolicyResponse )
     {
         super();
-        control = new PasswordPolicyResponseDecorator( ppolicyResponse );
+        control = new PasswordPolicyResponseDecorator( codec, ppolicyResponse );
         stateStack = new int[1];
         grammar = PasswordPolicyResponseGrammar.getInstance();
         setTransition( PasswordPolicyResponseStates.START_STATE );

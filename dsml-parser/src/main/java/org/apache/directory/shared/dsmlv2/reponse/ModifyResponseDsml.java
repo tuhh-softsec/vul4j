@@ -72,7 +72,8 @@ public class ModifyResponseDsml extends AbstractResultResponseDsml<ModifyRespons
     {
         Element element = root.addElement( "modifyResponse" );
 
-        LdapResultDsml ldapResultDsml = new LdapResultDsml( ( (ModifyResponse) getDecorated() ).getLdapResult(), getDecorated() );
+        LdapResultDsml ldapResultDsml = new LdapResultDsml( getCodecService(), 
+            getDecorated().getLdapResult(), getDecorated() );
         ldapResultDsml.toDsml( element );
         return element;
     }

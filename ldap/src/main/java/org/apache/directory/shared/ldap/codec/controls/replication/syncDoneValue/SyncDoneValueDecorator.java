@@ -31,6 +31,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 import org.apache.directory.shared.util.Strings;
 
@@ -54,9 +55,9 @@ public class SyncDoneValueDecorator extends ControlDecorator<ISyncDoneValue> imp
     /**
      * Creates a new instance of SyncDoneValueControlCodec.
      */
-    public SyncDoneValueDecorator()
+    public SyncDoneValueDecorator( ILdapCodecService codec )
     {
-        super( new SyncDoneValue() );
+        super( codec, new SyncDoneValue() );
     }
     
 
@@ -252,7 +253,7 @@ public class SyncDoneValueDecorator extends ControlDecorator<ISyncDoneValue> imp
     public Asn1Object decode( byte[] controlBytes ) throws DecoderException
     {
         ByteBuffer bb = ByteBuffer.wrap( controlBytes );
-        SyncDoneValueContainer container = new SyncDoneValueContainer( this );
+        SyncDoneValueContainer container = new SyncDoneValueContainer( getCodecService(), this );
         decoder.decode( bb, container );
         return this;
     }

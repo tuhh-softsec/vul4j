@@ -25,6 +25,7 @@ import javax.naming.ldap.Control;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.IControlFactory;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.model.message.controls.Subentries;
 import org.apache.directory.shared.ldap.model.message.controls.SubentriesImpl;
 
@@ -38,14 +39,23 @@ import org.apache.directory.shared.ldap.model.message.controls.SubentriesImpl;
  */
 public class SubentriesFactory implements IControlFactory<Subentries, SubentriesDecorator>
 {
+    private ILdapCodecService codec;
+    
+    
+    public SubentriesFactory( ILdapCodecService codec )
+    {
+        this.codec = codec;
+    }
+    
     public String getOid()
     {
         return Subentries.OID;
     }
 
+    
     public SubentriesDecorator newCodecControl()
     {
-        return new SubentriesDecorator();
+        return new SubentriesDecorator( codec );
     }
 
 
@@ -62,7 +72,7 @@ public class SubentriesFactory implements IControlFactory<Subentries, Subentries
             throw new IllegalArgumentException( "Bad control provided: " + control );
         }
         
-        return new SubentriesDecorator( control );
+        return new SubentriesDecorator( codec, control );
     }
 
     public Control toJndiControl( Subentries control ) throws EncoderException

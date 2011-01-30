@@ -30,6 +30,7 @@ import org.apache.directory.shared.asn1.Asn1Object;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 
 
@@ -42,7 +43,7 @@ public class PasswordPolicyResponseDecorator extends ControlDecorator<IPasswordP
 {
     /** An instance of this decoder */
     private static final Asn1Decoder decoder = new Asn1Decoder();
-
+    
     // Storage for computed lengths
     private transient int valueLength = 0;
     private transient int ppolicySeqLength = 0;
@@ -51,15 +52,15 @@ public class PasswordPolicyResponseDecorator extends ControlDecorator<IPasswordP
     private transient int graceAuthNsRemainingTagLength;
     
     
-    public PasswordPolicyResponseDecorator()
+    public PasswordPolicyResponseDecorator( ILdapCodecService codec )
     {
-        super( new PasswordPolicyResponse() );
+        super( codec, new PasswordPolicyResponse() );
     }
 
 
-    public PasswordPolicyResponseDecorator( IPasswordPolicyResponse response )
+    public PasswordPolicyResponseDecorator( ILdapCodecService codec, IPasswordPolicyResponse response )
     {
-        super( response );
+        super( codec, response );
     }
 
 
@@ -240,7 +241,7 @@ public class PasswordPolicyResponseDecorator extends ControlDecorator<IPasswordP
     public Asn1Object decode( byte[] controlBytes ) throws DecoderException
     {
         ByteBuffer bb = ByteBuffer.wrap( controlBytes );
-        PasswordPolicyResponseContainer container = new PasswordPolicyResponseContainer( this );
+        PasswordPolicyResponseContainer container = new PasswordPolicyResponseContainer( getCodecService(), this );
         decoder.decode( bb, container );
         return this;
     }

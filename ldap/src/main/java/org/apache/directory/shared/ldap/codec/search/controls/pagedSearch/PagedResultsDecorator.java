@@ -31,6 +31,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 import org.apache.directory.shared.ldap.model.message.controls.PagedResults;
 import org.apache.directory.shared.ldap.model.message.controls.PagedResultsImpl;
@@ -58,9 +59,9 @@ public class PagedResultsDecorator extends ControlDecorator<PagedResults> implem
      * Creates a new instance of PagedResultsDecorator with a newly created decorated
      * PagedResults Control.
      */
-    public PagedResultsDecorator()
+    public PagedResultsDecorator( ILdapCodecService codec )
     {
-        this( new PagedResultsImpl() );
+        this( codec, new PagedResultsImpl() );
     }
 
 
@@ -70,9 +71,9 @@ public class PagedResultsDecorator extends ControlDecorator<PagedResults> implem
      *
      * @param  pagedResults The PagedResults Control to be decorated.
      */
-    public PagedResultsDecorator( PagedResults pagedResults )
+    public PagedResultsDecorator( ILdapCodecService codec, PagedResults pagedResults )
     {
-        super( pagedResults );
+        super( codec, pagedResults );
     }
 
 
@@ -296,7 +297,7 @@ public class PagedResultsDecorator extends ControlDecorator<PagedResults> implem
     public Asn1Object decode( byte[] controlBytes ) throws DecoderException
     {
         ByteBuffer bb = ByteBuffer.wrap( controlBytes );
-        PagedResultsContainer container = new PagedResultsContainer( this );
+        PagedResultsContainer container = new PagedResultsContainer( getCodecService(), this );
         decoder.decode( bb, container );
         return this;
     }

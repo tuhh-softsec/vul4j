@@ -20,6 +20,9 @@
 package org.apache.directory.shared.dsmlv2.request;
 
 
+import java.nio.ByteBuffer;
+
+import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.dsmlv2.DsmlDecorator;
 import org.apache.directory.shared.dsmlv2.ParserUtils;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
@@ -67,7 +70,7 @@ public abstract class AbstractRequestDsml<E extends Request> extends RequestDeco
         }
 
         // Controls
-        ParserUtils.addControls( element, getDecorated().getControls().values() );
+        ParserUtils.addControls( getCodecService(), element, getDecorated().getControls().values() );
 
         return element;
     }
@@ -113,5 +116,17 @@ public abstract class AbstractRequestDsml<E extends Request> extends RequestDeco
             default:
                 return "error";
         }
+    }
+
+
+    public int computeLength()
+    {
+        return 0;
+    }
+
+
+    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    {
+        return null;
     }
 }

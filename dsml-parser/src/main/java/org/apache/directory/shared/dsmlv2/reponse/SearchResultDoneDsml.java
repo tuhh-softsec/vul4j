@@ -71,7 +71,8 @@ public class SearchResultDoneDsml extends AbstractResultResponseDsml<SearchResul
     {
         Element element = root.addElement( "searchResultDone" );
 
-        LdapResultDsml ldapResultDsml = new LdapResultDsml( ( ( SearchResultDone ) getDecorated() ).getLdapResult(), getDecorated() );
+        LdapResultDsml ldapResultDsml = 
+            new LdapResultDsml( getCodecService(), getDecorated().getLdapResult(), getDecorated() );
         if ( ldapResultDsml != null )
         {
             ldapResultDsml.toDsml( element );

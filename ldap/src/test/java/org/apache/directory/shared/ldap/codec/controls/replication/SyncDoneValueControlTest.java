@@ -31,6 +31,8 @@ import java.nio.ByteBuffer;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.ISyncDoneValue;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.SyncDoneValueDecorator;
 import org.apache.directory.shared.util.Strings;
@@ -48,7 +50,9 @@ import org.junit.runner.RunWith;
 @Concurrent()
 public class SyncDoneValueControlTest
 {
+    private ILdapCodecService codec = new DefaultLdapCodecService();
 
+    
     @Test
     public void testSyncDoneValueControl() throws Exception
     {
@@ -63,7 +67,8 @@ public class SyncDoneValueControlTest
 
         bb.flip();
 
-        SyncDoneValueDecorator decorator = new SyncDoneValueDecorator();
+        SyncDoneValueContainer container = new SyncDoneValueContainer( codec );
+        SyncDoneValueDecorator decorator = container.getSyncDoneValueControl();
 
         ISyncDoneValue control = (ISyncDoneValue)decorator.decode( bb.array() );
         
@@ -115,7 +120,8 @@ public class SyncDoneValueControlTest
 
         bb.flip();
 
-        SyncDoneValueDecorator decorator = new SyncDoneValueDecorator();
+        SyncDoneValueContainer container = new SyncDoneValueContainer( codec );
+        SyncDoneValueDecorator decorator = container.getSyncDoneValueControl();
 
         ISyncDoneValue control = (ISyncDoneValue)decorator.decode( bb.array() );
 
@@ -164,7 +170,8 @@ public class SyncDoneValueControlTest
 
         bb.flip();
 
-        SyncDoneValueDecorator decorator = new SyncDoneValueDecorator();
+        SyncDoneValueContainer container = new SyncDoneValueContainer( codec );
+        SyncDoneValueDecorator decorator = container.getSyncDoneValueControl();
 
         ISyncDoneValue control = (ISyncDoneValue)decorator.decode( bb.array() );
 
@@ -187,7 +194,8 @@ public class SyncDoneValueControlTest
 
         bb.flip();
 
-        SyncDoneValueDecorator decorator = new SyncDoneValueDecorator();
+        SyncDoneValueContainer container = new SyncDoneValueContainer( codec );
+        SyncDoneValueDecorator decorator = container.getSyncDoneValueControl();
 
         ISyncDoneValue control = (ISyncDoneValue)decorator.decode( bb.array() );
 
