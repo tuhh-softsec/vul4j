@@ -34,9 +34,9 @@ import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 public class PasswordPolicyRequestDecorator extends ControlDecorator<IPasswordPolicyRequest> 
     implements IPasswordPolicyRequest
 {
-    public PasswordPolicyRequestDecorator( ILdapCodecService codec )
+    public PasswordPolicyRequestDecorator( ILdapCodecService codec, IPasswordPolicyRequest control )
     {
-        super( codec, IPasswordPolicyRequest.INSTANCE );
+        super( codec, control );
     }
 
 

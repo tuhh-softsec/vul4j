@@ -34,7 +34,4 @@ public interface IPasswordPolicyRequest extends Control
 
     /** the password policy request control */
     public static final String OID = "1.3.6.1.4.1.42.2.27.8.5.1";
-
-    /** an instance that can be repeatedly reused */
-    public static final IPasswordPolicyRequest INSTANCE = new PasswordPolicyRequest(); 
 }

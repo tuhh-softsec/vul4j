@@ -33,19 +33,14 @@ import org.apache.directory.shared.ldap.model.message.controls.ManageDsaIT;
  */
 public class ManageDsaITDecorator extends ControlDecorator<ManageDsaIT> implements ManageDsaIT
 {
-    // @TODO We should not bother encoding and decoding marker controls that always
-    // encode and decode into the same TLV/byte sequence. Can't the control just
-    // supply the canned PDU element?
-    //
-    // override the decorator component to hard code this control?
 
-
+    
     /**
      * Default constructor
      */
-    public ManageDsaITDecorator( ILdapCodecService codec )
+    public ManageDsaITDecorator( ILdapCodecService codec, ManageDsaIT control )
     {
-        super( codec, ManageDsaIT.INSTANCE );
+        super( codec, control );
     }
 
 

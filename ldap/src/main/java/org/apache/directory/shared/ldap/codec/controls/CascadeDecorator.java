@@ -36,9 +36,9 @@ public class CascadeDecorator extends ControlDecorator<Cascade> implements Casca
     /**
      * Default constructor
      */
-    public CascadeDecorator( ILdapCodecService codec )
+    public CascadeDecorator( ILdapCodecService codec, Cascade control )
     {
-        super( codec, Cascade.INSTANCE );
+        super( codec, control );
     }
 
     

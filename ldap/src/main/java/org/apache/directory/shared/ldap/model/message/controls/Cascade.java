@@ -32,9 +32,6 @@ public interface Cascade extends Control
     /** The Cascade control OID */
     String OID = "1.3.6.1.4.1.18060.0.0.1";
 
-    Cascade INSTANCE = new SimpleCascade();
-
-
     /**
      * Simple Cascade control implementation.
      *

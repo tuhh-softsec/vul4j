@@ -22,13 +22,11 @@ package org.apache.directory.shared.ldap.model.ldif;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
-import org.apache.directory.shared.ldap.codec.controls.ManageDsaITDecorator;
 import org.apache.directory.shared.ldap.model.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidAttributeValueException;
+import org.apache.directory.shared.ldap.model.message.controls.ManageDsaITImpl;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.name.Rdn;
 import org.apache.directory.shared.util.Strings;
@@ -542,8 +540,7 @@ public class LdifUtilsTest
         entry.addAttribute( "m-oid", "1.2.3.4" );
         entry.addAttribute( "m-description", "description" );
         
-        ILdapCodecService codec = new DefaultLdapCodecService();
-        ManageDsaITDecorator control = new ManageDsaITDecorator( codec );
+        ManageDsaITImpl control = new ManageDsaITImpl();
         
         entry.addControl( control );
         

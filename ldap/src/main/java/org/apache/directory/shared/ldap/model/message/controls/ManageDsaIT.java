@@ -63,30 +63,4 @@ public interface ManageDsaIT extends Control
 {
     /** This control OID */
     String OID = "2.16.840.1.113730.3.4.2";
-
-    /** An instance of this constant control which never changes */
-    ManageDsaIT INSTANCE = new SimpleManageDsaIT();
-
-
-    class SimpleManageDsaIT extends BasicControl implements ManageDsaIT
-    {
-        /**
-         * Default constructor.
-         */
-        public SimpleManageDsaIT()
-        {
-            super( OID );
-        }
-
-
-        public void setValue( byte [] value )
-        {
-        }
-
-
-        public boolean hasValue()
-        {
-            return false;
-        }
-    }
 }
