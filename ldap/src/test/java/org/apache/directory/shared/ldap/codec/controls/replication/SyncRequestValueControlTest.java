@@ -31,6 +31,8 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncRequestValue.ISyncRequestValue;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncRequestValue.SyncRequestValueDecorator;
 import org.apache.directory.shared.ldap.message.control.replication.SynchronizationModeEnum;
@@ -48,6 +50,9 @@ import org.junit.runner.RunWith;
 @Concurrent()
 public class SyncRequestValueControlTest
 {
+    private ILdapCodecService codec = new DefaultLdapCodecService();
+    
+    
     /**
      * Test the decoding of a SyncRequestValue control with a refreshOnly mode
      */
@@ -66,7 +71,7 @@ public class SyncRequestValueControlTest
             } );
         bb.flip();
 
-        SyncRequestValueDecorator decorator = new SyncRequestValueDecorator();
+        SyncRequestValueDecorator decorator = new SyncRequestValueDecorator( codec );
         
         ISyncRequestValue syncRequestValue = (ISyncRequestValue)decorator.decode( bb.array() );
 
@@ -124,7 +129,7 @@ public class SyncRequestValueControlTest
             } );
         bb.flip();
 
-        SyncRequestValueDecorator decorator = new SyncRequestValueDecorator();
+        SyncRequestValueDecorator decorator = new SyncRequestValueDecorator( codec );
         
         ISyncRequestValue syncRequestValue = (ISyncRequestValue)decorator.decode( bb.array() );
 
@@ -181,7 +186,7 @@ public class SyncRequestValueControlTest
             } );
         bb.flip();
 
-        SyncRequestValueDecorator decorator = new SyncRequestValueDecorator();
+        SyncRequestValueDecorator decorator = new SyncRequestValueDecorator(  codec );
         
         ISyncRequestValue syncRequestValue = (ISyncRequestValue)decorator.decode( bb.array() );
 
@@ -238,7 +243,7 @@ public class SyncRequestValueControlTest
             } );
         bb.flip();
 
-        SyncRequestValueDecorator decorator = new SyncRequestValueDecorator();
+        SyncRequestValueDecorator decorator = new SyncRequestValueDecorator( codec );
         
         ISyncRequestValue syncRequestValue = (ISyncRequestValue)decorator.decode( bb.array() );
 
@@ -295,7 +300,7 @@ public class SyncRequestValueControlTest
             } );
         bb.flip();
 
-        SyncRequestValueDecorator decorator = new SyncRequestValueDecorator();
+        SyncRequestValueDecorator decorator = new SyncRequestValueDecorator( codec );
         
         ISyncRequestValue syncRequestValue = (ISyncRequestValue)decorator.decode( bb.array() );
 
@@ -351,7 +356,7 @@ public class SyncRequestValueControlTest
             } );
         bb.flip();
 
-        SyncRequestValueDecorator decorator = new SyncRequestValueDecorator();
+        SyncRequestValueDecorator decorator = new SyncRequestValueDecorator( codec );
         
         ISyncRequestValue syncRequestValue = (ISyncRequestValue)decorator.decode( bb.array() );
 
@@ -408,7 +413,7 @@ public class SyncRequestValueControlTest
             } );
         bb.flip();
 
-        SyncRequestValueDecorator decorator = new SyncRequestValueDecorator();
+        SyncRequestValueDecorator decorator = new SyncRequestValueDecorator( codec );
         
         ISyncRequestValue syncRequestValue = (ISyncRequestValue)decorator.decode( bb.array() );
 
@@ -460,7 +465,7 @@ public class SyncRequestValueControlTest
             } );
         bb.flip();
 
-        SyncRequestValueDecorator decorator = new SyncRequestValueDecorator();
+        SyncRequestValueDecorator decorator = new SyncRequestValueDecorator( codec );
         
         try
         {
@@ -488,7 +493,7 @@ public class SyncRequestValueControlTest
             } );
         bb.flip();
 
-        SyncRequestValueDecorator decorator = new SyncRequestValueDecorator();
+        SyncRequestValueDecorator decorator = new SyncRequestValueDecorator( codec );
         
         try
         {
