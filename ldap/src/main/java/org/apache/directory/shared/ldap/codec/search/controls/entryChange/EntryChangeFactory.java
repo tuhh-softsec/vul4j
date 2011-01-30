@@ -27,7 +27,6 @@ import javax.naming.ldap.Control;
 
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
-import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
 import org.apache.directory.shared.ldap.codec.IControlFactory;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.model.message.controls.EntryChange;
@@ -43,7 +42,7 @@ import org.apache.directory.shared.ldap.model.message.controls.EntryChangeImpl;
 public class EntryChangeFactory implements IControlFactory<EntryChange, EntryChangeDecorator>
 {
     /** The LDAP codec service */
-    private ILdapCodecService codec = new DefaultLdapCodecService();
+    private ILdapCodecService codec;
 
     
     /**
