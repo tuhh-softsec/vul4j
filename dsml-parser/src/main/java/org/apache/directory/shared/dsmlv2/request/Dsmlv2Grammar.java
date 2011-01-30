@@ -82,7 +82,6 @@ import org.apache.directory.shared.ldap.model.message.ModifyDnRequestImpl;
 import org.apache.directory.shared.ldap.model.message.ModifyRequestImpl;
 import org.apache.directory.shared.ldap.model.message.SearchRequest;
 import org.apache.directory.shared.ldap.model.message.SearchRequestImpl;
-import org.apache.directory.shared.ldap.model.message.controls.BasicControl;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.name.Rdn;
 import org.apache.directory.shared.util.Base64;
@@ -2748,7 +2747,8 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
                     throw new XmlPullParserException( I18n.err( I18n.ERR_03034 ), xpp, null );
                 }
 
-                control = codec.decorate( new BasicControl( attributeValue ) );
+                Control decoratedControl = codec.newControl( attributeValue );
+                control = codec.decorate( decoratedControl );
                 container.getBatchRequest().getCurrentRequest().addControl( control );
             }
             else
