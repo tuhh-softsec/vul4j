@@ -42,22 +42,12 @@ public class BeanPropertySetterRule extends Rule {
     /**
      * Set this property on the top object.
      */
-    private final String propertyName;
+    private final String propertyName; // @Nullable
 
     /**
      * The body text used to set the property.
      */
     private String bodyText = null;
-
-    /**
-     * <p>Construct rule that automatically sets a property from the body text.
-     *
-     * <p> This construct creates a rule that sets the property
-     * on the top object named the same as the current element.
-     */
-    public BeanPropertySetterRule() {
-        this(null);
-    }
 
     /**
      * <p>Construct rule that sets the given property from the body text.</p>
