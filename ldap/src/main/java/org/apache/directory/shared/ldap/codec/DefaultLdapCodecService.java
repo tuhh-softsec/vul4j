@@ -20,10 +20,12 @@
 package org.apache.directory.shared.ldap.codec;
 
 
-import java.lang.reflect.Field; 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import javax.naming.ldap.BasicControl;
 
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
@@ -168,6 +170,7 @@ public class DefaultLdapCodecService implements ILdapCodecService
             Field f = clazz.getField( "OID" );
             String oid = ( String ) f.get( null );
             IControlFactory<?,?> factory = controlFactories.get( oid );
+            
             return ( E ) factory.newControl();
         }
         catch ( IllegalAccessException e )
@@ -202,6 +205,12 @@ public class DefaultLdapCodecService implements ILdapCodecService
         try
         {
             IControlFactory<?,?> factory = controlFactories.get( oid );
+            
+            if ( factory == null )
+            {
+                return (E)new BasicControl( oid );
+            }
+            
             return ( E ) factory.newControl();
         }
         catch ( SecurityException e )
@@ -218,6 +227,12 @@ public class DefaultLdapCodecService implements ILdapCodecService
         try
         {
             IControlFactory factory = controlFactories.get( control.getOid() );
+            
+            if ( factory == null )
+            {
+                return null; // Here, instanciate a default factory
+            }
+            
             return factory.decorate( control );
         }
         catch ( SecurityException e )
