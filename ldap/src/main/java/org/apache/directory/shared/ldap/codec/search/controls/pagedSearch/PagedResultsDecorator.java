@@ -175,19 +175,12 @@ public class PagedResultsDecorator extends ControlDecorator<PagedResults> implem
     }
 
 
-    private PagedResults getPagedResults()
-    {
-        return ( PagedResults ) getDecorated();
-    }
-
-
-
     /**
      * @return The requested or returned number of entries
      */
     public int getSize()
     {
-        return getPagedResults().getSize();
+        return getDecorated().getSize();
     }
 
 
@@ -198,7 +191,7 @@ public class PagedResultsDecorator extends ControlDecorator<PagedResults> implem
      */
     public void setSize( int size )
     {
-        getPagedResults().setSize( size );
+        getDecorated().setSize( size );
     }
 
 
@@ -207,7 +200,7 @@ public class PagedResultsDecorator extends ControlDecorator<PagedResults> implem
      */
     public byte[] getCookie()
     {
-        return getPagedResults().getCookie();
+        return getDecorated().getCookie();
     }
 
 
@@ -218,7 +211,17 @@ public class PagedResultsDecorator extends ControlDecorator<PagedResults> implem
      */
     public void setCookie( byte[] cookie )
     {
-        getPagedResults().setCookie( cookie );
+        // Copy the bytes
+        if ( !Strings.isEmpty( cookie ) )
+        {
+            byte[] copy = new byte[cookie.length];
+            System.arraycopy( cookie, 0, copy, 0, cookie.length );
+            getDecorated().setCookie( copy );
+        }
+        else
+        {
+            getDecorated().setCookie( null );
+        }
     }
 
 

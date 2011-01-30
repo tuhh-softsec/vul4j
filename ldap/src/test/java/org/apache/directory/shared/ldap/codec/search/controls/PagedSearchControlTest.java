@@ -21,9 +21,8 @@ package org.apache.directory.shared.ldap.codec.search.controls;
 
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -31,9 +30,8 @@ import java.util.Arrays;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedResultsContainer;
 import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedResultsDecorator;
-import org.apache.directory.shared.util.StringConstants;
+import org.apache.directory.shared.ldap.model.message.controls.PagedResults;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -63,20 +61,10 @@ public class PagedSearchControlTest
             } );
         bb.flip();
 
-        PagedResultsContainer container = new PagedResultsContainer();
-        PagedResultsDecorator decorator = container.getDecorator();
+        PagedResultsDecorator decorator = new PagedResultsDecorator();
         
-        try
-        {
-            decorator.decode( bb.array() );
-        }
-        catch ( DecoderException de )
-        {
-            de.printStackTrace();
-            fail( de.getMessage() );
-        }
+        PagedResults pagedSearch = (PagedResults)decorator.decode( bb.array() );
 
-        PagedResultsDecorator pagedSearch = container.getDecorator();
         assertEquals( 32, pagedSearch.getSize() );
         assertTrue( Arrays.equals( Strings.getBytesUtf8("test"),
             pagedSearch.getCookie() ) );
@@ -112,8 +100,8 @@ public class PagedSearchControlTest
     /**
      * Test the decoding of a PagedSearchControl with no cookie
      */
-    @Test
-    public void testDecodePagedSearchRequestNoCookie()
+    @Test( expected=DecoderException.class )
+    public void testDecodePagedSearchRequestNoCookie() throws Exception
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x05 );
         bb.put( new byte[]
@@ -123,26 +111,17 @@ public class PagedSearchControlTest
             } );
         bb.flip();
 
-        PagedResultsContainer container = new PagedResultsContainer();
-        PagedResultsDecorator decorator = container.getDecorator();
+        PagedResultsDecorator decorator = new PagedResultsDecorator();
         
-        try
-        {
-            decorator.decode( bb.array() );
-            fail();
-        }
-        catch ( DecoderException de )
-        {
-            assertTrue( true );
-        }
+        decorator.decode( bb.array() );
     }
     
     
     /**
      * Test the decoding of a PagedSearchControl with no size
      */
-    @Test
-    public void testDecodePagedSearchRequestNoSize()
+    @Test( expected=DecoderException.class )
+    public void testDecodePagedSearchRequestNoSize() throws Exception
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x08 );
         bb.put( new byte[]
@@ -152,26 +131,17 @@ public class PagedSearchControlTest
             } );
         bb.flip();
 
-        PagedResultsContainer container = new PagedResultsContainer();
-        PagedResultsDecorator decorator = container.getDecorator();
+        PagedResultsDecorator decorator = new PagedResultsDecorator();
         
-        try
-        {
-            decorator.decode( bb.array() );
-            fail();
-        }
-        catch ( DecoderException de )
-        {
-            assertTrue( true );
-        }
+        decorator.decode( bb.array() );
     }
     
     
     /**
      * Test the decoding of a PagedSearchControl with no size  and no cookie
      */
-    @Test
-    public void testDecodePagedSearchRequestNoSizeNoCookie()
+    @Test( expected=DecoderException.class )
+    public void testDecodePagedSearchRequestNoSizeNoCookie() throws Exception
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x02 );
         bb.put( new byte[]
@@ -180,18 +150,9 @@ public class PagedSearchControlTest
             } );
         bb.flip();
 
-        PagedResultsContainer container = new PagedResultsContainer();
-        PagedResultsDecorator decorator = container.getDecorator();
+        PagedResultsDecorator decorator = new PagedResultsDecorator();
         
-        try
-        {
-            decorator.decode( bb.array() );
-            fail();
-        }
-        catch ( DecoderException de )
-        {
-            assertTrue( true );
-        }
+        decorator.decode( bb.array() );
     }
     
     
@@ -210,20 +171,10 @@ public class PagedSearchControlTest
             } );
         bb.flip();
 
-        PagedResultsContainer container = new PagedResultsContainer();
-        PagedResultsDecorator decorator = container.getDecorator();
+        PagedResultsDecorator decorator = new PagedResultsDecorator();
         
-        try
-        {
-            decorator.decode( bb.array() );
-        }
-        catch ( DecoderException de )
-        {
-            de.printStackTrace();
-            fail( de.getMessage() );
-        }
+        PagedResults pagedSearch = (PagedResults)decorator.decode( bb.array() );
 
-        PagedResultsDecorator pagedSearch = container.getDecorator();
         assertEquals( Integer.MAX_VALUE, pagedSearch.getSize() );
         assertTrue( Arrays.equals( Strings.getBytesUtf8("test"),
             pagedSearch.getCookie() ) );
@@ -260,7 +211,7 @@ public class PagedSearchControlTest
     /**
      * Test encoding of a PagedSearchControl with a empty size
      */
-    @Test
+    @Test( expected=DecoderException.class )
     public void testEncodePagedSearchControlEmptySize() throws Exception
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x0a );
@@ -272,18 +223,9 @@ public class PagedSearchControlTest
             } );
         bb.flip();
 
-        PagedResultsContainer container = new PagedResultsContainer();
-        PagedResultsDecorator decorator = container.getDecorator();
+        PagedResultsDecorator decorator = new PagedResultsDecorator();
         
-        try
-        {
-            decorator.decode( bb.array() );
-            fail();
-        }
-        catch ( DecoderException de )
-        {
-            assertTrue( true );
-        }
+        decorator.decode( bb.array() );
     }
     
     
@@ -302,23 +244,12 @@ public class PagedSearchControlTest
             } );
         bb.flip();
 
-        PagedResultsContainer container = new PagedResultsContainer();
-        PagedResultsDecorator decorator = container.getDecorator();
+        PagedResultsDecorator decorator = new PagedResultsDecorator();
         
-        try
-        {
-            decorator.decode( bb.array() );
-        }
-        catch ( DecoderException de )
-        {
-            de.printStackTrace();
-            fail( de.getMessage() );
-        }
+        PagedResults pagedSearch = (PagedResults)decorator.decode( bb.array() );
 
-        PagedResultsDecorator pagedSearch = container.getDecorator();
         assertEquals( 32, pagedSearch.getSize() );
-        assertNotNull( pagedSearch.getCookie() );
-        assertEquals( StringConstants.EMPTY_BYTES, pagedSearch.getCookie() );
+        assertNull( pagedSearch.getCookie() );
             
         ByteBuffer buffer = ByteBuffer.allocate( 0x23 );
         buffer.put( new byte[]
@@ -343,6 +274,5 @@ public class PagedSearchControlTest
         String decoded = Strings.dumpBytes(bb.array());
         String expected = Strings.dumpBytes(buffer.array());
         assertEquals( expected, decoded );
-
     }
 }
