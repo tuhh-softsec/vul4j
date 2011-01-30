@@ -17,10 +17,12 @@
  */
 package org.apache.commons.digester3.rulesbinder;
 
+import org.apache.commons.digester3.BeanPropertySetterRule;
+
 /**
  * Builder chained when invoking {@link LinkedRuleBuilder#setBeanProperty()}.
  */
-public interface BeanPropertySetterBuilder extends BackToLinkedRuleBuilder {
+public interface BeanPropertySetterBuilder extends BackToLinkedRuleBuilder<BeanPropertySetterRule> {
 
     /**
      * Sets the name of property to set.

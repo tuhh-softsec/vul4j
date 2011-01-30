@@ -17,10 +17,12 @@
  */
 package org.apache.commons.digester3.rulesbinder;
 
+import org.apache.commons.digester3.ObjectCreateRule;
+
 /**
  * Builder chained when invoking {@link LinkedRuleBuilder#objectCreate(String)}.
  */
-public interface ObjectCreateBuilder extends BackToLinkedRuleBuilder {
+public interface ObjectCreateBuilder extends BackToLinkedRuleBuilder<ObjectCreateRule> {
 
     /**
      * Construct an object with the specified class name.

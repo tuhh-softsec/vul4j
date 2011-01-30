@@ -17,10 +17,12 @@
  */
 package org.apache.commons.digester3.rulesbinder;
 
+import org.apache.commons.digester3.SetPropertyRule;
+
 /**
  * Builder chained when invoking {@link LinkedRuleBuilder#setProperty(String)}.
  */
-public interface SetPropertyBuilder extends BackToLinkedRuleBuilder {
+public interface SetPropertyBuilder extends BackToLinkedRuleBuilder<SetPropertyRule> {
 
     /**
      * Sets the attribute that will contain the property value.

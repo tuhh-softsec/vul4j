@@ -17,10 +17,13 @@
  */
 package org.apache.commons.digester3.rulesbinder;
 
+import org.apache.commons.digester3.Rule;
+import org.apache.commons.digester3.spi.RuleProvider;
+
 /**
  * Builder invoked to back to main {@link LinkedRuleBuilder}.
  */
-interface BackToLinkedRuleBuilder {
+interface BackToLinkedRuleBuilder<R extends Rule> extends RuleProvider<R> {
 
     /**
      * Come back to the main {@link LinkedRuleBuilder}.

@@ -17,10 +17,12 @@
  */
 package org.apache.commons.digester3.rulesbinder;
 
+import org.apache.commons.digester3.SetPropertiesRule;
+
 /**
  * Builder chained when invoking {@link LinkedRuleBuilder#setNestedProperties()}.
  */
-public interface SetPropertiesBuilder extends BackToLinkedRuleBuilder {
+public interface SetPropertiesBuilder extends BackToLinkedRuleBuilder<SetPropertiesRule> {
 
     /**
      * Add an additional attribute name to property name mapping.

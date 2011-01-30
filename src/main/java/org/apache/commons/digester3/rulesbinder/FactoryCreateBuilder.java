@@ -17,12 +17,13 @@
  */
 package org.apache.commons.digester3.rulesbinder;
 
+import org.apache.commons.digester3.FactoryCreateRule;
 import org.apache.commons.digester3.spi.ObjectCreationFactory;
 
 /**
  * Builder chained when invoking {@link LinkedRuleBuilder#factoryCreate(String)}.
  */
-public interface FactoryCreateBuilder extends BackToLinkedRuleBuilder {
+public interface FactoryCreateBuilder extends BackToLinkedRuleBuilder<FactoryCreateRule> {
 
     /**
      * Construct a factory create rule that will use the specified class name to create an {@link ObjectCreationFactory}

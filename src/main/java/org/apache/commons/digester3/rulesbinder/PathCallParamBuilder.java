@@ -17,10 +17,12 @@
  */
 package org.apache.commons.digester3.rulesbinder;
 
+import org.apache.commons.digester3.PathCallParamRule;
+
 /**
  * Builder chained when invoking {@link LinkedRuleBuilder#callParam(int)}.
  */
-public interface PathCallParamBuilder extends BackToLinkedRuleBuilder {
+public interface PathCallParamBuilder extends BackToLinkedRuleBuilder<PathCallParamRule> {
 
     /**
      * Sets the zero-relative parameter number.

@@ -17,6 +17,9 @@
  */
 package org.apache.commons.digester3.rulesbinder;
 
+import org.apache.commons.digester3.SetNextRule;
+import org.apache.commons.digester3.SetRootRule;
+import org.apache.commons.digester3.SetTopRule;
 import org.apache.commons.digester3.spi.ObjectCreationFactory;
 
 /**
@@ -88,7 +91,7 @@ public interface LinkedRuleBuilder {
      *
      * @param methodName Method name of the parent method to call
      */
-    ParamTypeBuilder setNext(String methodName);
+    ParamTypeBuilder<SetNextRule> setNext(String methodName);
 
     /**
      * Sets properties on the object at the top of the stack, based on attributes with corresponding names.
@@ -107,13 +110,13 @@ public interface LinkedRuleBuilder {
      *
      * @param methodName Method name of the parent method to call
      */
-    ParamTypeBuilder setRoot(String methodName);
+    ParamTypeBuilder<SetRootRule> setRoot(String methodName);
 
     /**
      * Calls a "set parent" method on the top (child) object, passing the (top-1) (parent) object as an argument.
      *
      * @param methodName Method name of the "set parent" method to call
      */
-    ParamTypeBuilder setTop(String methodName);
+    ParamTypeBuilder<SetTopRule> setTop(String methodName);
 
 }

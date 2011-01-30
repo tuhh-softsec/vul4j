@@ -17,10 +17,12 @@
  */
 package org.apache.commons.digester3.rulesbinder;
 
+import org.apache.commons.digester3.CallMethodRule;
+
 /**
  * Builder chained when invoking {@link LinkedRuleBuilder#callMethod(String)}.
  */
-public interface CallMethodBuilder extends BackToLinkedRuleBuilder {
+public interface CallMethodBuilder extends BackToLinkedRuleBuilder<CallMethodRule> {
 
     /**
      * Sets the location of the target object.

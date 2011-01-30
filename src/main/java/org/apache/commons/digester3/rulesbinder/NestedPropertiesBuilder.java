@@ -17,10 +17,12 @@
  */
 package org.apache.commons.digester3.rulesbinder;
 
+import org.apache.commons.digester3.SetNestedPropertiesRule;
+
 /**
  * Builder chained when invoking {@link LinkedRuleBuilder#setNestedProperties()}.
  */
-public interface NestedPropertiesBuilder extends BackToLinkedRuleBuilder {
+public interface NestedPropertiesBuilder extends BackToLinkedRuleBuilder<SetNestedPropertiesRule> {
 
     /**
      * Allows element2property mapping to be overridden.

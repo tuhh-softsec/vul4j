@@ -17,10 +17,12 @@
  */
 package org.apache.commons.digester3.rulesbinder;
 
+import org.apache.commons.digester3.ObjectParamRule;
+
 /**
  * Builder chained when invoking {@link LinkedRuleBuilder#objectCreate(String)}.
  */
-public interface ObjectParamBuilder extends BackToLinkedRuleBuilder {
+public interface ObjectParamBuilder extends BackToLinkedRuleBuilder<ObjectParamRule> {
 
     /**
      * The zero-relative index of the parameter we are saving.
