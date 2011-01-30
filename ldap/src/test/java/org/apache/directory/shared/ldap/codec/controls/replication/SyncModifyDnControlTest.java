@@ -34,7 +34,6 @@ import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn.ISyncModifyDn;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn.SyncModifyDnContainer;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn.SyncModifyDnDecorator;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
@@ -66,9 +65,7 @@ public class SyncModifyDnControlTest
             } );
         bb.flip();
 
-        SyncModifyDnContainer container = new SyncModifyDnContainer( codec );
-        SyncModifyDnDecorator decorator = container.getSyncModifyDnControl();
-
+        SyncModifyDnDecorator decorator = new SyncModifyDnDecorator( codec );
         ISyncModifyDn syncmodDnControl = (ISyncModifyDn)decorator.decode( bb.array() );
 
         assertEquals( "uid=jim", syncmodDnControl.getEntryDn() );
@@ -119,9 +116,8 @@ public class SyncModifyDnControlTest
             } );
         bb.flip();
 
-        SyncModifyDnContainer container = new SyncModifyDnContainer( codec );
-        SyncModifyDnDecorator decorator = container.getSyncModifyDnControl();
-
+        SyncModifyDnDecorator decorator = new SyncModifyDnDecorator( codec );
+        
         ISyncModifyDn syncmodDnControl = (ISyncModifyDn)decorator.decode( bb.array() );
 
         assertEquals( "uid=jim", syncmodDnControl.getEntryDn() );
@@ -174,9 +170,7 @@ public class SyncModifyDnControlTest
             } );
         bb.flip();
 
-        SyncModifyDnContainer container = new SyncModifyDnContainer( codec );
-        SyncModifyDnDecorator decorator = container.getSyncModifyDnControl();
-
+        SyncModifyDnDecorator decorator = new SyncModifyDnDecorator( codec );
         ISyncModifyDn syncmodDnControl = (ISyncModifyDn)decorator.decode( bb.array() );
 
         assertEquals( "uid=jim", syncmodDnControl.getEntryDn() );
@@ -228,8 +222,7 @@ public class SyncModifyDnControlTest
             } );
         bb.flip();
 
-        SyncModifyDnContainer container = new SyncModifyDnContainer( codec );
-        SyncModifyDnDecorator decorator = container.getSyncModifyDnControl();
+        SyncModifyDnDecorator decorator = new SyncModifyDnDecorator( codec );
         decorator.decode( bb.array() );
     }
 }
