@@ -24,7 +24,7 @@ import org.xml.sax.Attributes;
  * onto the object stack.  When the element is complete, the
  * object will be popped
  */
-class ObjectCreateRule extends Rule {
+public class ObjectCreateRule extends Rule {
 
     /**
      * The Java class name of the object to be created.
