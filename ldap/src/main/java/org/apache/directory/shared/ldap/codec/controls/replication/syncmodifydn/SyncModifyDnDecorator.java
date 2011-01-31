@@ -87,6 +87,12 @@ public class SyncModifyDnDecorator extends ControlDecorator<ISyncModifyDn> imple
     }
 
 
+    public SyncModifyDnDecorator( ILdapCodecService codec, ISyncModifyDn control )
+    {
+        super( codec, control );
+    }
+
+
     /**
      * Compute the SyncStateValue length.
      * 

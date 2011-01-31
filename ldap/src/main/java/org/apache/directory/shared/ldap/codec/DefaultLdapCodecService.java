@@ -32,6 +32,10 @@ import org.apache.directory.shared.ldap.codec.controls.CascadeFactory;
 import org.apache.directory.shared.ldap.codec.controls.ManageDsaITFactory;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.ISyncDoneValue;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.SyncDoneValueFactory;
+import org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValue.ISyncInfoValue;
+import org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValue.SyncInfoValueFactory;
+import org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn.ISyncModifyDn;
+import org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn.SyncModifyDnFactory;
 import org.apache.directory.shared.ldap.codec.search.controls.entryChange.EntryChangeFactory;
 import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedResultsFactory;
 import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearchFactory;
@@ -91,6 +95,12 @@ public class DefaultLdapCodecService implements ILdapCodecService
         
         SyncDoneValueFactory syncDoneValueFactory = new SyncDoneValueFactory( this );
         controlFactories.put( ISyncDoneValue.OID, syncDoneValueFactory );
+        
+        SyncInfoValueFactory syncInfoValueFactory = new SyncInfoValueFactory( this );
+        controlFactories.put( ISyncInfoValue.OID, syncInfoValueFactory );
+        
+        SyncModifyDnFactory syncModifyDnFactory = new SyncModifyDnFactory( this );
+        controlFactories.put( ISyncModifyDn.OID, syncModifyDnFactory );
     }
     
 
