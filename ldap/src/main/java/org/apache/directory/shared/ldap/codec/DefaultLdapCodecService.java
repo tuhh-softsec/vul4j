@@ -234,10 +234,7 @@ public class DefaultLdapCodecService implements ILdapCodecService
             
             if ( factory == null )
             {
-                org.apache.directory.shared.ldap.model.message.controls.BasicControl basic = 
-                    new org.apache.directory.shared.ldap.model.message.controls.BasicControl( control.getOid() );
-                basic.setCritical( control.isCritical() );
-                return new BasicControlDecorator( this, basic ); 
+                return new BasicControlDecorator( this, (BasicControl)control ); 
             }
             
             return factory.decorate( control );
