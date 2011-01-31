@@ -60,6 +60,18 @@ public class SyncDoneValueDecorator extends ControlDecorator<ISyncDoneValue> imp
     
 
     /**
+     * Creates a new instance of SyncDoneValueDecorator.
+     *
+     * @param codec The LDAP codec
+     * @param control The control to be decorated
+     */
+    public SyncDoneValueDecorator( ILdapCodecService codec, ISyncDoneValue control )
+    {
+        super( codec, control );
+    }
+
+
+    /**
      * Compute the syncDoneValue length.
      * 0x30 L1
      * |

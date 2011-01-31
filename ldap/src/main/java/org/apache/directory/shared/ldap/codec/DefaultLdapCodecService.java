@@ -30,6 +30,8 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.controls.CascadeFactory;
 import org.apache.directory.shared.ldap.codec.controls.ManageDsaITFactory;
+import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.ISyncDoneValue;
+import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.SyncDoneValueFactory;
 import org.apache.directory.shared.ldap.codec.search.controls.entryChange.EntryChangeFactory;
 import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedResultsFactory;
 import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearchFactory;
@@ -86,6 +88,9 @@ public class DefaultLdapCodecService implements ILdapCodecService
 
         SubentriesFactory subentriesFactory = new SubentriesFactory( this );
         controlFactories.put( Subentries.OID, subentriesFactory );
+        
+        SyncDoneValueFactory syncDoneValueFactory = new SyncDoneValueFactory( this );
+        controlFactories.put( ISyncDoneValue.OID, syncDoneValueFactory );
     }
     
 

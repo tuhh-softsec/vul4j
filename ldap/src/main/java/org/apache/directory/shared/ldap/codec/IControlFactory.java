@@ -37,11 +37,11 @@ public interface IControlFactory<C extends Control, D extends ICodecControl<C>>
     
     D newCodecControl();
     
-    D decorate( C control );
+    D decorate( C modelControl );
     
     C newControl();
     
-    javax.naming.ldap.Control toJndiControl( C control ) throws EncoderException;
+    javax.naming.ldap.Control toJndiControl( C modelControl ) throws EncoderException;
     
-    C fromJndiControl( javax.naming.ldap.Control control ) throws DecoderException;
+    C fromJndiControl( javax.naming.ldap.Control jndiControl ) throws DecoderException;
 }

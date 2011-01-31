@@ -17,7 +17,7 @@
  *   under the License.
  *
  */
-package org.apache.directory.shared.ldap.codec.search.controls.persistentSearch;
+package org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue;
 
 
 import java.nio.ByteBuffer;
@@ -29,75 +29,92 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.IControlFactory;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
-import org.apache.directory.shared.ldap.model.message.controls.PersistentSearch;
-import org.apache.directory.shared.ldap.model.message.controls.PersistentSearchImpl;
 
 
 /**
- * 
+ * A {@link IControlFactory} which creates {@link ISyncDoneValue} controls.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class PersistentSearchFactory implements IControlFactory<PersistentSearch, PersistentSearchDecorator>
+public class SyncDoneValueFactory implements IControlFactory<ISyncDoneValue, SyncDoneValueDecorator>
 {
+    
     private ILdapCodecService codec;
     
-    
-    public PersistentSearchFactory( ILdapCodecService codec )
+
+    /**
+     * Creates a new instance of SyncDoneValueFactory.
+     *
+     */
+    public SyncDoneValueFactory( ILdapCodecService codec )
     {
         this.codec = codec;
     }
     
+
+    /**
+     * 
+     * {@inheritDoc}
+     */
     public String getOid()
     {
-        return PersistentSearch.OID;
+        return ISyncDoneValue.OID;
     }
 
     
-    public PersistentSearchDecorator newCodecControl()
+    /**
+     * 
+     * {@inheritDoc}
+     */
+    public SyncDoneValueDecorator newCodecControl()
     {
-        return new PersistentSearchDecorator( codec );
+        return new SyncDoneValueDecorator( codec );
     }
-
     
-    public PersistentSearchDecorator decorate( PersistentSearch control )
+
+    public SyncDoneValueDecorator decorate( ISyncDoneValue control )
     {
+        SyncDoneValueDecorator decorator = null;
+        
         // protect against double decoration
-        if ( control instanceof PersistentSearchDecorator )
+        if ( control instanceof SyncDoneValueDecorator )
         {
-            return ( PersistentSearchDecorator ) control;
+            decorator = ( SyncDoneValueDecorator ) control;
         }
-        else 
+        else
         {
-            return new PersistentSearchDecorator( codec, control );
+            decorator = new SyncDoneValueDecorator( codec, control );
         }
+        
+        return decorator;
     }
 
     
-    public PersistentSearch newControl()
+    public ISyncDoneValue newControl()
     {
-        return new PersistentSearchImpl();
+        return new SyncDoneValue();
     }
     
-    
-    public Control toJndiControl( PersistentSearch control ) throws EncoderException
+
+    public Control toJndiControl( ISyncDoneValue control ) throws EncoderException
     {
-        PersistentSearchDecorator decorator = decorate( control );
-        ByteBuffer buf = ByteBuffer.allocate( decorator.computeLength() );
-        decorator.encode( buf );
-        buf.flip();
-        return new BasicControl( control.getOid(), control.isCritical(), buf.array() );
+        SyncDoneValueDecorator decorator = decorate( control );
+        ByteBuffer bb = ByteBuffer.allocate( decorator.computeLength() );
+        decorator.encode( bb );
+        bb.flip();
+        return new BasicControl( control.getOid(), control.isCritical(), decorator.getValue() );
     }
+
     
-    
-    public PersistentSearch fromJndiControl( Control jndi ) throws DecoderException
+    public ISyncDoneValue fromJndiControl( Control jndi ) throws DecoderException
     {
-        PersistentSearchDecorator decorator = newCodecControl();
+        SyncDoneValueDecorator decorator = newCodecControl();
         decorator.setCritical( jndi.isCritical() );
         decorator.setValue( jndi.getEncodedValue() );
-        byte[] controlBytes = new byte[decorator.computeLength()];
+        byte[] controlBytes = new byte[ decorator.computeLength() ];
         decorator.decode( controlBytes );
         return decorator.getDecorated();
     }
+
 }
