@@ -20,6 +20,7 @@ package org.apache.commons.digester3;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.digester3.rulesbinder.BackToLinkedRuleBuilder;
 import org.apache.commons.digester3.rulesbinder.BeanPropertySetterBuilder;
 import org.apache.commons.digester3.rulesbinder.CallMethodBuilder;
 import org.apache.commons.digester3.rulesbinder.CallParamBuilder;
@@ -33,6 +34,7 @@ import org.apache.commons.digester3.rulesbinder.ParamTypeBuilder;
 import org.apache.commons.digester3.rulesbinder.PathCallParamBuilder;
 import org.apache.commons.digester3.rulesbinder.SetPropertiesBuilder;
 import org.apache.commons.digester3.rulesbinder.SetPropertyBuilder;
+import org.apache.commons.digester3.spi.RuleProvider;
 
 /**
  * The Digester EDSL implementation.
@@ -175,7 +177,9 @@ final class RulesBinderImpl implements RulesBinder {
                             return null;
                         }
 
-                        return new ObjectCreateRule(this.className, this.attributeName);
+                        ObjectCreateRule rule = new ObjectCreateRule(this.className, this.attributeName);
+                        rule.setNamespaceURI(namespaceURI);
+                        return rule;
                     }
 
                     public LinkedRuleBuilder then() {
@@ -215,6 +219,44 @@ final class RulesBinderImpl implements RulesBinder {
 
             public CallMethodBuilder callMethod(String methodName) {
                 return null;
+            }
+
+            /**
+             * 
+             */
+            public <R extends Rule> BackToLinkedRuleBuilder<R> addRule(final R rule) {
+                if (rule == null) {
+                    addError("{forPattern(\"%s\").addRule()} null rule not valid", keyPattern);
+                }
+
+                return this.addRuleCreatedBy(new RuleProvider<R>() {
+
+                    public R get() {
+                        return rule;
+                    }
+
+                });
+            }
+
+            /**
+             * 
+             */
+            public <R extends Rule> BackToLinkedRuleBuilder<R> addRuleCreatedBy(final RuleProvider<R> provider) {
+                if (provider == null) {
+                    addError("{forPattern(\"%s\").addRuleCreatedBy()} null rule not valid", keyPattern);
+                }
+
+                return new BackToLinkedRuleBuilder<R>() {
+
+                    public LinkedRuleBuilder then() {
+                        return mainBuilder;
+                    }
+
+                    public R get() {
+                        return provider.get();
+                    }
+
+                };
             }
 
         };

@@ -17,10 +17,12 @@
  */
 package org.apache.commons.digester3.rulesbinder;
 
+import org.apache.commons.digester3.Rule;
 import org.apache.commons.digester3.SetNextRule;
 import org.apache.commons.digester3.SetRootRule;
 import org.apache.commons.digester3.SetTopRule;
 import org.apache.commons.digester3.spi.ObjectCreationFactory;
+import org.apache.commons.digester3.spi.RuleProvider;
 
 /**
  * Builder invoked to bind one or more rules to a pattern.
@@ -118,5 +120,23 @@ public interface LinkedRuleBuilder {
      * @param methodName Method name of the "set parent" method to call
      */
     ParamTypeBuilder<SetTopRule> setTop(String methodName);
+
+    /**
+     * Add a custom user rule in the specified pattern.
+     *
+     * @param <R>
+     * @param rule
+     * @return
+     */
+    <R extends Rule> BackToLinkedRuleBuilder<R> addRule(R rule);
+
+    /**
+     * Add a custom user rule in the specified pattern built by the given provider.
+     *
+     * @param <R>
+     * @param provider
+     * @return
+     */
+    <R extends Rule> BackToLinkedRuleBuilder<R> addRuleCreatedBy(RuleProvider<R> provider);
 
 }
