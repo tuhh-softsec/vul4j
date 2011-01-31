@@ -19,6 +19,7 @@ package org.apache.commons.digester3;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +48,28 @@ final class RulesBinderImpl implements RulesBinder {
      * Errors that can occur during binding time or rules creation.
      */
     private final List<ErrorMessage> errors = new ArrayList<ErrorMessage>();
+
+    /**
+     * The data structure where storing the providers binding.
+     */
+    private final Map<String, List<RuleProvider<? extends Rule>>> providers;
+
+    /**
+     * Creates a new {@link RulesBinder} instance with no bound providers.
+     */
+    public RulesBinderImpl() {
+        this(new LinkedHashMap<String, List<RuleProvider<? extends Rule>>>());
+    }
+
+    /**
+     * Creates a new {@link RulesBinder} instance with already bound providers,
+     * useful when creating child Digester from an existing configuration.
+     *
+     * @param providers the data structure where storing the providers binding.
+     */
+    public RulesBinderImpl(Map<String, List<RuleProvider<? extends Rule>>> providers) {
+        this.providers = providers;
+    }
 
     /**
      * {@inheritDoc}
@@ -401,6 +424,28 @@ final class RulesBinderImpl implements RulesBinder {
                     }
 
                 };
+            }
+
+            /**
+             * Add a provider in the data structure where storing the providers binding.
+             *
+             * @param <R> The rule will be created by the given provider
+             * @param provider The provider has to be stored in the data structure
+             * @return The provider itself has to be stored in the data structure
+             */
+            private <R extends Rule> RuleProvider<R> addProvider(RuleProvider<R> provider) {
+                if (keyPattern == null) {
+                    return provider;
+                }
+
+                List<RuleProvider<? extends Rule>> providerLits = providers.get(keyPattern);
+                if (providerLits == null) {
+                    providerLits = new ArrayList<RuleProvider<? extends Rule>>();
+                    providers.put(keyPattern, providerLits);
+                }
+                providerLits.add(provider);
+
+                return provider;
             }
 
         };
