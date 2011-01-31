@@ -155,7 +155,7 @@ public class ObjectClass extends AbstractSchemaObject
                         case AUXILIARY:
                             if ( superior.objectClassType == ObjectClassTypeEnum.STRUCTURAL )
                             {
-                                // An AUXILIARY OC can only inherit from STRUCTURAL OCs
+                                // An AUXILIARY OC cannot inherit from STRUCTURAL OCs
                                 String msg = I18n.err( I18n.ERR_04319, oid, superior );
 
                                 Throwable error = new LdapProtocolErrorException( msg );
@@ -168,7 +168,7 @@ public class ObjectClass extends AbstractSchemaObject
                         case STRUCTURAL:
                             if ( superior.objectClassType == ObjectClassTypeEnum.AUXILIARY )
                             {
-                                // A STRUCTURAL OC can only inherit from AUXILIARY OCs
+                                // A STRUCTURAL OC cannot inherit from AUXILIARY OCs
                                 String msg = I18n.err( I18n.ERR_04320, oid, superior );
 
                                 Throwable error = new LdapProtocolErrorException( msg );
