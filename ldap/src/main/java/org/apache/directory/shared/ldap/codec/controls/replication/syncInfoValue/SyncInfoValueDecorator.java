@@ -60,6 +60,15 @@ public class SyncInfoValueDecorator extends ControlDecorator<ISyncInfoValue> imp
     {
         super( codec, new SyncInfoValue() );
     }
+
+    
+    /**
+     * The constructor for this codec. Dont't forget to set the type.
+     */
+    public SyncInfoValueDecorator( ILdapCodecService codec, ISyncInfoValue control )
+    {
+        super( codec, control );
+    }
     
     
     /**
