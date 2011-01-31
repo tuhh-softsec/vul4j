@@ -110,16 +110,9 @@ final class RulesBinderImpl implements RulesBinder {
 
         return new LinkedRuleBuilder() {
 
-            private String namespaceURI;
+            private final LinkedRuleBuilder mainBuilder = this;
 
-            private LinkedRuleBuilder reportNotNull(String parameterName) {
-                String methodName = new Exception().getStackTrace()[1].getMethodName();
-                RulesBinderImpl.this.addError("{%s} Parameter \"%s\" for pattern \"%s\" must be NOT null",
-                        methodName,
-                        parameterName,
-                        keyPattern);
-                return this;
-            }
+            private String namespaceURI;
 
             public LinkedRuleBuilder withNamespaceURI(/* @Nullable */ String namespaceURI) {
                 this.namespaceURI = namespaceURI;
@@ -162,8 +155,51 @@ final class RulesBinderImpl implements RulesBinder {
                 return null;
             }
 
+            /**
+             * 
+             */
             public ObjectCreateBuilder createObject() {
-                return null;
+                return new ObjectCreateBuilder() {
+
+                    private String className;
+
+                    private String attributeName;
+
+                    public ObjectCreateRule get() {
+                        if (this.className == null && this.attributeName == null) {
+                            addError("{forPattern(\"%s\").createObject()} At least one between 'className' or 'attributeName' has to be specified",
+                                    keyPattern);
+                            return null;
+                        }
+
+                        return new ObjectCreateRule(this.className, this.attributeName);
+                    }
+
+                    public LinkedRuleBuilder then() {
+                        return mainBuilder;
+                    }
+
+                    public ObjectCreateBuilder ofTypeSpecifiedByAttribute(String attributeName) {
+                        this.attributeName = attributeName;
+                        return this;
+                    }
+
+                    public ObjectCreateBuilder ofType(Class<?> type) {
+                        if (type == null) {
+                            addError("{forPattern(\"%s\").createObject().ofType(Class<?>)} When specifying 'className', NULL Java type is not admitted",
+                                    keyPattern);
+                            return this;
+                        }
+
+                        return this.ofType(type.getName());
+                    }
+
+                    public ObjectCreateBuilder ofType(String className) {
+                        this.className = className;
+                        return this;
+                    }
+
+                };
             }
 
             public PathCallParamBuilder callParamPath() {
