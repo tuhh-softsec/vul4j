@@ -195,8 +195,39 @@ final class RulesBinderImpl implements RulesBinder {
                 });
             }
 
-            public SetPropertyBuilder setProperty(String attributePropertyName) {
-                return null;
+            /**
+             * 
+             */
+            public SetPropertyBuilder setProperty(final String attributePropertyName) {
+                if (attributePropertyName == null || attributePropertyName.length() == 0) {
+                    addError("{forPattern(\"%s\").setProperty(String)} empty 'attributePropertyName' not allowed",
+                            keyPattern);
+                }
+
+                return this.addProvider(new SetPropertyBuilder() {
+
+                    private String valueAttributeName;
+
+                    public SetPropertyRule get() {
+                        return setNamespaceAndReturn(new SetPropertyRule(attributePropertyName, valueAttributeName));
+                    }
+
+                    public LinkedRuleBuilder then() {
+                        return mainBuilder;
+                    }
+
+                    public SetPropertyBuilder extractingValueFromAttribute(String valueAttributeName) {
+                        if (attributePropertyName == null || attributePropertyName.length() == 0) {
+                            addError("{forPattern(\"%s\").setProperty(\"%s\")} empty 'valueAttributeName' not allowed",
+                                    keyPattern,
+                                    attributePropertyName);
+                        }
+
+                        this.valueAttributeName = valueAttributeName;
+                        return this;
+                    }
+
+                });
             }
 
             /**
