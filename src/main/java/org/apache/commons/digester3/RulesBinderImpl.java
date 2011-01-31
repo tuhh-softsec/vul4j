@@ -270,8 +270,28 @@ final class RulesBinderImpl implements RulesBinder {
                 };
             }
 
+            /**
+             * 
+             */
             public BeanPropertySetterBuilder setBeanProperty() {
-                return null;
+                return new BeanPropertySetterBuilder() {
+
+                    private String propertyName;
+
+                    public BeanPropertySetterRule get() {
+                        return new BeanPropertySetterRule(this.propertyName);
+                    }
+
+                    public LinkedRuleBuilder then() {
+                        return mainBuilder;
+                    }
+
+                    public BeanPropertySetterBuilder withName(String propertyName) {
+                        this.propertyName = propertyName;
+                        return this;
+                    }
+
+                };
             }
 
             public <T> ObjectParamBuilder objectParam(T paramObj) {
