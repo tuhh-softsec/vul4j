@@ -67,13 +67,14 @@ public class SubentriesFactory implements IControlFactory<Subentries, Subentries
     
     public SubentriesDecorator decorate( Subentries control )
     {
-        if ( control.getOid().equals( Subentries.OID ) )
+        if ( ! control.getOid().equals( Subentries.OID ) )
         {
             throw new IllegalArgumentException( "Bad control provided: " + control );
         }
         
         return new SubentriesDecorator( codec, control );
     }
+    
 
     public Control toJndiControl( Subentries control ) throws EncoderException
     {
