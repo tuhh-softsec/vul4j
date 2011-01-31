@@ -16,8 +16,6 @@
  */
 package org.apache.xml.security.utils.resolver.implementations;
 
-
-
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.utils.IdResolver;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
@@ -25,7 +23,6 @@ import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-
 
 /**
  * This resolver is used for resolving same-document URIs like URI="" of URI="#id".
@@ -37,103 +34,102 @@ import org.w3c.dom.Node;
  */
 public class ResolverFragment extends ResourceResolverSpi {
 
-   /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(
-                            ResolverFragment.class.getName());
-   public boolean engineIsThreadSafe() {
-           return true;
-   }
-   /**
-    * Method engineResolve
-    *
-    * Wird das gleiche Dokument referenziert?
-    * Wird ein anderes Dokument referenziert?
-    * @inheritDoc
-    * @param uri
-    * @param BaseURI
-    *
-    */
-   public XMLSignatureInput engineResolve(Attr uri, String BaseURI) 
-       throws ResourceResolverException
-   {
+    /** {@link org.apache.commons.logging} logging facility */
+    private static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(ResolverFragment.class.getName());
+    
+    public boolean engineIsThreadSafe() {
+        return true;
+    }
+    
+    /**
+     * Method engineResolve
+     *
+     * @inheritDoc
+     * @param uri
+     * @param BaseURI
+     */
+    public XMLSignatureInput engineResolve(Attr uri, String BaseURI) 
+        throws ResourceResolverException {
 
-      String uriNodeValue = uri.getNodeValue();
-      Document doc = uri.getOwnerElement().getOwnerDocument();
+        String uriNodeValue = uri.getNodeValue();
+        Document doc = uri.getOwnerElement().getOwnerDocument();
 
+        Node selectedElem = null;
+        if (uriNodeValue.equals("")) {
+            /*
+             * Identifies the node-set (minus any comment nodes) of the XML
+             * resource containing the signature
+             */
+            if (log.isDebugEnabled()) {
+                log.debug("ResolverFragment with empty URI (means complete document)");
+            }
+            selectedElem = doc;
+        } else {
+            /*
+             * URI="#chapter1"
+             * Identifies a node-set containing the element with ID attribute
+             * value 'chapter1' of the XML resource containing the signature.
+             * XML Signature (and its applications) modify this node-set to
+             * include the element plus all descendents including namespaces and
+             * attributes -- but not comments.
+             */
+            String id = uriNodeValue.substring(1);
 
-      Node selectedElem = null;
-      if (uriNodeValue.equals("")) {
-
-         /*
-          * Identifies the node-set (minus any comment nodes) of the XML
-          * resource containing the signature
-          */
-
-         log.debug("ResolverFragment with empty URI (means complete document)");
-         selectedElem = doc;
-      } else {
-
-         /*
-          * URI="#chapter1"
-          * Identifies a node-set containing the element with ID attribute
-          * value 'chapter1' of the XML resource containing the signature.
-          * XML Signature (and its applications) modify this node-set to
-          * include the element plus all descendents including namespaces and
-          * attributes -- but not comments.
-          */
-         String id = uriNodeValue.substring(1);
-
-         // Element selectedElem = doc.getElementById(id);
-         selectedElem = IdResolver.getElementById(doc, id);
-         if (selectedElem==null) {
+            selectedElem = IdResolver.getElementById(doc, id);
+            if (selectedElem == null) {
                 Object exArgs[] = { id };
-            throw new ResourceResolverException(
-               "signature.Verification.MissingID", exArgs, uri, BaseURI);
-         }
-         if (log.isDebugEnabled())
-                log.debug("Try to catch an Element with ID " + id + " and Element was " + selectedElem);
-      }
+                throw new ResourceResolverException(
+                    "signature.Verification.MissingID", exArgs, uri, BaseURI
+                );
+            }
+            if (log.isDebugEnabled()) {
+                log.debug(
+                    "Try to catch an Element with ID " + id + " and Element was " + selectedElem
+                );
+            }
+        }
 
-      XMLSignatureInput result = new XMLSignatureInput(selectedElem);
-      result.setExcludeComments(true);
+        XMLSignatureInput result = new XMLSignatureInput(selectedElem);
+        result.setExcludeComments(true);
 
-      //log.debug("We return a nodeset with " + resultSet.size() + " nodes");
-      result.setMIMEType("text/xml");	  
-          result.setSourceURI((BaseURI != null) ? BaseURI.concat(uri.getNodeValue()) :
-                  uri.getNodeValue());      
-      return result;
-   }
+        result.setMIMEType("text/xml");
+        if (BaseURI != null && BaseURI.length() > 0) {
+            result.setSourceURI(BaseURI.concat(uri.getNodeValue()));      
+        } else {
+            result.setSourceURI(uri.getNodeValue());      
+        }
+        return result;
+    }
 
-   /**
-    * Method engineCanResolve
-    * @inheritDoc
-    * @param uri
-    * @param BaseURI
-    *
-    */
-   public boolean engineCanResolve(Attr uri, String BaseURI) {
+    /**
+     * Method engineCanResolve
+     * @inheritDoc
+     * @param uri
+     * @param BaseURI
+     */
+    public boolean engineCanResolve(Attr uri, String BaseURI) {
+        if (uri == null) {
+            if (log.isDebugEnabled()) {
+                log.debug("Quick fail for null uri");
+            }
+            return false;
+        }
 
-      if (uri == null) {
-         log.debug("Quick fail for null uri");
-         return false;
-      }
-
-      String uriNodeValue = uri.getNodeValue();
-
-      if  (uriNodeValue.equals("") || 
-             ( 
-            (uriNodeValue.charAt(0)=='#') 
-              && !((uriNodeValue.charAt(1)=='x') && uriNodeValue.startsWith("#xpointer("))
-              )
-           ){
-         if (log.isDebugEnabled())
+        String uriNodeValue = uri.getNodeValue();
+        if (uriNodeValue.equals("") || 
+            ((uriNodeValue.charAt(0) == '#') 
+                && !((uriNodeValue.charAt(1) == 'x') && uriNodeValue.startsWith("#xpointer(")))
+        ) {
+            if (log.isDebugEnabled()) {
                 log.debug("State I can resolve reference: \"" + uriNodeValue + "\"");
-         return true;
-      }
-      if (log.isDebugEnabled())
-        log.debug("Do not seem to be able to resolve reference: \"" + uriNodeValue + "\"");
-      return false;
-   }
+            }
+            return true;
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("Do not seem to be able to resolve reference: \"" + uriNodeValue + "\"");
+        }
+        return false;
+    }
 
 }

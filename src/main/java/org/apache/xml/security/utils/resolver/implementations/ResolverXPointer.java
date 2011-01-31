@@ -16,8 +16,6 @@
  */
 package org.apache.xml.security.utils.resolver.implementations;
 
-
-
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.utils.IdResolver;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
@@ -25,7 +23,6 @@ import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-
 
 /**
  * Handles barename XPointer Reference URIs.
@@ -44,148 +41,123 @@ import org.w3c.dom.Node;
  */
 public class ResolverXPointer extends ResourceResolverSpi {
 
-   /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(
-                            ResolverXPointer.class.getName());
+    /** {@link org.apache.commons.logging} logging facility */
+    private static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(ResolverXPointer.class.getName());
+    
+    private static final String XP = "#xpointer(id(";
+    private static final int XP_LENGTH = XP.length();
 
     public boolean engineIsThreadSafe() {
-           return true;
-   }
-   /**
-    * @inheritDoc
-    */
-   public XMLSignatureInput engineResolve(Attr uri, String BaseURI)
-           throws ResourceResolverException {
+        return true;
+    }
+    
+    /**
+     * @inheritDoc
+     */
+    public XMLSignatureInput engineResolve(Attr uri, String BaseURI)
+        throws ResourceResolverException {
 
-      Node resultNode = null;
-      Document doc = uri.getOwnerElement().getOwnerDocument();
+        Node resultNode = null;
+        Document doc = uri.getOwnerElement().getOwnerDocument();
 
-        String uriStr=uri.getNodeValue();
-         if (isXPointerSlash(uriStr)) {
+        String uriStr = uri.getNodeValue();
+        if (isXPointerSlash(uriStr)) {
             resultNode = doc;
-               
-         } else if (isXPointerId(uriStr)) {
+        } else if (isXPointerId(uriStr)) {
             String id = getXPointerId(uriStr);
-            resultNode =IdResolver.getElementById(doc, id);
-
-            // log.debug("Use #xpointer(id('" + id + "')) on element " + selectedElem);
+            resultNode = IdResolver.getElementById(doc, id);
 
             if (resultNode == null) {
-               Object exArgs[] = { id };
+                Object exArgs[] = { id };
 
-               throw new ResourceResolverException(
-                  "signature.Verification.MissingID", exArgs, uri, BaseURI);
+                throw new ResourceResolverException(
+                    "signature.Verification.MissingID", exArgs, uri, BaseURI
+                );
             }
-            /*
-            resultNodes =
-               cXPathAPI
-                  .selectNodeList(selectedElem, Canonicalizer
-                     .XPATH_C14N_WITH_COMMENTS_SINGLE_NODE);*/
-         }
-      
+        }
 
-      XMLSignatureInput result = new XMLSignatureInput(resultNode);
+        XMLSignatureInput result = new XMLSignatureInput(resultNode);
 
-      result.setMIMEType("text/xml");
-      if (BaseURI != null && BaseURI.length() > 0) {
-          result.setSourceURI(BaseURI.concat(uri.getNodeValue()));      
-      } else {
-          result.setSourceURI(uri.getNodeValue());      
-      }
+        result.setMIMEType("text/xml");
+        if (BaseURI != null && BaseURI.length() > 0) {
+            result.setSourceURI(BaseURI.concat(uri.getNodeValue()));      
+        } else {
+            result.setSourceURI(uri.getNodeValue());      
+        }
 
-      return result;
-   }
+        return result;
+    }
 
-   /**
-    * @inheritDoc
-    */
-   public boolean engineCanResolve(Attr uri, String BaseURI) {
-
-      if (uri == null) {
-         return false;
-      }
-          String uriStr =uri.getNodeValue();
-      if (isXPointerSlash(uriStr) || isXPointerId(uriStr)) {
-         return true;
-      }
-
-      return false;
-   }
-
-   /**
-    * Method isXPointerSlash
-    *
-    * @param uri
-    * @return true if begins with xpointer
-    */
-   private static boolean isXPointerSlash(String uri) {
-
-      if (uri.equals("#xpointer(/)")) {
-         return true;
-      }
-
-      return false;
-   }
-
-   
-   private static final String XP="#xpointer(id(";
-   private static final int XP_LENGTH=XP.length();
-   /**
-    * Method isXPointerId
-    *
-    * @param uri
-    * @return it it has an xpointer id
-    *
-    */
-   private static boolean isXPointerId(String uri) {
-      
-
-      if (uri.startsWith(XP)
-              && uri.endsWith("))")) {
-         String idPlusDelim = uri.substring(XP_LENGTH,
-                                                     uri.length()
-                                                     - 2);
-
-         // log.debug("idPlusDelim=" + idPlusDelim);
-                 int idLen=idPlusDelim.length() -1;
-         if (((idPlusDelim.charAt(0) == '"') && (idPlusDelim
-                 .charAt(idLen) == '"')) || ((idPlusDelim
-                 .charAt(0) == '\'') && (idPlusDelim
-                 .charAt(idLen) == '\''))) {
-            if (log.isDebugEnabled())
-                log.debug("Id="
-                      + idPlusDelim.substring(1, idLen));
-
+    /**
+     * @inheritDoc
+     */
+    public boolean engineCanResolve(Attr uri, String BaseURI) {
+        if (uri == null) {
+            return false;
+        }
+        String uriStr = uri.getNodeValue();
+        if (isXPointerSlash(uriStr) || isXPointerId(uriStr)) {
             return true;
-         }
-      }
+        }
 
-      return false;
-   }
+        return false;
+    }
 
-   /**
-    * Method getXPointerId
-    *
-    * @param uri
-    * @return xpointerId to search.
-    */
-   private static String getXPointerId(String uri) {
+    /**
+     * Method isXPointerSlash
+     *
+     * @param uri
+     * @return true if begins with xpointer
+     */
+    private static boolean isXPointerSlash(String uri) {
+        if (uri.equals("#xpointer(/)")) {
+            return true;
+        }
 
+        return false;
+    }
 
-      if (uri.startsWith(XP)
-              && uri.endsWith("))")) {
-         String idPlusDelim = uri.substring(XP_LENGTH,uri.length()
-                                                     - 2);
-                 int idLen=idPlusDelim.length() -1;
-         if (((idPlusDelim.charAt(0) == '"') && (idPlusDelim
-                 .charAt(idLen) == '"')) || ((idPlusDelim
-                 .charAt(0) == '\'') && (idPlusDelim
-                 .charAt(idLen) == '\''))) {
-            return idPlusDelim.substring(1, idLen);
-         }
-      }
+    /**
+     * Method isXPointerId
+     *
+     * @param uri
+     * @return whether it has an xpointer id
+     */
+    private static boolean isXPointerId(String uri) {
+        if (uri.startsWith(XP) && uri.endsWith("))")) {
+            String idPlusDelim = uri.substring(XP_LENGTH, uri.length() - 2);
 
-      return null;
-   }
+            int idLen = idPlusDelim.length() -1;
+            if (((idPlusDelim.charAt(0) == '"') && (idPlusDelim.charAt(idLen) == '"')) 
+                || ((idPlusDelim.charAt(0) == '\'') && (idPlusDelim.charAt(idLen) == '\''))) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Id = " + idPlusDelim.substring(1, idLen));
+                }
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Method getXPointerId
+     *
+     * @param uri
+     * @return xpointerId to search.
+     */
+    private static String getXPointerId(String uri) {
+        if (uri.startsWith(XP) && uri.endsWith("))")) {
+            String idPlusDelim = uri.substring(XP_LENGTH,uri.length() - 2);
+            
+            int idLen = idPlusDelim.length() -1;
+            if (((idPlusDelim.charAt(0) == '"') && (idPlusDelim.charAt(idLen) == '"')) 
+                || ((idPlusDelim.charAt(0) == '\'') && (idPlusDelim.charAt(idLen) == '\''))) {
+                return idPlusDelim.substring(1, idLen);
+            }
+        }
+
+        return null;
+    }
 }

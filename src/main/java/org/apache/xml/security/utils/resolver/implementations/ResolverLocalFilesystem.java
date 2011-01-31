@@ -17,8 +17,9 @@
 package org.apache.xml.security.utils.resolver.implementations;
 
 import java.io.FileInputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 
-import org.apache.xml.utils.URI;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
@@ -31,10 +32,11 @@ import org.w3c.dom.Attr;
  */
 public class ResolverLocalFilesystem extends ResourceResolverSpi {
 
-   /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(
-                    ResolverLocalFilesystem.class.getName());
+    /** {@link org.apache.commons.logging} logging facility */
+    private static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(ResolverLocalFilesystem.class.getName());
+    
+    private static int FILE_URI_LENGTH = "file:/".length();
 
     public boolean engineIsThreadSafe() {
         return true;
@@ -44,19 +46,13 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
      * @inheritDoc
      */
     public XMLSignatureInput engineResolve(Attr uri, String BaseURI)
-           throws ResourceResolverException {
-
+        throws ResourceResolverException {
         try {
+            // calculate new URI
             URI uriNew = getNewURI(uri.getNodeValue(), BaseURI);
 
-            // if the URI contains a fragment, ignore it
-            URI uriNewNoFrag = new URI(uriNew);
-
-            uriNewNoFrag.setFragment(null);
-
             String fileName =
-                ResolverLocalFilesystem
-                .translateUriToFilename(uriNewNoFrag.toString());
+                ResolverLocalFilesystem.translateUriToFilename(uriNew.toString());
             FileInputStream inputStream = new FileInputStream(fileName);
             XMLSignatureInput result = new XMLSignatureInput(inputStream);
 
@@ -64,12 +60,10 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
 
             return result;
         } catch (Exception e) {
-            throw new ResourceResolverException("generic.EmptyMessage", e, uri,
-                                            BaseURI);
+            throw new ResourceResolverException("generic.EmptyMessage", e, uri, BaseURI);
         }
     }
 
-    private static int FILE_URI_LENGTH="file:/".length();
     /**
      * Method translateUriToFilename
      *
@@ -83,7 +77,7 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
         if (subStr.indexOf("%20") > -1) {
             int offset = 0;
             int index = 0;
-            StringBuffer temp = new StringBuffer(subStr.length());
+            StringBuilder temp = new StringBuilder(subStr.length());
             do {
                 index = subStr.indexOf("%20",offset);
                 if (index == -1) {
@@ -125,8 +119,7 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
                 log.debug("I was asked whether I can resolve " + uriNodeValue);
             }
 
-            if (uriNodeValue.startsWith("file:") ||
-                BaseURI.startsWith("file:")) {
+            if (uriNodeValue.startsWith("file:") || BaseURI.startsWith("file:")) {
                 if (log.isDebugEnabled()) {
                     log.debug("I state that I can resolve " + uriNodeValue);
                 }
@@ -134,17 +127,27 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
             }
         } catch (Exception e) {}
 
-        log.debug("But I can't");
+        if (log.isDebugEnabled()) {
+            log.debug("But I can't");
+        }
 
         return false;
     }
 
-    private static URI getNewURI(String uri, String BaseURI)
-           throws URI.MalformedURIException {
-
+    private static URI getNewURI(String uri, String BaseURI) throws URISyntaxException {
+        URI newUri = null;
         if (BaseURI == null || "".equals(BaseURI)) {
-             return new URI(uri);
+            newUri = new URI(uri);
+        } else {
+            newUri = new URI(BaseURI).resolve(uri);
         }
-        return new URI(new URI(BaseURI), uri);
+        
+        // if the URI contains a fragment, ignore it
+        if (newUri.getFragment() != null) {
+            URI uriNewNoFrag = 
+                new URI(newUri.getScheme(), newUri.getSchemeSpecificPart(), null);
+            return uriNewNoFrag;
+        }
+        return newUri;
     }
 }

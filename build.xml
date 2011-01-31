@@ -2,8 +2,8 @@
 <project name="Apache Santuario" default="help" basedir=".">
 
     <!-- G L O B A L    P R O P E R T I E S -->
-	<!-- Product name and version properties -->
-    <property name="product.Name" value="Apache-XML-Security-J"/>
+    <!-- Product name and version properties -->
+    <property name="product.Name" value="Apache XML Security for Java"/>
     <property name="product.name" value="xml-security"/>
     <property name="product.shortname" value="xmlsec"/>
 
@@ -18,7 +18,6 @@
     <property name="year" value="2000-2010"/>
     <property name="copyright" 
 			  value="Copyright © ${year} Apache XML Project. All Rights Reserved."/>
-
 
     <!-- directory properties -->
     <property name="dir.src"            value="${basedir}/src/main/java" />
@@ -132,7 +131,6 @@
     <!-- P A T T E R N S E T S -->
     <patternset id="id.patternset.distFiles">
 	<include name="build.xml"/>
-	<include name="INSTALL"/>
 	<include name="KEYS"/>
 	<include name="LICENSE"/>
 	<include name="NOTICE"/>
