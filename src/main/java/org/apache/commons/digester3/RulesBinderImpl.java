@@ -20,8 +20,19 @@ package org.apache.commons.digester3;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.digester3.rulesbinder.BeanPropertySetterBuilder;
+import org.apache.commons.digester3.rulesbinder.CallMethodBuilder;
+import org.apache.commons.digester3.rulesbinder.CallParamBuilder;
 import org.apache.commons.digester3.rulesbinder.ConverterBuilder;
+import org.apache.commons.digester3.rulesbinder.FactoryCreateBuilder;
 import org.apache.commons.digester3.rulesbinder.LinkedRuleBuilder;
+import org.apache.commons.digester3.rulesbinder.NestedPropertiesBuilder;
+import org.apache.commons.digester3.rulesbinder.ObjectCreateBuilder;
+import org.apache.commons.digester3.rulesbinder.ObjectParamBuilder;
+import org.apache.commons.digester3.rulesbinder.ParamTypeBuilder;
+import org.apache.commons.digester3.rulesbinder.PathCallParamBuilder;
+import org.apache.commons.digester3.rulesbinder.SetPropertiesBuilder;
+import org.apache.commons.digester3.rulesbinder.SetPropertyBuilder;
 
 /**
  * The Digester EDSL implementation.
@@ -83,7 +94,88 @@ final class RulesBinderImpl implements RulesBinder {
      * {@inheritDoc}
      */
     public LinkedRuleBuilder forPattern(String pattern) {
-        return null;
+        final String keyPattern;
+
+        if (pattern == null || pattern.length() == 0) {
+            this.addError(new IllegalArgumentException("Null or empty pattern is not valid"));
+            keyPattern = null;
+        } else {
+            if (pattern.endsWith("/")) {
+                // to help users who accidently add '/' to the end of their patterns
+                keyPattern = pattern.substring(0, pattern.length() - 1);
+            } else {
+                keyPattern = pattern;
+            }
+        }
+
+        return new LinkedRuleBuilder() {
+
+            private LinkedRuleBuilder reportNotNull(String parameterName) {
+                String methodName = new Exception().getStackTrace()[1].getMethodName();
+                RulesBinderImpl.this.addError("{%s} Parameter \"%s\" for pattern \"%s\" must be NOT null",
+                        methodName,
+                        parameterName,
+                        keyPattern);
+                return this;
+            }
+
+            public LinkedRuleBuilder withNamespaceURI(String namespaceURI) {
+                return null;
+            }
+
+            public ParamTypeBuilder<SetTopRule> setTop(String methodName) {
+                return null;
+            }
+
+            public ParamTypeBuilder<SetRootRule> setRoot(String methodName) {
+                return null;
+            }
+
+            public SetPropertyBuilder setProperty(String attributePropertyName) {
+                return null;
+            }
+
+            public SetPropertiesBuilder setProperties() {
+                return null;
+            }
+
+            public ParamTypeBuilder<SetNextRule> setNext(String methodName) {
+                return null;
+            }
+
+            public NestedPropertiesBuilder setNestedProperties() {
+                return null;
+            }
+
+            public BeanPropertySetterBuilder setBeanProperty() {
+                return null;
+            }
+
+            public <T> ObjectParamBuilder objectParam(T paramObj) {
+                return null;
+            }
+
+            public FactoryCreateBuilder factoryCreate() {
+                return null;
+            }
+
+            public ObjectCreateBuilder createObject() {
+                return null;
+            }
+
+            public PathCallParamBuilder callParamPath() {
+                return null;
+            }
+
+            public CallParamBuilder callParam() {
+                return null;
+            }
+
+            public CallMethodBuilder callMethod(String methodName) {
+                return null;
+            }
+
+        };
     }
 
     /**
