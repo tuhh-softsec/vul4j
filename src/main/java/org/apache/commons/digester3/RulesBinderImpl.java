@@ -253,7 +253,9 @@ final class RulesBinderImpl implements RulesBinder {
                     }
 
                     public R get() {
-                        return provider.get();
+                        R rule = provider.get();
+                        rule.setNamespaceURI(namespaceURI);
+                        return rule;
                     }
 
                 };
