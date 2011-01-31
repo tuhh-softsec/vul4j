@@ -124,8 +124,48 @@ final class RulesBinderImpl implements RulesBinder {
                 return this;
             }
 
-            public ParamTypeBuilder<SetTopRule> setTop(String methodName) {
-                return null;
+            /**
+             * 
+             */
+            public ParamTypeBuilder<SetTopRule> setTop(final String methodName) {
+                if (methodName == null || methodName.length() == 0) {
+                    addError("{forPattern(\"%s\").setTop(String)} empty 'methodName' not allowed", keyPattern);
+                }
+
+                return new ParamTypeBuilder<SetTopRule>() {
+
+                    private boolean useExactMatch = false;
+
+                    private String paramType;
+
+                    public LinkedRuleBuilder then() {
+                        return mainBuilder;
+                    }
+
+                    public ParamTypeBuilder<SetTopRule> useExactMatch(boolean useExactMatch) {
+                        this.useExactMatch = useExactMatch;
+                        return this;
+                    }
+
+                    public ParamTypeBuilder<SetTopRule> withParameterType(Class<?> paramType) {
+                        if (paramType == null) {
+                            addError("{forPattern(\"%s\").createObject().ofType(Class<?>)} NULL Java type not allowed",
+                                    keyPattern);
+                            return this;
+                        }
+                        return this.withParameterType(paramType.getName());
+                    }
+
+                    public ParamTypeBuilder<SetTopRule> withParameterType(String paramType) {
+                        this.paramType = paramType;
+                        return this;
+                    }
+
+                    public SetTopRule get() {
+                        return new SetTopRule(methodName, paramType, useExactMatch);
+                    }
+
+                };
             }
 
             public ParamTypeBuilder<SetRootRule> setRoot(String methodName) {
@@ -193,7 +233,7 @@ final class RulesBinderImpl implements RulesBinder {
 
                     public ObjectCreateBuilder ofType(Class<?> type) {
                         if (type == null) {
-                            addError("{forPattern(\"%s\").createObject().ofType(Class<?>)} When specifying 'className', NULL Java type is not admitted",
+                            addError("{forPattern(\"%s\").createObject().ofType(Class<?>)} NULL Java type not allowed",
                                     keyPattern);
                             return this;
                         }
