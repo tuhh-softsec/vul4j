@@ -263,6 +263,17 @@ public class DefaultLdapCodecService implements ILdapCodecService
 
     public Control fromJndiControl( javax.naming.ldap.Control control ) throws DecoderException
     {
-        return null;
+        IControlFactory factory = controlFactories.get( control.getID() );
+        
+        if ( factory == null )
+        {
+            BasicControl ourControl = new BasicControl( control.getID() );
+            ourControl.setCritical( control.isCritical() );
+            BasicControlDecorator decorator = new BasicControlDecorator( this, ourControl );
+            decorator.setValue( control.getEncodedValue() );
+            return decorator;
+        }
+        
+        return factory.fromJndiControl( control );
     }
 }
