@@ -29,7 +29,7 @@ import org.apache.directory.shared.ldap.model.message.Control;
  */
 public interface Subentries extends Control
 {
-    /** Ths control OID */
+    /** The control OID */
     String OID = "1.3.6.1.4.1.4203.1.10.1";
 
     /**
