@@ -25,8 +25,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.naming.ldap.BasicControl;
-
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.controls.CascadeFactory;
@@ -34,6 +32,7 @@ import org.apache.directory.shared.ldap.codec.controls.ManageDsaITFactory;
 import org.apache.directory.shared.ldap.codec.search.controls.entryChange.EntryChangeFactory;
 import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesFactory;
 import org.apache.directory.shared.ldap.model.message.Control;
+import org.apache.directory.shared.ldap.model.message.controls.BasicControl;
 import org.apache.directory.shared.ldap.model.message.controls.Cascade;
 import org.apache.directory.shared.ldap.model.message.controls.EntryChange;
 import org.apache.directory.shared.ldap.model.message.controls.ManageDsaIT;
