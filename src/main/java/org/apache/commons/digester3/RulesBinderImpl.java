@@ -39,6 +39,9 @@ import org.apache.commons.digester3.rulesbinder.SetPropertyBuilder;
  */
 final class RulesBinderImpl implements RulesBinder {
 
+    /**
+     * Errors that can occur during binding time or rules creation.
+     */
     private final List<ErrorMessage> errors = new ArrayList<ErrorMessage>();
 
     /**
