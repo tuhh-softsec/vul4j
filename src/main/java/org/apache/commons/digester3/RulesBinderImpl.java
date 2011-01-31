@@ -189,7 +189,7 @@ final class RulesBinderImpl implements RulesBinder {
                     }
 
                     public LinkedRuleBuilder then() {
-                        return null;
+                        return mainBuilder;
                     }
 
                     public SetPropertiesBuilder ignoreMissingProperty(boolean ignoreMissingProperty) {
