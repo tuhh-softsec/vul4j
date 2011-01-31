@@ -25,10 +25,11 @@ import java.util.List;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
-import org.apache.directory.shared.ldap.model.exception.LdapProtocolErrorException;
+import org.apache.directory.shared.ldap.model.exception.LdapSchemaException;
+import org.apache.directory.shared.ldap.model.exception.LdapSchemaExceptionCodes;
 import org.apache.directory.shared.ldap.model.schema.registries.AttributeTypeRegistry;
-import org.apache.directory.shared.ldap.model.schema.registries.Registries;
 import org.apache.directory.shared.ldap.model.schema.registries.ObjectClassRegistry;
+import org.apache.directory.shared.ldap.model.schema.registries.Registries;
 
 
 /**
@@ -145,7 +146,9 @@ public class ObjectClass extends AbstractSchemaObject
                                 // An ABSTRACT OC can only inherit from ABSTRACT OCs
                                 String msg = I18n.err( I18n.ERR_04318, oid, superior.getObjectType(), superior );
 
-                                Throwable error = new LdapProtocolErrorException( msg );
+                                Throwable error = new LdapSchemaException(
+                                    LdapSchemaExceptionCodes.OC_ABSTRACT_MUST_INHERIT_FROM_ABSTRACT_OC,
+                                    this, msg );
                                 errors.add( error );
                                 return;
                             }
@@ -158,7 +161,9 @@ public class ObjectClass extends AbstractSchemaObject
                                 // An AUXILIARY OC cannot inherit from STRUCTURAL OCs
                                 String msg = I18n.err( I18n.ERR_04319, oid, superior );
 
-                                Throwable error = new LdapProtocolErrorException( msg );
+                                Throwable error = new LdapSchemaException(
+                                    LdapSchemaExceptionCodes.OC_AUXILIARY_CANNOT_INHERIT_FROM_STRUCTURAL_OC,
+                                    this, msg );
                                 errors.add( error );
                                 return;
                             }
@@ -171,7 +176,9 @@ public class ObjectClass extends AbstractSchemaObject
                                 // A STRUCTURAL OC cannot inherit from AUXILIARY OCs
                                 String msg = I18n.err( I18n.ERR_04320, oid, superior );
 
-                                Throwable error = new LdapProtocolErrorException( msg );
+                                Throwable error = new LdapSchemaException(
+                                    LdapSchemaExceptionCodes.OC_STRUCTURAL_CANNOT_INHERIT_FROM_AUXILIARY_OC,
+                                    this, msg );
                                 errors.add( error );
                                 return;
                             }
@@ -186,7 +193,8 @@ public class ObjectClass extends AbstractSchemaObject
                     // Cannot find the OC
                     String msg = I18n.err( I18n.ERR_04321, oid, superiorName );
 
-                    Throwable error = new LdapProtocolErrorException( msg );
+                    Throwable error = new LdapSchemaException( LdapSchemaExceptionCodes.OC_NONEXISTENT_SUPERIOR,
+                        this, msg );
                     errors.add( error );
                     return;
                 }
@@ -214,7 +222,9 @@ public class ObjectClass extends AbstractSchemaObject
                         // Collective Attributes are not allowed in MAY or MUST
                         String msg = I18n.err( I18n.ERR_04485_COLLECTIVE_NOT_ALLOWED_IN_MAY, mayAttributeTypeName, oid );
 
-                        Throwable error = new LdapProtocolErrorException( msg );
+                        Throwable error = new LdapSchemaException(
+                            LdapSchemaExceptionCodes.OC_COLLECTIVE_NOT_ALLOWED_IN_MAY,
+                            this, msg );
                         errors.add( error );
                         break;
                     }
@@ -223,7 +233,9 @@ public class ObjectClass extends AbstractSchemaObject
                     {
                         // Already registered : this is an error
                         String msg = I18n.err( I18n.ERR_04322, oid, mayAttributeTypeName );
-                        Throwable error = new LdapProtocolErrorException( msg );
+
+                        Throwable error = new LdapSchemaException( LdapSchemaExceptionCodes.OC_DUPLICATE_AT_IN_MAY,
+                            this, msg );
                         errors.add( error );
                         break;
                     }
@@ -235,7 +247,8 @@ public class ObjectClass extends AbstractSchemaObject
                     // Cannot find the AT
                     String msg = I18n.err( I18n.ERR_04323, oid, mayAttributeTypeName );
 
-                    Throwable error = new LdapProtocolErrorException( msg );
+                    Throwable error = new LdapSchemaException( LdapSchemaExceptionCodes.OC_NONEXISTENT_MAY_AT,
+                        this, msg );
                     errors.add( error );
                     break;
                 }
@@ -261,9 +274,12 @@ public class ObjectClass extends AbstractSchemaObject
                     if ( attributeType.isCollective() )
                     {
                         // Collective Attributes are not allowed in MAY or MUST
-                        String msg = I18n.err( I18n.ERR_04484_COLLECTIVE_NOT_ALLOWED_IN_MUST, mustAttributeTypeName, oid );
+                        String msg = I18n.err( I18n.ERR_04484_COLLECTIVE_NOT_ALLOWED_IN_MUST, mustAttributeTypeName,
+                            oid );
 
-                        Throwable error = new LdapProtocolErrorException( msg );
+                        Throwable error = new LdapSchemaException(
+                            LdapSchemaExceptionCodes.OC_COLLECTIVE_NOT_ALLOWED_IN_MUST,
+                            this, msg );
                         errors.add( error );
                         break;
                     }
@@ -273,7 +289,8 @@ public class ObjectClass extends AbstractSchemaObject
                         // Already registered : this is an error
                         String msg = I18n.err( I18n.ERR_04324, oid, mustAttributeTypeName );
 
-                        Throwable error = new LdapProtocolErrorException( msg );
+                        Throwable error = new LdapSchemaException( LdapSchemaExceptionCodes.OC_DUPLICATE_AT_IN_MUST,
+                            this, msg );
                         errors.add( error );
                         break;
                     }
@@ -284,7 +301,9 @@ public class ObjectClass extends AbstractSchemaObject
                         // Already registered : this is an error
                         String msg = I18n.err( I18n.ERR_04325, oid, mustAttributeTypeName );
 
-                        Throwable error = new LdapProtocolErrorException( msg );
+                        Throwable error = new LdapSchemaException(
+                            LdapSchemaExceptionCodes.OC_DUPLICATE_AT_IN_MAY_AND_MUST,
+                            this, msg );
                         errors.add( error );
                         break;
                     }
@@ -296,7 +315,8 @@ public class ObjectClass extends AbstractSchemaObject
                     // Cannot find the AT
                     String msg = I18n.err( I18n.ERR_04326, oid, mustAttributeTypeName );
 
-                    Throwable error = new LdapProtocolErrorException( msg );
+                    Throwable error = new LdapSchemaException( LdapSchemaExceptionCodes.OC_NONEXISTENT_MUST_AT,
+                        this, msg );
                     errors.add( error );
                     break;
                 }

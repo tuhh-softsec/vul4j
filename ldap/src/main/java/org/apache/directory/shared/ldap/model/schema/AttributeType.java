@@ -26,9 +26,8 @@ import java.util.Set;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
-import org.apache.directory.shared.ldap.model.exception.LdapProtocolErrorException;
-import org.apache.directory.shared.ldap.model.exception.LdapSchemaViolationException;
-import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
+import org.apache.directory.shared.ldap.model.exception.LdapSchemaException;
+import org.apache.directory.shared.ldap.model.exception.LdapSchemaExceptionCodes;
 import org.apache.directory.shared.ldap.model.schema.registries.AttributeTypeRegistry;
 import org.apache.directory.shared.ldap.model.schema.registries.Registries;
 import org.slf4j.Logger;
@@ -225,7 +224,8 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
                 // Not allowed.
                 String msg = I18n.err( I18n.ERR_04303, superiorOid, getName() );
 
-                Throwable error = new LdapProtocolErrorException( msg );
+                Throwable error = new LdapSchemaException( LdapSchemaExceptionCodes.AT_NONEXISTENT_SUPERIOR,
+                    this, msg );
                 errors.add( error );
                 LOG.info( msg );
 
@@ -240,7 +240,9 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
                 {
                     String msg = I18n.err( I18n.ERR_04482_CANNOT_SUBTYPE_COLLECTIVE, currentSuperior, getName() );
 
-                    Throwable error = new LdapProtocolErrorException( msg );
+                    Throwable error = new LdapSchemaException(
+                        LdapSchemaExceptionCodes.AT_CANNOT_SUBTYPE_COLLECTIVE_AT,
+                        this, msg );
                     errors.add( error );
                     LOG.info( msg );
                     return false;
@@ -282,7 +284,8 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
                         // Not allowed.
                         String msg = I18n.err( I18n.ERR_04304, getName() );
 
-                        Throwable error = new LdapProtocolErrorException( msg );
+                        Throwable error = new LdapSchemaException( LdapSchemaExceptionCodes.AT_CYCLE_TYPE_HIERARCHY,
+                            this, msg );
                         errors.add( error );
                         LOG.info( msg );
                         isOk = false;
@@ -305,7 +308,8 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
                 // Not allowed.
                 String msg = I18n.err( I18n.ERR_04305, superiorOid, getName() );
 
-                Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, msg );
+                Throwable error = new LdapSchemaException( LdapSchemaExceptionCodes.AT_NONEXISTENT_SUPERIOR,
+                    this, msg );
                 errors.add( error );
                 LOG.info( msg );
 
@@ -339,7 +343,8 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
                 // Not allowed.
                 String msg = I18n.err( I18n.ERR_04306, syntaxOid, getName() );
 
-                Throwable error = new LdapProtocolErrorException( msg );
+                Throwable error = new LdapSchemaException( LdapSchemaExceptionCodes.AT_NONEXISTENT_SYNTAX,
+                    this, msg );
                 errors.add( error );
                 LOG.info( msg );
                 return;
@@ -355,7 +360,8 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
                 // Not allowed.
                 String msg = I18n.err( I18n.ERR_04306, syntaxOid, getName() );
 
-                Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, msg );
+                Throwable error = new LdapSchemaException( LdapSchemaExceptionCodes.AT_NONEXISTENT_SYNTAX,
+                    this, msg );
                 errors.add( error );
                 LOG.info( msg );
                 return;
@@ -374,7 +380,8 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
                 // Not allowed.
                 String msg = I18n.err( I18n.ERR_04307, getName() );
 
-                Throwable error = new LdapProtocolErrorException( msg );
+                Throwable error = new LdapSchemaException( LdapSchemaExceptionCodes.AT_SYNTAX_OR_SUPERIOR_REQUIRED,
+                    this, msg );
                 errors.add( error );
                 LOG.info( msg );
                 return;
@@ -402,7 +409,9 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
                 // Not allowed.
                 String msg = I18n.err( I18n.ERR_04308, equalityOid, getName() );
 
-                Throwable error = new LdapProtocolErrorException( msg );
+                Throwable error = new LdapSchemaException(
+                    LdapSchemaExceptionCodes.AT_NONEXISTENT_EQUALITY_MATCHING_RULE,
+                    this, msg );
                 errors.add( error );
                 LOG.info( msg );
                 return;
@@ -417,7 +426,9 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
                 // Not allowed.
                 String msg = I18n.err( I18n.ERR_04309, equalityOid, getName() );
 
-                Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, msg );
+                Throwable error = new LdapSchemaException(
+                    LdapSchemaExceptionCodes.AT_NONEXISTENT_EQUALITY_MATCHING_RULE,
+                    this, msg );
                 errors.add( error );
                 LOG.info( msg );
             }
@@ -452,7 +463,9 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
                 // Not allowed.
                 String msg = I18n.err( I18n.ERR_04310, orderingOid, getName() );
 
-                Throwable error = new LdapProtocolErrorException( msg );
+                Throwable error = new LdapSchemaException(
+                    LdapSchemaExceptionCodes.AT_NONEXISTENT_ORDERING_MATCHING_RULE,
+                    this, msg );
                 errors.add( error );
                 LOG.info( msg );
                 return;
@@ -467,7 +480,9 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
                 // Not allowed.
                 String msg = I18n.err( I18n.ERR_04311, orderingOid, getName() );
 
-                Throwable error = new LdapProtocolErrorException( msg );
+                Throwable error = new LdapSchemaException(
+                    LdapSchemaExceptionCodes.AT_NONEXISTENT_ORDERING_MATCHING_RULE,
+                    this, msg );
                 errors.add( error );
                 LOG.info( msg );
             }
@@ -503,7 +518,9 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
                 // Not allowed.
                 String msg = I18n.err( I18n.ERR_04312, substringOid, getName() );
 
-                Throwable error = new LdapProtocolErrorException( msg );
+                Throwable error = new LdapSchemaException(
+                    LdapSchemaExceptionCodes.AT_NONEXISTENT_SUBSTRING_MATCHING_RULE,
+                    this, msg );
                 errors.add( error );
                 LOG.info( msg );
                 return;
@@ -518,7 +535,9 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
                 // Not allowed.
                 String msg = I18n.err( I18n.ERR_04313, substringOid, getName() );
 
-                Throwable error = new LdapSchemaViolationException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, msg );
+                Throwable error = new LdapSchemaException(
+                    LdapSchemaExceptionCodes.AT_NONEXISTENT_SUBSTRING_MATCHING_RULE,
+                    this, msg );
                 errors.add( error );
                 LOG.info( msg );
                 return;
@@ -547,7 +566,8 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
             // This is an error
             String msg = I18n.err( I18n.ERR_04314, getName() );
 
-            Throwable error = new LdapProtocolErrorException( msg );
+            Throwable error = new LdapSchemaException( LdapSchemaExceptionCodes.AT_MUST_HAVE_SAME_USAGE_THAN_SUPERIOR,
+                this, msg );
             errors.add( error );
             LOG.info( msg );
             return;
@@ -559,7 +579,9 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
             // Cannot have a not user modifiable AT which is not an operational AT
             String msg = I18n.err( I18n.ERR_04315, getName() );
 
-            Throwable error = new LdapProtocolErrorException( msg );
+            Throwable error = new LdapSchemaException(
+                LdapSchemaExceptionCodes.AT_USER_APPLICATIONS_USAGE_MUST_BE_USER_MODIFIABLE,
+                this, msg );
             errors.add( error );
             LOG.info( msg );
         }
@@ -582,7 +604,9 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
             // An AttributeType which is collective must be a USER attributeType
             String msg = I18n.err( I18n.ERR_04316, getName() );
 
-            Throwable error = new LdapProtocolErrorException( msg );
+            Throwable error = new LdapSchemaException(
+                LdapSchemaExceptionCodes.AT_COLLECTIVE_MUST_HAVE_USER_APPLICATIONS_USAGE,
+                this, msg );
             errors.add( error );
             LOG.info( msg );
         }
@@ -592,7 +616,8 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
             // A collective attribute must be multi-valued
             String msg = I18n.err( I18n.ERR_04483_COLLECTIVE_NOT_MULTI_VALUED, getName() );
 
-            Throwable error = new LdapProtocolErrorException( msg );
+            Throwable error = new LdapSchemaException( LdapSchemaExceptionCodes.AT_COLLECTIVE_CANNOT_BE_SINGLE_VALUED,
+                this, msg );
             errors.add( error );
             LOG.info( msg );
         }
