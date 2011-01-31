@@ -232,8 +232,42 @@ final class RulesBinderImpl implements RulesBinder {
                 };
             }
 
+            /**
+             * 
+             */
             public NestedPropertiesBuilder setNestedProperties() {
-                return null;
+                return new NestedPropertiesBuilder() {
+
+                    private final Map<String, String> elementNames = new HashMap<String, String>();
+
+                    private boolean trimData = true;
+
+                    private boolean allowUnknownChildElements = false;
+
+                    public SetNestedPropertiesRule get() {
+                        return new SetNestedPropertiesRule(elementNames, trimData, allowUnknownChildElements);
+                    }
+
+                    public LinkedRuleBuilder then() {
+                        return mainBuilder;
+                    }
+
+                    public NestedPropertiesBuilder trimData(boolean trimData) {
+                        this.trimData = trimData;
+                        return this;
+                    }
+
+                    public NestedPropertiesBuilder addAlias(String elementName, String propertyName) {
+                        if (elementName == null) {
+                            addError("{forPattern(\"%s\").setNestedProperties().addAlias(String,String)} empty 'methodName' not allowed",
+                                    keyPattern);
+                        } else {
+                            this.elementNames.put(elementName, propertyName);
+                        }
+                        return this;
+                    }
+
+                };
             }
 
             public BeanPropertySetterBuilder setBeanProperty() {
