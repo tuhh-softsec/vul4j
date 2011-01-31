@@ -18,7 +18,9 @@
 package org.apache.commons.digester3;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.digester3.rulesbinder.BackToLinkedRuleBuilder;
 import org.apache.commons.digester3.rulesbinder.BeanPropertySetterBuilder;
@@ -172,8 +174,40 @@ final class RulesBinderImpl implements RulesBinder {
                 return null;
             }
 
+            /**
+             * 
+             */
             public SetPropertiesBuilder setProperties() {
-                return null;
+                return new SetPropertiesBuilder() {
+
+                    private final Map<String, String> aliases = new HashMap<String, String>();
+
+                    private boolean ignoreMissingProperty = true;
+
+                    public SetPropertiesRule get() {
+                        return new SetPropertiesRule(this.aliases, this.ignoreMissingProperty);
+                    }
+
+                    public LinkedRuleBuilder then() {
+                        return null;
+                    }
+
+                    public SetPropertiesBuilder ignoreMissingProperty(boolean ignoreMissingProperty) {
+                        this.ignoreMissingProperty = ignoreMissingProperty;
+                        return this;
+                    }
+
+                    public SetPropertiesBuilder addAlias(String attributeName, /* @Nullable */String propertyName) {
+                        if (attributeName == null) {
+                            addError("{forPattern(\"%s\").setProperties().addAlias(String,String)} empty 'methodName' not allowed",
+                                    keyPattern);
+                        } else {
+                            this.aliases.put(attributeName, propertyName);
+                        }
+                        return this;
+                    }
+
+                };
             }
 
             /**
