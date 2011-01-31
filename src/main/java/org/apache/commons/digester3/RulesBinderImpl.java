@@ -165,7 +165,8 @@ final class RulesBinderImpl implements RulesBinder {
                     }
 
                     public SetTopRule get() {
-                        return new SetTopRule(this.getMethodName(), this.getParamType(), this.isUseExactMatch());
+                        return setNamespaceAndReturn(
+                                new SetTopRule(this.getMethodName(), this.getParamType(), this.isUseExactMatch()));
                     }
 
                 });
@@ -187,7 +188,8 @@ final class RulesBinderImpl implements RulesBinder {
                     }
 
                     public SetRootRule get() {
-                        return new SetRootRule(this.getMethodName(), this.getParamType(), this.isUseExactMatch());
+                        return setNamespaceAndReturn(
+                                new SetRootRule(this.getMethodName(), this.getParamType(), this.isUseExactMatch()));
                     }
 
                 });
@@ -208,7 +210,7 @@ final class RulesBinderImpl implements RulesBinder {
                     private boolean ignoreMissingProperty = true;
 
                     public SetPropertiesRule get() {
-                        return new SetPropertiesRule(this.aliases, this.ignoreMissingProperty);
+                        return setNamespaceAndReturn(new SetPropertiesRule(this.aliases, this.ignoreMissingProperty));
                     }
 
                     public LinkedRuleBuilder then() {
@@ -249,7 +251,8 @@ final class RulesBinderImpl implements RulesBinder {
                     }
 
                     public SetNextRule get() {
-                        return new SetNextRule(this.getMethodName(), this.getParamType(), this.isUseExactMatch());
+                        return setNamespaceAndReturn(
+                                new SetNextRule(this.getMethodName(), this.getParamType(), this.isUseExactMatch()));
                     }
 
                 });
@@ -268,7 +271,8 @@ final class RulesBinderImpl implements RulesBinder {
                     private boolean allowUnknownChildElements = false;
 
                     public SetNestedPropertiesRule get() {
-                        return new SetNestedPropertiesRule(elementNames, trimData, allowUnknownChildElements);
+                        return setNamespaceAndReturn(
+                                new SetNestedPropertiesRule(elementNames, trimData, allowUnknownChildElements));
                     }
 
                     public LinkedRuleBuilder then() {
@@ -302,7 +306,7 @@ final class RulesBinderImpl implements RulesBinder {
                     private String propertyName;
 
                     public BeanPropertySetterRule get() {
-                        return new BeanPropertySetterRule(this.propertyName);
+                        return setNamespaceAndReturn(new BeanPropertySetterRule(this.propertyName));
                     }
 
                     public LinkedRuleBuilder then() {
@@ -342,9 +346,7 @@ final class RulesBinderImpl implements RulesBinder {
                             return null;
                         }
 
-                        ObjectCreateRule rule = new ObjectCreateRule(this.className, this.attributeName);
-                        rule.setNamespaceURI(namespaceURI);
-                        return rule;
+                        return setNamespaceAndReturn(new ObjectCreateRule(this.className, this.attributeName));
                     }
 
                     public LinkedRuleBuilder then() {
@@ -418,9 +420,7 @@ final class RulesBinderImpl implements RulesBinder {
                     }
 
                     public R get() {
-                        R rule = provider.get();
-                        rule.setNamespaceURI(namespaceURI);
-                        return rule;
+                        return setNamespaceAndReturn(provider.get());
                     }
 
                 });
@@ -446,6 +446,18 @@ final class RulesBinderImpl implements RulesBinder {
                 providerLits.add(provider);
 
                 return provider;
+            }
+
+            /**
+             * Set the namespaceURI to the given rule and return it.
+             *
+             * @param <R> The rule type to apply the namespaceURI
+             * @param rule The rule to apply the namespaceURI
+             * @return  The rule type to apply the namespaceURI
+             */
+            private <R extends Rule> R setNamespaceAndReturn(R rule) {
+                rule.setNamespaceURI(namespaceURI);
+                return rule;
             }
 
         };
