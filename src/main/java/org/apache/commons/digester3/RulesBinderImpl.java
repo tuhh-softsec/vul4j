@@ -168,8 +168,48 @@ final class RulesBinderImpl implements RulesBinder {
                 };
             }
 
-            public ParamTypeBuilder<SetRootRule> setRoot(String methodName) {
-                return null;
+            /**
+             * 
+             */
+            public ParamTypeBuilder<SetRootRule> setRoot(final String methodName) {
+                if (methodName == null || methodName.length() == 0) {
+                    addError("{forPattern(\"%s\").setRoot(String)} empty 'methodName' not allowed", keyPattern);
+                }
+
+                return new ParamTypeBuilder<SetRootRule>() {
+
+                    private boolean useExactMatch = false;
+
+                    private String paramType;
+
+                    public LinkedRuleBuilder then() {
+                        return mainBuilder;
+                    }
+
+                    public ParamTypeBuilder<SetRootRule> useExactMatch(boolean useExactMatch) {
+                        this.useExactMatch = useExactMatch;
+                        return this;
+                    }
+
+                    public ParamTypeBuilder<SetRootRule> withParameterType(Class<?> paramType) {
+                        if (paramType == null) {
+                            addError("{forPattern(\"%s\").createObject().ofType(Class<?>)} NULL Java type not allowed",
+                                    keyPattern);
+                            return this;
+                        }
+                        return this.withParameterType(paramType.getName());
+                    }
+
+                    public ParamTypeBuilder<SetRootRule> withParameterType(String paramType) {
+                        this.paramType = paramType;
+                        return this;
+                    }
+
+                    public SetRootRule get() {
+                        return new SetRootRule(methodName, paramType, useExactMatch);
+                    }
+
+                };
             }
 
             public SetPropertyBuilder setProperty(String attributePropertyName) {
