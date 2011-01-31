@@ -32,6 +32,7 @@ import org.apache.directory.shared.ldap.codec.controls.CascadeFactory;
 import org.apache.directory.shared.ldap.codec.controls.ManageDsaITFactory;
 import org.apache.directory.shared.ldap.codec.search.controls.entryChange.EntryChangeFactory;
 import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedResultsFactory;
+import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearchFactory;
 import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesFactory;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.controls.BasicControl;
@@ -39,6 +40,7 @@ import org.apache.directory.shared.ldap.model.message.controls.Cascade;
 import org.apache.directory.shared.ldap.model.message.controls.EntryChange;
 import org.apache.directory.shared.ldap.model.message.controls.ManageDsaIT;
 import org.apache.directory.shared.ldap.model.message.controls.PagedResults;
+import org.apache.directory.shared.ldap.model.message.controls.PersistentSearch;
 import org.apache.directory.shared.ldap.model.message.controls.Subentries;
 import org.apache.mina.filter.codec.ProtocolCodecFactory;
 
@@ -67,20 +69,23 @@ public class DefaultLdapCodecService implements ILdapCodecService
      */
     private void loadStockControls()
     {
-        SubentriesFactory subentriesFactory = new SubentriesFactory( this );
-        controlFactories.put( Subentries.OID, subentriesFactory );
-
         CascadeFactory cascadeFactory = new CascadeFactory( this );
         controlFactories.put( Cascade.OID, cascadeFactory );
-        
-        ManageDsaITFactory manageDsaITFactory = new ManageDsaITFactory( this );
-        controlFactories.put( ManageDsaIT.OID, manageDsaITFactory );
         
         EntryChangeFactory entryChangeFactory = new EntryChangeFactory( this );
         controlFactories.put( EntryChange.OID, entryChangeFactory );
         
+        ManageDsaITFactory manageDsaITFactory = new ManageDsaITFactory( this );
+        controlFactories.put( ManageDsaIT.OID, manageDsaITFactory );
+        
         PagedResultsFactory pagedResultsFactory = new PagedResultsFactory( this );
         controlFactories.put( PagedResults.OID, pagedResultsFactory );
+        
+        PersistentSearchFactory persistentSearchFactory = new PersistentSearchFactory( this );
+        controlFactories.put( PersistentSearch.OID, persistentSearchFactory );
+
+        SubentriesFactory subentriesFactory = new SubentriesFactory( this );
+        controlFactories.put( Subentries.OID, subentriesFactory );
     }
     
 
