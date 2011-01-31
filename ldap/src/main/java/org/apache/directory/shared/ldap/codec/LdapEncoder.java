@@ -45,7 +45,7 @@ import org.apache.directory.shared.util.Strings;
 public class LdapEncoder
 {
     /** The LdapCodecService */
-    private ILdapCodecService codec;
+    private ILdapCodecService codec = new DefaultLdapCodecService();
     
     
     /**
