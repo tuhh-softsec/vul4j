@@ -110,6 +110,8 @@ final class RulesBinderImpl implements RulesBinder {
 
         return new LinkedRuleBuilder() {
 
+            private String namespaceURI;
+
             private LinkedRuleBuilder reportNotNull(String parameterName) {
                 String methodName = new Exception().getStackTrace()[1].getMethodName();
                 RulesBinderImpl.this.addError("{%s} Parameter \"%s\" for pattern \"%s\" must be NOT null",
@@ -119,8 +121,9 @@ final class RulesBinderImpl implements RulesBinder {
                 return this;
             }
 
-            public LinkedRuleBuilder withNamespaceURI(String namespaceURI) {
-                return null;
+            public LinkedRuleBuilder withNamespaceURI(/* @Nullable */ String namespaceURI) {
+                this.namespaceURI = namespaceURI;
+                return this;
             }
 
             public ParamTypeBuilder<SetTopRule> setTop(String methodName) {
