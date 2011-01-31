@@ -157,7 +157,7 @@ final class RulesBinderImpl implements RulesBinder {
                     addError("{forPattern(\"%s\").setTop(String)} empty 'methodName' not allowed", keyPattern);
                 }
 
-                return new AbstractParamTypeBuilder<SetTopRule>(keyPattern, methodName, RulesBinderImpl.this, this) {
+                return this.addProvider(new AbstractParamTypeBuilder<SetTopRule>(keyPattern, methodName, RulesBinderImpl.this, this) {
 
                     @Override
                     protected String getCalledMethodName() {
@@ -168,7 +168,7 @@ final class RulesBinderImpl implements RulesBinder {
                         return new SetTopRule(this.getMethodName(), this.getParamType(), this.isUseExactMatch());
                     }
 
-                };
+                });
             }
 
             /**
@@ -179,7 +179,7 @@ final class RulesBinderImpl implements RulesBinder {
                     addError("{forPattern(\"%s\").setRoot(String)} empty 'methodName' not allowed", keyPattern);
                 }
 
-                return new AbstractParamTypeBuilder<SetRootRule>(keyPattern, methodName, RulesBinderImpl.this, this) {
+                return this.addProvider(new AbstractParamTypeBuilder<SetRootRule>(keyPattern, methodName, RulesBinderImpl.this, this) {
 
                     @Override
                     protected String getCalledMethodName() {
@@ -190,7 +190,7 @@ final class RulesBinderImpl implements RulesBinder {
                         return new SetRootRule(this.getMethodName(), this.getParamType(), this.isUseExactMatch());
                     }
 
-                };
+                });
             }
 
             public SetPropertyBuilder setProperty(String attributePropertyName) {
@@ -201,7 +201,7 @@ final class RulesBinderImpl implements RulesBinder {
              * 
              */
             public SetPropertiesBuilder setProperties() {
-                return new SetPropertiesBuilder() {
+                return this.addProvider(new SetPropertiesBuilder() {
 
                     private final Map<String, String> aliases = new HashMap<String, String>();
 
@@ -230,7 +230,7 @@ final class RulesBinderImpl implements RulesBinder {
                         return this;
                     }
 
-                };
+                });
             }
 
             /**
@@ -241,7 +241,7 @@ final class RulesBinderImpl implements RulesBinder {
                     addError("{forPattern(\"%s\").setNext(String)} empty 'methodName' not allowed", keyPattern);
                 }
 
-                return new AbstractParamTypeBuilder<SetNextRule>(keyPattern, methodName, RulesBinderImpl.this, this) {
+                return this.addProvider(new AbstractParamTypeBuilder<SetNextRule>(keyPattern, methodName, RulesBinderImpl.this, this) {
 
                     @Override
                     protected String getCalledMethodName() {
@@ -252,14 +252,14 @@ final class RulesBinderImpl implements RulesBinder {
                         return new SetNextRule(this.getMethodName(), this.getParamType(), this.isUseExactMatch());
                     }
 
-                };
+                });
             }
 
             /**
              * 
              */
             public NestedPropertiesBuilder setNestedProperties() {
-                return new NestedPropertiesBuilder() {
+                return this.addProvider(new NestedPropertiesBuilder() {
 
                     private final Map<String, String> elementNames = new HashMap<String, String>();
 
@@ -290,14 +290,14 @@ final class RulesBinderImpl implements RulesBinder {
                         return this;
                     }
 
-                };
+                });
             }
 
             /**
              * 
              */
             public BeanPropertySetterBuilder setBeanProperty() {
-                return new BeanPropertySetterBuilder() {
+                return this.addProvider(new BeanPropertySetterBuilder() {
 
                     private String propertyName;
 
@@ -314,7 +314,7 @@ final class RulesBinderImpl implements RulesBinder {
                         return this;
                     }
 
-                };
+                });
             }
 
             public <T> ObjectParamBuilder objectParam(T paramObj) {
@@ -329,7 +329,7 @@ final class RulesBinderImpl implements RulesBinder {
              * 
              */
             public ObjectCreateBuilder createObject() {
-                return new ObjectCreateBuilder() {
+                return this.addProvider(new ObjectCreateBuilder() {
 
                     private String className;
 
@@ -371,7 +371,7 @@ final class RulesBinderImpl implements RulesBinder {
                         return this;
                     }
 
-                };
+                });
             }
 
             public PathCallParamBuilder callParamPath() {
@@ -411,7 +411,7 @@ final class RulesBinderImpl implements RulesBinder {
                     addError("{forPattern(\"%s\").addRuleCreatedBy()} null rule not valid", keyPattern);
                 }
 
-                return new BackToLinkedRuleBuilder<R>() {
+                return this.addProvider(new BackToLinkedRuleBuilder<R>() {
 
                     public LinkedRuleBuilder then() {
                         return mainBuilder;
@@ -423,7 +423,7 @@ final class RulesBinderImpl implements RulesBinder {
                         return rule;
                     }
 
-                };
+                });
             }
 
             /**
@@ -433,7 +433,7 @@ final class RulesBinderImpl implements RulesBinder {
              * @param provider The provider has to be stored in the data structure
              * @return The provider itself has to be stored in the data structure
              */
-            private <R extends Rule> RuleProvider<R> addProvider(RuleProvider<R> provider) {
+            private <R extends Rule, RP extends RuleProvider<R>> RP addProvider(RP provider) {
                 if (keyPattern == null) {
                     return provider;
                 }
