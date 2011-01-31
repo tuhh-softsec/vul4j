@@ -36,6 +36,7 @@ import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.dsmlv2.AbstractResponseTest;
 import org.apache.directory.shared.dsmlv2.Dsmlv2ResponseParser;
 import org.apache.directory.shared.dsmlv2.reponse.SearchResponse;
+import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.model.entry.Value;
@@ -87,7 +88,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
         assertNotNull( control );
         assertTrue( control.isCritical() );
         assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
-        assertEquals( "Some text", Strings.utf8ToString((byte[]) getCodec().decorate( control ).getValue()) );
+        assertEquals( "Some text", Strings.utf8ToString((byte[]) ((ControlDecorator<Control>)control).getValue()) );
     }
 
 
@@ -123,7 +124,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
         assertNotNull( control );
         assertTrue( control.isCritical() );
         assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
-        assertFalse( getCodec().decorate( control ).hasValue() );
+        assertFalse( ((ControlDecorator<Control>)control).hasValue() );
     }
 
 
@@ -159,7 +160,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
         assertNotNull( control );
         assertFalse( control.isCritical() );
         assertEquals( "1.2.840.113556.1.4.789", control.getOid() );
-        assertEquals( "Some other text", Strings.utf8ToString((byte[]) getCodec().decorate( control ).getValue()) );
+        assertEquals( "Some other text", Strings.utf8ToString((byte[]) ((ControlDecorator<Control>)control).getValue()) );
     }
 
 
@@ -195,7 +196,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
         assertNotNull( control );
         assertTrue( control.isCritical() );
         assertEquals( "1.2.840.113556.1.4.456", control.getOid() );
-        assertFalse( getCodec().decorate( control ).hasValue() );
+        assertFalse( ((ControlDecorator<Control>)control).hasValue() );
     }
 
 
