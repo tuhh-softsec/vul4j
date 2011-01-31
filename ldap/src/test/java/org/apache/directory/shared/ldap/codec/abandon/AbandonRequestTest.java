@@ -78,27 +78,27 @@ public class AbandonRequestTest
                 0x02, 0x01, 0x03, // messageID MessageID
                 0x50, 0x01, 0x02, // CHOICE { ..., abandonRequest
                 // AbandonRequest,...
-                  ( byte ) 0xA0, 0x5A, // controls [0] Controls OPTIONAL }
-                    0x30, 0x1A, // Control ::= SEQUENCE {
-                                // controlType LDAPOID,
-                      0x04, 0x0D, '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '1',
-                                  // criticality BOOLEAN DEFAULT FALSE,
-                      0x01, 0x01, ( byte ) 0xFF,
-                                  // controlValue OCTET STRING OPTIONAL }
-                      0x04, 0x06, 'a', 'b', 'c', 'd', 'e', 'f', 
-                    0x30, 0x17, // Control ::= SEQUENCE {
-                                // controlType LDAPOID,
-                      0x04, 0x0D, '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '2',
-                                  // controlValue OCTET STRING OPTIONAL }
-                      0x04, 0x06, 'g', 'h', 'i', 'j', 'k', 'l', 
-                    0x30, 0x12, // Control ::= SEQUENCE {
-                                // controlType LDAPOID,
-                      0x04, 0x0D, '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '3',
-                                  // criticality BOOLEAN DEFAULT FALSE }
-                      0x01, 0x01, ( byte ) 0xFF, 
-                    0x30, 0x0F, // Control ::= SEQUENCE {
-                                // controlType LDAPOID}
-                      0x04, 0x0D, '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '4' } );
+                ( byte ) 0xA0, 0x5A, // controls [0] Controls OPTIONAL }
+                  0x30, 0x1A, // Control ::= SEQUENCE {
+                              // controlType LDAPOID,
+                    0x04, 0x0D, '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '1',
+                                // criticality BOOLEAN DEFAULT FALSE,
+                    0x01, 0x01, ( byte ) 0xFF,
+                                // controlValue OCTET STRING OPTIONAL }
+                    0x04, 0x06, 'a', 'b', 'c', 'd', 'e', 'f', 
+                  0x30, 0x17, // Control ::= SEQUENCE {
+                              // controlType LDAPOID,
+                    0x04, 0x0D, '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '2',
+                                // controlValue OCTET STRING OPTIONAL }
+                    0x04, 0x06, 'g', 'h', 'i', 'j', 'k', 'l', 
+                  0x30, 0x12, // Control ::= SEQUENCE {
+                              // controlType LDAPOID,
+                    0x04, 0x0D, '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '3',
+                                // criticality BOOLEAN DEFAULT FALSE }
+                    0x01, 0x01, ( byte ) 0xFF, 
+                  0x30, 0x0F, // Control ::= SEQUENCE {
+                              // controlType LDAPOID}
+                    0x04, 0x0D, '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '4' } );
 
         stream.flip();
 

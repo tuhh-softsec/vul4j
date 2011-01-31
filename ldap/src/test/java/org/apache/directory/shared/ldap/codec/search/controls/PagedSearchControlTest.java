@@ -56,7 +56,7 @@ public class PagedSearchControlTest
     @Test
     public void testEncodePagedSearchControl() throws Exception
     {
-        ByteBuffer bb = ByteBuffer.allocate( 0x2A );
+        ByteBuffer bb = ByteBuffer.allocate( 0x0B );
         bb.put( new byte[]
             { 
                 0x30, 0x09,                        // realSearchControlValue ::= SEQUENCE {
@@ -75,28 +75,13 @@ public class PagedSearchControlTest
             
         bb.flip();
 
-        ByteBuffer buffer = ByteBuffer.allocate( 0x27 );
-        buffer.put( new byte[]
-            { 
-              0x30, 0x25,                            // Control
-                0x04, 0x16,                          // OID (PagedSearch)
-                  '1', '.', '2', '.', '8', '4', '0', '.', 
-                  '1', '1', '3', '5', '5', '6', '.', '1', 
-                  '.', '4', '.', '3', '1', '9',
-                0x04, 0x0B,
-                  0x30, 0x09,                        // realSearchControlValue ::= SEQUENCE {
-                    0x02, 0x01, 0x20,                // size INTEGER,
-                    0x04, 0x04, 't', 'e', 's', 't'   // cookie OCTET STRING,
-            } );
-        buffer.flip();
-
         PagedResultsDecorator ctrl = new PagedResultsDecorator( codec );
         ctrl.setSize( 32 );
         ctrl.setCookie( Strings.getBytesUtf8("test") );
 
-        bb = ctrl.encode( ByteBuffer.allocate( ctrl.computeLength() ) );
-        String decoded = Strings.dumpBytes(bb.array());
-        String expected = Strings.dumpBytes(buffer.array());
+        ByteBuffer buffer = ctrl.encode( ByteBuffer.allocate( ctrl.computeLength() ) );
+        String decoded = Strings.dumpBytes( buffer.array() );
+        String expected = Strings.dumpBytes( bb.array() );
         assertEquals( expected, decoded );
     }
     
@@ -186,28 +171,13 @@ public class PagedSearchControlTest
         bb.flip();
 
 
-        ByteBuffer buffer = ByteBuffer.allocate( 0x27 );
-        buffer.put( new byte[]
-            { 
-              0x30, 0x25,                            // Control
-                0x04, 0x16,                          // OID (PagedSearch)
-                  '1', '.', '2', '.', '8', '4', '0', '.', 
-                  '1', '1', '3', '5', '5', '6', '.', '1', 
-                  '.', '4', '.', '3', '1', '9',
-                0x04, 0x0B,
-                  0x30, 0x09,                        // realSearchControlValue ::= SEQUENCE {
-                    0x02, 0x01, (byte)0xFF,          // size INTEGER,
-                    0x04, 0x04, 't', 'e', 's', 't'   // cookie OCTET STRING,
-            } );
-        buffer.flip();
-
         PagedResultsDecorator ctrl = new PagedResultsDecorator( codec );
         ctrl.setSize( -1 );
         ctrl.setCookie( Strings.getBytesUtf8("test") );
 
-        bb = ctrl.encode( ByteBuffer.allocate( ctrl.computeLength() ) );
-        String decoded = Strings.dumpBytes(bb.array());
-        String expected = Strings.dumpBytes(buffer.array());
+        ByteBuffer buffer = ctrl.encode( ByteBuffer.allocate( ctrl.computeLength() ) );
+        String decoded = Strings.dumpBytes( buffer.array() );
+        String expected = Strings.dumpBytes( bb.array() );
         assertEquals( expected, decoded );
     }
     
@@ -255,28 +225,13 @@ public class PagedSearchControlTest
         assertEquals( 32, pagedSearch.getSize() );
         assertNull( pagedSearch.getCookie() );
             
-        ByteBuffer buffer = ByteBuffer.allocate( 0x23 );
-        buffer.put( new byte[]
-            { 
-              0x30, 0x21,                            // Control
-                0x04, 0x16,                          // OID (PagedSearch)
-                  '1', '.', '2', '.', '8', '4', '0', '.', 
-                  '1', '1', '3', '5', '5', '6', '.', '1', 
-                  '.', '4', '.', '3', '1', '9',
-                0x04, 0x07,
-                  0x30, 0x05,                        // realSearchControlValue ::= SEQUENCE {
-                    0x02, 0x01, 0x20,                // size INTEGER,
-                    0x04, 0x00                       // cookie OCTET STRING,
-            } );
-        buffer.flip();
-
         PagedResultsDecorator ctrl = new PagedResultsDecorator( codec );
         ctrl.setSize( 32 );
         ctrl.setCookie( null );
 
-        bb = ctrl.encode( ByteBuffer.allocate( ctrl.computeLength() ) );
-        String decoded = Strings.dumpBytes(bb.array());
-        String expected = Strings.dumpBytes(buffer.array());
+        ByteBuffer buffer = ctrl.encode( ByteBuffer.allocate( ctrl.computeLength() ) );
+        String decoded = Strings.dumpBytes( buffer.array() );
+        String expected = Strings.dumpBytes( bb.array() );
         assertEquals( expected, decoded );
     }
 }

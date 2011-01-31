@@ -63,24 +63,8 @@ public class PasswordPolicyResponseControlTest
         assertEquals( 1, passwordPolicyResponse.getTimeBeforeExpiration() );
         assertEquals( 1, passwordPolicyResponse.getPasswordPolicyError().getValue() );
         
-        ByteBuffer buffer = ByteBuffer.allocate( 0x29 );
-        buffer.put( new byte[]
-               {
-                 0x30, 0x27,
-                  0x04, 0x19,
-                   '1','.', '3', '.', '6', '.', '1', '.', '4',
-                   '.', '1', '.', '4', '2', '.', '2', '.', '2',
-                   '7', '.', '8', '.', '5', '.', '1',
-                   0x04, 0x0A,
-                    0x30, 0x08,
-                     (byte)0xA0, 0x03,         // timeBeforeExpiration
-                            (byte)0x80, 0x01, 0x01, 
-                     (byte)0x81, 0x01, 0x01   // ppolicyError
-               } );
-        buffer.flip();
-        
         ByteBuffer encoded = ((PasswordPolicyResponseDecorator)passwordPolicyResponse).encode( ByteBuffer.allocate( ((PasswordPolicyResponseDecorator)passwordPolicyResponse).computeLength() ) );
-        assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
+        assertEquals( Strings.dumpBytes( bb.array() ), Strings.dumpBytes( encoded.array() ) );
     }
     
 
@@ -106,24 +90,8 @@ public class PasswordPolicyResponseControlTest
         assertEquals( 1, passwordPolicyResponse.getGraceAuthNsRemaining() );
         assertEquals( 1, passwordPolicyResponse.getPasswordPolicyError().getValue() );
         
-        ByteBuffer buffer = ByteBuffer.allocate( 0x29 );
-        buffer.put( new byte[]
-               {
-                 0x30, 0x27,
-                  0x04, 0x19,
-                   '1','.', '3', '.', '6', '.', '1', '.', '4',
-                   '.', '1', '.', '4', '2', '.', '2', '.', '2',
-                   '7', '.', '8', '.', '5', '.', '1',
-                   0x04, 0x0A,
-                     0x30, 0x08,
-                       (byte)0xA0, 0x03,           // warning
-                         (byte)0x81, 0x01, 0x01,   // graceAuthNsRemaining
-                       (byte)0x81, 0x01, 0x01      // error
-               } );
-        buffer.flip();
-        
         ByteBuffer encoded = ((PasswordPolicyResponseDecorator)passwordPolicyResponse).encode( ByteBuffer.allocate( ((PasswordPolicyResponseDecorator)passwordPolicyResponse).computeLength() ) );
-        assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
+        assertEquals( Strings.dumpBytes( bb.array() ), Strings.dumpBytes( encoded.array())  );
     }
 
     
@@ -147,23 +115,8 @@ public class PasswordPolicyResponseControlTest
 
         assertEquals( 1, passwordPolicyResponse.getTimeBeforeExpiration() );
         
-        ByteBuffer buffer = ByteBuffer.allocate( 0x26 );
-        buffer.put( new byte[]
-               {
-                 0x30, 0x24,
-                  0x04, 0x19,
-                   '1','.', '3', '.', '6', '.', '1', '.', '4',
-                   '.', '1', '.', '4', '2', '.', '2', '.', '2',
-                   '7', '.', '8', '.', '5', '.', '1',
-                   0x04, 0x07,
-                    0x30, 0x05,
-                     (byte)0xA0, 0x03,
-                            (byte)0x80, 0x01, 0x01  // timeBeforeExpiration
-               } );
-        buffer.flip();
-        
         ByteBuffer encoded = ((PasswordPolicyResponseDecorator)passwordPolicyResponse).encode( ByteBuffer.allocate( ((PasswordPolicyResponseDecorator)passwordPolicyResponse).computeLength() ) );
-        assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
+        assertEquals( Strings.dumpBytes( bb.array() ), Strings.dumpBytes( encoded.array() ) );
     }
     
 
@@ -187,23 +140,8 @@ public class PasswordPolicyResponseControlTest
 
         assertEquals( 1, passwordPolicyResponse.getGraceAuthNsRemaining() );
         
-        ByteBuffer buffer = ByteBuffer.allocate( 0x26 );
-        buffer.put( new byte[]
-               {
-                 0x30, 0x24,
-                  0x04, 0x19,
-                   '1','.', '3', '.', '6', '.', '1', '.', '4',
-                   '.', '1', '.', '4', '2', '.', '2', '.', '2',
-                   '7', '.', '8', '.', '5', '.', '1',
-                   0x04, 0x07,
-                    0x30, 0x05,
-                     (byte)0xA0, 0x03,
-                          (byte)0x81, 0x01, 0x01  // graceAuthNsRemaining
-               } );
-        buffer.flip();
-        
         ByteBuffer encoded = ((PasswordPolicyResponseDecorator)passwordPolicyResponse).encode( ByteBuffer.allocate( ((PasswordPolicyResponseDecorator)passwordPolicyResponse).computeLength() ) );
-        assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
+        assertEquals( Strings.dumpBytes( bb.array() ), Strings.dumpBytes( encoded.array() ) );
     }
     
     
@@ -226,22 +164,8 @@ public class PasswordPolicyResponseControlTest
         
         assertEquals( 1, passwordPolicyResponse.getPasswordPolicyError().getValue() );
         
-        ByteBuffer buffer = ByteBuffer.allocate( 0x24 );
-        buffer.put( new byte[]
-               {
-                 0x30, 0x22,
-                  0x04, 0x19,
-                   '1','.', '3', '.', '6', '.', '1', '.', '4',
-                   '.', '1', '.', '4', '2', '.', '2', '.', '2',
-                   '7', '.', '8', '.', '5', '.', '1',
-                   0x04, 0x05,
-                     0x30, 0x03,
-                      (byte)0x81, 0x01, 0x01  // error
-               } );
-        buffer.flip();
-        
         ByteBuffer encoded = ((PasswordPolicyResponseDecorator)passwordPolicyResponse).encode( ByteBuffer.allocate( ((PasswordPolicyResponseDecorator)passwordPolicyResponse).computeLength() ) );
-        assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
+        assertEquals( Strings.dumpBytes( bb.array() ), Strings.dumpBytes( encoded.array() ) );
     }
 
     
@@ -263,18 +187,7 @@ public class PasswordPolicyResponseControlTest
         
         assertNotNull( passwordPolicyResponse );
         
-        ByteBuffer buffer = ByteBuffer.allocate( 0x1D );
-        buffer.put( new byte[]
-               {
-                 0x30, 0x1B,
-                   0x04, 0x19,
-                     '1','.', '3', '.', '6', '.', '1', '.', '4',
-                     '.', '1', '.', '4', '2', '.', '2', '.', '2',
-                     '7', '.', '8', '.', '5', '.', '1',
-               } );
-        buffer.flip();
-        
         ByteBuffer encoded = ((PasswordPolicyResponseDecorator)passwordPolicyResponse).encode( ByteBuffer.allocate( ((PasswordPolicyResponseDecorator)passwordPolicyResponse).computeLength() ) );
-        assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
+        assertEquals( "", Strings.dumpBytes( encoded.array() ) );
     }
 }

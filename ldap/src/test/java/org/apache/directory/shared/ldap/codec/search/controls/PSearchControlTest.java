@@ -56,15 +56,9 @@ public class PSearchControlTest
     @Test
     public void testEncodePSearchControl() throws Exception
     {
-        ByteBuffer bb = ByteBuffer.allocate( 0x28 );
+        ByteBuffer bb = ByteBuffer.allocate( 0x0B );
         bb.put( new byte[]
             { 
-            0x30, 0x26,                            // Control
-              0x04, 0x17,                          // OID (SyncRequestValue)
-                '2', '.', '1', '6', '.', '8', '4', '0', 
-                '.', '1', '.', '1', '1', '3', '7', '3', 
-                '0', '.', '3', '.', '4', '.', '3',
-              0x04, 0x0B,
                 0x30, 0x09,           // PersistentSearch ::= SEQUENCE {
                   0x02, 0x01, 0x01,   // changeTypes INTEGER,
                   0x01, 0x01, 0x00,   // changesOnly BOOLEAN,

@@ -77,25 +77,9 @@ public class SyncDoneValueControlTest
         // test encoding
         try
         {
-            ByteBuffer buffer = ByteBuffer.allocate( 0x29 );
-            buffer.put( new byte[]
-                { 
-                0x30, 0x27,                            // Control
-                  0x04, 0x18,                          // OID (SyncRequestValue)
-                    '1', '.', '3', '.', '6', '.', '1', '.', 
-                    '4', '.', '1', '.', '4', '2', '0', '3', 
-                    '.', '1', '.', '9', '.', '1', '.', '3',
-                  0x04, 0x0B,
-                    0x30, 0x09, 
-                      0x04, 0x04, 'x', 'k', 'c', 'd',  // the cookie 
-                      0x01, 0x01, ( byte ) 0xFF        // refreshDeletes flag TRUE
-                } );
-
-            buffer.flip();
-
-            bb = ((SyncDoneValueDecorator)control).encode( ByteBuffer.allocate( ((SyncDoneValueDecorator)control).computeLength() ) );
-            String expected = Strings.dumpBytes(buffer.array());
-            String decoded = Strings.dumpBytes(bb.array());
+            ByteBuffer buffer = ((SyncDoneValueDecorator)control).encode( ByteBuffer.allocate( ((SyncDoneValueDecorator)control).computeLength() ) );
+            String expected = Strings.dumpBytes( bb.array() );
+            String decoded = Strings.dumpBytes( buffer.array() );
             assertEquals( expected, decoded );
         }
         catch( EncoderException e )
@@ -114,7 +98,7 @@ public class SyncDoneValueControlTest
             { 
               0x30, 0x03, 
               // null cookie
-                0x01, 0x01, 0x10 // refreshDeletes flag TRUE
+                0x01, 0x01, (byte)0xFF // refreshDeletes flag TRUE
             } );
 
         bb.flip();
@@ -129,24 +113,9 @@ public class SyncDoneValueControlTest
         // test encoding
         try
         {
-            ByteBuffer buffer = ByteBuffer.allocate( 0x23 );
-            buffer.put( new byte[]
-                { 
-                0x30, 0x21,                            // Control
-                  0x04, 0x18,                          // OID (SyncRequestValue)
-                    '1', '.', '3', '.', '6', '.', '1', '.', 
-                    '4', '.', '1', '.', '4', '2', '0', '3', 
-                    '.', '1', '.', '9', '.', '1', '.', '3',
-                  0x04, 0x05,
-                    0x30, 0x03, 
-                      0x01, 0x01, ( byte ) 0xFF        // refreshDeletes flag TRUE
-                } );
-
-            buffer.flip();
-
-            bb = ((SyncDoneValueDecorator)control).encode( ByteBuffer.allocate( ((SyncDoneValueDecorator)control).computeLength() ) );
-            String expected = Strings.dumpBytes(buffer.array());
-            String decoded = Strings.dumpBytes(bb.array());
+            ByteBuffer buffer = ((SyncDoneValueDecorator)control).encode( ByteBuffer.allocate( ((SyncDoneValueDecorator)control).computeLength() ) );
+            String expected = Strings.dumpBytes( bb.array() );
+            String decoded = Strings.dumpBytes( buffer.array() );
             assertEquals( expected, decoded );
         }
         catch( EncoderException e )
@@ -201,24 +170,9 @@ public class SyncDoneValueControlTest
         // test encoding
         try
         {
-            ByteBuffer buffer = ByteBuffer.allocate( 0x20 );
-            buffer.put( new byte[]
-                { 
-                0x30, 0x1E,                            // Control
-                  0x04, 0x18,                          // OID (SyncRequestValue)
-                    '1', '.', '3', '.', '6', '.', '1', '.', 
-                    '4', '.', '1', '.', '4', '2', '0', '3', 
-                    '.', '1', '.', '9', '.', '1', '.', '3',
-                  0x04, 0x02,
-                    0x30, 0x00
-                } );
-
-            buffer.flip();
-
-            bb = ((SyncDoneValueDecorator)control).encode( ByteBuffer.allocate( ((SyncDoneValueDecorator)control).computeLength() ) );
-            String expected = Strings.dumpBytes(buffer.array());
-            String decoded = Strings.dumpBytes(bb.array());
-            assertEquals( expected, decoded );
+            ByteBuffer buffer = ((SyncDoneValueDecorator)control).encode( ByteBuffer.allocate( ((SyncDoneValueDecorator)control).computeLength() ) );
+            String decoded = Strings.dumpBytes( buffer.array() );
+            assertEquals( "0x30 0x00 ", decoded );
         }
         catch( Exception e )
         {

@@ -245,15 +245,9 @@ public class EntryChangeControlTest
     @Test
     public void testEncodeEntryChangeControl() throws Exception
     {
-        ByteBuffer bb = ByteBuffer.allocate( 0x2A );
+        ByteBuffer bb = ByteBuffer.allocate( 0x0D );
         bb.put( new byte[]
             { 
-            0x30, 0x28,                            // Control
-              0x04, 0x17,                          // OID (SyncRequestValue)
-                '2', '.', '1', '6', '.', '8', '4', '0', 
-                '.', '1', '.', '1', '1', '3', '7', '3', 
-                '0', '.', '3', '.', '4', '.', '7',
-              0x04, 0x0D,
                 0x30, 0x0B,                        // EntryChangeNotification ::= SEQUENCE {
                   0x0A, 0x01, 0x08,                //     changeType ENUMERATED {
                                                    //         modDN (8)
@@ -283,15 +277,9 @@ public class EntryChangeControlTest
     @Test
     public void testEncodeEntryChangeControlLong() throws Exception
     {
-        ByteBuffer bb = ByteBuffer.allocate( 0x30 );
+        ByteBuffer bb = ByteBuffer.allocate( 0x13 );
         bb.put( new byte[]
             { 
-            0x30, 0x2E,                            // Control
-              0x04, 0x17,                          // OID (SyncRequestValue)
-                '2', '.', '1', '6', '.', '8', '4', '0', 
-                '.', '1', '.', '1', '1', '3', '7', '3', 
-                '0', '.', '3', '.', '4', '.', '7',
-              0x04, 0x13,
                 0x30, 0x11,                        // EntryChangeNotification ::= SEQUENCE {
                   0x0A, 0x01, 0x08,                //     changeType ENUMERATED {
                                                    //         modDN (8)

@@ -29,18 +29,18 @@ import java.util.Map;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
+import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
-import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
 import org.apache.directory.shared.ldap.codec.ICodecControl;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.decorators.DeleteResponseDecorator;
+import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.DeleteResponse;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
-import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -189,34 +189,27 @@ public class DelResponseTest
 
         stream.put( new byte[]
             {
-                0x30,
-                0x48, // LDAPMessage ::=SEQUENCE {
-                0x02,
-                0x01,
-                0x01, // messageID MessageID
-                0x6B,
-                0x26, // CHOICE { ..., delResponse DelResponse, ...
-                // DelResponse ::= [APPLICATION 11] LDAPResult
-                0x0A,
-                0x01,
-                0x21, // LDAPResult ::= SEQUENCE {
-                // resultCode ENUMERATED {
-                // success (0), ...
-                // },
-                0x04,
-                0x1F, // matchedDN LDAPDN,
-                'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
-                'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o',
-                'm',
-                0x04,
-                0x00, // errorMessage
-                // LDAPString,
-                // referral [3] Referral OPTIONAL }
-                // }
-                ( byte ) 0xA0,
-                0x1B, // A control
-                0x30, 0x19, 0x04, 0x17, 0x32, 0x2E, 0x31, 0x36, 0x2E, 0x38, 0x34, 0x30, 0x2E, 0x31, 0x2E, 0x31, 0x31,
-                0x33, 0x37, 0x33, 0x30, 0x2E, 0x33, 0x2E, 0x34, 0x2E, 0x32
+                0x30, 0x48,               // LDAPMessage ::=SEQUENCE {
+                  0x02, 0x01, 0x01,       // messageID MessageID
+                  0x6B, 0x26,             // CHOICE { ..., delResponse DelResponse, ...
+                                          // DelResponse ::= [APPLICATION 11] LDAPResult
+                    0x0A, 0x01, 0x21,     // LDAPResult ::= SEQUENCE {
+                                          // resultCode ENUMERATED {
+                                          // success (0), ...
+                                          // },
+                    0x04, 0x1F,           // matchedDN LDAPDN,
+                  'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
+                  'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm',
+                    0x04, 0x00,           // errorMessage
+                                          // LDAPString,
+                                          // referral [3] Referral OPTIONAL }
+                                          // }
+                    ( byte ) 0xA0, 0x1B,  // A control
+                      0x30, 0x19, 
+                        0x04, 0x17, 
+                          0x32, 0x2E, 0x31, 0x36, 0x2E, 0x38, 0x34, 0x30, 
+                          0x2E, 0x31, 0x2E, 0x31, 0x31, 0x33, 0x37, 0x33, 
+                          0x30, 0x2E, 0x33, 0x2E, 0x34, 0x2E, 0x32
 
             } );
 

@@ -75,25 +75,8 @@ public class SyncModifyDnControlTest
         // Check the encoding
         try
         {
-
-            ByteBuffer buffer = ByteBuffer.allocate( 48 );
-            buffer.put( new byte[]
-                { 
-                  0x30, 0x2E,                            // Control
-                    0x04, 0x18,                          // OID (SuncStateValue)
-                      '1', '.', '3', '.', '6', '.', '1', '.', 
-                      '4', '.', '1', '.', '4', '2', '0', '3', 
-                      '.', '1', '.', '9', '.', '1', '.', '5',
-                     0x04, 0x12, 
-                     0x30, 0x10, 
-                      0x04, 0x07, 'u','i','d','=','j','i','m', //     entryDn entryDn
-                      ( byte )0x80, 0x05,                     //     move
-                      'o','u','=','d','c'         //     newSuperiorDn LDAPDN
-                } );
-            buffer.flip();
-
             ByteBuffer encoded = ((SyncModifyDnDecorator)syncmodDnControl).encode( ByteBuffer.allocate( ((SyncModifyDnDecorator)syncmodDnControl).computeLength() ) );
-            assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
+            assertEquals( Strings.dumpBytes( bb.array() ), Strings.dumpBytes(encoded.array()) );
         }
         catch ( EncoderException ee )
         {
@@ -127,26 +110,8 @@ public class SyncModifyDnControlTest
         // Check the encoding
         try
         {
-
-            ByteBuffer buffer = ByteBuffer.allocate( 53 );
-            buffer.put( new byte[]
-                { 
-                  0x30, 0x33,                            // Control
-                    0x04, 0x18,                          // OID (SuncStateValue)
-                      '1', '.', '3', '.', '6', '.', '1', '.', 
-                      '4', '.', '1', '.', '4', '2', '0', '3', 
-                      '.', '1', '.', '9', '.', '1', '.', '5',
-                      0x04, 0x17,
-                      0x30, 0x15,                                // SyncModifyDnControl ::= SEQUENCE {
-                      0x04, 0x07, 'u','i','d','=','j','i','m', //     entryDn LDAPDN
-                      ( byte )0x00A1, 0x0A,                    //     rename
-                        0x04, 0x05, 'u','i','d','=','j',       //     newRdn
-                        0x01, 0x01, ( byte ) 0xFF                       //     deleteOldRdn
-                } );
-            buffer.flip();
-
             ByteBuffer encoded = ((SyncModifyDnDecorator)syncmodDnControl).encode( ByteBuffer.allocate( ((SyncModifyDnDecorator)syncmodDnControl).computeLength() ) );
-            assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
+            assertEquals( Strings.dumpBytes( bb.array() ), Strings.dumpBytes(encoded.array()) );
                 }
         catch ( EncoderException ee )
         {
@@ -181,27 +146,8 @@ public class SyncModifyDnControlTest
         // Check the encoding
         try
         {
-
-            ByteBuffer buffer = ByteBuffer.allocate( 60 );
-            buffer.put( new byte[]
-                { 
-                  0x30, 0x3A,                            // Control
-                    0x04, 0x18,                          // OID (SuncStateValue)
-                      '1', '.', '3', '.', '6', '.', '1', '.', 
-                      '4', '.', '1', '.', '4', '2', '0', '3', 
-                      '.', '1', '.', '9', '.', '1', '.', '5',
-                      0x04, 0x1E,
-                      0x30, 0x1C,                                // SyncModifyDnControl ::= SEQUENCE {
-                      0x04, 0x07, 'u','i','d','=','j','i','m', //     entryDn LDAPDN
-                      ( byte )0x00A2, 0x11,                    //     rename
-                        0x04, 0x05, 'o','u','=','d','c',       //     newSuperiorDn
-                        0x04, 0x05, 'u','i','d','=','j',       //     newRdn
-                        0x01, 0x01, ( byte ) 0xFF                       //     deleteOldRdn
-                } );
-            buffer.flip();
-
             ByteBuffer encoded = ((SyncModifyDnDecorator)syncmodDnControl).encode( ByteBuffer.allocate( ((SyncModifyDnDecorator)syncmodDnControl).computeLength() ) );
-            assertEquals( Strings.dumpBytes(buffer.array()), Strings.dumpBytes(encoded.array()) );
+            assertEquals( Strings.dumpBytes( bb.array() ), Strings.dumpBytes(encoded.array()) );
                 }
         catch ( EncoderException ee )
         {

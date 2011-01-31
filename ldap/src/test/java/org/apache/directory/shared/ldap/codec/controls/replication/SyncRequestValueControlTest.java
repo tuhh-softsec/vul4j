@@ -82,26 +82,20 @@ public class SyncRequestValueControlTest
         // Check the encoding
         try
         {
-            ByteBuffer buffer = ByteBuffer.allocate( 0x28 );
-            buffer.put( new byte[]
+            bb = ByteBuffer.allocate( 0x0A );
+            bb.put( new byte[]
                 { 
-                  0x30, 0x26,                            // Control
-                    0x04, 0x18,                          // OID (SyncRequestValue)
-                      '1', '.', '3', '.', '6', '.', '1', '.', 
-                      '4', '.', '1', '.', '4', '2', '0', '3',
-                      '.', '1', '.', '9', '.', '1', '.', '1',
-                    0x04, 0x0A,
-                      0x30, 0x08,                        // syncRequestValue ::= SEQUENCE {
-                        0x0A, 0x01, 0x01,                //     mode ENUMERATED {
-                                                         //         refreshOnly (1)
-                                                         //     }
-                        0x04, 0x03, 'a', 'b', 'c'        //     cookie syncCookie OPTIONAL,
+                0x30, 0x08,                     // syncRequestValue ::= SEQUENCE {
+                  0x0A, 0x01, 0x01,             //     mode ENUMERATED {
+                                                //         refreshOnly (1)
+                                                //     }
+                  0x04, 0x03, 'a', 'b', 'c'     //     cookie syncCookie OPTIONAL,
                 } );
-            buffer.flip();
+            bb.flip();
 
-            bb = ((SyncRequestValueDecorator)syncRequestValue).encode( ByteBuffer.allocate( ((SyncRequestValueDecorator)syncRequestValue).computeLength() ) );
-            String decoded = Strings.dumpBytes(bb.array());
-            String expected = Strings.dumpBytes(buffer.array());
+            ByteBuffer buffer = ((SyncRequestValueDecorator)syncRequestValue).encode( ByteBuffer.allocate( ((SyncRequestValueDecorator)syncRequestValue).computeLength() ) );
+            String decoded = Strings.dumpBytes( bb.array()) ;
+            String expected = Strings.dumpBytes( buffer.array() );
             assertEquals( expected, decoded );
         }
         catch ( EncoderException ee )
@@ -140,26 +134,20 @@ public class SyncRequestValueControlTest
         // Check the encoding
         try
         {
-            ByteBuffer buffer = ByteBuffer.allocate( 0x28 );
+            ByteBuffer buffer = ByteBuffer.allocate( 0x0A );
             buffer.put( new byte[]
                 { 
-                  0x30, 0x26,                            // Control
-                    0x04, 0x18,                          // OID (SyncRequestValue)
-                      '1', '.', '3', '.', '6', '.', '1', '.', 
-                      '4', '.', '1', '.', '4', '2', '0', '3',
-                      '.', '1', '.', '9', '.', '1', '.', '1',
-                    0x04, 0x0A,
-                      0x30, 0x08,                        // syncRequestValue ::= SEQUENCE {
-                        0x0A, 0x01, 0x03,                //     mode ENUMERATED {
-                                                         //         refreshAndPersist (3)
-                                                         //     }
-                        0x04, 0x03, 'a', 'b', 'c'        //     cookie syncCookie OPTIONAL,
+                  0x30, 0x08,                        // syncRequestValue ::= SEQUENCE {
+                    0x0A, 0x01, 0x03,                //     mode ENUMERATED {
+                                                     //         refreshAndPersist (3)
+                                                     //     }
+                    0x04, 0x03, 'a', 'b', 'c'        //     cookie syncCookie OPTIONAL,
                 } );
             buffer.flip();
 
             bb = ((SyncRequestValueDecorator)syncRequestValue).encode( ByteBuffer.allocate( ((SyncRequestValueDecorator)syncRequestValue).computeLength() ) );
-            String decoded = Strings.dumpBytes(bb.array());
-            String expected = Strings.dumpBytes(buffer.array());
+            String decoded = Strings.dumpBytes( bb.array() );
+            String expected = Strings.dumpBytes( buffer.array() );
             assertEquals( expected, decoded );
         }
         catch ( EncoderException ee )
@@ -197,25 +185,19 @@ public class SyncRequestValueControlTest
         // Check the encoding
         try
         {
-            ByteBuffer buffer = ByteBuffer.allocate( 0x23 );
-            buffer.put( new byte[]
+            bb = ByteBuffer.allocate( 0x05 );
+            bb.put( new byte[]
                 { 
-                  0x30, 0x21,                            // Control
-                    0x04, 0x18,                          // OID (SyncRequestValue)
-                      '1', '.', '3', '.', '6', '.', '1', '.', 
-                      '4', '.', '1', '.', '4', '2', '0', '3',
-                      '.', '1', '.', '9', '.', '1', '.', '1',
-                    0x04, 0x05,
-                      0x30, 0x03,                        // syncRequestValue ::= SEQUENCE {
-                        0x0A, 0x01, 0x03                 //     mode ENUMERATED {
-                                                         //         refreshAndPersist (3)
-                                                         //     }
+                0x30, 0x03,                     // syncRequestValue ::= SEQUENCE {
+                  0x0A, 0x01, 0x03              //     mode ENUMERATED {
+                                                //         refreshAndPersist (3)
+                                                //     }
                 } );
-            buffer.flip();
-
-            bb = ((SyncRequestValueDecorator)syncRequestValue).encode( ByteBuffer.allocate( ((SyncRequestValueDecorator)syncRequestValue).computeLength() ) );
-            String decoded = Strings.dumpBytes(bb.array());
-            String expected = Strings.dumpBytes(buffer.array());
+            bb.flip();
+            
+            ByteBuffer buffer = ((SyncRequestValueDecorator)syncRequestValue).encode( ByteBuffer.allocate( ((SyncRequestValueDecorator)syncRequestValue).computeLength() ) );
+            String decoded = Strings.dumpBytes( buffer.array() );
+            String expected = Strings.dumpBytes( bb.array() );
             assertEquals( expected, decoded );
         }
         catch ( EncoderException ee )
@@ -232,8 +214,8 @@ public class SyncRequestValueControlTest
     @Test
     public void testDecodeSyncRequestValueControlNoCookieReloadHintTrue() throws Exception
     {
-        ByteBuffer bb = ByteBuffer.allocate( 0x08 );
-        bb.put( new byte[]
+        ByteBuffer buffer = ByteBuffer.allocate( 0x08 );
+        buffer.put( new byte[]
             { 
             0x30, 0x06,                     // syncRequestValue ::= SEQUENCE {
               0x0A, 0x01, 0x03,             //     mode ENUMERATED {
@@ -241,11 +223,11 @@ public class SyncRequestValueControlTest
                                             //     }
               0x01, 0x01, (byte)0xFF        //     reloadHint BOOLEAN DEFAULT FALSE
             } );
-        bb.flip();
+        buffer.flip();
 
         SyncRequestValueDecorator decorator = new SyncRequestValueDecorator( codec );
         
-        ISyncRequestValue syncRequestValue = (ISyncRequestValue)decorator.decode( bb.array() );
+        ISyncRequestValue syncRequestValue = (ISyncRequestValue)decorator.decode( buffer.array() );
 
         assertEquals( SynchronizationModeEnum.REFRESH_AND_PERSIST, syncRequestValue.getMode() );
         assertNull( syncRequestValue.getCookie() );
@@ -254,26 +236,9 @@ public class SyncRequestValueControlTest
         // Check the encoding
         try
         {
-            ByteBuffer buffer = ByteBuffer.allocate( 0x26 );
-            buffer.put( new byte[]
-                { 
-                  0x30, 0x24,                            // Control
-                    0x04, 0x18,                          // OID (SyncRequestValue)
-                      '1', '.', '3', '.', '6', '.', '1', '.', 
-                      '4', '.', '1', '.', '4', '2', '0', '3',
-                      '.', '1', '.', '9', '.', '1', '.', '1',
-                    0x04, 0x08,
-                      0x30, 0x06,                        // syncRequestValue ::= SEQUENCE {
-                        0x0A, 0x01, 0x03,                //     mode ENUMERATED {
-                                                         //         refreshAndPersist (3)
-                                                         //     }
-                        0x01, 0x01, (byte)0xFF           //     reloadHint
-                } );
-            buffer.flip();
-
-            bb = ((SyncRequestValueDecorator)syncRequestValue).encode( ByteBuffer.allocate( ((SyncRequestValueDecorator)syncRequestValue).computeLength() ) );
-            String decoded = Strings.dumpBytes(bb.array());
-            String expected = Strings.dumpBytes(buffer.array());
+            ByteBuffer bb = ((SyncRequestValueDecorator)syncRequestValue).encode( ByteBuffer.allocate( ((SyncRequestValueDecorator)syncRequestValue).computeLength() ) );
+            String decoded = Strings.dumpBytes( bb.array() );
+            String expected = Strings.dumpBytes( buffer.array() );
             assertEquals( expected, decoded );
         }
         catch ( EncoderException ee )
@@ -311,25 +276,9 @@ public class SyncRequestValueControlTest
         // Check the encoding
         try
         {
-            ByteBuffer buffer = ByteBuffer.allocate( 0x23 );
-            buffer.put( new byte[]
-                { 
-                  0x30, 0x21,                            // Control
-                    0x04, 0x18,                          // OID (SyncRequestValue)
-                      '1', '.', '3', '.', '6', '.', '1', '.', 
-                      '4', '.', '1', '.', '4', '2', '0', '3',
-                      '.', '1', '.', '9', '.', '1', '.', '1',
-                    0x04, 0x05,
-                      0x30, 0x03,                        // syncRequestValue ::= SEQUENCE {
-                        0x0A, 0x01, 0x03,                //     mode ENUMERATED {
-                                                         //         refreshAndPersist (3)
-                                                         //     }
-                } );
-            buffer.flip();
-
-            bb = ((SyncRequestValueDecorator)syncRequestValue).encode( ByteBuffer.allocate( ((SyncRequestValueDecorator)syncRequestValue).computeLength() ) );
-            String decoded = Strings.dumpBytes(bb.array());
-            String expected = Strings.dumpBytes(buffer.array());
+            ByteBuffer buffer = ((SyncRequestValueDecorator)syncRequestValue).encode( ByteBuffer.allocate( ((SyncRequestValueDecorator)syncRequestValue).computeLength() ) );
+            String decoded = Strings.dumpBytes( buffer.array() );
+            String expected = Strings.dumpBytes( bb.array() );
             assertEquals( expected, decoded );
         }
         catch ( EncoderException ee )
@@ -345,7 +294,7 @@ public class SyncRequestValueControlTest
     @Test
     public void testDecodeSyncRequestValueControlNoReloadHintSuccess() throws Exception
     {
-        ByteBuffer bb = ByteBuffer.allocate( 0x0D );
+        ByteBuffer bb = ByteBuffer.allocate( 0x0A );
         bb.put( new byte[]
             { 
             0x30, 0x08,                     // syncRequestValue ::= SEQUENCE {
@@ -367,26 +316,9 @@ public class SyncRequestValueControlTest
         // Check the encoding
         try
         {
-            ByteBuffer buffer = ByteBuffer.allocate( 0x28 );
-            buffer.put( new byte[]
-                { 
-                  0x30, 0x26,                            // Control
-                    0x04, 0x18,                          // OID (SyncRequestValue)
-                      '1', '.', '3', '.', '6', '.', '1', '.', 
-                      '4', '.', '1', '.', '4', '2', '0', '3',
-                      '.', '1', '.', '9', '.', '1', '.', '1',
-                    0x04, 0x0A,
-                      0x30, 0x08,                        // syncRequestValue ::= SEQUENCE {
-                        0x0A, 0x01, 0x03,                //     mode ENUMERATED {
-                                                         //         refreshAndPersist (3)
-                                                         //     }
-                        0x04, 0x03, 'a', 'b', 'c'        //     cookie syncCookie OPTIONAL,
-                } );
-            buffer.flip();
-
-            bb = ((SyncRequestValueDecorator)syncRequestValue).encode( ByteBuffer.allocate( ((SyncRequestValueDecorator)syncRequestValue).computeLength() ) );
-            String decoded = Strings.dumpBytes(bb.array());
-            String expected = Strings.dumpBytes(buffer.array());
+            ByteBuffer buffer = ((SyncRequestValueDecorator)syncRequestValue).encode( ByteBuffer.allocate( ((SyncRequestValueDecorator)syncRequestValue).computeLength() ) );
+            String decoded = Strings.dumpBytes( buffer.array() );
+            String expected = Strings.dumpBytes( bb.array() );
             assertEquals( expected, decoded );
         }
         catch ( EncoderException ee )
@@ -424,25 +356,19 @@ public class SyncRequestValueControlTest
         // Check the encoding
         try
         {
-            ByteBuffer buffer = ByteBuffer.allocate( 0x23 );
-            buffer.put( new byte[]
+            bb = ByteBuffer.allocate( 0x05 );
+            bb.put( new byte[]
                 { 
-                  0x30, 0x21,                            // Control
-                    0x04, 0x18,                          // OID (SyncRequestValue)
-                      '1', '.', '3', '.', '6', '.', '1', '.', 
-                      '4', '.', '1', '.', '4', '2', '0', '3',
-                      '.', '1', '.', '9', '.', '1', '.', '1',
-                    0x04, 0x05,
-                      0x30, 0x03,                        // syncRequestValue ::= SEQUENCE {
-                        0x0A, 0x01, 0x03,                //     mode ENUMERATED {
-                                                         //         refreshAndPersist (3)
-                                                         //     }
+                0x30, 0x03,                     // syncRequestValue ::= SEQUENCE {
+                  0x0A, 0x01, 0x03              //     mode ENUMERATED {
+                                                //         refreshAndPersist (3)
+                                                //     }
                 } );
-            buffer.flip();
+            bb.flip();
 
-            bb = ((SyncRequestValueDecorator)syncRequestValue).encode( ByteBuffer.allocate( ((SyncRequestValueDecorator)syncRequestValue).computeLength() ) );
-            String decoded = Strings.dumpBytes(bb.array());
-            String expected = Strings.dumpBytes(buffer.array());
+            ByteBuffer buffer = ((SyncRequestValueDecorator)syncRequestValue).encode( ByteBuffer.allocate( ((SyncRequestValueDecorator)syncRequestValue).computeLength() ) );
+            String decoded = Strings.dumpBytes( buffer.array() );
+            String expected = Strings.dumpBytes( bb.array() );
             assertEquals( expected, decoded );
         }
         catch ( EncoderException ee )

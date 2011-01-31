@@ -73,23 +73,9 @@ public class SubEntryControlTest
         // test encoding
         try
         {
-            ByteBuffer buffer = ByteBuffer.allocate( 0x20 );
-            buffer.put( new byte[]
-                { 
-                0x30, 0x1E,                            // Control
-                  0x04, 0x17,                          // OID (Subentries)
-                    '1', '.', '3', '.', '6', '.', '1', '.', 
-                    '4', '.', '1', '.', '4', '2', '0', '3', 
-                    '.', '1', '.', '1', '0', '.', '1',
-                  0x04, 0x03,
-                    0x01, 0x01, (byte)0xFF // Visibility ::= BOOLEAN
-                } );
-
-            buffer.flip();
-
-            bb = decorator.encode( ByteBuffer.allocate( decorator.computeLength() ) );
-            String expected = Strings.dumpBytes(buffer.array());
-            String decoded = Strings.dumpBytes(bb.array());
+            ByteBuffer buffer = decorator.encode( ByteBuffer.allocate( decorator.computeLength() ) );
+            String expected = Strings.dumpBytes( bb.array() );
+            String decoded = Strings.dumpBytes( buffer.array() );
             assertEquals( expected, decoded );
         }
         catch( EncoderException e )
@@ -121,23 +107,9 @@ public class SubEntryControlTest
         // test encoding
         try
         {
-            ByteBuffer buffer = ByteBuffer.allocate( 0x20 );
-            buffer.put( new byte[]
-                { 
-                0x30, 0x1E,                            // Control
-                  0x04, 0x17,                          // OID (Subentries)
-                    '1', '.', '3', '.', '6', '.', '1', '.', 
-                    '4', '.', '1', '.', '4', '2', '0', '3', 
-                    '.', '1', '.', '1', '0', '.', '1',
-                  0x04, 0x03,
-                    0x01, 0x01, 0x00 // Visibility ::= BOOLEAN
-                } );
-
-            buffer.flip();
-
-            bb = decorator.encode( ByteBuffer.allocate( decorator.computeLength() ) );
-            String expected = Strings.dumpBytes(buffer.array());
-            String decoded = Strings.dumpBytes(bb.array());
+            ByteBuffer buffer = decorator.encode( ByteBuffer.allocate( decorator.computeLength() ) );
+            String expected = Strings.dumpBytes( bb.array() );
+            String decoded = Strings.dumpBytes( buffer.array() );
             assertEquals( expected, decoded );
         }
         catch( EncoderException e )
