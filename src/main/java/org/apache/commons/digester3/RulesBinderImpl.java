@@ -132,37 +132,15 @@ final class RulesBinderImpl implements RulesBinder {
                     addError("{forPattern(\"%s\").setTop(String)} empty 'methodName' not allowed", keyPattern);
                 }
 
-                return new ParamTypeBuilder<SetTopRule>() {
+                return new AbstractParamTypeBuilder<SetTopRule>(keyPattern, methodName, RulesBinderImpl.this, this) {
 
-                    private boolean useExactMatch = false;
-
-                    private String paramType;
-
-                    public LinkedRuleBuilder then() {
-                        return mainBuilder;
-                    }
-
-                    public ParamTypeBuilder<SetTopRule> useExactMatch(boolean useExactMatch) {
-                        this.useExactMatch = useExactMatch;
-                        return this;
-                    }
-
-                    public ParamTypeBuilder<SetTopRule> withParameterType(Class<?> paramType) {
-                        if (paramType == null) {
-                            addError("{forPattern(\"%s\").createObject().ofType(Class<?>)} NULL Java type not allowed",
-                                    keyPattern);
-                            return this;
-                        }
-                        return this.withParameterType(paramType.getName());
-                    }
-
-                    public ParamTypeBuilder<SetTopRule> withParameterType(String paramType) {
-                        this.paramType = paramType;
-                        return this;
+                    @Override
+                    protected String getCalledMethodName() {
+                        return "setTop";
                     }
 
                     public SetTopRule get() {
-                        return new SetTopRule(methodName, paramType, useExactMatch);
+                        return new SetTopRule(this.getMethodName(), this.getParamType(), this.isUseExactMatch());
                     }
 
                 };
@@ -176,37 +154,15 @@ final class RulesBinderImpl implements RulesBinder {
                     addError("{forPattern(\"%s\").setRoot(String)} empty 'methodName' not allowed", keyPattern);
                 }
 
-                return new ParamTypeBuilder<SetRootRule>() {
+                return new AbstractParamTypeBuilder<SetRootRule>(keyPattern, methodName, RulesBinderImpl.this, this) {
 
-                    private boolean useExactMatch = false;
-
-                    private String paramType;
-
-                    public LinkedRuleBuilder then() {
-                        return mainBuilder;
-                    }
-
-                    public ParamTypeBuilder<SetRootRule> useExactMatch(boolean useExactMatch) {
-                        this.useExactMatch = useExactMatch;
-                        return this;
-                    }
-
-                    public ParamTypeBuilder<SetRootRule> withParameterType(Class<?> paramType) {
-                        if (paramType == null) {
-                            addError("{forPattern(\"%s\").createObject().ofType(Class<?>)} NULL Java type not allowed",
-                                    keyPattern);
-                            return this;
-                        }
-                        return this.withParameterType(paramType.getName());
-                    }
-
-                    public ParamTypeBuilder<SetRootRule> withParameterType(String paramType) {
-                        this.paramType = paramType;
-                        return this;
+                    @Override
+                    protected String getCalledMethodName() {
+                        return "setRoot";
                     }
 
                     public SetRootRule get() {
-                        return new SetRootRule(methodName, paramType, useExactMatch);
+                        return new SetRootRule(this.getMethodName(), this.getParamType(), this.isUseExactMatch());
                     }
 
                 };
@@ -220,8 +176,26 @@ final class RulesBinderImpl implements RulesBinder {
                 return null;
             }
 
-            public ParamTypeBuilder<SetNextRule> setNext(String methodName) {
-                return null;
+            /**
+             * 
+             */
+            public ParamTypeBuilder<SetNextRule> setNext(final String methodName) {
+                if (methodName == null || methodName.length() == 0) {
+                    addError("{forPattern(\"%s\").setNext(String)} empty 'methodName' not allowed", keyPattern);
+                }
+
+                return new AbstractParamTypeBuilder<SetNextRule>(keyPattern, methodName, RulesBinderImpl.this, this) {
+
+                    @Override
+                    protected String getCalledMethodName() {
+                        return "setNext";
+                    }
+
+                    public SetNextRule get() {
+                        return new SetNextRule(this.getMethodName(), this.getParamType(), this.isUseExactMatch());
+                    }
+
+                };
             }
 
             public NestedPropertiesBuilder setNestedProperties() {
@@ -342,6 +316,70 @@ final class RulesBinderImpl implements RulesBinder {
             }
 
         };
+    }
+
+    private static abstract class AbstractParamTypeBuilder<R extends Rule> implements ParamTypeBuilder<R> {
+
+        private final String keyPattern;
+
+        private final String methodName;
+
+        private final RulesBinder binder;
+
+        private final LinkedRuleBuilder mainLinkedBuilder;
+
+        private boolean useExactMatch = false;
+
+        private String paramType;
+
+        public AbstractParamTypeBuilder(String keyPattern,
+                String methodName,
+                RulesBinder binder,
+                LinkedRuleBuilder mainBuilder) {
+            this.keyPattern = keyPattern;
+            this.methodName = methodName;
+            this.binder = binder;
+            this.mainLinkedBuilder = mainBuilder;
+        }
+
+        public final LinkedRuleBuilder then() {
+            return this.mainLinkedBuilder;
+        }
+
+        public final ParamTypeBuilder<R> useExactMatch(boolean useExactMatch) {
+            this.useExactMatch = useExactMatch;
+            return this;
+        }
+
+        public final ParamTypeBuilder<R> withParameterType(Class<?> paramType) {
+            if (paramType == null) {
+                this.binder.addError("{forPattern(\"%s\").%s.withParameterType(Class<?>)} NULL Java type not allowed",
+                        this.keyPattern,
+                        this.getCalledMethodName());
+                return this;
+            }
+            return this.withParameterType(paramType.getName());
+        }
+
+        public ParamTypeBuilder<R> withParameterType(String paramType) {
+            this.paramType = paramType;
+            return this;
+        }
+
+        protected abstract String getCalledMethodName();
+
+        public String getMethodName() {
+            return methodName;
+        }
+
+        public String getParamType() {
+            return paramType;
+        }
+
+        public boolean isUseExactMatch() {
+            return useExactMatch;
+        }
+
     }
 
     /**
