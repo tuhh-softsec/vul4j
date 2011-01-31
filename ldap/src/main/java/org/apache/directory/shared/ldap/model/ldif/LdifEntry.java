@@ -605,8 +605,17 @@ public class LdifEntry implements Cloneable, Externalizable
             {
                 this.controls = new ConcurrentHashMap<String, LdifControl>();
             }
-    
-            this.controls.put( control.getOid(), ( LdifControl ) control );
+            
+            if ( control instanceof LdifControl )
+            {
+                this.controls.put( control.getOid(), ( LdifControl ) control );
+            }
+            else
+            {
+                LdifControl ldifControl = new LdifControl( control.getOid() );
+                ldifControl.setCritical( control.isCritical() );
+                this.controls.put( control.getOid(), new LdifControl( control.getOid() ) );
+            }
         }
     }
 

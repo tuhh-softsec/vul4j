@@ -208,7 +208,7 @@ public class DefaultLdapCodecService implements ILdapCodecService
             
             if ( factory == null )
             {
-                return (E)new BasicControl( oid );
+                return ( E ) new BasicControl( oid );
             }
             
             return ( E ) factory.newControl();
@@ -230,7 +230,10 @@ public class DefaultLdapCodecService implements ILdapCodecService
             
             if ( factory == null )
             {
-                return null; // Here, instanciate a default factory
+                org.apache.directory.shared.ldap.model.message.controls.BasicControl basic = 
+                    new org.apache.directory.shared.ldap.model.message.controls.BasicControl( control.getOid() );
+                basic.setCritical( control.isCritical() );
+                return new BasicControlDecorator( this, basic ); 
             }
             
             return factory.decorate( control );
