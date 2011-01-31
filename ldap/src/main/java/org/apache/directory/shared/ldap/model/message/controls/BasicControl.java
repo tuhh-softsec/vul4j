@@ -20,11 +20,15 @@
 package org.apache.directory.shared.ldap.model.message.controls;
 
 
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.model.message.Control;
 
 
 /**
- * A Control base class.
+ * A simple implementation of the {@link Control} interface with storage for 
+ * the OID and the criticality properties. When a {@link ILdapCodecService} 
+ * implementation does not have specific control factories available, hence 
+ * the control is unrecognized, it creates instances of this control for them.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
@@ -45,6 +49,19 @@ public class BasicControl implements Control
     public BasicControl( String oid )
     {
         this.oid = oid;
+    }
+
+
+    /**
+     * Creates a Control with a specific OID, and criticality set.
+     *
+     * @param oid The OID of this Control.
+     * @param criticality true if this Control is critical, false otherwise. 
+     */
+    public BasicControl( String oid, boolean criticality )
+    {
+        this.oid = oid;
+        this.criticality = criticality;
     }
 
 
