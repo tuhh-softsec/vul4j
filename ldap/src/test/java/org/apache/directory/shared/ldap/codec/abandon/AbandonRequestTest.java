@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.codec.abandon;
 
 
-import static org.junit.Assert.assertEquals; 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -30,20 +30,20 @@ import java.util.Map;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
 import org.apache.directory.shared.ldap.codec.ICodecControl;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
-import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.model.message.AbandonRequest;
-import org.apache.directory.shared.ldap.model.message.AbandonRequestImpl;
-import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.codec.LdapEncoder;
+import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.decorators.AbandonRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
+import org.apache.directory.shared.ldap.model.message.AbandonRequest;
+import org.apache.directory.shared.ldap.model.message.AbandonRequestImpl;
 import org.apache.directory.shared.ldap.model.message.Control;
+import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -78,24 +78,27 @@ public class AbandonRequestTest
                 0x02, 0x01, 0x03, // messageID MessageID
                 0x50, 0x01, 0x02, // CHOICE { ..., abandonRequest
                 // AbandonRequest,...
-                ( byte ) 0xA0, 0x5A, // controls [0] Controls OPTIONAL }
-                0x30, 0x1A, // Control ::= SEQUENCE {
-                // controlType LDAPOID,
-                0x04, 0x0D, '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '1',
-                // criticality BOOLEAN DEFAULT FALSE,
-                0x01, 0x01, ( byte ) 0xFF,
-                // controlValue OCTET STRING OPTIONAL }
-                0x04, 0x06, 'a', 'b', 'c', 'd', 'e', 'f', 0x30, 0x17, // Control ::= SEQUENCE {
-                // controlType LDAPOID,
-                0x04, 0x0D, '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '2',
-                // controlValue OCTET STRING OPTIONAL }
-                0x04, 0x06, 'g', 'h', 'i', 'j', 'k', 'l', 0x30, 0x12, // Control ::= SEQUENCE {
-                // controlType LDAPOID,
-                0x04, 0x0D, '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '3',
-                // criticality BOOLEAN DEFAULT FALSE }
-                0x01, 0x01, ( byte ) 0xFF, 0x30, 0x0F, // Control ::= SEQUENCE {
-                // controlType LDAPOID}
-                0x04, 0x0D, '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '4' } );
+                  ( byte ) 0xA0, 0x5A, // controls [0] Controls OPTIONAL }
+                    0x30, 0x1A, // Control ::= SEQUENCE {
+                                // controlType LDAPOID,
+                      0x04, 0x0D, '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '1',
+                                  // criticality BOOLEAN DEFAULT FALSE,
+                      0x01, 0x01, ( byte ) 0xFF,
+                                  // controlValue OCTET STRING OPTIONAL }
+                      0x04, 0x06, 'a', 'b', 'c', 'd', 'e', 'f', 
+                    0x30, 0x17, // Control ::= SEQUENCE {
+                                // controlType LDAPOID,
+                      0x04, 0x0D, '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '2',
+                                  // controlValue OCTET STRING OPTIONAL }
+                      0x04, 0x06, 'g', 'h', 'i', 'j', 'k', 'l', 
+                    0x30, 0x12, // Control ::= SEQUENCE {
+                                // controlType LDAPOID,
+                      0x04, 0x0D, '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '3',
+                                  // criticality BOOLEAN DEFAULT FALSE }
+                      0x01, 0x01, ( byte ) 0xFF, 
+                    0x30, 0x0F, // Control ::= SEQUENCE {
+                                // controlType LDAPOID}
+                      0x04, 0x0D, '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '4' } );
 
         stream.flip();
 

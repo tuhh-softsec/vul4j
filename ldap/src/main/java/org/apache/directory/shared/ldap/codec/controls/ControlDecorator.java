@@ -179,11 +179,11 @@ public abstract class ControlDecorator<E extends Control> extends AbstractAsn1Ob
         {
             byte[] copy = new byte[ value.length ];
             System.arraycopy( value, 0, copy, 0, value.length );
-            value = copy;
+            this.value = copy;
         } 
         else 
         {
-            value = null;
+            this.value = null;
         }
     }
 

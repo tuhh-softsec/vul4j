@@ -20,11 +20,15 @@
 package org.apache.directory.shared.ldap.codec;
 
 
+import java.nio.ByteBuffer;
+
 import org.apache.directory.shared.asn1.Asn1Object;
 import org.apache.directory.shared.asn1.DecoderException;
+import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.asn1.ber.tlv.Value;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 import org.apache.directory.shared.ldap.model.message.controls.BasicControl;
-import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -37,9 +41,6 @@ public class BasicControlDecorator extends ControlDecorator<BasicControl>
 {
     private ILdapCodecService codec;
 
-    /** The control value */
-    private byte[] value;
-
     public BasicControlDecorator( ILdapCodecService codec, BasicControl control )
     {
         super( codec, control );
@@ -49,8 +50,6 @@ public class BasicControlDecorator extends ControlDecorator<BasicControl>
     @Override
     public Asn1Object decode( byte[] controlBytes ) throws DecoderException
     {
-        setValue( controlBytes );
-        
         return null;
     }
 
@@ -58,32 +57,40 @@ public class BasicControlDecorator extends ControlDecorator<BasicControl>
     /**
      * {@inheritDoc}
      */
-    public boolean hasValue()
+    public int computeLength()
     {
-        return value != null;
-    }
-    
-
-    /**
-     * {@inheritDoc}
-     */
-    public byte[] getValue()
-    {
-        return value;
-    }
-    
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setValue( byte[] value )
-    {
-        if ( ! Strings.isEmpty( value ) )
+        // Call the super class to compute the global control length
+        if ( getValue() == null )
         {
-            byte[] copy = new byte[value.length];
-            System.arraycopy( value, 0, copy, 0, value.length );
+            valueLength = 0;
+        }
+        else
+        {
+            valueLength = getValue().length;
         }
         
-        this.value = value;
+        return super.computeLength( valueLength );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    {
+        if ( buffer == null )
+        {
+            throw new EncoderException( I18n.err( I18n.ERR_04023 ) );
+        }
+
+        // Encode the Control envelop
+        super.encode( buffer );
+        
+        if ( valueLength != 0 )
+        {
+            Value.encode( buffer, getValue() );
+        }
+
+        return buffer;
     }
 }
