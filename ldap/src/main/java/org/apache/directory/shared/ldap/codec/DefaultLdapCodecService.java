@@ -30,12 +30,14 @@ import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.controls.CascadeFactory;
 import org.apache.directory.shared.ldap.codec.controls.ManageDsaITFactory;
 import org.apache.directory.shared.ldap.codec.search.controls.entryChange.EntryChangeFactory;
+import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedResultsFactory;
 import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesFactory;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.controls.BasicControl;
 import org.apache.directory.shared.ldap.model.message.controls.Cascade;
 import org.apache.directory.shared.ldap.model.message.controls.EntryChange;
 import org.apache.directory.shared.ldap.model.message.controls.ManageDsaIT;
+import org.apache.directory.shared.ldap.model.message.controls.PagedResults;
 import org.apache.directory.shared.ldap.model.message.controls.Subentries;
 import org.apache.mina.filter.codec.ProtocolCodecFactory;
 
@@ -75,6 +77,9 @@ public class DefaultLdapCodecService implements ILdapCodecService
         
         EntryChangeFactory entryChangeFactory = new EntryChangeFactory( this );
         controlFactories.put( EntryChange.OID, entryChangeFactory );
+        
+        PagedResultsFactory pagedResultsFactory = new PagedResultsFactory( this );
+        controlFactories.put( PagedResults.OID, pagedResultsFactory );
     }
     
 
