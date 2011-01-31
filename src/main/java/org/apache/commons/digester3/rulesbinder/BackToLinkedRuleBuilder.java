@@ -23,7 +23,7 @@ import org.apache.commons.digester3.spi.RuleProvider;
 /**
  * Builder invoked to back to main {@link LinkedRuleBuilder}.
  */
-interface BackToLinkedRuleBuilder<R extends Rule> extends RuleProvider<R> {
+public interface BackToLinkedRuleBuilder<R extends Rule> extends RuleProvider<R> {
 
     /**
      * Come back to the main {@link LinkedRuleBuilder}.
