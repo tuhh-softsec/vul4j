@@ -42,32 +42,55 @@ import org.apache.directory.shared.ldap.model.message.controls.SubentriesImpl;
  */
 public class SubentriesFactory implements IControlFactory<Subentries, SubentriesDecorator>
 {
+    /** The LDAP codec service */
     private ILdapCodecService codec;
     
     
+    /**
+     * Creates a new instance of SubentriesFactory.
+     *
+     * @param codec
+     */
     public SubentriesFactory( ILdapCodecService codec )
     {
         this.codec = codec;
     }
     
+    
+    /**
+     * 
+     * {@inheritDoc}
+     */
     public String getOid()
     {
         return Subentries.OID;
     }
 
     
+    /**
+     * 
+     * {@inheritDoc}
+     */
     public SubentriesDecorator newCodecControl()
     {
         return new SubentriesDecorator( codec );
     }
 
 
+    /**
+     * 
+     * {@inheritDoc}
+     */
     public Subentries newControl()
     {
         return new SubentriesImpl();
     }
 
     
+    /**
+     * 
+     * {@inheritDoc}
+     */
     public SubentriesDecorator decorate( Subentries control )
     {
         if ( ! control.getOid().equals( Subentries.OID ) )
@@ -79,6 +102,10 @@ public class SubentriesFactory implements IControlFactory<Subentries, Subentries
     }
     
 
+    /**
+     * 
+     * {@inheritDoc}
+     */
     public Control toJndiControl( Subentries control ) throws EncoderException
     {
         SubentriesDecorator decorator = null;
@@ -100,6 +127,10 @@ public class SubentriesFactory implements IControlFactory<Subentries, Subentries
     }
     
 
+    /**
+     * 
+     * {@inheritDoc}
+     */
     public Subentries fromJndiControl( Control control ) throws DecoderException
     {
         SubentriesDecorator decorator = new SubentriesDecorator( codec );
