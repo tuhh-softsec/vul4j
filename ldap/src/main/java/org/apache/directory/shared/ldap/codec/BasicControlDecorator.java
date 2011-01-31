@@ -25,6 +25,7 @@ import java.nio.ByteBuffer;
 import org.apache.directory.shared.asn1.Asn1Object;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 import org.apache.directory.shared.ldap.model.message.controls.BasicControl;
 
 
@@ -34,7 +35,7 @@ import org.apache.directory.shared.ldap.model.message.controls.BasicControl;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class BasicControlDecorator implements ICodecControl<BasicControl>, IDecorator<BasicControl>
+public class BasicControlDecorator extends ControlDecorator<BasicControl>
 {
     private byte[] value;
     
@@ -44,8 +45,7 @@ public class BasicControlDecorator implements ICodecControl<BasicControl>, IDeco
     
     public BasicControlDecorator( ILdapCodecService codec, BasicControl control )
     {
-        this.codec = codec;
-        this.control = control;
+        super( codec, control );
     }
     
     
