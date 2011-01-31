@@ -34,6 +34,8 @@ import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue
 import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.SyncDoneValueFactory;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValue.ISyncInfoValue;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValue.SyncInfoValueFactory;
+import org.apache.directory.shared.ldap.codec.controls.replication.syncRequestValue.ISyncRequestValue;
+import org.apache.directory.shared.ldap.codec.controls.replication.syncRequestValue.SyncRequestValueFactory;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn.ISyncModifyDn;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn.SyncModifyDnFactory;
 import org.apache.directory.shared.ldap.codec.search.controls.entryChange.EntryChangeFactory;
@@ -101,6 +103,9 @@ public class DefaultLdapCodecService implements ILdapCodecService
         
         SyncModifyDnFactory syncModifyDnFactory = new SyncModifyDnFactory( this );
         controlFactories.put( ISyncModifyDn.OID, syncModifyDnFactory );
+        
+        SyncRequestValueFactory syncRequestValueFactory = new SyncRequestValueFactory( this );
+        controlFactories.put( ISyncRequestValue.OID, syncRequestValueFactory );
     }
     
 
