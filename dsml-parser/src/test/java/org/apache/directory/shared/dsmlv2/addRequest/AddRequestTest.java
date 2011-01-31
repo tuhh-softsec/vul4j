@@ -34,6 +34,7 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.dsmlv2.AbstractTest;
 import org.apache.directory.shared.dsmlv2.Dsmlv2Parser;
+import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.model.entry.Value;
@@ -157,7 +158,7 @@ public class AddRequestTest extends AbstractTest
         assertNotNull( control );
         assertTrue( control.isCritical() );
         assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
-        assertEquals( "Some text", Strings.utf8ToString((byte[]) getCodec().decorate( control ).getValue()) );
+        assertEquals( "Some text", Strings.utf8ToString( ((ControlDecorator<Control>)control).getValue() ) );
     }
 
 

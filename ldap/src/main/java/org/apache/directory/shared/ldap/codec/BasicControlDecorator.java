@@ -20,13 +20,11 @@
 package org.apache.directory.shared.ldap.codec;
 
 
-import java.nio.ByteBuffer;
-
 import org.apache.directory.shared.asn1.Asn1Object;
 import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 import org.apache.directory.shared.ldap.model.message.controls.BasicControl;
+import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -37,65 +35,22 @@ import org.apache.directory.shared.ldap.model.message.controls.BasicControl;
  */
 public class BasicControlDecorator extends ControlDecorator<BasicControl>
 {
-    private byte[] value;
-    
-    private BasicControl control;
     private ILdapCodecService codec;
-    
-    
+
+    /** The control value */
+    private byte[] value;
+
     public BasicControlDecorator( ILdapCodecService codec, BasicControl control )
     {
         super( codec, control );
     }
-    
-    
-    public String getOid()
-    {
-        return control.getOid();
-    }
 
-    
-    public boolean isCritical()
-    {
-        return control.isCritical();
-    }
 
-    
-    public void setCritical( boolean isCritical )
-    {
-        control.setCritical( isCritical );
-    }
-
-    
-    public BasicControl getDecorated()
-    {
-        return control;
-    }
-
-    
-    public int computeLength()
-    {
-        return 0;
-    }
-
-    
-    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
-    {
-        return null;
-    }
-
-    
-    public ILdapCodecService getCodecService()
-    {
-        return codec;
-    }
-
-    
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public Asn1Object decode( byte[] controlBytes ) throws DecoderException
     {
+        setValue( controlBytes );
+        
         return null;
     }
 
@@ -123,6 +78,12 @@ public class BasicControlDecorator extends ControlDecorator<BasicControl>
      */
     public void setValue( byte[] value )
     {
+        if ( ! Strings.isEmpty( value ) )
+        {
+            byte[] copy = new byte[value.length];
+            System.arraycopy( value, 0, copy, 0, value.length );
+        }
+        
         this.value = value;
     }
 }
