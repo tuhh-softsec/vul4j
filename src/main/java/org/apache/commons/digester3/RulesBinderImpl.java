@@ -451,6 +451,11 @@ final class RulesBinderImpl implements RulesBinder {
         };
     }
 
+    /**
+     * Abstract {@link ParamTypeBuilder} implementation for {@code setNext()}, {@code setRoot()} and {@code setTop()}
+     *
+     * @param <R> The rule type has to be created
+     */
     private static abstract class AbstractParamTypeBuilder<R extends Rule> implements ParamTypeBuilder<R> {
 
         private final String keyPattern;
@@ -475,15 +480,24 @@ final class RulesBinderImpl implements RulesBinder {
             this.mainLinkedBuilder = mainBuilder;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         public final LinkedRuleBuilder then() {
             return this.mainLinkedBuilder;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         public final ParamTypeBuilder<R> useExactMatch(boolean useExactMatch) {
             this.useExactMatch = useExactMatch;
             return this;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         public final ParamTypeBuilder<R> withParameterType(Class<?> paramType) {
             if (paramType == null) {
                 this.binder.addError("{forPattern(\"%s\").%s.withParameterType(Class<?>)} NULL Java type not allowed",
@@ -494,6 +508,9 @@ final class RulesBinderImpl implements RulesBinder {
             return this.withParameterType(paramType.getName());
         }
 
+        /**
+         * {@inheritDoc}
+         */
         public ParamTypeBuilder<R> withParameterType(String paramType) {
             this.paramType = paramType;
             return this;
