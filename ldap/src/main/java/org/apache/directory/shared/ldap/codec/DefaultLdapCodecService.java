@@ -21,6 +21,7 @@ package org.apache.directory.shared.ldap.codec;
 
 
 import java.lang.reflect.Field;
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -250,7 +251,13 @@ public class DefaultLdapCodecService implements ILdapCodecService
 
     public javax.naming.ldap.Control toJndiControl( Control control ) throws EncoderException
     {
-        return null;
+        ICodecControl<? extends Control> decorator = decorate( control );
+        ByteBuffer bb = ByteBuffer.allocate( decorator.computeLength() );
+        decorator.encode( bb );
+        bb.flip();
+        javax.naming.ldap.BasicControl jndiControl = 
+            new javax.naming.ldap.BasicControl( control.getOid(), control.isCritical(), bb.array() );
+        return jndiControl;
     }
 
 
