@@ -20,6 +20,9 @@
 package org.apache.directory.shared.ldap.codec.search.controls.subentries;
 
 
+import java.nio.ByteBuffer;
+
+import javax.naming.ldap.BasicControl;
 import javax.naming.ldap.Control;
 
 import org.apache.directory.shared.asn1.DecoderException;
@@ -78,11 +81,29 @@ public class SubentriesFactory implements IControlFactory<Subentries, Subentries
 
     public Control toJndiControl( Subentries control ) throws EncoderException
     {
-        return null;
+        SubentriesDecorator decorator = null;
+        
+        if ( control instanceof SubentriesDecorator )
+        {
+            decorator = ( SubentriesDecorator ) control;
+        }
+        else
+        {
+            decorator = new SubentriesDecorator( codec, control );
+        }
+        
+        ByteBuffer bb = ByteBuffer.allocate( decorator.computeLength() );
+        decorator.encode( bb );
+        bb.flip();
+        
+        return new BasicControl( control.getOid(), control.isCritical(), decorator.getValue() );
     }
+    
 
     public Subentries fromJndiControl( Control control ) throws DecoderException
     {
-        return null;
+        SubentriesDecorator decorator = new SubentriesDecorator( codec );
+        decorator.decode( control.getEncodedValue() );
+        return decorator.getDecorated();
     }
 }
