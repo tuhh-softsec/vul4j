@@ -47,9 +47,6 @@ public class PersistentSearchDecorator extends ControlDecorator<PersistentSearch
     /** A temporary storage for a psearch length */
     private int psearchSeqLength;
 
-    /** The encoded value of the control. */
-    private byte[] value;
-    
     /** An instance of this decoder */
     private static final Asn1Decoder decoder = new Asn1Decoder();
 
@@ -99,8 +96,7 @@ public class PersistentSearchDecorator extends ControlDecorator<PersistentSearch
         psearchSeqLength = changeTypesLength + changesOnlyLength + returnRCsLength;
         int valueLength = 1 + TLV.getNbBytes( psearchSeqLength ) + psearchSeqLength;
 
-        // Call the super class to compute the global control length
-        return super.computeLength( valueLength );
+        return valueLength;
     }
 
 
@@ -117,13 +113,6 @@ public class PersistentSearchDecorator extends ControlDecorator<PersistentSearch
         {
             throw new EncoderException( I18n.err( I18n.ERR_04023 ) );
         }
-
-        // Encode the Control envelop
-        super.encode( buffer );
-        
-        // Encode the OCTET_STRING tag
-        buffer.put( UniversalTag.OCTET_STRING.getValue() );
-        buffer.put( TLV.getBytes( valueLength ) );
 
         // Now encode the PagedSearch specific part
         buffer.put( UniversalTag.SEQUENCE.getValue() );

@@ -25,7 +25,6 @@ import java.nio.ByteBuffer;
 import org.apache.directory.shared.asn1.Asn1Object;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
-import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 import org.apache.directory.shared.ldap.model.message.controls.BasicControl;
@@ -77,7 +76,7 @@ public class BasicControlDecorator extends ControlDecorator<BasicControl>
             valueLength = getValue().length;
         }
         
-        return super.computeLength( valueLength );
+        return valueLength;
     }
 
 
@@ -91,12 +90,9 @@ public class BasicControlDecorator extends ControlDecorator<BasicControl>
             throw new EncoderException( I18n.err( I18n.ERR_04023 ) );
         }
 
-        // Encode the Control envelop
-        super.encode( buffer );
-        
         if ( valueLength != 0 )
         {
-            Value.encode( buffer, getValue() );
+            buffer.put( getValue() );
         }
 
         return buffer;

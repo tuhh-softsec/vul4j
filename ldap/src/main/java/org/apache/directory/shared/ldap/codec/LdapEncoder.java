@@ -48,6 +48,69 @@ public class LdapEncoder
     private ILdapCodecService codec = new DefaultLdapCodecService();
     
     
+    
+    private int computeControlLength( Control control )
+    {
+        // First, compute the control's value length
+        int controlValueLength = ((ICodecControl)control).computeLength();
+        
+        // Now, compute the envelop length
+        // The OID
+        int oidLengh = Strings.getBytesUtf8( control.getOid() ).length;
+        int controlLength = 1 + TLV.getNbBytes( oidLengh ) + oidLengh;
+
+        // The criticality, only if true
+        if ( control.isCritical() )
+        {
+            controlLength += 1 + 1 + 1; // Always 3 for a boolean
+        }
+        
+        if ( controlValueLength != 0 )
+        {
+            controlLength += 1 + TLV.getNbBytes( controlValueLength ) + controlValueLength;
+        }
+       
+        return controlLength;
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    private ByteBuffer encodeControl( ByteBuffer buffer, Control control ) throws EncoderException
+    {
+        if ( buffer == null )
+        {
+            throw new EncoderException( I18n.err( I18n.ERR_04023 ) );
+        }
+
+        try
+        {
+            // The LdapMessage Sequence
+            buffer.put( UniversalTag.SEQUENCE.getValue() );
+
+            // The length has been calculated by the computeLength method
+            int controlLength = computeControlLength( control );
+            buffer.put( TLV.getBytes( controlLength ) );
+        }
+        catch ( BufferOverflowException boe )
+        {
+            throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
+        }
+
+        // The control type
+        Value.encode( buffer, control.getOid().getBytes() );
+
+        // The control criticality, if true
+        if ( control.isCritical() )
+        {
+            Value.encode( buffer, control.isCritical() );
+        }
+
+        return buffer;
+    }
+    
+
     /**
      * Generate the PDU which contains the encoded object. 
      * 
@@ -106,12 +169,24 @@ public class LdapEncoder
             {
                 // Encode the controls
                 buffer.put( ( byte ) LdapConstants.CONTROLS_TAG );
-                buffer.put( TLV.getBytes(decorator.getControlsLength()) );
+                buffer.put( TLV.getBytes( decorator.getControlsLength() ) );
 
                 // Encode each control
                 for ( Control control : controls.values() )
                 {
-                    ( ( ICodecControl<?> ) control ).encode( buffer );
+                    encodeControl( buffer, control );
+                    
+                    // The OctetString tag if the value is not null
+                    int controlValueLength = ((ICodecControl)control).computeLength();
+                    
+                    if ( controlValueLength > 0 )
+                    {
+                        buffer.put( UniversalTag.OCTET_STRING.getValue() );
+                        buffer.put( TLV.getBytes( controlValueLength ) );
+    
+                        // And now, the value
+                        ( ( ICodecControl<?> ) control ).encode( buffer );
+                    }
                 }
             }
         }
@@ -182,7 +257,9 @@ public class LdapEncoder
             // We may have more than one control. ControlsLength is L4.
             for ( Control control : controls.values() )
             {
-                controlsSequenceLength += ( ( ICodecControl<?> ) control ).computeLength();
+                int controlLength = computeControlLength( control );
+                
+                controlsSequenceLength += 1 + TLV.getNbBytes( controlLength ) + controlLength;
             }
 
             // Computes the controls length

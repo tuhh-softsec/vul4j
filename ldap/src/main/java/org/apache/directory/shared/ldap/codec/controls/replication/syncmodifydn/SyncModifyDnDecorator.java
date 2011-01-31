@@ -70,8 +70,6 @@ public class SyncModifyDnDecorator extends ControlDecorator<ISyncModifyDn> imple
     private int renameLen = 0;
     private int moveAndRenameLen = 0;
     
-    private byte[] value;
-
     /** An instance of this decoder */
     private Asn1Decoder decoder = new Asn1Decoder();
 
@@ -133,7 +131,7 @@ public class SyncModifyDnDecorator extends ControlDecorator<ISyncModifyDn> imple
 
         valueLength = 1 + TLV.getNbBytes( syncModDnSeqLength ) + syncModDnSeqLength;
         
-        return super.computeLength( valueLength );
+        return valueLength;
     }
 
 
@@ -151,13 +149,6 @@ public class SyncModifyDnDecorator extends ControlDecorator<ISyncModifyDn> imple
             throw new EncoderException( I18n.err( I18n.ERR_04023 ) );
         }
 
-        // Encode the Control envelop
-        super.encode( buffer );
-
-        // Encode the OCTET_STRING tag
-        buffer.put( UniversalTag.OCTET_STRING.getValue() );
-        buffer.put( TLV.getBytes( valueLength ) );
-        
         // Encode the SEQ 
         buffer.put( UniversalTag.SEQUENCE.getValue() );
         buffer.put( TLV.getBytes( syncModDnSeqLength ) );

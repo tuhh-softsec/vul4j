@@ -20,21 +20,15 @@
 package org.apache.directory.shared.ldap.codec.controls;
 
 
-import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.asn1.AbstractAsn1Object;
 import org.apache.directory.shared.asn1.Asn1Object;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
-import org.apache.directory.shared.asn1.ber.tlv.TLV;
-import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
-import org.apache.directory.shared.asn1.ber.tlv.Value;
-import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.ICodecControl;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.model.message.Control;
-import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -58,7 +52,7 @@ public abstract class ControlDecorator<E extends Control> extends AbstractAsn1Ob
     private int controlLength;
 
     /** The encoded value of the control. */
-    private byte[] value;
+    protected byte[] value;
     
     /** The codec service responsible for encoding decoding this object */
     private ILdapCodecService codec;
@@ -73,35 +67,6 @@ public abstract class ControlDecorator<E extends Control> extends AbstractAsn1Ob
     {
         this.decorated = decoratedControl;
         this.codec = codec;
-    }
-
-
-    /**
-     * Computes the length of the Control given the length of its value.
-     *
-     * @param valueLength The length of the Control's value.
-     * @return The length of the Control including its value.
-     */
-    public int computeLength( int valueLength )
-    {
-        // The OID
-        int oidLengh = Strings.getBytesUtf8( getOid() ).length;
-        controlLength = 1 + TLV.getNbBytes( oidLengh ) + oidLengh;
-
-        // The criticality, only if true
-        if ( isCritical() )
-        {
-            controlLength += 1 + 1 + 1; // Always 3 for a boolean
-        }
-
-        this.valueLength = valueLength;
-
-        if ( valueLength != 0 )
-        {
-            controlLength += 1 + TLV.getNbBytes( valueLength ) + valueLength;
-        }
-
-        return 1 + TLV.getNbBytes( controlLength ) + controlLength;
     }
 
 
@@ -121,7 +86,7 @@ public abstract class ControlDecorator<E extends Control> extends AbstractAsn1Ob
     {
         this.decorated = decorated;
     }
-    
+
     
     /**
      * {@inheritDoc}
@@ -227,37 +192,7 @@ public abstract class ControlDecorator<E extends Control> extends AbstractAsn1Ob
     /**
      * {@inheritDoc}
      */
-    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
-    {
-        if ( buffer == null )
-        {
-            throw new EncoderException( I18n.err( I18n.ERR_04023 ) );
-        }
-
-        try
-        {
-            // The LdapMessage Sequence
-            buffer.put( UniversalTag.SEQUENCE.getValue() );
-
-            // The length has been calculated by the computeLength method
-            buffer.put( TLV.getBytes( controlLength ) );
-        }
-        catch ( BufferOverflowException boe )
-        {
-            throw new EncoderException( I18n.err( I18n.ERR_04005 ) );
-        }
-
-        // The control type
-        Value.encode( buffer, getOid().getBytes() );
-
-        // The control criticality, if true
-        if ( isCritical() )
-        {
-            Value.encode( buffer, isCritical() );
-        }
-
-        return buffer;
-    }
+    public abstract ByteBuffer encode( ByteBuffer buffer ) throws EncoderException;
 
 
     // ------------------------------------------------------------------------

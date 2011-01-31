@@ -49,8 +49,6 @@ public class SyncInfoValueDecorator extends ControlDecorator<ISyncInfoValue> imp
     /** The syncUUIDs cumulative length */
     private int syncUUIDsLength;
     
-    private byte[] value;
-    
     /** An instance of this decoder */
     private static final Asn1Decoder decoder = new Asn1Decoder();
 
@@ -195,8 +193,6 @@ public class SyncInfoValueDecorator extends ControlDecorator<ISyncInfoValue> imp
     }
 
     
-
-    
     /**
      * Compute the SyncInfoValue length.
      * 
@@ -246,7 +242,7 @@ public class SyncInfoValueDecorator extends ControlDecorator<ISyncInfoValue> imp
                 valueLength = syncInfoValueLength;
 
                 // Call the super class to compute the global control length
-                return super.computeLength( valueLength );
+                return valueLength;
                 
             case REFRESH_DELETE :
             case REFRESH_PRESENT :
@@ -264,7 +260,7 @@ public class SyncInfoValueDecorator extends ControlDecorator<ISyncInfoValue> imp
                 valueLength = 1 + TLV.getNbBytes( syncInfoValueLength ) + syncInfoValueLength;
                 
                 // Call the super class to compute the global control length
-                return super.computeLength( valueLength );
+                return valueLength;
                 
             case SYNC_ID_SET :
                 if ( getCookie() != null )
@@ -295,7 +291,10 @@ public class SyncInfoValueDecorator extends ControlDecorator<ISyncInfoValue> imp
                 valueLength = 1 + TLV.getNbBytes( syncInfoValueLength ) + syncInfoValueLength;
 
                 // Call the super class to compute the global control length
-                return super.computeLength( valueLength );
+                return valueLength;
+                
+            default :
+                
         }
         
         return 1 + TLV.getNbBytes( syncInfoValueLength ) + syncInfoValueLength;
@@ -315,13 +314,6 @@ public class SyncInfoValueDecorator extends ControlDecorator<ISyncInfoValue> imp
         {
             throw new EncoderException( I18n.err( I18n.ERR_04023 ) );
         }
-
-        // Encode the Control envelop
-        super.encode( buffer );
-        
-        // Encode the OCTET_STRING tag
-        buffer.put( UniversalTag.OCTET_STRING.getValue() );
-        buffer.put( TLV.getBytes( valueLength ) );
 
         switch ( getType() )
         {

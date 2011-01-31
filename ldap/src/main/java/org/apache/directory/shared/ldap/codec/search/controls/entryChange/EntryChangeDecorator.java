@@ -57,9 +57,6 @@ public class EntryChangeDecorator extends ControlDecorator<EntryChange> implemen
     /** The entry change global length */
     private int eccSeqLength;
 
-    /** The encoded value of the control. */
-    private byte[] value;
-    
     /** An instance of this decoder */
     private static final Asn1Decoder decoder = new Asn1Decoder();
 
@@ -127,8 +124,7 @@ public class EntryChangeDecorator extends ControlDecorator<EntryChange> implemen
         eccSeqLength = changeTypesLength + previousDnLength + changeNumberLength;
         valueLength = 1 + TLV.getNbBytes( eccSeqLength ) + eccSeqLength;
 
-        // Call the super class to compute the global control length
-        return super.computeLength( valueLength );
+        return valueLength;
     }
 
 
@@ -145,13 +141,6 @@ public class EntryChangeDecorator extends ControlDecorator<EntryChange> implemen
         {
             throw new EncoderException( I18n.err( I18n.ERR_04023 ) );
         }
-
-        // Encode the Control envelop
-        super.encode( buffer );
-
-        // Encode the OCTET_STRING tag
-        buffer.put( UniversalTag.OCTET_STRING.getValue() );
-        buffer.put( TLV.getBytes( valueLength ) );
 
         buffer.put( UniversalTag.SEQUENCE.getValue() );
         buffer.put( TLV.getBytes( eccSeqLength ) );

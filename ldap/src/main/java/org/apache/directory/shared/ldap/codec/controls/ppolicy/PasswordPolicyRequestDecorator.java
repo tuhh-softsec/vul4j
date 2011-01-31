@@ -20,8 +20,11 @@
 package org.apache.directory.shared.ldap.codec.controls.ppolicy;
 
 
+import java.nio.ByteBuffer;
+
 import org.apache.directory.shared.asn1.Asn1Object;
 import org.apache.directory.shared.asn1.DecoderException;
+import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 
@@ -50,5 +53,12 @@ public class PasswordPolicyRequestDecorator extends ControlDecorator<IPasswordPo
     public Asn1Object decode( byte[] controlBytes ) throws DecoderException
     {
         return this;
+    }
+
+
+    @Override
+    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    {
+        return buffer;
     }
 }

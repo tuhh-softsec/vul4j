@@ -47,9 +47,6 @@ public class SyncRequestValueDecorator  extends ControlDecorator<ISyncRequestVal
     /** The global length for this control */
     private int syncRequestValueLength;
     
-    /** The opaque value of the control */
-    private byte[] value;
-
     /** An instance of this decoder */
     private static final Asn1Decoder decoder = new Asn1Decoder();
 
@@ -161,7 +158,7 @@ public class SyncRequestValueDecorator  extends ControlDecorator<ISyncRequestVal
         valueLength =  1 + TLV.getNbBytes( syncRequestValueLength ) + syncRequestValueLength;
 
         // Call the super class to compute the global control length
-        return super.computeLength( valueLength );
+        return valueLength;
     }
     
     
@@ -178,13 +175,6 @@ public class SyncRequestValueDecorator  extends ControlDecorator<ISyncRequestVal
         {
             throw new EncoderException( I18n.err( I18n.ERR_04023 ) );
         }
-
-        // Encode the Control envelop
-        super.encode( buffer );
-        
-        // Encode the OCTET_STRING tag
-        buffer.put( UniversalTag.OCTET_STRING.getValue() );
-        buffer.put( TLV.getBytes( valueLength ) );
 
         // Encode the SEQ 
         buffer.put( UniversalTag.SEQUENCE.getValue() );

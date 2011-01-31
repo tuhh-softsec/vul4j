@@ -26,8 +26,6 @@ import org.apache.directory.shared.asn1.Asn1Object;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
-import org.apache.directory.shared.asn1.ber.tlv.TLV;
-import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
@@ -44,9 +42,6 @@ import org.apache.directory.shared.ldap.model.message.controls.SubentriesImpl;
  */
 public class SubentriesDecorator extends ControlDecorator<Subentries> implements Subentries
 {
-    /** The encoded value of the control. */
-    private byte[] value;
-    
     /** The sub entry decoder */
     private static final Asn1Decoder decoder = new Asn1Decoder();
 
@@ -77,11 +72,7 @@ public class SubentriesDecorator extends ControlDecorator<Subentries> implements
      */
     public int computeLength()
     {
-        int subentriesLength =  1 + 1 + 1;
-        int valueLength = subentriesLength;
-
-        // Call the super class to compute the global control length
-        return super.computeLength( valueLength );
+        return 1 + 1 + 1;
     }
 
 
@@ -98,13 +89,6 @@ public class SubentriesDecorator extends ControlDecorator<Subentries> implements
         {
             throw new EncoderException( I18n.err( I18n.ERR_04023 ) );
         }
-
-        // Encode the Control envelop
-        super.encode( buffer );
-        
-        // Encode the OCTET_STRING tag
-        buffer.put( UniversalTag.OCTET_STRING.getValue() );
-        buffer.put( TLV.getBytes( valueLength ) );
 
         // Now encode the Subentries specific part
         Value.encode( buffer, isVisible() );

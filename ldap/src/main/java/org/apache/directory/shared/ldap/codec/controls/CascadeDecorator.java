@@ -20,8 +20,11 @@
 package org.apache.directory.shared.ldap.codec.controls;
 
 
+import java.nio.ByteBuffer;
+
 import org.apache.directory.shared.asn1.Asn1Object;
 import org.apache.directory.shared.asn1.DecoderException;
+import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.model.message.controls.Cascade;
 
@@ -47,13 +50,19 @@ public class CascadeDecorator extends ControlDecorator<Cascade> implements Casca
      */
     public int computeLength()
     {
-        // Call the super class to compute the global control length
-        return super.computeLength( 0 );
+        return 0;
     }
 
     
     public Asn1Object decode( byte[] controlBytes ) throws DecoderException
     {
         return this;
+    }
+
+
+    @Override
+    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
+    {
+        return buffer;
     }
 }

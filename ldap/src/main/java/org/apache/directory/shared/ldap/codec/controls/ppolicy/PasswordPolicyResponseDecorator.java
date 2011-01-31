@@ -22,13 +22,13 @@ package org.apache.directory.shared.ldap.codec.controls.ppolicy;
 
 import java.nio.ByteBuffer;
 
+import org.apache.directory.shared.asn1.Asn1Object;
+import org.apache.directory.shared.asn1.DecoderException;
+import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
-import org.apache.directory.shared.asn1.Asn1Object;
-import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
@@ -93,7 +93,7 @@ public class PasswordPolicyResponseDecorator extends ControlDecorator<IPasswordP
             valueLength = 1 + TLV.getNbBytes( ppolicySeqLength ) + ppolicySeqLength;
         }
 
-        return super.computeLength( valueLength );
+        return valueLength;
     }
 
 
@@ -103,16 +103,6 @@ public class PasswordPolicyResponseDecorator extends ControlDecorator<IPasswordP
         if ( buffer == null )
         {
             throw new EncoderException( I18n.err( I18n.ERR_04023 ) );
-        }
-
-        // Encode the Control envelop
-        super.encode( buffer );
-
-        if ( valueLength > 0 )
-        {
-            // Encode the OCTET_STRING tag
-            buffer.put( UniversalTag.OCTET_STRING.getValue() );
-            buffer.put( TLV.getBytes( valueLength ) );
         }
 
         if ( ( getTimeBeforeExpiration() < 0 ) && ( getGraceAuthNsRemaining() < 0 ) && ( getPasswordPolicyError() == null ) )
