@@ -195,37 +195,27 @@ public abstract class ControlDecorator<E extends Control> extends AbstractAsn1Ob
     // ------------------------------------------------------------------------
     // Object Method Overrides
     // ------------------------------------------------------------------------
-
+    /**
+     * @see Object#hashCode()
+     */
+    public int hashCode()
+    {
+        return decorated.hashCode();
+    }
 
     /**
      * @see Object#equals(Object)
      */
     public boolean equals( Object o )
     {
-        if ( o == this )
+        if ( decorated == null )
         {
-            return true;
+            return o == null;
         }
-
-        if ( o == null )
+        else
         {
-            return false;
+            return decorated.equals( o );
         }
-
-        if ( !( o instanceof Control) )
-        {
-            return false;
-        }
-
-        Control otherControl = ( Control ) o;
-        
-        if ( !getOid().equalsIgnoreCase( otherControl.getOid() ) )
-        {
-            return false;
-        }
-
-        //noinspection SimplifiableIfStatement
-        return otherControl.isCritical() == isCritical();
     }
 
 

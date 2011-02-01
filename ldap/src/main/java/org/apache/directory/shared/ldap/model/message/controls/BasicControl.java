@@ -96,6 +96,19 @@ public class BasicControl implements Control
     {
         this.criticality = criticality;
     }
+    
+    
+    /**
+     * @see Object#hashCode()
+     */
+    public int hashCode()
+    {
+        int h = 17;
+        h = h*37 + ( criticality ? 1 : 0 );
+        h = h*37 + ( oid == null ? 0 : oid.hashCode() );
+        
+        return h;
+    }
 
     
     /**
