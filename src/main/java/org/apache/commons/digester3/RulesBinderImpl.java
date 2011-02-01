@@ -18,8 +18,8 @@
 package org.apache.commons.digester3;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -52,13 +52,13 @@ final class RulesBinderImpl implements RulesBinder {
     /**
      * The data structure where storing the providers binding.
      */
-    private final Map<String, List<RuleProvider<? extends Rule>>> providers;
+    private final Collection<RegisteredProvider> providers;
 
     /**
      * Creates a new {@link RulesBinder} instance with no bound providers.
      */
     public RulesBinderImpl() {
-        this(new LinkedHashMap<String, List<RuleProvider<? extends Rule>>>());
+        this(new ArrayList<RegisteredProvider>());
     }
 
     /**
@@ -67,7 +67,7 @@ final class RulesBinderImpl implements RulesBinder {
      *
      * @param providers the data structure where storing the providers binding.
      */
-    public RulesBinderImpl(Map<String, List<RuleProvider<? extends Rule>>> providers) {
+    public RulesBinderImpl(Collection<RegisteredProvider> providers) {
         this.providers = providers;
     }
 
@@ -492,12 +492,7 @@ final class RulesBinderImpl implements RulesBinder {
                     return provider;
                 }
 
-                List<RuleProvider<? extends Rule>> providerLits = providers.get(keyPattern);
-                if (providerLits == null) {
-                    providerLits = new ArrayList<RuleProvider<? extends Rule>>();
-                    providers.put(keyPattern, providerLits);
-                }
-                providerLits.add(provider);
+                providers.add(new RegisteredProvider(keyPattern, provider));
 
                 return provider;
             }
@@ -515,6 +510,30 @@ final class RulesBinderImpl implements RulesBinder {
             }
 
         };
+    }
+
+    /**
+     * Used to associate rule providers with paths in the rules binder.
+     */
+    private static class RegisteredProvider {
+
+        private final String pattern;
+
+        private final RuleProvider<? extends Rule> provider;
+
+        public <R extends Rule> RegisteredProvider(String pattern, RuleProvider<R> provider) {
+            this.pattern = pattern;
+            this.provider = provider;
+        }
+
+        public String getPattern() {
+            return pattern;
+        }
+
+        public RuleProvider<? extends Rule> getProvider() {
+            return provider;
+        }
+
     }
 
     /**
