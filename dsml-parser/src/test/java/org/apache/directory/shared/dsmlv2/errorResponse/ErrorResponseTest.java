@@ -54,7 +54,7 @@ public class ErrorResponseTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( ErrorResponseTest.class.getResource( "response_with_requestID_attribute.xml" )
                 .openStream(), "UTF-8" );
@@ -101,7 +101,7 @@ public class ErrorResponseTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( ErrorResponseTest.class.getResource( "response_with_type_notAttempted.xml" ).openStream(),
                 "UTF-8" );
@@ -128,7 +128,7 @@ public class ErrorResponseTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( ErrorResponseTest.class.getResource( "response_with_type_couldNotConnect.xml" )
                 .openStream(), "UTF-8" );
@@ -155,7 +155,7 @@ public class ErrorResponseTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( ErrorResponseTest.class.getResource( "response_with_type_connectionClosed.xml" )
                 .openStream(), "UTF-8" );
@@ -182,7 +182,7 @@ public class ErrorResponseTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( ErrorResponseTest.class.getResource( "response_with_type_malformedRequest.xml" )
                 .openStream(), "UTF-8" );
@@ -209,7 +209,7 @@ public class ErrorResponseTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( ErrorResponseTest.class.getResource( "response_with_type_gatewayInternalError.xml" )
                 .openStream(), "UTF-8" );
@@ -236,7 +236,7 @@ public class ErrorResponseTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( ErrorResponseTest.class.getResource( "response_with_type_authenticationFailed.xml" )
                 .openStream(), "UTF-8" );
@@ -263,7 +263,7 @@ public class ErrorResponseTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( ErrorResponseTest.class.getResource( "response_with_type_unresolvableURI.xml" )
                 .openStream(), "UTF-8" );
@@ -290,7 +290,7 @@ public class ErrorResponseTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( ErrorResponseTest.class.getResource( "response_with_type_other.xml" ).openStream(),
                 "UTF-8" );
@@ -327,7 +327,7 @@ public class ErrorResponseTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( ErrorResponseTest.class.getResource( "response_with_message.xml" ).openStream(), "UTF-8" );
 
@@ -353,7 +353,7 @@ public class ErrorResponseTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( ErrorResponseTest.class.getResource( "response_with_empty_message.xml" ).openStream(),
                 "UTF-8" );

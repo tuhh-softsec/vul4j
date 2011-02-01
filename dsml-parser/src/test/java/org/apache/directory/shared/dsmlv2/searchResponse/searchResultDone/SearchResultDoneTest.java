@@ -66,7 +66,7 @@ public class SearchResultDoneTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( SearchResultDoneTest.class.getResource( "response_with_1_control.xml" ).openStream(),
                 "UTF-8" );
@@ -102,7 +102,7 @@ public class SearchResultDoneTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( SearchResultDoneTest.class.getResource( "response_with_1_control_empty_value.xml" )
                 .openStream(), "UTF-8" );
@@ -138,7 +138,7 @@ public class SearchResultDoneTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( SearchResultDoneTest.class.getResource( "response_with_2_controls.xml" ).openStream(),
                 "UTF-8" );
@@ -174,7 +174,7 @@ public class SearchResultDoneTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( SearchResultDoneTest.class.getResource( "response_with_3_controls_without_value.xml" )
                 .openStream(), "UTF-8" );
@@ -210,7 +210,7 @@ public class SearchResultDoneTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( SearchResultDoneTest.class.getResource( "response_with_requestID_attribute.xml" )
                 .openStream(), "UTF-8" );
@@ -268,7 +268,7 @@ public class SearchResultDoneTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( SearchResultDoneTest.class.getResource( "response_with_result_code.xml" ).openStream(),
                 "UTF-8" );
@@ -298,7 +298,7 @@ public class SearchResultDoneTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( SearchResultDoneTest.class.getResource( "response_with_error_message.xml" ).openStream(),
                 "UTF-8" );
@@ -329,7 +329,7 @@ public class SearchResultDoneTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( SearchResultDoneTest.class.getResource( "response_with_empty_error_message.xml" )
                 .openStream(), "UTF-8" );
@@ -359,7 +359,7 @@ public class SearchResultDoneTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( SearchResultDoneTest.class.getResource( "response_with_1_referral.xml" ).openStream(),
                 "UTF-8" );
@@ -400,7 +400,7 @@ public class SearchResultDoneTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( SearchResultDoneTest.class.getResource( "response_with_1_empty_referral.xml" )
                 .openStream(), "UTF-8" );
@@ -432,7 +432,7 @@ public class SearchResultDoneTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( SearchResultDoneTest.class.getResource( "response_with_2_referrals.xml" ).openStream(),
                 "UTF-8" );
@@ -482,7 +482,7 @@ public class SearchResultDoneTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( SearchResultDoneTest.class.getResource( "response_with_1_referral_and_error_message.xml" )
                 .openStream(), "UTF-8" );
@@ -523,7 +523,7 @@ public class SearchResultDoneTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( SearchResultDoneTest.class.getResource( "response_with_matchedDN_attribute.xml" )
                 .openStream(), "UTF-8" );

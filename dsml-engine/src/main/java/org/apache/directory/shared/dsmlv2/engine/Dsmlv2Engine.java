@@ -48,8 +48,11 @@ import org.apache.directory.shared.dsmlv2.request.BatchRequest.OnError;
 import org.apache.directory.shared.dsmlv2.request.BatchRequest.Processing;
 import org.apache.directory.shared.dsmlv2.request.BatchRequest.ResponseOrder;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.model.cursor.Cursor;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
+import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.message.AbandonRequest;
 import org.apache.directory.shared.ldap.model.message.AddRequest;
 import org.apache.directory.shared.ldap.model.message.AddResponse;
@@ -109,6 +112,8 @@ public class Dsmlv2Engine
 
     /** The batch response. */
     private BatchResponseDsml batchResponse;
+    
+    private ILdapCodecService codec = new DefaultLdapCodecService();
 
 
     /**
@@ -140,7 +145,7 @@ public class Dsmlv2Engine
      */
     public String processDSML( String dsmlInput ) throws XmlPullParserException
     {
-        parser = new Dsmlv2Parser();
+        parser = new Dsmlv2Parser( codec );
         parser.setInput( dsmlInput );
 
         return processDSML();
@@ -161,7 +166,7 @@ public class Dsmlv2Engine
      */
     public String processDSMLFile( String fileName ) throws XmlPullParserException, FileNotFoundException
     {
-        parser = new Dsmlv2Parser();
+        parser = new Dsmlv2Parser( codec );
         parser.setInputFile( fileName );
 
         return processDSML();
@@ -182,7 +187,7 @@ public class Dsmlv2Engine
      */
     public String processDSML( InputStream inputStream, String inputEncoding ) throws XmlPullParserException
     {
-        parser = new Dsmlv2Parser();
+        parser = new Dsmlv2Parser( codec );
         parser.setInput( inputStream, inputEncoding );
         return processDSML();
     }

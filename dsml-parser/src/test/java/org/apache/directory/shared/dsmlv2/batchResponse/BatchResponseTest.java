@@ -62,7 +62,7 @@ public class BatchResponseTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( BatchResponseTest.class.getResource( "response_with_requestID_attribute.xml" )
                 .openStream(), "UTF-8" );
@@ -99,7 +99,7 @@ public class BatchResponseTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( BatchResponseTest.class.getResource( "response_with_0_response.xml" ).openStream(),
                 "UTF-8" );
@@ -126,7 +126,7 @@ public class BatchResponseTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( BatchResponseTest.class.getResource( "response_with_1_AddResponse.xml" ).openStream(),
                 "UTF-8" );
@@ -164,7 +164,7 @@ public class BatchResponseTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( BatchResponseTest.class.getResource( "response_with_1_AuthResponse.xml" ).openStream(),
                 "UTF-8" );
@@ -202,7 +202,7 @@ public class BatchResponseTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( BatchResponseTest.class.getResource( "response_with_1_CompareResponse.xml" ).openStream(),
                 "UTF-8" );
@@ -240,7 +240,7 @@ public class BatchResponseTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( BatchResponseTest.class.getResource( "response_with_1_DelResponse.xml" ).openStream(),
                 "UTF-8" );
@@ -278,7 +278,7 @@ public class BatchResponseTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( BatchResponseTest.class.getResource( "response_with_1_ErrorResponse.xml" ).openStream(),
                 "UTF-8" );
@@ -316,7 +316,7 @@ public class BatchResponseTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput(
                 BatchResponseTest.class.getResource( "response_with_1_ExtendedResponse.xml" ).openStream(), "UTF-8" );
@@ -354,7 +354,7 @@ public class BatchResponseTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( BatchResponseTest.class.getResource( "response_with_1_ModDNResponse.xml" ).openStream(),
                 "UTF-8" );
@@ -392,7 +392,7 @@ public class BatchResponseTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( BatchResponseTest.class.getResource( "response_with_1_ModifyResponse.xml" ).openStream(),
                 "UTF-8" );
@@ -430,7 +430,7 @@ public class BatchResponseTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( BatchResponseTest.class.getResource( "response_with_1_SearchResponse.xml" ).openStream(),
                 "UTF-8" );
@@ -468,7 +468,7 @@ public class BatchResponseTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( BatchResponseTest.class.getResource( "response_with_2_AddResponse.xml" ).openStream(),
                 "UTF-8" );
@@ -506,7 +506,7 @@ public class BatchResponseTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( BatchResponseTest.class.getResource( "response_with_2_AuthResponse.xml" ).openStream(),
                 "UTF-8" );
@@ -544,7 +544,7 @@ public class BatchResponseTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( BatchResponseTest.class.getResource( "response_with_2_CompareResponse.xml" ).openStream(),
                 "UTF-8" );
@@ -582,7 +582,7 @@ public class BatchResponseTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( BatchResponseTest.class.getResource( "response_with_2_DelResponse.xml" ).openStream(),
                 "UTF-8" );
@@ -620,7 +620,7 @@ public class BatchResponseTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( BatchResponseTest.class.getResource( "response_with_2_ErrorResponse.xml" ).openStream(),
                 "UTF-8" );
@@ -658,7 +658,7 @@ public class BatchResponseTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput(
                 BatchResponseTest.class.getResource( "response_with_2_ExtendedResponse.xml" ).openStream(), "UTF-8" );
@@ -696,7 +696,7 @@ public class BatchResponseTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( BatchResponseTest.class.getResource( "response_with_2_ModDNResponse.xml" ).openStream(),
                 "UTF-8" );
@@ -734,7 +734,7 @@ public class BatchResponseTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( BatchResponseTest.class.getResource( "response_with_2_ModifyResponse.xml" ).openStream(),
                 "UTF-8" );
@@ -772,7 +772,7 @@ public class BatchResponseTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( BatchResponseTest.class.getResource( "response_with_2_SearchResponse.xml" ).openStream(),
                 "UTF-8" );

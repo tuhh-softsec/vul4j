@@ -86,7 +86,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource( "request_with_dn_attribute.xml" ).openStream(),
                 "UTF-8" );
@@ -113,7 +113,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput(
                 SearchRequestTest.class.getResource( "request_with_requestID_attribute.xml" ).openStream(), "UTF-8" );
@@ -150,7 +150,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource( "request_with_1_control.xml" ).openStream(), "UTF-8" );
 
@@ -184,7 +184,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource( "request_with_1_control_base64_value.xml" )
                 .openStream(), "UTF-8" );
@@ -219,7 +219,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource( "request_with_1_control_empty_value.xml" )
                 .openStream(), "UTF-8" );
@@ -254,7 +254,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser
                 .setInput( SearchRequestTest.class.getResource( "request_with_2_controls.xml" ).openStream(), "UTF-8" );
@@ -289,7 +289,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource( "request_with_3_controls_without_value.xml" )
                 .openStream(), "UTF-8" );
@@ -345,7 +345,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource( "request_with_scope_baseObject.xml" ).openStream(),
                 "UTF-8" );
@@ -373,7 +373,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource( "request_with_scope_singleLevel.xml" ).openStream(),
                 "UTF-8" );
@@ -401,7 +401,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource( "request_with_scope_wholeSubtree.xml" ).openStream(),
                 "UTF-8" );
@@ -449,7 +449,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource( "request_with_derefAliases_derefAlways.xml" )
                 .openStream(), "UTF-8" );
@@ -477,7 +477,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource( "request_with_derefAliases_derefFindingBaseObj.xml" )
                 .openStream(), "UTF-8" );
@@ -505,7 +505,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource( "request_with_derefAliases_derefInSearching.xml" )
                 .openStream(), "UTF-8" );
@@ -533,7 +533,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource( "request_with_derefAliases_neverDerefAliases.xml" )
                 .openStream(), "UTF-8" );
@@ -572,7 +572,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput(
                 SearchRequestTest.class.getResource( "request_with_sizeLimit_attribute.xml" ).openStream(), "UTF-8" );
@@ -611,7 +611,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput(
                 SearchRequestTest.class.getResource( "request_with_timeLimit_attribute.xml" ).openStream(), "UTF-8" );
@@ -649,7 +649,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource( "request_with_typesOnly_true.xml" ).openStream(),
                 "UTF-8" );
@@ -676,7 +676,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource( "request_with_typesOnly_1.xml" ).openStream(),
                 "UTF-8" );
@@ -703,7 +703,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource( "request_with_typesOnly_false.xml" ).openStream(),
                 "UTF-8" );
@@ -730,7 +730,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource( "request_with_typesOnly_0.xml" ).openStream(),
                 "UTF-8" );
@@ -777,7 +777,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource( "request_with_attributes_but_no_attribute.xml" )
                 .openStream(), "UTF-8" );
@@ -813,7 +813,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource( "request_with_attributes_1_attribute.xml" )
                 .openStream(), "UTF-8" );
@@ -845,7 +845,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource( "request_with_attributes_2_attribute.xml" )
                 .openStream(), "UTF-8" );
@@ -899,7 +899,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource( "filters/request_with_and.xml" ).openStream(),
                 "UTF-8" );
@@ -928,7 +928,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser
                 .setInput( SearchRequestTest.class.getResource( "filters/request_with_or.xml" ).openStream(), "UTF-8" );
@@ -957,7 +957,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource( "filters/request_with_not.xml" ).openStream(),
                 "UTF-8" );
@@ -996,7 +996,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput(
                 SearchRequestTest.class.getResource( "filters/request_with_approxMatch.xml" ).openStream(), "UTF-8" );
@@ -1031,7 +1031,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource( "filters/request_with_approxMatch_base64_value.xml" )
                 .openStream(), "UTF-8" );
@@ -1066,7 +1066,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource(
                 "filters/request_with_approxMatch_with_empty_value.xml" ).openStream(), "UTF-8" );
@@ -1131,7 +1131,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource( "filters/request_with_greaterOrEqual.xml" )
                 .openStream(), "UTF-8" );
@@ -1166,7 +1166,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource(
                 "filters/request_with_greaterOrEqual_base64_value.xml" ).openStream(), "UTF-8" );
@@ -1201,7 +1201,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource(
                 "filters/request_with_greaterOrEqual_with_empty_value.xml" ).openStream(), "UTF-8" );
@@ -1266,7 +1266,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput(
                 SearchRequestTest.class.getResource( "filters/request_with_lessOrEqual.xml" ).openStream(), "UTF-8" );
@@ -1301,7 +1301,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource( "filters/request_with_lessOrEqual_base64_value.xml" )
                 .openStream(), "UTF-8" );
@@ -1336,7 +1336,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource(
                 "filters/request_with_lessOrEqual_with_empty_value.xml" ).openStream(), "UTF-8" );
@@ -1401,7 +1401,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource( "filters/request_with_equalityMatch.xml" )
                 .openStream(), "UTF-8" );
@@ -1435,7 +1435,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class
                 .getResource( "filters/request_with_equalityMatch_base64_value.xml" ).openStream(), "UTF-8" );
@@ -1470,7 +1470,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource(
                 "filters/request_with_equalityMatch_with_empty_value.xml" ).openStream(), "UTF-8" );
@@ -1535,7 +1535,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource( "filters/request_with_present.xml" ).openStream(),
                 "UTF-8" );
@@ -1578,7 +1578,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource( "filters/request_with_extensibleMatch.xml" )
                 .openStream(), "UTF-8" );
@@ -1613,7 +1613,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource(
                 "filters/request_with_extensibleMatch_base64_value.xml" ).openStream(), "UTF-8" );
@@ -1648,7 +1648,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource(
                 "filters/request_with_extensibleMatch_with_empty_value.xml" ).openStream(), "UTF-8" );
@@ -1703,7 +1703,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource(
                 "filters/request_with_extensibleMatch_with_dnAttributes_true.xml" ).openStream(), "UTF-8" );
@@ -1736,7 +1736,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource(
                 "filters/request_with_extensibleMatch_with_dnAttributes_1.xml" ).openStream(), "UTF-8" );
@@ -1769,7 +1769,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource(
                 "filters/request_with_extensibleMatch_with_dnAttributes_false.xml" ).openStream(), "UTF-8" );
@@ -1802,7 +1802,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource(
                 "filters/request_with_extensibleMatch_with_dnAttributes_0.xml" ).openStream(), "UTF-8" );
@@ -1845,7 +1845,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource(
                 "filters/request_with_extensibleMatch_with_matchingRule.xml" ).openStream(), "UTF-8" );
@@ -1878,7 +1878,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource( "filters/request_with_extensibleMatch_with_name.xml" )
                 .openStream(), "UTF-8" );
@@ -1911,7 +1911,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource( "filters/request_with_substrings.xml" ).openStream(),
                 "UTF-8" );
@@ -1954,7 +1954,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource( "filters/request_with_substrings_1_initial.xml" )
                 .openStream(), "UTF-8" );
@@ -1987,7 +1987,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource(
                 "filters/request_with_substrings_1_base64_initial.xml" ).openStream(), "UTF-8" );
@@ -2020,7 +2020,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class
                 .getResource( "filters/request_with_substrings_1_empty_initial.xml" ).openStream(), "UTF-8" );
@@ -2053,7 +2053,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class
                 .getResource( "filters/request_with_substrings_1_initial_1_any.xml" ).openStream(), "UTF-8" );
@@ -2092,7 +2092,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource(
                 "filters/request_with_substrings_1_initial_1_final.xml" ).openStream(), "UTF-8" );
@@ -2127,7 +2127,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource( "filters/request_with_substrings_1_any.xml" )
                 .openStream(), "UTF-8" );
@@ -2163,7 +2163,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource( "filters/request_with_substrings_1_base64_any.xml" )
                 .openStream(), "UTF-8" );
@@ -2199,7 +2199,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource( "filters/request_with_substrings_1_empty_any.xml" )
                 .openStream(), "UTF-8" );
@@ -2234,7 +2234,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource( "filters/request_with_substrings_2_any.xml" )
                 .openStream(), "UTF-8" );
@@ -2273,7 +2273,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource( "filters/request_with_substrings_1_any_1_final.xml" )
                 .openStream(), "UTF-8" );
@@ -2312,7 +2312,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource( "filters/request_with_substrings_1_final.xml" )
                 .openStream(), "UTF-8" );
@@ -2345,7 +2345,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource( "filters/request_with_substrings_1_base64_final.xml" )
                 .openStream(), "UTF-8" );
@@ -2378,7 +2378,7 @@ public class SearchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( SearchRequestTest.class.getResource( "filters/request_with_substrings_1_empty_final.xml" )
                 .openStream(), "UTF-8" );

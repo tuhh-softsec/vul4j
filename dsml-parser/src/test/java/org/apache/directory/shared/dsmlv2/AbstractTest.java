@@ -21,12 +21,12 @@
 package org.apache.directory.shared.dsmlv2;
 
 
-import org.apache.directory.shared.dsmlv2.Dsmlv2Parser;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.xmlpull.v1.XmlPullParserException;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 /**
  * This class had to be used to create a Request TestCase
@@ -37,7 +37,6 @@ public abstract class AbstractTest
 {
     /** The LDAP encoder decoder service */
     private ILdapCodecService codec = new DefaultLdapCodecService();
-    
     
     public ILdapCodecService getCodec()
     {
@@ -57,7 +56,7 @@ public abstract class AbstractTest
     {
         try
         {
-            Dsmlv2Parser parser = new Dsmlv2Parser();
+            Dsmlv2Parser parser = new Dsmlv2Parser( codec );
 
             parser.setInput( testClass.getResource( filename ).openStream(), "UTF-8" );
 

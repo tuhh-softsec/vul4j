@@ -21,10 +21,10 @@
 package org.apache.directory.shared.dsmlv2;
 
 
-import org.apache.directory.shared.dsmlv2.Dsmlv2ResponseParser;
-import org.xmlpull.v1.XmlPullParserException;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * This class had to be used to create a Response TestCase
@@ -45,7 +45,7 @@ public abstract class AbstractResponseTest extends AbstractTest
     {
         try
         {
-            Dsmlv2ResponseParser parser = new Dsmlv2ResponseParser();
+            Dsmlv2ResponseParser parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( testClass.getResource( filename ).openStream(), "UTF-8" );
 

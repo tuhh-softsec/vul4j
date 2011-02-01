@@ -51,7 +51,7 @@ public class SearchResponseTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( SearchResponseTest.class.getResource( "response_with_requestID_attribute.xml" )
                 .openStream(), "UTF-8" );
@@ -88,7 +88,7 @@ public class SearchResponseTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( SearchResponseTest.class.getResource( "response_with_1_SRD.xml" ).openStream(), "UTF-8" );
 
@@ -114,7 +114,7 @@ public class SearchResponseTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( SearchResponseTest.class.getResource( "response_with_1_SRE_1_SRD.xml" ).openStream(),
                 "UTF-8" );
@@ -143,7 +143,7 @@ public class SearchResponseTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( SearchResponseTest.class.getResource( "response_with_1_SRR_1_SRD.xml" ).openStream(),
                 "UTF-8" );
@@ -172,7 +172,7 @@ public class SearchResponseTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput(
                 SearchResponseTest.class.getResource( "response_with_1_SRE_1_SRR_1_SRD.xml" ).openStream(), "UTF-8" );
@@ -203,7 +203,7 @@ public class SearchResponseTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( SearchResponseTest.class.getResource( "response_with_2_SRE_1_SRD.xml" ).openStream(),
                 "UTF-8" );
@@ -232,7 +232,7 @@ public class SearchResponseTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( SearchResponseTest.class.getResource( "response_with_2_SRR_1_SRD.xml" ).openStream(),
                 "UTF-8" );
@@ -261,7 +261,7 @@ public class SearchResponseTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput(
                 SearchResponseTest.class.getResource( "response_with_2_SRE_2_SRR_1_SRD.xml" ).openStream(), "UTF-8" );

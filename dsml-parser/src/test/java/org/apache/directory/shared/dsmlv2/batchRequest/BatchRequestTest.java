@@ -64,7 +64,7 @@ public class BatchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( BatchRequestTest.class.getResource( "request_with_requestID_attribute.xml" ).openStream(),
                 "UTF-8" );
@@ -101,7 +101,7 @@ public class BatchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( BatchRequestTest.class.getResource( "request_with_requestID_attribute.xml" ).openStream(),
                 "UTF-8" );
@@ -128,7 +128,7 @@ public class BatchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( BatchRequestTest.class.getResource( "request_with_1_AuthRequest.xml" ).openStream(),
                 "UTF-8" );
@@ -166,7 +166,7 @@ public class BatchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( BatchRequestTest.class.getResource( "request_with_1_AddRequest.xml" ).openStream(),
                 "UTF-8" );
@@ -204,7 +204,7 @@ public class BatchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( BatchRequestTest.class.getResource( "request_with_1_CompareRequest.xml" ).openStream(),
                 "UTF-8" );
@@ -242,7 +242,7 @@ public class BatchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( BatchRequestTest.class.getResource( "request_with_1_AbandonRequest.xml" ).openStream(),
                 "UTF-8" );
@@ -280,7 +280,7 @@ public class BatchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( BatchRequestTest.class.getResource( "request_with_1_DelRequest.xml" ).openStream(),
                 "UTF-8" );
@@ -318,7 +318,7 @@ public class BatchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( BatchRequestTest.class.getResource( "request_with_1_ExtendedRequest.xml" ).openStream(),
                 "UTF-8" );
@@ -356,7 +356,7 @@ public class BatchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( BatchRequestTest.class.getResource( "request_with_1_ModDNRequest.xml" ).openStream(),
                 "UTF-8" );
@@ -394,7 +394,7 @@ public class BatchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( BatchRequestTest.class.getResource( "request_with_1_ModifyRequest.xml" ).openStream(),
                 "UTF-8" );
@@ -432,7 +432,7 @@ public class BatchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( BatchRequestTest.class.getResource( "request_with_1_SearchRequest.xml" ).openStream(),
                 "UTF-8" );
@@ -470,7 +470,7 @@ public class BatchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( BatchRequestTest.class.getResource( "request_with_2_AddRequest.xml" ).openStream(),
                 "UTF-8" );
@@ -508,7 +508,7 @@ public class BatchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( BatchRequestTest.class.getResource( "request_with_2_CompareRequest.xml" ).openStream(),
                 "UTF-8" );
@@ -546,7 +546,7 @@ public class BatchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( BatchRequestTest.class.getResource( "request_with_2_AbandonRequest.xml" ).openStream(),
                 "UTF-8" );
@@ -584,7 +584,7 @@ public class BatchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( BatchRequestTest.class.getResource( "request_with_2_DelRequest.xml" ).openStream(),
                 "UTF-8" );
@@ -622,7 +622,7 @@ public class BatchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( BatchRequestTest.class.getResource( "request_with_2_ExtendedRequest.xml" ).openStream(),
                 "UTF-8" );
@@ -660,7 +660,7 @@ public class BatchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( BatchRequestTest.class.getResource( "request_with_2_ModDNRequest.xml" ).openStream(),
                 "UTF-8" );
@@ -698,7 +698,7 @@ public class BatchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( BatchRequestTest.class.getResource( "request_with_2_ModifyRequest.xml" ).openStream(),
                 "UTF-8" );
@@ -736,7 +736,7 @@ public class BatchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( BatchRequestTest.class.getResource( "request_with_2_SearchRequest.xml" ).openStream(),
                 "UTF-8" );
@@ -774,7 +774,7 @@ public class BatchRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser();
+            parser = new Dsmlv2Parser( getCodec() );
 
             parser.setInput( BatchRequestTest.class.getResource( "request_with_1_AuthRequest_1_AddRequest.xml" )
                 .openStream(), "UTF-8" );

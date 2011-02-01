@@ -65,7 +65,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( SearchResultEntryTest.class.getResource( "response_with_1_control.xml" ).openStream(),
                 "UTF-8" );
@@ -101,7 +101,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( SearchResultEntryTest.class.getResource( "response_with_1_control_empty_value.xml" )
                 .openStream(), "UTF-8" );
@@ -137,7 +137,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( SearchResultEntryTest.class.getResource( "response_with_2_controls.xml" ).openStream(),
                 "UTF-8" );
@@ -173,7 +173,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( SearchResultEntryTest.class.getResource( "response_with_3_controls_without_value.xml" )
                 .openStream(), "UTF-8" );
@@ -229,7 +229,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( SearchResultEntryTest.class.getResource( "response_with_dn_attribute.xml" ).openStream(),
                 "UTF-8" );
@@ -257,7 +257,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( SearchResultEntryTest.class.getResource( "response_with_requestID_attribute.xml" )
                 .openStream(), "UTF-8" );
@@ -295,7 +295,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( SearchResultEntryTest.class.getResource( "response_with_0_attr.xml" ).openStream(),
                 "UTF-8" );
@@ -320,7 +320,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput(
                 SearchResultEntryTest.class.getResource( "response_with_1_attr_0_value.xml" ).openStream(), "UTF-8" );
@@ -353,7 +353,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput(
                 SearchResultEntryTest.class.getResource( "response_with_1_attr_1_value.xml" ).openStream(), "UTF-8" );
@@ -392,7 +392,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( SearchResultEntryTest.class.getResource( "response_with_1_attr_1_base64_value.xml" )
                 .openStream(), "UTF-8" );
@@ -435,7 +435,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput( SearchResultEntryTest.class.getResource( "response_with_1_attr_1_empty_value.xml" )
                 .openStream(), "UTF-8" );
@@ -474,7 +474,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput(
                 SearchResultEntryTest.class.getResource( "response_with_1_attr_2_value.xml" ).openStream(), "UTF-8" );
@@ -517,7 +517,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
         Dsmlv2ResponseParser parser = null;
         try
         {
-            parser = new Dsmlv2ResponseParser();
+            parser = new Dsmlv2ResponseParser( getCodec() );
 
             parser.setInput(
                 SearchResultEntryTest.class.getResource( "response_with_2_attr_1_value.xml" ).openStream(), "UTF-8" );
