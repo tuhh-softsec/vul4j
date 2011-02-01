@@ -22,13 +22,13 @@ import org.w3c.dom.Node;
 
 /**@deprecated*/
 public interface ElementChecker {
-         /**
-          * Check that the elemnt is the one expect
-          *
-          * @throws XMLSecurityException
-          */
-           public void guaranteeThatElementInCorrectSpace(ElementProxy expected, Element actual)
-                   throws XMLSecurityException;
-           
-           public boolean isNamespaceElement(Node el, String type, String ns);
+    /**
+     * Check that the element is the one expect
+     *
+     * @throws XMLSecurityException
+     */
+    public void guaranteeThatElementInCorrectSpace(ElementProxy expected, Element actual)
+        throws XMLSecurityException;
+
+    public boolean isNamespaceElement(Node el, String type, String ns);
 }

@@ -94,8 +94,8 @@ public class ECDSASignatureTest extends org.junit.Assert {
              + dbf.isIgnoringElementContentWhitespace()
          );
         
-        String id = "http://apache.org/xml/properties/dom/document-class-name";
-        dbf.setAttribute(id, IndexedDocument.class.getName());
+        //String id = "http://apache.org/xml/properties/dom/document-class-name";
+        //dbf.setAttribute(id, IndexedDocument.class.getName());
         
         db = dbf.newDocumentBuilder();
         org.apache.xml.security.Init.init();

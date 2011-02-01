@@ -47,12 +47,14 @@ public final class ClassLoaderUtils {
      * @param resourceName The name of the resource to load
      * @param callingClass The Class object of the calling object
      */
-    public static URL getResource(String resourceName, Class callingClass) {
+    public static URL getResource(String resourceName, Class<?> callingClass) {
         URL url = Thread.currentThread().getContextClassLoader().getResource(resourceName);
         if (url == null && resourceName.startsWith("/")) {
             //certain classloaders need it without the leading /
-            url = Thread.currentThread().getContextClassLoader()
-                .getResource(resourceName.substring(1));
+            url = 
+                Thread.currentThread().getContextClassLoader().getResource(
+                    resourceName.substring(1)
+                );
         }
 
         ClassLoader cluClassloader = ClassLoaderUtils.class.getClassLoader();
@@ -98,28 +100,29 @@ public final class ClassLoaderUtils {
      * @param resourceName The name of the resource to load
      * @param callingClass The Class object of the calling object
      */
-    public static List getResources(String resourceName, Class callingClass) {
-        List ret = new ArrayList();
-        Enumeration urls = new Enumeration() {
+    public static List<URL> getResources(String resourceName, Class<?> callingClass) {
+        List<URL> ret = new ArrayList<URL>();
+        Enumeration<URL> urls = new Enumeration<URL>() {
             public boolean hasMoreElements() {
                 return false;
             }
-            public Object nextElement() {
+            public URL nextElement() {
                 return null;
             }
             
         };
         try {
-            urls = Thread.currentThread().getContextClassLoader()
-                .getResources(resourceName);
+            urls = Thread.currentThread().getContextClassLoader().getResources(resourceName);
         } catch (IOException e) {
             //ignore
         }
         if (!urls.hasMoreElements() && resourceName.startsWith("/")) {
             //certain classloaders need it without the leading /
             try {
-                urls = Thread.currentThread().getContextClassLoader()
-                    .getResources(resourceName.substring(1));
+                urls = 
+                    Thread.currentThread().getContextClassLoader().getResources(
+                        resourceName.substring(1)
+                    );
             } catch (IOException e) {
                 // ignore
             }
@@ -182,7 +185,7 @@ public final class ClassLoaderUtils {
      * @param resourceName The name of the resource to load
      * @param callingClass The Class object of the calling object
      */
-    public static InputStream getResourceAsStream(String resourceName, Class callingClass) {
+    public static InputStream getResourceAsStream(String resourceName, Class<?> callingClass) {
         URL url = getResource(resourceName, callingClass);
 
         try {
@@ -206,7 +209,7 @@ public final class ClassLoaderUtils {
      * @param callingClass The Class object of the calling object
      * @throws ClassNotFoundException If the class cannot be found anywhere.
      */
-    public static Class loadClass(String className, Class callingClass)
+    public static Class<?> loadClass(String className, Class<?> callingClass)
         throws ClassNotFoundException {
         try {
             ClassLoader cl = Thread.currentThread().getContextClassLoader();
@@ -220,7 +223,7 @@ public final class ClassLoaderUtils {
         return loadClass2(className, callingClass);
     }
 
-    private static Class loadClass2(String className, Class callingClass)
+    private static Class<?> loadClass2(String className, Class<?> callingClass)
         throws ClassNotFoundException {
         try {
             return Class.forName(className);
