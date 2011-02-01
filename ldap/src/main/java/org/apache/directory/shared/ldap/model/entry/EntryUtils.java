@@ -74,6 +74,7 @@ public class EntryUtils
     /**
      * A local Syntax class used for the tests
      */
+    @SuppressWarnings("PMD.AvoidUsingHardCodedIP")
     public static LdapSyntax syntaxFactory( String oid, boolean humanReadable )
     {
         LdapSyntax ldapSyntax = new LdapSyntax( oid );
