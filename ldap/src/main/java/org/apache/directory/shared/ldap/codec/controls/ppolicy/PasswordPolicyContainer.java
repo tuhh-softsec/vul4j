@@ -30,38 +30,38 @@ import org.apache.directory.shared.ldap.codec.ILdapCodecService;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class PasswordPolicyResponseContainer extends AbstractContainer
+public class PasswordPolicyContainer extends AbstractContainer
 {
-    private PasswordPolicyResponseDecorator control;
+    private PasswordPolicyDecorator control;
 
 
-    public PasswordPolicyResponseContainer( ILdapCodecService codec )
+    public PasswordPolicyContainer( ILdapCodecService codec )
     {
         super();
-        control = new PasswordPolicyResponseDecorator( codec, new PasswordPolicyResponseDecorator( codec ) );
+        control = new PasswordPolicyDecorator( codec, new PasswordPolicy() );
         stateStack = new int[1];
-        grammar = PasswordPolicyResponseGrammar.getInstance();
-        setTransition( PasswordPolicyResponseStates.START_STATE );
+        grammar = PasswordPolicyGrammar.getInstance();
+        setTransition( PasswordPolicyStates.START_STATE );
     }
 
 
-    public PasswordPolicyResponseContainer( ILdapCodecService codec, IPasswordPolicyResponse ppolicyResponse )
+    public PasswordPolicyContainer( ILdapCodecService codec, IPasswordPolicy ppolicyResponse )
     {
         super();
-        control = new PasswordPolicyResponseDecorator( codec, ppolicyResponse );
+        control = new PasswordPolicyDecorator( codec, ppolicyResponse );
         stateStack = new int[1];
-        grammar = PasswordPolicyResponseGrammar.getInstance();
-        setTransition( PasswordPolicyResponseStates.START_STATE );
+        grammar = PasswordPolicyGrammar.getInstance();
+        setTransition( PasswordPolicyStates.START_STATE );
     }
 
 
-    public PasswordPolicyResponseDecorator getPasswordPolicyResponseControl()
+    public PasswordPolicyDecorator getPasswordPolicyResponseControl()
     {
         return control;
     }
 
 
-    public void setPasswordPolicyResponseControl( PasswordPolicyResponseDecorator control )
+    public void setPasswordPolicyResponseControl( PasswordPolicyDecorator control )
     {
         this.control = control;
     }

@@ -48,9 +48,6 @@ public abstract class ControlDecorator<E extends Control> extends AbstractAsn1Ob
     /** The encoded value length */
     protected int valueLength;
 
-    /** The control length */
-    private int controlLength;
-
     /** The encoded value of the control. */
     protected byte[] value;
     

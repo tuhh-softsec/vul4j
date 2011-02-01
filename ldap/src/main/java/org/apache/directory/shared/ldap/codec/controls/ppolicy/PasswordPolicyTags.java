@@ -25,7 +25,7 @@ package org.apache.directory.shared.ldap.codec.controls.ppolicy;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public enum PasswordPolicyResponseTags
+public enum PasswordPolicyTags
 {
     PPOLICY_WARNING_TAG(0xA0),          // warning [0]
     PPOLICY_ERROR_TAG(0x81),            // error [1]
@@ -36,7 +36,7 @@ public enum PasswordPolicyResponseTags
     private int value;
 
 
-    private PasswordPolicyResponseTags( int value )
+    private PasswordPolicyTags( int value )
     {
         this.value = value;
     }

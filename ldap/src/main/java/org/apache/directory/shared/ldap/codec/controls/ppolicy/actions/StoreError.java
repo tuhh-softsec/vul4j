@@ -23,7 +23,7 @@ package org.apache.directory.shared.ldap.codec.controls.ppolicy.actions;
 import org.apache.directory.shared.asn1.actions.AbstractReadInteger;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.ldap.codec.controls.ppolicy.PasswordPolicyErrorEnum;
-import org.apache.directory.shared.ldap.codec.controls.ppolicy.PasswordPolicyResponseContainer;
+import org.apache.directory.shared.ldap.codec.controls.ppolicy.PasswordPolicyContainer;
 
 
 /**
@@ -49,10 +49,10 @@ public class StoreError extends AbstractReadInteger
     @Override
     protected void setIntegerValue( int value, Asn1Container container )
     {
-        PasswordPolicyResponseContainer ppolicyContainer = ( PasswordPolicyResponseContainer ) container;
+        PasswordPolicyContainer ppolicyContainer = ( PasswordPolicyContainer ) container;
         
         PasswordPolicyErrorEnum error = PasswordPolicyErrorEnum.get( value );
-        ppolicyContainer.getPasswordPolicyResponseControl().setPasswordPolicyError( error );
+        ppolicyContainer.getPasswordPolicyResponseControl().getResponse().setPasswordPolicyError( error );
 
         ppolicyContainer.setGrammarEndAllowed( true );
     }

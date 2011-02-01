@@ -32,25 +32,22 @@ import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 
 
 /**
- * A {@link IControlFactory} implementation producing {@link IPasswordPolicyRequest} 
- * controls.
+ * A {@link IControlFactory} which creates {@link IPasswordPolicy} controls.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class PasswordPolicyRequestFactory 
-    implements IControlFactory<IPasswordPolicyRequest, PasswordPolicyRequestDecorator>
+public class PasswordPolicyFactory implements IControlFactory<IPasswordPolicy, PasswordPolicyDecorator>
 {
-    /** The LDAP codec service */
+    
     private ILdapCodecService codec;
     
 
     /**
-     * Creates a new instance of PasswordPolicyRequestFactory.
+     * Creates a new instance of PasswordPolicyFactory.
      *
-     * @param codec The LDAP codec service
      */
-    public PasswordPolicyRequestFactory( ILdapCodecService codec )
+    public PasswordPolicyFactory( ILdapCodecService codec )
     {
         this.codec = codec;
     }
@@ -62,7 +59,7 @@ public class PasswordPolicyRequestFactory
      */
     public String getOid()
     {
-        return IPasswordPolicyRequest.OID;
+        return IPasswordPolicy.OID;
     }
 
     
@@ -70,55 +67,61 @@ public class PasswordPolicyRequestFactory
      * 
      * {@inheritDoc}
      */
-    public PasswordPolicyRequestDecorator newCodecControl()
+    public PasswordPolicyDecorator newCodecControl()
     {
-        return new PasswordPolicyRequestDecorator( codec, new PasswordPolicyRequest() );
-    }
-
-    
-    /**
-     * 
-     * {@inheritDoc}
-     */
-    public PasswordPolicyRequestDecorator decorate( IPasswordPolicyRequest modelControl )
-    {
-        return new PasswordPolicyRequestDecorator( codec, modelControl );
+        return new PasswordPolicyDecorator( codec );
     }
     
 
-    /**
-     * 
-     * {@inheritDoc}
-     */
-    public IPasswordPolicyRequest newControl()
+    public PasswordPolicyDecorator decorate( IPasswordPolicy control )
     {
-        return new PasswordPolicyRequest();
+        PasswordPolicyDecorator decorator = null;
+        
+        // protect against double decoration
+        if ( control instanceof PasswordPolicyDecorator )
+        {
+            decorator = ( PasswordPolicyDecorator ) control;
+        }
+        else
+        {
+            decorator = new PasswordPolicyDecorator( codec, control );
+        }
+        
+        return decorator;
+    }
+
+    
+    public IPasswordPolicy newControl()
+    {
+        return new PasswordPolicy();
     }
     
-    
-    /**
-     * 
-     * {@inheritDoc}
-     */
-    public Control toJndiControl( IPasswordPolicyRequest modelControl ) throws EncoderException
+
+    public Control toJndiControl( IPasswordPolicy control ) throws EncoderException
     {
-        PasswordPolicyRequestDecorator decorator = decorate( modelControl );
+        PasswordPolicyDecorator decorator = decorate( control );
         ByteBuffer bb = ByteBuffer.allocate( decorator.computeLength() );
         decorator.encode( bb );
         bb.flip();
-        return new BasicControl( modelControl.getOid(), modelControl.isCritical(), decorator.getValue() );
+        return new BasicControl( control.getOid(), control.isCritical(), decorator.getValue() );
     }
 
     
-    /**
-     * 
-     * {@inheritDoc}
-     */
-    public IPasswordPolicyRequest fromJndiControl( Control jndiControl ) throws DecoderException
+    public IPasswordPolicy fromJndiControl( Control jndi ) throws DecoderException
     {
-        PasswordPolicyRequestDecorator decorator = newCodecControl();
-        decorator.setCritical( jndiControl.isCritical() );
-        decorator.setValue( jndiControl.getEncodedValue() );
+        PasswordPolicyDecorator decorator = null;
+        
+        if ( jndi.getEncodedValue() == null || jndi.getEncodedValue().length == 0 )
+        {
+            decorator = new PasswordPolicyDecorator( codec, false );
+        }
+        else
+        {
+            decorator = new PasswordPolicyDecorator( codec, true );
+        }
+        
+        decorator.setCritical( jndi.isCritical() );
+        decorator.setValue( jndi.getEncodedValue() );
         byte[] controlBytes = new byte[ decorator.computeLength() ];
         decorator.decode( controlBytes );
         return decorator.getDecorated();

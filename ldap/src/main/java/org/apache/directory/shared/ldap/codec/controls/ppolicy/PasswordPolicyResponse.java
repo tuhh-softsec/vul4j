@@ -36,8 +36,6 @@ public class PasswordPolicyResponse implements IPasswordPolicyResponse
 
     /** number representing the password policy error */
     private PasswordPolicyErrorEnum ppolicyError;
-    
-    private boolean critical;
 
     
     /**
@@ -91,23 +89,5 @@ public class PasswordPolicyResponse implements IPasswordPolicyResponse
     public void setPasswordPolicyError( PasswordPolicyErrorEnum ppolicyError )
     {
         this.ppolicyError = ppolicyError;
-    }
-
-
-    public String getOid()
-    {
-        return PasswordPolicyRequest.OID;
-    }
-
-
-    public boolean isCritical()
-    {
-        return critical;
-    }
-
-
-    public void setCritical( boolean critical )
-    {
-        this.critical = critical;
     }
 }

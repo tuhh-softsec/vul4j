@@ -20,17 +20,8 @@
 package org.apache.directory.shared.ldap.codec.controls.ppolicy;
 
 
-import org.apache.directory.shared.ldap.model.message.Control;
-
-
-/**
- * PasswordPolicyResponseControl.
- *
- * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- */
-public interface IPasswordPolicyResponse extends Control
+public interface IPasswordPolicyResponse
 {
-
     int getTimeBeforeExpiration();
 
 
@@ -47,5 +38,4 @@ public interface IPasswordPolicyResponse extends Control
 
 
     void setPasswordPolicyError( PasswordPolicyErrorEnum ppolicyError );
-
 }

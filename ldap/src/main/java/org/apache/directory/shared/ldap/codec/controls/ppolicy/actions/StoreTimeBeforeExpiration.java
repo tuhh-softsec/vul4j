@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.codec.controls.ppolicy.actions;
 
 import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.actions.AbstractReadInteger;
-import org.apache.directory.shared.ldap.codec.controls.ppolicy.PasswordPolicyResponseContainer;
+import org.apache.directory.shared.ldap.codec.controls.ppolicy.PasswordPolicyContainer;
 
 
 /**
@@ -48,9 +48,9 @@ public class StoreTimeBeforeExpiration extends AbstractReadInteger
     @Override
     protected void setIntegerValue( int value, Asn1Container container )
     {
-        PasswordPolicyResponseContainer ppolicyContainer = ( PasswordPolicyResponseContainer ) container;
+        PasswordPolicyContainer ppolicyContainer = ( PasswordPolicyContainer ) container;
         
-        ppolicyContainer.getPasswordPolicyResponseControl().setTimeBeforeExpiration( value );
+        ppolicyContainer.getPasswordPolicyResponseControl().getResponse().setTimeBeforeExpiration( value );
         
         container.setGrammarEndAllowed( true );
     }

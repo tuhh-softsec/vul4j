@@ -30,8 +30,8 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.controls.CascadeFactory;
 import org.apache.directory.shared.ldap.codec.controls.ManageDsaITFactory;
-import org.apache.directory.shared.ldap.codec.controls.ppolicy.IPasswordPolicyRequest;
-import org.apache.directory.shared.ldap.codec.controls.ppolicy.PasswordPolicyRequestFactory;
+import org.apache.directory.shared.ldap.codec.controls.ppolicy.PasswordPolicy;
+import org.apache.directory.shared.ldap.codec.controls.ppolicy.PasswordPolicyFactory;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.ISyncDoneValue;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.SyncDoneValueFactory;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValue.ISyncInfoValue;
@@ -113,9 +113,9 @@ public class DefaultLdapCodecService implements ILdapCodecService
 
         SyncStateValueFactory syncStateValueFactory = new SyncStateValueFactory( this );
         controlFactories.put( ISyncStateValue.OID, syncStateValueFactory );
-
-        PasswordPolicyRequestFactory passwordPolicyRequestFactory = new PasswordPolicyRequestFactory( this );
-        controlFactories.put( IPasswordPolicyRequest.OID, passwordPolicyRequestFactory );
+        
+        PasswordPolicyFactory passwordPolicyFactory = new PasswordPolicyFactory( this );
+        controlFactories.put( PasswordPolicy.OID, passwordPolicyFactory );
 }
     
 
