@@ -38,6 +38,7 @@ import org.apache.commons.digester3.rulesbinder.PathCallParamBuilder;
 import org.apache.commons.digester3.rulesbinder.SetPropertiesBuilder;
 import org.apache.commons.digester3.rulesbinder.SetPropertyBuilder;
 import org.apache.commons.digester3.spi.RuleProvider;
+import org.apache.commons.digester3.spi.Rules;
 
 /**
  * The Digester EDSL implementation.
@@ -510,6 +511,18 @@ final class RulesBinderImpl implements RulesBinder {
             }
 
         };
+    }
+
+    /**
+     * Invokes the bound providers, then create the rule and associate it to the related pattern,
+     * storing them in the proper {@link Rules} implementation data structure.
+     *
+     * @param rules The {@link Rules} implementation to store the produced {@link Rule}s
+     */
+    public void populateRules(Rules rules) {
+        for (RegisteredProvider registeredProvider : this.providers) {
+            rules.add(registeredProvider.getPattern(), registeredProvider.getProvider().get());
+        }
     }
 
     /**
