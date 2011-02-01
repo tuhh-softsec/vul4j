@@ -532,8 +532,54 @@ final class RulesBinderImpl implements RulesBinder {
                 });
             }
 
+            /**
+             * 
+             */
             public CallParamBuilder callParam() {
-                return null;
+                return this.addProvider(new CallParamBuilder() {
+
+                    private int paramIndex = 0;
+
+                    private int stackIndex = 0;
+
+                    private boolean fromStack = false;
+
+                    private String attributeName;
+
+                    public CallParamRule get() {
+                        return setNamespaceAndReturn(new CallParamRule(paramIndex, fromStack, stackIndex, attributeName));
+                    }
+
+                    public LinkedRuleBuilder then() {
+                        return mainBuilder;
+                    }
+
+                    public CallParamBuilder withStackIndex(int stackIndex) {
+                        this.stackIndex = stackIndex;
+                        return this;
+                    }
+
+                    public CallParamBuilder ofIndex(int paramIndex) {
+                        if (paramIndex < 0) {
+                            addError("{forPattern(\"%s\").callParam().ofIndex(int)} negative index argument not allowed",
+                                    keyPattern);
+                        }
+
+                        this.paramIndex = paramIndex;
+                        return this;
+                    }
+
+                    public CallParamBuilder fromStack(boolean fromStack) {
+                        this.fromStack = fromStack;
+                        return this;
+                    }
+
+                    public CallParamBuilder fromAttribute(/* @Nullable */String attributeName) {
+                        this.attributeName = attributeName;
+                        return this;
+                    }
+
+                });
             }
 
             public CallMethodBuilder callMethod(String methodName) {
