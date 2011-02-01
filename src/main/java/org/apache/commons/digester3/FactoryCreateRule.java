@@ -67,24 +67,13 @@ public class FactoryCreateRule extends Rule {
      * @param className Default Java class name of the factory class
      * @param attributeName Attribute name which, if present, contains an
      *  override of the class name of the object creation factory to create.
+     * 
      * @param ignoreCreateExceptions if true, exceptions thrown by the object
      *  creation factory will be ignored.
      */
-    public FactoryCreateRule(String className, String attributeName, boolean ignoreCreateExceptions) {
+    public <T> FactoryCreateRule(String className, String attributeName, ObjectCreationFactory<T> creationFactory, boolean ignoreCreateExceptions) {
         this.className = className;
         this.attributeName = attributeName;
-        this.ignoreCreateExceptions = ignoreCreateExceptions;
-    }
-
-    /**
-     * Construct a factory create rule using the given, already instantiated,
-     * {@link ObjectCreationFactory}.
-     *
-     * @param creationFactory called on to create the object.
-     * @param ignoreCreateExceptions if true, exceptions thrown by the object
-     *  creation factory will be ignored.
-     */
-    public <T> FactoryCreateRule(ObjectCreationFactory<T> creationFactory, boolean ignoreCreateExceptions) {
         this.creationFactory = creationFactory;
         this.ignoreCreateExceptions = ignoreCreateExceptions;
     }
