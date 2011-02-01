@@ -42,7 +42,7 @@ abstract class AbstractRulesImpl implements Rules {
     /**
      * {@inheritDoc}
      */
-    public void add(String pattern, Rule rule) {
+    public final void add(String pattern, Rule rule) {
         if (this.digester != null && rule != null) {
             rule.setDigester(this.digester);
         }
