@@ -54,24 +54,7 @@ final class RulesBinderImpl implements RulesBinder {
     /**
      * The data structure where storing the providers binding.
      */
-    private final Collection<RegisteredProvider> providers;
-
-    /**
-     * Creates a new {@link RulesBinder} instance with no bound providers.
-     */
-    public RulesBinderImpl() {
-        this(new ArrayList<RegisteredProvider>());
-    }
-
-    /**
-     * Creates a new {@link RulesBinder} instance with already bound providers,
-     * useful when creating child Digester from an existing configuration.
-     *
-     * @param providers the data structure where storing the providers binding.
-     */
-    public RulesBinderImpl(Collection<RegisteredProvider> providers) {
-        this.providers = providers;
-    }
+    private final Collection<RegisteredProvider> providers = new ArrayList<RegisteredProvider>();
 
     /**
      * {@inheritDoc}
