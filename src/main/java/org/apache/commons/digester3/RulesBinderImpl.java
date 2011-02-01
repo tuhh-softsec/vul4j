@@ -37,6 +37,7 @@ import org.apache.commons.digester3.rulesbinder.ParamTypeBuilder;
 import org.apache.commons.digester3.rulesbinder.PathCallParamBuilder;
 import org.apache.commons.digester3.rulesbinder.SetPropertiesBuilder;
 import org.apache.commons.digester3.rulesbinder.SetPropertyBuilder;
+import org.apache.commons.digester3.spi.ObjectCreationFactory;
 import org.apache.commons.digester3.spi.RuleProvider;
 import org.apache.commons.digester3.spi.Rules;
 
@@ -356,12 +357,103 @@ final class RulesBinderImpl implements RulesBinder {
                 });
             }
 
-            public <T> ObjectParamBuilder objectParam(T paramObj) {
-                return null;
+            /**
+             * 
+             */
+            public <T> ObjectParamBuilder objectParam(/* @Nullable */final T paramObj) {
+                return this.addProvider(new ObjectParamBuilder() {
+
+                    private int paramIndex = 0;
+
+                    private String attributeName;
+
+                    public ObjectParamRule get() {
+                        return setNamespaceAndReturn(new ObjectParamRule(paramIndex, attributeName, paramObj));
+                    }
+
+                    public LinkedRuleBuilder then() {
+                        return mainBuilder;
+                    }
+
+                    public ObjectParamBuilder ofIndex(int paramIndex) {
+                        if (paramIndex < 0) {
+                            addError("{forPattern(\"%s\").objectParam(%s).ofIndex(int)} negative index argument not allowed",
+                                    keyPattern,
+                                    String.valueOf(paramObj));
+                        }
+
+                        this.paramIndex = paramIndex;
+                        return this;
+                    }
+
+                    public ObjectParamBuilder matchingAttribute(/* @Nullable */String attributeName) {
+                        this.attributeName = attributeName;
+                        return this;
+                    }
+
+                });
             }
 
+            /**
+             * 
+             */
             public FactoryCreateBuilder factoryCreate() {
-                return null;
+                return this.addProvider(new FactoryCreateBuilder() {
+
+                    private String className;
+
+                    private String attributeName;
+
+                    private boolean ignoreCreateExceptions;
+
+                    private ObjectCreationFactory<?> creationFactory;
+
+                    public FactoryCreateRule get() { // loading error, the rest are binding errors
+                        if (className == null && attributeName == null && creationFactory == null) {
+                            addError("{forPattern(\"%s\").factoryCreate()} at least one between 'className' ar 'attributeName' or 'creationFactory' has to be specified",
+                                    keyPattern);
+                            return null;
+                        }
+
+                        return setNamespaceAndReturn(
+                                new FactoryCreateRule(keyPattern, attributeName, creationFactory, ignoreCreateExceptions));
+                    }
+
+                    public LinkedRuleBuilder then() {
+                        return mainBuilder;
+                    }
+
+                    public <T> FactoryCreateBuilder usingFactory(/* @Nullable */ObjectCreationFactory<T> creationFactory) {
+                        this.creationFactory = creationFactory;
+                        return this;
+                    }
+
+                    public FactoryCreateBuilder overriddenByAttribute(/* @Nullable */String attributeName) {
+                        this.attributeName = attributeName;
+                        return this;
+                    }
+
+                    public FactoryCreateBuilder ofType(Class<?> type) {
+                        if (type == null) {
+                            addError("{forPattern(\"%s\").factoryCreate().ofType(Class<?>)} NULL Java type not allowed",
+                                    keyPattern);
+                            return this;
+                        }
+
+                        return this.ofType(type.getName());
+                    }
+
+                    public FactoryCreateBuilder ofType(/* @Nullable */String className) {
+                        this.className = className;
+                        return this;
+                    }
+
+                    public FactoryCreateBuilder ignoreCreateExceptions(boolean ignoreCreateExceptions) {
+                        this.ignoreCreateExceptions = ignoreCreateExceptions;
+                        return this;
+                    }
+
+                });
             }
 
             /**
