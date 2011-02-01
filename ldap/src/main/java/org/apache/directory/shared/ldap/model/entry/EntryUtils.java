@@ -31,8 +31,6 @@ import org.apache.directory.shared.ldap.model.schema.comparators.ByteArrayCompar
 import org.apache.directory.shared.ldap.model.schema.normalizers.DeepTrimToLowerNormalizer;
 import org.apache.directory.shared.util.Strings;
 
-import java.lang.*;
-
 /**
  * Some common declaration used by the serverEntry tests.
  *

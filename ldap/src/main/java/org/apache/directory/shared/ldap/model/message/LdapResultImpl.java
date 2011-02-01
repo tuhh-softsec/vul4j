@@ -20,10 +20,6 @@
 
 package org.apache.directory.shared.ldap.model.message;
 
-
-import org.apache.directory.shared.ldap.model.message.LdapResult;
-import org.apache.directory.shared.ldap.model.message.Referral;
-import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.model.name.Dn;
 
 

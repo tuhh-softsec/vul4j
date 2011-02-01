@@ -21,8 +21,6 @@
 package org.apache.directory.shared.ldap.model.message;
 
 
-import org.apache.directory.shared.ldap.model.message.Message;
-
 /**
  * Super interface used as a marker for all protocol response type messages.
  * Note that only 2 response interfaces directly extend this interfaces. They

@@ -20,10 +20,6 @@
 package org.apache.directory.shared.ldap.model.message;
 
 
-import org.apache.directory.shared.ldap.model.message.AbstractResultResponse;
-import org.apache.directory.shared.ldap.model.message.AddResponse;
-
-
 /**
  * AddResponse implementation.
  * 

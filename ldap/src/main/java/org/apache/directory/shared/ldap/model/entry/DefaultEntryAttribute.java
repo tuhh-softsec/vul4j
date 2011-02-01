@@ -22,7 +22,6 @@ package org.apache.directory.shared.ldap.model.entry;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.lang.*;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;

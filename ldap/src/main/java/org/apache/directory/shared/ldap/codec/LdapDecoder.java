@@ -22,7 +22,6 @@ package org.apache.directory.shared.ldap.codec;
 
 import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.security.ProviderException;
 
 import org.apache.directory.shared.asn1.DecoderCallback;
 import org.apache.directory.shared.asn1.DecoderException;

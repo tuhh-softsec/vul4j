@@ -21,8 +21,6 @@
 package org.apache.directory.shared.util;
 
 
-import org.apache.directory.shared.util.AbstractSimpleComponentsMonitor;
-
 /**
  * A components monitor for optional components.
  *

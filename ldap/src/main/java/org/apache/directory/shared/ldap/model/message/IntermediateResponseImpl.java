@@ -22,8 +22,6 @@ package org.apache.directory.shared.ldap.model.message;
 
 import java.util.Arrays;
 
-import org.apache.directory.shared.ldap.model.message.AbstractResultResponse;
-import org.apache.directory.shared.ldap.model.message.IntermediateResponse;
 import org.apache.directory.shared.util.Strings;
 
 

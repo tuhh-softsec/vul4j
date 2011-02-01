@@ -29,18 +29,16 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.model.entry.Entry;
-import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
-import org.apache.directory.shared.ldap.model.name.Dn;
-import org.apache.directory.shared.ldap.model.schema.registries.*;
-import org.apache.directory.shared.util.exception.NotImplementedException;
 import org.apache.directory.shared.ldap.model.constants.MetaSchemaConstants;
 import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
+import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.exception.LdapOtherException;
 import org.apache.directory.shared.ldap.model.exception.LdapProtocolErrorException;
 import org.apache.directory.shared.ldap.model.exception.LdapUnwillingToPerformException;
+import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
+import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.schema.AttributeType;
 import org.apache.directory.shared.ldap.model.schema.EntityFactory;
 import org.apache.directory.shared.ldap.model.schema.LdapComparator;
@@ -72,6 +70,7 @@ import org.apache.directory.shared.ldap.model.schema.registries.ImmutableSyntaxC
 import org.apache.directory.shared.ldap.model.schema.registries.LdapSyntaxRegistry;
 import org.apache.directory.shared.ldap.model.schema.registries.MatchingRuleRegistry;
 import org.apache.directory.shared.ldap.model.schema.registries.MatchingRuleUseRegistry;
+import org.apache.directory.shared.ldap.model.schema.registries.NameFormRegistry;
 import org.apache.directory.shared.ldap.model.schema.registries.NormalizerRegistry;
 import org.apache.directory.shared.ldap.model.schema.registries.ObjectClassRegistry;
 import org.apache.directory.shared.ldap.model.schema.registries.OidRegistry;
@@ -81,6 +80,7 @@ import org.apache.directory.shared.ldap.model.schema.registries.SchemaLoader;
 import org.apache.directory.shared.ldap.model.schema.registries.SyntaxCheckerRegistry;
 import org.apache.directory.shared.ldap.schemaloader.SchemaEntityFactory;
 import org.apache.directory.shared.util.Strings;
+import org.apache.directory.shared.util.exception.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -29,7 +29,6 @@ import javax.naming.LimitExceededException;
 import javax.naming.PartialResultException;
 import javax.naming.SizeLimitExceededException;
 
-import org.apache.directory.shared.ldap.model.exception.*;
 import org.apache.directory.shared.ldap.model.exception.LdapAttributeInUseException;
 import org.apache.directory.shared.ldap.model.exception.LdapAuthenticationException;
 import org.apache.directory.shared.ldap.model.exception.LdapAuthenticationNotSupportedException;
@@ -37,12 +36,13 @@ import org.apache.directory.shared.ldap.model.exception.LdapContextNotEmptyExcep
 import org.apache.directory.shared.ldap.model.exception.LdapEntryAlreadyExistsException;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidAttributeTypeException;
+import org.apache.directory.shared.ldap.model.exception.LdapInvalidAttributeValueException;
+import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidSearchFilterException;
 import org.apache.directory.shared.ldap.model.exception.LdapNoPermissionException;
 import org.apache.directory.shared.ldap.model.exception.LdapNoSuchAttributeException;
 import org.apache.directory.shared.ldap.model.exception.LdapNoSuchObjectException;
 import org.apache.directory.shared.ldap.model.exception.LdapOperationException;
-import org.apache.directory.shared.ldap.model.exception.LdapInvalidAttributeValueException;
 import org.apache.directory.shared.ldap.model.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.model.exception.LdapServiceUnavailableException;
 import org.apache.directory.shared.ldap.model.exception.LdapTimeLimitExceededException;

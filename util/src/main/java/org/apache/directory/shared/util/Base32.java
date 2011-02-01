@@ -21,8 +21,6 @@
 package org.apache.directory.shared.util;
 
 
-import org.apache.directory.shared.util.Strings;
-
 /**
  * decoding of base32 characters to raw bytes.
  * 
