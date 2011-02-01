@@ -52,9 +52,6 @@ import org.junit.runner.RunWith;
 @Concurrent()
 public class SubtreeSpecificationParserTest
 {
-    /** the ACIItem checker wrapper */
-    private static SubtreeSpecificationChecker checker;
-
     /** the ss parser wrapper */
     private static SubtreeSpecificationParser parser;
 
@@ -115,7 +112,6 @@ public class SubtreeSpecificationParserTest
     private static ObjectClass TOP_OC;      // 2.5.6.0
     private static ObjectClass ALIAS_OC;    // 2.5.6.1
     private static ObjectClass COUNTRY_OC;  // 2.5.6.2
-    private static ObjectClass LOCALITY_OC; // 2.5.6.3
     private static ObjectClass PERSON_OC;   // 2.5.6.6
 
     /**
@@ -129,13 +125,11 @@ public class SubtreeSpecificationParserTest
 
         schemaManager.loadAllEnabled();
 
-        checker = new SubtreeSpecificationChecker( schemaManager );
         parser = new SubtreeSpecificationParser( schemaManager );
 
         TOP_OC = schemaManager.lookupObjectClassRegistry( "top" );
         ALIAS_OC = schemaManager.lookupObjectClassRegistry( "alias" );
         COUNTRY_OC = schemaManager.lookupObjectClassRegistry( "country" );
-        LOCALITY_OC = schemaManager.lookupObjectClassRegistry( "locality" );
         PERSON_OC = schemaManager.lookupObjectClassRegistry( "person" );
     }
 
@@ -326,8 +320,6 @@ public class SubtreeSpecificationParserTest
         List<Refinement> outerAndList = new ArrayList<Refinement>();
         outerAndList.add( innerAndRefinement );
         outerAndList.add( notRefinement );
-
-        Refinement outerAndRefinement = new AndRefinement( outerAndList );
 
         StringBuilder buffer = new StringBuilder();
         ss.getRefinement().printRefinementToBuffer( buffer );
