@@ -582,8 +582,58 @@ final class RulesBinderImpl implements RulesBinder {
                 });
             }
 
-            public CallMethodBuilder callMethod(String methodName) {
-                return null;
+            /**
+             * 
+             */
+            public CallMethodBuilder callMethod(final String methodName) {
+                if (methodName == null || methodName.length() == 0) {
+                    addError("{forPattern(\"%s\").callMethod(String)} empty 'methodName' not allowed", keyPattern);
+                }
+
+                return this.addProvider(new CallMethodBuilder() {
+
+                    private int targetOffset;
+
+                    private int paramCount;
+
+                    private Class<?>[] paramTypes;
+
+                    private boolean useExactMatch;
+
+                    public CallMethodRule get() {
+                        return setNamespaceAndReturn(new CallMethodRule(targetOffset, methodName, paramCount, paramTypes, useExactMatch));
+                    }
+
+                    public LinkedRuleBuilder then() {
+                        return mainBuilder;
+                    }
+
+                    public CallMethodBuilder useExactMatch(boolean useExactMatch) {
+                        this.useExactMatch = useExactMatch;
+                        return this;
+                    }
+
+                    public CallMethodBuilder withTargetOffset(int targetOffset) {
+                        this.targetOffset = targetOffset;
+                        return this;
+                    }
+
+                    public CallMethodBuilder withParamCount(int paramCount) {
+                        if (paramCount < 0) {
+                            addError("{forPattern(\"%s\").callMethod().withParamCount(int)} negative parameters counter not allowed",
+                                    keyPattern);
+                        }
+
+                        this.paramCount = paramCount;
+                        return null;
+                    }
+
+                    public CallMethodBuilder withParamTypes(/* @Nullable */Class<?>... paramTypes) {
+                        this.paramTypes = paramTypes;
+                        return this;
+                    }
+
+                });
             }
 
             /**
