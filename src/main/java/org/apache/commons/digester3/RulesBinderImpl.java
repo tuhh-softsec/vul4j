@@ -218,7 +218,7 @@ final class RulesBinderImpl implements RulesBinder {
 
                     public SetPropertyBuilder extractingValueFromAttribute(String valueAttributeName) {
                         if (attributePropertyName == null || attributePropertyName.length() == 0) {
-                            addError("{forPattern(\"%s\").setProperty(\"%s\")} empty 'valueAttributeName' not allowed",
+                            addError("{forPattern(\"%s\").setProperty(\"%s\").extractingValueFromAttribute(String)} empty 'valueAttributeName' not allowed",
                                     keyPattern,
                                     attributePropertyName);
                         }
