@@ -601,7 +601,8 @@ final class RulesBinderImpl implements RulesBinder {
                     private boolean useExactMatch;
 
                     public CallMethodRule get() {
-                        return setNamespaceAndReturn(new CallMethodRule(targetOffset, methodName, paramCount, paramTypes, useExactMatch));
+                        return setNamespaceAndReturn(
+                                new CallMethodRule(targetOffset, methodName, paramCount, paramTypes, useExactMatch));
                     }
 
                     public LinkedRuleBuilder then() {
