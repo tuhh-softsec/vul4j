@@ -28,6 +28,8 @@ import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.model.exception.LdapAttributeInUseException;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
+import org.apache.directory.shared.ldap.model.exception.LdapSchemaException;
+import org.apache.directory.shared.ldap.model.exception.LdapSchemaExceptionCodes;
 import org.apache.directory.shared.ldap.model.schema.LoadableSchemaObject;
 import org.apache.directory.shared.ldap.model.schema.SchemaObject;
 import org.apache.directory.shared.ldap.model.schema.SchemaObjectType;
@@ -78,7 +80,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
     {
         if ( !byName.containsKey( oid ) )
         {
-            return byName.containsKey( Strings.toLowerCase(oid) );
+            return byName.containsKey( Strings.toLowerCase( oid ) );
         }
 
         return true;
@@ -90,7 +92,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
      */
     public String getSchemaName( String oid ) throws LdapException
     {
-        if ( !OID.isOID(oid) )
+        if ( !OID.isOID( oid ) )
         {
             String msg = I18n.err( I18n.ERR_04267 );
             LOG.warn( msg );
@@ -165,7 +167,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
         if ( schemaObject == null )
         {
             // let's try with trimming and lowercasing now
-            schemaObject = byName.get( Strings.trim(Strings.toLowerCase(oid)) );
+            schemaObject = byName.get( Strings.trim( Strings.toLowerCase( oid ) ) );
         }
 
         if ( schemaObject == null )
@@ -195,7 +197,8 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
         {
             String msg = I18n.err( I18n.ERR_04270, schemaObjectType.name(), oid );
             LOG.warn( msg );
-            throw new LdapAttributeInUseException( msg );
+            throw new LdapSchemaException( LdapSchemaExceptionCodes.OID_ALREADY_REGISTERED,
+                schemaObject, msg );
         }
 
         byName.put( oid, schemaObject );
@@ -206,13 +209,14 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
          */
         for ( String name : schemaObject.getNames() )
         {
-            String lowerName = Strings.trim(Strings.toLowerCase(name));
+            String lowerName = Strings.trim( Strings.toLowerCase( name ) );
 
             if ( byName.containsKey( lowerName ) )
             {
                 String msg = I18n.err( I18n.ERR_04271, schemaObjectType.name(), name );
                 LOG.warn( msg );
-                throw new LdapAttributeInUseException( msg );
+                throw new LdapSchemaException( LdapSchemaExceptionCodes.NAME_ALREADY_REGISTERED,
+                    schemaObject, msg );
             }
             else
             {
@@ -284,7 +288,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
          */
         for ( String name : schemaObject.getNames() )
         {
-            byName.remove( Strings.trim(Strings.toLowerCase(name)) );
+            byName.remove( Strings.trim( Strings.toLowerCase( name ) ) );
         }
 
         // And unregister the oid -> schemaObject relation

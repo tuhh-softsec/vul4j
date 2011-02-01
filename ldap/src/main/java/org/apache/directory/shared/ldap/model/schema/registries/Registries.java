@@ -32,6 +32,8 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.model.constants.MetaSchemaConstants;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapProtocolErrorException;
+import org.apache.directory.shared.ldap.model.exception.LdapSchemaException;
+import org.apache.directory.shared.ldap.model.exception.LdapSchemaExceptionCodes;
 import org.apache.directory.shared.ldap.model.exception.LdapSchemaViolationException;
 import org.apache.directory.shared.ldap.model.exception.LdapUnwillingToPerformException;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
@@ -419,7 +421,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
      */
     public Schema getLoadedSchema( String schemaName )
     {
-        return loadedSchemas.get( Strings.toLowerCase(schemaName) );
+        return loadedSchemas.get( Strings.toLowerCase( schemaName ) );
     }
 
 
@@ -431,7 +433,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
      */
     public boolean isSchemaLoaded( String schemaName )
     {
-        return loadedSchemas.containsKey( Strings.toLowerCase(schemaName) );
+        return loadedSchemas.containsKey( Strings.toLowerCase( schemaName ) );
     }
 
 
@@ -1004,13 +1006,16 @@ public class Registries implements SchemaLoaderListener, Cloneable
             catch ( LdapException ne )
             {
                 // This MR's syntax has not been loaded into the Registries.
-                errors.add( ne );
+                Throwable error = new LdapSchemaException( LdapSchemaExceptionCodes.OID_ALREADY_REGISTERED,
+                        matchingRule, I18n.err( I18n.ERR_04294, matchingRule.getOid() ) );
+                errors.add( error );
             }
         }
         else
         {
             // This is an error. 
-            Throwable error = new LdapProtocolErrorException( I18n.err( I18n.ERR_04294, matchingRule.getOid() ) );
+            Throwable error = new LdapSchemaException( LdapSchemaExceptionCodes.OID_ALREADY_REGISTERED,
+                    matchingRule, I18n.err( I18n.ERR_04294, matchingRule.getOid() ) );
             errors.add( error );
         }
 
@@ -1243,7 +1248,9 @@ public class Registries implements SchemaLoaderListener, Cloneable
                 if ( musts.contains( may ) )
                 {
                     // This is not allowed.
-                    Throwable error = new LdapProtocolErrorException( I18n.err( I18n.ERR_04299, objectClass.getOid() ) );
+                    Throwable error = new LdapSchemaException(
+                        LdapSchemaExceptionCodes.OC_DUPLICATE_AT_IN_MAY_AND_MUST,
+                        objectClass, may );
                     errors.add( error );
                     return;
                 }
@@ -1272,7 +1279,9 @@ public class Registries implements SchemaLoaderListener, Cloneable
                 // This OC's superior has not been loaded into the Registries.
                 if ( !processed.contains( superiorOid ) )
                 {
-                    errors.add( ne );
+                    Throwable error = new LdapSchemaException( LdapSchemaExceptionCodes.OC_NONEXISTENT_SUPERIOR,
+                        objectClass, superiorOid );
+                    errors.add( error );
                 }
             }
 
@@ -1288,8 +1297,8 @@ public class Registries implements SchemaLoaderListener, Cloneable
                 else
                 {
                     // Not allowed : we have a cyle
-                    Throwable error = new LdapProtocolErrorException( I18n.err( I18n.ERR_04300, objectClass.getOid(),
-                        superior ) );
+                    Throwable error = new LdapSchemaException( LdapSchemaExceptionCodes.OC_CYCLE_CLASS_HIERARCHY,
+                        objectClass, superior );
                     errors.add( error );
                     return;
                 }
@@ -1424,7 +1433,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
      */
     public void schemaLoaded( Schema schema )
     {
-        this.loadedSchemas.put( Strings.toLowerCase(schema.getSchemaName()), schema );
+        this.loadedSchemas.put( Strings.toLowerCase( schema.getSchemaName() ), schema );
     }
 
 
@@ -1436,7 +1445,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
      */
     public void schemaUnloaded( Schema schema )
     {
-        this.loadedSchemas.remove( Strings.toLowerCase(schema.getSchemaName()) );
+        this.loadedSchemas.remove( Strings.toLowerCase( schema.getSchemaName() ) );
     }
 
 
@@ -1466,7 +1475,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
      */
     private String getSchemaName( SchemaObject schemaObject )
     {
-        String schemaName = Strings.toLowerCase(schemaObject.getSchemaName());
+        String schemaName = Strings.toLowerCase( schemaObject.getSchemaName() );
 
         if ( loadedSchemas.containsKey( schemaName ) )
         {
@@ -1632,7 +1641,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         if ( content == null )
         {
             content = new HashSet<SchemaObjectWrapper>();
-            schemaObjects.put( Strings.toLowerCase(schemaName), content );
+            schemaObjects.put( Strings.toLowerCase( schemaName ), content );
         }
 
         SchemaObjectWrapper schemaObjectWrapper = new SchemaObjectWrapper( schemaObject );
@@ -1740,7 +1749,8 @@ public class Registries implements SchemaLoaderListener, Cloneable
      * @throws LdapException If the removal failed
      */
     // Remove me when TODO is implemented
-    @SuppressWarnings({"PMD.UnusedFormalParameter","PMD.EmptyIfStmt"})
+    @SuppressWarnings(
+        { "PMD.UnusedFormalParameter", "PMD.EmptyIfStmt" })
     private SchemaObject unregister( List<Throwable> errors, SchemaObject schemaObject ) throws LdapException
     {
         LOG.debug( "Unregistering {}:{}", schemaObject.getObjectType(), schemaObject.getOid() );
@@ -1825,7 +1835,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
     public void dissociateFromSchema( SchemaObject schemaObject ) throws LdapException
     {
         // And unregister the schemaObject within its schema
-        Set<SchemaObjectWrapper> content = schemaObjects.get( Strings.toLowerCase(schemaObject.getSchemaName()) );
+        Set<SchemaObjectWrapper> content = schemaObjects.get( Strings.toLowerCase( schemaObject.getSchemaName() ) );
 
         if ( content != null )
         {

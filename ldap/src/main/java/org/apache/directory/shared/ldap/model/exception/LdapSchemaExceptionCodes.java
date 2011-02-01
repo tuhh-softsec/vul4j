@@ -31,6 +31,17 @@ import org.apache.directory.shared.ldap.model.schema.SchemaManager;
  */
 public enum LdapSchemaExceptionCodes
 {
+    // Codes for all Schema Objects
+
+    /** Characterizing a SO with an OID being already registered */
+    OID_ALREADY_REGISTERED,
+    
+    /** Characterizing a SO with a name being already registered */
+    NAME_ALREADY_REGISTERED,
+
+    /** Characterizing an SO with a nonexistent schema */
+    NONEXISTENT_SCHEMA,
+    
     // Codes for Attribute Type
 
     /** Characterizing an AT with a nonexistent superior */
@@ -83,6 +94,9 @@ public enum LdapSchemaExceptionCodes
     /** Characterizing an OC with a nonexistent superior */
     OC_NONEXISTENT_SUPERIOR,
 
+    /** Characterizing an OC containing a cycle in its class hierarchy */
+    OC_CYCLE_CLASS_HIERARCHY,
+
     /** Characterizing an OC with a collective AT in its must ATs list */
     OC_COLLECTIVE_NOT_ALLOWED_IN_MUST,
 
@@ -103,4 +117,8 @@ public enum LdapSchemaExceptionCodes
 
     /** Characterizing an OC with a duplicated AT in its may and must ATs list */
     OC_DUPLICATE_AT_IN_MAY_AND_MUST,
+    // Codes for all Schema Objects
+
+    /** Characterizing a MR with a nonexistent syntax */
+    MR_NONEXISTENT_SYNTAX,
 }

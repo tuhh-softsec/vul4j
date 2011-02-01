@@ -36,10 +36,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
-import org.apache.directory.shared.ldap.model.exception.LdapAttributeInUseException;
 import org.apache.directory.shared.ldap.model.exception.LdapSchemaException;
-import org.apache.directory.shared.ldap.model.exception.LdapUnwillingToPerformException;
-import org.apache.directory.shared.ldap.model.exception.LdapProtocolErrorException;
 import org.apache.directory.shared.ldap.model.schema.AttributeType;
 import org.apache.directory.shared.ldap.model.schema.LdapComparator;
 import org.apache.directory.shared.ldap.model.schema.LdapSyntax;
@@ -608,7 +605,7 @@ public class SchemaManagerAddTest
         assertEquals( 1, errors.size() );
         Throwable error = errors.get( 0 );
 
-        assertTrue( error instanceof LdapProtocolErrorException );
+        assertTrue( error instanceof LdapSchemaException );
 
         // The AT must be there
         assertTrue( isATPresent( schemaManager, "2.5.18.4" ) );
@@ -645,7 +642,7 @@ public class SchemaManagerAddTest
         assertEquals( 1, errors.size() );
         Throwable error = errors.get( 0 );
 
-        assertTrue( error instanceof LdapAttributeInUseException );
+        assertTrue( error instanceof LdapSchemaException );
 
         // The AT must not be there
         assertFalse( isATPresent( schemaManager, "1.1.1.0" ) );
@@ -986,7 +983,7 @@ public class SchemaManagerAddTest
 
         assertEquals( 1, errors.size() );
         Throwable error = errors.get( 0 );
-        assertTrue( error instanceof LdapProtocolErrorException );
+        assertTrue( error instanceof LdapSchemaException );
 
         assertFalse( isMRPresent( schemaManager, "1.1.0" ) );
 
@@ -1015,7 +1012,7 @@ public class SchemaManagerAddTest
 
         assertEquals( 1, errors.size() );
         Throwable error = errors.get( 0 );
-        assertTrue( error instanceof LdapProtocolErrorException );
+        assertTrue( error instanceof LdapSchemaException );
 
         // Check that the existing MR has not been replaced
         assertTrue( isMRPresent( schemaManager, "2.5.13.0" ) );
@@ -1049,7 +1046,7 @@ public class SchemaManagerAddTest
 
         assertEquals( 1, errors.size() );
         Throwable error = errors.get( 0 );
-        assertTrue( error instanceof LdapAttributeInUseException );
+        assertTrue( error instanceof LdapSchemaException );
 
         assertEquals( mrrSize, schemaManager.getMatchingRuleRegistry().size() );
         assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
@@ -1111,7 +1108,7 @@ public class SchemaManagerAddTest
         assertEquals( 1, errors.size() );
         Throwable error = errors.get( 0 );
 
-        assertTrue( error instanceof LdapProtocolErrorException );
+        assertTrue( error instanceof LdapSchemaException );
 
         assertEquals( mrrSize, schemaManager.getMatchingRuleRegistry().size() );
         assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
@@ -1140,7 +1137,7 @@ public class SchemaManagerAddTest
 
         assertEquals( 1, errors.size() );
         Throwable error = errors.get( 0 );
-        assertTrue( error instanceof LdapUnwillingToPerformException );
+        assertTrue( error instanceof LdapSchemaException );
 
         // Check that the new MR has been injected
         assertFalse( isMRPresent( schemaManager, "1.1.0" ) );
@@ -1314,7 +1311,7 @@ public class SchemaManagerAddTest
         assertEquals( 1, schemaManager.getErrors().size() );
         Throwable error = schemaManager.getErrors().get( 0 );
 
-        assertTrue( error instanceof LdapProtocolErrorException );
+        assertTrue( error instanceof LdapSchemaException );
 
         ObjectClass added = schemaManager.lookupObjectClassRegistry( "2.5.17.0" );
 
@@ -1343,7 +1340,7 @@ public class SchemaManagerAddTest
         assertEquals( 1, schemaManager.getErrors().size() );
         Throwable error = schemaManager.getErrors().get( 0 );
 
-        assertTrue( error instanceof LdapAttributeInUseException );
+        assertTrue( error instanceof LdapSchemaException );
 
         assertFalse( isOCPresent( schemaManager, "1.1.0" ) );
 
@@ -1616,7 +1613,7 @@ public class SchemaManagerAddTest
 
         assertFalse( schemaManager.add( objectClass ) );
 
-        assertTrue( schemaManager.getErrors().get( 0 ) instanceof LdapProtocolErrorException );
+        assertTrue( schemaManager.getErrors().get( 0 ) instanceof LdapSchemaException );
 
         assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
 
@@ -1642,7 +1639,7 @@ public class SchemaManagerAddTest
 
         assertFalse( schemaManager.add( objectClass ) );
 
-        assertTrue( schemaManager.getErrors().get( 0 ) instanceof LdapProtocolErrorException );
+        assertTrue( schemaManager.getErrors().get( 0 ) instanceof LdapSchemaException );
 
         assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
 
@@ -1845,7 +1842,7 @@ public class SchemaManagerAddTest
 
         assertEquals( 1, schemaManager.getErrors().size() );
 
-        assertTrue( schemaManager.getErrors().get( 0 ) instanceof LdapProtocolErrorException );
+        assertTrue( schemaManager.getErrors().get( 0 ) instanceof LdapSchemaException );
 
         assertFalse( isOCPresent( schemaManager, "1.1.1" ) );
 
@@ -1906,7 +1903,7 @@ public class SchemaManagerAddTest
         assertEquals( 1, errors.size() );
         Throwable error = errors.get( 0 );
 
-        assertTrue( error instanceof LdapProtocolErrorException );
+        assertTrue( error instanceof LdapSchemaException );
         assertEquals( sSize, schemaManager.getLdapSyntaxRegistry().size() );
         assertEquals( goidSize, schemaManager.getGlobalOidRegistry().size() );
     }

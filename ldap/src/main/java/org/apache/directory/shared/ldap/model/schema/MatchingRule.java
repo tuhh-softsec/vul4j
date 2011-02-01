@@ -22,12 +22,17 @@ package org.apache.directory.shared.ldap.model.schema;
 
 import java.util.List;
 
+import javax.naming.NamingException;
+
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
-import org.apache.directory.shared.ldap.model.exception.LdapProtocolErrorException;
+import org.apache.directory.shared.ldap.model.exception.LdapSchemaException;
+import org.apache.directory.shared.ldap.model.exception.LdapSchemaExceptionCodes;
 import org.apache.directory.shared.ldap.model.schema.comparators.ComparableComparator;
 import org.apache.directory.shared.ldap.model.schema.normalizers.NoOpNormalizer;
 import org.apache.directory.shared.ldap.model.schema.registries.Registries;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -84,6 +89,9 @@ import org.apache.directory.shared.ldap.model.schema.registries.Registries;
 @SuppressWarnings("PMD.OverrideBothEqualsAndHashcode")
 public class MatchingRule extends AbstractSchemaObject
 {
+    /** A logger for this class */
+    private static final Logger LOG = LoggerFactory.getLogger( MatchingRule.class );
+    
     /** The serialVersionUID */
     private static final long serialVersionUID = 1L;
 
@@ -152,7 +160,12 @@ public class MatchingRule extends AbstractSchemaObject
             catch ( LdapException ne )
             {
                 // The Syntax is a mandatory element, it must exist.
-                throw new LdapProtocolErrorException( I18n.err( I18n.ERR_04317 ) );
+                String msg = I18n.err( I18n.ERR_04317 );
+
+                Throwable error = new LdapSchemaException( LdapSchemaExceptionCodes.MR_NONEXISTENT_SYNTAX,
+                    this, msg );
+                errors.add( error );
+                LOG.info( msg );
             }
 
             /**
