@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.digester3.Rule;
-import org.apache.commons.digester3.spi.Rules;
 
 /**
  * <p>Default implementation of the {@code Rules} interface that supports
@@ -45,7 +44,7 @@ import org.apache.commons.digester3.spi.Rules;
  * (and when multiple wildcard patterns match, only the longest, ie most 
  * explicit, pattern is considered a match).</p>
  */
-public class BaseRules implements Rules {
+public class BaseRules extends AbstractRulesImpl {
 
     /**
      * The set of registered Rule instances, keyed by the matching pattern.
@@ -61,12 +60,9 @@ public class BaseRules implements Rules {
     private List<Rule> rules = new ArrayList<Rule>();
 
     /**
-     * Register a new Rule instance matching the specified pattern.
-     *
-     * @param pattern Nesting pattern to be matched for this Rule
-     * @param rule Rule instance to be registered
+     * {@inheritDoc}
      */
-    public void add(String pattern, Rule rule) {
+    public void registerRule(String pattern, Rule rule) {
         // to help users who accidently add '/' to the end of their patterns
         int patternLength = pattern.length();
         if (patternLength > 1 && pattern.endsWith("/")) {

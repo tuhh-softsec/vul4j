@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.digester3.Rule;
-import org.apache.commons.digester3.spi.Rules;
 
 /**
  * <p>Rules implementation that uses regular expression matching for paths.</p>
@@ -31,7 +30,7 @@ import org.apache.commons.digester3.spi.Rules;
  * All patterns are tested to see if they match the path using the regex matcher.
  * All those that do are return in the order which the rules were added.</p>
  */
-public class RegexRules implements Rules {
+public class RegexRules extends AbstractRulesImpl {
 
     /** All registered <code>Rule</code>'s  */
     private final List<RegisteredRule> registeredRules = new ArrayList<RegisteredRule>();
@@ -55,7 +54,7 @@ public class RegexRules implements Rules {
     /**
      * {@inheritDoc}
      */
-    public void add(String pattern, Rule rule) {
+    public void registerRule(String pattern, Rule rule) {
         this.registeredRules.add(new RegisteredRule(pattern, rule));
     }
 
