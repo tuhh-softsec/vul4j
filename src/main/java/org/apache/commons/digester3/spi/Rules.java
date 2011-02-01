@@ -19,6 +19,7 @@ package org.apache.commons.digester3.spi;
 
 import java.util.List;
 
+import org.apache.commons.digester3.Digester;
 import org.apache.commons.digester3.Rule;
 
 /**
@@ -63,5 +64,12 @@ public interface Rules {
      * method.
      */
     List<Rule> rules();
+
+    /**
+     * Set the Digester instance with which this Rules instance is associated.
+     *
+     * @param digester The newly associated Digester instance
+     */
+    void setDigester(Digester digester);
 
 }
