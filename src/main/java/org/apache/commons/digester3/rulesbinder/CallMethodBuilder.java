@@ -46,4 +46,21 @@ public interface CallMethodBuilder extends BackToLinkedRuleBuilder<CallMethodRul
      */
     CallMethodBuilder withParamTypes(Class<?>...paramTypes);
 
+    /**
+     * Should <code>MethodUtils.invokeExactMethod</code> be used for the reflection.
+     *
+     * @param useExactMatch Flag to mark exact matching or not
+     * @return this builder instance
+     */
+    CallMethodBuilder useExactMatch(boolean useExactMatch);
+
+    /**
+     * The number of parameters to collect, or zero for a single argument from the body of this element.
+     *
+     * @param paramCount The number of parameters to collect, or zero for a single argument
+     *        from the body of this element.
+     * @return this builder instance
+     */
+    CallMethodBuilder withParamCount(int paramCount);
+
 }
