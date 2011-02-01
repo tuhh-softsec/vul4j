@@ -157,7 +157,8 @@ final class RulesBinderImpl implements RulesBinder {
                     addError("{forPattern(\"%s\").setTop(String)} empty 'methodName' not allowed", keyPattern);
                 }
 
-                return this.addProvider(new AbstractParamTypeBuilder<SetTopRule>(keyPattern, methodName, RulesBinderImpl.this, this) {
+                return this.addProvider(
+                        new AbstractParamTypeBuilder<SetTopRule>(keyPattern, methodName, RulesBinderImpl.this, this) {
 
                     @Override
                     protected String getCalledMethodName() {
@@ -180,7 +181,8 @@ final class RulesBinderImpl implements RulesBinder {
                     addError("{forPattern(\"%s\").setRoot(String)} empty 'methodName' not allowed", keyPattern);
                 }
 
-                return this.addProvider(new AbstractParamTypeBuilder<SetRootRule>(keyPattern, methodName, RulesBinderImpl.this, this) {
+                return this.addProvider(
+                        new AbstractParamTypeBuilder<SetRootRule>(keyPattern, methodName, RulesBinderImpl.this, this) {
 
                     @Override
                     protected String getCalledMethodName() {
@@ -274,7 +276,8 @@ final class RulesBinderImpl implements RulesBinder {
                     addError("{forPattern(\"%s\").setNext(String)} empty 'methodName' not allowed", keyPattern);
                 }
 
-                return this.addProvider(new AbstractParamTypeBuilder<SetNextRule>(keyPattern, methodName, RulesBinderImpl.this, this) {
+                return this.addProvider(
+                        new AbstractParamTypeBuilder<SetNextRule>(keyPattern, methodName, RulesBinderImpl.this, this) {
 
                     @Override
                     protected String getCalledMethodName() {
