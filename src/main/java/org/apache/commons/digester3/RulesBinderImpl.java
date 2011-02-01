@@ -407,8 +407,28 @@ final class RulesBinderImpl implements RulesBinder {
                 });
             }
 
+            /**
+             * 
+             */
             public PathCallParamBuilder callParamPath() {
-                return null;
+                return this.addProvider(new PathCallParamBuilder() {
+
+                    private int paramIndex = 0;
+
+                    public PathCallParamRule get() {
+                        return setNamespaceAndReturn(new PathCallParamRule(this.paramIndex));
+                    }
+
+                    public LinkedRuleBuilder then() {
+                        return mainBuilder;
+                    }
+
+                    public PathCallParamBuilder ofIndex(int paramIndex) {
+                        this.paramIndex = paramIndex;
+                        return this;
+                    }
+
+                });
             }
 
             public CallParamBuilder callParam() {
