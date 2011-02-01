@@ -520,6 +520,11 @@ final class RulesBinderImpl implements RulesBinder {
                     }
 
                     public PathCallParamBuilder ofIndex(int paramIndex) {
+                        if (paramIndex < 0) {
+                            addError("{forPattern(\"%s\").callParamPath().ofIndex(int)} negative index argument not allowed",
+                                    keyPattern);
+                        }
+
                         this.paramIndex = paramIndex;
                         return this;
                     }
