@@ -117,6 +117,7 @@ public enum LdapSchemaExceptionCodes
 
     /** Characterizing an OC with a duplicated AT in its may and must ATs list */
     OC_DUPLICATE_AT_IN_MAY_AND_MUST,
+    
     // Codes for all Schema Objects
 
     /** Characterizing a MR with a nonexistent syntax */

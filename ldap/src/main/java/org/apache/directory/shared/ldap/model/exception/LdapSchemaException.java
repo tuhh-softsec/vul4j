@@ -39,10 +39,13 @@ public class LdapSchemaException extends LdapException
     private LdapSchemaExceptionCodes code;
 
     /** The 'source' schema object */
-    private SchemaObject source;
+    private SchemaObject sourceObject;
 
     /** The 'other' schema object */
-    private SchemaObject other;
+    private SchemaObject otherObject;
+
+    /** The related ID (name or OID) of the exception */
+    private String relatedId;
 
 
     /**
@@ -51,6 +54,19 @@ public class LdapSchemaException extends LdapException
     public LdapSchemaException()
     {
         super();
+    }
+
+
+    /**
+     * Creates a new instance of LdapSchemaException.
+     *
+     * @param code
+     *      The code of the exception
+     */
+    public LdapSchemaException( LdapSchemaExceptionCodes code )
+    {
+        super();
+        this.code = code;
     }
 
 
@@ -71,73 +87,13 @@ public class LdapSchemaException extends LdapException
      *
      * @param code
      *      The code of the exception
-     * @param source
-     *      The 'source' schema object
-     * @param other
-     *      The 'other' schema object
      * @param explanation
      *      The message associated with the exception
      */
-    public LdapSchemaException( LdapSchemaExceptionCodes code, SchemaObject source, SchemaObject other,
-        String explanation )
+    public LdapSchemaException( LdapSchemaExceptionCodes code, String explanation )
     {
         super( explanation );
         this.code = code;
-        this.source = source;
-        this.other = other;
-    }
-
-
-    /**
-     * Creates a new instance of LdapSchemaException.
-     *
-     * @param code
-     *      The code of the exception
-     * @param source
-     *      The 'source' schema object
-     * @param explanation
-     *      The message associated with the exception
-     */
-    public LdapSchemaException( LdapSchemaExceptionCodes code, SchemaObject source, String explanation )
-    {
-        super( explanation );
-        this.code = code;
-        this.source = source;
-    }
-
-
-    /**
-     * Creates a new instance of LdapSchemaException.
-     *
-     * @param code
-     *      The code of the exception
-     * @param source
-     *      The 'source' schema object
-     * @param other
-     *      The 'other' schema object
-     */
-    public LdapSchemaException( LdapSchemaExceptionCodes code, SchemaObject source, SchemaObject other )
-    {
-        super();
-        this.code = code;
-        this.source = source;
-        this.other = other;
-    }
-
-
-    /**
-     * Creates a new instance of LdapSchemaException.
-     *
-     * @param code
-     *      The code of the exception
-     * @param source
-     *      The 'source' schema object
-     */
-    public LdapSchemaException( LdapSchemaExceptionCodes code, SchemaObject source )
-    {
-        super();
-        this.code = code;
-        this.source = source;
     }
 
 
@@ -171,9 +127,9 @@ public class LdapSchemaException extends LdapException
      * @return
      *      the 'source' schema object
      */
-    public SchemaObject getSource()
+    public SchemaObject getSourceObject()
     {
-        return source;
+        return sourceObject;
     }
 
 
@@ -183,9 +139,9 @@ public class LdapSchemaException extends LdapException
      * @param source
      *      the 'source' schema object
      */
-    public void setSource( SchemaObject source )
+    public void setSourceObject( SchemaObject source )
     {
-        this.source = source;
+        this.sourceObject = source;
     }
 
 
@@ -195,9 +151,9 @@ public class LdapSchemaException extends LdapException
      * @return
      *      the 'other' schema object
      */
-    public SchemaObject getOther()
+    public SchemaObject getOtherObject()
     {
-        return other;
+        return otherObject;
     }
 
 
@@ -207,8 +163,32 @@ public class LdapSchemaException extends LdapException
      * @param other
      *      the 'other' schema object
      */
-    public void setOther( SchemaObject other )
+    public void setOtherObject( SchemaObject other )
     {
-        this.other = other;
+        this.otherObject = other;
+    }
+
+
+    /**
+     * Gets the related ID (name or OID) of the exception.
+     *
+     * @return
+     *      the related ID (name or OID)
+     */
+    public String getRelatedId()
+    {
+        return relatedId;
+    }
+
+
+    /**
+     * Sets the related ID (name or OID) of the exception.
+     *
+     * @param relatedId
+     *      the related ID (name or OID)
+     */
+    public void setRelatedId( String relatedId )
+    {
+        this.relatedId = relatedId;
     }
 }
