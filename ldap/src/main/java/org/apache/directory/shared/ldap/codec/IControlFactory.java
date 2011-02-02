@@ -31,6 +31,9 @@ import org.apache.directory.shared.ldap.model.message.Control;
  * then registered with the codec and used by the codec to encode and decode
  * those controls.
  *
+ * @TODO must review this interface - too many methods - implementors should not
+ * have to implement so many methods.
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
@@ -51,20 +54,42 @@ public interface IControlFactory<C extends Control, D extends ICodecControl<C>>
 
 
     /**
-     * Decorates an existing control.
+     * Decorates an existing control. Implementors should check to make sure
+     * the supplied Control has not already been decorated to prevent needless
+     * decorator nesting.
      *
      * @param control The {@link Control} to be decorated.
-     * @return The decorator wrapped version of the Control.
+     * @return The decorator wrapping the Control.
      */
     D decorate( C control );
 
 
     /**
+     * Same as the {@link #newCodecControl()} but returns the decorated object using
+     * the Control interface subtype. Or do we really want that?
+     *
+     * @TODO isn't this totally superfluous? If the codec needs to get a handle on
+     * the original control object it can get that when it likes. If it needs to
+     * decorate it can do so. Must investigte why this is here and if we can remove
+     * it. This might be for efficiency - not to have to unnecesarily create a new
+     * decorator when all the codec wants is the control object.
      *
      * @return
      */
     C newControl();
-    
+
+
+    /**
+     * @TODO I also think these methods are not needed here. These can move to the
+     * codec facade interface - the codec service interface - instead. Basically the
+     * codec can grab a decorated object and generate the jndi equivalents and vice
+     * versa. We don't need tens of controls having to implement this same logic.
+     *
+     *
+     * @param modelControl
+     * @return
+     * @throws EncoderException
+     */
     javax.naming.ldap.Control toJndiControl( C modelControl ) throws EncoderException;
     
     C fromJndiControl( javax.naming.ldap.Control jndiControl ) throws DecoderException;
