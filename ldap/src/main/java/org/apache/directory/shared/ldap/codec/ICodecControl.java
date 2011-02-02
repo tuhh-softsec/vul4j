@@ -50,17 +50,17 @@ public interface ICodecControl<E extends Control> extends Control, IDecorator<E>
 
 
     /**
-     * Get the control value
+     * Gets the binary ASN.1 BER encoded representation of the control.
      * 
-     * @return The control value
+     * @return The control's encoded value
      */
     byte[] getValue();
 
 
     /**
-     * Set the encoded control value
+     * Set the Control's encoded control value.
      * 
-     * @param value The encoded control value to store
+     * @param value The encoded control value to store.
      */
     void setValue( byte[] value );
 }

@@ -43,13 +43,26 @@ public interface IControlFactory<C extends Control, D extends ICodecControl<C>>
 
 
     /**
+     * Creates and returns a decorated version of the Control.
+     *
+     * @return The {@link ICodecControl} decorated version of the Control.
+     */
+    D newCodecControl();
+
+
+    /**
+     * Decorates an existing control.
+     *
+     * @param control The {@link Control} to be decorated.
+     * @return The decorator wrapped version of the Control.
+     */
+    D decorate( C control );
+
+
+    /**
      *
      * @return
      */
-    D newCodecControl();
-    
-    D decorate( C modelControl );
-    
     C newControl();
     
     javax.naming.ldap.Control toJndiControl( C modelControl ) throws EncoderException;
