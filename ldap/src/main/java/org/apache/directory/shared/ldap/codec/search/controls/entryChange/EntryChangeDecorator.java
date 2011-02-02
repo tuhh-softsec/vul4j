@@ -258,7 +258,9 @@ public class EntryChangeDecorator extends ControlDecorator<EntryChange> implemen
     }
 
 
-    @Override
+    /**
+     * {@inheritDoc}
+     */
     public Asn1Object decode( byte[] controlBytes ) throws DecoderException
     {
         ByteBuffer bb = ByteBuffer.wrap( controlBytes );

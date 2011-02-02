@@ -260,7 +260,10 @@ public class SyncStateValueDecorator extends ControlDecorator<ISyncStateValue> i
         return sb.toString();
     }
 
-    @Override
+
+    /**
+     * {@inheritDoc}
+     */
     public Asn1Object decode( byte[] controlBytes ) throws DecoderException
     {
         ByteBuffer bb = ByteBuffer.wrap( controlBytes );

@@ -210,7 +210,9 @@ public class PasswordPolicyDecorator extends ControlDecorator<IPasswordPolicy> i
     }
 
 
-    @Override
+    /**
+     * {@inheritDoc}
+     */
     public Asn1Object decode( byte[] controlBytes ) throws DecoderException
     {
         if ( ! hasResponse() )

@@ -136,7 +136,9 @@ public class SubentriesDecorator extends ControlDecorator<Subentries> implements
     }
 
 
-    @Override
+    /**
+     * {@inheritDoc}
+     */
     public Asn1Object decode( byte[] controlBytes ) throws DecoderException
     {
         ByteBuffer bb = ByteBuffer.wrap( controlBytes );

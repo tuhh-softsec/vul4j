@@ -213,7 +213,9 @@ public class PersistentSearchDecorator extends ControlDecorator<PersistentSearch
     }
 
 
-    @Override
+    /**
+     * {@inheritDoc}
+     */
     public Asn1Object decode( byte[] controlBytes ) throws DecoderException
     {
         ByteBuffer bb = ByteBuffer.wrap( controlBytes );

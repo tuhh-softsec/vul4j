@@ -282,7 +282,9 @@ public class PagedResultsDecorator extends ControlDecorator<PagedResults> implem
     }
 
 
-    @Override
+    /**
+     * {@inheritDoc}
+     */
     public Asn1Object decode( byte[] controlBytes ) throws DecoderException
     {
         ByteBuffer bb = ByteBuffer.wrap( controlBytes );

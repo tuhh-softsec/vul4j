@@ -657,7 +657,9 @@ public class SyncInfoValueDecorator extends ControlDecorator<ISyncInfoValue> imp
     }
 
 
-    @Override
+    /**
+     * {@inheritDoc}
+     */
     public Asn1Object decode( byte[] controlBytes ) throws DecoderException
     {
         ByteBuffer bb = ByteBuffer.wrap( controlBytes );

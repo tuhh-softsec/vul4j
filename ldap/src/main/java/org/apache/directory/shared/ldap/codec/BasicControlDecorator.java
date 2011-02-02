@@ -56,7 +56,9 @@ public class BasicControlDecorator extends ControlDecorator<BasicControl>
     }
 
 
-    @Override
+    /**
+     * {@inheritDoc}
+     */
     public Asn1Object decode( byte[] controlBytes ) throws DecoderException
     {
         return null;

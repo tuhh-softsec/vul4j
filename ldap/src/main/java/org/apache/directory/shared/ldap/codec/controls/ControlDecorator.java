@@ -19,13 +19,7 @@
  */
 package org.apache.directory.shared.ldap.codec.controls;
 
-
-import java.nio.ByteBuffer;
-
 import org.apache.directory.shared.asn1.AbstractAsn1Object;
-import org.apache.directory.shared.asn1.Asn1Object;
-import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.api.ICodecControl;
 import org.apache.directory.shared.ldap.codec.api.ILdapCodecService;
 import org.apache.directory.shared.ldap.model.message.Control;
@@ -39,8 +33,7 @@ import org.apache.directory.shared.ldap.model.message.Control;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @param <E>
  */
-public abstract class ControlDecorator<E extends Control> extends AbstractAsn1Object 
-    implements Control, ICodecControl<E>
+public abstract class ControlDecorator<E extends Control> extends AbstractAsn1Object implements ICodecControl<E>
 {
     /** The decorated Control */
     private E decorated;
@@ -97,8 +90,6 @@ public abstract class ControlDecorator<E extends Control> extends AbstractAsn1Ob
     // ------------------------------------------------------------------------
     // Control Methods
     // ------------------------------------------------------------------------
-
-
     /**
      * Get the OID
      * 
@@ -175,8 +166,6 @@ public abstract class ControlDecorator<E extends Control> extends AbstractAsn1Ob
     // ------------------------------------------------------------------------
     // CodecControl Methods
     // ------------------------------------------------------------------------
-
-
     /**
      * {@inheritDoc}
      */
@@ -184,12 +173,6 @@ public abstract class ControlDecorator<E extends Control> extends AbstractAsn1Ob
     {
         return 0;
     }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public abstract ByteBuffer encode( ByteBuffer buffer ) throws EncoderException;
 
 
     // ------------------------------------------------------------------------
@@ -226,7 +209,4 @@ public abstract class ControlDecorator<E extends Control> extends AbstractAsn1Ob
     {
         return decorated.toString();
     }
-
-    
-    public abstract Asn1Object decode( byte[] controlBytes ) throws DecoderException;
 }

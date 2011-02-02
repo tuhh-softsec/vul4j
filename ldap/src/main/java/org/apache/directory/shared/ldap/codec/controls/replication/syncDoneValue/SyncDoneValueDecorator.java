@@ -252,8 +252,10 @@ public class SyncDoneValueDecorator extends ControlDecorator<ISyncDoneValue> imp
     }
 
 
-    @Override
-    public Asn1Object decode( byte[] controlBytes ) throws DecoderException
+    /**
+     * {@inheritDoc}
+     */
+   public Asn1Object decode( byte[] controlBytes ) throws DecoderException
     {
         ByteBuffer bb = ByteBuffer.wrap( controlBytes );
         SyncDoneValueContainer container = new SyncDoneValueContainer( getCodecService(), this );
