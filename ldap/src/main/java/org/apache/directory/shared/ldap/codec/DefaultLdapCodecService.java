@@ -28,6 +28,10 @@ import java.util.Map;
 
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.ldap.codec.api.ICodecControl;
+import org.apache.directory.shared.ldap.codec.api.IControlFactory;
+import org.apache.directory.shared.ldap.codec.api.IExtendedOpFactory;
+import org.apache.directory.shared.ldap.codec.api.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.controls.CascadeFactory;
 import org.apache.directory.shared.ldap.codec.controls.ManageDsaITFactory;
 import org.apache.directory.shared.ldap.codec.controls.ppolicy.PasswordPolicy;
