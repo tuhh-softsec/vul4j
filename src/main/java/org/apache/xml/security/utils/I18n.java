@@ -27,192 +27,182 @@ import java.util.ResourceBundle;
  */
 public class I18n {
 
-   /** Field NOT_INITIALIZED_MSG */
-   public static final String NOT_INITIALIZED_MSG =
-      "You must initialize the xml-security library correctly before you use it. "
-      + "Call the static method \"org.apache.xml.security.Init.init();\" to do that "
-      + "before you use any functionality from that library.";
+    /** Field NOT_INITIALIZED_MSG */
+    public static final String NOT_INITIALIZED_MSG =
+        "You must initialize the xml-security library correctly before you use it. "
+        + "Call the static method \"org.apache.xml.security.Init.init();\" to do that "
+        + "before you use any functionality from that library.";
 
-   /** Field defaultLanguageCode */
-   static String defaultLanguageCode;    // will be set in static{} block
+    /** Field defaultLanguageCode */
+    static String defaultLanguageCode;    // will be set in static{} block
 
-   /** Field defaultCountryCode */
-   static String defaultCountryCode;    // will be set in static{} block
+    /** Field defaultCountryCode */
+    static String defaultCountryCode;    // will be set in static{} block
 
-   /** Field resourceBundle */
-   static ResourceBundle resourceBundle;
+    /** Field resourceBundle */
+    static ResourceBundle resourceBundle;
 
-   /** Field alreadyInitialized */
-   static boolean alreadyInitialized = false;
+    /** Field alreadyInitialized */
+    static boolean alreadyInitialized = false;
 
-   /** Field _languageCode */
-   static String _languageCode = null;
+    /** Field languageCode */
+    static String languageCode = null;
 
-   /** Field _countryCode */
-   static String _countryCode = null;
+    /** Field countryCode */
+    static String countryCode = null;
 
-   /**
-    * Constructor I18n
-    *
-    */
-   private I18n() {
+    /**
+     * Constructor I18n
+     *
+     */
+    private I18n() {
+        // we don't allow instantiation
+    }
 
-      // we don't allow instantiation
-   }
+    /**
+     * Method translate
+     *
+     * translates a message ID into an internationalized String, see alse
+     * <CODE>XMLSecurityException.getExceptionMEssage()</CODE>. The strings are
+     * stored in the <CODE>ResourceBundle</CODE>, which is identified in
+     * <CODE>exceptionMessagesResourceBundleBase</CODE>
+     *
+     * @param message
+     * @param args is an <CODE>Object[]</CODE> array of strings which are inserted into 
+     * the String which is retrieved from the <CODE>ResouceBundle</CODE>
+     * @return message translated
+     */
+    public static String translate(String message, Object[] args) {
+        return getExceptionMessage(message, args);
+    }
 
-   /**
-    * Method translate
-    *
-    * translates a message ID into an internationalized String, see alse
-    * <CODE>XMLSecurityException.getExceptionMEssage()</CODE>. The strings are
-    * stored in the <CODE>ResourceBundle</CODE>, which is identified in
-    * <CODE>exceptionMessagesResourceBundleBase</CODE>
-    *
-    * @param message
-    * @param args is an <CODE>Object[]</CODE> array of strings which are inserted into the String which is retrieved from the <CODE>ResouceBundle</CODE>
-    * @return message translated
-    */
-   public static String translate(String message, Object[] args) {
-      return getExceptionMessage(message, args);
-   }
+    /**
+     * Method translate
+     *
+     * translates a message ID into an internationalized String, see also
+     * <CODE>XMLSecurityException.getExceptionMessage()</CODE>
+     *
+     * @param message
+     * @return message translated
+     */
+    public static String translate(String message) {
+        return getExceptionMessage(message);
+    }
 
-   /**
-    * Method translate
-    *
-    * translates a message ID into an internationalized String, see alse
-    * <CODE>XMLSecurityException.getExceptionMEssage()</CODE>
-    *
-    * @param message
-    * @return message translated
-    */
-   public static String translate(String message) {
-      return getExceptionMessage(message);
-   }
+    /**
+     * Method getExceptionMessage
+     *
+     * @param msgID
+     * @return message translated
+     *
+     */
+    public static String getExceptionMessage(String msgID) {
+        try {
+            return resourceBundle.getString(msgID);
+        } catch (Throwable t) {
+            if (org.apache.xml.security.Init.isInitialized()) {
+                return "No message with ID \"" + msgID
+                + "\" found in resource bundle \""
+                + Constants.exceptionMessagesResourceBundleBase + "\"";
+            } 
+            return I18n.NOT_INITIALIZED_MSG;
+        }
+    }
 
-   /**
-    * Method getExceptionMessage
-    *
-    * @param msgID
-    * @return message translated
-    *
-    */
-   public static String getExceptionMessage(String msgID) {
+    /**
+     * Method getExceptionMessage
+     *
+     * @param msgID
+     * @param originalException
+     * @return message translated
+     */
+    public static String getExceptionMessage(String msgID,
+                                             Exception originalException) {
+        try {
+            Object exArgs[] = { originalException.getMessage() };
+            return MessageFormat.format(resourceBundle.getString(msgID), exArgs);
+        } catch (Throwable t) {
+            if (org.apache.xml.security.Init.isInitialized()) {
+                return "No message with ID \"" + msgID
+                + "\" found in resource bundle \""
+                + Constants.exceptionMessagesResourceBundleBase
+                + "\". Original Exception was a "
+                + originalException.getClass().getName() + " and message "
+                + originalException.getMessage();
+            } 
+            return I18n.NOT_INITIALIZED_MSG;
+        }
+    }
 
-      try {
-         String s = resourceBundle.getString(msgID);
+    /**
+     * Method getExceptionMessage
+     *
+     * @param msgID
+     * @param exArgs
+     * @return message translated
+     */
+    public static String getExceptionMessage(String msgID, Object exArgs[]) {
 
-         return s;
-      } catch (Throwable t) {
-         if (org.apache.xml.security.Init.isInitialized()) {
-            return "No message with ID \"" + msgID
-                   + "\" found in resource bundle \""
-                   + Constants.exceptionMessagesResourceBundleBase + "\"";
-         } 
-         return I18n.NOT_INITIALIZED_MSG;
-      }
-   }
+        try {
+            return MessageFormat.format(resourceBundle.getString(msgID), exArgs);
+        } catch (Throwable t) {
+            if (org.apache.xml.security.Init.isInitialized()) {
+                return "No message with ID \"" + msgID
+                + "\" found in resource bundle \""
+                + Constants.exceptionMessagesResourceBundleBase + "\"";
+            } 
+            return I18n.NOT_INITIALIZED_MSG;
+        }
+    }
 
-   /**
-    * Method getExceptionMessage
-    *
-    * @param msgID
-    * @param originalException
-    * @return message translated
-    */
-   public static String getExceptionMessage(String msgID,
-                                            Exception originalException) {
+    /**
+     * Method init
+     *
+     * @param newDefaultLanguageCode
+     * @param newDefaultCountryCode
+     */
+    public static void init(String newDefaultLanguageCode,
+                            String newDefaultCountryCode) {
 
-      try {
-         Object exArgs[] = { originalException.getMessage() };
-         String s = MessageFormat.format(resourceBundle.getString(msgID),
-                                         exArgs);
+        I18n.defaultLanguageCode = newDefaultLanguageCode;
 
-         return s;
-      } catch (Throwable t) {
-         if (org.apache.xml.security.Init.isInitialized()) {
-            return "No message with ID \"" + msgID
-                   + "\" found in resource bundle \""
-                   + Constants.exceptionMessagesResourceBundleBase
-                   + "\". Original Exception was a "
-                   + originalException.getClass().getName() + " and message "
-                   + originalException.getMessage();
-         } 
-          return I18n.NOT_INITIALIZED_MSG;
-      }
-   }
+        if (I18n.defaultLanguageCode == null) {
+            I18n.defaultLanguageCode = Locale.getDefault().getLanguage();
+        }
 
-   /**
-    * Method getExceptionMessage
-    *
-    * @param msgID
-    * @param exArgs
-    * @return message translated
-    */
-   public static String getExceptionMessage(String msgID, Object exArgs[]) {
+        I18n.defaultCountryCode = newDefaultCountryCode;
 
-      try {
-         String s = MessageFormat.format(resourceBundle.getString(msgID),
-                                         exArgs);
+        if (I18n.defaultCountryCode == null) {
+            I18n.defaultCountryCode = Locale.getDefault().getCountry();
+        }
 
-         return s;
-      } catch (Throwable t) {
-         if (org.apache.xml.security.Init.isInitialized()) {
-            return "No message with ID \"" + msgID
-                   + "\" found in resource bundle \""
-                   + Constants.exceptionMessagesResourceBundleBase + "\"";
-         } 
-         return I18n.NOT_INITIALIZED_MSG;
-      }
-   }
+        initLocale(I18n.defaultLanguageCode, I18n.defaultCountryCode);
+    }
 
-   /**
-    * Method init
-    *
-    * @param _defaultLanguageCode
-    * @param _defaultCountryCode
-    */
-   public static void init(String _defaultLanguageCode,
-                           String _defaultCountryCode) {
+    /**
+     * Method initLocale
+     *
+     * @param newLanguageCode
+     * @param newCountryCode
+     */
+    public static void initLocale(String newLanguageCode, String newCountryCode) {
 
-      I18n.defaultLanguageCode = _defaultLanguageCode;
+        if (alreadyInitialized && newLanguageCode.equals(languageCode)
+            && newCountryCode.equals(countryCode)) {
+            return;
+        }
 
-      if (I18n.defaultLanguageCode == null) {
-         I18n.defaultLanguageCode = Locale.getDefault().getLanguage();
-      }
+        if ((newLanguageCode != null) && (newCountryCode != null)
+            && (newLanguageCode.length() > 0) && (newCountryCode.length() > 0)) {
+            languageCode = newLanguageCode;
+            countryCode = newCountryCode;
+        } else {
+            countryCode = I18n.defaultCountryCode;
+            languageCode = I18n.defaultLanguageCode;
+        }
 
-      I18n.defaultCountryCode = _defaultCountryCode;
-
-      if (I18n.defaultCountryCode == null) {
-         I18n.defaultCountryCode = Locale.getDefault().getCountry();
-      }
-
-      initLocale(I18n.defaultLanguageCode, I18n.defaultCountryCode);
-   }
-
-   /**
-    * Method initLocale
-    *
-    * @param languageCode
-    * @param countryCode
-    */
-   public static void initLocale(String languageCode, String countryCode) {
-
-      if (alreadyInitialized && languageCode.equals(_languageCode)
-              && countryCode.equals(_countryCode)) {
-         return;
-      }
-
-      if ((languageCode != null) && (countryCode != null)
-              && (languageCode.length() > 0) && (countryCode.length() > 0)) {
-         _languageCode = languageCode;
-         _countryCode = countryCode;
-      } else {
-         _countryCode = I18n.defaultCountryCode;
-         _languageCode = I18n.defaultLanguageCode;
-      }
-
-      I18n.resourceBundle =
-         ResourceBundle.getBundle(Constants.exceptionMessagesResourceBundleBase,
-                                  new Locale(_languageCode, _countryCode));
-   }
+        I18n.resourceBundle =
+            ResourceBundle.getBundle(Constants.exceptionMessagesResourceBundleBase,
+                                     new Locale(languageCode, countryCode));
+    }
 }

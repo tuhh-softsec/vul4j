@@ -26,8 +26,9 @@ import java.io.OutputStream;
 public class UnsyncByteArrayOutputStream extends OutputStream  {	
 
     private static final int INITIAL_SIZE = 8192;
-    private static ThreadLocal bufCache = new ThreadLocal() {
-        protected synchronized Object initialValue() {
+    private static ThreadLocal<byte[]> bufCache = new ThreadLocal<byte[]>() {
+        @Override
+        protected synchronized byte[] initialValue() {
             return new byte[INITIAL_SIZE];
         }
     };
@@ -75,7 +76,7 @@ public class UnsyncByteArrayOutputStream extends OutputStream  {
     public void reset() {
         pos = 0;
     }
-        
+
     private void expandSize(int newPos) {
         int newSize = size;
         while (newPos > newSize) {

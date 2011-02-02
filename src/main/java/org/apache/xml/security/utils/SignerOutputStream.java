@@ -26,16 +26,16 @@ import org.apache.xml.security.signature.XMLSignatureException;
  *
  */
 public class SignerOutputStream extends ByteArrayOutputStream {
+    private static org.apache.commons.logging.Log log =
+        org.apache.commons.logging.LogFactory.getLog(SignerOutputStream.class.getName());
+    
     final SignatureAlgorithm sa;
-    static org.apache.commons.logging.Log log =
-        org.apache.commons.logging.LogFactory.getLog
-        (SignerOutputStream.class.getName());
 
     /**
      * @param sa
      */
     public SignerOutputStream(SignatureAlgorithm sa) {
-        this.sa=sa;       
+        this.sa = sa;       
     }
 
     /** @inheritDoc */
@@ -43,33 +43,33 @@ public class SignerOutputStream extends ByteArrayOutputStream {
         try {
             sa.update(arg0);
         } catch (XMLSignatureException e) {
-            throw new RuntimeException(""+e);
+            throw new RuntimeException("" + e);
         }
     }
-    
+
     /** @inheritDoc */
     public void write(int arg0) {
         try {
             sa.update((byte)arg0);
         } catch (XMLSignatureException e) {
-            throw new RuntimeException(""+e);
+            throw new RuntimeException("" + e);
         }
     }
-    
+
     /** @inheritDoc */
     public void write(byte[] arg0, int arg1, int arg2) {
         if (log.isDebugEnabled()) {
             log.debug("Canonicalized SignedInfo:");
-            StringBuffer sb = new StringBuffer(arg2);
-            for (int i=arg1; i<(arg1+arg2); i++) {
-                sb.append((char) arg0[i]);
+            StringBuilder sb = new StringBuilder(arg2);
+            for (int i = arg1; i < (arg1 + arg2); i++) {
+                sb.append((char)arg0[i]);
             }
             log.debug(sb.toString());
         }
         try {
-            sa.update(arg0,arg1,arg2);
+            sa.update(arg0, arg1, arg2);
         } catch (XMLSignatureException e) {
-            throw new RuntimeException(""+e);
+            throw new RuntimeException("" + e);
         }
     }
 }

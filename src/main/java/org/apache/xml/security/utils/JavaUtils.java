@@ -30,7 +30,7 @@ import java.io.InputStream;
 public class JavaUtils {
 
     /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
+    private static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(JavaUtils.class.getName());
 
     private JavaUtils() {
@@ -76,7 +76,6 @@ public class JavaUtils {
      * @param bytes
      */
     public static void writeBytesToFilename(String filename, byte[] bytes) {
-
         FileOutputStream fos = null;
         try {
             if (filename != null && bytes != null) {
@@ -87,7 +86,9 @@ public class JavaUtils {
                 fos.write(bytes);
                 fos.close();
             } else {
-                log.debug("writeBytesToFilename got null byte[] pointed");
+                if (log.isDebugEnabled()) {
+                    log.debug("writeBytesToFilename got null byte[] pointed");
+                }
             }
         } catch (IOException ex) {
             if (fos != null) {
@@ -103,14 +104,12 @@ public class JavaUtils {
      * returns them as a byte array.
      *
      * @param inputStream
-     * @return the bytes readed from the stream
+     * @return the bytes read from the stream
      *
      * @throws FileNotFoundException
      * @throws IOException
      */
-    public static byte[] getBytesFromStream(InputStream inputStream) 
-        throws IOException {
-
+    public static byte[] getBytesFromStream(InputStream inputStream) throws IOException {
         byte refBytes[] = null;
 
         UnsyncByteArrayOutputStream baos = new UnsyncByteArrayOutputStream();
