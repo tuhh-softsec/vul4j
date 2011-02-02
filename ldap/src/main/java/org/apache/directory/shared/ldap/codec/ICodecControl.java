@@ -45,6 +45,8 @@ public interface ICodecControl<E extends Control> extends Control, IDecorator<E>
 
     /**
      * Checks to see if a value is set for this {@link ICodecControl}.
+     *
+     * @return true, if this control has a value, false otherwise
      */
     boolean hasValue();
 
