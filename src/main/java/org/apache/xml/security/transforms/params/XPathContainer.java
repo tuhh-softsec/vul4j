@@ -51,16 +51,16 @@ public class XPathContainer extends SignatureElementProxy implements TransformPa
     */
    public void setXPath(String xpath) {
 
-      if (this._constructionElement.getChildNodes() != null) {
-         NodeList nl = this._constructionElement.getChildNodes();
+      if (this.constructionElement.getChildNodes() != null) {
+         NodeList nl = this.constructionElement.getChildNodes();
 
          for (int i = 0; i < nl.getLength(); i++) {
-            this._constructionElement.removeChild(nl.item(i));
+            this.constructionElement.removeChild(nl.item(i));
          }
       }
 
-      Text xpathText = this._doc.createTextNode(xpath);
-      this._constructionElement.appendChild(xpathText);
+      Text xpathText = this.doc.createTextNode(xpath);
+      this.constructionElement.appendChild(xpathText);
    }
 
    /**

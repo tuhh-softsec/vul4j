@@ -83,10 +83,10 @@ public class XPathFilterCHGPContainer extends ElementProxy
       super(doc);
 
       if (includeSlashPolicy) {
-         this._constructionElement
+         this.constructionElement
             .setAttributeNS(null, XPathFilterCHGPContainer._ATT_INCLUDESLASH, "true");
       } else {
-         this._constructionElement
+         this.constructionElement
             .setAttributeNS(null, XPathFilterCHGPContainer._ATT_INCLUDESLASH, "false");
       }
 
@@ -98,10 +98,10 @@ public class XPathFilterCHGPContainer extends ElementProxy
                                            ._TAG_INCLUDE_BUT_SEARCH);
 
          includeButSearchElem
-            .appendChild(this._doc
+            .appendChild(this.doc
                .createTextNode(indentXPathText(includeButSearch)));
-         XMLUtils.addReturnToElement(this._constructionElement);
-         this._constructionElement.appendChild(includeButSearchElem);
+         XMLUtils.addReturnToElement(this.constructionElement);
+         this.constructionElement.appendChild(includeButSearchElem);
       }
 
       if ((excludeButSearch != null)
@@ -112,10 +112,10 @@ public class XPathFilterCHGPContainer extends ElementProxy
                                            ._TAG_EXCLUDE_BUT_SEARCH);
 
          excludeButSearchElem
-            .appendChild(this._doc
+            .appendChild(this.doc
                .createTextNode(indentXPathText(excludeButSearch)));
-         XMLUtils.addReturnToElement(this._constructionElement);
-         this._constructionElement.appendChild(excludeButSearchElem);
+         XMLUtils.addReturnToElement(this.constructionElement);
+         this.constructionElement.appendChild(excludeButSearchElem);
       }
 
       if ((exclude != null) && (exclude.trim().length() > 0)) {
@@ -124,12 +124,12 @@ public class XPathFilterCHGPContainer extends ElementProxy
                                   XPathFilterCHGPContainer._TAG_EXCLUDE);
 
          excludeElem
-            .appendChild(this._doc.createTextNode(indentXPathText(exclude)));
-         XMLUtils.addReturnToElement(this._constructionElement);
-         this._constructionElement.appendChild(excludeElem);
+            .appendChild(this.doc.createTextNode(indentXPathText(exclude)));
+         XMLUtils.addReturnToElement(this.constructionElement);
+         this.constructionElement.appendChild(excludeElem);
       }
 
-      XMLUtils.addReturnToElement(this._constructionElement);
+      XMLUtils.addReturnToElement(this.constructionElement);
    }
 
    /**
@@ -204,7 +204,7 @@ public class XPathFilterCHGPContainer extends ElementProxy
          return "";
       }
 
-      Element xElem = XMLUtils.selectNode(this._constructionElement.getFirstChild(), this.getBaseNamespace(),
+      Element xElem = XMLUtils.selectNode(this.constructionElement.getFirstChild(), this.getBaseNamespace(),
                          type,0);
 
       return XMLUtils.getFullTextChildrenFromElement(xElem);
@@ -244,7 +244,7 @@ public class XPathFilterCHGPContainer extends ElementProxy
     */
    public boolean getIncludeSlashPolicy() {
 
-      return this._constructionElement
+      return this.constructionElement
          .getAttributeNS(null, XPathFilterCHGPContainer._ATT_INCLUDESLASH)
          .equals("true");
    }
@@ -264,7 +264,7 @@ public class XPathFilterCHGPContainer extends ElementProxy
          return null;
       }
 
-      return XMLUtils.selectNodeText(this._constructionElement.getFirstChild(), this.getBaseNamespace(),
+      return XMLUtils.selectNodeText(this.constructionElement.getFirstChild(), this.getBaseNamespace(),
                          type,0);
    }
 

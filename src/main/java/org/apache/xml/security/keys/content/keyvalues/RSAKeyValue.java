@@ -63,7 +63,7 @@ public class RSAKeyValue extends SignatureElementProxy
 
       super(doc);
 
-      XMLUtils.addReturnToElement(this._constructionElement);
+      XMLUtils.addReturnToElement(this.constructionElement);
       this.addBigIntegerElement(modulus, Constants._TAG_MODULUS);
       this.addBigIntegerElement(exponent, Constants._TAG_EXPONENT);
    }
@@ -79,7 +79,7 @@ public class RSAKeyValue extends SignatureElementProxy
 
       super(doc);
 
-      XMLUtils.addReturnToElement(this._constructionElement);
+      XMLUtils.addReturnToElement(this.constructionElement);
 
       if (key instanceof java.security.interfaces.RSAPublicKey ) {
          this.addBigIntegerElement(((RSAPublicKey) key).getModulus(),

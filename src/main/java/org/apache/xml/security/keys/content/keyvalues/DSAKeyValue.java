@@ -66,7 +66,7 @@ public class DSAKeyValue extends SignatureElementProxy
 
       super(doc);
 
-      XMLUtils.addReturnToElement(this._constructionElement);
+      XMLUtils.addReturnToElement(this.constructionElement);
       this.addBigIntegerElement(P, Constants._TAG_P);
       this.addBigIntegerElement(Q, Constants._TAG_Q);
       this.addBigIntegerElement(G, Constants._TAG_G);
@@ -84,7 +84,7 @@ public class DSAKeyValue extends SignatureElementProxy
 
       super(doc);
 
-      XMLUtils.addReturnToElement(this._constructionElement);
+      XMLUtils.addReturnToElement(this.constructionElement);
 
       if (key instanceof java.security.interfaces.DSAPublicKey) {
          this.addBigIntegerElement(((DSAPublicKey) key).getParams().getP(),

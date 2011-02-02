@@ -3631,8 +3631,8 @@ public class XMLCipher {
                     throw new RuntimeException("Document is null");
                 }
 
-                this._doc = doc;
-                this._constructionElement =  createElementForFamilyLocal(this._doc,
+                this.doc = doc;
+                this.constructionElement =  createElementForFamilyLocal(this.doc,
                 this.getBaseNamespace(), this.getBaseLocalName()); 
             }
 
@@ -3658,8 +3658,8 @@ public class XMLCipher {
              * @return the XML Element form of that Transforms
              */
             public Element toElement() {
-                if (_doc == null)
-                    _doc = _contextDocument;
+                if (doc == null)
+                    doc = _contextDocument;
 
                 return getElement();
             }

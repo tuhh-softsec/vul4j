@@ -65,8 +65,8 @@ public class ObjectContainer extends SignatureElementProxy {
    public void setId(String Id) {
 
       if ((Id != null)) {
-         this._constructionElement.setAttributeNS(null, Constants._ATT_ID, Id);
-         IdResolver.registerElementById(this._constructionElement, Id);
+         this.constructionElement.setAttributeNS(null, Constants._ATT_ID, Id);
+         IdResolver.registerElementById(this.constructionElement, Id);
       }
    }
 
@@ -76,7 +76,7 @@ public class ObjectContainer extends SignatureElementProxy {
     * @return the <code>Id</code> attribute
     */
    public String getId() {
-      return this._constructionElement.getAttributeNS(null, Constants._ATT_ID);
+      return this.constructionElement.getAttributeNS(null, Constants._ATT_ID);
    }
 
    /**
@@ -87,7 +87,7 @@ public class ObjectContainer extends SignatureElementProxy {
    public void setMimeType(String MimeType) {
 
       if ( (MimeType != null)) {
-         this._constructionElement.setAttributeNS(null, Constants._ATT_MIMETYPE,
+         this.constructionElement.setAttributeNS(null, Constants._ATT_MIMETYPE,
                                                 MimeType);
       }
    }
@@ -98,7 +98,7 @@ public class ObjectContainer extends SignatureElementProxy {
     * @return the <code>MimeType</code> attribute
     */
    public String getMimeType() {
-      return this._constructionElement.getAttributeNS(null, Constants._ATT_MIMETYPE);
+      return this.constructionElement.getAttributeNS(null, Constants._ATT_MIMETYPE);
    }
 
    /**
@@ -109,7 +109,7 @@ public class ObjectContainer extends SignatureElementProxy {
    public void setEncoding(String Encoding) {
 
       if ((Encoding != null)) {
-         this._constructionElement.setAttributeNS(null, Constants._ATT_ENCODING,
+         this.constructionElement.setAttributeNS(null, Constants._ATT_ENCODING,
                                                 Encoding);
       }
    }
@@ -120,7 +120,7 @@ public class ObjectContainer extends SignatureElementProxy {
     * @return the <code>Encoding</code> attribute
     */
    public String getEncoding() {
-      return this._constructionElement.getAttributeNS(null, Constants._ATT_ENCODING);
+      return this.constructionElement.getAttributeNS(null, Constants._ATT_ENCODING);
    }
 
    /**
@@ -133,7 +133,7 @@ public class ObjectContainer extends SignatureElementProxy {
 
       Node result = null;
 
-      result = this._constructionElement.appendChild(node);
+      result = this.constructionElement.appendChild(node);
 
       return result;
    }

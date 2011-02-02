@@ -96,7 +96,7 @@ public class SignatureAlgorithm extends Algorithm {
         _signatureAlgorithm=isForSigning ? getInstanceForSigning(algorithmURI) :
             getInstanceForVerify(algorithmURI);	   
         this._signatureAlgorithm
-            .engineGetContextFromElement(this._constructionElement);
+            .engineGetContextFromElement(this.constructionElement);
     }
 
     private static SignatureAlgorithmSpi getInstanceForSigning
@@ -167,7 +167,7 @@ public class SignatureAlgorithm extends Algorithm {
         initializeAlgorithm(true);
         this._signatureAlgorithm.engineSetHMACOutputLength(HMACOutputLength);
         ((IntegrityHmac)this._signatureAlgorithm)
-            .engineAddContextToElement(this._constructionElement);
+            .engineAddContextToElement(this.constructionElement);
     }
 
     /**
@@ -374,7 +374,7 @@ public class SignatureAlgorithm extends Algorithm {
      * @return the URI representation of Transformation algorithm
      */
     public final String getURI() {
-        return this._constructionElement.getAttributeNS(null,
+        return this.constructionElement.getAttributeNS(null,
               Constants._ATT_ALGORITHM);
     }
 

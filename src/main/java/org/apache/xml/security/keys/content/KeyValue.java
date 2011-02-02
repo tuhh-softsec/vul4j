@@ -49,9 +49,9 @@ public class KeyValue extends SignatureElementProxy implements KeyInfoContent {
 
         super(doc);
 
-        XMLUtils.addReturnToElement(this._constructionElement);
-        this._constructionElement.appendChild(dsaKeyValue.getElement());
-        XMLUtils.addReturnToElement(this._constructionElement);
+        XMLUtils.addReturnToElement(this.constructionElement);
+        this.constructionElement.appendChild(dsaKeyValue.getElement());
+        XMLUtils.addReturnToElement(this.constructionElement);
     }
 
     /**
@@ -64,9 +64,9 @@ public class KeyValue extends SignatureElementProxy implements KeyInfoContent {
 
         super(doc);
 
-        XMLUtils.addReturnToElement(this._constructionElement);
-        this._constructionElement.appendChild(rsaKeyValue.getElement());
-        XMLUtils.addReturnToElement(this._constructionElement);
+        XMLUtils.addReturnToElement(this.constructionElement);
+        this.constructionElement.appendChild(rsaKeyValue.getElement());
+        XMLUtils.addReturnToElement(this.constructionElement);
     }
 
     /**
@@ -79,9 +79,9 @@ public class KeyValue extends SignatureElementProxy implements KeyInfoContent {
 
         super(doc);
 
-        XMLUtils.addReturnToElement(this._constructionElement);
-        this._constructionElement.appendChild(unknownKeyValue);
-        XMLUtils.addReturnToElement(this._constructionElement);
+        XMLUtils.addReturnToElement(this.constructionElement);
+        this.constructionElement.appendChild(unknownKeyValue);
+        XMLUtils.addReturnToElement(this.constructionElement);
     }
 
     /**
@@ -94,18 +94,18 @@ public class KeyValue extends SignatureElementProxy implements KeyInfoContent {
 
         super(doc);
 
-        XMLUtils.addReturnToElement(this._constructionElement);
+        XMLUtils.addReturnToElement(this.constructionElement);
 
         if (pk instanceof java.security.interfaces.DSAPublicKey) {
-            DSAKeyValue dsa = new DSAKeyValue(this._doc, pk);
+            DSAKeyValue dsa = new DSAKeyValue(this.doc, pk);
 
-            this._constructionElement.appendChild(dsa.getElement());
-            XMLUtils.addReturnToElement(this._constructionElement);
+            this.constructionElement.appendChild(dsa.getElement());
+            XMLUtils.addReturnToElement(this.constructionElement);
         } else if (pk instanceof java.security.interfaces.RSAPublicKey) {
-            RSAKeyValue rsa = new RSAKeyValue(this._doc, pk);
+            RSAKeyValue rsa = new RSAKeyValue(this.doc, pk);
 
-            this._constructionElement.appendChild(rsa.getElement());
-            XMLUtils.addReturnToElement(this._constructionElement);
+            this.constructionElement.appendChild(rsa.getElement());
+            XMLUtils.addReturnToElement(this.constructionElement);
         }
     }
 
@@ -130,20 +130,20 @@ public class KeyValue extends SignatureElementProxy implements KeyInfoContent {
     public PublicKey getPublicKey() throws XMLSecurityException {
 
         Element rsa = XMLUtils.selectDsNode
-            (this._constructionElement.getFirstChild(),
+            (this.constructionElement.getFirstChild(),
              Constants._TAG_RSAKEYVALUE,0);
          
         if (rsa != null) {
-            RSAKeyValue kv = new RSAKeyValue(rsa, this._baseURI);
+            RSAKeyValue kv = new RSAKeyValue(rsa, this.baseURI);
             return kv.getPublicKey();
         }
 
         Element dsa = XMLUtils.selectDsNode
-            (this._constructionElement.getFirstChild(),
+            (this.constructionElement.getFirstChild(),
              Constants._TAG_DSAKEYVALUE,0);
 
         if (dsa != null) {
-            DSAKeyValue kv = new DSAKeyValue(dsa, this._baseURI);
+            DSAKeyValue kv = new DSAKeyValue(dsa, this.baseURI);
             return kv.getPublicKey();
         }
 

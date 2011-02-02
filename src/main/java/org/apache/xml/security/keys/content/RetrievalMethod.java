@@ -75,15 +75,15 @@ public class RetrievalMethod extends SignatureElementProxy
 
       super(doc);
 
-      this._constructionElement.setAttributeNS(null, Constants._ATT_URI, URI);
+      this.constructionElement.setAttributeNS(null, Constants._ATT_URI, URI);
 
       if (Type != null) {
-         this._constructionElement.setAttributeNS(null, Constants._ATT_TYPE, Type);
+         this.constructionElement.setAttributeNS(null, Constants._ATT_TYPE, Type);
       }
 
       if (transforms != null) {
-         this._constructionElement.appendChild(transforms.getElement());
-         XMLUtils.addReturnToElement(this._constructionElement);
+         this.constructionElement.appendChild(transforms.getElement());
+         XMLUtils.addReturnToElement(this.constructionElement);
       }
    }
 
@@ -93,7 +93,7 @@ public class RetrievalMethod extends SignatureElementProxy
     * @return the URI attribute
     */
    public Attr getURIAttr() {
-      return this._constructionElement.getAttributeNodeNS(null, Constants._ATT_URI);
+      return this.constructionElement.getAttributeNodeNS(null, Constants._ATT_URI);
    }
 
    /**
@@ -108,7 +108,7 @@ public class RetrievalMethod extends SignatureElementProxy
 
    /** @return the type*/
    public String getType() {
-      return this._constructionElement.getAttributeNS(null, Constants._ATT_TYPE);
+      return this.constructionElement.getAttributeNS(null, Constants._ATT_TYPE);
    }
 
    /**
@@ -122,12 +122,12 @@ public class RetrievalMethod extends SignatureElementProxy
 
       try {
        Element transformsElem =
-             XMLUtils.selectDsNode(this._constructionElement.getFirstChild(), 
+             XMLUtils.selectDsNode(this.constructionElement.getFirstChild(), 
                                                 Constants
                                                    ._TAG_TRANSFORMS, 0);
 
          if (transformsElem != null) {
-            return new Transforms(transformsElem, this._baseURI);
+            return new Transforms(transformsElem, this.baseURI);
          }
 
          return null;

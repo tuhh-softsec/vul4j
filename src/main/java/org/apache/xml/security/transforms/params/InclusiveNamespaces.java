@@ -90,7 +90,7 @@ public class InclusiveNamespaces extends ElementProxy
          }
       }
 
-      this._constructionElement
+      this.constructionElement
          .setAttributeNS(null, InclusiveNamespaces._ATT_EC_PREFIXLIST,
                        sb.toString().trim());
    }
@@ -101,7 +101,7 @@ public class InclusiveNamespaces extends ElementProxy
     * @return The Inclusive Namespace string
     */
    public String getInclusiveNamespaces() {
-      return this._constructionElement
+      return this.constructionElement
          .getAttributeNS(null, InclusiveNamespaces._ATT_EC_PREFIXLIST);
    }
 

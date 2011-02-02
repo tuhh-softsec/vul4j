@@ -79,16 +79,16 @@ public class XPath2FilterContainer04 extends ElementProxy
 
       super(doc);
 
-      this._constructionElement.setAttributeNS(null, XPath2FilterContainer04._ATT_FILTER,
+      this.constructionElement.setAttributeNS(null, XPath2FilterContainer04._ATT_FILTER,
                                              filterType);
 
       if ((xpath2filter.length() > 2)
               && (!Character.isWhitespace(xpath2filter.charAt(0)))) {
-         XMLUtils.addReturnToElement(this._constructionElement);
-         this._constructionElement.appendChild(doc.createTextNode(xpath2filter));
-         XMLUtils.addReturnToElement(this._constructionElement);
+         XMLUtils.addReturnToElement(this.constructionElement);
+         this.constructionElement.appendChild(doc.createTextNode(xpath2filter));
+         XMLUtils.addReturnToElement(this.constructionElement);
       } else {
-         this._constructionElement
+         this.constructionElement
             .appendChild(doc.createTextNode(xpath2filter));
       }
    }
@@ -106,7 +106,7 @@ public class XPath2FilterContainer04 extends ElementProxy
       super(element, BaseURI);
 
       String filterStr =
-         this._constructionElement
+         this.constructionElement
             .getAttributeNS(null, XPath2FilterContainer04._ATT_FILTER);
 
       if (!filterStr
@@ -192,7 +192,7 @@ public class XPath2FilterContainer04 extends ElementProxy
     */
    public boolean isIntersect() {
 
-      return this._constructionElement
+      return this.constructionElement
          .getAttributeNS(null, XPath2FilterContainer04._ATT_FILTER)
          .equals(XPath2FilterContainer04._ATT_FILTER_VALUE_INTERSECT);
    }
@@ -204,7 +204,7 @@ public class XPath2FilterContainer04 extends ElementProxy
     */
    public boolean isSubtract() {
 
-      return this._constructionElement
+      return this.constructionElement
          .getAttributeNS(null, XPath2FilterContainer04._ATT_FILTER)
          .equals(XPath2FilterContainer04._ATT_FILTER_VALUE_SUBTRACT);
    }
@@ -216,7 +216,7 @@ public class XPath2FilterContainer04 extends ElementProxy
     */
    public boolean isUnion() {
 
-      return this._constructionElement
+      return this.constructionElement
          .getAttributeNS(null, XPath2FilterContainer04._ATT_FILTER)
          .equals(XPath2FilterContainer04._ATT_FILTER_VALUE_UNION);
    }
@@ -239,7 +239,7 @@ public class XPath2FilterContainer04 extends ElementProxy
     * @return the first Text node which contains information from the XPath 2 Filter String
     */
    public Node getXPathFilterTextNode() {
-      NodeList children = this._constructionElement.getChildNodes();
+      NodeList children = this.constructionElement.getChildNodes();
       int length = children.getLength();
 
       for (int i = 0; i < length; i++) {

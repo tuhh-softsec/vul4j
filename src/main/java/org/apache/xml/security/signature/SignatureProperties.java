@@ -45,7 +45,7 @@ public class SignatureProperties extends SignatureElementProxy {
 
       super(doc);
 
-      XMLUtils.addReturnToElement(this._constructionElement);
+      XMLUtils.addReturnToElement(this.constructionElement);
    }
 
    /**
@@ -67,7 +67,7 @@ public class SignatureProperties extends SignatureElementProxy {
    public int getLength() {
       
          Element[] propertyElems =
-            XMLUtils.selectDsNodes(this._constructionElement,
+            XMLUtils.selectDsNodes(this.constructionElement,
                                      Constants._TAG_SIGNATUREPROPERTY
                                     );
 
@@ -85,14 +85,14 @@ public class SignatureProperties extends SignatureElementProxy {
    public SignatureProperty item(int i) throws XMLSignatureException {
           try {
          Element propertyElem =
-            XMLUtils.selectDsNode(this._constructionElement, 
+            XMLUtils.selectDsNode(this.constructionElement, 
                                  Constants._TAG_SIGNATUREPROPERTY, 
                                  i );
 
          if (propertyElem == null) {
             return null;
          } 
-         return new SignatureProperty(propertyElem, this._baseURI);               
+         return new SignatureProperty(propertyElem, this.baseURI);               
       } catch (XMLSecurityException ex) {
          throw new XMLSignatureException("empty", ex);
       }
@@ -106,8 +106,8 @@ public class SignatureProperties extends SignatureElementProxy {
    public void setId(String Id) {
 
       if ((Id != null)) {
-         this._constructionElement.setAttributeNS(null, Constants._ATT_ID, Id);
-         IdResolver.registerElementById(this._constructionElement, Id);
+         this.constructionElement.setAttributeNS(null, Constants._ATT_ID, Id);
+         IdResolver.registerElementById(this.constructionElement, Id);
       }
    }
 
@@ -117,7 +117,7 @@ public class SignatureProperties extends SignatureElementProxy {
     * @return the <code>Id</code> attribute
     */
    public String getId() {
-      return this._constructionElement.getAttributeNS(null, Constants._ATT_ID);
+      return this.constructionElement.getAttributeNS(null, Constants._ATT_ID);
    }
 
    /**
@@ -126,8 +126,8 @@ public class SignatureProperties extends SignatureElementProxy {
     * @param sp
     */
    public void addSignatureProperty(SignatureProperty sp) {
-      this._constructionElement.appendChild(sp.getElement());
-      XMLUtils.addReturnToElement(this._constructionElement);
+      this.constructionElement.appendChild(sp.getElement());
+      XMLUtils.addReturnToElement(this.constructionElement);
    }
 
    /** @inheritDoc */

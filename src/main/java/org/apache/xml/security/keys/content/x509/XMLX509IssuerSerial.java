@@ -62,7 +62,7 @@ public class XMLX509IssuerSerial extends SignatureElementProxy
                                BigInteger x509SerialNumber) {
 
         super(doc);
-        XMLUtils.addReturnToElement(this._constructionElement);
+        XMLUtils.addReturnToElement(this.constructionElement);
         addTextElement(x509IssuerName, Constants._TAG_X509ISSUERNAME);
         addTextElement(x509SerialNumber.toString(), Constants._TAG_X509SERIALNUMBER);
     }

@@ -200,28 +200,28 @@ public final class XMLSignature extends SignatureElementProxy {
         String xmlnsDsPrefix = 
             getDefaultPrefixBindings(Constants.SignatureSpecNS);
         if (xmlnsDsPrefix == null) {
-            this._constructionElement.setAttributeNS
+            this.constructionElement.setAttributeNS
             (Constants.NamespaceSpecNS, "xmlns", Constants.SignatureSpecNS);
         } else {
-            this._constructionElement.setAttributeNS
+            this.constructionElement.setAttributeNS
             (Constants.NamespaceSpecNS, xmlnsDsPrefix, Constants.SignatureSpecNS);
         }
-        XMLUtils.addReturnToElement(this._constructionElement);
+        XMLUtils.addReturnToElement(this.constructionElement);
 
-        this._baseURI = BaseURI;
+        this.baseURI = BaseURI;
         this._signedInfo = new SignedInfo
-            (this._doc, SignatureMethodURI, HMACOutputLength,
+            (this.doc, SignatureMethodURI, HMACOutputLength,
              CanonicalizationMethodURI);
 
-        this._constructionElement.appendChild(this._signedInfo.getElement());
-        XMLUtils.addReturnToElement(this._constructionElement);
+        this.constructionElement.appendChild(this._signedInfo.getElement());
+        XMLUtils.addReturnToElement(this.constructionElement);
 
         // create an empty SignatureValue; this is filled by setSignatureValueElement
         signatureValueElement = XMLUtils.createElementInSignatureSpace
-            (this._doc, Constants._TAG_SIGNATUREVALUE);
+            (this.doc, Constants._TAG_SIGNATUREVALUE);
 
-        this._constructionElement.appendChild(signatureValueElement);
-        XMLUtils.addReturnToElement(this._constructionElement);
+        this.constructionElement.appendChild(signatureValueElement);
+        XMLUtils.addReturnToElement(this.constructionElement);
     }
 
     /**
@@ -241,27 +241,27 @@ public final class XMLSignature extends SignatureElementProxy {
         String xmlnsDsPrefix = 
             getDefaultPrefixBindings(Constants.SignatureSpecNS);
         if (xmlnsDsPrefix == null) {
-            this._constructionElement.setAttributeNS
+            this.constructionElement.setAttributeNS
             (Constants.NamespaceSpecNS, "xmlns", Constants.SignatureSpecNS);
         } else {
-            this._constructionElement.setAttributeNS
+            this.constructionElement.setAttributeNS
             (Constants.NamespaceSpecNS, xmlnsDsPrefix, Constants.SignatureSpecNS);
         }
-        XMLUtils.addReturnToElement(this._constructionElement);
+        XMLUtils.addReturnToElement(this.constructionElement);
 
-        this._baseURI = BaseURI;
+        this.baseURI = BaseURI;
         this._signedInfo = new SignedInfo
-            (this._doc, SignatureMethodElem, CanonicalizationMethodElem);
+            (this.doc, SignatureMethodElem, CanonicalizationMethodElem);
 
-        this._constructionElement.appendChild(this._signedInfo.getElement());
-        XMLUtils.addReturnToElement(this._constructionElement);
+        this.constructionElement.appendChild(this._signedInfo.getElement());
+        XMLUtils.addReturnToElement(this.constructionElement);
 
         // create an empty SignatureValue; this is filled by setSignatureValueElement
         signatureValueElement = XMLUtils.createElementInSignatureSpace
-            (this._doc, Constants._TAG_SIGNATUREVALUE);
+            (this.doc, Constants._TAG_SIGNATUREVALUE);
 
-        this._constructionElement.appendChild(signatureValueElement);
-        XMLUtils.addReturnToElement(this._constructionElement);
+        this.constructionElement.appendChild(signatureValueElement);
+        XMLUtils.addReturnToElement(this.constructionElement);
     }
 
     /**
@@ -327,8 +327,8 @@ public final class XMLSignature extends SignatureElementProxy {
      */
     public void setId(String id) {
         if (id != null) {
-            this._constructionElement.setAttributeNS(null, Constants._ATT_ID, id);
-            IdResolver.registerElementById(this._constructionElement, id);
+            this.constructionElement.setAttributeNS(null, Constants._ATT_ID, id);
+            IdResolver.registerElementById(this.constructionElement, id);
         }
     }
 
@@ -338,7 +338,7 @@ public final class XMLSignature extends SignatureElementProxy {
      * @return the <code>Id</code> attribute
      */
     public String getId() {
-        return this._constructionElement.getAttributeNS(null, Constants._ATT_ID);
+        return this.constructionElement.getAttributeNS(null, Constants._ATT_ID);
     }
 
     /**
@@ -384,7 +384,7 @@ public final class XMLSignature extends SignatureElementProxy {
             base64codedValue = "\n" + base64codedValue + "\n";
         }
 
-        Text t = this._doc.createTextNode(base64codedValue);
+        Text t = this.doc.createTextNode(base64codedValue);
         signatureValueElement.appendChild(t);
     }
 
@@ -402,24 +402,24 @@ public final class XMLSignature extends SignatureElementProxy {
         if (this._state == MODE_SIGN && this._keyInfo == null) {
 
             // create the KeyInfo
-            this._keyInfo = new KeyInfo(this._doc);
+            this._keyInfo = new KeyInfo(this.doc);
 
             // get the Element from KeyInfo
             Element keyInfoElement = this._keyInfo.getElement();
             Element firstObject = XMLUtils.selectDsNode
-                (this._constructionElement.getFirstChild(), 
+                (this.constructionElement.getFirstChild(), 
                  Constants._TAG_OBJECT, 0);
                      
             if (firstObject != null) {
                  // add it before the object
-                 this._constructionElement.insertBefore(keyInfoElement,
+                 this.constructionElement.insertBefore(keyInfoElement,
                                                         firstObject);
                  XMLUtils.addReturnBeforeChild
-                     (this._constructionElement, firstObject);
+                     (this.constructionElement, firstObject);
             } else {
                  // add it as the last element to the signature
-                 this._constructionElement.appendChild(keyInfoElement);
-                 XMLUtils.addReturnToElement(this._constructionElement);
+                 this.constructionElement.appendChild(keyInfoElement);
+                 XMLUtils.addReturnToElement(this.constructionElement);
             }         
         }
 
@@ -443,8 +443,8 @@ public final class XMLSignature extends SignatureElementProxy {
              //  "signature.operationOnlyBeforeSign");
          //}
 
-         this._constructionElement.appendChild(object.getElement());
-         XMLUtils.addReturnToElement(this._constructionElement);
+         this.constructionElement.appendChild(object.getElement());
+         XMLUtils.addReturnToElement(this.constructionElement);
       //} catch (XMLSecurityException ex) {
         // throw new XMLSignatureException("empty", ex);
       //}
@@ -461,10 +461,10 @@ public final class XMLSignature extends SignatureElementProxy {
     public ObjectContainer getObjectItem(int i) {
 
         Element objElem = XMLUtils.selectDsNode
-            (this._constructionElement.getFirstChild(), Constants._TAG_OBJECT, i);
+            (this.constructionElement.getFirstChild(), Constants._TAG_OBJECT, i);
 
         try {
-            return new ObjectContainer(objElem, this._baseURI);
+            return new ObjectContainer(objElem, this.baseURI);
         } catch (XMLSecurityException ex) {
             return null;
         }
@@ -657,7 +657,7 @@ public final class XMLSignature extends SignatureElementProxy {
     public void addDocument(String referenceURI, Transforms trans, 
         String digestURI, String ReferenceId, String ReferenceType)
         throws XMLSignatureException {
-        this._signedInfo.addDocument(this._baseURI, referenceURI, trans,
+        this._signedInfo.addDocument(this.baseURI, referenceURI, trans,
                                      digestURI, ReferenceId, ReferenceType);
     }
 
@@ -672,7 +672,7 @@ public final class XMLSignature extends SignatureElementProxy {
      */
     public void addDocument(String referenceURI, Transforms trans, 
         String digestURI) throws XMLSignatureException {
-        this._signedInfo.addDocument(this._baseURI, referenceURI, trans,
+        this._signedInfo.addDocument(this.baseURI, referenceURI, trans,
                                      digestURI, null, null);
     }
 
@@ -686,7 +686,7 @@ public final class XMLSignature extends SignatureElementProxy {
      */
     public void addDocument(String referenceURI, Transforms trans)
         throws XMLSignatureException {
-        this._signedInfo.addDocument(this._baseURI, referenceURI, trans,
+        this._signedInfo.addDocument(this.baseURI, referenceURI, trans,
                                      Constants.ALGO_ID_DIGEST_SHA1, null, null);
     }
 
@@ -698,7 +698,7 @@ public final class XMLSignature extends SignatureElementProxy {
      * @throws XMLSignatureException
      */
     public void addDocument(String referenceURI) throws XMLSignatureException {
-        this._signedInfo.addDocument(this._baseURI, referenceURI, null,
+        this._signedInfo.addDocument(this.baseURI, referenceURI, null,
                                      Constants.ALGO_ID_DIGEST_SHA1, null, null);
     }
 
@@ -712,7 +712,7 @@ public final class XMLSignature extends SignatureElementProxy {
      */
     public void addKeyInfo(X509Certificate cert) throws XMLSecurityException {
 
-        X509Data x509data = new X509Data(this._doc);
+        X509Data x509data = new X509Data(this.doc);
 
         x509data.addCertificate(cert);
         this.getKeyInfo().add(x509data);

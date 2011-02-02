@@ -57,17 +57,17 @@ import org.w3c.dom.Text;
  *
  * <p>Create a new reference</p>
  * <pre>
- * Document _doc;
+ * Document doc;
  * MessageDigestAlgorithm sha1 = MessageDigestAlgorithm.getInstance("http://#sha1");
  * Reference ref = new Reference(new XMLSignatureInput(new FileInputStream("1.gif"),
  *                               "http://localhost/1.gif",
  *                               (Transforms) null, sha1);
- * Element refElem = ref.toElement(_doc);
+ * Element refElem = ref.toElement(doc);
  * </pre>
  *
  * <p>Verify a reference</p>
  * <pre>
- * Element refElem = _doc.getElement("Reference"); // PSEUDO
+ * Element refElem = doc.getElement("Reference"); // PSEUDO
  * Reference ref = new Reference(refElem);
  * String url = ref.getURI();
  * ref.setData(new XMLSignatureInput(new FileInputStream(url)));
@@ -151,39 +151,39 @@ private Element digestValueElement;
 
       super(doc);
 
-      XMLUtils.addReturnToElement(this._constructionElement);
+      XMLUtils.addReturnToElement(this.constructionElement);
 
-      this._baseURI = BaseURI;
+      this.baseURI = BaseURI;
       this._manifest = manifest;
 
       this.setURI(ReferenceURI);
 
       // important: The ds:Reference must be added to the associated ds:Manifest
       //            or ds:SignedInfo _before_ the this.resolverResult() is called.
-      // this._manifest.appendChild(this._constructionElement);
-      // this._manifest.appendChild(this._doc.createTextNode("\n"));
+      // this._manifest.appendChild(this.constructionElement);
+      // this._manifest.appendChild(this.doc.createTextNode("\n"));
 
       if (transforms != null) {
           this.transforms=transforms;
-         this._constructionElement.appendChild(transforms.getElement());
-         XMLUtils.addReturnToElement(this._constructionElement);
+         this.constructionElement.appendChild(transforms.getElement());
+         XMLUtils.addReturnToElement(this.constructionElement);
       }
       {
          MessageDigestAlgorithm mda =
-            MessageDigestAlgorithm.getInstance(this._doc,
+            MessageDigestAlgorithm.getInstance(this.doc,
                                                messageDigestAlgorithm);
 
          digestMethodElem=mda.getElement();
-         this._constructionElement.appendChild(digestMethodElem);
-         XMLUtils.addReturnToElement(this._constructionElement);
+         this.constructionElement.appendChild(digestMethodElem);
+         XMLUtils.addReturnToElement(this.constructionElement);
       }
       {
          digestValueElement =
-            XMLUtils.createElementInSignatureSpace(this._doc,
+            XMLUtils.createElementInSignatureSpace(this.doc,
                                                    Constants._TAG_DIGESTVALUE);
 
-         this._constructionElement.appendChild(digestValueElement);
-         XMLUtils.addReturnToElement(this._constructionElement);
+         this.constructionElement.appendChild(digestValueElement);
+         XMLUtils.addReturnToElement(this.constructionElement);
       }
    }
 
@@ -200,11 +200,11 @@ private Element digestValueElement;
            throws XMLSecurityException {
 
       super(element, BaseURI);
-      this._baseURI=BaseURI;
+      this.baseURI=BaseURI;
       Element el=XMLUtils.getNextElement(element.getFirstChild());
       if (Constants._TAG_TRANSFORMS.equals(el.getLocalName()) && 
                   Constants.SignatureSpecNS.equals(el.getNamespaceURI())) {
-          transforms = new Transforms(el,this._baseURI);
+          transforms = new Transforms(el,this.baseURI);
           el=XMLUtils.getNextElement(el.getNextSibling());
       }
       digestMethodElem = el;
@@ -234,7 +234,7 @@ private Element digestValueElement;
                   return null;
           }
 
-      return MessageDigestAlgorithm.getInstance(this._doc, uri);
+      return MessageDigestAlgorithm.getInstance(this.doc, uri);
    }
 
    /**
@@ -245,7 +245,7 @@ private Element digestValueElement;
    public void setURI(String URI) {
 
       if ( URI != null) {
-         this._constructionElement.setAttributeNS(null, Constants._ATT_URI,
+         this.constructionElement.setAttributeNS(null, Constants._ATT_URI,
                                                   URI);
       }
    }
@@ -256,7 +256,7 @@ private Element digestValueElement;
     * @return URI the <code>URI</code> of this <code>Reference</code> element
     */
    public String getURI() {
-      return this._constructionElement.getAttributeNS(null, Constants._ATT_URI);
+      return this.constructionElement.getAttributeNS(null, Constants._ATT_URI);
    }
 
    /**
@@ -267,8 +267,8 @@ private Element digestValueElement;
    public void setId(String Id) {
 
       if ( Id != null ) {
-         this._constructionElement.setAttributeNS(null, Constants._ATT_ID, Id);
-         IdResolver.registerElementById(this._constructionElement, Id);
+         this.constructionElement.setAttributeNS(null, Constants._ATT_ID, Id);
+         IdResolver.registerElementById(this.constructionElement, Id);
       }
    }
 
@@ -278,7 +278,7 @@ private Element digestValueElement;
     * @return Id the <code>Id</code> attribute of this <code>Reference</code> element
     */
    public String getId() {
-      return this._constructionElement.getAttributeNS(null, Constants._ATT_ID);
+      return this.constructionElement.getAttributeNS(null, Constants._ATT_ID);
    }
 
    /**
@@ -289,7 +289,7 @@ private Element digestValueElement;
    public void setType(String Type) {
 
       if (Type != null) {
-         this._constructionElement.setAttributeNS(null, Constants._ATT_TYPE,
+         this.constructionElement.setAttributeNS(null, Constants._ATT_TYPE,
                                                   Type);
       }
    }
@@ -300,7 +300,7 @@ private Element digestValueElement;
     * @return the <code>type</code> attribute of the Reference
     */
    public String getType() {
-      return this._constructionElement.getAttributeNS(null,
+      return this.constructionElement.getAttributeNS(null,
               Constants._ATT_TYPE);
    }
 
@@ -352,7 +352,7 @@ private Element digestValueElement;
          }
 
          String base64codedValue = Base64.encode(digestValue);
-         Text t = this._doc.createTextNode(base64codedValue);
+         Text t = this.doc.createTextNode(base64codedValue);
 
          digestValueElement.appendChild(t);
    }
@@ -378,7 +378,7 @@ private Element digestValueElement;
            throws ReferenceNotInitializedException {
 
       try {
-         Attr URIAttr = this._constructionElement.getAttributeNodeNS(null,
+         Attr URIAttr = this.constructionElement.getAttributeNodeNS(null,
             Constants._ATT_URI);
          String URI;
 
@@ -389,7 +389,7 @@ private Element digestValueElement;
          }
 
          ResourceResolver resolver = ResourceResolver.getInstance(URIAttr,
-            this._baseURI, this._manifest._perManifestResolvers);
+            this.baseURI, this._manifest._perManifestResolvers);
 
          if (resolver == null) {
             Object exArgs[] = { URI };
@@ -400,7 +400,7 @@ private Element digestValueElement;
 
          resolver.addProperties(this._manifest._resolverProperties);
 
-         XMLSignatureInput input = resolver.resolve(URIAttr, this._baseURI);
+         XMLSignatureInput input = resolver.resolve(URIAttr, this.baseURI);
                   
 
          return input;
@@ -696,8 +696,8 @@ private Element digestValueElement;
          if (Reference.useC14N11 && !validating &&
              !output.isOutputStreamSet() && !output.isOctetStream()) {
              if (transforms == null) {
-                 transforms = new Transforms(this._doc);
-                 this._constructionElement.insertBefore
+                 transforms = new Transforms(this.doc);
+                 this.constructionElement.insertBefore
                      (transforms.getElement(), digestMethodElem);
              }
              transforms.addTransform(Transforms.TRANSFORM_C14N11_OMIT_COMMENTS);

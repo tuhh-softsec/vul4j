@@ -79,7 +79,7 @@ public class Manifest extends SignatureElementProxy {
 
       super(doc);
 
-      XMLUtils.addReturnToElement(this._constructionElement);
+      XMLUtils.addReturnToElement(this.constructionElement);
 
       this._references = new ArrayList();
    }
@@ -97,7 +97,7 @@ public class Manifest extends SignatureElementProxy {
       super(element, BaseURI);
 
       // check out Reference children
-      this._referencesEl = XMLUtils.selectDsNodes(this._constructionElement.getFirstChild(),
+      this._referencesEl = XMLUtils.selectDsNodes(this.constructionElement.getFirstChild(),
          Constants._TAG_REFERENCE);
       int le = this._referencesEl.length;
       {
@@ -137,8 +137,8 @@ public class Manifest extends SignatureElementProxy {
            String BaseURI, String referenceURI, Transforms transforms, String digestURI, String ReferenceId, String ReferenceType)
               throws XMLSignatureException {
 
-         // the this._doc is handed implicitly by the this.getOwnerDocument()
-         Reference ref = new Reference(this._doc, BaseURI, referenceURI, this,
+         // the this.doc is handed implicitly by the this.getOwnerDocument()
+         Reference ref = new Reference(this.doc, BaseURI, referenceURI, this,
                                        transforms, digestURI);
 
          if (ReferenceId != null) {
@@ -153,8 +153,8 @@ public class Manifest extends SignatureElementProxy {
          this._references.add(ref);
 
          // add the Element of the Reference object to the Manifest/SignedInfo
-         this._constructionElement.appendChild(ref.getElement());
-         XMLUtils.addReturnToElement(this._constructionElement);
+         this.constructionElement.appendChild(ref.getElement());
+         XMLUtils.addReturnToElement(this.constructionElement);
    }
 
    /**
@@ -199,7 +199,7 @@ public class Manifest extends SignatureElementProxy {
          if (this._references.get(i) == null) {
 
             // not yet constructed, so _we_ have to            
-            Reference ref = new Reference(_referencesEl[i], this._baseURI, this);
+            Reference ref = new Reference(_referencesEl[i], this.baseURI, this);
 
             this._references.set(i, ref);
          }
@@ -216,8 +216,8 @@ public class Manifest extends SignatureElementProxy {
    public void setId(String Id) {
 
       if (Id != null) {
-         this._constructionElement.setAttributeNS(null, Constants._ATT_ID, Id);
-         IdResolver.registerElementById(this._constructionElement, Id);
+         this.constructionElement.setAttributeNS(null, Constants._ATT_ID, Id);
+         IdResolver.registerElementById(this.constructionElement, Id);
       }
    }
 
@@ -227,7 +227,7 @@ public class Manifest extends SignatureElementProxy {
     * @return the <code>Id</code> attribute in <code>ds:Manifest</code>
     */
    public String getId() {
-      return this._constructionElement.getAttributeNS(null, Constants._ATT_ID);
+      return this.constructionElement.getAttributeNS(null, Constants._ATT_ID);
    }
 
    /**
@@ -274,7 +274,7 @@ public class Manifest extends SignatureElementProxy {
            throws MissingResourceFailureException, XMLSecurityException {
       if (_referencesEl==null) {
         this._referencesEl =  
-            XMLUtils.selectDsNodes(this._constructionElement.getFirstChild(),
+            XMLUtils.selectDsNodes(this.constructionElement.getFirstChild(),
                          Constants._TAG_REFERENCE);
       }
           if (log.isDebugEnabled()) {
@@ -295,7 +295,7 @@ public class Manifest extends SignatureElementProxy {
       for (int i =
               0; i < this._referencesEl.length; i++) {
          Reference currentRef =
-            new Reference(_referencesEl[i], this._baseURI, this);
+            new Reference(_referencesEl[i], this.baseURI, this);
 
          this._references.set(i, currentRef);
 

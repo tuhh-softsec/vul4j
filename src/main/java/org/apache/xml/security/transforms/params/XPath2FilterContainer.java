@@ -92,9 +92,9 @@ public class XPath2FilterContainer extends ElementProxy
 
       super(doc);
 
-      this._constructionElement
+      this.constructionElement
          .setAttributeNS(null, XPath2FilterContainer._ATT_FILTER, filterType);
-      this._constructionElement.appendChild(doc.createTextNode(xpath2filter));
+      this.constructionElement.appendChild(doc.createTextNode(xpath2filter));
    }
 
    /**
@@ -109,7 +109,7 @@ public class XPath2FilterContainer extends ElementProxy
 
       super(element, BaseURI);
 
-      String filterStr = this._constructionElement.getAttributeNS(null,
+      String filterStr = this.constructionElement.getAttributeNS(null,
                             XPath2FilterContainer._ATT_FILTER);
 
       if (!filterStr
@@ -231,7 +231,7 @@ public class XPath2FilterContainer extends ElementProxy
     */
    public boolean isIntersect() {
 
-      return this._constructionElement
+      return this.constructionElement
          .getAttributeNS(null, XPath2FilterContainer._ATT_FILTER)
          .equals(XPath2FilterContainer._ATT_FILTER_VALUE_INTERSECT);
    }
@@ -243,7 +243,7 @@ public class XPath2FilterContainer extends ElementProxy
     */
    public boolean isSubtract() {
 
-      return this._constructionElement
+      return this.constructionElement
          .getAttributeNS(null, XPath2FilterContainer._ATT_FILTER)
          .equals(XPath2FilterContainer._ATT_FILTER_VALUE_SUBTRACT);
    }
@@ -255,7 +255,7 @@ public class XPath2FilterContainer extends ElementProxy
     */
    public boolean isUnion() {
 
-      return this._constructionElement
+      return this.constructionElement
          .getAttributeNS(null, XPath2FilterContainer._ATT_FILTER)
          .equals(XPath2FilterContainer._ATT_FILTER_VALUE_UNION);
    }
@@ -279,7 +279,7 @@ public class XPath2FilterContainer extends ElementProxy
     */
    public Node getXPathFilterTextNode() {
 
-      NodeList children = this._constructionElement.getChildNodes();
+      NodeList children = this.constructionElement.getChildNodes();
       int length = children.getLength();
 
       for (int i = 0; i < length; i++) {

@@ -105,7 +105,7 @@ public class Transforms extends SignatureElementProxy {
      */
     public Transforms(Document doc) {
         super(doc);
-        XMLUtils.addReturnToElement(this._constructionElement);
+        XMLUtils.addReturnToElement(this.constructionElement);
     }
 
     /**
@@ -155,7 +155,7 @@ public class Transforms extends SignatureElementProxy {
                 log.debug("Transforms.addTransform(" + transformURI + ")");
 
             Transform transform = 
-                Transform.getInstance(this._doc, transformURI);
+                Transform.getInstance(this.doc, transformURI);
 
             this.addTransform(transform);
         } catch (InvalidTransformException ex) {
@@ -181,7 +181,7 @@ public class Transforms extends SignatureElementProxy {
                 log.debug("Transforms.addTransform(" + transformURI + ")");
 
             Transform transform = 
-                Transform.getInstance(this._doc, transformURI, contextElement);
+                Transform.getInstance(this.doc, transformURI, contextElement);
 
             this.addTransform(transform);
         } catch (InvalidTransformException ex) {
@@ -204,7 +204,7 @@ public class Transforms extends SignatureElementProxy {
 
         try {
             Transform transform = 
-                Transform.getInstance(this._doc, transformURI, contextNodes);
+                Transform.getInstance(this.doc, transformURI, contextNodes);
             this.addTransform(transform);
         } catch (InvalidTransformException ex) {
             throw new TransformationException("empty", ex);
@@ -222,8 +222,8 @@ public class Transforms extends SignatureElementProxy {
 
         Element transformElement = transform.getElement();
 
-        this._constructionElement.appendChild(transformElement);
-        XMLUtils.addReturnToElement(this._constructionElement);
+        this.constructionElement.appendChild(transformElement);
+        XMLUtils.addReturnToElement(this.constructionElement);
     }
 
     /**
@@ -286,7 +286,7 @@ public class Transforms extends SignatureElementProxy {
     {
         if (transforms == null) {
             transforms = XMLUtils.selectDsNodes
-                (this._constructionElement.getFirstChild(), "Transform");
+                (this.constructionElement.getFirstChild(), "Transform");
         }
         return transforms.length;       
     }
@@ -304,9 +304,9 @@ public class Transforms extends SignatureElementProxy {
         try {
             if (transforms == null) {
                 transforms = XMLUtils.selectDsNodes
-                    (this._constructionElement.getFirstChild(), "Transform");
+                    (this.constructionElement.getFirstChild(), "Transform");
             }
-            return new Transform(transforms[i], this._baseURI);
+            return new Transform(transforms[i], this.baseURI);
         } catch (XMLSecurityException ex) {
             throw new TransformationException("empty", ex);
         }

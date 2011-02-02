@@ -61,7 +61,7 @@ public abstract class Algorithm extends SignatureElementProxy {
     * @return The URI of the alogrithm
     */
    public String getAlgorithmURI() {
-      return this._constructionElement.getAttributeNS(null, Constants._ATT_ALGORITHM);
+      return this.constructionElement.getAttributeNS(null, Constants._ATT_ALGORITHM);
    }
 
    /**
@@ -72,7 +72,7 @@ public abstract class Algorithm extends SignatureElementProxy {
    protected void setAlgorithmURI(String algorithmURI) {
 
       if ( (algorithmURI != null)) {
-         this._constructionElement.setAttributeNS(null, Constants._ATT_ALGORITHM,
+         this.constructionElement.setAttributeNS(null, Constants._ATT_ALGORITHM,
                                                 algorithmURI);
       }
    }

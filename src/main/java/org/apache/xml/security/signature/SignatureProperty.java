@@ -77,8 +77,8 @@ public class SignatureProperty extends SignatureElementProxy {
    public void setId(String Id) {
 
       if ((Id != null)) {
-         this._constructionElement.setAttributeNS(null, Constants._ATT_ID, Id);
-         IdResolver.registerElementById(this._constructionElement, Id);
+         this.constructionElement.setAttributeNS(null, Constants._ATT_ID, Id);
+         IdResolver.registerElementById(this.constructionElement, Id);
       }
    }
 
@@ -88,7 +88,7 @@ public class SignatureProperty extends SignatureElementProxy {
     * @return the <code>Id</code> attribute
     */
    public String getId() {
-      return this._constructionElement.getAttributeNS(null, Constants._ATT_ID);
+      return this.constructionElement.getAttributeNS(null, Constants._ATT_ID);
    }
 
    /**
@@ -99,7 +99,7 @@ public class SignatureProperty extends SignatureElementProxy {
    public void setTarget(String Target) {
 
       if ((Target != null)) {
-         this._constructionElement.setAttributeNS(null, Constants._ATT_TARGET, Target);
+         this.constructionElement.setAttributeNS(null, Constants._ATT_TARGET, Target);
       }
    }
 
@@ -109,7 +109,7 @@ public class SignatureProperty extends SignatureElementProxy {
     * @return the <code>Target</code> attribute
     */
    public String getTarget() {
-      return this._constructionElement.getAttributeNS(null, Constants._ATT_TARGET);
+      return this.constructionElement.getAttributeNS(null, Constants._ATT_TARGET);
    }
 
    /**
@@ -119,7 +119,7 @@ public class SignatureProperty extends SignatureElementProxy {
     * @return the node in this element.
     */
    public Node appendChild(Node node) {
-      return this._constructionElement.appendChild(node);
+      return this.constructionElement.appendChild(node);
    }
 
    /** @inheritDoc */

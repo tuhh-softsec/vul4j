@@ -81,7 +81,7 @@ public final class Transform extends SignatureElementProxy {
 
         super(doc);
 
-        this._constructionElement.setAttributeNS
+        this.constructionElement.setAttributeNS
             (null, Constants._ATT_ALGORITHM, algorithmURI);
 
         transformSpi = getTransformSpi(algorithmURI);
@@ -100,7 +100,7 @@ public final class Transform extends SignatureElementProxy {
         // give it to the current document
         if (contextNodes != null) {
             for (int i = 0; i < contextNodes.getLength(); i++) {
-                this._constructionElement.appendChild
+                this.constructionElement.appendChild
                     (contextNodes.item(i).cloneNode(true));
             }
          }
@@ -249,7 +249,7 @@ public final class Transform extends SignatureElementProxy {
      * @return the URI representation of Transformation algorithm
      */
     public String getURI() {
-        return this._constructionElement.getAttributeNS
+        return this.constructionElement.getAttributeNS
             (null, Constants._ATT_ALGORITHM);
     }
 

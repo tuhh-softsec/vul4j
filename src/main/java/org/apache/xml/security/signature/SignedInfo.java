@@ -100,25 +100,25 @@ public class SignedInfo extends Manifest {
 
         super(doc);
 
-        c14nMethod = XMLUtils.createElementInSignatureSpace(this._doc,
+        c14nMethod = XMLUtils.createElementInSignatureSpace(this.doc,
                                 Constants._TAG_CANONICALIZATIONMETHOD);
 
         c14nMethod.setAttributeNS(null, Constants._ATT_ALGORITHM,
                                   canonicalizationMethodURI);
-        this._constructionElement.appendChild(c14nMethod);
-        XMLUtils.addReturnToElement(this._constructionElement);
+        this.constructionElement.appendChild(c14nMethod);
+        XMLUtils.addReturnToElement(this.constructionElement);
 
         if (hMACOutputLength > 0) {
-            this._signatureAlgorithm = new SignatureAlgorithm(this._doc,
+            this._signatureAlgorithm = new SignatureAlgorithm(this.doc,
                     signatureMethodURI, hMACOutputLength);
         } else {
-            this._signatureAlgorithm = new SignatureAlgorithm(this._doc,
+            this._signatureAlgorithm = new SignatureAlgorithm(this.doc,
                     signatureMethodURI);
         }
 
         signatureMethod = this._signatureAlgorithm.getElement();
-        this._constructionElement.appendChild(signatureMethod);
-        XMLUtils.addReturnToElement(this._constructionElement);
+        this.constructionElement.appendChild(signatureMethod);
+        XMLUtils.addReturnToElement(this.constructionElement);
     }
    
     /**
@@ -133,16 +133,16 @@ public class SignedInfo extends Manifest {
         super(doc);
         // Check this?
         this.c14nMethod = canonicalizationMethodElem;
-        this._constructionElement.appendChild(c14nMethod);
-        XMLUtils.addReturnToElement(this._constructionElement);
+        this.constructionElement.appendChild(c14nMethod);
+        XMLUtils.addReturnToElement(this.constructionElement);
    
         this._signatureAlgorithm = 
             new SignatureAlgorithm(signatureMethodElem, null);
 
         signatureMethod = this._signatureAlgorithm.getElement();
-        this._constructionElement.appendChild(signatureMethod);
+        this.constructionElement.appendChild(signatureMethod);
       
-        XMLUtils.addReturnToElement(this._constructionElement);
+        XMLUtils.addReturnToElement(this.constructionElement);
     }
 
     /**
@@ -256,7 +256,7 @@ public class SignedInfo extends Manifest {
                 Canonicalizer.getInstance(this.getCanonicalizationMethodURI());
 
             this._c14nizedBytes =
-                c14nizer.canonicalizeSubtree(this._constructionElement);
+                c14nizer.canonicalizeSubtree(this.constructionElement);
         }
 
         // make defensive copy
@@ -281,10 +281,10 @@ public class SignedInfo extends Manifest {
             String inclusiveNamespaces = this.getInclusiveNamespaces();
 
             if (inclusiveNamespaces == null) {
-                c14nizer.canonicalizeSubtree(this._constructionElement);
+                c14nizer.canonicalizeSubtree(this.constructionElement);
             } else {
                 c14nizer.canonicalizeSubtree
-                    (this._constructionElement, inclusiveNamespaces);
+                    (this.constructionElement, inclusiveNamespaces);
             }
         } else {
             try {
