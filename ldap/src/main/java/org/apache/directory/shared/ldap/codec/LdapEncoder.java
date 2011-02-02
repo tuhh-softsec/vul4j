@@ -30,8 +30,6 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.api.ICodecControl;
-import org.apache.directory.shared.ldap.codec.api.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.Message;
@@ -187,7 +185,7 @@ public class LdapEncoder
                         buffer.put( TLV.getBytes( controlValueLength ) );
     
                         // And now, the value
-                        ( (org.apache.directory.shared.ldap.codec.api.ICodecControl<?> ) control ).encode( buffer );
+                        ( ( ICodecControl<?> ) control ).encode( buffer );
                     }
                 }
             }

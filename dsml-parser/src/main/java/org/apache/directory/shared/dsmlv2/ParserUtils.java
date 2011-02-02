@@ -34,8 +34,8 @@ import org.apache.directory.shared.dsmlv2.request.BatchRequest;
 import org.apache.directory.shared.dsmlv2.request.BatchRequest.Processing;
 import org.apache.directory.shared.dsmlv2.request.BatchRequest.ResponseOrder;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.api.ICodecControl;
-import org.apache.directory.shared.ldap.codec.api.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.ICodecControl;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.model.ldif.LdifUtils;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.util.Base64;
@@ -235,7 +235,7 @@ public final class ParserUtils
                 byte[] value;
                 if ( control instanceof ICodecControl<?> )
                 {
-                    value = ( (org.apache.directory.shared.ldap.codec.api.ICodecControl<?> ) control ).getValue();
+                    value = ( ( ICodecControl<?> ) control ).getValue();
                 }
                 else
                 {

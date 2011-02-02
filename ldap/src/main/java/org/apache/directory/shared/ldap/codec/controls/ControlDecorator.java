@@ -20,8 +20,8 @@
 package org.apache.directory.shared.ldap.codec.controls;
 
 import org.apache.directory.shared.asn1.AbstractAsn1Object;
-import org.apache.directory.shared.ldap.codec.api.ICodecControl;
-import org.apache.directory.shared.ldap.codec.api.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.ICodecControl;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.model.message.Control;
 
 

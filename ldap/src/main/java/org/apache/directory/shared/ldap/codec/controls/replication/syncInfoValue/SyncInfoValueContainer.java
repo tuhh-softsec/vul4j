@@ -21,7 +21,7 @@ package org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValu
 
 
 import org.apache.directory.shared.asn1.ber.AbstractContainer;
-import org.apache.directory.shared.ldap.codec.api.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 
 
 /**

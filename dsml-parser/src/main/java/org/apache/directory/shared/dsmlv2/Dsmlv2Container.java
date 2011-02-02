@@ -24,7 +24,7 @@ package org.apache.directory.shared.dsmlv2;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.dsmlv2.reponse.BatchResponse;
 import org.apache.directory.shared.dsmlv2.request.BatchRequest;
-import org.apache.directory.shared.ldap.codec.api.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.xmlpull.v1.XmlPullParser;
 
 

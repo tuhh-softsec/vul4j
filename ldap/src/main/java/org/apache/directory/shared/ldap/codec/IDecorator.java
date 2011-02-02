@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.api;
+package org.apache.directory.shared.ldap.codec;
 
 
 import java.nio.ByteBuffer;
