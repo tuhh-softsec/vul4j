@@ -26,15 +26,26 @@ import org.apache.directory.shared.ldap.model.message.Control;
 
 
 /**
- * The LdapCodec interface, defined by the codec API.
+ * Implementors of new codec control extensions must implement a factory using
+ * this factory interface, Factory implementations for specific controls are
+ * then registered with the codec and used by the codec to encode and decode
+ * those controls.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
 public interface IControlFactory<C extends Control, D extends ICodecControl<C>>
 {
+    /**
+     * @return The OID of the Control this factory creates.
+     */
     String getOid();
-    
+
+
+    /**
+     *
+     * @return
+     */
     D newCodecControl();
     
     D decorate( C modelControl );

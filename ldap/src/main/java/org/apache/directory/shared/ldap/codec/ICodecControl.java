@@ -26,7 +26,8 @@ import org.apache.directory.shared.ldap.model.message.Control;
 
 
 /**
- * Define the transform method to be implemented by all the codec Controls
+ * The codec uses this interface to add additional information to LDAP Model
+ * Control objects during encoding and decoding.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */

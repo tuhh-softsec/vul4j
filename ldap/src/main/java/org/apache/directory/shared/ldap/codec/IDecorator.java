@@ -26,8 +26,9 @@ import org.apache.directory.shared.asn1.EncoderException;
 
 
 /**
- * A decorator interface exposing the ComputeLength and encode methods.
- * 
+ * The codec uses this interface to add additional information to LDAP Model
+ * objects during encoding and decoding,
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public interface IDecorator<E>
