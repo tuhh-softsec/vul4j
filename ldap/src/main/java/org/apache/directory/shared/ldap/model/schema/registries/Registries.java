@@ -1006,17 +1006,19 @@ public class Registries implements SchemaLoaderListener, Cloneable
             catch ( LdapException ne )
             {
                 // This MR's syntax has not been loaded into the Registries.
-                Throwable error = new LdapSchemaException( LdapSchemaExceptionCodes.OID_ALREADY_REGISTERED,
-                        matchingRule, I18n.err( I18n.ERR_04294, matchingRule.getOid() ) );
-                errors.add( error );
+                LdapSchemaException ldapSchemaException = new LdapSchemaException(
+                    LdapSchemaExceptionCodes.OID_ALREADY_REGISTERED, I18n.err( I18n.ERR_04294, matchingRule.getOid() ) );
+                ldapSchemaException.setSourceObject( matchingRule );
+                errors.add( ldapSchemaException );
             }
         }
         else
         {
             // This is an error. 
-            Throwable error = new LdapSchemaException( LdapSchemaExceptionCodes.OID_ALREADY_REGISTERED,
-                    matchingRule, I18n.err( I18n.ERR_04294, matchingRule.getOid() ) );
-            errors.add( error );
+            LdapSchemaException ldapSchemaException = new LdapSchemaException(
+                LdapSchemaExceptionCodes.OID_ALREADY_REGISTERED, I18n.err( I18n.ERR_04294, matchingRule.getOid() ) );
+            ldapSchemaException.setSourceObject( matchingRule );
+            errors.add( ldapSchemaException );
         }
 
         // Process the Normalizer
@@ -1248,10 +1250,11 @@ public class Registries implements SchemaLoaderListener, Cloneable
                 if ( musts.contains( may ) )
                 {
                     // This is not allowed.
-                    Throwable error = new LdapSchemaException(
-                        LdapSchemaExceptionCodes.OC_DUPLICATE_AT_IN_MAY_AND_MUST,
-                        objectClass, may );
-                    errors.add( error );
+                    LdapSchemaException ldapSchemaException = new LdapSchemaException(
+                        LdapSchemaExceptionCodes.OC_DUPLICATE_AT_IN_MAY_AND_MUST );
+                    ldapSchemaException.setSourceObject( objectClass );
+                    ldapSchemaException.setOtherObject( may );
+                    errors.add( ldapSchemaException );
                     return;
                 }
             }
@@ -1279,9 +1282,11 @@ public class Registries implements SchemaLoaderListener, Cloneable
                 // This OC's superior has not been loaded into the Registries.
                 if ( !processed.contains( superiorOid ) )
                 {
-                    Throwable error = new LdapSchemaException( LdapSchemaExceptionCodes.OC_NONEXISTENT_SUPERIOR,
-                        objectClass, superiorOid );
-                    errors.add( error );
+                    LdapSchemaException ldapSchemaException = new LdapSchemaException(
+                        LdapSchemaExceptionCodes.OC_NONEXISTENT_SUPERIOR );
+                    ldapSchemaException.setSourceObject( objectClass );
+                    ldapSchemaException.setRelatedId( superiorOid );
+                    errors.add( ldapSchemaException );
                 }
             }
 
@@ -1297,9 +1302,11 @@ public class Registries implements SchemaLoaderListener, Cloneable
                 else
                 {
                     // Not allowed : we have a cyle
-                    Throwable error = new LdapSchemaException( LdapSchemaExceptionCodes.OC_CYCLE_CLASS_HIERARCHY,
-                        objectClass, superior );
-                    errors.add( error );
+                    LdapSchemaException ldapSchemaException = new LdapSchemaException(
+                        LdapSchemaExceptionCodes.OC_CYCLE_CLASS_HIERARCHY );
+                    ldapSchemaException.setSourceObject( objectClass );
+                    ldapSchemaException.setOtherObject( superior );
+                    errors.add( ldapSchemaException );
                     return;
                 }
             }

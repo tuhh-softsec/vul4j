@@ -91,7 +91,7 @@ public class MatchingRule extends AbstractSchemaObject
 {
     /** A logger for this class */
     private static final Logger LOG = LoggerFactory.getLogger( MatchingRule.class );
-    
+
     /** The serialVersionUID */
     private static final long serialVersionUID = 1L;
 
@@ -162,9 +162,10 @@ public class MatchingRule extends AbstractSchemaObject
                 // The Syntax is a mandatory element, it must exist.
                 String msg = I18n.err( I18n.ERR_04317 );
 
-                Throwable error = new LdapSchemaException( LdapSchemaExceptionCodes.MR_NONEXISTENT_SYNTAX,
-                    this, msg );
-                errors.add( error );
+                LdapSchemaException ldapSchemaException = new LdapSchemaException(
+                    LdapSchemaExceptionCodes.MR_NONEXISTENT_SYNTAX, msg );
+                ldapSchemaException.setSourceObject( this );
+                errors.add( ldapSchemaException );
                 LOG.info( msg );
             }
 

@@ -1704,9 +1704,10 @@ public class DefaultSchemaManager implements SchemaManager
             // The new schemaObject's OID must not already exist
             if ( checkOidExist( copy ) )
             {
-                Throwable error = new LdapSchemaException( LdapSchemaExceptionCodes.OID_ALREADY_REGISTERED,
-                    schemaObject, I18n.err( I18n.ERR_11008, schemaObject.getOid() ) );
-                errors.add( error );
+                LdapSchemaException ldapSchemaException = new LdapSchemaException(
+                    LdapSchemaExceptionCodes.OID_ALREADY_REGISTERED, I18n.err( I18n.ERR_11008, schemaObject.getOid() ) );
+                ldapSchemaException.setSourceObject( schemaObject );
+                errors.add( ldapSchemaException );
 
                 return false;
             }
@@ -1717,9 +1718,13 @@ public class DefaultSchemaManager implements SchemaManager
             if ( schemaName == null )
             {
                 // The schema associated with the SchemaaObject does not exist. This is not valid.
-                Throwable error = new LdapSchemaException( LdapSchemaExceptionCodes.NONEXISTENT_SCHEMA,
-                    schemaObject, I18n.err( I18n.ERR_11009, schemaObject.getOid(), copy.getSchemaName() ) );
-                errors.add( error );
+
+                LdapSchemaException ldapSchemaException = new LdapSchemaException(
+                    LdapSchemaExceptionCodes.NONEXISTENT_SCHEMA, I18n.err( I18n.ERR_11009, schemaObject.getOid(),
+                        copy.getSchemaName() ) );
+                ldapSchemaException.setSourceObject( schemaObject );
+                ldapSchemaException.setRelatedId( copy.getSchemaName() );
+                errors.add( ldapSchemaException );
 
                 return false;
             }

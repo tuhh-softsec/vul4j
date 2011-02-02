@@ -26,7 +26,6 @@ import java.util.Map;
 
 import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.model.exception.LdapAttributeInUseException;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapSchemaException;
 import org.apache.directory.shared.ldap.model.exception.LdapSchemaExceptionCodes;
@@ -197,8 +196,10 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
         {
             String msg = I18n.err( I18n.ERR_04270, schemaObjectType.name(), oid );
             LOG.warn( msg );
-            throw new LdapSchemaException( LdapSchemaExceptionCodes.OID_ALREADY_REGISTERED,
-                schemaObject, msg );
+            LdapSchemaException ldapSchemaException = new LdapSchemaException(
+                LdapSchemaExceptionCodes.OID_ALREADY_REGISTERED, msg );
+            ldapSchemaException.setSourceObject( schemaObject );
+            throw ldapSchemaException;
         }
 
         byName.put( oid, schemaObject );
@@ -215,8 +216,10 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
             {
                 String msg = I18n.err( I18n.ERR_04271, schemaObjectType.name(), name );
                 LOG.warn( msg );
-                throw new LdapSchemaException( LdapSchemaExceptionCodes.NAME_ALREADY_REGISTERED,
-                    schemaObject, msg );
+                LdapSchemaException ldapSchemaException = new LdapSchemaException(
+                    LdapSchemaExceptionCodes.NAME_ALREADY_REGISTERED, msg );
+                ldapSchemaException.setSourceObject( schemaObject );
+                throw ldapSchemaException;
             }
             else
             {
