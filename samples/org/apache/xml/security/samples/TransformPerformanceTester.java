@@ -189,7 +189,7 @@ public class TransformPerformanceTester {
 
             FileOutputStream fos;
 
-            fos = new FileOutputStream("pureedge_xfilter2doc.xml");
+            fos = new FileOutputStream("pureedge_xfilter2_doc.xml");
 
             fos.write(result[0]);
             fos.close();
@@ -226,7 +226,7 @@ public class TransformPerformanceTester {
 
             FileOutputStream fos;
 
-            fos = new FileOutputStream("pureedge_xfilter2_newdoc.xml");
+            fos = new FileOutputStream("pureedge_xfilter2_new_doc.xml");
 
             fos.write(result[0]);
             fos.close();
@@ -263,7 +263,7 @@ public class TransformPerformanceTester {
 
             FileOutputStream fos;
 
-            fos = new FileOutputStream("pureedge_apachefilterdoc.xml");
+            fos = new FileOutputStream("pureedge_apachefilter_doc.xml");
 
             fos.write(result[0]);
             fos.close();
@@ -313,7 +313,7 @@ public class TransformPerformanceTester {
 
             FileOutputStream fos;
 
-            fos = new FileOutputStream("xfilter2spec_xfilter2doc_1.xml");
+            fos = new FileOutputStream("xfilter2spec_xfilter2_doc_1.xml");
 
             fos.write(result[0]);
             fos.close();
@@ -363,7 +363,7 @@ public class TransformPerformanceTester {
 
             FileOutputStream fos;
 
-            fos = new FileOutputStream("xfilter2spec_xfilter2doc_2.xml");
+            fos = new FileOutputStream("xfilter2spec_xfilter2_doc_2.xml");
 
             fos.write(result[0]);
             fos.close();
@@ -413,7 +413,7 @@ public class TransformPerformanceTester {
 
             FileOutputStream fos;
 
-            fos = new FileOutputStream("xfilter2spec_xfilter2doc_3.xml");
+            fos = new FileOutputStream("xfilter2spec_xfilter2_doc_3.xml");
 
             fos.write(result[0]);
             fos.close();
@@ -464,7 +464,7 @@ public class TransformPerformanceTester {
 
             FileOutputStream fos;
 
-            fos = new FileOutputStream("xfilter2spec_apachefilterdoc_1.xml");
+            fos = new FileOutputStream("xfilter2spec_apachefilter_doc_1.xml");
 
             fos.write(result[0]);
             fos.close();
@@ -515,7 +515,7 @@ public class TransformPerformanceTester {
 
             FileOutputStream fos;
 
-            fos = new FileOutputStream("xfilter2spec_apachefilterdoc_2.xml");
+            fos = new FileOutputStream("xfilter2spec_apachefilter_doc_2.xml");
 
             fos.write(result[0]);
             fos.close();
@@ -566,7 +566,7 @@ public class TransformPerformanceTester {
 
             FileOutputStream fos;
 
-            fos = new FileOutputStream("xfilter2spec_apachefilterdoc_3.xml");
+            fos = new FileOutputStream("xfilter2spec_apachefilter_doc_3.xml");
 
             fos.write(result[0]);
             fos.close();
@@ -609,7 +609,7 @@ public class TransformPerformanceTester {
             FileOutputStream fos;
 
             fos = new FileOutputStream(
-            "apachesample_apachefilterdoc_7_optimal.xml");
+            "apachesample_apachefilter_doc_7_optimal.xml");
 
             fos.write(result[0]);
             fos.close();
@@ -651,7 +651,7 @@ public class TransformPerformanceTester {
 
             FileOutputStream fos;
 
-            fos = new FileOutputStream("apachesample_apachefilterdoc_1.xml");
+            fos = new FileOutputStream("apachesample_apachefilter_doc_1.xml");
 
             fos.write(result[0]);
             fos.close();
@@ -691,7 +691,7 @@ public class TransformPerformanceTester {
 
             FileOutputStream fos;
 
-            fos = new FileOutputStream("apachesample_apachefilterdoc_2.xml");
+            fos = new FileOutputStream("apachesample_apachefilter_doc_2.xml");
 
             fos.write(result[0]);
             fos.close();
@@ -731,7 +731,7 @@ public class TransformPerformanceTester {
 
             FileOutputStream fos;
 
-            fos = new FileOutputStream("apachesample_apachefilterdoc_3.xml");
+            fos = new FileOutputStream("apachesample_apachefilter_doc_3.xml");
 
             fos.write(result[0]);
             fos.close();
@@ -771,7 +771,7 @@ public class TransformPerformanceTester {
 
             FileOutputStream fos;
 
-            fos = new FileOutputStream("apachesample_apachefilterdoc_4.xml");
+            fos = new FileOutputStream("apachesample_apachefilter_doc_4.xml");
 
             fos.write(result[0]);
             fos.close();
@@ -811,7 +811,7 @@ public class TransformPerformanceTester {
 
             FileOutputStream fos;
 
-            fos = new FileOutputStream("apachesample_apachefilterdoc_5.xml");
+            fos = new FileOutputStream("apachesample_apachefilter_doc_5.xml");
 
             fos.write(result[0]);
             fos.close();
@@ -851,7 +851,7 @@ public class TransformPerformanceTester {
 
             FileOutputStream fos;
 
-            fos = new FileOutputStream("apachesample_apachefilterdoc_6.xml");
+            fos = new FileOutputStream("apachesample_apachefilter_doc_6.xml");
 
             fos.write(result[0]);
             fos.close();
@@ -891,7 +891,7 @@ public class TransformPerformanceTester {
 
             FileOutputStream fos;
 
-            fos = new FileOutputStream("apachesample_apachefilterdoc_7.xml");
+            fos = new FileOutputStream("apachesample_apachefilter_doc_7.xml");
 
             fos.write(result[0]);
             fos.close();
@@ -930,7 +930,7 @@ public class TransformPerformanceTester {
 
             FileOutputStream fos;
 
-            fos = new FileOutputStream("apachesample_xfilter2doc_1.xml");
+            fos = new FileOutputStream("apachesample_xfilter2_doc_1.xml");
 
             fos.write(result[0]);
             fos.close();
@@ -969,7 +969,7 @@ public class TransformPerformanceTester {
 
             FileOutputStream fos;
 
-            fos = new FileOutputStream("apachesample_xfilter2doc_2.xml");
+            fos = new FileOutputStream("apachesample_xfilter2_doc_2.xml");
 
             fos.write(result[0]);
             fos.close();
@@ -1008,7 +1008,7 @@ public class TransformPerformanceTester {
 
             FileOutputStream fos;
 
-            fos = new FileOutputStream("apachesample_xfilter2doc_3.xml");
+            fos = new FileOutputStream("apachesample_xfilter2_doc_3.xml");
 
             fos.write(result[0]);
             fos.close();
@@ -1047,7 +1047,7 @@ public class TransformPerformanceTester {
 
             FileOutputStream fos;
 
-            fos = new FileOutputStream("apachesample_xfilter2doc_4.xml");
+            fos = new FileOutputStream("apachesample_xfilter2_doc_4.xml");
 
             fos.write(result[0]);
             fos.close();
@@ -1086,7 +1086,7 @@ public class TransformPerformanceTester {
 
             FileOutputStream fos;
 
-            fos = new FileOutputStream("apachesample_xfilter2doc_5.xml");
+            fos = new FileOutputStream("apachesample_xfilter2_doc_5.xml");
 
             fos.write(result[0]);
             fos.close();
@@ -1125,7 +1125,7 @@ public class TransformPerformanceTester {
 
             FileOutputStream fos;
 
-            fos = new FileOutputStream("apachesample_xfilter2doc_6.xml");
+            fos = new FileOutputStream("apachesample_xfilter2_doc_6.xml");
 
             fos.write(result[0]);
             fos.close();
@@ -1164,7 +1164,7 @@ public class TransformPerformanceTester {
 
             FileOutputStream fos;
 
-            fos = new FileOutputStream("apachesample_xfilter2doc_7.xml");
+            fos = new FileOutputStream("apachesample_xfilter2_doc_7.xml");
 
             fos.write(result[0]);
             fos.close();
@@ -1210,7 +1210,7 @@ public class TransformPerformanceTester {
 
             FileOutputStream fos;
 
-            fos = new FileOutputStream("xfilter2spec_xfilter2_3_newdoc.xml");
+            fos = new FileOutputStream("xfilter2spec_xfilter2_3_new_doc.xml");
 
             fos.write(result[0]);
             fos.close();
