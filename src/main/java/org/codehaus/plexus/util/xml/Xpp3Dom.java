@@ -19,6 +19,7 @@ package org.codehaus.plexus.util.xml;
 import org.codehaus.plexus.util.xml.pull.XmlSerializer;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,7 +33,10 @@ import java.util.Map;
  * NOTE: remove all the util code in here when separated, this class should be pure data.
  */
 public class Xpp3Dom
+    implements Serializable
 {
+    private static final long serialVersionUID = 2567894443061173996L;
+
     protected String name;
 
     protected String value;
