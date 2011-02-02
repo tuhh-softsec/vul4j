@@ -20,15 +20,14 @@
 package org.apache.directory.shared.ldap.model.message.controls;
 
 
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.model.message.Control;
 
 
 /**
  * A simple implementation of the {@link Control} interface with storage for 
- * the OID and the criticality properties. When a {@link ILdapCodecService} 
- * implementation does not have specific control factories available, hence 
- * the control is unrecognized, it creates instances of this control for them.
+ * the OID and the criticality properties. When the codec factory service
+ * does not have specific control factories available, hence the control is
+ * unrecognized, it creates instances of this control for them.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
