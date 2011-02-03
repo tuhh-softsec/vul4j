@@ -34,7 +34,6 @@ import org.apache.directory.shared.ldap.codec.controls.ppolicy.PasswordPolicy;
 import org.apache.directory.shared.ldap.codec.controls.ppolicy.PasswordPolicyFactory;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.SyncDoneValueFactory;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValue.SyncInfoValueFactory;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncRequestValue.ISyncRequestValue;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncRequestValue.SyncRequestValueFactory;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncStateValue.ISyncStateValue;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncStateValue.SyncStateValueFactory;
@@ -55,6 +54,7 @@ import org.apache.directory.shared.ldap.model.message.controls.Subentries;
 import org.apache.directory.shared.ldap.model.message.controls.SyncDoneValue;
 import org.apache.directory.shared.ldap.model.message.controls.SyncInfoValue;
 import org.apache.directory.shared.ldap.model.message.controls.SyncModifyDn;
+import org.apache.directory.shared.ldap.model.message.controls.SyncRequestValue;
 import org.apache.mina.filter.codec.ProtocolCodecFactory;
 
 
@@ -110,7 +110,7 @@ public class DefaultLdapCodecService implements ILdapCodecService
         controlFactories.put( SyncModifyDn.OID, syncModifyDnFactory );
         
         SyncRequestValueFactory syncRequestValueFactory = new SyncRequestValueFactory( this );
-        controlFactories.put( ISyncRequestValue.OID, syncRequestValueFactory );
+        controlFactories.put( SyncRequestValue.OID, syncRequestValueFactory );
 
         SyncStateValueFactory syncStateValueFactory = new SyncStateValueFactory( this );
         controlFactories.put( ISyncStateValue.OID, syncStateValueFactory );

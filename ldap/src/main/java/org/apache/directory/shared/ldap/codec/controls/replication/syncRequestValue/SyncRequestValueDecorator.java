@@ -6,22 +6,21 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License. 
- *  
+ *  under the License.
+ *
  */
 package org.apache.directory.shared.ldap.codec.controls.replication.syncRequestValue;
 
 
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 
 import org.apache.directory.shared.asn1.Asn1Object;
 import org.apache.directory.shared.asn1.DecoderException;
@@ -33,36 +32,38 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
+import org.apache.directory.shared.ldap.model.message.controls.SyncRequestValue;
+import org.apache.directory.shared.ldap.model.message.controls.SyncRequestValueImpl;
 import org.apache.directory.shared.ldap.model.message.controls.SynchronizationModeEnum;
 import org.apache.directory.shared.util.Strings;
 
 
 /**
  * A syncRequestValue object, as defined in RFC 4533
- * 
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SyncRequestValueDecorator  extends ControlDecorator<ISyncRequestValue> implements ISyncRequestValue
+public class SyncRequestValueDecorator  extends ControlDecorator<SyncRequestValue> implements SyncRequestValue
 {
     /** The global length for this control */
     private int syncRequestValueLength;
-    
+
     /** An instance of this decoder */
     private static final Asn1Decoder decoder = new Asn1Decoder();
 
-    
+
     public SyncRequestValueDecorator( ILdapCodecService codec )
     {
-        super( codec, new SyncRequestValue() );
+        super( codec, new SyncRequestValueImpl() );
     }
 
-    
-    public SyncRequestValueDecorator( ILdapCodecService codec, ISyncRequestValue control )
+
+    public SyncRequestValueDecorator( ILdapCodecService codec, SyncRequestValue control )
     {
         super( codec, control );
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -71,7 +72,7 @@ public class SyncRequestValueDecorator  extends ControlDecorator<ISyncRequestVal
         return getDecorated().getMode();
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -80,7 +81,7 @@ public class SyncRequestValueDecorator  extends ControlDecorator<ISyncRequestVal
         getDecorated().setMode( mode );
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -89,7 +90,7 @@ public class SyncRequestValueDecorator  extends ControlDecorator<ISyncRequestVal
         return getDecorated().getCookie();
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -108,7 +109,7 @@ public class SyncRequestValueDecorator  extends ControlDecorator<ISyncRequestVal
         }
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -117,7 +118,7 @@ public class SyncRequestValueDecorator  extends ControlDecorator<ISyncRequestVal
         return getDecorated().isReloadHint();
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -125,30 +126,31 @@ public class SyncRequestValueDecorator  extends ControlDecorator<ISyncRequestVal
     {
         getDecorated().setReloadHint( reloadHint );
     }
-    
-    
+
+
     /**
      * Compute the SyncRequestValue length.
-     * 
+     *
      * SyncRequestValue :
      * 0x30 L1
-     *  | 
+     *  |
      *  +--> 0x0A 0x01 [0x00|0x01|0x02|0x03] (mode)
      * [+--> 0x04 L2 abcd...                 (cookie)
      *  +--> 0x01 0x01 [0x00|0xFF]           (reloadHint)
-     *   
+     *
      */
+    @Override
     public int computeLength()
     {
         // The mode length
         syncRequestValueLength = 1 + 1 + 1;
-        
+
         // The cookie length, if we have a cookie
         if ( getCookie() != null )
         {
             syncRequestValueLength += 1 + TLV.getNbBytes( getCookie().length ) + getCookie().length;
         }
-        
+
         // The reloadHint length, default to false
         if ( isReloadHint() )
         {
@@ -160,15 +162,16 @@ public class SyncRequestValueDecorator  extends ControlDecorator<ISyncRequestVal
         // Call the super class to compute the global control length
         return valueLength;
     }
-    
-    
+
+
     /**
      * Encode the SyncRequestValue control
-     * 
+     *
      * @param buffer The encoded sink
      * @return A ByteBuffer that contains the encoded PDU
      * @throws EncoderException If anything goes wrong.
      */
+    @Override
     public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
     {
         if ( buffer == null )
@@ -176,7 +179,7 @@ public class SyncRequestValueDecorator  extends ControlDecorator<ISyncRequestVal
             throw new EncoderException( I18n.err( I18n.ERR_04023 ) );
         }
 
-        // Encode the SEQ 
+        // Encode the SEQ
         buffer.put( UniversalTag.SEQUENCE.getValue() );
         buffer.put( TLV.getBytes( syncRequestValueLength ) );
 
@@ -190,30 +193,31 @@ public class SyncRequestValueDecorator  extends ControlDecorator<ISyncRequestVal
         {
             Value.encode( buffer, getCookie() );
         }
-        
+
         // The reloadHint if not false
         if ( isReloadHint() )
         {
             Value.encode( buffer, isReloadHint() );
         }
-        
+
         return buffer;
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public byte[] getValue()
     {
         if ( value == null )
         {
             try
-            { 
+            {
                 computeLength();
                 ByteBuffer buffer = ByteBuffer.allocate( valueLength );
-                
-                // Encode the SEQ 
+
+                // Encode the SEQ
                 buffer.put( UniversalTag.SEQUENCE.getValue() );
                 buffer.put( TLV.getBytes( syncRequestValueLength ) );
 
@@ -227,7 +231,7 @@ public class SyncRequestValueDecorator  extends ControlDecorator<ISyncRequestVal
                 {
                     Value.encode( buffer, getCookie() );
                 }
-                
+
                 // The reloadHint if not false
                 if ( isReloadHint() )
                 {
@@ -241,49 +245,10 @@ public class SyncRequestValueDecorator  extends ControlDecorator<ISyncRequestVal
                 return null;
             }
         }
-        
+
         return value;
     }
 
-
-
-
-    /**
-     * @see Object#equals(Object)
-     */
-    public boolean equals( Object o )
-    {
-        if ( !super.equals( o ) )
-        {
-            return false;
-        }
-
-        SyncRequestValueDecorator otherControl = ( SyncRequestValueDecorator ) o;
-        
-        return ( getMode() == otherControl.getMode() ) && 
-            ( isReloadHint() == otherControl.isReloadHint() ) &&
-            ( Arrays.equals( getCookie(), otherControl.getCookie() ) );
-    }
-
-
-    /**
-     * @see Object#toString()
-     */
-    public String toString()
-    {
-        StringBuilder sb = new StringBuilder();
-        
-        sb.append( "    SyncRequestValue control :\n" );
-        sb.append( "        oid : " ).append( getOid() ).append( '\n' );
-        sb.append( "        critical : " ).append( isCritical() ).append( '\n' );
-        sb.append( "        mode              : '" ).append( getMode() ).append( "'\n" );
-        sb.append( "        cookie            : '" ).
-            append( Strings.dumpBytes( getCookie() ) ).append( "'\n" );
-        sb.append( "        refreshAndPersist : '" ).append( isReloadHint() ).append( "'\n" );
-
-        return sb.toString();
-    }
-    
 
     /**
      * {@inheritDoc}

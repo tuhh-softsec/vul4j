@@ -19,30 +19,56 @@
  */
 package org.apache.directory.shared.ldap.model.message.controls;
 
+
 import java.util.Arrays;
 
 import org.apache.directory.shared.util.Strings;
 
 
 /**
- * A simple {@link SyncDoneValue} implementation to store control properties.
+ * A syncRequestValue object, as defined in RFC 4533 :
+ * <pre>
+ * 2.2.  Sync Request Control
+ *
+ *    The Sync Request Control is an LDAP Control [RFC4511] where the
+ *    controlType is the object identifier 1.3.6.1.4.1.4203.1.9.1.1 and the
+ *    controlValue, an OCTET STRING, contains a BER-encoded
+ *    syncRequestValue.  The criticality field is either TRUE or FALSE.
+ *
+ *       syncRequestValue ::= SEQUENCE {
+ *           mode ENUMERATED {
+ *               -- 0 unused
+ *               refreshOnly       (1),
+ *               -- 2 reserved
+ *               refreshAndPersist (3)
+ *           },
+ *           cookie     syncCookie OPTIONAL,
+ *           reloadHint BOOLEAN DEFAULT FALSE
+ *       }
+ *
+ *    The Sync Request Control is only applicable to the SearchRequest
+ *    Message.
+ * </pre>
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class SyncDoneValueImpl extends AbstractControl implements SyncDoneValue
+public class SyncRequestValueImpl extends AbstractControl implements SyncRequestValue
 {
+    /** The synchronization type */
+    private SynchronizationModeEnum mode;
+
     /** The Sync cookie */
     private byte[] cookie;
 
-    /** the refreshDeletes flag */
-    private boolean refreshDeletes;
+    /** The reloadHint flag */
+    private boolean isReloadHint;
 
 
     /**
-     * Creates a new instance of SyncDoneValueImpl.
+     * Creates a new instance of SyncRequestValueImpl.
      */
-    public SyncDoneValueImpl()
+    public SyncRequestValueImpl()
     {
         super( OID );
     }
@@ -50,11 +76,11 @@ public class SyncDoneValueImpl extends AbstractControl implements SyncDoneValue
 
     /**
      *
-     * Creates a new instance of SyncDoneValueImpl.
+     * Creates a new instance of SyncRequestValueImpl.
      *
      * @param isCritical The critical flag
      */
-    public SyncDoneValueImpl( boolean isCritical )
+    public SyncRequestValueImpl( boolean isCritical )
     {
         super( OID, isCritical );
     }
@@ -65,7 +91,7 @@ public class SyncDoneValueImpl extends AbstractControl implements SyncDoneValue
      */
     public byte[] getCookie()
     {
-        return cookie;
+        return this.cookie;
     }
 
 
@@ -81,18 +107,36 @@ public class SyncDoneValueImpl extends AbstractControl implements SyncDoneValue
     /**
      * {@inheritDoc}
      */
-    public boolean isRefreshDeletes()
+    public SynchronizationModeEnum getMode()
     {
-        return refreshDeletes;
+        return mode;
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public void setRefreshDeletes( boolean refreshDeletes )
+    public void setMode( SynchronizationModeEnum mode )
     {
-        this.refreshDeletes = refreshDeletes;
+        this.mode = mode;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isReloadHint()
+    {
+        return isReloadHint;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setReloadHint( boolean reloadHint )
+    {
+        this.isReloadHint = reloadHint;
     }
 
 
@@ -105,7 +149,8 @@ public class SyncDoneValueImpl extends AbstractControl implements SyncDoneValue
         int h = 37;
 
         h = h*17 + super.hashCode();
-        h = h*17 + ( refreshDeletes ? 1 : 0 );
+        h = h*17 + ( isReloadHint ? 1 : 0 );
+        h = h*17 + mode.getValue();
 
         if ( cookie != null )
         {
@@ -125,21 +170,21 @@ public class SyncDoneValueImpl extends AbstractControl implements SyncDoneValue
     @Override
     public boolean equals( Object o )
     {
-        if ( this == o )
-        {
-            return true;
-        }
-
-        if ( !( o instanceof SyncDoneValue ) )
+        if ( !super.equals( o ) )
         {
             return false;
         }
 
-        SyncDoneValue otherControl = ( SyncDoneValue ) o;
+        if ( !( o instanceof SyncRequestValue ) )
+        {
+            return false;
+        }
 
-        return  ( refreshDeletes == otherControl.isRefreshDeletes() ) &&
-                ( Arrays.equals( cookie, otherControl.getCookie() ) &&
-                ( isCritical() == otherControl.isCritical() ) );
+        SyncRequestValue otherControl = ( SyncRequestValue ) o;
+
+        return ( mode == otherControl.getMode() ) &&
+            ( isReloadHint == otherControl.isReloadHint() ) &&
+            ( Arrays.equals( cookie, otherControl.getCookie() ) );
     }
 
 
@@ -151,11 +196,13 @@ public class SyncDoneValueImpl extends AbstractControl implements SyncDoneValue
     {
         StringBuilder sb = new StringBuilder();
 
-        sb.append( "    SyncDoneValue control :\n" );
+        sb.append( "    SyncRequestValue control :\n" );
         sb.append( "        oid : " ).append( getOid() ).append( '\n' );
         sb.append( "        critical : " ).append( isCritical() ).append( '\n' );
-        sb.append( "        cookie            : '" ).append( Strings.dumpBytes( getCookie() ) ).append( "'\n" );
-        sb.append( "        refreshDeletes : '" ).append( isRefreshDeletes() ).append( "'\n" );
+        sb.append( "        mode              : '" ).append( getMode() ).append( "'\n" );
+        sb.append( "        cookie            : '" ).
+            append( Strings.dumpBytes( getCookie() ) ).append( "'\n" );
+        sb.append( "        refreshAndPersist : '" ).append( isReloadHint() ).append( "'\n" );
 
         return sb.toString();
     }

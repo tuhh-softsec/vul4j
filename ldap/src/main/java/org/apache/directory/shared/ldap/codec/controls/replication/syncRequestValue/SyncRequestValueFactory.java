@@ -29,15 +29,17 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.IControlFactory;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.model.message.controls.SyncRequestValue;
+import org.apache.directory.shared.ldap.model.message.controls.SyncRequestValueImpl;
 
 
 /**
- * A {@link IControlFactory} which creates {@link ISyncRequestValue} controls.
+ * A {@link IControlFactory} which creates {@link SyncRequestValue} controls.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class SyncRequestValueFactory implements IControlFactory<ISyncRequestValue, SyncRequestValueDecorator>
+public class SyncRequestValueFactory implements IControlFactory<SyncRequestValue, SyncRequestValueDecorator>
 {
     
     private ILdapCodecService codec;
@@ -59,7 +61,7 @@ public class SyncRequestValueFactory implements IControlFactory<ISyncRequestValu
      */
     public String getOid()
     {
-        return ISyncRequestValue.OID;
+        return SyncRequestValue.OID;
     }
 
     
@@ -73,7 +75,7 @@ public class SyncRequestValueFactory implements IControlFactory<ISyncRequestValu
     }
     
 
-    public SyncRequestValueDecorator decorate( ISyncRequestValue control )
+    public SyncRequestValueDecorator decorate( SyncRequestValue control )
     {
         SyncRequestValueDecorator decorator = null;
         
@@ -91,13 +93,13 @@ public class SyncRequestValueFactory implements IControlFactory<ISyncRequestValu
     }
 
     
-    public ISyncRequestValue newControl()
+    public SyncRequestValue newControl()
     {
-        return new SyncRequestValue();
+        return new SyncRequestValueImpl();
     }
     
 
-    public Control toJndiControl( ISyncRequestValue control ) throws EncoderException
+    public Control toJndiControl( SyncRequestValue control ) throws EncoderException
     {
         SyncRequestValueDecorator decorator = decorate( control );
         ByteBuffer bb = ByteBuffer.allocate( decorator.computeLength() );
@@ -107,7 +109,7 @@ public class SyncRequestValueFactory implements IControlFactory<ISyncRequestValu
     }
 
     
-    public ISyncRequestValue fromJndiControl( Control jndi ) throws DecoderException
+    public SyncRequestValue fromJndiControl( Control jndi ) throws DecoderException
     {
         SyncRequestValueDecorator decorator = newCodecControl();
         decorator.setCritical( jndi.isCritical() );

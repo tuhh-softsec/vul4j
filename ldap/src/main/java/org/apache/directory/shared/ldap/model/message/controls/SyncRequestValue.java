@@ -17,11 +17,10 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.controls.replication.syncRequestValue;
+package org.apache.directory.shared.ldap.model.message.controls;
 
 
 import org.apache.directory.shared.ldap.model.message.Control;
-import org.apache.directory.shared.ldap.model.message.controls.SynchronizationModeEnum;
 
 
 /**
@@ -29,7 +28,7 @@ import org.apache.directory.shared.ldap.model.message.controls.SynchronizationMo
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface ISyncRequestValue extends Control
+public interface SyncRequestValue extends Control
 {
 
     /** This control OID */

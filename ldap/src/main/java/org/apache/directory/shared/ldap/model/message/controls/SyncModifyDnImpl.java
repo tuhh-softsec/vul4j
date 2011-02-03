@@ -19,10 +19,6 @@
  */
 package org.apache.directory.shared.ldap.model.message.controls;
 
-import org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn.SyncModifyDnDecorator;
-
-
-
 
 /**
  * A simple {@link SyncModifyDn} implementation to hold properties.
@@ -202,7 +198,7 @@ public class SyncModifyDnImpl extends AbstractControl implements SyncModifyDn
             return false;
         }
 
-        SyncModifyDnDecorator otherControl = ( SyncModifyDnDecorator ) o;
+        SyncModifyDn otherControl = ( SyncModifyDn ) o;
 
         if ( newRdn != null )
         {

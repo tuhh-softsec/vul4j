@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValue.SyncInfoValueDecorator;
 import org.apache.directory.shared.util.Strings;
 
 
@@ -233,7 +232,7 @@ public class SyncInfoValueImpl extends AbstractControl implements SyncInfoValue
             return false;
         }
 
-        SyncInfoValueDecorator otherControl = ( SyncInfoValueDecorator ) o;
+        SyncInfoValue otherControl = ( SyncInfoValue ) o;
 
         if ( syncUUIDs != null )
         {
@@ -271,10 +270,10 @@ public class SyncInfoValueImpl extends AbstractControl implements SyncInfoValue
             }
         }
 
-        return ( isRefreshDeletes() == otherControl.isRefreshDeletes() ) &&
-            ( isRefreshDone() == otherControl.isRefreshDone() ) &&
-            ( getType() == otherControl.getType() ) &&
-            ( Arrays.equals( getCookie(), otherControl.getCookie() ) &&
+        return ( refreshDeletes == otherControl.isRefreshDeletes() ) &&
+            ( refreshDone == otherControl.isRefreshDone() ) &&
+            ( type == otherControl.getType() ) &&
+            ( Arrays.equals( cookie, otherControl.getCookie() ) &&
             ( isCritical() == otherControl.isCritical() ) );
     }
 

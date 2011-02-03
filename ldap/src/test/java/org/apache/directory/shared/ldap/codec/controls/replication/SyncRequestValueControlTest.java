@@ -33,8 +33,8 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncRequestValue.ISyncRequestValue;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncRequestValue.SyncRequestValueDecorator;
+import org.apache.directory.shared.ldap.model.message.controls.SyncRequestValue;
 import org.apache.directory.shared.ldap.model.message.controls.SynchronizationModeEnum;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
@@ -73,7 +73,7 @@ public class SyncRequestValueControlTest
 
         SyncRequestValueDecorator decorator = new SyncRequestValueDecorator( codec );
         
-        ISyncRequestValue syncRequestValue = (ISyncRequestValue)decorator.decode( bb.array() );
+        SyncRequestValue syncRequestValue = (SyncRequestValue)decorator.decode( bb.array() );
 
         assertEquals( SynchronizationModeEnum.REFRESH_ONLY, syncRequestValue.getMode() );
         assertEquals( "abc", Strings.utf8ToString(syncRequestValue.getCookie()) );
@@ -125,7 +125,7 @@ public class SyncRequestValueControlTest
 
         SyncRequestValueDecorator decorator = new SyncRequestValueDecorator( codec );
         
-        ISyncRequestValue syncRequestValue = (ISyncRequestValue)decorator.decode( bb.array() );
+        SyncRequestValue syncRequestValue = (SyncRequestValue)decorator.decode( bb.array() );
 
         assertEquals( SynchronizationModeEnum.REFRESH_AND_PERSIST, syncRequestValue.getMode() );
         assertEquals( "abc", Strings.utf8ToString(syncRequestValue.getCookie()) );
@@ -176,7 +176,7 @@ public class SyncRequestValueControlTest
 
         SyncRequestValueDecorator decorator = new SyncRequestValueDecorator(  codec );
         
-        ISyncRequestValue syncRequestValue = (ISyncRequestValue)decorator.decode( bb.array() );
+        SyncRequestValue syncRequestValue = (SyncRequestValue)decorator.decode( bb.array() );
 
         assertEquals( SynchronizationModeEnum.REFRESH_AND_PERSIST, syncRequestValue.getMode() );
         assertNull( syncRequestValue.getCookie() );
@@ -227,7 +227,7 @@ public class SyncRequestValueControlTest
 
         SyncRequestValueDecorator decorator = new SyncRequestValueDecorator( codec );
         
-        ISyncRequestValue syncRequestValue = (ISyncRequestValue)decorator.decode( buffer.array() );
+        SyncRequestValue syncRequestValue = (SyncRequestValue)decorator.decode( buffer.array() );
 
         assertEquals( SynchronizationModeEnum.REFRESH_AND_PERSIST, syncRequestValue.getMode() );
         assertNull( syncRequestValue.getCookie() );
@@ -267,7 +267,7 @@ public class SyncRequestValueControlTest
 
         SyncRequestValueDecorator decorator = new SyncRequestValueDecorator( codec );
         
-        ISyncRequestValue syncRequestValue = (ISyncRequestValue)decorator.decode( bb.array() );
+        SyncRequestValue syncRequestValue = (SyncRequestValue)decorator.decode( bb.array() );
 
         assertEquals( SynchronizationModeEnum.REFRESH_AND_PERSIST, syncRequestValue.getMode() );
         assertNull( syncRequestValue.getCookie() );
@@ -307,7 +307,7 @@ public class SyncRequestValueControlTest
 
         SyncRequestValueDecorator decorator = new SyncRequestValueDecorator( codec );
         
-        ISyncRequestValue syncRequestValue = (ISyncRequestValue)decorator.decode( bb.array() );
+        SyncRequestValue syncRequestValue = (SyncRequestValue)decorator.decode( bb.array() );
 
         assertEquals( SynchronizationModeEnum.REFRESH_AND_PERSIST, syncRequestValue.getMode() );
         assertEquals( "abc", Strings.utf8ToString(syncRequestValue.getCookie()) );
@@ -347,7 +347,7 @@ public class SyncRequestValueControlTest
 
         SyncRequestValueDecorator decorator = new SyncRequestValueDecorator( codec );
         
-        ISyncRequestValue syncRequestValue = (ISyncRequestValue)decorator.decode( bb.array() );
+        SyncRequestValue syncRequestValue = (SyncRequestValue)decorator.decode( bb.array() );
 
         assertEquals( SynchronizationModeEnum.REFRESH_AND_PERSIST, syncRequestValue.getMode() );
         assertEquals( "", Strings.utf8ToString(syncRequestValue.getCookie()) );
