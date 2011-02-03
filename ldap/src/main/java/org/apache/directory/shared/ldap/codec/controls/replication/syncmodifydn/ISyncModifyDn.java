@@ -20,8 +20,8 @@
 package org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn;
 
 
-import org.apache.directory.shared.ldap.message.control.replication.SyncModifyDnType;
 import org.apache.directory.shared.ldap.model.message.Control;
+import org.apache.directory.shared.ldap.model.message.controls.SyncModifyDnType;
 
 
 /**

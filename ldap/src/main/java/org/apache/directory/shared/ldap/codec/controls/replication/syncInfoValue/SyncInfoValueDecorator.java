@@ -6,23 +6,22 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License. 
- *  
+ *  under the License.
+ *
  */
 package org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValue;
 
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.directory.shared.asn1.Asn1Object;
@@ -35,45 +34,47 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
-import org.apache.directory.shared.ldap.message.control.replication.SynchronizationInfoEnum;
+import org.apache.directory.shared.ldap.model.message.controls.SyncInfoValue;
+import org.apache.directory.shared.ldap.model.message.controls.SyncInfoValueImpl;
+import org.apache.directory.shared.ldap.model.message.controls.SynchronizationInfoEnum;
 import org.apache.directory.shared.util.Strings;
 
 
 /**
  * A syncInfoValue object, as defined in RFC 4533
- * 
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SyncInfoValueDecorator extends ControlDecorator<ISyncInfoValue> implements ISyncInfoValue
+public class SyncInfoValueDecorator extends ControlDecorator<SyncInfoValue> implements SyncInfoValue
 {
     /** The syncUUIDs cumulative length */
     private int syncUUIDsLength;
-    
+
     /** An instance of this decoder */
     private static final Asn1Decoder decoder = new Asn1Decoder();
 
-    
+
     /**
      * The constructor for this codec. Dont't forget to set the type.
      */
     public SyncInfoValueDecorator( ILdapCodecService codec )
     {
-        super( codec, new SyncInfoValue() );
+        super( codec, new SyncInfoValueImpl() );
     }
 
-    
+
     /**
      * The constructor for this codec. Dont't forget to set the type.
      */
-    public SyncInfoValueDecorator( ILdapCodecService codec, ISyncInfoValue control )
+    public SyncInfoValueDecorator( ILdapCodecService codec, SyncInfoValue control )
     {
         super( codec, control );
     }
-    
-    
+
+
     /**
      * The constructor for this codec.
-     * @param type The kind of syncInfo we will store. Can be newCookie, 
+     * @param type The kind of syncInfo we will store. Can be newCookie,
      * refreshPresent, refreshDelete or syncIdSet
      */
     public SyncInfoValueDecorator( ILdapCodecService codec, SynchronizationInfoEnum type )
@@ -82,8 +83,8 @@ public class SyncInfoValueDecorator extends ControlDecorator<ISyncInfoValue> imp
 
         setType( type);
     }
-    
-    
+
+
     /** The global length for this control */
     private int syncInfoValueLength;
 
@@ -95,7 +96,7 @@ public class SyncInfoValueDecorator extends ControlDecorator<ISyncInfoValue> imp
         return getDecorated().getType();
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -110,7 +111,7 @@ public class SyncInfoValueDecorator extends ControlDecorator<ISyncInfoValue> imp
         }
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -119,7 +120,7 @@ public class SyncInfoValueDecorator extends ControlDecorator<ISyncInfoValue> imp
         return getDecorated().getCookie();
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -191,8 +192,8 @@ public class SyncInfoValueDecorator extends ControlDecorator<ISyncInfoValue> imp
     {
         getDecorated().setSyncUUIDs( syncUUIDs );
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -201,12 +202,12 @@ public class SyncInfoValueDecorator extends ControlDecorator<ISyncInfoValue> imp
         getDecorated().addSyncUUID( syncUUID );
     }
 
-    
+
     /**
      * Compute the SyncInfoValue length.
-     * 
+     *
      * SyncInfoValue :
-     * 
+     *
      * 0xA0 L1 abcd                   // newCookie
      * 0xA1 L2                        // refreshDelete
      *   |
@@ -231,11 +232,12 @@ public class SyncInfoValueDecorator extends ControlDecorator<ISyncInfoValue> imp
     public static final int BIND_REQUEST_SASL_TAG = 0xA3;
 
      */
+    @Override
     public int computeLength()
     {
         // The mode length
         syncInfoValueLength = 0;
-        
+
         switch ( getType() )
         {
             case NEW_COOKIE :
@@ -247,36 +249,36 @@ public class SyncInfoValueDecorator extends ControlDecorator<ISyncInfoValue> imp
                 {
                     syncInfoValueLength = 1 + 1;
                 }
-                
+
                 valueLength = syncInfoValueLength;
 
                 // Call the super class to compute the global control length
                 return valueLength;
-                
+
             case REFRESH_DELETE :
             case REFRESH_PRESENT :
                 if ( getCookie() != null )
                 {
                     syncInfoValueLength = 1 + TLV.getNbBytes( getCookie().length ) + getCookie().length;
                 }
-                
+
                 // The refreshDone flag, only if not true, as it default to true
                 if ( ! isRefreshDone() )
                 {
                     syncInfoValueLength += 1 + 1 + 1;
                 }
-                
+
                 valueLength = 1 + TLV.getNbBytes( syncInfoValueLength ) + syncInfoValueLength;
-                
+
                 // Call the super class to compute the global control length
                 return valueLength;
-                
+
             case SYNC_ID_SET :
                 if ( getCookie() != null )
                 {
                     syncInfoValueLength = 1 + TLV.getNbBytes( getCookie().length ) + getCookie().length;
                 }
-                
+
                 // The refreshDeletes flag, default to false
                 if ( isRefreshDeletes() )
                 {
@@ -291,32 +293,33 @@ public class SyncInfoValueDecorator extends ControlDecorator<ISyncInfoValue> imp
                     for ( byte[] syncUUID: getSyncUUIDs() )
                     {
                         int uuidLength = 1 + TLV.getNbBytes( syncUUID.length ) + syncUUID.length;
-                        
+
                         syncUUIDsLength += uuidLength;
                     }
                 }
-                
+
                 syncInfoValueLength += 1 + TLV.getNbBytes( syncUUIDsLength ) + syncUUIDsLength;
                 valueLength = 1 + TLV.getNbBytes( syncInfoValueLength ) + syncInfoValueLength;
 
                 // Call the super class to compute the global control length
                 return valueLength;
-                
+
             default :
-                
+
         }
-        
+
         return 1 + TLV.getNbBytes( syncInfoValueLength ) + syncInfoValueLength;
     }
-    
-    
+
+
     /**
      * Encode the SyncInfoValue control
-     * 
+     *
      * @param buffer The encoded sink
      * @return A ByteBuffer that contains the encoded PDU
      * @throws EncoderException If anything goes wrong.
      */
+    @Override
     public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
     {
         if ( buffer == null )
@@ -343,7 +346,7 @@ public class SyncInfoValueDecorator extends ControlDecorator<ISyncInfoValue> imp
                 }
 
                 break;
-                
+
             case REFRESH_DELETE :
                 // The second case : refreshDelete
                 buffer.put( (byte)SyncInfoValueTags.REFRESH_DELETE_TAG.getValue() );
@@ -354,15 +357,15 @@ public class SyncInfoValueDecorator extends ControlDecorator<ISyncInfoValue> imp
                 {
                     Value.encode( buffer, getCookie() );
                 }
-                
+
                 // The refreshDone flag
                 if ( ! isRefreshDone() )
                 {
                     Value.encode( buffer, isRefreshDone() );
                 }
-                
+
                 break;
-                
+
             case REFRESH_PRESENT :
                 // The third case : refreshPresent
                 buffer.put( (byte)SyncInfoValueTags.REFRESH_PRESENT_TAG.getValue() );
@@ -373,7 +376,7 @@ public class SyncInfoValueDecorator extends ControlDecorator<ISyncInfoValue> imp
                 {
                     Value.encode( buffer, getCookie() );
                 }
-                
+
                 // The refreshDone flag
                 if ( ! isRefreshDone() )
                 {
@@ -381,7 +384,7 @@ public class SyncInfoValueDecorator extends ControlDecorator<ISyncInfoValue> imp
                 }
 
                 break;
-                
+
             case SYNC_ID_SET :
                 // The last case : syncIdSet
                 buffer.put( (byte)SyncInfoValueTags.SYNC_ID_SET_TAG.getValue() );
@@ -392,17 +395,17 @@ public class SyncInfoValueDecorator extends ControlDecorator<ISyncInfoValue> imp
                 {
                     Value.encode( buffer, getCookie() );
                 }
-                
+
                 // The refreshDeletes flag if not false
                 if ( isRefreshDeletes() )
                 {
                     Value.encode( buffer, isRefreshDeletes() );
                 }
-                
+
                 // The syncUUIDs
                 buffer.put( UniversalTag.SET.getValue() );
                 buffer.put( TLV.getBytes( syncUUIDsLength ) );
-                
+
                 // Loop on the UUIDs if any
                 if ( getSyncUUIDs().size() != 0 )
                 {
@@ -415,20 +418,21 @@ public class SyncInfoValueDecorator extends ControlDecorator<ISyncInfoValue> imp
 
         return buffer;
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public byte[] getValue()
     {
         if ( value == null )
         {
             try
-            { 
+            {
                 computeLength();
                 ByteBuffer buffer = ByteBuffer.allocate( valueLength );
-                
+
                 switch ( getType() )
                 {
                     case NEW_COOKIE :
@@ -448,7 +452,7 @@ public class SyncInfoValueDecorator extends ControlDecorator<ISyncInfoValue> imp
                         }
 
                         break;
-                        
+
                     case REFRESH_DELETE :
                         // The second case : refreshDelete
                         buffer.put( (byte)SyncInfoValueTags.REFRESH_DELETE_TAG.getValue() );
@@ -459,15 +463,15 @@ public class SyncInfoValueDecorator extends ControlDecorator<ISyncInfoValue> imp
                         {
                             Value.encode( buffer, getCookie() );
                         }
-                        
+
                         // The refreshDone flag
                         if ( ! isRefreshDone() )
                         {
                             Value.encode( buffer, isRefreshDone() );
                         }
-                        
+
                         break;
-                        
+
                     case REFRESH_PRESENT :
                         // The third case : refreshPresent
                         buffer.put( (byte)SyncInfoValueTags.REFRESH_PRESENT_TAG.getValue() );
@@ -478,7 +482,7 @@ public class SyncInfoValueDecorator extends ControlDecorator<ISyncInfoValue> imp
                         {
                             Value.encode( buffer, getCookie() );
                         }
-                        
+
                         // The refreshDone flag
                         if ( ! isRefreshDone() )
                         {
@@ -486,7 +490,7 @@ public class SyncInfoValueDecorator extends ControlDecorator<ISyncInfoValue> imp
                         }
 
                         break;
-                        
+
                     case SYNC_ID_SET :
                         // The last case : syncIdSet
                         buffer.put( (byte)SyncInfoValueTags.SYNC_ID_SET_TAG.getValue() );
@@ -497,17 +501,17 @@ public class SyncInfoValueDecorator extends ControlDecorator<ISyncInfoValue> imp
                         {
                             Value.encode( buffer, getCookie() );
                         }
-                        
+
                         // The refreshDeletes flag if not false
                         if ( isRefreshDeletes() )
                         {
                             Value.encode( buffer, isRefreshDeletes() );
                         }
-                        
+
                         // The syncUUIDs
                         buffer.put( UniversalTag.SET.getValue() );
                         buffer.put( TLV.getBytes( syncUUIDsLength ) );
-                        
+
                         // Loop on the UUIDs if any
                         if ( getSyncUUIDs().size() != 0 )
                         {
@@ -517,7 +521,7 @@ public class SyncInfoValueDecorator extends ControlDecorator<ISyncInfoValue> imp
                             }
                         }
                 }
-                
+
                 value = buffer.array();
             }
             catch ( Exception e )
@@ -525,135 +529,8 @@ public class SyncInfoValueDecorator extends ControlDecorator<ISyncInfoValue> imp
                 return null;
             }
         }
-        
+
         return value;
-    }
-
-    
-    /**
-     * @see Object#equals(Object)
-     */
-    public boolean equals( Object o )
-    {
-        if ( !super.equals( o ) )
-        {
-            return false;
-        }
-
-        SyncInfoValueDecorator otherControl = ( SyncInfoValueDecorator ) o;
-
-        if ( getSyncUUIDs() != null )
-        {
-            if ( otherControl.getSyncUUIDs() == null )
-            {
-                return false;
-            }
-            
-            // @TODO : check the UUIDs
-            for ( @SuppressWarnings("unused") byte[] syncUuid : getSyncUUIDs() )
-            {
-            }
-        }
-        else
-        {
-            if ( otherControl.getSyncUUIDs() != null )
-            {
-                return false;
-            }
-        }
-        
-        return ( isRefreshDeletes() == otherControl.isRefreshDeletes() ) &&
-            ( isRefreshDone() == otherControl.isRefreshDone() ) &&
-            ( getType() == otherControl.getType() ) &&
-            ( Arrays.equals( getCookie(), otherControl.getCookie() ) );
-    }
-
-
-
-    
-    /**
-     * @see Object#toString()
-     */
-    public String toString()
-    {
-        StringBuilder sb = new StringBuilder();
-        
-        sb.append( "    SyncInfoValue control :\n" );
-        sb.append( "        oid : " ).append( getOid() ).append( '\n' );
-        sb.append( "        critical : " ).append( isCritical() ).append( '\n' );
-
-        switch ( getType() )
-        {
-            case NEW_COOKIE :
-                sb.append( "        newCookie : '" ).
-                    append( Strings.dumpBytes( getCookie() ) ).append( "'\n" );
-                break;
-                
-            case REFRESH_DELETE :
-                sb.append( "        refreshDelete : \n" );
-                
-                if ( getCookie() != null )
-                {
-                    sb.append( "            cookie : '" ).
-                        append( Strings.dumpBytes( getCookie() ) ).append( "'\n" );
-                }
-                
-                sb.append( "            refreshDone : " ).append(  isRefreshDone() ).append( '\n' );
-                break;
-                
-            case REFRESH_PRESENT :
-                sb.append( "        refreshPresent : \n" );
-                
-                if ( getCookie() != null )
-                {
-                    sb.append( "            cookie : '" ).
-                        append( Strings.dumpBytes( getCookie() ) ).append( "'\n" );
-                }
-                
-                sb.append( "            refreshDone : " ).append(  isRefreshDone() ).append( '\n' );
-                break;
-                
-            case SYNC_ID_SET :
-                sb.append( "        syncIdSet : \n" );
-                
-                if ( getCookie() != null )
-                {
-                    sb.append( "            cookie : '" ).
-                        append( Strings.dumpBytes( getCookie() ) ).append( "'\n" );
-                }
-                
-                sb.append( "            refreshDeletes : " ).append(  isRefreshDeletes() ).append( '\n' );
-                sb.append(  "            syncUUIDS : " );
-
-                if ( getSyncUUIDs().size() != 0 )
-                {
-                    boolean isFirst = true;
-                    
-                    for ( byte[] syncUUID: getSyncUUIDs() )
-                    {
-                        if ( isFirst )
-                        {
-                            isFirst = false;
-                        }
-                        else
-                        {
-                            sb.append( ", " );
-                        }
-                        
-                        sb.append( Arrays.toString ( syncUUID ) );
-                    }
-                    
-                    sb.append( '\n' );
-                }
-                else
-                {
-                    sb.append(  "empty\n" );
-                }
-                
-                break;
-        }
-        
-        return sb.toString();
     }
 
 

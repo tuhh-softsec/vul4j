@@ -17,12 +17,11 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValue;
+package org.apache.directory.shared.ldap.model.message.controls;
 
 
 import java.util.List;
 
-import org.apache.directory.shared.ldap.message.control.replication.SynchronizationInfoEnum;
 import org.apache.directory.shared.ldap.model.message.Control;
 
 
@@ -31,7 +30,7 @@ import org.apache.directory.shared.ldap.model.message.Control;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface ISyncInfoValue extends Control
+public interface SyncInfoValue extends Control
 {
 
     /** This control OID */

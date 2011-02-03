@@ -20,8 +20,8 @@
 package org.apache.directory.shared.ldap.codec.controls.replication.syncStateValue;
 
 
-import org.apache.directory.shared.ldap.message.control.replication.SyncStateTypeEnum;
 import org.apache.directory.shared.ldap.model.message.Control;
+import org.apache.directory.shared.ldap.model.message.controls.SyncStateTypeEnum;
 
 
 /**

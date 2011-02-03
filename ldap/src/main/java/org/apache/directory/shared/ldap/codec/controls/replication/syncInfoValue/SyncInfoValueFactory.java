@@ -29,15 +29,17 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.IControlFactory;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.model.message.controls.SyncInfoValue;
+import org.apache.directory.shared.ldap.model.message.controls.SyncInfoValueImpl;
 
 
 /**
- * A {@link IControlFactory} which creates {@link ISyncInfoValue} controls.
+ * A {@link IControlFactory} which creates {@link SyncInfoValue} controls.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class SyncInfoValueFactory implements IControlFactory<ISyncInfoValue, SyncInfoValueDecorator>
+public class SyncInfoValueFactory implements IControlFactory<SyncInfoValue, SyncInfoValueDecorator>
 {
     
     private ILdapCodecService codec;
@@ -59,7 +61,7 @@ public class SyncInfoValueFactory implements IControlFactory<ISyncInfoValue, Syn
      */
     public String getOid()
     {
-        return ISyncInfoValue.OID;
+        return SyncInfoValue.OID;
     }
 
     
@@ -73,7 +75,7 @@ public class SyncInfoValueFactory implements IControlFactory<ISyncInfoValue, Syn
     }
     
 
-    public SyncInfoValueDecorator decorate( ISyncInfoValue control )
+    public SyncInfoValueDecorator decorate( SyncInfoValue control )
     {
         SyncInfoValueDecorator decorator = null;
         
@@ -91,13 +93,13 @@ public class SyncInfoValueFactory implements IControlFactory<ISyncInfoValue, Syn
     }
 
     
-    public ISyncInfoValue newControl()
+    public SyncInfoValue newControl()
     {
-        return new SyncInfoValue();
+        return new SyncInfoValueImpl();
     }
     
 
-    public Control toJndiControl( ISyncInfoValue control ) throws EncoderException
+    public Control toJndiControl( SyncInfoValue control ) throws EncoderException
     {
         SyncInfoValueDecorator decorator = decorate( control );
         ByteBuffer bb = ByteBuffer.allocate( decorator.computeLength() );
@@ -107,7 +109,7 @@ public class SyncInfoValueFactory implements IControlFactory<ISyncInfoValue, Syn
     }
 
     
-    public ISyncInfoValue fromJndiControl( Control jndi ) throws DecoderException
+    public SyncInfoValue fromJndiControl( Control jndi ) throws DecoderException
     {
         SyncInfoValueDecorator decorator = newCodecControl();
         decorator.setCritical( jndi.isCritical() );
