@@ -32,7 +32,7 @@ import org.apache.directory.shared.util.Strings;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class OpaqueControlImpl extends AbstractControl implements Control
+public final class OpaqueControlImpl extends AbstractControl implements Control
 {
 	/** The opaque encoded value */
 	private byte[] value;
