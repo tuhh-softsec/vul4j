@@ -41,16 +41,17 @@ public class DefaultComparatorRegistry extends DefaultSchemaObjectRegistry<LdapC
 
     /** A speedup for debug */
     private static final boolean DEBUG = LOG.isDebugEnabled();
-    
+
+
     /**
      * Creates a new default ComparatorRegistry instance.
      */
     public DefaultComparatorRegistry()
     {
-        super( SchemaObjectType.COMPARATOR, new OidRegistry() );
+        super( SchemaObjectType.COMPARATOR, new OidRegistry<LdapComparator<?>>() );
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -60,7 +61,7 @@ public class DefaultComparatorRegistry extends DefaultSchemaObjectRegistry<LdapC
         {
             return;
         }
-        
+
         // Loop on all the SchemaObjects stored and remove those associated
         // with the give schemaName
         for ( LdapComparator<?> comparator : this )
@@ -69,7 +70,7 @@ public class DefaultComparatorRegistry extends DefaultSchemaObjectRegistry<LdapC
             {
                 String oid = comparator.getOid();
                 SchemaObject removed = unregister( oid );
-                
+
                 if ( DEBUG )
                 {
                     LOG.debug( "Removed {} with oid {} from the registry", removed, oid );
@@ -77,32 +78,32 @@ public class DefaultComparatorRegistry extends DefaultSchemaObjectRegistry<LdapC
             }
         }
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
     public DefaultComparatorRegistry copy()
     {
         DefaultComparatorRegistry copy = new DefaultComparatorRegistry();
-        
+
         // Copy the base data
         copy.copy( this );
-        
+
         return copy;
     }
-    
-    
+
+
     /**
      * @see Object#toString()
      */
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
-        
+
         sb.append( schemaObjectType ).append( ": " );
         boolean isFirst = true;
-        
+
         for ( String name : byName.keySet() )
         {
             if ( isFirst )
@@ -113,15 +114,14 @@ public class DefaultComparatorRegistry extends DefaultSchemaObjectRegistry<LdapC
             {
                 sb.append( ", " );
             }
-            
+
             LdapComparator<?> comparator = byName.get( name );
-            
+
             String fqcn = comparator.getFqcn();
             int lastDotPos = fqcn.lastIndexOf( '.' );
-            
+
             sb.append( '<' ).append( comparator.getOid() ).append( ", " );
-            
-            
+
             if ( lastDotPos > 0 )
             {
                 sb.append( fqcn.substring( lastDotPos + 1 ) );
@@ -130,10 +130,10 @@ public class DefaultComparatorRegistry extends DefaultSchemaObjectRegistry<LdapC
             {
                 sb.append( fqcn );
             }
-            
+
             sb.append( '>' );
         }
-        
+
         return sb.toString();
     }
 }

@@ -46,16 +46,17 @@ public class DefaultDITStructureRuleRegistry extends DefaultSchemaObjectRegistry
 
     /** A speedup for debug */
     private static final boolean DEBUG = LOG.isDebugEnabled();
-    
+
     /** a map of DITStructureRule looked up by RuleId */
     protected Map<Integer, DITStructureRule> byRuleId;
-    
+
+
     /**
      * Creates a new default NormalizerRegistry instance.
      */
     public DefaultDITStructureRuleRegistry()
     {
-        super( SchemaObjectType.DIT_STRUCTURE_RULE, new OidRegistry() );
+        super( SchemaObjectType.DIT_STRUCTURE_RULE, new OidRegistry<DITStructureRule>() );
         byRuleId = new HashMap<Integer, DITStructureRule>();
     }
 
@@ -68,7 +69,7 @@ public class DefaultDITStructureRuleRegistry extends DefaultSchemaObjectRegistry
         return byRuleId.containsKey( ruleId );
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -76,8 +77,8 @@ public class DefaultDITStructureRuleRegistry extends DefaultSchemaObjectRegistry
     {
         return byRuleId.values().iterator();
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -85,8 +86,8 @@ public class DefaultDITStructureRuleRegistry extends DefaultSchemaObjectRegistry
     {
         return byRuleId.keySet().iterator();
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -98,20 +99,20 @@ public class DefaultDITStructureRuleRegistry extends DefaultSchemaObjectRegistry
         {
             return ditStructureRule.getSchemaName();
         }
-        
+
         String msg = I18n.err( I18n.ERR_04263, ruleId );
         LOG.warn( msg );
         throw new LdapException( msg );
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
     public void register( DITStructureRule ditStructureRule ) throws LdapException
     {
         int ruleId = ditStructureRule.getRuleId();
-        
+
         if ( byRuleId.containsKey( ruleId ) )
         {
             String msg = I18n.err( I18n.ERR_04264, ruleId );
@@ -120,14 +121,14 @@ public class DefaultDITStructureRuleRegistry extends DefaultSchemaObjectRegistry
         }
 
         byRuleId.put( ruleId, ditStructureRule );
-        
+
         if ( LOG.isDebugEnabled() )
         {
             LOG.debug( "registered {} for OID {}", ditStructureRule, ruleId );
         }
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -146,7 +147,7 @@ public class DefaultDITStructureRuleRegistry extends DefaultSchemaObjectRegistry
         {
             LOG.debug( "Found {} with ruleId: {}", ditStructureRule, ruleId );
         }
-        
+
         return ditStructureRule;
     }
 
@@ -157,14 +158,14 @@ public class DefaultDITStructureRuleRegistry extends DefaultSchemaObjectRegistry
     public void unregister( int ruleId ) throws LdapException
     {
         DITStructureRule ditStructureRule = byRuleId.remove( ruleId );
-        
+
         if ( DEBUG )
         {
             LOG.debug( "Removed {} with ruleId {} from the registry", ditStructureRule, ruleId );
         }
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -174,7 +175,7 @@ public class DefaultDITStructureRuleRegistry extends DefaultSchemaObjectRegistry
         {
             return;
         }
-        
+
         // Loop on all the SchemaObjects stored and remove those associated
         // with the give schemaName
         for ( DITStructureRule ditStructureRule : this )
@@ -183,7 +184,7 @@ public class DefaultDITStructureRuleRegistry extends DefaultSchemaObjectRegistry
             {
                 int ruleId = ditStructureRule.getRuleId();
                 SchemaObject removed = byRuleId.remove( ruleId );
-                
+
                 if ( DEBUG )
                 {
                     LOG.debug( "Removed {} with ruleId {} from the registry", removed, ruleId );
@@ -192,7 +193,7 @@ public class DefaultDITStructureRuleRegistry extends DefaultSchemaObjectRegistry
         }
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
@@ -213,18 +214,18 @@ public class DefaultDITStructureRuleRegistry extends DefaultSchemaObjectRegistry
             }
         }
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
     public DefaultDITStructureRuleRegistry copy()
     {
         DefaultDITStructureRuleRegistry copy = new DefaultDITStructureRuleRegistry();
-        
+
         // Copy the base data
         copy.copy( this );
-        
+
         return copy;
     }
 }

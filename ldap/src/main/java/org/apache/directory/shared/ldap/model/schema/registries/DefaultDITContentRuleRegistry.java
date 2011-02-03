@@ -37,7 +37,7 @@ public class DefaultDITContentRuleRegistry extends DefaultSchemaObjectRegistry<D
      */
     public DefaultDITContentRuleRegistry()
     {
-        super( SchemaObjectType.DIT_CONTENT_RULE, new OidRegistry() );
+        super( SchemaObjectType.DIT_CONTENT_RULE, new OidRegistry<DITContentRule>() );
     }
     
     

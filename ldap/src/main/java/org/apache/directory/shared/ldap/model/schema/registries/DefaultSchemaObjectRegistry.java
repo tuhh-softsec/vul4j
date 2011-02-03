@@ -58,13 +58,13 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
     protected SchemaObjectType schemaObjectType;
 
     /** the global OID Registry */
-    protected OidRegistry oidRegistry;
+    protected OidRegistry<T> oidRegistry;
 
 
     /**
      * Creates a new DefaultSchemaObjectRegistry instance.
      */
-    protected DefaultSchemaObjectRegistry( SchemaObjectType schemaObjectType, OidRegistry oidRegistry )
+    protected DefaultSchemaObjectRegistry( SchemaObjectType schemaObjectType, OidRegistry<T> oidRegistry )
     {
         byName = new HashMap<String, T>();
         this.schemaObjectType = schemaObjectType;
@@ -387,7 +387,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
                 {
                     try
                     {
-                        copiedValue = ( T ) oidRegistry.getSchemaObject( value.getOid() );
+                        copiedValue = oidRegistry.getSchemaObject( value.getOid() );
                     }
                     catch ( LdapException ne )
                     {
@@ -396,7 +396,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
                 }
                 else
                 {
-                    copiedValue = ( T ) value.copy();
+                    copiedValue = (T) value.copy();
                 }
 
                 // Update the data structure. 
@@ -414,7 +414,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
     /**
      * {@inheritDoc}
      */
-    public SchemaObject get( String oid )
+    public T get( String oid )
     {
         try
         {

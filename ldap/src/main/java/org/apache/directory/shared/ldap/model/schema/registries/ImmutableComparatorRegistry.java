@@ -22,13 +22,11 @@ package org.apache.directory.shared.ldap.model.schema.registries;
 
 import java.util.Iterator;
 
-import org.apache.directory.shared.ldap.model.exception.LdapException;
-
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapUnwillingToPerformException;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.model.schema.LdapComparator;
-import org.apache.directory.shared.ldap.model.schema.SchemaObject;
 import org.apache.directory.shared.ldap.model.schema.SchemaObjectType;
 
 
@@ -174,7 +172,7 @@ public class ImmutableComparatorRegistry implements ComparatorRegistry
     /**
      * {@inheritDoc}
      */
-    public SchemaObject get( String oid )
+    public LdapComparator<?> get( String oid )
     {
         return immutableComparatorRegistry.get( oid );
     }

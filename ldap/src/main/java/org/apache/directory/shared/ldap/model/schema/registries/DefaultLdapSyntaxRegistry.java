@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.model.schema.registries;
 
+
 import org.apache.directory.shared.ldap.model.schema.LdapSyntax;
 import org.apache.directory.shared.ldap.model.schema.SchemaObjectType;
 
@@ -36,20 +37,20 @@ public class DefaultLdapSyntaxRegistry extends DefaultSchemaObjectRegistry<LdapS
      */
     public DefaultLdapSyntaxRegistry()
     {
-        super( SchemaObjectType.LDAP_SYNTAX, new OidRegistry() );
+        super( SchemaObjectType.LDAP_SYNTAX, new OidRegistry<LdapSyntax>() );
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
     public DefaultLdapSyntaxRegistry copy()
     {
         DefaultLdapSyntaxRegistry copy = new DefaultLdapSyntaxRegistry();
-        
+
         // Copy the base data
         copy.copy( this );
-        
+
         return copy;
     }
 }
