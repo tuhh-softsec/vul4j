@@ -235,16 +235,32 @@ public class SyncInfoValueImpl extends AbstractControl implements SyncInfoValue
 
         SyncInfoValueDecorator otherControl = ( SyncInfoValueDecorator ) o;
 
-        if ( getSyncUUIDs() != null )
+        if ( syncUUIDs != null )
         {
             if ( otherControl.getSyncUUIDs() == null )
             {
                 return false;
             }
 
-            // @TODO : check the UUIDs
-            for ( @SuppressWarnings("unused") byte[] syncUuid : getSyncUUIDs() )
+            // @TODO : this is extremely heavy... We have to find a better way to
+            // compare the lists of suncUuids, but atm, it's enough.
+            for ( byte[] syncUuid : syncUUIDs )
             {
+                boolean found = false;
+
+                for ( byte[] otherSyncUuid : otherControl.getSyncUUIDs() )
+                {
+                    if ( Arrays.equals( syncUuid, otherSyncUuid ) )
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if ( found == false )
+                {
+                    return false;
+                }
             }
         }
         else
