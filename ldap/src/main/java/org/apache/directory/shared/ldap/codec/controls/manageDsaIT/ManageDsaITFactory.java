@@ -20,16 +20,10 @@
 package org.apache.directory.shared.ldap.codec.controls.manageDsaIT;
 
 
-import javax.naming.ldap.BasicControl;
-import javax.naming.ldap.Control;
-
-import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.IControlFactory;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.model.message.controls.ManageDsaIT;
 import org.apache.directory.shared.ldap.model.message.controls.ManageDsaITImpl;
-import org.apache.directory.shared.util.StringConstants;
 
 
 /**
@@ -88,23 +82,5 @@ public class ManageDsaITFactory implements IControlFactory<ManageDsaIT, ManageDs
     public ManageDsaIT newControl()
     {
         return new ManageDsaITImpl();
-    }
-
-    
-    /**
-     * {@inheritDoc}
-     */
-    public Control toJndiControl( ManageDsaIT control ) throws EncoderException
-    {
-        return new BasicControl( ManageDsaIT.OID, control.isCritical(), StringConstants.EMPTY_BYTES );
-    }
-
-    
-    /**
-     * {@inheritDoc}
-     */
-    public ManageDsaIT fromJndiControl( Control control ) throws DecoderException
-    {
-        return new ManageDsaITImpl( control.isCritical() );
     }
 }

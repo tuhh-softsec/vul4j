@@ -20,13 +20,6 @@
 package org.apache.directory.shared.ldap.codec.controls.search.subentries;
 
 
-import java.nio.ByteBuffer;
-
-import javax.naming.ldap.BasicControl;
-import javax.naming.ldap.Control;
-
-import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.IControlFactory;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.model.message.controls.Subentries;
@@ -99,42 +92,5 @@ public class SubentriesFactory implements IControlFactory<Subentries, Subentries
         }
         
         return new SubentriesDecorator( codec, control );
-    }
-    
-
-    /**
-     * 
-     * {@inheritDoc}
-     */
-    public Control toJndiControl( Subentries control ) throws EncoderException
-    {
-        SubentriesDecorator decorator = null;
-        
-        if ( control instanceof SubentriesDecorator )
-        {
-            decorator = ( SubentriesDecorator ) control;
-        }
-        else
-        {
-            decorator = new SubentriesDecorator( codec, control );
-        }
-        
-        ByteBuffer bb = ByteBuffer.allocate( decorator.computeLength() );
-        decorator.encode( bb );
-        bb.flip();
-        
-        return new BasicControl( control.getOid(), control.isCritical(), decorator.getValue() );
-    }
-    
-
-    /**
-     * 
-     * {@inheritDoc}
-     */
-    public Subentries fromJndiControl( Control control ) throws DecoderException
-    {
-        SubentriesDecorator decorator = new SubentriesDecorator( codec );
-        decorator.decode( control.getEncodedValue() );
-        return decorator.getDecorated();
     }
 }

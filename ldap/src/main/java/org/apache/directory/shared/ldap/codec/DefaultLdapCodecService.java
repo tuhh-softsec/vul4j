@@ -100,6 +100,9 @@ public class DefaultLdapCodecService implements ILdapCodecService
         SubentriesFactory subentriesFactory = new SubentriesFactory( this );
         controlFactories.put( Subentries.OID, subentriesFactory );
         
+        // @TODO - these will eventually be removed to enable plugin driven
+        // registration instead
+        
         SyncDoneValueFactory syncDoneValueFactory = new SyncDoneValueFactory( this );
         controlFactories.put( SyncDoneValue.OID, syncDoneValueFactory );
         
@@ -303,13 +306,17 @@ public class DefaultLdapCodecService implements ILdapCodecService
         
         if ( factory == null )
         {
-            AbstractControl ourControl = new OpaqueControl( control.getID() );
+            OpaqueControl ourControl = new OpaqueControl( control.getID() );
             ourControl.setCritical( control.isCritical() );
             BasicControlDecorator decorator = new BasicControlDecorator( this, ourControl );
             decorator.setValue( control.getEncodedValue() );
             return decorator;
         }
         
-        return factory.fromJndiControl( control );
+        ICodecControl<? extends Control> ourControl = factory.newCodecControl();
+        ourControl.setCritical( control.isCritical() );
+        ourControl.setValue( control.getEncodedValue() );
+        ourControl.decode( control.getEncodedValue() );
+        return ourControl;
     }
 }

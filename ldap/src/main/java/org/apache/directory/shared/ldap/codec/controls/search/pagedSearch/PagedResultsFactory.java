@@ -20,13 +20,6 @@
 package org.apache.directory.shared.ldap.codec.controls.search.pagedSearch;
 
 
-import java.nio.ByteBuffer; 
-
-import javax.naming.ldap.BasicControl;
-import javax.naming.ldap.Control;
-
-import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.IControlFactory;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.model.message.controls.PagedResults;
@@ -89,29 +82,5 @@ public class PagedResultsFactory implements IControlFactory<PagedResults, PagedR
     public PagedResults newControl()
     {
         return new PagedResultsImpl();
-    }
-    
-
-    /**
-     * {@inheritDoc}
-     */
-    public Control toJndiControl( PagedResults control ) throws EncoderException
-    {
-        PagedResultsDecorator decorator = decorate( control );
-        ByteBuffer bb = ByteBuffer.allocate( decorator.computeLength() );
-        decorator.encode( bb );
-        bb.flip();
-        return new BasicControl( PagedResults.OID, control.isCritical(), bb.array() );
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public PagedResults fromJndiControl( Control control ) throws DecoderException
-    {
-        PagedResultsDecorator decorator = new PagedResultsDecorator( codec );
-        decorator.setValue( control.getEncodedValue() );
-        return decorator;
     }
 }

@@ -20,13 +20,6 @@
 package org.apache.directory.shared.ldap.codec.controls.search.entryChange;
 
 
-import java.nio.ByteBuffer;
-
-import javax.naming.ldap.BasicControl;
-import javax.naming.ldap.Control;
-
-import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.IControlFactory;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.model.message.controls.EntryChange;
@@ -89,29 +82,5 @@ public class EntryChangeFactory implements IControlFactory<EntryChange, EntryCha
     public EntryChange newControl()
     {
         return new EntryChangeImpl();
-    }
-    
-
-    /**
-     * {@inheritDoc}
-     */
-    public Control toJndiControl( EntryChange control ) throws EncoderException
-    {
-        EntryChangeDecorator decorator = decorate( control );
-        ByteBuffer bb = ByteBuffer.allocate( decorator.computeLength() );
-        decorator.encode( bb );
-        bb.flip();
-        return new BasicControl( EntryChange.OID, control.isCritical(), bb.array() );
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public EntryChange fromJndiControl( Control control ) throws DecoderException
-    {
-        EntryChangeDecorator decorator = new EntryChangeDecorator( codec );
-        decorator.setValue( control.getEncodedValue() );
-        return decorator;
     }
 }

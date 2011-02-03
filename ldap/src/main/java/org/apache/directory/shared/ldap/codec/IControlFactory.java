@@ -20,8 +20,6 @@
 package org.apache.directory.shared.ldap.codec;
 
 
-import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.model.message.Control;
 
 
@@ -77,20 +75,4 @@ public interface IControlFactory<C extends Control, D extends ICodecControl<C>>
      * @return
      */
     C newControl();
-
-
-    /**
-     * @TODO I also think these methods are not needed here. These can move to the
-     * codec facade interface - the codec service interface - instead. Basically the
-     * codec can grab a decorated object and generate the jndi equivalents and vice
-     * versa. We don't need tens of controls having to implement this same logic.
-     *
-     *
-     * @param modelControl
-     * @return
-     * @throws EncoderException
-     */
-    javax.naming.ldap.Control toJndiControl( C modelControl ) throws EncoderException;
-    
-    C fromJndiControl( javax.naming.ldap.Control jndiControl ) throws DecoderException;
 }

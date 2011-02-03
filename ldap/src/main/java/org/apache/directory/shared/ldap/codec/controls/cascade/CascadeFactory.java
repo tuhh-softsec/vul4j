@@ -20,16 +20,10 @@
 package org.apache.directory.shared.ldap.codec.controls.cascade;
 
 
-import javax.naming.ldap.BasicControl;
-import javax.naming.ldap.Control;
-
-import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.IControlFactory;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.model.message.controls.Cascade;
 import org.apache.directory.shared.ldap.model.message.controls.CascadeImpl;
-import org.apache.directory.shared.util.StringConstants;
 
 
 /**
@@ -88,23 +82,5 @@ public class CascadeFactory implements IControlFactory<Cascade, CascadeDecorator
     public Cascade newControl()
     {
         return new CascadeImpl();
-    }
-
-    
-    /**
-     * {@inheritDoc}
-     */
-    public Control toJndiControl( Cascade control ) throws EncoderException
-    {
-        return new BasicControl( Cascade.OID, control.isCritical(), StringConstants.EMPTY_BYTES );
-    }
-
-    
-    /**
-     * {@inheritDoc}
-     */
-    public Cascade fromJndiControl( Control control ) throws DecoderException
-    {
-        return new CascadeImpl( control.isCritical() );
     }
 }

@@ -20,13 +20,6 @@
 package org.apache.directory.shared.ldap.codec.controls.search.persistentSearch;
 
 
-import java.nio.ByteBuffer;
-
-import javax.naming.ldap.BasicControl;
-import javax.naming.ldap.Control;
-
-import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.IControlFactory;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.model.message.controls.PersistentSearch;
@@ -48,19 +41,29 @@ public class PersistentSearchFactory implements IControlFactory<PersistentSearch
     {
         this.codec = codec;
     }
+
     
+    /**
+     * {@inheritDoc}
+     */
     public String getOid()
     {
         return PersistentSearch.OID;
     }
 
     
+    /**
+     * {@inheritDoc}
+     */
     public PersistentSearchDecorator newCodecControl()
     {
         return new PersistentSearchDecorator( codec );
     }
 
     
+    /**
+     * {@inheritDoc}
+     */
     public PersistentSearchDecorator decorate( PersistentSearch control )
     {
         // protect against double decoration
@@ -75,29 +78,11 @@ public class PersistentSearchFactory implements IControlFactory<PersistentSearch
     }
 
     
+    /**
+     * {@inheritDoc}
+     */
     public PersistentSearch newControl()
     {
         return new PersistentSearchImpl();
-    }
-    
-    
-    public Control toJndiControl( PersistentSearch control ) throws EncoderException
-    {
-        PersistentSearchDecorator decorator = decorate( control );
-        ByteBuffer buf = ByteBuffer.allocate( decorator.computeLength() );
-        decorator.encode( buf );
-        buf.flip();
-        return new BasicControl( control.getOid(), control.isCritical(), buf.array() );
-    }
-    
-    
-    public PersistentSearch fromJndiControl( Control jndi ) throws DecoderException
-    {
-        PersistentSearchDecorator decorator = newCodecControl();
-        decorator.setCritical( jndi.isCritical() );
-        decorator.setValue( jndi.getEncodedValue() );
-        byte[] controlBytes = new byte[decorator.computeLength()];
-        decorator.decode( controlBytes );
-        return decorator.getDecorated();
     }
 }
