@@ -18,7 +18,7 @@
  *
  */
 
-package org.apache.directory.shared.ldap.codec.controls.ppolicy;
+package org.apache.directory.shared.ldap.extras.controls.ppolicy_impl;
 
 
 import static org.junit.Assert.assertEquals;
