@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.directory.shared.ldap.codec.controls;
+package org.apache.directory.shared.ldap.codec.controls.cascade;
 
 
 import org.apache.directory.shared.ldap.codec.ICodecControl;

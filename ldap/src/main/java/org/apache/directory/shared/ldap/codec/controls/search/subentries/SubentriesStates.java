@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.search.controls.pagedSearch;
+package org.apache.directory.shared.ldap.codec.controls.search.subentries;
 
 
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
@@ -25,12 +25,12 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
 
 
 /**
- * This class store the PagedSearchControl's grammar constants. It is also used for
+ * This class store the SubEntryControl's grammar constants. It is also used for
  * debugging purposes.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public enum PagedResultsStates implements States
+public enum SubentriesStates implements States
 {
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
@@ -39,22 +39,17 @@ public enum PagedResultsStates implements States
     END_STATE,
 
     // =========================================================================
-    // Paged search control grammar states
+    // Sub entry control grammar states
     // =========================================================================
-    /** Initial state */
+
+    /** Starting state */
     START_STATE,
 
-    /** Sequence Value */
-    PAGED_SEARCH_SEQUENCE_STATE,
-
-    /** Size Value */
-    SIZE_STATE,
-    
-    /** Cookie Value */
-    COOKIE_STATE,
+    /** Visibility Value */
+    SUB_ENTRY_VISIBILITY_STATE,
 
     /** terminal state */
-    LAST_PAGED_SEARCH_STATE;
+    LAST_SUB_ENTRY_STATE;
 
 
     /**
@@ -65,7 +60,7 @@ public enum PagedResultsStates implements States
      */
     public String getGrammarName( int grammar )
     {
-        return "PAGED_SEARCH_GRAMMAR";
+        return "SUB_ENTRY_GRAMMAR";
     }
 
 
@@ -77,9 +72,9 @@ public enum PagedResultsStates implements States
      */
     public String getGrammarName( Grammar grammar )
     {
-        if ( grammar instanceof PagedResultsGrammar )
+        if ( grammar instanceof SubentriesGrammar )
         {
-            return "PAGEDSEARCH_GRAMMAR";
+            return "SUB_ENTRY_GRAMMAR";
         }
 
         return "UNKNOWN GRAMMAR";
@@ -94,7 +89,7 @@ public enum PagedResultsStates implements States
      */
     public String getState( int state )
     {
-        return ( ( state == END_STATE.ordinal() ) ? "PAGED_SEARCH_END_STATE" : name() );
+        return ( ( state == END_STATE.ordinal() ) ? "SUB_ENTRY_END_STATE" : name() );
     }
 
     
@@ -110,7 +105,7 @@ public enum PagedResultsStates implements States
     /**
      * {@inheritDoc}
      */
-    public PagedResultsStates getStartState()
+    public SubentriesStates getStartState()
     {
         return START_STATE;
     }

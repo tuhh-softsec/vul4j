@@ -17,7 +17,7 @@
  *   under the License.
  *
  */
-package org.apache.directory.shared.ldap.codec.search.controls.subentries;
+package org.apache.directory.shared.ldap.codec.controls.search.entryChange;
 
 
 import java.nio.ByteBuffer;
@@ -29,112 +29,89 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.IControlFactory;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
-import org.apache.directory.shared.ldap.model.message.controls.Subentries;
-import org.apache.directory.shared.ldap.model.message.controls.SubentriesImpl;
+import org.apache.directory.shared.ldap.model.message.controls.EntryChange;
+import org.apache.directory.shared.ldap.model.message.controls.EntryChangeImpl;
 
 
 /**
- * A factory for creating {@link Subentries} Controls and their 
- * {@link SubentriesDecorator} objects.
+ * A {@link IControlFactory} for {@link EntryChange} controls.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class SubentriesFactory implements IControlFactory<Subentries, SubentriesDecorator>
+public class EntryChangeFactory implements IControlFactory<EntryChange, EntryChangeDecorator>
 {
     /** The LDAP codec service */
     private ILdapCodecService codec;
-    
+
     
     /**
-     * Creates a new instance of SubentriesFactory.
+     * Creates a new instance of EntryChangeFactory.
      *
-     * @param codec
+     * @param codec The LDAP codec.
      */
-    public SubentriesFactory( ILdapCodecService codec )
+    public EntryChangeFactory( ILdapCodecService codec )
     {
         this.codec = codec;
     }
     
     
     /**
-     * 
      * {@inheritDoc}
      */
     public String getOid()
     {
-        return Subentries.OID;
+        return EntryChange.OID;
     }
 
     
     /**
-     * 
      * {@inheritDoc}
      */
-    public SubentriesDecorator newCodecControl()
+    public EntryChangeDecorator newCodecControl()
     {
-        return new SubentriesDecorator( codec );
-    }
-
-
-    /**
-     * 
-     * {@inheritDoc}
-     */
-    public Subentries newControl()
-    {
-        return new SubentriesImpl();
-    }
-
-    
-    /**
-     * 
-     * {@inheritDoc}
-     */
-    public SubentriesDecorator decorate( Subentries control )
-    {
-        if ( ! control.getOid().equals( Subentries.OID ) )
-        {
-            throw new IllegalArgumentException( "Bad control provided: " + control );
-        }
-        
-        return new SubentriesDecorator( codec, control );
+        return new EntryChangeDecorator( codec );
     }
     
 
     /**
-     * 
      * {@inheritDoc}
      */
-    public Control toJndiControl( Subentries control ) throws EncoderException
+    public EntryChangeDecorator decorate( EntryChange control )
     {
-        SubentriesDecorator decorator = null;
-        
-        if ( control instanceof SubentriesDecorator )
-        {
-            decorator = ( SubentriesDecorator ) control;
-        }
-        else
-        {
-            decorator = new SubentriesDecorator( codec, control );
-        }
-        
+        return new EntryChangeDecorator( codec, control );
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public EntryChange newControl()
+    {
+        return new EntryChangeImpl();
+    }
+    
+
+    /**
+     * {@inheritDoc}
+     */
+    public Control toJndiControl( EntryChange control ) throws EncoderException
+    {
+        EntryChangeDecorator decorator = decorate( control );
         ByteBuffer bb = ByteBuffer.allocate( decorator.computeLength() );
         decorator.encode( bb );
         bb.flip();
-        
-        return new BasicControl( control.getOid(), control.isCritical(), decorator.getValue() );
+        return new BasicControl( EntryChange.OID, control.isCritical(), bb.array() );
     }
-    
+
 
     /**
-     * 
      * {@inheritDoc}
      */
-    public Subentries fromJndiControl( Control control ) throws DecoderException
+    public EntryChange fromJndiControl( Control control ) throws DecoderException
     {
-        SubentriesDecorator decorator = new SubentriesDecorator( codec );
-        decorator.decode( control.getEncodedValue() );
-        return decorator.getDecorated();
+        EntryChangeDecorator decorator = new EntryChangeDecorator( codec );
+        decorator.setValue( control.getEncodedValue() );
+        return decorator;
     }
 }

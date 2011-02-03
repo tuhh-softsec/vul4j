@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.search.controls.persistentSearch;
+package org.apache.directory.shared.ldap.codec.controls.search.persistentSearch;
 
 
 import java.nio.ByteBuffer;

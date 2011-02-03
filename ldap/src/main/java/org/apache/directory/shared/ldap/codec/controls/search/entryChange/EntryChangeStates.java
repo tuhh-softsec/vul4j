@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.search.controls.subentries;
+package org.apache.directory.shared.ldap.codec.controls.search.entryChange;
 
 
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
@@ -25,12 +25,12 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
 
 
 /**
- * This class store the SubEntryControl's grammar constants. It is also used for
- * debugging purposes.
+ * This class store the EntryChangeControl's grammar constants. It is also used
+ * for debugging purposes.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public enum SubentriesStates implements States
+public enum EntryChangeStates implements States
 {
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
@@ -39,28 +39,36 @@ public enum SubentriesStates implements States
     END_STATE,
 
     // =========================================================================
-    // Sub entry control grammar states
+    // Entry change control grammar states
     // =========================================================================
 
-    /** Starting state */
+    /** Sequence Tag */
     START_STATE,
 
-    /** Visibility Value */
-    SUB_ENTRY_VISIBILITY_STATE,
+    /** Sequence */
+    EC_SEQUENCE_STATE,
+
+    /** changeType */
+    CHANGE_TYPE_STATE,
+
+    /** previousDN */
+    PREVIOUS_DN_STATE,
+
+    /** changeNumber */
+    CHANGE_NUMBER_STATE,
 
     /** terminal state */
-    LAST_SUB_ENTRY_STATE;
+    LAST_EC_STATE;
 
 
     /**
      * Get the grammar name
      * 
-     * @param grammar The grammar code
      * @return The grammar name
      */
-    public String getGrammarName( int grammar )
+    public String getGrammarName()
     {
-        return "SUB_ENTRY_GRAMMAR";
+        return "EC_GRAMMAR";
     }
 
 
@@ -72,9 +80,9 @@ public enum SubentriesStates implements States
      */
     public String getGrammarName( Grammar grammar )
     {
-        if ( grammar instanceof SubentriesGrammar )
+        if ( grammar instanceof EntryChangeGrammar )
         {
-            return "SUB_ENTRY_GRAMMAR";
+            return "EC_GRAMMAR";
         }
 
         return "UNKNOWN GRAMMAR";
@@ -89,7 +97,7 @@ public enum SubentriesStates implements States
      */
     public String getState( int state )
     {
-        return ( ( state == END_STATE.ordinal() ) ? "SUB_ENTRY_END_STATE" : name() );
+        return ( ( state == END_STATE.ordinal() ) ? "EC_END_STATE" : name() );
     }
 
     
@@ -105,7 +113,7 @@ public enum SubentriesStates implements States
     /**
      * {@inheritDoc}
      */
-    public SubentriesStates getStartState()
+    public EntryChangeStates getStartState()
     {
         return START_STATE;
     }

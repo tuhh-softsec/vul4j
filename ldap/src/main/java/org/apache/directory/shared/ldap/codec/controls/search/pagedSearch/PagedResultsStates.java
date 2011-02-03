@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.search.controls.entryChange;
+package org.apache.directory.shared.ldap.codec.controls.search.pagedSearch;
 
 
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
@@ -25,12 +25,12 @@ import org.apache.directory.shared.asn1.ber.grammar.States;
 
 
 /**
- * This class store the EntryChangeControl's grammar constants. It is also used
- * for debugging purposes.
+ * This class store the PagedSearchControl's grammar constants. It is also used for
+ * debugging purposes.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public enum EntryChangeStates implements States
+public enum PagedResultsStates implements States
 {
     // ~ Static fields/initializers
     // -----------------------------------------------------------------
@@ -39,36 +39,33 @@ public enum EntryChangeStates implements States
     END_STATE,
 
     // =========================================================================
-    // Entry change control grammar states
+    // Paged search control grammar states
     // =========================================================================
-
-    /** Sequence Tag */
+    /** Initial state */
     START_STATE,
 
-    /** Sequence */
-    EC_SEQUENCE_STATE,
+    /** Sequence Value */
+    PAGED_SEARCH_SEQUENCE_STATE,
 
-    /** changeType */
-    CHANGE_TYPE_STATE,
-
-    /** previousDN */
-    PREVIOUS_DN_STATE,
-
-    /** changeNumber */
-    CHANGE_NUMBER_STATE,
+    /** Size Value */
+    SIZE_STATE,
+    
+    /** Cookie Value */
+    COOKIE_STATE,
 
     /** terminal state */
-    LAST_EC_STATE;
+    LAST_PAGED_SEARCH_STATE;
 
 
     /**
      * Get the grammar name
      * 
+     * @param grammar The grammar code
      * @return The grammar name
      */
-    public String getGrammarName()
+    public String getGrammarName( int grammar )
     {
-        return "EC_GRAMMAR";
+        return "PAGED_SEARCH_GRAMMAR";
     }
 
 
@@ -80,9 +77,9 @@ public enum EntryChangeStates implements States
      */
     public String getGrammarName( Grammar grammar )
     {
-        if ( grammar instanceof EntryChangeGrammar )
+        if ( grammar instanceof PagedResultsGrammar )
         {
-            return "EC_GRAMMAR";
+            return "PAGEDSEARCH_GRAMMAR";
         }
 
         return "UNKNOWN GRAMMAR";
@@ -97,7 +94,7 @@ public enum EntryChangeStates implements States
      */
     public String getState( int state )
     {
-        return ( ( state == END_STATE.ordinal() ) ? "EC_END_STATE" : name() );
+        return ( ( state == END_STATE.ordinal() ) ? "PAGED_SEARCH_END_STATE" : name() );
     }
 
     
@@ -113,7 +110,7 @@ public enum EntryChangeStates implements States
     /**
      * {@inheritDoc}
      */
-    public EntryChangeStates getStartState()
+    public PagedResultsStates getStartState()
     {
         return START_STATE;
     }

@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.search.controls.subentries;
+package org.apache.directory.shared.ldap.codec.controls.search.subentries;
 
 
 import java.nio.ByteBuffer;

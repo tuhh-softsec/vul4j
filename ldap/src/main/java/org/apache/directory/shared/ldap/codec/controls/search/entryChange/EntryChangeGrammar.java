@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.search.controls.entryChange;
+package org.apache.directory.shared.ldap.codec.controls.search.entryChange;
 
 
 import org.apache.directory.shared.asn1.DecoderException;

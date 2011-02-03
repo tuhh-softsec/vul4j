@@ -17,7 +17,7 @@
  *   under the License.
  *
  */
-package org.apache.directory.shared.ldap.codec.search.controls.pagedSearch;
+package org.apache.directory.shared.ldap.codec.controls.search.pagedSearch;
 
 
 import java.nio.ByteBuffer; 

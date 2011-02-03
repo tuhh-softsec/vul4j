@@ -17,7 +17,7 @@
  *   under the License.
  *
  */
-package org.apache.directory.shared.ldap.codec.controls;
+package org.apache.directory.shared.ldap.codec.controls.cascade;
 
 
 import javax.naming.ldap.BasicControl;

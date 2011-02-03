@@ -28,8 +28,8 @@ import java.util.Map;
 
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
-import org.apache.directory.shared.ldap.codec.controls.CascadeFactory;
-import org.apache.directory.shared.ldap.codec.controls.ManageDsaITFactory;
+import org.apache.directory.shared.ldap.codec.controls.cascade.CascadeFactory;
+import org.apache.directory.shared.ldap.codec.controls.manageDsaIT.ManageDsaITFactory;
 import org.apache.directory.shared.ldap.codec.controls.ppolicy.PasswordPolicy;
 import org.apache.directory.shared.ldap.codec.controls.ppolicy.PasswordPolicyFactory;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.ISyncDoneValue;
@@ -42,10 +42,10 @@ import org.apache.directory.shared.ldap.codec.controls.replication.syncStateValu
 import org.apache.directory.shared.ldap.codec.controls.replication.syncStateValue.SyncStateValueFactory;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn.ISyncModifyDn;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn.SyncModifyDnFactory;
-import org.apache.directory.shared.ldap.codec.search.controls.entryChange.EntryChangeFactory;
-import org.apache.directory.shared.ldap.codec.search.controls.pagedSearch.PagedResultsFactory;
-import org.apache.directory.shared.ldap.codec.search.controls.persistentSearch.PersistentSearchFactory;
-import org.apache.directory.shared.ldap.codec.search.controls.subentries.SubentriesFactory;
+import org.apache.directory.shared.ldap.codec.controls.search.entryChange.EntryChangeFactory;
+import org.apache.directory.shared.ldap.codec.controls.search.pagedSearch.PagedResultsFactory;
+import org.apache.directory.shared.ldap.codec.controls.search.persistentSearch.PersistentSearchFactory;
+import org.apache.directory.shared.ldap.codec.controls.search.subentries.SubentriesFactory;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.controls.BasicControl;
 import org.apache.directory.shared.ldap.model.message.controls.Cascade;
