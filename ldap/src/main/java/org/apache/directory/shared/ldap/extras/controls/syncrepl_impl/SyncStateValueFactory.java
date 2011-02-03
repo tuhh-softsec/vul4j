@@ -20,13 +20,6 @@
 package org.apache.directory.shared.ldap.extras.controls.syncrepl_impl;
 
 
-import java.nio.ByteBuffer;
-
-import javax.naming.ldap.BasicControl;
-import javax.naming.ldap.Control;
-
-import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.IControlFactory;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 
@@ -93,26 +86,5 @@ public class SyncStateValueFactory implements IControlFactory<SyncStateValue, Sy
     public SyncStateValue newControl()
     {
         return new SyncStateValueImpl();
-    }
-    
-
-    public Control toJndiControl( SyncStateValue control ) throws EncoderException
-    {
-        SyncStateValueDecorator decorator = decorate( control );
-        ByteBuffer bb = ByteBuffer.allocate( decorator.computeLength() );
-        decorator.encode( bb );
-        bb.flip();
-        return new BasicControl( control.getOid(), control.isCritical(), decorator.getValue() );
-    }
-
-    
-    public SyncStateValue fromJndiControl( Control jndi ) throws DecoderException
-    {
-        SyncStateValueDecorator decorator = newCodecControl();
-        decorator.setCritical( jndi.isCritical() );
-        decorator.setValue( jndi.getEncodedValue() );
-        byte[] controlBytes = new byte[ decorator.computeLength() ];
-        decorator.decode( controlBytes );
-        return decorator.getDecorated();
     }
 }

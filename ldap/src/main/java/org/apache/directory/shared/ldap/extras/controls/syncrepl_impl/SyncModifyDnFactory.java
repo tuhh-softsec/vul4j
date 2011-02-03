@@ -20,13 +20,6 @@
 package org.apache.directory.shared.ldap.extras.controls.syncrepl_impl;
 
 
-import java.nio.ByteBuffer;
-
-import javax.naming.ldap.BasicControl;
-import javax.naming.ldap.Control;
-
-import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.IControlFactory;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.extras.controls.SyncModifyDn;
@@ -97,26 +90,4 @@ public class SyncModifyDnFactory implements IControlFactory<SyncModifyDn, SyncMo
     {
         return new SyncModifyDnImpl();
     }
-    
-
-    public Control toJndiControl( SyncModifyDn control ) throws EncoderException
-    {
-        SyncModifyDnDecorator decorator = decorate( control );
-        ByteBuffer bb = ByteBuffer.allocate( decorator.computeLength() );
-        decorator.encode( bb );
-        bb.flip();
-        return new BasicControl( control.getOid(), control.isCritical(), decorator.getValue() );
-    }
-
-    
-    public SyncModifyDn fromJndiControl( Control jndi ) throws DecoderException
-    {
-        SyncModifyDnDecorator decorator = newCodecControl();
-        decorator.setCritical( jndi.isCritical() );
-        decorator.setValue( jndi.getEncodedValue() );
-        byte[] controlBytes = new byte[ decorator.computeLength() ];
-        decorator.decode( controlBytes );
-        return decorator.getDecorated();
-    }
-
 }

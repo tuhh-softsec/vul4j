@@ -20,13 +20,6 @@
 package org.apache.directory.shared.ldap.extras.controls.ppolicy_impl;
 
 
-import java.nio.ByteBuffer;
-
-import javax.naming.ldap.BasicControl;
-import javax.naming.ldap.Control;
-
-import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.IControlFactory;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.extras.controls.PasswordPolicy;
@@ -75,6 +68,10 @@ public class PasswordPolicyFactory implements IControlFactory<PasswordPolicy, Pa
     }
     
 
+    /**
+     * 
+     * {@inheritDoc}
+     */
     public PasswordPolicyDecorator decorate( PasswordPolicy control )
     {
         PasswordPolicyDecorator decorator = null;
@@ -93,39 +90,12 @@ public class PasswordPolicyFactory implements IControlFactory<PasswordPolicy, Pa
     }
 
     
+    /**
+     * 
+     * {@inheritDoc}
+     */
     public PasswordPolicy newControl()
     {
         return new PasswordPolicyImpl();
-    }
-    
-
-    public Control toJndiControl( PasswordPolicy control ) throws EncoderException
-    {
-        PasswordPolicyDecorator decorator = decorate( control );
-        ByteBuffer bb = ByteBuffer.allocate( decorator.computeLength() );
-        decorator.encode( bb );
-        bb.flip();
-        return new BasicControl( control.getOid(), control.isCritical(), decorator.getValue() );
-    }
-
-    
-    public PasswordPolicy fromJndiControl( Control jndi ) throws DecoderException
-    {
-        PasswordPolicyDecorator decorator = null;
-        
-        if ( jndi.getEncodedValue() == null || jndi.getEncodedValue().length == 0 )
-        {
-            decorator = new PasswordPolicyDecorator( codec, false );
-        }
-        else
-        {
-            decorator = new PasswordPolicyDecorator( codec, true );
-        }
-        
-        decorator.setCritical( jndi.isCritical() );
-        decorator.setValue( jndi.getEncodedValue() );
-        byte[] controlBytes = new byte[ decorator.computeLength() ];
-        decorator.decode( controlBytes );
-        return decorator.getDecorated();
     }
 }
