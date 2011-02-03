@@ -42,7 +42,7 @@ import org.apache.directory.shared.ldap.model.message.BindRequest;
 import org.apache.directory.shared.ldap.model.message.BindRequestImpl;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.controls.AbstractControl;
-import org.apache.directory.shared.ldap.model.message.controls.OpaqueControlImpl;
+import org.apache.directory.shared.ldap.model.message.controls.OpaqueControl;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Ignore;
@@ -189,7 +189,7 @@ public class BindRequestPerfTest
             bindRequest.setSimple( true );
             bindRequest.setName( name );
             bindRequest.setCredentials( Strings.getBytesUtf8("password") );
-            Control control = new OpaqueControlImpl( "2.16.840.1.113730.3.4.2" );
+            Control control = new OpaqueControl( "2.16.840.1.113730.3.4.2" );
 
             bindRequest.addControl( control );
 

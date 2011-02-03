@@ -29,28 +29,63 @@ import org.apache.mina.filter.codec.ProtocolCodecFactory;
 
 
 /**
- * The LdapCodec interface.
+ * The service interface for the LDAP codec.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
 public interface ILdapCodecService
 {
-    Iterator<String> controlOids();
+    /**
+     * Returns an Iterator over the OID Strings of registered controls.
+     * 
+     * @return The registered control OID Strings
+     */
+    Iterator<String> registeredControls();
     
     
-    Iterator<String> extendedRequestOids();
+    /**
+     * Returns an Iterator over the OID Strings of registered extended 
+     * requests.
+     *
+     * @return The registered extended request OID Strings
+     */
+    Iterator<String> registeredExtendedRequests();
     
     
+    /**
+     * Returns an Iterator over the OID Strings of registered extended 
+     * responses.
+     *
+     * @return The registered extended response OID Strings
+     */
     Iterator<String> extendedResponseOids();
     
     
+    /**
+     * Registers an {@link IControlFactory} with this service.
+     * 
+     * @param factory The control factory
+     */
     void registerControl( IControlFactory<?,?> factory );
     
     
+    /**
+     * Registers an {@link IExtendedOpFactory} for generating extended request 
+     * response pairs.
+     * 
+     * @param factory The extended operation factory
+     */
     void registerExtendedOp( IExtendedOpFactory<?,?> factory );
     
     
+    /**
+     * Creates a new Control instance
+     * 
+     * @param <E>
+     * @param clazz
+     * @return
+     */
     <E> E newControl( Class<? extends Control> clazz );
     
     

@@ -75,7 +75,7 @@ import org.apache.directory.shared.ldap.model.message.SearchResultEntryImpl;
 import org.apache.directory.shared.ldap.model.message.SearchResultReference;
 import org.apache.directory.shared.ldap.model.message.SearchResultReferenceImpl;
 import org.apache.directory.shared.ldap.model.message.controls.AbstractControl;
-import org.apache.directory.shared.ldap.model.message.controls.OpaqueControlImpl;
+import org.apache.directory.shared.ldap.model.message.controls.OpaqueControl;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.util.Base64;
 import org.apache.directory.shared.util.Strings;
@@ -1214,7 +1214,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
                 throw new XmlPullParserException( I18n.err( I18n.ERR_03006 ), xpp, null );
             }
 
-            control = container.getLdapCodecService().decorate( new OpaqueControlImpl( attributeValue ) );
+            control = container.getLdapCodecService().decorate( new OpaqueControl( attributeValue ) );
             parent.addControl( control );
         }
         else

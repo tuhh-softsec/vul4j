@@ -23,7 +23,7 @@ package org.apache.directory.shared.ldap.codec.controls;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.directory.shared.ldap.model.message.controls.OpaqueControlImpl;
+import org.apache.directory.shared.ldap.model.message.controls.OpaqueControl;
 import org.apache.directory.shared.util.StringConstants;
 import org.junit.Test;
 
@@ -37,12 +37,12 @@ public class OpaqueControlTest
     @Test
     public void testEmptyValue()
     {
-        OpaqueControlImpl control = new OpaqueControlImpl( "1.1" );
+        OpaqueControl control = new OpaqueControl( "1.1" );
 
-        assertFalse( control.hasValue() );
+        assertFalse( control.hasEncodedValue() );
 
         control.setEncodedValue( StringConstants.EMPTY_BYTES );
 
-        assertTrue( control.hasValue() );
+        assertTrue( control.hasEncodedValue() );
     }
 }

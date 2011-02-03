@@ -51,7 +51,7 @@ import org.apache.directory.shared.ldap.model.message.controls.AbstractControl;
 import org.apache.directory.shared.ldap.model.message.controls.Cascade;
 import org.apache.directory.shared.ldap.model.message.controls.EntryChange;
 import org.apache.directory.shared.ldap.model.message.controls.ManageDsaIT;
-import org.apache.directory.shared.ldap.model.message.controls.OpaqueControlImpl;
+import org.apache.directory.shared.ldap.model.message.controls.OpaqueControl;
 import org.apache.directory.shared.ldap.model.message.controls.PagedResults;
 import org.apache.directory.shared.ldap.model.message.controls.PersistentSearch;
 import org.apache.directory.shared.ldap.model.message.controls.Subentries;
@@ -137,7 +137,7 @@ public class DefaultLdapCodecService implements ILdapCodecService
     /**
      * {@inheritDoc}
      */
-    public Iterator<String> controlOids()
+    public Iterator<String> registeredControls()
     {
         return controlFactories.keySet().iterator();
     }
@@ -146,7 +146,7 @@ public class DefaultLdapCodecService implements ILdapCodecService
     /**
      * {@inheritDoc}
      */
-    public Iterator<String> extendedRequestOids()
+    public Iterator<String> registeredExtendedRequests()
     {
         return extReqFactories.keySet().iterator();
     }
@@ -249,7 +249,7 @@ public class DefaultLdapCodecService implements ILdapCodecService
             
             if ( factory == null )
             {
-                return ( E ) new OpaqueControlImpl( oid );
+                return ( E ) new OpaqueControl( oid );
             }
             
             return ( E ) factory.newControl();
@@ -303,7 +303,7 @@ public class DefaultLdapCodecService implements ILdapCodecService
         
         if ( factory == null )
         {
-            AbstractControl ourControl = new OpaqueControlImpl( control.getID() );
+            AbstractControl ourControl = new OpaqueControl( control.getID() );
             ourControl.setCritical( control.isCritical() );
             BasicControlDecorator decorator = new BasicControlDecorator( this, ourControl );
             decorator.setValue( control.getEncodedValue() );

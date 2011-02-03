@@ -20,19 +20,21 @@
 package org.apache.directory.shared.ldap.model.message.controls;
 
 
+import org.apache.directory.shared.ldap.codec.IControlFactory;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.util.Strings;
 
 
 /**
- * A simple implementation of the {@link Control} interface with storage for 
- * the OID and the criticality properties. When the codec factory service
- * does not have specific control factories available, hence the control is
- * unrecognized, it creates instances of this control for them.
+ * A final {@link Control} implementation intended specifically for handling
+ * controls who's values cannot be encoded or decoded by the codec service. 
+ * This situation results when no {@link IControlFactory} is found to be 
+ * registered for this control's OID. Hence additional opaque value handling
+ * methods are included to manage the opaque control value.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public final class OpaqueControlImpl extends AbstractControl implements Control
+public final class OpaqueControl extends AbstractControl implements Control
 {
 	/** The opaque encoded value */
 	private byte[] value;
@@ -42,7 +44,7 @@ public final class OpaqueControlImpl extends AbstractControl implements Control
      *
      * @param oid The OID of this Control.
      */
-    public OpaqueControlImpl( String oid )
+    public OpaqueControl( String oid )
     {
         super( oid );
     }
@@ -54,7 +56,7 @@ public final class OpaqueControlImpl extends AbstractControl implements Control
      * @param oid The OID of this Control.
      * @param criticality true if this Control is critical, false otherwise. 
      */
-    public OpaqueControlImpl( String oid, boolean criticality )
+    public OpaqueControl( String oid, boolean criticality )
     {
         super( oid, criticality);
     }
@@ -70,7 +72,8 @@ public final class OpaqueControlImpl extends AbstractControl implements Control
     
     
     /**
-     * Stores an opaque value into the vontrol
+     * Stores an opaque value into the control.
+     * 
      * @param value The opaque value to store
      */
     public void setEncodedValue( byte[] value )
@@ -82,9 +85,10 @@ public final class OpaqueControlImpl extends AbstractControl implements Control
     /**
      * Tells if the control has a stored value. Note that if the 
      * control has an empty value, this method will return true.
+     * 
      * @return true if the control has a value
      */
-    public boolean hasValue()
+    public boolean hasEncodedValue()
     {
     	return value != null;
     }
