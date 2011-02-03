@@ -6,22 +6,21 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License. 
- *  
+ *  under the License.
+ *
  */
 package org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue;
 
 
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 
 import org.apache.directory.shared.asn1.Asn1Object;
 import org.apache.directory.shared.asn1.DecoderException;
@@ -33,6 +32,8 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
+import org.apache.directory.shared.ldap.model.message.controls.SyncDoneValue;
+import org.apache.directory.shared.ldap.model.message.controls.SyncDoneValueImpl;
 import org.apache.directory.shared.util.Strings;
 
 
@@ -41,23 +42,23 @@ import org.apache.directory.shared.util.Strings;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SyncDoneValueDecorator extends ControlDecorator<ISyncDoneValue> implements ISyncDoneValue
+public class SyncDoneValueDecorator extends ControlDecorator<SyncDoneValue> implements SyncDoneValue
 {
     /** The global length for this control */
     private int syncDoneValueLength;
-    
+
     /** An instance of this decoder */
     private static final Asn1Decoder decoder = new Asn1Decoder();
 
-    
+
     /**
      * Creates a new instance of SyncDoneValueControlCodec.
      */
     public SyncDoneValueDecorator( ILdapCodecService codec )
     {
-        super( codec, new SyncDoneValue() );
+        super( codec, new SyncDoneValueImpl() );
     }
-    
+
 
     /**
      * Creates a new instance of SyncDoneValueDecorator.
@@ -65,7 +66,7 @@ public class SyncDoneValueDecorator extends ControlDecorator<ISyncDoneValue> imp
      * @param codec The LDAP codec
      * @param control The control to be decorated
      */
-    public SyncDoneValueDecorator( ILdapCodecService codec, ISyncDoneValue control )
+    public SyncDoneValueDecorator( ILdapCodecService codec, SyncDoneValue control )
     {
         super( codec, control );
     }
@@ -102,7 +103,7 @@ public class SyncDoneValueDecorator extends ControlDecorator<ISyncDoneValue> imp
 
     /**
      * Encode the SyncDoneValue control
-     * 
+     *
      * @param buffer The encoded sink
      * @return A ByteBuffer that contains the encoded PDU
      * @throws EncoderException If anything goes wrong while encoding.
@@ -115,7 +116,7 @@ public class SyncDoneValueDecorator extends ControlDecorator<ISyncDoneValue> imp
             throw new EncoderException( I18n.err( I18n.ERR_04023 ) );
         }
 
-        // Encode the SEQ 
+        // Encode the SEQ
         buffer.put( UniversalTag.SEQUENCE.getValue() );
         buffer.put( TLV.getBytes( syncDoneValueLength ) );
 
@@ -125,27 +126,28 @@ public class SyncDoneValueDecorator extends ControlDecorator<ISyncDoneValue> imp
         }
 
         if ( isRefreshDeletes() )
-        {  
+        {
             Value.encode( buffer, isRefreshDeletes() );
         }
 
         return buffer;
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public byte[] getValue()
     {
         if ( value == null )
         {
             try
-            { 
+            {
                 computeLength();
                 ByteBuffer buffer = ByteBuffer.allocate( valueLength );
-                
-                // Encode the SEQ 
+
+                // Encode the SEQ
                 buffer.put( UniversalTag.SEQUENCE.getValue() );
                 buffer.put( TLV.getBytes( syncDoneValueLength ) );
 
@@ -155,10 +157,10 @@ public class SyncDoneValueDecorator extends ControlDecorator<ISyncDoneValue> imp
                 }
 
                 if ( isRefreshDeletes() )
-                {  
+                {
                     Value.encode( buffer, isRefreshDeletes() );
                 }
-                
+
                 value = buffer.array();
             }
             catch ( Exception e )
@@ -166,7 +168,7 @@ public class SyncDoneValueDecorator extends ControlDecorator<ISyncDoneValue> imp
                 return null;
             }
         }
-        
+
         return value;
     }
 
@@ -214,41 +216,6 @@ public class SyncDoneValueDecorator extends ControlDecorator<ISyncDoneValue> imp
     public void setRefreshDeletes( boolean refreshDeletes )
     {
         getDecorated().setRefreshDeletes( refreshDeletes );
-    }
-
-
-    /**
-     * @see Object#equals(Object)
-     */
-    public boolean equals( Object o )
-    {
-        if ( ! super.equals( o ) )
-        {
-            return false;
-        }
-
-        SyncDoneValueDecorator otherControl = ( SyncDoneValueDecorator ) o;
-
-        return  ( isRefreshDeletes() == otherControl.isRefreshDeletes() ) 
-                && 
-                ( Arrays.equals( getCookie(), otherControl.getCookie() ) );
-    }
-
-
-   /**
-     * @see Object#toString()
-     */
-    public String toString()
-    {
-        StringBuilder sb = new StringBuilder();
-
-        sb.append( "    SyncDoneValue control :\n" );
-        sb.append( "        oid : " ).append( getOid() ).append( '\n' );
-        sb.append( "        critical : " ).append( isCritical() ).append( '\n' );
-        sb.append( "        cookie            : '" ).append( Strings.dumpBytes( getCookie() ) ).append( "'\n" );
-        sb.append( "        refreshDeletes : '" ).append( isRefreshDeletes() ).append( "'\n" );
-
-        return sb.toString();
     }
 
 

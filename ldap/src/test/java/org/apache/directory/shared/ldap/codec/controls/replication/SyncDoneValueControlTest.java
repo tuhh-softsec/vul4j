@@ -33,8 +33,8 @@ import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.ISyncDoneValue;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.SyncDoneValueDecorator;
+import org.apache.directory.shared.ldap.model.message.controls.SyncDoneValue;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -69,7 +69,7 @@ public class SyncDoneValueControlTest
 
         SyncDoneValueDecorator decorator =  new SyncDoneValueDecorator( codec );
 
-        ISyncDoneValue control = (ISyncDoneValue)decorator.decode( bb.array() );
+        SyncDoneValue control = (SyncDoneValue)decorator.decode( bb.array() );
         
         assertEquals( "xkcd", Strings.utf8ToString(control.getCookie()) );
         assertTrue( control.isRefreshDeletes() );
@@ -105,7 +105,7 @@ public class SyncDoneValueControlTest
 
         SyncDoneValueDecorator decorator =  new SyncDoneValueDecorator( codec );
 
-        ISyncDoneValue control = (ISyncDoneValue)decorator.decode( bb.array() );
+        SyncDoneValue control = (SyncDoneValue)decorator.decode( bb.array() );
 
         assertNull( control.getCookie() );
         assertTrue( control.isRefreshDeletes() );
@@ -139,7 +139,7 @@ public class SyncDoneValueControlTest
 
         SyncDoneValueDecorator decorator =  new SyncDoneValueDecorator( codec );
 
-        ISyncDoneValue control = (ISyncDoneValue)decorator.decode( bb.array() );
+        SyncDoneValue control = (SyncDoneValue)decorator.decode( bb.array() );
 
         assertNull( control.getCookie() );
         assertFalse( control.isRefreshDeletes() );
@@ -162,7 +162,7 @@ public class SyncDoneValueControlTest
 
         SyncDoneValueDecorator decorator =  new SyncDoneValueDecorator( codec );
 
-        ISyncDoneValue control = (ISyncDoneValue)decorator.decode( bb.array() );
+        SyncDoneValue control = (SyncDoneValue)decorator.decode( bb.array() );
 
         assertEquals( "", Strings.utf8ToString(control.getCookie()) );
         assertFalse( control.isRefreshDeletes() );

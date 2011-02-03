@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue;
+package org.apache.directory.shared.ldap.model.message.controls;
 
 import org.apache.directory.shared.ldap.model.message.Control;
 
@@ -27,7 +27,7 @@ import org.apache.directory.shared.ldap.model.message.Control;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface ISyncDoneValue extends Control
+public interface SyncDoneValue extends Control
 {
 
     /** This control OID */

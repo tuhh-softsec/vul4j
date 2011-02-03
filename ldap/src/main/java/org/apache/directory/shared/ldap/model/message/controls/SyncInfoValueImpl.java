@@ -223,7 +223,7 @@ public class SyncInfoValueImpl extends AbstractControl implements SyncInfoValue
     @Override
     public boolean equals( Object o )
     {
-        if ( this == o)
+        if ( this == o )
         {
             return true;
         }
@@ -232,7 +232,6 @@ public class SyncInfoValueImpl extends AbstractControl implements SyncInfoValue
         {
             return false;
         }
-
 
         SyncInfoValueDecorator otherControl = ( SyncInfoValueDecorator ) o;
 
@@ -259,7 +258,8 @@ public class SyncInfoValueImpl extends AbstractControl implements SyncInfoValue
         return ( isRefreshDeletes() == otherControl.isRefreshDeletes() ) &&
             ( isRefreshDone() == otherControl.isRefreshDone() ) &&
             ( getType() == otherControl.getType() ) &&
-            ( Arrays.equals( getCookie(), otherControl.getCookie() ) );
+            ( Arrays.equals( getCookie(), otherControl.getCookie() ) &&
+            ( isCritical() == otherControl.isCritical() ) );
     }
 
 
