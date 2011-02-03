@@ -17,34 +17,34 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.model.message.controls;
+package org.apache.directory.shared.ldap.extras.controls;
+
+import org.apache.directory.shared.i18n.I18n;
+
 
 /**
- * This class describes the four possible synchronization mode, out of
- * which only two are presently valid :
  * 
- * syncRequestValue ::= SEQUENCE {
- *     mode ENUMERATED {
- *         -- 0 unused
- *         refreshOnly       (1),
- *         -- 2 reserved
- *         refreshAndPersist (3)
- * ...
+ * This class describes the four types of states part of the syncStateValue as described in rfc4533.
  * 
- * @see <a href="http://www.faqs.org/rfcs/rfc4533.html">RFC 4533</a>
+ *  state ENUMERATED {
+ *            present (0),
+ *            add (1),
+ *            modify (2),
+ *            delete (3),
+ *            
+ *            #includes the below ApacheDS specific values
+ *            moddn(4),
+ *   }
+ *   
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- *
  */
-public enum SynchronizationModeEnum
+public enum SyncStateTypeEnum
 {
-    UNUSED(0),
-    REFRESH_ONLY(1),
-    RESERVED(2),
-    REFRESH_AND_PERSIST(3);
-    
-    /** The internal value */
+    PRESENT(0), ADD(1), MODIFY(2), DELETE(3), MODDN(4);
+
+    /** the internal value */
     private int value;
-    
+
 
     /**
      * Private constructor so no other instances can be created other than the
@@ -52,12 +52,12 @@ public enum SynchronizationModeEnum
      * 
      * @param value the integer value of the enumeration.
      */
-    private SynchronizationModeEnum( int value )
+    private SyncStateTypeEnum( int value )
     {
         this.value = value;
     }
 
-    
+
     /**
      * @return The value associated with the current element.
      */
@@ -65,31 +65,38 @@ public enum SynchronizationModeEnum
     {
         return value;
     }
-    
-    
+
+
     /**
-     * Get the {@link SynchronizationModeEnum} instance from an integer value.
+     * Get the {@link SyncStateTypeEnum} instance from an integer value.
      * 
      * @param value The value we want the enum element from
      * @return The enum element associated with this integer
      */
-    public static SynchronizationModeEnum getSyncMode( int value )
+    public static SyncStateTypeEnum getSyncStateType( int value )
     {
-        if ( value == REFRESH_AND_PERSIST.getValue() )
+        if ( value == PRESENT.value )
         {
-            return REFRESH_AND_PERSIST;
+            return PRESENT;
         }
-        else if ( value == REFRESH_ONLY.getValue() )
+        else if ( value == ADD.value )
         {
-            return REFRESH_ONLY;
+            return ADD;
         }
-        else if ( value == UNUSED.getValue() )
+        else if ( value == MODIFY.value )
         {
-            return UNUSED;
+            return MODIFY;
         }
-        else
+        else if ( value == DELETE.value )
         {
-            return RESERVED;
+            return DELETE;
         }
+        else if ( value == MODDN.value )
+        {
+            return MODDN;
+        }
+        
+        throw new IllegalArgumentException( I18n.err( I18n.ERR_04163, value ) );
     }
+
 }

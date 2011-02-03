@@ -18,7 +18,7 @@
  *
  */
 
-package org.apache.directory.shared.ldap.model.message.controls;
+package org.apache.directory.shared.ldap.extras.controls;
 
 /**
  * TODO SyncModifyDnControlEnum.

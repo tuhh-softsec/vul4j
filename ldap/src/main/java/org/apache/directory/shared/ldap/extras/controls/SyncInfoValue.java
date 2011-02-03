@@ -17,7 +17,7 @@
  *  under the License.
  *
  */
-package org.apache.directory.shared.ldap.model.message.controls;
+package org.apache.directory.shared.ldap.extras.controls;
 
 
 import java.util.List;

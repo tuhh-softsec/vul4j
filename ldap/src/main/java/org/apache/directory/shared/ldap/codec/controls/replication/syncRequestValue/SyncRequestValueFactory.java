@@ -29,8 +29,8 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.IControlFactory;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
-import org.apache.directory.shared.ldap.model.message.controls.SyncRequestValue;
-import org.apache.directory.shared.ldap.model.message.controls.SyncRequestValueImpl;
+import org.apache.directory.shared.ldap.extras.controls.SyncRequestValue;
+import org.apache.directory.shared.ldap.extras.controls.SyncRequestValueImpl;
 
 
 /**

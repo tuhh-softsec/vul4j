@@ -32,9 +32,9 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
-import org.apache.directory.shared.ldap.model.message.controls.SyncRequestValue;
-import org.apache.directory.shared.ldap.model.message.controls.SyncRequestValueImpl;
-import org.apache.directory.shared.ldap.model.message.controls.SynchronizationModeEnum;
+import org.apache.directory.shared.ldap.extras.controls.SyncRequestValue;
+import org.apache.directory.shared.ldap.extras.controls.SyncRequestValueImpl;
+import org.apache.directory.shared.ldap.extras.controls.SynchronizationModeEnum;
 import org.apache.directory.shared.util.Strings;
 
 

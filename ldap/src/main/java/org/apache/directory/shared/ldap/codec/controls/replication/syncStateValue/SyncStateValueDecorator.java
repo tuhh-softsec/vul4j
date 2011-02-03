@@ -33,7 +33,7 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
-import org.apache.directory.shared.ldap.model.message.controls.SyncStateTypeEnum;
+import org.apache.directory.shared.ldap.extras.controls.SyncStateTypeEnum;
 import org.apache.directory.shared.util.Strings;
 
 

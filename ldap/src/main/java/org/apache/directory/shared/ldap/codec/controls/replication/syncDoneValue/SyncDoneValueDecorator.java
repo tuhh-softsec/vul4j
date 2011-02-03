@@ -32,8 +32,8 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
-import org.apache.directory.shared.ldap.model.message.controls.SyncDoneValue;
-import org.apache.directory.shared.ldap.model.message.controls.SyncDoneValueImpl;
+import org.apache.directory.shared.ldap.extras.controls.SyncDoneValue;
+import org.apache.directory.shared.ldap.extras.controls.SyncDoneValueImpl;
 import org.apache.directory.shared.util.Strings;
 
 

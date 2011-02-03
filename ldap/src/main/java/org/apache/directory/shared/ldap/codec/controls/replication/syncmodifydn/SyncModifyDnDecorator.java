@@ -33,9 +33,9 @@ import org.apache.directory.shared.asn1.util.Asn1StringUtils;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
-import org.apache.directory.shared.ldap.model.message.controls.SyncModifyDn;
-import org.apache.directory.shared.ldap.model.message.controls.SyncModifyDnImpl;
-import org.apache.directory.shared.ldap.model.message.controls.SyncModifyDnType;
+import org.apache.directory.shared.ldap.extras.controls.SyncModifyDn;
+import org.apache.directory.shared.ldap.extras.controls.SyncModifyDnImpl;
+import org.apache.directory.shared.ldap.extras.controls.SyncModifyDnType;
 
 
 /**

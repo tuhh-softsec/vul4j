@@ -41,6 +41,10 @@ import org.apache.directory.shared.ldap.codec.controls.search.pagedSearch.PagedR
 import org.apache.directory.shared.ldap.codec.controls.search.persistentSearch.PersistentSearchFactory;
 import org.apache.directory.shared.ldap.codec.controls.search.subentries.SubentriesFactory;
 import org.apache.directory.shared.ldap.extras.controls.PasswordPolicy;
+import org.apache.directory.shared.ldap.extras.controls.SyncDoneValue;
+import org.apache.directory.shared.ldap.extras.controls.SyncInfoValue;
+import org.apache.directory.shared.ldap.extras.controls.SyncModifyDn;
+import org.apache.directory.shared.ldap.extras.controls.SyncRequestValue;
 import org.apache.directory.shared.ldap.extras.controls.ppolicy_impl.PasswordPolicyFactory;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.controls.AbstractControl;
@@ -51,10 +55,6 @@ import org.apache.directory.shared.ldap.model.message.controls.OpaqueControlImpl
 import org.apache.directory.shared.ldap.model.message.controls.PagedResults;
 import org.apache.directory.shared.ldap.model.message.controls.PersistentSearch;
 import org.apache.directory.shared.ldap.model.message.controls.Subentries;
-import org.apache.directory.shared.ldap.model.message.controls.SyncDoneValue;
-import org.apache.directory.shared.ldap.model.message.controls.SyncInfoValue;
-import org.apache.directory.shared.ldap.model.message.controls.SyncModifyDn;
-import org.apache.directory.shared.ldap.model.message.controls.SyncRequestValue;
 import org.apache.mina.filter.codec.ProtocolCodecFactory;
 
 

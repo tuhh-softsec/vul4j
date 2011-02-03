@@ -17,10 +17,11 @@
  *   under the License.
  *
  */
-package org.apache.directory.shared.ldap.model.message.controls;
+package org.apache.directory.shared.ldap.extras.controls;
 
 import java.util.Arrays;
 
+import org.apache.directory.shared.ldap.model.message.controls.AbstractControl;
 import org.apache.directory.shared.util.Strings;
 
 
