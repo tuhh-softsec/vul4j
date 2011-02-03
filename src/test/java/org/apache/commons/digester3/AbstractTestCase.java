@@ -46,7 +46,7 @@ abstract class AbstractTestCase {
      * @exception IOException if an input/output error occurs
      */
     protected InputStream getInputStream(String name) throws IOException {
-        return (this.getClass().getResourceAsStream("/org/apache/commons/digester/" + name));
+        return (this.getClass().getResourceAsStream("/org/apache/commons/digester3/" + name));
     }
 
 }
