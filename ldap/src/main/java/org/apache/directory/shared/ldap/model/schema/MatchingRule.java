@@ -165,6 +165,7 @@ public class MatchingRule extends AbstractSchemaObject
                 LdapSchemaException ldapSchemaException = new LdapSchemaException(
                     LdapSchemaExceptionCodes.MR_NONEXISTENT_SYNTAX, msg );
                 ldapSchemaException.setSourceObject( this );
+                ldapSchemaException.setRelatedId( ldapSyntaxOid );
                 errors.add( ldapSchemaException );
                 LOG.info( msg );
             }
