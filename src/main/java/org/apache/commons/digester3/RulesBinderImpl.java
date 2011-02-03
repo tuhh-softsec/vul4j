@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.digester3.rulesbinder.BackToLinkedRuleBuilder;
 import org.apache.commons.digester3.rulesbinder.BeanPropertySetterBuilder;
 import org.apache.commons.digester3.rulesbinder.CallMethodBuilder;
@@ -40,6 +41,7 @@ import org.apache.commons.digester3.rulesbinder.SetPropertyBuilder;
 import org.apache.commons.digester3.spi.ObjectCreationFactory;
 import org.apache.commons.digester3.spi.RuleProvider;
 import org.apache.commons.digester3.spi.Rules;
+import org.apache.commons.digester3.spi.TypeConverter;
 
 /**
  * The Digester EDSL implementation.
@@ -808,8 +810,23 @@ final class RulesBinderImpl implements RulesBinder {
     /**
      * {@inheritDoc}
      */
-    public <T> ConverterBuilder<T> convert(Class<T> type) {
-        return null;
+    public <T> ConverterBuilder<T> convert(final Class<T> type) {
+        if (type == null) {
+            this.addError(new IllegalArgumentException("NULL type is not allowed to be converted"));
+        }
+        return new ConverterBuilder<T>() {
+
+            public void withConverter(TypeConverter<T> typeConverter) {
+                if (typeConverter == null) {
+                    addError(new IllegalArgumentException(
+                            String.format("NULL TypeConverter is not allowed for converting '%s' type",
+                                    type.getName())));
+                }
+
+                ConvertUtils.register(new BeanUtilsConverterFacade(typeConverter), type);
+            }
+
+        };
     }
 
 }
