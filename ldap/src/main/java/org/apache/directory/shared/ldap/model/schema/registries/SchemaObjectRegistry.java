@@ -61,7 +61,7 @@ public interface SchemaObjectRegistry<T extends SchemaObject>
      * @param oid The SchemaObject's OID we are looking for
      * @return The SchemaObject, if any. Null otherwise
      */
-    SchemaObject get( String oid );
+    T get( String oid );
 
 
     /**
