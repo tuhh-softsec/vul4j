@@ -79,17 +79,7 @@ public interface ILdapCodecService
     void registerExtendedOp( IExtendedOpFactory<?,?> factory );
     
     
-    /**
-     * Creates a new Control instance
-     * 
-     * @param <E>
-     * @param clazz
-     * @return
-     */
-    <E> E newControl( Class<? extends Control> clazz );
-    
-    
-    <E> E newControl( String oid );
+    ICodecControl<? extends Control> newControl( String oid );
     
 
     ICodecControl<? extends Control> decorate( Control control );

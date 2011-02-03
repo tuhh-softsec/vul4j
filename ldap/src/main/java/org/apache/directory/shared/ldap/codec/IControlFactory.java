@@ -64,12 +64,12 @@ public interface IControlFactory<C extends Control, D extends ICodecControl<C>>
 
     /**
      * Same as the {@link #newCodecControl()} but returns the decorated object using
-     * the Control interface subtype. Or do we really want that?
+     * the Control interface sub-type. Or do we really want that?
      *
      * @TODO isn't this totally superfluous? If the codec needs to get a handle on
      * the original control object it can get that when it likes. If it needs to
-     * decorate it can do so. Must investigte why this is here and if we can remove
-     * it. This might be for efficiency - not to have to unnecesarily create a new
+     * decorate it can do so. Must investigate why this is here and if we can remove
+     * it. This might be for efficiency - not to have to unnecessarily create a new
      * decorator when all the codec wants is the control object.
      *
      * @return

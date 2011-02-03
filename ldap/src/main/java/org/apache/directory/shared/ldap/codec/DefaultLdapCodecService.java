@@ -206,37 +206,6 @@ public class DefaultLdapCodecService implements ILdapCodecService
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
-    public <E> E newControl( Class<? extends Control> clazz )
-    {
-        try
-        {
-            Field f = clazz.getField( "OID" );
-            String oid = ( String ) f.get( null );
-            IControlFactory<?,?> factory = controlFactories.get( oid );
-            
-            return ( E ) factory.newControl();
-        }
-        catch ( IllegalAccessException e )
-        {
-            e.printStackTrace();
-        }
-        catch ( SecurityException e )
-        {
-            e.printStackTrace();
-        }
-        catch ( NoSuchFieldException e )
-        {
-            e.printStackTrace();
-        }
-        
-        return null;
-    }
-
-    
-    /**
-     * {@inheritDoc}
-     */
     public ProtocolCodecFactory newProtocolCodecFactory( boolean client )
     {
         return null;
@@ -244,7 +213,7 @@ public class DefaultLdapCodecService implements ILdapCodecService
 
     
     @SuppressWarnings("unchecked")
-    public <E> E newControl( String oid )
+    public ICodecControl<? extends Control> newControl( String oid )
     {
         try
         {
@@ -252,10 +221,10 @@ public class DefaultLdapCodecService implements ILdapCodecService
             
             if ( factory == null )
             {
-                return ( E ) new OpaqueControl( oid );
+                return new BasicControlDecorator( this, new OpaqueControl( oid ) );
             }
             
-            return ( E ) factory.newControl();
+            return factory.newCodecControl();
         }
         catch ( SecurityException e )
         {

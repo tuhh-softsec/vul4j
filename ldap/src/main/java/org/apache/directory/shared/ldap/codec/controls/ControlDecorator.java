@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.codec.controls;
 
+
 import org.apache.directory.shared.asn1.AbstractAsn1Object;
 import org.apache.directory.shared.ldap.codec.ICodecControl;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
@@ -90,6 +91,8 @@ public abstract class ControlDecorator<E extends Control> extends AbstractAsn1Ob
     // ------------------------------------------------------------------------
     // Control Methods
     // ------------------------------------------------------------------------
+    
+    
     /**
      * Get the OID
      * 
@@ -166,6 +169,8 @@ public abstract class ControlDecorator<E extends Control> extends AbstractAsn1Ob
     // ------------------------------------------------------------------------
     // CodecControl Methods
     // ------------------------------------------------------------------------
+    
+    
     /**
      * {@inheritDoc}
      */
@@ -178,6 +183,8 @@ public abstract class ControlDecorator<E extends Control> extends AbstractAsn1Ob
     // ------------------------------------------------------------------------
     // Object Method Overrides
     // ------------------------------------------------------------------------
+    
+    
     /**
      * @see Object#hashCode()
      */
