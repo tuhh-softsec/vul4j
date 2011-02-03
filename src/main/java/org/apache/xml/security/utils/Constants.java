@@ -16,8 +16,6 @@
  */
 package org.apache.xml.security.utils;
 
-import org.apache.xml.security.exceptions.XMLSecurityException;
-
 /**
  * Provides all constants and some translation functions for i18n.
  *
@@ -251,34 +249,4 @@ public class Constants {
         // we don't allow instantiation
     }
 
-    /**
-     * Sets the namespace prefix which will be used to identify elements in the
-     * XML Signature Namespace.
-     *
-     * <pre>
-     * Constants.setSignatureSpecNSprefix("dsig");
-     * </pre>
-     *
-     * @param newPrefix is the new namespace prefix.
-     * @throws XMLSecurityException
-     * @see org.apache.xml.security.utils.Constants#getSignatureSpecNSprefix
-     * $todo$ Add consistency checking for valid prefix
-     */
-    public static void setSignatureSpecNSprefix(String newPrefix) throws XMLSecurityException {
-        ElementProxy.setDefaultPrefix(Constants.SignatureSpecNS, newPrefix);
-    }
-
-    /**
-     * Returns the XML namespace prefix which is used for elements in the XML
-     * Signature namespace.
-     *
-     * It is defaulted to <code>dsig</code>, but can be changed using the
-     * {@link #setSignatureSpecNSprefix} function.
-     *
-     * @return the current used namespace prefix
-     * @see #setSignatureSpecNSprefix
-     */
-    public static String getSignatureSpecNSprefix() {
-        return ElementProxy.getDefaultPrefix(Constants.SignatureSpecNS);
-    }
 }

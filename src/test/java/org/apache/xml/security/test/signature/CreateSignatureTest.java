@@ -39,6 +39,7 @@ import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.transforms.params.XPathContainer;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.ElementProxy;
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -136,13 +137,13 @@ public class CreateSignatureTest extends org.junit.Assert {
 
     @org.junit.Test
     public void testWithNSPrefixDisabled() throws Exception {
-        String prefix = Constants.getSignatureSpecNSprefix();
+        String prefix = ElementProxy.getDefaultPrefix(Constants.SignatureSpecNS);
         try {
-            Constants.setSignatureSpecNSprefix("");
+            ElementProxy.setDefaultPrefix(Constants.SignatureSpecNS, "");
             doSign();
-            Constants.setSignatureSpecNSprefix(prefix);
+            ElementProxy.setDefaultPrefix(Constants.SignatureSpecNS, prefix);
         } catch (Exception e) {
-            Constants.setSignatureSpecNSprefix(prefix);
+            ElementProxy.setDefaultPrefix(Constants.SignatureSpecNS, prefix);
             throw e;
         }
     }

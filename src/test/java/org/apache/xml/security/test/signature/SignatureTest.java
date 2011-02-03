@@ -31,6 +31,7 @@ import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.signature.XMLSignatureException;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.ElementProxy;
 import org.apache.xml.security.utils.resolver.implementations.ResolverXPointer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -46,7 +47,7 @@ public class SignatureTest extends org.junit.Assert {
 
     public SignatureTest() throws Exception {
         Init.init();
-        Constants.setSignatureSpecNSprefix("ds");
+        ElementProxy.setDefaultPrefix(Constants.SignatureSpecNS, "ds");
     }
 
     @org.junit.Test

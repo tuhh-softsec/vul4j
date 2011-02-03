@@ -16,8 +16,6 @@
  */
 package org.apache.xml.security.utils;
 
-import org.apache.xml.security.exceptions.XMLSecurityException;
-
 /**
  *
  * @author $Author$
@@ -190,23 +188,4 @@ public class EncryptionConstants {
         // we don't allow instantiation
     }
 
-    /**
-     * Method setEncryptionSpecNSprefix
-     *
-     * @param newPrefix
-     * @throws XMLSecurityException
-     */
-    public static void setEncryptionSpecNSprefix(String newPrefix)
-        throws XMLSecurityException {
-        ElementProxy.setDefaultPrefix(EncryptionConstants.EncryptionSpecNS, newPrefix);
-    }
-
-    /**
-     * Method getEncryptionSpecNSprefix
-     *
-     * @return the prefix for this node.
-     */
-    public static String getEncryptionSpecNSprefix() {
-        return ElementProxy.getDefaultPrefix(EncryptionConstants.EncryptionSpecNS);
-    }
 }

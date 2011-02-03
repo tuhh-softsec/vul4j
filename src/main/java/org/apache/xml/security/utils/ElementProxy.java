@@ -17,7 +17,7 @@
 package org.apache.xml.security.utils;
 
 import java.math.BigInteger;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 
 import org.apache.xml.security.exceptions.Base64DecodingException;
@@ -51,8 +51,8 @@ public abstract class ElementProxy {
     protected Document doc = null;
     
     /** Field prefixMappings */
-    static Map<String, String> prefixMappings = new HashMap<String, String>();
-    static Map<String, String> prefixMappingsBindings = new HashMap<String, String>();
+    static Map<String, String> prefixMappings = new ConcurrentHashMap<String, String>();
+    static Map<String, String> prefixMappingsBindings = new ConcurrentHashMap<String, String>();
 
     /**
      * Constructor ElementProxy

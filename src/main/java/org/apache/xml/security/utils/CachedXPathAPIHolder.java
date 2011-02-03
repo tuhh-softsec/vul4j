@@ -24,18 +24,18 @@ import org.w3c.dom.Document;
  */
 public class CachedXPathAPIHolder {
 
-    static ThreadLocal  local=new ThreadLocal();
-    static ThreadLocal localDoc=new ThreadLocal();
-  
+    static ThreadLocal<CachedXPathAPI> local = new ThreadLocal<CachedXPathAPI>();
+    static ThreadLocal<Document> localDoc = new ThreadLocal<Document>();
+
     /**
      * Sets the doc for the xpath transformation. Resets the cache if needed
      * @param doc
      */
     public static void setDoc(Document doc) {                    
-        if (localDoc.get()!=doc) {
-            CachedXPathAPI cx=(CachedXPathAPI)local.get();
-            if (cx==null) {
-                cx=new CachedXPathAPI();
+        if (localDoc.get() != doc) {
+            CachedXPathAPI cx = local.get();
+            if (cx == null) {
+                cx = new CachedXPathAPI();
                 local.set(cx);
                 localDoc.set(doc);
                 return;
@@ -50,9 +50,9 @@ public class CachedXPathAPIHolder {
      * @return the cachexpathapi for this thread
      */
     public static CachedXPathAPI getCachedXPathAPI() {        
-        CachedXPathAPI cx=(CachedXPathAPI)local.get();        
-        if (cx==null) {
-            cx=new CachedXPathAPI();
+        CachedXPathAPI cx = local.get();        
+        if (cx == null) {
+            cx = new CachedXPathAPI();
             local.set(cx);
             localDoc.set(null);            
         }
