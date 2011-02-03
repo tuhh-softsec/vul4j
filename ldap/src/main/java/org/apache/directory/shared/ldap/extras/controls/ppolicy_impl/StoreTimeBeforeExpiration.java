@@ -17,29 +17,27 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.controls.ppolicy.actions;
+package org.apache.directory.shared.ldap.extras.controls.ppolicy_impl;
 
 
-import org.apache.directory.shared.asn1.actions.AbstractReadInteger;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
-import org.apache.directory.shared.ldap.codec.controls.ppolicy.PasswordPolicyContainer;
-import org.apache.directory.shared.ldap.extras.controls.PasswordPolicyErrorEnum;
+import org.apache.directory.shared.asn1.actions.AbstractReadInteger;
 
 
 /**
- * The action used to store the error
+ * The action used to store the TimeBeforeExpiration
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class StoreError extends AbstractReadInteger
+public class StoreTimeBeforeExpiration extends AbstractReadInteger
 {
 
     /**
-     * Instantiates a new StoreError action.
+     * Instantiates a new StoreTimeBeforeExpiration action.
      */
-    public StoreError()
+    public StoreTimeBeforeExpiration()
     {
-        super( "PPolicy error" );
+        super( "PPolicy TimeBeforeExpiration" );
     }
 
 
@@ -51,9 +49,8 @@ public class StoreError extends AbstractReadInteger
     {
         PasswordPolicyContainer ppolicyContainer = ( PasswordPolicyContainer ) container;
         
-        PasswordPolicyErrorEnum error = PasswordPolicyErrorEnum.get( value );
-        ppolicyContainer.getPasswordPolicyResponseControl().getResponse().setPasswordPolicyError( error );
-
-        ppolicyContainer.setGrammarEndAllowed( true );
+        ppolicyContainer.getPasswordPolicyResponseControl().getResponse().setTimeBeforeExpiration( value );
+        
+        container.setGrammarEndAllowed( true );
     }
 }

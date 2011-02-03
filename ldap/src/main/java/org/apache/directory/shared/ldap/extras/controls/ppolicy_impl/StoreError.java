@@ -17,28 +17,28 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.controls.ppolicy.actions;
+package org.apache.directory.shared.ldap.extras.controls.ppolicy_impl;
 
 
 import org.apache.directory.shared.asn1.actions.AbstractReadInteger;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
-import org.apache.directory.shared.ldap.codec.controls.ppolicy.PasswordPolicyContainer;
+import org.apache.directory.shared.ldap.extras.controls.PasswordPolicyErrorEnum;
 
 
 /**
- * The action used to store the GraceAuthsRemains
+ * The action used to store the error
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class StoreGraceAuthsRemaining extends AbstractReadInteger
+public class StoreError extends AbstractReadInteger
 {
 
     /**
-     * Instantiates a new StoreCusec action.
+     * Instantiates a new StoreError action.
      */
-    public StoreGraceAuthsRemaining()
+    public StoreError()
     {
-        super( "PPolicy graceAuthnsRemains" );
+        super( "PPolicy error" );
     }
 
 
@@ -50,7 +50,8 @@ public class StoreGraceAuthsRemaining extends AbstractReadInteger
     {
         PasswordPolicyContainer ppolicyContainer = ( PasswordPolicyContainer ) container;
         
-        ppolicyContainer.getPasswordPolicyResponseControl().getResponse().setGraceAuthNsRemaining( value );
+        PasswordPolicyErrorEnum error = PasswordPolicyErrorEnum.get( value );
+        ppolicyContainer.getPasswordPolicyResponseControl().getResponse().setPasswordPolicyError( error );
 
         ppolicyContainer.setGrammarEndAllowed( true );
     }

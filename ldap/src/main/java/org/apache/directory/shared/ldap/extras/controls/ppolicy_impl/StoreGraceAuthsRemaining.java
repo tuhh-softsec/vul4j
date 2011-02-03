@@ -17,28 +17,27 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.controls.ppolicy.actions;
+package org.apache.directory.shared.ldap.extras.controls.ppolicy_impl;
 
 
-import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.actions.AbstractReadInteger;
-import org.apache.directory.shared.ldap.codec.controls.ppolicy.PasswordPolicyContainer;
+import org.apache.directory.shared.asn1.ber.Asn1Container;
 
 
 /**
- * The action used to store the TimeBeforeExpiration
+ * The action used to store the GraceAuthsRemains
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class StoreTimeBeforeExpiration extends AbstractReadInteger
+public class StoreGraceAuthsRemaining extends AbstractReadInteger
 {
 
     /**
-     * Instantiates a new StoreTimeBeforeExpiration action.
+     * Instantiates a new StoreCusec action.
      */
-    public StoreTimeBeforeExpiration()
+    public StoreGraceAuthsRemaining()
     {
-        super( "PPolicy TimeBeforeExpiration" );
+        super( "PPolicy graceAuthnsRemains" );
     }
 
 
@@ -50,8 +49,8 @@ public class StoreTimeBeforeExpiration extends AbstractReadInteger
     {
         PasswordPolicyContainer ppolicyContainer = ( PasswordPolicyContainer ) container;
         
-        ppolicyContainer.getPasswordPolicyResponseControl().getResponse().setTimeBeforeExpiration( value );
-        
-        container.setGrammarEndAllowed( true );
+        ppolicyContainer.getPasswordPolicyResponseControl().getResponse().setGraceAuthNsRemaining( value );
+
+        ppolicyContainer.setGrammarEndAllowed( true );
     }
 }

@@ -18,12 +18,11 @@
  *
  */
 
-package org.apache.directory.shared.ldap.extras.controls;
+package org.apache.directory.shared.ldap.extras.controls.ppolicy_impl;
 
 
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.States;
-import org.apache.directory.shared.ldap.codec.controls.ppolicy.PasswordPolicyGrammar;
 
 
 /**
