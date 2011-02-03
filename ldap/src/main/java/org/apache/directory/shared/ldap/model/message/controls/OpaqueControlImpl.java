@@ -21,6 +21,7 @@ package org.apache.directory.shared.ldap.model.message.controls;
 
 
 import org.apache.directory.shared.ldap.model.message.Control;
+import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -33,6 +34,9 @@ import org.apache.directory.shared.ldap.model.message.Control;
  */
 public class OpaqueControlImpl extends AbstractControl implements Control
 {
+	/** The opaque encoded value */
+	private byte[] value;
+	
     /**
      * Creates a Control with a specific OID.
      *
@@ -56,4 +60,32 @@ public class OpaqueControlImpl extends AbstractControl implements Control
     }
 
 
+    /**
+     * @return The encoded value
+     */
+    public byte[] getEncodedValue()
+    {
+    	return value;
+    }
+    
+    
+    /**
+     * Stores an opaque value into the vontrol
+     * @param value The opaque value to store
+     */
+    public void setEncodedValue( byte[] value )
+    {
+    	this.value = Strings.copy( value );
+    }
+    
+    
+    /**
+     * Tells if the control has a stored value. Note that if the 
+     * control has an empty value, this method will return true.
+     * @return true if the control has a value
+     */
+    public boolean hasValue()
+    {
+    	return value != null;
+    }
 }
