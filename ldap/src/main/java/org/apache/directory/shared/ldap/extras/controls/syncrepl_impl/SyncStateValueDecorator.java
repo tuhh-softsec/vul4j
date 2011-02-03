@@ -6,22 +6,21 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License. 
- *  
+ *  under the License.
+ *
  */
 package org.apache.directory.shared.ldap.extras.controls.syncrepl_impl;
 
 
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 
 import org.apache.directory.shared.asn1.Asn1Object;
 import org.apache.directory.shared.asn1.DecoderException;
@@ -34,12 +33,13 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 import org.apache.directory.shared.ldap.extras.controls.SyncStateTypeEnum;
-import org.apache.directory.shared.util.Strings;
+import org.apache.directory.shared.ldap.extras.controls.SyncStateValue;
+import org.apache.directory.shared.ldap.extras.controls.SyncStateValueImpl;
 
 
 /**
  * A syncStateValue object, as defined in RFC 4533
- * 
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class SyncStateValueDecorator extends ControlDecorator<SyncStateValue> implements SyncStateValue
@@ -50,13 +50,13 @@ public class SyncStateValueDecorator extends ControlDecorator<SyncStateValue> im
     /** An instance of this decoder */
     private static final Asn1Decoder decoder = new Asn1Decoder();
 
-    
+
     public SyncStateValueDecorator( ILdapCodecService codec )
     {
         super( codec, new SyncStateValueImpl() );
     }
 
-    
+
     public SyncStateValueDecorator( ILdapCodecService codec, SyncStateValue value )
     {
         super( codec, value );
@@ -119,15 +119,16 @@ public class SyncStateValueDecorator extends ControlDecorator<SyncStateValue> im
 
     /**
      * Compute the SyncStateValue length.
-     * 
+     *
      * SyncStateValue :
      * 0x30 L1
-     *  | 
+     *  |
      *  +--> 0x0A 0x01 [0x00|0x01|0x02|0x03] (type)
      * [+--> 0x04 L2 abcd...                 (entryUUID)
      * [+--> 0x04 L3 abcd...                 (cookie)
-     *   
+     *
      */
+    @Override
     public int computeLength()
     {
         // The sync state type length
@@ -140,7 +141,7 @@ public class SyncStateValueDecorator extends ControlDecorator<SyncStateValue> im
         {
             syncStateSeqLength += 1 + TLV.getNbBytes( getCookie().length ) + getCookie().length;
         }
-        
+
         valueLength = 1 + TLV.getNbBytes( syncStateSeqLength ) + syncStateSeqLength;
 
         return valueLength;
@@ -149,19 +150,20 @@ public class SyncStateValueDecorator extends ControlDecorator<SyncStateValue> im
 
     /**
      * Encode the SyncStateValue control
-     * 
+     *
      * @param buffer The encoded sink
      * @return A ByteBuffer that contains the encoded PDU
      * @throws EncoderException If anything goes wrong.
      */
+    @Override
     public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
     {
         if ( buffer == null )
         {
             throw new EncoderException( I18n.err( I18n.ERR_04023 ) );
         }
-        
-        // Encode the SEQ 
+
+        // Encode the SEQ
         buffer.put( UniversalTag.SEQUENCE.getValue() );
         buffer.put( TLV.getBytes( syncStateSeqLength ) );
 
@@ -181,21 +183,22 @@ public class SyncStateValueDecorator extends ControlDecorator<SyncStateValue> im
 
         return buffer;
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public byte[] getValue()
     {
         if ( value == null )
         {
             try
-            { 
+            {
                 computeLength();
                 ByteBuffer buffer = ByteBuffer.allocate( valueLength );
-                
-                // Encode the SEQ 
+
+                // Encode the SEQ
                 buffer.put( UniversalTag.SEQUENCE.getValue() );
                 buffer.put( TLV.getBytes( syncStateSeqLength ) );
 
@@ -220,44 +223,8 @@ public class SyncStateValueDecorator extends ControlDecorator<SyncStateValue> im
                 return null;
             }
         }
-        
+
         return value;
-    }
-
-
-    /**
-     * @see Object#equals(Object)
-     */
-    public boolean equals( Object o )
-    {
-        if ( !super.equals( o ) )
-        {
-            return false;
-        }
-
-        SyncStateValueDecorator otherControl = ( SyncStateValueDecorator ) o;
-        
-        return ( getSyncStateType() == otherControl.getSyncStateType() ) && 
-            ( Arrays.equals( getEntryUUID(), otherControl.getEntryUUID() ) ) &&
-            ( Arrays.equals( getCookie(), otherControl.getCookie() ) );
-    }
-
-
-    /**
-     * @see Object#toString()
-     */
-    public String toString()
-    {
-        StringBuilder sb = new StringBuilder();
-
-        sb.append( "    SyncStateValue control :\n" );
-        sb.append( "        oid : " ).append( getOid() ).append( '\n' );
-        sb.append( "        critical : " ).append( isCritical() ).append( '\n' );
-        sb.append( "        syncStateType     : '" ).append( getSyncStateType() ).append( "'\n" );
-        sb.append( "        entryUUID         : '" ).append( Strings.dumpBytes( getEntryUUID() ) ).append( "'\n" );
-        sb.append( "        cookie            : '" ).append( Strings.dumpBytes( getCookie()) ).append( "'\n" );
-
-        return sb.toString();
     }
 
 

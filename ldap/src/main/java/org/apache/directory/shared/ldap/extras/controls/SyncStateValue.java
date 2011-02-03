@@ -17,16 +17,37 @@
  *   under the License.
  *
  */
-package org.apache.directory.shared.ldap.extras.controls.syncrepl_impl;
+package org.apache.directory.shared.ldap.extras.controls;
 
 
-import org.apache.directory.shared.ldap.extras.controls.SyncStateTypeEnum;
 import org.apache.directory.shared.ldap.model.message.Control;
 
 
 /**
- * A syncStateValue object, as defined in RFC 4533
- * 
+ * A syncStateValue object, as defined in RFC 4533 :
+ * <pre>
+ * 2.3.  Sync State Control
+ *
+ *    The Sync State Control is an LDAP Control [RFC4511] where the
+ *    controlType is the object identifier 1.3.6.1.4.1.4203.1.9.1.2 and the
+ *    controlValue, an OCTET STRING, contains a BER-encoded syncStateValue.
+ *    The criticality is FALSE.
+ *
+ *       syncStateValue ::= SEQUENCE {
+ *           state ENUMERATED {
+ *               present (0),
+ *               add (1),
+ *               modify (2),
+ *               delete (3)
+ *           },
+ *           entryUUID syncUUID,
+ *           cookie    syncCookie OPTIONAL
+ *       }
+ *
+ *    The Sync State Control is only applicable to SearchResultEntry and
+ *    SearchResultReference Messages.
+ * </pre>
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public interface SyncStateValue extends Control
@@ -55,7 +76,7 @@ public interface SyncStateValue extends Control
 
     /**
      * set the syncState's type
-     * 
+     *
      * @param syncStateType the syncState's type
      */
     public abstract void setSyncStateType( SyncStateTypeEnum syncStateType );
@@ -69,9 +90,8 @@ public interface SyncStateValue extends Control
 
     /**
      * set the entryUUID
-     * 
+     *
      * @param entryUUID the entryUUID
      */
     public abstract void setEntryUUID( byte[] entryUUID );
-
 }

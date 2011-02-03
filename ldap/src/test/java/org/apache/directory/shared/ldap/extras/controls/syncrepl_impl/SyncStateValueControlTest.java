@@ -33,7 +33,7 @@ import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.extras.controls.SyncStateTypeEnum;
-import org.apache.directory.shared.ldap.extras.controls.syncrepl_impl.SyncStateValue;
+import org.apache.directory.shared.ldap.extras.controls.SyncStateValue;
 import org.apache.directory.shared.ldap.extras.controls.syncrepl_impl.SyncStateValueDecorator;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;

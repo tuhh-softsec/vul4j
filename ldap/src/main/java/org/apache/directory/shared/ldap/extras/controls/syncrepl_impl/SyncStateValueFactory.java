@@ -22,6 +22,8 @@ package org.apache.directory.shared.ldap.extras.controls.syncrepl_impl;
 
 import org.apache.directory.shared.ldap.codec.IControlFactory;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.extras.controls.SyncStateValue;
+import org.apache.directory.shared.ldap.extras.controls.SyncStateValueImpl;
 
 
 /**
