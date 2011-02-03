@@ -23,6 +23,8 @@ import org.apache.commons.digester3.spi.TypeConverter;
 
 /**
  * Façade for Apache BeanUtils' {@code org.apache.commons.beanutils.Converter}.
+ *
+ * IMPLEMENTATION NOTE: this class is for internal use only, must be deleted for final version.
  */
 final class BeanUtilsConverterFacade implements Converter {
 
@@ -40,6 +42,15 @@ final class BeanUtilsConverterFacade implements Converter {
      */
     public <T> BeanUtilsConverterFacade(TypeConverter<T> wrappedConverter) {
         this.wrappedConverter = wrappedConverter;
+    }
+
+    /**
+     * Return the wrapped {@link TypeConverter}.
+     *
+     * @return The wrapped {@link TypeConverter}
+     */
+    public TypeConverter<?> getWrappedConverter() {
+        return wrappedConverter;
     }
 
     /**
