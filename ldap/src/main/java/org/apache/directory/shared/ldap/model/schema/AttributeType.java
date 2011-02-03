@@ -227,6 +227,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
                 LdapSchemaException ldapSchemaException = new LdapSchemaException(
                     LdapSchemaExceptionCodes.AT_NONEXISTENT_SUPERIOR, msg );
                 ldapSchemaException.setSourceObject( this );
+                ldapSchemaException.setRelatedId( superiorOid );
                 errors.add( ldapSchemaException );
                 LOG.info( msg );
 
@@ -313,6 +314,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
                 LdapSchemaException ldapSchemaException = new LdapSchemaException(
                     LdapSchemaExceptionCodes.AT_NONEXISTENT_SUPERIOR, msg );
                 ldapSchemaException.setSourceObject( this );
+                ldapSchemaException.setRelatedId( superiorOid );
                 errors.add( ldapSchemaException );
                 LOG.info( msg );
 
@@ -349,6 +351,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
                 LdapSchemaException ldapSchemaException = new LdapSchemaException(
                     LdapSchemaExceptionCodes.AT_NONEXISTENT_SYNTAX, msg );
                 ldapSchemaException.setSourceObject( this );
+                ldapSchemaException.setRelatedId( syntaxOid );
                 errors.add( ldapSchemaException );
                 LOG.info( msg );
                 return;
@@ -367,6 +370,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
                 LdapSchemaException ldapSchemaException = new LdapSchemaException(
                     LdapSchemaExceptionCodes.AT_NONEXISTENT_SYNTAX, msg );
                 ldapSchemaException.setSourceObject( this );
+                ldapSchemaException.setRelatedId( syntaxOid );
                 errors.add( ldapSchemaException );
                 LOG.info( msg );
                 return;
@@ -417,6 +421,8 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
 
                 LdapSchemaException ldapSchemaException = new LdapSchemaException(
                     LdapSchemaExceptionCodes.AT_NONEXISTENT_EQUALITY_MATCHING_RULE, msg );
+                ldapSchemaException.setSourceObject( this );
+                ldapSchemaException.setRelatedId( equalityOid );
                 errors.add( ldapSchemaException );
                 LOG.info( msg );
                 return;
@@ -434,6 +440,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
                 LdapSchemaException ldapSchemaException = new LdapSchemaException(
                     LdapSchemaExceptionCodes.AT_NONEXISTENT_EQUALITY_MATCHING_RULE, msg );
                 ldapSchemaException.setSourceObject( this );
+                ldapSchemaException.setRelatedId( equalityOid );
                 errors.add( ldapSchemaException );
                 LOG.info( msg );
             }
@@ -471,6 +478,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
                 LdapSchemaException ldapSchemaException = new LdapSchemaException(
                     LdapSchemaExceptionCodes.AT_NONEXISTENT_ORDERING_MATCHING_RULE, msg );
                 ldapSchemaException.setSourceObject( this );
+                ldapSchemaException.setRelatedId( orderingOid );
                 errors.add( ldapSchemaException );
                 LOG.info( msg );
                 return;
@@ -488,6 +496,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
                 LdapSchemaException ldapSchemaException = new LdapSchemaException(
                     LdapSchemaExceptionCodes.AT_NONEXISTENT_ORDERING_MATCHING_RULE, msg );
                 ldapSchemaException.setSourceObject( this );
+                ldapSchemaException.setRelatedId( orderingOid );
                 errors.add( ldapSchemaException );
                 LOG.info( msg );
             }
@@ -526,6 +535,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
                 LdapSchemaException ldapSchemaException = new LdapSchemaException(
                     LdapSchemaExceptionCodes.AT_NONEXISTENT_SUBSTRING_MATCHING_RULE, msg );
                 ldapSchemaException.setSourceObject( this );
+                ldapSchemaException.setRelatedId( substringOid );
                 errors.add( ldapSchemaException );
                 LOG.info( msg );
                 return;
@@ -543,6 +553,7 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
                 LdapSchemaException ldapSchemaException = new LdapSchemaException(
                     LdapSchemaExceptionCodes.AT_NONEXISTENT_SUBSTRING_MATCHING_RULE, msg );
                 ldapSchemaException.setSourceObject( this );
+                ldapSchemaException.setRelatedId( substringOid );
                 errors.add( ldapSchemaException );
                 LOG.info( msg );
                 return;
