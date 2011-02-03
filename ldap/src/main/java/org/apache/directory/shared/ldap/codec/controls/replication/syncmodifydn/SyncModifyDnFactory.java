@@ -29,15 +29,17 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.IControlFactory;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.model.message.controls.SyncModifyDn;
+import org.apache.directory.shared.ldap.model.message.controls.SyncModifyDnImpl;
 
 
 /**
- * A {@link IControlFactory} which creates {@link ISyncModifyDn} controls.
+ * A {@link IControlFactory} which creates {@link SyncModifyDn} controls.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class SyncModifyDnFactory implements IControlFactory<ISyncModifyDn, SyncModifyDnDecorator>
+public class SyncModifyDnFactory implements IControlFactory<SyncModifyDn, SyncModifyDnDecorator>
 {
     
     private ILdapCodecService codec;
@@ -59,7 +61,7 @@ public class SyncModifyDnFactory implements IControlFactory<ISyncModifyDn, SyncM
      */
     public String getOid()
     {
-        return ISyncModifyDn.OID;
+        return SyncModifyDn.OID;
     }
 
     
@@ -73,7 +75,7 @@ public class SyncModifyDnFactory implements IControlFactory<ISyncModifyDn, SyncM
     }
     
 
-    public SyncModifyDnDecorator decorate( ISyncModifyDn control )
+    public SyncModifyDnDecorator decorate( SyncModifyDn control )
     {
         SyncModifyDnDecorator decorator = null;
         
@@ -91,13 +93,13 @@ public class SyncModifyDnFactory implements IControlFactory<ISyncModifyDn, SyncM
     }
 
     
-    public ISyncModifyDn newControl()
+    public SyncModifyDn newControl()
     {
-        return new SyncModifyDn();
+        return new SyncModifyDnImpl();
     }
     
 
-    public Control toJndiControl( ISyncModifyDn control ) throws EncoderException
+    public Control toJndiControl( SyncModifyDn control ) throws EncoderException
     {
         SyncModifyDnDecorator decorator = decorate( control );
         ByteBuffer bb = ByteBuffer.allocate( decorator.computeLength() );
@@ -107,7 +109,7 @@ public class SyncModifyDnFactory implements IControlFactory<ISyncModifyDn, SyncM
     }
 
     
-    public ISyncModifyDn fromJndiControl( Control jndi ) throws DecoderException
+    public SyncModifyDn fromJndiControl( Control jndi ) throws DecoderException
     {
         SyncModifyDnDecorator decorator = newCodecControl();
         decorator.setCritical( jndi.isCritical() );

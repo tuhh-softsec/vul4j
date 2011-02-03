@@ -6,16 +6,16 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License. 
- *  
+ *  under the License.
+ *
  */
 package org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn;
 
@@ -33,22 +33,24 @@ import org.apache.directory.shared.asn1.util.Asn1StringUtils;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
+import org.apache.directory.shared.ldap.model.message.controls.SyncModifyDn;
+import org.apache.directory.shared.ldap.model.message.controls.SyncModifyDnImpl;
 import org.apache.directory.shared.ldap.model.message.controls.SyncModifyDnType;
 
 
 /**
  * A SyncModifyDnControl object, to send the parameters used in a MODIFYDN operation
  * that was carried out on a syncrepl provider server.
- * 
+ *
  * The consumer will use the values present in this control to perform the same operation
  * on its local data, which helps in avoiding huge number of updates to the consumer.
- * 
+ *
  * NOTE: syncrepl, defined in RFC 4533, doesn't mention about this approach, this is a special
  *       extension provided by Apache Directory Server
- * 
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SyncModifyDnDecorator extends ControlDecorator<ISyncModifyDn> implements ISyncModifyDn
+public class SyncModifyDnDecorator extends ControlDecorator<SyncModifyDn> implements SyncModifyDn
 {
     /** the entry's Dn to be changed */
     private String entryDn;
@@ -69,17 +71,17 @@ public class SyncModifyDnDecorator extends ControlDecorator<ISyncModifyDn> imple
 
     private int renameLen = 0;
     private int moveAndRenameLen = 0;
-    
+
     /** An instance of this decoder */
     private Asn1Decoder decoder = new Asn1Decoder();
 
-    
+
     public SyncModifyDnDecorator( ILdapCodecService codec )
     {
-        super( codec, new SyncModifyDn() );
+        super( codec, new SyncModifyDnImpl() );
     }
 
-    
+
     public SyncModifyDnDecorator( ILdapCodecService codec, SyncModifyDnType type )
     {
         this( codec );
@@ -87,7 +89,7 @@ public class SyncModifyDnDecorator extends ControlDecorator<ISyncModifyDn> imple
     }
 
 
-    public SyncModifyDnDecorator( ILdapCodecService codec, ISyncModifyDn control )
+    public SyncModifyDnDecorator( ILdapCodecService codec, SyncModifyDn control )
     {
         super( codec, control );
     }
@@ -95,16 +97,17 @@ public class SyncModifyDnDecorator extends ControlDecorator<ISyncModifyDn> imple
 
     /**
      * Compute the SyncStateValue length.
-     * 
+     *
      * SyncStateValue :
      * 0x30 L1
-     *  | 
+     *  |
      *  +--> 0x04 L2 uid=jim...       (entryDn)
      * [+--> 0x04 L3 ou=system...     (newSuperior)
      * [+--> 0x04 L4 uid=jack...      (newRdn)
      * [+--> 0x04 0x01 [0x00|0x01]... (deleteOldRdn)
-     *   
+     *
      */
+    @Override
     public int computeLength()
     {
         syncModDnSeqLength = 1 + TLV.getNbBytes( entryDn.length() ) + entryDn.length();
@@ -136,18 +139,19 @@ public class SyncModifyDnDecorator extends ControlDecorator<ISyncModifyDn> imple
         }
 
         valueLength = 1 + TLV.getNbBytes( syncModDnSeqLength ) + syncModDnSeqLength;
-        
+
         return valueLength;
     }
 
 
     /**
      * Encode the SyncStateValue control
-     * 
+     *
      * @param buffer The encoded sink
      * @return A ByteBuffer that contains the encoded PDU
      * @throws EncoderException If anything goes wrong.
      */
+    @Override
     public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
     {
         if ( buffer == null )
@@ -155,13 +159,13 @@ public class SyncModifyDnDecorator extends ControlDecorator<ISyncModifyDn> imple
             throw new EncoderException( I18n.err( I18n.ERR_04023 ) );
         }
 
-        // Encode the SEQ 
+        // Encode the SEQ
         buffer.put( UniversalTag.SEQUENCE.getValue() );
         buffer.put( TLV.getBytes( syncModDnSeqLength ) );
 
         // the entryDn
         Value.encode( buffer, entryDn );
-        
+
         switch ( modDnType )
         {
             case MOVE:
@@ -193,6 +197,7 @@ public class SyncModifyDnDecorator extends ControlDecorator<ISyncModifyDn> imple
     /**
      * {@inheritDoc}
      */
+    @Override
     public byte[] getValue()
     {
         if ( value == null )
@@ -202,7 +207,7 @@ public class SyncModifyDnDecorator extends ControlDecorator<ISyncModifyDn> imple
                 computeLength();
                 ByteBuffer buffer = ByteBuffer.allocate( valueLength );
 
-                // Encode the SEQ 
+                // Encode the SEQ
                 buffer.put( UniversalTag.SEQUENCE.getValue() );
                 buffer.put( TLV.getBytes( syncModDnSeqLength ) );
 
@@ -336,73 +341,6 @@ public class SyncModifyDnDecorator extends ControlDecorator<ISyncModifyDn> imple
             throw new IllegalStateException( "cannot overwrite the existing modDnType value" );
         }
         this.modDnType = modDnType;
-    }
-
-
-    /**
-     * @see Object#equals(Object)
-     */
-    public boolean equals( Object o )
-    {
-        if ( !super.equals( o ) )
-        {
-            return false;
-        }
-
-        SyncModifyDnDecorator otherControl = ( SyncModifyDnDecorator ) o;
-        
-        if ( newRdn != null )
-        {
-            if ( newRdn.equals( otherControl.newRdn ) )
-            {
-                return false;
-            }
-        }
-        else
-        {
-            if ( otherControl.newRdn != null )
-            {
-                return false;
-            }
-        }
-        
-        if ( newSuperiorDn != null )
-        {
-            if ( newSuperiorDn.equals( otherControl.newSuperiorDn ) )
-            {
-                return false;
-            }
-        }
-        else
-        {
-            if ( otherControl.newSuperiorDn != null )
-            {
-                return false;
-            }
-        }
-        
-        return ( deleteOldRdn == otherControl.deleteOldRdn ) && 
-            ( modDnType == otherControl.modDnType ) &&
-            ( entryDn.equals( otherControl.entryDn ) );
-    }
-
-
-    /**
-     * @see Object#toString()
-     */
-    public String toString()
-    {
-        StringBuilder sb = new StringBuilder();
-
-        sb.append( "  SyncModifyDn control :\n" );
-        sb.append( "   oid          : '" ).append( getOid() ).append( '\n' );
-        sb.append( "   critical     : '" ).append( isCritical() ).append( '\n' );
-        sb.append( "   entryDn      : '" ).append( entryDn ).append( "'\n" );
-        sb.append( "   newSuperior  : '" ).append( newSuperiorDn ).append( "'\n" );
-        sb.append( "   newRdn       : '" ).append( newRdn ).append( "'\n" );
-        sb.append( "   deleteOldRdn : '" ).append( deleteOldRdn ).append( "'\n" );
-
-        return sb.toString();
     }
 
 

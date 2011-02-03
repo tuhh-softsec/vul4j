@@ -17,11 +17,10 @@
  *   under the License.
  *
  */
-package org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn;
+package org.apache.directory.shared.ldap.model.message.controls;
 
 
 import org.apache.directory.shared.ldap.model.message.Control;
-import org.apache.directory.shared.ldap.model.message.controls.SyncModifyDnType;
 
 
 /**
@@ -36,7 +35,7 @@ import org.apache.directory.shared.ldap.model.message.controls.SyncModifyDnType;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface ISyncModifyDn extends Control
+public interface SyncModifyDn extends Control
 {
 
     /** This control OID */

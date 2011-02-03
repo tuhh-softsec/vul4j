@@ -33,8 +33,8 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn.ISyncModifyDn;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncmodifydn.SyncModifyDnDecorator;
+import org.apache.directory.shared.ldap.model.message.controls.SyncModifyDn;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -66,7 +66,7 @@ public class SyncModifyDnControlTest
         bb.flip();
 
         SyncModifyDnDecorator decorator = new SyncModifyDnDecorator( codec );
-        ISyncModifyDn syncmodDnControl = (ISyncModifyDn)decorator.decode( bb.array() );
+        SyncModifyDn syncmodDnControl = (SyncModifyDn)decorator.decode( bb.array() );
 
         assertEquals( "uid=jim", syncmodDnControl.getEntryDn() );
         assertEquals( "ou=dc", syncmodDnControl.getNewSuperiorDn() );
@@ -101,7 +101,7 @@ public class SyncModifyDnControlTest
 
         SyncModifyDnDecorator decorator = new SyncModifyDnDecorator( codec );
         
-        ISyncModifyDn syncmodDnControl = (ISyncModifyDn)decorator.decode( bb.array() );
+        SyncModifyDn syncmodDnControl = (SyncModifyDn)decorator.decode( bb.array() );
 
         assertEquals( "uid=jim", syncmodDnControl.getEntryDn() );
         assertEquals( "uid=j", syncmodDnControl.getNewRdn() );
@@ -136,7 +136,7 @@ public class SyncModifyDnControlTest
         bb.flip();
 
         SyncModifyDnDecorator decorator = new SyncModifyDnDecorator( codec );
-        ISyncModifyDn syncmodDnControl = (ISyncModifyDn)decorator.decode( bb.array() );
+        SyncModifyDn syncmodDnControl = (SyncModifyDn)decorator.decode( bb.array() );
 
         assertEquals( "uid=jim", syncmodDnControl.getEntryDn() );
         assertEquals( "ou=dc", syncmodDnControl.getNewSuperiorDn() );
