@@ -27,7 +27,7 @@ package org.apache.directory.shared.ldap.model.message.controls;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class PersistentSearchImpl extends BasicControl implements PersistentSearch
+public class PersistentSearchImpl extends AbstractControl implements PersistentSearch
 {
 
     /**

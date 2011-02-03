@@ -57,7 +57,7 @@ import java.util.Arrays;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class PagedResultsImpl extends BasicControl implements PagedResults
+public class PagedResultsImpl extends AbstractControl implements PagedResults
 {
 
     /** The number of entries to return, or returned */

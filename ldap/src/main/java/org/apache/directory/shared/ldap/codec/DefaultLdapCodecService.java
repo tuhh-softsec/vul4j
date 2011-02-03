@@ -47,10 +47,11 @@ import org.apache.directory.shared.ldap.codec.controls.search.pagedSearch.PagedR
 import org.apache.directory.shared.ldap.codec.controls.search.persistentSearch.PersistentSearchFactory;
 import org.apache.directory.shared.ldap.codec.controls.search.subentries.SubentriesFactory;
 import org.apache.directory.shared.ldap.model.message.Control;
-import org.apache.directory.shared.ldap.model.message.controls.BasicControl;
+import org.apache.directory.shared.ldap.model.message.controls.AbstractControl;
 import org.apache.directory.shared.ldap.model.message.controls.Cascade;
 import org.apache.directory.shared.ldap.model.message.controls.EntryChange;
 import org.apache.directory.shared.ldap.model.message.controls.ManageDsaIT;
+import org.apache.directory.shared.ldap.model.message.controls.OpaqueControlImpl;
 import org.apache.directory.shared.ldap.model.message.controls.PagedResults;
 import org.apache.directory.shared.ldap.model.message.controls.PersistentSearch;
 import org.apache.directory.shared.ldap.model.message.controls.Subentries;
@@ -248,7 +249,7 @@ public class DefaultLdapCodecService implements ILdapCodecService
             
             if ( factory == null )
             {
-                return ( E ) new BasicControl( oid );
+                return ( E ) new OpaqueControlImpl( oid );
             }
             
             return ( E ) factory.newControl();
@@ -270,7 +271,7 @@ public class DefaultLdapCodecService implements ILdapCodecService
             
             if ( factory == null )
             {
-                return new BasicControlDecorator( this, (BasicControl)control ); 
+                return new BasicControlDecorator( this, (AbstractControl)control ); 
             }
             
             return factory.decorate( control );
@@ -302,7 +303,7 @@ public class DefaultLdapCodecService implements ILdapCodecService
         
         if ( factory == null )
         {
-            BasicControl ourControl = new BasicControl( control.getID() );
+            AbstractControl ourControl = new OpaqueControlImpl( control.getID() );
             ourControl.setCritical( control.isCritical() );
             BasicControlDecorator decorator = new BasicControlDecorator( this, ourControl );
             decorator.setValue( control.getEncodedValue() );

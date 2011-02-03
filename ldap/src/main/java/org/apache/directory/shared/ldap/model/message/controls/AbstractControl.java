@@ -31,7 +31,7 @@ import org.apache.directory.shared.ldap.model.message.Control;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class BasicControl implements Control
+public abstract class AbstractControl implements Control
 {
     /** The control type */
     private String oid;
@@ -45,7 +45,7 @@ public class BasicControl implements Control
      *
      * @param oid The OID of this Control.
      */
-    public BasicControl( String oid )
+    public AbstractControl( String oid )
     {
         this.oid = oid;
     }
@@ -57,7 +57,7 @@ public class BasicControl implements Control
      * @param oid The OID of this Control.
      * @param criticality true if this Control is critical, false otherwise. 
      */
-    public BasicControl( String oid, boolean criticality )
+    public AbstractControl( String oid, boolean criticality )
     {
         this.oid = oid;
         this.criticality = criticality;
@@ -137,7 +137,6 @@ public class BasicControl implements Control
             return false;
         }
 
-        //noinspection SimplifiableIfStatement
         return criticality == otherControl.isCritical();
     }
 

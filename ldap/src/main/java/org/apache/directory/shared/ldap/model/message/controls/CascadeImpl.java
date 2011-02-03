@@ -24,7 +24,7 @@ package org.apache.directory.shared.ldap.model.message.controls;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class CascadeImpl extends BasicControl implements Cascade
+public class CascadeImpl extends AbstractControl implements Cascade
 {
     /**
      * Default constructor

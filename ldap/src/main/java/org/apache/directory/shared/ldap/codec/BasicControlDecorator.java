@@ -27,7 +27,7 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
-import org.apache.directory.shared.ldap.model.message.controls.BasicControl;
+import org.apache.directory.shared.ldap.model.message.controls.AbstractControl;
 
 
 /**
@@ -39,16 +39,16 @@ import org.apache.directory.shared.ldap.model.message.controls.BasicControl;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class BasicControlDecorator extends ControlDecorator<BasicControl>
+public class BasicControlDecorator extends ControlDecorator<AbstractControl>
 {
     /**
      * Creates a new instance of BasicControlDecorator, decorating a 
-     * {@link BasicControl}.
+     * {@link AbstractControl}.
      *
      * @param codec The LDAP codec service.
-     * @param control The {@link BasicControl} to decorate.
+     * @param control The {@link AbstractControl} to decorate.
      */
-    public BasicControlDecorator( ILdapCodecService codec, BasicControl control )
+    public BasicControlDecorator( ILdapCodecService codec, AbstractControl control )
     {
         super( codec, control );
     }

@@ -126,7 +126,8 @@ import org.apache.directory.shared.ldap.model.message.SearchResultEntry;
 import org.apache.directory.shared.ldap.model.message.SearchResultReference;
 import org.apache.directory.shared.ldap.model.message.UnbindRequest;
 import org.apache.directory.shared.ldap.model.message.UnbindRequestImpl;
-import org.apache.directory.shared.ldap.model.message.controls.BasicControl;
+import org.apache.directory.shared.ldap.model.message.controls.AbstractControl;
+import org.apache.directory.shared.ldap.model.message.controls.OpaqueControlImpl;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.name.Rdn;
 import org.apache.directory.shared.ldap.model.schema.AttributeType;
@@ -2497,7 +2498,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         {
             DeleteRequest deleteRequest = new DeleteRequestImpl();
             deleteRequest.setName( dn );
-            deleteRequest.addControl( new BasicControl( treeDeleteOid ) );
+            deleteRequest.addControl( new OpaqueControlImpl( treeDeleteOid ) );
             return delete( deleteRequest );
         }
         else
@@ -2528,7 +2529,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
             {
                 DeleteRequest deleteRequest = new DeleteRequestImpl();
                 deleteRequest.setName( newDn );
-                deleteRequest.addControl( new BasicControl( treeDeleteOid ) );
+                deleteRequest.addControl( new OpaqueControlImpl( treeDeleteOid ) );
                 return delete( deleteRequest );
             }
             else

@@ -25,7 +25,7 @@ package org.apache.directory.shared.ldap.model.message.controls;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class ManageDsaITImpl extends BasicControl implements ManageDsaIT
+public class ManageDsaITImpl extends AbstractControl implements ManageDsaIT
 {
     /**
      * Default constructor.
