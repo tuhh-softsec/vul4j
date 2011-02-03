@@ -100,7 +100,7 @@ final class DigesterImpl implements Digester {
     /**
      * Stacks used for interrule communication, indexed by name String
      */
-    private final HashMap<String, Stack<Object>> stacksByName = new HashMap<String, Stack<Object>>();
+    private final Map<String, Stack<Object>> stacksByName = new HashMap<String, Stack<Object>>();
 
     /**
      * <p><code>List</code> of <code>InputSource</code> instances
@@ -126,7 +126,7 @@ final class DigesterImpl implements Digester {
      * The URLs of entityValidator that have been registered, keyed by the public
      * identifier that corresponds.
      */
-    private final HashMap<String, URL> entityValidator;
+    private final Map<String, URL> entityValidator;
 
     private final XMLReader reader;
 
@@ -163,7 +163,7 @@ final class DigesterImpl implements Digester {
             Rules rules,
             ClassLoader classLoader,
             Substitutor substitutor,
-            HashMap<String, URL> entityValidator) {
+            Map<String, URL> entityValidator) {
         this.reader = reader;
         this.reader.setDTDHandler(this);
         this.reader.setContentHandler(this);
