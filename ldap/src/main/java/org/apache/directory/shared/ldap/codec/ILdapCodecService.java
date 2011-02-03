@@ -85,9 +85,6 @@ public interface ILdapCodecService
     ICodecControl<? extends Control> decorate( Control control );
     
     
-    <E> E newCodecControl( Class<? extends ICodecControl<? extends Control>> clazz );
-    
-    
     /**
      * Creates a new LDAP {@link ProtocolCodecFactory}.
      *

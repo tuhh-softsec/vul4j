@@ -68,7 +68,7 @@ public class SyncDoneValueFactory implements IControlFactory<SyncDoneValue, Sync
     }
     
 
-    public SyncDoneValueDecorator decorate( SyncDoneValue control )
+    public SyncDoneValueDecorator newCodecControl( SyncDoneValue control )
     {
         SyncDoneValueDecorator decorator = null;
         

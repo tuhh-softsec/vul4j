@@ -70,7 +70,7 @@ public class EntryChangeFactory implements IControlFactory<EntryChange, EntryCha
     /**
      * {@inheritDoc}
      */
-    public EntryChangeDecorator decorate( EntryChange control )
+    public EntryChangeDecorator newCodecControl( EntryChange control )
     {
         return new EntryChangeDecorator( codec, control );
     }

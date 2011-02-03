@@ -70,7 +70,7 @@ public class CascadeFactory implements IControlFactory<Cascade, CascadeDecorator
     /**
      * {@inheritDoc}
      */
-    public CascadeDecorator decorate( Cascade control )
+    public CascadeDecorator newCodecControl( Cascade control )
     {
         return new CascadeDecorator( codec, control );
     }

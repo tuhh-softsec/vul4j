@@ -68,7 +68,7 @@ public class SyncModifyDnFactory implements IControlFactory<SyncModifyDn, SyncMo
     }
     
 
-    public SyncModifyDnDecorator decorate( SyncModifyDn control )
+    public SyncModifyDnDecorator newCodecControl( SyncModifyDn control )
     {
         SyncModifyDnDecorator decorator = null;
         

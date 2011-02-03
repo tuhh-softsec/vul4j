@@ -84,7 +84,7 @@ public class SubentriesFactory implements IControlFactory<Subentries, Subentries
      * 
      * {@inheritDoc}
      */
-    public SubentriesDecorator decorate( Subentries control )
+    public SubentriesDecorator newCodecControl( Subentries control )
     {
         if ( ! control.getOid().equals( Subentries.OID ) )
         {

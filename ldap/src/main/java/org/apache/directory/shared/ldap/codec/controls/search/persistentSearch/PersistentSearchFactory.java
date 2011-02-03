@@ -64,7 +64,7 @@ public class PersistentSearchFactory implements IControlFactory<PersistentSearch
     /**
      * {@inheritDoc}
      */
-    public PersistentSearchDecorator decorate( PersistentSearch control )
+    public PersistentSearchDecorator newCodecControl( PersistentSearch control )
     {
         // protect against double decoration
         if ( control instanceof PersistentSearchDecorator )

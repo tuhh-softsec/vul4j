@@ -72,7 +72,7 @@ public class PasswordPolicyFactory implements IControlFactory<PasswordPolicy, Pa
      * 
      * {@inheritDoc}
      */
-    public PasswordPolicyDecorator decorate( PasswordPolicy control )
+    public PasswordPolicyDecorator newCodecControl( PasswordPolicy control )
     {
         PasswordPolicyDecorator decorator = null;
         

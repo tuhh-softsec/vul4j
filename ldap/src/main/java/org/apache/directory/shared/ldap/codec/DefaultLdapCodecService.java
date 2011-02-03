@@ -172,36 +172,6 @@ public class DefaultLdapCodecService implements ILdapCodecService
         extReqFactories.put( factory.getRequestOid(), factory );
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
-    @SuppressWarnings("unchecked")
-    public <E> E newCodecControl( Class<? extends ICodecControl<? extends Control>> clazz )
-    {
-        try
-        {
-            Field f = clazz.getField( "OID" );
-            String oid = ( String ) f.get( null );
-            IControlFactory<?,?> factory = controlFactories.get( oid );
-            return ( E ) factory.newCodecControl();
-        }
-        catch ( IllegalAccessException e )
-        {
-            e.printStackTrace();
-        }
-        catch ( SecurityException e )
-        {
-            e.printStackTrace();
-        }
-        catch ( NoSuchFieldException e )
-        {
-            e.printStackTrace();
-        }
-        
-        return null;
-    }
-
     
     /**
      * {@inheritDoc}
@@ -246,7 +216,7 @@ public class DefaultLdapCodecService implements ILdapCodecService
                 return new BasicControlDecorator( this, control ); 
             }
             
-            return factory.decorate( control );
+            return factory.newCodecControl( control );
         }
         catch ( SecurityException e )
         {

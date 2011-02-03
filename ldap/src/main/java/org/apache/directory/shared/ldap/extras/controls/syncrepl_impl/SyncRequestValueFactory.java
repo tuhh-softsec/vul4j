@@ -68,7 +68,7 @@ public class SyncRequestValueFactory implements IControlFactory<SyncRequestValue
     }
     
 
-    public SyncRequestValueDecorator decorate( SyncRequestValue control )
+    public SyncRequestValueDecorator newCodecControl( SyncRequestValue control )
     {
         SyncRequestValueDecorator decorator = null;
         

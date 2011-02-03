@@ -70,7 +70,7 @@ public class PagedResultsFactory implements IControlFactory<PagedResults, PagedR
     /**
      * {@inheritDoc}
      */
-    public PagedResultsDecorator decorate( PagedResults control )
+    public PagedResultsDecorator newCodecControl( PagedResults control )
     {
         return new PagedResultsDecorator( codec, control );
     }

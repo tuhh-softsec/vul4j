@@ -59,7 +59,7 @@ public interface IControlFactory<C extends Control, D extends ICodecControl<C>>
      * @param control The {@link Control} to be decorated.
      * @return The decorator wrapping the Control.
      */
-    D decorate( C control );
+    D newCodecControl( C control );
 
 
     /**

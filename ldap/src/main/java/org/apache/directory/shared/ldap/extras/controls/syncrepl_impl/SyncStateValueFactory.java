@@ -67,7 +67,7 @@ public class SyncStateValueFactory implements IControlFactory<SyncStateValue, Sy
     }
     
 
-    public SyncStateValueDecorator decorate( SyncStateValue control )
+    public SyncStateValueDecorator newCodecControl( SyncStateValue control )
     {
         SyncStateValueDecorator decorator = null;
         
