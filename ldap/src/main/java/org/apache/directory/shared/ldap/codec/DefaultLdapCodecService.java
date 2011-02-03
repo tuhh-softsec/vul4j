@@ -30,7 +30,6 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.controls.cascade.CascadeFactory;
 import org.apache.directory.shared.ldap.codec.controls.manageDsaIT.ManageDsaITFactory;
-import org.apache.directory.shared.ldap.codec.controls.ppolicy.PasswordPolicy;
 import org.apache.directory.shared.ldap.codec.controls.ppolicy.PasswordPolicyFactory;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncDoneValue.SyncDoneValueFactory;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncInfoValue.SyncInfoValueFactory;
@@ -42,6 +41,7 @@ import org.apache.directory.shared.ldap.codec.controls.search.entryChange.EntryC
 import org.apache.directory.shared.ldap.codec.controls.search.pagedSearch.PagedResultsFactory;
 import org.apache.directory.shared.ldap.codec.controls.search.persistentSearch.PersistentSearchFactory;
 import org.apache.directory.shared.ldap.codec.controls.search.subentries.SubentriesFactory;
+import org.apache.directory.shared.ldap.extras.controls.PasswordPolicy;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.controls.AbstractControl;
 import org.apache.directory.shared.ldap.model.message.controls.Cascade;

@@ -29,6 +29,7 @@ import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.extras.controls.IPasswordPolicy;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 

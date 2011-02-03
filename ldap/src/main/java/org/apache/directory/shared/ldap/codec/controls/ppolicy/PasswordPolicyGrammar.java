@@ -30,6 +30,7 @@ import org.apache.directory.shared.ldap.codec.controls.ppolicy.actions.PPolicyIn
 import org.apache.directory.shared.ldap.codec.controls.ppolicy.actions.StoreError;
 import org.apache.directory.shared.ldap.codec.controls.ppolicy.actions.StoreGraceAuthsRemaining;
 import org.apache.directory.shared.ldap.codec.controls.ppolicy.actions.StoreTimeBeforeExpiration;
+import org.apache.directory.shared.ldap.extras.controls.PasswordPolicyStates;
 
 
 /**
