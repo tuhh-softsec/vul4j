@@ -25,10 +25,16 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.validation.Schema;
 
+import org.apache.commons.digester3.rules.BaseRules;
+import org.apache.commons.digester3.spi.Rules;
 import org.apache.commons.digester3.spi.Substitutor;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
 
 /**
  * This class manages the creation of Digester instances from digester rules modules.
@@ -233,6 +239,102 @@ public final class DigesterLoader {
      */
     public Map<String, URL> getRegistrations() {
         return Collections.unmodifiableMap(this.entityValidator);
+    }
+
+    /**
+     * Creates a new {@link Digester} instance that relies on the default {@link Rules} implementation.
+     *
+     * @return a new {@link Digester} instance
+     */
+    public Digester newDigester() {
+        return this.newDigester(new BaseRules());
+    }
+
+    /**
+     * Creates a new {@link Digester} instance that relies on the custom user define {@link Rules} implementation
+     *
+     * @param rules The custom user define {@link Rules} implementation
+     * @return a new {@link Digester} instance
+     */
+    public Digester newDigester(Rules rules) {
+        try {
+            return this.newDigester(this.factory.newSAXParser(), rules);
+        } catch (ParserConfigurationException e) {
+            throw new DigesterLoadingException("SAX Parser misconfigured", e);
+        } catch (SAXException e) {
+            throw new DigesterLoadingException("An error occurred while initializing the SAX Parser", e);
+        }
+    }
+
+    /**
+     * Creates a new {@link Digester} instance that relies on the given {@code SAXParser}
+     * and the default {@link Rules} implementation.
+     *
+     * @param parser the user defined {@code SAXParser}
+     * @return a new {@link Digester} instance
+     */
+    public Digester newDigester(SAXParser parser) {
+        return this.newDigester(parser, new BaseRules());
+    }
+
+    /**
+     * Creates a new {@link Digester} instance that relies on the given {@code SAXParser}
+     * and custom user define {@link Rules} implementation.
+     *
+     * @param parser The user defined {@code SAXParser}
+     * @param rules The custom user define {@link Rules} implementation
+     * @return a new {@link Digester} instance
+     */
+    public Digester newDigester(SAXParser parser, Rules rules) {
+        if (parser == null) {
+            throw new DigesterLoadingException("SAXParser must be not null");
+        }
+
+        try {
+            return this.newDigester(parser.getXMLReader(), rules);
+        } catch (SAXException e) {
+            throw new DigesterLoadingException("An error occurred while creating the XML Reader", e);
+        }
+    }
+
+    /**
+     * Creates a new {@link XMLReader} instance that relies on the given {@code XMLReader}
+     * and the default {@link Rules} implementation.
+     *
+     * @param reader The user defined {@code XMLReader}
+     * @return a new {@link Digester} instance
+     */
+    public Digester newDigester(XMLReader reader) {
+        return this.newDigester(reader, new BaseRules());
+    }
+
+    /**
+     * Creates a new {@link XMLReader} instance that relies on the given {@code XMLReader}
+     * and custom user define {@link Rules} implementation.
+     *
+     * @param reader The user defined {@code XMLReader}
+     * @param rules The custom user define {@link Rules} implementation
+     * @return a new {@link Digester} instance
+     */
+    public Digester newDigester(XMLReader reader, Rules rules) {
+        if (reader == null) {
+            throw new DigesterLoadingException("XMLReader must be not null");
+        }
+        if (rules == null) {
+            throw new DigesterLoadingException("Impossible to create a new Digester with null Rules");
+        }
+
+        ClassLoader classLoader = this.classLoader != null ? this.classLoader :
+            (this.useContextClassLoader ? Thread.currentThread().getContextClassLoader() : this.getClass().getClassLoader());
+
+        // check if there were errors while binding rules
+        if (this.rulesBinder.containsErrors()) {
+            throw new DigesterLoadingException(this.rulesBinder.getErrors());
+        }
+
+        this.rulesBinder.populateRules(rules);
+
+        return new DigesterImpl(reader, rules, classLoader, this.substitutor, this.entityValidator);
     }
 
 }
