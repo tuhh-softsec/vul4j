@@ -32,6 +32,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.beanutils.Converter;
 import org.apache.commons.digester3.spi.Rules;
 import org.apache.commons.digester3.spi.Substitutor;
 import org.apache.commons.digester3.spi.TypeConverter;
@@ -1230,9 +1232,30 @@ final class DigesterImpl implements Digester {
     /**
      * {@inheritDoc}
      */
-    public <T> TypeConverter<T> lookupConverter(Class<T> type) {
-        // TODO empty for now
-        return null;
+    public <T> TypeConverter<T> lookupConverter(final Class<T> type) {
+        // TODO temporary implementation, will be changed for final version
+
+        final Converter converter = ConvertUtils.lookup(type);
+
+        if (converter == null) {
+            return null; // use check delegated to users
+        }
+
+        if (converter instanceof BeanUtilsConverterFacade) {
+            return (TypeConverter<T>) ((BeanUtilsConverterFacade) converter).getWrappedConverter();
+        }
+
+        return new TypeConverter<T>() {
+
+            public T convert(String value) {
+                Object result = converter.convert(type, value);
+                if (result == null) {
+                    return null;
+                }
+                return type.cast(result);
+            }
+
+        };
     }
 
 }
