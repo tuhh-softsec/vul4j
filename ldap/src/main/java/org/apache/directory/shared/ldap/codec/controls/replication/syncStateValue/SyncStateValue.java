@@ -25,102 +25,53 @@ import org.apache.directory.shared.ldap.model.message.Control;
 
 
 /**
- * A simple SyncStateValue {@link Control} implementation.
- *
+ * A syncStateValue object, as defined in RFC 4533
+ * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
-public class SyncStateValue implements ISyncStateValue
+public interface SyncStateValue extends Control
 {
-    /** The syncStateEnum type */
-    private SyncStateTypeEnum type;
-
-    /** The Sync cookie */
-    private byte[] cookie;
-
-    /** The entryUUID */
-    private byte[] entryUuid;
-
-    private boolean critical;
-    
-    
-    /**
-     * {@inheritDoc}
-     */
-    public String getOid()
-    {
-        return OID;
-    }
+    /** This control OID */
+    public static final String OID = "1.3.6.1.4.1.4203.1.9.1.2";
 
 
     /**
-     * {@inheritDoc}
+     * @return the cookie
      */
-    public boolean isCritical()
-    {
-        return critical;
-    }
+    public abstract byte[] getCookie();
 
 
     /**
-     * {@inheritDoc}
+     * @param cookie the cookie to set
      */
-    public void setCritical( boolean isCritical )
-    {
-        this.critical = isCritical;
-    }
+    public abstract void setCookie( byte[] cookie );
 
 
     /**
-     * {@inheritDoc}
+     * @return the syncState's type
      */
-    public byte[] getCookie()
-    {
-        return cookie;
-    }
+    public abstract SyncStateTypeEnum getSyncStateType();
 
 
     /**
-     * {@inheritDoc}
+     * set the syncState's type
+     * 
+     * @param syncStateType the syncState's type
      */
-    public void setCookie( byte[] cookie )
-    {
-        this.cookie = cookie;
-    }
+    public abstract void setSyncStateType( SyncStateTypeEnum syncStateType );
 
 
     /**
-     * {@inheritDoc}
+     * @return the entryUUID
      */
-    public SyncStateTypeEnum getSyncStateType()
-    {
-        return type;
-    }
+    public abstract byte[] getEntryUUID();
 
 
     /**
-     * {@inheritDoc}
+     * set the entryUUID
+     * 
+     * @param entryUUID the entryUUID
      */
-    public void setSyncStateType( SyncStateTypeEnum syncStateType )
-    {
-        this.type = syncStateType;
-    }
+    public abstract void setEntryUUID( byte[] entryUUID );
 
-
-    /**
-     * {@inheritDoc}
-     */
-    public byte[] getEntryUUID()
-    {
-        return entryUuid;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setEntryUUID( byte[] entryUUID )
-    {
-        this.entryUuid = entryUUID;
-    }
 }

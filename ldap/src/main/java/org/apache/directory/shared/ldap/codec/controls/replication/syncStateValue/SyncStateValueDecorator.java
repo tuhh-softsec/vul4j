@@ -42,7 +42,7 @@ import org.apache.directory.shared.util.Strings;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SyncStateValueDecorator extends ControlDecorator<ISyncStateValue> implements ISyncStateValue
+public class SyncStateValueDecorator extends ControlDecorator<SyncStateValue> implements SyncStateValue
 {
     /** Global length for the control */
     private int syncStateSeqLength;
@@ -53,11 +53,11 @@ public class SyncStateValueDecorator extends ControlDecorator<ISyncStateValue> i
     
     public SyncStateValueDecorator( ILdapCodecService codec )
     {
-        super( codec, new SyncStateValue() );
+        super( codec, new SyncStateValueImpl() );
     }
 
     
-    public SyncStateValueDecorator( ILdapCodecService codec, ISyncStateValue value )
+    public SyncStateValueDecorator( ILdapCodecService codec, SyncStateValue value )
     {
         super( codec, value );
     }

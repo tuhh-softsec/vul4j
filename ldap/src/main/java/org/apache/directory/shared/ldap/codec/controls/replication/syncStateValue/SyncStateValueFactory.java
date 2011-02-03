@@ -32,12 +32,12 @@ import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 
 
 /**
- * A {@link IControlFactory} which creates {@link ISyncStateValue} controls.
+ * A {@link IControlFactory} which creates {@link SyncStateValue} controls.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class SyncStateValueFactory implements IControlFactory<ISyncStateValue, SyncStateValueDecorator>
+public class SyncStateValueFactory implements IControlFactory<SyncStateValue, SyncStateValueDecorator>
 {
     private ILdapCodecService codec;
     
@@ -58,7 +58,7 @@ public class SyncStateValueFactory implements IControlFactory<ISyncStateValue, S
      */
     public String getOid()
     {
-        return ISyncStateValue.OID;
+        return SyncStateValue.OID;
     }
 
     
@@ -72,7 +72,7 @@ public class SyncStateValueFactory implements IControlFactory<ISyncStateValue, S
     }
     
 
-    public SyncStateValueDecorator decorate( ISyncStateValue control )
+    public SyncStateValueDecorator decorate( SyncStateValue control )
     {
         SyncStateValueDecorator decorator = null;
         
@@ -90,13 +90,13 @@ public class SyncStateValueFactory implements IControlFactory<ISyncStateValue, S
     }
 
     
-    public ISyncStateValue newControl()
+    public SyncStateValue newControl()
     {
-        return new SyncStateValue();
+        return new SyncStateValueImpl();
     }
     
 
-    public Control toJndiControl( ISyncStateValue control ) throws EncoderException
+    public Control toJndiControl( SyncStateValue control ) throws EncoderException
     {
         SyncStateValueDecorator decorator = decorate( control );
         ByteBuffer bb = ByteBuffer.allocate( decorator.computeLength() );
@@ -106,7 +106,7 @@ public class SyncStateValueFactory implements IControlFactory<ISyncStateValue, S
     }
 
     
-    public ISyncStateValue fromJndiControl( Control jndi ) throws DecoderException
+    public SyncStateValue fromJndiControl( Control jndi ) throws DecoderException
     {
         SyncStateValueDecorator decorator = newCodecControl();
         decorator.setCritical( jndi.isCritical() );

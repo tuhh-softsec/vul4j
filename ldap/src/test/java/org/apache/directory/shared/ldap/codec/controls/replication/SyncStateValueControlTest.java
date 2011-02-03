@@ -32,7 +32,7 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
-import org.apache.directory.shared.ldap.codec.controls.replication.syncStateValue.ISyncStateValue;
+import org.apache.directory.shared.ldap.codec.controls.replication.syncStateValue.SyncStateValue;
 import org.apache.directory.shared.ldap.codec.controls.replication.syncStateValue.SyncStateValueDecorator;
 import org.apache.directory.shared.ldap.extras.controls.SyncStateTypeEnum;
 import org.apache.directory.shared.util.Strings;
@@ -71,7 +71,7 @@ public class SyncStateValueControlTest
 
         SyncStateValueDecorator decorator = new SyncStateValueDecorator( codec );
 
-        ISyncStateValue syncStateValue = (ISyncStateValue)decorator.decode( bb.array() );
+        SyncStateValue syncStateValue = (SyncStateValue)decorator.decode( bb.array() );
 
         assertEquals( SyncStateTypeEnum.PRESENT, syncStateValue.getSyncStateType() );
         assertEquals( "abc", Strings.utf8ToString(syncStateValue.getEntryUUID()) );
@@ -108,7 +108,7 @@ public class SyncStateValueControlTest
 
         SyncStateValueDecorator decorator = new SyncStateValueDecorator( codec );
 
-        ISyncStateValue syncStateValue = (ISyncStateValue)decorator.decode( bb.array() );
+        SyncStateValue syncStateValue = (SyncStateValue)decorator.decode( bb.array() );
 
         assertEquals( SyncStateTypeEnum.ADD, syncStateValue.getSyncStateType() );
         assertEquals( "abc", Strings.utf8ToString(syncStateValue.getEntryUUID()) );
@@ -146,7 +146,7 @@ public class SyncStateValueControlTest
 
         SyncStateValueDecorator decorator = new SyncStateValueDecorator( codec );
 
-        ISyncStateValue syncStateValue = (ISyncStateValue)decorator.decode( bb.array() );
+        SyncStateValue syncStateValue = (SyncStateValue)decorator.decode( bb.array() );
 
         assertEquals( SyncStateTypeEnum.MODIFY, syncStateValue.getSyncStateType() );
         assertEquals( "abc", Strings.utf8ToString(syncStateValue.getEntryUUID()) );
@@ -257,7 +257,7 @@ public class SyncStateValueControlTest
 
         SyncStateValueDecorator decorator = new SyncStateValueDecorator( codec );
 
-        ISyncStateValue syncStateValue = (ISyncStateValue)decorator.decode( bb.array() );
+        SyncStateValue syncStateValue = (SyncStateValue)decorator.decode( bb.array() );
 
         assertEquals( SyncStateTypeEnum.MODDN, syncStateValue.getSyncStateType() );
         assertEquals( "abc", Strings.utf8ToString(syncStateValue.getEntryUUID()) );
