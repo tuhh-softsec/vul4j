@@ -393,9 +393,8 @@ final class RulesBinderImpl implements RulesBinder {
 
                     public FactoryCreateRule get() { // loading error, the rest are binding errors
                         if (className == null && attributeName == null && creationFactory == null) {
-                            addError("{forPattern(\"%s\").factoryCreate()} at least one between 'className' ar 'attributeName' or 'creationFactory' has to be specified",
+                            throw new DigesterLoadingException("{forPattern(\"%s\").factoryCreate()} at least one between 'className' ar 'attributeName' or 'creationFactory' has to be specified",
                                     keyPattern);
-                            return null;
                         }
 
                         return setNamespaceAndReturn(
@@ -451,9 +450,8 @@ final class RulesBinderImpl implements RulesBinder {
 
                     public ObjectCreateRule get() {
                         if (this.className == null && this.attributeName == null) {
-                            addError("{forPattern(\"%s\").createObject()} At least one between 'className' or 'attributeName' has to be specified",
+                            throw new DigesterLoadingException("{forPattern(\"%s\").createObject()} At least one between 'className' or 'attributeName' has to be specified",
                                     keyPattern);
-                            return null;
                         }
 
                         return setNamespaceAndReturn(new ObjectCreateRule(this.className, this.attributeName));
