@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.controls.replication;
+package org.apache.directory.shared.ldap.extras.controls.syncrepl_impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
