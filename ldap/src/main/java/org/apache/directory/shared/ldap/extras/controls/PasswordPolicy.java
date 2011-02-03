@@ -24,129 +24,59 @@ import org.apache.directory.shared.ldap.model.message.Control;
 
 
 /**
- * A simple {@link IPasswordPolicy} {@link Control} implementation.
+ * The password policy {@link Control} interface.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class PasswordPolicy implements IPasswordPolicy
+public interface PasswordPolicy extends Control
 {
-    /** The criticality of this {@link Control} */
-    private boolean criticality;
+    /** the password policy request control */
+    public static final String OID = "1.3.6.1.4.1.42.2.27.8.5.1";
+
+
+    /**
+     * Checks whether this Control is the password policy request or the response
+     * by carrying with it an IPasswordPolicyResponse object. If it is a request, 
+     * then no response component will be associated with the control: getResponse()
+     * will return null.
+     *
+     * @return true if this Control carries a response, false if it is a request
+     */
+    boolean hasResponse();
     
-    /** The password policy response component if this is a response control */
-    private IPasswordPolicyResponse response;
-    
-    
-    /**
-     * Creates a new instance of a PasswordPolicy request Control without any
-     * response data associated with it.
-     */
-    public PasswordPolicy()
-    {
-        response = null;
-    }
-
-
-    /**
-     * Creates a new instance of a PasswordPolicy request Control without any
-     * response data associated with it.
-     */
-    public PasswordPolicy( boolean hasResponse )
-    {
-        if ( hasResponse )
-        {
-            response = new PasswordPolicyResponse();
-        }
-        else
-        {
-            response = null;
-        }
-    }
-
-
-    /**
-     * Creates a new instance of PasswordPolicy response Control with response 
-     * information packaged into the control.
-     */
-    public PasswordPolicy( IPasswordPolicyResponse response )
-    {
-        this.response = response;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public String getOid()
-    {
-        return IPasswordPolicy.OID;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isCritical()
-    {
-        return criticality;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setCritical( boolean isCritical )
-    {
-        this.criticality = isCritical;
-    }
-
     
     /**
+     * Sets the response. If null hasResponse() will return null and this will be
+     * handled as a password policy request control rather than a response control.
+     *
+     * @param response a valid response object, or null to make this a request
+     */
+    void setResponse( PasswordPolicyResponse response );
+    
+    
+    /**
+     * If true sets the response to a default newly initialized response object. 
+     * If this was previously a request, it automatically becomes a response. If it 
+     * was not a request with an already existing response object then that response
+     * is replace with a new one and the old is returned. If false then any response
+     * object set will be cleared to null. 
      * 
-     * {@inheritDoc}
+     * Effectively this will cause hasResponse() to return whatever you plug into it.
+     *
+     * @param hasResponse true to create default response, false to clear it
+     * @return the old response object, if one did not exist null is returned
      */
-    public void setResponse( IPasswordPolicyResponse response )
-    {
-        this.response = response;
-    }
+    PasswordPolicyResponse setResponse( boolean hasResponse );
     
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean hasResponse()
-    {
-        return response != null;
-    }
-
     
     /**
-     * 
-     * {@inheritDoc}
+     * Get's the response component of this control if this control carries a 
+     * response. If {@link #hasResponse()} returns true, this will return a non-null
+     * policy response object. 
+     *
+     * @return a non-null policy response or null, if {@link #hasResponse()} 
+     * returns false
      */
-    public IPasswordPolicyResponse setResponse( boolean hasResponse )
-    {
-        IPasswordPolicyResponse old = this.response;
-        
-        if ( hasResponse )
-        {
-            this.response = new PasswordPolicyResponse();
-        }
-        else
-        {
-            this.response = null;
-        }
-        
-        return old;
-    }
-    
-
-    /**
-     * {@inheritDoc}
-     */
-    public IPasswordPolicyResponse getResponse()
-    {
-        return response;
-    }
+    PasswordPolicyResponse getResponse();
 }

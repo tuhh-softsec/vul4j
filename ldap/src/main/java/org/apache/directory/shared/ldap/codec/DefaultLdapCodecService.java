@@ -40,7 +40,7 @@ import org.apache.directory.shared.ldap.codec.controls.search.entryChange.EntryC
 import org.apache.directory.shared.ldap.codec.controls.search.pagedSearch.PagedResultsFactory;
 import org.apache.directory.shared.ldap.codec.controls.search.persistentSearch.PersistentSearchFactory;
 import org.apache.directory.shared.ldap.codec.controls.search.subentries.SubentriesFactory;
-import org.apache.directory.shared.ldap.extras.controls.PasswordPolicy;
+import org.apache.directory.shared.ldap.extras.controls.PasswordPolicyImpl;
 import org.apache.directory.shared.ldap.extras.controls.SyncDoneValue;
 import org.apache.directory.shared.ldap.extras.controls.SyncInfoValue;
 import org.apache.directory.shared.ldap.extras.controls.SyncModifyDn;
@@ -116,7 +116,7 @@ public class DefaultLdapCodecService implements ILdapCodecService
         controlFactories.put( ISyncStateValue.OID, syncStateValueFactory );
         
         PasswordPolicyFactory passwordPolicyFactory = new PasswordPolicyFactory( this );
-        controlFactories.put( PasswordPolicy.OID, passwordPolicyFactory );
+        controlFactories.put( PasswordPolicyImpl.OID, passwordPolicyFactory );
 }
     
 

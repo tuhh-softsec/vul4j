@@ -29,17 +29,17 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.IControlFactory;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
-import org.apache.directory.shared.ldap.extras.controls.IPasswordPolicy;
 import org.apache.directory.shared.ldap.extras.controls.PasswordPolicy;
+import org.apache.directory.shared.ldap.extras.controls.PasswordPolicyImpl;
 
 
 /**
- * A {@link IControlFactory} which creates {@link IPasswordPolicy} controls.
+ * A {@link IControlFactory} which creates {@link PasswordPolicy} controls.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class PasswordPolicyFactory implements IControlFactory<IPasswordPolicy, PasswordPolicyDecorator>
+public class PasswordPolicyFactory implements IControlFactory<PasswordPolicy, PasswordPolicyDecorator>
 {
     
     private ILdapCodecService codec;
@@ -61,7 +61,7 @@ public class PasswordPolicyFactory implements IControlFactory<IPasswordPolicy, P
      */
     public String getOid()
     {
-        return IPasswordPolicy.OID;
+        return PasswordPolicy.OID;
     }
 
     
@@ -75,7 +75,7 @@ public class PasswordPolicyFactory implements IControlFactory<IPasswordPolicy, P
     }
     
 
-    public PasswordPolicyDecorator decorate( IPasswordPolicy control )
+    public PasswordPolicyDecorator decorate( PasswordPolicy control )
     {
         PasswordPolicyDecorator decorator = null;
         
@@ -93,13 +93,13 @@ public class PasswordPolicyFactory implements IControlFactory<IPasswordPolicy, P
     }
 
     
-    public IPasswordPolicy newControl()
+    public PasswordPolicy newControl()
     {
-        return new PasswordPolicy();
+        return new PasswordPolicyImpl();
     }
     
 
-    public Control toJndiControl( IPasswordPolicy control ) throws EncoderException
+    public Control toJndiControl( PasswordPolicy control ) throws EncoderException
     {
         PasswordPolicyDecorator decorator = decorate( control );
         ByteBuffer bb = ByteBuffer.allocate( decorator.computeLength() );
@@ -109,7 +109,7 @@ public class PasswordPolicyFactory implements IControlFactory<IPasswordPolicy, P
     }
 
     
-    public IPasswordPolicy fromJndiControl( Control jndi ) throws DecoderException
+    public PasswordPolicy fromJndiControl( Control jndi ) throws DecoderException
     {
         PasswordPolicyDecorator decorator = null;
         

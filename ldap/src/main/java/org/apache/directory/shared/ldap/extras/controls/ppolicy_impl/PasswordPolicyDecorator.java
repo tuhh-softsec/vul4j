@@ -32,9 +32,9 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
-import org.apache.directory.shared.ldap.extras.controls.IPasswordPolicy;
-import org.apache.directory.shared.ldap.extras.controls.IPasswordPolicyResponse;
 import org.apache.directory.shared.ldap.extras.controls.PasswordPolicy;
+import org.apache.directory.shared.ldap.extras.controls.PasswordPolicyResponse;
+import org.apache.directory.shared.ldap.extras.controls.PasswordPolicyImpl;
 
 
 /**
@@ -42,7 +42,7 @@ import org.apache.directory.shared.ldap.extras.controls.PasswordPolicy;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class PasswordPolicyDecorator extends ControlDecorator<IPasswordPolicy> implements IPasswordPolicy
+public class PasswordPolicyDecorator extends ControlDecorator<PasswordPolicy> implements PasswordPolicy
 {
     /** An instance of this decoder */
     private static final Asn1Decoder decoder = new Asn1Decoder();
@@ -57,17 +57,17 @@ public class PasswordPolicyDecorator extends ControlDecorator<IPasswordPolicy> i
     
     public PasswordPolicyDecorator( ILdapCodecService codec )
     {
-        super( codec, new PasswordPolicy() );
+        super( codec, new PasswordPolicyImpl() );
     }
     
     
     public PasswordPolicyDecorator( ILdapCodecService codec, boolean hasResponse )
     {
-        super( codec, new PasswordPolicy( hasResponse ) );
+        super( codec, new PasswordPolicyImpl( hasResponse ) );
     }
 
 
-    public PasswordPolicyDecorator( ILdapCodecService codec, IPasswordPolicy policy )
+    public PasswordPolicyDecorator( ILdapCodecService codec, PasswordPolicy policy )
     {
         super( codec, policy );
     }
@@ -244,7 +244,7 @@ public class PasswordPolicyDecorator extends ControlDecorator<IPasswordPolicy> i
      * 
      * {@inheritDoc}
      */
-    public void setResponse( IPasswordPolicyResponse response )
+    public void setResponse( PasswordPolicyResponse response )
     {
         getDecorated().setResponse( response );
     }
@@ -254,7 +254,7 @@ public class PasswordPolicyDecorator extends ControlDecorator<IPasswordPolicy> i
      * 
      * {@inheritDoc}
      */
-    public IPasswordPolicyResponse setResponse( boolean hasResponse )
+    public PasswordPolicyResponse setResponse( boolean hasResponse )
     {
         return getDecorated().setResponse( hasResponse );
     }
@@ -264,7 +264,7 @@ public class PasswordPolicyDecorator extends ControlDecorator<IPasswordPolicy> i
      * 
      * {@inheritDoc}
      */
-    public IPasswordPolicyResponse getResponse()
+    public PasswordPolicyResponse getResponse()
     {
         return getDecorated().getResponse();
     }

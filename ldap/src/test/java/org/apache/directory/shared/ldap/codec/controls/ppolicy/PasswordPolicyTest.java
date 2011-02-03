@@ -29,7 +29,7 @@ import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
-import org.apache.directory.shared.ldap.extras.controls.IPasswordPolicy;
+import org.apache.directory.shared.ldap.extras.controls.PasswordPolicy;
 import org.apache.directory.shared.ldap.extras.controls.ppolicy_impl.PasswordPolicyDecorator;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
@@ -60,7 +60,7 @@ public class PasswordPolicyTest
         bb.flip();
 
         PasswordPolicyDecorator control = new PasswordPolicyDecorator( codec, true );
-        IPasswordPolicy passwordPolicy = ( IPasswordPolicy ) control.decode( bb.array() );
+        PasswordPolicy passwordPolicy = ( PasswordPolicy ) control.decode( bb.array() );
 
         assertTrue( passwordPolicy.hasResponse() );
         assertEquals( 1, passwordPolicy.getResponse().getTimeBeforeExpiration() );
@@ -88,7 +88,7 @@ public class PasswordPolicyTest
         bb.flip();
 
         PasswordPolicyDecorator control = new PasswordPolicyDecorator( codec, true );
-        IPasswordPolicy passwordPolicy = ( IPasswordPolicy ) control.decode( bb.array() );
+        PasswordPolicy passwordPolicy = ( PasswordPolicy ) control.decode( bb.array() );
         
         assertTrue( passwordPolicy.hasResponse() );
         assertEquals( 1, passwordPolicy.getResponse().getGraceAuthNsRemaining() );
@@ -115,7 +115,7 @@ public class PasswordPolicyTest
         bb.flip();
 
         PasswordPolicyDecorator control = new PasswordPolicyDecorator( codec, true );
-        IPasswordPolicy passwordPolicy = ( IPasswordPolicy ) control.decode( bb.array() );
+        PasswordPolicy passwordPolicy = ( PasswordPolicy ) control.decode( bb.array() );
 
         assertTrue( passwordPolicy.hasResponse() );
         assertEquals( 1, passwordPolicy.getResponse().getTimeBeforeExpiration() );
@@ -141,7 +141,7 @@ public class PasswordPolicyTest
         bb.flip();
 
         PasswordPolicyDecorator control = new PasswordPolicyDecorator( codec, true );
-        IPasswordPolicy passwordPolicy = ( IPasswordPolicy ) control.decode( bb.array() );
+        PasswordPolicy passwordPolicy = ( PasswordPolicy ) control.decode( bb.array() );
 
         assertTrue( passwordPolicy.hasResponse() );
         assertEquals( 1, passwordPolicy.getResponse().getGraceAuthNsRemaining() );
@@ -166,7 +166,7 @@ public class PasswordPolicyTest
         bb.flip();
 
         PasswordPolicyDecorator control = new PasswordPolicyDecorator( codec, true );
-        IPasswordPolicy passwordPolicy = ( IPasswordPolicy ) control.decode( bb.array() );
+        PasswordPolicy passwordPolicy = ( PasswordPolicy ) control.decode( bb.array() );
         
         assertTrue( passwordPolicy.hasResponse() );
         assertEquals( 1, passwordPolicy.getResponse().getPasswordPolicyError().getValue() );
@@ -190,7 +190,7 @@ public class PasswordPolicyTest
         bb.flip();
 
         PasswordPolicyDecorator control = new PasswordPolicyDecorator( codec, true );
-        IPasswordPolicy passwordPolicy = ( IPasswordPolicy ) control.decode( bb.array() );
+        PasswordPolicy passwordPolicy = ( PasswordPolicy ) control.decode( bb.array() );
         
         assertNotNull( passwordPolicy );
         assertTrue( passwordPolicy.hasResponse() );

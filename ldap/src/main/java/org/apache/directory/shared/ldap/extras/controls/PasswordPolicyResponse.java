@@ -20,74 +20,22 @@
 package org.apache.directory.shared.ldap.extras.controls;
 
 
-/**
- * A PasswordPolicyResponse.
- *
- * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
- */
-public class PasswordPolicyResponse implements IPasswordPolicyResponse
+public interface PasswordPolicyResponse
 {
-    /** time before expiration of the password */
-    private int timeBeforeExpiration = -1;
-
-    /** number of remaining grace authentications */
-    private int graceAuthNsRemaining = -1;
-
-    /** number representing the password policy error */
-    private PasswordPolicyErrorEnum ppolicyError;
-
-    
-    /**
-     * {@inheritDoc}
-     */
-    public int getTimeBeforeExpiration()
-    {
-        return timeBeforeExpiration;
-    }
+    int getTimeBeforeExpiration();
 
 
-    /**
-     * {@inheritDoc}
-     */
-    public void setTimeBeforeExpiration( int timeBeforeExpiration )
-    {
-        this.timeBeforeExpiration = timeBeforeExpiration;
-    }
+    void setTimeBeforeExpiration( int timeBeforeExpiration );
 
 
-    /**
-     * {@inheritDoc}
-     */
-    public int getGraceAuthNsRemaining()
-    {
-        return graceAuthNsRemaining;
-    }
+    int getGraceAuthNsRemaining();
 
 
-    /**
-     * {@inheritDoc}
-     */
-    public void setGraceAuthNsRemaining( int graceAuthNsRemaining )
-    {
-        this.graceAuthNsRemaining = graceAuthNsRemaining;
-    }
+    void setGraceAuthNsRemaining( int graceAuthNsRemaining );
 
 
-    /**
-     * {@inheritDoc}
-     */
-    public PasswordPolicyErrorEnum getPasswordPolicyError()
-    {
-        return ppolicyError;
-    }
+    PasswordPolicyErrorEnum getPasswordPolicyError();
 
 
-    /**
-     * {@inheritDoc}
-     */
-    public void setPasswordPolicyError( PasswordPolicyErrorEnum ppolicyError )
-    {
-        this.ppolicyError = ppolicyError;
-    }
+    void setPasswordPolicyError( PasswordPolicyErrorEnum ppolicyError );
 }
