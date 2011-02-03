@@ -243,7 +243,7 @@ public class DefaultLdapCodecService implements ILdapCodecService
             
             if ( factory == null )
             {
-                return new BasicControlDecorator( this, (AbstractControl)control ); 
+                return new BasicControlDecorator( this, control ); 
             }
             
             return factory.decorate( control );
