@@ -49,4 +49,16 @@ abstract class AbstractTestCase {
         return (this.getClass().getResourceAsStream("/org/apache/commons/digester3/" + name));
     }
 
+    /**
+     * Creates a new Digester given the Modules and parse the XML resource in the classpath.
+     *
+     * @param xmlResourceName
+     * @param rulesModules
+     * @return
+     * @throws Throwable
+     */
+    protected Object newBasicDigesterAndParse(String xmlResourceName, RulesModule...rulesModules) throws Throwable {
+        return this.newBasicDigester(rulesModules).parse(getInputStream(xmlResourceName));
+    }
+
 }
