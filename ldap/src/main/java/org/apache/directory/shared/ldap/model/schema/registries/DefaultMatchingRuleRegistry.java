@@ -37,20 +37,20 @@ public class DefaultMatchingRuleRegistry extends DefaultSchemaObjectRegistry<Mat
      */
     public DefaultMatchingRuleRegistry()
     {
-        super( SchemaObjectType.MATCHING_RULE, new OidRegistry() );
+        super( SchemaObjectType.MATCHING_RULE, new OidRegistry<MatchingRule>() );
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
     public DefaultMatchingRuleRegistry copy()
     {
         DefaultMatchingRuleRegistry copy = new DefaultMatchingRuleRegistry();
-        
+
         // Copy the base data
         copy.copy( this );
-        
+
         return copy;
     }
 }

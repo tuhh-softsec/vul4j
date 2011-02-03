@@ -37,20 +37,20 @@ public class DefaultNameFormRegistry extends DefaultSchemaObjectRegistry<NameFor
      */
     public DefaultNameFormRegistry()
     {
-        super( SchemaObjectType.NAME_FORM, new OidRegistry() );
+        super( SchemaObjectType.NAME_FORM, new OidRegistry<NameForm>() );
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
     public DefaultNameFormRegistry copy()
     {
         DefaultNameFormRegistry copy = new DefaultNameFormRegistry();
-        
+
         // Copy the base data
         copy.copy( this );
-        
+
         return copy;
     }
 }

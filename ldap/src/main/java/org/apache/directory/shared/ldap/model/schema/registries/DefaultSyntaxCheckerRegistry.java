@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class DefaultSyntaxCheckerRegistry extends  DefaultSchemaObjectRegistry<SyntaxChecker>
+public class DefaultSyntaxCheckerRegistry extends DefaultSchemaObjectRegistry<SyntaxChecker>
     implements SyntaxCheckerRegistry
 {
     /** static class logger */
@@ -41,16 +41,17 @@ public class DefaultSyntaxCheckerRegistry extends  DefaultSchemaObjectRegistry<S
 
     /** A speedup for debug */
     private static final boolean DEBUG = LOG.isDebugEnabled();
-    
+
+
     /**
      * Creates a new default SyntaxCheckerRegistry instance.
      */
     public DefaultSyntaxCheckerRegistry()
     {
-        super( SchemaObjectType.SYNTAX_CHECKER, new OidRegistry() );
+        super( SchemaObjectType.SYNTAX_CHECKER, new OidRegistry<SyntaxChecker>() );
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -60,7 +61,7 @@ public class DefaultSyntaxCheckerRegistry extends  DefaultSchemaObjectRegistry<S
         {
             return;
         }
-        
+
         // Loop on all the SchemaObjects stored and remove those associated
         // with the give schemaName
         for ( SyntaxChecker syntaxChecker : this )
@@ -69,7 +70,7 @@ public class DefaultSyntaxCheckerRegistry extends  DefaultSchemaObjectRegistry<S
             {
                 String oid = syntaxChecker.getOid();
                 SchemaObject removed = unregister( oid );
-                
+
                 if ( DEBUG )
                 {
                     LOG.debug( "Removed {} with oid {} from the registry", removed, oid );
@@ -77,32 +78,32 @@ public class DefaultSyntaxCheckerRegistry extends  DefaultSchemaObjectRegistry<S
             }
         }
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
     public DefaultSyntaxCheckerRegistry copy()
     {
         DefaultSyntaxCheckerRegistry copy = new DefaultSyntaxCheckerRegistry();
-        
+
         // Copy the base data
         copy.copy( this );
-        
+
         return copy;
     }
 
-    
+
     /**
      * @see Object#toString()
      */
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
-        
+
         sb.append( schemaObjectType ).append( ": " );
         boolean isFirst = true;
-        
+
         for ( String name : byName.keySet() )
         {
             if ( isFirst )
@@ -113,15 +114,14 @@ public class DefaultSyntaxCheckerRegistry extends  DefaultSchemaObjectRegistry<S
             {
                 sb.append( ", " );
             }
-            
+
             SyntaxChecker syntaxChecker = byName.get( name );
-            
+
             String fqcn = syntaxChecker.getFqcn();
             int lastDotPos = fqcn.lastIndexOf( '.' );
-            
+
             sb.append( '<' ).append( syntaxChecker.getOid() ).append( ", " );
-            
-            
+
             if ( lastDotPos > 0 )
             {
                 sb.append( fqcn.substring( lastDotPos + 1 ) );
@@ -130,10 +130,10 @@ public class DefaultSyntaxCheckerRegistry extends  DefaultSchemaObjectRegistry<S
             {
                 sb.append( fqcn );
             }
-            
+
             sb.append( '>' );
         }
-        
+
         return sb.toString();
     }
 }

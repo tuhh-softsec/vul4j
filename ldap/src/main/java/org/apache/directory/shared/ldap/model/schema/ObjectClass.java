@@ -196,6 +196,7 @@ public class ObjectClass extends AbstractSchemaObject
                     LdapSchemaException ldapSchemaException = new LdapSchemaException(
                         LdapSchemaExceptionCodes.OC_NONEXISTENT_SUPERIOR, msg );
                     ldapSchemaException.setSourceObject( this );
+                    ldapSchemaException.setRelatedId( superiorName );
                     errors.add( ldapSchemaException );
                     return;
                 }
@@ -226,6 +227,7 @@ public class ObjectClass extends AbstractSchemaObject
                         LdapSchemaException ldapSchemaException = new LdapSchemaException(
                             LdapSchemaExceptionCodes.OC_COLLECTIVE_NOT_ALLOWED_IN_MAY, msg );
                         ldapSchemaException.setSourceObject( this );
+                        ldapSchemaException.setRelatedId( mayAttributeTypeName );
                         errors.add( ldapSchemaException );
                         break;
                     }
@@ -238,6 +240,7 @@ public class ObjectClass extends AbstractSchemaObject
                         LdapSchemaException ldapSchemaException = new LdapSchemaException(
                             LdapSchemaExceptionCodes.OC_DUPLICATE_AT_IN_MAY, msg );
                         ldapSchemaException.setSourceObject( this );
+                        ldapSchemaException.setRelatedId( mayAttributeTypeName );
                         errors.add( ldapSchemaException );
                         break;
                     }
@@ -252,6 +255,7 @@ public class ObjectClass extends AbstractSchemaObject
                     LdapSchemaException ldapSchemaException = new LdapSchemaException(
                         LdapSchemaExceptionCodes.OC_NONEXISTENT_MAY_AT, msg );
                     ldapSchemaException.setSourceObject( this );
+                    ldapSchemaException.setRelatedId( mayAttributeTypeName );
                     errors.add( ldapSchemaException );
                     break;
                 }
@@ -283,6 +287,7 @@ public class ObjectClass extends AbstractSchemaObject
                         LdapSchemaException ldapSchemaException = new LdapSchemaException(
                             LdapSchemaExceptionCodes.OC_COLLECTIVE_NOT_ALLOWED_IN_MUST, msg );
                         ldapSchemaException.setSourceObject( this );
+                        ldapSchemaException.setRelatedId( mustAttributeTypeName );
                         errors.add( ldapSchemaException );
                         break;
                     }
@@ -295,6 +300,7 @@ public class ObjectClass extends AbstractSchemaObject
                         LdapSchemaException ldapSchemaException = new LdapSchemaException(
                             LdapSchemaExceptionCodes.OC_DUPLICATE_AT_IN_MUST, msg );
                         ldapSchemaException.setSourceObject( this );
+                        ldapSchemaException.setRelatedId( mustAttributeTypeName );
                         errors.add( ldapSchemaException );
                         break;
                     }
@@ -309,6 +315,7 @@ public class ObjectClass extends AbstractSchemaObject
                             LdapSchemaExceptionCodes.OC_DUPLICATE_AT_IN_MAY_AND_MUST,
                             msg );
                         ldapSchemaException.setSourceObject( this );
+                        ldapSchemaException.setRelatedId( mustAttributeTypeName );
                         errors.add( ldapSchemaException );
                         break;
                     }
@@ -323,6 +330,7 @@ public class ObjectClass extends AbstractSchemaObject
                     LdapSchemaException ldapSchemaException = new LdapSchemaException(
                         LdapSchemaExceptionCodes.OC_NONEXISTENT_MUST_AT, msg );
                     ldapSchemaException.setSourceObject( this );
+                    ldapSchemaException.setRelatedId( mustAttributeTypeName );
                     errors.add( ldapSchemaException );
                     break;
                 }

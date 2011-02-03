@@ -40,22 +40,23 @@ import org.apache.directory.shared.ldap.model.schema.SchemaObjectType;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class DefaultObjectClassRegistry extends DefaultSchemaObjectRegistry<ObjectClass> 
+public class DefaultObjectClassRegistry extends DefaultSchemaObjectRegistry<ObjectClass>
     implements ObjectClassRegistry
 {
     /** maps OIDs to a Set of descendants for that OID */
-    private Map<String,Set<ObjectClass>> oidToDescendants;
+    private Map<String, Set<ObjectClass>> oidToDescendants;
+
 
     /**
      * Creates a new default ObjectClassRegistry instance.
      */
     public DefaultObjectClassRegistry()
     {
-        super( SchemaObjectType.OBJECT_CLASS, new OidRegistry() );
-        oidToDescendants = new HashMap<String,Set<ObjectClass>>();
+        super( SchemaObjectType.OBJECT_CLASS, new OidRegistry<ObjectClass>() );
+        oidToDescendants = new HashMap<String, Set<ObjectClass>>();
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -65,15 +66,15 @@ public class DefaultObjectClassRegistry extends DefaultSchemaObjectRegistry<Obje
         {
             String oid = getOidByName( ancestorId );
             Set<ObjectClass> descendants = oidToDescendants.get( oid );
-            return (descendants != null) && !descendants.isEmpty();
+            return ( descendants != null ) && !descendants.isEmpty();
         }
         catch ( LdapException ne )
         {
             throw new LdapNoSuchAttributeException( ne.getMessage() );
         }
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -84,12 +85,12 @@ public class DefaultObjectClassRegistry extends DefaultSchemaObjectRegistry<Obje
         {
             String oid = getOidByName( ancestorId );
             Set<ObjectClass> descendants = oidToDescendants.get( oid );
-            
+
             if ( descendants == null )
             {
                 return Collections.EMPTY_SET.iterator();
             }
-            
+
             return descendants.iterator();
         }
         catch ( LdapException ne )
@@ -98,34 +99,34 @@ public class DefaultObjectClassRegistry extends DefaultSchemaObjectRegistry<Obje
         }
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
-    public void registerDescendants( ObjectClass objectClass, List<ObjectClass> ancestors ) 
+    public void registerDescendants( ObjectClass objectClass, List<ObjectClass> ancestors )
         throws LdapException
     {
         // add this attribute to descendant list of other attributes in superior chain
-        if ( ( ancestors == null ) || ( ancestors.size() == 0 ) ) 
+        if ( ( ancestors == null ) || ( ancestors.size() == 0 ) )
         {
             return;
         }
-        
+
         for ( ObjectClass ancestor : ancestors )
         {
             // Get the ancestor's descendant, if any
             Set<ObjectClass> descendants = oidToDescendants.get( ancestor.getOid() );
-    
+
             // Initialize the descendant Set to store the descendants for the attributeType
             if ( descendants == null )
             {
                 descendants = new HashSet<ObjectClass>( 1 );
                 oidToDescendants.put( ancestor.getOid(), descendants );
             }
-            
+
             // Add the current ObjectClass as a descendant
             descendants.add( objectClass );
-            
+
             try
             {
                 // And recurse until we reach the top of the hierarchy
@@ -137,35 +138,35 @@ public class DefaultObjectClassRegistry extends DefaultSchemaObjectRegistry<Obje
             }
         }
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
-    public void unregisterDescendants( ObjectClass attributeType, List<ObjectClass> ancestors ) 
+    public void unregisterDescendants( ObjectClass attributeType, List<ObjectClass> ancestors )
         throws LdapException
     {
         // add this attribute to descendant list of other attributes in superior chain
-        if ( ( ancestors == null ) || ( ancestors.size() == 0 ) ) 
+        if ( ( ancestors == null ) || ( ancestors.size() == 0 ) )
         {
             return;
         }
-        
+
         for ( ObjectClass ancestor : ancestors )
         {
             // Get the ancestor's descendant, if any
             Set<ObjectClass> descendants = oidToDescendants.get( ancestor.getOid() );
-    
+
             if ( descendants != null )
             {
                 descendants.remove( attributeType );
-                
+
                 if ( descendants.size() == 0 )
                 {
                     oidToDescendants.remove( ancestor.getOid() );
                 }
             }
-            
+
             try
             {
                 // And recurse until we reach the top of the hierarchy
@@ -177,8 +178,8 @@ public class DefaultObjectClassRegistry extends DefaultSchemaObjectRegistry<Obje
             }
         }
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -187,15 +188,15 @@ public class DefaultObjectClassRegistry extends DefaultSchemaObjectRegistry<Obje
         try
         {
             ObjectClass removed = super.unregister( numericOid );
-    
+
             // Deleting an ObjectClass which might be used as a superior means we have
             // to recursively update the descendant map. We also have to remove
             // the at.oid -> descendant relation
             oidToDescendants.remove( numericOid );
-            
+
             // Now recurse if needed
             unregisterDescendants( removed, removed.getSuperiors() );
-            
+
             return removed;
         }
         catch ( LdapException ne )
@@ -203,18 +204,18 @@ public class DefaultObjectClassRegistry extends DefaultSchemaObjectRegistry<Obje
             throw new LdapNoSuchAttributeException( ne.getMessage() );
         }
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
     public DefaultObjectClassRegistry copy()
     {
         DefaultObjectClassRegistry copy = new DefaultObjectClassRegistry();
-        
+
         // Copy the base data
         copy.copy( this );
-        
+
         return copy;
     }
 
@@ -229,21 +230,21 @@ public class DefaultObjectClassRegistry extends DefaultSchemaObjectRegistry<Obje
         {
             objectClass.clear();
         }
-        
+
         // First clear the shared elements
         super.clear();
-        
+
         // and clear the descendant
         for ( String oid : oidToDescendants.keySet() )
         {
             Set<ObjectClass> descendants = oidToDescendants.get( oid );
-            
+
             if ( descendants != null )
             {
                 descendants.clear();
             }
         }
-        
+
         oidToDescendants.clear();
     }
 }

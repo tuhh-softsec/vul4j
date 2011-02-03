@@ -61,7 +61,7 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
      */
     public DefaultAttributeTypeRegistry()
     {
-        super( SchemaObjectType.ATTRIBUTE_TYPE, new OidRegistry() );
+        super( SchemaObjectType.ATTRIBUTE_TYPE, new OidRegistry<AttributeType>() );
         oidNormalizerMap = new HashMap<String, OidNormalizer>();
         oidToDescendantSet = new HashMap<String, Set<AttributeType>>();
     }

@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class OidRegistry implements Iterable<SchemaObject>
+public class OidRegistry<T extends SchemaObject> implements Iterable<T>
 {
     /** static class logger */
     private static final Logger LOG = LoggerFactory.getLogger( OidRegistry.class );
@@ -49,8 +49,8 @@ public class OidRegistry implements Iterable<SchemaObject>
     /** Speedup for DEBUG mode */
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
-    /** Maps OID to a SchemaObject */
-    private Map<String, SchemaObject> byOid = new HashMap<String, SchemaObject>();
+    /** Maps OID to a type of SchemaObject */
+    private Map<String, T> byOid = new HashMap<String, T>();
 
 
     /**
@@ -97,9 +97,9 @@ public class OidRegistry implements Iterable<SchemaObject>
      * @return the associated SchemaObject
      * @throws LdapException if oid does not exist
      */
-    public SchemaObject getSchemaObject( String oid ) throws LdapException
+    public T getSchemaObject( String oid ) throws LdapException
     {
-        SchemaObject schemaObject = byOid.get( oid );
+        T schemaObject = byOid.get( oid );
 
         if ( schemaObject != null )
         {
@@ -164,7 +164,7 @@ public class OidRegistry implements Iterable<SchemaObject>
      * 
      * @return all the SchemaObject registered
      */
-    public Iterator<SchemaObject> iterator()
+    public Iterator<T> iterator()
     {
         return byOid.values().iterator();
     }
@@ -175,7 +175,7 @@ public class OidRegistry implements Iterable<SchemaObject>
      * 
      * @param schemaObject The SchemaObject the oid belongs to
      */
-    public void register( SchemaObject schemaObject ) throws LdapException
+    public void register( T schemaObject ) throws LdapException
     {
         if ( schemaObject == null )
         {
@@ -223,7 +223,7 @@ public class OidRegistry implements Iterable<SchemaObject>
      *
      * @param schemaObject The SchemaObject to inject into the OidRegistry
      */
-    /* No qualifier */void put( SchemaObject schemaObject )
+    /* No qualifier */void put( T schemaObject )
     {
         byOid.put( schemaObject.getOid(), schemaObject );
     }
@@ -252,12 +252,12 @@ public class OidRegistry implements Iterable<SchemaObject>
      * 
      * @return A new OidRegistry instance
      */
-    public OidRegistry copy()
+    public OidRegistry<T> copy()
     {
-        OidRegistry copy = new OidRegistry();
+        OidRegistry<T> copy = new OidRegistry<T>();
 
         // Clone the map
-        copy.byOid = new HashMap<String, SchemaObject>();
+        copy.byOid = new HashMap<String, T>();
 
         return copy;
     }

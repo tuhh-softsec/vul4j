@@ -22,13 +22,11 @@ package org.apache.directory.shared.ldap.model.schema.registries;
 
 import java.util.Iterator;
 
-import org.apache.directory.shared.ldap.model.exception.LdapException;
-
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapUnwillingToPerformException;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.model.schema.DITStructureRule;
-import org.apache.directory.shared.ldap.model.schema.SchemaObject;
 import org.apache.directory.shared.ldap.model.schema.SchemaObjectType;
 
 
@@ -218,7 +216,7 @@ public class ImmutableDITStructureRuleRegistry implements DITStructureRuleRegist
     /**
      * {@inheritDoc}
      */
-    public SchemaObject get( String oid )
+    public DITStructureRule get( String oid )
     {
         return immutableDITStructureRuleRegistry.get( oid );
     }

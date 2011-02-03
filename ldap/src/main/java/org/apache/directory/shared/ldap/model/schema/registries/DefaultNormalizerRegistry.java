@@ -41,16 +41,17 @@ public class DefaultNormalizerRegistry extends DefaultSchemaObjectRegistry<Norma
 
     /** A speedup for debug */
     private static final boolean DEBUG = LOG.isDebugEnabled();
-    
+
+
     /**
      * Creates a new default NormalizerRegistry instance.
      */
     public DefaultNormalizerRegistry()
     {
-        super( SchemaObjectType.NORMALIZER, new OidRegistry() );
+        super( SchemaObjectType.NORMALIZER, new OidRegistry<Normalizer>() );
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -60,7 +61,7 @@ public class DefaultNormalizerRegistry extends DefaultSchemaObjectRegistry<Norma
         {
             return;
         }
-        
+
         // Loop on all the SchemaObjects stored and remove those associated
         // with the give schemaName
         for ( Normalizer normalizer : this )
@@ -69,7 +70,7 @@ public class DefaultNormalizerRegistry extends DefaultSchemaObjectRegistry<Norma
             {
                 String oid = normalizer.getOid();
                 SchemaObject removed = unregister( oid );
-                
+
                 if ( DEBUG )
                 {
                     LOG.debug( "Removed {} with oid {} from the registry", removed, oid );
@@ -77,32 +78,32 @@ public class DefaultNormalizerRegistry extends DefaultSchemaObjectRegistry<Norma
             }
         }
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
     public DefaultNormalizerRegistry copy()
     {
         DefaultNormalizerRegistry copy = new DefaultNormalizerRegistry();
-        
+
         // Copy the base data
         copy.copy( this );
-        
+
         return copy;
     }
-    
-    
+
+
     /**
      * @see Object#toString()
      */
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
-        
+
         sb.append( schemaObjectType ).append( ": " );
         boolean isFirst = true;
-        
+
         for ( String name : byName.keySet() )
         {
             if ( isFirst )
@@ -113,15 +114,14 @@ public class DefaultNormalizerRegistry extends DefaultSchemaObjectRegistry<Norma
             {
                 sb.append( ", " );
             }
-            
+
             Normalizer normalizer = byName.get( name );
-            
+
             String fqcn = normalizer.getFqcn();
             int lastDotPos = fqcn.lastIndexOf( '.' );
-            
+
             sb.append( '<' ).append( normalizer.getOid() ).append( ", " );
-            
-            
+
             if ( lastDotPos > 0 )
             {
                 sb.append( fqcn.substring( lastDotPos + 1 ) );
@@ -130,10 +130,10 @@ public class DefaultNormalizerRegistry extends DefaultSchemaObjectRegistry<Norma
             {
                 sb.append( fqcn );
             }
-            
+
             sb.append( '>' );
         }
-        
+
         return sb.toString();
     }
 }

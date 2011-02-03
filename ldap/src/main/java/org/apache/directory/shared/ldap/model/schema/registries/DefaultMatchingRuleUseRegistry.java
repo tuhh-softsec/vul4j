@@ -40,20 +40,20 @@ public class DefaultMatchingRuleUseRegistry extends DefaultSchemaObjectRegistry<
      */
     public DefaultMatchingRuleUseRegistry()
     {
-        super( SchemaObjectType.MATCHING_RULE_USE, new OidRegistry() );
+        super( SchemaObjectType.MATCHING_RULE_USE, new OidRegistry<MatchingRuleUse>() );
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
     public DefaultMatchingRuleUseRegistry copy()
     {
         DefaultMatchingRuleUseRegistry copy = new DefaultMatchingRuleUseRegistry();
-        
+
         // Copy the base data
         copy.copy( this );
-        
+
         return copy;
     }
 }

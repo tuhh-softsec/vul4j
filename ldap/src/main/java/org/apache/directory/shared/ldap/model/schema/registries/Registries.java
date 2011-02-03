@@ -101,7 +101,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
     protected NormalizerRegistry normalizerRegistry;
 
     /** The global OID registry */
-    protected OidRegistry globalOidRegistry;
+    protected OidRegistry<SchemaObject> globalOidRegistry;
 
     /** The SyntaxChecker registry */
     protected SyntaxCheckerRegistry syntaxCheckerRegistry;
@@ -147,7 +147,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
      */
     public Registries( SchemaManager schemaManager )
     {
-        this.globalOidRegistry = new OidRegistry();
+        globalOidRegistry = new OidRegistry<SchemaObject>();
         attributeTypeRegistry = new DefaultAttributeTypeRegistry();
         comparatorRegistry = new DefaultComparatorRegistry();
         ditContentRuleRegistry = new DefaultDITContentRuleRegistry();
@@ -253,7 +253,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
     /**
      * @return The global Oid registry
      */
-    public OidRegistry getGlobalOidRegistry()
+    public OidRegistry<SchemaObject> getGlobalOidRegistry()
     {
         return globalOidRegistry;
     }
