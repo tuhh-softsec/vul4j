@@ -79,9 +79,21 @@ public interface ILdapCodecService
     void registerExtendedOp( IExtendedOpFactory<?,?> factory );
     
     
+    /**
+     * Creates a new codec control decorator of the specified type.
+     *
+     * @param oid The OID of the new control to create.
+     * @return The newly created codec control.
+     */
     ICodecControl<? extends Control> newControl( String oid );
     
 
+    /**
+     * Creates a new codec control decorator for the provided control.
+     *
+     * @param control The control the codec control is generated for.
+     * @return The newly created codec control.
+     */
     ICodecControl<? extends Control> newControl( Control control );
     
     
@@ -95,7 +107,22 @@ public interface ILdapCodecService
     ProtocolCodecFactory newProtocolCodecFactory( boolean client );
     
     
-    javax.naming.ldap.Control toJndiControl( Control control ) throws EncoderException;
+    /**
+     * Creates a JNDI control from the ldap model's control.
+     *
+     * @param modelControl The model's control.
+     * @return The JNDI control.
+     * @throws EncoderException if there are problems encoding the modelControl.
+     */
+    javax.naming.ldap.Control toJndiControl( Control modelControl ) throws EncoderException;
     
-    Control fromJndiControl( javax.naming.ldap.Control control ) throws DecoderException;
+    
+    /**
+     * Creates a model control from the JNDI control.
+     *
+     * @param jndiControl The JNDI control.
+     * @return The model control.
+     * @throws DecoderException if there are problems decoding the value of the JNDI control.
+     */
+    Control fromJndiControl( javax.naming.ldap.Control jndiControl ) throws DecoderException;
 }
