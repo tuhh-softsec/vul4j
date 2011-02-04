@@ -21,6 +21,7 @@ package org.apache.directory.shared.ldap.codec;
 
 
 import java.nio.ByteBuffer;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -140,7 +141,7 @@ public class DefaultLdapCodecService implements ILdapCodecService
      */
     public Iterator<String> registeredControls()
     {
-        return controlFactories.keySet().iterator();
+        return Collections.unmodifiableSet( controlFactories.keySet() ).iterator();
     }
     
 
@@ -149,7 +150,7 @@ public class DefaultLdapCodecService implements ILdapCodecService
      */
     public Iterator<String> registeredExtendedRequests()
     {
-        return extReqFactories.keySet().iterator();
+        return Collections.unmodifiableSet( extReqFactories.keySet() ).iterator();
     }
 
     
@@ -158,7 +159,7 @@ public class DefaultLdapCodecService implements ILdapCodecService
      */
     public Iterator<String> registeredExtendedResponses()
     {
-        return extResFactories.keySet().iterator();
+        return Collections.unmodifiableSet( extResFactories.keySet() ).iterator();
     }
 
     
@@ -180,6 +181,9 @@ public class DefaultLdapCodecService implements ILdapCodecService
     }
 
     
+    /**
+     * {@inheritDoc}
+     */
     @SuppressWarnings("unchecked")
     public ICodecControl<? extends Control> newControl( String oid )
     {
@@ -203,6 +207,9 @@ public class DefaultLdapCodecService implements ILdapCodecService
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public ICodecControl<? extends Control> newControl( Control control )
     {
         try
@@ -225,6 +232,9 @@ public class DefaultLdapCodecService implements ILdapCodecService
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public javax.naming.ldap.Control toJndiControl( Control control ) throws EncoderException
     {
         ICodecControl<? extends Control> decorator = newControl( control );
@@ -237,6 +247,9 @@ public class DefaultLdapCodecService implements ILdapCodecService
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public Control fromJndiControl( javax.naming.ldap.Control control ) throws DecoderException
     {
         IControlFactory factory = controlFactories.get( control.getID() );
