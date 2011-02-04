@@ -624,7 +624,7 @@ final class RulesBinderImpl implements RulesBinder {
                         }
 
                         this.paramCount = paramCount;
-                        return null;
+                        return this;
                     }
 
                     public CallMethodBuilder withParamTypes(/* @Nullable */Class<?>... paramTypes) {
