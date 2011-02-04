@@ -198,16 +198,6 @@
 
     <!-- check targets -->
 
-    <target name="do.check.forrest">
-	<property environment="env"/>
-	<condition property="has.forrest">
-		<or>
-			<available filepath="${env.PATH}" file="forrest" />
-			<available filepath="${env.PATH}" file="forrest.bat" />
-		</or>
-	</condition>
-    </target>
-
     <target name="do.check.bindist">
 	<condition property="is.bin.dist">
 	    <and>
@@ -223,16 +213,7 @@
 
 
     <!-- B U I L D  T A R G E T S -->
-    <!-- Forrest new -->
     <property environment="env"/>
-    <property name="forrest.home" value="${env.FORREST_HOME}"/>
-    <property name="project.home" value="${dir.docs}"/>	
-    <!-- 'site' is a target imported from forrest.build.xml -->
-    <import file="${env.FORREST_HOME}/forrest.build.xml" optional="true"/>
-    <target name="raul-forrest"  if="env.FORREST_HOME">
-	<antcall target="site"></antcall>
-	<echo>something here</echo>
-    </target>
     <!-- source -->
     <target name="build.src"
             depends="do.build.src,env.mk.dirs,do.check.bindist"
@@ -670,18 +651,6 @@
     	</javadoc>
     </target>
 
-    <target name="build.xdocs"
-            depends="do.check.forrest"
-	    if="has.forrest">
-	<!-- Call Forrest externally -->
-	<exec executable="forrest"
-	      os="Linux SunOS"
-	      dir="${dir.docs}" />
-	<exec executable="forrest.bat"
-	      os="Windows"
-	      dir="${dir.docs}" />
-    </target>
-    
     <target name="clover.report.html" depends="with.clover">
 	<clover-report>
       		<current outfile="${dir.build.coverage}"
@@ -765,7 +734,6 @@
 
     <target name="compile"          depends="build.src" />
     <target name="docs"             depends="build.docs" />
-    <target name="xdocs"            depends="build.xdocs" />
     <target name="javadoc"          depends="build.docs" />
     <target name="jar"              depends="build.jar" />
     <target name="dist"             depends="build.dist" />
