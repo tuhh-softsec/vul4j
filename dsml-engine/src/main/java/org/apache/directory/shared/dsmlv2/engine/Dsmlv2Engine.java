@@ -49,7 +49,7 @@ import org.apache.directory.shared.dsmlv2.request.BatchRequest.Processing;
 import org.apache.directory.shared.dsmlv2.request.BatchRequest.ResponseOrder;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.model.cursor.Cursor;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
@@ -113,7 +113,7 @@ public class Dsmlv2Engine
     /** The batch response. */
     private BatchResponseDsml batchResponse;
     
-    private ILdapCodecService codec = new DefaultLdapCodecService();
+    private LdapCodecService codec = new DefaultLdapCodecService();
 
 
     /**

@@ -21,7 +21,7 @@ package org.apache.directory.shared.dsmlv2.request;
 
 
 import org.apache.directory.shared.dsmlv2.ParserUtils;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.decorators.AddRequestDecorator;
 import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
@@ -46,7 +46,7 @@ public class AddRequestDsml extends AbstractRequestDsml<AddRequest>
     /**
      * Creates a new getDecoratedMessage() of AddRequestDsml.
      */
-    public AddRequestDsml( ILdapCodecService codec )
+    public AddRequestDsml( LdapCodecService codec )
     {
         super( codec, new AddRequestImpl() );
     }
@@ -58,7 +58,7 @@ public class AddRequestDsml extends AbstractRequestDsml<AddRequest>
     * @param ldapMessage
     *      the message to decorate
     */
-    public AddRequestDsml( ILdapCodecService codec, AddRequest ldapMessage )
+    public AddRequestDsml( LdapCodecService codec, AddRequest ldapMessage )
     {
         super( codec, ldapMessage );
     }

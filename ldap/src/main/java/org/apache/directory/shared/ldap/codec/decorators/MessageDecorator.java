@@ -23,9 +23,9 @@ package org.apache.directory.shared.ldap.codec.decorators;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.directory.shared.ldap.codec.ICodecControl;
-import org.apache.directory.shared.ldap.codec.IDecorator;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.CodecControl;
+import org.apache.directory.shared.ldap.codec.Decorator;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 import org.apache.directory.shared.ldap.model.exception.MessageException;
 import org.apache.directory.shared.ldap.model.message.AbandonRequest;
@@ -60,7 +60,7 @@ import org.apache.directory.shared.ldap.model.message.UnbindRequest;
  * @TODO make this class abstract, after finishing switch and all types and make default blow an EncoderException
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public abstract class MessageDecorator<E extends Message> implements Message, IDecorator<E>
+public abstract class MessageDecorator<E extends Message> implements Message, Decorator<E>
 {
     /** The decorated Control */
     private final E decoratedMessage;
@@ -75,13 +75,13 @@ public abstract class MessageDecorator<E extends Message> implements Message, ID
     private int controlsLength;
 
     /** The current control */
-    private ICodecControl<? extends Control> currentControl;
+    private CodecControl<? extends Control> currentControl;
     
     /** The LdapCodecService */
-    private final ILdapCodecService codec;
+    private final LdapCodecService codec;
 
     
-    public static MessageDecorator<? extends Message> getDecorator( ILdapCodecService codec, Message decoratedMessage )
+    public static MessageDecorator<? extends Message> getDecorator( LdapCodecService codec, Message decoratedMessage )
     {
         if ( decoratedMessage instanceof MessageDecorator )
         {
@@ -197,7 +197,7 @@ public abstract class MessageDecorator<E extends Message> implements Message, ID
     /**
      * Makes a Message an Decorator object.
      */
-    protected MessageDecorator( ILdapCodecService codec, E decoratedMessage )
+    protected MessageDecorator( LdapCodecService codec, E decoratedMessage )
     {
         this.codec = codec;
         this.decoratedMessage = decoratedMessage;
@@ -246,7 +246,7 @@ public abstract class MessageDecorator<E extends Message> implements Message, ID
      * 
      * @return The current Control Object
      */
-    public ICodecControl<? extends Control> getCurrentControl()
+    public CodecControl<? extends Control> getCurrentControl()
     {
         return currentControl;
     }
@@ -300,11 +300,11 @@ public abstract class MessageDecorator<E extends Message> implements Message, ID
     public void addControl( Control control ) throws MessageException
     {
         Control decorated;
-        ICodecControl<? extends Control> controlDecorator;
+        CodecControl<? extends Control> controlDecorator;
         
         if ( control instanceof ControlDecorator )
         {
-            controlDecorator = ( ICodecControl<? extends Control> ) control;
+            controlDecorator = ( CodecControl<? extends Control> ) control;
             decorated = controlDecorator.getDecorated();
         }
         else
@@ -398,7 +398,7 @@ public abstract class MessageDecorator<E extends Message> implements Message, ID
     /**
      * {@inheritDoc}
      */
-    public ILdapCodecService getCodecService()
+    public LdapCodecService getCodecService()
     {
         return codec;
     }

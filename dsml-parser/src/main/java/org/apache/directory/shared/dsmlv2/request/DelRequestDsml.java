@@ -20,7 +20,7 @@
 package org.apache.directory.shared.dsmlv2.request;
 
 
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.DeleteRequest;
 import org.apache.directory.shared.ldap.model.message.DeleteRequestImpl;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
@@ -38,7 +38,7 @@ public class DelRequestDsml extends AbstractRequestDsml<DeleteRequest>
     /**
      * Creates a new getDecoratedMessage() of DelRequestDsml.
      */
-    public DelRequestDsml( ILdapCodecService codec )
+    public DelRequestDsml( LdapCodecService codec )
     {
         super( codec, new DeleteRequestImpl() );
     }
@@ -50,7 +50,7 @@ public class DelRequestDsml extends AbstractRequestDsml<DeleteRequest>
      * @param ldapMessage
      *      the message to decorate
      */
-    public DelRequestDsml( ILdapCodecService codec, DeleteRequest ldapMessage )
+    public DelRequestDsml( LdapCodecService codec, DeleteRequest ldapMessage )
     {
         super( codec, ldapMessage );
     }

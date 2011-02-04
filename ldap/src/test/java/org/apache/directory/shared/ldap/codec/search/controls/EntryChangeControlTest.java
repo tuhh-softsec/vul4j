@@ -29,7 +29,7 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.controls.search.entryChange.EntryChangeDecorator;
 import org.apache.directory.shared.ldap.model.message.controls.ChangeType;
 import org.apache.directory.shared.ldap.model.message.controls.EntryChange;
@@ -48,7 +48,7 @@ import org.junit.runner.RunWith;
 @Concurrent()
 public class EntryChangeControlTest
 {
-    private ILdapCodecService codec = new DefaultLdapCodecService();
+    private LdapCodecService codec = new DefaultLdapCodecService();
 
     /**
      * Test the decoding of a EntryChangeControl

@@ -21,7 +21,7 @@ package org.apache.directory.shared.ldap.codec.controls.search.persistentSearch;
 
 
 import org.apache.directory.shared.asn1.ber.AbstractContainer;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.controls.PersistentSearch;
 
 
@@ -33,14 +33,14 @@ public class PersistentSearchContainer extends AbstractContainer
     /** PSearchControl */
     private PersistentSearchDecorator decorator;
     
-    private ILdapCodecService codec;
+    private LdapCodecService codec;
 
 
     /**
      * Creates a new PSearchControlContainer object. We will store one grammar,
      * it's enough ...
      */
-    public PersistentSearchContainer( ILdapCodecService codec )
+    public PersistentSearchContainer( LdapCodecService codec )
     {
         super();
         this.codec = codec;
@@ -57,7 +57,7 @@ public class PersistentSearchContainer extends AbstractContainer
      *
      * @param control The PersistentSearch Control or a decorating wrapper.
      */
-    public PersistentSearchContainer( ILdapCodecService codec, PersistentSearch control )
+    public PersistentSearchContainer( LdapCodecService codec, PersistentSearch control )
     {
         this( codec );
         decorate( control );

@@ -60,7 +60,7 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.MessageEncoderException;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
@@ -222,7 +222,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
     private SchemaManager schemaManager;
 
     /** the ldap codec service */
-    ILdapCodecService codec = new DefaultLdapCodecService();
+    LdapCodecService codec = new DefaultLdapCodecService();
     
     /** the SslFilter key */
     private static final String SSL_FILTER_KEY = "sslFilter";
@@ -3283,7 +3283,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
     /**
      * {@inheritDoc}
      */
-    public ILdapCodecService getCodecService()
+    public LdapCodecService getCodecService()
     {
         return codec;
     }

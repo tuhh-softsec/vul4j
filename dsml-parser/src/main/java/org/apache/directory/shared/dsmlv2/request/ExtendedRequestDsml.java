@@ -22,7 +22,7 @@ package org.apache.directory.shared.dsmlv2.request;
 
 import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.dsmlv2.ParserUtils;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequestImpl;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
@@ -41,7 +41,7 @@ public class ExtendedRequestDsml extends AbstractRequestDsml<ExtendedRequest>
     /**
      * Creates a new getDecoratedMessage() of ExtendedRequestDsml.
      */
-    public ExtendedRequestDsml( ILdapCodecService codec )
+    public ExtendedRequestDsml( LdapCodecService codec )
     {
         super( codec, new ExtendedRequestImpl() );
     }
@@ -53,7 +53,7 @@ public class ExtendedRequestDsml extends AbstractRequestDsml<ExtendedRequest>
      * @param ldapMessage
      *      the message to decorate
      */
-    public ExtendedRequestDsml( ILdapCodecService codec, ExtendedRequest ldapMessage )
+    public ExtendedRequestDsml( LdapCodecService codec, ExtendedRequest ldapMessage )
     {
         super( codec, ldapMessage );
     }

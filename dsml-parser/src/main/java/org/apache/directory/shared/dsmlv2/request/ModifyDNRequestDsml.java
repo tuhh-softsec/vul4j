@@ -20,7 +20,7 @@
 package org.apache.directory.shared.dsmlv2.request;
 
 
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.message.ModifyDnRequest;
 import org.apache.directory.shared.ldap.model.message.ModifyDnRequestImpl;
@@ -39,7 +39,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml<ModifyDnRequest>
     /**
      * Creates a new getDecoratedMessage() of ModifyDNRequestDsml.
      */
-    public ModifyDNRequestDsml( ILdapCodecService codec )
+    public ModifyDNRequestDsml( LdapCodecService codec )
     {
         super( codec, new ModifyDnRequestImpl() );
     }
@@ -51,7 +51,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml<ModifyDnRequest>
      * @param ldapMessage
      *      the message to decorate
      */
-    public ModifyDNRequestDsml( ILdapCodecService codec, ModifyDnRequest ldapMessage )
+    public ModifyDNRequestDsml( LdapCodecService codec, ModifyDnRequest ldapMessage )
     {
         super( codec, ldapMessage );
     }

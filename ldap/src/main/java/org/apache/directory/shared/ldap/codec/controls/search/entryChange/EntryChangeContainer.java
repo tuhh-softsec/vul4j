@@ -21,7 +21,7 @@ package org.apache.directory.shared.ldap.codec.controls.search.entryChange;
 
 
 import org.apache.directory.shared.asn1.ber.AbstractContainer;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.controls.EntryChange;
 
 
@@ -34,14 +34,14 @@ public class EntryChangeContainer extends AbstractContainer
     private EntryChangeDecorator control;
     
     /** The codec that encodes and decodes */
-    private ILdapCodecService codec;
+    private LdapCodecService codec;
 
 
     /**
      * Creates a new EntryChangeContainer object. We will store one
      * grammar, it's enough ...
      */
-    public EntryChangeContainer( ILdapCodecService codec )
+    public EntryChangeContainer( LdapCodecService codec )
     {
         super();
         this.codec = codec;
@@ -58,7 +58,7 @@ public class EntryChangeContainer extends AbstractContainer
      * @param control The EntryChange ControlDecorator, or a Control to be
      * wrapped by a new decorator.
      */
-    public EntryChangeContainer( ILdapCodecService codec, EntryChange control )
+    public EntryChangeContainer( LdapCodecService codec, EntryChange control )
     {
         this( codec );
         decorate( control );

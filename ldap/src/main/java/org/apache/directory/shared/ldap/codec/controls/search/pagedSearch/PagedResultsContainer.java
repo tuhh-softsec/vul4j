@@ -21,7 +21,7 @@ package org.apache.directory.shared.ldap.codec.controls.search.pagedSearch;
 
 
 import org.apache.directory.shared.asn1.ber.AbstractContainer;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.controls.PagedResults;
 
 
@@ -35,7 +35,7 @@ public class PagedResultsContainer extends AbstractContainer
     /** PagedSearchControl */
     private PagedResultsDecorator control;
     
-    private ILdapCodecService codec;
+    private LdapCodecService codec;
 
 
     /**
@@ -43,7 +43,7 @@ public class PagedResultsContainer extends AbstractContainer
      * it's enough ...
      * @param codec The encoder decoder for this container
      */
-    public PagedResultsContainer( ILdapCodecService codec )
+    public PagedResultsContainer( LdapCodecService codec )
     {
         super();
         this.codec = codec;
@@ -61,7 +61,7 @@ public class PagedResultsContainer extends AbstractContainer
      * @param codec The encoder decoder for this container
      * @param control A PagedResults Control to optionally be wrapped.
      */
-    public PagedResultsContainer( ILdapCodecService codec, PagedResults control )
+    public PagedResultsContainer( LdapCodecService codec, PagedResults control )
     {
         this( codec );
         decorate( control );

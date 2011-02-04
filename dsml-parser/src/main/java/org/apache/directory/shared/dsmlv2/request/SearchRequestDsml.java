@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.apache.directory.shared.dsmlv2.ParserUtils;
 import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilter;
 import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
@@ -55,7 +55,7 @@ public class SearchRequestDsml extends AbstractRequestDsml<SearchRequest>
     /**
      * Creates a new getDecoratedMessage() of SearchRequestDsml.
      */
-    public SearchRequestDsml( ILdapCodecService codec )
+    public SearchRequestDsml( LdapCodecService codec )
     {
         super( codec, new SearchRequestImpl() );
     }
@@ -67,7 +67,7 @@ public class SearchRequestDsml extends AbstractRequestDsml<SearchRequest>
      * @param ldapMessage
      *      the message to decorate
      */
-    public SearchRequestDsml( ILdapCodecService codec, SearchRequest ldapMessage )
+    public SearchRequestDsml( LdapCodecService codec, SearchRequest ldapMessage )
     {
         super( codec, ldapMessage );
     }

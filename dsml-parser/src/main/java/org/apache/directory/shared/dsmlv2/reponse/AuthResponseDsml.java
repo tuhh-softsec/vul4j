@@ -21,7 +21,7 @@
 package org.apache.directory.shared.dsmlv2.reponse;
 
 
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.BindResponse;
 import org.apache.directory.shared.ldap.model.message.BindResponseImpl;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
@@ -38,7 +38,7 @@ public class AuthResponseDsml extends AbstractResultResponseDsml<BindResponse>
     /**
      * Creates a new getDecoratedMessage() of AuthResponseDsml.
      */
-    public AuthResponseDsml( ILdapCodecService codec )
+    public AuthResponseDsml( LdapCodecService codec )
     {
         super( codec, new BindResponseImpl() );
     }
@@ -50,7 +50,7 @@ public class AuthResponseDsml extends AbstractResultResponseDsml<BindResponse>
      * @param ldapMessage
      *      the message to decorate
      */
-    public AuthResponseDsml( ILdapCodecService codec, BindResponse ldapMessage )
+    public AuthResponseDsml( LdapCodecService codec, BindResponse ldapMessage )
     {
         super( codec, ldapMessage );
     }

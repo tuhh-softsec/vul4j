@@ -31,7 +31,7 @@ import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.extras.controls.SyncStateTypeEnum;
 import org.apache.directory.shared.ldap.extras.controls.SyncStateValue;
 import org.apache.directory.shared.ldap.extras.controls.syncrepl_impl.SyncStateValueDecorator;
@@ -49,7 +49,7 @@ import org.junit.runner.RunWith;
 @Concurrent()
 public class SyncStateValueControlTest
 {
-    private ILdapCodecService codec = new DefaultLdapCodecService();
+    private LdapCodecService codec = new DefaultLdapCodecService();
     
     /**
      * Test the decoding of a SyncStateValue control with a refreshOnly mode

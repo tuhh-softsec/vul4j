@@ -24,8 +24,8 @@ import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.dsmlv2.DsmlDecorator;
-import org.apache.directory.shared.ldap.codec.ICodecControl;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.CodecControl;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.Response;
@@ -45,7 +45,7 @@ public abstract class AbstractResponseDsml<E extends Response> extends MessageDe
      *
      * @param ldapMessage the LDAP message to decorate
      */
-    public AbstractResponseDsml( ILdapCodecService codec, E ldapMessage )
+    public AbstractResponseDsml( LdapCodecService codec, E ldapMessage )
     {
         super( codec, ldapMessage );
     }
@@ -80,7 +80,7 @@ public abstract class AbstractResponseDsml<E extends Response> extends MessageDe
     /**
      * {@inheritDoc}
      */
-    public ICodecControl<? extends Control> getCurrentControl()
+    public CodecControl<? extends Control> getCurrentControl()
     {
         // TODO Auto-generated method stub
         return null;

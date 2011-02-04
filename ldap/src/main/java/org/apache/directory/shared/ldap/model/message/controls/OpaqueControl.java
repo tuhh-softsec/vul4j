@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.model.message.controls;
 
 
-import org.apache.directory.shared.ldap.codec.IControlFactory;
+import org.apache.directory.shared.ldap.codec.ControlFactory;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.util.Strings;
 
@@ -28,7 +28,7 @@ import org.apache.directory.shared.util.Strings;
 /**
  * A final {@link Control} implementation intended specifically for handling
  * controls who's values cannot be encoded or decoded by the codec service. 
- * This situation results when no {@link IControlFactory} is found to be 
+ * This situation results when no {@link ControlFactory} is found to be 
  * registered for this control's OID. Hence additional opaque value handling
  * methods are included to manage the opaque control value.
  * 

@@ -51,7 +51,7 @@ import javax.naming.ldap.LdapName;
 
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.model.exception.LdapAffectMultipleDsaException;
 import org.apache.directory.shared.ldap.model.exception.LdapAliasDereferencingException;
 import org.apache.directory.shared.ldap.model.exception.LdapAliasException;
@@ -102,7 +102,7 @@ public final class JndiUtils
 
 
     // @TODO not really needed and can be moved out
-    public static javax.naming.ldap.Control toJndiControl( ILdapCodecService codec, Control control ) 
+    public static javax.naming.ldap.Control toJndiControl( LdapCodecService codec, Control control ) 
         throws EncoderException
     {
         return codec.toJndiControl( control );
@@ -110,7 +110,7 @@ public final class JndiUtils
 
 
     // @TODO not really needed and can be moved out
-    public static javax.naming.ldap.Control[] toJndiControls( ILdapCodecService codec, Control... controls ) 
+    public static javax.naming.ldap.Control[] toJndiControls( LdapCodecService codec, Control... controls ) 
          throws EncoderException
     {
         if ( controls != null )
@@ -133,7 +133,7 @@ public final class JndiUtils
 
 
     // @TODO not really needed and can be moved out
-    public static Control fromJndiControl( ILdapCodecService codec, javax.naming.ldap.Control jndiControl ) 
+    public static Control fromJndiControl( LdapCodecService codec, javax.naming.ldap.Control jndiControl ) 
         throws DecoderException
     {
         return codec.fromJndiControl( jndiControl );
@@ -141,7 +141,7 @@ public final class JndiUtils
 
 
     // @TODO not really needed and can be moved out
-    public static Control[] fromJndiControls( ILdapCodecService codec, javax.naming.ldap.Control... jndiControls )
+    public static Control[] fromJndiControls( LdapCodecService codec, javax.naming.ldap.Control... jndiControls )
         throws DecoderException
     {
         if ( jndiControls != null )

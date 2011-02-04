@@ -1,6 +1,6 @@
 package org.apache.directory.shared.ldap.codec;
 
 
-interface ITestCodecControl extends ICodecControl<ITestControl>, ITestControl
+interface ITestCodecControl extends CodecControl<ITestControl>, ITestControl
 {
 }

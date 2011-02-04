@@ -28,8 +28,8 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.IDecorator;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.Decorator;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.model.message.LdapResult;
 import org.apache.directory.shared.ldap.model.message.Referral;
@@ -43,7 +43,7 @@ import org.apache.directory.shared.util.Strings;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class LdapResultDecorator implements LdapResult, IDecorator<LdapResult>
+public class LdapResultDecorator implements LdapResult, Decorator<LdapResult>
 {
     /** The decorated LdapResult */
     private final LdapResult decoratedLdapResult;
@@ -55,7 +55,7 @@ public class LdapResultDecorator implements LdapResult, IDecorator<LdapResult>
     private byte[] matchedDnBytes;
     
     /** The codec responsible for encoding and decoding this object. */
-    private ILdapCodecService codec;
+    private LdapCodecService codec;
 
 
     /**
@@ -321,7 +321,7 @@ public class LdapResultDecorator implements LdapResult, IDecorator<LdapResult>
     /**
      * {@inheritDoc}
      */
-    public ILdapCodecService getCodecService()
+    public LdapCodecService getCodecService()
     {
         return codec;
     }

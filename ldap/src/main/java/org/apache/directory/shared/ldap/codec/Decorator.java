@@ -31,7 +31,7 @@ import org.apache.directory.shared.asn1.EncoderException;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface IDecorator<E>
+public interface Decorator<E>
 {
     /**
      * Gets the object being decorated by this IDecorator.
@@ -65,5 +65,5 @@ public interface IDecorator<E>
      * 
      * @return the codec service
      */
-    ILdapCodecService getCodecService();
+    LdapCodecService getCodecService();
 }

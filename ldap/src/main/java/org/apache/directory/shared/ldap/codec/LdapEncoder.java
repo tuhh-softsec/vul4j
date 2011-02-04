@@ -45,14 +45,14 @@ import org.apache.directory.shared.util.Strings;
 public class LdapEncoder
 {
     /** The LdapCodecService */
-    private ILdapCodecService codec = new DefaultLdapCodecService();
+    private LdapCodecService codec = new DefaultLdapCodecService();
     
     
     
     private int computeControlLength( Control control )
     {
         // First, compute the control's value length
-        int controlValueLength = ((ICodecControl)control).computeLength();
+        int controlValueLength = ((CodecControl)control).computeLength();
         
         // Now, compute the envelop length
         // The OID
@@ -177,7 +177,7 @@ public class LdapEncoder
                     encodeControl( buffer, control );
                     
                     // The OctetString tag if the value is not null
-                    int controlValueLength = ((ICodecControl)control).computeLength();
+                    int controlValueLength = ((CodecControl)control).computeLength();
                     
                     if ( controlValueLength > 0 )
                     {
@@ -185,7 +185,7 @@ public class LdapEncoder
                         buffer.put( TLV.getBytes( controlValueLength ) );
     
                         // And now, the value
-                        ( ( ICodecControl<?> ) control ).encode( buffer );
+                        ( ( CodecControl<?> ) control ).encode( buffer );
                     }
                 }
             }

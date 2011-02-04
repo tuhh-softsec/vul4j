@@ -20,22 +20,22 @@
 package org.apache.directory.shared.ldap.codec.controls.cascade;
 
 
-import org.apache.directory.shared.ldap.codec.IControlFactory;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.ControlFactory;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.controls.Cascade;
 import org.apache.directory.shared.ldap.model.message.controls.CascadeImpl;
 
 
 /**
- * A codec {@link IControlFactory} implementation for {@link Cascade} controls.
+ * A codec {@link ControlFactory} implementation for {@link Cascade} controls.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class CascadeFactory implements IControlFactory<Cascade, CascadeDecorator>
+public class CascadeFactory implements ControlFactory<Cascade, CascadeDecorator>
 {
     /** The LDAP codec responsible for encoding and decoding Cascade Controls */
-    private ILdapCodecService codec;
+    private LdapCodecService codec;
     
     
     /**
@@ -43,7 +43,7 @@ public class CascadeFactory implements IControlFactory<Cascade, CascadeDecorator
      *
      * @param codec The LDAP codec
      */
-    public CascadeFactory( ILdapCodecService codec )
+    public CascadeFactory( LdapCodecService codec )
     {
         this.codec = codec;
     }

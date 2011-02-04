@@ -23,7 +23,7 @@ package org.apache.directory.shared.dsmlv2.reponse;
 
 import java.util.List;
 
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.model.filter.LdapURL;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.message.SearchResultReference;
@@ -41,7 +41,7 @@ public class SearchResultReferenceDsml extends AbstractResponseDsml<SearchResult
     /**
      * Creates a new getDecoratedMessage() of SearchResultReferenceDsml.
      */
-    public SearchResultReferenceDsml( ILdapCodecService codec )
+    public SearchResultReferenceDsml( LdapCodecService codec )
     {
         super( codec, new SearchResultReferenceImpl() );
     }
@@ -53,7 +53,7 @@ public class SearchResultReferenceDsml extends AbstractResponseDsml<SearchResult
      * @param ldapMessage
      *      the message to decorate
      */
-    public SearchResultReferenceDsml( ILdapCodecService codec, SearchResultReference ldapMessage )
+    public SearchResultReferenceDsml( LdapCodecService codec, SearchResultReference ldapMessage )
     {
         super( codec, ldapMessage );
     }

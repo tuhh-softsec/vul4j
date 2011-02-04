@@ -30,7 +30,7 @@ import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public interface IExtendedOpFactory<Q extends ExtendedRequest, P extends ExtendedResponse>
+public interface ExtendedOpFactory<Q extends ExtendedRequest, P extends ExtendedResponse>
 {
     String getResponseOid();
     

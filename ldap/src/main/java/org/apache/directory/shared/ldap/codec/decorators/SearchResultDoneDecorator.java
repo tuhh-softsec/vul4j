@@ -26,7 +26,7 @@ import java.nio.ByteBuffer;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.model.message.SearchResultDone;
 
@@ -47,7 +47,7 @@ public class SearchResultDoneDecorator extends ResponseDecorator<SearchResultDon
      *
      * @param decoratedMessage the decorated SearchResultDone
      */
-    public SearchResultDoneDecorator( ILdapCodecService codec, SearchResultDone decoratedMessage )
+    public SearchResultDoneDecorator( LdapCodecService codec, SearchResultDone decoratedMessage )
     {
         super( codec, decoratedMessage );
     }

@@ -27,7 +27,7 @@ import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.model.entry.BinaryValue;
 import org.apache.directory.shared.ldap.model.entry.Value;
@@ -62,7 +62,7 @@ public class CompareRequestDecorator extends SingleReplyRequestDecorator<Compare
      *
      * @param decoratedMessage the decorated CompareRequest
      */
-    public CompareRequestDecorator( ILdapCodecService codec, CompareRequest decoratedMessage )
+    public CompareRequestDecorator( LdapCodecService codec, CompareRequest decoratedMessage )
     {
         super( codec, decoratedMessage );
     }

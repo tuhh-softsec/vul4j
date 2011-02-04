@@ -20,7 +20,7 @@
 package org.apache.directory.shared.dsmlv2.request;
 
 
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.BindRequest;
 import org.apache.directory.shared.ldap.model.message.BindRequestImpl;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
@@ -37,7 +37,7 @@ public class AuthRequestDsml extends AbstractRequestDsml<BindRequest>
     /**
      * Creates a new getDecoratedMessage() of AuthRequestDsml.
      */
-    public AuthRequestDsml( ILdapCodecService codec )
+    public AuthRequestDsml( LdapCodecService codec )
     {
         super( codec, new BindRequestImpl() );
     }
@@ -49,7 +49,7 @@ public class AuthRequestDsml extends AbstractRequestDsml<BindRequest>
      * @param ldapMessage
      *      the message to decorate
      */
-    public AuthRequestDsml( ILdapCodecService codec, BindRequest ldapMessage )
+    public AuthRequestDsml( LdapCodecService codec, BindRequest ldapMessage )
     {
         super( codec, ldapMessage );
     }

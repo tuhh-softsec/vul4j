@@ -21,7 +21,7 @@
 package org.apache.directory.shared.dsmlv2.reponse;
 
 
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.DeleteResponse;
 import org.apache.directory.shared.ldap.model.message.DeleteResponseImpl;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
@@ -38,7 +38,7 @@ public class DelResponseDsml extends AbstractResultResponseDsml<DeleteResponse>
     /**
      * Creates a new getDecoratedMessage() of DelResponseDsml.
      */
-    public DelResponseDsml( ILdapCodecService codec )
+    public DelResponseDsml( LdapCodecService codec )
     {
         super( codec, new DeleteResponseImpl() );
     }
@@ -50,7 +50,7 @@ public class DelResponseDsml extends AbstractResultResponseDsml<DeleteResponse>
      * @param ldapMessage
      *      the message to decorate
      */
-    public DelResponseDsml( ILdapCodecService codec, DeleteResponse ldapMessage )
+    public DelResponseDsml( LdapCodecService codec, DeleteResponse ldapMessage )
     {
         super( codec, ldapMessage );
     }

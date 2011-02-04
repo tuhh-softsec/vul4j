@@ -25,7 +25,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.xmlpull.v1.XmlPullParserException;
 
 /**
@@ -36,9 +36,9 @@ import org.xmlpull.v1.XmlPullParserException;
 public abstract class AbstractTest
 {
     /** The LDAP encoder decoder service */
-    private ILdapCodecService codec = new DefaultLdapCodecService();
+    private LdapCodecService codec = new DefaultLdapCodecService();
     
-    public ILdapCodecService getCodec()
+    public LdapCodecService getCodec()
     {
         return codec;
     }

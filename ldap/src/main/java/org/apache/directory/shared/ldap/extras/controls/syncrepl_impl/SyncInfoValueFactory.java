@@ -20,21 +20,21 @@
 package org.apache.directory.shared.ldap.extras.controls.syncrepl_impl;
 
 
-import org.apache.directory.shared.ldap.codec.IControlFactory;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.ControlFactory;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.extras.controls.SyncInfoValue;
 
 
 /**
- * A {@link IControlFactory} which creates {@link SyncInfoValue} controls.
+ * A {@link ControlFactory} which creates {@link SyncInfoValue} controls.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class SyncInfoValueFactory implements IControlFactory<SyncInfoValue, SyncInfoValueDecorator>
+public class SyncInfoValueFactory implements ControlFactory<SyncInfoValue, SyncInfoValueDecorator>
 {
     
-    private ILdapCodecService codec;
+    private LdapCodecService codec;
     
 
     /**
@@ -42,7 +42,7 @@ public class SyncInfoValueFactory implements IControlFactory<SyncInfoValue, Sync
      *
      * @param codec The codec for this factory.
      */
-    public SyncInfoValueFactory( ILdapCodecService codec )
+    public SyncInfoValueFactory( LdapCodecService codec )
     {
         this.codec = codec;
     }

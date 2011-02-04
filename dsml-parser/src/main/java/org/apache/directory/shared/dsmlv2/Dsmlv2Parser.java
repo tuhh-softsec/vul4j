@@ -31,7 +31,7 @@ import java.io.StringReader;
 import org.apache.directory.shared.dsmlv2.request.BatchRequest;
 import org.apache.directory.shared.dsmlv2.request.Dsmlv2Grammar;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.Message;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -56,7 +56,7 @@ public class Dsmlv2Parser
      * @throws XmlPullParserException
      *      if an error occurs while the initialization of the parser
      */
-    public Dsmlv2Parser( ILdapCodecService codec ) throws XmlPullParserException
+    public Dsmlv2Parser( LdapCodecService codec ) throws XmlPullParserException
     {
         this.container = new Dsmlv2Container( codec );
 

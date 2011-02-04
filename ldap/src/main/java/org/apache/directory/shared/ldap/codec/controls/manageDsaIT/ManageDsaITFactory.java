@@ -20,22 +20,22 @@
 package org.apache.directory.shared.ldap.codec.controls.manageDsaIT;
 
 
-import org.apache.directory.shared.ldap.codec.IControlFactory;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.ControlFactory;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.controls.ManageDsaIT;
 import org.apache.directory.shared.ldap.model.message.controls.ManageDsaITImpl;
 
 
 /**
- * A codec {@link IControlFactory} implementation for {@link ManageDsaIT} control.
+ * A codec {@link ControlFactory} implementation for {@link ManageDsaIT} control.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class ManageDsaITFactory implements IControlFactory<ManageDsaIT, ManageDsaITDecorator>
+public class ManageDsaITFactory implements ControlFactory<ManageDsaIT, ManageDsaITDecorator>
 {
     /** The LDAP codec responsible for encoding and decoding Cascade Controls */
-    private ILdapCodecService codec;
+    private LdapCodecService codec;
     
     
     /**
@@ -43,7 +43,7 @@ public class ManageDsaITFactory implements IControlFactory<ManageDsaIT, ManageDs
      *
      * @param codec The LDAP codec
      */
-    public ManageDsaITFactory( ILdapCodecService codec )
+    public ManageDsaITFactory( LdapCodecService codec )
     {
         this.codec = codec;
     }

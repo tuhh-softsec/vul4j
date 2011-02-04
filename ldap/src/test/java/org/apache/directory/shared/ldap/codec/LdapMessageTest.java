@@ -54,7 +54,7 @@ public class LdapMessageTest
     /** The encoder instance */
     LdapEncoder encoder = new LdapEncoder();
     
-    ILdapCodecService codec = new DefaultLdapCodecService();
+    LdapCodecService codec = new DefaultLdapCodecService();
 
 
     // ~ Methods

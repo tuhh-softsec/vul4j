@@ -20,28 +20,28 @@
 package org.apache.directory.shared.ldap.extras.controls.ppolicy_impl;
 
 
-import org.apache.directory.shared.ldap.codec.IControlFactory;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.ControlFactory;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.extras.controls.PasswordPolicy;
 
 
 /**
- * A {@link IControlFactory} which creates {@link PasswordPolicy} controls.
+ * A {@link ControlFactory} which creates {@link PasswordPolicy} controls.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class PasswordPolicyFactory implements IControlFactory<PasswordPolicy, PasswordPolicyDecorator>
+public class PasswordPolicyFactory implements ControlFactory<PasswordPolicy, PasswordPolicyDecorator>
 {
     
-    private ILdapCodecService codec;
+    private LdapCodecService codec;
     
 
     /**
      * Creates a new instance of PasswordPolicyFactory.
      *
      */
-    public PasswordPolicyFactory( ILdapCodecService codec )
+    public PasswordPolicyFactory( LdapCodecService codec )
     {
         this.codec = codec;
     }

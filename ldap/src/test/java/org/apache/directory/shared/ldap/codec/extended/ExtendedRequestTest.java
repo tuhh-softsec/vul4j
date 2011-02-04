@@ -33,8 +33,8 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
-import org.apache.directory.shared.ldap.codec.ICodecControl;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.CodecControl;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.decorators.ExtendedRequestDecorator;
@@ -57,7 +57,7 @@ public class ExtendedRequestTest
     /** The encoder instance */
     LdapEncoder encoder = new LdapEncoder();
 
-    ILdapCodecService codec = new DefaultLdapCodecService();
+    LdapCodecService codec = new DefaultLdapCodecService();
     
 
     /**
@@ -184,7 +184,7 @@ public class ExtendedRequestTest
         assertTrue( extendedRequest.hasControl( "2.16.840.1.113730.3.4.2" ) );
 
         @SuppressWarnings("unchecked")
-        ICodecControl<Control> control = ( ICodecControl<Control> ) extendedRequest.getControl( "2.16.840.1.113730.3.4.2" );
+        CodecControl<Control> control = ( CodecControl<Control> ) extendedRequest.getControl( "2.16.840.1.113730.3.4.2" );
         assertEquals( "", Strings.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the encoding
@@ -267,7 +267,7 @@ public class ExtendedRequestTest
         assertTrue( extendedRequest.hasControl( "2.16.840.1.113730.3.4.2" ) );
 
         @SuppressWarnings("unchecked")
-        ICodecControl<Control> control = ( ICodecControl<Control> ) extendedRequest.getControl( "2.16.840.1.113730.3.4.2" );
+        CodecControl<Control> control = ( CodecControl<Control> ) extendedRequest.getControl( "2.16.840.1.113730.3.4.2" );
         assertEquals( "", Strings.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the encoding

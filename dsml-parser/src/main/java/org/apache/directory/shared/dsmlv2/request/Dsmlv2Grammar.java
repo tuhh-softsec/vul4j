@@ -41,8 +41,8 @@ import org.apache.directory.shared.dsmlv2.request.BatchRequest.ResponseOrder;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
 import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
-import org.apache.directory.shared.ldap.codec.ICodecControl;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.CodecControl;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.decorators.AbandonRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.AddRequestDecorator;
@@ -99,7 +99,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
     /** The instance of grammar. Dsmlv2Grammar is a singleton */
     private static Dsmlv2Grammar instance = new Dsmlv2Grammar();
 
-    private ILdapCodecService codec = new DefaultLdapCodecService();
+    private LdapCodecService codec = new DefaultLdapCodecService();
     
 
     /**
@@ -2733,7 +2733,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
             XmlPullParser xpp = container.getParser();
-            ICodecControl<? extends Control> control;
+            CodecControl<? extends Control> control;
 
             // Checking and adding the Control's attributes
             String attributeValue;
@@ -2784,7 +2784,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
             MessageDecorator<?> messageDecorator = ( MessageDecorator<?> ) container.getBatchRequest().getCurrentRequest();
-            ICodecControl<? extends Control> control = messageDecorator.getCurrentControl();
+            CodecControl<? extends Control> control = messageDecorator.getCurrentControl();
 
             XmlPullParser xpp = container.getParser();
 

@@ -34,7 +34,7 @@ import org.apache.mina.filter.codec.ProtocolCodecFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public interface ILdapCodecService
+public interface LdapCodecService
 {
     /**
      * Returns an Iterator over the OID Strings of registered controls.
@@ -63,20 +63,20 @@ public interface ILdapCodecService
     
     
     /**
-     * Registers an {@link IControlFactory} with this service.
+     * Registers an {@link ControlFactory} with this service.
      * 
      * @param factory The control factory
      */
-    void registerControl( IControlFactory<?,?> factory );
+    void registerControl( ControlFactory<?,?> factory );
     
     
     /**
-     * Registers an {@link IExtendedOpFactory} for generating extended request 
+     * Registers an {@link ExtendedOpFactory} for generating extended request 
      * response pairs.
      * 
      * @param factory The extended operation factory
      */
-    void registerExtendedOp( IExtendedOpFactory<?,?> factory );
+    void registerExtendedOp( ExtendedOpFactory<?,?> factory );
     
     
     /**
@@ -85,7 +85,7 @@ public interface ILdapCodecService
      * @param oid The OID of the new control to create.
      * @return The newly created codec control.
      */
-    ICodecControl<? extends Control> newControl( String oid );
+    CodecControl<? extends Control> newControl( String oid );
     
 
     /**
@@ -94,7 +94,7 @@ public interface ILdapCodecService
      * @param control The control the codec control is generated for.
      * @return The newly created codec control.
      */
-    ICodecControl<? extends Control> newControl( Control control );
+    CodecControl<? extends Control> newControl( Control control );
     
     
     /**

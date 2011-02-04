@@ -20,21 +20,21 @@
 package org.apache.directory.shared.ldap.codec.controls.search.pagedSearch;
 
 
-import org.apache.directory.shared.ldap.codec.IControlFactory;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.ControlFactory;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.controls.PagedResults;
 
 
 /**
- * A {@link IControlFactory} for {@link EntryChange} controls.
+ * A {@link ControlFactory} for {@link EntryChange} controls.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class PagedResultsFactory implements IControlFactory<PagedResults, PagedResultsDecorator>
+public class PagedResultsFactory implements ControlFactory<PagedResults, PagedResultsDecorator>
 {
     /** The LDAP codec service */
-    private ILdapCodecService codec;
+    private LdapCodecService codec;
 
     
     /**
@@ -42,7 +42,7 @@ public class PagedResultsFactory implements IControlFactory<PagedResults, PagedR
      *
      * @param codec The LDAP codec.
      */
-    public PagedResultsFactory( ILdapCodecService codec )
+    public PagedResultsFactory( LdapCodecService codec )
     {
         this.codec = codec;
     }

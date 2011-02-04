@@ -19,7 +19,7 @@
 package org.apache.directory.shared.ldap.codec.controls.cascade;
 
 
-import org.apache.directory.shared.ldap.codec.ICodecControl;
+import org.apache.directory.shared.ldap.codec.CodecControl;
 import org.apache.directory.shared.ldap.model.message.controls.Cascade;
 
 
@@ -28,6 +28,6 @@ import org.apache.directory.shared.ldap.model.message.controls.Cascade;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface CascadeCodecControl extends ICodecControl<Cascade>, Cascade
+public interface CascadeCodecControl extends CodecControl<Cascade>, Cascade
 {
 }

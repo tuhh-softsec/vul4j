@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.codec.decorators;
 
 
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.AbandonListener;
 import org.apache.directory.shared.ldap.model.message.AbandonableRequest;
 
@@ -39,7 +39,7 @@ public abstract class AbandonableRequestDecorator<M extends AbandonableResultRes
      *
      * @param decoratedMessage the decorated message
      */
-    public AbandonableRequestDecorator( ILdapCodecService codec, M decoratedMessage )
+    public AbandonableRequestDecorator( LdapCodecService codec, M decoratedMessage )
     {
         super( codec, decoratedMessage );
     }

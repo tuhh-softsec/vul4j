@@ -26,7 +26,7 @@ import java.nio.ByteBuffer;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
 import org.apache.directory.shared.util.Strings;
@@ -54,7 +54,7 @@ public class ExtendedResponseDecorator extends ResponseDecorator<ExtendedRespons
      *
      * @param decoratedMessage the decorated ExtendedResponse
      */
-    public ExtendedResponseDecorator( ILdapCodecService codec, ExtendedResponse decoratedMessage )
+    public ExtendedResponseDecorator( LdapCodecService codec, ExtendedResponse decoratedMessage )
     {
         super( codec, decoratedMessage );
     }

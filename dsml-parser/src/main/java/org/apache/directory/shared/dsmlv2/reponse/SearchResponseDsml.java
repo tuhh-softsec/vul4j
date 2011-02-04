@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.directory.shared.dsmlv2.DsmlDecorator;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.model.message.ResultResponse;
 import org.dom4j.Element;
@@ -46,7 +46,7 @@ public class SearchResponseDsml extends AbstractResultResponseDsml<ResultRespons
     /**
      * Creates a new getDecoratedMessage() of SearchResponseDsml.
      */
-    public SearchResponseDsml( ILdapCodecService codec )
+    public SearchResponseDsml( LdapCodecService codec )
     {
         super( codec, null );
     }
@@ -57,7 +57,7 @@ public class SearchResponseDsml extends AbstractResultResponseDsml<ResultRespons
      *
      * @param response the LDAP response message to decorate
      */
-    public SearchResponseDsml( ILdapCodecService codec, Message response )
+    public SearchResponseDsml( LdapCodecService codec, Message response )
     {
         super( codec, ( ResultResponse ) response );
     }

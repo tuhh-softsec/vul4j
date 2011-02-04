@@ -58,7 +58,7 @@ public class LdapResultTest
     /** The encoder instance */
     LdapEncoder encoder = new LdapEncoder();
     
-    ILdapCodecService codec = new DefaultLdapCodecService();
+    LdapCodecService codec = new DefaultLdapCodecService();
 
 
     // ~ Methods

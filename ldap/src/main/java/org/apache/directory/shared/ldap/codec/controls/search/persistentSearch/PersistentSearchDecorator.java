@@ -30,7 +30,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 import org.apache.directory.shared.ldap.model.message.controls.ChangeType;
 import org.apache.directory.shared.ldap.model.message.controls.PersistentSearch;
@@ -55,7 +55,7 @@ public class PersistentSearchDecorator extends ControlDecorator<PersistentSearch
      * Default constructor creates a PersistentSearch Control automatically
      * wrapped in a decorator object inside this container.
      */
-    public PersistentSearchDecorator( ILdapCodecService codec )
+    public PersistentSearchDecorator( LdapCodecService codec )
     {
         this( codec, new PersistentSearchImpl() );
     }
@@ -67,7 +67,7 @@ public class PersistentSearchDecorator extends ControlDecorator<PersistentSearch
      *
      * @param control The PersistentSearch Control to wrap.
      */
-    public PersistentSearchDecorator( ILdapCodecService codec, PersistentSearch control )
+    public PersistentSearchDecorator( LdapCodecService codec, PersistentSearch control )
     {
         super( codec, control );
     }

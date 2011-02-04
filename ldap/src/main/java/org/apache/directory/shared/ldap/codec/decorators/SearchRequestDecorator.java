@@ -32,7 +32,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.search.AndFilter;
@@ -103,7 +103,7 @@ public class SearchRequestDecorator extends MessageDecorator<SearchRequest> impl
      *
      * @param decoratedMessage the decorated SearchRequest
      */
-    public SearchRequestDecorator( ILdapCodecService codec, SearchRequest decoratedMessage )
+    public SearchRequestDecorator( LdapCodecService codec, SearchRequest decoratedMessage )
     {
         super( codec, decoratedMessage );
     }

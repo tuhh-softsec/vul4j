@@ -39,7 +39,7 @@ import org.apache.directory.shared.dsmlv2.ParserUtils;
 import org.apache.directory.shared.dsmlv2.Tag;
 import org.apache.directory.shared.dsmlv2.reponse.ErrorResponse.ErrorResponseType;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.ICodecControl;
+import org.apache.directory.shared.ldap.codec.CodecControl;
 import org.apache.directory.shared.ldap.codec.decorators.AddResponseDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.BindResponseDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.CompareResponseDecorator;
@@ -1198,7 +1198,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
      */
     private void createAndAddControl( Dsmlv2Container container, Message parent ) throws XmlPullParserException
     {
-        ICodecControl<? extends Control> control = null;
+        CodecControl<? extends Control> control = null;
 
         XmlPullParser xpp = container.getParser();
 
@@ -1297,7 +1297,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
      */
     private void createAndAddControlValue( Dsmlv2Container container, Message parent ) throws XmlPullParserException
     {
-        ICodecControl<? extends Control> control = ( ( MessageDecorator<?> ) parent ).getCurrentControl();
+        CodecControl<? extends Control> control = ( ( MessageDecorator<?> ) parent ).getCurrentControl();
 
         XmlPullParser xpp = container.getParser();
         try

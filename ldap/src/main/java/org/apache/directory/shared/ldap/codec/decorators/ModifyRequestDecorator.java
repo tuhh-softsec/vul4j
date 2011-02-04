@@ -31,7 +31,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.model.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.model.entry.DefaultModification;
@@ -78,7 +78,7 @@ public class ModifyRequestDecorator extends SingleReplyRequestDecorator<ModifyRe
      *
      * @param decoratedMessage the decorated ModifyRequest
      */
-    public ModifyRequestDecorator( ILdapCodecService codec, ModifyRequest decoratedMessage )
+    public ModifyRequestDecorator( LdapCodecService codec, ModifyRequest decoratedMessage )
     {
         super( codec, decoratedMessage );
     }

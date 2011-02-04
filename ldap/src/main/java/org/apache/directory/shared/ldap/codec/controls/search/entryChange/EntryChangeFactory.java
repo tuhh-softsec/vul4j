@@ -20,21 +20,21 @@
 package org.apache.directory.shared.ldap.codec.controls.search.entryChange;
 
 
-import org.apache.directory.shared.ldap.codec.IControlFactory;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.ControlFactory;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.controls.EntryChange;
 
 
 /**
- * A {@link IControlFactory} for {@link EntryChange} controls.
+ * A {@link ControlFactory} for {@link EntryChange} controls.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class EntryChangeFactory implements IControlFactory<EntryChange, EntryChangeDecorator>
+public class EntryChangeFactory implements ControlFactory<EntryChange, EntryChangeDecorator>
 {
     /** The LDAP codec service */
-    private ILdapCodecService codec;
+    private LdapCodecService codec;
 
     
     /**
@@ -42,7 +42,7 @@ public class EntryChangeFactory implements IControlFactory<EntryChange, EntryCha
      *
      * @param codec The LDAP codec.
      */
-    public EntryChangeFactory( ILdapCodecService codec )
+    public EntryChangeFactory( LdapCodecService codec )
     {
         this.codec = codec;
     }

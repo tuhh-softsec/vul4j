@@ -25,7 +25,7 @@ import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.model.message.UnbindRequest;
 
@@ -42,7 +42,7 @@ public class UnbindRequestDecorator extends RequestDecorator<UnbindRequest> impl
      *
      * @param decoratedMessage the decorated message
      */
-    public UnbindRequestDecorator( ILdapCodecService codec, UnbindRequest decoratedMessage )
+    public UnbindRequestDecorator( LdapCodecService codec, UnbindRequest decoratedMessage )
     {
         super( codec, decoratedMessage );
     }

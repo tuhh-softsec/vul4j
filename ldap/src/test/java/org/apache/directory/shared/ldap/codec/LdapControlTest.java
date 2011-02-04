@@ -51,7 +51,7 @@ public class LdapControlTest
 {
     /** The encoder instance */
     LdapEncoder encoder = new LdapEncoder();
-    ILdapCodecService codec = new DefaultLdapCodecService();
+    LdapCodecService codec = new DefaultLdapCodecService();
 
 
     /**
@@ -120,25 +120,25 @@ public class LdapControlTest
 
         assertEquals( 4, controls.size() );
 
-        ICodecControl<Control> control = ( ICodecControl<Control> ) controls.get( "1.3.6.1.5.5.1" );
+        CodecControl<Control> control = ( CodecControl<Control> ) controls.get( "1.3.6.1.5.5.1" );
         assertEquals( "1.3.6.1.5.5.1", control.getOid() );
         assertEquals( "0x61 0x62 0x63 0x64 0x65 0x66 ", Strings.dumpBytes( ( byte[] ) control.getValue() ) );
         assertTrue( control.isCritical() );
         internalAbandonRequest.addControl( control );
 
-        control = ( ICodecControl<Control> ) controls.get( "1.3.6.1.5.5.2" );
+        control = ( CodecControl<Control> ) controls.get( "1.3.6.1.5.5.2" );
         assertEquals( "1.3.6.1.5.5.2", control.getOid() );
         assertEquals( "0x67 0x68 0x69 0x6A 0x6B 0x6C ", Strings.dumpBytes((byte[]) control.getValue()) );
         assertFalse( control.isCritical() );
         internalAbandonRequest.addControl( control );
 
-        control = ( ICodecControl<Control> ) controls.get( "1.3.6.1.5.5.3" );
+        control = ( CodecControl<Control> ) controls.get( "1.3.6.1.5.5.3" );
         assertEquals( "1.3.6.1.5.5.3", control.getOid() );
         assertEquals( "", Strings.dumpBytes((byte[]) control.getValue()) );
         assertTrue( control.isCritical() );
         internalAbandonRequest.addControl( control );
 
-        control = ( ICodecControl<Control> ) controls.get( "1.3.6.1.5.5.4" );
+        control = ( CodecControl<Control> ) controls.get( "1.3.6.1.5.5.4" );
         assertEquals( "1.3.6.1.5.5.4", control.getOid() );
         assertEquals( "", Strings.dumpBytes((byte[]) control.getValue()) );
         assertFalse( control.isCritical() );

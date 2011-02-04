@@ -20,8 +20,8 @@
 package org.apache.directory.shared.ldap.codec.controls.search.subentries;
 
 
-import org.apache.directory.shared.ldap.codec.IControlFactory;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.ControlFactory;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.controls.Subentries;
 
 
@@ -32,10 +32,10 @@ import org.apache.directory.shared.ldap.model.message.controls.Subentries;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class SubentriesFactory implements IControlFactory<Subentries, SubentriesDecorator>
+public class SubentriesFactory implements ControlFactory<Subentries, SubentriesDecorator>
 {
     /** The LDAP codec service */
-    private ILdapCodecService codec;
+    private LdapCodecService codec;
     
     
     /**
@@ -43,7 +43,7 @@ public class SubentriesFactory implements IControlFactory<Subentries, Subentries
      *
      * @param codec
      */
-    public SubentriesFactory( ILdapCodecService codec )
+    public SubentriesFactory( LdapCodecService codec )
     {
         this.codec = codec;
     }

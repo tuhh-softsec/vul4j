@@ -20,8 +20,8 @@
 package org.apache.directory.shared.ldap.codec.controls.search.persistentSearch;
 
 
-import org.apache.directory.shared.ldap.codec.IControlFactory;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.ControlFactory;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.controls.PersistentSearch;
 
 
@@ -31,12 +31,12 @@ import org.apache.directory.shared.ldap.model.message.controls.PersistentSearch;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class PersistentSearchFactory implements IControlFactory<PersistentSearch, PersistentSearchDecorator>
+public class PersistentSearchFactory implements ControlFactory<PersistentSearch, PersistentSearchDecorator>
 {
-    private ILdapCodecService codec;
+    private LdapCodecService codec;
     
     
-    public PersistentSearchFactory( ILdapCodecService codec )
+    public PersistentSearchFactory( LdapCodecService codec )
     {
         this.codec = codec;
     }

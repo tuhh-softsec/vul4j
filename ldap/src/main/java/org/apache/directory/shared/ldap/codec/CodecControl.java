@@ -31,7 +31,7 @@ import org.apache.directory.shared.ldap.model.message.Control;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface ICodecControl<E extends Control> extends Control, IDecorator<E>
+public interface CodecControl<E extends Control> extends Control, Decorator<E>
 {
     /**
      * Decodes raw ASN.1 encoded bytes into an Asn1Object for the control.
@@ -44,7 +44,7 @@ public interface ICodecControl<E extends Control> extends Control, IDecorator<E>
 
 
     /**
-     * Checks to see if a value is set for this {@link ICodecControl}.
+     * Checks to see if a value is set for this {@link CodecControl}.
      *
      * @return true, if this control has a value, false otherwise
      */

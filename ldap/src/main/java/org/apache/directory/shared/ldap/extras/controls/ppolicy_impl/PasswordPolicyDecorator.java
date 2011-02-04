@@ -30,7 +30,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 import org.apache.directory.shared.ldap.extras.controls.PasswordPolicy;
 import org.apache.directory.shared.ldap.extras.controls.PasswordPolicyResponse;
@@ -55,19 +55,19 @@ public class PasswordPolicyDecorator extends ControlDecorator<PasswordPolicy> im
     private transient int graceAuthNsRemainingTagLength;
     
     
-    public PasswordPolicyDecorator( ILdapCodecService codec )
+    public PasswordPolicyDecorator( LdapCodecService codec )
     {
         super( codec, new PasswordPolicyImpl() );
     }
     
     
-    public PasswordPolicyDecorator( ILdapCodecService codec, boolean hasResponse )
+    public PasswordPolicyDecorator( LdapCodecService codec, boolean hasResponse )
     {
         super( codec, new PasswordPolicyImpl( hasResponse ) );
     }
 
 
-    public PasswordPolicyDecorator( ILdapCodecService codec, PasswordPolicy policy )
+    public PasswordPolicyDecorator( LdapCodecService codec, PasswordPolicy policy )
     {
         super( codec, policy );
     }

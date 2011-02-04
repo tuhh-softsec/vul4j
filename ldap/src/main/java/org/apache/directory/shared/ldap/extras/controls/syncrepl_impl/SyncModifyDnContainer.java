@@ -21,7 +21,7 @@ package org.apache.directory.shared.ldap.extras.controls.syncrepl_impl;
 
 
 import org.apache.directory.shared.asn1.ber.AbstractContainer;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 
 
 /**
@@ -39,7 +39,7 @@ public class SyncModifyDnContainer extends AbstractContainer
      * Creates a new SyncStateValueControlContainer object. We will store one grammar,
      * it's enough ...
      */
-    public SyncModifyDnContainer( ILdapCodecService codec )
+    public SyncModifyDnContainer( LdapCodecService codec )
     {
         super();
         this.control = new SyncModifyDnDecorator( codec );

@@ -24,7 +24,7 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
-import org.apache.directory.shared.ldap.codec.ICodecControl;
+import org.apache.directory.shared.ldap.codec.CodecControl;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
 import org.apache.directory.shared.ldap.model.message.Control;
@@ -59,7 +59,7 @@ public class ControlValueAction extends GrammarAction<LdapMessageContainer<Messa
         TLV tlv = container.getCurrentTLV();
 
         MessageDecorator<?> message = container.getMessage();
-        ICodecControl<? extends Control> control = message.getCurrentControl();
+        CodecControl<? extends Control> control = message.getCurrentControl();
 
         // Get the current control
         Value value = tlv.getValue();

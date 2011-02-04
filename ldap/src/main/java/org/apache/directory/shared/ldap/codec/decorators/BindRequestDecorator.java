@@ -27,7 +27,7 @@ import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
 import org.apache.directory.shared.ldap.model.message.BindRequest;
 import org.apache.directory.shared.ldap.model.name.Dn;
@@ -57,7 +57,7 @@ public class BindRequestDecorator extends SingleReplyRequestDecorator<BindReques
      *
      * @param decoratedMessage the decorated BindRequests.
      */
-    public BindRequestDecorator( ILdapCodecService codec, BindRequest decoratedMessage )
+    public BindRequestDecorator( LdapCodecService codec, BindRequest decoratedMessage )
     {
         super( codec, decoratedMessage );
     }

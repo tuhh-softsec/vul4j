@@ -35,7 +35,7 @@ import org.apache.directory.shared.ldap.model.message.Control;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public interface IControlFactory<C extends Control, D extends ICodecControl<C>>
+public interface ControlFactory<C extends Control, D extends CodecControl<C>>
 {
     /**
      * @return The OID of the Control this factory creates.
@@ -46,7 +46,7 @@ public interface IControlFactory<C extends Control, D extends ICodecControl<C>>
     /**
      * Creates and returns a decorated version of the Control.
      *
-     * @return The {@link ICodecControl} decorated version of the Control.
+     * @return The {@link CodecControl} decorated version of the Control.
      */
     D newCodecControl();
 

@@ -31,7 +31,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 import org.apache.directory.shared.ldap.model.message.controls.PagedResults;
 import org.apache.directory.shared.ldap.model.message.controls.PagedResultsImpl;
@@ -56,7 +56,7 @@ public class PagedResultsDecorator extends ControlDecorator<PagedResults> implem
      * Creates a new instance of PagedResultsDecorator with a newly created decorated
      * PagedResults Control.
      */
-    public PagedResultsDecorator( ILdapCodecService codec )
+    public PagedResultsDecorator( LdapCodecService codec )
     {
         this( codec, new PagedResultsImpl() );
     }
@@ -68,7 +68,7 @@ public class PagedResultsDecorator extends ControlDecorator<PagedResults> implem
      *
      * @param  pagedResults The PagedResults Control to be decorated.
      */
-    public PagedResultsDecorator( ILdapCodecService codec, PagedResults pagedResults )
+    public PagedResultsDecorator( LdapCodecService codec, PagedResults pagedResults )
     {
         super( codec, pagedResults );
     }

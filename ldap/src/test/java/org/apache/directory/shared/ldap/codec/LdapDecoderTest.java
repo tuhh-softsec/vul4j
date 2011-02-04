@@ -59,7 +59,7 @@ import org.junit.runner.RunWith;
 @Concurrent()
 public class LdapDecoderTest
 {
-    ILdapCodecService codec = new DefaultLdapCodecService();
+    LdapCodecService codec = new DefaultLdapCodecService();
     
     private static class LdapProtocolDecoderOutput extends AbstractProtocolDecoderOutput 
     {

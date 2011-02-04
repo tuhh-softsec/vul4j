@@ -58,16 +58,16 @@ import org.apache.mina.filter.codec.ProtocolCodecFactory;
 
 
 /**
- * The default {@link ILdapCodecService} implementation.
+ * The default {@link LdapCodecService} implementation.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public class DefaultLdapCodecService implements ILdapCodecService
+public class DefaultLdapCodecService implements LdapCodecService
 {
-    Map<String,IControlFactory<?,?>> controlFactories = new HashMap<String, IControlFactory<?,?>>();
-    Map<String,IExtendedOpFactory<?,?>> extReqFactories = new HashMap<String, IExtendedOpFactory<?,?>>();
-    Map<String,IExtendedOpFactory<?,?>> extResFactories = new HashMap<String, IExtendedOpFactory<?,?>>();
+    Map<String,ControlFactory<?,?>> controlFactories = new HashMap<String, ControlFactory<?,?>>();
+    Map<String,ExtendedOpFactory<?,?>> extReqFactories = new HashMap<String, ExtendedOpFactory<?,?>>();
+    Map<String,ExtendedOpFactory<?,?>> extResFactories = new HashMap<String, ExtendedOpFactory<?,?>>();
     
     
     public DefaultLdapCodecService()
@@ -130,7 +130,7 @@ public class DefaultLdapCodecService implements ILdapCodecService
     /**
      * {@inheritDoc}
      */
-    public void registerControl( IControlFactory<?,?> factory )
+    public void registerControl( ControlFactory<?,?> factory )
     {
         controlFactories.put( factory.getOid(), factory );
     }
@@ -166,7 +166,7 @@ public class DefaultLdapCodecService implements ILdapCodecService
     /**
      * {@inheritDoc}
      */
-    public void registerExtendedOp( IExtendedOpFactory<?, ?> factory )
+    public void registerExtendedOp( ExtendedOpFactory<?, ?> factory )
     {
         extReqFactories.put( factory.getRequestOid(), factory );
     }
@@ -184,9 +184,9 @@ public class DefaultLdapCodecService implements ILdapCodecService
     /**
      * {@inheritDoc}
      */
-    public ICodecControl<? extends Control> newControl( String oid )
+    public CodecControl<? extends Control> newControl( String oid )
     {
-        IControlFactory<?,?> factory = controlFactories.get( oid );
+        ControlFactory<?,?> factory = controlFactories.get( oid );
         
         if ( factory == null )
         {
@@ -200,7 +200,7 @@ public class DefaultLdapCodecService implements ILdapCodecService
     /**
      * {@inheritDoc}
      */
-    public ICodecControl<? extends Control> newControl( Control control )
+    public CodecControl<? extends Control> newControl( Control control )
     {
         if ( control == null )
         {
@@ -208,12 +208,12 @@ public class DefaultLdapCodecService implements ILdapCodecService
         }
         
         // protect agains being multiply decorated
-        if ( control instanceof ICodecControl )
+        if ( control instanceof CodecControl )
         {
-            return ( ICodecControl<?> )control;
+            return ( CodecControl<?> )control;
         }
         
-        IControlFactory factory = controlFactories.get( control.getOid() );
+        ControlFactory factory = controlFactories.get( control.getOid() );
         
         if ( factory == null )
         {
@@ -229,7 +229,7 @@ public class DefaultLdapCodecService implements ILdapCodecService
      */
     public javax.naming.ldap.Control toJndiControl( Control control ) throws EncoderException
     {
-        ICodecControl<? extends Control> decorator = newControl( control );
+        CodecControl<? extends Control> decorator = newControl( control );
         ByteBuffer bb = ByteBuffer.allocate( decorator.computeLength() );
         decorator.encode( bb );
         bb.flip();
@@ -244,7 +244,7 @@ public class DefaultLdapCodecService implements ILdapCodecService
      */
     public Control fromJndiControl( javax.naming.ldap.Control control ) throws DecoderException
     {
-        IControlFactory factory = controlFactories.get( control.getID() );
+        ControlFactory factory = controlFactories.get( control.getID() );
         
         if ( factory == null )
         {
@@ -256,7 +256,7 @@ public class DefaultLdapCodecService implements ILdapCodecService
             return decorator;
         }
         
-        ICodecControl<? extends Control> ourControl = factory.newCodecControl();
+        CodecControl<? extends Control> ourControl = factory.newCodecControl();
         ourControl.setCritical( control.isCritical() );
         ourControl.setValue( control.getEncodedValue() );
         ourControl.decode( control.getEncodedValue() );

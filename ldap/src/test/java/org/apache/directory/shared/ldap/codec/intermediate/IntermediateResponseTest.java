@@ -33,8 +33,8 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
-import org.apache.directory.shared.ldap.codec.ICodecControl;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.CodecControl;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.decorators.IntermediateResponseDecorator;
@@ -58,7 +58,7 @@ public class IntermediateResponseTest
     LdapEncoder encoder = new LdapEncoder();
 
     /** The codec service */
-    ILdapCodecService codec = new DefaultLdapCodecService();
+    LdapCodecService codec = new DefaultLdapCodecService();
 
 
     /**
@@ -182,7 +182,7 @@ public class IntermediateResponseTest
 
         assertEquals( 1, controls.size() );
 
-        ICodecControl<Control> control = ( ICodecControl<Control> )controls.get( "2.16.840.1.113730.3.4.2" );
+        CodecControl<Control> control = ( CodecControl<Control> )controls.get( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", Strings.dumpBytes((byte[]) control.getValue()) );
 
@@ -263,7 +263,7 @@ public class IntermediateResponseTest
 
         assertEquals( 1, controls.size() );
 
-        ICodecControl<Control> control = ( ICodecControl<Control> )controls.get( "2.16.840.1.113730.3.4.2" );
+        CodecControl<Control> control = ( CodecControl<Control> )controls.get( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", Strings.dumpBytes((byte[]) control.getValue()) );
 

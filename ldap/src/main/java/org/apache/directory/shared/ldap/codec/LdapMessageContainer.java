@@ -51,14 +51,14 @@ public class LdapMessageContainer<E extends MessageDecorator<? extends Message>>
     private ControlDecorator<? extends Control> currentControl;
     
     /** The codec service */
-    private final ILdapCodecService codec;
+    private final LdapCodecService codec;
 
 
     /**
      * Creates a new LdapMessageContainer object. We will store ten grammars,
      * it's enough ...
      */
-    public LdapMessageContainer( ILdapCodecService codec )
+    public LdapMessageContainer( LdapCodecService codec )
     {
         this( codec, new BinaryAttributeDetector()
         {
@@ -76,7 +76,7 @@ public class LdapMessageContainer<E extends MessageDecorator<? extends Message>>
      *
      * @param binaryAttributeDetector checks if an attribute is binary
      */
-    public LdapMessageContainer( ILdapCodecService codec, BinaryAttributeDetector binaryAttributeDetector )
+    public LdapMessageContainer( LdapCodecService codec, BinaryAttributeDetector binaryAttributeDetector )
     {
         super();
         this.codec = codec;
@@ -88,11 +88,11 @@ public class LdapMessageContainer<E extends MessageDecorator<? extends Message>>
 
 
     /**
-     * Gets the {@link ILdapCodecService} associated with this {@link Asn1Container}.
+     * Gets the {@link LdapCodecService} associated with this {@link Asn1Container}.
      *
      * @return
      */
-    public ILdapCodecService getLdapCodecService()
+    public LdapCodecService getLdapCodecService()
     {
         return codec;
     }

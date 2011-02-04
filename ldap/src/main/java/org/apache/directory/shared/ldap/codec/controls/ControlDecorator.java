@@ -21,8 +21,8 @@ package org.apache.directory.shared.ldap.codec.controls;
 
 
 import org.apache.directory.shared.asn1.AbstractAsn1Object;
-import org.apache.directory.shared.ldap.codec.ICodecControl;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.CodecControl;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.Control;
 
 
@@ -34,7 +34,7 @@ import org.apache.directory.shared.ldap.model.message.Control;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @param <E>
  */
-public abstract class ControlDecorator<E extends Control> extends AbstractAsn1Object implements ICodecControl<E>
+public abstract class ControlDecorator<E extends Control> extends AbstractAsn1Object implements CodecControl<E>
 {
     /** The decorated Control */
     private E decorated;
@@ -46,7 +46,7 @@ public abstract class ControlDecorator<E extends Control> extends AbstractAsn1Ob
     protected byte[] value;
     
     /** The codec service responsible for encoding decoding this object */
-    private ILdapCodecService codec;
+    private LdapCodecService codec;
 
     
     /**
@@ -54,7 +54,7 @@ public abstract class ControlDecorator<E extends Control> extends AbstractAsn1Ob
      *
      * @param decoratedControl The Control to decorate.
      */
-    public ControlDecorator( ILdapCodecService codec, E decoratedControl )
+    public ControlDecorator( LdapCodecService codec, E decoratedControl )
     {
         this.decorated = decoratedControl;
         this.codec = codec;
@@ -82,7 +82,7 @@ public abstract class ControlDecorator<E extends Control> extends AbstractAsn1Ob
     /**
      * {@inheritDoc}
      */
-    public ILdapCodecService getCodecService()
+    public LdapCodecService getCodecService()
     {
         return codec;
     }
