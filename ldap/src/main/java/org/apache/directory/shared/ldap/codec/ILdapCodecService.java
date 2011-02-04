@@ -59,7 +59,7 @@ public interface ILdapCodecService
      *
      * @return The registered extended response OID Strings
      */
-    Iterator<String> extendedResponseOids();
+    Iterator<String> registeredExtendedResponses();
     
     
     /**
@@ -82,7 +82,7 @@ public interface ILdapCodecService
     ICodecControl<? extends Control> newControl( String oid );
     
 
-    ICodecControl<? extends Control> decorate( Control control );
+    ICodecControl<? extends Control> newControl( Control control );
     
     
     /**

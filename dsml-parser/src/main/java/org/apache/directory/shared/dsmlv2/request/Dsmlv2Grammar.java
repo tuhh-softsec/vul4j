@@ -2747,7 +2747,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
                     throw new XmlPullParserException( I18n.err( I18n.ERR_03034 ), xpp, null );
                 }
 
-                control = codec.decorate( codec.newControl( attributeValue ) );
+                control = codec.newControl( codec.newControl( attributeValue ) );
                 container.getBatchRequest().getCurrentRequest().addControl( control );
             }
             else

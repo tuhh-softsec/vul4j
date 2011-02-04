@@ -1214,7 +1214,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
                 throw new XmlPullParserException( I18n.err( I18n.ERR_03006 ), xpp, null );
             }
 
-            control = container.getLdapCodecService().decorate( new OpaqueControl( attributeValue ) );
+            control = container.getLdapCodecService().newControl( new OpaqueControl( attributeValue ) );
             parent.addControl( control );
         }
         else

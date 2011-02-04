@@ -239,7 +239,7 @@ public final class ParserUtils
                 }
                 else
                 {
-                    value = codec.decorate( control ).getValue();
+                    value = codec.newControl( control ).getValue();
                 }
                 
                 if ( value != null )

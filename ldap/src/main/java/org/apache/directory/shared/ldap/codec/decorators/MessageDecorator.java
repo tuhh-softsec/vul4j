@@ -309,7 +309,7 @@ public abstract class MessageDecorator<E extends Message> implements Message, ID
         }
         else
         {
-            controlDecorator = codec.decorate( control );
+            controlDecorator = codec.newControl( control );
             decorated = control;
         }
         

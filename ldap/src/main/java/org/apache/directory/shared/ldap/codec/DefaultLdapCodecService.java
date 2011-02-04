@@ -20,7 +20,6 @@
 package org.apache.directory.shared.ldap.codec;
 
 
-import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -47,7 +46,6 @@ import org.apache.directory.shared.ldap.extras.controls.syncrepl_impl.SyncModify
 import org.apache.directory.shared.ldap.extras.controls.syncrepl_impl.SyncRequestValueFactory;
 import org.apache.directory.shared.ldap.extras.controls.syncrepl_impl.SyncStateValueFactory;
 import org.apache.directory.shared.ldap.model.message.Control;
-import org.apache.directory.shared.ldap.model.message.controls.AbstractControl;
 import org.apache.directory.shared.ldap.model.message.controls.Cascade;
 import org.apache.directory.shared.ldap.model.message.controls.EntryChange;
 import org.apache.directory.shared.ldap.model.message.controls.ManageDsaIT;
@@ -158,7 +156,7 @@ public class DefaultLdapCodecService implements ILdapCodecService
     /**
      * {@inheritDoc}
      */
-    public Iterator<String> extendedResponseOids()
+    public Iterator<String> registeredExtendedResponses()
     {
         return extResFactories.keySet().iterator();
     }
@@ -191,7 +189,7 @@ public class DefaultLdapCodecService implements ILdapCodecService
             
             if ( factory == null )
             {
-                return new BasicControlDecorator( this, new OpaqueControl( oid ) );
+                return new BasicControlDecorator<Control>( this, new OpaqueControl( oid ) );
             }
             
             return factory.newCodecControl();
@@ -205,7 +203,7 @@ public class DefaultLdapCodecService implements ILdapCodecService
     }
 
 
-    public ICodecControl<? extends Control> decorate( Control control )
+    public ICodecControl<? extends Control> newControl( Control control )
     {
         try
         {
@@ -213,7 +211,7 @@ public class DefaultLdapCodecService implements ILdapCodecService
             
             if ( factory == null )
             {
-                return new BasicControlDecorator( this, control ); 
+                return new BasicControlDecorator<Control>( this, control ); 
             }
             
             return factory.newCodecControl( control );
@@ -229,7 +227,7 @@ public class DefaultLdapCodecService implements ILdapCodecService
 
     public javax.naming.ldap.Control toJndiControl( Control control ) throws EncoderException
     {
-        ICodecControl<? extends Control> decorator = decorate( control );
+        ICodecControl<? extends Control> decorator = newControl( control );
         ByteBuffer bb = ByteBuffer.allocate( decorator.computeLength() );
         decorator.encode( bb );
         bb.flip();
@@ -247,7 +245,8 @@ public class DefaultLdapCodecService implements ILdapCodecService
         {
             OpaqueControl ourControl = new OpaqueControl( control.getID() );
             ourControl.setCritical( control.isCritical() );
-            BasicControlDecorator decorator = new BasicControlDecorator( this, ourControl );
+            BasicControlDecorator<Control> decorator = 
+                new BasicControlDecorator<Control>( this, ourControl );
             decorator.setValue( control.getEncodedValue() );
             return decorator;
         }
