@@ -577,13 +577,28 @@ final class RulesBinderImpl implements RulesBinder {
 
                     private int targetOffset;
 
-                    private int paramCount;
+                    private int paramCount = 0;
 
                     private Class<?>[] paramTypes;
 
-                    private boolean useExactMatch;
+                    private boolean useExactMatch = false;
 
                     public CallMethodRule get() {
+                        Class<?>[] paramTypes = null;
+
+                        if (this.paramTypes == null) {
+                            if (this.paramCount == 0) {
+                                paramTypes = new Class<?>[] { String.class };
+                            } else {
+                                paramTypes = new Class<?>[this.paramCount];
+                                for (int i = 0; i < paramTypes.length; i++) {
+                                    paramTypes[i] = String.class;
+                                }
+                            }
+                        } else {
+                            paramTypes = this.paramTypes;
+                        }
+
                         return setNamespaceAndReturn(
                                 new CallMethodRule(targetOffset, methodName, paramCount, paramTypes, useExactMatch));
                     }
