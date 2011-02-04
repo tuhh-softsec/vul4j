@@ -17,68 +17,63 @@
  */
 package org.apache.xml.security.transforms;
 
-
-
 import org.apache.xml.security.exceptions.XMLSecurityException;
-
 
 /**
  *
  * @author Christian Geuer-Pollmann
  */
 public class TransformationException extends XMLSecurityException {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
 
-   /**
-         * 
-         */
-        private static final long serialVersionUID = 1L;
+    /**
+     * Constructor TransformationException
+     *
+     */
+    public TransformationException() {
+        super();
+    }
 
-   /**
-    * Constructor TransformationException
-    *
-    */
-   public TransformationException() {
-      super();
-   }
+    /**
+     * Constructor TransformationException
+     *
+     * @param msgID
+     */
+    public TransformationException(String msgID) {
+        super(msgID);
+    }
 
-   /**
-    * Constructor TransformationException
-    *
-    * @param _msgID
-    */
-   public TransformationException(String _msgID) {
-      super(_msgID);
-   }
+    /**
+     * Constructor TransformationException
+     *
+     * @param msgID
+     * @param exArgs
+     */
+    public TransformationException(String msgID, Object exArgs[]) {
+        super(msgID, exArgs);
+    }
 
-   /**
-    * Constructor TransformationException
-    *
-    * @param _msgID
-    * @param exArgs
-    */
-   public TransformationException(String _msgID, Object exArgs[]) {
-      super(_msgID, exArgs);
-   }
+    /**
+     * Constructor TransformationException
+     *
+     * @param msgID
+     * @param originalException
+     */
+    public TransformationException(String msgID, Exception originalException) {
+        super(msgID, originalException);
+    }
 
-   /**
-    * Constructor TransformationException
-    *
-    * @param _msgID
-    * @param _originalException
-    */
-   public TransformationException(String _msgID, Exception _originalException) {
-      super(_msgID, _originalException);
-   }
-
-   /**
-    * Constructor TransformationException
-    *
-    * @param _msgID
-    * @param exArgs
-    * @param _originalException
-    */
-   public TransformationException(String _msgID, Object exArgs[],
-                                  Exception _originalException) {
-      super(_msgID, exArgs, _originalException);
-   }
+    /**
+     * Constructor TransformationException
+     *
+     * @param msgID
+     * @param exArgs
+     * @param originalException
+     */
+    public TransformationException(String msgID, Object exArgs[], Exception originalException) {
+        super(msgID, exArgs, originalException);
+    }
 }

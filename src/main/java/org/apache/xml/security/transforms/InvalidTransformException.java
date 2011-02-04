@@ -17,10 +17,7 @@
  */
 package org.apache.xml.security.transforms;
 
-
-
 import org.apache.xml.security.exceptions.XMLSecurityException;
-
 
 /**
  *
@@ -28,57 +25,56 @@ import org.apache.xml.security.exceptions.XMLSecurityException;
  */
 public class InvalidTransformException extends XMLSecurityException {
 
-   /**
-         * 
-         */
-        private static final long serialVersionUID = 1L;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
 
-   /**
-    * Constructor InvalidTransformException
-    *
-    */
-   public InvalidTransformException() {
-      super();
-   }
+    /**
+     * Constructor InvalidTransformException
+     *
+     */
+    public InvalidTransformException() {
+        super();
+    }
 
-   /**
-    * Constructor InvalidTransformException
-    *
-    * @param _msgId
-    */
-   public InvalidTransformException(String _msgId) {
-      super(_msgId);
-   }
+    /**
+     * Constructor InvalidTransformException
+     *
+     * @param msgId
+     */
+    public InvalidTransformException(String msgId) {
+        super(msgId);
+    }
 
-   /**
-    * Constructor InvalidTransformException
-    *
-    * @param _msgId
-    * @param exArgs
-    */
-   public InvalidTransformException(String _msgId, Object exArgs[]) {
-      super(_msgId, exArgs);
-   }
+    /**
+     * Constructor InvalidTransformException
+     *
+     * @param msgId
+     * @param exArgs
+     */
+    public InvalidTransformException(String msgId, Object exArgs[]) {
+        super(msgId, exArgs);
+    }
 
-   /**
-    * Constructor InvalidTransformException
-    *
-    * @param _msgId
-    * @param _originalException
-    */
-   public InvalidTransformException(String _msgId, Exception _originalException) {
-      super(_msgId, _originalException);
-   }
+    /**
+     * Constructor InvalidTransformException
+     *
+     * @param msgId
+     * @param originalException
+     */
+    public InvalidTransformException(String msgId, Exception originalException) {
+        super(msgId, originalException);
+    }
 
-   /**
-    * Constructor InvalidTransformException
-    *
-    * @param _msgId
-    * @param exArgs
-    * @param _originalException
-    */
-   public InvalidTransformException(String _msgId, Object exArgs[],
-                                    Exception _originalException) {
-      super(_msgId, exArgs, _originalException);
-   }
+    /**
+     * Constructor InvalidTransformException
+     *
+     * @param msgId
+     * @param exArgs
+     * @param originalException
+     */
+    public InvalidTransformException(String msgId, Object exArgs[], Exception originalException) {
+        super(msgId, exArgs, originalException);
+    }
 }

@@ -54,7 +54,7 @@ public class OldApiTest extends org.junit.Assert {
             XMLSignatureInput input
         ) throws IOException, CanonicalizationException, InvalidCanonicalizerException,
             TransformationException, ParserConfigurationException, SAXException {
-            assertEquals(compare, _transformObject);
+            assertEquals(compare, transformObject);
             return null ;
         }
 

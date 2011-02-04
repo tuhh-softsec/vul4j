@@ -40,6 +40,7 @@ import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.transforms.params.XPathContainer;
 import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.ElementProxy;
 import org.apache.xml.security.utils.IdResolver;
 import org.apache.xml.security.utils.JavaUtils;
 import org.apache.xml.security.utils.XMLUtils;
@@ -68,7 +69,7 @@ public class CreateMerlinsExampleTwentyThree {
      * @throws Exception
      */
     public static void main(String unused[]) throws Exception {
-        Constants.setSignatureSpecNSprefix("ds");
+        ElementProxy.setDefaultPrefix(Constants.SignatureSpecNS, "ds");
 
         String keystoreType = "JKS";
         String keystoreFile = "samples/data/keystore.jks";

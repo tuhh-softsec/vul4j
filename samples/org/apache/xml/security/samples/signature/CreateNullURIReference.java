@@ -25,6 +25,7 @@ import java.security.cert.X509Certificate;
 
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.ElementProxy;
 import org.apache.xml.security.utils.XMLUtils;
 
 
@@ -71,9 +72,9 @@ public class CreateNullURIReference {
 
         javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
         org.w3c.dom.Document doc = db.newDocument();
-        String BaseURI = signatureFile.toURL().toString();
+        String BaseURI = signatureFile.toURI().toURL().toString();
 
-        Constants.setSignatureSpecNSprefix(null);
+        ElementProxy.setDefaultPrefix(Constants.SignatureSpecNS, null);
 
         XMLSignature sig = 
             new XMLSignature(doc, BaseURI, XMLSignature.ALGO_ID_SIGNATURE_DSA);

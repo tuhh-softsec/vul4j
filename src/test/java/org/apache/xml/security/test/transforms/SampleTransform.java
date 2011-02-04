@@ -29,9 +29,8 @@ public class SampleTransform extends TransformSpi {
     public static final String uri =
         "http://org.apache.xml.security.test.transforms.SampleTransform";
 
-    public SampleTransform() {
+    public SampleTransform() throws InvalidTransformException {
         try {
-            Transform.init();
             Transform.register
                (uri, "org.apache.xml.security.test.transforms.SampleTransform");
         } catch (AlgorithmAlreadyRegisteredException e) { }

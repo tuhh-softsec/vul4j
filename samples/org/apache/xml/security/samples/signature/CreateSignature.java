@@ -26,6 +26,7 @@ import java.security.cert.X509Certificate;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.ElementProxy;
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Element;
 
@@ -50,7 +51,7 @@ public class CreateSignature {
      * @throws Exception
      */
     public static void main(String unused[]) throws Exception {
-        Constants.setSignatureSpecNSprefix("ds");
+        ElementProxy.setDefaultPrefix(Constants.SignatureSpecNS, "ds");
 
         //All the parameters for the keystore
         String keystoreType = "JKS";

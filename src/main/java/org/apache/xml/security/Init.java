@@ -204,7 +204,6 @@ public class Init {
                         
             if (tag.equals("TransformAlgorithms")){
                XX_configure_reg_transforms_start = System.currentTimeMillis();
-               Transform.init();
 
                Element[] tranElem = XMLUtils.selectNodes(el.getFirstChild(),CONF_NS,"TransformAlgorithm");
 
