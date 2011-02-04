@@ -23,7 +23,6 @@ package org.apache.directory.shared.ldap.codec.controls.search.entryChange;
 import org.apache.directory.shared.ldap.codec.IControlFactory;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.model.message.controls.EntryChange;
-import org.apache.directory.shared.ldap.model.message.controls.EntryChangeImpl;
 
 
 /**
@@ -73,14 +72,5 @@ public class EntryChangeFactory implements IControlFactory<EntryChange, EntryCha
     public EntryChangeDecorator newCodecControl( EntryChange control )
     {
         return new EntryChangeDecorator( codec, control );
-    }
-
-    
-    /**
-     * {@inheritDoc}
-     */
-    public EntryChange newControl()
-    {
-        return new EntryChangeImpl();
     }
 }

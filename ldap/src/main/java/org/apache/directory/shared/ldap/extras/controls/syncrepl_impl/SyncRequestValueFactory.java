@@ -23,7 +23,6 @@ package org.apache.directory.shared.ldap.extras.controls.syncrepl_impl;
 import org.apache.directory.shared.ldap.codec.IControlFactory;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.extras.controls.SyncRequestValue;
-import org.apache.directory.shared.ldap.extras.controls.SyncRequestValueImpl;
 
 
 /**
@@ -34,13 +33,14 @@ import org.apache.directory.shared.ldap.extras.controls.SyncRequestValueImpl;
  */
 public class SyncRequestValueFactory implements IControlFactory<SyncRequestValue, SyncRequestValueDecorator>
 {
-    
+    /** The codec for this factory */
     private ILdapCodecService codec;
     
 
     /**
      * Creates a new instance of SyncRequestValueFactory.
      *
+     * @param codec The codec for this factory.
      */
     public SyncRequestValueFactory( ILdapCodecService codec )
     {
@@ -49,7 +49,6 @@ public class SyncRequestValueFactory implements IControlFactory<SyncRequestValue
     
 
     /**
-     * 
      * {@inheritDoc}
      */
     public String getOid()
@@ -59,7 +58,6 @@ public class SyncRequestValueFactory implements IControlFactory<SyncRequestValue
 
     
     /**
-     * 
      * {@inheritDoc}
      */
     public SyncRequestValueDecorator newCodecControl()
@@ -68,26 +66,11 @@ public class SyncRequestValueFactory implements IControlFactory<SyncRequestValue
     }
     
 
+    /**
+     * {@inheritDoc}
+     */
     public SyncRequestValueDecorator newCodecControl( SyncRequestValue control )
     {
-        SyncRequestValueDecorator decorator = null;
-        
-        // protect against double decoration
-        if ( control instanceof SyncRequestValueDecorator )
-        {
-            decorator = ( SyncRequestValueDecorator ) control;
-        }
-        else
-        {
-            decorator = new SyncRequestValueDecorator( codec, control );
-        }
-        
-        return decorator;
-    }
-
-    
-    public SyncRequestValue newControl()
-    {
-        return new SyncRequestValueImpl();
+        return new SyncRequestValueDecorator( codec, control );
     }
 }

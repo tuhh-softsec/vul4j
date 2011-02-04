@@ -23,7 +23,6 @@ package org.apache.directory.shared.ldap.codec.controls.search.persistentSearch;
 import org.apache.directory.shared.ldap.codec.IControlFactory;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.model.message.controls.PersistentSearch;
-import org.apache.directory.shared.ldap.model.message.controls.PersistentSearchImpl;
 
 
 /**
@@ -66,23 +65,6 @@ public class PersistentSearchFactory implements IControlFactory<PersistentSearch
      */
     public PersistentSearchDecorator newCodecControl( PersistentSearch control )
     {
-        // protect against double decoration
-        if ( control instanceof PersistentSearchDecorator )
-        {
-            return ( PersistentSearchDecorator ) control;
-        }
-        else 
-        {
-            return new PersistentSearchDecorator( codec, control );
-        }
-    }
-
-    
-    /**
-     * {@inheritDoc}
-     */
-    public PersistentSearch newControl()
-    {
-        return new PersistentSearchImpl();
+        return new PersistentSearchDecorator( codec, control );
     }
 }

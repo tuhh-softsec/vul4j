@@ -74,13 +74,4 @@ public class ManageDsaITFactory implements IControlFactory<ManageDsaIT, ManageDs
     {
         return new ManageDsaITDecorator( codec, control );
     }
-    
-
-    /**
-     * {@inheritDoc}
-     */
-    public ManageDsaIT newControl()
-    {
-        return new ManageDsaITImpl();
-    }
 }

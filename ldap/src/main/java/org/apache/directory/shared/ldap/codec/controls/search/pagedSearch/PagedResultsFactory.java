@@ -23,7 +23,6 @@ package org.apache.directory.shared.ldap.codec.controls.search.pagedSearch;
 import org.apache.directory.shared.ldap.codec.IControlFactory;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.model.message.controls.PagedResults;
-import org.apache.directory.shared.ldap.model.message.controls.PagedResultsImpl;
 
 
 /**
@@ -73,14 +72,5 @@ public class PagedResultsFactory implements IControlFactory<PagedResults, PagedR
     public PagedResultsDecorator newCodecControl( PagedResults control )
     {
         return new PagedResultsDecorator( codec, control );
-    }
-
-    
-    /**
-     * {@inheritDoc}
-     */
-    public PagedResults newControl()
-    {
-        return new PagedResultsImpl();
     }
 }

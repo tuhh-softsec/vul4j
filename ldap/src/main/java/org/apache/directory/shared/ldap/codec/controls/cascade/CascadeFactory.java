@@ -74,13 +74,4 @@ public class CascadeFactory implements IControlFactory<Cascade, CascadeDecorator
     {
         return new CascadeDecorator( codec, control );
     }
-
-    
-    /**
-     * {@inheritDoc}
-     */
-    public Cascade newControl()
-    {
-        return new CascadeImpl();
-    }
 }

@@ -23,7 +23,6 @@ package org.apache.directory.shared.ldap.codec.controls.search.subentries;
 import org.apache.directory.shared.ldap.codec.IControlFactory;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.model.message.controls.Subentries;
-import org.apache.directory.shared.ldap.model.message.controls.SubentriesImpl;
 
 
 /**
@@ -74,23 +73,8 @@ public class SubentriesFactory implements IControlFactory<Subentries, Subentries
      * 
      * {@inheritDoc}
      */
-    public Subentries newControl()
-    {
-        return new SubentriesImpl();
-    }
-
-    
-    /**
-     * 
-     * {@inheritDoc}
-     */
     public SubentriesDecorator newCodecControl( Subentries control )
     {
-        if ( ! control.getOid().equals( Subentries.OID ) )
-        {
-            throw new IllegalArgumentException( "Bad control provided: " + control );
-        }
-        
         return new SubentriesDecorator( codec, control );
     }
 }

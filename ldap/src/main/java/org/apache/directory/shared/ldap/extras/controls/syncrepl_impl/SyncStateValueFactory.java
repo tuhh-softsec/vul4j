@@ -23,7 +23,6 @@ package org.apache.directory.shared.ldap.extras.controls.syncrepl_impl;
 import org.apache.directory.shared.ldap.codec.IControlFactory;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.extras.controls.SyncStateValue;
-import org.apache.directory.shared.ldap.extras.controls.SyncStateValueImpl;
 
 
 /**
@@ -34,12 +33,14 @@ import org.apache.directory.shared.ldap.extras.controls.SyncStateValueImpl;
  */
 public class SyncStateValueFactory implements IControlFactory<SyncStateValue, SyncStateValueDecorator>
 {
+    /** The codec for this factory */
     private ILdapCodecService codec;
     
 
     /**
      * Creates a new instance of SyncStateValueFactory.
      *
+     * @param codec The codec for this factory.
      */
     public SyncStateValueFactory( ILdapCodecService codec )
     {
@@ -48,7 +49,6 @@ public class SyncStateValueFactory implements IControlFactory<SyncStateValue, Sy
     
 
     /**
-     * 
      * {@inheritDoc}
      */
     public String getOid()
@@ -58,7 +58,6 @@ public class SyncStateValueFactory implements IControlFactory<SyncStateValue, Sy
 
     
     /**
-     * 
      * {@inheritDoc}
      */
     public SyncStateValueDecorator newCodecControl()
@@ -67,26 +66,11 @@ public class SyncStateValueFactory implements IControlFactory<SyncStateValue, Sy
     }
     
 
+    /**
+     * {@inheritDoc}
+     */
     public SyncStateValueDecorator newCodecControl( SyncStateValue control )
     {
-        SyncStateValueDecorator decorator = null;
-        
-        // protect against double decoration
-        if ( control instanceof SyncStateValueDecorator )
-        {
-            decorator = ( SyncStateValueDecorator ) control;
-        }
-        else
-        {
-            decorator = new SyncStateValueDecorator( codec, control );
-        }
-        
-        return decorator;
-    }
-
-    
-    public SyncStateValue newControl()
-    {
-        return new SyncStateValueImpl();
+        return new SyncStateValueDecorator( codec, control );
     }
 }

@@ -23,7 +23,6 @@ package org.apache.directory.shared.ldap.extras.controls.syncrepl_impl;
 import org.apache.directory.shared.ldap.codec.IControlFactory;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.extras.controls.SyncInfoValue;
-import org.apache.directory.shared.ldap.extras.controls.SyncInfoValueImpl;
 
 
 /**
@@ -41,6 +40,7 @@ public class SyncInfoValueFactory implements IControlFactory<SyncInfoValue, Sync
     /**
      * Creates a new instance of SyncInfoValueFactory.
      *
+     * @param codec The codec for this factory.
      */
     public SyncInfoValueFactory( ILdapCodecService codec )
     {
@@ -49,7 +49,6 @@ public class SyncInfoValueFactory implements IControlFactory<SyncInfoValue, Sync
     
 
     /**
-     * 
      * {@inheritDoc}
      */
     public String getOid()
@@ -59,7 +58,6 @@ public class SyncInfoValueFactory implements IControlFactory<SyncInfoValue, Sync
 
     
     /**
-     * 
      * {@inheritDoc}
      */
     public SyncInfoValueDecorator newCodecControl()
@@ -68,26 +66,11 @@ public class SyncInfoValueFactory implements IControlFactory<SyncInfoValue, Sync
     }
     
 
+    /**
+     * {@inheritDoc}
+     */
     public SyncInfoValueDecorator newCodecControl( SyncInfoValue control )
     {
-        SyncInfoValueDecorator decorator = null;
-        
-        // protect against double decoration
-        if ( control instanceof SyncInfoValueDecorator )
-        {
-            decorator = ( SyncInfoValueDecorator ) control;
-        }
-        else
-        {
-            decorator = new SyncInfoValueDecorator( codec, control );
-        }
-        
-        return decorator;
-    }
-
-    
-    public SyncInfoValue newControl()
-    {
-        return new SyncInfoValueImpl();
+        return new SyncInfoValueDecorator( codec, control );
     }
 }

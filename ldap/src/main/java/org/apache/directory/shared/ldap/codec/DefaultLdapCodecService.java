@@ -184,26 +184,16 @@ public class DefaultLdapCodecService implements ILdapCodecService
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
     public ICodecControl<? extends Control> newControl( String oid )
     {
-        try
+        IControlFactory<?,?> factory = controlFactories.get( oid );
+        
+        if ( factory == null )
         {
-            IControlFactory<?,?> factory = controlFactories.get( oid );
-            
-            if ( factory == null )
-            {
-                return new BasicControlDecorator<Control>( this, new OpaqueControl( oid ) );
-            }
-            
-            return factory.newCodecControl();
-        }
-        catch ( SecurityException e )
-        {
-            e.printStackTrace();
+            return new BasicControlDecorator<Control>( this, new OpaqueControl( oid ) );
         }
         
-        return null;
+        return factory.newCodecControl();
     }
 
 
@@ -212,23 +202,25 @@ public class DefaultLdapCodecService implements ILdapCodecService
      */
     public ICodecControl<? extends Control> newControl( Control control )
     {
-        try
+        if ( control == null )
         {
-            IControlFactory factory = controlFactories.get( control.getOid() );
-            
-            if ( factory == null )
-            {
-                return new BasicControlDecorator<Control>( this, control ); 
-            }
-            
-            return factory.newCodecControl( control );
-        }
-        catch ( SecurityException e )
-        {
-            e.printStackTrace();
+            throw new NullPointerException( "Control argument was null." );
         }
         
-        return null;
+        // protect agains being multiply decorated
+        if ( control instanceof ICodecControl )
+        {
+            return ( ICodecControl<?> )control;
+        }
+        
+        IControlFactory factory = controlFactories.get( control.getOid() );
+        
+        if ( factory == null )
+        {
+            return new BasicControlDecorator<Control>( this, control ); 
+        }
+        
+        return factory.newCodecControl( control );
     }
 
 

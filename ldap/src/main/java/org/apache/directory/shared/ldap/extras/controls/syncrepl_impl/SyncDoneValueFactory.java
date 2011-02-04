@@ -23,7 +23,6 @@ package org.apache.directory.shared.ldap.extras.controls.syncrepl_impl;
 import org.apache.directory.shared.ldap.codec.IControlFactory;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.extras.controls.SyncDoneValue;
-import org.apache.directory.shared.ldap.extras.controls.SyncDoneValueImpl;
 
 
 /**
@@ -34,13 +33,14 @@ import org.apache.directory.shared.ldap.extras.controls.SyncDoneValueImpl;
  */
 public class SyncDoneValueFactory implements IControlFactory<SyncDoneValue, SyncDoneValueDecorator>
 {
-    
+    /** The codec for this factory */
     private ILdapCodecService codec;
     
 
     /**
      * Creates a new instance of SyncDoneValueFactory.
      *
+     * @param codec The codec for this factory.
      */
     public SyncDoneValueFactory( ILdapCodecService codec )
     {
@@ -49,7 +49,6 @@ public class SyncDoneValueFactory implements IControlFactory<SyncDoneValue, Sync
     
 
     /**
-     * 
      * {@inheritDoc}
      */
     public String getOid()
@@ -59,7 +58,6 @@ public class SyncDoneValueFactory implements IControlFactory<SyncDoneValue, Sync
 
     
     /**
-     * 
      * {@inheritDoc}
      */
     public SyncDoneValueDecorator newCodecControl()
@@ -68,26 +66,11 @@ public class SyncDoneValueFactory implements IControlFactory<SyncDoneValue, Sync
     }
     
 
+    /**
+     * {@inheritDoc}
+     */
     public SyncDoneValueDecorator newCodecControl( SyncDoneValue control )
     {
-        SyncDoneValueDecorator decorator = null;
-        
-        // protect against double decoration
-        if ( control instanceof SyncDoneValueDecorator )
-        {
-            decorator = ( SyncDoneValueDecorator ) control;
-        }
-        else
-        {
-            decorator = new SyncDoneValueDecorator( codec, control );
-        }
-        
-        return decorator;
-    }
-
-    
-    public SyncDoneValue newControl()
-    {
-        return new SyncDoneValueImpl();
+        return new SyncDoneValueDecorator( codec, control );
     }
 }

@@ -23,7 +23,6 @@ package org.apache.directory.shared.ldap.extras.controls.syncrepl_impl;
 import org.apache.directory.shared.ldap.codec.IControlFactory;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.extras.controls.SyncModifyDn;
-import org.apache.directory.shared.ldap.extras.controls.SyncModifyDnImpl;
 
 
 /**
@@ -41,6 +40,7 @@ public class SyncModifyDnFactory implements IControlFactory<SyncModifyDn, SyncMo
     /**
      * Creates a new instance of SyncModifyDnFactory.
      *
+     * @param codec The codec for this factory.
      */
     public SyncModifyDnFactory( ILdapCodecService codec )
     {
@@ -49,7 +49,6 @@ public class SyncModifyDnFactory implements IControlFactory<SyncModifyDn, SyncMo
     
 
     /**
-     * 
      * {@inheritDoc}
      */
     public String getOid()
@@ -59,7 +58,6 @@ public class SyncModifyDnFactory implements IControlFactory<SyncModifyDn, SyncMo
 
     
     /**
-     * 
      * {@inheritDoc}
      */
     public SyncModifyDnDecorator newCodecControl()
@@ -68,26 +66,11 @@ public class SyncModifyDnFactory implements IControlFactory<SyncModifyDn, SyncMo
     }
     
 
+    /**
+     * {@inheritDoc}
+     */
     public SyncModifyDnDecorator newCodecControl( SyncModifyDn control )
     {
-        SyncModifyDnDecorator decorator = null;
-        
-        // protect against double decoration
-        if ( control instanceof SyncModifyDnDecorator )
-        {
-            decorator = ( SyncModifyDnDecorator ) control;
-        }
-        else
-        {
-            decorator = new SyncModifyDnDecorator( codec, control );
-        }
-        
-        return decorator;
-    }
-
-    
-    public SyncModifyDn newControl()
-    {
-        return new SyncModifyDnImpl();
+        return new SyncModifyDnDecorator( codec, control );
     }
 }

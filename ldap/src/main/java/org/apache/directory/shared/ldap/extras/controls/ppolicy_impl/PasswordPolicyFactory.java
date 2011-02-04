@@ -23,7 +23,6 @@ package org.apache.directory.shared.ldap.extras.controls.ppolicy_impl;
 import org.apache.directory.shared.ldap.codec.IControlFactory;
 import org.apache.directory.shared.ldap.codec.ILdapCodecService;
 import org.apache.directory.shared.ldap.extras.controls.PasswordPolicy;
-import org.apache.directory.shared.ldap.extras.controls.PasswordPolicyImpl;
 
 
 /**
@@ -74,28 +73,6 @@ public class PasswordPolicyFactory implements IControlFactory<PasswordPolicy, Pa
      */
     public PasswordPolicyDecorator newCodecControl( PasswordPolicy control )
     {
-        PasswordPolicyDecorator decorator = null;
-        
-        // protect against double decoration
-        if ( control instanceof PasswordPolicyDecorator )
-        {
-            decorator = ( PasswordPolicyDecorator ) control;
-        }
-        else
-        {
-            decorator = new PasswordPolicyDecorator( codec, control );
-        }
-        
-        return decorator;
-    }
-
-    
-    /**
-     * 
-     * {@inheritDoc}
-     */
-    public PasswordPolicy newControl()
-    {
-        return new PasswordPolicyImpl();
+        return new PasswordPolicyDecorator( codec, control );
     }
 }
