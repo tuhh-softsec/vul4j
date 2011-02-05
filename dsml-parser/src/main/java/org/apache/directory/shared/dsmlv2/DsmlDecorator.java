@@ -29,7 +29,7 @@ import org.dom4j.Element;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface DsmlDecorator
+public interface DsmlDecorator<E>
 {
     /**
      * Converts the request/reponse to its XML representation in the DSMLv2 format
@@ -40,4 +40,12 @@ public interface DsmlDecorator
      *      the dom4j Element corresponding to the entry.
      */
     Element toDsml( Element root );
+    
+    
+    /**
+     * Gets the Message this DsmlDecorator decorates.
+     * 
+     * @return The decorated Message instance
+     */
+    E getDecorated();
 }

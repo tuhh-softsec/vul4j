@@ -41,7 +41,7 @@ import org.dom4j.Element;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class LdapResultDsml implements DsmlDecorator
+public class LdapResultDsml implements DsmlDecorator<LdapResult>
 {
     /** The LDAP Result to decorate */
     private LdapResult result;
@@ -211,5 +211,14 @@ public class LdapResultDsml implements DsmlDecorator
     public void setResultCode( ResultCodeEnum resultCode )
     {
         result.setResultCode( resultCode );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public LdapResult getDecorated()
+    {
+        return result;
     }
 }

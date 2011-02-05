@@ -20,14 +20,8 @@
 package org.apache.directory.shared.dsmlv2.reponse;
 
 
-import java.nio.ByteBuffer;
-
-import org.apache.directory.shared.asn1.EncoderException;
-import org.apache.directory.shared.dsmlv2.DsmlDecorator;
-import org.apache.directory.shared.ldap.codec.CodecControl;
 import org.apache.directory.shared.ldap.codec.LdapCodecService;
-import org.apache.directory.shared.ldap.codec.decorators.ResponseDecorator;
-import org.apache.directory.shared.ldap.model.message.Control;
+import org.apache.directory.shared.ldap.model.message.LdapResult;
 import org.apache.directory.shared.ldap.model.message.ResultResponse;
 import org.dom4j.Element;
 
@@ -37,17 +31,17 @@ import org.dom4j.Element;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public abstract class AbstractResultResponseDsml<E extends ResultResponse> extends ResponseDecorator<E> implements DsmlDecorator
+public abstract class AbstractResultResponseDsml<E extends ResultResponse> 
+    extends AbstractResponseDsml<ResultResponse> implements ResultResponse
 {
-
     /**
      * Instantiates a new abstract DSML response.
      *
      * @param ldapMessage the LDAP message to decorate
      */
-    public AbstractResultResponseDsml( LdapCodecService codec, E ldapMessage )
+    public AbstractResultResponseDsml( LdapCodecService codec, E resultResponse )
     {
-        super( codec, ldapMessage );
+        super( codec, resultResponse );
     }
 
 
@@ -60,72 +54,8 @@ public abstract class AbstractResultResponseDsml<E extends ResultResponse> exten
     /**
      * {@inheritDoc}
      */
-    public void addAllControls( Control[] controls )
+    public LdapResult getLdapResult()
     {
-        // TODO Auto-generated method stub
-
+        return getDecorated().getLdapResult();
     }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public Object get( Object key )
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public CodecControl<? extends Control> getCurrentControl()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean hasControl( String oid )
-    {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public Object put( Object key, Object value )
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public void removeControl( Control control )
-    {
-        // TODO Auto-generated method stub
-
-    }
-
-
-    public int computeLength()
-    {
-        return 0;
-    }
-
-
-    public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
-    {
-        return null;
-    }
-
 }

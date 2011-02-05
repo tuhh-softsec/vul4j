@@ -17,11 +17,11 @@
  *  under the License. 
  *  
  */
-
 package org.apache.directory.shared.dsmlv2.reponse;
 
 
 import org.apache.directory.shared.dsmlv2.DsmlDecorator;
+import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.AbstractResponse;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.message.Response;
@@ -43,9 +43,12 @@ import org.dom4j.Element;
  *     <li>OTHER</li>
  * </ul>
  * 
+ * @TODO review this class - maybe it should not be decorated and if it is 
+ * it should extend AbstractResultResponseDsml - by Alex
+ * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ErrorResponse extends AbstractResponse implements Response, DsmlDecorator
+public class ErrorResponse extends AbstractResponse implements Response, DsmlDecorator<Response>
 {
     /**
      * This enum represents the different types of error response
@@ -257,5 +260,19 @@ public class ErrorResponse extends AbstractResponse implements Response, DsmlDec
     public void setErrorType( ErrorResponseType errorType )
     {
         this.errorType = errorType;
+    }
+
+
+    public LdapCodecService getCodecService()
+    {
+        throw new IllegalArgumentException( "This should not be a decorator " +
+        		"but seems it was made into one. We need to do something about" +
+        		"this if this exception is being raise." );
+    }
+
+
+    public Response getDecorated()
+    {
+        return this;
     }
 }
