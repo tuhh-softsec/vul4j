@@ -379,7 +379,7 @@ public interface Digester extends ContentHandler, DTDHandler, EntityResolver, Er
     /**
      * Allows retrieve the bound converter for the given type.
      *
-     * NOTE: the first version will be a commons-beanutils Converter façade.
+     * NOTE: the first version will be a commons-beanutils Converter facade.
      *
      * @param <T>
      * @param type
