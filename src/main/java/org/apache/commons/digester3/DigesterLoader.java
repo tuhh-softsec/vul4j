@@ -158,6 +158,13 @@ public final class DigesterLoader {
     }
 
     /**
+     * Return the "namespace aware" flag for parsers we create.
+     */
+    public boolean isNamespaceAware() {
+        return this.factory.isNamespaceAware();
+    }
+
+    /**
      * Set the XInclude-aware flag for parsers we create. This additionally
      * requires namespace-awareness.
      *
@@ -170,6 +177,16 @@ public final class DigesterLoader {
     }
 
     /**
+     * Return the XInclude-aware flag for parsers we create;
+     *
+     * @return true, if the XInclude-aware flag for parsers we create is set,
+     *         false otherwise
+     */
+    public boolean isXIncludeAware() {
+        return this.factory.isXIncludeAware();
+    }
+
+    /**
      * Set the validating parser flag.
      *
      * @param validating The new validating parser flag.
@@ -177,6 +194,15 @@ public final class DigesterLoader {
     public DigesterLoader setValidating(boolean validating) {
         this.factory.setValidating(validating);
         return this;
+    }
+
+    /**
+     * Return the validating parser flag.
+     *
+     * @return true, if the validating parser flag is set, false otherwise
+     */
+    public boolean isValidating() {
+        return this.factory.isValidating();
     }
 
     /**
