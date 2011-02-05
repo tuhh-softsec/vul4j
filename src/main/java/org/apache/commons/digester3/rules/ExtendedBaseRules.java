@@ -187,7 +187,7 @@ public class ExtendedBaseRules extends BaseRules {
      */
     @Override
     public void registerRule(String pattern, Rule rule) {
-        super.add(pattern, rule);
+        super.registerRule(pattern, rule);
         this.counter++;
         this.order.put(rule, this.counter);
     }
