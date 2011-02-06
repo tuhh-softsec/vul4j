@@ -38,7 +38,6 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * 
  * A LDAP message decoder. It is based on shared-ldap decoder.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
@@ -65,7 +64,7 @@ public class LdapProtocolDecoder implements ProtocolDecoder
     {
         // Allocate a LdapMessage Container
         Asn1Decoder ldapDecoder = new Asn1Decoder();
-        Asn1Container ldapMessageContainer = ( LdapMessageContainer ) session.getAttribute( "LDAP-Container" );
+        Asn1Container ldapMessageContainer = ( LdapMessageContainer<?> ) session.getAttribute( "LDAP-Container" );
         ByteBuffer buf = buffer.buf();
         int currentPos = 0;
 
@@ -90,7 +89,7 @@ public class LdapProtocolDecoder implements ProtocolDecoder
                 if ( ldapMessageContainer.getState() == TLVStateEnum.PDU_DECODED )
                 {
                     // get back the decoded message
-                    Message message = ( ( LdapMessageContainer ) ldapMessageContainer ).getMessage();
+                    Message message = ( ( LdapMessageContainer<?> ) ldapMessageContainer ).getMessage();
 
                     if ( IS_DEBUG )
                     {
@@ -99,7 +98,7 @@ public class LdapProtocolDecoder implements ProtocolDecoder
                     }
 
                     // Clean the container for the next decoding
-                    ( ( LdapMessageContainer ) ldapMessageContainer ).clean();
+                    ( ( LdapMessageContainer<?> ) ldapMessageContainer ).clean();
 
                     // Send back the message
                     out.write( message );
@@ -108,7 +107,7 @@ public class LdapProtocolDecoder implements ProtocolDecoder
             catch ( DecoderException de )
             {
                 buf.clear();
-                ( ( LdapMessageContainer ) ldapMessageContainer ).clean();
+                ( ( LdapMessageContainer<?> ) ldapMessageContainer ).clean();
                 throw de;
             }
         }

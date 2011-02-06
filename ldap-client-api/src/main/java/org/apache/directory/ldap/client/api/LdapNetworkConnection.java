@@ -126,7 +126,6 @@ import org.apache.directory.shared.ldap.model.message.SearchResultEntry;
 import org.apache.directory.shared.ldap.model.message.SearchResultReference;
 import org.apache.directory.shared.ldap.model.message.UnbindRequest;
 import org.apache.directory.shared.ldap.model.message.UnbindRequestImpl;
-import org.apache.directory.shared.ldap.model.message.controls.AbstractControl;
 import org.apache.directory.shared.ldap.model.message.controls.OpaqueControl;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.name.Rdn;
