@@ -21,7 +21,7 @@
 package org.apache.directory.shared.dsmlv2.delRequest;
 
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertEquals; 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -32,8 +32,8 @@ import java.util.Map;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.dsmlv2.AbstractTest;
+import org.apache.directory.shared.dsmlv2.DsmlControl;
 import org.apache.directory.shared.dsmlv2.Dsmlv2Parser;
-import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.DeleteRequest;
 import org.apache.directory.shared.util.Strings;
@@ -153,7 +153,7 @@ public class DelRequestTest extends AbstractTest
         assertNotNull( control );
         assertTrue( control.isCritical() );
         assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
-        assertEquals( "Some text", Strings.utf8ToString((byte[]) ((ControlDecorator<Control>)control).getValue()) );
+        assertEquals( "Some text", Strings.utf8ToString((byte[]) ( ( DsmlControl<?> ) control ).getValue()) );
     }
 
 
@@ -188,7 +188,7 @@ public class DelRequestTest extends AbstractTest
         assertNotNull( control );
         assertTrue( control.isCritical() );
         assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
-        assertEquals( "DSMLv2.0 rocks!!", Strings.utf8ToString((byte[]) ((ControlDecorator<Control>)control).getValue()) );
+        assertEquals( "DSMLv2.0 rocks!!", Strings.utf8ToString((byte[]) ( ( DsmlControl<?> ) control ).getValue()) );
     }
 
 
@@ -223,7 +223,7 @@ public class DelRequestTest extends AbstractTest
         assertNotNull( control );
         assertTrue( control.isCritical() );
         assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
-        assertFalse( ((ControlDecorator<Control>)control).hasValue() );
+        assertFalse( ( ( DsmlControl<?> ) control ).hasValue() );
     }
 
 
@@ -257,7 +257,7 @@ public class DelRequestTest extends AbstractTest
         assertNotNull( control );
         assertFalse( control.isCritical() );
         assertEquals( "1.2.840.113556.1.4.789", control.getOid() );
-        assertEquals( "Some other text", Strings.utf8ToString((byte[]) ((ControlDecorator<Control>)control).getValue()) );
+        assertEquals( "Some other text", Strings.utf8ToString((byte[]) ( ( DsmlControl<?> ) control ).getValue()) );
     }
 
 
@@ -292,7 +292,7 @@ public class DelRequestTest extends AbstractTest
         assertNotNull( control );
         assertTrue( control.isCritical() );
         assertEquals( "1.2.840.113556.1.4.456", control.getOid() );
-        assertFalse( ((ControlDecorator<Control>)control).hasValue() );
+        assertFalse( ( ( DsmlControl<?> ) control ).hasValue() );
     }
 
 

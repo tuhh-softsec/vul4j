@@ -28,11 +28,11 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 
-import org.apache.directory.shared.dsmlv2.request.BatchRequest;
+import org.apache.directory.shared.dsmlv2.request.BatchRequestDsml;
 import org.apache.directory.shared.dsmlv2.request.Dsmlv2Grammar;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapCodecService;
-import org.apache.directory.shared.ldap.model.message.Message;
+import org.apache.directory.shared.ldap.model.message.Request;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -215,7 +215,7 @@ public class Dsmlv2Parser
      * @return 
      *      the Batch Request or null if the it has not been parsed yet
      */
-    public BatchRequest getBatchRequest()
+    public BatchRequestDsml getBatchRequest()
     {
         return container.getBatchRequest();
     }
@@ -228,7 +228,7 @@ public class Dsmlv2Parser
      * @throws XmlPullParserException      
      *      when an error occurs during the parsing
      */
-    public Message getNextRequest() throws XmlPullParserException
+    public DsmlDecorator<? extends Request> getNextRequest() throws XmlPullParserException
     {
         if ( container.getBatchRequest() == null )
         {

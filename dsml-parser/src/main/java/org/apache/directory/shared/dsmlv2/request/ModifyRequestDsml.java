@@ -25,6 +25,8 @@ import java.util.Iterator;
 
 import org.apache.directory.shared.dsmlv2.ParserUtils;
 import org.apache.directory.shared.ldap.codec.LdapCodecService;
+import org.apache.directory.shared.ldap.model.entry.DefaultEntryAttribute;
+import org.apache.directory.shared.ldap.model.entry.DefaultModification;
 import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.model.entry.Modification;
 import org.apache.directory.shared.ldap.model.entry.ModificationOperation;
@@ -47,6 +49,14 @@ public class ModifyRequestDsml
     extends AbstractResultResponseRequestDsml<ModifyRequest>
     implements ModifyRequest
 {
+
+    /** The current attribute being decoded */
+    private EntryAttribute currentAttribute;
+
+    /** A local storage for the operation */
+    private ModificationOperation currentOperation;
+    
+    
     /**
      * Creates a new getDecoratedMessage() of ModifyRequestDsml.
      */
@@ -69,11 +79,58 @@ public class ModifyRequestDsml
 
 
     /**
-     * {@inheritDoc}
+     * Return the current attribute's type
      */
-    public MessageTypeEnum getType()
+    public String getCurrentAttributeType()
     {
-        return getDecorated().getType();
+        return currentAttribute.getId();
+    }
+
+    
+    /**
+     * Store the current operation
+     * 
+     * @param currentOperation The currentOperation to set.
+     */
+    public void setCurrentOperation( int currentOperation )
+    {
+        this.currentOperation = ModificationOperation.getOperation( currentOperation );
+    }
+
+
+    /**
+     * Add a new attributeTypeAndValue
+     * 
+     * @param type The attribute's name
+     */
+    public void addAttributeTypeAndValues( String type )
+    {
+        currentAttribute = new DefaultEntryAttribute( type );
+
+        Modification modification = new DefaultModification( currentOperation, currentAttribute );
+        getDecorated().addModification( modification );
+    }
+
+
+    /**
+     * Add a new value to the current attribute
+     * 
+     * @param value The value to add
+     */
+    public void addAttributeValue( byte[] value )
+    {
+        currentAttribute.add( value );
+    }
+
+
+    /**
+     * Add a new value to the current attribute
+     * 
+     * @param value The value to add
+     */
+    public void addAttributeValue( String value )
+    {
+        currentAttribute.add( value );
     }
 
 
@@ -151,6 +208,11 @@ public class ModifyRequestDsml
     }
 
 
+    //-------------------------------------------------------------------------
+    // The ModifyRequest methods
+    //-------------------------------------------------------------------------
+    
+    
     /**
      * {@inheritDoc}
      */

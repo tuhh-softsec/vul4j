@@ -68,14 +68,14 @@ public abstract class MessageDecorator<E extends Message> implements Message, De
     /** Map of message controls using OID Strings for keys and Control values */
     private final Map<String, Control> controls;
 
+    /** The current control */
+    private CodecControl<? extends Control> currentControl;
+
     /** The encoded Message length */
     protected int messageLength;
 
     /** The length of the controls */
     private int controlsLength;
-
-    /** The current control */
-    private CodecControl<? extends Control> currentControl;
     
     /** The LdapCodecService */
     private final LdapCodecService codec;

@@ -20,6 +20,7 @@
 package org.apache.directory.shared.dsmlv2;
 
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.directory.shared.ldap.codec.LdapCodecService;
@@ -39,20 +40,36 @@ public abstract class AbstractDsmlMessageDecorator<E extends Message>
 {
     /** The LDAP message codec */
     private final LdapCodecService codec;
+
     /** The LDAP message */
     private final E message;
     
+    /** Map of message controls using OID Strings for keys and Control values */
+    private final Map<String, Control> controls;
+
+    /** The current control */
+    private DsmlControl<? extends Control> currentControl;
+
     
     public AbstractDsmlMessageDecorator( LdapCodecService codec, E message )
     {
         this.codec = codec;
         this.message = message;
+        controls = new HashMap<String, Control>();
     }
     
     
     /**
-     * {@inheritDoc}
+     * Get the current Control Object
+     * 
+     * @return The current Control Object
      */
+    public DsmlControl<? extends Control> getCurrentControl()
+    {
+        return currentControl;
+    }
+
+    
     public LdapCodecService getCodecService()
     {
         return codec;
@@ -73,7 +90,7 @@ public abstract class AbstractDsmlMessageDecorator<E extends Message>
      */
     public Map<String, Control> getControls()
     {
-        return message.getControls();
+        return controls;
     }
 
     
@@ -82,7 +99,7 @@ public abstract class AbstractDsmlMessageDecorator<E extends Message>
      */
     public Control getControl( String oid )
     {
-        return message.getControl( oid );
+        return controls.get( oid );
     }
 
     
@@ -91,7 +108,7 @@ public abstract class AbstractDsmlMessageDecorator<E extends Message>
      */
     public boolean hasControl( String oid )
     {
-        return message.hasControl( oid );
+        return controls.containsKey( oid );
     }
 
     
@@ -100,7 +117,23 @@ public abstract class AbstractDsmlMessageDecorator<E extends Message>
      */
     public void addControl( Control control ) throws MessageException
     {
-        message.addControl( control );
+        Control decorated;
+        DsmlControl<? extends Control> decorator;
+        
+        if ( control instanceof DsmlControl )
+        {
+            decorator = ( DsmlControl<?> ) control;
+            decorated = decorator.getDecorated();
+        }
+        else
+        {
+            decorator = new DsmlControl<Control>( codec, codec.newControl( control ) );
+            decorated = control;
+        }
+        
+        message.addControl( decorated );
+        controls.put( control.getOid(), decorator );
+        currentControl = decorator;
     }
 
     
@@ -109,7 +142,10 @@ public abstract class AbstractDsmlMessageDecorator<E extends Message>
      */
     public void addAllControls( Control[] controls ) throws MessageException
     {
-        message.addAllControls( controls );
+        for ( Control control : controls )
+        {
+            addControl( control );
+        }
     }
 
     
@@ -118,6 +154,7 @@ public abstract class AbstractDsmlMessageDecorator<E extends Message>
      */
     public void removeControl( Control control ) throws MessageException
     {
+        controls.remove( control.getOid() );
         message.removeControl( control );
     }
 

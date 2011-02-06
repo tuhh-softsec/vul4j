@@ -139,7 +139,7 @@ public class ExtendedRequestDsml
      */
     public void setRequestValue( byte[] requestValue )
     {
-        getDecorated().getRequestValue();
+        getDecorated().setRequestValue( requestValue );
     }
 
 

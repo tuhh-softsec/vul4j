@@ -30,9 +30,9 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.directory.shared.dsmlv2.request.BatchRequest;
-import org.apache.directory.shared.dsmlv2.request.BatchRequest.Processing;
-import org.apache.directory.shared.dsmlv2.request.BatchRequest.ResponseOrder;
+import org.apache.directory.shared.dsmlv2.request.BatchRequestDsml;
+import org.apache.directory.shared.dsmlv2.request.BatchRequestDsml.Processing;
+import org.apache.directory.shared.dsmlv2.request.BatchRequestDsml.ResponseOrder;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.CodecControl;
 import org.apache.directory.shared.ldap.codec.LdapCodecService;
@@ -278,7 +278,7 @@ public final class ParserUtils
      */
     public static boolean isRequestIdNeeded( Dsmlv2Container container ) throws XmlPullParserException
     {
-        BatchRequest batchRequest = container.getBatchRequest();
+        BatchRequestDsml batchRequest = container.getBatchRequest();
 
         if ( batchRequest == null )
         {

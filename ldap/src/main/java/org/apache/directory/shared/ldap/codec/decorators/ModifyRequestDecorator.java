@@ -231,7 +231,7 @@ public class ModifyRequestDecorator extends SingleReplyRequestDecorator<ModifyRe
 
 
     //-------------------------------------------------------------------------
-    // The SearchResultReference methods
+    // The ModifyRequest methods
     //-------------------------------------------------------------------------
     
     

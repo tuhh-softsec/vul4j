@@ -29,7 +29,9 @@ import java.util.Set;
 
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.util.OID;
+import org.apache.directory.shared.dsmlv2.AbstractDsmlMessageDecorator;
 import org.apache.directory.shared.dsmlv2.AbstractGrammar;
+import org.apache.directory.shared.dsmlv2.DsmlControl;
 import org.apache.directory.shared.dsmlv2.DsmlDecorator;
 import org.apache.directory.shared.dsmlv2.Dsmlv2Container;
 import org.apache.directory.shared.dsmlv2.Dsmlv2StatesEnum;
@@ -41,17 +43,6 @@ import org.apache.directory.shared.dsmlv2.Tag;
 import org.apache.directory.shared.dsmlv2.reponse.ErrorResponse.ErrorResponseType;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.CodecControl;
-import org.apache.directory.shared.ldap.codec.decorators.AddResponseDecorator;
-import org.apache.directory.shared.ldap.codec.decorators.BindResponseDecorator;
-import org.apache.directory.shared.ldap.codec.decorators.CompareResponseDecorator;
-import org.apache.directory.shared.ldap.codec.decorators.DeleteResponseDecorator;
-import org.apache.directory.shared.ldap.codec.decorators.ExtendedResponseDecorator;
-import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
-import org.apache.directory.shared.ldap.codec.decorators.ModifyDnResponseDecorator;
-import org.apache.directory.shared.ldap.codec.decorators.ModifyResponseDecorator;
-import org.apache.directory.shared.ldap.codec.decorators.SearchResultDoneDecorator;
-import org.apache.directory.shared.ldap.codec.decorators.SearchResultEntryDecorator;
-import org.apache.directory.shared.ldap.codec.decorators.SearchResultReferenceDecorator;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.exception.LdapURLEncodingException;
@@ -796,9 +787,9 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            AddResponseDecorator addResponse = new AddResponseDecorator( container.getLdapCodecService(), new AddResponseImpl() );
-            AddResponseDsml addResponseDsml = new AddResponseDsml( container.getLdapCodecService(), addResponse );
-            container.getBatchResponse().addResponse( addResponseDsml );
+            AddResponseDsml addResponse = new AddResponseDsml( 
+                container.getLdapCodecService(), new AddResponseImpl() );
+            container.getBatchResponse().addResponse( addResponse );
 
             LdapResult ldapResult = addResponse.getLdapResult();
 
@@ -838,9 +829,9 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            BindResponseDecorator bindResponse = new BindResponseDecorator( container.getLdapCodecService(), new BindResponseImpl() );
-            BindResponseDsml bindResponseDsml = new BindResponseDsml( container.getLdapCodecService(), bindResponse );
-            container.getBatchResponse().addResponse( bindResponseDsml );
+            BindResponseDsml bindResponse = new BindResponseDsml( 
+                container.getLdapCodecService(), new BindResponseImpl() );
+            container.getBatchResponse().addResponse( bindResponse );
 
             LdapResult ldapResult = bindResponse.getLdapResult();
 
@@ -881,9 +872,9 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            CompareResponseDecorator compareResponse = new CompareResponseDecorator( container.getLdapCodecService(), new CompareResponseImpl() );
-            CompareResponseDsml compareResponseDsml = new CompareResponseDsml( container.getLdapCodecService(), compareResponse );
-            container.getBatchResponse().addResponse( compareResponseDsml );
+            CompareResponseDsml compareResponse = new CompareResponseDsml( 
+                container.getLdapCodecService(), new CompareResponseImpl() );
+            container.getBatchResponse().addResponse( compareResponse );
 
             LdapResult ldapResult = compareResponse.getLdapResult();
 
@@ -923,9 +914,9 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            DeleteResponseDecorator delResponse = new DeleteResponseDecorator( container.getLdapCodecService(), new DeleteResponseImpl() );
-            DelResponseDsml delResponseDsml = new DelResponseDsml( container.getLdapCodecService(), delResponse );
-            container.getBatchResponse().addResponse( delResponseDsml );
+            DelResponseDsml delResponse = new DelResponseDsml( 
+                container.getLdapCodecService(), new DeleteResponseImpl() );
+            container.getBatchResponse().addResponse( delResponse );
 
             LdapResult ldapResult = delResponse.getLdapResult();
 
@@ -965,9 +956,9 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            ModifyResponseDecorator modifyResponse = new ModifyResponseDecorator( container.getLdapCodecService(), new ModifyResponseImpl() );
-            ModifyResponseDsml modifyResponseDsml = new ModifyResponseDsml( container.getLdapCodecService(), modifyResponse );
-            container.getBatchResponse().addResponse( modifyResponseDsml );
+            ModifyResponseDsml modifyResponse = new ModifyResponseDsml( 
+                container.getLdapCodecService(), new ModifyResponseImpl() );
+            container.getBatchResponse().addResponse( modifyResponse );
 
             LdapResult ldapResult = modifyResponse.getLdapResult();
 
@@ -1007,11 +998,11 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            ModifyDnResponseDecorator modifyDNResponse = new ModifyDnResponseDecorator( container.getLdapCodecService(), new ModifyDnResponseImpl() );
-            ModDNResponseDsml modDNResponseDsml = new ModDNResponseDsml( container.getLdapCodecService(), modifyDNResponse );
-            container.getBatchResponse().addResponse( modDNResponseDsml );
+            ModDNResponseDsml modDNResponse = new ModDNResponseDsml( 
+                container.getLdapCodecService(), new ModifyDnResponseImpl() );
+            container.getBatchResponse().addResponse( modDNResponse );
 
-            LdapResult ldapResult = modifyDNResponse.getLdapResult();
+            LdapResult ldapResult = modDNResponse.getLdapResult();
 
             XmlPullParser xpp = container.getParser();
 
@@ -1022,7 +1013,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
 
             if ( attributeValue != null )
             {
-                modifyDNResponse.setMessageId( ParserUtils.parseAndVerifyRequestID( attributeValue, xpp ) );
+                modDNResponse.setMessageId( ParserUtils.parseAndVerifyRequestID( attributeValue, xpp ) );
             }
 
             // MatchedDN
@@ -1049,7 +1040,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            ExtendedResponseDecorator extendedResponse = null;
+            ExtendedResponseDsml extendedResponse = null;
 
             // Checking and adding the batchRequest's attributes
             String attributeValue;
@@ -1061,15 +1052,17 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
 
             if ( attributeValue != null )
             {
-                extendedResponse = new ExtendedResponseDecorator( container.getLdapCodecService(), new ExtendedResponseImpl( ParserUtils.parseAndVerifyRequestID( attributeValue, xpp ) ) );
+                extendedResponse = new ExtendedResponseDsml( 
+                    container.getLdapCodecService(), new ExtendedResponseImpl( 
+                        ParserUtils.parseAndVerifyRequestID( attributeValue, xpp ) ) );
             }
             else
             {
-                extendedResponse = new ExtendedResponseDecorator( container.getLdapCodecService(), new ExtendedResponseImpl( -1 ) );
+                extendedResponse = new ExtendedResponseDsml( 
+                    container.getLdapCodecService(), new ExtendedResponseImpl( -1 ) );
             }
 
-            ExtendedResponseDsml extendedResponseDsml = new ExtendedResponseDsml( container.getLdapCodecService(), extendedResponse );
-            container.getBatchResponse().addResponse( extendedResponseDsml );
+            container.getBatchResponse().addResponse( extendedResponse );
 
             LdapResult ldapResult = extendedResponse.getLdapResult();
 
@@ -1197,7 +1190,8 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
      * @param parent the parent 
      * @throws XmlPullParserException
      */
-    private void createAndAddControl( Dsmlv2Container container, Message parent ) throws XmlPullParserException
+    private void createAndAddControl( Dsmlv2Container container, 
+        AbstractDsmlMessageDecorator<? extends Message> parent ) throws XmlPullParserException
     {
         CodecControl<? extends Control> control = null;
 
@@ -1249,18 +1243,18 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            DsmlDecorator<? extends Response> ldapResponse = 
+            AbstractDsmlMessageDecorator<? extends Message> message =
+                ( AbstractDsmlMessageDecorator<? extends Message> ) 
                 container.getBatchResponse().getCurrentResponse();
             
-            // Search Response is a special case
-            if ( ldapResponse.getDecorated() instanceof SearchResponse )
+            if ( message instanceof SearchResponseDsml )
             {
-                createAndAddControl( container, ( ( SearchResponse ) 
-                    ldapResponse.getDecorated() ).getSearchResultDone() );
+                createAndAddControl( container, 
+                    ( ( SearchResponse ) ( ( SearchResponseDsml ) message ).getDecorated() ).getSearchResultDone() );
             }
             else
             {
-                createAndAddControl( container, ldapResponse.getDecorated() );
+                createAndAddControl( container, message );
             }
         }
     };
@@ -1273,9 +1267,11 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            Message ldapMessage = ( ( SearchResponse ) container.getBatchResponse().getCurrentResponse().getDecorated() )
-                .getCurrentSearchResultEntry();
-            createAndAddControl( container, ldapMessage );
+            SearchResponse response = ( SearchResponse )
+            ( ( SearchResponseDsml ) container.getBatchResponse()
+                .getCurrentResponse() ).getDecorated();
+        
+            createAndAddControl( container, response.getCurrentSearchResultEntry() );
         }
     };
 
@@ -1287,9 +1283,11 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            Message ldapMessage = ( ( SearchResponse ) container.getBatchResponse().getCurrentResponse().getDecorated() )
-                .getCurrentSearchResultReference();
-            createAndAddControl( container, ldapMessage );
+            SearchResponse response = ( SearchResponse )
+                ( ( SearchResponseDsml ) container.getBatchResponse()
+                    .getCurrentResponse() ).getDecorated();
+            
+            createAndAddControl( container, response.getCurrentSearchResultReference() );
         }
     };
 
@@ -1300,9 +1298,12 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
      * @param parent the parent 
      * @throws XmlPullParserException
      */
-    private void createAndAddControlValue( Dsmlv2Container container, Message parent ) throws XmlPullParserException
+    private void createAndAddControlValue( Dsmlv2Container container, 
+        AbstractDsmlMessageDecorator<? extends Message> parent ) 
+        throws XmlPullParserException
     {
-        CodecControl<? extends Control> control = ( ( MessageDecorator<?> ) parent ).getCurrentControl();
+        DsmlControl<? extends Control> control = 
+            ( ( AbstractDsmlMessageDecorator<?> ) parent ).getCurrentControl();
 
         XmlPullParser xpp = container.getParser();
         try
@@ -1339,19 +1340,20 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            
-            DsmlDecorator<? extends Response> ldapResponse = 
+            AbstractDsmlMessageDecorator<? extends Response> response
+                = ( AbstractDsmlMessageDecorator<? extends Response> )
                 container.getBatchResponse().getCurrentResponse();
             
-            // Search Response is a special case
-            if ( ldapResponse.getDecorated() instanceof SearchResponse )
+            if ( response instanceof SearchResponseDsml )
             {
-                createAndAddControlValue( container, ( ( SearchResponse ) 
-                    ldapResponse.getDecorated() ).getSearchResultDone() );
+                SearchResponse searchResponse = ( SearchResponse ) 
+                    response.getDecorated();
+                createAndAddControlValue( container, 
+                    searchResponse.getSearchResultDone() );
             }
             else
             {
-                createAndAddControlValue( container, ldapResponse.getDecorated() );
+                createAndAddControlValue( container, response );
             }
         }
     };
@@ -1364,9 +1366,10 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            Message ldapMessage = ( ( SearchResponse ) container.getBatchResponse().getCurrentResponse().getDecorated() )
-                .getCurrentSearchResultEntry();
-            createAndAddControlValue( container, ldapMessage );
+            SearchResponse response = ( SearchResponse ) 
+                container.getBatchResponse().getCurrentResponse().getDecorated();
+            createAndAddControlValue( container, 
+                response.getCurrentSearchResultEntry() );
         }
     };
 
@@ -1378,9 +1381,10 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            Message ldapMessage = ( ( SearchResponse ) container.getBatchResponse().getCurrentResponse().getDecorated() )
-                .getCurrentSearchResultReference();
-            createAndAddControlValue( container, ldapMessage );
+            SearchResponseDsml response = ( SearchResponseDsml ) 
+                container.getBatchResponse().getCurrentResponse();
+            createAndAddControlValue( container, 
+                ( ( SearchResponse ) response.getDecorated() ).getCurrentSearchResultReference() );
         }
     };
 
@@ -1576,16 +1580,13 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            SearchResultEntryDecorator searchResultEntry = 
-                new SearchResultEntryDecorator( 
-                    container.getLdapCodecService(), 
+            SearchResultEntryDsml searchResultEntry = 
+                new SearchResultEntryDsml( container.getLdapCodecService(), 
                     new SearchResultEntryImpl() );
-
-            SearchResponse searchResponse = ( SearchResponse ) 
-                container.getBatchResponse().getCurrentResponse().getDecorated();
-
-            searchResponse.addSearchResultEntry( searchResultEntry );
-
+            SearchResponseDsml searchResponse = ( SearchResponseDsml ) 
+                container.getBatchResponse().getCurrentResponse();
+            searchResponse.addResponse( searchResultEntry );
+            
             XmlPullParser xpp = container.getParser();
 
             // Checking and adding the request's attributes
@@ -1627,15 +1628,15 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            SearchResultReferenceDecorator searchResultReference = 
-                new SearchResultReferenceDecorator( 
+            SearchResultReferenceDsml searchResultReference = 
+                new SearchResultReferenceDsml( 
                     container.getLdapCodecService(), 
                     new SearchResultReferenceImpl() );
 
-            SearchResponse searchResponse = ( SearchResponse ) 
-                container.getBatchResponse().getCurrentResponse().getDecorated();
-
-            searchResponse.addSearchResultReference( searchResultReference );
+            SearchResponseDsml searchResponseDsml = ( SearchResponseDsml ) 
+                container.getBatchResponse().getCurrentResponse();
+            
+            searchResponseDsml.addResponse( searchResultReference );
 
             XmlPullParser xpp = container.getParser();
 
@@ -1659,17 +1660,14 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            SearchResultDoneDecorator searchResultDone = 
-                new SearchResultDoneDecorator( container.getLdapCodecService(), 
+            SearchResultDoneDsml searchResultDone = 
+                new SearchResultDoneDsml( container.getLdapCodecService(), 
                     new SearchResultDoneImpl() );
 
-            searchResultDone.getLdapResult();
-
-            SearchResponse searchResponse = ( SearchResponse ) container
-                .getBatchResponse().getCurrentResponse().getDecorated();
-
-            searchResponse.setSearchResultDone( searchResultDone );
-
+            SearchResponseDsml searchResponseDsml = ( SearchResponseDsml )
+                container.getBatchResponse().getCurrentResponse();
+            searchResponseDsml.addResponse( searchResultDone );
+            
             XmlPullParser xpp = container.getParser();
 
             // Checking and adding the batchRequest's attributes
@@ -1709,8 +1707,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
             SearchResponse searchResponse = ( SearchResponse ) 
                 container.getBatchResponse().getCurrentResponse().getDecorated();
 
-            SearchResultEntryDecorator searchResultEntry = 
-                ( SearchResultEntryDecorator ) 
+            SearchResultEntryDsml searchResultEntry = ( SearchResultEntryDsml ) 
                 searchResponse.getCurrentSearchResultEntry();
 
             XmlPullParser xpp = container.getParser();
@@ -1748,7 +1745,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGra
         {
             SearchResponse searchResponse = ( SearchResponse ) 
                 container.getBatchResponse().getCurrentResponse().getDecorated();
-            SearchResultEntryDecorator searchResultEntry = ( SearchResultEntryDecorator ) 
+            SearchResultEntryDsml searchResultEntry = ( SearchResultEntryDsml ) 
                 searchResponse.getCurrentSearchResultEntry();
 
             XmlPullParser xpp = container.getParser();

@@ -26,9 +26,6 @@ import java.util.List;
 
 import org.apache.directory.shared.ldap.model.message.AbstractResponse;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
-import org.apache.directory.shared.ldap.model.message.SearchResultDone;
-import org.apache.directory.shared.ldap.model.message.SearchResultEntry;
-import org.apache.directory.shared.ldap.model.message.SearchResultReference;
 
 
 /**
@@ -39,13 +36,13 @@ import org.apache.directory.shared.ldap.model.message.SearchResultReference;
 public class SearchResponse extends AbstractResponse
 {
     /** The List of contained Search Result Entries */
-    private List<SearchResultEntry> searchResultEntryList = new ArrayList<SearchResultEntry>();
+    private List<SearchResultEntryDsml> searchResultEntryList = new ArrayList<SearchResultEntryDsml>();
 
     /** The List of contained Search Result References */
-    private List<SearchResultReference> searchResultReferenceList = new ArrayList<SearchResultReference>();
+    private List<SearchResultReferenceDsml> searchResultReferenceList = new ArrayList<SearchResultReferenceDsml>();
 
     /** The Search Result Done object */
-    private SearchResultDone searchResultDone;
+    private SearchResultDoneDsml searchResultDone;
 
 
     /**
@@ -68,7 +65,7 @@ public class SearchResponse extends AbstractResponse
      * @return
      *      true (as per the general contract of the Collection.add method)
      */
-    public boolean addSearchResultEntry( SearchResultEntry searchResultEntry )
+    public boolean addSearchResultEntry( SearchResultEntryDsml searchResultEntry )
     {
         return searchResultEntryList.add( searchResultEntry );
     }
@@ -80,7 +77,7 @@ public class SearchResponse extends AbstractResponse
      * @return
      *      the current Searche Result Entry
      */
-    public SearchResultEntry getCurrentSearchResultEntry()
+    public SearchResultEntryDsml getCurrentSearchResultEntry()
     {
         if ( searchResultEntryList.size() > 0 )
         {
@@ -99,7 +96,7 @@ public class SearchResponse extends AbstractResponse
      * @return
      *      the Search Result Entry List
      */
-    public List<SearchResultEntry> getSearchResultEntryList()
+    public List<SearchResultEntryDsml> getSearchResultEntryList()
     {
         return searchResultEntryList;
     }
@@ -113,7 +110,7 @@ public class SearchResponse extends AbstractResponse
      * @return
      *      true (as per the general contract of the Collection.add method)
      */
-    public boolean addSearchResultReference( SearchResultReference searchResultReference )
+    public boolean addSearchResultReference( SearchResultReferenceDsml searchResultReference )
     {
         return searchResultReferenceList.add( searchResultReference );
     }
@@ -125,7 +122,7 @@ public class SearchResponse extends AbstractResponse
      * @return
      *      the current Search Result Reference
      */
-    public SearchResultReference getCurrentSearchResultReference()
+    public SearchResultReferenceDsml getCurrentSearchResultReference()
     {
         if ( searchResultReferenceList.size() > 0 )
         {
@@ -144,7 +141,7 @@ public class SearchResponse extends AbstractResponse
      * @return
      *      the Search Result Reference List
      */
-    public List<SearchResultReference> getSearchResultReferenceList()
+    public List<SearchResultReferenceDsml> getSearchResultReferenceList()
     {
         return searchResultReferenceList;
     }
@@ -156,7 +153,7 @@ public class SearchResponse extends AbstractResponse
      * @return
      *      the Search Result Entry
      */
-    public SearchResultDone getSearchResultDone()
+    public SearchResultDoneDsml getSearchResultDone()
     {
         return searchResultDone;
     }
@@ -168,7 +165,7 @@ public class SearchResponse extends AbstractResponse
      * @param searchResultDone
      *      the Search Result Entry to set
      */
-    public void setSearchResultDone( SearchResultDone searchResultDone )
+    public void setSearchResultDone( SearchResultDoneDsml searchResultDone )
     {
         this.searchResultDone = searchResultDone;
     }

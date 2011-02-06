@@ -29,6 +29,7 @@ import org.apache.directory.ldap.client.api.LdapConnection;
 import org.apache.directory.ldap.client.api.LdapNetworkConnection;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.dsmlv2.DsmlDecorator;
 import org.apache.directory.shared.dsmlv2.Dsmlv2Parser;
 import org.apache.directory.shared.dsmlv2.reponse.AddResponseDsml;
 import org.apache.directory.shared.dsmlv2.reponse.BindResponseDsml;
@@ -43,10 +44,10 @@ import org.apache.directory.shared.dsmlv2.reponse.ModifyResponseDsml;
 import org.apache.directory.shared.dsmlv2.reponse.SearchResponseDsml;
 import org.apache.directory.shared.dsmlv2.reponse.SearchResultEntryDsml;
 import org.apache.directory.shared.dsmlv2.reponse.SearchResultReferenceDsml;
-import org.apache.directory.shared.dsmlv2.request.BatchRequest;
-import org.apache.directory.shared.dsmlv2.request.BatchRequest.OnError;
-import org.apache.directory.shared.dsmlv2.request.BatchRequest.Processing;
-import org.apache.directory.shared.dsmlv2.request.BatchRequest.ResponseOrder;
+import org.apache.directory.shared.dsmlv2.request.BatchRequestDsml;
+import org.apache.directory.shared.dsmlv2.request.BatchRequestDsml.OnError;
+import org.apache.directory.shared.dsmlv2.request.BatchRequestDsml.Processing;
+import org.apache.directory.shared.dsmlv2.request.BatchRequestDsml.ResponseOrder;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapCodecService;
@@ -65,12 +66,12 @@ import org.apache.directory.shared.ldap.model.message.DeleteRequest;
 import org.apache.directory.shared.ldap.model.message.DeleteResponse;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
-import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.message.ModifyDnRequest;
 import org.apache.directory.shared.ldap.model.message.ModifyDnResponse;
 import org.apache.directory.shared.ldap.model.message.ModifyRequest;
 import org.apache.directory.shared.ldap.model.message.ModifyResponse;
+import org.apache.directory.shared.ldap.model.message.Request;
 import org.apache.directory.shared.ldap.model.message.Response;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.model.message.SearchRequest;
@@ -108,7 +109,7 @@ public class Dsmlv2Engine
     private boolean exit = false;
 
     /** The batch request. */
-    private BatchRequest batchRequest;
+    private BatchRequestDsml batchRequest;
 
     /** The batch response. */
     private BatchResponseDsml batchResponse;
@@ -239,7 +240,7 @@ public class Dsmlv2Engine
         //    - Sending the request to the server
         //    - Getting and converting reponse(s) as XML
         //    - Looping until last request
-        Message request = null;
+        DsmlDecorator<? extends Request> request = null;
 
         try
         {
@@ -259,7 +260,7 @@ public class Dsmlv2Engine
             // Checking the request has a requestID attribute if Processing = Parallel and ResponseOrder = Unordered
             if ( ( batchRequest.getProcessing().equals( Processing.PARALLEL ) )
                 && ( batchRequest.getResponseOrder().equals( ResponseOrder.UNORDERED ) )
-                && ( request.getMessageId() <= 0 ) )
+                && ( request.getDecorated().getMessageId() <= 0 ) )
             {
                 // Then we have to send an errorResponse
                 ErrorResponse errorResponse = new ErrorResponse( 0, ErrorResponseType.MALFORMED_REQUEST, I18n
@@ -311,11 +312,11 @@ public class Dsmlv2Engine
      * 
      * @param request the request to process
      */
-    private void processRequest( Message request ) throws Exception
+    private void processRequest( DsmlDecorator<? extends Request> request ) throws Exception
     {
         ResultCodeEnum resultCode = null;
 
-        switch ( request.getType() )
+        switch ( request.getDecorated().getType() )
         {
             case ABANDON_REQUEST:
                 connection.abandon( ( AbandonRequest ) request );
@@ -421,7 +422,7 @@ public class Dsmlv2Engine
                 break;
 
             default:
-                throw new IllegalStateException( "Unexpected request tpye " + request.getType() );
+                throw new IllegalStateException( "Unexpected request tpye " + request.getDecorated().getType() );
         }
 
         if ( ( !continueOnError ) && ( resultCode != ResultCodeEnum.SUCCESS )

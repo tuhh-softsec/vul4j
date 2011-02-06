@@ -30,17 +30,18 @@ import java.util.List;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.dsmlv2.AbstractTest;
+import org.apache.directory.shared.dsmlv2.DsmlDecorator;
 import org.apache.directory.shared.dsmlv2.Dsmlv2Parser;
-import org.apache.directory.shared.dsmlv2.request.BatchRequest;
+import org.apache.directory.shared.dsmlv2.request.BatchRequestDsml;
 import org.apache.directory.shared.ldap.model.message.AbandonRequest;
 import org.apache.directory.shared.ldap.model.message.AddRequest;
 import org.apache.directory.shared.ldap.model.message.BindRequest;
 import org.apache.directory.shared.ldap.model.message.CompareRequest;
 import org.apache.directory.shared.ldap.model.message.DeleteRequest;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
-import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.model.message.ModifyDnRequest;
 import org.apache.directory.shared.ldap.model.message.ModifyRequest;
+import org.apache.directory.shared.ldap.model.message.Request;
 import org.apache.directory.shared.ldap.model.message.SearchRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -76,7 +77,7 @@ public class BatchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        BatchRequest batchRequest = parser.getBatchRequest();
+        BatchRequestDsml batchRequest = parser.getBatchRequest();
 
         assertEquals( 1234567890, batchRequest.getRequestID() );
     }
@@ -113,7 +114,7 @@ public class BatchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        BatchRequest batchRequest = parser.getBatchRequest();
+        BatchRequestDsml batchRequest = parser.getBatchRequest();
 
         assertEquals( 0, batchRequest.getRequests().size() );
     }
@@ -140,13 +141,11 @@ public class BatchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        BatchRequest batchRequest = parser.getBatchRequest();
+        BatchRequestDsml batchRequest = parser.getBatchRequest();
 
         assertEquals( 1, batchRequest.getRequests().size() );
 
-        Message request = batchRequest.getCurrentRequest();
-
-        if ( request instanceof BindRequest)
+        if ( batchRequest.getCurrentRequest() instanceof BindRequest)
         {
             assertTrue( true );
         }
@@ -178,13 +177,11 @@ public class BatchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        BatchRequest batchRequest = parser.getBatchRequest();
+        BatchRequestDsml batchRequest = parser.getBatchRequest();
 
         assertEquals( 1, batchRequest.getRequests().size() );
 
-        Message request = batchRequest.getCurrentRequest();
-
-        if ( request instanceof AddRequest )
+        if ( batchRequest.getCurrentRequest() instanceof AddRequest )
         {
             assertTrue( true );
         }
@@ -216,13 +213,11 @@ public class BatchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        BatchRequest batchRequest = parser.getBatchRequest();
+        BatchRequestDsml batchRequest = parser.getBatchRequest();
 
         assertEquals( 1, batchRequest.getRequests().size() );
 
-        Message request = batchRequest.getCurrentRequest();
-
-        if ( request instanceof CompareRequest )
+        if ( batchRequest.getCurrentRequest() instanceof CompareRequest )
         {
             assertTrue( true );
         }
@@ -254,13 +249,11 @@ public class BatchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        BatchRequest batchRequest = parser.getBatchRequest();
+        BatchRequestDsml batchRequest = parser.getBatchRequest();
 
         assertEquals( 1, batchRequest.getRequests().size() );
 
-        Message request = batchRequest.getCurrentRequest();
-
-        if ( request instanceof AbandonRequest )
+        if ( batchRequest.getCurrentRequest() instanceof AbandonRequest )
         {
             assertTrue( true );
         }
@@ -292,13 +285,11 @@ public class BatchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        BatchRequest batchRequest = parser.getBatchRequest();
+        BatchRequestDsml batchRequest = parser.getBatchRequest();
 
         assertEquals( 1, batchRequest.getRequests().size() );
 
-        Message request = batchRequest.getCurrentRequest();
-
-        if ( request instanceof DeleteRequest )
+        if ( batchRequest.getCurrentRequest() instanceof DeleteRequest )
         {
             assertTrue( true );
         }
@@ -330,13 +321,11 @@ public class BatchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        BatchRequest batchRequest = parser.getBatchRequest();
+        BatchRequestDsml batchRequest = parser.getBatchRequest();
 
         assertEquals( 1, batchRequest.getRequests().size() );
 
-        Message request = batchRequest.getCurrentRequest();
-
-        if ( request instanceof ExtendedRequest)
+        if ( batchRequest.getCurrentRequest() instanceof ExtendedRequest)
         {
             assertTrue( true );
         }
@@ -368,13 +357,11 @@ public class BatchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        BatchRequest batchRequest = parser.getBatchRequest();
+        BatchRequestDsml batchRequest = parser.getBatchRequest();
 
         assertEquals( 1, batchRequest.getRequests().size() );
 
-        Message request = batchRequest.getCurrentRequest();
-
-        if ( request instanceof ModifyDnRequest )
+        if ( batchRequest.getCurrentRequest() instanceof ModifyDnRequest )
         {
             assertTrue( true );
         }
@@ -406,13 +393,11 @@ public class BatchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        BatchRequest batchRequest = parser.getBatchRequest();
+        BatchRequestDsml batchRequest = parser.getBatchRequest();
 
         assertEquals( 1, batchRequest.getRequests().size() );
 
-        Message request = batchRequest.getCurrentRequest();
-
-        if ( request instanceof ModifyRequest)
+        if ( batchRequest.getCurrentRequest() instanceof ModifyRequest)
         {
             assertTrue( true );
         }
@@ -444,13 +429,11 @@ public class BatchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        BatchRequest batchRequest = parser.getBatchRequest();
+        BatchRequestDsml batchRequest = parser.getBatchRequest();
 
         assertEquals( 1, batchRequest.getRequests().size() );
 
-        Message request = batchRequest.getCurrentRequest();
-
-        if ( request instanceof SearchRequest )
+        if ( batchRequest.getCurrentRequest() instanceof SearchRequest )
         {
             assertTrue( true );
         }
@@ -482,13 +465,11 @@ public class BatchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        BatchRequest batchRequest = parser.getBatchRequest();
+        BatchRequestDsml batchRequest = parser.getBatchRequest();
 
         assertEquals( 2, batchRequest.getRequests().size() );
 
-        Message request = batchRequest.getCurrentRequest();
-
-        if ( request instanceof AddRequest )
+        if ( batchRequest.getCurrentRequest() instanceof AddRequest )
         {
             assertTrue( true );
         }
@@ -520,13 +501,11 @@ public class BatchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        BatchRequest batchRequest = parser.getBatchRequest();
+        BatchRequestDsml batchRequest = parser.getBatchRequest();
 
         assertEquals( 2, batchRequest.getRequests().size() );
 
-        Message request = batchRequest.getCurrentRequest();
-
-        if ( request instanceof CompareRequest )
+        if ( batchRequest.getCurrentRequest() instanceof CompareRequest )
         {
             assertTrue( true );
         }
@@ -558,13 +537,11 @@ public class BatchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        BatchRequest batchRequest = parser.getBatchRequest();
+        BatchRequestDsml batchRequest = parser.getBatchRequest();
 
         assertEquals( 2, batchRequest.getRequests().size() );
 
-        Message request = batchRequest.getCurrentRequest();
-
-        if ( request instanceof AbandonRequest )
+        if ( batchRequest.getCurrentRequest() instanceof AbandonRequest )
         {
             assertTrue( true );
         }
@@ -596,13 +573,11 @@ public class BatchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        BatchRequest batchRequest = parser.getBatchRequest();
+        BatchRequestDsml batchRequest = parser.getBatchRequest();
 
         assertEquals( 2, batchRequest.getRequests().size() );
 
-        Message request = batchRequest.getCurrentRequest();
-
-        if ( request instanceof DeleteRequest )
+        if ( batchRequest.getCurrentRequest() instanceof DeleteRequest )
         {
             assertTrue( true );
         }
@@ -634,13 +609,11 @@ public class BatchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        BatchRequest batchRequest = parser.getBatchRequest();
+        BatchRequestDsml batchRequest = parser.getBatchRequest();
 
         assertEquals( 2, batchRequest.getRequests().size() );
 
-        Message request = batchRequest.getCurrentRequest();
-
-        if ( request instanceof ExtendedRequest )
+        if ( batchRequest.getCurrentRequest() instanceof ExtendedRequest )
         {
             assertTrue( true );
         }
@@ -672,13 +645,11 @@ public class BatchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        BatchRequest batchRequest = parser.getBatchRequest();
+        BatchRequestDsml batchRequest = parser.getBatchRequest();
 
         assertEquals( 2, batchRequest.getRequests().size() );
 
-        Message request = batchRequest.getCurrentRequest();
-
-        if ( request instanceof ModifyDnRequest )
+        if ( batchRequest.getCurrentRequest() instanceof ModifyDnRequest )
         {
             assertTrue( true );
         }
@@ -710,13 +681,11 @@ public class BatchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        BatchRequest batchRequest = parser.getBatchRequest();
+        BatchRequestDsml batchRequest = parser.getBatchRequest();
 
         assertEquals( 2, batchRequest.getRequests().size() );
 
-        Message request = batchRequest.getCurrentRequest();
-
-        if ( request instanceof ModifyRequest )
+        if ( batchRequest.getCurrentRequest() instanceof ModifyRequest )
         {
             assertTrue( true );
         }
@@ -748,13 +717,11 @@ public class BatchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        BatchRequest batchRequest = parser.getBatchRequest();
+        BatchRequestDsml batchRequest = parser.getBatchRequest();
 
         assertEquals( 2, batchRequest.getRequests().size() );
 
-        Message request = batchRequest.getCurrentRequest();
-
-        if ( request instanceof SearchRequest )
+        if ( batchRequest.getCurrentRequest() instanceof SearchRequest )
         {
             assertTrue( true );
         }
@@ -786,15 +753,14 @@ public class BatchRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        BatchRequest batchRequest = parser.getBatchRequest();
+        BatchRequestDsml batchRequest = parser.getBatchRequest();
 
-        List requests = batchRequest.getRequests();
+        List<DsmlDecorator<? extends Request>> requests = 
+            batchRequest.getRequests();
 
         assertEquals( 2, requests.size() );
 
-        Message request = ( Message ) requests.get( 0 );
-
-        if ( request instanceof BindRequest )
+        if ( requests.get( 0 ) instanceof BindRequest )
         {
             assertTrue( true );
         }
@@ -803,9 +769,7 @@ public class BatchRequestTest extends AbstractTest
             fail();
         }
 
-        request = ( Message ) requests.get( 1 );
-
-        if ( request instanceof AddRequest )
+        if ( requests.get( 1 ) instanceof AddRequest )
         {
             assertTrue( true );
         }

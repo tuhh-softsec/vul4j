@@ -27,6 +27,9 @@ import org.apache.directory.shared.dsmlv2.DsmlDecorator;
 import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.model.message.Response;
+import org.apache.directory.shared.ldap.model.message.SearchResultDone;
+import org.apache.directory.shared.ldap.model.message.SearchResultEntry;
+import org.apache.directory.shared.ldap.model.message.SearchResultReference;
 import org.dom4j.Element;
 
 
@@ -74,6 +77,26 @@ public class SearchResponseDsml extends AbstractResponseDsml<Response>
      */
     public boolean addResponse( DsmlDecorator<? extends Response> response )
     {
+        if ( response instanceof SearchResultEntry )
+        {
+            ( ( SearchResponse ) getDecorated() ).addSearchResultEntry( 
+                ( SearchResultEntryDsml ) response );            
+        }
+        else if ( response instanceof SearchResultReference )
+        {
+            ( ( SearchResponse ) getDecorated() ).addSearchResultReference( 
+                ( SearchResultReferenceDsml ) response );            
+        }
+        else if ( response instanceof SearchResultDone )
+        {
+            ( ( SearchResponse ) getDecorated() ).setSearchResultDone( 
+                ( SearchResultDoneDsml ) response );            
+        }
+        else
+        {
+            throw new IllegalArgumentException( "Unidentified search resp type" );
+        }
+        
         return responses.add( response );
     }
 

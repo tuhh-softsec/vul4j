@@ -17,13 +17,12 @@
  *  under the License. 
  *  
  */
-
 package org.apache.directory.shared.dsmlv2.reponse;
 
 
-import org.apache.directory.shared.dsmlv2.ParserUtils;
+import org.apache.directory.shared.dsmlv2.ParserUtils; 
 import org.apache.directory.shared.ldap.codec.LdapCodecService;
-import org.apache.directory.shared.ldap.codec.decorators.SearchResultEntryDecorator;
+import org.apache.directory.shared.ldap.model.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.model.entry.Value;
@@ -46,6 +45,11 @@ public class SearchResultEntryDsml
     extends AbstractResponseDsml<SearchResultEntry>
     implements SearchResultEntry
 {
+    
+    /** The current attribute being processed */
+    private EntryAttribute currentAttribute;
+    
+    
     /**
      * Creates a new getDecoratedMessage() of SearchResultEntryDsml.
      */
@@ -66,6 +70,45 @@ public class SearchResultEntryDsml
         super( codec, ldapMessage );
     }
 
+    
+    
+    
+    public EntryAttribute getCurrentAttribute()
+    {
+        return currentAttribute;
+    }
+
+
+    /**
+     * Create a new attribute
+     * 
+     * @param type The attribute's type
+     */
+    public void addAttribute( String type ) throws LdapException
+    {
+        currentAttribute = new DefaultEntryAttribute( type );
+
+        getDecorated().getEntry().put( currentAttribute );
+    }
+
+
+    /**
+     * Add a new value to the current attribute
+     * 
+     * @param value The added value
+     */
+    public void addAttributeValue( Object value )
+    {
+        if ( value instanceof String )
+        {
+            currentAttribute.add( ( String ) value );
+        }
+        else
+        {
+            currentAttribute.add( ( byte[] ) value );
+        }
+    }
+    
 
     /**
      * {@inheritDoc}
@@ -158,28 +201,5 @@ public class SearchResultEntryDsml
     public void setEntry( Entry entry )
     {
         getDecorated().setEntry( entry );
-    }
-
-
-    /**
-     * Create a new attribute.
-     * 
-     * @param type The attribute's name
-     * @throws LdapException if the type doesn't exist
-     */
-    public void addAttributeType( String type ) throws LdapException
-    {
-        ( ( SearchResultEntryDecorator ) getDecorated() ).addAttribute( type );
-    }
-
-
-    /**
-     * Add a new value to the current attribute.
-     * 
-     * @param value the added value
-     */
-    public void addAttributeValue( Object value )
-    {
-        ( ( SearchResultEntryDecorator ) getDecorated() ).addAttributeValue( value );
     }
 }

@@ -147,12 +147,6 @@ public class SearchRequestDecorator extends MessageDecorator<SearchRequest> impl
     }
 
 
-    public Filter getCurrentFilter()
-    {
-        return currentFilter;
-    }
-
-
     /**
      * Set the SearchRequest PDU TLV's Id
      * @param tlvId The TLV id
@@ -160,6 +154,12 @@ public class SearchRequestDecorator extends MessageDecorator<SearchRequest> impl
     public void setTlvId( int tlvId )
     {
         this.tlvId = tlvId;
+    }
+
+
+    public Filter getCurrentFilter()
+    {
+        return currentFilter;
     }
 
 
