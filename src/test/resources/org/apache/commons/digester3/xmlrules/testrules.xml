@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE digester-rules PUBLIC "-//Jakarta Apache //DTD digester-rules XML V1.0//EN" "http://jakarta.apache.org/commons/digester/dtds/digester-rules.dtd">
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<digester-rules>
+    <pattern value="root/foo">
+        <object-create-rule classname="org.apache.commons.digester3.xmlrules.ObjectTestImpl" />
+        <set-next-rule methodname="add" paramtype="java.lang.Object" />
+        <set-properties-rule />
+
+        <include path="org/apache/commons/digester3/xmlrules/testrulesinclude.xml" />
+        <include class="org.apache.commons.digester3.xmlrules.DigesterRulesSourceTestImpl" />
+
+        <pattern value="call-method-rule-tests">
+            <call-method-rule pattern="longValue" methodname="setLongValue" paramcount="0" paramtypes="java.lang.Long" />
+            <call-method-rule pattern="defaultParamType" methodname="setStringValue" paramcount="0" />
+            <call-method-rule pattern="pushIt" methodname="push" />
+            <call-method-rule pattern="mapValue" methodname="setMapValue" paramcount="2" paramtypes="java.lang.String, java.lang.String" />
+            <call-param-rule pattern="mapValue" attrname="name" paramnumber="0" />
+            <call-param-rule pattern="mapValue" paramnumber="1" />
+        </pattern>
+
+        <bean-property-setter-rule pattern="property" name="property"/>
+
+    </pattern>
+</digester-rules>
