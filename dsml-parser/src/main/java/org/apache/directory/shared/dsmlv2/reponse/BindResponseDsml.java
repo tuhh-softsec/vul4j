@@ -17,14 +17,12 @@
  *  under the License. 
  *  
  */
-
 package org.apache.directory.shared.dsmlv2.reponse;
 
 
 import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.BindResponse;
 import org.apache.directory.shared.ldap.model.message.BindResponseImpl;
-import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.dom4j.Element;
 
 
@@ -33,12 +31,12 @@ import org.dom4j.Element;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class AuthResponseDsml extends AbstractResultResponseDsml<BindResponse>
+public class BindResponseDsml extends AbstractResultResponseDsml<BindResponse> implements BindResponse
 {
     /**
      * Creates a new getDecoratedMessage() of AuthResponseDsml.
      */
-    public AuthResponseDsml( LdapCodecService codec )
+    public BindResponseDsml( LdapCodecService codec )
     {
         super( codec, new BindResponseImpl() );
     }
@@ -50,18 +48,9 @@ public class AuthResponseDsml extends AbstractResultResponseDsml<BindResponse>
      * @param ldapMessage
      *      the message to decorate
      */
-    public AuthResponseDsml( LdapCodecService codec, BindResponse ldapMessage )
+    public BindResponseDsml( LdapCodecService codec, BindResponse ldapMessage )
     {
         super( codec, ldapMessage );
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public MessageTypeEnum getType()
-    {
-        return getDecorated().getType();
     }
 
 
@@ -76,5 +65,23 @@ public class AuthResponseDsml extends AbstractResultResponseDsml<BindResponse>
             getDecorated().getLdapResult(), getDecorated() );
         ldapResultDsml.toDsml( element );
         return element;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public byte[] getServerSaslCreds()
+    {
+        return getDecorated().getServerSaslCreds();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setServerSaslCreds( byte[] serverSaslCreds )
+    {
+        getDecorated().setServerSaslCreds( serverSaslCreds );
     }
 }

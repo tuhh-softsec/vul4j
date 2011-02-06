@@ -33,6 +33,7 @@ import org.dom4j.Element;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class SearchResultDoneDsml extends AbstractResultResponseDsml<SearchResultDone>
+    implements SearchResultDone
 {
     /**
      * Creates a new getDecoratedMessage() of SearchResultDoneDsml.

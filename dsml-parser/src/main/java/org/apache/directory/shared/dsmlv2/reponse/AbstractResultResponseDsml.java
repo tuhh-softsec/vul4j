@@ -32,7 +32,7 @@ import org.dom4j.Element;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public abstract class AbstractResultResponseDsml<E extends ResultResponse> 
-    extends AbstractResponseDsml<ResultResponse> implements ResultResponse
+    extends AbstractResponseDsml<E> implements ResultResponse
 {
     /**
      * Instantiates a new abstract DSML response.

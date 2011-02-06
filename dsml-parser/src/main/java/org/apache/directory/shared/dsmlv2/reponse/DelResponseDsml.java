@@ -34,6 +34,7 @@ import org.dom4j.Element;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class DelResponseDsml extends AbstractResultResponseDsml<DeleteResponse>
+    implements DeleteResponse
 {
     /**
      * Creates a new getDecoratedMessage() of DelResponseDsml.

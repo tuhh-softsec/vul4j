@@ -41,7 +41,7 @@ import org.dom4j.Element;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class LdapResultDsml implements DsmlDecorator<LdapResult>
+public class LdapResultDsml implements DsmlDecorator<LdapResult>, LdapResult
 {
     /** The LDAP Result to decorate */
     private LdapResult result;
@@ -153,9 +153,9 @@ public class LdapResultDsml implements DsmlDecorator<LdapResult>
      * 
      * @return Returns the matchedDN.
      */
-    public String getMatchedDn()
+    public Dn getMatchedDn()
     {
-        return result.getMatchedDn().getName();
+        return result.getMatchedDn();
     }
 
 
@@ -220,5 +220,32 @@ public class LdapResultDsml implements DsmlDecorator<LdapResult>
     public LdapResult getDecorated()
     {
         return result;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isReferral()
+    {
+        return getDecorated().isReferral();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Referral getReferral()
+    {
+        return getDecorated().getReferral();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setReferral( Referral referral )
+    {
+        getDecorated().setReferral( referral );
     }
 }

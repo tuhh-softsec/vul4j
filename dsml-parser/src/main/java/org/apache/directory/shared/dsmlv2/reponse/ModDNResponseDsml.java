@@ -17,7 +17,6 @@
  *  under the License. 
  *  
  */
-
 package org.apache.directory.shared.dsmlv2.reponse;
 
 
@@ -34,6 +33,7 @@ import org.dom4j.Element;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class ModDNResponseDsml extends AbstractResultResponseDsml<ModifyDnResponse>
+    implements ModifyDnResponse
 {
     /**
      * Creates a new getDecoratedMessage() of ModDNResponseDsml.

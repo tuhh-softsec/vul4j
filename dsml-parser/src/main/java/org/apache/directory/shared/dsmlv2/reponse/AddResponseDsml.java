@@ -33,7 +33,8 @@ import org.dom4j.Element;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class AddResponseDsml extends AbstractResultResponseDsml<AddResponse>
+public class AddResponseDsml extends AbstractResultResponseDsml<AddResponse> 
+    implements AddResponse
 {
     /**
      * Creates a new getDecoratedMessage() of AddResponseDsml.

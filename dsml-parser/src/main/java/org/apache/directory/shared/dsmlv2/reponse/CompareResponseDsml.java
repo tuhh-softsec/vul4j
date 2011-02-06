@@ -33,7 +33,7 @@ import org.dom4j.Element;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class CompareResponseDsml extends AbstractResultResponseDsml<CompareResponse>
+public class CompareResponseDsml extends AbstractResultResponseDsml<CompareResponse> implements CompareResponse
 {
     /**
      * Creates a new getDecoratedMessage() of CompareResponseDsml.
@@ -76,5 +76,14 @@ public class CompareResponseDsml extends AbstractResultResponseDsml<CompareRespo
             getDecorated().getLdapResult(), getDecorated() );
         ldapResultDsml.toDsml( element );
         return element;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isTrue()
+    {
+        return getDecorated().isTrue();
     }
 }

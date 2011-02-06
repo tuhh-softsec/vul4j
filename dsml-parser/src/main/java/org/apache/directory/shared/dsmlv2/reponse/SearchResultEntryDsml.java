@@ -43,6 +43,7 @@ import org.dom4j.QName;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class SearchResultEntryDsml extends AbstractResponseDsml<SearchResultEntry>
+    implements SearchResultEntry
 {
     /**
      * Creates a new getDecoratedMessage() of SearchResultEntryDsml.
@@ -122,7 +123,7 @@ public class SearchResultEntryDsml extends AbstractResponseDsml<SearchResultEntr
      */
     public Dn getObjectName()
     {
-        return ( ( SearchResultEntry ) getDecorated() ).getObjectName();
+        return getDecorated().getObjectName();
     }
 
 
@@ -133,7 +134,7 @@ public class SearchResultEntryDsml extends AbstractResponseDsml<SearchResultEntr
      */
     public void setObjectName( Dn objectName )
     {
-        ( ( SearchResultEntry ) getDecorated() ).setObjectName( objectName );
+        getDecorated().setObjectName( objectName );
     }
 
 
@@ -144,7 +145,7 @@ public class SearchResultEntryDsml extends AbstractResponseDsml<SearchResultEntr
      */
     public Entry getEntry()
     {
-        return ( ( SearchResultEntry ) getDecorated() ).getEntry();
+        return getDecorated().getEntry();
     }
 
 
@@ -155,7 +156,7 @@ public class SearchResultEntryDsml extends AbstractResponseDsml<SearchResultEntr
      */
     public void setEntry( Entry entry )
     {
-        ( ( SearchResultEntry ) getDecorated() ).setEntry( entry );
+        getDecorated().setEntry( entry );
     }
 
 

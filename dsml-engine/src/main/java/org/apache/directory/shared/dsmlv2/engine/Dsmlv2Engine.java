@@ -31,7 +31,7 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.dsmlv2.Dsmlv2Parser;
 import org.apache.directory.shared.dsmlv2.reponse.AddResponseDsml;
-import org.apache.directory.shared.dsmlv2.reponse.AuthResponseDsml;
+import org.apache.directory.shared.dsmlv2.reponse.BindResponseDsml;
 import org.apache.directory.shared.dsmlv2.reponse.BatchResponseDsml;
 import org.apache.directory.shared.dsmlv2.reponse.CompareResponseDsml;
 import org.apache.directory.shared.dsmlv2.reponse.DelResponseDsml;
@@ -330,7 +330,7 @@ public class Dsmlv2Engine
 
             case BIND_REQUEST:
                 BindResponse bindResponse = connection.bind( ( BindRequest ) request );
-                AuthResponseDsml authResponseDsml = new AuthResponseDsml( connection.getCodecService(), bindResponse );
+                BindResponseDsml authResponseDsml = new BindResponseDsml( connection.getCodecService(), bindResponse );
                 batchResponse.addResponse( authResponseDsml );
 
                 break;
