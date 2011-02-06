@@ -33,14 +33,14 @@ import org.dom4j.Element;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class AuthRequestDsml 
+public class BindRequestDsml 
     extends AbstractResultResponseRequestDsml<BindRequest>
     implements BindRequest
 {
     /**
      * Creates a new getDecoratedMessage() of AuthRequestDsml.
      */
-    public AuthRequestDsml( LdapCodecService codec )
+    public BindRequestDsml( LdapCodecService codec )
     {
         super( codec, new BindRequestImpl() );
     }
@@ -52,7 +52,7 @@ public class AuthRequestDsml
      * @param ldapMessage
      *      the message to decorate
      */
-    public AuthRequestDsml( LdapCodecService codec, BindRequest ldapMessage )
+    public BindRequestDsml( LdapCodecService codec, BindRequest ldapMessage )
     {
         super( codec, ldapMessage );
     }
