@@ -41,7 +41,6 @@ import org.apache.directory.shared.dsmlv2.request.BatchRequestDsml.Processing;
 import org.apache.directory.shared.dsmlv2.request.BatchRequestDsml.ResponseOrder;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
-import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
 import org.apache.directory.shared.ldap.codec.CodecControl;
 import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
@@ -80,19 +79,17 @@ import org.xmlpull.v1.XmlPullParserException;
  */
 public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
 {
-    /** The instance of grammar. Dsmlv2Grammar is a singleton */
-    private static Dsmlv2Grammar instance = new Dsmlv2Grammar();
-
-    private LdapCodecService codec = new DefaultLdapCodecService();
+    private LdapCodecService codec;
     
 
     /**
      * Creates a new instance of Dsmlv2Grammar.
      */
     @SuppressWarnings("unchecked")
-    private Dsmlv2Grammar()
+    public Dsmlv2Grammar( LdapCodecService codec )
     {
         name = Dsmlv2Grammar.class.getName();
+        this.codec = codec;
 
         // Create the transitions table
         super.transitions = ( HashMap<Tag, GrammarTransition>[] ) Array.newInstance( HashMap.class, 200 ); // TODO Change this value
@@ -1031,6 +1028,17 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
 
     } // End of the constructor
 
+    
+    
+    /**
+     * @return The LDAP codec service.
+     */
+    public LdapCodecService getLdapCodecService()
+    {
+        return codec;
+    }
+    
+    
     //*************************
     //*    GRAMMAR ACTIONS    *
     //*************************
@@ -2822,16 +2830,4 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
             }
         }
     };
-
-
-    /**
-     * Gets an instance of this grammar
-     * 
-     * @return
-     *      an instance of this grammar
-     */
-    public static Dsmlv2Grammar getInstance()
-    {
-        return instance;
-    }
 }

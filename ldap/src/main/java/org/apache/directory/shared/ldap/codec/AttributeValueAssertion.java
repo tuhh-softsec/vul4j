@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.codec;
 
+
 import org.apache.directory.shared.ldap.model.entry.*;
 import org.apache.directory.shared.util.Strings;
 

@@ -24,6 +24,7 @@ package org.apache.directory.shared.dsmlv2;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.apache.directory.shared.dsmlv2.request.Dsmlv2Grammar;
 import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.xmlpull.v1.XmlPullParserException;
@@ -38,10 +39,22 @@ public abstract class AbstractTest
     /** The LDAP encoder decoder service */
     private LdapCodecService codec = new DefaultLdapCodecService();
     
+    private Dsmlv2Grammar grammar = new Dsmlv2Grammar( codec );
+    
+    
+    public Dsmlv2Parser newParser() throws Exception
+    {
+        return new Dsmlv2Parser( grammar );
+    }
+    
+    
     public LdapCodecService getCodec()
     {
         return codec;
     }
+    
+    
+    
     
     
     /**
@@ -56,7 +69,7 @@ public abstract class AbstractTest
     {
         try
         {
-            Dsmlv2Parser parser = new Dsmlv2Parser( codec );
+            Dsmlv2Parser parser = new Dsmlv2Parser( grammar );
 
             parser.setInput( testClass.getResource( filename ).openStream(), "UTF-8" );
 

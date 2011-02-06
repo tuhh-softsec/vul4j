@@ -31,7 +31,6 @@ import java.io.StringReader;
 import org.apache.directory.shared.dsmlv2.request.BatchRequestDsml;
 import org.apache.directory.shared.dsmlv2.request.Dsmlv2Grammar;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.Request;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -48,6 +47,9 @@ public class Dsmlv2Parser
 {
     /** The associated DSMLv2 container */
     private Dsmlv2Container container;
+    
+    /** The thread safe DSMLv2 Grammar */
+    private Dsmlv2Grammar grammar;
 
 
     /**
@@ -56,12 +58,12 @@ public class Dsmlv2Parser
      * @throws XmlPullParserException
      *      if an error occurs while the initialization of the parser
      */
-    public Dsmlv2Parser( LdapCodecService codec ) throws XmlPullParserException
+    public Dsmlv2Parser( Dsmlv2Grammar grammar ) throws XmlPullParserException
     {
-        this.container = new Dsmlv2Container( codec );
-
-        this.container.setGrammar( Dsmlv2Grammar.getInstance() );
-
+        this.container = new Dsmlv2Container( grammar.getLdapCodecService() );
+        this.container.setGrammar( grammar );
+        this.grammar = grammar;
+        
         XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
         factory.setNamespaceAware( true );
         XmlPullParser xpp = factory.newPullParser();
@@ -127,8 +129,6 @@ public class Dsmlv2Parser
      */
     public void parse() throws XmlPullParserException, IOException
     {
-        Dsmlv2Grammar grammar = Dsmlv2Grammar.getInstance();
-
         grammar.executeAction( container );
     }
 

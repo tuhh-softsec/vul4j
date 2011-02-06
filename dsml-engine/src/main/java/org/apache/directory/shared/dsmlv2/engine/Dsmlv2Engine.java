@@ -45,6 +45,7 @@ import org.apache.directory.shared.dsmlv2.reponse.SearchResponseDsml;
 import org.apache.directory.shared.dsmlv2.reponse.SearchResultEntryDsml;
 import org.apache.directory.shared.dsmlv2.reponse.SearchResultReferenceDsml;
 import org.apache.directory.shared.dsmlv2.request.BatchRequestDsml;
+import org.apache.directory.shared.dsmlv2.request.Dsmlv2Grammar;
 import org.apache.directory.shared.dsmlv2.request.BatchRequestDsml.OnError;
 import org.apache.directory.shared.dsmlv2.request.BatchRequestDsml.Processing;
 import org.apache.directory.shared.dsmlv2.request.BatchRequestDsml.ResponseOrder;
@@ -116,7 +117,9 @@ public class Dsmlv2Engine
     
     private LdapCodecService codec = new DefaultLdapCodecService();
 
+    private Dsmlv2Grammar grammar = new Dsmlv2Grammar( codec );
 
+    
     /**
      * Creates a new instance of Dsmlv2Engine.
      * 
@@ -146,7 +149,7 @@ public class Dsmlv2Engine
      */
     public String processDSML( String dsmlInput ) throws XmlPullParserException
     {
-        parser = new Dsmlv2Parser( codec );
+        parser = new Dsmlv2Parser( grammar );
         parser.setInput( dsmlInput );
 
         return processDSML();
@@ -167,7 +170,7 @@ public class Dsmlv2Engine
      */
     public String processDSMLFile( String fileName ) throws XmlPullParserException, FileNotFoundException
     {
-        parser = new Dsmlv2Parser( codec );
+        parser = new Dsmlv2Parser( grammar );
         parser.setInputFile( fileName );
 
         return processDSML();
@@ -188,7 +191,7 @@ public class Dsmlv2Engine
      */
     public String processDSML( InputStream inputStream, String inputEncoding ) throws XmlPullParserException
     {
-        parser = new Dsmlv2Parser( codec );
+        parser = new Dsmlv2Parser( grammar );
         parser.setInput( inputStream, inputEncoding );
         return processDSML();
     }
