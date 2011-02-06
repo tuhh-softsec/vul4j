@@ -25,12 +25,14 @@ import java.util.Iterator;
 
 import org.apache.directory.shared.dsmlv2.ParserUtils;
 import org.apache.directory.shared.ldap.codec.LdapCodecService;
+import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.model.entry.Modification;
 import org.apache.directory.shared.ldap.model.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.message.ModifyRequest;
 import org.apache.directory.shared.ldap.model.message.ModifyRequestImpl;
+import org.apache.directory.shared.ldap.model.name.Dn;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
 import org.dom4j.QName;
@@ -41,7 +43,9 @@ import org.dom4j.QName;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ModifyRequestDsml extends AbstractRequestDsml<ModifyRequest>
+public class ModifyRequestDsml 
+    extends AbstractResultResponseRequestDsml<ModifyRequest>
+    implements ModifyRequest
 {
     /**
      * Creates a new getDecoratedMessage() of ModifyRequestDsml.
@@ -144,5 +148,158 @@ public class ModifyRequestDsml extends AbstractRequestDsml<ModifyRequest>
         }
 
         return element;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public MessageTypeEnum getResponseType()
+    {
+        return getDecorated().getResponseType();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Dn getName()
+    {
+        return getDecorated().getName();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setName( Dn name )
+    {
+        getDecorated().setName( name );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Collection<Modification> getModifications()
+    {
+        return getDecorated().getModifications();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void addModification( Modification mod )
+    {
+        getDecorated().addModification( mod );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void removeModification( Modification mod )
+    {
+        getDecorated().removeModification( mod );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void remove( String attributeName, String... attributeValue )
+    {
+        getDecorated().remove( attributeName, attributeValue );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void remove( String attributeName, byte[]... attributeValue )
+    {
+        getDecorated().remove( attributeName, attributeValue );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void remove( EntryAttribute attr )
+    {
+        getDecorated().remove( attr );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void addModification( EntryAttribute attr, ModificationOperation modOp )
+    {
+        getDecorated().addModification( attr, modOp );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void add( String attributeName, String... attributeValue )
+    {
+        getDecorated().add( attributeName, attributeValue );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void add( String attributeName, byte[]... attributeValue )
+    {
+        getDecorated().add( attributeName, attributeValue );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void add( EntryAttribute attr )
+    {
+        getDecorated().add( attr );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void replace( String attributeName )
+    {
+        getDecorated().replace( attributeName );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void replace( String attributeName, String... attributeValue )
+    {
+        getDecorated().replace( attributeName, attributeValue );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void replace( String attributeName, byte[]... attributeValue )
+    {
+        getDecorated().replace( attributeName, attributeValue );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void replace( EntryAttribute attr )
+    {
+        getDecorated().replace( attr );
     }
 }
