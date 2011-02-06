@@ -91,6 +91,11 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+          <configLocation>directory-checks.xml</configLocation>
+          <suppressionsLocation>${basedir}/src/checkstyle/suppressions.xml</suppressionsLocation>
+          <suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
+        </configuration>
         <dependencies>
           <dependency>
             <groupId>org.apache.directory.buildtools</groupId>
