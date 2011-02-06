@@ -168,17 +168,10 @@ public class FactoryCreateRule extends Rule {
      */
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("FactoryCreateRule[")
-            .append("className=")
-            .append(this.className)
-            .append(", attributeName=")
-            .append(this.attributeName);
-        if (this.creationFactory != null) {
-            sb.append(", creationFactory=");
-            sb.append(this.creationFactory);
-        }
-        sb.append("]");
-        return (sb.toString());
+        return String.format("FactoryCreateRule[className=%s, attributeName=%s, creationFactory=%s]",
+                this.className,
+                this.attributeName,
+                this.creationFactory);
     }
 
     /**
