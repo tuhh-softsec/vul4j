@@ -74,7 +74,6 @@ import org.apache.directory.shared.ldap.model.message.SearchResultDoneImpl;
 import org.apache.directory.shared.ldap.model.message.SearchResultEntryImpl;
 import org.apache.directory.shared.ldap.model.message.SearchResultReference;
 import org.apache.directory.shared.ldap.model.message.SearchResultReferenceImpl;
-import org.apache.directory.shared.ldap.model.message.controls.AbstractControl;
 import org.apache.directory.shared.ldap.model.message.controls.OpaqueControl;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.util.Base64;

@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.apache.directory.shared.dsmlv2.DsmlDecorator;
 import org.apache.directory.shared.dsmlv2.ParserUtils;
+import org.apache.directory.shared.ldap.model.message.Response;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -38,7 +39,7 @@ import org.dom4j.Element;
 public class BatchResponseDsml
 {
     /** The Responses list */
-    private List<DsmlDecorator> responses;
+    private List<DsmlDecorator<? extends Response>> responses;
 
     /** The ID of the response */
     private int requestID;
@@ -49,7 +50,7 @@ public class BatchResponseDsml
      */
     public BatchResponseDsml()
     {
-        responses = new ArrayList<DsmlDecorator>();
+        responses = new ArrayList<DsmlDecorator<? extends Response>>();
     }
 
 
@@ -61,7 +62,7 @@ public class BatchResponseDsml
      * @return
      *      true (as per the general contract of the Collection.add method).
      */
-    public boolean addResponse( DsmlDecorator response )
+    public boolean addResponse( DsmlDecorator<? extends Response> response )
     {
         return responses.add( response );
     }
@@ -75,7 +76,7 @@ public class BatchResponseDsml
      * @return
      *      true if this list contained the specified element.
      */
-    public boolean removeResponse( DsmlDecorator response )
+    public boolean removeResponse( DsmlDecorator<Response> response )
     {
         return responses.remove( response );
     }
@@ -120,7 +121,7 @@ public class BatchResponseDsml
             element.addAttribute( "requestID", "" + requestID );
         }
 
-        for ( DsmlDecorator response : responses )
+        for ( DsmlDecorator<? extends Response> response : responses )
         {
             response.toDsml( element );
         }

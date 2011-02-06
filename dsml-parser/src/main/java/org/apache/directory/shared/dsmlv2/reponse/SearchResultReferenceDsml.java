@@ -36,7 +36,8 @@ import org.dom4j.Element;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SearchResultReferenceDsml extends AbstractResponseDsml<SearchResultReference>
+public class SearchResultReferenceDsml 
+    extends AbstractResponseDsml<SearchResultReference>
     implements SearchResultReference
 {
     /**

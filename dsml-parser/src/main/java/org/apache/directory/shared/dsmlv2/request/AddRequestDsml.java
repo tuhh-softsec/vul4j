@@ -41,7 +41,8 @@ import org.dom4j.QName;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class AddRequestDsml extends AbstractResultResponseRequestDsml<AddRequest> 
+public class AddRequestDsml 
+    extends AbstractResultResponseRequestDsml<AddRequest> 
     implements AddRequest
 {
     /**

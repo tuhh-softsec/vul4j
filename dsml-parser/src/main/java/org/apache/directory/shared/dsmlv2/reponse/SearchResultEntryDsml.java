@@ -42,7 +42,8 @@ import org.dom4j.QName;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SearchResultEntryDsml extends AbstractResponseDsml<SearchResultEntry>
+public class SearchResultEntryDsml 
+    extends AbstractResponseDsml<SearchResultEntry>
     implements SearchResultEntry
 {
     /**

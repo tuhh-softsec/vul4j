@@ -26,6 +26,7 @@ import java.util.List;
 import org.apache.directory.shared.dsmlv2.DsmlDecorator;
 import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.Message;
+import org.apache.directory.shared.ldap.model.message.Response;
 import org.apache.directory.shared.ldap.model.message.ResultResponse;
 import org.dom4j.Element;
 
@@ -40,7 +41,8 @@ import org.dom4j.Element;
 public class SearchResponseDsml extends AbstractResultResponseDsml<ResultResponse>
 {
     /** The responses */
-    private List<DsmlDecorator> responses = new ArrayList<DsmlDecorator>();
+    private List<DsmlDecorator<? extends Response>> responses = 
+        new ArrayList<DsmlDecorator<? extends Response>>();
 
 
     /**
@@ -71,7 +73,7 @@ public class SearchResponseDsml extends AbstractResultResponseDsml<ResultRespons
      * @return
      *      true (as per the general contract of the Collection.add method).
      */
-    public boolean addResponse( DsmlDecorator response )
+    public boolean addResponse( DsmlDecorator<? extends Response> response )
     {
         return responses.add( response );
     }
@@ -85,7 +87,7 @@ public class SearchResponseDsml extends AbstractResultResponseDsml<ResultRespons
      * @return
      *      true if this list contained the specified element.
      */
-    public boolean removeResponse( DsmlDecorator response )
+    public boolean removeResponse( DsmlDecorator<Response> response )
     {
         return responses.remove( response );
     }
@@ -108,7 +110,7 @@ public class SearchResponseDsml extends AbstractResultResponseDsml<ResultRespons
             }
         }
 
-        for ( DsmlDecorator response : responses )
+        for ( DsmlDecorator<? extends Response> response : responses )
         {
             response.toDsml( element );
         }

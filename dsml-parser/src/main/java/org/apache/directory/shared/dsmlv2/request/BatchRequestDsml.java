@@ -28,6 +28,7 @@ import org.apache.directory.shared.dsmlv2.ParserUtils;
 import org.apache.directory.shared.dsmlv2.request.BatchRequest.OnError;
 import org.apache.directory.shared.dsmlv2.request.BatchRequest.Processing;
 import org.apache.directory.shared.dsmlv2.request.BatchRequest.ResponseOrder;
+import org.apache.directory.shared.ldap.model.message.Request;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -41,7 +42,7 @@ import org.dom4j.Element;
 public class BatchRequestDsml
 {
     /** The Requests list */
-    private List<DsmlDecorator> requests;
+    private List<DsmlDecorator<? extends Request>> requests;
 
     /** The ID of the request */
     private int requestID;
@@ -61,7 +62,7 @@ public class BatchRequestDsml
      */
     public BatchRequestDsml()
     {
-        requests = new ArrayList<DsmlDecorator>();
+        requests = new ArrayList<DsmlDecorator<? extends Request>>();
         responseOrder = ResponseOrder.SEQUENTIAL;
         processing = Processing.SEQUENTIAL;
         onError = OnError.EXIT;
@@ -76,7 +77,7 @@ public class BatchRequestDsml
      * @return
      *      true (as per the general contract of the Collection.add method).
      */
-    public boolean addRequest( DsmlDecorator request )
+    public boolean addRequest( DsmlDecorator<? extends Request> request )
     {
         return requests.add( request );
     }
@@ -90,7 +91,7 @@ public class BatchRequestDsml
      * @return
      *      true if this list contained the specified element.
      */
-    public boolean removeRequest( DsmlDecorator request )
+    public boolean removeRequest( DsmlDecorator<? extends Request> request )
     {
         return requests.remove( request );
     }
@@ -227,7 +228,7 @@ public class BatchRequestDsml
         }
 
         // Requests
-        for ( DsmlDecorator request : requests )
+        for ( DsmlDecorator<? extends Request> request : requests )
         {
             request.toDsml( element );
         }
