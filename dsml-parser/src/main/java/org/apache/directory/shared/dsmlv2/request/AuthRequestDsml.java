@@ -24,6 +24,7 @@ import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.BindRequest;
 import org.apache.directory.shared.ldap.model.message.BindRequestImpl;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
+import org.apache.directory.shared.ldap.model.name.Dn;
 import org.dom4j.Element;
 
 
@@ -32,7 +33,9 @@ import org.dom4j.Element;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class AuthRequestDsml extends AbstractRequestDsml<BindRequest>
+public class AuthRequestDsml 
+    extends AbstractResultResponseRequestDsml<BindRequest>
+    implements BindRequest
 {
     /**
      * Creates a new getDecoratedMessage() of AuthRequestDsml.
@@ -81,5 +84,131 @@ public class AuthRequestDsml extends AbstractRequestDsml<BindRequest>
         }
 
         return element;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public MessageTypeEnum getResponseType()
+    {
+        return getDecorated().getResponseType();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isSimple()
+    {
+        return getDecorated().isSimple();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean getSimple()
+    {
+        return getDecorated().getSimple();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setSimple( boolean isSimple )
+    {
+        getDecorated().setSimple( isSimple );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public byte[] getCredentials()
+    {
+        return getDecorated().getCredentials();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setCredentials( String credentials )
+    {
+        getDecorated().setCredentials( credentials );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setCredentials( byte[] credentials )
+    {
+        getDecorated().setCredentials( credentials );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Dn getName()
+    {
+        return getDecorated().getName();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setName( Dn name )
+    {
+        getDecorated().setName( name );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isVersion3()
+    {
+        return getDecorated().isVersion3();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean getVersion3()
+    {
+        return getDecorated().getVersion3();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setVersion3( boolean isVersion3 )
+    {
+        getDecorated().setVersion3( isVersion3 );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getSaslMechanism()
+    {
+        return getDecorated().getSaslMechanism();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setSaslMechanism( String saslMechanism )
+    {
+        getDecorated().setSaslMechanism( saslMechanism );
     }
 }

@@ -41,7 +41,8 @@ import org.dom4j.QName;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class AddRequestDsml extends AbstractRequestDsml<AddRequest>
+public class AddRequestDsml extends AbstractResultResponseRequestDsml<AddRequest> 
+    implements AddRequest
 {
     /**
      * Creates a new getDecoratedMessage() of AddRequestDsml.
@@ -80,16 +81,14 @@ public class AddRequestDsml extends AbstractRequestDsml<AddRequest>
     {
         Element element = super.toDsml( root );
 
-        AddRequest request = ( AddRequest ) getDecorated();
-
         // Dn
-        if ( request.getEntry() != null )
+        if ( getDecorated().getEntry() != null )
         {
-            element.addAttribute( "dn", request.getEntry().getDn().getName() );
+            element.addAttribute( "dn", getDecorated().getEntry().getDn().getName() );
         }
 
         // Attributes
-        Entry entry = request.getEntry();
+        Entry entry = getDecorated().getEntry();
         if ( entry != null )
         {
             for ( EntryAttribute attribute : entry )
@@ -139,7 +138,7 @@ public class AddRequestDsml extends AbstractRequestDsml<AddRequest>
      */
     public Entry getEntry()
     {
-        return ( ( AddRequest ) getDecorated() ).getEntry();
+        return getDecorated().getEntry();
     }
 
 
@@ -184,7 +183,7 @@ public class AddRequestDsml extends AbstractRequestDsml<AddRequest>
      */
     public Dn getEntryDn()
     {
-        return ( ( AddRequest ) getDecorated() ).getEntryDn();
+        return getDecorated().getEntryDn();
     }
 
 
@@ -195,7 +194,7 @@ public class AddRequestDsml extends AbstractRequestDsml<AddRequest>
      */
     public void setEntryDn( Dn entryDn )
     {
-        ( ( AddRequest ) getDecorated() ).setEntryDn( entryDn );
+        getDecorated().setEntryDn( entryDn );
     }
 
 
@@ -207,7 +206,7 @@ public class AddRequestDsml extends AbstractRequestDsml<AddRequest>
      */
     public void setEntry( Entry entry )
     {
-        ( ( AddRequest ) getDecorated() ).setEntry( entry );
+        getDecorated().setEntry( entry );
     }
 
 
@@ -217,5 +216,14 @@ public class AddRequestDsml extends AbstractRequestDsml<AddRequest>
     public String getCurrentAttributeType()
     {
         return ( ( AddRequestDecorator ) getDecorated() ).getCurrentAttributeType();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public MessageTypeEnum getResponseType()
+    {
+        return getDecorated().getResponseType();
     }
 }

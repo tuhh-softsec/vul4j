@@ -32,7 +32,8 @@ import org.dom4j.Element;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class AbandonRequestDsml extends AbstractRequestDsml<AbandonRequest>
+public class AbandonRequestDsml extends AbstractRequestDsml<AbandonRequest> 
+    implements AbandonRequest
 {
     /**
      * Creates a new instance of AbandonRequestDsml.
@@ -70,12 +71,10 @@ public class AbandonRequestDsml extends AbstractRequestDsml<AbandonRequest>
     {
         Element element = super.toDsml( root );
 
-        AbandonRequest request = (AbandonRequest) getDecorated();
-
         // AbandonID
-        if ( request.getAbandoned() != 0 )
+        if ( getDecorated().getAbandoned() != 0 )
         {
-            element.addAttribute( "abandonID", "" + request.getAbandoned() );
+            element.addAttribute( "abandonID", "" + getDecorated().getAbandoned() );
         }
 
         return element;
@@ -89,7 +88,7 @@ public class AbandonRequestDsml extends AbstractRequestDsml<AbandonRequest>
      */
     public int getAbandonedMessageId()
     {
-        return ( ( AbandonRequest ) getDecorated() ).getAbandoned();
+        return getDecorated().getAbandoned();
     }
 
 
@@ -100,6 +99,24 @@ public class AbandonRequestDsml extends AbstractRequestDsml<AbandonRequest>
      */
     public void setAbandonedMessageId( int abandonedMessageId )
     {
-        ( ( AbandonRequest ) getDecorated() ).setAbandoned( abandonedMessageId );
+        getDecorated().setAbandoned( abandonedMessageId );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public int getAbandoned()
+    {
+        return getDecorated().getAbandoned();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setAbandoned( int requestId )
+    {
+        getDecorated().setAbandoned( requestId );
     }
 }

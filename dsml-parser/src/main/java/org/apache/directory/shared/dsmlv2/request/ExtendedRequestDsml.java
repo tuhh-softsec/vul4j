@@ -36,7 +36,9 @@ import org.dom4j.QName;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ExtendedRequestDsml extends AbstractRequestDsml<ExtendedRequest>
+public class ExtendedRequestDsml 
+    extends AbstractResultResponseRequestDsml<ExtendedRequest>
+    implements ExtendedRequest
 {
     /**
      * Creates a new getDecoratedMessage() of ExtendedRequestDsml.
@@ -75,12 +77,11 @@ public class ExtendedRequestDsml extends AbstractRequestDsml<ExtendedRequest>
     {
         Element element = super.toDsml( root );
 
-        ExtendedRequest request = ( ExtendedRequest ) getDecorated();
-
         // Request Name
-        if ( request.getRequestName() != null )
+        if ( getDecorated().getRequestName() != null )
         {
-            element.addElement( "requestName" ).setText( request.getRequestName() );
+            element.addElement( "requestName" ).setText( 
+                getDecorated().getRequestName() );
         }
 
         // Request Value        
@@ -90,8 +91,9 @@ public class ExtendedRequestDsml extends AbstractRequestDsml<ExtendedRequest>
         element.getDocument().getRootElement().add( xsiNamespace );
 
         Element valueElement = element.addElement( "requestValue" ).addText(
-            ParserUtils.base64Encode( request.getRequestValue() ) );
-        valueElement.addAttribute( new QName( "type", xsiNamespace ), "xsd:" + ParserUtils.BASE64BINARY );
+            ParserUtils.base64Encode( getDecorated().getRequestValue() ) );
+        valueElement.addAttribute( new QName( "type", xsiNamespace ), 
+            "xsd:" + ParserUtils.BASE64BINARY );
 
         return element;
     }
@@ -104,7 +106,7 @@ public class ExtendedRequestDsml extends AbstractRequestDsml<ExtendedRequest>
      */
     public String getRequestName()
     {
-        return ( (ExtendedRequest) getDecorated() ).getRequestName();
+        return getDecorated().getRequestName();
     }
 
 
@@ -115,7 +117,7 @@ public class ExtendedRequestDsml extends AbstractRequestDsml<ExtendedRequest>
      */
     public void setRequestName( OID requestName )
     {
-        ( ( ExtendedRequest ) getDecorated() ).setRequestName( requestName.toString() );
+        getDecorated().setRequestName( requestName.toString() );
     }
 
 
@@ -126,7 +128,7 @@ public class ExtendedRequestDsml extends AbstractRequestDsml<ExtendedRequest>
      */
     public byte[] getRequestValue()
     {
-        return ( ( ExtendedRequest ) getDecorated() ).getRequestValue();
+        return getDecorated().getRequestValue();
     }
 
 
@@ -137,6 +139,24 @@ public class ExtendedRequestDsml extends AbstractRequestDsml<ExtendedRequest>
      */
     public void setRequestValue( byte[] requestValue )
     {
-        ( ( ExtendedRequest ) getDecorated() ).getRequestValue();
+        getDecorated().getRequestValue();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public MessageTypeEnum getResponseType()
+    {
+        return getDecorated().getResponseType();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setRequestName( String oid )
+    {
+        getDecorated().setRequestName( oid );
     }
 }

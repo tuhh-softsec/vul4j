@@ -27,7 +27,10 @@ import org.apache.directory.shared.dsmlv2.DsmlDecorator;
 import org.apache.directory.shared.dsmlv2.ParserUtils;
 import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.decorators.RequestDecorator;
-import org.apache.directory.shared.ldap.model.message.Request;
+import org.apache.directory.shared.ldap.model.message.AbandonListener;
+import org.apache.directory.shared.ldap.model.message.AbandonableRequest;
+import org.apache.directory.shared.ldap.model.message.ResultResponse;
+import org.apache.directory.shared.ldap.model.message.ResultResponseRequest;
 import org.dom4j.Element;
 
 
@@ -36,7 +39,9 @@ import org.dom4j.Element;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public abstract class AbstractRequestDsml<E extends Request> extends RequestDecorator<E> implements DsmlDecorator<E>, Request
+public abstract class AbstractResultResponseRequestDsml<E extends ResultResponseRequest> 
+    extends RequestDecorator<E> 
+    implements DsmlDecorator<E>, ResultResponseRequest, AbandonableRequest
 {
     /**
      * Creates a new instance of AbstractRequestDsml.
@@ -44,7 +49,7 @@ public abstract class AbstractRequestDsml<E extends Request> extends RequestDeco
      * @param ldapMessage
      *      the message to decorate
      */
-    public AbstractRequestDsml( LdapCodecService codec, E ldapMessage )
+    public AbstractResultResponseRequestDsml( LdapCodecService codec, E ldapMessage )
     {
         super( codec, ldapMessage );
     }
@@ -128,5 +133,41 @@ public abstract class AbstractRequestDsml<E extends Request> extends RequestDeco
     public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
     {
         return null;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public ResultResponse getResultResponse()
+    {
+        return getDecorated().getResultResponse();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void abandon()
+    {
+        ( ( AbandonableRequest ) getDecorated() ).abandon();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isAbandoned()
+    {
+        return ( ( AbandonableRequest ) getDecorated() ).isAbandoned();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void addAbandonListener( AbandonListener listener )
+    {
+        ( ( AbandonableRequest ) getDecorated() ).addAbandonListener( listener );
     }
 }
