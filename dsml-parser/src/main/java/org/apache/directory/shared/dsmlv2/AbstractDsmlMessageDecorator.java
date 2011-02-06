@@ -17,12 +17,11 @@
  *   under the License.
  *
  */
-package org.apache.directory.shared.dsmlv2.reponse;
+package org.apache.directory.shared.dsmlv2;
 
 
 import java.util.Map;
 
-import org.apache.directory.shared.dsmlv2.DsmlDecorator;
 import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.model.exception.MessageException;
 import org.apache.directory.shared.ldap.model.message.Control;
