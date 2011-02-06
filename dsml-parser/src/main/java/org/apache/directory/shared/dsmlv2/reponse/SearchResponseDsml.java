@@ -27,7 +27,6 @@ import org.apache.directory.shared.dsmlv2.DsmlDecorator;
 import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.model.message.Response;
-import org.apache.directory.shared.ldap.model.message.ResultResponse;
 import org.dom4j.Element;
 
 
@@ -38,7 +37,7 @@ import org.dom4j.Element;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SearchResponseDsml extends AbstractResultResponseDsml<ResultResponse>
+public class SearchResponseDsml extends AbstractResponseDsml<Response>
 {
     /** The responses */
     private List<DsmlDecorator<? extends Response>> responses = 
@@ -61,7 +60,7 @@ public class SearchResponseDsml extends AbstractResultResponseDsml<ResultRespons
      */
     public SearchResponseDsml( LdapCodecService codec, Message response )
     {
-        super( codec, ( ResultResponse ) response );
+        super( codec, ( Response ) response );
     }
 
 

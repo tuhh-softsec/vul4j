@@ -76,7 +76,7 @@ public class SearchResultReferenceTest extends AbstractResponseTest
         }
 
         SearchResultReference searchResultReference = ( ( SearchResponse ) parser.getBatchResponse()
-            .getCurrentResponse() ).getCurrentSearchResultReference();
+            .getCurrentResponse().getDecorated() ).getCurrentSearchResultReference();
         Map<String, Control> controls = searchResultReference.getControls();
 
         assertEquals( 1, searchResultReference.getControls().size() );
@@ -112,7 +112,7 @@ public class SearchResultReferenceTest extends AbstractResponseTest
         }
 
         SearchResultReference searchResultReference = ( ( SearchResponse ) parser.getBatchResponse()
-            .getCurrentResponse() ).getCurrentSearchResultReference();
+            .getCurrentResponse().getDecorated() ).getCurrentSearchResultReference();
         Map<String, Control> controls = searchResultReference.getControls();
 
         assertEquals( 1, searchResultReference.getControls().size() );
@@ -148,7 +148,7 @@ public class SearchResultReferenceTest extends AbstractResponseTest
         }
 
         SearchResultReference searchResultReference = ( ( SearchResponse ) parser.getBatchResponse()
-            .getCurrentResponse() ).getCurrentSearchResultReference();
+            .getCurrentResponse().getDecorated() ).getCurrentSearchResultReference();
         Map<String, Control> controls = searchResultReference.getControls();
 
         assertEquals( 2, searchResultReference.getControls().size() );
@@ -183,7 +183,7 @@ public class SearchResultReferenceTest extends AbstractResponseTest
         }
 
         SearchResultReference searchResultReference = ( ( SearchResponse ) parser.getBatchResponse()
-            .getCurrentResponse() ).getCurrentSearchResultReference();
+            .getCurrentResponse().getDecorated() ).getCurrentSearchResultReference();
         Map<String, Control> controls = searchResultReference.getControls();
 
         assertEquals( 3, searchResultReference.getControls().size() );
@@ -219,7 +219,7 @@ public class SearchResultReferenceTest extends AbstractResponseTest
         }
 
         SearchResultReference searchResultReference = ( ( SearchResponse ) parser.getBatchResponse()
-            .getCurrentResponse() ).getCurrentSearchResultReference();
+            .getCurrentResponse().getDecorated() ).getCurrentSearchResultReference();
 
         assertEquals( 456, searchResultReference.getMessageId() );
     }
@@ -267,7 +267,7 @@ public class SearchResultReferenceTest extends AbstractResponseTest
         }
 
         SearchResultReference searchResultReference = ( ( SearchResponse ) parser.getBatchResponse()
-            .getCurrentResponse() ).getCurrentSearchResultReference();
+            .getCurrentResponse().getDecorated() ).getCurrentSearchResultReference();
 
         Collection<String> references = searchResultReference.getReferral().getLdapUrls();
 
@@ -306,7 +306,7 @@ public class SearchResultReferenceTest extends AbstractResponseTest
         }
 
         SearchResultReference searchResultReference = ( ( SearchResponse ) parser.getBatchResponse()
-            .getCurrentResponse() ).getCurrentSearchResultReference();
+            .getCurrentResponse().getDecorated() ).getCurrentSearchResultReference();
 
         Collection<String> references = searchResultReference.getReferral().getLdapUrls();
 
@@ -336,7 +336,7 @@ public class SearchResultReferenceTest extends AbstractResponseTest
         }
 
         SearchResultReference searchResultReference = ( ( SearchResponse ) parser.getBatchResponse()
-            .getCurrentResponse() ).getCurrentSearchResultReference();
+            .getCurrentResponse().getDecorated() ).getCurrentSearchResultReference();
 
         Collection<String> references = searchResultReference.getReferral().getLdapUrls();
 

@@ -22,7 +22,7 @@ package org.apache.directory.shared.dsmlv2;
 
 
 import org.apache.directory.shared.asn1.ber.Asn1Container;
-import org.apache.directory.shared.dsmlv2.reponse.BatchResponse;
+import org.apache.directory.shared.dsmlv2.reponse.BatchResponseDsml;
 import org.apache.directory.shared.dsmlv2.request.BatchRequest;
 import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.xmlpull.v1.XmlPullParser;
@@ -52,7 +52,7 @@ public class Dsmlv2Container implements Container
     private BatchRequest batchRequest;
 
     /** The BatchResponse of the parsing */
-    private BatchResponse batchResponse;
+    private BatchResponseDsml batchResponse;
 
     /**  The associated grammar */
     private AbstractGrammar grammar;
@@ -111,7 +111,7 @@ public class Dsmlv2Container implements Container
      * @return
      *      Returns the Batch Response
      */
-    public BatchResponse getBatchResponse()
+    public BatchResponseDsml getBatchResponse()
     {
         return batchResponse;
     }
@@ -123,7 +123,7 @@ public class Dsmlv2Container implements Container
      * @param batchResponse
      *      the Batch Response to set
      */
-    public void setBatchResponse( BatchResponse batchResponse )
+    public void setBatchResponse( BatchResponseDsml batchResponse )
     {
         this.batchResponse = batchResponse;
     }

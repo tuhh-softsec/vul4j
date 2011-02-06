@@ -78,7 +78,7 @@ public class SearchResultDoneTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultDone searchResultDone = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
+        SearchResultDone searchResultDone = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse().getDecorated() )
             .getSearchResultDone();
         Map<String, Control> controls = searchResultDone.getControls();
 
@@ -114,7 +114,7 @@ public class SearchResultDoneTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultDone searchResultDone = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
+        SearchResultDone searchResultDone = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse().getDecorated() )
             .getSearchResultDone();
         Map<String, Control> controls = searchResultDone.getControls();
 
@@ -150,7 +150,7 @@ public class SearchResultDoneTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultDone searchResultDone = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
+        SearchResultDone searchResultDone = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse().getDecorated() )
             .getSearchResultDone();
         Map<String, Control> controls = searchResultDone.getControls();
 
@@ -186,7 +186,8 @@ public class SearchResultDoneTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultDone searchResultDone = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
+        SearchResultDone searchResultDone = ( ( SearchResponse ) 
+            parser.getBatchResponse().getCurrentResponse().getDecorated() )
             .getSearchResultDone();
         Map<String, Control> controls = searchResultDone.getControls();
 
@@ -222,7 +223,7 @@ public class SearchResultDoneTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultDone searchResultDone = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
+        SearchResultDone searchResultDone = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse().getDecorated() )
             .getSearchResultDone();
 
         assertEquals( 456, searchResultDone.getMessageId() );
@@ -280,7 +281,8 @@ public class SearchResultDoneTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultDone searchResultDone = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
+        SearchResultDone searchResultDone = ( ( SearchResponse ) 
+            parser.getBatchResponse().getCurrentResponse().getDecorated() )
             .getSearchResultDone();
 
         LdapResult ldapResult = searchResultDone.getLdapResult();
@@ -310,7 +312,7 @@ public class SearchResultDoneTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultDone searchResultDone = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
+        SearchResultDone searchResultDone = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse().getDecorated() )
             .getSearchResultDone();
 
         LdapResult ldapResult = searchResultDone.getLdapResult();
@@ -341,7 +343,7 @@ public class SearchResultDoneTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultDone searchResultDone = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
+        SearchResultDone searchResultDone = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse().getDecorated() )
             .getSearchResultDone();
 
         LdapResult ldapResult = searchResultDone.getLdapResult();
@@ -371,7 +373,8 @@ public class SearchResultDoneTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultDone searchResultDone = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
+        SearchResultDone searchResultDone = ( ( SearchResponse ) 
+            parser.getBatchResponse().getCurrentResponse().getDecorated() )
             .getSearchResultDone();
 
         LdapResult ldapResult = searchResultDone.getLdapResult();
@@ -412,7 +415,8 @@ public class SearchResultDoneTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultDone searchResultDone = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
+        SearchResultDone searchResultDone = ( ( SearchResponse ) 
+            parser.getBatchResponse().getCurrentResponse().getDecorated() )
             .getSearchResultDone();
 
         LdapResult ldapResult = searchResultDone.getLdapResult();
@@ -444,7 +448,7 @@ public class SearchResultDoneTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultDone searchResultDone = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
+        SearchResultDone searchResultDone = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse().getDecorated() )
             .getSearchResultDone();
 
         LdapResult ldapResult = searchResultDone.getLdapResult();
@@ -494,7 +498,7 @@ public class SearchResultDoneTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultDone searchResultDone = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
+        SearchResultDone searchResultDone = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse().getDecorated() )
             .getSearchResultDone();
 
         LdapResult ldapResult = searchResultDone.getLdapResult();
@@ -535,7 +539,7 @@ public class SearchResultDoneTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultDone searchResultDone = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
+        SearchResultDone searchResultDone = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse().getDecorated() )
             .getSearchResultDone();
 
         LdapResult ldapResult = searchResultDone.getLdapResult();

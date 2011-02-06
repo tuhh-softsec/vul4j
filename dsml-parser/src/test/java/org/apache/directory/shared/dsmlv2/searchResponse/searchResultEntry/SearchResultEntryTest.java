@@ -77,7 +77,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultEntry searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
+        SearchResultEntry searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse().getDecorated() )
             .getCurrentSearchResultEntry();
         Map<String, Control> controls = searchResultEntry.getControls();
 
@@ -113,7 +113,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultEntry searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
+        SearchResultEntry searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse().getDecorated() )
             .getCurrentSearchResultEntry();
         Map<String, Control> controls = searchResultEntry.getControls();
 
@@ -149,7 +149,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultEntry searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
+        SearchResultEntry searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse().getDecorated() )
             .getCurrentSearchResultEntry();
         Map<String, Control> controls = searchResultEntry.getControls();
 
@@ -185,7 +185,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultEntry searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
+        SearchResultEntry searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse().getDecorated() )
             .getCurrentSearchResultEntry();
         Map<String, Control> controls = searchResultEntry.getControls();
 
@@ -241,7 +241,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultEntry searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
+        SearchResultEntry searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse().getDecorated() )
             .getCurrentSearchResultEntry();
 
         assertEquals( "dc=example,dc=com", searchResultEntry.getObjectName().toString() );
@@ -269,7 +269,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultEntry searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
+        SearchResultEntry searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse().getDecorated() )
             .getCurrentSearchResultEntry();
 
         assertEquals( 456, searchResultEntry.getMessageId() );
@@ -332,7 +332,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultEntry searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
+        SearchResultEntry searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse().getDecorated() )
             .getCurrentSearchResultEntry();
 
         Entry entry = searchResultEntry.getEntry();
@@ -365,7 +365,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultEntry searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
+        SearchResultEntry searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse().getDecorated() )
             .getCurrentSearchResultEntry();
 
         Entry entry = searchResultEntry.getEntry();
@@ -404,7 +404,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultEntry searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
+        SearchResultEntry searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse().getDecorated() )
             .getCurrentSearchResultEntry();
 
         Entry entry = searchResultEntry.getEntry();
@@ -447,7 +447,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultEntry searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
+        SearchResultEntry searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse().getDecorated() )
             .getCurrentSearchResultEntry();
 
         Entry entry = searchResultEntry.getEntry();
@@ -486,7 +486,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultEntry searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
+        SearchResultEntry searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse().getDecorated() )
             .getCurrentSearchResultEntry();
 
         Entry entry = searchResultEntry.getEntry();
@@ -529,7 +529,7 @@ public class SearchResultEntryTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResultEntry searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse() )
+        SearchResultEntry searchResultEntry = ( ( SearchResponse ) parser.getBatchResponse().getCurrentResponse().getDecorated() )
             .getCurrentSearchResultEntry();
 
         Entry entry = searchResultEntry.getEntry();

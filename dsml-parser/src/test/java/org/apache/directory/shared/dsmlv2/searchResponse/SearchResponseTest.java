@@ -63,7 +63,7 @@ public class SearchResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResponse searchResponse = ( SearchResponse ) parser.getBatchResponse().getCurrentResponse();
+        SearchResponse searchResponse = ( SearchResponse ) parser.getBatchResponse().getCurrentResponse().getDecorated();
 
         assertEquals( 456, searchResponse.getMessageId() );
     }
@@ -99,7 +99,7 @@ public class SearchResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResponse searchResponse = ( SearchResponse ) parser.getBatchResponse().getCurrentResponse();
+        SearchResponse searchResponse = ( SearchResponse ) parser.getBatchResponse().getCurrentResponse().getDecorated();
 
         assertNotNull( searchResponse.getSearchResultDone() );
     }
@@ -126,7 +126,7 @@ public class SearchResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResponse searchResponse = ( SearchResponse ) parser.getBatchResponse().getCurrentResponse();
+        SearchResponse searchResponse = ( SearchResponse ) parser.getBatchResponse().getCurrentResponse().getDecorated();
 
         assertEquals( 1, searchResponse.getSearchResultEntryList().size() );
 
@@ -155,7 +155,8 @@ public class SearchResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResponse searchResponse = ( SearchResponse ) parser.getBatchResponse().getCurrentResponse();
+        SearchResponse searchResponse = ( SearchResponse ) 
+            parser.getBatchResponse().getCurrentResponse().getDecorated();
 
         assertEquals( 1, searchResponse.getSearchResultReferenceList().size() );
 
@@ -184,7 +185,8 @@ public class SearchResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResponse searchResponse = ( SearchResponse ) parser.getBatchResponse().getCurrentResponse();
+        SearchResponse searchResponse = ( SearchResponse ) 
+            parser.getBatchResponse().getCurrentResponse().getDecorated();
 
         assertEquals( 1, searchResponse.getSearchResultEntryList().size() );
 
@@ -215,7 +217,8 @@ public class SearchResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResponse searchResponse = ( SearchResponse ) parser.getBatchResponse().getCurrentResponse();
+        SearchResponse searchResponse = ( SearchResponse ) 
+            parser.getBatchResponse().getCurrentResponse().getDecorated();
 
         assertEquals( 2, searchResponse.getSearchResultEntryList().size() );
 
@@ -244,7 +247,8 @@ public class SearchResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResponse searchResponse = ( SearchResponse ) parser.getBatchResponse().getCurrentResponse();
+        SearchResponse searchResponse = ( SearchResponse ) 
+            parser.getBatchResponse().getCurrentResponse().getDecorated();
 
         assertEquals( 2, searchResponse.getSearchResultReferenceList().size() );
 
@@ -273,7 +277,7 @@ public class SearchResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        SearchResponse searchResponse = ( SearchResponse ) parser.getBatchResponse().getCurrentResponse();
+        SearchResponse searchResponse = ( SearchResponse ) parser.getBatchResponse().getCurrentResponse().getDecorated();
 
         assertEquals( 2, searchResponse.getSearchResultEntryList().size() );
 

@@ -28,7 +28,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 
-import org.apache.directory.shared.dsmlv2.reponse.BatchResponse;
+import org.apache.directory.shared.dsmlv2.reponse.BatchResponseDsml;
 import org.apache.directory.shared.dsmlv2.reponse.Dsmlv2ResponseGrammar;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapCodecService;
@@ -215,7 +215,7 @@ public class Dsmlv2ResponseParser
      * @return 
      *      the Batch Response or null if the it has not been parsed yet
      */
-    public BatchResponse getBatchResponse()
+    public BatchResponseDsml getBatchResponse()
     {
         return container.getBatchResponse();
     }
@@ -228,7 +228,7 @@ public class Dsmlv2ResponseParser
      * @throws XmlPullParserException 
      *      when an error occurs during the parsing
      */
-    public Response getNextResponse() throws XmlPullParserException
+    public DsmlDecorator<? extends Response> getNextResponse() throws XmlPullParserException
     {
         if ( container.getBatchResponse() == null )
         {
