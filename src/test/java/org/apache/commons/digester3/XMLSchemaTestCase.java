@@ -55,27 +55,10 @@ public class XMLSchemaTestCase extends AbstractTestCase {
             newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).
             newSchema(this.getClass().getResource("Test13.xsd"));
 
-        digester = newLoader(new AbstractRulesModule() {
-
-            @Override
-            protected void configure() {
-                forPattern("employee").createObject().ofType(Employee.class);
-                forPattern("employee/firstName").setBeanProperty();
-                forPattern("employee/lastName").setBeanProperty();
-
-                forPattern("employee/address")
-                    .createObject().ofType(Address.class)
-                    .then()
-                    .setNext("addAddress");
-                forPattern("employee/address/type").setBeanProperty();
-                forPattern("employee/address/city").setBeanProperty();
-                forPattern("employee/address/state").setBeanProperty();
-            }
-
-        })
-        .setNamespaceAware(true)
-        .setSchema(test13schema)
-        .newDigester();
+        digester = newLoader(new EmployeeModule())
+            .setNamespaceAware(true)
+            .setSchema(test13schema)
+            .newDigester();
     }
 
     /**
