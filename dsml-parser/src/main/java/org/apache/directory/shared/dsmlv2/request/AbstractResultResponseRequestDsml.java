@@ -23,10 +23,8 @@ package org.apache.directory.shared.dsmlv2.request;
 import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.asn1.EncoderException;
-import org.apache.directory.shared.dsmlv2.DsmlDecorator;
 import org.apache.directory.shared.dsmlv2.ParserUtils;
 import org.apache.directory.shared.ldap.codec.LdapCodecService;
-import org.apache.directory.shared.ldap.codec.decorators.RequestDecorator;
 import org.apache.directory.shared.ldap.model.message.AbandonListener;
 import org.apache.directory.shared.ldap.model.message.AbandonableRequest;
 import org.apache.directory.shared.ldap.model.message.ResultResponse;
@@ -40,8 +38,8 @@ import org.dom4j.Element;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public abstract class AbstractResultResponseRequestDsml<E extends ResultResponseRequest> 
-    extends RequestDecorator<E> 
-    implements DsmlDecorator<E>, ResultResponseRequest, AbandonableRequest
+    extends AbstractRequestDsml<E> 
+    implements ResultResponseRequest, AbandonableRequest
 {
     /**
      * Creates a new instance of AbstractRequestDsml.
