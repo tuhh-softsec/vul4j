@@ -1922,6 +1922,7 @@ public class DefaultSchemaManager implements SchemaManager
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("rawtypes")
     public OidRegistry getGlobalOidRegistry()
     {
         return registries.getGlobalOidRegistry();

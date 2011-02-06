@@ -198,7 +198,7 @@ public class ReferralImplTest
         {
             public Collection<String> getLdapUrls()
             {
-                return Collections.EMPTY_LIST;
+                return Collections.emptyList();
             }
 
 

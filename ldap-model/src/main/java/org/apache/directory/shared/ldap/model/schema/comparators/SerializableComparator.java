@@ -87,18 +87,21 @@ public class SerializableComparator<E> extends LdapComparator<E>
     /**
      * @param schemaManager the schemaManager to set
      */
+    @SuppressWarnings("unchecked")
     public void setSchemaManager( SchemaManager schemaManager )
     {
         if ( wrapped == null )
         {
             try
             {
-                wrapped = (Comparator<E>)schemaManager.lookupComparatorRegistry( matchingRuleOid );
+                wrapped = ( Comparator<E> ) 
+                    schemaManager.lookupComparatorRegistry( matchingRuleOid );
             }
             catch ( LdapException ne )
             {
                 // Not found : get the default comparator
-                wrapped = (Comparator<E>)new ComparableComparator<Comparable<E>>( matchingRuleOid );
+                wrapped = ( Comparator<E> ) 
+                    new ComparableComparator<Comparable<E>>( matchingRuleOid );
             }
         }
 

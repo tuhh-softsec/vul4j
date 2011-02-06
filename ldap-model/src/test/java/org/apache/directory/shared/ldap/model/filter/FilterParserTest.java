@@ -33,7 +33,6 @@ import java.util.List;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.model.entry.StringValue;
-import org.apache.directory.shared.ldap.model.filter.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -81,7 +80,7 @@ public class FilterParserTest
         assertTrue( checkWrongFilter( "(&(cn=abc)" ) );
     }
 
-    @SuppressWarnings("unchecked")
+
     @Test
     public void testItemFilter() throws ParseException
     {
@@ -156,12 +155,11 @@ public class FilterParserTest
     }
 
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testOptionAndEscapesFilter() throws ParseException
     {
         String str = "(ou;lang-de>=\\23\\42asdl fkajsd)";     // \23 = '#'
-        SimpleNode node = ( SimpleNode ) FilterParser.parse( str );
+        SimpleNode<?> node = ( SimpleNode<?> ) FilterParser.parse( str );
         assertEquals( "ou;lang-de", node.getAttribute() );
         assertEquals( "#Basdl fkajsd", node.getValue().getString() );
         String  str2 = node.toString();
@@ -169,12 +167,11 @@ public class FilterParserTest
     }
 
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testOptionsAndEscapesFilter() throws ParseException
     {
         String str = "(ou;lang-de;version-124>=\\23\\42asdl fkajsd)";
-        SimpleNode node = ( SimpleNode ) FilterParser.parse( str );
+        SimpleNode<?> node = ( SimpleNode<?> ) FilterParser.parse( str );
         assertEquals( "ou;lang-de;version-124", node.getAttribute() );
         assertEquals( "#Basdl fkajsd", node.getValue().getString() );
         String  str2 = node.toString();
@@ -182,12 +179,11 @@ public class FilterParserTest
     }
 
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testNumericoidOptionsAndEscapesFilter() throws ParseException
     {
         String str = "(1.3.4.2;lang-de;version-124>=\\23\\42afdl fkajsd)";
-        SimpleNode node = ( SimpleNode ) FilterParser.parse( str );
+        SimpleNode<?> node = ( SimpleNode<?> ) FilterParser.parse( str );
         assertEquals( "1.3.4.2;lang-de;version-124", node.getAttribute() );
         assertEquals( "#Bafdl fkajsd", node.getValue().getString() );
         String  str2 = node.toString();
@@ -219,12 +215,11 @@ public class FilterParserTest
     }
 
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testEqualsFilter() throws ParseException
     {
         String str = "(ou=people)";
-        SimpleNode node = ( SimpleNode ) FilterParser.parse( str );
+        SimpleNode<?> node = ( SimpleNode<?> ) FilterParser.parse( str );
         assertEquals( "ou", node.getAttribute() );
         assertEquals( "people", node.getValue().getString() );
         assertTrue( node instanceof EqualityNode );
@@ -250,7 +245,6 @@ public class FilterParserTest
     }
 
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testEqualsWithForwardSlashFilter() throws ParseException
     {
@@ -878,7 +872,6 @@ public class FilterParserTest
     /**
      * test a filter with a # in value
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testEqualsFilterWithPoundInValue() throws ParseException
     {
@@ -972,7 +965,6 @@ public class FilterParserTest
     }
 
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testQuotedChars() throws ParseException
     {
@@ -985,7 +977,6 @@ public class FilterParserTest
     }
 
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testQuotedCharsCase() throws ParseException
     {
@@ -1091,8 +1082,8 @@ public class FilterParserTest
         // First child : (jagplayUserGroup=Active)
         ExprNode child1 = children1.get( 0 );
         assertTrue( child1 instanceof EqualityNode );
-        assertEquals( "jagplayUserGroup", ( ( EqualityNode ) child1 ).getAttribute() );
-        assertEquals( "Active", ( ( EqualityNode ) child1 ).getValue().getString() );
+        assertEquals( "jagplayUserGroup", ( ( EqualityNode<?> ) child1 ).getAttribute() );
+        assertEquals( "Active", ( ( EqualityNode<?> ) child1 ).getValue().getString() );
 
         // Second child : (!(jagplayUserGroup=Banned))
         ExprNode child2 = children1.get( 1 );
@@ -1101,14 +1092,14 @@ public class FilterParserTest
 
         ExprNode notNodeChild1 = notNode1.getFirstChild();
         assertTrue( notNodeChild1 instanceof EqualityNode );
-        assertEquals( "jagplayUserGroup", ( ( EqualityNode ) notNodeChild1 ).getAttribute() );
-        assertEquals( "Banned", ( ( EqualityNode ) notNodeChild1 ).getValue().getString() );
+        assertEquals( "jagplayUserGroup", ( ( EqualityNode<?> ) notNodeChild1 ).getAttribute() );
+        assertEquals( "Banned", ( ( EqualityNode<?> ) notNodeChild1 ).getValue().getString() );
 
         // Third child : (jagplayUserNickname=admin)
         ExprNode child3 = children1.get( 2 );
         assertTrue( child3 instanceof EqualityNode );
-        assertEquals( "jagplayUserNickname", ( ( EqualityNode ) child3 ).getAttribute() );
-        assertEquals( "admin", ( ( EqualityNode ) child3 ).getValue().getString() );
+        assertEquals( "jagplayUserNickname", ( ( EqualityNode<?> ) child3 ).getAttribute() );
+        assertEquals( "admin", ( ( EqualityNode<?> ) child3 ).getValue().getString() );
 
         // Check Node 2 : (&(jagplayUserNickname=admin)(&(jagplayUserGroup=Active)(!(jagplayUserGroup=Banned))))
         assertEquals( 2, node2.getChildren().size() );
@@ -1116,8 +1107,8 @@ public class FilterParserTest
 
         child1 = node2.getChildren().get( 0 );
         assertTrue( child1 instanceof EqualityNode );
-        assertEquals( "jagplayUserNickname", ( ( EqualityNode ) child1 ).getAttribute() );
-        assertEquals( "admin", ( ( EqualityNode ) child1 ).getValue().getString() );
+        assertEquals( "jagplayUserNickname", ( ( EqualityNode<?> ) child1 ).getAttribute() );
+        assertEquals( "admin", ( ( EqualityNode<?> ) child1 ).getValue().getString() );
 
         child2 = node2.getChildren().get( 1 );
         assertTrue( child2 instanceof AndNode );
@@ -1127,8 +1118,8 @@ public class FilterParserTest
         // First child : (jagplayUserGroup=Active)
         child1 = andNode2.getChildren().get( 0 );
         assertTrue( child1 instanceof EqualityNode );
-        assertEquals( "jagplayUserGroup", ( ( EqualityNode ) child1 ).getAttribute() );
-        assertEquals( "Active", ( ( EqualityNode ) child1 ).getValue().getString() );
+        assertEquals( "jagplayUserGroup", ( ( EqualityNode<?> ) child1 ).getAttribute() );
+        assertEquals( "Active", ( ( EqualityNode<?> ) child1 ).getValue().getString() );
 
         // second child : (!(jagplayUserGroup=Banned))
         child2 = andNode2.getChildren().get( 1 );
@@ -1137,7 +1128,7 @@ public class FilterParserTest
 
         notNodeChild1 = notNode1.getFirstChild();
         assertTrue( notNodeChild1 instanceof EqualityNode );
-        assertEquals( "jagplayUserGroup", ( ( EqualityNode ) notNodeChild1 ).getAttribute() );
-        assertEquals( "Banned", ( ( EqualityNode ) notNodeChild1 ).getValue().getString() );
+        assertEquals( "jagplayUserGroup", ( ( EqualityNode<?> ) notNodeChild1 ).getAttribute() );
+        assertEquals( "Banned", ( ( EqualityNode<?> ) notNodeChild1 ).getValue().getString() );
     }
 }

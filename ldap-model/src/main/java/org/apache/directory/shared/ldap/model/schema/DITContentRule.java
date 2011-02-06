@@ -711,6 +711,7 @@ public class DITContentRule extends AbstractSchemaObject
             return false;
         }
 
+        @SuppressWarnings("unused")
         DITContentRule that = ( DITContentRule ) o;
 
         // TODO : complete the check

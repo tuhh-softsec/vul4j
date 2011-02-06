@@ -3650,7 +3650,7 @@ public class DnTest
 
         for ( Rdn rdn : dn )
         {
-            fail( "Should not be there" );
+            fail( "Should not be there: rdn = " + rdn );
         }
 
         assertTrue( true );

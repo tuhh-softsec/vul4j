@@ -76,6 +76,7 @@ public class SchemaManagerEnableDisableLoadTest
                                               "apachemeta", "collective", "java", "krb5kdc", "other", "adsconfig", "pwdpolicy" );
 
     // List of all the disabled schemas
+    @SuppressWarnings("unused")
     private List<String>  disabledSchemas = Arrays.asList( "nis", "autofs", "apachedns", "dhcp", "samba", "corba" );
 
 

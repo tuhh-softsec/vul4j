@@ -34,6 +34,7 @@ public class DeepTrimCachingNormalizingComparator extends NormalizingComparator
     private static final long serialVersionUID = -3462901701103045845L;
 
     
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public DeepTrimCachingNormalizingComparator( String oid )
     {
         super( oid, new CachingNormalizer( new DeepTrimNormalizer( oid ), 10 ),

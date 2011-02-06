@@ -274,6 +274,7 @@ public class DITStructureRule extends AbstractSchemaObject
             return false;
         }
 
+        @SuppressWarnings("unused")
         DITStructureRule that = ( DITStructureRule ) o;
 
         // TODO : complete the test

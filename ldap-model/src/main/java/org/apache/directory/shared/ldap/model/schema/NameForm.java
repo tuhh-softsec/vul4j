@@ -531,6 +531,7 @@ public class NameForm extends AbstractSchemaObject
             return false;
         }
 
+        @SuppressWarnings("unused")
         NameForm that = ( NameForm ) o;
 
         // TODO : complete the checks

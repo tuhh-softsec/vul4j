@@ -162,34 +162,6 @@ public class SearchResponseReferenceImplTest
             }
 
 
-            public Control getCurrentControl()
-            {
-                return null;
-            }
-
-
-            public int getControlsLength()
-            {
-                return 0;
-            }
-
-
-            public void setControlsLength( int controlsLength )
-            {
-            }
-
-
-            public int getMessageLength()
-            {
-                return 0;
-            }
-
-
-            public void setMessageLength( int messageLength )
-            {
-            }
-
-
             public Control getControl( String oid )
             {
                 return null;

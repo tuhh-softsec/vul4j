@@ -23,7 +23,6 @@ package org.apache.directory.shared.ldap.model.filter;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.model.entry.StringValue;
-import org.apache.directory.shared.ldap.model.filter.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 

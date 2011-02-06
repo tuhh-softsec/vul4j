@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.model.entry;
 
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -30,11 +31,11 @@ import java.util.Set;
 
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.ldap.model.entry.*;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 
 /**
  * A test case for the AttributeUtils methods 

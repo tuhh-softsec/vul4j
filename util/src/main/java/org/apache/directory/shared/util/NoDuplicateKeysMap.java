@@ -32,6 +32,7 @@ import org.apache.directory.shared.i18n.I18n;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
+@SuppressWarnings("rawtypes")
 public class NoDuplicateKeysMap extends HashMap
 {
     /**
@@ -40,6 +41,7 @@ public class NoDuplicateKeysMap extends HashMap
      * 
      * @see java.util.Map#put(java.lang.Object, java.lang.Object)
      */
+    @SuppressWarnings("unchecked")
     public Object put( Object key, Object value ) throws IllegalArgumentException
     {
         if ( containsKey( key ) )

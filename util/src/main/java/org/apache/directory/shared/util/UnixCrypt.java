@@ -462,7 +462,8 @@ import org.apache.directory.shared.i18n.I18n;
       * @param setting the salt to be used
       * @return the encrypted String
       */
-     public static String crypt(String key, String setting)
+     @SuppressWarnings("deprecation")
+    public static String crypt(String key, String setting)
      {
          long constdatablock = 0L;       /* encryption constant */
          byte[] cryptresult = new byte[13];  /* encrypted result */

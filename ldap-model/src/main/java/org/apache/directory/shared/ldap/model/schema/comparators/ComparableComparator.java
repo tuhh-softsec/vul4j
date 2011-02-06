@@ -64,6 +64,7 @@ public class ComparableComparator<T> extends LdapComparator<Comparable<T>>
      * @param o2 the second comparable
      * @return {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
     public int compare( Comparable<T> o1, Comparable<T> o2 )
     {
         LOG.debug( "comparing objects '{}' with '{}'", o1, o2 );

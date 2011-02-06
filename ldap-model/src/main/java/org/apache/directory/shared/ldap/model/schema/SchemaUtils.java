@@ -1000,6 +1000,7 @@ public final class SchemaUtils
 
         buf.append( " FORM " ).append( dsr.getForm() );
 
+        @SuppressWarnings("unused")
         List<Integer> ruleIds = dsr.getSuperRules();
         // TODO : Add the rendering
 

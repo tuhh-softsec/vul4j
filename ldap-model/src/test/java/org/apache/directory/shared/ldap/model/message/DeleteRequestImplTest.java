@@ -30,7 +30,6 @@ import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.MessageException;
-import org.apache.directory.shared.ldap.model.message.*;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -236,34 +235,6 @@ public class DeleteRequestImplTest
             public boolean hasControl( String oid )
             {
                 return false;
-            }
-
-
-            public Control getCurrentControl()
-            {
-                return null;
-            }
-
-
-            public int getControlsLength()
-            {
-                return 0;
-            }
-
-
-            public void setControlsLength( int controlsLength )
-            {
-            }
-
-
-            public int getMessageLength()
-            {
-                return 0;
-            }
-
-
-            public void setMessageLength( int messageLength )
-            {
             }
 
 

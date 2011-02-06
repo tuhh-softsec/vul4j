@@ -70,7 +70,8 @@ public class SubtreeSpecificationParser
     /**
      * Creates a normalizing subtree specification parser.
      */
-    public SubtreeSpecificationParser( NormalizerMappingResolver resolver, SchemaManager schemaManager )
+    public SubtreeSpecificationParser( @SuppressWarnings("rawtypes") 
+        NormalizerMappingResolver resolver, SchemaManager schemaManager )
     {
         StringReader in = new StringReader( "" ); // place holder for the
                                                     // first input

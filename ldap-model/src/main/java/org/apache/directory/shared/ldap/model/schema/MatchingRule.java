@@ -126,6 +126,7 @@ public class MatchingRule extends AbstractSchemaObject
      * @param registries The Registries
      * @exception If the addition failed
      */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void addToRegistries( List<Throwable> errors, Registries registries ) throws LdapException
     {
         if ( registries != null )
@@ -330,6 +331,7 @@ public class MatchingRule extends AbstractSchemaObject
      *
      * @param ldapComparator The LdapComparator
      */
+    @SuppressWarnings("unchecked")
     public void setLdapComparator( LdapComparator<?> ldapComparator )
     {
         if ( locked )
@@ -349,6 +351,7 @@ public class MatchingRule extends AbstractSchemaObject
      *
      * @param ldapComparator The LdapComparator
      */
+    @SuppressWarnings("unchecked")
     public void updateLdapComparator( LdapComparator<?> ldapComparator )
     {
         if ( locked )

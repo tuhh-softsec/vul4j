@@ -135,7 +135,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
     protected Map<SchemaObjectWrapper, Set<SchemaObjectWrapper>> using;
 
     /** A reference on the schema Manager */
-    @SuppressWarnings("PMD.UnusedPrivateField")
+    @SuppressWarnings({ "PMD.UnusedPrivateField", "unused" })
     // False positive 
     private SchemaManager schemaManager;
 
@@ -673,7 +673,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
     @SuppressWarnings("PMD.UnusedFormalParameter")
     private void buildDitContentRuleReferences( List<Throwable> errors )
     {
-        for ( DITContentRule ditContentRule : ditContentRuleRegistry )
+        for ( @SuppressWarnings("unused") DITContentRule ditContentRule : ditContentRuleRegistry )
         {
             // TODO
         }
@@ -687,7 +687,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
     @SuppressWarnings("PMD.UnusedFormalParameter")
     private void buildDitStructureRuleReferences( List<Throwable> errors )
     {
-        for ( DITStructureRule ditStructureRule : ditStructureRuleRegistry )
+        for ( @SuppressWarnings("unused") DITStructureRule ditStructureRule : ditStructureRuleRegistry )
         {
             // TODO
         }
@@ -792,7 +792,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
     @SuppressWarnings("PMD.UnusedFormalParameter")
     private void buildNameFormReferences( List<Throwable> errors )
     {
-        for ( NameForm nameFormRule : nameFormRegistry )
+        for ( @SuppressWarnings("unused") NameForm nameFormRule : nameFormRegistry )
         {
             // TODO
         }

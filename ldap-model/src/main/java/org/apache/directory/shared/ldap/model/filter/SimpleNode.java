@@ -36,11 +36,9 @@ public abstract class SimpleNode<T> extends LeafNode
     /** the value */
     protected Value<T> value;
 
-    /* TODO - why are these here if not used? */
     /** Constants for comparisons : > */
     public static final boolean EVAL_GREATER = true;
 
-    /* TODO - why are these here if not used? */
     /** Constants for comparisons : < */
     public static final boolean EVAL_LESSER = false;
 
@@ -76,6 +74,7 @@ public abstract class SimpleNode<T> extends LeafNode
     /**
      * Makes a full clone in new memory space of the current node and children
      */
+    @SuppressWarnings("unchecked")
     @Override
     public ExprNode clone()
     {

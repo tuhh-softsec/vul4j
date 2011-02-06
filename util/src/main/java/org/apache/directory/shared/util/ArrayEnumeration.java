@@ -29,6 +29,7 @@ import java.util.NoSuchElementException;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
+@SuppressWarnings("rawtypes")
 public class ArrayEnumeration implements Enumeration
 {
     /** the index into the array */

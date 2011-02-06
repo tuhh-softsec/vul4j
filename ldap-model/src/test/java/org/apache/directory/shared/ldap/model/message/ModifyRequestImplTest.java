@@ -32,7 +32,6 @@ import java.util.Map;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.model.exception.MessageException;
-import org.apache.directory.shared.ldap.model.message.*;
 import org.apache.directory.shared.ldap.model.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.model.entry.DefaultModification;
 import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
@@ -428,34 +427,6 @@ public class ModifyRequestImplTest
             }
 
 
-            public Control getCurrentControl()
-            {
-                return null;
-            }
-
-
-            public int getControlsLength()
-            {
-                return 0;
-            }
-
-
-            public void setControlsLength( int controlsLength )
-            {
-            }
-
-
-            public int getMessageLength()
-            {
-                return 0;
-            }
-
-
-            public void setMessageLength( int messageLength )
-            {
-            }
-
-
             public Control getControl( String oid )
             {
                 return null;
@@ -494,43 +465,31 @@ public class ModifyRequestImplTest
 
             public void add( String attributeName, String... attributeValue )
             {
-                // TODO Auto-generated method stub
-
             }
 
 
             public void add( String attributeName, byte[]... attributeValue )
             {
-                // TODO Auto-generated method stub
-
             }
 
 
             public void add( EntryAttribute attr )
             {
-                // TODO Auto-generated method stub
-
             }
 
 
             public void remove( String attributeName, String... attributeValue )
             {
-                // TODO Auto-generated method stub
-
             }
 
 
             public void remove( String attributeName, byte[]... attributeValue )
             {
-                // TODO Auto-generated method stub
-
             }
 
 
             public void remove( EntryAttribute attr )
             {
-                // TODO Auto-generated method stub
-
             }
         };
 

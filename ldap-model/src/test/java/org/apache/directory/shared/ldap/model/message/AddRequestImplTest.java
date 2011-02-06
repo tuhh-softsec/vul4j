@@ -34,7 +34,6 @@ import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.MessageException;
-import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -303,61 +302,7 @@ public class AddRequestImplTest
                 return false;
             }
 
-
-            public void addAttributeType( String type ) throws LdapException
-            {
-            }
-
-
-            public void addAttributeValue( String value )
-            {
-            }
-
-
-            public void addAttributeValue( Value<?> value )
-            {
-            }
-
-
-            public void addAttributeValue( byte[] value )
-            {
-            }
-
-
-            public String getCurrentAttributeType()
-            {
-                return null;
-            }
-
-
-            public Control getCurrentControl()
-            {
-                return null;
-            }
-
-
-            public int getControlsLength()
-            {
-                return 0;
-            }
-
-
-            public void setControlsLength( int controlsLength )
-            {
-            }
-
-
-            public int getMessageLength()
-            {
-                return 0;
-            }
-
-
-            public void setMessageLength( int messageLength )
-            {
-            }
-
-
+            
             public Control getControl( String oid )
             {
                 return null;

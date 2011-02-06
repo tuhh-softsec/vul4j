@@ -402,6 +402,7 @@ public class FilterParser
      * @param pos
      * @return
      */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     private static ExprNode parsePresenceEqOrSubstring( SchemaManager schemaManager, String attribute, String filter, Position pos )
         throws ParseException, LdapException
     {
@@ -507,6 +508,7 @@ public class FilterParser
      *                  
      * An item starts with an attribute or a colon.
      */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     private static ExprNode parseItem( SchemaManager schemaManager, String filter, Position pos, char c ) 
         throws ParseException, LdapException
     {

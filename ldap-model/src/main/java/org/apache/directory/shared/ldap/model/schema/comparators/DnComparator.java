@@ -34,6 +34,7 @@ import org.apache.directory.shared.ldap.model.schema.SchemaManager;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
+@SuppressWarnings("serial")
 public class DnComparator extends LdapComparator<Object>
 {
     /** A reference to the schema manager */ 

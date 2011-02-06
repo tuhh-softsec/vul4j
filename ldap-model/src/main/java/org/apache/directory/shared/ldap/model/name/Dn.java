@@ -996,6 +996,7 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
      *
      * @return All the components
      */
+    @SuppressWarnings("unchecked")
     public List<Rdn> getRdns()
     {
         return UnmodifiableList.decorate( rdns );

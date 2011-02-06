@@ -26,13 +26,9 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.naming.NamingException;
-import javax.naming.ldap.ExtendedResponse;
-
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.model.exception.MessageException;
-import org.apache.directory.shared.ldap.model.message.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -252,13 +248,6 @@ public class ExtendedRequestImplTest
             }
 
 
-            public ExtendedResponse createExtendedResponse( String id, byte[] berValue, int offset, int length )
-                throws NamingException
-            {
-                return null;
-            }
-
-
             public void addAllControls( Control[] controls ) throws MessageException
             {
             }
@@ -267,34 +256,6 @@ public class ExtendedRequestImplTest
             public boolean hasControl( String oid )
             {
                 return false;
-            }
-
-
-            public Control getCurrentControl()
-            {
-                return null;
-            }
-
-
-            public int getControlsLength()
-            {
-                return 0;
-            }
-
-
-            public void setControlsLength( int controlsLength )
-            {
-            }
-
-
-            public int getMessageLength()
-            {
-                return 0;
-            }
-
-
-            public void setMessageLength( int messageLength )
-            {
             }
 
 

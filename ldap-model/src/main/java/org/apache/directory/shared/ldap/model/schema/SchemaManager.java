@@ -783,6 +783,7 @@ public interface SchemaManager
      *
      * @return The the global OidRegistry
      */
+    @SuppressWarnings("rawtypes")
     OidRegistry getGlobalOidRegistry();
 
 

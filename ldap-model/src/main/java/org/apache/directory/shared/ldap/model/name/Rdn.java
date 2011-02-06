@@ -714,6 +714,7 @@ public class Rdn implements Cloneable, Comparable<Rdn>, Externalizable, Iterable
             default:
                 if ( atavTypes.containsKey( normalizedType ) )
                 {
+                    @SuppressWarnings("unchecked")
                     Collection<Ava> atavList = ( Collection<Ava> ) atavTypes.get( normalizedType );
                     StringBuffer sb = new StringBuffer();
                     boolean isFirst = true;
@@ -792,6 +793,7 @@ public class Rdn implements Cloneable, Comparable<Rdn>, Externalizable, Iterable
             default:
                 if ( atavTypes.containsKey( normalizedType ) )
                 {
+                    @SuppressWarnings("unchecked")
                     Collection<Ava> atavList = ( Collection<Ava> ) atavTypes.get( normalizedType );
                     return atavList.iterator().next();
                 }

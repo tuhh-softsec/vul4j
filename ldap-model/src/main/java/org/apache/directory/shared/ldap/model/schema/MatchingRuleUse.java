@@ -297,6 +297,7 @@ public class MatchingRuleUse extends AbstractSchemaObject
             return false;
         }
 
+        @SuppressWarnings("unused")
         MatchingRuleUse that = ( MatchingRuleUse ) o;
 
         // TODO : complete the checks

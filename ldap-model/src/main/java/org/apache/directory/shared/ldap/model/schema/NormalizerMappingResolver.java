@@ -39,7 +39,7 @@ import java.util.Map;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface NormalizerMappingResolver
+public interface NormalizerMappingResolver<E extends Normalizer>
 {
-    Map getNormalizerMapping() throws Exception;
+    Map<String, E> getNormalizerMapping() throws Exception;
 }
