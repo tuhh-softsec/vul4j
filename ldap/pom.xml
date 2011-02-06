@@ -150,7 +150,6 @@
               org.apache.directory.shared.ldap.csn,
               org.apache.directory.shared.ldap.entry.client,
               org.apache.directory.shared.ldap.message*,
-              org.apache.directory.shared.ldap.model*,
               org.apache.directory.shared.ldap.sp,
               org.apache.directory.shared.ldap.subtree,
               org.apache.directory.shared.ldap.trigger,
