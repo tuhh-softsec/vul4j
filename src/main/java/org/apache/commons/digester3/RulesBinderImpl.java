@@ -400,7 +400,7 @@ final class RulesBinderImpl implements RulesBinder {
                         }
 
                         return setNamespaceAndReturn(
-                                new FactoryCreateRule(keyPattern, attributeName, creationFactory, ignoreCreateExceptions));
+                                new FactoryCreateRule(className, attributeName, creationFactory, ignoreCreateExceptions));
                     }
 
                     public LinkedRuleBuilder then() {
