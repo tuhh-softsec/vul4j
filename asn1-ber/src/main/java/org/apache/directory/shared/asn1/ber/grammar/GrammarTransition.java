@@ -20,6 +20,7 @@
 package org.apache.directory.shared.asn1.ber.grammar;
 
 
+import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.util.Asn1StringUtils;
 
 
@@ -29,10 +30,10 @@ import org.apache.directory.shared.asn1.util.Asn1StringUtils;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class GrammarTransition
+public class GrammarTransition<E extends Asn1Container>
 {
     /** The action associated to the transition */
-    private Action action;
+    private Action<E> action;
 
     /** The previous state */
     private Enum<?> previousState;
@@ -52,7 +53,7 @@ public class GrammarTransition
      * @param currentTag the current TLV's tag
      * @param action The action to execute. It could be null.
      */
-    public GrammarTransition( Enum<?> previousState, Enum<?> currentState, int currentTag, Action action )
+    public GrammarTransition( Enum<?> previousState, Enum<?> currentState, int currentTag, Action<E> action )
     {
         this.previousState = previousState;
         this.currentState = currentState;
@@ -75,7 +76,7 @@ public class GrammarTransition
     /**
      * @return Returns the action associated with the transition
      */
-    public Action getAction()
+    public Action<E> getAction()
     {
         return action;
     }

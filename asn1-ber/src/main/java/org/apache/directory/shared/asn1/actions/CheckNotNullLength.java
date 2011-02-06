@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class CheckNotNullLength extends GrammarAction
+public class CheckNotNullLength extends GrammarAction<Asn1Container>
 {
     /** The logger */
     private static final Logger LOG = LoggerFactory.getLogger( CheckNotNullLength.class );
