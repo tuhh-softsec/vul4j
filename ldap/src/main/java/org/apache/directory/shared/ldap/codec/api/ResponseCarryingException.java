@@ -18,7 +18,7 @@
  *  
  */
 
-package org.apache.directory.shared.ldap.codec;
+package org.apache.directory.shared.ldap.codec.api;
 
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.ldap.model.message.Message;

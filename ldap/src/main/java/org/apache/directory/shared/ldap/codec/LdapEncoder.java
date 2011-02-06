@@ -33,6 +33,7 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.api.CodecControl;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.LdapConstants;
+import org.apache.directory.shared.ldap.codec.api.MessageEncoderException;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.Message;
