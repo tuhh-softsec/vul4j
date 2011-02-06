@@ -17,7 +17,6 @@
  *  under the License. 
  *  
  */
-
 package org.apache.directory.shared.dsmlv2.reponse;
 
 
@@ -34,15 +33,10 @@ import org.apache.directory.shared.ldap.model.message.Response;
  */
 public class BatchResponse
 {
-
-    /**
-     * The responses contained in the Batch Response
-     */
+    /** The responses contained in the Batch Response */
     private List<Response> responses;
 
-    /**
-     * The ID of the response
-     */
+    /** The ID of the response */
     private int requestID;
 
 
@@ -56,6 +50,18 @@ public class BatchResponse
 
 
     /**
+     * Gets the current response
+     *
+     * @return
+     *      the current response
+     */
+    public Response getCurrentResponse()
+    {
+        return responses.get( responses.size() - 1 );
+    }
+
+    
+    /**
      * Adds a response
      *
      * @param response
@@ -66,18 +72,6 @@ public class BatchResponse
     public boolean addResponse( Response response )
     {
         return responses.add( response );
-    }
-
-
-    /**
-     * Gets the current response
-     *
-     * @return
-     *      the current response
-     */
-    public Response getCurrentResponse()
-    {
-        return responses.get( responses.size() - 1 );
     }
 
 

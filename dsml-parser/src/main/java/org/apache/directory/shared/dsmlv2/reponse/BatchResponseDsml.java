@@ -55,6 +55,18 @@ public class BatchResponseDsml
 
 
     /**
+     * Gets the current response
+     *
+     * @return
+     *      the current response
+     */
+    public DsmlDecorator<? extends Response> getCurrentResponse()
+    {
+        return responses.get( responses.size() - 1 );
+    }
+
+
+    /**
      * Adds a request to the Batch Response DSML.
      *
      * @param response
@@ -66,7 +78,7 @@ public class BatchResponseDsml
     {
         return responses.add( response );
     }
-
+    
 
     /**
      * Removes a request from the Batch Response DSML.
@@ -102,6 +114,18 @@ public class BatchResponseDsml
     public void setRequestID( int requestID )
     {
         this.requestID = requestID;
+    }
+
+
+    /**
+     * Gets the List of all the responses
+     *
+     * @return
+     *      the List of all the responses
+     */
+    public List<DsmlDecorator<? extends Response>> getResponses()
+    {
+        return responses;
     }
 
 
