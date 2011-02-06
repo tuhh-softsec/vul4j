@@ -130,7 +130,7 @@ abstract class AbstractMethodRule extends Rule {
      */
     @Override
     public final String toString() {
-        return String.format("%s[methodName=%s, paramType=%s, useExactMatch%s]",
+        return String.format("%s[methodName=%s, paramType=%s, useExactMatch=%s]",
                         this.getClass().getSimpleName(),
                         this.methodName,
                         this.paramType,
