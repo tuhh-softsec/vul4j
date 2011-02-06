@@ -79,6 +79,7 @@
     <module>integ</module>
     <module>all</module>
     <module>ldap</module>
+    <module>ldap-codec</module>
     <module>ldap-model</module>
     <module>ldap-schema</module>
     <module>ldap-schema-converter</module>
@@ -352,6 +353,12 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>shared-ldap-model</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>shared-ldap-codec</artifactId>
         <version>${project.version}</version>
       </dependency>
 
