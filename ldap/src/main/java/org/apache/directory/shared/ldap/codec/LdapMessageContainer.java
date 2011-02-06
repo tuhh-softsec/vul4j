@@ -25,7 +25,7 @@ import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
-import org.apache.directory.shared.ldap.message.spi.BinaryAttributeDetector;
+import org.apache.directory.shared.ldap.codec.api.BinaryAttributeDetector;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.Message;
 

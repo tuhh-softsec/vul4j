@@ -17,7 +17,7 @@
  *  under the License.
  *
  */
-package org.apache.directory.shared.ldap.message.spi;
+package org.apache.directory.shared.ldap.codec.api;
 
 
 
