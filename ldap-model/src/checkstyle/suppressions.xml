@@ -24,9 +24,6 @@
     "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
 
 <suppressions>
-    <!-- UnixCrypt is from external, no formatting is applied -->
-    <suppress files="org.apache.directory.shared.util.UnixCrypt" checks="[A-Za-z0-9]" />
-    
     <!-- hashcode() is final in super class -->
     <suppress files="org.apache.directory.shared.ldap.model.schema.SyntaxChecker" checks="EqualsHashCode" />
     <suppress files="org.apache.directory.shared.ldap.model.schema.Normalizer" checks="EqualsHashCode" />
@@ -38,7 +35,4 @@
     <suppress files="org.apache.directory.shared.ldap.model.constants.SchemaConstants" checks="JavadocVariable" />
     <suppress files="org.apache.directory.shared.ldap.model.constants.MetaSchemaConstants" checks="JavadocVariable" />
     <suppress files="org.apache.directory.shared.ldap.model.constants.PasswordPolicySchemaConstants" checks="JavadocVariable" />
-
-    <!-- Classes in org.apache.directory.shared.asn1.der are forked from Bouncy Castle -->
-    <suppress files="org.apache.directory.shared.asn1.der" checks="[A-Za-z0-9]" />
 </suppressions>
