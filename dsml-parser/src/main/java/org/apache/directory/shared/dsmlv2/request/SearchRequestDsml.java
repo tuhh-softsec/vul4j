@@ -28,15 +28,6 @@ import org.apache.directory.shared.dsmlv2.ParserUtils;
 import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
 import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapConstants;
-import org.apache.directory.shared.ldap.codec.search.AndFilter;
-import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilter;
-import org.apache.directory.shared.ldap.codec.search.ConnectorFilter;
-import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
-import org.apache.directory.shared.ldap.codec.search.Filter;
-import org.apache.directory.shared.ldap.codec.search.NotFilter;
-import org.apache.directory.shared.ldap.codec.search.OrFilter;
-import org.apache.directory.shared.ldap.codec.search.PresentFilter;
-import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
 import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.filter.AndNode;
@@ -80,9 +71,6 @@ public class SearchRequestDsml
 
     /** The global filter. This is used while decoding a PDU */
     private Filter topFilter;
-
-    /** The SearchRequest TLV id */
-    private int tlvId;
     
     
     /**
@@ -188,7 +176,7 @@ public class SearchRequestDsml
             // Ok, we have a parent. The new Filter will be added to
             // this parent, and will become the currentFilter if it's a connector.
             ( ( ConnectorFilter ) currentFilter ).addFilter( localFilter );
-            localFilter.setParent( currentFilter, currentFilter.getTlvId() );
+            localFilter.setParent( currentFilter );
 
             if ( localFilter instanceof ConnectorFilter )
             {
@@ -199,7 +187,7 @@ public class SearchRequestDsml
         {
             // No parent. This Filter will become the root.
             currentFilter = localFilter;
-            currentFilter.setParent( null, tlvId );
+            currentFilter.setParent( null );
             topFilter = localFilter;
         }
     }
