@@ -92,6 +92,11 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+          <configLocation>directory-checks.xml</configLocation>
+          <suppressionsLocation>${basedir}/src/checkstyle/suppressions.xml</suppressionsLocation>
+          <suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
+        </configuration>
         <dependencies>
           <dependency>
             <groupId>org.apache.directory.buildtools</groupId>
@@ -178,19 +183,21 @@
               </reportSets>
             </plugin>
       
+<!-- Disabled because of Hudson problems, see http://jira.codehaus.org/browse/MFINDBUGS-126
             <plugin>
               <groupId>org.codehaus.mojo</groupId>
               <artifactId>findbugs-maven-plugin</artifactId>
               <configuration>
                 <xrefLocation>${project.reporting.outputDirectory}/../xref</xrefLocation>
                 <xrefTestLocation>${project.reporting.outputDirectory}/../xref-test</xrefTestLocation>
-                <!-- required by dashboard plugin and hudson -->
+                <! - - required by dashboard plugin and hudson - - >
                 <xmlOutput>true</xmlOutput>
                 <effort>Max</effort>
                 <findbugsXmlOutput>true</findbugsXmlOutput>
                 <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
               </configuration>
             </plugin>
+-->
       
 <!-- Disabled because of Hudson problems
             <plugin>
