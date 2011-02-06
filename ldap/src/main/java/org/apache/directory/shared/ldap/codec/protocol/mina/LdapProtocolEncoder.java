@@ -17,58 +17,48 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.ldap.client.api.protocol;
+package org.apache.directory.shared.ldap.codec.protocol.mina;
 
 
+import java.nio.ByteBuffer;
+
+import org.apache.directory.shared.ldap.codec.LdapEncoder;
+import org.apache.directory.shared.ldap.model.message.Message;
+import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.IoSession;
-import org.apache.mina.filter.codec.ProtocolCodecFactory;
-import org.apache.mina.filter.codec.ProtocolDecoder;
 import org.apache.mina.filter.codec.ProtocolEncoder;
+import org.apache.mina.filter.codec.ProtocolEncoderOutput;
 
 
 /**
- * The factory used to create the LDAP encoder and decoder.
+ * A LDAP message decoder. It is based on shared-ldap decoder.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class LdapProtocolCodecFactory implements ProtocolCodecFactory
+public class LdapProtocolEncoder implements ProtocolEncoder
 {
-    /** The LdapDecoder key */
-    public static final String LDAP_DECODER = "LDAP_DECODER";
-
-    /** The LdapEncoder key */
-    public static final String LDAP_ENCODER = "LDAP_ENCODER";
+    /** The stateful encoder */
+    private static final LdapEncoder ENCODER = new LdapEncoder();
 
 
     /**
-     * Creates a new instance of LdapProtocolCodecFactory. It
-     * creates the encoded an decoder instances.
+     * {@inheritDoc}
      */
-    public LdapProtocolCodecFactory()
+    public void encode( IoSession session, Object message, ProtocolEncoderOutput out ) throws Exception
     {
+        ByteBuffer buffer = ENCODER.encodeMessage( ( Message ) message );
+
+        IoBuffer ioBuffer = IoBuffer.wrap( buffer );
+
+        out.write( ioBuffer );
     }
 
 
     /**
-     * Get the LDAP decoder.
-     *
-     * @param session the IO session
-     * @return the decoder
+     * {@inheritDoc}
      */
-    public ProtocolDecoder getDecoder( IoSession session )
+    public void dispose( IoSession session ) throws Exception
     {
-        return new LdapProtocolDecoder();
-    }
-
-
-    /**
-     * Get the LDAP encoder.
-     *
-     * @param session the IO session
-     * @return the encoder
-     */
-    public ProtocolEncoder getEncoder( IoSession session )
-    {
-        return new LdapProtocolEncoder();
+        // Nothing to do
     }
 }

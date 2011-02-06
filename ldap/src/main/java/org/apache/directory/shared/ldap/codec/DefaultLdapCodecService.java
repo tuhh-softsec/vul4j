@@ -28,6 +28,7 @@ import java.util.Map;
 
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.ldap.codec.api.CodecControl;
 import org.apache.directory.shared.ldap.codec.api.ControlFactory;
 import org.apache.directory.shared.ldap.codec.api.ExtendedOpFactory;
@@ -38,6 +39,8 @@ import org.apache.directory.shared.ldap.codec.controls.search.entryChange.EntryC
 import org.apache.directory.shared.ldap.codec.controls.search.pagedSearch.PagedResultsFactory;
 import org.apache.directory.shared.ldap.codec.controls.search.persistentSearch.PersistentSearchFactory;
 import org.apache.directory.shared.ldap.codec.controls.search.subentries.SubentriesFactory;
+import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
+import org.apache.directory.shared.ldap.codec.protocol.mina.LdapProtocolCodecFactory;
 import org.apache.directory.shared.ldap.extras.controls.PasswordPolicyImpl;
 import org.apache.directory.shared.ldap.extras.controls.SyncDoneValue;
 import org.apache.directory.shared.ldap.extras.controls.SyncInfoValue;
@@ -51,6 +54,7 @@ import org.apache.directory.shared.ldap.extras.controls.syncrepl_impl.SyncModify
 import org.apache.directory.shared.ldap.extras.controls.syncrepl_impl.SyncRequestValueFactory;
 import org.apache.directory.shared.ldap.extras.controls.syncrepl_impl.SyncStateValueFactory;
 import org.apache.directory.shared.ldap.model.message.Control;
+import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.model.message.controls.Cascade;
 import org.apache.directory.shared.ldap.model.message.controls.EntryChange;
 import org.apache.directory.shared.ldap.model.message.controls.ManageDsaIT;
@@ -58,6 +62,7 @@ import org.apache.directory.shared.ldap.model.message.controls.OpaqueControl;
 import org.apache.directory.shared.ldap.model.message.controls.PagedResults;
 import org.apache.directory.shared.ldap.model.message.controls.PersistentSearch;
 import org.apache.directory.shared.ldap.model.message.controls.Subentries;
+import org.apache.directory.shared.util.exception.NotImplementedException;
 import org.apache.mina.filter.codec.ProtocolCodecFactory;
 
 
@@ -178,10 +183,23 @@ public class DefaultLdapCodecService implements LdapCodecService
     
     /**
      * {@inheritDoc}
+     * 
+     * @TODO - finish this up and add factory registration capabilities,
+     * of course there is one default mechanism for now.
      */
     public ProtocolCodecFactory newProtocolCodecFactory( boolean client )
     {
-        return null;
+        if ( client )
+        {
+            return new LdapProtocolCodecFactory();
+        }
+        else
+        {
+            throw new NotImplementedException( 
+                "Filters may be different here, and we're probably going to " +
+                "want to have a protocol codec factory registration mechanism" +
+                "since this way we can swap in and out MINA/Grizzly" );
+        }
     }
 
     
@@ -204,6 +222,7 @@ public class DefaultLdapCodecService implements LdapCodecService
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
     public CodecControl<? extends Control> newControl( Control control )
     {
         if ( control == null )
@@ -217,6 +236,7 @@ public class DefaultLdapCodecService implements LdapCodecService
             return (org.apache.directory.shared.ldap.codec.api.CodecControl<?> )control;
         }
         
+        @SuppressWarnings("rawtypes")
         ControlFactory factory = controlFactories.get( control.getOid() );
         
         if ( factory == null )
@@ -248,6 +268,7 @@ public class DefaultLdapCodecService implements LdapCodecService
      */
     public Control fromJndiControl( javax.naming.ldap.Control control ) throws DecoderException
     {
+        @SuppressWarnings("rawtypes")
         ControlFactory factory = controlFactories.get( control.getID() );
         
         if ( factory == null )
@@ -260,10 +281,20 @@ public class DefaultLdapCodecService implements LdapCodecService
             return decorator;
         }
         
+        @SuppressWarnings("unchecked")
         CodecControl<? extends Control> ourControl = factory.newCodecControl();
         ourControl.setCritical( control.isCritical() );
         ourControl.setValue( control.getEncodedValue() );
         ourControl.decode( control.getEncodedValue() );
         return ourControl;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Asn1Container newMessageContainer()
+    {
+        return new LdapMessageContainer<MessageDecorator<? extends Message>>( this );
     }
 }

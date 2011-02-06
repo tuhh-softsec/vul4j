@@ -169,6 +169,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
     /**
      * Creates a new LdapMessageGrammar object.
      */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private LdapMessageGrammar()
     {
 

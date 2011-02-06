@@ -55,7 +55,7 @@ public class LdapEncoder
     private int computeControlLength( Control control )
     {
         // First, compute the control's value length
-        int controlValueLength = ((CodecControl)control).computeLength();
+        int controlValueLength = ( ( CodecControl<?> ) control).computeLength();
         
         // Now, compute the envelop length
         // The OID
@@ -180,7 +180,7 @@ public class LdapEncoder
                     encodeControl( buffer, control );
                     
                     // The OctetString tag if the value is not null
-                    int controlValueLength = ((CodecControl)control).computeLength();
+                    int controlValueLength = ( ( CodecControl<?> ) control).computeLength();
                     
                     if ( controlValueLength > 0 )
                     {

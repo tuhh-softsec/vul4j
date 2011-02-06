@@ -24,6 +24,7 @@ import java.util.Iterator;
 
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.mina.filter.codec.ProtocolCodecFactory;
 
@@ -125,4 +126,7 @@ public interface LdapCodecService
      * @throws DecoderException if there are problems decoding the value of the JNDI control.
      */
     Control fromJndiControl( javax.naming.ldap.Control jndiControl ) throws DecoderException;
+
+
+    Asn1Container newMessageContainer();
 }

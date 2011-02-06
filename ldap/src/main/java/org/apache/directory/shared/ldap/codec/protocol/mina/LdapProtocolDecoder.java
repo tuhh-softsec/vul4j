@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.ldap.client.api.protocol;
+package org.apache.directory.shared.ldap.codec.protocol.mina;
 
 
 import java.nio.ByteBuffer;

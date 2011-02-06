@@ -55,15 +55,11 @@ import org.apache.directory.ldap.client.api.future.ModifyDnFuture;
 import org.apache.directory.ldap.client.api.future.ModifyFuture;
 import org.apache.directory.ldap.client.api.future.ResponseFuture;
 import org.apache.directory.ldap.client.api.future.SearchFuture;
-import org.apache.directory.ldap.client.api.protocol.LdapProtocolCodecFactory;
 import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
-import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.MessageEncoderException;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
-import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
 import org.apache.directory.shared.ldap.message.extended.NoticeOfDisconnect;
 import org.apache.directory.shared.ldap.message.extended.nod.AddNoDResponse;
 import org.apache.directory.shared.ldap.message.extended.nod.BindNoDResponse;
@@ -185,9 +181,6 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
     /** A flag set to true when we used a local connector */
     private boolean localConnector;
 
-    /** The Ldap codec */
-    private IoFilter ldapProtocolFilter = new ProtocolCodecFilter( new LdapProtocolCodecFactory() );
-
     /**
      * The created session, created when we open a connection with
      * the Ldap server.
@@ -222,6 +215,9 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
 
     /** the ldap codec service */
     LdapCodecService codec = new DefaultLdapCodecService();
+
+    /** The Ldap codec protocol filter */
+    private IoFilter ldapProtocolFilter = new ProtocolCodecFilter( codec.newProtocolCodecFactory( true ) );
     
     /** the SslFilter key */
     private static final String SSL_FILTER_KEY = "sslFilter";
@@ -605,11 +601,8 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         ldapSession = connectionFuture.getSession();
         connected.set( true );
 
-        // And inject the current Ldap container into the session
-        Asn1Container ldapMessageContainer = new LdapMessageContainer<MessageDecorator<Message>>( codec );
-
         // Store the container into the session
-        ldapSession.setAttribute( "LDAP-Container", ldapMessageContainer );
+        ldapSession.setAttribute( "LDAP-Container", codec.newMessageContainer() );
 
         // Initialize the MessageId
         messageId.set( 0 );
