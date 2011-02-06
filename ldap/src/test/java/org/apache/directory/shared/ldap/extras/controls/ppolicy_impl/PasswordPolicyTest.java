@@ -28,7 +28,7 @@ import static org.junit.Assert.assertTrue;
 import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
-import org.apache.directory.shared.ldap.codec.LdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.extras.controls.PasswordPolicy;
 import org.apache.directory.shared.ldap.extras.controls.ppolicy_impl.PasswordPolicyDecorator;
 import org.apache.directory.shared.util.Strings;

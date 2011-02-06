@@ -34,6 +34,7 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.decorators.AddResponseDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
 import org.apache.directory.shared.ldap.model.message.AddResponse;

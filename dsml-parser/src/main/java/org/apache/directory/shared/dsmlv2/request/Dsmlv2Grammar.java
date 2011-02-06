@@ -33,17 +33,16 @@ import org.apache.directory.shared.dsmlv2.Dsmlv2Container;
 import org.apache.directory.shared.dsmlv2.Dsmlv2StatesEnum;
 import org.apache.directory.shared.dsmlv2.GrammarAction;
 import org.apache.directory.shared.dsmlv2.GrammarTransition;
-import org.apache.directory.shared.dsmlv2.IGrammar;
+import org.apache.directory.shared.dsmlv2.Grammar;
 import org.apache.directory.shared.dsmlv2.ParserUtils;
 import org.apache.directory.shared.dsmlv2.Tag;
 import org.apache.directory.shared.dsmlv2.request.BatchRequestDsml.OnError;
 import org.apache.directory.shared.dsmlv2.request.BatchRequestDsml.Processing;
 import org.apache.directory.shared.dsmlv2.request.BatchRequestDsml.ResponseOrder;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
-import org.apache.directory.shared.ldap.codec.CodecControl;
-import org.apache.directory.shared.ldap.codec.LdapCodecService;
-import org.apache.directory.shared.ldap.codec.LdapConstants;
+import org.apache.directory.shared.ldap.codec.api.CodecControl;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.LdapConstants;
 import org.apache.directory.shared.ldap.model.entry.BinaryValue;
 import org.apache.directory.shared.ldap.model.entry.StringValue;
 import org.apache.directory.shared.ldap.model.entry.Value;
@@ -77,7 +76,7 @@ import org.xmlpull.v1.XmlPullParserException;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public final class Dsmlv2Grammar extends AbstractGrammar implements IGrammar
+public final class Dsmlv2Grammar extends AbstractGrammar implements Grammar
 {
     private LdapCodecService codec;
     

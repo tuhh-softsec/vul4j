@@ -20,7 +20,7 @@
 package org.apache.directory.shared.dsmlv2;
 
 
-import org.apache.directory.shared.ldap.codec.LdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.dom4j.Element;
 

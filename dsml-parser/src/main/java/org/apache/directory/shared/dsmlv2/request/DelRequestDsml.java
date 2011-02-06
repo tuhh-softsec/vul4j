@@ -20,7 +20,7 @@
 package org.apache.directory.shared.dsmlv2.request;
 
 
-import org.apache.directory.shared.ldap.codec.LdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.DeleteRequest;
 import org.apache.directory.shared.ldap.model.message.DeleteRequestImpl;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;

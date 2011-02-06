@@ -20,8 +20,8 @@
 package org.apache.directory.shared.ldap.codec.controls.search.persistentSearch;
 
 
-import org.apache.directory.shared.ldap.codec.ControlFactory;
-import org.apache.directory.shared.ldap.codec.LdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.ControlFactory;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.controls.PersistentSearch;
 
 

@@ -69,6 +69,7 @@ import org.apache.directory.shared.ldap.codec.actions.StoreMatchValueAction;
 import org.apache.directory.shared.ldap.codec.actions.StoreReferenceAction;
 import org.apache.directory.shared.ldap.codec.actions.StoreTypeMatchingRuleAction;
 import org.apache.directory.shared.ldap.codec.actions.ValueAction;
+import org.apache.directory.shared.ldap.codec.api.LdapConstants;
 import org.apache.directory.shared.ldap.codec.decorators.AbandonRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.AddRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.AddResponseDecorator;

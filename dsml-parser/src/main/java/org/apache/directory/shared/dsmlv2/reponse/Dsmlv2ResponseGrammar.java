@@ -17,7 +17,6 @@
  *  under the License. 
  *  
  */
-
 package org.apache.directory.shared.dsmlv2.reponse;
 
 
@@ -37,12 +36,12 @@ import org.apache.directory.shared.dsmlv2.Dsmlv2Container;
 import org.apache.directory.shared.dsmlv2.Dsmlv2StatesEnum;
 import org.apache.directory.shared.dsmlv2.GrammarAction;
 import org.apache.directory.shared.dsmlv2.GrammarTransition;
-import org.apache.directory.shared.dsmlv2.IGrammar;
+import org.apache.directory.shared.dsmlv2.Grammar;
 import org.apache.directory.shared.dsmlv2.ParserUtils;
 import org.apache.directory.shared.dsmlv2.Tag;
 import org.apache.directory.shared.dsmlv2.reponse.ErrorResponse.ErrorResponseType;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.CodecControl;
+import org.apache.directory.shared.ldap.codec.api.CodecControl;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.exception.LdapURLEncodingException;
@@ -79,7 +78,7 @@ import org.xmlpull.v1.XmlPullParserException;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements IGrammar
+public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements Grammar
 {
     /** The instance of grammar. Dsmlv2ResponseGrammar is a singleton */
     private static Dsmlv2ResponseGrammar instance = new Dsmlv2ResponseGrammar();

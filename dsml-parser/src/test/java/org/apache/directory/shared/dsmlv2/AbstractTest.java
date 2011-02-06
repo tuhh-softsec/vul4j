@@ -26,7 +26,7 @@ import static org.junit.Assert.fail;
 
 import org.apache.directory.shared.dsmlv2.request.Dsmlv2Grammar;
 import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
-import org.apache.directory.shared.ldap.codec.LdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.xmlpull.v1.XmlPullParserException;
 
 /**

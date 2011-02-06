@@ -51,7 +51,7 @@ import org.apache.directory.shared.dsmlv2.request.BatchRequestDsml.Processing;
 import org.apache.directory.shared.dsmlv2.request.BatchRequestDsml.ResponseOrder;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
-import org.apache.directory.shared.ldap.codec.LdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.model.cursor.Cursor;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;

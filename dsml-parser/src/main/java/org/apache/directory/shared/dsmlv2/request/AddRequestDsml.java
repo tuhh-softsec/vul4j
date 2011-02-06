@@ -21,7 +21,7 @@ package org.apache.directory.shared.dsmlv2.request;
 
 
 import org.apache.directory.shared.dsmlv2.ParserUtils;
-import org.apache.directory.shared.ldap.codec.LdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.model.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.entry.EntryAttribute;

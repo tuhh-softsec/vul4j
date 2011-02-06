@@ -20,9 +20,6 @@
 package org.apache.directory.shared.dsmlv2.request;
 
 
-import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
-
-
 /**
  * Object to store the filter. A filter is seen as a tree with a root.
  * 

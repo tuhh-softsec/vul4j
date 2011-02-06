@@ -36,10 +36,10 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
-import org.apache.directory.shared.ldap.codec.CodecControl;
-import org.apache.directory.shared.ldap.codec.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.api.CodecControl;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
 import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.model.filter.ExprNode;
@@ -351,7 +351,7 @@ public class SearchRequestSubstringTest
 
         assertEquals( 1, controls.size() );
 
-        CodecControl<Control> control = ( CodecControl<Control> )searchRequest.getControl( "2.16.840.1.113730.3.4.2" );
+        CodecControl<Control> control = (org.apache.directory.shared.ldap.codec.api.CodecControl<Control> )searchRequest.getControl( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", Strings.dumpBytes((byte[]) control.getValue()) );
 

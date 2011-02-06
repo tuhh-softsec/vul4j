@@ -17,7 +17,6 @@
  *  under the License. 
  *  
  */
-
 package org.apache.directory.shared.dsmlv2.reponse;
 
 
@@ -26,7 +25,7 @@ import java.util.List;
 
 import org.apache.directory.shared.dsmlv2.DsmlDecorator;
 import org.apache.directory.shared.dsmlv2.ParserUtils;
-import org.apache.directory.shared.ldap.codec.LdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.model.filter.LdapURL;
 import org.apache.directory.shared.ldap.model.message.LdapResult;
 import org.apache.directory.shared.ldap.model.message.Message;

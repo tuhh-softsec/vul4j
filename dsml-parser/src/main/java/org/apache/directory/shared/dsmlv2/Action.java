@@ -17,29 +17,27 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.dsmlv2.reponse;
+package org.apache.directory.shared.dsmlv2;
 
 
-import org.apache.directory.shared.dsmlv2.AbstractDsmlMessageDecorator;
-import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
-import org.apache.directory.shared.ldap.model.message.Response;
+import org.xmlpull.v1.XmlPullParserException;
 
 
 /**
- * Base class for all DSML responses.
+ * IAction interface just contains the method 'action' which must be implemented
+ * in all the implementation classes.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public abstract class AbstractResponseDsml<E extends Response> 
-    extends AbstractDsmlMessageDecorator<E> implements Response
+public interface Action
 {
     /**
-     * Instantiates a new abstract DSML response.
-     *
-     * @param response the LDAP response message to decorate
+     * The action to be executed.
+     * 
+     * @param container
+     *      the container which stores the current data
+     * @throws XmlPullParserException
+     *      thrown if something went wrong.
      */
-    public AbstractResponseDsml( LdapCodecService codec, E response )
-    {
-        super( codec, response );
-    }
+    void action( Dsmlv2Container container ) throws XmlPullParserException;
 }

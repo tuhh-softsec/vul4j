@@ -21,7 +21,7 @@
 package org.apache.directory.shared.dsmlv2.reponse;
 
 
-import org.apache.directory.shared.ldap.codec.LdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.CompareResponse;
 import org.apache.directory.shared.ldap.model.message.CompareResponseImpl;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;

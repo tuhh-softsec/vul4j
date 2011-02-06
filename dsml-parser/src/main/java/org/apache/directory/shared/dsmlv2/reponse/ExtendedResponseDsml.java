@@ -22,7 +22,7 @@ package org.apache.directory.shared.dsmlv2.reponse;
 
 import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.dsmlv2.ParserUtils;
-import org.apache.directory.shared.ldap.codec.LdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
 import org.apache.directory.shared.ldap.model.message.ExtendedResponseImpl;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;

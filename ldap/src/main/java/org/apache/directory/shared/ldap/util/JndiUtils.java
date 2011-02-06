@@ -51,7 +51,7 @@ import javax.naming.ldap.LdapName;
 
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
-import org.apache.directory.shared.ldap.codec.LdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.model.exception.LdapAffectMultipleDsaException;
 import org.apache.directory.shared.ldap.model.exception.LdapAliasDereferencingException;
 import org.apache.directory.shared.ldap.model.exception.LdapAliasException;

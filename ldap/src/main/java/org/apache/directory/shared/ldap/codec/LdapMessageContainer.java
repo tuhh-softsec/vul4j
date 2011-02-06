@@ -22,6 +22,7 @@ package org.apache.directory.shared.ldap.codec;
 
 import org.apache.directory.shared.asn1.ber.AbstractContainer;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
 import org.apache.directory.shared.ldap.message.spi.BinaryAttributeDetector;

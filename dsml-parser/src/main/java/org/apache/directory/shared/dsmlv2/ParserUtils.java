@@ -17,7 +17,6 @@
  *  under the License. 
  *  
  */
-
 package org.apache.directory.shared.dsmlv2;
 
 
@@ -34,8 +33,8 @@ import org.apache.directory.shared.dsmlv2.request.BatchRequestDsml;
 import org.apache.directory.shared.dsmlv2.request.BatchRequestDsml.Processing;
 import org.apache.directory.shared.dsmlv2.request.BatchRequestDsml.ResponseOrder;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.CodecControl;
-import org.apache.directory.shared.ldap.codec.LdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.CodecControl;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.model.ldif.LdifUtils;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.util.Base64;
@@ -235,7 +234,7 @@ public final class ParserUtils
                 byte[] value;
                 if ( control instanceof CodecControl<?> )
                 {
-                    value = ( ( CodecControl<?> ) control ).getValue();
+                    value = ( (org.apache.directory.shared.ldap.codec.api.CodecControl<?> ) control ).getValue();
                 }
                 else
                 {

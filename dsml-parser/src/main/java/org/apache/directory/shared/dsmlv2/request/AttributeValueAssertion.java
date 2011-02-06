@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec;
+package org.apache.directory.shared.dsmlv2.request;
 
 
 import org.apache.directory.shared.ldap.codec.api.LdapConstants;

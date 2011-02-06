@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.extras.controls.ppolicy_impl;
 
 
 import org.apache.directory.shared.asn1.ber.AbstractContainer;
-import org.apache.directory.shared.ldap.codec.LdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.extras.controls.PasswordPolicy;
 import org.apache.directory.shared.ldap.extras.controls.PasswordPolicyImpl;
 

@@ -17,31 +17,52 @@
  *  under the License. 
  *  
  */
-
 package org.apache.directory.shared.dsmlv2;
 
+
+import java.io.IOException;
 
 import org.xmlpull.v1.XmlPullParserException;
 
 
 /**
- * IAction interface just contains the method 'action' which must be implemented
- * in all the implementong classes.
- * 
- * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
+ * The interface which expose common behavior of a Grammar implementer.
  */
-public interface IAction
+public interface Grammar
 {
-    // ~ Methods
-    // ------------------------------------------------------------------------------------
-
     /**
-     * The action to be executed.
+     * This method, when called, executes an action on the current data stored in
+     * the container.
      * 
      * @param container
-     *      the container which stores the current data
-     * @throws XmlPullParserException
-     *      thrown if something went wrong.
+     *            the DSML container
+     * @throws XmlPullParserException when an unrecoverable error occurs
+     * @throws IOException when an IO error occurs
      */
-    void action( Dsmlv2Container container ) throws XmlPullParserException;
+    void executeAction( Dsmlv2Container container ) throws XmlPullParserException, IOException;
+
+
+    /**
+     * Get the grammar name
+     * 
+     * @return Return the grammar's name
+     */
+    String getName();
+
+
+    /**
+     * Get the statesEnum for the current grammar
+     * 
+     * @return The specific States Enum for the current grammar
+     */
+    Enum<Dsmlv2StatesEnum>[] getStatesEnum();
+
+
+    /**
+     * Set the grammar's name
+     * 
+     * @param name
+     *            The grammar name
+     */
+    void setName( String name );
 }

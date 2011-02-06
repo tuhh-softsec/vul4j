@@ -20,7 +20,7 @@
 package org.apache.directory.shared.dsmlv2.request;
 
 
-import org.apache.directory.shared.ldap.codec.LdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.model.message.CompareRequest;
 import org.apache.directory.shared.ldap.model.message.CompareRequestImpl;

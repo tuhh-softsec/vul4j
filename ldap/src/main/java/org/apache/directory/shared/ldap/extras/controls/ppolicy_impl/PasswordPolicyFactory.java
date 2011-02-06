@@ -20,8 +20,8 @@
 package org.apache.directory.shared.ldap.extras.controls.ppolicy_impl;
 
 
-import org.apache.directory.shared.ldap.codec.ControlFactory;
-import org.apache.directory.shared.ldap.codec.LdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.ControlFactory;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.extras.controls.PasswordPolicy;
 
 

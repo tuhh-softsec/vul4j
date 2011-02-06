@@ -28,6 +28,10 @@ import java.util.Map;
 
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.ldap.codec.api.CodecControl;
+import org.apache.directory.shared.ldap.codec.api.ControlFactory;
+import org.apache.directory.shared.ldap.codec.api.ExtendedOpFactory;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.controls.cascade.CascadeFactory;
 import org.apache.directory.shared.ldap.codec.controls.manageDsaIT.ManageDsaITFactory;
 import org.apache.directory.shared.ldap.codec.controls.search.entryChange.EntryChangeFactory;
@@ -210,7 +214,7 @@ public class DefaultLdapCodecService implements LdapCodecService
         // protect agains being multiply decorated
         if ( control instanceof CodecControl )
         {
-            return ( CodecControl<?> )control;
+            return (org.apache.directory.shared.ldap.codec.api.CodecControl<?> )control;
         }
         
         ControlFactory factory = controlFactories.get( control.getOid() );

@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.codec.decorators;
 
 
-import org.apache.directory.shared.ldap.codec.LdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.AbandonListener;
 import org.apache.directory.shared.ldap.model.message.AbandonableRequest;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;

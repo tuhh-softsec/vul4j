@@ -25,9 +25,8 @@ import java.util.List;
 
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.dsmlv2.ParserUtils;
-import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
-import org.apache.directory.shared.ldap.codec.LdapCodecService;
-import org.apache.directory.shared.ldap.codec.LdapConstants;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.LdapConstants;
 import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.filter.AndNode;

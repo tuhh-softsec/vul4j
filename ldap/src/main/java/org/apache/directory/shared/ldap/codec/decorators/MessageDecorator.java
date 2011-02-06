@@ -23,9 +23,9 @@ package org.apache.directory.shared.ldap.codec.decorators;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.directory.shared.ldap.codec.CodecControl;
-import org.apache.directory.shared.ldap.codec.Decorator;
-import org.apache.directory.shared.ldap.codec.LdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.CodecControl;
+import org.apache.directory.shared.ldap.codec.api.Decorator;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 import org.apache.directory.shared.ldap.model.exception.MessageException;
 import org.apache.directory.shared.ldap.model.message.AbandonRequest;
@@ -304,7 +304,7 @@ public abstract class MessageDecorator<E extends Message> implements Message, De
         
         if ( control instanceof ControlDecorator )
         {
-            controlDecorator = ( CodecControl<? extends Control> ) control;
+            controlDecorator = (org.apache.directory.shared.ldap.codec.api.CodecControl<? extends Control> ) control;
             decorated = controlDecorator.getDecorated();
         }
         else
