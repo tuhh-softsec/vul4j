@@ -22,10 +22,8 @@ package org.apache.directory.shared.util;
 
 import java.util.NoSuchElementException;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
-import org.apache.directory.shared.util.ArrayNamingEnumeration;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -72,7 +70,7 @@ public class ArrayNamingEnumerationTest
     @Test
     public void testUsingEmptyArray()
     {
-        ArrayNamingEnumeration<String> list = new ArrayNamingEnumeration<String>( ArrayUtils.EMPTY_STRING_ARRAY );
+        ArrayNamingEnumeration<String> list = new ArrayNamingEnumeration<String>( StringConstants.EMPTY_STRINGS );
         assertFalse( list.hasMore() );
 
         try
