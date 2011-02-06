@@ -25,10 +25,10 @@
     <version>0.9.20-SNAPSHOT</version>
   </parent>
   
-  <artifactId>shared-ldap</artifactId>
-  <name>Apache Directory Shared LDAP</name>
+  <artifactId>shared-ldap-model</artifactId>
+  <name>Apache Directory Shared LDAP Model</name>
   <packaging>bundle</packaging>
-  <description>Common LDAP packages used by clients and servers</description>
+  <description>Common LDAP Model used by clients and servers</description>
 
   <dependencies>
     <dependency>
@@ -138,18 +138,9 @@
         <configuration>
           <manifestLocation>META-INF</manifestLocation>
           <instructions>
-            <Bundle-SymbolicName>${project.groupId}.ldap</Bundle-SymbolicName>
+            <Bundle-SymbolicName>${project.groupId}.ldap.model</Bundle-SymbolicName>
             <Export-Package>
-              org.apache.directory.shared.ldap.aci*,
-              org.apache.directory.shared.ldap.codec*,
-              org.apache.directory.shared.ldap.csn,
-              org.apache.directory.shared.ldap.entry.client,
-              org.apache.directory.shared.ldap.message*,
               org.apache.directory.shared.ldap.model*,
-              org.apache.directory.shared.ldap.sp,
-              org.apache.directory.shared.ldap.subtree,
-              org.apache.directory.shared.ldap.trigger,
-              org.apache.directory.shared.ldap.util*
             </Export-Package>
           </instructions>
         </configuration>
