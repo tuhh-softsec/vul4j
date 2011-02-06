@@ -20,7 +20,7 @@
 package org.apache.directory.shared.dsmlv2.request;
 
 
-import java.util.List;
+import java.util.List; 
 
 import org.apache.directory.shared.dsmlv2.ParserUtils;
 import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
@@ -30,6 +30,7 @@ import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilt
 import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
 import org.apache.directory.shared.ldap.codec.search.PresentFilter;
 import org.apache.directory.shared.ldap.model.entry.Value;
+import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.filter.AndNode;
 import org.apache.directory.shared.ldap.model.filter.ExprNode;
 import org.apache.directory.shared.ldap.model.filter.NotNode;
@@ -40,6 +41,7 @@ import org.apache.directory.shared.ldap.model.message.AliasDerefMode;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.message.SearchRequest;
 import org.apache.directory.shared.ldap.model.message.SearchRequestImpl;
+import org.apache.directory.shared.ldap.model.name.Dn;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
 import org.dom4j.QName;
@@ -50,7 +52,9 @@ import org.dom4j.QName;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SearchRequestDsml extends AbstractRequestDsml<SearchRequest>
+public class SearchRequestDsml 
+    extends AbstractResultResponseRequestDsml<SearchRequest>
+    implements SearchRequest
 {
     /**
      * Creates a new getDecoratedMessage() of SearchRequestDsml.
@@ -352,5 +356,176 @@ public class SearchRequestDsml extends AbstractRequestDsml<SearchRequest>
                 newElement.addAttribute( "matchingRule", matchingRule );
             }
         }
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public MessageTypeEnum[] getResponseTypes()
+    {
+        return getDecorated().getResponseTypes();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Dn getBase()
+    {
+        return getDecorated().getBase();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setBase( Dn baseDn )
+    {
+        getDecorated().setBase( baseDn );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public SearchScope getScope()
+    {
+        return getDecorated().getScope();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setScope( SearchScope scope )
+    {
+        getDecorated().setScope( scope );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public AliasDerefMode getDerefAliases()
+    {
+        return getDecorated().getDerefAliases();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setDerefAliases( AliasDerefMode aliasDerefAliases )
+    {
+        getDecorated().setDerefAliases( aliasDerefAliases );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public long getSizeLimit()
+    {
+        return getDecorated().getSizeLimit();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setSizeLimit( long entriesMax )
+    {
+        getDecorated().setSizeLimit( entriesMax );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public int getTimeLimit()
+    {
+        return getDecorated().getTimeLimit();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setTimeLimit( int secondsMax )
+    {
+        getDecorated().setTimeLimit( secondsMax );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean getTypesOnly()
+    {
+        return getDecorated().getTypesOnly();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setTypesOnly( boolean typesOnly )
+    {
+        getDecorated().setTypesOnly( typesOnly );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public ExprNode getFilter()
+    {
+        return getDecorated().getFilter();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setFilter( ExprNode filter )
+    {
+        getDecorated().setFilter( filter );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setFilter( String filter ) throws LdapException
+    {
+        getDecorated().setFilter( filter );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<String> getAttributes()
+    {
+        return getDecorated().getAttributes();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void addAttributes( String... attributes )
+    {
+        getDecorated().addAttributes( attributes );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void removeAttribute( String attribute )
+    {
+        getDecorated().removeAttribute( attribute );
     }
 }
