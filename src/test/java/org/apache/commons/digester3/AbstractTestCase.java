@@ -25,7 +25,7 @@ import java.io.InputStream;
 /**
  * Define some common utility methods shared between Digester tests.
  */
-abstract class AbstractTestCase {
+public abstract class AbstractTestCase {
 
     /**
      * Create the most basic Digester created from a list of {@link RulesModule}.
