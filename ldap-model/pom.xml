@@ -140,7 +140,7 @@
           <instructions>
             <Bundle-SymbolicName>${project.groupId}.ldap.model</Bundle-SymbolicName>
             <Export-Package>
-              org.apache.directory.shared.ldap.model*,
+              org.apache.directory.shared.ldap.model*
             </Export-Package>
           </instructions>
         </configuration>
