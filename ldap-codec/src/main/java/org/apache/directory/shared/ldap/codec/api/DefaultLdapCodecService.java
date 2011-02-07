@@ -149,6 +149,7 @@ public class DefaultLdapCodecService implements LdapCodecService
         Map<String, Object> config = new HashMap<String, Object>();
         config.put( FelixConstants.SYSTEMBUNDLE_ACTIVATORS_PROP, activators );
         config.put( FelixConstants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, getSystemPackages() );
+        config.put( "felix.cache.locking", false );
         
         // instantiate and start up felix
         felix = new Felix( config );
