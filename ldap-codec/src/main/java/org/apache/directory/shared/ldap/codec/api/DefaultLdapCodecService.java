@@ -42,12 +42,6 @@ import org.apache.directory.shared.ldap.codec.controls.search.subentries.Subentr
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
 import org.apache.directory.shared.ldap.codec.osgi.CodecHostActivator;
 import org.apache.directory.shared.ldap.codec.protocol.mina.LdapProtocolCodecFactory;
-import org.apache.directory.shared.ldap.extras.controls.ppolicy_impl.PasswordPolicyFactory;
-import org.apache.directory.shared.ldap.extras.controls.syncrepl_impl.SyncDoneValueFactory;
-import org.apache.directory.shared.ldap.extras.controls.syncrepl_impl.SyncInfoValueFactory;
-import org.apache.directory.shared.ldap.extras.controls.syncrepl_impl.SyncModifyDnFactory;
-import org.apache.directory.shared.ldap.extras.controls.syncrepl_impl.SyncRequestValueFactory;
-import org.apache.directory.shared.ldap.extras.controls.syncrepl_impl.SyncStateValueFactory;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.model.message.controls.OpaqueControl;
@@ -211,27 +205,6 @@ public class DefaultLdapCodecService implements LdapCodecService
         controlFactories.put( factory.getOid(), factory );
 
         factory = new SubentriesFactory( this );
-        controlFactories.put( factory.getOid(), factory );
-        
-        // @TODO - these will eventually be removed to enable plugin driven
-        // registration instead
-        
-        factory = new SyncDoneValueFactory( this );
-        controlFactories.put( factory.getOid(), factory );
-        
-        factory = new SyncInfoValueFactory( this );
-        controlFactories.put( factory.getOid(), factory );
-        
-        factory = new SyncModifyDnFactory( this );
-        controlFactories.put( factory.getOid(), factory );
-        
-        factory = new SyncRequestValueFactory( this );
-        controlFactories.put( factory.getOid(), factory );
-
-        factory = new SyncStateValueFactory( this );
-        controlFactories.put( factory.getOid(), factory );
-        
-        factory = new PasswordPolicyFactory( this );
         controlFactories.put( factory.getOid(), factory );
 }
     

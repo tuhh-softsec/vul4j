@@ -52,59 +52,10 @@
       <groupId>org.osgi</groupId>
       <artifactId>org.osgi</artifactId>
     </dependency>
-    
-    <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>commons-collections</groupId>
-      <artifactId>commons-collections</artifactId>
-    </dependency>
   </dependencies>
 
   <build>
     <plugins>
-      <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>generate-sources</phase>
-            <configuration />
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>antlr-maven-plugin</artifactId>
-        <version>2.1</version>
-        <configuration>
-          <grammars>*.g</grammars>
-        </configuration>
-        <executions>
-           <execution>
-              <goals>
-                 <goal>generate</goal>
-              </goals>
-           </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <excludes>
-            <exclude>**/Abstract*</exclude>
-            <exclude>**/*RegressionTest*</exclude>
-          </excludes>
-        </configuration>
-      </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
@@ -124,9 +75,8 @@
         <configuration>
           <manifestLocation>META-INF</manifestLocation>
           <instructions>
-            <Bundle-SymbolicName>${project.groupId}.ldap.codec</Bundle-SymbolicName>
+            <Bundle-SymbolicName>${project.groupId}.ldap.extras.codec</Bundle-SymbolicName>
             <Export-Package>
-              org.apache.directory.shared.ldap.codec.api,
               org.apache.directory.shared.ldap.extras.controls,
               org.apache.directory.shared.ldap.extras.extended
             </Export-Package>
