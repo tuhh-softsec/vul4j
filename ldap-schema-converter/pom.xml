@@ -36,11 +36,26 @@
       <artifactId>junit-addons</artifactId>
       <scope>test</scope>
     </dependency>
-
+    
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+    </dependency>
+    
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>shared-ldap</artifactId>
-    </dependency> 
+      <artifactId>shared-i18n</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>shared-ldap-model</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>shared-util</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
