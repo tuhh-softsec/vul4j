@@ -17,11 +17,10 @@
  *  under the License. 
  *  
  */
-
 package org.apache.directory.shared.dsmlv2.reponse;
 
 
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.message.ModifyResponse;
 import org.apache.directory.shared.ldap.model.message.ModifyResponseImpl;
@@ -34,11 +33,12 @@ import org.dom4j.Element;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class ModifyResponseDsml extends AbstractResultResponseDsml<ModifyResponse>
+    implements ModifyResponse
 {
     /**
      * Creates a new getDecoratedMessage() of ModifyResponseDsml.
      */
-    public ModifyResponseDsml( ILdapCodecService codec )
+    public ModifyResponseDsml( LdapCodecService codec )
     {
         super( codec, new ModifyResponseImpl() );
     }
@@ -50,7 +50,7 @@ public class ModifyResponseDsml extends AbstractResultResponseDsml<ModifyRespons
      * @param ldapMessage
      *      the message to decorate
      */
-    public ModifyResponseDsml( ILdapCodecService codec, ModifyResponse ldapMessage )
+    public ModifyResponseDsml( LdapCodecService codec, ModifyResponse ldapMessage )
     {
         super( codec, ldapMessage );
     }
@@ -77,5 +77,4 @@ public class ModifyResponseDsml extends AbstractResultResponseDsml<ModifyRespons
         ldapResultDsml.toDsml( element );
         return element;
     }
-
 }

@@ -17,7 +17,6 @@
  *  under the License. 
  *  
  */
-
 package org.apache.directory.shared.dsmlv2;
 
 
@@ -28,10 +27,10 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 
-import org.apache.directory.shared.dsmlv2.reponse.BatchResponse;
+import org.apache.directory.shared.dsmlv2.reponse.BatchResponseDsml;
 import org.apache.directory.shared.dsmlv2.reponse.Dsmlv2ResponseGrammar;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.Response;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -56,7 +55,7 @@ public class Dsmlv2ResponseParser
      * @throws XmlPullParserException
      *      if an error occurs while the initialization of the parser
      */
-    public Dsmlv2ResponseParser( ILdapCodecService codec ) throws XmlPullParserException
+    public Dsmlv2ResponseParser( LdapCodecService codec ) throws XmlPullParserException
     {
         this.container = new Dsmlv2Container( codec );
 
@@ -215,7 +214,7 @@ public class Dsmlv2ResponseParser
      * @return 
      *      the Batch Response or null if the it has not been parsed yet
      */
-    public BatchResponse getBatchResponse()
+    public BatchResponseDsml getBatchResponse()
     {
         return container.getBatchResponse();
     }
@@ -228,7 +227,7 @@ public class Dsmlv2ResponseParser
      * @throws XmlPullParserException 
      *      when an error occurs during the parsing
      */
-    public Response getNextResponse() throws XmlPullParserException
+    public DsmlDecorator<? extends Response> getNextResponse() throws XmlPullParserException
     {
         if ( container.getBatchResponse() == null )
         {

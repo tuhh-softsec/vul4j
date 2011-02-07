@@ -1977,4 +1977,24 @@ public final class Strings
 
         return bytes;
     }
+    
+    
+    /**
+     * Copy a byte array into a new byte array
+     * 
+     * @param value the byte array to copy
+     * @return The copied byte array
+     */
+    public static byte[] copy( byte[] value )
+    {
+    	if ( isEmpty( value ) )
+    	{
+    		return StringConstants.EMPTY_BYTES;
+    	}
+    	
+    	byte[] copy = new byte[value.length];
+    	System.arraycopy( value, 0, copy, 0, value.length );
+    	
+    	return copy;
+    }
 }

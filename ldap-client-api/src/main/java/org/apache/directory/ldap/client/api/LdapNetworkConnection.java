@@ -55,24 +55,18 @@ import org.apache.directory.ldap.client.api.future.ModifyDnFuture;
 import org.apache.directory.ldap.client.api.future.ModifyFuture;
 import org.apache.directory.ldap.client.api.future.ResponseFuture;
 import org.apache.directory.ldap.client.api.future.SearchFuture;
-import org.apache.directory.ldap.client.api.protocol.LdapProtocolCodecFactory;
 import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.util.OID;
-import org.apache.directory.shared.ldap.codec.DefaultLdapCodecService;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
-import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.MessageEncoderException;
-import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
-import org.apache.directory.shared.ldap.message.extended.NoticeOfDisconnect;
-import org.apache.directory.shared.ldap.message.extended.nod.AddNoDResponse;
-import org.apache.directory.shared.ldap.message.extended.nod.BindNoDResponse;
-import org.apache.directory.shared.ldap.message.extended.nod.CompareNoDResponse;
-import org.apache.directory.shared.ldap.message.extended.nod.DeleteNoDResponse;
-import org.apache.directory.shared.ldap.message.extended.nod.ExtendedNoDResponse;
-import org.apache.directory.shared.ldap.message.extended.nod.ModifyDnNoDResponse;
-import org.apache.directory.shared.ldap.message.extended.nod.ModifyNoDResponse;
-import org.apache.directory.shared.ldap.message.extended.nod.SearchNoDResponse;
+import org.apache.directory.shared.ldap.codec.api.DefaultLdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.MessageEncoderException;
+import org.apache.directory.shared.ldap.extras.extended.*;
+import org.apache.directory.shared.ldap.extras.extended.AddNoDResponse;
+import org.apache.directory.shared.ldap.extras.extended.CompareNoDResponse;
+import org.apache.directory.shared.ldap.extras.extended.DeleteNoDResponse;
+import org.apache.directory.shared.ldap.extras.extended.ExtendedNoDResponse;
+import org.apache.directory.shared.ldap.extras.extended.ModifyDnNoDResponse;
+import org.apache.directory.shared.ldap.extras.extended.SearchNoDResponse;
 import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.model.constants.SupportedSaslMechanisms;
 import org.apache.directory.shared.ldap.model.cursor.Cursor;
@@ -126,7 +120,7 @@ import org.apache.directory.shared.ldap.model.message.SearchResultEntry;
 import org.apache.directory.shared.ldap.model.message.SearchResultReference;
 import org.apache.directory.shared.ldap.model.message.UnbindRequest;
 import org.apache.directory.shared.ldap.model.message.UnbindRequestImpl;
-import org.apache.directory.shared.ldap.model.message.controls.BasicControl;
+import org.apache.directory.shared.ldap.model.message.controls.OpaqueControl;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.name.Rdn;
 import org.apache.directory.shared.ldap.model.schema.AttributeType;
@@ -185,9 +179,6 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
     /** A flag set to true when we used a local connector */
     private boolean localConnector;
 
-    /** The Ldap codec */
-    private IoFilter ldapProtocolFilter = new ProtocolCodecFilter( new LdapProtocolCodecFactory() );
-
     /**
      * The created session, created when we open a connection with
      * the Ldap server.
@@ -221,7 +212,10 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
     private SchemaManager schemaManager;
 
     /** the ldap codec service */
-    ILdapCodecService codec = new DefaultLdapCodecService();
+    LdapCodecService codec = new DefaultLdapCodecService();
+
+    /** The Ldap codec protocol filter */
+    private IoFilter ldapProtocolFilter = new ProtocolCodecFilter( codec.newProtocolCodecFactory( true ) );
     
     /** the SslFilter key */
     private static final String SSL_FILTER_KEY = "sslFilter";
@@ -605,11 +599,8 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         ldapSession = connectionFuture.getSession();
         connected.set( true );
 
-        // And inject the current Ldap container into the session
-        Asn1Container ldapMessageContainer = new LdapMessageContainer<MessageDecorator<Message>>( codec );
-
         // Store the container into the session
-        ldapSession.setAttribute( "LDAP-Container", ldapMessageContainer );
+        ldapSession.setAttribute( "LDAP-Container", codec.newMessageContainer() );
 
         // Initialize the MessageId
         messageId.set( 0 );
@@ -2497,7 +2488,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         {
             DeleteRequest deleteRequest = new DeleteRequestImpl();
             deleteRequest.setName( dn );
-            deleteRequest.addControl( new BasicControl( treeDeleteOid ) );
+            deleteRequest.addControl( new OpaqueControl( treeDeleteOid ) );
             return delete( deleteRequest );
         }
         else
@@ -2528,7 +2519,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
             {
                 DeleteRequest deleteRequest = new DeleteRequestImpl();
                 deleteRequest.setName( newDn );
-                deleteRequest.addControl( new BasicControl( treeDeleteOid ) );
+                deleteRequest.addControl( new OpaqueControl( treeDeleteOid ) );
                 return delete( deleteRequest );
             }
             else
@@ -3282,7 +3273,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
     /**
      * {@inheritDoc}
      */
-    public ILdapCodecService getCodecService()
+    public LdapCodecService getCodecService()
     {
         return codec;
     }

@@ -33,8 +33,8 @@ import java.util.Map;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.dsmlv2.AbstractTest;
+import org.apache.directory.shared.dsmlv2.DsmlControl;
 import org.apache.directory.shared.dsmlv2.Dsmlv2Parser;
-import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 import org.apache.directory.shared.util.Strings;
@@ -60,7 +60,7 @@ public class ExtendedRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser( getCodec() );
+            parser = newParser();
 
             parser.setInput( ExtendedRequestTest.class.getResource( "request_with_requestID_attribute.xml" )
                 .openStream(), "UTF-8" );
@@ -97,7 +97,7 @@ public class ExtendedRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser( getCodec() );
+            parser = newParser();
 
             parser.setInput( ExtendedRequestTest.class.getResource( "request_with_1_control.xml" ).openStream(),
                 "UTF-8" );
@@ -119,7 +119,7 @@ public class ExtendedRequestTest extends AbstractTest
         assertNotNull( control );
         assertTrue( control.isCritical() );
         assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
-        assertEquals( "Some text", Strings.utf8ToString((byte[]) ((ControlDecorator<Control>)control).getValue()) );
+        assertEquals( "Some text", Strings.utf8ToString((byte[]) ( ( DsmlControl<?> ) control ).getValue()) );
     }
 
 
@@ -132,7 +132,7 @@ public class ExtendedRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser( getCodec() );
+            parser = newParser();
 
             parser.setInput( ExtendedRequestTest.class.getResource( "request_with_1_control_base64_value.xml" )
                 .openStream(), "UTF-8" );
@@ -154,7 +154,7 @@ public class ExtendedRequestTest extends AbstractTest
         assertNotNull( control );
         assertTrue( control.isCritical() );
         assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
-        assertEquals( "DSMLv2.0 rocks!!", Strings.utf8ToString((byte[]) ((ControlDecorator<Control>)control).getValue()) );
+        assertEquals( "DSMLv2.0 rocks!!", Strings.utf8ToString((byte[]) ( ( DsmlControl<?> ) control ).getValue()) );
     }
 
 
@@ -167,7 +167,7 @@ public class ExtendedRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser( getCodec() );
+            parser = newParser();
 
             parser.setInput( ExtendedRequestTest.class.getResource( "request_with_1_control_empty_value.xml" )
                 .openStream(), "UTF-8" );
@@ -189,7 +189,7 @@ public class ExtendedRequestTest extends AbstractTest
         assertNotNull( control );
         assertTrue( control.isCritical() );
         assertEquals( "1.2.840.113556.1.4.643", control.getOid() );
-        assertFalse( ((ControlDecorator<Control>)control).hasValue() );
+        assertFalse( ( ( DsmlControl<?> ) control ).hasValue() );
     }
 
 
@@ -202,7 +202,7 @@ public class ExtendedRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser( getCodec() );
+            parser = newParser();
 
             parser.setInput( ExtendedRequestTest.class.getResource( "request_with_2_controls.xml" ).openStream(),
                 "UTF-8" );
@@ -224,7 +224,7 @@ public class ExtendedRequestTest extends AbstractTest
         assertNotNull( control );
         assertFalse( control.isCritical() );
         assertEquals( "1.2.840.113556.1.4.789", control.getOid() );
-        assertEquals( "Some other text", Strings.utf8ToString((byte[]) ((ControlDecorator<Control>)control).getValue()) );
+        assertEquals( "Some other text", Strings.utf8ToString((byte[]) ( ( DsmlControl<?> ) control ).getValue()) );
     }
 
 
@@ -237,7 +237,7 @@ public class ExtendedRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser( getCodec() );
+            parser = newParser();
 
             parser.setInput( ExtendedRequestTest.class.getResource( "request_with_3_controls_without_value.xml" )
                 .openStream(), "UTF-8" );
@@ -259,7 +259,7 @@ public class ExtendedRequestTest extends AbstractTest
         assertNotNull( control );
         assertTrue( control.isCritical() );
         assertEquals( "1.2.840.113556.1.4.456", control.getOid() );
-        assertFalse( ((ControlDecorator<Control>)control).hasValue() );
+        assertFalse( ( ( DsmlControl<?> ) control ).hasValue() );
     }
 
 
@@ -272,7 +272,7 @@ public class ExtendedRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser( getCodec() );
+            parser = newParser();
 
             parser.setInput( ExtendedRequestTest.class.getResource( "request_with_requestValue.xml" ).openStream(),
                 "UTF-8" );
@@ -299,7 +299,7 @@ public class ExtendedRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser( getCodec() );
+            parser = newParser();
 
             parser.setInput( ExtendedRequestTest.class.getResource( "request_with_base64_requestValue.xml" )
                 .openStream(), "UTF-8" );
@@ -356,7 +356,7 @@ public class ExtendedRequestTest extends AbstractTest
         Dsmlv2Parser parser = null;
         try
         {
-            parser = new Dsmlv2Parser( getCodec() );
+            parser = newParser();
 
             parser.setInput( ExtendedRequestTest.class.getResource( "request_with_empty_requestValue.xml" )
                 .openStream(), "UTF-8" );

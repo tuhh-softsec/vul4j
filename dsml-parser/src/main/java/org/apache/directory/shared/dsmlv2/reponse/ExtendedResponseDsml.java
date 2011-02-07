@@ -17,13 +17,12 @@
  *  under the License. 
  *  
  */
-
 package org.apache.directory.shared.dsmlv2.reponse;
 
 
 import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.dsmlv2.ParserUtils;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
 import org.apache.directory.shared.ldap.model.message.ExtendedResponseImpl;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
@@ -39,11 +38,15 @@ import org.dom4j.QName;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class ExtendedResponseDsml extends AbstractResultResponseDsml<ExtendedResponse>
+    implements ExtendedResponse
 {
+    private static final long serialVersionUID = -3989420095112650346L;
+
+
     /**
      * Creates a new getDecoratedMessage() of ExtendedResponseDsml.
      */
-    public ExtendedResponseDsml( ILdapCodecService codec )
+    public ExtendedResponseDsml( LdapCodecService codec )
     {
         super( codec, new ExtendedResponseImpl( "" ) );
     }
@@ -55,7 +58,7 @@ public class ExtendedResponseDsml extends AbstractResultResponseDsml<ExtendedRes
      * @param ldapMessage
      *      the message to decorate
      */
-    public ExtendedResponseDsml( ILdapCodecService codec, ExtendedResponse ldapMessage )
+    public ExtendedResponseDsml( LdapCodecService codec, ExtendedResponse ldapMessage )
     {
         super( codec, ldapMessage );
     }
@@ -124,7 +127,7 @@ public class ExtendedResponseDsml extends AbstractResultResponseDsml<ExtendedRes
      */
     public String getResponseName()
     {
-        return ( ( ExtendedResponse ) getDecorated() ).getResponseName();
+        return getDecorated().getResponseName();
     }
 
 
@@ -135,7 +138,7 @@ public class ExtendedResponseDsml extends AbstractResultResponseDsml<ExtendedRes
      */
     public void setResponseName( OID responseName )
     {
-        ( ( ExtendedResponse ) getDecorated() ).setResponseName( responseName.toString() );
+        getDecorated().setResponseName( responseName.toString() );
     }
 
 
@@ -144,9 +147,9 @@ public class ExtendedResponseDsml extends AbstractResultResponseDsml<ExtendedRes
      * 
      * @return Returns the response.
      */
-    public Object getResponseValue()
+    public byte[] getResponseValue()
     {
-        return ( ( ExtendedResponse ) getDecorated() ).getResponseValue();
+        return getDecorated().getResponseValue();
     }
 
 
@@ -157,6 +160,33 @@ public class ExtendedResponseDsml extends AbstractResultResponseDsml<ExtendedRes
      */
     public void setResponseValue( byte[] response )
     {
-        ( ( ExtendedResponse ) getDecorated() ).setResponseValue( response );
+        getDecorated().setResponseValue( response );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getID()
+    {
+        return getDecorated().getID();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public byte[] getEncodedValue()
+    {
+        return getDecorated().getEncodedValue();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setResponseName( String oid )
+    {
+        getDecorated().setResponseName( oid );
     }
 }

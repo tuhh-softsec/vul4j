@@ -57,6 +57,7 @@ import org.apache.directory.shared.i18n.I18n;
  * @since Commons Collections 2.0
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
+@SuppressWarnings("rawtypes")
 public class SequencedHashMap implements Map, Cloneable, Externalizable
 {
 
@@ -69,7 +70,7 @@ public class SequencedHashMap implements Map, Cloneable, Externalizable
         // Note: This class cannot easily be made clonable. While the actual
         // implementation of a clone would be simple, defining the semantics is
         // difficult. If a shallow clone is implemented, then entry.next.prev !=
-        // entry, which is unintuitive and probably breaks all sorts of
+        // entry, which is un-intuitive and probably breaks all sorts of
         // assumptions
         // in code that uses this implementation. If a deep clone is
         // implemented, then what happens when the linked list is cyclical (as
@@ -503,6 +504,7 @@ public class SequencedHashMap implements Map, Cloneable, Externalizable
     /**
      * Implements {@link Map#put(Object, Object)}.
      */
+    @SuppressWarnings("unchecked")
     public Object put( Object key, Object value )
     {
         modCount++;
@@ -1177,6 +1179,7 @@ public class SequencedHashMap implements Map, Cloneable, Externalizable
      * @see #keySet()
      * @return The ordered list of keys.
      */
+    @SuppressWarnings("unchecked")
     public List sequence()
     {
         List l = new ArrayList( size() );

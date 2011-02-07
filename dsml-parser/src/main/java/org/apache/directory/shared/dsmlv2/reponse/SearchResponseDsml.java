@@ -24,9 +24,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.directory.shared.dsmlv2.DsmlDecorator;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.Message;
-import org.apache.directory.shared.ldap.model.message.ResultResponse;
+import org.apache.directory.shared.ldap.model.message.Response;
+import org.apache.directory.shared.ldap.model.message.SearchResultDone;
+import org.apache.directory.shared.ldap.model.message.SearchResultEntry;
+import org.apache.directory.shared.ldap.model.message.SearchResultReference;
 import org.dom4j.Element;
 
 
@@ -37,16 +40,17 @@ import org.dom4j.Element;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SearchResponseDsml extends AbstractResultResponseDsml<ResultResponse>
+public class SearchResponseDsml extends AbstractResponseDsml<Response>
 {
     /** The responses */
-    private List<DsmlDecorator> responses = new ArrayList<DsmlDecorator>();
+    private List<DsmlDecorator<? extends Response>> responses = 
+        new ArrayList<DsmlDecorator<? extends Response>>();
 
 
     /**
      * Creates a new getDecoratedMessage() of SearchResponseDsml.
      */
-    public SearchResponseDsml( ILdapCodecService codec )
+    public SearchResponseDsml( LdapCodecService codec )
     {
         super( codec, null );
     }
@@ -57,9 +61,9 @@ public class SearchResponseDsml extends AbstractResultResponseDsml<ResultRespons
      *
      * @param response the LDAP response message to decorate
      */
-    public SearchResponseDsml( ILdapCodecService codec, Message response )
+    public SearchResponseDsml( LdapCodecService codec, Message response )
     {
-        super( codec, ( ResultResponse ) response );
+        super( codec, ( Response ) response );
     }
 
 
@@ -71,8 +75,28 @@ public class SearchResponseDsml extends AbstractResultResponseDsml<ResultRespons
      * @return
      *      true (as per the general contract of the Collection.add method).
      */
-    public boolean addResponse( DsmlDecorator response )
+    public boolean addResponse( DsmlDecorator<? extends Response> response )
     {
+        if ( response instanceof SearchResultEntry )
+        {
+            ( ( SearchResponse ) getDecorated() ).addSearchResultEntry( 
+                ( SearchResultEntryDsml ) response );            
+        }
+        else if ( response instanceof SearchResultReference )
+        {
+            ( ( SearchResponse ) getDecorated() ).addSearchResultReference( 
+                ( SearchResultReferenceDsml ) response );            
+        }
+        else if ( response instanceof SearchResultDone )
+        {
+            ( ( SearchResponse ) getDecorated() ).setSearchResultDone( 
+                ( SearchResultDoneDsml ) response );            
+        }
+        else
+        {
+            throw new IllegalArgumentException( "Unidentified search resp type" );
+        }
+        
         return responses.add( response );
     }
 
@@ -85,7 +109,7 @@ public class SearchResponseDsml extends AbstractResultResponseDsml<ResultRespons
      * @return
      *      true if this list contained the specified element.
      */
-    public boolean removeResponse( DsmlDecorator response )
+    public boolean removeResponse( DsmlDecorator<Response> response )
     {
         return responses.remove( response );
     }
@@ -108,7 +132,7 @@ public class SearchResponseDsml extends AbstractResultResponseDsml<ResultRespons
             }
         }
 
-        for ( DsmlDecorator response : responses )
+        for ( DsmlDecorator<? extends Response> response : responses )
         {
             response.toDsml( element );
         }

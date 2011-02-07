@@ -31,10 +31,10 @@ import org.apache.directory.shared.i18n.I18n;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class JoinIterator implements Iterator
+public class JoinIterator implements Iterator<Object>
 {
     /** the iterators whose results are joined */
-    private final Iterator[] iterators;
+    private final Iterator<?>[] iterators;
 
     private int index;
 
@@ -48,7 +48,7 @@ public class JoinIterator implements Iterator
      *             if a null array argument, or one with less than 2 elements is
      *             used
      */
-    public JoinIterator(Iterator[] iterators)
+    public JoinIterator( Iterator<?>[] iterators )
     {
         if ( iterators == null || iterators.length < 2 )
         {

@@ -17,7 +17,6 @@
  *  under the License. 
  *  
  */
-
 package org.apache.directory.shared.dsmlv2;
 
 
@@ -27,7 +26,7 @@ package org.apache.directory.shared.dsmlv2;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public abstract class GrammarAction implements IAction
+public abstract class GrammarAction implements Action
 {
     /** The action's name */
     private String name;

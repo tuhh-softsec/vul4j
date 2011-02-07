@@ -17,14 +17,13 @@
  *  under the License. 
  *  
  */
-
 package org.apache.directory.shared.dsmlv2;
 
 
 import org.apache.directory.shared.asn1.ber.Asn1Container;
-import org.apache.directory.shared.dsmlv2.reponse.BatchResponse;
-import org.apache.directory.shared.dsmlv2.request.BatchRequest;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.dsmlv2.reponse.BatchResponseDsml;
+import org.apache.directory.shared.dsmlv2.request.BatchRequestDsml;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.xmlpull.v1.XmlPullParser;
 
 
@@ -49,33 +48,33 @@ public class Dsmlv2Container implements Container
     private XmlPullParser parser;
 
     /** The BatchRequest of the parsing */
-    private BatchRequest batchRequest;
+    private BatchRequestDsml batchRequest;
 
     /** The BatchResponse of the parsing */
-    private BatchResponse batchResponse;
+    private BatchResponseDsml batchResponse;
 
     /**  The associated grammar */
     private AbstractGrammar grammar;
 
     /** The codec service */
-    private final ILdapCodecService codec;
+    private final LdapCodecService codec;
 
     /**
      * Creates a new LdapMessageContainer object. We will store ten grammars,
      * it's enough ...
      */
-    public Dsmlv2Container( ILdapCodecService codec )
+    public Dsmlv2Container( LdapCodecService codec )
     {
         this.codec= codec;
     }
     
     
     /**
-     * Gets the {@link ILdapCodecService} associated with this {@link Asn1Container}.
+     * Gets the {@link LdapCodecService} associated with this {@link Asn1Container}.
      *
      * @return
      */
-    public ILdapCodecService getLdapCodecService()
+    public LdapCodecService getLdapCodecService()
     {
         return codec;
     }
@@ -87,7 +86,7 @@ public class Dsmlv2Container implements Container
      * @return
      *      Returns the Batch Request
      */
-    public BatchRequest getBatchRequest()
+    public BatchRequestDsml getBatchRequest()
     {
         return batchRequest;
     }
@@ -99,7 +98,7 @@ public class Dsmlv2Container implements Container
      * @param batchRequest
      *      the Batch Request to set
      */
-    public void setBatchRequest( BatchRequest batchRequest )
+    public void setBatchRequest( BatchRequestDsml batchRequest )
     {
         this.batchRequest = batchRequest;
     }
@@ -111,7 +110,7 @@ public class Dsmlv2Container implements Container
      * @return
      *      Returns the Batch Response
      */
-    public BatchResponse getBatchResponse()
+    public BatchResponseDsml getBatchResponse()
     {
         return batchResponse;
     }
@@ -123,7 +122,7 @@ public class Dsmlv2Container implements Container
      * @param batchResponse
      *      the Batch Response to set
      */
-    public void setBatchResponse( BatchResponse batchResponse )
+    public void setBatchResponse( BatchResponseDsml batchResponse )
     {
         this.batchResponse = batchResponse;
     }

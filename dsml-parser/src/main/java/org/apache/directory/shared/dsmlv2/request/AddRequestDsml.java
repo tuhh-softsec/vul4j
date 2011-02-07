@@ -21,8 +21,8 @@ package org.apache.directory.shared.dsmlv2.request;
 
 
 import org.apache.directory.shared.dsmlv2.ParserUtils;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
-import org.apache.directory.shared.ldap.codec.decorators.AddRequestDecorator;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
+import org.apache.directory.shared.ldap.model.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.model.entry.Value;
@@ -41,12 +41,19 @@ import org.dom4j.QName;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class AddRequestDsml extends AbstractRequestDsml<AddRequest>
+public class AddRequestDsml 
+    extends AbstractResultResponseRequestDsml<AddRequest> 
+    implements AddRequest
 {
+
+    /** The current attribute being decoded */
+    private EntryAttribute currentAttribute;
+    
+    
     /**
      * Creates a new getDecoratedMessage() of AddRequestDsml.
      */
-    public AddRequestDsml( ILdapCodecService codec )
+    public AddRequestDsml( LdapCodecService codec )
     {
         super( codec, new AddRequestImpl() );
     }
@@ -58,12 +65,76 @@ public class AddRequestDsml extends AbstractRequestDsml<AddRequest>
     * @param ldapMessage
     *      the message to decorate
     */
-    public AddRequestDsml( ILdapCodecService codec, AddRequest ldapMessage )
+    public AddRequestDsml( LdapCodecService codec, AddRequest ldapMessage )
     {
         super( codec, ldapMessage );
     }
 
+    
 
+    
+    /**
+     * Create a new attributeValue
+     * 
+     * @param type The attribute's name (called 'type' in the grammar)
+     */
+    public void addAttributeType( String type ) throws LdapException
+    {
+        // do not create a new attribute if we have seen this attributeType before
+        if ( getDecorated().getEntry().get( type ) != null )
+        {
+            currentAttribute = getDecorated().getEntry().get( type );
+            return;
+        }
+
+        // fix this to use AttributeImpl(type.getString().toLowerCase())
+        currentAttribute = new DefaultEntryAttribute( type );
+        getDecorated().getEntry().put( currentAttribute );
+    }
+
+
+    /**
+     * @return Returns the currentAttribute type.
+     */
+    public String getCurrentAttributeType()
+    {
+        return currentAttribute.getId();
+    }
+
+
+    /**
+     * Add a new value to the current attribute
+     * 
+     * @param value The value to add
+     */
+    public void addAttributeValue( String value )
+    {
+        currentAttribute.add( value );
+    }
+
+
+    /**
+     * Add a new value to the current attribute
+     * 
+     * @param value The value to add
+     */
+    public void addAttributeValue( Value<?> value )
+    {
+        currentAttribute.add( value );
+    }
+
+
+    /**
+     * Add a new value to the current attribute
+     * 
+     * @param value The value to add
+     */
+    public void addAttributeValue( byte[] value )
+    {
+        currentAttribute.add( value );
+    }
+    
+    
     /**
      * {@inheritDoc}
      */
@@ -80,16 +151,14 @@ public class AddRequestDsml extends AbstractRequestDsml<AddRequest>
     {
         Element element = super.toDsml( root );
 
-        AddRequest request = ( AddRequest ) getDecorated();
-
         // Dn
-        if ( request.getEntry() != null )
+        if ( getDecorated().getEntry() != null )
         {
-            element.addAttribute( "dn", request.getEntry().getDn().getName() );
+            element.addAttribute( "dn", getDecorated().getEntry().getDn().getName() );
         }
 
         // Attributes
-        Entry entry = request.getEntry();
+        Entry entry = getDecorated().getEntry();
         if ( entry != null )
         {
             for ( EntryAttribute attribute : entry )
@@ -139,19 +208,7 @@ public class AddRequestDsml extends AbstractRequestDsml<AddRequest>
      */
     public Entry getEntry()
     {
-        return ( ( AddRequest ) getDecorated() ).getEntry();
-    }
-
-
-    /**
-     * Create a new attributeValue
-     * 
-     * @param type The attribute's name (called 'type' in the grammar)
-     * @throws org.apache.directory.shared.ldap.model.exception.LdapException
-     */
-    public void addAttributeType( String type ) throws LdapException
-    {
-        ( ( AddRequestDecorator ) getDecorated() ).addAttributeType( type );
+        return getDecorated().getEntry();
     }
 
 
@@ -164,15 +221,15 @@ public class AddRequestDsml extends AbstractRequestDsml<AddRequest>
     {
         if ( value instanceof Value<?> )
         {
-            ( ( AddRequestDecorator ) getDecorated() ).addAttributeValue( (Value<?>) value );
+            ( ( AddRequestDsml ) getDecorated() ).addAttributeValue( (Value<?>) value );
         }
         else if ( value instanceof String )
         {
-            ( ( AddRequestDecorator ) getDecorated() ).addAttributeValue( ( String ) value );
+            ( ( AddRequestDsml ) getDecorated() ).addAttributeValue( ( String ) value );
         }
         else if ( value instanceof byte[] )
         {
-            ( ( AddRequestDecorator ) getDecorated() ).addAttributeValue( ( byte[] ) value );
+            ( ( AddRequestDsml ) getDecorated() ).addAttributeValue( ( byte[] ) value );
         }
     }
 
@@ -184,7 +241,7 @@ public class AddRequestDsml extends AbstractRequestDsml<AddRequest>
      */
     public Dn getEntryDn()
     {
-        return ( ( AddRequest ) getDecorated() ).getEntryDn();
+        return getDecorated().getEntryDn();
     }
 
 
@@ -195,7 +252,7 @@ public class AddRequestDsml extends AbstractRequestDsml<AddRequest>
      */
     public void setEntryDn( Dn entryDn )
     {
-        ( ( AddRequest ) getDecorated() ).setEntryDn( entryDn );
+        getDecorated().setEntryDn( entryDn );
     }
 
 
@@ -207,15 +264,15 @@ public class AddRequestDsml extends AbstractRequestDsml<AddRequest>
      */
     public void setEntry( Entry entry )
     {
-        ( ( AddRequest ) getDecorated() ).setEntry( entry );
+        getDecorated().setEntry( entry );
     }
 
 
     /**
-     * @return Returns the currentAttribute type.
+     * {@inheritDoc}
      */
-    public String getCurrentAttributeType()
+    public MessageTypeEnum getResponseType()
     {
-        return ( ( AddRequestDecorator ) getDecorated() ).getCurrentAttributeType();
+        return getDecorated().getResponseType();
     }
 }

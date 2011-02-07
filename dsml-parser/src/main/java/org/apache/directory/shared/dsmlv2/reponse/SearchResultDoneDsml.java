@@ -20,7 +20,7 @@
 package org.apache.directory.shared.dsmlv2.reponse;
 
 
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.message.SearchResultDone;
 import org.apache.directory.shared.ldap.model.message.SearchResultDoneImpl;
@@ -33,11 +33,12 @@ import org.dom4j.Element;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class SearchResultDoneDsml extends AbstractResultResponseDsml<SearchResultDone>
+    implements SearchResultDone
 {
     /**
      * Creates a new getDecoratedMessage() of SearchResultDoneDsml.
      */
-    public SearchResultDoneDsml( ILdapCodecService codec )
+    public SearchResultDoneDsml( LdapCodecService codec )
     {
         super( codec, new SearchResultDoneImpl() );
     }
@@ -49,7 +50,7 @@ public class SearchResultDoneDsml extends AbstractResultResponseDsml<SearchResul
      * @param ldapMessage
      *      the message to decorate
      */
-    public SearchResultDoneDsml( ILdapCodecService codec, SearchResultDone ldapMessage )
+    public SearchResultDoneDsml( LdapCodecService codec, SearchResultDone ldapMessage )
     {
         super( codec, ldapMessage );
     }

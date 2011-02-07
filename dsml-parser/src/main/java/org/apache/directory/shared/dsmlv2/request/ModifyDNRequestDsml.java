@@ -20,7 +20,7 @@
 package org.apache.directory.shared.dsmlv2.request;
 
 
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.message.ModifyDnRequest;
 import org.apache.directory.shared.ldap.model.message.ModifyDnRequestImpl;
@@ -34,12 +34,14 @@ import org.dom4j.Element;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ModifyDNRequestDsml extends AbstractRequestDsml<ModifyDnRequest>
+public class ModifyDNRequestDsml 
+    extends AbstractResultResponseRequestDsml<ModifyDnRequest>
+    implements ModifyDnRequest
 {
     /**
      * Creates a new getDecoratedMessage() of ModifyDNRequestDsml.
      */
-    public ModifyDNRequestDsml( ILdapCodecService codec )
+    public ModifyDNRequestDsml( LdapCodecService codec )
     {
         super( codec, new ModifyDnRequestImpl() );
     }
@@ -51,7 +53,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml<ModifyDnRequest>
      * @param ldapMessage
      *      the message to decorate
      */
-    public ModifyDNRequestDsml( ILdapCodecService codec, ModifyDnRequest ldapMessage )
+    public ModifyDNRequestDsml( LdapCodecService codec, ModifyDnRequest ldapMessage )
     {
         super( codec, ldapMessage );
     }
@@ -107,7 +109,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml<ModifyDnRequest>
      */
     public Dn getName()
     {
-        return ( ( ModifyDnRequest ) getDecorated() ).getName();
+        return getDecorated().getName();
     }
 
 
@@ -118,7 +120,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml<ModifyDnRequest>
      */
     public void setEntry( Dn name )
     {
-        ( ( ModifyDnRequest ) getDecorated() ).setName( name );
+        getDecorated().setName( name );
     }
 
 
@@ -129,7 +131,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml<ModifyDnRequest>
      */
     public boolean isDeleteOldRDN()
     {
-        return ( ( ModifyDnRequest ) getDecorated() ).getDeleteOldRdn();
+        return getDecorated().getDeleteOldRdn();
     }
 
 
@@ -140,7 +142,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml<ModifyDnRequest>
      */
     public void setDeleteOldRDN( boolean deleteOldRDN )
     {
-        ( ( ModifyDnRequest ) getDecorated() ).setDeleteOldRdn( deleteOldRDN );
+        getDecorated().setDeleteOldRdn( deleteOldRDN );
     }
 
 
@@ -151,7 +153,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml<ModifyDnRequest>
      */
     public Rdn getNewRDN()
     {
-        return ( ( ModifyDnRequest ) getDecorated() ).getNewRdn();
+        return getDecorated().getNewRdn();
     }
 
 
@@ -162,7 +164,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml<ModifyDnRequest>
      */
     public void setNewRDN( Rdn newRdn)
     {
-        ( ( ModifyDnRequest ) getDecorated() ).setNewRdn(newRdn);
+        getDecorated().setNewRdn( newRdn );
     }
 
 
@@ -173,7 +175,7 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml<ModifyDnRequest>
      */
     public Dn getNewSuperior()
     {
-        return ( (ModifyDnRequest) getDecorated() ).getNewSuperior();
+        return getDecorated().getNewSuperior();
     }
 
 
@@ -184,6 +186,69 @@ public class ModifyDNRequestDsml extends AbstractRequestDsml<ModifyDnRequest>
      */
     public void setNewSuperior( Dn newSuperior )
     {
-        ( ( ModifyDnRequest ) getDecorated() ).setNewSuperior( newSuperior );
+        getDecorated().setNewSuperior( newSuperior );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public MessageTypeEnum getResponseType()
+    {
+        return getDecorated().getResponseType();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setName( Dn name )
+    {
+        getDecorated().setName( name );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Rdn getNewRdn()
+    {
+        return getDecorated().getNewRdn();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setNewRdn( Rdn newRdn )
+    {
+        getDecorated().setNewRdn( newRdn );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean getDeleteOldRdn()
+    {
+        return getDecorated().getDeleteOldRdn();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setDeleteOldRdn( boolean deleteOldRdn )
+    {
+        getDecorated().setDeleteOldRdn( deleteOldRdn );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isMove()
+    {
+        return getDecorated().isMove();
     }
 }

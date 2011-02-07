@@ -47,7 +47,7 @@ public abstract class AbstractGrammar implements Grammar
      * indice the states, the second dimension indices the Tag value, so it is
      * 256 wide.
      */
-    protected GrammarTransition[][] transitions;
+    protected GrammarTransition<Asn1Container>[][] transitions;
 
     /** The grammar name */
     private String name;
@@ -87,7 +87,7 @@ public abstract class AbstractGrammar implements Grammar
      * @param tag The current tag
      * @return A valid transition if any, or null.
      */
-    public GrammarTransition getTransition( Enum<?> state, int tag )
+    public GrammarTransition<Asn1Container> getTransition( Enum<?> state, int tag )
     {
         return transitions[state.ordinal()][tag & 0x00FF];
     }
@@ -113,7 +113,7 @@ public abstract class AbstractGrammar implements Grammar
         byte tagByte = container.getCurrentTLV().getTag();
 
         // We will loop until no more actions are to be executed
-        GrammarTransition transition = ( ( AbstractGrammar ) container.getGrammar() ).getTransition( currentState,
+        GrammarTransition<Asn1Container> transition = ( ( AbstractGrammar ) container.getGrammar() ).getTransition( currentState,
             tagByte );
 
         if ( transition == null )
@@ -134,7 +134,7 @@ public abstract class AbstractGrammar implements Grammar
 
         if ( transition.hasAction() )
         {
-            Action action = transition.getAction();
+            Action<Asn1Container> action = transition.getAction();
             action.action( container );
         }
 

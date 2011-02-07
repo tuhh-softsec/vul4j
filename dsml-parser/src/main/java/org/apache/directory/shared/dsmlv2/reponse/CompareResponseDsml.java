@@ -21,7 +21,7 @@
 package org.apache.directory.shared.dsmlv2.reponse;
 
 
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.CompareResponse;
 import org.apache.directory.shared.ldap.model.message.CompareResponseImpl;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
@@ -33,12 +33,12 @@ import org.dom4j.Element;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class CompareResponseDsml extends AbstractResultResponseDsml<CompareResponse>
+public class CompareResponseDsml extends AbstractResultResponseDsml<CompareResponse> implements CompareResponse
 {
     /**
      * Creates a new getDecoratedMessage() of CompareResponseDsml.
      */
-    public CompareResponseDsml( ILdapCodecService codec )
+    public CompareResponseDsml( LdapCodecService codec )
     {
         super( codec, new CompareResponseImpl() );
     }
@@ -50,7 +50,7 @@ public class CompareResponseDsml extends AbstractResultResponseDsml<CompareRespo
      * @param ldapMessage
      *      the message to decorate
      */
-    public CompareResponseDsml( ILdapCodecService codec, CompareResponse ldapMessage )
+    public CompareResponseDsml( LdapCodecService codec, CompareResponse ldapMessage )
     {
         super( codec, ldapMessage );
     }
@@ -76,5 +76,14 @@ public class CompareResponseDsml extends AbstractResultResponseDsml<CompareRespo
             getDecorated().getLdapResult(), getDecorated() );
         ldapResultDsml.toDsml( element );
         return element;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isTrue()
+    {
+        return getDecorated().isTrue();
     }
 }

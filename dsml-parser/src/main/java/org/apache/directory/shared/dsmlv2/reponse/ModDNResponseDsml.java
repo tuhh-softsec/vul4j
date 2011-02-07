@@ -17,11 +17,10 @@
  *  under the License. 
  *  
  */
-
 package org.apache.directory.shared.dsmlv2.reponse;
 
 
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.message.ModifyDnResponse;
 import org.apache.directory.shared.ldap.model.message.ModifyDnResponseImpl;
@@ -34,11 +33,12 @@ import org.dom4j.Element;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class ModDNResponseDsml extends AbstractResultResponseDsml<ModifyDnResponse>
+    implements ModifyDnResponse
 {
     /**
      * Creates a new getDecoratedMessage() of ModDNResponseDsml.
      */
-    public ModDNResponseDsml( ILdapCodecService codec )
+    public ModDNResponseDsml( LdapCodecService codec )
     {
         super( codec, new ModifyDnResponseImpl() );
     }
@@ -50,7 +50,7 @@ public class ModDNResponseDsml extends AbstractResultResponseDsml<ModifyDnRespon
      * @param ldapMessage
      *      the message to decorate
      */
-    public ModDNResponseDsml( ILdapCodecService codec, ModifyDnResponse ldapMessage )
+    public ModDNResponseDsml( LdapCodecService codec, ModifyDnResponse ldapMessage )
     {
         super( codec, ldapMessage );
     }

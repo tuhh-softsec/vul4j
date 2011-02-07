@@ -17,7 +17,6 @@
  *  under the License. 
  *  
  */
-
 package org.apache.directory.shared.dsmlv2;
 
 
@@ -30,12 +29,12 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.directory.shared.dsmlv2.request.BatchRequest;
-import org.apache.directory.shared.dsmlv2.request.BatchRequest.Processing;
-import org.apache.directory.shared.dsmlv2.request.BatchRequest.ResponseOrder;
+import org.apache.directory.shared.dsmlv2.request.BatchRequestDsml;
+import org.apache.directory.shared.dsmlv2.request.BatchRequestDsml.Processing;
+import org.apache.directory.shared.dsmlv2.request.BatchRequestDsml.ResponseOrder;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.ICodecControl;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.CodecControl;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.model.ldif.LdifUtils;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.util.Base64;
@@ -214,7 +213,7 @@ public final class ParserUtils
      * @param element the element to add the Controls to
      * @param controls a List of Controls
      */
-    public static void addControls( ILdapCodecService codec, Element element, Collection<Control> controls )
+    public static void addControls( LdapCodecService codec, Element element, Collection<Control> controls )
     {
         if ( controls != null )
         {
@@ -233,13 +232,13 @@ public final class ParserUtils
                 }
 
                 byte[] value;
-                if ( control instanceof ICodecControl<?> )
+                if ( control instanceof CodecControl<?> )
                 {
-                    value = ( ( ICodecControl<?> ) control ).getValue();
+                    value = ( (org.apache.directory.shared.ldap.codec.api.CodecControl<?> ) control ).getValue();
                 }
                 else
                 {
-                    value = codec.decorate( control ).getValue();
+                    value = codec.newControl( control ).getValue();
                 }
                 
                 if ( value != null )
@@ -278,7 +277,7 @@ public final class ParserUtils
      */
     public static boolean isRequestIdNeeded( Dsmlv2Container container ) throws XmlPullParserException
     {
-        BatchRequest batchRequest = container.getBatchRequest();
+        BatchRequestDsml batchRequest = container.getBatchRequest();
 
         if ( batchRequest == null )
         {

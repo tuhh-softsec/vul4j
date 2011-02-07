@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apache.directory.shared.asn1.util.OID;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.model.cursor.SearchCursor;
 import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.entry.Modification;
@@ -732,7 +732,7 @@ public interface LdapConnection
      * 
      * @return The LDAP CODEC service.
      */
-    ILdapCodecService getCodecService();
+    LdapCodecService getCodecService();
     
     
     /**

@@ -20,7 +20,7 @@
 package org.apache.directory.shared.dsmlv2.request;
 
 
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.AbandonRequest;
 import org.apache.directory.shared.ldap.model.message.AbandonRequestImpl;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
@@ -32,12 +32,13 @@ import org.dom4j.Element;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class AbandonRequestDsml extends AbstractRequestDsml<AbandonRequest>
+public class AbandonRequestDsml extends AbstractRequestDsml<AbandonRequest> 
+    implements AbandonRequest
 {
     /**
      * Creates a new instance of AbandonRequestDsml.
      */
-    public AbandonRequestDsml( ILdapCodecService codec )
+    public AbandonRequestDsml( LdapCodecService codec )
     {
         super( codec, new AbandonRequestImpl() );
     }
@@ -48,7 +49,7 @@ public class AbandonRequestDsml extends AbstractRequestDsml<AbandonRequest>
      *
      * @param ldapMessage the message to decorate
      */
-    public AbandonRequestDsml( ILdapCodecService codec, AbandonRequest ldapMessage )
+    public AbandonRequestDsml( LdapCodecService codec, AbandonRequest ldapMessage )
     {
         super( codec, ldapMessage );
     }
@@ -70,12 +71,10 @@ public class AbandonRequestDsml extends AbstractRequestDsml<AbandonRequest>
     {
         Element element = super.toDsml( root );
 
-        AbandonRequest request = (AbandonRequest) getDecorated();
-
         // AbandonID
-        if ( request.getAbandoned() != 0 )
+        if ( getDecorated().getAbandoned() != 0 )
         {
-            element.addAttribute( "abandonID", "" + request.getAbandoned() );
+            element.addAttribute( "abandonID", "" + getDecorated().getAbandoned() );
         }
 
         return element;
@@ -89,7 +88,7 @@ public class AbandonRequestDsml extends AbstractRequestDsml<AbandonRequest>
      */
     public int getAbandonedMessageId()
     {
-        return ( ( AbandonRequest ) getDecorated() ).getAbandoned();
+        return getDecorated().getAbandoned();
     }
 
 
@@ -100,6 +99,24 @@ public class AbandonRequestDsml extends AbstractRequestDsml<AbandonRequest>
      */
     public void setAbandonedMessageId( int abandonedMessageId )
     {
-        ( ( AbandonRequest ) getDecorated() ).setAbandoned( abandonedMessageId );
+        getDecorated().setAbandoned( abandonedMessageId );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public int getAbandoned()
+    {
+        return getDecorated().getAbandoned();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setAbandoned( int requestId )
+    {
+        getDecorated().setAbandoned( requestId );
     }
 }

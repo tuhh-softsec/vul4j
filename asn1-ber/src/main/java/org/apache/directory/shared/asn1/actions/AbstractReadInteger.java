@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public abstract class AbstractReadInteger extends GrammarAction
+public abstract class AbstractReadInteger extends GrammarAction<Asn1Container>
 {
     /** The logger */
     private static final Logger LOG = LoggerFactory.getLogger( AbstractReadInteger.class );

@@ -17,7 +17,6 @@
  *  under the License. 
  *  
  */
-
 package org.apache.directory.shared.dsmlv2.reponse;
 
 
@@ -26,7 +25,7 @@ import java.util.List;
 
 import org.apache.directory.shared.dsmlv2.DsmlDecorator;
 import org.apache.directory.shared.dsmlv2.ParserUtils;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.model.filter.LdapURL;
 import org.apache.directory.shared.ldap.model.message.LdapResult;
 import org.apache.directory.shared.ldap.model.message.Message;
@@ -41,7 +40,7 @@ import org.dom4j.Element;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class LdapResultDsml implements DsmlDecorator
+public class LdapResultDsml implements DsmlDecorator<LdapResult>, LdapResult
 {
     /** The LDAP Result to decorate */
     private LdapResult result;
@@ -50,7 +49,7 @@ public class LdapResultDsml implements DsmlDecorator
     private Message message;
     
     /** The ldap codec service */
-    private ILdapCodecService codec;
+    private LdapCodecService codec;
 
 
     /**
@@ -62,7 +61,7 @@ public class LdapResultDsml implements DsmlDecorator
      *      the associated message
      * @param the ldap codec service 
      */
-    public LdapResultDsml( ILdapCodecService codec, LdapResult result, Message message )
+    public LdapResultDsml( LdapCodecService codec, LdapResult result, Message message )
     {
         this.codec = codec;
         this.result = result;
@@ -153,9 +152,9 @@ public class LdapResultDsml implements DsmlDecorator
      * 
      * @return Returns the matchedDN.
      */
-    public String getMatchedDn()
+    public Dn getMatchedDn()
     {
-        return result.getMatchedDn().getName();
+        return result.getMatchedDn();
     }
 
 
@@ -211,5 +210,41 @@ public class LdapResultDsml implements DsmlDecorator
     public void setResultCode( ResultCodeEnum resultCode )
     {
         result.setResultCode( resultCode );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public LdapResult getDecorated()
+    {
+        return result;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isReferral()
+    {
+        return getDecorated().isReferral();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Referral getReferral()
+    {
+        return getDecorated().getReferral();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setReferral( Referral referral )
+    {
+        getDecorated().setReferral( referral );
     }
 }

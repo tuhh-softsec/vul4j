@@ -23,10 +23,9 @@ package org.apache.directory.shared.dsmlv2.request;
 import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.asn1.EncoderException;
-import org.apache.directory.shared.dsmlv2.DsmlDecorator;
+import org.apache.directory.shared.dsmlv2.AbstractDsmlMessageDecorator;
 import org.apache.directory.shared.dsmlv2.ParserUtils;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
-import org.apache.directory.shared.ldap.codec.decorators.RequestDecorator;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.Request;
 import org.dom4j.Element;
 
@@ -36,7 +35,9 @@ import org.dom4j.Element;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public abstract class AbstractRequestDsml<E extends Request> extends RequestDecorator<E> implements DsmlDecorator
+public abstract class AbstractRequestDsml<E extends Request> 
+    extends AbstractDsmlMessageDecorator<E> 
+    implements Request
 {
     /**
      * Creates a new instance of AbstractRequestDsml.
@@ -44,7 +45,7 @@ public abstract class AbstractRequestDsml<E extends Request> extends RequestDeco
      * @param ldapMessage
      *      the message to decorate
      */
-    public AbstractRequestDsml( ILdapCodecService codec, E ldapMessage )
+    public AbstractRequestDsml( LdapCodecService codec, E ldapMessage )
     {
         super( codec, ldapMessage );
     }
@@ -128,5 +129,14 @@ public abstract class AbstractRequestDsml<E extends Request> extends RequestDeco
     public ByteBuffer encode( ByteBuffer buffer ) throws EncoderException
     {
         return null;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean hasResponse()
+    {
+        return getDecorated().hasResponse();
     }
 }

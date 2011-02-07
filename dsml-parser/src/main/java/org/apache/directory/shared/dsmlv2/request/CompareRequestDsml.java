@@ -20,7 +20,8 @@
 package org.apache.directory.shared.dsmlv2.request;
 
 
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
+import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.model.message.CompareRequest;
 import org.apache.directory.shared.ldap.model.message.CompareRequestImpl;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
@@ -33,12 +34,14 @@ import org.dom4j.Element;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class CompareRequestDsml extends AbstractRequestDsml<CompareRequest>
+public class CompareRequestDsml 
+    extends AbstractResultResponseRequestDsml<CompareRequest>
+    implements CompareRequest
 {
     /**
      * Creates a new getDecoratedMessage() of CompareRequestDsml.
      */
-    public CompareRequestDsml( ILdapCodecService codec )
+    public CompareRequestDsml( LdapCodecService codec )
     {
         super( codec, new CompareRequestImpl() );
     }
@@ -50,7 +53,7 @@ public class CompareRequestDsml extends AbstractRequestDsml<CompareRequest>
      * @param ldapMessage
      *      the message to decorate
      */
-    public CompareRequestDsml( ILdapCodecService codec, CompareRequest ldapMessage )
+    public CompareRequestDsml( LdapCodecService codec, CompareRequest ldapMessage )
     {
         super( codec, ldapMessage );
     }
@@ -102,7 +105,7 @@ public class CompareRequestDsml extends AbstractRequestDsml<CompareRequest>
      */
     public Dn getName()
     {
-        return ( (CompareRequest) getDecorated() ).getName();
+        return getDecorated().getName();
     }
 
 
@@ -113,18 +116,7 @@ public class CompareRequestDsml extends AbstractRequestDsml<CompareRequest>
      */
     public void setName( Dn entry )
     {
-        ( ( CompareRequest ) getDecorated() ).setName( entry );
-    }
-
-
-    /**
-     * Get the assertion value
-     * 
-     * @return Returns the assertionValue.
-     */
-    public Object getAssertionValue()
-    {
-        return ( ( CompareRequest ) getDecorated() ).getAssertionValue();
+        getDecorated().setName( entry );
     }
 
 
@@ -137,11 +129,11 @@ public class CompareRequestDsml extends AbstractRequestDsml<CompareRequest>
     {
         if ( assertionValue instanceof String )
         {
-            ( ( CompareRequest ) getDecorated() ).setAssertionValue( ( String ) assertionValue );
+            getDecorated().setAssertionValue( ( String ) assertionValue );
         }
         else
         {
-            ( ( CompareRequest ) getDecorated() ).setAssertionValue( ( byte[] ) assertionValue );
+            getDecorated().setAssertionValue( ( byte[] ) assertionValue );
         }
     }
 
@@ -153,7 +145,7 @@ public class CompareRequestDsml extends AbstractRequestDsml<CompareRequest>
      */
     public String getAttributeDesc()
     {
-        return ( ( CompareRequest ) getDecorated() ).getAttributeId();
+        return getDecorated().getAttributeId();
     }
 
 
@@ -164,6 +156,60 @@ public class CompareRequestDsml extends AbstractRequestDsml<CompareRequest>
      */
     public void setAttributeDesc( String attributeDesc )
     {
-        ( ( CompareRequest ) getDecorated() ).setAttributeId( attributeDesc );
+        getDecorated().setAttributeId( attributeDesc );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public MessageTypeEnum getResponseType()
+    {
+        return getDecorated().getResponseType();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setAssertionValue( String value )
+    {
+        getDecorated().setAssertionValue( value );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setAssertionValue( byte[] value )
+    {
+        getDecorated().setAssertionValue( value );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getAttributeId()
+    {
+        return getDecorated().getAttributeId();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setAttributeId( String attrId )
+    {
+        getDecorated().setAttributeId( attrId );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Value<?> getAssertionValue()
+    {
+        return getDecorated().getAssertionValue();
     }
 }

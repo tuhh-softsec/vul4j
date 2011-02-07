@@ -20,7 +20,7 @@
 package org.apache.directory.shared.dsmlv2.request;
 
 
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.DeleteRequest;
 import org.apache.directory.shared.ldap.model.message.DeleteRequestImpl;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
@@ -33,12 +33,14 @@ import org.dom4j.Element;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class DelRequestDsml extends AbstractRequestDsml<DeleteRequest>
+public class DelRequestDsml 
+    extends AbstractResultResponseRequestDsml<DeleteRequest>
+    implements DeleteRequest
 {
     /**
      * Creates a new getDecoratedMessage() of DelRequestDsml.
      */
-    public DelRequestDsml( ILdapCodecService codec )
+    public DelRequestDsml( LdapCodecService codec )
     {
         super( codec, new DeleteRequestImpl() );
     }
@@ -50,7 +52,7 @@ public class DelRequestDsml extends AbstractRequestDsml<DeleteRequest>
      * @param ldapMessage
      *      the message to decorate
      */
-    public DelRequestDsml( ILdapCodecService codec, DeleteRequest ldapMessage )
+    public DelRequestDsml( LdapCodecService codec, DeleteRequest ldapMessage )
     {
         super( codec, ldapMessage );
     }
@@ -72,12 +74,10 @@ public class DelRequestDsml extends AbstractRequestDsml<DeleteRequest>
     {
         Element element = super.toDsml( root );
 
-        DeleteRequest request = ( DeleteRequest ) getDecorated();
-
         // Dn
-        if ( request.getName() != null )
+        if ( getDecorated().getName() != null )
         {
-            element.addAttribute( "dn", request.getName().getName() );
+            element.addAttribute( "dn", getDecorated().getName().getName() );
         }
 
         return element;
@@ -91,7 +91,7 @@ public class DelRequestDsml extends AbstractRequestDsml<DeleteRequest>
      */
     public Dn getEntry()
     {
-        return ( ( DeleteRequest ) getDecorated() ).getName();
+        return getDecorated().getName();
     }
 
 
@@ -102,6 +102,33 @@ public class DelRequestDsml extends AbstractRequestDsml<DeleteRequest>
      */
     public void setEntry( Dn entry )
     {
-        ( (DeleteRequest) getDecorated() ).setName( entry );
+        getDecorated().setName( entry );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public MessageTypeEnum getResponseType()
+    {
+        return getDecorated().getResponseType();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Dn getName()
+    {
+        return getDecorated().getName();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setName( Dn name )
+    {
+        getDecorated().setName( name );
     }
 }

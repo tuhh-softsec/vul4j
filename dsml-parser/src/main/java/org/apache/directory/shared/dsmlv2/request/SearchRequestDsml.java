@@ -20,26 +20,34 @@
 package org.apache.directory.shared.dsmlv2.request;
 
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.List; 
 
+import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.dsmlv2.ParserUtils;
-import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
-import org.apache.directory.shared.ldap.codec.LdapConstants;
-import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilter;
-import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
-import org.apache.directory.shared.ldap.codec.search.PresentFilter;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.LdapConstants;
 import org.apache.directory.shared.ldap.model.entry.Value;
+import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.filter.AndNode;
+import org.apache.directory.shared.ldap.model.filter.ApproximateNode;
+import org.apache.directory.shared.ldap.model.filter.BranchNode;
+import org.apache.directory.shared.ldap.model.filter.EqualityNode;
 import org.apache.directory.shared.ldap.model.filter.ExprNode;
+import org.apache.directory.shared.ldap.model.filter.ExtensibleNode;
+import org.apache.directory.shared.ldap.model.filter.GreaterEqNode;
+import org.apache.directory.shared.ldap.model.filter.LeafNode;
+import org.apache.directory.shared.ldap.model.filter.LessEqNode;
 import org.apache.directory.shared.ldap.model.filter.NotNode;
 import org.apache.directory.shared.ldap.model.filter.OrNode;
+import org.apache.directory.shared.ldap.model.filter.PresenceNode;
 import org.apache.directory.shared.ldap.model.filter.SearchScope;
 import org.apache.directory.shared.ldap.model.filter.SubstringNode;
 import org.apache.directory.shared.ldap.model.message.AliasDerefMode;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.message.SearchRequest;
 import org.apache.directory.shared.ldap.model.message.SearchRequestImpl;
+import org.apache.directory.shared.ldap.model.name.Dn;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
 import org.dom4j.QName;
@@ -50,12 +58,24 @@ import org.dom4j.QName;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SearchRequestDsml extends AbstractRequestDsml<SearchRequest>
+public class SearchRequestDsml 
+    extends AbstractResultResponseRequestDsml<SearchRequest>
+    implements SearchRequest
 {
+    /** A temporary storage for a terminal Filter */
+    private Filter terminalFilter;
+
+    /** The current filter. This is used while decoding a PDU */
+    private Filter currentFilter;
+
+    /** The global filter. This is used while decoding a PDU */
+    private Filter topFilter;
+    
+    
     /**
      * Creates a new getDecoratedMessage() of SearchRequestDsml.
      */
-    public SearchRequestDsml( ILdapCodecService codec )
+    public SearchRequestDsml( LdapCodecService codec )
     {
         super( codec, new SearchRequestImpl() );
     }
@@ -67,12 +87,250 @@ public class SearchRequestDsml extends AbstractRequestDsml<SearchRequest>
      * @param ldapMessage
      *      the message to decorate
      */
-    public SearchRequestDsml( ILdapCodecService codec, SearchRequest ldapMessage )
+    public SearchRequestDsml( LdapCodecService codec, SearchRequest ldapMessage )
     {
         super( codec, ldapMessage );
     }
+    
+    
 
 
+    public Filter getCurrentFilter()
+    {
+        return currentFilter;
+    }
+
+
+    /**
+     * Gets the search filter associated with this search request.
+     *
+     * @return the expression node for the root of the filter expression tree.
+     */
+    public Filter getCodecFilter()
+    {
+        return topFilter;
+    }
+
+
+    /**
+     * Gets the search filter associated with this search request.
+     *
+     * @return the expression node for the root of the filter expression tree.
+     */
+    public ExprNode getFilterNode()
+    {
+        return transform( topFilter );
+    }
+
+
+    /**
+     * Get the terminal filter
+     *
+     * @return Returns the terminal filter.
+     */
+    public Filter getTerminalFilter()
+    {
+        return terminalFilter;
+    }
+
+
+    /**
+     * Set the terminal filter
+     *
+     * @param terminalFilter the teminalFilter.
+     */
+    public void setTerminalFilter( Filter terminalFilter )
+    {
+        this.terminalFilter = terminalFilter;
+    }
+
+
+    /**
+     * Set the current filter
+     *
+     * @param filter The filter to set.
+     */
+    public void setCurrentFilter( Filter filter )
+    {
+        currentFilter = filter;
+    }
+
+
+    /**
+     * Add a current filter. We have two cases :
+     * - there is no previous current filter : the filter
+     * is the top level filter
+     * - there is a previous current filter : the filter is added
+     * to the currentFilter set, and the current filter is changed
+     *
+     * In any case, the previous current filter will always be a
+     * ConnectorFilter when this method is called.
+     *
+     * @param localFilter The filter to set.
+     */
+    public void addCurrentFilter( Filter localFilter ) throws DecoderException
+    {
+        if ( currentFilter != null )
+        {
+            // Ok, we have a parent. The new Filter will be added to
+            // this parent, and will become the currentFilter if it's a connector.
+            ( ( ConnectorFilter ) currentFilter ).addFilter( localFilter );
+            localFilter.setParent( currentFilter );
+
+            if ( localFilter instanceof ConnectorFilter )
+            {
+                currentFilter = localFilter;
+            }
+        }
+        else
+        {
+            // No parent. This Filter will become the root.
+            currentFilter = localFilter;
+            currentFilter.setParent( null );
+            topFilter = localFilter;
+        }
+    }
+    
+
+
+
+    /**
+     * Transform the Filter part of a SearchRequest to an ExprNode
+     *
+     * @param filter The filter to be transformed
+     * @return An ExprNode
+     */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private ExprNode transform( Filter filter )
+    {
+        if ( filter != null )
+        {
+            // Transform OR, AND or NOT leaves
+            if ( filter instanceof ConnectorFilter)
+            {
+                BranchNode branch = null;
+
+                if ( filter instanceof AndFilter)
+                {
+                    branch = new AndNode();
+                }
+                else if ( filter instanceof OrFilter)
+                {
+                    branch = new OrNode();
+                }
+                else if ( filter instanceof NotFilter)
+                {
+                    branch = new NotNode();
+                }
+
+                List<Filter> filtersSet = ( ( ConnectorFilter ) filter ).getFilterSet();
+
+                // Loop on all AND/OR children
+                if ( filtersSet != null )
+                {
+                    for ( Filter node : filtersSet )
+                    {
+                        branch.addNode( transform( node ) );
+                    }
+                }
+
+                return branch;
+            }
+            else
+            {
+                // Transform PRESENT or ATTRIBUTE_VALUE_ASSERTION
+                LeafNode branch = null;
+
+                if ( filter instanceof PresentFilter )
+                {
+                    branch = new PresenceNode( ( ( PresentFilter ) filter ).getAttributeDescription() );
+                }
+                else if ( filter instanceof AttributeValueAssertionFilter )
+                {
+                    AttributeValueAssertion ava = ( ( AttributeValueAssertionFilter ) filter ).getAssertion();
+
+                    // Transform =, >=, <=, ~= filters
+                    switch ( ( ( AttributeValueAssertionFilter ) filter ).getFilterType() )
+                    {
+                        case LdapConstants.EQUALITY_MATCH_FILTER:
+                            branch = new EqualityNode( ava.getAttributeDesc(), ava.getAssertionValue() );
+
+                            break;
+
+                        case LdapConstants.GREATER_OR_EQUAL_FILTER:
+                            branch = new GreaterEqNode( ava.getAttributeDesc(), ava.getAssertionValue() );
+
+                            break;
+
+                        case LdapConstants.LESS_OR_EQUAL_FILTER:
+                            branch = new LessEqNode( ava.getAttributeDesc(), ava.getAssertionValue() );
+
+                            break;
+
+                        case LdapConstants.APPROX_MATCH_FILTER:
+                            branch = new ApproximateNode( ava.getAttributeDesc(), ava.getAssertionValue() );
+
+                            break;
+                    }
+
+                }
+                else if ( filter instanceof SubstringFilter )
+                {
+                    // Transform Substring filters
+                    SubstringFilter substrFilter = ( SubstringFilter ) filter;
+                    String initialString = null;
+                    String finalString = null;
+                    List<String> anyString = null;
+
+                    if ( substrFilter.getInitialSubstrings() != null )
+                    {
+                        initialString = substrFilter.getInitialSubstrings();
+                    }
+
+                    if ( substrFilter.getFinalSubstrings() != null )
+                    {
+                        finalString = substrFilter.getFinalSubstrings();
+                    }
+
+                    if ( substrFilter.getAnySubstrings() != null )
+                    {
+                        anyString = new ArrayList<String>();
+
+                        for ( String any : substrFilter.getAnySubstrings() )
+                        {
+                            anyString.add( any );
+                        }
+                    }
+
+                    branch = new SubstringNode( anyString, substrFilter.getType(), initialString, finalString );
+                }
+                else if ( filter instanceof ExtensibleMatchFilter )
+                {
+                    // Transform Extensible Match Filter
+                    ExtensibleMatchFilter extFilter = ( ExtensibleMatchFilter ) filter;
+                    String matchingRule = null;
+
+                    Value<?> value = extFilter.getMatchValue();
+
+                    if ( extFilter.getMatchingRule() != null )
+                    {
+                        matchingRule = extFilter.getMatchingRule();
+                    }
+
+                    branch = new ExtensibleNode( extFilter.getType(), value, matchingRule, extFilter.isDnAttributes() );
+                }
+
+                return branch;
+            }
+        }
+        else
+        {
+            // We have found nothing to transform. Return null then.
+            return null;
+        }
+    }
+
+    
     /**
      * {@inheritDoc}
      */
@@ -352,5 +610,176 @@ public class SearchRequestDsml extends AbstractRequestDsml<SearchRequest>
                 newElement.addAttribute( "matchingRule", matchingRule );
             }
         }
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public MessageTypeEnum[] getResponseTypes()
+    {
+        return getDecorated().getResponseTypes();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Dn getBase()
+    {
+        return getDecorated().getBase();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setBase( Dn baseDn )
+    {
+        getDecorated().setBase( baseDn );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public SearchScope getScope()
+    {
+        return getDecorated().getScope();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setScope( SearchScope scope )
+    {
+        getDecorated().setScope( scope );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public AliasDerefMode getDerefAliases()
+    {
+        return getDecorated().getDerefAliases();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setDerefAliases( AliasDerefMode aliasDerefAliases )
+    {
+        getDecorated().setDerefAliases( aliasDerefAliases );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public long getSizeLimit()
+    {
+        return getDecorated().getSizeLimit();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setSizeLimit( long entriesMax )
+    {
+        getDecorated().setSizeLimit( entriesMax );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public int getTimeLimit()
+    {
+        return getDecorated().getTimeLimit();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setTimeLimit( int secondsMax )
+    {
+        getDecorated().setTimeLimit( secondsMax );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean getTypesOnly()
+    {
+        return getDecorated().getTypesOnly();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setTypesOnly( boolean typesOnly )
+    {
+        getDecorated().setTypesOnly( typesOnly );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public ExprNode getFilter()
+    {
+        return getDecorated().getFilter();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setFilter( ExprNode filter )
+    {
+        getDecorated().setFilter( filter );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setFilter( String filter ) throws LdapException
+    {
+        getDecorated().setFilter( filter );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<String> getAttributes()
+    {
+        return getDecorated().getAttributes();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void addAttributes( String... attributes )
+    {
+        getDecorated().addAttributes( attributes );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void removeAttribute( String attribute )
+    {
+        getDecorated().removeAttribute( attribute );
     }
 }

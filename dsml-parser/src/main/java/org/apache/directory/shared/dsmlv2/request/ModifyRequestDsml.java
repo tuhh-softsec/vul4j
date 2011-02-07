@@ -24,13 +24,17 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.apache.directory.shared.dsmlv2.ParserUtils;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
+import org.apache.directory.shared.ldap.model.entry.DefaultEntryAttribute;
+import org.apache.directory.shared.ldap.model.entry.DefaultModification;
+import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.model.entry.Modification;
 import org.apache.directory.shared.ldap.model.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.message.ModifyRequest;
 import org.apache.directory.shared.ldap.model.message.ModifyRequestImpl;
+import org.apache.directory.shared.ldap.model.name.Dn;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
 import org.dom4j.QName;
@@ -41,12 +45,22 @@ import org.dom4j.QName;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ModifyRequestDsml extends AbstractRequestDsml<ModifyRequest>
+public class ModifyRequestDsml 
+    extends AbstractResultResponseRequestDsml<ModifyRequest>
+    implements ModifyRequest
 {
+
+    /** The current attribute being decoded */
+    private EntryAttribute currentAttribute;
+
+    /** A local storage for the operation */
+    private ModificationOperation currentOperation;
+    
+    
     /**
      * Creates a new getDecoratedMessage() of ModifyRequestDsml.
      */
-    public ModifyRequestDsml( ILdapCodecService codec )
+    public ModifyRequestDsml( LdapCodecService codec )
     {
         super( codec, new ModifyRequestImpl() );
     }
@@ -58,18 +72,65 @@ public class ModifyRequestDsml extends AbstractRequestDsml<ModifyRequest>
      * @param ldapMessage
      *      the message to decorate
      */
-    public ModifyRequestDsml( ILdapCodecService codec, ModifyRequest ldapMessage )
+    public ModifyRequestDsml( LdapCodecService codec, ModifyRequest ldapMessage )
     {
         super( codec, ldapMessage );
     }
 
 
     /**
-     * {@inheritDoc}
+     * Return the current attribute's type
      */
-    public MessageTypeEnum getType()
+    public String getCurrentAttributeType()
     {
-        return getDecorated().getType();
+        return currentAttribute.getId();
+    }
+
+    
+    /**
+     * Store the current operation
+     * 
+     * @param currentOperation The currentOperation to set.
+     */
+    public void setCurrentOperation( int currentOperation )
+    {
+        this.currentOperation = ModificationOperation.getOperation( currentOperation );
+    }
+
+
+    /**
+     * Add a new attributeTypeAndValue
+     * 
+     * @param type The attribute's name
+     */
+    public void addAttributeTypeAndValues( String type )
+    {
+        currentAttribute = new DefaultEntryAttribute( type );
+
+        Modification modification = new DefaultModification( currentOperation, currentAttribute );
+        getDecorated().addModification( modification );
+    }
+
+
+    /**
+     * Add a new value to the current attribute
+     * 
+     * @param value The value to add
+     */
+    public void addAttributeValue( byte[] value )
+    {
+        currentAttribute.add( value );
+    }
+
+
+    /**
+     * Add a new value to the current attribute
+     * 
+     * @param value The value to add
+     */
+    public void addAttributeValue( String value )
+    {
+        currentAttribute.add( value );
     }
 
 
@@ -144,5 +205,163 @@ public class ModifyRequestDsml extends AbstractRequestDsml<ModifyRequest>
         }
 
         return element;
+    }
+
+
+    //-------------------------------------------------------------------------
+    // The ModifyRequest methods
+    //-------------------------------------------------------------------------
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public MessageTypeEnum getResponseType()
+    {
+        return getDecorated().getResponseType();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Dn getName()
+    {
+        return getDecorated().getName();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setName( Dn name )
+    {
+        getDecorated().setName( name );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Collection<Modification> getModifications()
+    {
+        return getDecorated().getModifications();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void addModification( Modification mod )
+    {
+        getDecorated().addModification( mod );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void removeModification( Modification mod )
+    {
+        getDecorated().removeModification( mod );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void remove( String attributeName, String... attributeValue )
+    {
+        getDecorated().remove( attributeName, attributeValue );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void remove( String attributeName, byte[]... attributeValue )
+    {
+        getDecorated().remove( attributeName, attributeValue );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void remove( EntryAttribute attr )
+    {
+        getDecorated().remove( attr );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void addModification( EntryAttribute attr, ModificationOperation modOp )
+    {
+        getDecorated().addModification( attr, modOp );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void add( String attributeName, String... attributeValue )
+    {
+        getDecorated().add( attributeName, attributeValue );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void add( String attributeName, byte[]... attributeValue )
+    {
+        getDecorated().add( attributeName, attributeValue );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void add( EntryAttribute attr )
+    {
+        getDecorated().add( attr );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void replace( String attributeName )
+    {
+        getDecorated().replace( attributeName );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void replace( String attributeName, String... attributeValue )
+    {
+        getDecorated().replace( attributeName, attributeValue );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void replace( String attributeName, byte[]... attributeValue )
+    {
+        getDecorated().replace( attributeName, attributeValue );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void replace( EntryAttribute attr )
+    {
+        getDecorated().replace( attr );
     }
 }

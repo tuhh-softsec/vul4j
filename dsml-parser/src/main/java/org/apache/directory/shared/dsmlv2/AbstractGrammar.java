@@ -17,7 +17,6 @@
  *  under the License. 
  *  
  */
-
 package org.apache.directory.shared.dsmlv2;
 
 
@@ -35,12 +34,12 @@ import org.xmlpull.v1.XmlPullParserException;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public abstract class AbstractGrammar implements IGrammar
+public abstract class AbstractGrammar implements Grammar
 {
 
     /**
      * Table of transitions. It's a two dimension array, the first dimension
-     * indice the states, the second dimension indices the Tag value, so it is
+     * indexes the states, the second dimension indexes the Tag value, so it is
      * 256 wide.
      */
     protected HashMap<Tag, GrammarTransition>[] transitions;

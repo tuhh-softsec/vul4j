@@ -25,9 +25,7 @@ import java.util.List;
 
 import org.apache.directory.shared.dsmlv2.DsmlDecorator;
 import org.apache.directory.shared.dsmlv2.ParserUtils;
-import org.apache.directory.shared.dsmlv2.request.BatchRequest.OnError;
-import org.apache.directory.shared.dsmlv2.request.BatchRequest.Processing;
-import org.apache.directory.shared.dsmlv2.request.BatchRequest.ResponseOrder;
+import org.apache.directory.shared.ldap.model.message.Request;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -41,7 +39,7 @@ import org.dom4j.Element;
 public class BatchRequestDsml
 {
     /** The Requests list */
-    private List<DsmlDecorator> requests;
+    private List<DsmlDecorator<? extends Request>> requests;
 
     /** The ID of the request */
     private int requestID;
@@ -57,17 +55,71 @@ public class BatchRequestDsml
 
 
     /**
+     * This enum represents the different types of processing for a Batch Request 
+     *
+     * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
+     */
+    public enum Processing
+    {
+        /** Sequential processing. */
+        SEQUENTIAL, 
+        /** Parallel processing. */
+        PARALLEL
+    }
+
+    
+    /**
+     * This enum represents the different types of on error handling for a BatchRequest
+     *
+     * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
+         */
+    public enum OnError
+    {
+        /** Resume on error. */
+        RESUME, 
+        /** Exit on error. */
+        EXIT
+    }
+
+
+    /**
+     * This enum represents the different types of response order for a Batch Request
+     *
+     * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
+         */
+    public enum ResponseOrder
+    {
+        /** Sequential response order. */
+        SEQUENTIAL,
+        /** Unordered response order. */
+        UNORDERED
+    }
+    
+    
+    /**
      * Creates a new instance of BatchResponseDsml.
      */
     public BatchRequestDsml()
     {
-        requests = new ArrayList<DsmlDecorator>();
+        requests = new ArrayList<DsmlDecorator<? extends Request>>();
         responseOrder = ResponseOrder.SEQUENTIAL;
         processing = Processing.SEQUENTIAL;
         onError = OnError.EXIT;
     }
 
 
+    /**
+     * Gets the current request
+     *
+     * @return
+     *      the current request
+     */
+    public DsmlDecorator<? extends Request> getCurrentRequest()
+    {
+        return requests.get( requests.size() - 1 );
+    }
+
+    
     /**
      * Adds a request to the Batch Request DSML.
      *
@@ -76,7 +128,7 @@ public class BatchRequestDsml
      * @return
      *      true (as per the general contract of the Collection.add method).
      */
-    public boolean addRequest( DsmlDecorator request )
+    public boolean addRequest( DsmlDecorator<? extends Request> request )
     {
         return requests.add( request );
     }
@@ -90,7 +142,7 @@ public class BatchRequestDsml
      * @return
      *      true if this list contained the specified element.
      */
-    public boolean removeRequest( DsmlDecorator request )
+    public boolean removeRequest( DsmlDecorator<? extends Request> request )
     {
         return requests.remove( request );
     }
@@ -169,10 +221,10 @@ public class BatchRequestDsml
 
 
     /**
-     * Gets the reponse order type of the request
+     * Gets the response order type of the request
      *
      * @return
-     *      the reponse order type of the request
+     *      the response order type of the request
      */
     public ResponseOrder getResponseOrder()
     {
@@ -181,10 +233,10 @@ public class BatchRequestDsml
 
 
     /**
-     * Sets the reponse order type of the request
+     * Sets the response order type of the request
      *
      * @param responseOrder
-     *      the reponse order type to set
+     *      the response order type to set
      */
     public void setResponseOrder( ResponseOrder responseOrder )
     {
@@ -192,6 +244,17 @@ public class BatchRequestDsml
     }
 
 
+    /**
+     * Gets the List of all the requests in the Batch Request
+     *
+     * @return the List of all the requests in the Batch Request
+     */
+    public List<DsmlDecorator<? extends Request>> getRequests()
+    {
+        return requests;
+    }
+
+    
     /**
      * Converts this Batch Request to its XML representation in the DSMLv2 format.
      * 
@@ -227,11 +290,31 @@ public class BatchRequestDsml
         }
 
         // Requests
-        for ( DsmlDecorator request : requests )
+        for ( DsmlDecorator<? extends Request> request : requests )
         {
             request.toDsml( element );
         }
 
         return ParserUtils.styleDocument( document ).asXML();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString()
+    {
+        StringBuffer sb = new StringBuffer();
+
+        sb.append( "[" );
+        sb.append( "processing: " + processing );
+        sb.append( " - " );
+        sb.append( "onError: " + onError );
+        sb.append( " - " );
+        sb.append( "responseOrder: " + responseOrder );
+        sb.append( "]" );
+
+        return sb.toString();
     }
 }

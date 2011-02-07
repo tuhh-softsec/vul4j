@@ -46,11 +46,13 @@ public class MethodUtilsTest
 {
     private static class TestClass
     {
+        @SuppressWarnings("unused")
         public static void methodA( String str )
         {
             
         }
         
+        @SuppressWarnings("unused")
         public static void methodB( Collection<?> c )
         {
             

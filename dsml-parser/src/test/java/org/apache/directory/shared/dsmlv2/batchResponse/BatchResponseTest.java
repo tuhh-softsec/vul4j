@@ -28,8 +28,9 @@ import static org.junit.Assert.fail;
 import org.apache.directory.junit.tools.Concurrent;
 import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.dsmlv2.AbstractResponseTest;
+import org.apache.directory.shared.dsmlv2.DsmlDecorator;
 import org.apache.directory.shared.dsmlv2.Dsmlv2ResponseParser;
-import org.apache.directory.shared.dsmlv2.reponse.BatchResponse;
+import org.apache.directory.shared.dsmlv2.reponse.BatchResponseDsml;
 import org.apache.directory.shared.dsmlv2.reponse.ErrorResponse;
 import org.apache.directory.shared.dsmlv2.reponse.SearchResponse;
 import org.apache.directory.shared.ldap.model.message.AddResponse;
@@ -74,7 +75,7 @@ public class BatchResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        BatchResponse batchResponse = parser.getBatchResponse();
+        BatchResponseDsml batchResponse = parser.getBatchResponse();
 
         assertEquals( 1234567890, batchResponse.getRequestID() );
     }
@@ -111,7 +112,7 @@ public class BatchResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        BatchResponse batchResponse = parser.getBatchResponse();
+        BatchResponseDsml batchResponse = parser.getBatchResponse();
 
         assertEquals( 0, batchResponse.getResponses().size() );
     }
@@ -138,11 +139,11 @@ public class BatchResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        BatchResponse batchResponse = parser.getBatchResponse();
+        BatchResponseDsml batchResponse = parser.getBatchResponse();
 
         assertEquals( 1, batchResponse.getResponses().size() );
 
-        Response response = batchResponse.getCurrentResponse();
+        DsmlDecorator<? extends Response> response = batchResponse.getCurrentResponse();
 
         if ( response instanceof AddResponse)
         {
@@ -176,11 +177,11 @@ public class BatchResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        BatchResponse batchResponse = parser.getBatchResponse();
+        BatchResponseDsml batchResponse = parser.getBatchResponse();
 
         assertEquals( 1, batchResponse.getResponses().size() );
 
-        Response response = batchResponse.getCurrentResponse();
+        DsmlDecorator<? extends Response> response = batchResponse.getCurrentResponse();
 
         if ( response instanceof BindResponse )
         {
@@ -214,11 +215,11 @@ public class BatchResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        BatchResponse batchResponse = parser.getBatchResponse();
+        BatchResponseDsml batchResponse = parser.getBatchResponse();
 
         assertEquals( 1, batchResponse.getResponses().size() );
 
-        Response response = batchResponse.getCurrentResponse();
+        DsmlDecorator<? extends Response> response = batchResponse.getCurrentResponse();
 
         if ( response instanceof CompareResponse )
         {
@@ -252,11 +253,11 @@ public class BatchResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        BatchResponse batchResponse = parser.getBatchResponse();
+        BatchResponseDsml batchResponse = parser.getBatchResponse();
 
         assertEquals( 1, batchResponse.getResponses().size() );
 
-        Response response = batchResponse.getCurrentResponse();
+        DsmlDecorator<? extends Response> response = batchResponse.getCurrentResponse();
 
         if ( response instanceof DeleteResponse )
         {
@@ -290,11 +291,11 @@ public class BatchResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        BatchResponse batchResponse = parser.getBatchResponse();
+        BatchResponseDsml batchResponse = parser.getBatchResponse();
 
         assertEquals( 1, batchResponse.getResponses().size() );
 
-        Response response = batchResponse.getCurrentResponse();
+        DsmlDecorator<? extends Response> response = batchResponse.getCurrentResponse();
 
         if ( response instanceof ErrorResponse )
         {
@@ -328,11 +329,11 @@ public class BatchResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        BatchResponse batchResponse = parser.getBatchResponse();
+        BatchResponseDsml batchResponse = parser.getBatchResponse();
 
         assertEquals( 1, batchResponse.getResponses().size() );
 
-        Response response = batchResponse.getCurrentResponse();
+        DsmlDecorator<? extends Response> response = batchResponse.getCurrentResponse();
 
         if ( response instanceof ExtendedResponse )
         {
@@ -366,11 +367,11 @@ public class BatchResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        BatchResponse batchResponse = parser.getBatchResponse();
+        BatchResponseDsml batchResponse = parser.getBatchResponse();
 
         assertEquals( 1, batchResponse.getResponses().size() );
 
-        Response response = batchResponse.getCurrentResponse();
+        DsmlDecorator<? extends Response> response = batchResponse.getCurrentResponse();
 
         if ( response instanceof ModifyDnResponse )
         {
@@ -404,11 +405,11 @@ public class BatchResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        BatchResponse batchResponse = parser.getBatchResponse();
+        BatchResponseDsml batchResponse = parser.getBatchResponse();
 
         assertEquals( 1, batchResponse.getResponses().size() );
 
-        Response response = batchResponse.getCurrentResponse();
+        DsmlDecorator<? extends Response> response = batchResponse.getCurrentResponse();
 
         if ( response instanceof ModifyResponse )
         {
@@ -442,13 +443,13 @@ public class BatchResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        BatchResponse batchResponse = parser.getBatchResponse();
+        BatchResponseDsml batchResponse = parser.getBatchResponse();
 
         assertEquals( 1, batchResponse.getResponses().size() );
 
-        Response response = batchResponse.getCurrentResponse();
+        DsmlDecorator<? extends Response> response = batchResponse.getCurrentResponse();
 
-        if ( response instanceof SearchResponse )
+        if ( response.getDecorated() instanceof SearchResponse )
         {
             assertTrue( true );
         }
@@ -480,11 +481,11 @@ public class BatchResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        BatchResponse batchResponse = parser.getBatchResponse();
+        BatchResponseDsml batchResponse = parser.getBatchResponse();
 
         assertEquals( 2, batchResponse.getResponses().size() );
 
-        Response response = batchResponse.getCurrentResponse();
+        DsmlDecorator<? extends Response> response = batchResponse.getCurrentResponse();
 
         if ( response instanceof AddResponse )
         {
@@ -518,11 +519,11 @@ public class BatchResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        BatchResponse batchResponse = parser.getBatchResponse();
+        BatchResponseDsml batchResponse = parser.getBatchResponse();
 
         assertEquals( 2, batchResponse.getResponses().size() );
 
-        Response response = batchResponse.getCurrentResponse();
+        DsmlDecorator<? extends Response> response = batchResponse.getCurrentResponse();
 
         if ( response instanceof BindResponse )
         {
@@ -556,11 +557,11 @@ public class BatchResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        BatchResponse batchResponse = parser.getBatchResponse();
+        BatchResponseDsml batchResponse = parser.getBatchResponse();
 
         assertEquals( 2, batchResponse.getResponses().size() );
 
-        Response response = batchResponse.getCurrentResponse();
+        DsmlDecorator<? extends Response> response = batchResponse.getCurrentResponse();
 
         if ( response instanceof CompareResponse )
         {
@@ -594,11 +595,11 @@ public class BatchResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        BatchResponse batchResponse = parser.getBatchResponse();
+        BatchResponseDsml batchResponse = parser.getBatchResponse();
 
         assertEquals( 2, batchResponse.getResponses().size() );
 
-        Response response = batchResponse.getCurrentResponse();
+        DsmlDecorator<? extends Response> response = batchResponse.getCurrentResponse();
 
         if ( response instanceof DeleteResponse )
         {
@@ -632,11 +633,11 @@ public class BatchResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        BatchResponse batchResponse = parser.getBatchResponse();
+        BatchResponseDsml batchResponse = parser.getBatchResponse();
 
         assertEquals( 2, batchResponse.getResponses().size() );
 
-        Response response = batchResponse.getCurrentResponse();
+        DsmlDecorator<? extends Response> response = batchResponse.getCurrentResponse();
 
         if ( response instanceof ErrorResponse )
         {
@@ -670,11 +671,11 @@ public class BatchResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        BatchResponse batchResponse = parser.getBatchResponse();
+        BatchResponseDsml batchResponse = parser.getBatchResponse();
 
         assertEquals( 2, batchResponse.getResponses().size() );
 
-        Response response = batchResponse.getCurrentResponse();
+        DsmlDecorator<? extends Response> response = batchResponse.getCurrentResponse();
 
         if ( response instanceof ExtendedResponse)
         {
@@ -708,11 +709,11 @@ public class BatchResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        BatchResponse batchResponse = parser.getBatchResponse();
+        BatchResponseDsml batchResponse = parser.getBatchResponse();
 
         assertEquals( 2, batchResponse.getResponses().size() );
 
-        Response response = batchResponse.getCurrentResponse();
+        DsmlDecorator<? extends Response> response = batchResponse.getCurrentResponse();
 
         if ( response instanceof ModifyDnResponse )
         {
@@ -746,11 +747,11 @@ public class BatchResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        BatchResponse batchResponse = parser.getBatchResponse();
+        BatchResponseDsml batchResponse = parser.getBatchResponse();
 
         assertEquals( 2, batchResponse.getResponses().size() );
 
-        Response response = batchResponse.getCurrentResponse();
+        DsmlDecorator<? extends Response> response = batchResponse.getCurrentResponse();
 
         if ( response instanceof ModifyResponse )
         {
@@ -784,13 +785,13 @@ public class BatchResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        BatchResponse batchResponse = parser.getBatchResponse();
+        BatchResponseDsml batchResponse = parser.getBatchResponse();
 
         assertEquals( 2, batchResponse.getResponses().size() );
 
-        Response response = batchResponse.getCurrentResponse();
+        DsmlDecorator<? extends Response> response = batchResponse.getCurrentResponse();
 
-        if ( response instanceof SearchResponse )
+        if ( response.getDecorated() instanceof SearchResponse )
         {
             assertTrue( true );
         }

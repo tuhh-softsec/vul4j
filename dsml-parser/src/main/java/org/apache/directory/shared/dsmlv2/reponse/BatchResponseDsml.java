@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.apache.directory.shared.dsmlv2.DsmlDecorator;
 import org.apache.directory.shared.dsmlv2.ParserUtils;
+import org.apache.directory.shared.ldap.model.message.Response;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -38,7 +39,7 @@ import org.dom4j.Element;
 public class BatchResponseDsml
 {
     /** The Responses list */
-    private List<DsmlDecorator> responses;
+    private List<DsmlDecorator<? extends Response>> responses;
 
     /** The ID of the response */
     private int requestID;
@@ -49,7 +50,19 @@ public class BatchResponseDsml
      */
     public BatchResponseDsml()
     {
-        responses = new ArrayList<DsmlDecorator>();
+        responses = new ArrayList<DsmlDecorator<? extends Response>>();
+    }
+
+
+    /**
+     * Gets the current response
+     *
+     * @return
+     *      the current response
+     */
+    public DsmlDecorator<? extends Response> getCurrentResponse()
+    {
+        return responses.get( responses.size() - 1 );
     }
 
 
@@ -61,11 +74,11 @@ public class BatchResponseDsml
      * @return
      *      true (as per the general contract of the Collection.add method).
      */
-    public boolean addResponse( DsmlDecorator response )
+    public boolean addResponse( DsmlDecorator<? extends Response> response )
     {
         return responses.add( response );
     }
-
+    
 
     /**
      * Removes a request from the Batch Response DSML.
@@ -75,7 +88,7 @@ public class BatchResponseDsml
      * @return
      *      true if this list contained the specified element.
      */
-    public boolean removeResponse( DsmlDecorator response )
+    public boolean removeResponse( DsmlDecorator<Response> response )
     {
         return responses.remove( response );
     }
@@ -105,6 +118,18 @@ public class BatchResponseDsml
 
 
     /**
+     * Gets the List of all the responses
+     *
+     * @return
+     *      the List of all the responses
+     */
+    public List<DsmlDecorator<? extends Response>> getResponses()
+    {
+        return responses;
+    }
+
+
+    /**
      * Converts this Batch Response to its XML representation in the DSMLv2 format.
      * 
      * @return the XML representation in DSMLv2 format
@@ -120,7 +145,7 @@ public class BatchResponseDsml
             element.addAttribute( "requestID", "" + requestID );
         }
 
-        for ( DsmlDecorator response : responses )
+        for ( DsmlDecorator<? extends Response> response : responses )
         {
             response.toDsml( element );
         }

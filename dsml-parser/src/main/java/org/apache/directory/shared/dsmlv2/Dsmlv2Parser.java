@@ -17,7 +17,6 @@
  *  under the License. 
  *  
  */
-
 package org.apache.directory.shared.dsmlv2;
 
 
@@ -28,11 +27,10 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 
-import org.apache.directory.shared.dsmlv2.request.BatchRequest;
+import org.apache.directory.shared.dsmlv2.request.BatchRequestDsml;
 import org.apache.directory.shared.dsmlv2.request.Dsmlv2Grammar;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.ILdapCodecService;
-import org.apache.directory.shared.ldap.model.message.Message;
+import org.apache.directory.shared.ldap.model.message.Request;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -48,6 +46,9 @@ public class Dsmlv2Parser
 {
     /** The associated DSMLv2 container */
     private Dsmlv2Container container;
+    
+    /** The thread safe DSMLv2 Grammar */
+    private Dsmlv2Grammar grammar;
 
 
     /**
@@ -56,12 +57,12 @@ public class Dsmlv2Parser
      * @throws XmlPullParserException
      *      if an error occurs while the initialization of the parser
      */
-    public Dsmlv2Parser( ILdapCodecService codec ) throws XmlPullParserException
+    public Dsmlv2Parser( Dsmlv2Grammar grammar ) throws XmlPullParserException
     {
-        this.container = new Dsmlv2Container( codec );
-
-        this.container.setGrammar( Dsmlv2Grammar.getInstance() );
-
+        this.container = new Dsmlv2Container( grammar.getLdapCodecService() );
+        this.container.setGrammar( grammar );
+        this.grammar = grammar;
+        
         XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
         factory.setNamespaceAware( true );
         XmlPullParser xpp = factory.newPullParser();
@@ -127,8 +128,6 @@ public class Dsmlv2Parser
      */
     public void parse() throws XmlPullParserException, IOException
     {
-        Dsmlv2Grammar grammar = Dsmlv2Grammar.getInstance();
-
         grammar.executeAction( container );
     }
 
@@ -215,7 +214,7 @@ public class Dsmlv2Parser
      * @return 
      *      the Batch Request or null if the it has not been parsed yet
      */
-    public BatchRequest getBatchRequest()
+    public BatchRequestDsml getBatchRequest()
     {
         return container.getBatchRequest();
     }
@@ -228,7 +227,7 @@ public class Dsmlv2Parser
      * @throws XmlPullParserException      
      *      when an error occurs during the parsing
      */
-    public Message getNextRequest() throws XmlPullParserException
+    public DsmlDecorator<? extends Request> getNextRequest() throws XmlPullParserException
     {
         if ( container.getBatchRequest() == null )
         {
