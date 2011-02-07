@@ -149,6 +149,10 @@ public class DefaultLdapCodecService implements LdapCodecService
         Map<String, Object> config = new HashMap<String, Object>();
         config.put( FelixConstants.SYSTEMBUNDLE_ACTIVATORS_PROP, activators );
         config.put( FelixConstants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, getSystemPackages() );
+        
+        // @TODO - this must be overridden by tests to be false in surefire configs
+        // @TODO - remove this and make it a property on this class which is true 
+        //         by default unless overridden by surefire's configuration.
         config.put( "felix.cache.locking", false );
         
         // instantiate and start up felix

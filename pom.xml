@@ -417,6 +417,12 @@
       <!-- OSGi and Felix Dependencies -->
 
       <dependency>
+        <groupId>org.osgi</groupId>
+        <artifactId>org.osgi</artifactId>
+        <version>3.0.0</version>
+      </dependency>
+
+      <dependency>
         <groupId>org.apache.felix</groupId>
         <artifactId>org.apache.felix.framework</artifactId>
         <version>3.0.8</version>
