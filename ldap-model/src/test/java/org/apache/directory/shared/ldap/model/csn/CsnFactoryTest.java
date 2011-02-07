@@ -21,8 +21,8 @@
 package org.apache.directory.shared.ldap.model.csn;
 
 
-import org.apache.directory.junit.tools.Concurrent;
-import org.apache.directory.junit.tools.ConcurrentJunitRunner;
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.model.csn.Csn;
 import org.apache.directory.shared.ldap.model.csn.CsnFactory;
 import org.junit.Test;
@@ -37,7 +37,7 @@ import static org.junit.Assert.assertFalse;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 @RunWith(ConcurrentJunitRunner.class)
-@Concurrent()
+@Concurrency()
 public class CsnFactoryTest
 {
     private static final int NUM_GENERATES = 10;

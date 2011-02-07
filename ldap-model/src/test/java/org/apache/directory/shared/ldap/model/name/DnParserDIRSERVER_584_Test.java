@@ -22,8 +22,8 @@ package org.apache.directory.shared.ldap.model.name;
 
 import java.util.ArrayList;
 
-import org.apache.directory.junit.tools.Concurrent;
-import org.apache.directory.junit.tools.ConcurrentJunitRunner;
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.name.DnParser;
 import org.apache.directory.shared.ldap.model.name.Rdn;
@@ -40,7 +40,7 @@ import static org.junit.Assert.fail;
  * @see <a href="https://issues.apache.org/jira/browse/DIRSERVER-584">DIRSERVER-584</a>
  */
 @RunWith(ConcurrentJunitRunner.class)
-@Concurrent()
+@Concurrency()
 public class DnParserDIRSERVER_584_Test
 {
    /**

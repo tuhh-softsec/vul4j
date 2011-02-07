@@ -29,8 +29,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.directory.junit.tools.Concurrent;
-import org.apache.directory.junit.tools.ConcurrentJunitRunner;
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -41,7 +41,7 @@ import org.junit.runner.RunWith;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 @RunWith( ConcurrentJunitRunner.class )
-@Concurrent()
+@Concurrency()
 public class StringsTest
 {
     @Test

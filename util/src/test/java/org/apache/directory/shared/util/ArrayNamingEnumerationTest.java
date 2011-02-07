@@ -22,8 +22,8 @@ package org.apache.directory.shared.util;
 
 import java.util.NoSuchElementException;
 
-import org.apache.directory.junit.tools.Concurrent;
-import org.apache.directory.junit.tools.ConcurrentJunitRunner;
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -40,7 +40,7 @@ import static org.junit.Assert.fail;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 @RunWith(ConcurrentJunitRunner.class)
-@Concurrent()
+@Concurrency()
 public class ArrayNamingEnumerationTest
 {
     /**

@@ -31,8 +31,6 @@ import static org.junit.Assert.fail;
 import java.util.Collection;
 import java.util.Map;
 
-import org.apache.directory.junit.tools.Concurrent;
-import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.dsmlv2.AbstractResponseTest;
@@ -48,6 +46,9 @@ import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
+
 
 /**
  * Tests for the Extended Response parsing
@@ -55,7 +56,7 @@ import org.junit.runner.RunWith;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 @RunWith(ConcurrentJunitRunner.class)
-@Concurrent()
+@Concurrency()
 public class ExtendedResponseTest extends AbstractResponseTest
 {
 

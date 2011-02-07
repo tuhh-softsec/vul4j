@@ -21,14 +21,14 @@ package org.apache.directory.shared.util;
 
 import static org.junit.Assert.assertEquals;
 
-import org.apache.directory.junit.tools.Concurrent;
-import org.apache.directory.junit.tools.ConcurrentJunitRunner;
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.shared.util.Base32;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(ConcurrentJunitRunner.class)
-@Concurrent()
+@Concurrency()
 public class Base32Test
 {
     @Test
