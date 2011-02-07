@@ -413,7 +413,15 @@
         <artifactId>commons-pool</artifactId>
         <version>${commons.pool.version}</version>
       </dependency>
-      
+
+      <!-- OSGi and Felix Dependencies -->
+
+      <dependency>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>org.apache.felix.framework</artifactId>
+        <version>3.0.8</version>
+      </dependency>
+
       <!-- Test dependencies -->
 
       <dependency>
