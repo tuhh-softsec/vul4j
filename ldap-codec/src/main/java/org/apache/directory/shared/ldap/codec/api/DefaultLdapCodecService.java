@@ -21,9 +21,11 @@ package org.apache.directory.shared.ldap.codec.api;
 
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.directory.shared.asn1.DecoderException;
@@ -38,13 +40,8 @@ import org.apache.directory.shared.ldap.codec.controls.search.pagedSearch.PagedR
 import org.apache.directory.shared.ldap.codec.controls.search.persistentSearch.PersistentSearchFactory;
 import org.apache.directory.shared.ldap.codec.controls.search.subentries.SubentriesFactory;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
+import org.apache.directory.shared.ldap.codec.osgi.CodecHostActivator;
 import org.apache.directory.shared.ldap.codec.protocol.mina.LdapProtocolCodecFactory;
-import org.apache.directory.shared.ldap.extras.controls.PasswordPolicyImpl;
-import org.apache.directory.shared.ldap.extras.controls.SyncDoneValue;
-import org.apache.directory.shared.ldap.extras.controls.SyncInfoValue;
-import org.apache.directory.shared.ldap.extras.controls.SyncModifyDn;
-import org.apache.directory.shared.ldap.extras.controls.SyncRequestValue;
-import org.apache.directory.shared.ldap.extras.controls.SyncStateValue;
 import org.apache.directory.shared.ldap.extras.controls.ppolicy_impl.PasswordPolicyFactory;
 import org.apache.directory.shared.ldap.extras.controls.syncrepl_impl.SyncDoneValueFactory;
 import org.apache.directory.shared.ldap.extras.controls.syncrepl_impl.SyncInfoValueFactory;
@@ -53,15 +50,15 @@ import org.apache.directory.shared.ldap.extras.controls.syncrepl_impl.SyncReques
 import org.apache.directory.shared.ldap.extras.controls.syncrepl_impl.SyncStateValueFactory;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.Message;
-import org.apache.directory.shared.ldap.model.message.controls.Cascade;
-import org.apache.directory.shared.ldap.model.message.controls.EntryChange;
-import org.apache.directory.shared.ldap.model.message.controls.ManageDsaIT;
 import org.apache.directory.shared.ldap.model.message.controls.OpaqueControl;
-import org.apache.directory.shared.ldap.model.message.controls.PagedResults;
-import org.apache.directory.shared.ldap.model.message.controls.PersistentSearch;
-import org.apache.directory.shared.ldap.model.message.controls.Subentries;
 import org.apache.directory.shared.util.exception.NotImplementedException;
+import org.apache.felix.framework.Felix;
+import org.apache.felix.framework.util.FelixConstants;
 import org.apache.mina.filter.codec.ProtocolCodecFactory;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -72,14 +69,118 @@ import org.apache.mina.filter.codec.ProtocolCodecFactory;
  */
 public class DefaultLdapCodecService implements LdapCodecService
 {
-    Map<String,ControlFactory<?,?>> controlFactories = new HashMap<String, ControlFactory<?,?>>();
-    Map<String,ExtendedOpFactory<?,?>> extReqFactories = new HashMap<String, ExtendedOpFactory<?,?>>();
-    Map<String,ExtendedOpFactory<?,?>> extResFactories = new HashMap<String, ExtendedOpFactory<?,?>>();
+    private static final Logger LOG = LoggerFactory.getLogger( DefaultLdapCodecService.class );
+    
+    /**
+     * This should be constructed at class initialization time by reading the
+     * Export-Package attribute of the this jar's manifest file.
+     */
+    private static final String[] SYSTEM_PACKAGES =
+    {
+        "org.apache.directory.shared.ldap.codec.api; version=1.0.0"
+    };
+    
+    /** The map of registered {@link ControlFactory}'s */
+    private Map<String,ControlFactory<?,?>> controlFactories = new HashMap<String, ControlFactory<?,?>>();
+
+    /** The map of registered {@link ExtendedOpFactory}'s by request OID */
+    private Map<String,ExtendedOpFactory<?,?>> extReqFactories = new HashMap<String, ExtendedOpFactory<?,?>>();
+    
+    /** The map of registered {@link ExtendedOpFactory}'s by response OID */
+    private Map<String,ExtendedOpFactory<?,?>> extResFactories = new HashMap<String, ExtendedOpFactory<?,?>>();
+    
+    /** The codec's {@link BundleActivator} */
+    private CodecHostActivator activator;
+    
+    /** The embedded {@link Felix} instance */
+    private Felix felix;
     
     
+    /**
+     * Creates a new instance of DefaultLdapCodecService.
+     */
     public DefaultLdapCodecService()
     {
         loadStockControls();
+        setupFelix();
+    }
+    
+    
+    /**
+     * Assembles the <code>org.osgi.framework.system.packages.extra</code> list
+     * of system packages exported by the embedding host to interact with bundles
+     * running inside {@link Felix}.
+     * 
+     * @return A comma delimited list of exported host packages.
+     */
+    private String getSystemPackages()
+    {
+        StringBuilder sb = new StringBuilder();
+        int ii = 0;
+        
+        do
+        {
+            // add comma if we're not at start and have more left
+            if ( ii > 0 && ii < SYSTEM_PACKAGES.length - 1 )
+            {
+                sb.append( ',' );
+            }
+            
+            sb.append( SYSTEM_PACKAGES[ii] );
+            ii++;
+        }
+        while( ii < SYSTEM_PACKAGES.length );
+        
+        return sb.toString();
+    }
+    
+    
+    /**
+     * Sets up a {@link Felix} instance.
+     */
+    private void setupFelix()
+    {
+        // initialize activator and setup system bundle activators
+        activator = new CodecHostActivator( this );
+        List<BundleActivator> activators = new ArrayList<BundleActivator>();
+        activators.add( activator );
+        
+        // setup configuration for felix 
+        Map<String, Object> config = new HashMap<String, Object>();
+        config.put( FelixConstants.SYSTEMBUNDLE_ACTIVATORS_PROP, activators );
+        config.put( FelixConstants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, getSystemPackages() );
+        
+        // instantiate and start up felix
+        felix = new Felix( config );
+        try
+        {
+            felix.start();
+        }
+        catch ( BundleException e )
+        {
+            String message = "Failed to start embedded felix instance: " + e.getMessage();
+            LOG.error( message, e );
+            throw new RuntimeException( message, e );
+        }
+    }
+    
+    
+    /**
+     * Shuts down the codec and its embedded {@link Felix} instance.
+     */
+    public void shutdown()
+    {
+        try
+        {
+            felix.stop();
+            felix.waitForStop( 0 );
+        }
+        catch ( Exception e )
+        {
+            String message = "Failed to stop embedded felix instance: " + e.getMessage();
+            LOG.error( message, e );
+            throw new RuntimeException( message, e );
+        }
     }
     
     
@@ -88,49 +189,50 @@ public class DefaultLdapCodecService implements LdapCodecService
      */
     private void loadStockControls()
     {
-        CascadeFactory cascadeFactory = new CascadeFactory( this );
-        controlFactories.put( Cascade.OID, cascadeFactory );
+        ControlFactory<?, ?> factory = new CascadeFactory( this );
+        controlFactories.put( factory.getOid(), factory );
+        LOG.info( "Registered Stock Control: {}", factory.getOid() );
         
-        EntryChangeFactory entryChangeFactory = new EntryChangeFactory( this );
-        controlFactories.put( EntryChange.OID, entryChangeFactory );
+        factory = new EntryChangeFactory( this );
+        controlFactories.put( factory.getOid(), factory );
         
-        ManageDsaITFactory manageDsaITFactory = new ManageDsaITFactory( this );
-        controlFactories.put( ManageDsaIT.OID, manageDsaITFactory );
+        factory = new ManageDsaITFactory( this );
+        controlFactories.put( factory.getOid(), factory );
         
-        PagedResultsFactory pagedResultsFactory = new PagedResultsFactory( this );
-        controlFactories.put( PagedResults.OID, pagedResultsFactory );
+        factory = new PagedResultsFactory( this );
+        controlFactories.put( factory.getOid(), factory );
         
-        PersistentSearchFactory persistentSearchFactory = new PersistentSearchFactory( this );
-        controlFactories.put( PersistentSearch.OID, persistentSearchFactory );
+        factory = new PersistentSearchFactory( this );
+        controlFactories.put( factory.getOid(), factory );
 
-        SubentriesFactory subentriesFactory = new SubentriesFactory( this );
-        controlFactories.put( Subentries.OID, subentriesFactory );
+        factory = new SubentriesFactory( this );
+        controlFactories.put( factory.getOid(), factory );
         
         // @TODO - these will eventually be removed to enable plugin driven
         // registration instead
         
-        SyncDoneValueFactory syncDoneValueFactory = new SyncDoneValueFactory( this );
-        controlFactories.put( SyncDoneValue.OID, syncDoneValueFactory );
+        factory = new SyncDoneValueFactory( this );
+        controlFactories.put( factory.getOid(), factory );
         
-        SyncInfoValueFactory syncInfoValueFactory = new SyncInfoValueFactory( this );
-        controlFactories.put( SyncInfoValue.OID, syncInfoValueFactory );
+        factory = new SyncInfoValueFactory( this );
+        controlFactories.put( factory.getOid(), factory );
         
-        SyncModifyDnFactory syncModifyDnFactory = new SyncModifyDnFactory( this );
-        controlFactories.put( SyncModifyDn.OID, syncModifyDnFactory );
+        factory = new SyncModifyDnFactory( this );
+        controlFactories.put( factory.getOid(), factory );
         
-        SyncRequestValueFactory syncRequestValueFactory = new SyncRequestValueFactory( this );
-        controlFactories.put( SyncRequestValue.OID, syncRequestValueFactory );
+        factory = new SyncRequestValueFactory( this );
+        controlFactories.put( factory.getOid(), factory );
 
-        SyncStateValueFactory syncStateValueFactory = new SyncStateValueFactory( this );
-        controlFactories.put( SyncStateValue.OID, syncStateValueFactory );
+        factory = new SyncStateValueFactory( this );
+        controlFactories.put( factory.getOid(), factory );
         
-        PasswordPolicyFactory passwordPolicyFactory = new PasswordPolicyFactory( this );
-        controlFactories.put( PasswordPolicyImpl.OID, passwordPolicyFactory );
+        factory = new PasswordPolicyFactory( this );
+        controlFactories.put( factory.getOid(), factory );
 }
     
 
     //-------------------------------------------------------------------------
-    // ILdapCodecService implementation methods
+    // LdapCodecService implementation methods
     //-------------------------------------------------------------------------
     
     
