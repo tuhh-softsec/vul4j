@@ -25,6 +25,14 @@ import org.apache.commons.digester3.SetPropertiesRule;
 public interface SetPropertiesBuilder extends BackToLinkedRuleBuilder<SetPropertiesRule> {
 
     /**
+     * Add an attribute name to the ignore list.
+     *
+     * @param attributeName The attribute to match has to be ignored
+     * @return this builder instance
+     */
+    SetPropertiesBuilder ignoreAttribute(String attributeName);
+
+    /**
      * Add an additional attribute name to property name mapping.
      *
      * @param attributeName The attribute to match

@@ -242,9 +242,19 @@ final class RulesBinderImpl implements RulesBinder {
                         return this;
                     }
 
+                    public SetPropertiesBuilder ignoreAttribute(String attributeName) {
+                        if (attributeName == null) {
+                            addError("{forPattern(\"%s\").setProperties().ignoreAttribute(String)} empty 'attributeName' not allowed",
+                                    keyPattern);
+                        } else {
+                            this.aliases.put(attributeName, null);
+                        }
+                        return this;
+                    }
+
                     public SetPropertiesBuilder addAlias(String attributeName, /* @Nullable */String propertyName) {
                         if (attributeName == null) {
-                            addError("{forPattern(\"%s\").setProperties().addAlias(String,String)} empty 'methodName' not allowed",
+                            addError("{forPattern(\"%s\").setProperties().addAlias(String,String)} empty 'attributeName' not allowed",
                                     keyPattern);
                         } else {
                             this.aliases.put(attributeName, propertyName);
