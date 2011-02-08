@@ -33,7 +33,7 @@ import org.junit.Test;
  * @author Robert Burrell Donkin <robertdonkin@mac.com>
  * @version $Revision$ $Date$
  */
-public class EBRTestCase extends BaseRulesTestCase {
+public class ExtendedBaseRulesTestCase extends BaseRulesTestCase {
 
     /**
      * <p> This should be overriden by subclasses.
