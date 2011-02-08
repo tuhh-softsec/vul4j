@@ -345,6 +345,11 @@ final class RulesBinderImpl implements RulesBinder {
                         return this;
                     }
 
+                    public NestedPropertiesBuilder allowUnknownChildElements(boolean allowUnknownChildElements) {
+                        this.allowUnknownChildElements = allowUnknownChildElements;
+                        return this;
+                    }
+
                 });
             }
 

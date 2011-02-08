@@ -51,4 +51,12 @@ public interface NestedPropertiesBuilder extends BackToLinkedRuleBuilder<SetNest
      */
     NestedPropertiesBuilder trimData(boolean trimData);
 
+    /**
+     * 
+     *
+     * @param allowUnknownChildElements
+     * @return
+     */
+    NestedPropertiesBuilder allowUnknownChildElements(boolean allowUnknownChildElements);
+
 }
