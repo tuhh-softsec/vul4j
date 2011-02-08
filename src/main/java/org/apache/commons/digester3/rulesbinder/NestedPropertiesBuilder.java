@@ -25,6 +25,14 @@ import org.apache.commons.digester3.SetNestedPropertiesRule;
 public interface NestedPropertiesBuilder extends BackToLinkedRuleBuilder<SetNestedPropertiesRule> {
 
     /**
+     * Allows ignore a matching element.
+     *
+     * @param elementName The child xml element to be ignored
+     * @return this builder instance
+     */
+    NestedPropertiesBuilder ignoreElement(String elementName);
+
+    /**
      * Allows element2property mapping to be overridden.
      *
      * @param elementName The child xml element to match

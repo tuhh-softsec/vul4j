@@ -320,12 +320,27 @@ final class RulesBinderImpl implements RulesBinder {
                         return this;
                     }
 
-                    public NestedPropertiesBuilder addAlias(String elementName, String propertyName) {
+                    public NestedPropertiesBuilder ignoreElement(String elementName) {
                         if (elementName == null) {
-                            addError("{forPattern(\"%s\").setNestedProperties().addAlias(String,String)} empty 'methodName' not allowed",
+                            addError("{forPattern(\"%s\").setNestedProperties().ignoreElement(String)} empty 'elementName' not allowed",
                                     keyPattern);
                         } else {
-                            this.elementNames.put(elementName, propertyName);
+                            this.elementNames.put(elementName, null);
+                        }
+                        return this;
+                    }
+
+                    public NestedPropertiesBuilder addAlias(String elementName, String propertyName) {
+                        if (elementName == null) {
+                            addError("{forPattern(\"%s\").setNestedProperties().addAlias(String,String)} empty 'elementName' not allowed",
+                                    keyPattern);
+                        } else {
+                            if (propertyName == null) {
+                                addError("{forPattern(\"%s\").setNestedProperties().addAlias(String,String)} empty 'propertyName' not allowed",
+                                        keyPattern);
+                            } else {
+                                this.elementNames.put(elementName, propertyName);
+                            }
                         }
                         return this;
                     }
