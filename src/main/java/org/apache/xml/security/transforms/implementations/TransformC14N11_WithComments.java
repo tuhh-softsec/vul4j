@@ -37,15 +37,16 @@ public class TransformC14N11_WithComments extends TransformSpi {
         return Transforms.TRANSFORM_C14N11_WITH_COMMENTS;
     }
 
-    protected XMLSignatureInput enginePerformTransform
-        (XMLSignatureInput input, Transform transform)
+    protected XMLSignatureInput enginePerformTransform(
+        XMLSignatureInput input, Transform transform
+    )
         throws CanonicalizationException {
         return enginePerformTransform(input, null, transform);
     }
 
-    protected XMLSignatureInput enginePerformTransform
-        (XMLSignatureInput input, OutputStream os, Transform transform)
-        throws CanonicalizationException {
+    protected XMLSignatureInput enginePerformTransform(
+        XMLSignatureInput input, OutputStream os, Transform transform
+    ) throws CanonicalizationException {
       
         Canonicalizer11_WithComments c14n = new Canonicalizer11_WithComments();
         if (os != null) {
