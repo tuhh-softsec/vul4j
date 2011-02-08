@@ -81,7 +81,7 @@
   </dependencies>
 
   <properties>
-    <pluginDirectory>${project.build.directory}/pluginDirectory</pluginDirectory>
+    <codec.plugin.directory>${project.build.directory}/pluginDirectory</codec.plugin.directory>
   </properties>
 
   <build>
@@ -102,11 +102,11 @@
               onFirstInit
             </org.osgi.framework.storage.clean>
             <org.osgi.framework.storage>
-              ${project.build.directory}/osgi-cache
+              osgi-cache
             </org.osgi.framework.storage>
-            <org.apache.directory.shared.ldap.codec.api.DefaultLdapCodecService.pluginDirectory>
-              ${pluginDirectory}
-            </org.apache.directory.shared.ldap.codec.api.DefaultLdapCodecService.pluginDirectory>
+            <codec.plugin.directory>
+              ${codec.plugin.directory}
+            </codec.plugin.directory>
           </systemPropertyVariables>
         </configuration>
       </plugin>
@@ -127,7 +127,7 @@
                   <groupId>${project.groupId}</groupId>
                   <artifactId>shared-ldap-extras-codec</artifactId>
                   <version>${project.version}</version>
-                  <outputDirectory>${pluginDirectory}</outputDirectory>
+                  <outputDirectory>${codec.plugin.directory}</outputDirectory>
                 </artifactItem>
               </artifactItems>
             </configuration>

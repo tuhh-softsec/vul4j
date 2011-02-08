@@ -28,7 +28,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
@@ -65,6 +64,12 @@ import org.slf4j.LoggerFactory;
  */
 public class DefaultLdapCodecService implements LdapCodecService
 {
+    /** Missing felix constants for cache directory locking */
+    public static final String FELIX_CACHE_LOCKING = "felix.cache.locking";
+
+    /** Missing felix constants for cache root directory path */
+    public static final String FELIX_CACHE_ROOTDIR = "felix.cache.rootdir";
+
     /** A logger */
     private static final Logger LOG = LoggerFactory.getLogger( DefaultLdapCodecService.class );
     
@@ -98,8 +103,7 @@ public class DefaultLdapCodecService implements LdapCodecService
     };
  
     /** System property checked if the pluginProperty is null */
-    public static final String PLUGIN_DIRECTORY_PROPERTY = DefaultLdapCodecService.class.getName() + 
-        ".pluginDirectory";
+    public static final String PLUGIN_DIRECTORY_PROPERTY = "codec.plugin.directory";
     
     /** The map of registered {@link ControlFactory}'s */
     private Map<String,ControlFactory<?,?>> controlFactories = new HashMap<String, ControlFactory<?,?>>();
@@ -115,23 +119,138 @@ public class DefaultLdapCodecService implements LdapCodecService
     
     /** The embedded {@link Felix} instance */
     private Felix felix;
+
+    /** Felix's bundle cache directory */
+    private final File cacheDirectory;
     
     /** The plugin (bundle) containing directory to load codec extensions from */
     private final File pluginDirectory;
     
     
     /**
-     * Creates a new instance of DefaultLdapCodecService.
+     * Creates a new instance of DefaultLdapCodecService. Optionally checks for
+     * system property {@link #PLUGIN_DIRECTORY_PROPERTY}. Intended for use by 
+     * unit test running tools like Maven's surefire:
+     * <pre>
+     *   &lt;properties&gt;
+     *     &lt;codec.plugin.directory&gt;${project.build.directory}/pluginDirectory&lt;/codec.plugin.directory&gt;
+     *   &lt;/properties&gt;
+     * 
+     *   &lt;build&gt;
+     *     &lt;plugins&gt;
+     *       &lt;plugin&gt;
+     *         &lt;artifactId&gt;maven-surefire-plugin&lt;/artifactId&gt;
+     *         &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+     *         &lt;configuration&gt;
+     *           &lt;systemPropertyVariables&gt;
+     *             &lt;workingDirectory&gt;${basedir}/target&lt;/workingDirectory&gt;
+     *             &lt;felix.cache.rootdir&gt;
+     *               ${project.build.directory}
+     *             &lt;/felix.cache.rootdir&gt;
+     *             &lt;felix.cache.locking&gt;
+     *               true
+     *             &lt;/felix.cache.locking&gt;
+     *             &lt;org.osgi.framework.storage.clean&gt;
+     *               onFirstInit
+     *             &lt;/org.osgi.framework.storage.clean&gt;
+     *             &lt;org.osgi.framework.storage&gt;
+     *               osgi-cache
+     *             &lt;/org.osgi.framework.storage&gt;
+     *             &lt;codec.plugin.directory&gt;
+     *               ${codec.plugin.directory}
+     *             &lt;/codec.plugin.directory&gt;
+     *           &lt;/systemPropertyVariables&gt;
+     *         &lt;/configuration&gt;
+     *       &lt;/plugin&gt;
+     *       
+     *       &lt;plugin&gt;
+     *         &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+     *         &lt;artifactId&gt;maven-dependency-plugin&lt;/artifactId&gt;
+     *         &lt;executions&gt;
+     *           &lt;execution&gt;
+     *             &lt;id&gt;copy&lt;/id&gt;
+     *             &lt;phase&gt;compile&lt;/phase&gt;
+     *             &lt;goals&gt;
+     *               &lt;goal&gt;copy&lt;/goal&gt;
+     *             &lt;/goals&gt;
+     *             &lt;configuration&gt;
+     *               &lt;artifactItems&gt;
+     *                 &lt;artifactItem&gt;
+     *                   &lt;groupId&gt;${project.groupId}&lt;/groupId&gt;
+     *                   &lt;artifactId&gt;shared-ldap-extras-codec&lt;/artifactId&gt;
+     *                   &lt;version&gt;${project.version}&lt;/version&gt;
+     *                   &lt;outputDirectory&gt;${codec.plugin.directory}&lt;/outputDirectory&gt;
+     *                 &lt;/artifactItem&gt;
+     *               &lt;/artifactItems&gt;
+     *             &lt;/configuration&gt;
+     *           &lt;/execution&gt;
+     *         &lt;/executions&gt;
+     *       &lt;/plugin&gt;
+     *     &lt;/plugins&gt;
+     *   &lt;/build&gt;
+     * </pre>
      */
     public DefaultLdapCodecService()
     {
-        this( getPluginDirectorySystemValue() );
+        this( null, null );
     }
     
     
-    private static File getPluginDirectorySystemValue()
+    /**
+     * Uses system properties and default considerations to create a cache 
+     * directory that can be used when one is not provided.
+     *
+     * @see FelixConstants#FRAMEWORK_STORAGE
+     * @return The cache directory default.
+     */
+    private File getCacheDirectoryDefault()
+    {
+        String frameworkStorage = System.getProperties().getProperty( FelixConstants.FRAMEWORK_STORAGE );
+        LOG.info( "{}: {}", FelixConstants.FRAMEWORK_STORAGE, frameworkStorage );
+        
+        String felixCacheRootdir = System.getProperties().getProperty( FELIX_CACHE_ROOTDIR );
+        LOG.info( "{}: {}", FELIX_CACHE_ROOTDIR, felixCacheRootdir );
+
+        try
+        {
+            if ( frameworkStorage == null && felixCacheRootdir == null )
+            {
+                return new File( File.createTempFile( "dummy", null ).getParentFile(), 
+                    "osgi-cache-" + Integer.toString( this.hashCode() ) );
+            }
+            else if ( frameworkStorage == null && felixCacheRootdir != null )
+            {
+                return new File( new File ( felixCacheRootdir ), 
+                    "osgi-cache-" + Integer.toString( this.hashCode() ) );
+            }
+            else if ( frameworkStorage != null && felixCacheRootdir == null )
+            {
+                return new File( frameworkStorage + "-" + Integer.toString( this.hashCode() ) );
+            }
+            
+            // else if both are not null now
+            return new File( new File ( felixCacheRootdir ), 
+                frameworkStorage + Integer.toString( this.hashCode() ) );
+        }
+        catch ( Exception e ) 
+        {
+            String message = "Failure to create temporary cache directory: " + e.getMessage();
+            LOG.warn( message, e );
+            return null;
+        }
+    }
+    
+    
+    /**
+     * Gets the optional system property value for the pluginDirectory if one 
+     * is provided.
+     *
+     * @return The path for the pluginDirectory or null if not provided.
+     */
+    private File getPluginDirectoryDefault()
     {
         String value = System.getProperty( DefaultLdapCodecService.PLUGIN_DIRECTORY_PROPERTY );
+        LOG.info( "{}: {}", PLUGIN_DIRECTORY_PROPERTY, value );
         
         if ( value == null )
         {
@@ -145,23 +264,88 @@ public class DefaultLdapCodecService implements LdapCodecService
     /**
      * Creates a new instance of DefaultLdapCodecService.
      */
-    public DefaultLdapCodecService( File pluginDirectory )
+    public DefaultLdapCodecService( File pluginDirectory, File cacheDirectory )
     {
-        this.pluginDirectory = pluginDirectory;
         
+        // -------------------------------------------------------------------
+        // Handle plugin directory
+        // -------------------------------------------------------------------
+
         if ( pluginDirectory == null )
+        {
+            this.pluginDirectory = getPluginDirectoryDefault();
+            LOG.info( "Null plugin directory provided, using default instead: {}", this.pluginDirectory );
+        }
+        else
+        {
+            this.pluginDirectory = pluginDirectory;
+            LOG.info( "Valid plugin directory provided: {}", this.pluginDirectory );
+        }
+        
+        if ( this.pluginDirectory == null )
         {
             // do nothing
         }
-        else if ( ! pluginDirectory.isDirectory() )
+        else if ( ! this.pluginDirectory.exists() )
         {
-            String msg = "The provided plugin directory is not a directory:" + pluginDirectory.getAbsolutePath();
+            this.pluginDirectory.mkdirs();
+        }
+        
+        if ( this.pluginDirectory == null )
+        {
+            // do nothing
+        }
+        else if ( ! this.pluginDirectory.isDirectory() )
+        {
+            String msg = "The provided plugin directory is not a directory:" + this.pluginDirectory.getAbsolutePath();
             LOG.error( msg );
             throw new IllegalArgumentException( msg );
         }
-        else if ( ! pluginDirectory.canRead() )
+        else if ( ! this.pluginDirectory.canRead() )
         {
-            String msg = "The provided plugin directory is not readable:" + pluginDirectory.getAbsolutePath();
+            String msg = "The provided plugin directory is not readable:" + this.pluginDirectory.getAbsolutePath();
+            LOG.error( msg );
+            throw new IllegalArgumentException( msg );
+        }
+
+        
+        // -------------------------------------------------------------------
+        // Handle cache directory
+        // -------------------------------------------------------------------
+        
+        if ( cacheDirectory == null )
+        {
+            this.cacheDirectory = getCacheDirectoryDefault();
+            LOG.info( "Null cache directory provided, using default instead: {}", this.cacheDirectory );
+        }
+        else
+        {
+            this.cacheDirectory = cacheDirectory;
+            LOG.info( "Valid cache directory provided: {}", this.cacheDirectory );
+        }
+        
+        if ( this.cacheDirectory == null )
+        {
+            // do nothing
+        }
+        else if ( ! this.cacheDirectory.exists() )
+        {
+            this.cacheDirectory.mkdirs();
+        }
+        
+        if ( this.cacheDirectory == null )
+        {
+            // do nothing
+        }
+        else if ( ! this.cacheDirectory.isDirectory() )
+        {
+            String msg = "The provided cache directory is not a directory:" + this.cacheDirectory.getAbsolutePath();
+            LOG.error( msg );
+            throw new IllegalArgumentException( msg );
+        }
+        else if ( ! this.cacheDirectory.canRead() )
+        {
+            String msg = "The provided cache directory is not readable:" + this.cacheDirectory.getAbsolutePath();
             LOG.error( msg );
             throw new IllegalArgumentException( msg );
         }
@@ -196,6 +380,8 @@ public class DefaultLdapCodecService implements LdapCodecService
         }
         while( ii < SYSTEM_PACKAGES.length );
         
+        LOG.info( "System packages shared by host: " + SYSTEM_PACKAGES );
+        
         return sb.toString();
     }
     
@@ -214,26 +400,31 @@ public class DefaultLdapCodecService implements LdapCodecService
         Map<String, Object> config = new HashMap<String, Object>();
         config.put( FelixConstants.SYSTEMBUNDLE_ACTIVATORS_PROP, activators );
         config.put( FelixConstants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, getSystemPackages() );
+        config.put( FELIX_CACHE_ROOTDIR, this.cacheDirectory.getParent() );
+        config.put( FelixConstants.FRAMEWORK_STORAGE, this.cacheDirectory.getName() );
         
-        Properties props = System.getProperties();
-        if ( props.getProperty( FelixConstants.FRAMEWORK_STORAGE ) != null )
+        if ( System.getProperties().getProperty( FelixConstants.FRAMEWORK_STORAGE_CLEAN ) != null )
         {
-            config.put( FelixConstants.FRAMEWORK_STORAGE, props.getProperty( FelixConstants.FRAMEWORK_STORAGE ) );
+            String cleanMode = System.getProperties().getProperty( FelixConstants.FRAMEWORK_STORAGE_CLEAN );
+            config.put( FelixConstants.FRAMEWORK_STORAGE_CLEAN, cleanMode );
+            LOG.info( "Using framework storage clean value from sytem properties: {}", cleanMode );
+        }
+        else
+        {
+            config.put( FelixConstants.FRAMEWORK_STORAGE_CLEAN, "none" );
+            LOG.info( "Using framework storage clean defaults: none" );
         }
 
-        if ( props.getProperty( FelixConstants.FRAMEWORK_STORAGE_CLEAN ) != null )
+        if ( System.getProperties().getProperty( FELIX_CACHE_LOCKING ) != null )
         {
-            config.put( FelixConstants.FRAMEWORK_STORAGE_CLEAN, props.getProperty( FelixConstants.FRAMEWORK_STORAGE_CLEAN ) );
+            String lockCache = System.getProperties().getProperty( FELIX_CACHE_LOCKING );
+            config.put( FELIX_CACHE_LOCKING, lockCache );
+            LOG.info( "Using framework cache locking setting from sytem properties: {}", lockCache );
         }
-
-        if ( props.getProperty( "felix.cache.rootdir" ) != null )
+        else
         {
-            config.put( "felix.cache.rootdir", props.getProperty( "felix.cache.rootdir" ) );
-        }
-
-        if ( props.getProperty( "felix.cache.locking" ) != null )
-        {
-            config.put( "felix.cache.locking", props.getProperty( "felix.cache.locking" ) );
+            config.put( FELIX_CACHE_LOCKING, "true" );
+            LOG.info( "Using default for cache locking: enabled" );
         }
         
         // instantiate and start up felix
@@ -256,6 +447,8 @@ public class DefaultLdapCodecService implements LdapCodecService
      */
     public void shutdown()
     {
+        LOG.info( "Attempt to shutdown the codec service" );
+        
         try
         {
             felix.stop();
@@ -277,22 +470,27 @@ public class DefaultLdapCodecService implements LdapCodecService
     {
         ControlFactory<?, ?> factory = new CascadeFactory( this );
         controlFactories.put( factory.getOid(), factory );
-        LOG.info( "Registered Stock Control: {}", factory.getOid() );
+        LOG.info( "Registered pre-bundled control factory: {}", factory.getOid() );
         
         factory = new EntryChangeFactory( this );
         controlFactories.put( factory.getOid(), factory );
+        LOG.info( "Registered pre-bundled control factory: {}", factory.getOid() );
         
         factory = new ManageDsaITFactory( this );
         controlFactories.put( factory.getOid(), factory );
+        LOG.info( "Registered pre-bundled control factory: {}", factory.getOid() );
         
         factory = new PagedResultsFactory( this );
         controlFactories.put( factory.getOid(), factory );
+        LOG.info( "Registered pre-bundled control factory: {}", factory.getOid() );
         
         factory = new PersistentSearchFactory( this );
         controlFactories.put( factory.getOid(), factory );
+        LOG.info( "Registered pre-bundled control factory: {}", factory.getOid() );
 
         factory = new SubentriesFactory( this );
         controlFactories.put( factory.getOid(), factory );
+        LOG.info( "Registered pre-bundled control factory: {}", factory.getOid() );
 }
     
 
