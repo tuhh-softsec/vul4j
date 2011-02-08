@@ -68,6 +68,12 @@ import org.apache.directory.shared.ldap.codec.actions.StoreMatchValueAction;
 import org.apache.directory.shared.ldap.codec.actions.StoreReferenceAction;
 import org.apache.directory.shared.ldap.codec.actions.StoreTypeMatchingRuleAction;
 import org.apache.directory.shared.ldap.codec.actions.ValueAction;
+import org.apache.directory.shared.ldap.codec.actions.abandonRequest.InitAbandonRequest;
+import org.apache.directory.shared.ldap.codec.actions.bindRequest.InitBindRequest;
+import org.apache.directory.shared.ldap.codec.actions.bindRequest.InitSaslBind;
+import org.apache.directory.shared.ldap.codec.actions.bindRequest.StoreName;
+import org.apache.directory.shared.ldap.codec.actions.bindRequest.StoreSimpleAuth;
+import org.apache.directory.shared.ldap.codec.actions.bindRequest.StoreVersion;
 import org.apache.directory.shared.ldap.codec.actions.controls.ControlsInitAction;
 import org.apache.directory.shared.ldap.codec.actions.delRequest.InitDelRequest;
 import org.apache.directory.shared.ldap.codec.actions.ldapMessage.InitLdapMessage;
@@ -75,7 +81,6 @@ import org.apache.directory.shared.ldap.codec.actions.ldapMessage.StoreMessageId
 import org.apache.directory.shared.ldap.codec.actions.unbindRequest.InitUnbindRequest;
 import org.apache.directory.shared.ldap.codec.api.LdapConstants;
 import org.apache.directory.shared.ldap.codec.api.ResponseCarryingException;
-import org.apache.directory.shared.ldap.codec.decorators.AbandonRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.AddRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.AddResponseDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.BindRequestDecorator;
@@ -100,12 +105,10 @@ import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.filter.SearchScope;
-import org.apache.directory.shared.ldap.model.message.AbandonRequestImpl;
 import org.apache.directory.shared.ldap.model.message.AddRequestImpl;
 import org.apache.directory.shared.ldap.model.message.AddResponseImpl;
 import org.apache.directory.shared.ldap.model.message.AliasDerefMode;
 import org.apache.directory.shared.ldap.model.message.BindRequest;
-import org.apache.directory.shared.ldap.model.message.BindRequestImpl;
 import org.apache.directory.shared.ldap.model.message.BindResponseImpl;
 import org.apache.directory.shared.ldap.model.message.CompareRequest;
 import org.apache.directory.shared.ldap.model.message.CompareRequestImpl;
@@ -184,9 +187,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // The next state will be LDAP_MESSAGE_STATE
         //
         // We will just check that the length is not null
-        super.transitions[LdapStatesEnum.START_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition<LdapMessageContainer<MessageDecorator<? extends Message>>>(
-            LdapStatesEnum.START_STATE, LdapStatesEnum.LDAP_MESSAGE_STATE, UniversalTag.SEQUENCE.getValue(),
-            new InitLdapMessage() );
+        super.transitions[LdapStatesEnum.START_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] =
+            new GrammarTransition<LdapMessageContainer<MessageDecorator<? extends Message>>>(
+                LdapStatesEnum.START_STATE,
+                LdapStatesEnum.LDAP_MESSAGE_STATE,
+                UniversalTag.SEQUENCE.getValue(),
+                new InitLdapMessage() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from LdapMessage to Message ID
@@ -201,9 +207,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //
         // The message ID will be temporarily stored in the container, because we can't store it
         // into an object.
-        super.transitions[LdapStatesEnum.LDAP_MESSAGE_STATE.ordinal()][UniversalTag.INTEGER.getValue()] = new GrammarTransition(
-            LdapStatesEnum.LDAP_MESSAGE_STATE, LdapStatesEnum.MESSAGE_ID_STATE, UniversalTag.INTEGER.getValue(),
-            new StoreMessageId() );
+        super.transitions[LdapStatesEnum.LDAP_MESSAGE_STATE.ordinal()][UniversalTag.INTEGER.getValue()] =
+            new GrammarTransition<LdapMessageContainer<MessageDecorator<? extends Message>>>(
+                LdapStatesEnum.LDAP_MESSAGE_STATE,
+                LdapStatesEnum.MESSAGE_ID_STATE,
+                UniversalTag.INTEGER.getValue(),
+                new StoreMessageId() );
 
         // ********************************************************************************************
         // We have a ProtocolOp :
@@ -236,9 +245,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // --------------------------------------------------------------------------------------------
         // LdapMessage ::= ... UnBindRequest ...
         // unbindRequest ::= [APPLICATION 2] NULL
-        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.UNBIND_REQUEST_TAG] = new GrammarTransition(
-            LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.UNBIND_REQUEST_STATE, LdapConstants.UNBIND_REQUEST_TAG,
-            new InitUnbindRequest() );
+        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.UNBIND_REQUEST_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.MESSAGE_ID_STATE,
+                LdapStatesEnum.UNBIND_REQUEST_STATE,
+                LdapConstants.UNBIND_REQUEST_TAG,
+                new InitUnbindRequest() );
 
         // --------------------------------------------------------------------------------------------
         // transition from UnBindRequest Message to Controls.
@@ -247,9 +259,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //         ... },
         //     controls       [0] Controls OPTIONAL }
         //
-        super.transitions[LdapStatesEnum.UNBIND_REQUEST_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
-            LdapStatesEnum.UNBIND_REQUEST_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
-            new ControlsInitAction() );
+        super.transitions[LdapStatesEnum.UNBIND_REQUEST_STATE.ordinal()][LdapConstants.CONTROLS_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.UNBIND_REQUEST_STATE,
+                LdapStatesEnum.CONTROLS_STATE,
+                LdapConstants.CONTROLS_TAG,
+                new ControlsInitAction() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Message ID to DelRequest Message.
@@ -258,9 +273,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // delRequest ::= [APPLICATION 10] LDAPDN
         //
         // We store the Dn to bve deleted into the DelRequest object
-        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.DEL_REQUEST_TAG] = new GrammarTransition(
-            LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.DEL_REQUEST_STATE, LdapConstants.DEL_REQUEST_TAG,
-            new InitDelRequest() );
+        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.DEL_REQUEST_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.MESSAGE_ID_STATE,
+                LdapStatesEnum.DEL_REQUEST_STATE,
+                LdapConstants.DEL_REQUEST_TAG,
+                new InitDelRequest() );
 
         // --------------------------------------------------------------------------------------------
         // transition from DelRequest Message to Controls.
@@ -269,9 +287,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //         ... },
         //     controls       [0] Controls OPTIONAL }
         //
-        super.transitions[LdapStatesEnum.DEL_REQUEST_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
-            LdapStatesEnum.DEL_REQUEST_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
-            new ControlsInitAction() );
+        super.transitions[LdapStatesEnum.DEL_REQUEST_STATE.ordinal()][LdapConstants.CONTROLS_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.DEL_REQUEST_STATE,
+                LdapStatesEnum.CONTROLS_STATE,
+                LdapConstants.CONTROLS_TAG,
+                new ControlsInitAction() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Message ID to AbandonRequest Message.
@@ -280,59 +301,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // AbandonRequest ::= [APPLICATION 16] MessageID
         //
         // Create the AbandonRequest object, and store the ID in it
-        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.ABANDON_REQUEST_TAG] = new GrammarTransition(
-            LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.ABANDON_REQUEST_STATE, LdapConstants.ABANDON_REQUEST_TAG,
-            new GrammarAction<LdapMessageContainer<AbandonRequestDecorator>>( "Init Abandon Request" )
-            {
-                public void action( LdapMessageContainer<AbandonRequestDecorator> container ) throws DecoderException
-                {
-                    // Create the AbandonRequest LdapMessage instance and store it in the container
-                    AbandonRequestDecorator abandonRequest = new AbandonRequestDecorator(
-                        container.getLdapCodecService(), new AbandonRequestImpl( container.getMessageId() ) );
-                    container.setMessage( abandonRequest );
-
-                    // The current TLV should be a integer
-                    // We get it and store it in MessageId
-                    TLV tlv = container.getCurrentTLV();
-
-                    Value value = tlv.getValue();
-
-                    if ( ( value == null ) || ( value.getData() == null ) )
-                    {
-                        String msg = I18n.err( I18n.ERR_04075 );
-                        LOG.error( msg );
-
-                        // This will generate a PROTOCOL_ERROR
-                        throw new DecoderException( msg );
-                    }
-
-                    try
-                    {
-                        int abandonnedMessageId = IntegerDecoder.parse( value, 0, Integer.MAX_VALUE );
-
-                        abandonRequest.setAbandoned( abandonnedMessageId );
-
-                        if ( IS_DEBUG )
-                        {
-                            LOG
-                                .debug( "AbandonMessage Id has been decoded : {}", Integer
-                                    .valueOf( abandonnedMessageId ) );
-                        }
-
-                        container.setGrammarEndAllowed( true );
-
-                        return;
-                    }
-                    catch ( IntegerDecoderException ide )
-                    {
-                        LOG.error( I18n
-                            .err( I18n.ERR_04076, Strings.dumpBytes(value.getData()), ide.getMessage() ) );
-
-                        // This will generate a PROTOCOL_ERROR
-                        throw new DecoderException( ide.getMessage() );
-                    }
-                }
-            } );
+        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.ABANDON_REQUEST_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.MESSAGE_ID_STATE,
+                LdapStatesEnum.ABANDON_REQUEST_STATE,
+                LdapConstants.ABANDON_REQUEST_TAG,
+                new InitAbandonRequest() );
 
         // --------------------------------------------------------------------------------------------
         // transition from AbandonRequest Message to Controls.
@@ -341,9 +315,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //         ... },
         //     controls       [0] Controls OPTIONAL }
         //
-        super.transitions[LdapStatesEnum.ABANDON_REQUEST_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
-            LdapStatesEnum.ABANDON_REQUEST_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
-            new ControlsInitAction() );
+        super.transitions[LdapStatesEnum.ABANDON_REQUEST_STATE.ordinal()][LdapConstants.CONTROLS_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.ABANDON_REQUEST_STATE,
+                LdapStatesEnum.CONTROLS_STATE,
+                LdapConstants.CONTROLS_TAG,
+                new ControlsInitAction() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Message ID to BindRequest Message.
@@ -352,30 +329,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // BindRequest ::= [APPLICATION 0] SEQUENCE { ...
         //
         // We have to allocate a BindRequest
-        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.BIND_REQUEST_TAG] = new GrammarTransition(
-            LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.BIND_REQUEST_STATE, LdapConstants.BIND_REQUEST_TAG,
-            new GrammarAction<LdapMessageContainer<BindRequestDecorator>>( "Init BindRequest" )
-            {
-                public void action( LdapMessageContainer<BindRequestDecorator> container ) throws DecoderException
-                {
-                    // Create the BindRequest LdapMessage instance and store it in the container
-                    BindRequestDecorator bindRequest = new BindRequestDecorator(
-                        container.getLdapCodecService(), new BindRequestImpl( container.getMessageId() ) );
-                    container.setMessage( bindRequest );
-
-                    // We will check that the request is not null
-                    TLV tlv = container.getCurrentTLV();
-
-                    if ( tlv.getLength() == 0 )
-                    {
-                        String msg = I18n.err( I18n.ERR_04077 );
-                        LOG.error( msg );
-
-                        // This will generate a PROTOCOL_ERROR
-                        throw new DecoderException( msg );
-                    }
-                }
-            } );
+        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.BIND_REQUEST_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.MESSAGE_ID_STATE,
+                LdapStatesEnum.BIND_REQUEST_STATE,
+                LdapConstants.BIND_REQUEST_TAG,
+                new InitBindRequest() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from BindRequest to version
@@ -385,41 +344,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ....
         //
         // The Ldap version is parsed and stored into the BindRequest object
-        super.transitions[LdapStatesEnum.BIND_REQUEST_STATE.ordinal()][UniversalTag.INTEGER.getValue()] = new GrammarTransition(
-            LdapStatesEnum.BIND_REQUEST_STATE, LdapStatesEnum.VERSION_STATE, UniversalTag.INTEGER.getValue(),
-            new GrammarAction<LdapMessageContainer<BindRequestDecorator>>( "Store version" )
-            {
-                public void action( LdapMessageContainer<BindRequestDecorator> container ) throws DecoderException
-                {
-                    BindRequest bindRequestMessage = container.getMessage();
-
-                    // The current TLV should be a integer between 1 and 127
-                    // We get it and store it in Version
-                    TLV tlv = container.getCurrentTLV();
-
-                    Value value = tlv.getValue();
-
-                    try
-                    {
-                        int version = IntegerDecoder.parse( value, 1, 127 );
-
-                        if ( IS_DEBUG )
-                        {
-                            LOG.debug( "Ldap version ", Integer.valueOf( version ) );
-                        }
-
-                        bindRequestMessage.setVersion3( version == 3 );
-                    }
-                    catch ( IntegerDecoderException ide )
-                    {
-                        LOG.error( I18n
-                            .err( I18n.ERR_04078, Strings.dumpBytes(value.getData()), ide.getMessage() ) );
-
-                        // This will generate a PROTOCOL_ERROR
-                        throw new DecoderException( ide.getMessage() );
-                    }
-                }
-            } );
+        super.transitions[LdapStatesEnum.BIND_REQUEST_STATE.ordinal()][UniversalTag.INTEGER.getValue()] =
+            new GrammarTransition(
+                LdapStatesEnum.BIND_REQUEST_STATE,
+                LdapStatesEnum.VERSION_STATE,
+                UniversalTag.INTEGER.getValue(),
+                new StoreVersion() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from version to name
@@ -429,52 +359,13 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     name                    LDAPDN,
         //     ....
         //
-        // The Ldap version is parsed and stored into the BindRequest object
-        super.transitions[LdapStatesEnum.VERSION_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.VERSION_STATE, LdapStatesEnum.NAME_STATE, UniversalTag.OCTET_STRING.getValue(),
-            new GrammarAction<LdapMessageContainer<BindRequestDecorator>>( "Store Bind Name value" )
-            {
-                public void action( LdapMessageContainer<BindRequestDecorator> container ) throws DecoderException
-                {
-                    BindRequest bindRequestMessage = container.getMessage();
-
-                    // Get the Value and store it in the BindRequest
-                    TLV tlv = container.getCurrentTLV();
-
-                    // We have to handle the special case of a 0 length name
-                    if ( tlv.getLength() == 0 )
-                    {
-                        bindRequestMessage.setName( Dn.EMPTY_DN );
-                    }
-                    else
-                    {
-                        byte[] dnBytes = tlv.getValue().getData();
-                        String dnStr = Strings.utf8ToString(dnBytes);
-
-                        try
-                        {
-                            Dn dn = new Dn( dnStr );
-                            bindRequestMessage.setName( dn );
-                        }
-                        catch ( LdapInvalidDnException ine )
-                        {
-                            String msg = "Incorrect Dn given : " + dnStr + " (" + Strings.dumpBytes(dnBytes)
-                                + ") is invalid";
-                            LOG.error( "{} : {}", msg, ine.getMessage() );
-
-                            BindResponseImpl response = new BindResponseImpl( bindRequestMessage.getMessageId() );
-
-                            throw new ResponseCarryingException( msg, response, ResultCodeEnum.INVALID_DN_SYNTAX,
-                                Dn.EMPTY_DN, ine );
-                        }
-                    }
-
-                    if ( IS_DEBUG )
-                    {
-                        LOG.debug( " The Bind name is {}", bindRequestMessage.getName() );
-                    }
-                }
-            } );
+        // The Ldap name is stored into the BindRequest object
+        super.transitions[LdapStatesEnum.VERSION_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] =
+            new GrammarTransition(
+                LdapStatesEnum.VERSION_STATE,
+                LdapStatesEnum.NAME_STATE,
+                UniversalTag.OCTET_STRING.getValue(),
+                new StoreName() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from name to Simple Authentication
@@ -488,38 +379,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // We have to create an Authentication Object to store the credentials.
-        super.transitions[LdapStatesEnum.NAME_STATE.ordinal()][LdapConstants.BIND_REQUEST_SIMPLE_TAG] = new GrammarTransition(
-            LdapStatesEnum.NAME_STATE, LdapStatesEnum.SIMPLE_STATE, LdapConstants.BIND_REQUEST_SIMPLE_TAG,
-            new GrammarAction<LdapMessageContainer<BindRequestDecorator>>( "Store Bind Simple Authentication value" )
-            {
-                public void action( LdapMessageContainer<BindRequestDecorator> container ) throws DecoderException
-                {
-                    BindRequest bindRequestMessage = container.getMessage();
-                    TLV tlv = container.getCurrentTLV();
-
-                    // Allocate the Authentication Object
-                    bindRequestMessage.setSimple( true );
-
-                    // We have to handle the special case of a 0 length simple
-                    if ( tlv.getLength() == 0 )
-                    {
-                        bindRequestMessage.setCredentials( StringConstants.EMPTY_BYTES );
-                    }
-                    else
-                    {
-                        bindRequestMessage.setCredentials( tlv.getValue().getData() );
-                    }
-
-                    // We can have an END transition
-                    container.setGrammarEndAllowed( true );
-
-                    if ( IS_DEBUG )
-                    {
-                        LOG.debug( "The simple authentication is : {}", Strings.dumpBytes(bindRequestMessage
-                                .getCredentials()) );
-                    }
-                }
-            } );
+        super.transitions[LdapStatesEnum.NAME_STATE.ordinal()][LdapConstants.BIND_REQUEST_SIMPLE_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.NAME_STATE,
+                LdapStatesEnum.SIMPLE_STATE,
+                LdapConstants.BIND_REQUEST_SIMPLE_TAG,
+                new StoreSimpleAuth() );
 
         // --------------------------------------------------------------------------------------------
         // transition from Simple Authentication to Controls.
@@ -528,9 +393,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //         ... },
         //     controls       [0] Controls OPTIONAL }
         //
-        super.transitions[LdapStatesEnum.SIMPLE_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
-            LdapStatesEnum.SIMPLE_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
-            new ControlsInitAction() );
+        super.transitions[LdapStatesEnum.SIMPLE_STATE.ordinal()][LdapConstants.CONTROLS_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.SIMPLE_STATE,
+                LdapStatesEnum.CONTROLS_STATE,
+                LdapConstants.CONTROLS_TAG,
+                new ControlsInitAction() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from name to SASL Authentication
@@ -545,35 +413,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // We have to create an Authentication Object to store the credentials.
-        super.transitions[LdapStatesEnum.NAME_STATE.ordinal()][LdapConstants.BIND_REQUEST_SASL_TAG] = new GrammarTransition(
-            LdapStatesEnum.NAME_STATE, LdapStatesEnum.SASL_STATE, LdapConstants.BIND_REQUEST_SASL_TAG,
-            new GrammarAction<LdapMessageContainer<BindRequestDecorator>>( "Initialize Bind SASL Authentication" )
-            {
-                public void action( LdapMessageContainer<BindRequestDecorator> container ) throws DecoderException
-                {
-                    BindRequest bindRequestMessage = container.getMessage();
-                    TLV tlv = container.getCurrentTLV();
-
-                    // We will check that the sasl is not null
-                    if ( tlv.getLength() == 0 )
-                    {
-                        String msg = I18n.err( I18n.ERR_04079 );
-                        LOG.error( msg );
-
-                        BindResponseImpl response = new BindResponseImpl( bindRequestMessage.getMessageId() );
-
-                        throw new ResponseCarryingException( msg, response, ResultCodeEnum.INVALID_CREDENTIALS,
-                            bindRequestMessage.getName(), null );
-                    }
-
-                    bindRequestMessage.setSimple( false );
-
-                    if ( IS_DEBUG )
-                    {
-                        LOG.debug( "The SaslCredential has been created" );
-                    }
-                }
-            } );
+        super.transitions[LdapStatesEnum.NAME_STATE.ordinal()][LdapConstants.BIND_REQUEST_SASL_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.NAME_STATE,
+                LdapStatesEnum.SASL_STATE,
+                LdapConstants.BIND_REQUEST_SASL_TAG,
+                new InitSaslBind() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from SASL Authentication to Mechanism

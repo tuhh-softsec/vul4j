@@ -17,19 +17,18 @@
  *  under the License.
  *
  */
-package org.apache.directory.shared.ldap.codec.actions.delRequest;
+package org.apache.directory.shared.ldap.codec.actions.bindRequest;
 
 
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
-import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.api.ResponseCarryingException;
-import org.apache.directory.shared.ldap.codec.decorators.DeleteRequestDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.BindRequestDecorator;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
-import org.apache.directory.shared.ldap.model.message.DeleteRequestImpl;
-import org.apache.directory.shared.ldap.model.message.DeleteResponseImpl;
+import org.apache.directory.shared.ldap.model.message.BindRequest;
+import org.apache.directory.shared.ldap.model.message.BindResponseImpl;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.util.Strings;
@@ -38,54 +37,47 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * The action used to initialize the DelRequest.
+ * The action used to store the BindRequest version MessageID.
  * <pre>
- * LdapMessage ::= ... DelRequest ...
- * delRequest ::= [APPLICATION 10] LDAPDN
- *
- * We store the Dn to bve deleted into the DelRequest object
+ * BindRequest ::= [APPLICATION 0] SEQUENCE {
+ *     ....
+ *     name                    LDAPDN,
+ *     ....
  * </pre>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class InitDelRequest extends GrammarAction<LdapMessageContainer<DeleteRequestDecorator>>
+public class StoreName extends GrammarAction<LdapMessageContainer<BindRequestDecorator>>
 {
     /** The logger */
-    private static final Logger LOG = LoggerFactory.getLogger( InitDelRequest.class );
+    private static final Logger LOG = LoggerFactory.getLogger( StoreName.class );
 
     /** Speedup for logs */
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
+
     /**
      * Instantiates a new action.
      */
-    public InitDelRequest()
+    public StoreName()
     {
-        super( "Delete Request initialization" );
+        super( "Store BindRequest Name value" );
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public void action( LdapMessageContainer<DeleteRequestDecorator> container ) throws DecoderException
+    public void action( LdapMessageContainer<BindRequestDecorator> container ) throws DecoderException
     {
-        // Create the DeleteRequest LdapMessage instance and store it in the container
-        DeleteRequestDecorator delRequest = new DeleteRequestDecorator(
-            container.getLdapCodecService(), new DeleteRequestImpl( container.getMessageId() ) );
-        container.setMessage( delRequest );
+        BindRequest bindRequestMessage = container.getMessage();
 
-        // And store the Dn into it
-        // Get the Value and store it in the DelRequest
+        // Get the Value and store it in the BindRequest
         TLV tlv = container.getCurrentTLV();
 
-        // We have to handle the special case of a 0 length matched
-        // Dn
-        Dn entry = null;
-
+        // We have to handle the special case of a 0 length name
         if ( tlv.getLength() == 0 )
         {
-            // This will generate a PROTOCOL_ERROR
-            throw new DecoderException( I18n.err( I18n.ERR_04073 ) );
+            bindRequestMessage.setName( Dn.EMPTY_DN );
         }
         else
         {
@@ -94,28 +86,25 @@ public class InitDelRequest extends GrammarAction<LdapMessageContainer<DeleteReq
 
             try
             {
-                entry = new Dn( dnStr );
+                Dn dn = new Dn( dnStr );
+                bindRequestMessage.setName( dn );
             }
             catch ( LdapInvalidDnException ine )
             {
-                String msg = I18n.err( I18n.ERR_04074, dnStr, Strings.dumpBytes(dnBytes), ine
-                    .getLocalizedMessage() );
-                LOG.error( msg );
+                String msg = "Incorrect Dn given : " + dnStr + " (" + Strings.dumpBytes(dnBytes)
+                    + ") is invalid";
+                LOG.error( "{} : {}", msg, ine.getMessage() );
 
-                DeleteResponseImpl response = new DeleteResponseImpl( delRequest.getMessageId() );
+                BindResponseImpl response = new BindResponseImpl( bindRequestMessage.getMessageId() );
+
                 throw new ResponseCarryingException( msg, response, ResultCodeEnum.INVALID_DN_SYNTAX,
                     Dn.EMPTY_DN, ine );
             }
-
-            delRequest.setName( entry );
         }
-
-        // We can have an END transition
-        container.setGrammarEndAllowed( true );
 
         if ( IS_DEBUG )
         {
-            LOG.debug( "Deleting Dn {}", entry );
+            LOG.debug( " The Bind name is {}", bindRequestMessage.getName() );
         }
     }
 }
