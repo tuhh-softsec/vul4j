@@ -31,8 +31,8 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.directory.junit.tools.Concurrent;
-import org.apache.directory.junit.tools.ConcurrentJunitRunner;
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapProtocolErrorException;
 import org.apache.directory.shared.ldap.model.schema.AttributeType;
@@ -61,7 +61,7 @@ import org.junit.runner.RunWith;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 @RunWith(ConcurrentJunitRunner.class)
-@Concurrent()
+@Concurrency()
 public class SchemaManagerDelTest
 {
     // A directory in which the ldif files will be stored

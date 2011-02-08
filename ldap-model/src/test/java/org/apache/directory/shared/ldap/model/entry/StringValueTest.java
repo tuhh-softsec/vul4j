@@ -31,8 +31,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import org.apache.directory.junit.tools.Concurrent;
-import org.apache.directory.junit.tools.ConcurrentJunitRunner;
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.schema.normalizers.DeepTrimToLowerNormalizer;
 import org.apache.directory.shared.ldap.model.schema.syntaxCheckers.Ia5StringSyntaxChecker;
@@ -46,7 +46,7 @@ import org.junit.runner.RunWith;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 @RunWith(ConcurrentJunitRunner.class)
-@Concurrent()
+@Concurrency()
 public class StringValueTest
 {
     //----------------------------------------------------------------------------------

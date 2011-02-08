@@ -26,8 +26,8 @@ import static org.junit.Assert.assertFalse;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.directory.junit.tools.Concurrent;
-import org.apache.directory.junit.tools.ConcurrentJunitRunner;
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.aci.protectedItem.AllAttributeValuesItem;
 import org.apache.directory.shared.ldap.model.schema.AttributeType;
 import org.junit.Before;
@@ -41,7 +41,7 @@ import org.junit.runner.RunWith;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 @RunWith(ConcurrentJunitRunner.class)
-@Concurrent()
+@Concurrency()
 public class ProtectedItem_AllAttributeValuesTest
 {
     AllAttributeValuesItem allAttributeValuesA;

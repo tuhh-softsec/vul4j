@@ -20,8 +20,8 @@
 package org.apache.directory.shared.ldap.model.message;
 
 
-import org.apache.directory.junit.tools.Concurrent;
-import org.apache.directory.junit.tools.ConcurrentJunitRunner;
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.junit.Test;
@@ -38,7 +38,7 @@ import static org.junit.Assert.assertTrue;
  *         $Rev: 946353 $
  */
 @RunWith(ConcurrentJunitRunner.class)
-@Concurrent()
+@Concurrency()
 public class BindResponseImplTest
 
 {

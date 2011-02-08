@@ -50,6 +50,7 @@
     <commons.pool.version>1.5.5</commons.pool.version>
     <dom4j.version>1.6.1</dom4j.version>
     <junit.version>4.8.2</junit.version>
+    <mycila-junit.version>1.0.ga</mycila-junit.version>
     <log4j.version>1.2.16</log4j.version>
     <mina.core.version>2.0.2</mina.core.version>
     <slf4j.api.version>1.6.1</slf4j.api.version>
@@ -441,6 +442,12 @@
         <groupId>org.apache.directory.junit</groupId>
         <artifactId>junit-addons</artifactId>
         <version>${org.apache.directory.junit.junit-addons.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.mycila</groupId>
+        <artifactId>mycila-junit</artifactId>
+        <version>${mycila-junit.version}</version>
       </dependency>
 
       <!-- Logging dependencies -->

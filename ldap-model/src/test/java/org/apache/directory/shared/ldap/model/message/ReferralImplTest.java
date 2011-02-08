@@ -26,8 +26,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.apache.directory.junit.tools.Concurrent;
-import org.apache.directory.junit.tools.ConcurrentJunitRunner;
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.model.message.Referral;
 import org.apache.directory.shared.ldap.model.message.ReferralImpl;
 import org.junit.Test;
@@ -41,7 +41,7 @@ import org.junit.runner.RunWith;
  *         $Rev: 946251 $
  */
 @RunWith(ConcurrentJunitRunner.class)
-@Concurrent()
+@Concurrency()
 public class ReferralImplTest
 {
     /**

@@ -20,8 +20,8 @@
 package org.apache.directory.shared.ldap.model.schema.normalizers;
 
 
-import org.apache.directory.junit.tools.Concurrent;
-import org.apache.directory.junit.tools.ConcurrentJunitRunner;
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.model.entry.BinaryValue;
 import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.model.schema.normalizers.BooleanNormalizer;
@@ -39,7 +39,7 @@ import static org.junit.Assert.assertNull;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 @RunWith(ConcurrentJunitRunner.class)
-@Concurrent()
+@Concurrency()
 public class BooleanNormalizerTest
 {
     BooleanNormalizer normalizer = new BooleanNormalizer();

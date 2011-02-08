@@ -45,8 +45,8 @@ import java.util.Map;
 import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
 
-import org.apache.directory.junit.tools.Concurrent;
-import org.apache.directory.junit.tools.ConcurrentJunitRunner;
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.schema.normalizers.DeepTrimToLowerNormalizer;
 import org.apache.directory.shared.ldap.model.schema.normalizers.OidNormalizer;
@@ -62,7 +62,7 @@ import org.junit.runner.RunWith;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 @RunWith(ConcurrentJunitRunner.class)
-@Concurrent()
+@Concurrency()
 public class DnTest
 {
     private static Map<String, OidNormalizer> oids;

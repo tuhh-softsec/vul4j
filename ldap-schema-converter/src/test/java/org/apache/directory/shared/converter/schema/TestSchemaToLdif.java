@@ -27,14 +27,14 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.directory.junit.tools.Concurrent;
-import org.apache.directory.junit.tools.ConcurrentJunitRunner;
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 
 @RunWith(ConcurrentJunitRunner.class)
-@Concurrent()
+@Concurrency()
 public class TestSchemaToLdif
 {
     private static final String HEADER = 

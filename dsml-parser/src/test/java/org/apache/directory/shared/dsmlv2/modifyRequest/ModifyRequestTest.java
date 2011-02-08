@@ -34,8 +34,6 @@ import java.util.Map;
 
 import javax.naming.NamingException;
 
-import org.apache.directory.junit.tools.Concurrent;
-import org.apache.directory.junit.tools.ConcurrentJunitRunner;
 import org.apache.directory.shared.dsmlv2.AbstractTest;
 import org.apache.directory.shared.dsmlv2.DsmlControl;
 import org.apache.directory.shared.dsmlv2.Dsmlv2Parser;
@@ -48,6 +46,9 @@ import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
+
 
 /**
  * Tests for the Modify Request parsing
@@ -55,7 +56,7 @@ import org.junit.runner.RunWith;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 @RunWith(ConcurrentJunitRunner.class)
-@Concurrent()
+@Concurrency()
 public class ModifyRequestTest extends AbstractTest
 {
     /**

@@ -21,7 +21,6 @@
 package org.apache.directory.shared.dsmlv2;
 
 
-import org.apache.directory.junit.tools.ConcurrentSuite;
 import org.apache.directory.shared.dsmlv2.abandonRequest.AbandonRequestTest;
 import org.apache.directory.shared.dsmlv2.addRequest.AddRequestTest;
 import org.apache.directory.shared.dsmlv2.addResponse.AddResponseTest;
@@ -47,6 +46,8 @@ import org.apache.directory.shared.dsmlv2.searchResponse.searchResultEntry.Searc
 import org.apache.directory.shared.dsmlv2.searchResponse.searchResultReference.SearchResultReferenceTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+
+import com.mycila.junit.concurrent.ConcurrentSuite;
 
 
 /**

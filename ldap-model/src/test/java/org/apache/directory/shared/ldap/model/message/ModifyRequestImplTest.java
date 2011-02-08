@@ -29,8 +29,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.directory.junit.tools.Concurrent;
-import org.apache.directory.junit.tools.ConcurrentJunitRunner;
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.model.exception.MessageException;
 import org.apache.directory.shared.ldap.model.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.model.entry.DefaultModification;
@@ -50,7 +50,7 @@ import org.junit.runner.RunWith;
  * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
  */
 @RunWith(ConcurrentJunitRunner.class)
-@Concurrent()
+@Concurrency()
 public class ModifyRequestImplTest
 {
     private static final Map<String, Control> EMPTY_CONTROL_MAP = new HashMap<String, Control>();
