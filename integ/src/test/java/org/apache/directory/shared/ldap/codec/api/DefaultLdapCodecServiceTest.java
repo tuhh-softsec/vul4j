@@ -21,8 +21,10 @@ package org.apache.directory.shared.ldap.codec.api;
 
 
 import static org.junit.Assert.*; 
+
 import java.util.Iterator;
 
+import org.apache.directory.shared.ldap.extras.controls.PasswordPolicy;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.junit.Test;
 
@@ -33,7 +35,7 @@ import org.junit.Test;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class DefaultLdapCodecServiceTest
-{
+{   
     /**
      * Test method for {@link DefaultLdapCodecService#DefaultLdapCodecService()}.
      */
@@ -42,14 +44,17 @@ public class DefaultLdapCodecServiceTest
     {
         System.out.println( "Property name = " + DefaultLdapCodecService.PLUGIN_DIRECTORY_PROPERTY );
         System.out.println( "Property value = " + System.getProperty( DefaultLdapCodecService.PLUGIN_DIRECTORY_PROPERTY ) );
+        
         DefaultLdapCodecService codec = new DefaultLdapCodecService();
         Iterator<String> oids = codec.registeredControls();
         while ( oids.hasNext() )
         {
             System.out.println( "Registered OID = " + oids.next() );
         }
+        
+        assertTrue( codec.isControlRegistered( PasswordPolicy.OID ) );
 
-        CodecControl<? extends Control> control = codec.newControl( "2.16.840.1.113730.3.4.3" );
+        CodecControl<? extends Control> control = codec.newControl( PasswordPolicy.OID );
         assertNotNull( control );
         System.out.println( control );
         assertNotNull( codec );

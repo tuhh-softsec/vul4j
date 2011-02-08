@@ -92,40 +92,21 @@
   <build>
     <plugins>
       <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>generate-sources</phase>
-            <configuration />
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>antlr-maven-plugin</artifactId>
-        <configuration>
-          <grammars>*.g</grammars>
-        </configuration>
-        <executions>
-           <execution>
-              <goals>
-                 <goal>generate</goal>
-              </goals>
-           </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
         <configuration>
-          <excludes>
-            <exclude>**/Abstract*</exclude>
-            <exclude>**/*RegressionTest*</exclude>
-          </excludes>
+          <systemPropertyVariables>
+            <workingDirectory>${basedir}/target</workingDirectory>
+            <felix.cache.rootdir>
+              ${project.build.directory}
+            </felix.cache.rootdir>
+            <felix.cache.locking>
+              false
+            </felix.cache.locking>
+            <org.osgi.framework.storage>
+              ${project.build.directory}/osgi-cache
+            </org.osgi.framework.storage>
+          </systemPropertyVariables>
         </configuration>
       </plugin>
 

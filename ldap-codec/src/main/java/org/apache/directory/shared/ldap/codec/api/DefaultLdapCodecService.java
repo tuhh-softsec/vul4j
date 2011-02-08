@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
@@ -73,6 +74,26 @@ public class DefaultLdapCodecService implements LdapCodecService
      */
     private static final String[] SYSTEM_PACKAGES =
     {
+        "org.slf4j; version=1.6.0",
+        "org.apache.directory.shared.i18n; version=1.0.0",
+        "org.apache.directory.shared.util; version=1.0.0",
+        "org.apache.directory.shared.util.exception; version=1.0.0",
+        "org.apache.directory.shared.asn1; version=1.0.0",
+        "org.apache.directory.shared.asn1.util; version=1.0.0",
+        "org.apache.directory.shared.asn1.ber; version=1.0.0",
+        "org.apache.directory.shared.asn1.ber.tlv; version=1.0.0",
+        "org.apache.directory.shared.asn1.ber.grammar; version=1.0.0",
+        "org.apache.directory.shared.asn1.actions; version=1.0.0",
+        "org.apache.directory.shared.ldap.asn1.ber; version=1.0.0",
+        "org.apache.directory.shared.ldap.model; version=1.0.0",
+        "org.apache.directory.shared.ldap.model.exception; version=1.0.0",
+        "org.apache.directory.shared.ldap.model.filter; version=1.0.0",
+        "org.apache.directory.shared.ldap.model.name; version=1.0.0",
+        "org.apache.directory.shared.ldap.model.entry; version=1.0.0",
+        "org.apache.directory.shared.ldap.model.schema; version=1.0.0",
+        "org.apache.directory.shared.ldap.model.message; version=1.0.0",
+        "org.apache.directory.shared.ldap.model.message.controls; version=1.0.0",
+        "org.apache.directory.shared.ldap.codec.controls; version=1.0.0",
         "org.apache.directory.shared.ldap.codec.api; version=1.0.0"
     };
  
@@ -165,7 +186,7 @@ public class DefaultLdapCodecService implements LdapCodecService
         do
         {
             // add comma if we're not at start and have more left
-            if ( ii > 0 && ii < SYSTEM_PACKAGES.length - 1 )
+            if ( ii > 0 && ii < SYSTEM_PACKAGES.length )
             {
                 sb.append( ',' );
             }
@@ -194,10 +215,26 @@ public class DefaultLdapCodecService implements LdapCodecService
         config.put( FelixConstants.SYSTEMBUNDLE_ACTIVATORS_PROP, activators );
         config.put( FelixConstants.FRAMEWORK_SYSTEMPACKAGES_EXTRA, getSystemPackages() );
         
-        // @TODO - this must be overridden by tests to be false in surefire configs
-        // @TODO - remove this and make it a property on this class which is true 
-        //         by default unless overridden by surefire's configuration.
-        config.put( "felix.cache.locking", false );
+        Properties props = System.getProperties();
+        if ( props.getProperty( FelixConstants.FRAMEWORK_STORAGE ) != null )
+        {
+            config.put( FelixConstants.FRAMEWORK_STORAGE, props.getProperty( FelixConstants.FRAMEWORK_STORAGE ) );
+        }
+
+        if ( props.getProperty( FelixConstants.FRAMEWORK_STORAGE_CLEAN ) != null )
+        {
+            config.put( FelixConstants.FRAMEWORK_STORAGE_CLEAN, props.getProperty( FelixConstants.FRAMEWORK_STORAGE_CLEAN ) );
+        }
+
+        if ( props.getProperty( "felix.cache.rootdir" ) != null )
+        {
+            config.put( "felix.cache.rootdir", props.getProperty( "felix.cache.rootdir" ) );
+        }
+
+        if ( props.getProperty( "felix.cache.locking" ) != null )
+        {
+            config.put( "felix.cache.locking", props.getProperty( "felix.cache.locking" ) );
+        }
         
         // instantiate and start up felix
         felix = new Felix( config );
@@ -288,6 +325,15 @@ public class DefaultLdapCodecService implements LdapCodecService
     public Iterator<String> registeredControls()
     {
         return Collections.unmodifiableSet( controlFactories.keySet() ).iterator();
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isControlRegistered( String oid )
+    {
+        return controlFactories.containsKey( oid );
     }
     
 

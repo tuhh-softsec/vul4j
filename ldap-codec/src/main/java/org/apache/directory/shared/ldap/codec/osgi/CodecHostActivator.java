@@ -75,7 +75,8 @@ public class CodecHostActivator implements BundleActivator
             
             for ( File file : files )
             {
-                bundleContext.installBundle( file.toURI().toURL().toExternalForm() );
+                Bundle bundle = bundleContext.installBundle( file.toURI().toURL().toExternalForm() );
+                bundle.start();
             }
         }
     }

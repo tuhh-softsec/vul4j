@@ -74,6 +74,25 @@
       </plugin>
 
       <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <configuration>
+          <systemPropertyVariables>
+            <workingDirectory>${basedir}/target</workingDirectory>
+            <felix.cache.rootdir>
+              ${project.build.directory}
+            </felix.cache.rootdir>
+            <felix.cache.locking>
+              false
+            </felix.cache.locking>
+            <org.osgi.framework.storage>
+              ${project.build.directory}/osgi-cache
+            </org.osgi.framework.storage>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+
+      <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <inherited>true</inherited>

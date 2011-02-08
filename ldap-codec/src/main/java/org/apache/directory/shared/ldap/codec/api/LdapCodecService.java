@@ -46,6 +46,14 @@ public interface LdapCodecService
     
     
     /**
+     * Checks if a control has been registered.
+     * 
+     * @return The OID of the control to check for registration
+     */
+    boolean isControlRegistered( String oid );
+    
+    
+    /**
      * Returns an Iterator over the OID Strings of registered extended 
      * requests.
      *

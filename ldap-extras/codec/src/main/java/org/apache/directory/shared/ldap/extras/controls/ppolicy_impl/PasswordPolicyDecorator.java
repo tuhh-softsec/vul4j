@@ -195,16 +195,16 @@ public class PasswordPolicyDecorator extends ControlDecorator<PasswordPolicy> im
         sb.append( "  PasswordPolicyResponse control :\n" );
         sb.append( "   oid          : '" ).append( getOid() ).append( '\n' );
         
-        if ( getResponse().getTimeBeforeExpiration() >= 0 )
+        if ( hasResponse() && getResponse().getTimeBeforeExpiration() >= 0 )
         {
             sb.append( "   timeBeforeExpiration          : '" ).append( getResponse().getTimeBeforeExpiration() ).append( '\n' );
         }
-        else if ( getResponse().getGraceAuthNsRemaining() >= 0 )
+        else if ( hasResponse() && getResponse().getGraceAuthNsRemaining() >= 0 )
         {
             sb.append( "   graceAuthNsRemaining          : '" ).append( getResponse().getGraceAuthNsRemaining() ).append( '\n' );
         }
 
-        if ( getResponse().getPasswordPolicyError() != null )
+        if ( hasResponse() && getResponse().getPasswordPolicyError() != null )
         {
             sb.append( "   ppolicyError          : '" ).append( getResponse().getPasswordPolicyError().toString() ).append( '\n' );
         }

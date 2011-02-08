@@ -158,11 +158,13 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
     static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
     /** The instance of grammar. LdapMessageGrammar is a singleton */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private static Grammar<LdapMessageContainer<MessageDecorator<? extends Message>>> instance = new LdapMessageGrammar();
 
     /**
      * Creates a new LdapMessageGrammar object.
      */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private LdapMessageGrammar()
     {
 
@@ -6372,13 +6374,14 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
      *
      * @return An instance on the LdapMessage Grammar
      */
+    @SuppressWarnings("rawtypes")
     public static Grammar getInstance()
     {
         return instance;
     }
 
     /**
-     * Build an AttributeType froma byte array. An AttributeType contains
+     * Build an AttributeType from a byte array. An AttributeType contains
      * only chars within [0-9][a-z][A-Z][-.].
      *
      * @param bytes The bytes containing the AttributeType

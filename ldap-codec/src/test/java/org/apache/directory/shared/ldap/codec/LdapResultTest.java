@@ -30,12 +30,12 @@ import java.util.Collection;
 
 import com.mycila.junit.concurrent.Concurrency;
 import com.mycila.junit.concurrent.ConcurrentJunitRunner;
+
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.ldap.codec.api.DefaultLdapCodecService;
-import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.decorators.AddResponseDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
 import org.apache.directory.shared.ldap.model.message.AddResponse;
@@ -43,6 +43,8 @@ import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.model.message.Referral;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.shared.util.Strings;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -58,10 +60,25 @@ import org.junit.runner.RunWith;
 public class LdapResultTest
 {
     /** The encoder instance */
-    LdapEncoder encoder = new LdapEncoder();
+    private static LdapEncoder encoder = new LdapEncoder();
     
-    LdapCodecService codec = new DefaultLdapCodecService();
-
+    private static DefaultLdapCodecService codec = new DefaultLdapCodecService();
+    
+    
+    @BeforeClass
+    public static void setupLdapCodecService()
+    {
+        codec = new DefaultLdapCodecService();
+    }
+    
+    
+    @AfterClass
+    public static void tearDownLdapCodecService()
+    {
+        codec.shutdown();
+        codec = null;
+    }
+    
 
     // ~ Methods
     // ------------------------------------------------------------------------------------

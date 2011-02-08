@@ -92,11 +92,21 @@
         <configuration>
           <systemPropertyVariables>
             <workingDirectory>${basedir}/target</workingDirectory>
-            <property>
-               <!-- org.apache.directory.shared.ldap.codec.api.DefaultLdapCodecService.pluginDirectory -->
-              <name>org.apache.directory.shared.ldap.codec.api.DefaultLdapCodecService.pluginDirectory</name>
-              <value>${pluginDirectory}/foo</value>
-            </property> 
+            <felix.cache.rootdir>
+              ${project.build.directory}
+            </felix.cache.rootdir>
+            <felix.cache.locking>
+              true
+            </felix.cache.locking>
+            <org.osgi.framework.storage.clean>
+              onFirstInit
+            </org.osgi.framework.storage.clean>
+            <org.osgi.framework.storage>
+              ${project.build.directory}/osgi-cache
+            </org.osgi.framework.storage>
+            <org.apache.directory.shared.ldap.codec.api.DefaultLdapCodecService.pluginDirectory>
+              ${pluginDirectory}
+            </org.apache.directory.shared.ldap.codec.api.DefaultLdapCodecService.pluginDirectory>
           </systemPropertyVariables>
         </configuration>
       </plugin>
@@ -107,7 +117,7 @@
         <executions>
           <execution>
             <id>copy</id>
-            <phase>package</phase>
+            <phase>compile</phase>
             <goals>
               <goal>copy</goal>
             </goals>
