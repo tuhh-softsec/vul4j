@@ -62,7 +62,7 @@ public class RegexRulesTestCase {
         assertEquals("Wrong number of rules returned (2)", 3, matches.size());
         assertEquals("Rule Out Of Order (4)", "alpha", ((OrderRule) matches.get(0)).getIdentifier());
         assertEquals("Rule Out Of Order (5)", "beta", ((OrderRule) matches.get(1)).getIdentifier());
-        assertEquals("Rule Out Of Order (6)", "gamma", ((OrderRule) matches.get(2)).getIdentifier());        
+        assertEquals("Rule Out Of Order (6)", "gamma", ((OrderRule) matches.get(2)).getIdentifier());
     }
 
     /** Test regex matcher that matches nothing */
