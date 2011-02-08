@@ -230,7 +230,7 @@ public class DefaultLdapCodecService implements LdapCodecService
             
             // else if both are not null now
             return new File( new File ( felixCacheRootdir ), 
-                frameworkStorage + Integer.toString( this.hashCode() ) );
+                frameworkStorage + "-" + Integer.toString( this.hashCode() ) );
         }
         catch ( Exception e ) 
         {
