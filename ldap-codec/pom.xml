@@ -30,10 +30,32 @@
   <packaging>bundle</packaging>
   <description>LDAP Codec used by clients and servers</description>
 
+  <properties>
+    <projectName>ApacheDS-Shared</projectName>
+    <distMgmtSiteUrl>scpexe://people.apache.org/www/directory.apache.org/shared/gen-docs/${project.version}/</distMgmtSiteUrl>
+
+    <!-- Set versions for depending projects -->
+    <skin.version>1.0.2</skin.version>
+    <org.apache.directory.junit.junit-addons.version>0.1-SNAPSHOT</org.apache.directory.junit.junit-addons.version>
+    <org.apache.directory.shared.version>0.9.20-SNAPSHOT</org.apache.directory.shared.version>
+    <org.apache.directory.checkstyle-configuration.version>0.2-SNAPSHOT</org.apache.directory.checkstyle-configuration.version>
+
+    <!-- Set versions for depending jars -->
+    <antlr.version>2.7.7</antlr.version>
+    <commons.collections.version>3.2.1</commons.collections.version>
+    <commons.lang.version>2.6</commons.lang.version>
+    <junit.version>4.8.2</junit.version>
+    <log4j.version>1.2.16</log4j.version>
+    <mina.core.version>2.0.2</mina.core.version>
+    <org.apache.felix.version>3.0.8</org.apache.felix.version>
+    <!--org.osgi.version>3.0.0</org.osgi.version-->
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.directory.junit</groupId>
       <artifactId>junit-addons</artifactId>
+      <version>${org.apache.directory.junit.junit-addons.version}</version>
       <scope>test</scope>
     </dependency>
     
@@ -46,46 +68,55 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>shared-util</artifactId>
+      <version>${org.apache.directory.shared.version}</version>
     </dependency> 
 
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>shared-asn1-api</artifactId>
+      <version>${org.apache.directory.shared.version}</version>
     </dependency> 
 
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>shared-asn1-ber</artifactId>
+      <version>${org.apache.directory.shared.version}</version>
     </dependency> 
 
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>shared-i18n</artifactId>
+      <version>${org.apache.directory.shared.version}</version>
     </dependency> 
 
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>shared-ldap-model</artifactId>
+      <version>${org.apache.directory.shared.version}</version>
     </dependency> 
 
     <dependency>
       <groupId>org.apache.mina</groupId>
       <artifactId>mina-core</artifactId>
+      <version>${mina.core.version}</version>
     </dependency>
     
     <dependency>
       <groupId>org.apache.felix</groupId>
       <artifactId>org.apache.felix.framework</artifactId>
+      <version>${org.apache.felix.version}</version>
     </dependency>
     
     <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
+      <version>${commons.lang.version}</version>
     </dependency>
 
     <dependency>
       <groupId>commons-collections</groupId>
       <artifactId>commons-collections</artifactId>
+      <version>${commons.collections.version}</version>
     </dependency>
   </dependencies>
 
