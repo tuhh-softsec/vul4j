@@ -6,16 +6,16 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License. 
- *  
+ *  under the License.
+ *
  */
 package org.apache.directory.shared.ldap.codec;
 
@@ -39,7 +39,6 @@ import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.actions.AttributeDescAction;
 import org.apache.directory.shared.ldap.codec.actions.ControlValueAction;
-import org.apache.directory.shared.ldap.codec.actions.ControlsInitAction;
 import org.apache.directory.shared.ldap.codec.actions.ErrorMessageAction;
 import org.apache.directory.shared.ldap.codec.actions.InitAndFilterAction;
 import org.apache.directory.shared.ldap.codec.actions.InitApproxMatchFilterAction;
@@ -69,6 +68,11 @@ import org.apache.directory.shared.ldap.codec.actions.StoreMatchValueAction;
 import org.apache.directory.shared.ldap.codec.actions.StoreReferenceAction;
 import org.apache.directory.shared.ldap.codec.actions.StoreTypeMatchingRuleAction;
 import org.apache.directory.shared.ldap.codec.actions.ValueAction;
+import org.apache.directory.shared.ldap.codec.actions.controls.ControlsInitAction;
+import org.apache.directory.shared.ldap.codec.actions.delRequest.InitDelRequest;
+import org.apache.directory.shared.ldap.codec.actions.ldapMessage.InitLdapMessage;
+import org.apache.directory.shared.ldap.codec.actions.ldapMessage.StoreMessageId;
+import org.apache.directory.shared.ldap.codec.actions.unbindRequest.InitUnbindRequest;
 import org.apache.directory.shared.ldap.codec.api.LdapConstants;
 import org.apache.directory.shared.ldap.codec.api.ResponseCarryingException;
 import org.apache.directory.shared.ldap.codec.decorators.AbandonRequestDecorator;
@@ -78,7 +82,6 @@ import org.apache.directory.shared.ldap.codec.decorators.BindRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.BindResponseDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.CompareRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.CompareResponseDecorator;
-import org.apache.directory.shared.ldap.codec.decorators.DeleteRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.DeleteResponseDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.ExtendedRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.ExtendedResponseDecorator;
@@ -92,7 +95,6 @@ import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.SearchResultDoneDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.SearchResultEntryDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.SearchResultReferenceDecorator;
-import org.apache.directory.shared.ldap.codec.decorators.UnbindRequestDecorator;
 import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
@@ -109,7 +111,6 @@ import org.apache.directory.shared.ldap.model.message.CompareRequest;
 import org.apache.directory.shared.ldap.model.message.CompareRequestImpl;
 import org.apache.directory.shared.ldap.model.message.CompareResponseImpl;
 import org.apache.directory.shared.ldap.model.message.Control;
-import org.apache.directory.shared.ldap.model.message.DeleteRequestImpl;
 import org.apache.directory.shared.ldap.model.message.DeleteResponseImpl;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequestImpl;
@@ -133,7 +134,6 @@ import org.apache.directory.shared.ldap.model.message.SearchRequestImpl;
 import org.apache.directory.shared.ldap.model.message.SearchResultDoneImpl;
 import org.apache.directory.shared.ldap.model.message.SearchResultEntryImpl;
 import org.apache.directory.shared.ldap.model.message.SearchResultReferenceImpl;
-import org.apache.directory.shared.ldap.model.message.UnbindRequestImpl;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.name.Rdn;
 import org.apache.directory.shared.util.StringConstants;
@@ -146,14 +146,11 @@ import org.slf4j.LoggerFactory;
  * This class implements the LdapMessage message. All the actions are declared
  * in this class. As it is a singleton, these declaration are only done once. If
  * an action is to be added or modified, this is where the work is to be done !
- * 
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public final class LdapMessageGrammar extends AbstractGrammar
+public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageContainer<MessageDecorator<? extends Message>>>
 {
-    // ~ Static fields/initializers
-    // -----------------------------------------------------------------
-
     /** The logger */
     static final Logger LOG = LoggerFactory.getLogger( LdapMessageGrammar.class );
 
@@ -161,16 +158,11 @@ public final class LdapMessageGrammar extends AbstractGrammar
     static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
     /** The instance of grammar. LdapMessageGrammar is a singleton */
-    private static Grammar instance = new LdapMessageGrammar();
-
-
-    // ~ Constructors
-    // -------------------------------------------------------------------------------
+    private static Grammar<LdapMessageContainer<MessageDecorator<? extends Message>>> instance = new LdapMessageGrammar();
 
     /**
      * Creates a new LdapMessageGrammar object.
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     private LdapMessageGrammar()
     {
 
@@ -183,31 +175,16 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // Transition from START to LdapMessage
         // ============================================================================================
         // This is the starting state :
-        // LDAPMessage --> SEQUENCE { ... 
+        // LDAPMessage --> SEQUENCE { ...
         //
-        // We have a LDAPMessage, and the tag must be 0x30. 
+        // We have a LDAPMessage, and the tag must be 0x30.
         //
         // The next state will be LDAP_MESSAGE_STATE
         //
         // We will just check that the length is not null
-        super.transitions[LdapStatesEnum.START_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.START_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition<LdapMessageContainer<MessageDecorator<? extends Message>>>(
             LdapStatesEnum.START_STATE, LdapStatesEnum.LDAP_MESSAGE_STATE, UniversalTag.SEQUENCE.getValue(),
-            new GrammarAction<LdapMessageContainer<MessageDecorator<? extends Message>>>( "LdapMessage initialization" )
-            {
-                public void action( LdapMessageContainer<MessageDecorator<? extends Message>> container ) throws DecoderException
-                {
-                    TLV tlv = container.getCurrentTLV();
-
-                    // The Length should not be null
-                    if ( tlv.getLength() == 0 )
-                    {
-                        LOG.error( I18n.err( I18n.ERR_04066 ) );
-
-                        // This will generate a PROTOCOL_ERROR
-                        throw new DecoderException( I18n.err( I18n.ERR_04067 ) );
-                    }
-                }
-            } );
+            new InitLdapMessage() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from LdapMessage to Message ID
@@ -224,46 +201,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // into an object.
         super.transitions[LdapStatesEnum.LDAP_MESSAGE_STATE.ordinal()][UniversalTag.INTEGER.getValue()] = new GrammarTransition(
             LdapStatesEnum.LDAP_MESSAGE_STATE, LdapStatesEnum.MESSAGE_ID_STATE, UniversalTag.INTEGER.getValue(),
-            new GrammarAction<LdapMessageContainer<MessageDecorator<? extends Message>>>( "Store MessageId" )
-            {
-                public void action( LdapMessageContainer<MessageDecorator<? extends Message>> container ) throws DecoderException
-                {
-                    // The current TLV should be a integer
-                    // We get it and store it in MessageId
-                    TLV tlv = container.getCurrentTLV();
-
-                    // The Length should not be null
-                    if ( tlv.getLength() == 0 )
-                    {
-                        LOG.error( I18n.err( I18n.ERR_04068 ) );
-
-                        // This will generate a PROTOCOL_ERROR
-                        throw new DecoderException( I18n.err( I18n.ERR_04069 ) );
-                    }
-
-                    Value value = tlv.getValue();
-
-                    try
-                    {
-                        int messageId = IntegerDecoder.parse( value, 0, Integer.MAX_VALUE );
-
-                        container.setMessageId( messageId );
-
-                        if ( IS_DEBUG )
-                        {
-                            LOG.debug( "Ldap Message Id has been decoded : " + messageId );
-                        }
-                    }
-                    catch ( IntegerDecoderException ide )
-                    {
-                        LOG.error( I18n.err( I18n.ERR_04070, Strings.dumpBytes(value.getData()), ide
-                            .getLocalizedMessage() ) );
-
-                        // This will generate a PROTOCOL_ERROR                        
-                        throw new DecoderException( ide.getMessage() );
-                    }
-                }
-            } );
+            new StoreMessageId() );
 
         // ********************************************************************************************
         // We have a ProtocolOp :
@@ -296,34 +234,9 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // --------------------------------------------------------------------------------------------
         // LdapMessage ::= ... UnBindRequest ...
         // unbindRequest ::= [APPLICATION 2] NULL
-        // We have to switch to the UnBindRequest grammar
         super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.UNBIND_REQUEST_TAG] = new GrammarTransition(
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.UNBIND_REQUEST_STATE, LdapConstants.UNBIND_REQUEST_TAG,
-            new GrammarAction<LdapMessageContainer<UnbindRequestDecorator>>( "Unbind Request initialization" )
-            {
-                public void action( LdapMessageContainer<UnbindRequestDecorator> container ) throws DecoderException
-                {
-                    // Create the UnbindRequest LdapMessage instance and store it in the container
-                    UnbindRequestDecorator unbindRequest = new UnbindRequestDecorator( 
-                        container.getLdapCodecService(), new UnbindRequestImpl( container.getMessageId() ) );
-                    container.setMessage( unbindRequest );
-
-                    TLV tlv = container.getCurrentTLV();
-                    int expectedLength = tlv.getLength();
-
-                    // The Length should be null
-                    if ( expectedLength != 0 )
-                    {
-                        LOG.error( I18n.err( I18n.ERR_04071, Integer.valueOf( expectedLength ) ) );
-
-                        // This will generate a PROTOCOL_ERROR
-                        throw new DecoderException( I18n.err( I18n.ERR_04072 ) );
-                    }
-
-                    // We can quit now
-                    container.setGrammarEndAllowed( true );
-                }
-            } );
+            new InitUnbindRequest() );
 
         // --------------------------------------------------------------------------------------------
         // transition from UnBindRequest Message to Controls.
@@ -345,60 +258,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // We store the Dn to bve deleted into the DelRequest object
         super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.DEL_REQUEST_TAG] = new GrammarTransition(
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.DEL_REQUEST_STATE, LdapConstants.DEL_REQUEST_TAG,
-            new GrammarAction<LdapMessageContainer<DeleteRequestDecorator>>( "Init del Request" )
-            {
-                public void action( LdapMessageContainer<DeleteRequestDecorator> container ) throws DecoderException
-                {
-                    // Create the DeleteRequest LdapMessage instance and store it in the container
-                    DeleteRequestDecorator delRequest = new DeleteRequestDecorator( 
-                        container.getLdapCodecService(), new DeleteRequestImpl( container.getMessageId() ) );
-                    container.setMessage( delRequest );
-
-                    // And store the Dn into it
-                    // Get the Value and store it in the DelRequest
-                    TLV tlv = container.getCurrentTLV();
-
-                    // We have to handle the special case of a 0 length matched
-                    // Dn
-                    Dn entry = null;
-
-                    if ( tlv.getLength() == 0 )
-                    {
-                        // This will generate a PROTOCOL_ERROR
-                        throw new DecoderException( I18n.err( I18n.ERR_04073 ) );
-                    }
-                    else
-                    {
-                        byte[] dnBytes = tlv.getValue().getData();
-                        String dnStr = Strings.utf8ToString(dnBytes);
-
-                        try
-                        {
-                            entry = new Dn( dnStr );
-                        }
-                        catch ( LdapInvalidDnException ine )
-                        {
-                            String msg = I18n.err( I18n.ERR_04074, dnStr, Strings.dumpBytes(dnBytes), ine
-                                .getLocalizedMessage() );
-                            LOG.error( msg );
-
-                            DeleteResponseImpl response = new DeleteResponseImpl( delRequest.getMessageId() );
-                            throw new ResponseCarryingException( msg, response, ResultCodeEnum.INVALID_DN_SYNTAX,
-                                Dn.EMPTY_DN, ine );
-                        }
-
-                        delRequest.setName( entry );
-                    }
-
-                    // We can have an END transition
-                    container.setGrammarEndAllowed( true );
-
-                    if ( IS_DEBUG )
-                    {
-                        LOG.debug( "Deleting Dn {}", entry );
-                    }
-                }
-            } );
+            new InitDelRequest() );
 
         // --------------------------------------------------------------------------------------------
         // transition from DelRequest Message to Controls.
@@ -425,7 +285,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                 public void action( LdapMessageContainer<AbandonRequestDecorator> container ) throws DecoderException
                 {
                     // Create the AbandonRequest LdapMessage instance and store it in the container
-                    AbandonRequestDecorator abandonRequest = new AbandonRequestDecorator( 
+                    AbandonRequestDecorator abandonRequest = new AbandonRequestDecorator(
                         container.getLdapCodecService(), new AbandonRequestImpl( container.getMessageId() ) );
                     container.setMessage( abandonRequest );
 
@@ -497,7 +357,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                 public void action( LdapMessageContainer<BindRequestDecorator> container ) throws DecoderException
                 {
                     // Create the BindRequest LdapMessage instance and store it in the container
-                    BindRequestDecorator bindRequest = new BindRequestDecorator( 
+                    BindRequestDecorator bindRequest = new BindRequestDecorator(
                         container.getLdapCodecService(), new BindRequestImpl( container.getMessageId() ) );
                     container.setMessage( bindRequest );
 
@@ -569,7 +429,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //
         // The Ldap version is parsed and stored into the BindRequest object
         super.transitions[LdapStatesEnum.VERSION_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.VERSION_STATE, LdapStatesEnum.NAME_STATE, UniversalTag.OCTET_STRING.getValue(), 
+            LdapStatesEnum.VERSION_STATE, LdapStatesEnum.NAME_STATE, UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction<LdapMessageContainer<BindRequestDecorator>>( "Store Bind Name value" )
             {
                 public void action( LdapMessageContainer<BindRequestDecorator> container ) throws DecoderException
@@ -815,7 +675,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
             new ControlsInitAction() );
 
         // --------------------------------------------------------------------------------------------
-        // Transition from MessageId to BindResponse message 
+        // Transition from MessageId to BindResponse message
         // --------------------------------------------------------------------------------------------
         // LdapMessage ::= ... BindResponse ...
         // BindResponse ::= [APPLICATION 1] SEQUENCE { ...
@@ -827,23 +687,23 @@ public final class LdapMessageGrammar extends AbstractGrammar
                 public void action( LdapMessageContainer<BindResponseDecorator> container )
                 {
                     // Now, we can allocate the BindResponse Object
-                    BindResponseDecorator bindResponse = new BindResponseDecorator( 
+                    BindResponseDecorator bindResponse = new BindResponseDecorator(
                         container.getLdapCodecService(), new BindResponseImpl( container.getMessageId() ) );
                     container.setMessage( bindResponse );
                 }
             } );
 
         // --------------------------------------------------------------------------------------------
-        // Transition from BindResponse message to Result Code BR 
+        // Transition from BindResponse message to Result Code BR
         // --------------------------------------------------------------------------------------------
         // BindResponse ::= [APPLICATION 1] SEQUENCE {
         //     COMPONENTS OF LDAPResult,
         //     ...
         //
         // LDAPResult ::= SEQUENCE {
-        //     resultCode ENUMERATED { 
+        //     resultCode ENUMERATED {
         //         ...
-        // 
+        //
         // Stores the result code into the Bind Response object
         super.transitions[LdapStatesEnum.BIND_RESPONSE_STATE.ordinal()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
             LdapStatesEnum.BIND_RESPONSE_STATE, LdapStatesEnum.RESULT_CODE_BR_STATE, UniversalTag.ENUMERATED.getValue(),
@@ -876,31 +736,31 @@ public final class LdapMessageGrammar extends AbstractGrammar
             new ErrorMessageAction() );
 
         // --------------------------------------------------------------------------------------------
-        // Transition from Error Message BR to Server SASL credentials 
+        // Transition from Error Message BR to Server SASL credentials
         // --------------------------------------------------------------------------------------------
         // BindResponse ::= APPLICATION 1] SEQUENCE {
         //     ...
         //     serverSaslCreds [7] OCTET STRING OPTIONAL }
         //
-        // Stores the sasl credentials 
+        // Stores the sasl credentials
         super.transitions[LdapStatesEnum.ERROR_MESSAGE_BR_STATE.ordinal()][LdapConstants.SERVER_SASL_CREDENTIAL_TAG] = new GrammarTransition(
             LdapStatesEnum.ERROR_MESSAGE_BR_STATE, LdapStatesEnum.SERVER_SASL_CREDENTIALS_STATE,
             LdapConstants.SERVER_SASL_CREDENTIAL_TAG, new ServerSASLCredsAction() );
 
         // --------------------------------------------------------------------------------------------
-        // Transition from Error Message BR to Referrals BR 
+        // Transition from Error Message BR to Referrals BR
         // --------------------------------------------------------------------------------------------
         // LDAPResult ::= SEQUENCE {
         //     ...
         //     referral   [3] Referral OPTIONNAL }
         //
-        // Initialiaze the referrals list 
+        // Initialiaze the referrals list
         super.transitions[LdapStatesEnum.ERROR_MESSAGE_BR_STATE.ordinal()][LdapConstants.LDAP_RESULT_REFERRAL_SEQUENCE_TAG] = new GrammarTransition(
             LdapStatesEnum.ERROR_MESSAGE_BR_STATE, LdapStatesEnum.REFERRALS_BR_STATE,
             LdapConstants.LDAP_RESULT_REFERRAL_SEQUENCE_TAG, new InitReferralsAction() );
 
         // --------------------------------------------------------------------------------------------
-        // Transition from Referrals BR to Referral BR 
+        // Transition from Referrals BR to Referral BR
         // --------------------------------------------------------------------------------------------
         // Referral ::= SEQUENCE SIZE (1..MAX) OF uri URI (RFC 4511)
         // URI ::= LDAPString
@@ -911,7 +771,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
             new ReferralAction() );
 
         // --------------------------------------------------------------------------------------------
-        // Transition from Referral BR to Referral BR 
+        // Transition from Referral BR to Referral BR
         // --------------------------------------------------------------------------------------------
         // Referral ::= SEQUENCE SIZE (1..MAX) OF uri URI (RFC 4511)
         // URI ::= LDAPString
@@ -922,7 +782,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
             new ReferralAction() );
 
         // --------------------------------------------------------------------------------------------
-        // Transition from Referral BR to Server SASL Credentials 
+        // Transition from Referral BR to Server SASL Credentials
         // --------------------------------------------------------------------------------------------
         // Referral ::= SEQUENCE SIZE (1..MAX) OF uri URI (RFC 4511)
         // URI ::= LDAPString
@@ -933,7 +793,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
             LdapConstants.SERVER_SASL_CREDENTIAL_TAG, new ServerSASLCredsAction() );
 
         // --------------------------------------------------------------------------------------------
-        // Transition from Referral BR to Controls 
+        // Transition from Referral BR to Controls
         // --------------------------------------------------------------------------------------------
         //         bindResponse   BindResponse,
         //         ... },
@@ -945,19 +805,19 @@ public final class LdapMessageGrammar extends AbstractGrammar
             new ControlsInitAction() );
 
         // --------------------------------------------------------------------------------------------
-        // Transition from Error Message BR to controls 
+        // Transition from Error Message BR to controls
         // --------------------------------------------------------------------------------------------
         //         bindResponse   BindResponse,
         //         ... },
         //     controls       [0] Controls OPTIONAL }
         //
-        //  
+        //
         super.transitions[LdapStatesEnum.ERROR_MESSAGE_BR_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.ERROR_MESSAGE_BR_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
             new ControlsInitAction() );
 
         // --------------------------------------------------------------------------------------------
-        // Transition from Server SASL credentials to Controls 
+        // Transition from Server SASL credentials to Controls
         // --------------------------------------------------------------------------------------------
         //         bindResponse   BindResponse,
         //         ... },
@@ -1000,7 +860,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //     referral   [3] Referral OPTIONNAL }
         //
-        // Initialize the referrals list 
+        // Initialize the referrals list
         super.transitions[LdapStatesEnum.ERROR_MESSAGE_STATE.ordinal()][LdapConstants.LDAP_RESULT_REFERRAL_SEQUENCE_TAG] = new GrammarTransition(
             LdapStatesEnum.ERROR_MESSAGE_STATE, LdapStatesEnum.REFERRALS_STATE,
             LdapConstants.LDAP_RESULT_REFERRAL_SEQUENCE_TAG, new GrammarAction<LdapMessageContainer<MessageDecorator<? extends Message>>>( "Init referrals list" )
@@ -1030,7 +890,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
             } );
 
         // --------------------------------------------------------------------------------------------
-        // Transition from Referrals to Referral 
+        // Transition from Referrals to Referral
         // --------------------------------------------------------------------------------------------
         // Referral ::= SEQUENCE SIZE (1..MAX) OF uri URI (RFC 4511)
         // URI ::= LDAPString
@@ -1041,7 +901,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
             new ReferralAction() );
 
         // --------------------------------------------------------------------------------------------
-        // Transition from Referral to Referral 
+        // Transition from Referral to Referral
         // --------------------------------------------------------------------------------------------
         // Referral ::= SEQUENCE SIZE (1..MAX) OF uri URI (RFC 4511)
         // URI ::= LDAPString
@@ -1052,7 +912,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
             new ReferralAction() );
 
         // --------------------------------------------------------------------------------------------
-        // Transition from Referral to Controls 
+        // Transition from Referral to Controls
         // --------------------------------------------------------------------------------------------
         //         xxxResponse   xxxResponse,
         //         ... },
@@ -1064,13 +924,13 @@ public final class LdapMessageGrammar extends AbstractGrammar
             new ControlsInitAction() );
 
         // --------------------------------------------------------------------------------------------
-        // Transition from Error Message to controls 
+        // Transition from Error Message to controls
         // --------------------------------------------------------------------------------------------
         //         xxxResponse   xxxResponse,
         //         ... },
         //     controls       [0] Controls OPTIONAL }
         //
-        //  
+        //
         super.transitions[LdapStatesEnum.ERROR_MESSAGE_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.ERROR_MESSAGE_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
             new ControlsInitAction() );
@@ -1089,7 +949,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                 public void action( LdapMessageContainer<MessageDecorator<? extends Message>> container )
                 {
                     // Now, we can allocate the SearchResultEntry Object
-                    SearchResultEntryDecorator searchResultEntry = new SearchResultEntryDecorator( 
+                    SearchResultEntryDecorator searchResultEntry = new SearchResultEntryDecorator(
                         container.getLdapCodecService(), new SearchResultEntryImpl( container.getMessageId() ) );
                     container.setMessage( searchResultEntry );
                 }
@@ -1265,7 +1125,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //
         // We may have no value. Just allows the grammar to end
         super.transitions[LdapStatesEnum.TYPE_SR_STATE.ordinal()][UniversalTag.SET.getValue()] = new GrammarTransition(
-            LdapStatesEnum.TYPE_SR_STATE, LdapStatesEnum.VALS_SR_STATE, UniversalTag.SET.getValue(), 
+            LdapStatesEnum.TYPE_SR_STATE, LdapStatesEnum.VALS_SR_STATE, UniversalTag.SET.getValue(),
             new GrammarAction<LdapMessageContainer<MessageDecorator<? extends Message>>>( "Grammar end allowed" )
             {
                 public void action( LdapMessageContainer<MessageDecorator<? extends Message>> container ) throws DecoderException
@@ -1282,7 +1142,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     vals SET OF AttributeValue }
         //
         // AttributeValue ::= OCTET STRING
-        // 
+        //
         // Store the attribute value
         super.transitions[LdapStatesEnum.VALS_SR_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.VALS_SR_STATE, LdapStatesEnum.ATTRIBUTE_VALUE_SR_STATE, UniversalTag.OCTET_STRING.getValue(),
@@ -1294,7 +1154,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // PartialAttributeList ::= SEQUENCE OF SEQUENCE {
         //     ...
         //     vals SET OF AttributeValue }
-        // 
+        //
         // Loop when we don't have any attribute value. Nothing to do
         super.transitions[LdapStatesEnum.VALS_SR_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
             LdapStatesEnum.VALS_SR_STATE, LdapStatesEnum.PARTIAL_ATTRIBUTES_LIST_STATE, UniversalTag.SEQUENCE.getValue(), null );
@@ -1312,14 +1172,14 @@ public final class LdapMessageGrammar extends AbstractGrammar
             new ControlsInitAction() );
 
         // --------------------------------------------------------------------------------------------
-        // Transition from AttributeValueSR to AttributeValueSR 
+        // Transition from AttributeValueSR to AttributeValueSR
         // --------------------------------------------------------------------------------------------
         // PartialAttributeList ::= SEQUENCE OF SEQUENCE {
         //     ...
         //     vals SET OF AttributeValue }
         //
         // AttributeValue ::= OCTET STRING
-        // 
+        //
         // Store the attribute value
         super.transitions[LdapStatesEnum.ATTRIBUTE_VALUE_SR_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.ATTRIBUTE_VALUE_SR_STATE, LdapStatesEnum.ATTRIBUTE_VALUE_SR_STATE,
@@ -1331,7 +1191,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // PartialAttributeList ::= SEQUENCE OF SEQUENCE {
         //     ...
         //     vals SET OF AttributeValue }
-        // 
+        //
         // Loop when we don't have any attribute value. Nothing to do
         super.transitions[LdapStatesEnum.ATTRIBUTE_VALUE_SR_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
             LdapStatesEnum.ATTRIBUTE_VALUE_SR_STATE, LdapStatesEnum.PARTIAL_ATTRIBUTES_LIST_STATE,
@@ -1354,7 +1214,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // --------------------------------------------------------------------------------------------
         // LdapMessage ::= ... SearchResultDone ...
         // SearchResultDone ::= [APPLICATION 5] SEQUENCE { ...
-        // 
+        //
         super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.SEARCH_RESULT_DONE_TAG] = new GrammarTransition(
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.SEARCH_RESULT_DONE_STATE,
             LdapConstants.SEARCH_RESULT_DONE_TAG, new GrammarAction<LdapMessageContainer<SearchResultDoneDecorator>>( "Init search Result Done" )
@@ -1362,7 +1222,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                 public void action( LdapMessageContainer<SearchResultDoneDecorator> container )
                 {
                     // Now, we can allocate the SearchResultDone Object
-                    SearchResultDoneDecorator searchResultDone = new SearchResultDoneDecorator( 
+                    SearchResultDoneDecorator searchResultDone = new SearchResultDoneDecorator(
                         container.getLdapCodecService(), new SearchResultDoneImpl( container.getMessageId() ) );
                     container.setMessage( searchResultDone );
 
@@ -1379,7 +1239,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // LDAPResult ::= SEQUENCE {
         //     resultCode    ENUMERATED {
         //         ...
-        // 
+        //
         // Stores the result code
         super.transitions[LdapStatesEnum.SEARCH_RESULT_DONE_STATE.ordinal()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
             LdapStatesEnum.SEARCH_RESULT_DONE_STATE, LdapStatesEnum.RESULT_CODE_STATE, UniversalTag.ENUMERATED.getValue(),
@@ -1400,7 +1260,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                 {
                     // Now, we can allocate the ModifyRequest Object
                     ModifyRequest modifyRequest = new ModifyRequestImpl( container.getMessageId() );
-                    ModifyRequestDecorator modifyRequestDecorator = new ModifyRequestDecorator( 
+                    ModifyRequestDecorator modifyRequestDecorator = new ModifyRequestDecorator(
                         container.getLdapCodecService(), modifyRequest );
                     container.setMessage( modifyRequestDecorator );
                 }
@@ -1430,7 +1290,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     // Store the value.
                     if ( tlv.getLength() == 0 )
                     {
-                        ((ModifyRequest)modifyRequestDecorator.getDecorated()).setName( object );
+                        (modifyRequestDecorator.getDecorated()).setName( object );
                     }
                     else
                     {
@@ -1627,7 +1487,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //
         // Initialize the list of values
         super.transitions[LdapStatesEnum.TYPE_MOD_STATE.ordinal()][UniversalTag.SET.getValue()] = new GrammarTransition(
-            LdapStatesEnum.TYPE_MOD_STATE, LdapStatesEnum.VALS_STATE, UniversalTag.SET.getValue(), 
+            LdapStatesEnum.TYPE_MOD_STATE, LdapStatesEnum.VALS_STATE, UniversalTag.SET.getValue(),
             new GrammarAction<LdapMessageContainer<MessageDecorator<? extends Message>>>( "Init Attribute vals" )
             {
                 public void action( LdapMessageContainer<MessageDecorator<? extends Message>> container )
@@ -1763,7 +1623,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                 public void action( LdapMessageContainer<ModifyResponseDecorator> container )
                 {
                     // Now, we can allocate the ModifyResponse Object
-                    ModifyResponseDecorator modifyResponse = new ModifyResponseDecorator( 
+                    ModifyResponseDecorator modifyResponse = new ModifyResponseDecorator(
                         container.getLdapCodecService(), new ModifyResponseImpl( container.getMessageId() ) );
                     container.setMessage( modifyResponse );
 
@@ -1780,7 +1640,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // LDAPResult ::= SEQUENCE {
         //     resultCode    ENUMERATED {
         //         ...
-        // 
+        //
         // Stores the result code
         super.transitions[LdapStatesEnum.MODIFY_RESPONSE_STATE.ordinal()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
             LdapStatesEnum.MODIFY_RESPONSE_STATE, LdapStatesEnum.RESULT_CODE_STATE, UniversalTag.ENUMERATED.getValue(),
@@ -1801,7 +1661,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                 {
                     // Now, we can allocate the AddRequest Object
                     int messageId = container.getMessageId();
-                    AddRequestDecorator addRequest = new AddRequestDecorator( 
+                    AddRequestDecorator addRequest = new AddRequestDecorator(
                         container.getLdapCodecService(), new AddRequestImpl( messageId ) );
                     container.setMessage( addRequest );
 
@@ -1885,7 +1745,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //    attributes AttributeList }
         //
-        // AttributeList ::= SEQUENCE OF ... 
+        // AttributeList ::= SEQUENCE OF ...
         //
         // Initialize the attribute list
         super.transitions[LdapStatesEnum.ENTRY_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
@@ -2016,7 +1876,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // --------------------------------------------------------------------------------------------
         // LdapMessage ::= ... AddResponse ...
         // AddResponse ::= [APPLICATION 9] LDAPResult
-        // 
+        //
         super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.ADD_RESPONSE_TAG] = new GrammarTransition(
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.ADD_RESPONSE_STATE, LdapConstants.ADD_RESPONSE_TAG,
             new GrammarAction<LdapMessageContainer<AddResponseDecorator>>( "Init AddResponse" )
@@ -2024,7 +1884,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                 public void action( LdapMessageContainer<AddResponseDecorator> container ) throws DecoderException
                 {
                     // Now, we can allocate the AddResponse Object
-                    AddResponseDecorator addResponse = new AddResponseDecorator( 
+                    AddResponseDecorator addResponse = new AddResponseDecorator(
                         container.getLdapCodecService(), new AddResponseImpl( container.getMessageId() ) );
                     container.setMessage( addResponse );
 
@@ -2053,7 +1913,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // LDAPResult ::= SEQUENCE {
         //     resultCode    ENUMERATED {
         //         ...
-        // 
+        //
         // Stores the result code
         super.transitions[LdapStatesEnum.ADD_RESPONSE_STATE.ordinal()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
             LdapStatesEnum.ADD_RESPONSE_STATE, LdapStatesEnum.RESULT_CODE_STATE, UniversalTag.ENUMERATED.getValue(),
@@ -2072,7 +1932,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                 public void action( LdapMessageContainer<DeleteResponseDecorator> container )
                 {
                     // Now, we can allocate the DelResponse Object
-                    DeleteResponseDecorator delResponse = new DeleteResponseDecorator( 
+                    DeleteResponseDecorator delResponse = new DeleteResponseDecorator(
                         container.getLdapCodecService(), new DeleteResponseImpl( container.getMessageId() ) );
                     container.setMessage( delResponse );
 
@@ -2089,7 +1949,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // LDAPResult ::= SEQUENCE {
         //     resultCode    ENUMERATED {
         //         ...
-        // 
+        //
         // Stores the result code
         super.transitions[LdapStatesEnum.DEL_RESPONSE_STATE.ordinal()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
             LdapStatesEnum.DEL_RESPONSE_STATE, LdapStatesEnum.RESULT_CODE_STATE, UniversalTag.ENUMERATED.getValue(),
@@ -2109,7 +1969,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                 public void action( LdapMessageContainer<ModifyDnRequestDecorator> container )
                 {
                     // Now, we can allocate the ModifyDNRequest Object
-                    ModifyDnRequestDecorator modifyDnRequest = new ModifyDnRequestDecorator( 
+                    ModifyDnRequestDecorator modifyDnRequest = new ModifyDnRequestDecorator(
                         container.getLdapCodecService(), new ModifyDnRequestImpl( container.getMessageId() ) );
                     container.setMessage( modifyDnRequest );
 
@@ -2277,7 +2137,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                         LOG.error( I18n
                             .err( I18n.ERR_04091, Strings.dumpBytes(value.getData()), bde.getMessage() ) );
 
-                        // This will generate a PROTOCOL_ERROR                        
+                        // This will generate a PROTOCOL_ERROR
                         throw new DecoderException( bde.getMessage() );
                     }
 
@@ -2308,7 +2168,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // Stores the new superior
         super.transitions[LdapStatesEnum.DELETE_OLD_RDN_STATE.ordinal()][LdapConstants.MODIFY_DN_REQUEST_NEW_SUPERIOR_TAG] = new GrammarTransition(
             LdapStatesEnum.DELETE_OLD_RDN_STATE, LdapStatesEnum.NEW_SUPERIOR_STATE,
-            LdapConstants.MODIFY_DN_REQUEST_NEW_SUPERIOR_TAG, 
+            LdapConstants.MODIFY_DN_REQUEST_NEW_SUPERIOR_TAG,
             new GrammarAction<LdapMessageContainer<ModifyDnRequestDecorator>>( "Store new superior" )
             {
                 public void action( LdapMessageContainer<ModifyDnRequestDecorator> container ) throws DecoderException
@@ -2408,7 +2268,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                 public void action( LdapMessageContainer<ModifyDnResponseDecorator> container )
                 {
                     // Now, we can allocate the ModifyDnResponse Object
-                    ModifyDnResponseDecorator modifyDnResponse = new ModifyDnResponseDecorator( 
+                    ModifyDnResponseDecorator modifyDnResponse = new ModifyDnResponseDecorator(
                         container.getLdapCodecService(), new ModifyDnResponseImpl( container.getMessageId() ) );
                     container.setMessage( modifyDnResponse );
 
@@ -2425,7 +2285,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // LDAPResult ::= SEQUENCE {
         //     resultCode    ENUMERATED {
         //         ...
-        // 
+        //
         // Stores the result co        //     modifyDNRequest ModifyDNRequest,
         //     ... },
         // controls   [0] Controls OPTIONAL }
@@ -2437,11 +2297,11 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // Transition from Message ID to CompareResquest
         // --------------------------------------------------------------------------------------------
         // LdapMessage ::= ... CompareRequest ...
-        // 
+        //
         // CompareRequest ::= [APPLICATION 14] SEQUENCE {
         // ...
         //
-        // Initialize the Compare Request object 
+        // Initialize the Compare Request object
         super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.COMPARE_REQUEST_TAG] = new GrammarTransition(
             LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.COMPARE_REQUEST_STATE, LdapConstants.COMPARE_REQUEST_TAG,
             new GrammarAction<LdapMessageContainer<CompareRequestDecorator>>( "Init Compare Request" )
@@ -2449,7 +2309,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                 public void action( LdapMessageContainer<CompareRequestDecorator> container )
                 {
                     // Now, we can allocate the CompareRequest Object
-                    CompareRequestDecorator compareRequest = new CompareRequestDecorator( 
+                    CompareRequestDecorator compareRequest = new CompareRequestDecorator(
                         container.getLdapCodecService(), new CompareRequestImpl( container.getMessageId() ) );
                     container.setMessage( compareRequest );
 
@@ -2522,7 +2382,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ava AttributeValueAssertion }
         //
         // AttributeValueAssertion ::= SEQUENCE {
-        // 
+        //
         // Nothing to do
         super.transitions[LdapStatesEnum.ENTRY_COMP_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
             LdapStatesEnum.ENTRY_COMP_STATE, LdapStatesEnum.AVA_STATE, UniversalTag.SEQUENCE.getValue(), null );
@@ -2535,7 +2395,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //
         // AttributeDescription LDAPString
-        // 
+        //
         // Stores the attribute description
         super.transitions[LdapStatesEnum.AVA_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.AVA_STATE, LdapStatesEnum.ATTRIBUTE_DESC_STATE, UniversalTag.OCTET_STRING.getValue(),
@@ -2579,7 +2439,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     assertionValue AssertionValue }
         //
         // AssertionValue OCTET STRING
-        // 
+        //
         // Stores the attribute value
         super.transitions[LdapStatesEnum.ATTRIBUTE_DESC_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.ATTRIBUTE_DESC_STATE, LdapStatesEnum.ASSERTION_VALUE_STATE, UniversalTag.OCTET_STRING.getValue(),
@@ -2634,7 +2494,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     assertionValue AssertionValue }
         //
         // AssertionValue OCTET STRING
-        // 
+        //
         // Stores the attribute value
         super.transitions[LdapStatesEnum.ASSERTION_VALUE_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.ASSERTION_VALUE_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
@@ -2653,7 +2513,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                 public void action( LdapMessageContainer<CompareResponseDecorator> container ) throws DecoderException
                 {
                     // Now, we can allocate the CompareResponse Object
-                    CompareResponseDecorator compareResponse = new CompareResponseDecorator( 
+                    CompareResponseDecorator compareResponse = new CompareResponseDecorator(
                         container.getLdapCodecService(), new CompareResponseImpl( container.getMessageId() ) );
                     container.setMessage( compareResponse );
 
@@ -2680,7 +2540,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // LDAPResult ::= SEQUENCE {
         //     resultCode    ENUMERATED {
         //         ...
-        // 
+        //
         // Stores the result code
         super.transitions[LdapStatesEnum.COMPARE_RESPONSE_STATE.ordinal()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
             LdapStatesEnum.COMPARE_RESPONSE_STATE, LdapStatesEnum.RESULT_CODE_STATE, UniversalTag.ENUMERATED.getValue(),
@@ -2700,7 +2560,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                 public void action( LdapMessageContainer<SearchResultReferenceDecorator> container ) throws DecoderException
                 {
                     // Now, we can allocate the SearchResultReference Object
-                    SearchResultReferenceDecorator searchResultReference = new SearchResultReferenceDecorator( 
+                    SearchResultReferenceDecorator searchResultReference = new SearchResultReferenceDecorator(
                         container.getLdapCodecService(), new SearchResultReferenceImpl( container.getMessageId() ) );
                     container.setMessage( searchResultReference );
 
@@ -2756,7 +2616,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                 public void action( LdapMessageContainer<ExtendedRequestDecorator> container ) throws DecoderException
                 {
                     // Now, we can allocate the ExtendedRequest Object
-                    ExtendedRequestDecorator extendedRequest = new ExtendedRequestDecorator( 
+                    ExtendedRequestDecorator extendedRequest = new ExtendedRequestDecorator(
                         container.getLdapCodecService(), new ExtendedRequestImpl( container.getMessageId() ) );
                     container.setMessage( extendedRequest );
 
@@ -2790,7 +2650,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     {
                         String msg = I18n.err( I18n.ERR_04095 );
                         LOG.error( msg );
-                        // This will generate a PROTOCOL_ERROR                        
+                        // This will generate a PROTOCOL_ERROR
                         throw new DecoderException( msg );
                     }
                     else
@@ -2916,7 +2776,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                 public void action( LdapMessageContainer<ExtendedResponseDecorator> container ) throws DecoderException
                 {
                     // Now, we can allocate the ExtendedResponse Object
-                    ExtendedResponseDecorator extendedResponse = new ExtendedResponseDecorator( 
+                    ExtendedResponseDecorator extendedResponse = new ExtendedResponseDecorator(
                         container.getLdapCodecService(), new ExtendedResponseImpl( container.getMessageId() ) );
                     container.setMessage( extendedResponse );
 
@@ -2945,7 +2805,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     COMPONENTS OF LDAPResult,
         //     ...
         //
-        // 
+        //
         super.transitions[LdapStatesEnum.RESULT_CODE_ER_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.RESULT_CODE_ER_STATE, LdapStatesEnum.MATCHED_DN_ER_STATE, UniversalTag.OCTET_STRING.getValue(),
             new MatchedDNAction() );
@@ -2958,26 +2818,26 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     COMPONENTS OF LDAPResult,
         //     ...
         //
-        // 
+        //
         super.transitions[LdapStatesEnum.MATCHED_DN_ER_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.MATCHED_DN_ER_STATE, LdapStatesEnum.ERROR_MESSAGE_ER_STATE, UniversalTag.OCTET_STRING.getValue(),
             new ErrorMessageAction() );
 
         // --------------------------------------------------------------------------------------------
-        // Transition from Error Message ER to Referrals ER 
+        // Transition from Error Message ER to Referrals ER
         // --------------------------------------------------------------------------------------------
         // LdapMessage ::= ... ExtendedResponse ...
         // ExtendedResponse ::= [APPLICATION 24] SEQUENCE {
         //     COMPONENTS OF LDAPResult,
         //     ...
         //
-        // 
+        //
         super.transitions[LdapStatesEnum.ERROR_MESSAGE_ER_STATE.ordinal()][LdapConstants.LDAP_RESULT_REFERRAL_SEQUENCE_TAG] = new GrammarTransition(
             LdapStatesEnum.ERROR_MESSAGE_ER_STATE, LdapStatesEnum.REFERRALS_ER_STATE,
             LdapConstants.LDAP_RESULT_REFERRAL_SEQUENCE_TAG, new InitReferralsAction() );
 
         // --------------------------------------------------------------------------------------------
-        // Transition from Referrals ER to Referral ER 
+        // Transition from Referrals ER to Referral ER
         // --------------------------------------------------------------------------------------------
         // Referral ::= SEQUENCE SIZE (1..MAX) OF uri URI (RFC 4511)
         // URI ::= LDAPString
@@ -2988,7 +2848,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
             new ReferralAction() );
 
         // --------------------------------------------------------------------------------------------
-        // Transition from Referral ER to Referral ER 
+        // Transition from Referral ER to Referral ER
         // --------------------------------------------------------------------------------------------
         // Referral ::= SEQUENCE SIZE (1..MAX) OF uri URI (RFC 4511)
         // URI ::= LDAPString
@@ -2999,7 +2859,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
             new ReferralAction() );
 
         // --------------------------------------------------------------------------------------------
-        // Transition from Referral ER to ResponseName 
+        // Transition from Referral ER to ResponseName
         // --------------------------------------------------------------------------------------------
         // Referral ::= SEQUENCE SIZE (1..MAX) OF uri URI (RFC 4511)
         // URI ::= LDAPString
@@ -3010,7 +2870,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
             LdapConstants.EXTENDED_RESPONSE_RESPONSE_NAME_TAG, new ResponseNameAction() );
 
         // --------------------------------------------------------------------------------------------
-        // Transition from Referral ER to Response 
+        // Transition from Referral ER to Response
         // --------------------------------------------------------------------------------------------
         // Referral ::= SEQUENCE SIZE (1..MAX) OF uri URI (RFC 4511)
         // URI ::= LDAPString
@@ -3021,7 +2881,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
             LdapConstants.EXTENDED_RESPONSE_RESPONSE_TAG, new ResponseAction() );
 
         // --------------------------------------------------------------------------------------------
-        // Transition from Referral ER to Controls 
+        // Transition from Referral ER to Controls
         // --------------------------------------------------------------------------------------------
         //         extendedResponse   ExtendedResponse,
         //         ... },
@@ -3033,20 +2893,20 @@ public final class LdapMessageGrammar extends AbstractGrammar
             new ControlsInitAction() );
 
         // --------------------------------------------------------------------------------------------
-        // Transition from Error Message ER to Controls 
+        // Transition from Error Message ER to Controls
         // --------------------------------------------------------------------------------------------
         // LdapMessage ::= ... ExtendedResponse ...
         // ExtendedResponse ::= [APPLICATION 24] SEQUENCE {
         //     COMPONENTS OF LDAPResult,
         //     ...
         //
-        // 
+        //
         super.transitions[LdapStatesEnum.ERROR_MESSAGE_ER_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.ERROR_MESSAGE_ER_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
             new ControlsInitAction() );
 
         // --------------------------------------------------------------------------------------------
-        // Transition from Error Message ER to ResponseName 
+        // Transition from Error Message ER to ResponseName
         // --------------------------------------------------------------------------------------------
         // LdapMessage ::= ... ExtendedResponse ...
         // ExtendedResponse ::= [APPLICATION 24] SEQUENCE {
@@ -3060,7 +2920,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
             LdapConstants.EXTENDED_RESPONSE_RESPONSE_NAME_TAG, new ResponseNameAction() );
 
         // --------------------------------------------------------------------------------------------
-        // Transition from Response Name to Response 
+        // Transition from Response Name to Response
         // --------------------------------------------------------------------------------------------
         // LdapMessage ::= ... ExtendedResponse ...
         // ExtendedResponse ::= [APPLICATION 24] SEQUENCE {
@@ -3074,7 +2934,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
             LdapConstants.EXTENDED_RESPONSE_RESPONSE_TAG, new ResponseAction() );
 
         // --------------------------------------------------------------------------------------------
-        // Transition from ResponseName to Controls 
+        // Transition from ResponseName to Controls
         // --------------------------------------------------------------------------------------------
         //         extendedRequest   EtendedRequest,
         //         ... },
@@ -3086,7 +2946,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
             new ControlsInitAction() );
 
         // --------------------------------------------------------------------------------------------
-        // Transition from Error Message ER to Response 
+        // Transition from Error Message ER to Response
         // --------------------------------------------------------------------------------------------
         // LdapMessage ::= ... ExtendedResponse ...
         // ExtendedResponse ::= [APPLICATION 24] SEQUENCE {
@@ -3100,7 +2960,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
             LdapConstants.EXTENDED_RESPONSE_RESPONSE_TAG, new ResponseAction() );
 
         // --------------------------------------------------------------------------------------------
-        // Transition from Response to Controls 
+        // Transition from Response to Controls
         // --------------------------------------------------------------------------------------------
         //         extendedRequest   EtendedRequest,
         //         ... },
@@ -3125,8 +2985,8 @@ public final class LdapMessageGrammar extends AbstractGrammar
                 public void action( LdapMessageContainer<IntermediateResponseDecorator> container ) throws DecoderException
                 {
                     // Now, we can allocate the IntermediateResponse Object
-                    IntermediateResponseDecorator intermediateResponse = 
-                        new IntermediateResponseDecorator( container.getLdapCodecService(), 
+                    IntermediateResponseDecorator intermediateResponse =
+                        new IntermediateResponseDecorator( container.getLdapCodecService(),
                             new IntermediateResponseImpl( container.getMessageId() ) );
                     container.setMessage( intermediateResponse );
 
@@ -3160,7 +3020,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     {
                         String msg = I18n.err( I18n.ERR_04095 );
                         LOG.error( msg );
-                        // This will generate a PROTOCOL_ERROR                        
+                        // This will generate a PROTOCOL_ERROR
                         throw new DecoderException( msg );
                     }
                     else
@@ -3207,7 +3067,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // Stores the value
         super.transitions[LdapStatesEnum.INTERMEDIATE_RESPONSE_STATE.ordinal()][LdapConstants.INTERMEDIATE_RESPONSE_VALUE_TAG] = new GrammarTransition(
             LdapStatesEnum.INTERMEDIATE_RESPONSE_STATE, LdapStatesEnum.INTERMEDIATE_RESPONSE_VALUE_STATE,
-            LdapConstants.INTERMEDIATE_RESPONSE_VALUE_TAG, 
+            LdapConstants.INTERMEDIATE_RESPONSE_VALUE_TAG,
             new GrammarAction<LdapMessageContainer<IntermediateResponseDecorator>>( "Store response value" )
             {
                 public void action( LdapMessageContainer<IntermediateResponseDecorator> container ) throws DecoderException
@@ -3249,7 +3109,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // Stores the value
         super.transitions[LdapStatesEnum.INTERMEDIATE_RESPONSE_NAME_STATE.ordinal()][LdapConstants.INTERMEDIATE_RESPONSE_VALUE_TAG] = new GrammarTransition(
             LdapStatesEnum.INTERMEDIATE_RESPONSE_NAME_STATE, LdapStatesEnum.INTERMEDIATE_RESPONSE_VALUE_STATE,
-            LdapConstants.INTERMEDIATE_RESPONSE_VALUE_TAG, 
+            LdapConstants.INTERMEDIATE_RESPONSE_VALUE_TAG,
             new GrammarAction<LdapMessageContainer<IntermediateResponseDecorator>>( "Store value" )
             {
                 public void action( LdapMessageContainer<IntermediateResponseDecorator> container ) throws DecoderException
@@ -3308,7 +3168,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // --------------------------------------------------------------------------------------------
         // Controls
         // --------------------------------------------------------------------------------------------
-        Action<LdapMessageContainer<MessageDecorator<? extends Message>>> addControl = 
+        Action<LdapMessageContainer<MessageDecorator<? extends Message>>> addControl =
             new GrammarAction<LdapMessageContainer<MessageDecorator<? extends Message>>>( "Add Control" )
         {
             public void action( LdapMessageContainer<MessageDecorator<? extends Message>> container ) throws DecoderException
@@ -3335,7 +3195,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         // Controls ::= SEQUENCE OF Control
         //  ...
         //
-        // Initialize the controls 
+        // Initialize the controls
         super.transitions[LdapStatesEnum.CONTROLS_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
             LdapStatesEnum.CONTROLS_STATE, LdapStatesEnum.CONTROL_STATE, UniversalTag.SEQUENCE.getValue(), addControl );
 
@@ -3379,7 +3239,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
 
                     Message message = container.getMessage();
 
-                    Control control = container.getLdapCodecService().newControl( oidValue );  
+                    Control control = container.getLdapCodecService().newControl( oidValue );
 
                     message.addControl( control );
 
@@ -3521,7 +3381,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
                     // Now, we can allocate the SearchRequest Object
                     TLV tlv = container.getCurrentTLV();
 
-                    SearchRequestDecorator searchRequest = new SearchRequestDecorator( 
+                    SearchRequestDecorator searchRequest = new SearchRequestDecorator(
                         container.getLdapCodecService(), new SearchRequestImpl( container.getMessageId() ) );
 
                     searchRequest.setTlvId( tlv.getId());
@@ -3852,7 +3712,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //============================================================================================
         // Search Request And Filter
         // This is quite complicated, because we have a tree structure to build,
-        // and we may have many elements on each node. For instance, considering the 
+        // and we may have many elements on each node. For instance, considering the
         // search filter :
         // (& (| (a = b) (c = d)) (! (e = f)) (attr =* h))
         // We will have to create an And filter with three children :
@@ -3874,14 +3734,14 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //|   A1 24                     | 82 36          | 0 0           | new level 2
         //|      A3 12                  | 82 36 18       | 0 0 0         | new level 3
         //|         04 0B 'objectclass' | 82 36 18       | 0 0 13        |
-        //|         04 03 'top'         | 82 36 18       | 0 20 18       | 
+        //|         04 03 'top'         | 82 36 18       | 0 20 18       |
         //|                             |       ^               ^        |
         //|                             |       |               |        |
         //|                             |       +---------------+        |
         //+-----------------------------* end level 3 -------------------*
         //|      A3 0E                  | 82 36 14       | 0 0 0         | new level 3
         //|         04 02 'ou'          | 82 36 14       | 0 0 4         |
-        //|         04 08 'contacts'    | 82 36 14       | 38 36 14      | 
+        //|         04 08 'contacts'    | 82 36 14       | 38 36 14      |
         //|                             |    ^  ^             ^  ^       |
         //|                             |    |  |             |  |       |
         //|                             |    |  +-------------|--+       |
@@ -3889,7 +3749,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //+-----------------------------* end level 3, end level 2 ------*
         //|   A2 14                     | 82 20          | 38 0          | new level 2
         //|      A3 12                  | 82 20 18       | 38 0 0        | new level 3
-        //|         04 0B 'objectclass' | 82 20 18       | 38 0 13       | 
+        //|         04 0B 'objectclass' | 82 20 18       | 38 0 13       |
         //|         04 03 'ttt'         | 82 20 18       | 60 20 18      |
         //|                             |    ^  ^             ^  ^       |
         //|                             |    |  |             |  |       |
@@ -3899,7 +3759,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //|   A4 14                     | 82 20          | 60 0          | new level 2
         //|      04 0B 'objectclass'    | 82 20          | 60 13         |
         //|      30 05                  | 82 20          | 60 13         |
-        //|         82 03 'top'         | 82 20          | 82 20         | 
+        //|         82 03 'top'         | 82 20          | 82 20         |
         //|                             | ^  ^             ^  ^          |
         //|                             | |  |             |  |          |
         //|                             | |  +-------------|--+          |
@@ -5324,7 +5184,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //     substrings SEQUENCE OF CHOICE {
         //         ...
-        //         any  [1] LDAPSTRING 
+        //         any  [1] LDAPSTRING
         //         ...
         //
         // Store substring any type
@@ -5941,7 +5801,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     matchingRule [1] MatchingRuleId OPTIONAL,
         //     ...
         //
-        // Store the matching rule ID 
+        // Store the matching rule ID
         super.transitions[LdapStatesEnum.EXTENSIBLE_MATCH_STATE.ordinal()][LdapConstants.MATCHING_RULE_ID_TAG] = new GrammarTransition(
             LdapStatesEnum.EXTENSIBLE_MATCH_STATE, LdapStatesEnum.MATCHING_RULE_STATE,
             LdapConstants.MATCHING_RULE_ID_TAG, new GrammarAction<LdapMessageContainer<SearchRequestDecorator>>( "Store matching rule Value" )
@@ -5983,7 +5843,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     type [2] AttributeDescription OPTIONAL,
         //     ...
         //
-        // Store the matching rule ID 
+        // Store the matching rule ID
         super.transitions[LdapStatesEnum.EXTENSIBLE_MATCH_STATE.ordinal()][LdapConstants.MATCHING_RULE_TYPE_TAG] = new GrammarTransition(
             LdapStatesEnum.EXTENSIBLE_MATCH_STATE, LdapStatesEnum.TYPE_MATCHING_RULE_STATE,
             LdapConstants.MATCHING_RULE_TYPE_TAG, new StoreTypeMatchingRuleAction() );
@@ -6000,7 +5860,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     matchValue [3] AssertionValue,
         //     ...
         //
-        // Store the matching rule ID 
+        // Store the matching rule ID
         super.transitions[LdapStatesEnum.EXTENSIBLE_MATCH_STATE.ordinal()][LdapConstants.MATCH_VALUE_TAG] = new GrammarTransition(
             LdapStatesEnum.EXTENSIBLE_MATCH_STATE, LdapStatesEnum.MATCH_VALUE_STATE, LdapConstants.MATCH_VALUE_TAG,
             new StoreMatchValueAction() );
@@ -6017,7 +5877,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     type [2] AttributeDescription OPTIONAL,
         //     ...
         //
-        // Store the matching rule ID 
+        // Store the matching rule ID
         super.transitions[LdapStatesEnum.MATCHING_RULE_STATE.ordinal()][LdapConstants.MATCHING_RULE_TYPE_TAG] = new GrammarTransition(
             LdapStatesEnum.MATCHING_RULE_STATE, LdapStatesEnum.TYPE_MATCHING_RULE_STATE,
             LdapConstants.MATCHING_RULE_TYPE_TAG, new StoreTypeMatchingRuleAction() );
@@ -6034,7 +5894,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     matchValue [3] AssertionValue,
         //     ...
         //
-        // Store the matching rule ID 
+        // Store the matching rule ID
         super.transitions[LdapStatesEnum.MATCHING_RULE_STATE.ordinal()][LdapConstants.MATCH_VALUE_TAG] = new GrammarTransition(
             LdapStatesEnum.MATCHING_RULE_STATE, LdapStatesEnum.MATCH_VALUE_STATE, LdapConstants.MATCH_VALUE_TAG,
             new StoreMatchValueAction() );
@@ -6051,7 +5911,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     matchValue [3] AssertionValue,
         //     ...
         //
-        // Store the matching rule ID 
+        // Store the matching rule ID
         super.transitions[LdapStatesEnum.TYPE_MATCHING_RULE_STATE.ordinal()][LdapConstants.MATCH_VALUE_TAG] = new GrammarTransition(
             LdapStatesEnum.TYPE_MATCHING_RULE_STATE, LdapStatesEnum.MATCH_VALUE_STATE, LdapConstants.MATCH_VALUE_TAG,
             new StoreMatchValueAction() );
@@ -6067,10 +5927,10 @@ public final class LdapMessageGrammar extends AbstractGrammar
         //     ...
         //     dnAttributes [4] BOOLEAN DEFAULT FALSE }
         //
-        // Store the dnAttributes flag 
+        // Store the dnAttributes flag
         super.transitions[LdapStatesEnum.MATCH_VALUE_STATE.ordinal()][LdapConstants.DN_ATTRIBUTES_FILTER_TAG] = new GrammarTransition(
             LdapStatesEnum.MATCH_VALUE_STATE, LdapStatesEnum.DN_ATTRIBUTES_STATE,
-            LdapConstants.DN_ATTRIBUTES_FILTER_TAG, 
+            LdapConstants.DN_ATTRIBUTES_FILTER_TAG,
             new GrammarAction<LdapMessageContainer<SearchRequestDecorator>>( "Store matching dnAttributes Value" )
             {
                 public void action( LdapMessageContainer<SearchRequestDecorator> container ) throws DecoderException
@@ -6509,7 +6369,7 @@ public final class LdapMessageGrammar extends AbstractGrammar
 
     /**
      * Get the instance of this grammar
-     * 
+     *
      * @return An instance on the LdapMessage Grammar
      */
     public static Grammar getInstance()

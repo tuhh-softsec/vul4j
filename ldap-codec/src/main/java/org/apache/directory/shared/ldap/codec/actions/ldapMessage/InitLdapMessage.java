@@ -6,23 +6,24 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License. 
- *  
+ *  under the License.
+ *
  */
-package org.apache.directory.shared.ldap.codec.actions;
+package org.apache.directory.shared.ldap.codec.actions.ldapMessage;
 
 
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
 import org.apache.directory.shared.ldap.model.message.Message;
@@ -31,25 +32,27 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * The action used to initialize a control.
- * 
+ * The action used to initialize an LdapMessage
+ * <pre>
+ * LDAPMessage --> SEQUENCE { ...
+ *
+ * We have a LDAPMessage, and the tag must be 0x30.
+ *
+ * The next state will be LDAP_MESSAGE_STATE
+ * </pre>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ControlsInitAction extends GrammarAction<LdapMessageContainer<MessageDecorator<? extends Message>>>
+public class InitLdapMessage extends GrammarAction<LdapMessageContainer<MessageDecorator<? extends Message>>>
 {
     /** The logger */
-    private static final Logger LOG = LoggerFactory.getLogger( ControlsInitAction.class );
-
-    /** Speedup for logs */
-    private static final boolean IS_DEBUG = LOG.isDebugEnabled();
-
+    private static final Logger LOG = LoggerFactory.getLogger( InitLdapMessage.class );
 
     /**
-     * Instantiates a new controls init action.
+     * Instantiates a new action.
      */
-    public ControlsInitAction()
+    public InitLdapMessage()
     {
-        super( "Initialize a control" );
+        super( "LdapMessage initialization" );
     }
 
 
@@ -59,20 +62,14 @@ public class ControlsInitAction extends GrammarAction<LdapMessageContainer<Messa
     public void action( LdapMessageContainer<MessageDecorator<? extends Message>> container ) throws DecoderException
     {
         TLV tlv = container.getCurrentTLV();
-        int expectedLength = tlv.getLength();
 
-        // The Length should be null
-        if ( expectedLength == 0 )
+        // The Length should not be null
+        if ( tlv.getLength() == 0 )
         {
-            LOG.error( "The length of controls must not be null" );
+            LOG.error( I18n.err( I18n.ERR_04066 ) );
 
             // This will generate a PROTOCOL_ERROR
-            throw new DecoderException( "The length of controls must not be null" );
-        }
-
-        if ( IS_DEBUG )
-        {
-            LOG.debug( "A new list of controls has been initialized" );
+            throw new DecoderException( I18n.err( I18n.ERR_04067 ) );
         }
     }
 }

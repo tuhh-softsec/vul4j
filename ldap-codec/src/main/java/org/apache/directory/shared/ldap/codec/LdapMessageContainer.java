@@ -34,7 +34,7 @@ import org.apache.directory.shared.ldap.model.message.Message;
  * The LdapMessage container stores all the messages decoded by the Asn1Decoder.
  * When dealing with an encoding PDU, we will obtain a LdapMessage in the
  * container.
- * 
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class LdapMessageContainer<E extends MessageDecorator<? extends Message>> extends AbstractContainer
@@ -50,7 +50,7 @@ public class LdapMessageContainer<E extends MessageDecorator<? extends Message>>
 
     /** The current control */
     private ControlDecorator<? extends Control> currentControl;
-    
+
     /** The codec service */
     private final LdapCodecService codec;
 
@@ -97,8 +97,8 @@ public class LdapMessageContainer<E extends MessageDecorator<? extends Message>>
     {
         return codec;
     }
-    
-    
+
+
     /**
      * @return Returns the ldapMessage.
      */
@@ -111,7 +111,7 @@ public class LdapMessageContainer<E extends MessageDecorator<? extends Message>>
     /**
      * Set a Message Object into the container. It will be completed by the
      * ldapDecoder.
-     * 
+     *
      * @param message The message to set.
      */
     public void setMessage( E messageDecorator )
@@ -123,6 +123,7 @@ public class LdapMessageContainer<E extends MessageDecorator<? extends Message>>
     /**
      * {@inheritDoc}
      */
+    @Override
     public void clean()
     {
         super.clean();
