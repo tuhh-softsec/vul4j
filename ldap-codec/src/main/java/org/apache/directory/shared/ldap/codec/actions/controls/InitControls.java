@@ -17,42 +17,42 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.actions;
+package org.apache.directory.shared.ldap.codec.actions.controls;
 
 
+import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
-import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
-import org.apache.directory.shared.ldap.model.message.LdapResult;
 import org.apache.directory.shared.ldap.model.message.Message;
-import org.apache.directory.shared.ldap.model.message.ResultResponse;
-import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 /**
- * The action used to set the LdapResult error message.
- * 
+ * The action used to initialize a control.
+ * <pre>
+ *         ... },
+ *     controls       [0] Controls OPTIONAL }
+ * </pre>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ErrorMessageAction extends GrammarAction<LdapMessageContainer<MessageDecorator<? extends Message>>>
+public class InitControls extends GrammarAction<LdapMessageContainer<MessageDecorator<? extends Message>>>
 {
     /** The logger */
-    private static final Logger LOG = LoggerFactory.getLogger( ErrorMessageAction.class );
+    private static final Logger LOG = LoggerFactory.getLogger( InitControls.class );
 
     /** Speedup for logs */
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
 
     /**
-     * Instantiates a new error message action.
+     * Instantiates a new controls init action.
      */
-    public ErrorMessageAction()
+    public InitControls()
     {
-        super( "Store error message" );
+        super( "Initialize a control" );
     }
 
 
@@ -61,31 +61,21 @@ public class ErrorMessageAction extends GrammarAction<LdapMessageContainer<Messa
      */
     public void action( LdapMessageContainer<MessageDecorator<? extends Message>> container ) throws DecoderException
     {
-        // Get the Value and store it in the BindResponse
         TLV tlv = container.getCurrentTLV();
-        String errorMessage = null;
+        int expectedLength = tlv.getLength();
 
-        // We have to handle the special case of a 0 length error
-        // message
-        if ( tlv.getLength() == 0 )
+        // The Length should be null
+        if ( expectedLength == 0 )
         {
-            errorMessage = "";
-        }
-        else
-        {
-            errorMessage = Strings.utf8ToString(tlv.getValue().getData());
-        }
+            LOG.error( "The length of controls must not be null" );
 
-        ResultResponse response = ( ResultResponse ) container.getMessage();
-        LdapResult ldapResult = response.getLdapResult();
-        ldapResult.setErrorMessage( errorMessage );
-
-        // We can have an END transition
-        container.setGrammarEndAllowed( true );
+            // This will generate a PROTOCOL_ERROR
+            throw new DecoderException( "The length of controls must not be null" );
+        }
 
         if ( IS_DEBUG )
         {
-            LOG.debug( "The error message is : " + errorMessage );
+            LOG.debug( "A new list of controls has been initialized" );
         }
     }
 }

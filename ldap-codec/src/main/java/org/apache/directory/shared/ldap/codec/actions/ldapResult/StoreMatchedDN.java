@@ -6,23 +6,23 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License. 
- *  
+ *  under the License.
+ *
  */
-package org.apache.directory.shared.ldap.codec.actions;
+package org.apache.directory.shared.ldap.codec.actions.ldapResult;
 
 
+import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
-import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
@@ -39,13 +39,19 @@ import org.slf4j.LoggerFactory;
 
 /**
  * The action used to set the LdapResult matched Dn.
- * 
+ *
+ * <pre>
+ * LDAPResult ::= SEQUENCE {
+ *     ...
+ *     matchedDN LDAPDN,
+ *     ...
+ * </pre>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class MatchedDNAction extends GrammarAction<LdapMessageContainer<MessageDecorator<? extends Message>>>
+public class StoreMatchedDN extends GrammarAction<LdapMessageContainer<MessageDecorator<? extends Message>>>
 {
     /** The logger */
-    private static final Logger LOG = LoggerFactory.getLogger( MatchedDNAction.class );
+    private static final Logger LOG = LoggerFactory.getLogger( StoreMatchedDN.class );
 
     /** Speedup for logs */
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
@@ -54,7 +60,7 @@ public class MatchedDNAction extends GrammarAction<LdapMessageContainer<MessageD
     /**
      * Instantiates a new matched dn action.
      */
-    public MatchedDNAction()
+    public StoreMatchedDN()
     {
         super( "Store matched Dn" );
     }

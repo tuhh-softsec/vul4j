@@ -20,6 +20,13 @@
 package org.apache.directory.shared.ldap.codec;
 
 
+import static org.apache.directory.shared.asn1.ber.tlv.UniversalTag.BOOLEAN;
+import static org.apache.directory.shared.asn1.ber.tlv.UniversalTag.ENUMERATED;
+import static org.apache.directory.shared.asn1.ber.tlv.UniversalTag.INTEGER;
+import static org.apache.directory.shared.asn1.ber.tlv.UniversalTag.OCTET_STRING;
+import static org.apache.directory.shared.asn1.ber.tlv.UniversalTag.SEQUENCE;
+import static org.apache.directory.shared.asn1.ber.tlv.UniversalTag.SET;
+
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.Action;
@@ -33,13 +40,11 @@ import org.apache.directory.shared.asn1.ber.tlv.IntegerDecoderException;
 import org.apache.directory.shared.asn1.ber.tlv.LongDecoder;
 import org.apache.directory.shared.asn1.ber.tlv.LongDecoderException;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
-import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.actions.AttributeDescAction;
 import org.apache.directory.shared.ldap.codec.actions.ControlValueAction;
-import org.apache.directory.shared.ldap.codec.actions.ErrorMessageAction;
 import org.apache.directory.shared.ldap.codec.actions.InitAndFilterAction;
 import org.apache.directory.shared.ldap.codec.actions.InitApproxMatchFilterAction;
 import org.apache.directory.shared.ldap.codec.actions.InitAssertionValueFilterAction;
@@ -52,16 +57,11 @@ import org.apache.directory.shared.ldap.codec.actions.InitLessOrEqualFilterActio
 import org.apache.directory.shared.ldap.codec.actions.InitNotFilterAction;
 import org.apache.directory.shared.ldap.codec.actions.InitOrFilterAction;
 import org.apache.directory.shared.ldap.codec.actions.InitPresentFilterAction;
-import org.apache.directory.shared.ldap.codec.actions.InitReferralsAction;
 import org.apache.directory.shared.ldap.codec.actions.InitSubstringsFilterAction;
-import org.apache.directory.shared.ldap.codec.actions.MatchedDNAction;
 import org.apache.directory.shared.ldap.codec.actions.ModifyAttributeValueAction;
-import org.apache.directory.shared.ldap.codec.actions.ReferralAction;
 import org.apache.directory.shared.ldap.codec.actions.ResponseAction;
 import org.apache.directory.shared.ldap.codec.actions.ResponseNameAction;
-import org.apache.directory.shared.ldap.codec.actions.ResultCodeAction;
 import org.apache.directory.shared.ldap.codec.actions.SearchResultAttributeValueAction;
-import org.apache.directory.shared.ldap.codec.actions.ServerSASLCredsAction;
 import org.apache.directory.shared.ldap.codec.actions.StoreAnyAction;
 import org.apache.directory.shared.ldap.codec.actions.StoreFinalAction;
 import org.apache.directory.shared.ldap.codec.actions.StoreMatchValueAction;
@@ -72,19 +72,26 @@ import org.apache.directory.shared.ldap.codec.actions.abandonRequest.InitAbandon
 import org.apache.directory.shared.ldap.codec.actions.bindRequest.InitBindRequest;
 import org.apache.directory.shared.ldap.codec.actions.bindRequest.InitSaslBind;
 import org.apache.directory.shared.ldap.codec.actions.bindRequest.StoreName;
+import org.apache.directory.shared.ldap.codec.actions.bindRequest.StoreSaslCredentials;
+import org.apache.directory.shared.ldap.codec.actions.bindRequest.StoreSaslMechanism;
 import org.apache.directory.shared.ldap.codec.actions.bindRequest.StoreSimpleAuth;
 import org.apache.directory.shared.ldap.codec.actions.bindRequest.StoreVersion;
-import org.apache.directory.shared.ldap.codec.actions.controls.ControlsInitAction;
+import org.apache.directory.shared.ldap.codec.actions.bindResponse.InitBindResponse;
+import org.apache.directory.shared.ldap.codec.actions.bindResponse.StoreServerSASLCreds;
+import org.apache.directory.shared.ldap.codec.actions.controls.InitControls;
 import org.apache.directory.shared.ldap.codec.actions.delRequest.InitDelRequest;
 import org.apache.directory.shared.ldap.codec.actions.ldapMessage.InitLdapMessage;
 import org.apache.directory.shared.ldap.codec.actions.ldapMessage.StoreMessageId;
+import org.apache.directory.shared.ldap.codec.actions.ldapResult.AddReferral;
+import org.apache.directory.shared.ldap.codec.actions.ldapResult.InitReferrals;
+import org.apache.directory.shared.ldap.codec.actions.ldapResult.StoreErrorMessage;
+import org.apache.directory.shared.ldap.codec.actions.ldapResult.StoreMatchedDN;
+import org.apache.directory.shared.ldap.codec.actions.ldapResult.StoreResultCode;
 import org.apache.directory.shared.ldap.codec.actions.unbindRequest.InitUnbindRequest;
 import org.apache.directory.shared.ldap.codec.api.LdapConstants;
 import org.apache.directory.shared.ldap.codec.api.ResponseCarryingException;
 import org.apache.directory.shared.ldap.codec.decorators.AddRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.AddResponseDecorator;
-import org.apache.directory.shared.ldap.codec.decorators.BindRequestDecorator;
-import org.apache.directory.shared.ldap.codec.decorators.BindResponseDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.CompareRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.CompareResponseDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.DeleteResponseDecorator;
@@ -108,8 +115,6 @@ import org.apache.directory.shared.ldap.model.filter.SearchScope;
 import org.apache.directory.shared.ldap.model.message.AddRequestImpl;
 import org.apache.directory.shared.ldap.model.message.AddResponseImpl;
 import org.apache.directory.shared.ldap.model.message.AliasDerefMode;
-import org.apache.directory.shared.ldap.model.message.BindRequest;
-import org.apache.directory.shared.ldap.model.message.BindResponseImpl;
 import org.apache.directory.shared.ldap.model.message.CompareRequest;
 import org.apache.directory.shared.ldap.model.message.CompareRequestImpl;
 import org.apache.directory.shared.ldap.model.message.CompareResponseImpl;
@@ -120,7 +125,6 @@ import org.apache.directory.shared.ldap.model.message.ExtendedRequestImpl;
 import org.apache.directory.shared.ldap.model.message.ExtendedResponseImpl;
 import org.apache.directory.shared.ldap.model.message.IntermediateResponse;
 import org.apache.directory.shared.ldap.model.message.IntermediateResponseImpl;
-import org.apache.directory.shared.ldap.model.message.LdapResult;
 import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.model.message.ModifyDnRequest;
 import org.apache.directory.shared.ldap.model.message.ModifyDnRequestImpl;
@@ -128,10 +132,7 @@ import org.apache.directory.shared.ldap.model.message.ModifyDnResponseImpl;
 import org.apache.directory.shared.ldap.model.message.ModifyRequest;
 import org.apache.directory.shared.ldap.model.message.ModifyRequestImpl;
 import org.apache.directory.shared.ldap.model.message.ModifyResponseImpl;
-import org.apache.directory.shared.ldap.model.message.Referral;
-import org.apache.directory.shared.ldap.model.message.ReferralImpl;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
-import org.apache.directory.shared.ldap.model.message.ResultResponse;
 import org.apache.directory.shared.ldap.model.message.SearchRequest;
 import org.apache.directory.shared.ldap.model.message.SearchRequestImpl;
 import org.apache.directory.shared.ldap.model.message.SearchResultDoneImpl;
@@ -187,11 +188,11 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // The next state will be LDAP_MESSAGE_STATE
         //
         // We will just check that the length is not null
-        super.transitions[LdapStatesEnum.START_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] =
+        super.transitions[LdapStatesEnum.START_STATE.ordinal()][SEQUENCE.getValue()] =
             new GrammarTransition<LdapMessageContainer<MessageDecorator<? extends Message>>>(
                 LdapStatesEnum.START_STATE,
                 LdapStatesEnum.LDAP_MESSAGE_STATE,
-                UniversalTag.SEQUENCE.getValue(),
+                SEQUENCE.getValue(),
                 new InitLdapMessage() );
 
         // --------------------------------------------------------------------------------------------
@@ -207,11 +208,11 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //
         // The message ID will be temporarily stored in the container, because we can't store it
         // into an object.
-        super.transitions[LdapStatesEnum.LDAP_MESSAGE_STATE.ordinal()][UniversalTag.INTEGER.getValue()] =
+        super.transitions[LdapStatesEnum.LDAP_MESSAGE_STATE.ordinal()][INTEGER.getValue()] =
             new GrammarTransition<LdapMessageContainer<MessageDecorator<? extends Message>>>(
                 LdapStatesEnum.LDAP_MESSAGE_STATE,
                 LdapStatesEnum.MESSAGE_ID_STATE,
-                UniversalTag.INTEGER.getValue(),
+                INTEGER.getValue(),
                 new StoreMessageId() );
 
         // ********************************************************************************************
@@ -264,7 +265,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.UNBIND_REQUEST_STATE,
                 LdapStatesEnum.CONTROLS_STATE,
                 LdapConstants.CONTROLS_TAG,
-                new ControlsInitAction() );
+                new InitControls() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Message ID to DelRequest Message.
@@ -292,7 +293,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.DEL_REQUEST_STATE,
                 LdapStatesEnum.CONTROLS_STATE,
                 LdapConstants.CONTROLS_TAG,
-                new ControlsInitAction() );
+                new InitControls() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Message ID to AbandonRequest Message.
@@ -320,7 +321,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.ABANDON_REQUEST_STATE,
                 LdapStatesEnum.CONTROLS_STATE,
                 LdapConstants.CONTROLS_TAG,
-                new ControlsInitAction() );
+                new InitControls() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Message ID to BindRequest Message.
@@ -344,11 +345,11 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ....
         //
         // The Ldap version is parsed and stored into the BindRequest object
-        super.transitions[LdapStatesEnum.BIND_REQUEST_STATE.ordinal()][UniversalTag.INTEGER.getValue()] =
+        super.transitions[LdapStatesEnum.BIND_REQUEST_STATE.ordinal()][INTEGER.getValue()] =
             new GrammarTransition(
                 LdapStatesEnum.BIND_REQUEST_STATE,
                 LdapStatesEnum.VERSION_STATE,
-                UniversalTag.INTEGER.getValue(),
+                INTEGER.getValue(),
                 new StoreVersion() );
 
         // --------------------------------------------------------------------------------------------
@@ -360,11 +361,11 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ....
         //
         // The Ldap name is stored into the BindRequest object
-        super.transitions[LdapStatesEnum.VERSION_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] =
+        super.transitions[LdapStatesEnum.VERSION_STATE.ordinal()][OCTET_STRING.getValue()] =
             new GrammarTransition(
                 LdapStatesEnum.VERSION_STATE,
                 LdapStatesEnum.NAME_STATE,
-                UniversalTag.OCTET_STRING.getValue(),
+                OCTET_STRING.getValue(),
                 new StoreName() );
 
         // --------------------------------------------------------------------------------------------
@@ -398,7 +399,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.SIMPLE_STATE,
                 LdapStatesEnum.CONTROLS_STATE,
                 LdapConstants.CONTROLS_TAG,
-                new ControlsInitAction() );
+                new InitControls() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from name to SASL Authentication
@@ -428,35 +429,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // We have to store the mechanism.
-        super.transitions[LdapStatesEnum.SASL_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.SASL_STATE, LdapStatesEnum.MECHANISM_STATE, UniversalTag.OCTET_STRING.getValue(),
-            new GrammarAction<LdapMessageContainer<BindRequestDecorator>>( "Store SASL mechanism" )
-            {
-                public void action( LdapMessageContainer<BindRequestDecorator> container ) throws DecoderException
-                {
-                    BindRequest bindRequestMessage = container.getMessage();
-                    TLV tlv = container.getCurrentTLV();
-
-                    // We have to handle the special case of a 0 length
-                    // mechanism
-                    if ( tlv.getLength() == 0 )
-                    {
-                        bindRequestMessage.setSaslMechanism( "" );
-                    }
-                    else
-                    {
-                        bindRequestMessage.setSaslMechanism( Strings.utf8ToString(tlv.getValue().getData()) );
-                    }
-
-                    // We can have an END transition
-                    container.setGrammarEndAllowed( true );
-
-                    if ( IS_DEBUG )
-                    {
-                        LOG.debug( "The mechanism is : {}", bindRequestMessage.getSaslMechanism() );
-                    }
-                }
-            } );
+        super.transitions[LdapStatesEnum.SASL_STATE.ordinal()][OCTET_STRING.getValue()] =
+            new GrammarTransition(
+                LdapStatesEnum.SASL_STATE,
+                LdapStatesEnum.MECHANISM_STATE,
+                OCTET_STRING.getValue(),
+                new StoreSaslMechanism() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Mechanism to Credentials
@@ -466,38 +444,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     credentials OCTET STRING OPTIONAL }
         //
         // We have to store the mechanism.
-        super.transitions[LdapStatesEnum.MECHANISM_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.MECHANISM_STATE, LdapStatesEnum.CREDENTIALS_STATE, UniversalTag.OCTET_STRING.getValue(),
-            new GrammarAction<LdapMessageContainer<BindRequestDecorator>>( "Store SASL credentials" )
-            {
-                public void action( LdapMessageContainer<BindRequestDecorator> container )
-                {
-                    BindRequest bindRequestMessage = container.getMessage();
-
-                    // Get the Value and store it in the BindRequest
-                    TLV tlv = container.getCurrentTLV();
-
-                    // We have to handle the special case of a 0 length
-                    // credentials
-                    if ( tlv.getLength() == 0 )
-                    {
-                        bindRequestMessage.setCredentials( StringConstants.EMPTY_BYTES );
-                    }
-                    else
-                    {
-                        bindRequestMessage.setCredentials( tlv.getValue().getData() );
-                    }
-
-                    // We can have an END transition
-                    container.setGrammarEndAllowed( true );
-
-                    if ( IS_DEBUG )
-                    {
-                        LOG.debug( "The credentials are : {}", Strings.dumpBytes(bindRequestMessage
-                                .getCredentials()) );
-                    }
-                }
-            } );
+        super.transitions[LdapStatesEnum.MECHANISM_STATE.ordinal()][OCTET_STRING.getValue()] =
+            new GrammarTransition(
+                LdapStatesEnum.MECHANISM_STATE,
+                LdapStatesEnum.CREDENTIALS_STATE,
+                OCTET_STRING.getValue(),
+                new StoreSaslCredentials() );
 
         // --------------------------------------------------------------------------------------------
         // transition from from Mechanism to Controls.
@@ -506,9 +458,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //         ... },
         //     controls       [0] Controls OPTIONAL }
         //
-        super.transitions[LdapStatesEnum.MECHANISM_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
-            LdapStatesEnum.MECHANISM_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
-            new ControlsInitAction() );
+        super.transitions[LdapStatesEnum.MECHANISM_STATE.ordinal()][LdapConstants.CONTROLS_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.MECHANISM_STATE,
+                LdapStatesEnum.CONTROLS_STATE,
+                LdapConstants.CONTROLS_TAG,
+                new InitControls() );
 
         // --------------------------------------------------------------------------------------------
         // transition from credentials to Controls.
@@ -517,9 +472,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //         ... },
         //     controls       [0] Controls OPTIONAL }
         //
-        super.transitions[LdapStatesEnum.CREDENTIALS_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
-            LdapStatesEnum.CREDENTIALS_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
-            new ControlsInitAction() );
+        super.transitions[LdapStatesEnum.CREDENTIALS_STATE.ordinal()][LdapConstants.CONTROLS_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.CREDENTIALS_STATE,
+                LdapStatesEnum.CONTROLS_STATE,
+                LdapConstants.CONTROLS_TAG,
+                new InitControls() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from MessageId to BindResponse message
@@ -527,18 +485,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // LdapMessage ::= ... BindResponse ...
         // BindResponse ::= [APPLICATION 1] SEQUENCE { ...
         // We have to switch to the BindResponse grammar
-        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.BIND_RESPONSE_TAG] = new GrammarTransition(
-            LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.BIND_RESPONSE_STATE, LdapConstants.BIND_RESPONSE_TAG,
-            new GrammarAction<LdapMessageContainer<BindResponseDecorator>>( "Init BindReponse" )
-            {
-                public void action( LdapMessageContainer<BindResponseDecorator> container )
-                {
-                    // Now, we can allocate the BindResponse Object
-                    BindResponseDecorator bindResponse = new BindResponseDecorator(
-                        container.getLdapCodecService(), new BindResponseImpl( container.getMessageId() ) );
-                    container.setMessage( bindResponse );
-                }
-            } );
+        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.BIND_RESPONSE_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.MESSAGE_ID_STATE,
+                LdapStatesEnum.BIND_RESPONSE_STATE,
+                LdapConstants.BIND_RESPONSE_TAG,
+                new InitBindResponse() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from BindResponse message to Result Code BR
@@ -552,9 +504,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //         ...
         //
         // Stores the result code into the Bind Response object
-        super.transitions[LdapStatesEnum.BIND_RESPONSE_STATE.ordinal()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
-            LdapStatesEnum.BIND_RESPONSE_STATE, LdapStatesEnum.RESULT_CODE_BR_STATE, UniversalTag.ENUMERATED.getValue(),
-            new ResultCodeAction() );
+        super.transitions[LdapStatesEnum.BIND_RESPONSE_STATE.ordinal()][ENUMERATED.getValue()] =
+            new GrammarTransition(
+                LdapStatesEnum.BIND_RESPONSE_STATE,
+                LdapStatesEnum.RESULT_CODE_BR_STATE,
+                ENUMERATED.getValue(),
+                new StoreResultCode() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Result Code BR to Matched Dn BR
@@ -565,9 +520,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // Stores the matched Dn
-        super.transitions[LdapStatesEnum.RESULT_CODE_BR_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.RESULT_CODE_BR_STATE, LdapStatesEnum.MATCHED_DN_BR_STATE, UniversalTag.OCTET_STRING.getValue(),
-            new MatchedDNAction() );
+        super.transitions[LdapStatesEnum.RESULT_CODE_BR_STATE.ordinal()][OCTET_STRING.getValue()] =
+            new GrammarTransition(
+                LdapStatesEnum.RESULT_CODE_BR_STATE,
+                LdapStatesEnum.MATCHED_DN_BR_STATE,
+                OCTET_STRING.getValue(),
+                new StoreMatchedDN() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Matched Dn BR to Error Message BR
@@ -578,9 +536,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // Stores the error message
-        super.transitions[LdapStatesEnum.MATCHED_DN_BR_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.MATCHED_DN_BR_STATE, LdapStatesEnum.ERROR_MESSAGE_BR_STATE, UniversalTag.OCTET_STRING.getValue(),
-            new ErrorMessageAction() );
+        super.transitions[LdapStatesEnum.MATCHED_DN_BR_STATE.ordinal()][OCTET_STRING.getValue()] =
+            new GrammarTransition(
+                LdapStatesEnum.MATCHED_DN_BR_STATE,
+                LdapStatesEnum.ERROR_MESSAGE_BR_STATE,
+                OCTET_STRING.getValue(),
+                new StoreErrorMessage() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Error Message BR to Server SASL credentials
@@ -590,9 +551,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     serverSaslCreds [7] OCTET STRING OPTIONAL }
         //
         // Stores the sasl credentials
-        super.transitions[LdapStatesEnum.ERROR_MESSAGE_BR_STATE.ordinal()][LdapConstants.SERVER_SASL_CREDENTIAL_TAG] = new GrammarTransition(
-            LdapStatesEnum.ERROR_MESSAGE_BR_STATE, LdapStatesEnum.SERVER_SASL_CREDENTIALS_STATE,
-            LdapConstants.SERVER_SASL_CREDENTIAL_TAG, new ServerSASLCredsAction() );
+        super.transitions[LdapStatesEnum.ERROR_MESSAGE_BR_STATE.ordinal()][LdapConstants.SERVER_SASL_CREDENTIAL_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.ERROR_MESSAGE_BR_STATE,
+                LdapStatesEnum.SERVER_SASL_CREDENTIALS_STATE,
+                LdapConstants.SERVER_SASL_CREDENTIAL_TAG,
+                new StoreServerSASLCreds() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Error Message BR to Referrals BR
@@ -602,9 +566,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     referral   [3] Referral OPTIONNAL }
         //
         // Initialiaze the referrals list
-        super.transitions[LdapStatesEnum.ERROR_MESSAGE_BR_STATE.ordinal()][LdapConstants.LDAP_RESULT_REFERRAL_SEQUENCE_TAG] = new GrammarTransition(
-            LdapStatesEnum.ERROR_MESSAGE_BR_STATE, LdapStatesEnum.REFERRALS_BR_STATE,
-            LdapConstants.LDAP_RESULT_REFERRAL_SEQUENCE_TAG, new InitReferralsAction() );
+        super.transitions[LdapStatesEnum.ERROR_MESSAGE_BR_STATE.ordinal()][LdapConstants.LDAP_RESULT_REFERRAL_SEQUENCE_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.ERROR_MESSAGE_BR_STATE,
+                LdapStatesEnum.REFERRALS_BR_STATE,
+                LdapConstants.LDAP_RESULT_REFERRAL_SEQUENCE_TAG,
+                new InitReferrals() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Referrals BR to Referral BR
@@ -613,9 +580,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // URI ::= LDAPString
         //
         // Add a first Referral
-        super.transitions[LdapStatesEnum.REFERRALS_BR_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.REFERRALS_BR_STATE, LdapStatesEnum.REFERRAL_BR_STATE, UniversalTag.OCTET_STRING.getValue(),
-            new ReferralAction() );
+        super.transitions[LdapStatesEnum.REFERRALS_BR_STATE.ordinal()][OCTET_STRING.getValue()] =
+            new GrammarTransition(
+                LdapStatesEnum.REFERRALS_BR_STATE,
+                LdapStatesEnum.REFERRAL_BR_STATE,
+                OCTET_STRING.getValue(),
+                new AddReferral() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Referral BR to Referral BR
@@ -624,9 +594,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // URI ::= LDAPString
         //
         // Adda new Referral
-        super.transitions[LdapStatesEnum.REFERRAL_BR_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.REFERRAL_BR_STATE, LdapStatesEnum.REFERRAL_BR_STATE, UniversalTag.OCTET_STRING.getValue(),
-            new ReferralAction() );
+        super.transitions[LdapStatesEnum.REFERRAL_BR_STATE.ordinal()][OCTET_STRING.getValue()] =
+            new GrammarTransition(
+                LdapStatesEnum.REFERRAL_BR_STATE,
+                LdapStatesEnum.REFERRAL_BR_STATE,
+                OCTET_STRING.getValue(),
+                new AddReferral() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Referral BR to Server SASL Credentials
@@ -635,9 +608,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // URI ::= LDAPString
         //
         // Adda new Referral
-        super.transitions[LdapStatesEnum.REFERRAL_BR_STATE.ordinal()][LdapConstants.SERVER_SASL_CREDENTIAL_TAG] = new GrammarTransition(
-            LdapStatesEnum.REFERRAL_BR_STATE, LdapStatesEnum.SERVER_SASL_CREDENTIALS_STATE,
-            LdapConstants.SERVER_SASL_CREDENTIAL_TAG, new ServerSASLCredsAction() );
+        super.transitions[LdapStatesEnum.REFERRAL_BR_STATE.ordinal()][LdapConstants.SERVER_SASL_CREDENTIAL_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.REFERRAL_BR_STATE,
+                LdapStatesEnum.SERVER_SASL_CREDENTIALS_STATE,
+                LdapConstants.SERVER_SASL_CREDENTIAL_TAG,
+                new StoreServerSASLCreds() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Referral BR to Controls
@@ -647,9 +623,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     controls       [0] Controls OPTIONAL }
         //
         // Adda new Referral
-        super.transitions[LdapStatesEnum.REFERRAL_BR_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
-            LdapStatesEnum.REFERRAL_BR_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
-            new ControlsInitAction() );
+        super.transitions[LdapStatesEnum.REFERRAL_BR_STATE.ordinal()][LdapConstants.CONTROLS_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.REFERRAL_BR_STATE,
+                LdapStatesEnum.CONTROLS_STATE,
+                LdapConstants.CONTROLS_TAG,
+                new InitControls() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Error Message BR to controls
@@ -659,9 +638,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     controls       [0] Controls OPTIONAL }
         //
         //
-        super.transitions[LdapStatesEnum.ERROR_MESSAGE_BR_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
-            LdapStatesEnum.ERROR_MESSAGE_BR_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
-            new ControlsInitAction() );
+        super.transitions[LdapStatesEnum.ERROR_MESSAGE_BR_STATE.ordinal()][LdapConstants.CONTROLS_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.ERROR_MESSAGE_BR_STATE,
+                LdapStatesEnum.CONTROLS_STATE,
+                LdapConstants.CONTROLS_TAG,
+                new InitControls() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Server SASL credentials to Controls
@@ -670,9 +652,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //         ... },
         //     controls       [0] Controls OPTIONAL }
         //
-        super.transitions[LdapStatesEnum.SERVER_SASL_CREDENTIALS_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
-            LdapStatesEnum.SERVER_SASL_CREDENTIALS_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
-            new ControlsInitAction() );
+        super.transitions[LdapStatesEnum.SERVER_SASL_CREDENTIALS_STATE.ordinal()][LdapConstants.CONTROLS_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.SERVER_SASL_CREDENTIALS_STATE,
+                LdapStatesEnum.CONTROLS_STATE,
+                LdapConstants.CONTROLS_TAG,
+                new InitControls() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Result Code to Matched Dn
@@ -683,9 +668,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // Stores the matched Dn
-        super.transitions[LdapStatesEnum.RESULT_CODE_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.RESULT_CODE_STATE, LdapStatesEnum.MATCHED_DN_STATE, UniversalTag.OCTET_STRING.getValue(),
-            new MatchedDNAction() );
+        super.transitions[LdapStatesEnum.RESULT_CODE_STATE.ordinal()][OCTET_STRING.getValue()] =
+            new GrammarTransition(
+                LdapStatesEnum.RESULT_CODE_STATE,
+                LdapStatesEnum.MATCHED_DN_STATE,
+                OCTET_STRING.getValue(),
+                new StoreMatchedDN() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Matched Dn to Error Message
@@ -696,9 +684,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // Stores the error message
-        super.transitions[LdapStatesEnum.MATCHED_DN_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.MATCHED_DN_STATE, LdapStatesEnum.ERROR_MESSAGE_STATE, UniversalTag.OCTET_STRING.getValue(),
-            new ErrorMessageAction() );
+        super.transitions[LdapStatesEnum.MATCHED_DN_STATE.ordinal()][OCTET_STRING.getValue()] =
+            new GrammarTransition(
+                LdapStatesEnum.MATCHED_DN_STATE,
+                LdapStatesEnum.ERROR_MESSAGE_STATE,
+                OCTET_STRING.getValue(),
+                new StoreErrorMessage() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Error Message to Referrals
@@ -708,33 +699,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     referral   [3] Referral OPTIONNAL }
         //
         // Initialize the referrals list
-        super.transitions[LdapStatesEnum.ERROR_MESSAGE_STATE.ordinal()][LdapConstants.LDAP_RESULT_REFERRAL_SEQUENCE_TAG] = new GrammarTransition(
-            LdapStatesEnum.ERROR_MESSAGE_STATE, LdapStatesEnum.REFERRALS_STATE,
-            LdapConstants.LDAP_RESULT_REFERRAL_SEQUENCE_TAG, new GrammarAction<LdapMessageContainer<MessageDecorator<? extends Message>>>( "Init referrals list" )
-            {
-                public void action( LdapMessageContainer<MessageDecorator<? extends Message>> container ) throws DecoderException
-                {
-                    TLV tlv = container.getCurrentTLV();
-
-                    // If we have a Referrals sequence, then it should not be empty
-                    // sasl credentials
-                    if ( tlv.getLength() == 0 )
-                    {
-                        String msg = I18n.err( I18n.ERR_04080 );
-                        LOG.error( msg );
-
-                        // This will generate a PROTOCOL_ERROR
-                        throw new DecoderException( msg );
-                    }
-
-                    Message response = container.getMessage();
-                    LdapResult ldapResult = ( ( ResultResponse ) response ).getLdapResult();
-
-                    Referral referral = new ReferralImpl();
-
-                    ldapResult.setReferral( referral );
-                }
-            } );
+        super.transitions[LdapStatesEnum.ERROR_MESSAGE_STATE.ordinal()][LdapConstants.LDAP_RESULT_REFERRAL_SEQUENCE_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.ERROR_MESSAGE_STATE,
+                LdapStatesEnum.REFERRALS_STATE,
+                LdapConstants.LDAP_RESULT_REFERRAL_SEQUENCE_TAG,
+                new InitReferrals() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Referrals to Referral
@@ -743,9 +713,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // URI ::= LDAPString
         //
         // Add a first Referral
-        super.transitions[LdapStatesEnum.REFERRALS_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.REFERRALS_STATE, LdapStatesEnum.REFERRAL_STATE, UniversalTag.OCTET_STRING.getValue(),
-            new ReferralAction() );
+        super.transitions[LdapStatesEnum.REFERRALS_STATE.ordinal()][OCTET_STRING.getValue()] =
+            new GrammarTransition(
+                LdapStatesEnum.REFERRALS_STATE,
+                LdapStatesEnum.REFERRAL_STATE,
+                OCTET_STRING.getValue(),
+                new AddReferral() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Referral to Referral
@@ -754,9 +727,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // URI ::= LDAPString
         //
         // Adda new Referral
-        super.transitions[LdapStatesEnum.REFERRAL_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.REFERRAL_STATE, LdapStatesEnum.REFERRAL_STATE, UniversalTag.OCTET_STRING.getValue(),
-            new ReferralAction() );
+        super.transitions[LdapStatesEnum.REFERRAL_STATE.ordinal()][OCTET_STRING.getValue()] =
+            new GrammarTransition(
+                LdapStatesEnum.REFERRAL_STATE,
+                LdapStatesEnum.REFERRAL_STATE,
+                OCTET_STRING.getValue(),
+                new AddReferral() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Referral to Controls
@@ -766,9 +742,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     controls       [0] Controls OPTIONAL }
         //
         // Adda new Referral
-        super.transitions[LdapStatesEnum.REFERRAL_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
-            LdapStatesEnum.REFERRAL_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
-            new ControlsInitAction() );
+        super.transitions[LdapStatesEnum.REFERRAL_STATE.ordinal()][LdapConstants.CONTROLS_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.REFERRAL_STATE,
+                LdapStatesEnum.CONTROLS_STATE,
+                LdapConstants.CONTROLS_TAG,
+                new InitControls() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Error Message to controls
@@ -778,9 +757,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     controls       [0] Controls OPTIONAL }
         //
         //
-        super.transitions[LdapStatesEnum.ERROR_MESSAGE_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
-            LdapStatesEnum.ERROR_MESSAGE_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
-            new ControlsInitAction() );
+        super.transitions[LdapStatesEnum.ERROR_MESSAGE_STATE.ordinal()][LdapConstants.CONTROLS_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.ERROR_MESSAGE_STATE,
+                LdapStatesEnum.CONTROLS_STATE,
+                LdapConstants.CONTROLS_TAG,
+                new InitControls() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from MessageId to SearchResultEntry Message.
@@ -810,8 +792,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // ...
         //
         // Store the object name.
-        super.transitions[LdapStatesEnum.SEARCH_RESULT_ENTRY_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.SEARCH_RESULT_ENTRY_STATE, LdapStatesEnum.OBJECT_NAME_STATE, UniversalTag.OCTET_STRING.getValue(),
+        super.transitions[LdapStatesEnum.SEARCH_RESULT_ENTRY_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
+            LdapStatesEnum.SEARCH_RESULT_ENTRY_STATE, LdapStatesEnum.OBJECT_NAME_STATE, OCTET_STRING.getValue(),
             new GrammarAction<LdapMessageContainer<SearchResultEntryDecorator>>( "Store search result entry object name Value" )
             {
                 public void action( LdapMessageContainer<SearchResultEntryDecorator> container ) throws DecoderException
@@ -866,8 +848,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // ...
         //
         // We may have no attributes. Just allows the grammar to end
-        super.transitions[LdapStatesEnum.OBJECT_NAME_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
-            LdapStatesEnum.OBJECT_NAME_STATE, LdapStatesEnum.ATTRIBUTES_SR_STATE, UniversalTag.SEQUENCE.getValue(),
+        super.transitions[LdapStatesEnum.OBJECT_NAME_STATE.ordinal()][SEQUENCE.getValue()] = new GrammarTransition(
+            LdapStatesEnum.OBJECT_NAME_STATE, LdapStatesEnum.ATTRIBUTES_SR_STATE, SEQUENCE.getValue(),
             new GrammarAction<LdapMessageContainer<MessageDecorator<? extends Message>>>( "Pop and end allowed" )
             {
                 public void action( LdapMessageContainer<MessageDecorator<? extends Message>> container ) throws DecoderException
@@ -887,9 +869,9 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // ...
         //
         // nothing to do
-        super.transitions[LdapStatesEnum.ATTRIBUTES_SR_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ATTRIBUTES_SR_STATE.ordinal()][SEQUENCE.getValue()] = new GrammarTransition(
             LdapStatesEnum.ATTRIBUTES_SR_STATE, LdapStatesEnum.PARTIAL_ATTRIBUTES_LIST_STATE,
-            UniversalTag.SEQUENCE.getValue(), null );
+            SEQUENCE.getValue(), null );
 
         // --------------------------------------------------------------------------------------------
         // Transition from AttributesSR to Controls
@@ -901,7 +883,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // Initialize the controls
         super.transitions[LdapStatesEnum.ATTRIBUTES_SR_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.ATTRIBUTES_SR_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
-            new ControlsInitAction() );
+            new InitControls() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from PartialAttributesList to typeSR
@@ -915,8 +897,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // Store the attribute's name.
-        super.transitions[LdapStatesEnum.PARTIAL_ATTRIBUTES_LIST_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.PARTIAL_ATTRIBUTES_LIST_STATE, LdapStatesEnum.TYPE_SR_STATE, UniversalTag.OCTET_STRING.getValue(),
+        super.transitions[LdapStatesEnum.PARTIAL_ATTRIBUTES_LIST_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
+            LdapStatesEnum.PARTIAL_ATTRIBUTES_LIST_STATE, LdapStatesEnum.TYPE_SR_STATE, OCTET_STRING.getValue(),
             new GrammarAction<LdapMessageContainer<SearchResultEntryDecorator>>( "Store search result entry object name Value" )
             {
                 public void action( LdapMessageContainer<SearchResultEntryDecorator> container ) throws DecoderException
@@ -971,8 +953,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     vals SET OF AttributeValue }
         //
         // We may have no value. Just allows the grammar to end
-        super.transitions[LdapStatesEnum.TYPE_SR_STATE.ordinal()][UniversalTag.SET.getValue()] = new GrammarTransition(
-            LdapStatesEnum.TYPE_SR_STATE, LdapStatesEnum.VALS_SR_STATE, UniversalTag.SET.getValue(),
+        super.transitions[LdapStatesEnum.TYPE_SR_STATE.ordinal()][SET.getValue()] = new GrammarTransition(
+            LdapStatesEnum.TYPE_SR_STATE, LdapStatesEnum.VALS_SR_STATE, SET.getValue(),
             new GrammarAction<LdapMessageContainer<MessageDecorator<? extends Message>>>( "Grammar end allowed" )
             {
                 public void action( LdapMessageContainer<MessageDecorator<? extends Message>> container ) throws DecoderException
@@ -991,8 +973,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // AttributeValue ::= OCTET STRING
         //
         // Store the attribute value
-        super.transitions[LdapStatesEnum.VALS_SR_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.VALS_SR_STATE, LdapStatesEnum.ATTRIBUTE_VALUE_SR_STATE, UniversalTag.OCTET_STRING.getValue(),
+        super.transitions[LdapStatesEnum.VALS_SR_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
+            LdapStatesEnum.VALS_SR_STATE, LdapStatesEnum.ATTRIBUTE_VALUE_SR_STATE, OCTET_STRING.getValue(),
             new SearchResultAttributeValueAction() );
 
         // --------------------------------------------------------------------------------------------
@@ -1003,8 +985,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     vals SET OF AttributeValue }
         //
         // Loop when we don't have any attribute value. Nothing to do
-        super.transitions[LdapStatesEnum.VALS_SR_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
-            LdapStatesEnum.VALS_SR_STATE, LdapStatesEnum.PARTIAL_ATTRIBUTES_LIST_STATE, UniversalTag.SEQUENCE.getValue(), null );
+        super.transitions[LdapStatesEnum.VALS_SR_STATE.ordinal()][SEQUENCE.getValue()] = new GrammarTransition(
+            LdapStatesEnum.VALS_SR_STATE, LdapStatesEnum.PARTIAL_ATTRIBUTES_LIST_STATE, SEQUENCE.getValue(), null );
 
         // --------------------------------------------------------------------------------------------
         // Transition from ValsSR to Controls
@@ -1016,7 +998,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // Initialize the controls
         super.transitions[LdapStatesEnum.VALS_SR_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.VALS_SR_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
-            new ControlsInitAction() );
+            new InitControls() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from AttributeValueSR to AttributeValueSR
@@ -1028,9 +1010,9 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // AttributeValue ::= OCTET STRING
         //
         // Store the attribute value
-        super.transitions[LdapStatesEnum.ATTRIBUTE_VALUE_SR_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ATTRIBUTE_VALUE_SR_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.ATTRIBUTE_VALUE_SR_STATE, LdapStatesEnum.ATTRIBUTE_VALUE_SR_STATE,
-            UniversalTag.OCTET_STRING.getValue(), new SearchResultAttributeValueAction() );
+            OCTET_STRING.getValue(), new SearchResultAttributeValueAction() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from AttributeValueSR to PartialAttributesList
@@ -1040,9 +1022,9 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     vals SET OF AttributeValue }
         //
         // Loop when we don't have any attribute value. Nothing to do
-        super.transitions[LdapStatesEnum.ATTRIBUTE_VALUE_SR_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ATTRIBUTE_VALUE_SR_STATE.ordinal()][SEQUENCE.getValue()] = new GrammarTransition(
             LdapStatesEnum.ATTRIBUTE_VALUE_SR_STATE, LdapStatesEnum.PARTIAL_ATTRIBUTES_LIST_STATE,
-            UniversalTag.SEQUENCE.getValue(), null );
+            SEQUENCE.getValue(), null );
 
         // --------------------------------------------------------------------------------------------
         // Transition from AttributeValueSR to Controls
@@ -1054,7 +1036,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // Initialize the controls
         super.transitions[LdapStatesEnum.ATTRIBUTE_VALUE_SR_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.ATTRIBUTE_VALUE_SR_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
-            new ControlsInitAction() );
+            new InitControls() );
 
         // --------------------------------------------------------------------------------------------
         // SearchResultDone Message.
@@ -1088,9 +1070,9 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //         ...
         //
         // Stores the result code
-        super.transitions[LdapStatesEnum.SEARCH_RESULT_DONE_STATE.ordinal()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
-            LdapStatesEnum.SEARCH_RESULT_DONE_STATE, LdapStatesEnum.RESULT_CODE_STATE, UniversalTag.ENUMERATED.getValue(),
-            new ResultCodeAction() );
+        super.transitions[LdapStatesEnum.SEARCH_RESULT_DONE_STATE.ordinal()][ENUMERATED.getValue()] = new GrammarTransition(
+            LdapStatesEnum.SEARCH_RESULT_DONE_STATE, LdapStatesEnum.RESULT_CODE_STATE, ENUMERATED.getValue(),
+            new StoreResultCode() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Message ID to ModifyRequest Message
@@ -1121,8 +1103,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // Stores the object Dn
-        super.transitions[LdapStatesEnum.MODIFY_REQUEST_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.MODIFY_REQUEST_STATE, LdapStatesEnum.OBJECT_STATE, UniversalTag.OCTET_STRING.getValue(),
+        super.transitions[LdapStatesEnum.MODIFY_REQUEST_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
+            LdapStatesEnum.MODIFY_REQUEST_STATE, LdapStatesEnum.OBJECT_STATE, OCTET_STRING.getValue(),
             new GrammarAction<LdapMessageContainer<ModifyRequestDecorator>>( "Store Modify request object Value" )
             {
                 public void action( LdapMessageContainer<ModifyRequestDecorator> container ) throws DecoderException
@@ -1178,8 +1160,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // Initialize the modifications list
-        super.transitions[LdapStatesEnum.OBJECT_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
-            LdapStatesEnum.OBJECT_STATE, LdapStatesEnum.MODIFICATIONS_STATE, UniversalTag.SEQUENCE.getValue(), null );
+        super.transitions[LdapStatesEnum.OBJECT_STATE.ordinal()][SEQUENCE.getValue()] = new GrammarTransition(
+            LdapStatesEnum.OBJECT_STATE, LdapStatesEnum.MODIFICATIONS_STATE, SEQUENCE.getValue(), null );
 
         // --------------------------------------------------------------------------------------------
         // Transition from modifications to modification sequence
@@ -1190,8 +1172,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // Nothing to do
-        super.transitions[LdapStatesEnum.MODIFICATIONS_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
-            LdapStatesEnum.MODIFICATIONS_STATE, LdapStatesEnum.MODIFICATIONS_SEQ_STATE, UniversalTag.SEQUENCE.getValue(), null );
+        super.transitions[LdapStatesEnum.MODIFICATIONS_STATE.ordinal()][SEQUENCE.getValue()] = new GrammarTransition(
+            LdapStatesEnum.MODIFICATIONS_STATE, LdapStatesEnum.MODIFICATIONS_SEQ_STATE, SEQUENCE.getValue(), null );
 
         // --------------------------------------------------------------------------------------------
         // Transition from modification sequence to operation
@@ -1203,8 +1185,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //             ...
         //
         // Store operation type
-        super.transitions[LdapStatesEnum.MODIFICATIONS_SEQ_STATE.ordinal()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
-            LdapStatesEnum.MODIFICATIONS_SEQ_STATE, LdapStatesEnum.OPERATION_STATE, UniversalTag.ENUMERATED.getValue(),
+        super.transitions[LdapStatesEnum.MODIFICATIONS_SEQ_STATE.ordinal()][ENUMERATED.getValue()] = new GrammarTransition(
+            LdapStatesEnum.MODIFICATIONS_SEQ_STATE, LdapStatesEnum.OPERATION_STATE, ENUMERATED.getValue(),
             new GrammarAction<LdapMessageContainer<ModifyRequestDecorator>>( "Store operation type" )
             {
                 public void action( LdapMessageContainer<ModifyRequestDecorator> container ) throws DecoderException
@@ -1266,8 +1248,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // Nothing to do
-        super.transitions[LdapStatesEnum.OPERATION_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
-            LdapStatesEnum.OPERATION_STATE, LdapStatesEnum.MODIFICATION_STATE, UniversalTag.SEQUENCE.getValue(), null );
+        super.transitions[LdapStatesEnum.OPERATION_STATE.ordinal()][SEQUENCE.getValue()] = new GrammarTransition(
+            LdapStatesEnum.OPERATION_STATE, LdapStatesEnum.MODIFICATION_STATE, SEQUENCE.getValue(), null );
 
         // --------------------------------------------------------------------------------------------
         // Transition from modification to TypeMod
@@ -1283,8 +1265,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // Stores the type
-        super.transitions[LdapStatesEnum.MODIFICATION_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.MODIFICATION_STATE, LdapStatesEnum.TYPE_MOD_STATE, UniversalTag.OCTET_STRING.getValue(),
+        super.transitions[LdapStatesEnum.MODIFICATION_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
+            LdapStatesEnum.MODIFICATION_STATE, LdapStatesEnum.TYPE_MOD_STATE, OCTET_STRING.getValue(),
             new GrammarAction<LdapMessageContainer<ModifyRequestDecorator>>( "Store type" )
             {
                 public void action( LdapMessageContainer<ModifyRequestDecorator> container ) throws DecoderException
@@ -1333,8 +1315,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     vals SET OF AttributeValue }
         //
         // Initialize the list of values
-        super.transitions[LdapStatesEnum.TYPE_MOD_STATE.ordinal()][UniversalTag.SET.getValue()] = new GrammarTransition(
-            LdapStatesEnum.TYPE_MOD_STATE, LdapStatesEnum.VALS_STATE, UniversalTag.SET.getValue(),
+        super.transitions[LdapStatesEnum.TYPE_MOD_STATE.ordinal()][SET.getValue()] = new GrammarTransition(
+            LdapStatesEnum.TYPE_MOD_STATE, LdapStatesEnum.VALS_STATE, SET.getValue(),
             new GrammarAction<LdapMessageContainer<MessageDecorator<? extends Message>>>( "Init Attribute vals" )
             {
                 public void action( LdapMessageContainer<MessageDecorator<? extends Message>> container )
@@ -1370,8 +1352,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // AttributeValue ::= OCTET STRING
         //
         // Stores a value
-        super.transitions[LdapStatesEnum.VALS_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.VALS_STATE, LdapStatesEnum.ATTRIBUTE_VALUE_STATE, UniversalTag.OCTET_STRING.getValue(),
+        super.transitions[LdapStatesEnum.VALS_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
+            LdapStatesEnum.VALS_STATE, LdapStatesEnum.ATTRIBUTE_VALUE_STATE, OCTET_STRING.getValue(),
             new ModifyAttributeValueAction() );
 
         // --------------------------------------------------------------------------------------------
@@ -1390,8 +1372,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // AttributeValue ::= OCTET STRING
         //
         // Nothing to do
-        super.transitions[LdapStatesEnum.VALS_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
-            LdapStatesEnum.VALS_STATE, LdapStatesEnum.MODIFICATIONS_SEQ_STATE, UniversalTag.SEQUENCE.getValue(), null );
+        super.transitions[LdapStatesEnum.VALS_STATE.ordinal()][SEQUENCE.getValue()] = new GrammarTransition(
+            LdapStatesEnum.VALS_STATE, LdapStatesEnum.MODIFICATIONS_SEQ_STATE, SEQUENCE.getValue(), null );
 
         // --------------------------------------------------------------------------------------------
         // Transition from vals to Controls
@@ -1403,7 +1385,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // Nothing to do
         super.transitions[LdapStatesEnum.VALS_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.VALS_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
-            new ControlsInitAction() );
+            new InitControls() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Attribute Value to Attribute Value
@@ -1421,8 +1403,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // AttributeValue ::= OCTET STRING
         //
         // Stores a value
-        super.transitions[LdapStatesEnum.ATTRIBUTE_VALUE_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.ATTRIBUTE_VALUE_STATE, LdapStatesEnum.ATTRIBUTE_VALUE_STATE, UniversalTag.OCTET_STRING.getValue(),
+        super.transitions[LdapStatesEnum.ATTRIBUTE_VALUE_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
+            LdapStatesEnum.ATTRIBUTE_VALUE_STATE, LdapStatesEnum.ATTRIBUTE_VALUE_STATE, OCTET_STRING.getValue(),
             new ModifyAttributeValueAction() );
 
         // --------------------------------------------------------------------------------------------
@@ -1441,8 +1423,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // AttributeValue ::= OCTET STRING
         //
         // Nothing to do
-        super.transitions[LdapStatesEnum.ATTRIBUTE_VALUE_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
-            LdapStatesEnum.ATTRIBUTE_VALUE_STATE, LdapStatesEnum.MODIFICATIONS_SEQ_STATE, UniversalTag.SEQUENCE.getValue(),
+        super.transitions[LdapStatesEnum.ATTRIBUTE_VALUE_STATE.ordinal()][SEQUENCE.getValue()] = new GrammarTransition(
+            LdapStatesEnum.ATTRIBUTE_VALUE_STATE, LdapStatesEnum.MODIFICATIONS_SEQ_STATE, SEQUENCE.getValue(),
             null );
 
         // --------------------------------------------------------------------------------------------
@@ -1455,7 +1437,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // Nothing to do
         super.transitions[LdapStatesEnum.ATTRIBUTE_VALUE_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.ATTRIBUTE_VALUE_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
-            new ControlsInitAction() );
+            new InitControls() );
 
         // --------------------------------------------------------------------------------------------
         // ModifyResponse Message.
@@ -1489,9 +1471,9 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //         ...
         //
         // Stores the result code
-        super.transitions[LdapStatesEnum.MODIFY_RESPONSE_STATE.ordinal()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
-            LdapStatesEnum.MODIFY_RESPONSE_STATE, LdapStatesEnum.RESULT_CODE_STATE, UniversalTag.ENUMERATED.getValue(),
-            new ResultCodeAction() );
+        super.transitions[LdapStatesEnum.MODIFY_RESPONSE_STATE.ordinal()][ENUMERATED.getValue()] = new GrammarTransition(
+            LdapStatesEnum.MODIFY_RESPONSE_STATE, LdapStatesEnum.RESULT_CODE_STATE, ENUMERATED.getValue(),
+            new StoreResultCode() );
 
         // --------------------------------------------------------------------------------------------
         // AddRequest Message.
@@ -1534,8 +1516,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // Stores the Dn
-        super.transitions[LdapStatesEnum.ADD_REQUEST_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.ADD_REQUEST_STATE, LdapStatesEnum.ENTRY_STATE, UniversalTag.OCTET_STRING.getValue(),
+        super.transitions[LdapStatesEnum.ADD_REQUEST_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
+            LdapStatesEnum.ADD_REQUEST_STATE, LdapStatesEnum.ENTRY_STATE, OCTET_STRING.getValue(),
             new GrammarAction<LdapMessageContainer<AddRequestDecorator>>( "Store add request object Value" )
             {
                 public void action( LdapMessageContainer<AddRequestDecorator> container ) throws DecoderException
@@ -1595,8 +1577,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // AttributeList ::= SEQUENCE OF ...
         //
         // Initialize the attribute list
-        super.transitions[LdapStatesEnum.ENTRY_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
-            LdapStatesEnum.ENTRY_STATE, LdapStatesEnum.ATTRIBUTES_STATE, UniversalTag.SEQUENCE.getValue(), null );
+        super.transitions[LdapStatesEnum.ENTRY_STATE.ordinal()][SEQUENCE.getValue()] = new GrammarTransition(
+            LdapStatesEnum.ENTRY_STATE, LdapStatesEnum.ATTRIBUTES_STATE, SEQUENCE.getValue(), null );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Attributes to Attribute
@@ -1604,8 +1586,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // AttributeList ::= SEQUENCE OF SEQUENCE {
         //
         // We don't do anything in this transition. The attribute will be created when we met the type
-        super.transitions[LdapStatesEnum.ATTRIBUTES_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
-            LdapStatesEnum.ATTRIBUTES_STATE, LdapStatesEnum.ATTRIBUTE_STATE, UniversalTag.SEQUENCE.getValue(), null );
+        super.transitions[LdapStatesEnum.ATTRIBUTES_STATE.ordinal()][SEQUENCE.getValue()] = new GrammarTransition(
+            LdapStatesEnum.ATTRIBUTES_STATE, LdapStatesEnum.ATTRIBUTE_STATE, SEQUENCE.getValue(), null );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Attribute to type
@@ -1617,8 +1599,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // AttributeDescription LDAPString
         //
         // We store the type in the current attribute
-        super.transitions[LdapStatesEnum.ATTRIBUTE_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.ATTRIBUTE_STATE, LdapStatesEnum.TYPE_STATE, UniversalTag.OCTET_STRING.getValue(),
+        super.transitions[LdapStatesEnum.ATTRIBUTE_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
+            LdapStatesEnum.ATTRIBUTE_STATE, LdapStatesEnum.TYPE_STATE, OCTET_STRING.getValue(),
             new GrammarAction<LdapMessageContainer<AddRequestDecorator>>( "Store attribute type" )
             {
                 public void action( LdapMessageContainer<AddRequestDecorator> container ) throws DecoderException
@@ -1670,8 +1652,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     vals SET OF AttributeValue }
         //
         // Nothing to do here.
-        super.transitions[LdapStatesEnum.TYPE_STATE.ordinal()][UniversalTag.SET.getValue()] = new GrammarTransition(
-            LdapStatesEnum.TYPE_STATE, LdapStatesEnum.VALUES_STATE, UniversalTag.SET.getValue(), null );
+        super.transitions[LdapStatesEnum.TYPE_STATE.ordinal()][SET.getValue()] = new GrammarTransition(
+            LdapStatesEnum.TYPE_STATE, LdapStatesEnum.VALUES_STATE, SET.getValue(), null );
 
         // --------------------------------------------------------------------------------------------
         // Transition from vals to Value
@@ -1683,8 +1665,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // AttributeValue OCTET STRING
         //
         // Store the value into the current attribute
-        super.transitions[LdapStatesEnum.VALUES_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.VALUES_STATE, LdapStatesEnum.VALUE_STATE, UniversalTag.OCTET_STRING.getValue(), new ValueAction() );
+        super.transitions[LdapStatesEnum.VALUES_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
+            LdapStatesEnum.VALUES_STATE, LdapStatesEnum.VALUE_STATE, OCTET_STRING.getValue(), new ValueAction() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Value to Value
@@ -1696,8 +1678,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // AttributeValue OCTET STRING
         //
         // Store the value into the current attribute
-        super.transitions[LdapStatesEnum.VALUE_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.VALUE_STATE, LdapStatesEnum.VALUE_STATE, UniversalTag.OCTET_STRING.getValue(), new ValueAction() );
+        super.transitions[LdapStatesEnum.VALUE_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
+            LdapStatesEnum.VALUE_STATE, LdapStatesEnum.VALUE_STATE, OCTET_STRING.getValue(), new ValueAction() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Value to Attribute
@@ -1705,8 +1687,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // AttributeList ::= SEQUENCE OF SEQUENCE {
         //
         // Nothing to do here.
-        super.transitions[LdapStatesEnum.VALUE_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
-            LdapStatesEnum.VALUE_STATE, LdapStatesEnum.ATTRIBUTE_STATE, UniversalTag.SEQUENCE.getValue(), null );
+        super.transitions[LdapStatesEnum.VALUE_STATE.ordinal()][SEQUENCE.getValue()] = new GrammarTransition(
+            LdapStatesEnum.VALUE_STATE, LdapStatesEnum.ATTRIBUTE_STATE, SEQUENCE.getValue(), null );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Value to Controls
@@ -1716,7 +1698,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // Initialize the controls
         super.transitions[LdapStatesEnum.VALUE_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.VALUE_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
-            new ControlsInitAction() );
+            new InitControls() );
 
         // --------------------------------------------------------------------------------------------
         // AddResponse Message.
@@ -1762,9 +1744,9 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //         ...
         //
         // Stores the result code
-        super.transitions[LdapStatesEnum.ADD_RESPONSE_STATE.ordinal()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
-            LdapStatesEnum.ADD_RESPONSE_STATE, LdapStatesEnum.RESULT_CODE_STATE, UniversalTag.ENUMERATED.getValue(),
-            new ResultCodeAction() );
+        super.transitions[LdapStatesEnum.ADD_RESPONSE_STATE.ordinal()][ENUMERATED.getValue()] = new GrammarTransition(
+            LdapStatesEnum.ADD_RESPONSE_STATE, LdapStatesEnum.RESULT_CODE_STATE, ENUMERATED.getValue(),
+            new StoreResultCode() );
 
         // --------------------------------------------------------------------------------------------
         // DelResponse Message.
@@ -1798,9 +1780,9 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //         ...
         //
         // Stores the result code
-        super.transitions[LdapStatesEnum.DEL_RESPONSE_STATE.ordinal()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
-            LdapStatesEnum.DEL_RESPONSE_STATE, LdapStatesEnum.RESULT_CODE_STATE, UniversalTag.ENUMERATED.getValue(),
-            new ResultCodeAction() );
+        super.transitions[LdapStatesEnum.DEL_RESPONSE_STATE.ordinal()][ENUMERATED.getValue()] = new GrammarTransition(
+            LdapStatesEnum.DEL_RESPONSE_STATE, LdapStatesEnum.RESULT_CODE_STATE, ENUMERATED.getValue(),
+            new StoreResultCode() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from MessageID to ModifydDNRequest Message.
@@ -1832,8 +1814,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // Stores the entry Dn
-        super.transitions[LdapStatesEnum.MODIFY_DN_REQUEST_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.MODIFY_DN_REQUEST_STATE, LdapStatesEnum.ENTRY_MOD_DN_STATE, UniversalTag.OCTET_STRING.getValue(),
+        super.transitions[LdapStatesEnum.MODIFY_DN_REQUEST_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
+            LdapStatesEnum.MODIFY_DN_REQUEST_STATE, LdapStatesEnum.ENTRY_MOD_DN_STATE, OCTET_STRING.getValue(),
             new GrammarAction<LdapMessageContainer<ModifyDnRequestDecorator>>( "Store entry" )
             {
                 public void action( LdapMessageContainer<ModifyDnRequestDecorator> container ) throws DecoderException
@@ -1893,8 +1875,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // RelativeRDN :: LDAPString
         //
         // Stores the new Rdn
-        super.transitions[LdapStatesEnum.ENTRY_MOD_DN_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.ENTRY_MOD_DN_STATE, LdapStatesEnum.NEW_RDN_STATE, UniversalTag.OCTET_STRING.getValue(),
+        super.transitions[LdapStatesEnum.ENTRY_MOD_DN_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
+            LdapStatesEnum.ENTRY_MOD_DN_STATE, LdapStatesEnum.NEW_RDN_STATE, OCTET_STRING.getValue(),
             new GrammarAction<LdapMessageContainer<ModifyDnRequestDecorator>>( "Store new Rdn" )
             {
                 public void action( LdapMessageContainer<ModifyDnRequestDecorator> container ) throws DecoderException
@@ -1957,8 +1939,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // Stores the deleteOldRDN flag
-        super.transitions[LdapStatesEnum.NEW_RDN_STATE.ordinal()][UniversalTag.BOOLEAN.getValue()] = new GrammarTransition(
-            LdapStatesEnum.NEW_RDN_STATE, LdapStatesEnum.DELETE_OLD_RDN_STATE, UniversalTag.BOOLEAN.getValue(),
+        super.transitions[LdapStatesEnum.NEW_RDN_STATE.ordinal()][BOOLEAN.getValue()] = new GrammarTransition(
+            LdapStatesEnum.NEW_RDN_STATE, LdapStatesEnum.DELETE_OLD_RDN_STATE, BOOLEAN.getValue(),
             new GrammarAction<LdapMessageContainer<ModifyDnRequestDecorator>>( "Store matching dnAttributes Value" )
             {
                 public void action( LdapMessageContainer<ModifyDnRequestDecorator> container ) throws DecoderException
@@ -2087,7 +2069,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // Stores the new superior
         super.transitions[LdapStatesEnum.DELETE_OLD_RDN_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.DELETE_OLD_RDN_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
-            new ControlsInitAction() );
+            new InitControls() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from DeleteOldRDN to Controls
@@ -2099,7 +2081,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // Stores the new superior
         super.transitions[LdapStatesEnum.NEW_SUPERIOR_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.NEW_SUPERIOR_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
-            new ControlsInitAction() );
+            new InitControls() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from MessageID to ModifyDNResponse Message.
@@ -2136,9 +2118,9 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // Stores the result co        //     modifyDNRequest ModifyDNRequest,
         //     ... },
         // controls   [0] Controls OPTIONAL }
-        super.transitions[LdapStatesEnum.MODIFY_DN_RESPONSE_STATE.ordinal()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
-            LdapStatesEnum.MODIFY_DN_RESPONSE_STATE, LdapStatesEnum.RESULT_CODE_STATE, UniversalTag.ENUMERATED.getValue(),
-            new ResultCodeAction() );
+        super.transitions[LdapStatesEnum.MODIFY_DN_RESPONSE_STATE.ordinal()][ENUMERATED.getValue()] = new GrammarTransition(
+            LdapStatesEnum.MODIFY_DN_RESPONSE_STATE, LdapStatesEnum.RESULT_CODE_STATE, ENUMERATED.getValue(),
+            new StoreResultCode() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Message ID to CompareResquest
@@ -2172,8 +2154,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // Stores the compared Dn
-        super.transitions[LdapStatesEnum.COMPARE_REQUEST_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.COMPARE_REQUEST_STATE, LdapStatesEnum.ENTRY_COMP_STATE, UniversalTag.OCTET_STRING.getValue(),
+        super.transitions[LdapStatesEnum.COMPARE_REQUEST_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
+            LdapStatesEnum.COMPARE_REQUEST_STATE, LdapStatesEnum.ENTRY_COMP_STATE, OCTET_STRING.getValue(),
             new GrammarAction<LdapMessageContainer<CompareRequestDecorator>>( "Store entry" )
             {
                 public void action( LdapMessageContainer<CompareRequestDecorator> container ) throws DecoderException
@@ -2231,8 +2213,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // AttributeValueAssertion ::= SEQUENCE {
         //
         // Nothing to do
-        super.transitions[LdapStatesEnum.ENTRY_COMP_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
-            LdapStatesEnum.ENTRY_COMP_STATE, LdapStatesEnum.AVA_STATE, UniversalTag.SEQUENCE.getValue(), null );
+        super.transitions[LdapStatesEnum.ENTRY_COMP_STATE.ordinal()][SEQUENCE.getValue()] = new GrammarTransition(
+            LdapStatesEnum.ENTRY_COMP_STATE, LdapStatesEnum.AVA_STATE, SEQUENCE.getValue(), null );
 
         // --------------------------------------------------------------------------------------------
         // Transition from ava to AttributeDesc
@@ -2244,8 +2226,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // AttributeDescription LDAPString
         //
         // Stores the attribute description
-        super.transitions[LdapStatesEnum.AVA_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.AVA_STATE, LdapStatesEnum.ATTRIBUTE_DESC_STATE, UniversalTag.OCTET_STRING.getValue(),
+        super.transitions[LdapStatesEnum.AVA_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
+            LdapStatesEnum.AVA_STATE, LdapStatesEnum.ATTRIBUTE_DESC_STATE, OCTET_STRING.getValue(),
             new GrammarAction<LdapMessageContainer<CompareRequestDecorator>>( "Store attribute desc" )
             {
                 public void action( LdapMessageContainer<CompareRequestDecorator> container ) throws DecoderException
@@ -2288,8 +2270,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // AssertionValue OCTET STRING
         //
         // Stores the attribute value
-        super.transitions[LdapStatesEnum.ATTRIBUTE_DESC_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.ATTRIBUTE_DESC_STATE, LdapStatesEnum.ASSERTION_VALUE_STATE, UniversalTag.OCTET_STRING.getValue(),
+        super.transitions[LdapStatesEnum.ATTRIBUTE_DESC_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
+            LdapStatesEnum.ATTRIBUTE_DESC_STATE, LdapStatesEnum.ASSERTION_VALUE_STATE, OCTET_STRING.getValue(),
             new GrammarAction<LdapMessageContainer<CompareRequestDecorator>>( "Store assertion value" )
             {
                 public void action( LdapMessageContainer<CompareRequestDecorator> container )
@@ -2345,7 +2327,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // Stores the attribute value
         super.transitions[LdapStatesEnum.ASSERTION_VALUE_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.ASSERTION_VALUE_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
-            new ControlsInitAction() );
+            new InitControls() );
 
         // --------------------------------------------------------------------------------------------
         // CompareResponse Message.
@@ -2389,9 +2371,9 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //         ...
         //
         // Stores the result code
-        super.transitions[LdapStatesEnum.COMPARE_RESPONSE_STATE.ordinal()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
-            LdapStatesEnum.COMPARE_RESPONSE_STATE, LdapStatesEnum.RESULT_CODE_STATE, UniversalTag.ENUMERATED.getValue(),
-            new ResultCodeAction() );
+        super.transitions[LdapStatesEnum.COMPARE_RESPONSE_STATE.ordinal()][ENUMERATED.getValue()] = new GrammarTransition(
+            LdapStatesEnum.COMPARE_RESPONSE_STATE, LdapStatesEnum.RESULT_CODE_STATE, ENUMERATED.getValue(),
+            new StoreResultCode() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from MessageID to SearchResultReference Message.
@@ -2422,8 +2404,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // SearchResultReference ::= [APPLICATION 19] SEQUENCE OF LDAPURL
         //
         // Initialization of SearchResultReference object
-        super.transitions[LdapStatesEnum.SEARCH_RESULT_REFERENCE_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.SEARCH_RESULT_REFERENCE_STATE, LdapStatesEnum.REFERENCE_STATE, UniversalTag.OCTET_STRING.getValue(),
+        super.transitions[LdapStatesEnum.SEARCH_RESULT_REFERENCE_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
+            LdapStatesEnum.SEARCH_RESULT_REFERENCE_STATE, LdapStatesEnum.REFERENCE_STATE, OCTET_STRING.getValue(),
             new StoreReferenceAction() );
 
         // --------------------------------------------------------------------------------------------
@@ -2433,8 +2415,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // SearchResultReference ::= [APPLICATION 19] SEQUENCE OF LDAPURL
         //
         // Initialization of SearchResultReference object
-        super.transitions[LdapStatesEnum.REFERENCE_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.REFERENCE_STATE, LdapStatesEnum.REFERENCE_STATE, UniversalTag.OCTET_STRING.getValue(),
+        super.transitions[LdapStatesEnum.REFERENCE_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
+            LdapStatesEnum.REFERENCE_STATE, LdapStatesEnum.REFERENCE_STATE, OCTET_STRING.getValue(),
             new StoreReferenceAction() );
 
         // --------------------------------------------------------------------------------------------
@@ -2447,7 +2429,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // Initialization the controls
         super.transitions[LdapStatesEnum.REFERENCE_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.REFERENCE_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
-            new ControlsInitAction() );
+            new InitControls() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Message Id to ExtendedRequest Message
@@ -2595,7 +2577,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // Stores the value
         super.transitions[LdapStatesEnum.REQUEST_NAME_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.REQUEST_NAME_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
-            new ControlsInitAction() );
+            new InitControls() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from RequestValue to Controls
@@ -2607,7 +2589,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // Stores the value
         super.transitions[LdapStatesEnum.REQUEST_VALUE_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.REQUEST_VALUE_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
-            new ControlsInitAction() );
+            new InitControls() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from MessageId to ExtendedResponse Message.
@@ -2640,9 +2622,9 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // Stores the result code
-        super.transitions[LdapStatesEnum.EXTENDED_RESPONSE_STATE.ordinal()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
-            LdapStatesEnum.EXTENDED_RESPONSE_STATE, LdapStatesEnum.RESULT_CODE_ER_STATE, UniversalTag.ENUMERATED.getValue(),
-            new ResultCodeAction() );
+        super.transitions[LdapStatesEnum.EXTENDED_RESPONSE_STATE.ordinal()][ENUMERATED.getValue()] = new GrammarTransition(
+            LdapStatesEnum.EXTENDED_RESPONSE_STATE, LdapStatesEnum.RESULT_CODE_ER_STATE, ENUMERATED.getValue(),
+            new StoreResultCode() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Result Code ER to Matched Dn ER
@@ -2653,9 +2635,9 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         //
-        super.transitions[LdapStatesEnum.RESULT_CODE_ER_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.RESULT_CODE_ER_STATE, LdapStatesEnum.MATCHED_DN_ER_STATE, UniversalTag.OCTET_STRING.getValue(),
-            new MatchedDNAction() );
+        super.transitions[LdapStatesEnum.RESULT_CODE_ER_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
+            LdapStatesEnum.RESULT_CODE_ER_STATE, LdapStatesEnum.MATCHED_DN_ER_STATE, OCTET_STRING.getValue(),
+            new StoreMatchedDN() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Matched Dn ER to Error Message ER
@@ -2666,9 +2648,9 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         //
-        super.transitions[LdapStatesEnum.MATCHED_DN_ER_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.MATCHED_DN_ER_STATE, LdapStatesEnum.ERROR_MESSAGE_ER_STATE, UniversalTag.OCTET_STRING.getValue(),
-            new ErrorMessageAction() );
+        super.transitions[LdapStatesEnum.MATCHED_DN_ER_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
+            LdapStatesEnum.MATCHED_DN_ER_STATE, LdapStatesEnum.ERROR_MESSAGE_ER_STATE, OCTET_STRING.getValue(),
+            new StoreErrorMessage() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Error Message ER to Referrals ER
@@ -2681,7 +2663,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //
         super.transitions[LdapStatesEnum.ERROR_MESSAGE_ER_STATE.ordinal()][LdapConstants.LDAP_RESULT_REFERRAL_SEQUENCE_TAG] = new GrammarTransition(
             LdapStatesEnum.ERROR_MESSAGE_ER_STATE, LdapStatesEnum.REFERRALS_ER_STATE,
-            LdapConstants.LDAP_RESULT_REFERRAL_SEQUENCE_TAG, new InitReferralsAction() );
+            LdapConstants.LDAP_RESULT_REFERRAL_SEQUENCE_TAG, new InitReferrals() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Referrals ER to Referral ER
@@ -2690,9 +2672,9 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // URI ::= LDAPString
         //
         // Add a first Referral
-        super.transitions[LdapStatesEnum.REFERRALS_ER_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.REFERRALS_ER_STATE, LdapStatesEnum.REFERRAL_ER_STATE, UniversalTag.OCTET_STRING.getValue(),
-            new ReferralAction() );
+        super.transitions[LdapStatesEnum.REFERRALS_ER_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
+            LdapStatesEnum.REFERRALS_ER_STATE, LdapStatesEnum.REFERRAL_ER_STATE, OCTET_STRING.getValue(),
+            new AddReferral() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Referral ER to Referral ER
@@ -2701,9 +2683,9 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // URI ::= LDAPString
         //
         // Adda new Referral
-        super.transitions[LdapStatesEnum.REFERRAL_ER_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.REFERRAL_ER_STATE, LdapStatesEnum.REFERRAL_ER_STATE, UniversalTag.OCTET_STRING.getValue(),
-            new ReferralAction() );
+        super.transitions[LdapStatesEnum.REFERRAL_ER_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
+            LdapStatesEnum.REFERRAL_ER_STATE, LdapStatesEnum.REFERRAL_ER_STATE, OCTET_STRING.getValue(),
+            new AddReferral() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Referral ER to ResponseName
@@ -2737,7 +2719,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // Adda new Referral
         super.transitions[LdapStatesEnum.REFERRAL_ER_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.REFERRAL_ER_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
-            new ControlsInitAction() );
+            new InitControls() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Error Message ER to Controls
@@ -2750,7 +2732,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //
         super.transitions[LdapStatesEnum.ERROR_MESSAGE_ER_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.ERROR_MESSAGE_ER_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
-            new ControlsInitAction() );
+            new InitControls() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Error Message ER to ResponseName
@@ -2790,7 +2772,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // Init the controls
         super.transitions[LdapStatesEnum.RESPONSE_NAME_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.RESPONSE_NAME_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
-            new ControlsInitAction() );
+            new InitControls() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Error Message ER to Response
@@ -2816,7 +2798,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // Init the controls
         super.transitions[LdapStatesEnum.RESPONSE_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.RESPONSE_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
-            new ControlsInitAction() );
+            new InitControls() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Message Id to IntermediateResponse Message
@@ -2998,7 +2980,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // Stores the value
         super.transitions[LdapStatesEnum.INTERMEDIATE_RESPONSE_NAME_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.INTERMEDIATE_RESPONSE_NAME_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
-            new ControlsInitAction() );
+            new InitControls() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from ResponseValue to Controls
@@ -3010,7 +2992,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // Stores the value
         super.transitions[LdapStatesEnum.INTERMEDIATE_RESPONSE_VALUE_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.INTERMEDIATE_RESPONSE_VALUE_STATE, LdapStatesEnum.CONTROLS_STATE,
-            LdapConstants.CONTROLS_TAG, new ControlsInitAction() );
+            LdapConstants.CONTROLS_TAG, new InitControls() );
 
         // --------------------------------------------------------------------------------------------
         // Controls
@@ -3043,8 +3025,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //  ...
         //
         // Initialize the controls
-        super.transitions[LdapStatesEnum.CONTROLS_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
-            LdapStatesEnum.CONTROLS_STATE, LdapStatesEnum.CONTROL_STATE, UniversalTag.SEQUENCE.getValue(), addControl );
+        super.transitions[LdapStatesEnum.CONTROLS_STATE.ordinal()][SEQUENCE.getValue()] = new GrammarTransition(
+            LdapStatesEnum.CONTROLS_STATE, LdapStatesEnum.CONTROL_STATE, SEQUENCE.getValue(), addControl );
 
         // ============================================================================================
         // Transition from Control to ControlType
@@ -3053,8 +3035,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // Create a new Control object, and store it in the message Container
-        super.transitions[LdapStatesEnum.CONTROL_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.CONTROL_STATE, LdapStatesEnum.CONTROL_TYPE_STATE, UniversalTag.OCTET_STRING.getValue(),
+        super.transitions[LdapStatesEnum.CONTROL_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
+            LdapStatesEnum.CONTROL_STATE, LdapStatesEnum.CONTROL_TYPE_STATE, OCTET_STRING.getValue(),
             new GrammarAction<LdapMessageContainer<MessageDecorator<? extends Message>>>( "Set Control Type" )
             {
                 public void action( LdapMessageContainer<MessageDecorator<? extends Message>> container ) throws DecoderException
@@ -3109,8 +3091,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // Store the value in the control object created before
-        super.transitions[LdapStatesEnum.CONTROL_TYPE_STATE.ordinal()][UniversalTag.BOOLEAN.getValue()] = new GrammarTransition(
-            LdapStatesEnum.CONTROL_TYPE_STATE, LdapStatesEnum.CRITICALITY_STATE, UniversalTag.OCTET_STRING.getValue(),
+        super.transitions[LdapStatesEnum.CONTROL_TYPE_STATE.ordinal()][BOOLEAN.getValue()] = new GrammarTransition(
+            LdapStatesEnum.CONTROL_TYPE_STATE, LdapStatesEnum.CRITICALITY_STATE, OCTET_STRING.getValue(),
             new GrammarAction<LdapMessageContainer<MessageDecorator<? extends Message>>>( "Set Criticality" )
             {
                 public void action( LdapMessageContainer<MessageDecorator<? extends Message>> container ) throws DecoderException
@@ -3163,8 +3145,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     controlValue OCTET STRING OPTIONAL }
         //
         // Store the value in the control object created before
-        super.transitions[LdapStatesEnum.CRITICALITY_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.CRITICALITY_STATE, LdapStatesEnum.CONTROL_VALUE_STATE, UniversalTag.OCTET_STRING.getValue(),
+        super.transitions[LdapStatesEnum.CRITICALITY_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
+            LdapStatesEnum.CRITICALITY_STATE, LdapStatesEnum.CONTROL_VALUE_STATE, OCTET_STRING.getValue(),
             new ControlValueAction() );
 
         // ============================================================================================
@@ -3175,8 +3157,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     controlValue OCTET STRING OPTIONAL }
         //
         // Store the value in the control object created before
-        super.transitions[LdapStatesEnum.CONTROL_TYPE_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.CONTROL_TYPE_STATE, LdapStatesEnum.CONTROL_VALUE_STATE, UniversalTag.OCTET_STRING.getValue(),
+        super.transitions[LdapStatesEnum.CONTROL_TYPE_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
+            LdapStatesEnum.CONTROL_TYPE_STATE, LdapStatesEnum.CONTROL_VALUE_STATE, OCTET_STRING.getValue(),
             new ControlValueAction() );
 
         // ============================================================================================
@@ -3187,8 +3169,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     controlValue OCTET STRING OPTIONAL }
         //
         // Store the value in the control object created before
-        super.transitions[LdapStatesEnum.CONTROL_TYPE_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
-            LdapStatesEnum.CONTROL_TYPE_STATE, LdapStatesEnum.CONTROL_STATE, UniversalTag.SEQUENCE.getValue(), addControl );
+        super.transitions[LdapStatesEnum.CONTROL_TYPE_STATE.ordinal()][SEQUENCE.getValue()] = new GrammarTransition(
+            LdapStatesEnum.CONTROL_TYPE_STATE, LdapStatesEnum.CONTROL_STATE, SEQUENCE.getValue(), addControl );
 
         // ============================================================================================
         // Transition from Control Criticality to Control
@@ -3198,8 +3180,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     controlValue OCTET STRING OPTIONAL }
         //
         // Store the value in the control object created before
-        super.transitions[LdapStatesEnum.CRITICALITY_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
-            LdapStatesEnum.CRITICALITY_STATE, LdapStatesEnum.CONTROL_STATE, UniversalTag.SEQUENCE.getValue(), addControl );
+        super.transitions[LdapStatesEnum.CRITICALITY_STATE.ordinal()][SEQUENCE.getValue()] = new GrammarTransition(
+            LdapStatesEnum.CRITICALITY_STATE, LdapStatesEnum.CONTROL_STATE, SEQUENCE.getValue(), addControl );
 
         // ============================================================================================
         // Transition from Control Value to Control
@@ -3209,8 +3191,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     controlValue OCTET STRING OPTIONAL }
         //
         // Store the value in the control object created before
-        super.transitions[LdapStatesEnum.CONTROL_VALUE_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
-            LdapStatesEnum.CONTROL_VALUE_STATE, LdapStatesEnum.CONTROL_STATE, UniversalTag.SEQUENCE.getValue(), addControl );
+        super.transitions[LdapStatesEnum.CONTROL_VALUE_STATE.ordinal()][SEQUENCE.getValue()] = new GrammarTransition(
+            LdapStatesEnum.CONTROL_VALUE_STATE, LdapStatesEnum.CONTROL_STATE, SEQUENCE.getValue(), addControl );
 
         // --------------------------------------------------------------------------------------------
         // Transition from message ID to SearchRequest Message
@@ -3246,8 +3228,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // We have a value for the base object, we will store it in the message
-        super.transitions[LdapStatesEnum.SEARCH_REQUEST_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.SEARCH_REQUEST_STATE, LdapStatesEnum.BASE_OBJECT_STATE, UniversalTag.OCTET_STRING.getValue(),
+        super.transitions[LdapStatesEnum.SEARCH_REQUEST_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
+            LdapStatesEnum.SEARCH_REQUEST_STATE, LdapStatesEnum.BASE_OBJECT_STATE, OCTET_STRING.getValue(),
             new GrammarAction<LdapMessageContainer<SearchRequestDecorator>>( "store base object value" )
             {
                 public void action( LdapMessageContainer<SearchRequestDecorator> container ) throws DecoderException
@@ -3307,8 +3289,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // We have a value for the scope, we will store it in the message
-        super.transitions[LdapStatesEnum.BASE_OBJECT_STATE.ordinal()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
-            LdapStatesEnum.BASE_OBJECT_STATE, LdapStatesEnum.SCOPE_STATE, UniversalTag.ENUMERATED.getValue(),
+        super.transitions[LdapStatesEnum.BASE_OBJECT_STATE.ordinal()][ENUMERATED.getValue()] = new GrammarTransition(
+            LdapStatesEnum.BASE_OBJECT_STATE, LdapStatesEnum.SCOPE_STATE, ENUMERATED.getValue(),
             new GrammarAction<LdapMessageContainer<SearchRequestDecorator>>( "store scope value" )
             {
                 public void action( LdapMessageContainer<SearchRequestDecorator> container ) throws DecoderException
@@ -3368,8 +3350,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // We have a value for the derefAliases, we will store it in the message
-        super.transitions[LdapStatesEnum.SCOPE_STATE.ordinal()][UniversalTag.ENUMERATED.getValue()] = new GrammarTransition(
-            LdapStatesEnum.SCOPE_STATE, LdapStatesEnum.DEREF_ALIAS_STATE, UniversalTag.ENUMERATED.getValue(),
+        super.transitions[LdapStatesEnum.SCOPE_STATE.ordinal()][ENUMERATED.getValue()] = new GrammarTransition(
+            LdapStatesEnum.SCOPE_STATE, LdapStatesEnum.DEREF_ALIAS_STATE, ENUMERATED.getValue(),
             new GrammarAction<LdapMessageContainer<SearchRequestDecorator>>( "store derefAliases value" )
             {
                 public void action( LdapMessageContainer<SearchRequestDecorator> container ) throws DecoderException
@@ -3429,8 +3411,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // We have a value for the sizeLimit, we will store it in the message
-        super.transitions[LdapStatesEnum.DEREF_ALIAS_STATE.ordinal()][UniversalTag.INTEGER.getValue()] = new GrammarTransition(
-            LdapStatesEnum.DEREF_ALIAS_STATE, LdapStatesEnum.SIZE_LIMIT_STATE, UniversalTag.INTEGER.getValue(),
+        super.transitions[LdapStatesEnum.DEREF_ALIAS_STATE.ordinal()][INTEGER.getValue()] = new GrammarTransition(
+            LdapStatesEnum.DEREF_ALIAS_STATE, LdapStatesEnum.SIZE_LIMIT_STATE, INTEGER.getValue(),
             new GrammarAction<LdapMessageContainer<SearchRequestDecorator>>( "store sizeLimit value" )
             {
                 public void action( LdapMessageContainer<SearchRequestDecorator> container ) throws DecoderException
@@ -3473,8 +3455,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // We have a value for the timeLimit, we will store it in the message
-        super.transitions[LdapStatesEnum.SIZE_LIMIT_STATE.ordinal()][UniversalTag.INTEGER.getValue()] = new GrammarTransition(
-            LdapStatesEnum.SIZE_LIMIT_STATE, LdapStatesEnum.TIME_LIMIT_STATE, UniversalTag.INTEGER.getValue(),
+        super.transitions[LdapStatesEnum.SIZE_LIMIT_STATE.ordinal()][INTEGER.getValue()] = new GrammarTransition(
+            LdapStatesEnum.SIZE_LIMIT_STATE, LdapStatesEnum.TIME_LIMIT_STATE, INTEGER.getValue(),
             new GrammarAction<LdapMessageContainer<SearchRequestDecorator>>( "store timeLimit value" )
             {
                 public void action( LdapMessageContainer<SearchRequestDecorator> container ) throws DecoderException
@@ -3518,8 +3500,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // We have a value for the typesOnly, we will store it in the message.
-        super.transitions[LdapStatesEnum.TIME_LIMIT_STATE.ordinal()][UniversalTag.BOOLEAN.getValue()] = new GrammarTransition(
-            LdapStatesEnum.TIME_LIMIT_STATE, LdapStatesEnum.TYPES_ONLY_STATE, UniversalTag.BOOLEAN.getValue(),
+        super.transitions[LdapStatesEnum.TIME_LIMIT_STATE.ordinal()][BOOLEAN.getValue()] = new GrammarTransition(
+            LdapStatesEnum.TIME_LIMIT_STATE, LdapStatesEnum.TYPES_ONLY_STATE, BOOLEAN.getValue(),
             new GrammarAction<LdapMessageContainer<SearchRequestDecorator>>( "store typesOnly value" )
             {
                 public void action( LdapMessageContainer<SearchRequestDecorator> container ) throws DecoderException
@@ -4340,9 +4322,9 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // Init Attribute Desc filter
-        super.transitions[LdapStatesEnum.EQUALITY_MATCH_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.EQUALITY_MATCH_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.EQUALITY_MATCH_STATE, LdapStatesEnum.ATTRIBUTE_DESC_FILTER_STATE,
-            UniversalTag.OCTET_STRING.getValue(), new InitAttributeDescFilterAction() );
+            OCTET_STRING.getValue(), new InitAttributeDescFilterAction() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Attribute Desc Filter to Assertion Value Filter
@@ -4357,9 +4339,9 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     assertionValue   AssertionValue }
         //
         // Init Assertion Value filter
-        super.transitions[LdapStatesEnum.ATTRIBUTE_DESC_FILTER_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ATTRIBUTE_DESC_FILTER_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.ATTRIBUTE_DESC_FILTER_STATE, LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE,
-            UniversalTag.OCTET_STRING.getValue(), new InitAssertionValueFilterAction() );
+            OCTET_STRING.getValue(), new InitAssertionValueFilterAction() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Assertion Value Filter to AND filter
@@ -4552,9 +4534,9 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     AttributeDescription
         //
         // Init attribute description list
-        super.transitions[LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE.ordinal()][SEQUENCE.getValue()] = new GrammarTransition(
             LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE, LdapStatesEnum.ATTRIBUTE_DESCRIPTION_LIST_STATE,
-            UniversalTag.SEQUENCE.getValue(), new InitAttributeDescListAction() );
+            SEQUENCE.getValue(), new InitAttributeDescListAction() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Attribute Description List to AttributeDescription
@@ -4568,9 +4550,9 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     AttributeDescription
         //
         // Store attribute description
-        super.transitions[LdapStatesEnum.ATTRIBUTE_DESCRIPTION_LIST_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ATTRIBUTE_DESCRIPTION_LIST_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.ATTRIBUTE_DESCRIPTION_LIST_STATE, LdapStatesEnum.ATTRIBUTE_DESCRIPTION_STATE,
-            UniversalTag.OCTET_STRING.getValue(), new AttributeDescAction() );
+            OCTET_STRING.getValue(), new AttributeDescAction() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Attribute Description List to Controls
@@ -4582,7 +4564,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // Empty attribute description list, with controls
         super.transitions[LdapStatesEnum.ATTRIBUTE_DESCRIPTION_LIST_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.ATTRIBUTE_DESCRIPTION_LIST_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
-            new ControlsInitAction() );
+            new InitControls() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Attribute Description to AttributeDescription
@@ -4596,9 +4578,9 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     AttributeDescription
         //
         // Store attribute description
-        super.transitions[LdapStatesEnum.ATTRIBUTE_DESCRIPTION_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.ATTRIBUTE_DESCRIPTION_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.ATTRIBUTE_DESCRIPTION_STATE, LdapStatesEnum.ATTRIBUTE_DESCRIPTION_STATE,
-            UniversalTag.OCTET_STRING.getValue(), new AttributeDescAction() );
+            OCTET_STRING.getValue(), new AttributeDescAction() );
 
         // --------------------------------------------------------------------------------------------
         // transition from Attribute Description to Controls.
@@ -4609,7 +4591,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //
         super.transitions[LdapStatesEnum.ATTRIBUTE_DESCRIPTION_STATE.ordinal()][LdapConstants.CONTROLS_TAG] = new GrammarTransition(
             LdapStatesEnum.ATTRIBUTE_DESCRIPTION_STATE, LdapStatesEnum.CONTROLS_STATE, LdapConstants.CONTROLS_TAG,
-            new ControlsInitAction() );
+            new InitControls() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Greater Or Equal to Attribute Desc Filter
@@ -4624,9 +4606,9 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // Init Attribute Desc filter
-        super.transitions[LdapStatesEnum.GREATER_OR_EQUAL_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.GREATER_OR_EQUAL_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.GREATER_OR_EQUAL_STATE, LdapStatesEnum.ATTRIBUTE_DESC_FILTER_STATE,
-            UniversalTag.OCTET_STRING.getValue(), new InitAttributeDescFilterAction() );
+            OCTET_STRING.getValue(), new InitAttributeDescFilterAction() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Less Or Equal to Attribute Desc Filter
@@ -4641,9 +4623,9 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // Init Attribute Desc filter
-        super.transitions[LdapStatesEnum.LESS_OR_EQUAL_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.LESS_OR_EQUAL_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.LESS_OR_EQUAL_STATE, LdapStatesEnum.ATTRIBUTE_DESC_FILTER_STATE,
-            UniversalTag.OCTET_STRING.getValue(), new InitAttributeDescFilterAction() );
+            OCTET_STRING.getValue(), new InitAttributeDescFilterAction() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Substrings to typeSubstring
@@ -4658,8 +4640,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // Init substring type
-        super.transitions[LdapStatesEnum.SUBSTRING_FILTER_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.SUBSTRING_FILTER_STATE, LdapStatesEnum.TYPE_SUBSTRING_STATE, UniversalTag.OCTET_STRING.getValue(),
+        super.transitions[LdapStatesEnum.SUBSTRING_FILTER_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
+            LdapStatesEnum.SUBSTRING_FILTER_STATE, LdapStatesEnum.TYPE_SUBSTRING_STATE, OCTET_STRING.getValue(),
             new GrammarAction<LdapMessageContainer<SearchRequestDecorator>>( "Store substring filter type" )
             {
                 public void action( LdapMessageContainer<SearchRequestDecorator> container ) throws DecoderException
@@ -4703,8 +4685,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // Init substring type
-        super.transitions[LdapStatesEnum.TYPE_SUBSTRING_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
-            LdapStatesEnum.TYPE_SUBSTRING_STATE, LdapStatesEnum.SUBSTRINGS_STATE, UniversalTag.SEQUENCE.getValue(),
+        super.transitions[LdapStatesEnum.TYPE_SUBSTRING_STATE.ordinal()][SEQUENCE.getValue()] = new GrammarTransition(
+            LdapStatesEnum.TYPE_SUBSTRING_STATE, LdapStatesEnum.SUBSTRINGS_STATE, SEQUENCE.getValue(),
             new GrammarAction<LdapMessageContainer<MessageDecorator<? extends Message>>>( "Substring Filter substringsSequence " )
             {
                 public void action( LdapMessageContainer<MessageDecorator<? extends Message>> container ) throws DecoderException
@@ -4827,8 +4809,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     AttributeDescription
         //
         // Init attribute description list
-        super.transitions[LdapStatesEnum.INITIAL_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
-            LdapStatesEnum.INITIAL_STATE, LdapStatesEnum.ATTRIBUTE_DESCRIPTION_LIST_STATE, UniversalTag.SEQUENCE.getValue(),
+        super.transitions[LdapStatesEnum.INITIAL_STATE.ordinal()][SEQUENCE.getValue()] = new GrammarTransition(
+            LdapStatesEnum.INITIAL_STATE, LdapStatesEnum.ATTRIBUTE_DESCRIPTION_LIST_STATE, SEQUENCE.getValue(),
             new InitAttributeDescListAction() );
 
         // --------------------------------------------------------------------------------------------
@@ -5051,8 +5033,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     AttributeDescription
         //
         // Init attribute description list
-        super.transitions[LdapStatesEnum.ANY_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
-            LdapStatesEnum.ANY_STATE, LdapStatesEnum.ATTRIBUTE_DESCRIPTION_LIST_STATE, UniversalTag.SEQUENCE.getValue(),
+        super.transitions[LdapStatesEnum.ANY_STATE.ordinal()][SEQUENCE.getValue()] = new GrammarTransition(
+            LdapStatesEnum.ANY_STATE, LdapStatesEnum.ATTRIBUTE_DESCRIPTION_LIST_STATE, SEQUENCE.getValue(),
             new InitAttributeDescListAction() );
 
         // --------------------------------------------------------------------------------------------
@@ -5243,8 +5225,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     AttributeDescription
         //
         // Init attribute description list
-        super.transitions[LdapStatesEnum.FINAL_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
-            LdapStatesEnum.FINAL_STATE, LdapStatesEnum.ATTRIBUTE_DESCRIPTION_LIST_STATE, UniversalTag.SEQUENCE.getValue(),
+        super.transitions[LdapStatesEnum.FINAL_STATE.ordinal()][SEQUENCE.getValue()] = new GrammarTransition(
+            LdapStatesEnum.FINAL_STATE, LdapStatesEnum.ATTRIBUTE_DESCRIPTION_LIST_STATE, SEQUENCE.getValue(),
             new InitAttributeDescListAction() );
 
         // --------------------------------------------------------------------------------------------
@@ -5616,8 +5598,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     AttributeDescription
         //
         // Init attribute description list
-        super.transitions[LdapStatesEnum.PRESENT_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
-            LdapStatesEnum.PRESENT_STATE, LdapStatesEnum.ATTRIBUTE_DESCRIPTION_LIST_STATE, UniversalTag.SEQUENCE.getValue(),
+        super.transitions[LdapStatesEnum.PRESENT_STATE.ordinal()][SEQUENCE.getValue()] = new GrammarTransition(
+            LdapStatesEnum.PRESENT_STATE, LdapStatesEnum.ATTRIBUTE_DESCRIPTION_LIST_STATE, SEQUENCE.getValue(),
             new InitAttributeDescListAction() );
 
         // --------------------------------------------------------------------------------------------
@@ -5633,9 +5615,9 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // Init Attribute Desc filter
-        super.transitions[LdapStatesEnum.APPROX_MATCH_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.APPROX_MATCH_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
             LdapStatesEnum.APPROX_MATCH_STATE, LdapStatesEnum.ATTRIBUTE_DESC_FILTER_STATE,
-            UniversalTag.OCTET_STRING.getValue(), new InitAttributeDescFilterAction() );
+            OCTET_STRING.getValue(), new InitAttributeDescFilterAction() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Extensible Match to MatchingRule
@@ -6010,9 +5992,9 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     AttributeDescription
         //
         // Init attribute description list
-        super.transitions[LdapStatesEnum.MATCH_VALUE_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.MATCH_VALUE_STATE.ordinal()][SEQUENCE.getValue()] = new GrammarTransition(
             LdapStatesEnum.MATCH_VALUE_STATE, LdapStatesEnum.ATTRIBUTE_DESCRIPTION_LIST_STATE,
-            UniversalTag.SEQUENCE.getValue(), new InitAttributeDescListAction() );
+            SEQUENCE.getValue(), new InitAttributeDescListAction() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from dnAttributes to AND filter
@@ -6205,9 +6187,9 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     AttributeDescription
         //
         // Init attribute description list
-        super.transitions[LdapStatesEnum.DN_ATTRIBUTES_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
+        super.transitions[LdapStatesEnum.DN_ATTRIBUTES_STATE.ordinal()][SEQUENCE.getValue()] = new GrammarTransition(
             LdapStatesEnum.DN_ATTRIBUTES_STATE, LdapStatesEnum.ATTRIBUTE_DESCRIPTION_LIST_STATE,
-            UniversalTag.SEQUENCE.getValue(), new InitAttributeDescListAction() );
+            SEQUENCE.getValue(), new InitAttributeDescListAction() );
     }
 
 

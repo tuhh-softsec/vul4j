@@ -20,59 +20,68 @@
 package org.apache.directory.shared.ldap.codec.actions.bindRequest;
 
 
-import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
-import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.decorators.BindRequestDecorator;
-import org.apache.directory.shared.ldap.model.message.BindRequestImpl;
+import org.apache.directory.shared.ldap.model.message.BindRequest;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 /**
- * The action used to initialize the BindRequest
+ * The action used to store the BindRequest version MessageID.
  * <pre>
- * LdapMessage ::= ... BindRequest ...
- * BindRequest ::= [APPLICATION 0] SEQUENCE { ...
+ * SaslCredentials ::= SEQUENCE {
+ *     ...
+ *     credentials OCTET STRING OPTIONAL }
  * </pre>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class InitBindRequest extends GrammarAction<LdapMessageContainer<BindRequestDecorator>>
+public class StoreSaslMechanism extends GrammarAction<LdapMessageContainer<BindRequestDecorator>>
 {
     /** The logger */
-    private static final Logger LOG = LoggerFactory.getLogger( InitBindRequest.class );
+    private static final Logger LOG = LoggerFactory.getLogger( StoreSaslMechanism.class );
+
+    /** Speedup for logs */
+    private static final boolean IS_DEBUG = LOG.isDebugEnabled();
+
 
     /**
      * Instantiates a new action.
      */
-    public InitBindRequest()
+    public StoreSaslMechanism()
     {
-        super( "Init BindRequest" );
+        super( "Store SASL credentials" );
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public void action( LdapMessageContainer<BindRequestDecorator> container ) throws DecoderException
+    public void action( LdapMessageContainer<BindRequestDecorator> container )
     {
-        // Create the BindRequest LdapMessage instance and store it in the container
-        BindRequestDecorator bindRequest = new BindRequestDecorator(
-            container.getLdapCodecService(), new BindRequestImpl( container.getMessageId() ) );
-        container.setMessage( bindRequest );
-
-        // We will check that the request is not null
+        BindRequest bindRequestMessage = container.getMessage();
         TLV tlv = container.getCurrentTLV();
 
+        // We have to handle the special case of a 0 length
+        // mechanism
         if ( tlv.getLength() == 0 )
         {
-            String msg = I18n.err( I18n.ERR_04077 );
-            LOG.error( msg );
+            bindRequestMessage.setSaslMechanism( "" );
+        }
+        else
+        {
+            bindRequestMessage.setSaslMechanism( Strings.utf8ToString(tlv.getValue().getData()) );
+        }
 
-            // This will generate a PROTOCOL_ERROR
-            throw new DecoderException( msg );
+        // We can have an END transition
+        container.setGrammarEndAllowed( true );
+
+        if ( IS_DEBUG )
+        {
+            LOG.debug( "The mechanism is : {}", bindRequestMessage.getSaslMechanism() );
         }
     }
 }
