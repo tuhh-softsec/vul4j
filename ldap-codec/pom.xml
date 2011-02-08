@@ -182,7 +182,8 @@
           <instructions>
             <Bundle-SymbolicName>${project.groupId}.ldap.codec</Bundle-SymbolicName>
             <Export-Package>
-              org.apache.directory.shared.ldap.codec.api
+              org.apache.directory.shared.ldap.codec.api,
+              org.apache.directory.shared.ldap.codec.controls
             </Export-Package>
           </instructions>
         </configuration>
