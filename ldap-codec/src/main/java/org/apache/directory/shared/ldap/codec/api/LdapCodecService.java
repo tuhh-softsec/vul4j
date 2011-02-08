@@ -72,6 +72,14 @@ public interface LdapCodecService
     
     
     /**
+     * Unregisters an {@link ControlFactory} with this service.
+     * 
+     * @param oid The oid of the control the factory is associated with.
+     */
+    void unregisterControl( String oid );
+    
+    
+    /**
      * Registers an {@link ExtendedOpFactory} for generating extended request 
      * response pairs.
      * 

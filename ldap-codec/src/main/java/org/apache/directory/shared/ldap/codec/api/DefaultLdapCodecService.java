@@ -20,6 +20,7 @@
 package org.apache.directory.shared.ldap.codec.api;
 
 
+import java.io.File;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -63,6 +64,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DefaultLdapCodecService implements LdapCodecService
 {
+    /** A logger */
     private static final Logger LOG = LoggerFactory.getLogger( DefaultLdapCodecService.class );
     
     /**
@@ -73,6 +75,10 @@ public class DefaultLdapCodecService implements LdapCodecService
     {
         "org.apache.directory.shared.ldap.codec.api; version=1.0.0"
     };
+ 
+    /** System property checked if the pluginProperty is null */
+    public static final String PLUGIN_DIRECTORY_PROPERTY = DefaultLdapCodecService.class.getName() + 
+        ".pluginDirectory";
     
     /** The map of registered {@link ControlFactory}'s */
     private Map<String,ControlFactory<?,?>> controlFactories = new HashMap<String, ControlFactory<?,?>>();
@@ -89,12 +95,56 @@ public class DefaultLdapCodecService implements LdapCodecService
     /** The embedded {@link Felix} instance */
     private Felix felix;
     
+    /** The plugin (bundle) containing directory to load codec extensions from */
+    private final File pluginDirectory;
+    
     
     /**
      * Creates a new instance of DefaultLdapCodecService.
      */
     public DefaultLdapCodecService()
     {
+        this( getPluginDirectorySystemValue() );
+    }
+    
+    
+    private static File getPluginDirectorySystemValue()
+    {
+        String value = System.getProperty( DefaultLdapCodecService.PLUGIN_DIRECTORY_PROPERTY );
+        
+        if ( value == null )
+        {
+            return null;
+        }
+        
+        return new File( value );
+    }
+    
+    
+    /**
+     * Creates a new instance of DefaultLdapCodecService.
+     */
+    public DefaultLdapCodecService( File pluginDirectory )
+    {
+        this.pluginDirectory = pluginDirectory;
+        
+        if ( pluginDirectory == null )
+        {
+            // do nothing
+        }
+        else if ( ! pluginDirectory.isDirectory() )
+        {
+            String msg = "The provided plugin directory is not a directory:" + pluginDirectory.getAbsolutePath();
+            LOG.error( msg );
+            throw new IllegalArgumentException( msg );
+        }
+        else if ( ! pluginDirectory.canRead() )
+        {
+            String msg = "The provided plugin directory is not readable:" + pluginDirectory.getAbsolutePath();
+            LOG.error( msg );
+            throw new IllegalArgumentException( msg );
+        }
+        
         loadStockControls();
         setupFelix();
     }
@@ -223,6 +273,15 @@ public class DefaultLdapCodecService implements LdapCodecService
     }
     
 
+    /**
+     * {@inheritDoc}
+     */
+    public void unregisterControl( String oid )
+    {
+        controlFactories.remove( oid );
+    }
+
+    
     /**
      * {@inheritDoc}
      */
@@ -374,5 +433,19 @@ public class DefaultLdapCodecService implements LdapCodecService
     public Asn1Container newMessageContainer()
     {
         return new LdapMessageContainer<MessageDecorator<? extends Message>>( this );
+    }
+
+
+    /**
+     * Gets the plugin directory containing codec extension bundles to load. 
+     * If null, the service checks to see if system properties were used to 
+     * specify the plugin directory. 
+     *
+     * @see {@link #PLUGIN_DIRECTORY_PROPERTY}
+     * @return The directory containing plugins.
+     */
+    public File getPluginDirectory()
+    {
+        return pluginDirectory;
     }
 }

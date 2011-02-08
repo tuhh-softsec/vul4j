@@ -41,7 +41,6 @@
      integration tests.
    -->
   
-
   <description>
     A place to put integration tests that if put in their rightful
     project position would incure some cyclic dependencies even if
@@ -68,12 +67,22 @@
     </dependency>
 
     <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>shared-ldap-extras-codec</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
       <version>${commons.io.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <properties>
+    <pluginDirectory>${project.build.directory}/pluginDirectory</pluginDirectory>
+  </properties>
 
   <build>
     <plugins>
@@ -83,9 +92,39 @@
         <configuration>
           <systemPropertyVariables>
             <workingDirectory>${basedir}/target</workingDirectory>
+            <property>
+               <!-- org.apache.directory.shared.ldap.codec.api.DefaultLdapCodecService.pluginDirectory -->
+              <name>org.apache.directory.shared.ldap.codec.api.DefaultLdapCodecService.pluginDirectory</name>
+              <value>${pluginDirectory}/foo</value>
+            </property> 
           </systemPropertyVariables>
         </configuration>
       </plugin>
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>shared-ldap-extras-codec</artifactId>
+                  <version>${project.version}</version>
+                  <outputDirectory>${pluginDirectory}</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      
     </plugins>
   </build>
 </project>

@@ -21,7 +21,7 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.directory.shared</groupId>
-    <artifactId>shared-parent</artifactId>
+    <artifactId>shared-ldap-extras-parent</artifactId>
     <version>0.9.20-SNAPSHOT</version>
   </parent>
   
@@ -86,6 +86,9 @@
               org.apache.directory.shared.ldap.extras.controls,
               org.apache.directory.shared.ldap.extras.extended
             </Export-Package>
+            <Bundle-Activator>
+              org.apache.directory.shared.ldap.extras.ExtrasBundleActivator
+            </Bundle-Activator>
           </instructions>
         </configuration>
       </plugin>

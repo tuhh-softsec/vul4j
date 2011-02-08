@@ -20,6 +20,10 @@
 package org.apache.directory.shared.ldap.codec.osgi;
 
 
+import java.io.File;
+import java.io.FileFilter;
+
+import org.apache.directory.shared.ldap.codec.api.DefaultLdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
@@ -34,12 +38,12 @@ import org.osgi.framework.ServiceRegistration;
  */
 public class CodecHostActivator implements BundleActivator
 {
-    private LdapCodecService codec; 
+    private DefaultLdapCodecService codec; 
     private ServiceRegistration registration;
     private BundleContext bundleContext;
     
     
-    public CodecHostActivator( LdapCodecService codec )
+    public CodecHostActivator( DefaultLdapCodecService codec )
     {
         this.codec = codec;
     }
@@ -53,8 +57,29 @@ public class CodecHostActivator implements BundleActivator
         this.bundleContext = bundleContext;
         
         registration = bundleContext.registerService( LdapCodecService.class.getName(), codec, null );
+        
+        if ( codec.getPluginDirectory() != null )
+        {
+            File[] files = codec.getPluginDirectory().listFiles( new FileFilter()
+            {
+                public boolean accept( File pathname )
+                {
+                    return 
+                        pathname.canRead()
+                        &&
+                        pathname.isFile() 
+                        && 
+                        pathname.getAbsolutePath().endsWith( ".jar" );
+                }
+            });
+            
+            for ( File file : files )
+            {
+                bundleContext.installBundle( file.toURI().toURL().toExternalForm() );
+            }
+        }
     }
-
+    
 
     /**
      * {@inheritDoc}
