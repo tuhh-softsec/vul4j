@@ -252,12 +252,17 @@ final class RulesBinderImpl implements RulesBinder {
                         return this;
                     }
 
-                    public SetPropertiesBuilder addAlias(String attributeName, /* @Nullable */String propertyName) {
+                    public SetPropertiesBuilder addAlias(String attributeName, String propertyName) {
                         if (attributeName == null) {
                             addError("{forPattern(\"%s\").setProperties().addAlias(String,String)} empty 'attributeName' not allowed",
                                     keyPattern);
                         } else {
-                            this.aliases.put(attributeName, propertyName);
+                            if (propertyName == null) {
+                                addError("{forPattern(\"%s\").setProperties().addAlias(String,String)} empty 'propertyName' not allowed",
+                                        keyPattern);
+                            } else {
+                                this.aliases.put(attributeName, propertyName);
+                            }
                         }
                         return this;
                     }

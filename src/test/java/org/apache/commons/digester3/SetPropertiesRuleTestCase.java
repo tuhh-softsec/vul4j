@@ -168,7 +168,9 @@ public class SetPropertiesRuleTestCase extends AbstractTestCase {
                 forPattern("root")
                     .createObject().ofType("org.apache.commons.digester3.SimpleTestBean")
                     .then()
-                    .setProperties().ignoreMissingProperty(false).addAlias("ignore", null);
+                    .setProperties()
+                        .ignoreMissingProperty(false)
+                        .ignoreAttribute("ignore");
             }
 
         }).parse(xmlTestReader(TEST_XML_3));
