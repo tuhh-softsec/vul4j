@@ -53,6 +53,8 @@
     <mycila-junit.version>1.0.ga</mycila-junit.version>
     <log4j.version>1.2.16</log4j.version>
     <mina.core.version>2.0.2</mina.core.version>
+    <org.apache.felix.version>3.0.8</org.apache.felix.version>
+    <org.osgi.version>3.0.0</org.osgi.version>
     <slf4j.api.version>1.6.1</slf4j.api.version>
     <slf4j.log4j12.version>1.6.1</slf4j.log4j12.version>
     <xml.apis.version>2.0.2</xml.apis.version>
@@ -427,13 +429,13 @@
       <dependency>
         <groupId>org.osgi</groupId>
         <artifactId>org.osgi</artifactId>
-        <version>3.0.0</version>
+        <version>${org.osgi.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.felix</groupId>
         <artifactId>org.apache.felix.framework</artifactId>
-        <version>3.0.8</version>
+        <version>${org.apache.felix.version}</version>
       </dependency>
 
       <!-- Test dependencies -->
