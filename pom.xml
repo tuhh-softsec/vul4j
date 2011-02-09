@@ -75,13 +75,6 @@ limitations under the License.
           </systemProperties>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-release-plugin</artifactId>
-        <configuration>
-          <tagBase>https://svn.codehaus.org/plexus/plexus-utils/tags/</tagBase>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
 </project>
