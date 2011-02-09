@@ -95,7 +95,7 @@ public class ObjectCreateRule extends Rule {
      */
     @Override
     public String toString() {
-        return String.format("ObjectCreateRule[className=%s, attributeName=%s]", this.type.getClasses(), this.attributeName);
+        return String.format("ObjectCreateRule[type=%s, attributeName=%s]", this.type.getName(), this.attributeName);
     }
 
 }
