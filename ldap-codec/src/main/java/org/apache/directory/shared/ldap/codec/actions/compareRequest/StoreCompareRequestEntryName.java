@@ -17,18 +17,19 @@
  *  under the License.
  *
  */
-package org.apache.directory.shared.ldap.codec.actions.bindRequest;
+package org.apache.directory.shared.ldap.codec.actions.compareRequest;
 
 
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.api.ResponseCarryingException;
-import org.apache.directory.shared.ldap.codec.decorators.BindRequestDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.CompareRequestDecorator;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
-import org.apache.directory.shared.ldap.model.message.BindRequest;
-import org.apache.directory.shared.ldap.model.message.BindResponseImpl;
+import org.apache.directory.shared.ldap.model.message.CompareRequest;
+import org.apache.directory.shared.ldap.model.message.CompareResponseImpl;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.util.Strings;
@@ -37,47 +38,48 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * The action used to store the BindRequest name.
+ * The action used to store the Compare Request name
  * <pre>
- * BindRequest ::= [APPLICATION 0] SEQUENCE {
- *     ....
- *     name                    LDAPDN,
- *     ....
+ * CompareRequest ::= [APPLICATION 14] SEQUENCE {
+ *     entry    LDAPDN,
+ *     ...
  * </pre>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class StoreName extends GrammarAction<LdapMessageContainer<BindRequestDecorator>>
+public class StoreCompareRequestEntryName extends GrammarAction<LdapMessageContainer<CompareRequestDecorator>>
 {
     /** The logger */
-    private static final Logger LOG = LoggerFactory.getLogger( StoreName.class );
+    private static final Logger LOG = LoggerFactory.getLogger( StoreCompareRequestEntryName.class );
 
     /** Speedup for logs */
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
-
     /**
      * Instantiates a new action.
      */
-    public StoreName()
+    public StoreCompareRequestEntryName()
     {
-        super( "Store BindRequest Name value" );
+        super( "Store CompareRequest entry Name" );
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public void action( LdapMessageContainer<BindRequestDecorator> container ) throws DecoderException
+    public void action( LdapMessageContainer<CompareRequestDecorator> container ) throws DecoderException
     {
-        BindRequest bindRequestMessage = container.getMessage();
+        CompareRequest compareRequest = container.getMessage();
 
-        // Get the Value and store it in the BindRequest
+        // Get the Value and store it in the CompareRequest
         TLV tlv = container.getCurrentTLV();
+        Dn entry = null;
 
-        // We have to handle the special case of a 0 length name
+        // We have to handle the special case of a 0 length matched
+        // Dn
         if ( tlv.getLength() == 0 )
         {
-            bindRequestMessage.setName( Dn.EMPTY_DN );
+            // This will generate a PROTOCOL_ERROR
+            throw new DecoderException( I18n.err( I18n.ERR_04089 ) );
         }
         else
         {
@@ -86,25 +88,25 @@ public class StoreName extends GrammarAction<LdapMessageContainer<BindRequestDec
 
             try
             {
-                Dn dn = new Dn( dnStr );
-                bindRequestMessage.setName( dn );
+                entry = new Dn( dnStr );
             }
             catch ( LdapInvalidDnException ine )
             {
-                String msg = "Incorrect Dn given : " + dnStr + " (" + Strings.dumpBytes(dnBytes)
+                String msg = "Invalid Dn given : " + dnStr + " (" + Strings.dumpBytes(dnBytes)
                     + ") is invalid";
                 LOG.error( "{} : {}", msg, ine.getMessage() );
 
-                BindResponseImpl response = new BindResponseImpl( bindRequestMessage.getMessageId() );
-
+                CompareResponseImpl response = new CompareResponseImpl( compareRequest.getMessageId() );
                 throw new ResponseCarryingException( msg, response, ResultCodeEnum.INVALID_DN_SYNTAX,
                     Dn.EMPTY_DN, ine );
             }
+
+            compareRequest.setName( entry );
         }
 
         if ( IS_DEBUG )
         {
-            LOG.debug( " The Bind name is {}", bindRequestMessage.getName() );
+            LOG.debug( "Comparing Dn {}", entry );
         }
     }
 }

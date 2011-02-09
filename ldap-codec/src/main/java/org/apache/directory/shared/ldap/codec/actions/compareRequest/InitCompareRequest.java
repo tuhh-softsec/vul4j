@@ -17,49 +17,51 @@
  *  under the License.
  *
  */
-package org.apache.directory.shared.ldap.codec.actions.delResponse;
+package org.apache.directory.shared.ldap.codec.actions.compareRequest;
 
 
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.decorators.DeleteResponseDecorator;
-import org.apache.directory.shared.ldap.model.message.DeleteResponseImpl;
+import org.apache.directory.shared.ldap.codec.decorators.CompareRequestDecorator;
+import org.apache.directory.shared.ldap.model.message.CompareRequestImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 /**
- * The action used to initialize the DelResponse response
+ * The action used to initialize the CompareRequest.
  * <pre>
- * LdapMessage ::= ... DelResponse ...
- * DelResponse ::= [APPLICATION 11] SEQUENCE { ...
+ * LdapMessage ::= ... CompareRequest ...
+ *
+ * CompareRequest ::= [APPLICATION 14] SEQUENCE {
+ * ...
  * </pre>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class InitDelResponse extends GrammarAction<LdapMessageContainer<DeleteResponseDecorator>>
+public class InitCompareRequest extends GrammarAction<LdapMessageContainer<CompareRequestDecorator>>
 {
     /** The logger */
-    private static final Logger LOG = LoggerFactory.getLogger( InitDelResponse.class );
+    private static final Logger LOG = LoggerFactory.getLogger( InitCompareRequest.class );
 
     /**
      * Instantiates a new action.
      */
-    public InitDelResponse()
+    public InitCompareRequest()
     {
-        super( "Init DelResponse" );
+        super( "Compare Request initialization" );
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public void action( LdapMessageContainer<DeleteResponseDecorator> container )
+    public void action( LdapMessageContainer<CompareRequestDecorator> container )
     {
-        // Now, we can allocate the DelResponse Object
-        DeleteResponseDecorator delResponse = new DeleteResponseDecorator(
-            container.getLdapCodecService(), new DeleteResponseImpl( container.getMessageId() ) );
-        container.setMessage( delResponse );
+        // Now, we can allocate the CompareRequest Object
+        CompareRequestDecorator compareRequest = new CompareRequestDecorator(
+            container.getLdapCodecService(), new CompareRequestImpl( container.getMessageId() ) );
+        container.setMessage( compareRequest );
 
-        LOG.debug( "Del response " );
+        LOG.debug( "Compare Request" );
     }
 }

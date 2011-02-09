@@ -83,6 +83,11 @@ import org.apache.directory.shared.ldap.codec.actions.bindRequest.StoreSimpleAut
 import org.apache.directory.shared.ldap.codec.actions.bindRequest.StoreVersion;
 import org.apache.directory.shared.ldap.codec.actions.bindResponse.InitBindResponse;
 import org.apache.directory.shared.ldap.codec.actions.bindResponse.StoreServerSASLCreds;
+import org.apache.directory.shared.ldap.codec.actions.compareRequest.InitCompareRequest;
+import org.apache.directory.shared.ldap.codec.actions.compareRequest.StoreCompareRequestAssertionValue;
+import org.apache.directory.shared.ldap.codec.actions.compareRequest.StoreCompareRequestAttributeDesc;
+import org.apache.directory.shared.ldap.codec.actions.compareRequest.StoreCompareRequestEntryName;
+import org.apache.directory.shared.ldap.codec.actions.compareResponse.InitCompareResponse;
 import org.apache.directory.shared.ldap.codec.actions.controls.InitControls;
 import org.apache.directory.shared.ldap.codec.actions.delRequest.InitDelRequest;
 import org.apache.directory.shared.ldap.codec.actions.delResponse.InitDelResponse;
@@ -112,8 +117,6 @@ import org.apache.directory.shared.ldap.codec.actions.searchResultEntry.StoreSea
 import org.apache.directory.shared.ldap.codec.actions.unbindRequest.InitUnbindRequest;
 import org.apache.directory.shared.ldap.codec.api.LdapConstants;
 import org.apache.directory.shared.ldap.codec.api.ResponseCarryingException;
-import org.apache.directory.shared.ldap.codec.decorators.CompareRequestDecorator;
-import org.apache.directory.shared.ldap.codec.decorators.CompareResponseDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.ExtendedRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.ExtendedResponseDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.IntermediateResponseDecorator;
@@ -125,9 +128,6 @@ import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.filter.SearchScope;
 import org.apache.directory.shared.ldap.model.message.AliasDerefMode;
-import org.apache.directory.shared.ldap.model.message.CompareRequest;
-import org.apache.directory.shared.ldap.model.message.CompareRequestImpl;
-import org.apache.directory.shared.ldap.model.message.CompareResponseImpl;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequestImpl;
@@ -1654,20 +1654,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // ...
         //
         // Initialize the Compare Request object
-        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.COMPARE_REQUEST_TAG] = new GrammarTransition(
-            LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.COMPARE_REQUEST_STATE, LdapConstants.COMPARE_REQUEST_TAG,
-            new GrammarAction<LdapMessageContainer<CompareRequestDecorator>>( "Init Compare Request" )
-            {
-                public void action( LdapMessageContainer<CompareRequestDecorator> container )
-                {
-                    // Now, we can allocate the CompareRequest Object
-                    CompareRequestDecorator compareRequest = new CompareRequestDecorator(
-                        container.getLdapCodecService(), new CompareRequestImpl( container.getMessageId() ) );
-                    container.setMessage( compareRequest );
-
-                    LOG.debug( "Compare Request" );
-                }
-            } );
+        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.COMPARE_REQUEST_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.MESSAGE_ID_STATE,
+                LdapStatesEnum.COMPARE_REQUEST_STATE,
+                LdapConstants.COMPARE_REQUEST_TAG,
+                new InitCompareRequest() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from CompareResquest to entryComp
@@ -1677,54 +1669,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // Stores the compared Dn
-        super.transitions[LdapStatesEnum.COMPARE_REQUEST_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.COMPARE_REQUEST_STATE, LdapStatesEnum.ENTRY_COMP_STATE, OCTET_STRING,
-            new GrammarAction<LdapMessageContainer<CompareRequestDecorator>>( "Store entry" )
-            {
-                public void action( LdapMessageContainer<CompareRequestDecorator> container ) throws DecoderException
-                {
-                    CompareRequest compareRequest = container.getMessage();
-
-                    // Get the Value and store it in the CompareRequest
-                    TLV tlv = container.getCurrentTLV();
-                    Dn entry = null;
-
-                    // We have to handle the special case of a 0 length matched
-                    // Dn
-                    if ( tlv.getLength() == 0 )
-                    {
-                        // This will generate a PROTOCOL_ERROR
-                        throw new DecoderException( I18n.err( I18n.ERR_04089 ) );
-                    }
-                    else
-                    {
-                        byte[] dnBytes = tlv.getValue().getData();
-                        String dnStr = Strings.utf8ToString(dnBytes);
-
-                        try
-                        {
-                            entry = new Dn( dnStr );
-                        }
-                        catch ( LdapInvalidDnException ine )
-                        {
-                            String msg = "Invalid Dn given : " + dnStr + " (" + Strings.dumpBytes(dnBytes)
-                                + ") is invalid";
-                            LOG.error( "{} : {}", msg, ine.getMessage() );
-
-                            CompareResponseImpl response = new CompareResponseImpl( compareRequest.getMessageId() );
-                            throw new ResponseCarryingException( msg, response, ResultCodeEnum.INVALID_DN_SYNTAX,
-                                Dn.EMPTY_DN, ine );
-                        }
-
-                        compareRequest.setName( entry );
-                    }
-
-                    if ( IS_DEBUG )
-                    {
-                        LOG.debug( "Comparing Dn {}", entry );
-                    }
-                }
-            } );
+        super.transitions[LdapStatesEnum.COMPARE_REQUEST_STATE.ordinal()][OCTET_STRING.getValue()] =
+            new GrammarTransition(
+                LdapStatesEnum.COMPARE_REQUEST_STATE,
+                LdapStatesEnum.ENTRY_COMP_STATE,
+                OCTET_STRING,
+                new StoreCompareRequestEntryName() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from entryComp to ava
@@ -1752,39 +1702,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // AttributeDescription LDAPString
         //
         // Stores the attribute description
-        super.transitions[LdapStatesEnum.AVA_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.AVA_STATE, LdapStatesEnum.ATTRIBUTE_DESC_STATE, OCTET_STRING,
-            new GrammarAction<LdapMessageContainer<CompareRequestDecorator>>( "Store attribute desc" )
-            {
-                public void action( LdapMessageContainer<CompareRequestDecorator> container ) throws DecoderException
-                {
-                    // Get the CompareRequest Object
-                    CompareRequest compareRequest = container.getMessage();
-
-                    // Get the Value and store it in the CompareRequest
-                    TLV tlv = container.getCurrentTLV();
-
-                    // We have to handle the special case of a 0 length matched
-                    // Dn
-                    if ( tlv.getLength() == 0 )
-                    {
-                        String msg = I18n.err( I18n.ERR_04093 );
-                        LOG.error( msg );
-                        CompareResponseImpl response = new CompareResponseImpl( compareRequest.getMessageId() );
-
-                        throw new ResponseCarryingException( msg, response, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX,
-                            compareRequest.getName(), null );
-                    }
-
-                    String type = Strings.utf8ToString( tlv.getValue().getData() );
-                    compareRequest.setAttributeId( type );
-
-                    if ( IS_DEBUG )
-                    {
-                        LOG.debug( "Comparing attribute description {}", compareRequest.getAttributeId() );
-                    }
-                }
-            } );
+        super.transitions[LdapStatesEnum.AVA_STATE.ordinal()][OCTET_STRING.getValue()] =
+            new GrammarTransition(
+                LdapStatesEnum.AVA_STATE,
+                LdapStatesEnum.ATTRIBUTE_DESC_STATE,
+                OCTET_STRING,
+                new StoreCompareRequestAttributeDesc() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from AttributeDesc to Assertion Value
@@ -1796,50 +1719,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // AssertionValue OCTET STRING
         //
         // Stores the attribute value
-        super.transitions[LdapStatesEnum.ATTRIBUTE_DESC_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.ATTRIBUTE_DESC_STATE, LdapStatesEnum.ASSERTION_VALUE_STATE, OCTET_STRING,
-            new GrammarAction<LdapMessageContainer<CompareRequestDecorator>>( "Store assertion value" )
-            {
-                public void action( LdapMessageContainer<CompareRequestDecorator> container )
-                {
-                    // Get the CompareRequest Object
-                    CompareRequest compareRequest = container.getMessage();
-
-                    // Get the Value and store it in the CompareRequest
-                    TLV tlv = container.getCurrentTLV();
-
-                    // We have to handle the special case of a 0 length value
-                    if ( tlv.getLength() == 0 )
-                    {
-                        compareRequest.setAssertionValue( "" );
-                    }
-                    else
-                    {
-                        if ( container.isBinary( compareRequest.getAttributeId() ) )
-                        {
-                            compareRequest.setAssertionValue( tlv.getValue().getData() );
-
-                            if ( IS_DEBUG )
-                            {
-                                LOG.debug( "Comparing attribute value {}", Strings.dumpBytes(compareRequest
-                                        .getAssertionValue().getBytes()) );
-                            }
-                        }
-                        else
-                        {
-                            compareRequest.setAssertionValue( Strings.utf8ToString(tlv.getValue().getData()) );
-
-                            if ( LOG.isDebugEnabled() )
-                            {
-                                LOG.debug( "Comparing attribute value {}", compareRequest.getAssertionValue() );
-                            }
-                        }
-                    }
-
-                    // We can have an END transition
-                    container.setGrammarEndAllowed( true );
-                }
-            } );
+        super.transitions[LdapStatesEnum.ATTRIBUTE_DESC_STATE.ordinal()][OCTET_STRING.getValue()] =
+            new GrammarTransition(
+                LdapStatesEnum.ATTRIBUTE_DESC_STATE,
+                LdapStatesEnum.ASSERTION_VALUE_STATE,
+                OCTET_STRING,
+                new StoreCompareRequestAssertionValue() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Assertion Value to Controls
@@ -1864,30 +1749,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // LdapMessage ::= ... CompareResponse ...
         // CompareResponse ::= [APPLICATION 15] LDAPResult
         // We have to switch to the CompareResponse grammar
-        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.COMPARE_RESPONSE_TAG] = new GrammarTransition(
-            LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.COMPARE_RESPONSE_STATE, LdapConstants.COMPARE_RESPONSE_TAG,
-            new GrammarAction<LdapMessageContainer<CompareResponseDecorator>>( "Init CompareResponse" )
-            {
-                public void action( LdapMessageContainer<CompareResponseDecorator> container ) throws DecoderException
-                {
-                    // Now, we can allocate the CompareResponse Object
-                    CompareResponseDecorator compareResponse = new CompareResponseDecorator(
-                        container.getLdapCodecService(), new CompareResponseImpl( container.getMessageId() ) );
-                    container.setMessage( compareResponse );
-
-                    // We will check that the request is not null
-                    TLV tlv = container.getCurrentTLV();
-
-                    if ( tlv.getLength() == 0 )
-                    {
-                        String msg = I18n.err( I18n.ERR_04094 );
-                        LOG.error( msg );
-                        throw new DecoderException( msg );
-                    }
-
-                    LOG.debug( "Compare response " );
-                }
-            } );
+        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.COMPARE_RESPONSE_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.MESSAGE_ID_STATE,
+                LdapStatesEnum.COMPARE_RESPONSE_STATE,
+                LdapConstants.COMPARE_RESPONSE_TAG,
+                new InitCompareResponse() );
 
         // --------------------------------------------------------------------------------------------
         // CompareResponse Message.

@@ -33,11 +33,11 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * The action used to initialize the SearchResultEntry response
+ * The action used to store the SearchResultEntry attributes
  * <pre>
  * SearchResultEntry ::= [APPLICATION 4] SEQUENCE { ...
- * ...
- * attributes PartialAttributeList }
+ *     ...
+ *     attributes PartialAttributeList }
  *
  * PartialAttributeList ::= SEQUENCE OF SEQUENCE {
  *     type  AttributeDescription,

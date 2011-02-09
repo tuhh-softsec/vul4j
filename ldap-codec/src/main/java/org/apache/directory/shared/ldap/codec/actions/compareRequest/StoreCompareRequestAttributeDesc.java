@@ -17,7 +17,7 @@
  *  under the License.
  *
  */
-package org.apache.directory.shared.ldap.codec.actions.addRequest;
+package org.apache.directory.shared.ldap.codec.actions.compareRequest;
 
 
 import org.apache.directory.shared.asn1.DecoderException;
@@ -26,9 +26,9 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.api.ResponseCarryingException;
-import org.apache.directory.shared.ldap.codec.decorators.AddRequestDecorator;
-import org.apache.directory.shared.ldap.model.exception.LdapException;
-import org.apache.directory.shared.ldap.model.message.AddResponseImpl;
+import org.apache.directory.shared.ldap.codec.decorators.CompareRequestDecorator;
+import org.apache.directory.shared.ldap.model.message.CompareRequest;
+import org.apache.directory.shared.ldap.model.message.CompareResponseImpl;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
@@ -36,18 +36,22 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * The action used to store the AddRequest AttributeDescription
+ * The action used to store the AssertionValue attributeDescription in a Compare Request
  * <pre>
- * AttributeList ::= SEQUENCE OF SEQUENCE {
- *     type    AttributeDescription,
+ * CompareRequest ::= [APPLICATION 14] SEQUENCE {
+ *     ...
+ *     ava AttributeValueAssertion }
+ *
+ * AttributeValueAssertion ::= SEQUENCE {
+ *     attributeDesc   AttributeDescription,
  *     ...
  * </pre>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class AddAddRequestAttributeType extends GrammarAction<LdapMessageContainer<AddRequestDecorator>>
+public class StoreCompareRequestAttributeDesc extends GrammarAction<LdapMessageContainer<CompareRequestDecorator>>
 {
     /** The logger */
-    private static final Logger LOG = LoggerFactory.getLogger( AddAddRequestAttributeType.class );
+    private static final Logger LOG = LoggerFactory.getLogger( StoreCompareRequestAttributeDesc.class );
 
     /** Speedup for logs */
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
@@ -55,52 +59,41 @@ public class AddAddRequestAttributeType extends GrammarAction<LdapMessageContain
     /**
      * Instantiates a new action.
      */
-    public AddAddRequestAttributeType()
+    public StoreCompareRequestAttributeDesc()
     {
-        super( "Store attribute type" );
+        super( "Store CompareRequest assertion description" );
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public void action( LdapMessageContainer<AddRequestDecorator> container ) throws DecoderException
+    public void action( LdapMessageContainer<CompareRequestDecorator> container ) throws DecoderException
     {
-        AddRequestDecorator addRequest = container.getMessage();
+        // Get the CompareRequest Object
+        CompareRequest compareRequest = container.getMessage();
 
+        // Get the Value and store it in the CompareRequest
         TLV tlv = container.getCurrentTLV();
 
-        // Store the type. It can't be null.
+        // We have to handle the special case of a 0 length matched
+        // Dn
         if ( tlv.getLength() == 0 )
         {
-            String msg = I18n.err( I18n.ERR_04086 );
+            String msg = I18n.err( I18n.ERR_04093 );
             LOG.error( msg );
-
-            AddResponseImpl response = new AddResponseImpl( addRequest.getMessageId() );
+            CompareResponseImpl response = new CompareResponseImpl( compareRequest.getMessageId() );
 
             throw new ResponseCarryingException( msg, response, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX,
-                addRequest.getEntry().getDn(), null );
+                compareRequest.getName(), null );
         }
 
         String type = Strings.utf8ToString( tlv.getValue().getData() );
-
-        try
-        {
-            addRequest.addAttributeType( type );
-        }
-        catch ( LdapException ne )
-        {
-            String msg = I18n.err( I18n.ERR_04087 );
-            LOG.error( msg );
-
-            AddResponseImpl response = new AddResponseImpl( addRequest.getMessageId() );
-            throw new ResponseCarryingException( msg, response, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX,
-                addRequest.getEntry().getDn(), ne );
-        }
+        compareRequest.setAttributeId( type );
 
         if ( IS_DEBUG )
         {
-            LOG.debug( "Adding type {}", type );
+            LOG.debug( "Comparing attribute description {}", compareRequest.getAttributeId() );
         }
     }
 }

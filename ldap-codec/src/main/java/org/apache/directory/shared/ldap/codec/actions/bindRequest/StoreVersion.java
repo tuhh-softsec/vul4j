@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * The action used to store the BindRequest version MessageID.
+ * The action used to store the BindRequest version.
  * <pre>
  * BindRequest ::= [APPLICATION 0] SEQUENCE {
  *     version                 INTEGER (1 ..  127),

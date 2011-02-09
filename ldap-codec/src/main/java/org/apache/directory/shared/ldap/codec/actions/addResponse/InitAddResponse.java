@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * The action used to initialize the SearchResultDone response
+ * The action used to initialize the AddResponse response
  * <pre>
  * LdapMessage ::= ... AddResponse ...
  * AddResponse ::= [APPLICATION 9] SEQUENCE { ...

@@ -33,11 +33,11 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * The action used to store the BindRequest version MessageID.
+ * The action used to store the BindRequest credentials.
  * <pre>
  * SaslCredentials ::= SEQUENCE {
- *     mechanism   LDAPSTRING,
  *     ...
+ *     credentials OCTET STRING OPTIONAL }
  * </pre>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
@@ -55,7 +55,7 @@ public class StoreSaslCredentials extends GrammarAction<LdapMessageContainer<Bin
      */
     public StoreSaslCredentials()
     {
-        super( "Store SASL mechanism" );
+        super( "Store SASL credentials" );
     }
 
 

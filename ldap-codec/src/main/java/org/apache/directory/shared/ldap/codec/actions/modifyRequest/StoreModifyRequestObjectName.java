@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * The action used to initialize the SearchResultEntry response
+ * The action used to store the ModificationRequest object name
  * <pre>
  * ModifyRequest ::= [APPLICATION 6] SEQUENCE {
  *     object    LDAPDN,

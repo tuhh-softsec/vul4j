@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * The action used to store the LdapMessage MessageID.
+ * The action used to initialize the UnbindRequest :
  * <pre>
  * LdapMessage ::= ... UnBindRequest ...
  * unbindRequest ::= [APPLICATION 2] NULL

@@ -33,10 +33,13 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * The action used to initialize the SearchResultEntry response
+ * The action used to store the SearchResultEntry name
  * <pre>
  * LdapMessage ::= ... SearchResultEntry ...
- * SearchResultEntry ::= [APPLICATION 4] SEQUENCE { ...
+ * SearchResultEntry ::= [APPLICATION 4] SEQUENCE {
+ *         objectName      LDAPDN,
+ *         ...
+ *
  * </pre>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
@@ -53,7 +56,7 @@ public class StoreSearchResultEntryObjectName extends GrammarAction<LdapMessageC
      */
     public StoreSearchResultEntryObjectName()
     {
-        super( "Init SearchResultEntry" );
+        super( "Store SearchResultEntry name" );
     }
 
 

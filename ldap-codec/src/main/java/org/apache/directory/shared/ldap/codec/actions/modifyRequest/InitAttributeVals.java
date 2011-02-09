@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * The action used to initialize the SearchResultEntry response
+ * The action used to initialize the set of ModificationRequest AVAs
  * <pre>
  * ModifyRequest ::= [APPLICATION 6] SEQUENCE {
  *     ...

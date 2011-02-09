@@ -17,71 +17,62 @@
  *  under the License.
  *
  */
-package org.apache.directory.shared.ldap.codec.actions.bindRequest;
+package org.apache.directory.shared.ldap.codec.actions.compareResponse;
 
 
+import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.decorators.BindRequestDecorator;
-import org.apache.directory.shared.ldap.model.message.BindRequest;
-import org.apache.directory.shared.util.Strings;
+import org.apache.directory.shared.ldap.codec.decorators.CompareResponseDecorator;
+import org.apache.directory.shared.ldap.model.message.CompareResponseImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 /**
- * The action used to store the BindRequest version MessageID.
+ * The action used to initialize the CompareResponse
  * <pre>
- * SaslCredentials ::= SEQUENCE {
- *     mechanism   LDAPSTRING,
- *     ...
+ * LdapMessage ::= ... CompareResponse ...
+ * CompareResponse ::= [APPLICATION 15] LDAPResult
  * </pre>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class StoreSaslMechanism extends GrammarAction<LdapMessageContainer<BindRequestDecorator>>
+public class InitCompareResponse extends GrammarAction<LdapMessageContainer<CompareResponseDecorator>>
 {
     /** The logger */
-    private static final Logger LOG = LoggerFactory.getLogger( StoreSaslMechanism.class );
-
-    /** Speedup for logs */
-    private static final boolean IS_DEBUG = LOG.isDebugEnabled();
-
+    private static final Logger LOG = LoggerFactory.getLogger( InitCompareResponse.class );
 
     /**
      * Instantiates a new action.
      */
-    public StoreSaslMechanism()
+    public InitCompareResponse()
     {
-        super( "Store SASL mechanism" );
+        super( "Compare Response initialization" );
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public void action( LdapMessageContainer<BindRequestDecorator> container )
+    public void action( LdapMessageContainer<CompareResponseDecorator> container ) throws DecoderException
     {
-        BindRequest bindRequestMessage = container.getMessage();
+        // Now, we can allocate the CompareResponse Object
+        CompareResponseDecorator compareResponse = new CompareResponseDecorator(
+            container.getLdapCodecService(), new CompareResponseImpl( container.getMessageId() ) );
+        container.setMessage( compareResponse );
+
+        // We will check that the request is not null
         TLV tlv = container.getCurrentTLV();
 
-        // We have to handle the special case of a 0 length
-        // mechanism
         if ( tlv.getLength() == 0 )
         {
-            bindRequestMessage.setSaslMechanism( "" );
-        }
-        else
-        {
-            bindRequestMessage.setSaslMechanism( Strings.utf8ToString(tlv.getValue().getData()) );
+            String msg = I18n.err( I18n.ERR_04094 );
+            LOG.error( msg );
+            throw new DecoderException( msg );
         }
 
-        // We can have an END transition
-        container.setGrammarEndAllowed( true );
-
-        if ( IS_DEBUG )
-        {
-            LOG.debug( "The mechanism is : {}", bindRequestMessage.getSaslMechanism() );
-        }
+        LOG.debug( "Compare response " );
     }
 }

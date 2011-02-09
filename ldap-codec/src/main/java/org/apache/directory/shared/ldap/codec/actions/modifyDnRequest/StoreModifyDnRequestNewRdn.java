@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * The action used to initialize the SearchResultEntry response
+ * The action used to store the ModifyDnRequest new RDN
  * <pre>
  * ModifyDNRequest ::= [APPLICATION 12] SEQUENCE { ...
  *     ...

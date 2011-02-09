@@ -28,7 +28,7 @@ import org.apache.directory.shared.ldap.model.message.ModifyRequestImpl;
 
 
 /**
- * The action used to initialize the SearchResultDone response
+ * The action used to initialize the ModifyRequest message
  * <pre>
  * LdapMessage ::= ... ModifyRequest ...
  * ModifyRequest ::= [APPLICATION 6] SEQUENCE { ...

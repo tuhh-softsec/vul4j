@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * The action used to initialize the SearchResultEntry response
+ * The action used to store the AddReqyuest entry name
  * <pre>
  * AddRequest ::= [APPLICATION 8] SEQUENCE {
  *     entry           LDAPDN,
