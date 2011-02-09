@@ -93,6 +93,12 @@ import org.apache.directory.shared.ldap.codec.actions.ldapResult.InitReferrals;
 import org.apache.directory.shared.ldap.codec.actions.ldapResult.StoreErrorMessage;
 import org.apache.directory.shared.ldap.codec.actions.ldapResult.StoreMatchedDN;
 import org.apache.directory.shared.ldap.codec.actions.ldapResult.StoreResultCode;
+import org.apache.directory.shared.ldap.codec.actions.modifyDnRequest.InitModifyDnRequest;
+import org.apache.directory.shared.ldap.codec.actions.modifyDnRequest.StoreModifyDnRequestDeleteOldRdn;
+import org.apache.directory.shared.ldap.codec.actions.modifyDnRequest.StoreModifyDnRequestEntryName;
+import org.apache.directory.shared.ldap.codec.actions.modifyDnRequest.StoreModifyDnRequestNewRdn;
+import org.apache.directory.shared.ldap.codec.actions.modifyDnRequest.StoreModifyDnRequestNewSuperior;
+import org.apache.directory.shared.ldap.codec.actions.modifyDnResponse.InitModifyDnResponse;
 import org.apache.directory.shared.ldap.codec.actions.modifyRequest.AddModifyRequestAttribute;
 import org.apache.directory.shared.ldap.codec.actions.modifyRequest.InitAttributeVals;
 import org.apache.directory.shared.ldap.codec.actions.modifyRequest.InitModifyRequest;
@@ -112,8 +118,6 @@ import org.apache.directory.shared.ldap.codec.decorators.ExtendedRequestDecorato
 import org.apache.directory.shared.ldap.codec.decorators.ExtendedResponseDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.IntermediateResponseDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
-import org.apache.directory.shared.ldap.codec.decorators.ModifyDnRequestDecorator;
-import org.apache.directory.shared.ldap.codec.decorators.ModifyDnResponseDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.SearchResultReferenceDecorator;
 import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
@@ -131,16 +135,12 @@ import org.apache.directory.shared.ldap.model.message.ExtendedResponseImpl;
 import org.apache.directory.shared.ldap.model.message.IntermediateResponse;
 import org.apache.directory.shared.ldap.model.message.IntermediateResponseImpl;
 import org.apache.directory.shared.ldap.model.message.Message;
-import org.apache.directory.shared.ldap.model.message.ModifyDnRequest;
-import org.apache.directory.shared.ldap.model.message.ModifyDnRequestImpl;
-import org.apache.directory.shared.ldap.model.message.ModifyDnResponseImpl;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.model.message.SearchRequest;
 import org.apache.directory.shared.ldap.model.message.SearchRequestImpl;
 import org.apache.directory.shared.ldap.model.message.SearchResultDoneImpl;
 import org.apache.directory.shared.ldap.model.message.SearchResultReferenceImpl;
 import org.apache.directory.shared.ldap.model.name.Dn;
-import org.apache.directory.shared.ldap.model.name.Rdn;
 import org.apache.directory.shared.util.StringConstants;
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
@@ -1510,20 +1510,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // ModifyDNRequest ::= [APPLICATION 12] SEQUENCE { ...
         //
         // Create the ModifyDNRequest Object
-        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.MODIFY_DN_REQUEST_TAG] = new GrammarTransition(
-            LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.MODIFY_DN_REQUEST_STATE,
-            LdapConstants.MODIFY_DN_REQUEST_TAG, new GrammarAction<LdapMessageContainer<ModifyDnRequestDecorator>>( "Init Modify Dn Request" )
-            {
-                public void action( LdapMessageContainer<ModifyDnRequestDecorator> container )
-                {
-                    // Now, we can allocate the ModifyDNRequest Object
-                    ModifyDnRequestDecorator modifyDnRequest = new ModifyDnRequestDecorator(
-                        container.getLdapCodecService(), new ModifyDnRequestImpl( container.getMessageId() ) );
-                    container.setMessage( modifyDnRequest );
-
-                    LOG.debug( "ModifyDn request" );
-                }
-            } );
+        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.MODIFY_DN_REQUEST_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.MESSAGE_ID_STATE,
+                LdapStatesEnum.MODIFY_DN_REQUEST_STATE,
+                LdapConstants.MODIFY_DN_REQUEST_TAG,
+                new InitModifyDnRequest() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from ModifydDNRequest Message to EntryModDN
@@ -1533,55 +1525,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // Stores the entry Dn
-        super.transitions[LdapStatesEnum.MODIFY_DN_REQUEST_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.MODIFY_DN_REQUEST_STATE, LdapStatesEnum.ENTRY_MOD_DN_STATE, OCTET_STRING,
-            new GrammarAction<LdapMessageContainer<ModifyDnRequestDecorator>>( "Store entry" )
-            {
-                public void action( LdapMessageContainer<ModifyDnRequestDecorator> container ) throws DecoderException
-                {
-                    ModifyDnRequest modifyDnRequest = container.getMessage();
-
-                    // Get the Value and store it in the modifyDNRequest
-                    TLV tlv = container.getCurrentTLV();
-
-                    // We have to handle the special case of a 0 length matched
-                    // Dn
-                    Dn entry = null;
-
-                    if ( tlv.getLength() == 0 )
-                    {
-                        // This will generate a PROTOCOL_ERROR
-                        throw new DecoderException( I18n.err( I18n.ERR_04089 ) );
-                    }
-                    else
-                    {
-                        byte[] dnBytes = tlv.getValue().getData();
-                        String dnStr = Strings.utf8ToString(dnBytes);
-
-                        try
-                        {
-                            entry = new Dn( dnStr );
-                        }
-                        catch ( LdapInvalidDnException ine )
-                        {
-                            String msg = "Invalid Dn given : " + dnStr + " (" + Strings.dumpBytes(dnBytes)
-                                + ") is invalid";
-                            LOG.error( "{} : {}", msg, ine.getMessage() );
-
-                            ModifyDnResponseImpl response = new ModifyDnResponseImpl( modifyDnRequest.getMessageId() );
-                            throw new ResponseCarryingException( msg, response, ResultCodeEnum.INVALID_DN_SYNTAX,
-                                Dn.EMPTY_DN, ine );
-                        }
-
-                        modifyDnRequest.setName( entry );
-                    }
-
-                    if ( IS_DEBUG )
-                    {
-                        LOG.debug( "Modifying Dn {}", entry );
-                    }
-                }
-            } );
+        super.transitions[LdapStatesEnum.MODIFY_DN_REQUEST_STATE.ordinal()][OCTET_STRING.getValue()] =
+            new GrammarTransition(
+                LdapStatesEnum.MODIFY_DN_REQUEST_STATE,
+                LdapStatesEnum.ENTRY_MOD_DN_STATE,
+                OCTET_STRING,
+                new StoreModifyDnRequestEntryName() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from EntryModDN to NewRDN
@@ -1594,60 +1543,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // RelativeRDN :: LDAPString
         //
         // Stores the new Rdn
-        super.transitions[LdapStatesEnum.ENTRY_MOD_DN_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.ENTRY_MOD_DN_STATE, LdapStatesEnum.NEW_RDN_STATE, OCTET_STRING,
-            new GrammarAction<LdapMessageContainer<ModifyDnRequestDecorator>>( "Store new Rdn" )
-            {
-                public void action( LdapMessageContainer<ModifyDnRequestDecorator> container ) throws DecoderException
-                {
-                    ModifyDnRequest modifyDnRequest = container.getMessage();
-
-                    // Get the Value and store it in the modifyDNRequest
-                    TLV tlv = container.getCurrentTLV();
-
-                    // We have to handle the special case of a 0 length matched
-                    // newDN
-                    Rdn newRdn = null;
-
-                    if ( tlv.getLength() == 0 )
-                    {
-                        String msg = I18n.err( I18n.ERR_04090 );
-                        LOG.error( msg );
-
-                        ModifyDnResponseImpl response = new ModifyDnResponseImpl( modifyDnRequest.getMessageId() );
-                        throw new ResponseCarryingException( msg, response, ResultCodeEnum.INVALID_DN_SYNTAX,
-                            modifyDnRequest.getName(), null );
-                    }
-                    else
-                    {
-                        byte[] dnBytes = tlv.getValue().getData();
-                        String dnStr = Strings.utf8ToString(dnBytes);
-
-                        try
-                        {
-                            Dn dn = new Dn( dnStr );
-                            newRdn = dn.getRdn( 0 );
-                        }
-                        catch ( LdapInvalidDnException ine )
-                        {
-                            String msg = "Invalid new Rdn given : " + dnStr + " (" + Strings.dumpBytes(dnBytes)
-                                + ") is invalid";
-                            LOG.error( "{} : {}", msg, ine.getMessage() );
-
-                            ModifyDnResponseImpl response = new ModifyDnResponseImpl( modifyDnRequest.getMessageId() );
-                            throw new ResponseCarryingException( msg, response, ResultCodeEnum.INVALID_DN_SYNTAX,
-                                modifyDnRequest.getName(), ine );
-                        }
-
-                        modifyDnRequest.setNewRdn( newRdn );
-                    }
-
-                    if ( IS_DEBUG )
-                    {
-                        LOG.debug( "Modifying with new Rdn {}", newRdn );
-                    }
-                }
-            } );
+        super.transitions[LdapStatesEnum.ENTRY_MOD_DN_STATE.ordinal()][OCTET_STRING.getValue()] =
+            new GrammarTransition(
+                LdapStatesEnum.ENTRY_MOD_DN_STATE,
+                LdapStatesEnum.NEW_RDN_STATE,
+                OCTET_STRING,
+                new StoreModifyDnRequestNewRdn() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from NewRDN to DeleteOldRDN
@@ -1658,53 +1559,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // Stores the deleteOldRDN flag
-        super.transitions[LdapStatesEnum.NEW_RDN_STATE.ordinal()][BOOLEAN.getValue()] = new GrammarTransition(
-            LdapStatesEnum.NEW_RDN_STATE, LdapStatesEnum.DELETE_OLD_RDN_STATE, BOOLEAN,
-            new GrammarAction<LdapMessageContainer<ModifyDnRequestDecorator>>( "Store matching dnAttributes Value" )
-            {
-                public void action( LdapMessageContainer<ModifyDnRequestDecorator> container ) throws DecoderException
-                {
-                    ModifyDnRequest modifyDnRequest = container.getMessage();
-
-                    TLV tlv = container.getCurrentTLV();
-
-                    // We get the value. If it's a 0, it's a FALSE. If it's
-                    // a FF, it's a TRUE. Any other value should be an error,
-                    // but we could relax this constraint. So if we have
-                    // something
-                    // which is not 0, it will be interpreted as TRUE, but we
-                    // will generate a warning.
-                    Value value = tlv.getValue();
-
-                    try
-                    {
-                        modifyDnRequest.setDeleteOldRdn( BooleanDecoder.parse( value ) );
-                    }
-                    catch ( BooleanDecoderException bde )
-                    {
-                        LOG.error( I18n
-                            .err( I18n.ERR_04091, Strings.dumpBytes(value.getData()), bde.getMessage() ) );
-
-                        // This will generate a PROTOCOL_ERROR
-                        throw new DecoderException( bde.getMessage() );
-                    }
-
-                    // We can have an END transition
-                    container.setGrammarEndAllowed( true );
-
-                    if ( IS_DEBUG )
-                    {
-                        if ( modifyDnRequest.getDeleteOldRdn() )
-                        {
-                            LOG.debug( " Old Rdn attributes will be deleted" );
-                        }
-                        else
-                        {
-                            LOG.debug( " Old Rdn attributes will be retained" );
-                        }
-                    }
-                }
-            } );
+        super.transitions[LdapStatesEnum.NEW_RDN_STATE.ordinal()][BOOLEAN.getValue()] =
+            new GrammarTransition(
+                LdapStatesEnum.NEW_RDN_STATE,
+                LdapStatesEnum.DELETE_OLD_RDN_STATE,
+                BOOLEAN,
+                new StoreModifyDnRequestDeleteOldRdn() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from DeleteOldRDN to NewSuperior
@@ -1714,69 +1574,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     newSuperior [0] LDAPDN OPTIONAL }
         //
         // Stores the new superior
-        super.transitions[LdapStatesEnum.DELETE_OLD_RDN_STATE.ordinal()][LdapConstants.MODIFY_DN_REQUEST_NEW_SUPERIOR_TAG] = new GrammarTransition(
-            LdapStatesEnum.DELETE_OLD_RDN_STATE, LdapStatesEnum.NEW_SUPERIOR_STATE,
-            LdapConstants.MODIFY_DN_REQUEST_NEW_SUPERIOR_TAG,
-            new GrammarAction<LdapMessageContainer<ModifyDnRequestDecorator>>( "Store new superior" )
-            {
-                public void action( LdapMessageContainer<ModifyDnRequestDecorator> container ) throws DecoderException
-                {
-                    ModifyDnRequest modifyDnRequest = container.getMessage();
-
-                    // Get the Value and store it in the modifyDNRequest
-                    TLV tlv = container.getCurrentTLV();
-
-                    // We have to handle the special case of a 0 length matched
-                    // Dn
-                    Dn newSuperior = Dn.EMPTY_DN;
-
-                    if ( tlv.getLength() == 0 )
-                    {
-
-                        if ( modifyDnRequest.getDeleteOldRdn() )
-                        {
-                            // This will generate a PROTOCOL_ERROR
-                            throw new DecoderException( I18n.err( I18n.ERR_04092 ) );
-                        }
-                        else
-                        {
-                            LOG.warn( "The new superior is null, so we will change the entry" );
-                        }
-
-                        modifyDnRequest.setNewSuperior( newSuperior );
-                    }
-                    else
-                    {
-                        byte[] dnBytes = tlv.getValue().getData();
-                        String dnStr = Strings.utf8ToString(dnBytes);
-
-                        try
-                        {
-                            newSuperior = new Dn( dnStr );
-                        }
-                        catch ( LdapInvalidDnException ine )
-                        {
-                            String msg = "Invalid new superior Dn given : " + dnStr + " ("
-                                + Strings.dumpBytes(dnBytes) + ") is invalid";
-                            LOG.error( "{} : {}", msg, ine.getMessage() );
-
-                            ModifyDnResponseImpl response = new ModifyDnResponseImpl( modifyDnRequest.getMessageId() );
-                            throw new ResponseCarryingException( msg, response, ResultCodeEnum.INVALID_DN_SYNTAX,
-                                modifyDnRequest.getName(), ine );
-                        }
-
-                        modifyDnRequest.setNewSuperior( newSuperior );
-                    }
-
-                    // We can have an END transition
-                    container.setGrammarEndAllowed( true );
-
-                    if ( IS_DEBUG )
-                    {
-                        LOG.debug( "New superior Dn {}", newSuperior );
-                    }
-                }
-            } );
+        super.transitions[LdapStatesEnum.DELETE_OLD_RDN_STATE.ordinal()][LdapConstants.MODIFY_DN_REQUEST_NEW_SUPERIOR_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.DELETE_OLD_RDN_STATE,
+                LdapStatesEnum.NEW_SUPERIOR_STATE,
+                LdapConstants.MODIFY_DN_REQUEST_NEW_SUPERIOR_TAG,
+                new StoreModifyDnRequestNewSuperior() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from DeleteOldRDN to Controls
@@ -1815,20 +1618,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // Creates the ModifyDNResponse
-        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.MODIFY_DN_RESPONSE_TAG] = new GrammarTransition(
-            LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.MODIFY_DN_RESPONSE_STATE,
-            LdapConstants.MODIFY_DN_RESPONSE_TAG, new GrammarAction<LdapMessageContainer<ModifyDnResponseDecorator>>( "Init ModifyDNResponse" )
-            {
-                public void action( LdapMessageContainer<ModifyDnResponseDecorator> container )
-                {
-                    // Now, we can allocate the ModifyDnResponse Object
-                    ModifyDnResponseDecorator modifyDnResponse = new ModifyDnResponseDecorator(
-                        container.getLdapCodecService(), new ModifyDnResponseImpl( container.getMessageId() ) );
-                    container.setMessage( modifyDnResponse );
-
-                    LOG.debug( "Modify Dn response " );
-                }
-            } );
+        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.MODIFY_DN_RESPONSE_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.MESSAGE_ID_STATE,
+                LdapStatesEnum.MODIFY_DN_RESPONSE_STATE,
+                LdapConstants.MODIFY_DN_RESPONSE_TAG,
+                new InitModifyDnResponse() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from ModifyDNResponse Message to Result Code
