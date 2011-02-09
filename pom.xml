@@ -39,7 +39,6 @@
     <!-- Set versions for depending projects -->
     <skin.version>1.0.2</skin.version>
     <org.apache.directory.junit.junit-addons.version>0.1</org.apache.directory.junit.junit-addons.version>
-    <org.apache.directory.shared.version>1.0.0-M1-SNAPSHOT</org.apache.directory.shared.version>
     <org.apache.directory.checkstyle-configuration.version>0.1</org.apache.directory.checkstyle-configuration.version>
     
     <!-- Set versions for depending jars -->
