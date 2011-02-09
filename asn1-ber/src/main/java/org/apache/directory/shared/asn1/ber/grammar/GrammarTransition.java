@@ -6,16 +6,16 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License. 
- *  
+ *  under the License.
+ *
  */
 package org.apache.directory.shared.asn1.ber.grammar;
 
@@ -27,7 +27,7 @@ import org.apache.directory.shared.asn1.util.Asn1StringUtils;
 /**
  * Define a transition between two states of a grammar. It stores the next
  * state, and the action to execute while executing the transition.
- * 
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class GrammarTransition<E extends Asn1Container>
@@ -47,7 +47,7 @@ public class GrammarTransition<E extends Asn1Container>
 
     /**
      * Creates a new GrammarTransition object.
-     * 
+     *
      * @param previousState the previous state
      * @param currentState The current state
      * @param currentTag the current TLV's tag
@@ -63,8 +63,23 @@ public class GrammarTransition<E extends Asn1Container>
 
 
     /**
+     * Creates a new GrammarTransition object.
+     *
+     * @param previousState the previous state
+     * @param currentState The current state
+     * @param currentTag the current TLV's tag
+     */
+    public GrammarTransition( Enum<?> previousState, Enum<?> currentState, int currentTag )
+    {
+        this.previousState = previousState;
+        this.currentState = currentState;
+        this.currentTag = currentTag;
+    }
+
+
+    /**
      * Tells if the transition has an associated action.
-     * 
+     *
      * @return <code>true</code> if an action has been associated to the transition
      */
     public boolean hasAction()
@@ -104,6 +119,7 @@ public class GrammarTransition<E extends Asn1Container>
      * @param statesEnum Starting state.
      * @return A representation of the transition as a string.
      */
+    @Override
     public String toString( )
     {
         StringBuilder sb = new StringBuilder();
