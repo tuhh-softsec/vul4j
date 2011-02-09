@@ -22,6 +22,7 @@ package org.apache.directory.ldap.client.api.callback;
 
 
 import java.io.IOException;
+import java.text.MessageFormat;
 
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
@@ -29,6 +30,7 @@ import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.sasl.RealmCallback;
+import javax.security.sasl.RealmChoiceCallback;
 
 import org.apache.directory.ldap.client.api.SaslRequest;
 import org.apache.directory.shared.util.Strings;
@@ -82,7 +84,7 @@ public class SaslCallbackHandler implements CallbackHandler
                 PasswordCallback pcb = ( PasswordCallback ) cb;
 
                 LOG.debug( "sending credentials in the PasswordCallback" );
-                pcb.setPassword( Strings.utf8ToString(saslReq.getCredentials()).toCharArray() );
+                pcb.setPassword( Strings.utf8ToString( saslReq.getCredentials() ).toCharArray() );
             }
             else if ( cb instanceof RealmCallback )
             {
@@ -101,6 +103,59 @@ public class SaslCallbackHandler implements CallbackHandler
                     rcb.setText( rcb.getDefaultText() );
                 }
             }
+            else if ( cb instanceof RealmChoiceCallback )
+            {
+                RealmChoiceCallback rccb = ( RealmChoiceCallback ) cb;
+
+                boolean foundRealmName = false;
+
+                String[] realmNames = rccb.getChoices();
+                for ( int i = 0; i < realmNames.length; i++ )
+                {
+                    String realmName = realmNames[i];
+                    if ( realmName.equals( saslReq.getRealmName() ) )
+                    {
+                        foundRealmName = true;
+
+                        LOG.debug( "sending the user specified realm value {} in the RealmChoiceCallback", realmName );
+                        rccb.setSelectedIndex( i );
+                        break;
+                    }
+                }
+
+                if ( !foundRealmName )
+                {
+                    throw new IOException(
+                        MessageFormat
+                            .format(
+                                "Cannot match ''java.naming.security.sasl.realm'' property value ''{0}'' with choices ''{1}'' in RealmChoiceCallback.",
+                                saslReq.getRealmName(), getRealmNamesAsString( realmNames ) ) );
+                }
+            }
         }
+    }
+
+
+    /**
+     * Gets the realm names as a string.
+     *
+     * @param realmNames the array of realm names
+     * @return  the realm names as a string
+     */
+    private String getRealmNamesAsString( String[] realmNames )
+    {
+        StringBuilder sb = new StringBuilder();
+
+        if ( ( realmNames != null ) && ( realmNames.length > 0 ) )
+        {
+            for ( String realmName : realmNames )
+            {
+                sb.append( realmName );
+                sb.append( ',' );
+            }
+            sb.deleteCharAt( sb.length() - 1 );
+        }
+
+        return sb.toString();
     }
 }
