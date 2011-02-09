@@ -6,16 +6,16 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License. 
- *  
+ *  under the License.
+ *
  */
 package org.apache.directory.shared.ldap.codec;
 
@@ -29,14 +29,10 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.Queue;
 
-import com.mycila.junit.concurrent.Concurrency;
-import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.tlv.TLVStateEnum;
-import org.apache.directory.shared.ldap.codec.api.DefaultLdapCodecService;
-import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.decorators.BindRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
 import org.apache.directory.shared.ldap.model.message.BindRequest;
@@ -51,31 +47,32 @@ import org.apache.mina.filter.codec.ProtocolDecoderOutput;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
+
 
 /**
  * A global Ldap Decoder test
- * 
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 @RunWith(ConcurrentJunitRunner.class)
 @Concurrency()
-public class LdapDecoderTest
+public class LdapDecoderTest extends AbstractCodecServiceTest
 {
-    LdapCodecService codec = new DefaultLdapCodecService();
-    
-    private static class LdapProtocolDecoderOutput extends AbstractProtocolDecoderOutput 
+    private static class LdapProtocolDecoderOutput extends AbstractProtocolDecoderOutput
     {
         public LdapProtocolDecoderOutput()
         {
             // Do nothing
         }
-        
-        public void flush( NextFilter nextFilter, IoSession session ) 
+
+        public void flush( NextFilter nextFilter, IoSession session )
         {
             // Do nothing
             Queue<Object> messageQueue = getMessageQueue();
-            
-            while ( !messageQueue.isEmpty() ) 
+
+            while ( !messageQueue.isEmpty() )
             {
                 nextFilter.messageReceived( session, messageQueue.poll()) ;
             }
@@ -96,7 +93,7 @@ public class LdapDecoderTest
             }
         }
     }
-    
+
     /**
      * Test the decoding of a full PDU
      */
@@ -104,13 +101,13 @@ public class LdapDecoderTest
     public void testDecodeFull()
     {
         LdapDecoder ldapDecoder = new LdapDecoder();
-        LdapMessageContainer<MessageDecorator<? extends Message>> container = 
+        LdapMessageContainer<MessageDecorator<? extends Message>> container =
             new LdapMessageContainer<MessageDecorator<? extends Message>>( codec );
         ldapDecoder.setLdapMessageContainer( container );
 
         ByteBuffer stream = ByteBuffer.allocate( 0x35 );
         stream.put( new byte[]
-            { 
+            {
                 0x30, 0x33,                     // LDAPMessage ::=SEQUENCE {
                     0x02, 0x01, 0x01,           // messageID MessageID
                   0x60, 0x2E,                   // CHOICE { ..., bindRequest BindRequest, ...
@@ -118,7 +115,7 @@ public class LdapDecoderTest
                     0x02, 0x01, 0x03,           // version INTEGER (1..127),
                     0x04, 0x1F,                 // name LDAPDN,
                       'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
-                      'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 
+                      'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm',
                     ( byte ) 0x80, 0x08,        // authentication
                                                 // AuthenticationChoice
                                                 // AuthenticationChoice ::= CHOICE { simple [0] OCTET STRING,
@@ -160,7 +157,7 @@ public class LdapDecoderTest
     public void testDecode2Messages() throws Exception
     {
         LdapDecoder ldapDecoder = new LdapDecoder();
-        LdapMessageContainer<MessageDecorator<? extends Message>> container = 
+        LdapMessageContainer<MessageDecorator<? extends Message>> container =
             new LdapMessageContainer<MessageDecorator<? extends Message>>( codec );
         ldapDecoder.setLdapMessageContainer( container );
 
@@ -169,7 +166,7 @@ public class LdapDecoderTest
 
         IoBuffer stream = IoBuffer.allocate( 0x6A );
         stream.put( new byte[]
-            { 
+            {
                 0x30, 0x33,                     // LDAPMessage ::=SEQUENCE {
                   0x02, 0x01, 0x01,             // messageID MessageID
                   0x60, 0x2E,                   // CHOICE { ..., bindRequest BindRequest, ...
@@ -177,7 +174,7 @@ public class LdapDecoderTest
                     0x02, 0x01, 0x03,           // version INTEGER (1..127),
                     0x04, 0x1F,                 // name LDAPDN,
                       'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
-                      'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 
+                      'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm',
                     ( byte ) 0x80, 0x08,        // authentication
                                                 // AuthenticationChoice
                                                 // AuthenticationChoice ::= CHOICE { simple [0] OCTET STRING,
@@ -190,7 +187,7 @@ public class LdapDecoderTest
                     0x02, 0x01, 0x03,           // version INTEGER (1..127),
                     0x04, 0x1F,                 // name LDAPDN,
                       'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
-                      'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 
+                      'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm',
                     ( byte ) 0x80, 0x08,        // authentication
                                                 // AuthenticationChoice
                                                 // AuthenticationChoice ::= CHOICE { simple [0] OCTET STRING,
@@ -221,7 +218,7 @@ public class LdapDecoderTest
         assertEquals( "uid=akarasulu,dc=example,dc=com", bindRequest.getName().toString() );
         assertTrue( bindRequest.isSimple() );
         assertEquals( "password", Strings.utf8ToString(bindRequest.getCredentials()) );
-        
+
         // The second message
         bindRequest = ( BindRequest ) ( ( LdapProtocolDecoderOutput ) result ).getMessage();
 
@@ -388,7 +385,7 @@ public class LdapDecoderTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<MessageDecorator<? extends Message>> ldapMessageContainer = 
+        LdapMessageContainer<MessageDecorator<? extends Message>> ldapMessageContainer =
             new LdapMessageContainer<MessageDecorator<? extends Message>>( codec );
 
         // Decode a BindRequest PDU
@@ -441,7 +438,7 @@ public class LdapDecoderTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        Asn1Container ldapMessageContainer = 
+        Asn1Container ldapMessageContainer =
             new LdapMessageContainer<MessageDecorator<? extends Message>>( codec );
 
         // Decode a BindRequest PDU
@@ -512,9 +509,9 @@ public class LdapDecoderTest
 
     /**
      * Test the decoding of a split Length.
-     * 
+     *
      * The length is 3 bytes long, but the PDU has been split
-     * just after the first byte 
+     * just after the first byte
      */
     @Test
     public void testDecodeSplittedLength()

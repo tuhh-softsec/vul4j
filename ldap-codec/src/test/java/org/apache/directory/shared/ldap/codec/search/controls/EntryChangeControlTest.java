@@ -6,16 +6,16 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License. 
- *  
+ *  under the License.
+ *
  */
 package org.apache.directory.shared.ldap.codec.search.controls;
 
@@ -25,11 +25,8 @@ import static org.junit.Assert.assertNull;
 
 import java.nio.ByteBuffer;
 
-import com.mycila.junit.concurrent.Concurrency;
-import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.ldap.codec.api.DefaultLdapCodecService;
-import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
+import org.apache.directory.shared.ldap.codec.AbstractCodecServiceTest;
 import org.apache.directory.shared.ldap.codec.controls.search.entryChange.EntryChangeDecorator;
 import org.apache.directory.shared.ldap.model.message.controls.ChangeType;
 import org.apache.directory.shared.ldap.model.message.controls.EntryChange;
@@ -38,18 +35,19 @@ import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
+
 
 /**
  * Test the EntryChangeControlTest codec
- * 
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 @RunWith(ConcurrentJunitRunner.class)
 @Concurrency()
-public class EntryChangeControlTest
+public class EntryChangeControlTest extends AbstractCodecServiceTest
 {
-    private LdapCodecService codec = new DefaultLdapCodecService();
-
     /**
      * Test the decoding of a EntryChangeControl
      */
@@ -58,7 +56,7 @@ public class EntryChangeControlTest
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x0D );
         bb.put( new byte[]
-            { 
+            {
             0x30, 0x0B,                     // EntryChangeNotification ::= SEQUENCE {
               0x0A, 0x01, 0x08,             //     changeType ENUMERATED {
                                             //         modDN (8)
@@ -69,7 +67,7 @@ public class EntryChangeControlTest
         bb.flip();
 
         EntryChangeDecorator decorator = new EntryChangeDecorator( codec );
-        
+
         EntryChange entryChange = (EntryChange)decorator.decode( bb.array() );
 
         assertEquals( ChangeType.MODDN, entryChange.getChangeType() );
@@ -86,7 +84,7 @@ public class EntryChangeControlTest
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x13 );
         bb.put( new byte[]
-            { 
+            {
             0x30, 0x11,                     // EntryChangeNotification ::= SEQUENCE {
               0x0A, 0x01, 0x08,             //     changeType ENUMERATED {
                                             //         modDN (8)
@@ -98,7 +96,7 @@ public class EntryChangeControlTest
         bb.flip();
 
         EntryChangeDecorator decorator = new EntryChangeDecorator( codec );
-        
+
         EntryChange entryChange = (EntryChange)decorator.decode( bb.array() );
 
         assertEquals( ChangeType.MODDN, entryChange.getChangeType() );
@@ -115,7 +113,7 @@ public class EntryChangeControlTest
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x08 );
         bb.put( new byte[]
-            { 
+            {
             0x30, 0x06,             // EntryChangeNotification ::= SEQUENCE {
               0x0A, 0x01, 0x01,     //     changeType ENUMERATED {
                                     //         Add (1)
@@ -126,7 +124,7 @@ public class EntryChangeControlTest
         bb.flip();
 
         EntryChangeDecorator decorator = new EntryChangeDecorator( codec );
-        
+
         EntryChange entryChange = (EntryChange)decorator.decode( bb.array() );
 
         assertEquals( ChangeType.ADD, entryChange.getChangeType() );
@@ -144,7 +142,7 @@ public class EntryChangeControlTest
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x0D );
         bb.put( new byte[]
-            { 
+            {
             0x30, 0x0B,                     // EntryChangeNotification ::= SEQUENCE {
               0x0A, 0x01, 0x01,             //     changeType ENUMERATED {
                                             //         ADD (1)
@@ -157,7 +155,7 @@ public class EntryChangeControlTest
         bb.flip();
 
         EntryChangeDecorator decorator = new EntryChangeDecorator( codec );
-        
+
         decorator.decode( bb.array() );
     }
 
@@ -170,7 +168,7 @@ public class EntryChangeControlTest
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x05 );
         bb.put( new byte[]
-            { 
+            {
             0x30, 0x03,                 // EntryChangeNotification ::= SEQUENCE {
               0x0A, 0x01, 0x01,         //     changeType ENUMERATED {
                                         //         ADD (1)
@@ -180,7 +178,7 @@ public class EntryChangeControlTest
         bb.flip();
 
         EntryChangeDecorator decorator = new EntryChangeDecorator( codec );
-        
+
         EntryChange entryChange = (EntryChange)decorator.decode( bb.array() );
 
         assertEquals( ChangeType.ADD, entryChange.getChangeType() );
@@ -198,7 +196,7 @@ public class EntryChangeControlTest
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x05 );
         bb.put( new byte[]
-            { 
+            {
             0x30, 0x03,                 // EntryChangeNotification ::= SEQUENCE {
               0x0A, 0x01, 0x03,         //     changeType ENUMERATED {
                                         //         BAD Change Type
@@ -208,7 +206,7 @@ public class EntryChangeControlTest
         bb.flip();
 
         EntryChangeDecorator decorator = new EntryChangeDecorator( codec );
-        
+
         decorator.decode( bb.array() );
     }
 
@@ -221,7 +219,7 @@ public class EntryChangeControlTest
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x1C );
         bb.put( new byte[]
-            { 
+            {
             0x30, 0x1A,                     // EntryChangeNotification ::= SEQUENCE {
               0x0A, 0x01, 0x08,             //     changeType ENUMERATED {
                                             //         modDN (8)
@@ -234,7 +232,7 @@ public class EntryChangeControlTest
         bb.flip();
 
         EntryChangeDecorator decorator = new EntryChangeDecorator( codec );
-        
+
         decorator.decode( bb.array() );
     }
 
@@ -247,7 +245,7 @@ public class EntryChangeControlTest
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x0D );
         bb.put( new byte[]
-            { 
+            {
                 0x30, 0x0B,                        // EntryChangeNotification ::= SEQUENCE {
                   0x0A, 0x01, 0x08,                //     changeType ENUMERATED {
                                                    //         modDN (8)
@@ -261,7 +259,7 @@ public class EntryChangeControlTest
 
         EntryChangeDecorator decorator = new EntryChangeDecorator( codec );
 
-        EntryChange entryChange = (EntryChange) decorator.getDecorated();
+        EntryChange entryChange = decorator.getDecorated();
         entryChange.setChangeType( ChangeType.MODDN );
         entryChange.setChangeNumber( 16 );
         entryChange.setPreviousDn( new Dn( "a=b" ) );
@@ -279,7 +277,7 @@ public class EntryChangeControlTest
     {
         ByteBuffer bb = ByteBuffer.allocate( 0x13 );
         bb.put( new byte[]
-            { 
+            {
                 0x30, 0x11,                        // EntryChangeNotification ::= SEQUENCE {
                   0x0A, 0x01, 0x08,                //     changeType ENUMERATED {
                                                    //         modDN (8)
@@ -293,8 +291,8 @@ public class EntryChangeControlTest
         bb.flip();
 
         EntryChangeDecorator decorator = new EntryChangeDecorator( codec );
-        
-        EntryChange entryChange = (EntryChange) decorator.getDecorated();
+
+        EntryChange entryChange = decorator.getDecorated();
 
         entryChange.setChangeType( ChangeType.MODDN );
         entryChange.setChangeNumber( 5124095576030430L );

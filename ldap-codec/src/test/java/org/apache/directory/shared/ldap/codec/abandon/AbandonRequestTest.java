@@ -6,16 +6,16 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License. 
- *  
+ *  under the License.
+ *
  */
 package org.apache.directory.shared.ldap.codec.abandon;
 
@@ -28,16 +28,12 @@ import static org.junit.Assert.fail;
 import java.nio.ByteBuffer;
 import java.util.Map;
 
-import com.mycila.junit.concurrent.Concurrency;
-import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
-import org.apache.directory.shared.ldap.codec.LdapEncoder;
+import org.apache.directory.shared.ldap.codec.AbstractCodecServiceTest;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.api.CodecControl;
-import org.apache.directory.shared.ldap.codec.api.DefaultLdapCodecService;
-import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.decorators.AbandonRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
 import org.apache.directory.shared.ldap.model.message.AbandonRequest;
@@ -48,22 +44,19 @@ import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
+
 
 /**
  * Test an AbandonRequest
- * 
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 @RunWith(ConcurrentJunitRunner.class)
 @Concurrency()
-public class AbandonRequestTest
+public class AbandonRequestTest extends AbstractCodecServiceTest
 {
-    /** The encoder instance */
-    LdapEncoder encoder = new LdapEncoder();
-    
-    LdapCodecService codec = new DefaultLdapCodecService();
-
-
     /**
      * Test the decoding of a AbandonRequest with controls
      */
@@ -85,17 +78,17 @@ public class AbandonRequestTest
                                 // criticality BOOLEAN DEFAULT FALSE,
                     0x01, 0x01, ( byte ) 0xFF,
                                 // controlValue OCTET STRING OPTIONAL }
-                    0x04, 0x06, 'a', 'b', 'c', 'd', 'e', 'f', 
+                    0x04, 0x06, 'a', 'b', 'c', 'd', 'e', 'f',
                   0x30, 0x17, // Control ::= SEQUENCE {
                               // controlType LDAPOID,
                     0x04, 0x0D, '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '2',
                                 // controlValue OCTET STRING OPTIONAL }
-                    0x04, 0x06, 'g', 'h', 'i', 'j', 'k', 'l', 
+                    0x04, 0x06, 'g', 'h', 'i', 'j', 'k', 'l',
                   0x30, 0x12, // Control ::= SEQUENCE {
                               // controlType LDAPOID,
                     0x04, 0x0D, '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '3',
                                 // criticality BOOLEAN DEFAULT FALSE }
-                    0x01, 0x01, ( byte ) 0xFF, 
+                    0x01, 0x01, ( byte ) 0xFF,
                   0x30, 0x0F, // Control ::= SEQUENCE {
                               // controlType LDAPOID}
                     0x04, 0x0D, '1', '.', '3', '.', '6', '.', '1', '.', '5', '.', '5', '.', '4' } );
@@ -103,7 +96,7 @@ public class AbandonRequestTest
         stream.flip();
 
         // Allocate a LdapMessageContainer Container
-        LdapMessageContainer<AbandonRequestDecorator> ldapMessageContainer = 
+        LdapMessageContainer<AbandonRequestDecorator> ldapMessageContainer =
             new LdapMessageContainer<AbandonRequestDecorator>( codec );
 
         // Decode the PDU
@@ -134,25 +127,25 @@ public class AbandonRequestTest
 
         CodecControl<? extends Control> control = (org.apache.directory.shared.ldap.codec.api.CodecControl<?> ) controls.get( "1.3.6.1.5.5.1" );
         assertEquals( "1.3.6.1.5.5.1", control.getOid() );
-        assertEquals( "0x61 0x62 0x63 0x64 0x65 0x66 ", Strings.dumpBytes( ( byte[] ) control.getValue() ) );
+        assertEquals( "0x61 0x62 0x63 0x64 0x65 0x66 ", Strings.dumpBytes( control.getValue() ) );
         assertTrue( control.isCritical() );
         internalAbandonRequest.addControl( control );
 
         control = (org.apache.directory.shared.ldap.codec.api.CodecControl<?> ) controls.get( "1.3.6.1.5.5.2" );
         assertEquals( "1.3.6.1.5.5.2", control.getOid() );
-        assertEquals( "0x67 0x68 0x69 0x6A 0x6B 0x6C ", Strings.dumpBytes( ( byte[] ) control.getValue() ) );
+        assertEquals( "0x67 0x68 0x69 0x6A 0x6B 0x6C ", Strings.dumpBytes( control.getValue() ) );
         assertFalse( control.isCritical() );
         internalAbandonRequest.addControl( control );
 
         control = (org.apache.directory.shared.ldap.codec.api.CodecControl<?> ) controls.get( "1.3.6.1.5.5.3" );
         assertEquals( "1.3.6.1.5.5.3", control.getOid() );
-        assertEquals( "", Strings.dumpBytes((byte[]) control.getValue()) );
+        assertEquals( "", Strings.dumpBytes(control.getValue()) );
         assertTrue( control.isCritical() );
         internalAbandonRequest.addControl( control );
 
         control = (org.apache.directory.shared.ldap.codec.api.CodecControl<?> ) controls.get( "1.3.6.1.5.5.4" );
         assertEquals( "1.3.6.1.5.5.4", control.getOid() );
-        assertEquals( "", Strings.dumpBytes((byte[]) control.getValue()) );
+        assertEquals( "", Strings.dumpBytes(control.getValue()) );
         assertFalse( control.isCritical() );
         internalAbandonRequest.addControl( control );
 
@@ -208,7 +201,7 @@ public class AbandonRequestTest
         stream.flip();
 
         // Allocate a LdapMessageContainer Container
-        LdapMessageContainer<AbandonRequestDecorator> ldapMessageContainer = 
+        LdapMessageContainer<AbandonRequestDecorator> ldapMessageContainer =
             new LdapMessageContainer<AbandonRequestDecorator>( codec );
 
         // Decode the PDU
@@ -271,7 +264,7 @@ public class AbandonRequestTest
         stream.flip();
 
         // Allocate a LdapMessageContainer Container
-        LdapMessageContainer<MessageDecorator<? extends Message>> ldapMessageContainer = 
+        LdapMessageContainer<MessageDecorator<? extends Message>> ldapMessageContainer =
             new LdapMessageContainer<MessageDecorator<? extends Message>>( codec );
 
         // Decode the PDU
@@ -308,7 +301,7 @@ public class AbandonRequestTest
         stream.flip();
 
         // Allocate a LdapMessageContainer Container
-        LdapMessageContainer<MessageDecorator<? extends Message>> ldapMessageContainer = 
+        LdapMessageContainer<MessageDecorator<? extends Message>> ldapMessageContainer =
             new LdapMessageContainer<MessageDecorator<? extends Message>>( codec );
 
         // Decode the PDU

@@ -6,16 +6,16 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License. 
- *  
+ *  under the License.
+ *
  */
 package org.apache.directory.shared.ldap.codec.search;
 
@@ -32,15 +32,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.mycila.junit.concurrent.Concurrency;
-import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
-import org.apache.directory.shared.ldap.codec.LdapEncoder;
+import org.apache.directory.shared.ldap.codec.AbstractCodecServiceTest;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.api.DefaultLdapCodecService;
-import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
 import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.model.filter.ExprNode;
@@ -51,32 +47,29 @@ import org.apache.directory.shared.ldap.model.message.SearchRequest;
 import org.apache.directory.shared.ldap.model.schema.normalizers.DeepTrimToLowerNormalizer;
 import org.apache.directory.shared.ldap.model.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.util.Strings;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 
 
 /**
  * A test case for SearchRequest messages
- * 
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 @RunWith(ConcurrentJunitRunner.class)
 @Concurrency()
-public class SearchRequestMatchingRuleAssertionTest
+public class SearchRequestMatchingRuleAssertionTest extends AbstractCodecServiceTest
 {
-    /** The encoder instance */
-    LdapEncoder encoder = new LdapEncoder();
-
-    /** The codec service */
-    LdapCodecService codec = new DefaultLdapCodecService();
-
     /** An oid normalizer map */
     static Map<String, OidNormalizer> oids = new HashMap<String, OidNormalizer>();
 
 
-    @BeforeClass
-    public static void setUp() throws Exception
+    @Before
+    public void setUp() throws Exception
     {
         // DC normalizer
         OidNormalizer dcOidNormalizer = new OidNormalizer( "dc", new DeepTrimToLowerNormalizer(
@@ -179,7 +172,7 @@ public class SearchRequestMatchingRuleAssertionTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
@@ -256,7 +249,7 @@ public class SearchRequestMatchingRuleAssertionTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
@@ -301,7 +294,7 @@ public class SearchRequestMatchingRuleAssertionTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
@@ -346,7 +339,7 @@ public class SearchRequestMatchingRuleAssertionTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
@@ -394,7 +387,7 @@ public class SearchRequestMatchingRuleAssertionTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
@@ -464,7 +457,7 @@ public class SearchRequestMatchingRuleAssertionTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
@@ -559,7 +552,7 @@ public class SearchRequestMatchingRuleAssertionTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
@@ -606,7 +599,7 @@ public class SearchRequestMatchingRuleAssertionTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
@@ -653,7 +646,7 @@ public class SearchRequestMatchingRuleAssertionTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
@@ -700,7 +693,7 @@ public class SearchRequestMatchingRuleAssertionTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
