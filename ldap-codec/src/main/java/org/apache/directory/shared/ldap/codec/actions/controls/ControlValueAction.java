@@ -17,13 +17,18 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.actions;
+package org.apache.directory.shared.ldap.codec.actions.controls;
 
 
+import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
+import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.decorators.ModifyRequestDecorator;
+import org.apache.directory.shared.ldap.codec.api.CodecControl;
+import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
+import org.apache.directory.shared.ldap.model.message.Control;
+import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.util.StringConstants;
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
@@ -31,55 +36,46 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * The action used to store a Value to an modifyRequest
+ * The action used to set the value of a control. This is an extension point
+ * where different controls can be plugged in (at least eventually). For now we
+ * hard code controls.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ModifyAttributeValueAction extends GrammarAction<LdapMessageContainer<ModifyRequestDecorator>>
+public class ControlValueAction extends GrammarAction<LdapMessageContainer<MessageDecorator<? extends Message>>>
 {
     /** The logger */
-    private static final Logger LOG = LoggerFactory.getLogger( ModifyAttributeValueAction.class );
+    private static final Logger LOG = LoggerFactory.getLogger( ControlValueAction.class );
 
     /** Speedup for logs */
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
 
     /**
-     * Instantiates a new modify attribute value action.
-     */
-    public ModifyAttributeValueAction()
-    {
-        super( "Stores AttributeValue" );
-    }
-
-
-    /**
      * {@inheritDoc}
      */
-    public void action( LdapMessageContainer<ModifyRequestDecorator> container )
+    public void action( LdapMessageContainer<MessageDecorator<? extends Message>> container ) throws DecoderException
     {
-        ModifyRequestDecorator modifyRequestDecorator = container.getMessage();
-
         TLV tlv = container.getCurrentTLV();
 
-        // Store the value. It can't be null
-        byte[] value = StringConstants.EMPTY_BYTES;
+        MessageDecorator<?> message = container.getMessage();
+        CodecControl<? extends Control> control = message.getCurrentControl();
 
+        // Get the current control
+        Value value = tlv.getValue();
+
+        // Store the value - have to handle the special case of a 0 length value
         if ( tlv.getLength() == 0 )
         {
-            modifyRequestDecorator.addAttributeValue( "" );
+            control.setValue( StringConstants.EMPTY_BYTES );
         }
         else
         {
-            value = tlv.getValue().getData();
+            control.setValue( value.getData() );
 
-            if ( container.isBinary( modifyRequestDecorator.getCurrentAttributeType() ) )
+            if ( control != null )
             {
-                modifyRequestDecorator.addAttributeValue( value );
-            }
-            else
-            {
-                modifyRequestDecorator.addAttributeValue( Strings.utf8ToString((byte[]) value) );
+                control.decode( value.getData() );
             }
         }
 
@@ -88,7 +84,7 @@ public class ModifyAttributeValueAction extends GrammarAction<LdapMessageContain
 
         if ( IS_DEBUG )
         {
-            LOG.debug( "Value modified : {}", value );
+            LOG.debug( "Control value : " + Strings.dumpBytes((byte[]) control.getValue()) );
         }
     }
 }

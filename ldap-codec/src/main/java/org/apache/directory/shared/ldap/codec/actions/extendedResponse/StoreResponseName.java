@@ -6,18 +6,18 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License. 
- *  
+ *  under the License.
+ *
  */
-package org.apache.directory.shared.ldap.codec.actions;
+package org.apache.directory.shared.ldap.codec.actions.extendedResponse;
 
 
 import org.apache.directory.shared.asn1.DecoderException;
@@ -35,13 +35,19 @@ import org.slf4j.LoggerFactory;
 
 /**
  * The action used to store a Response Name to an ExtendedResponse
- * 
+ * <pre>
+ * LdapMessage ::= ... ExtendedResponse ...
+ * ExtendedResponse ::= [APPLICATION 24] SEQUENCE {
+ *     COMPONENTS OF LDAPResult,
+ *     responseName   [10] LDAPOID OPTIONAL,
+ *     ...
+ * </pre>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ResponseNameAction extends GrammarAction<LdapMessageContainer<ExtendedResponseDecorator>>
+public class StoreResponseName extends GrammarAction<LdapMessageContainer<ExtendedResponseDecorator>>
 {
     /** The logger */
-    private static final Logger LOG = LoggerFactory.getLogger( ResponseNameAction.class );
+    private static final Logger LOG = LoggerFactory.getLogger( StoreResponseName.class );
 
     /** Speedup for logs */
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
@@ -50,7 +56,7 @@ public class ResponseNameAction extends GrammarAction<LdapMessageContainer<Exten
     /**
      * Instantiates a new response name action.
      */
-    public ResponseNameAction()
+    public StoreResponseName()
     {
         super( "Store response name" );
     }

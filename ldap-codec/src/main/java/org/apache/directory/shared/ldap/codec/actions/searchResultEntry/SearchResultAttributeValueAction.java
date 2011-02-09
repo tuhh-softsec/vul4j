@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.actions;
+package org.apache.directory.shared.ldap.codec.actions.searchResultEntry;
 
 
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;

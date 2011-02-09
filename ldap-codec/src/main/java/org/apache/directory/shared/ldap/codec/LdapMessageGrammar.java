@@ -45,7 +45,6 @@ import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.actions.AllowGrammarEnd;
 import org.apache.directory.shared.ldap.codec.actions.AttributeDescAction;
-import org.apache.directory.shared.ldap.codec.actions.ControlValueAction;
 import org.apache.directory.shared.ldap.codec.actions.InitAndFilterAction;
 import org.apache.directory.shared.ldap.codec.actions.InitApproxMatchFilterAction;
 import org.apache.directory.shared.ldap.codec.actions.InitAssertionValueFilterAction;
@@ -59,18 +58,14 @@ import org.apache.directory.shared.ldap.codec.actions.InitNotFilterAction;
 import org.apache.directory.shared.ldap.codec.actions.InitOrFilterAction;
 import org.apache.directory.shared.ldap.codec.actions.InitPresentFilterAction;
 import org.apache.directory.shared.ldap.codec.actions.InitSubstringsFilterAction;
-import org.apache.directory.shared.ldap.codec.actions.ModifyAttributeValueAction;
 import org.apache.directory.shared.ldap.codec.actions.ResponseAction;
-import org.apache.directory.shared.ldap.codec.actions.ResponseNameAction;
-import org.apache.directory.shared.ldap.codec.actions.SearchResultAttributeValueAction;
 import org.apache.directory.shared.ldap.codec.actions.StoreAnyAction;
 import org.apache.directory.shared.ldap.codec.actions.StoreFinalAction;
 import org.apache.directory.shared.ldap.codec.actions.StoreMatchValueAction;
-import org.apache.directory.shared.ldap.codec.actions.StoreReferenceAction;
 import org.apache.directory.shared.ldap.codec.actions.StoreTypeMatchingRuleAction;
-import org.apache.directory.shared.ldap.codec.actions.ValueAction;
 import org.apache.directory.shared.ldap.codec.actions.abandonRequest.InitAbandonRequest;
 import org.apache.directory.shared.ldap.codec.actions.addRequest.AddAddRequestAttributeType;
+import org.apache.directory.shared.ldap.codec.actions.addRequest.AddAttributeValue;
 import org.apache.directory.shared.ldap.codec.actions.addRequest.InitAddRequest;
 import org.apache.directory.shared.ldap.codec.actions.addRequest.StoreAddRequestEntryName;
 import org.apache.directory.shared.ldap.codec.actions.addResponse.InitAddResponse;
@@ -88,9 +83,15 @@ import org.apache.directory.shared.ldap.codec.actions.compareRequest.StoreCompar
 import org.apache.directory.shared.ldap.codec.actions.compareRequest.StoreCompareRequestAttributeDesc;
 import org.apache.directory.shared.ldap.codec.actions.compareRequest.StoreCompareRequestEntryName;
 import org.apache.directory.shared.ldap.codec.actions.compareResponse.InitCompareResponse;
+import org.apache.directory.shared.ldap.codec.actions.controls.ControlValueAction;
 import org.apache.directory.shared.ldap.codec.actions.controls.InitControls;
 import org.apache.directory.shared.ldap.codec.actions.delRequest.InitDelRequest;
 import org.apache.directory.shared.ldap.codec.actions.delResponse.InitDelResponse;
+import org.apache.directory.shared.ldap.codec.actions.extendedRequest.InitExtendedRequest;
+import org.apache.directory.shared.ldap.codec.actions.extendedRequest.StoreExtendedRequestName;
+import org.apache.directory.shared.ldap.codec.actions.extendedRequest.StoreExtendedRequestValue;
+import org.apache.directory.shared.ldap.codec.actions.extendedResponse.InitExtendedResponse;
+import org.apache.directory.shared.ldap.codec.actions.extendedResponse.StoreResponseName;
 import org.apache.directory.shared.ldap.codec.actions.ldapMessage.InitLdapMessage;
 import org.apache.directory.shared.ldap.codec.actions.ldapMessage.StoreMessageId;
 import org.apache.directory.shared.ldap.codec.actions.ldapResult.AddReferral;
@@ -107,31 +108,29 @@ import org.apache.directory.shared.ldap.codec.actions.modifyDnResponse.InitModif
 import org.apache.directory.shared.ldap.codec.actions.modifyRequest.AddModifyRequestAttribute;
 import org.apache.directory.shared.ldap.codec.actions.modifyRequest.InitAttributeVals;
 import org.apache.directory.shared.ldap.codec.actions.modifyRequest.InitModifyRequest;
+import org.apache.directory.shared.ldap.codec.actions.modifyRequest.StoreModifyRequestAttributeValue;
 import org.apache.directory.shared.ldap.codec.actions.modifyRequest.StoreModifyRequestObjectName;
 import org.apache.directory.shared.ldap.codec.actions.modifyRequest.StoreOperationType;
 import org.apache.directory.shared.ldap.codec.actions.modifyResponse.InitModifyResponse;
 import org.apache.directory.shared.ldap.codec.actions.searchResultDone.InitSearchResultDone;
 import org.apache.directory.shared.ldap.codec.actions.searchResultEntry.AddAttributeType;
 import org.apache.directory.shared.ldap.codec.actions.searchResultEntry.InitSearchResultEntry;
+import org.apache.directory.shared.ldap.codec.actions.searchResultEntry.SearchResultAttributeValueAction;
 import org.apache.directory.shared.ldap.codec.actions.searchResultEntry.StoreSearchResultEntryObjectName;
+import org.apache.directory.shared.ldap.codec.actions.searchResultReference.InitSearchResultReference;
+import org.apache.directory.shared.ldap.codec.actions.searchResultReference.StoreReferenceAction;
 import org.apache.directory.shared.ldap.codec.actions.unbindRequest.InitUnbindRequest;
 import org.apache.directory.shared.ldap.codec.api.LdapConstants;
 import org.apache.directory.shared.ldap.codec.api.ResponseCarryingException;
-import org.apache.directory.shared.ldap.codec.decorators.ExtendedRequestDecorator;
-import org.apache.directory.shared.ldap.codec.decorators.ExtendedResponseDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.IntermediateResponseDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
-import org.apache.directory.shared.ldap.codec.decorators.SearchResultReferenceDecorator;
 import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.filter.SearchScope;
 import org.apache.directory.shared.ldap.model.message.AliasDerefMode;
 import org.apache.directory.shared.ldap.model.message.Control;
-import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
-import org.apache.directory.shared.ldap.model.message.ExtendedRequestImpl;
-import org.apache.directory.shared.ldap.model.message.ExtendedResponseImpl;
 import org.apache.directory.shared.ldap.model.message.IntermediateResponse;
 import org.apache.directory.shared.ldap.model.message.IntermediateResponseImpl;
 import org.apache.directory.shared.ldap.model.message.Message;
@@ -139,7 +138,6 @@ import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.model.message.SearchRequest;
 import org.apache.directory.shared.ldap.model.message.SearchRequestImpl;
 import org.apache.directory.shared.ldap.model.message.SearchResultDoneImpl;
-import org.apache.directory.shared.ldap.model.message.SearchResultReferenceImpl;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.util.StringConstants;
 import org.apache.directory.shared.util.Strings;
@@ -1164,7 +1162,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.VALS_STATE,
                 LdapStatesEnum.ATTRIBUTE_VALUE_STATE,
                 OCTET_STRING,
-                new ModifyAttributeValueAction() );
+                new StoreModifyRequestAttributeValue() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from vals to ModificationsSeq
@@ -1224,7 +1222,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.ATTRIBUTE_VALUE_STATE,
                 LdapStatesEnum.ATTRIBUTE_VALUE_STATE,
                 OCTET_STRING,
-                new ModifyAttributeValueAction() );
+                new StoreModifyRequestAttributeValue() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Attribute Value to ModificationsSeq
@@ -1397,7 +1395,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.VALUES_STATE,
                 LdapStatesEnum.VALUE_STATE,
                 OCTET_STRING,
-                new ValueAction() );
+                new AddAttributeValue() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Value to Value
@@ -1414,7 +1412,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.VALUE_STATE,
                 LdapStatesEnum.VALUE_STATE,
                 OCTET_STRING,
-                new ValueAction() );
+                new AddAttributeValue() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Value to Attribute
@@ -1781,20 +1779,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // SearchResultReference ::= [APPLICATION 19] SEQUENCE OF LDAPURL
         //
         // Initialization of SearchResultReference object
-        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.SEARCH_RESULT_REFERENCE_TAG] = new GrammarTransition(
-            LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.SEARCH_RESULT_REFERENCE_STATE,
-            LdapConstants.SEARCH_RESULT_REFERENCE_TAG, new GrammarAction<LdapMessageContainer<SearchResultReferenceDecorator>>( "Init SearchResultReference" )
-            {
-                public void action( LdapMessageContainer<SearchResultReferenceDecorator> container ) throws DecoderException
-                {
-                    // Now, we can allocate the SearchResultReference Object
-                    SearchResultReferenceDecorator searchResultReference = new SearchResultReferenceDecorator(
-                        container.getLdapCodecService(), new SearchResultReferenceImpl( container.getMessageId() ) );
-                    container.setMessage( searchResultReference );
-
-                    LOG.debug( "SearchResultReference response " );
-                }
-            } );
+        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.SEARCH_RESULT_REFERENCE_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.MESSAGE_ID_STATE,
+                LdapStatesEnum.SEARCH_RESULT_REFERENCE_STATE,
+                LdapConstants.SEARCH_RESULT_REFERENCE_TAG,
+                new InitSearchResultReference() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from SearchResultReference Message to Reference
@@ -1846,20 +1836,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // ExtendedRequest ::= [APPLICATION 23] SEQUENCE {
         //
         // Creates the ExtendedRequest object
-        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.EXTENDED_REQUEST_TAG] = new GrammarTransition(
-            LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.EXTENDED_REQUEST_STATE, LdapConstants.EXTENDED_REQUEST_TAG,
-            new GrammarAction<LdapMessageContainer<ExtendedRequestDecorator>>( "Init Extended Request" )
-            {
-                public void action( LdapMessageContainer<ExtendedRequestDecorator> container ) throws DecoderException
-                {
-                    // Now, we can allocate the ExtendedRequest Object
-                    ExtendedRequestDecorator extendedRequest = new ExtendedRequestDecorator(
-                        container.getLdapCodecService(), new ExtendedRequestImpl( container.getMessageId() ) );
-                    container.setMessage( extendedRequest );
-
-                    LOG.debug( "Extended request" );
-                }
-            } );
+        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.EXTENDED_REQUEST_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.MESSAGE_ID_STATE,
+                LdapStatesEnum.EXTENDED_REQUEST_STATE,
+                LdapConstants.EXTENDED_REQUEST_TAG,
+                new InitExtendedRequest() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from ExtendedRequest Message to RequestName
@@ -1869,70 +1851,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // Stores the name
-        super.transitions[LdapStatesEnum.EXTENDED_REQUEST_STATE.ordinal()][LdapConstants.EXTENDED_REQUEST_NAME_TAG] = new GrammarTransition(
-            LdapStatesEnum.EXTENDED_REQUEST_STATE, LdapStatesEnum.REQUEST_NAME_STATE,
-            LdapConstants.EXTENDED_REQUEST_NAME_TAG, new GrammarAction<LdapMessageContainer<ExtendedRequestDecorator>>( "Store name" )
-            {
-                public void action( LdapMessageContainer<ExtendedRequestDecorator> container ) throws DecoderException
-                {
-                    // We can allocate the ExtendedRequest Object
-                    ExtendedRequest extendedRequest = container.getMessage();
-
-                    // Get the Value and store it in the ExtendedRequest
-                    TLV tlv = container.getCurrentTLV();
-
-                    // We have to handle the special case of a 0 length matched
-                    // OID
-                    if ( tlv.getLength() == 0 )
-                    {
-                        String msg = I18n.err( I18n.ERR_04095 );
-                        LOG.error( msg );
-                        // This will generate a PROTOCOL_ERROR
-                        throw new DecoderException( msg );
-                    }
-                    else
-                    {
-                        byte[] requestNameBytes = tlv.getValue().getData();
-
-                        try
-                        {
-                            String requestName = Strings.utf8ToString(requestNameBytes);
-
-                            if ( !OID.isOID( requestName ) )
-                            {
-
-                                String msg = "The Request name is not a valid OID : "
-                                    + Strings.utf8ToString(requestNameBytes) + " ("
-                                    + Strings.dumpBytes(requestNameBytes) + ") is invalid";
-                                LOG.error( msg );
-
-                                // throw an exception, we will get a PROTOCOL_ERROR
-                                throw new DecoderException( msg );
-                            }
-
-                            extendedRequest.setRequestName( requestName );
-                        }
-                        catch ( DecoderException de )
-                        {
-                            String msg = "The Request name is not a valid OID : "
-                                + Strings.utf8ToString(requestNameBytes) + " ("
-                                + Strings.dumpBytes(requestNameBytes) + ") is invalid";
-                            LOG.error( "{} : {}", msg, de.getMessage() );
-
-                            // Rethrow the exception, we will get a PROTOCOL_ERROR
-                            throw de;
-                        }
-                    }
-
-                    // We can have an END transition
-                    container.setGrammarEndAllowed( true );
-
-                    if ( IS_DEBUG )
-                    {
-                        LOG.debug( "OID read : {}", extendedRequest.getRequestName() );
-                    }
-                }
-            } );
+        super.transitions[LdapStatesEnum.EXTENDED_REQUEST_STATE.ordinal()][LdapConstants.EXTENDED_REQUEST_NAME_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.EXTENDED_REQUEST_STATE,
+                LdapStatesEnum.REQUEST_NAME_STATE,
+                LdapConstants.EXTENDED_REQUEST_NAME_TAG,
+                new StoreExtendedRequestName() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from RequestName to RequestValue
@@ -1942,38 +1866,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     requestValue  [1] OCTET STRING OPTIONAL }
         //
         // Stores the value
-        super.transitions[LdapStatesEnum.REQUEST_NAME_STATE.ordinal()][LdapConstants.EXTENDED_REQUEST_VALUE_TAG] = new GrammarTransition(
-            LdapStatesEnum.REQUEST_NAME_STATE, LdapStatesEnum.REQUEST_VALUE_STATE,
-            LdapConstants.EXTENDED_REQUEST_VALUE_TAG, new GrammarAction<LdapMessageContainer<ExtendedRequestDecorator>>( "Store value" )
-            {
-                public void action( LdapMessageContainer<ExtendedRequestDecorator> container ) throws DecoderException
-                {
-                    // We can allocate the ExtendedRequest Object
-                    ExtendedRequest extendedRequest = container.getMessage();
-
-                    // Get the Value and store it in the ExtendedRequest
-                    TLV tlv = container.getCurrentTLV();
-
-                    // We have to handle the special case of a 0 length matched
-                    // value
-                    if ( tlv.getLength() == 0 )
-                    {
-                        extendedRequest.setRequestValue( StringConstants.EMPTY_BYTES );
-                    }
-                    else
-                    {
-                        extendedRequest.setRequestValue( tlv.getValue().getData() );
-                    }
-
-                    // We can have an END transition
-                    container.setGrammarEndAllowed( true );
-
-                    if ( IS_DEBUG )
-                    {
-                        LOG.debug( "Extended value : {}", extendedRequest.getRequestValue() );
-                    }
-                }
-            } );
+        super.transitions[LdapStatesEnum.REQUEST_NAME_STATE.ordinal()][LdapConstants.EXTENDED_REQUEST_VALUE_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.REQUEST_NAME_STATE,
+                LdapStatesEnum.REQUEST_VALUE_STATE,
+                LdapConstants.EXTENDED_REQUEST_VALUE_TAG,
+                new StoreExtendedRequestValue() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from RequestName to Controls
@@ -2012,20 +1910,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // ExtendedResponse ::= [APPLICATION 24] SEQUENCE {
         //
         // Creates the ExtendeResponse object
-        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.EXTENDED_RESPONSE_TAG] = new GrammarTransition(
-            LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.EXTENDED_RESPONSE_STATE,
-            LdapConstants.EXTENDED_RESPONSE_TAG, new GrammarAction<LdapMessageContainer<ExtendedResponseDecorator>>( "Init Extended Reponse" )
-            {
-                public void action( LdapMessageContainer<ExtendedResponseDecorator> container ) throws DecoderException
-                {
-                    // Now, we can allocate the ExtendedResponse Object
-                    ExtendedResponseDecorator extendedResponse = new ExtendedResponseDecorator(
-                        container.getLdapCodecService(), new ExtendedResponseImpl( container.getMessageId() ) );
-                    container.setMessage( extendedResponse );
-
-                    LOG.debug( "Extended Response" );
-                }
-            } );
+        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.EXTENDED_RESPONSE_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.MESSAGE_ID_STATE,
+                LdapStatesEnum.EXTENDED_RESPONSE_STATE,
+                LdapConstants.EXTENDED_RESPONSE_TAG,
+                new InitExtendedResponse() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from ExtendedResponse Message to Result Code ER
@@ -2131,7 +2021,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.REFERRAL_ER_STATE,
                 LdapStatesEnum.RESPONSE_NAME_STATE,
                 LdapConstants.EXTENDED_RESPONSE_RESPONSE_NAME_TAG,
-                new ResponseNameAction() );
+                new StoreResponseName() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Referral ER to Response
@@ -2193,7 +2083,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.ERROR_MESSAGE_ER_STATE,
                 LdapStatesEnum.RESPONSE_NAME_STATE,
                 LdapConstants.EXTENDED_RESPONSE_RESPONSE_NAME_TAG,
-                new ResponseNameAction() );
+                new StoreResponseName() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Response Name to Response
