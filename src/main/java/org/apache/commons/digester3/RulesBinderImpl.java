@@ -18,6 +18,7 @@
 package org.apache.commons.digester3;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -56,6 +57,12 @@ final class RulesBinderImpl implements RulesBinder {
      * The data structure where storing the providers binding.
      */
     private final Collection<RegisteredProvider> providers = new ArrayList<RegisteredProvider>();
+
+    private final ClassLoader classLoader;
+
+    public RulesBinderImpl(final ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
 
     /**
      * {@inheritDoc}
@@ -661,8 +668,31 @@ final class RulesBinderImpl implements RulesBinder {
                         return this;
                     }
 
+                    public CallMethodBuilder withParamTypes(String... paramTypeNames) {
+                        if (paramTypeNames != null) {
+                            this.paramTypes = new Class[paramTypeNames.length];
+                            for (int i = 0; i < paramTypeNames.length; i++) {
+                                try {
+                                    this.paramTypes[i] = classLoader.loadClass(paramTypeNames[i]);
+                                } catch (ClassNotFoundException e) {
+                                    // use the digester log
+                                    addError("{forPattern(\"%s\").callMethod().withParamTypes(%s)} class %s cannot be load",
+                                            keyPattern,
+                                            Arrays.toString(paramTypeNames),
+                                            paramTypeNames[i]);
+                                }
+                            }
+                        }
+                        return this;
+                    }
+
                     public CallMethodBuilder withParamTypes(/* @Nullable */Class<?>... paramTypes) {
                         this.paramTypes = paramTypes;
+
+                        if (paramTypes != null) {
+                            this.paramCount = paramTypes.length;
+                        }
+
                         return this;
                     }
 

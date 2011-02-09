@@ -175,7 +175,7 @@ public class CallMethodRule extends Rule {
      */
     @Override
     public void body(String namespace, String name, String text) throws Exception {
-        if (this.paramTypes.length == 0) {
+        if (this.paramTypes.length == 1) {
             this.bodyText = text.trim();
         }
     }
