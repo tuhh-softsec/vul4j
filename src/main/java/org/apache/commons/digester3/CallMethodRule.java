@@ -19,6 +19,7 @@ package org.apache.commons.digester3;
 
 import java.util.Formatter;
 
+import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.MethodUtils;
 import org.xml.sax.Attributes;
 
@@ -229,12 +230,6 @@ public class CallMethodRule extends Rule {
             }
 
             parameters = new Object[]{ this.bodyText };
-            /* TODO this situation has to be managed by the builder
-            if (this.paramTypes.length == 0) {
-                this.paramTypes = new Class[1];
-                this.paramTypes[0] = String.class;
-            } */
-
         } else {
             // When paramCount is zero and paramTypes.length is zero it
             // means that we truly are calling a method with no parameters.
@@ -251,7 +246,7 @@ public class CallMethodRule extends Rule {
             if (parameters[i] == null
                     || (parameters[i] instanceof String && !String.class.isAssignableFrom(this.paramTypes[i]))) {
 
-                paramValues[i] = this.getDigester().lookupConverter(this.paramTypes[i]).convert((String) parameters[i]);
+                paramValues[i] = ConvertUtils.convert((String) parameters[i], paramTypes[i]);
             } else {
                 paramValues[i] = parameters[i];
             }

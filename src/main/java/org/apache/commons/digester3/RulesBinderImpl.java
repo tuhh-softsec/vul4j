@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.digester3.rulesbinder.BackToLinkedRuleBuilder;
 import org.apache.commons.digester3.rulesbinder.BeanPropertySetterBuilder;
 import org.apache.commons.digester3.rulesbinder.CallMethodBuilder;
@@ -873,7 +872,7 @@ final class RulesBinderImpl implements RulesBinder {
                                     type.getName())));
                 }
 
-                ConvertUtils.register(new BeanUtilsConverterFacade(typeConverter), type);
+                // TODO register the type converter!!!
             }
 
         };
