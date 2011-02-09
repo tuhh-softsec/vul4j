@@ -29,7 +29,7 @@ public class ObjectCreateRule extends Rule {
     /**
      * The Java class name of the object to be created.
      */
-    private final String className;
+    private final Class<?> type;
 
     /**
      * The attribute containing an override class name if it is present.
@@ -42,8 +42,8 @@ public class ObjectCreateRule extends Rule {
      * @param className The Java class name of the object to be created
      * @param attributeName The attribute containing an override class name if it is present
      */
-    public ObjectCreateRule(String className, String attributeName) {
-        this.className = className;
+    public ObjectCreateRule(Class<?> type, String attributeName) {
+        this.type = type;
         this.attributeName = attributeName;
     }
 
@@ -53,21 +53,25 @@ public class ObjectCreateRule extends Rule {
     @Override
     public void begin(String namespace, String name, Attributes attributes) throws Exception {
         // Identify the name of the class to instantiate
-        String realClassName = this.className;
+        Class<?> clazz = this.type;
         if (this.attributeName != null) {
             String value = attributes.getValue(this.attributeName);
             if (value != null) {
-                realClassName = value;
+                clazz = this.getDigester().getClassLoader().loadClass(value);
             }
         }
         if (this.getDigester().getLog().isDebugEnabled()) {
             this.getDigester().getLog().debug(String.format("[ObjectCreateRule]{%s} New %s",
                     this.getDigester().getMatch(),
-                    realClassName));
+                    clazz.getName()));
+        }
+
+        if (clazz == null) {
+            throw this.getDigester().createSAXException(String.format("[ObjectCreateRule]{%s} No type defined",
+                    this.getDigester().getMatch()));
         }
 
         // Instantiate the new object and push it on the context stack
-        Class<?> clazz = this.getDigester().getClassLoader().loadClass(realClassName);
         Object instance = clazz.newInstance();
         this.getDigester().push(instance);
     }
@@ -91,7 +95,7 @@ public class ObjectCreateRule extends Rule {
      */
     @Override
     public String toString() {
-        return String.format("ObjectCreateRule[className=%s, attributeName=%s]", this.className, this.attributeName);
+        return String.format("ObjectCreateRule[className=%s, attributeName=%s]", this.type.getClasses(), this.attributeName);
     }
 
 }
