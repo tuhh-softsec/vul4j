@@ -16,8 +16,6 @@
  */
 package org.apache.xml.security.transforms.implementations;
 
-
-
 import javax.xml.transform.TransformerException;
 
 import org.apache.xml.dtm.DTM;
@@ -31,7 +29,6 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-
 
 /**
  * The 'here()' function returns a node-set containing the attribute or
@@ -52,106 +49,105 @@ import org.w3c.dom.Node;
  */
 public class FuncHere extends Function {
 
-   /**
-         * 
-         */
-        private static final long serialVersionUID = 1L;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
 
-   /**
-    * The here function returns a node-set containing the attribute or
-    * processing instruction node or the parent element of the text node
-    * that directly bears the XPath expression.  This expression results
-    * in an error if the containing XPath expression does not appear in the
-    * same XML document against which the XPath expression is being evaluated.
-    *
-    * @param xctxt
-    * @return the xobject
-    * @throws javax.xml.transform.TransformerException
-    */
-   public XObject execute(XPathContext xctxt)
-           throws javax.xml.transform.TransformerException {
+    /**
+     * The here function returns a node-set containing the attribute or
+     * processing instruction node or the parent element of the text node
+     * that directly bears the XPath expression.  This expression results
+     * in an error if the containing XPath expression does not appear in the
+     * same XML document against which the XPath expression is being evaluated.
+     *
+     * @param xctxt
+     * @return the xobject
+     * @throws javax.xml.transform.TransformerException
+     */
+    public XObject execute(XPathContext xctxt)
+        throws javax.xml.transform.TransformerException {
 
-      Node xpathOwnerNode = (Node) xctxt.getOwnerObject();
+        Node xpathOwnerNode = (Node) xctxt.getOwnerObject();
 
-      if (xpathOwnerNode == null) {
-         return null;
-      }
+        if (xpathOwnerNode == null) {
+            return null;
+        }
 
-      int xpathOwnerNodeDTM = xctxt.getDTMHandleFromNode(xpathOwnerNode);
+        int xpathOwnerNodeDTM = xctxt.getDTMHandleFromNode(xpathOwnerNode);
 
-      int currentNode = xctxt.getCurrentNode();
-      DTM dtm = xctxt.getDTM(currentNode);
-      int docContext = dtm.getDocument();
+        int currentNode = xctxt.getCurrentNode();
+        DTM dtm = xctxt.getDTM(currentNode);
+        int docContext = dtm.getDocument();
 
-      if (DTM.NULL == docContext) {
-         error(xctxt, XPATHErrorResources.ER_CONTEXT_HAS_NO_OWNERDOC, null);
-      }
+        if (DTM.NULL == docContext) {
+            error(xctxt, XPATHErrorResources.ER_CONTEXT_HAS_NO_OWNERDOC, null);
+        }
 
-      {
+        {
+            // check whether currentNode and the node containing the XPath expression
+            // are in the same document
+            Document currentDoc =
+                XMLUtils.getOwnerDocument(dtm.getNode(currentNode));
+            Document xpathOwnerDoc = XMLUtils.getOwnerDocument(xpathOwnerNode);
 
-         // check whether currentNode and the node containing the XPath expression
-         // are in the same document
-         Document currentDoc =
-            XMLUtils.getOwnerDocument(dtm.getNode(currentNode));
-         Document xpathOwnerDoc = XMLUtils.getOwnerDocument(xpathOwnerNode);
+            if (currentDoc != xpathOwnerDoc) {
+                throw new TransformerException(I18n.translate("xpath.funcHere.documentsDiffer"));
+            }
+        }
 
-         if (currentDoc != xpathOwnerDoc) {
-            throw new TransformerException(I18n
-               .translate("xpath.funcHere.documentsDiffer"));
-         }
-      }
+        XNodeSet nodes = new XNodeSet(xctxt.getDTMManager());
+        NodeSetDTM nodeSet = nodes.mutableNodeset();
 
-      XNodeSet nodes = new XNodeSet(xctxt.getDTMManager());
-      NodeSetDTM nodeSet = nodes.mutableNodeset();
+        {
+            int hereNode = DTM.NULL;
 
-      {
-         int hereNode = DTM.NULL;
+            switch (dtm.getNodeType(xpathOwnerNodeDTM)) {
 
-         switch (dtm.getNodeType(xpathOwnerNodeDTM)) {
+            case Node.ATTRIBUTE_NODE : {
+                // returns a node-set containing the attribute
+                hereNode = xpathOwnerNodeDTM;
 
-         case Node.ATTRIBUTE_NODE : {
-            // returns a node-set containing the attribute
-            hereNode = xpathOwnerNodeDTM;
+                nodeSet.addNode(hereNode);
 
-            nodeSet.addNode(hereNode);
+                break;
+            }
+            case Node.PROCESSING_INSTRUCTION_NODE : {
+                // returns a node-set containing the processing instruction node
+                hereNode = xpathOwnerNodeDTM;
 
-            break;
-         }
-         case Node.PROCESSING_INSTRUCTION_NODE : {
-            // returns a node-set containing the processing instruction node
-            hereNode = xpathOwnerNodeDTM;
+                nodeSet.addNode(hereNode);
 
-            nodeSet.addNode(hereNode);
+                break;
+            }
+            case Node.TEXT_NODE : {
+                // returns a node-set containing the parent element of the
+                // text node that directly bears the XPath expression
+                hereNode = dtm.getParent(xpathOwnerNodeDTM);
 
-            break;
-         }
-         case Node.TEXT_NODE : {
-            // returns a node-set containing the parent element of the
-            // text node that directly bears the XPath expression
-            hereNode = dtm.getParent(xpathOwnerNodeDTM);
+                nodeSet.addNode(hereNode);
 
-            nodeSet.addNode(hereNode);
+                break;
+            }
+            default :
+                break;
+            }
+        }
 
-            break;
-         }
-         default :
-            break;
-         }
-      }
+        /** $todo$ Do I have to do this detach() call? */
+        nodeSet.detach();
 
-      /** $todo$ Do I have to do this detach() call? */
-      nodeSet.detach();
+        return nodes;
+    }
 
-      return nodes;
-   }
+    /**
+     * No arguments to process, so this does nothing.
+     * @param vars
+     * @param globalsSize
+     */
+    @SuppressWarnings("unchecked")
+    public void fixupVariables(java.util.Vector vars, int globalsSize) {
 
-   /**
-    * No arguments to process, so this does nothing.
-    * @param vars
-    * @param globalsSize
-    */
-   public void fixupVariables(java.util.Vector vars, int globalsSize) {
-
-      // do nothing
-   }
+        // do nothing
+    }
 }

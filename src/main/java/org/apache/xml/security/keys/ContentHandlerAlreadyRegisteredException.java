@@ -1,4 +1,3 @@
-
 /*
  * Copyright  1999-2004 The Apache Software Foundation.
  *
@@ -17,71 +16,63 @@
  */
 package org.apache.xml.security.keys;
 
-
-
 import org.apache.xml.security.exceptions.XMLSecurityException;
 
+public class ContentHandlerAlreadyRegisteredException extends XMLSecurityException {
 
-/**
- *
- * @author $Author$
- */
-public class ContentHandlerAlreadyRegisteredException
-        extends XMLSecurityException {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
 
-   /**
-         * 
-         */
-        private static final long serialVersionUID = 1L;
+    /**
+     * Constructor ContentHandlerAlreadyRegisteredException
+     *
+     */
+    public ContentHandlerAlreadyRegisteredException() {
+        super();
+    }
 
-   /**
-    * Constructor ContentHandlerAlreadyRegisteredException
-    *
-    */
-   public ContentHandlerAlreadyRegisteredException() {
-      super();
-   }
+    /**
+     * Constructor ContentHandlerAlreadyRegisteredException
+     *
+     * @param msgID
+     */
+    public ContentHandlerAlreadyRegisteredException(String msgID) {
+        super(msgID);
+    }
 
-   /**
-    * Constructor ContentHandlerAlreadyRegisteredException
-    *
-    * @param _msgID
-    */
-   public ContentHandlerAlreadyRegisteredException(String _msgID) {
-      super(_msgID);
-   }
+    /**
+     * Constructor ContentHandlerAlreadyRegisteredException
+     *
+     * @param msgID
+     * @param exArgs
+     */
+    public ContentHandlerAlreadyRegisteredException(String msgID, Object exArgs[]) {
+        super(msgID, exArgs);
+    }
 
-   /**
-    * Constructor ContentHandlerAlreadyRegisteredException
-    *
-    * @param _msgID
-    * @param exArgs
-    */
-   public ContentHandlerAlreadyRegisteredException(String _msgID,
-           Object exArgs[]) {
-      super(_msgID, exArgs);
-   }
+    /**
+     * Constructor ContentHandlerAlreadyRegisteredException
+     *
+     * @param msgID
+     * @param originalException
+     */
+    public ContentHandlerAlreadyRegisteredException(String msgID, Exception originalException) {
+        super(msgID, originalException);
+    }
 
-   /**
-    * Constructor ContentHandlerAlreadyRegisteredException
-    *
-    * @param _msgID
-    * @param _originalException
-    */
-   public ContentHandlerAlreadyRegisteredException(String _msgID,
-           Exception _originalException) {
-      super(_msgID, _originalException);
-   }
-
-   /**
-    * Constructor ContentHandlerAlreadyRegisteredException
-    *
-    * @param _msgID
-    * @param exArgs
-    * @param _originalException
-    */
-   public ContentHandlerAlreadyRegisteredException(String _msgID,
-           Object exArgs[], Exception _originalException) {
-      super(_msgID, exArgs, _originalException);
-   }
+    /**
+     * Constructor ContentHandlerAlreadyRegisteredException
+     *
+     * @param msgID
+     * @param exArgs
+     * @param originalException
+     */
+    public ContentHandlerAlreadyRegisteredException(
+        String msgID, Object exArgs[], Exception originalException
+    ) {
+        super(msgID, exArgs, originalException);
+    }
+    
 }

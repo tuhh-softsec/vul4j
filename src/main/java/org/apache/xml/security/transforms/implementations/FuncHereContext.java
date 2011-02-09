@@ -16,21 +16,18 @@
  */
 package org.apache.xml.security.transforms.implementations;
 
-
-
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.security.utils.I18n;
 import org.apache.xpath.CachedXPathAPI;
 import org.apache.xpath.XPathContext;
 import org.w3c.dom.Node;
 
-
 /**
  * {@link FuncHereContext} extends {@link XPathContext} for supplying context
  * for the <CODE>here()</CODE> function. The here() function needs to know
  * <I>where</I> in an XML instance the XPath text string appeared. This can be
- * in {@link org.w3c.dom.Text}, {@link org.w3c.dom.Attr}ibutes and {@ProcessingInstrinction} nodes. The
- * correct node must be supplied to the constructor of {@link FuncHereContext}.
+ * in {@link org.w3c.dom.Text}, {@link org.w3c.dom.Attr}ibutes and {@ProcessingInstrinction} nodes.
+ * The correct node must be supplied to the constructor of {@link FuncHereContext}.
  * The supplied Node MUST contain the XPath which is to be executed.
  *
  * <PRE>
@@ -61,79 +58,74 @@ import org.w3c.dom.Node;
  * @author $Author$
  * @see org.apache.xml.security.transforms.implementations.FuncHere
  * @see org.apache.xml.security.utils.XPathFuncHereAPI
- * @see <A HREF="http://www.w3.org/Signature/Drafts/xmldsig-core/Overview.html#function-here">XML Signature - The here() function</A>
+ * @see <A HREF="http://www.w3.org/Signature/Drafts/xmldsig-core/Overview.html#function-here">
+ * XML Signature - The here() function</A>
  */
 public class FuncHereContext extends XPathContext {
 
-   /**
-    * This constuctor is disabled because if we use the here() function we
-    * <I>always</I> need to know in which node the XPath occured.
-    */
-   private FuncHereContext() {}
+    /**
+     * Constructor FuncHereContext
+     *
+     * @param owner
+     */
+    public FuncHereContext(Node owner) {
+        super(owner);
+    }
 
-   /**
-    * Constructor FuncHereContext
-    *
-    * @param owner
-    */
-   public FuncHereContext(Node owner) {
-      super(owner);
-   }
+    /**
+     * Constructor FuncHereContext
+     *
+     * @param owner
+     * @param xpathContext
+     */
+    public FuncHereContext(Node owner, XPathContext xpathContext) {
 
-   /**
-    * Constructor FuncHereContext
-    *
-    * @param owner
-    * @param xpathContext
-    */
-   public FuncHereContext(Node owner, XPathContext xpathContext) {
+        super(owner);
 
-      super(owner);
+        try {
+            super.m_dtmManager = xpathContext.getDTMManager();
+        } catch (IllegalAccessError iae) {
+            throw new IllegalAccessError(I18n.translate("endorsed.jdk1.4.0")
+                                         + " Original message was \""
+                                         + iae.getMessage() + "\"");
+        }
+    }
 
-      try {
-         super.m_dtmManager = xpathContext.getDTMManager();
-      } catch (IllegalAccessError iae) {
-         throw new IllegalAccessError(I18n.translate("endorsed.jdk1.4.0")
-                                      + " Original message was \""
-                                      + iae.getMessage() + "\"");
-      }
-   }
+    /**
+     * Constructor FuncHereContext
+     *
+     * @param owner
+     * @param previouslyUsed
+     */
+    public FuncHereContext(Node owner, CachedXPathAPI previouslyUsed) {
 
-   /**
-    * Constructor FuncHereContext
-    *
-    * @param owner
-    * @param previouslyUsed
-    */
-   public FuncHereContext(Node owner, CachedXPathAPI previouslyUsed) {
+        super(owner);
 
-      super(owner);
+        try {
+            super.m_dtmManager = previouslyUsed.getXPathContext().getDTMManager();
+        } catch (IllegalAccessError iae) {
+            throw new IllegalAccessError(I18n.translate("endorsed.jdk1.4.0")
+                                         + " Original message was \""
+                                         + iae.getMessage() + "\"");
+        }
+    }
 
-      try {
-         super.m_dtmManager = previouslyUsed.getXPathContext().getDTMManager();
-      } catch (IllegalAccessError iae) {
-         throw new IllegalAccessError(I18n.translate("endorsed.jdk1.4.0")
-                                      + " Original message was \""
-                                      + iae.getMessage() + "\"");
-      }
-   }
+    /**
+     * Constructor FuncHereContext
+     *
+     * @param owner
+     * @param dtmManager
+     */
+    public FuncHereContext(Node owner, DTMManager dtmManager) {
 
-   /**
-    * Constructor FuncHereContext
-    *
-    * @param owner
-    * @param dtmManager
-    */
-   public FuncHereContext(Node owner, DTMManager dtmManager) {
+        super(owner);
 
-      super(owner);
-
-      try {
-         super.m_dtmManager = dtmManager;
-      } catch (IllegalAccessError iae) {
-         throw new IllegalAccessError(I18n.translate("endorsed.jdk1.4.0")
-                                      + " Original message was \""
-                                      + iae.getMessage() + "\"");
-      }
-   }
+        try {
+            super.m_dtmManager = dtmManager;
+        } catch (IllegalAccessError iae) {
+            throw new IllegalAccessError(I18n.translate("endorsed.jdk1.4.0")
+                                         + " Original message was \""
+                                         + iae.getMessage() + "\"");
+        }
+    }
 }
