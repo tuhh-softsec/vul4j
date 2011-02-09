@@ -21,6 +21,7 @@ package org.apache.directory.shared.asn1.ber.grammar;
 
 
 import org.apache.directory.shared.asn1.ber.Asn1Container;
+import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.util.Asn1StringUtils;
 
 
@@ -74,6 +75,38 @@ public class GrammarTransition<E extends Asn1Container>
         this.previousState = previousState;
         this.currentState = currentState;
         this.currentTag = currentTag;
+    }
+
+
+    /**
+     * Creates a new GrammarTransition object.
+     *
+     * @param previousState the previous state
+     * @param currentState The current state
+     * @param currentTag the current TLV's tag
+     * @param action The action to execute. It could be null.
+     */
+    public GrammarTransition( Enum<?> previousState, Enum<?> currentState, UniversalTag currentTag, Action<E> action )
+    {
+        this.previousState = previousState;
+        this.currentState = currentState;
+        this.action = action;
+        this.currentTag = currentTag.getValue();
+    }
+
+
+    /**
+     * Creates a new GrammarTransition object.
+     *
+     * @param previousState the previous state
+     * @param currentState The current state
+     * @param currentTag the current TLV's tag
+     */
+    public GrammarTransition( Enum<?> previousState, Enum<?> currentState, UniversalTag currentTag )
+    {
+        this.previousState = previousState;
+        this.currentState = currentState;
+        this.currentTag = currentTag.getValue();
     }
 
 
