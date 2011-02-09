@@ -94,21 +94,6 @@
       </plugin>
 
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>antlr-maven-plugin</artifactId>
-        <configuration>
-          <grammars>*.g</grammars>
-        </configuration>
-        <executions>
-           <execution>
-              <goals>
-                 <goal>generate</goal>
-              </goals>
-           </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <excludes>
