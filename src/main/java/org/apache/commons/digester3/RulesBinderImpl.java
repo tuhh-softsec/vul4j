@@ -487,17 +487,17 @@ final class RulesBinderImpl implements RulesBinder {
             public ObjectCreateBuilder createObject() {
                 return this.addProvider(new ObjectCreateBuilder() {
 
-                    private String className;
+                    private Class<?> type;
 
                     private String attributeName;
 
                     public ObjectCreateRule get() {
-                        if (this.className == null && this.attributeName == null) {
-                            throw new DigesterLoadingException("{forPattern(\"%s\").createObject()} At least one between 'className' or 'attributeName' has to be specified",
+                        if (this.type == null && this.attributeName == null) {
+                            throw new DigesterLoadingException("{forPattern(\"%s\").createObject()} At least one between 'type' or 'attributeName' has to be specified",
                                     keyPattern);
                         }
 
-                        return setNamespaceAndReturn(new ObjectCreateRule(this.className, this.attributeName));
+                        return setNamespaceAndReturn(new ObjectCreateRule(this.type, this.attributeName));
                     }
 
                     public LinkedRuleBuilder then() {
@@ -509,19 +509,33 @@ final class RulesBinderImpl implements RulesBinder {
                         return this;
                     }
 
-                    public ObjectCreateBuilder ofType(Class<?> type) {
+                    public <T> ObjectCreateBuilder ofType(Class<T> type) {
                         if (type == null) {
                             addError("{forPattern(\"%s\").createObject().ofType(Class<?>)} NULL Java type not allowed",
                                     keyPattern);
                             return this;
                         }
 
-                        return this.ofType(type.getName());
+                        this.type = type;
+
+                        return this;
                     }
 
                     public ObjectCreateBuilder ofType(String className) {
-                        this.className = className;
-                        return this;
+                        if (className == null) {
+                            addError("{forPattern(\"%s\").createObject().ofType(String)} NULL Java type not allowed",
+                                    keyPattern);
+                            return this;
+                        }
+
+                        try {
+                            return this.ofType(classLoader.loadClass(className));
+                        } catch (ClassNotFoundException e) {
+                            addError("{forPattern(\"%s\").createObject().ofType(String)} class '%s' cannot be load",
+                                    keyPattern,
+                                    className);
+                            return this;
+                        }
                     }
 
                 });
@@ -676,7 +690,7 @@ final class RulesBinderImpl implements RulesBinder {
                                     this.paramTypes[i] = classLoader.loadClass(paramTypeNames[i]);
                                 } catch (ClassNotFoundException e) {
                                     // use the digester log
-                                    addError("{forPattern(\"%s\").callMethod().withParamTypes(%s)} class %s cannot be load",
+                                    addError("{forPattern(\"%s\").callMethod().withParamTypes(%s)} class '%s' cannot be load",
                                             keyPattern,
                                             Arrays.toString(paramTypeNames),
                                             paramTypeNames[i]);

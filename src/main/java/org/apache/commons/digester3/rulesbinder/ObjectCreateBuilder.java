@@ -38,7 +38,7 @@ public interface ObjectCreateBuilder extends BackToLinkedRuleBuilder<ObjectCreat
      * @param type Java class of the object to be created
      * @return this builder instance
      */
-    ObjectCreateBuilder ofType(Class<?> type);
+    <T> ObjectCreateBuilder ofType(Class<T> type);
 
     /**
      * Allows specify the attribute containing an override class name if it is present.

@@ -71,7 +71,7 @@ public final class DigesterLoader {
     /**
      * The concrete {@link RulesBinder} implementation.
      */
-    private final RulesBinderImpl rulesBinder = new RulesBinderImpl();
+    private RulesBinderImpl rulesBinder;
 
     /**
      * The URLs of entityValidator that have been registered, keyed by the public
@@ -83,6 +83,10 @@ public final class DigesterLoader {
      * The SAXParserFactory to create new default {@link Digester} instances.
      */
     private final SAXParserFactory factory = SAXParserFactory.newInstance();
+
+    private final Object $lock = new Object();
+
+    private final Collection<RulesModule> rulesModules;
 
     private boolean useContextClassLoader;
 
@@ -102,14 +106,7 @@ public final class DigesterLoader {
      * @param rulesModules The modules containing the {@code Rule} binding
      */
     private DigesterLoader(Collection<RulesModule> rulesModules) {
-        for (RulesModule rulesModule : rulesModules) {
-            rulesModule.configure(this.rulesBinder);
-        }
-
-        // check if there were errors while binding rules
-        if (this.rulesBinder.containsErrors()) {
-            throw new DigesterLoadingException(this.rulesBinder.getErrors());
-        }
+        this.rulesModules = rulesModules;
     }
 
     /**
@@ -352,6 +349,15 @@ public final class DigesterLoader {
 
         ClassLoader classLoader = this.classLoader != null ? this.classLoader :
             (this.useContextClassLoader ? Thread.currentThread().getContextClassLoader() : this.getClass().getClassLoader());
+
+        synchronized (this.$lock) {
+            if (this.rulesBinder == null) {
+                this.rulesBinder = new RulesBinderImpl(classLoader);
+                for (RulesModule rulesModule : rulesModules) {
+                    rulesModule.configure(this.rulesBinder);
+                }
+            }
+        }
 
         // check if there were errors while binding rules
         if (this.rulesBinder.containsErrors()) {
