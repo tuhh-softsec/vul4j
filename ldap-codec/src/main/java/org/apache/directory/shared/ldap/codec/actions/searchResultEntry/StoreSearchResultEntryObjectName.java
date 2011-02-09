@@ -40,10 +40,10 @@ import org.slf4j.LoggerFactory;
  * </pre>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class StoreObjectName extends GrammarAction<LdapMessageContainer<SearchResultEntryDecorator>>
+public class StoreSearchResultEntryObjectName extends GrammarAction<LdapMessageContainer<SearchResultEntryDecorator>>
 {
     /** The logger */
-    private static final Logger LOG = LoggerFactory.getLogger( StoreObjectName.class );
+    private static final Logger LOG = LoggerFactory.getLogger( StoreSearchResultEntryObjectName.class );
 
     /** Speedup for logs */
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
@@ -51,7 +51,7 @@ public class StoreObjectName extends GrammarAction<LdapMessageContainer<SearchRe
     /**
      * Instantiates a new action.
      */
-    public StoreObjectName()
+    public StoreSearchResultEntryObjectName()
     {
         super( "Init SearchResultEntry" );
     }

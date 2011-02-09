@@ -70,6 +70,10 @@ import org.apache.directory.shared.ldap.codec.actions.StoreReferenceAction;
 import org.apache.directory.shared.ldap.codec.actions.StoreTypeMatchingRuleAction;
 import org.apache.directory.shared.ldap.codec.actions.ValueAction;
 import org.apache.directory.shared.ldap.codec.actions.abandonRequest.InitAbandonRequest;
+import org.apache.directory.shared.ldap.codec.actions.addRequest.AddAddRequestAttributeType;
+import org.apache.directory.shared.ldap.codec.actions.addRequest.InitAddRequest;
+import org.apache.directory.shared.ldap.codec.actions.addRequest.StoreAddRequestEntryName;
+import org.apache.directory.shared.ldap.codec.actions.addResponse.InitAddResponse;
 import org.apache.directory.shared.ldap.codec.actions.bindRequest.InitBindRequest;
 import org.apache.directory.shared.ldap.codec.actions.bindRequest.InitSaslBind;
 import org.apache.directory.shared.ldap.codec.actions.bindRequest.StoreName;
@@ -81,6 +85,7 @@ import org.apache.directory.shared.ldap.codec.actions.bindResponse.InitBindRespo
 import org.apache.directory.shared.ldap.codec.actions.bindResponse.StoreServerSASLCreds;
 import org.apache.directory.shared.ldap.codec.actions.controls.InitControls;
 import org.apache.directory.shared.ldap.codec.actions.delRequest.InitDelRequest;
+import org.apache.directory.shared.ldap.codec.actions.delResponse.InitDelResponse;
 import org.apache.directory.shared.ldap.codec.actions.ldapMessage.InitLdapMessage;
 import org.apache.directory.shared.ldap.codec.actions.ldapMessage.StoreMessageId;
 import org.apache.directory.shared.ldap.codec.actions.ldapResult.AddReferral;
@@ -97,15 +102,12 @@ import org.apache.directory.shared.ldap.codec.actions.modifyResponse.InitModifyR
 import org.apache.directory.shared.ldap.codec.actions.searchResultDone.InitSearchResultDone;
 import org.apache.directory.shared.ldap.codec.actions.searchResultEntry.AddAttributeType;
 import org.apache.directory.shared.ldap.codec.actions.searchResultEntry.InitSearchResultEntry;
-import org.apache.directory.shared.ldap.codec.actions.searchResultEntry.StoreObjectName;
+import org.apache.directory.shared.ldap.codec.actions.searchResultEntry.StoreSearchResultEntryObjectName;
 import org.apache.directory.shared.ldap.codec.actions.unbindRequest.InitUnbindRequest;
 import org.apache.directory.shared.ldap.codec.api.LdapConstants;
 import org.apache.directory.shared.ldap.codec.api.ResponseCarryingException;
-import org.apache.directory.shared.ldap.codec.decorators.AddRequestDecorator;
-import org.apache.directory.shared.ldap.codec.decorators.AddResponseDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.CompareRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.CompareResponseDecorator;
-import org.apache.directory.shared.ldap.codec.decorators.DeleteResponseDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.ExtendedRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.ExtendedResponseDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.IntermediateResponseDecorator;
@@ -116,17 +118,13 @@ import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.SearchResultReferenceDecorator;
 import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
-import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.filter.SearchScope;
-import org.apache.directory.shared.ldap.model.message.AddRequestImpl;
-import org.apache.directory.shared.ldap.model.message.AddResponseImpl;
 import org.apache.directory.shared.ldap.model.message.AliasDerefMode;
 import org.apache.directory.shared.ldap.model.message.CompareRequest;
 import org.apache.directory.shared.ldap.model.message.CompareRequestImpl;
 import org.apache.directory.shared.ldap.model.message.CompareResponseImpl;
 import org.apache.directory.shared.ldap.model.message.Control;
-import org.apache.directory.shared.ldap.model.message.DeleteResponseImpl;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequestImpl;
 import org.apache.directory.shared.ldap.model.message.ExtendedResponseImpl;
@@ -794,7 +792,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.SEARCH_RESULT_ENTRY_STATE,
                 LdapStatesEnum.OBJECT_NAME_STATE,
                 OCTET_STRING,
-                new StoreObjectName() );
+                new StoreSearchResultEntryObjectName() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from ObjectName to AttributesSR
@@ -1303,31 +1301,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // AddRequest ::= [APPLICATION 8] SEQUENCE { ...
         //
         // Initialize the AddRequest object
-        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.ADD_REQUEST_TAG] = new GrammarTransition(
-            LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.ADD_REQUEST_STATE, LdapConstants.ADD_REQUEST_TAG,
-            new GrammarAction<LdapMessageContainer<AddRequestDecorator>>( "Init addRequest" )
-            {
-                public void action( LdapMessageContainer<AddRequestDecorator> container ) throws DecoderException
-                {
-                    // Now, we can allocate the AddRequest Object
-                    int messageId = container.getMessageId();
-                    AddRequestDecorator addRequest = new AddRequestDecorator(
-                        container.getLdapCodecService(), new AddRequestImpl( messageId ) );
-                    container.setMessage( addRequest );
-
-                    // We will check that the request is not null
-                    TLV tlv = container.getCurrentTLV();
-
-                    if ( tlv.getLength() == 0 )
-                    {
-                        String msg = I18n.err( I18n.ERR_04084 );
-                        LOG.error( msg );
-
-                        // Will generate a PROTOCOL_ERROR
-                        throw new DecoderException( msg );
-                    }
-                }
-            } );
+        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.ADD_REQUEST_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.MESSAGE_ID_STATE,
+                LdapStatesEnum.ADD_REQUEST_STATE,
+                LdapConstants.ADD_REQUEST_TAG,
+                new InitAddRequest() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Add Request to Entry
@@ -1337,56 +1316,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // Stores the Dn
-        super.transitions[LdapStatesEnum.ADD_REQUEST_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.ADD_REQUEST_STATE, LdapStatesEnum.ENTRY_STATE, OCTET_STRING,
-            new GrammarAction<LdapMessageContainer<AddRequestDecorator>>( "Store add request object Value" )
-            {
-                public void action( LdapMessageContainer<AddRequestDecorator> container ) throws DecoderException
-                {
-                    AddRequestDecorator addRequest = container.getMessage();
-
-                    TLV tlv = container.getCurrentTLV();
-
-                    // Store the entry. It can't be null
-                    if ( tlv.getLength() == 0 )
-                    {
-                        String msg = I18n.err( I18n.ERR_04085 );
-                        LOG.error( msg );
-
-                        AddResponseImpl response = new AddResponseImpl( addRequest.getMessageId() );
-
-                        // I guess that trying to add an entry which Dn is empty is a naming violation...
-                        // Not 100% sure though ...
-                        throw new ResponseCarryingException( msg, response, ResultCodeEnum.NAMING_VIOLATION,
-                            Dn.EMPTY_DN, null );
-                    }
-                    else
-                    {
-                        Dn entryDn = null;
-                        byte[] dnBytes = tlv.getValue().getData();
-                        String dnStr = Strings.utf8ToString(dnBytes);
-
-                        try
-                        {
-                            entryDn = new Dn( dnStr );
-                        }
-                        catch ( LdapInvalidDnException ine )
-                        {
-                            String msg = "Invalid Dn given : " + dnStr + " (" + Strings.dumpBytes(dnBytes)
-                                + ") is invalid";
-                            LOG.error( "{} : {}", msg, ine.getMessage() );
-
-                            AddResponseImpl response = new AddResponseImpl( addRequest.getMessageId() );
-                            throw new ResponseCarryingException( msg, response, ResultCodeEnum.INVALID_DN_SYNTAX,
-                                Dn.EMPTY_DN, ine );
-                        }
-
-                        addRequest.setEntryDn( entryDn );
-                    }
-
-                    LOG.debug( "Adding an entry with Dn : {}", addRequest.getEntry() );
-                }
-            } );
+        super.transitions[LdapStatesEnum.ADD_REQUEST_STATE.ordinal()][OCTET_STRING.getValue()] =
+            new GrammarTransition(
+                LdapStatesEnum.ADD_REQUEST_STATE,
+                LdapStatesEnum.ENTRY_STATE,
+                OCTET_STRING,
+                new StoreAddRequestEntryName() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Entry to Attributes
@@ -1426,50 +1361,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // AttributeDescription LDAPString
         //
         // We store the type in the current attribute
-        super.transitions[LdapStatesEnum.ATTRIBUTE_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.ATTRIBUTE_STATE, LdapStatesEnum.TYPE_STATE, OCTET_STRING,
-            new GrammarAction<LdapMessageContainer<AddRequestDecorator>>( "Store attribute type" )
-            {
-                public void action( LdapMessageContainer<AddRequestDecorator> container ) throws DecoderException
-                {
-                    AddRequestDecorator addRequest = container.getMessage();
-
-                    TLV tlv = container.getCurrentTLV();
-
-                    // Store the type. It can't be null.
-                    if ( tlv.getLength() == 0 )
-                    {
-                        String msg = I18n.err( I18n.ERR_04086 );
-                        LOG.error( msg );
-
-                        AddResponseImpl response = new AddResponseImpl( addRequest.getMessageId() );
-
-                        throw new ResponseCarryingException( msg, response, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX,
-                            addRequest.getEntry().getDn(), null );
-                    }
-
-                    String type = Strings.utf8ToString( tlv.getValue().getData() );
-
-                    try
-                    {
-                        addRequest.addAttributeType( type );
-                    }
-                    catch ( LdapException ne )
-                    {
-                        String msg = I18n.err( I18n.ERR_04087 );
-                        LOG.error( msg );
-
-                        AddResponseImpl response = new AddResponseImpl( addRequest.getMessageId() );
-                        throw new ResponseCarryingException( msg, response, ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX,
-                            addRequest.getEntry().getDn(), ne );
-                    }
-
-                    if ( IS_DEBUG )
-                    {
-                        LOG.debug( "Adding type {}", type );
-                    }
-                }
-            } );
+        super.transitions[LdapStatesEnum.ATTRIBUTE_STATE.ordinal()][OCTET_STRING.getValue()] =
+            new GrammarTransition(
+                LdapStatesEnum.ATTRIBUTE_STATE,
+                LdapStatesEnum.TYPE_STATE,
+                OCTET_STRING,
+                new AddAddRequestAttributeType() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from type to vals
@@ -1550,32 +1447,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // LdapMessage ::= ... AddResponse ...
         // AddResponse ::= [APPLICATION 9] LDAPResult
         //
-        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.ADD_RESPONSE_TAG] = new GrammarTransition(
-            LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.ADD_RESPONSE_STATE, LdapConstants.ADD_RESPONSE_TAG,
-            new GrammarAction<LdapMessageContainer<AddResponseDecorator>>( "Init AddResponse" )
-            {
-                public void action( LdapMessageContainer<AddResponseDecorator> container ) throws DecoderException
-                {
-                    // Now, we can allocate the AddResponse Object
-                    AddResponseDecorator addResponse = new AddResponseDecorator(
-                        container.getLdapCodecService(), new AddResponseImpl( container.getMessageId() ) );
-                    container.setMessage( addResponse );
-
-                    // We will check that the request is not null
-                    TLV tlv = container.getCurrentTLV();
-
-                    int expectedLength = tlv.getLength();
-
-                    if ( expectedLength == 0 )
-                    {
-                        String msg = I18n.err( I18n.ERR_04088 );
-                        LOG.error( msg );
-                        throw new DecoderException( msg );
-                    }
-
-                    LOG.debug( "Add Response" );
-                }
-            } );
+        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.ADD_RESPONSE_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.MESSAGE_ID_STATE,
+                LdapStatesEnum.ADD_RESPONSE_STATE,
+                LdapConstants.ADD_RESPONSE_TAG,
+                new InitAddResponse() );
 
         // --------------------------------------------------------------------------------------------
         // AddResponse Message.
@@ -1601,20 +1478,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // LdapMessage ::= ... DelResponse ...
         // DelResponse ::= [APPLICATION 11] LDAPResult
         // We have to switch to the DelResponse grammar
-        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.DEL_RESPONSE_TAG] = new GrammarTransition(
-            LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.DEL_RESPONSE_STATE, LdapConstants.DEL_RESPONSE_TAG,
-            new GrammarAction<LdapMessageContainer<DeleteResponseDecorator>>( "Init DelResponse" )
-            {
-                public void action( LdapMessageContainer<DeleteResponseDecorator> container )
-                {
-                    // Now, we can allocate the DelResponse Object
-                    DeleteResponseDecorator delResponse = new DeleteResponseDecorator(
-                        container.getLdapCodecService(), new DeleteResponseImpl( container.getMessageId() ) );
-                    container.setMessage( delResponse );
-
-                    LOG.debug( "Del response " );
-                }
-            } );
+        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.DEL_RESPONSE_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.MESSAGE_ID_STATE,
+                LdapStatesEnum.DEL_RESPONSE_STATE,
+                LdapConstants.DEL_RESPONSE_TAG,
+                new InitDelResponse() );
 
         // --------------------------------------------------------------------------------------------
         // DelResponse Message.
