@@ -6,24 +6,24 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License. 
- *  
+ *  under the License.
+ *
  */
 package org.apache.directory.shared.ldap.codec;
 
 
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.security.ProviderException;
 
-import org.apache.directory.shared.asn1.DecoderCallback;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.tlv.TLVStateEnum;
@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * The LdapDecoder decodes ASN.1 BER encoded PDUs.
- * 
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class LdapDecoder implements ProtocolDecoder
@@ -56,9 +56,6 @@ public class LdapDecoder implements ProtocolDecoder
 
     /** The message container for this instance */
     private LdapMessageContainer<MessageDecorator<? extends Message>> ldapMessageContainer;
-
-    /** The callback to call when the decoding is done */
-    private DecoderCallback decoderCallback;
 
     /** The ASN 1 decoder instance */
     private Asn1Decoder asn1Decoder;
@@ -76,7 +73,7 @@ public class LdapDecoder implements ProtocolDecoder
     /**
      * Feeds the bytes within the input stream to the digester to generate the
      * resultant decoded Message.
-     * 
+     *
      * @param in The InputStream containing the PDU to be decoded
      * @throws ProviderException If the decoding went wrong
      */
@@ -112,7 +109,7 @@ public class LdapDecoder implements ProtocolDecoder
     /**
      * Decodes a PDU from an input stream into a Snickers compiler generated
      * stub envelope.
-     * 
+     *
      * @param lock Lock object used to exclusively read from the input stream
      * @param in The input stream to read and decode PDU bytes from
      * @return return decoded stub
@@ -177,31 +174,11 @@ public class LdapDecoder implements ProtocolDecoder
     }
 
 
-    /**
-     * Set the callback to call when the PDU has been decoded
-     * 
-     * @param cb The callback
-     */
-    public void setCallback( DecoderCallback cb )
-    {
-        decoderCallback = cb;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public DecoderCallback getCallback()
-    {
-        return decoderCallback;
-    }
-
-
     @SuppressWarnings("unchecked")
     public void decode( IoSession session, IoBuffer in, ProtocolDecoderOutput out ) throws Exception
     {
         ByteBuffer buf = in.buf();
-        LdapMessageContainer<MessageDecorator<? extends Message>> messageContainer = 
+        LdapMessageContainer<MessageDecorator<? extends Message>> messageContainer =
             ( LdapMessageContainer<MessageDecorator<? extends Message>> ) session.getAttribute( "messageContainer" );
 
         if ( session.containsAttribute( "maxPDUSize" ) )
@@ -252,9 +229,9 @@ public class LdapDecoder implements ProtocolDecoder
                     {
                         LOG.debug( "Decoded LdapMessage : " + messageContainer.getMessage() );
                     }
-                    
+
                     Message message = messageContainer.getMessage();
-                    
+
                     out.write( message );
 
                     messageContainer.clean();

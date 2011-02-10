@@ -6,16 +6,16 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License. 
- *  
+ *  under the License.
+ *
  */
 package org.apache.directory.shared.asn1.util;
 
@@ -25,7 +25,7 @@ import java.io.UnsupportedEncodingException;
 
 /**
  * Little helper class.
- * 
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public final class Asn1StringUtils
@@ -42,17 +42,8 @@ public final class Asn1StringUtils
 
 
     /**
-     * This is a helper class, there is no reason to define a public constructor for it.
-     */
-    private Asn1StringUtils()
-    {
-        // Do nothing
-    }
-
-
-    /**
      * Helper function that dump a byte in hex form
-     * 
+     *
      * @param octet The byte to dump
      * @return A string representation of the byte
      */
@@ -65,7 +56,7 @@ public final class Asn1StringUtils
 
     /**
      * Helper function that dump an array of bytes in hex form
-     * 
+     *
      * @param buffer The bytes array to dump
      * @return A string representation of the array of bytes
      */
@@ -90,7 +81,7 @@ public final class Asn1StringUtils
 
     /**
      * Return UTF-8 encoded byte[] representation of a String
-     * 
+     *
      * @param string The string to be transformed to a byte array
      * @return The transformed byte array
      */
@@ -116,7 +107,7 @@ public final class Asn1StringUtils
     /**
      * Transform a string to an array of ASCII bytes, where the byte array will contain
      * only values in [0, 127].
-     * 
+     *
      * @param string The byte array to transform
      * @return The resulting string
      */

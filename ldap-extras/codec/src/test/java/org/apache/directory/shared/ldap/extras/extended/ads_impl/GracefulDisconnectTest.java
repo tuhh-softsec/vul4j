@@ -6,16 +6,16 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License. 
- *  
+ *  under the License.
+ *
  */
 package org.apache.directory.shared.ldap.extras.extended.ads_impl;
 
@@ -27,11 +27,8 @@ import static org.junit.Assert.fail;
 import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.EncoderException;
-import org.apache.directory.shared.ldap.extras.extended.ads_impl.GracefulDisconnect;
-import org.apache.directory.shared.ldap.extras.extended.ads_impl.GracefulDisconnectContainer;
-import org.apache.directory.shared.ldap.extras.extended.ads_impl.GracefulDisconnectDecoder;
+import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,7 +39,7 @@ import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 
 /**
  * Test the GracefulDisconnectTest codec
- * 
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 @RunWith(ConcurrentJunitRunner.class)
@@ -91,7 +88,7 @@ public class GracefulDisconnectTest
         assertEquals( 1, gracefulDisconnect.getDelay() );
         assertEquals( 2, gracefulDisconnect.getReplicatedContexts().size() );
         assertEquals( "ldap://directory.apache.org:80/", gracefulDisconnect.getReplicatedContexts().get( 0 ).toString() );
-        assertEquals( "ldap://ldap.netscape.com/o=Babsco,c=US???(int=%5c00%5c00%5c00%5c04)", gracefulDisconnect
+        assertEquals( "ldap://ldap.netscape.com/o=Babsco,c=US???(int=%5C00%5C00%5C00%5C04)", gracefulDisconnect
             .getReplicatedContexts().get( 1 ).toString() );
 
         // Check the length
@@ -112,7 +109,7 @@ public class GracefulDisconnectTest
             fail( ee.getMessage() );
         }
     }
-    
+
 
     /**
      * Test the decoding of a GracefulDisconnect with a timeOffline only
@@ -285,16 +282,16 @@ public class GracefulDisconnectTest
         Asn1Decoder decoder = new GracefulDisconnectDecoder();
         ByteBuffer stream = ByteBuffer.allocate( 0x6A );
         stream.put( new byte[]
-            { 
+            {
             0x30, 0x68,             // GracefulDisconnec ::= SEQUENCE {
               0x30, 0x66,           // replicatedContexts Referral OPTIONAL
-                0x04, 0x1F, 
+                0x04, 0x1F,
                   'l', 'd', 'a', 'p', ':', '/', '/', 'd', 'i', 'r', 'e', 'c', 't', 'o', 'r', 'y', '.', 'a',
-                  'p', 'a', 'c', 'h', 'e', '.', 'o', 'r', 'g', ':', '8', '0', '/', 
-                0x04, 0x43, 
-                  'l', 'd', 'a', 'p', ':', '/', '/', 'l', 'd', 'a', 'p', '.', 'n', 'e', 't', 's', 'c', 'a', 
-                  'p', 'e', '.', 'c', 'o', 'm', '/', 'o', '=', 'B', 'a', 'b', 's', 'c', 'o', ',', 'c', '=', 
-                  'U', 'S', '?', '?', '?', '(', 'i', 'n', 't', '=', '%', '5', 'c', '0', '0', '%', '5', 'c', 
+                  'p', 'a', 'c', 'h', 'e', '.', 'o', 'r', 'g', ':', '8', '0', '/',
+                0x04, 0x43,
+                  'l', 'd', 'a', 'p', ':', '/', '/', 'l', 'd', 'a', 'p', '.', 'n', 'e', 't', 's', 'c', 'a',
+                  'p', 'e', '.', 'c', 'o', 'm', '/', 'o', '=', 'B', 'a', 'b', 's', 'c', 'o', ',', 'c', '=',
+                  'U', 'S', '?', '?', '?', '(', 'i', 'n', 't', '=', '%', '5', 'c', '0', '0', '%', '5', 'c',
                   '0', '0', '%', '5', 'c', '0', '0', '%', '5', 'c', '0', '4', ')'
             } );
 
@@ -318,7 +315,7 @@ public class GracefulDisconnectTest
         assertEquals( 0, gracefulDisconnect.getDelay() );
         assertEquals( 2, gracefulDisconnect.getReplicatedContexts().size() );
         assertEquals( "ldap://directory.apache.org:80/", gracefulDisconnect.getReplicatedContexts().get( 0 ).toString() );
-        assertEquals( "ldap://ldap.netscape.com/o=Babsco,c=US???(int=%5c00%5c00%5c00%5c04)", gracefulDisconnect
+        assertEquals( "ldap://ldap.netscape.com/o=Babsco,c=US???(int=%5C00%5C00%5C00%5C04)", gracefulDisconnect
             .getReplicatedContexts().get( 1 ).toString() );
 
         // Check the length
