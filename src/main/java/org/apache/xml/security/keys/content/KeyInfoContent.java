@@ -17,10 +17,6 @@
  */
 package org.apache.xml.security.keys.content;
 
-
-
-
-
 /**
  * Empty interface just to identify Elements that can be cildren of ds:KeyInfo.
  *

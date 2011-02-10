@@ -120,18 +120,6 @@ public class Init {
             long XX_parsing_end = System.currentTimeMillis();                       
             long XX_configure_i18n_start = 0;            
             
-            {
-                XX_configure_reg_keyInfo_start = System.currentTimeMillis();
-               try {
-                  KeyInfo.init();
-               } catch (Exception e) {
-                  e.printStackTrace();
-
-                  throw e;
-               }
-               XX_configure_reg_keyInfo_end = System.currentTimeMillis();
-            }
-            
                         long XX_configure_reg_transforms_start=0;
                         long XX_configure_reg_jcemapper_start=0;
                         long XX_configure_reg_sigalgos_start=0;

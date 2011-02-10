@@ -17,28 +17,18 @@
  */
 package org.apache.xml.security.keys.content.keyvalues;
 
-
-
 import java.security.PublicKey;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
 
-/**
- *
- *
- *
- *
- * @author $Author$
- *
- */
 public interface KeyValueContent {
 
-   /**
-    * Method getPublicKey
-    *
-    * @return the public key
-    * @throws XMLSecurityException
-    */
-   public PublicKey getPublicKey()
-      throws XMLSecurityException;
+    /**
+     * Method getPublicKey
+     *
+     * @return the public key
+     * @throws XMLSecurityException
+     */
+    public PublicKey getPublicKey() throws XMLSecurityException;
+    
 }
