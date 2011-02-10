@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.controls;
+package org.apache.directory.shared.ldap.codec.api;
 
 
 import org.apache.directory.shared.asn1.AbstractAsn1Object;

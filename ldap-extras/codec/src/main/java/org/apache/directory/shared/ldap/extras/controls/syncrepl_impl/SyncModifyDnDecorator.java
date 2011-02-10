@@ -32,7 +32,7 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.util.Asn1StringUtils;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
-import org.apache.directory.shared.ldap.codec.controls.ControlDecorator;
+import org.apache.directory.shared.ldap.codec.api.ControlDecorator;
 import org.apache.directory.shared.ldap.extras.controls.SyncModifyDn;
 import org.apache.directory.shared.ldap.extras.controls.SyncModifyDnImpl;
 import org.apache.directory.shared.ldap.extras.controls.SyncModifyDnType;

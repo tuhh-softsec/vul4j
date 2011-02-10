@@ -6,38 +6,43 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License. 
- *  
+ *  under the License.
+ *
  */
-package org.apache.directory.shared.ldap.codec.controls;
+package org.apache.directory.shared.ldap.model.message.controls;
 
 
-import org.apache.directory.shared.asn1.Asn1Object;
-import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.ldap.model.message.Control;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import org.apache.directory.shared.ldap.model.message.controls.OpaqueControl;
+import org.apache.directory.shared.util.StringConstants;
+import org.junit.Test;
 
 
 /**
- * An interface for decoders of controls.
- * 
+ * Test the OpaqueControl class
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface ControlDecoder<E extends Control>
+public class OpaqueControlTest
 {
-    /**
-     * Decodes raw ASN.1 encoded bytes into an Asn1Object for the control.
-     * 
-     * @param controlBytes the encoded control bytes
-     * @return the decoded Asn1Object for the control
-     * @throws DecoderException if anything goes wrong
-     */
-    Asn1Object decode( byte[] controlBytes ) throws DecoderException;
+    @Test
+    public void testEmptyValue()
+    {
+        OpaqueControl control = new OpaqueControl( "1.1" );
+
+        assertFalse( control.hasEncodedValue() );
+
+        control.setEncodedValue( StringConstants.EMPTY_BYTES );
+
+        assertTrue( control.hasEncodedValue() );
+    }
 }
