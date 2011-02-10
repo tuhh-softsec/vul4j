@@ -6,16 +6,16 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License. 
- *  
+ *  under the License.
+ *
  */
 package org.apache.directory.shared.asn1.ber.tlv;
 
@@ -25,15 +25,15 @@ import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.asn1.util.Asn1StringUtils;
 import org.apache.directory.shared.asn1.util.BitString;
 import org.apache.directory.shared.asn1.util.OID;
-import org.apache.directory.shared.asn1.util.Asn1StringUtils;
 import org.apache.directory.shared.i18n.I18n;
 
 
 /**
  * This class stores the data decoded from a TLV.
- * 
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class Value implements Serializable
@@ -106,7 +106,7 @@ public class Value implements Serializable
 
     /**
      * Creates a new Value from a byte[]
-     * 
+     *
      * @param value the associated value
      */
     public Value( byte[] value )
@@ -130,7 +130,7 @@ public class Value implements Serializable
 
     /**
      * Initialize the Value
-     * 
+     *
      * @param size The data size to allocate.
      */
     public void init( int size )
@@ -152,7 +152,7 @@ public class Value implements Serializable
 
     /**
      * Get the Values'data
-     * 
+     *
      * @return Returns the data.
      */
     public byte[] getData()
@@ -163,7 +163,7 @@ public class Value implements Serializable
 
     /**
      * Set a block of bytes in the Value
-     * 
+     *
      * @param data The data to set.
      */
     public void setData( ByteBuffer data )
@@ -176,7 +176,7 @@ public class Value implements Serializable
 
     /**
      * Append some bytes to the data buffer.
-     * 
+     *
      * @param buffer The data to append.
      */
     public void addData( ByteBuffer buffer )
@@ -189,7 +189,7 @@ public class Value implements Serializable
 
     /**
      * Set a block of bytes in the Value
-     * 
+     *
      * @param data The data to set.
      */
     public void setData( byte[] data )
@@ -201,7 +201,7 @@ public class Value implements Serializable
 
     /**
      * Append some bytes to the data buffer.
-     * 
+     *
      * @param array The data to append.
      */
     public void addData( byte[] array )
@@ -224,21 +224,21 @@ public class Value implements Serializable
      * Utility function that return the number of bytes necessary to store an
      * integer value. Note that this value must be in [Integer.MIN_VALUE,
      * Integer.MAX_VALUE].
-     * 
+     *
      * @param value The value to store in a byte array
      * @return The number of bytes necessary to store the value.
      */
     public static int getNbBytes( int value )
     {
-        if ( value >= ONE_BYTE_MIN && value <= ONE_BYTE_MAX )
+        if ( ( value >= ONE_BYTE_MIN ) && ( value <= ONE_BYTE_MAX ) )
         {
             return 1;
         }
-        else if ( value >= TWO_BYTE_MIN && value <= TWO_BYTE_MAX )
+        else if ( ( value >= TWO_BYTE_MIN ) && ( value <= TWO_BYTE_MAX ) )
         {
             return 2;
         }
-        else if ( value >= THREE_BYTE_MIN && value <= THREE_BYTE_MAX )
+        else if ( ( value >= THREE_BYTE_MIN ) && ( value <= THREE_BYTE_MAX ) )
         {
             return 3;
         }
@@ -253,37 +253,37 @@ public class Value implements Serializable
      * Utility function that return the number of bytes necessary to store a
      * long value. Note that this value must be in [Long.MIN_VALUE,
      * Long.MAX_VALUE].
-     * 
+     *
      * @param value The value to store in a byte array
      * @return The number of bytes necessary to store the value.
      */
     public static int getNbBytes( long value )
     {
-        if ( value >= ONE_BYTE_MIN && value <= ONE_BYTE_MAX )
+        if ( ( value >= ONE_BYTE_MIN ) && ( value <= ONE_BYTE_MAX ) )
         {
             return 1;
         }
-        else if ( value >= TWO_BYTE_MIN && value <= TWO_BYTE_MAX )
+        else if ( ( value >= TWO_BYTE_MIN ) && ( value <= TWO_BYTE_MAX ) )
         {
             return 2;
         }
-        else if ( value >= THREE_BYTE_MIN && value <= THREE_BYTE_MAX )
+        else if ( ( value >= THREE_BYTE_MIN ) && ( value <= THREE_BYTE_MAX ) )
         {
             return 3;
         }
-        else if ( value >= FOUR_BYTE_MIN && value <= FOUR_BYTE_MAX )
+        else if ( ( value >= FOUR_BYTE_MIN ) && ( value <= FOUR_BYTE_MAX ) )
         {
             return 4;
         }
-        else if ( value >= FIVE_BYTE_MIN && value <= FIVE_BYTE_MAX )
+        else if ( ( value >= FIVE_BYTE_MIN ) && ( value <= FIVE_BYTE_MAX ) )
         {
             return 5;
         }
-        else if ( value >= SIX_BYTE_MIN && value <= SIX_BYTE_MAX )
+        else if ( ( value >= SIX_BYTE_MIN ) && ( value <= SIX_BYTE_MAX ) )
         {
             return 6;
         }
-        else if ( value >= SEVEN_BYTE_MIN && value <= SEVEN_BYTE_MAX )
+        else if ( ( value >= SEVEN_BYTE_MIN ) && ( value <= SEVEN_BYTE_MAX ) )
         {
             return 7;
         }
@@ -296,17 +296,19 @@ public class Value implements Serializable
 
     /**
      * Utility function that return a byte array representing the Value We must
-     * respect the ASN.1 BER encoding scheme : 
-     * 1) positive integer 
-     * - [0 - 0x7F] : 0xVV 
-     * - [0x80 - 0xFF] : 0x00 0xVV 
-     * - [0x0100 - 0x7FFF] : 0xVV 0xVV 
-     * - [0x8000 - 0xFFFF] : 0x00 0xVV 0xVV 
-     * - [0x010000 - 0x7FFFFF] : 0xVV 0xVV 0xVV 
-     * - [0x800000 - 0xFFFFFF] : 0x00 0xVV 0xVV 0xVV 
-     * - [0x01000000 - 0x7FFFFFFF] : 0xVV 0xVV 0xVV 0xVV 
+     * respect the ASN.1 BER encoding scheme :
+     * <pre>
+     * 1) positive integer
+     * - [0 - 0x7F] : 0xVV
+     * - [0x80 - 0xFF] : 0x00 0xVV
+     * - [0x0100 - 0x7FFF] : 0xVV 0xVV
+     * - [0x8000 - 0xFFFF] : 0x00 0xVV 0xVV
+     * - [0x010000 - 0x7FFFFF] : 0xVV 0xVV 0xVV
+     * - [0x800000 - 0xFFFFFF] : 0x00 0xVV 0xVV 0xVV
+     * - [0x01000000 - 0x7FFFFFFF] : 0xVV 0xVV 0xVV 0xVV
      * 2) Negative number - (~value) + 1
-     * 
+     * </pre>
+     *
      * @param value The value to store in a byte array
      * @return The byte array representing the value.
      */
@@ -395,64 +397,66 @@ public class Value implements Serializable
     /**
      * Utility function that return a byte array representing the Value.
      * We must respect the ASN.1 BER encoding scheme : <br>
-     * 1) positive integer <br>
-     * - [0 - 0x7F] : 0xVV <br>
-     * - [0x80 - 0xFF] : 0x00 0xVV <br>
-     * - [0x0100 - 0x7FFF] : 0xVV 0xVV <br>
-     * - [0x8000 - 0xFFFF] : 0x00 0xVV 0xVV <br>
-     * - [0x010000 - 0x7FFFFF] : 0xVV 0xVV 0xVV <br>
-     * - [0x800000 - 0xFFFFFF] : 0x00 0xVV 0xVV 0xVV <br>
-     * - [0x01000000 - 0x7FFFFFFF] : 0xVV 0xVV 0xVV 0xVV <br>
-     * 2) Negative number - (~value) + 1 <br>
+     * <pre>
+     * 1) positive integer
+     * - [0 - 0x7F] : 0xVV
+     * - [0x80 - 0xFF] : 0x00 0xVV
+     * - [0x0100 - 0x7FFF] : 0xVV 0xVV
+     * - [0x8000 - 0xFFFF] : 0x00 0xVV 0xVV
+     * - [0x010000 - 0x7FFFFF] : 0xVV 0xVV 0xVV
+     * - [0x800000 - 0xFFFFFF] : 0x00 0xVV 0xVV 0xVV
+     * - [0x01000000 - 0x7FFFFFFF] : 0xVV 0xVV 0xVV 0xVV
+     * 2) Negative number - (~value) + 1
+     * <pre>
      * They are encoded following the table (the <br>
      * encode bytes are those enclosed by squared braquets) :<br>
      * <br>
-     *   -1                      -> FF FF FF FF FF FF FF [FF]<br>
-     *   -127                    -> FF FF FF FF FF FF FF [81]<br>
-     *   -128                    -> FF FF FF FF FF FF FF [80]<br>
-     *   -129                    -> FF FF FF FF FF FF [FF 7F]<br>
-     *   -255                    -> FF FF FF FF FF FF [FF 01]<br>
-     *   -256                    -> FF FF FF FF FF FF [FF 00]<br>
-     *   -257                    -> FF FF FF FF FF FF [FE FF]<br>
-     *   -32767                  -> FF FF FF FF FF FF [80 01]<br>
-     *   -32768                  -> FF FF FF FF FF FF [80 00]<br>
-     *   -32769                  -> FF FF FF FF FF [FF 7F FF]<br>
-     *   -65535                  -> FF FF FF FF FF [FF 00 01]<br>
-     *   -65536                  -> FF FF FF FF FF [FF 00 00]<br>
-     *   -65537                  -> FF FF FF FF FF [FE FF FF]<br>
-     *   -8388607                -> FF FF FF FF FF [80 00 01]<br>
-     *   -8388608                -> FF FF FF FF FF [80 00 00]<br>
-     *   -8388609                -> FF FF FF FF [FF 7F FF FF]<br>
-     *   -16777215               -> FF FF FF FF [FF 00 00 01]<br>
-     *   -16777216               -> FF FF FF FF [FF 00 00 00]<br>
-     *   -16777217               -> FF FF FF FF [FE FF FF FF]<br>
-     *   -2147483647             -> FF FF FF FF [80 00 00 01]<br>
-     *   -2147483648             -> FF FF FF FF [80 00 00 00]<br>
-     *   -2147483649             -> FF FF FF [FF 7F FF FF FF]<br>
-     *   -4294967295             -> FF FF FF [FF 00 00 00 01]<br>
-     *   -4294967296             -> FF FF FF [FF 00 00 00 00]<br>
-     *   -4294967297             -> FF FF FF [FE FF FF FF FF]<br>
-     *   -549755813887           -> FF FF FF [80 00 00 00 01]<br>
-     *   -549755813888           -> FF FF FF [80 00 00 00 00]<br>
-     *   -549755813889           -> FF FF [FF 7F FF FF FF FF]<br>
-     *   -1099511627775          -> FF FF [FF 00 00 00 00 01]<br>
-     *   -1099511627776          -> FF FF [FF 00 00 00 00 00]<br>
-     *   -1099511627777          -> FF FF [FE FF FF FF FF FF]<br>
-     *   -140737488355327        -> FF FF [80 00 00 00 00 01]<br>
-     *   -140737488355328        -> FF FF [80 00 00 00 00 00]<br>
-     *   -140737488355329        -> FF [FF 7F FF FF FF FF FF]<br>
-     *   -281474976710655        -> FF [FF 00 00 00 00 00 01]<br>
-     *   -281474976710656        -> FF [FF 00 00 00 00 00 00]<br>
-     *   -281474976710657        -> FF [FE FF FF FF FF FF FF]<br>
-     *   -36028797018963967      -> FF [80 00 00 00 00 00 01]<br>
-     *   -36028797018963968      -> FF [80 00 00 00 00 00 00]<br>
-     *   -36028797018963969      -> [FF 7F FF FF FF FF FF FF]<br>
-     *   -72057594037927935      -> [FF 00 00 00 00 00 00 01]<br>
-     *   -72057594037927936      -> [FF 00 00 00 00 00 00 00]<br>
-     *   -72057594037927937      -> [FE FF FF FF FF FF FF FF]<br>
-     *   -9223372036854775807    -> [80 00 00 00 00 00 00 01]<br>
-     *   -9223372036854775808    -> [80 00 00 00 00 00 00 00]<br>
-     * 
+     * <pre>
+     *   -1                      -> FF FF FF FF FF FF FF [FF]
+     *   -127                    -> FF FF FF FF FF FF FF [81]
+     *   -128                    -> FF FF FF FF FF FF FF [80]
+     *   -129                    -> FF FF FF FF FF FF [FF 7F]
+     *   -255                    -> FF FF FF FF FF FF [FF 01]
+     *   -256                    -> FF FF FF FF FF FF [FF 00]
+     *   -257                    -> FF FF FF FF FF FF [FE FF]
+     *   -32767                  -> FF FF FF FF FF FF [80 01]
+     *   -32768                  -> FF FF FF FF FF FF [80 00]
+     *   -32769                  -> FF FF FF FF FF [FF 7F FF]
+     *   -65535                  -> FF FF FF FF FF [FF 00 01]
+     *   -65536                  -> FF FF FF FF FF [FF 00 00]
+     *   -65537                  -> FF FF FF FF FF [FE FF FF]
+     *   -8388607                -> FF FF FF FF FF [80 00 01]
+     *   -8388608                -> FF FF FF FF FF [80 00 00]
+     *   -8388609                -> FF FF FF FF [FF 7F FF FF]
+     *   -16777215               -> FF FF FF FF [FF 00 00 01]
+     *   -16777216               -> FF FF FF FF [FF 00 00 00]
+     *   -16777217               -> FF FF FF FF [FE FF FF FF]
+     *   -2147483647             -> FF FF FF FF [80 00 00 01]
+     *   -2147483648             -> FF FF FF FF [80 00 00 00]
+     *   -2147483649             -> FF FF FF [FF 7F FF FF FF]
+     *   -4294967295             -> FF FF FF [FF 00 00 00 01]
+     *   -4294967296             -> FF FF FF [FF 00 00 00 00]
+     *   -4294967297             -> FF FF FF [FE FF FF FF FF]
+     *   -549755813887           -> FF FF FF [80 00 00 00 01]
+     *   -549755813888           -> FF FF FF [80 00 00 00 00]
+     *   -549755813889           -> FF FF [FF 7F FF FF FF FF]
+     *   -1099511627775          -> FF FF [FF 00 00 00 00 01]
+     *   -1099511627776          -> FF FF [FF 00 00 00 00 00]
+     *   -1099511627777          -> FF FF [FE FF FF FF FF FF]
+     *   -140737488355327        -> FF FF [80 00 00 00 00 01]
+     *   -140737488355328        -> FF FF [80 00 00 00 00 00]
+     *   -140737488355329        -> FF [FF 7F FF FF FF FF FF]
+     *   -281474976710655        -> FF [FF 00 00 00 00 00 01]
+     *   -281474976710656        -> FF [FF 00 00 00 00 00 00]
+     *   -281474976710657        -> FF [FE FF FF FF FF FF FF]
+     *   -36028797018963967      -> FF [80 00 00 00 00 00 01]
+     *   -36028797018963968      -> FF [80 00 00 00 00 00 00]
+     *   -36028797018963969      -> [FF 7F FF FF FF FF FF FF]
+     *   -72057594037927936      -> [FF 00 00 00 00 00 00 00]
+     *   -72057594037927937      -> [FE FF FF FF FF FF FF FF]
+     *   -9223372036854775807    -> [80 00 00 00 00 00 00 01]
+     *   -9223372036854775808    -> [80 00 00 00 00 00 00 00]
+     * </pre>
      * @param value The value to store in a byte array
      * @return The byte array representing the value.
      */
@@ -628,7 +632,7 @@ public class Value implements Serializable
 
     /**
      * Encode a String value
-     * 
+     *
      * @param buffer The PDU in which the value will be put
      * @param string The String to be encoded. It is supposed to be UTF-8
      * @throws EncoderException if the PDU in which the value should be encoded is
@@ -663,7 +667,7 @@ public class Value implements Serializable
 
     /**
      * Encode a BIT STRING value
-     * 
+     *
      * @param buffer The PDU in which the value will be put
      * @param bitString The BitString to be encoded.
      * @throws EncoderException if the PDU in which the value should be encoded is
@@ -680,9 +684,9 @@ public class Value implements Serializable
         {
             buffer.put( UniversalTag.BIT_STRING.getValue() );
 
-            // The BitString length. We add one byte for the unused number 
+            // The BitString length. We add one byte for the unused number
             // of bits
-            byte[] bytes = bitString.getData(); 
+            byte[] bytes = bitString.getData();
             int length = bytes.length;
 
             buffer.put( TLV.getBytes( length ) );
@@ -697,7 +701,7 @@ public class Value implements Serializable
 
     /**
      * Encode an OctetString value
-     * 
+     *
      * @param buffer The PDU in which the value will be put
      * @param bytes The bytes to be encoded
      * @throws EncoderException if the PDU in which the value should be encoded is
@@ -733,7 +737,7 @@ public class Value implements Serializable
 
     /**
      * Encode an OID value
-     * 
+     *
      * @param buffer The PDU in which the value will be put
      * @param oid The OID to be encoded
      * @throws EncoderException if the PDU in which the value should be encoded is
@@ -765,7 +769,7 @@ public class Value implements Serializable
 
     /**
      * Encode an integer value
-     * 
+     *
      * @param buffer The PDU in which the value will be put
      * @param value The integer to be encoded
      * @throws EncoderException if the PDU in which the value should be encoded is
@@ -793,7 +797,7 @@ public class Value implements Serializable
 
     /**
      * Encode a long value
-     * 
+     *
      * @param buffer The PDU in which the value will be put
      * @param value The long to be encoded
      * @throws EncoderException if the PDU in which the value should be encoded is
@@ -821,7 +825,7 @@ public class Value implements Serializable
 
     /**
      * Encode an integer value
-     * 
+     *
      * @param buffer The PDU in which the value will be put
      * @param tag The tag if it's not an UNIVERSAL one
      * @param value The integer to be encoded
@@ -850,7 +854,7 @@ public class Value implements Serializable
 
     /**
      * Encode an enumerated value
-     * 
+     *
      * @param buffer The PDU in which the value will be put
      * @param value The integer to be encoded
      * @throws EncoderException if the PDU in which the value should be encoded is
@@ -878,7 +882,7 @@ public class Value implements Serializable
 
     /**
      * Encode a boolean value
-     * 
+     *
      * @param buffer The PDU in which the value will be put
      * @param bool The boolean to be encoded
      * @throws EncoderException if the PDU in which the value should be encoded is
@@ -911,9 +915,10 @@ public class Value implements Serializable
 
     /**
      * Return a string representing the Value
-     * 
+     *
      * @return A string representing the value
      */
+    @Override
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
