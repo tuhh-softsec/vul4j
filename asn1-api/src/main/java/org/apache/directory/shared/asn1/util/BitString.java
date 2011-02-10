@@ -6,16 +6,16 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License. 
- *  
+ *  under the License.
+ *
  */
 package org.apache.directory.shared.asn1.util;
 
@@ -28,7 +28,7 @@ import org.apache.directory.shared.i18n.I18n;
 /**
  * Implement the Bit String primitive type. A BitString is internally stored as
  * an array of byte.
- * 
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class BitString implements Serializable
@@ -55,7 +55,7 @@ public class BitString implements Serializable
     /**
      * Creates a BitString with a specific length (length is the number of
      * bits).
-     * 
+     *
      * @param length The BitString length (it's a number of bits)
      */
     public BitString( int length )
@@ -85,7 +85,7 @@ public class BitString implements Serializable
     /**
      * Creates a BitString from a byte[]. As the first byteis the number of unused bits
      * in the last byte, we have to ignore it.
-     * 
+     *
      * @param bytes The value to store. The first byte contains the number of
      * unused bits
      */
@@ -104,7 +104,7 @@ public class BitString implements Serializable
     /**
      * Set a new BitString in the BitString. It will replace the old BitString,
      * and reset the current length with the new one.
-     * 
+     *
      * @param bytes The string to store
      */
     public void setData( byte[] bytes )
@@ -132,7 +132,7 @@ public class BitString implements Serializable
     /**
      * Get the representation of a BitString. A first byte containing the number
      * of unused bits is added
-     * 
+     *
      * @return A byte array which represent the BitString
      */
     public byte[] getData()
@@ -148,7 +148,7 @@ public class BitString implements Serializable
 
     /**
      * Get the number of unused bits
-     * 
+     *
      * @return A byte which represent the number of unused bits
      */
     public byte getUnusedBits()
@@ -158,10 +158,10 @@ public class BitString implements Serializable
 
 
     /**
-     * Set a bit at a specified position. 
+     * Set a bit at a specified position.
      * The bits are stored from left to right.
      * For instance, if we have 10 bits, then they are coded as b0 b1 b2 b3 b4 b5 b6 b7 - b8 b9 x x x x x x
-     * 
+     *
      * @param pos The bit to set
      */
     public void setBit( int pos )
@@ -180,11 +180,11 @@ public class BitString implements Serializable
 
 
     /**
-     * Clear a bit at a specified position. 
+     * Clear a bit at a specified position.
      * The bits are stored from left to right.
-     * For instance, if we have 10 bits, then they are coded 
+     * For instance, if we have 10 bits, then they are coded
      * as b0 b1 b2 b3 b4 b5 b6 b7 - b8 b9 x x x x x x
-     * 
+     *
      * @param pos The bit to clear
      */
     public void clearBit( int pos )
@@ -203,24 +203,23 @@ public class BitString implements Serializable
 
 
     /**
-     * Get the bit stored into the BitString at a specific position. 
+     * Get the bit stored into the BitString at a specific position.
      * The bits are stored from left to right, the LSB on the left and the
-     * MSB on the right
-     * For instance, if we have 10 bits, then they are coded as 
+     * MSB on the right.<br/>
+     * For instance, if we have 10 bits, then they are coded as
      * b0 b1 b2 b3 - b4 b5 b6 b7 - b8 b9 x x - x x x x
-     * 
-     * With '1001 000x', where x is an unused bit, 
-     *       ^ ^    ^ 
-     *       | |    | 
-     *       | |    |  
-     *       | |    +----- getBit(6) = 0 
-     *       | +---------- getBit(2) = 0 
+     * <pre>
+     * With '1001 000x', where x is an unused bit,
+     *       ^ ^    ^
+     *       | |    |
+     *       | |    |
+     *       | |    +----- getBit(6) = 0
+     *       | +---------- getBit(2) = 0
      *       +------------ getBit(0) = 1
-     *       
-     * @param pos The position of the requested bit.  
-     * 
-     * @return <code>true</code> if the bit is set, <code>false</code>
-     *         otherwise
+     * </pre>
+     * @param pos The position of the requested bit.
+     *
+     * @return <code>true</code> if the bit is set, <code>false</code> otherwise
      */
     public boolean getBit( int pos )
     {
@@ -234,7 +233,7 @@ public class BitString implements Serializable
         byte mask = (byte)( 1 << bitNumber );
 
         int res = bytes[posBytes] & mask;
-        
+
         return res != 0;
     }
 
@@ -250,9 +249,10 @@ public class BitString implements Serializable
 
     /**
      * Return a native String representation of the BitString.
-     * 
+     *
      * @return A String representing the BitString
      */
+    @Override
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
