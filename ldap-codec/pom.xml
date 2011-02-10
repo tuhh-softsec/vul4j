@@ -131,9 +131,11 @@
           <instructions>
             <Bundle-SymbolicName>${project.groupId}.ldap.codec</Bundle-SymbolicName>
             <Export-Package>
-              org.apache.directory.shared.ldap.codec.api,
-              org.apache.directory.shared.ldap.codec.controls
+              org.apache.directory.shared.ldap.codec.api
             </Export-Package>
+            <Bundle-Activator>
+              org.apache.directory.shared.ldap.codec.osgi.DefaultActivator
+            </Bundle-Activator>
           </instructions>
         </configuration>
       </plugin>
