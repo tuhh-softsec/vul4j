@@ -35,7 +35,7 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.api.CodecControl;
-import org.apache.directory.shared.ldap.codec.api.DefaultLdapCodecService;
+import org.apache.directory.shared.ldap.codec.standalone.StandaloneLdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.decorators.UnbindRequestDecorator;
 import org.apache.directory.shared.ldap.model.message.Control;
@@ -57,7 +57,7 @@ public class UnBindRequestTest
     private LdapEncoder encoder = new LdapEncoder();
 
     /** The codec service */
-    private LdapCodecService codec = new DefaultLdapCodecService();
+    private LdapCodecService codec = new StandaloneLdapCodecService();
 
     /**
      * Test the decoding of a UnBindRequest with no controls

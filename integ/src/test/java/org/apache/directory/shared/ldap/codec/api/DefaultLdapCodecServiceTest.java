@@ -24,28 +24,29 @@ import static org.junit.Assert.*;
 
 import java.util.Iterator;
 
+import org.apache.directory.shared.ldap.codec.standalone.StandaloneLdapCodecService;
 import org.apache.directory.shared.ldap.extras.controls.PasswordPolicy;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.junit.Test;
 
 
 /**
- * Tests for DefaultLdapCodecService.
+ * Tests for StandaloneLdapCodecService.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class DefaultLdapCodecServiceTest
 {   
     /**
-     * Test method for {@link DefaultLdapCodecService#DefaultLdapCodecService()}.
+     * Test method for {@link org.apache.directory.shared.ldap.codec.standalone.StandaloneLdapCodecService#StandaloneLdapCodecService()}.
      */
     @Test
     public void testLoadingExtras()
     {
-        System.out.println( "Property name = " + DefaultLdapCodecService.PLUGIN_DIRECTORY_PROPERTY );
-        System.out.println( "Property value = " + System.getProperty( DefaultLdapCodecService.PLUGIN_DIRECTORY_PROPERTY ) );
+        System.out.println( "Property name = " + StandaloneLdapCodecService.PLUGIN_DIRECTORY_PROPERTY );
+        System.out.println( "Property value = " + System.getProperty( StandaloneLdapCodecService.PLUGIN_DIRECTORY_PROPERTY ) );
         
-        DefaultLdapCodecService codec = new DefaultLdapCodecService();
+        StandaloneLdapCodecService codec = new StandaloneLdapCodecService();
         Iterator<String> oids = codec.registeredControls();
         while ( oids.hasNext() )
         {

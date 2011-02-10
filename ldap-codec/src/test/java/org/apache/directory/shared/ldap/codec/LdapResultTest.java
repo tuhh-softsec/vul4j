@@ -6,16 +6,16 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *
+ *  
  *    http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License.
- *
+ *  under the License. 
+ *  
  */
 package org.apache.directory.shared.ldap.codec;
 
@@ -28,10 +28,14 @@ import static org.junit.Assert.fail;
 import java.nio.ByteBuffer;
 import java.util.Collection;
 
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
+
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
-import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
+import org.apache.directory.shared.asn1.ber.Asn1Container;
+import org.apache.directory.shared.ldap.codec.standalone.StandaloneLdapCodecService;
 import org.apache.directory.shared.ldap.codec.decorators.AddResponseDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
 import org.apache.directory.shared.ldap.model.message.AddResponse;
@@ -39,23 +43,46 @@ import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.model.message.Referral;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.shared.util.Strings;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import com.mycila.junit.concurrent.Concurrency;
-import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 
 
 /**
  * A test for LdapResults. We will use a AddResponse message to test the
  * LdapResult part
- *
+ * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 @RunWith(ConcurrentJunitRunner.class)
 @Concurrency()
-public class LdapResultTest extends AbstractCodecServiceTest
+public class LdapResultTest
 {
+    /** The encoder instance */
+    private static LdapEncoder encoder = new LdapEncoder();
+    
+    private static StandaloneLdapCodecService codec = new StandaloneLdapCodecService();
+    
+    
+    @BeforeClass
+    public static void setupLdapCodecService()
+    {
+        codec = new StandaloneLdapCodecService();
+    }
+    
+    
+    @AfterClass
+    public static void tearDownLdapCodecService()
+    {
+        codec.shutdown();
+        codec = null;
+    }
+    
+
+    // ~ Methods
+    // ------------------------------------------------------------------------------------
+
     /**
      * Test the decoding of a AddResponse with no LdapResult
      */
@@ -273,7 +300,7 @@ public class LdapResultTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<AddResponseDecorator> container =
+        LdapMessageContainer<AddResponseDecorator> container = 
             new LdapMessageContainer<AddResponseDecorator>( codec );
 
         // Decode the AddResponse PDU
@@ -573,7 +600,7 @@ public class LdapResultTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<MessageDecorator<? extends Message>> container =
+        LdapMessageContainer<MessageDecorator<? extends Message>> container = 
             new LdapMessageContainer<MessageDecorator<? extends Message>>( codec );
 
         // Decode the AddResponse PDU

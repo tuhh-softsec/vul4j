@@ -6,16 +6,16 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *
+ *  
  *    http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License.
- *
+ *  under the License. 
+ *  
  */
 package org.apache.directory.shared.ldap.codec.bind;
 
@@ -28,13 +28,17 @@ import static org.junit.Assert.fail;
 import java.nio.ByteBuffer;
 import java.util.Map;
 
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
-import org.apache.directory.shared.ldap.codec.AbstractCodecServiceTest;
+import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.api.CodecControl;
+import org.apache.directory.shared.ldap.codec.standalone.StandaloneLdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.ResponseCarryingException;
 import org.apache.directory.shared.ldap.codec.decorators.BindRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
@@ -47,17 +51,19 @@ import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.mycila.junit.concurrent.Concurrency;
-import com.mycila.junit.concurrent.ConcurrentJunitRunner;
-
 
 /**
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 @RunWith(ConcurrentJunitRunner.class)
 @Concurrency()
-public class BindRequestTest extends AbstractCodecServiceTest
+public class BindRequestTest
 {
+    /** The encoder instance */
+    LdapEncoder encoder = new LdapEncoder();
+
+    LdapCodecService codec = new StandaloneLdapCodecService();
+
     /**
      * Test the decoding of a BindRequest with Simple authentication and no
      * controls
@@ -70,7 +76,7 @@ public class BindRequestTest extends AbstractCodecServiceTest
 
         ByteBuffer stream = ByteBuffer.allocate( 0x52 );
         stream.put( new byte[]
-             {
+             { 
              0x30, 0x50,                 // LDAPMessage ::=SEQUENCE {
                0x02, 0x01, 0x01,         // messageID MessageID
                0x60, 0x2E,               // CHOICE { ..., bindRequest BindRequest, ...
@@ -78,16 +84,16 @@ public class BindRequestTest extends AbstractCodecServiceTest
                  0x02, 0x01, 0x03,       // version INTEGER (1..127),
                  0x04, 0x1F,             // name LDAPDN,
                  'u', 'i', 'd', '=', 'a', 'k', 'a', 'r', 'a', 's', 'u', 'l', 'u', ',', 'd', 'c', '=', 'e', 'x', 'a',
-                 'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm',
+                 'm', 'p', 'l', 'e', ',', 'd', 'c', '=', 'c', 'o', 'm', 
                  ( byte ) 0x80, 0x08,    // authentication AuthenticationChoice
                                          // AuthenticationChoice ::= CHOICE { simple [0] OCTET STRING,
                                          // ...
-                   'p', 'a', 's', 's', 'w', 'o', 'r', 'd',
+                   'p', 'a', 's', 's', 'w', 'o', 'r', 'd', 
                ( byte ) 0xA0, 0x1B, // A control
-                 0x30, 0x19,
-                   0x04, 0x17,
-                     0x32, 0x2E, 0x31, 0x36, 0x2E, 0x38, 0x34, 0x30, 0x2E, 0x31, 0x2E, 0x31, 0x31, 0x33, 0x37, 0x33,
-                     0x30, 0x2E, 0x33, 0x2E, 0x34, 0x2E, 0x32
+                 0x30, 0x19, 
+                   0x04, 0x17, 
+                     0x32, 0x2E, 0x31, 0x36, 0x2E, 0x38, 0x34, 0x30, 0x2E, 0x31, 0x2E, 0x31, 0x31, 0x33, 0x37, 0x33, 
+                     0x30, 0x2E, 0x33, 0x2E, 0x34, 0x2E, 0x32 
              } );
 
         String decodedPdu = StringTools.dumpBytes( stream.array() );
@@ -108,7 +114,7 @@ public class BindRequestTest extends AbstractCodecServiceTest
             }
             long t1 = System.currentTimeMillis();
             System.out.println( "Delta = " + ( t1 - t0 ) );
-
+            
             ldapDecoder.decode( stream, container );
         }
         catch ( DecoderException de )
@@ -262,7 +268,7 @@ public class BindRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<MessageDecorator<? extends Message>> container =
+        LdapMessageContainer<MessageDecorator<? extends Message>> container = 
             new LdapMessageContainer<MessageDecorator<? extends Message>>( codec );
 
         // Decode the BindRequest PDU
@@ -504,7 +510,7 @@ public class BindRequestTest extends AbstractCodecServiceTest
                 0x04, 0x0B, 'K', 'E', 'R', 'B', 'E', 'R', 'O', 'S', '_', 'V', '4', ( byte ) 0x04, 0x06, // SaslCredentials ::= SEQUENCE {
                 // ...
                 // credentials OCTET STRING OPTIONAL }
-                //
+                // 
                 'a', 'b', 'c', 'd', 'e', 'f' } );
 
         String decodedPdu = Strings.dumpBytes(stream.array());
@@ -581,7 +587,7 @@ public class BindRequestTest extends AbstractCodecServiceTest
                 0x04, 0x0B, 'K', 'E', 'R', 'B', 'E', 'R', 'O', 'S', '_', 'V', '4', ( byte ) 0x04, 0x06, // SaslCredentials ::= SEQUENCE {
                 // ...
                 // credentials OCTET STRING OPTIONAL }
-                //
+                // 
                 'a', 'b', 'c', 'd', 'e', 'f' } );
 
         String decodedPdu = Strings.dumpBytes(stream.array());
@@ -1057,13 +1063,13 @@ public class BindRequestTest extends AbstractCodecServiceTest
 
         ByteBuffer stream = ByteBuffer.allocate( 0x11 );
         stream.put( new byte[]
-            {
+            { 
             0x30, 0x0F,                 // LDAPMessage ::=SEQUENCE {
               0x02, 0x01, 0x01,         // messageID MessageID
               0x60, 0x0A,               // CHOICE { ..., bindRequest BindRequest, ...
                 0x02, 0x01, 0x03,       // version INTEGER (1..127),
-                0x04, 0x00,
-                ( byte ) 0xA3, 0x03,
+                0x04, 0x00, 
+                ( byte ) 0xA3, 0x03, 
                   0x04, 0x01, (byte)0xFF
             } );
 
@@ -1212,7 +1218,7 @@ public class BindRequestTest extends AbstractCodecServiceTest
         @SuppressWarnings("unchecked")
         CodecControl<Control> control = (org.apache.directory.shared.ldap.codec.api.CodecControl<Control> ) controls.get( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
-        assertEquals( "", Strings.dumpBytes( control.getValue() ) );
+        assertEquals( "", Strings.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the encoding
         try
@@ -1292,7 +1298,7 @@ public class BindRequestTest extends AbstractCodecServiceTest
         @SuppressWarnings("unchecked")
         CodecControl<Control> control = (org.apache.directory.shared.ldap.codec.api.CodecControl<Control> ) controls.get( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
-        assertEquals( "", Strings.dumpBytes( control.getValue() ) );
+        assertEquals( "", Strings.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the encoding
         try
@@ -1323,17 +1329,17 @@ public class BindRequestTest extends AbstractCodecServiceTest
     {
         Dn name = new Dn( "uid=akarasulu,dc=example,dc=com" );
         long t0 = System.currentTimeMillis();
-
+        
         for ( int i = 0; i< 10000; i++)
         {
             // Check the decoded BindRequest
             LdapMessage message = new LdapMessage();
             message.setMessageId( 1 );
-
+            
             BindRequest br = new BindRequest();
             br.setMessageId( 1 );
             br.setName( name );
-
+            
             Control control = new Control();
             control.setControlType( "2.16.840.1.113730.3.4.2" );
 
@@ -1343,7 +1349,7 @@ public class BindRequestTest extends AbstractCodecServiceTest
             br.addControl( control );
             br.setAuthentication( authentication );
             message.setProtocolOP( br );
-
+    
             // Check the encoding
             try
             {

@@ -6,16 +6,16 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *
+ *  
  *    http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License.
- *
+ *  under the License. 
+ *  
  */
 package org.apache.directory.shared.ldap.codec.search;
 
@@ -32,12 +32,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.tlv.TLVStateEnum;
-import org.apache.directory.shared.ldap.codec.AbstractCodecServiceTest;
+import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.standalone.StandaloneLdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.ResponseCarryingException;
 import org.apache.directory.shared.ldap.codec.controls.search.subentries.SubentriesDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
@@ -59,6 +63,7 @@ import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.model.message.SearchRequest;
 import org.apache.directory.shared.ldap.model.message.SearchResultDoneImpl;
+import org.apache.directory.shared.ldap.model.message.controls.Subentries;
 import org.apache.directory.shared.ldap.model.schema.normalizers.DeepTrimToLowerNormalizer;
 import org.apache.directory.shared.ldap.model.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.util.Strings;
@@ -66,19 +71,22 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.mycila.junit.concurrent.Concurrency;
-import com.mycila.junit.concurrent.ConcurrentJunitRunner;
-
 
 /**
  * A test case for SearchRequest messages
- *
+ * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 @RunWith(ConcurrentJunitRunner.class)
 @Concurrency()
-public class SearchRequestTest extends AbstractCodecServiceTest
+public class SearchRequestTest
 {
+    /** The encoder instance */
+    LdapEncoder encoder = new LdapEncoder();
+
+    /** The codec service */
+    LdapCodecService codec = new StandaloneLdapCodecService();
+
     /** An oid normalizer map */
     static Map<String, OidNormalizer> oids = new HashMap<String, OidNormalizer>();
 
@@ -144,7 +152,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
                 // derefFindingBaseObj (2),
                 // derefAlways (3) },
                 0x02, 0x02, 0x03, ( byte ) 0xE8, // sizeLimit INTEGER (0 .. maxInt), (1000)
-                0x02, 0x02, 0x03, ( byte ) 0xE8, // timeLimit INTEGER (0 .. maxInt), (1000)
+                0x02, 0x02, 0x03, ( byte ) 0xE8, // timeLimit INTEGER (0 .. maxInt), (1000) 
                 0x01, 0x01, ( byte ) 0xFF, // typesOnly  BOOLEAN, (TRUE)
                 // filter Filter,
                 ( byte ) 0xA0, 0x3C, // Filter ::= CHOICE {
@@ -179,7 +187,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
@@ -307,7 +315,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
                 //         derefFindingBaseObj (2),
                 //         derefAlways (3) },
                 0x02, 0x02, 0x03, ( byte ) 0xE8, //     sizeLimit INTEGER (0 .. maxInt), (1000)
-                0x02, 0x02, 0x03, ( byte ) 0xE8, //     timeLimit INTEGER (0 .. maxInt), (1000)
+                0x02, 0x02, 0x03, ( byte ) 0xE8, //     timeLimit INTEGER (0 .. maxInt), (1000) 
                 0x01, 0x01, ( byte ) 0xFF, //     typesOnly BOOLEAN, (TRUE)
                 //     filter Filter,
                 ( byte ) 0xA0, 0x3C, // Filter ::= CHOICE {
@@ -317,15 +325,15 @@ public class SearchRequestTest extends AbstractCodecServiceTest
                 // Assertion,
                 // Assertion ::= SEQUENCE {
                 0x04, 0x0B, // attributeDesc AttributeDescription (LDAPString),
-                'o', 'b', 'j', 'e', 'c', 't', 'c', 'l', 'a', 's', 's', 0x04, 0x03, // attributeDesc AttributeDescription (LDAPString),
+                'o', 'b', 'j', 'e', 'c', 't', 'c', 'l', 'a', 's', 's', 0x04, 0x03, // attributeDesc AttributeDescription (LDAPString), 
                 't', 'o', 'p', ( byte ) 0xA6, 0x0E, // lessOrEqual [3] Assertion,
                 0x04, 0x02, // Assertion ::= SEQUENCE {
                 'o', 'u', // attributeDesc AttributeDescription (LDAPString),
-                0x04, 0x08, // assertionValue AssertionValue (OCTET STRING) }
+                0x04, 0x08, // assertionValue AssertionValue (OCTET STRING) } 
                 'c', 'o', 'n', 't', 'a', 'c', 't', 's', ( byte ) 0xA2, 0x14, // not [2] Filter,
                 ( byte ) 0xA5, 0x12, // greaterOrEqual [5] Assertion,
                 // Assertion ::= SEQUENCE {
-                0x04, 0x0B, // attributeDesc AttributeDescription (LDAPString),
+                0x04, 0x0B, // attributeDesc AttributeDescription (LDAPString), 
                 'o', 'b', 'j', 'e', 'c', 't', 'c', 'l', 'a', 's', 's', 0x04, 0x03, 't', 't', 't', // assertionValue AssertionValue (OCTET STRING) }
                 // attributes AttributeDescriptionList }
                 0x30, 0x15, // AttributeDescriptionList ::= SEQUENCE OF
@@ -339,7 +347,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
@@ -507,7 +515,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
@@ -651,7 +659,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
@@ -757,7 +765,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
@@ -845,7 +853,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
@@ -935,7 +943,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
@@ -1048,19 +1056,19 @@ public class SearchRequestTest extends AbstractCodecServiceTest
                   ( byte ) 0xa0, 0x45, // controls
                     0x30, 0x28,
                       0x04, 0x16, // control
-                        '1', '.', '2', '.', '8', '4', '0', '.',
-                        '1', '1', '3', '5', '5', '6', '.', '1',
-                        '.', '4', '.', '3', '1', '9',
+                        '1', '.', '2', '.', '8', '4', '0', '.', 
+                        '1', '1', '3', '5', '5', '6', '.', '1', 
+                        '.', '4', '.', '3', '1', '9', 
                       0x01, 0x01, ( byte ) 0xff, // criticality: false
-                      0x04, 0x0b,
-                        0x30, 0x09,
-                          0x02, 0x01, 0x02,
+                      0x04, 0x0b, 
+                        0x30, 0x09, 
+                          0x02, 0x01, 0x02, 
                           0x04, 0x04, 0x47, 0x00, 0x00, 0x00, // value: pageSize=2
-                    0x30, 0x19,
+                    0x30, 0x19, 
                       0x04, 0x17, // control
-                        '2', '.', '1', '6', '.', '8', '4', '0',
-                        '.', '1', '.', '1', '1', '3', '7', '3',
-                        '0', '.', '3', '.', '4', '.', '2',
+                        '2', '.', '1', '6', '.', '8', '4', '0', 
+                        '.', '1', '.', '1', '1', '3', '7', '3', 
+                        '0', '.', '3', '.', '4', '.', '2', 
                         };
 
         byte[] asn1BERJava6 = new byte[]
@@ -1078,20 +1086,20 @@ public class SearchRequestTest extends AbstractCodecServiceTest
                    'o', 'b', 'j', 'e', 'c', 't', 'C', 'l', 'a', 's', 's',
                  0x30, 0x00, // Attributes = '*'
                  ( byte ) 0xa0, 0x45, // controls
-                   0x30, 0x19,
+                   0x30, 0x19, 
                      0x04, 0x17, // control
-                       '2', '.', '1', '6', '.', '8', '4', '0',
-                       '.', '1', '.', '1', '1', '3', '7', '3',
-                       '0', '.', '3', '.', '4', '.', '2',
+                       '2', '.', '1', '6', '.', '8', '4', '0', 
+                       '.', '1', '.', '1', '1', '3', '7', '3', 
+                       '0', '.', '3', '.', '4', '.', '2', 
                    0x30, 0x28,
                      0x04, 0x16, // control
-                       '1', '.', '2', '.', '8', '4', '0', '.',
-                       '1', '1', '3', '5', '5', '6', '.', '1',
-                       '.', '4', '.', '3', '1', '9',
+                       '1', '.', '2', '.', '8', '4', '0', '.', 
+                       '1', '1', '3', '5', '5', '6', '.', '1', 
+                       '.', '4', '.', '3', '1', '9', 
                      0x01, 0x01, ( byte ) 0xff, // criticality: false
-                     0x04, 0x0b,
-                       0x30, 0x09,
-                         0x02, 0x01, 0x02,
+                     0x04, 0x0b, 
+                       0x30, 0x09, 
+                         0x02, 0x01, 0x02, 
                          0x04, 0x04, 0x47, 0x00, 0x00, 0x00, // value: pageSize=2
                        };
 
@@ -1108,7 +1116,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         streamJava5.put( asn1BERJava5 );
         String decodedPduJava5 = Strings.dumpBytes(streamJava5.array());
 
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
@@ -1160,7 +1168,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
             assertEquals( 0x81, bb.limit() );
 
             String encodedPdu = Strings.dumpBytes(bb.array());
-
+            
             assertTrue( decodedPduJava5.equals( encodedPdu ) || decodedPduJava6.equals( encodedPdu ) );
         }
         catch ( EncoderException ee )
@@ -1287,7 +1295,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
@@ -1328,7 +1336,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         // (& (| (obectclass=top) (...
         List<ExprNode> orNodes = orFilter.getChildren();
         assertEquals( 2, orNodes.size() );
-
+        
         EqualityNode<?> equalityNode = ( EqualityNode<?> ) orNodes.get( 0 );
         assertNotNull( equalityNode );
 
@@ -1406,7 +1414,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         String decodedPdu = Strings.dumpBytes(stream.array());
         stream.flip();
 
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
@@ -1432,7 +1440,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         assertEquals( subEntryControlOID, subEntryControl.getOid() );
         assertTrue( subEntryControl.isCritical() );
         assertTrue( subEntryControl instanceof SubentriesDecorator );
-        assertTrue( ( ( ( SubentriesDecorator ) subEntryControl ).getDecorated() ).isVisible() );
+        assertTrue( ( ( Subentries ) ( ( SubentriesDecorator ) subEntryControl ).getDecorated() ).isVisible() );
 
         assertEquals( "dc=my-domain,dc=com", searchRequest.getBase().toString() );
         assertEquals( SearchScope.SUBTREE, searchRequest.getScope() );
@@ -1483,7 +1491,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
@@ -1518,7 +1526,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
@@ -1563,7 +1571,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
                 // derefFindingBaseObj (2),
                 // derefAlways (3) },
                 0x02, 0x02, 0x03, ( byte ) 0xE8, // sizeLimit INTEGER (0 .. maxInt), (1000)
-                0x02, 0x02, 0x03, ( byte ) 0xE8, // timeLimit INTEGER (0 .. maxInt), (1000)
+                0x02, 0x02, 0x03, ( byte ) 0xE8, // timeLimit INTEGER (0 .. maxInt), (1000) 
                 0x01, 0x01, ( byte ) 0xFF, // typesOnly  BOOLEAN, (TRUE)
                 // filter Filter,
                 ( byte ) 0xA0, 0x3C, // Filter ::= CHOICE {
@@ -1598,7 +1606,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
@@ -1639,7 +1647,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         // (& (| (obectclass=top) (...
         List<ExprNode> orNodes = orFilter.getChildren();
         assertEquals( 2, orNodes.size() );
-
+        
         EqualityNode<?> equalityNode = ( EqualityNode<?> ) orNodes.get( 0 );
         assertNotNull( equalityNode );
 
@@ -1725,7 +1733,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
                 // derefFindingBaseObj (2),
                 // derefAlways (3) },
                 0x02, 0x02, 0x03, ( byte ) 0xE8, // sizeLimit INTEGER (0 .. maxInt), (1000)
-                0x02, 0x02, 0x03, ( byte ) 0xE8, // timeLimit INTEGER (0 .. maxInt), (1000)
+                0x02, 0x02, 0x03, ( byte ) 0xE8, // timeLimit INTEGER (0 .. maxInt), (1000) 
                 0x01, 0x01, ( byte ) 0xFF, // typesOnly  BOOLEAN, (TRUE)
                 // filter Filter,
                 ( byte ) 0xA0, 0x3C, // Filter ::= CHOICE {
@@ -1759,7 +1767,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
@@ -1801,7 +1809,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
@@ -1851,7 +1859,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
                 // derefFindingBaseObj (2),
                 // derefAlways (3) },
                 0x02, 0x02, 0x03, ( byte ) 0xE8, // sizeLimit INTEGER (0 .. maxInt), (1000)
-                0x02, 0x02, 0x03, ( byte ) 0xE8, // timeLimit INTEGER (0 .. maxInt), (1000)
+                0x02, 0x02, 0x03, ( byte ) 0xE8, // timeLimit INTEGER (0 .. maxInt), (1000) 
                 0x01, 0x01, ( byte ) 0xFF, // typesOnly  BOOLEAN, (TRUE)
                 // filter Filter,
                 ( byte ) 0xA0, 0x3C, // Filter ::= CHOICE {
@@ -1885,7 +1893,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
@@ -1923,7 +1931,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
@@ -1973,7 +1981,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
                 // derefFindingBaseObj (2),
                 // derefAlways (3) },
                 0x02, 0x02, 0x03, ( byte ) 0xE8, // sizeLimit INTEGER (0 .. maxInt), (1000)
-                0x02, 0x02, 0x03, ( byte ) 0xE8, // timeLimit INTEGER (0 .. maxInt), (1000)
+                0x02, 0x02, 0x03, ( byte ) 0xE8, // timeLimit INTEGER (0 .. maxInt), (1000) 
                 0x01, 0x01, ( byte ) 0xFF, // typesOnly  BOOLEAN, (TRUE)
                 // filter Filter,
                 ( byte ) 0xA0, 0x3C, // Filter ::= CHOICE {
@@ -2007,7 +2015,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
@@ -2045,7 +2053,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
@@ -2095,7 +2103,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
                 // derefFindingBaseObj (2),
                 // derefAlways (3) },
                 0x02, 0x01, ( byte ) 0xFF, // sizeLimit INTEGER (0 .. maxInt), (1000)
-                0x02, 0x02, 0x03, ( byte ) 0xE8, // timeLimit INTEGER (0 .. maxInt), (1000)
+                0x02, 0x02, 0x03, ( byte ) 0xE8, // timeLimit INTEGER (0 .. maxInt), (1000) 
                 0x01, 0x01, ( byte ) 0xFF, // typesOnly  BOOLEAN, (TRUE)
                 // filter Filter,
                 ( byte ) 0xA0, 0x3C, // Filter ::= CHOICE {
@@ -2129,7 +2137,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
@@ -2170,7 +2178,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
@@ -2220,7 +2228,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
                 // derefFindingBaseObj (2),
                 // derefAlways (3) },
                 0x02, 0x02, 0x03, ( byte ) 0xE8, // sizeLimit INTEGER (0 .. maxInt), (1000)
-                0x02, 0x01, ( byte ) 0xFF, // timeLimit INTEGER (0 .. maxInt), (1000)
+                0x02, 0x01, ( byte ) 0xFF, // timeLimit INTEGER (0 .. maxInt), (1000) 
                 0x01, 0x01, ( byte ) 0xFF, // typesOnly  BOOLEAN, (TRUE)
                 // filter Filter,
                 ( byte ) 0xA0, 0x3C, // Filter ::= CHOICE {
@@ -2254,7 +2262,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
@@ -2295,7 +2303,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
@@ -2337,7 +2345,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
@@ -2379,7 +2387,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
@@ -2421,7 +2429,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
@@ -2463,7 +2471,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
@@ -2505,7 +2513,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
@@ -2547,7 +2555,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
@@ -2590,7 +2598,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
@@ -2639,7 +2647,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
@@ -2730,7 +2738,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
@@ -2821,7 +2829,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
@@ -2890,7 +2898,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
@@ -2937,7 +2945,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
@@ -2984,7 +2992,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
@@ -3032,7 +3040,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
@@ -3073,7 +3081,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         // Decode a SearchRequest message
@@ -3099,7 +3107,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         assertEquals( 0, searchRequest.getTimeLimit() );
         assertEquals( false, searchRequest.getTypesOnly() );
 
-        // And
+        // And 
         ExprNode filter = searchRequest.getFilter();
 
         AndNode andNode = ( AndNode ) filter;
@@ -3171,14 +3179,14 @@ public class SearchRequestTest extends AbstractCodecServiceTest
                 //      derefFindingBaseObj (2),
                 //      derefAlways (3) },
                 0x02, 0x01, 0x00, // sizeLimit INTEGER (0 .. maxInt), (0)
-                0x02, 0x01, 0x00, // timeLimit INTEGER (0 .. maxInt), (1000)
+                0x02, 0x01, 0x00, // timeLimit INTEGER (0 .. maxInt), (1000) 
                 0x01, 0x01, ( byte ) 0xFF,// typesOnly BOOLEAN, (TRUE)
                 // filter Filter,
                 ( byte ) 0xA3, 0x06, // Filter ::= CHOICE {
                 //      equalityMatch [3] Assertion,
                 // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'a', //      attributeDesc AttributeDescription (LDAPString),
-                0x04, 0x01, 'b', //      assertionValue AssertionValue (OCTET STRING) }
+                0x04, 0x01, 'b', //      assertionValue AssertionValue (OCTET STRING) } 
                 // attributes AttributeDescriptionList }
                 0x30, 0x00, // AttributeDescriptionList ::= SEQUENCE OF AttributeDescription
             } );
@@ -3187,7 +3195,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
@@ -3272,7 +3280,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
                 //      derefFindingBaseObj (2),
                 //      derefAlways (3) },
                 0x02, 0x01, 0x00, // sizeLimit INTEGER (0 .. maxInt), (0)
-                0x02, 0x01, 0x00, // timeLimit INTEGER (0 .. maxInt), (1000)
+                0x02, 0x01, 0x00, // timeLimit INTEGER (0 .. maxInt), (1000) 
                 0x01, 0x01, ( byte ) 0xFF,// typesOnly BOOLEAN, (TRUE)
                 // filter Filter,
                 ( byte ) 0xA0, 0x08, // Filter ::= CHOICE {
@@ -3280,7 +3288,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
                 //      equalityMatch [3] Assertion,
                 // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'a', //      attributeDesc AttributeDescription (LDAPString),
-                0x04, 0x01, 'b', //      assertionValue AssertionValue (OCTET STRING) }
+                0x04, 0x01, 'b', //      assertionValue AssertionValue (OCTET STRING) } 
                 // attributes AttributeDescriptionList }
                 0x30, 0x00, // AttributeDescriptionList ::= SEQUENCE OF AttributeDescription
             } );
@@ -3289,7 +3297,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
@@ -3382,7 +3390,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
                 //      derefFindingBaseObj (2),
                 //      derefAlways (3) },
                 0x02, 0x01, 0x00, // sizeLimit INTEGER (0 .. maxInt), (0)
-                0x02, 0x01, 0x00, // timeLimit INTEGER (0 .. maxInt), (1000)
+                0x02, 0x01, 0x00, // timeLimit INTEGER (0 .. maxInt), (1000) 
                 0x01, 0x01, ( byte ) 0xFF,// typesOnly BOOLEAN, (TRUE)
                 // filter Filter,
                 ( byte ) 0xA0, 0x10, // Filter ::= CHOICE {
@@ -3390,12 +3398,12 @@ public class SearchRequestTest extends AbstractCodecServiceTest
                 //      equalityMatch [3] Assertion,
                 // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'a', //      attributeDesc AttributeDescription (LDAPString),
-                0x04, 0x01, 'b', //      assertionValue AssertionValue (OCTET STRING) }
+                0x04, 0x01, 'b', //      assertionValue AssertionValue (OCTET STRING) } 
                 ( byte ) 0xA3, 0x06,
                 //      equalityMatch [3] Assertion,
                 // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'c', //      attributeDesc AttributeDescription (LDAPString),
-                0x04, 0x01, 'd', //      assertionValue AssertionValue (OCTET STRING) }
+                0x04, 0x01, 'd', //      assertionValue AssertionValue (OCTET STRING) } 
                 // attributes AttributeDescriptionList }
                 0x30, 0x00, // AttributeDescriptionList ::= SEQUENCE OF AttributeDescription
             } );
@@ -3404,7 +3412,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
@@ -3504,7 +3512,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
                 //      derefFindingBaseObj (2),
                 //      derefAlways (3) },
                 0x02, 0x01, 0x00, // sizeLimit INTEGER (0 .. maxInt), (0)
-                0x02, 0x01, 0x00, // timeLimit INTEGER (0 .. maxInt), (1000)
+                0x02, 0x01, 0x00, // timeLimit INTEGER (0 .. maxInt), (1000) 
                 0x01, 0x01, ( byte ) 0xFF,// typesOnly BOOLEAN, (TRUE)
                 // filter Filter,
                 ( byte ) 0xA0, 0x0A, // Filter ::= CHOICE { and             [0] SET OF Filter,
@@ -3512,7 +3520,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
                 ( byte ) 0xA3, 0x06,//      equalityMatch [3] Assertion,
                 // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'a', //      attributeDesc AttributeDescription (LDAPString),
-                0x04, 0x01, 'b', //      assertionValue AssertionValue (OCTET STRING) }
+                0x04, 0x01, 'b', //      assertionValue AssertionValue (OCTET STRING) } 
                 0x30, 0x00, // AttributeDescriptionList ::= SEQUENCE OF AttributeDescription
             } );
 
@@ -3520,7 +3528,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
@@ -3620,7 +3628,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
                 //      derefFindingBaseObj (2),
                 //      derefAlways (3) },
                 0x02, 0x01, 0x00, // sizeLimit INTEGER (0 .. maxInt), (0)
-                0x02, 0x01, 0x00, // timeLimit INTEGER (0 .. maxInt), (1000)
+                0x02, 0x01, 0x00, // timeLimit INTEGER (0 .. maxInt), (1000) 
                 0x01, 0x01, ( byte ) 0xFF,// typesOnly BOOLEAN, (TRUE)
                 // filter Filter,
                 ( byte ) 0xA0, 0x12, // Filter ::= CHOICE { and             [0] SET OF Filter,
@@ -3629,12 +3637,12 @@ public class SearchRequestTest extends AbstractCodecServiceTest
                 //      equalityMatch [3] Assertion,
                 // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'a', //      attributeDesc AttributeDescription (LDAPString),
-                0x04, 0x01, 'b', //      assertionValue AssertionValue (OCTET STRING) }
+                0x04, 0x01, 'b', //      assertionValue AssertionValue (OCTET STRING) } 
                 ( byte ) 0xA3, 0x06,
                 //      equalityMatch [3] Assertion,
                 // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'c', //      attributeDesc AttributeDescription (LDAPString),
-                0x04, 0x01, 'd', //      assertionValue AssertionValue (OCTET STRING) }
+                0x04, 0x01, 'd', //      assertionValue AssertionValue (OCTET STRING) } 
                 0x30, 0x00, // AttributeDescriptionList ::= SEQUENCE OF AttributeDescription
             } );
 
@@ -3642,7 +3650,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
@@ -3749,7 +3757,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
                 //      derefFindingBaseObj (2),
                 //      derefAlways (3) },
                 0x02, 0x01, 0x00, // sizeLimit INTEGER (0 .. maxInt), (0)
-                0x02, 0x01, 0x00, // timeLimit INTEGER (0 .. maxInt), (1000)
+                0x02, 0x01, 0x00, // timeLimit INTEGER (0 .. maxInt), (1000) 
                 0x01, 0x01, ( byte ) 0xFF,// typesOnly BOOLEAN, (TRUE)
                 // filter Filter,
                 ( byte ) 0xA0, 0x12, // Filter ::= CHOICE { and             [0] SET OF Filter,
@@ -3757,12 +3765,12 @@ public class SearchRequestTest extends AbstractCodecServiceTest
                 ( byte ) 0xA3, 0x06,//      equalityMatch [3] Assertion,
                 // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'a', //      attributeDesc AttributeDescription (LDAPString),
-                0x04, 0x01, 'b', //      assertionValue AssertionValue (OCTET STRING) }
+                0x04, 0x01, 'b', //      assertionValue AssertionValue (OCTET STRING) } 
                 ( byte ) 0xA3, 0x06, //      equalityMatch [3] Assertion,
                 //      equalityMatch [3] Assertion,
                 // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'c', //      attributeDesc AttributeDescription (LDAPString),
-                0x04, 0x01, 'd', //      assertionValue AssertionValue (OCTET STRING) }
+                0x04, 0x01, 'd', //      assertionValue AssertionValue (OCTET STRING) } 
                 0x30, 0x00, // AttributeDescriptionList ::= SEQUENCE OF AttributeDescription
             } );
 
@@ -3770,7 +3778,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
@@ -3877,7 +3885,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
                 //      derefFindingBaseObj (2),
                 //      derefAlways (3) },
                 0x02, 0x01, 0x00, // sizeLimit INTEGER (0 .. maxInt), (0)
-                0x02, 0x01, 0x00, // timeLimit INTEGER (0 .. maxInt), (1000)
+                0x02, 0x01, 0x00, // timeLimit INTEGER (0 .. maxInt), (1000) 
                 0x01, 0x01, ( byte ) 0xFF,// typesOnly BOOLEAN, (TRUE)
                 // filter Filter,
                 ( byte ) 0xA0, 0x1A, // Filter ::= CHOICE { and             [0] SET OF Filter,
@@ -3885,16 +3893,16 @@ public class SearchRequestTest extends AbstractCodecServiceTest
                 ( byte ) 0xA3, 0x06,//      equalityMatch [3] Assertion,
                 // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'a', //      attributeDesc AttributeDescription (LDAPString),
-                0x04, 0x01, 'b', //      assertionValue AssertionValue (OCTET STRING) }
+                0x04, 0x01, 'b', //      assertionValue AssertionValue (OCTET STRING) } 
                 ( byte ) 0xA3, 0x06,//      equalityMatch [3] Assertion,
                 // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'c', //      attributeDesc AttributeDescription (LDAPString),
-                0x04, 0x01, 'd', //      assertionValue AssertionValue (OCTET STRING) }
+                0x04, 0x01, 'd', //      assertionValue AssertionValue (OCTET STRING) } 
                 ( byte ) 0xA3, 0x06, //      equalityMatch [3] Assertion,
                 //      equalityMatch [3] Assertion,
                 // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'e', //      attributeDesc AttributeDescription (LDAPString),
-                0x04, 0x01, 'f', //      assertionValue AssertionValue (OCTET STRING) }
+                0x04, 0x01, 'f', //      assertionValue AssertionValue (OCTET STRING) } 
                 0x30, 0x00, // AttributeDescriptionList ::= SEQUENCE OF AttributeDescription
             } );
 
@@ -3902,7 +3910,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
@@ -4017,24 +4025,24 @@ public class SearchRequestTest extends AbstractCodecServiceTest
                 //      derefFindingBaseObj (2),
                 //      derefAlways (3) },
                 0x02, 0x01, 0x00, // sizeLimit INTEGER (0 .. maxInt), (0)
-                0x02, 0x01, 0x00, // timeLimit INTEGER (0 .. maxInt), (1000)
+                0x02, 0x01, 0x00, // timeLimit INTEGER (0 .. maxInt), (1000) 
                 0x01, 0x01, ( byte ) 0xFF,// typesOnly BOOLEAN, (TRUE)
                 // filter Filter,
                 ( byte ) 0xA0, 0x1A, // Filter ::= CHOICE { and             [0] SET OF Filter,
                 ( byte ) 0xA3, 0x06, //      equalityMatch [3] Assertion,
                 // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'a', //      attributeDesc AttributeDescription (LDAPString),
-                0x04, 0x01, 'b', //      assertionValue AssertionValue (OCTET STRING) }
+                0x04, 0x01, 'b', //      assertionValue AssertionValue (OCTET STRING) } 
                 ( byte ) 0xA1, 0x10, // Filter ::= CHOICE { or             [1] SET OF Filter,
                 ( byte ) 0xA3, 0x06,//      equalityMatch [3] Assertion,
                 // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'c', //      attributeDesc AttributeDescription (LDAPString),
-                0x04, 0x01, 'd', //      assertionValue AssertionValue (OCTET STRING) }
+                0x04, 0x01, 'd', //      assertionValue AssertionValue (OCTET STRING) } 
                 ( byte ) 0xA3, 0x06,//      equalityMatch [3] Assertion,
                 //      equalityMatch [3] Assertion,
                 // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'e', //      attributeDesc AttributeDescription (LDAPString),
-                0x04, 0x01, 'f', //      assertionValue AssertionValue (OCTET STRING) }
+                0x04, 0x01, 'f', //      assertionValue AssertionValue (OCTET STRING) } 
                 0x30, 0x00, // AttributeDescriptionList ::= SEQUENCE OF AttributeDescription
             } );
 
@@ -4042,7 +4050,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
@@ -4156,7 +4164,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
                 //      derefFindingBaseObj (2),
                 //      derefAlways (3) },
                 0x02, 0x01, 0x00, // sizeLimit INTEGER (0 .. maxInt), (0)
-                0x02, 0x01, 0x00, // timeLimit INTEGER (0 .. maxInt), (1000)
+                0x02, 0x01, 0x00, // timeLimit INTEGER (0 .. maxInt), (1000) 
                 0x01, 0x01, ( byte ) 0xFF,// typesOnly BOOLEAN, (TRUE)
                 // filter Filter,
                 ( byte ) 0xA0, 0x14, // Filter ::= CHOICE { and             [0] SET OF Filter,
@@ -4164,13 +4172,13 @@ public class SearchRequestTest extends AbstractCodecServiceTest
                 ( byte ) 0xA3, 0x06,//      equalityMatch [3] Assertion,
                 // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'a', //      attributeDesc AttributeDescription (LDAPString),
-                0x04, 0x01, 'b', //      assertionValue AssertionValue (OCTET STRING) }
+                0x04, 0x01, 'b', //      assertionValue AssertionValue (OCTET STRING) } 
                 ( byte ) 0xA0, 0x08, // Filter ::= CHOICE { and             [0] SET OF Filter,
                 ( byte ) 0xA3, 0x06,//      equalityMatch [3] Assertion,
                 //      equalityMatch [3] Assertion,
                 // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'c', //      attributeDesc AttributeDescription (LDAPString),
-                0x04, 0x01, 'd', //      assertionValue AssertionValue (OCTET STRING) }
+                0x04, 0x01, 'd', //      assertionValue AssertionValue (OCTET STRING) } 
                 0x30, 0x00 // AttributeDescriptionList ::= SEQUENCE OF AttributeDescription
             } );
 
@@ -4178,7 +4186,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
@@ -4292,7 +4300,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
                 //      derefFindingBaseObj (2),
                 //      derefAlways (3) },
                 0x02, 0x01, 0x00, // sizeLimit INTEGER (0 .. maxInt), (0)
-                0x02, 0x01, 0x00, // timeLimit INTEGER (0 .. maxInt), (1000)
+                0x02, 0x01, 0x00, // timeLimit INTEGER (0 .. maxInt), (1000) 
                 0x01, 0x01, ( byte ) 0xFF,// typesOnly BOOLEAN, (TRUE)
                 // filter Filter,
                 ( byte ) 0xA0, 0x1C, // Filter ::= CHOICE { and             [0] SET OF Filter,
@@ -4300,17 +4308,17 @@ public class SearchRequestTest extends AbstractCodecServiceTest
                 ( byte ) 0xA3, 0x06,//      equalityMatch [3] Assertion,
                 // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'a', //      attributeDesc AttributeDescription (LDAPString),
-                0x04, 0x01, 'b', //      assertionValue AssertionValue (OCTET STRING) }
+                0x04, 0x01, 'b', //      assertionValue AssertionValue (OCTET STRING) } 
                 ( byte ) 0xA3, 0x06,//      equalityMatch [3] Assertion,
                 // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'c', //      attributeDesc AttributeDescription (LDAPString),
-                0x04, 0x01, 'd', //      assertionValue AssertionValue (OCTET STRING) }
+                0x04, 0x01, 'd', //      assertionValue AssertionValue (OCTET STRING) } 
                 ( byte ) 0xA0, 0x08, // Filter ::= CHOICE { and             [0] SET OF Filter,
                 ( byte ) 0xA3, 0x06,//      equalityMatch [3] Assertion,
                 //      equalityMatch [3] Assertion,
                 // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'e', //      attributeDesc AttributeDescription (LDAPString),
-                0x04, 0x01, 'f', //      assertionValue AssertionValue (OCTET STRING) }
+                0x04, 0x01, 'f', //      assertionValue AssertionValue (OCTET STRING) } 
                 0x30, 0x00 // AttributeDescriptionList ::= SEQUENCE OF AttributeDescription
             } );
 
@@ -4318,7 +4326,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
@@ -4439,7 +4447,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
                 //      derefFindingBaseObj (2),
                 //      derefAlways (3) },
                 0x02, 0x01, 0x00, // sizeLimit INTEGER (0 .. maxInt), (0)
-                0x02, 0x01, 0x00, // timeLimit INTEGER (0 .. maxInt), (1000)
+                0x02, 0x01, 0x00, // timeLimit INTEGER (0 .. maxInt), (1000) 
                 0x01, 0x01, ( byte ) 0xFF,// typesOnly BOOLEAN, (TRUE)
                 // filter Filter,
                 ( byte ) 0xA0, 0x1C, // Filter ::= CHOICE { and             [0] SET OF Filter,
@@ -4452,7 +4460,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
                 ( byte ) 0xA5, 0x06,//      greaterOrEqual [3] Assertion,
                 // Assertion ::= SEQUENCE {
                 0x04, 0x01, 'e', //      attributeDesc AttributeDescription (LDAPString),
-                0x04, 0x01, 'f', //      assertionValue AssertionValue (OCTET STRING) }
+                0x04, 0x01, 'f', //      assertionValue AssertionValue (OCTET STRING) } 
                 0x30, 0x00 // AttributeDescriptionList ::= SEQUENCE OF AttributeDescription
             } );
 
@@ -4460,7 +4468,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
@@ -4568,7 +4576,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
@@ -4633,7 +4641,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try
@@ -4744,7 +4752,7 @@ public class SearchRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a BindRequest Container
-        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer =
+        LdapMessageContainer<SearchRequestDecorator> ldapMessageContainer = 
             new LdapMessageContainer<SearchRequestDecorator>( codec );
 
         try

@@ -6,16 +6,16 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *
+ *  
  *    http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License.
- *
+ *  under the License. 
+ *  
  */
 package org.apache.directory.shared.ldap.codec.add;
 
@@ -32,41 +32,43 @@ import java.util.Set;
 
 import javax.naming.NamingException;
 
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
-import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
-import org.apache.directory.shared.ldap.codec.AbstractCodecServiceTest;
+import org.apache.directory.shared.asn1.ber.Asn1Container;
+import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.api.CodecControl;
+import org.apache.directory.shared.ldap.codec.standalone.StandaloneLdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.ResponseCarryingException;
 import org.apache.directory.shared.ldap.codec.decorators.AddRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
 import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.model.entry.Value;
-import org.apache.directory.shared.ldap.model.message.AddRequest;
-import org.apache.directory.shared.ldap.model.message.AddResponseImpl;
-import org.apache.directory.shared.ldap.model.message.Control;
-import org.apache.directory.shared.ldap.model.message.Message;
-import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
+import org.apache.directory.shared.ldap.model.message.*;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.mycila.junit.concurrent.Concurrency;
-import com.mycila.junit.concurrent.ConcurrentJunitRunner;
-
 
 /**
  * Test the AddRequest codec
- *
+ * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 @RunWith(ConcurrentJunitRunner.class)
 @Concurrency()
-public class AddRequestTest extends AbstractCodecServiceTest
+public class AddRequestTest
 {
+    /** The encoder instance */
+    LdapEncoder encoder = new LdapEncoder();
+
+    LdapCodecService codec = new StandaloneLdapCodecService();
+
     /**
      * Test the decoding of a AddRequest
      */
@@ -118,7 +120,7 @@ public class AddRequestTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<AddRequestDecorator> container =
+        LdapMessageContainer<AddRequestDecorator> container = 
             new LdapMessageContainer<AddRequestDecorator>( codec );
 
         // Decode a AddRequest message
@@ -163,7 +165,7 @@ public class AddRequestTest extends AbstractCodecServiceTest
 
         assertTrue( expectedTypes.contains( attribute.getId().toLowerCase() ) );
 
-        Set<String> vals = typesVals.get( attribute.getId().toLowerCase() );
+        Set<String> vals = ( Set<String> ) typesVals.get( attribute.getId().toLowerCase() );
 
         for ( Value<?> value : attribute )
         {
@@ -176,7 +178,7 @@ public class AddRequestTest extends AbstractCodecServiceTest
 
         assertTrue( expectedTypes.contains( attribute.getId().toLowerCase() ) );
 
-        vals = typesVals.get( attribute.getId().toLowerCase() );
+        vals = ( Set<String> ) typesVals.get( attribute.getId().toLowerCase() );
 
         for ( Value<?> value : attribute )
         {
@@ -371,7 +373,7 @@ public class AddRequestTest extends AbstractCodecServiceTest
 
         // Allocate a LdapMessage Container
         Asn1Container ldapMessageContainer = new LdapMessageContainer<MessageDecorator<? extends Message>>( codec );
-
+ 
         // Decode a AddRequest message
         try
         {
@@ -792,7 +794,7 @@ public class AddRequestTest extends AbstractCodecServiceTest
         @SuppressWarnings("unchecked")
         CodecControl<Control> control = (org.apache.directory.shared.ldap.codec.api.CodecControl<Control> ) controls.get( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
-        assertEquals( "", Strings.dumpBytes( control.getValue() ) );
+        assertEquals( "", Strings.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the encoding
         try

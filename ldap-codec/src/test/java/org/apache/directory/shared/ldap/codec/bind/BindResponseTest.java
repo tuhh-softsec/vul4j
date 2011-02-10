@@ -6,16 +6,16 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *
+ *  
  *    http://www.apache.org/licenses/LICENSE-2.0
- *
+ *  
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License.
- *
+ *  under the License. 
+ *  
  */
 package org.apache.directory.shared.ldap.codec.bind;
 
@@ -28,13 +28,17 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Map;
 
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
-import org.apache.directory.shared.ldap.codec.AbstractCodecServiceTest;
+import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.api.CodecControl;
+import org.apache.directory.shared.ldap.codec.standalone.StandaloneLdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.controls.search.pagedSearch.PagedResultsDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.BindResponseDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
@@ -46,17 +50,19 @@ import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.mycila.junit.concurrent.Concurrency;
-import com.mycila.junit.concurrent.ConcurrentJunitRunner;
-
 
 /**
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 @RunWith(ConcurrentJunitRunner.class)
 @Concurrency()
-public class BindResponseTest extends AbstractCodecServiceTest
+public class BindResponseTest
 {
+    /** The encoder instance */
+    LdapEncoder encoder = new LdapEncoder();
+
+    LdapCodecService codec = new StandaloneLdapCodecService();
+
     /**
      * Test the decoding of a BindResponse
      */
@@ -155,13 +161,13 @@ public class BindResponseTest extends AbstractCodecServiceTest
                 ( byte ) 0xa0, 0x2C,                    // controls
                   0x30, 0x2A,                           // The PagedSearchControl
                     0x04, 0x16,                         // Oid : 1.2.840.113556.1.4.319
-                      0x31, 0x2e, 0x32, 0x2e, 0x38, 0x34, 0x30, 0x2e,
-                      0x31, 0x31, 0x33, 0x35, 0x35, 0x36, 0x2e, 0x31,
-                      0x2e, 0x34, 0x2e, 0x33, 0x31, 0x39,
+                      0x31, 0x2e, 0x32, 0x2e, 0x38, 0x34, 0x30, 0x2e, 
+                      0x31, 0x31, 0x33, 0x35, 0x35, 0x36, 0x2e, 0x31, 
+                      0x2e, 0x34, 0x2e, 0x33, 0x31, 0x39, 
                     0x01, 0x01, ( byte ) 0xff,          // criticality: false
-                    0x04, 0x0D,
-                      0x30, 0x0B,
-                        0x02, 0x01, 0x05,               // Size = 5, cookie = "abcdef"
+                    0x04, 0x0D, 
+                      0x30, 0x0B, 
+                        0x02, 0x01, 0x05,               // Size = 5, cookie = "abcdef" 
                         0x04, 0x06, 'a', 'b', 'c', 'd', 'e', 'f' } );
 
         String decodedPdu = Strings.dumpBytes(stream.array());
@@ -323,11 +329,11 @@ public class BindResponseTest extends AbstractCodecServiceTest
                   ( byte ) 0x87, 0x00, // serverSaslCreds [7] OCTET STRING
                 // OPTIONAL }
                 ( byte ) 0xA0, 0x1B, // A control
-                  0x30, 0x19,
-                    0x04, 0x17,
+                  0x30, 0x19, 
+                    0x04, 0x17, 
                       0x32, 0x2E, 0x31, 0x36, 0x2E, 0x38, 0x34, 0x30,
-                      0x2E, 0x31, 0x2E, 0x31, 0x31, 0x33, 0x37, 0x33,
-                      0x30, 0x2E, 0x33, 0x2E, 0x34, 0x2E, 0x32
+                      0x2E, 0x31, 0x2E, 0x31, 0x31, 0x33, 0x37, 0x33, 
+                      0x30, 0x2E, 0x33, 0x2E, 0x34, 0x2E, 0x32 
               } );
 
         String decodedPdu = Strings.dumpBytes(stream.array());
@@ -364,7 +370,7 @@ public class BindResponseTest extends AbstractCodecServiceTest
         @SuppressWarnings("unchecked")
         CodecControl<Control> control = (org.apache.directory.shared.ldap.codec.api.CodecControl<Control> ) controls.get( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
-        assertEquals( "", Strings.dumpBytes( control.getValue() ) );
+        assertEquals( "", Strings.dumpBytes( ( byte[] ) control.getValue() ) );
 
         // Check the encoding
         try
@@ -417,7 +423,7 @@ public class BindResponseTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<BindResponseDecorator> container =
+        LdapMessageContainer<BindResponseDecorator> container = 
             new LdapMessageContainer<BindResponseDecorator>( codec );
 
         // Decode the BindResponse PDU

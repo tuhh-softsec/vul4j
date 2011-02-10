@@ -27,10 +27,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.nio.ByteBuffer;
 
-import org.apache.directory.shared.ldap.codec.api.DefaultLdapCodecService;
+import org.apache.directory.shared.ldap.codec.standalone.StandaloneLdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.extras.controls.PasswordPolicy;
-import org.apache.directory.shared.ldap.extras.controls.ppolicy_impl.PasswordPolicyDecorator;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 
@@ -42,7 +41,7 @@ import org.junit.Test;
  */
 public class PasswordPolicyTest
 {
-    LdapCodecService codec = new DefaultLdapCodecService();
+    LdapCodecService codec = new StandaloneLdapCodecService();
     
     @Test
     public void testDecodeRespWithExpiryWarningAndError() throws Exception
