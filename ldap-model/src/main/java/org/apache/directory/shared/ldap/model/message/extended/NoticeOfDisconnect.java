@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.extras.extended;
+package org.apache.directory.shared.ldap.model.message.extended;
 
 
 import org.apache.directory.shared.i18n.I18n;

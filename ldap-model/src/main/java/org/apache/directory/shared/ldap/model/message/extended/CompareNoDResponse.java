@@ -17,20 +17,20 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.extras.extended;
+package org.apache.directory.shared.ldap.model.message.extended;
 
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.model.message.DeleteResponseImpl;
+import org.apache.directory.shared.ldap.model.message.CompareResponseImpl;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 
 
 /**
  * An extended operation intended for notifying clients of upcoming
- * disconnection for the Delete response. 
+ * disconnection for the Compare response. 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class DeleteNoDResponse extends DeleteResponseImpl
+public class CompareNoDResponse extends CompareResponseImpl
 {
     /** The OID of the NotiveOfDisconnect extended operation. */
     public static final String EXTENSION_OID = NoticeOfDisconnect.EXTENSION_OID;
@@ -39,20 +39,20 @@ public class DeleteNoDResponse extends DeleteResponseImpl
     private static final byte[] EMPTY_RESPONSE = new byte[0];
 
     /** The single instance with unavailable result code. */
-    public static final DeleteNoDResponse UNAVAILABLE = new DeleteNoDResponse( ResultCodeEnum.UNAVAILABLE );
+    public static final CompareNoDResponse UNAVAILABLE = new CompareNoDResponse( ResultCodeEnum.UNAVAILABLE );
 
     /** The single instance with protocolError result code. */
-    public static final DeleteNoDResponse PROTOCOLERROR = new DeleteNoDResponse( ResultCodeEnum.PROTOCOL_ERROR );
+    public static final CompareNoDResponse PROTOCOLERROR = new CompareNoDResponse( ResultCodeEnum.PROTOCOL_ERROR );
 
     /** The single instance with strongAuthRequired result code. */
-    public static final DeleteNoDResponse STRONGAUTHREQUIRED = new DeleteNoDResponse(
+    public static final CompareNoDResponse STRONGAUTHREQUIRED = new CompareNoDResponse(
         ResultCodeEnum.STRONG_AUTH_REQUIRED );
 
 
     /**
      * Creates a new instance of NoticeOfDisconnect.
      */
-    private DeleteNoDResponse( ResultCodeEnum rcode )
+    private CompareNoDResponse( ResultCodeEnum rcode )
     {
         super();
 

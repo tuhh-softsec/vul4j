@@ -17,20 +17,20 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.extras.extended;
+package org.apache.directory.shared.ldap.model.message.extended;
 
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.model.message.ModifyResponseImpl;
+import org.apache.directory.shared.ldap.model.message.BindResponseImpl;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 
 
 /**
  * An extended operation intended for notifying clients of upcoming
- * disconnection for the Modify response. 
+ * disconnection for the Bind response. 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ModifyNoDResponse extends ModifyResponseImpl
+public class BindNoDResponse extends BindResponseImpl
 {
     /** The OID of the NotiveOfDisconnect extended operation. */
     public static final String EXTENSION_OID = NoticeOfDisconnect.EXTENSION_OID;
@@ -39,20 +39,20 @@ public class ModifyNoDResponse extends ModifyResponseImpl
     private static final byte[] EMPTY_RESPONSE = new byte[0];
 
     /** The single instance with unavailable result code. */
-    public static final ModifyNoDResponse UNAVAILABLE = new ModifyNoDResponse( ResultCodeEnum.UNAVAILABLE );
+    public static final BindNoDResponse UNAVAILABLE = new BindNoDResponse( ResultCodeEnum.UNAVAILABLE );
 
     /** The single instance with protocolError result code. */
-    public static final ModifyNoDResponse PROTOCOLERROR = new ModifyNoDResponse( ResultCodeEnum.PROTOCOL_ERROR );
+    public static final BindNoDResponse PROTOCOLERROR = new BindNoDResponse( ResultCodeEnum.PROTOCOL_ERROR );
 
     /** The single instance with strongAuthRequired result code. */
-    public static final ModifyNoDResponse STRONGAUTHREQUIRED = new ModifyNoDResponse(
+    public static final BindNoDResponse STRONGAUTHREQUIRED = new BindNoDResponse(
         ResultCodeEnum.STRONG_AUTH_REQUIRED );
 
 
     /**
      * Creates a new instance of NoticeOfDisconnect.
      */
-    private ModifyNoDResponse( ResultCodeEnum rcode )
+    private BindNoDResponse( ResultCodeEnum rcode )
     {
         super();
 

@@ -17,20 +17,20 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.extras.extended;
+package org.apache.directory.shared.ldap.model.message.extended;
 
 
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.model.message.CompareResponseImpl;
+import org.apache.directory.shared.ldap.model.message.ModifyDnResponseImpl;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 
 
 /**
  * An extended operation intended for notifying clients of upcoming
- * disconnection for the Compare response. 
+ * disconnection for the ModifyDn response. 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class CompareNoDResponse extends CompareResponseImpl
+public class ModifyDnNoDResponse extends ModifyDnResponseImpl
 {
     /** The OID of the NotiveOfDisconnect extended operation. */
     public static final String EXTENSION_OID = NoticeOfDisconnect.EXTENSION_OID;
@@ -39,20 +39,20 @@ public class CompareNoDResponse extends CompareResponseImpl
     private static final byte[] EMPTY_RESPONSE = new byte[0];
 
     /** The single instance with unavailable result code. */
-    public static final CompareNoDResponse UNAVAILABLE = new CompareNoDResponse( ResultCodeEnum.UNAVAILABLE );
+    public static final ModifyDnNoDResponse UNAVAILABLE = new ModifyDnNoDResponse( ResultCodeEnum.UNAVAILABLE );
 
     /** The single instance with protocolError result code. */
-    public static final CompareNoDResponse PROTOCOLERROR = new CompareNoDResponse( ResultCodeEnum.PROTOCOL_ERROR );
+    public static final ModifyDnNoDResponse PROTOCOLERROR = new ModifyDnNoDResponse( ResultCodeEnum.PROTOCOL_ERROR );
 
     /** The single instance with strongAuthRequired result code. */
-    public static final CompareNoDResponse STRONGAUTHREQUIRED = new CompareNoDResponse(
+    public static final ModifyDnNoDResponse STRONGAUTHREQUIRED = new ModifyDnNoDResponse(
         ResultCodeEnum.STRONG_AUTH_REQUIRED );
 
 
     /**
      * Creates a new instance of NoticeOfDisconnect.
      */
-    private CompareNoDResponse( ResultCodeEnum rcode )
+    private ModifyDnNoDResponse( ResultCodeEnum rcode )
     {
         super();
 

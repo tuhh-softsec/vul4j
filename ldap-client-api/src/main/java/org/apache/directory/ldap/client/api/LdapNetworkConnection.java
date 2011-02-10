@@ -60,13 +60,9 @@ import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.ldap.codec.api.DefaultLdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.MessageEncoderException;
-import org.apache.directory.shared.ldap.extras.extended.*;
-import org.apache.directory.shared.ldap.extras.extended.AddNoDResponse;
-import org.apache.directory.shared.ldap.extras.extended.CompareNoDResponse;
-import org.apache.directory.shared.ldap.extras.extended.DeleteNoDResponse;
-import org.apache.directory.shared.ldap.extras.extended.ExtendedNoDResponse;
-import org.apache.directory.shared.ldap.extras.extended.ModifyDnNoDResponse;
-import org.apache.directory.shared.ldap.extras.extended.SearchNoDResponse;
+import org.apache.directory.shared.ldap.model.message.extended.AddNoDResponse;
+import org.apache.directory.shared.ldap.model.message.extended.*;
+import org.apache.directory.shared.ldap.model.message.extended.ModifyDnNoDResponse;
 import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.model.constants.SupportedSaslMechanisms;
 import org.apache.directory.shared.ldap.model.cursor.Cursor;
@@ -121,6 +117,7 @@ import org.apache.directory.shared.ldap.model.message.SearchResultReference;
 import org.apache.directory.shared.ldap.model.message.UnbindRequest;
 import org.apache.directory.shared.ldap.model.message.UnbindRequestImpl;
 import org.apache.directory.shared.ldap.model.message.controls.OpaqueControl;
+import org.apache.directory.shared.ldap.model.message.extended.SearchNoDResponse;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.name.Rdn;
 import org.apache.directory.shared.ldap.model.schema.AttributeType;
@@ -2063,7 +2060,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
             }
             else
             {
-                if ( modifyResponse instanceof ModifyNoDResponse )
+                if ( modifyResponse instanceof ModifyNoDResponse)
                 {
                     // A NoticeOfDisconnect : deserves a special treatment
                     throw new LdapException( modifyResponse.getLdapResult().getErrorMessage() );

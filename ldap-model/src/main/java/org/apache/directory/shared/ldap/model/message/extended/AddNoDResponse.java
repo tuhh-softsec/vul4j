@@ -17,20 +17,20 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.extras.extended;
+package org.apache.directory.shared.ldap.model.message.extended;
 
 
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.model.message.AddResponseImpl;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
-import org.apache.directory.shared.ldap.model.message.SearchResultDoneImpl;
 
 
 /**
  * An extended operation intended for notifying clients of upcoming
- * disconnection for the Search response. 
+ * disconnection for the Add response. 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SearchNoDResponse extends SearchResultDoneImpl
+public class AddNoDResponse extends AddResponseImpl
 {
     /** The OID of the NotiveOfDisconnect extended operation. */
     public static final String EXTENSION_OID = NoticeOfDisconnect.EXTENSION_OID;
@@ -39,20 +39,20 @@ public class SearchNoDResponse extends SearchResultDoneImpl
     private static final byte[] EMPTY_RESPONSE = new byte[0];
 
     /** The single instance with unavailable result code. */
-    public static final SearchNoDResponse UNAVAILABLE = new SearchNoDResponse( ResultCodeEnum.UNAVAILABLE );
+    public static final AddNoDResponse UNAVAILABLE = new AddNoDResponse( ResultCodeEnum.UNAVAILABLE );
 
     /** The single instance with protocolError result code. */
-    public static final SearchNoDResponse PROTOCOLERROR = new SearchNoDResponse( ResultCodeEnum.PROTOCOL_ERROR );
+    public static final AddNoDResponse PROTOCOLERROR = new AddNoDResponse( ResultCodeEnum.PROTOCOL_ERROR );
 
     /** The single instance with strongAuthRequired result code. */
-    public static final SearchNoDResponse STRONGAUTHREQUIRED = new SearchNoDResponse(
+    public static final AddNoDResponse STRONGAUTHREQUIRED = new AddNoDResponse(
         ResultCodeEnum.STRONG_AUTH_REQUIRED );
 
 
     /**
      * Creates a new instance of NoticeOfDisconnect.
      */
-    private SearchNoDResponse( ResultCodeEnum rcode )
+    private AddNoDResponse( ResultCodeEnum rcode )
     {
         super();
 

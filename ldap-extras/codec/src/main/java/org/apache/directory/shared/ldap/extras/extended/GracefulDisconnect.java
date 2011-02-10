@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
 /**
  * An unsolicited notification, extended response, intended for notifying
  * clients of upcoming disconnection due to intended service windows. Unlike the
- * {@link NoticeOfDisconnect} this response contains additional information about
+ * {@link org.apache.directory.shared.ldap.model.message.extended.NoticeOfDisconnect} this response contains additional information about
  * the amount of time the server will be offline and exactly when it intends to
  * shutdown.
  * 
