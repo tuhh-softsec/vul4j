@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.actions;
+package org.apache.directory.shared.ldap.codec.actions.searchRequest.filter;
 
 
 import org.apache.directory.shared.asn1.DecoderException;
@@ -41,10 +41,10 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class InitAssertionValueFilterAction extends GrammarAction<LdapMessageContainer<SearchRequestDecorator>>
+public class InitAssertionValueFilter extends GrammarAction<LdapMessageContainer<SearchRequestDecorator>>
 {
     /** The logger */
-    private static final Logger LOG = LoggerFactory.getLogger( InitAssertionValueFilterAction.class );
+    private static final Logger LOG = LoggerFactory.getLogger( InitAssertionValueFilter.class );
 
     /** Speedup for logs */
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
@@ -53,7 +53,7 @@ public class InitAssertionValueFilterAction extends GrammarAction<LdapMessageCon
     /**
      * Instantiates a new init assertion value filter action.
      */
-    public InitAssertionValueFilterAction()
+    public InitAssertionValueFilter()
     {
         super( "Initialize Assertion Value filter" );
     }

@@ -44,23 +44,7 @@ import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.actions.AllowGrammarEnd;
 import org.apache.directory.shared.ldap.codec.actions.CheckLengthNotNull;
-import org.apache.directory.shared.ldap.codec.actions.InitAndFilterAction;
-import org.apache.directory.shared.ldap.codec.actions.InitApproxMatchFilterAction;
-import org.apache.directory.shared.ldap.codec.actions.InitAssertionValueFilterAction;
-import org.apache.directory.shared.ldap.codec.actions.InitAttributeDescFilterAction;
 import org.apache.directory.shared.ldap.codec.actions.InitAttributeDescListAction;
-import org.apache.directory.shared.ldap.codec.actions.InitEqualityMatchFilterAction;
-import org.apache.directory.shared.ldap.codec.actions.InitExtensibleMatchFilterAction;
-import org.apache.directory.shared.ldap.codec.actions.InitGreaterOrEqualFilterAction;
-import org.apache.directory.shared.ldap.codec.actions.InitLessOrEqualFilterAction;
-import org.apache.directory.shared.ldap.codec.actions.InitNotFilterAction;
-import org.apache.directory.shared.ldap.codec.actions.InitOrFilterAction;
-import org.apache.directory.shared.ldap.codec.actions.InitPresentFilterAction;
-import org.apache.directory.shared.ldap.codec.actions.InitSubstringsFilterAction;
-import org.apache.directory.shared.ldap.codec.actions.StoreAnyAction;
-import org.apache.directory.shared.ldap.codec.actions.StoreFinalAction;
-import org.apache.directory.shared.ldap.codec.actions.StoreMatchValueAction;
-import org.apache.directory.shared.ldap.codec.actions.StoreTypeMatchingRuleAction;
 import org.apache.directory.shared.ldap.codec.actions.abandonRequest.InitAbandonRequest;
 import org.apache.directory.shared.ldap.codec.actions.addRequest.AddAddRequestAttributeType;
 import org.apache.directory.shared.ldap.codec.actions.addRequest.AddAttributeValue;
@@ -114,7 +98,23 @@ import org.apache.directory.shared.ldap.codec.actions.modifyRequest.StoreModifyR
 import org.apache.directory.shared.ldap.codec.actions.modifyRequest.StoreModifyRequestObjectName;
 import org.apache.directory.shared.ldap.codec.actions.modifyRequest.StoreOperationType;
 import org.apache.directory.shared.ldap.codec.actions.modifyResponse.InitModifyResponse;
+import org.apache.directory.shared.ldap.codec.actions.searchRequest.StoreAny;
+import org.apache.directory.shared.ldap.codec.actions.searchRequest.StoreFinal;
+import org.apache.directory.shared.ldap.codec.actions.searchRequest.StoreMatchValue;
 import org.apache.directory.shared.ldap.codec.actions.searchRequest.StoreSearchRequestAttributeDesc;
+import org.apache.directory.shared.ldap.codec.actions.searchRequest.StoreTypeMatchingRule;
+import org.apache.directory.shared.ldap.codec.actions.searchRequest.filter.InitAndFilter;
+import org.apache.directory.shared.ldap.codec.actions.searchRequest.filter.InitApproxMatchFilter;
+import org.apache.directory.shared.ldap.codec.actions.searchRequest.filter.InitAssertionValueFilter;
+import org.apache.directory.shared.ldap.codec.actions.searchRequest.filter.InitAttributeDescFilter;
+import org.apache.directory.shared.ldap.codec.actions.searchRequest.filter.InitEqualityMatchFilter;
+import org.apache.directory.shared.ldap.codec.actions.searchRequest.filter.InitExtensibleMatchFilter;
+import org.apache.directory.shared.ldap.codec.actions.searchRequest.filter.InitGreaterOrEqualFilter;
+import org.apache.directory.shared.ldap.codec.actions.searchRequest.filter.InitLessOrEqualFilter;
+import org.apache.directory.shared.ldap.codec.actions.searchRequest.filter.InitNotFilter;
+import org.apache.directory.shared.ldap.codec.actions.searchRequest.filter.InitOrFilter;
+import org.apache.directory.shared.ldap.codec.actions.searchRequest.filter.InitPresentFilter;
+import org.apache.directory.shared.ldap.codec.actions.searchRequest.filter.InitSubstringsFilter;
 import org.apache.directory.shared.ldap.codec.actions.searchResultDone.InitSearchResultDone;
 import org.apache.directory.shared.ldap.codec.actions.searchResultEntry.AddAttributeType;
 import org.apache.directory.shared.ldap.codec.actions.searchResultEntry.InitSearchResultEntry;
@@ -2863,7 +2863,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.TYPES_ONLY_STATE,
                 LdapStatesEnum.AND_STATE,
                 LdapConstants.AND_FILTER_TAG,
-                new InitAndFilterAction() );
+                new InitAndFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from TypesOnly to OR filter
@@ -2884,7 +2884,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.TYPES_ONLY_STATE,
                 LdapStatesEnum.OR_STATE,
                 LdapConstants.OR_FILTER_TAG,
-                new InitOrFilterAction() );
+                new InitOrFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from TypesOnly to NOT filter
@@ -2905,7 +2905,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.TYPES_ONLY_STATE,
                 LdapStatesEnum.NOT_STATE,
                 LdapConstants.NOT_FILTER_TAG,
-                new InitNotFilterAction() );
+                new InitNotFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from TypesOnly to Equality Match filter
@@ -2926,7 +2926,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.TYPES_ONLY_STATE,
                 LdapStatesEnum.EQUALITY_MATCH_STATE,
                 LdapConstants.EQUALITY_MATCH_FILTER_TAG,
-                new InitEqualityMatchFilterAction() );
+                new InitEqualityMatchFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from TypesOnly to Substrings filter
@@ -2947,7 +2947,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.TYPES_ONLY_STATE,
                 LdapStatesEnum.SUBSTRING_FILTER_STATE,
                 LdapConstants.SUBSTRINGS_FILTER_TAG,
-                new InitSubstringsFilterAction() );
+                new InitSubstringsFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from TypesOnly to GreaterOrEqual filter
@@ -2968,7 +2968,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.TYPES_ONLY_STATE,
                 LdapStatesEnum.GREATER_OR_EQUAL_STATE,
                 LdapConstants.GREATER_OR_EQUAL_FILTER_TAG,
-                new InitGreaterOrEqualFilterAction() );
+                new InitGreaterOrEqualFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from TypesOnly to LessOrEqual filter
@@ -2989,7 +2989,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.TYPES_ONLY_STATE,
                 LdapStatesEnum.LESS_OR_EQUAL_STATE,
                 LdapConstants.LESS_OR_EQUAL_FILTER_TAG,
-                new InitLessOrEqualFilterAction() );
+                new InitLessOrEqualFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from TypesOnly to Present filter
@@ -3010,7 +3010,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.TYPES_ONLY_STATE,
                 LdapStatesEnum.PRESENT_STATE,
                 LdapConstants.PRESENT_FILTER_TAG,
-                new InitPresentFilterAction() );
+                new InitPresentFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from TypesOnly to Approx Match filter
@@ -3031,7 +3031,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.TYPES_ONLY_STATE,
                 LdapStatesEnum.APPROX_MATCH_STATE,
                 LdapConstants.APPROX_MATCH_FILTER_TAG,
-                new InitApproxMatchFilterAction() );
+                new InitApproxMatchFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from TypesOnly to Extensible Match filter
@@ -3052,7 +3052,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.TYPES_ONLY_STATE,
                 LdapStatesEnum.EXTENSIBLE_MATCH_STATE,
                 LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG,
-                new InitExtensibleMatchFilterAction() );
+                new InitExtensibleMatchFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from AND to AND filter
@@ -3072,7 +3072,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.AND_STATE,
                 LdapStatesEnum.AND_STATE,
                 LdapConstants.AND_FILTER_TAG,
-                new InitAndFilterAction() );
+                new InitAndFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from AND to OR filter
@@ -3093,7 +3093,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.AND_STATE,
                 LdapStatesEnum.OR_STATE,
                 LdapConstants.OR_FILTER_TAG,
-                new InitOrFilterAction() );
+                new InitOrFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from AND to NOT filter
@@ -3114,7 +3114,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.AND_STATE,
                 LdapStatesEnum.NOT_STATE,
                 LdapConstants.NOT_FILTER_TAG,
-                new InitNotFilterAction() );
+                new InitNotFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from AND to Equality Match filter
@@ -3135,7 +3135,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.AND_STATE,
                 LdapStatesEnum.EQUALITY_MATCH_STATE,
                 LdapConstants.EQUALITY_MATCH_FILTER_TAG,
-                new InitEqualityMatchFilterAction() );
+                new InitEqualityMatchFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from AND to Substrings filter
@@ -3156,7 +3156,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.AND_STATE,
                 LdapStatesEnum.SUBSTRING_FILTER_STATE,
                 LdapConstants.SUBSTRINGS_FILTER_TAG,
-                new InitSubstringsFilterAction() );
+                new InitSubstringsFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from AND to GreaterOrEqual filter
@@ -3177,7 +3177,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.AND_STATE,
                 LdapStatesEnum.GREATER_OR_EQUAL_STATE,
                 LdapConstants.GREATER_OR_EQUAL_FILTER_TAG,
-                new InitGreaterOrEqualFilterAction() );
+                new InitGreaterOrEqualFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from AND to LessOrEqual filter
@@ -3198,7 +3198,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.AND_STATE,
                 LdapStatesEnum.LESS_OR_EQUAL_STATE,
                 LdapConstants.LESS_OR_EQUAL_FILTER_TAG,
-                new InitLessOrEqualFilterAction() );
+                new InitLessOrEqualFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from AND to Present filter
@@ -3219,7 +3219,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.AND_STATE,
                 LdapStatesEnum.PRESENT_STATE,
                 LdapConstants.PRESENT_FILTER_TAG,
-                new InitPresentFilterAction() );
+                new InitPresentFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from AND to Approx Match filter
@@ -3240,7 +3240,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.AND_STATE,
                 LdapStatesEnum.APPROX_MATCH_STATE,
                 LdapConstants.APPROX_MATCH_FILTER_TAG,
-                new InitApproxMatchFilterAction() );
+                new InitApproxMatchFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from AND to Extensible Match filter
@@ -3261,7 +3261,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.AND_STATE,
                 LdapStatesEnum.EXTENSIBLE_MATCH_STATE,
                 LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG,
-                new InitExtensibleMatchFilterAction() );
+                new InitExtensibleMatchFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from OR to AND filter
@@ -3281,7 +3281,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.OR_STATE,
                 LdapStatesEnum.AND_STATE,
                 LdapConstants.AND_FILTER_TAG,
-                new InitAndFilterAction() );
+                new InitAndFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from OR to OR filter
@@ -3302,7 +3302,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.OR_STATE,
                 LdapStatesEnum.OR_STATE,
                 LdapConstants.OR_FILTER_TAG,
-                new InitOrFilterAction() );
+                new InitOrFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from OR to NOT filter
@@ -3323,7 +3323,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.OR_STATE,
                 LdapStatesEnum.NOT_STATE,
                 LdapConstants.NOT_FILTER_TAG,
-                new InitNotFilterAction() );
+                new InitNotFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from OR to Equality Match filter
@@ -3344,7 +3344,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.OR_STATE,
                 LdapStatesEnum.EQUALITY_MATCH_STATE,
                 LdapConstants.EQUALITY_MATCH_FILTER_TAG,
-                new InitEqualityMatchFilterAction() );
+                new InitEqualityMatchFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from OR to Substrings filter
@@ -3365,7 +3365,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.OR_STATE,
                 LdapStatesEnum.SUBSTRING_FILTER_STATE,
                 LdapConstants.SUBSTRINGS_FILTER_TAG,
-                new InitSubstringsFilterAction() );
+                new InitSubstringsFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from OR to GreaterOrEqual filter
@@ -3386,7 +3386,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.OR_STATE,
                 LdapStatesEnum.GREATER_OR_EQUAL_STATE,
                 LdapConstants.GREATER_OR_EQUAL_FILTER_TAG,
-                new InitGreaterOrEqualFilterAction() );
+                new InitGreaterOrEqualFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from OR to LessOrEqual filter
@@ -3407,7 +3407,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.OR_STATE,
                 LdapStatesEnum.LESS_OR_EQUAL_STATE,
                 LdapConstants.LESS_OR_EQUAL_FILTER_TAG,
-                new InitLessOrEqualFilterAction() );
+                new InitLessOrEqualFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from OR to Present filter
@@ -3428,7 +3428,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.OR_STATE,
                 LdapStatesEnum.PRESENT_STATE,
                 LdapConstants.PRESENT_FILTER_TAG,
-                new InitPresentFilterAction() );
+                new InitPresentFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from OR to Approx Match filter
@@ -3449,7 +3449,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.OR_STATE,
                 LdapStatesEnum.APPROX_MATCH_STATE,
                 LdapConstants.APPROX_MATCH_FILTER_TAG,
-                new InitApproxMatchFilterAction() );
+                new InitApproxMatchFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from OR to Extensible Match filter
@@ -3470,7 +3470,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.OR_STATE,
                 LdapStatesEnum.EXTENSIBLE_MATCH_STATE,
                 LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG,
-                new InitExtensibleMatchFilterAction() );
+                new InitExtensibleMatchFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from NOT to AND filter
@@ -3490,7 +3490,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.NOT_STATE,
                 LdapStatesEnum.AND_STATE,
                 LdapConstants.AND_FILTER_TAG,
-                new InitAndFilterAction() );
+                new InitAndFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from NOT to OR filter
@@ -3511,7 +3511,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.NOT_STATE,
                 LdapStatesEnum.OR_STATE,
                 LdapConstants.OR_FILTER_TAG,
-                new InitOrFilterAction() );
+                new InitOrFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from NOT to NOT filter
@@ -3532,7 +3532,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.NOT_STATE,
                 LdapStatesEnum.NOT_STATE,
                 LdapConstants.NOT_FILTER_TAG,
-                new InitNotFilterAction() );
+                new InitNotFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from NOT to Equality Match filter
@@ -3553,7 +3553,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.NOT_STATE,
                 LdapStatesEnum.EQUALITY_MATCH_STATE,
                 LdapConstants.EQUALITY_MATCH_FILTER_TAG,
-                new InitEqualityMatchFilterAction() );
+                new InitEqualityMatchFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from NOT to Substrings filter
@@ -3574,7 +3574,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.NOT_STATE,
                 LdapStatesEnum.SUBSTRING_FILTER_STATE,
                 LdapConstants.SUBSTRINGS_FILTER_TAG,
-                new InitSubstringsFilterAction() );
+                new InitSubstringsFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from NOT to GreaterOrEqual filter
@@ -3595,7 +3595,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.NOT_STATE,
                 LdapStatesEnum.GREATER_OR_EQUAL_STATE,
                 LdapConstants.GREATER_OR_EQUAL_FILTER_TAG,
-                new InitGreaterOrEqualFilterAction() );
+                new InitGreaterOrEqualFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from NOT to LessOrEqual filter
@@ -3616,7 +3616,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.NOT_STATE,
                 LdapStatesEnum.LESS_OR_EQUAL_STATE,
                 LdapConstants.LESS_OR_EQUAL_FILTER_TAG,
-                new InitLessOrEqualFilterAction() );
+                new InitLessOrEqualFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from NOT to Present filter
@@ -3637,7 +3637,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.NOT_STATE,
                 LdapStatesEnum.PRESENT_STATE,
                 LdapConstants.PRESENT_FILTER_TAG,
-                new InitPresentFilterAction() );
+                new InitPresentFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from NOT to Approx Match filter
@@ -3658,7 +3658,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.NOT_STATE,
                 LdapStatesEnum.APPROX_MATCH_STATE,
                 LdapConstants.APPROX_MATCH_FILTER_TAG,
-                new InitApproxMatchFilterAction() );
+                new InitApproxMatchFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from NOT to Extensible Match filter
@@ -3679,7 +3679,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.NOT_STATE,
                 LdapStatesEnum.EXTENSIBLE_MATCH_STATE,
                 LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG,
-                new InitExtensibleMatchFilterAction() );
+                new InitExtensibleMatchFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Equality match to Attribute Desc Filter
@@ -3699,7 +3699,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.EQUALITY_MATCH_STATE,
                 LdapStatesEnum.ATTRIBUTE_DESC_FILTER_STATE,
                 OCTET_STRING,
-                new InitAttributeDescFilterAction() );
+                new InitAttributeDescFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Attribute Desc Filter to Assertion Value Filter
@@ -3719,7 +3719,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.ATTRIBUTE_DESC_FILTER_STATE,
                 LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE,
                 OCTET_STRING,
-                new InitAssertionValueFilterAction() );
+                new InitAssertionValueFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Assertion Value Filter to AND filter
@@ -3739,7 +3739,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE,
                 LdapStatesEnum.AND_STATE,
                 LdapConstants.AND_FILTER_TAG,
-                new InitAndFilterAction() );
+                new InitAndFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Assertion Value Filter to OR filter
@@ -3760,7 +3760,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE,
                 LdapStatesEnum.OR_STATE,
                 LdapConstants.OR_FILTER_TAG,
-                new InitOrFilterAction() );
+                new InitOrFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Assertion Value Filter to NOT filter
@@ -3781,7 +3781,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE,
                 LdapStatesEnum.NOT_STATE,
                 LdapConstants.NOT_FILTER_TAG,
-                new InitNotFilterAction() );
+                new InitNotFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Assertion Value Filter to Equality Match filter
@@ -3802,7 +3802,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE,
                 LdapStatesEnum.EQUALITY_MATCH_STATE,
                 LdapConstants.EQUALITY_MATCH_FILTER_TAG,
-                new InitEqualityMatchFilterAction() );
+                new InitEqualityMatchFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Assertion Value Filter to Substrings filter
@@ -3823,7 +3823,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE,
                 LdapStatesEnum.SUBSTRING_FILTER_STATE,
                 LdapConstants.SUBSTRINGS_FILTER_TAG,
-                new InitSubstringsFilterAction() );
+                new InitSubstringsFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Assertion Value Filter to GreaterOrEqual filter
@@ -3844,7 +3844,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE,
                 LdapStatesEnum.GREATER_OR_EQUAL_STATE,
                 LdapConstants.GREATER_OR_EQUAL_FILTER_TAG,
-                new InitGreaterOrEqualFilterAction() );
+                new InitGreaterOrEqualFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Assertion Value Filter to LessOrEqual filter
@@ -3865,7 +3865,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE,
                 LdapStatesEnum.LESS_OR_EQUAL_STATE,
                 LdapConstants.LESS_OR_EQUAL_FILTER_TAG,
-                new InitLessOrEqualFilterAction() );
+                new InitLessOrEqualFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Assertion Value Filter to Present filter
@@ -3886,7 +3886,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE,
                 LdapStatesEnum.PRESENT_STATE,
                 LdapConstants.PRESENT_FILTER_TAG,
-                new InitPresentFilterAction() );
+                new InitPresentFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Assertion Value Filter to Approx Match filter
@@ -3907,7 +3907,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE,
                 LdapStatesEnum.APPROX_MATCH_STATE,
                 LdapConstants.APPROX_MATCH_FILTER_TAG,
-                new InitApproxMatchFilterAction() );
+                new InitApproxMatchFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Assertion Value Filter to Extensible Match filter
@@ -3928,7 +3928,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE,
                 LdapStatesEnum.EXTENSIBLE_MATCH_STATE,
                 LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG,
-                new InitExtensibleMatchFilterAction() );
+                new InitExtensibleMatchFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Assertion Value Filter to Attribute Description List
@@ -4034,7 +4034,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.GREATER_OR_EQUAL_STATE,
                 LdapStatesEnum.ATTRIBUTE_DESC_FILTER_STATE,
                 OCTET_STRING,
-                new InitAttributeDescFilterAction() );
+                new InitAttributeDescFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Less Or Equal to Attribute Desc Filter
@@ -4054,7 +4054,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.LESS_OR_EQUAL_STATE,
                 LdapStatesEnum.ATTRIBUTE_DESC_FILTER_STATE,
                 OCTET_STRING,
-                new InitAttributeDescFilterAction() );
+                new InitAttributeDescFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Substrings to typeSubstring
@@ -4184,7 +4184,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.SUBSTRINGS_STATE,
                 LdapStatesEnum.ANY_STATE,
                 LdapConstants.SUBSTRINGS_FILTER_ANY_TAG,
-                new StoreAnyAction() );
+                new StoreAny() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from substrings to final
@@ -4201,7 +4201,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.SUBSTRINGS_STATE,
                 LdapStatesEnum.FINAL_STATE,
                 LdapConstants.SUBSTRINGS_FILTER_FINAL_TAG,
-                new StoreFinalAction() );
+                new StoreFinal() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from initial to any
@@ -4219,7 +4219,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.INITIAL_STATE,
                 LdapStatesEnum.ANY_STATE,
                 LdapConstants.SUBSTRINGS_FILTER_ANY_TAG,
-                new StoreAnyAction() );
+                new StoreAny() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from initial to final
@@ -4236,7 +4236,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.INITIAL_STATE,
                 LdapStatesEnum.FINAL_STATE,
                 LdapConstants.SUBSTRINGS_FILTER_FINAL_TAG,
-                new StoreFinalAction() );
+                new StoreFinal() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from initial to Attribute Description List
@@ -4275,7 +4275,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.INITIAL_STATE,
                 LdapStatesEnum.AND_STATE,
                 LdapConstants.AND_FILTER_TAG,
-                new InitAndFilterAction() );
+                new InitAndFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from initial to OR filter
@@ -4296,7 +4296,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.INITIAL_STATE,
                 LdapStatesEnum.OR_STATE,
                 LdapConstants.OR_FILTER_TAG,
-                new InitOrFilterAction() );
+                new InitOrFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from initial to NOT filter
@@ -4317,7 +4317,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.INITIAL_STATE,
                 LdapStatesEnum.NOT_STATE,
                 LdapConstants.NOT_FILTER_TAG,
-                new InitNotFilterAction() );
+                new InitNotFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from initial to Equality Match filter
@@ -4338,7 +4338,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.INITIAL_STATE,
                 LdapStatesEnum.EQUALITY_MATCH_STATE,
                 LdapConstants.EQUALITY_MATCH_FILTER_TAG,
-                new InitEqualityMatchFilterAction() );
+                new InitEqualityMatchFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from initial to Substrings filter
@@ -4359,7 +4359,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.INITIAL_STATE,
                 LdapStatesEnum.SUBSTRING_FILTER_STATE,
                 LdapConstants.SUBSTRINGS_FILTER_TAG,
-                new InitSubstringsFilterAction() );
+                new InitSubstringsFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from initial to GreaterOrEqual filter
@@ -4380,7 +4380,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.INITIAL_STATE,
                 LdapStatesEnum.GREATER_OR_EQUAL_STATE,
                 LdapConstants.GREATER_OR_EQUAL_FILTER_TAG,
-                new InitGreaterOrEqualFilterAction() );
+                new InitGreaterOrEqualFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from initial to LessOrEqual filter
@@ -4401,7 +4401,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.INITIAL_STATE,
                 LdapStatesEnum.LESS_OR_EQUAL_STATE,
                 LdapConstants.LESS_OR_EQUAL_FILTER_TAG,
-                new InitLessOrEqualFilterAction() );
+                new InitLessOrEqualFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from initial to Present filter
@@ -4422,7 +4422,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.INITIAL_STATE,
                 LdapStatesEnum.PRESENT_STATE,
                 LdapConstants.PRESENT_FILTER_TAG,
-                new InitPresentFilterAction() );
+                new InitPresentFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from initial to Approx Match filter
@@ -4443,7 +4443,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.INITIAL_STATE,
                 LdapStatesEnum.APPROX_MATCH_STATE,
                 LdapConstants.APPROX_MATCH_FILTER_TAG,
-                new InitApproxMatchFilterAction() );
+                new InitApproxMatchFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from initial to Extensible Match filter
@@ -4464,7 +4464,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.INITIAL_STATE,
                 LdapStatesEnum.EXTENSIBLE_MATCH_STATE,
                 LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG,
-                new InitExtensibleMatchFilterAction() );
+                new InitExtensibleMatchFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from any to final
@@ -4481,7 +4481,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.ANY_STATE,
                 LdapStatesEnum.FINAL_STATE,
                 LdapConstants.SUBSTRINGS_FILTER_FINAL_TAG,
-                new StoreFinalAction() );
+                new StoreFinal() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from any to any
@@ -4499,7 +4499,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.ANY_STATE,
                 LdapStatesEnum.ANY_STATE,
                 LdapConstants.SUBSTRINGS_FILTER_ANY_TAG,
-                new StoreAnyAction() );
+                new StoreAny() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from any to Attribute Description List
@@ -4538,7 +4538,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.ANY_STATE,
                 LdapStatesEnum.AND_STATE,
                 LdapConstants.AND_FILTER_TAG,
-                new InitAndFilterAction() );
+                new InitAndFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from any to OR filter
@@ -4559,7 +4559,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.ANY_STATE,
                 LdapStatesEnum.OR_STATE,
                 LdapConstants.OR_FILTER_TAG,
-                new InitOrFilterAction() );
+                new InitOrFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from any to NOT filter
@@ -4580,7 +4580,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.ANY_STATE,
                 LdapStatesEnum.NOT_STATE,
                 LdapConstants.NOT_FILTER_TAG,
-                new InitNotFilterAction() );
+                new InitNotFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from any to Equality Match filter
@@ -4601,7 +4601,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.ANY_STATE,
                 LdapStatesEnum.EQUALITY_MATCH_STATE,
                 LdapConstants.EQUALITY_MATCH_FILTER_TAG,
-                new InitEqualityMatchFilterAction() );
+                new InitEqualityMatchFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from any to Substrings filter
@@ -4622,7 +4622,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.ANY_STATE,
                 LdapStatesEnum.SUBSTRING_FILTER_STATE,
                 LdapConstants.SUBSTRINGS_FILTER_TAG,
-                new InitSubstringsFilterAction() );
+                new InitSubstringsFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from any to GreaterOrEqual filter
@@ -4643,7 +4643,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.ANY_STATE,
                 LdapStatesEnum.GREATER_OR_EQUAL_STATE,
                 LdapConstants.GREATER_OR_EQUAL_FILTER_TAG,
-                new InitGreaterOrEqualFilterAction() );
+                new InitGreaterOrEqualFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from any to LessOrEqual filter
@@ -4664,7 +4664,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.ANY_STATE,
                 LdapStatesEnum.LESS_OR_EQUAL_STATE,
                 LdapConstants.LESS_OR_EQUAL_FILTER_TAG,
-                new InitLessOrEqualFilterAction() );
+                new InitLessOrEqualFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from any to Present filter
@@ -4685,7 +4685,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.ANY_STATE,
                 LdapStatesEnum.PRESENT_STATE,
                 LdapConstants.PRESENT_FILTER_TAG,
-                new InitPresentFilterAction() );
+                new InitPresentFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from any to Approx Match filter
@@ -4706,7 +4706,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.ANY_STATE,
                 LdapStatesEnum.APPROX_MATCH_STATE,
                 LdapConstants.APPROX_MATCH_FILTER_TAG,
-                new InitApproxMatchFilterAction() );
+                new InitApproxMatchFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from any to Extensible Match filter
@@ -4727,7 +4727,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.ANY_STATE,
                 LdapStatesEnum.EXTENSIBLE_MATCH_STATE,
                 LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG,
-                new InitExtensibleMatchFilterAction() );
+                new InitExtensibleMatchFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from final to Attribute Description List
@@ -4766,7 +4766,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.FINAL_STATE,
                 LdapStatesEnum.AND_STATE,
                 LdapConstants.AND_FILTER_TAG,
-                new InitAndFilterAction() );
+                new InitAndFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from final to OR filter
@@ -4787,7 +4787,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.FINAL_STATE,
                 LdapStatesEnum.OR_STATE,
                 LdapConstants.OR_FILTER_TAG,
-                new InitOrFilterAction() );
+                new InitOrFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from final to NOT filter
@@ -4808,7 +4808,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.FINAL_STATE,
                 LdapStatesEnum.NOT_STATE,
                 LdapConstants.NOT_FILTER_TAG,
-                new InitNotFilterAction() );
+                new InitNotFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from final to Equality Match filter
@@ -4829,7 +4829,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.FINAL_STATE,
                 LdapStatesEnum.EQUALITY_MATCH_STATE,
                 LdapConstants.EQUALITY_MATCH_FILTER_TAG,
-                new InitEqualityMatchFilterAction() );
+                new InitEqualityMatchFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from final to Substrings filter
@@ -4850,7 +4850,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.FINAL_STATE,
                 LdapStatesEnum.SUBSTRING_FILTER_STATE,
                 LdapConstants.SUBSTRINGS_FILTER_TAG,
-                new InitSubstringsFilterAction() );
+                new InitSubstringsFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from final to GreaterOrEqual filter
@@ -4871,7 +4871,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.FINAL_STATE,
                 LdapStatesEnum.GREATER_OR_EQUAL_STATE,
                 LdapConstants.GREATER_OR_EQUAL_FILTER_TAG,
-                new InitGreaterOrEqualFilterAction() );
+                new InitGreaterOrEqualFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from final to LessOrEqual filter
@@ -4892,7 +4892,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.FINAL_STATE,
                 LdapStatesEnum.LESS_OR_EQUAL_STATE,
                 LdapConstants.LESS_OR_EQUAL_FILTER_TAG,
-                new InitLessOrEqualFilterAction() );
+                new InitLessOrEqualFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from final to Present filter
@@ -4913,7 +4913,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.FINAL_STATE,
                 LdapStatesEnum.PRESENT_STATE,
                 LdapConstants.PRESENT_FILTER_TAG,
-                new InitPresentFilterAction() );
+                new InitPresentFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from final to Approx Match filter
@@ -4934,7 +4934,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.FINAL_STATE,
                 LdapStatesEnum.APPROX_MATCH_STATE,
                 LdapConstants.APPROX_MATCH_FILTER_TAG,
-                new InitApproxMatchFilterAction() );
+                new InitApproxMatchFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from final to Extensible Match filter
@@ -4955,7 +4955,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.FINAL_STATE,
                 LdapStatesEnum.EXTENSIBLE_MATCH_STATE,
                 LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG,
-                new InitExtensibleMatchFilterAction() );
+                new InitExtensibleMatchFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Present Filter to AND filter
@@ -4975,7 +4975,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.PRESENT_STATE,
                 LdapStatesEnum.AND_STATE,
                 LdapConstants.AND_FILTER_TAG,
-                new InitAndFilterAction() );
+                new InitAndFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Present Filter to OR filter
@@ -4996,7 +4996,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.PRESENT_STATE,
                 LdapStatesEnum.OR_STATE,
                 LdapConstants.OR_FILTER_TAG,
-                new InitOrFilterAction() );
+                new InitOrFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Present Filter to NOT filter
@@ -5017,7 +5017,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.PRESENT_STATE,
                 LdapStatesEnum.NOT_STATE,
                 LdapConstants.NOT_FILTER_TAG,
-                new InitNotFilterAction() );
+                new InitNotFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Present Filter to Equality Match filter
@@ -5038,7 +5038,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.PRESENT_STATE,
                 LdapStatesEnum.EQUALITY_MATCH_STATE,
                 LdapConstants.EQUALITY_MATCH_FILTER_TAG,
-                new InitEqualityMatchFilterAction() );
+                new InitEqualityMatchFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Present Filter to Substrings filter
@@ -5059,7 +5059,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.PRESENT_STATE,
                 LdapStatesEnum.SUBSTRING_FILTER_STATE,
                 LdapConstants.SUBSTRINGS_FILTER_TAG,
-                new InitSubstringsFilterAction() );
+                new InitSubstringsFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Present Filter to GreaterOrEqual filter
@@ -5080,7 +5080,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.PRESENT_STATE,
                 LdapStatesEnum.GREATER_OR_EQUAL_STATE,
                 LdapConstants.GREATER_OR_EQUAL_FILTER_TAG,
-                new InitGreaterOrEqualFilterAction() );
+                new InitGreaterOrEqualFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Present Filter to LessOrEqual filter
@@ -5101,7 +5101,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.PRESENT_STATE,
                 LdapStatesEnum.LESS_OR_EQUAL_STATE,
                 LdapConstants.LESS_OR_EQUAL_FILTER_TAG,
-                new InitLessOrEqualFilterAction() );
+                new InitLessOrEqualFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Present Filter to Present filter
@@ -5122,7 +5122,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.PRESENT_STATE,
                 LdapStatesEnum.PRESENT_STATE,
                 LdapConstants.PRESENT_FILTER_TAG,
-                new InitPresentFilterAction() );
+                new InitPresentFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Present Filter to Approx Match filter
@@ -5143,7 +5143,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.PRESENT_STATE,
                 LdapStatesEnum.APPROX_MATCH_STATE,
                 LdapConstants.APPROX_MATCH_FILTER_TAG,
-                new InitApproxMatchFilterAction() );
+                new InitApproxMatchFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Present Filter to Extensible Match filter
@@ -5164,7 +5164,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.PRESENT_STATE,
                 LdapStatesEnum.EXTENSIBLE_MATCH_STATE,
                 LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG,
-                new InitExtensibleMatchFilterAction() );
+                new InitExtensibleMatchFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Present Filter to Attribute Description List
@@ -5203,7 +5203,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.APPROX_MATCH_STATE,
                 LdapStatesEnum.ATTRIBUTE_DESC_FILTER_STATE,
                 OCTET_STRING,
-                new InitAttributeDescFilterAction() );
+                new InitAttributeDescFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Extensible Match to MatchingRule
@@ -5264,7 +5264,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.EXTENSIBLE_MATCH_STATE,
                 LdapStatesEnum.TYPE_MATCHING_RULE_STATE,
                 LdapConstants.MATCHING_RULE_TYPE_TAG,
-                new StoreTypeMatchingRuleAction() );
+                new StoreTypeMatchingRule() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Extensible Match to match value
@@ -5284,7 +5284,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.EXTENSIBLE_MATCH_STATE,
                 LdapStatesEnum.MATCH_VALUE_STATE,
                 LdapConstants.MATCH_VALUE_TAG,
-                new StoreMatchValueAction() );
+                new StoreMatchValue() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from matching rule to type matching rule
@@ -5304,7 +5304,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.MATCHING_RULE_STATE,
                 LdapStatesEnum.TYPE_MATCHING_RULE_STATE,
                 LdapConstants.MATCHING_RULE_TYPE_TAG,
-                new StoreTypeMatchingRuleAction() );
+                new StoreTypeMatchingRule() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from matching rule to match value
@@ -5324,7 +5324,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.MATCHING_RULE_STATE,
                 LdapStatesEnum.MATCH_VALUE_STATE,
                 LdapConstants.MATCH_VALUE_TAG,
-                new StoreMatchValueAction() );
+                new StoreMatchValue() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from matching type to match value
@@ -5344,7 +5344,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.TYPE_MATCHING_RULE_STATE,
                 LdapStatesEnum.MATCH_VALUE_STATE,
                 LdapConstants.MATCH_VALUE_TAG,
-                new StoreMatchValueAction() );
+                new StoreMatchValue() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from match value to dnAttributes
@@ -5420,7 +5420,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.MATCH_VALUE_STATE,
                 LdapStatesEnum.AND_STATE,
                 LdapConstants.AND_FILTER_TAG,
-                new InitAndFilterAction() );
+                new InitAndFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from match value to OR filter
@@ -5441,7 +5441,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.MATCH_VALUE_STATE,
                 LdapStatesEnum.OR_STATE,
                 LdapConstants.OR_FILTER_TAG,
-                new InitOrFilterAction() );
+                new InitOrFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from match value to NOT filter
@@ -5462,7 +5462,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.MATCH_VALUE_STATE,
                 LdapStatesEnum.NOT_STATE,
                 LdapConstants.NOT_FILTER_TAG,
-                new InitNotFilterAction() );
+                new InitNotFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from match value to Equality Match filter
@@ -5483,7 +5483,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.MATCH_VALUE_STATE,
                 LdapStatesEnum.EQUALITY_MATCH_STATE,
                 LdapConstants.EQUALITY_MATCH_FILTER_TAG,
-                new InitEqualityMatchFilterAction() );
+                new InitEqualityMatchFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from match value to Substrings filter
@@ -5504,7 +5504,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.MATCH_VALUE_STATE,
                 LdapStatesEnum.SUBSTRING_FILTER_STATE,
                 LdapConstants.SUBSTRINGS_FILTER_TAG,
-                new InitSubstringsFilterAction() );
+                new InitSubstringsFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from match value to GreaterOrEqual filter
@@ -5525,7 +5525,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.MATCH_VALUE_STATE,
                 LdapStatesEnum.GREATER_OR_EQUAL_STATE,
                 LdapConstants.GREATER_OR_EQUAL_FILTER_TAG,
-                new InitGreaterOrEqualFilterAction() );
+                new InitGreaterOrEqualFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from match value to LessOrEqual filter
@@ -5546,7 +5546,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.MATCH_VALUE_STATE,
                 LdapStatesEnum.LESS_OR_EQUAL_STATE,
                 LdapConstants.LESS_OR_EQUAL_FILTER_TAG,
-                new InitLessOrEqualFilterAction() );
+                new InitLessOrEqualFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from match value to Present filter
@@ -5567,7 +5567,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.MATCH_VALUE_STATE,
                 LdapStatesEnum.PRESENT_STATE,
                 LdapConstants.PRESENT_FILTER_TAG,
-                new InitPresentFilterAction() );
+                new InitPresentFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from match value to Approx Match filter
@@ -5588,7 +5588,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.MATCH_VALUE_STATE,
                 LdapStatesEnum.APPROX_MATCH_STATE,
                 LdapConstants.APPROX_MATCH_FILTER_TAG,
-                new InitApproxMatchFilterAction() );
+                new InitApproxMatchFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from match value to Extensible Match filter
@@ -5609,7 +5609,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.MATCH_VALUE_STATE,
                 LdapStatesEnum.EXTENSIBLE_MATCH_STATE,
                 LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG,
-                new InitExtensibleMatchFilterAction() );
+                new InitExtensibleMatchFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from match value to Attribute Description List
@@ -5648,7 +5648,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.DN_ATTRIBUTES_STATE,
                 LdapStatesEnum.AND_STATE,
                 LdapConstants.AND_FILTER_TAG,
-                new InitAndFilterAction() );
+                new InitAndFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from dnAttributes to OR filter
@@ -5669,7 +5669,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.DN_ATTRIBUTES_STATE,
                 LdapStatesEnum.OR_STATE,
                 LdapConstants.OR_FILTER_TAG,
-                new InitOrFilterAction() );
+                new InitOrFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from dnAttributes to NOT filter
@@ -5690,7 +5690,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.DN_ATTRIBUTES_STATE,
                 LdapStatesEnum.NOT_STATE,
                 LdapConstants.NOT_FILTER_TAG,
-                new InitNotFilterAction() );
+                new InitNotFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from dnAttributes to Equality Match filter
@@ -5711,7 +5711,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.DN_ATTRIBUTES_STATE,
                 LdapStatesEnum.EQUALITY_MATCH_STATE,
                 LdapConstants.EQUALITY_MATCH_FILTER_TAG,
-                new InitEqualityMatchFilterAction() );
+                new InitEqualityMatchFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from dnAttributes to Substrings filter
@@ -5732,7 +5732,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.DN_ATTRIBUTES_STATE,
                 LdapStatesEnum.SUBSTRING_FILTER_STATE,
                 LdapConstants.SUBSTRINGS_FILTER_TAG,
-                new InitSubstringsFilterAction() );
+                new InitSubstringsFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from dnAttributes to GreaterOrEqual filter
@@ -5753,7 +5753,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.DN_ATTRIBUTES_STATE,
                 LdapStatesEnum.GREATER_OR_EQUAL_STATE,
                 LdapConstants.GREATER_OR_EQUAL_FILTER_TAG,
-                new InitGreaterOrEqualFilterAction() );
+                new InitGreaterOrEqualFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from dnAttributes to LessOrEqual filter
@@ -5774,7 +5774,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.DN_ATTRIBUTES_STATE,
                 LdapStatesEnum.LESS_OR_EQUAL_STATE,
                 LdapConstants.LESS_OR_EQUAL_FILTER_TAG,
-                new InitLessOrEqualFilterAction() );
+                new InitLessOrEqualFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from dnAttributes to Present filter
@@ -5795,7 +5795,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.DN_ATTRIBUTES_STATE,
                 LdapStatesEnum.PRESENT_STATE,
                 LdapConstants.PRESENT_FILTER_TAG,
-                new InitPresentFilterAction() );
+                new InitPresentFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from dnAttributes to Approx Match filter
@@ -5816,7 +5816,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.DN_ATTRIBUTES_STATE,
                 LdapStatesEnum.APPROX_MATCH_STATE,
                 LdapConstants.APPROX_MATCH_FILTER_TAG,
-                new InitApproxMatchFilterAction() );
+                new InitApproxMatchFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from dnAttributes to Extensible Match filter
@@ -5837,7 +5837,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.DN_ATTRIBUTES_STATE,
                 LdapStatesEnum.EXTENSIBLE_MATCH_STATE,
                 LdapConstants.EXTENSIBLE_MATCH_FILTER_TAG,
-                new InitExtensibleMatchFilterAction() );
+                new InitExtensibleMatchFilter() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from dnAttributes to Attribute Description List

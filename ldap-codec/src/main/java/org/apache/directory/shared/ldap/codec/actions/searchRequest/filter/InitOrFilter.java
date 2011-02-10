@@ -17,42 +17,42 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.actions;
+package org.apache.directory.shared.ldap.codec.actions.searchRequest.filter;
 
 
-import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
+import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
-import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
+import org.apache.directory.shared.ldap.codec.search.Filter;
+import org.apache.directory.shared.ldap.codec.search.OrFilter;
 
-import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 /**
- * The action used to store a final value into a substring filter
+ * The action used to initialize the OR filter
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class StoreFinalAction extends GrammarAction<LdapMessageContainer<SearchRequestDecorator>>
+public class InitOrFilter extends GrammarAction<LdapMessageContainer<SearchRequestDecorator>>
 {
     /** The logger */
-    private static final Logger LOG = LoggerFactory.getLogger( StoreFinalAction.class );
+    private static final Logger LOG = LoggerFactory.getLogger( InitOrFilter.class );
 
     /** Speedup for logs */
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
 
     /**
-     * Instantiates a new store final action.
+     * Instantiates a new init OR filter action.
      */
-    public StoreFinalAction()
+    public InitOrFilter()
     {
-        super( "Store a final value" );
+        super( "Initialize OR filter" );
     }
 
 
@@ -61,30 +61,26 @@ public class StoreFinalAction extends GrammarAction<LdapMessageContainer<SearchR
      */
     public void action( LdapMessageContainer<SearchRequestDecorator> container ) throws DecoderException
     {
-        SearchRequestDecorator searchRequest = container.getMessage();
-
         TLV tlv = container.getCurrentTLV();
-
-        // Store the value.
-        SubstringFilter substringFilter = ( SubstringFilter ) searchRequest.getTerminalFilter();
 
         if ( tlv.getLength() == 0 )
         {
-            String msg = I18n.err( I18n.ERR_04020 );
+            String msg = I18n.err( I18n.ERR_04010 );
             LOG.error( msg );
             throw new DecoderException( msg );
         }
 
-        String finalValue = Strings.utf8ToString(tlv.getValue().getData());
-        substringFilter.setFinalSubstrings( finalValue );
+        SearchRequestDecorator searchRequestDecorator = container.getMessage();
 
-        // We now have to get back to the nearest filter which is
-        // not terminal.
-        searchRequest.unstackFilters( container );
+        // We can allocate the SearchRequest
+        Filter orFilter = new OrFilter( container.getTlvId() );
+
+        // Set the filter
+        searchRequestDecorator.addCurrentFilter( orFilter );
 
         if ( IS_DEBUG )
         {
-            LOG.debug( "Stored a any substring : {}", finalValue );
+            LOG.debug( "Initialize OR filter" );
         }
     }
 }

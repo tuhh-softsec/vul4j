@@ -17,41 +17,40 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.actions;
+package org.apache.directory.shared.ldap.codec.actions.searchRequest.filter;
 
 
-import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
-import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.DecoderException;
+import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.api.LdapConstants;
 import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
-import org.apache.directory.shared.ldap.codec.search.PresentFilter;
-
-import org.apache.directory.shared.util.Strings;
+import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilter;
+import org.apache.directory.shared.ldap.codec.search.Filter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 /**
- * The action used to initialize the Present filter
+ * The action used to initialize the Less Or Equal filter
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class InitPresentFilterAction extends GrammarAction<LdapMessageContainer<SearchRequestDecorator>>
+public class InitLessOrEqualFilter extends GrammarAction<LdapMessageContainer<SearchRequestDecorator>>
 {
     /** The logger */
-    private static final Logger LOG = LoggerFactory.getLogger( InitPresentFilterAction.class );
+    private static final Logger LOG = LoggerFactory.getLogger( InitLessOrEqualFilter.class );
 
     /** Speedup for logs */
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
 
     /**
-     * Instantiates a new init present filter action.
+     * Instantiates a new init less or equal filter action.
      */
-    public InitPresentFilterAction()
+    public InitLessOrEqualFilter()
     {
-        super( "Init present filter Value" );
+        super( "Initialize Less Or Equal filter" );
     }
 
 
@@ -62,35 +61,19 @@ public class InitPresentFilterAction extends GrammarAction<LdapMessageContainer<
     {
         SearchRequestDecorator searchRequestDecorator = container.getMessage();
 
-        TLV tlv = container.getCurrentTLV();
-
         // We can allocate the Attribute Value Assertion
-        PresentFilter presentFilter = new PresentFilter( container.getTlvId() );
+        Filter filter = new AttributeValueAssertionFilter( container.getTlvId(),
+            LdapConstants.LESS_OR_EQUAL_FILTER );
 
-        // add the filter to the request filter
-        searchRequestDecorator.addCurrentFilter( presentFilter );
-        searchRequestDecorator.setTerminalFilter( presentFilter );
+        searchRequestDecorator.addCurrentFilter( filter );
 
-        String value = Strings.utf8ToString(tlv.getValue().getData());
-
-        if ( Strings.isEmpty(value) )
-        {
-            presentFilter.setAttributeDescription( "" );
-        }
-        else
-        {
-            // Store the value.
-            String type = Strings.utf8ToString(tlv.getValue().getData());
-            presentFilter.setAttributeDescription( type );
-        }
-
-        // We now have to get back to the nearest filter which is
-        // not terminal.
-        searchRequestDecorator.unstackFilters( container );
+        // Store the filter structure that still has to be
+        // fulfilled
+        searchRequestDecorator.setTerminalFilter( filter );
 
         if ( IS_DEBUG )
         {
-            LOG.debug( "Initialize Present filter" );
+            LOG.debug( "Initialize Less Or Equal filter" );
         }
     }
 }

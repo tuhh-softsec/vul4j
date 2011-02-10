@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.actions;
+package org.apache.directory.shared.ldap.codec.actions.searchRequest.filter;
 
 
 import org.apache.directory.shared.asn1.DecoderException;
@@ -32,25 +32,25 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * The action used to initialize the Less Or Equal filter
+ * The action used to initialize the Approx Match filter
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class InitLessOrEqualFilterAction extends GrammarAction<LdapMessageContainer<SearchRequestDecorator>>
+public class InitApproxMatchFilter extends GrammarAction<LdapMessageContainer<SearchRequestDecorator>>
 {
     /** The logger */
-    private static final Logger LOG = LoggerFactory.getLogger( InitLessOrEqualFilterAction.class );
+    private static final Logger LOG = LoggerFactory.getLogger( InitApproxMatchFilter.class );
 
     /** Speedup for logs */
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
 
     /**
-     * Instantiates a new init less or equal filter action.
+     * Instantiates a new init approx match filter action.
      */
-    public InitLessOrEqualFilterAction()
+    public InitApproxMatchFilter()
     {
-        super( "Initialize Less Or Equal filter" );
+        super( "Init Approx Match filter Value" );
     }
 
 
@@ -63,7 +63,7 @@ public class InitLessOrEqualFilterAction extends GrammarAction<LdapMessageContai
 
         // We can allocate the Attribute Value Assertion
         Filter filter = new AttributeValueAssertionFilter( container.getTlvId(),
-            LdapConstants.LESS_OR_EQUAL_FILTER );
+            LdapConstants.APPROX_MATCH_FILTER );
 
         searchRequestDecorator.addCurrentFilter( filter );
 
@@ -73,7 +73,7 @@ public class InitLessOrEqualFilterAction extends GrammarAction<LdapMessageContai
 
         if ( IS_DEBUG )
         {
-            LOG.debug( "Initialize Less Or Equal filter" );
+            LOG.debug( "Initialize Approx Match filter" );
         }
     }
 }

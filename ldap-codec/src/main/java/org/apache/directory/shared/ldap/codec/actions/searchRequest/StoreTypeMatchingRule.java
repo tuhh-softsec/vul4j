@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.actions;
+package org.apache.directory.shared.ldap.codec.actions.searchRequest;
 
 
 import org.apache.directory.shared.asn1.DecoderException;
@@ -26,32 +26,33 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
-import org.apache.directory.shared.ldap.codec.search.Filter;
-import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
+import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 /**
- * The action used to initialize the Substrings filter
+ * The action used to store a type matching rule
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class InitSubstringsFilterAction extends GrammarAction<LdapMessageContainer<SearchRequestDecorator>>
+public class StoreTypeMatchingRule extends GrammarAction<LdapMessageContainer<SearchRequestDecorator>>
 {
-    /** The logger */
-    private static final Logger LOG = LoggerFactory.getLogger( InitSubstringsFilterAction.class );
+
+    /** The logger. */
+    private static final Logger LOG = LoggerFactory.getLogger( StoreTypeMatchingRule.class );
 
     /** Speedup for logs */
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
 
     /**
-     * Instantiates a new init substrings filter action.
+     * Instantiates a new store type matching rule action.
      */
-    public InitSubstringsFilterAction()
+    public StoreTypeMatchingRule()
     {
-        super( "Initialize Substrings filter" );
+        super( "Store matching type Value" );
     }
 
 
@@ -60,28 +61,28 @@ public class InitSubstringsFilterAction extends GrammarAction<LdapMessageContain
      */
     public void action( LdapMessageContainer<SearchRequestDecorator> container ) throws DecoderException
     {
-        SearchRequestDecorator searchRequestDecorator = container.getMessage();
+        SearchRequestDecorator searchRequest = container.getMessage();
 
         TLV tlv = container.getCurrentTLV();
 
-        int expectedLength = tlv.getLength();
-
-        if ( expectedLength == 0 )
+        if ( tlv.getLength() == 0 )
         {
-            String msg = I18n.err( I18n.ERR_04012 );
+            String msg = I18n.err( I18n.ERR_04022 );
             LOG.error( msg );
             throw new DecoderException( msg );
         }
-
-        // We can allocate the SearchRequest
-        Filter substringFilter = new SubstringFilter( container.getTlvId() );
-
-        searchRequestDecorator.addCurrentFilter( substringFilter );
-        searchRequestDecorator.setTerminalFilter( substringFilter );
-
-        if ( IS_DEBUG )
+        else
         {
-            LOG.debug( "Initialize Substrings filter" );
+            // Store the value.
+            ExtensibleMatchFilter extensibleMatchFilter = ( ExtensibleMatchFilter ) searchRequest.getTerminalFilter();
+
+            String type = Strings.utf8ToString(tlv.getValue().getData());
+            extensibleMatchFilter.setType( type );
+
+            if ( IS_DEBUG )
+            {
+                LOG.debug( "Stored a type matching rule : {}", type );
+            }
         }
     }
 }

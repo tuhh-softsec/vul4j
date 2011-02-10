@@ -17,40 +17,41 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.actions;
+package org.apache.directory.shared.ldap.codec.actions.searchRequest.filter;
 
 
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
+import org.apache.directory.shared.asn1.ber.tlv.TLV;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.api.LdapConstants;
 import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
-import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilter;
 import org.apache.directory.shared.ldap.codec.search.Filter;
+import org.apache.directory.shared.ldap.codec.search.NotFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 /**
- * The action used to initialize the Greater Or Equal filter
+ * The action used to initialize the NOT filter
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class InitGreaterOrEqualFilterAction extends GrammarAction<LdapMessageContainer<SearchRequestDecorator>>
+public class InitNotFilter extends GrammarAction<LdapMessageContainer<SearchRequestDecorator>>
 {
     /** The logger */
-    private static final Logger LOG = LoggerFactory.getLogger( InitGreaterOrEqualFilterAction.class );
+    private static final Logger LOG = LoggerFactory.getLogger( InitNotFilter.class );
 
     /** Speedup for logs */
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
 
     /**
-     * Instantiates a new init greater or equal filter action.
+     * Instantiates a new init NOT filter action.
      */
-    public InitGreaterOrEqualFilterAction()
+    public InitNotFilter()
     {
-        super( "Initialize Greater Or Equal filter" );
+        super( "Initialize NOT filter" );
     }
 
 
@@ -59,21 +60,26 @@ public class InitGreaterOrEqualFilterAction extends GrammarAction<LdapMessageCon
      */
     public void action( LdapMessageContainer<SearchRequestDecorator> container ) throws DecoderException
     {
+        TLV tlv = container.getCurrentTLV();
+
+        if ( tlv.getLength() == 0 )
+        {
+            String msg = I18n.err( I18n.ERR_04009 );
+            LOG.error( msg );
+            throw new DecoderException( msg );
+        }
+
         SearchRequestDecorator searchRequestDecorator = container.getMessage();
 
-        // We can allocate the Attribute Value Assertion
-        Filter filter = new AttributeValueAssertionFilter( container.getTlvId(),
-            LdapConstants.GREATER_OR_EQUAL_FILTER );
+        // We can allocate the SearchRequest
+        Filter notFilter = new NotFilter( container.getTlvId() );
 
-        searchRequestDecorator.addCurrentFilter( filter );
-
-        // Store the filter structure that still has to be
-        // fulfilled
-        searchRequestDecorator.setTerminalFilter( filter );
+        // Set the filter
+        searchRequestDecorator.addCurrentFilter( notFilter );
 
         if ( IS_DEBUG )
         {
-            LOG.debug( "Initialize Greater Or Equal filter" );
+            LOG.debug( "Initialize NOT filter" );
         }
     }
 }

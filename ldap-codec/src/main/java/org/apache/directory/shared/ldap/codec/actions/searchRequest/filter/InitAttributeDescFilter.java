@@ -17,41 +17,42 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.actions;
+package org.apache.directory.shared.ldap.codec.actions.searchRequest.filter;
 
 
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
-import org.apache.directory.shared.ldap.codec.search.Filter;
-import org.apache.directory.shared.ldap.codec.search.NotFilter;
+import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilter;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 /**
- * The action used to initialize the NOT filter
+ * The action used to initialize the AttributeDesc filter
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class InitNotFilterAction extends GrammarAction<LdapMessageContainer<SearchRequestDecorator>>
+public class InitAttributeDescFilter extends GrammarAction<LdapMessageContainer<SearchRequestDecorator>>
 {
     /** The logger */
-    private static final Logger LOG = LoggerFactory.getLogger( InitNotFilterAction.class );
+    private static final Logger LOG = LoggerFactory.getLogger( InitAttributeDescFilter.class );
 
     /** Speedup for logs */
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
 
     /**
-     * Instantiates a new init NOT filter action.
+     * Instantiates a new init attribute desc filter action.
      */
-    public InitNotFilterAction()
+    public InitAttributeDescFilter()
     {
-        super( "Initialize NOT filter" );
+        super( "Initialize AttributeDesc filter" );
     }
 
 
@@ -60,26 +61,31 @@ public class InitNotFilterAction extends GrammarAction<LdapMessageContainer<Sear
      */
     public void action( LdapMessageContainer<SearchRequestDecorator> container ) throws DecoderException
     {
+        SearchRequestDecorator searchRequestDecorator = container.getMessage();
+
         TLV tlv = container.getCurrentTLV();
+
+        AttributeValueAssertion assertion = new AttributeValueAssertion();
 
         if ( tlv.getLength() == 0 )
         {
-            String msg = I18n.err( I18n.ERR_04009 );
+            String msg = I18n.err( I18n.ERR_04007 );
             LOG.error( msg );
             throw new DecoderException( msg );
         }
+        else
+        {
+            String type = Strings.utf8ToString(tlv.getValue().getData());
+            assertion.setAttributeDesc( type );
 
-        SearchRequestDecorator searchRequestDecorator = container.getMessage();
-
-        // We can allocate the SearchRequest
-        Filter notFilter = new NotFilter( container.getTlvId() );
-
-        // Set the filter
-        searchRequestDecorator.addCurrentFilter( notFilter );
+            AttributeValueAssertionFilter terminalFilter = ( AttributeValueAssertionFilter )
+                    searchRequestDecorator.getTerminalFilter();
+            terminalFilter.setAssertion( assertion );
+        }
 
         if ( IS_DEBUG )
         {
-            LOG.debug( "Initialize NOT filter" );
+            LOG.debug( "Initialize AttributeDesc filter" );
         }
     }
 }

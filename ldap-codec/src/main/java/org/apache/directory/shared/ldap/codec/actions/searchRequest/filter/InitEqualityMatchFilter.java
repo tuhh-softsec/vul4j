@@ -17,40 +17,40 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.actions;
+package org.apache.directory.shared.ldap.codec.actions.searchRequest.filter;
 
 
-import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
-import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.DecoderException;
+import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.api.LdapConstants;
 import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
-import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
-import org.apache.directory.shared.ldap.model.entry.BinaryValue;
+import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilter;
+import org.apache.directory.shared.ldap.codec.search.Filter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 /**
- * The action used to store a match value
+ * The action used to initialize the Equality Match filter
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class StoreMatchValueAction extends GrammarAction<LdapMessageContainer<SearchRequestDecorator>>
+public class InitEqualityMatchFilter extends GrammarAction<LdapMessageContainer<SearchRequestDecorator>>
 {
     /** The logger */
-    private static final Logger LOG = LoggerFactory.getLogger( StoreMatchValueAction.class );
+    private static final Logger LOG = LoggerFactory.getLogger( InitEqualityMatchFilter.class );
 
     /** Speedup for logs */
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
 
     /**
-     * Instantiates a new store match value action.
+     * Instantiates a new init equality match filter action.
      */
-    public StoreMatchValueAction()
+    public InitEqualityMatchFilter()
     {
-        super( "Store match Value" );
+        super( "Initialize Equality Match filter" );
     }
 
 
@@ -59,22 +59,21 @@ public class StoreMatchValueAction extends GrammarAction<LdapMessageContainer<Se
      */
     public void action( LdapMessageContainer<SearchRequestDecorator> container ) throws DecoderException
     {
-        SearchRequestDecorator decorator = container.getMessage();
+        SearchRequestDecorator searchRequestDecorator = container.getMessage();
 
-        TLV tlv = container.getCurrentTLV();
+        // We can allocate the Attribute Value Assertion
+        Filter filter = new AttributeValueAssertionFilter( container.getTlvId(),
+            LdapConstants.EQUALITY_MATCH_FILTER );
 
-        // Store the value.
-        ExtensibleMatchFilter extensibleMatchFilter = ( ExtensibleMatchFilter ) decorator.getTerminalFilter();
+        searchRequestDecorator.addCurrentFilter( filter );
 
-        byte[] value = tlv.getValue().getData();
-        extensibleMatchFilter.setMatchValue( new BinaryValue( value ) );
-
-        // unstack the filters if needed
-        decorator.unstackFilters( container );
+        // Store the filter structure that still has to be
+        // fulfilled
+        searchRequestDecorator.setTerminalFilter( filter );
 
         if ( IS_DEBUG )
         {
-            LOG.debug( "Stored a match value : {}", value );
+            LOG.debug( "Initialize Equality Match filter" );
         }
     }
 }

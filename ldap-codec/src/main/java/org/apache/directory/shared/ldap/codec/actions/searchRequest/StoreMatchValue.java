@@ -17,40 +17,40 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.actions;
+package org.apache.directory.shared.ldap.codec.actions.searchRequest;
 
 
-import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
+import org.apache.directory.shared.asn1.ber.tlv.TLV;
+import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.api.LdapConstants;
 import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
-import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilter;
-import org.apache.directory.shared.ldap.codec.search.Filter;
+import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
+import org.apache.directory.shared.ldap.model.entry.BinaryValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 /**
- * The action used to initialize the Approx Match filter
+ * The action used to store a match value
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class InitApproxMatchFilterAction extends GrammarAction<LdapMessageContainer<SearchRequestDecorator>>
+public class StoreMatchValue extends GrammarAction<LdapMessageContainer<SearchRequestDecorator>>
 {
     /** The logger */
-    private static final Logger LOG = LoggerFactory.getLogger( InitApproxMatchFilterAction.class );
+    private static final Logger LOG = LoggerFactory.getLogger( StoreMatchValue.class );
 
     /** Speedup for logs */
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
 
     /**
-     * Instantiates a new init approx match filter action.
+     * Instantiates a new store match value action.
      */
-    public InitApproxMatchFilterAction()
+    public StoreMatchValue()
     {
-        super( "Init Approx Match filter Value" );
+        super( "Store match Value" );
     }
 
 
@@ -59,21 +59,22 @@ public class InitApproxMatchFilterAction extends GrammarAction<LdapMessageContai
      */
     public void action( LdapMessageContainer<SearchRequestDecorator> container ) throws DecoderException
     {
-        SearchRequestDecorator searchRequestDecorator = container.getMessage();
+        SearchRequestDecorator decorator = container.getMessage();
 
-        // We can allocate the Attribute Value Assertion
-        Filter filter = new AttributeValueAssertionFilter( container.getTlvId(),
-            LdapConstants.APPROX_MATCH_FILTER );
+        TLV tlv = container.getCurrentTLV();
 
-        searchRequestDecorator.addCurrentFilter( filter );
+        // Store the value.
+        ExtensibleMatchFilter extensibleMatchFilter = ( ExtensibleMatchFilter ) decorator.getTerminalFilter();
 
-        // Store the filter structure that still has to be
-        // fulfilled
-        searchRequestDecorator.setTerminalFilter( filter );
+        byte[] value = tlv.getValue().getData();
+        extensibleMatchFilter.setMatchValue( new BinaryValue( value ) );
+
+        // unstack the filters if needed
+        decorator.unstackFilters( container );
 
         if ( IS_DEBUG )
         {
-            LOG.debug( "Initialize Approx Match filter" );
+            LOG.debug( "Stored a match value : {}", value );
         }
     }
 }

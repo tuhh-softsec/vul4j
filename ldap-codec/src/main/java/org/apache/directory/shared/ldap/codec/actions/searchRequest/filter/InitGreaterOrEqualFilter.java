@@ -17,40 +17,40 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.actions;
+package org.apache.directory.shared.ldap.codec.actions.searchRequest.filter;
 
 
-import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.DecoderException;
+import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.api.LdapConstants;
 import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
-import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
+import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilter;
 import org.apache.directory.shared.ldap.codec.search.Filter;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 /**
- * The action used to initialize the Extensible Match filter
+ * The action used to initialize the Greater Or Equal filter
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class InitExtensibleMatchFilterAction extends GrammarAction<LdapMessageContainer<SearchRequestDecorator>>
+public class InitGreaterOrEqualFilter extends GrammarAction<LdapMessageContainer<SearchRequestDecorator>>
 {
     /** The logger */
-    private static final Logger LOG = LoggerFactory.getLogger( InitExtensibleMatchFilterAction.class );
+    private static final Logger LOG = LoggerFactory.getLogger( InitGreaterOrEqualFilter.class );
 
     /** Speedup for logs */
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
 
     /**
-     * Instantiates a new init extensible match filter action.
+     * Instantiates a new init greater or equal filter action.
      */
-    public InitExtensibleMatchFilterAction()
+    public InitGreaterOrEqualFilter()
     {
-        super( "Init Extensible Match filter Value" );
+        super( "Initialize Greater Or Equal filter" );
     }
 
 
@@ -61,15 +61,19 @@ public class InitExtensibleMatchFilterAction extends GrammarAction<LdapMessageCo
     {
         SearchRequestDecorator searchRequestDecorator = container.getMessage();
 
-        // We can allocate the ExtensibleMatch Filter
-        Filter extensibleMatchFilter = new ExtensibleMatchFilter( container.getTlvId() );
+        // We can allocate the Attribute Value Assertion
+        Filter filter = new AttributeValueAssertionFilter( container.getTlvId(),
+            LdapConstants.GREATER_OR_EQUAL_FILTER );
 
-        searchRequestDecorator.addCurrentFilter( extensibleMatchFilter );
-        searchRequestDecorator.setTerminalFilter( extensibleMatchFilter );
+        searchRequestDecorator.addCurrentFilter( filter );
+
+        // Store the filter structure that still has to be
+        // fulfilled
+        searchRequestDecorator.setTerminalFilter( filter );
 
         if ( IS_DEBUG )
         {
-            LOG.debug( "Initialize Extensible Match filter" );
+            LOG.debug( "Initialize Greater Or Equal filter" );
         }
     }
 }
