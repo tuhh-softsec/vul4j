@@ -28,18 +28,15 @@ import static org.apache.directory.shared.asn1.ber.tlv.UniversalTag.SEQUENCE;
 import static org.apache.directory.shared.asn1.ber.tlv.UniversalTag.SET;
 
 import org.apache.directory.shared.asn1.DecoderException;
+import org.apache.directory.shared.asn1.actions.CheckNotNullLength;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
-import org.apache.directory.shared.asn1.ber.tlv.BooleanDecoder;
-import org.apache.directory.shared.asn1.ber.tlv.BooleanDecoderException;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
-import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.actions.AllowGrammarEnd;
 import org.apache.directory.shared.ldap.codec.actions.CheckLengthNotNull;
-import org.apache.directory.shared.ldap.codec.actions.InitAttributeDescListAction;
 import org.apache.directory.shared.ldap.codec.actions.abandonRequest.InitAbandonRequest;
 import org.apache.directory.shared.ldap.codec.actions.addRequest.AddAddRequestAttributeType;
 import org.apache.directory.shared.ldap.codec.actions.addRequest.AddAttributeValue;
@@ -96,9 +93,7 @@ import org.apache.directory.shared.ldap.codec.actions.modifyRequest.StoreModifyR
 import org.apache.directory.shared.ldap.codec.actions.modifyRequest.StoreOperationType;
 import org.apache.directory.shared.ldap.codec.actions.modifyResponse.InitModifyResponse;
 import org.apache.directory.shared.ldap.codec.actions.searchRequest.InitSearchRequest;
-import org.apache.directory.shared.ldap.codec.actions.searchRequest.StoreAny;
-import org.apache.directory.shared.ldap.codec.actions.searchRequest.StoreFinal;
-import org.apache.directory.shared.ldap.codec.actions.searchRequest.StoreMatchValue;
+import org.apache.directory.shared.ldap.codec.actions.searchRequest.InitSearchRequestAttributeDescList;
 import org.apache.directory.shared.ldap.codec.actions.searchRequest.StoreSearchRequestAttributeDesc;
 import org.apache.directory.shared.ldap.codec.actions.searchRequest.StoreSearchRequestBaseObject;
 import org.apache.directory.shared.ldap.codec.actions.searchRequest.StoreSearchRequestDerefAlias;
@@ -119,6 +114,12 @@ import org.apache.directory.shared.ldap.codec.actions.searchRequest.filter.InitN
 import org.apache.directory.shared.ldap.codec.actions.searchRequest.filter.InitOrFilter;
 import org.apache.directory.shared.ldap.codec.actions.searchRequest.filter.InitPresentFilter;
 import org.apache.directory.shared.ldap.codec.actions.searchRequest.filter.InitSubstringsFilter;
+import org.apache.directory.shared.ldap.codec.actions.searchRequest.filter.StoreAny;
+import org.apache.directory.shared.ldap.codec.actions.searchRequest.filter.StoreFinal;
+import org.apache.directory.shared.ldap.codec.actions.searchRequest.filter.StoreInitial;
+import org.apache.directory.shared.ldap.codec.actions.searchRequest.filter.StoreMatchValue;
+import org.apache.directory.shared.ldap.codec.actions.searchRequest.filter.StoreMatchingRuleDnAttributes;
+import org.apache.directory.shared.ldap.codec.actions.searchRequest.filter.StoreSubstringFilterType;
 import org.apache.directory.shared.ldap.codec.actions.searchResultDone.InitSearchResultDone;
 import org.apache.directory.shared.ldap.codec.actions.searchResultEntry.AddAttributeType;
 import org.apache.directory.shared.ldap.codec.actions.searchResultEntry.InitSearchResultEntry;
@@ -131,7 +132,6 @@ import org.apache.directory.shared.ldap.codec.api.LdapConstants;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
 import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
-import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
 import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
@@ -184,7 +184,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
             new GrammarTransition<LdapMessageContainer<MessageDecorator<? extends Message>>>(
                 LdapStatesEnum.START_STATE,
                 LdapStatesEnum.LDAP_MESSAGE_STATE,
-                SEQUENCE.getValue(),
+                SEQUENCE,
                 new InitLdapMessage() );
 
         // --------------------------------------------------------------------------------------------
@@ -800,7 +800,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
             new GrammarTransition(
                 LdapStatesEnum.OBJECT_NAME_STATE,
                 LdapStatesEnum.ATTRIBUTES_SR_STATE,
-                SEQUENCE.getValue(),
+                SEQUENCE,
                 new AllowGrammarEnd() );
 
         // --------------------------------------------------------------------------------------------
@@ -818,7 +818,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
             new GrammarTransition(
                 LdapStatesEnum.ATTRIBUTES_SR_STATE,
                 LdapStatesEnum.PARTIAL_ATTRIBUTES_LIST_STATE,
-                SEQUENCE.getValue(),
+                SEQUENCE,
                 null );
 
         // --------------------------------------------------------------------------------------------
@@ -871,7 +871,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
             new GrammarTransition(
                 LdapStatesEnum.TYPE_SR_STATE,
                 LdapStatesEnum.VALS_SR_STATE,
-                SET.getValue(),
+                SET,
                 new AllowGrammarEnd() );
 
         // --------------------------------------------------------------------------------------------
@@ -1131,7 +1131,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
             new GrammarTransition(
                 LdapStatesEnum.TYPE_MOD_STATE,
                 LdapStatesEnum.VALS_STATE,
-                SET.getValue(),
+                SET,
                 new InitAttributeVals() );
 
         // --------------------------------------------------------------------------------------------
@@ -2244,7 +2244,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
             new GrammarTransition(
                 LdapStatesEnum.CONTROLS_STATE,
                 LdapStatesEnum.CONTROL_STATE,
-                SEQUENCE.getValue(),
+                SEQUENCE,
                 new CheckLengthNotNull() );
 
         // ============================================================================================
@@ -2319,7 +2319,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
             new GrammarTransition(
                 LdapStatesEnum.CONTROL_TYPE_STATE,
                 LdapStatesEnum.CONTROL_STATE,
-                SEQUENCE.getValue(),
+                SEQUENCE,
                 new CheckLengthNotNull() );
 
         // ============================================================================================
@@ -2334,7 +2334,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
             new GrammarTransition(
                 LdapStatesEnum.CRITICALITY_STATE,
                 LdapStatesEnum.CONTROL_STATE,
-                SEQUENCE.getValue(),
+                SEQUENCE,
                 new CheckLengthNotNull() );
 
         // ============================================================================================
@@ -2349,7 +2349,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
             new GrammarTransition(
                 LdapStatesEnum.CONTROL_VALUE_STATE,
                 LdapStatesEnum.CONTROL_STATE,
-                SEQUENCE.getValue(),
+                SEQUENCE,
                 new CheckLengthNotNull() );
 
         // --------------------------------------------------------------------------------------------
@@ -3633,8 +3633,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
             new GrammarTransition(
                 LdapStatesEnum.ASSERTION_VALUE_FILTER_STATE,
                 LdapStatesEnum.ATTRIBUTE_DESCRIPTION_LIST_STATE,
-                SEQUENCE.getValue(),
-                new InitAttributeDescListAction() );
+                SEQUENCE,
+                new InitSearchRequestAttributeDescList() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Attribute Description List to AttributeDescription
@@ -3756,36 +3756,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // Init substring type
-        super.transitions[LdapStatesEnum.SUBSTRING_FILTER_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.SUBSTRING_FILTER_STATE, LdapStatesEnum.TYPE_SUBSTRING_STATE, OCTET_STRING,
-            new GrammarAction<LdapMessageContainer<SearchRequestDecorator>>( "Store substring filter type" )
-            {
-                public void action( LdapMessageContainer<SearchRequestDecorator> container ) throws DecoderException
-                {
-                    SearchRequestDecorator searchRequestDecorator = container.getMessage();
-
-                    TLV tlv = container.getCurrentTLV();
-
-                    // Store the value.
-                    SubstringFilter substringFilter = ( SubstringFilter ) searchRequestDecorator.getTerminalFilter();
-
-                    if ( tlv.getLength() == 0 )
-                    {
-                        String msg = I18n.err( I18n.ERR_04106 );
-                        LOG.error( msg );
-                        throw new DecoderException( msg );
-                    }
-                    else
-                    {
-                        String type = Strings.utf8ToString( tlv.getValue().getData() );
-                        substringFilter.setType( type );
-
-                        // We now have to get back to the nearest filter which
-                        // is not terminal.
-                        searchRequestDecorator.setTerminalFilter( substringFilter );
-                    }
-                }
-            } );
+        super.transitions[LdapStatesEnum.SUBSTRING_FILTER_STATE.ordinal()][OCTET_STRING.getValue()] =
+            new GrammarTransition(
+                LdapStatesEnum.SUBSTRING_FILTER_STATE,
+                LdapStatesEnum.TYPE_SUBSTRING_STATE,
+                OCTET_STRING,
+                new StoreSubstringFilterType() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from typeSubstring to substrings
@@ -3801,21 +3777,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // Init substring type
-        super.transitions[LdapStatesEnum.TYPE_SUBSTRING_STATE.ordinal()][SEQUENCE.getValue()] = new GrammarTransition(
-            LdapStatesEnum.TYPE_SUBSTRING_STATE, LdapStatesEnum.SUBSTRINGS_STATE, SEQUENCE.getValue(),
-            new GrammarAction<LdapMessageContainer<MessageDecorator<? extends Message>>>( "Substring Filter substringsSequence " )
-            {
-                public void action( LdapMessageContainer<MessageDecorator<? extends Message>> container ) throws DecoderException
-                {
-                    TLV tlv = container.getCurrentTLV();
-
-                    if ( tlv.getLength() == 0 )
-                    {
-                        LOG.error( I18n.err( I18n.ERR_04107 ) );
-                        throw new DecoderException( "The substring sequence is empty" );
-                    }
-                }
-            } );
+        super.transitions[LdapStatesEnum.TYPE_SUBSTRING_STATE.ordinal()][SEQUENCE.getValue()] =
+            new GrammarTransition(
+                LdapStatesEnum.TYPE_SUBSTRING_STATE,
+                LdapStatesEnum.SUBSTRINGS_STATE,
+                SEQUENCE,
+                new CheckNotNullLength<LdapMessageContainer<SearchRequestDecorator>>() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from substrings to Initial
@@ -3827,33 +3794,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //         ...
         //
         // Store initial value
-        super.transitions[LdapStatesEnum.SUBSTRINGS_STATE.ordinal()][LdapConstants.SUBSTRINGS_FILTER_INITIAL_TAG] = new GrammarTransition(
-            LdapStatesEnum.SUBSTRINGS_STATE, LdapStatesEnum.INITIAL_STATE, LdapConstants.SUBSTRINGS_FILTER_INITIAL_TAG,
-            new GrammarAction<LdapMessageContainer<SearchRequestDecorator>>( "Store substring filter initial Value" )
-            {
-                public void action( LdapMessageContainer<SearchRequestDecorator> container ) throws DecoderException
-                {
-                    SearchRequestDecorator searchRequestDecorator = container.getMessage();
-
-                    TLV tlv = container.getCurrentTLV();
-
-                    // Store the value.
-                    SubstringFilter substringFilter = ( SubstringFilter ) searchRequestDecorator.getTerminalFilter();
-
-                    if ( tlv.getLength() == 0 )
-                    {
-                        String msg = I18n.err( I18n.ERR_04108 );
-                        LOG.error( msg );
-                        throw new DecoderException( msg );
-                    }
-
-                    substringFilter.setInitialSubstrings( Strings.utf8ToString(tlv.getValue().getData()) );
-
-                    // We now have to get back to the nearest filter which is
-                    // not terminal.
-                    searchRequestDecorator.unstackFilters( container );
-                }
-            } );
+        super.transitions[LdapStatesEnum.SUBSTRINGS_STATE.ordinal()][LdapConstants.SUBSTRINGS_FILTER_INITIAL_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.SUBSTRINGS_STATE,
+                LdapStatesEnum.INITIAL_STATE,
+                LdapConstants.SUBSTRINGS_FILTER_INITIAL_TAG,
+                new StoreInitial() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from substrings to any
@@ -3941,8 +3887,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
             new GrammarTransition(
                 LdapStatesEnum.INITIAL_STATE,
                 LdapStatesEnum.ATTRIBUTE_DESCRIPTION_LIST_STATE,
-                SEQUENCE.getValue(),
-                new InitAttributeDescListAction() );
+                SEQUENCE,
+                new InitSearchRequestAttributeDescList() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from initial to AND filter
@@ -4204,8 +4150,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
             new GrammarTransition(
                 LdapStatesEnum.ANY_STATE,
                 LdapStatesEnum.ATTRIBUTE_DESCRIPTION_LIST_STATE,
-                SEQUENCE.getValue(),
-                new InitAttributeDescListAction() );
+                SEQUENCE,
+                new InitSearchRequestAttributeDescList() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from any to AND filter
@@ -4432,8 +4378,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
             new GrammarTransition(
                 LdapStatesEnum.FINAL_STATE,
                 LdapStatesEnum.ATTRIBUTE_DESCRIPTION_LIST_STATE,
-                SEQUENCE.getValue(),
-                new InitAttributeDescListAction() );
+                SEQUENCE,
+                new InitSearchRequestAttributeDescList() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from final to AND filter
@@ -4869,8 +4815,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
             new GrammarTransition(
                 LdapStatesEnum.PRESENT_STATE,
                 LdapStatesEnum.ATTRIBUTE_DESCRIPTION_LIST_STATE,
-                SEQUENCE.getValue(),
-                new InitAttributeDescListAction() );
+                SEQUENCE,
+                new InitSearchRequestAttributeDescList() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Approx Match to Attribute Desc Filter
@@ -5045,49 +4991,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     dnAttributes [4] BOOLEAN DEFAULT FALSE }
         //
         // Store the dnAttributes flag
-        super.transitions[LdapStatesEnum.MATCH_VALUE_STATE.ordinal()][LdapConstants.DN_ATTRIBUTES_FILTER_TAG] = new GrammarTransition(
-            LdapStatesEnum.MATCH_VALUE_STATE, LdapStatesEnum.DN_ATTRIBUTES_STATE,
-            LdapConstants.DN_ATTRIBUTES_FILTER_TAG,
-            new GrammarAction<LdapMessageContainer<SearchRequestDecorator>>( "Store matching dnAttributes Value" )
-            {
-                public void action( LdapMessageContainer<SearchRequestDecorator> container ) throws DecoderException
-                {
-                    SearchRequestDecorator searchRequest = container.getMessage();
-
-                    TLV tlv = container.getCurrentTLV();
-
-                    // Store the value.
-                    ExtensibleMatchFilter extensibleMatchFilter = ( ExtensibleMatchFilter ) searchRequest.getTerminalFilter();
-
-                    // We get the value. If it's a 0, it's a FALSE. If it's
-                    // a FF, it's a TRUE. Any other value should be an error,
-                    // but we could relax this constraint. So if we have
-                    // something
-                    // which is not 0, it will be interpreted as TRUE, but we
-                    // will generate a warning.
-                    Value value = tlv.getValue();
-
-                    try
-                    {
-                        extensibleMatchFilter.setDnAttributes( BooleanDecoder.parse( value ) );
-                    }
-                    catch ( BooleanDecoderException bde )
-                    {
-                        LOG.error( I18n
-                            .err( I18n.ERR_04110, Strings.dumpBytes(value.getData()), bde.getMessage() ) );
-
-                        throw new DecoderException( bde.getMessage() );
-                    }
-
-                    if ( IS_DEBUG )
-                    {
-                        LOG.debug( "Dn Attributes : {}", Boolean.valueOf( extensibleMatchFilter.isDnAttributes() ) );
-                    }
-
-                    // unstack the filters if needed
-                    searchRequest.unstackFilters( container );
-                }
-            } );
+        super.transitions[LdapStatesEnum.MATCH_VALUE_STATE.ordinal()][LdapConstants.DN_ATTRIBUTES_FILTER_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.MATCH_VALUE_STATE,
+                LdapStatesEnum.DN_ATTRIBUTES_STATE,
+                LdapConstants.DN_ATTRIBUTES_FILTER_TAG,
+                new StoreMatchingRuleDnAttributes() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from match value to AND filter
@@ -5314,8 +5223,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
             new GrammarTransition(
                 LdapStatesEnum.MATCH_VALUE_STATE,
                 LdapStatesEnum.ATTRIBUTE_DESCRIPTION_LIST_STATE,
-                SEQUENCE.getValue(),
-                new InitAttributeDescListAction() );
+                SEQUENCE,
+                new InitSearchRequestAttributeDescList() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from dnAttributes to AND filter
@@ -5542,8 +5451,8 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
             new GrammarTransition(
                 LdapStatesEnum.DN_ATTRIBUTES_STATE,
                 LdapStatesEnum.ATTRIBUTE_DESCRIPTION_LIST_STATE,
-                SEQUENCE.getValue(),
-                new InitAttributeDescListAction() );
+                SEQUENCE,
+                new InitSearchRequestAttributeDescList() );
     }
 
 

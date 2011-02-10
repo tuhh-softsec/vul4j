@@ -41,13 +41,11 @@ import org.slf4j.LoggerFactory;
  * <pre>
  * SearchRequest ::= [APPLICATION 3] SEQUENCE {
  *     ...
- *     ...
  *     derefAliases ENUMERATED {
  *         neverDerefAliases   (0),
  *         derefInSearching    (1),
  *         derefFindingBaseObj (2),
  *         derefAlways         (3) },
- *     ...
  *     ...
  * </pre>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
@@ -65,7 +63,7 @@ public class StoreSearchRequestDerefAlias extends GrammarAction<LdapMessageConta
      */
     public StoreSearchRequestDerefAlias()
     {
-        super( "Store SearchRequest derefAlias  flag" );
+        super( "Store SearchRequest derefAlias flag" );
     }
 
 
@@ -119,6 +117,3 @@ public class StoreSearchRequestDerefAlias extends GrammarAction<LdapMessageConta
         }
     }
 }
-
-
-
