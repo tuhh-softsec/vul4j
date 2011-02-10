@@ -24,7 +24,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
 /**
- * Initialize the Codec service
+ * Initialize the Codec service. This can later be removed.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
@@ -51,7 +51,6 @@ public abstract class AbstractCodecServiceTest
     @AfterClass
     public static void tearDownLdapCodecService()
     {
-        codec.shutdown();
         codec = null;
     }
 }
