@@ -44,7 +44,6 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.actions.AllowGrammarEnd;
-import org.apache.directory.shared.ldap.codec.actions.AttributeDescAction;
 import org.apache.directory.shared.ldap.codec.actions.InitAndFilterAction;
 import org.apache.directory.shared.ldap.codec.actions.InitApproxMatchFilterAction;
 import org.apache.directory.shared.ldap.codec.actions.InitAssertionValueFilterAction;
@@ -58,7 +57,6 @@ import org.apache.directory.shared.ldap.codec.actions.InitNotFilterAction;
 import org.apache.directory.shared.ldap.codec.actions.InitOrFilterAction;
 import org.apache.directory.shared.ldap.codec.actions.InitPresentFilterAction;
 import org.apache.directory.shared.ldap.codec.actions.InitSubstringsFilterAction;
-import org.apache.directory.shared.ldap.codec.actions.ResponseAction;
 import org.apache.directory.shared.ldap.codec.actions.StoreAnyAction;
 import org.apache.directory.shared.ldap.codec.actions.StoreFinalAction;
 import org.apache.directory.shared.ldap.codec.actions.StoreMatchValueAction;
@@ -83,14 +81,15 @@ import org.apache.directory.shared.ldap.codec.actions.compareRequest.StoreCompar
 import org.apache.directory.shared.ldap.codec.actions.compareRequest.StoreCompareRequestAttributeDesc;
 import org.apache.directory.shared.ldap.codec.actions.compareRequest.StoreCompareRequestEntryName;
 import org.apache.directory.shared.ldap.codec.actions.compareResponse.InitCompareResponse;
-import org.apache.directory.shared.ldap.codec.actions.controls.ControlValueAction;
 import org.apache.directory.shared.ldap.codec.actions.controls.InitControls;
+import org.apache.directory.shared.ldap.codec.actions.controls.StoreControlValue;
 import org.apache.directory.shared.ldap.codec.actions.delRequest.InitDelRequest;
 import org.apache.directory.shared.ldap.codec.actions.delResponse.InitDelResponse;
 import org.apache.directory.shared.ldap.codec.actions.extendedRequest.InitExtendedRequest;
 import org.apache.directory.shared.ldap.codec.actions.extendedRequest.StoreExtendedRequestName;
 import org.apache.directory.shared.ldap.codec.actions.extendedRequest.StoreExtendedRequestValue;
 import org.apache.directory.shared.ldap.codec.actions.extendedResponse.InitExtendedResponse;
+import org.apache.directory.shared.ldap.codec.actions.extendedResponse.StoreExtendedResponseValue;
 import org.apache.directory.shared.ldap.codec.actions.extendedResponse.StoreResponseName;
 import org.apache.directory.shared.ldap.codec.actions.ldapMessage.InitLdapMessage;
 import org.apache.directory.shared.ldap.codec.actions.ldapMessage.StoreMessageId;
@@ -112,13 +111,14 @@ import org.apache.directory.shared.ldap.codec.actions.modifyRequest.StoreModifyR
 import org.apache.directory.shared.ldap.codec.actions.modifyRequest.StoreModifyRequestObjectName;
 import org.apache.directory.shared.ldap.codec.actions.modifyRequest.StoreOperationType;
 import org.apache.directory.shared.ldap.codec.actions.modifyResponse.InitModifyResponse;
+import org.apache.directory.shared.ldap.codec.actions.searchRequest.StoreSearchRequestAttributeDesc;
 import org.apache.directory.shared.ldap.codec.actions.searchResultDone.InitSearchResultDone;
 import org.apache.directory.shared.ldap.codec.actions.searchResultEntry.AddAttributeType;
 import org.apache.directory.shared.ldap.codec.actions.searchResultEntry.InitSearchResultEntry;
-import org.apache.directory.shared.ldap.codec.actions.searchResultEntry.SearchResultAttributeValueAction;
+import org.apache.directory.shared.ldap.codec.actions.searchResultEntry.StoreSearchResultAttributeValue;
 import org.apache.directory.shared.ldap.codec.actions.searchResultEntry.StoreSearchResultEntryObjectName;
 import org.apache.directory.shared.ldap.codec.actions.searchResultReference.InitSearchResultReference;
-import org.apache.directory.shared.ldap.codec.actions.searchResultReference.StoreReferenceAction;
+import org.apache.directory.shared.ldap.codec.actions.searchResultReference.StoreReference;
 import org.apache.directory.shared.ldap.codec.actions.unbindRequest.InitUnbindRequest;
 import org.apache.directory.shared.ldap.codec.api.LdapConstants;
 import org.apache.directory.shared.ldap.codec.api.ResponseCarryingException;
@@ -896,7 +896,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.VALS_SR_STATE,
                 LdapStatesEnum.ATTRIBUTE_VALUE_SR_STATE,
                 OCTET_STRING,
-                new SearchResultAttributeValueAction() );
+                new StoreSearchResultAttributeValue() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from ValsSR to PartialAttributesList
@@ -942,7 +942,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.ATTRIBUTE_VALUE_SR_STATE,
                 LdapStatesEnum.ATTRIBUTE_VALUE_SR_STATE,
                 OCTET_STRING,
-                new SearchResultAttributeValueAction() );
+                new StoreSearchResultAttributeValue() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from AttributeValueSR to PartialAttributesList
@@ -1798,7 +1798,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.SEARCH_RESULT_REFERENCE_STATE,
                 LdapStatesEnum.REFERENCE_STATE,
                 OCTET_STRING,
-                new StoreReferenceAction() );
+                new StoreReference() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Reference to Reference
@@ -1812,7 +1812,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.REFERENCE_STATE,
                 LdapStatesEnum.REFERENCE_STATE,
                 OCTET_STRING,
-                new StoreReferenceAction() );
+                new StoreReference() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Reference to Controls
@@ -2029,13 +2029,13 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // Referral ::= SEQUENCE SIZE (1..MAX) OF uri URI (RFC 4511)
         // URI ::= LDAPString
         //
-        // Adda new Referral
+        // Add a new Referral
         super.transitions[LdapStatesEnum.REFERRAL_ER_STATE.ordinal()][LdapConstants.EXTENDED_RESPONSE_RESPONSE_TAG] =
             new GrammarTransition(
                 LdapStatesEnum.REFERRAL_ER_STATE,
                 LdapStatesEnum.RESPONSE_STATE,
                 LdapConstants.EXTENDED_RESPONSE_RESPONSE_TAG,
-                new ResponseAction() );
+                new StoreExtendedResponseValue() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Referral ER to Controls
@@ -2100,7 +2100,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.RESPONSE_NAME_STATE,
                 LdapStatesEnum.RESPONSE_STATE,
                 LdapConstants.EXTENDED_RESPONSE_RESPONSE_TAG,
-                new ResponseAction() );
+                new StoreExtendedResponseValue() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from ResponseName to Controls
@@ -2132,7 +2132,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.ERROR_MESSAGE_ER_STATE,
                 LdapStatesEnum.RESPONSE_STATE,
                 LdapConstants.EXTENDED_RESPONSE_RESPONSE_TAG,
-                new ResponseAction() );
+                new StoreExtendedResponseValue() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Response to Controls
@@ -2509,7 +2509,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.CRITICALITY_STATE,
                 LdapStatesEnum.CONTROL_VALUE_STATE,
                 OCTET_STRING,
-                new ControlValueAction() );
+                new StoreControlValue() );
 
         // ============================================================================================
         // Transition from Control Type to Control Value
@@ -2524,7 +2524,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.CONTROL_TYPE_STATE,
                 LdapStatesEnum.CONTROL_VALUE_STATE,
                 OCTET_STRING,
-                new ControlValueAction() );
+                new StoreControlValue() );
 
         // ============================================================================================
         // Transition from Control Type to Control
@@ -4100,7 +4100,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.ATTRIBUTE_DESCRIPTION_LIST_STATE,
                 LdapStatesEnum.ATTRIBUTE_DESCRIPTION_STATE,
                 OCTET_STRING,
-                new AttributeDescAction() );
+                new StoreSearchRequestAttributeDesc() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Attribute Description List to Controls
@@ -4134,7 +4134,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.ATTRIBUTE_DESCRIPTION_STATE,
                 LdapStatesEnum.ATTRIBUTE_DESCRIPTION_STATE,
                 OCTET_STRING,
-                new AttributeDescAction() );
+                new StoreSearchRequestAttributeDesc() );
 
         // --------------------------------------------------------------------------------------------
         // transition from Attribute Description to Controls.

@@ -6,74 +6,82 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License. 
- *  
+ *  under the License.
+ *
  */
-package org.apache.directory.shared.ldap.codec.actions;
+package org.apache.directory.shared.ldap.codec.actions.controls;
 
 
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
+import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.decorators.ExtendedResponseDecorator;
-import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
+import org.apache.directory.shared.ldap.codec.api.CodecControl;
+import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
+import org.apache.directory.shared.ldap.model.message.Control;
+import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.util.StringConstants;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 /**
- * The action used to store a Response to an ExtendedResponse
- * 
+ * The action used to set the value of a control. This is an extension point
+ * where different controls can be plugged in (at least eventually). For now we
+ * hard code controls.
+ * <pre>
+ * Control ::= SEQUENCE {
+ *     ...
+ *     controlValue OCTET STRING OPTIONAL }
+ * </pre>
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ResponseAction extends GrammarAction<LdapMessageContainer<ExtendedResponseDecorator>>
+public class StoreControlValue extends GrammarAction<LdapMessageContainer<MessageDecorator<? extends Message>>>
 {
     /** The logger */
-    private static final Logger LOG = LoggerFactory.getLogger( ResponseAction.class );
+    private static final Logger LOG = LoggerFactory.getLogger( StoreControlValue.class );
 
     /** Speedup for logs */
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
 
     /**
-     * Instantiates a new response action.
-     */
-    public ResponseAction()
-    {
-        super( "Store response" );
-    }
-
-
-    /**
      * {@inheritDoc}
      */
-    public void action( LdapMessageContainer<ExtendedResponseDecorator> container ) throws DecoderException
+    public void action( LdapMessageContainer<MessageDecorator<? extends Message>> container ) throws DecoderException
     {
-        // We can allocate the ExtendedResponse Object
-        ExtendedResponse extendedResponse = container.getMessage();
-
-        // Get the Value and store it in the ExtendedResponse
         TLV tlv = container.getCurrentTLV();
 
-        // We have to handle the special case of a 0 length matched
-        // OID
+        MessageDecorator<?> message = container.getMessage();
+        CodecControl<? extends Control> control = message.getCurrentControl();
+
+        // Get the current control
+        Value value = tlv.getValue();
+
+        // Store the value - have to handle the special case of a 0 length value
         if ( tlv.getLength() == 0 )
         {
-            extendedResponse.setResponseValue( StringConstants.EMPTY_BYTES );
+            control.setValue( StringConstants.EMPTY_BYTES );
         }
         else
         {
-            extendedResponse.setResponseValue( tlv.getValue().getData() );
+            control.setValue( value.getData() );
+
+            if ( control != null )
+            {
+                control.decode( value.getData() );
+            }
         }
 
         // We can have an END transition
@@ -81,7 +89,7 @@ public class ResponseAction extends GrammarAction<LdapMessageContainer<ExtendedR
 
         if ( IS_DEBUG )
         {
-            LOG.debug( "Extended value : {}", extendedResponse.getResponseValue() );
+            LOG.debug( "Control value : " + Strings.dumpBytes(control.getValue()) );
         }
     }
 }

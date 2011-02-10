@@ -6,71 +6,78 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License. 
- *  
+ *  under the License.
+ *
  */
-package org.apache.directory.shared.ldap.codec.actions;
+package org.apache.directory.shared.ldap.codec.actions.extendedResponse;
 
 
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
-import org.apache.directory.shared.util.Strings;
+import org.apache.directory.shared.ldap.codec.decorators.ExtendedResponseDecorator;
+import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
+import org.apache.directory.shared.util.StringConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 /**
- * The action used to store the attribute description
- * 
+ * The action used to store a Response to an ExtendedResponse
+ * <pre>
+ * ExtendedResponse ::= [APPLICATION 24] SEQUENCE {
+ *     ...
+ *     response       [11] OCTET STRING OPTIONAL}
+ * </pre>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class AttributeDescAction extends GrammarAction<LdapMessageContainer<SearchRequestDecorator>>
+public class StoreExtendedResponseValue extends GrammarAction<LdapMessageContainer<ExtendedResponseDecorator>>
 {
     /** The logger */
-    private static final Logger LOG = LoggerFactory.getLogger( AttributeDescAction.class );
+    private static final Logger LOG = LoggerFactory.getLogger( StoreExtendedResponseValue.class );
 
     /** Speedup for logs */
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
 
     /**
-     * Instantiates a new attribute desc action.
+     * Instantiates a new response action.
      */
-    public AttributeDescAction()
+    public StoreExtendedResponseValue()
     {
-        super( "Store attribute description" );
+        super( "Store response value" );
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public void action( LdapMessageContainer<SearchRequestDecorator> container ) throws DecoderException
+    public void action( LdapMessageContainer<ExtendedResponseDecorator> container ) throws DecoderException
     {
-        SearchRequestDecorator searchRequestDecorator = container.getMessage();
+        // We can allocate the ExtendedResponse Object
+        ExtendedResponse extendedResponse = container.getMessage();
+
+        // Get the Value and store it in the ExtendedResponse
         TLV tlv = container.getCurrentTLV();
-        String attributeDescription = null;
 
-        if ( tlv.getLength() != 0 )
+        // We have to handle the special case of a 0 length matched
+        // OID
+        if ( tlv.getLength() == 0 )
         {
-            attributeDescription = Strings.utf8ToString(tlv.getValue().getData());
-
-            // If the attributeDescription is empty, we won't add it
-            if ( !Strings.isEmpty(attributeDescription.trim()) )
-            {
-                searchRequestDecorator.getDecorated().addAttributes( attributeDescription );
-            }
+            extendedResponse.setResponseValue( StringConstants.EMPTY_BYTES );
+        }
+        else
+        {
+            extendedResponse.setResponseValue( tlv.getValue().getData() );
         }
 
         // We can have an END transition
@@ -78,7 +85,7 @@ public class AttributeDescAction extends GrammarAction<LdapMessageContainer<Sear
 
         if ( IS_DEBUG )
         {
-            LOG.debug( "Decoded Attribute Description : {}", attributeDescription );
+            LOG.debug( "Extended value : {}", extendedResponse.getResponseValue() );
         }
     }
 }
