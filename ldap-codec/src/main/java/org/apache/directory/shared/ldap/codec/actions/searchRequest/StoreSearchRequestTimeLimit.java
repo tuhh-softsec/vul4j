@@ -22,40 +22,42 @@ package org.apache.directory.shared.ldap.codec.actions.searchRequest;
 
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
+import org.apache.directory.shared.asn1.ber.tlv.IntegerDecoder;
+import org.apache.directory.shared.asn1.ber.tlv.IntegerDecoderException;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
+import org.apache.directory.shared.asn1.ber.tlv.Value;
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
-import org.apache.directory.shared.util.Strings;
+import org.apache.directory.shared.ldap.model.message.SearchRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 /**
- * The action used to store the attribute description
+ * The action used to store the SearchRequest timeLimit
  * <pre>
  * SearchRequest ::= [APPLICATION 3] SEQUENCE {
  *     ...
- *     attributes  AttributeDescriptionList }
- *
- * AttributeDescriptionList ::= SEQUENCE OF
- *     AttributeDescription
+ *     timeLimit INTEGER (0 .. maxInt),
+ *     ...
  * </pre>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class StoreSearchRequestAttributeDesc extends GrammarAction<LdapMessageContainer<SearchRequestDecorator>>
+public class StoreSearchRequestTimeLimit extends GrammarAction<LdapMessageContainer<SearchRequestDecorator>>
 {
     /** The logger */
-    private static final Logger LOG = LoggerFactory.getLogger( StoreSearchRequestAttributeDesc.class );
+    private static final Logger LOG = LoggerFactory.getLogger( StoreSearchRequestTimeLimit.class );
 
     /** Speedup for logs */
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
     /**
-     * Instantiates a new attribute desc action.
+     * Instantiates a new action.
      */
-    public StoreSearchRequestAttributeDesc()
+    public StoreSearchRequestTimeLimit()
     {
-        super( "Store attribute description" );
+        super( "Store SearchRequest timeLimit" );
     }
 
 
@@ -64,27 +66,32 @@ public class StoreSearchRequestAttributeDesc extends GrammarAction<LdapMessageCo
      */
     public void action( LdapMessageContainer<SearchRequestDecorator> container ) throws DecoderException
     {
-        SearchRequestDecorator searchRequestDecorator = container.getMessage();
+        SearchRequest searchRequest = container.getMessage().getDecorated();
+
         TLV tlv = container.getCurrentTLV();
-        String attributeDescription = null;
 
-        if ( tlv.getLength() != 0 )
+        // The current TLV should be a integer
+        // We get it and store it in timeLimit
+        Value value = tlv.getValue();
+
+        int timeLimit = 0;
+
+        try
         {
-            attributeDescription = Strings.utf8ToString(tlv.getValue().getData());
-
-            // If the attributeDescription is empty, we won't add it
-            if ( !Strings.isEmpty(attributeDescription.trim()) )
-            {
-                searchRequestDecorator.getDecorated().addAttributes( attributeDescription );
-            }
+            timeLimit = IntegerDecoder.parse( value, 0, Integer.MAX_VALUE );
+        }
+        catch ( IntegerDecoderException ide )
+        {
+            String msg = I18n.err( I18n.ERR_04104, value.toString() );
+            LOG.error( msg );
+            throw new DecoderException( msg );
         }
 
-        // We can have an END transition
-        container.setGrammarEndAllowed( true );
+        searchRequest.setTimeLimit( timeLimit );
 
         if ( IS_DEBUG )
         {
-            LOG.debug( "Decoded Attribute Description : {}", attributeDescription );
+            LOG.debug( "The timeLimit value is set to {} seconds", Integer.valueOf( timeLimit ) );
         }
     }
 }

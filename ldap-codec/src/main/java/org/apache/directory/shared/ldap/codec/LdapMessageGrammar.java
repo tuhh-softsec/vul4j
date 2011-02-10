@@ -34,13 +34,8 @@ import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
 import org.apache.directory.shared.asn1.ber.tlv.BooleanDecoder;
 import org.apache.directory.shared.asn1.ber.tlv.BooleanDecoderException;
-import org.apache.directory.shared.asn1.ber.tlv.IntegerDecoder;
-import org.apache.directory.shared.asn1.ber.tlv.IntegerDecoderException;
-import org.apache.directory.shared.asn1.ber.tlv.LongDecoder;
-import org.apache.directory.shared.asn1.ber.tlv.LongDecoderException;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
-import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.actions.AllowGrammarEnd;
 import org.apache.directory.shared.ldap.codec.actions.CheckLengthNotNull;
@@ -65,7 +60,9 @@ import org.apache.directory.shared.ldap.codec.actions.compareRequest.StoreCompar
 import org.apache.directory.shared.ldap.codec.actions.compareRequest.StoreCompareRequestAttributeDesc;
 import org.apache.directory.shared.ldap.codec.actions.compareRequest.StoreCompareRequestEntryName;
 import org.apache.directory.shared.ldap.codec.actions.compareResponse.InitCompareResponse;
+import org.apache.directory.shared.ldap.codec.actions.controls.AddControl;
 import org.apache.directory.shared.ldap.codec.actions.controls.InitControls;
+import org.apache.directory.shared.ldap.codec.actions.controls.StoreControlCriticality;
 import org.apache.directory.shared.ldap.codec.actions.controls.StoreControlValue;
 import org.apache.directory.shared.ldap.codec.actions.delRequest.InitDelRequest;
 import org.apache.directory.shared.ldap.codec.actions.delResponse.InitDelResponse;
@@ -98,10 +95,17 @@ import org.apache.directory.shared.ldap.codec.actions.modifyRequest.StoreModifyR
 import org.apache.directory.shared.ldap.codec.actions.modifyRequest.StoreModifyRequestObjectName;
 import org.apache.directory.shared.ldap.codec.actions.modifyRequest.StoreOperationType;
 import org.apache.directory.shared.ldap.codec.actions.modifyResponse.InitModifyResponse;
+import org.apache.directory.shared.ldap.codec.actions.searchRequest.InitSearchRequest;
 import org.apache.directory.shared.ldap.codec.actions.searchRequest.StoreAny;
 import org.apache.directory.shared.ldap.codec.actions.searchRequest.StoreFinal;
 import org.apache.directory.shared.ldap.codec.actions.searchRequest.StoreMatchValue;
 import org.apache.directory.shared.ldap.codec.actions.searchRequest.StoreSearchRequestAttributeDesc;
+import org.apache.directory.shared.ldap.codec.actions.searchRequest.StoreSearchRequestBaseObject;
+import org.apache.directory.shared.ldap.codec.actions.searchRequest.StoreSearchRequestDerefAlias;
+import org.apache.directory.shared.ldap.codec.actions.searchRequest.StoreSearchRequestScope;
+import org.apache.directory.shared.ldap.codec.actions.searchRequest.StoreSearchRequestSizeLimit;
+import org.apache.directory.shared.ldap.codec.actions.searchRequest.StoreSearchRequestTimeLimit;
+import org.apache.directory.shared.ldap.codec.actions.searchRequest.StoreSearchRequestTypesOnly;
 import org.apache.directory.shared.ldap.codec.actions.searchRequest.StoreTypeMatchingRule;
 import org.apache.directory.shared.ldap.codec.actions.searchRequest.filter.InitAndFilter;
 import org.apache.directory.shared.ldap.codec.actions.searchRequest.filter.InitApproxMatchFilter;
@@ -124,21 +128,11 @@ import org.apache.directory.shared.ldap.codec.actions.searchResultReference.Init
 import org.apache.directory.shared.ldap.codec.actions.searchResultReference.StoreReference;
 import org.apache.directory.shared.ldap.codec.actions.unbindRequest.InitUnbindRequest;
 import org.apache.directory.shared.ldap.codec.api.LdapConstants;
-import org.apache.directory.shared.ldap.codec.api.ResponseCarryingException;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
 import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
 import org.apache.directory.shared.ldap.codec.search.SubstringFilter;
-import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
-import org.apache.directory.shared.ldap.model.filter.SearchScope;
-import org.apache.directory.shared.ldap.model.message.AliasDerefMode;
-import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.Message;
-import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
-import org.apache.directory.shared.ldap.model.message.SearchRequest;
-import org.apache.directory.shared.ldap.model.message.SearchRequestImpl;
-import org.apache.directory.shared.ldap.model.message.SearchResultDoneImpl;
-import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -2260,52 +2254,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // Create a new Control object, and store it in the message Container
-        super.transitions[LdapStatesEnum.CONTROL_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.CONTROL_STATE, LdapStatesEnum.CONTROL_TYPE_STATE, OCTET_STRING,
-            new GrammarAction<LdapMessageContainer<MessageDecorator<? extends Message>>>( "Set Control Type" )
-            {
-                public void action( LdapMessageContainer<MessageDecorator<? extends Message>> container ) throws DecoderException
-                {
-                    TLV tlv = container.getCurrentTLV();
-
-                    // Store the type
-                    // We have to handle the special case of a 0 length OID
-                    if ( tlv.getLength() == 0 )
-                    {
-                        String msg = I18n.err( I18n.ERR_04097 );
-                        LOG.error( msg );
-
-                        // This will generate a PROTOCOL_ERROR
-                        throw new DecoderException( msg );
-                    }
-
-                    byte[] value = tlv.getValue().getData();
-                    String oidValue = Strings.asciiBytesToString(value);
-
-                    // The OID is encoded as a String, not an Object Id
-                    if ( !OID.isOID(oidValue) )
-                    {
-                        LOG.error( I18n.err( I18n.ERR_04098, Strings.dumpBytes(value) ) );
-
-                        // This will generate a PROTOCOL_ERROR
-                        throw new DecoderException( I18n.err( I18n.ERR_04099, oidValue ) );
-                    }
-
-                    Message message = container.getMessage();
-
-                    Control control = container.getLdapCodecService().newControl( oidValue );
-
-                    message.addControl( control );
-
-                    // We can have an END transition
-                    container.setGrammarEndAllowed( true );
-
-                    if ( IS_DEBUG )
-                    {
-                        LOG.debug( "Control OID : " + oidValue );
-                    }
-                }
-            } );
+        super.transitions[LdapStatesEnum.CONTROL_STATE.ordinal()][OCTET_STRING.getValue()] =
+            new GrammarTransition(
+                LdapStatesEnum.CONTROL_STATE,
+                LdapStatesEnum.CONTROL_TYPE_STATE,
+                OCTET_STRING,
+                new AddControl() );
 
         // ============================================================================================
         // Transition from ControlType to Control Criticality
@@ -2316,51 +2270,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // Store the value in the control object created before
-        super.transitions[LdapStatesEnum.CONTROL_TYPE_STATE.ordinal()][BOOLEAN.getValue()] = new GrammarTransition(
-            LdapStatesEnum.CONTROL_TYPE_STATE, LdapStatesEnum.CRITICALITY_STATE, OCTET_STRING,
-            new GrammarAction<LdapMessageContainer<MessageDecorator<? extends Message>>>( "Set Criticality" )
-            {
-                public void action( LdapMessageContainer<MessageDecorator<? extends Message>> container ) throws DecoderException
-                {
-                    TLV tlv = container.getCurrentTLV();
-
-                    // Get the current control
-                    Control control = null;
-
-                    MessageDecorator<? extends Message> message = container.getMessage();
-                    control = message.getCurrentControl();
-
-                    // Store the criticality
-                    // We get the value. If it's a 0, it's a FALSE. If it's
-                    // a FF, it's a TRUE. Any other value should be an error,
-                    // but we could relax this constraint. So if we have
-                    // something
-                    // which is not 0, it will be interpreted as TRUE, but we
-                    // will generate a warning.
-                    Value value = tlv.getValue();
-
-                    try
-                    {
-                        control.setCritical( BooleanDecoder.parse( value ) );
-                    }
-                    catch ( BooleanDecoderException bde )
-                    {
-                        LOG.error( I18n
-                            .err( I18n.ERR_04100, Strings.dumpBytes(value.getData()), bde.getMessage() ) );
-
-                        // This will generate a PROTOCOL_ERROR
-                        throw new DecoderException( bde.getMessage() );
-                    }
-
-                    // We can have an END transition
-                    container.setGrammarEndAllowed( true );
-
-                    if ( IS_DEBUG )
-                    {
-                        LOG.debug( "Control criticality : " + control.isCritical() );
-                    }
-                }
-            } );
+        super.transitions[LdapStatesEnum.CONTROL_TYPE_STATE.ordinal()][BOOLEAN.getValue()] =
+            new GrammarTransition(
+                LdapStatesEnum.CONTROL_TYPE_STATE,
+                LdapStatesEnum.CRITICALITY_STATE,
+                OCTET_STRING,
+                new StoreControlCriticality() );
 
         // ============================================================================================
         // Transition from Control Criticality to Control Value
@@ -2444,24 +2359,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // SearchRequest ::= [APPLICATION 3] SEQUENCE { ...
         //
         // Initialize the searchRequest object
-        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.SEARCH_REQUEST_TAG] = new GrammarTransition(
-            LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.SEARCH_REQUEST_STATE, LdapConstants.SEARCH_REQUEST_TAG,
-            new GrammarAction<LdapMessageContainer<SearchRequestDecorator>>( "Init SearchRequest" )
-            {
-                public void action( LdapMessageContainer<SearchRequestDecorator> container )
-                {
-                    // Now, we can allocate the SearchRequest Object
-                    TLV tlv = container.getCurrentTLV();
-
-                    SearchRequestDecorator searchRequest = new SearchRequestDecorator(
-                        container.getLdapCodecService(), new SearchRequestImpl( container.getMessageId() ) );
-
-                    searchRequest.setTlvId( tlv.getId());
-                    container.setMessage( searchRequest );
-
-                    LOG.debug( "Search Request" );
-                }
-            } );
+        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.SEARCH_REQUEST_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.MESSAGE_ID_STATE,
+                LdapStatesEnum.SEARCH_REQUEST_STATE,
+                LdapConstants.SEARCH_REQUEST_TAG,
+                new InitSearchRequest() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from SearchRequest Message to BaseObject
@@ -2471,54 +2374,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // We have a value for the base object, we will store it in the message
-        super.transitions[LdapStatesEnum.SEARCH_REQUEST_STATE.ordinal()][OCTET_STRING.getValue()] = new GrammarTransition(
-            LdapStatesEnum.SEARCH_REQUEST_STATE, LdapStatesEnum.BASE_OBJECT_STATE, OCTET_STRING,
-            new GrammarAction<LdapMessageContainer<SearchRequestDecorator>>( "store base object value" )
-            {
-                public void action( LdapMessageContainer<SearchRequestDecorator> container ) throws DecoderException
-                {
-                    SearchRequestDecorator searchRequestDecorator = container.getMessage();
-                    SearchRequest searchRequest = searchRequestDecorator.getDecorated();
-
-                    TLV tlv = container.getCurrentTLV();
-
-                    // We have to check that this is a correct Dn
-                    Dn baseObject = null;
-
-                    // We have to handle the special case of a 0 length base
-                    // object,
-                    // which means that the search is done from the default
-                    // root.
-                    if ( tlv.getLength() != 0 )
-                    {
-                        byte[] dnBytes = tlv.getValue().getData();
-                        String dnStr = Strings.utf8ToString(dnBytes);
-
-                        try
-                        {
-                            baseObject = new Dn( dnStr );
-                        }
-                        catch ( LdapInvalidDnException ine )
-                        {
-                            String msg = "Invalid root Dn given : " + dnStr + " (" + Strings.dumpBytes(dnBytes)
-                                + ") is invalid";
-                            LOG.error( "{} : {}", msg, ine.getMessage() );
-
-                            SearchResultDoneImpl response = new SearchResultDoneImpl( searchRequest.getMessageId() );
-                            throw new ResponseCarryingException( msg, response, ResultCodeEnum.INVALID_DN_SYNTAX,
-                                Dn.EMPTY_DN, ine );
-                        }
-                    }
-                    else
-                    {
-                        baseObject = Dn.EMPTY_DN;
-                    }
-
-                    searchRequest.setBase(baseObject);
-
-                    LOG.debug( "Searching with root Dn : {}", baseObject );
-                }
-            } );
+        super.transitions[LdapStatesEnum.SEARCH_REQUEST_STATE.ordinal()][OCTET_STRING.getValue()] =
+            new GrammarTransition(
+                LdapStatesEnum.SEARCH_REQUEST_STATE,
+                LdapStatesEnum.BASE_OBJECT_STATE,
+                OCTET_STRING,
+                new StoreSearchRequestBaseObject() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from BaseObject to Scope
@@ -2532,53 +2393,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // We have a value for the scope, we will store it in the message
-        super.transitions[LdapStatesEnum.BASE_OBJECT_STATE.ordinal()][ENUMERATED.getValue()] = new GrammarTransition(
-            LdapStatesEnum.BASE_OBJECT_STATE, LdapStatesEnum.SCOPE_STATE, ENUMERATED,
-            new GrammarAction<LdapMessageContainer<SearchRequestDecorator>>( "store scope value" )
-            {
-                public void action( LdapMessageContainer<SearchRequestDecorator> container ) throws DecoderException
-                {
-                    SearchRequest searchRequest = container.getMessage().getDecorated();
-
-                    TLV tlv = container.getCurrentTLV();
-
-                    // We have to check that this is a correct scope
-                    Value value = tlv.getValue();
-                    int scope = 0;
-
-                    try
-                    {
-                        scope = IntegerDecoder.parse( value, LdapConstants.SCOPE_BASE_OBJECT,
-                            LdapConstants.SCOPE_WHOLE_SUBTREE );
-                    }
-                    catch ( IntegerDecoderException ide )
-                    {
-                        String msg = I18n.err( I18n.ERR_04101, value.toString() );
-                        LOG.error( msg );
-                        throw new DecoderException( msg );
-                    }
-
-                    searchRequest.setScope( SearchScope.getSearchScope(scope) );
-
-                    if ( IS_DEBUG )
-                    {
-                        switch ( scope )
-                        {
-                            case LdapConstants.SCOPE_BASE_OBJECT:
-                                LOG.debug( "Searching within BASE_OBJECT scope " );
-                                break;
-
-                            case LdapConstants.SCOPE_SINGLE_LEVEL:
-                                LOG.debug( "Searching within SINGLE_LEVEL scope " );
-                                break;
-
-                            case LdapConstants.SCOPE_WHOLE_SUBTREE:
-                                LOG.debug( "Searching within WHOLE_SUBTREE scope " );
-                                break;
-                        }
-                    }
-                }
-            } );
+        super.transitions[LdapStatesEnum.BASE_OBJECT_STATE.ordinal()][ENUMERATED.getValue()] =
+            new GrammarTransition(
+                LdapStatesEnum.BASE_OBJECT_STATE,
+                LdapStatesEnum.SCOPE_STATE,
+                ENUMERATED,
+                new StoreSearchRequestScope() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from Scope to DerefAlias
@@ -2593,57 +2413,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // We have a value for the derefAliases, we will store it in the message
-        super.transitions[LdapStatesEnum.SCOPE_STATE.ordinal()][ENUMERATED.getValue()] = new GrammarTransition(
-            LdapStatesEnum.SCOPE_STATE, LdapStatesEnum.DEREF_ALIAS_STATE, ENUMERATED,
-            new GrammarAction<LdapMessageContainer<SearchRequestDecorator>>( "store derefAliases value" )
-            {
-                public void action( LdapMessageContainer<SearchRequestDecorator> container ) throws DecoderException
-                {
-                    SearchRequest searchRequest = container.getMessage().getDecorated();
-
-                    TLV tlv = container.getCurrentTLV();
-
-                    // We have to check that this is a correct derefAliases
-                    Value value = tlv.getValue();
-                    int derefAliases = 0;
-
-                    try
-                    {
-                        derefAliases = IntegerDecoder.parse(value, LdapConstants.NEVER_DEREF_ALIASES,
-                                LdapConstants.DEREF_ALWAYS);
-                    }
-                    catch ( IntegerDecoderException ide )
-                    {
-                        String msg = I18n.err( I18n.ERR_04102, value.toString() );
-                        LOG.error( msg );
-                        throw new DecoderException( msg );
-                    }
-
-                    searchRequest.setDerefAliases( AliasDerefMode.getDerefMode( derefAliases ) );
-
-                    if ( IS_DEBUG )
-                    {
-                        switch ( derefAliases )
-                        {
-                            case LdapConstants.NEVER_DEREF_ALIASES:
-                                LOG.debug( "Handling object strategy : NEVER_DEREF_ALIASES" );
-                                break;
-
-                            case LdapConstants.DEREF_IN_SEARCHING:
-                                LOG.debug( "Handling object strategy : DEREF_IN_SEARCHING" );
-                                break;
-
-                            case LdapConstants.DEREF_FINDING_BASE_OBJ:
-                                LOG.debug( "Handling object strategy : DEREF_FINDING_BASE_OBJ" );
-                                break;
-
-                            case LdapConstants.DEREF_ALWAYS:
-                                LOG.debug( "Handling object strategy : DEREF_ALWAYS" );
-                                break;
-                        }
-                    }
-                }
-            } );
+        super.transitions[LdapStatesEnum.SCOPE_STATE.ordinal()][ENUMERATED.getValue()] =
+            new GrammarTransition(
+                LdapStatesEnum.SCOPE_STATE,
+                LdapStatesEnum.DEREF_ALIAS_STATE,
+                ENUMERATED,
+                new StoreSearchRequestDerefAlias() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from DerefAlias to SizeLimit
@@ -2654,40 +2429,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // We have a value for the sizeLimit, we will store it in the message
-        super.transitions[LdapStatesEnum.DEREF_ALIAS_STATE.ordinal()][INTEGER.getValue()] = new GrammarTransition(
-            LdapStatesEnum.DEREF_ALIAS_STATE, LdapStatesEnum.SIZE_LIMIT_STATE, INTEGER,
-            new GrammarAction<LdapMessageContainer<SearchRequestDecorator>>( "store sizeLimit value" )
-            {
-                public void action( LdapMessageContainer<SearchRequestDecorator> container ) throws DecoderException
-                {
-                    SearchRequest searchRequest = container.getMessage().getDecorated();
-
-                    TLV tlv = container.getCurrentTLV();
-
-                    // The current TLV should be a integer
-                    // We get it and store it in sizeLimit
-                    Value value = tlv.getValue();
-                    long sizeLimit = 0;
-
-                    try
-                    {
-                        sizeLimit = LongDecoder.parse( value, 0, Integer.MAX_VALUE );
-                    }
-                    catch ( LongDecoderException lde )
-                    {
-                        String msg = I18n.err( I18n.ERR_04103, value.toString() );
-                        LOG.error( msg );
-                        throw new DecoderException( msg );
-                    }
-
-                    searchRequest.setSizeLimit( sizeLimit );
-
-                    if ( IS_DEBUG )
-                    {
-                        LOG.debug( "The sizeLimit value is set to {} objects", Long.valueOf( sizeLimit ) );
-                    }
-                }
-            } );
+        super.transitions[LdapStatesEnum.DEREF_ALIAS_STATE.ordinal()][INTEGER.getValue()] = new
+            GrammarTransition(
+                LdapStatesEnum.DEREF_ALIAS_STATE,
+                LdapStatesEnum.SIZE_LIMIT_STATE,
+                INTEGER,
+                new StoreSearchRequestSizeLimit() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from SizeLimit to TimeLimit
@@ -2698,41 +2445,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // We have a value for the timeLimit, we will store it in the message
-        super.transitions[LdapStatesEnum.SIZE_LIMIT_STATE.ordinal()][INTEGER.getValue()] = new GrammarTransition(
-            LdapStatesEnum.SIZE_LIMIT_STATE, LdapStatesEnum.TIME_LIMIT_STATE, INTEGER,
-            new GrammarAction<LdapMessageContainer<SearchRequestDecorator>>( "store timeLimit value" )
-            {
-                public void action( LdapMessageContainer<SearchRequestDecorator> container ) throws DecoderException
-                {
-                    SearchRequest searchRequest = container.getMessage().getDecorated();
-
-                    TLV tlv = container.getCurrentTLV();
-
-                    // The current TLV should be a integer
-                    // We get it and store it in timeLimit
-                    Value value = tlv.getValue();
-
-                    int timeLimit = 0;
-
-                    try
-                    {
-                        timeLimit = IntegerDecoder.parse( value, 0, Integer.MAX_VALUE );
-                    }
-                    catch ( IntegerDecoderException ide )
-                    {
-                        String msg = I18n.err( I18n.ERR_04104, value.toString() );
-                        LOG.error( msg );
-                        throw new DecoderException( msg );
-                    }
-
-                    searchRequest.setTimeLimit( timeLimit );
-
-                    if ( IS_DEBUG )
-                    {
-                        LOG.debug( "The timeLimit value is set to {} seconds", Integer.valueOf( timeLimit ) );
-                    }
-                }
-            } );
+        super.transitions[LdapStatesEnum.SIZE_LIMIT_STATE.ordinal()][INTEGER.getValue()] =
+            new GrammarTransition(
+                LdapStatesEnum.SIZE_LIMIT_STATE,
+                LdapStatesEnum.TIME_LIMIT_STATE,
+                INTEGER,
+                new StoreSearchRequestTimeLimit() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from TimeLimit to TypesOnly
@@ -2743,43 +2461,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // We have a value for the typesOnly, we will store it in the message.
-        super.transitions[LdapStatesEnum.TIME_LIMIT_STATE.ordinal()][BOOLEAN.getValue()] = new GrammarTransition(
-            LdapStatesEnum.TIME_LIMIT_STATE, LdapStatesEnum.TYPES_ONLY_STATE, BOOLEAN,
-            new GrammarAction<LdapMessageContainer<SearchRequestDecorator>>( "store typesOnly value" )
-            {
-                public void action( LdapMessageContainer<SearchRequestDecorator> container ) throws DecoderException
-                {
-                    SearchRequest searchRequest = container.getMessage().getDecorated();
-
-                    TLV tlv = container.getCurrentTLV();
-
-                    // We get the value. If it's a 0, it's a FALSE. If it's
-                    // a FF, it's a TRUE. Any other value should be an error,
-                    // but we could relax this constraint. So if we have
-                    // something
-                    // which is not 0, it will be interpreted as TRUE, but we
-                    // will generate a warning.
-                    Value value = tlv.getValue();
-
-                    try
-                    {
-                        searchRequest.setTypesOnly( BooleanDecoder.parse( value ) );
-                    }
-                    catch ( BooleanDecoderException bde )
-                    {
-                        LOG.error( I18n
-                            .err( I18n.ERR_04105, Strings.dumpBytes(value.getData()), bde.getMessage() ) );
-
-                        throw new DecoderException( bde.getMessage() );
-                    }
-
-                    if ( IS_DEBUG )
-                    {
-                        LOG.debug( "The search will return {}", ( searchRequest.getTypesOnly() ? "only attributs type"
-                            : "attributes types and values" ) );
-                    }
-                }
-            } );
+        super.transitions[LdapStatesEnum.TIME_LIMIT_STATE.ordinal()][BOOLEAN.getValue()] =
+            new GrammarTransition(
+                LdapStatesEnum.TIME_LIMIT_STATE,
+                LdapStatesEnum.TYPES_ONLY_STATE,
+                BOOLEAN,
+                new StoreSearchRequestTypesOnly() );
 
         //============================================================================================
         // Search Request And Filter
