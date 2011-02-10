@@ -25,10 +25,21 @@
     <version>0.9.20-SNAPSHOT</version>
   </parent>
   
-  <artifactId>shared-ldap-codec</artifactId>
-  <name>Apache Directory Shared LDAP Codec</name>
-  <packaging>bundle</packaging>
-  <description>LDAP Codec used by clients and servers</description>
+  <artifactId>shared-ldap-codec-standalone</artifactId>
+  <name>Apache Directory Shared LDAP Codec Standalone</name>
+  <packaging>jar</packaging>
+  <description>
+    This module was created to fix issue DIRSHARED-91 where the embedded Felix
+    instance inside the default LdapCodecService implementation was making it 
+    very problematic to deploy the ldap-codec inside an RCP (OSGi) environment
+    and hence Apache Directory Studio could not use it.
+
+    This module is most likely temporary and will disappear once we are fully
+    OSGi enabled. This module is a plain old jar, not a bundle to avoid 
+    accidental reuse as an OSGi module because it contains the version of the
+    LdapCodecService that embeds Felix to make controls and extended ops 
+    pluggable in the codec.
+  </description>
 
   <dependencies>
     <dependency>
@@ -45,47 +56,12 @@
 
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>shared-util</artifactId>
+      <artifactId>shared-ldap-codec</artifactId>
     </dependency> 
 
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>shared-asn1-api</artifactId>
-    </dependency> 
-
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>shared-asn1-ber</artifactId>
-    </dependency> 
-
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>shared-i18n</artifactId>
-    </dependency> 
-
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>shared-ldap-model</artifactId>
-    </dependency> 
-
-    <dependency>
-      <groupId>org.apache.mina</groupId>
-      <artifactId>mina-core</artifactId>
-    </dependency>
-    
     <dependency>
       <groupId>org.apache.felix</groupId>
       <artifactId>org.apache.felix.framework</artifactId>
-    </dependency>
-    
-    <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>commons-collections</groupId>
-      <artifactId>commons-collections</artifactId>
     </dependency>
   </dependencies>
 
@@ -107,34 +83,6 @@
               ${project.build.directory}/osgi-cache
             </org.osgi.framework.storage>
           </systemPropertyVariables>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifestFile>META-INF/MANIFEST.MF</manifestFile>
-            <addMavenDescriptor>false</addMavenDescriptor>
-          </archive>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <inherited>true</inherited>
-        <extensions>true</extensions>
-        <configuration>
-          <manifestLocation>META-INF</manifestLocation>
-          <instructions>
-            <Bundle-SymbolicName>${project.groupId}.ldap.codec</Bundle-SymbolicName>
-            <Export-Package>
-              org.apache.directory.shared.ldap.codec.api,
-              org.apache.directory.shared.ldap.codec.controls
-            </Export-Package>
-          </instructions>
         </configuration>
       </plugin>
     </plugins>
