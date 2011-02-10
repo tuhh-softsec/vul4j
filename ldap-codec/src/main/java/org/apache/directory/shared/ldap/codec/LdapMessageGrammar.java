@@ -29,7 +29,6 @@ import static org.apache.directory.shared.asn1.ber.tlv.UniversalTag.SET;
 
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
-import org.apache.directory.shared.asn1.ber.grammar.Action;
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
@@ -44,6 +43,7 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.actions.AllowGrammarEnd;
+import org.apache.directory.shared.ldap.codec.actions.CheckLengthNotNull;
 import org.apache.directory.shared.ldap.codec.actions.InitAndFilterAction;
 import org.apache.directory.shared.ldap.codec.actions.InitApproxMatchFilterAction;
 import org.apache.directory.shared.ldap.codec.actions.InitAssertionValueFilterAction;
@@ -91,6 +91,9 @@ import org.apache.directory.shared.ldap.codec.actions.extendedRequest.StoreExten
 import org.apache.directory.shared.ldap.codec.actions.extendedResponse.InitExtendedResponse;
 import org.apache.directory.shared.ldap.codec.actions.extendedResponse.StoreExtendedResponseValue;
 import org.apache.directory.shared.ldap.codec.actions.extendedResponse.StoreResponseName;
+import org.apache.directory.shared.ldap.codec.actions.intermediateResponse.InitIntermediateResponse;
+import org.apache.directory.shared.ldap.codec.actions.intermediateResponse.StoreIntermediateResponseName;
+import org.apache.directory.shared.ldap.codec.actions.intermediateResponse.StoreIntermediateResponseValue;
 import org.apache.directory.shared.ldap.codec.actions.ldapMessage.InitLdapMessage;
 import org.apache.directory.shared.ldap.codec.actions.ldapMessage.StoreMessageId;
 import org.apache.directory.shared.ldap.codec.actions.ldapResult.AddReferral;
@@ -122,7 +125,6 @@ import org.apache.directory.shared.ldap.codec.actions.searchResultReference.Stor
 import org.apache.directory.shared.ldap.codec.actions.unbindRequest.InitUnbindRequest;
 import org.apache.directory.shared.ldap.codec.api.LdapConstants;
 import org.apache.directory.shared.ldap.codec.api.ResponseCarryingException;
-import org.apache.directory.shared.ldap.codec.decorators.IntermediateResponseDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
 import org.apache.directory.shared.ldap.codec.search.ExtensibleMatchFilter;
@@ -131,15 +133,12 @@ import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.filter.SearchScope;
 import org.apache.directory.shared.ldap.model.message.AliasDerefMode;
 import org.apache.directory.shared.ldap.model.message.Control;
-import org.apache.directory.shared.ldap.model.message.IntermediateResponse;
-import org.apache.directory.shared.ldap.model.message.IntermediateResponseImpl;
 import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.model.message.SearchRequest;
 import org.apache.directory.shared.ldap.model.message.SearchRequestImpl;
 import org.apache.directory.shared.ldap.model.message.SearchResultDoneImpl;
 import org.apache.directory.shared.ldap.model.name.Dn;
-import org.apache.directory.shared.util.StringConstants;
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -2156,21 +2155,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         // IntermediateResponse ::= [APPLICATION 25] SEQUENCE {
         //
         // Creates the IntermediateResponse object
-        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.INTERMEDIATE_RESPONSE_TAG] = new GrammarTransition(
-            LdapStatesEnum.MESSAGE_ID_STATE, LdapStatesEnum.INTERMEDIATE_RESPONSE_STATE,
-            LdapConstants.INTERMEDIATE_RESPONSE_TAG, new GrammarAction<LdapMessageContainer<IntermediateResponseDecorator>>( "Init Intermediate Response" )
-            {
-                public void action( LdapMessageContainer<IntermediateResponseDecorator> container ) throws DecoderException
-                {
-                    // Now, we can allocate the IntermediateResponse Object
-                    IntermediateResponseDecorator intermediateResponse =
-                        new IntermediateResponseDecorator( container.getLdapCodecService(),
-                            new IntermediateResponseImpl( container.getMessageId() ) );
-                    container.setMessage( intermediateResponse );
-
-                    LOG.debug( "Intermediate Response" );
-                }
-            } );
+        super.transitions[LdapStatesEnum.MESSAGE_ID_STATE.ordinal()][LdapConstants.INTERMEDIATE_RESPONSE_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.MESSAGE_ID_STATE,
+                LdapStatesEnum.INTERMEDIATE_RESPONSE_STATE,
+                LdapConstants.INTERMEDIATE_RESPONSE_TAG,
+                new InitIntermediateResponse() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from IntermediateResponse Message to ResponseName
@@ -2180,59 +2170,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     ...
         //
         // Stores the name
-        super.transitions[LdapStatesEnum.INTERMEDIATE_RESPONSE_STATE.ordinal()][LdapConstants.INTERMEDIATE_RESPONSE_NAME_TAG] = new GrammarTransition(
-            LdapStatesEnum.INTERMEDIATE_RESPONSE_STATE, LdapStatesEnum.INTERMEDIATE_RESPONSE_NAME_STATE,
-            LdapConstants.INTERMEDIATE_RESPONSE_NAME_TAG, new GrammarAction<LdapMessageContainer<IntermediateResponseDecorator>>( "Store response name" )
-            {
-                public void action( LdapMessageContainer<IntermediateResponseDecorator> container ) throws DecoderException
-                {
-                    // We can get the IntermediateResponse Object
-                    IntermediateResponse intermediateResponse = container.getMessage();
-
-                    // Get the Value and store it in the IntermediateResponse
-                    TLV tlv = container.getCurrentTLV();
-
-                    // We have to handle the special case of a 0 length matched
-                    // OID.
-                    if ( tlv.getLength() == 0 )
-                    {
-                        String msg = I18n.err( I18n.ERR_04095 );
-                        LOG.error( msg );
-                        // This will generate a PROTOCOL_ERROR
-                        throw new DecoderException( msg );
-                    }
-                    else
-                    {
-                        byte[] responseNameBytes = tlv.getValue().getData();
-
-                        String oidStr = Strings.utf8ToString(responseNameBytes);
-
-                        if ( OID.isOID( oidStr ) )
-                        {
-                            OID.isOID( oidStr );
-                            intermediateResponse.setResponseName( oidStr );
-                        }
-                        else
-                        {
-                            String msg = "The Intermediate Response name is not a valid OID : "
-                                + Strings.utf8ToString(responseNameBytes) + " ("
-                                + Strings.dumpBytes(responseNameBytes) + ") is invalid";
-                            LOG.error( "{} : {}", msg, oidStr );
-
-                            // Rethrow the exception, we will get a PROTOCOL_ERROR
-                            throw new DecoderException( msg );
-                        }
-                    }
-
-                    // We can have an END transition
-                    container.setGrammarEndAllowed( true );
-
-                    if ( IS_DEBUG )
-                    {
-                        LOG.debug( "OID read : {}", intermediateResponse.getResponseName() );
-                    }
-                }
-            } );
+        super.transitions[LdapStatesEnum.INTERMEDIATE_RESPONSE_STATE.ordinal()][LdapConstants.INTERMEDIATE_RESPONSE_NAME_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.INTERMEDIATE_RESPONSE_STATE,
+                LdapStatesEnum.INTERMEDIATE_RESPONSE_NAME_STATE,
+                LdapConstants.INTERMEDIATE_RESPONSE_NAME_TAG,
+                new StoreIntermediateResponseName() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from IntermediateResponse Message to ResponseValue (ResponseName is null)
@@ -2243,39 +2186,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     }
         //
         // Stores the value
-        super.transitions[LdapStatesEnum.INTERMEDIATE_RESPONSE_STATE.ordinal()][LdapConstants.INTERMEDIATE_RESPONSE_VALUE_TAG] = new GrammarTransition(
-            LdapStatesEnum.INTERMEDIATE_RESPONSE_STATE, LdapStatesEnum.INTERMEDIATE_RESPONSE_VALUE_STATE,
-            LdapConstants.INTERMEDIATE_RESPONSE_VALUE_TAG,
-            new GrammarAction<LdapMessageContainer<IntermediateResponseDecorator>>( "Store response value" )
-            {
-                public void action( LdapMessageContainer<IntermediateResponseDecorator> container ) throws DecoderException
-                {
-                    // We can get the IntermediateResponse Object
-                    IntermediateResponse intermediateResponse = container.getMessage();
-
-                    // Get the Value and store it in the IntermediateResponse
-                    TLV tlv = container.getCurrentTLV();
-
-                    // We have to handle the special case of a 0 length matched
-                    // value
-                    if ( tlv.getLength() == 0 )
-                    {
-                        intermediateResponse.setResponseValue( StringConstants.EMPTY_BYTES );
-                    }
-                    else
-                    {
-                        intermediateResponse.setResponseValue( tlv.getValue().getData() );
-                    }
-
-                    // We can have an END transition
-                    container.setGrammarEndAllowed( true );
-
-                    if ( IS_DEBUG )
-                    {
-                        LOG.debug( "Value read : {}", Strings.dumpBytes(intermediateResponse.getResponseValue()) );
-                    }
-                }
-            } );
+        super.transitions[LdapStatesEnum.INTERMEDIATE_RESPONSE_STATE.ordinal()][LdapConstants.INTERMEDIATE_RESPONSE_VALUE_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.INTERMEDIATE_RESPONSE_STATE,
+                LdapStatesEnum.INTERMEDIATE_RESPONSE_VALUE_STATE,
+                LdapConstants.INTERMEDIATE_RESPONSE_VALUE_TAG,
+                new StoreIntermediateResponseValue() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from ResponseName to ResponseValue
@@ -2285,39 +2201,12 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
         //     responseValue  [1] OCTET STRING OPTIONAL }
         //
         // Stores the value
-        super.transitions[LdapStatesEnum.INTERMEDIATE_RESPONSE_NAME_STATE.ordinal()][LdapConstants.INTERMEDIATE_RESPONSE_VALUE_TAG] = new GrammarTransition(
-            LdapStatesEnum.INTERMEDIATE_RESPONSE_NAME_STATE, LdapStatesEnum.INTERMEDIATE_RESPONSE_VALUE_STATE,
-            LdapConstants.INTERMEDIATE_RESPONSE_VALUE_TAG,
-            new GrammarAction<LdapMessageContainer<IntermediateResponseDecorator>>( "Store value" )
-            {
-                public void action( LdapMessageContainer<IntermediateResponseDecorator> container ) throws DecoderException
-                {
-                    // We can allocate the ExtendedRequest Object
-                    IntermediateResponse intermediateResponse = container.getMessage();
-
-                    // Get the Value and store it in the IntermediateResponse
-                    TLV tlv = container.getCurrentTLV();
-
-                    // We have to handle the special case of a 0 length matched
-                    // value
-                    if ( tlv.getLength() == 0 )
-                    {
-                        intermediateResponse.setResponseValue( StringConstants.EMPTY_BYTES );
-                    }
-                    else
-                    {
-                        intermediateResponse.setResponseValue( tlv.getValue().getData() );
-                    }
-
-                    // We can have an END transition
-                    container.setGrammarEndAllowed( true );
-
-                    if ( IS_DEBUG )
-                    {
-                        LOG.debug( "Response value : {}", intermediateResponse.getResponseValue() );
-                    }
-                }
-            } );
+        super.transitions[LdapStatesEnum.INTERMEDIATE_RESPONSE_NAME_STATE.ordinal()][LdapConstants.INTERMEDIATE_RESPONSE_VALUE_TAG] =
+            new GrammarTransition(
+                LdapStatesEnum.INTERMEDIATE_RESPONSE_NAME_STATE,
+                LdapStatesEnum.INTERMEDIATE_RESPONSE_VALUE_STATE,
+                LdapConstants.INTERMEDIATE_RESPONSE_VALUE_TAG,
+                new StoreIntermediateResponseValue() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from ResponseName to Controls
@@ -2349,29 +2238,6 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapConstants.CONTROLS_TAG,
                 new InitControls() );
 
-        // --------------------------------------------------------------------------------------------
-        // Controls
-        // --------------------------------------------------------------------------------------------
-        Action<LdapMessageContainer<MessageDecorator<? extends Message>>> addControl =
-            new GrammarAction<LdapMessageContainer<MessageDecorator<? extends Message>>>( "Add Control" )
-        {
-            public void action( LdapMessageContainer<MessageDecorator<? extends Message>> container ) throws DecoderException
-            {
-                TLV tlv = container.getCurrentTLV();
-                int expectedLength = tlv.getLength();
-
-                // The Length should be null
-                if ( expectedLength == 0 )
-                {
-                    String msg = I18n.err( I18n.ERR_04096 );
-                    LOG.error( msg );
-
-                    // This will generate a PROTOCOL_ERROR
-                    throw new DecoderException( msg );
-                }
-            }
-        };
-
         // ============================================================================================
         // Transition from Controls to Control
         // ============================================================================================
@@ -2385,7 +2251,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.CONTROLS_STATE,
                 LdapStatesEnum.CONTROL_STATE,
                 SEQUENCE.getValue(),
-                addControl );
+                new CheckLengthNotNull() );
 
         // ============================================================================================
         // Transition from Control to ControlType
@@ -2539,7 +2405,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.CONTROL_TYPE_STATE,
                 LdapStatesEnum.CONTROL_STATE,
                 SEQUENCE.getValue(),
-                addControl );
+                new CheckLengthNotNull() );
 
         // ============================================================================================
         // Transition from Control Criticality to Control
@@ -2554,7 +2420,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.CRITICALITY_STATE,
                 LdapStatesEnum.CONTROL_STATE,
                 SEQUENCE.getValue(),
-                addControl );
+                new CheckLengthNotNull() );
 
         // ============================================================================================
         // Transition from Control Value to Control
@@ -2569,7 +2435,7 @@ public final class LdapMessageGrammar<E> extends AbstractGrammar<LdapMessageCont
                 LdapStatesEnum.CONTROL_VALUE_STATE,
                 LdapStatesEnum.CONTROL_STATE,
                 SEQUENCE.getValue(),
-                addControl );
+                new CheckLengthNotNull() );
 
         // --------------------------------------------------------------------------------------------
         // Transition from message ID to SearchRequest Message
