@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.directory.shared</groupId>
     <artifactId>shared-parent</artifactId>
-    <version>1.0.0-M2-SNAPSHOT</version>
+    <version>1.0.0-M1-SNAPSHOT</version>
   </parent>
 
   <artifactId>ldap-client-api</artifactId>
