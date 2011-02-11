@@ -68,6 +68,15 @@ public abstract class AbstractRulesModule implements RulesModule {
     }
 
     /**
+     * Return the wrapped {@link RulesBinder}.
+     *
+     * @return The wrapped {@link RulesBinder}
+     */
+    protected RulesBinder rulesBinder() {
+        return this.rulesBinder;
+    }
+
+    /**
      * {@inheritDoc}
      */
     public final void configure(RulesBinder rulesBinder) {
