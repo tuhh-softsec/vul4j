@@ -88,6 +88,7 @@ final class CallParamBuilderImpl
      */
     public CallParamBuilderImpl withStackIndex(int stackIndex) {
         this.stackIndex = stackIndex;
+        this.fromStack = true;
         return this;
     }
 
