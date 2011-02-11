@@ -35,7 +35,7 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.api.CodecControl;
-import org.apache.directory.shared.ldap.codec.standalone.StandaloneLdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.DefaultLdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.ResponseCarryingException;
 import org.apache.directory.shared.ldap.codec.decorators.DeleteRequestDecorator;
@@ -54,12 +54,12 @@ import org.junit.runner.RunWith;
 @Concurrency()
 public class DelRequestTest
 {
+    LdapCodecService codec = new DefaultLdapCodecService();
+
     /** The encoder instance */
-    LdapEncoder encoder = new LdapEncoder();
+    LdapEncoder encoder = new LdapEncoder( codec );
 
-    LdapCodecService codec = new StandaloneLdapCodecService();
     
-
     /**
      * Test the decoding of a full DelRequest
      */

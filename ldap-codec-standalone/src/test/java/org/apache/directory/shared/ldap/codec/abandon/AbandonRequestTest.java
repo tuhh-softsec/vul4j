@@ -33,11 +33,9 @@ import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
-import org.apache.directory.shared.ldap.codec.LdapEncoder;
+import org.apache.directory.shared.ldap.codec.AbstractCodecServiceTest;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.api.CodecControl;
-import org.apache.directory.shared.ldap.codec.standalone.StandaloneLdapCodecService;
-import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.decorators.AbandonRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
 import org.apache.directory.shared.ldap.model.message.AbandonRequest;
@@ -56,14 +54,8 @@ import org.junit.runner.RunWith;
  */
 @RunWith(ConcurrentJunitRunner.class)
 @Concurrency()
-public class AbandonRequestTest
+public class AbandonRequestTest extends AbstractCodecServiceTest
 {
-    /** The encoder instance */
-    LdapEncoder encoder = new LdapEncoder();
-    
-    LdapCodecService codec = new StandaloneLdapCodecService();
-
-
     /**
      * Test the decoding of a AbandonRequest with controls
      */

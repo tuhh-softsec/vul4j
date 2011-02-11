@@ -35,7 +35,7 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.tlv.TLVStateEnum;
-import org.apache.directory.shared.ldap.codec.standalone.StandaloneLdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.DefaultLdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.decorators.BindRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
@@ -61,7 +61,8 @@ import org.junit.runner.RunWith;
 @Concurrency()
 public class LdapDecoderTest
 {
-    LdapCodecService codec = new StandaloneLdapCodecService();
+    LdapCodecService codec = new DefaultLdapCodecService();
+    
     
     private static class LdapProtocolDecoderOutput extends AbstractProtocolDecoderOutput 
     {

@@ -20,6 +20,7 @@
 package org.apache.directory.shared.ldap.codec.protocol.mina;
 
 
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.ProtocolCodecFactory;
 import org.apache.mina.filter.codec.ProtocolDecoder;
@@ -39,13 +40,19 @@ public class LdapProtocolCodecFactory implements ProtocolCodecFactory
     /** The LdapEncoder key */
     public static final String LDAP_ENCODER = "LDAP_ENCODER";
 
+    
+    private LdapCodecService codec;
 
+    
     /**
      * Creates a new instance of LdapProtocolCodecFactory. It
      * creates the encoded an decoder instances.
+     * 
+     * @param codec The codec associated with this protocol codec factory
      */
-    public LdapProtocolCodecFactory()
+    public LdapProtocolCodecFactory( LdapCodecService codec )
     {
+        this.codec = codec;
     }
 
 
@@ -69,6 +76,6 @@ public class LdapProtocolCodecFactory implements ProtocolCodecFactory
      */
     public ProtocolEncoder getEncoder( IoSession session )
     {
-        return new LdapProtocolEncoder();
+        return new LdapProtocolEncoder( codec );
     }
 }

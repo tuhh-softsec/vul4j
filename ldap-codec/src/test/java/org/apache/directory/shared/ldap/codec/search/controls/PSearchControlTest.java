@@ -28,7 +28,7 @@ import java.nio.ByteBuffer;
 import com.mycila.junit.concurrent.Concurrency;
 import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.ldap.codec.standalone.StandaloneLdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.DefaultLdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.controls.search.persistentSearch.PersistentSearchDecorator;
 import org.apache.directory.shared.ldap.model.message.controls.ChangeType;
@@ -47,7 +47,7 @@ import org.junit.runner.RunWith;
 @Concurrency()
 public class PSearchControlTest
 {
-    private LdapCodecService codec = new StandaloneLdapCodecService();
+    private LdapCodecService codec = new DefaultLdapCodecService();
 
     /**
      * Test encoding of a PSearchControl.

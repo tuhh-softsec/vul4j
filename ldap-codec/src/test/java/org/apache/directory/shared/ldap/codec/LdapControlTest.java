@@ -35,7 +35,7 @@ import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.ldap.codec.api.CodecControl;
-import org.apache.directory.shared.ldap.codec.standalone.StandaloneLdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.DefaultLdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.decorators.AbandonRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
@@ -52,11 +52,12 @@ import org.junit.runner.RunWith;
 @Concurrency()
 public class LdapControlTest
 {
+    LdapCodecService codec = new DefaultLdapCodecService();
+
     /** The encoder instance */
-    LdapEncoder encoder = new LdapEncoder();
-    LdapCodecService codec = new StandaloneLdapCodecService();
+    LdapEncoder encoder = new LdapEncoder( codec );
 
-
+    
     /**
      * Test the decoding of a Request with controls
      */

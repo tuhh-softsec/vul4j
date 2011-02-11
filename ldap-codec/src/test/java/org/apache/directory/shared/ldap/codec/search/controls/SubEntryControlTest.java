@@ -31,7 +31,7 @@ import com.mycila.junit.concurrent.Concurrency;
 import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
-import org.apache.directory.shared.ldap.codec.standalone.StandaloneLdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.DefaultLdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.controls.search.subentries.SubentriesDecorator;
 import org.apache.directory.shared.ldap.model.message.controls.Subentries;
@@ -49,7 +49,7 @@ import org.junit.runner.RunWith;
 @Concurrency()
 public class SubEntryControlTest
 {
-    private LdapCodecService codec = new StandaloneLdapCodecService();
+    private LdapCodecService codec = new DefaultLdapCodecService();
 
     /**
      * Test the decoding of a SubEntryControl with a true visibility

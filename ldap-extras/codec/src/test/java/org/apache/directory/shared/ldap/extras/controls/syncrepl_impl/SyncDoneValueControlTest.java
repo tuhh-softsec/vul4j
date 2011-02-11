@@ -29,7 +29,7 @@ import static org.junit.Assert.fail;
 import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.asn1.EncoderException;
-import org.apache.directory.shared.ldap.codec.standalone.StandaloneLdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.DefaultLdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.extras.controls.SyncDoneValue;
 import org.apache.directory.shared.util.Strings;
@@ -50,7 +50,8 @@ import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 @Concurrency()
 public class SyncDoneValueControlTest
 {
-    private LdapCodecService codec = new StandaloneLdapCodecService();
+    /** the codec service used for tests */
+    private LdapCodecService codec = new DefaultLdapCodecService();
 
     
     @Test

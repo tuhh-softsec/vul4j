@@ -28,7 +28,7 @@ import java.nio.ByteBuffer;
 import com.mycila.junit.concurrent.Concurrency;
 import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.ldap.codec.standalone.StandaloneLdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.DefaultLdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.controls.search.entryChange.EntryChangeDecorator;
 import org.apache.directory.shared.ldap.model.message.controls.ChangeType;
@@ -48,7 +48,7 @@ import org.junit.runner.RunWith;
 @Concurrency()
 public class EntryChangeControlTest
 {
-    private LdapCodecService codec = new StandaloneLdapCodecService();
+    private LdapCodecService codec = new DefaultLdapCodecService();
 
     /**
      * Test the decoding of a EntryChangeControl

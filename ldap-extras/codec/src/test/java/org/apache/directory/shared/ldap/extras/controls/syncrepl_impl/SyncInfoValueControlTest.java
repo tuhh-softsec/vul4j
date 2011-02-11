@@ -29,7 +29,7 @@ import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
-import org.apache.directory.shared.ldap.codec.standalone.StandaloneLdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.DefaultLdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.extras.controls.SyncInfoValue;
 import org.apache.directory.shared.ldap.extras.controls.SynchronizationInfoEnum;
@@ -50,8 +50,10 @@ import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 @Concurrency()
 public class SyncInfoValueControlTest
 {
-    private LdapCodecService codec = new StandaloneLdapCodecService();
+    /** the codec service used for tests */
+    private LdapCodecService codec = new DefaultLdapCodecService();
 
+    
     //--------------------------------------------------------------------------------
     // NewCookie choice tests
     //--------------------------------------------------------------------------------

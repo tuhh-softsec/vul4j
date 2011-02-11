@@ -30,7 +30,7 @@ import java.util.Arrays;
 import com.mycila.junit.concurrent.Concurrency;
 import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.ldap.codec.standalone.StandaloneLdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.DefaultLdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.controls.search.pagedSearch.PagedResultsDecorator;
 import org.apache.directory.shared.ldap.model.message.controls.PagedResults;
@@ -48,7 +48,7 @@ import org.junit.runner.RunWith;
 @Concurrency()
 public class PagedSearchControlTest
 {
-    private LdapCodecService codec = new StandaloneLdapCodecService();
+    private LdapCodecService codec = new DefaultLdapCodecService();
 
     /**
      * Test encoding of a PagedSearchControl.

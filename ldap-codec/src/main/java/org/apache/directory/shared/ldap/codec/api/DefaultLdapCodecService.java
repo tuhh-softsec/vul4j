@@ -187,7 +187,7 @@ public class DefaultLdapCodecService implements LdapCodecService
     {
         if ( client )
         {
-            return new LdapProtocolCodecFactory();
+            return new LdapProtocolCodecFactory( this );
         }
         else
         {

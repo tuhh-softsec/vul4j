@@ -19,9 +19,11 @@
  */
 package org.apache.directory.shared.ldap.codec;
 
-import org.apache.directory.shared.ldap.codec.api.DefaultLdapCodecService;
+
+import org.apache.directory.shared.ldap.codec.standalone.StandaloneLdapCodecService;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+
 
 /**
  * Initialize the Codec service
@@ -30,18 +32,21 @@ import org.junit.BeforeClass;
  */
 public abstract class AbstractCodecServiceTest
 {
+    /** The codec service */
+    protected static StandaloneLdapCodecService codec;
+
     /** The encoder instance */
-    protected static LdapEncoder encoder = new LdapEncoder();
+    protected static LdapEncoder encoder;
 
-    protected static DefaultLdapCodecService codec;
-
+    
     /**
      * Initialize the codec service
      */
     @BeforeClass
     public static void setupLdapCodecService()
     {
-        codec = new DefaultLdapCodecService();
+        codec = new StandaloneLdapCodecService();
+        encoder = new LdapEncoder( codec );
     }
 
 
@@ -53,5 +58,6 @@ public abstract class AbstractCodecServiceTest
     {
         codec.shutdown();
         codec = null;
+        encoder = null;
     }
 }

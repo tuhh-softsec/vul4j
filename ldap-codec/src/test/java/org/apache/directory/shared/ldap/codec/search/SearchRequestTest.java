@@ -40,7 +40,7 @@ import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.tlv.TLVStateEnum;
 import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.standalone.StandaloneLdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.DefaultLdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.ResponseCarryingException;
 import org.apache.directory.shared.ldap.codec.controls.search.subentries.SubentriesDecorator;
@@ -81,12 +81,13 @@ import org.junit.runner.RunWith;
 @Concurrency()
 public class SearchRequestTest
 {
-    /** The encoder instance */
-    LdapEncoder encoder = new LdapEncoder();
-
     /** The codec service */
-    LdapCodecService codec = new StandaloneLdapCodecService();
+    LdapCodecService codec = new DefaultLdapCodecService();
 
+    /** The encoder instance */
+    LdapEncoder encoder = new LdapEncoder( codec );
+
+    
     /** An oid normalizer map */
     static Map<String, OidNormalizer> oids = new HashMap<String, OidNormalizer>();
 

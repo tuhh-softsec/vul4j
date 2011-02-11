@@ -575,7 +575,7 @@ public class StandaloneLdapCodecService implements LdapCodecService
     {
         if ( client )
         {
-            return new LdapProtocolCodecFactory();
+            return new LdapProtocolCodecFactory( this );
         }
         else
         {
