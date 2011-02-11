@@ -17,7 +17,7 @@
  */
 package org.apache.commons.digester3.rulesbinder;
 
-import org.apache.commons.digester3.BeanPropertySetterRule;
+import org.apache.commons.digester3.rule.BeanPropertySetterRule;
 
 /**
  * Builder chained when invoking {@link LinkedRuleBuilder#setBeanProperty()}.

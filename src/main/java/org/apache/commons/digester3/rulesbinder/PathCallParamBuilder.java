@@ -17,7 +17,7 @@
  */
 package org.apache.commons.digester3.rulesbinder;
 
-import org.apache.commons.digester3.PathCallParamRule;
+import org.apache.commons.digester3.rule.PathCallParamRule;
 
 /**
  * Builder chained when invoking {@link LinkedRuleBuilder#callParam(int)}.

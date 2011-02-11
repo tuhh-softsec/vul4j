@@ -25,6 +25,7 @@ import static org.junit.Assert.fail;
 import java.io.Reader;
 import java.io.StringReader;
 
+import org.apache.commons.digester3.rule.AbstractRulesModule;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 

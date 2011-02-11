@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.commons.digester3;
+package org.apache.commons.digester3.rule;
 
 import java.beans.PropertyDescriptor;
 
@@ -23,6 +23,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.DynaBean;
 import org.apache.commons.beanutils.DynaProperty;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.digester3.Rule;
 import org.xml.sax.Attributes;
 
 /**

@@ -19,8 +19,8 @@ package org.apache.commons.digester3.internal.rulesbinder;
 
 import java.util.Arrays;
 
-import org.apache.commons.digester3.CallMethodRule;
-import org.apache.commons.digester3.RulesBinder;
+import org.apache.commons.digester3.rule.CallMethodRule;
+import org.apache.commons.digester3.rule.RulesBinder;
 import org.apache.commons.digester3.rulesbinder.CallMethodBuilder;
 
 /**

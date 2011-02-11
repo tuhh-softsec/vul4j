@@ -25,7 +25,7 @@ import java.util.List;
 
 import org.apache.commons.digester3.OrderRule;
 import org.apache.commons.digester3.Rule;
-import org.apache.commons.digester3.SetPropertiesRule;
+import org.apache.commons.digester3.rule.SetPropertiesRule;
 import org.apache.commons.digester3.spi.Rules;
 import org.junit.Test;
 

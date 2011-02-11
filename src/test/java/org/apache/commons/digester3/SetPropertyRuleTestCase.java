@@ -26,6 +26,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 
+import org.apache.commons.digester3.rule.AbstractRulesModule;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

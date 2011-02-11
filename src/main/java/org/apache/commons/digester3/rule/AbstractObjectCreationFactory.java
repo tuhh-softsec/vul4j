@@ -15,8 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.commons.digester3;
+package org.apache.commons.digester3.rule;
 
+import org.apache.commons.digester3.Digester;
 import org.apache.commons.digester3.spi.ObjectCreationFactory;
 import org.xml.sax.Attributes;
 

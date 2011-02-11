@@ -32,6 +32,8 @@ import javax.xml.validation.Schema;
 
 import org.apache.commons.digester3.internal.DigesterImpl;
 import org.apache.commons.digester3.internal.rulesbinder.RulesBinderImpl;
+import org.apache.commons.digester3.rule.RulesBinder;
+import org.apache.commons.digester3.rule.RulesModule;
 import org.apache.commons.digester3.rules.BaseRules;
 import org.apache.commons.digester3.spi.Rules;
 import org.apache.commons.digester3.spi.Substitutor;

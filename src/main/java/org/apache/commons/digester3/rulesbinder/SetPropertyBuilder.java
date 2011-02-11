@@ -17,7 +17,7 @@
  */
 package org.apache.commons.digester3.rulesbinder;
 
-import org.apache.commons.digester3.SetPropertyRule;
+import org.apache.commons.digester3.rule.SetPropertyRule;
 
 /**
  * Builder chained when invoking {@link LinkedRuleBuilder#setProperty(String)}.

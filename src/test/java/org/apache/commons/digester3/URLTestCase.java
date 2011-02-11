@@ -21,6 +21,8 @@ import static org.junit.Assert.assertNotNull;
 
 import java.net.URL;
 
+import org.apache.commons.digester3.rule.RulesBinder;
+import org.apache.commons.digester3.rule.RulesModule;
 import org.junit.Test;
 
 /**

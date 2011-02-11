@@ -26,6 +26,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.digester3.rule.AbstractObjectCreationFactory;
+import org.apache.commons.digester3.rule.AbstractRulesModule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;

@@ -17,7 +17,7 @@
  */
 package org.apache.commons.digester3.rulesbinder;
 
-import org.apache.commons.digester3.SetNextRule;
+import org.apache.commons.digester3.rule.SetNextRule;
 
 /**
  * Builder chained when invoking {@link LinkedRuleBuilder#setNext(String)}.

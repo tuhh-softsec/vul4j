@@ -17,8 +17,8 @@
  */
 package org.apache.commons.digester3.internal.rulesbinder;
 
-import org.apache.commons.digester3.RulesBinder;
-import org.apache.commons.digester3.SetTopRule;
+import org.apache.commons.digester3.rule.RulesBinder;
+import org.apache.commons.digester3.rule.SetTopRule;
 import org.apache.commons.digester3.rulesbinder.SetTopBuilder;
 
 final class SetTopBuilderImpl extends AbstractParamTypeBuilder<SetTopRule> implements SetTopBuilder {

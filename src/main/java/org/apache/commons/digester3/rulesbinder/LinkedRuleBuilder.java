@@ -18,9 +18,9 @@
 package org.apache.commons.digester3.rulesbinder;
 
 import org.apache.commons.digester3.Rule;
-import org.apache.commons.digester3.SetNextRule;
-import org.apache.commons.digester3.SetRootRule;
-import org.apache.commons.digester3.SetTopRule;
+import org.apache.commons.digester3.rule.SetNextRule;
+import org.apache.commons.digester3.rule.SetRootRule;
+import org.apache.commons.digester3.rule.SetTopRule;
 import org.apache.commons.digester3.spi.ObjectCreationFactory;
 import org.apache.commons.digester3.spi.RuleProvider;
 

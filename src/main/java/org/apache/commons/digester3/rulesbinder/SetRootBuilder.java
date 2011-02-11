@@ -17,7 +17,7 @@
  */
 package org.apache.commons.digester3.rulesbinder;
 
-import org.apache.commons.digester3.SetRootRule;
+import org.apache.commons.digester3.rule.SetRootRule;
 
 /**
  * Builder chained when invoking {@link LinkedRuleBuilder#setRoot(String)}.

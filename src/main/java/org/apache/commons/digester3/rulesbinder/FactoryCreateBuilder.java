@@ -17,7 +17,7 @@
  */
 package org.apache.commons.digester3.rulesbinder;
 
-import org.apache.commons.digester3.FactoryCreateRule;
+import org.apache.commons.digester3.rule.FactoryCreateRule;
 import org.apache.commons.digester3.spi.ObjectCreationFactory;
 
 /**

@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 
+import org.apache.commons.digester3.rule.AbstractRulesModule;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 

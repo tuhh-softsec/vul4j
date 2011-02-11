@@ -20,7 +20,7 @@ package org.apache.commons.digester3.internal.rulesbinder;
 /**
  * An error message and the context in which it occurred. Messages are usually created internally by
  * {@code Digester} and its extensions. Messages can be created explicitly in a module using
- * {@link org.apache.commons.digester3.RulesBinder#addError(Throwable) addError()} statement:
+ * {@link org.apache.commons.digester3.rule.RulesBinder#addError(Throwable) addError()} statement:
  * <pre>try {
  *   bindRulesFromFile();
  * } catch (IOException e) {

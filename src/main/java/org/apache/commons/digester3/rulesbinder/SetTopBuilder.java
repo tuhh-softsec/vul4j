@@ -17,7 +17,7 @@
  */
 package org.apache.commons.digester3.rulesbinder;
 
-import org.apache.commons.digester3.SetTopRule;
+import org.apache.commons.digester3.rule.SetTopRule;
 
 /**
  * Builder chained when invoking {@link LinkedRuleBuilder#setTop(String)}.

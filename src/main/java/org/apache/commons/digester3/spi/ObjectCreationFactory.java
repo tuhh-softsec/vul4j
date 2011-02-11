@@ -18,12 +18,12 @@
 package org.apache.commons.digester3.spi;
 
 import org.apache.commons.digester3.Digester;
-import org.apache.commons.digester3.FactoryCreateRule;
+import org.apache.commons.digester3.rule.FactoryCreateRule;
 import org.xml.sax.Attributes;
 
 /**
  * Interface for use with {@link FactoryCreateRule}.
- * The rule calls {@link org.apache.commons.digester3.RulesBinder#createObject} to create an object
+ * The rule calls {@link org.apache.commons.digester3.rule.RulesBinder#createObject} to create an object
  * to be pushed onto the {@code Digester} stack whenever it is matched.
  */
 public interface ObjectCreationFactory<T> {

@@ -17,7 +17,7 @@
  */
 package org.apache.commons.digester3.rulesbinder;
 
-import org.apache.commons.digester3.CallMethodRule;
+import org.apache.commons.digester3.rule.CallMethodRule;
 
 /**
  * Builder chained when invoking {@link LinkedRuleBuilder#callMethod(String)}.

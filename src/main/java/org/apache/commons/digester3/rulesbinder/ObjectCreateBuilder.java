@@ -17,7 +17,7 @@
  */
 package org.apache.commons.digester3.rulesbinder;
 
-import org.apache.commons.digester3.ObjectCreateRule;
+import org.apache.commons.digester3.rule.ObjectCreateRule;
 
 /**
  * Builder chained when invoking {@link LinkedRuleBuilder#objectCreate(String)}.

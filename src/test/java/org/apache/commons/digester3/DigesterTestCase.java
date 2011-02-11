@@ -34,6 +34,7 @@ import java.net.URL;
 import java.util.EmptyStackException;
 import java.util.Map;
 
+import org.apache.commons.digester3.rule.AbstractRulesModule;
 import org.apache.commons.digester3.spi.Substitutor;
 import org.junit.Test;
 import org.xml.sax.Attributes;
