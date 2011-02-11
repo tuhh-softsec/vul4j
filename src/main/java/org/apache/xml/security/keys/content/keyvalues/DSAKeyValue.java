@@ -91,7 +91,6 @@ public class DSAKeyValue extends SignatureElementProxy implements KeyValueConten
 
     /** @inheritDoc */
     public PublicKey getPublicKey() throws XMLSecurityException {
-
         try {
             DSAPublicKeySpec pkspec =
                 new DSAPublicKeySpec(

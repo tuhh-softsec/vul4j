@@ -29,14 +29,13 @@ import org.w3c.dom.Element;
 /**
  * Handles SubjectKeyIdentifier (SKI) for X.509v3.
  *
- * @author $Author$
- * @see <A HREF="http://java.sun.com/j2se/1.5.0/docs/api/java/security/cert/X509Extension.html">Interface X509Extension</A>
+ * @see <A HREF="http://java.sun.com/j2se/1.5.0/docs/api/java/security/cert/X509Extension.html">
+ * Interface X509Extension</A>
  */
-public class XMLX509SKI extends SignatureElementProxy
-        implements XMLX509DataContent {
+public class XMLX509SKI extends SignatureElementProxy implements XMLX509DataContent {
 
     /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
+    private static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(XMLX509SKI.class.getName());
 
     /**
@@ -45,7 +44,7 @@ public class XMLX509SKI extends SignatureElementProxy
      * distinct keys used by the same subject to be differentiated
      * (e.g., as key updating occurs).
      * <BR />
-     * A key identifer shall be unique with respect to all key identifiers
+     * A key identifier shall be unique with respect to all key identifiers
      * for the subject with which it is used. This extension is always non-critical.
      */
     public static final String SKI_OID = "2.5.29.14";
@@ -69,7 +68,7 @@ public class XMLX509SKI extends SignatureElementProxy
      * @throws XMLSecurityException
      */
     public XMLX509SKI(Document doc, X509Certificate x509certificate)
-           throws XMLSecurityException {
+        throws XMLSecurityException {
         super(doc);
         this.addBase64Text(XMLX509SKI.getSKIBytesFromCert(x509certificate));
     }
@@ -81,8 +80,7 @@ public class XMLX509SKI extends SignatureElementProxy
      * @param BaseURI
      * @throws XMLSecurityException
      */
-    public XMLX509SKI(Element element, String BaseURI)
-           throws XMLSecurityException {
+    public XMLX509SKI(Element element, String BaseURI) throws XMLSecurityException {
         super(element, BaseURI);
     }
 
@@ -110,8 +108,7 @@ public class XMLX509SKI extends SignatureElementProxy
 
         if (cert.getVersion() < 3) {
             Object exArgs[] = { new Integer(cert.getVersion()) };
-            throw new XMLSecurityException("certificate.noSki.lowVersion",
-                                           exArgs);
+            throw new XMLSecurityException("certificate.noSki.lowVersion", exArgs);
         }
 
         /*
@@ -124,12 +121,12 @@ public class XMLX509SKI extends SignatureElementProxy
         if (extensionValue == null) {
             throw new XMLSecurityException("certificate.noSki.null");
         }
-          
+
         /**
          * Strip away first four bytes from the extensionValue 
          * The first two bytes are the tag and length of the extensionValue
          * OCTET STRING, and the next two bytes are the tag and length of
-         * the skid OCTET STRING.
+         * the ski OCTET STRING.
          */
         byte skidValue[] = new byte[extensionValue.length - 4];
 

@@ -1,4 +1,3 @@
-
 /*
  * Copyright  1999-2004 The Apache Software Foundation.
  *
@@ -17,70 +16,60 @@
  */
 package org.apache.xml.security.keys.keyresolver;
 
-
-
 import org.apache.xml.security.exceptions.XMLSecurityException;
 
-
-/**
- *
- *
- * @author $Author$
- */
 public class InvalidKeyResolverException extends XMLSecurityException {
 
-   /**
-         * 
-         */
-        private static final long serialVersionUID = 1L;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
 
-   /**
-    * Constructor InvalidKeyResolverException
-    *
-    */
-   public InvalidKeyResolverException() {
-      super();
-   }
+    /**
+     * Constructor InvalidKeyResolverException
+     *
+     */
+    public InvalidKeyResolverException() {
+        super();
+    }
 
-   /**
-    * Constructor InvalidKeyResolverException
-    *
-    * @param _msgID
-    */
-   public InvalidKeyResolverException(String _msgID) {
-      super(_msgID);
-   }
+    /**
+     * Constructor InvalidKeyResolverException
+     *
+     * @param msgID
+     */
+    public InvalidKeyResolverException(String msgID) {
+        super(msgID);
+    }
 
-   /**
-    * Constructor InvalidKeyResolverException
-    *
-    * @param _msgID
-    * @param exArgs
-    */
-   public InvalidKeyResolverException(String _msgID, Object exArgs[]) {
-      super(_msgID, exArgs);
-   }
+    /**
+     * Constructor InvalidKeyResolverException
+     *
+     * @param msgID
+     * @param exArgs
+     */
+    public InvalidKeyResolverException(String msgID, Object exArgs[]) {
+        super(msgID, exArgs);
+    }
 
-   /**
-    * Constructor InvalidKeyResolverException
-    *
-    * @param _msgID
-    * @param _originalException
-    */
-   public InvalidKeyResolverException(String _msgID,
-                                      Exception _originalException) {
-      super(_msgID, _originalException);
-   }
+    /**
+     * Constructor InvalidKeyResolverException
+     *
+     * @param msgID
+     * @param originalException
+     */
+    public InvalidKeyResolverException(String msgID, Exception originalException) {
+        super(msgID, originalException);
+    }
 
-   /**
-    * Constructor InvalidKeyResolverException
-    *
-    * @param _msgID
-    * @param exArgs
-    * @param _originalException
-    */
-   public InvalidKeyResolverException(String _msgID, Object exArgs[],
-                                      Exception _originalException) {
-      super(_msgID, exArgs, _originalException);
-   }
+    /**
+     * Constructor InvalidKeyResolverException
+     *
+     * @param msgID
+     * @param exArgs
+     * @param originalException
+     */
+    public InvalidKeyResolverException(String msgID, Object exArgs[], Exception originalException) {
+        super(msgID, exArgs, originalException);
+    }
 }

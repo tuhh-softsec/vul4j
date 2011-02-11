@@ -1,4 +1,3 @@
-
 /*
  * Copyright  1999-2004 The Apache Software Foundation.
  *
@@ -30,5 +29,5 @@ public interface KeyValueContent {
      * @throws XMLSecurityException
      */
     public PublicKey getPublicKey() throws XMLSecurityException;
-    
+
 }
