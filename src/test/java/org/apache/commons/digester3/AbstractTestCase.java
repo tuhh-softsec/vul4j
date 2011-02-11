@@ -22,7 +22,6 @@ import static org.apache.commons.digester3.DigesterLoader.newLoader;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.commons.digester3.rule.RulesModule;
 
 /**
  * Define some common utility methods shared between Digester tests.

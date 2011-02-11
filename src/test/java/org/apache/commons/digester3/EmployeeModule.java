@@ -17,7 +17,6 @@
  */
 package org.apache.commons.digester3;
 
-import org.apache.commons.digester3.rule.AbstractRulesModule;
 
 /**
  * Shared module that contains rules for parsing Employee/Address entities.

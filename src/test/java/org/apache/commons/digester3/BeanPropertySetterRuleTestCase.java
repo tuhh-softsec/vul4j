@@ -30,7 +30,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.digester3.rule.AbstractRulesModule;
 import org.apache.commons.digester3.rules.ExtendedBaseRules;
 import org.junit.Test;
 import org.xml.sax.SAXException;

@@ -27,11 +27,11 @@ import java.io.StringReader;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import org.apache.commons.digester3.AbstractRulesModule;
 import org.apache.commons.digester3.Digester;
+import org.apache.commons.digester3.RulesBinder;
+import org.apache.commons.digester3.RulesModule;
 import org.apache.commons.digester3.SimpleTestBean;
-import org.apache.commons.digester3.rule.AbstractRulesModule;
-import org.apache.commons.digester3.rule.RulesBinder;
-import org.apache.commons.digester3.rule.RulesModule;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 

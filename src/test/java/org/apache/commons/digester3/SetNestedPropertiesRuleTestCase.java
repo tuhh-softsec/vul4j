@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
-import org.apache.commons.digester3.rule.AbstractRulesModule;
 import org.apache.commons.digester3.rules.BaseRules;
 import org.junit.Test;
 import org.xml.sax.SAXException;

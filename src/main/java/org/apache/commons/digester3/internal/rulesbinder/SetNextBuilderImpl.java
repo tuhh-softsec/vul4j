@@ -17,7 +17,7 @@
  */
 package org.apache.commons.digester3.internal.rulesbinder;
 
-import org.apache.commons.digester3.rule.RulesBinder;
+import org.apache.commons.digester3.RulesBinder;
 import org.apache.commons.digester3.rule.SetNextRule;
 import org.apache.commons.digester3.rulesbinder.SetNextBuilder;
 

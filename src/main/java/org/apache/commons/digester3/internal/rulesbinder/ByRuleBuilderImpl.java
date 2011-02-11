@@ -18,7 +18,7 @@
 package org.apache.commons.digester3.internal.rulesbinder;
 
 import org.apache.commons.digester3.Rule;
-import org.apache.commons.digester3.rule.RulesBinder;
+import org.apache.commons.digester3.RulesBinder;
 import org.apache.commons.digester3.rulesbinder.ByRuleBuilder;
 
 final class ByRuleBuilderImpl<R extends Rule> extends AbstractBackToLinkedRuleBuilder<R> implements ByRuleBuilder<R> {

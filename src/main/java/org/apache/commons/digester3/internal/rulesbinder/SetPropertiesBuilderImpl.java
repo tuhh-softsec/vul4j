@@ -20,7 +20,7 @@ package org.apache.commons.digester3.internal.rulesbinder;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.digester3.rule.RulesBinder;
+import org.apache.commons.digester3.RulesBinder;
 import org.apache.commons.digester3.rule.SetPropertiesRule;
 import org.apache.commons.digester3.rulesbinder.SetPropertiesBuilder;
 
