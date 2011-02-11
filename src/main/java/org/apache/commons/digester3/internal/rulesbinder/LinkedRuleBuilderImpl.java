@@ -134,6 +134,12 @@ final class LinkedRuleBuilderImpl implements LinkedRuleBuilder {
      * {@inheritDoc}
      */
     public NestedPropertiesBuilder setNestedProperties() {
+        // that would be useful when adding rules via automatically generated rules binding (such annotations)
+        NestedPropertiesBuilder nestedPropertiesBuilder = this.providersRegistry.getProvider(this.keyPattern, NestedPropertiesBuilder.class);
+        if (nestedPropertiesBuilder != null) {
+            return nestedPropertiesBuilder;
+        }
+
         return this.addProvider(new NestedPropertiesBuilderImpl(this.keyPattern, this.namespaceURI, this.mainBinder, this));
     }
 
@@ -153,6 +159,12 @@ final class LinkedRuleBuilderImpl implements LinkedRuleBuilder {
      * {@inheritDoc}
      */
     public SetPropertiesBuilder setProperties() {
+        // that would be useful when adding rules via automatically generated rules binding (such annotations)
+        SetPropertiesBuilder setPropertiesBuilder = this.providersRegistry.getProvider(this.keyPattern, SetPropertiesBuilder.class);
+        if (setPropertiesBuilder != null) {
+            return setPropertiesBuilder;
+        }
+
         return this.addProvider(new SetPropertiesBuilderImpl(this.keyPattern, this.namespaceURI, this.mainBinder, this));
     }
 
