@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.commons.digester3;
+package org.apache.commons.digester3.internal.rulesbinder;
 
 /**
  * An error message and the context in which it occurred. Messages are usually created internally by

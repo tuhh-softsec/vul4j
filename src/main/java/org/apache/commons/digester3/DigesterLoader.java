@@ -30,6 +30,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.validation.Schema;
 
+import org.apache.commons.digester3.internal.rulesbinder.RulesBinderImpl;
 import org.apache.commons.digester3.rules.BaseRules;
 import org.apache.commons.digester3.spi.Rules;
 import org.apache.commons.digester3.spi.Substitutor;
@@ -357,11 +358,6 @@ public final class DigesterLoader {
                     rulesModule.configure(this.rulesBinder);
                 }
             }
-        }
-
-        // check if there were errors while binding rules
-        if (this.rulesBinder.containsErrors()) {
-            throw new DigesterLoadingException(this.rulesBinder.getErrors());
         }
 
         this.rulesBinder.populateRules(rules);

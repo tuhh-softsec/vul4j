@@ -15,29 +15,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.commons.digester3.rulesbinder;
-
-import org.apache.commons.digester3.ObjectParamRule;
 
 /**
- * Builder chained when invoking {@link LinkedRuleBuilder#objectCreate(String)}.
+ * The Digester EDSL.
  */
-public interface ObjectParamBuilder<T> extends BackToLinkedRuleBuilder<ObjectParamRule> {
-
-    /**
-     * The zero-relative index of the parameter we are saving.
-     *
-     * @param paramIndex The zero-relative index of the parameter we are saving
-     * @return this builder instance
-     */
-    ObjectParamBuilder<T> ofIndex(int paramIndex);
-
-    /**
-     * The attribute which we are attempting to match.
-     *
-     * @param attributeName The attribute which we are attempting to match
-     * @return this builder instance
-     */
-    ObjectParamBuilder<T> matchingAttribute(String attributeName);
-
-}
+package org.apache.commons.digester3.internal.rulesbinder;

@@ -15,29 +15,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.commons.digester3.rulesbinder;
+package org.apache.commons.digester3.internal.rulesbinder;
 
-import org.apache.commons.digester3.ObjectParamRule;
+import org.apache.commons.digester3.Rule;
+import org.apache.commons.digester3.spi.RuleProvider;
 
 /**
- * Builder chained when invoking {@link LinkedRuleBuilder#objectCreate(String)}.
+ * Used to associate rule providers with paths in the rules binder.
  */
-public interface ObjectParamBuilder<T> extends BackToLinkedRuleBuilder<ObjectParamRule> {
+class RegisteredProvider {
 
-    /**
-     * The zero-relative index of the parameter we are saving.
-     *
-     * @param paramIndex The zero-relative index of the parameter we are saving
-     * @return this builder instance
-     */
-    ObjectParamBuilder<T> ofIndex(int paramIndex);
+    private final String pattern;
 
-    /**
-     * The attribute which we are attempting to match.
-     *
-     * @param attributeName The attribute which we are attempting to match
-     * @return this builder instance
-     */
-    ObjectParamBuilder<T> matchingAttribute(String attributeName);
+    private final RuleProvider<? extends Rule> provider;
+
+    public <R extends Rule> RegisteredProvider(String pattern, RuleProvider<R> provider) {
+        this.pattern = pattern;
+        this.provider = provider;
+    }
+
+    public String getPattern() {
+        return pattern;
+    }
+
+    public RuleProvider<? extends Rule> getProvider() {
+        return provider;
+    }
 
 }

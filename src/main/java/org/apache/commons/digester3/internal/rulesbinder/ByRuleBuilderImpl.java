@@ -15,29 +15,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.commons.digester3.rulesbinder;
+package org.apache.commons.digester3.internal.rulesbinder;
 
-import org.apache.commons.digester3.ObjectParamRule;
+import org.apache.commons.digester3.Rule;
+import org.apache.commons.digester3.RulesBinder;
+import org.apache.commons.digester3.rulesbinder.ByRuleBuilder;
 
-/**
- * Builder chained when invoking {@link LinkedRuleBuilder#objectCreate(String)}.
- */
-public interface ObjectParamBuilder<T> extends BackToLinkedRuleBuilder<ObjectParamRule> {
+final class ByRuleBuilderImpl<R extends Rule> extends AbstractBackToLinkedRuleBuilder<R> implements ByRuleBuilder<R> {
+
+    private final R rule;
+
+    public ByRuleBuilderImpl(String keyPattern,
+            String namespaceURI,
+            RulesBinder mainBinder,
+            LinkedRuleBuilderImpl mainBuilder,
+            R rule) {
+        super(keyPattern, namespaceURI, mainBinder, mainBuilder);
+        this.rule = rule;
+    }
 
     /**
-     * The zero-relative index of the parameter we are saving.
-     *
-     * @param paramIndex The zero-relative index of the parameter we are saving
-     * @return this builder instance
+     * {@inheritDoc}
      */
-    ObjectParamBuilder<T> ofIndex(int paramIndex);
-
-    /**
-     * The attribute which we are attempting to match.
-     *
-     * @param attributeName The attribute which we are attempting to match
-     * @return this builder instance
-     */
-    ObjectParamBuilder<T> matchingAttribute(String attributeName);
+    @Override
+    protected R createRule() {
+        return this.rule;
+    }
 
 }
