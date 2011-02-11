@@ -34,7 +34,6 @@ public class StorageResolverTest extends org.junit.Assert {
     private static final String SEP = System.getProperty("file.separator");
 
     @org.junit.Test
-    @SuppressWarnings("deprecation")
     public void testStorageResolver() throws Exception {
 
         String inputDir = BASEDIR + SEP + "src/test/resources" + SEP
@@ -51,22 +50,6 @@ public class StorageResolverTest extends org.junit.Assert {
 
         StorageResolver storage = new StorageResolver(ks);
         storage.add(ks2);
-
-        // iterate directly on the storage
-        int count = 0;
-        while (storage.hasNext()) {
-            X509Certificate cert = storage.next();
-            assertNotNull(cert);
-            count++;
-        }
-
-        assertEquals(4, count);
-
-        try {
-            storage.next();
-            fail("Expecting NoSuchElementException");
-        } catch (NoSuchElementException e) {
-        }
 
         Iterator<?> iter = storage.getIterator();
         checkIterator(iter);

@@ -1,4 +1,3 @@
-
 /*
  * Copyright 1999-2010 The Apache Software Foundation.
  *
@@ -17,6 +16,7 @@
  */
 package org.apache.xml.security.keys.storage.implementations;
 
+import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -26,70 +26,63 @@ import org.apache.xml.security.keys.storage.StorageResolverSpi;
 /**
  * This {@link StorageResolverSpi} makes a single {@link X509Certificate}
  * available to the {@link org.apache.xml.security.keys.storage.StorageResolver}.
- *
- * @author $Author$
  */
 public class SingleCertificateResolver extends StorageResolverSpi {
 
-   /** Field _certificate */
-   X509Certificate _certificate = null;
+    /** Field certificate */
+    X509Certificate certificate = null;
 
-   /**
-    * @param x509cert the single {@link X509Certificate}
-    */
-   public SingleCertificateResolver(X509Certificate x509cert) {
-      this._certificate = x509cert;
-   }
+    /**
+     * @param x509cert the single {@link X509Certificate}
+     */
+    public SingleCertificateResolver(X509Certificate x509cert) {
+        this.certificate = x509cert;
+    }
 
-   /** @inheritDoc */
-   public Iterator getIterator() {
-      return new InternalIterator(this._certificate);
-   }
+    /** @inheritDoc */
+    public Iterator<Certificate> getIterator() {
+        return new InternalIterator(this.certificate);
+    }
 
-   /**
-    * Class InternalIterator
-    *
-    * @author $Author$
-    * @version $Revision$
-    */
-   static class InternalIterator implements Iterator {
+    /**
+     * Class InternalIterator
+     */
+    static class InternalIterator implements Iterator<Certificate> {
 
-      /** Field _alreadyReturned */
-      boolean _alreadyReturned = false;
+        /** Field alreadyReturned */
+        boolean alreadyReturned = false;
 
-      /** Field _certificate */
-      X509Certificate _certificate = null;
+        /** Field certificate */
+        X509Certificate certificate = null;
 
-      /**
-       * Constructor InternalIterator
-       *
-       * @param x509cert
-       */
-      public InternalIterator(X509Certificate x509cert) {
-         this._certificate = x509cert;
-      }
+        /**
+         * Constructor InternalIterator
+         *
+         * @param x509cert
+         */
+        public InternalIterator(X509Certificate x509cert) {
+            this.certificate = x509cert;
+        }
 
-      /** @inheritDoc */
-      public boolean hasNext() {
-         return (!this._alreadyReturned);
-      }
+        /** @inheritDoc */
+        public boolean hasNext() {
+            return !this.alreadyReturned;
+        }
 
-      /** @inheritDoc */
-      public Object next() {
-         if (this._alreadyReturned) {
-             throw new NoSuchElementException();
-         }
-         this._alreadyReturned = true;
-         return this._certificate;
-      }
+        /** @inheritDoc */
+        public Certificate next() {
+            if (this.alreadyReturned) {
+                throw new NoSuchElementException();
+            }
+            this.alreadyReturned = true;
+            return this.certificate;
+        }
 
-      /**
-       * Method remove
-       *
-       */
-      public void remove() {
-         throw new UnsupportedOperationException(
-            "Can't remove keys from KeyStore");
-      }
-   }
+        /**
+         * Method remove
+         */
+        public void remove() {
+            throw new UnsupportedOperationException("Can't remove keys from KeyStore");
+        }
+    }
 }

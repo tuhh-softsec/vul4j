@@ -1,4 +1,3 @@
-
 /*
  * Copyright  1999-2010 The Apache Software Foundation.
  *
@@ -30,124 +29,119 @@ import org.apache.xml.security.keys.storage.StorageResolverSpi;
 /**
  * Makes the Certificates from a JAVA {@link KeyStore} object available to the
  * {@link org.apache.xml.security.keys.storage.StorageResolver}.
- *
- * @author $Author$
  */
 public class KeyStoreResolver extends StorageResolverSpi {
 
-   /** Field _keyStore */
-   KeyStore _keyStore = null;
+    /** Field keyStore */
+    KeyStore keyStore = null;
 
-   /**
-    * Constructor KeyStoreResolver
-    *
-    * @param keyStore is the keystore which contains the Certificates
-    * @throws StorageResolverException
-    */
-   public KeyStoreResolver(KeyStore keyStore) throws StorageResolverException {
-      this._keyStore = keyStore;
-      // Do a quick check on the keystore
-      try {
-         _keyStore.aliases();
-      } catch (KeyStoreException ex) {
-         throw new StorageResolverException("generic.EmptyMessage", ex);
-      }
-   }
+    /**
+     * Constructor KeyStoreResolver
+     *
+     * @param keyStore is the keystore which contains the Certificates
+     * @throws StorageResolverException
+     */
+    public KeyStoreResolver(KeyStore keyStore) throws StorageResolverException {
+        this.keyStore = keyStore;
+        // Do a quick check on the keystore
+        try {
+            keyStore.aliases();
+        } catch (KeyStoreException ex) {
+            throw new StorageResolverException("generic.EmptyMessage", ex);
+        }
+    }
 
-   /** @inheritDoc */
-   public Iterator getIterator() {
-      return new KeyStoreIterator(this._keyStore);
-   }
+    /** @inheritDoc */
+    public Iterator<Certificate> getIterator() {
+        return new KeyStoreIterator(this.keyStore);
+    }
 
-   /**
-    * Class KeyStoreIterator
-    *
-    * @author $Author$
-    * @version $Revision$
-    */
-   static class KeyStoreIterator implements Iterator {
+    /**
+     * Class KeyStoreIterator
+     */
+    static class KeyStoreIterator implements Iterator<Certificate> {
 
-      /** Field _keyStore */
-      KeyStore _keyStore = null;
+        /** Field keyStore */
+        KeyStore keyStore = null;
 
-      /** Field _aliases */
-      Enumeration _aliases = null;
-      
-      /** Field _nextCert */
-      Certificate _nextCert = null;
+        /** Field aliases */
+        Enumeration<String> aliases = null;
 
-      /**
-       * Constructor KeyStoreIterator
-       *
-       * @param keyStore
-       */
-      public KeyStoreIterator(KeyStore keyStore) {
-         try {
-            this._keyStore = keyStore;
-            this._aliases = this._keyStore.aliases();
-         } catch (KeyStoreException ex) {
-            // empty Enumeration
-            this._aliases = new Enumeration() {
-               public boolean hasMoreElements() {
-                  return false;
-               }
-               public Object nextElement() {
-                  return null;
-               }
-            };
-         }
-      }
+        /** Field nextCert */
+        Certificate nextCert = null;
 
-      /** @inheritDoc */
-      public boolean hasNext() {
-         if (_nextCert == null)
-            _nextCert = findNextCert();
-
-         return (_nextCert != null);
-      }
-
-      /** @inheritDoc */
-      public Object next() {
-         if (_nextCert == null) {
-            // maybe caller did not call hasNext()
-            _nextCert = findNextCert();
-            
-            if (_nextCert == null) {
-                throw new NoSuchElementException();
+        /**
+         * Constructor KeyStoreIterator
+         *
+         * @param keyStore
+         */
+        public KeyStoreIterator(KeyStore keyStore) {
+            try {
+                this.keyStore = keyStore;
+                this.aliases = this.keyStore.aliases();
+            } catch (KeyStoreException ex) {
+                // empty Enumeration
+                this.aliases = new Enumeration<String>() {
+                    public boolean hasMoreElements() {
+                        return false;
+                    }
+                    public String nextElement() {
+                        return null;
+                    }
+                };
             }
-         }
-         
-         Certificate ret = _nextCert;
-         _nextCert = null;
-         return ret;
-      }
+        }
 
-      /**
-       * Method remove
-       *
-       */
-      public void remove() {
-         throw new UnsupportedOperationException(
-            "Can't remove keys from KeyStore");
-      }
-      
-      // Find the next entry that contains a certificate and return it.
-      // In particular, this skips over entries containing symmetric keys.
-      private Certificate findNextCert() {
-         while (this._aliases.hasMoreElements()) {
-             String alias = (String) this._aliases.nextElement();
-             try {
-                Certificate cert = this._keyStore.getCertificate(alias);
-                if (cert != null)
-                   return cert;
-             } catch (KeyStoreException ex) {
-                return null;
-             }
-         }
+        /** @inheritDoc */
+        public boolean hasNext() {
+            if (nextCert == null) {
+                nextCert = findNextCert();
+            }
 
-         return null;
-      }
-      
-   }
-   
+            return (nextCert != null);
+        }
+
+        /** @inheritDoc */
+        public Certificate next() {
+            if (nextCert == null) {
+                // maybe caller did not call hasNext()
+                nextCert = findNextCert();
+
+                if (nextCert == null) {
+                    throw new NoSuchElementException();
+                }
+            }
+
+            Certificate ret = nextCert;
+            nextCert = null;
+            return ret;
+        }
+
+        /**
+         * Method remove
+         */
+        public void remove() {
+            throw new UnsupportedOperationException("Can't remove keys from KeyStore");
+        }
+
+        // Find the next entry that contains a certificate and return it.
+        // In particular, this skips over entries containing symmetric keys.
+        private Certificate findNextCert() {
+            while (this.aliases.hasMoreElements()) {
+                String alias = this.aliases.nextElement();
+                try {
+                    Certificate cert = this.keyStore.getCertificate(alias);
+                    if (cert != null) {
+                        return cert;
+                    }
+                } catch (KeyStoreException ex) {
+                    return null;
+                }
+            }
+
+            return null;
+        }
+
+    }
+
 }
