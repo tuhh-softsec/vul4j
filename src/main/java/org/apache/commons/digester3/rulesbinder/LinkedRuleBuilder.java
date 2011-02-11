@@ -79,7 +79,7 @@ public interface LinkedRuleBuilder {
      * @param <T> The parameter type to pass along
      * @param paramObj The parameter to pass along
      */
-    <T> ObjectParamBuilder objectParam(T paramObj);
+    <T> ObjectParamBuilder<T> objectParam(T paramObj);
 
     /**
      * Sets properties on the object at the top of the stack,
