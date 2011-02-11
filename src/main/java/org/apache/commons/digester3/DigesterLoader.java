@@ -30,6 +30,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.validation.Schema;
 
+import org.apache.commons.digester3.internal.DigesterImpl;
 import org.apache.commons.digester3.internal.rulesbinder.RulesBinderImpl;
 import org.apache.commons.digester3.rules.BaseRules;
 import org.apache.commons.digester3.spi.Rules;

@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.commons.digester3;
+package org.apache.commons.digester3.internal;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,8 +32,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import org.apache.commons.beanutils.ConvertUtils;
-import org.apache.commons.beanutils.Converter;
+import org.apache.commons.digester3.Digester;
+import org.apache.commons.digester3.Rule;
 import org.apache.commons.digester3.spi.Rules;
 import org.apache.commons.digester3.spi.Substitutor;
 import org.apache.commons.digester3.spi.TypeConverter;
@@ -51,7 +51,7 @@ import org.xml.sax.XMLReader;
 /**
  * {@link Digester} concrete implementation.
  */
-final class DigesterImpl implements Digester {
+public final class DigesterImpl implements Digester {
 
     /**
      * The Log to which most logging calls will be made.
