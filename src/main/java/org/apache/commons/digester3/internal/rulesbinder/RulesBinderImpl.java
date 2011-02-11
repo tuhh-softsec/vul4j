@@ -20,7 +20,6 @@ package org.apache.commons.digester3.internal.rulesbinder;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Formatter;
 import java.util.List;
 
