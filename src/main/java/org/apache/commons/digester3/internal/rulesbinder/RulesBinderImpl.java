@@ -48,10 +48,7 @@ public final class RulesBinderImpl implements RulesBinder {
      */
     private final List<ErrorMessage> errors = new ArrayList<ErrorMessage>();
 
-    /**
-     * The data structure where storing the providers binding.
-     */
-    private final Collection<RegisteredProvider> providers = new ArrayList<RegisteredProvider>();
+    private final ProvidersRegistry providersRegistry = new ProvidersRegistry();
 
     private final ClassLoader classLoader;
 
@@ -108,7 +105,7 @@ public final class RulesBinderImpl implements RulesBinder {
             }
         }
 
-        return new LinkedRuleBuilderImpl(this, this.providers, this.classLoader, keyPattern);
+        return new LinkedRuleBuilderImpl(this, this.providersRegistry, this.classLoader, keyPattern);
     }
 
     /**
@@ -166,9 +163,7 @@ public final class RulesBinderImpl implements RulesBinder {
             throw new DigesterLoadingException(fmt.toString());
         }
 
-        for (RegisteredProvider registeredProvider : this.providers) {
-            rules.add(registeredProvider.getPattern(), registeredProvider.getProvider().get());
-        }
+        this.providersRegistry.registerRules(rules);
     }
 
 }

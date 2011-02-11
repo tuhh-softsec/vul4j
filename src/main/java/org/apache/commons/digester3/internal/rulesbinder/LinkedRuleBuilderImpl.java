@@ -17,8 +17,6 @@
  */
 package org.apache.commons.digester3.internal.rulesbinder;
 
-import java.util.Collection;
-
 import org.apache.commons.digester3.Rule;
 import org.apache.commons.digester3.RulesBinder;
 import org.apache.commons.digester3.rulesbinder.BeanPropertySetterBuilder;
@@ -49,7 +47,7 @@ final class LinkedRuleBuilderImpl implements LinkedRuleBuilder {
     /**
      * The data structure where storing the providers binding.
      */
-    private final Collection<RegisteredProvider> providers;
+    private final ProvidersRegistry providersRegistry;
 
     private final ClassLoader classLoader;
 
@@ -58,11 +56,11 @@ final class LinkedRuleBuilderImpl implements LinkedRuleBuilder {
     private String namespaceURI;
 
     public LinkedRuleBuilderImpl(final RulesBinder mainBinder,
-            final Collection<RegisteredProvider> providers,
+            final ProvidersRegistry providersRegistry,
             final ClassLoader classLoader,
             final String keyPattern) {
         this.mainBinder = mainBinder;
-        this.providers = providers;
+        this.providersRegistry = providersRegistry;
         this.classLoader = classLoader;
         this.keyPattern = keyPattern;
     }
@@ -233,7 +231,7 @@ final class LinkedRuleBuilderImpl implements LinkedRuleBuilder {
             return provider;
         }
 
-        this.providers.add(new RegisteredProvider(this.keyPattern, provider));
+        this.providersRegistry.registerProvider(this.keyPattern, provider);
 
         return provider;
     }
