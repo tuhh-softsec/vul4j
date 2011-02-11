@@ -147,10 +147,11 @@ public class CallParamRule extends Rule {
      */
     @Override
     public String toString() {
-        return String.format("CallParamRule[paramIndex=%s, attributeName=%s, from stack=%s]",
+        return String.format("CallParamRule[paramIndex=%s, attributeName=%s, fromStack=%s, stackIndex=%s]",
                 this.paramIndex,
                 this.attributeName,
-                this.fromStack);
+                this.fromStack,
+                this.stackIndex);
     }
 
 }
