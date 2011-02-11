@@ -17,6 +17,6 @@
  */
 
 /**
- * The Digester EDSL implementation.
+ * Concrete {@link org.apache.commons.digester3.Rule} implementations.
  */
-package org.apache.commons.digester3.internal.rulesbinder;
+package org.apache.commons.digester3.rule;

@@ -17,6 +17,6 @@
  */
 
 /**
- * The Digester EDSL implementation.
+ * Internal use only stuff.
  */
-package org.apache.commons.digester3.internal.rulesbinder;
+package org.apache.commons.digester3.internal;
