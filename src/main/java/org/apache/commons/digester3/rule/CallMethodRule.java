@@ -92,12 +92,14 @@ import org.xml.sax.Attributes;
  */
 public class CallMethodRule extends Rule {
 
-    /** 
-     * location of the target object for the call, relative to the
+    /**
+     * The location of the target object for the call, relative to the
      * top of the digester object stack. The default value of zero
      * means the target object is the one on top of the stack.
      */
     private final int targetOffset;
+
+    private final int paramCount;
 
     /**
      * The method name to call on the parent object.
@@ -144,6 +146,7 @@ public class CallMethodRule extends Rule {
     public CallMethodRule(int targetOffset, String methodName, int paramCount, Class<?>[] paramTypes, boolean useExactMatch) {
         this.targetOffset = targetOffset;
         this.methodName = methodName;
+        this.paramCount = paramCount;
 
         // copy the parameter class into an array
         this.paramTypes = new Class[paramTypes.length];
@@ -160,8 +163,8 @@ public class CallMethodRule extends Rule {
     @Override
     public void begin(String namespace, String name, Attributes attributes) throws Exception {
         // Push an array to capture the parameter values if necessary
-        if (this.paramTypes.length > 0) {
-            Object parameters[] = new Object[this.paramTypes.length];
+        if (this.paramCount > 0) {
+            Object parameters[] = new Object[this.paramCount];
             for (int i = 0; i < parameters.length; i++) {
                 parameters[i] = null;
             }
@@ -176,7 +179,7 @@ public class CallMethodRule extends Rule {
      */
     @Override
     public void body(String namespace, String name, String text) throws Exception {
-        if (this.paramTypes.length == 1) {
+        if (this.paramCount == 0) {
             this.bodyText = text.trim();
         }
     }
@@ -188,7 +191,7 @@ public class CallMethodRule extends Rule {
     public void end(String namespace, String name) throws Exception {
         // Retrieve or construct the parameter values array
         Object parameters[] = null;
-        if (this.paramTypes.length > 0) {
+        if (this.paramCount > 0) {
 
             parameters = (Object[]) this.getDigester().popParams();
 
@@ -215,7 +218,7 @@ public class CallMethodRule extends Rule {
             // only be overridden if data is present in the XML. I don't
             // know why this should only apply to methods taking *one*
             // parameter, but it always has been so we can't change it now.
-            if (this.paramTypes.length == 1 && parameters[0] == null) {
+            if (this.paramCount == 1 && parameters[0] == null) {
                 return;
             }
 

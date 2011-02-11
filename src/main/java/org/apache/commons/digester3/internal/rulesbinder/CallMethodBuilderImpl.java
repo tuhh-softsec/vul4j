@@ -38,7 +38,7 @@ final class CallMethodBuilderImpl
 
     private int paramCount = 0;
 
-    private Class<?>[] paramTypes;
+    private Class<?>[] paramTypes = new Class<?>[]{};
 
     private boolean useExactMatch = false;
 
@@ -54,13 +54,7 @@ final class CallMethodBuilderImpl
     }
 
     /**
-     * Sets the location of the target object.
-     *
-     * Positive numbers are relative to the top of the digester object stack.
-     * Negative numbers are relative to the bottom of the stack. Zero implies the top object on the stack.
-     *
-     * @param targetOffset location of the target object.
-     * @return this builder instance
+     * {@inheritDoc}
      */
     public CallMethodBuilderImpl withTargetOffset(int targetOffset) {
         this.targetOffset = targetOffset;
@@ -68,13 +62,7 @@ final class CallMethodBuilderImpl
     }
 
     /**
-     * Sets the Java classe names that represent the parameter types of the method arguments.
-     *
-     * If you wish to use a primitive type, specify the corresonding Java wrapper class instead,
-     * such as {@code java.lang.Boolean.TYPE} for a {@code boolean} parameter.
-     *
-     * @param The Java classe names that represent the parameter types of the method arguments
-     * @return this builder instance
+     * {@inheritDoc}
      */
     public CallMethodBuilderImpl withParamTypes(String...paramTypeNames) {
         if (paramTypeNames != null) {
@@ -94,13 +82,7 @@ final class CallMethodBuilderImpl
     }
 
     /**
-     * Sets the Java classes that represent the parameter types of the method arguments.
-     *
-     * If you wish to use a primitive type, specify the corresonding Java wrapper class instead,
-     * such as {@code java.lang.Boolean.TYPE} for a {@code boolean} parameter.
-     *
-     * @param paramTypes The Java classes that represent the parameter types of the method arguments
-     * @return this builder instance
+     * {@inheritDoc}
      */
     public CallMethodBuilderImpl withParamTypes(Class<?>...paramTypes) {
         this.paramTypes = paramTypes;
@@ -113,10 +95,7 @@ final class CallMethodBuilderImpl
     }
 
     /**
-     * Should <code>MethodUtils.invokeExactMethod</code> be used for the reflection.
-     *
-     * @param useExactMatch Flag to mark exact matching or not
-     * @return this builder instance
+     * {@inheritDoc}
      */
     public CallMethodBuilderImpl useExactMatch(boolean useExactMatch) {
         this.useExactMatch = useExactMatch;
@@ -124,11 +103,7 @@ final class CallMethodBuilderImpl
     }
 
     /**
-     * The number of parameters to collect, or zero for a single argument from the body of this element.
-     *
-     * @param paramCount The number of parameters to collect, or zero for a single argument
-     *        from the body of this element.
-     * @return this builder instance
+     * {@inheritDoc}
      */
     public CallMethodBuilderImpl withParamCount(int paramCount) {
         if (paramCount < 0) {
@@ -137,7 +112,22 @@ final class CallMethodBuilderImpl
         }
 
         this.paramCount = paramCount;
+        if (this.paramCount == 0) {
+            this.paramTypes = new Class<?>[] { String.class };
+        } else {
+            this.paramTypes = new Class<?>[this.paramCount];
+            for (int i = 0; i < paramTypes.length; i++) {
+                this.paramTypes[i] = String.class;
+            }
+        }
         return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public CallMethodBuilder usingElementBodyAsArgument() {
+        return this.withParamCount(0);
     }
 
     /**
@@ -145,25 +135,10 @@ final class CallMethodBuilderImpl
      */
     @Override
     protected CallMethodRule createRule() {
-        Class<?>[] paramTypes = null;
-
-        if (this.paramTypes == null) {
-            if (this.paramCount == 0) {
-                paramTypes = new Class<?>[] { String.class };
-            } else {
-                paramTypes = new Class<?>[this.paramCount];
-                for (int i = 0; i < paramTypes.length; i++) {
-                    paramTypes[i] = String.class;
-                }
-            }
-        } else {
-            paramTypes = this.paramTypes;
-        }
-
         return new CallMethodRule(this.targetOffset,
                 this.methodName,
                 this.paramCount,
-                paramTypes,
+                this.paramTypes,
                 this.useExactMatch);
     }
 

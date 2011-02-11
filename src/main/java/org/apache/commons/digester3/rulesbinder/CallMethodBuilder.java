@@ -36,7 +36,14 @@ public interface CallMethodBuilder extends BackToLinkedRuleBuilder<CallMethodRul
     CallMethodBuilder withTargetOffset(int targetOffset);
 
     /**
-     * Sets the Java classe names that represent the parameter types of the method arguments.
+     * Prepare the {@link CallMethodRule} to be invoked using the matching element body as argument.
+     *
+     * @return this builder instance
+     */
+    CallMethodBuilder usingElementBodyAsArgument();
+
+    /**
+     * Sets the Java class names that represent the parameter types of the method arguments.
      *
      * If you wish to use a primitive type, specify the corresonding Java wrapper class instead,
      * such as {@code java.lang.Boolean.TYPE} for a {@code boolean} parameter.
