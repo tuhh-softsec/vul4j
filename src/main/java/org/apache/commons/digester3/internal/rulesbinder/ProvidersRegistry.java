@@ -40,7 +40,9 @@ final class ProvidersRegistry {
         indexedProviders.add(provider);
     }
 
-    public <R extends Rule, RP extends RuleProvider<R>> RP getProvider(String keyPattern, Class<RP> type) {
+    public <R extends Rule, RP extends RuleProvider<R>> RP getProvider(String keyPattern,
+            /* @Nullable */ String namespaceURI,
+            Class<RP> type) {
         List<RuleProvider<? extends Rule>> indexedProviders = this.providersIndex.get(keyPattern);
 
         if (indexedProviders == null || indexedProviders.isEmpty()) {
@@ -49,7 +51,14 @@ final class ProvidersRegistry {
 
         for (RuleProvider<? extends Rule> ruleProvider  : indexedProviders) {
             if (type.isInstance(ruleProvider)) {
-                return type.cast(ruleProvider);
+                if (namespaceURI == null) {
+                    if (ruleProvider.getNamespaceURI() == null) {
+                        return type.cast(ruleProvider);
+                    }
+                } else if (ruleProvider.getNamespaceURI() != null
+                        && namespaceURI.equals(ruleProvider.getNamespaceURI())) {
+                    return type.cast(ruleProvider);
+                }
             }
         }
 
