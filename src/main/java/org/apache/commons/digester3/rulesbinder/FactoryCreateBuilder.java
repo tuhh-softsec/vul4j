@@ -41,7 +41,7 @@ public interface FactoryCreateBuilder extends BackToLinkedRuleBuilder<FactoryCre
      * @param type Java class of the object creation factory class
      * @return this builder instance
      */
-    FactoryCreateBuilder ofType(Class<?> type);
+    <T> FactoryCreateBuilder ofType(Class<? extends ObjectCreationFactory<T>> type);
 
     /**
      * Construct a factory create rule using the given, already instantiated, {@link ObjectCreationFactory}.

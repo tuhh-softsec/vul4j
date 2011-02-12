@@ -29,7 +29,9 @@ final class FactoryCreateBuilderImpl
         extends AbstractBackToLinkedRuleBuilder<FactoryCreateRule>
         implements FactoryCreateBuilder {
 
-    private String className;
+    private final ClassLoader classLoader;
+
+    private Class<? extends ObjectCreationFactory<?>> type;
 
     private String attributeName;
 
@@ -40,34 +42,52 @@ final class FactoryCreateBuilderImpl
     public FactoryCreateBuilderImpl(String keyPattern,
             String namespaceURI,
             RulesBinder mainBinder,
-            LinkedRuleBuilderImpl mainBuilder) {
+            LinkedRuleBuilderImpl mainBuilder,
+            ClassLoader classLoader) {
         super(keyPattern, namespaceURI, mainBinder, mainBuilder);
+        this.classLoader = classLoader;
     }
 
     /**
      * {@inheritDoc}
      */
-    public FactoryCreateBuilderImpl ofType(/* @Nullable */String className) {
-        this.className = className;
+    public FactoryCreateBuilder ofType(String className) {
+        if (className == null) {
+            this.reportError("factoryCreate().ofType(Class<?>)", "NULL Java type not allowed");
+        }
+
+        try {
+            Class<?> type = this.classLoader.loadClass(className);
+            if (!ObjectCreationFactory.class.isAssignableFrom(type)) {
+                this.reportError("factoryCreate().ofType(Class<?>)", "NULL Java type not allowed");
+                return this;
+            }
+
+            this.type = (Class<? extends ObjectCreationFactory<?>>) type;
+        } catch (ClassNotFoundException e) {
+            this.reportError("factoryCreate().ofType(String)", String.format("class '%s' cannot be load", className));
+        }
+
         return this;
     }
 
     /**
      * {@inheritDoc}
      */
-    public FactoryCreateBuilderImpl ofType(Class<?> type) {
+    public <T> FactoryCreateBuilder ofType(Class<? extends ObjectCreationFactory<T>> type) {
         if (type == null) {
             this.reportError("factoryCreate().ofType(Class<?>)", "NULL Java type not allowed");
-            return this;
         }
 
-        return this.ofType(type.getName());
+        this.type = type;
+
+        return this;
     }
 
     /**
      * {@inheritDoc}
      */
-    public <T> FactoryCreateBuilderImpl usingFactory(/* @Nullable */ObjectCreationFactory<T> creationFactory) {
+    public <T> FactoryCreateBuilder usingFactory(/* @Nullable */ObjectCreationFactory<T> creationFactory) {
         this.creationFactory = creationFactory;
         return this;
     }
@@ -75,7 +95,7 @@ final class FactoryCreateBuilderImpl
     /**
      * {@inheritDoc}
      */
-    public FactoryCreateBuilderImpl overriddenByAttribute(/* @Nullable */String attributeName) {
+    public FactoryCreateBuilder overriddenByAttribute(/* @Nullable */String attributeName) {
         this.attributeName = attributeName;
         return this;
     }
@@ -83,7 +103,7 @@ final class FactoryCreateBuilderImpl
     /**
      * {@inheritDoc}
      */
-    public FactoryCreateBuilderImpl ignoreCreateExceptions(boolean ignoreCreateExceptions) {
+    public FactoryCreateBuilder ignoreCreateExceptions(boolean ignoreCreateExceptions) {
         this.ignoreCreateExceptions = ignoreCreateExceptions;
         return this;
     }
@@ -93,12 +113,12 @@ final class FactoryCreateBuilderImpl
      */
     @Override
     protected FactoryCreateRule createRule() {
-        if (className == null && attributeName == null && creationFactory == null) {
+        if (type == null && attributeName == null && creationFactory == null) {
             this.reportError("factoryCreate()",
                     "at least one between 'className' ar 'attributeName' or 'creationFactory' has to be specified");
         }
 
-        return new FactoryCreateRule(this.className, this.attributeName, this.creationFactory, this.ignoreCreateExceptions);
+        return new FactoryCreateRule(this.type, this.attributeName, this.creationFactory, this.ignoreCreateExceptions);
     }
 
 }

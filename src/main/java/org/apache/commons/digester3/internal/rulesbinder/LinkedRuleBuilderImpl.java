@@ -111,7 +111,8 @@ final class LinkedRuleBuilderImpl implements LinkedRuleBuilder {
      * {@inheritDoc}
      */
     public FactoryCreateBuilder factoryCreate() {
-        return this.addProvider(new FactoryCreateBuilderImpl(this.keyPattern, this.namespaceURI, this.mainBinder, this));
+        return this.addProvider(
+                new FactoryCreateBuilderImpl(this.keyPattern, this.namespaceURI, this.mainBinder, this, this.classLoader));
     }
 
     /**

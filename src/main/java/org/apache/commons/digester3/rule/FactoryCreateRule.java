@@ -47,10 +47,10 @@ public class FactoryCreateRule extends Rule {
     private String attributeName = null;
 
     /**
-     * The Java class name of the ObjectCreationFactory to be created.
+     * The Java class of the ObjectCreationFactory to be created.
      * This class must have a no-arguments constructor.
      */
-    private String className = null;
+    private Class<? extends ObjectCreationFactory<?>> type = null;
 
     /**
      * The object creation factory we will use to instantiate objects
@@ -72,8 +72,11 @@ public class FactoryCreateRule extends Rule {
      * @param ignoreCreateExceptions if true, exceptions thrown by the object
      *  creation factory will be ignored.
      */
-    public <T> FactoryCreateRule(String className, String attributeName, ObjectCreationFactory<T> creationFactory, boolean ignoreCreateExceptions) {
-        this.className = className;
+    public FactoryCreateRule(Class<? extends ObjectCreationFactory<?>> type,
+            String attributeName,
+            ObjectCreationFactory<?> creationFactory,
+            boolean ignoreCreateExceptions) {
+        this.type = type;
         this.attributeName = attributeName;
         this.creationFactory = creationFactory;
         this.ignoreCreateExceptions = ignoreCreateExceptions;
@@ -169,8 +172,8 @@ public class FactoryCreateRule extends Rule {
      */
     @Override
     public String toString() {
-        return String.format("FactoryCreateRule[className=%s, attributeName=%s, creationFactory=%s]",
-                this.className,
+        return String.format("FactoryCreateRule[type=%s, attributeName=%s, creationFactory=%s]",
+                this.type != null ? this.type.getName() : "",
                 this.attributeName,
                 this.creationFactory);
     }
@@ -185,19 +188,21 @@ public class FactoryCreateRule extends Rule {
      */
     protected ObjectCreationFactory<?> getFactory(Attributes attributes) throws Exception {
         if (this.creationFactory == null) {
-            String realClassName = this.className;
+            Class<?> clazz = this.type;
+
             if (this.attributeName != null) {
                 String value = attributes.getValue(this.attributeName);
                 if (value != null) {
-                    realClassName = value;
+                    clazz = this.getDigester().getClassLoader().loadClass(value);
                 }
             }
+
             if (this.getDigester().getLog().isDebugEnabled()) {
                 this.getDigester().getLog().debug(String.format("[FactoryCreateRule]{%s} New factory %s",
                         this.getDigester().getMatch(),
-                        realClassName));
+                        clazz.getName()));
             }
-            Class<?> clazz = this.getDigester().getClassLoader().loadClass(realClassName);
+
             this.creationFactory = (ObjectCreationFactory<?>) clazz.newInstance();
             this.creationFactory.setDigester(this.getDigester());
         }
