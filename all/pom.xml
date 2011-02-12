@@ -36,12 +36,57 @@
 
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>shared-asn1-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>shared-asn1-ber</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>ldap-client-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>shared-ldap</artifactId>
     </dependency>
 
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>shared-ldap-model</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>shared-ldap-codec</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>shared-ldap-schema</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>shared-ldap-schema-converter</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>shared-dsml-engine</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>shared-dsml-parser</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>shared-util</artifactId>
     </dependency>
   </dependencies>
 
@@ -57,7 +102,9 @@
               <goal>shade</goal>
             </goals>
             <configuration>
+              <shadedGroupFilter>org.apache.directory</shadedGroupFilter>
               <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
+              <createDependencyReducedPom>true</createDependencyReducedPom>
               <shadedArtifactAttached>false</shadedArtifactAttached>
             </configuration>
           </execution>
