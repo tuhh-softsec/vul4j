@@ -69,7 +69,13 @@ final class LinkedRuleBuilderImpl implements LinkedRuleBuilder {
      * {@inheritDoc}
      */
     public LinkedRuleBuilder withNamespaceURI(/* @Nullable */String namespaceURI) {
-        this.namespaceURI = namespaceURI;
+        if (namespaceURI == null || namespaceURI.length() > 0) {
+            this.namespaceURI = namespaceURI; 
+        } else {
+            // ignore empty namespaces, null is better
+            this.namespaceURI = null;
+        }
+
         return this;
     }
 
