@@ -59,6 +59,13 @@ abstract class AbstractBackToLinkedRuleBuilder<R extends Rule> implements BackTo
     /**
      * {@inheritDoc}
      */
+    public final String getNamespaceURI() {
+        return this.namespaceURI;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public final R get() {
         R rule = this.createRule();
         if (rule != null && this.namespaceURI != null) {

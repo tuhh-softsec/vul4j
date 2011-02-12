@@ -25,6 +25,13 @@ import org.apache.commons.digester3.Rule;
 public interface RuleProvider<R extends Rule> {
 
     /**
+     * Returns the namespace URI for which this Rule is relevant, if any.
+     *
+     * @return The namespace URI for which this Rule is relevant, if any
+     */
+    String getNamespaceURI();
+
+    /**
      * Provides an instance of {@link Rule}.
      *
      * Must never return null.
