@@ -51,6 +51,7 @@ final class FactoryCreateBuilderImpl
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked") // if class not assignable, will be notified via exception
     public FactoryCreateBuilder ofType(String className) {
         if (className == null) {
             this.reportError("factoryCreate().ofType(Class<?>)", "NULL Java type not allowed");
@@ -59,7 +60,7 @@ final class FactoryCreateBuilderImpl
         try {
             Class<?> type = this.classLoader.loadClass(className);
             if (!ObjectCreationFactory.class.isAssignableFrom(type)) {
-                this.reportError("factoryCreate().ofType(Class<?>)", "NULL Java type not allowed");
+                this.reportError("factoryCreate().ofType(String)", "NULL Java type not allowed");
                 return this;
             }
 
@@ -74,7 +75,7 @@ final class FactoryCreateBuilderImpl
     /**
      * {@inheritDoc}
      */
-    public <T> FactoryCreateBuilder ofType(Class<? extends ObjectCreationFactory<T>> type) {
+    public <T, F extends ObjectCreationFactory<T>> FactoryCreateBuilder ofType(Class<F> type) {
         if (type == null) {
             this.reportError("factoryCreate().ofType(Class<?>)", "NULL Java type not allowed");
         }
