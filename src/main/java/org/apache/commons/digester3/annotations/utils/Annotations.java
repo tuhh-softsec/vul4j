@@ -32,6 +32,11 @@ public class Annotations {
     private static final String VALUE = "value";
 
     /**
+     * The {@code pattern} string constant.
+     */
+    private static final String PATTERN = "pattern";
+
+    /**
      * This class can't be instantiated.
      */
     private Annotations() {
@@ -46,6 +51,20 @@ public class Annotations {
      */
     public static Object getAnnotationValue(Annotation annotation) {
         return invokeAnnotationMethod(annotation, VALUE);
+    }
+
+    /**
+     * Extract the {@code pattern()} from annotation.
+     *
+     * @param annotation the annotation has to be introspected.
+     * @return the annotation {@code pattern()}.
+     */
+    public static String getAnnotationPattern(Annotation annotation) {
+        Object ret = invokeAnnotationMethod(annotation, PATTERN);
+        if (ret != null) {
+            return (String) ret;
+        }
+        return null;
     }
 
     /**
