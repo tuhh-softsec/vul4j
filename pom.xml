@@ -85,7 +85,6 @@
     <module>ldap-client-api</module>
     <module>dsml-parser</module>
     <module>dsml-engine</module>
-    <module>distribution</module>
   </modules>
 
   <build>
@@ -113,6 +112,8 @@
               <!-- 3RD_PARTY_LICENSES -->
               <exclude>distribution/src/main/release/licenses/*</exclude>
               <exclude>src/main/release/licenses/*</exclude>
+              <!-- Missing license header in dependency reduced pom, see http://jira.codehaus.org/browse/MSHADE-48 -->
+              <exclude>**/dependency-reduced-pom.xml</exclude>
               <!-- Generated ldif files -->
               <exclude>ldap-schema/src/main/resources/schema/**</exclude>
               <exclude>ldap-schema/src/main/resources/schema-all.ldif</exclude>
@@ -300,6 +301,8 @@
                   <!-- 3RD_PARTY_LICENSES -->
                   <exclude>distribution/src/main/release/licenses/*</exclude>
                   <exclude>src/main/release/licenses/*</exclude>
+                  <!-- Missing license header in dependency reduced pom, see http://jira.codehaus.org/browse/MSHADE-48 -->
+                  <exclude>**/dependency-reduced-pom.xml</exclude>
                   <!-- Generated ldif files -->
                   <exclude>ldap-schema/src/main/resources/schema/**</exclude>
                   <exclude>ldap-schema/src/main/resources/schema-all.ldif</exclude>
@@ -567,6 +570,9 @@
   <profiles>
     <profile>
       <id>apache-release</id>
+      <modules>
+        <module>distribution</module>
+      </modules>
       <build>
         <plugins>
           <plugin>
