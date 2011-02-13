@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.directory.shared</groupId>
     <artifactId>shared-parent</artifactId>
-    <version>1.0.0-M1-SNAPSHOT</version>
+    <version>1.0.0-M1</version>
   </parent>
 
   <artifactId>ldap-client-api</artifactId>
@@ -38,9 +38,9 @@
   </issueManagement>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/directory/clients/ldap/trunk/ldap-client-api</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/directory/clients/ldap/trunk/ldap-client-api</developerConnection>
-    <url>http://svn.apache.org/viewvc/directory/clients/ldap/trunk/ldap-client-api</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/directory/clients/ldap/tags/1.0.0-M1/ldap-client-api</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/directory/clients/ldap/tags/1.0.0-M1/ldap-client-api</developerConnection>
+    <url>http://svn.apache.org/viewvc/directory/clients/ldap/tags/1.0.0-M1/ldap-client-api</url>
   </scm>
 
   <description>
