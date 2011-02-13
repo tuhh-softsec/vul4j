@@ -25,10 +25,10 @@
     <version>0.9.20-SNAPSHOT</version>
   </parent>
   
-  <artifactId>shared-ldap</artifactId>
-  <name>Apache Directory Shared LDAP</name>
+  <artifactId>shared-ldap-extras-aci</artifactId>
+  <name>Apache Directory Shared LDAP ACI Extras</name>
   <packaging>bundle</packaging>
-  <description>Common LDAP packages used by clients and servers</description>
+  <description>Extra Shared LDAP API for Access Control Items</description>
 
   <dependencies>
     <dependency>
@@ -50,16 +50,6 @@
 
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>shared-asn1-api</artifactId>
-    </dependency> 
-
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>shared-asn1-ber</artifactId>
-    </dependency> 
-
-    <dependency>
-      <groupId>${project.groupId}</groupId>
       <artifactId>shared-i18n</artifactId>
     </dependency> 
 
@@ -69,51 +59,13 @@
     </dependency> 
 
     <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>shared-ldap-codec-standalone</artifactId>
-    </dependency> 
-
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>shared-ldap-extras-codec</artifactId>
-    </dependency> 
-
-    <dependency>
-      <groupId>org.apache.mina</groupId>
-      <artifactId>mina-core</artifactId>
-    </dependency>
-    
-    <dependency>
       <groupId>antlr</groupId>
       <artifactId>antlr</artifactId>
-    </dependency>
-    
-    <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>commons-collections</groupId>
-      <artifactId>commons-collections</artifactId>
     </dependency>
   </dependencies>
 
   <build>
     <plugins>
-      <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>generate-sources</phase>
-            <configuration />
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>antlr-maven-plugin</artifactId>
@@ -131,27 +83,6 @@
       </plugin>
 
       <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <excludes>
-            <exclude>**/Abstract*</exclude>
-            <exclude>**/*RegressionTest*</exclude>
-          </excludes>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifestFile>META-INF/MANIFEST.MF</manifestFile>
-            <addMavenDescriptor>false</addMavenDescriptor>
-          </archive>
-        </configuration>
-      </plugin>
-
-      <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <inherited>true</inherited>
@@ -159,13 +90,9 @@
         <configuration>
           <manifestLocation>META-INF</manifestLocation>
           <instructions>
-            <Bundle-SymbolicName>${project.groupId}.ldap</Bundle-SymbolicName>
+            <Bundle-SymbolicName>${project.groupId}.ldap.extras.aci</Bundle-SymbolicName>
             <Export-Package>
-              org.apache.directory.shared.ldap.aci*,
-              org.apache.directory.shared.ldap.message*,
-              org.apache.directory.shared.ldap.sp,
-              org.apache.directory.shared.ldap.trigger,
-              org.apache.directory.shared.ldap.util*
+              org.apache.directory.shared.ldap.aci*
             </Export-Package>
           </instructions>
         </configuration>
