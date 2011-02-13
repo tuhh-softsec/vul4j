@@ -56,7 +56,7 @@
     
     <dependency>
       <groupId>org.osgi</groupId>
-      <artifactId>org.osgi</artifactId>
+      <artifactId>org.osgi.core</artifactId>
       <scope>provided</scope>
     </dependency>
   </dependencies>

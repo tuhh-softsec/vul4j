@@ -20,6 +20,14 @@
 package org.apache.directory.shared.ldap.codec.api;
 
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Iterator;
+
+import org.apache.directory.shared.ldap.codec.standalone.StandaloneLdapCodecService;
+import org.apache.directory.shared.ldap.extras.controls.PasswordPolicy;
+import org.apache.directory.shared.ldap.model.message.Control;
 import org.junit.Test;
 
 
@@ -28,13 +36,27 @@ import org.junit.Test;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class DefaultLdapCodecServiceTest
-{
+public class StandaloneLdapCodecServiceTest
+{   
     /**
-     * In situ OSGi test run.
+     * Test method for {@link org.apache.directory.shared.ldap.codec.standalone.StandaloneLdapCodecService#StandaloneLdapCodecService()}.
      */
     @Test
     public void testLoadingExtras()
     {
+        StandaloneLdapCodecService codec = new StandaloneLdapCodecService();
+        Iterator<String> oids = codec.registeredControls();
+        while ( oids.hasNext() )
+        {
+            System.out.println( "Registered OID = " + oids.next() );
+        }
+        
+        assertTrue( codec.isControlRegistered( PasswordPolicy.OID ) );
+
+        CodecControl<? extends Control> control = codec.newControl( PasswordPolicy.OID );
+        assertNotNull( control );
+        System.out.println( control );
+        assertNotNull( codec );
+        codec.shutdown();
     }
 }
