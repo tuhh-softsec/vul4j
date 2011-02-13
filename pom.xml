@@ -85,6 +85,7 @@
     <module>ldap-client-api</module>
     <module>dsml-parser</module>
     <module>dsml-engine</module>
+    <module>distribution</module>
   </modules>
 
   <build>
@@ -570,9 +571,6 @@
   <profiles>
     <profile>
       <id>apache-release</id>
-      <modules>
-        <module>distribution</module>
-      </modules>
       <build>
         <plugins>
           <plugin>
