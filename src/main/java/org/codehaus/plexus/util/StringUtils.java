@@ -58,8 +58,6 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * <p>Common <code>String</code> manipulation routines.</p>
@@ -2380,11 +2378,18 @@ public class StringUtils
      */
     public static String removeDuplicateWhitespace( String s )
     {
-        String patternStr = "\\s+";
-        String replaceStr = " ";
-        Pattern pattern = Pattern.compile( patternStr );
-        Matcher matcher = pattern.matcher( s );
-        return matcher.replaceAll( replaceStr );
+        StringBuffer result = new StringBuffer( );
+        int length = s.length();
+        boolean isPreviousWhiteSpace = false;
+        for (int i = 0; i < length; i++){
+            char c = s.charAt( i );
+            boolean thisCharWhiteSpace = Character.isWhitespace( c );
+            if (!(isPreviousWhiteSpace && thisCharWhiteSpace)){
+                result.append( c );
+            }
+            isPreviousWhiteSpace = thisCharWhiteSpace;
+        }
+        return result.toString();
     }
 
     /**

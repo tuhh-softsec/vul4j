@@ -221,6 +221,12 @@ public class StringUtilsTest
         assertEquals( "this is test ", StringUtils.removeDuplicateWhitespace( s ) );
         s = "this  \r\n   is \n  \r  test   ";
         assertEquals( "this is test ", StringUtils.removeDuplicateWhitespace( s ) );
+        s = "     this  \r\n   is \n  \r  test";
+        assertEquals( " this is test", StringUtils.removeDuplicateWhitespace( s ) );
+        s = "this  \r\n   is \n  \r  test   \n ";
+        assertEquals( "this is test ", StringUtils.removeDuplicateWhitespace( s ) );
+
+
     }
 
     public void testUnifyLineSeparators()
