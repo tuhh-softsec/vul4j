@@ -17,7 +17,6 @@
  */
 package org.apache.commons.digester3.annotations.handlers;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 import org.apache.commons.digester3.RulesBinder;
@@ -28,16 +27,15 @@ import org.apache.commons.digester3.annotations.rules.SetNext;
  */
 public final class SetNextHandler extends AbstractMethodHandler<SetNext> {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    protected void doBind(SetNext methodAnnotation,
-            Annotation annotation,
+    protected void doBind(String pattern,
+            String namespaceURI,
             Method method,
-            Class<?> type,
-            RulesBinder rulesBinder) {
-        
+            Class<?> type, RulesBinder rulesBinder) {
+        rulesBinder.forPattern(pattern)
+            .withNamespaceURI(namespaceURI)
+            .setNext(method.getName())
+            .withParameterType(type);
     }
 
 }

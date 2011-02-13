@@ -17,7 +17,6 @@
  */
 package org.apache.commons.digester3.annotations.handlers;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 import org.apache.commons.digester3.RulesBinder;
@@ -32,12 +31,15 @@ public final class SetRootHandler extends AbstractMethodHandler<SetRoot> {
      * {@inheritDoc}
      */
     @Override
-    protected void doBind(SetRoot methodAnnotation,
-            Annotation annotation,
+    protected void doBind(String pattern,
+            String namespaceURI,
             Method method,
             Class<?> type,
             RulesBinder rulesBinder) {
-        
+        rulesBinder.forPattern(pattern)
+            .withNamespaceURI(namespaceURI)
+            .setRoot(method.getName())
+            .withParameterType(type);
     }
 
 }

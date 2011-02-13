@@ -106,7 +106,9 @@ abstract class AbstractMethodHandler<A extends Annotation> implements Annotation
                 && annotation.annotationType().isAnnotationPresent(CreationRule.class)) {
             rulesBinder.install(new FromAnnotationsRuleModule(type));
 
-            this.doBind(methodAnnotation, annotation, method, type, rulesBinder);
+            String pattern = Annotations.getAnnotationPattern(annotation);
+            String namespaceURI = Annotations.getAnnotationNamespaceURI(annotation);
+            this.doBind(pattern, namespaceURI, method, type, rulesBinder);
         } else if (annotation.annotationType().isAnnotationPresent(DigesterRuleList.class)) {
             // check if it is one of the *.List annotation
             Annotation[] annotations = Annotations.getAnnotationsArrayValue(annotation);
@@ -119,8 +121,8 @@ abstract class AbstractMethodHandler<A extends Annotation> implements Annotation
         }
     }
 
-    protected abstract void doBind(A methodAnnotation,
-            Annotation annotation,
+    protected abstract void doBind(String pattern,
+            String namespaceURI,
             Method method,
             Class<?> type,
             RulesBinder rulesBinder);
