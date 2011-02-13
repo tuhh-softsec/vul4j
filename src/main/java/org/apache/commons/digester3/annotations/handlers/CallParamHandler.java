@@ -21,6 +21,7 @@ import org.apache.commons.digester3.RulesBinder;
 import org.apache.commons.digester3.annotations.AnnotationHandler;
 import org.apache.commons.digester3.annotations.reflect.MethodArgument;
 import org.apache.commons.digester3.annotations.rules.CallParam;
+import org.apache.commons.digester3.rulesbinder.CallParamBuilder;
 
 /**
  * {@link CallParam} handler.
@@ -31,13 +32,14 @@ public final class CallParamHandler implements AnnotationHandler<CallParam, Meth
      * {@inheritDoc}
      */
     public void handle(CallParam annotation, MethodArgument element, RulesBinder rulesBinder) {
-        rulesBinder.forPattern(annotation.pattern())
+        CallParamBuilder builder = rulesBinder.forPattern(annotation.pattern())
             .withNamespaceURI(annotation.namespaceURI())
             .callParam()
                 .ofIndex(element.getIndex())
-                .fromAttribute(annotation.attributeName().length() > 0 ? annotation.attributeName() : null)
-                .fromStack(annotation.fromStack())
-                .ofIndex(annotation.stackIndex());
+                .fromAttribute(annotation.attributeName().length() > 0 ? annotation.attributeName() : null);
+        if (annotation.fromStack()) {
+            builder.withStackIndex(annotation.stackIndex());
+        }
     }
 
 }
