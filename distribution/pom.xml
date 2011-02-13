@@ -66,13 +66,32 @@
           <execution>
             <phase>package</phase>
             <configuration>
+              <tarLongFileMode>gnu</tarLongFileMode>
               <descriptors>
                 <descriptor>src/main/assembly/bin.xml</descriptor>
+                <descriptor>src/main/assembly/src.xml</descriptor>
               </descriptors>
             </configuration>
             <goals>
               <goal>single</goal>
             </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.geronimo.genesis.plugins</groupId>
+        <artifactId>tools-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>verify-legal-files</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>verify-legal-files</goal>
+            </goals>
+            <configuration>
+              <!-- avoid false positive, as we add a '-bin' or '-src' to the base directory -->
+              <strict>false</strict>
+            </configuration>
           </execution>
         </executions>
       </plugin>

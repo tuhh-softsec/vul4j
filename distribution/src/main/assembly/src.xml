@@ -17,13 +17,26 @@
 -->
 <!-- $Rev:  $ $Date:  $ -->
 <assembly xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/assembly-1.1.0-SNAPSHOT.xsd">
-    <id>bin</id>
+    <id>src</id>
     <formats>
         <format>zip</format>
         <format>tar.gz</format>
     </formats>
-    <baseDirectory>${project.build.finalName}-bin</baseDirectory>
+    <baseDirectory>${project.build.finalName}-src</baseDirectory>
     <fileSets>
+        <fileSet>
+            <directory>${project.basedir}/..</directory>
+            <outputDirectory>/</outputDirectory>
+            <useDefaultExcludes>true</useDefaultExcludes>
+            <excludes>
+                <exclude>/</exclude>
+                <exclude>LICENSE</exclude>
+                <exclude>NOTICE</exclude>
+                <exclude>**/.*/**</exclude>
+                <exclude>**/*.log</exclude>
+                <exclude>**/${project.build.directory}/**</exclude>
+            </excludes>
+        </fileSet>
         <fileSet>
             <directory>src/main/release</directory>
             <outputDirectory>/</outputDirectory>
@@ -31,16 +44,5 @@
                 <include>**</include>
             </includes>
         </fileSet>
-        <fileSet>
-            <directory>target/additional-jars</directory>
-            <outputDirectory>/lib</outputDirectory>
-        </fileSet>
     </fileSets>
-    <dependencySets>
-        <dependencySet>
-            <outputDirectory>/lib</outputDirectory>
-            <unpack>false</unpack>
-            <scope>runtime</scope>
-        </dependencySet>
-    </dependencySets>
 </assembly>
