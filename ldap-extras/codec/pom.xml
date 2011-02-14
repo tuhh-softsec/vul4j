@@ -26,7 +26,7 @@
   </parent>
   
   <artifactId>shared-ldap-extras-codec</artifactId>
-  <name>Apache Directory Shared LDAP Codec Extras</name>
+  <name>Apache Directory Shared LDAP Extras Codec</name>
   <packaging>bundle</packaging>
   <description>
     Extra LDAP controls and extended operation extentions for the Codec used

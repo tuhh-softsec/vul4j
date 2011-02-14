@@ -26,7 +26,7 @@
   </parent>
   
   <artifactId>shared-ldap-extras-aci</artifactId>
-  <name>Apache Directory Shared LDAP ACI Extras</name>
+  <name>Apache Directory Shared LDAP Extras ACI</name>
   <packaging>bundle</packaging>
   <description>Extra Shared LDAP API for Access Control Items</description>
 
