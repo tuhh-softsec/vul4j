@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import net.webassembletool.output.Output;
 import net.webassembletool.resource.Resource;
+import net.webassembletool.util.Rfc2616;
 
 /**
  * Resource implementation that keeps the contents inside a byte array. A

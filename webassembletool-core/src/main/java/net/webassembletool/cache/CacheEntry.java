@@ -18,6 +18,7 @@ import net.webassembletool.HttpErrorPage;
 import net.webassembletool.ResourceContext;
 import net.webassembletool.http.HttpHeaders;
 import net.webassembletool.resource.Resource;
+import net.webassembletool.util.Rfc2616;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

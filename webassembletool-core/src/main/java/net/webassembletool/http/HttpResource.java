@@ -27,12 +27,12 @@ import net.webassembletool.Driver;
 import net.webassembletool.ResourceContext;
 import net.webassembletool.UserContext;
 import net.webassembletool.authentication.AuthenticationHandler;
-import net.webassembletool.cache.Rfc2616;
 import net.webassembletool.filter.Filter;
 import net.webassembletool.output.Output;
 import net.webassembletool.output.UnsupportedContentEncodingException;
 import net.webassembletool.resource.Resource;
 import net.webassembletool.resource.ResourceUtils;
+import net.webassembletool.util.Rfc2616;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
