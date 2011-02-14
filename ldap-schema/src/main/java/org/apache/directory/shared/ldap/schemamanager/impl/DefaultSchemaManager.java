@@ -137,7 +137,7 @@ public class DefaultSchemaManager implements SchemaManager
     public DefaultSchemaManager( SchemaLoader loader )
     {
         // Default to the the root (one schemaManager for all the entries
-        namingContext = Dn.EMPTY_DN;
+        namingContext = Dn.ROOT_DSE;
         this.schemaLoader = loader;
         errors = new ArrayList<Throwable>();
         registries = new Registries( this );

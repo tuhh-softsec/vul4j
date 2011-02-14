@@ -109,6 +109,9 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
     /** A null Dn */
     public static final Dn EMPTY_DN = new Dn();
 
+    /** The rootDSE */
+    public static final Dn ROOT_DSE = new Dn();
+
     /** the schema manager */
     private transient SchemaManager schemaManager;
 
