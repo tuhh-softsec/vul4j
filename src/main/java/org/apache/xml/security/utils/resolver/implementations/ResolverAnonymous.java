@@ -32,6 +32,11 @@ import org.w3c.dom.Attr;
 public class ResolverAnonymous extends ResourceResolverSpi {
 
     private XMLSignatureInput input = null;
+    
+    @Override
+    public boolean engineIsThreadSafe() {
+        return true;
+    }
 
     /**
      * @param filename

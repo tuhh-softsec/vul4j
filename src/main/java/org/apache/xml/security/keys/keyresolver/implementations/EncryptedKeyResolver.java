@@ -43,16 +43,14 @@ import org.w3c.dom.Element;
  *
  * @author Berin Lautenbach
  */
-
 public class EncryptedKeyResolver extends KeyResolverSpi {
 
     /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(
-                        RSAKeyValueResolver.class.getName());
+    private static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(RSAKeyValueResolver.class.getName());
 
-    Key _kek;
-    String _algorithm;
+    private Key kek;
+    private String algorithm;
 
     /**
      * Constructor for use when a KEK needs to be derived from a KeyInfo
@@ -60,8 +58,8 @@ public class EncryptedKeyResolver extends KeyResolverSpi {
      * @param algorithm
      */
     public EncryptedKeyResolver(String algorithm) {		
-        _kek = null;
-        _algorithm=algorithm;
+        kek = null;
+        this.algorithm = algorithm;
     }
 
     /**
@@ -70,25 +68,28 @@ public class EncryptedKeyResolver extends KeyResolverSpi {
      * @param kek
      */
     public EncryptedKeyResolver(String algorithm, Key kek) {		
-        _algorithm = algorithm;
-        _kek = kek;
+        this.algorithm = algorithm;
+        this.kek = kek;
     }
-        
+
     /** @inheritDoc */
     public PublicKey engineLookupAndResolvePublicKey(
-           Element element, String BaseURI, StorageResolver storage) {
+        Element element, String BaseURI, StorageResolver storage
+    ) {
         return null;
     }
 
     /** @inheritDoc */
     public X509Certificate engineLookupResolveX509Certificate(
-           Element element, String BaseURI, StorageResolver storage) {
+        Element element, String BaseURI, StorageResolver storage
+    ) {
         return null;
     }
 
     /** @inheritDoc */
     public javax.crypto.SecretKey engineLookupAndResolveSecretKey(
-        Element element, String BaseURI, StorageResolver storage) {
+        Element element, String BaseURI, StorageResolver storage
+    ) {
         if (log.isDebugEnabled()) {
             log.debug("EncryptedKeyResolver - Can I resolve " + element.getTagName());
         }
@@ -98,18 +99,20 @@ public class EncryptedKeyResolver extends KeyResolverSpi {
         }
 
         SecretKey key = null;
-        boolean isEncryptedKey = XMLUtils.elementIsInEncryptionSpace(element,
-                                 EncryptionConstants._TAG_ENCRYPTEDKEY);
+        boolean isEncryptedKey = 
+            XMLUtils.elementIsInEncryptionSpace(element, EncryptionConstants._TAG_ENCRYPTEDKEY);
         if (isEncryptedKey) {
-            log.debug("Passed an Encrypted Key");
+            if (log.isDebugEnabled()) {
+                log.debug("Passed an Encrypted Key");
+            }
             try {
                 XMLCipher cipher = XMLCipher.getInstance();
-                cipher.init(XMLCipher.UNWRAP_MODE, _kek);
+                cipher.init(XMLCipher.UNWRAP_MODE, kek);
                 EncryptedKey ek = cipher.loadEncryptedKey(element);
-                key = (SecretKey) cipher.decryptKey(ek, _algorithm);
+                key = (SecretKey) cipher.decryptKey(ek, algorithm);
             } catch (XMLEncryptionException e) {}
         }
-                              
+
         return key;
-   }
+    }
 }

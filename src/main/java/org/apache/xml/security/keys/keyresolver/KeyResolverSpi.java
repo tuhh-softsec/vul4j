@@ -27,9 +27,9 @@ import org.apache.xml.security.keys.storage.StorageResolver;
 import org.w3c.dom.Element;
 
 /**
- * This class is an abstract class for a child KeyInfo Elemnet.
+ * This class is an abstract class for a child KeyInfo Element.
  *
- * If you want the your KeyResolver, at firstly you must extand this class, and register
+ * If you want the your KeyResolver, at firstly you must extend this class, and register
  * as following in config.xml
  * <PRE>
  *  &lt;KeyResolver URI="http://www.w3.org/2000/09/xmldsig#KeyValue"
@@ -97,9 +97,9 @@ public abstract class KeyResolverSpi {
             try {
                 tmp = (KeyResolverSpi) getClass().newInstance();    	    
             } catch (InstantiationException e) {
-                throw new KeyResolverException("",e);
+                throw new KeyResolverException("", e);
             } catch (IllegalAccessException e) {
-                throw new KeyResolverException("",e);
+                throw new KeyResolverException("", e);
             }
         }
         return tmp;

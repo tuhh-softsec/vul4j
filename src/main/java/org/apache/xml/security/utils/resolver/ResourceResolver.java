@@ -28,8 +28,6 @@ import org.w3c.dom.Attr;
  * This is done by retrieving a Resolver. The resolver needs two arguments: The
  * URI in which the link to the new resource is defined and the baseURI of the
  * file/entity in which the URI occurs (the baseURI is the same as the SystemId).
- *
- * @author $Author$
  */
 public class ResourceResolver {
 
@@ -103,12 +101,6 @@ public class ResourceResolver {
             }
 
             if ((resolverTmp != null) && resolverTmp.canResolve(uri, baseURI)) {
-                if (i != 0) {
-                    // update resolver.
-                    resolverVector.remove(i);
-                    resolverVector.add(0, resolver);        		 
-                }
-
                 return resolverTmp;
             }
         }

@@ -184,8 +184,8 @@ public class OldApiTest extends org.junit.Assert {
     }
     
     @org.junit.Test
-    public void testOldKeyResolverSpi() throws Exception{
-        KeyResolver.register(OldKeyResolverSpi.class.getName());
+    public void testOldKeyResolverSpi() throws Exception {
+        KeyResolver.register(OldKeyResolverSpi.class.getName(), true);
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();				
         Element el = ((Element)doc.createElement("test"));
         PublicKey pk = KeyResolver.getPublicKey(el, "!!!testUri", null);
@@ -198,7 +198,7 @@ public class OldApiTest extends org.junit.Assert {
     }
 
     @org.junit.Test
-    public void testOldKeyResolverSpiInKeyInfo() throws Exception{
+    public void testOldKeyResolverSpiInKeyInfo() throws Exception {
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
         Element el = (Element)doc.createElementNS("http://www.w3.org/2000/09/xmldsig#","KeyInfo");
         el.appendChild((Element)doc.createElementNS("http://www.w3.org/2000/09/xmldsig#","KeyInfo"));

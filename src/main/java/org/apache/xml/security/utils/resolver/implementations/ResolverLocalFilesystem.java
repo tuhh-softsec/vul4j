@@ -38,6 +38,7 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
     
     private static int FILE_URI_LENGTH = "file:/".length();
 
+    @Override
     public boolean engineIsThreadSafe() {
         return true;
     }

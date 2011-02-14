@@ -84,6 +84,7 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
     /** Field HttpProxyPass */
     private static final int HttpBasicPass = 5;
 
+    @Override
     public boolean engineIsThreadSafe() {
         return true;
     }

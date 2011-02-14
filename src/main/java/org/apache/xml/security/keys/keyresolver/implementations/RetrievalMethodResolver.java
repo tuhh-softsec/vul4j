@@ -65,9 +65,8 @@ import org.xml.sax.SAXException;
 public class RetrievalMethodResolver extends KeyResolverSpi {
 
     /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(
-                        RetrievalMethodResolver.class.getName());
+    private static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(RetrievalMethodResolver.class.getName());
 
     /**
      * Method engineResolvePublicKey
@@ -77,10 +76,9 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
      * @param storage
      */
     public PublicKey engineLookupAndResolvePublicKey(
-           Element element, String BaseURI, StorageResolver storage)
-    {
-        if (!XMLUtils.elementIsInSignatureSpace(element,
-               Constants._TAG_RETRIEVALMETHOD)) {      
+           Element element, String BaseURI, StorageResolver storage
+    ) {
+        if (!XMLUtils.elementIsInSignatureSpace(element, Constants._TAG_RETRIEVALMETHOD)) {      
             return null;
         }
 
@@ -100,37 +98,27 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
              Element e = obtainReferenceElement(resource); 
              return resolveKey(e, BaseURI, storage);
          } catch (XMLSecurityException ex) {
-             log.debug("XMLSecurityException", ex);
+             if (log.isDebugEnabled()) {
+                 log.debug("XMLSecurityException", ex);
+             }
          } catch (CertificateException ex) {
-             log.debug("CertificateException", ex);
+             if (log.isDebugEnabled()) {
+                 log.debug("CertificateException", ex);
+             }
          } catch (IOException ex) {
-             log.debug("IOException", ex);
+             if (log.isDebugEnabled()) {
+                 log.debug("IOException", ex);
+             }
          } catch (ParserConfigurationException e) {
-             log.debug("ParserConfigurationException", e);
+             if (log.isDebugEnabled()) {
+                 log.debug("ParserConfigurationException", e);
+             }
          } catch (SAXException e) {
-             log.debug("SAXException", e);
+             if (log.isDebugEnabled()) {
+                 log.debug("SAXException", e);
+             }
          } 
          return null;
-    }
-
-    static private Element obtainReferenceElement(XMLSignatureInput resource) 
-        throws CanonicalizationException, ParserConfigurationException, 
-        IOException, SAXException, KeyResolverException {
-        Element e;
-        if (resource.isElement()){
-            e = (Element) resource.getSubNode();
-        } else if (resource.isNodeSet()) {
-            // Retrieved resource is a nodeSet
-            e = getDocumentElement(resource.getNodeSet());
-        } else {
-            // Retrieved resource is an inputStream
-            byte inputBytes[] = resource.getBytes();
-            e = getDocFromBytes(inputBytes);
-            // otherwise, we parse the resource, create an Element and delegate
-            if (log.isDebugEnabled()) 
-                log.debug("we have to parse " + inputBytes.length + " bytes");
-        }
-        return e;
     }
 
     /**
@@ -142,8 +130,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
      */
     public X509Certificate engineLookupResolveX509Certificate(
         Element element, String BaseURI, StorageResolver storage) {
-        if (!XMLUtils.elementIsInSignatureSpace(element,
-               Constants._TAG_RETRIEVALMETHOD)) {      
+        if (!XMLUtils.elementIsInSignatureSpace(element, Constants._TAG_RETRIEVALMETHOD)) {      
              return null;
         }
 
@@ -158,15 +145,25 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
             Element e = obtainReferenceElement(resource);
             return resolveCertificate(e, BaseURI, storage);
         } catch (XMLSecurityException ex) {
-            log.debug("XMLSecurityException", ex);
+            if (log.isDebugEnabled()) {
+                log.debug("XMLSecurityException", ex);
+            }
         } catch (CertificateException ex) {
-            log.debug("CertificateException", ex);
+            if (log.isDebugEnabled()) {
+                log.debug("CertificateException", ex);
+            }
         } catch (IOException ex) {
-            log.debug("IOException", ex);
+            if (log.isDebugEnabled()) {
+                log.debug("IOException", ex);
+            }
         } catch (ParserConfigurationException e) {
-            log.debug("ParserConfigurationException", e);
+            if (log.isDebugEnabled()) {
+                log.debug("ParserConfigurationException", e);
+            }
         } catch (SAXException e) {
-            log.debug("SAXException", e);
+            if (log.isDebugEnabled()) {
+                log.debug("SAXException", e);
+            }
         } 
         return null;
     }
@@ -179,8 +176,9 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
      * @return
      * @throws KeyResolverException 
      */
-    static private X509Certificate resolveCertificate(Element e,
-        String BaseURI, StorageResolver storage) throws KeyResolverException {
+    private static X509Certificate resolveCertificate(
+        Element e, String BaseURI, StorageResolver storage
+    ) throws KeyResolverException {
         if (log.isDebugEnabled()) {
             log.debug("Now we have a {" + e.getNamespaceURI() + "}"
                 + e.getLocalName() + " Element");
@@ -200,8 +198,9 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
      * @return
      * @throws KeyResolverException 
      */
-    static private PublicKey resolveKey(Element e, String BaseURI, 
-        StorageResolver storage) throws KeyResolverException {
+    private static PublicKey resolveKey(
+        Element e, String BaseURI, StorageResolver storage
+    ) throws KeyResolverException {
         if (log.isDebugEnabled()) {
             log.debug("Now we have a {" + e.getNamespaceURI() + "}"
                 + e.getLocalName() + " Element");
@@ -212,9 +211,30 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
         }
         return null;
     }
+    
+    private static Element obtainReferenceElement(XMLSignatureInput resource) 
+        throws CanonicalizationException, ParserConfigurationException, 
+        IOException, SAXException, KeyResolverException {
+        Element e;
+        if (resource.isElement()){
+            e = (Element) resource.getSubNode();
+        } else if (resource.isNodeSet()) {
+            // Retrieved resource is a nodeSet
+            e = getDocumentElement(resource.getNodeSet());
+        } else {
+            // Retrieved resource is an inputStream
+            byte inputBytes[] = resource.getBytes();
+            e = getDocFromBytes(inputBytes);
+            // otherwise, we parse the resource, create an Element and delegate
+            if (log.isDebugEnabled()) {
+                log.debug("we have to parse " + inputBytes.length + " bytes");
+            }
+        }
+        return e;
+    }
 
-    static private X509Certificate getRawCertificate(XMLSignatureInput resource)
-    throws CanonicalizationException, IOException, CertificateException {
+    private static X509Certificate getRawCertificate(XMLSignatureInput resource)
+        throws CanonicalizationException, IOException, CertificateException {
         byte inputBytes[] = resource.getBytes();	   
         // if the resource stores a raw certificate, we have to handle it
         CertificateFactory certFact = 
@@ -229,8 +249,9 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
      * @return
      * @throws XMLSecurityException 
      */
-    static private XMLSignatureInput resolveInput(RetrievalMethod rm,
-        String BaseURI) throws XMLSecurityException {
+    private static XMLSignatureInput resolveInput(
+        RetrievalMethod rm, String BaseURI
+    ) throws XMLSecurityException {
         Attr uri = rm.getURIAttr();
         // Apply the transforms
         Transforms transforms = rm.getTransforms();
@@ -238,7 +259,9 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
         if (resRes != null) {
             XMLSignatureInput resource = resRes.resolve(uri, BaseURI);
             if (transforms != null) {
-                log.debug("We have Transforms");
+                if (log.isDebugEnabled()) {
+                    log.debug("We have Transforms");
+                }
                 resource = transforms.performTransforms(resource);
             }		  
             return resource;
@@ -253,7 +276,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
      * @return the Document Element after parsing bytes 
      * @throws KeyResolverException if something goes wrong
      */
-    static Element getDocFromBytes(byte[] bytes) throws KeyResolverException {
+    private static Element getDocFromBytes(byte[] bytes) throws KeyResolverException {
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             dbf.setNamespaceAware(true);
@@ -277,12 +300,12 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
      * @param storage
      */
     public javax.crypto.SecretKey engineLookupAndResolveSecretKey(
-           Element element, String BaseURI, StorageResolver storage)
-    {
+        Element element, String BaseURI, StorageResolver storage
+    ) {
         return null;
     }
    
-    static Element getDocumentElement(Set set) {
+    private static Element getDocumentElement(Set set) {
         Iterator it = set.iterator();
         Element e = null;
         while (it.hasNext()) {
@@ -292,7 +315,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
                 break;
             }
         }
-        List parents = new ArrayList(10);
+        List<Node> parents = new ArrayList<Node>();
                 
         // Obtain all the parents of the elemnt
         while (e != null) {
@@ -304,7 +327,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
             e = (Element) n;
         }
         // Visit them in reverse order.
-        ListIterator it2 = parents.listIterator(parents.size()-1);
+        ListIterator<Node> it2 = parents.listIterator(parents.size()-1);
         Element ele = null;
         while (it2.hasPrevious()) {
             ele = (Element) it2.previous();

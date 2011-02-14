@@ -315,7 +315,6 @@ public class Init {
                         
             if (tag.equals("KeyResolver")){
                XX_configure_reg_keyResolver_start =System.currentTimeMillis();
-               KeyResolver.init();
 
                Element[] resolverElem = XMLUtils.selectNodes(el.getFirstChild(), CONF_NS,"Resolver");
 

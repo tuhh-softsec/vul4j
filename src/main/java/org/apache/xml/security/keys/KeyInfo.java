@@ -751,7 +751,6 @@ public class KeyInfo extends SignatureElementProxy {
                             );
 
                         if (pk != null) {
-                            KeyResolver.hit(it);
                             return pk;
                         }                     
                     }                              
@@ -860,7 +859,6 @@ public class KeyInfo extends SignatureElementProxy {
             KeyResolverSpi keyResolver = (KeyResolverSpi) it.next();
             X509Certificate cert = applyCurrentResolver(uri, storageLength, keyResolver);
             if (cert != null) {
-                KeyResolver.hit(it);
                 return cert;
             }
         }
