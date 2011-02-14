@@ -49,7 +49,17 @@
     
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>shared-ldap</artifactId>
+      <artifactId>shared-ldap-codec</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>shared-ldap-codec-standalone</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>shared-ldap-model</artifactId>
     </dependency>
     
     <dependency>
