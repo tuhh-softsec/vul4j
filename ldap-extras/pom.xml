@@ -34,6 +34,7 @@
   <modules>
     <module>aci</module>
     <module>codec</module>
+    <module>sp</module>
     <module>trigger</module>
     <module>util</module>
   </modules>
