@@ -394,6 +394,12 @@
 
       <dependency>
         <groupId>${project.groupId}</groupId>
+        <artifactId>shared-ldap-extras-util</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>${project.groupId}</groupId>
         <artifactId>ldap-client-api</artifactId>
         <version>${project.version}</version>
       </dependency>
