@@ -180,50 +180,6 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
 
 
     /**
-     * @see #Dn(Dn, SchemaManager)
-     */
-    public Dn(Dn dn) throws LdapInvalidDnException
-    {
-        this( dn, null );
-    }
-
-
-    /**
-     * Copies a Dn to an Dn.
-     *
-     * @param dn composed of String name components.
-     * @param schemaManager the schema manager
-     * @throws LdapInvalidDnException If the Name is invalid.
-     */
-    public Dn(Dn dn, SchemaManager schemaManager) throws LdapInvalidDnException
-    {
-        this.schemaManager = schemaManager;
-
-        if ( ( dn != null ) && ( dn.size() != 0 ) )
-        {
-            for ( Rdn rdn : dn )
-            {
-                rdns.add( 0, rdn.clone() );
-            }
-        }
-
-        toUpName();
-
-        normalized = new AtomicBoolean();
-
-        if ( schemaManager != null )
-        {
-            normalize( schemaManager.getNormalizerMapping() );
-        }
-        else
-        {
-            normalizeInternal();
-            normalized.set( false );
-        }
-    }
-
-
-    /**
      * @see #Dn(String, SchemaManager)
      */
     public Dn(String upName) throws LdapInvalidDnException
@@ -384,22 +340,51 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
      *
      * @param rdn the Rdn to be used in the Dn
      */
-    public Dn( Rdn rdn )
+    public Dn( Rdn... rdns )
     {
-        rdns.add( rdn.clone() );
-
-        if ( rdn.isNormalized() )
+        if ( rdns == null )
         {
-            this.normName = rdn.getNormName();
-            this.upName = rdn.getName();
-            this.bytes = Strings.getBytesUtf8(normName);
-            normalized = new AtomicBoolean( true );
+            return;
         }
-        else
+        
+        for ( Rdn rdn : rdns)
         {
-            normalizeInternal();
+            this.rdns.add( rdn.clone() );
+        }
+
+        normalizeInternal();
+        toUpName();
+        normalized = new AtomicBoolean( false );
+    }
+
+
+    /**
+     *
+     * Creates a Dn by based on the given Rdn.
+     *
+     * @param rdn the Rdn to be used in the Dn
+     */
+    public Dn( SchemaManager schemaManager, Rdn... rdns )
+    {
+        if ( rdns == null )
+        {
+            return;
+        }
+        
+        for ( Rdn rdn : rdns)
+        {
+            this.rdns.add( rdn.clone() );
+        }
+
+        try
+        {
+            normalize( schemaManager );
             toUpName();
             normalized = new AtomicBoolean( false );
+        }
+        catch( LdapInvalidDnException lide )
+        {
+            throw new IllegalArgumentException( lide.getMessage() );
         }
     }
 
