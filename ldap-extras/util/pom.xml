@@ -25,10 +25,10 @@
     <version>0.9.20-SNAPSHOT</version>
   </parent>
   
-  <artifactId>shared-ldap</artifactId>
-  <name>Apache Directory Shared LDAP</name>
+  <artifactId>shared-ldap-extras-util</artifactId>
+  <name>Apache Directory Shared LDAP Extras Util</name>
   <packaging>bundle</packaging>
-  <description>Common LDAP packages used by clients and servers</description>
+  <description>Shared LDAP Extra utility packages used by clients and servers</description>
 
   <dependencies>
     <dependency>
@@ -55,11 +55,6 @@
 
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>shared-asn1-ber</artifactId>
-    </dependency> 
-
-    <dependency>
-      <groupId>${project.groupId}</groupId>
       <artifactId>shared-i18n</artifactId>
     </dependency> 
 
@@ -72,26 +67,6 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>shared-ldap-codec-standalone</artifactId>
     </dependency> 
-
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>shared-ldap-extras-codec</artifactId>
-    </dependency> 
-
-    <dependency>
-      <groupId>org.apache.mina</groupId>
-      <artifactId>mina-core</artifactId>
-    </dependency>
-    
-    <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>commons-collections</groupId>
-      <artifactId>commons-collections</artifactId>
-    </dependency>
   </dependencies>
 
   <build>
@@ -106,7 +81,6 @@
           <instructions>
             <Bundle-SymbolicName>${project.groupId}.ldap</Bundle-SymbolicName>
             <Export-Package>
-              org.apache.directory.shared.ldap.sp,
               org.apache.directory.shared.ldap.util*
             </Export-Package>
           </instructions>
