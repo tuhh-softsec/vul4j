@@ -32,6 +32,7 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>aci</module>
     <module>codec</module>
   </modules>
 
