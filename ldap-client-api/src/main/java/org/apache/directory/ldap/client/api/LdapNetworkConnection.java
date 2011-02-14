@@ -57,12 +57,9 @@ import org.apache.directory.ldap.client.api.future.ResponseFuture;
 import org.apache.directory.ldap.client.api.future.SearchFuture;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.util.OID;
-import org.apache.directory.shared.ldap.codec.standalone.StandaloneLdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.MessageEncoderException;
-import org.apache.directory.shared.ldap.model.message.extended.AddNoDResponse;
-import org.apache.directory.shared.ldap.model.message.extended.*;
-import org.apache.directory.shared.ldap.model.message.extended.ModifyDnNoDResponse;
+import org.apache.directory.shared.ldap.codec.standalone.StandaloneLdapCodecService;
 import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.model.constants.SupportedSaslMechanisms;
 import org.apache.directory.shared.ldap.model.cursor.Cursor;
@@ -117,6 +114,14 @@ import org.apache.directory.shared.ldap.model.message.SearchResultReference;
 import org.apache.directory.shared.ldap.model.message.UnbindRequest;
 import org.apache.directory.shared.ldap.model.message.UnbindRequestImpl;
 import org.apache.directory.shared.ldap.model.message.controls.OpaqueControl;
+import org.apache.directory.shared.ldap.model.message.extended.AddNoDResponse;
+import org.apache.directory.shared.ldap.model.message.extended.BindNoDResponse;
+import org.apache.directory.shared.ldap.model.message.extended.CompareNoDResponse;
+import org.apache.directory.shared.ldap.model.message.extended.DeleteNoDResponse;
+import org.apache.directory.shared.ldap.model.message.extended.ExtendedNoDResponse;
+import org.apache.directory.shared.ldap.model.message.extended.ModifyDnNoDResponse;
+import org.apache.directory.shared.ldap.model.message.extended.ModifyNoDResponse;
+import org.apache.directory.shared.ldap.model.message.extended.NoticeOfDisconnect;
 import org.apache.directory.shared.ldap.model.message.extended.SearchNoDResponse;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.name.Rdn;
@@ -213,7 +218,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
 
     /** The Ldap codec protocol filter */
     private IoFilter ldapProtocolFilter = new ProtocolCodecFilter( codec.newProtocolCodecFactory( true ) );
-    
+
     /** the SslFilter key */
     private static final String SSL_FILTER_KEY = "sslFilter";
 
@@ -531,7 +536,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         CloseFuture closeFuture = connectionFuture.getSession().getCloseFuture();
 
         // Add a listener to close the session in the session.
-        closeFuture.addListener( ( IoFutureListener<?> ) new IoFutureListener<IoFuture>()
+        closeFuture.addListener( new IoFutureListener<IoFuture>()
         {
             public void operationComplete( IoFuture future )
             {
@@ -1584,11 +1589,12 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
 
     /**
      * Handle the exception we got.
-     * 
+     *
      * @param session The session we got the exception on
      * @param cause The exception cause
      * @throws Exception The t
      */
+    @Override
     public void exceptionCaught( IoSession session, Throwable cause ) throws Exception
     {
         LOG.warn( cause.getMessage(), cause );
@@ -1631,11 +1637,12 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
     /**
      * Handle the incoming LDAP messages. This is where we feed the cursor for search
      * requests, or call the listener.
-     * 
+     *
      * @param session The session that received a message
      * @param message The received message
      * @throws Exception If there is some error while processing the message
      */
+    @Override
     public void messageReceived( IoSession session, Object message ) throws Exception
     {
         // Feed the response and store it into the session
@@ -1814,13 +1821,13 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
                 if ( responseFuture instanceof SearchFuture )
                 {
                     intermediateResponse = new IntermediateResponseImpl( messageId );
-                    addControls( intermediateResponse, ( IntermediateResponse ) response );
+                    addControls( intermediateResponse, response );
                     ( ( SearchFuture ) responseFuture ).set( intermediateResponse );
                 }
                 else if ( responseFuture instanceof ExtendedFuture )
                 {
                     intermediateResponse = new IntermediateResponseImpl( messageId );
-                    addControls( intermediateResponse, ( IntermediateResponse ) response );
+                    addControls( intermediateResponse, response );
                     ( ( ExtendedFuture ) responseFuture ).set( intermediateResponse );
                 }
                 else
@@ -3010,7 +3017,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         }
         catch ( LdapNoPermissionException lnpe )
         {
-            // Special case to deal with insufficient permissions 
+            // Special case to deal with insufficient permissions
             return false;
         }
         catch ( LdapException le )
@@ -3063,7 +3070,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
             searchRequest.setScope( SearchScope.OBJECT );
             searchRequest.addAttributes( attributes );
             searchRequest.setDerefAliases( AliasDerefMode.DEREF_ALWAYS );
-            
+
             if ( ( controls != null ) && ( controls.length > 0 ) )
             {
                 searchRequest.addAllControls( controls );
@@ -3181,9 +3188,9 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
 
     /**
      * loads schema using the specified schema loader
-     * 
+     *
      * @param loader the {@link SchemaLoader} to be used to load schema
-     * @throws LdapException 
+     * @throws LdapException
      */
     public void loadSchema( SchemaLoader loader ) throws LdapException
     {
@@ -3274,8 +3281,8 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
     {
         return codec;
     }
-    
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -3439,7 +3446,8 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
 
     /**
      * Sends the StartTLS extended request to server and adds a security layer
-     * upon receiving a response with successful result
+     * upon receiving a response with successful result. Note that we will use
+     * the default LDAP connection.
      *
      * @throws LdapException
      */
@@ -3473,7 +3481,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
 
 
     /**
-     * adds {@link SslFilter} to the IOConnector or IOSession's filter chain 
+     * adds {@link SslFilter} to the IOConnector or IOSession's filter chain
      */
     private void addSslFilter() throws LdapException
     {
@@ -3506,7 +3514,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
 
 
     /**
-     * perform SASL based bind operation @see {@link #bindSasl(SaslRequest)} 
+     * perform SASL based bind operation @see {@link #bindSasl(SaslRequest)}
      */
     private BindFuture bindSasl( String name, byte[] credentials, String saslMech, String authzId, String realmName,
         Control... ctrls )
@@ -3580,13 +3588,13 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
                 throw new LdapException( message );
             }
 
-            // Corner case : the SASL mech might send an initial challenge, and we have to 
+            // Corner case : the SASL mech might send an initial challenge, and we have to
             // deal with it immediately.
             if ( sc.hasInitialResponse() )
             {
                 byte[] challengeResponse = sc.evaluateChallenge( new byte[0] );
 
-                // Stores the challenge's response, and send it to the server 
+                // Stores the challenge's response, and send it to the server
                 bindRequest.setCredentials( challengeResponse );
                 writeBindRequest( bindRequest );
 
@@ -3698,13 +3706,13 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
 
     /**
      * method to write the kerberos config in the standard MIT kerberos format
-     * 
-     * This is required cause the JGSS api is not able to recognize the port value set 
+     *
+     * This is required cause the JGSS api is not able to recognize the port value set
      * in the system property java.security.krb5.kdc this issue makes it impossible
      * to set a kdc running non standard ports (other than 88)
-     *  
+     *
      * e.g localhost:6088
-     * 
+     *
      * <pre>
      * [libdefaults]
      *     default_realm = EXAMPLE.COM
@@ -3714,7 +3722,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
      *         kdc = localhost:6088
      *     }
      * </pre>
-     * 
+     *
      * @return the full path of the config file
      */
     private String createKrbConfFile( String realmName, String kdcHost, int kdcPort ) throws IOException

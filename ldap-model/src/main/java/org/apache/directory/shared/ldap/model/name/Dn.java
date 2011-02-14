@@ -228,7 +228,7 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
      */
     public Dn(String upName) throws LdapInvalidDnException
     {
-        this( upName, null );
+        this( null, upName );
     }
 
 
@@ -245,7 +245,7 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
      * @param schemaManager the schema manager (optional)
      * @throws LdapInvalidNameException if the String does not contain a valid Dn.
      */
-    public Dn(String upName, SchemaManager schemaManager) throws LdapInvalidDnException
+    public Dn( SchemaManager schemaManager, String upName ) throws LdapInvalidDnException
     {
         if ( upName != null )
         {
@@ -379,29 +379,12 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
 
 
     /**
-     * Creates a Dn.
-     *
-     * Note: This is mostly used internally in the server
-     *
-     * @param upName The user provided name
-     * @param normName the normalized name
-     * @param bytes the name as a byte[]
-     * @param rdnList the list of RDNs present in the Dn
-     */
-    public Dn(String upName, String normName, byte[] bytes, List<Rdn> rdnList)
-    {
-        this( upName, normName, bytes );
-        rdns.addAll( rdnList );
-    }
-
-
-    /**
      *
      * Creates a Dn by based on the given Rdn.
      *
      * @param rdn the Rdn to be used in the Dn
      */
-    public Dn(Rdn rdn)
+    public Dn( Rdn rdn )
     {
         rdns.add( rdn.clone() );
 
@@ -517,6 +500,7 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
      *
      * @return A String representing the normalized Dn
      */
+    @Override
     public String toString()
     {
         return getName();
@@ -667,6 +651,7 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
      * @see java.lang.Object#hashCode()
      * @return the instance hash code
      */
+    @Override
     public int hashCode()
     {
         int result = 37;
@@ -1025,7 +1010,7 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
         for ( int i = rdns.size() - posn; i < rdns.size(); i++ )
         {
             // Don't forget to clone the rdns !
-            newDn.rdns.add( (Rdn) rdns.get( i ).clone() );
+            newDn.rdns.add( rdns.get( i ).clone() );
         }
 
         newDn.normName = newDn.toNormName();
@@ -1058,7 +1043,7 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
         for ( int i = 0; i < size() - posn; i++ )
         {
             // Don't forget to clone the rdns !
-            newDn.rdns.add( (Rdn) rdns.get( i ).clone() );
+            newDn.rdns.add( rdns.get( i ).clone() );
         }
 
         newDn.normName = newDn.toNormName();
@@ -1283,6 +1268,31 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
     /**
      * {@inheritDoc}
      */
+    public Dn add( int posn, Rdn rdn )
+    {
+        if ( ( posn < 0 ) || ( posn > size() ) )
+        {
+            String message = I18n.err( I18n.ERR_04206, posn, rdns.size() );
+            LOG.error( message );
+            throw new ArrayIndexOutOfBoundsException( message );
+        }
+
+        // We have to parse the nameComponent which is given as an argument
+        Rdn newRdn = rdn.clone();
+
+        Dn clonedDn = clone();
+
+        int realPos = clonedDn.size() - posn;
+        clonedDn.rdns.add( realPos, newRdn );
+        clonedDn.toUpName();
+
+        return clonedDn;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
     public Dn remove( int posn ) throws LdapInvalidDnException
     {
         if ( rdns.size() == 0 )
@@ -1339,6 +1349,7 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Dn clone()
     {
         try
@@ -1349,7 +1360,7 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
 
             for ( Rdn rdn : rdns )
             {
-                dn.rdns.add( (Rdn) rdn.clone() );
+                dn.rdns.add( rdn.clone() );
             }
 
             return dn;
@@ -1366,11 +1377,12 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
      * @see java.lang.Object#equals(java.lang.Object)
      * @return <code>true</code> if the two instances are equals
      */
+    @Override
     public boolean equals( Object obj )
     {
         if ( obj instanceof String )
         {
-            return normName.equals( ( String ) obj );
+            return normName.equals( obj );
         }
         else if ( obj instanceof Dn)
         {
@@ -1493,7 +1505,7 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
         {
             // We have more than one ATAV for this Rdn. We will loop on all
             // ATAVs
-            Rdn rdnCopy = (Rdn) rdn.clone();
+            Rdn rdnCopy = rdn.clone();
             rdn.clear();
 
             for ( Ava val : rdnCopy )
