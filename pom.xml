@@ -388,6 +388,12 @@
 
       <dependency>
         <groupId>${project.groupId}</groupId>
+        <artifactId>shared-ldap-extras-trigger</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>${project.groupId}</groupId>
         <artifactId>ldap-client-api</artifactId>
         <version>${project.version}</version>
       </dependency>
