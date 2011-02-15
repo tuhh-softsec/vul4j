@@ -98,11 +98,13 @@
   -->
 <!ELEMENT call-method-rule EMPTY>
 <!ATTLIST call-method-rule
-    pattern      CDATA #IMPLIED
-    targetoffset CDATA #IMPLIED
-    methodname   CDATA #REQUIRED
-    paramcount   CDATA #IMPLIED
-    paramtypes   CDATA #IMPLIED>
+    pattern                    CDATA #IMPLIED
+    targetoffset               CDATA #IMPLIED
+    methodname                 CDATA #REQUIRED
+    paramcount                 CDATA #IMPLIED
+    paramtypes                 CDATA #IMPLIED
+    usingElementBodyAsArgument CDATA #IMPLIED
+    useExactMatch              CDATA #IMPLIED>
 
 <!-- 
     CallParamRule 

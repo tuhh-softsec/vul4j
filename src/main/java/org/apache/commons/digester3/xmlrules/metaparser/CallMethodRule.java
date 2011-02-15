@@ -49,24 +49,29 @@ final class CallMethodRule extends AbstractXmlRule {
             builder.withTargetOffset(targetOffset);
         }
 
+        if ("true".equalsIgnoreCase(attributes.getValue("usingElementBodyAsArgument"))) {
+            builder.usingElementBodyAsArgument();
+            return; // this takes advantage
+        }
+
+        builder.useExactMatch("true".equalsIgnoreCase(attributes.getValue("useExactMatch")));
+
         String paramCountStr = attributes.getValue("paramcount");
         if (paramCountStr != null) {
             int paramCount = Integer.parseInt(attributes.getValue("paramcount"));
 
             builder.withParamCount(paramCount);
+        }
 
-            String paramTypesStr = attributes.getValue("paramtypes");
-            if (paramTypesStr != null && paramTypesStr.length() > 0) {
-                StringTokenizer tokens = new StringTokenizer(paramTypesStr, " \t\n\r,");
-                String[] paramTypeNames = new String[tokens.countTokens()];
-                int counter = 0;
-                while (tokens.hasMoreTokens()) {
-                    paramTypeNames[counter++] = tokens.nextToken();
-                }
-                builder.withParamTypes(paramTypeNames);
+        String paramTypesStr = attributes.getValue("paramtypes");
+        if (paramTypesStr != null && paramTypesStr.length() > 0) {
+            StringTokenizer tokens = new StringTokenizer(paramTypesStr, " \t\n\r,");
+            String[] paramTypeNames = new String[tokens.countTokens()];
+            int counter = 0;
+            while (tokens.hasMoreTokens()) {
+                paramTypeNames[counter++] = tokens.nextToken();
             }
-        } else {
-            builder.usingElementBodyAsArgument();
+            builder.withParamTypes(paramTypeNames);
         }
     }
 
