@@ -18,13 +18,22 @@
 package org.apache.commons.digester3.xmlrules;
 
 import static org.apache.commons.digester3.DigesterLoader.newLoader;
+import static org.apache.commons.digester3.utils.InputSources.createInputSourceFromFile;
+import static org.apache.commons.digester3.utils.InputSources.createInputSourceFromInputStream;
+import static org.apache.commons.digester3.utils.InputSources.createInputSourceFromReader;
+import static org.apache.commons.digester3.utils.InputSources.createInputSourceFromURL;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 import java.net.URL;
 
 import org.apache.commons.digester3.DigesterLoadingException;
 import org.apache.commons.digester3.RulesBinder;
 import org.apache.commons.digester3.RulesModule;
 import org.apache.commons.digester3.xmlrules.metaparser.XmlRulesModule;
+import org.xml.sax.InputSource;
 
 /**
  * 
@@ -35,15 +44,26 @@ public final class FromXmlRulesModule implements RulesModule {
 
     private  static final String DIGESTER_DTD_PATH = "digester-rules.dtd";
 
-    private final URL xmlRules;
+    private final InputSource xmlRules;
 
     private URL xmlRulesDtdUrl = this.getClass().getResource(DIGESTER_DTD_PATH);
 
-    public FromXmlRulesModule(String path) {
+    /**
+     * 
+     * @param path
+     * @throws IOException
+     */
+    public FromXmlRulesModule(String path) throws IOException {
         this(path, Thread.currentThread().getContextClassLoader());
     }
 
-    public FromXmlRulesModule(String path, ClassLoader classLoader) {
+    /**
+     * 
+     * @param path
+     * @param classLoader
+     * @throws IOException
+     */
+    public FromXmlRulesModule(String path, ClassLoader classLoader) throws IOException {
         if (path == null) {
             throw new DigesterLoadingException("Parameter 'path' must not be null");
         }
@@ -54,10 +74,48 @@ public final class FromXmlRulesModule implements RulesModule {
         if (xmlRules == null) {
             throw new DigesterLoadingException(String.format("XML Rules '%s' not found on ", path));
         }
-        this.xmlRules = xmlRules;
+        this.xmlRules = createInputSourceFromURL(xmlRules);
     }
 
-    public FromXmlRulesModule(URL xmlRules) {
+    /**
+     * 
+     * @param file
+     * @throws IOException
+     */
+    public FromXmlRulesModule(File file) throws IOException {
+        this(createInputSourceFromFile(file));
+    }
+
+    /**
+     * 
+     * @param xmlRulesURL
+     * @throws IOException
+     */
+    public FromXmlRulesModule(URL xmlRulesURL) throws IOException {
+        this(createInputSourceFromURL(xmlRulesURL));
+    }
+
+    /**
+     * 
+     * @param input
+     */
+    public FromXmlRulesModule(InputStream input) {
+        this(createInputSourceFromInputStream(input));
+    }
+
+    /**
+     * 
+     * @param reader
+     */
+    public FromXmlRulesModule(Reader reader) {
+        this(createInputSourceFromReader(reader));
+    }
+
+    /**
+     * 
+     * @param xmlRules
+     */
+    public FromXmlRulesModule(InputSource xmlRules) {
         if (xmlRules == null) {
             throw new DigesterLoadingException("Parameter 'xmlRules' must not be null");
         }
@@ -91,7 +149,8 @@ public final class FromXmlRulesModule implements RulesModule {
      */
     @Override
     public String toString() {
-        return String.format("FromXmlRulesModule[%s]", this.xmlRules);
+        return String.format("FromXmlRulesModule[%s]",
+                this.xmlRules.getSystemId() != null ? this.xmlRules.getSystemId() : this.xmlRules.toString());
     }
 
 }

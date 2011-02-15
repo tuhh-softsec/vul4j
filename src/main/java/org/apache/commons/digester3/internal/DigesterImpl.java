@@ -17,6 +17,8 @@
  */
 package org.apache.commons.digester3.internal;
 
+import static org.apache.commons.digester3.utils.InputSources.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,7 +26,6 @@ import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.EmptyStackException;
 import java.util.HashMap;
@@ -1023,11 +1024,7 @@ public final class DigesterImpl implements Digester {
      * {@inheritDoc}
      */
     public Object parse(File file) throws IOException, SAXException {
-        if (file == null) {
-            throw new IllegalArgumentException("File to parse must be not null");
-        }
-
-        return this.parse(file.toURI().toURL());
+        return this.parse(createInputSourceFromFile(file));
     }
 
     /**
@@ -1052,87 +1049,28 @@ public final class DigesterImpl implements Digester {
      * {@inheritDoc}
      */
     public Object parse(InputStream input) throws IOException, SAXException {
-        if (input == null) {
-            throw new IllegalArgumentException("InputStream to parse must be not null");
-        }
-
-        return this.parse(new InputSource(input));
+        return this.parse(createInputSourceFromInputStream(input));
     }
 
     /**
      * {@inheritDoc}
      */
     public Object parse(Reader reader) throws IOException, SAXException {
-        if (reader == null) {
-            throw new IllegalArgumentException("Reader to parse must be not null");
-        }
-
-        return this.parse(new InputSource(reader));
+        return this.parse(createInputSourceFromReader(reader));
     }
 
     /**
      * {@inheritDoc}
      */
     public Object parse(String uri) throws IOException, SAXException {
-        if (uri == null) {
-            throw new IllegalArgumentException("String URI to parse must be not null");
-        }
-
-        return this.parse(new URL(uri));
+        return this.parse(createInputSourceFromUri(uri));
     }
 
     /**
      * {@inheritDoc}
      */
     public Object parse(URL url) throws IOException, SAXException {
-        if (url == null) {
-            throw new IllegalArgumentException("URL to parse is null");
-        }
-
-        InputSource inputSource = createInputSourceFromURL(url);
-        inputSource.setSystemId(url.toString());
-        return this.parse(inputSource);
-    }
-
-    /**
-     * Given a URL, return an InputSource that reads from that URL.
-     * <p>
-     * Ideally this function would not be needed and code could just use
-     * <code>new InputSource(entityURL)</code>. Unfortunately it appears
-     * that when the entityURL points to a file within a jar archive a
-     * caching mechanism inside the InputSource implementation causes a
-     * file-handle to the jar file to remain open. On Windows systems
-     * this then causes the jar archive file to be locked on disk
-     * ("in use") which makes it impossible to delete the jar file -
-     * and that really stuffs up "undeploy" in webapps in particular.
-     * <p>
-     * In JDK1.4 and later, Apache XercesJ is used as the xml parser.
-     * The InputSource object provided is converted into an XMLInputSource,
-     * and eventually passed to an instance of XMLDocumentScannerImpl to
-     * specify the source data to be converted into tokens for the rest
-     * of the XMLReader code to handle. XMLDocumentScannerImpl calls
-     * fEntityManager.startDocumentEntity(source), where fEntityManager
-     * is declared in ancestor class XMLScanner to be an XMLEntityManager. In
-     * that class, if the input source stream is null, then:
-     * <pre>
-     *  URL location = new URL(expandedSystemId);
-     *  URLConnection connect = location.openConnection();
-     *  if (connect instanceof HttpURLConnection) {
-     *    setHttpProperties(connect,xmlInputSource);
-     *  }
-     *  stream = connect.getInputStream();
-     * </pre>
-     * This method pretty much duplicates the standard behaviour, except
-     * that it calls URLConnection.setUseCaches(false) before opening
-     * the connection.
-     */
-    private static InputSource createInputSourceFromURL(URL url) throws MalformedURLException, IOException {
-        URLConnection connection = url.openConnection();
-        connection.setUseCaches(false);
-        InputStream stream = connection.getInputStream();
-        InputSource source = new InputSource(stream);
-        source.setSystemId(url.toExternalForm());
-        return source;
+        return this.parse(createInputSourceFromURL(url));
     }
 
     /**
