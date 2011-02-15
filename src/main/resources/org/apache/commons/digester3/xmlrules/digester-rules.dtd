@@ -78,7 +78,6 @@
     path  CDATA #IMPLIED
     class CDATA #IMPLIED>
 
-
 <!-- Each 'rule' element below corresponds to a concrete subclass
      of org.apache.framework.digester.Rule.
      Each 'rule' element has an optional 'pattern' attribute, which
@@ -176,7 +175,8 @@
 <!-- SetPropertiesRule -->
 <!ELEMENT set-properties-rule (alias)*>
 <!ATTLIST set-properties-rule
-    pattern   CDATA #IMPLIED>
+    pattern                 CDATA #IMPLIED
+    ignore-missing-property CDATA #IMPLIED>
 
 <!-- SetNestedPropertiesRule -->
 <!ELEMENT set-nested-properties-rule (alias)*>
