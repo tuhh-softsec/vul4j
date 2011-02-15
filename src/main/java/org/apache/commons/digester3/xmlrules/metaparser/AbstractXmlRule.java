@@ -39,7 +39,7 @@ abstract class AbstractXmlRule extends PatternRule {
     @Override
     public void begin(String namespace, String name, Attributes attributes) throws Exception {
         super.begin(namespace, name, attributes);
-        this.targetRulesBinder.forPattern(this.getMatchingPattern());
+        this.bindRule(this.targetRulesBinder.forPattern(this.getMatchingPattern()), attributes);
     }
 
     /**
