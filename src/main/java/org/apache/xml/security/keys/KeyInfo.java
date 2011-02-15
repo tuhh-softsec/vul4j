@@ -108,9 +108,9 @@ public class KeyInfo extends SignatureElementProxy {
     private List<StorageResolver> storageResolvers = nullList;
     
     /**
-     * Stores the individual (per-KeyInfo) {@link KeyResolver}s
+     * Stores the individual (per-KeyInfo) {@link KeyResolverSpi}s
      */
-    private List internalKeyResolvers = null;
+    private List<KeyResolverSpi> internalKeyResolvers = new ArrayList<KeyResolverSpi>();
 
     /**
      * Constructor KeyInfo
@@ -309,8 +309,7 @@ public class KeyInfo extends SignatureElementProxy {
      * @throws XMLEncryptionException
      */
 
-    public void add(EncryptedKey encryptedKey) 
-    throws XMLEncryptionException {
+    public void add(EncryptedKey encryptedKey) throws XMLEncryptionException {
         if (encryptedKeys == null) {
             encryptedKeys = new ArrayList<EncryptedKey>();
         }
@@ -428,7 +427,6 @@ public class KeyInfo extends SignatureElementProxy {
      * @throws XMLSecurityException
      */
     public KeyName itemKeyName(int i) throws XMLSecurityException {
-
         Element e = 
             XMLUtils.selectDsNode(
                 this.constructionElement.getFirstChild(), Constants._TAG_KEYNAME, i);
@@ -447,7 +445,6 @@ public class KeyInfo extends SignatureElementProxy {
      * @throws XMLSecurityException
      */
     public KeyValue itemKeyValue(int i) throws XMLSecurityException {
-
         Element e = 
             XMLUtils.selectDsNode(
                 this.constructionElement.getFirstChild(), Constants._TAG_KEYVALUE, i);
@@ -466,7 +463,6 @@ public class KeyInfo extends SignatureElementProxy {
      * @throws XMLSecurityException
      */
     public MgmtData itemMgmtData(int i) throws XMLSecurityException {
-
         Element e = 
             XMLUtils.selectDsNode(
                 this.constructionElement.getFirstChild(), Constants._TAG_MGMTDATA, i);
@@ -485,7 +481,6 @@ public class KeyInfo extends SignatureElementProxy {
      * @throws XMLSecurityException
      */
     public PGPData itemPGPData(int i) throws XMLSecurityException {
-
         Element e = 
             XMLUtils.selectDsNode(
                 this.constructionElement.getFirstChild(), Constants._TAG_PGPDATA, i);
@@ -504,7 +499,6 @@ public class KeyInfo extends SignatureElementProxy {
      * @throws XMLSecurityException
      */
     public RetrievalMethod itemRetrievalMethod(int i) throws XMLSecurityException {
-
         Element e = 
             XMLUtils.selectDsNode(
                 this.constructionElement.getFirstChild(), Constants._TAG_RETRIEVALMETHOD, i);
@@ -523,7 +517,6 @@ public class KeyInfo extends SignatureElementProxy {
      * @throws XMLSecurityException
      */
     public SPKIData itemSPKIData(int i) throws XMLSecurityException {
-
         Element e = 
             XMLUtils.selectDsNode(
                 this.constructionElement.getFirstChild(), Constants._TAG_SPKIDATA, i);
@@ -732,19 +725,14 @@ public class KeyInfo extends SignatureElementProxy {
      * @throws KeyResolverException
      */
     PublicKey getPublicKeyFromStaticResolvers() throws KeyResolverException {
-        int length = KeyResolver.length();
-        int storageLength = this.storageResolvers.size();
-        Iterator it = KeyResolver.iterator();
-        for (int i = 0; i < length; i++) {
-            KeyResolverSpi keyResolver = (KeyResolverSpi) it.next();
+        Iterator<KeyResolverSpi> it = KeyResolver.iterator();
+        while (it.hasNext()) {
+            KeyResolverSpi keyResolver = it.next();
             Node currentChild = this.constructionElement.getFirstChild();
             String uri = this.getBaseURI();
             while (currentChild != null) {       
-                if (currentChild.getNodeType() == Node.ELEMENT_NODE) {          	  
-                    for (int k = 0; k < storageLength; k++) {
-                        StorageResolver storage =
-                            (StorageResolver) this.storageResolvers.get(k);
-
+                if (currentChild.getNodeType() == Node.ELEMENT_NODE) {
+                    for (StorageResolver storage : storageResolvers) {
                         PublicKey pk =
                             keyResolver.engineLookupAndResolvePublicKey(
                                 (Element) currentChild, uri, storage
@@ -768,29 +756,27 @@ public class KeyInfo extends SignatureElementProxy {
      * @throws KeyResolverException
      */
     PublicKey getPublicKeyFromInternalResolvers() throws KeyResolverException {
-        int length=lengthInternalKeyResolver();
-        int storageLength=this.storageResolvers.size();
-        for (int i = 0; i < length; i++) {
-            KeyResolverSpi keyResolver = this.itemInternalKeyResolver(i);
-            if (log.isDebugEnabled())
+        for (KeyResolverSpi keyResolver : internalKeyResolvers) {
+            if (log.isDebugEnabled()) {
                 log.debug("Try " + keyResolver.getClass().getName());
+            }
 
-            Node currentChild=this.constructionElement.getFirstChild();
-            String uri=this.getBaseURI();
-            while (currentChild!=null)      {    
-                if (currentChild.getNodeType() == Node.ELEMENT_NODE) {               
-                    for (int k = 0; k < storageLength; k++) {
-                        StorageResolver storage =
-                            (StorageResolver) this.storageResolvers.get(k);
-                        PublicKey pk = keyResolver
-                        .engineLookupAndResolvePublicKey((Element) currentChild, uri, storage);
+            Node currentChild = this.constructionElement.getFirstChild();
+            String uri = this.getBaseURI();
+            while (currentChild != null)      {    
+                if (currentChild.getNodeType() == Node.ELEMENT_NODE) {            
+                    for (StorageResolver storage : storageResolvers) {
+                        PublicKey pk = 
+                            keyResolver.engineLookupAndResolvePublicKey(
+                                (Element) currentChild, uri, storage
+                            );
 
                         if (pk != null) {
                             return pk;
                         }                     
                     }               
                 }
-                currentChild=currentChild.getNextSibling();
+                currentChild = currentChild.getNextSibling();
             }
         }
 
@@ -844,7 +830,7 @@ public class KeyInfo extends SignatureElementProxy {
      * @throws KeyResolverException
      */
     X509Certificate getX509CertificateFromStaticResolvers()
-    throws KeyResolverException {
+        throws KeyResolverException {
         if (log.isDebugEnabled()) {
             log.debug(
                 "Start getX509CertificateFromStaticResolvers() with " + KeyResolver.length() 
@@ -852,12 +838,10 @@ public class KeyInfo extends SignatureElementProxy {
             );
         }
         String uri = this.getBaseURI();
-        int length = KeyResolver.length();
-        int storageLength = this.storageResolvers.size();   
-        Iterator it = KeyResolver.iterator();
-        for (int i = 0; i < length; i++) {
-            KeyResolverSpi keyResolver = (KeyResolverSpi) it.next();
-            X509Certificate cert = applyCurrentResolver(uri, storageLength, keyResolver);
+        Iterator<KeyResolverSpi> it = KeyResolver.iterator();
+        while (it.hasNext()) {
+            KeyResolverSpi keyResolver = it.next();
+            X509Certificate cert = applyCurrentResolver(uri, keyResolver);
             if (cert != null) {
                 return cert;
             }
@@ -866,15 +850,12 @@ public class KeyInfo extends SignatureElementProxy {
     }
 
     private X509Certificate applyCurrentResolver(
-        String uri, int storageLength, KeyResolverSpi keyResolver
+        String uri, KeyResolverSpi keyResolver
     ) throws KeyResolverException {
         Node currentChild = this.constructionElement.getFirstChild();
         while (currentChild != null)      {       
             if (currentChild.getNodeType() == Node.ELEMENT_NODE) {
-                for (int k = 0; k < storageLength; k++) {
-                    StorageResolver storage =
-                        (StorageResolver) this.storageResolvers.get(k);
-
+                for (StorageResolver storage : storageResolvers) {
                     X509Certificate cert = 
                         keyResolver.engineLookupResolveX509Certificate(
                             (Element) currentChild, uri, storage
@@ -897,22 +878,20 @@ public class KeyInfo extends SignatureElementProxy {
      * @throws KeyResolverException
      */
     X509Certificate getX509CertificateFromInternalResolvers()
-    throws KeyResolverException {
+        throws KeyResolverException {
         if (log.isDebugEnabled()) {
             log.debug(
                 "Start getX509CertificateFromInternalResolvers() with " 
                 + this.lengthInternalKeyResolver() + " resolvers"
             );
         }
-        String uri=this.getBaseURI();
-        int storageLength=this.storageResolvers.size();
-        for (int i = 0; i < this.lengthInternalKeyResolver(); i++) {
-            KeyResolverSpi keyResolver = this.itemInternalKeyResolver(i);
+        String uri = this.getBaseURI();
+        for (KeyResolverSpi keyResolver : internalKeyResolvers) {
             if (log.isDebugEnabled()) {
                 log.debug("Try " + keyResolver.getClass().getName());
             }
-            X509Certificate cert= applyCurrentResolver(uri, storageLength, keyResolver);
-            if (cert!=null) {        	
+            X509Certificate cert = applyCurrentResolver(uri, keyResolver);
+            if (cert != null) {        	
                 return cert;
             }      
         }
@@ -961,33 +940,27 @@ public class KeyInfo extends SignatureElementProxy {
      * @return the secret key contained in this KeyInfo
      * @throws KeyResolverException
      */
-
     SecretKey getSecretKeyFromStaticResolvers() throws KeyResolverException {
-        final int length=KeyResolver.length();
-        int storageLength=this.storageResolvers.size();
-        Iterator it = KeyResolver.iterator();
-        for (int i = 0; i < length; i++) {
-            KeyResolverSpi keyResolver = (KeyResolverSpi) it.next();
+        Iterator<KeyResolverSpi> it = KeyResolver.iterator();
+        while (it.hasNext()) {
+            KeyResolverSpi keyResolver = it.next();
 
-            Node currentChild=this.constructionElement.getFirstChild();
-            String uri=this.getBaseURI();
-            while (currentChild!=null)      {    
-                if (currentChild.getNodeType() == Node.ELEMENT_NODE) {   
-                    for (int k = 0; k < storageLength; k++) {
-                        StorageResolver storage =
-                            (StorageResolver) this.storageResolvers.get(k);
-
+            Node currentChild = this.constructionElement.getFirstChild();
+            String uri = this.getBaseURI();
+            while (currentChild != null)      {    
+                if (currentChild.getNodeType() == Node.ELEMENT_NODE) {
+                    for (StorageResolver storage : storageResolvers) {
                         SecretKey sk =
-                            keyResolver.engineLookupAndResolveSecretKey((Element) currentChild,
-                                                                        uri,
-                                                                        storage);
+                            keyResolver.engineLookupAndResolveSecretKey(
+                                (Element) currentChild, uri, storage
+                            );
 
                         if (sk != null) {
                             return sk;
                         }                     
                     }               
                 }
-                currentChild=currentChild.getNextSibling();
+                currentChild = currentChild.getNextSibling();
             }
         }
         return null;
@@ -1001,29 +974,27 @@ public class KeyInfo extends SignatureElementProxy {
      */
 
     SecretKey getSecretKeyFromInternalResolvers() throws KeyResolverException {
-        int storageLength=this.storageResolvers.size();
-        for (int i = 0; i < this.lengthInternalKeyResolver(); i++) {
-            KeyResolverSpi keyResolver = this.itemInternalKeyResolver(i);
-            if (log.isDebugEnabled())
+        for (KeyResolverSpi keyResolver : internalKeyResolvers) {
+            if (log.isDebugEnabled()) {
                 log.debug("Try " + keyResolver.getClass().getName());
+            }
 
-            Node currentChild=this.constructionElement.getFirstChild();
-            String uri=this.getBaseURI();
-            while (currentChild!=null)      {    
+            Node currentChild = this.constructionElement.getFirstChild();
+            String uri = this.getBaseURI();
+            while (currentChild != null)      {    
                 if (currentChild.getNodeType() == Node.ELEMENT_NODE) {
-                    for (int k = 0; k < storageLength; k++) {
-                        StorageResolver storage =
-                            (StorageResolver) this.storageResolvers.get(k);
-
-                        SecretKey sk = keyResolver
-                        .engineLookupAndResolveSecretKey((Element) currentChild, uri, storage);
+                    for (StorageResolver storage : storageResolvers) {
+                        SecretKey sk = 
+                            keyResolver.engineLookupAndResolveSecretKey(
+                                (Element) currentChild, uri, storage
+                            );
 
                         if (sk != null) {
                             return sk;
                         }                    
                     }
                 }            
-                currentChild=currentChild.getNextSibling();
+                currentChild = currentChild.getNextSibling();
             }
         }
 
@@ -1069,28 +1040,27 @@ public class KeyInfo extends SignatureElementProxy {
      * @throws KeyResolverException
      */
     PrivateKey getPrivateKeyFromStaticResolvers() throws KeyResolverException {
-        final int length=KeyResolver.length();
-        Iterator it = KeyResolver.iterator();
-        for (int i = 0; i < length; i++) {
-            KeyResolverSpi keyResolver = (KeyResolverSpi) it.next();
+        Iterator<KeyResolverSpi> it = KeyResolver.iterator();
+        while (it.hasNext()) {
+            KeyResolverSpi keyResolver = it.next();
 
-            Node currentChild=this.constructionElement.getFirstChild();
-            String uri=this.getBaseURI();
-            while (currentChild!=null)      {    
+            Node currentChild = this.constructionElement.getFirstChild();
+            String uri = this.getBaseURI();
+            while (currentChild != null)      {    
                 if (currentChild.getNodeType() == Node.ELEMENT_NODE) {
                     // not using StorageResolvers at the moment
                     // since they cannot return private keys
                     StorageResolver storage = null;
-                    PrivateKey pk = keyResolver.engineLookupAndResolvePrivateKey(
-                                                                                 (Element) currentChild,
-                                                                                 uri,
-                                                                                 storage);
+                    PrivateKey pk = 
+                        keyResolver.engineLookupAndResolvePrivateKey(
+                            (Element) currentChild, uri, storage
+                        );
 
                     if (pk != null) {
                         return pk;
                     }                     
                 }
-                currentChild=currentChild.getNextSibling();
+                currentChild = currentChild.getNextSibling();
             }
         }
         return null;
@@ -1102,28 +1072,29 @@ public class KeyInfo extends SignatureElementProxy {
      * @return the private key contained in this KeyInfo
      * @throws KeyResolverException
      */
-
     PrivateKey getPrivateKeyFromInternalResolvers() throws KeyResolverException {
-        for (int i = 0; i < this.lengthInternalKeyResolver(); i++) {
-            KeyResolverSpi keyResolver = this.itemInternalKeyResolver(i);
-            if (log.isDebugEnabled())
+        for (KeyResolverSpi keyResolver : internalKeyResolvers) {
+            if (log.isDebugEnabled()) {
                 log.debug("Try " + keyResolver.getClass().getName());
+            }
 
-            Node currentChild=this.constructionElement.getFirstChild();
-            String uri=this.getBaseURI();
-            while (currentChild!=null)      {    
+            Node currentChild = this.constructionElement.getFirstChild();
+            String uri = this.getBaseURI();
+            while (currentChild != null) {    
                 if (currentChild.getNodeType() == Node.ELEMENT_NODE) {
                     // not using StorageResolvers at the moment
                     // since they cannot return private keys
                     StorageResolver storage = null;
-                    PrivateKey pk = keyResolver
-                    .engineLookupAndResolvePrivateKey((Element) currentChild, uri, storage);
+                    PrivateKey pk = 
+                        keyResolver.engineLookupAndResolvePrivateKey(
+                            (Element) currentChild, uri, storage
+                        );
 
                     if (pk != null) {
                         return pk;
                     }                    
                 }            
-                currentChild=currentChild.getNextSibling();
+                currentChild = currentChild.getNextSibling();
             }
         }
 
@@ -1137,9 +1108,6 @@ public class KeyInfo extends SignatureElementProxy {
      * @param realKeyResolver
      */
     public void registerInternalKeyResolver(KeyResolverSpi realKeyResolver) {
-        if (internalKeyResolvers==null) {
-            internalKeyResolvers=new ArrayList();
-        }
         this.internalKeyResolvers.add(realKeyResolver);
     }
 
@@ -1148,8 +1116,6 @@ public class KeyInfo extends SignatureElementProxy {
      * @return the length of the key
      */
     int lengthInternalKeyResolver() {
-        if (internalKeyResolvers==null)
-            return 0;
         return this.internalKeyResolvers.size();
     }
 
@@ -1160,7 +1126,7 @@ public class KeyInfo extends SignatureElementProxy {
      * @return the KeyResolverSpi for the index.
      */
     KeyResolverSpi itemInternalKeyResolver(int i) {
-        return (KeyResolverSpi) this.internalKeyResolvers.get(i);
+        return this.internalKeyResolvers.get(i);
     }
 
     /**

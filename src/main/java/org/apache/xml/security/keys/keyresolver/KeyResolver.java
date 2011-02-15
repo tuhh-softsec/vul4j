@@ -326,7 +326,6 @@ public class KeyResolver {
     static class ResolverIterator implements Iterator<KeyResolverSpi> {
         List<KeyResolver> res;
         Iterator<KeyResolver> it;
-        int i;
 
         public ResolverIterator(List<KeyResolver> list) {
             res = list;
@@ -338,7 +337,6 @@ public class KeyResolver {
         }
 
         public KeyResolverSpi next() {
-            i++;
             KeyResolver resolver = it.next();
             if (resolver == null) {
                 throw new RuntimeException("utils.resolver.noClass");
