@@ -66,10 +66,10 @@ public class HttpClientRequest {
 		this.preserveHost = preserveHost;
 	}
 
+	private static final String[] UNSAFE = { "{", "}", "|", "\\", "^", "~", "[", "]", "`" };
+	private static final String[] ESCAPED = { "%7B", "%7D", "%7C", "%5C", "%5E", "%7E", "%5B", "%5D", "%60" };
+
 	private String escapeUnsafeCharacters(String url) {
-		final String[] UNSAFE = { "{", "}", "|", "\\", "^", "~", "[", "]", "`" };
-		final String[] ESCAPED = { "%7B", "%7D", "%7C", "%5C", "%5E", "%7E",
-				"%5B", "%5D", "%60" };
 		String result = url;
 		for (int i = 0; i < UNSAFE.length; i++) {
 			result = result.replaceAll(Pattern.quote(UNSAFE[i]), ESCAPED[i]);
@@ -77,13 +77,10 @@ public class HttpClientRequest {
 		return result;
 	}
 
-	public HttpClientResponse execute(HttpClient httpClient,
-			HttpContext httpContext) throws IOException {
+	public HttpClientResponse execute(HttpClient httpClient, HttpContext httpContext) throws IOException {
 		buildHttpMethod();
-		HttpClientResponse result;
 		URL url = new URL(uri);
-		HttpHost httpHost = new HttpHost(url.getHost(), url.getPort(),
-				url.getProtocol());
+		HttpHost httpHost = new HttpHost(url.getHost(), url.getPort(), url.getProtocol());
 		// Preserve host if required
 		if (preserveHost) {
 			// original port is -1 for default ports(80, 443),
@@ -103,8 +100,7 @@ public class HttpClientRequest {
 
 		long start = System.currentTimeMillis();
 		// Do the request
-		result = new HttpClientResponse(httpHost, httpRequest, httpClient,
-				httpContext);
+		HttpClientResponse result = new HttpClientResponse(httpHost, httpRequest, httpClient, httpContext);
 		long end = System.currentTimeMillis();
 		if (LOG.isDebugEnabled()) {
 			LOG.debug(toString() + " -> " + result.toString() + " ("

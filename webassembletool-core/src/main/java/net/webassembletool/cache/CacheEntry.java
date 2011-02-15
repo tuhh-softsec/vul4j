@@ -28,12 +28,14 @@ import org.apache.commons.logging.LogFactory;
  * @author Nicolas Richeton
  */
 class CacheEntry {
-	private static Log LOG = LogFactory.getLog(CacheEntry.class);
+	private static final Log LOG = LogFactory.getLog(CacheEntry.class);
+	private static final long CLEAN_DELAY = 15 * 60 * 1000; // 15 minutes;
+	private static final Pattern ETAG_PATTERN = Pattern.compile(",?\\s*((W/)?\"[^\"]*\")");
+
 	private final String url;
 	private transient Storage storage;
 	private transient boolean dirty;
 	private long lastClean = -1;
-	private static long CLEAN_DELAY = 15 * 60 * 1000; // 15 minutes;
 
 	/**
 	 * A list a all responses for this ResourceContext. Only includes
@@ -52,9 +54,6 @@ class CacheEntry {
 	public String getUrl() {
 		return url;
 	}
-
-	private static Pattern ETAG_PATTERN = Pattern
-			.compile(",?\\s*((W/)?\"[^\"]*\")");
 
 	public CacheEntry(String url, Storage storage) {
 		this.url = url;
@@ -162,8 +161,7 @@ class CacheEntry {
 	 * @return The headers "If-Modified-Since" and "If-None-Match" to add to the
 	 *         request
 	 */
-	public Map<String, String> getValidators(ResourceContext resourceContext,
-			CachedResponse cachedResponse) {
+	public Map<String, String> getValidators(ResourceContext resourceContext, Resource cachedResponse) {
 		HashMap<String, String> result = new HashMap<String, String>();
 		String ifNoneMatch = getIfNoneMatch(resourceContext);
 		if (ifNoneMatch != null) {
@@ -213,8 +211,7 @@ class CacheEntry {
 		return null;
 	}
 
-	private String getIfModifiedSince(ResourceContext resourceContext,
-			CachedResponse cachedResponse) {
+	private String getIfModifiedSince(ResourceContext resourceContext, Resource cachedResponse) {
 		String requestedIfModifiedSinceString = resourceContext
 				.getOriginalRequest().getHeader(HttpHeaders.IF_MODIFIED_SINCE);
 		Date requestedIfModifiedSinceDate = Rfc2616.getDateHeader(
@@ -251,8 +248,7 @@ class CacheEntry {
 	 * @return The response to send to the client
 	 * @throws HttpErrorPage
 	 */
-	public Resource select(ResourceContext resourceContext,
-			CachedResponse cachedResponse, Resource newResource)
+	public Resource select(ResourceContext resourceContext, CachedResponse cachedResponse, Resource newResource)
 			throws HttpErrorPage {
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("select(" + resourceContext.getRelUrl() + ")");
@@ -340,8 +336,7 @@ class CacheEntry {
 		}
 	}
 
-	private void updateHeaders(CachedResponse cachedResponse,
-			Resource newResource) {
+	private void updateHeaders(CachedResponse cachedResponse, Resource newResource) {
 		copyHeader(newResource, cachedResponse, HttpHeaders.DATE);
 		copyHeader(newResource, cachedResponse, HttpHeaders.CONTENT_TYPE);
 		copyHeader(newResource, cachedResponse, HttpHeaders.CONTENT_LENGTH);
@@ -370,8 +365,7 @@ class CacheEntry {
 				&& resource.getStatusCode() != HttpServletResponse.SC_NOT_MODIFIED) {
 
 			// Inject headers from the original request.
-			resource.setRequestHeadersFromRequest(resourceContext
-					.getOriginalRequest());
+			resource.setRequestHeadersFromRequest(resourceContext.getOriginalRequest());
 
 			String key = getCacheKey(resourceContext, resource);
 
@@ -419,8 +413,7 @@ class CacheEntry {
 	 * @param resource
 	 * @return
 	 */
-	private String getCacheKey(ResourceContext resourceContext,
-			CachedResponse resource) {
+	private String getCacheKey(ResourceContext resourceContext, Resource resource) {
 		StringBuilder cacheKey = new StringBuilder();
 		cacheKey.append(url).append(" ");
 		String etag = Rfc2616.getEtag(resource);

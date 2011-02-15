@@ -113,12 +113,9 @@ public class Rfc2616 {
         if (varyString != null) {
             Map<String, String> result = new HashMap<String, String>();
             String[] varyStringSplit = varyString.split(",");
-            for (int i = 0; i < varyStringSplit.length; i++) {
-                String key = varyStringSplit[i];
+			for (String key : varyStringSplit) {
                 String value = resource.getRequestHeader(key);
-
                 result.put(key, value);
-
             }
             return result;
         }
@@ -281,7 +278,7 @@ public class Rfc2616 {
     }
 
     public final static long getAge(Resource resource) {
-        return new Date().getTime() - resource.getLocalDate().getTime();
+		return System.currentTimeMillis() - resource.getLocalDate().getTime();
     }
 
     public final static boolean isCacheable(Resource resource) {

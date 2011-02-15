@@ -58,8 +58,7 @@ public class HttpResource extends Resource {
 		this.url = ResourceUtils.getHttpUrlWithQueryString(resourceContext);
 
 		Driver driver = resourceContext.getDriver();
-		HttpServletRequest originalRequest = resourceContext
-				.getOriginalRequest();
+		HttpServletRequest originalRequest = resourceContext.getOriginalRequest();
 
 		// Retrieve session and other cookies
 		UserContext userContext = null;
@@ -75,8 +74,7 @@ public class HttpResource extends Resource {
 		httpContext = userContext.getHttpContext();
 
 		// Proceed with request
-		AuthenticationHandler authenticationHandler = resourceContext
-				.getDriver().getAuthenticationHandler();
+		AuthenticationHandler authenticationHandler = driver.getAuthenticationHandler();
 		boolean proxy = resourceContext.isProxy();
 		boolean preserveHost = resourceContext.isPreserveHost();
 		HttpClientRequest httpClientRequest = new HttpClientRequest(url,
@@ -92,21 +90,18 @@ public class HttpResource extends Resource {
 		authenticationHandler.preRequest(httpClientRequest, resourceContext);
 
 		// Filter
-		Filter filter = resourceContext.getDriver().getFilter();
+		Filter filter = driver.getFilter();
 		if (filter != null) {
 			filter.preRequest(httpClientRequest, resourceContext);
 		}
 		httpClientResponse = httpClientRequest.execute(httpClient, httpContext);
 
 		// Store context in session if cookies where created
-		if (newUserContext
-				&& userContext.getCookieStore().getCookies().size() > 0) {
-			resourceContext.getDriver().setUserContext(userContext,
-					originalRequest);
+		if (newUserContext && !userContext.getCookieStore().getCookies().isEmpty()) {
+			resourceContext.getDriver().setUserContext(userContext, originalRequest);
 		}
 
-		while (authenticationHandler.needsNewRequest(httpClientResponse,
-				resourceContext)) {
+		while (authenticationHandler.needsNewRequest(httpClientResponse, resourceContext)) {
 			// We must first ensure that the connection is always released, if
 			// not the connection manager's pool may be exhausted soon !
 			httpClientResponse.finish();
@@ -123,10 +118,8 @@ public class HttpResource extends Resource {
 					httpContext);
 
 			// Store context if cookies where created
-			if (newUserContext
-					&& userContext.getCookieStore().getCookies().size() > 0) {
-				resourceContext.getDriver().setUserContext(userContext,
-						originalRequest);
+			if (newUserContext && !userContext.getCookieStore().getCookies().isEmpty()) {
+				resourceContext.getDriver().setUserContext(userContext, originalRequest);
 			}
 
 		}
