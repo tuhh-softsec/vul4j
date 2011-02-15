@@ -55,7 +55,8 @@ final class IncludeRule extends Rule {
             if (!this.memoryRulesBinder.getIncludedFiles().add(fileName)) {
                 throw new DigesterLoadingException("Circular file inclusion detected for file: " + fileName);
             }
-            this.memoryRulesBinder.install(new FromXmlRulesModule(fileName));
+            // this.memoryRulesBinder.install(new FromXmlRulesModule(fileName));
+            this.install(new FromXmlRulesModule(fileName));
         }
 
         // The class attribute gives the name of a class that implements
@@ -73,13 +74,19 @@ final class IncludeRule extends Rule {
 
                 RulesModule rulesSource = (RulesModule) cls.newInstance();
 
-                this.targetRulesBinder.install(rulesSource);
+                this.install(rulesSource);
             } catch (Exception e) {
                 this.targetRulesBinder.addError("Impossible to include programmatic rules from class '%s': %s",
                         className,
                         e.getMessage());
             }
         }
+    }
+
+    private void install(RulesModule rulesModule) {
+        // that's an hack, shall not be taken in consideration!!! :)
+        rulesModule.configure(
+                new PrefixedRulesBinder(this.targetRulesBinder, this.memoryRulesBinder.getPatternStack().toString()));
     }
 
 }
