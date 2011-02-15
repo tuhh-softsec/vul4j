@@ -31,13 +31,9 @@ import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import javax.naming.InvalidNameException;
@@ -1329,7 +1325,7 @@ public class DnTest
     // CLONE Operation
     /**
      * test a clone operation on a empty Dn
-     */
+     *
     @Test
     public void testDnCloneEmpty()
     {
@@ -1342,7 +1338,7 @@ public class DnTest
 
     /**
      * test a clone operation on a simple Dn
-     */
+     *
     @Test
     public void testDnCloneSimple() throws LdapException
     {
@@ -1357,7 +1353,7 @@ public class DnTest
 
     /**
      * test a clone operation on a complex Dn
-     */
+     *
     @Test
     public void testDnCloneComplex() throws LdapException
     {
@@ -1500,13 +1496,14 @@ public class DnTest
     }
 
 
+    
     @Test
     public void testAttributeComparisonIsCaseInSensitive() throws Exception
     {
         Dn name1 = new Dn( "cn=HomeDir" );
         Dn name2 = new Dn( "CN=HomeDir" );
 
-        assertEquals( 0, name1.compareTo( name2 ) );
+        assertEquals( name1, name2 );
     }
 
 
@@ -1516,7 +1513,7 @@ public class DnTest
         Dn name1 = new Dn( "cn=HomeDir+cn=WorkDir" );
         Dn name2 = new Dn( "cn=HomeDir+CN=WorkDir" );
 
-        assertEquals( 0, name1.compareTo( name2 ) );
+        assertEquals( name1, name2 );
     }
 
 
@@ -1527,7 +1524,7 @@ public class DnTest
         Dn name1 = new Dn( "cn=HomeDir+cn=WorkDir" );
         Dn name2 = new Dn( "cn=WorkDir+cn=HomeDir" );
 
-        assertEquals( 0, name1.compareTo( name2 ) );
+        assertEquals( name1, name2 );
     }
 
 
@@ -1538,7 +1535,7 @@ public class DnTest
         Dn name1 = new Dn( "cn= HomeDir+cn=Workdir" );
         Dn name2 = new Dn( "cn = Work+cn=HomeDir" );
 
-        assertEquals( 1, name1.compareTo( name2 ) );
+        assertNotSame( name1, name2 );
     }
 
 
@@ -1592,18 +1589,18 @@ public class DnTest
         Dn name4 = new Dn( "cn=Website,cn=John,ou=Marketing,ou=West" );
         Dn name5 = new Dn( "cn=Airline,cn=John,ou=Marketing,ou=West" );
 
-        assertTrue( name0.compareTo( copy ) == 0 );
-        assertTrue( name0.compareTo( name1 ) < 0 );
-        assertTrue( name0.compareTo( name2 ) < 0 );
-        assertTrue( name1.compareTo( name2 ) < 0 );
-        assertTrue( name2.compareTo( name1 ) > 0 );
-        assertTrue( name2.compareTo( name0 ) > 0 );
-        assertTrue( name2.compareTo( name3 ) < 0 );
-        assertTrue( name2.compareTo( name4 ) < 0 );
-        assertTrue( name3.compareTo( name4 ) < 0 );
-        assertTrue( name3.compareTo( name5 ) > 0 );
-        assertTrue( name4.compareTo( name5 ) > 0 );
-        assertTrue( name2.compareTo( name5 ) < 0 );
+        assertEquals( name0, copy );
+        assertTrue( name0.isParentOf( name1 ) );
+        assertTrue( name0.isParentOf( name2 ) );
+        assertTrue( name1.isParentOf( name2 ) );
+        assertTrue( name2.isChildOf( name1 ) );
+        assertTrue( name2.isChildOf( name0 ) );
+        assertNotSame( name2, name3 );
+        assertNotSame( name2, name4 );
+        assertNotSame( name3, name4 );
+        assertNotSame( name3, name5 );
+        assertNotSame( name4, name5 );
+        assertNotSame( name2, name5 );
     }
 
 
@@ -1623,88 +1620,13 @@ public class DnTest
      *
      * @throws Exception
      *             if anything goes wrong.
-     */
+     *
     @Test
     public void testClone() throws Exception
     {
         String strName = "cn=HomeDir,cn=John,ou=Marketing,ou=East";
         Dn name = new Dn( strName );
         assertEquals( name, name.clone() );
-    }
-
-
-    /**
-     * Class to test for compareTo
-     *
-     * @throws Exception
-     *             if anything goes wrong.
-     */
-    @Test
-    public void testCompareTo() throws Exception
-    {
-        Dn name0 = new Dn( "ou=Marketing,ou=East" );
-        Dn copy = new Dn( "ou=Marketing,ou=East" );
-        Dn name1 = new Dn( "cn=John,ou=Marketing,ou=East" );
-        Dn name2 = new Dn( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
-        Dn name3 = new Dn( "cn=HomeDir,cn=John,ou=Marketing,ou=West" );
-        Dn name4 = new Dn( "cn=Website,cn=John,ou=Marketing,ou=West" );
-        Dn name5 = new Dn( "cn=Airline,cn=John,ou=Marketing,ou=West" );
-
-        assertTrue( name0.compareTo( copy ) == 0 );
-        assertTrue( name0.compareTo( name1 ) < 0 );
-        assertTrue( name0.compareTo( name2 ) < 0 );
-        assertTrue( name1.compareTo( name2 ) < 0 );
-        assertTrue( name2.compareTo( name1 ) > 0 );
-        assertTrue( name2.compareTo( name0 ) > 0 );
-        assertTrue( name2.compareTo( name3 ) < 0 );
-        assertTrue( name2.compareTo( name4 ) < 0 );
-        assertTrue( name3.compareTo( name4 ) < 0 );
-        assertTrue( name3.compareTo( name5 ) > 0 );
-        assertTrue( name4.compareTo( name5 ) > 0 );
-        assertTrue( name2.compareTo( name5 ) < 0 );
-
-        List<Dn> list = new ArrayList<Dn>();
-
-        Comparator<Dn> comparator = new Comparator<Dn>()
-        {
-            public int compare( Dn obj1, Dn obj2 )
-            {
-                Dn n1 = obj1;
-                Dn n2 = obj2;
-                return n1.compareTo( n2 );
-            }
-
-
-            public boolean equals( Object obj )
-            {
-                return super.equals( obj );
-            }
-
-
-            /**
-             * Compute the instance's hash code
-             * @return the instance's hash code
-             */
-            public int hashCode()
-            {
-                return super.hashCode();
-            }
-        };
-
-        list.add( name0 );
-        list.add( name1 );
-        list.add( name2 );
-        list.add( name3 );
-        list.add( name4 );
-        list.add( name5 );
-        Collections.sort( list, comparator );
-
-        assertEquals( name0, list.get( 0 ) );
-        assertEquals( name1, list.get( 1 ) );
-        assertEquals( name2, list.get( 2 ) );
-        assertEquals( name5, list.get( 3 ) );
-        assertEquals( name3, list.get( 4 ) );
-        assertEquals( name4, list.get( 5 ) );
     }
 
 
@@ -3069,74 +2991,6 @@ public class DnTest
     }
 
 
-    private ByteArrayOutputStream serializeDN( Dn dn ) throws IOException
-    {
-        ObjectOutputStream oOut = null;
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-        try
-        {
-            oOut = new ObjectOutputStream( out );
-            oOut.writeObject( dn );
-        }
-        catch ( IOException ioe )
-        {
-            throw ioe;
-        }
-        finally
-        {
-            try
-            {
-                if ( oOut != null )
-                {
-                    oOut.flush();
-                    oOut.close();
-                }
-            }
-            catch ( IOException ioe )
-            {
-                throw ioe;
-            }
-        }
-
-        return out;
-    }
-
-
-    private Dn deserializeDN( ByteArrayOutputStream out ) throws IOException, ClassNotFoundException
-    {
-        ObjectInputStream oIn = null;
-        ByteArrayInputStream in = new ByteArrayInputStream( out.toByteArray() );
-
-        try
-        {
-            oIn = new ObjectInputStream( in );
-
-            Dn dn = (Dn) oIn.readObject();
-
-            return dn;
-        }
-        catch ( IOException ioe )
-        {
-            throw ioe;
-        }
-        finally
-        {
-            try
-            {
-                if ( oIn != null )
-                {
-                    oIn.close();
-                }
-            }
-            catch ( IOException ioe )
-            {
-                throw ioe;
-            }
-        }
-    }
-
-
     /**
      * Test the serialization of a Dn
      *
@@ -3148,7 +3002,7 @@ public class DnTest
         Dn dn = new Dn( "ou= Some   People   + dc=  And   Some anImAls,dc = eXample,dc= cOm" );
         dn.normalize( schemaManager );
 
-        assertEquals( dn, deserializeDN( serializeDN( dn ) ) );
+        assertEquals( dn, DnSerializer.deserialize( DnSerializer.serialize( dn ) ) );
     }
 
 
@@ -3157,7 +3011,7 @@ public class DnTest
     {
         Dn dn = Dn.EMPTY_DN;
 
-        assertEquals( dn, deserializeDN( serializeDN( dn ) ) );
+        assertEquals( dn, DnSerializer.deserialize( DnSerializer.serialize( dn ) ) );
     }
 
 
@@ -3172,13 +3026,8 @@ public class DnTest
         Dn dn = new Dn( "ou= Some   People   + dc=  And   Some anImAls,dc = eXample,dc= cOm" );
         dn.normalize( schemaManager );
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream( baos );
+        byte[] data = DnSerializer.serialize( dn );
 
-        DnSerializer.serialize( dn, out );
-        out.flush();
-
-        byte[] data = baos.toByteArray();
         ObjectInputStream in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
         assertEquals( dn, DnSerializer.deserialize( in ) );
@@ -3249,7 +3098,7 @@ public class DnTest
         ObjectInputStream in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
         assertEquals( dn, DnSerializer.deserialize(in) );
-        assertEquals( dn, deserializeDN( serializeDN( dn ) ) );
+        assertEquals( dn, DnSerializer.deserialize( DnSerializer.serialize( dn ) ) );
     }
 
 

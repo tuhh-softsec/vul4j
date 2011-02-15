@@ -64,7 +64,14 @@ public class DnComparator extends LdapComparator<Object>
             return -1;
         }
         
-        return dn0.compareTo( dn1 );
+        if ( dn0.equals( dn1 ) )
+        {
+            return 0;
+        }
+        else
+        {
+            return -1;
+        }
     }
 
 

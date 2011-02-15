@@ -140,8 +140,8 @@ public class MultiThreadedTest
         assertEquals( 0, sharedRdn.compareTo( referenceRdn ) );
 
         sharedDn.normalize( schemaManager );
-        assertEquals( 0, referenceDn.compareTo( sharedDn ) );
-        assertEquals( 0, sharedDn.compareTo( referenceDn ) );
+        assertEquals( referenceDn, sharedDn );
+        assertEquals( sharedDn, referenceDn );
     }
 
 }

@@ -21,7 +21,6 @@
 package org.apache.directory.shared.ldap.model.name;
 
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -60,7 +59,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn>
+public final class Dn implements Iterable<Rdn>
 {
     /** The LoggerFactory used by this class */
     protected static final Logger LOG = LoggerFactory.getLogger( Dn.class );
@@ -83,8 +82,6 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
     /** A flag used to tell if the Dn has been normalized */
     private AtomicBoolean normalized;
 
-    // ~ Static fields/initializers
-    // -----------------------------------------------------------------
     /**
      *  The RDNs that are elements of the Dn
      * NOTE THAT THESE ARE IN THE OPPOSITE ORDER FROM THAT IMPLIED BY THE JAVADOC!
@@ -158,9 +155,6 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
     }
 
 
-    // ~ Methods
-    // ------------------------------------------------------------------------------------
-
     /**
      * Construct an empty Dn object
      */
@@ -185,7 +179,10 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
 
 
     /**
-     * @see #Dn( SchemaManager, String )
+     * Creates a new DN from the given String
+     *
+     * @param upName The String that contains the Dn
+     * @throws LdapInvalidNameException if the String does not contain a valid Dn.
      */
     public Dn( String upName ) throws LdapInvalidDnException
     {
@@ -194,16 +191,10 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
 
 
     /**
-     * Parse a String and checks that it is a valid Dn <br>
-     * <p>
-     * &lt;distinguishedName&gt; ::= &lt;name&gt; | e <br>
-     * &lt;name&gt; ::= &lt;name-component&gt; &lt;name-components&gt; <br>
-     * &lt;name-components&gt; ::= &lt;spaces&gt; &lt;separator&gt;
-     * &lt;spaces&gt; &lt;name-component&gt; &lt;name-components&gt; | e <br>
-     * </p>
+     * Creates a new Schema aware DN from the given String
      *
-     * @param upName The String that contains the Dn.
      * @param schemaManager the schema manager (optional)
+     * @param upName The String that contains the Dn
      * @throws LdapInvalidNameException if the String does not contain a valid Dn.
      */
     public Dn( SchemaManager schemaManager, String upName ) throws LdapInvalidDnException
@@ -234,7 +225,26 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
 
 
     /**
-     * @see #Dn(SchemaManager, String...)
+     * Creates a new instance of Dn, using varargs to declare the RDNs. Each
+     * String is either a full Rdn, or a couple of AttributeType DI and a value.
+     * If the String contains a '=' symbol, the the constructor will assume that
+     * the String arg contains afull Rdn, otherwise, it will consider that the
+     * following arg is the value.<br/>
+     * The created Dn is Schema aware.
+     * <br/><br/>
+     * An example of usage would be :
+     * <pre>
+     * String exampleName = "example";
+     * String baseDn = "dc=apache,dc=org";
+     *
+     * Dn dn = new Dn( DefaultSchemaManager.INSTANCE,
+     *     "cn=Test",
+     *     "ou", exampleName,
+     *     baseDn);
+     * </pre>
+     * @param schemaManager the schema manager
+     * @param upRdns
+     * @throws LdapInvalidDnException
      */
     public Dn(String... upRdns) throws LdapInvalidDnException
     {
@@ -247,9 +257,9 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
      * String is either a full Rdn, or a couple of AttributeType DI and a value.
      * If the String contains a '=' symbol, the the constructor will assume that
      * the String arg contains afull Rdn, otherwise, it will consider that the
-     * following arg is the value.
+     * following arg is the value.<br/>
      * The created Dn is Schema aware.
-     * <br/>
+     * <br/><br/>
      * An example of usage would be :
      * <pre>
      * String exampleName = "example";
@@ -260,7 +270,6 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
      *     "ou", exampleName,
      *     baseDn);
      * </pre>
-     *
      * @param schemaManager the schema manager
      * @param upRdns
      * @throws LdapInvalidDnException
@@ -342,10 +351,9 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
 
 
     /**
+     * Creates a Dn from a list of Rdns.
      *
-     * Creates a Dn by based on the given Rdn.
-     *
-     * @param rdn the Rdn to be used in the Dn
+     * @param rdns the list of Rdns to be used for the Dn
      */
     public Dn( Rdn... rdns )
     {
@@ -366,10 +374,10 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
 
 
     /**
+     * Creates a Schema aware Dn from a list of Rdns.
      *
-     * Creates a Dn by based on the given Rdn.
-     *
-     * @param rdn the Rdn to be used in the Dn
+     *  @param schemaManager The SchemaManager to use
+     * @param rdns the list of Rdns to be used for the Dn
      */
     public Dn( SchemaManager schemaManager, Rdn... rdns )
     {
@@ -1068,7 +1076,7 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
             return this;
         }
 
-        Dn clonedDn = clone();
+        Dn clonedDn = copy();
 
         // Concatenate the rdns
         clonedDn.rdns.addAll( clonedDn.size() - posn, dn.rdns );
@@ -1109,7 +1117,7 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
             return this;
         }
 
-        Dn clonedDn = clone();
+        Dn clonedDn = copy();
 
         // Concatenate the rdns
         clonedDn.rdns.addAll( clonedDn.size() - posn, dn.rdns );
@@ -1153,7 +1161,7 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
             return this;
         }
 
-        Dn clonedDn = clone();
+        Dn clonedDn = copy();
 
         // We have to parse the nameComponent which is given as an argument
         Rdn newRdn = new Rdn( comp, schemaManager );
@@ -1185,7 +1193,7 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
      */
     public Dn add( Rdn newRdn )
     {
-        Dn clonedDn = clone();
+        Dn clonedDn = copy();
 
         clonedDn.rdns.add( 0, newRdn.clone() );
         clonedDn.normalized.getAndSet( false );
@@ -1237,7 +1245,7 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
         // We have to parse the nameComponent which is given as an argument
         Rdn newRdn = new Rdn( comp );
 
-        Dn clonedDn = clone();
+        Dn clonedDn = copy();
 
         int realPos = clonedDn.size() - posn;
         clonedDn.rdns.add( realPos, newRdn );
@@ -1273,13 +1281,38 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
         // We have to parse the nameComponent which is given as an argument
         Rdn newRdn = rdn.clone();
 
-        Dn clonedDn = clone();
+        Dn clonedDn = copy();
 
         int realPos = clonedDn.size() - posn;
         clonedDn.rdns.add( realPos, newRdn );
         clonedDn.toUpName();
 
         return clonedDn;
+    }
+
+
+    /**
+     * used only for deserialization.
+     * 
+     * {@inheritDoc}
+     */
+    /* No qualifier */ Dn addInternal( int posn, Rdn rdn )
+    {
+        if ( ( posn < 0 ) || ( posn > size() ) )
+        {
+            String message = I18n.err( I18n.ERR_04206, posn, rdns.size() );
+            LOG.error( message );
+            throw new ArrayIndexOutOfBoundsException( message );
+        }
+
+        // We have to parse the nameComponent which is given as an argument
+        Rdn newRdn = rdn.clone();
+
+        int realPos = size() - posn;
+        rdns.add( realPos, newRdn );
+        toUpName();
+
+        return this;
     }
 
 
@@ -1300,7 +1333,7 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
             throw new ArrayIndexOutOfBoundsException( message );
         }
 
-        Dn clonedDn = clone();
+        Dn clonedDn = copy();
         clonedDn._removeChild( posn );
 
         return clonedDn;
@@ -1342,27 +1375,19 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
     /**
      * {@inheritDoc}
      */
-    @Override
-    public Dn clone()
+    //@Override
+    private Dn copy()
     {
-        try
-        {
-            Dn dn = (Dn) super.clone();
-            dn.normalized = new AtomicBoolean( normalized.get() );
-            dn.rdns = new ArrayList<Rdn>();
+        Dn dn = new Dn( schemaManager );
+        dn.normalized = new AtomicBoolean( normalized.get() );
+        dn.rdns = new ArrayList<Rdn>();
 
-            for ( Rdn rdn : rdns )
-            {
-                dn.rdns.add( rdn.clone() );
-            }
-
-            return dn;
-        }
-        catch ( CloneNotSupportedException cnse )
+        for ( Rdn rdn : rdns )
         {
-            LOG.error( I18n.err( I18n.ERR_04207 ) );
-            throw new Error( I18n.err( I18n.ERR_04208 ) );
+            dn.rdns.add( rdn.clone() );
         }
+
+        return dn;
     }
 
 
@@ -1401,32 +1426,6 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
         {
             return false;
         }
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public int compareTo( Dn dn )
-    {
-        if ( dn.size() != size() )
-        {
-            return size() - dn.size();
-        }
-
-        for ( int i = rdns.size(); i > 0; i-- )
-        {
-            Rdn rdn1 = rdns.get( i - 1 );
-            Rdn rdn2 = dn.rdns.get( i - 1 );
-            int res = rdn1.compareTo( rdn2 );
-
-            if ( res != 0 )
-            {
-                return res;
-            }
-        }
-
-        return EQUAL;
     }
 
 
@@ -1658,7 +1657,24 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
 
 
     /**
-     * {@inheritDoc}
+     * Iterate over the inner Rdn. The Rdn are returned from 
+     * the rightmost to the leftmost. For instance, the following code :<br/>
+     * <pre>
+     * Dn dn = new Dn( "sn=test, dc=apache, dc=org );
+     * 
+     * for ( Rdn rdn : dn )
+     * {
+     *     System.out.println( rdn.toString() );
+     * }
+     * </pre>
+     * <br/>
+     * will produce this output : <br/>
+     * <pre>
+     * dc=org
+     * dc=apache
+     * sn=test
+     * </pre>
+     * 
      */
     public Iterator<Rdn> iterator()
     {

@@ -19,9 +19,13 @@
  */
 package org.apache.directory.shared.ldap.model.name;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInput;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.util.Strings;
@@ -45,6 +49,36 @@ public final class DnSerializer
      */
     private DnSerializer()
     {
+    }
+
+
+    /**
+     * Serialize a Dn
+     *
+     * We have to store a Dn data efficiently. Here is the structure :
+     *
+     * <li>upName</li> The User provided Dn<p>
+     * <li>normName</li> May be null if the normName is equivalent to
+     * the upName<p>
+     * <li>rdns</li> The rdn's List.<p>
+     *
+     * for each rdn :
+     * <li>call the Rdn write method</li>
+     *
+     * @param dn The Dn to serialize
+     * @return a byte[] containing the serialized DN
+     * @throws IOException If we can't write in this stream
+     */
+    public static byte[] serialize( Dn dn ) throws IOException
+    {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream out = new ObjectOutputStream( baos );
+        
+        serialize( dn, out );
+        
+        out.flush();
+        
+        return baos.toByteArray();
     }
 
 
@@ -117,6 +151,26 @@ public final class DnSerializer
      * read is exposed in the {@link DnSerializer#serialize(Dn, ObjectOutput)}
      * method<p>
      *
+     * @param in The input bytes from which the Dn is read
+     * @return a deserialized Dn
+     * @throws IOException If the stream can't be read
+     */
+    public static Dn deserialize( byte[] bytes ) throws IOException
+    {
+        ByteArrayInputStream bais = new ByteArrayInputStream( bytes );
+        ObjectInputStream in = new ObjectInputStream( bais );
+    
+        return deserialize( in );
+    }
+    
+
+    /**
+     * Deserialize a Dn
+     *
+     * We read back the data to create a new Dn. The structure
+     * read is exposed in the {@link DnSerializer#serialize(Dn, ObjectOutput)}
+     * method<p>
+     *
      * @param in The input stream from which the Dn is read
      * @return a deserialized Dn
      * @throws IOException If the stream can't be read
@@ -147,7 +201,7 @@ public final class DnSerializer
         for ( int i = 0; i < nbRdns; i++ )
         {
             Rdn rdn = RdnSerializer.deserialize( in );
-            dn = dn.add( 0, rdn );
+            dn = dn.addInternal( 0, rdn );
         }
 
         return dn;
