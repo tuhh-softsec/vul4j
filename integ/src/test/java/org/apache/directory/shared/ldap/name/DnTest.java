@@ -17,7 +17,7 @@
  *  under the License.
  *
  */
-package org.apache.directory.shared.ldap.model.name;
+package org.apache.directory.shared.ldap.name;
 
 
 import static junit.framework.Assert.assertNotNull;
@@ -38,22 +38,26 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
 
-import com.mycila.junit.concurrent.Concurrency;
-import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
-import org.apache.directory.shared.ldap.model.schema.normalizers.DeepTrimToLowerNormalizer;
-import org.apache.directory.shared.ldap.model.schema.normalizers.OidNormalizer;
+import org.apache.directory.shared.ldap.model.name.Ava;
+import org.apache.directory.shared.ldap.model.name.Dn;
+import org.apache.directory.shared.ldap.model.name.DnParser;
+import org.apache.directory.shared.ldap.model.name.DnSerializer;
+import org.apache.directory.shared.ldap.model.name.Rdn;
+import org.apache.directory.shared.ldap.model.schema.SchemaManager;
+import org.apache.directory.shared.ldap.schemamanager.impl.DefaultSchemaManager;
 import org.apache.directory.shared.util.Strings;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 
 
 /**
@@ -65,41 +69,18 @@ import org.junit.runner.RunWith;
 @Concurrency()
 public class DnTest
 {
-    private static Map<String, OidNormalizer> oids;
-    private static Map<String, OidNormalizer> oidOids;
-
+    private static SchemaManager schemaManager;
 
     /**
      * Initialize OIDs maps for normalization
      */
     @BeforeClass
-    public static void initMapOids()
+    public static void setup() throws Exception
     {
-        oids = new HashMap<String, OidNormalizer>();
-
-        oids.put( "dc", new OidNormalizer( "dc", new DeepTrimToLowerNormalizer() ) );
-        oids.put( "domaincomponent", new OidNormalizer( "dc", new DeepTrimToLowerNormalizer() ) );
-        oids.put( "0.9.2342.19200300.100.1.25", new OidNormalizer( "dc", new DeepTrimToLowerNormalizer() ) );
-
-        oids.put( "ou", new OidNormalizer( "ou", new DeepTrimToLowerNormalizer() ) );
-        oids.put( "organizationalUnitName", new OidNormalizer( "ou", new DeepTrimToLowerNormalizer() ) );
-        oids.put( "2.5.4.11", new OidNormalizer( "ou", new DeepTrimToLowerNormalizer() ) );
-
-        // Another map where we store OIDs instead of names.
-        oidOids = new HashMap<String, OidNormalizer>();
-
-        oidOids.put( "dc", new OidNormalizer( "0.9.2342.19200300.100.1.25", new DeepTrimToLowerNormalizer() ) );
-        oidOids.put( "domaincomponent", new OidNormalizer( "0.9.2342.19200300.100.1.25",
-            new DeepTrimToLowerNormalizer() ) );
-        oidOids.put( "0.9.2342.19200300.100.1.25", new OidNormalizer( "0.9.2342.19200300.100.1.25",
-            new DeepTrimToLowerNormalizer() ) );
-        oidOids.put( "ou", new OidNormalizer( "2.5.4.11", new DeepTrimToLowerNormalizer() ) );
-        oidOids.put( "organizationalUnitName", new OidNormalizer( "2.5.4.11", new DeepTrimToLowerNormalizer() ) );
-        oidOids.put( "2.5.4.11", new OidNormalizer( "2.5.4.11", new DeepTrimToLowerNormalizer() ) );
+        schemaManager = new DefaultSchemaManager();
     }
 
 
-    // ~ Methods
     // ------------------------------------------------------------------------------------
     // CONSTRUCTOR functions --------------------------------------------------
 
@@ -418,7 +399,7 @@ public class DnTest
         assertEquals( "ou = \\#this is a sharp", dn.getName() );
 
         // Check the normalization now
-        Dn ndn = dn.normalize( oidOids );
+        Dn ndn = dn.normalize( schemaManager );
 
         assertEquals( "ou = \\#this is a sharp", ndn.getName() );
         assertEquals( "2.5.4.11=\\#this is a sharp", ndn.getNormName() );
@@ -438,7 +419,7 @@ public class DnTest
         assertEquals( "ou = AC\\\\DC", dn.getName() );
 
         // Check the normalization now
-        Dn ndn = dn.normalize( oidOids );
+        Dn ndn = dn.normalize( schemaManager );
         assertEquals( "ou = AC\\\\DC", ndn.getName() );
         assertEquals( "2.5.4.11=ac\\\\dc", ndn.getNormName() );
     }
@@ -2380,8 +2361,7 @@ public class DnTest
     /**
      * Class to test for String toString()
      *
-     * @throws Exception
-     *             if anything goes wrong
+     * @throws Exception if anything goes wrong
      */
     @Test
     public void testToString() throws Exception
@@ -2423,7 +2403,7 @@ public class DnTest
         assertEquals( "o=acme", two.getParent().getName() );
 
         Dn three = new Dn( "cn=test,dc=example,dc=com" );
-        three.normalize( oids );
+        three.normalize( schemaManager );
         Dn threeParent = three.getParent();
         assertNotNull( threeParent );
         assertTrue( threeParent.isNormalized() );
@@ -2510,9 +2490,9 @@ public class DnTest
 
         assertTrue( name.getName().equals( "ou= Some   People   ,dc = eXample,dc= cOm" ) );
 
-        Dn result = Dn.normalize(name, oids);
+        Dn result = name.normalize( schemaManager );
 
-        assertTrue( ( result ).getNormName().equals( "ou=some people,dc=example,dc=com" ) );
+        assertEquals( "2.5.4.11=some people,0.9.2342.19200300.100.1.25=example,0.9.2342.19200300.100.1.25=com", result.getNormName() );
     }
 
 
@@ -2529,7 +2509,7 @@ public class DnTest
         assertEquals( "ou", rdn.getNormType() );
         assertEquals( "ou", rdn.getUpType() );
 
-        Dn result = Dn.normalize(name, oidOids);
+        Dn result = name.normalize( schemaManager );
 
         assertTrue( result.getNormName().equals(
             "2.5.4.11=some people,0.9.2342.19200300.100.1.25=example,0.9.2342.19200300.100.1.25=com" ) );
@@ -2551,7 +2531,7 @@ public class DnTest
     {
         Dn name = new Dn();
 
-        Dn result = Dn.normalize(name, oids);
+        Dn result = name.normalize( schemaManager );
         assertTrue( result.toString().equals( "" ) );
     }
 
@@ -2565,7 +2545,7 @@ public class DnTest
         Dn name = new Dn(
             "2.5.4.11= Some   People   + 0.9.2342.19200300.100.1.25=  And   Some anImAls,0.9.2342.19200300.100.1.25 = eXample,dc= cOm" );
 
-        Dn result = Dn.normalize(name, oidOids);
+        Dn result = name.normalize( schemaManager );
 
         assertEquals(
             ( result ).getNormName(),
@@ -2586,7 +2566,7 @@ public class DnTest
         Dn name = new Dn(
             "2.5.4.11= Some   People   + domainComponent=  And   Some anImAls,DomainComponent = eXample,0.9.2342.19200300.100.1.25= cOm" );
 
-        Dn result = Dn.normalize(name, oidOids);
+        Dn result = name.normalize( schemaManager);
 
         assertTrue( result
             .getNormName()
@@ -2606,14 +2586,12 @@ public class DnTest
     public void testLdapNameHashCode() throws Exception
     {
         Dn name1 = Dn
-            .normalize(
-                    "2.5.4.11= Some   People   + domainComponent=  And   Some anImAls,DomainComponent = eXample,0.9.2342.19200300.100.1.25= cOm",
-                    oids);
+            .normalize( schemaManager,
+                    "2.5.4.11= Some   People   + domainComponent=  And   Some anImAls,DomainComponent = eXample,0.9.2342.19200300.100.1.25= cOm" );
 
         Dn name2 = Dn
-            .normalize(
-                    "2.5.4.11=some people+domainComponent=and some animals,DomainComponent=example,0.9.2342.19200300.100.1.25=com",
-                    oids);
+            .normalize( schemaManager,
+                    "2.5.4.11=some people+domainComponent=and some animals,DomainComponent=example,0.9.2342.19200300.100.1.25=com" );
 
         assertEquals( name1.hashCode(), name2.hashCode() );
     }
@@ -3168,7 +3146,7 @@ public class DnTest
     public void testNameSerialization() throws Exception
     {
         Dn dn = new Dn( "ou= Some   People   + dc=  And   Some anImAls,dc = eXample,dc= cOm" );
-        dn.normalize( oids );
+        dn.normalize( schemaManager );
 
         assertEquals( dn, deserializeDN( serializeDN( dn ) ) );
     }
@@ -3192,7 +3170,7 @@ public class DnTest
     public void testNameStaticSerialization() throws Exception
     {
         Dn dn = new Dn( "ou= Some   People   + dc=  And   Some anImAls,dc = eXample,dc= cOm" );
-        dn.normalize( oids );
+        dn.normalize( schemaManager );
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
@@ -3355,32 +3333,32 @@ public class DnTest
     public void testTrailingEscapedSpace() throws Exception
     {
         Dn dn1 = new Dn( "ou=A\\ ,ou=system" );
-        dn1.normalize( oids );
+        dn1.normalize( schemaManager );
         assertEquals( "ou=A\\ ,ou=system", dn1.getName() );
-        assertEquals( "ou=a,ou=system", dn1.getNormName() );
+        assertEquals( "2.5.4.11=a,2.5.4.11=system", dn1.getNormName() );
         assertEquals( "ou=A\\ ", dn1.getRdn().getName() );
-        assertEquals( "ou=a", dn1.getRdn().getNormName() );
+        assertEquals( "2.5.4.11=a", dn1.getRdn().getNormName() );
 
         Dn dn2 = new Dn( "ou=A\\20,ou=system" );
-        dn2.normalize( oids );
+        dn2.normalize( schemaManager );
         assertEquals( "ou=A\\20,ou=system", dn2.getName() );
-        assertEquals( "ou=a,ou=system", dn2.getNormName() );
+        assertEquals( "2.5.4.11=a,2.5.4.11=system", dn2.getNormName() );
         assertEquals( "ou=A\\20", dn2.getRdn().getName() );
-        assertEquals( "ou=a", dn2.getRdn().getNormName() );
+        assertEquals( "2.5.4.11=a", dn2.getRdn().getNormName() );
 
         Dn dn3 = new Dn( "ou=\\ ,ou=system" );
-        dn3.normalize( oids );
+        dn3.normalize( schemaManager );
         assertEquals( "ou=\\ ,ou=system", dn3.getName() );
-        assertEquals( "ou=\\ ,ou=system", dn3.getNormName() );
+        assertEquals( "2.5.4.11=\\ ,2.5.4.11=system", dn3.getNormName() );
         assertEquals( "ou=\\ ", dn3.getRdn().getName() );
-        assertEquals( "ou=\\ ", dn3.getRdn().getNormName() );
+        assertEquals( "2.5.4.11=\\ ", dn3.getRdn().getNormName() );
 
         Dn dn4 = new Dn( "ou=\\20,ou=system" );
-        dn4.normalize( oids );
+        dn4.normalize( schemaManager );
         assertEquals( "ou=\\20,ou=system", dn4.getName() );
-        assertEquals( "ou=\\ ,ou=system", dn4.getNormName() );
+        assertEquals( "2.5.4.11=\\ ,2.5.4.11=system", dn4.getNormName() );
         assertEquals( "ou=\\20", dn4.getRdn().getName() );
-        assertEquals( "ou=\\ ", dn4.getRdn().getNormName() );
+        assertEquals( "2.5.4.11=\\ ", dn4.getRdn().getNormName() );
     }
 
 
@@ -3427,7 +3405,7 @@ public class DnTest
     {
         Dn dn = new Dn( "  ou  =  Example ,  ou  =  COM " );
 
-        dn.normalize( oidOids );
+        dn.normalize( schemaManager );
         assertEquals( "2.5.4.11=example,2.5.4.11=com", dn.getNormName() );
         assertEquals( "  ou  =  Example ,  ou  =  COM ", dn.getName() );
 
@@ -3457,7 +3435,7 @@ public class DnTest
     {
         Dn dn = new Dn( "  ou  =  Example + ou = TEST ,  ou  =  COM " );
 
-        dn.normalize( oidOids );
+        dn.normalize( schemaManager );
         assertEquals( "2.5.4.11=example+2.5.4.11=test,2.5.4.11=com", dn.getNormName() );
         assertEquals( "  ou  =  Example + ou = TEST ,  ou  =  COM ", dn.getName() );
 
@@ -3508,7 +3486,7 @@ public class DnTest
     {
         Dn dn = new Dn( "  ou  =  Ex\\+mple ,  ou  =  COM " );
 
-        dn.normalize( oidOids );
+        dn.normalize( schemaManager );
         assertEquals( "2.5.4.11=ex\\+mple,2.5.4.11=com", dn.getNormName() );
         assertEquals( "  ou  =  Ex\\+mple ,  ou  =  COM ", dn.getName() );
 
@@ -3589,7 +3567,7 @@ public class DnTest
 
         // ------------------------------------------------------------------
         // Now normalize the Dn
-        dn.normalize( oidOids );
+        dn.normalize( schemaManager );
 
         assertEquals( "  OU  =  Ex\\+mple + ou = T\\+ST\\  ,  ou  =  COM ", dn.getName() );
         assertEquals( "2.5.4.11=ex\\+mple+2.5.4.11=t\\+st,2.5.4.11=com", dn.getNormName() );
@@ -3733,16 +3711,16 @@ public class DnTest
         dn = dn.add( "ou=users" );
         assertFalse( dn.isNormalized() );
 
-        dn.normalize( oidOids );
+        dn.normalize( schemaManager );
         assertTrue( dn.isNormalized() );
 
         dn = dn.add( "ou=x" );
-        assertFalse( dn.isNormalized() );
+        assertTrue( dn.isNormalized() );
 
-        assertEquals( "ou=x,2.5.4.11=users,2.5.4.11=system", dn.getNormName() );
+        assertEquals( "2.5.4.11=x,2.5.4.11=users,2.5.4.11=system", dn.getNormName() );
         assertEquals( "ou=x,ou=users,ou=system", dn.getName() );
 
-        dn.normalize( oidOids );
+        dn.normalize( schemaManager );
         assertEquals( "2.5.4.11=x,2.5.4.11=users,2.5.4.11=system", dn.getNormName() );
         assertEquals( "ou=x,ou=users,ou=system", dn.getName() );
 
@@ -3753,15 +3731,15 @@ public class DnTest
         dn = dn.add( rdn );
         assertFalse( dn.isNormalized() );
 
-        dn.normalize( oidOids );
+        dn.normalize( schemaManager );
         assertTrue( dn.isNormalized() );
 
         Dn anotherDn = new Dn( "ou=x,ou=users" );
 
         dn = dn.addAll( anotherDn );
-        assertFalse( dn.isNormalized() );
+        assertTrue( dn.isNormalized() );
 
-        dn.normalize( oidOids );
+        dn.normalize( schemaManager );
         assertTrue( dn.isNormalized() );
 
         dn = dn.remove( 0 );
@@ -3775,7 +3753,7 @@ public class DnTest
         String dnStr = "dc=/vehicles/v1/";
 
         Dn dn = new Dn( dnStr );
-        dn.normalize( oids );
+        dn.normalize( schemaManager );
 
         assertEquals( dnStr, dn.toString() );
     }

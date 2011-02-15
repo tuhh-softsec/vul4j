@@ -23,8 +23,6 @@ package org.apache.directory.shared.ldap.codec.api;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Iterator;
-
 import org.apache.directory.shared.ldap.codec.standalone.StandaloneLdapCodecService;
 import org.apache.directory.shared.ldap.extras.controls.PasswordPolicy;
 import org.apache.directory.shared.ldap.model.message.Control;
@@ -45,11 +43,6 @@ public class StandaloneLdapCodecServiceTest
     public void testLoadingExtras()
     {
         StandaloneLdapCodecService codec = new StandaloneLdapCodecService();
-        Iterator<String> oids = codec.registeredControls();
-        while ( oids.hasNext() )
-        {
-            System.out.println( "Registered OID = " + oids.next() );
-        }
         
         assertTrue( codec.isControlRegistered( PasswordPolicy.OID ) );
 

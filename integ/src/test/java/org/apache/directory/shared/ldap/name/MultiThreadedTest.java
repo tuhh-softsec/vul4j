@@ -17,25 +17,25 @@
  *  under the License.
  *
  */
-package org.apache.directory.shared.ldap.model.name;
+package org.apache.directory.shared.ldap.name;
 
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import com.mycila.junit.concurrent.Concurrency;
-import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.junit.tools.MultiThreadedMultiInvoker;
-import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
-import org.apache.directory.shared.ldap.model.schema.normalizers.DeepTrimToLowerNormalizer;
-import org.apache.directory.shared.ldap.model.schema.normalizers.OidNormalizer;
+import org.apache.directory.shared.ldap.model.name.Ava;
+import org.apache.directory.shared.ldap.model.name.Dn;
+import org.apache.directory.shared.ldap.model.name.Rdn;
+import org.apache.directory.shared.ldap.model.schema.SchemaManager;
+import org.apache.directory.shared.ldap.schemamanager.impl.DefaultSchemaManager;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 
 
 /**
@@ -50,8 +50,6 @@ public class MultiThreadedTest
     @Rule
     public MultiThreadedMultiInvoker i = new MultiThreadedMultiInvoker( 100, 1000 );
 
-    private static Map<String, OidNormalizer> oidsMap;
-
     private static Dn referenceDn;
     private static Dn sharedDn;
     private static Rdn referenceRdn;
@@ -59,30 +57,22 @@ public class MultiThreadedTest
     private static Ava referenceAva;
     private static Ava sharedAva;
 
+    private static SchemaManager schemaManager;
 
     @BeforeClass
-    public static void initMapOids() throws LdapInvalidDnException
+    public static void setup() throws Exception
     {
-        // Another map where we store OIDs instead of names.
-        oidsMap = new HashMap<String, OidNormalizer>();
-        oidsMap.put( "dc", new OidNormalizer( "0.9.2342.19200300.100.1.25", new DeepTrimToLowerNormalizer() ) );
-        oidsMap.put( "domaincomponent", new OidNormalizer( "0.9.2342.19200300.100.1.25",
-            new DeepTrimToLowerNormalizer() ) );
-        oidsMap.put( "0.9.2342.19200300.100.1.25", new OidNormalizer( "0.9.2342.19200300.100.1.25",
-            new DeepTrimToLowerNormalizer() ) );
-        oidsMap.put( "ou", new OidNormalizer( "2.5.4.11", new DeepTrimToLowerNormalizer() ) );
-        oidsMap.put( "organizationalUnitName", new OidNormalizer( "2.5.4.11", new DeepTrimToLowerNormalizer() ) );
-        oidsMap.put( "2.5.4.11", new OidNormalizer( "2.5.4.11", new DeepTrimToLowerNormalizer() ) );
+        schemaManager = new DefaultSchemaManager();
 
         referenceDn = new Dn( "dc=example,dc=com" );
-        referenceDn.normalize( oidsMap );
+        referenceDn.normalize( schemaManager );
         sharedDn = new Dn( "dc=example,dc=com" );
-        sharedDn.normalize( oidsMap );
+        sharedDn.normalize( schemaManager );
 
         referenceRdn = new Rdn( "ou=system" );
-        referenceRdn.normalize( oidsMap );
+        referenceRdn.normalize( schemaManager );
         sharedRdn = new Rdn( "ou=system" );
-        sharedRdn.normalize( oidsMap );
+        sharedRdn.normalize( schemaManager );
 
         referenceAva = new Ava( "ou", "2.5.4.11", "System", "system" );
         referenceAva.normalize();
@@ -96,10 +86,10 @@ public class MultiThreadedTest
     {
         sharedAva.normalize();
 
-        sharedRdn.normalize( oidsMap );
+        sharedRdn.normalize( schemaManager );
         assertTrue( sharedRdn.isNormalized() );
 
-        sharedDn.normalize( oidsMap );
+        sharedDn.normalize( schemaManager );
         assertTrue( sharedDn.isNormalized() );
     }
 
@@ -110,10 +100,10 @@ public class MultiThreadedTest
         sharedAva.normalize();
         assertEquals( referenceAva.hashCode(), sharedAva.hashCode() );
 
-        sharedRdn.normalize( oidsMap );
+        sharedRdn.normalize( schemaManager );
         assertEquals( referenceRdn.hashCode(), sharedRdn.hashCode() );
 
-        sharedDn.normalize( oidsMap );
+        sharedDn.normalize( schemaManager );
         assertEquals( referenceDn.hashCode(), sharedDn.hashCode() );
     }
 
@@ -126,12 +116,12 @@ public class MultiThreadedTest
         assertTrue( referenceAva.equals( sharedAva ) );
         assertTrue( sharedAva.equals( referenceAva ) );
 
-        sharedRdn.normalize( oidsMap );
+        sharedRdn.normalize( schemaManager );
         assertEquals( referenceRdn, sharedRdn );
         assertTrue( referenceRdn.equals( sharedRdn ) );
         assertTrue( sharedRdn.equals( referenceRdn ) );
 
-        sharedDn.normalize( oidsMap );
+        sharedDn.normalize( schemaManager );
         assertEquals( referenceDn, sharedDn );
         assertTrue( referenceDn.equals( sharedDn ) );
         assertTrue( sharedDn.equals( referenceDn ) );
@@ -145,11 +135,11 @@ public class MultiThreadedTest
         assertEquals( 0, sharedAva.compareTo( referenceAva ) );
         assertEquals( 0, referenceAva.compareTo( sharedAva ) );
 
-        sharedRdn.normalize( oidsMap );
+        sharedRdn.normalize( schemaManager );
         assertEquals( 0, referenceRdn.compareTo( sharedRdn ) );
         assertEquals( 0, sharedRdn.compareTo( referenceRdn ) );
 
-        sharedDn.normalize( oidsMap );
+        sharedDn.normalize( schemaManager );
         assertEquals( 0, referenceDn.compareTo( sharedDn ) );
         assertEquals( 0, sharedDn.compareTo( referenceDn ) );
     }

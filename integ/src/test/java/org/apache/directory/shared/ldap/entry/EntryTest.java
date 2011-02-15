@@ -16,14 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.directory.shared.ldap.model.entry;
+package org.apache.directory.shared.ldap.entry;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
@@ -32,24 +32,29 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import com.mycila.junit.concurrent.Concurrency;
-import com.mycila.junit.concurrent.ConcurrentJunitRunner;
-import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
+import org.apache.directory.shared.ldap.model.entry.BinaryValue;
+import org.apache.directory.shared.ldap.model.entry.DefaultEntry;
+import org.apache.directory.shared.ldap.model.entry.DefaultEntryAttribute;
+import org.apache.directory.shared.ldap.model.entry.Entry;
+import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
+import org.apache.directory.shared.ldap.model.entry.StringValue;
+import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.name.Dn;
-import org.apache.directory.shared.ldap.model.schema.normalizers.DeepTrimToLowerNormalizer;
-import org.apache.directory.shared.ldap.model.schema.normalizers.OidNormalizer;
+import org.apache.directory.shared.ldap.model.schema.SchemaManager;
+import org.apache.directory.shared.ldap.schemamanager.impl.DefaultSchemaManager;
 import org.apache.directory.shared.util.Strings;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 
 /**
  * A test class for the DefaultEntry class
@@ -64,8 +69,8 @@ public class EntryTest
     private static final byte[] BYTES1 = new byte[]{ 'a', 'b' };
     private static final byte[] BYTES2 = new byte[]{ 'b' };
     private static final byte[] BYTES3 = new byte[]{ 'c' };
-    private static Map<String, OidNormalizer> oids;
     
+    private static SchemaManager schemaManager;
     
     /**
      * Helper method which creates an entry with 4 attributes.
@@ -174,24 +179,7 @@ public class EntryTest
     public static void setUpBeforeClass() throws Exception
     {
         EXAMPLE_DN = new Dn( "dc=example,dc=com" );
-
-        oids = new HashMap<String, OidNormalizer>();
-
-        // DC normalizer
-        OidNormalizer dcOidNormalizer = new OidNormalizer( "dc",
-            new DeepTrimToLowerNormalizer( SchemaConstants.DOMAIN_COMPONENT_AT_OID ) );
-        
-        oids.put( "dc", dcOidNormalizer );
-        oids.put( "domaincomponent", dcOidNormalizer );
-        oids.put( "0.9.2342.19200300.100.1.25", dcOidNormalizer );
-
-        // OU normalizer
-        OidNormalizer ouOidNormalizer = new OidNormalizer( "ou",
-            new DeepTrimToLowerNormalizer( SchemaConstants.OU_AT_OID ) );
-        
-        oids.put( "ou", ouOidNormalizer );
-        oids.put( "organizationalUnitName", ouOidNormalizer );
-        oids.put( "2.5.4.11", ouOidNormalizer );
+        schemaManager = new DefaultSchemaManager();
     }
 
 
@@ -1271,7 +1259,7 @@ public class EntryTest
     {
         Dn dn = new Dn( "ou=system" );
         
-        dn.normalize( oids );
+        dn.normalize( schemaManager );
         
         byte[] password = Strings.getBytesUtf8("secret");
         Entry entry = new DefaultEntry( dn);
@@ -1325,7 +1313,7 @@ public class EntryTest
     {
         Dn dn = new Dn( "ou=system" );
         
-        dn.normalize( oids );
+        dn.normalize( schemaManager );
         
         Entry entry = new DefaultEntry( dn );
 

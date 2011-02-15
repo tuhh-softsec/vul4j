@@ -171,11 +171,13 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
 
 
     /**
-     * Construct an empty Dn object
+     * Construct an empty Schema aware Dn object
+     * 
+     *  @param schemaManager The SchemaManager to use
      */
-    public Dn(SchemaManager schemaManger)
+    public Dn( SchemaManager schemaManager )
     {
-        this.schemaManager = schemaManger;
+        this.schemaManager = schemaManager;
         upName = "";
         normName = "";
         normalized = new AtomicBoolean( true );
@@ -183,9 +185,9 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
 
 
     /**
-     * @see #Dn(String, SchemaManager)
+     * @see #Dn( SchemaManager, String )
      */
-    public Dn(String upName) throws LdapInvalidDnException
+    public Dn( String upName ) throws LdapInvalidDnException
     {
         this( null, upName );
     }
@@ -246,12 +248,14 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
      * If the String contains a '=' symbol, the the constructor will assume that
      * the String arg contains afull Rdn, otherwise, it will consider that the
      * following arg is the value.
+     * The created Dn is Schema aware.
+     * <br/>
      * An example of usage would be :
      * <pre>
      * String exampleName = "example";
      * String baseDn = "dc=apache,dc=org";
      *
-     * Dn dn = new Dn(
+     * Dn dn = new Dn( DefaultSchemaManager.INSTANCE,
      *     "cn=Test",
      *     "ou", exampleName,
      *     baseDn);
@@ -261,7 +265,7 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
      * @param upRdns
      * @throws LdapInvalidDnException
      */
-    public Dn(SchemaManager schemaManager, String... upRdns) throws LdapInvalidDnException
+    public Dn( SchemaManager schemaManager, String... upRdns ) throws LdapInvalidDnException
     {
         StringBuilder sb = new StringBuilder();
         boolean valueExpected = false;
@@ -404,10 +408,10 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
      * @throws LdapInvalidNameException If the Dn is invalid.
      * @throws LdapInvalidDnException If something went wrong.
      */
-    /* No qualifier */static Dn normalize( String name, Map<String, OidNormalizer> oidsMap )
+    public static Dn normalize( SchemaManager schemaManager, String name )
         throws LdapInvalidDnException
     {
-        if ( ( name == null ) || ( name.length() == 0 ) || ( oidsMap == null ) || ( oidsMap.isEmpty() ) )
+        if ( ( name == null ) || ( name.length() == 0 ) || ( schemaManager == null ) )
         {
             return Dn.EMPTY_DN;
         }
@@ -417,7 +421,7 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
         for ( Rdn rdn : newDn.rdns )
         {
             String upName = rdn.getName();
-            rdnOidToName( rdn, oidsMap );
+            rdnOidToName( rdn, schemaManager.getNormalizerMapping() );
             rdn.normalize();
             rdn.setUpName( upName );
         }
@@ -1167,6 +1171,7 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
         }
 
         clonedDn.toUpName();
+        clonedDn.toNormName();
 
         return clonedDn;
     }
@@ -1338,7 +1343,7 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
      * {@inheritDoc}
      */
     @Override
-    protected Dn clone()
+    public Dn clone()
     {
         try
         {
@@ -1567,7 +1572,7 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
      * @throws LdapInvalidDnException If something went wrong.
      * @return The normalized Dn
      */
-    public Dn normalize( Map<String, OidNormalizer> oidsMap ) throws LdapInvalidDnException
+    private Dn normalize( Map<String, OidNormalizer> oidsMap ) throws LdapInvalidDnException
     {
         if ( ( oidsMap == null ) || ( oidsMap.isEmpty() ) )
         {
