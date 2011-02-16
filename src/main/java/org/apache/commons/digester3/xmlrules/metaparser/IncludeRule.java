@@ -17,7 +17,8 @@
  */
 package org.apache.commons.digester3.xmlrules.metaparser;
 
-import org.apache.commons.digester3.DigesterLoadingException;
+import java.net.URL;
+
 import org.apache.commons.digester3.Rule;
 import org.apache.commons.digester3.RulesBinder;
 import org.apache.commons.digester3.RulesModule;
@@ -35,6 +36,8 @@ import org.xml.sax.Attributes;
  */
 final class IncludeRule extends Rule {
 
+    private static final String CLASSPATH_URL_PREFIX = "classpath:";
+
     private final WithMemoryRulesBinder memoryRulesBinder;
 
     private final RulesBinder targetRulesBinder;
@@ -50,12 +53,34 @@ final class IncludeRule extends Rule {
     @Override
     public void begin(String namespace, String name, Attributes attributes) throws Exception {
         // The path attribute gives the URI to another digester rules xml file
-        String fileName = attributes.getValue("path");
+        String fileName = attributes.getValue("url");
         if (fileName != null && fileName.length() > 0) {
-            if (!this.memoryRulesBinder.getIncludedFiles().add(fileName)) {
-                throw new DigesterLoadingException("Circular file inclusion detected for file: " + fileName);
+            FromXmlRulesModule fromXmlRulesModule = null;
+
+            if (fileName.startsWith(CLASSPATH_URL_PREFIX)) {
+                String path = fileName.substring(CLASSPATH_URL_PREFIX.length());
+                if ('/' == path.charAt(0)) {
+                    path = path.substring(1);
+                }
+                fromXmlRulesModule = new FromXmlRulesModule(path);
+            } else {
+                try {
+                    fromXmlRulesModule = new FromXmlRulesModule(new URL(fileName));
+                } catch (Exception e) {
+                    this.targetRulesBinder.addError("An error occurred while inculing file from '%s': %s",
+                            fileName,
+                            e.getMessage());
+                }
             }
-            this.install(new FromXmlRulesModule(fileName));
+
+            if (fromXmlRulesModule != null) {
+                if (!this.memoryRulesBinder.getIncludedFiles().add(fromXmlRulesModule.getSystemId())) {
+                    this.targetRulesBinder.addError("Circular file inclusion detected for XML rules: %s",
+                            fromXmlRulesModule.getSystemId());
+                } else {
+                    this.install(fromXmlRulesModule);
+                }
+            }
         }
 
         // The class attribute gives the name of a class that implements

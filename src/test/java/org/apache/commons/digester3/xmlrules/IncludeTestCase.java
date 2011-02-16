@@ -17,15 +17,17 @@
  */
 package org.apache.commons.digester3.xmlrules;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.StringReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.digester3.AbstractRulesModule;
 import org.apache.commons.digester3.AbstractTestCase;
 import org.apache.commons.digester3.Digester;
+import org.apache.commons.digester3.DigesterLoadingException;
 import org.apache.commons.digester3.Rule;
 import org.junit.Test;
 
@@ -55,7 +57,7 @@ public final class IncludeTestCase extends AbstractTestCase {
         String rulesXml = "<?xml version='1.0'?>"
                 + "<digester-rules>"
                 + " <pattern value='root/foo'>"
-                + "   <include class='org.apache.commons.digester3.xmlrules.IncludeTestCase$TestDigesterRulesModule'/>"
+                + "   <include class='org.apache.commons.digester3.xmlrules.IncludeTestCase$TestDigesterRulesModule' />"
                 + " </pattern>"
                 + "</digester-rules>";
 
@@ -68,6 +70,15 @@ public final class IncludeTestCase extends AbstractTestCase {
 
         assertEquals("Number of entries", 1, list.size());
         assertEquals("Entry value", "short", list.get(0));
+    }
+
+    /**
+     * Validates that circular includes are detected and result in an exception
+     */
+    @Test(expected = DigesterLoadingException.class)
+    public void testCircularInclude() throws Exception {
+        URL rules = ClassLoader.getSystemResource("org/apache/commons/digester3/xmlrules/testCircularRules.xml");
+        newBasicDigester(new FromXmlRulesModule(rules));
     }
 
 }

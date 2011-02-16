@@ -133,8 +133,10 @@ public final class FromXmlRulesModule implements RulesModule {
      * {@inheritDoc}
      */
     public void configure(RulesBinder rulesBinder) {
+        XmlRulesModule xmlRulesModule = new XmlRulesModule(rulesBinder, this.getSystemId());
+
         try {
-            newLoader(new XmlRulesModule(rulesBinder))
+            newLoader(xmlRulesModule)
                 .register(DIGESTER_PUBLIC_ID, this.xmlRulesDtdUrl.toString())
                 .setXIncludeAware(true)
                 .newDigester()
@@ -144,13 +146,17 @@ public final class FromXmlRulesModule implements RulesModule {
         }
     }
 
+    public String getSystemId() {
+        return this.xmlRules.getSystemId();
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
     public String toString() {
         return String.format("FromXmlRulesModule[%s]",
-                this.xmlRules.getSystemId() != null ? this.xmlRules.getSystemId() : this.xmlRules.toString());
+                this.getSystemId() != null ? this.getSystemId() : this.xmlRules.toString());
     }
 
 }

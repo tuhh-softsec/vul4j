@@ -28,10 +28,13 @@ public final class XmlRulesModule implements RulesModule {
 
     private final RulesBinder targetRulesBinder;
 
+    private final String rootSystemId;
+
     private WithMemoryRulesBinder memoryRulesBinder;
 
-    public XmlRulesModule(final RulesBinder targetRulesBinder) {
+    public XmlRulesModule(final RulesBinder targetRulesBinder, String rootSystemId) {
         this.targetRulesBinder = targetRulesBinder;
+        this.rootSystemId = rootSystemId;
     }
 
     /**
@@ -42,6 +45,9 @@ public final class XmlRulesModule implements RulesModule {
             this.memoryRulesBinder = (WithMemoryRulesBinder) rulesBinder;
         } else {
             this.memoryRulesBinder = new WithMemoryRulesBinder(rulesBinder);
+            if (this.rootSystemId != null) {
+                this.memoryRulesBinder.getIncludedFiles().add(this.rootSystemId);
+            }
         }
 
         PatternStack patternStack = this.memoryRulesBinder.getPatternStack();

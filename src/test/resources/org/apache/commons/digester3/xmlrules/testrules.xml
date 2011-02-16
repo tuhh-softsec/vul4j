@@ -22,7 +22,7 @@
         <set-next-rule methodname="add" paramtype="java.lang.Object" />
         <set-properties-rule />
 
-        <include path="org/apache/commons/digester3/xmlrules/testrulesinclude.xml" />
+        <include url="classpath:/org/apache/commons/digester3/xmlrules/testrulesinclude.xml" />
         <include class="org.apache.commons.digester3.xmlrules.DigesterRulesSourceTestImpl" />
 
         <pattern value="call-method-rule-tests">

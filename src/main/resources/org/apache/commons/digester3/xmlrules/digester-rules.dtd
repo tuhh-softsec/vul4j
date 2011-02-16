@@ -75,7 +75,7 @@
 -->
 <!ELEMENT include EMPTY>
 <!ATTLIST include
-    path  CDATA #IMPLIED
+    url   CDATA #IMPLIED
     class CDATA #IMPLIED>
 
 <!-- Each 'rule' element below corresponds to a concrete subclass

@@ -20,9 +20,9 @@
      in an exception. -->
 <digester-rules>
     <pattern value="root/foo">
-        <object-create-rule classname="org.apache.commons.digester.xmlrules.ObjectTestImpl" />
+        <object-create-rule classname="org.apache.commons.digester3.xmlrules.ObjectTestImpl" />
         <set-next-rule methodname="add" paramtype="java.lang.Object" />
         <set-properties-rule/>
-        <include path="org/apache/commons/digester3/xmlrules/testCircularRules.xml" />
+        <include url="classpath:/org/apache/commons/digester3/xmlrules/testCircularRules.xml" />
     </pattern>
 </digester-rules>
