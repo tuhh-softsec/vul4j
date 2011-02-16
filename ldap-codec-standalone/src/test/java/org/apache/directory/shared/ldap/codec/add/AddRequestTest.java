@@ -39,11 +39,8 @@ import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.ldap.codec.AbstractCodecServiceTest;
-import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.api.CodecControl;
-import org.apache.directory.shared.ldap.codec.standalone.StandaloneLdapCodecService;
-import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.ResponseCarryingException;
 import org.apache.directory.shared.ldap.codec.decorators.AddRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
@@ -65,13 +62,6 @@ import org.junit.runner.RunWith;
 @Concurrency()
 public class AddRequestTest extends AbstractCodecServiceTest
 {
-    /** the codec service used for tests */
-    private LdapCodecService codec = new StandaloneLdapCodecService();
-
-    /** The encoder instance */
-    private LdapEncoder encoder = new LdapEncoder( codec );
-
-    
     /**
      * Test the decoding of a AddRequest
      */

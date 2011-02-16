@@ -44,17 +44,13 @@
     
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>shared-i18n</artifactId>
+      <artifactId>shared-ldap-codec-standalone</artifactId>
+      <scope>test</scope>
     </dependency>
     
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>shared-ldap-codec</artifactId>
-    </dependency>
-    
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>shared-ldap-codec-standalone</artifactId>
     </dependency>
     
     <dependency>

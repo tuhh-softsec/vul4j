@@ -267,7 +267,7 @@ public class StandaloneLdapCodecService implements LdapCodecService
     /**
      * Creates a new instance of StandaloneLdapCodecService.
      */
-    public StandaloneLdapCodecService(File pluginDirectory, File cacheDirectory)
+    public StandaloneLdapCodecService( File pluginDirectory, File cacheDirectory )
     {
         
         // -------------------------------------------------------------------

@@ -22,6 +22,7 @@ package org.apache.directory.shared.ldap.codec.osgi;
 
 import org.apache.directory.shared.ldap.codec.api.DefaultLdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecServiceFactory;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -52,6 +53,7 @@ public class DefaultActivator implements BundleActivator
     public void start( BundleContext bundleContext ) throws Exception
     {
         registration = bundleContext.registerService( LdapCodecService.class.getName(), codec, null );
+        LdapCodecServiceFactory.initialize( codec );
     }
     
 

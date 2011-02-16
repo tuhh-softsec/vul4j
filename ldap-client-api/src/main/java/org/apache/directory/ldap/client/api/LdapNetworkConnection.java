@@ -58,8 +58,8 @@ import org.apache.directory.ldap.client.api.future.SearchFuture;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecServiceFactory;
 import org.apache.directory.shared.ldap.codec.api.MessageEncoderException;
-import org.apache.directory.shared.ldap.codec.standalone.StandaloneLdapCodecService;
 import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.model.constants.SupportedSaslMechanisms;
 import org.apache.directory.shared.ldap.model.cursor.Cursor;
@@ -214,7 +214,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
     private SchemaManager schemaManager;
 
     /** the ldap codec service */
-    LdapCodecService codec = new StandaloneLdapCodecService();
+    LdapCodecService codec = LdapCodecServiceFactory.getSingleton();
 
     /** The Ldap codec protocol filter */
     private IoFilter ldapProtocolFilter = new ProtocolCodecFilter( codec.newProtocolCodecFactory( true ) );
