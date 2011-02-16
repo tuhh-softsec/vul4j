@@ -495,10 +495,10 @@ public final class Dn implements Iterable<Rdn>
 
 
     /**
-     * Return the normalized Dn as a String. It returns the same value as the
-     * getNormName method
+     * Return the user provided Dn as a String. It returns the same value as the
+     * getName method
      *
-     * @return A String representing the normalized Dn
+     * @return A String representing the user provided Dn
      */
     @Override
     public String toString()
@@ -666,9 +666,9 @@ public final class Dn implements Iterable<Rdn>
 
 
     /**
-     * Get the initial Dn
+     * Get the user provided Dn
      *
-     * @return The Dn as a String
+     * @return The user provided Dn as a String
      */
     public String getName()
     {
@@ -683,14 +683,19 @@ public final class Dn implements Iterable<Rdn>
      *
      * @param upName the new up name
      */
-    void setUpName( String upName )
+    /* No qualifier */ void setUpName( String upName )
     {
         this.upName = upName;
     }
 
 
     /**
-     * Get the normalized Dn
+     * Get the normalized Dn. If the Dn is schema aware, the AttributeType
+     * will be represented using its OID :<br/>
+     * <pre>
+     * Dn dn = new Dn( schemaManager, "ou = Example , ou = com" );
+     * assert( "2.5.4.11=example,2.5.4.11=com".equals( dn.getNormName ) );
+     * </pre>
      *
      * @return The Dn as a String
      */
@@ -706,7 +711,8 @@ public final class Dn implements Iterable<Rdn>
 
 
     /**
-     * {@inheritDoc}
+     * Get the number of RDNs present in the DN
+     * @return The umber of RDNs in the DN
      */
     public int size()
     {
