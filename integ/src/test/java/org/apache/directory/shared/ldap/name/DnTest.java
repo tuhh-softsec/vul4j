@@ -40,6 +40,7 @@ import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
 
 import org.apache.directory.shared.ldap.model.exception.LdapException;
+import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.name.Ava;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.name.DnParser;
@@ -889,8 +890,8 @@ public class DnTest
     public void testDnGetPrefixPos0() throws LdapException
     {
         Dn dn = new Dn( "a=b, c=d,e = f" );
-        Dn newDn = ( dn.getPrefix( 0 ) );
-        assertEquals( "", newDn.getName() );
+        Dn newDn = ( dn.getParent( "" ) );
+        assertEquals( "a=b, c=d,e = f", newDn.getName() );
     }
 
 
@@ -901,8 +902,8 @@ public class DnTest
     public void testDnGetPrefixPos1() throws LdapException
     {
         Dn dn = new Dn( "a=b, c=d,e = f" );
-        Dn newDn = ( dn.getPrefix( 1 ) );
-        assertEquals( "e = f", newDn.getName() );
+        Dn newDn = ( dn.getParent( "a=b" ) );
+        assertEquals( " c=d,e = f", newDn.getName() );
     }
 
 
@@ -913,8 +914,8 @@ public class DnTest
     public void testDnGetPrefixPos2() throws LdapException
     {
         Dn dn = new Dn( "a=b, c=d,e = f" );
-        Dn newDn = ( dn.getPrefix( 2 ) );
-        assertEquals( " c=d,e = f", newDn.getName() );
+        Dn newDn = ( dn.getParent( "a=b, c=d" ) );
+        assertEquals( "e = f", newDn.getName() );
     }
 
 
@@ -925,29 +926,20 @@ public class DnTest
     public void testDnGetPrefixPos3() throws LdapException
     {
         Dn dn = new Dn( "a=b, c=d,e = f" );
-        Dn newDn = ( dn.getPrefix( 3 ) );
-        assertEquals( "a=b, c=d,e = f", newDn.getName() );
+        Dn newDn = ( dn.getParent( "a=b, c=d,e = f" ) );
+        assertEquals( "", newDn.getName() );
     }
 
 
     /**
      * Get the prefix out of bound
      */
-    @Test
+    @Test( expected=LdapInvalidDnException.class)
     public void testDnGetPrefixPos4() throws LdapException
     {
         Dn dn = new Dn( "a=b, c=d,e = f" );
 
-        try
-        {
-            dn.getPrefix( 4 );
-            // We should not reach this point.
-            fail();
-        }
-        catch ( ArrayIndexOutOfBoundsException aoobe )
-        {
-            assertTrue( true );
-        }
+        Dn res = dn.getParent( "a=z" );
     }
 
 
@@ -955,10 +947,10 @@ public class DnTest
      * Get the prefix of an empty LdapName
      */
     @Test
-    public void testDnGetPrefixEmptyDN()
+    public void testDnGetPrefixEmptyDN() throws LdapInvalidDnException
     {
         Dn dn = new Dn();
-        Dn newDn = ( dn.getPrefix( 0 ) );
+        Dn newDn = ( dn.getParent( "" ) );
         assertEquals( "", newDn.getName() );
     }
 
@@ -1959,11 +1951,11 @@ public class DnTest
     {
         Dn name = new Dn( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
 
-        assertEquals( "cn=HomeDir,cn=John,ou=Marketing,ou=East", name.getPrefix( 4 ).toString() );
-        assertEquals( "cn=John,ou=Marketing,ou=East", name.getPrefix( 3 ).toString() );
-        assertEquals( "ou=Marketing,ou=East", name.getPrefix( 2 ).toString() );
-        assertEquals( "ou=East", name.getPrefix( 1 ).toString() );
-        assertEquals( "", name.getPrefix( 0 ).toString() );
+        assertEquals( "cn=HomeDir,cn=John,ou=Marketing,ou=East", name.getParent( "" ).toString() );
+        assertEquals( "cn=John,ou=Marketing,ou=East", name.getParent( "cn=HomeDir" ).toString() );
+        assertEquals( "ou=Marketing,ou=East", name.getParent( "cn=HomeDir,cn=John" ).toString() );
+        assertEquals( "ou=East", name.getParent( "cn=HomeDir,cn=John,ou=Marketing" ).toString() );
+        assertEquals( "", name.getParent( "cn=HomeDir,cn=John,ou=Marketing,ou=East" ).toString() );
     }
 
 
@@ -2542,11 +2534,11 @@ public class DnTest
         LdapName jName = new LdapName( "cn=four,cn=three,cn=two,cn=one" );
         Dn aName = new Dn( "cn=four,cn=three,cn=two,cn=one" );
 
-        assertEquals( jName.getPrefix( 0 ).toString(), aName.getPrefix( 0 ).toString() );
-        assertEquals( jName.getPrefix( 1 ).toString(), aName.getPrefix( 1 ).toString() );
-        assertEquals( jName.getPrefix( 2 ).toString(), aName.getPrefix( 2 ).toString() );
-        assertEquals( jName.getPrefix( 3 ).toString(), aName.getPrefix( 3 ).toString() );
-        assertEquals( jName.getPrefix( 4 ).toString(), aName.getPrefix( 4 ).toString() );
+        assertEquals( jName.getPrefix( 0 ).toString(), aName.getParent( "cn=four,cn=three,cn=two,cn=one" ).toString() );
+        assertEquals( jName.getPrefix( 1 ).toString(), aName.getParent( "cn=four,cn=three,cn=two" ).toString() );
+        assertEquals( jName.getPrefix( 2 ).toString(), aName.getParent( "cn=four,cn=three" ).toString() );
+        assertEquals( jName.getPrefix( 3 ).toString(), aName.getParent( "cn=four" ).toString() );
+        assertEquals( jName.getPrefix( 4 ).toString(), aName.getParent( "" ).toString() );
     }
 
 

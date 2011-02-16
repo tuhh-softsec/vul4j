@@ -365,6 +365,7 @@ public final class Dn implements Iterable<Rdn>
         for ( Rdn rdn : rdns)
         {
             this.rdns.add( rdn.clone() );
+            
         }
 
         normalizeInternal();
@@ -393,9 +394,9 @@ public final class Dn implements Iterable<Rdn>
 
         try
         {
+            normalized = new AtomicBoolean( false );
             normalize( schemaManager );
             toUpName();
-            normalized = new AtomicBoolean( false );
         }
         catch( LdapInvalidDnException lide )
         {
@@ -997,30 +998,58 @@ public final class Dn implements Iterable<Rdn>
     /**
      * {@inheritDoc}
      */
-    public Dn getPrefix( int posn )
+    public Dn getParent( String descendant ) throws LdapInvalidDnException
     {
+        return getParent( new Dn( schemaManager, descendant ) );
+    }
+    
+
+    /**
+     * {@inheritDoc}
+     */
+    public Dn getParent( Dn descendant ) throws LdapInvalidDnException
+    {
+        if ( ( descendant == null ) || ( descendant.size() == 0 ) )
+        {
+            return this;
+        }
+        
         if ( rdns.size() == 0 )
         {
             return EMPTY_DN;
         }
-
-        if ( ( posn < 0 ) || ( posn > rdns.size() ) )
+        
+        int length = descendant.size();
+        
+        if ( length > rdns.size() )
         {
-            String message = I18n.err( I18n.ERR_04206, posn, rdns.size() );
+            String message = I18n.err( I18n.ERR_04206, length, rdns.size() );
             LOG.error( message );
             throw new ArrayIndexOutOfBoundsException( message );
         }
 
-        Dn newDn = new Dn();
+        Dn newDn = new Dn( schemaManager );
+        List<Rdn> rdnsDescendant = descendant.getRdns();
+        
+        for ( int i = 0; i < descendant.size(); i++ )
+        {
+            Rdn rdn = rdns.get( i );
+            Rdn rdnDescendant = rdnsDescendant.get( i );
+            
+            if ( !rdn.equals( rdnDescendant ) )
+            {
+                throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX );
+            }
+        }
 
-        for ( int i = rdns.size() - posn; i < rdns.size(); i++ )
+        for ( int i = length; i < rdns.size(); i++ )
         {
             // Don't forget to clone the rdns !
             newDn.rdns.add( rdns.get( i ).clone() );
         }
 
-        newDn.normName = newDn.toNormName();
-        newDn.upName = getUpNamePrefix( posn );
+        newDn.toUpName();
+        newDn.toNormName();
         newDn.normalized.set( normalized.get() );
 
         return newDn;
@@ -1374,7 +1403,26 @@ public final class Dn implements Iterable<Rdn>
             return null;
         }
 
-        return getPrefix( size() - 1 );
+        if ( rdns.size() == 0 )
+        {
+            return EMPTY_DN;
+        }
+        
+        int posn = rdns.size() - 1;
+
+        Dn newDn = new Dn( schemaManager );
+
+        for ( int i = rdns.size() - posn; i < rdns.size(); i++ )
+        {
+            // Don't forget to clone the rdns !
+            newDn.rdns.add( rdns.get( i ).clone() );
+        }
+
+        newDn.normName = newDn.toNormName();
+        newDn.upName = getUpNamePrefix( posn );
+        newDn.normalized.set( normalized.get() );
+
+        return newDn;
     }
 
 
