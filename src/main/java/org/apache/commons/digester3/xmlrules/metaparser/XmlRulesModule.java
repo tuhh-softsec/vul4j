@@ -81,6 +81,8 @@ public final class XmlRulesModule implements RulesModule {
                 .addRule(new SetNestedPropertiesRule(this.targetRulesBinder, patternStack));
             forPattern("*/set-nested-properties-rule/alias")
                 .addRule(new SetNestedPropertiesAliasRule(this.targetRulesBinder, patternStack));
+            forPattern("*/set-nested-properties-rule/ignore")
+                .addRule(new SetPropertiesIgnoreRule(this.targetRulesBinder, patternStack));
 
             forPattern("*/set-top-rule")
                 .addRule(new SetTopRule(this.targetRulesBinder, patternStack));

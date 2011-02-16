@@ -181,7 +181,7 @@
     ignore-missing-property CDATA #IMPLIED>
 
 <!-- SetNestedPropertiesRule -->
-<!ELEMENT set-nested-properties-rule (alias)*>
+<!ELEMENT set-nested-properties-rule (alias|ignore)*>
 <!ATTLIST set-nested-properties-rule
     pattern                       CDATA #IMPLIED
     allow-unknown-child-elements  CDATA #IMPLIED>
@@ -194,7 +194,8 @@
 
 <!ELEMENT ignore EMPTY>
 <!ATTLIST ignore
-    attr-name CDATA #IMPLIED>
+    attr-name CDATA #IMPLIED
+    elem-name CDATA #IMPLIED>
 
 <!-- SetPropertyRule -->
 <!ELEMENT set-property-rule EMPTY>
