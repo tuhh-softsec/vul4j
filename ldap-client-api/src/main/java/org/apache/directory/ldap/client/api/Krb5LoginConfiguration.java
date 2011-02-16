@@ -43,8 +43,14 @@ public class Krb5LoginConfiguration extends Configuration
     public Krb5LoginConfiguration()
     {
         String loginModule = "com.sun.security.auth.module.Krb5LoginModule";
+
+        HashMap<String, Object> options = new HashMap<String, Object>();
+
+        // TODO: this only works for Sun JVM
+        options.put( "refreshKrb5Config", "true" );
+        
         LoginModuleControlFlag flag = LoginModuleControlFlag.REQUIRED;
-        configList[0] = new AppConfigurationEntry( loginModule, flag, new HashMap<String, Object>() );
+        configList[0] = new AppConfigurationEntry( loginModule, flag, options );
     }
 
 
