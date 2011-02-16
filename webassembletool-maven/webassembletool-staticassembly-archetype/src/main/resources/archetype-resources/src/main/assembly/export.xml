@@ -1,0 +1,12 @@
+<assembly>
+	<id>export</id>
+	<formats>
+		<format>zip</format>
+	</formats>
+	<fileSets>
+		<fileSet>
+			<directory>target/generated-html</directory>
+			<outputDirectory></outputDirectory>
+		</fileSet>
+	</fileSets>
+</assembly>

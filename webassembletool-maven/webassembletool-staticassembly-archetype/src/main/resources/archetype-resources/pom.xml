@@ -5,12 +5,12 @@
 	<artifactId>\${artifactId}</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	<name>\${artifactId}</name>
+	<name>\${project.artifactId}</name>
 	<properties>
 		<maven.build.timestamp.format>yyyyMMdd_HHmm__</maven.build.timestamp.format>
 	</properties>
 	<build>
-		<finalName>\${artifactId}</finalName>
+		<finalName>\${project.artifactId}</finalName>
 		<filters>
 			<filter>src/main/filters/filter.properties</filter>
 		</filters>
@@ -36,6 +36,9 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>				
+				<configuration>
+					<encoding>ISO-8859-1</encoding>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>net.sourceforge.webassembletool.maven</groupId>
@@ -64,9 +67,9 @@
 						</goals>
 						<configuration>
 							<descriptors>
-								<descriptor>src/main/assembly/exportMaquette.xml</descriptor>
+								<descriptor>src/main/assembly/export.xml</descriptor>
 							</descriptors>
-							<finalName>${maven.build.timestamp}${project.name}</finalName>
+							<finalName>${maven.build.timestamp}_${project.name}</finalName>
 						</configuration>
 					</execution>
 				</executions>
