@@ -19,7 +19,7 @@
 <digester-rules>
     <pattern value="root">
         <factory-create-rule
-            classname="org.apache.commons.digester.xmlrules.ThrowExceptionCreationFactory"
+            classname="org.apache.commons.digester3.xmlrules.ThrowExceptionCreationFactory"
             ignore-exceptions="true" />
     </pattern>
 </digester-rules>

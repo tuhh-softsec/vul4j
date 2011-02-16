@@ -19,23 +19,22 @@
 <digester-rules>
     <pattern value="root">
         <pattern value="foo">
-            <call-method-rule 
-                  methodname="triple" 
-                  paramcount="3" 
-                  paramtypes="java.lang.String,java.lang.String,java.lang.String"/>
-            <call-param-rule 
-                  paramnumber='0'
-                  attrname='attr'/>
+            <call-method-rule
+                  methodname="triple"
+                  paramcount="3"
+                  paramtypes="java.lang.String,java.lang.String,java.lang.String" />
 
-            <pattern value='bar'>
-                <call-param-rule paramnumber='1' from-stack='false'/>
+            <call-param-rule paramnumber="0" attrname="attr" />
+
+            <pattern value="bar">
+                <call-param-rule paramnumber="1" from-stack="false" />
             </pattern>
 
-            <pattern value='foobar'>
-                <object-create-rule classname="java.lang.String"/>
+            <pattern value="foobar">
+                <object-create-rule classname="java.lang.String" />
 
-                <pattern value='ping'>
-                    <call-param-rule paramnumber='2' from-stack='true'/>
+                <pattern value="ping">
+                    <call-param-rule paramnumber="2" from-stack="true" />
                 </pattern>
             </pattern>
         </pattern>
