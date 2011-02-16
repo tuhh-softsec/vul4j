@@ -192,7 +192,8 @@
     attr-name CDATA #REQUIRED
     prop-name CDATA #IMPLIED>
 
-<!ELEMENT ignore
+<!ELEMENT ignore EMPTY>
+<!ATTLIST ignore
     attr-name CDATA #IMPLIED>
 
 <!-- SetPropertyRule -->
