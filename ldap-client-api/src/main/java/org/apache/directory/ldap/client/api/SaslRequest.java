@@ -27,6 +27,7 @@ import java.util.List;
 
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.util.StringConstants;
+import org.apache.directory.shared.util.Strings;
 
 
 /**
@@ -34,25 +35,33 @@ import org.apache.directory.shared.util.StringConstants;
  *  
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
+// TODO make this class abstract
 public class SaslRequest
 {
+    /** The mechanism used to decode user identity */
+    protected String saslMechanism;
+
     /** The list of controls */
-    private List<Control> controls = new ArrayList<Control>();
+    protected List<Control> controls = new ArrayList<Control>();
 
     /** The username */
-    private String username;
+    protected String username;
 
     /** The credentials */
-    private byte[] credentials;
+    protected byte[] credentials;
 
-    /** SASL realm name on the server */
-    private String realmName;
+    /** The realm name on the server */
+    protected String realmName;
 
     /** The authorization ID of the entity */
-    private String authorizationId;
+    protected String authorizationId;
 
-    /** The mechanism used to decode user identity */
-    private String saslMechanism;
+
+    protected SaslRequest( String saslMechanism )
+    {
+        super();
+        this.saslMechanism = saslMechanism;
+    }
 
 
     /**
@@ -173,11 +182,22 @@ public class SaslRequest
 
 
     /**
+     * Sets the credentials.
+     *
+     * @param credentials the credentials
+     */
+    public void setCredentials( String credentials )
+    {
+        this.credentials = Strings.getBytesUtf8( credentials );
+    }
+
+
+    /**
      * Sets the realm name.
      * 
      * @param realmName The realm name
      */
-    public void setRealmName( String realmName )
+    protected void setRealmName( String realmName )
     {
         this.realmName = realmName;
     }
@@ -188,7 +208,7 @@ public class SaslRequest
      *
      * @param saslMechanism the SASL mechanism
      */
-    public void setSaslMechanism( String saslMechanism )
+    protected void setSaslMechanism( String saslMechanism )
     {
         this.saslMechanism = saslMechanism;
     }

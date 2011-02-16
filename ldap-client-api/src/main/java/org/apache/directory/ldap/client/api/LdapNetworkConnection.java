@@ -61,7 +61,6 @@ import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecServiceFactory;
 import org.apache.directory.shared.ldap.codec.api.MessageEncoderException;
 import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
-import org.apache.directory.shared.ldap.model.constants.SupportedSaslMechanisms;
 import org.apache.directory.shared.ldap.model.cursor.Cursor;
 import org.apache.directory.shared.ldap.model.cursor.SearchCursor;
 import org.apache.directory.shared.ldap.model.entry.DefaultEntry;
@@ -385,7 +384,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         config.setLdapPort( config.getDefaultLdapPort() );
 
         // Default to localhost if null
-        if ( Strings.isEmpty(server) )
+        if ( Strings.isEmpty( server ) )
         {
             config.setLdapHost( "localhost" );
         }
@@ -414,7 +413,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         config.setLdapPort( useSsl ? config.getDefaultLdapsPort() : config.getDefaultLdapPort() );
 
         // Default to localhost if null
-        if ( Strings.isEmpty(server) )
+        if ( Strings.isEmpty( server ) )
         {
             config.setLdapHost( "localhost" );
         }
@@ -457,7 +456,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         config.setLdapPort( port );
 
         // Default to localhost if null
-        if ( Strings.isEmpty(server) )
+        if ( Strings.isEmpty( server ) )
         {
             config.setLdapHost( "localhost" );
         }
@@ -913,7 +912,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         LOG.debug( "Bind request : {}", name );
 
         // Create the BindRequest
-        BindRequest bindRequest = createBindRequest( name, Strings.getBytesUtf8(credentials) );
+        BindRequest bindRequest = createBindRequest( name, Strings.getBytesUtf8( credentials ) );
 
         return bind( bindRequest );
     }
@@ -927,7 +926,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         LOG.debug( "Bind request : {}", name );
 
         // Create the BindRequest
-        BindRequest bindRequest = createBindRequest( name, Strings.getBytesUtf8(credentials) );
+        BindRequest bindRequest = createBindRequest( name, Strings.getBytesUtf8( credentials ) );
 
         return bindAsync( bindRequest );
     }
@@ -941,7 +940,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         LOG.debug( "Bind request : {}", name );
 
         // Create the BindRequest
-        BindRequest bindRequest = createBindRequest( name, Strings.getBytesUtf8(credentials), null );
+        BindRequest bindRequest = createBindRequest( name, Strings.getBytesUtf8( credentials ), null );
 
         return bind( bindRequest );
     }
@@ -955,7 +954,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         LOG.debug( "Bind request : {}", name );
 
         // Create the BindRequest
-        BindRequest bindRequest = createBindRequest( name, Strings.getBytesUtf8(credentials) );
+        BindRequest bindRequest = createBindRequest( name, Strings.getBytesUtf8( credentials ) );
 
         return bindAsync( bindRequest );
     }
@@ -1093,7 +1092,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         bindRequest.setName( name );
 
         // Set the credentials
-        if ( Strings.isEmpty(saslMechanism) )
+        if ( Strings.isEmpty( saslMechanism ) )
         {
             // Simple bind
             bindRequest.setSimple( true );
@@ -1158,42 +1157,58 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
 
 
     /**
-     * Bind using CRAM-MD5 SASL mechanism.
+     * Bind to the server using a CramMd5Request object.
      *
-     * @param name the Dn of the user
-     * @param credentials password of the user
-     * @param authzId the authorization ID (can be null)
-     * @return response of the bind operation
-     * @throws LdapException if an LDAP error occurred during bind
-     * @throws IOException if an IO exception occurred
-     * @see #bindCramMd5(String, byte[], String, Control...)
+     * @param request The CramMd5Request POJO containing all the needed parameters
+     * @return A LdapResponse containing the result
+     * @throws LdapException if some error occurred
+     * @throws IOException if an I/O exception occurred
      */
-    public BindResponse bindCramMd5( String name, String credentials, String authzId )
-        throws LdapException, IOException
+    public BindResponse bind( CramMd5Request request ) throws LdapException, IOException
     {
-        return bindCramMd5( name, Strings.getBytesUtf8(credentials), authzId );
-    }
+        if ( request == null )
+        {
+            String msg = "Cannot process a null request";
+            LOG.debug( msg );
+            throw new IllegalArgumentException( msg );
+        }
 
+        BindFuture bindFuture = bindAsync( request );
 
-    /**
-     * Bind using CRAM-MD5 SASL mechanism.
-     *
-     * @param name the Dn of the user
-     * @param credentials password of the user
-     * @param authzId the authorization ID (can be null)
-     * @param ctrls controls to be sent with the bind request
-     * @return response of the bind operation
-     * @throws LdapException if an LDAP error occurred during bind
-     * @throws IOException if an IO exception occurred
-     */
-    public BindResponse bindCramMd5( String name, byte[] credentials, String authzId, Control... ctrls )
-        throws LdapException, IOException
-    {
-        BindFuture bindFuture = bindSasl( name, credentials, SupportedSaslMechanisms.CRAM_MD5, authzId, null, ctrls );
-
+        // Get the result from the future
         try
         {
-            return bindFuture.get();
+            // Read the response, waiting for it if not available immediately
+            // Get the response, blocking
+            BindResponse bindResponse = bindFuture.get( timeout, TimeUnit.MILLISECONDS );
+
+            if ( bindResponse == null )
+            {
+                // We didn't received anything : this is an error
+                LOG.error( "Bind failed : timeout occured" );
+                throw new LdapException( TIME_OUT_ERROR );
+            }
+
+            if ( bindResponse.getLdapResult().getResultCode() == ResultCodeEnum.SUCCESS )
+            {
+                authenticated.set( true );
+
+                // Everything is fine, return the response
+                LOG.debug( "Bind successful : {}", bindResponse );
+            }
+            else
+            {
+                // We have had an error
+                LOG.debug( "Bind failed : {}", bindResponse );
+            }
+
+            return bindResponse;
+        }
+        catch ( TimeoutException te )
+        {
+            // We didn't received anything : this is an error
+            LOG.error( "Bind failed : timeout occured" );
+            throw new LdapException( TIME_OUT_ERROR );
         }
         catch ( Exception ie )
         {
@@ -1208,62 +1223,73 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
 
 
     /**
-     * Bind using CRAM-MD5 SASL mechanism.
+     * Do an asynchronous bind, based on a CramMd5Request.
      *
-     * @param name the Dn of the user
-     * @param credentials password of the user
-     * @param authzId the authorization ID (can be null)
-     * @return response of the bind operation
-     * @throws LdapException if an LDAP error occurred during bind
-     * @throws IOException if an IO exception occurred
-     * @see #bindCramMd5(String, byte[], String, Control...)
+     * @param request The CramMd5Request POJO containing all the needed parameters
+     * @return The bind operation's future
+     * @throws LdapException if some error occurred
+     * @throws IOException if an I/O exception occurred
      */
-    public BindResponse bindCramMd5( String name, byte[] credentials, String authzId )
+    public BindFuture bindAsync( CramMd5Request request )
         throws LdapException, IOException
     {
-        return bindCramMd5( name, credentials, authzId, new Control[0] );
+        return bindSasl( request );
     }
 
 
     /**
-     * Bind using DIGEST-MD5 SASL mechanism.
+     * Bind to the server using a DigestMd5Request object.
      *
-     * @param name the Dn of the user
-     * @param credentials password of the user
-     * @param authzId the authorization ID (can be null)
-     * @param realmName the SASL realm name to be used
-     * @return response of the bind operation
-     * @throws LdapException if an LDAP error occurred during bind
-     * @throws IOException if an IO exception occurred
+     * @param request The DigestMd5Request POJO containing all the needed parameters
+     * @return A LdapResponse containing the result
+     * @throws LdapException if some error occurred
+     * @throws IOException if an I/O exception occurred
      */
-    public BindResponse bindDigestMd5( String name, String credentials, String authzId, String realmName )
-        throws LdapException, IOException
+    public BindResponse bind( DigestMd5Request request ) throws LdapException, IOException
     {
-        return bindDigestMd5( name, Strings.getBytesUtf8(credentials), authzId, realmName );
-    }
+        if ( request == null )
+        {
+            String msg = "Cannot process a null request";
+            LOG.debug( msg );
+            throw new IllegalArgumentException( msg );
+        }
 
+        BindFuture bindFuture = bindAsync( request );
 
-    /**
-     * Bind using DIGEST-MD5 SASL mechanism.
-     *
-     * @param name the Dn of the user
-     * @param credentials password of the user
-     * @param authzId the authorization ID (can be null)
-     * @param realmName the SASL realm name to be used
-     * @param ctrls the LDAP controls to be used
-     * @return response of the bind operation
-     * @throws LdapException if an LDAP error occurred during bind
-     * @throws IOException if an IO exception occurred
-     */
-    public BindResponse bindDigestMd5( String name, byte[] credentials, String authzId, String realmName,
-        Control... ctrls ) throws LdapException, IOException
-    {
-        BindFuture bindFuture = bindSasl( name, credentials, SupportedSaslMechanisms.DIGEST_MD5, authzId, realmName,
-            ctrls );
-
+        // Get the result from the future
         try
         {
-            return bindFuture.get();
+            // Read the response, waiting for it if not available immediately
+            // Get the response, blocking
+            BindResponse bindResponse = bindFuture.get( timeout, TimeUnit.MILLISECONDS );
+
+            if ( bindResponse == null )
+            {
+                // We didn't received anything : this is an error
+                LOG.error( "Bind failed : timeout occured" );
+                throw new LdapException( TIME_OUT_ERROR );
+            }
+
+            if ( bindResponse.getLdapResult().getResultCode() == ResultCodeEnum.SUCCESS )
+            {
+                authenticated.set( true );
+
+                // Everything is fine, return the response
+                LOG.debug( "Bind successful : {}", bindResponse );
+            }
+            else
+            {
+                // We have had an error
+                LOG.debug( "Bind failed : {}", bindResponse );
+            }
+
+            return bindResponse;
+        }
+        catch ( TimeoutException te )
+        {
+            // We didn't received anything : this is an error
+            LOG.error( "Bind failed : timeout occured" );
+            throw new LdapException( TIME_OUT_ERROR );
         }
         catch ( Exception ie )
         {
@@ -1278,93 +1304,120 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
 
 
     /**
-     * Bind using DIGEST-MD5 SASL mechanism.
+     * Do an asynchronous bind, based on a DigestMd5Request.
      *
-     * @param name the Dn of the user
-     * @param credentials password of the user
-     * @param authzId the authorization ID (can be null)
-     * @param realmName the SASL realm name to be used
-     * @return response of the bind operation
-     * @throws LdapException if an LDAP error occurred during bind
-     * @throws IOException if an IO exception occurred
-     * @see #bindDigestMd5(String, byte[], String, String, Control...)
+     * @param request The DigestMd5Request POJO containing all the needed parameters
+     * @return The bind operation's future
+     * @throws LdapException if some error occurred
+     * @throws IOException if an I/O exception occurred
      */
-    public BindResponse bindDigestMd5( String name, byte[] credentials, String authzId, String realmName )
+    public BindFuture bindAsync( DigestMd5Request request )
         throws LdapException, IOException
     {
-        return bindDigestMd5( name, credentials, authzId, realmName, new Control[0] );
+        return bindSasl( request );
     }
 
 
     /**
-     * Bind to the LDAP server using GSSAPI SASL mechanism.
+     * Bind to the server using a GssApiRequest object.
      *
-     * @param name the Dn of the user entry
-     * @param credentials the credentials of the user
-     * @param realmName name of the kerberos realm in which the given user entry is present
-     * @param kdcHost the host name of the KDC server
-     * @param kdcPort the port of the KDC server
-     * @param ctrls controls to be passed along with the bind request
-     * @return response of this bind operation
-     * @throws LdapException if an LDAP error occurred during bind
-     * @throws IOException if an IO exception occurred
-     * @see #bindGssApi(String, byte[], String, String, int, Control...)
+     * @param request The GssApiRequest POJO containing all the needed parameters
+     * @return A LdapResponse containing the result
+     * @throws LdapException if some error occurred
+     * @throws IOException if an I/O exception occurred
      */
-    public BindResponse bindGssApi( String name, String credentials, String realmName, String kdcHost, int kdcPort,
-        Control... ctrls )
-        throws LdapException, IOException
+    public BindResponse bind( GssApiRequest request ) throws LdapException, IOException
     {
-        return bindGssApi( name, Strings.getBytesUtf8(credentials), realmName, kdcHost, kdcPort, ctrls );
+        if ( request == null )
+        {
+            String msg = "Cannot process a null request";
+            LOG.debug( msg );
+            throw new IllegalArgumentException( msg );
+        }
+
+        BindFuture bindFuture = bindAsync( request );
+
+        // Get the result from the future
+        try
+        {
+            // Read the response, waiting for it if not available immediately
+            // Get the response, blocking
+            BindResponse bindResponse = bindFuture.get( timeout, TimeUnit.MILLISECONDS );
+
+            if ( bindResponse == null )
+            {
+                // We didn't received anything : this is an error
+                LOG.error( "Bind failed : timeout occured" );
+                throw new LdapException( TIME_OUT_ERROR );
+            }
+
+            if ( bindResponse.getLdapResult().getResultCode() == ResultCodeEnum.SUCCESS )
+            {
+                authenticated.set( true );
+
+                // Everything is fine, return the response
+                LOG.debug( "Bind successful : {}", bindResponse );
+            }
+            else
+            {
+                // We have had an error
+                LOG.debug( "Bind failed : {}", bindResponse );
+            }
+
+            return bindResponse;
+        }
+        catch ( TimeoutException te )
+        {
+            // We didn't received anything : this is an error
+            LOG.error( "Bind failed : timeout occured" );
+            throw new LdapException( TIME_OUT_ERROR );
+        }
+        catch ( Exception ie )
+        {
+            // Catch all other exceptions
+            LOG.error( NO_RESPONSE_ERROR, ie );
+            LdapException ldapException = new LdapException( NO_RESPONSE_ERROR );
+            ldapException.initCause( ie );
+
+            throw ldapException;
+        }
     }
 
 
     /**
-     * Bind to the LDAP server using GSSAPI SASL mechanism.
+     * Do an asynchronous bind, based on a GssApiRequest.
      *
-     * @param name the Dn of the user entry
-     * @param credentials the credentials of the user
-     * @param realmName name of the kerberos realm in which the given user entry is present
-     * @param kdcHost the host name of the KDC server
-     * @param kdcPort the port of the KDC server
-     * @param ctrls controls to be passed along with the bind request
-     * @return response of this bind operation
-     * @throws LdapException if an LDAP error occurred during bind
-     * @throws IOException if an IO exception occurred
+     * @param request The GssApiRequest POJO containing all the needed parameters
+     * @return The bind operation's future
+     * @throws LdapException if some error occurred
+     * @throws IOException if an I/O exception occurred
      */
-    public BindResponse bindGssApi( String name, byte[] credentials, String realmName, String kdcHost, int kdcPort,
-        Control... ctrls )
+    public BindFuture bindAsync( GssApiRequest request )
         throws LdapException, IOException
     {
-        String krbConfPath = createKrbConfFile( realmName, kdcHost, kdcPort );
+        System.clearProperty( "java.security.krb5.conf" );
+        String krbConfPath = createKrbConfFile( request.getRealmName(), request.getKdcHost(), request.getKdcPort() );
         System.setProperty( "java.security.krb5.conf", krbConfPath );
 
         Configuration.setConfiguration( new Krb5LoginConfiguration() );
         System.setProperty( "javax.security.auth.useSubjectCredsOnly", "true" );
 
-        final SaslRequest saslRequest = new SaslRequest();
-        saslRequest.setUsername( name );
-        saslRequest.setCredentials( credentials );
-        saslRequest.setSaslMechanism( SupportedSaslMechanisms.GSSAPI );
-        saslRequest.setRealmName( realmName );
-        saslRequest.addAllControls( ctrls );
-
         try
         {
             LoginContext loginContext = new LoginContext( "ldapnetworkconnection",
-                        new SaslCallbackHandler( saslRequest ) );
+                        new SaslCallbackHandler( request ) );
             loginContext.login();
 
-            // Now, bind by calling the internal bindSasl method
-            BindFuture future = ( BindFuture ) Subject.doAs( loginContext.getSubject(),
+            final GssApiRequest requetFinal = request;
+
+            return ( BindFuture ) Subject.doAs( loginContext.getSubject(),
                         new PrivilegedExceptionAction<Object>()
                     {
                         public Object run() throws Exception
                         {
-                            return bindSasl( saslRequest );
+                            return bindSasl( requetFinal );
                         }
                     } );
-
-            return future.get();
         }
         catch ( Exception e )
         {
@@ -1622,7 +1675,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
     {
         if ( message instanceof ExtendedResponse )
         {
-            ExtendedResponse response = (ExtendedResponse) message;
+            ExtendedResponse response = ( ExtendedResponse ) message;
 
             if ( response.getResponseName().equals( NoticeOfDisconnect.EXTENSION_OID ) )
             {
@@ -2067,7 +2120,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
             }
             else
             {
-                if ( modifyResponse instanceof ModifyNoDResponse)
+                if ( modifyResponse instanceof ModifyNoDResponse )
                 {
                     // A NoticeOfDisconnect : deserves a special treatment
                     throw new LdapException( modifyResponse.getLdapResult().getErrorMessage() );
@@ -3520,10 +3573,9 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         Control... ctrls )
         throws LdapException, IOException
     {
-        SaslRequest saslRequest = new SaslRequest();
+        SaslRequest saslRequest = new SaslRequest( saslMech ); // TODO fix this
         saslRequest.setUsername( name );
         saslRequest.setCredentials( credentials );
-        saslRequest.setSaslMechanism( saslMech );
         saslRequest.setAuthorizationId( authzId );
         saslRequest.setRealmName( realmName );
         saslRequest.addAllControls( ctrls );
