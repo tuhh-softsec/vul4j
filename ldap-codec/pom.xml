@@ -68,11 +68,6 @@
     </dependency>
     
     <dependency>
-      <groupId>org.apache.felix</groupId>
-      <artifactId>org.apache.felix.framework</artifactId>
-    </dependency>
-    
-    <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
     </dependency>
@@ -80,6 +75,12 @@
     <dependency>
       <groupId>commons-collections</groupId>
       <artifactId>commons-collections</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi</artifactId>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 
@@ -96,25 +97,6 @@
             </goals>
           </execution>
         </executions>
-      </plugin>
-
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <groupId>org.apache.maven.plugins</groupId>
-        <configuration>
-          <systemPropertyVariables>
-            <workingDirectory>${basedir}/target</workingDirectory>
-            <felix.cache.rootdir>
-              ${project.build.directory}
-            </felix.cache.rootdir>
-            <felix.cache.locking>
-              false
-            </felix.cache.locking>
-            <org.osgi.framework.storage>
-              ${project.build.directory}/osgi-cache
-            </org.osgi.framework.storage>
-          </systemPropertyVariables>
-        </configuration>
       </plugin>
 
       <plugin>
