@@ -55,186 +55,171 @@ import org.apache.xml.security.utils.I18n;
  *
  * @author Christian Geuer-Pollmann
  */
-public class XMLSecurityRuntimeException
-        extends RuntimeException {
-   /**
-     * 
-     */
+public class XMLSecurityRuntimeException extends RuntimeException {
+    
     private static final long serialVersionUID = 1L;
 
-   /** Field originalException */
-   protected Exception originalException = null;
+    /** Field originalException */
+    protected Exception originalException = null;
 
-   /** Field msgID */
-   protected String msgID;
+    /** Field msgID */
+    protected String msgID;
 
-   /**
-    * Constructor XMLSecurityRuntimeException
-    *
-    */
-   public XMLSecurityRuntimeException() {
+    /**
+     * Constructor XMLSecurityRuntimeException
+     *
+     */
+    public XMLSecurityRuntimeException() {
+        super("Missing message string");
 
-      super("Missing message string");
+        this.msgID = null;
+        this.originalException = null;
+    }
 
-      this.msgID = null;
-      this.originalException = null;
-   }
+    /**
+     * Constructor XMLSecurityRuntimeException
+     *
+     * @param msgID
+     */
+    public XMLSecurityRuntimeException(String msgID) {
+        super(I18n.getExceptionMessage(msgID));
 
-   /**
-    * Constructor XMLSecurityRuntimeException
-    *
-    * @param _msgID
-    */
-   public XMLSecurityRuntimeException(String _msgID) {
+        this.msgID = msgID;
+        this.originalException = null;
+    }
 
-      super(I18n.getExceptionMessage(_msgID));
+    /**
+     * Constructor XMLSecurityRuntimeException
+     *
+     * @param msgID
+     * @param exArgs
+     */
+    public XMLSecurityRuntimeException(String msgID, Object exArgs[]) {
+        super(MessageFormat.format(I18n.getExceptionMessage(msgID), exArgs));
 
-      this.msgID = _msgID;
-      this.originalException = null;
-   }
+        this.msgID = msgID;
+        this.originalException = null;
+    }
 
-   /**
-    * Constructor XMLSecurityRuntimeException
-    *
-    * @param _msgID
-    * @param exArgs
-    */
-   public XMLSecurityRuntimeException(String _msgID, Object exArgs[]) {
+    /**
+     * Constructor XMLSecurityRuntimeException
+     *
+     * @param originalException
+     */
+    public XMLSecurityRuntimeException(Exception originalException) {
+        super("Missing message ID to locate message string in resource bundle \""
+              + Constants.exceptionMessagesResourceBundleBase
+              + "\". Original Exception was a "
+              + originalException.getClass().getName() + " and message "
+              + originalException.getMessage());
 
-      super(MessageFormat.format(I18n.getExceptionMessage(_msgID), exArgs));
+        this.originalException = originalException;
+    }
 
-      this.msgID = _msgID;
-      this.originalException = null;
-   }
+    /**
+     * Constructor XMLSecurityRuntimeException
+     *
+     * @param msgID
+     * @param originalException
+     */
+    public XMLSecurityRuntimeException(String msgID, Exception originalException) {
+        super(I18n.getExceptionMessage(msgID, originalException));
 
-   /**
-    * Constructor XMLSecurityRuntimeException
-    *
-    * @param _originalException
-    */
-   public XMLSecurityRuntimeException(Exception _originalException) {
+        this.msgID = msgID;
+        this.originalException = originalException;
+    }
 
-      super("Missing message ID to locate message string in resource bundle \""
-            + Constants.exceptionMessagesResourceBundleBase
-            + "\". Original Exception was a "
-            + _originalException.getClass().getName() + " and message "
-            + _originalException.getMessage());
+    /**
+     * Constructor XMLSecurityRuntimeException
+     *
+     * @param msgID
+     * @param exArgs
+     * @param originalException
+     */
+    public XMLSecurityRuntimeException(String msgID, Object exArgs[], Exception originalException) {
+        super(MessageFormat.format(I18n.getExceptionMessage(msgID), exArgs));
 
-      this.originalException = _originalException;
-   }
+        this.msgID = msgID;
+        this.originalException = originalException;
+    }
 
-   /**
-    * Constructor XMLSecurityRuntimeException
-    *
-    * @param _msgID
-    * @param _originalException
-    */
-   public XMLSecurityRuntimeException(String _msgID, Exception _originalException) {
+    /**
+     * Method getMsgID
+     *
+     * @return the messageId
+     */
+    public String getMsgID() {
+        if (msgID == null) {
+            return "Missing message ID";
+        } 
+        return msgID;      
+    }
 
-      super(I18n.getExceptionMessage(_msgID, _originalException));
+    /** @inheritDoc */
+    public String toString() {
+        String s = this.getClass().getName();
+        String message = super.getLocalizedMessage();
 
-      this.msgID = _msgID;
-      this.originalException = _originalException;
-   }
+        if (message != null) {
+            message = s + ": " + message;
+        } else {
+            message = s;
+        }
 
-   /**
-    * Constructor XMLSecurityRuntimeException
-    *
-    * @param _msgID
-    * @param exArgs
-    * @param _originalException
-    */
-   public XMLSecurityRuntimeException(String _msgID, Object exArgs[],
-                               Exception _originalException) {
+        if (originalException != null) {
+            message = message + "\nOriginal Exception was " + originalException.toString();
+        }
 
-      super(MessageFormat.format(I18n.getExceptionMessage(_msgID), exArgs));
+        return message;
+    }
 
-      this.msgID = _msgID;
-      this.originalException = _originalException;
-   }
+    /**
+     * Method printStackTrace
+     *
+     */
+    public void printStackTrace() {
+        synchronized (System.err) {
+            super.printStackTrace(System.err);
 
-   /**
-    * Method getMsgID
-    *
-    * @return the messageId
-    */
-   public String getMsgID() {
+            if (this.originalException != null) {
+                this.originalException.printStackTrace(System.err);
+            }
+        }
+    }
 
-      if (msgID == null) {
-         return "Missing message ID";
-      } 
-      return msgID;      
-   }
+    /**
+     * Method printStackTrace
+     *
+     * @param printwriter
+     */
+    public void printStackTrace(PrintWriter printwriter) {
+        super.printStackTrace(printwriter);
 
-   /** @inheritDoc */
-   public String toString() {
+        if (this.originalException != null) {
+            this.originalException.printStackTrace(printwriter);
+        }
+    }
 
-      String s = this.getClass().getName();
-      String message = super.getLocalizedMessage();
+    /**
+     * Method printStackTrace
+     *
+     * @param printstream
+     */
+    public void printStackTrace(PrintStream printstream) {
+        super.printStackTrace(printstream);
 
-      if (message != null) {
-         message = s + ": " + message;
-      } else {
-         message = s;
-      }
+        if (this.originalException != null) {
+            this.originalException.printStackTrace(printstream);
+        }
+    }
 
-      if (originalException != null) {
-         message = message + "\nOriginal Exception was "
-                   + originalException.toString();
-      }
-
-      return message;
-   }
-
-   /**
-    * Method printStackTrace
-    *
-    */
-   public void printStackTrace() {
-
-      synchronized (System.err) {
-         super.printStackTrace(System.err);
-
-         if (this.originalException != null) {
-            this.originalException.printStackTrace(System.err);
-         }
-      }
-   }
-
-   /**
-    * Method printStackTrace
-    *
-    * @param printwriter
-    */
-   public void printStackTrace(PrintWriter printwriter) {
-
-      super.printStackTrace(printwriter);
-
-      if (this.originalException != null) {
-         this.originalException.printStackTrace(printwriter);
-      }
-   }
-
-   /**
-    * Method printStackTrace
-    *
-    * @param printstream
-    */
-   public void printStackTrace(PrintStream printstream) {
-
-      super.printStackTrace(printstream);
-
-      if (this.originalException != null) {
-         this.originalException.printStackTrace(printstream);
-      }
-   }
-
-   /**
-    * Method getOriginalException
-    *
-    * @return the original exception
-    */
-   public Exception getOriginalException() {
-      return originalException;
-   }
+    /**
+     * Method getOriginalException
+     *
+     * @return the original exception
+     */
+    public Exception getOriginalException() {
+        return originalException;
+    }
+    
 }

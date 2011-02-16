@@ -16,70 +16,60 @@
  */
 package org.apache.xml.security.exceptions;
 
-
-
-/**
- *
- *
- *
- *
- * @author Christian Geuer-Pollmann
- *
- */
 public class AlgorithmAlreadyRegisteredException extends XMLSecurityException {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
 
-   /**
-         * 
-         */
-        private static final long serialVersionUID = 1L;
+    /**
+     * Constructor AlgorithmAlreadyRegisteredException
+     *
+     */
+    public AlgorithmAlreadyRegisteredException() {
+        super();
+    }
 
-   /**
-    * Constructor AlgorithmAlreadyRegisteredException
-    *
-    */
-   public AlgorithmAlreadyRegisteredException() {
-      super();
-   }
+    /**
+     * Constructor AlgorithmAlreadyRegisteredException
+     *
+     * @param msgID
+     */
+    public AlgorithmAlreadyRegisteredException(String msgID) {
+        super(msgID);
+    }
 
-   /**
-    * Constructor AlgorithmAlreadyRegisteredException
-    *
-    * @param _msgID
-    */
-   public AlgorithmAlreadyRegisteredException(String _msgID) {
-      super(_msgID);
-   }
+    /**
+     * Constructor AlgorithmAlreadyRegisteredException
+     *
+     * @param msgID
+     * @param exArgs
+     */
+    public AlgorithmAlreadyRegisteredException(String msgID, Object exArgs[]) {
+        super(msgID, exArgs);
+    }
 
-   /**
-    * Constructor AlgorithmAlreadyRegisteredException
-    *
-    * @param _msgID
-    * @param exArgs
-    */
-   public AlgorithmAlreadyRegisteredException(String _msgID, Object exArgs[]) {
-      super(_msgID, exArgs);
-   }
+    /**
+     * Constructor AlgorithmAlreadyRegisteredException
+     *
+     * @param msgID
+     * @param originalException
+     */
+    public AlgorithmAlreadyRegisteredException(String msgID, Exception originalException) {
+        super(msgID, originalException);
+    }
 
-   /**
-    * Constructor AlgorithmAlreadyRegisteredException
-    *
-    * @param _msgID
-    * @param _originalException
-    */
-   public AlgorithmAlreadyRegisteredException(String _msgID,
-                                              Exception _originalException) {
-      super(_msgID, _originalException);
-   }
-
-   /**
-    * Constructor AlgorithmAlreadyRegisteredException
-    *
-    * @param _msgID
-    * @param exArgs
-    * @param _originalException
-    */
-   public AlgorithmAlreadyRegisteredException(String _msgID, Object exArgs[],
-                                              Exception _originalException) {
-      super(_msgID, exArgs, _originalException);
-   }
+    /**
+     * Constructor AlgorithmAlreadyRegisteredException
+     *
+     * @param msgID
+     * @param exArgs
+     * @param originalException
+     */
+    public AlgorithmAlreadyRegisteredException(
+        String msgID, Object exArgs[], Exception originalException
+    ) {
+        super(msgID, exArgs, originalException);
+    }
+    
 }
