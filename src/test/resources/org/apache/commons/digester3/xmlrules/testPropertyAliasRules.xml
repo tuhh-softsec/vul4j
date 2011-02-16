@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE digester-rules PUBLIC "-//Jakarta Apache //DTD digester-rules XML V1.0//EN" "http://jakarta.apache.org/commons/digester/dtds/digester-rules.dtd">
+<!DOCTYPE digester-rules PUBLIC "-//Apache Commons //DTD digester-rules XML V1.0//EN" "http://jakarta.apache.org/commons/digester/dtds/digester-rules.dtd">
 <!--
    Licensed to the Apache Software Foundation (ASF) under one or more
    contributor license agreements.  See the NOTICE file distributed with
@@ -24,7 +24,7 @@
     </pattern>
 
     <pattern value="toplevel/two">
-        <object-create-rule classname="org.apache.commons.digester.Address" />
+        <object-create-rule classname="org.apache.commons.digester3.Address" />
         <set-next-rule methodname="add" paramtype="java.lang.Object" />
         <set-properties-rule>
             <alias attr-name="alt-street" prop-name="street" />
@@ -34,16 +34,16 @@
     </pattern>
 
     <pattern value="toplevel/three">
-        <object-create-rule classname="org.apache.commons.digester.Address" />
+        <object-create-rule classname="org.apache.commons.digester3.Address" />
         <set-next-rule methodname="add" paramtype="java.lang.Object" />
         <set-properties-rule>
             <alias attr-name="aCity" prop-name="city" />
-            <alias attr-name="state" />
+            <ignore attr-name="state" />
         </set-properties-rule>
     </pattern>
 
     <pattern value="toplevel/four">
-        <object-create-rule classname="org.apache.commons.digester.Address" />
+        <object-create-rule classname="org.apache.commons.digester3.Address" />
         <set-next-rule methodname="add" paramtype="java.lang.Object" />
         <set-properties-rule>
             <alias attr-name="alt-city" prop-name="city" />

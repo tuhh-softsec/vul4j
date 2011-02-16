@@ -71,6 +71,8 @@ public final class XmlRulesModule implements RulesModule {
                 .addRule(new SetPropertiesRule(this.targetRulesBinder, patternStack));
             forPattern("*/set-properties-rule/alias")
                 .addRule(new SetPropertiesAliasRule(this.targetRulesBinder, patternStack));
+            forPattern("*/set-properties-rule/ignore")
+                .addRule(new SetPropertiesIgnoreRule(this.targetRulesBinder, patternStack));
 
             forPattern("*/set-property-rule")
                 .addRule(new SetPropertyRule(this.targetRulesBinder, patternStack));

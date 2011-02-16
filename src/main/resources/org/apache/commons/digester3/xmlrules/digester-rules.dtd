@@ -175,7 +175,7 @@
     attrname  CDATA #IMPLIED>
 
 <!-- SetPropertiesRule -->
-<!ELEMENT set-properties-rule (alias)*>
+<!ELEMENT set-properties-rule (alias|ignore)*>
 <!ATTLIST set-properties-rule
     pattern                 CDATA #IMPLIED
     ignore-missing-property CDATA #IMPLIED>
@@ -189,8 +189,11 @@
 <!-- An alias is a custom attribute->property name mapping -->
 <!ELEMENT alias EMPTY>
 <!ATTLIST alias
- attr-name CDATA #REQUIRED
- prop-name CDATA #IMPLIED>
+    attr-name CDATA #REQUIRED
+    prop-name CDATA #IMPLIED>
+
+<!ELEMENT ignore
+    attr-name CDATA #IMPLIED>
 
 <!-- SetPropertyRule -->
 <!ELEMENT set-property-rule EMPTY>
