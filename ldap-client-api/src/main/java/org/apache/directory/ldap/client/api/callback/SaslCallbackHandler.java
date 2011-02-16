@@ -45,7 +45,6 @@ import org.slf4j.LoggerFactory;
  */
 public class SaslCallbackHandler implements CallbackHandler
 {
-
     /** The sasl request. */
     private SaslRequest saslReq;
 
