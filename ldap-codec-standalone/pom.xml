@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.apache.directory.shared</groupId>
     <artifactId>shared-parent</artifactId>
-    <version>0.9.20-SNAPSHOT</version>
+    <version>1.0.0-M2-SNAPSHOT</version>
   </parent>
   
   <artifactId>shared-ldap-codec-standalone</artifactId>
@@ -48,12 +48,6 @@
       <scope>test</scope>
     </dependency>
     
-    <dependency>
-      <groupId>com.mycila</groupId>
-      <artifactId>mycila-junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>shared-ldap-codec</artifactId>

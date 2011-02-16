@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.apache.directory.shared</groupId>
     <artifactId>shared-parent</artifactId>
-    <version>0.9.20-SNAPSHOT</version>
+    <version>1.0.0-M2-SNAPSHOT</version>
   </parent>
   
   <artifactId>shared-ldap-schema</artifactId>
@@ -41,12 +41,6 @@
       <scope>test</scope>
     </dependency>
     
-    <dependency>
-      <groupId>com.mycila</groupId>
-      <artifactId>mycila-junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>shared-i18n</artifactId>
@@ -85,8 +79,8 @@
             <configuration>
               <target>
                 <!-- Various properties -->
-                <property name="schema.index" value="target/generated-resources/apacheds/META-INF/apacheds-schema.index"/>
-                <property name="schema.location" value="src${file.separator}main${file.separator}resources${file.separator}"/>
+                <property name="schema.index" value="target/generated-resources/apacheds/META-INF/apacheds-schema.index" />
+                <property name="schema.location" value="src${file.separator}main${file.separator}resources${file.separator}" />
               
                 <!-- Listing all LDIF files under schema location -->
                 <path id="schema.files.path">
@@ -95,17 +89,17 @@
                     <exclude name="schema-all.ldif" />
                   </fileset>
                 </path>
-                <property name="schema.files" refid="schema.files.path"/>
+                <property name="schema.files" refid="schema.files.path" />
                 
                 <!-- Creating the schema index file -->
-                <echo message="${schema.files}" file="${schema.index}"/>
+                <echo message="${schema.files}" file="${schema.index}" />
                 <replace file="${schema.index}">
                   <!-- Replace the path separator (':' on Unix, ';' on Windows) by a new line -->
-                  <replacefilter token="${path.separator}" value="${line.separator}"/>
+                  <replacefilter token="${path.separator}" value="${line.separator}" />
                   <!-- Remove the full path of the schema location to get relative paths for files -->
-                  <replacefilter token="${basedir}${file.separator}${schema.location}" value=""/>
+                  <replacefilter token="${basedir}${file.separator}${schema.location}" value="" />
                   <!-- Replace the file separator ('/' on Unix, '\' on Windows) by a '/' - Useful on Windows -->
-                  <replacefilter token="${file.separator}" value="/"/>
+                  <replacefilter token="${file.separator}" value="/" />
                 </replace>
               </target>
             </configuration>

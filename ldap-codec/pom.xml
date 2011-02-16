@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.apache.directory.shared</groupId>
     <artifactId>shared-parent</artifactId>
-    <version>0.9.20-SNAPSHOT</version>
+    <version>1.0.0-M2-SNAPSHOT</version>
   </parent>
   
   <artifactId>shared-ldap-codec</artifactId>
@@ -37,12 +37,6 @@
       <scope>test</scope>
     </dependency>
     
-    <dependency>
-      <groupId>com.mycila</groupId>
-      <artifactId>mycila-junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>shared-util</artifactId>
@@ -91,6 +85,19 @@
 
   <build>
     <plugins>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <configuration />
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <groupId>org.apache.maven.plugins</groupId>
