@@ -55,7 +55,6 @@ final class IncludeRule extends Rule {
             if (!this.memoryRulesBinder.getIncludedFiles().add(fileName)) {
                 throw new DigesterLoadingException("Circular file inclusion detected for file: " + fileName);
             }
-            // this.memoryRulesBinder.install(new FromXmlRulesModule(fileName));
             this.install(new FromXmlRulesModule(fileName));
         }
 
