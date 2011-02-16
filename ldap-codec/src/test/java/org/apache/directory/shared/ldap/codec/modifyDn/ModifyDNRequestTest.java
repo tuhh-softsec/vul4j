@@ -32,13 +32,11 @@ import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
-import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.api.CodecControl;
-import org.apache.directory.shared.ldap.codec.api.DefaultLdapCodecService;
-import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.ResponseCarryingException;
 import org.apache.directory.shared.ldap.codec.decorators.ModifyDnRequestDecorator;
+import org.apache.directory.shared.ldap.codec.osgi.AbstractCodecServiceTest;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.model.message.ModifyDnRequest;
@@ -56,14 +54,8 @@ import org.junit.runner.RunWith;
  */
 @RunWith(ConcurrentJunitRunner.class)
 @Concurrency()
-public class ModifyDNRequestTest
+public class ModifyDNRequestTest extends AbstractCodecServiceTest
 {
-    LdapCodecService codec = new DefaultLdapCodecService();
-
-    /** The encoder instance */
-    LdapEncoder encoder = new LdapEncoder( codec );
-
-    
     /**
      * Test the decoding of a full ModifyDNRequest
      */
@@ -366,6 +358,7 @@ public class ModifyDNRequestTest
 
         assertEquals( 1, controls.size() );
 
+        @SuppressWarnings("unchecked")
         CodecControl<Control> control = (org.apache.directory.shared.ldap.codec.api.CodecControl<Control> )modifyDnRequest.getControl( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", Strings.dumpBytes((byte[]) control.getValue()) );
@@ -528,6 +521,7 @@ public class ModifyDNRequestTest
 
         assertTrue( modifyDnRequest.hasControl( "2.16.840.1.113730.3.4.2" ) );
 
+        @SuppressWarnings("unchecked")
         CodecControl<Control> control = (org.apache.directory.shared.ldap.codec.api.CodecControl<Control> )modifyDnRequest.getControl( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", Strings.dumpBytes((byte[]) control.getValue()) );

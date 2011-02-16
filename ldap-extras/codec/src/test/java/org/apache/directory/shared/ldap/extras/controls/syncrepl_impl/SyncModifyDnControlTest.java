@@ -29,8 +29,7 @@ import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
-import org.apache.directory.shared.ldap.codec.api.DefaultLdapCodecService;
-import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
+import org.apache.directory.shared.ldap.codec.osgi.AbstractCodecServiceTest;
 import org.apache.directory.shared.ldap.extras.controls.SyncModifyDn;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
@@ -47,12 +46,8 @@ import com.mycila.junit.concurrent.ConcurrentJunitRunner;
  */
 @RunWith(ConcurrentJunitRunner.class)
 @Concurrency()
-public class SyncModifyDnControlTest
+public class SyncModifyDnControlTest extends AbstractCodecServiceTest
 {
-    /** the codec service used for tests */
-    private LdapCodecService codec = new DefaultLdapCodecService();
-    
-    
     @Test
     public void testDecodeSyncModifyDnControlWithMoveOperation() throws Exception
     {

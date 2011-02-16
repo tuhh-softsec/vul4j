@@ -50,7 +50,7 @@ public enum PasswordPolicyStates implements States
     /**
      * {@inheritDoc}
      */
-    public String getGrammarName( Grammar grammar )
+    public String getGrammarName( Grammar<?> grammar )
     {
         if( grammar instanceof PasswordPolicyGrammar )
         {

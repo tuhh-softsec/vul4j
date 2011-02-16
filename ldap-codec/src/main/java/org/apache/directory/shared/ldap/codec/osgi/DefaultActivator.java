@@ -20,7 +20,6 @@
 package org.apache.directory.shared.ldap.codec.osgi;
 
 
-import org.apache.directory.shared.ldap.codec.api.DefaultLdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecServiceFactory;
 import org.osgi.framework.BundleActivator;

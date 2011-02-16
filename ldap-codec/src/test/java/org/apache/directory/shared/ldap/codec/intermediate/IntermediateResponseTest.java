@@ -32,12 +32,10 @@ import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
-import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.api.CodecControl;
-import org.apache.directory.shared.ldap.codec.api.DefaultLdapCodecService;
-import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.decorators.IntermediateResponseDecorator;
+import org.apache.directory.shared.ldap.codec.osgi.AbstractCodecServiceTest;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.IntermediateResponse;
 import org.apache.directory.shared.util.Strings;
@@ -52,14 +50,8 @@ import org.junit.runner.RunWith;
  */
 @RunWith(ConcurrentJunitRunner.class)
 @Concurrency()
-public class IntermediateResponseTest
+public class IntermediateResponseTest extends AbstractCodecServiceTest
 {
-    LdapCodecService codec = new DefaultLdapCodecService();
-
-    /** The encoder instance */
-    LdapEncoder encoder = new LdapEncoder( codec );
-
-    
     /**
      * Test the decoding of a full IntermediateResponse
      */
@@ -181,6 +173,7 @@ public class IntermediateResponseTest
 
         assertEquals( 1, controls.size() );
 
+        @SuppressWarnings("unchecked")
         CodecControl<Control> control = (org.apache.directory.shared.ldap.codec.api.CodecControl<Control> )controls.get( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", Strings.dumpBytes((byte[]) control.getValue()) );
@@ -262,6 +255,7 @@ public class IntermediateResponseTest
 
         assertEquals( 1, controls.size() );
 
+        @SuppressWarnings("unchecked")
         CodecControl<Control> control = (org.apache.directory.shared.ldap.codec.api.CodecControl<Control> )controls.get( "2.16.840.1.113730.3.4.2" );
         assertEquals( "2.16.840.1.113730.3.4.2", control.getOid() );
         assertEquals( "", Strings.dumpBytes((byte[]) control.getValue()) );

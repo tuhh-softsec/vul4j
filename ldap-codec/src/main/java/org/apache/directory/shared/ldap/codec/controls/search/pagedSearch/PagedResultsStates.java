@@ -75,7 +75,7 @@ public enum PagedResultsStates implements States
      * @param grammar The grammar class
      * @return The grammar name
      */
-    public String getGrammarName( Grammar grammar )
+    public String getGrammarName( Grammar<?> grammar )
     {
         if ( grammar instanceof PagedResultsGrammar )
         {

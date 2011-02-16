@@ -27,12 +27,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.nio.ByteBuffer;
 
-import org.apache.directory.shared.ldap.codec.api.DefaultLdapCodecService;
-import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
+import org.apache.directory.shared.ldap.codec.osgi.AbstractCodecServiceTest;
 import org.apache.directory.shared.ldap.extras.controls.PasswordPolicy;
 import org.apache.directory.shared.util.Strings;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 
@@ -41,26 +38,8 @@ import org.junit.Test;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class PasswordPolicyTest
+public class PasswordPolicyTest extends AbstractCodecServiceTest
 {
-    /** the codec for all tests */
-    private static LdapCodecService codec;
-    
-    
-    @BeforeClass
-    public static void setup()
-    {
-        codec = new DefaultLdapCodecService();
-    }
-    
-    
-    @AfterClass
-    public static void tearDown()
-    {
-        codec = null;
-    }
-    
-    
     @Test
     public void testDecodeRespWithExpiryWarningAndError() throws Exception
     {

@@ -49,7 +49,7 @@ import org.apache.directory.shared.asn1.actions.CheckNotNullLength;
  *          
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class PasswordPolicyGrammar extends AbstractGrammar
+public class PasswordPolicyGrammar extends AbstractGrammar<PasswordPolicyContainer>
 {
     /** PasswordPolicyResponseControlGrammar singleton instance */
     private static final PasswordPolicyGrammar INSTANCE = new PasswordPolicyGrammar();

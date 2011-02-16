@@ -30,6 +30,7 @@ import org.apache.directory.shared.ldap.extras.controls.PasswordPolicyErrorEnum;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
+@SuppressWarnings("rawtypes")
 public class StoreError extends AbstractReadInteger
 {
 

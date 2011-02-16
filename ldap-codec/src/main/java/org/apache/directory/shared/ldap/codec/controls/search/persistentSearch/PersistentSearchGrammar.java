@@ -57,7 +57,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public final class PersistentSearchGrammar extends AbstractGrammar
+public final class PersistentSearchGrammar extends AbstractGrammar<PersistentSearchContainer>
 {
     /** The logger */
     static final Logger LOG = LoggerFactory.getLogger( PersistentSearchGrammar.class );
@@ -66,12 +66,13 @@ public final class PersistentSearchGrammar extends AbstractGrammar
     static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
     /** The instance of grammar. PSearchControlGrammar is a singleton */
-    private static Grammar instance = new PersistentSearchGrammar();
+    private static Grammar<?> instance = new PersistentSearchGrammar();
 
 
     /**
      * Creates a new PSearchControlGrammar object.
      */
+    @SuppressWarnings("unchecked")
     private PersistentSearchGrammar()
     {
         setName( PersistentSearchGrammar.class.getName() );
@@ -87,7 +88,7 @@ public final class PersistentSearchGrammar extends AbstractGrammar
          * Initialize the persistence search object
          */
         super.transitions[ PersistentSearchStates.START_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] =
-            new GrammarTransition( PersistentSearchStates.START_STATE,
+            new GrammarTransition<PersistentSearchContainer>( PersistentSearchStates.START_STATE,
                                     PersistentSearchStates.PSEARCH_SEQUENCE_STATE,
                                     UniversalTag.SEQUENCE.getValue(), null );
 
@@ -101,7 +102,7 @@ public final class PersistentSearchGrammar extends AbstractGrammar
          * Stores the change types value
          */
         super.transitions[ PersistentSearchStates.PSEARCH_SEQUENCE_STATE.ordinal()][UniversalTag.INTEGER.getValue()] =
-            new GrammarTransition( PersistentSearchStates.PSEARCH_SEQUENCE_STATE,
+            new GrammarTransition<PersistentSearchContainer>( PersistentSearchStates.PSEARCH_SEQUENCE_STATE,
                 PersistentSearchStates.CHANGE_TYPES_STATE,
                 UniversalTag.INTEGER.getValue(),
                 new GrammarAction<PersistentSearchContainer>( "Set PSearchControl changeTypes" )
@@ -143,7 +144,7 @@ public final class PersistentSearchGrammar extends AbstractGrammar
          * Stores the change only flag
          */
         super.transitions[ PersistentSearchStates.CHANGE_TYPES_STATE.ordinal()][UniversalTag.BOOLEAN.getValue()] =
-            new GrammarTransition( PersistentSearchStates.CHANGE_TYPES_STATE,
+            new GrammarTransition<PersistentSearchContainer>( PersistentSearchStates.CHANGE_TYPES_STATE,
                                     PersistentSearchStates.CHANGES_ONLY_STATE, UniversalTag.BOOLEAN.getValue(),
                 new GrammarAction<PersistentSearchContainer>( "Set PSearchControl changesOnly" )
             {
@@ -181,7 +182,7 @@ public final class PersistentSearchGrammar extends AbstractGrammar
          * Stores the return ECs flag 
          */
         super.transitions[ PersistentSearchStates.CHANGES_ONLY_STATE.ordinal()][UniversalTag.BOOLEAN.getValue()] =
-            new GrammarTransition( PersistentSearchStates.CHANGES_ONLY_STATE,
+            new GrammarTransition<PersistentSearchContainer>( PersistentSearchStates.CHANGES_ONLY_STATE,
                                     PersistentSearchStates.RETURN_ECS_STATE, UniversalTag.BOOLEAN.getValue(),
                 new GrammarAction<PersistentSearchContainer>( "Set PSearchControl returnECs" )
             {
@@ -219,7 +220,7 @@ public final class PersistentSearchGrammar extends AbstractGrammar
      * 
      * @return An instance on this grammar
      */
-    public static Grammar getInstance()
+    public static Grammar<?> getInstance()
     {
         return instance;
     }

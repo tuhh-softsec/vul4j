@@ -70,7 +70,7 @@ public enum SubentriesStates implements States
      * @param grammar The grammar class
      * @return The grammar name
      */
-    public String getGrammarName( Grammar grammar )
+    public String getGrammarName( Grammar<SubentriesContainer> grammar )
     {
         if ( grammar instanceof SubentriesGrammar )
         {

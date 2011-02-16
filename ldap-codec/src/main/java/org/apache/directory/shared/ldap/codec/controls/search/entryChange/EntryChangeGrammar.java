@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public final class EntryChangeGrammar extends AbstractGrammar
+public final class EntryChangeGrammar extends AbstractGrammar<EntryChangeContainer>
 {
     /** The logger */
     static final Logger LOG = LoggerFactory.getLogger( EntryChangeGrammar.class );
@@ -55,12 +55,13 @@ public final class EntryChangeGrammar extends AbstractGrammar
     static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
     /** The instance of grammar. EntryChangeGrammar is a singleton */
-    private static Grammar instance = new EntryChangeGrammar();
+    private static Grammar<?> instance = new EntryChangeGrammar();
 
 
     /**
      * Creates a new EntryChangeGrammar object.
      */
+    @SuppressWarnings("unchecked")
     private EntryChangeGrammar()
     {
         setName( EntryChangeGrammar.class.getName() );
@@ -76,7 +77,7 @@ public final class EntryChangeGrammar extends AbstractGrammar
         //
         // Initialization of the structure
         super.transitions[ EntryChangeStates.START_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] =
-            new GrammarTransition( EntryChangeStates.START_STATE,
+            new GrammarTransition<EntryChangeContainer>( EntryChangeStates.START_STATE,
                                     EntryChangeStates.EC_SEQUENCE_STATE,
                                     UniversalTag.SEQUENCE.getValue(), null );
 
@@ -89,7 +90,7 @@ public final class EntryChangeGrammar extends AbstractGrammar
         //
         // Evaluates the changeType
         super.transitions[ EntryChangeStates.EC_SEQUENCE_STATE.ordinal()][UniversalTag.ENUMERATED.getValue()] =
-            new GrammarTransition( EntryChangeStates.EC_SEQUENCE_STATE,
+            new GrammarTransition<EntryChangeContainer>( EntryChangeStates.EC_SEQUENCE_STATE,
                                     EntryChangeStates.CHANGE_TYPE_STATE,
                                     UniversalTag.ENUMERATED.getValue(),
             new GrammarAction<EntryChangeContainer>( "Set EntryChangeControl changeType" )
@@ -151,7 +152,7 @@ public final class EntryChangeGrammar extends AbstractGrammar
         // Set the previousDN into the structure. We first check that it's a
         // valid Dn
         super.transitions[ EntryChangeStates.CHANGE_TYPE_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] =
-            new GrammarTransition( EntryChangeStates.CHANGE_TYPE_STATE,
+            new GrammarTransition<EntryChangeContainer>( EntryChangeStates.CHANGE_TYPE_STATE,
                                     EntryChangeStates.PREVIOUS_DN_STATE,
                                     UniversalTag.OCTET_STRING.getValue(),
             new GrammarAction<EntryChangeContainer>( "Set EntryChangeControl previousDN" )
@@ -234,7 +235,7 @@ public final class EntryChangeGrammar extends AbstractGrammar
         //
         // Set the changeNumber into the structure
         super.transitions[ EntryChangeStates.PREVIOUS_DN_STATE.ordinal()][UniversalTag.INTEGER.getValue()] =
-            new GrammarTransition( EntryChangeStates.PREVIOUS_DN_STATE,
+            new GrammarTransition<EntryChangeContainer>( EntryChangeStates.PREVIOUS_DN_STATE,
                                     EntryChangeStates.CHANGE_NUMBER_STATE,
                                     UniversalTag.INTEGER.getValue(),
                 setChangeNumberAction );
@@ -249,7 +250,7 @@ public final class EntryChangeGrammar extends AbstractGrammar
         //
         // Set the changeNumber into the structure
         super.transitions[ EntryChangeStates.CHANGE_TYPE_STATE.ordinal()][UniversalTag.INTEGER.getValue()] =
-            new GrammarTransition( EntryChangeStates.CHANGE_TYPE_STATE,
+            new GrammarTransition<EntryChangeContainer>( EntryChangeStates.CHANGE_TYPE_STATE,
                                     EntryChangeStates.CHANGE_NUMBER_STATE,
                                     UniversalTag.INTEGER.getValue(),
                 setChangeNumberAction );
@@ -261,7 +262,7 @@ public final class EntryChangeGrammar extends AbstractGrammar
      * 
      * @return An instance on this grammar
      */
-    public static Grammar getInstance()
+    public static Grammar<?> getInstance()
     {
         return instance;
     }

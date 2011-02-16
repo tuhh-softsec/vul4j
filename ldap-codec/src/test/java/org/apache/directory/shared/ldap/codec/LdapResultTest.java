@@ -35,17 +35,14 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
-import org.apache.directory.shared.ldap.codec.api.DefaultLdapCodecService;
-import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.decorators.AddResponseDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
+import org.apache.directory.shared.ldap.codec.osgi.AbstractCodecServiceTest;
 import org.apache.directory.shared.ldap.model.message.AddResponse;
 import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.model.message.Referral;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.shared.util.Strings;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -58,33 +55,8 @@ import org.junit.runner.RunWith;
  */
 @RunWith(ConcurrentJunitRunner.class)
 @Concurrency()
-public class LdapResultTest
+public class LdapResultTest extends AbstractCodecServiceTest
 {
-    static LdapCodecService codec;
-
-    /** The encoder instance */
-    static LdapEncoder encoder;
-
-    
-    @BeforeClass
-    public static void setupLdapCodecService()
-    {
-        codec = new DefaultLdapCodecService();
-        encoder = new LdapEncoder( codec );
-    }
-    
-    
-    @AfterClass
-    public static void tearDownLdapCodecService()
-    {
-        codec = null;
-        encoder = null;
-    }
-    
-
-    // ~ Methods
-    // ------------------------------------------------------------------------------------
-
     /**
      * Test the decoding of a AddResponse with no LdapResult
      */
