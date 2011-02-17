@@ -28,6 +28,7 @@ import java.net.SocketAddress;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -60,6 +61,8 @@ import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecServiceFactory;
 import org.apache.directory.shared.ldap.codec.api.MessageEncoderException;
+import org.apache.directory.shared.ldap.model.constants.SaslQoP;
+import org.apache.directory.shared.ldap.model.constants.SaslSecurityStrength;
 import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.model.cursor.Cursor;
 import org.apache.directory.shared.ldap.model.cursor.SearchCursor;
@@ -3554,24 +3557,6 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
 
 
     /**
-     * perform SASL based bind operation @see {@link #bindSasl(SaslRequest)}
-     */
-    private BindFuture bindSasl( String name, byte[] credentials, String saslMech, String authzId, String realmName,
-        Control... ctrls )
-        throws LdapException, IOException
-    {
-        SaslRequest saslRequest = new SaslRequest( saslMech ); // TODO fix this
-        saslRequest.setUsername( name );
-        saslRequest.setCredentials( credentials );
-        saslRequest.setAuthorizationId( authzId );
-        saslRequest.setRealmName( realmName );
-        saslRequest.addAllControls( ctrls );
-
-        return bindSasl( saslRequest );
-    }
-
-
-    /**
      * Process the SASL Bind. It's a dialog with the server, we will send a first BindRequest, receive
      * a response and the, if this response is a challenge, continue by sending a new BindRequest with
      * the requested informations.
@@ -3609,13 +3594,36 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
             byte[] response = null;
             ResultCodeEnum result = null;
 
+            // Creating a map for SASL properties
+            Map<String, Object> properties = new HashMap<String, Object>();
+
+            // Quality of Protection SASL property
+            if ( saslRequest.getQualityOfProtection() != null )
+            {
+
+                properties.put( Sasl.QOP, saslRequest.getQualityOfProtection().getValue() );
+            }
+
+            // Security Strength SASL property
+            if ( saslRequest.getSecurityStrength() != null )
+            {
+                properties.put( Sasl.STRENGTH, saslRequest.getSecurityStrength().getValue() );
+            }
+
+            // Mutual Authentication SASL property
+            if ( saslRequest.isMutualAuthentication() )
+            {
+                properties.put( Sasl.SERVER_AUTH, "true" );
+            }
+
+            // Creating a SASL Client
             SaslClient sc = Sasl.createSaslClient(
                 new String[]
                     { bindRequest.getSaslMechanism() },
                 saslRequest.getAuthorizationId(),
                 "ldap",
                 config.getLdapHost(),
-                null,
+                properties,
                 new SaslCallbackHandler( saslRequest ) );
 
             // If the SaslClient wasn't created, that means we can't create the SASL client

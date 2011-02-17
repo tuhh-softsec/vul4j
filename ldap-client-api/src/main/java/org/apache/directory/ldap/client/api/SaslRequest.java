@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.directory.shared.ldap.model.constants.SaslQoP;
+import org.apache.directory.shared.ldap.model.constants.SaslSecurityStrength;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.util.StringConstants;
 import org.apache.directory.shared.util.Strings;
@@ -35,8 +37,7 @@ import org.apache.directory.shared.util.Strings;
  *  
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-// TODO make this class abstract
-public class SaslRequest
+public abstract class SaslRequest
 {
     /** The mechanism used to decode user identity */
     protected String saslMechanism;
@@ -56,10 +57,24 @@ public class SaslRequest
     /** The authorization ID of the entity */
     protected String authorizationId;
 
+    /** The quality of protection */
+    protected SaslQoP qualityOfProtection;
 
+    /** The security strength */
+    protected SaslSecurityStrength securityStrength;
+    
+    /** Require mutual authentication */
+    protected boolean mutualAuthentication = false;
+
+
+    /**
+     * Creates a new instance of SaslRequest.
+     *
+     * @param saslMechanism
+     *      the SASL mechanism
+     */
     protected SaslRequest( String saslMechanism )
     {
-        super();
         this.saslMechanism = saslMechanism;
     }
 
@@ -127,6 +142,17 @@ public class SaslRequest
 
 
     /**
+     * Gets the quality of protection.
+     *
+     * @return the quality of protection
+     */
+    public SaslQoP getQualityOfProtection()
+    {
+        return qualityOfProtection;
+    }
+
+
+    /**
      * Gets realm name.
      *
      * @return the realm name
@@ -149,6 +175,17 @@ public class SaslRequest
 
 
     /**
+     * Gets the security strength.
+     *
+     * @return the security strength
+     */
+    public SaslSecurityStrength getSecurityStrength()
+    {
+        return securityStrength;
+    }
+
+
+    /**
      * Gets the username.
      *
      * @return the username
@@ -156,6 +193,17 @@ public class SaslRequest
     public String getUsername()
     {
         return username;
+    }
+
+
+    /**
+     * Indicates if mutual authentication is required.
+     *
+     * @return the flag indicating if mutual authentication is required
+     */
+    public boolean isMutualAuthentication()
+    {
+        return mutualAuthentication;
     }
 
 
@@ -193,6 +241,28 @@ public class SaslRequest
 
 
     /**
+     * Sets the flag indicating if mutual authentication is required.
+     *
+     * @param mutualAuthentication the flag indicating if mutual authentication is required
+     */
+    public void setMutualAuthentication( boolean mutualAuthentication )
+    {
+        this.mutualAuthentication = mutualAuthentication;
+    }
+
+
+    /**
+     * Sets the quality of protection.
+     *
+     * @param qualityOfProtection the quality of protection
+     */
+    public void setQualityOfProtection( SaslQoP qualityOfProtection )
+    {
+        this.qualityOfProtection = qualityOfProtection;
+    }
+
+
+    /**
      * Sets the realm name.
      * 
      * @param realmName The realm name
@@ -211,6 +281,17 @@ public class SaslRequest
     protected void setSaslMechanism( String saslMechanism )
     {
         this.saslMechanism = saslMechanism;
+    }
+
+
+    /**
+     * Sets the security strength.
+     *
+     * @param securityStrength the security strength
+     */
+    public void setSecurityStrength( SaslSecurityStrength securityStrength )
+    {
+        this.securityStrength = securityStrength;
     }
 
 

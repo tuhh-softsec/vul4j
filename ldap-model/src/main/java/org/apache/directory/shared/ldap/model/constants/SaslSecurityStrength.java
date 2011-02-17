@@ -21,31 +21,32 @@ package org.apache.directory.shared.ldap.model.constants;
 
 
 /**
- * This enums contains values for SASL QoP (Quality of Protection).
+ * This enums contains values for SASL Security Strength.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public enum SaslQoP
+public enum SaslSecurityStrength
 {
-    /** Authentication only */
-    AUTH("auth"),
+    /** Low SASL Security Strength */
+    LOW("low"),
 
-    /** Authentication with integrity protection */
-    AUTH_INT("auth-int"),
+    /** Medium SASL Security Strength */
+    MEDIUM("medium"),
 
-    /** Authentication with integrity and privacy protection */
-    AUTH_CONF("auth-conf");
+    /** High SASL Security Strength */
+    HIGH("high");
 
     /** The equivalent string value */
     private String value;
 
 
     /**
-     * Creates a new instance of SaslQoP.
+     * Creates a new instance of SaslSecurityStrength.
      *
-     * @param value the equivalent string value
+     * @param value
+     *      the equivalent string value
      */
-    private SaslQoP( String value )
+    private SaslSecurityStrength( String value )
     {
         this.value = value;
     }
