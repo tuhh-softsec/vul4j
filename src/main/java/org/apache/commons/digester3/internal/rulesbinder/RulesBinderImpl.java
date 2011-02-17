@@ -49,10 +49,16 @@ public final class RulesBinderImpl implements RulesBinder {
 
     private final ProvidersRegistry providersRegistry = new ProvidersRegistry();
 
-    private final ClassLoader classLoader;
+    private ClassLoader classLoader;
 
-    public RulesBinderImpl(final ClassLoader classLoader) {
+    public void initialize(ClassLoader classLoader) {
         this.classLoader = classLoader;
+        this.providersRegistry.clear();
+        this.errors.clear();
+    }
+
+    public ClassLoader getContextClassLoader() {
+        return this.classLoader;
     }
 
     /**

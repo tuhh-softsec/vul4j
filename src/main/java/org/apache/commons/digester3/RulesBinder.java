@@ -71,4 +71,11 @@ public interface RulesBinder {
      */
     <T> ConverterBuilder<T> convert(Class<T> type);
 
+    /**
+     * Returns the {@code ClassLoader} used in the current bindings.
+     *
+     * @return The {@code ClassLoader} used in the current bindings.
+     */
+    ClassLoader getContextClassLoader();
+
 }

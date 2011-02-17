@@ -95,4 +95,9 @@ final class ProvidersRegistry {
 
     }
 
+    public void clear() {
+        this.providers.clear();
+        this.providersIndex.clear();
+    }
+
 }
