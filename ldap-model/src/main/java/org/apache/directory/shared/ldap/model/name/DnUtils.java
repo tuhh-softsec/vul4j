@@ -20,15 +20,15 @@
 package org.apache.directory.shared.ldap.model.name;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.util.Chars;
 import org.apache.directory.shared.util.Hex;
 import org.apache.directory.shared.util.Position;
 import org.apache.directory.shared.util.Unicode;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Utility class used by the Dn Parser.
@@ -37,8 +37,6 @@ import java.util.List;
  */
 public final class DnUtils
 {
-    // ~ Static fields/initializers
-    // -----------------------------------------------------------------
     /** A value if we got an error while parsing */
     public static final int PARSING_ERROR = -1;
 
