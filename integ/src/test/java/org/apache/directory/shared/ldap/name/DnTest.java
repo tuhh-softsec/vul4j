@@ -3598,4 +3598,16 @@ public class DnTest
 
         assertEquals( dnStr, dn.toString() );
     }
+    
+    
+    @Test
+    public void testCreateDnFromRdnParent() throws Exception
+    {
+        String rdn = "cn=test";
+        String parentDn = "ou=apache,ou=org";
+        
+        Dn dn = new Dn( rdn, parentDn );
+        
+        assertEquals( "cn=test,ou=apache,ou=org", dn.getName() );
+    }
 }

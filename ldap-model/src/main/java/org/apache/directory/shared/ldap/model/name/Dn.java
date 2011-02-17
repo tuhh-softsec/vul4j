@@ -365,12 +365,50 @@ public final class Dn implements Iterable<Rdn>
         for ( Rdn rdn : rdns)
         {
             this.rdns.add( rdn.clone() );
-            
         }
 
         normalizeInternal();
         toUpName();
         normalized = new AtomicBoolean( false );
+    }
+
+
+    /**
+     * Creates a Dn concatenating a Rdn and a Dn.
+     *
+     * @param rdns the list of Rdns to be used for the Dn
+     */
+    public Dn( Rdn rdn, Dn dn ) throws LdapInvalidDnException
+    {
+        if ( ( dn == null ) || ( rdn == null ) )
+        {
+            throw new IllegalArgumentException( "Either the dn or the rdn is null" );
+        }
+        
+        for ( Rdn rdnParent : dn )
+        {
+            rdns.add( rdnParent );
+        }
+        
+        rdns.add( rdn );
+        
+        normalized = new AtomicBoolean();
+        schemaManager = dn.schemaManager;
+
+        if ( schemaManager != null )
+        {
+            normalize( schemaManager.getNormalizerMapping() );
+        }
+        else
+        {
+            normalized.set( false );
+
+            // Stores the representations of a Dn : internal (as a string and as a
+            // byte[]) and external.
+            normalizeInternal();
+        }
+
+        toUpName();
     }
 
 
@@ -1136,9 +1174,20 @@ public final class Dn implements Iterable<Rdn>
     /**
      * {@inheritDoc}
      */
-    public Dn addAll( Dn suffix ) throws LdapInvalidDnException
+    public Dn addAll( Dn suffix )
     {
-        return addAll( rdns.size(), suffix );
+        Dn result = null;
+        
+        try
+        {
+            result = addAll( rdns.size(), suffix );
+        }
+        catch ( LdapInvalidDnException lie )
+        {
+            // Do nothing, 
+        }
+
+        return result;
     }
 
 
