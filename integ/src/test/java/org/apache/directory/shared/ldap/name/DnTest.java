@@ -1554,9 +1554,9 @@ public class DnTest
         Dn name5 = new Dn( "cn=Airline,cn=John,ou=Marketing,ou=West" );
 
         assertEquals( name0, copy );
-        assertTrue( name0.isParentOf( name1 ) );
-        assertTrue( name0.isParentOf( name2 ) );
-        assertTrue( name1.isParentOf( name2 ) );
+        assertTrue( name0.isAncestorOf( name1 ) );
+        assertTrue( name0.isAncestorOf( name2 ) );
+        assertTrue( name1.isAncestorOf( name2 ) );
         assertTrue( name2.isDescendantOf( name1 ) );
         assertTrue( name2.isDescendantOf( name0 ) );
         assertNotSame( name2, name3 );
@@ -3419,10 +3419,10 @@ public class DnTest
         Dn parent3 = new Dn( "dc=org" );
         Dn notParent = new Dn( "ou=example,dc=apache, dc=com" );
 
-        assertTrue( parent1.isParentOf( dn ) );
-        assertTrue( parent2.isParentOf( dn ) );
-        assertTrue( parent3.isParentOf( dn ) );
-        assertFalse( notParent.isParentOf( dn ) );
+        assertTrue( parent1.isAncestorOf( dn ) );
+        assertTrue( parent2.isAncestorOf( dn ) );
+        assertTrue( parent3.isAncestorOf( dn ) );
+        assertFalse( notParent.isAncestorOf( dn ) );
     }
 
 

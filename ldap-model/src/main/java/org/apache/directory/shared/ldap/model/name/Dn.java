@@ -827,11 +827,11 @@ public final class Dn implements Iterable<Rdn>
      * @param dn The child
      * @return true if the current Dn is a parent of the given Dn
      */
-    public boolean isParentOf( String dn )
+    public boolean isAncestorOf( String dn )
     {
         try
         {
-            return isParentOf( new Dn( dn ) );
+            return isAncestorOf( new Dn( dn ) );
         }
         catch ( LdapInvalidDnException lide )
         {
@@ -848,7 +848,7 @@ public final class Dn implements Iterable<Rdn>
      * @param dn The child
      * @return true if the current Dn is a parent of the given Dn
      */
-    public boolean isParentOf( Dn dn )
+    public boolean isAncestorOf( Dn dn )
     {
         if ( dn == null )
         {
