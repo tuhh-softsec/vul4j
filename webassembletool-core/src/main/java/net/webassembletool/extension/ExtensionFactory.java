@@ -22,8 +22,8 @@ import net.webassembletool.authentication.AuthenticationHandler;
 import net.webassembletool.cookie.CustomCookieStore;
 import net.webassembletool.filter.Filter;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Factory for all Wat extension classes (authenticator, filters, cookie store).
@@ -32,7 +32,7 @@ import org.apache.commons.logging.LogFactory;
  * 
  */
 public class ExtensionFactory {
-	private static final Log LOG = LogFactory.getLog(ExtensionFactory.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ExtensionFactory.class);
 
 	private static final String EXTENSION_WAT_FILTER = Filter.class.getName();
 	private static final String EXTENSION_COOKIE_STORE = CustomCookieStore.class

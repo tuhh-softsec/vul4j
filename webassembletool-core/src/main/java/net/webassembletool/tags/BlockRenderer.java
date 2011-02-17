@@ -9,8 +9,8 @@ import net.webassembletool.Renderer;
 import net.webassembletool.ResourceContext;
 import net.webassembletool.parser.Parser;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Block renderer.
@@ -22,7 +22,7 @@ import org.apache.commons.logging.LogFactory;
  * @author Francois-Xavier Bonnet
  */
 public class BlockRenderer implements Renderer, Appendable {
-	private final static Log LOG = LogFactory.getLog(BlockRenderer.class);
+	private final static Logger LOG = LoggerFactory.getLogger(BlockRenderer.class);
 	private final static Parser PARSER = new Parser(Pattern
 			.compile("<!--\\$[^>]*\\$-->"), BlockElement.TYPE);
 	private final String page;

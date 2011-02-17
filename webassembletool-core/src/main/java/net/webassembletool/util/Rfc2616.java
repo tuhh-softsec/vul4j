@@ -15,8 +15,8 @@ import net.webassembletool.output.Output;
 import net.webassembletool.resource.Resource;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.http.impl.cookie.DateParseException;
 import org.apache.http.impl.cookie.DateUtils;
 
@@ -33,7 +33,7 @@ public class Rfc2616 {
     }
 
     private static final int SECONDS = 1000;
-    private static final Log LOG = LogFactory.getLog(Rfc2616.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Rfc2616.class);
 
     private final static class CacheControlResponseHeader {
         private boolean _public = false;

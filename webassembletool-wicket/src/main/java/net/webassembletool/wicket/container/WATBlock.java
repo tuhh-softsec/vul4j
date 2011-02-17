@@ -25,8 +25,8 @@ import net.webassembletool.Driver;
 import net.webassembletool.HttpErrorPage;
 import net.webassembletool.wicket.utils.ResponseWriter;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.wicket.protocol.http.WebResponse;
 import org.apache.wicket.protocol.http.servlet.ServletWebRequest;
 
@@ -58,7 +58,7 @@ import org.apache.wicket.protocol.http.servlet.ServletWebRequest;
  * 
  */
 public class WATBlock extends AbstractWatDriverContainer {
-	private static final Log LOG = LogFactory.getLog(WATBlock.class);
+	private static final Logger LOG = LoggerFactory.getLogger(WATBlock.class);
 
 	private static final long serialVersionUID = 1L;
 	private String blockName = null;

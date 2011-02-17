@@ -20,8 +20,8 @@ import java.io.OutputStream;
 
 import net.webassembletool.wicket.container.WATParam;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.wicket.Response;
 import org.apache.wicket.protocol.http.WebResponse;
 
@@ -36,7 +36,7 @@ import org.apache.wicket.protocol.http.WebResponse;
  * @see Response
  */
 public class WATBufferedResponse extends WebResponse {
-	private static final Log LOG = LogFactory.getLog(WATBufferedResponse.class);
+	private static final Logger LOG = LoggerFactory.getLogger(WATBufferedResponse.class);
 
 	private final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 

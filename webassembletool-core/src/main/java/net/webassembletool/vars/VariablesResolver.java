@@ -26,8 +26,8 @@ import java.util.regex.Pattern;
 import net.webassembletool.ConfigurationException;
 import net.webassembletool.Driver;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Manage variables replacement
@@ -36,7 +36,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class VariablesResolver {
 
-	private static final Log LOG = LogFactory.getLog(VariablesResolver.class);
+	private static final Logger LOG = LoggerFactory.getLogger(VariablesResolver.class);
 
 	static {
 		// Load default settings

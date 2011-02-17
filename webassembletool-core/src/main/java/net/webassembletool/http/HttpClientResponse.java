@@ -20,8 +20,8 @@ import java.net.SocketTimeoutException;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
@@ -41,7 +41,7 @@ import org.apache.http.util.EntityUtils;
  * 
  */
 public class HttpClientResponse {
-	private final static Log LOG = LogFactory.getLog(HttpClientResponse.class);
+	private final static Logger LOG = LoggerFactory.getLogger(HttpClientResponse.class);
 	private HttpResponse httpResponse;
 	private HttpEntity httpEntity;
 	private int statusCode;

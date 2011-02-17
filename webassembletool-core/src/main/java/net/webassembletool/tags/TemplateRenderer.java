@@ -10,8 +10,8 @@ import net.webassembletool.Renderer;
 import net.webassembletool.ResourceContext;
 import net.webassembletool.parser.Parser;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Template renderer.
@@ -31,7 +31,7 @@ import org.apache.commons.logging.LogFactory;
  * @author Francois-Xavier Bonnet
  */
 public class TemplateRenderer implements Renderer, Appendable {
-	private final static Log LOG = LogFactory.getLog(TemplateRenderer.class);
+	private final static Logger LOG = LoggerFactory.getLogger(TemplateRenderer.class);
 	private final static Parser PARSER = new Parser(Pattern
 			.compile("<!--\\$[^>]*\\$-->"), TemplateElement.TYPE,
 			ParamElement.TYPE);

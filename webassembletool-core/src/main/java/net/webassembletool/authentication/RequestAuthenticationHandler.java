@@ -26,8 +26,8 @@ import net.webassembletool.ResourceContext;
 import net.webassembletool.http.HttpClientRequest;
 import net.webassembletool.http.HttpClientResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Forward session and/or request attributes as request headers.
@@ -36,8 +36,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class RequestAuthenticationHandler implements AuthenticationHandler {
 	private String headerPrefix = "X-ATTR-";
-	private static Log logger = LogFactory
-			.getLog(RequestAuthenticationHandler.class);
+	private static Logger logger = LoggerFactory.getLogger(RequestAuthenticationHandler.class);
 	private final ArrayList<String> sessionAttributes = new ArrayList<String>();
 	private final ArrayList<String> requestAttributes = new ArrayList<String>();
 

@@ -14,8 +14,8 @@ import net.webassembletool.ResourceContext;
 import net.webassembletool.http.RewriteUtils;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility class to generate URL and path for Resources
@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class ResourceUtils {
 
-	private static final Log LOG = LogFactory.getLog(ResourceUtils.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ResourceUtils.class);
 
 	/**
 	 * Private constructor

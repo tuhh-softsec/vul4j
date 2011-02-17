@@ -53,8 +53,8 @@ import net.webassembletool.vars.VariablesResolver;
 import net.webassembletool.xml.XpathRenderer;
 import net.webassembletool.xml.XsltRenderer;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.http.HttpHost;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.params.ClientPNames;
@@ -81,7 +81,7 @@ import org.apache.http.params.HttpParams;
  * @contributor Nicolas Richeton
  */
 public class Driver {
-	private static final Log LOG = LogFactory.getLog(Driver.class);
+	private static final Logger LOG = LoggerFactory.getLogger(Driver.class);
 	private final DriverConfiguration config;
 	private final Cache cache;
 	private final HttpClient httpClient;

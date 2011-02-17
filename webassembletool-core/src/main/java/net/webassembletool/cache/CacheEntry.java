@@ -20,15 +20,15 @@ import net.webassembletool.http.HttpHeaders;
 import net.webassembletool.resource.Resource;
 import net.webassembletool.util.Rfc2616;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Francois-Xavier Bonnet
  * @author Nicolas Richeton
  */
 class CacheEntry {
-	private static final Log LOG = LogFactory.getLog(CacheEntry.class);
+	private static final Logger LOG = LoggerFactory.getLogger(CacheEntry.class);
 	private static final long CLEAN_DELAY = 15 * 60 * 1000; // 15 minutes;
 	private static final Pattern ETAG_PATTERN = Pattern.compile(",?\\s*((W/)?\"[^\"]*\")");
 

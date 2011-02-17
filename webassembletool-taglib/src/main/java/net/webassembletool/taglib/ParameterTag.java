@@ -3,7 +3,7 @@ package net.webassembletool.taglib;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import javax.servlet.jsp.tagext.Tag;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 
 /**
  * Only used inside a tag that implements IParameterTag. This tag add a request parameter to the parent tag, which will be applied on render.
@@ -38,7 +38,7 @@ public class ParameterTag extends BodyTagSupport {
     public int doAfterBody() throws JspException {
         ParametrizableTag parent = getFirstAvailableParent();
         if (parent == null) {
-            LogFactory.getLog(ParameterTag.class).warn("No parent found, skipping tag");
+            LoggerFactory.getLogger(ParameterTag.class).warn("No parent found, skipping tag");
             return Tag.SKIP_BODY;
         }
         String value = getBodyContent().getString();

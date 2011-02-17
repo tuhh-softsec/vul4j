@@ -24,14 +24,13 @@ import net.webassembletool.Driver;
 import net.webassembletool.HttpErrorPage;
 import net.webassembletool.wicket.utils.ResponseWriter;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.protocol.http.WebResponse;
 import org.apache.wicket.protocol.http.servlet.ServletWebRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * A container for a template parameter. It encloses a block which will be
- * inserted into the template.
+ * A container for a template parameter. It encloses a block which will be inserted into the template.
  * 
  * <p>
  * Usage :
@@ -62,7 +61,7 @@ import org.apache.wicket.protocol.http.servlet.ServletWebRequest;
  * 
  */
 public class WATTemplate extends AbstractWatDriverContainer {
-	private static Log logger = LogFactory.getLog(WATTemplate.class);
+	private static Logger logger = LoggerFactory.getLogger(WATTemplate.class);
 	private static final long serialVersionUID = 1L;
 	private String name = null;
 	private String page = null;
@@ -83,8 +82,7 @@ public class WATTemplate extends AbstractWatDriverContainer {
 	}
 
 	@Override
-	public void process(Map<String, String> blocks, Map<String, String> params,
-			Map<String, String> replaceRules) {
+	public void process(Map<String, String> blocks, Map<String, String> params, Map<String, String> replaceRules) {
 		ServletWebRequest servletWebRequest = (ServletWebRequest) getRequest();
 		HttpServletRequest request = servletWebRequest.getHttpServletRequest();
 
@@ -93,12 +91,12 @@ public class WATTemplate extends AbstractWatDriverContainer {
 
 		Driver driver = getDriver();
 		try {
-			driver.renderTemplate(page, name, new ResponseWriter(webResponse),
-					request, response, blocks, replaceRules, params, false);
+			driver.renderTemplate(page, name, new ResponseWriter(webResponse), request, response, blocks, replaceRules, params,
+					false);
 		} catch (IOException e) {
-			logger.error(e);
+			logger.error("io error", e);
 		} catch (HttpErrorPage e) {
-			logger.error(e);
+			logger.error("http error", e);
 		}
 
 	}

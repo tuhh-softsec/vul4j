@@ -3,7 +3,7 @@ package net.webassembletool.taglib;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import javax.servlet.jsp.tagext.Tag;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 
 /**
  * Only used inside a tag that implements IReplaceableTag. This tag add a replace rule to the parent tag, which will be applied on render.
@@ -38,7 +38,7 @@ public class ReplaceTag extends BodyTagSupport {
     public int doAfterBody() throws JspException {
         ReplaceableTag parent = getFirstAvailableParent();
         if (parent == null) {
-            LogFactory.getLog(ReplaceTag.class).warn("No parent found, skipping tag");
+            LoggerFactory.getLogger(ReplaceTag.class).warn("No parent found, skipping tag");
             return Tag.SKIP_BODY;
         }
         if (expression == null)
@@ -53,7 +53,7 @@ public class ReplaceTag extends BodyTagSupport {
         if (getBodyContent() == null) {
             ReplaceableTag parent = getFirstAvailableParent();
             if (parent == null) {
-                LogFactory.getLog(ReplaceTag.class).warn("No parent found, skipping tag");
+                LoggerFactory.getLogger(ReplaceTag.class).warn("No parent found, skipping tag");
                 return Tag.SKIP_BODY;
             }
             parent.getReplaceRules().put(expression, "");

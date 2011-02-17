@@ -8,8 +8,8 @@ import net.webassembletool.http.HttpHeaders;
 import net.webassembletool.resource.Resource;
 import net.webassembletool.resource.ResourceUtils;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Represents a local interface to caching system.
@@ -19,7 +19,7 @@ import org.apache.commons.logging.LogFactory;
  * @author Francois-Xavier Bonnet
  */
 public class Cache {
-	private static Log LOG = LogFactory.getLog(Cache.class);
+	private static Logger LOG = LoggerFactory.getLogger(Cache.class);
 	private final Storage storage;
 
 	public Cache() {

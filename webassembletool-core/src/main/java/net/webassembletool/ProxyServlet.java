@@ -8,8 +8,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Servlet used to proxy requests from a remote application.
@@ -18,7 +18,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class ProxyServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static final Log LOG = LogFactory.getLog(ProxyServlet.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ProxyServlet.class);
 	private String provider;
 
 	@Override

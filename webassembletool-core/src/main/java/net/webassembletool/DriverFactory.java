@@ -8,8 +8,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Factory class used to configure and retrieve {@linkplain Driver} INSTANCIES.
@@ -17,7 +17,7 @@ import org.apache.commons.logging.LogFactory;
  * @author Stanislav Bernatskyi
  */
 public class DriverFactory {
-	private static final Log LOG = LogFactory.getLog(DriverFactory.class);
+	private static final Logger LOG = LoggerFactory.getLogger(DriverFactory.class);
 
 	private static final String DEFAULT_INSTANCE = "default";
 	private static final Map<String, Driver> INSTANCIES = new HashMap<String, Driver>();

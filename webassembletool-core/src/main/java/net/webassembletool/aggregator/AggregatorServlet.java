@@ -12,8 +12,8 @@ import net.webassembletool.DriverFactory;
 import net.webassembletool.HttpErrorPage;
 import net.webassembletool.esi.EsiRenderer;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Servlet used to proxy requests from a remote application.
@@ -22,7 +22,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class AggregatorServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static final Log LOG = LogFactory.getLog(AggregatorServlet.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AggregatorServlet.class);
 	private String provider;
 
 	@Override

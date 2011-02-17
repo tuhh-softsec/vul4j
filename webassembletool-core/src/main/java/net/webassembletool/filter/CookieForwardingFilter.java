@@ -28,8 +28,8 @@ import net.webassembletool.http.HttpClientResponse;
 import net.webassembletool.http.HttpHeaders;
 import net.webassembletool.output.Output;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Cookie forwarding Filter.
@@ -38,7 +38,7 @@ import org.apache.commons.logging.LogFactory;
  * 
  */
 public class CookieForwardingFilter implements Filter {
-	private static Log logger = LogFactory.getLog(ExtensionFactory.class);
+	private static Logger logger = LoggerFactory.getLogger(ExtensionFactory.class);
 	public static final String PROP_ATTRIBUTE = "forwardCookies";
 	private final ArrayList<String> forwardCookies = new ArrayList<String>();
 

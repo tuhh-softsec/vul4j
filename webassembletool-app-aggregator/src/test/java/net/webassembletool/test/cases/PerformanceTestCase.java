@@ -9,8 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
@@ -52,7 +52,7 @@ public class PerformanceTestCase extends TestCase {
 	private final static String AGGREGATOR = "http://localhost:8080/webassembletool-app-aggregator/";
 	private final static String AGGREGATOR_NO_CACHE = "http://localhost:8080/webassembletool-app-aggregator/nocache/ag1/";
 
-	private static final Log LOG = LogFactory.getLog(PerformanceTestCase.class);
+	private static final Logger LOG = LoggerFactory.getLogger(PerformanceTestCase.class);
 
 	/**
 	 * Execute a get request

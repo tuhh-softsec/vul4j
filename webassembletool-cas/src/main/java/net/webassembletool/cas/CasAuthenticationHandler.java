@@ -13,26 +13,22 @@ import net.webassembletool.authentication.AuthenticationHandler;
 import net.webassembletool.http.HttpClientRequest;
 import net.webassembletool.http.HttpClientResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jasig.cas.client.authentication.AttributePrincipal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CasAuthenticationHandler implements AuthenticationHandler {
-	private final static Log LOG = LogFactory
-			.getLog(AuthenticationHandler.class);
+	private final static Logger LOG = LoggerFactory.getLogger(AuthenticationHandler.class);
 	private final static String SECOND_REQUEST = "SECOND_REQUEST";
 	private String loginUrl = "/login";
 
-	private String addCasAuthentication(String location,
-			ResourceContext requestContext) {
-		Principal principal = requestContext.getOriginalRequest()
-				.getUserPrincipal();
+	private String addCasAuthentication(String location, ResourceContext requestContext) {
+		Principal principal = requestContext.getOriginalRequest().getUserPrincipal();
 		if (principal != null && principal instanceof AttributePrincipal) {
 			AttributePrincipal casPrincipal = (AttributePrincipal) principal;
 			LOG.debug("User logged in CAS as: " + casPrincipal.getName());
 			String casProxyTicket = casPrincipal.getProxyTicketFor(location);
-			LOG.debug("Proxy ticket retrieved: " + casPrincipal.getName()
-					+ " for service: " + location + " : " + casProxyTicket);
+			LOG.debug("Proxy ticket retrieved: " + casPrincipal.getName() + " for service: " + location + " : " + casProxyTicket);
 			if (casProxyTicket != null) {
 				if (location.indexOf("?") > 0) {
 					return location + "&ticket=" + casProxyTicket;
@@ -55,10 +51,8 @@ public class CasAuthenticationHandler implements AuthenticationHandler {
 		}
 	}
 
-	public boolean needsNewRequest(HttpClientResponse httpClientResponse,
-			ResourceContext requestContext) {
-		HttpServletRequest httpServletRequest = requestContext
-				.getOriginalRequest();
+	public boolean needsNewRequest(HttpClientResponse httpClientResponse, ResourceContext requestContext) {
+		HttpServletRequest httpServletRequest = requestContext.getOriginalRequest();
 		if (httpServletRequest.getAttribute(SECOND_REQUEST) != null) {
 			// Calculating the URL we may have been redirected to, as
 			// automatic redirect following is activated
@@ -66,10 +60,8 @@ public class CasAuthenticationHandler implements AuthenticationHandler {
 			if (currentLocation != null && currentLocation.contains(loginUrl)) {
 				// If the user is authenticated we need a second request with
 				// the proxy ticket
-				Principal principal = requestContext.getOriginalRequest()
-						.getUserPrincipal();
-				if (principal != null
-						&& principal instanceof AttributePrincipal) {
+				Principal principal = requestContext.getOriginalRequest().getUserPrincipal();
+				if (principal != null && principal instanceof AttributePrincipal) {
 					return true;
 				}
 			}
@@ -77,19 +69,15 @@ public class CasAuthenticationHandler implements AuthenticationHandler {
 		return false;
 	}
 
-	public void preRequest(HttpClientRequest request,
-			ResourceContext requestContext) {
-		HttpServletRequest httpServletRequest = requestContext
-				.getOriginalRequest();
+	public void preRequest(HttpClientRequest request, ResourceContext requestContext) {
+		HttpServletRequest httpServletRequest = requestContext.getOriginalRequest();
 		if (httpServletRequest.getAttribute(SECOND_REQUEST) != null) {
-			request.setUri(addCasAuthentication(request.getUri(),
-					requestContext));
+			request.setUri(addCasAuthentication(request.getUri(), requestContext));
 		}
 		httpServletRequest.setAttribute(SECOND_REQUEST, true);
 	}
 
-	public void render(ResourceContext requestContext, String src, Writer out)
-			throws IOException, HttpErrorPage {
+	public void render(ResourceContext requestContext, String src, Writer out) throws IOException, HttpErrorPage {
 		// Just copy src to out
 		out.write(src);
 	}

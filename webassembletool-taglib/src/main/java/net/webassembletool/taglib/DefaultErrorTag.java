@@ -3,7 +3,7 @@ package net.webassembletool.taglib;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import javax.servlet.jsp.tagext.Tag;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.LoggerFactory;
 
 /**
  * 'defaultError' JSP tag.
@@ -19,7 +19,7 @@ public class DefaultErrorTag extends BodyTagSupport {
     public int doAfterBody() throws JspException {
         ErrorManageableTag parent = getFirstAvailableParent();
         if (parent == null) {
-            LogFactory.getLog(ErrorDefinitionTag.class).warn("No parent found, skipping tag");
+            LoggerFactory.getLogger(ErrorDefinitionTag.class).warn("No parent found, skipping tag");
             return Tag.SKIP_BODY;
         }
         String value = getBodyContent().getString();
@@ -32,7 +32,7 @@ public class DefaultErrorTag extends BodyTagSupport {
         if (getBodyContent() == null) {
             ErrorManageableTag parent = getFirstAvailableParent();
             if (parent == null) {
-                LogFactory.getLog(ErrorDefinitionTag.class).warn("No parent found, skipping tag");
+                LoggerFactory.getLogger(ErrorDefinitionTag.class).warn("No parent found, skipping tag");
                 return Tag.SKIP_BODY;
             }
             parent.setDefaultMessage("");

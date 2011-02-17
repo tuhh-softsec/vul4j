@@ -22,16 +22,13 @@ import net.webassembletool.DriverFactory;
 import net.webassembletool.wicket.utils.WATNullResponse;
 import net.webassembletool.wicket.utils.WATWicketConfiguration;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.Response;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.MarkupStream;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 
 /**
- * A container for a template parameter. It encloses a block which will be
- * inserted into the template.
+ * A container for a template parameter. It encloses a block which will be inserted into the template.
  * 
  * <p>
  * Usage :
@@ -62,8 +59,6 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
  * 
  */
 public abstract class AbstractWatDriverContainer extends WebMarkupContainer {
-	private static Log logger = LogFactory
-			.getLog(AbstractWatDriverContainer.class);
 	private static final long serialVersionUID = 1L;
 
 	public static final String WAT_ERROR_PREFIX = "net.webassembletool.error";
@@ -115,13 +110,11 @@ public abstract class AbstractWatDriverContainer extends WebMarkupContainer {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.apache.wicket.MarkupContainer#onComponentTagBody(org.apache.wicket
-	 * .markup.MarkupStream, org.apache.wicket.markup.ComponentTag)
+	 * @see org.apache.wicket.MarkupContainer#onComponentTagBody(org.apache.wicket .markup.MarkupStream,
+	 * org.apache.wicket.markup.ComponentTag)
 	 */
 	@Override
-	protected void onComponentTagBody(MarkupStream markupStream,
-			ComponentTag openTag) {
+	protected void onComponentTagBody(MarkupStream markupStream, ComponentTag openTag) {
 
 		// For unit tests, WAT can be disabled. This component will then behave
 		// like a standard MarkupContainer.
@@ -141,15 +134,14 @@ public abstract class AbstractWatDriverContainer extends WebMarkupContainer {
 	}
 
 	/**
-	 * This method is called when the component is rendered. This is the place
-	 * to do the specific processing and call Driver.
+	 * This method is called when the component is rendered. This is the place to do the specific processing and call
+	 * Driver.
 	 * 
 	 * @param blocks
 	 * @param params
 	 * @param replaceRules
 	 */
-	public abstract void process(Map<String, String> blocks,
-			Map<String, String> params, Map<String, String> replaceRules);
+	public abstract void process(Map<String, String> blocks, Map<String, String> params, Map<String, String> replaceRules);
 
 	/**
 	 * Write error content according to the error.
@@ -158,8 +150,7 @@ public abstract class AbstractWatDriverContainer extends WebMarkupContainer {
 	 * @param response
 	 * @param httpStatusCode
 	 */
-	protected void sendErrorContent(Map<String, String> blocks,
-			Response response, Integer httpStatusCode) {
+	protected void sendErrorContent(Map<String, String> blocks, Response response, Integer httpStatusCode) {
 
 		String errorContent = blocks.get(WAT_ERROR_PREFIX + httpStatusCode);
 		if (errorContent == null) {

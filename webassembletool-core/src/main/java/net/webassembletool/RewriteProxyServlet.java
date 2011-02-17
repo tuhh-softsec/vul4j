@@ -16,8 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Reverse Proxy servlet with rewrite abilities. It will usually be mapped on *
@@ -197,7 +197,7 @@ public class RewriteProxyServlet extends HttpServlet {
 
 	}
 
-	private static Log logger = LogFactory.getLog(RewriteProxyServlet.class);
+	private static Logger logger = LoggerFactory.getLogger(RewriteProxyServlet.class);
 
 	private static final long serialVersionUID = 8479657871058986339L;
 

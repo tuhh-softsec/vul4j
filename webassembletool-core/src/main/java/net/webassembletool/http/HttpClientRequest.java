@@ -23,8 +23,8 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpHost;
 import org.apache.http.client.HttpClient;
@@ -46,7 +46,7 @@ import org.apache.http.protocol.HttpContext;
  * 
  */
 public class HttpClientRequest {
-	private final static Log LOG = LogFactory.getLog(HttpClientRequest.class);
+	private final static Logger LOG = LoggerFactory.getLogger(HttpClientRequest.class);
 	private String uri;
 	private final HttpServletRequest originalRequest;
 	private boolean proxy;
