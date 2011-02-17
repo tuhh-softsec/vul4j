@@ -567,6 +567,17 @@ public final class Dn implements Iterable<Rdn>
             return normName;
         }
     }
+    
+    
+    /**
+     * Get the associated SchemaManager if any.
+     * 
+     * @return The SchemaManager
+     */
+    public SchemaManager getSchemaManager()
+    {
+        return schemaManager;
+    }
 
 
     /**
