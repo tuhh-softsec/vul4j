@@ -41,6 +41,13 @@ final class WithMemoryRulesBinder implements RulesBinder {
     /**
      * {@inheritDoc}
      */
+    public ClassLoader getContextClassLoader() {
+        return this.wrappedRulesBinder.getContextClassLoader();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public void addError(String messagePattern, Object... arguments) {
         this.wrappedRulesBinder.addError(messagePattern, arguments);
     }
