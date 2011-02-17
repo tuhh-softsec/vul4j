@@ -32,22 +32,17 @@ import org.apache.xml.security.algorithms.SignatureAlgorithmSpi;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.signature.XMLSignatureException;
 
-/**
- *
- * @author $Author$
- */
 public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
 
     /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog
-        (SignatureBaseRSA.class.getName());
+    private static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(SignatureBaseRSA.class.getName());
 
     /** @inheritDoc */
     public abstract String engineGetURI();
 
     /** Field algorithm */
-    private java.security.Signature _signatureAlgorithm = null;
+    private java.security.Signature signatureAlgorithm = null;
 
     /**
      * Constructor SignatureRSA
@@ -55,17 +50,17 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
      * @throws XMLSignatureException
      */
     public SignatureBaseRSA() throws XMLSignatureException {
-
         String algorithmID = JCEMapper.translateURItoJCEID(this.engineGetURI());
 
-        if (log.isDebugEnabled())
+        if (log.isDebugEnabled()) {
             log.debug("Created SignatureRSA using " + algorithmID);
-        String provider=JCEMapper.getProviderId();
+        }
+        String provider = JCEMapper.getProviderId();
         try {
-            if (provider==null) {
-                this._signatureAlgorithm = Signature.getInstance(algorithmID);
+            if (provider == null) {
+                this.signatureAlgorithm = Signature.getInstance(algorithmID);
             } else {
-                this._signatureAlgorithm = Signature.getInstance(algorithmID,provider);
+                this.signatureAlgorithm = Signature.getInstance(algorithmID,provider);
             }
         } catch (java.security.NoSuchAlgorithmException ex) {
             Object[] exArgs = { algorithmID, ex.getLocalizedMessage() };
@@ -81,20 +76,17 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
     /** @inheritDoc */
     protected void engineSetParameter(AlgorithmParameterSpec params)
         throws XMLSignatureException {
-
         try {
-            this._signatureAlgorithm.setParameter(params);
+            this.signatureAlgorithm.setParameter(params);
         } catch (InvalidAlgorithmParameterException ex) {
             throw new XMLSignatureException("empty", ex);
         }
     }
 
     /** @inheritDoc */
-    protected boolean engineVerify(byte[] signature)
-        throws XMLSignatureException {
-
+    protected boolean engineVerify(byte[] signature) throws XMLSignatureException {
         try {
-            return this._signatureAlgorithm.verify(signature);
+            return this.signatureAlgorithm.verify(signature);
         } catch (SignatureException ex) {
             throw new XMLSignatureException("empty", ex);
         }
@@ -102,32 +94,29 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
 
     /** @inheritDoc */
     protected void engineInitVerify(Key publicKey) throws XMLSignatureException {
-
         if (!(publicKey instanceof PublicKey)) {
             String supplied = publicKey.getClass().getName();
             String needed = PublicKey.class.getName();
             Object exArgs[] = { supplied, needed };
 
-            throw new XMLSignatureException
-                ("algorithms.WrongKeyForThisOperation", exArgs);
+            throw new XMLSignatureException("algorithms.WrongKeyForThisOperation", exArgs);
         }
 
         try {
-            this._signatureAlgorithm.initVerify((PublicKey) publicKey);
+            this.signatureAlgorithm.initVerify((PublicKey) publicKey);
         } catch (InvalidKeyException ex) {
             // reinstantiate Signature object to work around bug in JDK
             // see: http://bugs.sun.com/view_bug.do?bug_id=4953555
-            Signature sig = this._signatureAlgorithm;
+            Signature sig = this.signatureAlgorithm;
             try {
-                this._signatureAlgorithm = Signature.getInstance
-                    (_signatureAlgorithm.getAlgorithm());
+                this.signatureAlgorithm = Signature.getInstance(signatureAlgorithm.getAlgorithm());
             } catch (Exception e) {
                 // this shouldn't occur, but if it does, restore previous 
                 // Signature
                 if (log.isDebugEnabled()) {
                     log.debug("Exception when reinstantiating Signature:" + e);
                 }
-                this._signatureAlgorithm = sig;
+                this.signatureAlgorithm = sig;
             }
             throw new XMLSignatureException("empty", ex);
         } 
@@ -136,7 +125,7 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
     /** @inheritDoc */
     protected byte[] engineSign() throws XMLSignatureException {
         try {
-            return this._signatureAlgorithm.sign();
+            return this.signatureAlgorithm.sign();
         } catch (SignatureException ex) {
             throw new XMLSignatureException("empty", ex);
         }
@@ -145,19 +134,16 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
     /** @inheritDoc */
     protected void engineInitSign(Key privateKey, SecureRandom secureRandom)
         throws XMLSignatureException {
-
         if (!(privateKey instanceof PrivateKey)) {
             String supplied = privateKey.getClass().getName();
             String needed = PrivateKey.class.getName();
             Object exArgs[] = { supplied, needed };
 
-            throw new XMLSignatureException
-                ("algorithms.WrongKeyForThisOperation", exArgs);
+            throw new XMLSignatureException("algorithms.WrongKeyForThisOperation", exArgs);
         }
 
         try {
-            this._signatureAlgorithm.initSign
-                ((PrivateKey) privateKey, secureRandom);
+            this.signatureAlgorithm.initSign((PrivateKey) privateKey, secureRandom);
         } catch (InvalidKeyException ex) {
             throw new XMLSignatureException("empty", ex);
         }
@@ -165,18 +151,16 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
 
     /** @inheritDoc */
     protected void engineInitSign(Key privateKey) throws XMLSignatureException {
-
         if (!(privateKey instanceof PrivateKey)) {
             String supplied = privateKey.getClass().getName();
             String needed = PrivateKey.class.getName();
             Object exArgs[] = { supplied, needed };
 
-            throw new XMLSignatureException
-                ("algorithms.WrongKeyForThisOperation", exArgs);
+            throw new XMLSignatureException("algorithms.WrongKeyForThisOperation", exArgs);
         }
 
         try {
-            this._signatureAlgorithm.initSign((PrivateKey) privateKey);
+            this.signatureAlgorithm.initSign((PrivateKey) privateKey);
         } catch (InvalidKeyException ex) {
             throw new XMLSignatureException("empty", ex);
         }
@@ -185,7 +169,7 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
     /** @inheritDoc */
     protected void engineUpdate(byte[] input) throws XMLSignatureException {
         try {
-            this._signatureAlgorithm.update(input);
+            this.signatureAlgorithm.update(input);
         } catch (SignatureException ex) {
             throw new XMLSignatureException("empty", ex);
         }
@@ -194,17 +178,16 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
     /** @inheritDoc */
     protected void engineUpdate(byte input) throws XMLSignatureException {
         try {
-            this._signatureAlgorithm.update(input);
+            this.signatureAlgorithm.update(input);
         } catch (SignatureException ex) {
             throw new XMLSignatureException("empty", ex);
         }
     }
 
     /** @inheritDoc */
-    protected void engineUpdate(byte buf[], int offset, int len)
-        throws XMLSignatureException {
+    protected void engineUpdate(byte buf[], int offset, int len) throws XMLSignatureException {
         try {
-            this._signatureAlgorithm.update(buf, offset, len);
+            this.signatureAlgorithm.update(buf, offset, len);
         } catch (SignatureException ex) {
             throw new XMLSignatureException("empty", ex);
         }
@@ -212,34 +195,29 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
 
     /** @inheritDoc */
     protected String engineGetJCEAlgorithmString() {
-        return this._signatureAlgorithm.getAlgorithm();
+        return this.signatureAlgorithm.getAlgorithm();
     }
 
     /** @inheritDoc */
     protected String engineGetJCEProviderName() {
-        return this._signatureAlgorithm.getProvider().getName();
+        return this.signatureAlgorithm.getProvider().getName();
     }
 
     /** @inheritDoc */
     protected void engineSetHMACOutputLength(int HMACOutputLength)
         throws XMLSignatureException {
-        throw new XMLSignatureException
-            ("algorithms.HMACOutputLengthOnlyForHMAC");
+        throw new XMLSignatureException("algorithms.HMACOutputLengthOnlyForHMAC");
     }
 
     /** @inheritDoc */
     protected void engineInitSign(
-        Key signingKey, AlgorithmParameterSpec algorithmParameterSpec)
-        throws XMLSignatureException {
-        throw new XMLSignatureException(
-            "algorithms.CannotUseAlgorithmParameterSpecOnRSA");
+        Key signingKey, AlgorithmParameterSpec algorithmParameterSpec
+    ) throws XMLSignatureException {
+        throw new XMLSignatureException("algorithms.CannotUseAlgorithmParameterSpecOnRSA");
     }
 
     /**
      * Class SignatureRSASHA1
-     *
-     * @author $Author$
-     * @version $Revision$
      */
     public static class SignatureRSASHA1 extends SignatureBaseRSA {
 
@@ -260,12 +238,9 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
 
     /**
      * Class SignatureRSASHA256
-     *
-     * @author $Author$
-     * @version $Revision$
      */
     public static class SignatureRSASHA256 extends SignatureBaseRSA {
- 
+
         /**
          * Constructor SignatureRSASHA256
          *
@@ -283,9 +258,6 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
 
     /**
      * Class SignatureRSASHA384
-     *
-     * @author $Author$
-     * @version $Revision$
      */
     public static class SignatureRSASHA384 extends SignatureBaseRSA {
 
@@ -306,9 +278,6 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
 
     /**
      * Class SignatureRSASHA512
-     *
-     * @author $Author$
-     * @version $Revision$
      */
     public static class SignatureRSASHA512 extends SignatureBaseRSA {
 
@@ -329,9 +298,6 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
 
     /**
      * Class SignatureRSARIPEMD160
-     *
-     * @author $Author$
-     * @version $Revision$
      */
     public static class SignatureRSARIPEMD160 extends SignatureBaseRSA {
 
@@ -352,9 +318,6 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
 
     /**
      * Class SignatureRSAMD5
-     *
-     * @author $Author$
-     * @version $Revision$
      */
     public static class SignatureRSAMD5 extends SignatureBaseRSA {
 
