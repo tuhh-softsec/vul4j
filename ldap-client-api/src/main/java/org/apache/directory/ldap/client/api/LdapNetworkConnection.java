@@ -1005,12 +1005,6 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         }
         catch ( TimeoutException te )
         {
-            // Send an abandon request
-            if ( !bindFuture.isCancelled() )
-            {
-                abandon( bindRequest.getMessageId() );
-            }
-
             // We didn't received anything : this is an error
             LOG.error( "Bind failed : timeout occured" );
             throw new LdapException( TIME_OUT_ERROR );
@@ -1021,13 +1015,6 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
             LOG.error( NO_RESPONSE_ERROR, ie );
             LdapException ldapException = new LdapException( NO_RESPONSE_ERROR );
             ldapException.initCause( ie );
-
-            // Send an abandon request
-            if ( !bindFuture.isCancelled() )
-            {
-                abandon( bindRequest.getMessageId() );
-            }
-
             throw ldapException;
         }
     }
