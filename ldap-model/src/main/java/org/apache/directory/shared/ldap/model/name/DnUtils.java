@@ -780,7 +780,7 @@ public final class DnUtils
     {
         Dn rdn = descendant;
 
-        if ( rdn.isChildOf( ancestor ) )
+        if ( rdn.isDescendantOf( ancestor ) )
         {
             for ( int ii = 0; ii < ancestor.size(); ii++ )
             {

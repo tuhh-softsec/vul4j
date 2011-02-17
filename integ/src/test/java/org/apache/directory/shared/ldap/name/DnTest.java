@@ -1057,7 +1057,7 @@ public class DnTest
     public void testDnStartsWithNull() throws LdapException
     {
         Dn dn = new Dn( "a=b, c=d,e = f" );
-        assertEquals( true, dn.isChildOf( (Dn) null ) );
+        assertEquals( true, dn.isDescendantOf( (Dn) null ) );
     }
 
 
@@ -1068,7 +1068,7 @@ public class DnTest
     public void testDnStartsWithEmpty() throws LdapException
     {
         Dn dn = new Dn( "a=b, c=d,e = f" );
-        assertEquals( true, dn.isChildOf( new Dn() ) );
+        assertEquals( true, dn.isDescendantOf( new Dn() ) );
     }
 
 
@@ -1079,7 +1079,7 @@ public class DnTest
     public void testDnStartsWithSimple() throws LdapException
     {
         Dn dn = new Dn( "a=b, c=d,e = f" );
-        assertEquals( true, dn.isChildOf( new Dn( "e=f" ) ) );
+        assertEquals( true, dn.isDescendantOf( new Dn( "e=f" ) ) );
     }
 
 
@@ -1090,7 +1090,7 @@ public class DnTest
     public void testDnStartsWithComplex() throws LdapException
     {
         Dn dn = new Dn( "a=b, c=d,e = f" );
-        assertEquals( true, dn.isChildOf( new Dn( "c =  d, e =  f" ) ) );
+        assertEquals( true, dn.isDescendantOf( new Dn( "c =  d, e =  f" ) ) );
     }
 
 
@@ -1101,7 +1101,7 @@ public class DnTest
     public void testDnStartsWithComplexMixedCase() throws LdapException
     {
         Dn dn = new Dn( "a=b, c=d,e = f" );
-        assertEquals( false, dn.isChildOf( new Dn( "c =  D, E =  f" ) ) );
+        assertEquals( false, dn.isDescendantOf( new Dn( "c =  D, E =  f" ) ) );
     }
 
 
@@ -1112,7 +1112,7 @@ public class DnTest
     public void testDnStartsWithFull() throws LdapException
     {
         Dn dn = new Dn( "a=b, c=d,e = f" );
-        assertEquals( true, dn.isChildOf( new Dn( "a=  b; c =  d, e =  f" ) ) );
+        assertEquals( true, dn.isDescendantOf( new Dn( "a=  b; c =  d, e =  f" ) ) );
     }
 
 
@@ -1123,7 +1123,7 @@ public class DnTest
     public void testDnStartsWithWrong() throws LdapException
     {
         Dn dn = new Dn( "a=b, c=d,e = f" );
-        assertEquals( false, dn.isChildOf( new Dn( "c =  t, e =  f" ) ) );
+        assertEquals( false, dn.isDescendantOf( new Dn( "c =  t, e =  f" ) ) );
     }
 
 
@@ -1557,8 +1557,8 @@ public class DnTest
         assertTrue( name0.isParentOf( name1 ) );
         assertTrue( name0.isParentOf( name2 ) );
         assertTrue( name1.isParentOf( name2 ) );
-        assertTrue( name2.isChildOf( name1 ) );
-        assertTrue( name2.isChildOf( name0 ) );
+        assertTrue( name2.isDescendantOf( name1 ) );
+        assertTrue( name2.isDescendantOf( name0 ) );
         assertNotSame( name2, name3 );
         assertNotSame( name2, name4 );
         assertNotSame( name3, name4 );
@@ -1952,43 +1952,43 @@ public class DnTest
         Dn n8 = new Dn( "cn=HomeDir,cn=John,ou=Marketing" );
 
         // Check with Dn
-        assertTrue( n0.isChildOf( n1 ) );
-        assertTrue( n0.isChildOf( n2 ) );
-        assertTrue( n0.isChildOf( n3 ) );
-        assertTrue( n0.isChildOf( n4 ) );
-        assertTrue( n0.isChildOf( n5 ) );
+        assertTrue( n0.isDescendantOf( n1 ) );
+        assertTrue( n0.isDescendantOf( n2 ) );
+        assertTrue( n0.isDescendantOf( n3 ) );
+        assertTrue( n0.isDescendantOf( n4 ) );
+        assertTrue( n0.isDescendantOf( n5 ) );
 
-        assertTrue( !n0.isChildOf( n6 ) );
-        assertTrue( !n0.isChildOf( n7 ) );
-        assertTrue( !n0.isChildOf( n8 ) );
+        assertTrue( !n0.isDescendantOf( n6 ) );
+        assertTrue( !n0.isDescendantOf( n7 ) );
+        assertTrue( !n0.isDescendantOf( n8 ) );
 
         Dn nn0 = new Dn( "cn=zero" );
         Dn nn10 = new Dn( "cn=one,cn=zero" );
         Dn nn210 = new Dn( "cn=two,cn=one,cn=zero" );
         Dn nn3210 = new Dn( "cn=three,cn=two,cn=one,cn=zero" );
 
-        assertTrue( nn0.isChildOf( nn0 ) );
-        assertTrue( nn10.isChildOf( nn0 ) );
-        assertTrue( nn210.isChildOf( nn0 ) );
-        assertTrue( nn3210.isChildOf( nn0 ) );
+        assertTrue( nn0.isDescendantOf( nn0 ) );
+        assertTrue( nn10.isDescendantOf( nn0 ) );
+        assertTrue( nn210.isDescendantOf( nn0 ) );
+        assertTrue( nn3210.isDescendantOf( nn0 ) );
 
-        assertTrue( nn10.isChildOf( nn10 ) );
-        assertTrue( nn210.isChildOf( nn10 ) );
-        assertTrue( nn3210.isChildOf( nn10 ) );
+        assertTrue( nn10.isDescendantOf( nn10 ) );
+        assertTrue( nn210.isDescendantOf( nn10 ) );
+        assertTrue( nn3210.isDescendantOf( nn10 ) );
 
-        assertTrue( nn210.isChildOf( nn210 ) );
-        assertTrue( nn3210.isChildOf( nn210 ) );
+        assertTrue( nn210.isDescendantOf( nn210 ) );
+        assertTrue( nn3210.isDescendantOf( nn210 ) );
 
-        assertTrue( nn3210.isChildOf( nn3210 ) );
+        assertTrue( nn3210.isDescendantOf( nn3210 ) );
 
         assertTrue( "Starting Dn fails with ADS Dn",
-            new Dn( "ou=foo,dc=apache,dc=org" ).isChildOf( new Dn( "dc=apache,dc=org" ) ) );
+            new Dn( "ou=foo,dc=apache,dc=org" ).isDescendantOf( new Dn( "dc=apache,dc=org" ) ) );
 
         assertTrue( "Starting Dn fails with Java LdapName",
-            new Dn( "ou=foo,dc=apache,dc=org" ).isChildOf( new Dn( "dc=apache,dc=org" ) ) );
+            new Dn( "ou=foo,dc=apache,dc=org" ).isDescendantOf( new Dn( "dc=apache,dc=org" ) ) );
 
         assertTrue( "Starting Dn fails with Java LdapName",
-            new Dn( "dc=apache,dc=org" ).isChildOf( new Dn( "dc=apache,dc=org" ) ) );
+            new Dn( "dc=apache,dc=org" ).isDescendantOf( new Dn( "dc=apache,dc=org" ) ) );
     }
 
 
@@ -2545,9 +2545,9 @@ public class DnTest
         Dn aName = new Dn( "cn=four,cn=three,cn=two,cn=one" );
 
         assertEquals( jName.startsWith( new LdapName( "cn=seven,cn=six,cn=five" ) ),
-            aName.isChildOf( new Dn( "cn=seven,cn=six,cn=five" ) ) );
+            aName.isDescendantOf( new Dn( "cn=seven,cn=six,cn=five" ) ) );
         assertEquals( jName.startsWith( new LdapName( "cn=three,cn=two,cn=one" ) ),
-            aName.isChildOf( new Dn( "cn=three,cn=two,cn=one" ) ) );
+            aName.isDescendantOf( new Dn( "cn=three,cn=two,cn=one" ) ) );
     }
 
 
@@ -3427,7 +3427,7 @@ public class DnTest
 
 
     @Test
-    public void testIsChildOfTrue() throws Exception
+    public void testIsDescendantOfTrue() throws Exception
     {
         Dn dn = new Dn( "ou=example, dc=apache, dc=org" );
         Dn parent1 = new Dn( "ou=example,dc=apache, dc=org" );
@@ -3435,10 +3435,10 @@ public class DnTest
         Dn parent3 = new Dn( "dc=org" );
         Dn notParent = new Dn( "dc=apache, dc=com" );
 
-        assertTrue( dn.isChildOf( parent1 ) );
-        assertTrue( dn.isChildOf( parent2 ) );
-        assertTrue( dn.isChildOf( parent3 ) );
-        assertFalse( notParent.isChildOf( dn ) );
+        assertTrue( dn.isDescendantOf( parent1 ) );
+        assertTrue( dn.isDescendantOf( parent2 ) );
+        assertTrue( dn.isDescendantOf( parent3 ) );
+        assertFalse( notParent.isDescendantOf( dn ) );
     }
 
 

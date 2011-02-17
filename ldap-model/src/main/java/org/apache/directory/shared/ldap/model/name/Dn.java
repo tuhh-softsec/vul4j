@@ -855,7 +855,7 @@ public final class Dn implements Iterable<Rdn>
             return false;
         }
 
-        return dn.isChildOf( this );
+        return dn.isDescendantOf( this );
     }
 
 
@@ -867,11 +867,11 @@ public final class Dn implements Iterable<Rdn>
      * @param dn The parent
      * @return true if the current Dn is a child of the given Dn
      */
-    public boolean isChildOf( String dn )
+    public boolean isDescendantOf( String dn )
     {
         try
         {
-            return isChildOf( new Dn( dn ) );
+            return isDescendantOf( new Dn( dn ) );
         }
         catch ( LdapInvalidDnException lide )
         {
@@ -888,7 +888,7 @@ public final class Dn implements Iterable<Rdn>
      * @param dn The parent
      * @return true if the current Dn is a child of the given Dn
      */
-    public boolean isChildOf( Dn dn )
+    public boolean isDescendantOf( Dn dn )
     {
         if ( ( dn == null ) || dn.isRootDSE() )
         {
