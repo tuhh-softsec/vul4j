@@ -725,36 +725,8 @@ public class DnTest
     {
         Dn dn = new Dn( "a=b, c=d" );
 
-        dn = dn.add( dn.size(), "e = f" );
+        dn = dn.add( "e = f" );
         assertEquals( "e = f,a=b, c=d", dn.getName() );
-        assertEquals( 3, dn.size() );
-    }
-
-
-    /**
-     * test Add at the start of an existing Dn
-     */
-    @Test
-    public void testDnAddStart() throws LdapException
-    {
-        Dn dn = new Dn( "a=b, c=d" );
-
-        dn = dn.add( 0, "e = f" );
-        assertEquals( "a=b, c=d,e = f", dn.getName() );
-        assertEquals( 3, dn.size() );
-    }
-
-
-    /**
-     * test Add at the middle of an existing Dn
-     */
-    @Test
-    public void testDnAddMiddle() throws LdapException
-    {
-        Dn dn = new Dn( "a=b, c=d" );
-
-        dn = dn.add( 1, "e = f" );
-        assertEquals( "a=b,e = f, c=d", dn.getName() );
         assertEquals( 3, dn.size() );
     }
 
@@ -1445,7 +1417,7 @@ public class DnTest
         assertEquals( "cn=John,ou=Marketing", out );
 
         // Add to the head (first): cn=John,ou=Marketing,ou=East
-        name = name.add( 0, "ou=East" );
+        name = new Dn( out, "ou=East" );
         out = name.toString();
 
         assertEquals( "cn=John,ou=Marketing,ou=East", out );
@@ -2209,66 +2181,16 @@ public class DnTest
         assertEquals( name4, name );
 
         Dn name3 = new Dn( "ou=Marketing,ou=East" );
-        name = name.add( 1, "ou=Marketing" );
+        name = name.add( "ou=Marketing" );
         assertEquals( name3, name );
 
         Dn name2 = new Dn( "cn=John,ou=Marketing,ou=East" );
-        name = name.add( 2, "cn=John" );
+        name = name.add( "cn=John" );
         assertEquals( name2, name );
 
         Dn name0 = new Dn( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
-        name = name.add( 3, "cn=HomeDir" );
-        assertEquals( name0, name );
-
-        Dn name5 = new Dn( "cn=HomeDir,cn=John,ou=Marketing,ou=East,o=LL " + "Bean Inc." );
-        name = name.add( 0, "o=LL Bean Inc." );
-        assertEquals( name5, name );
-
-        Dn name6 = new Dn( "cn=HomeDir,cn=John,ou=Marketing,ou=East,c=US,o=LL " + "Bean Inc." );
-        name = name.add( 1, "c=US" );
-        assertEquals( name6, name );
-
-        Dn name7 = new Dn( "cn=HomeDir,cn=John,ou=Advertising,ou=Marketing," + "ou=East,c=US,o=LL " + "Bean Inc." );
-        name = name.add( 4, "ou=Advertising" );
-        assertEquals( name7, name );
-    }
-
-
-    /**
-     * Class to test for remove
-     *
-     * @throws Exception
-     *             if anything goes wrong
-     */
-    @Test
-    public void testRemove() throws Exception
-    {
-        Dn name = new Dn();
-        assertEquals( new Dn( "" ), name );
-
-        Dn name3 = new Dn( "ou=Marketing" );
-        name = name.add( "ou=East" );
-        name = name.add( 1, "ou=Marketing" );
-        name = name.remove( 0 );
-        assertEquals( name3, name );
-
-        Dn name2 = new Dn( "cn=HomeDir,ou=Marketing,ou=East" );
-        name = name.add( 0, "ou=East" );
-        name = name.add( 2, "cn=John" );
         name = name.add( "cn=HomeDir" );
-        name = name.remove( 2 );
-        assertEquals( name2, name );
-
-        name = name.remove( 1 );
-        Dn name1 = new Dn( "cn=HomeDir,ou=East" );
-        assertEquals( name1, name );
-
-        name = name.remove( 1 );
-        Dn name0 = new Dn( "ou=East" );
         assertEquals( name0, name );
-
-        name = name.remove( 0 );
-        assertEquals( new Dn( "" ), name );
     }
 
 
@@ -2286,7 +2208,7 @@ public class DnTest
         name = name.add( "ou=East" );
         assertEquals( "ou=East", name.toString() );
 
-        name = name.add( 1, "ou=Marketing" );
+        name = name.add( "ou=Marketing" );
         assertEquals( "ou=Marketing,ou=East", name.toString() );
 
         name = name.add( "cn=John" );
@@ -2571,29 +2493,6 @@ public class DnTest
 
         assertSame( jName, jName.add( "cn=five" ) );
         assertNotSame( aName, aName.add( "cn=five" ) );
-        assertNotSame( jName.toString(), aName.toString() );
-    }
-
-
-    /**
-     * Test for DIRSERVER-191
-     */
-    @Test
-    public void testAddIntString() throws LdapException, InvalidNameException
-    {
-        LdapName jName = new LdapName( "cn=four,cn=three,cn=two,cn=one" );
-        Dn aName = new Dn( "cn=four,cn=three,cn=two,cn=one" );
-
-        assertSame( jName, jName.add( 0, "cn=zero" ) );
-        assertNotSame( aName, aName.add( 0, "cn=zero" ) );
-        assertNotSame( jName.toString(), aName.toString() );
-
-        assertSame( jName, jName.add( 2, "cn=one.5" ) );
-        assertNotSame( aName, aName.add( 2, "cn=one.5" ) );
-        assertNotSame( jName.toString(), aName.toString() );
-
-        assertSame( jName, jName.add( jName.size(), "cn=five" ) );
-        assertNotSame( aName, aName.add( aName.size(), "cn=five" ) );
         assertNotSame( jName.toString(), aName.toString() );
     }
 

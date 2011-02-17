@@ -1353,67 +1353,6 @@ public final class Dn implements Iterable<Rdn>
 
 
     /**
-     * {@inheritDoc}
-     */
-    public Dn add( int posn, String comp ) throws LdapInvalidDnException
-    {
-        if ( ( posn < 0 ) || ( posn > size() ) )
-        {
-            String message = I18n.err( I18n.ERR_04206, posn, rdns.size() );
-            LOG.error( message );
-            throw new ArrayIndexOutOfBoundsException( message );
-        }
-
-        // We have to parse the nameComponent which is given as an argument
-        Rdn newRdn = new Rdn( comp );
-
-        Dn clonedDn = copy();
-
-        int realPos = clonedDn.size() - posn;
-        clonedDn.rdns.add( realPos, newRdn );
-
-        if ( schemaManager != null )
-        {
-            clonedDn.normalize( schemaManager.getNormalizerMapping() );
-        }
-        else
-        {
-            clonedDn.normalizeInternal();
-            clonedDn.normalized.set( false );
-        }
-
-        clonedDn.toUpName();
-
-        return clonedDn;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public Dn add( int posn, Rdn rdn )
-    {
-        if ( ( posn < 0 ) || ( posn > size() ) )
-        {
-            String message = I18n.err( I18n.ERR_04206, posn, rdns.size() );
-            LOG.error( message );
-            throw new ArrayIndexOutOfBoundsException( message );
-        }
-
-        // We have to parse the nameComponent which is given as an argument
-        Rdn newRdn = rdn.clone();
-
-        Dn clonedDn = copy();
-
-        int realPos = clonedDn.size() - posn;
-        clonedDn.rdns.add( realPos, newRdn );
-        clonedDn.toUpName();
-
-        return clonedDn;
-    }
-
-
-    /**
      * used only for deserialization.
      * 
      * {@inheritDoc}
