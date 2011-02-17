@@ -61,8 +61,6 @@ import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecServiceFactory;
 import org.apache.directory.shared.ldap.codec.api.MessageEncoderException;
-import org.apache.directory.shared.ldap.model.constants.SaslQoP;
-import org.apache.directory.shared.ldap.model.constants.SaslSecurityStrength;
 import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.model.cursor.Cursor;
 import org.apache.directory.shared.ldap.model.cursor.SearchCursor;
@@ -1385,23 +1383,47 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
     public BindFuture bindAsync( GssApiRequest request )
         throws LdapException, IOException
     {
-        System.clearProperty( "java.security.krb5.conf" );
-        String krbConfPath = createKrbConfFile( request.getRealmName(), request.getKdcHost(), request.getKdcPort() );
-        System.setProperty( "java.security.krb5.conf", krbConfPath );
+        // Krb5.conf file
+        if ( request.getKrb5ConfFilePath() != null )
+        {
+            // Using the krb5.conf file provided by the user
+            System.setProperty( "java.security.krb5.conf", request.getKrb5ConfFilePath() );
+        }
+        else if ( ( request.getRealmName() != null ) && ( request.getKdcHost() != null )
+            && ( request.getKdcPort() != 0 ) )
+        {
+            // Using a custom krb5.conf we create from the settings provided by the user
+            String krbConfPath = createKrbConfFile( request.getRealmName(), request.getKdcHost(), request.getKdcPort() );
+            System.setProperty( "java.security.krb5.conf", krbConfPath );
+        }
+        else
+        {
+            // Using the system Kerberos configuration
+            System.clearProperty( "java.security.krb5.conf" );
 
-        Configuration.setConfiguration( new Krb5LoginConfiguration() );
-        System.setProperty( "javax.security.auth.useSubjectCredsOnly", "true" );
+        }
+
+        // Login Module configuration
+        if ( request.getLoginModuleConfiguration() != null )
+        {
+            // Using the configuration provided by the user
+            Configuration.setConfiguration( request.getLoginModuleConfiguration() );
+        }
+        else
+        {
+            // Using the default configuration
+            Configuration.setConfiguration( new Krb5LoginConfiguration() );
+        }
 
         try
         {
+            System.setProperty( "javax.security.auth.useSubjectCredsOnly", "true" );
             LoginContext loginContext = new LoginContext( "ldapnetworkconnection",
                         new SaslCallbackHandler( request ) );
             loginContext.login();
 
             final GssApiRequest requetFinal = request;
-
-            return ( BindFuture ) Subject.doAs( loginContext.getSubject(),
-                        new PrivilegedExceptionAction<Object>()
+            return ( BindFuture ) Subject.doAs( loginContext.getSubject(), new PrivilegedExceptionAction<Object>()
                     {
                         public Object run() throws Exception
                         {
@@ -3392,7 +3414,6 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         {
             for ( Control cc : controls.values() )
             {
-                // FIXME why the cc is coming as null!?
                 if ( cc == null )
                 {
                     continue;

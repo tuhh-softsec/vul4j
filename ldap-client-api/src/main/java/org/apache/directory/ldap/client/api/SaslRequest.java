@@ -62,7 +62,7 @@ public abstract class SaslRequest
 
     /** The security strength */
     protected SaslSecurityStrength securityStrength;
-    
+
     /** Require mutual authentication */
     protected boolean mutualAuthentication = false;
 
