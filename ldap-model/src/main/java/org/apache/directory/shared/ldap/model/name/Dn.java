@@ -179,24 +179,12 @@ public final class Dn implements Iterable<Rdn>
 
 
     /**
-     * Creates a new DN from the given String
-     *
-     * @param upName The String that contains the Dn
-     * @throws LdapInvalidNameException if the String does not contain a valid Dn.
-     */
-    public Dn( String upName ) throws LdapInvalidDnException
-    {
-        this( null, upName );
-    }
-
-
-    /**
      * Creates a new Schema aware DN from the given String
      *
      * @param schemaManager the schema manager (optional)
      * @param upName The String that contains the Dn
      * @throws LdapInvalidNameException if the String does not contain a valid Dn.
-     */
+     *
     public Dn( SchemaManager schemaManager, String upName ) throws LdapInvalidDnException
     {
         if ( upName != null )
@@ -282,6 +270,11 @@ public final class Dn implements Iterable<Rdn>
 
         for ( String upRdn : upRdns )
         {
+            if ( Strings.isEmpty( upRdn ) )
+            {
+                continue;
+            }
+            
             if ( isFirst )
             {
                 isFirst = false;
@@ -307,8 +300,8 @@ public final class Dn implements Iterable<Rdn>
                 valueExpected = false;
             }
         }
-
-        if ( valueExpected )
+        
+        if ( !isFirst && valueExpected )
         {
             throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, I18n.err( I18n.ERR_04202 ) );
         }
