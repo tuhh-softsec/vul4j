@@ -50,35 +50,6 @@ public final class FromXmlRulesModule implements RulesModule {
 
     /**
      * 
-     * @param path
-     * @throws IOException
-     */
-    public FromXmlRulesModule(String path) throws IOException {
-        this(path, Thread.currentThread().getContextClassLoader());
-    }
-
-    /**
-     * 
-     * @param path
-     * @param classLoader
-     * @throws IOException
-     */
-    public FromXmlRulesModule(String path, ClassLoader classLoader) throws IOException {
-        if (path == null) {
-            throw new DigesterLoadingException("Parameter 'path' must not be null");
-        }
-        if (classLoader == null) {
-            classLoader = this.getClass().getClassLoader();
-        }
-        URL xmlRules = classLoader.getResource(path);
-        if (xmlRules == null) {
-            throw new DigesterLoadingException(String.format("XML Rules '%s' not found on ", path));
-        }
-        this.xmlRules = createInputSourceFromURL(xmlRules);
-    }
-
-    /**
-     * 
      * @param file
      * @throws IOException
      */
