@@ -62,7 +62,13 @@ final class IncludeRule extends Rule {
                 if ('/' == path.charAt(0)) {
                     path = path.substring(1);
                 }
-                fromXmlRulesModule = new FromXmlRulesModule(path);
+                URL classPathResource = this.targetRulesBinder.getContextClassLoader().getResource(path);
+                if (classPathResource == null) {
+                    this.targetRulesBinder.addError("Resource '%s' not found, please make sure it is in the classpath",
+                            path);
+                } else {
+                    fromXmlRulesModule = new FromXmlRulesModule(classPathResource);
+                }
             } else {
                 try {
                     fromXmlRulesModule = new FromXmlRulesModule(new URL(fileName));
