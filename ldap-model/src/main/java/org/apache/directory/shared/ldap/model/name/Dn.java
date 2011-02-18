@@ -1081,18 +1081,40 @@ public final class Dn implements Iterable<Rdn>
 
 
     /**
-     * {@inheritDoc}
+     * Get the ancestor of a given DN, using the descendant DN. Assuming that
+     * a DN has two parts :<br/>
+     * DN = [descendant DN][ancestor DN]<br/>
+     * To get back the ancestor from the full DN, you just pass the descendant DN
+     * as a parameter. Here is a working example :
+     * <pre>
+     * Dn dn = new Dn( "cn=test, dc=server, dc=directory, dc=apache, dc=org" );
+     * 
+     * Dn ancestor = dn.getAncestorOf( "cn=test, dc=server, dc=directory" );
+     * 
+     * // At this point, the ancestor contains "dc=apache, dc=org"
+     * </pre> 
      */
-    public Dn getParent( String descendant ) throws LdapInvalidDnException
+    public Dn getAncestorOf( String descendant ) throws LdapInvalidDnException
     {
-        return getParent( new Dn( schemaManager, descendant ) );
+        return getAncestorOf( new Dn( schemaManager, descendant ) );
     }
     
 
     /**
-     * {@inheritDoc}
+     * Get the ancestor of a given DN, using the descendant DN. Assuming that
+     * a DN has two parts :<br/>
+     * DN = [descendant DN][ancestor DN]<br/>
+     * To get back the ancestor from the full DN, you just pass the descendant DN
+     * as a parameter. Here is a working example :
+     * <pre>
+     * Dn dn = new Dn( "cn=test, dc=server, dc=directory, dc=apache, dc=org" );
+     * 
+     * Dn ancestor = dn.getAncestorOf( new Dn( "cn=test, dc=server, dc=directory" ) );
+     * 
+     * // At this point, the ancestor contains "dc=apache, dc=org"
+     * </pre> 
      */
-    public Dn getParent( Dn descendant ) throws LdapInvalidDnException
+    public Dn getAncestorOf( Dn descendant ) throws LdapInvalidDnException
     {
         if ( ( descendant == null ) || ( descendant.size() == 0 ) )
         {

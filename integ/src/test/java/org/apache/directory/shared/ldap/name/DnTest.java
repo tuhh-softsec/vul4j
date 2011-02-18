@@ -862,7 +862,7 @@ public class DnTest
     public void testDnGetPrefixPos0() throws LdapException
     {
         Dn dn = new Dn( "a=b, c=d,e = f" );
-        Dn newDn = ( dn.getParent( "" ) );
+        Dn newDn = ( dn.getAncestorOf( "" ) );
         assertEquals( "a=b, c=d,e = f", newDn.getName() );
     }
 
@@ -874,7 +874,7 @@ public class DnTest
     public void testDnGetPrefixPos1() throws LdapException
     {
         Dn dn = new Dn( "a=b, c=d,e = f" );
-        Dn newDn = ( dn.getParent( "a=b" ) );
+        Dn newDn = ( dn.getAncestorOf( "a=b" ) );
         assertEquals( " c=d,e = f", newDn.getName() );
     }
 
@@ -886,7 +886,7 @@ public class DnTest
     public void testDnGetPrefixPos2() throws LdapException
     {
         Dn dn = new Dn( "a=b, c=d,e = f" );
-        Dn newDn = ( dn.getParent( "a=b, c=d" ) );
+        Dn newDn = ( dn.getAncestorOf( "a=b, c=d" ) );
         assertEquals( "e = f", newDn.getName() );
     }
 
@@ -898,7 +898,7 @@ public class DnTest
     public void testDnGetPrefixPos3() throws LdapException
     {
         Dn dn = new Dn( "a=b, c=d,e = f" );
-        Dn newDn = ( dn.getParent( "a=b, c=d,e = f" ) );
+        Dn newDn = ( dn.getAncestorOf( "a=b, c=d,e = f" ) );
         assertEquals( "", newDn.getName() );
     }
 
@@ -911,7 +911,7 @@ public class DnTest
     {
         Dn dn = new Dn( "a=b, c=d,e = f" );
 
-        Dn res = dn.getParent( "a=z" );
+        Dn res = dn.getAncestorOf( "a=z" );
     }
 
 
@@ -922,7 +922,7 @@ public class DnTest
     public void testDnGetPrefixEmptyDN() throws LdapInvalidDnException
     {
         Dn dn = new Dn();
-        Dn newDn = ( dn.getParent( "" ) );
+        Dn newDn = ( dn.getAncestorOf( "" ) );
         assertEquals( "", newDn.getName() );
     }
 
@@ -1923,11 +1923,11 @@ public class DnTest
     {
         Dn name = new Dn( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
 
-        assertEquals( "cn=HomeDir,cn=John,ou=Marketing,ou=East", name.getParent( "" ).toString() );
-        assertEquals( "cn=John,ou=Marketing,ou=East", name.getParent( "cn=HomeDir" ).toString() );
-        assertEquals( "ou=Marketing,ou=East", name.getParent( "cn=HomeDir,cn=John" ).toString() );
-        assertEquals( "ou=East", name.getParent( "cn=HomeDir,cn=John,ou=Marketing" ).toString() );
-        assertEquals( "", name.getParent( "cn=HomeDir,cn=John,ou=Marketing,ou=East" ).toString() );
+        assertEquals( "cn=HomeDir,cn=John,ou=Marketing,ou=East", name.getAncestorOf( "" ).toString() );
+        assertEquals( "cn=John,ou=Marketing,ou=East", name.getAncestorOf( "cn=HomeDir" ).toString() );
+        assertEquals( "ou=Marketing,ou=East", name.getAncestorOf( "cn=HomeDir,cn=John" ).toString() );
+        assertEquals( "ou=East", name.getAncestorOf( "cn=HomeDir,cn=John,ou=Marketing" ).toString() );
+        assertEquals( "", name.getAncestorOf( "cn=HomeDir,cn=John,ou=Marketing,ou=East" ).toString() );
     }
 
 
@@ -2456,11 +2456,11 @@ public class DnTest
         LdapName jName = new LdapName( "cn=four,cn=three,cn=two,cn=one" );
         Dn aName = new Dn( "cn=four,cn=three,cn=two,cn=one" );
 
-        assertEquals( jName.getPrefix( 0 ).toString(), aName.getParent( "cn=four,cn=three,cn=two,cn=one" ).toString() );
-        assertEquals( jName.getPrefix( 1 ).toString(), aName.getParent( "cn=four,cn=three,cn=two" ).toString() );
-        assertEquals( jName.getPrefix( 2 ).toString(), aName.getParent( "cn=four,cn=three" ).toString() );
-        assertEquals( jName.getPrefix( 3 ).toString(), aName.getParent( "cn=four" ).toString() );
-        assertEquals( jName.getPrefix( 4 ).toString(), aName.getParent( "" ).toString() );
+        assertEquals( jName.getPrefix( 0 ).toString(), aName.getAncestorOf( "cn=four,cn=three,cn=two,cn=one" ).toString() );
+        assertEquals( jName.getPrefix( 1 ).toString(), aName.getAncestorOf( "cn=four,cn=three,cn=two" ).toString() );
+        assertEquals( jName.getPrefix( 2 ).toString(), aName.getAncestorOf( "cn=four,cn=three" ).toString() );
+        assertEquals( jName.getPrefix( 3 ).toString(), aName.getAncestorOf( "cn=four" ).toString() );
+        assertEquals( jName.getPrefix( 4 ).toString(), aName.getAncestorOf( "" ).toString() );
     }
 
 
