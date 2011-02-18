@@ -578,6 +578,17 @@ public final class Dn implements Iterable<Rdn>
     {
         return schemaManager;
     }
+    
+    
+    /**
+     * Tells if the Dn is schema aware.
+     * 
+     * @return <code>true</code> If the Dn has a schemaManager
+     */
+    public boolean hasSchemaManager()
+    {
+        return schemaManager != null;
+    }
 
 
     /**
