@@ -514,7 +514,7 @@ public class DnTest
 
     /**
      * test a remove from position 0
-     */
+     *
     @Test
     public void testDnRemove0() throws LdapException
     {
@@ -530,7 +530,7 @@ public class DnTest
 
     /**
      * test a remove from position 1
-     */
+     *
     @Test
     public void testDnRemove1() throws LdapException
     {
@@ -543,7 +543,7 @@ public class DnTest
 
     /**
      * test a remove from position 2
-     */
+     *
     @Test
     public void testDnRemove2() throws LdapException
     {
@@ -557,7 +557,7 @@ public class DnTest
 
     /**
      * test a remove from position 1 whith semi colon
-     */
+     *
     @Test
     public void testDnRemove1WithSemiColon() throws LdapException
     {
@@ -571,7 +571,7 @@ public class DnTest
 
     /**
      * test a remove out of bound
-     */
+     *
     @Test
     public void testDnRemoveOutOfBound() throws LdapException
     {
@@ -660,10 +660,10 @@ public class DnTest
         dn = dn.add( "c = d" );
         assertEquals( 2, dn.size() );
 
-        dn = dn.remove( 0 );
+        dn = dn.getParent();
         assertEquals( 1, dn.size() );
 
-        dn = dn.remove( 0 );
+        dn = dn.getParent();
         assertEquals( 0, dn.size() );
     }
 
@@ -1034,7 +1034,7 @@ public class DnTest
 
     /**
      * Test that a Dn is empty
-     */
+     *
     @Test
     public void testDnRemoveIsEmpty() throws LdapException
     {
@@ -1337,7 +1337,7 @@ public class DnTest
      *
      * @throws Exception
      *             if anything goes wrong
-     */
+     *
     @Test
     public void testJNDITutorialExample() throws Exception
     {
@@ -2455,7 +2455,7 @@ public class DnTest
 
     /**
      * Test for DIRSERVER-191
-     */
+     *
     @Test
     public void testRemoveName() throws LdapException, InvalidNameException
     {
@@ -2467,7 +2467,7 @@ public class DnTest
         assertNotSame( jName.toString(), aName.toString() );
 
         jName.remove( jName.size() - 1 );
-        assertEquals( jName.toString(), aName.remove( aName.size() - 1 ).remove( 0 ).toString() );
+        assertEquals( jName.toString(), aName.getParent().remove( 0 ).toString() );
         assertNotSame( jName.toString(), aName.toString() );
     }
 
@@ -3329,9 +3329,6 @@ public class DnTest
         assertTrue( dn.isNormalized() );
 
         dn.normalize( schemaManager );
-        assertTrue( dn.isNormalized() );
-
-        dn = dn.remove( 0 );
         assertTrue( dn.isNormalized() );
     }
 

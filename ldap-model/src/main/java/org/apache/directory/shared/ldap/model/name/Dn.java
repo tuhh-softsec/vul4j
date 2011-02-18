@@ -1375,45 +1375,6 @@ public final class Dn implements Iterable<Rdn>
 
 
     /**
-     * {@inheritDoc}
-     */
-    public Dn remove( int posn ) throws LdapInvalidDnException
-    {
-        if ( rdns.size() == 0 )
-        {
-            return this;
-        }
-
-        if ( ( posn < 0 ) || ( posn >= rdns.size() ) )
-        {
-            String message = I18n.err( I18n.ERR_04206, posn, rdns.size() );
-            LOG.error( message );
-            throw new ArrayIndexOutOfBoundsException( message );
-        }
-
-        Dn clonedDn = copy();
-        clonedDn._removeChild( posn );
-
-        return clonedDn;
-    }
-
-
-    /**
-     * removes a child (Rdn) present at the given position
-     *
-     * @param posn the index of the child's position
-     */
-    private void _removeChild( int posn )
-    {
-        int realPos = size() - posn - 1;
-        rdns.remove( realPos );
-
-        normalizeInternal();
-        toUpName();
-    }
-
-
-    /**
      * Gets the parent Dn of this Dn. Null if this Dn doesn't have a parent, i.e. because it
      * is the empty Dn.
      *
