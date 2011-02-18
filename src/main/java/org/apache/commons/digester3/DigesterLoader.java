@@ -352,14 +352,51 @@ public final class DigesterLoader {
 
         if (!classLoader.equals(this.rulesBinder.getContextClassLoader())) {
             this.rulesBinder.initialize(classLoader);
-            for (RulesModule rulesModule : rulesModules) {
+            for (RulesModule rulesModule : this.rulesModules) {
+                rulesModule.configure(this.rulesBinder);
+            }
+        }
+
+        Digester digester = new DigesterImpl(reader, rules, classLoader, this.substitutor, this.entityValidator);
+
+        this.rulesBinder.populateRules(rules);
+
+        return digester;
+    }
+
+    /**
+     * Decorates given {@link Rules} with bound rules.
+     *
+     * @param rules The {@link Rules} instance has to be decorated
+     */
+    public void decorate(Rules rules) {
+        if (rules == null) {
+            throw new DigesterLoadingException("Parameter 'rules' must be not null");
+        }
+
+        ClassLoader classLoader = this.classLoader != null ? this.classLoader :
+            (this.useContextClassLoader ? Thread.currentThread().getContextClassLoader() : this.getClass().getClassLoader());
+
+        if (!classLoader.equals(this.rulesBinder.getContextClassLoader())) {
+            this.rulesBinder.initialize(classLoader);
+            for (RulesModule rulesModule : this.rulesModules) {
                 rulesModule.configure(this.rulesBinder);
             }
         }
 
         this.rulesBinder.populateRules(rules);
+    }
 
-        return new DigesterImpl(reader, rules, classLoader, this.substitutor, this.entityValidator);
+    /**
+     * Decorates given {@link Digester} with bound rules.
+     *
+     * @param digester The {@link Rules} instance has to be decorated
+     */
+    public void decorate(Digester digester) {
+        if (digester == null) {
+            throw new DigesterLoadingException("Parameter 'digester' must be not null");
+        }
+        this.decorate(digester.getRules());
     }
 
 }
