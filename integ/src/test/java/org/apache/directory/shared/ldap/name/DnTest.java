@@ -1135,7 +1135,7 @@ public class DnTest
     public void testDnEndsWithNull() throws LdapException
     {
         Dn dn = new Dn( "a=b, c=d,e = f" );
-        assertEquals( true, dn.hasSuffix( (Dn) null ) );
+        assertEquals( true, dn.isDescendantOf( (Dn) null ) );
     }
 
 
@@ -1146,7 +1146,7 @@ public class DnTest
     public void testDnEndsWithEmpty() throws LdapException
     {
         Dn dn = new Dn( "a=b, c=d,e = f" );
-        assertEquals( true, dn.hasSuffix( new Dn() ) );
+        assertEquals( true, dn.hasDescendant( new Dn() ) );
     }
 
 
@@ -1157,7 +1157,7 @@ public class DnTest
     public void testDnEndsWithSimple() throws LdapException
     {
         Dn dn = new Dn( "a=b, c=d,e = f" );
-        assertEquals( true, dn.hasSuffix( new Dn( "a=b" ) ) );
+        assertEquals( true, dn.hasDescendant( new Dn( "a=b" ) ) );
     }
 
 
@@ -1168,7 +1168,7 @@ public class DnTest
     public void testDnEndsWithComplex() throws LdapException
     {
         Dn dn = new Dn( "a=b, c=d,e = f" );
-        assertEquals( true, dn.hasSuffix( new Dn( "a =  b, c =  d" ) ) );
+        assertEquals( true, dn.hasDescendant( new Dn( "a =  b, c =  d" ) ) );
     }
 
 
@@ -1179,7 +1179,7 @@ public class DnTest
     public void testDnEndsWithComplexMixedCase() throws LdapException
     {
         Dn dn = new Dn( "a=b, c=d,e = f" );
-        assertEquals( false, dn.hasSuffix( new Dn( "a =  B, C =  d" ) ) );
+        assertEquals( false, dn.hasDescendant( new Dn( "a =  B, C =  d" ) ) );
     }
 
 
@@ -1190,7 +1190,7 @@ public class DnTest
     public void testDnEndsWithFull() throws LdapException
     {
         Dn dn = new Dn( "a=b, c=d,e = f" );
-        assertEquals( true, dn.hasSuffix( new Dn( "a=  b; c =  d, e =  f" ) ) );
+        assertEquals( true, dn.hasDescendant( new Dn( "a=  b; c =  d, e =  f" ) ) );
     }
 
 
@@ -1201,7 +1201,7 @@ public class DnTest
     public void testDnEndsWithWrong() throws LdapException
     {
         Dn dn = new Dn( "a=b, c=d,e = f" );
-        assertEquals( false, dn.hasSuffix( new Dn( "a =  b, e =  f" ) ) );
+        assertEquals( false, dn.hasDescendant( new Dn( "a =  b, e =  f" ) ) );
     }
 
 
@@ -2012,15 +2012,15 @@ public class DnTest
         Dn name7 = new Dn( "cn=HomeDir,cn=John" );
         Dn name8 = new Dn( "cn=HomeDir,cn=John,ou=Marketing" );
 
-        assertTrue( name0.hasSuffix( name1 ) );
-        assertTrue( !name0.hasSuffix( name2 ) );
-        assertTrue( !name0.hasSuffix( name3 ) );
-        assertTrue( !name0.hasSuffix( name4 ) );
-        assertTrue( name0.hasSuffix( name5 ) );
+        assertTrue( name0.hasDescendant( name1 ) );
+        assertTrue( !name0.hasDescendant( name2 ) );
+        assertTrue( !name0.hasDescendant( name3 ) );
+        assertTrue( !name0.hasDescendant( name4 ) );
+        assertTrue( name0.hasDescendant( name5 ) );
 
-        assertTrue( name0.hasSuffix( name6 ) );
-        assertTrue( name0.hasSuffix( name7 ) );
-        assertTrue( name0.hasSuffix( name8 ) );
+        assertTrue( name0.hasDescendant( name6 ) );
+        assertTrue( name0.hasDescendant( name7 ) );
+        assertTrue( name0.hasDescendant( name8 ) );
     }
 
 
@@ -2569,19 +2569,19 @@ public class DnTest
         Dn n2 = new Dn( "cn=two" );
         Dn n1 = new Dn( "cn=one" );
 
-        assertTrue( n3210.hasSuffix( n3 ) );
-        assertTrue( n3210.hasSuffix( n32 ) );
-        assertTrue( n3210.hasSuffix( n321 ) );
-        assertTrue( n3210.hasSuffix( n3210 ) );
+        assertTrue( n3210.hasDescendant( n3 ) );
+        assertTrue( n3210.hasDescendant( n32 ) );
+        assertTrue( n3210.hasDescendant( n321 ) );
+        assertTrue( n3210.hasDescendant( n3210 ) );
 
-        assertTrue( n210.hasSuffix( n2 ) );
-        assertTrue( n210.hasSuffix( n21 ) );
-        assertTrue( n210.hasSuffix( n210 ) );
+        assertTrue( n210.hasDescendant( n2 ) );
+        assertTrue( n210.hasDescendant( n21 ) );
+        assertTrue( n210.hasDescendant( n210 ) );
 
-        assertTrue( n10.hasSuffix( n1 ) );
-        assertTrue( n10.hasSuffix( n10 ) );
+        assertTrue( n10.hasDescendant( n1 ) );
+        assertTrue( n10.hasDescendant( n10 ) );
 
-        assertTrue( n0.hasSuffix( n0 ) );
+        assertTrue( n0.hasDescendant( n0 ) );
     }
 
 

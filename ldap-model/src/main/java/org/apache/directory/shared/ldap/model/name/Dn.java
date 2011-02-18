@@ -843,7 +843,7 @@ public final class Dn implements Iterable<Rdn>
 
     /**
      * Tells if the current Dn is a parent of another Dn.<br>
-     * For instance, <b>dc=com</b> is a parent
+     * For instance, <b>dc=com</b> is a ancestor
      * of <b>dc=example, dc=com</b>
      *
      * @param dn The child
@@ -864,7 +864,7 @@ public final class Dn implements Iterable<Rdn>
 
     /**
      * Tells if the current Dn is a parent of another Dn.<br>
-     * For instance, <b>dc=com</b> is a parent
+     * For instance, <b>dc=com</b> is a ancestor 
      * of <b>dc=example, dc=com</b>
      *
      * @param dn The child
@@ -883,7 +883,7 @@ public final class Dn implements Iterable<Rdn>
 
     /**
      * Tells if a Dn is a child of another Dn.<br>
-     * For instance, <b>dc=example, dc=com</b> is a child
+     * For instance, <b>dc=example, dc=com</b> is a descendant
      * of <b>dc=com</b>
      *
      * @param dn The parent
@@ -904,7 +904,7 @@ public final class Dn implements Iterable<Rdn>
 
     /**
      * Tells if a Dn is a child of another Dn.<br>
-     * For instance, <b>dc=example, dc=apache, dc=com</b> is a child
+     * For instance, <b>dc=example, dc=apache, dc=com</b> is a descendant
      * of <b>dc=com</b>
      *
      * @param dn The parent
@@ -942,17 +942,17 @@ public final class Dn implements Iterable<Rdn>
 
 
     /**
-     * Determines whether this name has a specific suffix. A name
-     * <tt>name</tt> has a Dn as a suffix if its right part contains the given Dn
-     *
-     * Be aware that for a specific
-     * Dn like : <b>cn=xxx, ou=yyy</b> the hasSuffix method will return false with
+     * Determines whether this name has a specific descendant. A name
+     * <tt>name</tt> has a Dn as a decendant if its left part contains the given Dn.
+     *<br/>
+     * For instance, for a Dn like : <b>cn=xxx, ou=yyy</b> the 
+     * hasDescendnat method will return false with
      * <b>ou=yyy</b>, and true with <b>cn=xxx</b>
      *
      * @param dn the name to check
      * @return true if <tt>dn</tt> is a suffix of this name, false otherwise
      */
-    public boolean hasSuffix( Dn dn )
+    public boolean hasDescendant( Dn dn )
     {
         if ( dn == null )
         {
