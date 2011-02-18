@@ -119,6 +119,7 @@
           <manifestLocation>META-INF</manifestLocation>
           <instructions>
             <Bundle-SymbolicName>${project.groupId}.ldap.codec</Bundle-SymbolicName>
+            <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
             <Export-Package>
               org.apache.directory.shared.ldap.codec.api
             </Export-Package>
