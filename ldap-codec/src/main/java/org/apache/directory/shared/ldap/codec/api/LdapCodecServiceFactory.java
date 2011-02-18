@@ -131,7 +131,6 @@ public class LdapCodecServiceFactory
             catch ( Exception e )
             {
                 LOG.error( "Failed to instantiate a viable instance, instantiating new instance of ", e );
-                
             }
         }
         else
