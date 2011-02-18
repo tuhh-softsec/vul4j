@@ -1139,72 +1139,6 @@ public class DnTest
     }
 
 
-    /**
-     * Test a endsWith an empty Dn
-     */
-    @Test
-    public void testDnEndsWithEmpty() throws LdapException
-    {
-        Dn dn = new Dn( "a=b, c=d,e = f" );
-        assertEquals( true, dn.hasDescendant( new Dn() ) );
-    }
-
-
-    /**
-     * Test a endsWith an simple Dn
-     */
-    @Test
-    public void testDnEndsWithSimple() throws LdapException
-    {
-        Dn dn = new Dn( "a=b, c=d,e = f" );
-        assertEquals( true, dn.hasDescendant( new Dn( "a=b" ) ) );
-    }
-
-
-    /**
-     * Test a endsWith a complex Dn
-     */
-    @Test
-    public void testDnEndsWithComplex() throws LdapException
-    {
-        Dn dn = new Dn( "a=b, c=d,e = f" );
-        assertEquals( true, dn.hasDescendant( new Dn( "a =  b, c =  d" ) ) );
-    }
-
-
-    /**
-     * Test a endsWith a complex Dn
-     */
-    @Test
-    public void testDnEndsWithComplexMixedCase() throws LdapException
-    {
-        Dn dn = new Dn( "a=b, c=d,e = f" );
-        assertEquals( false, dn.hasDescendant( new Dn( "a =  B, C =  d" ) ) );
-    }
-
-
-    /**
-     * Test a endsWith a full Dn
-     */
-    @Test
-    public void testDnEndsWithFull() throws LdapException
-    {
-        Dn dn = new Dn( "a=b, c=d,e = f" );
-        assertEquals( true, dn.hasDescendant( new Dn( "a=  b; c =  d, e =  f" ) ) );
-    }
-
-
-    /**
-     * Test a endsWith which returns false
-     */
-    @Test
-    public void testDnEndsWithWrong() throws LdapException
-    {
-        Dn dn = new Dn( "a=b, c=d,e = f" );
-        assertEquals( false, dn.hasDescendant( new Dn( "a =  b, e =  f" ) ) );
-    }
-
-
     // GET ALL operations
     /**
      * test a getAll operation on a null Dn
@@ -1993,38 +1927,6 @@ public class DnTest
 
 
     /**
-     * Class to test for endsWith
-     *
-     * @throws Exception
-     *             anything goes wrong
-     */
-    @Test
-    public void testEndsWith() throws Exception
-    {
-        Dn name0 = new Dn( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
-        Dn name1 = new Dn( "cn=HomeDir,cn=John,ou=Marketing,ou=East" );
-        Dn name2 = new Dn( "cn=John,ou=Marketing,ou=East" );
-        Dn name3 = new Dn( "ou=Marketing,ou=East" );
-        Dn name4 = new Dn( "ou=East" );
-        Dn name5 = new Dn( "" );
-
-        Dn name6 = new Dn( "cn=HomeDir" );
-        Dn name7 = new Dn( "cn=HomeDir,cn=John" );
-        Dn name8 = new Dn( "cn=HomeDir,cn=John,ou=Marketing" );
-
-        assertTrue( name0.hasDescendant( name1 ) );
-        assertTrue( !name0.hasDescendant( name2 ) );
-        assertTrue( !name0.hasDescendant( name3 ) );
-        assertTrue( !name0.hasDescendant( name4 ) );
-        assertTrue( name0.hasDescendant( name5 ) );
-
-        assertTrue( name0.hasDescendant( name6 ) );
-        assertTrue( name0.hasDescendant( name7 ) );
-        assertTrue( name0.hasDescendant( name8 ) );
-    }
-
-
-    /**
      * Class to test for Dn addAll(Dn)
      *
      * @throws Exception
@@ -2555,40 +2457,6 @@ public class DnTest
      * Test for DIRSERVER-191
      */
     @Test
-    public void testEndsWithName() throws LdapException, InvalidNameException
-    {
-        // Check with Dn
-        Dn n0 = new Dn( "cn=zero" );
-        Dn n10 = new Dn( "cn=one,cn=zero" );
-        Dn n210 = new Dn( "cn=two,cn=one,cn=zero" );
-        Dn n3210 = new Dn( "cn=three,cn=two,cn=one,cn=zero" );
-        Dn n321 = new Dn( "cn=three,cn=two,cn=one" );
-        Dn n32 = new Dn( "cn=three,cn=two" );
-        Dn n3 = new Dn( "cn=three" );
-        Dn n21 = new Dn( "cn=two,cn=one" );
-        Dn n2 = new Dn( "cn=two" );
-        Dn n1 = new Dn( "cn=one" );
-
-        assertTrue( n3210.hasDescendant( n3 ) );
-        assertTrue( n3210.hasDescendant( n32 ) );
-        assertTrue( n3210.hasDescendant( n321 ) );
-        assertTrue( n3210.hasDescendant( n3210 ) );
-
-        assertTrue( n210.hasDescendant( n2 ) );
-        assertTrue( n210.hasDescendant( n21 ) );
-        assertTrue( n210.hasDescendant( n210 ) );
-
-        assertTrue( n10.hasDescendant( n1 ) );
-        assertTrue( n10.hasDescendant( n10 ) );
-
-        assertTrue( n0.hasDescendant( n0 ) );
-    }
-
-
-    /**
-     * Test for DIRSERVER-191
-     */
-    @Test
     public void testRemoveName() throws LdapException, InvalidNameException
     {
         LdapName jName = new LdapName( "cn=four,cn=three,cn=two,cn=one" );
@@ -2601,25 +2469,6 @@ public class DnTest
         jName.remove( jName.size() - 1 );
         assertEquals( jName.toString(), aName.remove( aName.size() - 1 ).remove( 0 ).toString() );
         assertNotSame( jName.toString(), aName.toString() );
-    }
-
-
-    /**
-     * Test for DIRSERVER-191
-     *
-    @Test
-    public void testGetAllName() throws LdapException, InvalidNameException
-    {
-        LdapName jName = new LdapName( "cn=four,cn=three,cn=two,cn=one" );
-        Dn aName = new Dn( "cn=four,cn=three,cn=two,cn=one" );
-
-        Enumeration<String> j = jName.getAll();
-        Enumeration<String> a = aName.getAll();
-        while ( j.hasMoreElements() )
-        {
-            assertTrue( j.hasMoreElements() );
-            assertEquals( j.nextElement(), a.nextElement() );
-        }
     }
 
 

@@ -942,53 +942,6 @@ public final class Dn implements Iterable<Rdn>
 
 
     /**
-     * Determines whether this name has a specific descendant. A name
-     * <tt>name</tt> has a Dn as a decendant if its left part contains the given Dn.
-     *<br/>
-     * For instance, for a Dn like : <b>cn=xxx, ou=yyy</b> the 
-     * hasDescendnat method will return false with
-     * <b>ou=yyy</b>, and true with <b>cn=xxx</b>
-     *
-     * @param dn the name to check
-     * @return true if <tt>dn</tt> is a suffix of this name, false otherwise
-     */
-    public boolean hasDescendant( Dn dn )
-    {
-        if ( dn == null )
-        {
-            return true;
-        }
-
-        if ( dn.size() == 0 )
-        {
-            return true;
-        }
-
-        if ( dn.size() > size() )
-        {
-            // The name is longer than the current Dn.
-            return false;
-        }
-
-        // Ok, iterate through all the Rdn of the name,
-        // starting a the end of the current list.
-
-        for ( int i = 0; i < dn.size(); i++ )
-        {
-            Rdn nameRdn = dn.rdns.get( i );
-            Rdn ldapRdn = rdns.get( i );
-
-            if ( nameRdn.compareTo( ldapRdn ) != 0 )
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-
-    /**
      * Tells if the Dn contains no Rdn
      *
      * @return <code>true</code> if the Dn is empty
