@@ -51,7 +51,7 @@ public class GssApiRequest extends SaslRequest
      */
     public GssApiRequest()
     {
-        super( SupportedSaslMechanisms.CRAM_MD5 );
+        super( SupportedSaslMechanisms.GSSAPI );
     }
 
 
