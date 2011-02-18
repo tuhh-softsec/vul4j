@@ -35,36 +35,36 @@ public class XMLEncryptionException extends XMLSecurityException {
    }
    /**
     * 
-    * @param _msgID
+    * @param msgID
     */
-   public XMLEncryptionException(String _msgID) {
-      super(_msgID);
+   public XMLEncryptionException(String msgID) {
+      super(msgID);
    }
    /**
     * 
-    * @param _msgID
+    * @param msgID
     * @param exArgs
     */
-   public XMLEncryptionException(String _msgID, Object exArgs[]) {
-      super(_msgID, exArgs);
+   public XMLEncryptionException(String msgID, Object exArgs[]) {
+      super(msgID, exArgs);
    }
    /**
     * 
-    * @param _msgID
-    * @param _originalException
+    * @param msgID
+    * @param originalException
     */
-   public XMLEncryptionException(String _msgID,
-                                              Exception _originalException) {
-      super(_msgID, _originalException);
+   public XMLEncryptionException(String msgID,
+                                              Exception originalException) {
+      super(msgID, originalException);
    }
    /**
     * 
-    * @param _msgID
+    * @param msgID
     * @param exArgs
-    * @param _originalException
+    * @param originalException
     */
-   public XMLEncryptionException(String _msgID, Object exArgs[],
-                                              Exception _originalException) {
-      super(_msgID, exArgs, _originalException);
+   public XMLEncryptionException(String msgID, Object exArgs[],
+                                              Exception originalException) {
+      super(msgID, exArgs, originalException);
    }
 }

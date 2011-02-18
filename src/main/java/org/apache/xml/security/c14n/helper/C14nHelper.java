@@ -16,14 +16,11 @@
  */
 package org.apache.xml.security.c14n.helper;
 
-
-
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
-
 
 /**
  * Temporary swapped static functions from the normalizer Section
@@ -32,129 +29,123 @@ import org.w3c.dom.NamedNodeMap;
  */
 public class C14nHelper {
 
-   /**
-    * Constructor C14nHelper
-    *
-    */
-   private C14nHelper() {
+    /**
+     * Constructor C14nHelper
+     *
+     */
+    private C14nHelper() {
+        // don't allow instantiation
+    }
 
-      // don't allow instantiation
-   }
+    /**
+     * Method namespaceIsRelative
+     *
+     * @param namespace
+     * @return true if the given namespace is relative. 
+     */
+    public static boolean namespaceIsRelative(Attr namespace) {
+        return !namespaceIsAbsolute(namespace);
+    }
 
-   /**
-    * Method namespaceIsRelative
-    *
-    * @param namespace
-    * @return true if the given namespace is relative. 
-    */
-   public static boolean namespaceIsRelative(Attr namespace) {
-      return !namespaceIsAbsolute(namespace);
-   }
+    /**
+     * Method namespaceIsRelative
+     *
+     * @param namespaceValue
+     * @return true if the given namespace is relative.
+     */
+    public static boolean namespaceIsRelative(String namespaceValue) {
+        return !namespaceIsAbsolute(namespaceValue);
+    }
 
-   /**
-    * Method namespaceIsRelative
-    *
-    * @param namespaceValue
-    * @return true if the given namespace is relative.
-    */
-   public static boolean namespaceIsRelative(String namespaceValue) {
-      return !namespaceIsAbsolute(namespaceValue);
-   }
+    /**
+     * Method namespaceIsAbsolute
+     *
+     * @param namespace
+     * @return true if the given namespace is absolute.
+     */
+    public static boolean namespaceIsAbsolute(Attr namespace) {
+        return namespaceIsAbsolute(namespace.getValue());
+    }
 
-   /**
-    * Method namespaceIsAbsolute
-    *
-    * @param namespace
-    * @return true if the given namespace is absolute.
-    */
-   public static boolean namespaceIsAbsolute(Attr namespace) {
-      return namespaceIsAbsolute(namespace.getValue());
-   }
+    /**
+     * Method namespaceIsAbsolute
+     *
+     * @param namespaceValue
+     * @return true if the given namespace is absolute.
+     */
+    public static boolean namespaceIsAbsolute(String namespaceValue) {
+        // assume empty namespaces are absolute
+        if (namespaceValue.length() == 0) {
+            return true;
+        }
+        return namespaceValue.indexOf(':') > 0;
+    }
 
-   /**
-    * Method namespaceIsAbsolute
-    *
-    * @param namespaceValue
-    * @return true if the given namespace is absolute.
-    */
-   public static boolean namespaceIsAbsolute(String namespaceValue) {
+    /**
+     * This method throws an exception if the Attribute value contains
+     * a relative URI.
+     *
+     * @param attr
+     * @throws CanonicalizationException
+     */
+    public static void assertNotRelativeNS(Attr attr) throws CanonicalizationException {
+        if (attr == null) {
+            return;
+        }
 
-      // assume empty namespaces are absolute
-      if (namespaceValue.length() == 0) {
-         return true;
-      }
-      return namespaceValue.indexOf(':')>0;
-   }
+        String nodeAttrName = attr.getNodeName();
+        boolean definesDefaultNS = nodeAttrName.equals("xmlns");
+        boolean definesNonDefaultNS = nodeAttrName.startsWith("xmlns:");
 
-   /**
-    * This method throws an exception if the Attribute value contains
-    * a relative URI.
-    *
-    * @param attr
-    * @throws CanonicalizationException
-    */
-   public static void assertNotRelativeNS(Attr attr)
-           throws CanonicalizationException {
+        if (definesDefaultNS || definesNonDefaultNS) {
+            if (namespaceIsRelative(attr)) {
+                String parentName = attr.getOwnerElement().getTagName();
+                String attrValue = attr.getValue();
+                Object exArgs[] = { parentName, nodeAttrName, attrValue };
 
-      if (attr == null) {
-         return;
-      }
+                throw new CanonicalizationException(
+                    "c14n.Canonicalizer.RelativeNamespace", exArgs
+                );
+            }
+        }
+    }
 
-      String nodeAttrName = attr.getNodeName();
-      boolean definesDefaultNS = nodeAttrName.equals("xmlns");
-      boolean definesNonDefaultNS = nodeAttrName.startsWith("xmlns:");
-
-      if (definesDefaultNS || definesNonDefaultNS) {
-         if (namespaceIsRelative(attr)) {
-            String parentName = attr.getOwnerElement().getTagName();
-            String attrValue = attr.getValue();
-            Object exArgs[] = { parentName, nodeAttrName, attrValue };
+    /**
+     * This method throws a CanonicalizationException if the supplied Document
+     * is not able to be traversed using a TreeWalker.
+     *
+     * @param document
+     * @throws CanonicalizationException
+     */
+    public static void checkTraversability(Document document)
+        throws CanonicalizationException {
+        if (!document.isSupported("Traversal", "2.0")) {
+            Object exArgs[] = {document.getImplementation().getClass().getName() };
 
             throw new CanonicalizationException(
-               "c14n.Canonicalizer.RelativeNamespace", exArgs);
-         }
-      }
-   }
+                "c14n.Canonicalizer.TraversalNotSupported", exArgs
+            );
+        }
+    }
 
-   /**
-    * This method throws a CanonicalizationException if the supplied Document
-    * is not able to be traversed using a TreeWalker.
-    *
-    * @param document
-    * @throws CanonicalizationException
-    */
-   public static void checkTraversability(Document document)
-           throws CanonicalizationException {
+    /**
+     * This method throws a CanonicalizationException if the supplied Element
+     * contains any relative namespaces.
+     *
+     * @param ctxNode
+     * @throws CanonicalizationException
+     * @see C14nHelper#assertNotRelativeNS(Attr)
+     */
+    public static void checkForRelativeNamespace(Element ctxNode)
+        throws CanonicalizationException {
+        if (ctxNode != null) {
+            NamedNodeMap attributes = ctxNode.getAttributes();
 
-      if (!document.isSupported("Traversal", "2.0")) {
-         Object exArgs[] = {
-            document.getImplementation().getClass().getName() };
-
-         throw new CanonicalizationException(
-            "c14n.Canonicalizer.TraversalNotSupported", exArgs);
-      }
-   }
-
-   /**
-    * This method throws a CanonicalizationException if the supplied Element
-    * contains any relative namespaces.
-    *
-    * @param ctxNode
-    * @throws CanonicalizationException
-    * @see C14nHelper#assertNotRelativeNS(Attr)
-    */
-   public static void checkForRelativeNamespace(Element ctxNode)
-           throws CanonicalizationException {
-
-      if (ctxNode != null) {
-         NamedNodeMap attributes = ctxNode.getAttributes();
-
-         for (int i = 0; i < attributes.getLength(); i++) {
-            C14nHelper.assertNotRelativeNS((Attr) attributes.item(i));
-         }
-      } else {
-         throw new CanonicalizationException(
-            "Called checkForRelativeNamespace() on null");
-      }
-   }
+            for (int i = 0; i < attributes.getLength(); i++) {
+                C14nHelper.assertNotRelativeNS((Attr) attributes.item(i));
+            }
+        } else {
+            throw new CanonicalizationException("Called checkForRelativeNamespace() on null");
+        }
+    }
 }

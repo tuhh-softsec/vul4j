@@ -43,42 +43,42 @@ public class InvalidSignatureValueException extends XMLSignatureException {
    /**
     * Constructor InvalidSignatureValueException
     *
-    * @param _msgID
+    * @param msgID
     */
-   public InvalidSignatureValueException(String _msgID) {
-      super(_msgID);
+   public InvalidSignatureValueException(String msgID) {
+      super(msgID);
    }
 
    /**
     * Constructor InvalidSignatureValueException
     *
-    * @param _msgID
+    * @param msgID
     * @param exArgs
     */
-   public InvalidSignatureValueException(String _msgID, Object exArgs[]) {
-      super(_msgID, exArgs);
+   public InvalidSignatureValueException(String msgID, Object exArgs[]) {
+      super(msgID, exArgs);
    }
 
    /**
     * Constructor InvalidSignatureValueException
     *
-    * @param _msgID
-    * @param _originalException
+    * @param msgID
+    * @param originalException
     */
-   public InvalidSignatureValueException(String _msgID,
-                                         Exception _originalException) {
-      super(_msgID, _originalException);
+   public InvalidSignatureValueException(String msgID,
+                                         Exception originalException) {
+      super(msgID, originalException);
    }
 
    /**
     * Constructor InvalidSignatureValueException
     *
-    * @param _msgID
+    * @param msgID
     * @param exArgs
-    * @param _originalException
+    * @param originalException
     */
-   public InvalidSignatureValueException(String _msgID, Object exArgs[],
-                                         Exception _originalException) {
-      super(_msgID, exArgs, _originalException);
+   public InvalidSignatureValueException(String msgID, Object exArgs[],
+                                         Exception originalException) {
+      super(msgID, exArgs, originalException);
    }
 }

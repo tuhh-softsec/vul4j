@@ -42,42 +42,42 @@ public class InvalidDigestValueException extends XMLSignatureException {
    /**
     * Constructor InvalidDigestValueException
     *
-    * @param _msgID
+    * @param msgID
     */
-   public InvalidDigestValueException(String _msgID) {
-      super(_msgID);
+   public InvalidDigestValueException(String msgID) {
+      super(msgID);
    }
 
    /**
     * Constructor InvalidDigestValueException
     *
-    * @param _msgID
+    * @param msgID
     * @param exArgs
     */
-   public InvalidDigestValueException(String _msgID, Object exArgs[]) {
-      super(_msgID, exArgs);
+   public InvalidDigestValueException(String msgID, Object exArgs[]) {
+      super(msgID, exArgs);
    }
 
    /**
     * Constructor InvalidDigestValueException
     *
-    * @param _msgID
-    * @param _originalException
+    * @param msgID
+    * @param originalException
     */
-   public InvalidDigestValueException(String _msgID,
-                                      Exception _originalException) {
-      super(_msgID, _originalException);
+   public InvalidDigestValueException(String msgID,
+                                      Exception originalException) {
+      super(msgID, originalException);
    }
 
    /**
     * Constructor InvalidDigestValueException
     *
-    * @param _msgID
+    * @param msgID
     * @param exArgs
-    * @param _originalException
+    * @param originalException
     */
-   public InvalidDigestValueException(String _msgID, Object exArgs[],
-                                      Exception _originalException) {
-      super(_msgID, exArgs, _originalException);
+   public InvalidDigestValueException(String msgID, Object exArgs[],
+                                      Exception originalException) {
+      super(msgID, exArgs, originalException);
    }
 }

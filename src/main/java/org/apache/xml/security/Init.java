@@ -155,7 +155,6 @@ public class Init {
            
             if (tag.equals("CanonicalizationMethods")){
                 XX_configure_reg_c14n_start = System.currentTimeMillis();
-               Canonicalizer.init();
                Element[] list=XMLUtils.selectNodes(el.getFirstChild(),CONF_NS,"CanonicalizationMethod");               
 
                for (int i = 0; i < list.length; i++) {

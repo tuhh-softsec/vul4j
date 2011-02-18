@@ -1,4 +1,3 @@
-
 /*
  * Copyright  1999-2004 The Apache Software Foundation.
  *
@@ -17,69 +16,62 @@
  */
 package org.apache.xml.security.c14n;
 
-
-
 import org.apache.xml.security.exceptions.XMLSecurityException;
 
-
-/**
- *
- * @author Christian Geuer-Pollmann
- */
 public class InvalidCanonicalizerException extends XMLSecurityException {
 
-   /**
-         * 
-         */
-        private static final long serialVersionUID = 1L;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
 
-   /**
-    * Constructor InvalidCanonicalizerException
-    *
-    */
-   public InvalidCanonicalizerException() {
-      super();
-   }
+    /**
+     * Constructor InvalidCanonicalizerException
+     *
+     */
+    public InvalidCanonicalizerException() {
+        super();
+    }
 
-   /**
-    * Constructor InvalidCanonicalizerException
-    *
-    * @param _msgID
-    */
-   public InvalidCanonicalizerException(String _msgID) {
-      super(_msgID);
-   }
+    /**
+     * Constructor InvalidCanonicalizerException
+     *
+     * @param msgID
+     */
+    public InvalidCanonicalizerException(String msgID) {
+        super(msgID);
+    }
 
-   /**
-    * Constructor InvalidCanonicalizerException
-    *
-    * @param _msgID
-    * @param exArgs
-    */
-   public InvalidCanonicalizerException(String _msgID, Object exArgs[]) {
-      super(_msgID, exArgs);
-   }
+    /**
+     * Constructor InvalidCanonicalizerException
+     *
+     * @param msgID
+     * @param exArgs
+     */
+    public InvalidCanonicalizerException(String msgID, Object exArgs[]) {
+        super(msgID, exArgs);
+    }
 
-   /**
-    * Constructor InvalidCanonicalizerException
-    *
-    * @param _msgID
-    * @param _originalException
-    */
-   public InvalidCanonicalizerException(String _msgID,
-                                        Exception _originalException) {
-      super(_msgID, _originalException);
-   }
+    /**
+     * Constructor InvalidCanonicalizerException
+     *
+     * @param msgID
+     * @param originalException
+     */
+    public InvalidCanonicalizerException(String msgID, Exception originalException) {
+        super(msgID, originalException);
+    }
 
-   /**
-    * Constructor InvalidCanonicalizerException
-    *
-    * @param _msgID
-    * @param exArgs
-    * @param _originalException
-    */
-   public InvalidCanonicalizerException(String _msgID, Object exArgs[],
-                                        Exception _originalException) {
-      super(_msgID, exArgs, _originalException);
-   }
+    /**
+     * Constructor InvalidCanonicalizerException
+     *
+     * @param msgID
+     * @param exArgs
+     * @param originalException
+     */
+    public InvalidCanonicalizerException(
+        String msgID, Object exArgs[], Exception originalException
+    ) {
+        super(msgID, exArgs, originalException);
+    }
 }

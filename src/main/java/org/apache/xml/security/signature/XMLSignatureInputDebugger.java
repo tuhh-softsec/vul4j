@@ -315,10 +315,10 @@ public class XMLSignatureInputDebugger {
                         // we output all Attrs which are available
                         NamedNodeMap attrs = currentElement.getAttributes();
                         int attrsLength = attrs.getLength();
-                        Object attrs2[] = new Object[attrsLength];
+                        Attr attrs2[] = new Attr[attrsLength];
 
                         for (int i = 0; i < attrsLength; i++) {
-                                attrs2[i] = attrs.item(i);
+                                attrs2[i] = (Attr)attrs.item(i);
                         }
 
                         Arrays.sort(attrs2, ATTR_COMPARE);

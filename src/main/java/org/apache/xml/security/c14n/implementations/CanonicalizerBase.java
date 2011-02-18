@@ -126,7 +126,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     * @param xpathNodeSet
     * @throws CanonicalizationException
     */
-   public byte[] engineCanonicalizeXPathNodeSet(Set xpathNodeSet)
+   public byte[] engineCanonicalizeXPathNodeSet(Set<Node> xpathNodeSet)
            throws CanonicalizationException {
            this._xpathNodeSet = xpathNodeSet;
            return engineCanonicalizeXPathNodeSetInternal(XMLUtils.getOwnerDocument(this._xpathNodeSet));

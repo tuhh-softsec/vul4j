@@ -1,4 +1,3 @@
-
 /*
  * Copyright  1999-2004 The Apache Software Foundation.
  *
@@ -17,10 +16,7 @@
  */
 package org.apache.xml.security.c14n;
 
-
-
 import org.apache.xml.security.exceptions.XMLSecurityException;
-
 
 /**
  * Class CanonicalizationException
@@ -29,57 +25,58 @@ import org.apache.xml.security.exceptions.XMLSecurityException;
  */
 public class CanonicalizationException extends XMLSecurityException {
 
-   /**
-         * 
-         */
-        private static final long serialVersionUID = 1L;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
 
-   /**
-    * Constructor CanonicalizationException
-    *
-    */
-   public CanonicalizationException() {
-      super();
-   }
+    /**
+     * Constructor CanonicalizationException
+     *
+     */
+    public CanonicalizationException() {
+        super();
+    }
 
-   /**
-    * Constructor CanonicalizationException
-    *
-    * @param _msgID
-    */
-   public CanonicalizationException(String _msgID) {
-      super(_msgID);
-   }
+    /**
+     * Constructor CanonicalizationException
+     *
+     * @param msgID
+     */
+    public CanonicalizationException(String msgID) {
+        super(msgID);
+    }
 
-   /**
-    * Constructor CanonicalizationException
-    *
-    * @param _msgID
-    * @param exArgs
-    */
-   public CanonicalizationException(String _msgID, Object exArgs[]) {
-      super(_msgID, exArgs);
-   }
+    /**
+     * Constructor CanonicalizationException
+     *
+     * @param msgID
+     * @param exArgs
+     */
+    public CanonicalizationException(String msgID, Object exArgs[]) {
+        super(msgID, exArgs);
+    }
 
-   /**
-    * Constructor CanonicalizationException
-    *
-    * @param _msgID
-    * @param _originalException
-    */
-   public CanonicalizationException(String _msgID, Exception _originalException) {
-      super(_msgID, _originalException);
-   }
+    /**
+     * Constructor CanonicalizationException
+     *
+     * @param msgID
+     * @param originalException
+     */
+    public CanonicalizationException(String msgID, Exception originalException) {
+        super(msgID, originalException);
+    }
 
-   /**
-    * Constructor CanonicalizationException
-    *
-    * @param _msgID
-    * @param exArgs
-    * @param _originalException
-    */
-   public CanonicalizationException(String _msgID, Object exArgs[],
-                                    Exception _originalException) {
-      super(_msgID, exArgs, _originalException);
-   }
+    /**
+     * Constructor CanonicalizationException
+     *
+     * @param msgID
+     * @param exArgs
+     * @param originalException
+     */
+    public CanonicalizationException(
+        String msgID, Object exArgs[], Exception originalException
+    ) {
+        super(msgID, exArgs, originalException);
+    }
 }
