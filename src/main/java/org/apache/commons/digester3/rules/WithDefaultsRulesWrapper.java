@@ -72,12 +72,21 @@ public class WithDefaultsRulesWrapper implements Rules {
         this.wrappedRules = wrappedRules;
     }
 
-    /** Sets digeseter using these Rules */
+    /**
+     * {@inheritDoc}
+     */
     public void setDigester(Digester digester) {
         wrappedRules.setDigester(digester);
         for (Rule rule : defaultRules) {
             rule.setDigester(digester);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Digester getDigester() {
+        return this.wrappedRules.getDigester();
     }
 
     /** Gets Rule's which will be fired when the wrapped implementation returns no matches */

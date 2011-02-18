@@ -69,4 +69,11 @@ abstract class AbstractRulesImpl implements Rules {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public Digester getDigester() {
+        return this.digester;
+    }
+
 }

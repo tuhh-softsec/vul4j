@@ -72,4 +72,11 @@ public interface Rules {
      */
     void setDigester(Digester digester);
 
+    /**
+     * Returns the Digester instance with which this Rules instance is associated.
+     *
+     * @return The Digester instance with which this Rules instance is associated
+     */
+    Digester getDigester();
+
 }
