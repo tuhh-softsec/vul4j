@@ -964,32 +964,6 @@ public final class Dn implements Iterable<Rdn>
 
 
     /**
-     * Get the given Rdn as a String. The position is used in the
-     * reverse order. Assuming that we have a Dn like
-     * <pre>dc=example,dc=apache,dc=org</pre>
-     * then :
-     * <li><code>get(0)</code> will return dc=org</li>
-     * <li><code>get(1)</code> will return dc=apache</li>
-     * <li><code>get(2)</code> will return dc=example</li>
-     *
-     * @param posn The position of the wanted Rdn in the Dn.
-     */
-    public String get( int posn )
-    {
-        if ( rdns.size() == 0 )
-        {
-            return "";
-        }
-        else
-        {
-            Rdn rdn = rdns.get( rdns.size() - posn - 1 );
-
-            return rdn.getNormName();
-        }
-    }
-
-
-    /**
      * Retrieves a component of this name.
      *
      * @param posn
@@ -1043,6 +1017,89 @@ public final class Dn implements Iterable<Rdn>
         return UnmodifiableList.decorate( rdns );
     }
 
+
+    /**
+     * Get the descendant of a given DN, using the ancestr DN. Assuming that
+     * a DN has two parts :<br/>
+     * DN = [descendant DN][ancestor DN]<br/>
+     * To get back the descendant from the full DN, you just pass the ancestor DN
+     * as a parameter. Here is a working example :
+     * <pre>
+     * Dn dn = new Dn( "cn=test, dc=server, dc=directory, dc=apache, dc=org" );
+     * 
+     * Dn descendant = dn.getDescendantOf( "dc=apache, dc=org" );
+     * 
+     * // At this point, the descendant contains cn=test, dc=server, dc=directory"
+     * </pre> 
+     */
+    public Dn getDescendantOf( String ancestor ) throws LdapInvalidDnException
+    {
+        return getDescendantOf( new Dn( schemaManager, ancestor ) );
+    }
+    
+
+    
+    /**
+     * Get the descendant of a given DN, using the ancestr DN. Assuming that
+     * a DN has two parts :<br/>
+     * DN = [descendant DN][ancestor DN]<br/>
+     * To get back the descendant from the full DN, you just pass the ancestor DN
+     * as a parameter. Here is a working example :
+     * <pre>
+     * Dn dn = new Dn( "cn=test, dc=server, dc=directory, dc=apache, dc=org" );
+     * 
+     * Dn descendant = dn.getDescendantOf( "dc=apache, dc=org" );
+     * 
+     * // At this point, the descendant contains cn=test, dc=server, dc=directory"
+     * </pre> 
+     */
+    public Dn getDescendantOf( Dn ancestor ) throws LdapInvalidDnException
+    {
+        if ( ( ancestor == null ) || ( ancestor.size() == 0 ) )
+        {
+            return this;
+        }
+        
+        if ( rdns.size() == 0 )
+        {
+            return EMPTY_DN;
+        }
+        
+        int length = ancestor.size();
+        
+        if ( length > rdns.size() )
+        {
+            String message = I18n.err( I18n.ERR_04206, length, rdns.size() );
+            LOG.error( message );
+            throw new ArrayIndexOutOfBoundsException( message );
+        }
+
+        Dn newDn = new Dn( schemaManager );
+        List<Rdn> rdnsAncestor = ancestor.getRdns();
+        
+        for ( int i = 0; i < ancestor.size(); i++ )
+        {
+            Rdn rdn = rdns.get( size() -1 - i );
+            Rdn rdnDescendant = rdnsAncestor.get( ancestor.size() - 1 - i );
+            
+            if ( !rdn.equals( rdnDescendant ) )
+            {
+                throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX );
+            }
+        }
+
+        for ( int i = 0; i < rdns.size() - length; i++ )
+        {
+            // Don't forget to clone the rdns !
+            newDn.rdns.add( rdns.get( i ).clone() );
+        }
+
+        newDn.toUpName();
+        newDn.toNormName();
+        newDn.normalized.set( normalized.get() );
+
+        return newDn;
+    }
 
     /**
      * Get the ancestor of a given DN, using the descendant DN. Assuming that
