@@ -22,9 +22,7 @@ package org.apache.directory.shared.ldap.extras.extended.ads_impl;
 
 
 import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
-import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
@@ -41,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public final class StoredProcedureGrammar extends AbstractGrammar
+public final class StoredProcedureGrammar extends AbstractGrammar<StoredProcedureContainer>
 {
     //~ Static fields/initializers -----------------------------------------------------------------
 
@@ -50,7 +48,7 @@ public final class StoredProcedureGrammar extends AbstractGrammar
     static final Logger LOG = LoggerFactory.getLogger( StoredProcedureGrammar.class );
 
     /** The instance of grammar. StoredProcedureGrammar is a singleton. */
-    private static Grammar instance = new StoredProcedureGrammar();
+    private static StoredProcedureGrammar instance = new StoredProcedureGrammar();
 
 
     //~ Constructors -------------------------------------------------------------------------------
@@ -58,6 +56,7 @@ public final class StoredProcedureGrammar extends AbstractGrammar
     /**
      * Creates a new StoredProcedureGrammar object.
      */
+    @SuppressWarnings("unchecked")
     private StoredProcedureGrammar()
     {
         setName( StoredProcedureGrammar.class.getName() );
@@ -72,7 +71,7 @@ public final class StoredProcedureGrammar extends AbstractGrammar
         //   ...
         // Nothing to do.
         super.transitions[StoredProcedureStatesEnum.START_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = 
-            new GrammarTransition( StoredProcedureStatesEnum.START_STATE, 
+            new GrammarTransition<StoredProcedureContainer>( StoredProcedureStatesEnum.START_STATE, 
                                     StoredProcedureStatesEnum.STORED_PROCEDURE_STATE, 
                                     UniversalTag.SEQUENCE.getValue(), 
                                     null );
@@ -82,17 +81,14 @@ public final class StoredProcedureGrammar extends AbstractGrammar
         //
         // Creates the storeProcedure and stores the language
         super.transitions[StoredProcedureStatesEnum.STORED_PROCEDURE_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = 
-            new GrammarTransition( StoredProcedureStatesEnum.STORED_PROCEDURE_STATE, 
+            new GrammarTransition<StoredProcedureContainer>( StoredProcedureStatesEnum.STORED_PROCEDURE_STATE, 
                                     StoredProcedureStatesEnum.LANGUAGE_STATE, 
                                     UniversalTag.OCTET_STRING.getValue(),
-                new GrammarAction( "Stores the language" )
+                new GrammarAction<StoredProcedureContainer>( "Stores the language" )
             {
-                public void action( Asn1Container container ) throws DecoderException
+                public void action( StoredProcedureContainer container ) throws DecoderException
                 {
-
-                    StoredProcedureContainer storedProcedureContainer = ( StoredProcedureContainer ) container;
-
-                    TLV tlv = storedProcedureContainer.getCurrentTLV();
+                    TLV tlv = container.getCurrentTLV();
 
                     StoredProcedure storedProcedure = null;
 
@@ -116,7 +112,7 @@ public final class StoredProcedureGrammar extends AbstractGrammar
 
                         storedProcedure = new StoredProcedure();
                         storedProcedure.setLanguage( language );
-                        storedProcedureContainer.setStoredProcedure( storedProcedure );
+                        container.setStoredProcedure( storedProcedure );
                     }
                 }
             } );
@@ -125,20 +121,16 @@ public final class StoredProcedureGrammar extends AbstractGrammar
         //    ...
         // Stores the procedure.
         super.transitions[StoredProcedureStatesEnum.LANGUAGE_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = 
-            new GrammarTransition( StoredProcedureStatesEnum.LANGUAGE_STATE, 
+            new GrammarTransition<StoredProcedureContainer>( StoredProcedureStatesEnum.LANGUAGE_STATE, 
                                     StoredProcedureStatesEnum.PROCEDURE_STATE, 
                                     UniversalTag.OCTET_STRING.getValue(),
-                new GrammarAction(
-                "Stores the procedure" )
+                new GrammarAction<StoredProcedureContainer>( "Stores the procedure" )
             {
-                public void action( Asn1Container container ) throws DecoderException
+                public void action( StoredProcedureContainer container ) throws DecoderException
                 {
+                    TLV tlv = container.getCurrentTLV();
 
-                    StoredProcedureContainer storedProcedureContainer = ( StoredProcedureContainer ) container;
-
-                    TLV tlv = storedProcedureContainer.getCurrentTLV();
-
-                    StoredProcedure storedProcedure = storedProcedureContainer.getStoredProcedure();
+                    StoredProcedure storedProcedure = container.getStoredProcedure();
 
                     // Store the value.
                     if ( tlv.getLength() == 0 )
@@ -167,13 +159,12 @@ public final class StoredProcedureGrammar extends AbstractGrammar
         // The list of parameters will be created with the first parameter.
         // We can have an empty list of parameters, so the PDU can be empty
         super.transitions[StoredProcedureStatesEnum.PROCEDURE_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = 
-            new GrammarTransition( StoredProcedureStatesEnum.PROCEDURE_STATE, 
+            new GrammarTransition<StoredProcedureContainer>( StoredProcedureStatesEnum.PROCEDURE_STATE, 
                                     StoredProcedureStatesEnum.PARAMETERS_STATE, 
                                     UniversalTag.SEQUENCE.getValue(), 
-            new GrammarAction(
-                "Stores the parameters" )
+            new GrammarAction<StoredProcedureContainer>( "Stores the parameters" )
             {
-                public void action( Asn1Container container ) throws DecoderException
+                public void action( StoredProcedureContainer container ) throws DecoderException
                 {
                     StoredProcedureContainer storedProcedureContainer = ( StoredProcedureContainer ) container;
                     storedProcedureContainer.setGrammarEndAllowed( true );
@@ -184,7 +175,7 @@ public final class StoredProcedureGrammar extends AbstractGrammar
         //    ...
         // Nothing to do. 
         super.transitions[StoredProcedureStatesEnum.PARAMETERS_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = 
-            new GrammarTransition( StoredProcedureStatesEnum.PARAMETERS_STATE, 
+            new GrammarTransition<StoredProcedureContainer>( StoredProcedureStatesEnum.PARAMETERS_STATE, 
                                     StoredProcedureStatesEnum.PARAMETER_STATE, 
                                     UniversalTag.SEQUENCE.getValue(), 
                                     null );
@@ -195,17 +186,15 @@ public final class StoredProcedureGrammar extends AbstractGrammar
         //
         // We can create a parameter, and store its type
         super.transitions[StoredProcedureStatesEnum.PARAMETER_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = 
-            new GrammarTransition( StoredProcedureStatesEnum.PARAMETER_STATE, 
+            new GrammarTransition<StoredProcedureContainer>( StoredProcedureStatesEnum.PARAMETER_STATE, 
                                     StoredProcedureStatesEnum.PARAMETER_TYPE_STATE, 
                                     UniversalTag.OCTET_STRING.getValue(),
-                new GrammarAction( "Store parameter type" )
+                new GrammarAction<StoredProcedureContainer>( "Store parameter type" )
             {
-                public void action( Asn1Container container ) throws DecoderException
+                public void action( StoredProcedureContainer container ) throws DecoderException
                 {
-                    StoredProcedureContainer storedProcedureContainer = ( StoredProcedureContainer ) container;
-
-                    TLV tlv = storedProcedureContainer.getCurrentTLV();
-                    StoredProcedure storedProcedure = storedProcedureContainer.getStoredProcedure();
+                    TLV tlv = container.getCurrentTLV();
+                    StoredProcedure storedProcedure = container.getStoredProcedure();
 
                     // Store the value.
                     if ( tlv.getLength() == 0 )
@@ -241,12 +230,12 @@ public final class StoredProcedureGrammar extends AbstractGrammar
         // }
         // Store the parameter value
         super.transitions[StoredProcedureStatesEnum.PARAMETER_TYPE_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = 
-            new GrammarTransition( StoredProcedureStatesEnum.PARAMETER_TYPE_STATE, 
+            new GrammarTransition<StoredProcedureContainer>( StoredProcedureStatesEnum.PARAMETER_TYPE_STATE, 
                                     StoredProcedureStatesEnum.PARAMETER_VALUE_STATE, 
                                     UniversalTag.OCTET_STRING.getValue(),
-                new GrammarAction( "Store parameter value" )
+                new GrammarAction<StoredProcedureContainer>( "Store parameter value" )
             {
-                public void action( Asn1Container container ) throws DecoderException
+                public void action( StoredProcedureContainer container ) throws DecoderException
                 {
                     StoredProcedureContainer storedProcedureContainer = ( StoredProcedureContainer ) container;
 
@@ -295,7 +284,7 @@ public final class StoredProcedureGrammar extends AbstractGrammar
         // 
         // Loop on next parameter
         super.transitions[StoredProcedureStatesEnum.PARAMETER_VALUE_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = 
-            new GrammarTransition( StoredProcedureStatesEnum.PARAMETER_VALUE_STATE, 
+            new GrammarTransition<StoredProcedureContainer>( StoredProcedureStatesEnum.PARAMETER_VALUE_STATE, 
                                     StoredProcedureStatesEnum.PARAMETER_STATE, 
                                     UniversalTag.SEQUENCE.getValue(),
                                     null );
@@ -309,7 +298,7 @@ public final class StoredProcedureGrammar extends AbstractGrammar
      *
      * @return An instance on the StoredProcedure Grammar
      */
-    public static Grammar getInstance()
+    public static StoredProcedureGrammar getInstance()
     {
         return instance;
     }

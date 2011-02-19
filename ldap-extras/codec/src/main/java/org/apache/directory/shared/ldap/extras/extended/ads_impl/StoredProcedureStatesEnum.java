@@ -90,16 +90,9 @@ public enum StoredProcedureStatesEnum implements States
      * @param grammar The grammar class
      * @return The grammar name
      */
-    public String getGrammarName( Grammar grammar )
+    public String getGrammarName( Grammar<StoredProcedureContainer> grammar )
     {
-        if ( grammar instanceof StoredProcedureGrammar )
-        {
-            return "STORED_PROCEDURE_GRAMMAR";
-        }
-        else
-        {
-            return "UNKNOWN GRAMMAR";
-        }
+        return "STORED_PROCEDURE_GRAMMAR";
     }
 
 
