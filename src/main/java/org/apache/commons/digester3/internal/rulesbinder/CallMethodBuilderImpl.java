@@ -112,8 +112,11 @@ final class CallMethodBuilderImpl
         }
 
         this.paramCount = paramCount;
+
         if (this.paramCount == 0) {
-            this.paramTypes = new Class<?>[] { String.class };
+            if (this.paramTypes == null || this.paramTypes.length != 1) {
+                this.paramTypes = new Class<?>[] { String.class };
+            }
         } else {
             this.paramTypes = new Class<?>[this.paramCount];
             for (int i = 0; i < paramTypes.length; i++) {
