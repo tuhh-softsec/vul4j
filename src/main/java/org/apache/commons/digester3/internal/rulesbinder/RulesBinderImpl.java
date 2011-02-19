@@ -99,7 +99,7 @@ public final class RulesBinderImpl implements RulesBinder {
         final String keyPattern;
 
         if (pattern == null || pattern.length() == 0) {
-            this.addError(new IllegalArgumentException("Null or empty pattern is not valid"));
+            this.addError("Null or empty pattern is not valid");
             keyPattern = null;
         } else {
             if (pattern.endsWith("/")) {
