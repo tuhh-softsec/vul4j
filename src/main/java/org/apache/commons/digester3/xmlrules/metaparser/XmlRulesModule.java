@@ -30,11 +30,16 @@ public final class XmlRulesModule implements RulesModule {
 
     private final String rootSystemId;
 
+    private final String rootPath;
+
     private WithMemoryRulesBinder memoryRulesBinder;
 
-    public XmlRulesModule(final RulesBinder targetRulesBinder, String rootSystemId) {
+    public XmlRulesModule(final RulesBinder targetRulesBinder,
+            String rootSystemId,
+            /* @Nullable */ String rootPath) {
         this.targetRulesBinder = targetRulesBinder;
         this.rootSystemId = rootSystemId;
+        this.rootPath = rootPath;
     }
 
     /**
@@ -51,6 +56,10 @@ public final class XmlRulesModule implements RulesModule {
         }
 
         PatternStack patternStack = this.memoryRulesBinder.getPatternStack();
+
+        if (this.rootPath != null) {
+            patternStack.push(this.rootPath);
+        }
 
         try {
             forPattern("*/pattern")

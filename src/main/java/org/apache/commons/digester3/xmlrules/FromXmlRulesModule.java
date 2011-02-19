@@ -48,6 +48,8 @@ public final class FromXmlRulesModule implements RulesModule {
 
     private URL xmlRulesDtdUrl = this.getClass().getResource(DIGESTER_DTD_PATH);
 
+    private String rootPath;
+
     /**
      * 
      * @param file
@@ -100,11 +102,15 @@ public final class FromXmlRulesModule implements RulesModule {
         this.xmlRulesDtdUrl = xmlRulesDtdUrl;
     }
 
+    public void setRootPath(String rootPath) {
+        this.rootPath = rootPath;
+    }
+
     /**
      * {@inheritDoc}
      */
     public void configure(RulesBinder rulesBinder) {
-        XmlRulesModule xmlRulesModule = new XmlRulesModule(rulesBinder, this.getSystemId());
+        XmlRulesModule xmlRulesModule = new XmlRulesModule(rulesBinder, this.getSystemId(), this.rootPath);
 
         try {
             newLoader(xmlRulesModule)
