@@ -50,8 +50,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
-                    <source>${javac.src.version}</source>
-                    <target>${javac.target.version}</target>
+                    <source>${maven.compile.source}</source>
+                    <target>${maven.compile.target}</target>
                     <showDeprecation>true</showDeprecation>
                     <showWarnings>true</showWarnings>
                 </configuration>
