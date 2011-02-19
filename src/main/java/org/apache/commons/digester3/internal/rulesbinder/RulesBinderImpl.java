@@ -67,20 +67,24 @@ public final class RulesBinderImpl implements RulesBinder {
      */
     public void addError(String messagePattern, Object... arguments) {
         StackTraceElement[] stackTrace = new Exception().getStackTrace();
+        // let's check if it is an AbstractRulesModule extension first
         StackTraceElement element = stackTrace[3];
         Class<?> moduleClass = null;
 
         try {
+            // check if the set ClassLoader resolves the Class in the StackTrace
             moduleClass = Class.forName(element.getClassName(), false, this.classLoader);
         } catch (ClassNotFoundException e) {
             try {
+                // try otherwise with current ClassLoader
                 moduleClass = Class.forName(element.getClassName(), false, this.getClass().getClassLoader());
             } catch (ClassNotFoundException e1) {
-                // swallow, don't write the file name:line number
+                // Class in the StackTrace can't be found, don't write the file name:line number detail in the message
             }
         }
 
         if (moduleClass != null) {
+            // if it is not an AbstractRulesModule, then a RulesModule implementation
             if (!AbstractRulesModule.class.isAssignableFrom(moduleClass)) {
                 element = stackTrace[2];
             }
