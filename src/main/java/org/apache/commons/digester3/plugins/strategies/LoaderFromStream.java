@@ -75,7 +75,7 @@ public class LoaderFromStream extends RuleLoader {
         InputSource source = new InputSource(new ByteArrayInputStream(this.input));
         FromXmlRulesModule ruleModule = new FromXmlRulesModule(source);
         // creating new digester allows decorating existing Rules instance
-        newLoader(ruleModule).setClassLoader(d.getClassLoader()).newDigester(d.getRules());
+        newLoader(ruleModule).setClassLoader(d.getClassLoader()).decorate(d);
     }
 
 }
