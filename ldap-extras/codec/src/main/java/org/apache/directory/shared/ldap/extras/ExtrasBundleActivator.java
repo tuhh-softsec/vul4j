@@ -29,7 +29,7 @@ import org.apache.directory.shared.ldap.extras.controls.syncrepl_impl.SyncInfoVa
 import org.apache.directory.shared.ldap.extras.controls.syncrepl_impl.SyncModifyDnFactory;
 import org.apache.directory.shared.ldap.extras.controls.syncrepl_impl.SyncRequestValueFactory;
 import org.apache.directory.shared.ldap.extras.controls.syncrepl_impl.SyncStateValueFactory;
-import org.apache.directory.shared.ldap.extras.extended.CancelExtendedOpFactory;
+import org.apache.directory.shared.ldap.extras.extended.ads_impl.CancelExtendedOpFactory;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;

@@ -17,10 +17,11 @@
  *   under the License.
  *
  */
-package org.apache.directory.shared.ldap.extras.extended;
+package org.apache.directory.shared.ldap.extras.extended.ads_impl;
 
 
 import org.apache.directory.shared.ldap.codec.api.ExtendedOpFactory;
+import org.apache.directory.shared.ldap.extras.extended.CancelRequest;
 
 
 /**
