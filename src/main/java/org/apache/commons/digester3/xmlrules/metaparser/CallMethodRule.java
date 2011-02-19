@@ -49,11 +49,6 @@ final class CallMethodRule extends AbstractXmlRule {
             builder.withTargetOffset(targetOffset);
         }
 
-        if ("true".equalsIgnoreCase(attributes.getValue("usingElementBodyAsArgument"))) {
-            builder.usingElementBodyAsArgument();
-            return; // this takes advantage
-        }
-
         builder.useExactMatch("true".equalsIgnoreCase(attributes.getValue("useExactMatch")));
 
         String paramCountStr = attributes.getValue("paramcount");
@@ -72,6 +67,10 @@ final class CallMethodRule extends AbstractXmlRule {
                 paramTypeNames[counter++] = tokens.nextToken();
             }
             builder.withParamTypes(paramTypeNames);
+        }
+
+        if ("true".equalsIgnoreCase(attributes.getValue("usingElementBodyAsArgument"))) {
+            builder.usingElementBodyAsArgument();
         }
     }
 
