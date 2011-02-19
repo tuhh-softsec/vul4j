@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.List;
 
+import org.apache.commons.digester3.AbstractRulesModule;
 import org.apache.commons.digester3.DigesterLoadingException;
 import org.apache.commons.digester3.Rule;
 import org.apache.commons.digester3.RulesBinder;
@@ -65,6 +66,26 @@ public final class RulesBinderImpl implements RulesBinder {
      * {@inheritDoc}
      */
     public void addError(String messagePattern, Object... arguments) {
+        StackTraceElement[] stackTrace = new Exception().getStackTrace();
+        StackTraceElement element = stackTrace[3];
+        Class<?> moduleClass = null;
+
+        try {
+            moduleClass = Class.forName(element.getClassName(), false, this.classLoader);
+        } catch (ClassNotFoundException e) {
+            try {
+                moduleClass = Class.forName(element.getClassName(), false, this.getClass().getClassLoader());
+            } catch (ClassNotFoundException e1) {
+                // swallow, don't write the file name:line number
+            }
+        }
+
+        if (moduleClass != null) {
+            if (!AbstractRulesModule.class.isAssignableFrom(moduleClass)) {
+                element = stackTrace[2];
+            }
+            messagePattern = String.format("%s (%s:%s)", messagePattern, element.getFileName(), element.getLineNumber());
+        }
         this.addError(new ErrorMessage(messagePattern, arguments));
     }
 
