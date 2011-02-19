@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public final class CancelGrammar extends AbstractGrammar
+public final class CancelGrammar extends AbstractGrammar<CancelContainer>
 {
     /** The logger */
     static final Logger LOG = LoggerFactory.getLogger( CancelGrammar.class );
@@ -59,12 +59,13 @@ public final class CancelGrammar extends AbstractGrammar
     static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
     /** The instance of grammar. CancelGrammar is a singleton */
-    private static Grammar instance = new CancelGrammar();
+    private static Grammar<CancelContainer> instance = new CancelGrammar();
 
 
     /**
      * Creates a new GracefulDisconnectGrammar object.
      */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private CancelGrammar()
     {
         setName( CancelGrammar.class.getName() );
@@ -80,11 +81,10 @@ public final class CancelGrammar extends AbstractGrammar
          * Creates the Cancel object
          */
         super.transitions[CancelStatesEnum.START_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = 
-            new GrammarTransition( CancelStatesEnum.START_STATE,
+            new GrammarTransition<CancelContainer>( CancelStatesEnum.START_STATE,
                                     CancelStatesEnum.CANCEL_SEQUENCE_STATE, 
                                     UniversalTag.SEQUENCE.getValue(),
-                new GrammarAction(
-                "Init Cancel" )
+                new GrammarAction( "Init Cancel" )
             {
                 public void action( Asn1Container container )
                 {
@@ -104,7 +104,7 @@ public final class CancelGrammar extends AbstractGrammar
          * Set the cancelId value into the Cancel object.    
          */
         super.transitions[CancelStatesEnum.CANCEL_SEQUENCE_STATE.ordinal()][UniversalTag.INTEGER.getValue()] = 
-            new GrammarTransition( CancelStatesEnum.CANCEL_SEQUENCE_STATE,
+            new GrammarTransition<CancelContainer>( CancelStatesEnum.CANCEL_SEQUENCE_STATE,
                                     CancelStatesEnum.CANCEL_ID_STATE, 
                                     UniversalTag.INTEGER.getValue(), 
                 new GrammarAction( "Stores CancelId" )
@@ -142,7 +142,7 @@ public final class CancelGrammar extends AbstractGrammar
      * 
      * @return An instance on this grammar
      */
-    public static Grammar getInstance()
+    public static Grammar<CancelContainer> getInstance()
     {
         return instance;
     }

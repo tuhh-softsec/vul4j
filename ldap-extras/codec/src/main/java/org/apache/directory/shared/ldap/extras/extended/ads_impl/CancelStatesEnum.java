@@ -71,14 +71,9 @@ public enum CancelStatesEnum implements States
      * @param grammar The grammar class
      * @return The grammar name
      */
-    public String getGrammarName( Grammar grammar )
+    public String getGrammarName( Grammar<CancelContainer> grammar )
     {
-        if ( grammar instanceof CancelGrammar )
-        {
-            return "CANCEL_GRAMMAR";
-        }
-
-        return "UNKNOWN GRAMMAR";
+        return "CANCEL_GRAMMAR";
     }
 
 

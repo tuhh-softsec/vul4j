@@ -20,7 +20,6 @@
 package org.apache.directory.shared.ldap.extras.extended.ads_impl;
 
 
-import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
 import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
@@ -53,7 +52,7 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 
-public class CertGenerationGrammar extends AbstractGrammar
+public class CertGenerationGrammar extends AbstractGrammar<CertGenerationContainer>
 {
 
     /** logger */
@@ -63,9 +62,10 @@ public class CertGenerationGrammar extends AbstractGrammar
     static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
     /** The instance of grammar. CertGenerationObjectGrammar is a singleton */
-    private static Grammar instance = new CertGenerationGrammar();
+    private static Grammar<CertGenerationContainer> instance = new CertGenerationGrammar();
 
 
+    @SuppressWarnings("unchecked")
     public CertGenerationGrammar()
     {
         setName( CertGenerationGrammar.class.getName() );
@@ -81,15 +81,15 @@ public class CertGenerationGrammar extends AbstractGrammar
          *     
          * Creates the CertGenerationObject object
          */
-        super.transitions[CertGenerationStatesEnum.START_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition(
+        super.transitions[CertGenerationStatesEnum.START_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = 
+            new GrammarTransition<CertGenerationContainer>(
             CertGenerationStatesEnum.START_STATE, CertGenerationStatesEnum.CERT_GENERATION_REQUEST_SEQUENCE_STATE,
-            UniversalTag.SEQUENCE.getValue(), new GrammarAction( "Init CertGenerationObject" )
+            UniversalTag.SEQUENCE.getValue(), new GrammarAction<CertGenerationContainer>( "Init CertGenerationObject" )
             {
-                public void action( Asn1Container container )
+                public void action( CertGenerationContainer container )
                 {
-                    CertGenerationContainer certGenContainer = ( CertGenerationContainer ) container;
                     CertGenerationObject certGenerationObject = new CertGenerationObject();
-                    certGenContainer.setCertGenerationObject( certGenerationObject );
+                    container.setCertGenerationObject( certGenerationObject );
                 }
             } );
 
@@ -102,14 +102,14 @@ public class CertGenerationGrammar extends AbstractGrammar
          *     
          * Set the targetDN value into the CertGenerationObject instance.
          */
-        super.transitions[CertGenerationStatesEnum.CERT_GENERATION_REQUEST_SEQUENCE_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            CertGenerationStatesEnum.CERT_GENERATION_REQUEST_SEQUENCE_STATE, CertGenerationStatesEnum.TARGETDN_STATE,
-            UniversalTag.OCTET_STRING.getValue(), new GrammarAction( "Set Cert Generation target Dn value" )
+        super.transitions[CertGenerationStatesEnum.CERT_GENERATION_REQUEST_SEQUENCE_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = 
+            new GrammarTransition<CertGenerationContainer>( CertGenerationStatesEnum.CERT_GENERATION_REQUEST_SEQUENCE_STATE, 
+                CertGenerationStatesEnum.TARGETDN_STATE, UniversalTag.OCTET_STRING.getValue(), 
+                new GrammarAction<CertGenerationContainer>( "Set Cert Generation target Dn value" )
             {
-                public void action( Asn1Container container ) throws DecoderException
+                public void action( CertGenerationContainer container ) throws DecoderException
                 {
-                    CertGenerationContainer certGenContainer = ( CertGenerationContainer ) container;
-                    Value value = certGenContainer.getCurrentTLV().getValue();
+                    Value value = container.getCurrentTLV().getValue();
 
                     String targetDN = Strings.utf8ToString(value.getData());
 
@@ -127,7 +127,7 @@ public class CertGenerationGrammar extends AbstractGrammar
                             throw new DecoderException( msg );
                         }
                         
-                        certGenContainer.getCertGenerationObject().setTargetDN( targetDN );
+                        container.getCertGenerationObject().setTargetDN( targetDN );
                     }
                     else
                     {
@@ -148,14 +148,14 @@ public class CertGenerationGrammar extends AbstractGrammar
          *     
          * Set the issuerDN value into the CertGenerationObject instance.
          */
-        super.transitions[CertGenerationStatesEnum.TARGETDN_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            CertGenerationStatesEnum.TARGETDN_STATE, CertGenerationStatesEnum.ISSUER_STATE, UniversalTag.OCTET_STRING.getValue(),
-            new GrammarAction( "Set Cert Generation issuer Dn value" )
+        super.transitions[CertGenerationStatesEnum.TARGETDN_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = 
+            new GrammarTransition<CertGenerationContainer>( CertGenerationStatesEnum.TARGETDN_STATE, 
+                CertGenerationStatesEnum.ISSUER_STATE, UniversalTag.OCTET_STRING.getValue(),
+                new GrammarAction<CertGenerationContainer>( "Set Cert Generation issuer Dn value" )
             {
-                public void action( Asn1Container container ) throws DecoderException
+                public void action( CertGenerationContainer container ) throws DecoderException
                 {
-                    CertGenerationContainer certGenContainer = ( CertGenerationContainer ) container;
-                    Value value = certGenContainer.getCurrentTLV().getValue();
+                    Value value = container.getCurrentTLV().getValue();
 
                     String issuerDN = Strings.utf8ToString(value.getData());
 
@@ -173,7 +173,7 @@ public class CertGenerationGrammar extends AbstractGrammar
                             throw new DecoderException( msg );
                         }
                         
-                        certGenContainer.getCertGenerationObject().setIssuerDN( issuerDN );
+                        container.getCertGenerationObject().setIssuerDN( issuerDN );
                     }
                 }
             } );
@@ -188,14 +188,14 @@ public class CertGenerationGrammar extends AbstractGrammar
          *     
          * Set the subjectDN value into the CertGenerationObject instance.
          */
-        super.transitions[CertGenerationStatesEnum.ISSUER_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            CertGenerationStatesEnum.ISSUER_STATE, CertGenerationStatesEnum.SUBJECT_STATE, UniversalTag.OCTET_STRING.getValue(),
-            new GrammarAction( "Set Cert Generation subject Dn value" )
+        super.transitions[CertGenerationStatesEnum.ISSUER_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = 
+            new GrammarTransition<CertGenerationContainer>( CertGenerationStatesEnum.ISSUER_STATE, 
+                CertGenerationStatesEnum.SUBJECT_STATE, UniversalTag.OCTET_STRING.getValue(),
+            new GrammarAction<CertGenerationContainer>( "Set Cert Generation subject Dn value" )
             {
-                public void action( Asn1Container container ) throws DecoderException
+                public void action( CertGenerationContainer container ) throws DecoderException
                 {
-                    CertGenerationContainer certGenContainer = ( CertGenerationContainer ) container;
-                    Value value = certGenContainer.getCurrentTLV().getValue();
+                    Value value = container.getCurrentTLV().getValue();
 
                     String subjectDN = Strings.utf8ToString(value.getData());
 
@@ -213,7 +213,7 @@ public class CertGenerationGrammar extends AbstractGrammar
                             throw new DecoderException( msg );
                         }
 
-                        certGenContainer.getCertGenerationObject().setSubjectDN( subjectDN );
+                        container.getCertGenerationObject().setSubjectDN( subjectDN );
                     }
                     else
                     {
@@ -233,14 +233,15 @@ public class CertGenerationGrammar extends AbstractGrammar
          *     
          * Set the key algorithm value into the CertGenerationObject instance.
          */
-        super.transitions[CertGenerationStatesEnum.SUBJECT_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition(
-            CertGenerationStatesEnum.SUBJECT_STATE, CertGenerationStatesEnum.KEY_ALGORITHM_STATE,
-            UniversalTag.OCTET_STRING.getValue(), new GrammarAction( "Set Cert Generation key algorithm value" )
+        super.transitions[CertGenerationStatesEnum.SUBJECT_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] = 
+            new GrammarTransition<CertGenerationContainer>( CertGenerationStatesEnum.SUBJECT_STATE, 
+                CertGenerationStatesEnum.KEY_ALGORITHM_STATE,
+                UniversalTag.OCTET_STRING.getValue(), 
+                new GrammarAction<CertGenerationContainer>( "Set Cert Generation key algorithm value" )
             {
-                public void action( Asn1Container container ) throws DecoderException
+                public void action( CertGenerationContainer container ) throws DecoderException
                 {
-                    CertGenerationContainer certGenContainer = ( CertGenerationContainer ) container;
-                    Value value = certGenContainer.getCurrentTLV().getValue();
+                    Value value = container.getCurrentTLV().getValue();
 
                     String keyAlgorithm = Strings.utf8ToString(value.getData());
 
@@ -251,10 +252,10 @@ public class CertGenerationGrammar extends AbstractGrammar
 
                     if ( keyAlgorithm != null && ( keyAlgorithm.trim().length() > 0 ) )
                     {
-                        certGenContainer.getCertGenerationObject().setKeyAlgorithm( keyAlgorithm );
+                        container.getCertGenerationObject().setKeyAlgorithm( keyAlgorithm );
                     }
 
-                    certGenContainer.setGrammarEndAllowed( true );
+                    container.setGrammarEndAllowed( true );
                 }
             } );
 
@@ -266,7 +267,7 @@ public class CertGenerationGrammar extends AbstractGrammar
      * 
      * @return An instance on this grammar
      */
-    public static Grammar getInstance()
+    public static Grammar<CertGenerationContainer> getInstance()
     {
         return instance;
     }

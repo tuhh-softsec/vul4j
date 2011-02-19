@@ -62,14 +62,9 @@ public enum CertGenerationStatesEnum implements States
      * @param grammar The grammar class
      * @return The grammar name
      */
-    public String getGrammarName( Grammar grammar )
+    public String getGrammarName( Grammar<CertGenerationContainer> grammar )
     {
-        if ( grammar instanceof CertGenerationGrammar )
-        {
-            return "CERT_GENERATION_GRAMMER";
-        }
-        
-        return "UNKNOWN GRAMMAR";
+        return "CERT_GENERATION_GRAMMER";
     }
 
     
