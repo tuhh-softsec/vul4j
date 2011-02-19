@@ -80,14 +80,9 @@ public enum GracefulDisconnectStatesEnum implements States
      * @param grammar The grammar class
      * @return The grammar name
      */
-    public String getGrammarName( Grammar grammar )
+    public String getGrammarName( Grammar<GracefulDisconnectContainer> grammar )
     {
-        if ( grammar instanceof GracefulDisconnectGrammar )
-        {
-            return "GRACEFUL_DISCONNECT_GRAMMAR";
-        }
-
-        return "UNKNOWN GRAMMAR";
+        return "GRACEFUL_DISCONNECT_GRAMMAR";
     }
 
 
