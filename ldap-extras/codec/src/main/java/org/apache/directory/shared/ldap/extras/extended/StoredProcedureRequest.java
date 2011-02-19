@@ -75,6 +75,16 @@ public class StoredProcedureRequest extends ExtendedRequestImpl
 
     /**
      * Instantiates a new stored procedure request.
+     */
+    public StoredProcedureRequest()
+    {
+        this.setRequestName( EXTENSION_OID );
+        this.procedure = new StoredProcedure();
+    }
+
+
+    /**
+     * Instantiates a new stored procedure request.
      *
      * @param messageId the message id
      * @param procedure the procedure

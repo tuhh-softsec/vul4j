@@ -47,4 +47,13 @@ public class StoredProcedureResponse extends ExtendedResponseImpl
     {
         super( messageId, EXTENSION_OID );
     }
+
+    
+    /**
+     * Instantiates a new stored procedure response.
+     */
+    public StoredProcedureResponse()
+    {
+        super( EXTENSION_OID );
+    }
 }
