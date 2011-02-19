@@ -75,14 +75,9 @@ public enum GracefulShutdownStatesEnum implements States
      * @param grammar The grammar class
      * @return The grammar name
      */
-    public String getGrammarName( Grammar grammar )
+    public String getGrammarName( Grammar<GracefulShutdownContainer> grammar )
     {
-        if ( grammar instanceof GracefulShutdownGrammar )
-        {
-            return "GRACEFUL_SHUTDOWN_GRAMMAR";
-        }
-
-        return "UNKNOWN GRAMMAR";
+        return "GRACEFUL_SHUTDOWN_GRAMMAR";
     }
 
 

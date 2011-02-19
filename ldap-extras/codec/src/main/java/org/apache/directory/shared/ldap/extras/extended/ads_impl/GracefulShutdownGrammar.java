@@ -21,9 +21,7 @@ package org.apache.directory.shared.ldap.extras.extended.ads_impl;
 
 
 import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.AbstractGrammar;
-import org.apache.directory.shared.asn1.ber.grammar.Grammar;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
 import org.apache.directory.shared.asn1.ber.tlv.IntegerDecoderException;
@@ -50,7 +48,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public final class GracefulShutdownGrammar extends AbstractGrammar
+public final class GracefulShutdownGrammar extends AbstractGrammar<GracefulShutdownContainer>
 {
     /** The logger */
     static final Logger LOG = LoggerFactory.getLogger( GracefulShutdownGrammar.class );
@@ -59,12 +57,13 @@ public final class GracefulShutdownGrammar extends AbstractGrammar
     static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
     /** The instance of grammar. GracefulShutdownGrammar is a singleton */
-    private static Grammar instance = new GracefulShutdownGrammar();
+    private static GracefulShutdownGrammar instance = new GracefulShutdownGrammar();
 
 
     /**
      * Creates a new GracefulShutdownGrammar object.
      */
+    @SuppressWarnings("unchecked")
     private GracefulShutdownGrammar()
     {
         setName( GracefulShutdownGrammar.class.getName() );
@@ -81,17 +80,16 @@ public final class GracefulShutdownGrammar extends AbstractGrammar
          * Creates the GracefulShutdown object
          */
         super.transitions[GracefulShutdownStatesEnum.START_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] = 
-            new GrammarTransition( GracefulShutdownStatesEnum.START_STATE, 
+            new GrammarTransition<GracefulShutdownContainer>( GracefulShutdownStatesEnum.START_STATE, 
                 GracefulShutdownStatesEnum.GRACEFUL_SHUTDOWN_SEQUENCE_STATE, 
                 UniversalTag.SEQUENCE.getValue(),
-                new GrammarAction( "Init GracefulShutdown" )
+                new GrammarAction<GracefulShutdownContainer>( "Init GracefulShutdown" )
             {
-                public void action( Asn1Container container )
+                public void action( GracefulShutdownContainer container )
                 {
-                    GracefulShutdownContainer gracefulShutdownContainer = ( GracefulShutdownContainer ) container;
                     GracefulShutdown gracefulShutdown = new GracefulShutdown();
-                    gracefulShutdownContainer.setGracefulShutdown( gracefulShutdown );
-                    gracefulShutdownContainer.setGrammarEndAllowed( true );
+                    container.setGracefulShutdown( gracefulShutdown );
+                    container.setGrammarEndAllowed( true );
                 }
             } );
 
@@ -106,15 +104,14 @@ public final class GracefulShutdownGrammar extends AbstractGrammar
          * object.
          */
         super.transitions[GracefulShutdownStatesEnum.GRACEFUL_SHUTDOWN_SEQUENCE_STATE.ordinal()][UniversalTag.INTEGER.getValue()] = 
-            new GrammarTransition( GracefulShutdownStatesEnum.GRACEFUL_SHUTDOWN_SEQUENCE_STATE, 
+            new GrammarTransition<GracefulShutdownContainer>( GracefulShutdownStatesEnum.GRACEFUL_SHUTDOWN_SEQUENCE_STATE, 
                                     GracefulShutdownStatesEnum.TIME_OFFLINE_STATE, 
                                     UniversalTag.INTEGER.getValue(), 
-                new GrammarAction( "Set Graceful Shutdown time offline" )
+                new GrammarAction<GracefulShutdownContainer>( "Set Graceful Shutdown time offline" )
             {
-                public void action( Asn1Container container ) throws DecoderException
+                public void action( GracefulShutdownContainer container ) throws DecoderException
                 {
-                    GracefulShutdownContainer gracefulShutdownContainer = ( GracefulShutdownContainer ) container;
-                    Value value = gracefulShutdownContainer.getCurrentTLV().getValue();
+                    Value value = container.getCurrentTLV().getValue();
 
                     try
                     {
@@ -125,8 +122,8 @@ public final class GracefulShutdownGrammar extends AbstractGrammar
                             LOG.debug( "Time Offline = " + timeOffline );
                         }
 
-                        gracefulShutdownContainer.getGracefulShutdown().setTimeOffline( timeOffline );
-                        gracefulShutdownContainer.setGrammarEndAllowed( true );
+                        container.getGracefulShutdown().setTimeOffline( timeOffline );
+                        container.setGrammarEndAllowed( true );
                     }
                     catch ( IntegerDecoderException e )
                     {
@@ -148,16 +145,15 @@ public final class GracefulShutdownGrammar extends AbstractGrammar
          * object.
          */
         super.transitions[GracefulShutdownStatesEnum.TIME_OFFLINE_STATE.ordinal()][GracefulActionConstants.GRACEFUL_ACTION_DELAY_TAG] = 
-            new GrammarTransition( GracefulShutdownStatesEnum.TIME_OFFLINE_STATE, 
+            new GrammarTransition<GracefulShutdownContainer>( GracefulShutdownStatesEnum.TIME_OFFLINE_STATE, 
                                     GracefulShutdownStatesEnum.DELAY_STATE, 
                                     GracefulActionConstants.GRACEFUL_ACTION_DELAY_TAG, 
 
-                new GrammarAction( "Set Graceful Shutdown Delay" )
+                new GrammarAction<GracefulShutdownContainer>( "Set Graceful Shutdown Delay" )
             {
-                public void action( Asn1Container container ) throws DecoderException
+                public void action( GracefulShutdownContainer container ) throws DecoderException
                 {
-                    GracefulShutdownContainer gracefulShutdownContainer = ( GracefulShutdownContainer ) container;
-                    Value value = gracefulShutdownContainer.getCurrentTLV().getValue();
+                    Value value = container.getCurrentTLV().getValue();
 
                     try
                     {
@@ -168,8 +164,8 @@ public final class GracefulShutdownGrammar extends AbstractGrammar
                             LOG.debug( "Delay = " + delay );
                         }
 
-                        gracefulShutdownContainer.getGracefulShutdown().setDelay( delay );
-                        gracefulShutdownContainer.setGrammarEndAllowed( true );
+                        container.getGracefulShutdown().setDelay( delay );
+                        container.setGrammarEndAllowed( true );
                     }
                     catch ( IntegerDecoderException e )
                     {
@@ -192,13 +188,13 @@ public final class GracefulShutdownGrammar extends AbstractGrammar
          */
         super.transitions[GracefulShutdownStatesEnum.GRACEFUL_SHUTDOWN_SEQUENCE_STATE.ordinal()]
                          [GracefulActionConstants.GRACEFUL_ACTION_DELAY_TAG] = 
-            new GrammarTransition( GracefulShutdownStatesEnum.GRACEFUL_SHUTDOWN_SEQUENCE_STATE, 
+            new GrammarTransition<GracefulShutdownContainer>( GracefulShutdownStatesEnum.GRACEFUL_SHUTDOWN_SEQUENCE_STATE, 
                                     GracefulShutdownStatesEnum.DELAY_STATE, 
                                     GracefulActionConstants.GRACEFUL_ACTION_DELAY_TAG, 
 
-                new GrammarAction( "Set Graceful Shutdown Delay" )
+                new GrammarAction<GracefulShutdownContainer>( "Set Graceful Shutdown Delay" )
             {
-                public void action( Asn1Container container ) throws DecoderException
+                public void action( GracefulShutdownContainer container ) throws DecoderException
                 {
                     GracefulShutdownContainer gracefulShutdownContainer = ( GracefulShutdownContainer ) container;
                     Value value = gracefulShutdownContainer.getCurrentTLV().getValue();
@@ -231,7 +227,7 @@ public final class GracefulShutdownGrammar extends AbstractGrammar
      * 
      * @return An instance on this grammar
      */
-    public static Grammar getInstance()
+    public static GracefulShutdownGrammar getInstance()
     {
         return instance;
     }
