@@ -30,6 +30,7 @@ import org.apache.directory.shared.ldap.extras.controls.syncrepl_impl.SyncModify
 import org.apache.directory.shared.ldap.extras.controls.syncrepl_impl.SyncRequestValueFactory;
 import org.apache.directory.shared.ldap.extras.controls.syncrepl_impl.SyncStateValueFactory;
 import org.apache.directory.shared.ldap.extras.extended.ads_impl.CancelExtendedOpFactory;
+import org.apache.directory.shared.ldap.extras.extended.ads_impl.CertGenerationExtendedOpFactory;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -92,6 +93,9 @@ public class ExtrasBundleActivator implements BundleActivator
     private void registerExtrasExtendedOps( LdapCodecService codec )
     {
         ExtendedOpFactory<?> factory = new CancelExtendedOpFactory();
+        codec.registerExtendedOp( factory );
+        
+        factory = new CertGenerationExtendedOpFactory();
         codec.registerExtendedOp( factory );
     }
     

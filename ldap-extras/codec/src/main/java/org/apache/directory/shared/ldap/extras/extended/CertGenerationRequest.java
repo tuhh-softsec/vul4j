@@ -54,7 +54,6 @@ public class CertGenerationRequest extends ExtendedRequestImpl
 
 
     /**
-     * 
      * Creates a new instance of CertGenerationRequest.
      *
      * @param messageId the message id
@@ -73,6 +72,16 @@ public class CertGenerationRequest extends ExtendedRequestImpl
         certGenObj.setIssuerDN( issuerDN );
         certGenObj.setSubjectDN( subjectDN );
         certGenObj.setKeyAlgorithm( keyAlgorithm );
+    }
+
+
+    /**
+     * Creates a new instance of CertGenerationRequest.
+     */
+    public CertGenerationRequest()
+    {
+        setRequestName( EXTENSION_OID );
+        this.certGenObj = new CertGenerationObject();
     }
 
 
@@ -195,5 +204,4 @@ public class CertGenerationRequest extends ExtendedRequestImpl
     {
         certGenObj.setKeyAlgorithm( keyAlgorithm );
     }
-
 }
