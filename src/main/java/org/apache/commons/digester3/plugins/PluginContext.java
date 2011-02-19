@@ -152,8 +152,7 @@ public class PluginContext {
      * @param attrName is the attribute whose value contains the name of the
      * class to be instantiated.
      */
-    public void setPluginClassAttribute(String namespaceUri, 
-                                        String attrName) {
+    public void setPluginClassAttribute(String namespaceUri, String attrName) {
         pluginClassAttrNs = namespaceUri;
         pluginClassAttr = attrName;
     }
@@ -191,8 +190,7 @@ public class PluginContext {
      * @param attrName is the attribute whose value contains the id of the
      * plugin declaration to be used when instantiating an object.
      */
-    public void setPluginIdAttribute(String namespaceUri, 
-                                     String attrName) {
+    public void setPluginIdAttribute(String namespaceUri, String attrName) {
         pluginIdAttrNs = namespaceUri;
         pluginIdAttr = attrName;
     }
@@ -206,7 +204,7 @@ public class PluginContext {
     public String getPluginClassAttrNs() {
         return pluginClassAttrNs;
     }
-    
+
     /**
      * Get the namespace for the xml attribute which indicates to a 
      * PluginCreateRule which class is to be plugged in.
@@ -216,7 +214,7 @@ public class PluginContext {
     public String getPluginClassAttr() {
         return pluginClassAttr;
     }
-    
+
     /**
      * Get the namespace for the xml attribute which indicates to a 
      * PluginCreateRule which previous plugin declaration should be used.
@@ -226,7 +224,7 @@ public class PluginContext {
     public String getPluginIdAttrNs() {
         return pluginIdAttrNs;
     }
-    
+
     /**
      * Get the namespace for the xml attribute which indicates to a 
      * PluginCreateRule which previous plugin declaration should be used.
@@ -236,4 +234,5 @@ public class PluginContext {
     public String getPluginIdAttr() {
         return pluginIdAttr;
     }
+
 }

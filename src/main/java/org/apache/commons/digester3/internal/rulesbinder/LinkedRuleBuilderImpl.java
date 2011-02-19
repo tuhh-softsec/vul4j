@@ -30,6 +30,7 @@ import org.apache.commons.digester3.rulesbinder.NestedPropertiesBuilder;
 import org.apache.commons.digester3.rulesbinder.ObjectCreateBuilder;
 import org.apache.commons.digester3.rulesbinder.ObjectParamBuilder;
 import org.apache.commons.digester3.rulesbinder.PathCallParamBuilder;
+import org.apache.commons.digester3.rulesbinder.PluginCreateRuleBuilder;
 import org.apache.commons.digester3.rulesbinder.PluginDeclarationRuleBuilder;
 import org.apache.commons.digester3.rulesbinder.SetNextBuilder;
 import org.apache.commons.digester3.rulesbinder.SetPropertiesBuilder;
@@ -264,6 +265,14 @@ final class LinkedRuleBuilderImpl implements LinkedRuleBuilder {
     public PluginDeclarationRuleBuilder declarePlugin() {
         return this.addProvider(
                 new PluginDeclarationRuleBuilderImpl(this.keyPattern, this.namespaceURI, this.mainBinder, this));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public PluginCreateRuleBuilder createPlugin() {
+        return this.addProvider(
+                new PluginCreateRuleBuilderImpl(this.keyPattern, this.namespaceURI, this.mainBinder, this));
     }
 
 }

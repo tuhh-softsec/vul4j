@@ -150,4 +150,14 @@ public interface LinkedRuleBuilder {
      */
     PluginDeclarationRuleBuilder declarePlugin();
 
+    /**
+     * 
+     *
+     * NOTE: when using this rule, make sure {@link org.apache.commons.digester3.Digester} instances
+     * will be created using {@link org.apache.commons.digester3.plugins.PluginRules} rules strategy.
+     *
+     * @return
+     */
+    PluginCreateRuleBuilder createPlugin();
+
 }
