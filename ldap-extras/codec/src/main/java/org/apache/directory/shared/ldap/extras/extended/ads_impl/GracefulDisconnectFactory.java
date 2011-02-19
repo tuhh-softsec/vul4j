@@ -20,32 +20,40 @@
 package org.apache.directory.shared.ldap.extras.extended.ads_impl;
 
 
-import org.apache.directory.shared.ldap.codec.api.ExtendedOpFactory;
-import org.apache.directory.shared.ldap.extras.extended.CertGenerationRequest;
+import org.apache.directory.shared.asn1.DecoderException;
+import org.apache.directory.shared.ldap.codec.api.ExtendedRequestFactory;
+import org.apache.directory.shared.ldap.codec.api.UnsolicitedResponseFactory;
+import org.apache.directory.shared.ldap.extras.extended.GracefulDisconnect;
 
 
 /**
- * An {@link ExtendedOpFactory} for creating cancel extended request response 
+ * An {@link ExtendedRequestFactory} for creating cancel extended request response 
  * pairs.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class CertGenerationExtendedOpFactory implements ExtendedOpFactory<CertGenerationRequest>
+public class GracefulDisconnectFactory implements UnsolicitedResponseFactory<GracefulDisconnect>
 {
     /**
      * {@inheritDoc}
      */
     public String getOid()
     {
-        return CertGenerationRequest.EXTENSION_OID;
+        return GracefulDisconnect.EXTENSION_OID;
     }
 
     
     /**
      * {@inheritDoc}
      */
-    public CertGenerationRequest newRequest()
+    public GracefulDisconnect newRequest()
     {
-        return new CertGenerationRequest();
+        return new GracefulDisconnect();
+    }
+
+
+    public GracefulDisconnect newResponse( byte[] encodedValue ) throws DecoderException
+    {
+        return new GracefulDisconnect( encodedValue );
     }
 }

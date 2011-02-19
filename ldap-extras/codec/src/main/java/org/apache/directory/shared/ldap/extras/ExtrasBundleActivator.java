@@ -21,16 +21,27 @@ package org.apache.directory.shared.ldap.extras;
 
 
 import org.apache.directory.shared.ldap.codec.api.ControlFactory;
-import org.apache.directory.shared.ldap.codec.api.ExtendedOpFactory;
+import org.apache.directory.shared.ldap.codec.api.ExtendedRequestFactory;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.UnsolicitedResponseFactory;
+import org.apache.directory.shared.ldap.extras.controls.PasswordPolicy;
+import org.apache.directory.shared.ldap.extras.controls.SyncDoneValue;
+import org.apache.directory.shared.ldap.extras.controls.SyncInfoValue;
+import org.apache.directory.shared.ldap.extras.controls.SyncModifyDn;
+import org.apache.directory.shared.ldap.extras.controls.SyncRequestValue;
+import org.apache.directory.shared.ldap.extras.controls.SyncStateValue;
 import org.apache.directory.shared.ldap.extras.controls.ppolicy_impl.PasswordPolicyFactory;
 import org.apache.directory.shared.ldap.extras.controls.syncrepl_impl.SyncDoneValueFactory;
 import org.apache.directory.shared.ldap.extras.controls.syncrepl_impl.SyncInfoValueFactory;
 import org.apache.directory.shared.ldap.extras.controls.syncrepl_impl.SyncModifyDnFactory;
 import org.apache.directory.shared.ldap.extras.controls.syncrepl_impl.SyncRequestValueFactory;
 import org.apache.directory.shared.ldap.extras.controls.syncrepl_impl.SyncStateValueFactory;
-import org.apache.directory.shared.ldap.extras.extended.ads_impl.CancelExtendedOpFactory;
-import org.apache.directory.shared.ldap.extras.extended.ads_impl.CertGenerationExtendedOpFactory;
+import org.apache.directory.shared.ldap.extras.extended.CancelRequest;
+import org.apache.directory.shared.ldap.extras.extended.CertGenerationRequest;
+import org.apache.directory.shared.ldap.extras.extended.GracefulDisconnect;
+import org.apache.directory.shared.ldap.extras.extended.ads_impl.CancelFactory;
+import org.apache.directory.shared.ldap.extras.extended.ads_impl.CertGenerationFactory;
+import org.apache.directory.shared.ldap.extras.extended.ads_impl.GracefulDisconnectFactory;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -44,15 +55,16 @@ import org.osgi.framework.ServiceReference;
  */
 public class ExtrasBundleActivator implements BundleActivator
 {
+    private ServiceReference codecServiceRef;
+    
+    
     /**
      * {@inheritDoc}
      */
     public void start( BundleContext context ) throws Exception
     {
-        ServiceReference reference = 
-            context.getServiceReference( LdapCodecService.class.getName() );
-        
-        LdapCodecService codec = ( LdapCodecService ) context.getService( reference );
+        codecServiceRef = context.getServiceReference( LdapCodecService.class.getName() );
+        LdapCodecService codec = ( LdapCodecService ) context.getService( codecServiceRef );
         registerExtrasControls( codec );
         registerExtrasExtendedOps( codec );
     }
@@ -92,13 +104,26 @@ public class ExtrasBundleActivator implements BundleActivator
      */
     private void registerExtrasExtendedOps( LdapCodecService codec )
     {
-        ExtendedOpFactory<?> factory = new CancelExtendedOpFactory();
-        codec.registerExtendedOp( factory );
+        // --------------------------------------------------------------------
+        // Register Extended Request Factories
+        // --------------------------------------------------------------------
         
-        factory = new CertGenerationExtendedOpFactory();
-        codec.registerExtendedOp( factory );
+        
+        ExtendedRequestFactory<?,?> extReqfactory = new CancelFactory();
+        codec.registerExtendedRequest( extReqfactory );
+        
+        extReqfactory = new CertGenerationFactory();
+        codec.registerExtendedRequest( extReqfactory );
+        
+        
+        // --------------------------------------------------------------------
+        // Register Unsolicited Response Factories
+        // --------------------------------------------------------------------
+        
+        
+        UnsolicitedResponseFactory<?> unsolicitedResponseFactory = new GracefulDisconnectFactory();
+        codec.registerUnsolicitedResponse( unsolicitedResponseFactory );
     }
-    
     
     
     /**
@@ -106,5 +131,18 @@ public class ExtrasBundleActivator implements BundleActivator
      */
     public void stop( BundleContext context ) throws Exception
     {
+        LdapCodecService codec = ( LdapCodecService ) context.getService( codecServiceRef );
+        
+        codec.unregisterControl( SyncDoneValue.OID );
+        codec.unregisterControl( SyncInfoValue.OID );
+        codec.unregisterControl( SyncModifyDn.OID );
+        codec.unregisterControl( SyncRequestValue.OID );
+        codec.unregisterControl( SyncStateValue.OID );
+        codec.unregisterControl( PasswordPolicy.OID );
+        
+        codec.unregisterExtendedRequest( CancelRequest.EXTENSION_OID );
+        codec.unregisterExtendedRequest( CertGenerationRequest.EXTENSION_OID );
+        
+        codec.unregisterUnsolicitedResponse( GracefulDisconnect.EXTENSION_OID );
     }
 }

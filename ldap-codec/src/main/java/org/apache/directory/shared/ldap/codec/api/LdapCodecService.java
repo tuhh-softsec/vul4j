@@ -26,6 +26,7 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.ldap.model.message.Control;
+import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
 import org.apache.mina.filter.codec.ProtocolCodecFactory;
 
 
@@ -37,6 +38,12 @@ import org.apache.mina.filter.codec.ProtocolCodecFactory;
  */
 public interface LdapCodecService
 {
+    
+    // ------------------------------------------------------------------------
+    // Control Methods
+    // ------------------------------------------------------------------------
+
+    
     /**
      * Returns an Iterator over the OID Strings of registered controls.
      * 
@@ -54,20 +61,11 @@ public interface LdapCodecService
     
     
     /**
-     * Returns an Iterator over the OID Strings of registered extended 
-     * requests.
-     *
-     * @return The registered extended request OID Strings
-     */
-    Iterator<String> registeredExtendedRequests();
-    
-    
-    /**
      * Registers an {@link ControlFactory} with this service.
      * 
      * @param factory The control factory
      */
-    void registerControl( ControlFactory<?,?> factory );
+    ControlFactory<?,?> registerControl( ControlFactory<?,?> factory );
     
     
     /**
@@ -75,16 +73,7 @@ public interface LdapCodecService
      * 
      * @param oid The oid of the control the factory is associated with.
      */
-    void unregisterControl( String oid );
-    
-    
-    /**
-     * Registers an {@link ExtendedOpFactory} for generating extended request 
-     * response pairs.
-     * 
-     * @param factory The extended operation factory
-     */
-    void registerExtendedOp( ExtendedOpFactory<?> factory );
+    ControlFactory<?,?> unregisterControl( String oid );
     
     
     /**
@@ -106,16 +95,6 @@ public interface LdapCodecService
     
     
     /**
-     * Creates a new LDAP {@link ProtocolCodecFactory}.
-     *
-     * @param client if true a factory designed for clients is returned, 
-     * otherwise one for servers is returned.
-     * @return the client or server specific {@link ProtocolCodecFactory}
-     */
-    ProtocolCodecFactory newProtocolCodecFactory( boolean client );
-    
-    
-    /**
      * Creates a JNDI control from the ldap model's control.
      *
      * @param modelControl The model's control.
@@ -134,6 +113,115 @@ public interface LdapCodecService
      */
     Control fromJndiControl( javax.naming.ldap.Control jndiControl ) throws DecoderException;
 
+    
+    // ------------------------------------------------------------------------
+    // Extended Request Methods
+    // ------------------------------------------------------------------------
 
+    
+    /**
+     * Returns an Iterator over the OID Strings of registered extended 
+     * requests.
+     *
+     * @return The registered extended request OID Strings
+     */
+    Iterator<String> registeredExtendedRequests();
+    
+    
+    /**
+     * Registers an {@link ExtendedRequestFactory} for generating extended request 
+     * response pairs.
+     * 
+     * @param factory The extended request factory
+     * @return The displaced factory if one existed for the oid
+     */
+    ExtendedRequestFactory<?,?> registerExtendedRequest( ExtendedRequestFactory<?,?> factory );
+    
+    
+    /**
+     * Unregisters an {@link ExtendedRequestFactory} for generating extended 
+     * request response pairs.
+     * 
+     * @param oid The extended request oid
+     * @return The displaced factory if one existed for the oid
+     */
+    ExtendedRequestFactory<?,?> unregisterExtendedRequest( String oid );
+    
+    
+    // ------------------------------------------------------------------------
+    // Extended Response Methods
+    // ------------------------------------------------------------------------
+
+    
+    /**
+     * Returns an Iterator over the OID Strings of registered unsolicited 
+     * extended responses.
+     *
+     * @return The registered unsolicited extended response OID Strings
+     */
+    Iterator<String> registeredUnsolicitedResponses();
+    
+    
+    /**
+     * Registers an {@link UnsolicitedResponseFactory} for generating extended
+     * responses sent by servers without an extended request.
+     * 
+     * @param factory The unsolicited response creating factory
+     * @return The displaced factory if one existed for the oid
+     */
+    UnsolicitedResponseFactory<?> registerUnsolicitedResponse( UnsolicitedResponseFactory<?> factory );
+
+    
+    /**
+     * Unregisters an {@link UnsolicitedResponseFactory} for generating 
+     * extended responses sent by servers without an extended request.
+     * 
+     * @param oid The unsolicited response oid
+     */
+    UnsolicitedResponseFactory<?> unregisterUnsolicitedResponse( String oid );
+
+    
+    /**
+     * Creates a model ExtendedResponse from the JNDI ExtendedResponse.
+     *
+     * @param jndiResponse The JNDI ExtendedResponse 
+     * @return The model ExtendedResponse
+     * @throws DecoderException if the response value cannot be decoded.
+     */
+    ExtendedResponse fromJndi( javax.naming.ldap.ExtendedResponse jndiResponse ) throws DecoderException;
+    
+    
+    /**
+     * Creates a JNDI {@link javax.naming.ldap.ExtendedResponse} from the model 
+     * {@link ExtendedResponse}.
+     * 
+     * @param modelResponse
+     * @return
+     * @throws EncoderException
+     */
+    javax.naming.ldap.ExtendedResponse toJndi( ExtendedResponse modelResponse ) throws EncoderException;
+    
+    
+    // ------------------------------------------------------------------------
+    // Extended Request/Response Methods
+    // ------------------------------------------------------------------------
+
+    
+    /**
+     * Creates a new LDAP {@link ProtocolCodecFactory}.
+     *
+     * @param client if true a factory designed for clients is returned, 
+     * otherwise one for servers is returned.
+     * @return the client or server specific {@link ProtocolCodecFactory}
+     */
+    ProtocolCodecFactory newProtocolCodecFactory( boolean client );
+
+    
+    /**
+     * Creates a new MessageContainer.
+     *
+     * @TODO akarasulu - Wondering why is this not an LdapMessageContainer?
+     * @return The newly created LDAP MessageContainer instance.
+     */
     Asn1Container newMessageContainer();
 }

@@ -95,6 +95,16 @@ public class GracefulDisconnect extends ExtendedResponseImpl
 
     /**
      * Instantiates a new graceful disconnect.
+     */
+    public GracefulDisconnect()
+    {
+        super( 0, EXTENSION_OID );
+        this.responseValue = null;
+    }
+
+
+    /**
+     * Instantiates a new graceful disconnect.
      *
      * @param timeOffline the offline time after disconnect, in minutes
      * @param delay the delay before disconnect, in seconds
@@ -203,12 +213,21 @@ public class GracefulDisconnect extends ExtendedResponseImpl
 
 
     /**
-     * Sets the reponse OID specific encoded response values.
+     * Sets the response OID specific encoded response values.
      * 
      * @param responseValue the response specific encoded response values.
      */
     public void setResponseValue( byte[] responseValue )
     {
+        if ( responseValue == null )
+        {
+            this.responseValue = null;
+            this.delay = 0;
+            this.timeOffline = 0;
+            this.replicatedContexts = new ReferralImpl();
+            return;
+        }
+        
         ByteBuffer bb = ByteBuffer.wrap( responseValue );
         GracefulDisconnectContainer container = new GracefulDisconnectContainer();
         Asn1Decoder decoder = new Asn1Decoder();
@@ -232,15 +251,8 @@ public class GracefulDisconnect extends ExtendedResponseImpl
             replicatedContexts.addLdapUrl( ldapUrl.toString() );
         }
 
-        if ( responseValue != null )
-        {
-            this.responseValue = new byte[responseValue.length];
-            System.arraycopy( responseValue, 0, this.responseValue, 0, responseValue.length );
-        }
-        else
-        {
-            this.responseValue = null;
-        }
+        this.responseValue = new byte[responseValue.length];
+        System.arraycopy( responseValue, 0, this.responseValue, 0, responseValue.length );
     }
 
 

@@ -36,8 +36,9 @@ import org.apache.directory.shared.ldap.codec.BasicControlDecorator;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.api.CodecControl;
 import org.apache.directory.shared.ldap.codec.api.ControlFactory;
-import org.apache.directory.shared.ldap.codec.api.ExtendedOpFactory;
+import org.apache.directory.shared.ldap.codec.api.ExtendedRequestFactory;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.UnsolicitedResponseFactory;
 import org.apache.directory.shared.ldap.codec.controls.cascade.CascadeFactory;
 import org.apache.directory.shared.ldap.codec.controls.manageDsaIT.ManageDsaITFactory;
 import org.apache.directory.shared.ldap.codec.controls.search.entryChange.EntryChangeFactory;
@@ -47,6 +48,8 @@ import org.apache.directory.shared.ldap.codec.controls.search.subentries.Subentr
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
 import org.apache.directory.shared.ldap.codec.protocol.mina.LdapProtocolCodecFactory;
 import org.apache.directory.shared.ldap.model.message.Control;
+import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
+import org.apache.directory.shared.ldap.model.message.ExtendedResponseImpl;
 import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.model.message.controls.OpaqueControl;
 import org.apache.directory.shared.util.exception.NotImplementedException;
@@ -111,8 +114,11 @@ public class StandaloneLdapCodecService implements LdapCodecService
     /** The map of registered {@link org.apache.directory.shared.ldap.codec.api.ControlFactory}'s */
     private Map<String,ControlFactory<?,?>> controlFactories = new HashMap<String, ControlFactory<?,?>>();
 
-    /** The map of registered {@link org.apache.directory.shared.ldap.codec.api.ExtendedOpFactory}'s by request OID */
-    private Map<String,ExtendedOpFactory<?>> extReqFactories = new HashMap<String, ExtendedOpFactory<?>>();
+    /** The map of registered {@link org.apache.directory.shared.ldap.codec.api.ExtendedRequestFactory}'s by request OID */
+    private Map<String,ExtendedRequestFactory<?,?>> extReqFactories = new HashMap<String, ExtendedRequestFactory<?,?>>();
+
+    /** The map of registered {@link UnsolicitedResponseFactory}'s by request OID */
+    private Map<String,UnsolicitedResponseFactory<?>> unsolicitedFactories = new HashMap<String, UnsolicitedResponseFactory<?>>();
     
     /** The codec's {@link BundleActivator} */
     private CodecHostActivator activator;
@@ -502,18 +508,18 @@ public class StandaloneLdapCodecService implements LdapCodecService
     /**
      * {@inheritDoc}
      */
-    public void registerControl( ControlFactory<?,?> factory )
+    public ControlFactory<?,?> registerControl( ControlFactory<?,?> factory )
     {
-        controlFactories.put( factory.getOid(), factory );
+        return controlFactories.put( factory.getOid(), factory );
     }
     
 
     /**
      * {@inheritDoc}
      */
-    public void unregisterControl( String oid )
+    public ControlFactory<?,?> unregisterControl( String oid )
     {
-        controlFactories.remove( oid );
+        return controlFactories.remove( oid );
     }
 
     
@@ -547,9 +553,9 @@ public class StandaloneLdapCodecService implements LdapCodecService
     /**
      * {@inheritDoc}
      */
-    public void registerExtendedOp( ExtendedOpFactory<?> factory )
+    public ExtendedRequestFactory<?, ?> registerExtendedRequest( ExtendedRequestFactory<?,?> factory )
     {
-        extReqFactories.put( factory.getOid(), factory );
+        return extReqFactories.put( factory.getOid(), factory );
     }
 
     
@@ -682,5 +688,93 @@ public class StandaloneLdapCodecService implements LdapCodecService
     public File getPluginDirectory()
     {
         return pluginDirectory;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Iterator<String> registeredUnsolicitedResponses()
+    {
+        return Collections.unmodifiableSet( unsolicitedFactories.keySet() ).iterator();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public UnsolicitedResponseFactory<?> registerUnsolicitedResponse( UnsolicitedResponseFactory<?> factory )
+    {
+        return unsolicitedFactories.put( factory.getOid(), factory );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public javax.naming.ldap.ExtendedResponse toJndi( final ExtendedResponse modelResponse ) throws EncoderException
+    {
+        final byte[] encodedValue = new byte[ modelResponse.getEncodedValue().length ];
+        System.arraycopy( modelResponse.getEncodedValue(), 0, encodedValue, 0, modelResponse.getEncodedValue().length );
+        
+        return new javax.naming.ldap.ExtendedResponse()
+        {
+            private static final long serialVersionUID = 2955142105375495493L;
+
+            public String getID()
+            {
+                return modelResponse.getID();
+            }
+
+            public byte[] getEncodedValue()
+            {
+                return encodedValue;
+            }
+        };
+    }
+    
+
+    /**
+     * {@inheritDoc}
+     */
+    public ExtendedResponse fromJndi( javax.naming.ldap.ExtendedResponse jndiResponse ) throws DecoderException
+    {   
+        ExtendedResponse modelResponse;
+        ExtendedRequestFactory<?,?> extendedRequestFactory = extReqFactories.get( jndiResponse.getID() );
+        UnsolicitedResponseFactory<?> unsolicitedResponseFactory = unsolicitedFactories.get( jndiResponse.getID() );
+        
+        if ( unsolicitedResponseFactory != null )
+        {
+            modelResponse = unsolicitedResponseFactory.newResponse( jndiResponse.getEncodedValue() );
+        }
+        else if ( extendedRequestFactory != null )
+        {
+            modelResponse = extendedRequestFactory.newResponse( jndiResponse.getEncodedValue() );
+        }
+        else
+        {
+            modelResponse = new ExtendedResponseImpl( jndiResponse.getID() );
+            modelResponse.setResponseValue( jndiResponse.getEncodedValue() );
+        }
+        
+        return modelResponse;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public ExtendedRequestFactory<?, ?> unregisterExtendedRequest( String oid )
+    {
+        return extReqFactories.remove( oid );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public UnsolicitedResponseFactory<?> unregisterUnsolicitedResponse( String oid )
+    {
+        return unsolicitedFactories.remove( oid );
     }
 }

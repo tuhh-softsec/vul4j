@@ -20,27 +20,29 @@
 package org.apache.directory.shared.ldap.codec.api;
 
 
-import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
+import org.apache.directory.shared.asn1.DecoderException;
+import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
 
 
 /**
- * The LdapCodec interface, defined by the codec API.
+ * A factory which generates unsolicited server ExtendedResponses without 
+ * requiring an initiating client ExtendedRequest.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public interface ExtendedOpFactory<Q extends ExtendedRequest>
+public interface UnsolicitedResponseFactory<R extends ExtendedResponse>
 {
     /**
-     * Gets the OID of the extended requests this factory generates.
+     * Gets the OID of the {@link ExtendedResponse} this factory generates.
      *
-     * @return the extended request OID
+     * @return the extended response OID
      */
     String getOid();
     
     
     /**
-     *  @return A new instance of the ExtendedRequest.
+     *  @return A new instance of the ExtendedResponse.
      */
-    Q newRequest();
+    R newResponse( byte[] encodedValue ) throws DecoderException;
 }

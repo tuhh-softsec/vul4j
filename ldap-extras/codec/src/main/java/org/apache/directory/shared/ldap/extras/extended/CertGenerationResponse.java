@@ -70,6 +70,14 @@ public class CertGenerationResponse extends ExtendedResponseImpl
     }
 
 
+    public CertGenerationResponse()
+    {
+        super( EXTENSION_OID );
+        super.getLdapResult().setMatchedDn( null );
+        super.getLdapResult().setResultCode( ResultCodeEnum.SUCCESS );
+    }
+
+
     // ------------------------------------------------------------------------
     // ExtendedResponse Interface Method Implementations
     // ------------------------------------------------------------------------
