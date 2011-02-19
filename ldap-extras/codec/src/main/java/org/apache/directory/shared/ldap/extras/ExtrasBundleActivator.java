@@ -21,6 +21,7 @@ package org.apache.directory.shared.ldap.extras;
 
 
 import org.apache.directory.shared.ldap.codec.api.ControlFactory;
+import org.apache.directory.shared.ldap.codec.api.ExtendedOpFactory;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.extras.controls.ppolicy_impl.PasswordPolicyFactory;
 import org.apache.directory.shared.ldap.extras.controls.syncrepl_impl.SyncDoneValueFactory;
@@ -28,6 +29,7 @@ import org.apache.directory.shared.ldap.extras.controls.syncrepl_impl.SyncInfoVa
 import org.apache.directory.shared.ldap.extras.controls.syncrepl_impl.SyncModifyDnFactory;
 import org.apache.directory.shared.ldap.extras.controls.syncrepl_impl.SyncRequestValueFactory;
 import org.apache.directory.shared.ldap.extras.controls.syncrepl_impl.SyncStateValueFactory;
+import org.apache.directory.shared.ldap.extras.extended.CancelExtendedOpFactory;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -41,13 +43,27 @@ import org.osgi.framework.ServiceReference;
  */
 public class ExtrasBundleActivator implements BundleActivator
 {
+    /**
+     * {@inheritDoc}
+     */
     public void start( BundleContext context ) throws Exception
     {
         ServiceReference reference = 
             context.getServiceReference( LdapCodecService.class.getName() );
         
         LdapCodecService codec = ( LdapCodecService ) context.getService( reference );
-        
+        registerExtrasControls( codec );
+        registerExtrasExtendedOps( codec );
+    }
+    
+    
+    /**
+     * Registers all the extras controls present in this control pack.
+     *
+     * @param codec The codec service.
+     */
+    private void registerExtrasControls( LdapCodecService codec )
+    {
         ControlFactory<?,?> factory = new SyncDoneValueFactory( codec );
         codec.registerControl( factory );
         
@@ -68,8 +84,21 @@ public class ExtrasBundleActivator implements BundleActivator
     }
 
 
-    /* (non-Javadoc)
-     * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
+    /**
+     * Registers all the extras extended operations present in this control pack.
+     *
+     * @param codec The codec service.
+     */
+    private void registerExtrasExtendedOps( LdapCodecService codec )
+    {
+        ExtendedOpFactory<?> factory = new CancelExtendedOpFactory();
+        codec.registerExtendedOp( factory );
+    }
+    
+    
+    
+    /**
+     * {@inheritDoc}
      */
     public void stop( BundleContext context ) throws Exception
     {

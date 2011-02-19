@@ -62,7 +62,6 @@ public class CancelRequest extends ExtendedRequestImpl
 
 
     /**
-     * 
      * Creates a new instance of CancelRequest.
      *
      * @param messageId the message id
@@ -74,6 +73,15 @@ public class CancelRequest extends ExtendedRequestImpl
         setRequestName( EXTENSION_OID );
 
         this.cancelId = cancelId;
+    }
+
+
+    /**
+     * Creates a new instance of CancelRequest.
+     */
+    public CancelRequest()
+    {
+        setRequestName( EXTENSION_OID );
     }
 
 
@@ -116,6 +124,32 @@ public class CancelRequest extends ExtendedRequestImpl
         return ( ExtendedResponse ) getResultResponse();
     }
 
+    
+    /**
+     *  @return The id of the Message to cancel.
+     */
+    public int getCancelId()
+    {
+        return cancelId;
+    }
+    
+    
+    /**
+     * Sets the message to cancel by id.
+     *
+     * @param cancelId The id of the message to cancel.
+     */
+    public void setCancelId( int cancelId )
+    {
+        this.cancelId = cancelId;
+        
+        // clear the request value if it was previously computed for the old value
+        if ( requestValue != null )
+        {
+            requestValue = null;
+        }
+    }
+    
 
     /**
      * {@inheritDoc}

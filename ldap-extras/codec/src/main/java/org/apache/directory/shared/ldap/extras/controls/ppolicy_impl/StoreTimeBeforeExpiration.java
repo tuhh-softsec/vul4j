@@ -29,6 +29,7 @@ import org.apache.directory.shared.asn1.actions.AbstractReadInteger;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
+@SuppressWarnings("rawtypes")
 public class StoreTimeBeforeExpiration extends AbstractReadInteger
 {
 

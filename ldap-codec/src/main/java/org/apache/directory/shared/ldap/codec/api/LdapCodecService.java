@@ -63,15 +63,6 @@ public interface LdapCodecService
     
     
     /**
-     * Returns an Iterator over the OID Strings of registered extended 
-     * responses.
-     *
-     * @return The registered extended response OID Strings
-     */
-    Iterator<String> registeredExtendedResponses();
-    
-    
-    /**
      * Registers an {@link ControlFactory} with this service.
      * 
      * @param factory The control factory
@@ -93,7 +84,7 @@ public interface LdapCodecService
      * 
      * @param factory The extended operation factory
      */
-    void registerExtendedOp( ExtendedOpFactory<?,?> factory );
+    void registerExtendedOp( ExtendedOpFactory<?> factory );
     
     
     /**

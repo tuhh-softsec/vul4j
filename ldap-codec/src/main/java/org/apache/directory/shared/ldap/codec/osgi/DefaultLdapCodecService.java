@@ -67,10 +67,7 @@ public class DefaultLdapCodecService implements LdapCodecService
     private Map<String,ControlFactory<?,?>> controlFactories = new HashMap<String, ControlFactory<?,?>>();
 
     /** The map of registered {@link org.apache.directory.shared.ldap.codec.api.ExtendedOpFactory}'s by request OID */
-    private Map<String,ExtendedOpFactory<?,?>> extReqFactories = new HashMap<String, ExtendedOpFactory<?,?>>();
-
-    /** The map of registered {@link ExtendedOpFactory}'s by response OID */
-    private Map<String,ExtendedOpFactory<?,?>> extResFactories = new HashMap<String, ExtendedOpFactory<?,?>>();
+    private Map<String,ExtendedOpFactory<?>> extReqFactories = new HashMap<String, ExtendedOpFactory<?>>();
 
 
     /**
@@ -166,18 +163,9 @@ public class DefaultLdapCodecService implements LdapCodecService
     /**
      * {@inheritDoc}
      */
-    public Iterator<String> registeredExtendedResponses()
+    public void registerExtendedOp( ExtendedOpFactory<?> factory )
     {
-        return Collections.unmodifiableSet( extResFactories.keySet() ).iterator();
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public void registerExtendedOp( ExtendedOpFactory<?, ?> factory )
-    {
-        extReqFactories.put( factory.getRequestOid(), factory );
+        extReqFactories.put( factory.getOid(), factory );
     }
 
 

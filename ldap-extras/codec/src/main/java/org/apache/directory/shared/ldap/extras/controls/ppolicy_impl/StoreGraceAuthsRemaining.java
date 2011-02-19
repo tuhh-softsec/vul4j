@@ -29,6 +29,7 @@ import org.apache.directory.shared.asn1.ber.Asn1Container;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
+@SuppressWarnings("rawtypes")
 public class StoreGraceAuthsRemaining extends AbstractReadInteger
 {
 

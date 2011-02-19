@@ -55,6 +55,7 @@ public class PasswordPolicyGrammar extends AbstractGrammar<PasswordPolicyContain
     private static final PasswordPolicyGrammar INSTANCE = new PasswordPolicyGrammar();
 
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private PasswordPolicyGrammar()
     {
         setName( PasswordPolicyGrammar.class.getName() );
@@ -112,7 +113,7 @@ public class PasswordPolicyGrammar extends AbstractGrammar<PasswordPolicyContain
     }
 
 
-    public static Grammar getInstance()
+    public static Grammar<PasswordPolicyContainer> getInstance()
     {
         return INSTANCE;
     }

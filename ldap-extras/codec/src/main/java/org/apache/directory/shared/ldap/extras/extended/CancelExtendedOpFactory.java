@@ -17,30 +17,34 @@
  *   under the License.
  *
  */
-package org.apache.directory.shared.ldap.codec.api;
+package org.apache.directory.shared.ldap.extras.extended;
 
 
-import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
+import org.apache.directory.shared.ldap.codec.api.ExtendedOpFactory;
 
 
 /**
- * The LdapCodec interface, defined by the codec API.
+ * An {@link ExtendedOpFactory} for creating cancel extended request response 
+ * pairs.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
- * @version $Rev$, $Date$
  */
-public interface ExtendedOpFactory<Q extends ExtendedRequest>
+public class CancelExtendedOpFactory implements ExtendedOpFactory<CancelRequest>
 {
     /**
-     * Gets the OID of the extended requests this factory generates.
-     *
-     * @return the extended request OID
+     * {@inheritDoc}
      */
-    String getOid();
-    
+    public String getOid()
+    {
+        return CancelRequest.EXTENSION_OID;
+    }
+
     
     /**
-     *  @return A new instance of the ExtendedRequest.
+     * {@inheritDoc}
      */
-    Q newRequest();
+    public CancelRequest newRequest()
+    {
+        return new CancelRequest();
+    }
 }
