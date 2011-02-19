@@ -82,6 +82,17 @@ public class GracefulShutdownRequest extends ExtendedRequestImpl
      * Instantiates a new graceful shutdown request.
      *
      * @param messageId the message id
+     */
+    public GracefulShutdownRequest()
+    {
+        setRequestName( EXTENSION_OID );
+    }
+
+
+    /**
+     * Instantiates a new graceful shutdown request.
+     *
+     * @param messageId the message id
      * @param timeOffline the offline time after disconnection, in minutes
      * @param delay the delay before disconnection, in seconds
      */

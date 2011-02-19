@@ -88,6 +88,17 @@ public class GracefulShutdownResponse extends ExtendedResponseImpl
     }
 
 
+    /**
+     * Instantiates a new graceful shutdown response.
+     */
+    public GracefulShutdownResponse()
+    {
+        super( EXTENSION_OID );
+        super.getLdapResult().setMatchedDn( null );
+        super.getLdapResult().setResultCode( ResultCodeEnum.SUCCESS );
+    }
+
+
     // ------------------------------------------------------------------------
     // ExtendedResponse Interface Method Implementations
     // ------------------------------------------------------------------------

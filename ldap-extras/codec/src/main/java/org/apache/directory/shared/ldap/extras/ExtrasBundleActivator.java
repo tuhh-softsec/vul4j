@@ -39,9 +39,11 @@ import org.apache.directory.shared.ldap.extras.controls.syncrepl_impl.SyncStateV
 import org.apache.directory.shared.ldap.extras.extended.CancelRequest;
 import org.apache.directory.shared.ldap.extras.extended.CertGenerationRequest;
 import org.apache.directory.shared.ldap.extras.extended.GracefulDisconnect;
+import org.apache.directory.shared.ldap.extras.extended.GracefulShutdownRequest;
 import org.apache.directory.shared.ldap.extras.extended.ads_impl.CancelFactory;
 import org.apache.directory.shared.ldap.extras.extended.ads_impl.CertGenerationFactory;
 import org.apache.directory.shared.ldap.extras.extended.ads_impl.GracefulDisconnectFactory;
+import org.apache.directory.shared.ldap.extras.extended.ads_impl.GracefulShutdownFactory;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -114,7 +116,9 @@ public class ExtrasBundleActivator implements BundleActivator
         
         extReqfactory = new CertGenerationFactory();
         codec.registerExtendedRequest( extReqfactory );
-        
+
+        extReqfactory = new GracefulShutdownFactory();
+        codec.registerExtendedRequest( extReqfactory );
         
         // --------------------------------------------------------------------
         // Register Unsolicited Response Factories
@@ -142,6 +146,7 @@ public class ExtrasBundleActivator implements BundleActivator
         
         codec.unregisterExtendedRequest( CancelRequest.EXTENSION_OID );
         codec.unregisterExtendedRequest( CertGenerationRequest.EXTENSION_OID );
+        codec.unregisterExtendedRequest( GracefulShutdownRequest.EXTENSION_OID );
         
         codec.unregisterUnsolicitedResponse( GracefulDisconnect.EXTENSION_OID );
     }
