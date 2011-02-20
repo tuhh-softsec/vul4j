@@ -32,4 +32,19 @@
     <packaging>jar</packaging>
     <name>Commons Digester :: Examples :: DB Insert</name>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>org.apache.commons.digester3.examples.dbinsert.Main</mainClass>
+                    <arguments>
+                        <argument>example.xml</argument>
+                    </arguments>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>
