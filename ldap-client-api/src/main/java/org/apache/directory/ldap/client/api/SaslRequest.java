@@ -37,7 +37,8 @@ import org.apache.directory.shared.util.Strings;
  *  
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public abstract class SaslRequest
+// TODO make this class abstract
+public class SaslRequest
 {
     /** The mechanism used to decode user identity */
     protected String saslMechanism;
@@ -56,15 +57,6 @@ public abstract class SaslRequest
 
     /** The authorization ID of the entity */
     protected String authorizationId;
-
-    /** The quality of protection */
-    protected SaslQoP qualityOfProtection;
-
-    /** The security strength */
-    protected SaslSecurityStrength securityStrength;
-
-    /** Require mutual authentication */
-    protected boolean mutualAuthentication = false;
 
 
     /**
@@ -142,17 +134,6 @@ public abstract class SaslRequest
 
 
     /**
-     * Gets the quality of protection.
-     *
-     * @return the quality of protection
-     */
-    public SaslQoP getQualityOfProtection()
-    {
-        return qualityOfProtection;
-    }
-
-
-    /**
      * Gets realm name.
      *
      * @return the realm name
@@ -175,17 +156,6 @@ public abstract class SaslRequest
 
 
     /**
-     * Gets the security strength.
-     *
-     * @return the security strength
-     */
-    public SaslSecurityStrength getSecurityStrength()
-    {
-        return securityStrength;
-    }
-
-
-    /**
      * Gets the username.
      *
      * @return the username
@@ -193,17 +163,6 @@ public abstract class SaslRequest
     public String getUsername()
     {
         return username;
-    }
-
-
-    /**
-     * Indicates if mutual authentication is required.
-     *
-     * @return the flag indicating if mutual authentication is required
-     */
-    public boolean isMutualAuthentication()
-    {
-        return mutualAuthentication;
     }
 
 
@@ -241,28 +200,6 @@ public abstract class SaslRequest
 
 
     /**
-     * Sets the flag indicating if mutual authentication is required.
-     *
-     * @param mutualAuthentication the flag indicating if mutual authentication is required
-     */
-    public void setMutualAuthentication( boolean mutualAuthentication )
-    {
-        this.mutualAuthentication = mutualAuthentication;
-    }
-
-
-    /**
-     * Sets the quality of protection.
-     *
-     * @param qualityOfProtection the quality of protection
-     */
-    public void setQualityOfProtection( SaslQoP qualityOfProtection )
-    {
-        this.qualityOfProtection = qualityOfProtection;
-    }
-
-
-    /**
      * Sets the realm name.
      * 
      * @param realmName The realm name
@@ -281,17 +218,6 @@ public abstract class SaslRequest
     protected void setSaslMechanism( String saslMechanism )
     {
         this.saslMechanism = saslMechanism;
-    }
-
-
-    /**
-     * Sets the security strength.
-     *
-     * @param securityStrength the security strength
-     */
-    public void setSecurityStrength( SaslSecurityStrength securityStrength )
-    {
-        this.securityStrength = securityStrength;
     }
 
 

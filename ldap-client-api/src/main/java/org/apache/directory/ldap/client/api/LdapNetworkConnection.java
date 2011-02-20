@@ -61,6 +61,15 @@ import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecServiceFactory;
 import org.apache.directory.shared.ldap.codec.api.MessageEncoderException;
+import org.apache.directory.shared.ldap.model.message.extended.AddNoDResponse;
+import org.apache.directory.shared.ldap.model.message.extended.BindNoDResponse;
+import org.apache.directory.shared.ldap.model.message.extended.CompareNoDResponse;
+import org.apache.directory.shared.ldap.model.message.extended.DeleteNoDResponse;
+import org.apache.directory.shared.ldap.model.message.extended.ExtendedNoDResponse;
+import org.apache.directory.shared.ldap.model.message.extended.ModifyDnNoDResponse;
+import org.apache.directory.shared.ldap.model.message.extended.ModifyNoDResponse;
+import org.apache.directory.shared.ldap.model.message.extended.NoticeOfDisconnect;
+import org.apache.directory.shared.ldap.model.message.extended.SearchNoDResponse;
 import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.model.cursor.Cursor;
 import org.apache.directory.shared.ldap.model.cursor.SearchCursor;
@@ -1383,37 +1392,12 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
     public BindFuture bindAsync( GssApiRequest request )
         throws LdapException, IOException
     {
-        // Krb5.conf file
-        if ( request.getKrb5ConfFilePath() != null )
-        {
-            // Using the krb5.conf file provided by the user
-            System.setProperty( "java.security.krb5.conf", request.getKrb5ConfFilePath() );
-        }
-        else if ( ( request.getRealmName() != null ) && ( request.getKdcHost() != null )
-            && ( request.getKdcPort() != 0 ) )
-        {
-            // Using a custom krb5.conf we create from the settings provided by the user
-            String krbConfPath = createKrbConfFile( request.getRealmName(), request.getKdcHost(), request.getKdcPort() );
-            System.setProperty( "java.security.krb5.conf", krbConfPath );
-        }
-        else
-        {
-            // Using the system Kerberos configuration
-            System.clearProperty( "java.security.krb5.conf" );
+        System.clearProperty( "java.security.krb5.conf" );
+        String krbConfPath = createKrbConfFile( request.getRealmName(), request.getKdcHost(), request.getKdcPort() );
+        System.setProperty( "java.security.krb5.conf", krbConfPath );
 
-        }
-
-        // Login Module configuration
-        if ( request.getLoginModuleConfiguration() != null )
-        {
-            // Using the configuration provided by the user
-            Configuration.setConfiguration( request.getLoginModuleConfiguration() );
-        }
-        else
-        {
-            // Using the default configuration
-            Configuration.setConfiguration( new Krb5LoginConfiguration() );
-        }
+        Configuration.setConfiguration( new Krb5LoginConfiguration() );
+	System.setProperty( "javax.security.auth.useSubjectCredsOnly", "true" );
 
         try
         {
@@ -1423,7 +1407,9 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
             loginContext.login();
 
             final GssApiRequest requetFinal = request;
-            return ( BindFuture ) Subject.doAs( loginContext.getSubject(), new PrivilegedExceptionAction<Object>()
+
+            return ( BindFuture ) Subject.doAs( loginContext.getSubject(),
+                        new PrivilegedExceptionAction<Object>()
                     {
                         public Object run() throws Exception
                         {
@@ -3578,6 +3564,24 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
 
 
     /**
+     * perform SASL based bind operation @see {@link #bindSasl(SaslRequest)} 
+     */
+    private BindFuture bindSasl( String name, byte[] credentials, String saslMech, String authzId, String realmName,
+        Control... ctrls )
+        throws LdapException, IOException
+    {
+        SaslRequest saslRequest = new SaslRequest( saslMech ); // TODO fix this
+        saslRequest.setUsername( name );
+        saslRequest.setCredentials( credentials );
+        saslRequest.setAuthorizationId( authzId );
+        saslRequest.setRealmName( realmName );
+        saslRequest.addAllControls( ctrls );
+
+        return bindSasl( saslRequest );
+    }
+
+
+    /**
      * Process the SASL Bind. It's a dialog with the server, we will send a first BindRequest, receive
      * a response and the, if this response is a challenge, continue by sending a new BindRequest with
      * the requested informations.
@@ -3615,28 +3619,6 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
             byte[] response = null;
             ResultCodeEnum result = null;
 
-            // Creating a map for SASL properties
-            Map<String, Object> properties = new HashMap<String, Object>();
-
-            // Quality of Protection SASL property
-            if ( saslRequest.getQualityOfProtection() != null )
-            {
-
-                properties.put( Sasl.QOP, saslRequest.getQualityOfProtection().getValue() );
-            }
-
-            // Security Strength SASL property
-            if ( saslRequest.getSecurityStrength() != null )
-            {
-                properties.put( Sasl.STRENGTH, saslRequest.getSecurityStrength().getValue() );
-            }
-
-            // Mutual Authentication SASL property
-            if ( saslRequest.isMutualAuthentication() )
-            {
-                properties.put( Sasl.SERVER_AUTH, "true" );
-            }
-
             // Creating a SASL Client
             SaslClient sc = Sasl.createSaslClient(
                 new String[]
@@ -3644,7 +3626,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
                 saslRequest.getAuthorizationId(),
                 "ldap",
                 config.getLdapHost(),
-                properties,
+                null,
                 new SaslCallbackHandler( saslRequest ) );
 
             // If the SaslClient wasn't created, that means we can't create the SASL client
