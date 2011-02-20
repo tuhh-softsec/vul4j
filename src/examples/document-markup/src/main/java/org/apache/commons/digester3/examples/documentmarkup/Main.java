@@ -68,7 +68,7 @@ public class Main {
         MarkupDigester d = new MarkupDigester(newLoader(new MarkupModule()).newDigester());
         d.push(this);
 
-        d.parse(new StringReader("<p>Hi, this is an <i>example</i> of some <b>bold</b> text.</p"));
+        d.parse(new StringReader("<p>Hi, this is an <i>example</i> of some <b>bold</b> text.</p>"));
 
         System.out.println("Finished.");
     }
