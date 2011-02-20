@@ -285,7 +285,7 @@ public final class LdifRevertor
 
         currentParent = modifiedDn;
         currentRdn = currentParent.getRdn();
-        currentParent = currentParent.getParent();;
+        currentParent = currentParent.getParent();
 
         newDn = newSuperiorDn;
         newDn = newDn.add( modifiedDn.getRdn() );
