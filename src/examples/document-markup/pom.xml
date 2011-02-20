@@ -32,4 +32,16 @@
     <packaging>jar</packaging>
     <name>Commons Digester :: Examples :: Document Markup</name>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>org.apache.commons.digester3.examples.documentmarkup.Main</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>
