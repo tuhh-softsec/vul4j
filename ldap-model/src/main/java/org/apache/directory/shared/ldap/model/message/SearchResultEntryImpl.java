@@ -185,7 +185,6 @@ public class SearchResultEntryImpl extends AbstractResponse implements SearchRes
             }
         }
 
-        return sb.toString();
+        return super.toString( sb.toString() );
     }
-
 }

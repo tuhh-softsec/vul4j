@@ -62,6 +62,6 @@ public class ModifyResponseImpl extends AbstractResultResponse implements Modify
         sb.append( "    Modify Response\n" );
         sb.append( super.toString() );
 
-        return sb.toString();
+        return super.toString( sb.toString() );
     }
 }

@@ -168,8 +168,6 @@ public class SearchResultReferenceImpl extends AbstractResponse implements Searc
             }
         }
 
-        return sb.toString();
+        return super.toString( sb.toString() );
     }
 }
-
-

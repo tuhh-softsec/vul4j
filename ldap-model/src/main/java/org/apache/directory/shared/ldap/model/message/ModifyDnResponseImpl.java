@@ -63,6 +63,6 @@ public class ModifyDnResponseImpl extends AbstractResultResponse implements Modi
         sb.append( "    Modify Dn Response\n" );
         sb.append( super.toString() );
 
-        return sb.toString();
+        return super.toString( sb.toString() );
     }
 }

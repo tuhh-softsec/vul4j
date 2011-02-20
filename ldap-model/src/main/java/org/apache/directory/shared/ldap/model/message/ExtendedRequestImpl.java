@@ -283,6 +283,6 @@ public class ExtendedRequestImpl extends AbstractRequest implements ExtendedRequ
         // The controls
         sb.append( super.toString() );
 
-        return sb.toString();
+        return super.toString( sb.toString() );
     }
 }

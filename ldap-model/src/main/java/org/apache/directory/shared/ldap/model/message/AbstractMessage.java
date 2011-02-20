@@ -264,9 +264,14 @@ public abstract class AbstractMessage implements Message
      * 
      * @return A LdapMessage String
      */
-    public String toString()
+    public String toString( String message )
     {
         StringBuilder sb = new StringBuilder();
+        
+        sb.append( "MessageType : " ).append( type ).append( '\n' );
+        sb.append( "Message ID : " ).append( id ).append( '\n' );
+        
+        sb.append( message );
 
         if ( controls != null )
         {

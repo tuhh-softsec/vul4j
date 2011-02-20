@@ -105,6 +105,6 @@ public class SearchResultDoneImpl extends AbstractResultResponse implements Sear
         sb.append( "    Search Result Done\n" );
         sb.append( super.toString() );
 
-        return sb.toString();
+        return super.toString( sb.toString() );
     }
 }

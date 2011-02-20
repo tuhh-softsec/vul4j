@@ -70,6 +70,6 @@ public class UnbindRequestImpl extends AbstractRequest implements UnbindRequest
         // The controls
         sb.append( super.toString() );
 
-        return sb.toString();
+        return super.toString( sb.toString() );
     }
 }

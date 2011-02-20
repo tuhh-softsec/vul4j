@@ -72,6 +72,6 @@ public class CompareResponseImpl extends AbstractResultResponse implements Compa
         sb.append( "    Compare Response\n" );
         sb.append( super.toString() );
 
-        return sb.toString();
+        return super.toString( sb.toString() );
     }
 }
