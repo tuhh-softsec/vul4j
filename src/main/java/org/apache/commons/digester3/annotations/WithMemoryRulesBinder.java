@@ -22,7 +22,6 @@ import java.util.Set;
 
 import org.apache.commons.digester3.RulesBinder;
 import org.apache.commons.digester3.RulesModule;
-import org.apache.commons.digester3.rulesbinder.ConverterBuilder;
 import org.apache.commons.digester3.rulesbinder.LinkedRuleBuilder;
 
 final class WithMemoryRulesBinder implements RulesBinder {
@@ -71,13 +70,6 @@ final class WithMemoryRulesBinder implements RulesBinder {
      */
     public LinkedRuleBuilder forPattern(String pattern) {
         return this.wrappedRulesBinder.forPattern(pattern);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public <T> ConverterBuilder<T> convert(Class<T> type) {
-        return this.wrappedRulesBinder.convert(type);
     }
 
     /**

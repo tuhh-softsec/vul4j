@@ -28,10 +28,8 @@ import org.apache.commons.digester3.DigesterLoadingException;
 import org.apache.commons.digester3.Rule;
 import org.apache.commons.digester3.RulesBinder;
 import org.apache.commons.digester3.RulesModule;
-import org.apache.commons.digester3.rulesbinder.ConverterBuilder;
 import org.apache.commons.digester3.rulesbinder.LinkedRuleBuilder;
 import org.apache.commons.digester3.spi.Rules;
-import org.apache.commons.digester3.spi.TypeConverter;
 
 /**
  * The Digester EDSL implementation.
@@ -136,28 +134,6 @@ public final class RulesBinderImpl implements RulesBinder {
         }
 
         return new LinkedRuleBuilderImpl(this, this.providersRegistry, this.classLoader, keyPattern);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public <T> ConverterBuilder<T> convert(final Class<T> type) {
-        if (type == null) {
-            this.addError(new IllegalArgumentException("NULL type is not allowed to be converted"));
-        }
-        return new ConverterBuilder<T>() {
-
-            public void withConverter(TypeConverter<T> typeConverter) {
-                if (typeConverter == null) {
-                    addError(new IllegalArgumentException(
-                            String.format("NULL TypeConverter is not allowed for converting '%s' type",
-                                    type.getName())));
-                }
-
-                // TODO register the type converter!!!
-            }
-
-        };
     }
 
     /**

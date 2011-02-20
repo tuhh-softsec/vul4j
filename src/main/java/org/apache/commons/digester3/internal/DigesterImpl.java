@@ -17,7 +17,11 @@
  */
 package org.apache.commons.digester3.internal;
 
-import static org.apache.commons.digester3.utils.InputSources.*;
+import static org.apache.commons.digester3.utils.InputSources.createInputSourceFromFile;
+import static org.apache.commons.digester3.utils.InputSources.createInputSourceFromInputStream;
+import static org.apache.commons.digester3.utils.InputSources.createInputSourceFromReader;
+import static org.apache.commons.digester3.utils.InputSources.createInputSourceFromURL;
+import static org.apache.commons.digester3.utils.InputSources.createInputSourceFromUri;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,7 +41,6 @@ import org.apache.commons.digester3.Digester;
 import org.apache.commons.digester3.Rule;
 import org.apache.commons.digester3.spi.Rules;
 import org.apache.commons.digester3.spi.Substitutor;
-import org.apache.commons.digester3.spi.TypeConverter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xml.sax.Attributes;
@@ -1165,14 +1168,6 @@ public final class DigesterImpl implements Digester {
      */
     public SAXException createSAXException(String message) {
         return createSAXException(message, null);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public <T> TypeConverter<T> lookupConverter(final Class<T> type) {
-        // TODO empty implementation, will be changed for final version
-        return null;
     }
 
 }

@@ -28,7 +28,6 @@ import java.util.Stack;
 import org.apache.commons.digester3.Digester;
 import org.apache.commons.digester3.Rule;
 import org.apache.commons.digester3.spi.Rules;
-import org.apache.commons.digester3.spi.TypeConverter;
 import org.apache.commons.logging.Log;
 import org.xml.sax.Attributes;
 import org.xml.sax.ErrorHandler;
@@ -282,11 +281,6 @@ public class MarkupDigester implements Digester {
 
     public SAXException createSAXException(String message) {
         return this.wrapped.createSAXException(message);
-    }
-
-    public <T> TypeConverter<T> lookupConverter(Class<T> type) {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     /**

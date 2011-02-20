@@ -19,7 +19,6 @@ package org.apache.commons.digester3.xmlrules.metaparser;
 
 import org.apache.commons.digester3.RulesBinder;
 import org.apache.commons.digester3.RulesModule;
-import org.apache.commons.digester3.rulesbinder.ConverterBuilder;
 import org.apache.commons.digester3.rulesbinder.LinkedRuleBuilder;
 
 final class PrefixedRulesBinder implements RulesBinder {
@@ -69,13 +68,6 @@ final class PrefixedRulesBinder implements RulesBinder {
             pattern = this.prefix + '/' + pattern;
         }
         return this.wrappedRulesBinder.forPattern(pattern);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public <T> ConverterBuilder<T> convert(Class<T> type) {
-        return this.wrappedRulesBinder.convert(type);
     }
 
 }

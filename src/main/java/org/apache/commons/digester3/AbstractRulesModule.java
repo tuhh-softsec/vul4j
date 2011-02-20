@@ -17,7 +17,6 @@
  */
 package org.apache.commons.digester3;
 
-import org.apache.commons.digester3.rulesbinder.ConverterBuilder;
 import org.apache.commons.digester3.rulesbinder.LinkedRuleBuilder;
 
 /**
@@ -55,16 +54,6 @@ public abstract class AbstractRulesModule implements RulesModule {
      */
     protected LinkedRuleBuilder forPattern(String pattern) {
         return this.rulesBinder.forPattern(pattern);
-    }
-
-    /**
-     * @see RulesBinder#convert(Class)
-     * @param <T>
-     * @param type
-     * @return
-     */
-    protected <T> ConverterBuilder<T> convert(Class<T> type) {
-        return this.rulesBinder.convert(type);
     }
 
     /**
