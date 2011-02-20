@@ -46,7 +46,7 @@ directory:
   mvn compile
 
 * to build the jar artifact
-  mvn compile
+  mvn package
 
 * to run:
   mvn verify
