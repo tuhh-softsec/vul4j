@@ -107,4 +107,11 @@
         </dependency>
     </dependencies>
 
+    <modules>
+        <module>addressbook</module>
+        <module>catalog</module>
+        <module>dbinsert</module>
+        <module>document-markup</module>
+    </modules>
+
 </project>

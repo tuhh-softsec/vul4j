@@ -40,7 +40,7 @@
                 <configuration>
                     <mainClass>org.apache.commons.digester3.examples.catalog.Main</mainClass>
                     <arguments>
-                        <argument>example.xml</argument>
+                        <argument>${basedir}/example.xml</argument>
                     </arguments>
                 </configuration>
             </plugin>
