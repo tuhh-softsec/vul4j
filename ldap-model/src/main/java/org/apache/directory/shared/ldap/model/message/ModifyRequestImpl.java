@@ -438,6 +438,6 @@ public class ModifyRequestImpl extends AbstractAbandonableRequest implements Mod
         // The controls
         sb.append( super.toString() );
 
-        return sb.toString();
+        return super.toString( sb.toString() );
     }
 }

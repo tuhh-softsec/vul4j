@@ -328,6 +328,6 @@ public class CompareRequestImpl extends AbstractAbandonableRequest implements Co
         // The controls
         sb.append( super.toString() );
 
-        return sb.toString();
+        return super.toString( sb.toString() );
     }
 }

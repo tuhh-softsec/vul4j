@@ -31,7 +31,6 @@ import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.api.CodecControl;
-import org.apache.directory.shared.ldap.codec.api.DefaultLdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.LdapConstants;
 import org.apache.directory.shared.ldap.codec.api.MessageEncoderException;
@@ -50,8 +49,13 @@ import org.apache.directory.shared.util.Strings;
 public class LdapEncoder
 {
     /** The LdapCodecService */
-    private LdapCodecService codec = new DefaultLdapCodecService();
+    private LdapCodecService codec;
     
+    
+    public LdapEncoder( LdapCodecService codec )
+    {
+        this.codec = codec;
+    }
     
     
     private int computeControlLength( Control control )

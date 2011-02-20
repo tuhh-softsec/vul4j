@@ -23,6 +23,7 @@ package org.apache.directory.shared.ldap.codec.protocol.mina;
 import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.ldap.codec.LdapEncoder;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.IoSession;
@@ -38,7 +39,18 @@ import org.apache.mina.filter.codec.ProtocolEncoderOutput;
 public class LdapProtocolEncoder implements ProtocolEncoder
 {
     /** The stateful encoder */
-    private static final LdapEncoder ENCODER = new LdapEncoder();
+    private LdapEncoder encoder;
+    
+    
+    /**
+     * Creates a new instance of LdapProtocolEncoder.
+     *
+     * @param codec The LDAP codec service associated with this encoder.
+     */
+    public LdapProtocolEncoder( LdapCodecService codec )
+    {
+        this.encoder = new LdapEncoder( codec );
+    }
 
 
     /**
@@ -46,7 +58,7 @@ public class LdapProtocolEncoder implements ProtocolEncoder
      */
     public void encode( IoSession session, Object message, ProtocolEncoderOutput out ) throws Exception
     {
-        ByteBuffer buffer = ENCODER.encodeMessage( ( Message ) message );
+        ByteBuffer buffer = encoder.encodeMessage( ( Message ) message );
 
         IoBuffer ioBuffer = IoBuffer.wrap( buffer );
 

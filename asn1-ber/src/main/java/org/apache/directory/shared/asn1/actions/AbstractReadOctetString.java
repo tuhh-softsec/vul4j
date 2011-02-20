@@ -6,16 +6,16 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License. 
- *  
+ *  under the License.
+ *
  */
 package org.apache.directory.shared.asn1.actions;
 
@@ -32,10 +32,10 @@ import org.slf4j.LoggerFactory;
 
 /**
  * The action used to read an OCTET STRING value
- * 
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public abstract class AbstractReadOctetString extends GrammarAction<Asn1Container>
+public abstract class AbstractReadOctetString<E extends Asn1Container> extends GrammarAction<E>
 {
     /** The logger */
     private static final Logger LOG = LoggerFactory.getLogger( AbstractReadOctetString.class );
@@ -55,32 +55,32 @@ public abstract class AbstractReadOctetString extends GrammarAction<Asn1Containe
 
     /**
      * Instantiates a new AbstractReadInteger action.
-     * 
+     *
      * @param name The log message
      * @param canBeNull Tells if the byte array can be null or not
      */
     public AbstractReadOctetString( String name, boolean canBeNull )
     {
         super( name );
-        
+
         this.canBeNull = canBeNull;
     }
 
 
     /**
-     * 
+     *
      * set the OCTET STRING value to the appropriate field of ASN.1 object present in the container
-     * 
+     *
      * @param value the OCTET STRING value
      * @param container the ASN.1 object's container
      */
-    protected abstract void setOctetString( byte[] value, Asn1Container container );
+    protected abstract void setOctetString( byte[] value, E container );
 
 
     /**
      * {@inheritDoc}
      */
-    public final void action( Asn1Container container ) throws DecoderException
+    public final void action( E container ) throws DecoderException
     {
         TLV tlv = container.getCurrentTLV();
 
@@ -92,9 +92,9 @@ public abstract class AbstractReadOctetString extends GrammarAction<Asn1Containe
             // This will generate a PROTOCOL_ERROR
             throw new DecoderException( I18n.err( I18n.ERR_04067 ) );
         }
-        
+
         Value value = tlv.getValue();
-        
+
         // The data should not be null
         if ( ( value.getData() == null ) && ( !canBeNull ) )
         {
@@ -103,7 +103,7 @@ public abstract class AbstractReadOctetString extends GrammarAction<Asn1Containe
             // This will generate a PROTOCOL_ERROR
             throw new DecoderException( I18n.err( I18n.ERR_04067 ) );
         }
-        
+
         setOctetString( value.getData(), container );
     }
 }

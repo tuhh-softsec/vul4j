@@ -42,18 +42,19 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public final class SubentriesGrammar extends AbstractGrammar
+public final class SubentriesGrammar extends AbstractGrammar<SubentriesContainer>
 {
     /** The logger */
     static final Logger LOG = LoggerFactory.getLogger( SubentriesGrammar.class );
 
     /** The instance of grammar. SubEntryControlGrammar is a singleton */
-    private static Grammar instance = new SubentriesGrammar();
+    private static Grammar<SubentriesContainer> instance = new SubentriesGrammar();
 
 
     /**
      * Creates a new SubEntryGrammar object.
      */
+    @SuppressWarnings("unchecked")
     private SubentriesGrammar()
     {
         setName( SubentriesGrammar.class.getName() );
@@ -62,7 +63,7 @@ public final class SubentriesGrammar extends AbstractGrammar
         super.transitions = new GrammarTransition[ SubentriesStates.LAST_SUB_ENTRY_STATE.ordinal()][256];
 
         super.transitions[ SubentriesStates.START_STATE.ordinal()][UniversalTag.BOOLEAN.getValue()] =
-            new GrammarTransition( SubentriesStates.START_STATE,
+            new GrammarTransition<SubentriesContainer>( SubentriesStates.START_STATE,
                                     SubentriesStates.SUB_ENTRY_VISIBILITY_STATE, UniversalTag.BOOLEAN.getValue(),
                 new GrammarAction<SubentriesContainer>( "SubEntryControl visibility" )
             {
@@ -102,7 +103,7 @@ public final class SubentriesGrammar extends AbstractGrammar
      * 
      * @return An instance on this grammar
      */
-    public static Grammar getInstance()
+    public static Grammar<SubentriesContainer> getInstance()
     {
         return instance;
     }

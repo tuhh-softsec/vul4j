@@ -76,6 +76,12 @@
       <groupId>commons-collections</groupId>
       <artifactId>commons-collections</artifactId>
     </dependency>
+    
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi</artifactId>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -91,16 +97,6 @@
             </goals>
           </execution>
         </executions>
-      </plugin>
-
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <excludes>
-            <exclude>**/Abstract*</exclude>
-            <exclude>**/*RegressionTest*</exclude>
-          </excludes>
-        </configuration>
       </plugin>
 
       <plugin>
@@ -123,11 +119,13 @@
           <manifestLocation>META-INF</manifestLocation>
           <instructions>
             <Bundle-SymbolicName>${project.groupId}.ldap.codec</Bundle-SymbolicName>
+            <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
             <Export-Package>
-              org.apache.directory.shared.ldap.codec.api,
-              org.apache.directory.shared.ldap.extras.controls,
-              org.apache.directory.shared.ldap.extras.extended
+              org.apache.directory.shared.ldap.codec.api
             </Export-Package>
+            <Bundle-Activator>
+              org.apache.directory.shared.ldap.codec.osgi.DefaultActivator
+            </Bundle-Activator>
           </instructions>
         </configuration>
       </plugin>

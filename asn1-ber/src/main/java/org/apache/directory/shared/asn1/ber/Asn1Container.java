@@ -6,16 +6,16 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License. 
- *  
+ *  under the License.
+ *
  */
 package org.apache.directory.shared.asn1.ber;
 
@@ -29,30 +29,30 @@ import org.apache.directory.shared.asn1.ber.tlv.TLVStateEnum;
 
 /**
  * Every ASN1 container must implement this interface.
- * 
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public interface Asn1Container
 {
     /**
      * Gets the current stream containing the bytes to decode
-     * 
+     *
      * @return The current stream
      */
     ByteBuffer getStream();
-    
-    
+
+
     /**
      * Stores the Stream being decoded
-     * 
+     *
      * @param stream The stream being decoded
      */
     void setStream( ByteBuffer stream );
-    
-    
+
+
     /**
      * Get the current grammar state
-     * 
+     *
      * @return Returns the current grammar state
      */
     TLVStateEnum getState();
@@ -60,7 +60,7 @@ public interface Asn1Container
 
     /**
      * Set the new current state
-     * 
+     *
      * @param state The new state
      */
     void setState( TLVStateEnum state );
@@ -68,7 +68,7 @@ public interface Asn1Container
 
     /**
      * Get the currentTLV
-     * 
+     *
      * @return Returns the current TLV being decoded
      */
     TLV getCurrentTLV();
@@ -76,7 +76,7 @@ public interface Asn1Container
 
     /**
      * Set the current TLV
-     * 
+     *
      * @param tlv The current TLV
      */
     void setCurrentTLV( TLV tlv );
@@ -84,7 +84,7 @@ public interface Asn1Container
 
     /**
      * Get the grammar
-     * 
+     *
      * @return Returns the grammar used to decode a LdapMessage.
      */
     Grammar getGrammar();
@@ -92,7 +92,7 @@ public interface Asn1Container
 
     /**
      * Get the transition
-     * 
+     *
      * @return Returns the transition from the previous state to the new state
      */
     Enum<?> getTransition();
@@ -100,7 +100,7 @@ public interface Asn1Container
 
     /**
      * Update the transition from a state to another
-     * 
+     *
      * @param transition The transition to set
      */
     void setTransition( Enum<?> transition );
@@ -114,7 +114,7 @@ public interface Asn1Container
 
     /**
      * Set the parent TLV
-     * 
+     *
      * @param parentTLV The new parent TLV
      */
     void setParentTLV( TLV parentTLV );
@@ -122,7 +122,7 @@ public interface Asn1Container
 
     /**
      * Check that we can have a end state after this transition
-     * 
+     *
      * @return true if this can be the last transition
      */
     boolean isGrammarEndAllowed();
@@ -130,7 +130,7 @@ public interface Asn1Container
 
     /**
      * Set the flag to allow a end transition
-     * 
+     *
      * @param grammarEndAllowed true or false, depending on the next transition
      * being an end or not.
      */
@@ -178,8 +178,8 @@ public interface Asn1Container
      * replaced by the max integer value)
      */
     void setMaxPDUSize( int maxPDUSize );
-    
-    
+
+
     /**
      * Move backward in the stream to the first byte for a given TLV. This is useful when we have
      * read some Tag and Length in order to define the next transition, and if this transition
@@ -187,22 +187,22 @@ public interface Asn1Container
      * @param tlv The TLV to rollback
      */
     void rewind();
-    
-    
+
+
     /**
      * Look for the closest parent which has an expected length above 0
      */
     void updateParent();
-    
-    
+
+
     /**
      * @return true if the container should gather the value into itself, false
-     * if the decoding of the Value part should be done immediately for 
+     * if the decoding of the Value part should be done immediately for
      * constructed types.
      */
     boolean isGathering();
-    
-    
+
+
     /**
      * Set the isGathering flag
      * @param isGathering true to ask the Asn1Decoder to gather the data

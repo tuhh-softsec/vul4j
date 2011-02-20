@@ -21,7 +21,10 @@ package org.apache.directory.shared.ldap.model.message;
 
 
 import java.text.ParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapProtocolErrorException;
@@ -604,6 +607,6 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Sea
         // The controls
         sb.append( super.toString() );
 
-        return sb.toString();
+        return super.toString( sb.toString() );
     }
 }

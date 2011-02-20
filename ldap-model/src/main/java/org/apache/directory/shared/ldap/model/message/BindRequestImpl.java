@@ -418,6 +418,7 @@ public class BindRequestImpl extends AbstractAbandonableRequest implements BindR
     public String toString()
     {
         StringBuffer sb = new StringBuffer();
+        
         sb.append( "    BindRequest\n" );
         sb.append( "        Version : '" ).append( isVersion3 ? "3" : "2" ).append( "'\n" );
 
@@ -451,8 +452,6 @@ public class BindRequestImpl extends AbstractAbandonableRequest implements BindR
         }
 
         // The controls if any
-        sb.append( super.toString() );
-
-        return sb.toString();
+        return super.toString( sb.toString() );
     }
 }

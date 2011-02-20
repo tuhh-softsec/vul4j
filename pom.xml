@@ -23,7 +23,7 @@
     <groupId>org.apache.directory.project</groupId>
     <artifactId>project</artifactId>
     <version>20</version>
-    <relativePath />
+    <relativePath/>
   </parent>
 
   <groupId>org.apache.directory.shared</groupId>
@@ -51,10 +51,14 @@
     <junit.version>4.8.2</junit.version>
     <log4j.version>1.2.16</log4j.version>
     <mina.core.version>2.0.2</mina.core.version>
+    <org.osgi.version>3.0.0</org.osgi.version>
+    <org.osgi.core.version>4.2.0</org.osgi.core.version>
+    <org.apache.felix.version>3.0.2</org.apache.felix.version>
     <slf4j.api.version>1.6.1</slf4j.api.version>
     <slf4j.log4j12.version>1.6.1</slf4j.log4j12.version>
     <xml.apis.version>2.0.2</xml.apis.version>
     <xpp3.version>1.1.4c</xpp3.version>
+    <pax-exam.version>1.2.3</pax-exam.version>
     <findbugs.annotations.version>1.0.0</findbugs.annotations.version>
   </properties>
   
@@ -77,8 +81,9 @@
     <module>asn1-ber</module>
     <module>integ</module>
     <module>all</module>
-    <module>ldap</module>
+    <module>ldap-extras</module>
     <module>ldap-codec</module>
+    <module>ldap-codec-standalone</module>
     <module>ldap-model</module>
     <module>ldap-schema</module>
     <module>ldap-schema-converter</module>
@@ -398,12 +403,6 @@
 
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>shared-ldap</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>${project.groupId}</groupId>
         <artifactId>shared-ldap-model</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -411,6 +410,36 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>shared-ldap-codec</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>shared-ldap-codec-standalone</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>shared-ldap-extras-codec</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>shared-ldap-extras-aci</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>shared-ldap-extras-trigger</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>shared-ldap-extras-util</artifactId>
         <version>${project.version}</version>
       </dependency>
 
@@ -465,13 +494,54 @@
         <artifactId>commons-pool</artifactId>
         <version>${commons.pool.version}</version>
       </dependency>
-      
+
+      <!-- OSGi and Felix Dependencies -->
+
+      <dependency>
+        <groupId>org.osgi</groupId>
+        <artifactId>org.osgi</artifactId>
+        <version>${org.osgi.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.osgi</groupId>
+        <artifactId>org.osgi.core</artifactId>
+        <version>${org.osgi.core.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>org.apache.felix.framework</artifactId>
+        <version>${org.apache.felix.version}</version>
+      </dependency>
+
       <!-- Test dependencies -->
 
       <dependency>
         <groupId>org.apache.directory.junit</groupId>
         <artifactId>junit-addons</artifactId>
         <version>${org.apache.directory.junit.junit-addons.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.ops4j.pax.exam</groupId>
+        <artifactId>pax-exam</artifactId>
+        <version>${pax-exam.version}</version>
+        <scope>test</scope>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.ops4j.pax.exam</groupId>
+        <artifactId>pax-exam-junit</artifactId>
+        <version>${pax-exam.version}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.ops4j.pax.exam</groupId>
+        <artifactId>pax-exam-container-default</artifactId>
+        <version>${pax-exam.version}</version>
+        <scope>test</scope>
       </dependency>
 
       <!-- Logging dependencies -->

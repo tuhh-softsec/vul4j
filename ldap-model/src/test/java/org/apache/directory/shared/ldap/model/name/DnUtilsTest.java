@@ -22,15 +22,13 @@ package org.apache.directory.shared.ldap.model.name;
 
 import static org.junit.Assert.assertEquals;
 
-import com.mycila.junit.concurrent.Concurrency;
-import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
-import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
-import org.apache.directory.shared.ldap.model.name.Dn;
-import org.apache.directory.shared.ldap.model.name.DnUtils;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 
 
 
@@ -193,21 +191,5 @@ public class DnUtilsTest
         args = DnUtils.getCompositeComponents("cn=Alex");
         assertEquals( "expecting one part : ", 1, args.length );
         assertEquals( "cn=Alex", args[0] );
-    }
-
-
-    @Test
-    public void testGetRelativeName() throws LdapInvalidDnException
-    {
-        // test the basis case first with the root
-        Dn ancestor = new Dn( "" );
-        Dn descendant = new Dn( "ou=system" );
-        Dn relativeName = DnUtils.getRelativeName(ancestor, descendant);
-        assertEquals( relativeName.toString(), "ou=system" );
-
-        ancestor = new Dn( "ou=system" );
-        descendant = new Dn( "ou=users,ou=system" );
-        relativeName = DnUtils.getRelativeName(ancestor, descendant);
-        assertEquals( relativeName.toString(), "ou=users" );
     }
 }

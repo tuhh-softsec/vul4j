@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.codec.bind;
 
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertEquals; 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -34,14 +34,12 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
-import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.api.CodecControl;
-import org.apache.directory.shared.ldap.codec.api.DefaultLdapCodecService;
-import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.ResponseCarryingException;
 import org.apache.directory.shared.ldap.codec.decorators.BindRequestDecorator;
 import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
+import org.apache.directory.shared.ldap.codec.osgi.AbstractCodecServiceTest;
 import org.apache.directory.shared.ldap.model.message.BindRequest;
 import org.apache.directory.shared.ldap.model.message.BindResponseImpl;
 import org.apache.directory.shared.ldap.model.message.Control;
@@ -57,13 +55,8 @@ import org.junit.runner.RunWith;
  */
 @RunWith(ConcurrentJunitRunner.class)
 @Concurrency()
-public class BindRequestTest
+public class BindRequestTest extends AbstractCodecServiceTest
 {
-    /** The encoder instance */
-    LdapEncoder encoder = new LdapEncoder();
-
-    LdapCodecService codec = new DefaultLdapCodecService();
-
     /**
      * Test the decoding of a BindRequest with Simple authentication and no
      * controls

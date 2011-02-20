@@ -6,16 +6,16 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License. 
- *  
+ *  under the License.
+ *
  */
 package org.apache.directory.shared.asn1.actions;
 
@@ -23,10 +23,10 @@ package org.apache.directory.shared.asn1.actions;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
+import org.apache.directory.shared.asn1.ber.tlv.IntegerDecoder;
 import org.apache.directory.shared.asn1.ber.tlv.IntegerDecoderException;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
-import org.apache.directory.shared.asn1.ber.tlv.IntegerDecoder;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
@@ -35,10 +35,10 @@ import org.slf4j.LoggerFactory;
 
 /**
  * The action used to read an integer value
- * 
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public abstract class AbstractReadInteger extends GrammarAction<Asn1Container>
+public abstract class AbstractReadInteger<E extends Asn1Container> extends GrammarAction<E>
 {
     /** The logger */
     private static final Logger LOG = LoggerFactory.getLogger( AbstractReadInteger.class );
@@ -63,7 +63,7 @@ public abstract class AbstractReadInteger extends GrammarAction<Asn1Container>
 
 
     /**
-     * 
+     *
      * Creates a new instance of AbstractReadInteger.
      *
      * @param name the action's name
@@ -80,19 +80,19 @@ public abstract class AbstractReadInteger extends GrammarAction<Asn1Container>
 
 
     /**
-     * 
+     *
      * set the integer value to the appropriate field of ASN.1 object present in the container
-     * 
+     *
      * @param value the integer value
      * @param container the ASN.1 object's container
      */
-    protected abstract void setIntegerValue( int value, Asn1Container container );
+    protected abstract void setIntegerValue( int value, E container );
 
 
     /**
      * {@inheritDoc}
      */
-    public final void action( Asn1Container container ) throws DecoderException
+    public final void action( E container ) throws DecoderException
     {
         TLV tlv = container.getCurrentTLV();
 
@@ -104,9 +104,9 @@ public abstract class AbstractReadInteger extends GrammarAction<Asn1Container>
             // This will generate a PROTOCOL_ERROR
             throw new DecoderException( I18n.err( I18n.ERR_04067 ) );
         }
-        
+
         Value value = tlv.getValue();
-        
+
         try
         {
             int number = IntegerDecoder.parse( value, minValue, maxValue );
@@ -115,7 +115,7 @@ public abstract class AbstractReadInteger extends GrammarAction<Asn1Container>
             {
                 LOG.debug( "read integer value : {}", number );
             }
-            
+
             setIntegerValue( number, container );
         }
         catch ( IntegerDecoderException ide )

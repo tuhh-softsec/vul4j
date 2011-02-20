@@ -32,16 +32,13 @@ import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.api.CodecControl;
-import org.apache.directory.shared.ldap.codec.api.DefaultLdapCodecService;
-import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.decorators.BindRequestDecorator;
+import org.apache.directory.shared.ldap.codec.osgi.AbstractCodecServiceTest;
 import org.apache.directory.shared.ldap.model.message.BindRequest;
 import org.apache.directory.shared.ldap.model.message.BindRequestImpl;
 import org.apache.directory.shared.ldap.model.message.Control;
-import org.apache.directory.shared.ldap.model.message.controls.AbstractControl;
 import org.apache.directory.shared.ldap.model.message.controls.OpaqueControl;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.util.Strings;
@@ -55,13 +52,9 @@ import org.junit.runner.RunWith;
  */
 @RunWith(ConcurrentJunitRunner.class)
 @Concurrency()
-public class BindRequestPerfTest
+@Ignore( "Ignore performance tests: should not be with integration tests" )
+public class BindRequestPerfTest extends AbstractCodecServiceTest
 {
-    /** The encoder instance */
-    LdapEncoder encoder = new LdapEncoder();
-
-    LdapCodecService codec = new DefaultLdapCodecService();
-
     /**
      * Test the decoding of a BindRequest with Simple authentication and no
      * controls

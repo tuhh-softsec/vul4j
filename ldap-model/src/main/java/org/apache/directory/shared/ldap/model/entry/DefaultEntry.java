@@ -35,13 +35,14 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.name.Dn;
+import org.apache.directory.shared.ldap.model.name.DnSerializer;
 import org.apache.directory.shared.ldap.model.name.Rdn;
 import org.apache.directory.shared.ldap.model.name.RdnSerializer;
-import org.apache.directory.shared.util.exception.NotImplementedException;
 import org.apache.directory.shared.ldap.model.schema.AttributeType;
 import org.apache.directory.shared.ldap.model.schema.SchemaManager;
 import org.apache.directory.shared.util.Strings;
 import org.apache.directory.shared.util.Unicode;
+import org.apache.directory.shared.util.exception.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -2485,12 +2486,12 @@ public class DefaultEntry implements Entry
         if ( dn == null )
         {
             // Write an empty Dn
-            out.writeObject( Dn.EMPTY_DN );
+            DnSerializer.serialize( Dn.EMPTY_DN, out );
         }
         else
         {
             // Write the Dn
-            out.writeObject( dn );
+            DnSerializer.serialize( dn, out );
         }
 
         // Then the attributes.
@@ -2514,7 +2515,7 @@ public class DefaultEntry implements Entry
     public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException
     {
         // Read the Dn
-        dn = (Dn) in.readObject();
+        dn = DnSerializer.deserialize( in );
 
         // Read the number of attributes
         int nbAttributes = in.readInt();

@@ -64,6 +64,6 @@ public class DeleteResponseImpl extends AbstractResultResponse implements Delete
         sb.append( "    Delete Response\n" );
         sb.append( super.toString() );
 
-        return sb.toString();
+        return super.toString( sb.toString() );
     }
 }

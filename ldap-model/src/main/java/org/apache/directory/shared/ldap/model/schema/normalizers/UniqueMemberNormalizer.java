@@ -80,7 +80,7 @@ public class UniqueMemberNormalizer extends Normalizer
             
             if ( sharpPos > 0 )
             {
-                Dn dn = new Dn( nameAndUid.substring( 0, sharpPos ), schemaManager );
+                Dn dn = new Dn( schemaManager, nameAndUid.substring( 0, sharpPos ) );
                 
                 return new StringValue( dn.getNormName() + '#' + uid );
             }
@@ -125,7 +125,7 @@ public class UniqueMemberNormalizer extends Normalizer
             
             if ( sharpPos > 0 )
             {
-                Dn dn = new Dn( value.substring( 0, sharpPos ), schemaManager );
+                Dn dn = new Dn( schemaManager, value.substring( 0, sharpPos ) );
                 
                 return dn.getNormName() + '#' + uid;
             }
@@ -138,7 +138,7 @@ public class UniqueMemberNormalizer extends Normalizer
         {
             // No UID, the strValue is a Dn
             // Return the normalized Dn
-            return new Dn( value, schemaManager ).getNormName();
+            return new Dn( schemaManager, value ).getNormName();
         }
     }
 

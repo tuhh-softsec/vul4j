@@ -21,32 +21,43 @@ package org.apache.directory.shared.ldap.model.constants;
 
 
 /**
- * Contains constants used for populating the SASL QoP 
- * in the RootDSE.
- * Final reference -> class shouldn't be extended
+ * This enums contains values for SASL QoP (Quality of Protection).
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public final class SaslQoP
+public enum SaslQoP
 {
-    /**
-     *  Ensures no construction of this class, also ensures there is no need for final keyword above
-     *  (Implicit super constructor is not visible for default constructor),
-     *  but is still self documenting.
-     */
-    private SaslQoP()
-    {
-    }
-
-    /** The supported QOP attribute */
-    public final static String ATTRIBUTE = "supportedQoP";
-
     /** Authentication only */
-    public final static String QOP_AUTH      = "auth" ;
+    AUTH("auth"),
 
     /** Authentication with integrity protection */
-    public final static String QOP_AUTH_INT  = "auth-int" ;
+    AUTH_INT("auth-int"),
 
     /** Authentication with integrity and privacy protection */
-    public final static String QOP_AUTH_CONF = "auth-conf" ;
+    AUTH_CONF("auth-conf");
+
+    /** The equivalent string value */
+    private String value;
+
+
+    /**
+     * Creates a new instance of SaslQoP.
+     *
+     * @param value the equivalent string value
+     */
+    private SaslQoP( String value )
+    {
+        this.value = value;
+    }
+
+
+    /**
+     * Gets the equivalent string value.
+     *
+     * @return the equivalent string value
+     */
+    public String getValue()
+    {
+        return value;
+    }
 }

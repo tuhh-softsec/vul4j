@@ -6,16 +6,16 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License. 
- *  
+ *  under the License.
+ *
  */
 package org.apache.directory.shared.asn1.ber.grammar;
 
@@ -31,10 +31,10 @@ import org.slf4j.LoggerFactory;
 /**
  * The abstract Grammar which is the Mother of all the grammars. It contains
  * the transitions table.
- * 
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public abstract class AbstractGrammar implements Grammar
+public abstract class AbstractGrammar<E extends Asn1Container> implements Grammar<E>
 {
     /** The logger */
     private static final Logger LOG = LoggerFactory.getLogger( AbstractGrammar.class );
@@ -47,7 +47,7 @@ public abstract class AbstractGrammar implements Grammar
      * indice the states, the second dimension indices the Tag value, so it is
      * 256 wide.
      */
-    protected GrammarTransition<Asn1Container>[][] transitions;
+    protected GrammarTransition<E>[][] transitions;
 
     /** The grammar name */
     private String name;
@@ -60,7 +60,7 @@ public abstract class AbstractGrammar implements Grammar
 
     /**
      * Return the grammar's name
-     * 
+     *
      * @return The grammar name
      */
     public String getName()
@@ -71,7 +71,7 @@ public abstract class AbstractGrammar implements Grammar
 
     /**
      * Set the grammar's name
-     * 
+     *
      * @param name The new grammar name
      */
     public void setName( String name )
@@ -82,12 +82,12 @@ public abstract class AbstractGrammar implements Grammar
 
     /**
      * Get the transition associated with the state and tag
-     * 
+     *
      * @param state The current state
      * @param tag The current tag
      * @return A valid transition if any, or null.
      */
-    public GrammarTransition<Asn1Container> getTransition( Enum<?> state, int tag )
+    public GrammarTransition<E> getTransition( Enum<?> state, int tag )
     {
         return transitions[state.ordinal()][tag & 0x00FF];
     }
@@ -96,11 +96,11 @@ public abstract class AbstractGrammar implements Grammar
     /**
      * The main function. This is where an action is executed. If the action is
      * null, nothing is done.
-     * 
+     *
      * @param container The Asn1Container
      * @throws DecoderException Thrown if anything went wrong
      */
-    public void executeAction( Asn1Container container ) throws DecoderException
+    public void executeAction( E container ) throws DecoderException
     {
 
         Enum<?> currentState = container.getTransition();
@@ -113,7 +113,7 @@ public abstract class AbstractGrammar implements Grammar
         byte tagByte = container.getCurrentTLV().getTag();
 
         // We will loop until no more actions are to be executed
-        GrammarTransition<Asn1Container> transition = ( ( AbstractGrammar ) container.getGrammar() ).getTransition( currentState,
+        GrammarTransition<E> transition = ( ( AbstractGrammar<E> ) container.getGrammar() ).getTransition( currentState,
             tagByte );
 
         if ( transition == null )
@@ -134,7 +134,7 @@ public abstract class AbstractGrammar implements Grammar
 
         if ( transition.hasAction() )
         {
-            Action<Asn1Container> action = transition.getAction();
+            Action<E> action = transition.getAction();
             action.action( container );
         }
 

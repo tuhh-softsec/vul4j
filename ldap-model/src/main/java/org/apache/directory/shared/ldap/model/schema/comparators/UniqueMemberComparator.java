@@ -57,17 +57,27 @@ public class UniqueMemberComparator extends LdapComparator<String>
     /**
      * Implementation of the Compare method
      */
-    public int compare( String dnstr0, String dnstr1 )
+    public int compare( String dnstr1, String dnstr2 )
     {
-        int dash0 = dnstr0.lastIndexOf( '#' );
         int dash1 = dnstr1.lastIndexOf( '#' );
+        int dash2 = dnstr2.lastIndexOf( '#' );
 
-        if ( ( dash0 == -1 ) && ( dash1 == -1 ) )
+        if ( ( dash1 == -1 ) && ( dash2 == -1 ) )
         {
             // no UID part
             try
             {
-                return getDn( dnstr0 ).compareTo( getDn( dnstr1 ) );
+                Dn dn1 = getDn( dnstr1 );
+                Dn dn2 = getDn( dnstr2 );
+                
+                if ( dn1.equals( dn2 ) )
+                {
+                    return 0;
+                }
+                else
+                {
+                    return -1;
+                }
             }
             catch ( LdapInvalidDnException ne )
             {
@@ -77,33 +87,33 @@ public class UniqueMemberComparator extends LdapComparator<String>
         else
         {
             // Now, check that we don't have another '#'
-            if ( dnstr0.indexOf( '#' ) != dash0 )
+            if ( dnstr1.indexOf( '#' ) != dash1 )
             {
                 // Yes, we have one : this is not allowed, it should have been
                 // escaped.
                 return -1;
             }
 
-            if ( dnstr1.indexOf( '#' ) != dash0 )
+            if ( dnstr2.indexOf( '#' ) != dash1 )
             {
                 // Yes, we have one : this is not allowed, it should have been
                 // escaped.
                 return 1;
             }
 
-            Dn dn0 = null;
             Dn dn1 = null;
+            Dn dn2 = null;
 
             // This is an UID if the '#' is immediatly
             // followed by a BitString, except if the '#' is
             // on the last position
-            String uid0 = dnstr0.substring( dash0 + 1 );
+            String uid1 = dnstr1.substring( dash1 + 1 );
 
-            if ( dash0 > 0 )
+            if ( dash1 > 0 )
             {
                 try
                 {
-                    dn0 = new Dn( dnstr0.substring( 0, dash0 ) );
+                    dn1 = new Dn( dnstr1.substring( 0, dash1 ) );
                 }
                 catch ( LdapException ne )
                 {
@@ -118,13 +128,13 @@ public class UniqueMemberComparator extends LdapComparator<String>
             // This is an UID if the '#' is immediatly
             // followed by a BitString, except if the '#' is
             // on the last position
-            String uid1 = dnstr1.substring( dash1 + 1 );
+            String uid2 = dnstr2.substring( dash2 + 1 );
 
-            if ( dash1 > 0 )
+            if ( dash2 > 0 )
             {
                 try
                 {
-                    dn1 = new Dn( dnstr0.substring( 0, dash1 ) );
+                    dn2 = new Dn( dnstr1.substring( 0, dash2 ) );
                 }
                 catch ( LdapException ne )
                 {
@@ -136,14 +146,12 @@ public class UniqueMemberComparator extends LdapComparator<String>
                 return 1;
             }
 
-            int dnComp = dn0.compareTo( dn1 );
-
-            if ( dnComp != 0 )
+            if ( dn1.equals( dn2 ) )
             {
-                return dnComp;
+                return uid1.compareTo( uid2 );
             }
 
-            return uid0.compareTo( uid1 );
+            return -1;
         }
     }
 
@@ -169,7 +177,7 @@ public class UniqueMemberComparator extends LdapComparator<String>
         }
         else if ( obj instanceof String )
         {
-            dn = new Dn( ( String ) obj, schemaManager );
+            dn = new Dn( schemaManager, ( String ) obj );
         }
         else
         {

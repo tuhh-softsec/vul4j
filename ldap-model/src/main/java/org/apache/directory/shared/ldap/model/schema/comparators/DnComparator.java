@@ -20,10 +20,9 @@
 package org.apache.directory.shared.ldap.model.schema.comparators;
 
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
-
-import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.schema.LdapComparator;
 import org.apache.directory.shared.ldap.model.schema.SchemaManager;
@@ -65,7 +64,14 @@ public class DnComparator extends LdapComparator<Object>
             return -1;
         }
         
-        return dn0.compareTo( dn1 );
+        if ( dn0.equals( dn1 ) )
+        {
+            return 0;
+        }
+        else
+        {
+            return -1;
+        }
     }
 
 
@@ -81,7 +87,7 @@ public class DnComparator extends LdapComparator<Object>
         }
         else if ( obj instanceof String )
         {
-            dn = new Dn( ( String ) obj, schemaManager );
+            dn = new Dn( schemaManager, ( String ) obj );
         }
         else
         {

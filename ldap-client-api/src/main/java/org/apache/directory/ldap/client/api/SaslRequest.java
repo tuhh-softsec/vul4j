@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.directory.shared.ldap.model.constants.SaslQoP;
+import org.apache.directory.shared.ldap.model.constants.SaslSecurityStrength;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.util.StringConstants;
 import org.apache.directory.shared.util.Strings;
@@ -57,9 +59,14 @@ public class SaslRequest
     protected String authorizationId;
 
 
+    /**
+     * Creates a new instance of SaslRequest.
+     *
+     * @param saslMechanism
+     *      the SASL mechanism
+     */
     protected SaslRequest( String saslMechanism )
     {
-        super();
         this.saslMechanism = saslMechanism;
     }
 

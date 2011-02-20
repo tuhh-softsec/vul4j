@@ -201,6 +201,6 @@ public class DeleteRequestImpl extends AbstractAbandonableRequest implements Del
         sb.append( "        Entry : '" ).append( name.toString() ).append( "'\n" );
         sb.append( super.toString() );
 
-        return sb.toString();
+        return super.toString( sb.toString() );
     }
 }

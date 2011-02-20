@@ -80,6 +80,7 @@ import org.apache.directory.shared.ldap.model.schema.registries.Registries;
 import org.apache.directory.shared.ldap.model.schema.registries.Schema;
 import org.apache.directory.shared.ldap.model.schema.registries.SchemaLoader;
 import org.apache.directory.shared.ldap.model.schema.registries.SyntaxCheckerRegistry;
+import org.apache.directory.shared.ldap.schemaloader.JarLdifSchemaLoader;
 import org.apache.directory.shared.ldap.schemaloader.SchemaEntityFactory;
 import org.apache.directory.shared.util.Strings;
 import org.apache.directory.shared.util.exception.NotImplementedException;
@@ -127,6 +128,23 @@ public class DefaultSchemaManager implements SchemaManager
 
     /** Two flags for RELAXED and STRICT, this is RELAXED */
     public static final boolean RELAXED = true;
+    
+    /**
+     * Creates a new instance of DefaultSchemaManager with the default schema schemaLoader
+     *
+     * @param loader The schema loader to use
+     */
+    public DefaultSchemaManager() throws Exception
+    {
+        // Default to the the root (one schemaManager for all the entries
+        namingContext = Dn.ROOT_DSE;
+        this.schemaLoader = new JarLdifSchemaLoader();
+        errors = new ArrayList<Throwable>();
+        registries = new Registries( this );
+        factory = new SchemaEntityFactory();
+        isRelaxed = STRICT;
+        loadAllEnabled();
+    }
 
 
     /**
@@ -137,7 +155,7 @@ public class DefaultSchemaManager implements SchemaManager
     public DefaultSchemaManager( SchemaLoader loader )
     {
         // Default to the the root (one schemaManager for all the entries
-        namingContext = Dn.EMPTY_DN;
+        namingContext = Dn.ROOT_DSE;
         this.schemaLoader = loader;
         errors = new ArrayList<Throwable>();
         registries = new Registries( this );
@@ -1376,8 +1394,7 @@ public class DefaultSchemaManager implements SchemaManager
         try
         {
             schemaModificationAttributesDn = new Dn( SchemaConstants.SCHEMA_MODIFICATIONS_DN );
-            schemaModificationAttributesDn
-                .normalize( getRegistries().getAttributeTypeRegistry().getNormalizerMapping() );
+            schemaModificationAttributesDn.normalize( new DefaultSchemaManager() );
         }
         catch ( LdapInvalidDnException e )
         {

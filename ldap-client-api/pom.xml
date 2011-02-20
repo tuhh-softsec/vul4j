@@ -50,12 +50,23 @@
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>shared-ldap</artifactId>
+      <artifactId>shared-ldap-schema</artifactId>
     </dependency>
 
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>shared-ldap-schema</artifactId>
+      <artifactId>shared-ldap-codec-standalone</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>shared-ldap-codec</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>shared-ldap-extras-codec</artifactId>
     </dependency>
 
     <dependency>

@@ -20,20 +20,19 @@
 package org.apache.directory.shared.ldap.model.name;
 
 
-import com.mycila.junit.concurrent.Concurrency;
-import com.mycila.junit.concurrent.ConcurrentJunitRunner;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
-import org.apache.directory.shared.ldap.model.name.Dn;
-import org.apache.directory.shared.ldap.model.name.DnParser;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotNull;
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 
 
 /**
@@ -45,11 +44,7 @@ import static org.junit.Assert.assertNotNull;
 @Concurrency()
 public class DnParserTest
 {
-    // ~ Methods
-    // ------------------------------------------------------------------------------------
-
     // CONSTRUCTOR functions --------------------------------------------------
-
     /**
      * test an empty Dn
      */

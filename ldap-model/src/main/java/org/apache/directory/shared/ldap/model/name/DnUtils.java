@@ -20,15 +20,15 @@
 package org.apache.directory.shared.ldap.model.name;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.util.Chars;
 import org.apache.directory.shared.util.Hex;
 import org.apache.directory.shared.util.Position;
 import org.apache.directory.shared.util.Unicode;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Utility class used by the Dn Parser.
@@ -37,8 +37,6 @@ import java.util.List;
  */
 public final class DnUtils
 {
-    // ~ Static fields/initializers
-    // -----------------------------------------------------------------
     /** A value if we got an error while parsing */
     public static final int PARSING_ERROR = -1;
 
@@ -765,37 +763,6 @@ public final class DnUtils
         return rdn.substring( index + 1, rdn.length() );
     }
 
-    /**
-     * Gets the relative name between an ancestor and a potential descendant.
-     * Both name arguments must be normalized. The returned name is also
-     * normalized.
-     *
-     * @param ancestor the normalized distinguished name of the ancestor context
-     * @param descendant the normalized distinguished name of the descendant context
-     * @return the relative normalized name between the ancestor and the
-     *         descendant contexts
-     * @throws org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException if the contexts are not related in the ancestual sense
-     */
-    public static Dn getRelativeName( Dn ancestor, Dn descendant ) throws LdapInvalidDnException
-    {
-        Dn rdn = descendant;
-
-        if ( rdn.isChildOf( ancestor ) )
-        {
-            for ( int ii = 0; ii < ancestor.size(); ii++ )
-            {
-                rdn = rdn.remove( 0 );
-            }
-        }
-        else
-        {
-            LdapInvalidDnException e = new LdapInvalidDnException( I18n.err(I18n.ERR_04417, descendant, ancestor) );
-
-            throw e;
-        }
-
-        return rdn;
-    }
 
     /**
      * Gets the '+' appended components of a composite name component.

@@ -41,7 +41,6 @@
      integration tests.
    -->
   
-
   <description>
     A place to put integration tests that if put in their rightful
     project position would incure some cyclic dependencies even if
@@ -62,12 +61,46 @@
     </dependency>
 
     <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>shared-ldap-extras-codec</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>shared-ldap-codec-standalone</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
       <version>${commons.io.version}</version>
       <scope>test</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.ops4j.pax.exam</groupId>
+      <artifactId>pax-exam</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.ops4j.pax.exam</groupId>
+      <artifactId>pax-exam-junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.ops4j.pax.exam</groupId>
+      <artifactId>pax-exam-container-default</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
+
+  <properties>
+    <codec.plugin.directory>${project.build.directory}/pluginDirectory</codec.plugin.directory>
+  </properties>
 
   <build>
     <plugins>
@@ -77,9 +110,49 @@
         <configuration>
           <systemPropertyVariables>
             <workingDirectory>${basedir}/target</workingDirectory>
+            <felix.cache.rootdir>
+              ${project.build.directory}
+            </felix.cache.rootdir>
+            <felix.cache.locking>
+              true
+            </felix.cache.locking>
+            <org.osgi.framework.storage.clean>
+              onFirstInit
+            </org.osgi.framework.storage.clean>
+            <org.osgi.framework.storage>
+              osgi-cache
+            </org.osgi.framework.storage>
+            <codec.plugin.directory>
+              ${codec.plugin.directory}
+            </codec.plugin.directory>
           </systemPropertyVariables>
         </configuration>
       </plugin>
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>shared-ldap-extras-codec</artifactId>
+                  <version>${project.version}</version>
+                  <outputDirectory>${codec.plugin.directory}</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      
     </plugins>
   </build>
 </project>

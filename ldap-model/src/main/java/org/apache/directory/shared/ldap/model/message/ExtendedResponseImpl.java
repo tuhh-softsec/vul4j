@@ -265,6 +265,6 @@ public class ExtendedResponseImpl extends AbstractResultResponse implements Exte
 
         sb.append( super.toString() );
 
-        return sb.toString();
+        return super.toString( sb.toString() );
     }
 }

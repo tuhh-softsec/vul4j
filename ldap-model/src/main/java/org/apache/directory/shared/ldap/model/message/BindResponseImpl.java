@@ -187,6 +187,6 @@ public class BindResponseImpl extends AbstractResultResponse implements BindResp
                 .append( "'\n" );
         }
 
-        return sb.toString();
+        return super.toString( sb.toString() );
     }
 }

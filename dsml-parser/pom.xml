@@ -38,12 +38,18 @@
 
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>shared-i18n</artifactId>
+      <artifactId>shared-ldap-codec-standalone</artifactId>
+      <scope>test</scope>
     </dependency>
     
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>shared-ldap</artifactId>
+      <artifactId>shared-ldap-codec</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>shared-ldap-model</artifactId>
     </dependency>
     
     <dependency>
@@ -64,6 +70,24 @@
 
   <build>
     <plugins>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <configuration>
+          <systemPropertyVariables>
+            <workingDirectory>${basedir}/target</workingDirectory>
+            <felix.cache.rootdir>
+              ${project.build.directory}
+            </felix.cache.rootdir>
+            <felix.cache.locking>
+              false
+            </felix.cache.locking>
+            <org.osgi.framework.storage>
+              ${project.build.directory}/osgi-cache
+            </org.osgi.framework.storage>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>

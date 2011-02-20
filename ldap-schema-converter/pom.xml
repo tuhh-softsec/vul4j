@@ -56,6 +56,11 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>shared-util</artifactId>
     </dependency>
+    
+    <dependency>
+      <groupId>antlr</groupId>
+      <artifactId>antlr</artifactId>
+    </dependency>
   </dependencies>
 
   <build>

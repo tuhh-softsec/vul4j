@@ -21,11 +21,13 @@
 package org.apache.directory.ldap.client.api;
 
 
+import javax.security.auth.login.Configuration;
+
 import org.apache.directory.shared.ldap.model.constants.SupportedSaslMechanisms;
 
 
 /**
- * Holds the data required to complete the SASL operation
+ * Holds the data required to complete the GSS-API SASL operation
  *  
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
@@ -35,15 +37,32 @@ public class GssApiRequest extends SaslRequest
     protected String kdcHost;
 
     /** The KDC port */
-    protected int kdcPort;
+    protected int kdcPort = 0;
+
+    /** The krb5.conf file absolute path */
+    protected String krb5ConfFilePath;
+
+    /** The {@link javax.security.auth.login.Configuration} object for Login Module */
+    protected Configuration loginModuleConfiguration;
 
 
     /**
-     * TODO
+     * Creates a new instance of GssApiRequest.
      */
     public GssApiRequest()
     {
-        super( SupportedSaslMechanisms.CRAM_MD5 );
+        super( SupportedSaslMechanisms.GSSAPI );
+    }
+
+
+    /**
+     * Gets the {@link javax.security.auth.login.Configuration} object for Login Module.
+     *
+     * @return the {@link javax.security.auth.login.Configuration} object for Login Module
+     */
+    public Configuration getLoginModuleConfiguration()
+    {
+        return loginModuleConfiguration;
     }
 
 
@@ -70,6 +89,28 @@ public class GssApiRequest extends SaslRequest
 
 
     /**
+     * Gets the (absolute) path to the 'krb5.conf' file.
+     *
+     * @return the (absolute) path to the 'krb5.conf' file
+     */
+    public String getKrb5ConfFilePath()
+    {
+        return krb5ConfFilePath;
+    }
+
+
+    /**
+     * Sets the {@link javax.security.auth.login.Configuration} object for Login Module.
+     *
+     * @param loginModuleConfiguration the {@link javax.security.auth.login.Configuration} object for Login Module
+     */
+    public void setLoginModuleConfiguration( Configuration loginModuleConfiguration )
+    {
+        this.loginModuleConfiguration = loginModuleConfiguration;
+    }
+
+
+    /**
      * Sets the KDC host.
      *
      * @param kdcHost the KDC host
@@ -88,6 +129,17 @@ public class GssApiRequest extends SaslRequest
     public void setKdcPort( int kdcPort )
     {
         this.kdcPort = kdcPort;
+    }
+
+
+    /**
+     * Sets the (absolute) path to the 'krb5.conf' file.
+     *
+     * @param krb5ConfFilePath the (absolute) path to the 'krb5.conf' file
+     */
+    public void setKrb5ConfFilePath( String krb5ConfFilePath )
+    {
+        this.krb5ConfFilePath = krb5ConfFilePath;
     }
 
 

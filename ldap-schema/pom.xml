@@ -48,7 +48,7 @@
 
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>shared-ldap</artifactId>
+      <artifactId>shared-ldap-extras-aci</artifactId>
     </dependency>
 
     <dependency>

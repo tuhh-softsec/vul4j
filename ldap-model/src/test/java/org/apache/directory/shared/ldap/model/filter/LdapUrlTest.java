@@ -6,16 +6,16 @@
  *  to you under the Apache License, Version 2.0 (the
  *  "License"); you may not use this file except in compliance
  *  with the License.  You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  *  KIND, either express or implied.  See the License for the
  *  specific language governing permissions and limitations
- *  under the License. 
- *  
+ *  under the License.
+ *
  */
 package org.apache.directory.shared.ldap.model.filter;
 
@@ -30,8 +30,6 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mycila.junit.concurrent.Concurrency;
-import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.exception.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.model.filter.LdapURL.Extension;
@@ -39,10 +37,13 @@ import org.apache.directory.shared.ldap.model.name.Dn;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
+
 
 /**
  * Test the class LdapURL
- * 
+ *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 @RunWith(ConcurrentJunitRunner.class)
@@ -611,7 +612,7 @@ public class LdapUrlTest
     @Test
     public void testLdapRFC2255_6() throws LdapURLEncodingException
     {
-        assertEquals( "ldap://ldap.question.com/o=Question%3f,c=US?mail", new LdapURL(
+        assertEquals( "ldap://ldap.question.com/o=Question%3F,c=US?mail", new LdapURL(
             "ldap://ldap.question.com/o=Question%3f,c=US?mail" ).toString() );
     }
 
@@ -622,7 +623,7 @@ public class LdapUrlTest
     @Test
     public void testLdapRFC2255_7() throws LdapURLEncodingException
     {
-        assertEquals( "ldap://ldap.netscape.com/o=Babsco,c=US???(int=%5c00%5c00%5c00%5c04)", new LdapURL(
+        assertEquals( "ldap://ldap.netscape.com/o=Babsco,c=US???(int=%5C00%5C00%5C00%5C04)", new LdapURL(
             "ldap://ldap.netscape.com/o=Babsco,c=US???(int=%5c00%5c00%5c00%5c04)" ).toString() );
     }
 
@@ -2057,7 +2058,7 @@ public class LdapUrlTest
 
 
     /**
-     * Test the extension order of an LdapURL. 
+     * Test the extension order of an LdapURL.
      */
     @Test
     public void testLdapURLExtensionOrder()
@@ -2118,13 +2119,13 @@ public class LdapUrlTest
         url1.setPort( 123 );
         url1.setDn( Dn.EMPTY_DN );
         url1.getExtensions().add( new Extension( false, "X-CONNECTION-NAME", germanChars ) );
-        assertEquals( "ldap://localhost:123/????X-CONNECTION-NAME=%c3%84%c3%96%c3%9c%c3%9f%c3%a4%c3%b6%c3%bc", url1
+        assertEquals( "ldap://localhost:123/????X-CONNECTION-NAME=%C3%84%C3%96%C3%9C%C3%9F%C3%A4%C3%B6%C3%BC", url1
             .toString() );
 
         LdapURL url2 = new LdapURL(
             "ldap://localhost:123/????X-CONNECTION-NAME=%c3%84%c3%96%c3%9c%c3%9f%c3%a4%c3%b6%c3%bc" );
         assertEquals( germanChars, url1.getExtensionValue( "X-CONNECTION-NAME" ) );
-        assertEquals( "ldap://localhost:123/????X-CONNECTION-NAME=%c3%84%c3%96%c3%9c%c3%9f%c3%a4%c3%b6%c3%bc", url2
+        assertEquals( "ldap://localhost:123/????X-CONNECTION-NAME=%C3%84%C3%96%C3%9C%C3%9F%C3%A4%C3%B6%C3%BC", url2
             .toString() );
     }
 
@@ -2150,14 +2151,14 @@ public class LdapUrlTest
 
     /**
      * Test with RFC 3986 reserved characters in extension value.
-     * 
+     *
      *   reserved    = gen-delims / sub-delims
      *   gen-delims  = ":" / "/" / "?" / "#" / "[" / "]" / "@"
      *   sub-delims  = "!" / "$" / "&" / "'" / "(" / ")"
      *                 / "*" / "+" / "," / ";" / "="
-     *              
+     *
      * RFC 4516 specifies that '?' and a ',' must be percent encoded.
-     * 
+     *
      */
     @Test
     public void testLdapURLExtensionWithRFC3986ReservedCharsAndRFC4616Exception() throws Exception
@@ -2167,17 +2168,17 @@ public class LdapUrlTest
         url1.setPort( 123 );
         url1.setDn( Dn.EMPTY_DN );
         url1.getExtensions().add( new Extension( false, "X-CONNECTION-NAME", ":/?#[]@!$&'()*+,;=" ) );
-        assertEquals( "ldap://localhost:123/????X-CONNECTION-NAME=:/%3f#[]@!$&'()*+%2c;=", url1.toString() );
+        assertEquals( "ldap://localhost:123/????X-CONNECTION-NAME=:/%3F#[]@!$&'()*+%2c;=", url1.toString() );
 
         LdapURL url2 = new LdapURL( "ldap://localhost:123/????X-CONNECTION-NAME=:/%3f#[]@!$&'()*+%2c;=" );
         assertEquals( ":/?#[]@!$&'()*+,;=", url1.getExtensionValue( "X-CONNECTION-NAME" ) );
-        assertEquals( "ldap://localhost:123/????X-CONNECTION-NAME=:/%3f#[]@!$&'()*+%2c;=", url2.toString() );
+        assertEquals( "ldap://localhost:123/????X-CONNECTION-NAME=:/%3F#[]@!$&'()*+%2c;=", url2.toString() );
     }
 
 
     /**
      * Test with RFC 3986 unreserved characters in extension value.
-     * 
+     *
      *   unreserved  = ALPHA / DIGIT / "-" / "." / "_" / "~"
      */
     @Test

@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public final class PagedResultsGrammar extends AbstractGrammar
+public final class PagedResultsGrammar extends AbstractGrammar<PagedResultsContainer>
 {
     /** The logger */
     static final Logger LOG = LoggerFactory.getLogger( PagedResultsGrammar.class );
@@ -57,12 +57,13 @@ public final class PagedResultsGrammar extends AbstractGrammar
     static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
     /** The instance of grammar. PagedSearchControlGrammar is a singleton */
-    private static Grammar instance = new PagedResultsGrammar();
+    private static Grammar<?> instance = new PagedResultsGrammar();
 
 
     /**
      * Creates a new PagedSearchControlGrammar object.
      */
+    @SuppressWarnings("unchecked")
     private PagedResultsGrammar()
     {
         setName( PagedResultsGrammar.class.getName() );
@@ -78,7 +79,7 @@ public final class PagedResultsGrammar extends AbstractGrammar
          * Nothing to do
          */
         super.transitions[ PagedResultsStates.START_STATE.ordinal()][UniversalTag.SEQUENCE.getValue()] =
-            new GrammarTransition( PagedResultsStates.START_STATE,
+            new GrammarTransition<PagedResultsContainer>( PagedResultsStates.START_STATE,
                                     PagedResultsStates.PAGED_SEARCH_SEQUENCE_STATE,
                                     UniversalTag.SEQUENCE.getValue(), null );
 
@@ -93,7 +94,7 @@ public final class PagedResultsGrammar extends AbstractGrammar
          * Stores the size value
          */
         super.transitions[ PagedResultsStates.PAGED_SEARCH_SEQUENCE_STATE.ordinal()][UniversalTag.INTEGER.getValue()] =
-            new GrammarTransition( PagedResultsStates.PAGED_SEARCH_SEQUENCE_STATE,
+            new GrammarTransition<PagedResultsContainer>( PagedResultsStates.PAGED_SEARCH_SEQUENCE_STATE,
                 PagedResultsStates.SIZE_STATE,
                 UniversalTag.INTEGER.getValue(),
                 new GrammarAction<PagedResultsContainer>( "Set PagedSearchControl size" )
@@ -140,7 +141,7 @@ public final class PagedResultsGrammar extends AbstractGrammar
          * Stores the cookie flag
          */
         super.transitions[ PagedResultsStates.SIZE_STATE.ordinal()][UniversalTag.OCTET_STRING.getValue()] =
-            new GrammarTransition( PagedResultsStates.SIZE_STATE,
+            new GrammarTransition<PagedResultsContainer>( PagedResultsStates.SIZE_STATE,
                                     PagedResultsStates.COOKIE_STATE, UniversalTag.OCTET_STRING.getValue(),
                 new GrammarAction<PagedResultsContainer>( "Set PagedSearchControl cookie" )
             {
@@ -169,7 +170,7 @@ public final class PagedResultsGrammar extends AbstractGrammar
      * 
      * @return An instance on this grammar
      */
-    public static Grammar getInstance()
+    public static Grammar<?> getInstance()
     {
         return instance;
     }

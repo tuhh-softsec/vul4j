@@ -21,7 +21,6 @@
 package org.apache.directory.shared.ldap.model.name;
 
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -60,7 +59,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn>
+public final class Dn implements Iterable<Rdn>
 {
     /** The LoggerFactory used by this class */
     protected static final Logger LOG = LoggerFactory.getLogger( Dn.class );
@@ -83,8 +82,6 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
     /** A flag used to tell if the Dn has been normalized */
     private AtomicBoolean normalized;
 
-    // ~ Static fields/initializers
-    // -----------------------------------------------------------------
     /**
      *  The RDNs that are elements of the Dn
      * NOTE THAT THESE ARE IN THE OPPOSITE ORDER FROM THAT IMPLIED BY THE JAVADOC!
@@ -108,6 +105,9 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
 
     /** A null Dn */
     public static final Dn EMPTY_DN = new Dn();
+
+    /** The rootDSE */
+    public static final Dn ROOT_DSE = new Dn();
 
     /** the schema manager */
     private transient SchemaManager schemaManager;
@@ -155,9 +155,6 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
     }
 
 
-    // ~ Methods
-    // ------------------------------------------------------------------------------------
-
     /**
      * Construct an empty Dn object
      */
@@ -168,11 +165,13 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
 
 
     /**
-     * Construct an empty Dn object
+     * Construct an empty Schema aware Dn object
+     * 
+     *  @param schemaManager The SchemaManager to use
      */
-    public Dn(SchemaManager schemaManger)
+    public Dn( SchemaManager schemaManager )
     {
-        this.schemaManager = schemaManger;
+        this.schemaManager = schemaManager;
         upName = "";
         normName = "";
         normalized = new AtomicBoolean( true );
@@ -180,72 +179,13 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
 
 
     /**
-     * @see #Dn(Dn, SchemaManager)
-     */
-    public Dn(Dn dn) throws LdapInvalidDnException
-    {
-        this( dn, null );
-    }
-
-
-    /**
-     * Copies a Dn to an Dn.
+     * Creates a new Schema aware DN from the given String
      *
-     * @param dn composed of String name components.
-     * @param schemaManager the schema manager
-     * @throws LdapInvalidDnException If the Name is invalid.
-     */
-    public Dn(Dn dn, SchemaManager schemaManager) throws LdapInvalidDnException
-    {
-        this.schemaManager = schemaManager;
-
-        if ( ( dn != null ) && ( dn.size() != 0 ) )
-        {
-            for ( Rdn rdn : dn )
-            {
-                rdns.add( 0, rdn.clone() );
-            }
-        }
-
-        toUpName();
-
-        normalized = new AtomicBoolean();
-
-        if ( schemaManager != null )
-        {
-            normalize( schemaManager.getNormalizerMapping() );
-        }
-        else
-        {
-            normalizeInternal();
-            normalized.set( false );
-        }
-    }
-
-
-    /**
-     * @see #Dn(String, SchemaManager)
-     */
-    public Dn(String upName) throws LdapInvalidDnException
-    {
-        this( upName, null );
-    }
-
-
-    /**
-     * Parse a String and checks that it is a valid Dn <br>
-     * <p>
-     * &lt;distinguishedName&gt; ::= &lt;name&gt; | e <br>
-     * &lt;name&gt; ::= &lt;name-component&gt; &lt;name-components&gt; <br>
-     * &lt;name-components&gt; ::= &lt;spaces&gt; &lt;separator&gt;
-     * &lt;spaces&gt; &lt;name-component&gt; &lt;name-components&gt; | e <br>
-     * </p>
-     *
-     * @param upName The String that contains the Dn.
      * @param schemaManager the schema manager (optional)
+     * @param upName The String that contains the Dn
      * @throws LdapInvalidNameException if the String does not contain a valid Dn.
-     */
-    public Dn(String upName, SchemaManager schemaManager) throws LdapInvalidDnException
+     *
+    public Dn( SchemaManager schemaManager, String upName ) throws LdapInvalidDnException
     {
         if ( upName != null )
         {
@@ -273,7 +213,26 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
 
 
     /**
-     * @see #Dn(SchemaManager, String...)
+     * Creates a new instance of Dn, using varargs to declare the RDNs. Each
+     * String is either a full Rdn, or a couple of AttributeType DI and a value.
+     * If the String contains a '=' symbol, the the constructor will assume that
+     * the String arg contains afull Rdn, otherwise, it will consider that the
+     * following arg is the value.<br/>
+     * The created Dn is Schema aware.
+     * <br/><br/>
+     * An example of usage would be :
+     * <pre>
+     * String exampleName = "example";
+     * String baseDn = "dc=apache,dc=org";
+     *
+     * Dn dn = new Dn( DefaultSchemaManager.INSTANCE,
+     *     "cn=Test",
+     *     "ou", exampleName,
+     *     baseDn);
+     * </pre>
+     * @param schemaManager the schema manager
+     * @param upRdns
+     * @throws LdapInvalidDnException
      */
     public Dn(String... upRdns) throws LdapInvalidDnException
     {
@@ -286,23 +245,24 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
      * String is either a full Rdn, or a couple of AttributeType DI and a value.
      * If the String contains a '=' symbol, the the constructor will assume that
      * the String arg contains afull Rdn, otherwise, it will consider that the
-     * following arg is the value.
+     * following arg is the value.<br/>
+     * The created Dn is Schema aware.
+     * <br/><br/>
      * An example of usage would be :
      * <pre>
      * String exampleName = "example";
      * String baseDn = "dc=apache,dc=org";
      *
-     * Dn dn = new Dn(
+     * Dn dn = new Dn( DefaultSchemaManager.INSTANCE,
      *     "cn=Test",
      *     "ou", exampleName,
      *     baseDn);
      * </pre>
-     *
      * @param schemaManager the schema manager
      * @param upRdns
      * @throws LdapInvalidDnException
      */
-    public Dn(SchemaManager schemaManager, String... upRdns) throws LdapInvalidDnException
+    public Dn( SchemaManager schemaManager, String... upRdns ) throws LdapInvalidDnException
     {
         StringBuilder sb = new StringBuilder();
         boolean valueExpected = false;
@@ -310,6 +270,11 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
 
         for ( String upRdn : upRdns )
         {
+            if ( Strings.isEmpty( upRdn ) )
+            {
+                continue;
+            }
+            
             if ( isFirst )
             {
                 isFirst = false;
@@ -335,8 +300,8 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
                 valueExpected = false;
             }
         }
-
-        if ( valueExpected )
+        
+        if ( !isFirst && valueExpected )
         {
             throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, I18n.err( I18n.ERR_04202 ) );
         }
@@ -379,44 +344,137 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
 
 
     /**
-     * Creates a Dn.
+     * Creates a Dn from a list of Rdns.
      *
-     * Note: This is mostly used internally in the server
-     *
-     * @param upName The user provided name
-     * @param normName the normalized name
-     * @param bytes the name as a byte[]
-     * @param rdnList the list of RDNs present in the Dn
+     * @param rdns the list of Rdns to be used for the Dn
      */
-    public Dn(String upName, String normName, byte[] bytes, List<Rdn> rdnList)
+    public Dn( Rdn... rdns )
     {
-        this( upName, normName, bytes );
-        rdns.addAll( rdnList );
+        if ( rdns == null )
+        {
+            return;
+        }
+        
+        for ( Rdn rdn : rdns)
+        {
+            this.rdns.add( rdn.clone() );
+        }
+
+        normalizeInternal();
+        toUpName();
+        normalized = new AtomicBoolean( false );
     }
 
 
     /**
+     * Creates a Dn concatenating a Rdn and a Dn.
      *
-     * Creates a Dn by based on the given Rdn.
-     *
-     * @param rdn the Rdn to be used in the Dn
+     * @param rdns the list of Rdns to be used for the Dn
      */
-    public Dn(Rdn rdn)
+    public Dn( Rdn rdn, Dn dn ) throws LdapInvalidDnException
     {
-        rdns.add( rdn.clone() );
-
-        if ( rdn.isNormalized() )
+        if ( ( dn == null ) || ( rdn == null ) )
         {
-            this.normName = rdn.getNormName();
-            this.upName = rdn.getName();
-            this.bytes = Strings.getBytesUtf8(normName);
-            normalized = new AtomicBoolean( true );
+            throw new IllegalArgumentException( "Either the dn or the rdn is null" );
+        }
+        
+        for ( Rdn rdnParent : dn )
+        {
+            rdns.add( rdnParent );
+        }
+        
+        rdns.add( rdn );
+        
+        normalized = new AtomicBoolean();
+        schemaManager = dn.schemaManager;
+
+        if ( schemaManager != null )
+        {
+            normalize( schemaManager.getNormalizerMapping() );
         }
         else
         {
+            normalized.set( false );
+
+            // Stores the representations of a Dn : internal (as a string and as a
+            // byte[]) and external.
+            normalizeInternal();
+        }
+
+        toUpName();
+    }
+
+
+    /**
+     * Creates a Dn concatenating a Rdn and a Dn.
+     *
+     * @param rdns the list of Rdns to be used for the Dn
+     */
+    public Dn( SchemaManager schemaManager, Dn dn ) throws LdapInvalidDnException
+    {
+        if ( dn == null )
+        {
+            throw new IllegalArgumentException( "The dn is null" );
+        }
+        
+        for ( Rdn rdnParent : dn )
+        {
+            rdns.add( rdnParent );
+        }
+        
+        normalized = new AtomicBoolean();
+        this.schemaManager = schemaManager;
+
+        if ( schemaManager != null )
+        {
+            normalize( schemaManager.getNormalizerMapping() );
+        }
+        else
+        {
+            normalized.set( false );
+
+            // Stores the representations of a Dn : internal (as a string and as a
+            // byte[]) and external.
+            normalizeInternal();
+        }
+
+        toUpName();
+    }
+
+
+    /**
+     * Creates a Schema aware Dn from a list of Rdns.
+     *
+     *  @param schemaManager The SchemaManager to use
+     * @param rdns the list of Rdns to be used for the Dn
+     */
+    public Dn( SchemaManager schemaManager, Rdn... rdns )
+    {
+        if ( rdns == null )
+        {
+            return;
+        }
+        
+        for ( Rdn rdn : rdns)
+        {
+            this.rdns.add( rdn.clone() );
+        }
+
+        try
+        {
+            normalized = new AtomicBoolean( false );
+            
+            if ( this.schemaManager != null )
+            {
+                normalize( schemaManager.getNormalizerMapping() );
+            }
+
             normalizeInternal();
             toUpName();
-            normalized = new AtomicBoolean( false );
+        }
+        catch( LdapInvalidDnException lide )
+        {
+            throw new IllegalArgumentException( lide.getMessage() );
         }
     }
 
@@ -433,10 +491,10 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
      * @throws LdapInvalidNameException If the Dn is invalid.
      * @throws LdapInvalidDnException If something went wrong.
      */
-    /* No qualifier */static Dn normalize( String name, Map<String, OidNormalizer> oidsMap )
+    public static Dn normalize( SchemaManager schemaManager, String name )
         throws LdapInvalidDnException
     {
-        if ( ( name == null ) || ( name.length() == 0 ) || ( oidsMap == null ) || ( oidsMap.isEmpty() ) )
+        if ( ( name == null ) || ( name.length() == 0 ) || ( schemaManager == null ) )
         {
             return Dn.EMPTY_DN;
         }
@@ -446,7 +504,7 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
         for ( Rdn rdn : newDn.rdns )
         {
             String upName = rdn.getName();
-            rdnOidToName( rdn, oidsMap );
+            rdnOidToName( rdn, schemaManager.getNormalizerMapping() );
             rdn.normalize();
             rdn.setUpName( upName );
         }
@@ -509,14 +567,37 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
             return normName;
         }
     }
+    
+    
+    /**
+     * Get the associated SchemaManager if any.
+     * 
+     * @return The SchemaManager
+     */
+    public SchemaManager getSchemaManager()
+    {
+        return schemaManager;
+    }
+    
+    
+    /**
+     * Tells if the Dn is schema aware.
+     * 
+     * @return <code>true</code> If the Dn has a schemaManager
+     */
+    public boolean hasSchemaManager()
+    {
+        return schemaManager != null;
+    }
 
 
     /**
-     * Return the normalized Dn as a String. It returns the same value as the
-     * getNormName method
+     * Return the user provided Dn as a String. It returns the same value as the
+     * getName method
      *
-     * @return A String representing the normalized Dn
+     * @return A String representing the user provided Dn
      */
+    @Override
     public String toString()
     {
         return getName();
@@ -667,6 +748,7 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
      * @see java.lang.Object#hashCode()
      * @return the instance hash code
      */
+    @Override
     public int hashCode()
     {
         int result = 37;
@@ -681,9 +763,9 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
 
 
     /**
-     * Get the initial Dn
+     * Get the user provided Dn
      *
-     * @return The Dn as a String
+     * @return The user provided Dn as a String
      */
     public String getName()
     {
@@ -698,14 +780,19 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
      *
      * @param upName the new up name
      */
-    void setUpName( String upName )
+    /* No qualifier */ void setUpName( String upName )
     {
         this.upName = upName;
     }
 
 
     /**
-     * Get the normalized Dn
+     * Get the normalized Dn. If the Dn is schema aware, the AttributeType
+     * will be represented using its OID :<br/>
+     * <pre>
+     * Dn dn = new Dn( schemaManager, "ou = Example , ou = com" );
+     * assert( "2.5.4.11=example,2.5.4.11=com".equals( dn.getNormName ) );
+     * </pre>
      *
      * @return The Dn as a String
      */
@@ -721,7 +808,8 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
 
 
     /**
-     * {@inheritDoc}
+     * Get the number of RDNs present in the DN
+     * @return The umber of RDNs in the DN
      */
     public int size()
     {
@@ -755,17 +843,17 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
 
     /**
      * Tells if the current Dn is a parent of another Dn.<br>
-     * For instance, <b>dc=com</b> is a parent
+     * For instance, <b>dc=com</b> is a ancestor
      * of <b>dc=example, dc=com</b>
      *
      * @param dn The child
      * @return true if the current Dn is a parent of the given Dn
      */
-    public boolean isParentOf( String dn )
+    public boolean isAncestorOf( String dn )
     {
         try
         {
-            return isParentOf( new Dn( dn ) );
+            return isAncestorOf( new Dn( dn ) );
         }
         catch ( LdapInvalidDnException lide )
         {
@@ -776,36 +864,36 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
 
     /**
      * Tells if the current Dn is a parent of another Dn.<br>
-     * For instance, <b>dc=com</b> is a parent
+     * For instance, <b>dc=com</b> is a ancestor 
      * of <b>dc=example, dc=com</b>
      *
      * @param dn The child
      * @return true if the current Dn is a parent of the given Dn
      */
-    public boolean isParentOf( Dn dn )
+    public boolean isAncestorOf( Dn dn )
     {
         if ( dn == null )
         {
             return false;
         }
 
-        return dn.isChildOf( this );
+        return dn.isDescendantOf( this );
     }
 
 
     /**
      * Tells if a Dn is a child of another Dn.<br>
-     * For instance, <b>dc=example, dc=com</b> is a child
+     * For instance, <b>dc=example, dc=com</b> is a descendant
      * of <b>dc=com</b>
      *
      * @param dn The parent
      * @return true if the current Dn is a child of the given Dn
      */
-    public boolean isChildOf( String dn )
+    public boolean isDescendantOf( String dn )
     {
         try
         {
-            return isChildOf( new Dn( dn ) );
+            return isDescendantOf( new Dn( dn ) );
         }
         catch ( LdapInvalidDnException lide )
         {
@@ -816,13 +904,13 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
 
     /**
      * Tells if a Dn is a child of another Dn.<br>
-     * For instance, <b>dc=example, dc=apache, dc=com</b> is a child
+     * For instance, <b>dc=example, dc=apache, dc=com</b> is a descendant
      * of <b>dc=com</b>
      *
      * @param dn The parent
      * @return true if the current Dn is a child of the given Dn
      */
-    public boolean isChildOf( Dn dn )
+    public boolean isDescendantOf( Dn dn )
     {
         if ( ( dn == null ) || dn.isRootDSE() )
         {
@@ -854,53 +942,6 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
 
 
     /**
-     * Determines whether this name has a specific suffix. A name
-     * <tt>name</tt> has a Dn as a suffix if its right part contains the given Dn
-     *
-     * Be aware that for a specific
-     * Dn like : <b>cn=xxx, ou=yyy</b> the hasSuffix method will return false with
-     * <b>ou=yyy</b>, and true with <b>cn=xxx</b>
-     *
-     * @param dn the name to check
-     * @return true if <tt>dn</tt> is a suffix of this name, false otherwise
-     */
-    public boolean hasSuffix( Dn dn )
-    {
-        if ( dn == null )
-        {
-            return true;
-        }
-
-        if ( dn.size() == 0 )
-        {
-            return true;
-        }
-
-        if ( dn.size() > size() )
-        {
-            // The name is longer than the current Dn.
-            return false;
-        }
-
-        // Ok, iterate through all the Rdn of the name,
-        // starting a the end of the current list.
-
-        for ( int i = 0; i < dn.size(); i++ )
-        {
-            Rdn nameRdn = dn.rdns.get( i );
-            Rdn ldapRdn = rdns.get( i );
-
-            if ( nameRdn.compareTo( ldapRdn ) != 0 )
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-
-    /**
      * Tells if the Dn contains no Rdn
      *
      * @return <code>true</code> if the Dn is empty
@@ -919,32 +960,6 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
     public boolean isRootDSE()
     {
         return ( rdns.size() == 0 );
-    }
-
-
-    /**
-     * Get the given Rdn as a String. The position is used in the
-     * reverse order. Assuming that we have a Dn like
-     * <pre>dc=example,dc=apache,dc=org</pre>
-     * then :
-     * <li><code>get(0)</code> will return dc=org</li>
-     * <li><code>get(1)</code> will return dc=apache</li>
-     * <li><code>get(2)</code> will return dc=example</li>
-     *
-     * @param posn The position of the wanted Rdn in the Dn.
-     */
-    public String get( int posn )
-    {
-        if ( rdns.size() == 0 )
-        {
-            return "";
-        }
-        else
-        {
-            Rdn rdn = rdns.get( rdns.size() - posn - 1 );
-
-            return rdn.getNormName();
-        }
     }
 
 
@@ -1004,32 +1019,165 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
 
 
     /**
-     * {@inheritDoc}
+     * Get the descendant of a given DN, using the ancestr DN. Assuming that
+     * a DN has two parts :<br/>
+     * DN = [descendant DN][ancestor DN]<br/>
+     * To get back the descendant from the full DN, you just pass the ancestor DN
+     * as a parameter. Here is a working example :
+     * <pre>
+     * Dn dn = new Dn( "cn=test, dc=server, dc=directory, dc=apache, dc=org" );
+     * 
+     * Dn descendant = dn.getDescendantOf( "dc=apache, dc=org" );
+     * 
+     * // At this point, the descendant contains cn=test, dc=server, dc=directory"
+     * </pre> 
      */
-    public Dn getPrefix( int posn )
+    public Dn getDescendantOf( String ancestor ) throws LdapInvalidDnException
     {
+        return getDescendantOf( new Dn( schemaManager, ancestor ) );
+    }
+    
+
+    
+    /**
+     * Get the descendant of a given DN, using the ancestr DN. Assuming that
+     * a DN has two parts :<br/>
+     * DN = [descendant DN][ancestor DN]<br/>
+     * To get back the descendant from the full DN, you just pass the ancestor DN
+     * as a parameter. Here is a working example :
+     * <pre>
+     * Dn dn = new Dn( "cn=test, dc=server, dc=directory, dc=apache, dc=org" );
+     * 
+     * Dn descendant = dn.getDescendantOf( "dc=apache, dc=org" );
+     * 
+     * // At this point, the descendant contains cn=test, dc=server, dc=directory"
+     * </pre> 
+     */
+    public Dn getDescendantOf( Dn ancestor ) throws LdapInvalidDnException
+    {
+        if ( ( ancestor == null ) || ( ancestor.size() == 0 ) )
+        {
+            return this;
+        }
+        
         if ( rdns.size() == 0 )
         {
             return EMPTY_DN;
         }
-
-        if ( ( posn < 0 ) || ( posn > rdns.size() ) )
+        
+        int length = ancestor.size();
+        
+        if ( length > rdns.size() )
         {
-            String message = I18n.err( I18n.ERR_04206, posn, rdns.size() );
+            String message = I18n.err( I18n.ERR_04206, length, rdns.size() );
             LOG.error( message );
             throw new ArrayIndexOutOfBoundsException( message );
         }
 
-        Dn newDn = new Dn();
-
-        for ( int i = rdns.size() - posn; i < rdns.size(); i++ )
+        Dn newDn = new Dn( schemaManager );
+        List<Rdn> rdnsAncestor = ancestor.getRdns();
+        
+        for ( int i = 0; i < ancestor.size(); i++ )
         {
-            // Don't forget to clone the rdns !
-            newDn.rdns.add( (Rdn) rdns.get( i ).clone() );
+            Rdn rdn = rdns.get( size() -1 - i );
+            Rdn rdnDescendant = rdnsAncestor.get( ancestor.size() - 1 - i );
+            
+            if ( !rdn.equals( rdnDescendant ) )
+            {
+                throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX );
+            }
         }
 
-        newDn.normName = newDn.toNormName();
-        newDn.upName = getUpNamePrefix( posn );
+        for ( int i = 0; i < rdns.size() - length; i++ )
+        {
+            // Don't forget to clone the rdns !
+            newDn.rdns.add( rdns.get( i ).clone() );
+        }
+
+        newDn.toUpName();
+        newDn.toNormName();
+        newDn.normalized.set( normalized.get() );
+
+        return newDn;
+    }
+
+    /**
+     * Get the ancestor of a given DN, using the descendant DN. Assuming that
+     * a DN has two parts :<br/>
+     * DN = [descendant DN][ancestor DN]<br/>
+     * To get back the ancestor from the full DN, you just pass the descendant DN
+     * as a parameter. Here is a working example :
+     * <pre>
+     * Dn dn = new Dn( "cn=test, dc=server, dc=directory, dc=apache, dc=org" );
+     * 
+     * Dn ancestor = dn.getAncestorOf( "cn=test, dc=server, dc=directory" );
+     * 
+     * // At this point, the ancestor contains "dc=apache, dc=org"
+     * </pre> 
+     */
+    public Dn getAncestorOf( String descendant ) throws LdapInvalidDnException
+    {
+        return getAncestorOf( new Dn( schemaManager, descendant ) );
+    }
+    
+
+    /**
+     * Get the ancestor of a given DN, using the descendant DN. Assuming that
+     * a DN has two parts :<br/>
+     * DN = [descendant DN][ancestor DN]<br/>
+     * To get back the ancestor from the full DN, you just pass the descendant DN
+     * as a parameter. Here is a working example :
+     * <pre>
+     * Dn dn = new Dn( "cn=test, dc=server, dc=directory, dc=apache, dc=org" );
+     * 
+     * Dn ancestor = dn.getAncestorOf( new Dn( "cn=test, dc=server, dc=directory" ) );
+     * 
+     * // At this point, the ancestor contains "dc=apache, dc=org"
+     * </pre> 
+     */
+    public Dn getAncestorOf( Dn descendant ) throws LdapInvalidDnException
+    {
+        if ( ( descendant == null ) || ( descendant.size() == 0 ) )
+        {
+            return this;
+        }
+        
+        if ( rdns.size() == 0 )
+        {
+            return EMPTY_DN;
+        }
+        
+        int length = descendant.size();
+        
+        if ( length > rdns.size() )
+        {
+            String message = I18n.err( I18n.ERR_04206, length, rdns.size() );
+            LOG.error( message );
+            throw new ArrayIndexOutOfBoundsException( message );
+        }
+
+        Dn newDn = new Dn( schemaManager );
+        List<Rdn> rdnsDescendant = descendant.getRdns();
+        
+        for ( int i = 0; i < descendant.size(); i++ )
+        {
+            Rdn rdn = rdns.get( i );
+            Rdn rdnDescendant = rdnsDescendant.get( i );
+            
+            if ( !rdn.equals( rdnDescendant ) )
+            {
+                throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX );
+            }
+        }
+
+        for ( int i = length; i < rdns.size(); i++ )
+        {
+            // Don't forget to clone the rdns !
+            newDn.rdns.add( rdns.get( i ).clone() );
+        }
+
+        newDn.toUpName();
+        newDn.toNormName();
         newDn.normalized.set( normalized.get() );
 
         return newDn;
@@ -1058,7 +1206,7 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
         for ( int i = 0; i < size() - posn; i++ )
         {
             // Don't forget to clone the rdns !
-            newDn.rdns.add( (Rdn) rdns.get( i ).clone() );
+            newDn.rdns.add( rdns.get( i ).clone() );
         }
 
         newDn.normName = newDn.toNormName();
@@ -1091,7 +1239,7 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
             return this;
         }
 
-        Dn clonedDn = clone();
+        Dn clonedDn = copy();
 
         // Concatenate the rdns
         clonedDn.rdns.addAll( clonedDn.size() - posn, dn.rdns );
@@ -1116,9 +1264,20 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
     /**
      * {@inheritDoc}
      */
-    public Dn addAll( Dn suffix ) throws LdapInvalidDnException
+    public Dn addAll( Dn suffix )
     {
-        return addAll( rdns.size(), suffix );
+        Dn result = null;
+        
+        try
+        {
+            result = addAll( rdns.size(), suffix );
+        }
+        catch ( LdapInvalidDnException lie )
+        {
+            // Do nothing, 
+        }
+
+        return result;
     }
 
 
@@ -1132,7 +1291,7 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
             return this;
         }
 
-        Dn clonedDn = clone();
+        Dn clonedDn = copy();
 
         // Concatenate the rdns
         clonedDn.rdns.addAll( clonedDn.size() - posn, dn.rdns );
@@ -1151,7 +1310,9 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
         {
             if ( schemaManager != null )
             {
-                clonedDn.normalize( schemaManager );
+                clonedDn.normalize( schemaManager.getNormalizerMapping() );
+
+                normalizeInternal();
             }
             else
             {
@@ -1176,7 +1337,7 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
             return this;
         }
 
-        Dn clonedDn = clone();
+        Dn clonedDn = copy();
 
         // We have to parse the nameComponent which is given as an argument
         Rdn newRdn = new Rdn( comp, schemaManager );
@@ -1185,7 +1346,7 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
 
         if ( schemaManager != null )
         {
-            clonedDn.normalize( schemaManager );
+            clonedDn.normalize( schemaManager.getNormalizerMapping() );
         }
         else
         {
@@ -1194,6 +1355,7 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
         }
 
         clonedDn.toUpName();
+        clonedDn.toNormName();
 
         return clonedDn;
     }
@@ -1207,7 +1369,7 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
      */
     public Dn add( Rdn newRdn )
     {
-        Dn clonedDn = clone();
+        Dn clonedDn = copy();
 
         clonedDn.rdns.add( 0, newRdn.clone() );
         clonedDn.normalized.getAndSet( false );
@@ -1224,7 +1386,7 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
             {
                 if ( schemaManager != null )
                 {
-                    clonedDn.normalize( schemaManager );
+                    clonedDn.normalize( schemaManager.getNormalizerMapping() );
                 }
                 else
                 {
@@ -1245,9 +1407,11 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
 
 
     /**
+     * used only for deserialization.
+     * 
      * {@inheritDoc}
      */
-    public Dn add( int posn, String comp ) throws LdapInvalidDnException
+    /* No qualifier */ Dn addInternal( int posn, Rdn rdn )
     {
         if ( ( posn < 0 ) || ( posn > size() ) )
         {
@@ -1257,65 +1421,13 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
         }
 
         // We have to parse the nameComponent which is given as an argument
-        Rdn newRdn = new Rdn( comp );
+        Rdn newRdn = rdn.clone();
 
-        Dn clonedDn = clone();
-
-        int realPos = clonedDn.size() - posn;
-        clonedDn.rdns.add( realPos, newRdn );
-
-        if ( schemaManager != null )
-        {
-            clonedDn.normalize( schemaManager );
-        }
-        else
-        {
-            clonedDn.normalizeInternal();
-            clonedDn.normalized.set( false );
-        }
-
-        clonedDn.toUpName();
-
-        return clonedDn;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public Dn remove( int posn ) throws LdapInvalidDnException
-    {
-        if ( rdns.size() == 0 )
-        {
-            return this;
-        }
-
-        if ( ( posn < 0 ) || ( posn >= rdns.size() ) )
-        {
-            String message = I18n.err( I18n.ERR_04206, posn, rdns.size() );
-            LOG.error( message );
-            throw new ArrayIndexOutOfBoundsException( message );
-        }
-
-        Dn clonedDn = clone();
-        clonedDn._removeChild( posn );
-
-        return clonedDn;
-    }
-
-
-    /**
-     * removes a child (Rdn) present at the given position
-     *
-     * @param posn the index of the child's position
-     */
-    private void _removeChild( int posn )
-    {
-        int realPos = size() - posn - 1;
-        rdns.remove( realPos );
-
-        normalizeInternal();
+        int realPos = size() - posn;
+        rdns.add( realPos, newRdn );
         toUpName();
+
+        return this;
     }
 
 
@@ -1332,33 +1444,45 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
             return null;
         }
 
-        return getPrefix( size() - 1 );
+        if ( rdns.size() == 0 )
+        {
+            return EMPTY_DN;
+        }
+        
+        int posn = rdns.size() - 1;
+
+        Dn newDn = new Dn( schemaManager );
+
+        for ( int i = rdns.size() - posn; i < rdns.size(); i++ )
+        {
+            // Don't forget to clone the rdns !
+            newDn.rdns.add( rdns.get( i ).clone() );
+        }
+
+        newDn.normName = newDn.toNormName();
+        newDn.upName = getUpNamePrefix( posn );
+        newDn.normalized.set( normalized.get() );
+
+        return newDn;
     }
 
 
     /**
      * {@inheritDoc}
      */
-    protected Dn clone()
+    //@Override
+    private Dn copy()
     {
-        try
-        {
-            Dn dn = (Dn) super.clone();
-            dn.normalized = new AtomicBoolean( normalized.get() );
-            dn.rdns = new ArrayList<Rdn>();
+        Dn dn = new Dn( schemaManager );
+        dn.normalized = new AtomicBoolean( normalized.get() );
+        dn.rdns = new ArrayList<Rdn>();
 
-            for ( Rdn rdn : rdns )
-            {
-                dn.rdns.add( (Rdn) rdn.clone() );
-            }
-
-            return dn;
-        }
-        catch ( CloneNotSupportedException cnse )
+        for ( Rdn rdn : rdns )
         {
-            LOG.error( I18n.err( I18n.ERR_04207 ) );
-            throw new Error( I18n.err( I18n.ERR_04208 ) );
+            dn.rdns.add( rdn.clone() );
         }
+
+        return dn;
     }
 
 
@@ -1366,11 +1490,12 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
      * @see java.lang.Object#equals(java.lang.Object)
      * @return <code>true</code> if the two instances are equals
      */
+    @Override
     public boolean equals( Object obj )
     {
         if ( obj instanceof String )
         {
-            return normName.equals( ( String ) obj );
+            return normName.equals( obj );
         }
         else if ( obj instanceof Dn)
         {
@@ -1396,32 +1521,6 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
         {
             return false;
         }
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public int compareTo( Dn dn )
-    {
-        if ( dn.size() != size() )
-        {
-            return size() - dn.size();
-        }
-
-        for ( int i = rdns.size(); i > 0; i-- )
-        {
-            Rdn rdn1 = rdns.get( i - 1 );
-            Rdn rdn2 = dn.rdns.get( i - 1 );
-            int res = rdn1.compareTo( rdn2 );
-
-            if ( res != 0 )
-            {
-                return res;
-            }
-        }
-
-        return EQUAL;
     }
 
 
@@ -1493,7 +1592,7 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
         {
             // We have more than one ATAV for this Rdn. We will loop on all
             // ATAVs
-            Rdn rdnCopy = (Rdn) rdn.clone();
+            Rdn rdnCopy = rdn.clone();
             rdn.clear();
 
             for ( Ava val : rdnCopy )
@@ -1567,7 +1666,7 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
      * @throws LdapInvalidDnException If something went wrong.
      * @return The normalized Dn
      */
-    public Dn normalize( Map<String, OidNormalizer> oidsMap ) throws LdapInvalidDnException
+    private Dn normalize( Map<String, OidNormalizer> oidsMap ) throws LdapInvalidDnException
     {
         if ( ( oidsMap == null ) || ( oidsMap.isEmpty() ) )
         {
@@ -1653,7 +1752,24 @@ public class Dn implements Cloneable, Serializable, Comparable<Dn>, Iterable<Rdn
 
 
     /**
-     * {@inheritDoc}
+     * Iterate over the inner Rdn. The Rdn are returned from 
+     * the rightmost to the leftmost. For instance, the following code :<br/>
+     * <pre>
+     * Dn dn = new Dn( "sn=test, dc=apache, dc=org );
+     * 
+     * for ( Rdn rdn : dn )
+     * {
+     *     System.out.println( rdn.toString() );
+     * }
+     * </pre>
+     * <br/>
+     * will produce this output : <br/>
+     * <pre>
+     * dc=org
+     * dc=apache
+     * sn=test
+     * </pre>
+     * 
      */
     public Iterator<Rdn> iterator()
     {

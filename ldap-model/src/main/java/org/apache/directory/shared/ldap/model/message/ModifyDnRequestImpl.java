@@ -352,6 +352,6 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements M
         // The controls
         sb.append( super.toString() );
 
-        return sb.toString();
+        return super.toString( sb.toString() );
     }
 }

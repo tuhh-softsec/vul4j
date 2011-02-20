@@ -28,35 +28,40 @@ import org.apache.directory.shared.i18n.I18n;
 
 
 /**
- * This class implement an OID (Object Identifier).
- *
- * An OID is encoded as a list of bytes representing integers.
- *
- * An OID has a numeric representation where number are separated with dots :
- * SPNEGO Oid = 1.3.6.1.5.5.2
- *
- * Translating from a byte list to a dot separated list of number follows the rules :
- * - the first number is in [0..2]
- * - the second number is in [0..39] if the first number is 0 or 1
- * - the first byte has a value equal to : number 1 * 40 + number two
- * - the upper bit of a byte is set if the next byte is a part of the number
- *
- * For instance, the SPNEGO Oid (1.3.6.1.5.5.2) will be encoded :
+ * This class implement an OID (Object Identifier).<br/>
+ * <br/>
+ * An OID is encoded as a list of bytes representing integers.<br/>
+ * <br/>
+ * An OID has a numeric representation where number are separated with dots :<br/>
+ * SPNEGO Oid = 1.3.6.1.5.5.2<br/>
+ * <br/>
+ * Translating from a byte list to a dot separated list of number follows the rules :<br/>
+ * <ul>
+ * <li>the first number is in [0..2]</li>
+ * <li>the second number is in [0..39] if the first number is 0 or 1</li>
+ * <li>the first byte has a value equal to : number 1 * 40 + number two</li>
+ * <li>the upper bit of a byte is set if the next byte is a part of the number</li>
+ * </ul>
+ * <br/>
+ * For instance, the SPNEGO Oid (1.3.6.1.5.5.2) will be encoded :<br/>
+ * <pre>
  * 1.3 -> 0x2B (1*40 + 3 = 43 = 0x2B)
  * .6  -> 0x06
  * .1  -> 0x01
  * .5  -> 0x05
  * .5  -> 0x05
  * .2  -> 0x02
- *
- * The Kerberos V5 Oid (1.2.840.48018.1.2.2)  will be encoded :
+ * </pre>
+ * <br/>
+ * The Kerberos V5 Oid (1.2.840.48018.1.2.2)  will be encoded :<br/>
+ * <pre>
  * 1.2   -> 0x2A (1*40 + 2 = 42 = 0x2A)
  * 840   -> 0x86 0x48 (840 = 6 * 128 + 72 = (0x06 | 0x80) 0x48 = 0x86 0x48
  * 48018 -> 0x82 0xF7 0x12 (2 * 128 * 128 + 119 * 128 + 18 = (0x02 | 0x80) (0x77 | 0x80) 0x12
  * .1    -> 0x01
  * .2    -> 0x02
  * .2    -> 0x02
- *
+ * </pre>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class OID implements Serializable
@@ -294,7 +299,7 @@ public class OID implements Serializable
                     throw new DecoderException( I18n.err( I18n.ERR_00033_INVALID_OID, oid ) );
                 }
 
-                if ( ituOrIso && value > 39 )
+                if ( ituOrIso && ( value > 39 ) )
                 {
                     throw new DecoderException( I18n.err( I18n.ERR_00033_INVALID_OID, oid ) );
                 }
@@ -596,7 +601,7 @@ public class OID implements Serializable
                     return false;
                 }
 
-                if ( ituOrIso && value > 39 )
+                if ( ituOrIso && ( value > 39 ) )
                 {
                     return false;
                 }
@@ -631,6 +636,7 @@ public class OID implements Serializable
      *
      * @return A String representing the OID
      */
+    @Override
     public String toString()
     {
         StringBuffer sb = new StringBuffer();
@@ -652,6 +658,7 @@ public class OID implements Serializable
     /**
      * {@inheritDoc}
      */
+    @Override
     public int hashCode()
     {
         return hash;
@@ -661,6 +668,7 @@ public class OID implements Serializable
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean equals( Object oid )
     {
         if ( this == oid )

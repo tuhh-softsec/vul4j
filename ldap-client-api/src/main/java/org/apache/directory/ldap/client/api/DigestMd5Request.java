@@ -25,14 +25,14 @@ import org.apache.directory.shared.ldap.model.constants.SupportedSaslMechanisms;
 
 
 /**
- * Holds the data required to complete the SASL operation
+ * Holds the data required to complete the DIGEST-MD5 SASL operation
  *  
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class DigestMd5Request extends SaslRequest
 {
     /**
-     * TODO
+     * Creates a new instance of DigestMd5Request.
      */
     public DigestMd5Request()
     {

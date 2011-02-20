@@ -25,14 +25,14 @@ import org.apache.directory.shared.ldap.model.constants.SupportedSaslMechanisms;
 
 
 /**
- * Holds the data required to complete the SASL operation
+ * Holds the data required to complete the CRAM-MD5 SASL operation
  *  
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class CramMd5Request extends SaslRequest
-{   
+{
     /**
-     * TODO
+     * Creates a new instance of CramMd5Request.
      */
     public CramMd5Request()
     {

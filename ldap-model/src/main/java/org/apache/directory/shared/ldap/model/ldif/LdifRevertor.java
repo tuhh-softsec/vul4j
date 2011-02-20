@@ -285,7 +285,7 @@ public final class LdifRevertor
 
         currentParent = modifiedDn;
         currentRdn = currentParent.getRdn();
-        currentParent = currentParent.remove( currentParent.size() - 1 );
+        currentParent = currentParent.getParent();
 
         newDn = newSuperiorDn;
         newDn = newDn.add( modifiedDn.getRdn() );
@@ -334,7 +334,7 @@ public final class LdifRevertor
         {
             Dn oldSuperior = entry.getDn();
 
-            oldSuperior = oldSuperior.remove( oldSuperior.size() - 1 );
+            oldSuperior = oldSuperior.getParent();
             reverted.setNewSuperior( oldSuperior.getName() );
         }
 
@@ -399,7 +399,7 @@ public final class LdifRevertor
         {
             Dn oldSuperior = newDn;
 
-            oldSuperior = oldSuperior.remove( oldSuperior.size() - 1 );
+            oldSuperior = oldSuperior.getParent();
             reverted.setNewSuperior( oldSuperior.getName() );
         }
 
@@ -465,7 +465,7 @@ public final class LdifRevertor
         Rdn oldRdn = parentDn.getRdn();
 
         newDn = parentDn;
-        newDn = newDn.remove( newDn.size() - 1 );
+        newDn = newDn.getParent();
         newDn = newDn.add( newRdn );
 
         List<LdifEntry> entries = new ArrayList<LdifEntry>( 1 );
