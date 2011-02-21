@@ -25,7 +25,7 @@ package org.apache.directory.shared.ldap.model.message;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ExtendedRequestImpl extends AbstractRequest implements ExtendedRequest<ExtendedResponseImpl>
+public abstract class AbstractExtendedRequest<R extends ExtendedResponse> extends AbstractRequest implements ExtendedRequest<R>
 {
     static final long serialVersionUID = 7916990159044177480L;
 
@@ -33,14 +33,14 @@ public class ExtendedRequestImpl extends AbstractRequest implements ExtendedRequ
     private String oid;
 
     /** The associated response */
-    protected ExtendedResponseImpl response;
+    protected R response;
 
 
     /**
      * Creates an ExtendedRequest implementing object used to perform
      * extended protocol operation on the server.
      */
-    public ExtendedRequestImpl()
+    public AbstractExtendedRequest()
     {
         super( -1, TYPE, true );
     }
@@ -52,7 +52,7 @@ public class ExtendedRequestImpl extends AbstractRequest implements ExtendedRequ
      * 
      * @param id the sequential message identifier
      */
-    public ExtendedRequestImpl( final int id )
+    public AbstractExtendedRequest( final int id )
     {
         super( id, TYPE, true );
     }
@@ -107,15 +107,7 @@ public class ExtendedRequestImpl extends AbstractRequest implements ExtendedRequ
      * 
      * @return the result containing response for this request
      */
-    public ExtendedResponseImpl getResultResponse()
-    {
-        if ( response == null )
-        {
-            response = new ExtendedResponseImpl( getMessageId() );
-        }
-        
-        return response;
-    }
+    public abstract R getResultResponse();
 
 
     /**

@@ -32,7 +32,7 @@ import org.apache.directory.shared.util.StringConstants;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class CancelResponse extends ExtendedResponseImpl
+public class CancelResponse extends ExtendedResponseImpl implements ICancelResponse
 {
     /** The serial version UUID */
     private static final long serialVersionUID = 1L;
@@ -76,7 +76,7 @@ public class CancelResponse extends ExtendedResponseImpl
 
     public CancelResponse()
     {
-        super( CancelRequest.EXTENSION_OID );
+        super( ICancelRequest.EXTENSION_OID );
         super.getLdapResult().setMatchedDn( null );
         super.getLdapResult().setResultCode( ResultCodeEnum.SUCCESS );
     }

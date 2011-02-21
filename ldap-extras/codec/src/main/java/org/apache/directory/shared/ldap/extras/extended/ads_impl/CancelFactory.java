@@ -24,6 +24,8 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.ldap.codec.api.ExtendedRequestFactory;
 import org.apache.directory.shared.ldap.extras.extended.CancelRequest;
 import org.apache.directory.shared.ldap.extras.extended.CancelResponse;
+import org.apache.directory.shared.ldap.extras.extended.ICancelRequest;
+import org.apache.directory.shared.ldap.extras.extended.ICancelResponse;
 
 
 /**
@@ -39,14 +41,14 @@ public class CancelFactory implements ExtendedRequestFactory<CancelRequest, Canc
      */
     public String getOid()
     {
-        return CancelRequest.EXTENSION_OID;
+        return ICancelRequest.EXTENSION_OID;
     }
 
     
     /**
      * {@inheritDoc}
      */
-    public CancelRequest newRequest()
+    public ICancelRequest newRequest()
     {
         return new CancelRequest();
     }
@@ -55,9 +57,9 @@ public class CancelFactory implements ExtendedRequestFactory<CancelRequest, Canc
     /**
      * {@inheritDoc}
      */
-    public CancelResponse newResponse( byte[] encodedValue ) throws DecoderException
+    public ICancelResponse newResponse( byte[] encodedValue ) throws DecoderException
     {
-        CancelResponse response = new CancelResponse();
+        ICancelResponse response = new CancelResponse();
         response.setResponseValue( encodedValue );
         return response;
     }

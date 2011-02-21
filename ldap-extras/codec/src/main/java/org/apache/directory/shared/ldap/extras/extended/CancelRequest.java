@@ -20,18 +20,7 @@
 package org.apache.directory.shared.ldap.extras.extended;
 
 
-import javax.naming.NamingException;
-import javax.naming.ldap.ExtendedResponse;
-
-import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.EncoderException;
-import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.extras.extended.ads_impl.Cancel;
-import org.apache.directory.shared.ldap.extras.extended.ads_impl.CancelDecoder;
-import org.apache.directory.shared.ldap.model.message.ExtendedRequestImpl;
-import org.apache.directory.shared.ldap.model.message.ResultResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.directory.shared.ldap.model.message.AbstractExtendedRequest;
 
 
 /**
@@ -46,20 +35,13 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class CancelRequest extends ExtendedRequestImpl
+public class CancelRequest extends AbstractExtendedRequest<ICancelResponse> implements ICancelRequest
 {
     /** The serial version UUID */
     private static final long serialVersionUID = 1L;
 
-    /** A logger for this class */
-    private static final Logger LOG = LoggerFactory.getLogger( CancelRequest.class );
-
     /** The cancelId of the request to be canceled */
     private int cancelId;
-
-    /** The requestName for this extended request */
-    public static final String EXTENSION_OID = "1.3.6.1.1.8";
-
 
     /**
      * Creates a new instance of CancelRequest.
@@ -84,99 +66,20 @@ public class CancelRequest extends ExtendedRequestImpl
         setRequestName( EXTENSION_OID );
     }
 
-
-    /**
-     * Sets the extended request's <b>requestValue</b> portion of the PDU.
-     * 
-     * @param payload byte array of data encapsulating ext. req. parameters
-     */
-    public void setRequestValue( byte[] requestValue )
-    {
-        CancelDecoder decoder = new CancelDecoder();
-
-        try
-        {
-            Cancel cancel = ( Cancel ) decoder.decode( requestValue );
-
-            if ( requestValue != null )
-            {
-                this.requestValue = new byte[requestValue.length];
-                System.arraycopy( requestValue, 0, this.requestValue, 0, requestValue.length );
-            }
-            else
-            {
-                this.requestValue = null;
-            }
-
-            this.cancelId = cancel.getCancelId();
-        }
-        catch ( DecoderException e )
-        {
-            LOG.error( I18n.err( I18n.ERR_04165 ), e );
-            throw new RuntimeException( e );
-        }
-    }
-
-
-    public ExtendedResponse createExtendedResponse( String id, byte[] berValue, int offset, int length )
-        throws NamingException
-    {
-        return ( ExtendedResponse ) getResultResponse();
-    }
-
     
-    /**
-     *  @return The id of the Message to cancel.
-     */
     public int getCancelId()
     {
         return cancelId;
     }
     
     
-    /**
-     * Sets the message to cancel by id.
-     *
-     * @param cancelId The id of the message to cancel.
-     */
     public void setCancelId( int cancelId )
     {
         this.cancelId = cancelId;
-        
-        // clear the request value if it was previously computed for the old value
-        if ( requestValue != null )
-        {
-            requestValue = null;
-        }
     }
     
 
-    /**
-     * {@inheritDoc}
-     */
-    public byte[] getRequestValue()
-    {
-        if ( requestValue == null )
-        {
-            try
-            {
-                Cancel cancel = new Cancel();
-                cancel.setCancelId( this.cancelId );
-
-                requestValue = cancel.encode().array();
-            }
-            catch ( EncoderException e )
-            {
-                LOG.error( I18n.err( I18n.ERR_04164 ), e );
-                throw new RuntimeException( e );
-            }
-        }
-
-        return requestValue;
-    }
-
-
-    public ResultResponse getResultResponse()
+    public ICancelResponse getResultResponse()
     {
         if ( response == null )
         {

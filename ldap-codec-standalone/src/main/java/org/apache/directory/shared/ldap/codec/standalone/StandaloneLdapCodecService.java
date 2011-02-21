@@ -783,6 +783,9 @@ public class StandaloneLdapCodecService implements LdapCodecService
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public ExtendedRequest<?> fromJndi( javax.naming.ldap.ExtendedRequest jndiRequest ) throws DecoderException
     {
         // TODO Auto-generated method stub
@@ -790,6 +793,9 @@ public class StandaloneLdapCodecService implements LdapCodecService
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public javax.naming.ldap.ExtendedRequest toJndi( ExtendedRequest<?> modelRequest ) throws EncoderException
     {
         // TODO Auto-generated method stub
