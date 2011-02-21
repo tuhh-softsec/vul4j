@@ -24,7 +24,6 @@ import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.dsmlv2.ParserUtils;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
-import org.apache.directory.shared.ldap.model.message.ExtendedRequestImpl;
 import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.dom4j.Element;
@@ -37,20 +36,11 @@ import org.dom4j.QName;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ExtendedRequestDsml 
-    extends AbstractResultResponseRequestDsml<ExtendedRequest<ExtendedResponse>, ExtendedResponse>
-    implements ExtendedRequest<ExtendedResponse>
+public class ExtendedRequestDsml<Q extends ExtendedRequest<P>, P extends ExtendedResponse> 
+    extends AbstractResultResponseRequestDsml<Q, P>
+    implements ExtendedRequest<P>
 {
     private byte[] requestValue;
-
-
-    /**
-     * Creates a new getDecoratedMessage() of ExtendedRequestDsml.
-     */
-    public ExtendedRequestDsml( LdapCodecService codec )
-    {
-        super( codec, new ExtendedRequestImpl() );
-    }
 
 
     /**
@@ -59,7 +49,7 @@ public class ExtendedRequestDsml
      * @param ldapMessage
      *      the message to decorate
      */
-    public ExtendedRequestDsml( LdapCodecService codec, ExtendedRequest<ExtendedResponse> ldapMessage )
+    public ExtendedRequestDsml( LdapCodecService codec, Q ldapMessage )
     {
         super( codec, ldapMessage );
     }

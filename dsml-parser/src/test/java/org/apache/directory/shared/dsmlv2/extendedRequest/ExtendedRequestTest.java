@@ -72,7 +72,8 @@ public class ExtendedRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        ExtendedRequestDsml extendedRequest = ( ExtendedRequestDsml ) parser.getBatchRequest().getCurrentRequest();
+        ExtendedRequestDsml<?,?> extendedRequest = 
+            ( ExtendedRequestDsml<?,?> ) parser.getBatchRequest().getCurrentRequest();
 
         assertEquals( 456, extendedRequest.getMessageId() );
     }
@@ -109,7 +110,8 @@ public class ExtendedRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        ExtendedRequestDsml extendedRequest = ( ExtendedRequestDsml ) parser.getBatchRequest().getCurrentRequest();
+        ExtendedRequestDsml<?,?> extendedRequest = 
+            ( ExtendedRequestDsml<?,?> ) parser.getBatchRequest().getCurrentRequest();
         Map<String, Control> controls = extendedRequest.getControls();
 
         assertEquals( 1, extendedRequest.getControls().size() );
@@ -144,7 +146,8 @@ public class ExtendedRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        ExtendedRequestDsml extendedRequest = ( ExtendedRequestDsml ) parser.getBatchRequest().getCurrentRequest();
+        ExtendedRequestDsml<?,?> extendedRequest = 
+            ( ExtendedRequestDsml<?,?> ) parser.getBatchRequest().getCurrentRequest();
         Map<String, Control> controls = extendedRequest.getControls();
 
         assertEquals( 1, extendedRequest.getControls().size() );
@@ -179,7 +182,8 @@ public class ExtendedRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        ExtendedRequestDsml extendedRequest = ( ExtendedRequestDsml ) parser.getBatchRequest().getCurrentRequest();
+        ExtendedRequestDsml<?,?> extendedRequest = 
+            ( ExtendedRequestDsml<?,?> ) parser.getBatchRequest().getCurrentRequest();
         Map<String, Control> controls = extendedRequest.getControls();
 
         assertEquals( 1, extendedRequest.getControls().size() );
@@ -214,7 +218,8 @@ public class ExtendedRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        ExtendedRequestDsml extendedRequest = ( ExtendedRequestDsml ) parser.getBatchRequest().getCurrentRequest();
+        ExtendedRequestDsml<?,?> extendedRequest = 
+            ( ExtendedRequestDsml<?,?> ) parser.getBatchRequest().getCurrentRequest();
         Map<String, Control> controls = extendedRequest.getControls();
 
         assertEquals( 2, extendedRequest.getControls().size() );
@@ -249,7 +254,8 @@ public class ExtendedRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        ExtendedRequestDsml extendedRequest = ( ExtendedRequestDsml ) parser.getBatchRequest().getCurrentRequest();
+        ExtendedRequestDsml<?,?> extendedRequest = 
+            ( ExtendedRequestDsml<?,?> ) parser.getBatchRequest().getCurrentRequest();
         Map<String, Control> controls = extendedRequest.getControls();
 
         assertEquals( 3, extendedRequest.getControls().size() );
@@ -284,7 +290,8 @@ public class ExtendedRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        ExtendedRequestDsml extendedRequest = ( ExtendedRequestDsml ) parser.getBatchRequest().getCurrentRequest();
+        ExtendedRequestDsml<?,?> extendedRequest = 
+            ( ExtendedRequestDsml<?,?> ) parser.getBatchRequest().getCurrentRequest();
 
         assertEquals( "foobar", new String( extendedRequest.getRequestValue() ) );
     }
@@ -311,7 +318,8 @@ public class ExtendedRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        ExtendedRequestDsml extendedRequest = ( ExtendedRequestDsml ) parser.getBatchRequest().getCurrentRequest();
+        ExtendedRequestDsml<?,?> extendedRequest = 
+            ( ExtendedRequestDsml<?,?> ) parser.getBatchRequest().getCurrentRequest();
 
         assertEquals( "DSMLv2.0 rocks!!", new String( extendedRequest.getRequestValue() ) );
     }
@@ -368,8 +376,8 @@ public class ExtendedRequestTest extends AbstractTest
             fail( e.getMessage() );
         }
 
-        ExtendedRequestDsml extendedRequest = ( ExtendedRequestDsml ) parser
-            .getBatchRequest().getCurrentRequest();
+        ExtendedRequestDsml<?,?> extendedRequest = 
+            ( ExtendedRequestDsml<?,?> ) parser.getBatchRequest().getCurrentRequest();
         assertNull( extendedRequest.getRequestValue() );
     }
 

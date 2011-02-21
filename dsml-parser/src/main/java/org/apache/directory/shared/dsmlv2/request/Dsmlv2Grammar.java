@@ -58,6 +58,7 @@ import org.apache.directory.shared.ldap.model.message.CompareRequestImpl;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.DeleteRequestImpl;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequestImpl;
+import org.apache.directory.shared.ldap.model.message.ExtendedResponseImpl;
 import org.apache.directory.shared.ldap.model.message.ModifyDnRequestImpl;
 import org.apache.directory.shared.ldap.model.message.ModifyRequestImpl;
 import org.apache.directory.shared.ldap.model.message.Request;
@@ -1526,7 +1527,8 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements Grammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            ExtendedRequestDsml extendedRequest = new ExtendedRequestDsml( codec, new ExtendedRequestImpl() );
+            ExtendedRequestDsml<?,?> extendedRequest = 
+                new ExtendedRequestDsml<ExtendedRequestImpl,ExtendedResponseImpl>( codec, new ExtendedRequestImpl() );
             container.getBatchRequest().addRequest( extendedRequest );
 
             XmlPullParser xpp = container.getParser();
@@ -1557,7 +1559,8 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements Grammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            ExtendedRequestDsml extendedRequest = ( ExtendedRequestDsml ) container.getBatchRequest().getCurrentRequest();
+            ExtendedRequestDsml<?,?> extendedRequest = ( ExtendedRequestDsml<?,?> ) 
+                container.getBatchRequest().getCurrentRequest();
 
             XmlPullParser xpp = container.getParser();
 
@@ -1597,7 +1600,8 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements Grammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            ExtendedRequestDsml extendedRequest = ( ExtendedRequestDsml ) container.getBatchRequest().getCurrentRequest();
+            ExtendedRequestDsml<?,?> extendedRequest = ( ExtendedRequestDsml<?,?> ) 
+                container.getBatchRequest().getCurrentRequest();
 
             XmlPullParser xpp = container.getParser();
 
