@@ -26,8 +26,8 @@ import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.api.ExtendedRequestDecorator;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
-import org.apache.directory.shared.ldap.extras.extended.IStoredProcedureRequest;
-import org.apache.directory.shared.ldap.extras.extended.IStoredProcedureResponse;
+import org.apache.directory.shared.ldap.extras.extended.StoredProcedureRequest;
+import org.apache.directory.shared.ldap.extras.extended.StoredProcedureResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,15 +38,15 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class StoredProcedureRequestDecorator 
-    extends ExtendedRequestDecorator<IStoredProcedureRequest,IStoredProcedureResponse> 
-    implements IStoredProcedureRequest
+    extends ExtendedRequestDecorator<StoredProcedureRequest,StoredProcedureResponse> 
+    implements StoredProcedureRequest
 {
     private static final Logger LOG = LoggerFactory.getLogger( StoredProcedureRequestDecorator.class );
 
     private StoredProcedure procedure;
     
     
-    public StoredProcedureRequestDecorator( LdapCodecService codec, IStoredProcedureRequest decoratedMessage )
+    public StoredProcedureRequestDecorator( LdapCodecService codec, StoredProcedureRequest decoratedMessage )
     {
         super( codec, decoratedMessage );
     }

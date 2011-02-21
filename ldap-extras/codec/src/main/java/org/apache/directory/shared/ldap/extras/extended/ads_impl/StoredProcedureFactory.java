@@ -23,10 +23,10 @@ package org.apache.directory.shared.ldap.extras.extended.ads_impl;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.ldap.codec.api.ExtendedRequestFactory;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
-import org.apache.directory.shared.ldap.extras.extended.IStoredProcedureRequest;
-import org.apache.directory.shared.ldap.extras.extended.IStoredProcedureResponse;
 import org.apache.directory.shared.ldap.extras.extended.StoredProcedureRequest;
 import org.apache.directory.shared.ldap.extras.extended.StoredProcedureResponse;
+import org.apache.directory.shared.ldap.extras.extended.StoredProcedureRequestImpl;
+import org.apache.directory.shared.ldap.extras.extended.StoredProcedureResponseImpl;
 
 
 /**
@@ -35,7 +35,7 @@ import org.apache.directory.shared.ldap.extras.extended.StoredProcedureResponse;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class StoredProcedureFactory implements ExtendedRequestFactory<IStoredProcedureRequest, IStoredProcedureResponse>
+public class StoredProcedureFactory implements ExtendedRequestFactory<StoredProcedureRequest, StoredProcedureResponse>
 {
     private LdapCodecService codec;
     
@@ -56,25 +56,25 @@ public class StoredProcedureFactory implements ExtendedRequestFactory<IStoredPro
      */
     public String getOid()
     {
-        return IStoredProcedureRequest.EXTENSION_OID;
+        return StoredProcedureRequest.EXTENSION_OID;
     }
 
     
     /**
      * {@inheritDoc}
      */
-    public IStoredProcedureRequest newRequest()
+    public StoredProcedureRequest newRequest()
     {
-        return new StoredProcedureRequestDecorator( codec, new StoredProcedureRequest() );
+        return new StoredProcedureRequestDecorator( codec, new StoredProcedureRequestImpl() );
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public IStoredProcedureResponse newResponse( byte[] encodedValue ) throws DecoderException
+    public StoredProcedureResponse newResponse( byte[] encodedValue ) throws DecoderException
     {
-        StoredProcedureResponseDecorator response = new StoredProcedureResponseDecorator( codec, new StoredProcedureResponse() );
+        StoredProcedureResponseDecorator response = new StoredProcedureResponseDecorator( codec, new StoredProcedureResponseImpl() );
         response.setResponseValue( encodedValue );
         return response;
     }

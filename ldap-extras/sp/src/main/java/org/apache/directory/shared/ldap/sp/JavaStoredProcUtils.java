@@ -37,7 +37,7 @@ import javax.naming.ldap.LdapContext;
 import org.apache.commons.lang.SerializationUtils;
 import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecServiceFactory;
-import org.apache.directory.shared.ldap.extras.extended.StoredProcedureRequest;
+import org.apache.directory.shared.ldap.extras.extended.StoredProcedureRequestImpl;
 
 
 /**
@@ -130,7 +130,7 @@ public final class JavaStoredProcUtils
             /**
              * Create a new stored procedure execution request.
              */
-            StoredProcedureRequest req = new StoredProcedureRequest( 0, procedureName, language );
+            StoredProcedureRequestImpl req = new StoredProcedureRequestImpl( 0, procedureName, language );
 
             /**
              * For each argument UTF-8-encode the type name

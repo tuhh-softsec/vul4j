@@ -31,7 +31,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.extras.extended.StoredProcedureRequest;
+import org.apache.directory.shared.ldap.extras.extended.StoredProcedureRequestImpl;
 import org.apache.directory.shared.util.Strings;
 
 
@@ -61,10 +61,10 @@ public class StoredProcedure extends AbstractAsn1Object
     private List<Integer> paramValueLength;
 
     /** The underlying request */
-    private StoredProcedureRequest request;
+    private StoredProcedureRequestImpl request;
     
 
-    public StoredProcedure( StoredProcedureRequest request )
+    public StoredProcedure( StoredProcedureRequestImpl request )
     {
         this.request = request;
     }
@@ -72,7 +72,7 @@ public class StoredProcedure extends AbstractAsn1Object
 
     public StoredProcedure()
     {
-        this.request = new StoredProcedureRequest();
+        this.request = new StoredProcedureRequestImpl();
     }
     
 

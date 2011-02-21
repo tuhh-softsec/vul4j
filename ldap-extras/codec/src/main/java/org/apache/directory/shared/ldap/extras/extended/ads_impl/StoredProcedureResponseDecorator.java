@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.extras.extended.ads_impl;
 
 import org.apache.directory.shared.ldap.codec.api.ExtendedResponseDecorator;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
-import org.apache.directory.shared.ldap.extras.extended.IStoredProcedureResponse;
+import org.apache.directory.shared.ldap.extras.extended.StoredProcedureResponse;
 
 
 /**
@@ -30,7 +30,7 @@ import org.apache.directory.shared.ldap.extras.extended.IStoredProcedureResponse
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class StoredProcedureResponseDecorator extends ExtendedResponseDecorator<IStoredProcedureResponse> implements IStoredProcedureResponse
+public class StoredProcedureResponseDecorator extends ExtendedResponseDecorator<StoredProcedureResponse> implements StoredProcedureResponse
 {
     /**
      * Creates a new instance of CancelResponseDecorator.
@@ -38,7 +38,7 @@ public class StoredProcedureResponseDecorator extends ExtendedResponseDecorator<
      * @param codec
      * @param decoratedMessage
      */
-    public StoredProcedureResponseDecorator( LdapCodecService codec, IStoredProcedureResponse decoratedMessage )
+    public StoredProcedureResponseDecorator( LdapCodecService codec, StoredProcedureResponse decoratedMessage )
     {
         super( codec, decoratedMessage );
     }
