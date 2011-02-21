@@ -74,7 +74,7 @@
               false
             </felix.cache.locking>
             <org.osgi.framework.storage>
-              ${project.build.directory}/osgi-cache
+              osgi-cache
             </org.osgi.framework.storage>
           </systemPropertyVariables>
         </configuration>
