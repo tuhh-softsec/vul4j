@@ -23,6 +23,7 @@ package org.apache.directory.shared.ldap.codec.decorators;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.AbandonListener;
 import org.apache.directory.shared.ldap.model.message.AbandonableRequest;
+import org.apache.directory.shared.ldap.model.message.ResultResponse;
 
 
 /**
@@ -30,8 +31,8 @@ import org.apache.directory.shared.ldap.model.message.AbandonableRequest;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public abstract class AbandonableRequestDecorator<M extends AbandonableResultResponseRequest> 
-    extends ResultResponseRequestDecorator<M> 
+public abstract class AbandonableRequestDecorator<M extends AbandonableResultResponseRequest<R>, R extends ResultResponse> 
+    extends ResultResponseRequestDecorator<M,R> 
     implements AbandonableRequest
 {
     /**

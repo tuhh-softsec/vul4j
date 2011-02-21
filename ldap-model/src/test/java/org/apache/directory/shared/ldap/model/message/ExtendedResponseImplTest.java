@@ -56,7 +56,6 @@ public class ExtendedResponseImplTest
     {
         // Construct the Search response to test with results and referrals
         ExtendedResponseImpl response = new ExtendedResponseImpl( 45 );
-        response.setResponseValue( "Hello World!".getBytes() );
         response.setResponseName( "1.1.1.1" );
         LdapResult result = response.getLdapResult();
 
@@ -115,12 +114,6 @@ public class ExtendedResponseImplTest
             private static final long serialVersionUID = 5297000474419901408L;
 
 
-            public String getID()
-            {
-                return "1.1.1.1";
-            }
-
-
             public String getResponseName()
             {
                 return "1.1.1.1";
@@ -128,23 +121,6 @@ public class ExtendedResponseImplTest
 
 
             public void setResponseName( String oid )
-            {
-            }
-
-
-            public byte[] getEncodedValue()
-            {
-                return "Hello World!".getBytes();
-            }
-
-
-            public byte[] getResponseValue()
-            {
-                return "Hello World!".getBytes();
-            }
-
-
-            public void setResponseValue( byte[] value )
             {
             }
 
@@ -300,9 +276,7 @@ public class ExtendedResponseImplTest
     public void testNotEqualsDiffResponses()
     {
         ExtendedResponseImpl resp0 = createStub();
-        resp0.setResponseValue( "abc".getBytes() );
         ExtendedResponseImpl resp1 = createStub();
-        resp1.setResponseValue( "123".getBytes() );
 
         assertFalse( resp0.equals( resp1 ) );
         assertFalse( resp1.equals( resp0 ) );

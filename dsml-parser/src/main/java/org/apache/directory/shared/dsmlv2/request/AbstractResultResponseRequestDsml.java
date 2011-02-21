@@ -37,9 +37,9 @@ import org.dom4j.Element;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public abstract class AbstractResultResponseRequestDsml<E extends ResultResponseRequest> 
+public abstract class AbstractResultResponseRequestDsml<E extends ResultResponseRequest<F>, F extends ResultResponse> 
     extends AbstractRequestDsml<E> 
-    implements ResultResponseRequest, AbandonableRequest
+    implements ResultResponseRequest<F>, AbandonableRequest
 {
     /**
      * Creates a new instance of AbstractRequestDsml.
@@ -137,7 +137,7 @@ public abstract class AbstractResultResponseRequestDsml<E extends ResultResponse
     /**
      * {@inheritDoc}
      */
-    public ResultResponse getResultResponse()
+    public F getResultResponse()
     {
         return getDecorated().getResultResponse();
     }

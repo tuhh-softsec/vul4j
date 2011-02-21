@@ -41,6 +41,7 @@ public class ExtendedResponseDsml extends AbstractResultResponseDsml<ExtendedRes
     implements ExtendedResponse
 {
     private static final long serialVersionUID = -3989420095112650346L;
+    private byte[] response;
 
 
     /**
@@ -94,7 +95,7 @@ public class ExtendedResponseDsml extends AbstractResultResponseDsml<ExtendedRes
         }
 
         // Response
-        Object response = extendedResponse.getResponseValue();
+        Object response = getResponseValue();
 
         if ( response != null )
         {
@@ -120,6 +121,15 @@ public class ExtendedResponseDsml extends AbstractResultResponseDsml<ExtendedRes
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
+    public void setResponseName( String oid )
+    {
+        getDecorated().setResponseName( oid );
+    }
+
+    
     /**
      * Get the extended response name
      * 
@@ -149,7 +159,7 @@ public class ExtendedResponseDsml extends AbstractResultResponseDsml<ExtendedRes
      */
     public byte[] getResponseValue()
     {
-        return getDecorated().getResponseValue();
+        return this.response;
     }
 
 
@@ -160,33 +170,6 @@ public class ExtendedResponseDsml extends AbstractResultResponseDsml<ExtendedRes
      */
     public void setResponseValue( byte[] response )
     {
-        getDecorated().setResponseValue( response );
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public String getID()
-    {
-        return getDecorated().getID();
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public byte[] getEncodedValue()
-    {
-        return getDecorated().getEncodedValue();
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setResponseName( String oid )
-    {
-        getDecorated().setResponseName( oid );
+        this.response = response;
     }
 }

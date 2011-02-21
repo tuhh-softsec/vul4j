@@ -39,6 +39,7 @@ import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.model.entry.Modification;
 import org.apache.directory.shared.ldap.model.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.model.message.ModifyRequest;
+import org.apache.directory.shared.ldap.model.message.ModifyResponse;
 import org.apache.directory.shared.ldap.model.name.Dn;
 
 
@@ -47,7 +48,7 @@ import org.apache.directory.shared.ldap.model.name.Dn;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ModifyRequestDecorator extends SingleReplyRequestDecorator<ModifyRequest>
+public class ModifyRequestDecorator extends SingleReplyRequestDecorator<ModifyRequest,ModifyResponse>
     implements ModifyRequest
 {
     /** The modify request length */

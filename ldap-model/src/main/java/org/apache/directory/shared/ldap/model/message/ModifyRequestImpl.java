@@ -291,7 +291,7 @@ public class ModifyRequestImpl extends AbstractAbandonableRequest implements Mod
      * 
      * @return the result containing response for this request
      */
-    public ResultResponse getResultResponse()
+    public ModifyResponse getResultResponse()
     {
         if ( response == null )
         {

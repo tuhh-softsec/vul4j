@@ -29,6 +29,7 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.LdapConstants;
 import org.apache.directory.shared.ldap.model.message.DeleteRequest;
+import org.apache.directory.shared.ldap.model.message.DeleteResponse;
 import org.apache.directory.shared.ldap.model.name.Dn;
 
 
@@ -37,7 +38,7 @@ import org.apache.directory.shared.ldap.model.name.Dn;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class DeleteRequestDecorator extends SingleReplyRequestDecorator<DeleteRequest> 
+public class DeleteRequestDecorator extends SingleReplyRequestDecorator<DeleteRequest, DeleteResponse> 
     implements DeleteRequest
 {
     /**

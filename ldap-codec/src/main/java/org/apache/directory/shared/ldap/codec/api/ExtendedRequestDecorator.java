@@ -28,6 +28,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.decorators.SingleReplyRequestDecorator;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
+import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
 import org.apache.directory.shared.util.Strings;
 
 
@@ -36,8 +37,8 @@ import org.apache.directory.shared.util.Strings;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ExtendedRequestDecorator extends SingleReplyRequestDecorator<ExtendedRequest> 
-    implements ExtendedRequest
+public class ExtendedRequestDecorator extends SingleReplyRequestDecorator<ExtendedRequest<ExtendedResponse>,ExtendedResponse> 
+    implements ExtendedRequest<ExtendedResponse>
 {
     /** The extended request length */
     private int extendedRequestLength;
@@ -45,13 +46,15 @@ public class ExtendedRequestDecorator extends SingleReplyRequestDecorator<Extend
     /** The OID length */
     private byte[] requestNameBytes;
 
+    private byte[] requestValue;
+
 
     /**
      * Makes a ExtendedRequest a MessageDecorator.
      *
      * @param decoratedMessage the decorated ExtendedRequest
      */
-    public ExtendedRequestDecorator( LdapCodecService codec, ExtendedRequest decoratedMessage )
+    public ExtendedRequestDecorator( LdapCodecService codec, ExtendedRequest<ExtendedResponse> decoratedMessage )
     {
         super( codec, decoratedMessage );
     }
@@ -127,7 +130,7 @@ public class ExtendedRequestDecorator extends SingleReplyRequestDecorator<Extend
      */
     public byte[] getRequestValue()
     {
-        return getDecorated().getRequestValue();
+        return requestValue;
     }
 
 
@@ -136,7 +139,7 @@ public class ExtendedRequestDecorator extends SingleReplyRequestDecorator<Extend
      */
     public void setRequestValue( byte[] requestValue )
     {
-        getDecorated().setRequestValue( requestValue );
+        this.requestValue = requestValue;
     }
 
     

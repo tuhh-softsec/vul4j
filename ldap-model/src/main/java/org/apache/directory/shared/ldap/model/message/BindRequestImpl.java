@@ -310,7 +310,7 @@ public class BindRequestImpl extends AbstractAbandonableRequest implements BindR
      * 
      * @return the result containing response for this request
      */
-    public ResultResponse getResultResponse()
+    public BindResponse getResultResponse()
     {
         if ( response == null )
         {

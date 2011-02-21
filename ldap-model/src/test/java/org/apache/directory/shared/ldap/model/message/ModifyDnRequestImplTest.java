@@ -381,7 +381,7 @@ public class ModifyDnRequestImplTest
             }
 
 
-            public ResultResponse getResultResponse()
+            public ModifyDnResponse getResultResponse()
             {
                 return null;
             }

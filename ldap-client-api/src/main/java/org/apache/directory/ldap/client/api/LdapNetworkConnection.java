@@ -28,7 +28,6 @@ import java.net.SocketAddress;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -123,15 +122,6 @@ import org.apache.directory.shared.ldap.model.message.SearchResultReference;
 import org.apache.directory.shared.ldap.model.message.UnbindRequest;
 import org.apache.directory.shared.ldap.model.message.UnbindRequestImpl;
 import org.apache.directory.shared.ldap.model.message.controls.OpaqueControl;
-import org.apache.directory.shared.ldap.model.message.extended.AddNoDResponse;
-import org.apache.directory.shared.ldap.model.message.extended.BindNoDResponse;
-import org.apache.directory.shared.ldap.model.message.extended.CompareNoDResponse;
-import org.apache.directory.shared.ldap.model.message.extended.DeleteNoDResponse;
-import org.apache.directory.shared.ldap.model.message.extended.ExtendedNoDResponse;
-import org.apache.directory.shared.ldap.model.message.extended.ModifyDnNoDResponse;
-import org.apache.directory.shared.ldap.model.message.extended.ModifyNoDResponse;
-import org.apache.directory.shared.ldap.model.message.extended.NoticeOfDisconnect;
-import org.apache.directory.shared.ldap.model.message.extended.SearchNoDResponse;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.name.Rdn;
 import org.apache.directory.shared.ldap.model.schema.AttributeType;
@@ -146,6 +136,7 @@ import org.apache.directory.shared.ldap.schemaloader.JarLdifSchemaLoader;
 import org.apache.directory.shared.ldap.schemamanager.impl.DefaultSchemaManager;
 import org.apache.directory.shared.util.StringConstants;
 import org.apache.directory.shared.util.Strings;
+import org.apache.directory.shared.util.exception.NotImplementedException;
 import org.apache.mina.core.filterchain.IoFilter;
 import org.apache.mina.core.future.CloseFuture;
 import org.apache.mina.core.future.ConnectFuture;
@@ -2929,11 +2920,12 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
      */
     public ExtendedResponse extended( OID oid, byte[] value ) throws LdapException
     {
-        ExtendedRequest extendedRequest = new ExtendedRequestImpl();
+        ExtendedRequest<?> extendedRequest = new ExtendedRequestImpl();
         extendedRequest.setRequestName( oid.toString() );
-        extendedRequest.setRequestValue( value );
+        // extendedRequest.setRequestValue( value );
 
-        return extended( extendedRequest );
+        // return extended( extendedRequest );
+        throw new NotImplementedException( "need to figure out what to do with request value" );
     }
 
 

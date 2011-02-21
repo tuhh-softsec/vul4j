@@ -28,7 +28,7 @@ import org.apache.directory.shared.ldap.model.name.Dn;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface DeleteRequest extends SingleReplyRequest, AbandonableRequest
+public interface DeleteRequest extends SingleReplyRequest<DeleteResponse>, AbandonableRequest
 {
     /** Delete request message type enumeration value */
     MessageTypeEnum TYPE = MessageTypeEnum.DEL_REQUEST;

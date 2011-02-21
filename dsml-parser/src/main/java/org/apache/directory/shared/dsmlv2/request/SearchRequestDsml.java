@@ -47,6 +47,7 @@ import org.apache.directory.shared.ldap.model.message.AliasDerefMode;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.message.SearchRequest;
 import org.apache.directory.shared.ldap.model.message.SearchRequestImpl;
+import org.apache.directory.shared.ldap.model.message.SearchResultDone;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
@@ -59,7 +60,7 @@ import org.dom4j.QName;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class SearchRequestDsml 
-    extends AbstractResultResponseRequestDsml<SearchRequest>
+    extends AbstractResultResponseRequestDsml<SearchRequest, SearchResultDone>
     implements SearchRequest
 {
     /** A temporary storage for a terminal Filter */

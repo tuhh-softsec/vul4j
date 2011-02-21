@@ -25,7 +25,6 @@ import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.api.ExtendedRequestDecorator;
-import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 import org.apache.directory.shared.util.StringConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,7 +62,7 @@ public class StoreExtendedRequestValue extends GrammarAction<LdapMessageContaine
     public void action( LdapMessageContainer<ExtendedRequestDecorator> container ) throws DecoderException
     {
         // We can allocate the ExtendedRequest Object
-        ExtendedRequest extendedRequest = container.getMessage();
+        ExtendedRequestDecorator extendedRequest = container.getMessage();
 
         // Get the Value and store it in the ExtendedRequest
         TLV tlv = container.getCurrentTLV();

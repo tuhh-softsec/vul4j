@@ -37,6 +37,7 @@ import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.message.AddRequest;
+import org.apache.directory.shared.ldap.model.message.AddResponse;
 import org.apache.directory.shared.ldap.model.name.Dn;
 
 
@@ -45,7 +46,7 @@ import org.apache.directory.shared.ldap.model.name.Dn;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public final class AddRequestDecorator extends SingleReplyRequestDecorator<AddRequest> implements AddRequest
+public final class AddRequestDecorator extends SingleReplyRequestDecorator<AddRequest,AddResponse> implements AddRequest
 {
     /** The add request length */
     private int addRequestLength;

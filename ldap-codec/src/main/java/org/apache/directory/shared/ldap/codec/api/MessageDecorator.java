@@ -96,6 +96,7 @@ public abstract class MessageDecorator<E extends Message> implements Message, De
     private final LdapCodecService codec;
 
     
+    @SuppressWarnings("unchecked")
     public static MessageDecorator<? extends Message> getDecorator( LdapCodecService codec, Message decoratedMessage )
     {
         if ( decoratedMessage instanceof MessageDecorator )
@@ -144,7 +145,7 @@ public abstract class MessageDecorator<E extends Message> implements Message, De
                 break;
                 
             case EXTENDED_REQUEST:
-                decorator = new ExtendedRequestDecorator( codec, ( ExtendedRequest ) decoratedMessage );
+                decorator = new ExtendedRequestDecorator( codec, ( ExtendedRequest<ExtendedResponse> ) decoratedMessage );
                 break;
                 
             case EXTENDED_RESPONSE:

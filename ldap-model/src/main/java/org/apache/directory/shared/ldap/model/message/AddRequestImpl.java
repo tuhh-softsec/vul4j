@@ -206,7 +206,7 @@ public class AddRequestImpl extends AbstractAbandonableRequest implements AddReq
      * 
      * @return the result containing response for this request
      */
-    public ResultResponse getResultResponse()
+    public AddResponse getResultResponse()
     {
         if ( response == null )
         {

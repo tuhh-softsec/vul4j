@@ -48,8 +48,8 @@ import org.apache.directory.shared.ldap.codec.controls.search.persistentSearch.P
 import org.apache.directory.shared.ldap.codec.controls.search.subentries.SubentriesFactory;
 import org.apache.directory.shared.ldap.codec.protocol.mina.LdapProtocolCodecFactory;
 import org.apache.directory.shared.ldap.model.message.Control;
+import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
-import org.apache.directory.shared.ldap.model.message.ExtendedResponseImpl;
 import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.model.message.controls.OpaqueControl;
 import org.apache.directory.shared.util.exception.NotImplementedException;
@@ -714,23 +714,25 @@ public class StandaloneLdapCodecService implements LdapCodecService
      */
     public javax.naming.ldap.ExtendedResponse toJndi( final ExtendedResponse modelResponse ) throws EncoderException
     {
-        final byte[] encodedValue = new byte[ modelResponse.getEncodedValue().length ];
-        System.arraycopy( modelResponse.getEncodedValue(), 0, encodedValue, 0, modelResponse.getEncodedValue().length );
-        
-        return new javax.naming.ldap.ExtendedResponse()
-        {
-            private static final long serialVersionUID = 2955142105375495493L;
+        throw new NotImplementedException( "Figure out how to transform" );
 
-            public String getID()
-            {
-                return modelResponse.getID();
-            }
-
-            public byte[] getEncodedValue()
-            {
-                return encodedValue;
-            }
-        };
+//        final byte[] encodedValue = new byte[ modelResponse.getEncodedValue().length ];
+//        System.arraycopy( modelResponse.getEncodedValue(), 0, encodedValue, 0, modelResponse.getEncodedValue().length );
+//        
+//        return new javax.naming.ldap.ExtendedResponse()
+//        {
+//            private static final long serialVersionUID = 2955142105375495493L;
+//
+//            public String getID()
+//            {
+//                return modelResponse.getID();
+//            }
+//
+//            public byte[] getEncodedValue()
+//            {
+//                return encodedValue;
+//            }
+//        };
     }
     
 
@@ -739,25 +741,27 @@ public class StandaloneLdapCodecService implements LdapCodecService
      */
     public ExtendedResponse fromJndi( javax.naming.ldap.ExtendedResponse jndiResponse ) throws DecoderException
     {   
-        ExtendedResponse modelResponse;
-        ExtendedRequestFactory<?,?> extendedRequestFactory = extReqFactories.get( jndiResponse.getID() );
-        UnsolicitedResponseFactory<?> unsolicitedResponseFactory = unsolicitedFactories.get( jndiResponse.getID() );
-        
-        if ( unsolicitedResponseFactory != null )
-        {
-            modelResponse = unsolicitedResponseFactory.newResponse( jndiResponse.getEncodedValue() );
-        }
-        else if ( extendedRequestFactory != null )
-        {
-            modelResponse = extendedRequestFactory.newResponse( jndiResponse.getEncodedValue() );
-        }
-        else
-        {
-            modelResponse = new ExtendedResponseImpl( jndiResponse.getID() );
-            modelResponse.setResponseValue( jndiResponse.getEncodedValue() );
-        }
-        
-        return modelResponse;
+        throw new NotImplementedException( "Figure out how to transform" );
+
+//        ExtendedResponse modelResponse;
+//        ExtendedRequestFactory<?,?> extendedRequestFactory = extReqFactories.get( jndiResponse.getID() );
+//        UnsolicitedResponseFactory<?> unsolicitedResponseFactory = unsolicitedFactories.get( jndiResponse.getID() );
+//        
+//        if ( unsolicitedResponseFactory != null )
+//        {
+//            modelResponse = unsolicitedResponseFactory.newResponse( jndiResponse.getEncodedValue() );
+//        }
+//        else if ( extendedRequestFactory != null )
+//        {
+//            modelResponse = extendedRequestFactory.newResponse( jndiResponse.getEncodedValue() );
+//        }
+//        else
+//        {
+//            modelResponse = new ExtendedResponseImpl( jndiResponse.getID() );
+//            modelResponse.setResponseValue( jndiResponse.getEncodedValue() );
+//        }
+//        
+//        return modelResponse;
     }
 
 
@@ -776,5 +780,19 @@ public class StandaloneLdapCodecService implements LdapCodecService
     public UnsolicitedResponseFactory<?> unregisterUnsolicitedResponse( String oid )
     {
         return unsolicitedFactories.remove( oid );
+    }
+
+
+    public ExtendedRequest<?> fromJndi( javax.naming.ldap.ExtendedRequest jndiRequest ) throws DecoderException
+    {
+        // TODO Auto-generated method stub
+        throw new NotImplementedException();
+    }
+
+
+    public javax.naming.ldap.ExtendedRequest toJndi( ExtendedRequest<?> modelRequest ) throws EncoderException
+    {
+        // TODO Auto-generated method stub
+        throw new NotImplementedException();
     }
 }

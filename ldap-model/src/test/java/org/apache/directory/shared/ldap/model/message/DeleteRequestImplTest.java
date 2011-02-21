@@ -221,7 +221,7 @@ public class DeleteRequestImplTest
             }
 
 
-            public ResultResponse getResultResponse()
+            public DeleteResponse getResultResponse()
             {
                 return null;
             }

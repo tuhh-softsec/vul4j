@@ -289,7 +289,7 @@ public class CompareRequestImplTest
             }
 
 
-            public ResultResponse getResultResponse()
+            public CompareResponse getResultResponse()
             {
                 return null;
             }

@@ -20,15 +20,10 @@
 package org.apache.directory.shared.ldap.model.message;
 
 
-import java.util.Arrays;
-
-import org.apache.directory.shared.util.Strings;
-
-
 /**
- * ExtendedResponse implementation
+ * A simple ExtendedResponse implementation.
  * 
- * @author <a href="mailto:dev@directory.apache.org"> Apache Directory Project</a>
+ * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class ExtendedResponseImpl extends AbstractResultResponse implements ExtendedResponse
 {
@@ -36,9 +31,6 @@ public class ExtendedResponseImpl extends AbstractResultResponse implements Exte
 
     /** Object identifier for the extended response */
     protected String responseName;
-
-    /** Value encoded in the extended response payload */
-    protected byte[] responseValue;
 
 
     /**
@@ -80,25 +72,20 @@ public class ExtendedResponseImpl extends AbstractResultResponse implements Exte
     // ------------------------------------------------------------------------
     // ExtendedResponse Interface Method Implementations
     // ------------------------------------------------------------------------
+
+
     /**
-     * Sets the response OID specific encoded response value.
+     * Gets the OID uniquely identifying this extended response (a.k.a. its
+     * name).
      * 
-     * @param responseValue the response specific encoded response values.
+     * @return the responseName of the extended response
      */
-    public void setResponseValue( byte[] responseValue )
+    public String getResponseName()
     {
-        if ( responseValue != null )
-        {
-            this.responseValue = new byte[responseValue.length];
-            System.arraycopy( responseValue, 0, this.responseValue, 0, responseValue.length );
-        }
-        else
-        {
-            this.responseValue = null;
-        }
+        return ( ( responseName == null ) ? "" : responseName.toString() );
     }
 
-
+    
     /**
      * Sets the OID uniquely identifying this extended response (a.k.a. its
      * name).
@@ -122,11 +109,6 @@ public class ExtendedResponseImpl extends AbstractResultResponse implements Exte
         if ( responseName != null )
         {
             hash = hash * 17 + responseName.hashCode();
-        }
-
-        if ( responseValue != null )
-        {
-            hash = hash * 17 + Arrays.hashCode( responseValue );
         }
 
         hash = hash * 17 + super.hashCode();
@@ -177,68 +159,7 @@ public class ExtendedResponseImpl extends AbstractResultResponse implements Exte
             return false;
         }
 
-        if ( ( responseValue != null ) && ( resp.getResponseValue() == null ) )
-        {
-            return false;
-        }
-
-        if ( ( responseValue == null ) && ( resp.getResponseValue() != null ) )
-        {
-            return false;
-        }
-
-        return ( ( responseValue == null ) || ( resp.getResponseValue() == null )
-            || Arrays.equals( responseValue, resp.getResponseValue() ) );
-    }
-
-
-    /**
-     * Gets the OID uniquely identifying this extended response (a.k.a. its
-     * name).
-     * 
-     * @return the responseName of the extended response
-     */
-    public String getResponseName()
-    {
-        return ( ( responseName == null ) ? "" : responseName.toString() );
-    }
-
-
-    /**
-     * Gets the response OID specific encoded response values.
-     * 
-     * @return the response specific encoded response value
-     */
-    public byte[] getResponseValue()
-    {
-        if ( responseValue == null )
-        {
-            return null;
-        }
-
-        final byte[] copy = new byte[responseValue.length];
-        System.arraycopy( responseValue, 0, copy, 0, responseValue.length );
-        return copy;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     * @deprecated Use the {@link #getResponseValue()} method
-     */
-    public byte[] getEncodedValue()
-    {
-        return getResponseValue();
-    }
-
-
-    /**
-     * {@inheritDoc}
-     * @deprecated Use the {@link #getResponseName()} method
-     */
-    public String getID()
-    {
-        return getResponseName();
+        return true;
     }
 
 
@@ -256,11 +177,6 @@ public class ExtendedResponseImpl extends AbstractResultResponse implements Exte
         if ( responseName != null )
         {
             sb.append( "        ResponseName :'" ).append( responseName ).append( "'\n" );
-        }
-
-        if ( responseValue != null )
-        {
-            sb.append( "        ResponseValue :'" ).append( Strings.dumpBytes(responseValue) ).append( "'\n" );
         }
 
         sb.append( super.toString() );

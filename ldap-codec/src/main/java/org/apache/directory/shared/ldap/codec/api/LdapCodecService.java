@@ -26,6 +26,7 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.ldap.model.message.Control;
+import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
 import org.apache.mina.filter.codec.ProtocolCodecFactory;
 
@@ -200,10 +201,31 @@ public interface LdapCodecService
      * @throws EncoderException
      */
     javax.naming.ldap.ExtendedResponse toJndi( ExtendedResponse modelResponse ) throws EncoderException;
+
+    
+    /**
+     * Creates a model ExtendedResponse from the JNDI ExtendedResponse.
+     *
+     * @param jndiResponse The JNDI ExtendedResponse 
+     * @return The model ExtendedResponse
+     * @throws DecoderException if the response value cannot be decoded.
+     */
+    ExtendedRequest<?> fromJndi( javax.naming.ldap.ExtendedRequest jndiRequest ) throws DecoderException;
+    
+    
+    /**
+     * Creates a JNDI {@link javax.naming.ldap.ExtendedResponse} from the model 
+     * {@link ExtendedResponse}.
+     * 
+     * @param modelResponse
+     * @return
+     * @throws EncoderException
+     */
+    javax.naming.ldap.ExtendedRequest toJndi( ExtendedRequest<?> modelRequest ) throws EncoderException;
     
     
     // ------------------------------------------------------------------------
-    // Extended Request/Response Methods
+    // Other Methods
     // ------------------------------------------------------------------------
 
     

@@ -19,6 +19,7 @@
  */
 package org.apache.directory.shared.ldap.model.message;
 
+
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.name.Rdn;
 
@@ -64,7 +65,7 @@ import org.apache.directory.shared.ldap.model.name.Rdn;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface ModifyDnRequest extends SingleReplyRequest, AbandonableRequest
+public interface ModifyDnRequest extends SingleReplyRequest<ModifyDnResponse>, AbandonableRequest
 {
     /** Modify Dn request message type enumeration value */
     MessageTypeEnum TYPE = MessageTypeEnum.MODIFYDN_REQUEST;

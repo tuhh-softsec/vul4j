@@ -20,31 +20,20 @@
 package org.apache.directory.shared.ldap.model.message;
 
 
-import java.util.Arrays;
-
-import javax.naming.NamingException;
-import javax.naming.ldap.ExtendedResponse;
-
-import org.apache.directory.shared.util.Strings;
-
-
 /**
  * ExtendedRequest implementation.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ExtendedRequestImpl extends AbstractRequest implements ExtendedRequest
+public class ExtendedRequestImpl extends AbstractRequest implements ExtendedRequest<ExtendedResponse>
 {
     static final long serialVersionUID = 7916990159044177480L;
 
     /** Extended request's Object Identifier or <b>requestName</b> */
     private String oid;
 
-    /** Extended request's value */
-    protected byte[] requestValue;
-
     /** The associated response */
-    protected ResultResponse response;
+    protected ExtendedResponse response;
 
 
     /**
@@ -73,6 +62,19 @@ public class ExtendedRequestImpl extends AbstractRequest implements ExtendedRequ
     // ExtendedRequest Interface Method Implementations
     // -----------------------------------------------------------------------
 
+
+    /**
+     * Gets the Object Identifier corresponding to the extended request type.
+     * This is the <b>requestName</b> portion of the ext. req. PDU.
+     * 
+     * @return the dotted-decimal representation as a String of the OID
+     */
+    public String getRequestName()
+    {
+        return oid;
+    }
+
+    
     /**
      * Sets the Object Identifier corresponding to the extended request type.
      * 
@@ -81,45 +83,6 @@ public class ExtendedRequestImpl extends AbstractRequest implements ExtendedRequ
     public void setRequestName( String newOid )
     {
         this.oid = newOid;
-    }
-
-
-    /**
-     * Gets the extended request's <b>requestValue</b> portion of the PDU. The
-     * form of the data is request specific and is determined by the extended
-     * request OID.
-     * 
-     * @return byte array of data
-     */
-    public byte[] getRequestValue()
-    {
-        if ( requestValue == null )
-        {
-            return null;
-        }
-
-        final byte[] copy = new byte[requestValue.length];
-        System.arraycopy( requestValue, 0, copy, 0, requestValue.length );
-        return copy;
-    }
-
-
-    /**
-     * Sets the extended request's <b>requestValue</b> portion of the PDU.
-     * 
-     * @param payload byte array of data encapsulating ext. req. parameters
-     */
-    public void setRequestValue( byte[] payload )
-    {
-        if ( payload != null )
-        {
-            this.requestValue = new byte[payload.length];
-            System.arraycopy( payload, 0, this.requestValue, 0, payload.length );
-        }
-        else
-        {
-            this.requestValue = null;
-        }
     }
 
 
@@ -144,7 +107,7 @@ public class ExtendedRequestImpl extends AbstractRequest implements ExtendedRequ
      * 
      * @return the result containing response for this request
      */
-    public ResultResponse getResultResponse()
+    public ExtendedResponse getResultResponse()
     {
         if ( response == null )
         {
@@ -165,10 +128,6 @@ public class ExtendedRequestImpl extends AbstractRequest implements ExtendedRequ
         if ( oid != null )
         {
             hash = hash * 17 + oid.hashCode();
-        }
-        if ( requestValue != null )
-        {
-            hash = hash * 17 + Arrays.hashCode( requestValue );
         }
         hash = hash * 17 + super.hashCode();
 
@@ -199,7 +158,7 @@ public class ExtendedRequestImpl extends AbstractRequest implements ExtendedRequ
             return false;
         }
 
-        ExtendedRequest req = ( ExtendedRequest ) obj;
+        ExtendedRequest<?> req = ( ExtendedRequest<?> ) obj;
 
         if ( ( oid != null ) && ( req.getRequestName() == null ) )
         {
@@ -215,50 +174,8 @@ public class ExtendedRequestImpl extends AbstractRequest implements ExtendedRequ
         {
             return false;
         }
-
-        if ( ( requestValue != null ) && ( req.getRequestValue() == null ) )
-        {
-            return false;
-        }
-
-        if ( ( requestValue == null ) && ( req.getRequestValue() != null ) )
-        {
-            return false;
-        }
-
-        return ( ( requestValue == null ) || ( req.getRequestValue() == null )
-            || Arrays.equals( requestValue, req.getRequestValue() ) );
-    }
-
-
-    /**
-     * Gets the Object Idendifier corresponding to the extended request type.
-     * This is the <b>requestName</b> portion of the ext. req. PDU.
-     * 
-     * @return the dotted-decimal representation as a String of the OID
-     */
-    public String getRequestName()
-    {
-        return oid;
-    }
-
-
-    /**
-     * Creates the extended response.
-     * 
-     * This implement always returns null.
-     *
-     * @param id the OID
-     * @param berValue the value
-     * @param offset the offset
-     * @param length the length
-     * @return the extended response
-     * @throws NamingException the naming exception
-     */
-    public ExtendedResponse createExtendedResponse( String id, byte[] berValue, int offset, int length )
-        throws NamingException
-    {
-        return null;
+        
+        return true;
     }
 
 
@@ -273,12 +190,6 @@ public class ExtendedRequestImpl extends AbstractRequest implements ExtendedRequ
 
         sb.append( "    Extended request\n" );
         sb.append( "        Request name : '" ).append( oid ).append( "'\n" );
-
-        if ( oid != null )
-        {
-            sb.append( "        Request value : '" ).append( Strings.utf8ToString(requestValue) ).append( '/' )
-                .append( Strings.dumpBytes(requestValue) ).append( "'\n" );
-        }
 
         // The controls
         sb.append( super.toString() );

@@ -23,6 +23,7 @@ package org.apache.directory.shared.dsmlv2.request;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.DeleteRequest;
 import org.apache.directory.shared.ldap.model.message.DeleteRequestImpl;
+import org.apache.directory.shared.ldap.model.message.DeleteResponse;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.dom4j.Element;
@@ -34,7 +35,7 @@ import org.dom4j.Element;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class DelRequestDsml 
-    extends AbstractResultResponseRequestDsml<DeleteRequest>
+    extends AbstractResultResponseRequestDsml<DeleteRequest, DeleteResponse>
     implements DeleteRequest
 {
     /**

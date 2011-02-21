@@ -351,7 +351,7 @@ public class SearchRequestImpl extends AbstractAbandonableRequest implements Sea
      * 
      * @return the result containing response for this request
      */
-    public ResultResponse getResultResponse()
+    public SearchResultDone getResultResponse()
     {
         if ( response == null )
         {

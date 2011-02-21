@@ -37,7 +37,6 @@ import org.apache.directory.shared.ldap.codec.api.CodecControl;
 import org.apache.directory.shared.ldap.codec.api.ExtendedRequestDecorator;
 import org.apache.directory.shared.ldap.codec.osgi.AbstractCodecServiceTest;
 import org.apache.directory.shared.ldap.model.message.Control;
-import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -91,8 +90,7 @@ public class ExtendedRequestTest extends AbstractCodecServiceTest
         }
 
         // Check the decoded ExtendedRequest PDU
-        ExtendedRequest extendedRequest = container
-            .getMessage();
+        ExtendedRequestDecorator extendedRequest = container.getMessage();
 
         assertEquals( 1, extendedRequest.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", extendedRequest.getRequestName() );
@@ -163,7 +161,7 @@ public class ExtendedRequestTest extends AbstractCodecServiceTest
         }
 
         // Check the decoded ExtendedRequest PDU
-        ExtendedRequest extendedRequest = container.getMessage();
+        ExtendedRequestDecorator extendedRequest = container.getMessage();
 
         assertEquals( 1, extendedRequest.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", extendedRequest.getRequestName() );
@@ -245,7 +243,7 @@ public class ExtendedRequestTest extends AbstractCodecServiceTest
         }
 
         // Check the decoded ExtendedRequest PDU
-        ExtendedRequest extendedRequest = container.getMessage();
+        ExtendedRequestDecorator extendedRequest = container.getMessage();
 
         assertEquals( 1, extendedRequest.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", extendedRequest.getRequestName() );
@@ -428,7 +426,7 @@ public class ExtendedRequestTest extends AbstractCodecServiceTest
         }
 
         // Check the decoded ExtendedRequest PDU
-        ExtendedRequest extendedRequest = container.getMessage();
+        ExtendedRequestDecorator extendedRequest = container.getMessage();
 
         assertEquals( 1, extendedRequest.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", extendedRequest.getRequestName() );
@@ -494,11 +492,11 @@ public class ExtendedRequestTest extends AbstractCodecServiceTest
         }
 
         // Check the decoded ExtendedRequest PDU
-        ExtendedRequest extendedRequest = container.getMessage();
+        ExtendedRequestDecorator extendedRequest = container.getMessage();
 
         assertEquals( 1, extendedRequest.getMessageId() );
         assertEquals( "1.3.6.1.5.5.2", extendedRequest.getRequestName() );
-        assertEquals( "", Strings.utf8ToString(extendedRequest.getRequestValue()) );
+        assertEquals( "", Strings.utf8ToString( extendedRequest.getRequestValue() ) );
 
         // Check the encoding
         try
@@ -508,7 +506,7 @@ public class ExtendedRequestTest extends AbstractCodecServiceTest
             // Check the length
             assertEquals( 0x18, bb.limit() );
 
-            String encodedPdu = Strings.dumpBytes(bb.array());
+            String encodedPdu = Strings.dumpBytes( bb.array() );
 
             assertEquals( encodedPdu, decodedPdu );
         }

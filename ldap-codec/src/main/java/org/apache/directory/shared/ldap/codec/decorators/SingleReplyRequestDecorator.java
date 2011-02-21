@@ -24,6 +24,7 @@ import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.AbandonListener;
 import org.apache.directory.shared.ldap.model.message.AbandonableRequest;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
+import org.apache.directory.shared.ldap.model.message.ResultResponse;
 import org.apache.directory.shared.ldap.model.message.SingleReplyRequest;
 
 
@@ -32,8 +33,8 @@ import org.apache.directory.shared.ldap.model.message.SingleReplyRequest;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public abstract class SingleReplyRequestDecorator<M extends SingleReplyRequest> 
-    extends ResultResponseRequestDecorator<M> implements SingleReplyRequest, AbandonableRequest
+public abstract class SingleReplyRequestDecorator<M extends SingleReplyRequest<R>, R extends ResultResponse> 
+    extends ResultResponseRequestDecorator<M,R> implements SingleReplyRequest<R>, AbandonableRequest
 {
     /**
      * Makes Request a MessageDecorator.

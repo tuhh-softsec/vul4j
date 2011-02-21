@@ -24,6 +24,7 @@ import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.model.message.CompareRequest;
 import org.apache.directory.shared.ldap.model.message.CompareRequestImpl;
+import org.apache.directory.shared.ldap.model.message.CompareResponse;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.dom4j.Element;
@@ -35,7 +36,7 @@ import org.dom4j.Element;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class CompareRequestDsml 
-    extends AbstractResultResponseRequestDsml<CompareRequest>
+    extends AbstractResultResponseRequestDsml<CompareRequest, CompareResponse>
     implements CompareRequest
 {
     /**

@@ -286,7 +286,7 @@ public class AddRequestImplTest
             }
 
 
-            public ResultResponse getResultResponse()
+            public AddResponse getResultResponse()
             {
                 return null;
             }

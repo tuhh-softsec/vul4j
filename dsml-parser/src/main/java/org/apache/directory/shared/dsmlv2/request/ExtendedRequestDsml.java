@@ -25,6 +25,7 @@ import org.apache.directory.shared.dsmlv2.ParserUtils;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequestImpl;
+import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
@@ -37,9 +38,12 @@ import org.dom4j.QName;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class ExtendedRequestDsml 
-    extends AbstractResultResponseRequestDsml<ExtendedRequest>
-    implements ExtendedRequest
+    extends AbstractResultResponseRequestDsml<ExtendedRequest<ExtendedResponse>, ExtendedResponse>
+    implements ExtendedRequest<ExtendedResponse>
 {
+    private byte[] requestValue;
+
+
     /**
      * Creates a new getDecoratedMessage() of ExtendedRequestDsml.
      */
@@ -55,7 +59,7 @@ public class ExtendedRequestDsml
      * @param ldapMessage
      *      the message to decorate
      */
-    public ExtendedRequestDsml( LdapCodecService codec, ExtendedRequest ldapMessage )
+    public ExtendedRequestDsml( LdapCodecService codec, ExtendedRequest<ExtendedResponse> ldapMessage )
     {
         super( codec, ldapMessage );
     }
@@ -91,7 +95,7 @@ public class ExtendedRequestDsml
         element.getDocument().getRootElement().add( xsiNamespace );
 
         Element valueElement = element.addElement( "requestValue" ).addText(
-            ParserUtils.base64Encode( getDecorated().getRequestValue() ) );
+            ParserUtils.base64Encode( getRequestValue() ) );
         valueElement.addAttribute( new QName( "type", xsiNamespace ), 
             "xsd:" + ParserUtils.BASE64BINARY );
 
@@ -128,7 +132,7 @@ public class ExtendedRequestDsml
      */
     public byte[] getRequestValue()
     {
-        return getDecorated().getRequestValue();
+        return this.requestValue;
     }
 
 
@@ -139,7 +143,7 @@ public class ExtendedRequestDsml
      */
     public void setRequestValue( byte[] requestValue )
     {
-        getDecorated().setRequestValue( requestValue );
+        this.requestValue = requestValue;
     }
 
 

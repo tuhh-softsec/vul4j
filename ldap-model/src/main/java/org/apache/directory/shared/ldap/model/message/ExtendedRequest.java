@@ -52,7 +52,7 @@ package org.apache.directory.shared.ldap.model.message;
  *  @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * 
  */
-public interface ExtendedRequest extends SingleReplyRequest
+public interface ExtendedRequest<R extends ExtendedResponse> extends SingleReplyRequest<R>
 {
     /** Extended request message type enumeration value */
     MessageTypeEnum TYPE = MessageTypeEnum.EXTENDED_REQUEST;
@@ -62,8 +62,8 @@ public interface ExtendedRequest extends SingleReplyRequest
 
 
     /**
-     * Gets the Object Idendifier corresponding to the extended request type.
-     * This is the <b>requestName</b> portion of the ext. req. PDU.
+     * Gets the Object Identifier corresponding to the extended request type.
+     * This is the <b>requestName</b> portion of the ExtendedRequst PDU.
      * 
      * @return the dotted-decimal representation as a String of the OID
      */
@@ -71,27 +71,9 @@ public interface ExtendedRequest extends SingleReplyRequest
 
 
     /**
-     * Sets the Object Idendifier corresponding to the extended request type.
+     * Sets the Object Identifier corresponding to the extended request type.
      * 
      * @param oid the dotted-decimal representation as a String of the OID
      */
     void setRequestName( String oid );
-
-
-    /**
-     * Gets the extended request's <b>requestValue</b> portion of the PDU. The
-     * form of the data is request specific and is determined by the extended
-     * request OID.
-     * 
-     * @return byte array of data
-     */
-    byte[] getRequestValue();
-
-
-    /**
-     * Sets the extended request's <b>requestValue</b> portion of the PDU.
-     * 
-     * @param requestValue byte array of data encapsulating ext. req. parameters
-     */
-    void setRequestValue( byte[] requestValue );
 }

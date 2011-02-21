@@ -30,7 +30,7 @@ import org.apache.directory.shared.ldap.model.name.Dn;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface AddRequest extends SingleReplyRequest, AbandonableRequest
+public interface AddRequest extends SingleReplyRequest<AddResponse>, AbandonableRequest
 {
     /** LDAPv3 add request type enum code */
     MessageTypeEnum TYPE = MessageTypeEnum.ADD_REQUEST;

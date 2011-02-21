@@ -32,7 +32,7 @@ import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  * @version $Rev$, $Date$
  */
-public interface ExtendedRequestFactory<Q extends ExtendedRequest,P extends ExtendedResponse>
+public interface ExtendedRequestFactory<Q extends ExtendedRequest<P>,P extends ExtendedResponse>
 {
     /**
      * Gets the OID of the extended requests this factory generates.

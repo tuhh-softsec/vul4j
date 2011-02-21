@@ -34,6 +34,7 @@ import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.message.ModifyRequest;
 import org.apache.directory.shared.ldap.model.message.ModifyRequestImpl;
+import org.apache.directory.shared.ldap.model.message.ModifyResponse;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
@@ -46,7 +47,7 @@ import org.dom4j.QName;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class ModifyRequestDsml 
-    extends AbstractResultResponseRequestDsml<ModifyRequest>
+    extends AbstractResultResponseRequestDsml<ModifyRequest, ModifyResponse>
     implements ModifyRequest
 {
 

@@ -114,7 +114,7 @@ public class DeleteRequestImpl extends AbstractAbandonableRequest implements Del
      * 
      * @return the result containing response for this request
      */
-    public ResultResponse getResultResponse()
+    public DeleteResponse getResultResponse()
     {
         if ( response == null )
         {

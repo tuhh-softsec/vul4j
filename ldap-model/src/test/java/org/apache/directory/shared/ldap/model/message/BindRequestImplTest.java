@@ -324,7 +324,7 @@ public class BindRequestImplTest
             }
 
 
-            public ResultResponse getResultResponse()
+            public BindResponse getResultResponse()
             {
                 return null;
             }

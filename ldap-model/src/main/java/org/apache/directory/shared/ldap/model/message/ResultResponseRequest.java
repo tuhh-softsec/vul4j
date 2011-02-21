@@ -25,7 +25,7 @@ package org.apache.directory.shared.ldap.model.message;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface ResultResponseRequest extends Request
+public interface ResultResponseRequest<R extends ResultResponse> extends Request
 {
     /**
      * If called for the first time, this methohd creates a result containing
@@ -34,5 +34,5 @@ public interface ResultResponseRequest extends Request
      * @return a result containing response with defaults and the messageId set
      *         in response to this specific request
      */
-    ResultResponse getResultResponse();
+    R getResultResponse();
 }

@@ -36,6 +36,7 @@ import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.dsmlv2.AbstractResponseTest;
 import org.apache.directory.shared.dsmlv2.DsmlControl;
 import org.apache.directory.shared.dsmlv2.Dsmlv2ResponseParser;
+import org.apache.directory.shared.dsmlv2.reponse.ExtendedResponseDsml;
 import org.apache.directory.shared.ldap.model.exception.LdapURLEncodingException;
 import org.apache.directory.shared.ldap.model.filter.LdapURL;
 import org.apache.directory.shared.ldap.model.message.Control;
@@ -636,7 +637,7 @@ public class ExtendedResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        ExtendedResponse extendedResponse = ( ExtendedResponse ) parser.getBatchResponse().getCurrentResponse();
+        ExtendedResponseDsml extendedResponse = ( ExtendedResponseDsml ) parser.getBatchResponse().getCurrentResponse();
 
         assertEquals( "This is a response", Strings.utf8ToString(extendedResponse.getResponseValue()) );
     }
@@ -663,7 +664,7 @@ public class ExtendedResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        ExtendedResponse extendedResponse = ( ExtendedResponse ) parser.getBatchResponse().getCurrentResponse();
+        ExtendedResponseDsml extendedResponse = ( ExtendedResponseDsml ) parser.getBatchResponse().getCurrentResponse();
 
         assertEquals( "DSMLv2.0 rocks!!", new String( ( byte[] ) extendedResponse.getResponseValue() ) );
     }
@@ -690,7 +691,7 @@ public class ExtendedResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        ExtendedResponse extendedResponse = ( ExtendedResponse ) parser.getBatchResponse().getCurrentResponse();
+        ExtendedResponseDsml extendedResponse = ( ExtendedResponseDsml ) parser.getBatchResponse().getCurrentResponse();
 
         assertEquals( "", Strings.utf8ToString(extendedResponse.getResponseValue()) );
     }
@@ -717,8 +718,7 @@ public class ExtendedResponseTest extends AbstractResponseTest
             fail( e.getMessage() );
         }
 
-        ExtendedResponse extendedResponse = ( ExtendedResponse ) parser
-            .getBatchResponse().getCurrentResponse();
+        ExtendedResponseDsml extendedResponse = ( ExtendedResponseDsml ) parser.getBatchResponse().getCurrentResponse();
 
         assertEquals( "This is a response", Strings.utf8ToString(extendedResponse.getResponseValue()) );
 

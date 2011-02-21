@@ -67,8 +67,8 @@ import org.apache.directory.shared.ldap.model.message.AbandonListener;
 import org.apache.directory.shared.ldap.model.message.AliasDerefMode;
 import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
-import org.apache.directory.shared.ldap.model.message.ResultResponse;
 import org.apache.directory.shared.ldap.model.message.SearchRequest;
+import org.apache.directory.shared.ldap.model.message.SearchResultDone;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.util.Strings;
 
@@ -978,7 +978,7 @@ public class SearchRequestDecorator extends MessageDecorator<SearchRequest> impl
     }
 
 
-    public ResultResponse getResultResponse()
+    public SearchResultDone getResultResponse()
     {
         return getDecorated().getResultResponse();
     }

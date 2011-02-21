@@ -32,6 +32,7 @@ import org.apache.directory.shared.ldap.codec.api.LdapConstants;
 import org.apache.directory.shared.ldap.model.entry.BinaryValue;
 import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.model.message.CompareRequest;
+import org.apache.directory.shared.ldap.model.message.CompareResponse;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.util.Strings;
 
@@ -41,7 +42,7 @@ import org.apache.directory.shared.util.Strings;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class CompareRequestDecorator extends SingleReplyRequestDecorator<CompareRequest> 
+public class CompareRequestDecorator extends SingleReplyRequestDecorator<CompareRequest, CompareResponse> 
     implements CompareRequest
 {
     /** The bytes of the attribute id used in the comparison */

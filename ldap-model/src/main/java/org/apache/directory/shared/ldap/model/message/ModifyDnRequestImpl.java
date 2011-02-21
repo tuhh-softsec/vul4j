@@ -218,7 +218,7 @@ public class ModifyDnRequestImpl extends AbstractAbandonableRequest implements M
      * 
      * @return the result containing response for this request
      */
-    public ResultResponse getResultResponse()
+    public ModifyDnResponse getResultResponse()
     {
         if ( response == null )
         {

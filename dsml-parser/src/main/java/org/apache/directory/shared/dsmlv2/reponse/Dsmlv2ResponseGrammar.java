@@ -1864,7 +1864,7 @@ public final class Dsmlv2ResponseGrammar extends AbstractGrammar implements Gram
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            ExtendedResponse extendedResponse = ( ExtendedResponse ) container.getBatchResponse().getCurrentResponse();
+            ExtendedResponseDsml extendedResponse = ( ExtendedResponseDsml ) container.getBatchResponse().getCurrentResponse();
 
             XmlPullParser xpp = container.getParser();
 

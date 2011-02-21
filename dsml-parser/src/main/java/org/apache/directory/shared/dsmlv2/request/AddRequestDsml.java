@@ -29,6 +29,7 @@ import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.message.AddRequest;
 import org.apache.directory.shared.ldap.model.message.AddRequestImpl;
+import org.apache.directory.shared.ldap.model.message.AddResponse;
 import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.dom4j.Element;
@@ -42,7 +43,7 @@ import org.dom4j.QName;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class AddRequestDsml 
-    extends AbstractResultResponseRequestDsml<AddRequest> 
+    extends AbstractResultResponseRequestDsml<AddRequest, AddResponse> 
     implements AddRequest
 {
 

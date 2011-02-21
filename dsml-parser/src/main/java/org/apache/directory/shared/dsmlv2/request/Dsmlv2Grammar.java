@@ -57,7 +57,6 @@ import org.apache.directory.shared.ldap.model.message.CompareRequest;
 import org.apache.directory.shared.ldap.model.message.CompareRequestImpl;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.DeleteRequestImpl;
-import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequestImpl;
 import org.apache.directory.shared.ldap.model.message.ModifyDnRequestImpl;
 import org.apache.directory.shared.ldap.model.message.ModifyRequestImpl;
@@ -1558,7 +1557,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements Grammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            ExtendedRequest extendedRequest = ( ExtendedRequest ) container.getBatchRequest().getCurrentRequest();
+            ExtendedRequestDsml extendedRequest = ( ExtendedRequestDsml ) container.getBatchRequest().getCurrentRequest();
 
             XmlPullParser xpp = container.getParser();
 
@@ -1598,7 +1597,7 @@ public final class Dsmlv2Grammar extends AbstractGrammar implements Grammar
     {
         public void action( Dsmlv2Container container ) throws XmlPullParserException
         {
-            ExtendedRequest extendedRequest = ( ExtendedRequest ) container.getBatchRequest().getCurrentRequest();
+            ExtendedRequestDsml extendedRequest = ( ExtendedRequestDsml ) container.getBatchRequest().getCurrentRequest();
 
             XmlPullParser xpp = container.getParser();
 

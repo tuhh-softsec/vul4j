@@ -48,6 +48,8 @@ public class ExtendedResponseDecorator extends ResponseDecorator<ExtendedRespons
     /** The encoded extendedResponse length */
     private int extendedResponseLength;
 
+    private byte[] responseValue;
+
 
     /**
      * Makes a ExtendedResponse encodable.
@@ -110,24 +112,6 @@ public class ExtendedResponseDecorator extends ResponseDecorator<ExtendedRespons
     /**
      * {@inheritDoc}
      */
-    public byte[] getEncodedValue()
-    {
-        return getDecorated().getEncodedValue();
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public String getID()
-    {
-        return getDecorated().getID();
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
     public String getResponseName()
     {
         return getDecorated().getResponseName();
@@ -148,7 +132,7 @@ public class ExtendedResponseDecorator extends ResponseDecorator<ExtendedRespons
      */
     public byte[] getResponseValue()
     {
-        return getDecorated().getEncodedValue();
+        return responseValue;
     }
 
 
@@ -157,7 +141,7 @@ public class ExtendedResponseDecorator extends ResponseDecorator<ExtendedRespons
      */
     public void setResponseValue( byte[] responseValue )
     {
-        getDecorated().setResponseValue( responseValue );
+        this.responseValue = responseValue;
     }
 
     

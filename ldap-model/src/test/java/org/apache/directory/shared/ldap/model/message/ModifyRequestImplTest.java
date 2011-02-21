@@ -410,7 +410,7 @@ public class ModifyRequestImplTest
             }
 
 
-            public ResultResponse getResultResponse()
+            public ModifyResponse getResultResponse()
             {
                 return null;
             }

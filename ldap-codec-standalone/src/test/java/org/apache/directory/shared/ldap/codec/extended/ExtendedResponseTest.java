@@ -100,14 +100,14 @@ public class ExtendedResponseTest extends AbstractCodecServiceTest
         }
 
         // Check the decoded ExtendedResponse PDU
-        ExtendedResponse extendedResponse = container.getMessage();
+        ExtendedResponseDecorator extendedResponse = container.getMessage();
 
         assertEquals( 1, extendedResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );
         assertEquals( "", extendedResponse.getLdapResult().getMatchedDn().getName() );
         assertEquals( "", extendedResponse.getLdapResult().getErrorMessage() );
-        assertEquals( "1.3.6.1.5.5.2", extendedResponse.getID() );
-        assertEquals( "value", Strings.utf8ToString((byte[]) extendedResponse.getEncodedValue()) );
+        assertEquals( "1.3.6.1.5.5.2", extendedResponse.getResponseName() );
+        assertEquals( "value", Strings.utf8ToString((byte[]) extendedResponse.getResponseValue()) );
 
         // Check the encoding
         try
@@ -192,14 +192,14 @@ public class ExtendedResponseTest extends AbstractCodecServiceTest
         }
 
         // Check the decoded ExtendedResponse PDU
-        ExtendedResponse extendedResponse = container.getMessage();
+        ExtendedResponseDecorator extendedResponse = container.getMessage();
 
         assertEquals( 1, extendedResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );
         assertEquals( "", extendedResponse.getLdapResult().getMatchedDn().getName() );
         assertEquals( "", extendedResponse.getLdapResult().getErrorMessage() );
-        assertEquals( "1.3.6.1.5.5.2", extendedResponse.getID() );
-        assertEquals( "value", Strings.utf8ToString((byte[]) extendedResponse.getEncodedValue()) );
+        assertEquals( "1.3.6.1.5.5.2", extendedResponse.getResponseName() );
+        assertEquals( "value", Strings.utf8ToString((byte[]) extendedResponse.getResponseValue() ) );
 
         // Check the Control
         Map<String, Control> controls = extendedResponse.getControls();
@@ -566,14 +566,14 @@ public class ExtendedResponseTest extends AbstractCodecServiceTest
         }
 
         // Check the decoded ExtendedResponse PDU
-        ExtendedResponse extendedResponse = container.getMessage();
+        ExtendedResponseDecorator extendedResponse = container.getMessage();
 
         assertEquals( 1, extendedResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );
         assertEquals( "", extendedResponse.getLdapResult().getMatchedDn().getName() );
         assertEquals( "", extendedResponse.getLdapResult().getErrorMessage() );
-        assertEquals( "1.3.6.1.5.5.2", extendedResponse.getID() );
-        assertEquals( "", Strings.utf8ToString((byte[]) extendedResponse.getEncodedValue()) );
+        assertEquals( "1.3.6.1.5.5.2", extendedResponse.getResponseName() );
+        assertEquals( "", Strings.utf8ToString((byte[]) extendedResponse.getResponseValue() ) );
 
         // Check the encoding
         try
@@ -653,14 +653,14 @@ public class ExtendedResponseTest extends AbstractCodecServiceTest
         }
 
         // Check the decoded ExtendedResponse PDU
-        ExtendedResponse extendedResponse = container.getMessage();
+        ExtendedResponseDecorator extendedResponse = container.getMessage();
 
         assertEquals( 1, extendedResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );
         assertEquals( "", extendedResponse.getLdapResult().getMatchedDn().getName() );
         assertEquals( "", extendedResponse.getLdapResult().getErrorMessage() );
-        assertEquals( "1.3.6.1.5.5.2", extendedResponse.getID() );
-        assertEquals( "", Strings.utf8ToString((byte[]) extendedResponse.getEncodedValue()) );
+        assertEquals( "1.3.6.1.5.5.2", extendedResponse.getResponseName() );
+        assertEquals( "", Strings.utf8ToString( ( byte[] ) extendedResponse.getResponseValue() ) );
 
         // Check the Control
         Map<String, Control> controls = extendedResponse.getControls();
@@ -746,14 +746,14 @@ public class ExtendedResponseTest extends AbstractCodecServiceTest
         }
 
         // Check the decoded ExtendedResponse PDU
-        ExtendedResponse extendedResponse = container.getMessage();
+        ExtendedResponseDecorator extendedResponse = container.getMessage();
 
         assertEquals( 1, extendedResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );
         assertEquals( "", extendedResponse.getLdapResult().getMatchedDn().getName() );
         assertEquals( "", extendedResponse.getLdapResult().getErrorMessage() );
-        assertEquals( "1.3.6.1.5.5.2", extendedResponse.getID() );
-        assertEquals( "", Strings.utf8ToString((byte[]) extendedResponse.getEncodedValue()) );
+        assertEquals( "1.3.6.1.5.5.2", extendedResponse.getResponseName() );
+        assertEquals( "", Strings.utf8ToString((byte[]) extendedResponse.getResponseValue() ) );
 
         // Check the encoding
         try
@@ -834,14 +834,14 @@ public class ExtendedResponseTest extends AbstractCodecServiceTest
         }
 
         // Check the decoded ExtendedResponse PDU
-        ExtendedResponse extendedResponse = container.getMessage();
+        ExtendedResponseDecorator extendedResponse = container.getMessage();
 
         assertEquals( 1, extendedResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );
         assertEquals( "", extendedResponse.getLdapResult().getMatchedDn().getName() );
         assertEquals( "", extendedResponse.getLdapResult().getErrorMessage() );
-        assertEquals( "1.3.6.1.5.5.2", extendedResponse.getID() );
-        assertEquals( "", Strings.utf8ToString((byte[]) extendedResponse.getEncodedValue()) );
+        assertEquals( "1.3.6.1.5.5.2", extendedResponse.getResponseName() );
+        assertEquals( "", Strings.utf8ToString((byte[]) extendedResponse.getResponseValue() ) );
 
         // Check the Control
         Map<String, Control> controls = extendedResponse.getControls();

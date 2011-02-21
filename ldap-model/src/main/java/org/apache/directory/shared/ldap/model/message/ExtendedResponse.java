@@ -26,7 +26,7 @@ package org.apache.directory.shared.ldap.model.message;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface ExtendedResponse extends ResultResponse, javax.naming.ldap.ExtendedResponse
+public interface ExtendedResponse extends ResultResponse
 {
     /** Extended response message type enumeration value */
     MessageTypeEnum TYPE = MessageTypeEnum.EXTENDED_RESPONSE;
@@ -48,20 +48,4 @@ public interface ExtendedResponse extends ResultResponse, javax.naming.ldap.Exte
      * @param oidv the OID of the extended response type.
      */
     void setResponseName( String oid );
-
-
-    /**
-     * Gets the response OID specific encoded response values.
-     * 
-     * @return the response specific encoded response values.
-     */
-    byte[] getResponseValue();
-
-
-    /**
-     * Sets the response OID specific encoded response values.
-     * 
-     * @param responseValue the response specific encoded response values.
-     */
-    void setResponseValue( byte[] responseValue );
 }
