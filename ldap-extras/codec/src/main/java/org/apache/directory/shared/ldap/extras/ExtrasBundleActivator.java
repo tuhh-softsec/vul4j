@@ -113,7 +113,7 @@ public class ExtrasBundleActivator implements BundleActivator
         // --------------------------------------------------------------------
         
         
-        ExtendedRequestFactory<?,?> extReqfactory = new CancelFactory();
+        ExtendedRequestFactory<?,?> extReqfactory = new CancelFactory( codec );
         codec.registerExtendedRequest( extReqfactory );
         
         extReqfactory = new CertGenerationFactory();

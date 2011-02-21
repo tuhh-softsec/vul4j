@@ -145,7 +145,8 @@ public abstract class MessageDecorator<E extends Message> implements Message, De
                 break;
                 
             case EXTENDED_REQUEST:
-                decorator = new ExtendedRequestDecorator( codec, ( ExtendedRequest<ExtendedResponse> ) decoratedMessage );
+                decorator = new ExtendedRequestDecorator<ExtendedRequest<ExtendedResponse>,ExtendedResponse>( 
+                    codec, ( ExtendedRequest<ExtendedResponse> ) decoratedMessage );
                 break;
                 
             case EXTENDED_RESPONSE:

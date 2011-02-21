@@ -25,6 +25,7 @@ import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.api.ExtendedRequestDecorator;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequestImpl;
+import org.apache.directory.shared.ldap.model.message.ExtendedResponseImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * </pre>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class InitExtendedRequest extends GrammarAction<LdapMessageContainer<ExtendedRequestDecorator>>
+public class InitExtendedRequest extends GrammarAction<LdapMessageContainer<ExtendedRequestDecorator<?,?>>>
 {
     /** The logger */
     private static final Logger LOG = LoggerFactory.getLogger( InitExtendedRequest.class );
@@ -54,11 +55,13 @@ public class InitExtendedRequest extends GrammarAction<LdapMessageContainer<Exte
     /**
      * {@inheritDoc}
      */
-    public void action( LdapMessageContainer<ExtendedRequestDecorator> container ) throws DecoderException
+    public void action( LdapMessageContainer<ExtendedRequestDecorator<?,?>> container ) throws DecoderException
     {
         // Now, we can allocate the ExtendedRequest Object
-        ExtendedRequestDecorator extendedRequest = new ExtendedRequestDecorator(
-            container.getLdapCodecService(), new ExtendedRequestImpl( container.getMessageId() ) );
+        ExtendedRequestDecorator<?,?> extendedRequest = 
+            new ExtendedRequestDecorator<ExtendedRequestImpl,ExtendedResponseImpl>(
+                container.getLdapCodecService(), 
+                new ExtendedRequestImpl( container.getMessageId() ) );
         container.setMessage( extendedRequest );
 
         LOG.debug( "Extended request" );
