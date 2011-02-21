@@ -32,7 +32,7 @@ import org.apache.mina.filter.codec.ProtocolEncoderOutput;
 
 
 /**
- * A LDAP message decoder. It is based on shared-ldap decoder.
+ * A LDAP message encoder. It is based on shared-ldap encoder.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */

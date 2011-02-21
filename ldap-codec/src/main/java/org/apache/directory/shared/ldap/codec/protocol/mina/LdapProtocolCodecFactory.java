@@ -20,7 +20,6 @@
 package org.apache.directory.shared.ldap.codec.protocol.mina;
 
 
-import org.apache.directory.shared.ldap.codec.LdapDecoder;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.ProtocolCodecFactory;
@@ -65,7 +64,7 @@ public class LdapProtocolCodecFactory implements ProtocolCodecFactory
      */
     public ProtocolDecoder getDecoder( IoSession session )
     {
-        return new LdapDecoder();
+        return new LdapProtocolDecoder( codec );
     }
 
 

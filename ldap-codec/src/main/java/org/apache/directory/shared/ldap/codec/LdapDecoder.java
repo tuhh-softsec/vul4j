@@ -23,6 +23,7 @@ package org.apache.directory.shared.ldap.codec;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.security.ProviderException;
+import java.util.List;
 
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
@@ -34,9 +35,6 @@ import org.apache.directory.shared.ldap.model.exception.ResponseCarryingMessageE
 import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.util.Strings;
 import org.apache.mina.core.buffer.IoBuffer;
-import org.apache.mina.core.session.IoSession;
-import org.apache.mina.filter.codec.ProtocolDecoder;
-import org.apache.mina.filter.codec.ProtocolDecoderOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +44,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class LdapDecoder implements ProtocolDecoder
+public class LdapDecoder
 {
     /** The logger */
     private static Logger LOG = LoggerFactory.getLogger( LdapDecoder.class );
@@ -175,19 +173,9 @@ public class LdapDecoder implements ProtocolDecoder
 
 
     @SuppressWarnings("unchecked")
-    public void decode( IoSession session, IoBuffer in, ProtocolDecoderOutput out ) throws Exception
+    public void decode( IoBuffer in, LdapMessageContainer<MessageDecorator<? extends Message>> messageContainer, List<Message> decodedMessages ) throws Exception
     {
         ByteBuffer buf = in.buf();
-        LdapMessageContainer<MessageDecorator<? extends Message>> messageContainer =
-            ( LdapMessageContainer<MessageDecorator<? extends Message>> ) session.getAttribute( "messageContainer" );
-
-        if ( session.containsAttribute( "maxPDUSize" ) )
-        {
-            int maxPDUSize = ( Integer ) session.getAttribute( "maxPDUSize" );
-
-            messageContainer.setMaxPDUSize( maxPDUSize );
-        }
-
         buf.mark();
 
         while ( buf.hasRemaining() )
@@ -232,7 +220,7 @@ public class LdapDecoder implements ProtocolDecoder
 
                     Message message = messageContainer.getMessage();
 
-                    out.write( message );
+                    decodedMessages.add( message );
 
                     messageContainer.clean();
                 }
@@ -257,16 +245,6 @@ public class LdapDecoder implements ProtocolDecoder
                 }
             }
         }
-    }
-
-
-    public void dispose( IoSession session ) throws Exception
-    {
-    }
-
-
-    public void finishDecode( IoSession session, ProtocolDecoderOutput out ) throws Exception
-    {
     }
 
 
