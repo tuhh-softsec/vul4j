@@ -25,8 +25,8 @@ import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.api.ExtendedRequestDecorator;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
-import org.apache.directory.shared.ldap.extras.extended.IGracefulShutdownRequest;
-import org.apache.directory.shared.ldap.extras.extended.IGracefulShutdownResponse;
+import org.apache.directory.shared.ldap.extras.extended.GracefulShutdownRequest;
+import org.apache.directory.shared.ldap.extras.extended.GracefulShutdownResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,8 +36,8 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class GracefulShutdownRequestDecorator extends ExtendedRequestDecorator<IGracefulShutdownRequest,IGracefulShutdownResponse> 
-    implements IGracefulShutdownRequest
+public class GracefulShutdownRequestDecorator extends ExtendedRequestDecorator<GracefulShutdownRequest,GracefulShutdownResponse> 
+    implements GracefulShutdownRequest
 {
     private static final Logger LOG = LoggerFactory.getLogger( GracefulShutdownRequestDecorator.class );
     
@@ -48,7 +48,7 @@ public class GracefulShutdownRequestDecorator extends ExtendedRequestDecorator<I
      * @param codec
      * @param decoratedMessage
      */
-    public GracefulShutdownRequestDecorator( LdapCodecService codec, IGracefulShutdownRequest decoratedMessage )
+    public GracefulShutdownRequestDecorator( LdapCodecService codec, GracefulShutdownRequest decoratedMessage )
     {
         super( codec, decoratedMessage );
     }

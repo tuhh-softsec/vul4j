@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.extras.extended.ads_impl;
 
 import org.apache.directory.shared.ldap.codec.api.ExtendedResponseDecorator; 
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
-import org.apache.directory.shared.ldap.extras.extended.IGracefulShutdownResponse;
+import org.apache.directory.shared.ldap.extras.extended.GracefulShutdownResponse;
 
 
 /**
@@ -30,7 +30,7 @@ import org.apache.directory.shared.ldap.extras.extended.IGracefulShutdownRespons
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class GracefulShutdownResponseDecorator extends ExtendedResponseDecorator<IGracefulShutdownResponse> implements IGracefulShutdownResponse
+public class GracefulShutdownResponseDecorator extends ExtendedResponseDecorator<GracefulShutdownResponse> implements GracefulShutdownResponse
 {
     /**
      * Creates a new instance of CancelResponseDecorator.
@@ -38,7 +38,7 @@ public class GracefulShutdownResponseDecorator extends ExtendedResponseDecorator
      * @param codec
      * @param decoratedMessage
      */
-    public GracefulShutdownResponseDecorator( LdapCodecService codec, IGracefulShutdownResponse decoratedMessage )
+    public GracefulShutdownResponseDecorator( LdapCodecService codec, GracefulShutdownResponse decoratedMessage )
     {
         super( codec, decoratedMessage );
     }

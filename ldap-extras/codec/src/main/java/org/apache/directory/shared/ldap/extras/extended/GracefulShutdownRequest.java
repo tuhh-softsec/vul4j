@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.extras.extended;
 
 
-import org.apache.directory.shared.ldap.model.message.AbstractExtendedRequest;
+import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 
 
 /**
@@ -32,107 +32,48 @@ import org.apache.directory.shared.ldap.model.message.AbstractExtendedRequest;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class GracefulShutdownRequest extends AbstractExtendedRequest<IGracefulShutdownResponse> implements IGracefulShutdownRequest
+public interface GracefulShutdownRequest extends ExtendedRequest<GracefulShutdownResponse>
 {
-    /** The serialVersionUID. */
-    private static final long serialVersionUID = -4682291068700593492L;
 
-    private IGracefulShutdownResponse response;
+    /** The OID for the graceful shutdown extended operation request. */
+    String EXTENSION_OID = "1.3.6.1.4.1.18060.0.1.3";
     
-    /** Offline time after disconnection */
-    private int timeOffline;
-
-    /** Delay before disconnection */
-    private int delay;
+    /** Undetermined value used for offline time */
+    int UNDETERMINED = 0;
+    
+    /** The shutdown is immediate */
+    int NOW = 0;
 
 
     /**
-     * Instantiates a new graceful shutdown request.
+     * Gets the delay before disconnection, in seconds.
      *
-     * @param messageId the message id
+     * @return the delay before disconnection
      */
-    public GracefulShutdownRequest( int messageId )
-    {
-        this( messageId, UNDETERMINED, NOW );
-    }
+    int getDelay();
 
 
     /**
-     * Instantiates a new graceful shutdown request.
+     * Sets the delay befor disconnection, in seconds.
      *
-     * @param messageId the message id
+     * @param delay the new delay before disconnection
      */
-    public GracefulShutdownRequest()
-    {
-        setRequestName( EXTENSION_OID );
-    }
+    void setDelay( int delay );
 
 
     /**
-     * Instantiates a new graceful shutdown request.
+     * Gets the offline time after disconnection, in minutes.
      *
-     * @param messageId the message id
-     * @param timeOffline the offline time after disconnection, in minutes
-     * @param delay the delay before disconnection, in seconds
+     * @return the offline time after disconnection
      */
-    public GracefulShutdownRequest( int messageId, int timeOffline, int delay )
-    {
-        super( messageId );
-        setRequestName( EXTENSION_OID );
-        this.timeOffline = timeOffline;
-        this.delay = delay;
-    }
-
-
-    // -----------------------------------------------------------------------
-    // Parameters of the Extended Request Payload
-    // -----------------------------------------------------------------------
+    int getTimeOffline();
 
 
     /**
-     * {@inheritDoc}
+     * Sets the time offline after disconnection, in minutes.
+     *
+     * @param timeOffline the new time offline after disconnection
      */
-    public int getDelay()
-    {
-        return delay;
-    }
+    void setTimeOffline( int timeOffline );
 
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setDelay( int delay )
-    {
-        this.delay = delay;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public int getTimeOffline()
-    {
-        return timeOffline;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setTimeOffline( int timeOffline )
-    {
-        this.timeOffline = timeOffline;
-    }
-
-
-    @Override
-    public IGracefulShutdownResponse getResultResponse()
-    {
-        if ( response == null )
-        {
-            response = new GracefulShutdownResponse();
-        }
-        
-        return response;
-    }
 }

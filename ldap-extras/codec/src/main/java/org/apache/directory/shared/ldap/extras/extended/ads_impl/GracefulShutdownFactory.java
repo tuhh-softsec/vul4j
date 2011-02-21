@@ -23,10 +23,10 @@ package org.apache.directory.shared.ldap.extras.extended.ads_impl;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.ldap.codec.api.ExtendedRequestFactory;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
+import org.apache.directory.shared.ldap.extras.extended.GracefulShutdownRequestImpl;
+import org.apache.directory.shared.ldap.extras.extended.GracefulShutdownResponseImpl;
 import org.apache.directory.shared.ldap.extras.extended.GracefulShutdownRequest;
 import org.apache.directory.shared.ldap.extras.extended.GracefulShutdownResponse;
-import org.apache.directory.shared.ldap.extras.extended.IGracefulShutdownRequest;
-import org.apache.directory.shared.ldap.extras.extended.IGracefulShutdownResponse;
 
 
 /**
@@ -36,7 +36,7 @@ import org.apache.directory.shared.ldap.extras.extended.IGracefulShutdownRespons
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class GracefulShutdownFactory 
-    implements ExtendedRequestFactory<IGracefulShutdownRequest, IGracefulShutdownResponse>
+    implements ExtendedRequestFactory<GracefulShutdownRequest, GracefulShutdownResponse>
 {
     private LdapCodecService codec;
     
@@ -52,26 +52,26 @@ public class GracefulShutdownFactory
      */
     public String getOid()
     {
-        return IGracefulShutdownRequest.EXTENSION_OID;
+        return GracefulShutdownRequest.EXTENSION_OID;
     }
 
     
     /**
      * {@inheritDoc}
      */
-    public IGracefulShutdownRequest newRequest()
+    public GracefulShutdownRequest newRequest()
     {
-        return new GracefulShutdownRequest();
+        return new GracefulShutdownRequestImpl();
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public IGracefulShutdownResponse newResponse( byte[] encodedValue ) throws DecoderException
+    public GracefulShutdownResponse newResponse( byte[] encodedValue ) throws DecoderException
     {
         GracefulShutdownResponseDecorator response = new GracefulShutdownResponseDecorator( 
-            codec, new GracefulShutdownResponse() );
+            codec, new GracefulShutdownResponseImpl() );
         response.setResponseValue( encodedValue );
         return response;
     }
