@@ -32,16 +32,10 @@ import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class GracefulShutdownResponse extends ExtendedResponseImpl
+public class GracefulShutdownResponse extends ExtendedResponseImpl implements IGracefulShutdownResponse
 {
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = -3824715470944544189L;
-
-    /** The OID for the graceful shutdown extended operation response. */
-    public static final String EXTENSION_OID = "1.3.6.1.4.1.18060.0.1.4";
-
-    /** The empty response. */
-    private static final byte[] EMPTY_RESPONSE = new byte[0];
 
 
     /**
@@ -102,28 +96,6 @@ public class GracefulShutdownResponse extends ExtendedResponseImpl
     // ------------------------------------------------------------------------
     // ExtendedResponse Interface Method Implementations
     // ------------------------------------------------------------------------
-
-    /**
-     * Gets the reponse OID specific encoded response values.
-     * 
-     * @return the response specific encoded response values.
-     */
-    public byte[] getResponse()
-    {
-        return EMPTY_RESPONSE;
-    }
-
-
-    /**
-     * Sets the reponse OID specific encoded response values.
-     * 
-     * @param value
-     *            the response specific encoded response values.
-     */
-    public void setResponse( byte[] value )
-    {
-        // do nothing here instead
-    }
 
 
     /**

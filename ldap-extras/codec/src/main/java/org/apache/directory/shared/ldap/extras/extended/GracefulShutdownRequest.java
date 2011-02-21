@@ -20,18 +20,7 @@
 package org.apache.directory.shared.ldap.extras.extended;
 
 
-import javax.naming.NamingException;
-import javax.naming.ldap.ExtendedResponse;
-
-import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.EncoderException;
-import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.extras.extended.ads_impl.GracefulShutdown;
-import org.apache.directory.shared.ldap.extras.extended.ads_impl.GracefulShutdownDecoder;
-import org.apache.directory.shared.ldap.model.message.ExtendedRequestImpl;
-import org.apache.directory.shared.ldap.model.message.ResultResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.directory.shared.ldap.model.message.AbstractExtendedRequest;
 
 
 /**
@@ -43,23 +32,13 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class GracefulShutdownRequest extends ExtendedRequestImpl
+public class GracefulShutdownRequest extends AbstractExtendedRequest<IGracefulShutdownResponse> implements IGracefulShutdownRequest
 {
-    /** The logger. */
-    private static final Logger LOG = LoggerFactory.getLogger( GracefulShutdownRequest.class );
-
     /** The serialVersionUID. */
     private static final long serialVersionUID = -4682291068700593492L;
 
-    /** The OID for the graceful shutdown extended operation request. */
-    public static final String EXTENSION_OID = "1.3.6.1.4.1.18060.0.1.3";
-
-    /** Undetermined value used for offline time */
-    public static final int UNDETERMINED = 0;
-
-    /** The shutdown is immediate */
-    public static final int NOW = 0;
-
+    private IGracefulShutdownResponse response;
+    
     /** Offline time after disconnection */
     private int timeOffline;
 
@@ -105,96 +84,13 @@ public class GracefulShutdownRequest extends ExtendedRequestImpl
     }
 
 
-    /**
-     * {@inheritDoc}
-     */
-    public void setRequestValue( byte[] requestValue )
-    {
-        GracefulShutdownDecoder decoder = new GracefulShutdownDecoder();
-
-        try
-        {
-            GracefulShutdown gs = (GracefulShutdown) decoder.decode( requestValue );
-
-            if ( requestValue != null )
-            {
-                this.requestValue = new byte[requestValue.length];
-                System.arraycopy( requestValue, 0, this.requestValue, 0, requestValue.length );
-            }
-            else
-            {
-                this.requestValue = null;
-            }
-
-            this.timeOffline = gs.getTimeOffline();
-            this.delay = gs.getDelay();
-        }
-        catch ( DecoderException e )
-        {
-            LOG.error( I18n.err( I18n.ERR_04165 ), e );
-            throw new RuntimeException( e );
-        }
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public ExtendedResponse createExtendedResponse( String id, byte[] berValue, int offset, int length )
-        throws NamingException
-    {
-        return ( ExtendedResponse ) getResultResponse();
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public byte[] getRequestValue()
-    {
-        if ( requestValue == null )
-        {
-            try
-            {
-                GracefulShutdown gs = new GracefulShutdown();
-                gs.setDelay( this.delay );
-                gs.setTimeOffline( this.timeOffline );
-                requestValue = gs.encode().array();
-            }
-            catch ( EncoderException e )
-            {
-                LOG.error( I18n.err( I18n.ERR_04164 ), e );
-                throw new RuntimeException( e );
-            }
-        }
-
-        return requestValue;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public ResultResponse getResultResponse()
-    {
-        if ( response == null )
-        {
-            GracefulShutdownResponse gsr = new GracefulShutdownResponse( getMessageId() );
-            response = gsr;
-        }
-
-        return response;
-    }
-
-
     // -----------------------------------------------------------------------
     // Parameters of the Extended Request Payload
     // -----------------------------------------------------------------------
 
+
     /**
-     * Gets the delay before disconnection, in seconds.
-     *
-     * @return the delay before disconnection
+     * {@inheritDoc}
      */
     public int getDelay()
     {
@@ -203,9 +99,7 @@ public class GracefulShutdownRequest extends ExtendedRequestImpl
 
 
     /**
-     * Sets the delay befor disconnection, in seconds.
-     *
-     * @param delay the new delay before disconnection
+     * {@inheritDoc}
      */
     public void setDelay( int delay )
     {
@@ -214,9 +108,7 @@ public class GracefulShutdownRequest extends ExtendedRequestImpl
 
 
     /**
-     * Gets the offline time after disconnection, in minutes.
-     *
-     * @return the offline time after disconnection
+     * {@inheritDoc}
      */
     public int getTimeOffline()
     {
@@ -225,12 +117,22 @@ public class GracefulShutdownRequest extends ExtendedRequestImpl
 
 
     /**
-     * Sets the time offline after disconnection, in minutes.
-     *
-     * @param timeOffline the new time offline after disconnection
+     * {@inheritDoc}
      */
     public void setTimeOffline( int timeOffline )
     {
         this.timeOffline = timeOffline;
+    }
+
+
+    @Override
+    public IGracefulShutdownResponse getResultResponse()
+    {
+        if ( response == null )
+        {
+            response = new GracefulShutdownResponse();
+        }
+        
+        return response;
     }
 }
