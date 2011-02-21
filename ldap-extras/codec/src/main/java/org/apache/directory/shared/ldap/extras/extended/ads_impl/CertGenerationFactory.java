@@ -22,8 +22,11 @@ package org.apache.directory.shared.ldap.extras.extended.ads_impl;
 
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.ldap.codec.api.ExtendedRequestFactory;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.extras.extended.CertGenerationRequest;
 import org.apache.directory.shared.ldap.extras.extended.CertGenerationResponse;
+import org.apache.directory.shared.ldap.extras.extended.ICertGenerationRequest;
+import org.apache.directory.shared.ldap.extras.extended.ICertGenerationResponse;
 
 
 /**
@@ -33,32 +36,41 @@ import org.apache.directory.shared.ldap.extras.extended.CertGenerationResponse;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class CertGenerationFactory 
-    implements ExtendedRequestFactory<CertGenerationRequest, CertGenerationResponse>
+    implements ExtendedRequestFactory<ICertGenerationRequest, ICertGenerationResponse>
 {
+    private LdapCodecService codec;
+    
+    
+    public CertGenerationFactory( LdapCodecService codec )
+    {
+        this.codec = codec;
+    }
+    
+    
     /**
      * {@inheritDoc}
      */
     public String getOid()
     {
-        return CertGenerationRequest.EXTENSION_OID;
+        return ICertGenerationRequest.EXTENSION_OID;
     }
 
     
     /**
      * {@inheritDoc}
      */
-    public CertGenerationRequest newRequest()
+    public ICertGenerationRequest newRequest()
     {
-        return new CertGenerationRequest();
+        return new CertGenerationRequestDecorator( codec, new CertGenerationRequest() );
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public CertGenerationResponse newResponse( byte[] encodedValue ) throws DecoderException
+    public ICertGenerationResponse newResponse( byte[] encodedValue ) throws DecoderException
     {
-        CertGenerationResponse response = new CertGenerationResponse();
+        CertGenerationResponseDecorator response = new CertGenerationResponseDecorator( codec, new CertGenerationResponse() );
         response.setResponseValue( encodedValue );
         return response;
     }

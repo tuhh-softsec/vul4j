@@ -85,8 +85,8 @@ public class ExtendedResponseTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<ExtendedResponseDecorator> container = 
-            new LdapMessageContainer<ExtendedResponseDecorator>( codec );
+        LdapMessageContainer<ExtendedResponseDecorator<?>> container = 
+            new LdapMessageContainer<ExtendedResponseDecorator<?>>( codec );
 
         // Decode the ExtendedResponse PDU
         try
@@ -100,7 +100,7 @@ public class ExtendedResponseTest extends AbstractCodecServiceTest
         }
 
         // Check the decoded ExtendedResponse PDU
-        ExtendedResponseDecorator extendedResponse = container.getMessage();
+        ExtendedResponseDecorator<?> extendedResponse = container.getMessage();
 
         assertEquals( 1, extendedResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );
@@ -177,8 +177,8 @@ public class ExtendedResponseTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<ExtendedResponseDecorator> container = 
-            new LdapMessageContainer<ExtendedResponseDecorator>( codec );
+        LdapMessageContainer<ExtendedResponseDecorator<?>> container = 
+            new LdapMessageContainer<ExtendedResponseDecorator<?>>( codec );
 
         // Decode the ExtendedResponse PDU
         try
@@ -192,7 +192,7 @@ public class ExtendedResponseTest extends AbstractCodecServiceTest
         }
 
         // Check the decoded ExtendedResponse PDU
-        ExtendedResponseDecorator extendedResponse = container.getMessage();
+        ExtendedResponseDecorator<?> extendedResponse = container.getMessage();
 
         assertEquals( 1, extendedResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );
@@ -261,8 +261,8 @@ public class ExtendedResponseTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<ExtendedResponseDecorator> container = 
-            new LdapMessageContainer<ExtendedResponseDecorator>( codec );
+        LdapMessageContainer<ExtendedResponseDecorator<?>> container = 
+            new LdapMessageContainer<ExtendedResponseDecorator<?>>( codec );
 
         // Decode the ExtendedResponse PDU
         try
@@ -344,8 +344,8 @@ public class ExtendedResponseTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<ExtendedResponseDecorator> container = 
-            new LdapMessageContainer<ExtendedResponseDecorator>( codec );
+        LdapMessageContainer<ExtendedResponseDecorator<?>> container = 
+            new LdapMessageContainer<ExtendedResponseDecorator<?>>( codec );
 
         // Decode the ExtendedResponse PDU
         try
@@ -415,8 +415,8 @@ public class ExtendedResponseTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<ExtendedResponseDecorator> container = 
-            new LdapMessageContainer<ExtendedResponseDecorator>( codec );
+        LdapMessageContainer<ExtendedResponseDecorator<?>> container = 
+            new LdapMessageContainer<ExtendedResponseDecorator<?>>( codec );
 
         // Decode a DelRequest PDU
         try
@@ -460,8 +460,8 @@ public class ExtendedResponseTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<ExtendedResponseDecorator> container = 
-            new LdapMessageContainer<ExtendedResponseDecorator>( codec );
+        LdapMessageContainer<ExtendedResponseDecorator<?>> container = 
+            new LdapMessageContainer<ExtendedResponseDecorator<?>>( codec );
 
         // Decode a DelRequest PDU
         try
@@ -505,8 +505,8 @@ public class ExtendedResponseTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<ExtendedResponseDecorator> container = 
-            new LdapMessageContainer<ExtendedResponseDecorator>( codec );
+        LdapMessageContainer<ExtendedResponseDecorator<?>> container = 
+            new LdapMessageContainer<ExtendedResponseDecorator<?>>( codec );
 
         // Decode a DelRequest PDU
         try
@@ -551,8 +551,8 @@ public class ExtendedResponseTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<ExtendedResponseDecorator> container = 
-            new LdapMessageContainer<ExtendedResponseDecorator>( codec );
+        LdapMessageContainer<ExtendedResponseDecorator<?>> container = 
+            new LdapMessageContainer<ExtendedResponseDecorator<?>>( codec );
 
         // Decode the ExtendedResponse PDU
         try
@@ -566,7 +566,7 @@ public class ExtendedResponseTest extends AbstractCodecServiceTest
         }
 
         // Check the decoded ExtendedResponse PDU
-        ExtendedResponseDecorator extendedResponse = container.getMessage();
+        ExtendedResponseDecorator<?> extendedResponse = container.getMessage();
 
         assertEquals( 1, extendedResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );
@@ -638,8 +638,8 @@ public class ExtendedResponseTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<ExtendedResponseDecorator> container = 
-            new LdapMessageContainer<ExtendedResponseDecorator>( codec );
+        LdapMessageContainer<ExtendedResponseDecorator<?>> container = 
+            new LdapMessageContainer<ExtendedResponseDecorator<?>>( codec );
 
         // Decode the ExtendedResponse PDU
         try
@@ -653,7 +653,7 @@ public class ExtendedResponseTest extends AbstractCodecServiceTest
         }
 
         // Check the decoded ExtendedResponse PDU
-        ExtendedResponseDecorator extendedResponse = container.getMessage();
+        ExtendedResponseDecorator<?> extendedResponse = container.getMessage();
 
         assertEquals( 1, extendedResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );
@@ -731,8 +731,8 @@ public class ExtendedResponseTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<ExtendedResponseDecorator> container = 
-            new LdapMessageContainer<ExtendedResponseDecorator>( codec );
+        LdapMessageContainer<ExtendedResponseDecorator<?>> container = 
+            new LdapMessageContainer<ExtendedResponseDecorator<?>>( codec );
 
         // Decode the ExtendedResponse PDU
         try
@@ -746,7 +746,7 @@ public class ExtendedResponseTest extends AbstractCodecServiceTest
         }
 
         // Check the decoded ExtendedResponse PDU
-        ExtendedResponseDecorator extendedResponse = container.getMessage();
+        ExtendedResponseDecorator<?> extendedResponse = container.getMessage();
 
         assertEquals( 1, extendedResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );
@@ -819,8 +819,8 @@ public class ExtendedResponseTest extends AbstractCodecServiceTest
         stream.flip();
 
         // Allocate a LdapMessage Container
-        LdapMessageContainer<ExtendedResponseDecorator> container = 
-            new LdapMessageContainer<ExtendedResponseDecorator>( codec );
+        LdapMessageContainer<ExtendedResponseDecorator<?>> container = 
+            new LdapMessageContainer<ExtendedResponseDecorator<?>>( codec );
 
         // Decode the ExtendedResponse PDU
         try
@@ -834,7 +834,7 @@ public class ExtendedResponseTest extends AbstractCodecServiceTest
         }
 
         // Check the decoded ExtendedResponse PDU
-        ExtendedResponseDecorator extendedResponse = container.getMessage();
+        ExtendedResponseDecorator<?> extendedResponse = container.getMessage();
 
         assertEquals( 1, extendedResponse.getMessageId() );
         assertEquals( ResultCodeEnum.SUCCESS, extendedResponse.getLdapResult().getResultCode() );

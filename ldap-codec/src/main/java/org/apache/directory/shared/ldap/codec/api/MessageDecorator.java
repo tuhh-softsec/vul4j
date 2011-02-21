@@ -150,7 +150,7 @@ public abstract class MessageDecorator<E extends Message> implements Message, De
                 break;
                 
             case EXTENDED_RESPONSE:
-                decorator = new ExtendedResponseDecorator( codec, ( ExtendedResponse ) decoratedMessage );
+                decorator = new ExtendedResponseDecorator<ExtendedResponse>( codec, ( ExtendedResponse ) decoratedMessage );
                 break;
                 
             case INTERMEDIATE_RESPONSE:

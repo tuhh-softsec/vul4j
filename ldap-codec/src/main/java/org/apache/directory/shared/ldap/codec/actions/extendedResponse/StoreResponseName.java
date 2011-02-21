@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
  * </pre>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class StoreResponseName extends GrammarAction<LdapMessageContainer<ExtendedResponseDecorator>>
+public class StoreResponseName extends GrammarAction<LdapMessageContainer<ExtendedResponseDecorator<?>>>
 {
     /** The logger */
     private static final Logger LOG = LoggerFactory.getLogger( StoreResponseName.class );
@@ -65,7 +65,7 @@ public class StoreResponseName extends GrammarAction<LdapMessageContainer<Extend
     /**
      * {@inheritDoc}
      */
-    public void action( LdapMessageContainer<ExtendedResponseDecorator> container ) throws DecoderException
+    public void action( LdapMessageContainer<ExtendedResponseDecorator<?>> container ) throws DecoderException
     {
         // We can allocate the ExtendedResponse Object
         ExtendedResponse extendedResponse = container.getMessage();

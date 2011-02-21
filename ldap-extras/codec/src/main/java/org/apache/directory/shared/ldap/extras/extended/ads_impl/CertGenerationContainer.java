@@ -19,10 +19,11 @@
  */
 package org.apache.directory.shared.ldap.extras.extended.ads_impl;
 
+
 import org.apache.directory.shared.asn1.ber.AbstractContainer;
 
+
 /**
- * 
  * A container for certificate generation request codec.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
@@ -30,7 +31,7 @@ import org.apache.directory.shared.asn1.ber.AbstractContainer;
 public class CertGenerationContainer extends AbstractContainer
 {
     /** CertGenerationObject */
-    private CertGenerationObject certGenObj;
+    private CertGenerationRequestDecorator certGenObj;
 
 
     /**
@@ -49,7 +50,7 @@ public class CertGenerationContainer extends AbstractContainer
     /**
      * @return Returns the CertGenerationObject instance.
      */
-    public CertGenerationObject getCertGenerationObject()
+    public CertGenerationRequestDecorator getCertGenerationObject()
     {
         return certGenObj;
     }
@@ -61,7 +62,7 @@ public class CertGenerationContainer extends AbstractContainer
      * 
      * @param certGenObj the CertGenerationObject to set.
      */
-    public void setCertGenerationObject( CertGenerationObject certGenObj )
+    public void setCertGenerationObject( CertGenerationRequestDecorator certGenObj )
     {
         this.certGenObj = certGenObj;
     }

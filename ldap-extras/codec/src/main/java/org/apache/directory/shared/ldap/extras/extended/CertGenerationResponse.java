@@ -23,7 +23,6 @@ package org.apache.directory.shared.ldap.extras.extended;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.model.message.ExtendedResponseImpl;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
-import org.apache.directory.shared.util.StringConstants;
 
 
 /**
@@ -32,14 +31,10 @@ import org.apache.directory.shared.util.StringConstants;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class CertGenerationResponse extends ExtendedResponseImpl
+public class CertGenerationResponse extends ExtendedResponseImpl implements ICertGenerationResponse
 {
     /** The serial version UUID */
     private static final long serialVersionUID = 1L;
-
-    /** The CertGenerationResponse OID */
-    public static final String EXTENSION_OID = "1.3.6.1.4.1.18060.0.1.9";
-
 
     public CertGenerationResponse( int messageId, ResultCodeEnum rcode )
     {
@@ -75,33 +70,6 @@ public class CertGenerationResponse extends ExtendedResponseImpl
         super( EXTENSION_OID );
         super.getLdapResult().setMatchedDn( null );
         super.getLdapResult().setResultCode( ResultCodeEnum.SUCCESS );
-    }
-
-
-    // ------------------------------------------------------------------------
-    // ExtendedResponse Interface Method Implementations
-    // ------------------------------------------------------------------------
-
-    /**
-     * Gets the reponse OID specific encoded response values.
-     * 
-     * @return the response specific encoded response values.
-     */
-    public byte[] getResponse()
-    {
-        return StringConstants.EMPTY_BYTES;
-    }
-
-
-    /**
-     * Sets the response OID specific encoded response values.
-     * 
-     * @param value
-     *            the response specific encoded response values.
-     */
-    public void setResponse( byte[] value )
-    {
-        // do nothing here instead
     }
 
 

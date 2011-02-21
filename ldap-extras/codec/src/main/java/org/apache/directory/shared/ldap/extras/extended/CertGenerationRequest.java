@@ -20,18 +20,7 @@
 package org.apache.directory.shared.ldap.extras.extended;
 
 
-import javax.naming.NamingException;
-import javax.naming.ldap.ExtendedResponse;
-
-import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.asn1.EncoderException;
-import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.extras.extended.ads_impl.CertGenerationDecoder;
-import org.apache.directory.shared.ldap.extras.extended.ads_impl.CertGenerationObject;
-import org.apache.directory.shared.ldap.model.message.ExtendedRequestImpl;
-import org.apache.directory.shared.ldap.model.message.ResultResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.directory.shared.ldap.model.message.AbstractExtendedRequest;
 
 
 /**
@@ -41,18 +30,24 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class CertGenerationRequest extends ExtendedRequestImpl
+public class CertGenerationRequest extends AbstractExtendedRequest<ICertGenerationResponse> implements ICertGenerationRequest
 {
     /** The serial version UUID */
     private static final long serialVersionUID = 1L;
 
-    private CertGenerationObject certGenObj;
+    /** the Dn of the server entry which will be updated*/
+    private String targetDN;
 
-    private static final Logger LOG = LoggerFactory.getLogger( CertGenerationRequest.class );
+    /** the issuer Dn that will be set in the certificate*/
+    private String issuerDN;// = "CN=ApacheDS, OU=Directory, O=ASF, C=US";
 
-    public static final String EXTENSION_OID = "1.3.6.1.4.1.18060.0.1.8";
+    /** the Dn of the subject that is present in the certificate*/
+    private String subjectDN;// = "CN=ApacheDS, OU=Directory, O=ASF, C=US";
 
+    /** name of the algorithm used for generating the keys*/
+    private String keyAlgorithm;// = "RSA";
 
+    
     /**
      * Creates a new instance of CertGenerationRequest.
      *
@@ -66,12 +61,10 @@ public class CertGenerationRequest extends ExtendedRequestImpl
     {
         super( messageId );
         setRequestName( EXTENSION_OID );
-
-        this.certGenObj = new CertGenerationObject();
-        certGenObj.setTargetDN( targerDN );
-        certGenObj.setIssuerDN( issuerDN );
-        certGenObj.setSubjectDN( subjectDN );
-        certGenObj.setKeyAlgorithm( keyAlgorithm );
+        this.targetDN = targerDN;
+        this.issuerDN = issuerDN;
+        this.subjectDN = subjectDN;
+        this.keyAlgorithm = keyAlgorithm;
     }
 
 
@@ -81,127 +74,97 @@ public class CertGenerationRequest extends ExtendedRequestImpl
     public CertGenerationRequest()
     {
         setRequestName( EXTENSION_OID );
-        this.certGenObj = new CertGenerationObject();
-    }
-
-
-    public void setequestValue( byte[] requestValue )
-    {
-        CertGenerationDecoder decoder = new CertGenerationDecoder();
-
-        try
-        {
-            certGenObj = (CertGenerationObject) decoder.decode( requestValue );
-
-            if ( requestValue != null )
-            {
-                this.requestValue = new byte[requestValue.length];
-                System.arraycopy( requestValue, 0, this.requestValue, 0, requestValue.length );
-            }
-            else
-            {
-                this.requestValue = null;
-            }
-        }
-        catch ( DecoderException e )
-        {
-            LOG.error( I18n.err( I18n.ERR_04165 ), e );
-            throw new RuntimeException( e );
-        }
-    }
-
-
-    public ExtendedResponse createExtendedResponse( String id, byte[] berValue, int offset, int length )
-        throws NamingException
-    {
-        return ( ExtendedResponse ) getResultResponse();
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public byte[] getRequestValue()
-    {
-        if ( requestValue == null )
-        {
-            try
-            {
-                requestValue = certGenObj.encode().array();
-            }
-            catch ( EncoderException e )
-            {
-                LOG.error( I18n.err( I18n.ERR_04167 ), e );
-                throw new RuntimeException( e );
-            }
-        }
-
-        if ( requestValue == null )
-        {
-            return null;
-        }
-
-        final byte[] copy = new byte[requestValue.length];
-        System.arraycopy( requestValue, 0, copy, 0, requestValue.length );
-        return copy;
-    }
-
-
-    public ResultResponse getResultResponse()
-    {
-        if ( response == null )
-        {
-            response = new CertGenerationResponse( getMessageId() );
-        }
-
-        return response;
-    }
-
-
     public String getTargetDN()
     {
-        return certGenObj.getTargetDN();
+        return targetDN;
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void setTargetDN( String targetDN )
     {
-        certGenObj.setTargetDN( targetDN );
+        this.targetDN = targetDN;
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public String getIssuerDN()
     {
-        return certGenObj.getIssuerDN();
+        return issuerDN;
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void setIssuerDN( String issuerDN )
     {
-        certGenObj.setIssuerDN( issuerDN );
+        this.issuerDN = issuerDN;
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public String getSubjectDN()
     {
-        return certGenObj.getSubjectDN();
+        return subjectDN;
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void setSubjectDN( String subjectDN )
     {
-        certGenObj.setSubjectDN( subjectDN );
+        this.subjectDN = subjectDN;
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public String getKeyAlgorithm()
     {
-        return certGenObj.getKeyAlgorithm();
+        return keyAlgorithm;
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void setKeyAlgorithm( String keyAlgorithm )
     {
-        certGenObj.setKeyAlgorithm( keyAlgorithm );
+        this.keyAlgorithm = keyAlgorithm;
+    }
+
+
+    @Override
+    public ICertGenerationResponse getResultResponse()
+    {
+        return new CertGenerationResponse();
+    }
+    
+    
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append( "Certficate Generation Object { " ).append( " Target Dn: " ).append( targetDN ).append( ',' );
+        sb.append( " Issuer Dn: " ).append( issuerDN ).append( ',' );
+        sb.append( " Subject Dn: " ).append( subjectDN ).append( ',' );
+        sb.append( " Key Algorithm: " ).append( keyAlgorithm ).append( " }" );
+
+        return sb.toString();
     }
 }

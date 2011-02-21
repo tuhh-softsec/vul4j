@@ -37,7 +37,7 @@ import org.apache.directory.shared.util.Strings;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ExtendedResponseDecorator extends ResponseDecorator<ExtendedResponse> 
+public class ExtendedResponseDecorator<R extends ExtendedResponse> extends ResponseDecorator<R> 
     implements ExtendedResponse
 {
     private static final long serialVersionUID = -9029282485890195506L;
@@ -56,7 +56,7 @@ public class ExtendedResponseDecorator extends ResponseDecorator<ExtendedRespons
      *
      * @param decoratedMessage the decorated ExtendedResponse
      */
-    public ExtendedResponseDecorator( LdapCodecService codec, ExtendedResponse decoratedMessage )
+    public ExtendedResponseDecorator( LdapCodecService codec, R decoratedMessage )
     {
         super( codec, decoratedMessage );
     }

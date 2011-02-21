@@ -26,6 +26,7 @@ import org.apache.directory.shared.asn1.AbstractAsn1Object;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
+import org.apache.directory.shared.ldap.extras.extended.ICertGenerationRequest;
 import org.apache.directory.shared.util.Strings;
 
 
@@ -46,19 +47,15 @@ import org.apache.directory.shared.util.Strings;
  */
 public class CertGenerationObject extends AbstractAsn1Object
 {
-
-    /** the Dn of the server entry which will be updated*/
-    private String targetDN;
-
-    /** the issuer Dn that will be set in the certificate*/
-    private String issuerDN;// = "CN=ApacheDS, OU=Directory, O=ASF, C=US";
-
-    /** the Dn of the subject that is present in the certificate*/
-    private String subjectDN;// = "CN=ApacheDS, OU=Directory, O=ASF, C=US";
-
-    /** name of the algorithm used for generating the keys*/
-    private String keyAlgorithm;// = "RSA";
-
+    private ICertGenerationRequest request;
+    
+    
+    public CertGenerationObject( ICertGenerationRequest request )
+    {
+        this.request = request;
+    }
+    
+    
     /** stores the length of the request*/
     private int requestLength = 0;
 
@@ -66,16 +63,16 @@ public class CertGenerationObject extends AbstractAsn1Object
     @Override
     public int computeLength()
     {
-        int len = Strings.getBytesUtf8(targetDN).length;
+        int len = Strings.getBytesUtf8( request.getTargetDN() ).length;
         requestLength = 1 + Value.getNbBytes( len ) + len;
 
-        len = Strings.getBytesUtf8(issuerDN).length;
+        len = Strings.getBytesUtf8( request.getIssuerDN() ).length;
         requestLength += 1 + Value.getNbBytes( len ) + len;
 
-        len = Strings.getBytesUtf8(subjectDN).length;
+        len = Strings.getBytesUtf8( request.getSubjectDN() ).length;
         requestLength += 1 + Value.getNbBytes( len ) + len;
 
-        len = Strings.getBytesUtf8(keyAlgorithm).length;
+        len = Strings.getBytesUtf8( request.getKeyAlgorithm() ).length;
         requestLength += 1 + Value.getNbBytes( len ) + len;
 
         return 1 + Value.getNbBytes( requestLength ) + requestLength;
@@ -89,72 +86,11 @@ public class CertGenerationObject extends AbstractAsn1Object
         bb.put( UniversalTag.SEQUENCE.getValue() );
         bb.put( Value.getBytes( requestLength ) );
 
-        Value.encode( bb, targetDN );
-        Value.encode( bb, issuerDN );
-        Value.encode( bb, subjectDN );
-        Value.encode( bb, keyAlgorithm );
+        Value.encode( bb, request.getTargetDN() );
+        Value.encode( bb, request.getIssuerDN() );
+        Value.encode( bb, request.getSubjectDN() );
+        Value.encode( bb, request.getKeyAlgorithm() );
 
         return bb;
-    }
-
-
-    public String getTargetDN()
-    {
-        return targetDN;
-    }
-
-
-    public void setTargetDN( String targetDN )
-    {
-        this.targetDN = targetDN;
-    }
-
-
-    public String getIssuerDN()
-    {
-        return issuerDN;
-    }
-
-
-    public void setIssuerDN( String issuerDN )
-    {
-        this.issuerDN = issuerDN;
-    }
-
-
-    public String getSubjectDN()
-    {
-        return subjectDN;
-    }
-
-
-    public void setSubjectDN( String subjectDN )
-    {
-        this.subjectDN = subjectDN;
-    }
-
-
-    public String getKeyAlgorithm()
-    {
-        return keyAlgorithm;
-    }
-
-
-    public void setKeyAlgorithm( String keyAlgorithm )
-    {
-        this.keyAlgorithm = keyAlgorithm;
-    }
-
-
-    @Override
-    public String toString()
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append( "Certficate Generation Object { " ).append( " Target Dn: " ).append( targetDN ).append( ',' );
-        sb.append( " Issuer Dn: " ).append( issuerDN ).append( ',' );
-        sb.append( " Subject Dn: " ).append( subjectDN ).append( ',' );
-        sb.append( " Key Algorithm: " ).append( keyAlgorithm ).append( " }" );
-
-        return sb.toString();
     }
 }

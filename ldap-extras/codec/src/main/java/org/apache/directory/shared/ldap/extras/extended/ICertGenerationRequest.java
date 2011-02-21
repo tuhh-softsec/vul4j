@@ -17,29 +17,43 @@
  *   under the License.
  *
  */
-package org.apache.directory.shared.ldap.extras.extended.ads_impl;
+package org.apache.directory.shared.ldap.extras.extended;
 
 
-import org.apache.directory.shared.ldap.codec.api.ExtendedResponseDecorator;
-import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
-import org.apache.directory.shared.ldap.extras.extended.CancelResponse;
+import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 
 
 /**
- * A Decorator for CancelResponses.
+ * The interface for a certificate generation request extended operation.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class CancelResponseDecorator extends ExtendedResponseDecorator<CancelResponse> implements CancelResponse
+public interface ICertGenerationRequest extends ExtendedRequest<ICertGenerationResponse>
 {
-    /**
-     * Creates a new instance of CancelResponseDecorator.
-     *
-     * @param codec
-     * @param decoratedMessage
-     */
-    public CancelResponseDecorator( LdapCodecService codec, CancelResponse decoratedMessage )
-    {
-        super( codec, decoratedMessage );
-    }
+    public static final String EXTENSION_OID = "1.3.6.1.4.1.18060.0.1.8";
+
+
+    String getTargetDN();
+
+
+    void setTargetDN( String targetDN );
+
+
+    String getIssuerDN();
+
+
+    void setIssuerDN( String issuerDN );
+
+
+    String getSubjectDN();
+
+
+    void setSubjectDN( String subjectDN );
+
+
+    String getKeyAlgorithm();
+
+
+    void setKeyAlgorithm( String keyAlgorithm );
+
 }

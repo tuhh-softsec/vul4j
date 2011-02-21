@@ -28,6 +28,8 @@ import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecServiceFactory;
+import org.apache.directory.shared.ldap.extras.extended.CertGenerationRequest;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
@@ -88,7 +90,8 @@ public class CertGenerationGrammar extends AbstractGrammar<CertGenerationContain
             {
                 public void action( CertGenerationContainer container )
                 {
-                    CertGenerationObject certGenerationObject = new CertGenerationObject();
+                    CertGenerationRequestDecorator certGenerationObject = new CertGenerationRequestDecorator( 
+                        LdapCodecServiceFactory.getSingleton(), new CertGenerationRequest() );
                     container.setCertGenerationObject( certGenerationObject );
                 }
             } );
