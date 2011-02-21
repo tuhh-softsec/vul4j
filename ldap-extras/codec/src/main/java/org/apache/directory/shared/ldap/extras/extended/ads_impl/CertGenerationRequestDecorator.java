@@ -57,7 +57,7 @@ public class CertGenerationRequestDecorator
     {
         return certGenObj;
     }
-    
+
     
     /**
      * {@inheritDoc}

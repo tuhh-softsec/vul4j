@@ -29,8 +29,9 @@ import java.nio.ByteBuffer;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.EncoderException;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecServiceFactory;
+import org.apache.directory.shared.ldap.extras.extended.CertGenerationRequestImpl;
 import org.apache.directory.shared.ldap.extras.extended.ads_impl.CertGenerationContainer;
-import org.apache.directory.shared.ldap.extras.extended.ads_impl.CertGenerationObject;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -105,18 +106,20 @@ public class CertGenerationRequestTest
             fail( e.getMessage() );
         }
 
-        CertGenerationObject certGenObj = container.getCertGenerationObject();
-        assertEquals( dn, certGenObj.getTargetDN() );
-        assertEquals( dn, certGenObj.getIssuerDN() );
-        assertEquals( dn, certGenObj.getSubjectDN() );
-        assertEquals( keyAlgo, certGenObj.getKeyAlgorithm() );
+        CertGenerationRequestDecorator req = new CertGenerationRequestDecorator( 
+            LdapCodecServiceFactory.getSingleton(), new CertGenerationRequestImpl() );
+        req = container.getCertGenerationObject();
+        assertEquals( dn, req.getTargetDN() );
+        assertEquals( dn, req.getIssuerDN() );
+        assertEquals( dn, req.getSubjectDN() );
+        assertEquals( keyAlgo, req.getKeyAlgorithm() );
 
-        assertEquals( bufLen, certGenObj.computeLength() );
+        assertEquals( bufLen, req.computeLength() );
 
         try
         {
-            ByteBuffer encodedBuf = certGenObj.encode();
-            String encodedPdu = Strings.dumpBytes(encodedBuf.array());
+            ByteBuffer encodedBuf = req.getCertGenerationObject().encode();
+            String encodedPdu = Strings.dumpBytes( encodedBuf.array() );
 
             assertEquals( decodedPdu, encodedPdu );
         }
