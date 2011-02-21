@@ -23,7 +23,7 @@ package org.apache.directory.shared.ldap.codec.actions.extendedRequest;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
-import org.apache.directory.shared.ldap.codec.decorators.ExtendedRequestDecorator;
+import org.apache.directory.shared.ldap.codec.api.ExtendedRequestDecorator;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequestImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
