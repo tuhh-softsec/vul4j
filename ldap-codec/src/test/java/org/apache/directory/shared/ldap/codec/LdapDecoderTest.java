@@ -27,7 +27,6 @@ import static org.junit.Assert.fail;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
 
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
@@ -39,11 +38,8 @@ import org.apache.directory.shared.ldap.codec.osgi.AbstractCodecServiceTest;
 import org.apache.directory.shared.ldap.model.message.BindRequest;
 import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.util.Strings;
-import org.apache.mina.core.buffer.IoBuffer;
-import org.apache.mina.core.filterchain.IoFilter.NextFilter;
 import org.apache.mina.core.session.DummySession;
 import org.apache.mina.core.session.IoSession;
-import org.apache.mina.filter.codec.AbstractProtocolDecoderOutput;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -60,41 +56,6 @@ import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 @Concurrency()
 public class LdapDecoderTest extends AbstractCodecServiceTest
 {
-    
-    private static class LdapProtocolDecoderOutput extends AbstractProtocolDecoderOutput 
-    {
-        public LdapProtocolDecoderOutput()
-        {
-            // Do nothing
-        }
-        
-        public void flush( NextFilter nextFilter, IoSession session ) 
-        {
-            // Do nothing
-            Queue<Object> messageQueue = getMessageQueue();
-            
-            while ( !messageQueue.isEmpty() ) 
-            {
-                nextFilter.messageReceived( session, messageQueue.poll()) ;
-            }
-        }
-
-
-        public Object getMessage()
-        {
-            Queue<Object> messageQueue = getMessageQueue();
-
-            if ( !messageQueue.isEmpty() )
-            {
-                return messageQueue.poll();
-            }
-            else
-            {
-                return null;
-            }
-        }
-    }
-    
     /**
      * Test the decoding of a full PDU
      */
@@ -158,12 +119,11 @@ public class LdapDecoderTest extends AbstractCodecServiceTest
         LdapDecoder ldapDecoder = new LdapDecoder();
         LdapMessageContainer<MessageDecorator<? extends Message>> container = 
             new LdapMessageContainer<MessageDecorator<? extends Message>>( codec );
-        ldapDecoder.setLdapMessageContainer( container );
 
         IoSession dummySession = new DummySession();
         dummySession.setAttribute( "messageContainer", container );
 
-        IoBuffer stream = IoBuffer.allocate( 0x6A );
+        ByteBuffer stream = ByteBuffer.allocate( 0x6A );
         stream.put( new byte[]
             { 
                 0x30, 0x33,                     // LDAPMessage ::=SEQUENCE {

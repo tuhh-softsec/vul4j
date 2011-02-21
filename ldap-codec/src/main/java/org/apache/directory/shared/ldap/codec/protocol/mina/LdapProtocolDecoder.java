@@ -20,6 +20,7 @@
 package org.apache.directory.shared.ldap.codec.protocol.mina;
 
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,7 +73,9 @@ public class LdapProtocolDecoder implements ProtocolDecoder
         }
 
         List<Message> decodedMessages = new ArrayList<Message>();
-        decoder.decode( in, messageContainer, decodedMessages );
+        ByteBuffer buf = in.buf();
+
+        decoder.decode( buf, messageContainer, decodedMessages );
         
         for ( Message message : decodedMessages )
         {

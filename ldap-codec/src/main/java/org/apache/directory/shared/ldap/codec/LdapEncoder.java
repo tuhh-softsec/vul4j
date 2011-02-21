@@ -52,12 +52,21 @@ public class LdapEncoder
     private LdapCodecService codec;
     
     
+    /**
+     * Creates an instance of Ldap message encoder
+     * 
+     * @param codec The Codec service to use to handle Controls and extended operations,
+     * plus to get access to the underlying services.
+     */
     public LdapEncoder( LdapCodecService codec )
     {
         this.codec = codec;
     }
     
     
+    /**
+     * Compute the control's encoded length
+     */
     private int computeControlLength( Control control )
     {
         // First, compute the control's value length
@@ -84,7 +93,7 @@ public class LdapEncoder
     
     
     /**
-     * {@inheritDoc}
+     * Encode a control to a byte[]
      */
     private ByteBuffer encodeControl( ByteBuffer buffer, Control control ) throws EncoderException
     {
@@ -293,7 +302,9 @@ public class LdapEncoder
      * Encode the Referral message to a PDU.
      * 
      * @param buffer The buffer where to put the PDU
-     * @return The PDU.
+     * @param referral The referral to encode
+     * @return The encoded referral
+     * @exception EncoderException If the encoding failed
      */
     public static void encodeReferral( ByteBuffer buffer, Referral referral ) throws EncoderException
     {
@@ -316,6 +327,11 @@ public class LdapEncoder
     }
 
 
+    /**
+     * Compute the referral's encoded length
+     * @param referral The referral to encode
+     * @return The length of the encoded PDU
+     */
     public static int computeReferralLength( Referral referral )
     {
         if ( referral != null )
