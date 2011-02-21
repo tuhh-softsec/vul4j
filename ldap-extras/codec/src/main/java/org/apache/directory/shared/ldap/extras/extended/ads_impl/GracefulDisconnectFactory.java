@@ -22,8 +22,10 @@ package org.apache.directory.shared.ldap.extras.extended.ads_impl;
 
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.ldap.codec.api.ExtendedRequestFactory;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.UnsolicitedResponseFactory;
-import org.apache.directory.shared.ldap.extras.extended.GracefulDisconnect;
+import org.apache.directory.shared.ldap.extras.extended.GracefulDisconnectResponseImpl;
+import org.apache.directory.shared.ldap.extras.extended.GracefulDisconnectResponse;
 
 
 /**
@@ -32,28 +34,31 @@ import org.apache.directory.shared.ldap.extras.extended.GracefulDisconnect;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class GracefulDisconnectFactory implements UnsolicitedResponseFactory<GracefulDisconnect>
+public class GracefulDisconnectFactory implements UnsolicitedResponseFactory<GracefulDisconnectResponse>
 {
+    private LdapCodecService codec;
+    
+    
     /**
      * {@inheritDoc}
      */
     public String getOid()
     {
-        return GracefulDisconnect.EXTENSION_OID;
+        return GracefulDisconnectResponse.EXTENSION_OID;
     }
 
     
     /**
      * {@inheritDoc}
      */
-    public GracefulDisconnect newRequest()
+    public GracefulDisconnectResponse newRequest()
     {
-        return new GracefulDisconnect();
+        return new GracefulDisconnectResponseDecorator( codec, new GracefulDisconnectResponseImpl() );
     }
 
 
-    public GracefulDisconnect newResponse( byte[] encodedValue ) throws DecoderException
+    public GracefulDisconnectResponse newResponse( byte[] encodedValue ) throws DecoderException
     {
-        return new GracefulDisconnect( encodedValue );
+        return new GracefulDisconnectResponseDecorator( codec, encodedValue );
     }
 }

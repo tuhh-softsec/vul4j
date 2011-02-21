@@ -48,7 +48,7 @@ public class ExtendedResponseDecorator<R extends ExtendedResponse> extends Respo
     /** The encoded extendedResponse length */
     private int extendedResponseLength;
 
-    private byte[] responseValue;
+    protected byte[] responseValue;
 
 
     /**
