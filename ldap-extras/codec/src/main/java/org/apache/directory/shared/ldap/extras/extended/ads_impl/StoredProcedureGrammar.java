@@ -149,7 +149,7 @@ public final class StoredProcedureGrammar extends AbstractGrammar<StoredProcedur
 
                     if ( LOG.isDebugEnabled() )
                     {
-                        LOG.debug( "Procedure found : " + Strings.utf8ToString(storedProcedure.getProcedure()) );
+                        LOG.debug( "Procedure found : " + storedProcedure.getProcedureSpecification() );
                     }
                 }
             } );

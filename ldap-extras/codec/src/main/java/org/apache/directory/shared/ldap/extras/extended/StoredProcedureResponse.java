@@ -29,14 +29,10 @@ import org.apache.directory.shared.ldap.model.message.ExtendedResponseImpl;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class StoredProcedureResponse extends ExtendedResponseImpl
+public class StoredProcedureResponse extends ExtendedResponseImpl implements IStoredProcedureResponse
 {
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 7689434378578829994L;
-
-    /** The OID for the stored procedure extended operation response. */
-    public static final String EXTENSION_OID = "1.3.6.1.4.1.18060.0.1.7";
-
 
     /**
      * Instantiates a new stored procedure response.

@@ -33,7 +33,6 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.ldap.extras.extended.ads_impl.StoredProcedure;
 import org.apache.directory.shared.ldap.extras.extended.ads_impl.StoredProcedureContainer;
 import org.apache.directory.shared.ldap.extras.extended.ads_impl.StoredProcedureDecoder;
-import org.apache.directory.shared.ldap.extras.extended.ads_impl.StoredProcedure.StoredProcedureParameter;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -96,32 +95,24 @@ public class StoredProcedureTest
 
         assertEquals("Java", storedProcedure.getLanguage());
         
-        assertEquals( "execute", Strings.utf8ToString(storedProcedure.getProcedure()) );
+        assertEquals( "execute", storedProcedure.getProcedureSpecification() );
 
-        assertEquals( 3, storedProcedure.getParameters().size() );
+        assertEquals( 3, storedProcedure.size() );
 
-        StoredProcedureParameter param = storedProcedure.getParameters().get( 0 );
+        assertEquals( "int", storedProcedure.getParameterType( 0 ) );
+        assertEquals( 1, storedProcedure.getParameterValue( 0 ) );
 
-        assertEquals( "int", Strings.utf8ToString(param.getType()) );
-        assertEquals( 1, param.getValue()[0] );
+        assertEquals( "boolean", storedProcedure.getParameterType( 1 ) );
+        assertEquals( "true", storedProcedure.getParameterValue( 1 ) );
 
-        param = storedProcedure.getParameters().get( 1 );
-
-        assertEquals( "boolean", Strings.utf8ToString(param.getType()) );
-        assertEquals( "true", Strings.utf8ToString(param.getValue()) );
-
-        param = storedProcedure.getParameters().get( 2 );
-
-        assertEquals( "String", Strings.utf8ToString(param.getType()) );
-        assertEquals( "parameter3", Strings.utf8ToString(param.getValue()) );
+        assertEquals( "String", storedProcedure.getParameterType( 2 ) );
+        assertEquals( "parameter3", storedProcedure.getParameterValue( 2 ) );
 
         // Check the encoding
         try
         {
             ByteBuffer bb = storedProcedure.encode();
-
-            String encodedPdu = Strings.dumpBytes(bb.array());
-
+            String encodedPdu = Strings.dumpBytes( bb.array() );
             assertEquals( encodedPdu, decodedPdu );
         }
         catch ( EncoderException ee )
@@ -167,9 +158,9 @@ public class StoredProcedureTest
 
         assertEquals("Java", storedProcedure.getLanguage());
         
-        assertEquals( "execute", Strings.utf8ToString(storedProcedure.getProcedure()) );
+        assertEquals( "execute", storedProcedure.getProcedureSpecification() );
 
-        assertEquals( 0, storedProcedure.getParameters().size() );
+        assertEquals( 0, storedProcedure.size() );
         
         // Check the encoding
         try
@@ -227,14 +218,12 @@ public class StoredProcedureTest
 
         assertEquals("Java", storedProcedure.getLanguage());
         
-        assertEquals( "execute", Strings.utf8ToString(storedProcedure.getProcedure()) );
+        assertEquals( "execute", storedProcedure.getProcedureSpecification() );
 
-        assertEquals( 1, storedProcedure.getParameters().size() );
+        assertEquals( 1, storedProcedure.size() );
 
-        StoredProcedureParameter param = storedProcedure.getParameters().get( 0 );
-
-        assertEquals( "int", Strings.utf8ToString(param.getType()) );
-        assertEquals( 1, param.getValue()[0] );
+        assertEquals( "int", storedProcedure.getParameterType( 0 ) );
+        assertEquals( 1, storedProcedure.getParameterValue( 0 ) );
 
         // Check the encoding
         try

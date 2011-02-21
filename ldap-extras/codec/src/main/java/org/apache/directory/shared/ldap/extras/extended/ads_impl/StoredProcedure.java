@@ -17,13 +17,11 @@
  *  under the License. 
  *  
  */
-
 package org.apache.directory.shared.ldap.extras.extended.ads_impl;
 
 
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -33,6 +31,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.extras.extended.StoredProcedureRequest;
 import org.apache.directory.shared.util.Strings;
 
 
@@ -43,11 +42,6 @@ import org.apache.directory.shared.util.Strings;
  */
 public class StoredProcedure extends AbstractAsn1Object
 {
-    private String language;
-
-    private byte[] procedure;
-
-    private List<StoredProcedureParameter> parameters = new ArrayList<StoredProcedureParameter>();
 
     private StoredProcedureParameter currentParameter;
     
@@ -66,54 +60,21 @@ public class StoredProcedure extends AbstractAsn1Object
     /** The list of all parameter value lengths */
     private List<Integer> paramValueLength;
 
-    public String getLanguage()
+    /** The underlying request */
+    private StoredProcedureRequest request;
+    
+
+    public StoredProcedure( StoredProcedureRequest request )
     {
-        return language;
+        this.request = request;
     }
+    
 
-
-    public void setLanguage( String language )
+    public StoredProcedure()
     {
-        this.language = language;
+        this.request = new StoredProcedureRequest();
     }
-
-
-    public byte[] getProcedure()
-    {
-        if ( procedure == null )
-        {
-            return null;
-        }
-
-        final byte[] copy = new byte[ procedure.length ];
-        System.arraycopy( procedure, 0, copy, 0, procedure.length );
-        return copy;
-    }
-
-
-    public void setProcedure( byte[] procedure )
-    {
-        if ( procedure != null )
-        {
-            this.procedure = new byte[ procedure.length ];
-            System.arraycopy( procedure, 0, this.procedure, 0, procedure.length );
-        } else {
-            this.procedure = null;
-        }
-    }
-
-
-    public List<StoredProcedureParameter> getParameters()
-    {
-        return parameters;
-    }
-
-
-    public void addParameter( StoredProcedureParameter parameter )
-    {
-        parameters.add( parameter );
-    }
-
+    
 
     public StoredProcedureParameter getCurrentParameter()
     {
@@ -156,7 +117,9 @@ public class StoredProcedure extends AbstractAsn1Object
             {
                 this.type = new byte[ type.length ];
                 System.arraycopy( type, 0, this.type, 0, type.length );
-            } else {
+            } 
+            else 
+            {
                 this.type = null;
             }
         }
@@ -181,12 +144,15 @@ public class StoredProcedure extends AbstractAsn1Object
             {
                 this.value = new byte[ value.length ];
                 System.arraycopy( value, 0, this.value, 0, value.length );
-            } else {
+            } 
+            else 
+            {
                 this.value = null;
             }
         }
     }
 
+    
     /**
      * Compute the StoredProcedure length 
      * 
@@ -216,23 +182,25 @@ public class StoredProcedure extends AbstractAsn1Object
     public int computeLength()
     {
         // The language
-        byte[] languageBytes = Strings.getBytesUtf8(language);
+        byte[] languageBytes = Strings.getBytesUtf8( request.getLanguage() );
         
         int languageLength = 1 + TLV.getNbBytes( languageBytes.length )
             + languageBytes.length;
+        
+        byte[] procedure = request.getProcedure();
         
         // The procedure
         int procedureLength = 1 + TLV.getNbBytes( procedure.length )
             + procedure.length;
         
         // Compute parameters length value
-        if ( parameters != null )
+        if ( request.getParameters() != null )
         {
             parameterLength = new LinkedList<Integer>();
             paramTypeLength = new LinkedList<Integer>();
             paramValueLength = new LinkedList<Integer>();
             
-            for ( StoredProcedureParameter spParam:parameters )
+            for ( StoredProcedureParameter spParam : request.getParameters() )
             {
                 int localParameterLength = 0;
                 int localParamTypeLength = 0;
@@ -274,21 +242,21 @@ public class StoredProcedure extends AbstractAsn1Object
             bb.put( TLV.getBytes( storedProcedureLength ) );
 
             // The language
-            Value.encode( bb, language );
+            Value.encode( bb, request.getLanguage() );
 
             // The procedure
-            Value.encode( bb, procedure );
+            Value.encode( bb, request.getProcedure() );
             
             // The parameters sequence
             bb.put( UniversalTag.SEQUENCE.getValue() );
             bb.put( TLV.getBytes( parametersLength ) );
 
             // The parameters list
-            if ( ( parameters != null ) && ( parameters.size() != 0 ) )
+            if ( ( request.getParameters() != null ) && ( request.getParameters().size() != 0 ) )
             {
                 int parameterNumber = 0;
 
-                for ( StoredProcedureParameter spParam:parameters )
+                for ( StoredProcedureParameter spParam : request.getParameters() )
                 {
                     // The parameter sequence
                     bb.put( UniversalTag.SEQUENCE.getValue() );
@@ -326,10 +294,10 @@ public class StoredProcedure extends AbstractAsn1Object
         StringBuffer sb = new StringBuffer();
 
         sb.append( "    StoredProcedure\n" );
-        sb.append( "        Language : '" ).append( language ).append( "'\n" );
-        sb.append( "        Procedure\n" ).append( Strings.utf8ToString(procedure) ).append( "'\n" );
+        sb.append( "        Language : '" ).append( request.getLanguage() ).append( "'\n" );
+        sb.append( "        Procedure\n" ).append( request.getProcedureSpecification() ).append( "'\n" );
 
-        if ( ( parameters == null ) || ( parameters.size() == 0 ) )
+        if ( ( request.getParameters() == null ) || ( request.getParameters().size() == 0 ) )
         {
             sb.append( "        No parameters\n" );
         }
@@ -339,7 +307,7 @@ public class StoredProcedure extends AbstractAsn1Object
 
             int i = 1;
             
-            for ( StoredProcedureParameter spParam:parameters )
+            for ( StoredProcedureParameter spParam : request.getParameters() )
             {
                 sb.append( "            type[" ).append( i ) .append( "] : '" ).
                     append( Strings.utf8ToString(spParam.type) ).append( "'\n" );
@@ -349,5 +317,77 @@ public class StoredProcedure extends AbstractAsn1Object
         }
 
         return sb.toString();
+    }
+
+    
+    public String getLanguage()
+    {
+        return request.getLanguage();
+    }
+
+
+    public void setLanguage( String language )
+    {
+        request.setLanguage( language );
+    }
+
+
+    public void setProcedure( String procedure )
+    {
+        request.setProcedure( procedure );
+    }
+
+
+    public void setProcedure( byte[] procedure )
+    {
+        request.setProcedure( procedure );
+    }
+
+
+    public String getProcedureSpecification()
+    {
+        return request.getProcedureSpecification();
+    }
+
+
+    public int size()
+    {
+        return request.size();
+    }
+
+
+    public Object getParameterType( int index )
+    {
+        return request.getParameterType( index );
+    }
+
+
+    public Class<?> getJavaParameterType( int index )
+    {
+        return request.getJavaParameterType( index );
+    }
+
+
+    public Object getParameterValue( int index )
+    {
+        return request.getParameterValue( index );
+    }
+
+
+    public Object getJavaParameterValue( int index )
+    {
+        return request.getJavaParameterValue( index );
+    }
+
+
+    public void addParameter( Object type, Object value )
+    {
+        request.addParameter( type, value );
+    }
+
+
+    public void addParameter( StoredProcedureParameter parameter )
+    {
+        request.addParameter( parameter );
     }
 }

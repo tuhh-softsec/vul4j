@@ -40,7 +40,7 @@ import org.apache.directory.shared.ldap.extras.extended.GracefulDisconnectRespon
 import org.apache.directory.shared.ldap.extras.extended.CancelRequest;
 import org.apache.directory.shared.ldap.extras.extended.CertGenerationRequest;
 import org.apache.directory.shared.ldap.extras.extended.GracefulShutdownRequest;
-import org.apache.directory.shared.ldap.extras.extended.StoredProcedureRequest;
+import org.apache.directory.shared.ldap.extras.extended.IStoredProcedureRequest;
 import org.apache.directory.shared.ldap.extras.extended.ads_impl.CancelFactory;
 import org.apache.directory.shared.ldap.extras.extended.ads_impl.CertGenerationFactory;
 import org.apache.directory.shared.ldap.extras.extended.ads_impl.GracefulDisconnectFactory;
@@ -122,7 +122,7 @@ public class ExtrasBundleActivator implements BundleActivator
         extReqfactory = new GracefulShutdownFactory( codec );
         codec.registerExtendedRequest( extReqfactory );
         
-        extReqfactory = new StoredProcedureFactory();
+        extReqfactory = new StoredProcedureFactory( codec );
         codec.registerExtendedRequest( extReqfactory );
         
         
@@ -153,7 +153,7 @@ public class ExtrasBundleActivator implements BundleActivator
         codec.unregisterExtendedRequest( CancelRequest.EXTENSION_OID );
         codec.unregisterExtendedRequest( CertGenerationRequest.EXTENSION_OID );
         codec.unregisterExtendedRequest( GracefulShutdownRequest.EXTENSION_OID );
-        codec.unregisterExtendedRequest( StoredProcedureRequest.EXTENSION_OID );
+        codec.unregisterExtendedRequest( IStoredProcedureRequest.EXTENSION_OID );
         
         codec.unregisterUnsolicitedResponse( GracefulDisconnectResponse.EXTENSION_OID );
     }

@@ -17,29 +17,19 @@
  *   under the License.
  *
  */
-package org.apache.directory.shared.ldap.extras.extended.ads_impl;
+package org.apache.directory.shared.ldap.extras.extended;
 
 
-import org.apache.directory.shared.ldap.codec.api.ExtendedResponseDecorator; 
-import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
-import org.apache.directory.shared.ldap.extras.extended.GracefulShutdownResponse;
+import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
 
 
 /**
- * A Decorator for CancelResponses.
+ * The stored procedure extended operation response.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class GracefulShutdownResponseDecorator extends ExtendedResponseDecorator<GracefulShutdownResponse> implements GracefulShutdownResponse
+public interface IStoredProcedureResponse extends ExtendedResponse
 {
-    /**
-     * Creates a new instance of GracefulShutdownResponseDecorator.
-     *
-     * @param codec
-     * @param decoratedMessage
-     */
-    public GracefulShutdownResponseDecorator( LdapCodecService codec, GracefulShutdownResponse decoratedMessage )
-    {
-        super( codec, decoratedMessage );
-    }
+    /** The OID for the stored procedure extended operation response. */
+    String EXTENSION_OID = "1.3.6.1.4.1.18060.0.1.7";
 }

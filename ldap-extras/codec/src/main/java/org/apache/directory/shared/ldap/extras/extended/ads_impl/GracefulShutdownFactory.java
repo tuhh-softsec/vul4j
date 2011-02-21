@@ -61,7 +61,7 @@ public class GracefulShutdownFactory
      */
     public GracefulShutdownRequest newRequest()
     {
-        return new GracefulShutdownRequestImpl();
+        return new GracefulShutdownRequestDecorator( codec, new GracefulShutdownRequestImpl() );
     }
 
 

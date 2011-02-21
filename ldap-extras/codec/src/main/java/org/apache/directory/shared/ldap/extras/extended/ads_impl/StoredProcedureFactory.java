@@ -22,6 +22,9 @@ package org.apache.directory.shared.ldap.extras.extended.ads_impl;
 
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.ldap.codec.api.ExtendedRequestFactory;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
+import org.apache.directory.shared.ldap.extras.extended.IStoredProcedureRequest;
+import org.apache.directory.shared.ldap.extras.extended.IStoredProcedureResponse;
 import org.apache.directory.shared.ldap.extras.extended.StoredProcedureRequest;
 import org.apache.directory.shared.ldap.extras.extended.StoredProcedureResponse;
 
@@ -32,32 +35,46 @@ import org.apache.directory.shared.ldap.extras.extended.StoredProcedureResponse;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class StoredProcedureFactory implements ExtendedRequestFactory<StoredProcedureRequest, StoredProcedureResponse>
+public class StoredProcedureFactory implements ExtendedRequestFactory<IStoredProcedureRequest, IStoredProcedureResponse>
 {
+    private LdapCodecService codec;
+    
+    
+    /**
+     * Creates a new instance of StoredProcedureFactory.
+     *
+     * @param codec
+     */
+    public StoredProcedureFactory( LdapCodecService codec )
+    {
+        this.codec = codec;
+    }
+    
+    
     /**
      * {@inheritDoc}
      */
     public String getOid()
     {
-        return StoredProcedureRequest.EXTENSION_OID;
+        return IStoredProcedureRequest.EXTENSION_OID;
     }
 
     
     /**
      * {@inheritDoc}
      */
-    public StoredProcedureRequest newRequest()
+    public IStoredProcedureRequest newRequest()
     {
-        return new StoredProcedureRequest();
+        return new StoredProcedureRequestDecorator( codec, new StoredProcedureRequest() );
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public StoredProcedureResponse newResponse( byte[] encodedValue ) throws DecoderException
+    public IStoredProcedureResponse newResponse( byte[] encodedValue ) throws DecoderException
     {
-        StoredProcedureResponse response = new StoredProcedureResponse();
+        StoredProcedureResponseDecorator response = new StoredProcedureResponseDecorator( codec, new StoredProcedureResponse() );
         response.setResponseValue( encodedValue );
         return response;
     }

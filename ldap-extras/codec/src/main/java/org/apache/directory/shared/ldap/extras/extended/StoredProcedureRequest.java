@@ -20,23 +20,14 @@
 package org.apache.directory.shared.ldap.extras.extended;
 
 
-import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.naming.NamingException;
-import javax.naming.ldap.ExtendedResponse;
-
-import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.extras.extended.ads_impl.StoredProcedure;
-import org.apache.directory.shared.ldap.extras.extended.ads_impl.StoredProcedureContainer;
-import org.apache.directory.shared.ldap.extras.extended.ads_impl.StoredProcedureDecoder;
-import org.apache.directory.shared.ldap.model.message.ResultResponse;
+import org.apache.directory.shared.ldap.model.message.AbstractExtendedRequest;
 import org.apache.directory.shared.util.exception.NotImplementedException;
 import org.apache.directory.shared.ldap.extras.extended.ads_impl.StoredProcedure.StoredProcedureParameter;
-import org.apache.directory.shared.ldap.model.message.ExtendedRequestImpl;
 import org.apache.directory.shared.util.Strings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -44,20 +35,18 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class StoredProcedureRequest extends ExtendedRequestImpl
+public class StoredProcedureRequest extends AbstractExtendedRequest<IStoredProcedureResponse> implements IStoredProcedureRequest
 {
-    
-    /** The logger. */
-    private static final Logger LOG = LoggerFactory.getLogger( StoredProcedureRequest.class );
-    
     /** The serialVersionUID. */
     private static final long serialVersionUID = -4682291068700593492L;
     
-    /** The OID for the stored procedure extended operation request. */
-    public static final String EXTENSION_OID = "1.3.6.1.4.1.18060.0.1.6";
+    private String language;
 
-    /** The procedure. */
-    private StoredProcedure procedure;
+    private byte[] procedure;
+
+    private List<StoredProcedureParameter> parameters = new ArrayList<StoredProcedureParameter>();
+    
+    private IStoredProcedureResponse response;
 
 
     /**
@@ -69,7 +58,6 @@ public class StoredProcedureRequest extends ExtendedRequestImpl
     {
         super( messageId );
         this.setRequestName( EXTENSION_OID );
-        this.procedure = new StoredProcedure();
     }
 
 
@@ -79,7 +67,6 @@ public class StoredProcedureRequest extends ExtendedRequestImpl
     public StoredProcedureRequest()
     {
         this.setRequestName( EXTENSION_OID );
-        this.procedure = new StoredProcedure();
     }
 
 
@@ -94,154 +81,108 @@ public class StoredProcedureRequest extends ExtendedRequestImpl
     {
         super( messageId );
         this.setRequestName( EXTENSION_OID );
-        this.procedure = new StoredProcedure();
-        this.setLanguage( language );
-        this.setProcedure( procedure );
+        this.language = language;
+        this.procedure = Strings.getBytesUtf8( procedure );
     }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setRequestValue( byte[] payload )
-    {
-        StoredProcedureDecoder decoder = new StoredProcedureDecoder();
-        StoredProcedureContainer container = new StoredProcedureContainer();
-
-        try
-        {
-            decoder.decode( ByteBuffer.wrap( payload ), container );
-            this.procedure = container.getStoredProcedure();
-        }
-        catch ( Exception e )
-        {
-            LOG.error( I18n.err( I18n.ERR_04165 ), e );
-            throw new RuntimeException( e );
-        }
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public ExtendedResponse createExtendedResponse( String id, byte[] berValue, int offset, int length )
-        throws NamingException
-    {
-        StoredProcedureResponse resp = ( StoredProcedureResponse ) getResultResponse();
-        resp.setResponseValue( berValue );
-        resp.setResponseName( id );
-        return resp;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public byte[] getRequestValue()
-    {
-        if ( requestValue == null )
-        {
-            try
-            {
-                requestValue = procedure.encode().array();
-            }
-            catch ( EncoderException e )
-            {
-                LOG.error( I18n.err( I18n.ERR_04174 ), e );
-                throw new RuntimeException( e );
-            }
-        }
-
-        return requestValue;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public ResultResponse getResultResponse()
-    {
-        if ( response == null )
-        {
-            StoredProcedureResponse spr = new StoredProcedureResponse( getMessageId() );
-            spr.setResponseName( EXTENSION_OID );
-            response = spr;
-        }
-
-        return response;
-    }
-
-
+    
+    
     // -----------------------------------------------------------------------
     // Parameters of the Extended Request Payload
     // -----------------------------------------------------------------------
 
+
     /**
-     * Gets the language.
-     *
-     * @return the language
+     * {@inheritDoc}
      */
     public String getLanguage()
     {
-        return procedure.getLanguage();
+        return language;
     }
 
 
     /**
-     * Sets the language.
-     *
-     * @param language the new language
+     * {@inheritDoc}
      */
     public void setLanguage( String language )
     {
-        this.procedure.setLanguage( language );
+        this.language = language;
+    }
+
+
+    public byte[] getProcedure()
+    {
+        if ( procedure == null )
+        {
+            return null;
+        }
+
+        final byte[] copy = new byte[ procedure.length ];
+        System.arraycopy( procedure, 0, copy, 0, procedure.length );
+        return copy;
+    }
+
+
+    public void setProcedure( byte[] procedure )
+    {
+        if ( procedure != null )
+        {
+            this.procedure = new byte[ procedure.length ];
+            System.arraycopy( procedure, 0, this.procedure, 0, procedure.length );
+        } 
+        else 
+        {
+            this.procedure = null;
+        }
+    }
+
+
+    public List<StoredProcedureParameter> getParameters()
+    {
+        return parameters;
+    }
+
+
+    public void addParameter( StoredProcedureParameter parameter )
+    {
+        parameters.add( parameter );
     }
 
 
     /**
-     * Sets the procedure.
-     *
-     * @param procedure the new procedure
+     * {@inheritDoc}
      */
     public void setProcedure( String procedure )
     {
-        this.procedure.setProcedure( Strings.getBytesUtf8(procedure) );
+        this.procedure = Strings.getBytesUtf8( procedure );
     }
 
 
     /**
-     * Gets the procedure specification.
-     *
-     * @return the procedure specification
+     * {@inheritDoc}
      */
     public String getProcedureSpecification()
     {
-        return Strings.utf8ToString(procedure.getProcedure());
+        return Strings.utf8ToString( procedure );
     }
 
 
     /**
-     * Size.
-     *
-     * @return the int
+     * {@inheritDoc}
      */
     public int size()
     {
-        return this.procedure.getParameters().size();
+        return parameters.size();
     }
 
 
     /**
-     * Gets the parameter type.
-     *
-     * @param index the index
-     * @return the parameter type
+     * {@inheritDoc}
      */
     public Object getParameterType( int index )
     {
-        if ( !this.procedure.getLanguage().equals( "java" ) )
+        if ( ! language.equals( "java" ) )
         {
-            return procedure.getParameters().get( index ).getType();
+            return parameters.get( index ).getType();
         }
 
         return getJavaParameterType( index );
@@ -249,10 +190,7 @@ public class StoredProcedureRequest extends ExtendedRequestImpl
 
 
     /**
-     * Gets the java parameter type.
-     *
-     * @param index the index
-     * @return the java parameter type
+     * {@inheritDoc}
      */
     public Class<?> getJavaParameterType( int index )
     {
@@ -261,16 +199,13 @@ public class StoredProcedureRequest extends ExtendedRequestImpl
 
 
     /**
-     * Gets the parameter value.
-     *
-     * @param index the index
-     * @return the parameter value
+     * {@inheritDoc}
      */
     public Object getParameterValue( int index )
     {
-        if ( !this.procedure.getLanguage().equals( "java" ) )
+        if ( ! language.equals( "java" ) )
         {
-            return procedure.getParameters().get( index ).getValue();
+            return parameters.get( index ).getValue();
         }
 
         return getJavaParameterValue( index );
@@ -278,10 +213,7 @@ public class StoredProcedureRequest extends ExtendedRequestImpl
 
 
     /**
-     * Gets the java parameter value.
-     *
-     * @param index the index
-     * @return the java parameter value
+     * {@inheritDoc}
      */
     public Object getJavaParameterValue( int index )
     {
@@ -290,10 +222,7 @@ public class StoredProcedureRequest extends ExtendedRequestImpl
 
 
     /**
-     * Adds the parameter.
-     *
-     * @param type the type
-     * @param value the value
+     * {@inheritDoc}
      */
     public void addParameter( Object type, Object value )
     {
@@ -317,7 +246,7 @@ public class StoredProcedureRequest extends ExtendedRequestImpl
         StoredProcedureParameter parameter = new StoredProcedureParameter();
         parameter.setType( ( byte[] ) type );
         parameter.setValue( ( byte[] ) value );
-        this.procedure.addParameter( parameter );
+        parameters.add( parameter );
 
         // below here try to convert parameters to their appropriate byte[] representations
 
@@ -326,5 +255,22 @@ public class StoredProcedureRequest extends ExtendedRequestImpl
          * 
          * throw new NotImplementedException( "conversion of value to java type not implemented" );
          */
+    }
+
+
+    @Override
+    /**
+     * {@inheritDoc}
+     */
+    public IStoredProcedureResponse getResultResponse()
+    {
+        if ( response == null )
+        {
+            StoredProcedureResponse spr = new StoredProcedureResponse( getMessageId() );
+            spr.setResponseName( EXTENSION_OID );
+            response = spr;
+        }
+
+        return response;
     }
 }
