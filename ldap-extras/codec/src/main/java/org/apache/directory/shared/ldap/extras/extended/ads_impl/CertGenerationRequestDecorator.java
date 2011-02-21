@@ -25,8 +25,8 @@ import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.api.ExtendedRequestDecorator;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
-import org.apache.directory.shared.ldap.extras.extended.ICertGenerationRequest;
-import org.apache.directory.shared.ldap.extras.extended.ICertGenerationResponse;
+import org.apache.directory.shared.ldap.extras.extended.CertGenerationRequest;
+import org.apache.directory.shared.ldap.extras.extended.CertGenerationResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,8 +37,8 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class CertGenerationRequestDecorator 
-    extends ExtendedRequestDecorator<ICertGenerationRequest,ICertGenerationResponse> 
-    implements ICertGenerationRequest
+    extends ExtendedRequestDecorator<CertGenerationRequest,CertGenerationResponse> 
+    implements CertGenerationRequest
 {
     private static final Logger LOG = LoggerFactory.getLogger( CertGenerationRequestDecorator.class );
     
@@ -46,7 +46,7 @@ public class CertGenerationRequestDecorator
     private CertGenerationObject certGenObj;
 
 
-    public CertGenerationRequestDecorator( LdapCodecService codec, ICertGenerationRequest decoratedMessage )
+    public CertGenerationRequestDecorator( LdapCodecService codec, CertGenerationRequest decoratedMessage )
     {
         super( codec, decoratedMessage );
         certGenObj = new CertGenerationObject( decoratedMessage );
@@ -123,7 +123,7 @@ public class CertGenerationRequestDecorator
      * {@inheritDoc}
      */
     @Override
-    public ICertGenerationResponse getResultResponse()
+    public CertGenerationResponse getResultResponse()
     {
         return getDecorated().getResultResponse();
     }

@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.extras.extended.ads_impl;
 
 import org.apache.directory.shared.ldap.codec.api.ExtendedResponseDecorator;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
-import org.apache.directory.shared.ldap.extras.extended.ICertGenerationResponse;
+import org.apache.directory.shared.ldap.extras.extended.CertGenerationResponse;
 
 
 /**
@@ -30,7 +30,7 @@ import org.apache.directory.shared.ldap.extras.extended.ICertGenerationResponse;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class CertGenerationResponseDecorator extends ExtendedResponseDecorator<ICertGenerationResponse> implements ICertGenerationResponse
+public class CertGenerationResponseDecorator extends ExtendedResponseDecorator<CertGenerationResponse> implements CertGenerationResponse
 {
     /**
      * Creates a new instance of CancelResponseDecorator.
@@ -38,7 +38,7 @@ public class CertGenerationResponseDecorator extends ExtendedResponseDecorator<I
      * @param codec
      * @param decoratedMessage
      */
-    public CertGenerationResponseDecorator( LdapCodecService codec, ICertGenerationResponse decoratedMessage )
+    public CertGenerationResponseDecorator( LdapCodecService codec, CertGenerationResponse decoratedMessage )
     {
         super( codec, decoratedMessage );
     }

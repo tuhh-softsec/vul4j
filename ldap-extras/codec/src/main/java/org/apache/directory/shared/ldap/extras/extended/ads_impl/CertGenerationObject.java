@@ -26,7 +26,7 @@ import org.apache.directory.shared.asn1.AbstractAsn1Object;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
-import org.apache.directory.shared.ldap.extras.extended.ICertGenerationRequest;
+import org.apache.directory.shared.ldap.extras.extended.CertGenerationRequest;
 import org.apache.directory.shared.util.Strings;
 
 
@@ -47,10 +47,10 @@ import org.apache.directory.shared.util.Strings;
  */
 public class CertGenerationObject extends AbstractAsn1Object
 {
-    private ICertGenerationRequest request;
+    private CertGenerationRequest request;
     
     
-    public CertGenerationObject( ICertGenerationRequest request )
+    public CertGenerationObject( CertGenerationRequest request )
     {
         this.request = request;
     }

@@ -23,10 +23,10 @@ package org.apache.directory.shared.ldap.extras.extended.ads_impl;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.ldap.codec.api.ExtendedRequestFactory;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
+import org.apache.directory.shared.ldap.extras.extended.CertGenerationRequestImpl;
+import org.apache.directory.shared.ldap.extras.extended.CertGenerationResponseImpl;
 import org.apache.directory.shared.ldap.extras.extended.CertGenerationRequest;
 import org.apache.directory.shared.ldap.extras.extended.CertGenerationResponse;
-import org.apache.directory.shared.ldap.extras.extended.ICertGenerationRequest;
-import org.apache.directory.shared.ldap.extras.extended.ICertGenerationResponse;
 
 
 /**
@@ -36,7 +36,7 @@ import org.apache.directory.shared.ldap.extras.extended.ICertGenerationResponse;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class CertGenerationFactory 
-    implements ExtendedRequestFactory<ICertGenerationRequest, ICertGenerationResponse>
+    implements ExtendedRequestFactory<CertGenerationRequest, CertGenerationResponse>
 {
     private LdapCodecService codec;
     
@@ -52,25 +52,25 @@ public class CertGenerationFactory
      */
     public String getOid()
     {
-        return ICertGenerationRequest.EXTENSION_OID;
+        return CertGenerationRequest.EXTENSION_OID;
     }
 
     
     /**
      * {@inheritDoc}
      */
-    public ICertGenerationRequest newRequest()
+    public CertGenerationRequest newRequest()
     {
-        return new CertGenerationRequestDecorator( codec, new CertGenerationRequest() );
+        return new CertGenerationRequestDecorator( codec, new CertGenerationRequestImpl() );
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public ICertGenerationResponse newResponse( byte[] encodedValue ) throws DecoderException
+    public CertGenerationResponse newResponse( byte[] encodedValue ) throws DecoderException
     {
-        CertGenerationResponseDecorator response = new CertGenerationResponseDecorator( codec, new CertGenerationResponse() );
+        CertGenerationResponseDecorator response = new CertGenerationResponseDecorator( codec, new CertGenerationResponseImpl() );
         response.setResponseValue( encodedValue );
         return response;
     }

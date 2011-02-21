@@ -39,7 +39,7 @@ import org.apache.directory.shared.ldap.extras.controls.syncrepl_impl.SyncStateV
 import org.apache.directory.shared.ldap.extras.extended.GracefulDisconnect;
 import org.apache.directory.shared.ldap.extras.extended.GracefulShutdownRequest;
 import org.apache.directory.shared.ldap.extras.extended.CancelRequest;
-import org.apache.directory.shared.ldap.extras.extended.ICertGenerationRequest;
+import org.apache.directory.shared.ldap.extras.extended.CertGenerationRequest;
 import org.apache.directory.shared.ldap.extras.extended.StoredProcedureRequest;
 import org.apache.directory.shared.ldap.extras.extended.ads_impl.CancelFactory;
 import org.apache.directory.shared.ldap.extras.extended.ads_impl.CertGenerationFactory;
@@ -151,7 +151,7 @@ public class ExtrasBundleActivator implements BundleActivator
         codec.unregisterControl( PasswordPolicy.OID );
         
         codec.unregisterExtendedRequest( CancelRequest.EXTENSION_OID );
-        codec.unregisterExtendedRequest( ICertGenerationRequest.EXTENSION_OID );
+        codec.unregisterExtendedRequest( CertGenerationRequest.EXTENSION_OID );
         codec.unregisterExtendedRequest( GracefulShutdownRequest.EXTENSION_OID );
         codec.unregisterExtendedRequest( StoredProcedureRequest.EXTENSION_OID );
         

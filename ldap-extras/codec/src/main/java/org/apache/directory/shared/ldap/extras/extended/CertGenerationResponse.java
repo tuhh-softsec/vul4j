@@ -20,109 +20,16 @@
 package org.apache.directory.shared.ldap.extras.extended;
 
 
-import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.model.message.ExtendedResponseImpl;
-import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
+import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
 
 
 /**
- * 
- * The response sent back from the server after the CertGeneration extended operation is performed.
+ * The interface for the certificate generation extended operation.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class CertGenerationResponse extends ExtendedResponseImpl implements ICertGenerationResponse
+public interface CertGenerationResponse extends ExtendedResponse
 {
-    /** The serial version UUID */
-    private static final long serialVersionUID = 1L;
-
-    public CertGenerationResponse( int messageId, ResultCodeEnum rcode )
-    {
-        super( messageId, EXTENSION_OID );
-
-        switch ( rcode )
-        {
-            case SUCCESS:
-            case OPERATIONS_ERROR:
-            case INSUFFICIENT_ACCESS_RIGHTS:
-                break;
-
-            default:
-                throw new IllegalArgumentException( I18n.err( I18n.ERR_04166, ResultCodeEnum.SUCCESS,
-                    ResultCodeEnum.OPERATIONS_ERROR, ResultCodeEnum.INSUFFICIENT_ACCESS_RIGHTS ) );
-        }
-
-        super.getLdapResult().setMatchedDn( null );
-        super.getLdapResult().setResultCode( rcode );
-    }
-
-
-    public CertGenerationResponse( int messageId )
-    {
-        super( messageId, EXTENSION_OID );
-        super.getLdapResult().setMatchedDn( null );
-        super.getLdapResult().setResultCode( ResultCodeEnum.SUCCESS );
-    }
-
-
-    public CertGenerationResponse()
-    {
-        super( EXTENSION_OID );
-        super.getLdapResult().setMatchedDn( null );
-        super.getLdapResult().setResultCode( ResultCodeEnum.SUCCESS );
-    }
-
-
-    /**
-     * Gets the OID uniquely identifying this extended response (a.k.a. its
-     * name).
-     * 
-     * @return the OID of the extended response type.
-     */
-    public String getResponseName()
-    {
-        return EXTENSION_OID;
-    }
-
-
-    /**
-     * Sets the OID uniquely identifying this extended response (a.k.a. its
-     * name).
-     * 
-     * @param oid
-     *            the OID of the extended response type.
-     */
-    public void setResponseName( String oid )
-    {
-        throw new UnsupportedOperationException( I18n.err( I18n.ERR_04168, EXTENSION_OID ) );
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int hashCode()
-    {
-        int hash = 37;
-        // Seems simple but look at the equals() method ...
-        hash = hash * 17 + getClass().getName().hashCode();
-
-        return hash;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean equals( Object obj )
-    {
-        if ( obj == this )
-        {
-            return true;
-        }
-
-        return ( obj instanceof CertGenerationResponse );
-    }
+    /** The CertGenerationResponse OID */
+    public static final String EXTENSION_OID = "1.3.6.1.4.1.18060.0.1.9";
 }
