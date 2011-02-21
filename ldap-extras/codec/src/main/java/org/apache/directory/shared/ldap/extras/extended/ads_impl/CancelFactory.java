@@ -22,10 +22,10 @@ package org.apache.directory.shared.ldap.extras.extended.ads_impl;
 
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.ldap.codec.api.ExtendedRequestFactory;
+import org.apache.directory.shared.ldap.extras.extended.CancelRequestImpl;
+import org.apache.directory.shared.ldap.extras.extended.CancelResponseImpl;
 import org.apache.directory.shared.ldap.extras.extended.CancelRequest;
 import org.apache.directory.shared.ldap.extras.extended.CancelResponse;
-import org.apache.directory.shared.ldap.extras.extended.ICancelRequest;
-import org.apache.directory.shared.ldap.extras.extended.ICancelResponse;
 
 
 /**
@@ -34,32 +34,32 @@ import org.apache.directory.shared.ldap.extras.extended.ICancelResponse;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class CancelFactory implements ExtendedRequestFactory<CancelRequest, CancelResponse>
+public class CancelFactory implements ExtendedRequestFactory<CancelRequestImpl, CancelResponseImpl>
 {
     /**
      * {@inheritDoc}
      */
     public String getOid()
     {
-        return ICancelRequest.EXTENSION_OID;
+        return CancelRequest.EXTENSION_OID;
     }
 
     
     /**
      * {@inheritDoc}
      */
-    public ICancelRequest newRequest()
+    public CancelRequest newRequest()
     {
-        return new CancelRequest();
+        return new CancelRequestImpl();
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public ICancelResponse newResponse( byte[] encodedValue ) throws DecoderException
+    public CancelResponse newResponse( byte[] encodedValue ) throws DecoderException
     {
-        ICancelResponse response = new CancelResponse();
+        CancelResponse response = new CancelResponseImpl();
         response.setResponseValue( encodedValue );
         return response;
     }

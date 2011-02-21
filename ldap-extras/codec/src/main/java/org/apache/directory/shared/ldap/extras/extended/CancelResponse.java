@@ -20,120 +20,15 @@
 package org.apache.directory.shared.ldap.extras.extended;
 
 
-import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.model.message.ExtendedResponseImpl;
-import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
-import org.apache.directory.shared.util.StringConstants;
+import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
 
 
 /**
+ * The interface for Cancel ExtendedResponses.
  * 
- * The response sent back from the server after the Cancel extended operation is performed.
- *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class CancelResponse extends ExtendedResponseImpl implements ICancelResponse
+public interface CancelResponse extends ExtendedResponse
 {
-    /** The serial version UUID */
-    private static final long serialVersionUID = 1L;
 
-
-    /**
-     * Create a new CancelResponse object
-     * @param messageId The messageId
-     * @param rcode the result code
-     */
-    public CancelResponse( int messageId, ResultCodeEnum rcode )
-    {
-        super( messageId );
-
-        switch ( rcode )
-        {
-            case SUCCESS:
-            case CANCELED:
-            case CANNOT_CANCEL:
-            case NO_SUCH_OPERATION:
-            case TOO_LATE:
-                break;
-
-            default:
-                throw new IllegalArgumentException( I18n.err( I18n.ERR_04166, ResultCodeEnum.SUCCESS,
-                    ResultCodeEnum.OPERATIONS_ERROR, ResultCodeEnum.INSUFFICIENT_ACCESS_RIGHTS ) );
-        }
-
-        super.getLdapResult().setMatchedDn( null );
-        super.getLdapResult().setResultCode( rcode );
-    }
-
-
-    public CancelResponse( int messageId )
-    {
-        super( messageId );
-        super.getLdapResult().setMatchedDn( null );
-        super.getLdapResult().setResultCode( ResultCodeEnum.SUCCESS );
-    }
-
-
-    public CancelResponse()
-    {
-        super( ICancelRequest.EXTENSION_OID );
-        super.getLdapResult().setMatchedDn( null );
-        super.getLdapResult().setResultCode( ResultCodeEnum.SUCCESS );
-    }
-
-
-    // ------------------------------------------------------------------------
-    // ExtendedResponse Interface Method Implementations
-    // ------------------------------------------------------------------------
-    /**
-     * Gets the response OID specific encoded response values. It's a null
-     * value for a CancelResponse
-     * 
-     * @return the response specific encoded response values.
-     */
-    public byte[] getResponse()
-    {
-        return StringConstants.EMPTY_BYTES;
-    }
-
-
-    /**
-     * Gets the OID uniquely identifying this extended response (a.k.a. its
-     * name). It's a null value for the Cancel response
-     * 
-     * @return the OID of the extended response type.
-     */
-    public String getResponseName()
-    {
-        return "";
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int hashCode()
-    {
-        int hash = 37;
-        // Seems simple but look at the equals() method ...
-        hash = hash * 17 + getClass().getName().hashCode();
-
-        return hash;
-    }
-
-
-    /**
-     * @see Object#equals(Object)
-     */
-    @Override
-    public boolean equals( Object obj )
-    {
-        if ( obj == this )
-        {
-            return true;
-        }
-
-        return ( obj instanceof CancelResponse );
-    }
 }

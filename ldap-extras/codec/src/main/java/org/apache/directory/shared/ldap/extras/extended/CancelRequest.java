@@ -19,73 +19,32 @@
  */
 package org.apache.directory.shared.ldap.extras.extended;
 
-
-import org.apache.directory.shared.ldap.model.message.AbstractExtendedRequest;
+import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 
 
 /**
- * Implement the extended Cancel Request as described in RFC 3909.
- * 
- * It's grammar is :
- * 
- * cancelRequestValue ::= SEQUENCE {
- *        cancelID        MessageID
- *                        -- MessageID is as defined in [RFC2251]
- * }
+ * The CancelRequest interface.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class CancelRequest extends AbstractExtendedRequest<ICancelResponse> implements ICancelRequest
+public interface CancelRequest extends ExtendedRequest<CancelResponse>
 {
-    /** The serial version UUID */
-    private static final long serialVersionUID = 1L;
 
-    /** The cancelId of the request to be canceled */
-    private int cancelId;
+    /** The requestName for this extended request */
+    public static final String EXTENSION_OID = "1.3.6.1.1.8";
+
 
     /**
-     * Creates a new instance of CancelRequest.
+     *  @return The id of the Message to cancel.
+     */
+    public abstract int getCancelId();
+
+
+    /**
+     * Sets the message to cancel by id.
      *
-     * @param messageId the message id
-     * @param cancelId the message id of the request to cancel
+     * @param cancelId The id of the message to cancel.
      */
-    public CancelRequest( int messageId, int cancelId )
-    {
-        super( messageId );
-        setRequestName( EXTENSION_OID );
+    public abstract void setCancelId( int cancelId );
 
-        this.cancelId = cancelId;
-    }
-
-
-    /**
-     * Creates a new instance of CancelRequest.
-     */
-    public CancelRequest()
-    {
-        setRequestName( EXTENSION_OID );
-    }
-
-    
-    public int getCancelId()
-    {
-        return cancelId;
-    }
-    
-    
-    public void setCancelId( int cancelId )
-    {
-        this.cancelId = cancelId;
-    }
-    
-
-    public ICancelResponse getResultResponse()
-    {
-        if ( response == null )
-        {
-            response = new CancelResponse( cancelId );
-        }
-
-        return response;
-    }
 }
