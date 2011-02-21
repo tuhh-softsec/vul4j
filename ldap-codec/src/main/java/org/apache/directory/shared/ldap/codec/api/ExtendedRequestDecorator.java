@@ -37,8 +37,8 @@ import org.apache.directory.shared.util.Strings;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ExtendedRequestDecorator extends SingleReplyRequestDecorator<ExtendedRequest<ExtendedResponse>,ExtendedResponse> 
-    implements ExtendedRequest<ExtendedResponse>
+public class ExtendedRequestDecorator<Q extends ExtendedRequest<P>, P extends ExtendedResponse> 
+    extends SingleReplyRequestDecorator<Q,P> implements ExtendedRequest<P>
 {
     /** The extended request length */
     private int extendedRequestLength;
@@ -46,7 +46,7 @@ public class ExtendedRequestDecorator extends SingleReplyRequestDecorator<Extend
     /** The OID length */
     private byte[] requestNameBytes;
 
-    private byte[] requestValue;
+    protected byte[] requestValue;
 
 
     /**
@@ -54,7 +54,7 @@ public class ExtendedRequestDecorator extends SingleReplyRequestDecorator<Extend
      *
      * @param decoratedMessage the decorated ExtendedRequest
      */
-    public ExtendedRequestDecorator( LdapCodecService codec, ExtendedRequest<ExtendedResponse> decoratedMessage )
+    public ExtendedRequestDecorator( LdapCodecService codec, Q decoratedMessage )
     {
         super( codec, decoratedMessage );
     }

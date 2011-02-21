@@ -22,6 +22,7 @@ package org.apache.directory.shared.ldap.extras.extended.ads_impl;
 
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.ldap.codec.api.ExtendedRequestFactory;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.extras.extended.CancelRequestImpl;
 import org.apache.directory.shared.ldap.extras.extended.CancelResponseImpl;
 import org.apache.directory.shared.ldap.extras.extended.CancelRequest;
@@ -34,8 +35,17 @@ import org.apache.directory.shared.ldap.extras.extended.CancelResponse;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class CancelFactory implements ExtendedRequestFactory<CancelRequestImpl, CancelResponseImpl>
+public class CancelFactory implements ExtendedRequestFactory<CancelRequest, CancelResponse>
 {
+    private LdapCodecService codec;
+    
+    
+    public CancelFactory( LdapCodecService codec )
+    {
+        this.codec = codec;
+    }
+    
+    
     /**
      * {@inheritDoc}
      */
@@ -50,7 +60,7 @@ public class CancelFactory implements ExtendedRequestFactory<CancelRequestImpl, 
      */
     public CancelRequest newRequest()
     {
-        return new CancelRequestImpl();
+        return new CancelRequestDecorator( codec, new CancelRequestImpl() );
     }
 
 
@@ -59,7 +69,7 @@ public class CancelFactory implements ExtendedRequestFactory<CancelRequestImpl, 
      */
     public CancelResponse newResponse( byte[] encodedValue ) throws DecoderException
     {
-        CancelResponse response = new CancelResponseImpl();
+        CancelResponseDecorator response = new CancelResponseDecorator( codec, new CancelResponseImpl() );
         response.setResponseValue( encodedValue );
         return response;
     }
