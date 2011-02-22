@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.codec.actions.bindRequest;
 
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
-import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.api.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.decorators.BindRequestDecorator;
 import org.apache.directory.shared.ldap.model.message.BindRequest;
 import org.apache.directory.shared.util.Strings;

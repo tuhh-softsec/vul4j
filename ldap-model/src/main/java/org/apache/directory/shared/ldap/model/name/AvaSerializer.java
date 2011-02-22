@@ -83,8 +83,6 @@ public final class AvaSerializer
         if ( Strings.isEmpty(atav.getUpName())
             || Strings.isEmpty(atav.getUpType())
             || Strings.isEmpty(atav.getNormType())
-            || ( atav.getStart() < 0 )
-            || ( atav.getLength() < 2 ) // At least a type and '='
             || ( atav.getUpValue().isNull() )
             || ( atav.getNormValue().isNull() ) )
         {
@@ -102,14 +100,6 @@ public final class AvaSerializer
             {
                 message += "the normType should not be null or empty";
             }
-            else if ( atav.getStart() < 0 )
-            {
-                message += "the start should not be < 0";
-            }
-            else if ( atav.getLength() < 2 )
-            {
-                message += "the length should not be < 2";
-            }
             else if ( atav.getUpValue().isNull() )
             {
                 message += "the upValue should not be null";
@@ -124,8 +114,6 @@ public final class AvaSerializer
         }
         
         Unicode.writeUTF(out, atav.getUpName());
-        out.writeInt( atav.getStart() );
-        out.writeInt( atav.getLength() );
         Unicode.writeUTF(out, atav.getUpType());
         Unicode.writeUTF(out, atav.getNormType());
         
@@ -162,8 +150,6 @@ public final class AvaSerializer
     public static Ava deserialize( ObjectInput in ) throws IOException
     {
         String upName = Unicode.readUTF(in);
-        in.readInt(); // start
-        in.readInt(); // length
         String upType = Unicode.readUTF(in);
         String normType = Unicode.readUTF(in);
         

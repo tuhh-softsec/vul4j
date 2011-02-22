@@ -24,31 +24,28 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.util.Queue;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.mycila.junit.concurrent.Concurrency;
-import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.tlv.TLVStateEnum;
 import org.apache.directory.shared.ldap.codec.api.MessageDecorator;
+import org.apache.directory.shared.ldap.codec.api.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.decorators.BindRequestDecorator;
 import org.apache.directory.shared.ldap.codec.osgi.AbstractCodecServiceTest;
 import org.apache.directory.shared.ldap.model.message.BindRequest;
 import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.util.Strings;
-import org.apache.mina.core.buffer.IoBuffer;
-import org.apache.mina.core.filterchain.IoFilter.NextFilter;
 import org.apache.mina.core.session.DummySession;
 import org.apache.mina.core.session.IoSession;
-import org.apache.mina.filter.codec.AbstractProtocolDecoderOutput;
-import org.apache.mina.filter.codec.ProtocolDecoderOutput;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 
 
 /**
@@ -61,40 +58,6 @@ import org.junit.runner.RunWith;
 public class LdapDecoderTest extends AbstractCodecServiceTest
 {
     
-    private static class LdapProtocolDecoderOutput extends AbstractProtocolDecoderOutput 
-    {
-        public LdapProtocolDecoderOutput()
-        {
-            // Do nothing
-        }
-        
-        public void flush( NextFilter nextFilter, IoSession session ) 
-        {
-            // Do nothing
-            Queue<Object> messageQueue = getMessageQueue();
-            
-            while ( !messageQueue.isEmpty() ) 
-            {
-                nextFilter.messageReceived( session, messageQueue.poll()) ;
-            }
-        }
-
-
-        public Object getMessage()
-        {
-            Queue<Object> messageQueue = getMessageQueue();
-
-            if ( !messageQueue.isEmpty() )
-            {
-                return messageQueue.poll();
-            }
-            else
-            {
-                return null;
-            }
-        }
-    }
-    
     /**
      * Test the decoding of a full PDU
      */
@@ -104,7 +67,6 @@ public class LdapDecoderTest extends AbstractCodecServiceTest
         LdapDecoder ldapDecoder = new LdapDecoder();
         LdapMessageContainer<MessageDecorator<? extends Message>> container = 
             new LdapMessageContainer<MessageDecorator<? extends Message>>( codec );
-        ldapDecoder.setLdapMessageContainer( container );
 
         ByteBuffer stream = ByteBuffer.allocate( 0x35 );
         stream.put( new byte[]
@@ -126,22 +88,21 @@ public class LdapDecoderTest extends AbstractCodecServiceTest
 
         stream.flip();
 
-        InputStream is = new ByteArrayInputStream(stream.array());
-        Object result = null;
+        List<Message> result = new ArrayList<Message>();
 
         // Decode a BindRequest PDU
         try
         {
-            result = ldapDecoder.decode(null, is);
+            ldapDecoder.decode( stream, container, result );
         }
-        catch ( DecoderException de )
+        catch ( Exception de )
         {
             de.printStackTrace();
             fail( de.getMessage() );
         }
 
         // Check the decoded PDU
-        BindRequest bindRequest = (BindRequest) result;
+        BindRequest bindRequest = (BindRequest) result.get( 0 );
 
         assertEquals( 1, bindRequest.getMessageId() );
         assertTrue( bindRequest.isVersion3() );
@@ -160,12 +121,11 @@ public class LdapDecoderTest extends AbstractCodecServiceTest
         LdapDecoder ldapDecoder = new LdapDecoder();
         LdapMessageContainer<MessageDecorator<? extends Message>> container = 
             new LdapMessageContainer<MessageDecorator<? extends Message>>( codec );
-        ldapDecoder.setLdapMessageContainer( container );
 
         IoSession dummySession = new DummySession();
         dummySession.setAttribute( "messageContainer", container );
 
-        IoBuffer stream = IoBuffer.allocate( 0x6A );
+        ByteBuffer stream = ByteBuffer.allocate( 0x6A );
         stream.put( new byte[]
             { 
                 0x30, 0x33,                     // LDAPMessage ::=SEQUENCE {
@@ -198,12 +158,12 @@ public class LdapDecoderTest extends AbstractCodecServiceTest
 
         stream.flip();
 
-        ProtocolDecoderOutput result = new LdapProtocolDecoderOutput();
+        List<Message> result = new ArrayList<Message>();
 
         // Decode a BindRequest PDU
         try
         {
-            ldapDecoder.decode( dummySession, stream, result );
+            ldapDecoder.decode( stream, container, result );
         }
         catch ( DecoderException de )
         {
@@ -212,7 +172,7 @@ public class LdapDecoderTest extends AbstractCodecServiceTest
         }
 
         // Check the decoded PDU
-        BindRequest bindRequest = (BindRequest) ( ( LdapProtocolDecoderOutput ) result ).getMessage();
+        BindRequest bindRequest = (BindRequest) ( result.get( 0 ) );
 
         assertEquals( 1, bindRequest.getMessageId() );
         assertTrue( bindRequest.isVersion3() );
@@ -221,7 +181,7 @@ public class LdapDecoderTest extends AbstractCodecServiceTest
         assertEquals( "password", Strings.utf8ToString(bindRequest.getCredentials()) );
         
         // The second message
-        bindRequest = ( BindRequest ) ( ( LdapProtocolDecoderOutput ) result ).getMessage();
+        bindRequest = ( BindRequest ) ( result.get( 1 ) );
 
         assertEquals( 2, bindRequest.getMessageId() );
         assertTrue( bindRequest.isVersion3() );

@@ -57,18 +57,12 @@ import org.apache.directory.ldap.client.api.future.ResponseFuture;
 import org.apache.directory.ldap.client.api.future.SearchFuture;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.util.OID;
+import org.apache.directory.shared.ldap.codec.api.BinaryAttributeDetector;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecServiceFactory;
+import org.apache.directory.shared.ldap.codec.api.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.api.MessageDecorator;
 import org.apache.directory.shared.ldap.codec.api.MessageEncoderException;
-import org.apache.directory.shared.ldap.model.message.extended.AddNoDResponse;
-import org.apache.directory.shared.ldap.model.message.extended.BindNoDResponse;
-import org.apache.directory.shared.ldap.model.message.extended.CompareNoDResponse;
-import org.apache.directory.shared.ldap.model.message.extended.DeleteNoDResponse;
-import org.apache.directory.shared.ldap.model.message.extended.ExtendedNoDResponse;
-import org.apache.directory.shared.ldap.model.message.extended.ModifyDnNoDResponse;
-import org.apache.directory.shared.ldap.model.message.extended.ModifyNoDResponse;
-import org.apache.directory.shared.ldap.model.message.extended.NoticeOfDisconnect;
-import org.apache.directory.shared.ldap.model.message.extended.SearchNoDResponse;
 import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.model.cursor.Cursor;
 import org.apache.directory.shared.ldap.model.cursor.SearchCursor;
@@ -122,6 +116,15 @@ import org.apache.directory.shared.ldap.model.message.SearchResultReference;
 import org.apache.directory.shared.ldap.model.message.UnbindRequest;
 import org.apache.directory.shared.ldap.model.message.UnbindRequestImpl;
 import org.apache.directory.shared.ldap.model.message.controls.OpaqueControl;
+import org.apache.directory.shared.ldap.model.message.extended.AddNoDResponse;
+import org.apache.directory.shared.ldap.model.message.extended.BindNoDResponse;
+import org.apache.directory.shared.ldap.model.message.extended.CompareNoDResponse;
+import org.apache.directory.shared.ldap.model.message.extended.DeleteNoDResponse;
+import org.apache.directory.shared.ldap.model.message.extended.ExtendedNoDResponse;
+import org.apache.directory.shared.ldap.model.message.extended.ModifyDnNoDResponse;
+import org.apache.directory.shared.ldap.model.message.extended.ModifyNoDResponse;
+import org.apache.directory.shared.ldap.model.message.extended.NoticeOfDisconnect;
+import org.apache.directory.shared.ldap.model.message.extended.SearchNoDResponse;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.name.Rdn;
 import org.apache.directory.shared.ldap.model.schema.AttributeType;
@@ -1653,6 +1656,10 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
                 response.cancel( true );
                 response.setCause( realCause );
             }
+        }
+        else
+        {
+            cause.printStackTrace();
         }
     }
 
@@ -3447,6 +3454,38 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         }
 
         conCloseListeners.add( ccListener );
+    }
+
+
+    /**
+     * This method is called when a new session is created. We will store some
+     * informations that the session will need to process incoming requests.
+     * 
+     * @param session the newly created session
+     */
+    public void sessionCreated( IoSession session ) throws Exception
+    {
+        // Last, store the message container
+        LdapMessageContainer<? extends MessageDecorator<Message>> ldapMessageContainer = 
+            new LdapMessageContainer<MessageDecorator<Message>>( 
+            codec,
+            new BinaryAttributeDetector()
+            {
+                public boolean isBinary( String id )
+                {
+                    try
+                    {
+                        AttributeType type = schemaManager.lookupAttributeTypeRegistry( id );
+                        return !type.getSyntax().isHumanReadable();
+                    }
+                    catch ( Exception e )
+                    {
+                        return !Strings.isEmpty(id) && id.endsWith(";binary");
+                    }
+                }
+            } );
+
+        session.setAttribute( "messageContainer", ldapMessageContainer );
     }
 
 

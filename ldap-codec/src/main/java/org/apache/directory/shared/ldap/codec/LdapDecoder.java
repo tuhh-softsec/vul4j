@@ -22,31 +22,28 @@ package org.apache.directory.shared.ldap.codec;
 
 import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.security.ProviderException;
+import java.util.List;
 
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
 import org.apache.directory.shared.asn1.ber.tlv.TLVStateEnum;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.api.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.api.MessageDecorator;
 import org.apache.directory.shared.ldap.codec.api.ResponseCarryingException;
 import org.apache.directory.shared.ldap.model.exception.ResponseCarryingMessageException;
 import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.util.Strings;
-import org.apache.mina.core.buffer.IoBuffer;
-import org.apache.mina.core.session.IoSession;
-import org.apache.mina.filter.codec.ProtocolDecoder;
-import org.apache.mina.filter.codec.ProtocolDecoderOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 /**
- * The LdapDecoder decodes ASN.1 BER encoded PDUs.
+ * The LdapDecoder decodes ASN.1 BER encoded PDUs into LDAP messages
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class LdapDecoder implements ProtocolDecoder
+public class LdapDecoder
 {
     /** The logger */
     private static Logger LOG = LoggerFactory.getLogger( LdapDecoder.class );
@@ -60,7 +57,6 @@ public class LdapDecoder implements ProtocolDecoder
     /** The ASN 1 decoder instance */
     private Asn1Decoder asn1Decoder;
 
-
     /**
      * Creates an instance of a Ldap Decoder implementation.
      */
@@ -71,30 +67,28 @@ public class LdapDecoder implements ProtocolDecoder
 
 
     /**
-     * Feeds the bytes within the input stream to the digester to generate the
-     * resultant decoded Message.
+     * Decodes a PDU from an input stream into a Ldap message container. We can only
+     * decode one complete message.
      *
-     * @param in The InputStream containing the PDU to be decoded
-     * @throws ProviderException If the decoding went wrong
+     * @param in The input stream to read and decode PDU bytes from
+     * @return return The decoded message
      */
-    private void digest( InputStream in ) throws DecoderException
+    public Message decode( InputStream in, LdapMessageContainer<MessageDecorator<? extends Message>> container ) throws DecoderException
     {
-        byte[] buf;
-
         try
         {
             int amount;
 
             while ( in.available() > 0 )
             {
-                buf = new byte[in.available()];
+                byte[]buf = new byte[in.available()];
 
                 if ( ( amount = in.read( buf ) ) == -1 )
                 {
                     break;
                 }
 
-                asn1Decoder.decode( ByteBuffer.wrap( buf, 0, amount ), ldapMessageContainer );
+                asn1Decoder.decode( ByteBuffer.wrap( buf, 0, amount ), container );
             }
         }
         catch ( Exception e )
@@ -103,113 +97,59 @@ public class LdapDecoder implements ProtocolDecoder
             LOG.error( message );
             throw new DecoderException( message, e );
         }
+
+        if ( container.getState() == TLVStateEnum.PDU_DECODED )
+        {
+            if ( IS_DEBUG )
+            {
+                LOG.debug( "Decoded LdapMessage : " + container );
+            }
+
+            return container.getMessage();
+        }
+        else
+        {
+            LOG.error( I18n.err( I18n.ERR_04062 ) );
+            throw new DecoderException( I18n.err( I18n.ERR_04063 ) );
+        }
     }
 
 
     /**
-     * Decodes a PDU from an input stream into a Snickers compiler generated
-     * stub envelope.
-     *
-     * @param lock Lock object used to exclusively read from the input stream
-     * @param in The input stream to read and decode PDU bytes from
-     * @return return decoded stub
+     * Decode an incoming buffer into LDAP messages. The result can be 0, 1 or many 
+     * LDAP messages, which will be stored into the array the caller has created.
+     * 
+     * @param buffer The incoming byte buffer
+     * @param messageContainer The LdapMessageContainer which will be used to store the
+     * message being decoded. If the message is not fully decoded, the ucrrent state
+     * is stored into this container
+     * @param decodedMessages The list of decoded messages
+     * @throws Exception If the decoding failed
      */
-    public Object decode( Object lock, InputStream in ) throws DecoderException
+    public void decode( ByteBuffer buffer, LdapMessageContainer<MessageDecorator<? extends Message>> messageContainer, List<Message> decodedMessages ) throws DecoderException
     {
-        if ( lock == null )
-        {
-            digest( in );
+        buffer.mark();
 
-            if ( ldapMessageContainer.getState() == TLVStateEnum.PDU_DECODED )
-            {
-                if ( IS_DEBUG )
-                {
-                    LOG.debug( "Decoded LdapMessage : " + ldapMessageContainer.getMessage() );
-                }
-
-                return ldapMessageContainer.getMessage();
-            }
-            else
-            {
-                LOG.error( I18n.err( I18n.ERR_04062 ) );
-                throw new DecoderException( I18n.err( I18n.ERR_04063 ) );
-            }
-        }
-        else
+        while ( buffer.hasRemaining() )
         {
             try
             {
-                // Synchronize on the input lock object to prevent concurrent
-                // reads
-                synchronized ( lock )
-                {
-                    digest( in );
-
-                    // Notify/awaken threads waiting to read from input stream
-                    lock.notifyAll();
-                }
-            }
-            catch ( Exception e )
-            {
-                String message = I18n.err( I18n.ERR_04060, e.getLocalizedMessage() );
-                LOG.error( message );
-                throw new DecoderException( message, e );
-            }
-
-            if ( ldapMessageContainer.getState() == TLVStateEnum.PDU_DECODED )
-            {
-                if ( IS_DEBUG )
-                {
-                    LOG.debug( "Decoded LdapMessage : " + ldapMessageContainer.getMessage() );
-                }
-
-                return ldapMessageContainer.getMessage();
-            }
-            else
-            {
-                LOG.error( I18n.err( I18n.ERR_04064 ) );
-                throw new DecoderException( I18n.err( I18n.ERR_04063 ) );
-            }
-        }
-    }
-
-
-    @SuppressWarnings("unchecked")
-    public void decode( IoSession session, IoBuffer in, ProtocolDecoderOutput out ) throws Exception
-    {
-        ByteBuffer buf = in.buf();
-        LdapMessageContainer<MessageDecorator<? extends Message>> messageContainer =
-            ( LdapMessageContainer<MessageDecorator<? extends Message>> ) session.getAttribute( "messageContainer" );
-
-        if ( session.containsAttribute( "maxPDUSize" ) )
-        {
-            int maxPDUSize = ( Integer ) session.getAttribute( "maxPDUSize" );
-
-            messageContainer.setMaxPDUSize( maxPDUSize );
-        }
-
-        buf.mark();
-
-        while ( buf.hasRemaining() )
-        {
-            try
-            {
-                asn1Decoder.decode( buf, messageContainer );
+                asn1Decoder.decode( buffer, messageContainer );
 
                 if ( IS_DEBUG )
                 {
                     LOG.debug( "Decoding the PDU : " );
 
-                    int size = buf.position();
-                    buf.reset();
-                    int position = buf.position();
+                    int size = buffer.position();
+                    buffer.reset();
+                    int position = buffer.position();
                     int pduLength = size - position;
 
                     byte[] array = new byte[pduLength];
 
-                    System.arraycopy(buf.array(), position, array, 0, pduLength);
+                    System.arraycopy(buffer.array(), position, array, 0, pduLength);
 
-                    buf.position( size );
+                    buffer.position( size );
 
                     if ( array.length == 0 )
                     {
@@ -221,7 +161,7 @@ public class LdapDecoder implements ProtocolDecoder
                     }
                 }
 
-                buf.mark();
+                buffer.mark();
 
                 if ( messageContainer.getState() == TLVStateEnum.PDU_DECODED )
                 {
@@ -232,14 +172,14 @@ public class LdapDecoder implements ProtocolDecoder
 
                     Message message = messageContainer.getMessage();
 
-                    out.write( message );
+                    decodedMessages.add( message );
 
                     messageContainer.clean();
                 }
             }
             catch ( DecoderException de )
             {
-                buf.clear();
+                buffer.clear();
                 messageContainer.clean();
 
                 if ( de instanceof ResponseCarryingException )
@@ -257,24 +197,5 @@ public class LdapDecoder implements ProtocolDecoder
                 }
             }
         }
-    }
-
-
-    public void dispose( IoSession session ) throws Exception
-    {
-    }
-
-
-    public void finishDecode( IoSession session, ProtocolDecoderOutput out ) throws Exception
-    {
-    }
-
-
-    /**
-     * @param ldapMessageContainer the ldapMessageContainer to set
-     */
-    public void setLdapMessageContainer( LdapMessageContainer<MessageDecorator<? extends Message>> ldapMessageContainer )
-    {
-        this.ldapMessageContainer = ldapMessageContainer;
     }
 }

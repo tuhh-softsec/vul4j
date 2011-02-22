@@ -267,18 +267,4 @@ public class ExtendedResponseImplTest
         assertFalse( resp0.equals( resp1 ) );
         assertFalse( resp1.equals( resp0 ) );
     }
-
-
-    /**
-     * Tests inequality when responses are different.
-     */
-    @Test
-    public void testNotEqualsDiffResponses()
-    {
-        ExtendedResponseImpl resp0 = createStub();
-        ExtendedResponseImpl resp1 = createStub();
-
-        assertFalse( resp0.equals( resp1 ) );
-        assertFalse( resp1.equals( resp0 ) );
-    }
 }

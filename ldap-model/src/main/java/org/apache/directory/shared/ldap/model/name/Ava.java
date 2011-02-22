@@ -24,14 +24,17 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Arrays;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.model.entry.BinaryValue;
 import org.apache.directory.shared.ldap.model.entry.StringValue;
 import org.apache.directory.shared.ldap.model.entry.Value;
+import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
+import org.apache.directory.shared.ldap.model.schema.AttributeType;
+import org.apache.directory.shared.ldap.model.schema.MatchingRule;
+import org.apache.directory.shared.ldap.model.schema.SchemaManager;
 import org.apache.directory.shared.util.Strings;
 import org.apache.directory.shared.util.Unicode;
 import org.slf4j.Logger;
@@ -53,7 +56,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class Ava implements Cloneable, Comparable<Object>, Externalizable
+public final class Ava implements Externalizable, Cloneable
 {
     /**
      * Declares the Serial Version Uid.
@@ -82,22 +85,17 @@ public class Ava implements Cloneable, Comparable<Object>, Externalizable
     /** The user provided Ava */
     private String upName;
 
-    /** The starting position of this atav in the given string from which
-     * we have extracted the upName */
-    private int start;
-
-    /** The length of this atav upName */
-    private int length;
-
     /** Two values used for comparison, case sensitive */
     private static final boolean CASE_SENSITIVE = true;
 
     /** Two values used for comparison, case insensitive */
     private static final boolean CASE_INSENSITIVE = false;
 
+    /** the schema manager */
+    private transient SchemaManager schemaManager;
 
     /**
-     * Construct an empty Ava
+     * Constructs an empty Ava
      */
     public Ava()
     {
@@ -106,8 +104,20 @@ public class Ava implements Cloneable, Comparable<Object>, Externalizable
         normValue = null;
         upValue = null;
         upName = "";
-        start = -1;
-        length = 0;
+    }
+
+    
+    /**
+     * Constructs an empty schema aware Ava
+     */
+    public Ava( SchemaManager schemaManager )
+    {
+        normType = null;
+        upType = null;
+        normValue = null;
+        upValue = null;
+        upName = "";
+        this.schemaManager = schemaManager;
     }
 
     
@@ -124,13 +134,106 @@ public class Ava implements Cloneable, Comparable<Object>, Externalizable
      * @param upValue The User Provided value
      * @param normValue The normalized value
      */
-    public Ava(String upType, String normType, String upValue, String normValue) throws LdapInvalidDnException
+    public Ava( SchemaManager schemaManager, String upType, byte[] upValue ) throws LdapInvalidDnException
+    {
+        this( schemaManager, upType, new BinaryValue( upValue ) );
+    }
+
+    
+    /**
+     * Construct an Ava. The type and value are normalized :
+     * <li> the type is trimmed and lowercased </li>
+     * <li> the value is trimmed </li>
+     * <p>
+     * Note that the upValue should <b>not</b> be null or empty, or resolved
+     * to an empty string after having trimmed it. 
+     *
+     * @param upType The User Provided type
+     * @param normType The normalized type
+     * @param upValue The User Provided value
+     * @param normValue The normalized value
+     */
+    public Ava( SchemaManager schemaManager, String upType, String upValue ) throws LdapInvalidDnException
+    {
+        this( schemaManager, upType, new StringValue( upValue ) );
+    }
+
+    
+    /**
+     * Construct an Ava. The type and value are normalized :
+     * <li> the type is trimmed and lowercased </li>
+     * <li> the value is trimmed </li>
+     * <p>
+     * Note that the upValue should <b>not</b> be null or empty, or resolved
+     * to an empty string after having trimmed it. 
+     *
+     * @param upType The User Provided type
+     * @param normType The normalized type
+     * @param upValue The User Provided value
+     * @param normValue The normalized value
+     */
+    private Ava( SchemaManager schemaManager, String upType, Value<?> upValue ) throws LdapInvalidDnException
+    {
+        AttributeType attributeType = null;
+        
+        try
+        {
+            attributeType = schemaManager.lookupAttributeTypeRegistry( upType );
+        }
+        catch ( LdapException le )
+        {
+            String message =  I18n.err( I18n.ERR_04188 );
+            LOG.error( message );
+            throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, message );
+        }
+        
+        normType = attributeType.getOid();
+        this.upType = upType;
+            
+        try
+        {
+            MatchingRule equalityMatchingRule = attributeType.getEquality();
+            
+            if ( equalityMatchingRule != null )
+            {
+                this.normValue = equalityMatchingRule.getNormalizer().normalize( upValue );
+            }
+            else
+            {
+                this.normValue = upValue;
+            }
+        }
+        catch ( LdapException le )
+        {
+            String message =  I18n.err( I18n.ERR_04188 );
+            LOG.error( message );
+            throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, message );
+        }
+
+        this.upValue = upValue;
+        
+        upName = this.upType + '=' + ( this.upValue == null ? "" : this.upValue.getString() );
+    }
+
+    
+    /**
+     * Construct an Ava. The type and value are normalized :
+     * <li> the type is trimmed and lowercased </li>
+     * <li> the value is trimmed </li>
+     * <p>
+     * Note that the upValue should <b>not</b> be null or empty, or resolved
+     * to an empty string after having trimmed it. 
+     *
+     * @param upType The User Provided type
+     * @param normType The normalized type
+     * @param upValue The User Provided value
+     * @param normValue The normalized value
+     */
+    /* No qualifier */ Ava( String upType, String normType, String upValue, String normValue ) throws LdapInvalidDnException
     {
         this( upType, normType, new StringValue( upValue ), new StringValue( normValue ) );
     }
 
-
-
     
     /**
      * Construct an Ava. The type and value are normalized :
@@ -145,7 +248,7 @@ public class Ava implements Cloneable, Comparable<Object>, Externalizable
      * @param upValue The User Provided value
      * @param normValue The normalized value
      */
-    public Ava(String upType, String normType, byte[] upValue, byte[] normValue) throws LdapInvalidDnException
+    /* No qualifier */ Ava( String upType, String normType, byte[] upValue, byte[] normValue ) throws LdapInvalidDnException
     {
         this( upType, normType, new BinaryValue( upValue ), new BinaryValue( normValue ) );
     }
@@ -164,7 +267,7 @@ public class Ava implements Cloneable, Comparable<Object>, Externalizable
      * @param upValue The User Provided value
      * @param normValue The normalized value
      */
-    public Ava(String upType, String normType, Value<?> upValue, Value<?> normValue) throws LdapInvalidDnException
+    /* No qualifier */ Ava(String upType, String normType, Value<?> upValue, Value<?> normValue) throws LdapInvalidDnException
     {
         String upTypeTrimmed = Strings.trim(upType);
         String normTypeTrimmed = Strings.trim(normType);
@@ -201,8 +304,6 @@ public class Ava implements Cloneable, Comparable<Object>, Externalizable
         this.upValue = upValue;
         
         upName = this.upType + '=' + ( this.upValue == null ? "" : this.upValue.getString() );
-        start = 0;
-        length = upName.length();
     }
 
 
@@ -220,7 +321,7 @@ public class Ava implements Cloneable, Comparable<Object>, Externalizable
      * @param normValue The normalized value
      * @param upName The User Provided name (may be escaped)
      */
-    public Ava(String upType, String normType, Value<?> upValue, Value<?> normValue, String upName)
+    /* No qualifier */ Ava(String upType, String normType, Value<?> upValue, Value<?> normValue, String upName)
         throws LdapInvalidDnException
     {
         String upTypeTrimmed = Strings.trim(upType);
@@ -258,8 +359,6 @@ public class Ava implements Cloneable, Comparable<Object>, Externalizable
         this.upValue = upValue;
 
         this.upName = upName;
-        start = 0;
-        length = upName.length();
     }
 
 
@@ -316,28 +415,6 @@ public class Ava implements Cloneable, Comparable<Object>, Externalizable
 
 
     /**
-     * Get the upName length
-     *
-     * @return the upName length
-     */
-    public int getLength()
-    {
-        return length;
-    }
-
-
-    /**
-     * get the position in the original upName where this atav starts.
-     *
-     * @return The starting position of this atav
-     */
-    public int getStart()
-    {
-        return start;
-    }
-
-
-    /**
      * Get the user provided form of this attribute type and value
      *
      * @return The user provided form of this atav
@@ -369,144 +446,6 @@ public class Ava implements Cloneable, Comparable<Object>, Externalizable
         }
     }
 
-
-    /**
-     * Compares two NameComponents. They are equals if : 
-     * - types are equals, case insensitive, 
-     * - values are equals, case sensitive
-     *
-     * @param object
-     * @return 0 if both NC are equals, otherwise a positive value if the
-     *         original NC is superior to the second one, a negative value if
-     *         the second NC is superior.
-     */
-    public int compareTo( Object object )
-    {
-        if ( object instanceof Ava)
-        {
-            Ava nc = (Ava) object;
-
-            int res = compareType( normType, nc.normType );
-
-            if ( res != 0 )
-            {
-                return res;
-            }
-            else
-            {
-                return compareValue( normValue, nc.normValue, CASE_SENSITIVE );
-            }
-        }
-        else
-        {
-            return 1;
-        }
-    }
-
-
-    /**
-     * Compares two NameComponents. They are equals if : 
-     * - types are equals, case insensitive, 
-     * - values are equals, case insensitive
-     *
-     * @param object
-     * @return 0 if both NC are equals, otherwise a positive value if the
-     *         original NC is superior to the second one, a negative value if
-     *         the second NC is superior.
-     */
-    public int compareToIgnoreCase( Object object )
-    {
-        if ( object instanceof Ava)
-        {
-            Ava nc = (Ava) object;
-
-            int res = compareType( normType, nc.normType );
-
-            if ( res != 0 )
-            {
-                return res;
-            }
-            else
-            {
-                return compareValue( normValue, nc.normValue, CASE_INSENSITIVE );
-            }
-        }
-        else
-        {
-            return 1;
-        }
-    }
-
-
-    /**
-     * Compare two types, trimed and case insensitive
-     *
-     * @param val1 First String
-     * @param val2 Second String
-     * @return true if both strings are equals or null.
-     */
-    private int compareType( String val1, String val2 )
-    {
-        if ( Strings.isEmpty(val1) )
-        {
-            return Strings.isEmpty(val2) ? 0 : -1;
-        }
-        else if ( Strings.isEmpty(val2) )
-        {
-            return 1;
-        }
-        else
-        {
-            return ( Strings.trim(val1) ).compareToIgnoreCase( Strings.trim(val2) );
-        }
-    }
-
-
-    /**
-     * Compare two values
-     *
-     * @param val1 First value
-     * @param val2 Second value
-     * @param sensitivity A flag to define the case sensitivity
-     * @return -1 if the first value is inferior to the second one, +1 if
-     * its superior, 0 if both values are equal
-     */
-    private int compareValue( Value<?> val1, Value<?> val2, boolean sensitivity )
-    {
-        if ( !val1.isBinary() )
-        {
-            if ( !val2.isBinary() )
-            {
-                int val = ( sensitivity == CASE_SENSITIVE )
-                    ? ( val1.getString() ).compareTo( val2.getString() )
-                        : ( val1.getString() ).compareToIgnoreCase( val2.getString() );
-
-                return ( val < 0 ? -1 : ( val > 0 ? 1 : val ) );
-            }
-            else
-            {
-                return 1;
-            }
-        }
-        else
-        {
-            if ( val2.isBinary() )
-            {
-                if ( Arrays.equals( val1.getBytes(), val2.getBytes() ) )
-                {
-                    return 0;
-                }
-                else
-                {
-                    return 1;
-                }
-            }
-            else
-            {
-                return 1;
-            }
-        }
-    }
 
     private static final boolean[] DN_ESCAPED_CHARS = new boolean[]
         {
@@ -748,8 +687,6 @@ public class Ava implements Cloneable, Comparable<Object>, Externalizable
         if ( Strings.isEmpty(upName)
             || Strings.isEmpty(upType)
             || Strings.isEmpty(normType)
-            || ( start < 0 )
-            || ( length < 2 ) // At least a type and '='
             || ( upValue.isNull() )
             || ( normValue.isNull() ) )
         {
@@ -767,14 +704,6 @@ public class Ava implements Cloneable, Comparable<Object>, Externalizable
             {
                 message += "the normType should not be null or empty";
             }
-            else if ( start < 0 )
-            {
-                message += "the start should not be < 0";
-            }
-            else if ( length < 2 )
-            {
-                message += "the length should not be < 2";
-            }
             else if ( upValue.isNull() )
             {
                 message += "the upValue should not be null";
@@ -789,8 +718,6 @@ public class Ava implements Cloneable, Comparable<Object>, Externalizable
         }
         
         Unicode.writeUTF(out, upName);
-        out.writeInt( start );
-        out.writeInt( length );
         Unicode.writeUTF(out, upType);
         Unicode.writeUTF(out, normType);
         
@@ -823,8 +750,6 @@ public class Ava implements Cloneable, Comparable<Object>, Externalizable
     public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException
     {
         upName = Unicode.readUTF(in);
-        start = in.readInt();
-        length = in.readInt();
         upType = Unicode.readUTF(in);
         normType = Unicode.readUTF(in);
         
@@ -851,6 +776,17 @@ public class Ava implements Cloneable, Comparable<Object>, Externalizable
     
     
     /**
+     * Get the associated SchemaManager if any.
+     * 
+     * @return The SchemaManager
+     */
+    public SchemaManager getSchemaManager()
+    {
+        return schemaManager;
+    }
+    
+    
+    /**
      * A String representation of a Ava.
      *
      * @return A string representing a Ava
@@ -859,16 +795,16 @@ public class Ava implements Cloneable, Comparable<Object>, Externalizable
     {
         StringBuffer sb = new StringBuffer();
 
-        if ( Strings.isEmpty(normType) || Strings.isEmpty(normType.trim()) )
+        if ( Strings.isEmpty( normType) || Strings.isEmpty(normType.trim()) )
         {
             return "";
         }
 
-        sb.append( normType ).append( "=" );
+        sb.append( upType ).append( "=" );
 
-        if ( normValue != null )
+        if ( upValue != null )
         {
-            sb.append( normValue.getString() );
+            sb.append( upValue.getString() );
         }
 
         return sb.toString();

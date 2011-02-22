@@ -33,16 +33,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Iterator;
 
-import com.mycila.junit.concurrent.Concurrency;
-import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
-import org.apache.directory.shared.ldap.model.name.Ava;
-import org.apache.directory.shared.ldap.model.name.Rdn;
-import org.apache.directory.shared.ldap.model.name.RdnParser;
-import org.apache.directory.shared.ldap.model.name.RdnSerializer;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 
 
 /**
@@ -341,7 +338,7 @@ public class RdnTest
 
 
     /**
-     * Test the compareTo method for a Rdn.
+     * Test the equals method for a Rdn.
      * 
      * @throws LdapException
      */
@@ -350,7 +347,7 @@ public class RdnTest
     {
         Rdn rdn1 = new Rdn( " a = b + c = d + a = f + g = h " );
         Rdn rdn2 = null;
-        assertTrue( rdn1.compareTo( rdn2 ) > 0 );
+        assertFalse( rdn1.equals( rdn2 ) );
     }
 
 
@@ -364,7 +361,7 @@ public class RdnTest
     {
         Rdn rdn1 = new Rdn( " a = b + c = d + a = f + g = h " );
         Rdn rdn2 = new Rdn( " a = b " );
-        assertTrue( rdn1.compareTo( rdn2 ) > 0 );
+        assertFalse( rdn1.equals( rdn2 ) );
     }
 
 
@@ -379,7 +376,7 @@ public class RdnTest
         Rdn rdn1 = new Rdn( " a = b " );
         Rdn rdn2 = new Rdn( " a = b + c = d + a = f + g = h " );
 
-        assertTrue( rdn1.compareTo( rdn2 ) < 0 );
+        assertFalse( rdn1.equals( rdn2 ) );
     }
 
 
@@ -394,7 +391,7 @@ public class RdnTest
         Rdn rdn1 = new Rdn( " a = b + c = d + a = f + g = h " );
         Rdn rdn2 = new Rdn( " a = b + c = d + a = f + g = h " );
 
-        assertEquals( 0, rdn1.compareTo( rdn2 ) );
+        assertTrue( rdn1.equals( rdn2 ) );
     }
 
 
@@ -409,7 +406,7 @@ public class RdnTest
         Rdn rdn1 = new Rdn( " a = b + a = f + g = h + c = d " );
         Rdn rdn2 = new Rdn( " a = b + c = d + a = f + g = h " );
 
-        assertEquals( 0, rdn1.compareTo( rdn2 ) );
+        assertTrue( rdn1.equals( rdn2 ) );
     }
 
 
@@ -424,9 +421,8 @@ public class RdnTest
         Rdn rdn1 = new Rdn( " a = f + g = h + c = d " );
         Rdn rdn2 = new Rdn( " c = d + a = h + g = h " );
 
-        assertTrue( rdn1.compareTo( rdn2 ) < 0 );
-        assertTrue( rdn2.compareTo( rdn1 ) > 0 );
-        assertEquals( 0, rdn1.compareTo( rdn2 ) + rdn2.compareTo( rdn1 ) );
+        assertFalse( rdn1.equals( rdn2 ) );
+        assertFalse( rdn2.equals( rdn1 ) );
     }
 
 
@@ -442,23 +438,20 @@ public class RdnTest
         // the second ATAV differs
         Rdn rdn1 = new Rdn( " a = b + c = d " );
         Rdn rdn2 = new Rdn( " a = b + c = y " );
-        assertTrue( rdn1.compareTo( rdn2 ) < 0 );
-        assertTrue( rdn2.compareTo( rdn1 ) > 0 );
-        assertEquals( 0, rdn1.compareTo( rdn2 ) + rdn2.compareTo( rdn1 ) );
+        assertFalse( rdn1.equals( rdn2 ) );
+        assertFalse( rdn2.equals( rdn1 ) );
 
         // the third ATAV differs
         Rdn rdn3 = new Rdn( " a = b + c = d + e = f " );
         Rdn rdn4 = new Rdn( " a = b + c = d + e = y " );
-        assertTrue( rdn3.compareTo( rdn4 ) < 0 );
-        assertTrue( rdn4.compareTo( rdn3 ) > 0 );
-        assertEquals( 0, rdn3.compareTo( rdn4 ) + rdn4.compareTo( rdn3 ) );
+        assertFalse( rdn3.equals( rdn4 ) );
+        assertFalse( rdn4.equals( rdn3 ) );
 
         // the second ATAV differs in value only
         Rdn rdn5 = new Rdn( " a = b + a = c " );
         Rdn rdn6 = new Rdn( " a = b + a = y " );
-        assertTrue( rdn5.compareTo( rdn6 ) < 0 );
-        assertTrue( rdn6.compareTo( rdn5 ) > 0 );
-        assertEquals( 0, rdn5.compareTo( rdn6 ) + rdn6.compareTo( rdn5 ) );
+        assertFalse( rdn5.equals( rdn6 ) );
+        assertFalse( rdn6.equals( rdn5 ) );
     }
 
 
@@ -474,25 +467,23 @@ public class RdnTest
     {
         Rdn rdn1 = new Rdn( " a = b + c = d " );
         Rdn rdn2 = new Rdn( " c = d + a = b " );
-        assertEquals( 0, rdn1.compareTo( rdn2 ) );
+        assertTrue( rdn1.equals( rdn2 ) );
 
         rdn1 = new Rdn( " a = b + c = e " );
         rdn2 = new Rdn( " c = d + a = b " );
-        assertTrue( rdn1.compareTo( rdn2 ) > 0 );
-        assertTrue( rdn2.compareTo( rdn1 ) < 0 );
-        assertEquals( 0, rdn1.compareTo( rdn2 ) + rdn2.compareTo( rdn1 ) );
+        assertFalse( rdn1.equals( rdn2 ) );
+        assertFalse( rdn2.equals( rdn1 ) );
 
         rdn1 = new Rdn( " a = b + c = d " );
         rdn2 = new Rdn( " e = f + g = h " );
-        assertTrue( rdn1.compareTo( rdn2 ) < 0 );
-        assertTrue( rdn2.compareTo( rdn1 ) > 0 );
-        assertEquals( 0, rdn1.compareTo( rdn2 ) + rdn2.compareTo( rdn1 ) );
+        assertFalse( rdn1.equals( rdn2 ) );
+        assertFalse( rdn2.equals( rdn1 ) );
     }
 
 
     /**
      * Test for DIRSHARED-3.
-     * Tests that compareTo() is invertable for single-valued RDNs.
+     * Tests that equals() is invertable for single-valued RDNs.
      * 
      * @throws LdapException
      */
@@ -501,16 +492,15 @@ public class RdnTest
     {
         Rdn rdn1 = new Rdn( " a = b " );
         Rdn rdn2 = new Rdn( " a = c " );
-        assertTrue( rdn1.compareTo( rdn2 ) < 0 );
-        assertTrue( rdn2.compareTo( rdn1 ) > 0 );
-        assertEquals( 0, rdn1.compareTo( rdn2 ) + rdn2.compareTo( rdn1 ) );
+        assertFalse( rdn1.equals( rdn2 ) );
+        assertFalse( rdn2.equals( rdn1 ) );
 
     }
 
 
     /**
      * Test for DIRSHARED-3.
-     * Tests that compareTo() is invertable for multi-valued RDNs with different values.
+     * Tests that equals() is invertable for multi-valued RDNs with different values.
      * 
      * @throws LdapException
      */
@@ -519,15 +509,14 @@ public class RdnTest
     {
         Rdn rdn1 = new Rdn( " a = b + a = c " );
         Rdn rdn2 = new Rdn( " a = b + a = y " );
-        assertTrue( rdn1.compareTo( rdn2 ) < 0 );
-        assertTrue( rdn2.compareTo( rdn1 ) > 0 );
-        assertEquals( 0, rdn1.compareTo( rdn2 ) + rdn2.compareTo( rdn1 ) );
+        assertFalse( rdn1.equals( rdn2 ) );
+        assertFalse( rdn2.equals( rdn1 ) );
     }
 
 
     /**
      * Test for DIRSHARED-3.
-     * Tests that compareTo() is invertable for multi-valued RDNs with different types.
+     * Tests that equals() is invertable for multi-valued RDNs with different types.
      * 
      * @throws org.apache.directory.shared.ldap.model.exception.LdapException
      */
@@ -536,15 +525,14 @@ public class RdnTest
     {
         Rdn rdn1 = new Rdn( " a = b + c = d  " );
         Rdn rdn2 = new Rdn( " e = f + g = h " );
-        assertTrue( rdn1.compareTo( rdn2 ) < 0 );
-        assertTrue( rdn2.compareTo( rdn1 ) > 0 );
-        assertEquals( 0, rdn1.compareTo( rdn2 ) + rdn2.compareTo( rdn1 ) );
+        assertFalse( rdn1.equals( rdn2 ) );
+        assertFalse( rdn2.equals( rdn1 ) );
     }
 
 
     /**
      * Test for DIRSHARED-3.
-     * Tests that compareTo() is invertable for multi-valued RDNs with different order.
+     * Tests that equals() is invertable for multi-valued RDNs with different order.
      * 
      * @throws LdapException
      */
@@ -553,9 +541,8 @@ public class RdnTest
     {
         Rdn rdn1 = new Rdn( " c = d + a = b " );
         Rdn rdn2 = new Rdn( " a = b + e = f " );
-        assertTrue( rdn1.compareTo( rdn2 ) < 0 );
-        assertTrue( rdn2.compareTo( rdn1 ) > 0 );
-        assertEquals( 0, rdn1.compareTo( rdn2 ) + rdn2.compareTo( rdn1 ) );
+        assertFalse( rdn1.equals( rdn2 ) );
+        assertFalse( rdn2.equals( rdn1 ) );
     }
 
 
@@ -569,7 +556,7 @@ public class RdnTest
     {
         Rdn rdn1 = new Rdn( " a = b " );
 
-        assertEquals( 1, rdn1.compareTo( null ) );
+        assertFalse( rdn1.equals( null ) );
     }
 
 
@@ -584,7 +571,7 @@ public class RdnTest
         Rdn rdn1 = new Rdn( " a = b " );
         Rdn rdn2 = new Rdn( " a = b " );
 
-        assertEquals( 0, rdn1.compareTo( rdn2 ) );
+        assertTrue( rdn1.equals( rdn2 ) );
     }
 
 
@@ -599,8 +586,7 @@ public class RdnTest
         Rdn rdn1 = new Rdn( " a = b " );
         Rdn rdn2 = new Rdn( " A = b " );
 
-        assertEquals( 0, rdn1.compareTo( rdn2 ) );
-        assertEquals( true, rdn1.equals( rdn2 ) );
+        assertTrue( rdn1.equals( rdn2 ) );
     }
 
 
@@ -615,7 +601,7 @@ public class RdnTest
         Rdn rdn1 = new Rdn( " a = b " );
         Rdn rdn2 = new Rdn( " A = d " );
 
-        assertTrue( rdn1.compareTo( rdn2 ) < 0 );
+        assertFalse( rdn1.equals( rdn2 ) );
     }
 
 
@@ -1385,7 +1371,7 @@ public class RdnTest
 
 
     /**
-     * Tests the equals and compareTo results of cloned multi-valued RDNs.
+     * Tests the equals and equals results of cloned multi-valued RDNs.
      * Test for DIRSHARED-9.
      * 
      * @throws LdapException
@@ -1398,13 +1384,12 @@ public class RdnTest
         Rdn rdn = new Rdn( " A = b + C = d" );
         Rdn clonedRdn = (Rdn) rdn.clone();
 
-        assertEquals( 0, rdn.compareTo( clonedRdn ) );
-        assertEquals( true, rdn.equals( clonedRdn ) );
+        assertTrue( rdn.equals( clonedRdn ) );
     }
 
 
     /**
-     * Tests the equals and compareTo results of copy constructed multi-valued RDNs.
+     * Tests the equals and equals results of copy constructed multi-valued RDNs.
      * Test for DIRSHARED-9.
      * 
      * @throws LdapException
@@ -1417,8 +1402,7 @@ public class RdnTest
         Rdn rdn = new Rdn( " A = b + C = d" );
         Rdn copiedRdn = new Rdn( rdn );
 
-        assertEquals( 0, rdn.compareTo( copiedRdn ) );
-        assertEquals( true, rdn.equals( copiedRdn ) );
+        assertTrue( rdn.equals( copiedRdn ) );
     }
 
 

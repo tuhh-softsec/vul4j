@@ -74,8 +74,6 @@ public final class RdnSerializer
         out.writeInt( rdn.getNbAtavs() );
         Unicode.writeUTF(out, rdn.getName());
         Unicode.writeUTF(out, rdn.getNormName());
-        out.writeInt( rdn.getStart() );
-        out.writeInt( rdn.getLength() );
         
         switch ( rdn.getNbAtavs() )
         {
@@ -124,12 +122,8 @@ public final class RdnSerializer
             normName = upName;
         }
         
-        // Read the Rdn's position and length
-        int start = in.readInt();
-        int length = in.readInt();
-        
         // Now creates the Rdn
-        Rdn rdn = new Rdn( length, start, upName, normName );
+        Rdn rdn = new Rdn( 0, 0, upName, normName );
 
         // Read through the Atavs
         switch ( nbAtavs )

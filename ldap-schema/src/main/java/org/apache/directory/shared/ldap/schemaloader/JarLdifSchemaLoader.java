@@ -159,8 +159,8 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
      */
     private String getSchemaDirectoryString( Schema schema )
     {
-        return "schema" + File.separator + "ou=schema" + File.separator
-                        + "cn=" + Strings.lowerCase(schema.getSchemaName()) + File.separator;
+        return "schema" + "/" + "ou=schema" + "/"
+                        + "cn=" + Strings.lowerCase(schema.getSchemaName()) + "/";
     }
 
 
@@ -179,7 +179,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
         for ( Schema schema : schemas )
         {
             String start = getSchemaDirectoryString( schema )
-                + SchemaConstants.COMPARATORS_PATH + File.separator + "m-oid=";
+                + SchemaConstants.COMPARATORS_PATH + "/" + "m-oid=";
             String end = "." + LDIF_EXT;
 
             for ( String resourcePath : RESOURCE_MAP.keySet() )
@@ -215,7 +215,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
         for ( Schema schema : schemas )
         {
             String start = getSchemaDirectoryString( schema )
-                + SchemaConstants.SYNTAX_CHECKERS_PATH + File.separator + "m-oid=";
+                + SchemaConstants.SYNTAX_CHECKERS_PATH + "/" + "m-oid=";
             String end = "." + LDIF_EXT;
 
             for ( String resourcePath : RESOURCE_MAP.keySet() )
@@ -251,7 +251,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
         for ( Schema schema : schemas )
         {
             String start = getSchemaDirectoryString( schema )
-                + SchemaConstants.NORMALIZERS_PATH + File.separator + "m-oid=";
+                + SchemaConstants.NORMALIZERS_PATH + "/" + "m-oid=";
             String end = "." + LDIF_EXT;
 
             for ( String resourcePath : RESOURCE_MAP.keySet() )
@@ -287,7 +287,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
         for ( Schema schema : schemas )
         {
             String start = getSchemaDirectoryString( schema )
-                + SchemaConstants.MATCHING_RULES_PATH + File.separator + "m-oid=";
+                + SchemaConstants.MATCHING_RULES_PATH + "/" + "m-oid=";
             String end = "." + LDIF_EXT;
 
             for ( String resourcePath : RESOURCE_MAP.keySet() )
@@ -323,7 +323,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
         for ( Schema schema : schemas )
         {
             String start = getSchemaDirectoryString( schema )
-                + SchemaConstants.SYNTAXES_PATH + File.separator + "m-oid=";
+                + SchemaConstants.SYNTAXES_PATH + "/" + "m-oid=";
             String end = "." + LDIF_EXT;
 
             for ( String resourcePath : RESOURCE_MAP.keySet() )
@@ -360,7 +360,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
         {
             // check that the attributeTypes directory exists for the schema
             String start = getSchemaDirectoryString( schema )
-                    + SchemaConstants.ATTRIBUTES_TYPE_PATH + File.separator + "m-oid=";
+                    + SchemaConstants.ATTRIBUTES_TYPE_PATH + "/" + "m-oid=";
             String end = "." + LDIF_EXT;
             
             // get list of attributeType LDIF schema files in attributeTypes
@@ -397,7 +397,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
         for ( Schema schema : schemas )
         {
             String start = getSchemaDirectoryString( schema )
-                + SchemaConstants.MATCHING_RULE_USE_PATH + File.separator + "m-oid=";
+                + SchemaConstants.MATCHING_RULE_USE_PATH + "/" + "m-oid=";
             String end = "." + LDIF_EXT;
 
             for ( String resourcePath : RESOURCE_MAP.keySet() )
@@ -433,7 +433,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
         for ( Schema schema : schemas )
         {
             String start = getSchemaDirectoryString( schema )
-                + SchemaConstants.NAME_FORMS_PATH + File.separator + "m-oid=";
+                + SchemaConstants.NAME_FORMS_PATH + "/" + "m-oid=";
             String end = "." + LDIF_EXT;
 
             for ( String resourcePath : RESOURCE_MAP.keySet() )
@@ -469,7 +469,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
         for ( Schema schema : schemas )
         {
             String start = getSchemaDirectoryString( schema )
-                + SchemaConstants.DIT_CONTENT_RULES_PATH + File.separator + "m-oid=";
+                + SchemaConstants.DIT_CONTENT_RULES_PATH + "/" + "m-oid=";
             String end = "." + LDIF_EXT;
 
             for ( String resourcePath : RESOURCE_MAP.keySet() )
@@ -505,7 +505,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
         for ( Schema schema : schemas )
         {
             String start = getSchemaDirectoryString( schema )
-                + SchemaConstants.DIT_STRUCTURE_RULES_PATH + File.separator + "m-oid=";
+                + SchemaConstants.DIT_STRUCTURE_RULES_PATH + "/" + "m-oid=";
             String end = "." + LDIF_EXT;
 
             for ( String resourcePath : RESOURCE_MAP.keySet() )
@@ -542,7 +542,7 @@ public class JarLdifSchemaLoader extends AbstractSchemaLoader
         {
             // get objectClasses directory, check if exists, return if not
             String start = getSchemaDirectoryString( schema )
-                + SchemaConstants.OBJECT_CLASSES_PATH + File.separator + "m-oid=";
+                + SchemaConstants.OBJECT_CLASSES_PATH + "/" + "m-oid=";
             String end = "." + LDIF_EXT;
 
             for ( String resourcePath : RESOURCE_MAP.keySet() )

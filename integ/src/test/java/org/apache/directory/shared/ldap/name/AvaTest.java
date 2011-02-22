@@ -17,11 +17,10 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.model.name;
+package org.apache.directory.shared.ldap.name;
 
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -32,7 +31,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import org.apache.directory.shared.ldap.model.exception.LdapException;
+import org.apache.directory.shared.ldap.model.name.Ava;
+import org.apache.directory.shared.ldap.model.name.AvaSerializer;
+import org.apache.directory.shared.ldap.model.schema.SchemaManager;
+import org.apache.directory.shared.ldap.schemamanager.impl.DefaultSchemaManager;
 import org.apache.directory.shared.util.Strings;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -49,15 +53,22 @@ import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 @Concurrency()
 public class AvaTest
 {
-    // ~ Methods
-    // ------------------------------------------------------------------------------------
+
+    private static SchemaManager schemaManager;
+
+    @BeforeClass
+    public static void setup() throws Exception
+    {
+        schemaManager = new DefaultSchemaManager();
+    }
+    
     /**
      * Test a null AttributeTypeAndValue
      */
     @Test
     public void testAttributeTypeAndValueNull()
     {
-        Ava atav = new Ava();
+        Ava atav = new Ava( schemaManager );
         assertEquals( "", atav.toString() );
         assertEquals( "", atav.getUpName() );
     }
@@ -71,7 +82,7 @@ public class AvaTest
     {
         try
         {
-            new Ava( null, null, (String)null, (String)null );
+            new Ava( schemaManager, null, (String)null );
             fail();
         }
         catch ( LdapException ine )
@@ -89,7 +100,7 @@ public class AvaTest
     {
         try
         {
-            new Ava( "  ", " ", (String)null, (String)null );
+            new Ava( schemaManager, "  ", (String)null );
             fail();
         }
         catch ( LdapException ine )
@@ -105,26 +116,25 @@ public class AvaTest
     @Test
     public void testAttributeTypeAndValueValidType() throws LdapException
     {
-        Ava atav = new Ava( "A", "a", (String)null, (String)null );
-        assertEquals( "A=", atav.toString() );
-        assertEquals( "a=", atav.getNormName() );
-        assertEquals( "A=", atav.getUpName() );
+        Ava atav = new Ava( schemaManager, "CN", (String)null );
+        assertEquals( "CN=", atav.toString() );
+        assertEquals( "2.5.4.3=", atav.getNormName() );
+        assertEquals( "CN=", atav.getUpName() );
         
-        atav = new Ava( "  A  ", "a", (String)null, (String)null );
-        assertEquals( "a=", atav.getNormName() );
-        assertEquals( "  A  =", atav.toString() );
-        assertEquals( "  A  =", atav.getUpName() );
+        atav = new Ava( schemaManager, "  CN  ", (String)null );
+        assertEquals( "  CN  =", atav.toString() );
+        assertEquals( "2.5.4.3=", atav.getNormName() );
+        assertEquals( "  CN  =", atav.getUpName() );
+
+        atav = new Ava( schemaManager, "cn", (String)null );
+        assertEquals( "cn=", atav.toString() );
+        assertEquals( "2.5.4.3=", atav.getNormName() );
+        assertEquals( "cn=", atav.getUpName() );
         
-        atav = new Ava( "  A  ", null, (String)null, (String)null );
-        assertEquals( "a=", atav.getNormName() );
-        assertEquals( "  A  =", atav.toString() );
-        assertEquals( "  A  =", atav.getUpName() );
-        
-        atav = new Ava( null, "a", (String)null, (String)null );
-        assertEquals( "a=", atav.getNormName() );
-        assertEquals( "a=", atav.toString() );
-        assertEquals( "a=", atav.getUpName() );
-        
+        atav = new Ava( schemaManager, "  cn  ", (String)null );
+        assertEquals( "  cn  =", atav.toString() );
+        assertEquals( "2.5.4.3=", atav.getNormName() );
+        assertEquals( "  cn  =", atav.getUpName() );
     }
 
     /**
@@ -135,7 +145,7 @@ public class AvaTest
     {
         try
         {
-            new Ava( "", "", "", "" );
+            new Ava( schemaManager, "", "" );
             fail( "Should not occurs ... " );
         }
         catch ( LdapException ine )
@@ -151,9 +161,10 @@ public class AvaTest
     @Test
     public void testLdapRDNSimple() throws LdapException
     {
-        Ava atav = new Ava( "a", "a", "b", "b" );
-        assertEquals( "a=b", atav.toString() );
-        assertEquals( "a=b", atav.getUpName() );
+        Ava atav = new Ava( schemaManager, "cn", "b" );
+        assertEquals( "cn=b", atav.toString() );
+        assertEquals( "2.5.4.3=b", atav.getNormName() );
+        assertEquals( "cn=b", atav.getUpName() );
     }
 
 
@@ -163,8 +174,8 @@ public class AvaTest
     @Test
     public void testCompareToEquals() throws LdapException
     {
-        Ava atav1 = new Ava( "a", "a","b", "b" );
-        Ava atav2 = new Ava( "a", "a","b", "b" );
+        Ava atav1 = new Ava( schemaManager, "cn", "b" );
+        Ava atav2 = new Ava( schemaManager, "cn", "b" );
 
         assertTrue( atav1.equals( atav2 ) );
     }
@@ -176,77 +187,10 @@ public class AvaTest
     @Test
     public void testCompareToEqualsCase() throws LdapException
     {
-        Ava atav1 = new Ava( "a", "a", "b", "b" );
-        Ava atav2 = new Ava( "A", "A", "b", "b" );
+        Ava atav1 = new Ava( schemaManager, "cn", "b" );
+        Ava atav2 = new Ava( schemaManager, "CN", "b" );
 
         assertTrue( atav1.equals( atav2 ) );
-    }
-
-
-    /**
-     * Compare two atavs : the first one is superior because its type is
-     * superior
-     */
-    @Test
-    public void testCompareAtav1TypeSuperior() throws LdapException
-    {
-        Ava atav1 = new Ava( "b", "b", "b", "b" );
-            
-        Ava atav2 = new Ava( "a", "a", "b", "b" );
-
-        assertFalse( atav1.equals( atav2 ) );
-    }
-
-
-    /**
-     * Compare two atavs : the second one is superior because its type is
-     * superior
-     */
-    @Test
-    public void testCompareAtav2TypeSuperior() throws LdapException
-    {
-        Ava atav1 = new Ava( "a", "a", "b", "b" );
-        Ava atav2 = new Ava( "b", "b", "b", "b" );
-
-        assertFalse( atav1.equals( atav2 ) );
-    }
-
-
-    /**
-     * Compare two atavs : the first one is superior because its type is
-     * superior
-     */
-    @Test
-    public void testCompareAtav1ValueSuperior() throws LdapException
-    {
-        Ava atav1 = new Ava( "a", "a", "b", "b" );
-        Ava atav2 = new Ava( "a", "a", "a", "a" );
-
-        assertFalse( atav1.equals( atav2 ) );
-    }
-
-
-    /**
-     * Compare two atavs : the second one is superior because its type is
-     * superior
-     */
-    @Test
-    public void testCompareAtav2ValueSuperior() throws LdapException
-    {
-        Ava atav1 = new Ava( "a", "a", "a", "a" );
-        Ava atav2 = new Ava( "a", "a", "b", "b" );
-
-        assertFalse( atav1.equals( atav2 ) );
-    }
-
-
-    @Test
-    public void testNormalize() throws LdapException
-    {
-        Ava atav = new Ava( " A ", " A ", "a", "a" );
-
-        assertEquals( "a=a", atav.normalize() );
-
     }
 
 
@@ -258,7 +202,7 @@ public class AvaTest
     @Test
     public void testStringAtavSerialization() throws LdapException, IOException, ClassNotFoundException
     {
-        Ava atav = new Ava( "cn", "CN", "test", "Test" );
+        Ava atav = new Ava( schemaManager, "CN", "Test" );
 
         atav.normalize();
 
@@ -281,12 +225,9 @@ public class AvaTest
     @Test
     public void testBinaryAtavSerialization() throws LdapException, IOException, ClassNotFoundException
     {
-        byte[] upValue = Strings.getBytesUtf8("  Test  ");
         byte[] normValue = Strings.getBytesUtf8("Test");
 
-        Ava atav = new Ava( "cn", "CN", upValue, normValue );
-
-        atav.normalize();
+        Ava atav = new Ava( schemaManager, "JpegPhoto", normValue );
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
@@ -310,7 +251,7 @@ public class AvaTest
     @Test
     public void testNullAtavSerialization() throws LdapException, IOException, ClassNotFoundException
     {
-        Ava atav = new Ava();
+        Ava atav = new Ava( schemaManager );
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
@@ -328,30 +269,9 @@ public class AvaTest
 
 
     @Test
-    public void testNullNormValueSerialization() throws LdapException, IOException, ClassNotFoundException
-    {
-        Ava atav = new Ava( "CN", "cn", "test", (String)null );
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream( baos );
-
-        try
-        {
-            out.writeObject( atav );
-            fail();
-        }
-        catch ( IOException ioe )
-        {
-            String message = ioe.getMessage();
-            assertEquals( "Cannot serialize an wrong ATAV, the value should not be null", message );
-        }
-    }
-
-
-    @Test
     public void testNullUpValueSerialization() throws LdapException, IOException, ClassNotFoundException
     {
-        Ava atav = new Ava( "CN", "cn", null, "test" );
+        Ava atav = new Ava( schemaManager, "uid", (String)null );
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
@@ -372,28 +292,7 @@ public class AvaTest
     @Test
     public void testEmptyNormValueSerialization() throws LdapException, IOException, ClassNotFoundException
     {
-        Ava atav = new Ava( "CN", "cn", "test", "" );
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream( baos );
-
-        out.writeObject( atav );
-
-        ObjectInputStream in = null;
-
-        byte[] data = baos.toByteArray();
-        in = new ObjectInputStream( new ByteArrayInputStream( data ) );
-
-        Ava atav2 = (Ava)in.readObject();
-
-        assertEquals( atav, atav2 );
-    }
-
-
-    @Test
-    public void testEmptyUpValueSerialization() throws LdapException, IOException, ClassNotFoundException
-    {
-        Ava atav = new Ava( "CN", "cn", "", "test" );
+        Ava atav = new Ava( schemaManager, "CN", "" );
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
@@ -417,7 +316,7 @@ public class AvaTest
     @Test
     public void testStringAtavStaticSerialization() throws LdapException, IOException, ClassNotFoundException
     {
-        Ava atav = new Ava( "cn", "CN", "test", "Test" );
+        Ava atav = new Ava( schemaManager, "CN", "Test" );
 
         atav.normalize();
 
@@ -442,16 +341,13 @@ public class AvaTest
     public void testBinaryAtavStaticSerialization() throws LdapException, IOException, ClassNotFoundException
     {
         byte[] upValue = Strings.getBytesUtf8("  Test  ");
-        byte[] normValue = Strings.getBytesUtf8("Test");
 
-        Ava atav = new Ava( "cn", "CN", upValue, normValue );
-
-        atav.normalize();
+        Ava atav = new Ava( schemaManager, "JpegPhoto", upValue );
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        AvaSerializer.serialize(atav, out);
+        AvaSerializer.serialize( atav, out );
         out.flush();
 
         ObjectInputStream in = null;
@@ -471,7 +367,7 @@ public class AvaTest
     @Test
     public void testNullAtavStaticSerialization() throws LdapException, IOException, ClassNotFoundException
     {
-        Ava atav = new Ava();
+        Ava atav = new Ava( schemaManager );
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
@@ -488,74 +384,23 @@ public class AvaTest
     }
 
 
-    @Test
+    @Test( expected = IOException.class )
     public void testNullNormValueStaticSerialization() throws LdapException, IOException, ClassNotFoundException
     {
-        Ava atav = new Ava( "CN", "cn", "test", (String)null );
+        Ava atav = new Ava( schemaManager, "UID", (String)null );
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        try
-        {
-            AvaSerializer.serialize(atav, out);
-            fail();
-        }
-        catch ( IOException ioe )
-        {
-            String message = ioe.getMessage();
-            assertEquals( "Cannot serialize an wrong ATAV, the value should not be null", message );
-        }
-    }
-
-
-    @Test
-    public void testNullUpValueStaticSerialization() throws LdapException, IOException, ClassNotFoundException
-    {
-        Ava atav = new Ava( "CN", "cn", null, "test" );
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream( baos );
-
-        try
-        {
-            AvaSerializer.serialize(atav, out);
-            fail();
-        }
-        catch ( IOException ioe )
-        {
-            String message = ioe.getMessage();
-            assertEquals( "Cannot serialize an wrong ATAV, the upValue should not be null", message );
-        }
+        AvaSerializer.serialize(atav, out);
+        fail();
     }
 
 
     @Test
     public void testEmptyNormValueStaticSerialization() throws LdapException, IOException, ClassNotFoundException
     {
-        Ava atav = new Ava( "CN", "cn", "test", "" );
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream( baos );
-
-        AvaSerializer.serialize(atav, out);
-        out.flush();
-
-        ObjectInputStream in = null;
-
-        byte[] data = baos.toByteArray();
-        in = new ObjectInputStream( new ByteArrayInputStream( data ) );
-
-        Ava atav2 = AvaSerializer.deserialize(in);
-
-        assertEquals( atav, atav2 );
-    }
-
-
-    @Test
-    public void testEmptyUpValueStaticSerialization() throws LdapException, IOException, ClassNotFoundException
-    {
-        Ava atav = new Ava( "CN", "cn", "", "test" );
+        Ava atav = new Ava( schemaManager, "UID", (String)"" );
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );

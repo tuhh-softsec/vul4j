@@ -64,7 +64,7 @@ public class LdapProtocolCodecFactory implements ProtocolCodecFactory
      */
     public ProtocolDecoder getDecoder( IoSession session )
     {
-        return new LdapProtocolDecoder();
+        return new LdapProtocolDecoder( codec );
     }
 
 
