@@ -24,7 +24,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Arrays;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.model.entry.BinaryValue;
@@ -57,7 +56,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public final class Ava implements Cloneable, Comparable<Object>, Externalizable
+public final class Ava implements Externalizable, Cloneable
 {
     /**
      * Declares the Serial Version Uid.
@@ -173,7 +172,7 @@ public final class Ava implements Cloneable, Comparable<Object>, Externalizable
      * @param upValue The User Provided value
      * @param normValue The normalized value
      */
-    public Ava( SchemaManager schemaManager, String upType, Value<?> upValue ) throws LdapInvalidDnException
+    private Ava( SchemaManager schemaManager, String upType, Value<?> upValue ) throws LdapInvalidDnException
     {
         AttributeType attributeType = null;
         
@@ -447,144 +446,6 @@ public final class Ava implements Cloneable, Comparable<Object>, Externalizable
         }
     }
 
-
-    /**
-     * Compares two NameComponents. They are equals if : 
-     * - types are equals, case insensitive, 
-     * - values are equals, case sensitive
-     *
-     * @param object
-     * @return 0 if both NC are equals, otherwise a positive value if the
-     *         original NC is superior to the second one, a negative value if
-     *         the second NC is superior.
-     */
-    public int compareTo( Object object )
-    {
-        if ( object instanceof Ava)
-        {
-            Ava nc = (Ava) object;
-
-            int res = compareType( normType, nc.normType );
-
-            if ( res != 0 )
-            {
-                return res;
-            }
-            else
-            {
-                return compareValue( normValue, nc.normValue, CASE_SENSITIVE );
-            }
-        }
-        else
-        {
-            return 1;
-        }
-    }
-
-
-    /**
-     * Compares two NameComponents. They are equals if : 
-     * - types are equals, case insensitive, 
-     * - values are equals, case insensitive
-     *
-     * @param object
-     * @return 0 if both NC are equals, otherwise a positive value if the
-     *         original NC is superior to the second one, a negative value if
-     *         the second NC is superior.
-     */
-    public int compareToIgnoreCase( Object object )
-    {
-        if ( object instanceof Ava)
-        {
-            Ava nc = (Ava) object;
-
-            int res = compareType( normType, nc.normType );
-
-            if ( res != 0 )
-            {
-                return res;
-            }
-            else
-            {
-                return compareValue( normValue, nc.normValue, CASE_INSENSITIVE );
-            }
-        }
-        else
-        {
-            return 1;
-        }
-    }
-
-
-    /**
-     * Compare two types, trimed and case insensitive
-     *
-     * @param val1 First String
-     * @param val2 Second String
-     * @return true if both strings are equals or null.
-     */
-    private int compareType( String val1, String val2 )
-    {
-        if ( Strings.isEmpty(val1) )
-        {
-            return Strings.isEmpty(val2) ? 0 : -1;
-        }
-        else if ( Strings.isEmpty(val2) )
-        {
-            return 1;
-        }
-        else
-        {
-            return ( Strings.trim(val1) ).compareToIgnoreCase( Strings.trim(val2) );
-        }
-    }
-
-
-    /**
-     * Compare two values
-     *
-     * @param val1 First value
-     * @param val2 Second value
-     * @param sensitivity A flag to define the case sensitivity
-     * @return -1 if the first value is inferior to the second one, +1 if
-     * its superior, 0 if both values are equal
-     */
-    private int compareValue( Value<?> val1, Value<?> val2, boolean sensitivity )
-    {
-        if ( !val1.isBinary() )
-        {
-            if ( !val2.isBinary() )
-            {
-                int val = ( sensitivity == CASE_SENSITIVE )
-                    ? ( val1.getString() ).compareTo( val2.getString() )
-                        : ( val1.getString() ).compareToIgnoreCase( val2.getString() );
-
-                return ( val < 0 ? -1 : ( val > 0 ? 1 : val ) );
-            }
-            else
-            {
-                return 1;
-            }
-        }
-        else
-        {
-            if ( val2.isBinary() )
-            {
-                if ( Arrays.equals( val1.getBytes(), val2.getBytes() ) )
-                {
-                    return 0;
-                }
-                else
-                {
-                    return 1;
-                }
-            }
-            else
-            {
-                return 1;
-            }
-        }
-    }
 
     private static final boolean[] DN_ESCAPED_CHARS = new boolean[]
         {

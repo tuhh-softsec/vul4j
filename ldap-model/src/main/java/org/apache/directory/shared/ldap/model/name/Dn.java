@@ -931,7 +931,7 @@ public final class Dn implements Iterable<Rdn>
             Rdn nameRdn = dn.rdns.get( dn.rdns.size() - i - 1 );
             Rdn ldapRdn = rdns.get( rdns.size() - i - 1 );
 
-            if ( nameRdn.compareTo( ldapRdn ) != 0 )
+            if ( !nameRdn.equals( ldapRdn ) )
             {
                 return false;
             }
@@ -1508,7 +1508,7 @@ public final class Dn implements Iterable<Rdn>
 
             for ( int i = 0; i < this.size(); i++ )
             {
-                if ( name.rdns.get( i ).compareTo( rdns.get( i ) ) != 0 )
+                if ( !name.rdns.get( i ).equals( rdns.get( i ) ) )
                 {
                     return false;
                 }

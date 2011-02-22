@@ -130,15 +130,12 @@ public class MultiThreadedTest
     @Test
     public void testNormalizeCompare() throws Exception
     {
-        sharedAva.normalize();
-        assertEquals( 0, sharedAva.compareTo( referenceAva ) );
-        assertEquals( 0, referenceAva.compareTo( sharedAva ) );
+        assertTrue( sharedAva.equals( referenceAva ) );
+        assertTrue( referenceAva.equals( sharedAva ) );
 
-        sharedRdn.normalize( schemaManager );
-        assertEquals( 0, referenceRdn.compareTo( sharedRdn ) );
-        assertEquals( 0, sharedRdn.compareTo( referenceRdn ) );
+        assertTrue( referenceRdn.equals( sharedRdn ) );
+        assertTrue( sharedRdn.equals( referenceRdn ) );
 
-        sharedDn.normalize( schemaManager );
         assertEquals( referenceDn, sharedDn );
         assertEquals( sharedDn, referenceDn );
     }

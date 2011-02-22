@@ -21,6 +21,7 @@ package org.apache.directory.shared.ldap.model.name;
 
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -165,7 +166,7 @@ public class AvaTest
         Ava atav1 = new Ava( "a", "a","b", "b" );
         Ava atav2 = new Ava( "a", "a","b", "b" );
 
-        assertEquals( 0, atav1.compareTo( atav2 ) );
+        assertTrue( atav1.equals( atav2 ) );
     }
 
 
@@ -178,7 +179,7 @@ public class AvaTest
         Ava atav1 = new Ava( "a", "a", "b", "b" );
         Ava atav2 = new Ava( "A", "A", "b", "b" );
 
-        assertEquals( 0, atav1.compareTo( atav2 ) );
+        assertTrue( atav1.equals( atav2 ) );
     }
 
 
@@ -193,7 +194,7 @@ public class AvaTest
             
         Ava atav2 = new Ava( "a", "a", "b", "b" );
 
-        assertEquals( 1, atav1.compareTo( atav2 ) );
+        assertFalse( atav1.equals( atav2 ) );
     }
 
 
@@ -207,7 +208,7 @@ public class AvaTest
         Ava atav1 = new Ava( "a", "a", "b", "b" );
         Ava atav2 = new Ava( "b", "b", "b", "b" );
 
-        assertEquals( -1, atav1.compareTo( atav2 ) );
+        assertFalse( atav1.equals( atav2 ) );
     }
 
 
@@ -221,7 +222,7 @@ public class AvaTest
         Ava atav1 = new Ava( "a", "a", "b", "b" );
         Ava atav2 = new Ava( "a", "a", "a", "a" );
 
-        assertEquals( 1, atav1.compareTo( atav2 ) );
+        assertFalse( atav1.equals( atav2 ) );
     }
 
 
@@ -235,7 +236,7 @@ public class AvaTest
         Ava atav1 = new Ava( "a", "a", "a", "a" );
         Ava atav2 = new Ava( "a", "a", "b", "b" );
 
-        assertEquals( -1, atav1.compareTo( atav2 ) );
+        assertFalse( atav1.equals( atav2 ) );
     }
 
 

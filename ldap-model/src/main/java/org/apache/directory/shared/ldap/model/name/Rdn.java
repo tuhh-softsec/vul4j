@@ -24,11 +24,11 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.collections.MultiMap;
@@ -115,7 +115,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class Rdn implements Cloneable, Comparable<Rdn>, Externalizable, Iterable<Ava>
+public class Rdn implements Cloneable, Externalizable, Iterable<Ava>
 {
     /** The LoggerFactory used by this class */
     protected static final Logger LOG = LoggerFactory.getLogger( Rdn.class );
@@ -144,7 +144,7 @@ public class Rdn implements Cloneable, Comparable<Rdn>, Externalizable, Iterable
      * because we want the ATAVs to be sorted. An atav may contain more than one
      * value. In this case, the values are String stored in a List.
      */
-    private Set<Ava> atavs = null;
+    private List<Ava> atavs = null;
 
     /**
      * We also keep a set of types, in order to use manipulations. A type is
@@ -409,7 +409,7 @@ public class Rdn implements Cloneable, Comparable<Rdn>, Externalizable, Iterable
 
             default:
                 // We must duplicate the treeSet and the hashMap
-                atavs = new TreeSet<Ava>();
+                atavs = new ArrayList<Ava>();
                 atavTypes = new MultiValueMap();
 
                 for ( Ava currentAtav : rdn.atavs )
@@ -575,7 +575,7 @@ public class Rdn implements Cloneable, Comparable<Rdn>, Externalizable, Iterable
                 // We already have an atav. We have to put it in the HashMap
                 // before adding a new one.
                 // First, create the HashMap,
-                atavs = new TreeSet<Ava>();
+                atavs = new ArrayList<Ava>();
 
                 // and store the existing AttributeTypeAndValue into it.
                 atavs.add( atav );
@@ -625,7 +625,7 @@ public class Rdn implements Cloneable, Comparable<Rdn>, Externalizable, Iterable
                 // We already have an atav. We have to put it in the HashMap
                 // before adding a new one.
                 // First, create the HashMap,
-                atavs = new TreeSet<Ava>();
+                atavs = new ArrayList<Ava>();
 
                 // and store the existing AttributeTypeAndValue into it.
                 atavs.add( atav );
@@ -834,7 +834,7 @@ public class Rdn implements Cloneable, Comparable<Rdn>, Externalizable, Iterable
                 default:
                     // We must duplicate the treeSet and the hashMap
                     rdn.atavTypes = new MultiValueMap();
-                    rdn.atavs = new TreeSet<Ava>();
+                    rdn.atavs = new ArrayList<Ava>();
 
                     for ( Ava currentAtav : this.atavs )
                     {
@@ -866,7 +866,7 @@ public class Rdn implements Cloneable, Comparable<Rdn>, Externalizable, Iterable
      * @param rdn the Rdn to be compared
      * @return 0 if both RDNs are equals. -1 if the current Rdn is inferior, 1 if
      *         the current Rdn is superior, UNDEFINED otherwise.
-     */
+     *
     public int compareTo( Rdn rdn )
     {
         if ( rdn == null )
@@ -981,7 +981,7 @@ public class Rdn implements Cloneable, Comparable<Rdn>, Externalizable, Iterable
                 return atav;
 
             default:
-                return ( ( TreeSet<Ava> ) atavs ).first().clone();
+                return atavs.get( 0 ).clone();
         }
     }
 
@@ -1002,7 +1002,7 @@ public class Rdn implements Cloneable, Comparable<Rdn>, Externalizable, Iterable
                 return atav.getUpType();
 
             default:
-                return ( ( TreeSet<Ava> ) atavs ).first().getUpType();
+                return atavs.get( 0 ).getUpType();
         }
     }
 
@@ -1023,7 +1023,7 @@ public class Rdn implements Cloneable, Comparable<Rdn>, Externalizable, Iterable
                 return atav.getNormType();
 
             default:
-                return ( ( TreeSet<Ava> ) atavs ).first().getNormType();
+                return atavs.get( 0 ).getNormType();
         }
     }
 
@@ -1044,7 +1044,7 @@ public class Rdn implements Cloneable, Comparable<Rdn>, Externalizable, Iterable
                 return atav.getUpValue();
 
             default:
-                return ( ( TreeSet<Ava> ) atavs ).first().getUpValue();
+                return atavs.get( 0 ).getUpValue();
         }
     }
 
@@ -1065,7 +1065,7 @@ public class Rdn implements Cloneable, Comparable<Rdn>, Externalizable, Iterable
                 return atav.getNormValue();
 
             default:
-                return ( ( TreeSet<Ava> ) atavs ).first().getNormValue();
+                return atavs.get( 0 ).getNormValue();
         }
     }
 
@@ -1080,19 +1080,71 @@ public class Rdn implements Cloneable, Comparable<Rdn>, Externalizable, Iterable
      *            Rdn to be compared for equality with this Rdn
      * @return true if the specified object is equal to this Rdn
      */
-    public boolean equals( Object rdn )
+    public boolean equals( Object that )
     {
-        if ( this == rdn )
+        if ( this == that )
         {
             return true;
         }
 
-        if ( !( rdn instanceof Rdn) )
+        if ( !( that instanceof Rdn) )
         {
             return false;
         }
+        
+        Rdn rdn = (Rdn)that;
 
-        return compareTo( (Rdn) rdn ) == EQUAL;
+        if ( rdn.nbAtavs != nbAtavs )
+        {
+            // We don't have the same number of ATAVs. The Rdn which
+            // has the higher number of Atav is the one which is
+            // superior
+            return false;
+        }
+
+        switch ( nbAtavs )
+        {
+            case 0:
+                return true;
+
+            case 1:
+                return atav.equals( rdn.atav );
+
+            default:
+                // We have more than one value. We will
+                // go through all of them.
+
+                // the types are already normalized and sorted in the atavs Map
+                // so we could compare the first element with all of the second
+                // Ava elemnts, etc.
+                Iterator<Ava> localIterator = atavs.iterator();
+
+                while ( localIterator.hasNext() )
+                {
+                    Iterator<Ava> paramIterator = rdn.atavs.iterator();
+
+                    Ava localAtav = localIterator.next();
+                    boolean equals = false;
+
+                    while ( paramIterator.hasNext() )
+                    {
+                        Ava paramAtav = paramIterator.next();
+                        
+                        if ( localAtav.equals( paramAtav ) )
+                        {
+                            equals = true;
+                            break;
+                        }
+                    }
+
+                    if ( equals == false )
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+        }
     }
 
 
@@ -1573,7 +1625,7 @@ public class Rdn implements Cloneable, Comparable<Rdn>, Externalizable, Iterable
                 break;
 
             default:
-                atavs = new TreeSet<Ava>();
+                atavs = new ArrayList<Ava>();
 
                 atavTypes = new MultiValueMap();
 

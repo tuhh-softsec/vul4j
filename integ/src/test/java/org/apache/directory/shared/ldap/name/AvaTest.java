@@ -177,7 +177,7 @@ public class AvaTest
         Ava atav1 = new Ava( schemaManager, "cn", "b" );
         Ava atav2 = new Ava( schemaManager, "cn", "b" );
 
-        assertEquals( 0, atav1.compareTo( atav2 ) );
+        assertTrue( atav1.equals( atav2 ) );
     }
 
 
@@ -190,7 +190,7 @@ public class AvaTest
         Ava atav1 = new Ava( schemaManager, "cn", "b" );
         Ava atav2 = new Ava( schemaManager, "CN", "b" );
 
-        assertEquals( 0, atav1.compareTo( atav2 ) );
+        assertTrue( atav1.equals( atav2 ) );
     }
 
 
