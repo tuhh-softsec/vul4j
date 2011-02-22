@@ -40,7 +40,11 @@ import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.schema.SchemaManager;
 import org.apache.directory.shared.ldap.model.schema.normalizers.OidNormalizer;
-import org.apache.directory.shared.util.*;
+import org.apache.directory.shared.util.Chars;
+import org.apache.directory.shared.util.Hex;
+import org.apache.directory.shared.util.StringConstants;
+import org.apache.directory.shared.util.Strings;
+import org.apache.directory.shared.util.Unicode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -134,13 +138,6 @@ public class Rdn implements Cloneable, Comparable<Rdn>, Externalizable, Iterable
     /** The normalized Rdn */
     private String normName = null;
 
-    /** The starting position of this Rdn in the given string from which
-     * we have extracted the upName */
-    private int start;
-
-    /** The length of this Rdn upName */
-    private int length;
-
     /**
      * Stores all couple type = value. We may have more than one type, if the
      * '+' character appears in the AttributeTypeAndValue. This is a TreeSet,
@@ -230,8 +227,6 @@ public class Rdn implements Cloneable, Comparable<Rdn>, Externalizable, Iterable
      */
     public Rdn(String rdn, SchemaManager schemaManager) throws LdapInvalidDnException
     {
-        start = 0;
-
         if ( Strings.isNotEmpty(rdn) )
         {
             // Parse the string. The Rdn will be updated.
@@ -252,13 +247,11 @@ public class Rdn implements Cloneable, Comparable<Rdn>, Externalizable, Iterable
             }
 
             upName = rdn;
-            length = rdn.length();
         }
         else
         {
             upName = "";
             normName = "";
-            length = 0;
             normalized.set( false );
         }
     }
@@ -296,8 +289,6 @@ public class Rdn implements Cloneable, Comparable<Rdn>, Externalizable, Iterable
         addAVA( upType, normType, new StringValue( upValue ), new StringValue( normValue ) );
 
         upName = upType + '=' + upValue;
-        start = 0;
-        length = upName.length();
 
         // create the internal normalized form
         normalize();
@@ -346,8 +337,6 @@ public class Rdn implements Cloneable, Comparable<Rdn>, Externalizable, Iterable
         addAVA( upType, upType, new StringValue( upValue ), new StringValue( upValue ) );
 
         upName = upType + '=' + upValue;
-        start = 0;
-        length = upName.length();
 
         if( schemaManager != null )
         {
@@ -390,8 +379,6 @@ public class Rdn implements Cloneable, Comparable<Rdn>, Externalizable, Iterable
      */
     Rdn(int start, int length, String upName, String normName)
     {
-        this.start = start;
-        this.length = length;
         this.upName = upName;
         this.normName = normName;
         normalized.set( true );
@@ -409,8 +396,6 @@ public class Rdn implements Cloneable, Comparable<Rdn>, Externalizable, Iterable
         nbAtavs = rdn.getNbAtavs();
         this.normName = rdn.normName;
         this.upName = rdn.getName();
-        this.start = rdn.start;
-        this.length = rdn.length;
         normalized.set(rdn.normalized.get());
 
         switch ( rdn.getNbAtavs() )
@@ -679,8 +664,6 @@ public class Rdn implements Cloneable, Comparable<Rdn>, Externalizable, Iterable
         nbAtavs = 0;
         normName = "";
         upName = "";
-        start = -1;
-        length = 0;
         normalized.set( false );
     }
 
@@ -738,28 +721,6 @@ public class Rdn implements Cloneable, Comparable<Rdn>, Externalizable, Iterable
 
                 return "";
         }
-    }
-
-
-    /**
-     * Get the start position
-     *
-     * @return The start position in the Dn
-     */
-    public int getStart()
-    {
-        return start;
-    }
-
-
-    /**
-     * Get the Rdn length
-     *
-     * @return the Rdn length
-     */
-    public int getLength()
-    {
-        return length;
     }
 
 
@@ -1553,9 +1514,6 @@ public class Rdn implements Cloneable, Comparable<Rdn>, Externalizable, Iterable
             Unicode.writeUTF(out, normName);
         }
 
-        out.writeInt( start );
-        out.writeInt( length );
-
         switch ( nbAtavs )
         {
             case 0:
@@ -1601,9 +1559,6 @@ public class Rdn implements Cloneable, Comparable<Rdn>, Externalizable, Iterable
         {
             normName = upName;
         }
-
-        start = in.readInt();
-        length = in.readInt();
 
         switch ( nbAtavs )
         {
