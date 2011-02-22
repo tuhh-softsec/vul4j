@@ -82,13 +82,6 @@ public class Ava implements Cloneable, Comparable<Object>, Externalizable
     /** The user provided Ava */
     private String upName;
 
-    /** The starting position of this atav in the given string from which
-     * we have extracted the upName */
-    private int start;
-
-    /** The length of this atav upName */
-    private int length;
-
     /** Two values used for comparison, case sensitive */
     private static final boolean CASE_SENSITIVE = true;
 
@@ -106,8 +99,6 @@ public class Ava implements Cloneable, Comparable<Object>, Externalizable
         normValue = null;
         upValue = null;
         upName = "";
-        start = -1;
-        length = 0;
     }
 
     
@@ -201,8 +192,6 @@ public class Ava implements Cloneable, Comparable<Object>, Externalizable
         this.upValue = upValue;
         
         upName = this.upType + '=' + ( this.upValue == null ? "" : this.upValue.getString() );
-        start = 0;
-        length = upName.length();
     }
 
 
@@ -258,8 +247,6 @@ public class Ava implements Cloneable, Comparable<Object>, Externalizable
         this.upValue = upValue;
 
         this.upName = upName;
-        start = 0;
-        length = upName.length();
     }
 
 
@@ -312,28 +299,6 @@ public class Ava implements Cloneable, Comparable<Object>, Externalizable
     public String getNormName()
     {
         return normalize();
-    }
-
-
-    /**
-     * Get the upName length
-     *
-     * @return the upName length
-     */
-    public int getLength()
-    {
-        return length;
-    }
-
-
-    /**
-     * get the position in the original upName where this atav starts.
-     *
-     * @return The starting position of this atav
-     */
-    public int getStart()
-    {
-        return start;
     }
 
 
@@ -748,8 +713,6 @@ public class Ava implements Cloneable, Comparable<Object>, Externalizable
         if ( Strings.isEmpty(upName)
             || Strings.isEmpty(upType)
             || Strings.isEmpty(normType)
-            || ( start < 0 )
-            || ( length < 2 ) // At least a type and '='
             || ( upValue.isNull() )
             || ( normValue.isNull() ) )
         {
@@ -767,14 +730,6 @@ public class Ava implements Cloneable, Comparable<Object>, Externalizable
             {
                 message += "the normType should not be null or empty";
             }
-            else if ( start < 0 )
-            {
-                message += "the start should not be < 0";
-            }
-            else if ( length < 2 )
-            {
-                message += "the length should not be < 2";
-            }
             else if ( upValue.isNull() )
             {
                 message += "the upValue should not be null";
@@ -789,8 +744,6 @@ public class Ava implements Cloneable, Comparable<Object>, Externalizable
         }
         
         Unicode.writeUTF(out, upName);
-        out.writeInt( start );
-        out.writeInt( length );
         Unicode.writeUTF(out, upType);
         Unicode.writeUTF(out, normType);
         
@@ -823,8 +776,6 @@ public class Ava implements Cloneable, Comparable<Object>, Externalizable
     public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException
     {
         upName = Unicode.readUTF(in);
-        start = in.readInt();
-        length = in.readInt();
         upType = Unicode.readUTF(in);
         normType = Unicode.readUTF(in);
         

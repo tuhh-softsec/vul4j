@@ -20,25 +20,23 @@
 package org.apache.directory.shared.ldap.model.name;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import com.mycila.junit.concurrent.Concurrency;
-import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import org.apache.directory.shared.ldap.model.name.Ava;
-import org.apache.directory.shared.ldap.model.name.AvaSerializer;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 
 
 /**
@@ -61,8 +59,6 @@ public class AvaTest
         Ava atav = new Ava();
         assertEquals( "", atav.toString() );
         assertEquals( "", atav.getUpName() );
-        assertEquals( -1, atav.getStart() );
-        assertEquals( 0, atav.getLength() );
     }
 
 
@@ -153,8 +149,6 @@ public class AvaTest
         Ava atav = new Ava( "a", "a", "b", "b" );
         assertEquals( "a=b", atav.toString() );
         assertEquals( "a=b", atav.getUpName() );
-        assertEquals( 0, atav.getStart() );
-        assertEquals( 3, atav.getLength() );
     }
 
 
