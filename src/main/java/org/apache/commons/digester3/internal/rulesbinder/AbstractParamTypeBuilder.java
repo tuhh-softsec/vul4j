@@ -31,17 +31,21 @@ abstract class AbstractParamTypeBuilder<R extends Rule>
 
     private final String methodName;
 
+    private final ClassLoader classLoader;
+
     private boolean useExactMatch = false;
 
-    private String paramType;
+    private Class<?> paramType;
 
     public AbstractParamTypeBuilder(String keyPattern,
             String namespaceURI,
             RulesBinder mainBinder,
             LinkedRuleBuilderImpl mainBuilder,
-            String methodName) {
+            String methodName,
+            ClassLoader classLoader) {
         super(keyPattern, namespaceURI, mainBinder, mainBuilder);
         this.methodName = methodName;
+        this.classLoader = classLoader;
     }
 
     /**
@@ -60,7 +64,18 @@ abstract class AbstractParamTypeBuilder<R extends Rule>
      * {@inheritDoc}
      */
     public final ParamTypeBuilder<R> withParameterType(String paramType) {
-        this.paramType = paramType;
+        if (paramType == null) {
+            this.reportError(String.format(".%s.withParameterType(Class<?>)", this.methodName),
+                    "NULL Java type not allowed");
+            return this;
+        }
+
+        try {
+            this.paramType = this.classLoader.loadClass(paramType);
+        } catch (ClassNotFoundException e) {
+            this.reportError(String.format(".%s.withParameterType(Class<?>)", this.methodName),
+                    String.format("class '%s' cannot be load", paramType));
+        }
         return this;
     }
 
@@ -76,7 +91,7 @@ abstract class AbstractParamTypeBuilder<R extends Rule>
         return this.methodName;
     }
 
-    protected final String getParamType() {
+    protected final Class<?> getParamType() {
         return this.paramType;
     }
 

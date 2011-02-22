@@ -27,8 +27,9 @@ final class SetRootBuilderImpl extends AbstractParamTypeBuilder<SetRootRule> imp
             String namespaceURI,
             RulesBinder mainBinder,
             LinkedRuleBuilderImpl mainBuilder,
-            String methodName) {
-        super(keyPattern, namespaceURI, mainBinder, mainBuilder, methodName);
+            String methodName,
+            ClassLoader classLoader) {
+        super(keyPattern, namespaceURI, mainBinder, mainBuilder, methodName, classLoader);
     }
 
     /**

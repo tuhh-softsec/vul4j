@@ -162,7 +162,7 @@ final class LinkedRuleBuilderImpl implements LinkedRuleBuilder {
                     this.keyPattern);
         }
         return this.addProvider(
-                new SetNextBuilderImpl(this.keyPattern, this.namespaceURI, this.mainBinder, this, methodName));
+                new SetNextBuilderImpl(this.keyPattern, this.namespaceURI, this.mainBinder, this, methodName, this.classLoader));
     }
 
     /**
@@ -202,7 +202,7 @@ final class LinkedRuleBuilderImpl implements LinkedRuleBuilder {
         }
 
         return this.addProvider(
-                new SetRootBuilderImpl(this.keyPattern, this.namespaceURI, this.mainBinder, this, methodName));
+                new SetRootBuilderImpl(this.keyPattern, this.namespaceURI, this.mainBinder, this, methodName, this.classLoader));
     }
 
     /**
@@ -215,7 +215,7 @@ final class LinkedRuleBuilderImpl implements LinkedRuleBuilder {
         }
 
         return this.addProvider(
-                new SetTopBuilderImpl(this.keyPattern, this.namespaceURI, this.mainBinder, this, methodName));
+                new SetTopBuilderImpl(this.keyPattern, this.namespaceURI, this.mainBinder, this, methodName, this.classLoader));
     }
 
     /**

@@ -35,7 +35,7 @@ abstract class AbstractMethodRule extends Rule {
     /**
      * The Java class name of the parameter type expected by the method.
      */
-    private final String paramType;
+    private final Class<?> paramType;
 
     /**
      * Should we use exact matching.
@@ -49,7 +49,7 @@ abstract class AbstractMethodRule extends Rule {
      * @param paramType
      * @param useExactMatch
      */
-    public AbstractMethodRule(String methodName, String paramType, boolean useExactMatch) {
+    public AbstractMethodRule(String methodName, Class<?> paramType, boolean useExactMatch) {
         this.methodName = methodName;
         this.paramType = paramType;
         this.useExactMatch = useExactMatch;
@@ -59,7 +59,7 @@ abstract class AbstractMethodRule extends Rule {
         return this.methodName;
     }
 
-    public final String getParamType() {
+    public final Class<?> getParamType() {
         return this.paramType;
     }
 
@@ -113,7 +113,7 @@ abstract class AbstractMethodRule extends Rule {
 
         Class<?> paramTypes[] = new Class<?>[1];
         if (this.getParamType() != null) {
-            paramTypes[0] = this.getDigester().getClassLoader().loadClass(this.getParamType());
+            paramTypes[0] = this.getParamType();
         } else {
             paramTypes[0] = arg.getClass();
         }
@@ -133,7 +133,7 @@ abstract class AbstractMethodRule extends Rule {
         return String.format("%s[methodName=%s, paramType=%s, useExactMatch=%s]",
                         this.getClass().getSimpleName(),
                         this.methodName,
-                        this.paramType,
+                        (this.paramType != null ? this.paramType.getName() : "unset"),
                         this.useExactMatch);
     }
 

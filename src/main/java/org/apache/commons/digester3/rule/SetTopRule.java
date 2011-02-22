@@ -34,7 +34,7 @@ public class SetTopRule extends AbstractMethodRule {
      * @param methodName Method name of the "set parent" method to call
      * @param paramType Java class of the "set parent" method's argument
      */
-    public SetTopRule(String methodName, String paramType, boolean useExactMatch) {
+    public SetTopRule(String methodName, Class<?> paramType, boolean useExactMatch) {
         super(methodName, paramType, useExactMatch);
     }
 

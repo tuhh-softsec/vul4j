@@ -38,7 +38,7 @@ public class SetRootRule extends AbstractMethodRule {
      *  Java wrapper class instead, such as <code>java.lang.Boolean</code>
      *  for a <code>boolean</code> parameter)
      */
-    public SetRootRule(String methodName, String paramType, boolean useExactMatch) {
+    public SetRootRule(String methodName, Class<?> paramType, boolean useExactMatch) {
         super(methodName, paramType, useExactMatch);
     }
 

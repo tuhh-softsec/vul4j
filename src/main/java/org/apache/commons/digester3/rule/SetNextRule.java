@@ -46,7 +46,7 @@ public class SetNextRule extends AbstractMethodRule {
      *  Java wrapper class instead, such as <code>java.lang.Boolean</code>
      *  for a <code>boolean</code> parameter)
      */
-    public SetNextRule(String methodName, String paramType, boolean useExactMatch) {
+    public SetNextRule(String methodName, Class<?> paramType, boolean useExactMatch) {
         super(methodName, paramType, useExactMatch);
     }
 
