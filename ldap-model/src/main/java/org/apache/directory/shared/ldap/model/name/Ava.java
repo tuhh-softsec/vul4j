@@ -30,8 +30,12 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.model.entry.BinaryValue;
 import org.apache.directory.shared.ldap.model.entry.StringValue;
 import org.apache.directory.shared.ldap.model.entry.Value;
+import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
+import org.apache.directory.shared.ldap.model.schema.AttributeType;
+import org.apache.directory.shared.ldap.model.schema.MatchingRule;
+import org.apache.directory.shared.ldap.model.schema.SchemaManager;
 import org.apache.directory.shared.util.Strings;
 import org.apache.directory.shared.util.Unicode;
 import org.slf4j.Logger;
@@ -53,7 +57,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class Ava implements Cloneable, Comparable<Object>, Externalizable
+public final class Ava implements Cloneable, Comparable<Object>, Externalizable
 {
     /**
      * Declares the Serial Version Uid.
@@ -88,9 +92,11 @@ public class Ava implements Cloneable, Comparable<Object>, Externalizable
     /** Two values used for comparison, case insensitive */
     private static final boolean CASE_INSENSITIVE = false;
 
+    /** the schema manager */
+    private transient SchemaManager schemaManager;
 
     /**
-     * Construct an empty Ava
+     * Constructs an empty Ava
      */
     public Ava()
     {
@@ -103,24 +109,17 @@ public class Ava implements Cloneable, Comparable<Object>, Externalizable
 
     
     /**
-     * Construct an Ava. The type and value are normalized :
-     * <li> the type is trimmed and lowercased </li>
-     * <li> the value is trimmed </li>
-     * <p>
-     * Note that the upValue should <b>not</b> be null or empty, or resolved
-     * to an empty string after having trimmed it. 
-     *
-     * @param upType The User Provided type
-     * @param normType The normalized type
-     * @param upValue The User Provided value
-     * @param normValue The normalized value
+     * Constructs an empty schema aware Ava
      */
-    public Ava(String upType, String normType, String upValue, String normValue) throws LdapInvalidDnException
+    public Ava( SchemaManager schemaManager )
     {
-        this( upType, normType, new StringValue( upValue ), new StringValue( normValue ) );
+        normType = null;
+        upType = null;
+        normValue = null;
+        upValue = null;
+        upName = "";
+        this.schemaManager = schemaManager;
     }
-
-
 
     
     /**
@@ -136,7 +135,121 @@ public class Ava implements Cloneable, Comparable<Object>, Externalizable
      * @param upValue The User Provided value
      * @param normValue The normalized value
      */
-    public Ava(String upType, String normType, byte[] upValue, byte[] normValue) throws LdapInvalidDnException
+    public Ava( SchemaManager schemaManager, String upType, byte[] upValue ) throws LdapInvalidDnException
+    {
+        this( schemaManager, upType, new BinaryValue( upValue ) );
+    }
+
+    
+    /**
+     * Construct an Ava. The type and value are normalized :
+     * <li> the type is trimmed and lowercased </li>
+     * <li> the value is trimmed </li>
+     * <p>
+     * Note that the upValue should <b>not</b> be null or empty, or resolved
+     * to an empty string after having trimmed it. 
+     *
+     * @param upType The User Provided type
+     * @param normType The normalized type
+     * @param upValue The User Provided value
+     * @param normValue The normalized value
+     */
+    public Ava( SchemaManager schemaManager, String upType, String upValue ) throws LdapInvalidDnException
+    {
+        this( schemaManager, upType, new StringValue( upValue ) );
+    }
+
+    
+    /**
+     * Construct an Ava. The type and value are normalized :
+     * <li> the type is trimmed and lowercased </li>
+     * <li> the value is trimmed </li>
+     * <p>
+     * Note that the upValue should <b>not</b> be null or empty, or resolved
+     * to an empty string after having trimmed it. 
+     *
+     * @param upType The User Provided type
+     * @param normType The normalized type
+     * @param upValue The User Provided value
+     * @param normValue The normalized value
+     */
+    public Ava( SchemaManager schemaManager, String upType, Value<?> upValue ) throws LdapInvalidDnException
+    {
+        AttributeType attributeType = null;
+        
+        try
+        {
+            attributeType = schemaManager.lookupAttributeTypeRegistry( upType );
+        }
+        catch ( LdapException le )
+        {
+            String message =  I18n.err( I18n.ERR_04188 );
+            LOG.error( message );
+            throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, message );
+        }
+        
+        normType = attributeType.getOid();
+        this.upType = upType;
+            
+        try
+        {
+            MatchingRule equalityMatchingRule = attributeType.getEquality();
+            
+            if ( equalityMatchingRule != null )
+            {
+                this.normValue = equalityMatchingRule.getNormalizer().normalize( upValue );
+            }
+            else
+            {
+                this.normValue = upValue;
+            }
+        }
+        catch ( LdapException le )
+        {
+            String message =  I18n.err( I18n.ERR_04188 );
+            LOG.error( message );
+            throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, message );
+        }
+
+        this.upValue = upValue;
+        
+        upName = this.upType + '=' + ( this.upValue == null ? "" : this.upValue.getString() );
+    }
+
+    
+    /**
+     * Construct an Ava. The type and value are normalized :
+     * <li> the type is trimmed and lowercased </li>
+     * <li> the value is trimmed </li>
+     * <p>
+     * Note that the upValue should <b>not</b> be null or empty, or resolved
+     * to an empty string after having trimmed it. 
+     *
+     * @param upType The User Provided type
+     * @param normType The normalized type
+     * @param upValue The User Provided value
+     * @param normValue The normalized value
+     */
+    /* No qualifier */ Ava( String upType, String normType, String upValue, String normValue ) throws LdapInvalidDnException
+    {
+        this( upType, normType, new StringValue( upValue ), new StringValue( normValue ) );
+    }
+
+    
+    /**
+     * Construct an Ava. The type and value are normalized :
+     * <li> the type is trimmed and lowercased </li>
+     * <li> the value is trimmed </li>
+     * <p>
+     * Note that the upValue should <b>not</b> be null or empty, or resolved
+     * to an empty string after having trimmed it. 
+     *
+     * @param upType The User Provided type
+     * @param normType The normalized type
+     * @param upValue The User Provided value
+     * @param normValue The normalized value
+     */
+    /* No qualifier */ Ava( String upType, String normType, byte[] upValue, byte[] normValue ) throws LdapInvalidDnException
     {
         this( upType, normType, new BinaryValue( upValue ), new BinaryValue( normValue ) );
     }
@@ -155,7 +268,7 @@ public class Ava implements Cloneable, Comparable<Object>, Externalizable
      * @param upValue The User Provided value
      * @param normValue The normalized value
      */
-    public Ava(String upType, String normType, Value<?> upValue, Value<?> normValue) throws LdapInvalidDnException
+    /* No qualifier */ Ava(String upType, String normType, Value<?> upValue, Value<?> normValue) throws LdapInvalidDnException
     {
         String upTypeTrimmed = Strings.trim(upType);
         String normTypeTrimmed = Strings.trim(normType);
@@ -209,7 +322,7 @@ public class Ava implements Cloneable, Comparable<Object>, Externalizable
      * @param normValue The normalized value
      * @param upName The User Provided name (may be escaped)
      */
-    public Ava(String upType, String normType, Value<?> upValue, Value<?> normValue, String upName)
+    /* No qualifier */ Ava(String upType, String normType, Value<?> upValue, Value<?> normValue, String upName)
         throws LdapInvalidDnException
     {
         String upTypeTrimmed = Strings.trim(upType);
@@ -802,6 +915,17 @@ public class Ava implements Cloneable, Comparable<Object>, Externalizable
     
     
     /**
+     * Get the associated SchemaManager if any.
+     * 
+     * @return The SchemaManager
+     */
+    public SchemaManager getSchemaManager()
+    {
+        return schemaManager;
+    }
+    
+    
+    /**
      * A String representation of a Ava.
      *
      * @return A string representing a Ava
@@ -810,16 +934,16 @@ public class Ava implements Cloneable, Comparable<Object>, Externalizable
     {
         StringBuffer sb = new StringBuffer();
 
-        if ( Strings.isEmpty(normType) || Strings.isEmpty(normType.trim()) )
+        if ( Strings.isEmpty( normType) || Strings.isEmpty(normType.trim()) )
         {
             return "";
         }
 
-        sb.append( normType ).append( "=" );
+        sb.append( upType ).append( "=" );
 
-        if ( normValue != null )
+        if ( upValue != null )
         {
-            sb.append( normValue.getString() );
+            sb.append( upValue.getString() );
         }
 
         return sb.toString();

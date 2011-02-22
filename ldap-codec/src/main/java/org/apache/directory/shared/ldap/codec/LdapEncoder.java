@@ -364,6 +364,4 @@ public class LdapEncoder
             return 0;
         }
     }
-
-
 }

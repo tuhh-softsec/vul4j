@@ -74,9 +74,8 @@ public class MultiThreadedTest
         sharedRdn = new Rdn( "ou=system" );
         sharedRdn.normalize( schemaManager );
 
-        referenceAva = new Ava( "ou", "2.5.4.11", "System", "system" );
-        referenceAva.normalize();
-        sharedAva = new Ava( "ou", "2.5.4.11", "System", "system" );
+        referenceAva = new Ava( schemaManager, "ou", "System" );
+        sharedAva = new Ava( schemaManager, "ou", "System" );
         sharedAva.normalize();
     }
 
