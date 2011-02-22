@@ -246,4 +246,7 @@ public interface LdapCodecService
      * @return The newly created LDAP MessageContainer instance.
      */
     Asn1Container newMessageContainer();
+
+
+    <E extends ExtendedResponse> E newExtendedResponse( ExtendedRequest<E> req, byte[] serializedResponse );
 }

@@ -401,4 +401,14 @@ public class DefaultLdapCodecService implements LdapCodecService
         // TODO Auto-generated method stub
         throw new NotImplementedException();
     }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public <E extends ExtendedResponse> E newExtendedResponse( ExtendedRequest<E> req, byte[] serializedResponse )
+    {
+        // TODO Auto-generated method stub
+        throw new NotImplementedException();
+    }
 }
