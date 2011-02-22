@@ -227,7 +227,7 @@ public class AvaTest
     {
         byte[] normValue = Strings.getBytesUtf8("Test");
 
-        Ava atav = new Ava( schemaManager, "JpegPhoto", normValue );
+        Ava atav = new Ava( schemaManager, "userPKCS12", normValue );
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
@@ -342,7 +342,7 @@ public class AvaTest
     {
         byte[] upValue = Strings.getBytesUtf8("  Test  ");
 
-        Ava atav = new Ava( schemaManager, "JpegPhoto", upValue );
+        Ava atav = new Ava( schemaManager, "userPKCS12", upValue );
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );

@@ -72,6 +72,9 @@ public final class Ava implements Externalizable, Cloneable
 
     /** The normalized Name type */
     private String normType;
+    
+    /** The attributeType if the Ava is schemaAware */
+    private transient AttributeType attributeType;
 
     /** The user provided Name type */
     private String upType;
@@ -84,12 +87,6 @@ public final class Ava implements Externalizable, Cloneable
 
     /** The user provided Ava */
     private String upName;
-
-    /** Two values used for comparison, case sensitive */
-    private static final boolean CASE_SENSITIVE = true;
-
-    /** Two values used for comparison, case insensitive */
-    private static final boolean CASE_INSENSITIVE = false;
 
     /** the schema manager */
     private transient SchemaManager schemaManager;
@@ -136,7 +133,25 @@ public final class Ava implements Externalizable, Cloneable
      */
     public Ava( SchemaManager schemaManager, String upType, byte[] upValue ) throws LdapInvalidDnException
     {
-        this( schemaManager, upType, new BinaryValue( upValue ) );
+        if ( schemaManager != null )
+        { 
+            try
+            {
+                attributeType = schemaManager.lookupAttributeTypeRegistry( upType );
+            }
+            catch ( LdapException le )
+            {
+                String message =  I18n.err( I18n.ERR_04188 );
+                LOG.error( message );
+                throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, message );
+            }
+            
+            createAva( schemaManager, upType, new BinaryValue( attributeType, upValue ) );
+        }
+        else
+        {
+            createAva( upType, new BinaryValue( upValue ) );
+        }
     }
 
     
@@ -155,7 +170,25 @@ public final class Ava implements Externalizable, Cloneable
      */
     public Ava( SchemaManager schemaManager, String upType, String upValue ) throws LdapInvalidDnException
     {
-        this( schemaManager, upType, new StringValue( upValue ) );
+        if ( schemaManager != null )
+        { 
+            try
+            {
+                attributeType = schemaManager.lookupAttributeTypeRegistry( upType );
+            }
+            catch ( LdapException le )
+            {
+                String message =  I18n.err( I18n.ERR_04188 );
+                LOG.error( message );
+                throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, message );
+            }
+            
+            createAva( schemaManager, upType, new StringValue( attributeType, upValue ) );
+        }
+        else
+        {
+            createAva( upType, new StringValue( upValue ) );
+        }
     }
 
     
@@ -172,21 +205,8 @@ public final class Ava implements Externalizable, Cloneable
      * @param upValue The User Provided value
      * @param normValue The normalized value
      */
-    private Ava( SchemaManager schemaManager, String upType, Value<?> upValue ) throws LdapInvalidDnException
+    private void createAva( SchemaManager schemaManager, String upType, Value<?> upValue ) throws LdapInvalidDnException
     {
-        AttributeType attributeType = null;
-        
-        try
-        {
-            attributeType = schemaManager.lookupAttributeTypeRegistry( upType );
-        }
-        catch ( LdapException le )
-        {
-            String message =  I18n.err( I18n.ERR_04188 );
-            LOG.error( message );
-            throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, message );
-        }
-        
         normType = attributeType.getOid();
         this.upType = upType;
             
@@ -251,6 +271,59 @@ public final class Ava implements Externalizable, Cloneable
     /* No qualifier */ Ava( String upType, String normType, byte[] upValue, byte[] normValue ) throws LdapInvalidDnException
     {
         this( upType, normType, new BinaryValue( upValue ), new BinaryValue( normValue ) );
+    }
+    
+    
+    /**
+     * Construct an Ava. The type and value are normalized :
+     * <li> the type is trimmed and lowercased </li>
+     * <li> the value is trimmed </li>
+     * <p>
+     * Note that the upValue should <b>not</b> be null or empty, or resolved
+     * to an empty string after having trimmed it. 
+     *
+     * @param upType The User Provided type
+     * @param normType The normalized type
+     * @param upValue The User Provided value
+     * @param normValue The normalized value
+     */
+    private void createAva( String upType, Value<?> upValue ) throws LdapInvalidDnException
+    {
+        String upTypeTrimmed = Strings.trim(upType);
+        String normTypeTrimmed = Strings.trim(normType);
+        
+        if ( Strings.isEmpty(upTypeTrimmed) )
+        {
+            if ( Strings.isEmpty(normTypeTrimmed) )
+            {
+                String message =  I18n.err( I18n.ERR_04188 );
+                LOG.error( message );
+                throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, message );
+            }
+            else
+            {
+                // In this case, we will use the normType instead
+                this.normType = Strings.lowerCaseAscii( normTypeTrimmed );
+                this.upType = normType;
+            }
+        }
+        else if ( Strings.isEmpty(normTypeTrimmed) )
+        {
+            // In this case, we will use the upType instead
+            this.normType = Strings.lowerCaseAscii( upTypeTrimmed );
+            this.upType = upType;
+        }
+        else
+        {
+            this.normType = Strings.lowerCaseAscii( normTypeTrimmed );
+            this.upType = upType;
+            
+        }
+            
+        this.normValue = upValue;
+        this.upValue = upValue;
+        
+        upName = this.upType + '=' + ( this.upValue == null ? "" : this.upValue.getString() );
     }
 
 
@@ -624,7 +697,21 @@ public final class Ava implements Externalizable, Cloneable
         }
         else
         {
-            return normValue.equals( instance.normValue );
+            if ( schemaManager != null )
+            {
+                MatchingRule equalityMatchingRule = attributeType.getEquality();
+                
+                if ( equalityMatchingRule != null )
+                {
+                    return equalityMatchingRule.getLdapComparator().compare( normValue, instance.normValue ) == 0;
+                }
+                
+                return false;
+            }
+            else
+            {
+                return normValue.equals( instance.normValue );
+            }
         }
     }
 
