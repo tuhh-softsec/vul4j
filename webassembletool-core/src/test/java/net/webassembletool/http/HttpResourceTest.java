@@ -83,7 +83,8 @@ public class HttpResourceTest extends TestCase {
 		EasyMock.expect(statusLine.getStatusCode()).andReturn(HttpServletResponse.SC_MOVED_TEMPORARILY).anyTimes();
 		EasyMock.expect(statusLine.getReasonPhrase()).andReturn("Moved Permanently").anyTimes();
 		EasyMock.expect(httpResponse.getFirstHeader("Location")).andReturn(header).anyTimes();
-		EasyMock.expect(httpResponse.getFirstHeader((String)EasyMock.anyObject())).andReturn(null).anyTimes();
+		EasyMock.expect(httpResponse.getAllHeaders()).andReturn(new Header[0]).anyTimes();
+		EasyMock.expect(httpResponse.getFirstHeader((String) EasyMock.anyObject())).andReturn(null).anyTimes();
 
 		EasyMock.expect(header.getValue()).andReturn("http://localhost:8080/webassembletool-app-aggregated1/redirected.jsp");
 		EasyMock.expect(header.getValue()).andReturn("http://localhost:8080/webassembletool-app-aggregated1/redirected.jsp");

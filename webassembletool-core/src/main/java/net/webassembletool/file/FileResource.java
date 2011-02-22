@@ -5,16 +5,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.Collection;
 import java.util.Map.Entry;
-import java.util.Properties;
 
-import net.webassembletool.ResourceContext;
 import net.webassembletool.output.Output;
 import net.webassembletool.resource.Resource;
-import net.webassembletool.resource.ResourceUtils;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -27,38 +22,14 @@ import org.apache.commons.lang.StringUtils;
  */
 public class FileResource extends Resource {
 	private File file;
-	private Map<String, String> headersMap;
-	private int statusCode;
-	private String statusMessage;
+	private final HeadersFile headersFile;
 
-	public FileResource(String localBase, ResourceContext target)
-			throws IOException {
-		String url = ResourceUtils.getFileUrl(localBase, target);
-		file = new File(url);
-		File headersFile = new File(url + ".headers");
+	public FileResource(File dataFile, File headersFile) throws IOException {
+		this.file = dataFile;
 		if (file.exists() && headersFile.exists()) {
-			headersMap = new HashMap<String, String>();
-			InputStream headersInputStream = new FileInputStream(headersFile);
-			Properties headers = new Properties();
-			headers.load(headersInputStream);
-			headersInputStream.close();
-
-			Iterator<Entry<Object, Object>> iterator = headers.entrySet()
-					.iterator();
-
-			while (iterator.hasNext()) {
-				Entry<Object, Object> header = iterator.next();
-				if (StringUtils.isNumeric(header.getKey().toString())) {
-					statusCode = Integer.parseInt(header.getKey().toString());
-					statusMessage = header.getValue().toString();
-				} else {
-					headersMap.put(header.getKey().toString().toLowerCase(),
-							header.getValue().toString());
-				}
-			}
+			this.headersFile = FileUtils.loadHeaders(headersFile);
 		} else {
-			statusCode = 404;
-			statusMessage = "Not found";
+			this.headersFile = new HeadersFile(404, "Not found");
 		}
 	}
 
@@ -69,14 +40,9 @@ public class FileResource extends Resource {
 
 	@Override
 	public void render(Output output) throws IOException {
-		output.setStatus(statusCode, statusMessage);
-		if (headersMap != null) {
-			Iterator<Entry<String, String>> iterator = headersMap.entrySet()
-					.iterator();
-			while (iterator.hasNext()) {
-				Entry<String, String> header = iterator.next();
-				output.addHeader(header.getKey(), header.getValue());
-			}
+		output.setStatus(headersFile.getStatusCode(), headersFile.getStatusMessage());
+		for (Entry<String, Object> header : headersFile.getHeadersMap().entrySet()) {
+			output.addHeader(header.getKey(), header.getValue().toString());
 		}
 
 		if (file != null) {
@@ -97,14 +63,20 @@ public class FileResource extends Resource {
 	 */
 	@Override
 	public int getStatusCode() {
-		return statusCode;
+		return headersFile.getStatusCode();
+	}
+
+	@Override
+	public Collection<String> getHeaderNames() {
+		return headersFile.getHeadersMap().keySet();
 	}
 
 	@Override
 	public String getHeader(String name) {
-		if (headersMap == null) {
+		if (StringUtils.isEmpty(name)) {
 			return null;
 		}
-		return headersMap.get(name);
+		Object value = headersFile.getHeader(name);
+		return value != null ? value.toString() : null;
 	}
 }

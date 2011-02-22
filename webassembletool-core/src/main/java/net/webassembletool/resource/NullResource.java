@@ -1,6 +1,8 @@
 package net.webassembletool.resource;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
 
 import net.webassembletool.output.Output;
 
@@ -25,6 +27,11 @@ public class NullResource extends Resource {
 		} finally {
 			output.close();
 		}
+	}
+
+	@Override
+	public Collection<String> getHeaderNames() {
+		return Collections.emptySet();
 	}
 
 	@Override

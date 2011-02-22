@@ -15,8 +15,10 @@
 package net.webassembletool;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import net.webassembletool.authentication.RemoteUserAuthenticationHandler;
@@ -46,15 +48,16 @@ public class DriverConfiguration {
 	private String proxyHost;
 	private int proxyPort = 0;
 	private boolean filterJsessionid = true;
-	private String authenticationHandler = RemoteUserAuthenticationHandler.class
-			.getName();
+	private String authenticationHandler = RemoteUserAuthenticationHandler.class.getName();
 	private final Properties properties;
 	private boolean preserveHost = false;
 	private String cookieStore = SerializableBasicCookieStore.class.getName();
 	private String filter = null;
 	private final List<String> parsableContentTypes;
+	private final Set<String> blackListedHeaders;
 
-	private static String DEFAULT_PARSABLE_CONTENT_TYPES = "text/html, application/xhtml+xml";
+	private static final String DEFAULT_PARSABLE_CONTENT_TYPES = "text/html, application/xhtml+xml";
+	private static final String DEFAULT_BLACK_LISTED_HEADERS = "Content-Length,Content-Encoding,Transfer-Encoding";
 
 	public DriverConfiguration(String instanceName, Properties props) {
 		this.instanceName = instanceName;
@@ -136,8 +139,7 @@ public class DriverConfiguration {
 			}
 		}
 		// Parsable content types
-		String strContentTypes = props.getProperty("parsableContentTypes",
-				DEFAULT_PARSABLE_CONTENT_TYPES);
+		String strContentTypes = props.getProperty("parsableContentTypes", DEFAULT_PARSABLE_CONTENT_TYPES);
 		StringTokenizer tokenizer = new StringTokenizer(strContentTypes, ",");
 		String contentType;
 		parsableContentTypes = new ArrayList<String>();
@@ -147,7 +149,22 @@ public class DriverConfiguration {
 			parsableContentTypes.add(contentType);
 		}
 
+		// populate headers black list
+		blackListedHeaders = new HashSet<String>();
+		String headers = props.getProperty("blackListedHeaders", DEFAULT_BLACK_LISTED_HEADERS);
+		String[] split = headers.split(",");
+		for (String header : split) {
+			blackListedHeaders.add(header.toLowerCase());
+		}
+
 		properties = props;
+	}
+
+	public boolean isBlackListed(String headerName) {
+		if (headerName == null || headerName.length() == 0) {
+			return true;
+		}
+		return blackListedHeaders.contains(headerName.toLowerCase());
 	}
 
 	public String getFilter() {

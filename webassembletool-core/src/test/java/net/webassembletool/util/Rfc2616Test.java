@@ -1,6 +1,7 @@
 package net.webassembletool.util;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Date;
 
 import junit.framework.TestCase;
@@ -54,6 +55,10 @@ public class Rfc2616Test extends TestCase {
 				return null;
 			}
 
+			@Override
+			public Collection<String> getHeaderNames() {
+				return null;
+			}
 		};
 
 		Date d = Rfc2616.getExpiration(r);
@@ -89,7 +94,11 @@ public class Rfc2616Test extends TestCase {
 
 			@Override
 			public String getHeader(String name) {
+				return null;
+			}
 
+			@Override
+			public Collection<String> getHeaderNames() {
 				return null;
 			}
 		};

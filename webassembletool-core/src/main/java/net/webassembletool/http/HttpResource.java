@@ -17,6 +17,7 @@ package net.webassembletool.http;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.zip.GZIPInputStream;
@@ -36,10 +37,10 @@ import net.webassembletool.resource.ResourceUtils;
 import net.webassembletool.util.Rfc2616;
 
 import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.http.client.HttpClient;
 import org.apache.http.protocol.HttpContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Resource implementation pointing to a resource on an external application.
@@ -146,9 +147,8 @@ public class HttpResource extends Resource {
 
 	@Override
 	public void render(Output output) throws IOException {
-		output.setStatus(httpClientResponse.getStatusCode(),
-				httpClientResponse.getStatusText());
-		Rfc2616.copyHeaders(this, output);
+		output.setStatus(httpClientResponse.getStatusCode(), httpClientResponse.getStatusText());
+		Rfc2616.copyHeaders(target.getDriver().getConfiguration(), this, output);
 		Filter filter = target.getDriver().getFilter();
 		if (filter != null) {
 			filter.postRequest(httpClientResponse, output, target);
@@ -286,4 +286,8 @@ public class HttpResource extends Resource {
 		return httpClientResponse.getHeader(name);
 	}
 
+	@Override
+	public Collection<String> getHeaderNames() {
+		return httpClientResponse.getHeaderNames();
+	}
 }

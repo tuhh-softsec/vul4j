@@ -20,9 +20,9 @@ public class FileOutput extends Output {
 	private final File headerFile;
 	private FileOutputStream fileOutputStream;
 
-	public FileOutput(String url) {
-		file = new File(url);
-		headerFile = new File(url + ".headers");
+	public FileOutput(File dataFile, File headersFile) {
+		this.file = dataFile;
+		this.headerFile = headersFile;
 	}
 
 	/** {@inheritDoc} */
@@ -35,8 +35,7 @@ public class FileOutput extends Output {
 			}
 			fileOutputStream = new FileOutputStream(file);
 		} catch (IOException e) {
-			throw new OutputException("Could not create file: " + file.toURI(),
-					e);
+			throw new OutputException("Could not create file: " + file.toURI(), e);
 		}
 	}
 
@@ -50,24 +49,19 @@ public class FileOutput extends Output {
 	@Override
 	public void close() {
 		try {
-			// In case the file could not be written, fileOutputStream might be
-			// null
+			// In case the file could not be written, fileOutputStream might be null
 			if (fileOutputStream != null) {
 				fileOutputStream.close();
 			}
-			fileOutputStream = null;
 		} catch (IOException e) {
-			throw new OutputException("Could not close file: " + file.toURI(),
-					e);
+			throw new OutputException("Could not close file: " + file.toURI(), e);
+		} finally {
+			fileOutputStream = null;
 		}
 		try {
-			FileOutputStream headers = new FileOutputStream(headerFile);
-			addHeader(Integer.toString(getStatusCode()), getStatusMessage());
-			getHeaders().store(headers, "Headers");
-			headers.close();
+			FileUtils.storeHeaders(headerFile, new HeadersFile(getHeaders(), getStatusCode(), getStatusMessage()));
 		} catch (IOException e) {
-			throw new OutputException("Could not write to file: "
-					+ headerFile.toURI(), e);
+			throw new OutputException("Could not write to file: " + headerFile.toURI(), e);
 		}
 	}
 

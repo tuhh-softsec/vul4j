@@ -17,11 +17,12 @@ package net.webassembletool.http;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.SocketTimeoutException;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
@@ -34,6 +35,8 @@ import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author François-Xavier Bonnet
@@ -48,13 +51,11 @@ public class HttpClientResponse {
 	private String statusText;
 	private String currentLocation;
 	private Exception exception;
-	private InputStream inputStream;
 
 	public HttpClientResponse(HttpHost httpHost, HttpRequest basicHttpRequest,
 			HttpClient httpClient, HttpContext httpContext) {
 		try {
-			httpResponse = httpClient.execute(httpHost, basicHttpRequest,
-					httpContext);
+			httpResponse = httpClient.execute(httpHost, basicHttpRequest, httpContext);
 			statusCode = httpResponse.getStatusLine().getStatusCode();
 			statusText = httpResponse.getStatusLine().getReasonPhrase();
 			httpEntity = httpResponse.getEntity();
@@ -134,8 +135,7 @@ public class HttpClientResponse {
 	}
 
 	public InputStream openStream() throws IllegalStateException, IOException {
-		inputStream = httpEntity.getContent();
-		return inputStream;
+		return httpEntity.getContent();
 	}
 
 	public String getHeader(String name) {
@@ -150,6 +150,18 @@ public class HttpClientResponse {
 		}
 	}
 
+	public Collection<String> getHeaderNames() {
+		Set<String> result = new HashSet<String>();
+		if (httpResponse != null) {
+			Header[] headers = httpResponse.getAllHeaders();
+			if (headers != null) {
+				for (Header header : headers) {
+					result.add(header.getName());
+				}
+			}
+		}
+		return result;
+	}
 	public String[] getHeaders(String name) {
 		String[] result = null;
 		if (httpResponse != null) {

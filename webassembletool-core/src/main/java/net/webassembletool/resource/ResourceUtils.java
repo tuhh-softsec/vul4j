@@ -1,6 +1,7 @@
 package net.webassembletool.resource;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
@@ -11,6 +12,8 @@ import javax.servlet.http.HttpSession;
 
 import net.webassembletool.DriverConfiguration;
 import net.webassembletool.ResourceContext;
+import net.webassembletool.file.FileOutput;
+import net.webassembletool.file.FileResource;
 import net.webassembletool.http.RewriteUtils;
 
 import org.apache.commons.lang.StringUtils;
@@ -223,18 +226,29 @@ public class ResourceUtils {
 		}
 	}
 
-	public final static String getFileUrl(String localBase,
-			ResourceContext target) {
+	public static FileOutput createFileOutput(String localBase, ResourceContext target) {
+		String baseFileName = getFileUrl(localBase, target);
+		String headersFileName = baseFileName + ".headers";
+		return new FileOutput(new File(baseFileName), new File(headersFileName));
+	}
+
+	public static FileResource createFileResource(String localBase, ResourceContext target) throws IOException {
+		String baseFileName = getFileUrl(localBase, target);
+		String headersFileName = baseFileName + ".headers";
+		return new FileResource(new File(baseFileName), new File(headersFileName));
+	}
+
+	private final static String getFileUrl(String localBase, ResourceContext target) {
 		String answer = "";
 		String url = target.getRelUrl();
 		// Remove ":" and "//" for absolute urls
 		url = url.replaceAll(":", "_");
 		url = url.replaceAll("//", "__");
-		url = ResourceUtils.concatUrlForFile(localBase, target.getRelUrl());
+		url = ResourceUtils.concatUrlForFile(localBase, url);
 		// Append queryString hashcode to supply different cache
 		// filenames
 		String queryString = ResourceUtils.buildQueryString(target);
-		if ("".equals(queryString)) {
+		if (queryString.length() == 0) {
 			answer = url;
 		} else {
 			answer = url + "_" + queryString.hashCode();

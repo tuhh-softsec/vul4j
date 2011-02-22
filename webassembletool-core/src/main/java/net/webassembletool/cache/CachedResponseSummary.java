@@ -1,10 +1,10 @@
 package net.webassembletool.cache;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Properties;
+import java.util.Map.Entry;
 
 import net.webassembletool.output.Output;
 import net.webassembletool.resource.Resource;
@@ -17,7 +17,7 @@ import net.webassembletool.resource.Resource;
  * 
  */
 public class CachedResponseSummary extends Resource {
-	private Properties headers;
+	private Map<String, Object> headers;
 	private int statusCode;
 	private Map<String, String> requestHeaders;
 	private boolean responseBody;
@@ -58,7 +58,7 @@ public class CachedResponseSummary extends Resource {
 		return responseBody;
 	}
 
-	public void setHeaders(Properties headers) {
+	public void setHeaders(Map<String, Object> headers) {
 		this.headers = headers;
 	}
 
@@ -90,10 +90,13 @@ public class CachedResponseSummary extends Resource {
 	}
 
 	@Override
+	public Collection<String> getHeaderNames() {
+		return headers.keySet();
+	}
+
+	@Override
 	public final String getHeader(String key) {
-		for (Iterator<Map.Entry<Object, Object>> headersIterator = headers
-				.entrySet().iterator(); headersIterator.hasNext();) {
-			Map.Entry<Object, Object> entry = headersIterator.next();
+		for (Entry<String, Object> entry : headers.entrySet()) {
 			if (key.equalsIgnoreCase(entry.getKey().toString())) {
 				return entry.getValue().toString();
 			}
@@ -108,10 +111,7 @@ public class CachedResponseSummary extends Resource {
 	 */
 	@Override
 	public String getRequestHeader(String key) {
-
-		for (Iterator<Map.Entry<String, String>> headersIterator = requestHeaders
-				.entrySet().iterator(); headersIterator.hasNext();) {
-			Map.Entry<String, String> entry = headersIterator.next();
+		for (Entry<String, String> entry : requestHeaders.entrySet()) {
 			if (key.equalsIgnoreCase(entry.getKey().toString())) {
 				return entry.getValue().toString();
 			}

@@ -3,9 +3,9 @@ package net.webassembletool.output;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
+import java.util.Map.Entry;
 
 /**
  * An Output is designed to collect the response to a successfull HTTP request,
@@ -26,7 +26,7 @@ public abstract class Output {
 	private String charsetName;
 	private int statusCode;
 	private String statusMessage;
-	private final Properties headers = new Properties();
+	private final Map<String, Object> headers = new HashMap<String, Object>();
 
 	/**
 	 * Sets the HTTP status code of the response
@@ -57,26 +57,29 @@ public abstract class Output {
 		this.statusMessage = statusMessage;
 	}
 
-	protected final Properties getHeaders() {
+	protected final Map<String, Object> getHeaders() {
 		return headers;
 	}
 
 	public final String getHeader(String key) {
-		for (Iterator<Map.Entry<Object, Object>> headersIterator = getHeaders()
-				.entrySet().iterator(); headersIterator.hasNext();) {
-			Map.Entry<Object, Object> entry = headersIterator.next();
-			if (key.equalsIgnoreCase(entry.getKey().toString()))
+		for (Entry<String, Object> entry : headers.entrySet()) {
+			if (key.equalsIgnoreCase(entry.getKey())) {
 				return entry.getValue().toString();
+			}
 		}
 		return null;
 	}
 
 	public final void setHeader(String key, String value) {
-		for (Iterator<Map.Entry<Object, Object>> headersIterator = getHeaders()
-				.entrySet().iterator(); headersIterator.hasNext();) {
-			Map.Entry<Object, Object> entry = headersIterator.next();
-			if (key.equalsIgnoreCase(entry.getKey().toString()))
-				headers.remove(entry.getKey());
+		String keyToRemove = null;
+		for (Entry<String, Object> entry : headers.entrySet()) {
+			if (key.equalsIgnoreCase(entry.getKey())) {
+				keyToRemove = entry.getKey();
+				break;
+			}
+		}
+		if (keyToRemove != null) {
+			headers.remove(keyToRemove);
 		}
 		headers.put(key, value);
 	}

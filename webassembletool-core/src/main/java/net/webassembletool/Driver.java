@@ -53,8 +53,6 @@ import net.webassembletool.vars.VariablesResolver;
 import net.webassembletool.xml.XpathRenderer;
 import net.webassembletool.xml.XsltRenderer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.http.HttpHost;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.params.ClientPNames;
@@ -70,6 +68,8 @@ import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.params.HttpParams;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Main class used to retrieve data from a provider application using HTTP
@@ -554,7 +554,7 @@ public class Driver {
 					// Resource in cache, does not need validation, just render
 					// it
 					LOG.debug("Reusing cache entry for: " + httpUrl);
-					Rfc2616.renderResource(cachedResource, multipleOutput);
+					Rfc2616.renderResource(config, cachedResource, multipleOutput);
 					return;
 				}
 			}
@@ -563,8 +563,7 @@ public class Driver {
 				// Prepare a FileOutput to store the result on the file system
 				if (config.isPutInCache()
 						&& Rfc2616.isCacheable(resourceContext)) {
-					fileOutput = new FileOutput(ResourceUtils.getFileUrl(
-							config.getLocalBase(), resourceContext));
+					fileOutput = ResourceUtils.createFileOutput(config.getLocalBase(), resourceContext);
 					multipleOutput.addOutput(fileOutput);
 				}
 				if (cache != null) {
@@ -580,22 +579,21 @@ public class Driver {
 				}
 				// If there is an error, we will try to reuse an old cache entry
 				if (!httpResource.isError()) {
-					Rfc2616.renderResource(httpResource, multipleOutput);
+					Rfc2616.renderResource(config, httpResource, multipleOutput);
 					return;
 				}
 			}
 			// Resource could not be loaded from HTTP, let's use the expired
 			// cache entry if not empty and not error.
 			if (cachedResource != null && !cachedResource.isError()) {
-				Rfc2616.renderResource(cachedResource, multipleOutput);
+				Rfc2616.renderResource(config, cachedResource, multipleOutput);
 				return;
 			}
 			// Resource could not be loaded neither from HTTP, nor from the
 			// cache, let's try from the file system
 			if (config.getLocalBase() != null
 					&& Rfc2616.isCacheable(resourceContext)) {
-				fileResource = new FileResource(config.getLocalBase(),
-						resourceContext);
+				fileResource = ResourceUtils.createFileResource(config.getLocalBase(), resourceContext);
 				if (!fileResource.isError()) {
 					// on réinitialise l'output pour ne pas écraser le fichier
 					// stocké sur le disque
@@ -603,24 +601,24 @@ public class Driver {
 					multipleOutput.addOutput(output);
 					memoryOutput = new CacheOutput(config.getCacheMaxFileSize());
 					multipleOutput.addOutput(memoryOutput);
-					Rfc2616.renderResource(fileResource, multipleOutput);
+					Rfc2616.renderResource(config, fileResource, multipleOutput);
 					return;
 				}
 			}
 			// No valid response could be found, let's render the response even
 			// if it is an error
 			if (httpResource != null) {
-				Rfc2616.renderResource(httpResource, multipleOutput);
+				Rfc2616.renderResource(config, httpResource, multipleOutput);
 				return;
 			} else if (cachedResource != null) {
-				Rfc2616.renderResource(cachedResource, multipleOutput);
+				Rfc2616.renderResource(config, cachedResource, multipleOutput);
 				return;
 			} else if (fileResource != null) {
-				Rfc2616.renderResource(fileResource, multipleOutput);
+				Rfc2616.renderResource(config, fileResource, multipleOutput);
 				return;
 			} else {
 				// Resource could not be loaded at all
-				Rfc2616.renderResource(new NullResource(), multipleOutput);
+				Rfc2616.renderResource(config, new NullResource(), multipleOutput);
 			}
 		} catch (Throwable t) {
 			// In case there was a problem during rendering (client abort for

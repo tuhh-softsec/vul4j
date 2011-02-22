@@ -1,6 +1,7 @@
 package net.webassembletool.resource;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletResponse;
@@ -51,12 +52,17 @@ public abstract class Resource {
 
 	/**
 	 * Get resource header.
+	 * <p>
+	 * However it would be better to allow multiple values for single name retrieval.
 	 * 
 	 * @param name
 	 *            Header name (not null)
 	 * @return Header value or null
 	 */
 	public abstract String getHeader(String name);
+
+	/** Returns all available header names found in resource. */
+	public abstract Collection<String> getHeaderNames();
 
 	/**
 	 * Get header of the request which was used to get this resource. This can

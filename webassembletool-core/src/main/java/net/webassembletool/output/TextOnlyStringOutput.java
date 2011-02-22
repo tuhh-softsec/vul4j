@@ -4,9 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -79,17 +78,12 @@ public class TextOnlyStringOutput extends Output {
 	 * Copy all the headers to the response
 	 */
 	private void copyHeaders() {
-		for (Iterator<Map.Entry<Object, Object>> headersIterator = getHeaders()
-				.entrySet().iterator(); headersIterator.hasNext();) {
-			Map.Entry<Object, Object> entry = headersIterator.next();
+		for (Entry<String, Object> entry : getHeaders().entrySet()) {
 			// Swallow content-encoding and content-length headers for html
 			// pages as content-length may change and gzip-encoded pages will be
 			// decoded
-			if (!text
-					|| (!"content-length".equalsIgnoreCase((String) (entry
-							.getKey())))) {
-				response.setHeader(entry.getKey().toString(), entry.getValue()
-						.toString());
+			if (!text || (!"content-length".equalsIgnoreCase(entry.getKey()))) {
+				response.setHeader(entry.getKey(), entry.getValue().toString());
 			}
 		}
 	}

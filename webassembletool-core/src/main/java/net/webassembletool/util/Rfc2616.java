@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.webassembletool.DriverConfiguration;
 import net.webassembletool.ResourceContext;
 import net.webassembletool.output.Output;
 import net.webassembletool.resource.Resource;
@@ -392,11 +393,10 @@ public class Rfc2616 {
 		return false;
 	}
 
-	public final static void renderResource(Resource resource, Output output)
-			throws IOException {
+	public final static void renderResource(DriverConfiguration config, Resource resource, Output output) throws IOException {
 		if (HttpServletResponse.SC_NOT_MODIFIED == resource.getStatusCode()) {
 			output.setStatusCode(resource.getStatusCode());
-			copyHeaders(resource, output);
+			copyHeaders(config, resource, output);
 			output.open();
 			output.getOutputStream();
 			// No response body
@@ -406,49 +406,15 @@ public class Rfc2616 {
 		}
 	}
 
-	/**
-	 * Copies end-to-end headers from a resource to an output
-	 */
-	public final static void copyHeaders(Resource resource, Output output) {
-		copyHeader(resource, output, "Date");
-		copyHeader(resource, output, "Content-Type");
-		// Do not copy Content-encoding
-		// Do not copy Content-length header for gzipped streams as it will
-		// change ! OK this is not compliant with RFC 2616 but we need to do
-		// that as we often have to modify the content of the response
-		if (resource.getHeader("Content-encoding") == null) {
-			copyHeader(resource, output, "Content-Length");
-		}
-		copyHeader(resource, output, "Last-Modified");
-		copyHeader(resource, output, "ETag");
-		copyHeader(resource, output, "Expires");
-		copyHeader(resource, output, "Cache-control");
-		// FIXME: We have to copy all headers except those that the RFC says not
-		// to. For now, we just add a missing (and important) header
-		// See :
-		// https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=15
-		copyHeader(resource, output, "Content-Disposition");
-
-		// See
-		// https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=18
-		copyHeader(resource, output, "Vary");
-	}
-
-	/**
-	 * Copy header "name" from "resource" to "output".
-	 * 
-	 * @param resource
-	 *            source Resource
-	 * @param output
-	 *            target Output
-	 * @param name
-	 *            name of the header
-	 */
-	private final static void copyHeader(Resource resource, Output output,
-			String name) {
-		String value = resource.getHeader(name);
-		if (value != null) {
-			output.setHeader(name, value);
+	/** Copies end-to-end headers from a resource to an output. */
+	public final static void copyHeaders(DriverConfiguration config, Resource resource, Output output) {
+		for (String headerName : resource.getHeaderNames()) {
+			if (!config.isBlackListed(headerName)) {
+				String headerValue = resource.getHeader(headerName);
+				if (headerValue != null) {
+					output.setHeader(headerName, headerValue);
+				}
+			}
 		}
 	}
 

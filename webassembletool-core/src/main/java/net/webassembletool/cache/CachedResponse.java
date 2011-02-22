@@ -1,13 +1,12 @@
 package net.webassembletool.cache;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -24,14 +23,14 @@ import net.webassembletool.util.Rfc2616;
  */
 public class CachedResponse extends Resource {
 	private final byte[] byteArray;
-	private final Properties headers;
+	private final Map<String, Object> headers;
 	private final String charset;
 	private final int statusCode;
 	private final String statusMessage;
 	private final Date localDate = new Date();
 	private Map<String, String> requestHeaders;
 
-	public CachedResponse(byte[] byteArray, String charset, Properties headers,
+	public CachedResponse(byte[] byteArray, String charset, Map<String, Object> headers,
 			int statusCode, String statusMessage) {
 		this.byteArray = byteArray;
 		this.headers = headers;
@@ -69,8 +68,8 @@ public class CachedResponse extends Resource {
 		output.setStatus(statusCode, statusMessage);
 		try {
 			output.setCharsetName(charset);
-			for (Entry<Object, Object> entry : headers.entrySet()) {
-				String key = entry.getKey().toString();
+			for (Entry<String, Object> entry : headers.entrySet()) {
+				String key = entry.getKey();
 				String value = entry.getValue().toString();
 				output.addHeader(key, value);
 			}
@@ -91,11 +90,14 @@ public class CachedResponse extends Resource {
 	}
 
 	@Override
+	public Collection<String> getHeaderNames() {
+		return headers.keySet();
+	}
+
+	@Override
 	public final String getHeader(String key) {
-		for (Iterator<Map.Entry<Object, Object>> headersIterator = headers
-				.entrySet().iterator(); headersIterator.hasNext();) {
-			Map.Entry<Object, Object> entry = headersIterator.next();
-			if (key.equalsIgnoreCase(entry.getKey().toString())) {
+		for (Entry<String, Object> entry : headers.entrySet()) {
+			if (key.equalsIgnoreCase(entry.getKey())) {
 				return entry.getValue().toString();
 			}
 		}
@@ -182,8 +184,7 @@ public class CachedResponse extends Resource {
 		s.setLocalDate(localDate);
 
 		// Copy Response headers
-		Properties headers2 = new Properties();
-		headers2.putAll(headers);
+		Map<String, Object> headers2 = new HashMap<String, Object>(headers);
 		s.setHeaders(headers2);
 
 		// Copy Request headers
