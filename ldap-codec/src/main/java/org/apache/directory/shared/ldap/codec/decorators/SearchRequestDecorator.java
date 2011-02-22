@@ -32,9 +32,10 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
-import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.LdapConstants;
+import org.apache.directory.shared.ldap.codec.api.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.api.MessageDecorator;
 import org.apache.directory.shared.ldap.codec.search.AndFilter;
 import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilter;
 import org.apache.directory.shared.ldap.codec.search.ConnectorFilter;
@@ -285,7 +286,7 @@ public class SearchRequestDecorator extends MessageDecorator<SearchRequest> impl
     public void unstackFilters( Asn1Container container )
     {
         LdapMessageContainer<MessageDecorator<Message>> ldapMessageContainer = 
-            ( LdapMessageContainer<MessageDecorator<Message>> ) container;
+            (org.apache.directory.shared.ldap.codec.api.LdapMessageContainer<MessageDecorator<Message>> ) container;
 
         TLV tlv = ldapMessageContainer.getCurrentTLV();
         TLV localParent = tlv.getParent();

@@ -22,7 +22,7 @@ package org.apache.directory.shared.ldap.codec.actions.searchResultReference;
 
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
-import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.api.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.decorators.SearchResultReferenceDecorator;
 import org.apache.directory.shared.ldap.model.message.SearchResultReferenceImpl;
 import org.slf4j.Logger;

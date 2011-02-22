@@ -21,7 +21,7 @@ package org.apache.directory.shared.ldap.codec.actions.searchResultDone;
 
 
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
-import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.api.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.decorators.SearchResultDoneDecorator;
 import org.apache.directory.shared.ldap.model.message.SearchResultDoneImpl;
 import org.slf4j.Logger;

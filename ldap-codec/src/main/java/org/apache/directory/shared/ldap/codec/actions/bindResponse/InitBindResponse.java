@@ -21,7 +21,7 @@ package org.apache.directory.shared.ldap.codec.actions.bindResponse;
 
 
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
-import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.api.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.decorators.BindResponseDecorator;
 import org.apache.directory.shared.ldap.model.message.BindResponseImpl;
 

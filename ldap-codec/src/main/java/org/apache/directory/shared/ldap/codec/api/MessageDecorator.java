@@ -17,16 +17,33 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.codec.decorators;
+package org.apache.directory.shared.ldap.codec.api;
 
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.directory.shared.ldap.codec.api.CodecControl;
-import org.apache.directory.shared.ldap.codec.api.ControlDecorator;
-import org.apache.directory.shared.ldap.codec.api.Decorator;
-import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
+import org.apache.directory.shared.ldap.codec.decorators.AbandonRequestDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.AddRequestDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.AddResponseDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.BindRequestDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.BindResponseDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.CompareRequestDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.CompareResponseDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.DeleteRequestDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.DeleteResponseDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.ExtendedRequestDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.ExtendedResponseDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.IntermediateResponseDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.ModifyDnRequestDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.ModifyDnResponseDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.ModifyRequestDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.ModifyResponseDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.SearchRequestDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.SearchResultDoneDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.SearchResultEntryDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.SearchResultReferenceDecorator;
+import org.apache.directory.shared.ldap.codec.decorators.UnbindRequestDecorator;
 import org.apache.directory.shared.ldap.model.exception.MessageException;
 import org.apache.directory.shared.ldap.model.message.AbandonRequest;
 import org.apache.directory.shared.ldap.model.message.AddRequest;
@@ -85,7 +102,7 @@ public abstract class MessageDecorator<E extends Message> implements Message, De
     {
         if ( decoratedMessage instanceof MessageDecorator )
         {
-            return ( MessageDecorator<?> ) decoratedMessage;
+            return (org.apache.directory.shared.ldap.codec.api.MessageDecorator<?> ) decoratedMessage;
         }
         
         MessageDecorator<?> decorator = null;

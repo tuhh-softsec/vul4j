@@ -24,7 +24,7 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.api.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.api.ResponseCarryingException;
 import org.apache.directory.shared.ldap.codec.decorators.CompareRequestDecorator;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;

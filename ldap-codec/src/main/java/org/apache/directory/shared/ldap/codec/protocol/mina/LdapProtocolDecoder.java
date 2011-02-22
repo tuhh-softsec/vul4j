@@ -25,9 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.directory.shared.ldap.codec.LdapDecoder;
-import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
-import org.apache.directory.shared.ldap.codec.decorators.MessageDecorator;
+import org.apache.directory.shared.ldap.codec.api.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.api.MessageDecorator;
 import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.IoSession;
@@ -63,7 +63,7 @@ public class LdapProtocolDecoder implements ProtocolDecoder
     public void decode( IoSession session, IoBuffer in, ProtocolDecoderOutput out ) throws Exception
     {
         LdapMessageContainer<MessageDecorator<? extends Message>> messageContainer =
-            ( LdapMessageContainer<MessageDecorator<? extends Message>> ) session.getAttribute( "messageContainer" );
+            (org.apache.directory.shared.ldap.codec.api.LdapMessageContainer<MessageDecorator<? extends Message>> ) session.getAttribute( "messageContainer" );
 
         if ( session.containsAttribute( "maxPDUSize" ) )
         {

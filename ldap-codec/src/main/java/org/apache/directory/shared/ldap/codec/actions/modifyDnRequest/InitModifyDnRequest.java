@@ -21,7 +21,7 @@ package org.apache.directory.shared.ldap.codec.actions.modifyDnRequest;
 
 
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
-import org.apache.directory.shared.ldap.codec.LdapMessageContainer;
+import org.apache.directory.shared.ldap.codec.api.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.decorators.ModifyDnRequestDecorator;
 import org.apache.directory.shared.ldap.model.message.ModifyDnRequestImpl;
 import org.slf4j.Logger;
