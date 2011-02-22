@@ -23,6 +23,9 @@ package org.apache.directory.shared.ldap.extras.extended;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.directory.shared.asn1.ber.tlv.IntegerDecoder;
+import org.apache.directory.shared.asn1.ber.tlv.IntegerDecoderException;
+import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.model.message.AbstractExtendedRequest;
 import org.apache.directory.shared.util.exception.NotImplementedException;
@@ -192,6 +195,24 @@ public class StoredProcedureRequestImpl extends AbstractExtendedRequest<StoredPr
     /**
      * {@inheritDoc}
      */
+    public Object getParameterTypeString( int index )
+    {
+        if ( ! language.equals( "java" ) )
+        {
+            Object obj = parameters.get( index ).getType();
+            if ( obj instanceof byte[] )
+            {
+                return Strings.utf8ToString( ( byte [] ) obj );
+            }
+        }
+
+        return getJavaParameterType( index );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
     public Class<?> getJavaParameterType( int index )
     {
         throw new NotImplementedException( I18n.err( I18n.ERR_04175 ) );
@@ -206,6 +227,42 @@ public class StoredProcedureRequestImpl extends AbstractExtendedRequest<StoredPr
         if ( ! language.equals( "java" ) )
         {
             return parameters.get( index ).getValue();
+        }
+
+        return getJavaParameterValue( index );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Object getParameterValueString( int index )
+    {
+        if ( ! language.equals( "java" ) )
+        {
+            Object obj = parameters.get( index ).getValue();
+            if ( obj instanceof byte[] )
+            {
+                String str = Strings.utf8ToString( ( byte [] ) obj );
+                String type = ( String ) getParameterTypeString( index );
+                
+                if ( type.equals( "int" ) )
+                {
+                    try
+                    {
+                        return IntegerDecoder.parse( new Value( (byte[]) obj ) );
+                    }
+                    catch ( IntegerDecoderException e )
+                    {
+                        throw new RuntimeException( "Failed to decode INTEGER: " + 
+                            Strings.dumpBytes( ( byte[] ) obj ), e );
+                    }
+                }
+                else 
+                {
+                    return str;
+                }
+            }
         }
 
         return getJavaParameterValue( index );

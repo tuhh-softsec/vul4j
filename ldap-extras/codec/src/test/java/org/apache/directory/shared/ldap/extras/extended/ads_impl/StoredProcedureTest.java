@@ -78,7 +78,7 @@ public class StoredProcedureTest
         stream.flip();
 
         // Allocate a StoredProcedure Container
-        Asn1Container storedProcedureContainer = new StoredProcedureContainer();
+        StoredProcedureContainer storedProcedureContainer = new StoredProcedureContainer();
 
         // Decode a StoredProcedure message
         try
@@ -91,7 +91,7 @@ public class StoredProcedureTest
             fail( de.getMessage() );
         }
 
-        StoredProcedure storedProcedure = ( ( StoredProcedureContainer ) storedProcedureContainer ).getStoredProcedure();
+        StoredProcedure storedProcedure = storedProcedureContainer.getStoredProcedure();
 
         assertEquals("Java", storedProcedure.getLanguage());
         
@@ -99,14 +99,14 @@ public class StoredProcedureTest
 
         assertEquals( 3, storedProcedure.size() );
 
-        assertEquals( "int", storedProcedure.getParameterType( 0 ) );
-        assertEquals( 1, storedProcedure.getParameterValue( 0 ) );
+        assertEquals( "int", storedProcedure.getParameterTypeString( 0 ) );
+        assertEquals( 1, storedProcedure.getParameterValueString( 0 ) );
 
-        assertEquals( "boolean", storedProcedure.getParameterType( 1 ) );
-        assertEquals( "true", storedProcedure.getParameterValue( 1 ) );
+        assertEquals( "boolean", storedProcedure.getParameterTypeString( 1 ) );
+        assertEquals( "true", storedProcedure.getParameterValueString( 1 ) );
 
-        assertEquals( "String", storedProcedure.getParameterType( 2 ) );
-        assertEquals( "parameter3", storedProcedure.getParameterValue( 2 ) );
+        assertEquals( "String", storedProcedure.getParameterTypeString( 2 ) );
+        assertEquals( "parameter3", storedProcedure.getParameterValueString( 2 ) );
 
         // Check the encoding
         try
@@ -222,8 +222,8 @@ public class StoredProcedureTest
 
         assertEquals( 1, storedProcedure.size() );
 
-        assertEquals( "int", storedProcedure.getParameterType( 0 ) );
-        assertEquals( 1, storedProcedure.getParameterValue( 0 ) );
+        assertEquals( "int", storedProcedure.getParameterTypeString( 0 ) );
+        assertEquals( 1, storedProcedure.getParameterValueString( 0 ) );
 
         // Check the encoding
         try

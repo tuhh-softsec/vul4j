@@ -93,7 +93,7 @@ public class CertGenerationRequestTest
         bb.put( new byte[]
             { 0x04, 0x03, 'R', 'S', 'A' } );
 
-        String decodedPdu = Strings.dumpBytes(bb.array());
+        String decodedPdu = Strings.dumpBytes( bb.array() );
         bb.flip();
 
         CertGenerationContainer container = new CertGenerationContainer();
@@ -114,7 +114,7 @@ public class CertGenerationRequestTest
         assertEquals( dn, req.getSubjectDN() );
         assertEquals( keyAlgo, req.getKeyAlgorithm() );
 
-        assertEquals( bufLen, req.computeLength() );
+        assertEquals( bufLen, req.getCertGenerationObject().computeLength() );
 
         try
         {

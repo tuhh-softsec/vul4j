@@ -98,6 +98,18 @@ public class StoredProcedure extends AbstractAsn1Object
         byte[] value;
 
 
+        public String getTypeString()
+        {
+            return Strings.utf8ToString( type );
+        }
+        
+        
+        public String getValueString()
+        {
+            return Strings.utf8ToString( value );
+        }
+        
+        
         public byte[] getType()
         {
             if ( type == null )
@@ -362,6 +374,12 @@ public class StoredProcedure extends AbstractAsn1Object
     }
 
 
+    public Object getParameterTypeString( int index )
+    {
+        return request.getParameterTypeString( index );
+    }
+
+
     public Class<?> getJavaParameterType( int index )
     {
         return request.getJavaParameterType( index );
@@ -371,6 +389,12 @@ public class StoredProcedure extends AbstractAsn1Object
     public Object getParameterValue( int index )
     {
         return request.getParameterValue( index );
+    }
+
+
+    public Object getParameterValueString( int index )
+    {
+        return request.getParameterValueString( index );
     }
 
 
