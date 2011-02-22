@@ -22,6 +22,7 @@ import java.lang.reflect.Field;
 import org.apache.commons.digester3.RulesBinder;
 import org.apache.commons.digester3.annotations.AnnotationHandler;
 import org.apache.commons.digester3.annotations.rules.SetProperty;
+import org.apache.commons.digester3.rulesbinder.SetPropertiesBuilder;
 
 /**
  * {@link SetProperty} handler.
@@ -32,9 +33,15 @@ public final class SetPropertiesHandler implements AnnotationHandler<SetProperty
      * {@inheritDoc}
      */
     public void handle(SetProperty annotation, Field element, RulesBinder rulesBinder) {
-        rulesBinder.forPattern(annotation.pattern())
+        SetPropertiesBuilder builder = rulesBinder.forPattern(annotation.pattern())
             .withNamespaceURI(annotation.namespaceURI())
-            .setProperties().addAlias(annotation.attributeName(), element.getName());
+            .setProperties();
+
+        if (annotation.attributeName() != null
+                && annotation.attributeName().length() > 0
+                && !element.getName().equals(annotation.attributeName())) {
+            builder.addAlias(annotation.attributeName(), element.getName());
+        }
     }
 
 }
