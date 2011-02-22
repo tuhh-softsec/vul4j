@@ -40,7 +40,7 @@ import org.xml.sax.InputSource;
  */
 public final class FromXmlRulesModule implements RulesModule {
 
-    private static final String DIGESTER_PUBLIC_ID = "-//Apache Commons //DTD digester-rules XML V2.0//EN";
+    private static final String DIGESTER_PUBLIC_ID = "-//Apache Commons //DTD digester-rules XML V1.0//EN";
 
     private  static final String DIGESTER_DTD_PATH = "digester-rules.dtd";
 
