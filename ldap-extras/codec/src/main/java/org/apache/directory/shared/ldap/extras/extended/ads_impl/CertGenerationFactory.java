@@ -74,4 +74,15 @@ public class CertGenerationFactory
         response.setResponseValue( encodedValue );
         return response;
     }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public CertGenerationRequest newRequest( byte[] value )
+    {
+        CertGenerationRequestDecorator req = new CertGenerationRequestDecorator( codec, new CertGenerationRequestImpl() );
+        req.setRequestValue( value );
+        return req;
+    }
 }

@@ -73,4 +73,12 @@ public class CancelFactory implements ExtendedRequestFactory<CancelRequest, Canc
         response.setResponseValue( encodedValue );
         return response;
     }
+
+
+    public CancelRequest newRequest( byte[] value )
+    {
+        CancelRequestDecorator req = new CancelRequestDecorator( codec, new CancelRequestImpl() );
+        req.setRequestValue( value );
+        return req;
+    }
 }

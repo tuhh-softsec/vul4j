@@ -24,8 +24,9 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.ldap.codec.api.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.api.ExtendedRequestDecorator;
+import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequestImpl;
-import org.apache.directory.shared.ldap.model.message.ExtendedResponseImpl;
+import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +60,7 @@ public class InitExtendedRequest extends GrammarAction<LdapMessageContainer<Exte
     {
         // Now, we can allocate the ExtendedRequest Object
         ExtendedRequestDecorator<?,?> extendedRequest = 
-            new ExtendedRequestDecorator<ExtendedRequestImpl,ExtendedResponseImpl>(
+            new ExtendedRequestDecorator<ExtendedRequest<ExtendedResponse>,ExtendedResponse>(
                 container.getLdapCodecService(), 
                 new ExtendedRequestImpl( container.getMessageId() ) );
         container.setMessage( extendedRequest );

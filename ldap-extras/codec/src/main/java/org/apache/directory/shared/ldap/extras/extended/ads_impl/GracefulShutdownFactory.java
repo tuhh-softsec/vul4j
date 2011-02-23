@@ -75,4 +75,15 @@ public class GracefulShutdownFactory
         response.setResponseValue( encodedValue );
         return response;
     }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public GracefulShutdownRequest newRequest( byte[] value )
+    {
+        GracefulShutdownRequestDecorator req = new GracefulShutdownRequestDecorator( codec, new GracefulShutdownRequestImpl() );
+        req.setRequestValue( value );
+        return req;
+    }
 }

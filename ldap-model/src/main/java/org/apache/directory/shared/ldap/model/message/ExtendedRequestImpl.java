@@ -25,7 +25,7 @@ package org.apache.directory.shared.ldap.model.message;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class ExtendedRequestImpl extends AbstractRequest implements ExtendedRequest<ExtendedResponseImpl>
+public class ExtendedRequestImpl extends AbstractRequest implements ExtendedRequest<ExtendedResponse>
 {
     static final long serialVersionUID = 7916990159044177480L;
 

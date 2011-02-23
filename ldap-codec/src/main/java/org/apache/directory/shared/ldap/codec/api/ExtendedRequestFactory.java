@@ -43,9 +43,18 @@ public interface ExtendedRequestFactory<Q extends ExtendedRequest<P>,P extends E
     
     
     /**
-     *  @return A new instance of the ExtendedRequest.
+     *  @return A new instance of the {@link ExtendedRequestDecorator}.
      */
     Q newRequest();
+
+    
+    /**
+     * Returns a new {@link ExtendedRequestDecorator} with the following encoded value.
+     * 
+     * @param value the encoded value
+     * @return the decorator for the extended request type
+     */
+    Q newRequest( byte[] value );
     
     
     /**

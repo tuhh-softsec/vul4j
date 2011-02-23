@@ -24,6 +24,7 @@ import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
 import org.apache.directory.shared.ldap.codec.BasicControlDecorator;
+import org.apache.directory.shared.ldap.codec.api.ExtendedRequestDecorator;
 import org.apache.directory.shared.ldap.codec.api.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.api.CodecControl;
 import org.apache.directory.shared.ldap.codec.api.ControlFactory;
@@ -40,6 +41,7 @@ import org.apache.directory.shared.ldap.codec.controls.search.subentries.Subentr
 import org.apache.directory.shared.ldap.codec.protocol.mina.LdapProtocolCodecFactory;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
+import org.apache.directory.shared.ldap.model.message.ExtendedRequestImpl;
 import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
 import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.model.message.controls.OpaqueControl;
@@ -410,5 +412,31 @@ public class DefaultLdapCodecService implements LdapCodecService
     {
         // TODO Auto-generated method stub
         throw new NotImplementedException();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public ExtendedRequest<?> newExtendedRequest( String oid, byte[] value )
+    {
+        ExtendedRequest<?> req = null;
+        
+        ExtendedRequestFactory<?,?> extendedRequestFactory = extReqFactories.get( oid );
+        if ( extendedRequestFactory != null )
+        {
+            req = extendedRequestFactory.newRequest( value );
+        }
+        else
+        {
+            ExtendedRequestDecorator<ExtendedRequest<ExtendedResponse>, ExtendedResponse> decorator = 
+                new ExtendedRequestDecorator<ExtendedRequest<ExtendedResponse>, ExtendedResponse>( this, 
+                    new ExtendedRequestImpl() );
+            decorator.setRequestName( oid );
+            decorator.setRequestValue( value );
+            req = decorator;
+        }
+        
+        return req;
     }
 }

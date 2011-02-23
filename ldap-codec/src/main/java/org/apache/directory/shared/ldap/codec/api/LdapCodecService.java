@@ -249,4 +249,14 @@ public interface LdapCodecService
 
 
     <E extends ExtendedResponse> E newExtendedResponse( ExtendedRequest<E> req, byte[] serializedResponse );
+
+
+    /**
+     * Creates a new ExtendedRequest instance.
+     * 
+     * @param oid the extended request's object identifier
+     * @param value the encoded value of the extended request
+     * @return The new extended request
+     */
+    ExtendedRequest<?> newExtendedRequest( String oid, byte[] value );
 }

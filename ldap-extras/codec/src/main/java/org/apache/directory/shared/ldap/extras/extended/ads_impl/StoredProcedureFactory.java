@@ -78,4 +78,15 @@ public class StoredProcedureFactory implements ExtendedRequestFactory<StoredProc
         response.setResponseValue( encodedValue );
         return response;
     }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public StoredProcedureRequest newRequest( byte[] value )
+    {
+        StoredProcedureRequestDecorator req = new StoredProcedureRequestDecorator( codec, new StoredProcedureRequestImpl() );
+        req.setRequestValue( value );
+        return req;
+    }
 }

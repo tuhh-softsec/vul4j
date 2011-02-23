@@ -2927,12 +2927,9 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
      */
     public ExtendedResponse extended( OID oid, byte[] value ) throws LdapException
     {
-        ExtendedRequest<?> extendedRequest = new ExtendedRequestImpl();
-        extendedRequest.setRequestName( oid.toString() );
-        // extendedRequest.setRequestValue( value );
-
-        // return extended( extendedRequest );
-        throw new NotImplementedException( "need to figure out what to do with request value" );
+        ExtendedRequest<?> extendedRequest = 
+            LdapCodecServiceFactory.getSingleton().newExtendedRequest( oid.toString(), value );
+        return extended( extendedRequest );
     }
 
 
