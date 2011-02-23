@@ -248,7 +248,7 @@ public interface LdapCodecService
     Asn1Container newMessageContainer();
 
 
-    <E extends ExtendedResponse> E newExtendedResponse( ExtendedRequest<E> req, byte[] serializedResponse );
+    <E extends ExtendedResponse> E newExtendedResponse( ExtendedRequest<E> req, byte[] serializedResponse ) throws DecoderException;
 
 
     /**

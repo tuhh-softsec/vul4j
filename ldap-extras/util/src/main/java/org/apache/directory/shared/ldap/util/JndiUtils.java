@@ -21,7 +21,6 @@ package org.apache.directory.shared.ldap.util;
 
 
 import java.util.Hashtable;
-import java.util.Map;
 
 import javax.naming.AuthenticationException;
 import javax.naming.AuthenticationNotSupportedException;
@@ -45,7 +44,6 @@ import javax.naming.directory.InvalidAttributeValueException;
 import javax.naming.directory.InvalidSearchFilterException;
 import javax.naming.directory.NoSuchAttributeException;
 import javax.naming.directory.SchemaViolationException;
-import javax.naming.ldap.ExtendedResponse;
 import javax.naming.ldap.LdapName;
 
 import org.apache.directory.shared.asn1.DecoderException;
@@ -76,10 +74,7 @@ import org.apache.directory.shared.ldap.model.exception.LdapSchemaViolationExcep
 import org.apache.directory.shared.ldap.model.exception.LdapServiceUnavailableException;
 import org.apache.directory.shared.ldap.model.exception.LdapTimeLimitExceededException;
 import org.apache.directory.shared.ldap.model.exception.LdapUnwillingToPerformException;
-import org.apache.directory.shared.ldap.model.exception.MessageException;
 import org.apache.directory.shared.ldap.model.message.Control;
-import org.apache.directory.shared.ldap.model.message.LdapResult;
-import org.apache.directory.shared.ldap.model.message.MessageTypeEnum;
 import org.apache.directory.shared.ldap.model.name.Dn;
 
 
@@ -157,135 +152,6 @@ public final class JndiUtils
         {
             return null;
         }
-    }
-
-
-    /**
-     * TODO toJndiExtendedResponse. This is NOT correct ATM
-     *
-     * @param request
-     * @return
-     */
-    public static org.apache.directory.shared.ldap.model.message.ExtendedResponse fromJndiExtendedResponse(
-        final ExtendedResponse response )
-    {
-        class ServerExtendedResponse implements org.apache.directory.shared.ldap.model.message.ExtendedResponse
-        {
-            private static final long serialVersionUID = 1L;
-
-            public String getResponseName()
-            {
-                return response.getID();
-            }
-
-
-            public void setResponseName( String oid )
-            {
-            }
-
-
-            public LdapResult getLdapResult()
-            {
-                return null;
-            }
-
-
-            public void addAllControls( Control[] controls ) throws MessageException
-            {
-            }
-
-
-            public void addControl( Control control ) throws MessageException
-            {
-            }
-
-
-            public Object get( Object key )
-            {
-                return null;
-            }
-
-
-            public Control getControl( String oid )
-            {
-                return null;
-            }
-
-
-            public Map<String, Control> getControls()
-            {
-                return null;
-            }
-
-
-            @SuppressWarnings("unused")
-            public int getControlsLength()
-            {
-                return 0;
-            }
-
-
-            @SuppressWarnings("unused")
-            public Control getCurrentControl()
-            {
-                return null;
-            }
-
-
-            public int getMessageId()
-            {
-                return 0;
-            }
-
-
-            @SuppressWarnings("unused")
-            public int getMessageLength()
-            {
-                return 0;
-            }
-
-
-            public MessageTypeEnum getType()
-            {
-                return null;
-            }
-
-
-            public boolean hasControl( String oid )
-            {
-                return false;
-            }
-
-
-            public Object put( Object key, Object value )
-            {
-                return null;
-            }
-
-
-            public void removeControl( Control control ) throws MessageException
-            {
-            }
-
-
-            @SuppressWarnings("unused")
-            public void setControlsLength( int controlsLength )
-            {
-            }
-
-
-            public void setMessageId( int messageId )
-            {
-            }
-
-
-            @SuppressWarnings("unused")
-            public void setMessageLength( int messageLength )
-            {
-            }
-        }
-
-        return new ServerExtendedResponse();
     }
 
 

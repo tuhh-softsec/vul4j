@@ -29,6 +29,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.naming.NamingException;
+
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Container;
@@ -37,6 +39,7 @@ import org.apache.directory.shared.ldap.codec.api.CodecControl;
 import org.apache.directory.shared.ldap.codec.api.ControlFactory;
 import org.apache.directory.shared.ldap.codec.api.ExtendedRequestDecorator;
 import org.apache.directory.shared.ldap.codec.api.ExtendedRequestFactory;
+import org.apache.directory.shared.ldap.codec.api.ExtendedResponseDecorator;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.api.MessageDecorator;
@@ -52,6 +55,7 @@ import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequestImpl;
 import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
+import org.apache.directory.shared.ldap.model.message.ExtendedResponseImpl;
 import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.model.message.controls.OpaqueControl;
 import org.apache.directory.shared.util.exception.NotImplementedException;
@@ -790,8 +794,9 @@ public class StandaloneLdapCodecService implements LdapCodecService
      */
     public ExtendedRequest<?> fromJndi( javax.naming.ldap.ExtendedRequest jndiRequest ) throws DecoderException
     {
-        // TODO Auto-generated method stub
-        throw new NotImplementedException();
+        ExtendedRequestDecorator<?,?> decorator =
+            ( ExtendedRequestDecorator<?, ?> ) newExtendedRequest( jndiRequest.getID(), jndiRequest.getEncodedValue() );
+        return decorator;
     }
 
 
@@ -800,18 +805,70 @@ public class StandaloneLdapCodecService implements LdapCodecService
      */
     public javax.naming.ldap.ExtendedRequest toJndi( ExtendedRequest<?> modelRequest ) throws EncoderException
     {
-        // TODO Auto-generated method stub
-        throw new NotImplementedException();
+        final String oid = modelRequest.getRequestName();
+        final byte[] value;
+        
+        if ( modelRequest instanceof ExtendedRequestDecorator )
+        {
+            ExtendedRequestDecorator<?, ?> decorator = ( ExtendedRequestDecorator<?, ?> ) modelRequest;
+            value = decorator.getRequestValue();
+        }
+        else
+        {
+            // have to ask the factory to decorate for us - can't do it ourselves
+            throw new NotImplementedException( "need to decorate the request" );
+        }
+        
+        
+        javax.naming.ldap.ExtendedRequest jndiRequest = new javax.naming.ldap.ExtendedRequest()
+        {
+            private static final long serialVersionUID = -4160980385909987475L;
+
+            public String getID()
+            {
+                return oid;
+            }
+
+            public byte[] getEncodedValue()
+            {
+                return value;
+            }
+
+            public javax.naming.ldap.ExtendedResponse createExtendedResponse( String id, byte[] berValue, int offset,
+                int length ) throws NamingException
+            {
+                throw new NotImplementedException( "need to create new extended response" );
+            }
+            
+        };
+
+        return jndiRequest;
     }
 
 
     /**
      * {@inheritDoc}
+     * @throws DecoderException 
      */
-    public <E extends ExtendedResponse> E newExtendedResponse( ExtendedRequest<E> req, byte[] serializedResponse )
+    @SuppressWarnings("unchecked")
+    public <E extends ExtendedResponse> E newExtendedResponse( ExtendedRequest<E> req, byte[] serializedResponse ) throws DecoderException
     {
-        // TODO Auto-generated method stub
-        return null;
+        ExtendedResponseDecorator<ExtendedResponse> resp;
+        
+        ExtendedRequestFactory<?,?> extendedRequestFactory = extReqFactories.get( req.getRequestName() );
+        if ( extendedRequestFactory != null )
+        {
+            resp = ( ExtendedResponseDecorator<ExtendedResponse> ) extendedRequestFactory.newResponse( serializedResponse );
+        }
+        else
+        {
+            resp = new ExtendedResponseDecorator<ExtendedResponse>( this, 
+                new ExtendedResponseImpl( req.getRequestName() ) );
+            resp.setResponseValue( serializedResponse );
+            resp.setResponseName( req.getRequestName() );
+        }
+        
+        return ( E ) resp;
     }
 
 
