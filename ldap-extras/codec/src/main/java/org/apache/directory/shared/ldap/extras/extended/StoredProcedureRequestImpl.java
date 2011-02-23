@@ -30,6 +30,7 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.model.message.AbstractExtendedRequest;
 import org.apache.directory.shared.util.exception.NotImplementedException;
 import org.apache.directory.shared.ldap.extras.extended.ads_impl.StoredProcedure.StoredProcedureParameter;
+import org.apache.directory.shared.util.StringConstants;
 import org.apache.directory.shared.util.Strings;
 
 
@@ -43,9 +44,9 @@ public class StoredProcedureRequestImpl extends AbstractExtendedRequest<StoredPr
     /** The serialVersionUID. */
     private static final long serialVersionUID = -4682291068700593492L;
     
-    private String language;
+    private String language = "Java";
 
-    private byte[] procedure;
+    private byte[] procedure = StringConstants.EMPTY_BYTES;
 
     private List<StoredProcedureParameter> parameters = new ArrayList<StoredProcedureParameter>();
     
