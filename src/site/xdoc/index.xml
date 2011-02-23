@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+ <properties>
+  <title>Commons</title>
+  <author email="dev@commons.apache.org">Commons Documentation Team</author>
+ </properties>
+
+ <body>
+
+<section name="The Digester Component">
+
+<p>Many projects read XML configuration files to provide initialization
+of various Java objects within the system.  There are several ways of doing
+this, and the <em>Digester</em> component was designed to provide a common
+implementation that can be used in many different projects.</p>
+
+<p>Basically, the <em>Digester</em> package lets you configure an XML -&gt;
+Java object mapping module, which triggers certain actions called
+<em>rules</em> whenever a particular pattern of nested XML elements is
+recognized.</p>
+
+<p>The Digester 3.0 is an almost complete rewrite of the original Digester
+implementation, which offers:</p>
+<ul>
+    <li>A universal loader: core features and extensions became not so easy
+    to maintain, since every contribution was created with a different approach;
+    a fresh new architecture is able to load modules that allow users
+    write and include easily their own extensions;</li>
+    <li>Reusability of Digester configurations: what was missing is a way to
+    <i>describe</i> how the Digester instances have to be built and not how
+    to set rules given an existing instance;</li>
+    <li>Rules are now expressed via EDSL: the key feature of Digester3 is expressing
+    rule bindings using a fluent APIs collection, that speak more in English rather
+    than in a programming language;</li>
+    <li>Improved errors reporting: rules binding debug operations have made easier,
+    a detailed errors list of wrong binding is reported just when the loader
+    attempts to create a new Digester instance, and not when running it.</li>
+</ul>
+
+</section>
+
+
+<section name="Documentation">
+
+<p>User documentation is available in the website, you can start reading the
+<a href="http://commons.apache.org/sandbox/digester/guide/core.html">Core APIs</a>.</p>
+
+<p>The <a href="http://commons.apache.org/sandbox/digester/RELEASE-NOTES.txt">
+Release Notes</a> document the new features and bug fixes that have been
+included in this release.</p>
+
+<p>The "examples" directory in the source code repository contains code which 
+demonstrates the basic functionality. In particular, you should read the 
+AddressBook example in the "api" subdirectory. You can view the examples
+directly from the Subversion repository via <a
+href="http://svn.apache.org/viewvc/commons/sandbox/digester3/trunk/src/examples/">
+the web-based repository browser</a> web site, or can use subversion to 
+download the files.
+</p>
+
+</section>
+
+</body>
+</document>
