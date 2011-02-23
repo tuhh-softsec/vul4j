@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements.  See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+  <properties>
+    <title>Download Commons Digester</title>
+    <author email="dev@commons.apache.org">Commons Documentation Team</author>
+  </properties>
+  <body>
+    <section name="Annotations">
+      <p>The <code>org.apache.commons.digester3.annotations</code> package provides for Java5 Annotations
+        meta-data based definition of rules for <code>Digester</code>.
+        This improves maintainability of both Java code and XML documents, as
+        rules are now defined in POJOs and generating rules binding
+        at run-time, avoiding manual updates.</p>
+
+       <subsection name="Introduction">
+         <p>This is a brief overview of the digester-rules-in-Java5 Annotations
+        feature. Inspired by the basic idea behind the JPA, BeanValidation and
+        JAXB's specifications, this feature lets you define Digester rules
+        directly in target POJOs, instead of creating and initializing the Rules
+        objects programmatically, which can become tedious.</p>
+       </subsection>
+
+       <subsection name="Annotation Rules">
+         <p>A digester rule on a POJO is expressed through one or more annotations.
+        An annotation is considered a digester rule definition if its retention
+        policy contains RUNTIME and if the annotation itself is annotated with
+        <code>org.apache.commons.digester.annotations.DigesterRule</code>.</p>
+
+        <p>The <code>DigesterRule</code> is defined by the combination of:</p>
+        <ul>
+            <li>the reflected <code>Class&lt;? extends org.apache.commons.digester3.Rule&gt;</code>
+            by the annotation;</li>
+            <li>the <code>org.apache.commons.digester3.annotations.AnnotationHandler</code>
+            class that has to be invoked during the target class traversal.</li>
+        </ul>
+
+        <p>Digester annotations can target any of the following <code>ElementType</code>s:</p>
+        <ul>
+            <li><code>FIELD</code> for Digester rules concerning attributes;</li>
+            <li><code>METHOD</code> for Digester rules concerning methods calls;</li>
+            <li><code>PARAMETER</code> for Digester rules concerning methods parameters setting;</li>
+            <li><code>TYPE</code> for Digester rules concerning types creation.</li>
+        </ul>
+        <p>While other <code>ElementType</code>s are not forbidden, the Digester
+        annotations processor does not have to recognize and process annotation
+        rules placed on such types.</p>
+
+        <p>Every Digester rule annotation <b>must</b> define a <i>pattern</i>
+        element of type <code>String</code> that represents the element matching
+        path pattern.</p>
+
+        <source>@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+@CreationRule
+@DigesterRule(
+    reflectsRule = ObjectCreateRule.class,
+    handledBy = ObjectCreateHandler.class
+)
+public @interface ObjectCreate {
+
+    String pattern();
+
+}</source>
+       </subsection>
+
+       <subsection name="Applying multiple annotation rule of the same type">
+         <p>It is often useful to declare the same annotation rule more than once
+        to the same target, with different properties. To support this requirement,
+        the Digester annotation processor treats annotations annotated by
+        <code>@org.apache.commons.digester3.annotations.DigesterRuleList</code>
+        whose <code>value</code> element has a return type of an array of rule
+        annotations in a special way. Each element in the value array are processed
+        by the Digester annotation processor as regular annotation rule annotations.
+        This means that each Digester rule specified in the <code>value</code>
+        element is applied to the target. The annotation must have retention
+        <code>RUNTIME</code> and can be applied on a type, field, method or
+        method parameter. It is recommended to use the same set of targets as
+        the initial Digester annotation rule.</p>
+
+        <p>Note to designers: each Digester annotation rule should be coupled
+        with its corresponding multi-valued annotation.
+        It is recommended, though not mandated, the definition of
+        an inner annotation named <code>List</code>.</p>
+
+         <source>@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+@CreationRule
+@DigesterRule(
+    reflectsRule = ObjectCreateRule.class,
+    handledBy = ObjectCreateHandler.class
+)
+public @interface ObjectCreate {
+
+    String pattern();
+
+    @Documented
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.TYPE)
+    @DigesterRuleList
+    @interface List {
+        ObjectCreate[] value();
+    }
+
+}</source>
+       </subsection>
+
+       <subsection name="AnnotationHandler implementation">
+         <p>An <code>AnnotationHandler</code> implementation performs the rule binding
+        of a given annotation for a given annotated element. The implementation
+        classes are specified by the <code>handledBy</code> element of the
+        <code>@DigesterRule</code> annotation that decorates the rule annotation
+        definition. The rule provider implementation implements the
+        <code>org.apache.commons.digester3.annotations.AnnotationHandler&lt;A extends Annotation, E extends AnnotatedElement&gt;</code>
+        interface.</p>
+
+        <source>class ObjectCreateHandler implements AnnotationHandler&lt;ObjectCreate, Class&lt;?&gt;&gt; {
+
+    public void handle(ObjectCreate annotation, Class&lt;?&gt; element, RulesBinder rulesBinder) {
+        rulesBinder.forPattern(annotation.pattern())
+            .withNamespaceURI(annotation.namespaceURI())
+            .createObject()
+                .ofType(element)
+                .ofTypeSpecifiedByAttribute(annotation.attributeName() != null ? annotation.attributeName() : null);
+    }
+
+}</source>
+
+         <h5>Notes</h5>
+        <p>A new instance of the <code>AnnotationHandler</code> will be created each time the Digester
+        annotations processor will meet the relative rule that requests it.</p>
+        <p>To supply the missing <code>AnnotatedElement</code> for methods
+        <code>PARAMETER</code>s, the Digester annotation processor come with the
+        <code>org.apache.commons.digester.annotations.reflect.MethodArgument</code>
+        class.</p>
+       </subsection>
+
+       <subsection name="Built-in Rules">
+         <p>All built-in annotation rules are in the package
+        <code>org.apache.commons.digester.annotations.rules</code>.
+        Here is the list of annotations and their usage.</p>
+
+        <h4><code>TYPE</code> annotations</h4>
+        <table>
+            <thead>
+                <tr><th>Annotation</th><th>Reflect rule</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>@ObjectCreate</td><td>org.apache.commons.digester3.rule.ObjectCreateRule</td></tr>
+                <tr><td>@FactoryCreate</td><td>org.apache.commons.digester3.rule.FactoryCreateRule</td></tr>
+            </tbody>
+        </table>
+
+        <h4><code>FIELD</code> annotations</h4>
+        <table>
+            <thead>
+                <tr><th>Annotation</th><th>Reflect rule</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>@BeanPropertySetter</td><td>org.apache.commons.digester3.rule.BeanPropertySetterRule</td></tr>
+                <tr><td>@SetProperty</td><td>org.apache.commons.digester3.rule.SetPropertiesRule</td></tr>
+            </tbody>
+        </table>
+
+        <h4><code>METHOD</code> annotations</h4>
+        <table>
+            <thead>
+                <tr><th>Annotation</th><th>Reflect rule</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>@CallMethod</td><td>org.apache.commons.digester3.rule.CallMethodRule</td></tr>
+                <tr><td>@SetNext</td><td>org.apache.commons.digester3.rule.SetNextRule</td></tr>
+                <tr><td>@SetRoot</td><td>org.apache.commons.digester3.rule.SetRootRule</td></tr>
+                <tr><td>@SetTop</td><td>org.apache.commons.digester3.rule.SetTopRule</td></tr>
+            </tbody>
+        </table>
+
+        <h4><code>PARAMETER</code> annotations</h4>
+        <table>
+            <thead>
+                <tr><th>Annotation</th><th>Reflect rule</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>@CallParam</td><td>org.apache.commons.digester3.rule.CallParamRule</td></tr>
+            </tbody>
+        </table>
+       </subsection>
+
+       <subsection name="Bootstrapping">
+         <p>The core of Digester annotations rules processor is the
+    <code>org.apache.commons.digester3.annotations.FromAnnotationsRuleModule</code> class, a specialization of
+    <code>org.apache.commons.digester3.RulesModule</code>.</p>
+
+    <p>A <code>FromAnnotationsRuleModule</code>
+    instance is able to analyze <code>Class&lt;?&gt;</code> graphs and builds
+    the relative rule bindings to create
+    <code>org.apache.commons.digester3.Digester</code> instances.</p>
+
+    <p>An <code>org.apache.commons.digester3.annotations.spi.AnnotationHandlerFactory</code>
+    implementation performs the creation of
+    <code>org.apache.commons.digester3.annotations.AnnotationHandler&lt;A extends Annotation, E extends AnnotatedElement&gt;</code>
+    instances; the default implementation is limited to create the handler
+    by invoking the default empty constructor of the required class, but
+    users are free to give their implementation if they need a more complex
+    factory, i.e. providers requires components that could be injected from a
+    context, etc. etc.</p>
+
+    <p>Said that, to obtain a fresh new
+    <code>org.apache.commons.digester3.DigesterLoader</code> instance
+    with default factories, it is enough invoking the default module constructor:</p>
+
+    <source>DigesterLoader digesterLoader = newLoaderBuilder(new FromAnnotationsRuleModule(MyType.class));</source>
+
+    <p>Otherwise, if users need specify their custom factory:</p>
+
+    <source>DigesterLoader digesterLoader = newLoaderBuilder(new FromAnnotationsRuleModule(MyType.class, new MyAnnotationHandlerFactory()));</source>
+       </subsection>
+
+       <subsection name="Example: a simple RSS parser">
+         <p>Let's assume there is the need to parse the following (simplified)
+    XML/RSS feed:</p>
+
+    <source>&lt;rss version="2.0"&gt;
+    &lt;channel&gt;
+
+        &lt;title&gt;Apache&lt;/title&gt;
+        &lt;link&gt;http://www.apache.org&lt;/link&gt;
+        &lt;description&gt;The Apache Software Foundation&lt;/description&gt;
+        &lt;language&gt;en-US&lt;/language&gt;
+        &lt;rating&gt;(PICS-1.1 "http://www.rsac.org/ratingsv01.html"
+            2 gen true comment "RSACi North America Server"
+            for "http://www.rsac.org" on "1996.04.16T08:15-0500"
+            r (n 0 s 0 v 0 l 0))&lt;/rating&gt;
+
+        &lt;image&gt;
+            &lt;title&gt;Apache&lt;/title&gt;
+            &lt;url&gt;http://jakarta.apache.org/images/jakarta-logo.gif&lt;/url&gt;
+            &lt;link&gt;http://jakarta.apache.org&lt;/link&gt;
+            &lt;width&gt;505&lt;/width&gt;
+            &lt;height&gt;480&lt;/height&gt;
+            &lt;description&gt;The Jakarta project. Open source, serverside java.&lt;/description&gt;
+        &lt;/image&gt;
+
+        &lt;item&gt;
+            &lt;title&gt;Commons Attributes 2.1 Released&lt;/title&gt;
+            &lt;link&gt;http://jakarta.apache.org/site/news/news-2004-2ndHalf.html#20040815.1&lt;/link&gt;
+            &lt;description&gt;The Apache Commons team is happy to announce the release of Commons Attributes 2.1.
+            This is the first release of the new Commons-Attributes code.&lt;/description&gt;
+        &lt;/item&gt;
+
+        &lt;item&gt;
+            &lt;title&gt;Cloudscape Becomes Apache Derby&lt;/title&gt;
+            &lt;link&gt;http://jakarta.apache.org/site/news/elsewhere-2004-2ndHalf.html#20040803.1&lt;/link&gt;
+            &lt;description&gt;IBM has submitted a proposal to the Apache DB project for a Java-based package to be called 'Derby'.&lt;/description&gt;
+        &lt;/item&gt;
+
+        &lt;item&gt;
+            &lt;title&gt;Commons BeanUtils 1.7 Released&lt;/title&gt;
+            &lt;link&gt;http://jakarta.apache.org/site/news/news-2004-2ndHalf.html#20040802.1&lt;/link&gt;
+            &lt;description/&gt;
+        &lt;/item&gt;
+
+        &lt;item&gt;
+            &lt;title&gt;Commons JXPath 1.2 Released&lt;/title&gt;
+            &lt;link&gt;http://jakarta.apache.org/site/news/news-2004-2ndHalf.html#20040801.2&lt;/link&gt;
+            &lt;description/&gt;
+        &lt;/item&gt;
+    &lt;/channel&gt;
+&lt;/rss&gt;</source>
+
+    <p>So, let's define the Java entities and annotate them; first the <code>Channel</code> entity:</p>
+
+    <source>@ObjectCreate(pattern = "rss/channel")
+class Channel {
+
+    private final List&lt;Item&gt; items = new ArrayList&lt;Item&gt;();
+
+    @BeanPropertySetter(pattern = "rss/channel/title")
+    private String title;
+
+    @BeanPropertySetter(pattern = "rss/channel/link")
+    private String link;
+
+    @BeanPropertySetter(pattern = "rss/channel/description")
+    private String description;
+
+    @BeanPropertySetter(pattern = "rss/channel/language")
+    private String language;
+
+    private Image image;
+
+    // getters and setters
+
+    @SetNext
+    public void setImage(Image image) {
+        this.image = image;
+    }
+
+    @SetNext
+    public void addItem(Item item) {
+        this.items.add(item);
+    }
+
+}</source>
+
+    <p>Then the <code>Image</code> entity:</p>
+
+    <source>@ObjectCreate(pattern = "rss/channel/image")
+class Image {
+
+    @BeanPropertySetter(pattern = "rss/channel/image/description")
+    private String description;
+
+    @BeanPropertySetter(pattern = "rss/channel/image/width")
+    private int width;
+
+    @BeanPropertySetter(pattern = "rss/channel/image/height")
+    private int height;
+
+    @BeanPropertySetter(pattern = "rss/channel/image/link")
+    private String link;
+
+    @BeanPropertySetter(pattern = "rss/channel/image/title")
+    private String title;
+
+    @BeanPropertySetter(pattern = "rss/channel/image/url")
+    private String url;
+
+    // getters and setters
+
+}</source>
+
+    <p>and finally the <code>Item</code> entity:</p>
+
+    <source>@ObjectCreate(pattern = "rss/channel/item")
+class Item {
+
+    @BeanPropertySetter(pattern = "rss/channel/item/description")
+    private String description;
+
+    @BeanPropertySetter(pattern = "rss/channel/item/link")
+    private String link;
+
+    @BeanPropertySetter(pattern = "rss/channel/item/title")
+    private String title;
+
+    // getters and setters
+
+}</source>
+
+    <p>It is now possible to create the <code>Digester</code> instance and parse the XML:</p>
+
+    <source>DigesterLoader digesterLoader = newLoader(new FromAnnotationsRuleModule(Channel.class));
+...
+Digester digester = digesterLoader.newDigester();
+try {
+    Channel channel = (Channel) digester.parse(new URL("http://www.myfeedprovider.com/rss.xml").openStream());
+} catch (Exception e) {
+    // do something
+}
+    </source>
+       </subsection>
+    </section>
+  </body>
+</document>
