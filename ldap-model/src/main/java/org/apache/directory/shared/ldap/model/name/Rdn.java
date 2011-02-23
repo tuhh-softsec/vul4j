@@ -206,7 +206,7 @@ public class Rdn implements Cloneable, Externalizable, Iterable<Ava>
      *
      * @param schemaManager the schema manager
      */
-    public Rdn(SchemaManager schemaManager)
+    public Rdn( SchemaManager schemaManager )
     {
         // Don't waste space... This is not so often we have multiple
         // name-components in a Rdn... So we won't initialize the Map and the
@@ -221,11 +221,11 @@ public class Rdn implements Cloneable, Externalizable, Iterable<Ava>
     /**
      * A constructor that parse a String representing a Rdn.
      *
-     * @param rdn the String containing the Rdn to parse
      * @param schemaManager the schema manager
+     * @param rdn the String containing the Rdn to parse
      * @throws LdapInvalidDnException if the Rdn is invalid
      */
-    public Rdn(String rdn, SchemaManager schemaManager) throws LdapInvalidDnException
+    public Rdn( SchemaManager schemaManager, String rdn ) throws LdapInvalidDnException
     {
         if ( Strings.isNotEmpty(rdn) )
         {
@@ -263,9 +263,9 @@ public class Rdn implements Cloneable, Externalizable, Iterable<Ava>
      * @param rdn the String containing the Rdn to parse
      * @throws LdapInvalidDnException if the Rdn is invalid
      */
-    public Rdn(String rdn) throws LdapInvalidDnException
+    public Rdn( String rdn ) throws LdapInvalidDnException
     {
-        this( rdn, ( SchemaManager ) null );
+        this( ( SchemaManager ) null, rdn );
     }
 
 
@@ -282,7 +282,7 @@ public class Rdn implements Cloneable, Externalizable, Iterable<Ava>
      * @param schemaManager the schema manager
      * @throws LdapInvalidDnException if the Rdn is invalid
      */
-    public Rdn(String upType, String normType, String upValue, String normValue, SchemaManager schemaManager) throws LdapInvalidDnException
+    public Rdn( SchemaManager schemaManager, String upType, String normType, String upValue, String normValue ) throws LdapInvalidDnException
     {
         this.schemaManager = schemaManager;
 
@@ -315,9 +315,9 @@ public class Rdn implements Cloneable, Externalizable, Iterable<Ava>
      * @throws LdapInvalidDnException if the Rdn is invalid
      * @see #Rdn(String, String, String, String, SchemaManager)
      */
-    public Rdn(String upType, String normType, String upValue, String normValue) throws LdapInvalidDnException
+    public Rdn( String upType, String normType, String upValue, String normValue ) throws LdapInvalidDnException
     {
-        this( upType, normType, upValue, normValue, null );
+        this( null, upType, normType, upValue, normValue );
     }
 
 
@@ -332,7 +332,7 @@ public class Rdn implements Cloneable, Externalizable, Iterable<Ava>
      * @param schemaManager the schema manager
      * @throws LdapInvalidDnException if the Rdn is invalid
      */
-    public Rdn(String upType, String upValue, SchemaManager schemaManager) throws LdapInvalidDnException
+    public Rdn( SchemaManager schemaManager, String upType, String upValue ) throws LdapInvalidDnException
     {
         addAVA( upType, upType, new StringValue( upValue ), new StringValue( upValue ) );
 
@@ -363,9 +363,9 @@ public class Rdn implements Cloneable, Externalizable, Iterable<Ava>
      * @throws LdapInvalidDnException if the Rdn is invalid
      * @see #Rdn(String, String, SchemaManager)
      */
-    public Rdn(String upType, String upValue) throws LdapInvalidDnException
+    public Rdn( String upType, String upValue ) throws LdapInvalidDnException
     {
-        this( upType, upValue, null );
+        this( null, upType, upValue );
     }
 
 

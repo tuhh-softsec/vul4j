@@ -1340,7 +1340,7 @@ public final class Dn implements Iterable<Rdn>
         Dn clonedDn = copy();
 
         // We have to parse the nameComponent which is given as an argument
-        Rdn newRdn = new Rdn( comp, schemaManager );
+        Rdn newRdn = new Rdn( schemaManager, comp );
 
         clonedDn.rdns.add( 0, newRdn );
 
