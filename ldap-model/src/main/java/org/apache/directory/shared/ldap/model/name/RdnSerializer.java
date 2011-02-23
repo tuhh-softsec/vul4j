@@ -80,10 +80,6 @@ public final class RdnSerializer
             case 0 :
                 break;
 
-            case 1 :
-                AvaSerializer.serialize(rdn.getAVA(), out);
-                break;
-                
             default :
                 for ( Ava atav:rdn )
                 {

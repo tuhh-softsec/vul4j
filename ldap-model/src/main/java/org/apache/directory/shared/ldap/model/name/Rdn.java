@@ -880,7 +880,7 @@ public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
      *
      * @return The first AttributeTypeAndValue of this Rdn
      */
-    public Ava getAVA()
+    public Ava getAva()
     {
         switch ( nbAtavs )
         {
