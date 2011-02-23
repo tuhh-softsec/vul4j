@@ -21,12 +21,15 @@ package org.apache.directory.shared.ldap.extras.extended.ads_impl;
 
 
 import org.apache.directory.shared.asn1.DecoderException;
+import org.apache.directory.shared.ldap.codec.api.ExtendedRequestDecorator;
 import org.apache.directory.shared.ldap.codec.api.ExtendedRequestFactory;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
+import org.apache.directory.shared.ldap.extras.extended.CancelRequest;
 import org.apache.directory.shared.ldap.extras.extended.CertGenerationRequestImpl;
 import org.apache.directory.shared.ldap.extras.extended.CertGenerationResponseImpl;
 import org.apache.directory.shared.ldap.extras.extended.CertGenerationRequest;
 import org.apache.directory.shared.ldap.extras.extended.CertGenerationResponse;
+import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 
 
 /**
@@ -84,5 +87,23 @@ public class CertGenerationFactory
         CertGenerationRequestDecorator req = new CertGenerationRequestDecorator( codec, new CertGenerationRequestImpl() );
         req.setRequestValue( value );
         return req;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public ExtendedRequestDecorator<CertGenerationRequest, CertGenerationResponse> decorate( ExtendedRequest<?> modelRequest )
+    {
+        if ( modelRequest instanceof CertGenerationRequestDecorator )
+        {
+            return ( CertGenerationRequestDecorator ) modelRequest;
+        }
+        else if ( modelRequest instanceof CancelRequest )
+        {
+            return new CertGenerationRequestDecorator( codec, ( CertGenerationRequest ) modelRequest );
+        }
+        
+        return ( CertGenerationRequestDecorator ) newRequest();
     }
 }

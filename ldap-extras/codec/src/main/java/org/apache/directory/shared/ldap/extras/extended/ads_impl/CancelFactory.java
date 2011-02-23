@@ -21,12 +21,14 @@ package org.apache.directory.shared.ldap.extras.extended.ads_impl;
 
 
 import org.apache.directory.shared.asn1.DecoderException;
+import org.apache.directory.shared.ldap.codec.api.ExtendedRequestDecorator;
 import org.apache.directory.shared.ldap.codec.api.ExtendedRequestFactory;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.extras.extended.CancelRequestImpl;
 import org.apache.directory.shared.ldap.extras.extended.CancelResponseImpl;
 import org.apache.directory.shared.ldap.extras.extended.CancelRequest;
 import org.apache.directory.shared.ldap.extras.extended.CancelResponse;
+import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 
 
 /**
@@ -75,10 +77,31 @@ public class CancelFactory implements ExtendedRequestFactory<CancelRequest, Canc
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public CancelRequest newRequest( byte[] value )
     {
         CancelRequestDecorator req = new CancelRequestDecorator( codec, new CancelRequestImpl() );
         req.setRequestValue( value );
         return req;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public ExtendedRequestDecorator<CancelRequest, CancelResponse> decorate( ExtendedRequest<?> modelRequest )
+    {
+        if ( modelRequest instanceof CancelRequestDecorator )
+        {
+            return ( CancelRequestDecorator ) modelRequest;
+        }
+        else if ( modelRequest instanceof CancelRequest )
+        {
+            return new CancelRequestDecorator( codec, ( CancelRequest ) modelRequest );
+        }
+        
+        return ( CancelRequestDecorator ) newRequest();
     }
 }

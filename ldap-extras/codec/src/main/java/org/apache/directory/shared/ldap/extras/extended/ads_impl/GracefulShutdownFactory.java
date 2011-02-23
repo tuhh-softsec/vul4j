@@ -21,12 +21,14 @@ package org.apache.directory.shared.ldap.extras.extended.ads_impl;
 
 
 import org.apache.directory.shared.asn1.DecoderException;
+import org.apache.directory.shared.ldap.codec.api.ExtendedRequestDecorator;
 import org.apache.directory.shared.ldap.codec.api.ExtendedRequestFactory;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.extras.extended.GracefulShutdownRequestImpl;
 import org.apache.directory.shared.ldap.extras.extended.GracefulShutdownResponseImpl;
 import org.apache.directory.shared.ldap.extras.extended.GracefulShutdownRequest;
 import org.apache.directory.shared.ldap.extras.extended.GracefulShutdownResponse;
+import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 
 
 /**
@@ -85,5 +87,24 @@ public class GracefulShutdownFactory
         GracefulShutdownRequestDecorator req = new GracefulShutdownRequestDecorator( codec, new GracefulShutdownRequestImpl() );
         req.setRequestValue( value );
         return req;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public ExtendedRequestDecorator<GracefulShutdownRequest, GracefulShutdownResponse> decorate(
+        ExtendedRequest<?> modelRequest )
+    {
+        if ( modelRequest instanceof GracefulShutdownRequestDecorator )
+        {
+            return ( GracefulShutdownRequestDecorator ) modelRequest;
+        }
+        else if ( modelRequest instanceof GracefulShutdownRequest )
+        {
+            return new GracefulShutdownRequestDecorator( codec, ( GracefulShutdownRequest ) modelRequest );
+        }
+        
+        return ( GracefulShutdownRequestDecorator ) newRequest();
     }
 }

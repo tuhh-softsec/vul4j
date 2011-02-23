@@ -58,6 +58,15 @@ public interface ExtendedRequestFactory<Q extends ExtendedRequest<P>,P extends E
     
     
     /**
+     * Decorates a non-decorated request.
+     *
+     * @param modelRequest the non decorated model request
+     * @return the decorated model request
+     */
+    ExtendedRequestDecorator<Q, P> decorate( ExtendedRequest<?> modelRequest );
+    
+    
+    /**
      * Creates a new ExtendedResponse, for the ExtendedRequest with a specific
      * encoded value.
      * 

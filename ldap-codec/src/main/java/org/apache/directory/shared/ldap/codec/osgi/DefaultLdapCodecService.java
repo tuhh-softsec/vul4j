@@ -47,6 +47,7 @@ import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
 import org.apache.directory.shared.ldap.model.message.ExtendedResponseImpl;
 import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.model.message.controls.OpaqueControl;
+import org.apache.directory.shared.util.Strings;
 import org.apache.directory.shared.util.exception.NotImplementedException;
 import org.apache.mina.filter.codec.ProtocolCodecFactory;
 import org.slf4j.Logger;
@@ -403,7 +404,7 @@ public class DefaultLdapCodecService implements LdapCodecService
     /**
      * {@inheritDoc}
      */
-    public javax.naming.ldap.ExtendedRequest toJndi( ExtendedRequest<?> modelRequest ) throws EncoderException
+    public javax.naming.ldap.ExtendedRequest toJndi( final ExtendedRequest<?> modelRequest ) throws EncoderException
     {
         final String oid = modelRequest.getRequestName();
         final byte[] value;
@@ -416,7 +417,9 @@ public class DefaultLdapCodecService implements LdapCodecService
         else
         {
             // have to ask the factory to decorate for us - can't do it ourselves
-            throw new NotImplementedException( "need to decorate the request" );
+            ExtendedRequestFactory<?,?> extendedRequestFactory = extReqFactories.get( modelRequest.getRequestName() );
+            ExtendedRequestDecorator<?, ?> decorator = extendedRequestFactory.decorate( modelRequest );
+            value = decorator.getRequestValue();
         }
         
         
@@ -437,9 +440,36 @@ public class DefaultLdapCodecService implements LdapCodecService
             public javax.naming.ldap.ExtendedResponse createExtendedResponse( String id, byte[] berValue, int offset,
                 int length ) throws NamingException
             {
-                throw new NotImplementedException( "need to create new extended response" );
+                ExtendedRequestFactory<?,?> factory = extReqFactories.get( modelRequest.getRequestName() );
+                
+                try
+                {
+                    final ExtendedResponseDecorator<?> resp = ( ExtendedResponseDecorator<?> ) factory.newResponse( berValue );
+                    javax.naming.ldap.ExtendedResponse jndiResponse = new javax.naming.ldap.ExtendedResponse()
+                    {
+                        private static final long serialVersionUID = -7686354122066100703L;
+
+                        public String getID()
+                        {
+                            return oid;
+                        }
+
+                        public byte[] getEncodedValue()
+                        {
+                            return resp.getResponseValue();
+                        }
+                    };
+                    
+                    return jndiResponse;
+                }
+                catch ( DecoderException e )
+                {
+                    NamingException ne = new NamingException( "Unable to decode encoded response value: " + 
+                        Strings.dumpBytes( berValue ) );
+                    ne.setRootCause( e );
+                    throw ne;
+                }
             }
-            
         };
 
         return jndiRequest;

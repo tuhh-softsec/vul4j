@@ -20,13 +20,15 @@
 package org.apache.directory.shared.ldap.extras.extended.ads_impl;
 
 
-import org.apache.directory.shared.asn1.DecoderException;
+import org.apache.directory.shared.asn1.DecoderException; 
+import org.apache.directory.shared.ldap.codec.api.ExtendedRequestDecorator;
 import org.apache.directory.shared.ldap.codec.api.ExtendedRequestFactory;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.extras.extended.StoredProcedureRequest;
 import org.apache.directory.shared.ldap.extras.extended.StoredProcedureResponse;
 import org.apache.directory.shared.ldap.extras.extended.StoredProcedureRequestImpl;
 import org.apache.directory.shared.ldap.extras.extended.StoredProcedureResponseImpl;
+import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 
 
 /**
@@ -88,5 +90,24 @@ public class StoredProcedureFactory implements ExtendedRequestFactory<StoredProc
         StoredProcedureRequestDecorator req = new StoredProcedureRequestDecorator( codec, new StoredProcedureRequestImpl() );
         req.setRequestValue( value );
         return req;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public ExtendedRequestDecorator<StoredProcedureRequest, StoredProcedureResponse> decorate(
+        ExtendedRequest<?> modelRequest )
+    {
+        if ( modelRequest instanceof StoredProcedureRequestDecorator )
+        {
+            return ( StoredProcedureRequestDecorator ) modelRequest;
+        }
+        else if ( modelRequest instanceof StoredProcedureRequest )
+        {
+            return new StoredProcedureRequestDecorator( codec, ( StoredProcedureRequest ) modelRequest );
+        }
+        
+        return ( StoredProcedureRequestDecorator ) newRequest();
     }
 }
