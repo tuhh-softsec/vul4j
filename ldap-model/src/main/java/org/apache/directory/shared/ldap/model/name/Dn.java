@@ -1588,23 +1588,13 @@ public final class Dn implements Iterable<Rdn>
     /** No qualifier */
     static void rdnOidToName( Rdn rdn, Map<String, OidNormalizer> oidsMap ) throws LdapInvalidDnException
     {
-        if ( rdn.getNbAtavs() > 1 )
-        {
-            // We have more than one ATAV for this Rdn. We will loop on all
-            // ATAVs
-            Rdn rdnCopy = rdn.clone();
-            rdn.clear();
+        // We have more than one ATAV for this Rdn. We will loop on all
+        // ATAVs
+        Rdn rdnCopy = rdn.clone();
+        rdn.clear();
 
-            for ( Ava val : rdnCopy )
-            {
-                Ava newAtav = atavOidToName( val, oidsMap );
-                rdn.addAVA( newAtav );
-            }
-        }
-        else
+        for ( Ava val : rdnCopy )
         {
-            Ava val = rdn.getAVA();
-            rdn.clear();
             Ava newAtav = atavOidToName( val, oidsMap );
             rdn.addAVA( newAtav );
         }
