@@ -62,6 +62,15 @@
                     <td>No</td>
                     <td>text/html,application/xhtml+xml</td>
                 </tr>
+                <tr>
+                    <td>blackListedHeaders</td>
+                    <td>List of comma separated headers which will be removed from server's response before returning to the client. By default, ignored headers are Content-Length, Content-Encoding and Transfer-Encoding.
+                    Use this syntax to set ignored headers :
+                    <code>blackListedHeaders=Content-Length,Content-Encoding,Transfer-Encoding</code>
+                    </td>
+                    <td>No</td>
+                    <td>Content-Length,Content-Encoding,Transfer-Encoding</td>
+                </tr>
 				<tr>
 					<td>timeout</td>
 					<td>Timeout while establishing a connection with the server
