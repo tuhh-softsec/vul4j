@@ -27,6 +27,7 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.api.ExtendedRequestDecorator;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.extras.extended.StoredProcedureRequest;
+import org.apache.directory.shared.ldap.extras.extended.StoredProcedureRequestImpl;
 import org.apache.directory.shared.ldap.extras.extended.StoredProcedureResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +50,8 @@ public class StoredProcedureRequestDecorator
     public StoredProcedureRequestDecorator( LdapCodecService codec, StoredProcedureRequest decoratedMessage )
     {
         super( codec, decoratedMessage );
+        
+        procedure = new StoredProcedure( ( StoredProcedureRequestImpl ) decoratedMessage );
     }
 
 
