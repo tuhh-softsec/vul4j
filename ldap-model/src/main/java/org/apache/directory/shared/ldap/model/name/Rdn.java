@@ -115,7 +115,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class Rdn implements Cloneable, Externalizable, Iterable<Ava>
+public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
 {
     /** The LoggerFactory used by this class */
     protected static final Logger LOG = LoggerFactory.getLogger( Rdn.class );
@@ -485,13 +485,27 @@ public class Rdn implements Cloneable, Externalizable, Iterable<Ava>
      * Transform a Rdn by changing the value to its OID counterpart and
      * normalizing the value accordingly to its type.
      *
-     * @param sm the SchemaManager
+     * @param schemaManager the SchemaManager
      * @return this Rdn, normalized
      * @throws org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException if the Rdn is invalid
      */
-    public Rdn normalize( SchemaManager sm ) throws LdapInvalidDnException
+    public Rdn normalize( SchemaManager schemaManager ) throws LdapInvalidDnException
     {
-        return normalize( sm.getNormalizerMapping() );
+        if ( normalized.get() )
+        {
+            return this;
+        }
+
+        synchronized ( this )
+        {
+            String savedUpName = getName();
+            Dn.rdnOidToName( this, schemaManager.getNormalizerMapping() );
+            normalize();
+            this.upName = savedUpName;
+            normalized.set( true );
+    
+            return this;
+        }
     }
 
 
