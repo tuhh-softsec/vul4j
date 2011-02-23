@@ -51,30 +51,22 @@ Given the following digester rules in the main "parsing" application:</p>
         @Override
         protected void configure() {
             forPattern("pipeline")
-                .createObject()
-                    .ofType(Pipeline.class);
+                .createObject().ofType(Pipeline.class);
 
             forPattern("pipeline/source")
-                .callMethod("setSource")
-                    .withParamCount(1)
+                .callMethod("setSource").withParamCount(1)
                 .then()
-                .callParam()
-                    .ofIndex(0)
-                    .fromAttribute("file");
+                .callParam().ofIndex(0).fromAttribute("file");
 
             forPattern("pipeline/transform")
-                .createPlugin()
-                    .ofType(Transform.class)
+                .createPlugin().ofType(Transform.class)
                 .then()
                 .setNext("setTransform");
 
             forPattern("pipeline/destination")
-                .callMethod("setDest")
-                    .withParamCount(1)
+                .callMethod("setDest").withParamCount(1)
                 .then()
-                .callParam()
-                    .ofIndex(0)
-                    .fromAttribute("file");
+                .callParam().ofIndex(0).fromAttribute("file");
         }
 
     });
@@ -230,7 +222,7 @@ the rule info may have any name of your choice, but the original class +
 <p>
 Here is the addRules method on class SubstituteTransform, from the example:</p>
 <source>
-    public static void addRules(Digester d, String pathPrefix) {
+    public static void addRules(final Digester d, final String pathPrefix) {
         newLoader(new AbstractRulesModule() {
 
             @Override
@@ -239,13 +231,11 @@ Here is the addRules method on class SubstituteTransform, from the example:</p>
                 // define any object of type Widget. Because a Container is
                 // itself a widget, this allows us to build trees of objects.
                 forPattern(pattern + "/from")
-                    .callMethod("setFrom")
-                        .usingElementBodyAsArgument();
+                    .callMethod("setFrom").usingElementBodyAsArgument();
 
                 // allow users to declare plugins under a container as well
                 forPattern(pattern + "/to")
-                    .callMethod("setTo")
-                        .usingElementBodyAsArgument();
+                    .callMethod("setTo").usingElementBodyAsArgument();
             }
 
         }).decorate(digester.getRules());
