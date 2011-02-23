@@ -472,7 +472,7 @@ public class Rdn implements Cloneable, Externalizable, Iterable<Ava>
                         sb.append( '+' );
                     }
 
-                    sb.append( ata.normalize() );
+                    sb.append( ata.getNormName() );
                 }
 
                 normName = sb.toString();

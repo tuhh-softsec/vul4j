@@ -605,6 +605,7 @@ public final class Ava implements Externalizable, Cloneable
         
         return sb.toString();
     }
+    
 
     /**
      * A Normalized String representation of a Ava :
@@ -656,6 +657,7 @@ public final class Ava implements Externalizable, Cloneable
 
         return result;
     }
+    
 
     /**
      * @see Object#equals(Object)

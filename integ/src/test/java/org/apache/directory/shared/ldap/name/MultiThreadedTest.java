@@ -76,7 +76,6 @@ public class MultiThreadedTest
 
         referenceAva = new Ava( schemaManager, "ou", "System" );
         sharedAva = new Ava( schemaManager, "ou", "System" );
-        sharedAva.normalize();
     }
 
 
@@ -96,7 +95,6 @@ public class MultiThreadedTest
     @Test
     public void testNormalizeHashCode() throws Exception
     {
-        sharedAva.normalize();
         assertEquals( referenceAva.hashCode(), sharedAva.hashCode() );
 
         sharedRdn.normalize( schemaManager );
@@ -110,7 +108,6 @@ public class MultiThreadedTest
     @Test
     public void testNormalizeEquals() throws Exception
     {
-        sharedAva.normalize();
         assertEquals( referenceAva, sharedAva );
         assertTrue( referenceAva.equals( sharedAva ) );
         assertTrue( sharedAva.equals( referenceAva ) );

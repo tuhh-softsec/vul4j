@@ -204,8 +204,6 @@ public class AvaTest
     {
         Ava atav = new Ava( schemaManager, "CN", "Test" );
 
-        atav.normalize();
-
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
@@ -317,8 +315,6 @@ public class AvaTest
     public void testStringAtavStaticSerialization() throws LdapException, IOException, ClassNotFoundException
     {
         Ava atav = new Ava( schemaManager, "CN", "Test" );
-
-        atav.normalize();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
