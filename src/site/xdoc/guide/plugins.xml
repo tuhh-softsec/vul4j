@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements.  See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+  <properties>
+    <title>Download Commons Digester</title>
+    <author email="dev@commons.apache.org">Commons Documentation Team</author>
+  </properties>
+  <body>
+    <section name="An overview of the Digester Plugins module.">
+      <p>Provides an easy mechanism whereby new digestion rules 
+can be added dynamically during a digestion.</p>
+
+      <subsection name="Introduction">
+        <p>Many applications have xml configuration files which are "extensible".
+Some examples of this are:</p>
+<ul>
+<li>Apache log4j allows user-provided "Appender" classes to be specified in 
+    its configuration file</li>
+<li>Apache Avalon allows "components" of a user-specified class</li>
+<li>Apache Ant allows custom tasks to be defined</li>
+</ul>
+<p>The Digester "plugins" module can be used to add this kind of functionality
+to your own applications.
+</p>
+      </subsection>
+
+      <subsection name="An Example">
+        <p>Let's start off with an example.</p>
+<p>
+Given the following digester rules in the main "parsing" application:</p>
+<source>
+    DigesterLoader digesterLoader = newLoader(new AbstractRulesModule() {
+
+        @Override
+        protected void configure() {
+            forPattern("pipeline")
+                .createObject()
+                    .ofType(Pipeline.class);
+
+            forPattern("pipeline/source")
+                .callMethod("setSource")
+                    .withParamCount(1)
+                .then()
+                .callParam()
+                    .ofIndex(0)
+                    .fromAttribute("file");
+
+            forPattern("pipeline/transform")
+                .createPlugin()
+                    .ofType(Transform.class)
+                .then()
+                .setNext("setTransform");
+
+            forPattern("pipeline/destination")
+                .callMethod("setDest")
+                    .withParamCount(1)
+                .then()
+                .callParam()
+                    .ofIndex(0)
+                    .fromAttribute("file");
+        }
+
+    });
+
+    ...
+
+    digesterLoader.newDigester(new PluginRules()).parse(filename);
+</source>
+<p>
+the following input can be processed:
+</p>
+<source>
+    &lt;pipeline&gt;
+      &lt;source file="input.txt"/&gt;
+      &lt;transform plugin-class="SubstituteTransform"&gt;
+        &lt;from&gt;changeme&lt;/from&gt;
+        &lt;to&gt;changed&lt;/to&gt;
+      &lt;/transform&gt;
+      &lt;destination file="output.txt"/&gt;
+    &lt;/pipeline&gt;
+</source>
+<p>
+Note that the "SubstituteTransform" class is not hard-wired into the
+application, and also that this class is configuring itself from the
+same configuration file.</p>
+<p>
+The user can specify any class they like here, and (provided that class follows
+the plugins conventions) it can use any Digester functionality to process
+the configuration data within the transform tag and its subtags.</p>
+<p>
+The original application simply defined a "plugin point" of 
+"pipeline/transform" at which user classes could be plugged in. However
+it did not specify what classes were permitted, other than that they
+must implement the Transform interface. It is the input file which has 
+defined exactly which class should be instantiated when the transform 
+element is encountered, and furthermore the "plugin" class itself has
+dynamically added rules for parsing elements nested within itself.</p>
+<p>
+A class used as a plugin may dynamically add its own rules to the digester,
+in order to process its attributes and any subtags in any manner it wishes.
+This may be done by several mechanisms, including:</p>
+<ul>
+<li> declaring a method <code>public static void addRules(Digester d, String
+pattern)</code> on the class being "plugged in", or</li>
+<li> providing a separate "rule info" class, somewhat in the spirit of 
+"BeanInfo" classes for java beans, or</li>
+<li> providing an xmlrules file which defines the associated parsing rules.</li>
+</ul>
+<p>If a plugin class has a no-parameter constructor, does not expect any subtags, 
+and is satisfied with mapping any attributes on the parent xml tag to 
+bean-property-setter methods on itself, then no rules need to be defined at 
+all; the class can be used as a plugin without any coding.</p>
+<p>
+In the example above, an end user may create their own classes which implement
+the required Transform interface, then cause these custom classes to be used
+instead of, or in addition to, classes distributed with the application.</p>
+      </subsection>
+
+      <subsection name="Plugin Declarations">
+        <p>As well as the syntax shown above, where plugin classnames were defined
+as they were used, plugin classes can be pre-declared (provided the application
+associates a <code>PluginDeclarationRule</code> with a tag for that purpose). Example:</p>
+<p>The plugin class can be declared once:</p>
+<source>
+  &lt;plugin id="widget" class="com.acme.Widget"/&gt;
+</source>
+<p>and later referenced via the short "id" value:</p>
+<source>
+  &lt;sometag plugin-id="widget" ... &gt;
+</source>
+      </subsection>
+
+      <subsection name="Suggested Applications">
+        <p>Any application where user-specific operations may need to be performed
+that cannot be known in advance by the initial application developer may
+benefit from this module. Applications in the style of the Apache projects 
+listed at the top of this page (Log4j, Cocoon, Ant) are examples.</p>
+<p>
+Note also that plugged-in classes can themselves allow user-defined classes
+to be plugged in within their configuration. This allows a very simple
+framework to be extended almost without limit by the end user.</p>
+      </subsection>
+
+      <subsection name="Terminology">
+        <p>The term "plugin declaration" refers to an xml element which matches a
+PluginDeclarationRule, where the user specifies an id-to-class mapping.</p>
+<p>
+The term "plugin point" refers to a pattern associated with a PluginCreateRule.
+An xml element matching that pattern is expected to have a plugin-id attribute
+(but see note on "default plugins" elsewhere in this document).</p>
+      </subsection>
+
+      <subsection name="Limitations">
+        <p>The user cannot replace the <i>name</i> of the tag used as the plugin-point; 
+<code>&lt;statement plugin-id="if"&gt;</code> cannot become &lt;if&gt;.</p>
+<p>
+An instance of "PluginRules" must be used as the Rules implementation
+for the Digester (see example). However a PluginRules can use any other Rules
+implementation as its rule-matching engine, so this is not a significant issue.
+Plugged-in classes may only use the default RulesBase matching for the rules
+they add dynamically.</p>
+<p>
+For technical reasons, a single instance of PluginCreateRule cannot 
+currently be associated with multiple patterns; multiple instances are 
+required. This is not expected to be a problem.
+</p>
+      </subsection>
+
+      <subsection name="Performance">
+        <p>For patterns which do not involve "plugin points" there is minimal
+performance impact when adding rules to the Digester, and none when
+processing input data.</p>
+<p>
+Processing elements which match patterns added dynamically by plugin classes 
+does have a performance impact, but not excessively so.</p>
+      </subsection>
+
+      <subsection name="Alternatives">
+        <p>The "xmlrules" digester module allows modification of parsing rules
+without code changes or recompilation. However this feature is aimed
+at the developer, not the end user of an application. The differences
+between xmlrules functionality and plugins functionality are:</p>
+<ul>
+<li>
+With xmlrules, the full set of parsing rules for the whole configuration file
+is exposed. This is good for developers, but in most cases both too complex 
+and too dangerous to require end users to edit directly.
+</li>
+<li>
+Using xmlrules requires a fair level of knowledge of the Apache Digester.
+How an end user (not a plugin developer) can use plugins can be explained in 
+about 3 paragraphs. </li>
+</ul>
+      </subsection>
+
+      <subsection name="How to write plugin classes">
+        <p>In order to be useful, the problem domain needs to involve a base class or 
+interface which can have multiple implementations. This section assumes that
+this is the case, that you have already created a concrete implementation
+of that base class or interface, and are wondering what changes need to
+be made to that class to make it suitable for a "plugin".</p>
+<p>
+Well, if the class has a no-argument constuctor, and only simple configuration
+needs that can be met by a SetPropertiesRule, then no changes need to be
+made at all.</p>
+<p>
+In other circumstances, you may either define an "addRules" method on the
+class which adds any necessary rules to the digester, a separate class
+containing that information, or write an xmlrules-format file defining the
+necessary rules. In the "separate rule info class" approach, the class containing
+the rule info may have any name of your choice, but the original class + 
+"RuleInfo" is recommended.</p>
+<p>
+Here is the addRules method on class SubstituteTransform, from the example:</p>
+<source>
+    public static void addRules(Digester d, String pathPrefix) {
+        newLoader(new AbstractRulesModule() {
+
+            @Override
+            protected void configure() {
+                // A Container object can have subtags called "widget" which
+                // define any object of type Widget. Because a Container is
+                // itself a widget, this allows us to build trees of objects.
+                forPattern(pattern + "/from")
+                    .callMethod("setFrom")
+                        .usingElementBodyAsArgument();
+
+                // allow users to declare plugins under a container as well
+                forPattern(pattern + "/to")
+                    .callMethod("setTo")
+                        .usingElementBodyAsArgument();
+            }
+
+        }).decorate(digester.getRules());
+    }
+</source>
+<p>A "rule info" class consists of nothing but a static method defined as above.</p>
+<p>
+If a plugin class does not define an "addRules" method, and the plugin
+declaration does not associate a rule info class with it, then the 
+plugins module will define a "SetPropertiesRule" by default. However if
+any custom rules are defined for the plugin class, then that implementation
+is required to define a SetPropertiesRule for itself if it desires one.</p>
+<p>
+Note that when adding any rules, the pattern passed to the digester
+<i>must</i> start with the pathPrefix provided. A plugin cannot
+define rules with absolute paths. And as defined in the limitations, the 
+pattern should not include any wildcard characters.</p>
+      </subsection>
+
+      <subsection name="Other features">
+        <p>Multiple plugin declarations are permitted; the latest simply overrides
+earlier ones.</p>
+<p>
+In situations where a user <i>might</i> want to specify a custom class,
+but will often want "default" behaviour, a PluginCreateRule can specify
+a default class. If the user then omits the "plugin-id" attribute on
+the matching xml element, an instance of the default class will be
+created.</p>
+      </subsection>
+
+    </section>
+
+    <section name="Plugin strategies">
+      <p>
+The <code>plugins.strategies</code> package contains "rule-finding" strategy
+classes, and their associated "helper" loader classes.</p>
+<p>
+Note that you do not need to understand or deal with any of the classes in
+this package in order to use the plugins functionality. If you wish to use
+plugins functionality in non-english languages and therefore want to
+change the attribute names used on plugin declaration tags ("id", "file", etc)
+then you will need some familiarity with this package. Otherwise, this package
+is only relevant to people really wishing to tweak plugins in unexpected
+ways. If this is the case, come and talk to us on the digester email lists
+as we would be interested in knowing about your requirements.</p>
+<p>
+When the plugins module is being used and the input xml indicates that
+a specific plugin class is to be instantiated, that class may then wish
+to configure itself from the xml attributes on that tag or xml attributes
+and elements nested within that tag.</p>
+<p>
+The question is: how is the digester going to figure out where the plugin
+keeps its custom rules which are to be applied to the xml within that
+plugin tag?</p>
+<p>
+Well, the answer is that there is a list of "rule finding strategies",
+generally containing an instance of each of the Finder classes in this 
+package in a specific order. The strategies provided here should satisfy 
+just about everyone, but if they don't you can add extra strategies if 
+desired.</p>
+<p>
+A RuleFinder is essentially a "strategy" or "algorithm" for finding the dynamic
+rules associated with a plugin class. When a plugin declaration is encountered 
+in the input xml, the PluginContext object is asked for the list of RuleFinder 
+objects, then each RuleFinder instance in turn is passed the declaration 
+parameters, and asked "are you able to locate custom parsing rules for this 
+declaration?". When one can, it returns a RuleLoader instance which is 
+remembered. When the input xml indicates that an instance of the declared 
+plugin class is to be created, that RuleLoader is invoked to temporarily add 
+the relevant custom rules to the Digester in order to map xml 
+attributes/elements/etc into the instantiated plugin object. Once the end of 
+the plugin tag is encountered, those temporary rules are removed. This repeats 
+each time the input xml indicates that an instance of a plugin class is to be 
+instantiated.</p>
+<p>
+If the plugin is declared "inline", using the "plugin-class" attribute
+instead of using "plugin-id" to reference a previous declaration then the
+process is exactly the same, except that the RuleFinder objects don't
+have any user-provided attribute "hints" to tell them where the custom
+rules are.</p>
+<p>
+The RuleFinder list is carefully ordered; classes which look at the 
+user-provided data in the declaration come first, and classes which look in 
+"well-known places" come later so that users can override default behaviour by 
+providing the appropriate tags on the plugin declaration.</p>
+<p>
+See the javadoc on the different Finder classes for information on what
+each does, and what attribute (if any) it looks for in the declaration.</p>
+    </section>
+  </body>
+</document>
