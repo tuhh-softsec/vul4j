@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.collections.MultiMap;
@@ -237,7 +236,7 @@ public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
             if ( schemaManager != null )
             {
                 this.schemaManager = schemaManager;
-                normalize( schemaManager.getNormalizerMapping() );
+                normalize( schemaManager );
                 normalized.set( true );
             }
             else
@@ -341,7 +340,7 @@ public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
         if( schemaManager != null )
         {
             this.schemaManager = schemaManager;
-            normalize( schemaManager.getNormalizerMapping() );
+            normalize( schemaManager );
             normalized.set( true );
         }
         else
@@ -500,39 +499,6 @@ public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
         {
             String savedUpName = getName();
             Dn.rdnOidToName( this, schemaManager.getNormalizerMapping() );
-            normalize();
-            this.upName = savedUpName;
-            normalized.set( true );
-    
-            return this;
-        }
-    }
-
-
-    /**
-     * Transform a Rdn by changing the value to its OID counterpart and
-     * normalizing the value accordingly to its type.
-     *
-     * @param oidsMap the mapping between names and OIDs
-     * @return this Rdn, normalized
-     * @throws LdapInvalidDnException if the Rdn is invalid
-     */
-    public Rdn normalize( Map<String, OidNormalizer> oidsMap ) throws LdapInvalidDnException
-    {
-        if ( ( oidsMap == null ) || ( oidsMap.isEmpty() ) )
-        {
-            return this;
-        }
-
-        if ( normalized.get() )
-        {
-            return this;
-        }
-
-        synchronized ( this )
-        {
-            String savedUpName = getName();
-            Dn.rdnOidToName(this, oidsMap);
             normalize();
             this.upName = savedUpName;
             normalized.set( true );
