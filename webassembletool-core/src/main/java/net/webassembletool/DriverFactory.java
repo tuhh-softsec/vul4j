@@ -46,7 +46,9 @@ public class DriverFactory {
 			throw ce;
 		} finally {
 			try {
-				inputStream.close();
+				if (inputStream != null) {
+					inputStream.close();
+				}
 			} catch (IOException e) {
 				LOG.error("failed to close stream", e);
 			}
