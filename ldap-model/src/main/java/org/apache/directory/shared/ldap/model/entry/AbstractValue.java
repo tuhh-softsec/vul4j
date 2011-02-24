@@ -19,9 +19,8 @@
  */
 package org.apache.directory.shared.ldap.model.entry;
 
-import org.apache.directory.shared.ldap.model.exception.LdapException;
-
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.schema.AttributeType;
 import org.apache.directory.shared.ldap.model.schema.LdapComparator;
 import org.apache.directory.shared.ldap.model.schema.MatchingRule;
@@ -42,7 +41,7 @@ public abstract class AbstractValue<T> implements Value<T>
     private static final Logger LOG = LoggerFactory.getLogger( AbstractValue.class );
 
     /** reference to the attributeType zssociated with the value */
-    protected transient AttributeType attributeType;
+    protected AttributeType attributeType;
 
     /** the wrapped binary value */
     protected T wrappedValue;
@@ -57,7 +56,7 @@ public abstract class AbstractValue<T> implements Value<T>
     protected Boolean valid;
 
     /** A flag set if the normalized data is different from the wrapped data */
-    protected transient boolean same;
+    protected boolean same;
     
     /** The computed hashcode. We don't want to compute it each time the hashcode() method is called */
     protected volatile int h;

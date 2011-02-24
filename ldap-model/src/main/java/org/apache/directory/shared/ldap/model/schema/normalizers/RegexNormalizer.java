@@ -37,10 +37,10 @@ import org.apache.directory.shared.ldap.model.schema.Normalizer;
 public class RegexNormalizer extends Normalizer
 {
     /** the perl 5 regex engine */
-    private final transient Pattern[] regexes;
+    private final Pattern[] regexes;
 
     /** the set of regular expressions used to transform values */
-    private final transient Matcher[] matchers;
+    private final Matcher[] matchers;
 
 
     /**

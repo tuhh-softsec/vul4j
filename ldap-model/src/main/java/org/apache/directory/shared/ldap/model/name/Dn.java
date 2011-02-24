@@ -110,7 +110,7 @@ public final class Dn implements Iterable<Rdn>
     public static final Dn ROOT_DSE = new Dn();
 
     /** the schema manager */
-    private transient SchemaManager schemaManager;
+    private SchemaManager schemaManager;
 
     /**
      * An iterator over RDNs

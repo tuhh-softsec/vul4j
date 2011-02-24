@@ -187,7 +187,7 @@ public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
     private AtomicBoolean normalized = new AtomicBoolean();
 
     /** the schema manager */
-    private transient SchemaManager schemaManager;
+    private SchemaManager schemaManager;
 
 
     /**

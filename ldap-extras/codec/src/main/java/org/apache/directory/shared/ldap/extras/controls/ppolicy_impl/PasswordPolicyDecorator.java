@@ -33,8 +33,8 @@ import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.api.ControlDecorator;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.extras.controls.PasswordPolicy;
-import org.apache.directory.shared.ldap.extras.controls.PasswordPolicyResponse;
 import org.apache.directory.shared.ldap.extras.controls.PasswordPolicyImpl;
+import org.apache.directory.shared.ldap.extras.controls.PasswordPolicyResponse;
 
 
 /**
@@ -48,11 +48,11 @@ public class PasswordPolicyDecorator extends ControlDecorator<PasswordPolicy> im
     private static final Asn1Decoder decoder = new Asn1Decoder();
     
     // Storage for computed lengths
-    private transient int valueLength = 0;
-    private transient int ppolicySeqLength = 0;
-    private transient int warningLength = 0;
-    private transient int timeBeforeExpirationTagLength;
-    private transient int graceAuthNsRemainingTagLength;
+    private int valueLength = 0;
+    private int ppolicySeqLength = 0;
+    private int warningLength = 0;
+    private int timeBeforeExpirationTagLength;
+    private int graceAuthNsRemainingTagLength;
     
     
     public PasswordPolicyDecorator( LdapCodecService codec )

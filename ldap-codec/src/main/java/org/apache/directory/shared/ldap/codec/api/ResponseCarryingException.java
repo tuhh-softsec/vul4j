@@ -44,7 +44,7 @@ public class ResponseCarryingException extends DecoderException
     private static final long serialVersionUID = 1L;
 
     /** The response with the error cause */
-    private transient Message response;
+    private Message response;
     
     /**
      * Creates a DecoderException

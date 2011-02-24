@@ -72,10 +72,10 @@ public class Csn implements Comparable<Csn>
     private final int changeCount;  
 
     /** Stores the String representation of the CSN */
-    private transient String csnStr;
+    private String csnStr;
 
     /** Stores the byte array representation of the CSN */
-    private transient byte[] bytes;
+    private byte[] bytes;
 
     /** The Timestamp syntax. The last 'z' is _not_ the Time Zone */
     private static final SimpleDateFormat SDF = new SimpleDateFormat( "yyyyMMddHHmmss" );
