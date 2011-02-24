@@ -92,9 +92,6 @@ public class MatchingRule extends AbstractSchemaObject
     /** A logger for this class */
     private static final Logger LOG = LoggerFactory.getLogger( MatchingRule.class );
 
-    /** The serialVersionUID */
-    private static final long serialVersionUID = 1L;
-
     /** The associated Comparator */
     protected LdapComparator<? super Object> ldapComparator;
 

@@ -144,9 +144,6 @@ public class AttributeType extends AbstractSchemaObject implements Cloneable
     /** A logger for this class */
     private static final Logger LOG = LoggerFactory.getLogger( AttributeType.class );
 
-    /** The serialVersionUID */
-    public static final long serialVersionUID = 1L;
-
     /** The syntax OID associated with this AttributeType */
     private String syntaxOid;
 
