@@ -39,11 +39,9 @@ import org.apache.directory.shared.ldap.model.schema.syntaxCheckers.NumericOidSy
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
+@SuppressWarnings("serial")
 public class NameOrNumericIdNormalizer extends Normalizer
 {
-    /** The serial UID */
-    public static final long serialVersionUID = 1L;
-
     private NumericOidSyntaxChecker checker = new NumericOidSyntaxChecker();
 
     /** A reference to the schema manager used to normalize the Name */

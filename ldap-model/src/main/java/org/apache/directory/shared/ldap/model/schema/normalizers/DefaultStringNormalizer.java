@@ -35,11 +35,9 @@ import org.apache.directory.shared.util.Strings;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
+@SuppressWarnings("serial")
 public class DefaultStringNormalizer extends Normalizer
 {
-    // The serial UID
-    private static final long serialVersionUID = 1L;
-    
     /** A default String normalizer */
     private static final DefaultStringNormalizer NORMALIZER = new DefaultStringNormalizer();
     

@@ -25,7 +25,7 @@ import java.io.IOException;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.model.entry.StringValue;
-import org.apache.directory.shared.ldap.model.entry.*;
+import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.schema.Normalizer;
@@ -37,11 +37,9 @@ import org.apache.directory.shared.ldap.model.schema.PrepareString;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
+@SuppressWarnings("serial")
 public class NumericNormalizer extends Normalizer
 {
-    /** The serial UID */
-    public static final long serialVersionUID = 1L;
-
     /**
      * Creates a new instance of NumericNormalizer.
      */

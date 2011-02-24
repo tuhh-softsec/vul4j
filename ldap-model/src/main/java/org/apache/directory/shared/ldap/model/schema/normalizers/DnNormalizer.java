@@ -34,11 +34,9 @@ import org.apache.directory.shared.ldap.model.schema.SchemaManager;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
+@SuppressWarnings("serial")
 public class DnNormalizer extends Normalizer
 {
-    // The serial UID
-    private static final long serialVersionUID = 1L;
-    
     /** A reference to the schema manager used to normalize the Dn */
     private SchemaManager schemaManager;
     

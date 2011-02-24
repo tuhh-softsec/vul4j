@@ -32,11 +32,9 @@ import org.apache.directory.shared.ldap.model.schema.registries.Registries;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
+@SuppressWarnings("serial")
 public class CachingNormalizer extends Normalizer
 {
-    /** The serial UID */
-    public static final long serialVersionUID = 1L;
-
     /** Cache maximum size default */
     public static final int CACHE_MAX = 250;
 

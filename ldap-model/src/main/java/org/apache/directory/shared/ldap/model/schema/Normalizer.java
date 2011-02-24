@@ -30,13 +30,9 @@ import org.apache.directory.shared.ldap.model.exception.LdapException;
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 // super.hashCode is final
-@SuppressWarnings("PMD.OverrideBothEqualsAndHashcode")
+@SuppressWarnings({ "PMD.OverrideBothEqualsAndHashcode", "serial" })
 public abstract class Normalizer extends LoadableSchemaObject
 {
-    /** The serialversionUID */
-    private static final long serialVersionUID = 1L;
-
-
     /**
      * The Normalizer base constructor. We use it's MR OID to
      * initialize the SchemaObject instance
