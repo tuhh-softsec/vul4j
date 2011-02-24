@@ -23,6 +23,41 @@
 					<address>fxbonnet@users.sourceforge.net</address>
 				</configuration>
 			</notifier>
+			<notifier>
+				<sendOnSuccess>false</sendOnSuccess>
+				<sendOnWarning>false</sendOnWarning>
+				<configuration>
+					<address>nicolas.richeton@gmail.com</address>
+				</configuration>
+			</notifier>
+			<notifier>
+				<sendOnSuccess>false</sendOnSuccess>
+				<sendOnWarning>false</sendOnWarning>
+				<configuration>
+					<address>stanislav.bernatskyi@smile-ukraine.com</address>
+				</configuration>
+			</notifier>
+			<notifier>
+				<sendOnSuccess>false</sendOnSuccess>
+				<sendOnWarning>false</sendOnWarning>
+				<configuration>
+					<address>andreii.lebedinskiy@smile-ukraine.com</address>
+				</configuration>
+			</notifier>
+			<notifier>
+				<sendOnSuccess>false</sendOnSuccess>
+				<sendOnWarning>false</sendOnWarning>
+				<configuration>
+					<address>tatyana.hordynskaya@smile-ukraine.com</address>
+				</configuration>
+			</notifier>
+			<notifier>
+				<sendOnSuccess>false</sendOnSuccess>
+				<sendOnWarning>false</sendOnWarning>
+				<configuration>
+					<address>ishutin.andrii@smile-ukraine.com</address>
+				</configuration>
+			</notifier>
 		</notifiers>
 	</ciManagement>
 	<inceptionYear>2008</inceptionYear>
