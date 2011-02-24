@@ -20,7 +20,6 @@
 package org.apache.directory.shared.ldap.aci;
 
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -32,11 +31,8 @@ import java.util.Set;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public abstract class Permission implements Serializable
+public abstract class Permission
 {
-    /** The serialVersionUID. */
-    private static final long serialVersionUID = 8923801399021825709L;
-
     /** The precedence. */
     private final Integer precedence;
 
