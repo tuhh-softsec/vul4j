@@ -20,7 +20,6 @@
 package org.apache.directory.shared.ldap.model.csn;
 
 
-import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -55,17 +54,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class Csn implements Serializable, Comparable<Csn>
+public class Csn implements Comparable<Csn>
 {
-    /**
-     * Declares the Serial Version Uid.
-     *
-     * @see <a
-     *      href="http://c2.com/cgi/wiki?AlwaysDeclareSerialVersionUid">Always
-     *      Declare Serial Version Uid</a>
-     */
-    private static final long serialVersionUID = 1L;
-
     /** The logger for this class */
     private static final Logger LOG = LoggerFactory.getLogger( Csn.class );
 

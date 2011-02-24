@@ -20,7 +20,6 @@
 package org.apache.directory.shared.asn1.util;
 
 
-import java.io.Serializable;
 import java.util.Arrays;
 
 import org.apache.directory.shared.asn1.DecoderException;
@@ -64,11 +63,8 @@ import org.apache.directory.shared.i18n.I18n;
  * </pre>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class OID implements Serializable
+public class OID
 {
-    /** Internal Serial UUID version */
-    private static final long serialVersionUID = 1L;
-
     /** The OID as a array of int */
     private long[] oidValues;
 

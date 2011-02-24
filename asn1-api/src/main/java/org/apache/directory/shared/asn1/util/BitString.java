@@ -20,8 +20,6 @@
 package org.apache.directory.shared.asn1.util;
 
 
-import java.io.Serializable;
-
 import org.apache.directory.shared.i18n.I18n;
 
 
@@ -31,11 +29,8 @@ import org.apache.directory.shared.i18n.I18n;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class BitString implements Serializable
+public class BitString
 {
-    /** The serialVersion UID constant */
-    private static final long serialVersionUID = 1L;
-
     /** A null MutableString */
     public static final BitString EMPTY_STRING = new BitString( 1 );
 
