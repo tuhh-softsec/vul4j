@@ -15,22 +15,23 @@
 
 This page display "test-cookie" content.
 
-<% if ( request.getCookies() != null  ){ 
+<%
 	boolean found = false;
-	Cookie[] cookies = request.getCookies();
-	for( int i = 0; i < cookies.length; i ++){
-		if( "test-cookie" .equals(cookies[i].getName())){
-			%><%=cookies[i].getValue() %><% 
-			found = true;
-		}
+    if ( request.getCookies() != null) { 
+    	Cookie[] cookies = request.getCookies();
+    	for (int i = 0; i < cookies.length; i ++) {
+    		if ("test-cookie".equals(cookies[i].getName())) {
+%>
+                test-cookie: <%=cookies[i].getValue() %>
+<% 
+                found = true;
+            }
+	    }
 	}
-	
-	 if ( !found ){ %>
-	<%="no cookie" %>
-	<% } 
+    if ( !found ) { %>
+    <%="no cookie" %>
+<% } %>
 
- } %>
 Generation time :  stime<%=System.currentTimeMillis() %>etime
-
 </body>
 </html>

@@ -22,8 +22,8 @@ public class VaryAggregatorTest extends TestCase {
 	private String sessionId = null;
 
 	/**
-	 * Send a request with a Cookie "test-cookie" to vary.jsp (which will get
-	 * content from provider) and ensure the result is valid.
+	 * Send a request with a Cookie "test-cookie" to vary.jsp (which will get content from provider) and ensure the
+	 * result is valid.
 	 * 
 	 * @param addCookie
 	 * @param value
@@ -33,8 +33,7 @@ public class VaryAggregatorTest extends TestCase {
 	 * @throws IOException
 	 * @throws SAXException
 	 */
-	private String doCookieRequest(boolean addCookie, String value,
-			boolean refresh) throws MalformedURLException, IOException,
+	private String doCookieRequest(boolean addCookie, String value, boolean refresh) throws MalformedURLException, IOException,
 			SAXException {
 
 		WebConversation webConversation = new WebConversation();
@@ -61,9 +60,11 @@ public class VaryAggregatorTest extends TestCase {
 		// Ensure content is valid.
 		WebResponse resp = webConversation.getResponse(req);
 		if (addCookie) {
-			assertTrue(resp.getText().contains(value));
+			assertNotNull(resp.getText());
+			assertTrue("no value '" + value + "' found", resp.getText().contains(value));
 		} else {
-			assertTrue(resp.getText().contains("no cookie"));
+			assertNotNull(resp.getText());
+			assertTrue("no cookie found", resp.getText().contains("no cookie"));
 		}
 
 		// Ensure vary and Cache-Control header were forwarded
@@ -78,13 +79,11 @@ public class VaryAggregatorTest extends TestCase {
 		}
 
 		// Return page timestamp. Can be used to detect cache hits.
-		return resp.getText().substring(resp.getText().indexOf("stime") + 5,
-				resp.getText().indexOf("etime"));
+		return resp.getText().substring(resp.getText().indexOf("stime") + 5, resp.getText().indexOf("etime"));
 	}
 
 	/**
-	 * Call "vary.jsp" with different cookie values and ensure cache use and
-	 * content are valid.
+	 * Call "vary.jsp" with different cookie values and ensure cache use and content are valid.
 	 * 
 	 * @throws Exception
 	 */
