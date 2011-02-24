@@ -36,8 +36,8 @@ import org.apache.commons.digester3.rule.BeanPropertySetterRule;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 @DigesterRule(
-        reflectsRule = BeanPropertySetterRule.class,
-        handledBy = BeanPropertySetterHandler.class
+    reflectsRule = BeanPropertySetterRule.class,
+    handledBy = BeanPropertySetterHandler.class
 )
 public @interface BeanPropertySetter {
 

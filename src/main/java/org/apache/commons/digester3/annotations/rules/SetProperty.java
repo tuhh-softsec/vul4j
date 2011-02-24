@@ -36,8 +36,8 @@ import org.apache.commons.digester3.rule.SetPropertiesRule;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 @DigesterRule(
-        reflectsRule = SetPropertiesRule.class,
-        handledBy = SetPropertiesHandler.class
+    reflectsRule = SetPropertiesRule.class,
+    handledBy = SetPropertiesHandler.class
 )
 public @interface SetProperty {
 

@@ -35,8 +35,8 @@ import org.apache.commons.digester3.rule.SetNextRule;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 @DigesterRule(
-        reflectsRule = SetNextRule.class,
-        handledBy = SetNextHandler.class
+    reflectsRule = SetNextRule.class,
+    handledBy = SetNextHandler.class
 )
 public @interface SetNext {
 

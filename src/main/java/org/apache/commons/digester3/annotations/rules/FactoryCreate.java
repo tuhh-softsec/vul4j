@@ -38,8 +38,8 @@ import org.apache.commons.digester3.spi.ObjectCreationFactory;
 @Target(ElementType.TYPE)
 @CreationRule
 @DigesterRule(
-        reflectsRule = FactoryCreateRule.class,
-        handledBy = FactoryCreateHandler.class
+    reflectsRule = FactoryCreateRule.class,
+    handledBy = FactoryCreateHandler.class
 )
 public @interface FactoryCreate {
 

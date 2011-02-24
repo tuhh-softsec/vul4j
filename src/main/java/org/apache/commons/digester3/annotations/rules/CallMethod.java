@@ -36,8 +36,8 @@ import org.apache.commons.digester3.rule.CallMethodRule;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 @DigesterRule(
-        reflectsRule = CallMethodRule.class,
-        handledBy = CallMethodHandler.class
+    reflectsRule = CallMethodRule.class,
+    handledBy = CallMethodHandler.class
 )
 public @interface CallMethod {
 

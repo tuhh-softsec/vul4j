@@ -36,8 +36,8 @@ import org.apache.commons.digester3.rule.CallParamRule;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
 @DigesterRule(
-        reflectsRule = CallParamRule.class,
-        handledBy = CallParamHandler.class
+    reflectsRule = CallParamRule.class,
+    handledBy = CallParamHandler.class
 )
 public @interface CallParam {
 

@@ -36,8 +36,8 @@ import org.apache.commons.digester3.rule.PathCallParamRule;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
 @DigesterRule(
-        reflectsRule = PathCallParamRule.class,
-        handledBy = PathCallParamHandler.class
+    reflectsRule = PathCallParamRule.class,
+    handledBy = PathCallParamHandler.class
 )
 public @interface PathCallParam {
 

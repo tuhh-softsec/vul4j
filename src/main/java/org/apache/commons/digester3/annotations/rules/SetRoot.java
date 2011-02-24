@@ -35,8 +35,8 @@ import org.apache.commons.digester3.rule.SetRootRule;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 @DigesterRule(
-        reflectsRule = SetRootRule.class,
-        handledBy = SetRootHandler.class
+    reflectsRule = SetRootRule.class,
+    handledBy = SetRootHandler.class
 )
 public @interface SetRoot {
 

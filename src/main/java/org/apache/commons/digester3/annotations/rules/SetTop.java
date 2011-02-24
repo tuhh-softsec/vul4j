@@ -36,8 +36,8 @@ import org.apache.commons.digester3.rule.SetTopRule;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 @DigesterRule(
-        reflectsRule = SetTopRule.class,
-        handledBy = SetTopHandler.class
+    reflectsRule = SetTopRule.class,
+    handledBy = SetTopHandler.class
 )
 public @interface SetTop {
 

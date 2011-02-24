@@ -37,8 +37,8 @@ import org.apache.commons.digester3.rule.ObjectCreateRule;
 @Target(ElementType.TYPE)
 @CreationRule
 @DigesterRule(
-        reflectsRule = ObjectCreateRule.class,
-        handledBy = ObjectCreateHandler.class
+    reflectsRule = ObjectCreateRule.class,
+    handledBy = ObjectCreateHandler.class
 )
 public @interface ObjectCreate {
 
