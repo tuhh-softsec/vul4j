@@ -33,20 +33,23 @@ public class DriverFactory {
 
 	/** Loads all instancies according to default configuration file */
 	public final static void configure() {
+		InputStream inputStream = Driver.class.getResourceAsStream("driver.properties");
 		try {
-			InputStream inputStream = Driver.class
-					.getResourceAsStream("driver.properties");
 			if (inputStream != null) {
 				Properties props = new Properties();
 				props.load(inputStream);
 				configure(props);
 			}
 		} catch (IOException e) {
-			ConfigurationException ce = new ConfigurationException(
-					"Error loading configuration", e);
-
+			ConfigurationException ce = new ConfigurationException("Error loading configuration", e);
 			LOG.error(ce.getMessage(), ce);
 			throw ce;
+		} finally {
+			try {
+				inputStream.close();
+			} catch (IOException e) {
+				LOG.error("failed to close stream", e);
+			}
 		}
 	}
 
@@ -57,21 +60,17 @@ public class DriverFactory {
 	 *            properties to use for configuration
 	 */
 	public final static void configure(Properties props) {
-		INSTANCIES.clear();
 		HashMap<String, Properties> driversProps = new HashMap<String, Properties>();
-		for (Enumeration<?> enumeration = props.propertyNames(); enumeration
-				.hasMoreElements();) {
+		for (Enumeration<?> enumeration = props.propertyNames(); enumeration.hasMoreElements();) {
 			String propertyName = (String) enumeration.nextElement();
 			String prefix;
 			String name;
-			if (propertyName.indexOf(".") < 0) {
+			if (propertyName.indexOf('.') < 0) {
 				prefix = DEFAULT_INSTANCE;
 				name = propertyName;
 			} else {
-				prefix = propertyName.substring(0,
-						propertyName.lastIndexOf("."));
-				name = propertyName
-						.substring(propertyName.lastIndexOf(".") + 1);
+				prefix = propertyName.substring(0, propertyName.lastIndexOf('.'));
+				name = propertyName.substring(propertyName.lastIndexOf('.') + 1);
 			}
 			Properties driverProperties = driversProps.get(prefix);
 			if (driverProperties == null) {
@@ -80,10 +79,20 @@ public class DriverFactory {
 			}
 			driverProperties.put(name, props.getProperty(propertyName));
 		}
-		for (Entry<String, Properties> entry : driversProps.entrySet()) {
-			String name = entry.getKey();
-			Properties driverProperties = entry.getValue();
-			INSTANCIES.put(name, new Driver(name, driverProperties));
+		synchronized (INSTANCIES) {
+			INSTANCIES.clear();
+			for (Entry<String, Properties> entry : driversProps.entrySet()) {
+				String name = entry.getKey();
+				Properties driverProperties = entry.getValue();
+				INSTANCIES.put(name, new Driver(name, driverProperties));
+			}
+		}
+	}
+
+	/** Registers new {@linkplain Driver} under provided name with specified properties. */
+	public static void configure(String name, Properties props) {
+		synchronized (INSTANCIES) {
+			INSTANCIES.put(name, new Driver(name, props));
 		}
 	}
 
@@ -108,23 +117,23 @@ public class DriverFactory {
 	 * @return the named instance
 	 */
 	public final static Driver getInstance(String instanceName) {
-		if (INSTANCIES.isEmpty()) {
-			throw new ConfigurationException(
-					"Driver has not been configured and driver.properties file was not found");
-		}
 		String effectiveInstanceName = instanceName;
 		if (effectiveInstanceName == null) {
 			effectiveInstanceName = DEFAULT_INSTANCE;
 		}
-		Driver instance = INSTANCIES.get(effectiveInstanceName);
-		if (instance == null) {
-			ConfigurationException e = new ConfigurationException(
-					"No configuration properties found for factory : "
-							+ effectiveInstanceName);
-			LOG.error(e.getMessage(), e);
-			throw e;
+		synchronized (INSTANCIES) {
+			if (INSTANCIES.isEmpty()) {
+				throw new ConfigurationException("Driver has not been configured and driver.properties file was not found");
+			}
+			Driver instance = INSTANCIES.get(effectiveInstanceName);
+			if (instance == null) {
+				ConfigurationException e = new ConfigurationException("No configuration properties found for factory : "
+						+ effectiveInstanceName);
+				LOG.error(e.getMessage(), e);
+				throw e;
+			}
+			return instance;
 		}
-		return instance;
 	}
 
 	/**
@@ -136,6 +145,8 @@ public class DriverFactory {
 	 *            The instance
 	 */
 	final static void put(String instanceName, Driver instance) {
-		INSTANCIES.put(instanceName, instance);
+		synchronized (INSTANCIES) {
+			INSTANCIES.put(instanceName, instance);
+		}
 	}
 }
