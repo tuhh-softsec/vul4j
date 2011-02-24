@@ -20,7 +20,6 @@
 package org.apache.directory.shared.ldap.model.schema;
 
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -64,7 +63,7 @@ import org.apache.directory.shared.ldap.model.schema.registries.Registries;
  * <b>obsolete</b> : LdapSyntax, Comparator, Normalizer, SyntaxChecker
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public interface SchemaObject extends Serializable
+public interface SchemaObject
 {
     /**
      * Gets usually what is the numeric object identifier assigned to this
