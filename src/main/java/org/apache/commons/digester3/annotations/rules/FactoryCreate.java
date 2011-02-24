@@ -26,8 +26,10 @@ import java.lang.annotation.Target;
 import org.apache.commons.digester3.annotations.DigesterRule;
 import org.apache.commons.digester3.annotations.DigesterRuleList;
 import org.apache.commons.digester3.annotations.handlers.FactoryCreateHandler;
+import org.apache.commons.digester3.rule.AbstractObjectCreationFactory;
 import org.apache.commons.digester3.rule.FactoryCreateRule;
 import org.apache.commons.digester3.spi.ObjectCreationFactory;
+import org.xml.sax.Attributes;
 
 /**
  * Classes annotated with {@code FactoryCreate} will be bound with
@@ -48,7 +50,7 @@ public @interface FactoryCreate {
      *
      * @return the Java class of the object creation factory class
      */
-    Class<? extends ObjectCreationFactory<?>> factoryClass();
+    Class<? extends ObjectCreationFactory<?>> factoryClass() default DefaultObjectCreationFactory.class;
 
     /**
      * Allows specify the attribute containing an override class name if it is present.
@@ -90,6 +92,22 @@ public @interface FactoryCreate {
     @DigesterRuleList
     @interface List {
         FactoryCreate[] value();
+    }
+
+    /**
+     * Dummy ObjectCreationFactory type only for annotation value type purposes.
+     */
+    public static final class DefaultObjectCreationFactory extends AbstractObjectCreationFactory<Object> {
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public Object createObject(Attributes attributes) throws Exception {
+            // do nothing
+            return null;
+        }
+
     }
 
 }

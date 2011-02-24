@@ -20,6 +20,7 @@ package org.apache.commons.digester3.annotations.handlers;
 import org.apache.commons.digester3.RulesBinder;
 import org.apache.commons.digester3.annotations.AnnotationHandler;
 import org.apache.commons.digester3.annotations.rules.FactoryCreate;
+import org.apache.commons.digester3.rulesbinder.FactoryCreateBuilder;
 
 /**
  * {@link FactoryCreate} handler.
@@ -30,12 +31,15 @@ public final class FactoryCreateHandler implements AnnotationHandler<FactoryCrea
      * {@inheritDoc}
      */
     public void handle(FactoryCreate annotation, Class<?> element, RulesBinder rulesBinder) {
-        rulesBinder.forPattern(annotation.pattern())
+        FactoryCreateBuilder builder = rulesBinder.forPattern(annotation.pattern())
             .withNamespaceURI(annotation.namespaceURI())
             .factoryCreate()
                 .overriddenByAttribute(annotation.attributeName().length() > 0 ? annotation.attributeName() : null)
-                .ignoreCreateExceptions(annotation.ignoreCreateExceptions())
-                .ofType(annotation.factoryClass());
+                .ignoreCreateExceptions(annotation.ignoreCreateExceptions());
+
+        if (FactoryCreate.DefaultObjectCreationFactory.class != annotation.factoryClass()) {
+            builder.ofType(annotation.factoryClass());
+        }
     }
 
 }
