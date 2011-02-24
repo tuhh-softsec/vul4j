@@ -20,11 +20,11 @@ package org.apache.directory.shared.ldap.model.entry;
 
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -33,8 +33,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
 
-import com.mycila.junit.concurrent.Concurrency;
-import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.schema.Normalizer;
 import org.apache.directory.shared.ldap.model.schema.SyntaxChecker;
@@ -42,6 +40,9 @@ import org.apache.directory.shared.util.StringConstants;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 
 
 /**
@@ -61,8 +62,6 @@ public class BinaryValueTest
     
     private static final Normalizer BINARY_NORMALIZER = new Normalizer( "1.1.1" )
     {
-        private static final long serialVersionUID = 1L;
-        
         public Value<?> normalize( Value<?> value ) throws LdapException
         {
             if ( value.isBinary() )
@@ -95,8 +94,6 @@ public class BinaryValueTest
      */
     private static final Normalizer BINARY_NORMALIZER_EMPTY = new Normalizer( "1.1.1" )
     {
-        private static final long serialVersionUID = 1L;
-        
         public Value<?> normalize( Value<?> value ) throws LdapException
         {
             if ( value.isBinary() )
@@ -116,8 +113,6 @@ public class BinaryValueTest
     
     private static final SyntaxChecker BINARY_CHECKER = new SyntaxChecker( "1.1.1" )
     {
-        private static final long serialVersionUID = 6721114025331041937L;
-
         public boolean isValidSyntax( Object value )
         {
             if ( value == null )
