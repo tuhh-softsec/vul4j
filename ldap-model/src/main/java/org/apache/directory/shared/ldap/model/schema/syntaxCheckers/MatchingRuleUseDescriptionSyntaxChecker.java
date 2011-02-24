@@ -47,13 +47,11 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
+@SuppressWarnings("serial")
 public class MatchingRuleUseDescriptionSyntaxChecker extends SyntaxChecker
 {
     /** A logger for this class */
     private static final Logger LOG = LoggerFactory.getLogger( MatchingRuleUseDescriptionSyntaxChecker.class );
-
-    /** The serialVersionUID */
-    private static final long serialVersionUID = 1L;
 
     /** The schema parser used to parse the MatchingRuleUseDescription Syntax */
     private MatchingRuleUseDescriptionSchemaParser schemaParser = new MatchingRuleUseDescriptionSchemaParser();

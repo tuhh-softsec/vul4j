@@ -32,13 +32,11 @@ import org.slf4j.LoggerFactory;
  *  
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
+@SuppressWarnings("serial")
 public class FaxSyntaxChecker extends BinarySyntaxChecker
 {
     /** A logger for this class */
     private static final Logger LOG = LoggerFactory.getLogger( FaxSyntaxChecker.class );
-
-    /** The serialVersionUID */
-    private static final long serialVersionUID = 1L;
 
     /**
      * Private default constructor to prevent unnecessary instantiation.

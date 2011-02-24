@@ -41,13 +41,11 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
+@SuppressWarnings("serial")
 public class CountrySyntaxChecker extends SyntaxChecker
 {
     /** A logger for this class */
     private static final Logger LOG = LoggerFactory.getLogger( CountrySyntaxChecker.class );
-
-    /** The serialVersionUID */
-    private static final long serialVersionUID = 1L;
 
     /** The ISO 3166 list of countries, as of 2006 */
     private static final String[] COUNTRY_ISO_3166 =
