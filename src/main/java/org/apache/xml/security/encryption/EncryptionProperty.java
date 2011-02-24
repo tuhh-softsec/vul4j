@@ -16,7 +16,6 @@
  */
 package org.apache.xml.security.encryption;
 
-
 import java.util.Iterator;
 import org.w3c.dom.Element;
 
@@ -46,6 +45,7 @@ import org.w3c.dom.Element;
  * @author Axl Mattheus
  */
 public interface EncryptionProperty {
+    
     /**
      * Returns the <code>EncryptedType</code> being described.
      *
@@ -94,10 +94,10 @@ public interface EncryptionProperty {
     /**
      * Returns the properties of the <CODE>EncryptionProperty</CODE>.
      *
-     * @return an <code>Iterator</code> over all the addiitonal encryption
+     * @return an <code>Iterator</code> over all the additional encryption
      *   information contained in this class.
      */
-    Iterator getEncryptionInformation();
+    Iterator<Element> getEncryptionInformation();
 
     /**
      * Adds encryption information.

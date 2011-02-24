@@ -18,14 +18,12 @@ package org.apache.xml.security.encryption;
 
 import org.w3c.dom.Attr;
 
-
 /**
  * <code>CipherReference</code> identifies a source which, when processed,
  * yields the encrypted octet sequence.
  * <p>
  * The actual value is obtained as follows. The <code>CipherReference URI</code>
  * contains an identifier that is dereferenced. Should the
- * <code>CipherReference</code> element contain an OPTIONAL sequence of
  * Transforms, the data resulting from dereferencing the <code>URI</code> is
  * transformed as specified so as to yield the intended cipher value. For
  * example, if the value is base64 encoded within an XML document; the
@@ -62,16 +60,16 @@ public interface CipherReference {
      */
     String getURI();
 
-        /**
-         * Gets the URI as an Attribute node.  Used to meld the CipherREference
-         * with the XMLSignature ResourceResolvers
+    /**
+     * Gets the URI as an Attribute node.  Used to meld the CipherREference
+     * with the XMLSignature ResourceResolvers
      * @return
-         */
-        public Attr getURIAsAttr();
+     */
+    public Attr getURIAsAttr();
 
     /**
      * Returns the <code>Transforms</code> that specifies how to transform the
-     * <code>URI</code> to yield the appropiate cipher value.
+     * <code>URI</code> to yield the appropriate cipher value.
      *
      * @return the transform that specifies how to transform the reference to
      *   yield the intended cipher value.
@@ -80,7 +78,7 @@ public interface CipherReference {
 
     /**
      * Sets the <code>Transforms</code> that specifies how to transform the
-     * <code>URI</code> to yield the appropiate cipher value.
+     * <code>URI</code> to yield the appropriate cipher value.
      *
      * @param transforms the set of <code>Transforms</code> that specifies how
      *   to transform the reference to yield the intended cipher value.

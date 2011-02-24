@@ -16,9 +16,7 @@
  */
 package org.apache.xml.security.encryption;
 
-
 import org.apache.xml.security.keys.KeyInfo;
-
 
 /**
  * EncryptedType is the abstract type from which <code>EncryptedData</code> and
@@ -46,6 +44,7 @@ import org.apache.xml.security.keys.KeyInfo;
  * @author Axl Mattheus
  */
 public interface EncryptedType {
+    
     /**
      * Returns a <code>String</code> providing for the standard method of
      * assigning an id to the element within the document context.
@@ -113,7 +112,7 @@ public interface EncryptedType {
     void setMimeType(String type);
 
     /**
-     * Retusn an <code>URI</code> representing the encoding of the
+     * Return an <code>URI</code> representing the encoding of the
      * <code>EncryptedType</code>.
      *
      * @return the encoding of this <code>EncryptedType</code>.

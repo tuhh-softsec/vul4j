@@ -16,11 +16,9 @@
  */
 package org.apache.xml.security.encryption;
 
-
 import java.util.Iterator;
 import org.apache.xml.security.keys.KeyInfo;
 import org.w3c.dom.Element;
-
 
 /**
  * A Key Agreement algorithm provides for the derivation of a shared secret key
@@ -75,6 +73,7 @@ import org.w3c.dom.Element;
  * @author Axl Mattheus
  */
 public interface AgreementMethod {
+    
     /**
      * Returns an <code>byte</code> array.
      * @return
@@ -88,10 +87,10 @@ public interface AgreementMethod {
     void setKANonce(byte[] kanonce);
 
     /**
-     * Returns aditional information regarding the <code>AgreementMethod</code>.
+     * Returns additional information regarding the <code>AgreementMethod</code>.
      * @return
      */
-    Iterator getAgreementMethodInformation();
+    Iterator<Element> getAgreementMethodInformation();
 
     /**
      * Adds additional <code>AgreementMethod</code> information.
@@ -130,7 +129,7 @@ public interface AgreementMethod {
     void setOriginatorKeyInfo(KeyInfo keyInfo);
 
     /**
-     * Retruns information relating to the recipient's shared secret.
+     * Returns information relating to the recipient's shared secret.
      *
      * @return information relating to the recipient's shared secret.
      */
@@ -150,4 +149,3 @@ public interface AgreementMethod {
      */
     String getAlgorithm();
 }
-

@@ -16,10 +16,8 @@
  */
 package org.apache.xml.security.encryption;
 
-
 import java.util.Iterator;
 import org.w3c.dom.Element;
-
 
 /**
  * <code>EncryptionMethod</code> describes the encryption algorithm applied to
@@ -85,7 +83,7 @@ public interface EncryptionMethod {
      * @return an <code>Iterator</code> over all the additional infomation
      *   about the <code>EncryptionMethod</code>.
      */
-    Iterator getEncryptionMethodInformation();
+    Iterator<Element> getEncryptionMethodInformation();
 
     /**
      * Adds encryption method information.

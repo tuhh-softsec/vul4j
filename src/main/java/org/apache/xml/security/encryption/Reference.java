@@ -16,10 +16,8 @@
  */
 package org.apache.xml.security.encryption;
 
-
 import java.util.Iterator;
 import org.w3c.dom.Element;
-
 
 /**
  * A wrapper for a pointer from a key value of an <code>EncryptedKey</code> to
@@ -70,7 +68,7 @@ public interface Reference {
      *
      * @return child elements.
      */
-    Iterator getElementRetrievalInformation();
+    Iterator<Element> getElementRetrievalInformation();
 
     /**
      * Adds retrieval information.

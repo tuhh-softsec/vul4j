@@ -16,7 +16,6 @@
  */
 package org.apache.xml.security.encryption;
 
-
 /**
  * The <code>EncryptedData</code> element is the core element in the syntax. Not
  * only does its <code>CipherData</code> child contain the encrypted data, but

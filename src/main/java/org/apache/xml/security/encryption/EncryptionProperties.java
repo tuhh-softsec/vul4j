@@ -16,9 +16,7 @@
  */
 package org.apache.xml.security.encryption;
 
-
 import java.util.Iterator;
-
 
 /**
  * <code>EncryptionProperties</code> can hold additional information concerning
@@ -42,6 +40,7 @@ import java.util.Iterator;
  * @author Axl Mattheus
  */
 public interface EncryptionProperties {
+    
     /**
      * Returns the <code>EncryptionProperties</code>' id.
      *
@@ -63,7 +62,7 @@ public interface EncryptionProperties {
      *
      * @return an <code>Iterator</code> over all the encryption properties.
      */
-    Iterator getEncryptionProperties();
+    Iterator<EncryptionProperty> getEncryptionProperties();
 
     /**
      * Adds an <code>EncryptionProperty</code>.

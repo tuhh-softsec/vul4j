@@ -16,9 +16,6 @@
  */
 package org.apache.xml.security.encryption;
 
-
-
-
 /**
  * A container for <code>ds:Transform</code>s.
  * <p>
@@ -36,36 +33,13 @@ package org.apache.xml.security.encryption;
  */
 public interface Transforms {
     /**
-     * Returns an <code>Iterator</code> over all the transforms contained in
-     * this transform list.
-     *
-     * @return all transforms.
-     */
-    /* Iterator getTransforms(); */
-
-    /**
-     * Adds a <code>ds:Transform</code> to the list of transforms.
-     *
-     * @param transform.
-     */
-    /* void addTransform(Transform transform); */
-
-    /**
-     * Removes the specified transform.
-     *
-     * @param transform.
-     */
-        /*    void removeTransform(Transform transform); */
-
-        /**
-         * Temporary method to turn the XMLEncryption Transforms class
-         * into a DS class.  The main logic is currently implemented in the
-         * DS class, so we need to get to get the base class.
-         * <p>
-         * <b>Note</b> This will be removed in future versions
+     * Temporary method to turn the XMLEncryption Transforms class
+     * into a DS class.  The main logic is currently implemented in the
+     * DS class, so we need to get to get the base class.
+     * <p>
+     * <b>Note</b> This will be removed in future versions
      * @return
-         */
-
-        org.apache.xml.security.transforms.Transforms getDSTransforms();
+     */
+    org.apache.xml.security.transforms.Transforms getDSTransforms();
 
 }

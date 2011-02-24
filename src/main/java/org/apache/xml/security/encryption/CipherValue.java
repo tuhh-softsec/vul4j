@@ -16,7 +16,6 @@
  */
 package org.apache.xml.security.encryption;
 
-
 /**
  * <code>CipherValue</code> is the wrapper for cipher text.
  *
@@ -24,20 +23,18 @@ package org.apache.xml.security.encryption;
  */
 public interface CipherValue {
     /**
-     * Resturns the Base 64 encoded, encrypted octets that is the
-     * <code>CihperValue</code>.
+     * Returns the Base 64 encoded, encrypted octets that is the
+     * <code>CipherValue</code>.
      *
      * @return cipher value.
      */
-        String getValue();
-        // byte[] getValue();
-    
+    String getValue();
+
     /**
      * Sets the Base 64 encoded, encrypted octets that is the
-     * <code>CihperValue</code>.
+     * <code>CipherValue</code>.
      *
      * @param value the cipher value.
      */
-        void setValue(String value);
-        // void setValue(byte[] value);
+    void setValue(String value);
 }

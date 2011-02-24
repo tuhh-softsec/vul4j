@@ -16,9 +16,7 @@
  */
 package org.apache.xml.security.encryption;
 
-
 import java.util.Iterator;
-
 
 /**
  * <code>ReferenceList</code> is an element that contains pointers from a key
@@ -41,8 +39,10 @@ import java.util.Iterator;
  * @see Reference
  */
 public interface ReferenceList {
-        /** DATA TAG */
+    
+    /** DATA TAG */
     public static final int DATA_REFERENCE = 0x00000001;
+    
     /** KEY TAG */
     public static final int KEY_REFERENCE  = 0x00000002;
 
@@ -79,11 +79,11 @@ public interface ReferenceList {
 
     /**
      * Returns an <code>Iterator</code> over all the <code>Reference</code>s
-     * contatined in this <code>ReferenceList</code>.
+     * contained in this <code>ReferenceList</code>.
      *
      * @return Iterator.
      */
-    public Iterator getReferences();
+    public Iterator<Reference> getReferences();
 
     /**
      * <code>DataReference</code> factory method. Returns a

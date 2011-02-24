@@ -16,8 +16,6 @@
  */
 package org.apache.xml.security.encryption;
 
-
-
 /**
  * The <code>EncryptedKey</code> element is used to transport encryption keys
  * from the originator to a known recipient(s). It may be used as a stand-alone
@@ -47,9 +45,9 @@ package org.apache.xml.security.encryption;
  * @author Axl Mattheus
  */
 public interface EncryptedKey extends EncryptedType {
+    
     /**
-     * Returns a hint as to which recipient this encrypted key value is intended
-     * for.
+     * Returns a hint as to which recipient this encrypted key value is intended for.
      *
      * @return the recipient of the <code>EncryptedKey</code>.
      */

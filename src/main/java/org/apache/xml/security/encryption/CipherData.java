@@ -16,7 +16,6 @@
  */
 package org.apache.xml.security.encryption;
 
-
 /**
  * <code>CipherData</code> provides encrypted data. It must either contain the
  * encrypted octet sequence as base64 encoded text of the
@@ -38,8 +37,10 @@ package org.apache.xml.security.encryption;
  * @author Axl Mattheus
  */
 public interface CipherData {
+    
     /** VALUE_TYPE ASN */
     public static final int VALUE_TYPE = 0x00000001;
+    
     /** REFERENCE_TYPE ASN */
     public static final int REFERENCE_TYPE = 0x00000002;
 
@@ -72,19 +73,17 @@ public interface CipherData {
      * Returns a reference to an external location containing the encrypted
      * octet sequence (<code>byte</code> array).
      *
-     * @return the reference to an external location containing the enctrypted
-     *   octet sequence.
+     * @return the reference to an external location containing the encrypted
+     * octet sequence.
      */
     CipherReference getCipherReference();
 
     /**
      * Sets the <code>CipherData</code>'s reference.
      *
-     * @param reference an external location containing the enctrypted octet
-     *   sequence.
+     * @param reference an external location containing the encrypted octet sequence.
      * @throws XMLEncryptionException
      */
-    void setCipherReference(CipherReference reference) throws
-        XMLEncryptionException;
+    void setCipherReference(CipherReference reference) throws XMLEncryptionException;
 }
 
