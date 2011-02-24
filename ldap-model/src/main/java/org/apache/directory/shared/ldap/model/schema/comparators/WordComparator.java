@@ -46,12 +46,11 @@ import org.slf4j.LoggerFactory;
  */
 public class WordComparator extends LdapComparator<String>
 {
+    /** The serial version UID */
+    private static final long serialVersionUID = 2L;
+
     /** A logger for this class */
     private static final Logger LOG = LoggerFactory.getLogger( WordComparator.class );
-
-    /** The serialVersionUID */
-    private static final long serialVersionUID = 1L;
-
 
     /**
      * The StringComparator constructor. Its OID is the StringMatch matching

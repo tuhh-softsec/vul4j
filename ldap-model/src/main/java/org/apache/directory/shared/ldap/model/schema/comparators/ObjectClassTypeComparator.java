@@ -32,9 +32,9 @@ import org.apache.directory.shared.util.Strings;
  */
 public class ObjectClassTypeComparator<T> extends LdapComparator<T> 
 {
-    private static final long serialVersionUID = 1L;
+    /** The serial version UID */
+    private static final long serialVersionUID = 2L;
 
-    
     public ObjectClassTypeComparator( String oid )
     {
         super( oid );

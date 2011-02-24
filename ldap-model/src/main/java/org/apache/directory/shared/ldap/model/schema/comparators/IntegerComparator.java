@@ -21,6 +21,7 @@ package org.apache.directory.shared.ldap.model.schema.comparators;
 
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.math.BigInteger;
 
 import org.apache.directory.shared.i18n.I18n;
@@ -35,14 +36,13 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class IntegerComparator extends LdapComparator<Object>
+public class IntegerComparator extends LdapComparator<Object> implements Serializable
 {
+    /** The serial version UID */
+    private static final long serialVersionUID = 2L;
+
     /** A logger for this class */
     private static final Logger LOG = LoggerFactory.getLogger( IntegerComparator.class );
-
-    /** The serialVersionUID */
-    private static final long serialVersionUID = 1L;
-
 
     /**
      * The IntegerComparator constructor. Its OID is the IntegerOrderingMatch matching

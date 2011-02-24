@@ -37,12 +37,11 @@ import org.apache.directory.shared.ldap.model.schema.SchemaManager;
  */
 public class UniqueMemberComparator extends LdapComparator<String>
 {
-    /** The serialVersionUID */
-    private static final long serialVersionUID = 1L;
+    /** The serial version UID */
+    private static final long serialVersionUID = 2L;
 
     /** A reference to the schema manager */
-    private transient SchemaManager schemaManager;
-
+    private SchemaManager schemaManager;
 
     /**
      * The IntegerComparator constructor. Its OID is the IntegerOrderingMatch matching
