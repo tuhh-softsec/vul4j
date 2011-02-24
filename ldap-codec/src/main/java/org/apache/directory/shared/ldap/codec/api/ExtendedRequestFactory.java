@@ -74,4 +74,14 @@ public interface ExtendedRequestFactory<Q extends ExtendedRequest<P>,P extends E
      * @return The new ExtendedResponse.
      */
     P newResponse( byte[] encodedValue ) throws DecoderException;
+
+
+    /**
+     * Decorates an ExtendedResponse which may or may not be of the expected 
+     * type. The factory implementor must check and handle appropriately.
+     *
+     * @param decoratedMessage the message to be decorated.
+     * @return The decorated message 
+     */
+    ExtendedResponseDecorator<P> decorate( ExtendedResponse decoratedMessage );
 }

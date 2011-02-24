@@ -259,4 +259,10 @@ public interface LdapCodecService
      * @return The new extended request
      */
     ExtendedRequest<?> newExtendedRequest( String oid, byte[] value );
+
+
+    ExtendedRequestDecorator<?,?> decorate( ExtendedRequest<?> decoratedMessage );
+
+
+    ExtendedResponseDecorator<?> decorate( ExtendedResponse decoratedMessage );
 }

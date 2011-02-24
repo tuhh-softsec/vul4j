@@ -23,12 +23,14 @@ package org.apache.directory.shared.ldap.extras.extended.ads_impl;
 import org.apache.directory.shared.asn1.DecoderException; 
 import org.apache.directory.shared.ldap.codec.api.ExtendedRequestDecorator;
 import org.apache.directory.shared.ldap.codec.api.ExtendedRequestFactory;
+import org.apache.directory.shared.ldap.codec.api.ExtendedResponseDecorator;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.extras.extended.StoredProcedureRequest;
 import org.apache.directory.shared.ldap.extras.extended.StoredProcedureResponse;
 import org.apache.directory.shared.ldap.extras.extended.StoredProcedureRequestImpl;
 import org.apache.directory.shared.ldap.extras.extended.StoredProcedureResponseImpl;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
+import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
 
 
 /**
@@ -108,6 +110,22 @@ public class StoredProcedureFactory implements ExtendedRequestFactory<StoredProc
             return new StoredProcedureRequestDecorator( codec, ( StoredProcedureRequest ) modelRequest );
         }
         
+        // @TODO this is really bad because we loose the parameters 
         return ( StoredProcedureRequestDecorator ) newRequest();
+    }
+
+
+    public ExtendedResponseDecorator<StoredProcedureResponse> decorate( ExtendedResponse decoratedMessage )
+    {
+        if ( decoratedMessage instanceof StoredProcedureResponseDecorator )
+        {
+            return ( StoredProcedureResponseDecorator ) decoratedMessage;
+        }
+        else if ( decoratedMessage instanceof StoredProcedureResponse )
+        {
+            return new StoredProcedureResponseDecorator( codec, ( StoredProcedureResponse ) decoratedMessage );
+        }
+        
+        return new StoredProcedureResponseDecorator( codec, new StoredProcedureResponseImpl() );
     }
 }

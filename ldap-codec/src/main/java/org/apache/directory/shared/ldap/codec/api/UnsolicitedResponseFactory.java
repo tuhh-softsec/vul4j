@@ -45,4 +45,13 @@ public interface UnsolicitedResponseFactory<R extends ExtendedResponse>
      *  @return A new instance of the ExtendedResponse.
      */
     R newResponse( byte[] encodedValue ) throws DecoderException;
+
+
+    /**
+     * Decorates an existing extended operation response.
+     * 
+     * @param decoratedMessage the extended response to be decorated
+     * @return the decorated message
+     */
+    ExtendedResponseDecorator<R> decorate( ExtendedResponse decoratedMessage );
 }

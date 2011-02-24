@@ -23,12 +23,14 @@ package org.apache.directory.shared.ldap.extras.extended.ads_impl;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.ldap.codec.api.ExtendedRequestDecorator;
 import org.apache.directory.shared.ldap.codec.api.ExtendedRequestFactory;
+import org.apache.directory.shared.ldap.codec.api.ExtendedResponseDecorator;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.extras.extended.GracefulShutdownRequestImpl;
 import org.apache.directory.shared.ldap.extras.extended.GracefulShutdownResponseImpl;
 import org.apache.directory.shared.ldap.extras.extended.GracefulShutdownRequest;
 import org.apache.directory.shared.ldap.extras.extended.GracefulShutdownResponse;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
+import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
 
 
 /**
@@ -106,5 +108,23 @@ public class GracefulShutdownFactory
         }
         
         return ( GracefulShutdownRequestDecorator ) newRequest();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public ExtendedResponseDecorator<GracefulShutdownResponse> decorate( ExtendedResponse decoratedMessage )
+    {
+        if ( decoratedMessage instanceof GracefulShutdownResponseDecorator )
+        {
+            return ( GracefulShutdownResponseDecorator ) decoratedMessage;
+        }
+        else if ( decoratedMessage instanceof GracefulShutdownResponse )
+        {
+            return new GracefulShutdownResponseDecorator( codec, ( GracefulShutdownResponse ) decoratedMessage );
+        }
+        
+        return new GracefulShutdownResponseDecorator( codec, new GracefulShutdownResponseImpl() );
     }
 }

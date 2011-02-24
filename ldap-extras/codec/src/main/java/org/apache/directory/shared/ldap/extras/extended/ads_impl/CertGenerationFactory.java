@@ -23,6 +23,7 @@ package org.apache.directory.shared.ldap.extras.extended.ads_impl;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.ldap.codec.api.ExtendedRequestDecorator;
 import org.apache.directory.shared.ldap.codec.api.ExtendedRequestFactory;
+import org.apache.directory.shared.ldap.codec.api.ExtendedResponseDecorator;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.extras.extended.CancelRequest;
 import org.apache.directory.shared.ldap.extras.extended.CertGenerationRequestImpl;
@@ -30,6 +31,7 @@ import org.apache.directory.shared.ldap.extras.extended.CertGenerationResponseIm
 import org.apache.directory.shared.ldap.extras.extended.CertGenerationRequest;
 import org.apache.directory.shared.ldap.extras.extended.CertGenerationResponse;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
+import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
 
 
 /**
@@ -105,5 +107,23 @@ public class CertGenerationFactory
         }
         
         return ( CertGenerationRequestDecorator ) newRequest();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public ExtendedResponseDecorator<CertGenerationResponse> decorate( ExtendedResponse decoratedMessage )
+    {
+        if ( decoratedMessage instanceof CertGenerationResponseDecorator )
+        {
+            return ( CertGenerationResponseDecorator ) decoratedMessage;
+        }
+        else if ( decoratedMessage instanceof CertGenerationResponse )
+        {
+            return new CertGenerationResponseDecorator( codec, ( CertGenerationResponse ) decoratedMessage );
+        }
+        
+        return new CertGenerationResponseDecorator( codec, new CertGenerationResponseImpl() );
     }
 }

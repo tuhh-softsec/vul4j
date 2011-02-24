@@ -22,10 +22,12 @@ package org.apache.directory.shared.ldap.extras.extended.ads_impl;
 
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.ldap.codec.api.ExtendedRequestFactory;
+import org.apache.directory.shared.ldap.codec.api.ExtendedResponseDecorator;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.UnsolicitedResponseFactory;
 import org.apache.directory.shared.ldap.extras.extended.GracefulDisconnectResponseImpl;
 import org.apache.directory.shared.ldap.extras.extended.GracefulDisconnectResponse;
+import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
 
 
 /**
@@ -60,5 +62,20 @@ public class GracefulDisconnectFactory implements UnsolicitedResponseFactory<Gra
     public GracefulDisconnectResponse newResponse( byte[] encodedValue ) throws DecoderException
     {
         return new GracefulDisconnectResponseDecorator( codec, encodedValue );
+    }
+
+
+    public ExtendedResponseDecorator<GracefulDisconnectResponse> decorate( ExtendedResponse decoratedMessage )
+    {
+        if ( decoratedMessage instanceof GracefulDisconnectResponseDecorator )
+        {
+            return ( GracefulDisconnectResponseDecorator ) decoratedMessage;
+        }
+        else if ( decoratedMessage instanceof GracefulDisconnectResponse )
+        {
+            return new GracefulDisconnectResponseDecorator( codec, ( GracefulDisconnectResponse ) decoratedMessage );
+        }
+        
+        return new GracefulDisconnectResponseDecorator( codec, new GracefulDisconnectResponseImpl() );
     }
 }

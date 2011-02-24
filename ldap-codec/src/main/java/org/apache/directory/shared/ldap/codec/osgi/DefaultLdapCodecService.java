@@ -529,4 +529,53 @@ public class DefaultLdapCodecService implements LdapCodecService
         
         return req;
     }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public ExtendedRequestDecorator<?, ?> decorate( ExtendedRequest<?> decoratedMessage )
+    {
+        ExtendedRequestDecorator<?,?> req = null;
+        
+        ExtendedRequestFactory<?,?> extendedRequestFactory = extReqFactories.get( decoratedMessage.getRequestName() );
+        if ( extendedRequestFactory != null )
+        {
+            req = extendedRequestFactory.decorate( decoratedMessage );
+        }
+        else
+        {
+            req = new ExtendedRequestDecorator<ExtendedRequest<ExtendedResponse>, ExtendedResponse>( this, 
+                    ( ExtendedRequest<ExtendedResponse> ) decoratedMessage );
+        }
+        
+        return req;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public ExtendedResponseDecorator<?> decorate( ExtendedResponse decoratedMessage )
+    {
+        ExtendedResponseDecorator<?> resp = null;
+        
+        UnsolicitedResponseFactory<?> unsolicitedResponseFactory = unsolicitedFactories.get( decoratedMessage.getResponseName() );
+        ExtendedRequestFactory<?,?> extendedRequestFactory = extReqFactories.get( decoratedMessage.getResponseName() );
+        if ( extendedRequestFactory != null )
+        {
+            resp = extendedRequestFactory.decorate( decoratedMessage );
+        }
+        else if ( unsolicitedResponseFactory != null )
+        {
+            resp = unsolicitedResponseFactory.decorate( decoratedMessage );
+        }
+        else
+        {
+            resp = new ExtendedResponseDecorator<ExtendedResponse>( this, decoratedMessage );
+        }
+        
+        return resp;
+    }
 }
