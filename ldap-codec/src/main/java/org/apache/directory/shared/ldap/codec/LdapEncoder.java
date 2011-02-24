@@ -60,6 +60,11 @@ public class LdapEncoder
      */
     public LdapEncoder( LdapCodecService codec )
     {
+        if ( codec == null )
+        {
+            throw new NullPointerException( "codec argument cannot be null" );
+        }
+        
         this.codec = codec;
     }
     

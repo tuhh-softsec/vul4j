@@ -99,12 +99,8 @@ public class CancelFactory implements ExtendedRequestFactory<CancelRequest, Canc
         {
             return ( CancelRequestDecorator ) modelRequest;
         }
-        else if ( modelRequest instanceof CancelRequest )
-        {
-            return new CancelRequestDecorator( codec, ( CancelRequest ) modelRequest );
-        }
         
-        return ( CancelRequestDecorator ) newRequest();
+        return new CancelRequestDecorator( codec, ( CancelRequest ) modelRequest );
     }
 
 
@@ -117,11 +113,7 @@ public class CancelFactory implements ExtendedRequestFactory<CancelRequest, Canc
         {
             return ( CancelResponseDecorator ) decoratedMessage;
         }
-        else if ( decoratedMessage instanceof CancelResponse )
-        {
-            return new CancelResponseDecorator( codec, ( CancelResponse ) decoratedMessage );
-        }
-        
-        return new CancelResponseDecorator( codec, new CancelResponseImpl() );        
+
+        return new CancelResponseDecorator( codec, ( CancelResponse ) decoratedMessage );
     }
 }

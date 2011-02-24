@@ -31,5 +31,5 @@ import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
 public interface CertGenerationResponse extends ExtendedResponse
 {
     /** The CertGenerationResponse OID */
-    public static final String EXTENSION_OID = "1.3.6.1.4.1.18060.0.1.9";
+    public static final String EXTENSION_OID = CertGenerationRequest.EXTENSION_OID;
 }

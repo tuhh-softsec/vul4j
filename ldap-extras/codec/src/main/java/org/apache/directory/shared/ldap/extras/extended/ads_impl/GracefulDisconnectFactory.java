@@ -59,23 +59,25 @@ public class GracefulDisconnectFactory implements UnsolicitedResponseFactory<Gra
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public GracefulDisconnectResponse newResponse( byte[] encodedValue ) throws DecoderException
     {
         return new GracefulDisconnectResponseDecorator( codec, encodedValue );
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public ExtendedResponseDecorator<GracefulDisconnectResponse> decorate( ExtendedResponse decoratedMessage )
     {
         if ( decoratedMessage instanceof GracefulDisconnectResponseDecorator )
         {
             return ( GracefulDisconnectResponseDecorator ) decoratedMessage;
         }
-        else if ( decoratedMessage instanceof GracefulDisconnectResponse )
-        {
-            return new GracefulDisconnectResponseDecorator( codec, ( GracefulDisconnectResponse ) decoratedMessage );
-        }
-        
-        return new GracefulDisconnectResponseDecorator( codec, new GracefulDisconnectResponseImpl() );
+
+        return new GracefulDisconnectResponseDecorator( codec, ( GracefulDisconnectResponse ) decoratedMessage );
     }
 }

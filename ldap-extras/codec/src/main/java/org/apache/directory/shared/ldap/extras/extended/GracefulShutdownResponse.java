@@ -14,5 +14,5 @@ import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
 public interface GracefulShutdownResponse extends ExtendedResponse
 {
     /** The OID for the graceful shutdown extended operation response. */
-    String EXTENSION_OID = "1.3.6.1.4.1.18060.0.1.4";
+    String EXTENSION_OID = GracefulShutdownRequest.EXTENSION_OID;
 }

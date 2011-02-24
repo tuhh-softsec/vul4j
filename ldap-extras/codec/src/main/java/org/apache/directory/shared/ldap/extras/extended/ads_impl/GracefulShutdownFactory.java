@@ -102,12 +102,8 @@ public class GracefulShutdownFactory
         {
             return ( GracefulShutdownRequestDecorator ) modelRequest;
         }
-        else if ( modelRequest instanceof GracefulShutdownRequest )
-        {
-            return new GracefulShutdownRequestDecorator( codec, ( GracefulShutdownRequest ) modelRequest );
-        }
-        
-        return ( GracefulShutdownRequestDecorator ) newRequest();
+
+        return new GracefulShutdownRequestDecorator( codec, ( GracefulShutdownRequest ) modelRequest );
     }
 
 
@@ -120,11 +116,7 @@ public class GracefulShutdownFactory
         {
             return ( GracefulShutdownResponseDecorator ) decoratedMessage;
         }
-        else if ( decoratedMessage instanceof GracefulShutdownResponse )
-        {
-            return new GracefulShutdownResponseDecorator( codec, ( GracefulShutdownResponse ) decoratedMessage );
-        }
-        
-        return new GracefulShutdownResponseDecorator( codec, new GracefulShutdownResponseImpl() );
+
+        return new GracefulShutdownResponseDecorator( codec, ( GracefulShutdownResponse ) decoratedMessage );
     }
 }

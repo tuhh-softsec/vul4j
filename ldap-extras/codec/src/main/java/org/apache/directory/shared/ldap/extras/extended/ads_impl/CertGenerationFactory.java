@@ -25,7 +25,6 @@ import org.apache.directory.shared.ldap.codec.api.ExtendedRequestDecorator;
 import org.apache.directory.shared.ldap.codec.api.ExtendedRequestFactory;
 import org.apache.directory.shared.ldap.codec.api.ExtendedResponseDecorator;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
-import org.apache.directory.shared.ldap.extras.extended.CancelRequest;
 import org.apache.directory.shared.ldap.extras.extended.CertGenerationRequestImpl;
 import org.apache.directory.shared.ldap.extras.extended.CertGenerationResponseImpl;
 import org.apache.directory.shared.ldap.extras.extended.CertGenerationRequest;
@@ -101,12 +100,8 @@ public class CertGenerationFactory
         {
             return ( CertGenerationRequestDecorator ) modelRequest;
         }
-        else if ( modelRequest instanceof CancelRequest )
-        {
-            return new CertGenerationRequestDecorator( codec, ( CertGenerationRequest ) modelRequest );
-        }
-        
-        return ( CertGenerationRequestDecorator ) newRequest();
+
+        return new CertGenerationRequestDecorator( codec, ( CertGenerationRequest ) modelRequest );
     }
 
 
@@ -119,11 +114,7 @@ public class CertGenerationFactory
         {
             return ( CertGenerationResponseDecorator ) decoratedMessage;
         }
-        else if ( decoratedMessage instanceof CertGenerationResponse )
-        {
-            return new CertGenerationResponseDecorator( codec, ( CertGenerationResponse ) decoratedMessage );
-        }
-        
-        return new CertGenerationResponseDecorator( codec, new CertGenerationResponseImpl() );
+
+        return new CertGenerationResponseDecorator( codec, ( CertGenerationResponse ) decoratedMessage );
     }
 }

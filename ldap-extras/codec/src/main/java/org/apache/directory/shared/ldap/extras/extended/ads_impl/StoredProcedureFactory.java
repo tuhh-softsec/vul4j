@@ -105,27 +105,22 @@ public class StoredProcedureFactory implements ExtendedRequestFactory<StoredProc
         {
             return ( StoredProcedureRequestDecorator ) modelRequest;
         }
-        else if ( modelRequest instanceof StoredProcedureRequest )
-        {
-            return new StoredProcedureRequestDecorator( codec, ( StoredProcedureRequest ) modelRequest );
-        }
         
-        // @TODO this is really bad because we loose the parameters 
-        return ( StoredProcedureRequestDecorator ) newRequest();
+        
+        return new StoredProcedureRequestDecorator( codec, ( StoredProcedureRequest ) modelRequest );
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public ExtendedResponseDecorator<StoredProcedureResponse> decorate( ExtendedResponse decoratedMessage )
     {
         if ( decoratedMessage instanceof StoredProcedureResponseDecorator )
         {
             return ( StoredProcedureResponseDecorator ) decoratedMessage;
         }
-        else if ( decoratedMessage instanceof StoredProcedureResponse )
-        {
-            return new StoredProcedureResponseDecorator( codec, ( StoredProcedureResponse ) decoratedMessage );
-        }
         
-        return new StoredProcedureResponseDecorator( codec, new StoredProcedureResponseImpl() );
+        return new StoredProcedureResponseDecorator( codec, ( StoredProcedureResponse ) decoratedMessage );
     }
 }
