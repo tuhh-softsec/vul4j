@@ -25,15 +25,12 @@
     <version>1.0.0-M2-SNAPSHOT</version>
   </parent>
   
-  <artifactId>shared-ldap-extras-codec</artifactId>
-  <name>Apache Directory Shared LDAP Extras Codec</name>
+  <artifactId>shared-ldap-extras-codec-api</artifactId>
+  <name>Apache Directory Shared LDAP Extras Codec API</name>
   <packaging>bundle</packaging>
   <description>
-    Extra LDAP controls and extended operation extentions for the Codec used
-    by clients and servers. These controls and extended operations are not 
-    standard issue. Some are very ApacheDS specific. Some may be from obscure
-    RFC draft specifications. Both ApacheDS and Studio will use these controls
-    as well as clients if the codec loads these extensions.
+    Extra LDAP controls and extended operation interfaces and POJOs for the
+    Codec extensions used by clients and servers.
   </description>
 
   <dependencies>
@@ -45,48 +42,12 @@
 
     <dependency>
       <groupId>org.apache.directory.shared</groupId>
-      <artifactId>shared-ldap-codec</artifactId>
-    </dependency>
-    
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.core</artifactId>
-      <scope>provided</scope>
+      <artifactId>shared-ldap-model</artifactId>
     </dependency>
   </dependencies>
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifestFile>META-INF/MANIFEST.MF</manifestFile>
-            <addMavenDescriptor>false</addMavenDescriptor>
-          </archive>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <groupId>org.apache.maven.plugins</groupId>
-        <configuration>
-          <systemPropertyVariables>
-            <workingDirectory>${basedir}/target</workingDirectory>
-            <felix.cache.rootdir>
-              ${project.build.directory}
-            </felix.cache.rootdir>
-            <felix.cache.locking>
-              false
-            </felix.cache.locking>
-            <org.osgi.framework.storage>
-              ${project.build.directory}/osgi-cache
-            </org.osgi.framework.storage>
-          </systemPropertyVariables>
-        </configuration>
-      </plugin>
-
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
@@ -95,14 +56,11 @@
         <configuration>
           <manifestLocation>META-INF</manifestLocation>
           <instructions>
-            <Bundle-SymbolicName>${project.groupId}.ldap.extras.codec</Bundle-SymbolicName>
+            <Bundle-SymbolicName>${project.groupId}.ldap.extras.codec.api</Bundle-SymbolicName>
             <Export-Package>
               org.apache.directory.shared.ldap.extras.controls,
               org.apache.directory.shared.ldap.extras.extended
             </Export-Package>
-            <Bundle-Activator>
-              org.apache.directory.shared.ldap.extras.ExtrasBundleActivator
-            </Bundle-Activator>
           </instructions>
         </configuration>
       </plugin>
