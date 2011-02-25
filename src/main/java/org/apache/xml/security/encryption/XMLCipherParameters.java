@@ -14,9 +14,7 @@
  *  limitations under the License.
  *
  */
-
 package org.apache.xml.security.encryption;
-
 
 /**
  * Constants
