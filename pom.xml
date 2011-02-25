@@ -156,6 +156,9 @@
 					<moduleExcludes>
 						<moduleType>war</moduleType>
 					</moduleExcludes>
+					<chmod>true</chmod>
+					<chmodMode>g+wX,a+rX</chmodMode>
+					<chmodOptions>-Rf</chmodOptions>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -415,7 +418,7 @@
 			<id>webassembletool-site</id>
 			<name>ESIGate</name>
 			<url>sftp://web.sourceforge.net/home/groups/w/we/webassembletool/htdocs</url>
-			<!--<url>scp://shell.sourceforge.net/home/groups/w/we/webassembletool/htdocs</url>-->
+			<!--<url>scp://shell.sourceforge.net/home/groups/w/we/webassembletool/htdocs</url>-->			
 		</site>
 	</distributionManagement>
 	<properties>
