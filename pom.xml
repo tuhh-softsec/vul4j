@@ -22,8 +22,8 @@
 
     <parent>
         <groupId>org.apache.commons</groupId>
-        <artifactId>commons-parent</artifactId>
-        <version>18</version>
+        <artifactId>commons-sandbox-parent</artifactId>
+        <version>9</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -38,39 +38,35 @@
         pattern of nested XML elements is recognized.
     </description>
 
-    <url>http://commons.apache.org/digester/</url>
-
-    <issueManagement>
-        <system>jira</system>
-        <url>http://issues.apache.org/jira/browse/DIGESTER</url>
-    </issueManagement>
+    <url>http://commons.apache.org/sandbox/digester3/</url>
 
     <scm>
-        <connection>scm:svn:http://svn.apache.org/repos/asf/commons/proper/digester/trunk</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/commons/proper/digester/trunk</developerConnection>
-        <url>http://svn.apache.org/viewvc/commons/proper/digester/trunk</url>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/commons/sandbox/digester3/trunk</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/commons/sandbox/digester3/trunk</developerConnection>
+        <url>http://svn.apache.org/viewvc/commons/sandbox/digester3/trunk</url>
     </scm>
 
     <distributionManagement>
-        <!-- Cannot define in parent ATM, see COMMONSSITE-26 -->
         <site>
-            <id>apache.website</id>
-            <name>Apache Commons Site</name>
-            <url>${commons.deployment.protocol}://people.apache.org/www/commons.apache.org/digester</url>
+            <id>people.apache.org</id>
+            <name>Commons Digester3</name>
+            <url>${commons.deployment.protocol}://people.apache.org/www/commons.apache.org/sandbox/digester3</url>
         </site>
     </distributionManagement>
+
+    <developers>
+        <developer>
+            <name>Simone Tripodi</name>
+            <id>simonetripodi</id>
+            <email>simonetripodi at apache dot org</email>
+        </developer>
+    </developers>
 
     <properties>
         <maven.compile.source>1.5</maven.compile.source>
         <maven.compile.target>1.5</maven.compile.target>
-        <commons.componentid>digester</commons.componentid>
-        <commons.release.version>3-0</commons.release.version>
-        <commons.release.desc>(minium JDK 1.5)</commons.release.desc>
-        <commons.release.2.version>2.1</commons.release.2.version>
-        <commons.release.2.desc>(minimum JDK 1.5)</commons.release.2.desc>
-        <commons.rc.version>RC1</commons.rc.version>
-        <commons.jira.id>DIGESTER</commons.jira.id>
-        <commons.jira.pid>12310471</commons.jira.pid>
+        <commons.componentid>digester3</commons.componentid>
+        <commons.jira.componentid>12314224</commons.jira.componentid>
     </properties>
 
     <dependencies>
@@ -98,6 +94,14 @@
         <resources>
             <resource>
                 <directory>${basedir}/src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>${basedir}</directory>
+                <targetPath>META-INF</targetPath>
+                <includes>
+                    <include>NOTICE.txt</include>
+                    <include>LICENSE.txt</include>
+                </includes>
             </resource>
         </resources>
     </build>
