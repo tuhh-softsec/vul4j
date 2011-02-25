@@ -40,11 +40,9 @@ import org.apache.directory.shared.ldap.model.schema.PrepareString;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
+@SuppressWarnings("serial")
 public class DeepTrimToLowerNormalizer extends Normalizer
 {
-    /** The serial UID */
-    public static final long serialVersionUID = 1L;
-
     /**
      * Creates a new instance of DeepTrimToLowerNormalizer.
      * 

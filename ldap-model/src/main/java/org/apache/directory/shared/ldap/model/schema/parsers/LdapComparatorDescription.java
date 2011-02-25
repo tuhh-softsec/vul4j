@@ -32,10 +32,6 @@ import org.apache.directory.shared.ldap.model.schema.SchemaObjectType;
  */
 public class LdapComparatorDescription extends LoadableSchemaObject
 {
-    /** The serialVersionUID */
-    private static final long serialVersionUID = 1L;
-
-
     /**
      * A constructor for a LdapComparatorDescription.
      * @param oid The associated OID

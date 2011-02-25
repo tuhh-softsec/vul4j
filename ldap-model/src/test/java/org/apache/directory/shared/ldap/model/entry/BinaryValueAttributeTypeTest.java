@@ -34,8 +34,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
 
-import com.mycila.junit.concurrent.Concurrency;
-import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.schema.AttributeType;
 import org.apache.directory.shared.ldap.model.schema.LdapSyntax;
@@ -48,6 +46,9 @@ import org.apache.directory.shared.util.Strings;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 
 
 /**
@@ -87,8 +88,6 @@ public class BinaryValueAttributeTypeTest
         mr.setLdapComparator( new ByteArrayComparator( "1.1.1" ) );
         mr.setNormalizer( new Normalizer( "1.1.1" )
         {
-            private static final long serialVersionUID = 1L;
-            
             public Value<?> normalize( Value<?> value ) throws LdapException
             {
                 if ( value.isBinary() )

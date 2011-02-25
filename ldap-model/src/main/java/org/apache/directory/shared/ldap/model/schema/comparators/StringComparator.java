@@ -20,6 +20,8 @@
 package org.apache.directory.shared.ldap.model.schema.comparators;
 
 
+import java.io.Serializable;
+
 import org.apache.directory.shared.ldap.model.schema.LdapComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,13 +32,14 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class StringComparator extends LdapComparator<String>
+public class StringComparator extends LdapComparator<String> implements Serializable
 {
+    /** The serial version UID */
+    private static final long serialVersionUID = 2L;
+
+
     /** A logger for this class */
     private static final Logger LOG = LoggerFactory.getLogger( StringComparator.class );
-
-    /** The serialVersionUID */
-    private static final long serialVersionUID = 1L;
 
 
     /**

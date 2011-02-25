@@ -33,10 +33,6 @@ import java.util.Collections;
  */
 public class ItemPermission extends Permission
 {
-
-    /** The serialVersionUID. */
-    private static final long serialVersionUID = 5530483336917026261L;
-
     /** The user classes. */
     private final Collection<UserClass> userClasses;
 

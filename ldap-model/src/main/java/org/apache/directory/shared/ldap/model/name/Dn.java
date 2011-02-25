@@ -110,7 +110,7 @@ public final class Dn implements Iterable<Rdn>
     public static final Dn ROOT_DSE = new Dn();
 
     /** the schema manager */
-    private transient SchemaManager schemaManager;
+    private SchemaManager schemaManager;
 
     /**
      * An iterator over RDNs
@@ -316,7 +316,7 @@ public final class Dn implements Iterable<Rdn>
         if ( schemaManager != null )
         {
             this.schemaManager = schemaManager;
-            normalize( schemaManager.getNormalizerMapping() );
+            normalize( schemaManager );
         }
         else
         {
@@ -390,7 +390,7 @@ public final class Dn implements Iterable<Rdn>
 
         if ( schemaManager != null )
         {
-            normalize( schemaManager.getNormalizerMapping() );
+            normalize( schemaManager );
         }
         else
         {
@@ -427,7 +427,7 @@ public final class Dn implements Iterable<Rdn>
 
         if ( schemaManager != null )
         {
-            normalize( schemaManager.getNormalizerMapping() );
+            normalize( schemaManager );
         }
         else
         {
@@ -466,7 +466,7 @@ public final class Dn implements Iterable<Rdn>
             
             if ( this.schemaManager != null )
             {
-                normalize( schemaManager.getNormalizerMapping() );
+                normalize( schemaManager );
             }
 
             normalizeInternal();
@@ -1310,7 +1310,7 @@ public final class Dn implements Iterable<Rdn>
         {
             if ( schemaManager != null )
             {
-                clonedDn.normalize( schemaManager.getNormalizerMapping() );
+                clonedDn.normalize( schemaManager );
 
                 normalizeInternal();
             }
@@ -1340,13 +1340,13 @@ public final class Dn implements Iterable<Rdn>
         Dn clonedDn = copy();
 
         // We have to parse the nameComponent which is given as an argument
-        Rdn newRdn = new Rdn( comp, schemaManager );
+        Rdn newRdn = new Rdn( schemaManager, comp );
 
         clonedDn.rdns.add( 0, newRdn );
 
         if ( schemaManager != null )
         {
-            clonedDn.normalize( schemaManager.getNormalizerMapping() );
+            clonedDn.normalize( schemaManager );
         }
         else
         {
@@ -1386,7 +1386,7 @@ public final class Dn implements Iterable<Rdn>
             {
                 if ( schemaManager != null )
                 {
-                    clonedDn.normalize( schemaManager.getNormalizerMapping() );
+                    clonedDn.normalize( schemaManager );
                 }
                 else
                 {
@@ -1588,114 +1588,15 @@ public final class Dn implements Iterable<Rdn>
     /** No qualifier */
     static void rdnOidToName( Rdn rdn, Map<String, OidNormalizer> oidsMap ) throws LdapInvalidDnException
     {
-        if ( rdn.getNbAtavs() > 1 )
-        {
-            // We have more than one ATAV for this Rdn. We will loop on all
-            // ATAVs
-            Rdn rdnCopy = rdn.clone();
-            rdn.clear();
+        // We have more than one ATAV for this Rdn. We will loop on all
+        // ATAVs
+        Rdn rdnCopy = rdn.clone();
+        rdn.clear();
 
-            for ( Ava val : rdnCopy )
-            {
-                Ava newAtav = atavOidToName( val, oidsMap );
-                rdn.addAVA( newAtav );
-            }
-        }
-        else
+        for ( Ava val : rdnCopy )
         {
-            Ava val = rdn.getAVA();
-            rdn.clear();
             Ava newAtav = atavOidToName( val, oidsMap );
             rdn.addAVA( newAtav );
-        }
-    }
-
-
-    /**
-     * Change the internal Dn, using the OID instead of the first name or other
-     * aliases. As we still have the UP name of each Rdn, we will be able to
-     * provide both representation of the Dn. example : dn: 2.5.4.3=People,
-     * dc=example, domainComponent=com will be transformed to : 2.5.4.3=People,
-     * 0.9.2342.19200300.100.1.25=example, 0.9.2342.19200300.100.1.25=com
-     * because 2.5.4.3 is the OID for cn and dc is the first
-     * alias of the couple of aliases (dc, domaincomponent), which OID is
-     * 0.9.2342.19200300.100.1.25.
-     * This is really important do have such a representation, as 'cn' and
-     * 'commonname' share the same OID.
-     *
-     * @param dn The Dn to transform.
-     * @param oidsMap The mapping between names and oids.
-     * @return A normalized form of the Dn.
-     * @throws LdapInvalidDnException If something went wrong.
-     */
-    public static Dn normalize( Dn dn, Map<String, OidNormalizer> oidsMap ) throws LdapInvalidDnException
-    {
-        if ( ( dn == null ) || ( dn.size() == 0 ) || ( oidsMap == null ) || ( oidsMap.size() == 0 ) )
-        {
-            return dn;
-        }
-
-        for ( Rdn rdn : dn.rdns )
-        {
-            String upName = rdn.getName();
-            rdnOidToName( rdn, oidsMap );
-            rdn.normalize();
-            rdn.setUpName( upName );
-        }
-
-        dn.normalizeInternal();
-
-        dn.normalized.set( true );
-        return dn;
-    }
-
-
-    /**
-     * Change the internal Dn, using the OID instead of the first name or other
-     * aliases. As we still have the UP name of each Rdn, we will be able to
-     * provide both representation of the Dn. example : dn: 2.5.4.3=People,
-     * dc=example, domainComponent=com will be transformed to : 2.5.4.3=People,
-     * 0.9.2342.19200300.100.1.25=example, 0.9.2342.19200300.100.1.25=com
-     * because 2.5.4.3 is the OID for cn and dc is the first
-     * alias of the couple of aliases (dc, domaincomponent), which OID is
-     * 0.9.2342.19200300.100.1.25.
-     * This is really important do have such a representation, as 'cn' and
-     * 'commonname' share the same OID.
-     *
-     * @param oidsMap The mapping between names and oids.
-     * @throws LdapInvalidDnException If something went wrong.
-     * @return The normalized Dn
-     */
-    private Dn normalize( Map<String, OidNormalizer> oidsMap ) throws LdapInvalidDnException
-    {
-        if ( ( oidsMap == null ) || ( oidsMap.isEmpty() ) )
-        {
-            return this;
-        }
-
-        if ( normalized.get() )
-        {
-            return this;
-        }
-
-        synchronized ( this )
-        {
-            if ( size() == 0 )
-            {
-                normalized.set( true );
-                return this;
-            }
-
-            for ( Rdn rdn : rdns )
-            {
-                rdn.normalize( oidsMap );
-            }
-
-            normalizeInternal();
-
-            normalized.set( true );
-
-            return this;
         }
     }
 
@@ -1718,7 +1619,30 @@ public final class Dn implements Iterable<Rdn>
 
         if ( this.schemaManager != null )
         {
-            return normalize( schemaManager.getNormalizerMapping() );
+            if ( normalized.get() )
+            {
+                return this;
+            }
+
+            synchronized ( this )
+            {
+                if ( size() == 0 )
+                {
+                    normalized.set( true );
+                    return this;
+                }
+
+                for ( Rdn rdn : rdns )
+                {
+                    rdn.normalize( schemaManager );
+                }
+
+                normalizeInternal();
+
+                normalized.set( true );
+
+                return this;
+            }
         }
 
         normalizeInternal();

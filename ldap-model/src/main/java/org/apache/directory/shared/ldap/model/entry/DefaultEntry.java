@@ -70,7 +70,7 @@ public class DefaultEntry implements Entry
     private Map<String, EntryAttribute> attributes = new HashMap<String, EntryAttribute>();
 
     /** A speedup to get the ObjectClass attribute */
-    private static transient AttributeType objectClassAttributeType;
+    private static AttributeType objectClassAttributeType;
 
     /** The SchemaManager */
     private SchemaManager schemaManager;
@@ -79,7 +79,7 @@ public class DefaultEntry implements Entry
     private volatile int h;
 
     /** A mutex to manage synchronization*/
-    private static final transient Object MUTEX = new Object();
+    private static final Object MUTEX = new Object();
 
 
     //-------------------------------------------------------------------------

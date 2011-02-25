@@ -35,11 +35,11 @@ import org.slf4j.LoggerFactory;
  */
 public class TelephoneNumberComparator extends LdapComparator<String>
 {
+    /** The serial version UID */
+    private static final long serialVersionUID = 2L;
+
     /** A logger for this class */
     private static final Logger LOG = LoggerFactory.getLogger( TelephoneNumberComparator.class );
-
-    /** The serialVersionUID */
-    private static final long serialVersionUID = 1L;
 
     /**
      * The TelephoneNumberComparator constructor. Its OID is the TelephoneNumberMatch matching

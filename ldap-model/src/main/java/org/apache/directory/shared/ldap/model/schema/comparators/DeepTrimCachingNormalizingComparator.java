@@ -31,9 +31,9 @@ import org.apache.directory.shared.ldap.model.schema.normalizers.DeepTrimNormali
  */
 public class DeepTrimCachingNormalizingComparator extends NormalizingComparator
 {
-    private static final long serialVersionUID = -3462901701103045845L;
+    /** The serial version UID */
+    private static final long serialVersionUID = 2L;
 
-    
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public DeepTrimCachingNormalizingComparator( String oid )
     {

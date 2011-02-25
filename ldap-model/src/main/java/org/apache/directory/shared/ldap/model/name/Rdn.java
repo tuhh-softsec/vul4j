@@ -28,8 +28,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.collections.MultiMap;
 import org.apache.commons.collections.map.MultiValueMap;
@@ -115,7 +113,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class Rdn implements Cloneable, Externalizable, Iterable<Ava>
+public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
 {
     /** The LoggerFactory used by this class */
     protected static final Logger LOG = LoggerFactory.getLogger( Rdn.class );
@@ -185,10 +183,10 @@ public class Rdn implements Cloneable, Externalizable, Iterable<Ava>
     public static final int EQUAL = 0;
 
     /** A flag used to tell if the Rdn has been normalized */
-    private AtomicBoolean normalized = new AtomicBoolean();
+    private boolean normalized = false;
 
     /** the schema manager */
-    private transient SchemaManager schemaManager;
+    private SchemaManager schemaManager;
 
 
     /**
@@ -206,7 +204,7 @@ public class Rdn implements Cloneable, Externalizable, Iterable<Ava>
      *
      * @param schemaManager the schema manager
      */
-    public Rdn(SchemaManager schemaManager)
+    public Rdn( SchemaManager schemaManager )
     {
         // Don't waste space... This is not so often we have multiple
         // name-components in a Rdn... So we won't initialize the Map and the
@@ -214,18 +212,18 @@ public class Rdn implements Cloneable, Externalizable, Iterable<Ava>
         this.schemaManager = schemaManager;
         upName = "";
         normName = "";
-        normalized.set( false );
+        normalized = false;
     }
 
 
     /**
      * A constructor that parse a String representing a Rdn.
      *
-     * @param rdn the String containing the Rdn to parse
      * @param schemaManager the schema manager
+     * @param rdn the String containing the Rdn to parse
      * @throws LdapInvalidDnException if the Rdn is invalid
      */
-    public Rdn(String rdn, SchemaManager schemaManager) throws LdapInvalidDnException
+    public Rdn( SchemaManager schemaManager, String rdn ) throws LdapInvalidDnException
     {
         if ( Strings.isNotEmpty(rdn) )
         {
@@ -237,13 +235,13 @@ public class Rdn implements Cloneable, Externalizable, Iterable<Ava>
             if ( schemaManager != null )
             {
                 this.schemaManager = schemaManager;
-                normalize( schemaManager.getNormalizerMapping() );
-                normalized.set( true );
+                normalize( schemaManager );
+                normalized = true;
             }
             else
             {
                 normalize();
-                normalized.set( false );
+                normalized = false;
             }
 
             upName = rdn;
@@ -252,7 +250,7 @@ public class Rdn implements Cloneable, Externalizable, Iterable<Ava>
         {
             upName = "";
             normName = "";
-            normalized.set( false );
+            normalized = false;
         }
     }
 
@@ -263,9 +261,9 @@ public class Rdn implements Cloneable, Externalizable, Iterable<Ava>
      * @param rdn the String containing the Rdn to parse
      * @throws LdapInvalidDnException if the Rdn is invalid
      */
-    public Rdn(String rdn) throws LdapInvalidDnException
+    public Rdn( String rdn ) throws LdapInvalidDnException
     {
-        this( rdn, ( SchemaManager ) null );
+        this( ( SchemaManager ) null, rdn );
     }
 
 
@@ -282,7 +280,7 @@ public class Rdn implements Cloneable, Externalizable, Iterable<Ava>
      * @param schemaManager the schema manager
      * @throws LdapInvalidDnException if the Rdn is invalid
      */
-    public Rdn(String upType, String normType, String upValue, String normValue, SchemaManager schemaManager) throws LdapInvalidDnException
+    public Rdn( SchemaManager schemaManager, String upType, String normType, String upValue, String normValue ) throws LdapInvalidDnException
     {
         this.schemaManager = schemaManager;
 
@@ -295,12 +293,12 @@ public class Rdn implements Cloneable, Externalizable, Iterable<Ava>
 
         if( schemaManager != null )
         {
-            normalized.set( true );
+            normalized = true;
         }
         else
         {
             // As strange as it seems, the Rdn is *not* normalized against the schema at this point
-            normalized.set( false );
+            normalized = false;
         }
     }
 
@@ -315,9 +313,9 @@ public class Rdn implements Cloneable, Externalizable, Iterable<Ava>
      * @throws LdapInvalidDnException if the Rdn is invalid
      * @see #Rdn(String, String, String, String, SchemaManager)
      */
-    public Rdn(String upType, String normType, String upValue, String normValue) throws LdapInvalidDnException
+    public Rdn( String upType, String normType, String upValue, String normValue ) throws LdapInvalidDnException
     {
-        this( upType, normType, upValue, normValue, null );
+        this( null, upType, normType, upValue, normValue );
     }
 
 
@@ -332,7 +330,7 @@ public class Rdn implements Cloneable, Externalizable, Iterable<Ava>
      * @param schemaManager the schema manager
      * @throws LdapInvalidDnException if the Rdn is invalid
      */
-    public Rdn(String upType, String upValue, SchemaManager schemaManager) throws LdapInvalidDnException
+    public Rdn( SchemaManager schemaManager, String upType, String upValue ) throws LdapInvalidDnException
     {
         addAVA( upType, upType, new StringValue( upValue ), new StringValue( upValue ) );
 
@@ -341,8 +339,8 @@ public class Rdn implements Cloneable, Externalizable, Iterable<Ava>
         if( schemaManager != null )
         {
             this.schemaManager = schemaManager;
-            normalize( schemaManager.getNormalizerMapping() );
-            normalized.set( true );
+            normalize( schemaManager );
+            normalized = true;
         }
         else
         {
@@ -350,7 +348,7 @@ public class Rdn implements Cloneable, Externalizable, Iterable<Ava>
             normalize();
 
             // As strange as it seems, the Rdn is *not* normalized against the schema at this point
-            normalized.set( false );
+            normalized = false;
         }
     }
 
@@ -363,9 +361,9 @@ public class Rdn implements Cloneable, Externalizable, Iterable<Ava>
      * @throws LdapInvalidDnException if the Rdn is invalid
      * @see #Rdn(String, String, SchemaManager)
      */
-    public Rdn(String upType, String upValue) throws LdapInvalidDnException
+    public Rdn( String upType, String upValue ) throws LdapInvalidDnException
     {
-        this( upType, upValue, null );
+        this( null, upType, upValue );
     }
 
 
@@ -381,7 +379,7 @@ public class Rdn implements Cloneable, Externalizable, Iterable<Ava>
     {
         this.upName = upName;
         this.normName = normName;
-        normalized.set( true );
+        normalized = true;
     }
 
 
@@ -396,7 +394,7 @@ public class Rdn implements Cloneable, Externalizable, Iterable<Ava>
         nbAtavs = rdn.getNbAtavs();
         this.normName = rdn.normName;
         this.upName = rdn.getName();
-        normalized.set(rdn.normalized.get());
+        normalized = rdn.normalized;
 
         switch ( rdn.getNbAtavs() )
         {
@@ -472,7 +470,7 @@ public class Rdn implements Cloneable, Externalizable, Iterable<Ava>
                         sb.append( '+' );
                     }
 
-                    sb.append( ata.normalize() );
+                    sb.append( ata.getNormName() );
                 }
 
                 normName = sb.toString();
@@ -485,32 +483,13 @@ public class Rdn implements Cloneable, Externalizable, Iterable<Ava>
      * Transform a Rdn by changing the value to its OID counterpart and
      * normalizing the value accordingly to its type.
      *
-     * @param sm the SchemaManager
+     * @param schemaManager the SchemaManager
      * @return this Rdn, normalized
      * @throws org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException if the Rdn is invalid
      */
-    public Rdn normalize( SchemaManager sm ) throws LdapInvalidDnException
+    public Rdn normalize( SchemaManager schemaManager ) throws LdapInvalidDnException
     {
-        return normalize( sm.getNormalizerMapping() );
-    }
-
-
-    /**
-     * Transform a Rdn by changing the value to its OID counterpart and
-     * normalizing the value accordingly to its type.
-     *
-     * @param oidsMap the mapping between names and OIDs
-     * @return this Rdn, normalized
-     * @throws LdapInvalidDnException if the Rdn is invalid
-     */
-    public Rdn normalize( Map<String, OidNormalizer> oidsMap ) throws LdapInvalidDnException
-    {
-        if ( ( oidsMap == null ) || ( oidsMap.isEmpty() ) )
-        {
-            return this;
-        }
-
-        if ( normalized.get() )
+        if ( normalized )
         {
             return this;
         }
@@ -518,10 +497,10 @@ public class Rdn implements Cloneable, Externalizable, Iterable<Ava>
         synchronized ( this )
         {
             String savedUpName = getName();
-            Dn.rdnOidToName(this, oidsMap);
+            Dn.rdnOidToName( this, schemaManager.getNormalizerMapping() );
             normalize();
             this.upName = savedUpName;
-            normalized.set( true );
+            normalized = true;
     
             return this;
         }
@@ -664,7 +643,7 @@ public class Rdn implements Cloneable, Externalizable, Iterable<Ava>
         nbAtavs = 0;
         normName = "";
         upName = "";
-        normalized.set( false );
+        normalized = false;
     }
 
 
@@ -817,7 +796,7 @@ public class Rdn implements Cloneable, Externalizable, Iterable<Ava>
         try
         {
             Rdn rdn = (Rdn) super.clone();
-            rdn.normalized = new AtomicBoolean( normalized.get() );
+            rdn.normalized = normalized;
 
             // The AttributeTypeAndValue is immutable. We won't clone it
 
@@ -900,7 +879,7 @@ public class Rdn implements Cloneable, Externalizable, Iterable<Ava>
      *
      * @return The first AttributeTypeAndValue of this Rdn
      */
-    public Ava getAVA()
+    public Ava getAva()
     {
         switch ( nbAtavs )
         {
@@ -1402,7 +1381,7 @@ public class Rdn implements Cloneable, Externalizable, Iterable<Ava>
      */
     public boolean isNormalized()
     {
-        return normalized.get();
+        return normalized;
     }
 
 

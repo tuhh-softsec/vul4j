@@ -50,12 +50,9 @@ import org.apache.directory.shared.util.GeneralizedTime.TimeZoneFormat;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
+@SuppressWarnings("serial")
 public class GeneralizedTimeNormalizer extends Normalizer
 {
-    /** The serial UID */
-    public static final long serialVersionUID = 1L;
-
-
     /**
      * Creates a new instance of GeneralizedTimeNormalizer.
      */

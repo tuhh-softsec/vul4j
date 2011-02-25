@@ -74,7 +74,7 @@ public final class Ava implements Externalizable, Cloneable
     private String normType;
     
     /** The attributeType if the Ava is schemaAware */
-    private transient AttributeType attributeType;
+    private AttributeType attributeType;
 
     /** The user provided Name type */
     private String upType;
@@ -89,7 +89,7 @@ public final class Ava implements Externalizable, Cloneable
     private String upName;
 
     /** the schema manager */
-    private transient SchemaManager schemaManager;
+    private SchemaManager schemaManager;
 
     /**
      * Constructs an empty Ava
@@ -605,6 +605,7 @@ public final class Ava implements Externalizable, Cloneable
         
         return sb.toString();
     }
+    
 
     /**
      * A Normalized String representation of a Ava :
@@ -656,6 +657,7 @@ public final class Ava implements Externalizable, Cloneable
 
         return result;
     }
+    
 
     /**
      * @see Object#equals(Object)

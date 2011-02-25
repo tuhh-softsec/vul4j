@@ -32,11 +32,6 @@ import org.apache.directory.shared.util.Strings;
  */
 public class LdifControl implements Control
 {
-    /** The serial version UID */
-    private static final long serialVersionUID = 1L;
-
-    // ~ Instance fields
-    // ----------------------------------------------------------------------------
     /** The control type */
     private String oid;
 

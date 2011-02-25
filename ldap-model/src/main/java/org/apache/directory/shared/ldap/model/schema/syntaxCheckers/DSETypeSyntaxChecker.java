@@ -44,13 +44,11 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
+@SuppressWarnings("serial")
 public class DSETypeSyntaxChecker extends SyntaxChecker
 {
     /** A logger for this class */
     private static final Logger LOG = LoggerFactory.getLogger( DSETypeSyntaxChecker.class );
-
-    /** The serialVersionUID */
-    private static final long serialVersionUID = 1L;
 
     /** The DSE BITS keywords */
     private static final String[] DSE_BITS_STRINGS = 

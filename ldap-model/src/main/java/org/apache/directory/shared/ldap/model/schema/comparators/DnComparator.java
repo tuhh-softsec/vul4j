@@ -36,8 +36,11 @@ import org.apache.directory.shared.ldap.model.schema.SchemaManager;
 @SuppressWarnings("serial")
 public class DnComparator extends LdapComparator<Object>
 {
+    /** The serial version UID */
+    private static final long serialVersionUID = 2L;
+
     /** A reference to the schema manager */ 
-    private transient SchemaManager schemaManager;
+    private SchemaManager schemaManager;
     
     public DnComparator( String oid )
     {
@@ -83,7 +86,7 @@ public class DnComparator extends LdapComparator<Object>
         {
             dn = (Dn)obj;
             
-            dn = ( dn.isNormalized() ? dn : Dn.normalize(dn, schemaManager.getNormalizerMapping()) );
+            dn = ( dn.isNormalized() ? dn : dn.normalize( schemaManager ) );
         }
         else if ( obj instanceof String )
         {

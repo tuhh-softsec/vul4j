@@ -20,6 +20,7 @@
 package org.apache.directory.shared.ldap.model.schema;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -70,10 +71,10 @@ import org.apache.directory.shared.util.Strings;
  * <b>obsolete</b> : LdapSyntax, Comparator, Normalizer, SyntaxChecker
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public abstract class AbstractSchemaObject implements SchemaObject
+public abstract class AbstractSchemaObject implements SchemaObject, Serializable
 {
-    /** The serialVersionUID */
-    public static final long serialVersionUID = 1L;
+    /** The serial version UID */
+    private static final long serialVersionUID = 2L;
 
     /** The SchemaObject numeric OID */
     protected String oid;

@@ -20,7 +20,6 @@
 package org.apache.directory.shared.ldap.aci;
 
 
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -34,11 +33,8 @@ import org.apache.directory.shared.ldap.model.subtree.SubtreeSpecification;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public abstract class UserClass implements Serializable
+public abstract class UserClass
 {
-    /** The serialVersionUID. */
-    private static final long serialVersionUID = -123919984184219893L;
-
     /**
      * Every directory user (with possible requirements for
      * authenticationLevel).
@@ -71,10 +67,6 @@ public abstract class UserClass implements Serializable
      */
     public static final class AllUsers extends UserClass
     {
-        /** The serialVersionUID. */
-        private static final long serialVersionUID = 8967984720792510292L;
-
-
         private AllUsers()
         {
         }
@@ -97,10 +89,6 @@ public abstract class UserClass implements Serializable
      */
     public static final class ThisEntry extends UserClass
     {
-        /** The serialVersionUID. */
-        private static final long serialVersionUID = -8189325270233754470L;
-
-
         private ThisEntry()
         {
         }
@@ -121,10 +109,6 @@ public abstract class UserClass implements Serializable
      */
     public static final class ParentOfEntry extends UserClass
     {
-        /** The serialVersionUID. */
-        private static final long serialVersionUID = 5247207736068086476L;
-
-
         private ParentOfEntry()
         {
         }
@@ -146,9 +130,6 @@ public abstract class UserClass implements Serializable
      */
     private abstract static class NamedUserClass extends UserClass
     {
-        /** The serialVersionUID. */
-        private static final long serialVersionUID = 8571875984468893621L;
-
         /** The names. */
         protected final Set<Dn> names;
 
@@ -257,10 +238,6 @@ public abstract class UserClass implements Serializable
      */
     public static class Name extends NamedUserClass
     {
-        /** The serialVersionUID. */
-        private static final long serialVersionUID = -4168412030168359882L;
-
-
         /**
          * Creates a new instance.
          * 
@@ -291,10 +268,6 @@ public abstract class UserClass implements Serializable
      */
     public static class UserGroup extends NamedUserClass
     {
-        /** The serialVersionUID. */
-        private static final long serialVersionUID = 8887107815072965807L;
-
-
         /**
          * Creates a new instance.
          * 
@@ -323,9 +296,6 @@ public abstract class UserClass implements Serializable
      */
     public static class Subtree extends UserClass
     {
-        /** The serialVersionUID. */
-        private static final long serialVersionUID = 3949337699049701332L;
-
         /** The subtree specifications. */
         protected final Set<SubtreeSpecification> subtreeSpecifications;
 

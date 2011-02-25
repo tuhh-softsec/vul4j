@@ -20,6 +20,7 @@
 package org.apache.directory.shared.ldap.model.schema.comparators;
 
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import org.apache.directory.shared.i18n.I18n;
@@ -35,9 +36,10 @@ import org.apache.directory.shared.ldap.model.schema.SchemaManager;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class SerializableComparator<E> extends LdapComparator<E>
+public class SerializableComparator<E> extends LdapComparator<E> implements Serializable
 {
-    private static final long serialVersionUID = 3257566226288162870L;
+    /** The serial version UID */
+    private static final long serialVersionUID = 2L;
 
     /** the OID of the matchingRule for this comparator */
     private String matchingRuleOid;

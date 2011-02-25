@@ -50,13 +50,11 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
+@SuppressWarnings("serial")
 public class FacsimileTelephoneNumberSyntaxChecker extends TelephoneNumberSyntaxChecker
 {
     /** A logger for this class */
     private static final Logger LOG = LoggerFactory.getLogger( FacsimileTelephoneNumberSyntaxChecker.class );
-
-    /** The serialVersionUID */
-    private static final long serialVersionUID = 1L;
 
     /** Fax parameters possible values */
     private static final String TWO_DIMENSIONAL  = "twoDimensional";

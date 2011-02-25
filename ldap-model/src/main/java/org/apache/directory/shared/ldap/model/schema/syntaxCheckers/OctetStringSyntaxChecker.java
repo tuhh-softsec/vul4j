@@ -34,11 +34,9 @@ import org.apache.directory.shared.ldap.model.schema.SyntaxChecker;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
+@SuppressWarnings("serial")
 public class OctetStringSyntaxChecker extends SyntaxChecker
 {
-    /** The serialVersionUID */
-    private static final long serialVersionUID = 1L;
-
     /**
      * Creates a new instance of OctetStringSyntaxChecker.
      */

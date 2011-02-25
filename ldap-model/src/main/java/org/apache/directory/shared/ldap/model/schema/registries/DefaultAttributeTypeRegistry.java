@@ -50,7 +50,7 @@ public class DefaultAttributeTypeRegistry extends DefaultSchemaObjectRegistry<At
     private static final Logger LOG = LoggerFactory.getLogger( DefaultAttributeTypeRegistry.class );
 
     /** cached Oid/normalizer mapping */
-    private transient Map<String, OidNormalizer> oidNormalizerMap;
+    private Map<String, OidNormalizer> oidNormalizerMap;
 
     /** maps OIDs to a Set of descendants for that OID */
     private Map<String, Set<AttributeType>> oidToDescendantSet;

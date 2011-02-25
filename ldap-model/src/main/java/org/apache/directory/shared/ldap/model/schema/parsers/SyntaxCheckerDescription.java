@@ -32,10 +32,6 @@ import org.apache.directory.shared.ldap.model.schema.SchemaObjectType;
  */
 public class SyntaxCheckerDescription extends LoadableSchemaObject
 {
-    /** SerialVersionUID */
-    private static final long serialVersionUID = 1L;
-
-
     /**
      * Default constructor for a SyntaxCheckerDecription
      * @param oid The SyntaxChecker OID

@@ -33,16 +33,14 @@ import org.apache.directory.shared.ldap.model.schema.Normalizer;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
+@SuppressWarnings("serial")
 public class RegexNormalizer extends Normalizer
 {
-    /** The serial UID */
-    public static final long serialVersionUID = 1L;
-
     /** the perl 5 regex engine */
-    private final transient Pattern[] regexes;
+    private final Pattern[] regexes;
 
     /** the set of regular expressions used to transform values */
-    private final transient Matcher[] matchers;
+    private final Matcher[] matchers;
 
 
     /**

@@ -31,12 +31,9 @@ package org.apache.directory.shared.ldap.model.schema.normalizers;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
+@SuppressWarnings("serial")
 public class CachingDeepTrimToLowerNormalizer extends CachingNormalizer
 {
-    /** serial version UID */
-    private static final long serialVersionUID = -206263185305284269L;
-
-
     public CachingDeepTrimToLowerNormalizer()
     {
         super( new DeepTrimToLowerNormalizer() );

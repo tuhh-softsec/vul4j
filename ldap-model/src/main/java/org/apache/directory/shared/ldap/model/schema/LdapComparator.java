@@ -20,6 +20,7 @@
 package org.apache.directory.shared.ldap.model.schema;
 
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 
@@ -29,11 +30,10 @@ import java.util.Comparator;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public abstract class LdapComparator<T> extends LoadableSchemaObject implements Comparator<T>
+public abstract class LdapComparator<T> extends LoadableSchemaObject implements Comparator<T>, Serializable
 {
-    /** The serialversionUID */
-    private static final long serialVersionUID = 1L;
-
+    /** The serial version UID */
+    private static final long serialVersionUID = 2L;
 
     /**
      * Create a new instance of a Comparator

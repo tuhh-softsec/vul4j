@@ -38,19 +38,20 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 
-import com.mycila.junit.concurrent.Concurrency;
-import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.schema.AttributeType;
 import org.apache.directory.shared.ldap.model.schema.LdapComparator;
 import org.apache.directory.shared.ldap.model.schema.SyntaxChecker;
 import org.apache.directory.shared.ldap.model.schema.comparators.StringComparator;
-import org.apache.directory.shared.ldap.model.schema.normalizers.NoOpNormalizer;
 import org.apache.directory.shared.ldap.model.schema.normalizers.DeepTrimToLowerNormalizer;
+import org.apache.directory.shared.ldap.model.schema.normalizers.NoOpNormalizer;
 import org.apache.directory.shared.ldap.model.schema.syntaxCheckers.OctetStringSyntaxChecker;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 
 
 /**
@@ -444,8 +445,6 @@ public class StringValueAttributeTypeTest
     @Test public void testConstrainedString()
     {
         s.setSyntaxChecker( new SyntaxChecker( "1.1.1.1" ) {
-            private static final long serialVersionUID = 0L;
-
             public boolean isValidSyntax( Object value )
             {
                 if ( value instanceof String )
@@ -460,8 +459,6 @@ public class StringValueAttributeTypeTest
         mr.setSyntax( s );
         mr.setLdapComparator( new LdapComparator<String>( mr.getOid() )
         {
-            private static final long serialVersionUID = 0L;
-
             public int compare( String o1, String o2 )
             {
                 if ( o1 == null )

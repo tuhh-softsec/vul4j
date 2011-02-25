@@ -36,8 +36,8 @@ import org.apache.directory.shared.util.Strings;
 @SuppressWarnings("PMD.OverrideBothEqualsAndHashcode")
 public abstract class LoadableSchemaObject extends AbstractSchemaObject
 {
-    /** The serialVersionUID */
-    private static final long serialVersionUID = 1L;
+    /** The serial version UID */
+    private static final long serialVersionUID = 2L;
 
     /** The Full Qualified Class Name */
     private String fqcn;

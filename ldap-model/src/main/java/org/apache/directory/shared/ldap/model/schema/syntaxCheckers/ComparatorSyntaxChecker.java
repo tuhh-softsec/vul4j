@@ -26,11 +26,9 @@ import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
+@SuppressWarnings("serial")
 public class ComparatorSyntaxChecker extends Ia5StringSyntaxChecker
 {
-    /** The serialVersionUID */
-    private static final long serialVersionUID = 1L;
-
     /**
      * 
      * Creates a new instance of ComparatorSyntaxChecker.
