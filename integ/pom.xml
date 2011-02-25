@@ -62,7 +62,7 @@
 
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>shared-ldap-extras-codec</artifactId>
+      <artifactId>shared-ldap-extras-codec-api</artifactId>
       <scope>test</scope>
     </dependency>
 

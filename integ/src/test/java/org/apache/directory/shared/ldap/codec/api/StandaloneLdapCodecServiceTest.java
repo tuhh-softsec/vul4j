@@ -25,6 +25,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.apache.directory.shared.ldap.codec.standalone.StandaloneLdapCodecService;
 import org.apache.directory.shared.ldap.extras.controls.PasswordPolicy;
+import org.apache.directory.shared.ldap.extras.extended.StoredProcedureRequest;
+import org.apache.directory.shared.ldap.extras.extended.StoredProcedureRequestImpl;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.junit.Test;
 
@@ -48,8 +50,27 @@ public class StandaloneLdapCodecServiceTest
 
         CodecControl<? extends Control> control = codec.newControl( PasswordPolicy.OID );
         assertNotNull( control );
-        System.out.println( control );
         assertNotNull( codec );
+        codec.shutdown();
+    }
+
+
+    /**
+     * Test an extended operation.
+     */
+    @Test
+    public void testLoadingExtendedOperation()
+    {
+        StandaloneLdapCodecService codec = new StandaloneLdapCodecService();
+        StoredProcedureRequest req = new StoredProcedureRequestImpl();
+        req.setLanguage( "Java" );
+        req.setProcedure( "bogusProc" );
+        
+        assertNotNull( req );
+        assertNotNull( codec );
+        
+        StoredProcedureRequest decorator = ( StoredProcedureRequest ) codec.decorate( req );
+        assertNotNull( decorator );
         codec.shutdown();
     }
 }
