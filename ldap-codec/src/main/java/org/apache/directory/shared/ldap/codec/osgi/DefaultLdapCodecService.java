@@ -578,4 +578,13 @@ public class DefaultLdapCodecService implements LdapCodecService
         
         return resp;
     }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isExtendedOperationRegistered( String oid )
+    {
+        return extReqFactories.containsKey( oid ) || unsolicitedFactories.containsKey( oid );
+    }
 }

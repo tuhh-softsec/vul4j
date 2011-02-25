@@ -149,6 +149,16 @@ public interface LdapCodecService
     ExtendedRequestFactory<?,?> unregisterExtendedRequest( String oid );
     
     
+    /**
+     * Checks to see if an extended operation, either a standard request 
+     * response, pair or just an unsolicited response is registered.
+     *
+     * @param oid The object identifier for the extended operation
+     * @return true if registered, false if not
+     */
+    boolean isExtendedOperationRegistered( String oid );
+    
+    
     // ------------------------------------------------------------------------
     // Extended Response Methods
     // ------------------------------------------------------------------------
