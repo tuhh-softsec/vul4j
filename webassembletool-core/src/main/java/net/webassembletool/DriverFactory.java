@@ -67,12 +67,13 @@ public class DriverFactory {
 			String propertyName = (String) enumeration.nextElement();
 			String prefix;
 			String name;
-			if (propertyName.indexOf('.') < 0) {
+			int idx = propertyName.lastIndexOf('.');
+			if (idx < 0) {
 				prefix = DEFAULT_INSTANCE;
 				name = propertyName;
 			} else {
-				prefix = propertyName.substring(0, propertyName.lastIndexOf('.'));
-				name = propertyName.substring(propertyName.lastIndexOf('.') + 1);
+				prefix = propertyName.substring(0, idx);
+				name = propertyName.substring(idx + 1);
 			}
 			Properties driverProperties = driversProps.get(prefix);
 			if (driverProperties == null) {
@@ -84,9 +85,7 @@ public class DriverFactory {
 		synchronized (INSTANCIES) {
 			INSTANCIES.clear();
 			for (Entry<String, Properties> entry : driversProps.entrySet()) {
-				String name = entry.getKey();
-				Properties driverProperties = entry.getValue();
-				INSTANCIES.put(name, new Driver(name, driverProperties));
+				configure(entry.getKey(), entry.getValue());
 			}
 		}
 	}
