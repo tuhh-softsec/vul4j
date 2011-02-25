@@ -101,10 +101,6 @@
           <manifestLocation>META-INF</manifestLocation>
           <instructions>
             <Bundle-SymbolicName>${project.groupId}.ldap.extras.codec</Bundle-SymbolicName>
-            <Export-Package>
-              org.apache.directory.shared.ldap.extras.controls,
-              org.apache.directory.shared.ldap.extras.extended
-            </Export-Package>
             <Bundle-Activator>
               org.apache.directory.shared.ldap.extras.ExtrasBundleActivator
             </Bundle-Activator>
