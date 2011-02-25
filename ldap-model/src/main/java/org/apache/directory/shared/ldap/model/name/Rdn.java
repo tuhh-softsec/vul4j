@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.collections.MultiMap;
 import org.apache.commons.collections.map.MultiValueMap;
@@ -184,7 +183,7 @@ public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
     public static final int EQUAL = 0;
 
     /** A flag used to tell if the Rdn has been normalized */
-    private AtomicBoolean normalized = new AtomicBoolean();
+    private boolean normalized = false;
 
     /** the schema manager */
     private SchemaManager schemaManager;
@@ -213,7 +212,7 @@ public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
         this.schemaManager = schemaManager;
         upName = "";
         normName = "";
-        normalized.set( false );
+        normalized = false;
     }
 
 
@@ -237,12 +236,12 @@ public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
             {
                 this.schemaManager = schemaManager;
                 normalize( schemaManager );
-                normalized.set( true );
+                normalized = true;
             }
             else
             {
                 normalize();
-                normalized.set( false );
+                normalized = false;
             }
 
             upName = rdn;
@@ -251,7 +250,7 @@ public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
         {
             upName = "";
             normName = "";
-            normalized.set( false );
+            normalized = false;
         }
     }
 
@@ -294,12 +293,12 @@ public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
 
         if( schemaManager != null )
         {
-            normalized.set( true );
+            normalized = true;
         }
         else
         {
             // As strange as it seems, the Rdn is *not* normalized against the schema at this point
-            normalized.set( false );
+            normalized = false;
         }
     }
 
@@ -341,7 +340,7 @@ public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
         {
             this.schemaManager = schemaManager;
             normalize( schemaManager );
-            normalized.set( true );
+            normalized = true;
         }
         else
         {
@@ -349,7 +348,7 @@ public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
             normalize();
 
             // As strange as it seems, the Rdn is *not* normalized against the schema at this point
-            normalized.set( false );
+            normalized = false;
         }
     }
 
@@ -380,7 +379,7 @@ public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
     {
         this.upName = upName;
         this.normName = normName;
-        normalized.set( true );
+        normalized = true;
     }
 
 
@@ -395,7 +394,7 @@ public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
         nbAtavs = rdn.getNbAtavs();
         this.normName = rdn.normName;
         this.upName = rdn.getName();
-        normalized.set(rdn.normalized.get());
+        normalized = rdn.normalized;
 
         switch ( rdn.getNbAtavs() )
         {
@@ -490,7 +489,7 @@ public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
      */
     public Rdn normalize( SchemaManager schemaManager ) throws LdapInvalidDnException
     {
-        if ( normalized.get() )
+        if ( normalized )
         {
             return this;
         }
@@ -501,7 +500,7 @@ public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
             Dn.rdnOidToName( this, schemaManager.getNormalizerMapping() );
             normalize();
             this.upName = savedUpName;
-            normalized.set( true );
+            normalized = true;
     
             return this;
         }
@@ -644,7 +643,7 @@ public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
         nbAtavs = 0;
         normName = "";
         upName = "";
-        normalized.set( false );
+        normalized = false;
     }
 
 
@@ -797,7 +796,7 @@ public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
         try
         {
             Rdn rdn = (Rdn) super.clone();
-            rdn.normalized = new AtomicBoolean( normalized.get() );
+            rdn.normalized = normalized;
 
             // The AttributeTypeAndValue is immutable. We won't clone it
 
@@ -1382,7 +1381,7 @@ public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
      */
     public boolean isNormalized()
     {
-        return normalized.get();
+        return normalized;
     }
 
 
