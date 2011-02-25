@@ -62,11 +62,7 @@ implementation, which offers:</p>
 <section name="Documentation">
 
 <p>User documentation is available in the website, you can start reading the
-<a href="http://commons.apache.org/sandbox/digester/guide/core.html">Core APIs</a>.</p>
-
-<p>The <a href="http://commons.apache.org/sandbox/digester/RELEASE-NOTES.txt">
-Release Notes</a> document the new features and bug fixes that have been
-included in this release.</p>
+<a href="http://commons.apache.org/sandbox/digester3/guide/core.html">Core APIs</a>.</p>
 
 <p>The "examples" directory in the source code repository contains code which 
 demonstrates the basic functionality. In particular, you should read the 
