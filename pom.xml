@@ -427,6 +427,12 @@
 
       <dependency>
         <groupId>${project.groupId}</groupId>
+        <artifactId>shared-ldap-extras-codec-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>${project.groupId}</groupId>
         <artifactId>shared-ldap-extras-aci</artifactId>
         <version>${project.version}</version>
       </dependency>
