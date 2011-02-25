@@ -21,6 +21,7 @@ package org.apache.directory.shared.ldap.codec.standalone;
 
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,6 +29,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.jar.Attributes;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 
 import javax.naming.NamingException;
 
@@ -112,7 +116,9 @@ public class StandaloneLdapCodecService implements LdapCodecService
         "org.apache.directory.shared.ldap.model.message; version=1.0.0",
         "org.apache.directory.shared.ldap.model.message.controls; version=1.0.0",
         "org.apache.directory.shared.ldap.codec.controls; version=1.0.0",
-        "org.apache.directory.shared.ldap.codec.api; version=1.0.0"
+        "org.apache.directory.shared.ldap.codec.api; version=1.0.0",
+        "org.apache.directory.shared.ldap.extras.controls",
+        "org.apache.directory.shared.ldap.extras.extended"
     };
  
     /** System property checked if the pluginProperty is null */
@@ -393,9 +399,34 @@ public class StandaloneLdapCodecService implements LdapCodecService
         }
         while( ii < SYSTEM_PACKAGES.length );
         
-        LOG.info( "System packages shared by host: " + SYSTEM_PACKAGES );
-        
         return sb.toString();
+    }
+    
+    
+    private String getExportPackage( File bundle )
+    {   
+        JarFile jar;
+        try
+        {
+            jar = new JarFile( bundle );
+            Manifest manifest = jar.getManifest();
+            
+            Attributes attrs = manifest.getMainAttributes();
+            for ( Object key : attrs.keySet() )
+            {
+                if ( key.toString().equals( "Export-Package" ) )
+                {
+                    return attrs.get( key ).toString();
+                }
+            }
+            
+            return null;
+        }
+        catch ( IOException e )
+        {
+            LOG.error( "Failed to open jar file or manifest.", e );
+            throw new RuntimeException( "Failed to open jar file or manifest.", e );
+        }
     }
     
     
@@ -974,5 +1005,14 @@ public class StandaloneLdapCodecService implements LdapCodecService
         }
         
         return resp;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isExtendedOperationRegistered( String oid )
+    {
+        return extReqFactories.containsKey( oid ) || unsolicitedFactories.containsKey( oid );
     }
 }
