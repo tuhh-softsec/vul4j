@@ -50,7 +50,7 @@
     
     <dependency>
       <groupId>org.apache.directory.shared</groupId>
-      <artifactId>shared-ldap-codec-api</artifactId>
+      <artifactId>shared-ldap-extras-codec-api</artifactId>
     </dependency>
     
     <dependency>
