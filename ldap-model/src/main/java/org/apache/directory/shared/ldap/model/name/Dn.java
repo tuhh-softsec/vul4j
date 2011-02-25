@@ -22,10 +22,10 @@ package org.apache.directory.shared.ldap.model.name;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.collections.list.UnmodifiableList;
 import org.apache.directory.shared.i18n.I18n;
@@ -80,7 +80,7 @@ public final class Dn implements Iterable<Rdn>
     public static final int EQUAL = 0;
 
     /** A flag used to tell if the Dn has been normalized */
-    private AtomicBoolean normalized;
+    private boolean normalized;
 
     /**
      *  The RDNs that are elements of the Dn
@@ -174,41 +174,7 @@ public final class Dn implements Iterable<Rdn>
         this.schemaManager = schemaManager;
         upName = "";
         normName = "";
-        normalized = new AtomicBoolean( true );
-    }
-
-
-    /**
-     * Creates a new Schema aware DN from the given String
-     *
-     * @param schemaManager the schema manager (optional)
-     * @param upName The String that contains the Dn
-     * @throws LdapInvalidNameException if the String does not contain a valid Dn.
-     *
-    public Dn( SchemaManager schemaManager, String upName ) throws LdapInvalidDnException
-    {
-        if ( upName != null )
-        {
-            DnParser.parseInternal( upName, rdns );
-        }
-
-        normalized = new AtomicBoolean();
-
-        if ( schemaManager != null )
-        {
-            this.schemaManager = schemaManager;
-            normalize( schemaManager.getNormalizerMapping() );
-        }
-        else
-        {
-            normalized.set( false );
-
-            // Stores the representations of a Dn : internal (as a string and as a
-            // byte[]) and external.
-            normalizeInternal();
-        }
-
-        this.upName = upName;
+        normalized = true;
     }
 
 
@@ -306,8 +272,6 @@ public final class Dn implements Iterable<Rdn>
             throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, I18n.err( I18n.ERR_04202 ) );
         }
 
-        normalized = new AtomicBoolean();
-
         // Stores the representations of a Dn : internal (as a string and as a
         // byte[]) and external.
         upName = sb.toString();
@@ -320,7 +284,7 @@ public final class Dn implements Iterable<Rdn>
         }
         else
         {
-            normalized.set( false );
+            normalized = false;
             normalizeInternal();
         }
     }
@@ -334,12 +298,14 @@ public final class Dn implements Iterable<Rdn>
      * @param normName the normalized name
      * @param bytes the name as a byte[]
      */
-    Dn(String upName, String normName, byte[] bytes)
+    Dn( SchemaManager schemaManager, String upName, String normName, Rdn... rdns )
     {
-        normalized = new AtomicBoolean( true );
+        this.schemaManager = schemaManager;
+        normalized = schemaManager != null;
         this.upName = upName;
         this.normName = normName;
-        this.bytes = bytes;
+        bytes = Strings.getBytesUtf8( upName );
+        this.rdns = Arrays.asList( rdns );
     }
 
 
@@ -362,7 +328,7 @@ public final class Dn implements Iterable<Rdn>
 
         normalizeInternal();
         toUpName();
-        normalized = new AtomicBoolean( false );
+        normalized = false;
     }
 
 
@@ -385,7 +351,6 @@ public final class Dn implements Iterable<Rdn>
         
         rdns.add( rdn );
         
-        normalized = new AtomicBoolean();
         schemaManager = dn.schemaManager;
 
         if ( schemaManager != null )
@@ -394,7 +359,7 @@ public final class Dn implements Iterable<Rdn>
         }
         else
         {
-            normalized.set( false );
+            normalized = false;
 
             // Stores the representations of a Dn : internal (as a string and as a
             // byte[]) and external.
@@ -422,7 +387,6 @@ public final class Dn implements Iterable<Rdn>
             rdns.add( rdnParent );
         }
         
-        normalized = new AtomicBoolean();
         this.schemaManager = schemaManager;
 
         if ( schemaManager != null )
@@ -431,7 +395,7 @@ public final class Dn implements Iterable<Rdn>
         }
         else
         {
-            normalized.set( false );
+            normalized = false;
 
             // Stores the representations of a Dn : internal (as a string and as a
             // byte[]) and external.
@@ -462,7 +426,7 @@ public final class Dn implements Iterable<Rdn>
 
         try
         {
-            normalized = new AtomicBoolean( false );
+            normalized = false;
             
             if ( this.schemaManager != null )
             {
@@ -510,7 +474,7 @@ public final class Dn implements Iterable<Rdn>
         }
 
         newDn.normalizeInternal();
-        newDn.normalized.set( true );
+        newDn.normalized = true;
 
         return newDn;
     }
@@ -1096,7 +1060,7 @@ public final class Dn implements Iterable<Rdn>
 
         newDn.toUpName();
         newDn.toNormName();
-        newDn.normalized.set( normalized.get() );
+        newDn.normalized = normalized;
 
         return newDn;
     }
@@ -1178,7 +1142,7 @@ public final class Dn implements Iterable<Rdn>
 
         newDn.toUpName();
         newDn.toNormName();
-        newDn.normalized.set( normalized.get() );
+        newDn.normalized = normalized;
 
         return newDn;
     }
@@ -1317,7 +1281,7 @@ public final class Dn implements Iterable<Rdn>
             else
             {
                 clonedDn.normalizeInternal();
-                clonedDn.normalized.set( false );
+                clonedDn.normalized = false;
             }
 
             clonedDn.toUpName();
@@ -1351,7 +1315,7 @@ public final class Dn implements Iterable<Rdn>
         else
         {
             clonedDn.normalizeInternal();
-            clonedDn.normalized.set( false );
+            clonedDn.normalized = false;
         }
 
         clonedDn.toUpName();
@@ -1372,7 +1336,7 @@ public final class Dn implements Iterable<Rdn>
         Dn clonedDn = copy();
 
         clonedDn.rdns.add( 0, newRdn.clone() );
-        clonedDn.normalized.getAndSet( false );
+        clonedDn.normalized = false;
 
         // FIXME this try-catch block shouldn't be here
         // instead this method should throw the LdapInvalidDnException
@@ -1391,7 +1355,7 @@ public final class Dn implements Iterable<Rdn>
                 else
                 {
                     clonedDn.normalizeInternal();
-                    clonedDn.normalized.set( false );
+                    clonedDn.normalized = false;
                 }
             }
         }
@@ -1461,7 +1425,7 @@ public final class Dn implements Iterable<Rdn>
 
         newDn.normName = newDn.toNormName();
         newDn.upName = getUpNamePrefix( posn );
-        newDn.normalized.set( normalized.get() );
+        newDn.normalized = normalized;
 
         return newDn;
     }
@@ -1474,7 +1438,7 @@ public final class Dn implements Iterable<Rdn>
     private Dn copy()
     {
         Dn dn = new Dn( schemaManager );
-        dn.normalized = new AtomicBoolean( normalized.get() );
+        dn.normalized = normalized;
         dn.rdns = new ArrayList<Rdn>();
 
         for ( Rdn rdn : rdns )
@@ -1596,7 +1560,7 @@ public final class Dn implements Iterable<Rdn>
         for ( Ava val : rdnCopy )
         {
             Ava newAtav = atavOidToName( val, oidsMap );
-            rdn.addAVA( newAtav );
+            rdn.addAVA( null, newAtav );
         }
     }
 
@@ -1619,7 +1583,7 @@ public final class Dn implements Iterable<Rdn>
 
         if ( this.schemaManager != null )
         {
-            if ( normalized.get() )
+            if ( normalized )
             {
                 return this;
             }
@@ -1628,7 +1592,7 @@ public final class Dn implements Iterable<Rdn>
             {
                 if ( size() == 0 )
                 {
-                    normalized.set( true );
+                    normalized = true;
                     return this;
                 }
 
@@ -1639,7 +1603,7 @@ public final class Dn implements Iterable<Rdn>
 
                 normalizeInternal();
 
-                normalized.set( true );
+                normalized = true;
 
                 return this;
             }
@@ -1671,7 +1635,7 @@ public final class Dn implements Iterable<Rdn>
      */
     public boolean isNormalized()
     {
-        return normalized.get();
+        return normalized;
     }
 
 

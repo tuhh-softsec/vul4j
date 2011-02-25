@@ -27,6 +27,7 @@ import org.apache.directory.shared.ldap.model.entry.BinaryValue;
 import org.apache.directory.shared.ldap.model.entry.StringValue;
 import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
+import org.apache.directory.shared.ldap.model.schema.SchemaManager;
 import org.apache.directory.shared.util.Strings;
 import org.apache.directory.shared.util.Unicode;
 import org.slf4j.Logger;
@@ -147,7 +148,8 @@ public final class AvaSerializer
      * @throws IOException If the input stream can't be read
      * @return The constructed AttributeTypeAndValue
      */
-    public static Ava deserialize( ObjectInput in ) throws IOException
+    public static Ava deserialize( SchemaManager schemaManager, ObjectInput in ) 
+        throws IOException, LdapInvalidDnException
     {
         String upName = Unicode.readUTF(in);
         String upType = Unicode.readUTF(in);
@@ -163,7 +165,7 @@ public final class AvaSerializer
                 Value<String> normValue = new StringValue( Unicode.readUTF(in) );
                 
                 Ava atav =
-                    new Ava( upType, normType, upValue, normValue, upName );
+                    new Ava( schemaManager, upType, normType, upValue, normValue );
                 
                 return atav;
             }

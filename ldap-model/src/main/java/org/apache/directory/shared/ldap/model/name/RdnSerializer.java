@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
+import org.apache.directory.shared.ldap.model.schema.SchemaManager;
 import org.apache.directory.shared.util.Strings;
 import org.apache.directory.shared.util.Unicode;
 import org.slf4j.Logger;
@@ -54,17 +56,15 @@ public final class RdnSerializer
      * We should write all those ATAVs sequencially, following the 
      * structure :
      * 
-     * <li>nbAtavs</li> The number of ATAVs to write. Can't be 0.
-     * <li>upName</li> The User provided Rdn
-     * <li>normName</li> The normalized Rdn. It can be empty if the normalized
-     * name equals the upName.
+     * <li>nbAtavs : The number of ATAVs to write. Can't be 0.</li>
+     * <li>upName< : The User provided Rdn</li>
+     * <li>normName : The normalized Rdn. It can be empty if the normalized
+     * name equals the upName.</li>
      * <li>atavs</li>
      * <p>
      * For each ATAV :<p>
-     * <li>start</li> The position of this ATAV in the upName string
-     * <li>length</li> The ATAV user provided length
-     * <li>Call the ATAV write method</li> The ATAV itself
-     *  
+     * <li>Call the ATAV write method :The ATAV itself</li>
+     * <br/>
      * @param rdn The Rdn to serialize
      * @param out the stream in which the Rdn will be serialized
      * @throws IOException If we can't write in this stream
@@ -94,15 +94,17 @@ public final class RdnSerializer
     /**
      * Deserialize a Rdn instance
      * 
-     * We read back the data to create a new RDB. The structure 
+     * We read back the data to create a new Rdn. The structure 
      * read is exposed in the {@link Rdn#writeExternal(ObjectOutput)}
      * method<p>
      * 
+     * @param schemaManager The SchemaManager (can be null)
      * @param in The input stream from which the Rdn is read
      * @return a deserialized Rdn
      * @throws IOException If the stream can't be read
      */
-    public static Rdn deserialize( ObjectInput in ) throws IOException
+    public static Rdn deserialize( SchemaManager schemaManager, ObjectInput in )
+        throws IOException, LdapInvalidDnException
     {
         // Read the ATAV number
         int nbAtavs = in.readInt();
@@ -118,30 +120,33 @@ public final class RdnSerializer
             normName = upName;
         }
         
-        // Now creates the Rdn
-        Rdn rdn = new Rdn( 0, 0, upName, normName );
+        Rdn rdn = null;
 
         // Read through the Atavs
         switch ( nbAtavs )
         {
             case 0 :
-                return rdn;
+                rdn = new Rdn( schemaManager, upName, normName, (Ava[])null );
+                break;
                 
             case 1 :
-                Ava atav = AvaSerializer.deserialize(in);
+                Ava ava = AvaSerializer.deserialize( schemaManager, in );
                 
-                rdn.addAVA( atav );
-
-                return rdn;
+                rdn = new Rdn( schemaManager, upName, normName, ava );
+                break;
                 
             default :
+                Ava[] avas = new Ava[nbAtavs];
+                
                 for ( int i = 0; i < nbAtavs; i++  )
                 {
-                    atav = AvaSerializer.deserialize(in);
-                    rdn.addAVA( atav );
+                    ava = AvaSerializer.deserialize( schemaManager, in );
+                    avas[i] = ava;
                 }
-            
-                return rdn;
+
+                rdn = new Rdn( schemaManager, upName, normName, avas );
         }
+
+        return rdn;
     }
 }

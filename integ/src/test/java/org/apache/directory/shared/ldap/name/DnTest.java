@@ -2506,7 +2506,7 @@ public class DnTest
         Dn dn = new Dn( "ou= Some   People   + dc=  And   Some anImAls,dc = eXample,dc= cOm" );
         dn.normalize( schemaManager );
 
-        assertEquals( dn, DnSerializer.deserialize( DnSerializer.serialize( dn ) ) );
+        assertEquals( dn, DnSerializer.deserialize( schemaManager, DnSerializer.serialize( dn ) ) );
     }
 
 
@@ -2515,7 +2515,7 @@ public class DnTest
     {
         Dn dn = Dn.EMPTY_DN;
 
-        assertEquals( dn, DnSerializer.deserialize( DnSerializer.serialize( dn ) ) );
+        assertEquals( dn, DnSerializer.deserialize( schemaManager, DnSerializer.serialize( dn ) ) );
     }
 
 
@@ -2534,7 +2534,7 @@ public class DnTest
 
         ObjectInputStream in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        assertEquals( dn, DnSerializer.deserialize( in ) );
+        assertEquals( dn, DnSerializer.deserialize( schemaManager, in ) );
     }
 
 
@@ -2601,8 +2601,8 @@ public class DnTest
         byte[] data = baos.toByteArray();
         ObjectInputStream in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        assertEquals( dn, DnSerializer.deserialize(in) );
-        assertEquals( dn, DnSerializer.deserialize( DnSerializer.serialize( dn ) ) );
+        assertEquals( dn, DnSerializer.deserialize( schemaManager, in ) );
+        assertEquals( dn, DnSerializer.deserialize( schemaManager, DnSerializer.serialize( dn ) ) );
     }
 
 

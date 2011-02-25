@@ -34,6 +34,8 @@ import java.io.ObjectOutputStream;
 import java.util.Iterator;
 
 import org.apache.directory.shared.ldap.model.exception.LdapException;
+import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
+import org.apache.directory.shared.ldap.model.schema.SchemaManager;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,8 +53,9 @@ import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 @Concurrency()
 public class RdnTest
 {
-    // ~ Methods
-    // ------------------------------------------------------------------------------------
+    /** A null schemaManager used in tests */
+    SchemaManager schemaManager = null;
+    
     /**
      * Test a null Rdn
      */
@@ -1149,14 +1152,14 @@ public class RdnTest
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        Rdn rdn2 = RdnSerializer.deserialize( in );
+        Rdn rdn2 = RdnSerializer.deserialize( schemaManager, in );
 
         assertEquals( rdn, rdn2 );
     }
 
 
     @Test
-    public void testNullRdnStaticSerialization() throws IOException, ClassNotFoundException
+    public void testNullRdnStaticSerialization() throws IOException, ClassNotFoundException, LdapInvalidDnException
     {
         Rdn rdn = new Rdn();
 
@@ -1173,7 +1176,7 @@ public class RdnTest
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        Rdn rdn2 = RdnSerializer.deserialize( in );
+        Rdn rdn2 = RdnSerializer.deserialize( schemaManager, in );
 
         assertEquals( rdn, rdn2 );
     }
@@ -1199,7 +1202,7 @@ public class RdnTest
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        Rdn rdn2 = RdnSerializer.deserialize( in );
+        Rdn rdn2 = RdnSerializer.deserialize( schemaManager, in );
 
         assertEquals( rdn, rdn2 );
     }
@@ -1225,7 +1228,7 @@ public class RdnTest
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        Rdn rdn2 = RdnSerializer.deserialize( in );
+        Rdn rdn2 = RdnSerializer.deserialize( schemaManager, in );
 
         assertEquals( rdn, rdn2 );
     }
@@ -1251,7 +1254,7 @@ public class RdnTest
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        Rdn rdn2 = RdnSerializer.deserialize( in );
+        Rdn rdn2 = RdnSerializer.deserialize( schemaManager, in );
 
         assertEquals( rdn, rdn2 );
     }
@@ -1277,7 +1280,7 @@ public class RdnTest
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        Rdn rdn2 = RdnSerializer.deserialize( in );
+        Rdn rdn2 = RdnSerializer.deserialize( schemaManager, in );
 
         assertEquals( rdn, rdn2 );
     }
@@ -1304,7 +1307,7 @@ public class RdnTest
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        Rdn rdn2 = RdnSerializer.deserialize( in );
+        Rdn rdn2 = RdnSerializer.deserialize( schemaManager, in );
 
         assertEquals( rdn, rdn2 );
     }
@@ -1331,7 +1334,7 @@ public class RdnTest
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        Rdn rdn2 = RdnSerializer.deserialize( in );
+        Rdn rdn2 = RdnSerializer.deserialize( schemaManager, in );
 
         assertEquals( rdn, rdn2 );
     }

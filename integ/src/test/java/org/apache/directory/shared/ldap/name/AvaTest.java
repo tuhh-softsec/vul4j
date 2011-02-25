@@ -327,7 +327,7 @@ public class AvaTest
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        Ava atav2 = AvaSerializer.deserialize(in);
+        Ava atav2 = AvaSerializer.deserialize( schemaManager, in );
 
         assertEquals( atav, atav2 );
     }
@@ -351,7 +351,7 @@ public class AvaTest
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        Ava atav2 = AvaSerializer.deserialize(in);
+        Ava atav2 = AvaSerializer.deserialize(schemaManager, in );
 
         assertEquals( atav, atav2 );
     }
@@ -409,7 +409,7 @@ public class AvaTest
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        Ava atav2 = AvaSerializer.deserialize(in);
+        Ava atav2 = AvaSerializer.deserialize(schemaManager, in );
 
         assertEquals( atav, atav2 );
     }

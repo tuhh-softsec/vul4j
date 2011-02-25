@@ -249,9 +249,9 @@ public final class Ava implements Externalizable, Cloneable
      * @param upValue The User Provided value
      * @param normValue The normalized value
      */
-    /* No qualifier */ Ava( String upType, String normType, String upValue, String normValue ) throws LdapInvalidDnException
+    /* No qualifier */ Ava( SchemaManager schemaManager, String upType, String normType, String upValue, String normValue ) throws LdapInvalidDnException
     {
-        this( upType, normType, new StringValue( upValue ), new StringValue( normValue ) );
+        this( schemaManager, upType, normType, new StringValue( upValue ), new StringValue( normValue ) );
     }
 
     
@@ -268,9 +268,9 @@ public final class Ava implements Externalizable, Cloneable
      * @param upValue The User Provided value
      * @param normValue The normalized value
      */
-    /* No qualifier */ Ava( String upType, String normType, byte[] upValue, byte[] normValue ) throws LdapInvalidDnException
+    /* No qualifier */ Ava( SchemaManager schemaManager, String upType, String normType, byte[] upValue, byte[] normValue ) throws LdapInvalidDnException
     {
-        this( upType, normType, new BinaryValue( upValue ), new BinaryValue( normValue ) );
+        this( schemaManager, upType, normType, new BinaryValue( upValue ), new BinaryValue( normValue ) );
     }
     
     
@@ -340,43 +340,19 @@ public final class Ava implements Externalizable, Cloneable
      * @param upValue The User Provided value
      * @param normValue The normalized value
      */
-    /* No qualifier */ Ava(String upType, String normType, Value<?> upValue, Value<?> normValue) throws LdapInvalidDnException
+    /* No qualifier */ Ava( SchemaManager schemaManager, String upType, String normType, Value<?> upValue, Value<?> normValue ) throws LdapInvalidDnException
     {
-        String upTypeTrimmed = Strings.trim(upType);
-        String normTypeTrimmed = Strings.trim(normType);
-        
-        if ( Strings.isEmpty(upTypeTrimmed) )
-        {
-            if ( Strings.isEmpty(normTypeTrimmed) )
-            {
-                String message =  I18n.err( I18n.ERR_04188 );
-                LOG.error( message );
-                throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, message );
-            }
-            else
-            {
-                // In this case, we will use the normType instead
-                this.normType = Strings.lowerCaseAscii(normTypeTrimmed);
-                this.upType = normType;
-            }
-        }
-        else if ( Strings.isEmpty(normTypeTrimmed) )
-        {
-            // In this case, we will use the upType instead
-            this.normType = Strings.lowerCaseAscii(upTypeTrimmed);
-            this.upType = upType;
-        }
-        else
-        {
-            this.normType = Strings.lowerCaseAscii(normTypeTrimmed);
-            this.upType = upType;
-            
-        }
-            
-        this.normValue = normValue;
+        this.upType = upType;
+        this.normType = normType;
         this.upValue = upValue;
-        
+        this.normValue = normValue;
         upName = this.upType + '=' + ( this.upValue == null ? "" : this.upValue.getString() );
+        this.schemaManager = schemaManager;
+        
+        if ( schemaManager != null )
+        {
+            attributeType = schemaManager.getAttributeType( normType );
+        }
     }
 
 
@@ -705,7 +681,7 @@ public final class Ava implements Externalizable, Cloneable
                 
                 if ( equalityMatchingRule != null )
                 {
-                    return equalityMatchingRule.getLdapComparator().compare( normValue, instance.normValue ) == 0;
+                    return equalityMatchingRule.getLdapComparator().compare( normValue.get(), instance.normValue.get() ) == 0;
                 }
                 
                 return false;
