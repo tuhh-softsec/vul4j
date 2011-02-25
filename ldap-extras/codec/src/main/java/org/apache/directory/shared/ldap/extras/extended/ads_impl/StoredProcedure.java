@@ -31,6 +31,7 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.extras.extended.StoredProcedureParameter;
 import org.apache.directory.shared.ldap.extras.extended.StoredProcedureRequestImpl;
 import org.apache.directory.shared.util.Strings;
 
@@ -89,83 +90,6 @@ public class StoredProcedure extends AbstractAsn1Object
     
 
     /**
-     * Bean for representing a Stored Procedure Parameter
-     */
-    public static class StoredProcedureParameter
-    {
-        byte[] type;
-
-        byte[] value;
-
-
-        public String getTypeString()
-        {
-            return Strings.utf8ToString( type );
-        }
-        
-        
-        public String getValueString()
-        {
-            return Strings.utf8ToString( value );
-        }
-        
-        
-        public byte[] getType()
-        {
-            if ( type == null )
-            {
-                return null;
-            }
-
-            final byte[] copy = new byte[ type.length ];
-            System.arraycopy( type, 0, copy, 0, type.length );
-            return copy;
-        }
-
-
-        public void setType( byte[] type )
-        {
-            if ( type != null )
-            {
-                this.type = new byte[ type.length ];
-                System.arraycopy( type, 0, this.type, 0, type.length );
-            } 
-            else 
-            {
-                this.type = null;
-            }
-        }
-
-
-        public byte[] getValue()
-        {
-            if ( value == null )
-            {
-                return null;
-            }
-
-            final byte[] copy = new byte[ value.length ];
-            System.arraycopy( value, 0, copy, 0, value.length );
-            return copy;
-        }
-
-
-        public void setValue( byte[] value )
-        {
-            if ( value != null )
-            {
-                this.value = new byte[ value.length ];
-                System.arraycopy( value, 0, this.value, 0, value.length );
-            } 
-            else 
-            {
-                this.value = null;
-            }
-        }
-    }
-
-    
-    /**
      * Compute the StoredProcedure length 
      * 
      * 0x30 L1 
@@ -218,8 +142,8 @@ public class StoredProcedure extends AbstractAsn1Object
                 int localParamTypeLength = 0;
                 int localParamValueLength = 0;
                 
-                localParamTypeLength = 1 + TLV.getNbBytes( spParam.type.length ) + spParam.type.length;
-                localParamValueLength = 1 + TLV.getNbBytes( spParam.value.length ) + spParam.value.length;
+                localParamTypeLength = 1 + TLV.getNbBytes( spParam.getType().length ) + spParam.getType().length;
+                localParamValueLength = 1 + TLV.getNbBytes( spParam.getValue().length ) + spParam.getValue().length;
                 
                 localParameterLength = localParamTypeLength + localParamValueLength;
                 
@@ -276,10 +200,10 @@ public class StoredProcedure extends AbstractAsn1Object
                     bb.put( TLV.getBytes( localParameterLength ) );
 
                     // The parameter type
-                    Value.encode( bb, spParam.type );
+                    Value.encode( bb, spParam.getType() );
 
                     // The parameter value
-                    Value.encode( bb, spParam.value );
+                    Value.encode( bb, spParam.getValue() );
 
                     // Go to the next parameter;
                     parameterNumber++;
@@ -322,9 +246,9 @@ public class StoredProcedure extends AbstractAsn1Object
             for ( StoredProcedureParameter spParam : request.getParameters() )
             {
                 sb.append( "            type[" ).append( i ) .append( "] : '" ).
-                    append( Strings.utf8ToString(spParam.type) ).append( "'\n" );
+                    append( Strings.utf8ToString(spParam.getType()) ).append( "'\n" );
                 sb.append( "            value[" ).append( i ) .append( "] : '" ).
-                    append( Strings.dumpBytes(spParam.value) ).append( "'\n" );
+                    append( Strings.dumpBytes(spParam.getValue()) ).append( "'\n" );
             }
         }
 
