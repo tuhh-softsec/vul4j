@@ -23,7 +23,6 @@ import java.util.Map.Entry;
 import java.util.zip.GZIPInputStream;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import net.webassembletool.Driver;
 import net.webassembletool.ResourceContext;
@@ -97,18 +96,17 @@ public class HttpResource extends Resource {
 			filter.preRequest(httpClientRequest, resourceContext);
 		}
 		httpClientResponse = httpClientRequest.execute(httpClient, httpContext);
-		if (httpClientResponse != null
-				&& (httpClientResponse.getStatusCode() == HttpServletResponse.SC_MOVED_PERMANENTLY || httpClientResponse
-						.getStatusCode() == HttpServletResponse.SC_MOVED_TEMPORARILY)) {
-			if (!httpClientResponse.getCurrentLocation().startsWith(
-					resourceContext.getDriver().getBaseURL())) {
-				LOG.debug("Current location should be started with: "
-						+ resourceContext.getDriver().getBaseURL());
-				throw new IOException(
-						"Current location should be started with: "
-						+ resourceContext.getDriver().getBaseURL());
-			}
-		}
+		// if (httpClientResponse != null
+		// && (httpClientResponse.getStatusCode() == HttpServletResponse.SC_MOVED_PERMANENTLY || httpClientResponse
+		// .getStatusCode() == HttpServletResponse.SC_MOVED_TEMPORARILY)) {
+		// if (!httpClientResponse.getCurrentLocation().startsWith(
+		// resourceContext.getDriver().getBaseURL())) {
+		// LOG.debug("Current location should be started with: "
+		// + resourceContext.getDriver().getBaseURL());
+		// throw new IOException("Current location should be started with: " + resourceContext.getDriver().getBaseURL()
+		// + " but it is: " + httpClientResponse.getCurrentLocation());
+		// }
+		// }
 
 		// Store context in session if cookies where created
 		if (newUserContext && !userContext.getCookieStore().getCookies().isEmpty()) {
