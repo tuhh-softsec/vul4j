@@ -1,0 +1,105 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+  -->
+
+<html>
+<head>
+<title>Proposal for Digester3 Package</title>
+</head>
+<body bgcolor="white">
+
+<div align="center">
+<h1>Proposal for <em>Digester3</em> Package</h1>
+</div>
+
+<h3>(0) Rationale</h3>
+
+<p>
+  The Digester3 is an almost complete rewrite of the original Digester implementation, which offers:
+    <li>A universal loader: core features and extensions became not so easy
+    to maintain, since every contribution was created with a different approach;
+    a fresh new architecture is able to load modules that allow users
+    write and include easily their own extensions;</li>
+    <li>Reusability of Digester configurations: what was missing is a way to
+    <i>describe</i> how the Digester instances have to be built and not how
+    to set rules given an existing instance;</li>
+    <li>Rules are now expressed via EDSL: the key feature of Digester3 is expressing
+    rule bindings using a fluent APIs collection, that speak more in English rather
+    than in a programming language;</li>
+    <li>Improved errors reporting: rules binding debug operations have made easier,
+    a detailed errors list of wrong binding is reported just when the loader
+    attempts to create a new Digester instance, and not when running it.</li>
+</p>
+
+<h3>(1) Scope of the Package</h3>
+
+<p>
+  The Digester3 package is intended to provide to Commons users a new Digester experience, simplifying tasks such
+  rules binding, now expressed via fluent APIs, and extensions development, simplified by a fresh new architecture
+  based on modules.
+</p>
+
+<p>
+  Digester3 is not compatible with previous releases of Digester.
+</p>
+
+<h3>(1.5) Interaction With Other Packages</h3>
+
+<p>Like the current Digester, Digester3 should rely on standard Java 1.5 and on
+Apache Commons Logging, Apache Commons Beanutils.
+For development, it utilizes the JUnit4 unit testing framework,
+maven 2 or 3 and general quality checking tools (coding style, test coverage,
+classical error patterns monitoring).</p>
+
+<p>No external configuration files are utilized.</p>
+
+
+<h3>(2) Initial Source of the Package</h3>
+
+<p>
+The initial codebase will be imported from an unpublished proof of concept
+developed by the proposal creator.</p>
+
+<p>The proposed package name for the new component is
+<code>org.apache.commons.digester3</code>.</p>
+
+
+<h3>(3)  Required Commons Resources</h3>
+
+<ul>
+<li>Subversion Repository - New directory <code>digester3</code> in the
+    <code>commons</code> subversion repository.</li>
+<li>Mailing List - Discussions will take place on the general
+    <em>dev@commons.apache.org</em> mailing list.  To help
+    list subscribers identify messages of interest, it is suggested that
+    the message subject of messages about this component be prefixed with
+    [digester3].</li>
+<li>Jira - New component "digester3" under the "Commons" product
+    category, with appropriate version identifiers as needed.</li>
+</ul>
+
+
+<h3>(4) Initial Committers</h3>
+
+<p>The initial committers on the Digester3 component shall be:
+<ul>
+<ul>
+  <li><a href="mailto:simonetripodi@apache.org">Simone Tripodi</a></li>
+</ul>
+</p>
+
+</body>
+</html>
