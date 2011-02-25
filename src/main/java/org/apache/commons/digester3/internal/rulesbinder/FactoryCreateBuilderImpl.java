@@ -75,9 +75,10 @@ final class FactoryCreateBuilderImpl
     /**
      * {@inheritDoc}
      */
-    public <T, F extends ObjectCreationFactory<T>> FactoryCreateBuilder ofType(Class<F> type) {
+    public FactoryCreateBuilder ofType(Class<? extends ObjectCreationFactory<?>> type) {
         if (type == null) {
-            this.reportError("factoryCreate().ofType(Class<?>)", "NULL Java type not allowed");
+            this.reportError("factoryCreate().ofType(Class<? extends ObjectCreationFactory<?>>)",
+                    "NULL Java type not allowed");
         }
 
         this.type = type;
