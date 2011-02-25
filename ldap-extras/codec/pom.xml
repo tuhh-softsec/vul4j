@@ -49,6 +49,11 @@
     </dependency>
     
     <dependency>
+      <groupId>org.apache.directory.shared</groupId>
+      <artifactId>shared-ldap-codec-api</artifactId>
+    </dependency>
+    
+    <dependency>
       <groupId>org.osgi</groupId>
       <artifactId>org.osgi.core</artifactId>
       <scope>provided</scope>
