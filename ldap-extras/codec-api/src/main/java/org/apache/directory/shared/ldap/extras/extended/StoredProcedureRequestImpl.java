@@ -29,7 +29,6 @@ import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.model.message.AbstractExtendedRequest;
 import org.apache.directory.shared.util.exception.NotImplementedException;
-import org.apache.directory.shared.ldap.extras.extended.ads_impl.StoredProcedure.StoredProcedureParameter;
 import org.apache.directory.shared.util.StringConstants;
 import org.apache.directory.shared.util.Strings;
 
