@@ -153,6 +153,6 @@ public class OsgiUtilsTest
     @Test
     public void testGetAllBundleExports()
     {
-        OsgiUtils.getAllBundleExports( null );
+        OsgiUtils.getAllBundleExports( null, null );
     }
 }

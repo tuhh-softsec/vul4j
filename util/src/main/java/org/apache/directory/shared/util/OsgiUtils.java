@@ -50,9 +50,13 @@ public class OsgiUtils
      *
      * @return All the exported packages of all bundles on the classpath.
      */
-    public static Set<String> getAllBundleExports( FileFilter filter )
+    public static Set<String> getAllBundleExports( FileFilter filter, Set<String> pkgs )
     {
-        Set<String> pkgs = new HashSet<String>();
+        if ( pkgs == null )
+        {
+            pkgs = new HashSet<String>();
+        }
+        
         Set<File> candidates = getClasspathCandidates( filter );
         
         for ( File candidate : candidates )
