@@ -21,17 +21,15 @@ package org.apache.directory.shared.ldap.codec.standalone;
 
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.jar.Attributes;
-import java.util.jar.JarFile;
-import java.util.jar.Manifest;
+import java.util.Set;
 
 import javax.naming.NamingException;
 
@@ -62,6 +60,7 @@ import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
 import org.apache.directory.shared.ldap.model.message.ExtendedResponseImpl;
 import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.directory.shared.ldap.model.message.controls.OpaqueControl;
+import org.apache.directory.shared.util.OsgiUtils;
 import org.apache.directory.shared.util.Strings;
 import org.apache.directory.shared.util.exception.NotImplementedException;
 import org.apache.felix.framework.Felix;
@@ -383,50 +382,35 @@ public class StandaloneLdapCodecService implements LdapCodecService
      */
     private String getSystemPackages()
     {
-        StringBuilder sb = new StringBuilder();
-        int ii = 0;
-        
-        do
+        Set<String> pkgs = new HashSet<String>();
+
+        // Load defaults from command line properties if it exists
+        String sysProp = System.getProperty( FelixConstants.FRAMEWORK_SYSTEMPACKAGES_EXTRA );
+        if ( sysProp != null )
         {
-            // add comma if we're not at start and have more left
-            if ( ii > 0 && ii < SYSTEM_PACKAGES.length )
+            OsgiUtils.splitIntoPackages( sysProp, pkgs );
+        }
+        
+        // Merge defaults with exports from all bundles on system path
+        OsgiUtils.getAllBundleExports( null, pkgs );
+        
+        // Merge all now with exports listed in our properties
+        Collections.addAll( pkgs, SYSTEM_PACKAGES );
+        
+        StringBuilder sb = new StringBuilder();
+        Iterator<String> i = pkgs.iterator();
+        while ( i.hasNext() )
+        {
+            String pkg = i.next();
+            sb.append( pkg );
+            LOG.debug( "Adding system extras package: {}", pkg );
+            if ( i.hasNext() )
             {
                 sb.append( ',' );
             }
-            
-            sb.append( SYSTEM_PACKAGES[ii] );
-            ii++;
         }
-        while( ii < SYSTEM_PACKAGES.length );
         
         return sb.toString();
-    }
-    
-    
-    private String getExportPackage( File bundle )
-    {   
-        JarFile jar;
-        try
-        {
-            jar = new JarFile( bundle );
-            Manifest manifest = jar.getManifest();
-            
-            Attributes attrs = manifest.getMainAttributes();
-            for ( Object key : attrs.keySet() )
-            {
-                if ( key.toString().equals( "Export-Package" ) )
-                {
-                    return attrs.get( key ).toString();
-                }
-            }
-            
-            return null;
-        }
-        catch ( IOException e )
-        {
-            LOG.error( "Failed to open jar file or manifest.", e );
-            throw new RuntimeException( "Failed to open jar file or manifest.", e );
-        }
     }
     
     
