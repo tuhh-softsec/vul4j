@@ -18,6 +18,7 @@
 <project name="Digester">
   <bannerRight>
     <name>Commons Digester 3</name>
+    <src>/images/logo.png</src>
     <href>/index.html</href>
   </bannerRight>
 
