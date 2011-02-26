@@ -62,6 +62,13 @@
         </developer>
     </developers>
 
+    <contributors>
+        <contributor>
+            <name>Daniele Testa</name>
+            <email>mrwolfgraphics at gmail dot com</email>
+        </contributor>
+    </contributors>
+
     <properties>
         <maven.compile.source>1.5</maven.compile.source>
         <maven.compile.target>1.5</maven.compile.target>
