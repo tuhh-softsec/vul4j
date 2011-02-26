@@ -75,5 +75,14 @@ download the files.
 
 </section>
 
+<section name="Acknowledgements">
+<p>A spacial <i>Thank You</i> goes to:</p>
+<ul>
+    <li>James Carman, who had the initial idea of building a Digester with fluent APIs;</li>
+    <li>Matt Benson, for having influenced me on DSL;</li>
+    <li>Daniele Testa [mrwolfgraphics AT gmail DOT com], who provided the Digester3 logo.</li>
+</ul>
+</section>
+
 </body>
 </document>
