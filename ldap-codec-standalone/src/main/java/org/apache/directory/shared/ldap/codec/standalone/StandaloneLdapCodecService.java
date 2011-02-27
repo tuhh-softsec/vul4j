@@ -931,7 +931,14 @@ public class StandaloneLdapCodecService implements LdapCodecService
         ExtendedRequestFactory<?,?> extendedRequestFactory = extReqFactories.get( oid );
         if ( extendedRequestFactory != null )
         {
-            req = extendedRequestFactory.newRequest( value );
+            if ( value == null )
+            {
+                req = extendedRequestFactory.newRequest();
+            }
+            else
+            {
+                req = extendedRequestFactory.newRequest( value );
+            }
         }
         else
         {

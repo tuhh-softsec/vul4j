@@ -25,8 +25,10 @@ import org.apache.directory.shared.asn1.ber.grammar.GrammarAction;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecServiceFactory;
 import org.apache.directory.shared.ldap.codec.api.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.api.ExtendedRequestDecorator;
+import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,9 +65,8 @@ public class StoreExtendedRequestName extends GrammarAction<LdapMessageContainer
      */
     public void action( LdapMessageContainer<ExtendedRequestDecorator<?,?>> container ) throws DecoderException
     {
-        // We can allocate the ExtendedRequest Object
-        ExtendedRequestDecorator<?,?> extendedRequest = container.getMessage();
-
+        ExtendedRequest<?> req;
+        
         // Get the Value and store it in the ExtendedRequest
         TLV tlv = container.getCurrentTLV();
 
@@ -98,7 +99,8 @@ public class StoreExtendedRequestName extends GrammarAction<LdapMessageContainer
                     throw new DecoderException( msg );
                 }
 
-                extendedRequest.setRequestName( requestName );
+                req = LdapCodecServiceFactory.getSingleton().newExtendedRequest( requestName, null );
+                container.setMessage( LdapCodecServiceFactory.getSingleton().decorate( req ) );
             }
             catch ( DecoderException de )
             {
@@ -117,7 +119,7 @@ public class StoreExtendedRequestName extends GrammarAction<LdapMessageContainer
 
         if ( IS_DEBUG )
         {
-            LOG.debug( "OID read : {}", extendedRequest.getRequestName() );
+            LOG.debug( "OID read : {}", req.getRequestName() );
         }
     }
 }
