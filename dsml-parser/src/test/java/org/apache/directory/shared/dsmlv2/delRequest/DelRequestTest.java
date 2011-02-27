@@ -245,6 +245,7 @@ public class DelRequestTest extends AbstractTest
         }
         catch ( Exception e )
         {
+            e.printStackTrace();
             fail( e.getMessage() );
         }
 

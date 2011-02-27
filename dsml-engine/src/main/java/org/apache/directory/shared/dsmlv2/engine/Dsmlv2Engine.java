@@ -50,8 +50,6 @@ import org.apache.directory.shared.dsmlv2.request.BatchRequestDsml.OnError;
 import org.apache.directory.shared.dsmlv2.request.BatchRequestDsml.Processing;
 import org.apache.directory.shared.dsmlv2.request.BatchRequestDsml.ResponseOrder;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
-import org.apache.directory.shared.ldap.codec.api.LdapCodecServiceFactory;
 import org.apache.directory.shared.ldap.model.cursor.Cursor;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
@@ -115,9 +113,7 @@ public class Dsmlv2Engine
     /** The batch response. */
     private BatchResponseDsml batchResponse;
     
-    private LdapCodecService codec = LdapCodecServiceFactory.getSingleton();
-
-    private Dsmlv2Grammar grammar = new Dsmlv2Grammar( codec );
+    private Dsmlv2Grammar grammar = new Dsmlv2Grammar();
 
     
     /**
@@ -354,7 +350,7 @@ public class Dsmlv2Engine
                 break;
 
             case EXTENDED_REQUEST:
-                ExtendedResponse extendedResponse = connection.extended( ( ExtendedRequest ) request );
+                ExtendedResponse extendedResponse = connection.extended( ( ExtendedRequest<?> ) request );
                 ExtendedResponseDsml extendedResponseDsml = new ExtendedResponseDsml( connection.getCodecService(), extendedResponse );
                 batchResponse.addResponse( extendedResponseDsml );
 

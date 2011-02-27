@@ -39,7 +39,7 @@ public abstract class AbstractTest
     /** The LDAP encoder decoder service */
     private LdapCodecService codec = LdapCodecServiceFactory.getSingleton();
     
-    private Dsmlv2Grammar grammar = new Dsmlv2Grammar( codec );
+    private Dsmlv2Grammar grammar = new Dsmlv2Grammar();
     
     
     public Dsmlv2Parser newParser() throws Exception

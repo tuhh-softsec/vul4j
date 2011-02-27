@@ -42,6 +42,7 @@ import org.apache.directory.shared.dsmlv2.request.BatchRequestDsml.ResponseOrder
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.api.CodecControl;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecServiceFactory;
 import org.apache.directory.shared.ldap.codec.api.LdapConstants;
 import org.apache.directory.shared.ldap.model.entry.BinaryValue;
 import org.apache.directory.shared.ldap.model.entry.StringValue;
@@ -79,17 +80,16 @@ import org.xmlpull.v1.XmlPullParserException;
  */
 public final class Dsmlv2Grammar extends AbstractGrammar implements Grammar
 {
-    private LdapCodecService codec;
+    private LdapCodecService codec = LdapCodecServiceFactory.getSingleton();
     
 
     /**
      * Creates a new instance of Dsmlv2Grammar.
      */
     @SuppressWarnings("unchecked")
-    public Dsmlv2Grammar( LdapCodecService codec )
+    public Dsmlv2Grammar()
     {
         name = Dsmlv2Grammar.class.getName();
-        this.codec = codec;
 
         // Create the transitions table
         super.transitions = ( HashMap<Tag, GrammarTransition>[] ) Array.newInstance( HashMap.class, 200 ); // TODO Change this value
