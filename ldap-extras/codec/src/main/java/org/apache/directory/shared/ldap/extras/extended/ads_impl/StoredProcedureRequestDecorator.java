@@ -280,6 +280,8 @@ public class StoredProcedureRequestDecorator
     {
         StoredProcedureDecoder decoder = new StoredProcedureDecoder();
         StoredProcedureContainer container = new StoredProcedureContainer();
+        
+        container.setStoredProcedure( this );
 
         try
         {

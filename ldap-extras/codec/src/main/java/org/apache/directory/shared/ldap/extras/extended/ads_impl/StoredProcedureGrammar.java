@@ -91,7 +91,12 @@ public final class StoredProcedureGrammar extends AbstractGrammar<StoredProcedur
                 {
                     TLV tlv = container.getCurrentTLV();
 
-                    StoredProcedureRequestDecorator storedProcedure = null;
+                    StoredProcedureRequestDecorator storedProcedure = container.getStoredProcedure();
+                    if ( storedProcedure == null )
+                    {
+                        storedProcedure = new StoredProcedureRequestDecorator( LdapCodecServiceFactory.getSingleton() );
+                        container.setStoredProcedure( storedProcedure );
+                    }
 
                     // Store the value.
                     if ( tlv.getLength() == 0 )
@@ -111,9 +116,7 @@ public final class StoredProcedureGrammar extends AbstractGrammar<StoredProcedur
                             LOG.debug( "SP language found: " + language );
                         }
 
-                        storedProcedure = new StoredProcedureRequestDecorator( LdapCodecServiceFactory.getSingleton() );
                         storedProcedure.setLanguage( language );
-                        container.setStoredProcedure( storedProcedure );
                     }
                 }
             } );
@@ -167,8 +170,7 @@ public final class StoredProcedureGrammar extends AbstractGrammar<StoredProcedur
             {
                 public void action( StoredProcedureContainer container ) throws DecoderException
                 {
-                    StoredProcedureContainer storedProcedureContainer = ( StoredProcedureContainer ) container;
-                    storedProcedureContainer.setGrammarEndAllowed( true );
+                    container.setGrammarEndAllowed( true );
                 }
             } );
         

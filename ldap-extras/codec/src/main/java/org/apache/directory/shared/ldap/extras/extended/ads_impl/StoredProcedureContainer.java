@@ -77,7 +77,6 @@ public class StoredProcedureContainer extends AbstractContainer
     public void clean()
     {
         super.clean();
-
         storedProcedure = null;
     }
 }
