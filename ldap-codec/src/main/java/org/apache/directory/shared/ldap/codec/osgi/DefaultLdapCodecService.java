@@ -501,6 +501,7 @@ public class DefaultLdapCodecService implements LdapCodecService
             resp.setResponseName( req.getRequestName() );
         }
         
+        resp.setMessageId( req.getMessageId() );
         return ( E ) resp;
     }
 
