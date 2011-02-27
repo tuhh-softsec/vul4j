@@ -218,7 +218,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
     LdapCodecService codec = LdapCodecServiceFactory.getSingleton();
 
     /** The Ldap codec protocol filter */
-    private IoFilter ldapProtocolFilter = new ProtocolCodecFilter( codec.newProtocolCodecFactory() );
+    private IoFilter ldapProtocolFilter = new ProtocolCodecFilter( codec.getProtocolCodecFactory() );
 
     /** the SslFilter key */
     private static final String SSL_FILTER_KEY = "sslFilter";

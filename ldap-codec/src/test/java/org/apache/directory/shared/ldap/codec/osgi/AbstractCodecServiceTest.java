@@ -23,6 +23,10 @@ package org.apache.directory.shared.ldap.codec.osgi;
 import org.apache.directory.shared.ldap.codec.LdapEncoder;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecServiceFactory;
 import org.apache.directory.shared.ldap.codec.osgi.DefaultLdapCodecService;
+import org.apache.mina.core.session.IoSession;
+import org.apache.mina.filter.codec.ProtocolCodecFactory;
+import org.apache.mina.filter.codec.ProtocolDecoder;
+import org.apache.mina.filter.codec.ProtocolEncoder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
@@ -47,6 +51,20 @@ public abstract class AbstractCodecServiceTest
     public static void setupLdapCodecService()
     {
         codec = new DefaultLdapCodecService();
+
+        codec.registerProtocolCodecFactory( new ProtocolCodecFactory()
+        {
+            public ProtocolEncoder getEncoder( IoSession session ) throws Exception
+            {
+                return null;
+            }
+            
+            public ProtocolDecoder getDecoder( IoSession session ) throws Exception
+            {
+                return null;
+            }
+        });
+        
         
         if ( LdapCodecServiceFactory.isInitialized() == false )
         {

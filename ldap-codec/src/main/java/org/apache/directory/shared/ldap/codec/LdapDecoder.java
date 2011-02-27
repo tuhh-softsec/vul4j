@@ -51,9 +51,6 @@ public class LdapDecoder
     /** A speedup for logger */
     private static final boolean IS_DEBUG = LOG.isDebugEnabled();
 
-    /** The message container for this instance */
-    private LdapMessageContainer<MessageDecorator<? extends Message>> ldapMessageContainer;
-
     /** The ASN 1 decoder instance */
     private Asn1Decoder asn1Decoder;
 

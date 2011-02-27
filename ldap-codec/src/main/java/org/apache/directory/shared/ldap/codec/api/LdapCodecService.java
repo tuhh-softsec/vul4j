@@ -39,6 +39,8 @@ import org.apache.mina.filter.codec.ProtocolCodecFactory;
  */
 public interface LdapCodecService
 {
+    String DEFAULT_PROTOCOL_CODEC_FACTORY = 
+        "org.apache.directory.shared.ldap.codec.protocol.mina.LdapProtocolCodecFactory";
     
     // ------------------------------------------------------------------------
     // Control Methods
@@ -244,7 +246,17 @@ public interface LdapCodecService
      *
      * @return the {@link ProtocolCodecFactory}
      */
-    ProtocolCodecFactory newProtocolCodecFactory();
+    ProtocolCodecFactory getProtocolCodecFactory();
+    
+    
+    /**
+     * Registers a ProtocolCodecFactory with this LdapCodecService.
+     *
+     * @param factory The factory being registered.
+     * @return The previously set {@link ProtocolCodecFactory}, or null if 
+     * none had been set earlier.
+     */
+    ProtocolCodecFactory registerProtocolCodecFactory( ProtocolCodecFactory factory );
 
     
     /**

@@ -52,7 +52,6 @@ import org.apache.directory.shared.ldap.codec.controls.search.entryChange.EntryC
 import org.apache.directory.shared.ldap.codec.controls.search.pagedSearch.PagedResultsFactory;
 import org.apache.directory.shared.ldap.codec.controls.search.persistentSearch.PersistentSearchFactory;
 import org.apache.directory.shared.ldap.codec.controls.search.subentries.SubentriesFactory;
-import org.apache.directory.shared.ldap.codec.protocol.mina.LdapProtocolCodecFactory;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequestImpl;
@@ -131,6 +130,9 @@ public class StandaloneLdapCodecService implements LdapCodecService
 
     /** The map of registered {@link UnsolicitedResponseFactory}'s by request OID */
     private Map<String,UnsolicitedResponseFactory<?>> unsolicitedFactories = new HashMap<String, UnsolicitedResponseFactory<?>>();
+    
+    /** The LDAP {@link ProtocolCodecFactory} implementation used */
+    private ProtocolCodecFactory protocolCodecFactory;
     
     /** The codec's {@link BundleActivator} */
     private CodecHostActivator activator;
@@ -309,6 +311,21 @@ public class StandaloneLdapCodecService implements LdapCodecService
         
         loadStockControls();
         setupFelix();
+        
+        if ( protocolCodecFactory == null )
+        {
+            try
+            {
+                @SuppressWarnings("unchecked")
+                Class<? extends ProtocolCodecFactory> clazz = ( Class<? extends ProtocolCodecFactory> ) 
+                    Class.forName( DEFAULT_PROTOCOL_CODEC_FACTORY );
+                protocolCodecFactory = clazz.newInstance();
+            }
+            catch( Exception cause )
+            {
+                throw new RuntimeException( "Failed to load default codec factory.", cause );
+            }
+        }
     }
     
     
@@ -588,11 +605,22 @@ public class StandaloneLdapCodecService implements LdapCodecService
     /**
      * {@inheritDoc}
      */
-    public ProtocolCodecFactory newProtocolCodecFactory()
+    public ProtocolCodecFactory getProtocolCodecFactory()
     {
-        return new LdapProtocolCodecFactory();
+        return protocolCodecFactory;
     }
 
+    
+    /**
+     * {@inheritDoc}
+     */
+    public ProtocolCodecFactory registerProtocolCodecFactory( ProtocolCodecFactory protocolCodecFactory )
+    {
+        ProtocolCodecFactory old = this.protocolCodecFactory;
+        this.protocolCodecFactory = protocolCodecFactory;
+        return old;
+    }
+    
     
     /**
      * {@inheritDoc}

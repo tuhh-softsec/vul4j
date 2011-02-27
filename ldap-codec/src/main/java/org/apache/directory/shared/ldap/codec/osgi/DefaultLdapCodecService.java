@@ -39,7 +39,6 @@ import org.apache.directory.shared.ldap.codec.controls.search.entryChange.EntryC
 import org.apache.directory.shared.ldap.codec.controls.search.pagedSearch.PagedResultsFactory;
 import org.apache.directory.shared.ldap.codec.controls.search.persistentSearch.PersistentSearchFactory;
 import org.apache.directory.shared.ldap.codec.controls.search.subentries.SubentriesFactory;
-import org.apache.directory.shared.ldap.codec.protocol.mina.LdapProtocolCodecFactory;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequestImpl;
@@ -82,6 +81,9 @@ public class DefaultLdapCodecService implements LdapCodecService
     /** The map of registered {@link UnsolicitedResponseFactory}'s by request OID */
     private Map<String,UnsolicitedResponseFactory<?>> unsolicitedFactories = new HashMap<String, UnsolicitedResponseFactory<?>>();
 
+    /** The registered ProtocolCodecFactory */
+    private ProtocolCodecFactory protocolCodecFactory;
+    
 
     /**
      * Creates a new instance of DefaultLdapCodecService.
@@ -185,9 +187,17 @@ public class DefaultLdapCodecService implements LdapCodecService
     /**
      * {@inheritDoc}
      */
-    public ProtocolCodecFactory newProtocolCodecFactory()
+    public ProtocolCodecFactory getProtocolCodecFactory()
     {
-        return new LdapProtocolCodecFactory();
+        return protocolCodecFactory;
+    }
+    
+    
+    public ProtocolCodecFactory registerProtocolCodecFactory( ProtocolCodecFactory protocolCodecFactory )
+    {
+        ProtocolCodecFactory oldFactory = this.protocolCodecFactory;
+        this.protocolCodecFactory = protocolCodecFactory;
+        return oldFactory;
     }
 
 

@@ -49,6 +49,12 @@
     </dependency>
     
     <dependency>
+      <groupId>org.apache.directory.shared</groupId>
+      <artifactId>shared-ldap-protocol-codec</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>shared-ldap-codec</artifactId>
     </dependency> 
