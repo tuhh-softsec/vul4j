@@ -21,16 +21,17 @@
 package org.apache.directory.shared.ldap.extras.extended.ads_impl;
 
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertEquals; 
 import static org.junit.Assert.fail;
 
 import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
-import org.apache.directory.shared.asn1.ber.Asn1Container;
+import org.apache.directory.shared.asn1.ber.tlv.IntegerDecoder;
+import org.apache.directory.shared.asn1.ber.tlv.IntegerDecoderException;
+import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.asn1.DecoderException;
-import org.apache.directory.shared.ldap.extras.extended.ads_impl.StoredProcedure;
 import org.apache.directory.shared.ldap.extras.extended.ads_impl.StoredProcedureContainer;
 import org.apache.directory.shared.ldap.extras.extended.ads_impl.StoredProcedureDecoder;
 import org.apache.directory.shared.util.Strings;
@@ -51,7 +52,7 @@ import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 public class StoredProcedureTest
 {
     @Test
-    public void testDecodeStoredProcedureNParams()
+    public void testDecodeStoredProcedureNParams() throws IntegerDecoderException
     {
         Asn1Decoder storedProcedureDecoder = new StoredProcedureDecoder();
 
@@ -91,7 +92,7 @@ public class StoredProcedureTest
             fail( de.getMessage() );
         }
 
-        StoredProcedure storedProcedure = storedProcedureContainer.getStoredProcedure();
+        StoredProcedureRequestDecorator storedProcedure = storedProcedureContainer.getStoredProcedure();
 
         assertEquals("Java", storedProcedure.getLanguage());
         
@@ -99,14 +100,14 @@ public class StoredProcedureTest
 
         assertEquals( 3, storedProcedure.size() );
 
-        assertEquals( "int", storedProcedure.getParameterTypeString( 0 ) );
-        assertEquals( 1, storedProcedure.getParameterValueString( 0 ) );
+        assertEquals( "int", Strings.utf8ToString( ( byte[] ) storedProcedure.getParameterType( 0 ) ) );
+        assertEquals( 1, IntegerDecoder.parse( new Value( ( byte[] ) storedProcedure.getParameterValue( 0 ) ) ) );
 
-        assertEquals( "boolean", storedProcedure.getParameterTypeString( 1 ) );
-        assertEquals( "true", storedProcedure.getParameterValueString( 1 ) );
+        assertEquals( "boolean", Strings.utf8ToString( ( byte[] ) storedProcedure.getParameterType( 1 ) ) );
+        assertEquals( "true", Strings.utf8ToString( ( byte[] ) storedProcedure.getParameterValue( 1 ) ) );
 
-        assertEquals( "String", storedProcedure.getParameterTypeString( 2 ) );
-        assertEquals( "parameter3", storedProcedure.getParameterValueString( 2 ) );
+        assertEquals( "String", Strings.utf8ToString( ( byte[] ) storedProcedure.getParameterType( 2 ) ) );
+        assertEquals( "parameter3", Strings.utf8ToString( ( byte [] ) storedProcedure.getParameterValue( 2 ) ) );
 
         // Check the encoding
         try
@@ -141,7 +142,7 @@ public class StoredProcedureTest
         stream.flip();
 
         // Allocate a StoredProcedure Container
-        Asn1Container storedProcedureContainer = new StoredProcedureContainer();
+        StoredProcedureContainer storedProcedureContainer = new StoredProcedureContainer();
 
         // Decode a StoredProcedure message
         try
@@ -154,7 +155,7 @@ public class StoredProcedureTest
             fail( de.getMessage() );
         }
 
-        StoredProcedure storedProcedure = ( ( StoredProcedureContainer ) storedProcedureContainer ).getStoredProcedure();
+        StoredProcedureRequestDecorator storedProcedure = storedProcedureContainer.getStoredProcedure();
 
         assertEquals("Java", storedProcedure.getLanguage());
         
@@ -180,7 +181,7 @@ public class StoredProcedureTest
 
     
     @Test
-    public void testDecodeStoredProcedureOneParam()
+    public void testDecodeStoredProcedureOneParam() throws IntegerDecoderException
     {
         Asn1Decoder storedProcedureDecoder = new StoredProcedureDecoder();
 
@@ -201,7 +202,7 @@ public class StoredProcedureTest
         stream.flip();
 
         // Allocate a StoredProcedure Container
-        Asn1Container storedProcedureContainer = new StoredProcedureContainer();
+        StoredProcedureContainer storedProcedureContainer = new StoredProcedureContainer();
 
         // Decode a StoredProcedure message
         try
@@ -214,7 +215,7 @@ public class StoredProcedureTest
             fail( de.getMessage() );
         }
 
-        StoredProcedure storedProcedure = ( ( StoredProcedureContainer ) storedProcedureContainer ).getStoredProcedure();
+        StoredProcedureRequestDecorator storedProcedure = storedProcedureContainer.getStoredProcedure();
 
         assertEquals("Java", storedProcedure.getLanguage());
         
@@ -222,8 +223,8 @@ public class StoredProcedureTest
 
         assertEquals( 1, storedProcedure.size() );
 
-        assertEquals( "int", storedProcedure.getParameterTypeString( 0 ) );
-        assertEquals( 1, storedProcedure.getParameterValueString( 0 ) );
+        assertEquals( "int", Strings.utf8ToString( ( byte[] ) storedProcedure.getParameterType( 0 ) ) );
+        assertEquals( 1, IntegerDecoder.parse( new Value( ( byte [] ) storedProcedure.getParameterValue( 0 ) ) ) );
 
         // Check the encoding
         try

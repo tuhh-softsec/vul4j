@@ -20,6 +20,8 @@
 package org.apache.directory.shared.ldap.extras.extended;
 
 
+import java.util.List;
+
 import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 
 
@@ -51,14 +53,12 @@ public interface StoredProcedureRequest extends ExtendedRequest<StoredProcedureR
     void setLanguage( String language );
 
 
-    /**
-     * Sets the procedure.
-     *
-     * @param procedure the new procedure
-     */
-    void setProcedure( String procedure );
+    byte[] getProcedure();
+    
+    
+    void setProcedure( byte[] procedure );
 
-
+    
     /**
      * Gets the procedure specification.
      *
@@ -119,4 +119,8 @@ public interface StoredProcedureRequest extends ExtendedRequest<StoredProcedureR
      */
     void addParameter( Object type, Object value );
 
+    
+    void addParameter( StoredProcedureParameter parameter );
+
+    List<StoredProcedureParameter> getParameters();
 }

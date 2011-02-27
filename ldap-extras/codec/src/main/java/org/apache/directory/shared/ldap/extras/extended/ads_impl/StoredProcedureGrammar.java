@@ -28,6 +28,7 @@ import org.apache.directory.shared.asn1.ber.grammar.GrammarTransition;
 import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecServiceFactory;
 import org.apache.directory.shared.ldap.extras.extended.StoredProcedureParameter;
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
@@ -90,7 +91,7 @@ public final class StoredProcedureGrammar extends AbstractGrammar<StoredProcedur
                 {
                     TLV tlv = container.getCurrentTLV();
 
-                    StoredProcedure storedProcedure = null;
+                    StoredProcedureRequestDecorator storedProcedure = null;
 
                     // Store the value.
                     if ( tlv.getLength() == 0 )
@@ -110,7 +111,7 @@ public final class StoredProcedureGrammar extends AbstractGrammar<StoredProcedur
                             LOG.debug( "SP language found: " + language );
                         }
 
-                        storedProcedure = new StoredProcedure();
+                        storedProcedure = new StoredProcedureRequestDecorator( LdapCodecServiceFactory.getSingleton() );
                         storedProcedure.setLanguage( language );
                         container.setStoredProcedure( storedProcedure );
                     }
@@ -130,7 +131,7 @@ public final class StoredProcedureGrammar extends AbstractGrammar<StoredProcedur
                 {
                     TLV tlv = container.getCurrentTLV();
 
-                    StoredProcedure storedProcedure = container.getStoredProcedure();
+                    StoredProcedureRequestDecorator storedProcedure = container.getStoredProcedure();
 
                     // Store the value.
                     if ( tlv.getLength() == 0 )
@@ -194,7 +195,7 @@ public final class StoredProcedureGrammar extends AbstractGrammar<StoredProcedur
                 public void action( StoredProcedureContainer container ) throws DecoderException
                 {
                     TLV tlv = container.getCurrentTLV();
-                    StoredProcedure storedProcedure = container.getStoredProcedure();
+                    StoredProcedureRequestDecorator storedProcedure = container.getStoredProcedure();
 
                     // Store the value.
                     if ( tlv.getLength() == 0 )
@@ -240,7 +241,7 @@ public final class StoredProcedureGrammar extends AbstractGrammar<StoredProcedur
                     StoredProcedureContainer storedProcedureContainer = ( StoredProcedureContainer ) container;
 
                     TLV tlv = storedProcedureContainer.getCurrentTLV();
-                    StoredProcedure storedProcedure = storedProcedureContainer.getStoredProcedure();
+                    StoredProcedureRequestDecorator storedProcedure = storedProcedureContainer.getStoredProcedure();
 
                     // Store the value.
                     if ( tlv.getLength() == 0 )

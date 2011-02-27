@@ -35,7 +35,7 @@ public class StoredProcedureContainer extends AbstractContainer
     // ----------------------------------------------------------------------------
 
     /** StoredProcedure */
-    private StoredProcedure storedProcedure;
+    private StoredProcedureRequestDecorator storedProcedure;
 
 
     // ~ Constructors
@@ -55,7 +55,7 @@ public class StoredProcedureContainer extends AbstractContainer
     /**
      * @return Returns the ldapMessage.
      */
-    public StoredProcedure getStoredProcedure()
+    public StoredProcedureRequestDecorator getStoredProcedure()
     {
         return storedProcedure;
     }
@@ -68,7 +68,7 @@ public class StoredProcedureContainer extends AbstractContainer
      * @param ldapMessage
      *            The ldapMessage to set.
      */
-    public void setStoredProcedure( StoredProcedure storedProcedure )
+    public void setStoredProcedure( StoredProcedureRequestDecorator storedProcedure )
     {
         this.storedProcedure = storedProcedure;
     }

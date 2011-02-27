@@ -27,7 +27,6 @@ import org.apache.directory.shared.ldap.codec.api.ExtendedResponseDecorator;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.extras.extended.StoredProcedureRequest;
 import org.apache.directory.shared.ldap.extras.extended.StoredProcedureResponse;
-import org.apache.directory.shared.ldap.extras.extended.StoredProcedureRequestImpl;
 import org.apache.directory.shared.ldap.extras.extended.StoredProcedureResponseImpl;
 import org.apache.directory.shared.ldap.model.message.ExtendedRequest;
 import org.apache.directory.shared.ldap.model.message.ExtendedResponse;
@@ -69,7 +68,7 @@ public class StoredProcedureFactory implements ExtendedRequestFactory<StoredProc
      */
     public StoredProcedureRequest newRequest()
     {
-        return new StoredProcedureRequestDecorator( codec, new StoredProcedureRequestImpl() );
+        return new StoredProcedureRequestDecorator( codec );
     }
 
 
@@ -89,8 +88,12 @@ public class StoredProcedureFactory implements ExtendedRequestFactory<StoredProc
      */
     public StoredProcedureRequest newRequest( byte[] value )
     {
-        StoredProcedureRequestDecorator req = new StoredProcedureRequestDecorator( codec, new StoredProcedureRequestImpl() );
-        req.setRequestValue( value );
+        StoredProcedureRequestDecorator req = new StoredProcedureRequestDecorator( codec );
+        
+        if ( value != null )
+        {
+            req.setRequestValue( value );
+        }
         return req;
     }
 
