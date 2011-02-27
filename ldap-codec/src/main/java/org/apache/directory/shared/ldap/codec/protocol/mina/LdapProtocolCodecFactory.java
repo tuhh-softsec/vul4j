@@ -34,6 +34,9 @@ import org.apache.mina.filter.codec.ProtocolEncoder;
  */
 public class LdapProtocolCodecFactory implements ProtocolCodecFactory
 {
+    /** The tag stored into the session if we want to set a max PDU size */
+    public final static String MAX_PDU_SIZE = "MAX_PDU_SIZE";
+
     /** The LdapDecoder key */
     public static final String LDAP_DECODER = "LDAP_DECODER";
 
@@ -64,7 +67,7 @@ public class LdapProtocolCodecFactory implements ProtocolCodecFactory
      */
     public ProtocolDecoder getDecoder( IoSession session )
     {
-        return new LdapProtocolDecoder( codec );
+        return new LdapProtocolDecoder();
     }
 
 

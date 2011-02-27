@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.directory.shared.ldap.codec.LdapDecoder;
-import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.api.MessageDecorator;
 import org.apache.directory.shared.ldap.model.message.Message;
@@ -51,7 +50,7 @@ public class LdapProtocolDecoder implements ProtocolDecoder
      *
      * @param codec The LDAP codec service associated with this encoder.
      */
-    public LdapProtocolDecoder( LdapCodecService codec )
+    public LdapProtocolDecoder()
     {
         this.decoder = new LdapDecoder();
     }
@@ -62,8 +61,10 @@ public class LdapProtocolDecoder implements ProtocolDecoder
      */
     public void decode( IoSession session, IoBuffer in, ProtocolDecoderOutput out ) throws Exception
     {
+        @SuppressWarnings("unchecked")
         LdapMessageContainer<MessageDecorator<? extends Message>> messageContainer =
-            (org.apache.directory.shared.ldap.codec.api.LdapMessageContainer<MessageDecorator<? extends Message>> ) session.getAttribute( "messageContainer" );
+            (org.apache.directory.shared.ldap.codec.api.LdapMessageContainer<MessageDecorator<? extends Message>> ) 
+            session.getAttribute( "messageContainer" );
 
         if ( session.containsAttribute( "maxPDUSize" ) )
         {
