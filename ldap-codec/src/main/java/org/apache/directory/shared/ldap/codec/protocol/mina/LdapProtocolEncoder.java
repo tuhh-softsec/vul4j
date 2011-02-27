@@ -23,7 +23,7 @@ package org.apache.directory.shared.ldap.codec.protocol.mina;
 import java.nio.ByteBuffer;
 
 import org.apache.directory.shared.ldap.codec.LdapEncoder;
-import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecServiceFactory;
 import org.apache.directory.shared.ldap.model.message.Message;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.IoSession;
@@ -47,9 +47,9 @@ public class LdapProtocolEncoder implements ProtocolEncoder
      *
      * @param codec The LDAP codec service associated with this encoder.
      */
-    public LdapProtocolEncoder( LdapCodecService codec )
+    public LdapProtocolEncoder()
     {
-        this.encoder = new LdapEncoder( codec );
+        this.encoder = new LdapEncoder( LdapCodecServiceFactory.getSingleton() );
     }
 
 

@@ -242,11 +242,9 @@ public interface LdapCodecService
     /**
      * Creates a new LDAP {@link ProtocolCodecFactory}.
      *
-     * @param client if true a factory designed for clients is returned, 
-     * otherwise one for servers is returned.
-     * @return the client or server specific {@link ProtocolCodecFactory}
+     * @return the {@link ProtocolCodecFactory}
      */
-    ProtocolCodecFactory newProtocolCodecFactory( boolean client );
+    ProtocolCodecFactory newProtocolCodecFactory();
 
     
     /**

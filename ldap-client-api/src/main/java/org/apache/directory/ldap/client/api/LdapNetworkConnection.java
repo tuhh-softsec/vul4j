@@ -138,7 +138,6 @@ import org.apache.directory.shared.ldap.schemaloader.JarLdifSchemaLoader;
 import org.apache.directory.shared.ldap.schemamanager.impl.DefaultSchemaManager;
 import org.apache.directory.shared.util.StringConstants;
 import org.apache.directory.shared.util.Strings;
-import org.apache.directory.shared.util.exception.NotImplementedException;
 import org.apache.mina.core.filterchain.IoFilter;
 import org.apache.mina.core.future.CloseFuture;
 import org.apache.mina.core.future.ConnectFuture;
@@ -219,7 +218,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
     LdapCodecService codec = LdapCodecServiceFactory.getSingleton();
 
     /** The Ldap codec protocol filter */
-    private IoFilter ldapProtocolFilter = new ProtocolCodecFilter( codec.newProtocolCodecFactory( true ) );
+    private IoFilter ldapProtocolFilter = new ProtocolCodecFilter( codec.newProtocolCodecFactory() );
 
     /** the SslFilter key */
     private static final String SSL_FILTER_KEY = "sslFilter";

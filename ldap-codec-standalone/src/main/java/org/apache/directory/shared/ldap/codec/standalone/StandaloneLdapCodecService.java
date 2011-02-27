@@ -587,23 +587,10 @@ public class StandaloneLdapCodecService implements LdapCodecService
     
     /**
      * {@inheritDoc}
-     * 
-     * @TODO - finish this up and add factory registration capabilities,
-     * of course there is one default mechanism for now.
      */
-    public ProtocolCodecFactory newProtocolCodecFactory( boolean client )
+    public ProtocolCodecFactory newProtocolCodecFactory()
     {
-        if ( client )
-        {
-            return new LdapProtocolCodecFactory( this );
-        }
-        else
-        {
-            throw new NotImplementedException( 
-                "Filters may be different here, and we're probably going to " +
-                "want to have a protocol codec factory registration mechanism" +
-                "since this way we can swap in and out MINA/Grizzly" );
-        }
+        return new LdapProtocolCodecFactory();
     }
 
     
