@@ -185,6 +185,11 @@ public class OsgiUtils
             jar = new JarFile( bundle );
             Manifest manifest = jar.getManifest();
             
+            if ( manifest == null )
+            {
+                return null;
+            }
+            
             Attributes attrs = manifest.getMainAttributes();
             for ( Object key : attrs.keySet() )
             {
