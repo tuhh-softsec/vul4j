@@ -47,7 +47,11 @@ public abstract class AbstractCodecServiceTest
     public static void setupLdapCodecService()
     {
         codec = new DefaultLdapCodecService();
-        LdapCodecServiceFactory.initialize( codec );
+        
+        if ( LdapCodecServiceFactory.isInitialized() == false )
+        {
+            LdapCodecServiceFactory.initialize( codec );
+        }
         encoder = new LdapEncoder( codec );
     }
 
