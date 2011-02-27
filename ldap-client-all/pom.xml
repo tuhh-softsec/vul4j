@@ -92,8 +92,6 @@
               <goal>shade</goal>
             </goals>
             <configuration>
-              <shadedGroupFilter>org.apache.directory</shadedGroupFilter>
-              <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
               <createDependencyReducedPom>true</createDependencyReducedPom>
               <shadedArtifactAttached>false</shadedArtifactAttached>
             </configuration>
