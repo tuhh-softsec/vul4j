@@ -215,72 +215,11 @@ public class StandaloneLdapCodecService implements LdapCodecService
     
     
     /**
-     * Uses system properties and default considerations to create a cache 
-     * directory that can be used when one is not provided.
-     *
-     * @see FelixConstants#FRAMEWORK_STORAGE
-     * @return The cache directory default.
-     */
-    private File getCacheDirectoryDefault()
-    {
-        String frameworkStorage = System.getProperties().getProperty( FelixConstants.FRAMEWORK_STORAGE );
-        LOG.info( "{}: {}", FelixConstants.FRAMEWORK_STORAGE, frameworkStorage );
-        
-        String felixCacheRootdir = System.getProperties().getProperty( FELIX_CACHE_ROOTDIR );
-        LOG.info( "{}: {}", FELIX_CACHE_ROOTDIR, felixCacheRootdir );
-
-        try
-        {
-            if ( frameworkStorage == null && felixCacheRootdir == null )
-            {
-                return new File( File.createTempFile( "dummy", null ).getParentFile(), 
-                    "osgi-cache-" + Integer.toString( this.hashCode() ) );
-            }
-            else if ( frameworkStorage == null && felixCacheRootdir != null )
-            {
-                return new File( new File ( felixCacheRootdir ), 
-                    "osgi-cache-" + Integer.toString( this.hashCode() ) );
-            }
-            else if ( frameworkStorage != null && felixCacheRootdir == null )
-            {
-                return new File( frameworkStorage + "-" + Integer.toString( this.hashCode() ) );
-            }
-            
-            // else if both are not null now
-            return new File( new File ( felixCacheRootdir ), 
-                frameworkStorage + "-" + Integer.toString( this.hashCode() ) );
-        }
-        catch ( Exception e ) 
-        {
-            String message = "Failure to create temporary cache directory: " + e.getMessage();
-            LOG.warn( message, e );
-            return null;
-        }
-    }
-    
-    
-    /**
-     * Gets the optional system property value for the pluginDirectory if one 
-     * is provided.
-     *
-     * @return The path for the pluginDirectory or null if not provided.
-     */
-    private File getPluginDirectoryDefault()
-    {
-        String value = System.getProperty( StandaloneLdapCodecService.PLUGIN_DIRECTORY_PROPERTY );
-        LOG.info( "{}: {}", PLUGIN_DIRECTORY_PROPERTY, value );
-        
-        if ( value == null )
-        {
-            return null;
-        }
-        
-        return new File( value );
-    }
-    
-    
-    /**
      * Creates a new instance of StandaloneLdapCodecService.
+     * 
+     * @param pluginDirectory The directory where plugins are stored
+     * @param cacheDirectory The directory where the embedded Felix manages 
+     * its cache
      */
     public StandaloneLdapCodecService( File pluginDirectory, File cacheDirectory )
     {
@@ -370,6 +309,71 @@ public class StandaloneLdapCodecService implements LdapCodecService
         
         loadStockControls();
         setupFelix();
+    }
+    
+    
+    /**
+     * Uses system properties and default considerations to create a cache 
+     * directory that can be used when one is not provided.
+     *
+     * @see FelixConstants#FRAMEWORK_STORAGE
+     * @return The cache directory default.
+     */
+    private File getCacheDirectoryDefault()
+    {
+        String frameworkStorage = System.getProperties().getProperty( FelixConstants.FRAMEWORK_STORAGE );
+        LOG.info( "{}: {}", FelixConstants.FRAMEWORK_STORAGE, frameworkStorage );
+        
+        String felixCacheRootdir = System.getProperties().getProperty( FELIX_CACHE_ROOTDIR );
+        LOG.info( "{}: {}", FELIX_CACHE_ROOTDIR, felixCacheRootdir );
+
+        try
+        {
+            if ( frameworkStorage == null && felixCacheRootdir == null )
+            {
+                return new File( File.createTempFile( "dummy", null ).getParentFile(), 
+                    "osgi-cache-" + Integer.toString( this.hashCode() ) );
+            }
+            else if ( frameworkStorage == null && felixCacheRootdir != null )
+            {
+                return new File( new File ( felixCacheRootdir ), 
+                    "osgi-cache-" + Integer.toString( this.hashCode() ) );
+            }
+            else if ( frameworkStorage != null && felixCacheRootdir == null )
+            {
+                return new File( frameworkStorage + "-" + Integer.toString( this.hashCode() ) );
+            }
+            
+            // else if both are not null now
+            return new File( new File ( felixCacheRootdir ), 
+                frameworkStorage + "-" + Integer.toString( this.hashCode() ) );
+        }
+        catch ( Exception e ) 
+        {
+            String message = "Failure to create temporary cache directory: " + e.getMessage();
+            LOG.warn( message, e );
+            return null;
+        }
+    }
+    
+    
+    /**
+     * Gets the optional system property value for the pluginDirectory if one 
+     * is provided.
+     *
+     * @return The path for the pluginDirectory or null if not provided.
+     */
+    private File getPluginDirectoryDefault()
+    {
+        String value = System.getProperty( StandaloneLdapCodecService.PLUGIN_DIRECTORY_PROPERTY );
+        LOG.info( "{}: {}", PLUGIN_DIRECTORY_PROPERTY, value );
+        
+        if ( value == null )
+        {
+            return null;
+        }
+        
+        return new File( value );
     }
     
     
