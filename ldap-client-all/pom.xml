@@ -25,8 +25,8 @@
     <version>1.0.0-M2-SNAPSHOT</version>
   </parent>
   
-  <artifactId>shared-all</artifactId>
-  <name>Apache Directory Shared All</name>
+  <artifactId>shared-ldap-client-all</artifactId>
+  <name>Apache Directory Shared LDAP Client All</name>
 
   <dependencies>
     <dependency>
@@ -61,22 +61,17 @@
 
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>shared-ldap-codec-standalone</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>shared-ldap-schema</artifactId>
     </dependency>
 
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>shared-ldap-schema-converter</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>shared-dsml-engine</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>shared-dsml-parser</artifactId>
+      <artifactId>shared-ldap-client-api</artifactId>
     </dependency>
 
     <dependency>

@@ -27,8 +27,8 @@
     <version>1.0.0-M2-SNAPSHOT</version>
   </parent>
 
-  <artifactId>ldap-client-api</artifactId>
-  <name>Apache Directory LDAP Client API</name>
+  <artifactId>shared-ldap-client-api</artifactId>
+  <name>Apache Directory Shared LDAP Client API</name>
   <packaging>bundle</packaging>
   <inceptionYear>2009</inceptionYear>
 

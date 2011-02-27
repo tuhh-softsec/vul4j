@@ -89,6 +89,7 @@
     <module>ldap-schema</module>
     <module>ldap-schema-converter</module>
     <module>ldap-client-api</module>
+    <module>ldap-client-all</module>
     <module>dsml-parser</module>
     <module>dsml-engine</module>
     <module>distribution</module>
@@ -458,7 +459,7 @@
 
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>ldap-client-api</artifactId>
+        <artifactId>shared-ldap-client-api</artifactId>
         <version>${project.version}</version>
       </dependency>
 

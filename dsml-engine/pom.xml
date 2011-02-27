@@ -42,7 +42,7 @@
     
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>ldap-client-api</artifactId>
+      <artifactId>shared-ldap-client-api</artifactId>
     </dependency>
     
     <dependency>
