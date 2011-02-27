@@ -21,6 +21,7 @@ package org.apache.directory.shared.ldap.codec.osgi;
 
 
 import org.apache.directory.shared.ldap.codec.LdapEncoder;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecServiceFactory;
 import org.apache.directory.shared.ldap.codec.osgi.DefaultLdapCodecService;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -46,6 +47,7 @@ public abstract class AbstractCodecServiceTest
     public static void setupLdapCodecService()
     {
         codec = new DefaultLdapCodecService();
+        LdapCodecServiceFactory.initialize( codec );
         encoder = new LdapEncoder( codec );
     }
 

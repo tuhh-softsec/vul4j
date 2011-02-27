@@ -100,6 +100,7 @@ public class StoreExtendedRequestName extends GrammarAction<LdapMessageContainer
                 }
 
                 req = LdapCodecServiceFactory.getSingleton().newExtendedRequest( requestName, null );
+                req.setMessageId( container.getMessageId() );
                 container.setMessage( LdapCodecServiceFactory.getSingleton().decorate( req ) );
             }
             catch ( DecoderException de )
