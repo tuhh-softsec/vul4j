@@ -561,7 +561,7 @@ import static org.apache.commons.digester3.DigesterLoader.newLoader;
   })
   .setValidating(false);
 
-  Foo foo = (Foo) loader.newDigester().parse(/* put here the source */);
+  Foo foo = loader.newDigester().parse(/* put here the source */);
 </source>
 
 <p>In order, these rules do the following tasks:</p>
