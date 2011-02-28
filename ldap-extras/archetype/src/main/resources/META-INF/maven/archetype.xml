@@ -2,14 +2,14 @@
   xsi:schemaLocation="http://maven.apache.org/plugins/maven-archetype-plugin/archetype/1.0.0 http://maven.apache.org/xsd/archetype-1.0.0.xsd">
   <id>shared-ldap-extras-archetype</id>
   <sources>
-    <source>src/main/java/org/acme/controls/BarControl.java</source>
-    <source>src/main/java/org/acme/extended/FooExtendedRequest.java</source>
-    <source>src/main/java/org/acme/extended/FooExtendedResponse.java</source>
+    <source>src/main/java/controls/BarControl.java</source>
+    <source>src/main/java/extended/FooExtendedRequest.java</source>
+    <source>src/main/java/extended/FooExtendedResponse.java</source>
   </sources>
   <testSources>
-    <source>src/test/java/org/acme/controls/BarControlTest.java</source>
-    <source>src/test/java/org/acme/extended/FooExtendedRequestTest.java</source>
-    <source>src/test/java/org/acme/extended/FooExtendedResponseTest.java</source>
+    <source>src/test/java/controls/BarControlTest.java</source>
+    <source>src/test/java/extended/FooExtendedRequestTest.java</source>
+    <source>src/test/java/extended/FooExtendedResponseTest.java</source>
   </testSources>
 </archetype>
 
