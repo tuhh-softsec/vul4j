@@ -77,8 +77,7 @@
   <modules>
     <module>i18n</module>
     <module>util</module>
-    <module>asn1-api</module>
-    <module>asn1-ber</module>
+    <module>asn1</module>
     <module>integ</module>
     <module>all</module>
     <module>ldap-extras</module>
