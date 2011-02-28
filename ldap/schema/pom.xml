@@ -26,18 +26,14 @@
     <version>1.0.0-M2-SNAPSHOT</version>
   </parent>
   
-  <artifactId>shared-ldap-extras-parent</artifactId>
-  <name>Apache Directory Shared LDAP Extras</name>
+  <artifactId>shared-ldap-schema-parent</artifactId>
+  <name>Apache Directory Shared LDAP Schema Parent</name>
   <inceptionYear>2003</inceptionYear>
   <packaging>pom</packaging>
 
   <modules>
-    <module>aci</module>
-    <module>codec</module>
-    <module>codec-api</module>
-    <module>sp</module>
-    <module>trigger</module>
-    <module>util</module>
+    <module>data</module>
+    <module>converter</module>
   </modules>
 
   <build>
@@ -53,9 +49,9 @@
   </build>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/directory/shared/trunk/ldap/extras</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/directory/shared/trunk/ldap/extras</developerConnection>
-    <url>http://svn.apache.org/viewvc/directory/shared/trunk/ldap/extras</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/directory/shared/trunk/ldap/schema</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/directory/shared/trunk/ldap/schema</developerConnection>
+    <url>http://svn.apache.org/viewvc/directory/shared/trunk/ldap/schema</url>
   </scm>
 
 </project>
