@@ -80,15 +80,7 @@
     <module>asn1</module>
     <module>integ</module>
     <module>all</module>
-    <module>ldap-extras</module>
-    <module>ldap-codec</module>
-    <module>ldap-codec-standalone</module>
-    <module>ldap-protocol-codec</module>
-    <module>ldap-model</module>
-    <module>ldap-schema</module>
-    <module>ldap-schema-converter</module>
-    <module>ldap-client-api</module>
-    <module>ldap-client-all</module>
+    <module>ldap</module>
     <module>dsml</module>
     <module>distribution</module>
   </modules>
