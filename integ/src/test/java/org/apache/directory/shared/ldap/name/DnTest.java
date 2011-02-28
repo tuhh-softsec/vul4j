@@ -2051,7 +2051,7 @@ public class DnTest
 
         assertEquals(
             ( result ).getNormName(),
-            "0.9.2342.19200300.100.1.25=and some animals+2.5.4.11=some people,0.9.2342.19200300.100.1.25=example,0.9.2342.19200300.100.1.25=com" );
+            "2.5.4.11=some people+0.9.2342.19200300.100.1.25=and some animals,0.9.2342.19200300.100.1.25=example,0.9.2342.19200300.100.1.25=com" );
         assertTrue( ( result )
             .getName()
             .equals(
@@ -2073,7 +2073,7 @@ public class DnTest
         assertTrue( result
             .getNormName()
             .equals(
-                "0.9.2342.19200300.100.1.25=and some animals+2.5.4.11=some people,0.9.2342.19200300.100.1.25=example,0.9.2342.19200300.100.1.25=com" ) );
+                "2.5.4.11=some people+0.9.2342.19200300.100.1.25=and some animals,0.9.2342.19200300.100.1.25=example,0.9.2342.19200300.100.1.25=com" ) );
         assertTrue( result
             .getName()
             .equals(
@@ -2506,7 +2506,7 @@ public class DnTest
         Dn dn = new Dn( "ou= Some   People   + dc=  And   Some anImAls,dc = eXample,dc= cOm" );
         dn.normalize( schemaManager );
 
-        assertEquals( dn, DnSerializer.deserialize( DnSerializer.serialize( dn ) ) );
+        assertEquals( dn, DnSerializer.deserialize( schemaManager, DnSerializer.serialize( dn ) ) );
     }
 
 
@@ -2515,7 +2515,7 @@ public class DnTest
     {
         Dn dn = Dn.EMPTY_DN;
 
-        assertEquals( dn, DnSerializer.deserialize( DnSerializer.serialize( dn ) ) );
+        assertEquals( dn, DnSerializer.deserialize( schemaManager, DnSerializer.serialize( dn ) ) );
     }
 
 
@@ -2534,7 +2534,7 @@ public class DnTest
 
         ObjectInputStream in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        assertEquals( dn, DnSerializer.deserialize( in ) );
+        assertEquals( dn, DnSerializer.deserialize( schemaManager, in ) );
     }
 
 
@@ -2601,8 +2601,8 @@ public class DnTest
         byte[] data = baos.toByteArray();
         ObjectInputStream in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        assertEquals( dn, DnSerializer.deserialize(in) );
-        assertEquals( dn, DnSerializer.deserialize( DnSerializer.serialize( dn ) ) );
+        assertEquals( dn, DnSerializer.deserialize( schemaManager, in ) );
+        assertEquals( dn, DnSerializer.deserialize( schemaManager, DnSerializer.serialize( dn ) ) );
     }
 
 
@@ -2641,14 +2641,14 @@ public class DnTest
         // antlr parser: string value with trailing spaces
         Dn dn1 = new Dn( " cn = Amos\\,Tori , ou=system " );
         assertEquals( " cn = Amos\\,Tori ", dn1.getRdn().getName() );
-        Ava atav1 = dn1.getRdn().getAVA();
+        Ava atav1 = dn1.getRdn().getAva();
         assertEquals( "cn", atav1.getUpType() );
         assertEquals( "Amos,Tori", atav1.getUpValue().getString() );
 
         // antlr parser: hexstring with trailing spaces
         Dn dn3 = new Dn( " cn = #414243 , ou=system " );
         assertEquals( " cn = #414243 ", dn3.getRdn().getName() );
-        Ava atav3 = dn3.getRdn().getAVA();
+        Ava atav3 = dn3.getRdn().getAva();
         assertEquals( "cn", atav3.getUpType() );
         assertEquals( "ABC", atav3.getUpValue().getString() );
         assertTrue( Arrays.equals( Strings.getBytesUtf8("ABC"), atav3.getNormValue().getBytes() ) );
@@ -2656,7 +2656,7 @@ public class DnTest
         // antlr parser:
         Dn dn4 = new Dn( " cn = \\41\\42\\43 , ou=system " );
         assertEquals( " cn = \\41\\42\\43 ", dn4.getRdn().getName() );
-        Ava atav4 = dn4.getRdn().getAVA();
+        Ava atav4 = dn4.getRdn().getAva();
         assertEquals( "cn", atav4.getUpType() );
         assertEquals( "ABC", atav4.getUpValue().getString() );
         assertEquals( "ABC", atav4.getNormValue().getString() );
@@ -2664,7 +2664,7 @@ public class DnTest
         // antlr parser: quotestring with trailing spaces
         Dn dn5 = new Dn( " cn = \"ABC\" , ou=system " );
         assertEquals( " cn = \"ABC\" ", dn5.getRdn().getName() );
-        Ava atav5 = dn5.getRdn().getAVA();
+        Ava atav5 = dn5.getRdn().getAva();
         assertEquals( "cn", atav5.getUpType() );
         assertEquals( "ABC", atav5.getUpValue().getString() );
         assertEquals( "ABC", atav5.getNormValue().getString() );
@@ -2672,7 +2672,7 @@ public class DnTest
         // fast parser: string value with trailing spaces
         Dn dn2 = new Dn( " cn = Amos Tori , ou=system " );
         assertEquals( " cn = Amos Tori ", dn2.getRdn().getName() );
-        Ava atav2 = dn2.getRdn().getAVA();
+        Ava atav2 = dn2.getRdn().getAva();
         assertEquals( "cn", atav2.getUpType() );
         assertEquals( "Amos Tori", atav2.getUpValue().getString() );
     }
@@ -2770,7 +2770,7 @@ public class DnTest
         assertEquals( "Example", rdn.getUpValue().getString() );
         assertEquals( "  ou  =  Example ", rdn.getName() );
 
-        Ava atav = rdn.getAVA();
+        Ava atav = rdn.getAva();
 
         assertEquals( "2.5.4.11=example", atav.getNormName() );
         assertEquals( "2.5.4.11", atav.getNormType() );
@@ -2801,7 +2801,7 @@ public class DnTest
         assertEquals( "  ou  =  Example + ou = TEST ", rdn.getName() );
 
         // The first ATAV
-        Ava atav = rdn.getAVA();
+        Ava atav = rdn.getAva();
 
         assertEquals( "2.5.4.11=example", atav.getNormName() );
         assertEquals( "2.5.4.11", atav.getNormType() );
@@ -2851,7 +2851,7 @@ public class DnTest
         assertEquals( "Ex+mple", rdn.getUpValue().getString() );
         assertEquals( "  ou  =  Ex\\+mple ", rdn.getName() );
 
-        Ava atav = rdn.getAVA();
+        Ava atav = rdn.getAva();
 
         assertEquals( "2.5.4.11=ex\\+mple", atav.getNormName() );
         assertEquals( "2.5.4.11", atav.getNormType() );
@@ -2886,7 +2886,7 @@ public class DnTest
         assertEquals( "Ex+mple", rdn.getNormValue().getString() );
 
         // The first ATAV
-        Ava atav = rdn.getAVA();
+        Ava atav = rdn.getAva();
 
         assertEquals( "  OU  =  Ex\\+mple ", atav.getUpName() );
         assertEquals( "ou=Ex\\+mple", atav.getNormName() );
@@ -2937,7 +2937,7 @@ public class DnTest
         assertEquals( "ex+mple", rdn.getNormValue().getString() );
 
         // The first ATAV
-        atav = rdn.getAVA();
+        atav = rdn.getAva();
 
         assertEquals( "  OU  =  Ex\\+mple ", atav.getUpName() );
         assertEquals( "2.5.4.11=ex\\+mple", atav.getNormName() );
