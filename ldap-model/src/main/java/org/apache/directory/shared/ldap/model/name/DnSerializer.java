@@ -27,8 +27,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 
-import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.util.Strings;
+import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
+import org.apache.directory.shared.ldap.model.schema.SchemaManager;
 import org.apache.directory.shared.util.Unicode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -112,22 +112,13 @@ public final class DnSerializer
         Unicode.writeUTF(out, dn.getName());
 
         // Write the NormName if different
-        if ( dn.isNormalized() )
+        if ( dn.getName().equals( dn.getNormName() ) )
         {
-            if ( dn.getName().equals( dn.getNormName() ) )
-            {
-                Unicode.writeUTF(out, "");
-            }
-            else
-            {
-                Unicode.writeUTF(out, dn.getNormName());
-            }
+            Unicode.writeUTF(out, "");
         }
         else
         {
-            String message = I18n.err( I18n.ERR_04212, dn );
-            LOG.error( message );
-            throw new IOException( message );
+            Unicode.writeUTF(out, dn.getNormName());
         }
 
         // Should we store the byte[] ???
@@ -155,12 +146,13 @@ public final class DnSerializer
      * @return a deserialized Dn
      * @throws IOException If the stream can't be read
      */
-    public static Dn deserialize( byte[] bytes ) throws IOException
+    public static Dn deserialize( SchemaManager schemaManager, byte[] bytes ) 
+        throws IOException, LdapInvalidDnException
     {
         ByteArrayInputStream bais = new ByteArrayInputStream( bytes );
         ObjectInputStream in = new ObjectInputStream( bais );
     
-        return deserialize( in );
+        return deserialize( schemaManager, in );
     }
     
 
@@ -171,11 +163,13 @@ public final class DnSerializer
      * read is exposed in the {@link DnSerializer#serialize(Dn, ObjectOutput)}
      * method<p>
      *
+     * @param schemaManager The SchemaManager (can be null)
      * @param in The input stream from which the Dn is read
      * @return a deserialized Dn
      * @throws IOException If the stream can't be read
      */
-    public static Dn deserialize( ObjectInput in ) throws IOException
+    public static Dn deserialize( SchemaManager schemaManager, ObjectInput in ) 
+        throws IOException, LdapInvalidDnException
     {
         // Read the UPName
         String upName = Unicode.readUTF(in);
@@ -191,19 +185,19 @@ public final class DnSerializer
             normName = upName;
         }
 
-        // Should we read the byte[] ???
-        byte[] bytes = Strings.getBytesUtf8(upName);
-
         // Read the RDNs. Is it's null, the number will be -1.
         int nbRdns = in.readInt();
-        Dn dn = new Dn( upName, normName, bytes );
-
+        
+        Rdn[] rdns = new Rdn[nbRdns];
+        
         for ( int i = 0; i < nbRdns; i++ )
         {
-            Rdn rdn = RdnSerializer.deserialize( in );
-            dn = dn.addInternal( 0, rdn );
+            Rdn rdn = RdnSerializer.deserialize( schemaManager, in );
+            rdns[i] = rdn;
         }
 
+        Dn dn = new Dn( schemaManager, upName, normName, rdns );
+        
         return dn;
     }
 }

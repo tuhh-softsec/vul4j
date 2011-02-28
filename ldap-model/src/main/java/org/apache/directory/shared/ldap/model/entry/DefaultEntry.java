@@ -34,6 +34,7 @@ import java.util.Set;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
+import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.name.DnSerializer;
 import org.apache.directory.shared.ldap.model.name.Rdn;
@@ -2515,7 +2516,15 @@ public class DefaultEntry implements Entry
     public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException
     {
         // Read the Dn
-        dn = DnSerializer.deserialize( in );
+        try
+        {
+            dn = DnSerializer.deserialize( schemaManager, in );
+        }
+        catch( LdapInvalidDnException lide )
+        {
+            throw new IOException( lide.getMessage() );
+        }
+            
 
         // Read the number of attributes
         int nbAttributes = in.readInt();
@@ -2627,7 +2636,7 @@ public class DefaultEntry implements Entry
      * @throws IOException if there was a problem when deserializing
      * @throws ClassNotFoundException if we can't deserialize an expected object
      */
-    public void deserialize( ObjectInput in ) throws IOException, ClassNotFoundException
+    public void deserialize( ObjectInput in ) throws IOException, ClassNotFoundException, LdapInvalidDnException
     {
         // Read the Dn
         dn = Dn.EMPTY_DN;
@@ -2636,7 +2645,7 @@ public class DefaultEntry implements Entry
 
         if ( b == 1 )
         {
-            Rdn rdn = RdnSerializer.deserialize( in );
+            Rdn rdn = RdnSerializer.deserialize( schemaManager, in );
             dn = new Dn( rdn );
         }
 
