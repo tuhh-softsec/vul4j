@@ -29,24 +29,12 @@
   <artifactId>shared-ldap-extras-archetype</artifactId>
   <name>Apache Directory Shared LDAP Extras Archetype</name>
   <inceptionYear>2003</inceptionYear>
-  <packaging>pom</packaging>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+  <packaging>jar</packaging>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/directory/shared/trunk/ldap-extras</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/directory/shared/trunk/ldap-extras</developerConnection>
-    <url>http://svn.apache.org/viewvc/directory/shared/trunk/ldap-extras</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/directory/shared/trunk/ldap-extras/archetype</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/directory/shared/trunk/ldap-extras/archetype</developerConnection>
+    <url>http://svn.apache.org/viewvc/directory/shared/trunk/ldap-extras/archetype</url>
   </scm>
 
 </project>
