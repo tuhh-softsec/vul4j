@@ -50,6 +50,7 @@ public class DefaultActivator implements BundleActivator
      */
     public void start( BundleContext bundleContext ) throws Exception
     {
+        System.out.println( "start( BundleContext bundleContext )");
         registration = bundleContext.registerService( LdapProtocolCodecFactory.class.getName(), factory, null );
         LdapCodecServiceFactory.getSingleton().registerProtocolCodecFactory( factory );
     }

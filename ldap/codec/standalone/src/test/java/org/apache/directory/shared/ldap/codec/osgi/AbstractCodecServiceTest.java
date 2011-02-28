@@ -20,7 +20,7 @@
 package org.apache.directory.shared.ldap.codec.osgi;
 
 
-import org.apache.directory.shared.ldap.codec.LdapEncoder;
+import org.apache.directory.shared.ldap.codec.api.LdapEncoder;
 import org.apache.directory.shared.ldap.codec.standalone.StandaloneLdapCodecService;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
