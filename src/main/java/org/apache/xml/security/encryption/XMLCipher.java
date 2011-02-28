@@ -1174,15 +1174,17 @@ public class XMLCipher {
      * @throws XMLEncryptionException
      */
     public EncryptedKey encryptKey(Document doc, Key key) throws XMLEncryptionException {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Encrypting key ...");
+        }
 
-        logger.debug("Encrypting key ...");
-
-        if(null == key) 
+        if (null == key) {
             logger.error("Key unexpectedly null...");
-        if(cipherMode != WRAP_MODE)
+        }
+        if (cipherMode != WRAP_MODE) {
             logger.debug("XMLCipher unexpectedly not in WRAP_MODE...");
+        }
         if (algorithm == null) {
-
             throw new XMLEncryptionException("XMLCipher instance without transformation specified");
         }
 
@@ -1194,16 +1196,17 @@ public class XMLCipher {
         if (contextCipher == null) {
             // Now create the working cipher
 
-            String jceAlgorithm =
-                JCEMapper.translateURItoJCEID(algorithm);
-
-            logger.debug("alg = " + jceAlgorithm);
+            String jceAlgorithm = JCEMapper.translateURItoJCEID(algorithm);
+            if (logger.isDebugEnabled()) {
+                logger.debug("alg = " + jceAlgorithm);
+            }
 
             try {
-                if (requestedJCEProvider == null)
+                if (requestedJCEProvider == null) {
                     c = Cipher.getInstance(jceAlgorithm);
-                else
+                } else {
                     c = Cipher.getInstance(jceAlgorithm, requestedJCEProvider);
+                }
             } catch (NoSuchAlgorithmException nsae) {
                 throw new XMLEncryptionException("empty", nsae);
             } catch (NoSuchProviderException nspre) {
@@ -1228,23 +1231,21 @@ public class XMLCipher {
         }
 
         String base64EncodedEncryptedOctets = Base64.encode(encryptedBytes);
-
-        logger.debug("Encrypted key octets:\n" + base64EncodedEncryptedOctets);
-        logger.debug("Encrypted key octets length = " +
-                     base64EncodedEncryptedOctets.length());
+        if (logger.isDebugEnabled()) {
+            logger.debug("Encrypted key octets:\n" + base64EncodedEncryptedOctets);
+            logger.debug("Encrypted key octets length = " + base64EncodedEncryptedOctets.length());
+        }
 
         CipherValue cv = ek.getCipherData().getCipherValue();
         cv.setValue(base64EncodedEncryptedOctets);
 
         try {
-            EncryptionMethod method = factory.newEncryptionMethod(
-                                                                   new URI(algorithm).toString());
+            EncryptionMethod method = factory.newEncryptionMethod(new URI(algorithm).toString());
             ek.setEncryptionMethod(method);
         } catch (URI.MalformedURIException mfue) {
             throw new XMLEncryptionException("empty", mfue);
         }
         return ek;
-
     }
 
     /**
@@ -1256,22 +1257,24 @@ public class XMLCipher {
      * @return a key corresponding to the given type
      * @throws XMLEncryptionException
      */
+    public Key decryptKey(EncryptedKey encryptedKey, String algorithm) 
+        throws XMLEncryptionException {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Decrypting key from previously loaded EncryptedKey...");
+        }
 
-    public Key decryptKey(EncryptedKey encryptedKey, String algorithm) throws
-    XMLEncryptionException {
-
-        logger.debug("Decrypting key from previously loaded EncryptedKey...");
-
-        if(cipherMode != UNWRAP_MODE)
+        if (cipherMode != UNWRAP_MODE && logger.isDebugEnabled()) {
             logger.debug("XMLCipher unexpectedly not in UNWRAP_MODE...");
+        }
 
         if (algorithm == null) {
             throw new XMLEncryptionException("Cannot decrypt a key without knowing the algorithm");
         }
 
         if (key == null) {
-
-            logger.debug("Trying to find a KEK via key resolvers");
+            if (logger.isDebugEnabled()) {
+                logger.debug("Trying to find a KEK via key resolvers");
+            }
 
             KeyInfo ki = encryptedKey.getKeyInfo();
             if (ki != null) {
@@ -1280,12 +1283,12 @@ public class XMLCipher {
                     String keyType = JCEMapper.getJCEKeyAlgorithmFromURI(keyWrapAlg);
                     if ("RSA".equals(keyType)) {
                         key = ki.getPrivateKey();
-                    }
-                    else {
+                    } else {
                         key = ki.getSecretKey();
                     }
                 }
                 catch (Exception e) {
+                    //
                 }
             }
             if (key == null) {
@@ -1298,25 +1301,27 @@ public class XMLCipher {
         XMLCipherInput cipherInput = new XMLCipherInput(encryptedKey);
         byte [] encryptedBytes = cipherInput.getBytes();
 
-        String jceKeyAlgorithm =
-            JCEMapper.getJCEKeyAlgorithmFromURI(algorithm);
-        logger.debug("JCE Key Algorithm: " + jceKeyAlgorithm);
+        String jceKeyAlgorithm = JCEMapper.getJCEKeyAlgorithmFromURI(algorithm);
+        if (logger.isDebugEnabled()) {
+            logger.debug("JCE Key Algorithm: " + jceKeyAlgorithm);
+        }
 
         Cipher c;
         if (contextCipher == null) {
             // Now create the working cipher
 
             String jceAlgorithm =
-                JCEMapper.translateURItoJCEID(
-                                              encryptedKey.getEncryptionMethod().getAlgorithm());
-
-            logger.debug("JCE Algorithm = " + jceAlgorithm);
+                JCEMapper.translateURItoJCEID(encryptedKey.getEncryptionMethod().getAlgorithm());
+            if (logger.isDebugEnabled()) {
+                logger.debug("JCE Algorithm = " + jceAlgorithm);
+            }
 
             try {
-                if (requestedJCEProvider == null)
+                if (requestedJCEProvider == null) {
                     c = Cipher.getInstance(jceAlgorithm);
-                else
+                } else {
                     c = Cipher.getInstance(jceAlgorithm, requestedJCEProvider);
+                }
             } catch (NoSuchAlgorithmException nsae) {
                 throw new XMLEncryptionException("empty", nsae);
             } catch (NoSuchProviderException nspre) {
@@ -1333,17 +1338,16 @@ public class XMLCipher {
         try {		
             c.init(Cipher.UNWRAP_MODE, key);
             ret = c.unwrap(encryptedBytes, jceKeyAlgorithm, Cipher.SECRET_KEY);
-
         } catch (InvalidKeyException ike) {
             throw new XMLEncryptionException("empty", ike);
         } catch (NoSuchAlgorithmException nsae) {
             throw new XMLEncryptionException("empty", nsae);
         }
-
-        logger.debug("Decryption of key type " + algorithm + " OK");
+        if (logger.isDebugEnabled()) {
+            logger.debug("Decryption of key type " + algorithm + " OK");
+        }
 
         return ret;
-
     }
 
     /**
@@ -1357,12 +1361,8 @@ public class XMLCipher {
      * @return a key corresponding to the given type
      * @throws XMLEncryptionException
      */
-
-    public Key decryptKey(EncryptedKey encryptedKey) throws
-    XMLEncryptionException {
-
+    public Key decryptKey(EncryptedKey encryptedKey) throws XMLEncryptionException {
         return decryptKey(encryptedKey, ed.getEncryptionMethod().getAlgorithm());
-
     }
 
     /**
@@ -1383,13 +1383,14 @@ public class XMLCipher {
      * @return the <code>Node</code> as a result of the decrypt operation.
      * @throws XMLEncryptionException
      */
-    private Document decryptElement(Element element) throws
-    XMLEncryptionException {
+    private Document decryptElement(Element element) throws XMLEncryptionException {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Decrypting element...");
+        }
 
-        logger.debug("Decrypting element...");
-
-        if(cipherMode != DECRYPT_MODE)
+        if (cipherMode != DECRYPT_MODE) {
             logger.error("XMLCipher unexpectedly not in DECRYPT_MODE...");
+        }
 
         String octets;
         try {
@@ -1398,33 +1399,26 @@ public class XMLCipher {
             throw new XMLEncryptionException("empty", uee);
         }
 
-
-        logger.debug("Decrypted octets:\n" + octets);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Decrypted octets:\n" + octets);
+        }
 
         Node sourceParent =  element.getParentNode();
 
-        DocumentFragment decryptedFragment = 
-            serializer.deserialize(octets, sourceParent);
-
+        DocumentFragment decryptedFragment = serializer.deserialize(octets, sourceParent);
 
         // The de-serialiser returns a fragment whose children we need to
         // take on.
-
         if (sourceParent != null && Node.DOCUMENT_NODE == sourceParent.getNodeType()) {
-
             // If this is a content decryption, this may have problems
-
             contextDocument.removeChild(contextDocument.getDocumentElement());
             contextDocument.appendChild(decryptedFragment);
-        }
-        else {
+        } else {
             sourceParent.replaceChild(decryptedFragment, element);
-
         }
 
-        return (contextDocument);
+        return contextDocument;
     }
-
 
     /**
      * 
@@ -1432,17 +1426,18 @@ public class XMLCipher {
      * @return the <code>Node</code> as a result of the decrypt operation.
      * @throws XMLEncryptionException
      */
-    private Document decryptElementContent(Element element) throws 
-    XMLEncryptionException {
-        Element e = (Element) element.getElementsByTagNameNS(
-                                                             EncryptionConstants.EncryptionSpecNS, 
-                                                             EncryptionConstants._TAG_ENCRYPTEDDATA).item(0);
+    private Document decryptElementContent(Element element) throws XMLEncryptionException {
+        Element e = 
+            (Element) element.getElementsByTagNameNS(
+                EncryptionConstants.EncryptionSpecNS,
+                EncryptionConstants._TAG_ENCRYPTEDDATA
+            ).item(0);
 
         if (null == e) {
             throw new XMLEncryptionException("No EncryptedData child element.");
         }
 
-        return (decryptElement(e));
+        return decryptElement(e);
     }
 
     /**
@@ -1456,28 +1451,27 @@ public class XMLCipher {
      * @return the bytes resulting from the decryption
      * @throws XMLEncryptionException
      */
+    public byte[] decryptToByteArray(Element element) throws XMLEncryptionException {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Decrypting to ByteArray...");
+        }
 
-    public byte[] decryptToByteArray(Element element) 
-    throws XMLEncryptionException {
-
-        logger.debug("Decrypting to ByteArray...");
-
-        if(cipherMode != DECRYPT_MODE)
+        if (cipherMode != DECRYPT_MODE) {
             logger.error("XMLCipher unexpectedly not in DECRYPT_MODE...");
+        }
 
         EncryptedData encryptedData = factory.newEncryptedData(element);
 
         if (key == null) {
-
             KeyInfo ki = encryptedData.getKeyInfo();
-
             if (ki != null) {
                 try {
                     // Add a EncryptedKey resolver
                     ki.registerInternalKeyResolver(
-                                                   new EncryptedKeyResolver(
-                                                                            encryptedData.getEncryptionMethod().getAlgorithm(), 
-                                                                            kek));
+                        new EncryptedKeyResolver(
+                            encryptedData.getEncryptionMethod().getAlgorithm(), kek
+                        )
+                    );
                     key = ki.getSecretKey();
                 } catch (KeyResolverException kre) {
                     // We will throw in a second...
@@ -1485,8 +1479,9 @@ public class XMLCipher {
             }
 
             if (key == null) {
-                logger.error("XMLCipher::decryptElement called without a key and unable to resolve");
-
+                logger.error(
+                    "XMLCipher::decryptElement called without a key and unable to resolve"
+                );
                 throw new XMLEncryptionException("encryption.nokey");
             }
         }
@@ -1499,14 +1494,17 @@ public class XMLCipher {
 
         String jceAlgorithm = 
             JCEMapper.translateURItoJCEID(encryptedData.getEncryptionMethod().getAlgorithm());
-        logger.debug("JCE Algorithm = " + jceAlgorithm);
+        if (logger.isDebugEnabled()) {
+            logger.debug("JCE Algorithm = " + jceAlgorithm);
+        }
 
         Cipher c;
         try {
-            if (requestedJCEProvider == null)
+            if (requestedJCEProvider == null) {
                 c = Cipher.getInstance(jceAlgorithm);
-            else
+            } else {
                 c = Cipher.getInstance(jceAlgorithm, requestedJCEProvider);
+            }
         } catch (NoSuchAlgorithmException nsae) {
             throw new XMLEncryptionException("empty", nsae);
         } catch (NoSuchProviderException nspre) {
@@ -1540,19 +1538,15 @@ public class XMLCipher {
         }
 
         byte[] plainBytes;
-
         try {
-            plainBytes = c.doFinal(encryptedBytes, 
-                                   ivLen, 
-                                   encryptedBytes.length - ivLen);
-
+            plainBytes = c.doFinal(encryptedBytes, ivLen, encryptedBytes.length - ivLen);
         } catch (IllegalBlockSizeException ibse) {
             throw new XMLEncryptionException("empty", ibse);
         } catch (BadPaddingException bpe) {
             throw new XMLEncryptionException("empty", bpe);
         }
 
-        return (plainBytes);
+        return plainBytes;
     }
 
     /*
@@ -1593,16 +1587,13 @@ public class XMLCipher {
      * -->
      * @throws XMLEncryptionException
      */
-
-    public EncryptedData createEncryptedData(int type, String value) throws
-    XMLEncryptionException {
+    public EncryptedData createEncryptedData(int type, String value) throws XMLEncryptionException {
         EncryptedData result = null;
         CipherData data = null;
 
         switch (type) {
         case CipherData.REFERENCE_TYPE:
-            CipherReference cipherReference = factory.newCipherReference(
-                                                                          value);
+            CipherReference cipherReference = factory.newCipherReference(value);
             data = factory.newCipherData(type);
             data.setCipherReference(cipherReference);
             result = factory.newEncryptedData(data);
@@ -1614,7 +1605,7 @@ public class XMLCipher {
             result = factory.newEncryptedData(data);
         }
 
-        return (result);
+        return result;
     }
 
     /**
@@ -1651,16 +1642,13 @@ public class XMLCipher {
      * -->
      * @throws XMLEncryptionException
      */
-
-    public EncryptedKey createEncryptedKey(int type, String value) throws
-    XMLEncryptionException {
+    public EncryptedKey createEncryptedKey(int type, String value) throws XMLEncryptionException {
         EncryptedKey result = null;
         CipherData data = null;
 
         switch (type) {
         case CipherData.REFERENCE_TYPE:
-            CipherReference cipherReference = factory.newCipherReference(
-                                                                          value);
+            CipherReference cipherReference = factory.newCipherReference(value);
             data = factory.newCipherData(type);
             data.setCipherReference(cipherReference);
             result = factory.newEncryptedKey(data);
@@ -1672,7 +1660,7 @@ public class XMLCipher {
             result = factory.newEncryptedKey(data);
         }
 
-        return (result);
+        return result;
     }
 
     /**
@@ -1681,9 +1669,8 @@ public class XMLCipher {
      * @param algorithm Algorithm of the agreement method
      * @return a new <code>AgreementMethod</code>
      */
-
     public AgreementMethod createAgreementMethod(String algorithm) {
-        return (factory.newAgreementMethod(algorithm));
+        return factory.newAgreementMethod(algorithm);
     }
 
     /**
@@ -1693,9 +1680,8 @@ public class XMLCipher {
      * REFERENCE_TYPE)
      * @return a new <code>CipherData</code>
      */
-
     public CipherData createCipherData(int type) {
-        return (factory.newCipherData(type));
+        return factory.newCipherData(type);
     }
 
     /**
@@ -1704,9 +1690,8 @@ public class XMLCipher {
      * @param uri The URI that the reference will refer 
      * @return a new <code>CipherReference</code>
      */
-
     public CipherReference createCipherReference(String uri) {
-        return (factory.newCipherReference(uri));
+        return factory.newCipherReference(uri);
     }
 
     /**
@@ -1715,9 +1700,8 @@ public class XMLCipher {
      * @param value The value to set the ciphertext to
      * @return a new <code>CipherValue</code>
      */
-
     public CipherValue createCipherValue(String value) {
-        return (factory.newCipherValue(value));
+        return factory.newCipherValue(value);
     }
 
     /**
@@ -1727,7 +1711,7 @@ public class XMLCipher {
      * @return a new <code>EncryptionMethod</code>
      */
     public EncryptionMethod createEncryptionMethod(String algorithm) {
-        return (factory.newEncryptionMethod(algorithm));
+        return factory.newEncryptionMethod(algorithm);
     }
 
     /**
@@ -1735,7 +1719,7 @@ public class XMLCipher {
      * @return a new <code>EncryptionProperties</code>
      */
     public EncryptionProperties createEncryptionProperties() {
-        return (factory.newEncryptionProperties());
+        return factory.newEncryptionProperties();
     }
 
     /**
@@ -1752,7 +1736,7 @@ public class XMLCipher {
      * @return a new <code>ReferenceList</code>
      */
     public ReferenceList createReferenceList(int type) {
-        return (factory.newReferenceList(type));
+        return factory.newReferenceList(type);
     }
 
     /**
@@ -1763,9 +1747,8 @@ public class XMLCipher {
      * createTransforms(Document) method.
      * @return a new <code>Transforms</code>
      */
-
     public Transforms createTransforms() {
-        return (factory.newTransforms());
+        return factory.newTransforms();
     }
 
     /**
@@ -1779,7 +1762,7 @@ public class XMLCipher {
      * @return a new <code>Transforms</code>
      */
     public Transforms createTransforms(Document doc) {
-        return (factory.newTransforms(doc));
+        return factory.newTransforms(doc);
     }
 
     /**
@@ -1789,35 +1772,19 @@ public class XMLCipher {
      *
      * @author  Axl Mattheus
      */
-
     private class Serializer {
         /**
          * Initialize the <code>XMLSerializer</code> with the specified context
          * <code>Document</code>.
          * <p/>
          * Setup OutputFormat in a way that the serialization does <b>not</b>
-         * modifiy the contents, that is it shall not do any pretty printing
+         * modify the contents, that is it shall not do any pretty printing
          * and so on. This would destroy the original content before 
          * encryption. If that content was signed before encryption and the 
          * serialization modifies the content the signature verification will
          * fail.
          */
         Serializer() {
-        }
-
-        /**
-         * Returns a <code>String</code> representation of the specified
-         * <code>Document</code>.
-         * <p/>
-         * Refer also to comments about setup of format.
-         *
-         * @param document the <code>Document</code> to serialize.
-         * @return the <code>String</code> representation of the serilaized
-         *   <code>Document</code>.
-         * @throws Exception
-         */
-        String serialize(Document document) throws Exception {
-            return canonSerialize(document);
         }
 
         /**
@@ -1840,7 +1807,7 @@ public class XMLCipher {
          * <code>NodeList</code>.
          * <p/>
          * This is a special case because the NodeList may represent a
-         * <code>DocumentFragment</code>. A document fragement may be a
+         * <code>DocumentFragment</code>. A document fragment may be a
          * non-valid XML document (refer to appropriate description of
          * W3C) because it my start with a non-element node, e.g. a text
          * node.
@@ -1853,7 +1820,7 @@ public class XMLCipher {
          * Refer also to comments about setup of format.
          * 
          * @param content the <code>NodeList</code> to serialize.
-         * @return the <code>String</code> representation of the serilaized
+         * @return the <code>String</code> representation of the serialized
          *   <code>NodeList</code>.
          * @throws Exception
          */
@@ -1888,16 +1855,15 @@ public class XMLCipher {
          * @param ctx
          * @return the DocumentFragment resulting from the parse of the source
          * @throws XMLEncryptionException
-         *
          */
         DocumentFragment deserialize(String source, Node ctx) throws XMLEncryptionException {
             DocumentFragment result;
             final String tagname = "fragment";
 
             // Create the context to parse the document against
-            StringBuffer sb;
+            StringBuilder sb;
 
-            sb = new StringBuffer();
+            sb = new StringBuilder();
             sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?><"+tagname);
 
             // Run through each node up to the document node and find any
@@ -1906,13 +1872,13 @@ public class XMLCipher {
             Node wk = ctx;
 
             while (wk != null) {
-
                 NamedNodeMap atts = wk.getAttributes();
                 int length;
-                if (atts != null)
+                if (atts != null) {
                     length = atts.getLength();
-                else
+                } else {
                     length = 0;
+                }
 
                 for (int i = 0 ; i < length ; ++i) {
                     Node att = atts.item(i);
@@ -1932,10 +1898,8 @@ public class XMLCipher {
                             p = p.getParentNode();
                         }
                         if (found == false) {
-
                             // This is an attribute node
-                            sb.append(" " + att.getNodeName() + "=\"" + 
-                                      att.getNodeValue() + "\"");
+                            sb.append(" " + att.getNodeName() + "=\"" + att.getNodeValue() + "\"");
                         }
                     }
                 }
@@ -1950,11 +1914,10 @@ public class XMLCipher {
                 dbf.setNamespaceAware(true);
                 dbf.setAttribute("http://xml.org/sax/features/namespaces", Boolean.TRUE);
                 DocumentBuilder db = dbf.newDocumentBuilder();
-                Document d = db.parse(
-                                      new InputSource(new StringReader(fragment)));
+                Document d = db.parse(new InputSource(new StringReader(fragment)));
 
-                Element fragElt = (Element) contextDocument.importNode(
-                                                                        d.getDocumentElement(), true);
+                Element fragElt = 
+                    (Element) contextDocument.importNode(d.getDocumentElement(), true);
                 result = contextDocument.createDocumentFragment();
                 Node child = fragElt.getFirstChild();
                 while (child != null) {
@@ -1963,7 +1926,6 @@ public class XMLCipher {
                     child = fragElt.getFirstChild();
                 }
                 // String outp = serialize(d);
-
             } catch (SAXException se) {
                 throw new XMLEncryptionException("empty", se);
             } catch (ParserConfigurationException pce) {
@@ -1972,7 +1934,7 @@ public class XMLCipher {
                 throw new XMLEncryptionException("empty", ioe);
             }
 
-            return (result);
+            return result;
         }
     }
 
@@ -1987,7 +1949,7 @@ public class XMLCipher {
          * @return a new AgreementMethod
          */
         AgreementMethod newAgreementMethod(String algorithm)  {
-            return (new AgreementMethodImpl(algorithm));
+            return new AgreementMethodImpl(algorithm);
         }
 
         /**
@@ -1996,7 +1958,7 @@ public class XMLCipher {
          *
          */
         CipherData newCipherData(int type) {
-            return (new CipherDataImpl(type));
+            return new CipherDataImpl(type);
         }
 
         /**
@@ -2004,7 +1966,7 @@ public class XMLCipher {
          * @return a new CipherReference
          */
         CipherReference newCipherReference(String uri)  {
-            return (new CipherReferenceImpl(uri));
+            return new CipherReferenceImpl(uri);
         }
 
         /**
@@ -2012,12 +1974,12 @@ public class XMLCipher {
          * @return a new CipherValue
          */
         CipherValue newCipherValue(String value) {
-            return (new CipherValueImpl(value));
+            return new CipherValueImpl(value);
         }
 
         /*
         CipherValue newCipherValue(byte[] value) {
-            return (new CipherValueImpl(value));
+            return new CipherValueImpl(value);
         }
          */
 
@@ -2026,7 +1988,7 @@ public class XMLCipher {
          * @return a new EncryptedData
          */
         EncryptedData newEncryptedData(CipherData data) {
-            return (new EncryptedDataImpl(data));
+            return new EncryptedDataImpl(data);
         }
 
         /**
@@ -2034,7 +1996,7 @@ public class XMLCipher {
          * @return a new EncryptedKey
          */
         EncryptedKey newEncryptedKey(CipherData data) {
-            return (new EncryptedKeyImpl(data));
+            return new EncryptedKeyImpl(data);
         }
 
         /**
@@ -2042,36 +2004,36 @@ public class XMLCipher {
          * @return a new EncryptionMethod
          */
         EncryptionMethod newEncryptionMethod(String algorithm) {
-            return (new EncryptionMethodImpl(algorithm));
+            return new EncryptionMethodImpl(algorithm);
         }
 
         /**
          * @return a new EncryptionProperties
          */
         EncryptionProperties newEncryptionProperties() {
-            return (new EncryptionPropertiesImpl());
+            return new EncryptionPropertiesImpl();
         }
 
         /**
          * @return a new EncryptionProperty
          */
         EncryptionProperty newEncryptionProperty() {
-            return (new EncryptionPropertyImpl());
+            return new EncryptionPropertyImpl();
         }
 
         /**
          * @param type ReferenceList.DATA_REFERENCE or ReferenceList.KEY_REFERENCE
-         * @return a new ReferenceList zz
+         * @return a new ReferenceList
          */
         ReferenceList newReferenceList(int type) {
-            return (new ReferenceListImpl(type));
+            return new ReferenceListImpl(type);
         }
 
         /**
          * @return a new Transforms
          */
         Transforms newTransforms() {
-            return (new TransformsImpl());
+            return new TransformsImpl();
         }
 
         /**
@@ -2079,94 +2041,15 @@ public class XMLCipher {
          * @return a new Transforms
          */
         Transforms newTransforms(Document doc) {
-            return (new TransformsImpl(doc));
-        }
-
-        /**
-         * @param element
-         * @return a new AgreementMethod
-         * @throws XMLEncryptionException
-         *
-         */
-        // <element name="AgreementMethod" type="xenc:AgreementMethodType"/>
-        // <complexType name="AgreementMethodType" mixed="true">
-        //     <sequence>
-        //         <element name="KA-Nonce" minOccurs="0" type="base64Binary"/>
-        //         <!-- <element ref="ds:DigestMethod" minOccurs="0"/> -->
-        //         <any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
-        //         <element name="OriginatorKeyInfo" minOccurs="0" type="ds:KeyInfoType"/>
-        //         <element name="RecipientKeyInfo" minOccurs="0" type="ds:KeyInfoType"/>
-        //     </sequence>
-        //     <attribute name="Algorithm" type="anyURI" use="required"/>
-        // </complexType>
-        AgreementMethod newAgreementMethod(Element element) throws
-        XMLEncryptionException {
-            if (null == element) {
-                throw new NullPointerException("element is null");
-            }
-
-            String algorithm = element.getAttributeNS(null, 
-                                                      EncryptionConstants._ATT_ALGORITHM);
-            AgreementMethod result = newAgreementMethod(algorithm);
-
-            Element kaNonceElement = (Element) element.getElementsByTagNameNS(
-                                                                              EncryptionConstants.EncryptionSpecNS,
-                                                                              EncryptionConstants._TAG_KA_NONCE).item(0);
-            if (null != kaNonceElement) {
-                result.setKANonce(kaNonceElement.getNodeValue().getBytes());
-            }
-            // TODO: ///////////////////////////////////////////////////////////
-            // Figure out how to make this pesky line work..
-            // <any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
-
-            // TODO: Work out how to handle relative URI
-
-            Element originatorKeyInfoElement =
-                (Element) element.getElementsByTagNameNS(
-                                                         EncryptionConstants.EncryptionSpecNS,
-                                                         EncryptionConstants._TAG_ORIGINATORKEYINFO).item(0);
-            if (null != originatorKeyInfoElement) {
-                try {
-                    result.setOriginatorKeyInfo(
-                                                new KeyInfo(originatorKeyInfoElement, null));
-                } catch (XMLSecurityException xse) {
-                    throw new XMLEncryptionException("empty", xse);
-                }
-            }
-
-            // TODO: Work out how to handle relative URI
-
-            Element recipientKeyInfoElement =
-                (Element) element.getElementsByTagNameNS(
-                                                         EncryptionConstants.EncryptionSpecNS,
-                                                         EncryptionConstants._TAG_RECIPIENTKEYINFO).item(0);
-            if (null != recipientKeyInfoElement) {
-                try {
-                    result.setRecipientKeyInfo(
-                                               new KeyInfo(recipientKeyInfoElement, null));
-                } catch (XMLSecurityException xse) {
-                    throw new XMLEncryptionException("empty", xse);
-                }
-            }
-
-            return (result);
+            return new TransformsImpl(doc);
         }
 
         /**
          * @param element
          * @return a new CipherData
          * @throws XMLEncryptionException
-         *
          */
-        // <element name='CipherData' type='xenc:CipherDataType'/>
-        // <complexType name='CipherDataType'>
-        //     <choice>
-        //         <element name='CipherValue' type='base64Binary'/>
-        //         <element ref='xenc:CipherReference'/>
-        //     </choice>
-        // </complexType>
-        CipherData newCipherData(Element element) throws
-        XMLEncryptionException {
+        CipherData newCipherData(Element element) throws XMLEncryptionException {
             if (null == element) {
                 throw new NullPointerException("element is null");
             }
@@ -2174,19 +2057,20 @@ public class XMLCipher {
             int type = 0;
             Element e = null;
             if (element.getElementsByTagNameNS(
-                                               EncryptionConstants.EncryptionSpecNS, 
-                                               EncryptionConstants._TAG_CIPHERVALUE).getLength() > 0) {
+                EncryptionConstants.EncryptionSpecNS, 
+                EncryptionConstants._TAG_CIPHERVALUE).getLength() > 0
+            ) {
                 type = CipherData.VALUE_TYPE;
                 e = (Element) element.getElementsByTagNameNS(
-                                                             EncryptionConstants.EncryptionSpecNS,
-                                                             EncryptionConstants._TAG_CIPHERVALUE).item(0);
+                    EncryptionConstants.EncryptionSpecNS,
+                    EncryptionConstants._TAG_CIPHERVALUE).item(0);
             } else if (element.getElementsByTagNameNS(
-                                                      EncryptionConstants.EncryptionSpecNS,
-                                                      EncryptionConstants._TAG_CIPHERREFERENCE).getLength() > 0) {
+                EncryptionConstants.EncryptionSpecNS,
+                EncryptionConstants._TAG_CIPHERREFERENCE).getLength() > 0) {
                 type = CipherData.REFERENCE_TYPE;
                 e = (Element) element.getElementsByTagNameNS(
-                                                             EncryptionConstants.EncryptionSpecNS,
-                                                             EncryptionConstants._TAG_CIPHERREFERENCE).item(0);
+                    EncryptionConstants.EncryptionSpecNS,
+                    EncryptionConstants._TAG_CIPHERREFERENCE).item(0);
             }
 
             CipherData result = newCipherData(type);
@@ -2196,7 +2080,7 @@ public class XMLCipher {
                 result.setCipherReference(newCipherReference(e));
             }
 
-            return (result);
+            return result;
         }
 
         /**
@@ -2205,34 +2089,25 @@ public class XMLCipher {
          * @throws XMLEncryptionException
          *
          */
-        // <element name='CipherReference' type='xenc:CipherReferenceType'/>
-        // <complexType name='CipherReferenceType'>
-        //     <sequence>
-        //         <element name='Transforms' type='xenc:TransformsType' minOccurs='0'/>
-        //     </sequence>
-        //     <attribute name='URI' type='anyURI' use='required'/>
-        // </complexType>
-        CipherReference newCipherReference(Element element) throws
-        XMLEncryptionException {
+        CipherReference newCipherReference(Element element) throws XMLEncryptionException {
 
             Attr URIAttr = 
                 element.getAttributeNodeNS(null, EncryptionConstants._ATT_URI);
             CipherReference result = new CipherReferenceImpl(URIAttr);
 
             // Find any Transforms
-
-            NodeList transformsElements = element.getElementsByTagNameNS(
-                                                                         EncryptionConstants.EncryptionSpecNS,
-                                                                         EncryptionConstants._TAG_TRANSFORMS);
-            Element transformsElement =
-                (Element) transformsElements.item(0);
+            NodeList transformsElements = 
+                element.getElementsByTagNameNS(
+                    EncryptionConstants.EncryptionSpecNS, EncryptionConstants._TAG_TRANSFORMS);
+            Element transformsElement = (Element) transformsElements.item(0);
 
             if (transformsElement != null) {
-                logger.debug("Creating a DSIG based Transforms element");
+                if (logger.isDebugEnabled()) {    
+                    logger.debug("Creating a DSIG based Transforms element");
+                }
                 try {
                     result.setTransforms(new TransformsImpl(transformsElement));
-                }
-                catch (XMLSignatureException xse) {
+                } catch (XMLSignatureException xse) {
                     throw new XMLEncryptionException("empty", xse);
                 } catch (InvalidTransformException ite) {
                     throw new XMLEncryptionException("empty", ite);
@@ -2251,9 +2126,7 @@ public class XMLCipher {
         CipherValue newCipherValue(Element element) {
             String value = XMLUtils.getFullTextChildrenFromElement(element);
 
-            CipherValue result = newCipherValue(value);
-
-            return (result);
+            return newCipherValue(value);
         }
 
         /**
@@ -2262,32 +2135,12 @@ public class XMLCipher {
          * @throws XMLEncryptionException
          *
          */
-        // <complexType name='EncryptedType' abstract='true'>
-        //     <sequence>
-        //         <element name='EncryptionMethod' type='xenc:EncryptionMethodType'
-        //             minOccurs='0'/>
-        //         <element ref='ds:KeyInfo' minOccurs='0'/>
-        //         <element ref='xenc:CipherData'/>
-        //         <element ref='xenc:EncryptionProperties' minOccurs='0'/>
-        //     </sequence>
-        //     <attribute name='Id' type='ID' use='optional'/>
-        //     <attribute name='Type' type='anyURI' use='optional'/>
-        //     <attribute name='MimeType' type='string' use='optional'/>
-        //     <attribute name='Encoding' type='anyURI' use='optional'/>
-        // </complexType>
-        // <element name='EncryptedData' type='xenc:EncryptedDataType'/>
-        // <complexType name='EncryptedDataType'>
-        //     <complexContent>
-        //         <extension base='xenc:EncryptedType'/>
-        //     </complexContent>
-        // </complexType>
-        EncryptedData newEncryptedData(Element element) throws
-        XMLEncryptionException {
+        EncryptedData newEncryptedData(Element element) throws XMLEncryptionException {
             EncryptedData result = null;
 
-            NodeList dataElements = element.getElementsByTagNameNS(
-                                                                   EncryptionConstants.EncryptionSpecNS,
-                                                                   EncryptionConstants._TAG_CIPHERDATA);
+            NodeList dataElements = 
+                element.getElementsByTagNameNS(
+                    EncryptionConstants.EncryptionSpecNS, EncryptionConstants._TAG_CIPHERDATA);
 
             // Need to get the last CipherData found, as earlier ones will
             // be for elements in the KeyInfo lists
@@ -2299,22 +2152,17 @@ public class XMLCipher {
 
             result = newEncryptedData(data);
 
-            result.setId(element.getAttributeNS(
-                                                null, EncryptionConstants._ATT_ID));
-            result.setType(
-                           element.getAttributeNS(null, EncryptionConstants._ATT_TYPE));
-            result.setMimeType(element.getAttributeNS(
-                                                      null, EncryptionConstants._ATT_MIMETYPE));
-            result.setEncoding(
-                               element.getAttributeNS(null, Constants._ATT_ENCODING));
+            result.setId(element.getAttributeNS(null, EncryptionConstants._ATT_ID));
+            result.setType(element.getAttributeNS(null, EncryptionConstants._ATT_TYPE));
+            result.setMimeType(element.getAttributeNS(null, EncryptionConstants._ATT_MIMETYPE));
+            result.setEncoding( element.getAttributeNS(null, Constants._ATT_ENCODING));
 
             Element encryptionMethodElement =
                 (Element) element.getElementsByTagNameNS(
-                                                         EncryptionConstants.EncryptionSpecNS,
-                                                         EncryptionConstants._TAG_ENCRYPTIONMETHOD).item(0);
+                    EncryptionConstants.EncryptionSpecNS,
+                    EncryptionConstants._TAG_ENCRYPTIONMETHOD).item(0);
             if (null != encryptionMethodElement) {
-                result.setEncryptionMethod(newEncryptionMethod(
-                                                               encryptionMethodElement));
+                result.setEncryptionMethod(newEncryptionMethod(encryptionMethodElement));
             }
 
             // BFL 16/7/03 - simple implementation
@@ -2322,258 +2170,186 @@ public class XMLCipher {
 
             Element keyInfoElement =
                 (Element) element.getElementsByTagNameNS(
-                                                         Constants.SignatureSpecNS, Constants._TAG_KEYINFO).item(0);
+                    Constants.SignatureSpecNS, Constants._TAG_KEYINFO).item(0);
             if (null != keyInfoElement) {
                 try {
                     result.setKeyInfo(new KeyInfo(keyInfoElement, null));
                 } catch (XMLSecurityException xse) {
-                    throw new XMLEncryptionException("Error loading Key Info", 
-                                                     xse);
+                    throw new XMLEncryptionException("Error loading Key Info", xse);
                 }
             }
 
             // TODO: Implement
             Element encryptionPropertiesElement =
                 (Element) element.getElementsByTagNameNS(
-                                                         EncryptionConstants.EncryptionSpecNS,
-                                                         EncryptionConstants._TAG_ENCRYPTIONPROPERTIES).item(0);
+                    EncryptionConstants.EncryptionSpecNS,
+                    EncryptionConstants._TAG_ENCRYPTIONPROPERTIES).item(0);
             if (null != encryptionPropertiesElement) {
                 result.setEncryptionProperties(
-                                               newEncryptionProperties(encryptionPropertiesElement));
+                    newEncryptionProperties(encryptionPropertiesElement)
+                );
             }
 
-            return (result);
+            return result;
         }
 
         /**
          * @param element
          * @return a new EncryptedKey
          * @throws XMLEncryptionException
-         *
          */
-        // <complexType name='EncryptedType' abstract='true'>
-        //     <sequence>
-        //         <element name='EncryptionMethod' type='xenc:EncryptionMethodType'
-        //             minOccurs='0'/>
-        //         <element ref='ds:KeyInfo' minOccurs='0'/>
-        //         <element ref='xenc:CipherData'/>
-        //         <element ref='xenc:EncryptionProperties' minOccurs='0'/>
-        //     </sequence>
-        //     <attribute name='Id' type='ID' use='optional'/>
-        //     <attribute name='Type' type='anyURI' use='optional'/>
-        //     <attribute name='MimeType' type='string' use='optional'/>
-        //     <attribute name='Encoding' type='anyURI' use='optional'/>
-        // </complexType>
-        // <element name='EncryptedKey' type='xenc:EncryptedKeyType'/>
-        // <complexType name='EncryptedKeyType'>
-        //     <complexContent>
-        //         <extension base='xenc:EncryptedType'>
-        //             <sequence>
-        //                 <element ref='xenc:ReferenceList' minOccurs='0'/>
-        //                 <element name='CarriedKeyName' type='string' minOccurs='0'/>
-        //             </sequence>
-        //             <attribute name='Recipient' type='string' use='optional'/>
-        //         </extension>
-        //     </complexContent>
-        // </complexType>
-        EncryptedKey newEncryptedKey(Element element) throws
-        XMLEncryptionException {
+        EncryptedKey newEncryptedKey(Element element) throws XMLEncryptionException {
             EncryptedKey result = null;
-            NodeList dataElements = element.getElementsByTagNameNS(
-                                                                   EncryptionConstants.EncryptionSpecNS,
-                                                                   EncryptionConstants._TAG_CIPHERDATA);
+            NodeList dataElements = 
+                element.getElementsByTagNameNS(
+                    EncryptionConstants.EncryptionSpecNS, EncryptionConstants._TAG_CIPHERDATA);
             Element dataElement =
                 (Element) dataElements.item(dataElements.getLength() - 1);
 
             CipherData data = newCipherData(dataElement);
             result = newEncryptedKey(data);
 
-            result.setId(element.getAttributeNS(
-                                                null, EncryptionConstants._ATT_ID));
-            result.setType(
-                           element.getAttributeNS(null, EncryptionConstants._ATT_TYPE));
-            result.setMimeType(element.getAttributeNS(
-                                                      null, EncryptionConstants._ATT_MIMETYPE));
-            result.setEncoding(
-                               element.getAttributeNS(null, Constants._ATT_ENCODING));
-            result.setRecipient(element.getAttributeNS(
-                                                       null, EncryptionConstants._ATT_RECIPIENT));
+            result.setId(element.getAttributeNS(null, EncryptionConstants._ATT_ID));
+            result.setType(element.getAttributeNS(null, EncryptionConstants._ATT_TYPE));
+            result.setMimeType(element.getAttributeNS(null, EncryptionConstants._ATT_MIMETYPE));
+            result.setEncoding(element.getAttributeNS(null, Constants._ATT_ENCODING));
+            result.setRecipient(element.getAttributeNS(null, EncryptionConstants._ATT_RECIPIENT));
 
             Element encryptionMethodElement =
                 (Element) element.getElementsByTagNameNS(
-                                                         EncryptionConstants.EncryptionSpecNS, 
-                                                         EncryptionConstants._TAG_ENCRYPTIONMETHOD).item(0);
+                    EncryptionConstants.EncryptionSpecNS, 
+                    EncryptionConstants._TAG_ENCRYPTIONMETHOD).item(0);
             if (null != encryptionMethodElement) {
-                result.setEncryptionMethod(newEncryptionMethod(
-                                                               encryptionMethodElement));
+                result.setEncryptionMethod(newEncryptionMethod(encryptionMethodElement));
             }
 
             Element keyInfoElement =
                 (Element) element.getElementsByTagNameNS(
-                                                         Constants.SignatureSpecNS, Constants._TAG_KEYINFO).item(0);
+                    Constants.SignatureSpecNS, Constants._TAG_KEYINFO).item(0);
             if (null != keyInfoElement) {
                 try {
                     result.setKeyInfo(new KeyInfo(keyInfoElement, null));
                 } catch (XMLSecurityException xse) {
-                    throw new XMLEncryptionException
-                    ("Error loading Key Info", xse);
+                    throw new XMLEncryptionException("Error loading Key Info", xse);
                 }
             }
 
             // TODO: Implement
             Element encryptionPropertiesElement =
                 (Element) element.getElementsByTagNameNS(
-                                                         EncryptionConstants.EncryptionSpecNS,
-                                                         EncryptionConstants._TAG_ENCRYPTIONPROPERTIES).item(0);
+                    EncryptionConstants.EncryptionSpecNS,
+                    EncryptionConstants._TAG_ENCRYPTIONPROPERTIES).item(0);
             if (null != encryptionPropertiesElement) {
                 result.setEncryptionProperties(
-                                               newEncryptionProperties(encryptionPropertiesElement));
+                    newEncryptionProperties(encryptionPropertiesElement)
+                );
             }
 
             Element referenceListElement =
                 (Element) element.getElementsByTagNameNS(
-                                                         EncryptionConstants.EncryptionSpecNS, 
-                                                         EncryptionConstants._TAG_REFERENCELIST).item(0);
+                    EncryptionConstants.EncryptionSpecNS, 
+                    EncryptionConstants._TAG_REFERENCELIST).item(0);
             if (null != referenceListElement) {
                 result.setReferenceList(newReferenceList(referenceListElement));
             }
 
             Element carriedNameElement =
                 (Element) element.getElementsByTagNameNS(
-                                                         EncryptionConstants.EncryptionSpecNS,
-                                                         EncryptionConstants._TAG_CARRIEDKEYNAME).item(0);
+                    EncryptionConstants.EncryptionSpecNS,
+                    EncryptionConstants._TAG_CARRIEDKEYNAME).item(0);
             if (null != carriedNameElement) {
-                result.setCarriedName
-                (carriedNameElement.getFirstChild().getNodeValue());
+                result.setCarriedName(carriedNameElement.getFirstChild().getNodeValue());
             }
 
-            return (result);
+            return result;
         }
 
         /**
          * @param element
          * @return a new EncryptionMethod
          */
-        // <complexType name='EncryptionMethodType' mixed='true'>
-        //     <sequence>
-        //         <element name='KeySize' minOccurs='0' type='xenc:KeySizeType'/>
-        //         <element name='OAEPparams' minOccurs='0' type='base64Binary'/>
-        //         <any namespace='##other' minOccurs='0' maxOccurs='unbounded'/>
-        //     </sequence>
-        //     <attribute name='Algorithm' type='anyURI' use='required'/>
-        // </complexType>
         EncryptionMethod newEncryptionMethod(Element element) {
-            String algorithm = element.getAttributeNS(
-                                                      null, EncryptionConstants._ATT_ALGORITHM);
+            String algorithm = element.getAttributeNS(null, EncryptionConstants._ATT_ALGORITHM);
             EncryptionMethod result = newEncryptionMethod(algorithm);
 
             Element keySizeElement =
                 (Element) element.getElementsByTagNameNS(
-                                                         EncryptionConstants.EncryptionSpecNS, 
-                                                         EncryptionConstants._TAG_KEYSIZE).item(0);
+                    EncryptionConstants.EncryptionSpecNS, 
+                    EncryptionConstants._TAG_KEYSIZE).item(0);
             if (null != keySizeElement) {
                 result.setKeySize(
-                                  Integer.valueOf(
-                                                  keySizeElement.getFirstChild().getNodeValue()).intValue());
+                    Integer.valueOf(
+                        keySizeElement.getFirstChild().getNodeValue()).intValue());
             }
 
             Element oaepParamsElement =
                 (Element) element.getElementsByTagNameNS(
-                                                         EncryptionConstants.EncryptionSpecNS, 
-                                                         EncryptionConstants._TAG_OAEPPARAMS).item(0);
+                    EncryptionConstants.EncryptionSpecNS, 
+                    EncryptionConstants._TAG_OAEPPARAMS).item(0);
             if (null != oaepParamsElement) {
-                result.setOAEPparams(
-                                     oaepParamsElement.getNodeValue().getBytes());
+                result.setOAEPparams(oaepParamsElement.getNodeValue().getBytes());
             }
 
             // TODO: Make this mess work
             // <any namespace='##other' minOccurs='0' maxOccurs='unbounded'/>
 
-            return (result);
+            return result;
         }
 
         /**
          * @param element
          * @return a new EncryptionProperties
          */
-        // <element name='EncryptionProperties' type='xenc:EncryptionPropertiesType'/>
-        // <complexType name='EncryptionPropertiesType'>
-        //     <sequence>
-        //         <element ref='xenc:EncryptionProperty' maxOccurs='unbounded'/>
-        //     </sequence>
-        //     <attribute name='Id' type='ID' use='optional'/>
-        // </complexType>
         EncryptionProperties newEncryptionProperties(Element element) {
             EncryptionProperties result = newEncryptionProperties();
 
-            result.setId(element.getAttributeNS(
-                                                null, EncryptionConstants._ATT_ID));
+            result.setId(element.getAttributeNS(null, EncryptionConstants._ATT_ID));
 
             NodeList encryptionPropertyList =
                 element.getElementsByTagNameNS(
-                                               EncryptionConstants.EncryptionSpecNS, 
-                                               EncryptionConstants._TAG_ENCRYPTIONPROPERTY);
-            for(int i = 0; i < encryptionPropertyList.getLength(); i++) {
+                    EncryptionConstants.EncryptionSpecNS, 
+                    EncryptionConstants._TAG_ENCRYPTIONPROPERTY);
+            for (int i = 0; i < encryptionPropertyList.getLength(); i++) {
                 Node n = encryptionPropertyList.item(i);
                 if (null != n) {
-                    result.addEncryptionProperty(
-                                                 newEncryptionProperty((Element) n));
+                    result.addEncryptionProperty(newEncryptionProperty((Element) n));
                 }
             }
 
-            return (result);
+            return result;
         }
 
         /**
          * @param element
          * @return a new EncryptionProperty
          */
-        // <element name='EncryptionProperty' type='xenc:EncryptionPropertyType'/>
-        // <complexType name='EncryptionPropertyType' mixed='true'>
-        //     <choice maxOccurs='unbounded'>
-        //         <any namespace='##other' processContents='lax'/>
-        //     </choice>
-        //     <attribute name='Target' type='anyURI' use='optional'/>
-        //     <attribute name='Id' type='ID' use='optional'/>
-        //     <anyAttribute namespace="http://www.w3.org/XML/1998/namespace"/>
-        // </complexType>
         EncryptionProperty newEncryptionProperty(Element element) {
             EncryptionProperty result = newEncryptionProperty();
 
-            result.setTarget(
-                             element.getAttributeNS(null, EncryptionConstants._ATT_TARGET));
-            result.setId(element.getAttributeNS(
-                                                null, EncryptionConstants._ATT_ID));
+            result.setTarget(element.getAttributeNS(null, EncryptionConstants._ATT_TARGET));
+            result.setId(element.getAttributeNS(null, EncryptionConstants._ATT_ID));
             // TODO: Make this lot work...
             // <anyAttribute namespace="http://www.w3.org/XML/1998/namespace"/>
 
             // TODO: Make this work...
             // <any namespace='##other' processContents='lax'/>
 
-            return (result);
+            return result;
         }
 
         /**
          * @param element
          * @return a new ReferenceList
          */
-        // <element name='ReferenceList'>
-        //     <complexType>
-        //         <choice minOccurs='1' maxOccurs='unbounded'>
-        //             <element name='DataReference' type='xenc:ReferenceType'/>
-        //             <element name='KeyReference' type='xenc:ReferenceType'/>
-        //         </choice>
-        //     </complexType>
-        // </element>
         ReferenceList newReferenceList(Element element) {
             int type = 0;
             if (null != element.getElementsByTagNameNS(
-                                                       EncryptionConstants.EncryptionSpecNS, 
-                                                       EncryptionConstants._TAG_DATAREFERENCE).item(0)) {
+                EncryptionConstants.EncryptionSpecNS, 
+                EncryptionConstants._TAG_DATAREFERENCE).item(0)) {
                 type = ReferenceList.DATA_REFERENCE;
             } else if (null != element.getElementsByTagNameNS(
-                                                              EncryptionConstants.EncryptionSpecNS,
-                                                              EncryptionConstants._TAG_KEYREFERENCE).item(0)) {
+                EncryptionConstants.EncryptionSpecNS,
+                EncryptionConstants._TAG_KEYREFERENCE).item(0)) {
                 type = ReferenceList.KEY_REFERENCE;
             } else {
                 // complain
@@ -2583,65 +2359,27 @@ public class XMLCipher {
             NodeList list = null;
             switch (type) {
             case ReferenceList.DATA_REFERENCE:
-                list = element.getElementsByTagNameNS(
-                                                      EncryptionConstants.EncryptionSpecNS, 
-                                                      EncryptionConstants._TAG_DATAREFERENCE);
+                list = 
+                    element.getElementsByTagNameNS(
+                        EncryptionConstants.EncryptionSpecNS, 
+                        EncryptionConstants._TAG_DATAREFERENCE);
                 for (int i = 0; i < list.getLength() ; i++) {
                     String uri = ((Element) list.item(i)).getAttribute("URI");
                     result.add(result.newDataReference(uri));
                 }
                 break;
             case ReferenceList.KEY_REFERENCE:
-                list = element.getElementsByTagNameNS(
-                                                      EncryptionConstants.EncryptionSpecNS, 
-                                                      EncryptionConstants._TAG_KEYREFERENCE);
+                list =
+                    element.getElementsByTagNameNS(
+                        EncryptionConstants.EncryptionSpecNS, 
+                        EncryptionConstants._TAG_KEYREFERENCE);
                 for (int i = 0; i < list.getLength() ; i++) {
                     String uri = ((Element) list.item(i)).getAttribute("URI");
                     result.add(result.newKeyReference(uri));
                 }
             }
 
-            return (result);
-        }
-
-        /**
-         * @param element
-         * @return a new Transforms
-         */
-        Transforms newTransforms(Element element) {
-            return (null);
-        }
-
-        /**
-         * @param agreementMethod
-         * @return the XML Element form of that AgreementMethod
-         */
-        Element toElement(AgreementMethod agreementMethod) {
-            return ((AgreementMethodImpl) agreementMethod).toElement();
-        }
-
-        /**
-         * @param cipherData
-         * @return the XML Element form of that CipherData
-         */
-        Element toElement(CipherData cipherData) {
-            return ((CipherDataImpl) cipherData).toElement();
-        }
-
-        /**
-         * @param cipherReference
-         * @return the XML Element form of that CipherReference
-         */
-        Element toElement(CipherReference cipherReference) {
-            return ((CipherReferenceImpl) cipherReference).toElement();
-        }
-
-        /**
-         * @param cipherValue
-         * @return the XML Element form of that CipherValue
-         */
-        Element toElement(CipherValue cipherValue) {
-            return ((CipherValueImpl) cipherValue).toElement();
+            return result;
         }
 
         /**
@@ -2660,57 +2398,6 @@ public class XMLCipher {
             return ((EncryptedKeyImpl) encryptedKey).toElement();
         }
 
-        /**
-         * @param encryptionMethod
-         * @return the XML Element form of that EncryptionMethod
-         */
-        Element toElement(EncryptionMethod encryptionMethod) {
-            return ((EncryptionMethodImpl) encryptionMethod).toElement();
-        }
-
-        /**
-         * @param encryptionProperties
-         * @return the XML Element form of that EncryptionProperties
-         */
-        Element toElement(EncryptionProperties encryptionProperties) {
-            return ((EncryptionPropertiesImpl) encryptionProperties).toElement();
-        }
-
-        /**
-         * @param encryptionProperty
-         * @return the XML Element form of that EncryptionProperty
-         */
-        Element toElement(EncryptionProperty encryptionProperty) {
-            return ((EncryptionPropertyImpl) encryptionProperty).toElement();
-        }
-
-        /**
-         * @param referenceList
-         * @return the XML Element form of that ReferenceList
-         */
-        Element toElement(ReferenceList referenceList) {
-            return ((ReferenceListImpl) referenceList).toElement();
-        }
-
-        /**
-         * @param transforms
-         * @return the XML Element form of that Transforms
-         */
-        Element toElement(Transforms transforms) {
-            return ((TransformsImpl) transforms).toElement();
-        }
-
-        // <element name="AgreementMethod" type="xenc:AgreementMethodType"/>
-        // <complexType name="AgreementMethodType" mixed="true">
-        //     <sequence>
-        //         <element name="KA-Nonce" minOccurs="0" type="base64Binary"/>
-        //         <!-- <element ref="ds:DigestMethod" minOccurs="0"/> -->
-        //         <any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
-        //         <element name="OriginatorKeyInfo" minOccurs="0" type="ds:KeyInfoType"/>
-        //         <element name="RecipientKeyInfo" minOccurs="0" type="ds:KeyInfoType"/>
-        //     </sequence>
-        //     <attribute name="Algorithm" type="anyURI" use="required"/>
-        // </complexType>
         private class AgreementMethodImpl implements AgreementMethod {
             private byte[] kaNonce = null;
             private List agreementMethodInformation = null;
