@@ -45,7 +45,7 @@ import org.xml.sax.SAXException;
  * Usage: java Main example.xml
  */
 public class Main {
-    
+
     /**
      * Main method : entry point for running this example program.
      * <p>
