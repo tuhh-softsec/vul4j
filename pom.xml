@@ -401,7 +401,7 @@
 
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>shared-ldap-codec</artifactId>
+        <artifactId>shared-ldap-codec-core</artifactId>
         <version>${project.version}</version>
       </dependency>
 

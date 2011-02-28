@@ -21,11 +21,11 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.directory.shared</groupId>
-    <artifactId>shared-parent</artifactId>
+    <artifactId>shared-ldap-codec-parent</artifactId>
     <version>1.0.0-M2-SNAPSHOT</version>
   </parent>
   
-  <artifactId>shared-ldap-codec</artifactId>
+  <artifactId>shared-ldap-codec-core</artifactId>
   <name>Apache Directory Shared LDAP Codec</name>
   <packaging>bundle</packaging>
   <description>LDAP Codec used by clients and servers</description>
@@ -118,7 +118,7 @@
         <configuration>
           <manifestLocation>META-INF</manifestLocation>
           <instructions>
-            <Bundle-SymbolicName>${project.groupId}.ldap.codec</Bundle-SymbolicName>
+            <Bundle-SymbolicName>${project.groupId}.ldap.codec.core</Bundle-SymbolicName>
             <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
             <Export-Package>
               org.apache.directory.shared.ldap.codec.api

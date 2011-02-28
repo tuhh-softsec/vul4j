@@ -21,7 +21,7 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.directory.shared</groupId>
-    <artifactId>shared-parent</artifactId>
+    <artifactId>shared-ldap-schema-parent</artifactId>
     <version>1.0.0-M2-SNAPSHOT</version>
   </parent>
   

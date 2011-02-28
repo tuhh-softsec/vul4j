@@ -23,7 +23,7 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.directory.shared</groupId>
-    <artifactId>shared-parent</artifactId>
+    <artifactId>shared-ldap-client-parent</artifactId>
     <version>1.0.0-M2-SNAPSHOT</version>
   </parent>
 
@@ -61,7 +61,7 @@
 
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>shared-ldap-codec</artifactId>
+      <artifactId>shared-ldap-codec-core</artifactId>
     </dependency>
 
     <dependency>
