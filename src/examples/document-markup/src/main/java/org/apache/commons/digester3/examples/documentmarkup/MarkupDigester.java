@@ -159,28 +159,28 @@ public class MarkupDigester implements Digester {
         return this.wrapped.getMatch();
     }
 
-    public Object parse(File file) throws IOException, SAXException {
-        return this.wrapped.parse(file);
+    public <T> T parse(File file) throws IOException, SAXException {
+        return this.wrapped.<T>parse(file);
     }
 
-    public Object parse(InputSource input) throws IOException, SAXException {
-        return this.wrapped.parse(input);
+    public <T> T parse(InputSource input) throws IOException, SAXException {
+        return this.wrapped.<T>parse(input);
     }
 
-    public Object parse(InputStream input) throws IOException, SAXException {
-        return this.wrapped.parse(input);
+    public <T> T parse(InputStream input) throws IOException, SAXException {
+        return this.wrapped.<T>parse(input);
     }
 
-    public Object parse(Reader reader) throws IOException, SAXException {
-        return this.wrapped.parse(reader);
+    public <T> T parse(Reader reader) throws IOException, SAXException {
+        return this.wrapped.<T>parse(reader);
     }
 
-    public Object parse(String uri) throws IOException, SAXException {
-        return this.wrapped.parse(uri);
+    public <T> T parse(String uri) throws IOException, SAXException {
+        return this.wrapped.<T>parse(uri);
     }
 
-    public Object parse(URL url) throws IOException, SAXException {
-        return this.wrapped.parse(url);
+    public <T> T parse(URL url) throws IOException, SAXException {
+        return this.wrapped.<T>parse(url);
     }
 
     public Rules getRules() {

@@ -66,9 +66,10 @@ public class Main {
         Digester d = newLoader(new CatalogModel()).newDigester();
 
         // Process the input file.
+        Catalog catalog = null;
         try {
             Reader reader = getInputData(filename);
-            d.parse(reader);
+            catalog = d.parse(reader);
         } catch (IOException ioe) {
             System.out.println("Error reading input file:" + ioe.getMessage());
             System.exit(-1);
@@ -77,11 +78,6 @@ public class Main {
             System.exit(-1);
         }
 
-        // Get the first object created by the digester's rules
-        // (the "root" object). Note that this is exactly the same object
-        // returned by the Digester.parse method; either approach works.
-        Catalog catalog = (Catalog) d.getRoot();
-        
         // Print out all the contents of the catalog, as loaded from
         // the input file.
         catalog.print();
