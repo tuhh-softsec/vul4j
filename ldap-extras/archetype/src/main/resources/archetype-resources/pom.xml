@@ -19,14 +19,10 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.apache.directory.shared</groupId>
-    <artifactId>shared-ldap-extras-parent</artifactId>
-    <version>1.0.0-M2-SNAPSHOT</version>
-  </parent>
-  
-  <artifactId>shared-ldap-extras-codec</artifactId>
-  <name>Apache Directory Shared LDAP Extras Codec</name>
+  <groupId>${groupId}</groupId>
+  <version>${version}</version>
+  <artifactId>${artifactId}</artifactId>
+  <name>Extra LDAP Plugins</name>
   <packaging>bundle</packaging>
   <description>
     An LDAP extension module containing additional controls and
@@ -93,9 +89,9 @@
         <configuration>
           <manifestLocation>META-INF</manifestLocation>
           <instructions>
-            <Bundle-SymbolicName>${project.groupId}.ldap.extras.codec</Bundle-SymbolicName>
+            <Bundle-SymbolicName>${project.groupId}.ldap.extras</Bundle-SymbolicName>
             <Bundle-Activator>
-              org.apache.directory.shared.ldap.extras.ExtrasBundleActivator
+              org.acme.DefaultActivator
             </Bundle-Activator>
           </instructions>
         </configuration>
