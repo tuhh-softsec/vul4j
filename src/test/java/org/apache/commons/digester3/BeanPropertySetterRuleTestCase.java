@@ -195,7 +195,7 @@ public class BeanPropertySetterRuleTestCase extends AbstractTestCase {
      */
     @Test
     public void testSetGivenProperty() throws SAXException, IOException {
-        SimpleTestBean bean = (SimpleTestBean) newBasicDigester(new AbstractRulesModule() {
+        SimpleTestBean bean = newBasicDigester(new AbstractRulesModule() {
 
             @Override
             protected void configure() {
@@ -234,7 +234,7 @@ public class BeanPropertySetterRuleTestCase extends AbstractTestCase {
     public void testSetUnknownProperty() {
         // Attempt to parse the input
         try {
-            SimpleTestBean bean = (SimpleTestBean) newBasicDigester(new AbstractRulesModule() {
+            SimpleTestBean bean = newBasicDigester(new AbstractRulesModule() {
 
                 @Override
                 protected void configure() {
@@ -263,7 +263,7 @@ public class BeanPropertySetterRuleTestCase extends AbstractTestCase {
      */
     @Test
     public void testAutomaticallySetProperties() throws SAXException, IOException {
-        SimpleTestBean bean = (SimpleTestBean) newLoader(new AbstractRulesModule() {
+        SimpleTestBean bean = newLoader(new AbstractRulesModule() {
 
             @Override
             protected void configure() {

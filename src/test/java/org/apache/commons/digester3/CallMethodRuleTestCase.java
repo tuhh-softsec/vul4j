@@ -71,7 +71,7 @@ public class CallMethodRuleTestCase extends AbstractTestCase {
      */
     @Test
     public void testCallMethodOnly() throws Throwable {
-        Employee employee = (Employee) newBasicDigesterAndParse("Test9.xml", new AbstractRulesModule() {
+        Employee employee = newBasicDigesterAndParse("Test9.xml", new AbstractRulesModule() {
 
             @Override
             protected void configure() {
@@ -97,7 +97,7 @@ public class CallMethodRuleTestCase extends AbstractTestCase {
      */
     @Test
     public void testSetLastNameProperty() throws Throwable {
-        Employee employee = (Employee) newBasicDigesterAndParse("Test5.xml", new AbstractRulesModule() {
+        Employee employee = newBasicDigesterAndParse("Test5.xml", new AbstractRulesModule() {
 
             @Override
             protected void configure() {
@@ -114,7 +114,7 @@ public class CallMethodRuleTestCase extends AbstractTestCase {
 
     @Test
     public void testSetAgeProperty() throws Throwable {
-        Employee employee = (Employee) newBasicDigesterAndParse("Test5.xml", new AbstractRulesModule() {
+        Employee employee = newBasicDigesterAndParse("Test5.xml", new AbstractRulesModule() {
 
             @Override
             protected void configure() {
@@ -131,7 +131,7 @@ public class CallMethodRuleTestCase extends AbstractTestCase {
 
     @Test
     public void testSetActiveProperty() throws Throwable {
-        Employee employee = (Employee) newBasicDigesterAndParse("Test5.xml", new AbstractRulesModule() {
+        Employee employee = newBasicDigesterAndParse("Test5.xml", new AbstractRulesModule() {
 
             @Override
             protected void configure() {
@@ -149,7 +149,7 @@ public class CallMethodRuleTestCase extends AbstractTestCase {
 
     @Test
     public void testSetSalaryProperty() throws Throwable {
-        Employee employee = (Employee) newBasicDigesterAndParse("Test5.xml", new AbstractRulesModule() {
+        Employee employee = newBasicDigesterAndParse("Test5.xml", new AbstractRulesModule() {
 
             @Override
             protected void configure() {
@@ -179,7 +179,7 @@ public class CallMethodRuleTestCase extends AbstractTestCase {
             append("  <value name='The value'/>").
             append("</map>");
 
-        HashMap<AlphaBean, BetaBean> map = (HashMap<AlphaBean, BetaBean>) newBasicDigester(new AbstractRulesModule() {
+        HashMap<AlphaBean, BetaBean> map = newBasicDigester(new AbstractRulesModule() {
 
             @Override
             protected void configure() {
@@ -225,7 +225,7 @@ public class CallMethodRuleTestCase extends AbstractTestCase {
         NamedBean root1 = null;
         try {
             // an exception will be thrown if the method can't be found
-            root1 = (NamedBean) newBasicDigesterAndParse("Test8.xml", new AbstractRulesModule() {
+            root1 = newBasicDigesterAndParse("Test8.xml", new AbstractRulesModule() {
 
                 @Override
                 protected void configure() {
@@ -653,7 +653,7 @@ public class CallMethodRuleTestCase extends AbstractTestCase {
 
         });
 
-        HashMap<String, Address> map = (HashMap<String, Address>) digester.parse(getInputStream("Test5.xml"));
+        HashMap<String, Address> map = digester.parse(getInputStream("Test5.xml"));
 
         assertNotNull(map);
         Set<String> keys = map.keySet();
@@ -690,7 +690,7 @@ public class CallMethodRuleTestCase extends AbstractTestCase {
 
         });
 
-        HashMap<String, Address> map = (HashMap<String, Address>) digester.parse(getInputStream("Test5.xml"));
+        HashMap<String, Address> map = digester.parse(getInputStream("Test5.xml"));
 
         assertNotNull(map);
         Set<String> keys = map.keySet();

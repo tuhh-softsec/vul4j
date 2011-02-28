@@ -108,7 +108,7 @@ public class VariableExpansionTestCase {
         String xml = "<root alpha='${attr1}' beta='var{attr2}'/>";
         StringReader input = new StringReader(xml);
 
-        Object root = newLoader(new RulesModule() {
+        SimpleTestBean bean = newLoader(new RulesModule() {
 
             public void configure(RulesBinder binder) {
                 binder.forPattern("root").createObject().ofType(SimpleTestBean.class)
@@ -117,8 +117,7 @@ public class VariableExpansionTestCase {
 
         }).newDigester().parse(input);
 
-        assertNotNull("Digester returned no object", root);
-        SimpleTestBean bean = (SimpleTestBean) root;
+        assertNotNull("Digester returned no object", bean);
 
         assertEquals("${attr1}", bean.getAlpha());
         assertEquals("var{attr2}", bean.getBeta());
@@ -132,7 +131,7 @@ public class VariableExpansionTestCase {
         String xml = "<root alpha='${attr1}' beta='var{attr2}'/>";
         StringReader input = new StringReader(xml);
 
-        Object root = newLoader(new AbstractRulesModule() {
+        SimpleTestBean bean = newLoader(new AbstractRulesModule() {
 
             @Override
             protected void configure() {
@@ -145,8 +144,7 @@ public class VariableExpansionTestCase {
         .newDigester()
         .parse(input);
 
-        assertNotNull("Digester returned no object", root);
-        SimpleTestBean bean = (SimpleTestBean) root;
+        assertNotNull("Digester returned no object", bean);
 
         assertEquals("${attr1}", bean.getAlpha());
         assertEquals("var{attr2}", bean.getBeta());
@@ -239,7 +237,7 @@ public class VariableExpansionTestCase {
             "</root>";
 
         StringReader input = new StringReader(xml);
-        Object root = newLoader(new RulesModule() {
+        SimpleTestBean bean = newLoader(new RulesModule() {
 
             public void configure(RulesBinder rulesBinder) {
                 rulesBinder.forPattern("root")
@@ -253,8 +251,7 @@ public class VariableExpansionTestCase {
         .newDigester()
         .parse(input);
 
-        assertNotNull("Digester returned no object", root);
-        SimpleTestBean bean = (SimpleTestBean) root;
+        assertNotNull("Digester returned no object", bean);
 
         assertEquals(
             "Twas brillig and the slithy toves" +

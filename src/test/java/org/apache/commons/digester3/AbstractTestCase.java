@@ -58,8 +58,8 @@ public abstract class AbstractTestCase {
      * @return
      * @throws Throwable
      */
-    protected Object newBasicDigesterAndParse(String xmlResourceName, RulesModule...rulesModules) throws Throwable {
-        return this.newBasicDigester(rulesModules).parse(getInputStream(xmlResourceName));
+    protected <T> T newBasicDigesterAndParse(String xmlResourceName, RulesModule...rulesModules) throws Throwable {
+        return this.newBasicDigester(rulesModules).<T>parse(getInputStream(xmlResourceName));
     }
 
 }

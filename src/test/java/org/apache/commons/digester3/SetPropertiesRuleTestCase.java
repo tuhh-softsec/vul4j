@@ -57,7 +57,7 @@ public class SetPropertiesRuleTestCase extends AbstractTestCase {
     @Test
     public void testPositive() throws Exception {
         // Parse the input
-        SimpleTestBean bean = (SimpleTestBean) newBasicDigester(new AbstractRulesModule() {
+        SimpleTestBean bean = newBasicDigester(new AbstractRulesModule() {
 
             @Override
             protected void configure() {
@@ -89,7 +89,7 @@ public class SetPropertiesRuleTestCase extends AbstractTestCase {
     @Test
     public void testIgnoreMissing() throws Exception {
         // Parse the input
-        SimpleTestBean bean = (SimpleTestBean) newBasicDigester(new AbstractRulesModule() {
+        SimpleTestBean bean = newBasicDigester(new AbstractRulesModule() {
 
             @Override
             protected void configure() {
@@ -121,7 +121,7 @@ public class SetPropertiesRuleTestCase extends AbstractTestCase {
     public void testNegativeNotIgnoreMissing() throws Exception {
         try {
             // Parse the input
-            SimpleTestBean bean =  (SimpleTestBean) newBasicDigester(new AbstractRulesModule() {
+            SimpleTestBean bean = newBasicDigester(new AbstractRulesModule() {
 
                 @Override
                 protected void configure() {
@@ -161,7 +161,7 @@ public class SetPropertiesRuleTestCase extends AbstractTestCase {
     @Test
     public void testPositiveNotIgnoreMissingWithIgnoreAttributes() throws Exception {
         // Parse the input
-        SimpleTestBean bean =  (SimpleTestBean) newBasicDigester(new AbstractRulesModule() {
+        SimpleTestBean bean = newBasicDigester(new AbstractRulesModule() {
 
             @Override
             protected void configure() {

@@ -37,7 +37,7 @@ public class XIncludeTestCase extends AbstractTestCase {
     @Test
     public void testXInclude() throws SAXException, IOException {
         // Parse our test input
-        Employee employee = (Employee) newLoader(new EmployeeModule())
+        Employee employee = newLoader(new EmployeeModule())
             .setNamespaceAware(true)
             .setXIncludeAware(true)
             .newDigester()

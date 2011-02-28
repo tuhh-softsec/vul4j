@@ -72,7 +72,7 @@ public class SetPropertyRuleTestCase extends AbstractTestCase {
     @Test
     public void testPositive() throws Exception {
         // Parse the input
-        SimpleTestBean bean = (SimpleTestBean) this.digester.parse(xmlTestReader(TEST_XML_1));
+        SimpleTestBean bean = this.digester.parse(xmlTestReader(TEST_XML_1));
 
         // Check that the properties were set correctly
         assertEquals("alpha property set",
@@ -95,7 +95,7 @@ public class SetPropertyRuleTestCase extends AbstractTestCase {
     public void testNegative() {
         // Parse the input (should fail)
         try {
-            SimpleTestBean bean = (SimpleTestBean) this.digester.parse(xmlTestReader(TEST_XML_2));
+            SimpleTestBean bean = this.digester.parse(xmlTestReader(TEST_XML_2));
 
             fail("Should have thrown NoSuchMethodException");
             assertNotNull(bean); // just to prevent compiler warning on unused var
@@ -146,7 +146,7 @@ public class SetPropertyRuleTestCase extends AbstractTestCase {
 
         // Parse the input - should not throw an exception
         @SuppressWarnings("unused")
-        SimpleTestBean bean = (SimpleTestBean) this.digester.parse(xmlTestReader(TEST_XML_3));
+        SimpleTestBean bean = this.digester.parse(xmlTestReader(TEST_XML_3));
     }
 
     /**

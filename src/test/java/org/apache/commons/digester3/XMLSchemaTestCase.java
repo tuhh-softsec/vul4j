@@ -79,7 +79,7 @@ public class XMLSchemaTestCase extends AbstractTestCase {
         digester.setErrorHandler(teh);
 
         // Parse our test input
-        Employee employee = (Employee) digester.parse(getInputStream("Test13-01.xml"));
+        Employee employee = digester.parse(getInputStream("Test13-01.xml"));
         assertNotNull("failed to parsed an employee", employee);
         assertTrue("Test13-01 should not generate errors in Schema validation", teh.clean);
 

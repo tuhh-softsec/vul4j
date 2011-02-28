@@ -54,7 +54,7 @@ public class SetNestedPropertiesRuleTestCase extends AbstractTestCase {
      */
     @Test
     public void testAutomaticallySetProperties() throws SAXException, IOException {
-        SimpleTestBean bean = (SimpleTestBean) newBasicDigester(new AbstractRulesModule() {
+        SimpleTestBean bean = newBasicDigester(new AbstractRulesModule() {
 
             @Override
             protected void configure() {
@@ -101,7 +101,7 @@ public class SetNestedPropertiesRuleTestCase extends AbstractTestCase {
             "</root>";
 
         try {
-            SimpleTestBean bean = (SimpleTestBean) newBasicDigester(new AbstractRulesModule() {
+            SimpleTestBean bean = newBasicDigester(new AbstractRulesModule() {
 
                 @Override
                 protected void configure() {
@@ -157,7 +157,7 @@ public class SetNestedPropertiesRuleTestCase extends AbstractTestCase {
 
         });
 
-        SimpleTestBean bean = (SimpleTestBean) digester.parse(new StringReader(TEST_XML));
+        SimpleTestBean bean = digester.parse(new StringReader(TEST_XML));
 
         // check properties are set correctly
         assertEquals(
@@ -211,7 +211,7 @@ public class SetNestedPropertiesRuleTestCase extends AbstractTestCase {
 
         });
 
-        SimpleTestBean bean = (SimpleTestBean) digester.parse(new StringReader(TEST_XML));
+        SimpleTestBean bean = digester.parse(new StringReader(TEST_XML));
 
         // check properties are set correctly
         assertEquals(
@@ -268,7 +268,7 @@ public class SetNestedPropertiesRuleTestCase extends AbstractTestCase {
 
         });
 
-        SimpleTestBean bean = (SimpleTestBean) digester.parse(new StringReader(TEST_XML));
+        SimpleTestBean bean = digester.parse(new StringReader(TEST_XML));
 
         // check properties are set correctly
         assertEquals(
@@ -338,7 +338,7 @@ public class SetNestedPropertiesRuleTestCase extends AbstractTestCase {
 
         });
 
-        SimpleTestBean bean = (SimpleTestBean) digester.parse(reader);
+        SimpleTestBean bean = digester.parse(reader);
 
         assertNotNull("No object created", bean);
 
@@ -398,7 +398,7 @@ public class SetNestedPropertiesRuleTestCase extends AbstractTestCase {
         });
 
         try {
-            SimpleTestBean bean = (SimpleTestBean) digester.parse(reader);
+            SimpleTestBean bean = digester.parse(reader);
             fail("Expected to generate an exception.");
             assertNotNull(bean); // just to prevent compiler warning on unused var
         } catch(SAXException e) {
@@ -439,7 +439,7 @@ public class SetNestedPropertiesRuleTestCase extends AbstractTestCase {
 
         });
 
-        SimpleTestBean bean = (SimpleTestBean) digester.parse(reader);
+        SimpleTestBean bean = digester.parse(reader);
         assertNotNull(bean);
     }
 
@@ -474,7 +474,7 @@ public class SetNestedPropertiesRuleTestCase extends AbstractTestCase {
 
         });
 
-        SimpleTestBean bean = (SimpleTestBean) digester.parse(reader);
+        SimpleTestBean bean = digester.parse(reader);
         assertNotNull(bean);
     }
 

@@ -81,7 +81,7 @@ public interface Digester extends ContentHandler, DTDHandler, EntityResolver, Er
      * @exception IOException if an input/output error occurs
      * @exception SAXException if a parsing exception occurs
      */
-    Object parse(File file) throws IOException, SAXException;
+    <T> T parse(File file) throws IOException, SAXException;
 
     /**
      * Parse the content of the specified input source using this Digester.
@@ -92,7 +92,7 @@ public interface Digester extends ContentHandler, DTDHandler, EntityResolver, Er
      * @exception IOException if an input/output error occurs
      * @exception SAXException if a parsing exception occurs
      */
-    Object parse(InputSource input) throws IOException, SAXException;
+    <T> T parse(InputSource input) throws IOException, SAXException;
 
     /**
      * Parse the content of the specified input stream using this Digester.
@@ -103,7 +103,7 @@ public interface Digester extends ContentHandler, DTDHandler, EntityResolver, Er
      * @exception IOException if an input/output error occurs
      * @exception SAXException if a parsing exception occurs
      */
-    Object parse(InputStream input) throws IOException, SAXException;
+    <T> T parse(InputStream input) throws IOException, SAXException;
 
     /**
      * Parse the content of the specified reader using this Digester.
@@ -114,7 +114,7 @@ public interface Digester extends ContentHandler, DTDHandler, EntityResolver, Er
      * @exception IOException if an input/output error occurs
      * @exception SAXException if a parsing exception occurs
      */
-    Object parse(Reader reader) throws IOException, SAXException;
+    <T> T parse(Reader reader) throws IOException, SAXException;
 
     /**
      * Parse the content of the specified URI using this Digester.
@@ -125,7 +125,7 @@ public interface Digester extends ContentHandler, DTDHandler, EntityResolver, Er
      * @exception IOException if an input/output error occurs
      * @exception SAXException if a parsing exception occurs
      */
-    Object parse(String uri) throws IOException, SAXException;
+    <T> T parse(String uri) throws IOException, SAXException;
 
     /**
      * Parse the content of the specified URL using this Digester.
@@ -136,7 +136,7 @@ public interface Digester extends ContentHandler, DTDHandler, EntityResolver, Er
      * @exception IOException if an input/output error occurs
      * @exception SAXException if a parsing exception occurs
      */
-    Object parse(URL url) throws IOException, SAXException;
+    <T> T parse(URL url) throws IOException, SAXException;
 
     /**
      * Return the <code>Rules</code> implementation object containing our

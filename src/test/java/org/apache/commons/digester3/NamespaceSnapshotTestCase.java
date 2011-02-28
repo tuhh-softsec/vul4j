@@ -77,10 +77,9 @@ public class NamespaceSnapshotTestCase extends AbstractTestCase {
         .setNamespaceAware(true)
         .newDigester();
 
-        Object result = digester.parse(getInputStream("Test11.xml"));
-        assertNotNull(result);
+        NamespacedBox root = digester.parse(getInputStream("Test11.xml"));
+        assertNotNull(root);
 
-        NamespacedBox root = (NamespacedBox) result;
         Map<String, String> nsmap = root.getNamespaces();
         assertEquals(3, nsmap.size());
         assertEquals("", nsmap.get(""));

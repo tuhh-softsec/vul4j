@@ -1026,14 +1026,15 @@ public final class DigesterImpl implements Digester {
     /**
      * {@inheritDoc}
      */
-    public Object parse(File file) throws IOException, SAXException {
-        return this.parse(createInputSourceFromFile(file));
+    public <T> T parse(File file) throws IOException, SAXException {
+        return this.<T>parse(createInputSourceFromFile(file));
     }
 
     /**
      * {@inheritDoc}
      */
-    public Object parse(InputSource input) throws IOException, SAXException {
+    @SuppressWarnings("unchecked")
+    public <T> T parse(InputSource input) throws IOException, SAXException {
         if (input == null) {
             throw new IllegalArgumentException("InputSource to parse must be not null");
         }
@@ -1042,7 +1043,11 @@ public final class DigesterImpl implements Digester {
 
         try {
             this.reader.parse(input);
-            return this.root;
+
+            if (this.root == null) {
+                return null;
+            }
+            return (T) this.root;
         } finally {
             this.cleanup();
         }
@@ -1051,29 +1056,29 @@ public final class DigesterImpl implements Digester {
     /**
      * {@inheritDoc}
      */
-    public Object parse(InputStream input) throws IOException, SAXException {
-        return this.parse(createInputSourceFromInputStream(input));
+    public <T> T parse(InputStream input) throws IOException, SAXException {
+        return this.<T>parse(createInputSourceFromInputStream(input));
     }
 
     /**
      * {@inheritDoc}
      */
-    public Object parse(Reader reader) throws IOException, SAXException {
-        return this.parse(createInputSourceFromReader(reader));
+    public <T> T parse(Reader reader) throws IOException, SAXException {
+        return this.<T>parse(createInputSourceFromReader(reader));
     }
 
     /**
      * {@inheritDoc}
      */
-    public Object parse(String uri) throws IOException, SAXException {
-        return this.parse(createInputSourceFromUri(uri));
+    public <T> T parse(String uri) throws IOException, SAXException {
+        return this.<T>parse(createInputSourceFromUri(uri));
     }
 
     /**
      * {@inheritDoc}
      */
-    public Object parse(URL url) throws IOException, SAXException {
-        return this.parse(createInputSourceFromURL(url));
+    public <T> T parse(URL url) throws IOException, SAXException {
+        return this.<T>parse(createInputSourceFromURL(url));
     }
 
     /**
