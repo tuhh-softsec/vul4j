@@ -25,7 +25,7 @@
     <version>1.0.0-M2-SNAPSHOT</version>
   </parent>
   
-  <artifactId>shared-ldap-schema</artifactId>
+  <artifactId>shared-ldap-schema-data</artifactId>
   <name>Apache Directory Shared LDAP Schema</name>
 
   <description>

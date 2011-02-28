@@ -455,7 +455,7 @@
 
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>shared-ldap-schema</artifactId>
+        <artifactId>shared-ldap-schema-data</artifactId>
         <version>${project.version}</version>
       </dependency>
 
