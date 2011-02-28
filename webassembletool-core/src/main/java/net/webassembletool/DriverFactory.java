@@ -92,8 +92,12 @@ public class DriverFactory {
 
 	/** Registers new {@linkplain Driver} under provided name with specified properties. */
 	public static void configure(String name, Properties props) {
+		String effectiveName = name;
+		if (effectiveName == null) {
+			effectiveName = DEFAULT_INSTANCE;
+		}
 		synchronized (INSTANCIES) {
-			INSTANCIES.put(name, new Driver(name, props));
+			INSTANCIES.put(effectiveName, new Driver(name, props));
 		}
 	}
 
