@@ -1033,7 +1033,6 @@ public final class DigesterImpl implements Digester {
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
     public <T> T parse(InputSource input) throws IOException, SAXException {
         if (input == null) {
             throw new IllegalArgumentException("InputSource to parse must be not null");
@@ -1047,7 +1046,10 @@ public final class DigesterImpl implements Digester {
             if (this.root == null) {
                 return null;
             }
-            return (T) this.root;
+
+            @SuppressWarnings("unchecked")
+            T returned = (T) this.root;
+            return returned;
         } finally {
             this.cleanup();
         }
