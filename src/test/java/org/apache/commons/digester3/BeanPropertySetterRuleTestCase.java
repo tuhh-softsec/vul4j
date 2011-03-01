@@ -77,9 +77,12 @@ public class BeanPropertySetterRuleTestCase extends AbstractTestCase {
 
             @Override
             protected void configure() {
-                forPattern("root/alpha").addRule(firstRule)
-                                        .then().addRule(secondRule)
-                                        .then().addRule(thirdRule);
+                forPattern("root/alpha")
+                    .addRule(firstRule)
+                    .then()
+                    .addRule(secondRule)
+                    .then()
+                    .addRule(thirdRule);
             }
 
         }).parse(xmlTestReader());
@@ -199,8 +202,10 @@ public class BeanPropertySetterRuleTestCase extends AbstractTestCase {
 
             @Override
             protected void configure() {
-                forPattern("root").createObject().ofType("org.apache.commons.digester3.SimpleTestBean")
-                                  .then().setBeanProperty().withName("alpha");
+                forPattern("root")
+                    .createObject().ofType("org.apache.commons.digester3.SimpleTestBean")
+                    .then()
+                    .setBeanProperty().withName("alpha");
                 forPattern("root/alpha").setBeanProperty().withName("beta");
                 forPattern("root/delta").setBeanProperty().withName("delta");
             }
@@ -238,8 +243,10 @@ public class BeanPropertySetterRuleTestCase extends AbstractTestCase {
 
                 @Override
                 protected void configure() {
-                    forPattern("root").createObject().ofType("org.apache.commons.digester3.SimpleTestBean")
-                                      .then().setBeanProperty().withName("unknown");
+                    forPattern("root")
+                        .createObject().ofType("org.apache.commons.digester3.SimpleTestBean")
+                        .then()
+                        .setBeanProperty().withName("unknown");
                 }
 
             }).parse(xmlTestReader());
