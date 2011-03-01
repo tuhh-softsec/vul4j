@@ -31,20 +31,32 @@ import org.osgi.framework.ServiceRegistration;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-@SuppressWarnings({"UnusedDeclaration"})
-public class DefaultActivator implements BundleActivator
+@SuppressWarnings(
+    { "UnusedDeclaration" })
+public class LdapProtocolCodecActivator implements BundleActivator
 {
     private LdapProtocolCodecFactory factory;
     private ServiceRegistration registration;
 
 
-    @SuppressWarnings({"UnusedDeclaration"})
-    public DefaultActivator()
+    @SuppressWarnings(
+        { "UnusedDeclaration" })
+    public LdapProtocolCodecActivator()
     {
         this.factory = new LdapProtocolCodecFactory();
     }
-    
-    
+
+
+    /**
+     * This class does nothing. It's just a nasty hack to force the bundle
+     * to get started lazy by calling this method.
+     */
+    public static void lazyStart()
+    {
+        // Does nothing
+    }
+
+
     /**
      * {@inheritDoc}
      */
@@ -53,7 +65,7 @@ public class DefaultActivator implements BundleActivator
         registration = bundleContext.registerService( LdapProtocolCodecFactory.class.getName(), factory, null );
         LdapCodecServiceFactory.getSingleton().registerProtocolCodecFactory( factory );
     }
-    
+
 
     /**
      * {@inheritDoc}

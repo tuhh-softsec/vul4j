@@ -67,7 +67,7 @@
             <Bundle-SymbolicName>${project.groupId}.ldap.protocol.codec</Bundle-SymbolicName>
             <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
             <Bundle-Activator>
-              org.apache.directory.shared.ldap.codec.protocol.mina.DefaultActivator
+              org.apache.directory.shared.ldap.codec.protocol.mina.LdapProtocolCodecActivator
             </Bundle-Activator>
           </instructions>
         </configuration>
