@@ -68,7 +68,7 @@
 
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>shared-ldap-protocol-codec</artifactId>
+      <artifactId>shared-ldap-net-mina</artifactId>
       <scope>test</scope>
     </dependency>
 
