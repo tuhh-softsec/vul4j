@@ -56,13 +56,19 @@
     
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>shared-ldap-schema</artifactId>
+      <artifactId>shared-ldap-schema-data</artifactId>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>shared-ldap-extras-codec</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>shared-ldap-net-mina</artifactId>
       <scope>test</scope>
     </dependency>
 

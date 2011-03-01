@@ -77,19 +77,11 @@
   <modules>
     <module>i18n</module>
     <module>util</module>
-    <module>asn1-api</module>
-    <module>asn1-ber</module>
+    <module>asn1</module>
     <module>integ</module>
     <module>all</module>
-    <module>ldap-extras</module>
-    <module>ldap-codec</module>
-    <module>ldap-codec-standalone</module>
-    <module>ldap-model</module>
-    <module>ldap-schema</module>
-    <module>ldap-schema-converter</module>
-    <module>ldap-client-api</module>
-    <module>dsml-parser</module>
-    <module>dsml-engine</module>
+    <module>ldap</module>
+    <module>dsml</module>
     <module>distribution</module>
   </modules>
 
@@ -409,7 +401,13 @@
 
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>shared-ldap-codec</artifactId>
+        <artifactId>shared-ldap-codec-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>shared-ldap-net-mina</artifactId>
         <version>${project.version}</version>
       </dependency>
 
@@ -422,6 +420,12 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>shared-ldap-extras-codec</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>shared-ldap-extras-codec-api</artifactId>
         <version>${project.version}</version>
       </dependency>
 
@@ -445,13 +449,13 @@
 
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>ldap-client-api</artifactId>
+        <artifactId>shared-ldap-client-api</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>shared-ldap-schema</artifactId>
+        <artifactId>shared-ldap-schema-data</artifactId>
         <version>${project.version}</version>
       </dependency>
 

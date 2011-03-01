@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+  
+  http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apache.directory.shared</groupId>
+    <artifactId>shared-ldap-schema-parent</artifactId>
+    <version>1.0.0-M2-SNAPSHOT</version>
+  </parent>
+  
+  <artifactId>shared-ldap-schema-data</artifactId>
+  <name>Apache Directory Shared LDAP Schema</name>
+
+  <description>
+    Jar bundled LDIF files containing schema data using the Apache Directory
+    specific meta schema for describing schema information using LDAP.  This
+    jar can be used by clients as well as by ApacheDS' schema partition.
+  </description>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.directory.junit</groupId>
+      <artifactId>junit-addons</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>shared-i18n</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>shared-ldap-extras-aci</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>${commons.io.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <configuration>
+          <systemPropertyVariables>
+            <workingDirectory>${basedir}/target</workingDirectory>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.6</version>
+        <executions>
+          <execution>
+            <phase>generate-resources</phase>
+            <configuration>
+              <target>
+                <!-- Various properties -->
+                <property name="schema.index" value="target/generated-resources/apacheds/META-INF/apacheds-schema.index" />
+                <property name="schema.location" value="src${file.separator}main${file.separator}resources${file.separator}" />
+              
+                <!-- Listing all LDIF files under schema location -->
+                <path id="schema.files.path">
+                  <fileset dir="${schema.location}">
+                    <include name="**/*.ldif" />
+                    <exclude name="schema-all.ldif" />
+                  </fileset>
+                </path>
+                <property name="schema.files" refid="schema.files.path" />
+                
+                <!-- Creating the schema index file -->
+                <echo message="${schema.files}" file="${schema.index}" />
+                <replace file="${schema.index}">
+                  <!-- Replace the path separator (':' on Unix, ';' on Windows) by a new line -->
+                  <replacefilter token="${path.separator}" value="${line.separator}" />
+                  <!-- Remove the full path of the schema location to get relative paths for files -->
+                  <replacefilter token="${basedir}${file.separator}${schema.location}" value="" />
+                  <!-- Replace the file separator ('/' on Unix, '\' on Windows) by a '/' - Useful on Windows -->
+                  <replacefilter token="${file.separator}" value="/" />
+                </replace>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestFile>META-INF/MANIFEST.MF</manifestFile>
+            <addMavenDescriptor>false</addMavenDescriptor>
+          </archive>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <inherited>true</inherited>
+        <extensions>true</extensions>
+        <executions>
+          <execution>
+            <id>bundle-manifest</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <manifestLocation>META-INF</manifestLocation>
+          <instructions>
+            <Bundle-SymbolicName>${project.groupId}.ldap.schema</Bundle-SymbolicName>
+            <Export-Package>org.apache.directory.shared.ldap.schema*</Export-Package>
+            <Import-Package>
+              *,
+              org.apache.directory.shared.ldap.aci,
+              org.apache.directory.shared.ldap.model.schema.comparators,
+              org.apache.directory.shared.ldap.model.schema.normalizers,
+              org.apache.directory.shared.ldap.model.schema.parsers,
+              org.apache.directory.shared.ldap.model.schema.registries,
+              org.apache.directory.shared.ldap.model.schema.syntaxCheckers
+            </Import-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+
+    </plugins>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+      <resource>
+        <directory>target/generated-resources/apacheds</directory>
+      </resource>
+    </resources>
+  </build>
+</project>
