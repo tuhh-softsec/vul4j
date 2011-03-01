@@ -87,6 +87,9 @@ public interface Digester extends ContentHandler, DTDHandler, EntityResolver, Er
      * Parse the content of the specified input source using this Digester.
      * Returns the root element from the object stack (if any).
      *
+     * <b>WARNING</b>: this method is subject to {@link ClassCastException} if
+     * the returned object is not assignable to the generic type.
+     *
      * @param input Input source containing the XML data to be parsed
      *
      * @exception IOException if an input/output error occurs
@@ -97,6 +100,9 @@ public interface Digester extends ContentHandler, DTDHandler, EntityResolver, Er
     /**
      * Parse the content of the specified input stream using this Digester.
      * Returns the root element from the object stack (if any).
+     *
+     * <b>WARNING</b>: this method is subject to {@link ClassCastException} if
+     * the returned object is not assignable to the generic type.
      *
      * @param input Input stream containing the XML data to be parsed
      *
@@ -109,6 +115,9 @@ public interface Digester extends ContentHandler, DTDHandler, EntityResolver, Er
      * Parse the content of the specified reader using this Digester.
      * Returns the root element from the object stack (if any).
      *
+     * <b>WARNING</b>: this method is subject to {@link ClassCastException} if
+     * the returned object is not assignable to the generic type.
+     *
      * @param reader Reader containing the XML data to be parsed
      *
      * @exception IOException if an input/output error occurs
@@ -120,6 +129,9 @@ public interface Digester extends ContentHandler, DTDHandler, EntityResolver, Er
      * Parse the content of the specified URI using this Digester.
      * Returns the root element from the object stack (if any).
      *
+     * <b>WARNING</b>: this method is subject to {@link ClassCastException} if
+     * the returned object is not assignable to the generic type.
+     *
      * @param uri URI containing the XML data to be parsed
      *
      * @exception IOException if an input/output error occurs
@@ -130,6 +142,9 @@ public interface Digester extends ContentHandler, DTDHandler, EntityResolver, Er
     /**
      * Parse the content of the specified URL using this Digester.
      * Returns the root element from the object stack (if any).
+     *
+     * <b>WARNING</b>: this method is subject to {@link ClassCastException} if
+     * the returned object is not assignable to the generic type.
      *
      * @param url URL containing the XML data to be parsed
      *
