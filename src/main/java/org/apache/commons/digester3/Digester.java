@@ -294,7 +294,7 @@ public interface Digester extends ContentHandler, DTDHandler, EntityResolver, Er
      * @return the root object that has been created after parsing
      *  or null if the digester has not parsed any XML yet.
      */
-    Object getRoot();
+    <T> T getRoot();
 
     /**
      * This method allows the "root" variable to be reset to null.

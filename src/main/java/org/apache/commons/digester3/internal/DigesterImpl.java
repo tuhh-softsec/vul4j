@@ -380,8 +380,8 @@ public final class DigesterImpl implements Digester {
     /**
      * {@inheritDoc}
      */
-    public Object getRoot() {
-        return this.root;
+    public <T> T getRoot() {
+        return this.<T>npeSafeCast(this.root);
     }
 
     /**
@@ -1048,7 +1048,7 @@ public final class DigesterImpl implements Digester {
         try {
             this.reader.parse(input);
 
-            return this.<T>npeSafeCast(this.root);
+            return this.<T>getRoot();
         } finally {
             this.cleanup();
         }

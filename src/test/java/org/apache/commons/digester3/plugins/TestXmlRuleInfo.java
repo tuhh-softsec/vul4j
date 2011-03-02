@@ -71,9 +71,7 @@ public class TestXmlRuleInfo extends AbstractPluginTestCase {
 
         digester.parse(new StringReader(input.toString()));
 
-        Object root = digester.getRoot();
-        assertEquals(ObjectTestImpl.class, root.getClass());
-        ObjectTestImpl testObject = (ObjectTestImpl) root;
+        ObjectTestImpl testObject = digester.getRoot();
         assertEquals("xmlrules1", testObject.getValue());
     }
 
@@ -96,9 +94,7 @@ public class TestXmlRuleInfo extends AbstractPluginTestCase {
 
         digester.parse(new StringReader(input.toString()));
 
-        Object root = digester.getRoot();
-        assertEquals(ObjectTestImpl.class, root.getClass());
-        ObjectTestImpl testObject = (ObjectTestImpl) root;
+        ObjectTestImpl testObject = digester.getRoot();
         assertEquals("xmlrules2", testObject.getValue());
     }
 
@@ -119,9 +115,7 @@ public class TestXmlRuleInfo extends AbstractPluginTestCase {
 
         digester.parse(new StringReader(input.toString()));
 
-        Object root = digester.getRoot();
-        assertEquals(ObjectTestImpl.class, root.getClass());
-        ObjectTestImpl testObject = (ObjectTestImpl) root;
+        ObjectTestImpl testObject = digester.getRoot();
         assertEquals("xmlrules-ruleinfo", testObject.getValue());
     }
 
