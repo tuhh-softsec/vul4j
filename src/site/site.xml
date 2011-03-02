@@ -31,12 +31,13 @@
     </menu>
 
     <menu name="Developers Guide">
-      <item name="Core APIs"            href="/guide/core.html"/>
-      <item name="Plugins"              href="/guide/plugins.html"/>
-      <item name="Substitution"         href="/guide/substitution.html"/>
-      <item name="XML Rules"            href="/guide/xmlrules.html"/>
-      <item name="Annotations"          href="/guide/annotations.html"/>
-      <item name="FAQ"                  href="/guide/faq.html"/>
+      <item name="Core APIs"                 href="/guide/core.html"/>
+      <item name="Plugins"                   href="/guide/plugins.html"/>
+      <item name="Substitution"              href="/guide/substitution.html"/>
+      <item name="XML Rules"                 href="/guide/xmlrules.html"/>
+      <item name="Annotations"               href="/guide/annotations.html"/>
+      <item name="Digester vs. Digester3"    href="/guide/dvsd3.html"/>
+      <item name="FAQ"                       href="/guide/faq.html"/>
     </menu>
   </body>
 
