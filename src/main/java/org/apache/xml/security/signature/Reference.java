@@ -389,7 +389,7 @@ private Element digestValueElement;
          }
 
          ResourceResolver resolver = ResourceResolver.getInstance(URIAttr,
-            this.baseURI, this._manifest._perManifestResolvers);
+            this.baseURI, this._manifest.getPerManifestResolvers());
 
          if (resolver == null) {
             Object exArgs[] = { URI };
@@ -398,7 +398,7 @@ private Element digestValueElement;
                "signature.Verification.Reference.NoInput", exArgs);
          }
 
-         resolver.addProperties(this._manifest._resolverProperties);
+         resolver.addProperties(this._manifest.getResolverProperties());
 
          XMLSignatureInput input = resolver.resolve(URIAttr, this.baseURI);
                   

@@ -1,4 +1,3 @@
-
 /*
  * Copyright  1999-2004 The Apache Software Foundation.
  *
@@ -17,10 +16,6 @@
  */
 package org.apache.xml.security.signature;
 
-
-
-
-
 /**
  * Thrown by {@link org.apache.xml.security.signature.SignedInfo#verify()} when
  * testing the signature fails because of uninitialized
@@ -31,97 +26,93 @@ package org.apache.xml.security.signature;
  */
 public class MissingResourceFailureException extends XMLSignatureException {
 
-   /**
-         * 
-         */
-        private static final long serialVersionUID = 1L;
-   /** Field uninitializedReference */
-   Reference uninitializedReference = null;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    
+    /** Field uninitializedReference */
+    Reference uninitializedReference = null;
 
-   /**
-    * MissingKeyResourceFailureException constructor.
-    * @param msgID
-    * @param reference
-    * @see #getReference
-    */
-   public MissingResourceFailureException(String msgID, Reference reference) {
+    /**
+     * MissingKeyResourceFailureException constructor.
+     * @param msgID
+     * @param reference
+     * @see #getReference
+     */
+    public MissingResourceFailureException(String msgID, Reference reference) {
+        super(msgID);
 
-      super(msgID);
+        this.uninitializedReference = reference;
+    }
 
-      this.uninitializedReference = reference;
-   }
+    /**
+     * Constructor MissingResourceFailureException
+     *
+     * @param msgID
+     * @param exArgs
+     * @param reference
+     * @see #getReference
+     */
+    public MissingResourceFailureException(String msgID, Object exArgs[], Reference reference) {
+        super(msgID, exArgs);
 
-   /**
-    * Constructor MissingResourceFailureException
-    *
-    * @param msgID
-    * @param exArgs
-    * @param reference
-    * @see #getReference
-    */
-   public MissingResourceFailureException(String msgID, Object exArgs[],
-                                          Reference reference) {
+        this.uninitializedReference = reference;
+    }
 
-      super(msgID, exArgs);
+    /**
+     * Constructor MissingResourceFailureException
+     *
+     * @param msgID
+     * @param originalException
+     * @param reference
+     * @see #getReference
+     */
+    public MissingResourceFailureException(
+        String msgID, Exception originalException, Reference reference
+    ) {
+        super(msgID, originalException);
 
-      this.uninitializedReference = reference;
-   }
+        this.uninitializedReference = reference;
+    }
 
-   /**
-    * Constructor MissingResourceFailureException
-    *
-    * @param msgID
-    * @param originalException
-    * @param reference
-    * @see #getReference
-    */
-   public MissingResourceFailureException(String msgID,
-                                          Exception originalException,
-                                          Reference reference) {
+    /**
+     * Constructor MissingResourceFailureException
+     *
+     * @param msgID
+     * @param exArgs
+     * @param originalException
+     * @param reference
+     * @see #getReference
+     */
+    public MissingResourceFailureException(
+        String msgID, Object exArgs[], Exception originalException, Reference reference
+    ) {
+        super(msgID, exArgs, originalException);
 
-      super(msgID, originalException);
+        this.uninitializedReference = reference;
+    }
 
-      this.uninitializedReference = reference;
-   }
+    /**
+     * used to set the uninitialized {@link org.apache.xml.security.signature.Reference}
+     *
+     * @param reference the Reference object
+     * @see #getReference
+     */
+    public void setReference(Reference reference) {
+        this.uninitializedReference = reference;
+    }
 
-   /**
-    * Constructor MissingResourceFailureException
-    *
-    * @param msgID
-    * @param exArgs
-    * @param originalException
-    * @param reference
-    * @see #getReference
-    */
-   public MissingResourceFailureException(String msgID, Object exArgs[],
-                                          Exception originalException,
-                                          Reference reference) {
-
-      super(msgID, exArgs, originalException);
-
-      this.uninitializedReference = reference;
-   }
-
-   /**
-    * used to set the uninitialized {@link org.apache.xml.security.signature.Reference}
-    *
-    * @param reference the Reference object
-    * @see #getReference
-    */
-   public void setReference(Reference reference) {
-      this.uninitializedReference = reference;
-   }
-
-   /**
-    * used to get the uninitialized {@link org.apache.xml.security.signature.Reference}
-    *
-    * This allows to supply the correct {@link org.apache.xml.security.signature.XMLSignatureInput}
-    * to the {@link org.apache.xml.security.signature.Reference} to try again verification.
-    *
-    * @return the Reference object
-    * @see #setReference
-    */
-   public Reference getReference() {
-      return this.uninitializedReference;
-   }
+    /**
+     * used to get the uninitialized {@link org.apache.xml.security.signature.Reference}
+     *
+     * This allows to supply the correct {@link org.apache.xml.security.signature.XMLSignatureInput}
+     * to the {@link org.apache.xml.security.signature.Reference} to try again verification.
+     *
+     * @return the Reference object
+     * @see #setReference
+     */
+    public Reference getReference() {
+        return this.uninitializedReference;
+    }
 }

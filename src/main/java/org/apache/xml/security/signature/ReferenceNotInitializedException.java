@@ -1,4 +1,3 @@
-
 /*
  * Copyright  1999-2004 The Apache Software Foundation.
  *
@@ -17,10 +16,6 @@
  */
 package org.apache.xml.security.signature;
 
-
-
-
-
 /**
  * Raised if verifying a {@link org.apache.xml.security.signature.Reference} fails
  * because of an uninitialized {@link org.apache.xml.security.signature.XMLSignatureInput}
@@ -29,58 +24,56 @@ package org.apache.xml.security.signature;
  */
 public class ReferenceNotInitializedException extends XMLSignatureException {
 
-   /**
-         * 
-         */
-        private static final long serialVersionUID = 1L;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
 
-   /**
-    * Constructor ReferenceNotInitializedException
-    *
-    */
-   public ReferenceNotInitializedException() {
-      super();
-   }
+    /**
+     * Constructor ReferenceNotInitializedException
+     *
+     */
+    public ReferenceNotInitializedException() {
+        super();
+    }
 
-   /**
-    * Constructor ReferenceNotInitializedException
-    *
-    * @param msgID
-    */
-   public ReferenceNotInitializedException(String msgID) {
-      super(msgID);
-   }
+    /**
+     * Constructor ReferenceNotInitializedException
+     *
+     * @param msgID
+     */
+    public ReferenceNotInitializedException(String msgID) {
+        super(msgID);
+    }
 
-   /**
-    * Constructor ReferenceNotInitializedException
-    *
-    * @param msgID
-    * @param exArgs
-    */
-   public ReferenceNotInitializedException(String msgID, Object exArgs[]) {
-      super(msgID, exArgs);
-   }
+    /**
+     * Constructor ReferenceNotInitializedException
+     *
+     * @param msgID
+     * @param exArgs
+     */
+    public ReferenceNotInitializedException(String msgID, Object exArgs[]) {
+        super(msgID, exArgs);
+    }
 
-   /**
-    * Constructor ReferenceNotInitializedException
-    *
-    * @param msgID
-    * @param originalException
-    */
-   public ReferenceNotInitializedException(String msgID,
-                                           Exception originalException) {
-      super(msgID, originalException);
-   }
+    /**
+     * Constructor ReferenceNotInitializedException
+     *
+     * @param msgID
+     * @param originalException
+     */
+    public ReferenceNotInitializedException(String msgID, Exception originalException) {
+        super(msgID, originalException);
+    }
 
-   /**
-    * Constructor ReferenceNotInitializedException
-    *
-    * @param msgID
-    * @param exArgs
-    * @param originalException
-    */
-   public ReferenceNotInitializedException(String msgID, Object exArgs[],
-                                           Exception originalException) {
-      super(msgID, exArgs, originalException);
-   }
+    /**
+     * Constructor ReferenceNotInitializedException
+     *
+     * @param msgID
+     * @param exArgs
+     * @param originalException
+     */
+    public ReferenceNotInitializedException(String msgID, Object exArgs[], Exception originalException) {
+        super(msgID, exArgs, originalException);
+    }
 }
