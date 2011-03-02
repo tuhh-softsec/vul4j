@@ -23,7 +23,7 @@ limitations under the License.
     <author email="dev@commons.apache.org">Commons Documentation Team</author>
   </properties>
   <body>
-    <section name="New Digester APIs">
+    <section name="New Digester fluent APIs">
       <p>The main difference between Digester <i>1.X</i>, <i>2.X</i> and <i>3.X</i> is that the
       while the first follows the approach <i>"given a Digester instance, then configure it"</i>,
       the new Digester instead follows the opposite approach <i>"given one (or more) configuration(s), create
@@ -135,6 +135,22 @@ limitations under the License.
       making rules semantic simpler, and the effort of configuration is moved to the startup;
       the <i>DigesterLoader</i> indeed will analyze all the <i>RulesModule</i> instances
       and will be ready to create new Digester instances with pre-filled rules.</p>
+    </section>
+
+    <section name="One single configuration point">
+      <p>TODO</p>
+    </section>
+
+    <section name="One single universal loader">
+      <p>TODO</p>
+    </section>
+
+    <section name="Extensions optimization">
+      <p>TODO</p>
+    </section>
+
+    <section name="Startup checks and improved error reporting">
+      <p>TODO</p>
     </section>
   </body>
 </document>
