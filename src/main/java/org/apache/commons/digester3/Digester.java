@@ -309,6 +309,9 @@ public interface Digester extends ContentHandler, DTDHandler, EntityResolver, Er
      * method allows you to access the root object that has been created 
      * after parsing has completed.
      *
+     * <b>WARNING</b>: this method is subject to {@link ClassCastException} if
+     * the returned object is not assignable to the generic type.
+     *
      * @return the root object that has been created after parsing
      *  or null if the digester has not parsed any XML yet.
      */
