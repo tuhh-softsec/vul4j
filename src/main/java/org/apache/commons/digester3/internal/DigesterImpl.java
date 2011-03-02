@@ -86,7 +86,7 @@ public final class DigesterImpl implements Digester {
      * The parameters stack being utilized by CallMethodRule and
      * CallParamRule rules.
      */
-    private final Stack<Object> params = new Stack<Object>();
+    private final Stack<Object[]> params = new Stack<Object[]>();
 
     /**
      * Stack whose elements are List objects, each containing a list of
@@ -394,7 +394,7 @@ public final class DigesterImpl implements Digester {
     /**
      * {@inheritDoc}
      */
-    public Object peekParams() {
+    public Object[] peekParams() {
         try {
             return this.params.peek();
         } catch (EmptyStackException e) {
@@ -406,7 +406,7 @@ public final class DigesterImpl implements Digester {
     /**
      * {@inheritDoc}
      */
-    public Object peekParams(int n) {
+    public Object[] peekParams(int n) {
         int index = (this.params.size() - 1) - n;
         if (index < 0) {
             this.log.warn("Empty stack (returning null)");
@@ -423,7 +423,7 @@ public final class DigesterImpl implements Digester {
     /**
      * {@inheritDoc}
      */
-    public void pushParams(Object object) {
+    public void pushParams(Object[] object) {
         if (this.log.isTraceEnabled()) {
             this.log.trace("Pushing params");
         }
@@ -433,7 +433,7 @@ public final class DigesterImpl implements Digester {
     /**
      * {@inheritDoc}
      */
-    public Object popParams() {
+    public Object[] popParams() {
         try {
             if (this.log.isTraceEnabled()) {
                 this.log.trace("Popping params");

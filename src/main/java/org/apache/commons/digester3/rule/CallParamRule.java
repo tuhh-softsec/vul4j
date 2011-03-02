@@ -112,7 +112,7 @@ public class CallParamRule extends Rule {
         // if this CallParamRule is reused in subsequent nesting.
 
         if (param != null) {
-            Object parameters[] = (Object[]) this.getDigester().peekParams();
+            Object[] parameters = this.getDigester().peekParams();
             parameters[this.paramIndex] = param;
         }
     }
@@ -137,7 +137,7 @@ public class CallParamRule extends Rule {
     public void end(String namespace, String name) {
         if (this.bodyTextStack != null && !this.bodyTextStack.empty()) {
             // what we do now is push one parameter onto the top set of parameters
-            Object parameters[] = (Object[]) this.getDigester().peekParams();
+            Object[] parameters = this.getDigester().peekParams();
             parameters[this.paramIndex] = this.bodyTextStack.pop();
         }
     }

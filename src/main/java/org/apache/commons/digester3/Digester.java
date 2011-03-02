@@ -313,7 +313,7 @@ public interface Digester extends ContentHandler, DTDHandler, EntityResolver, Er
      * <p>The parameters stack is used to store <code>CallMethodRule</code> parameters. 
      * See {@link #params}.</p>
      */
-    Object peekParams();
+    Object[] peekParams();
 
     /**
      * <p>Return the n'th object down the parameters stack, where 0 is the top element
@@ -325,7 +325,7 @@ public interface Digester extends ContentHandler, DTDHandler, EntityResolver, Er
      * @param n Index of the desired element, where 0 is the top of the stack,
      *  1 is the next element down, and so on.
      */
-    Object peekParams(int n);
+    Object[] peekParams(int n);
 
     /**
      * <p>Push a new object onto the top of the parameters stack.</p>
@@ -335,7 +335,7 @@ public interface Digester extends ContentHandler, DTDHandler, EntityResolver, Er
      *
      * @param object The new object
      */
-    void pushParams(Object object);
+    void pushParams(Object[] object);
 
     /**
      * <p>Pop the top object off of the parameters stack, and return it.  If there are
@@ -344,7 +344,7 @@ public interface Digester extends ContentHandler, DTDHandler, EntityResolver, Er
      * <p>The parameters stack is used to store <code>CallMethodRule</code> parameters. 
      * See {@link #params}.</p>
      */
-    Object popParams();
+    Object[] popParams();
 
     /**
      * Get the most current namespaces for all prefixes.

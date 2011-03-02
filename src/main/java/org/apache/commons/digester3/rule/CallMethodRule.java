@@ -190,10 +190,10 @@ public class CallMethodRule extends Rule {
     @Override
     public void end(String namespace, String name) throws Exception {
         // Retrieve or construct the parameter values array
-        Object parameters[] = null;
+        Object[] parameters = null;
         if (this.paramCount > 0) {
 
-            parameters = (Object[]) this.getDigester().popParams();
+            parameters = this.getDigester().popParams();
 
             if (this.getDigester().getLog().isTraceEnabled()) {
                 Formatter formatter = new Formatter("[CallMethodRule]");

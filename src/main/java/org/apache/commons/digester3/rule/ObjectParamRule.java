@@ -72,7 +72,7 @@ public class ObjectParamRule extends Rule {
     @Override
     public void begin(String namespace, String name, Attributes attributes) throws Exception {
         Object anAttribute = null;
-        Object parameters[] = (Object[]) this.getDigester().peekParams();
+        Object[] parameters = this.getDigester().peekParams();
 
         if (this.attributeName != null) {
             anAttribute = attributes.getValue(attributeName);
