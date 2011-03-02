@@ -35,6 +35,9 @@ public class StreamFeeder
 
     private boolean done;
 
+    volatile boolean disabled;
+
+
     /**
      * Create a new StreamFeeder
      *
@@ -65,7 +68,6 @@ public class StreamFeeder
         finally
         {
             close();
-
 
             synchronized ( this )
             {
@@ -135,10 +137,28 @@ public class StreamFeeder
         {
             synchronized ( output )
             {
-                output.write( data );
+                if ( !disabled )
+                {
+                    output.write( data );
+                }
 
                 data = input.read();
             }
         }
     }
+
+    public synchronized void waitUntilDone()
+        throws InterruptedException
+    {
+        while ( !isDone() )
+        {
+            wait();
+        }
+    }
+
+    public void disable()
+    {
+        disabled = true;
+    }
+
 }

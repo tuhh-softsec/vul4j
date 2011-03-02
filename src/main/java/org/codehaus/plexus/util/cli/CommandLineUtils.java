@@ -16,6 +16,10 @@ package org.codehaus.plexus.util.cli;
  * limitations under the License.
  */
 
+import org.codehaus.plexus.util.Os;
+import org.codehaus.plexus.util.ReaderFactory;
+import org.codehaus.plexus.util.StringUtils;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,10 +35,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
-
-import org.codehaus.plexus.util.Os;
-import org.codehaus.plexus.util.ReaderFactory;
-import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
@@ -122,10 +122,10 @@ public abstract class CommandLineUtils
     }
 
     /**
-     * @param cl  The command line to execute
-     * @param systemIn  The input to read from, must be thread safe
-     * @param systemOut  A consumer that receives output, must be thread safe
-     * @param systemErr  A consumer that receives system error stream output, must be thread safe
+     * @param cl               The command line to execute
+     * @param systemIn         The input to read from, must be thread safe
+     * @param systemOut        A consumer that receives output, must be thread safe
+     * @param systemErr        A consumer that receives system error stream output, must be thread safe
      * @param timeoutInSeconds Positive integer to specify timeout, zero and negative integers for no timeout.
      * @return A return value, see {@link Process#exitValue()}
      * @throws CommandLineException or CommandLineTimeOutException if time out occurs
@@ -188,32 +188,7 @@ public abstract class CommandLineUtils
                 returnValue = p.exitValue();
             }
 
-            if ( inputFeeder != null )
-            {
-                synchronized ( inputFeeder )
-                {
-                    while ( !inputFeeder.isDone() )
-                    {
-                        inputFeeder.wait();
-                    }
-                }
-            }
-
-            synchronized ( outputPumper )
-            {
-                while ( !outputPumper.isDone() )
-                {
-                    outputPumper.wait();
-                }
-            }
-
-            synchronized ( errorPumper )
-            {
-                while ( !errorPumper.isDone() )
-                {
-                    errorPumper.wait();
-                }
-            }
+            waitForAllPumpers( inputFeeder, outputPumper, errorPumper );
 
             processes.remove( new Long( cl.getPid() ) );
 
@@ -232,6 +207,12 @@ public abstract class CommandLineUtils
         catch ( InterruptedException ex )
         {
             killProcess( cl.getPid() );
+            if ( inputFeeder != null )
+            {
+                inputFeeder.disable();
+            }
+            outputPumper.disable();
+            errorPumper.disable();
             throw new CommandLineTimeOutException( "Error while executing external command, process killed.", ex );
         }
         finally
@@ -254,6 +235,19 @@ public abstract class CommandLineUtils
         }
     }
 
+    private static void waitForAllPumpers( StreamFeeder inputFeeder, StreamPumper outputPumper,
+                                           StreamPumper errorPumper )
+        throws InterruptedException
+    {
+        if ( inputFeeder != null )
+        {
+            inputFeeder.waitUntilDone();
+        }
+
+        outputPumper.waitUntilDone();
+        errorPumper.waitUntilDone();
+    }
+
     /**
      * Gets the shell environment variables for this process. Note that the returned mapping from variable names to
      * values will always be case-sensitive regardless of the platform, i.e. <code>getSystemEnvVars().get("path")</code>
@@ -263,7 +257,7 @@ public abstract class CommandLineUtils
      * @return The shell environment variables, can be empty but never <code>null</code>.
      * @throws IOException If the environment variables could not be queried from the shell.
      * @see System#getenv() System.getenv() API, new in JDK 5.0, to get the same result
-     * <b>since 2.0.2 System#getenv() will be used if available in the current running jvm.</b>
+     *      <b>since 2.0.2 System#getenv() will be used if available in the current running jvm.</b>
      */
     public static Properties getSystemEnvVars()
         throws IOException
@@ -279,14 +273,14 @@ public abstract class CommandLineUtils
      * @return Properties object of (possibly modified) envar keys mapped to their values.
      * @throws IOException
      * @see System#getenv() System.getenv() API, new in JDK 5.0, to get the same result
-     * <b>since 2.0.2 System#getenv() will be used if available in the current running jvm.</b>
+     *      <b>since 2.0.2 System#getenv() will be used if available in the current running jvm.</b>
      */
     public static Properties getSystemEnvVars( boolean caseSensitive )
         throws IOException
     {
-        
+
         // check if it's 1.5+ run 
-        
+
         Method getenvMethod = getEnvMethod();
         if ( getenvMethod != null )
         {
@@ -307,7 +301,7 @@ public abstract class CommandLineUtils
                 throw new IOException( e.getMessage() );
             }
         }
-        
+
         Process p = null;
 
         try
@@ -627,7 +621,7 @@ public abstract class CommandLineUtils
         }
         return result.toString();
     }
-    
+
     private static Method getEnvMethod()
     {
         try
@@ -643,7 +637,7 @@ public abstract class CommandLineUtils
             return null;
         }
     }
-    
+
     private static Properties getEnvFromSystem( Method method, boolean caseSensitive )
         throws IllegalAccessException, IllegalArgumentException, InvocationTargetException
     {

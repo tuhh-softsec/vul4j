@@ -84,8 +84,8 @@ import java.io.PrintWriter;
  *
  * @author <a href="mailto:fvancea@maxiq.com">Florin Vancea </a>
  * @author <a href="mailto:pj@thoughtworks.com">Paul Julius </a>
- * @since June 11, 2001
  * @version $Id$
+ * @since June 11, 2001
  */
 public class StreamPumper
     extends Thread
@@ -101,6 +101,8 @@ public class StreamPumper
     private static final int SIZE = 1024;
 
     boolean done;
+
+    volatile boolean disabled;
 
     public StreamPumper( InputStream in )
     {
@@ -192,9 +194,23 @@ public class StreamPumper
 
     private void consumeLine( String line )
     {
-        if ( consumer != null )
+        if ( consumer != null && !disabled )
         {
             consumer.consumeLine( line );
         }
+    }
+
+    public synchronized void waitUntilDone()
+        throws InterruptedException
+    {
+        while ( !isDone() )
+        {
+            wait();
+        }
+    }
+
+    public void disable()
+    {
+        disabled = true;
     }
 }
