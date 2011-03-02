@@ -17,6 +17,7 @@
  */
 package org.apache.commons.digester3;
 
+import java.lang.reflect.Proxy;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
@@ -31,6 +32,7 @@ import javax.xml.parsers.SAXParserFactory;
 import javax.xml.validation.Schema;
 
 import org.apache.commons.digester3.internal.DigesterImpl;
+import org.apache.commons.digester3.internal.mapper.MapperInvocationHandler;
 import org.apache.commons.digester3.internal.rulesbinder.RulesBinderImpl;
 import org.apache.commons.digester3.rules.BaseRules;
 import org.apache.commons.digester3.spi.Rules;
@@ -397,6 +399,31 @@ public final class DigesterLoader {
             throw new DigesterLoadingException("Parameter 'digester' must be not null");
         }
         this.decorate(digester.getRules());
+    }
+
+    /**
+     * Creates a &lt;T&gt; dynamic proxy that wraps the Digester
+     * and performs Digester mapping under the hood.
+     *
+     * <b>WARNING</b>: this methods supports interfaces only.
+     *
+     * @param <T> The generic interface to be proxyed
+     * @param mapperType The interface has to be proxyed
+     * @return The {@code mapperType} dynamic proxy
+     */
+    public <T> T getMapper(Class<T> mapperType) {
+        if (mapperType == null) {
+            throw new DigesterLoadingException("Maparemeter 'mapperType' must be not null");
+        }
+        if (!mapperType.isInterface()) {
+            throw new DigesterLoadingException("Only interfaces supported in this version");
+        }
+
+        @SuppressWarnings("unchecked")
+        T mapperProxy = (T) Proxy.newProxyInstance(mapperType.getClassLoader(),
+                new Class<?>[]{ mapperType },
+                new MapperInvocationHandler(mapperType, this));
+        return mapperProxy;
     }
 
 }
