@@ -43,7 +43,8 @@ public class NamespaceSnapshotTestCase extends AbstractTestCase {
         public final void begin(final String namespace, final String name, final Attributes attributes) {
             Digester d = getDigester();
             Map<String, String> namespaces = d.getCurrentNamespaces();
-            ((NamespacedBox) d.peek()).setNamespaces(namespaces);
+            NamespacedBox namespacedBox = d.peek();
+            namespacedBox.setNamespaces(namespaces);
         }
     }
 

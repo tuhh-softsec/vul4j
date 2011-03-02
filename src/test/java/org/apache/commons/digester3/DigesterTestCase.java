@@ -180,7 +180,7 @@ public class DigesterTestCase extends AbstractTestCase {
     public void testStackMethods() {
         Digester digester = newEmptyDigester();
 
-        Object value = null;
+        String value = null;
 
         // New stack must be empty
         assertEquals("New stack is empty", 0, digester.getCount());

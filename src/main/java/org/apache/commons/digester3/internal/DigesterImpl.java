@@ -251,7 +251,7 @@ public final class DigesterImpl implements Digester {
     /**
      * {@inheritDoc}
      */
-    public void push(Object object) {
+    public <T> void push(T object) {
         if (this.stack.size() == 0) {
             this.root = object;
         }
@@ -261,7 +261,7 @@ public final class DigesterImpl implements Digester {
     /**
      * {@inheritDoc}
      */
-    public void push(String stackName, Object value) {
+    public <T> void push(String stackName, T value) {
         Stack<Object> namedStack = this.stacksByName.get(stackName);
         if (namedStack == null) {
             namedStack = new Stack<Object>();
@@ -273,9 +273,9 @@ public final class DigesterImpl implements Digester {
     /**
      * {@inheritDoc}
      */
-    public Object pop() {
+    public <T> T pop() {
         try {
-            return this.stack.pop();
+            return this.<T>npeSafeCast(this.stack.pop());
         } catch (EmptyStackException e) {
             this.log.warn("Empty stack (returning null)");
             return null;
@@ -285,9 +285,7 @@ public final class DigesterImpl implements Digester {
     /**
      * {@inheritDoc}
      */
-    public Object pop(String stackName) {
-        Object result = null;
-
+    public <T> T pop(String stackName) {
         Stack<Object> namedStack = stacksByName.get(stackName);
         if (namedStack == null) {
             if (this.log.isDebugEnabled()) {
@@ -296,17 +294,15 @@ public final class DigesterImpl implements Digester {
             throw new EmptyStackException();
         }
 
-        result = namedStack.pop();
-
-        return result;
+        return this.<T>npeSafeCast(namedStack.pop());
     }
 
     /**
      * {@inheritDoc}
      */
-    public Object peek() {
+    public <T> T peek() {
         try {
-            return this.stack.peek();
+            return this.<T>npeSafeCast(this.stack.peek());
         } catch (EmptyStackException e) {
             this.log.warn("Empty stack (returning null)");
             return (null);
@@ -316,21 +312,21 @@ public final class DigesterImpl implements Digester {
     /**
      * {@inheritDoc}
      */
-    public Object peek(String stackName) {
-        return this.peek(stackName, 0);
+    public <T> T peek(String stackName) {
+        return this.<T>npeSafeCast(this.peek(stackName, 0));
     }
 
     /**
      * {@inheritDoc}
      */
-    public Object peek(int n) {
+    public <T> T peek(int n) {
         int index = (this.stack.size() - 1) - n;
         if (index < 0) {
             this.log.warn("Empty stack (returning null)");
             return null;
         }
         try {
-            return (this.stack.get(index));
+            return this.<T>npeSafeCast(this.stack.get(index));
         } catch (EmptyStackException e) {
             this.log.warn("Empty stack (returning null)");
             return null;
@@ -340,8 +336,7 @@ public final class DigesterImpl implements Digester {
     /**
      * {@inheritDoc}
      */
-    public Object peek(String stackName, int n) {
-        Object result = null;
+    public <T> T peek(String stackName, int n) {
         Stack<Object> namedStack = this.stacksByName.get(stackName);
         if (namedStack == null ) {
             if (log.isDebugEnabled()) {
@@ -350,13 +345,23 @@ public final class DigesterImpl implements Digester {
                         + "' is empty");
             }
             throw new EmptyStackException();
-        } else {
-            int index = (namedStack.size() - 1) - n;
-            if (index < 0) {
-                throw new EmptyStackException();
-            }
-            result = namedStack.get(index);
         }
+
+        int index = (namedStack.size() - 1) - n;
+        if (index < 0) {
+            throw new EmptyStackException();
+        }
+
+        return this.<T>npeSafeCast(namedStack.get(index));
+    }
+
+    private <T> T npeSafeCast(Object obj) {
+        if (obj == null) {
+            return null;
+        }
+
+        @SuppressWarnings("unchecked")
+        T result = (T) obj;
         return result;
     }
 
@@ -1043,13 +1048,7 @@ public final class DigesterImpl implements Digester {
         try {
             this.reader.parse(input);
 
-            if (this.root == null) {
-                return null;
-            }
-
-            @SuppressWarnings("unchecked")
-            T returned = (T) this.root;
-            return returned;
+            return this.<T>npeSafeCast(this.root);
         } finally {
             this.cleanup();
         }

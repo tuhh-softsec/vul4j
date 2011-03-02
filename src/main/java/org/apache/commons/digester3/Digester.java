@@ -183,7 +183,7 @@ public interface Digester extends ContentHandler, DTDHandler, EntityResolver, Er
      *
      * @param object The new object
      */
-    void push(Object object);
+    <T> void push(T object);
 
     /**
      * Pushes the given object onto the stack with the given name.
@@ -192,13 +192,13 @@ public interface Digester extends ContentHandler, DTDHandler, EntityResolver, Er
      * @param stackName the name of the stack onto which the object should be pushed
      * @param value the Object to be pushed onto the named stack.
      */
-    void push(String stackName, Object value);
+    <T> void push(String stackName, T value);
 
     /**
      * Pop the top object off of the stack, and return it.  If there are
      * no objects on the stack, return <code>null</code>.
      */
-    Object pop();
+    <T> T pop();
 
     /**
      * <p>Pops (gets and removes) the top object from the stack with the given name.</p>
@@ -211,13 +211,13 @@ public interface Digester extends ContentHandler, DTDHandler, EntityResolver, Er
      * empty or has not been created yet
      * @throws EmptyStackException if the named stack is empty
      */
-    Object pop(String stackName);
+    <T> T pop(String stackName);
 
     /**
      * Return the top object on the stack without removing it.  If there are
      * no objects on the stack, return <code>null</code>.
      */
-    Object peek();
+    <T> T peek();
 
     /**
      * <p>Gets the top object from the stack with the given name.
@@ -231,7 +231,7 @@ public interface Digester extends ContentHandler, DTDHandler, EntityResolver, Er
      * empty or has not been created yet
      * @throws EmptyStackException if the named stack is empty
      */
-    Object peek(String stackName);
+    <T> T peek(String stackName);
 
     /**
      * Return the n'th object down the stack, where 0 is the top element
@@ -241,7 +241,7 @@ public interface Digester extends ContentHandler, DTDHandler, EntityResolver, Er
      * @param n Index of the desired element, where 0 is the top of the stack,
      *  1 is the next element down, and so on.
      */
-    Object peek(int n);
+    <T> T peek(int n);
 
     /**
      * <p>Gets the top object from the stack with the given name.
@@ -256,7 +256,7 @@ public interface Digester extends ContentHandler, DTDHandler, EntityResolver, Er
      * @return the specified <code>Object</code> on the stack.
      * @throws EmptyStackException if the named stack is empty.
      */
-    Object peek(String stackName, int n);
+    <T> T peek(String stackName, int n);
 
     /**
      * <p>Is the stack with the given name empty?</p>

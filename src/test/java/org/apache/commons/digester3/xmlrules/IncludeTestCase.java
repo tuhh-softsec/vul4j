@@ -44,7 +44,8 @@ public final class IncludeTestCase extends AbstractTestCase {
 
                 @Override
                 public void body(String namespace, String name, String text) throws Exception {
-                    ((ArrayList<String>) this.getDigester().peek()).add(text);
+                    ArrayList<String> stringList = this.getDigester().peek();
+                    stringList.add(text);
                 }
 
             });
