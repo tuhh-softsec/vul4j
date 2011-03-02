@@ -423,11 +423,11 @@ public final class DigesterImpl implements Digester {
     /**
      * {@inheritDoc}
      */
-    public void pushParams(Object[] object) {
+    public void pushParams(Object...params) {
         if (this.log.isTraceEnabled()) {
             this.log.trace("Pushing params");
         }
-        this.params.push(object);
+        this.params.push(params);
     }
 
     /**

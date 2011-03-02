@@ -76,6 +76,9 @@ public interface Digester extends ContentHandler, DTDHandler, EntityResolver, Er
      * Parse the content of the specified file using this Digester.  Returns
      * the root element from the object stack (if any).
      *
+     * <b>WARNING</b>: this method is subject to {@link ClassCastException} if
+     * the returned object is not assignable to the generic type.
+     *
      * @param file File containing the XML data to be parsed
      *
      * @exception IOException if an input/output error occurs
@@ -354,9 +357,9 @@ public interface Digester extends ContentHandler, DTDHandler, EntityResolver, Er
      * <p>The parameters stack is used to store <code>CallMethodRule</code> parameters. 
      * See {@link #params}.</p>
      *
-     * @param object The new object
+     * @param params The new object
      */
-    void pushParams(Object[] object);
+    void pushParams(Object...params);
 
     /**
      * <p>Pop the top object off of the parameters stack, and return it.  If there are
