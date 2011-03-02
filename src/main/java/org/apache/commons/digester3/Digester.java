@@ -197,6 +197,9 @@ public interface Digester extends ContentHandler, DTDHandler, EntityResolver, Er
     /**
      * Pop the top object off of the stack, and return it.  If there are
      * no objects on the stack, return <code>null</code>.
+     *
+     * <b>WARNING</b>: this method is subject to {@link ClassCastException} if
+     * the returned object is not assignable to the generic type.
      */
     <T> T pop();
 
@@ -205,6 +208,9 @@ public interface Digester extends ContentHandler, DTDHandler, EntityResolver, Er
      *
      * <p><strong>Note:</strong> a stack is considered empty
      * if no objects have been pushed onto it yet.</p>
+     *
+     * <b>WARNING</b>: this method is subject to {@link ClassCastException} if
+     * the returned object is not assignable to the generic type.
      *
      * @param stackName the name of the stack from which the top value is to be popped.
      * @return the top <code>Object</code> on the stack or or null if the stack is either 
@@ -216,6 +222,9 @@ public interface Digester extends ContentHandler, DTDHandler, EntityResolver, Er
     /**
      * Return the top object on the stack without removing it.  If there are
      * no objects on the stack, return <code>null</code>.
+     *
+     * <b>WARNING</b>: this method is subject to {@link ClassCastException} if
+     * the returned object is not assignable to the generic type.
      */
     <T> T peek();
 
@@ -225,6 +234,9 @@ public interface Digester extends ContentHandler, DTDHandler, EntityResolver, Er
      * </p>
      * <p><strong>Note:</strong> a stack is considered empty
      * if no objects have been pushed onto it yet.</p>
+     *
+     * <b>WARNING</b>: this method is subject to {@link ClassCastException} if
+     * the returned object is not assignable to the generic type.
      *
      * @param stackName the name of the stack to be peeked
      * @return the top <code>Object</code> on the stack or null if the stack is either 
@@ -238,6 +250,9 @@ public interface Digester extends ContentHandler, DTDHandler, EntityResolver, Er
      * and [getCount()-1] is the bottom element.  If the specified index
      * is out of range, return <code>null</code>.
      *
+     * <b>WARNING</b>: this method is subject to {@link ClassCastException} if
+     * the returned object is not assignable to the generic type.
+     *
      * @param n Index of the desired element, where 0 is the top of the stack,
      *  1 is the next element down, and so on.
      */
@@ -249,6 +264,9 @@ public interface Digester extends ContentHandler, DTDHandler, EntityResolver, Er
      * </p>
      * <p><strong>Note:</strong> a stack is considered empty
      * if no objects have been pushed onto it yet.</p>
+     *
+     * <b>WARNING</b>: this method is subject to {@link ClassCastException} if
+     * the returned object is not assignable to the generic type.
      *
      * @param stackName the name of the stack to be peeked
      * @param n Index of the desired element, where 0 is the top of the stack,
