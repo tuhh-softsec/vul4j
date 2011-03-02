@@ -80,14 +80,16 @@ public class FilteredIterable<T> implements Iterable<T> {
      * @param predicate filter, non-<code>null</code>
      * @return <code>this</code>, fluently
      */
-    public synchronized FilteredIterable<T> retain(UnaryPredicate<? super T> predicate) {
+    public FilteredIterable<T> retain(UnaryPredicate<? super T> predicate) {
         if (predicate == null) {
             throw new NullPointerException("filtering predicate was null");
         }
-        if (this.predicate == null) {
-            this.predicate = new UnaryAnd<T>();
+        synchronized (this) {
+            if (this.predicate == null) {
+                this.predicate = new UnaryAnd<T>();
+            }
+            this.predicate.and(predicate);
         }
-        this.predicate.and(predicate);
         return this;
     }
 
@@ -138,7 +140,6 @@ public class FilteredIterable<T> implements Iterable<T> {
                 }
                 return false;
             }
-
         });
     }
 
