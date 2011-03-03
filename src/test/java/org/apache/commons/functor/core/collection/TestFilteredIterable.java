@@ -30,6 +30,7 @@ import junit.framework.TestSuite;
 import org.apache.commons.functor.BaseFunctorTest;
 import org.apache.commons.functor.UnaryPredicate;
 import org.apache.commons.functor.core.Constant;
+import org.apache.commons.functor.core.IsEqual;
 
 /**
  * @version $Revision$ $Date$
@@ -221,9 +222,14 @@ public class TestFilteredIterable extends BaseFunctorTest {
         for (String s : strings) {
             assertTrue(s instanceof String);
         }
+    }
+
+    public void testRetainOneType2() {
+        Iterable<Object> objects = Arrays.asList((Object) "foo", "bar", "baz", 2L, BigInteger.ZERO);
         Iterator<Number> iterator = FilteredIterable.of(objects).retain(Number.class).iterator();
         assertEquals(2L, iterator.next());
         assertEquals(BigInteger.ZERO, iterator.next());
+        assertFalse(iterator.hasNext());
     }
 
     public void testRetainMultipleTypes() {
@@ -231,6 +237,22 @@ public class TestFilteredIterable extends BaseFunctorTest {
         Iterator<Object> iterator = FilteredIterable.of(objects).retain(Long.class, BigInteger.class).iterator();
         assertEquals(2L, iterator.next());
         assertEquals(BigInteger.ZERO, iterator.next());
+        assertFalse(iterator.hasNext());
+    }
+
+    public void testMultipleLevels() {
+        Iterable<Object> objects = Arrays.asList((Object) "foo", "bar", "baz", 2L, BigInteger.ZERO);
+        Iterator<String> iterator = FilteredIterable.of(objects).retain(String.class).retain(IsEqual.to("foo"))
+                .iterator();
+        assertEquals("foo", iterator.next());
+        assertFalse(iterator.hasNext());
+    }
+
+    public void testMultipleLevels2() {
+        Iterable<Object> objects = Arrays.asList((Object) "foo", "bar", "baz", 2L, BigInteger.ZERO);
+        Iterator<Long> iterator = FilteredIterable.of(objects).retain(Number.class).retain(Long.class).iterator();
+        assertEquals(2L, iterator.next().longValue());
+        assertFalse(iterator.hasNext());
     }
 
     public void testRetainNullType() {
