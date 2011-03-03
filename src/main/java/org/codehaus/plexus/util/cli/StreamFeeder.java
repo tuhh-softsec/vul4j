@@ -26,16 +26,10 @@ import java.io.OutputStream;
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
-public class StreamFeeder
-    extends Thread
-{
+public class StreamFeeder extends AbstractStreamHandler {
     private InputStream input;
 
     private OutputStream output;
-
-    private boolean done;
-
-    volatile boolean disabled;
 
 
     /**
@@ -71,7 +65,7 @@ public class StreamFeeder
 
             synchronized ( this )
             {
-                done = true;
+                setDone();
 
                 this.notifyAll();
             }
@@ -119,11 +113,6 @@ public class StreamFeeder
         }
     }
 
-    public boolean isDone()
-    {
-        return done;
-    }
-
     // ----------------------------------------------------------------------
     //
     // ----------------------------------------------------------------------
@@ -133,11 +122,11 @@ public class StreamFeeder
     {
         int data = input.read();
 
-        while ( !done && data != -1 )
+        while ( !isDone() && data != -1 )
         {
             synchronized ( output )
             {
-                if ( !disabled )
+                if ( !isDisabled())
                 {
                     output.write( data );
                 }
@@ -145,20 +134,6 @@ public class StreamFeeder
                 data = input.read();
             }
         }
-    }
-
-    public synchronized void waitUntilDone()
-        throws InterruptedException
-    {
-        while ( !isDone() )
-        {
-            wait();
-        }
-    }
-
-    public void disable()
-    {
-        disabled = true;
     }
 
 }

@@ -88,7 +88,7 @@ import java.io.PrintWriter;
  * @since June 11, 2001
  */
 public class StreamPumper
-    extends Thread
+    extends AbstractStreamHandler
 {
     private final BufferedReader in;
 
@@ -99,10 +99,6 @@ public class StreamPumper
     private volatile Exception exception = null;
 
     private static final int SIZE = 1024;
-
-    boolean done;
-
-    volatile boolean disabled;
 
     public StreamPumper( InputStream in )
     {
@@ -162,7 +158,7 @@ public class StreamPumper
 
             synchronized ( this )
             {
-                done = true;
+                setDone();
 
                 this.notifyAll();
             }
@@ -182,11 +178,6 @@ public class StreamPumper
         IOUtil.close( out );
     }
 
-    public boolean isDone()
-    {
-        return done;
-    }
-
     public Exception getException()
     {
         return exception;
@@ -194,23 +185,9 @@ public class StreamPumper
 
     private void consumeLine( String line )
     {
-        if ( consumer != null && !disabled )
+        if ( consumer != null && !isDisabled() )
         {
             consumer.consumeLine( line );
         }
-    }
-
-    public synchronized void waitUntilDone()
-        throws InterruptedException
-    {
-        while ( !isDone() )
-        {
-            wait();
-        }
-    }
-
-    public void disable()
-    {
-        disabled = true;
     }
 }

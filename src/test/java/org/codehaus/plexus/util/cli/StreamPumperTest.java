@@ -52,6 +52,8 @@ package org.codehaus.plexus.util.cli;
  * limitations under the License.
  */
 
+import junit.framework.TestCase;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -60,12 +62,11 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 /**
  * @author <a href="mailto:pj@thoughtworks.com">Paul Julius</a>
  */
-public class StreamPumperTest extends TestCase
+public class StreamPumperTest
+    extends TestCase
 {
     private String lineSeparator;
 
@@ -80,7 +81,8 @@ public class StreamPumperTest extends TestCase
     /*
      * @see TestCase#setUp()
      */
-    public void setUp() throws Exception
+    public void setUp()
+        throws Exception
     {
         super.setUp();
         lineSeparator = System.getProperty( "line.separator" );
@@ -91,8 +93,7 @@ public class StreamPumperTest extends TestCase
         String line1 = "line1";
         String line2 = "line2";
         String lines = line1 + "\n" + line2;
-        ByteArrayInputStream inputStream =
-            new ByteArrayInputStream( lines.getBytes() );
+        ByteArrayInputStream inputStream = new ByteArrayInputStream( lines.getBytes() );
 
         TestConsumer consumer = new TestConsumer();
         StreamPumper pumper = new StreamPumper( inputStream, consumer );
@@ -188,9 +189,9 @@ public class StreamPumperTest extends TestCase
         /**
          * Checks to see if this consumer consumed a particular line. This method will wait up to timeout number of
          * milliseconds for the line to get consumed.
-         * 
+         *
          * @param testLine Line to test for.
-         * @param timeout Number of milliseconds to wait for the line.
+         * @param timeout  Number of milliseconds to wait for the line.
          * @return true if the line gets consumed, else false.
          */
         public boolean wasLineConsumed( String testLine, long timeout )
@@ -232,4 +233,22 @@ public class StreamPumperTest extends TestCase
         }
     }
 
+    public void testEnabled()
+    {
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream( "AB\nCE\nEF".getBytes() );
+        TestConsumer streamConsumer = new TestConsumer();
+        StreamPumper streamPumper = new StreamPumper( byteArrayInputStream, streamConsumer );
+        streamPumper.run();
+        assertEquals( 3, streamConsumer.lines.size() );
+    }
+
+    public void testDisabled()
+    {
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream( "AB\nCE\nEF".getBytes() );
+        TestConsumer streamConsumer = new TestConsumer();
+        StreamPumper streamPumper = new StreamPumper( byteArrayInputStream, streamConsumer );
+        streamPumper.disable();
+        streamPumper.run();
+        assertEquals( 0, streamConsumer.lines.size() );
+    }
 }
