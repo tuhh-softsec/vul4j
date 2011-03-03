@@ -19,8 +19,11 @@ package org.codehaus.plexus.util.cli;
 /**
  * @author <a href="mailto:kristian.rosenvold@gmail.com">Kristian Rosenvold</a>
  */
-public class AbstractStreamHandler extends Thread {
+public class AbstractStreamHandler
+    extends Thread
+{
     private boolean done;
+
     private volatile boolean disabled;
 
     public boolean isDone()
@@ -38,7 +41,8 @@ public class AbstractStreamHandler extends Thread {
     }
 
 
-    protected boolean isDisabled() {
+    protected boolean isDisabled()
+    {
         return disabled;
     }
 
