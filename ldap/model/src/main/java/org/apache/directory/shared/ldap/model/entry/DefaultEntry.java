@@ -315,7 +315,7 @@ public class DefaultEntry implements Entry
     public DefaultEntry( SchemaManager schemaManager, Dn dn, EntryAttribute... attributes )
     {
         this.schemaManager = schemaManager;
-
+        
         if ( dn == null )
         {
             this.dn = Dn.EMPTY_DN;
@@ -326,18 +326,40 @@ public class DefaultEntry implements Entry
             normalizeDN( this.dn );
         }
 
-        initObjectClassAT();
-
-        for ( EntryAttribute attribute : attributes )
+        if ( schemaManager == null )
         {
-            // Store a new ServerAttribute
-            try
+            if ( attributes != null )
             {
-                put( attribute );
+                for ( EntryAttribute attribute : attributes )
+                {
+                    if ( attribute == null )
+                    {
+                        continue;
+                    }
+    
+                    // Store a new ClientAttribute
+                    this.attributes.put( attribute.getId(), attribute );
+                }
             }
-            catch ( LdapException ne )
+        }
+        else
+        {
+            initObjectClassAT();
+    
+            if ( attributes != null )
             {
-                LOG.warn( "The ServerAttribute '{}' does not exist. It has been discarded", attribute );
+                for ( EntryAttribute attribute : attributes )
+                {
+                    // Store a new ServerAttribute
+                    try
+                    {
+                        put( attribute );
+                    }
+                    catch ( LdapException ne )
+                    {
+                        LOG.warn( "The ServerAttribute '{}' does not exist. It has been discarded", attribute );
+                    }
+                }
             }
         }
     }

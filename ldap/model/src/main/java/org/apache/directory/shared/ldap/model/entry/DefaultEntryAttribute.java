@@ -160,6 +160,27 @@ public class DefaultEntryAttribute implements EntryAttribute
 
     /**
      * Create a new instance of a EntryAttribute, without ID nor value.
+     */
+    /* No qualifier */ DefaultEntryAttribute( AttributeType attributeType, String upId, String normId, boolean isHR, int hashCode, Value<?>... values)
+    {
+        this.attributeType = attributeType;
+        this.upId = upId;
+        this.id = normId;
+        this.isHR = isHR;
+        this.h = hashCode;
+        
+        if ( values != null )
+        {
+            for ( Value<?> value : values )
+            {
+                this.values.add( value );
+            }
+        }
+    }
+
+
+    /**
+     * Create a new instance of a EntryAttribute, without ID nor value.
      * 
      * @param attributeType the attributeType for the empty attribute added into the entry
      */
@@ -2421,11 +2442,11 @@ public class DefaultEntryAttribute implements EntryAttribute
                 // Write the value, using the correct method
                 if ( value instanceof StringValue)
                 {
-                    ((StringValue)value).serialize( out );
+                    StringValue.serialize( value, out );
                 }
                 else
                 {
-                    ((BinaryValue)value).serialize( out );
+                    BinaryValue.serialize( value, out );
                 }
             }
         }
@@ -2462,13 +2483,11 @@ public class DefaultEntryAttribute implements EntryAttribute
                 
                 if ( isHR )
                 {
-                    value  = new StringValue( attributeType );
-                    ((StringValue)value).deserialize( in );
+                    value = StringValue.deserialize( null, in );
                 }
                 else
                 {
-                    value  = new BinaryValue( attributeType );
-                    ((BinaryValue)value).deserialize( in );
+                    value  = BinaryValue.deserialize( null, in );
                 }
                 
                 try

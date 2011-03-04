@@ -25,12 +25,13 @@ import java.io.ObjectOutput;
 
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
-import org.apache.directory.shared.util.exception.NotImplementedException;
 import org.apache.directory.shared.ldap.model.schema.AttributeType;
 import org.apache.directory.shared.ldap.model.schema.LdapComparator;
 import org.apache.directory.shared.ldap.model.schema.Normalizer;
+import org.apache.directory.shared.ldap.model.schema.SchemaManager;
 import org.apache.directory.shared.util.Strings;
 import org.apache.directory.shared.util.Unicode;
+import org.apache.directory.shared.util.exception.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -546,109 +547,14 @@ public class StringValue extends AbstractValue<String>
 
     
     /**
-     * We will write the value and the normalized value, only
-     * if the normalized value is different.
-     * 
-     * If the value is empty, a flag is written at the beginning with 
-     * the value true, otherwise, a false is written.
-     * 
-     * The data will be stored following this structure :
-     *  [empty value flag]
-     *  [UP value]
-     *  [normalized] (will be false if the value can't be normalized)
-     *  [same] (a flag set to true if the normalized value equals the UP value)
-     *  [Norm value] (the normalized value if different from the UP value)
-     *  
-     *  @param out the buffer in which we will stored the serialized form of the value
-     *  @throws IOException if we can't write into the buffer
+     * {@inheritDoc}
      */
-    public void serialize( ObjectOutput out ) throws IOException
+    public static StringValue deserialize( SchemaManager schemaManager, ObjectInput in ) throws IOException
     {
-        if ( wrappedValue != null )
-        {
-            // write a flag indicating that the value is not null
-            out.writeBoolean( true );
-            
-            // Write the data
-            Unicode.writeUTF(out, wrappedValue);
-            
-            // Normalize the data
-            try
-            {
-                normalize();
-                out.writeBoolean( true );
-                
-                if ( wrappedValue.equals( normalizedValue ) )
-                {
-                    out.writeBoolean( true );
-                }
-                else
-                {
-                    out.writeBoolean( false );
-                    Unicode.writeUTF(out, normalizedValue);
-                }
-            }
-            catch ( LdapException ne )
-            {
-                // The value can't be normalized, we don't write the 
-                // normalized value.
-                normalizedValue = null;
-                out.writeBoolean( false );
-            }
-        }
-        else
-        {
-            // Write a flag indicating that the value is null
-            out.writeBoolean( false );
-        }
-        
-        out.flush();
+        return (StringValue)AbstractValue.deserialize( schemaManager, in );
     }
 
     
-    /**
-     * Deserialize a StringValue. 
-     *
-     * @param in the buffer containing the bytes with the serialized value
-     * @throws IOException 
-     * @throws ClassNotFoundException
-     */
-    public void deserialize( ObjectInput in ) throws IOException, ClassNotFoundException
-    {
-        // If the value is null, the flag will be set to false
-        if ( !in.readBoolean() )
-        {
-            wrappedValue = null;
-            normalizedValue = null;
-            return;
-        }
-        
-        // Read the value
-        String wrapped = Unicode.readUTF(in);
-        
-        wrappedValue = wrapped;
-        
-        // Read the normalized flag
-        normalized = in.readBoolean();
-        
-        if ( normalized )
-        {
-            normalized = true;
-
-            // Read the 'same' flag
-            if ( in.readBoolean() )
-            {
-                normalizedValue = wrapped;
-            }
-            else
-            {
-                // The normalized value is different. Read it
-                normalizedValue = Unicode.readUTF(in);
-            }
-        }
-    }
-
-
     /**
      * @see Object#toString()
      */

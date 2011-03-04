@@ -301,7 +301,9 @@ public final class Dn implements Iterable<Rdn>
     Dn( SchemaManager schemaManager, String upName, String normName, Rdn... rdns )
     {
         this.schemaManager = schemaManager;
-        normalized = schemaManager != null;
+        
+        normalized = ( schemaManager != null ) || ( normName != null );
+        
         this.upName = upName;
         this.normName = normName;
         bytes = Strings.getBytesUtf8( upName );

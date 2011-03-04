@@ -19,13 +19,19 @@
  */
 package org.apache.directory.shared.ldap.model.entry;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.schema.AttributeType;
 import org.apache.directory.shared.ldap.model.schema.LdapComparator;
 import org.apache.directory.shared.ldap.model.schema.MatchingRule;
 import org.apache.directory.shared.ldap.model.schema.Normalizer;
+import org.apache.directory.shared.ldap.model.schema.SchemaManager;
 import org.apache.directory.shared.ldap.model.schema.SyntaxChecker;
+import org.apache.directory.shared.util.StringConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +47,7 @@ public abstract class AbstractValue<T> implements Value<T>
     private static final Logger LOG = LoggerFactory.getLogger( AbstractValue.class );
 
     /** reference to the attributeType zssociated with the value */
-    protected AttributeType attributeType;
+    protected transient AttributeType attributeType;
 
     /** the wrapped binary value */
     protected T wrappedValue;
@@ -369,5 +375,217 @@ public abstract class AbstractValue<T> implements Value<T>
     public final void setNormalized( boolean normalized )
     {
         this.normalized = normalized;
+    }
+
+
+    /**
+     * Serializes a Value instance.
+     * 
+     * @param value The Value instance to serialize
+     * @param out The stream into which we will write the serialized instance
+     * @throws IOException If the stream can't be written
+     */
+    @SuppressWarnings("unchecked")
+    public static void serialize( Value<?> value, ObjectOutput out ) throws IOException
+    {
+        // The Value type
+        out.writeBoolean( value.isBinary() );
+
+        // The AttributeType's OID if we have one
+        if ( value.getAttributeType() != null )
+        {
+            out.writeBoolean( true );
+            out.writeUTF( value.getAttributeType().getOid() );
+        }
+        else
+        {
+            out.writeBoolean( false );
+        }
+        
+        // The UP value and norm value
+        if ( value.isBinary() )
+        {
+            byte[] upValue = (byte[])value.getReference();
+            
+            if ( upValue == null )
+            {
+                out.writeInt( -1 );
+            }
+            else
+            {
+                out.writeInt( upValue.length );
+                
+                if ( upValue.length > 0 )
+                {
+                    out.write( upValue );
+                }
+            }
+
+            byte[] normValue = (byte[])value.getNormalizedValueReference();
+            
+            if ( normValue == null )
+            {
+                out.writeInt( -1 );
+            }
+            else
+            {
+                out.writeInt( normValue.length );
+                
+                if ( normValue.length > 0 )
+                {
+                    out.write( normValue );
+                }
+            }
+        }
+        else
+        {
+            if ( ((AbstractValue<String>)value).wrappedValue != null )
+            {
+                out.writeBoolean( true );
+                out.writeUTF( ((AbstractValue<String>)value).wrappedValue );
+            }
+            else
+            {
+                out.writeBoolean( false );
+            }
+            
+            if ( ((AbstractValue<String>)value).normalizedValue != null )
+            {
+                out.writeBoolean( true );
+                out.writeUTF( ((AbstractValue<String>)value).normalizedValue );
+            }
+            else
+            {
+                out.writeBoolean( false );
+            }
+        }
+        
+        // The normalized flag
+        out.writeBoolean( value.isNormalized() );
+        
+        // The valid flag
+        out.writeBoolean( value.isValid() );
+        
+        // The same flag
+        if ( value.isBinary() )
+        {   
+            out.writeBoolean( ((BinaryValue)value).isSame() );
+        }
+        else
+        {
+            out.writeBoolean( ((StringValue)value).isSame() );
+        }
+
+        // The computed hashCode
+        out.writeInt( value.hashCode() );
+        
+        out.flush();
+    }
+
+
+    /**
+     * Deserializes a Value instance.
+     * 
+     * @param schemaManager The schemaManager instance
+     * @param in The input stream from which the Value is read
+     * @return a deserialized Value
+     * @throws IOException If the stream can't be read
+     */
+    @SuppressWarnings("unchecked")
+    public static Value<?> deserialize( SchemaManager schemaManager, ObjectInput in ) throws IOException
+    {
+        // The value type
+        boolean isBinary = in.readBoolean();
+        
+        Value<?> value = null;
+
+        if ( isBinary )
+        {
+            value = new BinaryValue();
+        }
+        else
+        {
+            value = new StringValue();
+        }
+
+        // The attributeType presence's flag
+        boolean hasAttributeType = in.readBoolean();
+        
+        if ( hasAttributeType )
+        {
+            String oid = in.readUTF();
+            
+            if ( schemaManager != null )
+            {
+                ((AbstractValue<?>)value).attributeType = schemaManager.getAttributeType( oid );
+            }
+        }
+        
+        if ( isBinary )
+        {
+            int upValueSize = in.readInt();
+            
+            switch ( upValueSize )
+            {
+                case -1 :
+                    break;
+                    
+                case 0 :
+                    ((AbstractValue<byte[]>)value).wrappedValue = StringConstants.EMPTY_BYTES;
+                    break;
+                    
+                default :
+                    ((AbstractValue<byte[]>)value).wrappedValue = new byte[upValueSize];
+                    in.read( ((AbstractValue<byte[]>)value).wrappedValue );
+                    break;
+            }
+
+            int normValueSize = in.readInt();
+            
+            switch ( normValueSize )
+            {
+                case -1 :
+                    break;
+                    
+                case 0 :
+                    ((AbstractValue<byte[]>)value).normalizedValue = StringConstants.EMPTY_BYTES;
+                    break;
+                   
+                default :
+                    ((AbstractValue<byte[]>)value).normalizedValue = new byte[normValueSize];
+                    in.read( ((AbstractValue<byte[]>)value).normalizedValue );
+                    break;
+            }
+        }
+        else
+        {
+            boolean notNull = in.readBoolean();
+            
+            if ( notNull )
+            {
+                ((AbstractValue<String>)value).wrappedValue = in.readUTF();
+            }
+
+            notNull = in.readBoolean();
+            
+            if ( notNull )
+            {
+                ((AbstractValue<String>)value).normalizedValue = in.readUTF();
+            }
+        }
+
+        // The normalized flag
+        ((AbstractValue<?>)value).normalized = in.readBoolean();
+        
+        // The valid flag
+        ((AbstractValue<?>)value).valid = in.readBoolean();
+        
+        // The same flag
+        ((AbstractValue<?>)value).same = in.readBoolean();
+
+        // The computed hashCode
+        ((AbstractValue<?>)value).h = in.readInt();
+        
+        return value;
     }
 }

@@ -30,8 +30,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.directory.shared.ldap.model.entry.*;
+import org.apache.directory.shared.ldap.model.entry.DefaultEntry;
+import org.apache.directory.shared.ldap.model.entry.DefaultEntryAttribute;
+import org.apache.directory.shared.ldap.model.entry.DefaultModification;
+import org.apache.directory.shared.ldap.model.entry.Entry;
+import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
+import org.apache.directory.shared.ldap.model.entry.Modification;
+import org.apache.directory.shared.ldap.model.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.model.entry.StringValue;
+import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.message.Control;
@@ -54,11 +61,8 @@ import org.apache.directory.shared.util.Unicode;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class LdifEntry implements Cloneable, Externalizable
+public class LdifEntry implements Cloneable
 {
-    /** The serial version UID */
-    private static final long serialVersionUID = 2L;
-
     /** Used in toArray() */
     public static final Modification[] EMPTY_MODS = new Modification[0];
 
@@ -88,7 +92,7 @@ public class LdifEntry implements Cloneable, Externalizable
 
 
     /**
-     * Creates a new Entry object.
+     * Creates a new LdifEntry object.
      */
     public LdifEntry()
     {
@@ -96,6 +100,19 @@ public class LdifEntry implements Cloneable, Externalizable
         modificationList = new LinkedList<Modification>();
         modificationItems = new HashMap<String, Modification>();
         entry = new DefaultEntry( (Dn) null );
+        controls = null;
+    }
+
+
+    /**
+     * Creates a new LdifEntry object, storing an Entry
+     */
+    public LdifEntry( Entry entry )
+    {
+        changeType = ChangeType.None; // Default LDIF content
+        modificationList = new LinkedList<Modification>();
+        modificationItems = new HashMap<String, Modification>();
+        this.entry = entry;
         controls = null;
     }
 

@@ -30,6 +30,7 @@ import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.schema.AttributeType;
 import org.apache.directory.shared.ldap.model.schema.LdapComparator;
 import org.apache.directory.shared.ldap.model.schema.Normalizer;
+import org.apache.directory.shared.ldap.model.schema.SchemaManager;
 import org.apache.directory.shared.ldap.model.schema.SyntaxChecker;
 import org.apache.directory.shared.ldap.model.schema.comparators.ByteArrayComparator;
 import org.apache.directory.shared.util.StringConstants;
@@ -53,9 +54,6 @@ public class BinaryValue extends AbstractValue<byte[]>
 
     /** logger for reporting errors that might not be handled properly upstream */
     private static final Logger LOG = LoggerFactory.getLogger( BinaryValue.class );
-
-    /** The computed hashcode. We don't want to compute it each time the hashcode() method is called */
-    private volatile int h;
 
 
     /**
@@ -637,160 +635,13 @@ public class BinaryValue extends AbstractValue<byte[]>
         }
     }
 
-
+    
     /**
-     * We will write the value and the normalized value, only
-     * if the normalized value is different.
-     * 
-     * If the value is empty, a flag is written at the beginning with 
-     * the value true, otherwise, a false is written.
-     * 
-     * The data will be stored following this structure :
-     *  [length] the wrapped length. Can be -1, if wrapped is null
-     *  [value length]
-     *  [UP value] if not empty
-     *  [normalized] (will be false if the value can't be normalized)
-     *  [same] (a flag set to true if the normalized value equals the UP value)
-     *  [Norm value] (the normalized value if different from the UP value, and not empty)
-     *  
-     *  @param out the buffer in which we will stored the serialized form of the value
-     *  @throws IOException if we can't write into the buffer
+     * {@inheritDoc}
      */
-    public void serialize( ObjectOutput out ) throws IOException
+    public static BinaryValue deserialize( SchemaManager schemaManager, ObjectInput in ) throws IOException
     {
-        if ( wrappedValue != null )
-        {
-            // write a the wrapped length
-            out.writeInt( wrappedValue.length );
-
-            // Write the data if not empty
-            if ( wrappedValue.length > 0 )
-            {
-                // The data
-                out.write( wrappedValue );
-
-                // Normalize the data
-                try
-                {
-                    normalize();
-
-                    if ( !normalized )
-                    {
-                        // We may not have a normalizer. Just get out
-                        // after having writen the flag
-                        out.writeBoolean( false );
-                    }
-                    else
-                    {
-                        // Write a flag indicating that the data has been normalized
-                        out.writeBoolean( true );
-
-                        if ( Arrays.equals( getReference(), normalizedValue ) )
-                        {
-                            // Write the 'same = true' flag
-                            out.writeBoolean( true );
-                        }
-                        else
-                        {
-                            // Write the 'same = false' flag
-                            out.writeBoolean( false );
-
-                            // Write the normalized value length
-                            out.writeInt( normalizedValue.length );
-
-                            if ( normalizedValue.length > 0 )
-                            {
-                                // Write the normalized value if not empty
-                                out.write( normalizedValue );
-                            }
-                        }
-                    }
-                }
-                catch ( LdapException ne )
-                {
-                    // The value can't be normalized, we don't write the 
-                    // normalized value.
-                    normalizedValue = null;
-                    out.writeBoolean( false );
-                }
-            }
-        }
-        else
-        {
-            // Write -1 indicating that the value is null
-            out.writeInt( -1 );
-        }
-    }
-
-
-    /**
-     * 
-     * Deserialize a BinaryValue. 
-     *
-     * @param in the buffer containing the bytes with the serialized value
-     * @throws IOException 
-     * @throws ClassNotFoundException
-     */
-    public void deserialize( ObjectInput in ) throws IOException, ClassNotFoundException
-    {
-        // The UP value length
-        int wrappedLength = in.readInt();
-
-        if ( wrappedLength == -1 )
-        {
-            // If the value is null, the length will be set to -1
-            same = true;
-            wrappedValue = null;
-        }
-        else if ( wrappedLength == 0 )
-        {
-            wrappedValue = StringConstants.EMPTY_BYTES;
-            same = true;
-            normalized = true;
-            normalizedValue = wrappedValue;
-        }
-        else
-        {
-            wrappedValue = new byte[wrappedLength];
-
-            // Read the data
-            in.readFully( wrappedValue );
-
-            // Check if we have a normalized value
-            normalized = in.readBoolean();
-
-            if ( normalized )
-            {
-                // Read the 'same' flag
-                same = in.readBoolean();
-
-                if ( !same )
-                {
-                    // Read the normalizedvalue length
-                    int normalizedLength = in.readInt();
-
-                    if ( normalizedLength > 0 )
-                    {
-                        normalizedValue = new byte[normalizedLength];
-
-                        // Read the normalized value
-                        if ( in.read( normalizedValue, 0, normalizedLength ) == -1 )
-                        {
-                            throw new IOException( I18n.err( I18n.ERR_04480_END_OF_STREAM ) );
-                        }
-                    }
-                    else
-                    {
-                        normalizedValue = StringConstants.EMPTY_BYTES;
-                    }
-                }
-                else
-                {
-                    normalizedValue = new byte[wrappedLength];
-                    System.arraycopy( wrappedValue, 0, normalizedValue, 0, wrappedLength );
-                }
-            }
-        }
+        return (BinaryValue)AbstractValue.deserialize( schemaManager, in );
     }
 
 

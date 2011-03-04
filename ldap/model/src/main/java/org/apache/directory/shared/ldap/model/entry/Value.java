@@ -23,7 +23,6 @@ package org.apache.directory.shared.ldap.model.entry;
 import java.io.Externalizable;
 
 import org.apache.directory.shared.ldap.model.exception.LdapException;
-
 import org.apache.directory.shared.ldap.model.schema.AttributeType;
 import org.apache.directory.shared.ldap.model.schema.Normalizer;
 import org.apache.directory.shared.ldap.model.schema.SyntaxChecker;

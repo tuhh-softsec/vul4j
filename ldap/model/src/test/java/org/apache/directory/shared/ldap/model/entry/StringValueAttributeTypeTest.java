@@ -106,7 +106,7 @@ public class StringValueAttributeTypeTest
         try
         {
             oOut = new ObjectOutputStream( out );
-            value.serialize( oOut );
+            StringValue.serialize( value, oOut );
         }
         catch ( IOException ioe )
         {
@@ -135,7 +135,7 @@ public class StringValueAttributeTypeTest
     /**
      * Deserialize a StringValue
      */
-    private StringValue deserializeValue( ByteArrayOutputStream out, AttributeType at ) throws IOException, ClassNotFoundException
+    private StringValue deserializeValue( ByteArrayOutputStream out ) throws IOException, ClassNotFoundException
     {
         ObjectInputStream oIn = null;
         ByteArrayInputStream in = new ByteArrayInputStream( out.toByteArray() );
@@ -144,8 +144,7 @@ public class StringValueAttributeTypeTest
         {
             oIn = new ObjectInputStream( in );
 
-            StringValue value = new StringValue( at );
-            value.deserialize( oIn );
+            StringValue value = StringValue.deserialize( null, oIn );
 
             return value;
         }
@@ -691,7 +690,7 @@ public class StringValueAttributeTypeTest
         assertEquals( "test test", normalized );
         assertEquals( "  Test   Test  ", ssv.getString() );
         
-        StringValue ssvSer = deserializeValue( serializeValue( ssv ), at );
+        StringValue ssvSer = deserializeValue( serializeValue( ssv ) );
         
         assertEquals( ssv, ssvSer );
    }
@@ -711,7 +710,7 @@ public class StringValueAttributeTypeTest
         assertEquals( "test", normalized );
         assertEquals( "test", ssv.getString() );
         
-        StringValue ssvSer = deserializeValue( serializeValue( ssv ), at );
+        StringValue ssvSer = deserializeValue( serializeValue( ssv ) );
         
         assertEquals( ssv, ssvSer );
    }
@@ -731,7 +730,7 @@ public class StringValueAttributeTypeTest
         assertNull( normalized );
         assertNull( ssv.get() );
         
-        StringValue ssvSer = deserializeValue( serializeValue( ssv ), at );
+        StringValue ssvSer = deserializeValue( serializeValue( ssv ) );
         
         assertEquals( ssv, ssvSer );
    }
@@ -751,7 +750,7 @@ public class StringValueAttributeTypeTest
         assertEquals( "", normalized );
         assertEquals( "", ssv.getString() );
         
-        StringValue ssvSer = deserializeValue( serializeValue( ssv ), at );
+        StringValue ssvSer = deserializeValue( serializeValue( ssv ) );
         
         assertEquals( ssv, ssvSer );
     }
@@ -763,11 +762,11 @@ public class StringValueAttributeTypeTest
     @Test public void testStringValueEmptyNormalizedSerialization() throws LdapException, IOException, ClassNotFoundException
     {
         // First check with a value which will be normalized
-        StringValue ssv = new StringValue( at, "  " );
+        StringValue ssv = new StringValue( "  " );
         
         assertEquals( "  ", ssv.getString() );
         
-        StringValue ssvSer = deserializeValue( serializeValue( ssv ), at );
+        StringValue ssvSer = deserializeValue( serializeValue( ssv ) );
         
         assertEquals( ssv, ssvSer );
     }
