@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements.  See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<faqs xmlns="http://maven.apache.org/FML/1.0.1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/FML/1.0.1 http://maven.apache.org/xsd/fml-1.0.1.xsd"
+  title="Frequently Asked Questions"
+  toplink="false">
+
+    <part id="General">
+        <faq id="jaxp_1_1_warnings">
+            <question>Why do I get warnings when using a JAXP 1.1 parser?</question>
+            <answer>
+                <p>If you're using a JAXP 1.1 parser, you might see the following warning (in your log):</p>
+<source>
+[WARN] Digester - -Error: JAXP SAXParser property not recognized: http://java.sun.com/xml/jaxp/properties/schemaLanguage
+</source>
+<p>This property is needed for JAXP 1.2 (XML Schema support) as required
+for the Servlet Spec. 2.4 but is not recognized by JAXP 1.1 parsers.
+This warning is harmless.</p>
+            </answer>
+        </faq>
+
+        <faq id="schema_validation_out_box">
+            <question>Why Doesn't Schema Validation Work With Parser XXX Out Of The Box?</question>
+            <answer><p>
+Schema location and language settings are often need for validation using schemas.
+Unfortunately, there isn't a single standard approach to how these properties are
+configured on a parser.
+Digester tries to guess the parser being used and configure it appropriately
+but it's not infallible.
+You might need to grab an instance, configure it and pass it to Digester.
+</p>
+<p>
+If you want to support more than one parser in a portable manner, 
+then you'll probably want to take a look at the 
+<code>org.apache.commons.digester.parsers</code> package
+and add a new class to support the particular parser that's causing problems.
+</p></answer>
+        </faq>
+
+        <faq id="help">
+            <question>Help! 
+I'm Validating Against Schema But Digester Ignores Errors!</question>
+            <answer><p>
+Digester is based on <a href="http://www.saxproject.org">SAX</a>. The convention for
+SAX parsers is that all errors are reported (to any registered 
+<code>ErrorHandler</code>) but processing continues. Digester (by default) 
+registers its own <code>ErrorHandler</code> implementation. This logs details 
+but does not stop the processing (following the usual convention for SAX 
+based processors). 
+</p>
+<p>
+This means that the errors reported by the validation of the schema will appear in the
+Digester logs but the processing will continue. To change this behaviour, call
+<code>digester.setErrorHandler</code> with a more suitable implementation.
+</p></answer>
+        </faq>
+
+        <faq id="example_code">
+            <question>Where Can I Find Example Code?</question>
+            <answer><p>Digester ships with a sample application: a mapping for the <em>Rich Site 
+Summary</em> format used by many newsfeeds. Download the source distribution 
+to see how it works.</p>
+<p>Digester also ships with a set of examples demonstrating most of the 
+features described in this document. See the "src/examples" subdirectory 
+of the source distribution.</p></answer>
+        </faq>
+
+        <faq id="support_rich_site">
+            <question>When Are You Going To Support <em>Rich Site Summary</em> Version x.y.z?</question>
+            <answer><p>The <em>Rich Site Summary</em> application is intended to be a sample application. 
+It works but we have no plans to add support for other versions of the format.
+</p>
+<p>
+We would consider donations of standard digester applications but it's unlikely that
+these would ever be shipped with the base digester distribution.
+If you want to discuss this, please post to <a href="http://commons.apache.org/mail-lists.html">
+commons dev mailing list</a>
+</p></answer>
+        </faq>
+    </part>
+</faqs>
