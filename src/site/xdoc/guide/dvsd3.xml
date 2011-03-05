@@ -137,12 +137,64 @@ limitations under the License.
       and will be ready to create new Digester instances with pre-filled rules.</p>
     </section>
 
-    <section name="One single configuration point">
-      <p>TODO</p>
-    </section>
+    <section name="One single configuration point, one single universal loader">
+      <p>As shown above, basic Digester2.X usage would be creating a Digester then setting the rules:</p>
+      <source>Digester digester = new Digester();
+    digester.addObjectCreate("root", "org.apache.commons.digester.SimpleTestBean");
+    digester.addBeanPropertySetter("root", "alpha");
+    digester.addBeanPropertySetter("root/alpha", "beta");
+    digester.addBeanPropertySetter("root/delta", "delta");</source>
 
-    <section name="One single universal loader">
-      <p>TODO</p>
+      <p>Alternatively, users can create the <code>Rules</code> instance, set the rules and pass it to the Digester:</p>
+      <source>ExtendedBaseRules rules = new ExtendedBaseRules();
+    rules.addRule("root", new ObjectCreateRule("org.apache.commons.digester.SimpleTestBean"));
+    rules.addRule("root", new BeanPropertySetterRule("alpha"));
+    rules.addRule("root/alpha", new BeanPropertySetterRule("beta"));
+    rules.addRule("root/delta", new BeanPropertySetterRule("delta"));
+
+    Digester digester = new Digester();
+    digester.setRules(rules);
+    </source>
+
+      <p>Last, but not least, special loader classes have been created to gain more benefits from <code>RuleSet</code>:
+like the <code>annotations</code> package <code>DigesterLoader</code>, to avoid scanning class elements each time
+users want to create a new Digester instance to parse <code>Channel</code> type:</p>
+      <source>import org.apache.commons.digester.annotations.*;
+
+DigesterLoader digesterLoader = new DigesterLoaderBuilder()
+    .useDefaultAnnotationRuleProviderFactory()
+    .useDefaultDigesterLoaderHandlerFactory();
+Digester digester = digesterLoader.createDigester(Channel.class);</source>
+
+      <p>In Digester3 there is just one universal loader that aggregates all the power of the components described above,
+configurations are expressed via <code>(Abstract)RulesModule</code></p>
+      <source>class SimpleTestBeanModule extends AbstractRulesModule {
+
+  @Override
+  protected void configure() {
+    forPattern("root")
+      .createObject().ofType("org.apache.commons.digester.SimpleTestBean")
+      .then()
+      .setBeanProperty("alpha");
+    forPattern("root/alpha").setBeanProperty("beta");
+    forPattern("root/delta").setBeanProperty("delta");
+  }
+
+}</source>
+      <p>Users can simply create new Digester instances:</p>
+      <source>DigesterLoader loader = newLoader(new SimpleTestBeanModule());
+    ...
+    Digester digester = loader.newDigester();</source>
+
+      <p>Users can create new Digester instances on top of different <code>Rules</code> types:</p>
+      <code>Digester digester = loader.newDigester(new ExtendedBaseRules());</code>
+
+      <p>An, by the nature of the universal loader, auxiliary optimizations are not needed:</p>
+      <source>DigesterLoader loader = newLoader(new FromAnnotationsRuleModule(Channel.class))
+    ...
+    Digester digester = loader.newDigester();
+    ...
+    digester = loader.newDigester(); // Channel.class won't be analyzed again!</source>
     </section>
 
     <section name="Extensions optimization">
