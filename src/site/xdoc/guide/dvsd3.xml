@@ -214,11 +214,45 @@ configurations are expressed via <code>(Abstract)RulesModule</code></p>
     ...
     Digester digester = loader.newDigester(); // myrule.xml already parsed
     ...
-    digester = loader.newDigester(); // myrule.xml won't be parsed again!</source>
+    Digester newDigester = loader.newDigester(); // myrule.xml won't be parsed again!</source>
     </section>
 
     <section name="Startup checks and improved error reporting">
-      <p>TODO</p>
+      <p>The new Digester tries as much as possible to check patterns/rules binding errors during the
+      <code>DigesterLoader</code> bootstrap, avoiding exceptions during the parsing operations.</p>
+      <p>Let's suppose for example the following Digester</p>
+      <source>Digester digester = new Digester();
+    digester.addObjectCreate("root", "com.acme.InOtherClassLoader");
+    ....
+    digester.addObjectCreate("root/child", "foo.bar.DoesNotExist");
+    ...</source>
+
+      <p>is using a wrong <code>ClassLoader</code> to resolve types, or declared types are in the wrong
+      package; a runtime error will be thrown as soon as the <i>root</i> pattern will match.</p>
+      <p>Let's suppose users debug their application and fix the <code>ClassLoader</code> problem, a new
+      runtime error will be thrown as soon as the <i>root/child</i> pattern will match, and so on.</p>
+
+      <p>The new Digester tries to report all patterns/rules binding error in one single detailed report, i.e.</p>
+      <source>class SampleModule extends AbstractRulesModule {
+
+  @Override
+  protected void configure() {
+    forPattern("root").createObject().ofType("com.acme.InOtherClassLoader");
+    ...
+    forPattern("root/child").createObject().ofType("foo.bar.DoesNotExist");
+    ...
+  }
+
+}</source>
+      <p>The <code>DigesterLoader</code> will report problems in the following way:</p>
+      <source>Exception in thread "XXX" org.apache.commons.digester3.DigesterLoadingException: Digester creation errors:
+
+1) {forPattern("root").createObject().ofType(String)} class 'com.acme.InOtherClassLoader' cannot be load (SampleModule.java:5)
+
+2) {forPattern("root/child").createObject().ofType(String)} class 'foo.bar.DoesNotExist' cannot be load (SampleModule.java:X)
+
+2 errors</source>
+        <p>So, users have at least an overview to debug their applications.</p>
     </section>
   </body>
 </document>
