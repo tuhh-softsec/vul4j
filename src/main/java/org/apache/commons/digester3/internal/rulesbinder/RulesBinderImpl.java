@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.List;
 
-import org.apache.commons.digester3.AbstractRulesModule;
 import org.apache.commons.digester3.DigesterLoadingException;
 import org.apache.commons.digester3.Rule;
 import org.apache.commons.digester3.RulesBinder;
@@ -65,27 +64,33 @@ public final class RulesBinderImpl implements RulesBinder {
      */
     public void addError(String messagePattern, Object... arguments) {
         StackTraceElement[] stackTrace = new Exception().getStackTrace();
-        // let's check if it is an AbstractRulesModule extension first
-        StackTraceElement element = stackTrace[3];
-        Class<?> moduleClass = null;
+        StackTraceElement element = null;
 
-        try {
-            // check if the set ClassLoader resolves the Class in the StackTrace
-            moduleClass = Class.forName(element.getClassName(), false, this.classLoader);
-        } catch (ClassNotFoundException e) {
+        int stackIndex = stackTrace.length - 1;
+        while (element == null && stackIndex > 0) {
+            Class<?> moduleClass = null;
             try {
-                // try otherwise with current ClassLoader
-                moduleClass = Class.forName(element.getClassName(), false, this.getClass().getClassLoader());
-            } catch (ClassNotFoundException e1) {
-                // Class in the StackTrace can't be found, don't write the file name:line number detail in the message
+                // check if the set ClassLoader resolves the Class in the StackTrace
+                moduleClass = Class.forName(stackTrace[stackIndex].getClassName(), false, this.classLoader);
+            } catch (ClassNotFoundException e) {
+                try {
+                    // try otherwise with current ClassLoader
+                    moduleClass = Class.forName(stackTrace[stackIndex].getClassName(), false, this.getClass().getClassLoader());
+                } catch (ClassNotFoundException e1) {
+                    // Class in the StackTrace can't be found, don't write the file name:line number detail in the message
+                }
             }
+
+            if (moduleClass != null) {
+                if (RulesModule.class.isAssignableFrom(moduleClass)) {
+                    element = stackTrace[stackIndex];
+                }
+            }
+
+            stackIndex--;
         }
 
-        if (moduleClass != null) {
-            // if it is not an AbstractRulesModule, then a RulesModule implementation
-            if (!AbstractRulesModule.class.isAssignableFrom(moduleClass)) {
-                element = stackTrace[2];
-            }
+        if (element != null) {
             messagePattern = String.format("%s (%s:%s)", messagePattern, element.getFileName(), element.getLineNumber());
         }
         this.addError(new ErrorMessage(messagePattern, arguments));
