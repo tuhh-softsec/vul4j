@@ -140,7 +140,8 @@ public class OsgiUtils
     public static Set<File> getClasspathCandidates( FileFilter filter )
     {
         Set<File> candidates = new HashSet<File>();
-        String[] cpElements = System.getProperty( "java.class.path" ).split( ":" );
+        String separator = System.getProperty( "path.separator" );
+        String[] cpElements = System.getProperty( "java.class.path" ).split( separator );
         
         for ( String element : cpElements )
         {
