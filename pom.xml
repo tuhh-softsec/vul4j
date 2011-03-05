@@ -53,12 +53,14 @@
     <mina.core.version>2.0.2</mina.core.version>
     <org.osgi.version>3.0.0</org.osgi.version>
     <org.osgi.core.version>4.2.0</org.osgi.core.version>
-    <org.apache.felix.version>3.0.2</org.apache.felix.version>
+    <org.apache.felix.version>3.0.9</org.apache.felix.version>
     <slf4j.api.version>1.6.1</slf4j.api.version>
     <slf4j.log4j12.version>1.6.1</slf4j.log4j12.version>
     <xml.apis.version>2.0.2</xml.apis.version>
     <xpp3.version>1.1.4c</xpp3.version>
-    <pax-exam.version>1.2.3</pax-exam.version>
+    <pax-exam.version>2.0.0-M1</pax-exam.version>
+    <pax-exam-container-default.version>1.2.4</pax-exam-container-default.version>
+    <pax-exam-junit.version>1.2.4</pax-exam-junit.version>
     <findbugs.annotations.version>1.0.0</findbugs.annotations.version>
   </properties>
   
@@ -537,14 +539,14 @@
       <dependency>
         <groupId>org.ops4j.pax.exam</groupId>
         <artifactId>pax-exam-junit</artifactId>
-        <version>${pax-exam.version}</version>
+        <version>${pax-exam-junit.version}</version>
         <scope>test</scope>
       </dependency>
 
       <dependency>
         <groupId>org.ops4j.pax.exam</groupId>
         <artifactId>pax-exam-container-default</artifactId>
-        <version>${pax-exam.version}</version>
+        <version>${pax-exam-container-default.version}</version>
         <scope>test</scope>
       </dependency>
 
