@@ -198,7 +198,23 @@ configurations are expressed via <code>(Abstract)RulesModule</code></p>
     </section>
 
     <section name="Extensions optimization">
-      <p>TODO</p>
+      <p>As shown above, the universal DigesterLoader introduces a set of optimizations not or partially
+      introduced in the previous Digester releases: the <code>FromXmlRuleSet</code>, for example,
+      parses the XML Digester rules each time the Digester creation is performed:</p>
+      <source>FromXmlRuleSet ruleSet = new FromXmlRuleSet(getClass().getResource("myrule.xml"));
+    Digester digester = new Digester();
+    ruleSet.addRuleInstances(digester); // myrule.xml will be parsed
+    ...
+    Digester newDigester = new Digester();
+    ruleSet.addRuleInstances(newDigester); // myrule.xml will be parsed again!</source>
+
+      <p>In Digester3 there's only one <code>RulesModule</code>s loading, so in the case of
+      <code>FromXmlRulesModule</code>, the XML rules will be parsed only once:</p>
+      <source>DigesterLoader loader = newLoader(new FromXmlRulesModule(getClass().getResource("myrule.xml")))
+    ...
+    Digester digester = loader.newDigester(); // myrule.xml already parsed
+    ...
+    digester = loader.newDigester(); // myrule.xml won't be parsed again!</source>
     </section>
 
     <section name="Startup checks and improved error reporting">
