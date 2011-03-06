@@ -71,11 +71,6 @@
 
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>shared-ldap-client-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>${project.groupId}</groupId>
       <artifactId>shared-util</artifactId>
     </dependency>
   </dependencies>
