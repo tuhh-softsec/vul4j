@@ -1485,15 +1485,15 @@ public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
     public void writeExternal( ObjectOutput out ) throws IOException
     {
         out.writeInt( nbAtavs );
-        Unicode.writeUTF(out, upName);
+        out.writeUTF( upName );
 
         if ( upName.equals( normName ) )
         {
-            Unicode.writeUTF(out, "");
+            out.writeUTF( "" );
         }
         else
         {
-            Unicode.writeUTF(out, normName);
+            out.writeUTF( normName );
         }
 
         switch ( nbAtavs )
@@ -1502,13 +1502,13 @@ public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
                 break;
 
             case 1:
-                out.writeObject( atav );
+                atav.writeExternal( out );
                 break;
 
             default:
-                for ( Ava value : atavs )
+                for ( Ava ava : atavs )
                 {
-                    out.writeObject( value );
+                    ava.writeExternal( out );
                 }
 
                 break;
@@ -1532,10 +1532,10 @@ public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
         nbAtavs = in.readInt();
 
         // Read the UPName
-        upName = Unicode.readUTF(in);
+        upName = in.readUTF();
 
         // Read the normName
-        normName = Unicode.readUTF(in);
+        normName = in.readUTF();
 
         if ( Strings.isEmpty(normName) )
         {
@@ -1549,7 +1549,8 @@ public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
                 break;
 
             case 1:
-                atav = (Ava) in.readObject();
+                atav = new Ava( schemaManager );
+                atav.readExternal( in );
                 atavType = atav.getNormType();
 
                 break;
@@ -1561,9 +1562,10 @@ public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
 
                 for ( int i = 0; i < nbAtavs; i++ )
                 {
-                    Ava value = (Ava) in.readObject();
-                    atavs.add( value );
-                    atavTypes.put( value.getNormType(), value );
+                    Ava ava = new Ava( schemaManager );
+                    ava.readExternal( in );
+                    atavs.add( ava );
+                    atavTypes.put( ava.getNormType(), ava );
                 }
 
                 atav = null;

@@ -36,7 +36,6 @@ import org.apache.directory.shared.ldap.model.schema.AttributeType;
 import org.apache.directory.shared.ldap.model.schema.MatchingRule;
 import org.apache.directory.shared.ldap.model.schema.SchemaManager;
 import org.apache.directory.shared.util.Strings;
-import org.apache.directory.shared.util.Unicode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -782,9 +781,35 @@ public final class Ava implements Externalizable, Cloneable
             throw new IOException( message );
         }
         
-        Unicode.writeUTF(out, upName);
-        Unicode.writeUTF(out, upType);
-        Unicode.writeUTF(out, normType);
+        if ( upName != null )
+        {
+            out.writeBoolean( true );
+            out.writeUTF( upName );
+        }
+        else
+        {
+            out.writeBoolean( false);
+        }
+        
+        if ( upType != null )
+        {
+            out.writeBoolean( true );
+            out.writeUTF( upType );
+        }
+        else
+        {
+            out.writeBoolean( false);
+        }
+        
+        if ( normType != null )
+        {
+            out.writeBoolean( true );
+            out.writeUTF( normType );
+        }
+        else
+        {
+            out.writeBoolean( false);
+        }
         
         boolean isHR = !normValue.isBinary();
         
@@ -792,15 +817,13 @@ public final class Ava implements Externalizable, Cloneable
         
         if ( isHR )
         {
-            Unicode.writeUTF(out, upValue.getString());
-            Unicode.writeUTF(out, normValue.getString());
+            StringValue.serialize( upValue, out );
+            StringValue.serialize( normValue, out );
         }
         else
         {
-            out.writeInt( upValue.length() );
-            out.write( upValue.getBytes() );
-            out.writeInt( normValue.length() );
-            out.write( normValue.getBytes() );
+            BinaryValue.serialize( upValue, out );
+            BinaryValue.serialize( normValue, out );
         }
     }
     
@@ -814,28 +837,43 @@ public final class Ava implements Externalizable, Cloneable
      */
     public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException
     {
-        upName = Unicode.readUTF(in);
-        upType = Unicode.readUTF(in);
-        normType = Unicode.readUTF(in);
+        boolean hasUpName = in.readBoolean();
+        
+        if ( hasUpName )
+        {
+            upName = in.readUTF();
+        }
+        
+        boolean hasUpType = in.readBoolean();
+
+        if ( hasUpType )
+        {
+            upType = in.readUTF();
+        }
+        
+        boolean hasNormType = in.readBoolean();
+
+        if ( hasNormType )
+        {
+            normType = in.readUTF();
+        }
         
         boolean isHR = in.readBoolean();
         
         if ( isHR )
         {
-            upValue = new StringValue( Unicode.readUTF(in) );
-            normValue = new StringValue( Unicode.readUTF(in) );
+            upValue = StringValue.deserialize( schemaManager, in );
+            normValue = StringValue.deserialize( schemaManager, in );
         }
         else
         {
-            int upValueLength = in.readInt();
-            byte[] upValueBytes = new byte[upValueLength];
-            in.readFully( upValueBytes );
-            upValue = new BinaryValue( upValueBytes );
-
-            int valueLength = in.readInt();
-            byte[] normValueBytes = new byte[valueLength];
-            in.readFully( normValueBytes );
-            normValue = new BinaryValue( normValueBytes );
+            upValue = BinaryValue.deserialize( schemaManager, in );
+            normValue = BinaryValue.deserialize( schemaManager, in );
+        }
+        
+        if ( schemaManager != null )
+        {
+            attributeType = schemaManager.getAttributeType( upType );
         }
     }
     

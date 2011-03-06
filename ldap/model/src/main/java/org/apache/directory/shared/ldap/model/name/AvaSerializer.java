@@ -23,13 +23,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.apache.directory.shared.ldap.model.entry.BinaryValue;
-import org.apache.directory.shared.ldap.model.entry.StringValue;
-import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.schema.SchemaManager;
-import org.apache.directory.shared.util.Strings;
-import org.apache.directory.shared.util.Unicode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,65 +70,14 @@ public final class AvaSerializer
      * <li>valueLength</li>
      * <li>value</li> The normalized value.
      *
-     * @param atav the AttributeTypeAndValue to serialize
+     * @param ava the AttributeTypeAndValue to serialize
      * @param out the OutputStream in which the atav will be serialized
      * @throws IOException If we can't serialize the atav
      */
-    public static void serialize( Ava atav, ObjectOutput out ) throws IOException
+    public static void serialize( Ava ava, ObjectOutput out ) throws IOException
     {
-        if ( Strings.isEmpty(atav.getUpName())
-            || Strings.isEmpty(atav.getUpType())
-            || Strings.isEmpty(atav.getNormType())
-            || ( atav.getUpValue().isNull() )
-            || ( atav.getNormValue().isNull() ) )
-        {
-            String message = "Cannot serialize an wrong ATAV, ";
-            
-            if ( Strings.isEmpty(atav.getUpName()) )
-            {
-                message += "the upName should not be null or empty";
-            }
-            else if ( Strings.isEmpty(atav.getUpType()) )
-            {
-                message += "the upType should not be null or empty";
-            }
-            else if ( Strings.isEmpty(atav.getNormType()) )
-            {
-                message += "the normType should not be null or empty";
-            }
-            else if ( atav.getUpValue().isNull() )
-            {
-                message += "the upValue should not be null";
-            }
-            else if ( atav.getNormValue().isNull() )
-            {
-                message += "the value should not be null";
-            }
-                
-            LOG.error( message );
-            throw new IOException( message );
-        }
-        
-        Unicode.writeUTF(out, atav.getUpName());
-        Unicode.writeUTF(out, atav.getUpType());
-        Unicode.writeUTF(out, atav.getNormType());
-        
-        boolean isHR = !atav.getNormValue().isBinary();
-        
-        out.writeBoolean( isHR );
-        
-        if ( isHR )
-        {
-            Unicode.writeUTF(out, atav.getUpValue().getString());
-            Unicode.writeUTF(out, atav.getNormValue().getString());
-        }
-        else
-        {
-            out.writeInt( atav.getUpValue().length() );
-            out.write( atav.getUpValue().getBytes() );
-            out.writeInt( atav.getNormValue().length() );
-            out.write( atav.getNormValue().getBytes() );
-        }
+        ava.writeExternal( out );
+        out.flush();
     }
     
     
@@ -151,45 +95,17 @@ public final class AvaSerializer
     public static Ava deserialize( SchemaManager schemaManager, ObjectInput in ) 
         throws IOException, LdapInvalidDnException
     {
-        String upName = Unicode.readUTF(in);
-        String upType = Unicode.readUTF(in);
-        String normType = Unicode.readUTF(in);
+        Ava ava = new Ava( schemaManager );
         
-        boolean isHR = in.readBoolean();
-
         try
         {
-            if ( isHR )
-            {
-                Value<String> upValue = new StringValue( Unicode.readUTF(in) );
-                Value<String> normValue = new StringValue( Unicode.readUTF(in) );
-                
-                Ava atav =
-                    new Ava( schemaManager, upType, normType, upValue, normValue );
-                
-                return atav;
-            }
-            else
-            {
-                int upValueLength = in.readInt();
-                byte[] upValue = new byte[upValueLength];
-                in.readFully( upValue );
-    
-                int valueLength = in.readInt();
-                byte[] normValue = new byte[valueLength];
-                in.readFully( normValue );
-    
-                Ava atav =
-                    new Ava( upType, normType,
-                        new BinaryValue( upValue) ,
-                        new BinaryValue( normValue ), upName );
-                
-                return atav;
-            }
+            ava.readExternal( in );
         }
-        catch ( LdapInvalidDnException ine )
+        catch ( ClassNotFoundException cnfe )
         {
-            throw new IOException( ine.getMessage() );
+            throw new IOException( cnfe.getMessage() );
         }
+        
+        return ava;
     }
 }

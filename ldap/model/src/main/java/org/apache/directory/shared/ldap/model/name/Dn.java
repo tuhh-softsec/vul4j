@@ -21,6 +21,10 @@
 package org.apache.directory.shared.ldap.model.name;
 
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -59,7 +63,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public final class Dn implements Iterable<Rdn>
+public final class Dn implements Iterable<Rdn>, Externalizable
 {
     /** The LoggerFactory used by this class */
     protected static final Logger LOG = LoggerFactory.getLogger( Dn.class );
@@ -1682,5 +1686,73 @@ public final class Dn implements Iterable<Rdn>
         }
 
         return true;
+    }
+    
+    
+    public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException
+    {
+        // Read the UPName
+        upName = in.readUTF();
+
+        // Read the NormName
+        normName = in.readUTF();
+
+        if ( normName.length() == 0 )
+        {
+            // As the normName is equal to the upName,
+            // we didn't saved the nbnormName on disk.
+            // restore it by copying the upName.
+            normName = upName;
+        }
+
+        // Read the RDNs. Is it's null, the number will be -1.
+        int nbRdns = in.readInt();
+        
+        rdns = new ArrayList<Rdn>( nbRdns );
+        
+        for ( int i = 0; i < nbRdns; i++ )
+        {
+            Rdn rdn = new Rdn( schemaManager );
+            rdn.readExternal( in );
+            rdns.add( rdn );
+        }
+    }
+    
+    
+    public void writeExternal( ObjectOutput out ) throws IOException
+    {
+        if ( upName == null )
+        {
+            String message = "Cannot serialize a NULL Dn";
+            LOG.error( message );
+            throw new IOException( message );
+        }
+
+        // Write the UPName
+        out.writeUTF( upName );
+
+        // Write the NormName if different
+        if ( upName.equals( normName ) )
+        {
+            out.writeUTF( "" );
+        }
+        else
+        {
+            out.writeUTF( normName );
+        }
+
+        // Should we store the byte[] ???
+
+        // Write the RDNs.
+        // First the number of RDNs
+        out.writeInt( size() );
+
+        // Loop on the RDNs
+        for ( Rdn rdn : rdns )
+        {
+            rdn.writeExternal( out );
+        }
+        
+        out.flush();
     }
 }

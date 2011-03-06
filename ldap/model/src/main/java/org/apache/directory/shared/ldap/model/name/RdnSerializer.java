@@ -25,8 +25,6 @@ import java.io.ObjectOutput;
 
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.schema.SchemaManager;
-import org.apache.directory.shared.util.Strings;
-import org.apache.directory.shared.util.Unicode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,23 +69,8 @@ public final class RdnSerializer
      */
     public static void serialize( Rdn rdn, ObjectOutput out ) throws IOException
     {
-        out.writeInt( rdn.getNbAtavs() );
-        Unicode.writeUTF(out, rdn.getName());
-        Unicode.writeUTF(out, rdn.getNormName());
-        
-        switch ( rdn.getNbAtavs() )
-        {
-            case 0 :
-                break;
-
-            default :
-                for ( Ava atav:rdn )
-                {
-                    AvaSerializer.serialize(atav, out);
-                }
-            
-                break;
-        }
+        rdn.writeExternal( out );
+        out.flush();
     }
     
     
@@ -106,45 +89,15 @@ public final class RdnSerializer
     public static Rdn deserialize( SchemaManager schemaManager, ObjectInput in )
         throws IOException, LdapInvalidDnException
     {
-        // Read the ATAV number
-        int nbAtavs = in.readInt();
-        
-        // Read the UPName
-        String upName = Unicode.readUTF(in);
-        
-        // Read the normName
-        String normName = Unicode.readUTF(in);
-        
-        if ( Strings.isEmpty(normName) )
+        Rdn rdn = new Rdn( schemaManager );
+    
+        try
         {
-            normName = upName;
+            rdn.readExternal( in );
         }
-        
-        Rdn rdn = null;
-
-        // Read through the Atavs
-        switch ( nbAtavs )
+        catch ( ClassNotFoundException cnfe )
         {
-            case 0 :
-                rdn = new Rdn( schemaManager, upName, normName, (Ava[])null );
-                break;
-                
-            case 1 :
-                Ava ava = AvaSerializer.deserialize( schemaManager, in );
-                
-                rdn = new Rdn( schemaManager, upName, normName, ava );
-                break;
-                
-            default :
-                Ava[] avas = new Ava[nbAtavs];
-                
-                for ( int i = 0; i < nbAtavs; i++  )
-                {
-                    ava = AvaSerializer.deserialize( schemaManager, in );
-                    avas[i] = ava;
-                }
-
-                rdn = new Rdn( schemaManager, upName, normName, avas );
+            throw new IOException( cnfe.getMessage() );
         }
 
         return rdn;

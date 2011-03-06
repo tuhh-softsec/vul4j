@@ -29,7 +29,6 @@ import java.io.ObjectOutputStream;
 
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.schema.SchemaManager;
-import org.apache.directory.shared.util.Unicode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,8 +75,6 @@ public final class DnSerializer
         
         serialize( dn, out );
         
-        out.flush();
-        
         return baos.toByteArray();
     }
 
@@ -101,37 +98,8 @@ public final class DnSerializer
      */
     public static void serialize( Dn dn, ObjectOutput out ) throws IOException
     {
-        if ( dn.getName() == null )
-        {
-            String message = "Cannot serialize a NULL Dn";
-            LOG.error( message );
-            throw new IOException( message );
-        }
-
-        // Write the UPName
-        Unicode.writeUTF(out, dn.getName());
-
-        // Write the NormName if different
-        if ( dn.getName().equals( dn.getNormName() ) )
-        {
-            Unicode.writeUTF(out, "");
-        }
-        else
-        {
-            Unicode.writeUTF(out, dn.getNormName());
-        }
-
-        // Should we store the byte[] ???
-
-        // Write the RDNs.
-        // First the number of RDNs
-        out.writeInt( dn.size() );
-
-        // Loop on the RDNs
-        for ( Rdn rdn:dn.getRdns() )
-        {
-            RdnSerializer.serialize( rdn, out );
-        }
+        dn.writeExternal( out );
+        out.flush();
     }
 
 
@@ -171,32 +139,16 @@ public final class DnSerializer
     public static Dn deserialize( SchemaManager schemaManager, ObjectInput in ) 
         throws IOException, LdapInvalidDnException
     {
-        // Read the UPName
-        String upName = Unicode.readUTF(in);
-
-        // Read the NormName
-        String normName = Unicode.readUTF(in);
-
-        if ( normName.length() == 0 )
-        {
-            // As the normName is equal to the upName,
-            // we didn't saved the nbnormName on disk.
-            // restore it by copying the upName.
-            normName = upName;
-        }
-
-        // Read the RDNs. Is it's null, the number will be -1.
-        int nbRdns = in.readInt();
+        Dn dn = new Dn( schemaManager );
         
-        Rdn[] rdns = new Rdn[nbRdns];
-        
-        for ( int i = 0; i < nbRdns; i++ )
+        try
         {
-            Rdn rdn = RdnSerializer.deserialize( schemaManager, in );
-            rdns[i] = rdn;
+            dn.readExternal( in );
         }
-
-        Dn dn = new Dn( schemaManager, upName, normName, rdns );
+        catch ( ClassNotFoundException cnfe )
+        {
+            throw new IOException( cnfe.getMessage() );
+        }
         
         return dn;
     }
