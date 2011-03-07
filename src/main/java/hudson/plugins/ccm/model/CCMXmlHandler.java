@@ -59,7 +59,10 @@ extends DefaultHandler
 	private static final String COMPLEXITY = "complexity";
 	private CCM ccm;
 	private Metric tempMetric;
-	private String tempVal;
+
+	private StringBuilder tempVal;
+	
+	private String tempSingleVal;
 	
 	/* (non-Javadoc)
 	 * @see org.xml.sax.helpers.DefaultHandler#startDocument()
@@ -69,6 +72,7 @@ extends DefaultHandler
 	throws SAXException 
 	{
 		this.ccm = new CCM();
+		tempVal = new StringBuilder();
 	}
 	
 	/* (non-Javadoc)
@@ -98,7 +102,8 @@ extends DefaultHandler
 			int length)
 	throws SAXException 
 	{
-		tempVal = new String(ch, start, length);
+		tempSingleVal = new String(ch, start, length);
+		tempVal.append( tempSingleVal );
 	}
 	
 	/* (non-Javadoc)
@@ -110,20 +115,21 @@ extends DefaultHandler
 	{
 		if ( COMPLEXITY.equals(qName) )
 		{
-			tempMetric.setComplexity( Integer.parseInt(tempVal) );
+			tempMetric.setComplexity( Integer.parseInt( tempSingleVal ) );
 		} else if ( UNIT.equals(qName) )
 		{
-			tempMetric.setUnit(tempVal);
+			tempMetric.setUnit(tempVal.toString());
 		} else if ( CLASSIFICATION.equals(qName) )
 		{
-			tempMetric.setClassification(tempVal);
+			tempMetric.setClassification(tempVal.toString());
 		} else if ( FILE.equals(qName) )
 		{
-			tempMetric.setFile(tempVal);
+			tempMetric.setFile(tempVal.toString());
 		} else if ( METRIC.equals(qName) )
 		{
 			this.ccm.getMetrics().add(tempMetric);
 		}
+		tempVal.setLength(0);
 	}
 	
 	public CCM getCCM()

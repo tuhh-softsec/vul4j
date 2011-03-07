@@ -107,6 +107,7 @@ implements FilePath.FileCallable<CCMReport>
 		
 		SAXParserFactory factory = SAXParserFactory.newInstance();
 		factory.setValidating(false);
+
 		try {
             factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
         } 

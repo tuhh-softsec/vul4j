@@ -23,10 +23,11 @@
  */
 package hudson.plugins.ccm;
 
-import java.text.DecimalFormat;
-
 import hudson.plugins.ccm.model.CCMReport;
 import hudson.plugins.ccm.model.Metric;
+
+import java.text.DecimalFormat;
+import java.util.List;
 
 /**
  * @author Bruno P. Kinoshita - http://www.kinoshita.eti.br
@@ -79,7 +80,18 @@ public class ReportSummary {
 		builder.append( Messages.CCM_Report_Summary_TopFifteen() );
 		builder.append("<table border=\"1\">\n");
 		int i = 0 ;
-        for(Metric metric: report.getMetrics()){
+		
+		List<Metric> metrics = report.getMetrics();
+		if ( metrics.size() > 0 )
+		{
+			builder.append("<tr>\n");
+			builder.append("<th style='background-color: #eee;'>" + Messages.CCM_Report_Details_FileTitle() + "</th>\n");
+			builder.append("<th style='background-color: #eee;'>" + Messages.CCM_Report_Details_UnitTitle() + "</th>\n");
+			builder.append("<th style='background-color: #eee;'>" + Messages.CCM_Report_Details_ClassificationTitle() + "</th>\n");
+			builder.append("<th style='background-color: #eee;'>" + Messages.CCM_Report_Details_ComplexityTitle() + "</th>\n");
+			builder.append("</tr>\n");
+		}
+        for(Metric metric: metrics){
         	builder.append("<tr>\n");
             // TOTHINK: Perhaps we could make some reference to the previous 
             // metric's?
