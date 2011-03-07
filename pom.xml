@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.apache.directory.project</groupId>
     <artifactId>project</artifactId>
-    <version>20</version>
+    <version>21</version>
     <relativePath/>
   </parent>
 
@@ -115,13 +115,14 @@
               <!-- Missing license header in dependency reduced pom, see http://jira.codehaus.org/browse/MSHADE-48 -->
               <exclude>**/dependency-reduced-pom.xml</exclude>
               <!-- Generated ldif files -->
-              <exclude>ldap-schema/src/main/resources/schema/**</exclude>
-              <exclude>ldap-schema/src/main/resources/schema-all.ldif</exclude>
+              <exclude>ldap/schema/data/src/main/resources/schema/**</exclude>
+              <exclude>ldap/schema/data/src/main/resources/schema-all.ldif</exclude>
+              <exclude>schema/data/src/main/resources/schema/**</exclude>
+              <exclude>schema/data/src/main/resources/schema-all.ldif</exclude>
+              <exclude>data/src/main/resources/schema/**</exclude>
+              <exclude>data/src/main/resources/schema-all.ldif</exclude>
               <exclude>src/main/resources/schema/**</exclude>
               <exclude>src/main/resources/schema-all.ldif</exclude>
-              <!-- Files having a Bouncy Castle license -->
-              <exclude>ldap/src/main/java/org/apache/directory/shared/asn1/der/*.java</exclude>
-              <exclude>src/main/java/org/apache/directory/shared/asn1/der/*.java</exclude>
             </excludes>
           </configuration>
          </plugin>

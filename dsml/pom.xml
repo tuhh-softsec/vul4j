@@ -36,22 +36,4 @@
     <module>parser</module>
   </modules>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-
-  <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/directory/shared/trunk/dsml</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/directory/shared/trunk/dsml</developerConnection>
-    <url>http://svn.apache.org/viewvc/directory/shared/trunk/dsml</url>
-  </scm>
-
 </project>
