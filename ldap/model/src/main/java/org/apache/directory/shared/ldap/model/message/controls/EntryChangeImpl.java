@@ -87,6 +87,21 @@ public class EntryChangeImpl extends AbstractControl implements EntryChange
 
 
     /**
+     * @see Object#hashCode()
+     */
+    public int hashCode()
+    {
+        int h = super.hashCode();
+
+        h = h * 37 + new Long( changeNumber ).intValue();
+        h = h * 37 + ( changeType == null ? 0 : changeType.hashCode() );
+        h = h * 37 + ( previousDn == null ? 0 : previousDn.hashCode() );
+
+        return h;
+    }
+
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -104,7 +119,7 @@ public class EntryChangeImpl extends AbstractControl implements EntryChange
              ( previousDn.equals( otherControl.getPreviousDn() ) );
     }
 
-    
+
     /**
      * Return a String representing this EntryChangeControl.
      */
