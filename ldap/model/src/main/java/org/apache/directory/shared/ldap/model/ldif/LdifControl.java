@@ -117,6 +117,27 @@ public class LdifControl implements Control
 
 
     /**
+     * @see Object#hashCode()
+     */
+    public int hashCode()
+    {
+        int h = 17;
+        h = h * 37 + ( criticality ? 1 : 0 );
+        h = h * 37 + ( oid == null ? 0 : oid.hashCode() );
+
+        if ( value != null )
+        {
+            for ( byte v : value )
+            {
+                h = h * 37 + v;
+            }
+        }
+
+        return h;
+    }
+
+
+    /**
      * @see Object#equals(Object)
      */
     public boolean equals( Object o )
@@ -131,7 +152,7 @@ public class LdifControl implements Control
             return false;
         }
 
-        if ( !( o instanceof Control) )
+        if ( !( o instanceof Control ) )
         {
             return false;
         }
