@@ -249,7 +249,7 @@ public interface EntryAttribute extends Iterable<Value<?>>, Cloneable, Externali
      * @exception IOException if I/O errors occur
      * @exception ClassNotFoundException if the class for an object being restored cannot be found.
      * @see Externalizable#readExternal(ObjectInput)
-     */
+     *
     void deserialize( ObjectInput in ) throws IOException, ClassNotFoundException;
 
     

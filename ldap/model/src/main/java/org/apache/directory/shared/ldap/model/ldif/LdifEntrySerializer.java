@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.apache.directory.shared.ldap.model.entry.DefaultModification;
 import org.apache.directory.shared.ldap.model.entry.Entry;
 import org.apache.directory.shared.ldap.model.entry.EntrySerializer;
 import org.apache.directory.shared.ldap.model.entry.Modification;
@@ -210,7 +211,16 @@ public class LdifEntrySerializer
 
                 for ( int i = 0; i < nbModifs; i++ )
                 {
-                    Modification modification = ModificationSerializer.deserialize( schemaManager, in );
+                    Modification modification = new DefaultModification();
+                    
+                    try
+                    {
+                        modification.readExternal( in );
+                    }
+                    catch ( ClassNotFoundException cnfe )
+                    {
+                        throw new IOException( cnfe.getMessage() );
+                    }
 
                     ldifEntry.addModificationItem( modification );
                 }

@@ -19,19 +19,13 @@
  */
 package org.apache.directory.shared.ldap.model.entry;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.schema.AttributeType;
 import org.apache.directory.shared.ldap.model.schema.LdapComparator;
 import org.apache.directory.shared.ldap.model.schema.MatchingRule;
 import org.apache.directory.shared.ldap.model.schema.Normalizer;
-import org.apache.directory.shared.ldap.model.schema.SchemaManager;
 import org.apache.directory.shared.ldap.model.schema.SyntaxChecker;
-import org.apache.directory.shared.util.StringConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +38,7 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractValue<T> implements Value<T>
 {
     /** logger for reporting errors that might not be handled properly upstream */
-    private static final Logger LOG = LoggerFactory.getLogger( AbstractValue.class );
+    protected static final Logger LOG = LoggerFactory.getLogger( AbstractValue.class );
 
     /** reference to the attributeType zssociated with the value */
     protected transient AttributeType attributeType;
@@ -66,7 +60,7 @@ public abstract class AbstractValue<T> implements Value<T>
     
     /** The computed hashcode. We don't want to compute it each time the hashcode() method is called */
     protected volatile int h;
-
+    
     /**
      * {@inheritDoc}
      */
@@ -384,7 +378,7 @@ public abstract class AbstractValue<T> implements Value<T>
      * @param value The Value instance to serialize
      * @param out The stream into which we will write the serialized instance
      * @throws IOException If the stream can't be written
-     */
+     *
     @SuppressWarnings("unchecked")
     public static void serialize( Value<?> value, ObjectOutput out ) throws IOException
     {
@@ -490,7 +484,7 @@ public abstract class AbstractValue<T> implements Value<T>
      * @param in The input stream from which the Value is read
      * @return a deserialized Value
      * @throws IOException If the stream can't be read
-     */
+     *
     @SuppressWarnings("unchecked")
     public static Value<?> deserialize( SchemaManager schemaManager, ObjectInput in ) throws IOException
     {
@@ -588,4 +582,5 @@ public abstract class AbstractValue<T> implements Value<T>
         
         return value;
     }
+    */
 }

@@ -28,6 +28,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import org.apache.directory.shared.ldap.model.exception.LdapException;
+import org.apache.directory.shared.ldap.model.schema.AttributeType;
 import org.apache.directory.shared.util.StringConstants;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,234 +61,246 @@ public class ValueSerializerTest
     
     
     @Test
-    public void testBinaryValueWithDataSerialization() throws IOException
+    public void testBinaryValueWithDataSerialization() throws IOException, ClassNotFoundException
     {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        BinaryValue.serialize( bv1, out );
+        bv1.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        BinaryValue bvDeser = (BinaryValue)BinaryValue.deserialize( null, in );
+        BinaryValue bvDeser = new BinaryValue( (AttributeType)null );
+        bvDeser.readExternal( in );
 
         assertEquals( bv1, bvDeser );
     }
     
     
     @Test
-    public void testBinaryValueWithEmptyDataSerialization() throws IOException
+    public void testBinaryValueWithEmptyDataSerialization() throws IOException, ClassNotFoundException
     {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        BinaryValue.serialize( bv2, out );
+        bv2.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        BinaryValue bvDeser = (BinaryValue)BinaryValue.deserialize( null, in );
+        BinaryValue bvDeser = new BinaryValue( (AttributeType)null );
+        bvDeser.readExternal( in );
 
         assertEquals( bv2, bvDeser );
     }
     
     
     @Test
-    public void testBinaryValueNoDataSerialization() throws IOException
+    public void testBinaryValueNoDataSerialization() throws IOException, ClassNotFoundException
     {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        BinaryValue.serialize( bv3, out );
+        bv3.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        BinaryValue bvDeser = (BinaryValue)BinaryValue.deserialize( null, in );
+        BinaryValue bvDeser = new BinaryValue( (AttributeType)null );
+        bvDeser.readExternal( in );
 
         assertEquals( bv3, bvDeser );
     }
     
     
     @Test
-    public void testStringValueWithDataSerialization() throws IOException
+    public void testStringValueWithDataSerialization() throws IOException, ClassNotFoundException
     {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        StringValue.serialize( sv1, out );
+        sv1.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        StringValue svDeser = (StringValue)StringValue.deserialize( null, in );
+        StringValue svDeser = new StringValue( (AttributeType)null );
+        svDeser.readExternal( in );
 
         assertEquals( sv1, svDeser );
     }
     
     
     @Test
-    public void testStringValueWithEmptyDataSerialization() throws IOException
+    public void testStringValueWithEmptyDataSerialization() throws IOException, ClassNotFoundException
     {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        StringValue.serialize( sv2, out );
+        sv2.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        StringValue svDeser = (StringValue)StringValue.deserialize( null, in );
+        StringValue svDeser = new StringValue( (AttributeType)null );
+        svDeser.readExternal( in );
 
         assertEquals( sv2, svDeser );
     }
     
     
     @Test
-    public void testStringValueNoDataSerialization() throws IOException
+    public void testStringValueNoDataSerialization() throws IOException, ClassNotFoundException
     {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        StringValue.serialize( sv3, out );
+        sv3.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        StringValue svDeser = (StringValue)StringValue.deserialize( null, in );
+        StringValue svDeser = new StringValue( (AttributeType)null );
+        svDeser.readExternal( in );
 
         assertEquals( sv3, svDeser );
     }
     
     
     @Test
-    public void testBinaryValueWithDataNormalizedSerialization() throws IOException, LdapException
+    public void testBinaryValueWithDataNormalizedSerialization() throws IOException, LdapException, ClassNotFoundException
     {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
         bv1n.normalize();
 
-        BinaryValue.serialize( bv1n, out );
+        bv1n.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        BinaryValue bvDeser = (BinaryValue)BinaryValue.deserialize( null, in );
+        BinaryValue bvDeser = new BinaryValue( (AttributeType)null );
+        bvDeser.readExternal( in );
 
         assertEquals( bv1n, bvDeser );
     }
     
     
     @Test
-    public void testBinaryValueWithEmptyDataNormalizedSerialization() throws IOException, LdapException
+    public void testBinaryValueWithEmptyDataNormalizedSerialization() throws IOException, LdapException, ClassNotFoundException
     {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
         bv2n.normalize();
 
-        BinaryValue.serialize( bv2n, out );
+        bv2n.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        BinaryValue bvDeser = (BinaryValue)BinaryValue.deserialize( null, in );
+        BinaryValue bvDeser = new BinaryValue( (AttributeType)null );
+        bvDeser.readExternal( in );
 
         assertEquals( bv2n, bvDeser );
     }
     
     
     @Test
-    public void testBinaryValueNoDataNormalizedSerialization() throws IOException, LdapException
+    public void testBinaryValueNoDataNormalizedSerialization() throws IOException, LdapException, ClassNotFoundException
     {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
         bv3n.normalize();
 
-        BinaryValue.serialize( bv3n, out );
+        bv3n.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        BinaryValue bvDeser = (BinaryValue)BinaryValue.deserialize( null, in );
+        BinaryValue bvDeser = new BinaryValue( (AttributeType)null );
+        bvDeser.readExternal( in );
 
         assertEquals( bv3n, bvDeser );
     }
     
     
     @Test
-    public void testStringValueWithDataNormalizedSerialization() throws IOException, LdapException
+    public void testStringValueWithDataNormalizedSerialization() throws IOException, LdapException, ClassNotFoundException
     {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
         sv1n.normalize();
 
-        StringValue.serialize( sv1n, out );
+        sv1n.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        StringValue svDeser = (StringValue)StringValue.deserialize( null, in );
+        StringValue svDeser = new StringValue( (AttributeType)null );
+        svDeser.readExternal( in );
 
         assertEquals( sv1n, svDeser );
     }
     
     
     @Test
-    public void testStringValueWithEmptyDataNormalizedSerialization() throws IOException, LdapException
+    public void testStringValueWithEmptyDataNormalizedSerialization() throws IOException, LdapException, ClassNotFoundException
     {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
         sv2n.normalize();
 
-        StringValue.serialize( sv2n, out );
+        sv2n.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        StringValue svDeser = (StringValue)StringValue.deserialize( null, in );
+        StringValue svDeser = new StringValue( (AttributeType)null );
+        svDeser.readExternal( in );
 
         assertEquals( sv2n, svDeser );
     }
     
     
     @Test
-    public void testStringValueNoDataNormalizedSerialization() throws IOException, LdapException
+    public void testStringValueNoDataNormalizedSerialization() throws IOException, LdapException, ClassNotFoundException
     {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
         sv3n.normalize();
 
-        StringValue.serialize( sv3n, out );
+        sv3n.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        StringValue svDeser = (StringValue)StringValue.deserialize( null, in );
+        StringValue svDeser = new StringValue( (AttributeType)null );
+        svDeser.readExternal( in );
 
         assertEquals( sv3n, svDeser );
     }

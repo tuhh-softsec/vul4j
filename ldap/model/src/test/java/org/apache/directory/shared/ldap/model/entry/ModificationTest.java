@@ -19,25 +19,20 @@
  */
 package org.apache.directory.shared.ldap.model.entry;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import com.mycila.junit.concurrent.Concurrency;
-import com.mycila.junit.concurrent.ConcurrentJunitRunner;
-import org.apache.directory.shared.ldap.model.entry.DefaultModification;
-import org.apache.directory.shared.ldap.model.entry.DefaultEntryAttribute;
-import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
-import org.apache.directory.shared.ldap.model.entry.Modification;
-import org.apache.directory.shared.ldap.model.entry.ModificationOperation;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 
 
 /**
@@ -52,7 +47,7 @@ public class ModificationTest
     /**
      * Serialize a DefaultModification
      */
-    private ByteArrayOutputStream serializeValue( DefaultModification value ) throws IOException
+    private ByteArrayOutputStream serializeValue( Modification modification ) throws IOException
     {
         ObjectOutputStream oOut = null;
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -60,7 +55,7 @@ public class ModificationTest
         try
         {
             oOut = new ObjectOutputStream( out );
-            oOut.writeObject( value );
+            modification.writeExternal( oOut );
         }
         catch ( IOException ioe )
         {
@@ -89,18 +84,20 @@ public class ModificationTest
     /**
      * Deserialize a DefaultModification
      */
-    private DefaultModification deserializeValue( ByteArrayOutputStream out ) throws IOException, ClassNotFoundException
+    private Modification deserializeValue( ByteArrayOutputStream out ) throws IOException, ClassNotFoundException
     {
         ObjectInputStream oIn = null;
         ByteArrayInputStream in = new ByteArrayInputStream( out.toByteArray() );
 
         try
         {
+            Modification modification = new DefaultModification();
+            
             oIn = new ObjectInputStream( in );
 
-            DefaultModification value = ( DefaultModification ) oIn.readObject();
+            modification.readExternal( oIn );
 
-            return value;
+            return modification;
         }
         catch ( IOException ioe )
         {

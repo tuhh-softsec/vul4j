@@ -30,13 +30,10 @@ import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.schema.AttributeType;
 import org.apache.directory.shared.ldap.model.schema.LdapComparator;
 import org.apache.directory.shared.ldap.model.schema.Normalizer;
-import org.apache.directory.shared.ldap.model.schema.SchemaManager;
 import org.apache.directory.shared.ldap.model.schema.SyntaxChecker;
 import org.apache.directory.shared.ldap.model.schema.comparators.ByteArrayComparator;
 import org.apache.directory.shared.util.StringConstants;
 import org.apache.directory.shared.util.Strings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -51,10 +48,6 @@ public class BinaryValue extends AbstractValue<byte[]>
 {
     /** Used for serialization */
     public static final long serialVersionUID = 2L;
-
-    /** logger for reporting errors that might not be handled properly upstream */
-    private static final Logger LOG = LoggerFactory.getLogger( BinaryValue.class );
-
 
     /**
      * Creates a BinaryValue without an initial wrapped value.
@@ -75,24 +68,20 @@ public class BinaryValue extends AbstractValue<byte[]>
      */
     public BinaryValue( AttributeType attributeType )
     {
-        if ( attributeType == null )
+        if ( attributeType != null )
         {
-            String message = I18n.err( I18n.ERR_04442_NULL_AT_NOT_ALLOWED );
-            LOG.error( message );
-            throw new IllegalArgumentException( message );
+            if ( attributeType.getSyntax() == null )
+            {
+                throw new IllegalArgumentException( I18n.err( I18n.ERR_04445 ) );
+            }
+    
+            if ( attributeType.getSyntax().isHumanReadable() )
+            {
+                LOG.warn( "Treating a value of a human readible attribute {} as binary: ", attributeType.getName() );
+            }
+    
+            this.attributeType = attributeType;
         }
-
-        if ( attributeType.getSyntax() == null )
-        {
-            throw new IllegalArgumentException( I18n.err( I18n.ERR_04445 ) );
-        }
-
-        if ( attributeType.getSyntax().isHumanReadable() )
-        {
-            LOG.warn( "Treating a value of a human readible attribute {} as binary: ", attributeType.getName() );
-        }
-
-        this.attributeType = attributeType;
     }
 
 
@@ -128,20 +117,28 @@ public class BinaryValue extends AbstractValue<byte[]>
     public BinaryValue( AttributeType attributeType, byte[] value )
     {
         this( attributeType );
-        SyntaxChecker syntaxChecker = attributeType.getSyntax().getSyntaxChecker();
-
-        if ( syntaxChecker != null )
+        
+        if ( attributeType != null )
         {
-            if ( syntaxChecker.isValidSyntax( value ) )
+            SyntaxChecker syntaxChecker = attributeType.getSyntax().getSyntaxChecker();
+    
+            if ( syntaxChecker != null )
             {
-                this.wrappedValue = value;
+                if ( syntaxChecker.isValidSyntax( value ) )
+                {
+                    this.wrappedValue = value;
+                }
+                else
+                {
+                    String msg = I18n.err( I18n.ERR_04479_INVALID_SYNTAX_VALUE, value, attributeType.getName() );
+                    LOG.info( msg );
+                    throw new IllegalArgumentException( msg );
+                }
             }
-            else
-            {
-                String msg = I18n.err( I18n.ERR_04479_INVALID_SYNTAX_VALUE, value, attributeType.getName() );
-                LOG.info( msg );
-                throw new IllegalArgumentException( msg );
-            }
+        }
+        else
+        {
+            this.wrappedValue = value;
         }
     }
 
@@ -554,6 +551,13 @@ public class BinaryValue extends AbstractValue<byte[]>
      */
     public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException
     {
+        // Read the BINARY flag
+        boolean isHR = in.readBoolean();
+        
+        if ( isHR )
+        {
+            throw new IOException( "The serialized value is not a Binary value" );
+        }
         // Read the wrapped value, if it's not null
         int wrappedLength = in.readInt();
 
@@ -584,8 +588,19 @@ public class BinaryValue extends AbstractValue<byte[]>
                 }
             }
         }
+        else
+        {
+            // Copy the wrappedValue into the normalizedValue
+            if ( wrappedLength >= 0 )
+            {
+                normalizedValue = new byte[wrappedLength];
+                
+                System.arraycopy( wrappedValue, 0, normalizedValue, 0, wrappedLength );
+            }
+        }
 
-        h = 0;
+        // The hashCoe
+        h = in.readInt();
     }
 
 
@@ -594,6 +609,9 @@ public class BinaryValue extends AbstractValue<byte[]>
      */
     public void writeExternal( ObjectOutput out ) throws IOException
     {
+        // Write the BINARY flag
+        out.writeBoolean( BINARY );
+        
         // Write the wrapped value, if it's not null
         if ( wrappedValue != null )
         {
@@ -633,18 +651,14 @@ public class BinaryValue extends AbstractValue<byte[]>
         {
             out.writeBoolean( false );
         }
+        
+        // The hashCode
+        out.writeInt( h );
+        
+        out.flush();
     }
 
     
-    /**
-     * {@inheritDoc}
-     */
-    public static BinaryValue deserialize( SchemaManager schemaManager, ObjectInput in ) throws IOException
-    {
-        return (BinaryValue)AbstractValue.deserialize( schemaManager, in );
-    }
-
-
     /**
      * Dumps binary in hex with label.
      *

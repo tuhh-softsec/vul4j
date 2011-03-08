@@ -34,7 +34,6 @@ import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.model.schema.AttributeType;
 import org.apache.directory.shared.ldap.model.schema.SyntaxChecker;
 import org.apache.directory.shared.util.Strings;
-import org.apache.directory.shared.util.Unicode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -186,14 +185,10 @@ public class DefaultEntryAttribute implements EntryAttribute
      */
     public DefaultEntryAttribute( AttributeType attributeType )
     {
-        if ( attributeType == null )
+        if ( attributeType != null )
         {
-            String message = I18n.err( I18n.ERR_04442_NULL_AT_NOT_ALLOWED );
-            LOG.error( message );
-            throw new IllegalArgumentException( message );
+            setAttributeType( attributeType );
         }
-        
-        setAttributeType( attributeType );
     }
 
 
@@ -2414,7 +2409,7 @@ public class DefaultEntryAttribute implements EntryAttribute
      * 
      * The inner structure is the same as the client attribute, but we can't call
      * it as we won't be able to serialize the serverValues
-     */
+     *
     public void serialize( ObjectOutput out ) throws IOException
     {
         // Write the UPId (the id will be deduced from the upID)
@@ -2439,15 +2434,8 @@ public class DefaultEntryAttribute implements EntryAttribute
             // Write each value
             for ( Value<?> value:values )
             {
-                // Write the value, using the correct method
-                if ( value instanceof StringValue)
-                {
-                    StringValue.serialize( value, out );
-                }
-                else
-                {
-                    BinaryValue.serialize( value, out );
-                }
+                // Write the value
+                value.writeExternal( out );
             }
         }
     }
@@ -2455,7 +2443,7 @@ public class DefaultEntryAttribute implements EntryAttribute
     
     /**
      * {@inheritDoc}
-     */
+     *
     // This will suppress PMD.EmptyCatchBlock warnings in this method
     @SuppressWarnings("PMD.EmptyCatchBlock")
     public void deserialize( ObjectInput in ) throws IOException, ClassNotFoundException
@@ -2483,13 +2471,15 @@ public class DefaultEntryAttribute implements EntryAttribute
                 
                 if ( isHR )
                 {
-                    value = StringValue.deserialize( null, in );
+                    value = new StringValue( (AttributeType)null );
                 }
                 else
                 {
-                    value  = BinaryValue.deserialize( null, in );
+                    value = new BinaryValue( (AttributeType)null );
                 }
                 
+                value.readExternal( in );
+
                 try
                 {
                     value.normalize();
@@ -2516,7 +2506,7 @@ public class DefaultEntryAttribute implements EntryAttribute
     public void writeExternal( ObjectOutput out ) throws IOException
     {
         // Write the UPId (the id will be deduced from the upID)
-        Unicode.writeUTF(out, upId);
+        out.writeUTF( upId );
         
         // Write the HR flag, if not null
         if ( isHR != null )
@@ -2538,7 +2528,7 @@ public class DefaultEntryAttribute implements EntryAttribute
             for ( Value<?> value:values )
             {
                 // Write the value
-                out.writeObject( value );
+                value.writeExternal( out );
             }
         }
         
@@ -2552,7 +2542,7 @@ public class DefaultEntryAttribute implements EntryAttribute
     public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException
     {
         // Read the ID and the UPId
-        upId = Unicode.readUTF(in);
+        upId = in.readUTF();
         
         // Compute the id
         setUpId( upId );
@@ -2570,7 +2560,20 @@ public class DefaultEntryAttribute implements EntryAttribute
         {
             for ( int i = 0; i < nbValues; i++ )
             {
-                values.add( (Value<?>)in.readObject() );
+                Value<?> value = null;
+                
+                if ( isHR )
+                {
+                    value = new StringValue( attributeType );
+                }
+                else
+                {
+                    value = new BinaryValue( attributeType );
+                }
+                
+                value.readExternal( in );
+                
+                values.add( value );
             }
         }
     }

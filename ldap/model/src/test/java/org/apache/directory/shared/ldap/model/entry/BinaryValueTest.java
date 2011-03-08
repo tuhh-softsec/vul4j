@@ -136,7 +136,7 @@ public class BinaryValueTest
         try
         {
             oOut = new ObjectOutputStream( out );
-            oOut.writeObject( value );
+            value.writeExternal( oOut );
         }
         catch ( IOException ioe )
         {
@@ -174,8 +174,9 @@ public class BinaryValueTest
         {
             oIn = new ObjectInputStream( in );
 
-            BinaryValue value = ( BinaryValue ) oIn.readObject();
-
+            BinaryValue value = new BinaryValue();
+            value.readExternal( oIn );
+            
             return value;
         }
         catch ( IOException ioe )
@@ -716,11 +717,11 @@ public class BinaryValueTest
         bv.isValid( BINARY_CHECKER );
 
         BinaryValue cbvSer = deserializeValue( serializeValue( bv ) );
-         assertNotSame( bv, cbvSer );
-         assertTrue( Arrays.equals( bv.getReference(), cbvSer.getReference() ) );
-         assertTrue( Arrays.equals( bv.getNormalizedValueReference(), cbvSer.getNormalizedValueReference() ) );
-         assertTrue( cbvSer.isNormalized() );
-         assertFalse( cbvSer.isValid() );
+        assertNotSame( bv, cbvSer );
+        assertTrue( Arrays.equals( bv.getReference(), cbvSer.getReference() ) );
+        assertTrue( Arrays.equals( bv.getNormalizedValueReference(), cbvSer.getNormalizedValueReference() ) );
+        assertTrue( cbvSer.isNormalized() );
+        assertFalse( cbvSer.isValid() );
     }
     
     

@@ -267,14 +267,15 @@ public class AvaTest
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        out.writeObject( atav );
+        atav.writeExternal( out );
 
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        Ava atav2 = (Ava)in.readObject();
+        Ava atav2 = new Ava( schemaManager );
+        atav2.readExternal( in );
 
         assertEquals( atav, atav2 );
     }

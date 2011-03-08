@@ -134,7 +134,7 @@ public class BinaryValueAttributeTypeTest
         try
         {
             oOut = new ObjectOutputStream( out );
-            BinaryValue.serialize( value, oOut );
+            value.writeExternal( oOut );
         }
         catch ( IOException ioe )
         {
@@ -172,7 +172,8 @@ public class BinaryValueAttributeTypeTest
         {
             oIn = new ObjectInputStream( in );
 
-            BinaryValue value = BinaryValue.deserialize( null, oIn );
+            BinaryValue value = new BinaryValue( (AttributeType)null );
+            value.readExternal( oIn );
 
             return value;
         }
@@ -202,17 +203,7 @@ public class BinaryValueAttributeTypeTest
      */
     @Test public void testBadConstructor()
     {
-        try
-        {
-            new BinaryValue( null, null );
-            fail();
-        }
-        catch ( IllegalArgumentException iae )
-        {
-            // Expected...
-        }
-        
-        // create a AT without any syntax
+        // create a AT without no syntax
         AttributeType attribute = new AttributeType( "1.1.3.1" );
         
         try

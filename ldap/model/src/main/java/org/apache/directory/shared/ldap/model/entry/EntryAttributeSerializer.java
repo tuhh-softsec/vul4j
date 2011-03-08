@@ -25,6 +25,7 @@ import java.io.ObjectOutput;
 
 import org.apache.directory.shared.ldap.model.schema.AttributeType;
 import org.apache.directory.shared.ldap.model.schema.SchemaManager;
+import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,7 +76,7 @@ public class EntryAttributeSerializer
         {
             for ( Value<?> value : attribute )
             {
-                AbstractValue.serialize( value, out );
+                value.writeExternal( out );
             }
         }
         
@@ -111,9 +112,40 @@ public class EntryAttributeSerializer
         
         if ( nbValues > 0 )
         {
+            AttributeType attributeType = null;
+            
+            if ( schemaManager != null )
+            {
+                if ( !Strings.isEmpty( upId ) )
+                { 
+                    attributeType = schemaManager.getAttributeType( upId );
+                }
+                else
+                {
+                    attributeType = schemaManager.getAttributeType( normId );
+                }
+            }
             for ( int i = 0; i < nbValues; i++ )
             {
-                Value<?> value = AbstractValue.deserialize( schemaManager, in );
+                Value<?> value = null;
+                
+                if ( isHR )
+                {
+                    value = new StringValue( attributeType );
+                }
+                else
+                {
+                    value = new BinaryValue( attributeType );
+                }
+                
+                try
+                {
+                    value.readExternal( in );
+                }
+                catch ( ClassNotFoundException cfne )
+                {
+                    throw new IOException( cfne.getMessage() );
+                }
                 values[i] = value;
             }
         }

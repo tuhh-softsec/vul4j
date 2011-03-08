@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.apache.directory.shared.ldap.model.schema.SchemaManager;
+import org.apache.directory.shared.ldap.model.schema.AttributeType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,13 +54,7 @@ public class ModificationSerializer
      */
     public static void serialize( Modification modification, ObjectOutput out ) throws IOException
     {
-        // The operation
-        out.writeInt( modification.getOperation().getValue() );
-        
-        // The EntryAttribute
-        EntryAttributeSerializer.serialize( modification.getAttribute(), out );
-        
-        out.flush();
+        modification.writeExternal( out );
     }
     
     
@@ -72,15 +66,18 @@ public class ModificationSerializer
      * @return a deserialized Modification
      * @throws IOException If the stream can't be read
      */
-    public static Modification deserialize( SchemaManager schemaManager, ObjectInput in ) throws IOException
+    public static Modification deserialize( AttributeType attributeType, ObjectInput in ) throws IOException
     {
-        // The operation
-        ModificationOperation operation = ModificationOperation.getOperation( in.readInt() );
-
-        // The EntryAttribute
-        EntryAttribute attribute = EntryAttributeSerializer.deserialize( schemaManager, in );
-
-        Modification modification = new DefaultModification( operation, attribute );
+        Modification modification = new DefaultModification( attributeType );
+        
+        try
+        {
+            modification.readExternal( in );
+        }
+        catch ( ClassNotFoundException cfne )
+        {
+            throw new IOException( cfne.getMessage() );
+        }
 
         return modification;
     }

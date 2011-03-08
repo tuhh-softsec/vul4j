@@ -28,12 +28,8 @@ import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.schema.AttributeType;
 import org.apache.directory.shared.ldap.model.schema.LdapComparator;
 import org.apache.directory.shared.ldap.model.schema.Normalizer;
-import org.apache.directory.shared.ldap.model.schema.SchemaManager;
 import org.apache.directory.shared.util.Strings;
-import org.apache.directory.shared.util.Unicode;
 import org.apache.directory.shared.util.exception.NotImplementedException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -49,9 +45,6 @@ public class StringValue extends AbstractValue<String>
     /** Used for serialization */
     private static final long serialVersionUID = 2L;
     
-    /** logger for reporting errors that might not be handled properly upstream */
-    private static final Logger LOG = LoggerFactory.getLogger( StringValue.class );
-
     // -----------------------------------------------------------------------
     // Constructors
     // -----------------------------------------------------------------------
@@ -72,25 +65,21 @@ public class StringValue extends AbstractValue<String>
      */
     public StringValue( AttributeType attributeType )
     {
-        if ( attributeType == null )
+        if ( attributeType != null )
         {
-            String message = I18n.err( I18n.ERR_04442_NULL_AT_NOT_ALLOWED );
-            LOG.error( message );
-            throw new IllegalArgumentException( message );
+            if ( attributeType.getSyntax() == null )
+            {
+                throw new IllegalArgumentException( I18n.err( I18n.ERR_04445 ) );
+            }
+    
+            if ( ! attributeType.getSyntax().isHumanReadable() )
+            {
+                LOG.warn( "Treating a value of a binary attribute {} as a String: "
+                    + "\nthis could cause data corruption!", attributeType.getName() );
+            }
+    
+            this.attributeType = attributeType;
         }
-
-        if ( attributeType.getSyntax() == null )
-        {
-            throw new IllegalArgumentException( I18n.err( I18n.ERR_04445 ) );
-        }
-
-        if ( ! attributeType.getSyntax().isHumanReadable() )
-        {
-            LOG.warn( "Treating a value of a binary attribute {} as a String: "
-                + "\nthis could cause data corruption!", attributeType.getName() );
-        }
-
-        this.attributeType = attributeType;
     }
 
 
@@ -373,6 +362,19 @@ public class StringValue extends AbstractValue<String>
             return other.isNull();
         }
        
+        // First check the upValue. If they are equal, the Values are equal
+        if ( wrappedValue == other.wrappedValue )
+        {
+            return true;
+        }
+        else if ( wrappedValue != null )
+        {
+            if ( wrappedValue.equals( other.wrappedValue ) )
+            {
+                return true;
+            }
+        }
+
         // If we have an attributeType, it must be equal
         // We should also use the comparator if we have an AT
         if ( attributeType != null )
@@ -485,22 +487,38 @@ public class StringValue extends AbstractValue<String>
      */
     public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException
     {
+        // Read the STRING flag
+        boolean isHR = in.readBoolean();
+        
+        if ( ! isHR )
+        {
+            throw new IOException( "The serialized value is not a String value" );
+        }
+        
         // Read the wrapped value, if it's not null
         if ( in.readBoolean() )
         {
-            wrappedValue = Unicode.readUTF(in);
+            wrappedValue = in.readUTF();
         }
         
         // Read the isNormalized flag
         normalized = in.readBoolean();
         
-        if ( ( normalized ) && ( in.readBoolean() ) )
+        if ( normalized ) 
         {
             // Read the normalized value, if not null
-            normalizedValue = Unicode.readUTF(in);
+            if ( in.readBoolean() )
+            {
+                normalizedValue = in.readUTF();
+            }
+        }
+        else
+        {
+            normalizedValue = wrappedValue;
         }
         
-        h = 0;
+        // The hashCoe
+        h = in.readInt();
     }
 
     
@@ -509,11 +527,14 @@ public class StringValue extends AbstractValue<String>
      */
     public void writeExternal( ObjectOutput out ) throws IOException
     {
+        // Write a boolean for the HR flag
+        out.writeBoolean( STRING );
+        
         // Write the wrapped value, if it's not null
         if ( wrappedValue != null )
         {
             out.writeBoolean( true );
-            Unicode.writeUTF(out, wrappedValue);
+            out.writeUTF( wrappedValue );
         }
         else
         {
@@ -523,13 +544,15 @@ public class StringValue extends AbstractValue<String>
         // Write the isNormalized flag
         if ( normalized )
         {
+            // This flag is present to tell that we have a normalized value different 
+            // from the upValue
             out.writeBoolean( true );
             
             // Write the normalized value, if not null
             if ( normalizedValue != null )
             {
                 out.writeBoolean( true );
-                Unicode.writeUTF(out, normalizedValue);
+                out.writeUTF( normalizedValue );
             }
             else
             {
@@ -538,20 +561,15 @@ public class StringValue extends AbstractValue<String>
         }
         else
         {
+            // No normalized value
             out.writeBoolean( false );
         }
         
+        // Write the hashCode
+        out.writeInt( h );
+        
         // and flush the data
         out.flush();
-    }
-
-    
-    /**
-     * {@inheritDoc}
-     */
-    public static StringValue deserialize( SchemaManager schemaManager, ObjectInput in ) throws IOException
-    {
-        return (StringValue)AbstractValue.deserialize( schemaManager, in );
     }
 
     

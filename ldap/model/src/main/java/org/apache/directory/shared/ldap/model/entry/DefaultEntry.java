@@ -2629,7 +2629,7 @@ public class DefaultEntry implements Entry
                 DefaultEntryAttribute attribute = ( DefaultEntryAttribute ) attributes.get( attributeType.getOid() );
 
                 // Write the attribute
-                attribute.serialize( out );
+                attribute.writeExternal( out );
             }
         }
         else
@@ -2645,7 +2645,7 @@ public class DefaultEntry implements Entry
                 DefaultEntryAttribute attribute = ( DefaultEntryAttribute ) attributes.get( id );
 
                 // Write the attribute
-                attribute.serialize( out );
+                attribute.writeExternal( out );
             }
         }
     }
@@ -2690,7 +2690,7 @@ public class DefaultEntry implements Entry
                     EntryAttribute attribute = new DefaultEntryAttribute( attributeType );
 
                     // Read the attribute
-                    attribute.deserialize( in );
+                    attribute.readExternal( in );
 
                     attributes.put( attributeType.getOid(), attribute );
                 }
@@ -2714,7 +2714,7 @@ public class DefaultEntry implements Entry
                 EntryAttribute attribute = new DefaultEntryAttribute( id );
 
                 // Read the attribute
-                attribute.deserialize( in );
+                attribute.readExternal( in );
 
                 attributes.put( id, attribute );
             }

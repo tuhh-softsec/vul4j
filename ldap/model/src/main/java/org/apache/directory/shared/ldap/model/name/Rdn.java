@@ -37,6 +37,7 @@ import org.apache.directory.shared.ldap.model.entry.StringValue;
 import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
+import org.apache.directory.shared.ldap.model.schema.AttributeType;
 import org.apache.directory.shared.ldap.model.schema.SchemaManager;
 import org.apache.directory.shared.ldap.model.schema.normalizers.OidNormalizer;
 import org.apache.directory.shared.util.Chars;
@@ -679,7 +680,17 @@ public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
     public Object getValue( String type ) throws LdapInvalidDnException
     {
         // First, let's normalize the type
-        String normalizedType = Strings.lowerCaseAscii(Strings.trim(type));
+        String normalizedType = Strings.lowerCaseAscii( Strings.trim( type ) );
+        
+        if ( schemaManager != null )
+        {
+             AttributeType attributeType = schemaManager.getAttributeType( normalizedType );
+             
+             if ( attributeType != null )
+             {
+                normalizedType = attributeType.getOid();
+             }
+        }
 
         switch ( nbAtavs )
         {
@@ -687,7 +698,7 @@ public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
                 return "";
 
             case 1:
-                if ( Strings.equals(atav.getNormType(), normalizedType) )
+                if ( Strings.equals( atav.getNormType(), normalizedType ) )
                 {
                     return atav.getNormValue().get();
                 }
@@ -1513,6 +1524,8 @@ public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
 
                 break;
         }
+        
+        out.flush();
     }
 
 

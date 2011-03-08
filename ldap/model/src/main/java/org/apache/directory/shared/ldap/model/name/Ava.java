@@ -815,16 +815,10 @@ public final class Ava implements Externalizable, Cloneable
         
         out.writeBoolean( isHR );
         
-        if ( isHR )
-        {
-            StringValue.serialize( upValue, out );
-            StringValue.serialize( normValue, out );
-        }
-        else
-        {
-            BinaryValue.serialize( upValue, out );
-            BinaryValue.serialize( normValue, out );
-        }
+        upValue.writeExternal( out );
+        normValue.writeExternal( out );
+        
+        out.flush();
     }
     
     
@@ -858,19 +852,34 @@ public final class Ava implements Externalizable, Cloneable
             normType = in.readUTF();
         }
         
-        boolean isHR = in.readBoolean();
+        if ( schemaManager != null )
+        {
+            if ( !Strings.isEmpty( upType ) )
+            {
+                attributeType = schemaManager.getAttributeType( upType );
+            }
+            else
+            {
+                attributeType = schemaManager.getAttributeType( normType );
+            }
+        }
         
+        boolean isHR = in.readBoolean();
+
         if ( isHR )
         {
-            upValue = StringValue.deserialize( schemaManager, in );
-            normValue = StringValue.deserialize( schemaManager, in );
+            upValue = new StringValue( attributeType );
+            normValue = new StringValue( attributeType );
         }
         else
         {
-            upValue = BinaryValue.deserialize( schemaManager, in );
-            normValue = BinaryValue.deserialize( schemaManager, in );
+            upValue = new BinaryValue( attributeType );
+            normValue = new BinaryValue( attributeType );
         }
-        
+
+        upValue.readExternal( in );
+        normValue.readExternal( in );
+
         if ( schemaManager != null )
         {
             attributeType = schemaManager.getAttributeType( upType );

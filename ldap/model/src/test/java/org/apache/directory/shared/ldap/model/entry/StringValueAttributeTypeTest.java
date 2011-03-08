@@ -106,7 +106,7 @@ public class StringValueAttributeTypeTest
         try
         {
             oOut = new ObjectOutputStream( out );
-            StringValue.serialize( value, oOut );
+            value.writeExternal( oOut );
         }
         catch ( IOException ioe )
         {
@@ -143,8 +143,10 @@ public class StringValueAttributeTypeTest
         try
         {
             oIn = new ObjectInputStream( in );
+            
+            StringValue value = new StringValue( at );
 
-            StringValue value = StringValue.deserialize( null, oIn );
+            value.readExternal( oIn );
 
             return value;
         }
@@ -308,17 +310,9 @@ public class StringValueAttributeTypeTest
         assertFalse( value1.equals( "test" ) );
         assertFalse( value1.equals( null ) );
         
-        assertFalse( value1.equals( valueString ) );
+        assertTrue( value1.equals( valueString ) );
         assertFalse( value1.equals( valueBytes ) );
     }
-
-    
-    
-    
-    
-    
-    
-    
     
     
     /**
@@ -326,16 +320,6 @@ public class StringValueAttributeTypeTest
      */
     @Test public void testBadConstructor()
     {
-        try
-        {
-            new StringValue( null, null );
-            fail();
-        }
-        catch ( IllegalArgumentException iae )
-        {
-            // Expected...
-        }
-        
         // create a AT without any syntax
         AttributeType attribute = new EntryUtils.AT( "1.1.3.1" );
         
