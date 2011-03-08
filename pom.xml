@@ -362,12 +362,6 @@
       
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>shared-util</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      
-      <dependency>
-        <groupId>${project.groupId}</groupId>
         <artifactId>shared-asn1-api</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -389,82 +383,94 @@
         <artifactId>shared-dsml-parser</artifactId>
         <version>${project.version}</version>
       </dependency>
-
+      
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>shared-i18n</artifactId>
         <version>${project.version}</version>
       </dependency>
-
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>shared-ldap-model</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>shared-ldap-codec-core</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>shared-ldap-net-mina</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>shared-ldap-codec-standalone</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>shared-ldap-extras-codec</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>shared-ldap-extras-codec-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>shared-ldap-extras-aci</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>shared-ldap-extras-trigger</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>shared-ldap-extras-util</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
+      
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>shared-ldap-client-api</artifactId>
         <version>${project.version}</version>
       </dependency>
-
+      
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>shared-ldap-codec-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>shared-ldap-codec-standalone</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>shared-ldap-extras-aci</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>shared-ldap-extras-codec</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>shared-ldap-extras-codec-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>shared-ldap-extras-sp</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>shared-ldap-extras-trigger</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>shared-ldap-extras-util</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>shared-ldap-model</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>shared-ldap-net-mina</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>shared-ldap-schema-converter</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>shared-ldap-schema-data</artifactId>
         <version>${project.version}</version>
       </dependency>
-
+      
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>shared-ldap-schema-converter</artifactId>
+        <artifactId>shared-util</artifactId>
         <version>${project.version}</version>
       </dependency>
 
