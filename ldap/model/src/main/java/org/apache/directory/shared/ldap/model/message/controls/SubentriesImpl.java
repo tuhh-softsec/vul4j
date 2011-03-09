@@ -87,6 +87,20 @@ public class SubentriesImpl extends AbstractControl implements Subentries
 
 
     /**
+     * @see Object#hashCode()
+     */
+    @Override
+    public int hashCode()
+    {
+        int h = super.hashCode();
+
+        h = h * 37 + ( visibility ? 1 : 0 );
+
+        return h;
+    }
+
+
+    /**
      * @see Object#equals(Object)
      */
     public boolean equals( Object o )

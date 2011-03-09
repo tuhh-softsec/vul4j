@@ -59,7 +59,6 @@ import java.util.Arrays;
  */
 public class PagedResultsImpl extends AbstractControl implements PagedResults
 {
-
     /** The number of entries to return, or returned */
     private int size;
 
@@ -130,6 +129,28 @@ public class PagedResultsImpl extends AbstractControl implements PagedResults
 
 
     /**
+     * @see Object#hashCode()
+     */
+    @Override
+    public int hashCode()
+    {
+        int h = super.hashCode();
+
+        h = h * 37 + size;
+
+        if ( cookie != null )
+        {
+            for ( byte b : cookie )
+            {
+                h = h * 17 + b;
+            }
+        }
+
+        return h;
+    }
+
+
+    /**
      * @see Object#equals(Object)
      */
     @Override
@@ -157,7 +178,7 @@ public class PagedResultsImpl extends AbstractControl implements PagedResults
         sb.append( "        oid : " ).append( getOid() ).append( '\n' );
         sb.append( "        critical : " ).append( isCritical() ).append( '\n' );
         sb.append( "        size   : '" ).append( size ).append( "'\n" );
-        sb.append( "        cookie   : '" ).append( Strings.dumpBytes(cookie) ).append( "'\n" );
+        sb.append( "        cookie   : '" ).append( Strings.dumpBytes( cookie ) ).append( "'\n" );
 
         return sb.toString();
     }
