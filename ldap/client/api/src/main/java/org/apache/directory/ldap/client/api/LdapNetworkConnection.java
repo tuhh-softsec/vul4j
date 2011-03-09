@@ -1389,7 +1389,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
         System.setProperty( "java.security.krb5.conf", krbConfPath );
 
         Configuration.setConfiguration( new Krb5LoginConfiguration() );
-	System.setProperty( "javax.security.auth.useSubjectCredsOnly", "true" );
+        System.setProperty( "javax.security.auth.useSubjectCredsOnly", "true" );
 
         try
         {
@@ -2925,7 +2925,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
      */
     public ExtendedResponse extended( OID oid, byte[] value ) throws LdapException
     {
-        ExtendedRequest<?> extendedRequest = 
+        ExtendedRequest<?> extendedRequest =
             LdapCodecServiceFactory.getSingleton().newExtendedRequest( oid.toString(), value );
         return extended( extendedRequest );
     }
@@ -3461,10 +3461,10 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
     public void sessionCreated( IoSession session ) throws Exception
     {
         // Last, store the message container
-        LdapMessageContainer<? extends MessageDecorator<Message>> ldapMessageContainer = 
-            new LdapMessageContainer<MessageDecorator<Message>>( 
-            codec,
-            new BinaryAttributeDetector()
+        LdapMessageContainer<? extends MessageDecorator<Message>> ldapMessageContainer =
+            new LdapMessageContainer<MessageDecorator<Message>>(
+                codec,
+                new BinaryAttributeDetector()
             {
                 public boolean isBinary( String id )
                 {
@@ -3475,7 +3475,7 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
                     }
                     catch ( Exception e )
                     {
-                        return !Strings.isEmpty(id) && id.endsWith(";binary");
+                        return !Strings.isEmpty( id ) && id.endsWith( ";binary" );
                     }
                 }
             } );
@@ -3586,24 +3586,6 @@ public class LdapNetworkConnection extends IoHandlerAdapter implements LdapAsync
             LOG.error( msg, e );
             throw new LdapException( msg, e );
         }
-    }
-
-
-    /**
-     * perform SASL based bind operation @see {@link #bindSasl(SaslRequest)} 
-     */
-    private BindFuture bindSasl( String name, byte[] credentials, String saslMech, String authzId, String realmName,
-        Control... ctrls )
-        throws LdapException, IOException
-    {
-        SaslRequest saslRequest = new SaslRequest( saslMech ); // TODO fix this
-        saslRequest.setUsername( name );
-        saslRequest.setCredentials( credentials );
-        saslRequest.setAuthorizationId( authzId );
-        saslRequest.setRealmName( realmName );
-        saslRequest.addAllControls( ctrls );
-
-        return bindSasl( saslRequest );
     }
 
 
