@@ -32,8 +32,8 @@ import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.dsmlv2.DsmlDecorator;
 import org.apache.directory.shared.dsmlv2.Dsmlv2Parser;
 import org.apache.directory.shared.dsmlv2.reponse.AddResponseDsml;
-import org.apache.directory.shared.dsmlv2.reponse.BindResponseDsml;
 import org.apache.directory.shared.dsmlv2.reponse.BatchResponseDsml;
+import org.apache.directory.shared.dsmlv2.reponse.BindResponseDsml;
 import org.apache.directory.shared.dsmlv2.reponse.CompareResponseDsml;
 import org.apache.directory.shared.dsmlv2.reponse.DelResponseDsml;
 import org.apache.directory.shared.dsmlv2.reponse.ErrorResponse;
@@ -45,14 +45,13 @@ import org.apache.directory.shared.dsmlv2.reponse.SearchResponseDsml;
 import org.apache.directory.shared.dsmlv2.reponse.SearchResultEntryDsml;
 import org.apache.directory.shared.dsmlv2.reponse.SearchResultReferenceDsml;
 import org.apache.directory.shared.dsmlv2.request.BatchRequestDsml;
-import org.apache.directory.shared.dsmlv2.request.Dsmlv2Grammar;
 import org.apache.directory.shared.dsmlv2.request.BatchRequestDsml.OnError;
 import org.apache.directory.shared.dsmlv2.request.BatchRequestDsml.Processing;
 import org.apache.directory.shared.dsmlv2.request.BatchRequestDsml.ResponseOrder;
+import org.apache.directory.shared.dsmlv2.request.Dsmlv2Grammar;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.model.cursor.Cursor;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
-import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.message.AbandonRequest;
 import org.apache.directory.shared.ldap.model.message.AddRequest;
 import org.apache.directory.shared.ldap.model.message.AddResponse;
@@ -475,7 +474,6 @@ public class Dsmlv2Engine
      * @throws EncoderException
      * @throws DecoderException
      * @throws IOException
-     * @throws LdapInvalidDnException
      */
     private void bind( int messageId ) throws LdapException, EncoderException, DecoderException, IOException
     {
