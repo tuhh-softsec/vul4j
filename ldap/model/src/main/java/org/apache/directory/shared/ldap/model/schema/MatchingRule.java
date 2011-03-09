@@ -22,8 +22,6 @@ package org.apache.directory.shared.ldap.model.schema;
 
 import java.util.List;
 
-import javax.naming.NamingException;
-
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapSchemaException;
@@ -123,7 +121,8 @@ public class MatchingRule extends AbstractSchemaObject
      * @param registries The Registries
      * @exception If the addition failed
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings(
+        { "unchecked", "rawtypes" })
     public void addToRegistries( List<Throwable> errors, Registries registries ) throws LdapException
     {
         if ( registries != null )
@@ -246,7 +245,6 @@ public class MatchingRule extends AbstractSchemaObject
      * Gets the LdapSyntax OID used by this MatchingRule.
      * 
      * @return the LdapSyntax of this MatchingRule
-     * @throws NamingException if there is a failure resolving the object
      */
     public String getSyntaxOid()
     {
@@ -315,7 +313,6 @@ public class MatchingRule extends AbstractSchemaObject
      * and sorted indexing.
      * 
      * @return the ordering LdapComparator
-     * @throws NamingException if there is a failure resolving the object
      */
     public LdapComparator<? super Object> getLdapComparator()
     {
@@ -365,7 +362,6 @@ public class MatchingRule extends AbstractSchemaObject
      * matching and indexing.
      * 
      * @return the associated normalizer
-     * @throws NamingException if there is a failure resolving the object
      */
     public Normalizer getNormalizer()
     {
