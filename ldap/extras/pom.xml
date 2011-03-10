@@ -28,7 +28,6 @@
   
   <artifactId>shared-ldap-extras-parent</artifactId>
   <name>Apache Directory Shared LDAP Extras</name>
-  <inceptionYear>2003</inceptionYear>
   <packaging>pom</packaging>
 
   <modules>
@@ -39,23 +38,5 @@
     <module>trigger</module>
     <module>util</module>
   </modules>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-
-  <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/directory/shared/trunk/ldap/extras</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/directory/shared/trunk/ldap/extras</developerConnection>
-    <url>http://svn.apache.org/viewvc/directory/shared/trunk/ldap/extras</url>
-  </scm>
 
 </project>

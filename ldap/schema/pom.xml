@@ -28,30 +28,11 @@
   
   <artifactId>shared-ldap-schema-parent</artifactId>
   <name>Apache Directory Shared LDAP Schema Parent</name>
-  <inceptionYear>2003</inceptionYear>
   <packaging>pom</packaging>
 
   <modules>
     <module>data</module>
     <module>converter</module>
   </modules>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-
-  <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/directory/shared/trunk/ldap/schema</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/directory/shared/trunk/ldap/schema</developerConnection>
-    <url>http://svn.apache.org/viewvc/directory/shared/trunk/ldap/schema</url>
-  </scm>
 
 </project>

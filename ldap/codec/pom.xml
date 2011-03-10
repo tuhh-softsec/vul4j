@@ -28,30 +28,11 @@
   
   <artifactId>shared-ldap-codec-parent</artifactId>
   <name>Apache Directory Shared LDAP Codec Parent</name>
-  <inceptionYear>2003</inceptionYear>
   <packaging>pom</packaging>
 
   <modules>
     <module>core</module>
     <module>standalone</module>
   </modules>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-
-  <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/directory/shared/trunk/ldap/codec</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/directory/shared/trunk/ldap/codec</developerConnection>
-    <url>http://svn.apache.org/viewvc/directory/shared/trunk/ldap/codec</url>
-  </scm>
 
 </project>
