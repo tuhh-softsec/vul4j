@@ -567,10 +567,10 @@ public class DefaultEntryAttribute implements EntryAttribute
      * @param id The attribute ID
      * @throws IllegalArgumentException If the ID is empty or null or
      * resolve to an empty value after being trimmed
-     */
-    public void setId( String id )
+     *
+    public void setId( String upId )
     {
-        String newId = Strings.trim(Strings.lowerCaseAscii(id));
+        String newId = Strings.trim( Strings.lowerCaseAscii( upId ) );
 
         if ( newId.length() == 0 )
         {
@@ -598,8 +598,8 @@ public class DefaultEntryAttribute implements EntryAttribute
                     if ( atName.equalsIgnoreCase( newId ) )
                     {
                         // Found ! We can store the upId and get out
-                        this.id = newId;
-                        this.upId = id;
+                        this.id = attributeType.getOid();
+                        this.upId = upId;
                         
                         // Compute the hashCode
                         rehash();
@@ -609,7 +609,7 @@ public class DefaultEntryAttribute implements EntryAttribute
                 }
                 
                 // Last case, the UpId is an OID
-                if ( !OID.isOID(newId) || !attributeType.getOid().equals( newId ) )
+                if ( !OID.isOID( newId ) || !attributeType.getOid().equals( newId ) )
                 {
                     // The id is incorrect : this is not allowed 
                     throw new IllegalArgumentException( I18n.err( I18n.ERR_04455, id, attributeType.getName() ) );
@@ -618,7 +618,7 @@ public class DefaultEntryAttribute implements EntryAttribute
         }
 
         this.id = newId;
-        this.upId = id;
+        this.upId = upId;
         
         // Compute the hashCode
         rehash();
@@ -655,7 +655,7 @@ public class DefaultEntryAttribute implements EntryAttribute
      */
     public void setUpId( String upId )
     {
-        setUpId( upId, null );
+        setUpId( upId, attributeType );
     }
 
     
@@ -709,21 +709,21 @@ public class DefaultEntryAttribute implements EntryAttribute
      */
     public void setUpId( String upId, AttributeType attributeType )
     {
-        String trimmed = Strings.trim(upId);
+        String trimmed = Strings.trim( upId );
 
-        if ( Strings.isEmpty(trimmed) && ( attributeType == null ) )
+        if ( Strings.isEmpty( trimmed ) && ( attributeType == null ) )
         {
             throw new IllegalArgumentException( "Cannot set a null ID with a null AttributeType" );
         }
         
-        String id = Strings.toLowerCase(trimmed);
+        String newId = Strings.toLowerCase( trimmed );
         
         if ( attributeType == null )
         {
             if ( this.attributeType == null )
             {
                 this.upId = upId;
-                this.id = id;
+                this.id = newId;
                 
                 // Compute the hashCode
                 rehash();
@@ -732,10 +732,10 @@ public class DefaultEntryAttribute implements EntryAttribute
             }    
             else
             {
-                if ( areCompatible( id, this.attributeType ) )
+                if ( areCompatible( newId, this.attributeType ) )
                 {
                     this.upId = upId;
-                    this.id = id;
+                    this.id = this.attributeType.getOid();
                     
                     // Compute the hashCode
                     rehash();
@@ -749,11 +749,11 @@ public class DefaultEntryAttribute implements EntryAttribute
             }
         }
         
-        if ( Strings.isEmpty(id) )
+        if ( Strings.isEmpty( newId ) )
         {
             this.attributeType = attributeType;
             this.upId = attributeType.getName();
-            this.id = Strings.trim(this.upId);
+            this.id = attributeType.getOid();
             
             // Compute the hashCode
             rehash();
@@ -761,10 +761,10 @@ public class DefaultEntryAttribute implements EntryAttribute
             return;
         }
 
-        if ( areCompatible( id, attributeType ) )
+        if ( areCompatible( newId, attributeType ) )
         {
             this.upId = upId;
-            this.id = id;
+            this.id = attributeType.getOid();
             this.attributeType = attributeType;
             
             // Compute the hashCode
@@ -2147,7 +2147,27 @@ public class DefaultEntryAttribute implements EntryAttribute
         }
 
         this.attributeType = attributeType;
-        setUpId( null, attributeType );
+        this.id = attributeType.getOid();
+        
+        if ( Strings.isEmpty( this.upId ) )
+        {
+            this.upId = attributeType.getName();
+        }
+        else
+        {
+            if ( !areCompatible( this.upId, attributeType ) )
+            {
+                this.upId = attributeType.getName();
+            }
+        }
+        
+        if ( values != null )
+        {
+            for ( Value<?> value : values )
+            {
+                value.apply( attributeType );
+            }
+        }
         
         isHR = attributeType.getSyntax().isHumanReadable();
         
@@ -2403,98 +2423,6 @@ public class DefaultEntryAttribute implements EntryAttribute
     }
 
 
-    /**
-     * This is the place where we serialize attributes, and all theirs
-     * elements. 
-     * 
-     * The inner structure is the same as the client attribute, but we can't call
-     * it as we won't be able to serialize the serverValues
-     *
-    public void serialize( ObjectOutput out ) throws IOException
-    {
-        // Write the UPId (the id will be deduced from the upID)
-        Unicode.writeUTF(out, upId);
-        
-        // Write the HR flag, if not null
-        if ( isHR != null )
-        {
-            out.writeBoolean( true );
-            out.writeBoolean( isHR );
-        }
-        else
-        {
-            out.writeBoolean( false );
-        }
-        
-        // Write the number of values
-        out.writeInt( size() );
-        
-        if ( size() > 0 ) 
-        {
-            // Write each value
-            for ( Value<?> value:values )
-            {
-                // Write the value
-                value.writeExternal( out );
-            }
-        }
-    }
-
-    
-    /**
-     * {@inheritDoc}
-     *
-    // This will suppress PMD.EmptyCatchBlock warnings in this method
-    @SuppressWarnings("PMD.EmptyCatchBlock")
-    public void deserialize( ObjectInput in ) throws IOException, ClassNotFoundException
-    {
-        // Read the ID and the UPId
-        upId = Unicode.readUTF(in);
-        
-        // Compute the id
-        setUpId( upId );
-        
-        // Read the HR flag, if not null
-        if ( in.readBoolean() )
-        {
-            isHR = in.readBoolean();
-        }
-
-        // Read the number of values
-        int nbValues = in.readInt();
-
-        if ( nbValues > 0 )
-        {
-            for ( int i = 0; i < nbValues; i++ )
-            {
-                Value<?> value = null;
-                
-                if ( isHR )
-                {
-                    value = new StringValue( (AttributeType)null );
-                }
-                else
-                {
-                    value = new BinaryValue( (AttributeType)null );
-                }
-                
-                value.readExternal( in );
-
-                try
-                {
-                    value.normalize();
-                }
-                catch ( LdapException ne )
-                {
-                    // Do nothing...
-                }
-                    
-                values.add( value );
-            }
-        }
-    }
-    
-    
     /**
      * This is the place where we serialize attributes, and all theirs
      * elements. 

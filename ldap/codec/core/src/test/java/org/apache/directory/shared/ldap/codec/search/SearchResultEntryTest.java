@@ -29,8 +29,6 @@ import java.util.Map;
 
 import javax.naming.NamingException;
 
-import com.mycila.junit.concurrent.Concurrency;
-import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.shared.asn1.DecoderException;
 import org.apache.directory.shared.asn1.EncoderException;
 import org.apache.directory.shared.asn1.ber.Asn1Decoder;
@@ -45,6 +43,9 @@ import org.apache.directory.shared.ldap.model.message.SearchResultEntry;
 import org.apache.directory.shared.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 
 
 /**
@@ -123,7 +124,7 @@ public class SearchResultEntryTest extends AbstractCodecServiceTest
         {
             EntryAttribute attribute = entry.get( "objectclass" );
 
-            assertEquals( "objectClass".toLowerCase(), attribute.getId().toLowerCase() );
+            assertEquals( "objectClass".toLowerCase(), attribute.getUpId().toLowerCase() );
 
             assertTrue( attribute.contains( "top" ) );
             assertTrue( attribute.contains( "organizationalUnit" ) );
@@ -227,7 +228,7 @@ public class SearchResultEntryTest extends AbstractCodecServiceTest
         {
             EntryAttribute attribute = entry.get( expectedAttributes[i] );
 
-            assertEquals( expectedAttributes[i].toLowerCase(), attribute.getId().toLowerCase() );
+            assertEquals( expectedAttributes[i].toLowerCase(), attribute.getUpId().toLowerCase() );
 
             assertTrue( attribute.contains( "top" ) );
             assertTrue( attribute.contains( "organizationalUnit" ) );
@@ -335,7 +336,7 @@ public class SearchResultEntryTest extends AbstractCodecServiceTest
         {
             EntryAttribute attribute = entry.get( "objectclass" );
 
-            assertEquals( "objectClass".toLowerCase(), attribute.getId().toLowerCase() );
+            assertEquals( "objectClass".toLowerCase(), attribute.getUpId().toLowerCase() );
 
             assertTrue( attribute.contains( "top" ) );
             assertTrue( attribute.contains( "person" ) );
@@ -836,7 +837,7 @@ public class SearchResultEntryTest extends AbstractCodecServiceTest
         {
             EntryAttribute attribute = entry.get( "objectclass" );
 
-            assertEquals( "objectClass".toLowerCase(), attribute.getId().toLowerCase() );
+            assertEquals( "objectClass".toLowerCase(), attribute.getUpId().toLowerCase() );
             assertEquals( 0, attribute.size() );
         }
 
@@ -920,11 +921,11 @@ public class SearchResultEntryTest extends AbstractCodecServiceTest
         assertEquals( 2, entry.size() );
 
         EntryAttribute attribute = entry.get( "objectclass" );
-        assertEquals( "objectClass".toLowerCase(), attribute.getId().toLowerCase() );
+        assertEquals( "objectClass".toLowerCase(), attribute.getUpId().toLowerCase() );
         assertEquals( 0, attribute.size() );
 
         attribute = entry.get( "objectclazz" );
-        assertEquals( "objectClazz".toLowerCase(), attribute.getId().toLowerCase() );
+        assertEquals( "objectClazz".toLowerCase(), attribute.getUpId().toLowerCase() );
         assertEquals( 0, attribute.size() );
 
         // Check the encoding
@@ -1013,7 +1014,7 @@ public class SearchResultEntryTest extends AbstractCodecServiceTest
         {
             EntryAttribute attribute = entry.get( "objectclass" );
 
-            assertEquals( "objectClass".toLowerCase(), attribute.getId().toLowerCase() );
+            assertEquals( "objectClass".toLowerCase(), attribute.getUpId().toLowerCase() );
 
             assertEquals( 0, attribute.size() );
         }
@@ -1111,7 +1112,7 @@ public class SearchResultEntryTest extends AbstractCodecServiceTest
         {
             EntryAttribute attribute = entry.get( "objectclass" );
 
-            assertEquals( "objectClass".toLowerCase(), attribute.getId().toLowerCase() );
+            assertEquals( "objectClass".toLowerCase(), attribute.getUpId().toLowerCase() );
 
             assertTrue( attribute.contains( "" ) );
         }
@@ -1205,7 +1206,7 @@ public class SearchResultEntryTest extends AbstractCodecServiceTest
         {
             EntryAttribute attribute = entry.get( "objectclass" );
 
-            assertEquals( "objectClass".toLowerCase(), attribute.getId().toLowerCase() );
+            assertEquals( "objectClass".toLowerCase(), attribute.getUpId().toLowerCase() );
 
             assertTrue( attribute.contains( "" ) );
         }

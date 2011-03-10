@@ -21,6 +21,8 @@ package org.apache.directory.shared.ldap.model.entry;
 
 import java.io.Externalizable;
 
+import org.apache.directory.shared.ldap.model.schema.AttributeType;
+
 /**
  * An internal interface for a ModificationItem. The name has been
  * chosen so that it does not conflict with @see ModificationItem
@@ -71,4 +73,12 @@ public interface Modification extends Cloneable, Externalizable
      * @return a clone of the current modification
      */
     Modification clone();
+
+    
+    /**
+     * Apply the AttributeType to the Modification
+     * 
+     * @param AttributeType the injected AttributeType
+     */
+    void applyAttributeType( AttributeType attributeType );
 }

@@ -440,7 +440,7 @@ public interface EntryAttribute extends Iterable<Value<?>>, Cloneable, Externali
      * @param id The attribute ID
      * @throws IllegalArgumentException If the ID is empty or null or
      * resolve to an empty value after being trimmed
-     */
+     *
     void setId( String id ) throws IllegalArgumentException;
 
     

@@ -205,7 +205,7 @@ public class ModifyRequestDecorator extends SingleReplyRequestDecorator<ModifyRe
      */
     public String getCurrentAttributeType()
     {
-        return currentAttribute.getId();
+        return currentAttribute.getUpId();
     }
 
 
@@ -449,7 +449,7 @@ public class ModifyRequestDecorator extends SingleReplyRequestDecorator<ModifyRe
                 int localValuesLength = 0;
 
                 // Modification length initialized with the type
-                int typeLength = modification.getAttribute().getId().length();
+                int typeLength = modification.getAttribute().getUpId().length();
                 int localModificationLength = 1 + TLV.getNbBytes( typeLength ) + typeLength;
 
                 // Get all the values
@@ -563,7 +563,7 @@ public class ModifyRequestDecorator extends SingleReplyRequestDecorator<ModifyRe
                     buffer.put( TLV.getBytes( localModificationLength ) );
 
                     // The modification type
-                    Value.encode( buffer, modification.getAttribute().getId() );
+                    Value.encode( buffer, modification.getAttribute().getUpId() );
 
                     // The values
                     buffer.put( UniversalTag.SET.getValue() );

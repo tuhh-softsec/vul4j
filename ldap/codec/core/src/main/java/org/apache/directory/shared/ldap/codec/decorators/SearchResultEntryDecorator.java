@@ -331,7 +331,7 @@ public class SearchResultEntryDecorator extends MessageDecorator<SearchResultEnt
                 int localValuesLength = 0;
 
                 // Get the type length
-                int idLength = attribute.getId().getBytes().length;
+                int idLength = attribute.getUpId().getBytes().length;
                 localAttributeLength = 1 + TLV.getNbBytes( idLength ) + idLength;
 
                 if ( attribute.size() != 0 )

@@ -175,6 +175,16 @@ public class DefaultModification implements Modification
     
     
     /**
+     * {@inheritDoc}
+     */
+    public void applyAttributeType( AttributeType attributeType )
+    {
+        this.attributeType = attributeType;
+        this.attribute.setAttributeType( attributeType );
+    }
+    
+    
+    /**
      * @see Object#equals(Object)
      * @return <code>true</code> if both values are equal
      */

@@ -56,30 +56,7 @@ public class EntryAttributeSerializer
      */
     public static void serialize( EntryAttribute attribute, ObjectOutput out ) throws IOException
     {
-        // The UP id
-        out.writeUTF( attribute.getUpId() );
-        
-        // The Norm id
-        out.writeUTF( attribute.getId() );
-
-        // The isHR flag
-        out.writeBoolean( attribute.isHR() );
-        
-        // The computed hashCode
-        out.writeInt( attribute.hashCode() );
-        
-        // The number of values
-        int nbValues = attribute.size(); 
-        out.writeInt( nbValues );
-        
-        if ( nbValues > 0 )
-        {
-            for ( Value<?> value : attribute )
-            {
-                value.writeExternal( out );
-            }
-        }
-        
+        attribute.writeExternal( out );
         out.flush();
     }
     
@@ -87,79 +64,36 @@ public class EntryAttributeSerializer
     /**
      * Deserializes a EntryAttribute instance.
      * 
-     * @param schemaManager The schemaManager instance
+     * @param attributeType The attributeType instance
      * @param in The input stream from which the EntryAttribute is read
      * @return a deserialized EntryAttribute
      * @throws IOException If the stream can't be read
      */
     public static EntryAttribute deserialize( SchemaManager schemaManager, ObjectInput in ) throws IOException
     {
-        // The UP id
-        String upId = in.readUTF();
+        EntryAttribute entryAttribute = new DefaultEntryAttribute();
         
-        // The Norm id
-        String normId = in.readUTF();
-        
-        // The isHR flag
-        boolean isHR = in.readBoolean();
-
-        // The computed hashCode
-        int hashCode = in.readInt();
-        
-        // The number of values
-        int nbValues = in.readInt();
-        Value<?>[] values = new Value<?>[ nbValues ];
-        
-        if ( nbValues > 0 )
+        try
         {
-            AttributeType attributeType = null;
-            
-            if ( schemaManager != null )
-            {
-                if ( !Strings.isEmpty( upId ) )
-                { 
-                    attributeType = schemaManager.getAttributeType( upId );
-                }
-                else
-                {
-                    attributeType = schemaManager.getAttributeType( normId );
-                }
-            }
-            for ( int i = 0; i < nbValues; i++ )
-            {
-                Value<?> value = null;
-                
-                if ( isHR )
-                {
-                    value = new StringValue( attributeType );
-                }
-                else
-                {
-                    value = new BinaryValue( attributeType );
-                }
-                
-                try
-                {
-                    value.readExternal( in );
-                }
-                catch ( ClassNotFoundException cfne )
-                {
-                    throw new IOException( cfne.getMessage() );
-                }
-                values[i] = value;
-            }
+            entryAttribute.readExternal( in );
+        }
+        catch ( ClassNotFoundException cnfe )
+        {
+            throw new IOException( cnfe.getMessage() );
         }
         
         AttributeType attributeType = null;
         
         if ( schemaManager != null )
         {
-            attributeType = schemaManager.getAttributeType( upId );
+            if ( !Strings.isEmpty( entryAttribute.getId() ) )
+            { 
+                attributeType = schemaManager.getAttributeType( entryAttribute.getId() );
+            }
+            
+            entryAttribute.setAttributeType( attributeType );
         }
-
-        // The EntryAttribute
-        EntryAttribute attribute = new DefaultEntryAttribute( attributeType, upId, normId, isHR, hashCode, values );
-
-        return attribute;
+        
+        return entryAttribute;
     }
 }

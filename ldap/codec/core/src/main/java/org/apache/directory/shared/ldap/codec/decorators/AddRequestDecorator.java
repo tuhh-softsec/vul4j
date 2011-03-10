@@ -217,7 +217,7 @@ public final class AddRequestDecorator extends SingleReplyRequestDecorator<AddRe
      */
     public String getCurrentAttributeType()
     {
-        return currentAttribute.getId();
+        return currentAttribute.getUpId();
     }
 
 
@@ -324,7 +324,7 @@ public final class AddRequestDecorator extends SingleReplyRequestDecorator<AddRe
                 int localValuesLength = 0;
 
                 // Get the type length
-                int idLength = attribute.getId().getBytes().length;
+                int idLength = attribute.getUpId().getBytes().length;
                 localAttributeLength = 1 + TLV.getNbBytes( idLength ) + idLength;
 
                 // The values
@@ -416,7 +416,7 @@ public final class AddRequestDecorator extends SingleReplyRequestDecorator<AddRe
                     buffer.put( TLV.getBytes( localAttributeLength ) );
 
                     // The attribute type
-                    org.apache.directory.shared.asn1.ber.tlv.Value.encode( buffer, attribute.getId() );
+                    org.apache.directory.shared.asn1.ber.tlv.Value.encode( buffer, attribute.getUpId() );
 
                     // The values
                     buffer.put( UniversalTag.SET.getValue() );
