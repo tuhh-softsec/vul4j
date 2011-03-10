@@ -31,8 +31,8 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.asn1.ber.tlv.Value;
 import org.apache.directory.shared.i18n.I18n;
-import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.ControlDecorator;
+import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.model.message.controls.PagedResults;
 import org.apache.directory.shared.ldap.model.message.controls.PagedResultsImpl;
 import org.apache.directory.shared.util.Strings;
@@ -245,6 +245,20 @@ public class PagedResultsDecorator extends ControlDecorator<PagedResults> implem
         }
 
         return value;
+    }
+
+
+    /**
+     * @see Object#hashCode()
+     */
+    @Override
+    public int hashCode()
+    {
+        int hash = super.hashCode();
+
+        hash = hash * 17 + pscSeqLength;
+
+        return hash;
     }
 
 

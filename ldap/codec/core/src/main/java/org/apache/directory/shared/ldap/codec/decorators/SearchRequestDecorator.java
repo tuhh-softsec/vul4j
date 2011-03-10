@@ -32,9 +32,9 @@ import org.apache.directory.shared.asn1.ber.tlv.TLV;
 import org.apache.directory.shared.asn1.ber.tlv.UniversalTag;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.codec.AttributeValueAssertion;
-import org.apache.directory.shared.ldap.codec.api.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.api.LdapCodecService;
 import org.apache.directory.shared.ldap.codec.api.LdapConstants;
+import org.apache.directory.shared.ldap.codec.api.LdapMessageContainer;
 import org.apache.directory.shared.ldap.codec.api.MessageDecorator;
 import org.apache.directory.shared.ldap.codec.search.AndFilter;
 import org.apache.directory.shared.ldap.codec.search.AttributeValueAssertionFilter;
@@ -285,7 +285,7 @@ public class SearchRequestDecorator extends MessageDecorator<SearchRequest> impl
     @SuppressWarnings("unchecked")
     public void unstackFilters( Asn1Container container )
     {
-        LdapMessageContainer<MessageDecorator<Message>> ldapMessageContainer = 
+        LdapMessageContainer<MessageDecorator<Message>> ldapMessageContainer =
             ( LdapMessageContainer<MessageDecorator<Message>> ) container;
 
         TLV tlv = ldapMessageContainer.getCurrentTLV();
@@ -347,25 +347,26 @@ public class SearchRequestDecorator extends MessageDecorator<SearchRequest> impl
      * @param filter The filter to be transformed
      * @return An ExprNode
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings(
+        { "unchecked", "rawtypes" })
     private ExprNode transform( Filter filter )
     {
         if ( filter != null )
         {
             // Transform OR, AND or NOT leaves
-            if ( filter instanceof ConnectorFilter)
+            if ( filter instanceof ConnectorFilter )
             {
                 BranchNode branch = null;
 
-                if ( filter instanceof AndFilter)
+                if ( filter instanceof AndFilter )
                 {
                     branch = new AndNode();
                 }
-                else if ( filter instanceof OrFilter)
+                else if ( filter instanceof OrFilter )
                 {
                     branch = new OrNode();
                 }
-                else if ( filter instanceof NotFilter)
+                else if ( filter instanceof NotFilter )
                 {
                     branch = new NotNode();
                 }
@@ -506,7 +507,7 @@ public class SearchRequestDecorator extends MessageDecorator<SearchRequest> impl
                     filter = new NotFilter();
                 }
 
-                List<ExprNode> children = ( (BranchNode) exprNode ).getChildren();
+                List<ExprNode> children = ( ( BranchNode ) exprNode ).getChildren();
 
                 // Loop on all AND/OR children
                 if ( children != null )
@@ -562,7 +563,7 @@ public class SearchRequestDecorator extends MessageDecorator<SearchRequest> impl
                     {
                         filter = new AttributeValueAssertionFilter( LdapConstants.APPROX_MATCH_FILTER );
                         AttributeValueAssertion assertion = new AttributeValueAssertion();
-                        assertion.setAttributeDesc( ( (ApproximateNode<?>) exprNode ).getAttribute() );
+                        assertion.setAttributeDesc( ( ( ApproximateNode<?> ) exprNode ).getAttribute() );
                         assertion.setAssertionValue( ( ( ApproximateNode<?> ) exprNode ).getValue() );
                         ( ( AttributeValueAssertionFilter ) filter ).setAssertion( assertion );
                     }
@@ -631,7 +632,7 @@ public class SearchRequestDecorator extends MessageDecorator<SearchRequest> impl
 
 
     /**
-     * {@inheritDoc}
+     * @see Object#hashCode()
      */
     @Override
     public int hashCode()
@@ -667,6 +668,63 @@ public class SearchRequestDecorator extends MessageDecorator<SearchRequest> impl
         hash = hash * 17 + super.hashCode();
 
         return hash;
+    }
+
+
+    /**
+     * @see Object#equals(Object)
+     */
+    @Override
+    public boolean equals( Object o )
+    {
+        if ( !super.equals( o ) )
+        {
+            return false;
+        }
+
+        if ( ( o == null ) || ( o instanceof SearchRequestDecorator ) )
+        {
+            return false;
+        }
+
+        SearchRequestDecorator otherSearchRequestDecorator = ( SearchRequestDecorator ) o;
+
+        if ( ( getDecorated() != null ) && ( !getDecorated().equals( otherSearchRequestDecorator.getDecorated() ) ) )
+        {
+            return false;
+        }
+
+        if ( searchRequestLength != otherSearchRequestDecorator.searchRequestLength )
+        {
+            return false;
+        }
+
+        if ( attributeDescriptionListLength != otherSearchRequestDecorator.attributeDescriptionListLength )
+        {
+            return false;
+        }
+
+        if ( ( terminalFilter != null ) && ( terminalFilter.equals( otherSearchRequestDecorator.terminalFilter ) ) )
+        {
+            return false;
+        }
+
+        if ( ( currentFilter != null ) && ( currentFilter.equals( otherSearchRequestDecorator.currentFilter ) ) )
+        {
+            return false;
+        }
+
+        if ( ( topFilter != null ) && ( topFilter.equals( otherSearchRequestDecorator.topFilter ) ) )
+        {
+            return false;
+        }
+
+        if ( tlvId != otherSearchRequestDecorator.tlvId )
+        {
+            return false;
+        }
+
+        return true;
     }
 
 
@@ -829,8 +887,7 @@ public class SearchRequestDecorator extends MessageDecorator<SearchRequest> impl
     //-------------------------------------------------------------------------
     // The Decorator methods
     //-------------------------------------------------------------------------
-    
-    
+
     /**
      * Compute the SearchRequest length
      * 
@@ -879,7 +936,7 @@ public class SearchRequestDecorator extends MessageDecorator<SearchRequest> impl
 
         // The filter
         setFilter( getFilter() );
-        searchRequestLength += 
+        searchRequestLength +=
             getCodecFilter().computeLength();
 
         // The attributes description list
@@ -891,7 +948,7 @@ public class SearchRequestDecorator extends MessageDecorator<SearchRequest> impl
             for ( String attribute : getAttributes() )
             {
                 // add the attribute length to the attributes length
-                int idLength = Strings.getBytesUtf8(attribute).length;
+                int idLength = Strings.getBytesUtf8( attribute ).length;
                 attributeDescriptionListLength += 1 + TLV.getNbBytes( idLength ) + idLength;
             }
         }
@@ -904,8 +961,8 @@ public class SearchRequestDecorator extends MessageDecorator<SearchRequest> impl
         // Return the result.
         return 1 + TLV.getNbBytes( searchRequestLength ) + searchRequestLength;
     }
-    
-    
+
+
     /**
      * Encode the SearchRequest message to a PDU.
      * 
@@ -936,7 +993,7 @@ public class SearchRequestDecorator extends MessageDecorator<SearchRequest> impl
             buffer.put( TLV.getBytes( getSearchRequestLength() ) );
 
             // The baseObject
-            org.apache.directory.shared.asn1.ber.tlv.Value.encode( buffer, Dn.getBytes( getBase()) );
+            org.apache.directory.shared.asn1.ber.tlv.Value.encode( buffer, Dn.getBytes( getBase() ) );
 
             // The scope
             org.apache.directory.shared.asn1.ber.tlv.Value.encodeEnumerated( buffer, getScope().getScope() );
