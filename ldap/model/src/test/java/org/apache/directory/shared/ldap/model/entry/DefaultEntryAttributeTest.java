@@ -18,12 +18,12 @@
  */
 package org.apache.directory.shared.ldap.model.entry;
 
-import static org.junit.Assert.fail;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -35,8 +35,6 @@ import java.util.Iterator;
 
 import javax.naming.directory.InvalidAttributeValueException;
 
-import com.mycila.junit.concurrent.Concurrency;
-import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidAttributeValueException;
 import org.apache.directory.shared.ldap.model.schema.syntaxCheckers.Ia5StringSyntaxChecker;
@@ -45,6 +43,9 @@ import org.apache.directory.shared.util.Strings;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 
 /**
  * Test the DefaultEntryAttribute class
@@ -312,10 +313,10 @@ public class DefaultEntryAttributeTest
 
         assertNull( attr.getId() );
         
-        attr.setId( "test" );
+        attr.setUpId( "test" );
         assertEquals( "test", attr.getId() );
         
-        attr.setId(  "  TEST  " );
+        attr.setUpId(  "  TEST  " );
         assertEquals( "test", attr.getId() );
     }
 
@@ -330,7 +331,7 @@ public class DefaultEntryAttributeTest
 
         try
         {
-            attr.setId( null );
+            attr.setUpId( null );
             fail();
         }
         catch ( IllegalArgumentException iae )
@@ -340,7 +341,7 @@ public class DefaultEntryAttributeTest
         
         try
         {
-            attr.setId( "" );
+            attr.setUpId( "" );
             fail();
         }
         catch ( IllegalArgumentException iae )
@@ -350,7 +351,7 @@ public class DefaultEntryAttributeTest
         
         try
         {
-            attr.setId( "  " );
+            attr.setUpId( "  " );
             fail();
         }
         catch ( IllegalArgumentException iae )
@@ -358,10 +359,10 @@ public class DefaultEntryAttributeTest
             assertTrue( true );
         }
         
-        attr.setId( "Test" );
+        attr.setUpId( "Test" );
         assertEquals( "test", attr.getId() );
         
-        attr.setId( " Test " );
+        attr.setUpId( " Test " );
         assertEquals( "test", attr.getId() );
     }
 
@@ -1406,10 +1407,10 @@ public class DefaultEntryAttributeTest
         
         assertTrue( attr1.equals( attr2 ) );
         
-        attr2.setId( "TEST" );
+        attr2.setUpId( "TEST" );
         assertTrue( attr1.equals( attr2 ) );
 
-        attr1.setId( "tset" );
+        attr1.setUpId( "tset" );
         assertFalse( attr1.equals( attr2 ) );
         
         attr1.setUpId( "TEST" );
@@ -1465,7 +1466,7 @@ public class DefaultEntryAttributeTest
         EntryAttribute clone = attr.clone();
         
         assertEquals( attr, clone );
-        attr.setId( "new" );
+        attr.setUpId( "new" );
         assertEquals( "test", clone.getId() );
         
         attr.add( "a", (String)null, "b" );
@@ -1491,7 +1492,7 @@ public class DefaultEntryAttributeTest
     {
         DefaultEntryAttribute dca = new DefaultEntryAttribute( "CommonName" );
         dca.setHR( true );
-        dca.setId( "CN" );
+        dca.setUpId( "CN" );
         dca.add( "test1", "test2" );
 
         DefaultEntryAttribute dcaSer = deserializeValue( serializeValue( dca ) );
@@ -1513,7 +1514,7 @@ public class DefaultEntryAttributeTest
     {
         DefaultEntryAttribute dca = new DefaultEntryAttribute( "CommonName" );
         dca.setHR( true );
-        dca.setId( "CN" );
+        dca.setUpId( "CN" );
 
         DefaultEntryAttribute dcaSer = deserializeValue( serializeValue( dca ) );
         assertEquals( dca.toString(), dcaSer.toString() );
@@ -1533,7 +1534,7 @@ public class DefaultEntryAttributeTest
     {
         DefaultEntryAttribute dca = new DefaultEntryAttribute( "CommonName" );
         dca.setHR( true );
-        dca.setId( "CN" );
+        dca.setUpId( "CN" );
         dca.add( (String)null );
 
         DefaultEntryAttribute dcaSer = deserializeValue( serializeValue( dca ) );
