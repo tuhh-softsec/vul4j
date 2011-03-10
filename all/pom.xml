@@ -27,6 +27,7 @@
   
   <artifactId>shared-all</artifactId>
   <name>Apache Directory Shared All</name>
+  <packaging>bundle</packaging>
 
   <dependencies>
     <dependency>
@@ -126,6 +127,36 @@
             </configuration>
           </execution>
         </executions>
+      </plugin>
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestFile>META-INF/MANIFEST.MF</manifestFile>
+            <addMavenDescriptor>false</addMavenDescriptor>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <inherited>true</inherited>
+        <extensions>true</extensions>
+        <configuration>
+          <manifestLocation>META-INF</manifestLocation>
+          <instructions>
+            <Bundle-SymbolicName>${project.groupId}.all</Bundle-SymbolicName>
+            <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
+            <Export-Package>
+              org.apache.directory.shared.ldap.codec.api
+            </Export-Package>
+            <Bundle-Activator>
+              org.apache.directory.shared.ldap.codec.osgi.DefaultActivator
+            </Bundle-Activator>
+          </instructions>
+        </configuration>
       </plugin>
     </plugins>
   </build>

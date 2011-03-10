@@ -80,7 +80,6 @@
     <module>i18n</module>
     <module>util</module>
     <module>asn1</module>
-    <module>integ</module>
     <module>all</module>
     <module>ldap</module>
     <module>dsml</module>
@@ -652,6 +651,17 @@
   </scm>
 
   <profiles>
+    <profile>
+      <id>integration</id>
+      <activation>
+        <property>
+          <name>integration</name>
+        </property>
+      </activation>
+      <modules>
+        <module>integ</module>
+      </modules>
+    </profile>
     <profile>
       <id>apache-release</id>
       <build>
