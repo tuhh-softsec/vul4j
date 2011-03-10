@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.apache.directory.shared</groupId>
     <artifactId>shared-ldap-parent</artifactId>
-    <version>1.0.0-M2</version>
+    <version>1.0.0-M3-SNAPSHOT</version>
   </parent>
   
   <artifactId>shared-ldap-codec-parent</artifactId>
@@ -47,9 +47,9 @@
   </build>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/directory/shared/tags/1.0.0-M2/ldap/codec</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/directory/shared/tags/1.0.0-M2/ldap/codec</developerConnection>
-    <url>http://svn.apache.org/viewvc/directory/shared/tags/1.0.0-M2/ldap/codec</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/directory/shared/trunk/ldap/codec</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/directory/shared/trunk/ldap/codec</developerConnection>
+    <url>http://svn.apache.org/viewvc/directory/shared/trunk/ldap/codec</url>
   </scm>
 
 </project>

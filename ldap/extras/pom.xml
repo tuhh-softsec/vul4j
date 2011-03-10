@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.apache.directory.shared</groupId>
     <artifactId>shared-ldap-parent</artifactId>
-    <version>1.0.0-M2</version>
+    <version>1.0.0-M3-SNAPSHOT</version>
   </parent>
   
   <artifactId>shared-ldap-extras-parent</artifactId>
@@ -51,9 +51,9 @@
   </build>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/directory/shared/tags/1.0.0-M2/ldap/extras</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/directory/shared/tags/1.0.0-M2/ldap/extras</developerConnection>
-    <url>http://svn.apache.org/viewvc/directory/shared/tags/1.0.0-M2/ldap/extras</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/directory/shared/trunk/ldap/extras</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/directory/shared/trunk/ldap/extras</developerConnection>
+    <url>http://svn.apache.org/viewvc/directory/shared/trunk/ldap/extras</url>
   </scm>
 
 </project>

@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.apache.directory.shared</groupId>
     <artifactId>shared-ldap-parent</artifactId>
-    <version>1.0.0-M2</version>
+    <version>1.0.0-M3-SNAPSHOT</version>
   </parent>
   
   <artifactId>shared-ldap-net-parent</artifactId>
@@ -46,9 +46,9 @@
   </build>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/directory/shared/tags/1.0.0-M2/ldap/net</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/directory/shared/tags/1.0.0-M2/ldap/net</developerConnection>
-    <url>http://svn.apache.org/viewvc/directory/shared/tags/1.0.0-M2/ldap/net</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/directory/shared/trunk/ldap/net</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/directory/shared/trunk/ldap/net</developerConnection>
+    <url>http://svn.apache.org/viewvc/directory/shared/trunk/ldap/net</url>
   </scm>
 
 </project>
