@@ -23,14 +23,14 @@
     <groupId>org.apache.directory.project</groupId>
     <artifactId>project</artifactId>
     <version>21</version>
-    <relativePath />
+    <relativePath/>
   </parent>
 
   <groupId>org.apache.directory.shared</groupId>
   <artifactId>shared-parent</artifactId>
   <name>Apache Directory Shared</name>
   <packaging>pom</packaging>
-  <version>1.0.0-M3-SNAPSHOT</version>
+  <version>1.0.0-M2-SNAPSHOT</version>
 
   <properties>
     <projectName>ApacheDS-Shared</projectName>
