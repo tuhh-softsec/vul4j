@@ -562,70 +562,6 @@ public class DefaultEntryAttribute implements EntryAttribute
 
     
     /**
-     * Set the Attribute ID. 
-     *
-     * @param id The attribute ID
-     * @throws IllegalArgumentException If the ID is empty or null or
-     * resolve to an empty value after being trimmed
-     *
-    public void setId( String upId )
-    {
-        String newId = Strings.trim( Strings.lowerCaseAscii( upId ) );
-
-        if ( newId.length() == 0 )
-        {
-            throw new IllegalArgumentException( I18n.err( I18n.ERR_04132 ) );
-        }
-        
-        if ( attributeType != null )
-        {
-            if ( attributeType.getName() == null )
-            {
-                // If the name is null, then we may have to store an OID
-                if ( !OID.isOID( newId )  || !attributeType.getOid().equals( newId ) )
-                {
-                    // This is an error
-                    throw new IllegalArgumentException( I18n.err( I18n.ERR_04132 ) );
-                }
-            }
-            else
-            {
-                // We have at least one name. Check that the normalized upId
-                // is one of those names. Otherwise, the upId may be an OID too.
-                // In this case, it must be equals to the attributeType OID.
-                for ( String atName:attributeType.getNames() )
-                {
-                    if ( atName.equalsIgnoreCase( newId ) )
-                    {
-                        // Found ! We can store the upId and get out
-                        this.id = attributeType.getOid();
-                        this.upId = upId;
-                        
-                        // Compute the hashCode
-                        rehash();
-                        
-                        return;
-                    }
-                }
-                
-                // Last case, the UpId is an OID
-                if ( !OID.isOID( newId ) || !attributeType.getOid().equals( newId ) )
-                {
-                    // The id is incorrect : this is not allowed 
-                    throw new IllegalArgumentException( I18n.err( I18n.ERR_04455, id, attributeType.getName() ) );
-                }
-            }
-        }
-
-        this.id = newId;
-        this.upId = upId;
-        
-        // Compute the hashCode
-        rehash();
-    }
-
-    
-    /**
      * Get's the user provided identifier for this entry.  This is the value
      * that will be used as the identifier for the attribute within the
      * entry.  If this is a commonName attribute for example and the user
@@ -2033,89 +1969,6 @@ public class DefaultEntryAttribute implements EntryAttribute
     }
     
     
-    /*
-     * Puts some values to this attribute.
-     * <p>
-     * The new values will replace the previous values.
-     * </p>
-     * <p>
-     * This method returns the number of values that were put.
-     * </p>
-     *
-     * @param val some values to be put which may be null
-     * @return the number of added values, or 0 if none has been added
-     *
-    public int put( String... vals )
-    {
-        values.clear();
-        return add( vals );
-    }
-    
-    
-    /**
-     * Puts some values to this attribute.
-     * <p>
-     * The new values will replace the previous values.
-     * </p>
-     * <p>
-     * This method returns the number of values that were put.
-     * </p>
-     *
-     * @param val some values to be put which may be null
-     * @return the number of added values, or 0 if none has been added
-     *
-    public int put( byte[]... vals )
-    {
-        values.clear();
-        return add( vals );
-    }
-
-    
-    /**
-     * Puts some values to this attribute.
-     * <p>
-     * The new values are replace the previous values.
-     * </p>
-     * <p>
-     * This method returns the number of values that were put.
-     * </p>
-     *
-     * @param val some values to be put which may be null
-     * @return the number of added values, or 0 if none has been added
-     *
-    public int put( Value<?>... vals )
-    {
-        values.clear();
-        return add( vals );
-    }
-    
-    
-    /**
-     * <p>
-     * Puts a list of values into this attribute.
-     * </p>
-     * <p>
-     * The new values will replace the previous values.
-     * </p>
-     * <p>
-     * This method returns the number of values that were put.
-     * </p>
-     *
-     * @param vals the values to be put
-     * @return the number of added values, or 0 if none has been added
-     *
-    public int put( List<Value<?>> vals )
-    {
-        values.clear();
-        
-        // Transform the List to an array
-        Value<?>[] valArray = new Value<?>[vals.size()];
-        return add( vals.toArray( valArray ) );
-    }
-    */
-    
-
-
     /**
      * Get the attribute type associated with this ServerAttribute.
      *
@@ -2232,38 +2085,6 @@ public class DefaultEntryAttribute implements EntryAttribute
         {
             h = h*17 + id.hashCode();
         }
-        
-        /*
-        // We have to sort the values if we wnt to correctly compare two Attributes
-        if ( isHR )
-        {
-            SortedSet<String> sortedSet = new TreeSet<String>();
-
-            for ( Value<?> value:values )
-            {
-                sortedSet.add( (String)value.getNormalizedValueReference() );
-            }
-            
-            for ( String value:sortedSet )
-            {
-                h = h*17 + value.hashCode();
-            }
-        }
-        else
-        {
-            SortedSet<byte[]> sortedSet = new TreeSet<byte[]>();
-            
-            for ( Value<?> value:values )
-            {
-                sortedSet.add( (byte[])value.getNormalizedValueReference() );
-            }
-            
-            for ( byte[] value:sortedSet )
-            {
-                h = h*17 + ArrayUtils.hashCode( value );
-            }
-        }
-        */
         
         if ( attributeType != null )
         {

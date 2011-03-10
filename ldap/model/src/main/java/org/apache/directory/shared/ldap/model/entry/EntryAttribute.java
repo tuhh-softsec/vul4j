@@ -20,8 +20,6 @@ package org.apache.directory.shared.ldap.model.entry;
 
 
 import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
 import java.util.Iterator;
 
 import org.apache.directory.shared.ldap.model.exception.LdapException;
@@ -243,17 +241,6 @@ public interface EntryAttribute extends Iterable<Value<?>>, Cloneable, Externali
 
     
     /**
-     * Deserialize an object input.
-     * 
-     * @param in the stream to read data from in order to restore the object
-     * @exception IOException if I/O errors occur
-     * @exception ClassNotFoundException if the class for an object being restored cannot be found.
-     * @see Externalizable#readExternal(ObjectInput)
-     *
-    void deserialize( ObjectInput in ) throws IOException, ClassNotFoundException;
-
-    
-    /**
      * <p>
      * Get the first value of this attribute. If there is none, 
      * null is returned.
@@ -431,17 +418,6 @@ public interface EntryAttribute extends Iterable<Value<?>>, Cloneable, Externali
      * <code>false</code> for a Binary attribute.
      */
     void setHR( boolean isHR );
-
-    
-    /**
-     * Set the normalized ID. The ID will be lower cased, and spaces
-     * will be trimmed. 
-     *
-     * @param id The attribute ID
-     * @throws IllegalArgumentException If the ID is empty or null or
-     * resolve to an empty value after being trimmed
-     *
-    void setId( String id ) throws IllegalArgumentException;
 
     
     /**
