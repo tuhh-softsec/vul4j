@@ -44,7 +44,7 @@ public class DefaultModification implements Modification
     /** The attribute which contains the modification */
     private EntryAttribute attribute;
     
-    /** The schemaManager */
+    /** The AtributeType */
     private AttributeType attributeType;
  
     /** logger for reporting errors that might not be handled properly upstream */
@@ -180,7 +180,20 @@ public class DefaultModification implements Modification
     public void applyAttributeType( AttributeType attributeType )
     {
         this.attributeType = attributeType;
-        this.attribute.setAttributeType( attributeType );
+        
+        if ( attribute != null )
+        {
+            attribute.setAttributeType( attributeType );
+        }
+    }
+
+
+    /**
+     * @return the attributeType
+     */
+    public AttributeType getAttributeType()
+    {
+        return attributeType;
     }
     
     
@@ -247,7 +260,7 @@ public class DefaultModification implements Modification
         
         if ( hasAttribute )
         {
-            attribute = new DefaultEntryAttribute( attributeType );
+            attribute = new DefaultEntryAttribute();
             attribute.readExternal( in );
         }
     }

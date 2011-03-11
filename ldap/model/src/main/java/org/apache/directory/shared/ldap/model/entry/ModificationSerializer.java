@@ -24,6 +24,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.apache.directory.shared.ldap.model.schema.AttributeType;
+import org.apache.directory.shared.ldap.model.schema.SchemaManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,13 +67,22 @@ public class ModificationSerializer
      * @return a deserialized Modification
      * @throws IOException If the stream can't be read
      */
-    public static Modification deserialize( AttributeType attributeType, ObjectInput in ) throws IOException
+    public static Modification deserialize( SchemaManager schemaManager, ObjectInput in ) throws IOException
     {
-        Modification modification = new DefaultModification( attributeType );
+        Modification modification = new DefaultModification();
         
         try
         {
             modification.readExternal( in );
+            
+            EntryAttribute attribute = modification.getAttribute();
+            
+            if ( ( attribute != null ) && ( schemaManager != null ) )
+            {
+                AttributeType attributeType = schemaManager.getAttributeType( attribute.getId() );
+                
+                modification.applyAttributeType( attributeType );
+            }
         }
         catch ( ClassNotFoundException cfne )
         {
