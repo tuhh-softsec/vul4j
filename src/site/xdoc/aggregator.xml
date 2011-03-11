@@ -130,13 +130,13 @@ This content will be replaced by the block "myblock"
                 </p>
                 in vars.properties :
 <source>
-myblock=myblock.html
+myblock=block.html
 myattributid=789
 </source>
 
 <source>
 <strong>&lt;!--$includeblock$aggregated2$$(myblock)$myblock$--&gt;</strong>
-This content will be replaced by the block "myblock" from myblock.html
+This content will be replaced by the block "myblock" from block.html
 <strong>&lt;!--$endincludeblock$--&gt;</strong>
 &lt;/body&gt;
 &lt;/html&gt;
@@ -145,8 +145,8 @@ This content will be replaced by the block "myblock" from myblock.html
                 or
 
 <source>
-<strong>&lt;!--$includeblock$aggregated2$myblock.html?id=$(myattributid)$myblock$--&gt;</strong>
-This content will be replaced by the block "myblock" from myblock.html?id=789
+<strong>&lt;!--$includeblock$aggregated2$block.html?id=$(myattributid)$myblock$--&gt;</strong>
+This content will be replaced by the block "myblock" from block.html?id=789
 <strong>&lt;!--$endincludeblock$--&gt;</strong>
 &lt;/body&gt;
 &lt;/html&gt;
