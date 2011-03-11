@@ -130,7 +130,7 @@ extends Graph
 
 		final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
 		rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-		rangeAxis.setAutoRange(true);
+		rangeAxis.setAutoRange(false);
 		rangeAxis.setAutoRangeMinimumSize(5);
 		rangeAxis.setLowerBound(0);
 

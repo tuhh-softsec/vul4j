@@ -28,7 +28,7 @@ import hudson.plugins.ccm.util.Messages;
 
 /**
  * @author Bruno P. Kinoshita - http://www.kinoshita.eti.br
- * @since 1.0
+ * @since 2.6
  */
 public class AbstractCCMAction 
 implements Action

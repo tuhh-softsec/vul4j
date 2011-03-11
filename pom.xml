@@ -10,7 +10,7 @@
 	
 	</parent>
 
-	<inceptionYear>2010-2010 the CCM plug-in team</inceptionYear>
+	<inceptionYear>2010-2011 the CCM plug-in team</inceptionYear>
 
 	<artifactId>ccm</artifactId>
 	<name>Jenkins CCM Plugin</name>
@@ -124,5 +124,8 @@
 			<url>http://maven.jenkins-ci.org/content/repositories/releases</url>
 		</repository>
 	</repositories>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 
 </project>
