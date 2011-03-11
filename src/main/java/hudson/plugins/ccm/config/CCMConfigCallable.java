@@ -25,8 +25,8 @@ package hudson.plugins.ccm.config;
 
 import hudson.FilePath.FileCallable;
 import hudson.model.BuildListener;
-import hudson.plugins.ccm.Messages;
 import hudson.plugins.ccm.CCMBuilder;
+import hudson.plugins.ccm.util.Messages;
 import hudson.remoting.VirtualChannel;
 
 import java.io.File;

@@ -1,6 +1,6 @@
-package hudson.plugins.ccm.model;
+package hudson.plugins.ccm.parser;
 
-import hudson.plugins.ccm.model.CCMXmlHandler;
+import hudson.plugins.ccm.parser.CCMXmlHandler;
 import junit.framework.TestCase;
 
 /**

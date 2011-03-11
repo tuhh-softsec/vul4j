@@ -1,10 +1,10 @@
-package hudson.plugins.ccm.model;
+package hudson.plugins.ccm.parser;
 
 import hudson.plugins.ccm.CCMBuildAction;
 import hudson.plugins.ccm.CCMResult;
-import hudson.plugins.ccm.model.CCMParser;
 import hudson.plugins.ccm.model.CCMReport;
 import hudson.plugins.ccm.model.Metric;
+import hudson.plugins.ccm.parser.CCMParser;
 
 import java.io.File;
 import java.io.IOException;

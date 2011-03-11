@@ -23,6 +23,8 @@
  */
 package hudson.plugins.ccm.model;
 
+import hudson.plugins.ccm.parser.CCMParser;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

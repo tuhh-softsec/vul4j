@@ -1,12 +1,14 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt" xmlns:local="local">
-    <j:if test="${from.hasValidResults()}">
+    <j:if test="${from.isDisplayGraph()}">
 	    <div align="right">
           <p/>
 		  <div class="test-trend-caption">
 		    ${%CCMTrend}
 		  </div>
 		  <div>
-		    <img src="${from.urlName}/trend" lazymap="${from.urlName}/trendMap"/>
+		    <a href="${from.urlName}/">       
+            	<img src="${from.urlName}/graph"/>
+            </a> 
 		  </div>
 	   	</div>
 	</j:if>

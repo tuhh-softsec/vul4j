@@ -21,10 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package hudson.plugins.ccm.model;
+package hudson.plugins.ccm.parser;
 
 import hudson.FilePath;
-import hudson.plugins.ccm.Messages;
+import hudson.plugins.ccm.model.CCM;
+import hudson.plugins.ccm.model.CCMReport;
+import hudson.plugins.ccm.model.Metric;
+import hudson.plugins.ccm.util.Messages;
 import hudson.remoting.VirtualChannel;
 
 import java.io.File;
@@ -99,7 +102,6 @@ implements FilePath.FileCallable<CCMReport>
 	throws IOException 
 	{
 	
-		
 		if ( LOG_ENABLED && logger != null )
 		{
 			logger.println(Messages.CCM_Parser_ParsingResults());

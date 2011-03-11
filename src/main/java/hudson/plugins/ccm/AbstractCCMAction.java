@@ -1,7 +1,7 @@
-/* 
+/*
  * The MIT License
- * 
- * Copyright (c) 2010 Bruno P. Kinoshita <http://www.kinoshita.eti.br>
+ *
+ * Copyright (c) <2011> <Bruno P. Kinoshita>
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,32 +21,54 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package hudson.plugins.ccm.config;
+package hudson.plugins.ccm;
 
-import hudson.FilePath.FileCallable;
-import hudson.plugins.ccm.CCMBuilder;
-import hudson.remoting.VirtualChannel;
-
-import java.io.File;
-import java.io.IOException;
+import hudson.model.Action;
+import hudson.plugins.ccm.util.Messages;
 
 /**
- * 
  * @author Bruno P. Kinoshita - http://www.kinoshita.eti.br
  * @since 1.0
  */
-public class CCMResultCallable 
-implements FileCallable<String>
+public class AbstractCCMAction 
+implements Action
 {
+
+	public static final String ICON_FILE_NAME = "/plugin/ccm/icons/ccm-24.png";
+	public static final String URL_NAME = "ccmResult";
 	
 	/* (non-Javadoc)
-	 * @see hudson.FilePath.FileCallable#invoke(java.io.File, hudson.remoting.VirtualChannel)
+	 * @see hudson.model.Action#getDisplayName()
 	 */
-	public String invoke(File workspace, VirtualChannel channel) 
-	throws IOException,
-	InterruptedException 
+	public String getDisplayName()
 	{
-		return new File( workspace, CCMBuilder.CCM_RESULT_FILE ).getAbsolutePath();
+		return Messages.CCM_Project_Action_CCMResults();
 	}
 
+	/* (non-Javadoc)
+	 * @see hudson.model.Action#getIconFileName()
+	 */
+	public String getIconFileName()
+	{
+		return ICON_FILE_NAME;
+	}
+
+	/* (non-Javadoc)
+	 * @see hudson.model.Action#getUrlName()
+	 */
+	public String getUrlName()
+	{
+		return URL_NAME;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see hudson.search.SearchItem#getSearchUrl()
+	 */
+	public String getSearchUrl()
+	{
+		return "ccmResult";
+	}
+	
 }

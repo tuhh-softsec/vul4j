@@ -26,6 +26,7 @@ package hudson.plugins.ccm;
 import hudson.Launcher;
 import hudson.Launcher.LocalLauncher;
 import hudson.model.TaskListener;
+import hudson.plugins.ccm.util.Messages;
 import hudson.remoting.Callable;
 import hudson.remoting.VirtualChannel;
 

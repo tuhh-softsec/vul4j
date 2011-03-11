@@ -21,7 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package hudson.plugins.ccm.model;
+package hudson.plugins.ccm.parser;
+
+import hudson.plugins.ccm.model.CCM;
+import hudson.plugins.ccm.model.Metric;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
