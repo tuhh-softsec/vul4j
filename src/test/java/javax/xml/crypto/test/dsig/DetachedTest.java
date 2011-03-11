@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2009 The Apache Software Foundation.
+ * Copyright 2006-2011 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@
  */
 package javax.xml.crypto.test.dsig;
 
+import javax.xml.crypto.URIDereferencer;
 import javax.xml.crypto.dsig.*;
 import javax.xml.crypto.dsig.dom.DOMSignContext;
 import javax.xml.crypto.dsig.dom.DOMValidateContext;
@@ -135,6 +136,9 @@ public class DetachedTest extends org.junit.Assert {
             DOMSignContext signContext = new DOMSignContext(kp.getPrivate(), doc);
             signContext.putNamespacePrefix(XMLSignature.XMLNS, "ds");
 
+            URIDereferencer ud = new LocalHttpCacheURIDereferencer();
+            signContext.setURIDereferencer(ud);
+
             // Generate (and sign) the XMLSignature
             signature.sign(signContext);
     
@@ -145,6 +149,7 @@ public class DetachedTest extends org.junit.Assert {
             // Create a XMLValidateContext & set the DSAPublicKey for validating
             XMLValidateContext vc = new DOMValidateContext(kp.getPublic(),
                 doc.getDocumentElement());
+            vc.setURIDereferencer(ud);
     
             // Validate the Signature (generated above)
             boolean coreValidity = signature.validate(vc); 

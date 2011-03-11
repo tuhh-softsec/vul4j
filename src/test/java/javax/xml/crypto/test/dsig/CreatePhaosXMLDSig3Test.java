@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2009 The Apache Software Foundation.
+ * Copyright 2006-2011 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ package javax.xml.crypto.test.dsig;
 
 import java.security.*;
 import java.util.*;
+import javax.xml.crypto.URIDereferencer;
 import javax.xml.crypto.dsig.*;
 import javax.xml.crypto.dsig.dom.*;
 import javax.xml.crypto.dsig.spec.*;
@@ -100,12 +101,15 @@ public class CreatePhaosXMLDSig3Test extends org.junit.Assert {
             (new KeySelectors.SecretKeySelector
              ("test".getBytes("ASCII")), doc);
         dsc.putNamespacePrefix(XMLSignature.XMLNS, "dsig");
+        URIDereferencer ud = new LocalHttpCacheURIDereferencer();
+        dsc.setURIDereferencer(ud);
 
         sig.sign(dsc);
 
         DOMValidateContext dvc = new DOMValidateContext
             (new KeySelectors.SecretKeySelector
              ("test".getBytes("ASCII")), doc);
+        dvc.setURIDereferencer(ud);
 
         XMLSignature sig2 = fac.unmarshalXMLSignature(dvc);
 

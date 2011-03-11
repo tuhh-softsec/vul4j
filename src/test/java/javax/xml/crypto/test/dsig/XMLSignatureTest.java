@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2009 The Apache Software Foundation.
+ * Copyright 2006-2011 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ package javax.xml.crypto.test.dsig;
 
 import java.util.*;
 import java.security.*;
+import javax.xml.crypto.URIDereferencer;
 import javax.xml.crypto.dom.DOMStructure;
 import javax.xml.crypto.dsig.*;
 import javax.xml.crypto.dsig.keyinfo.*;
@@ -51,6 +52,7 @@ public class XMLSignatureTest extends TestCase {
     private Key[] SIGN_KEYS;
     private Key[] VALIDATE_KEYS;
     private SignatureMethod[] SIG_METHODS;
+    private URIDereferencer ud;
 
     static {
         Security.insertProviderAt
@@ -91,6 +93,7 @@ public class XMLSignatureTest extends TestCase {
             (Collections.singletonList(kifac.newKeyName("Alice")));
         objs = Collections.singletonList
             (fac.newXMLObject(null, null, null, null));
+        ud = new LocalHttpCacheURIDereferencer();
     }
 
     public void tearDown() {}
@@ -175,9 +178,11 @@ public class XMLSignatureTest extends TestCase {
             sig = fac.newXMLSignature(si, ki, objs, id, sigValueId); 
             Document doc = TestUtils.newDocument();
             signContext = new DOMSignContext(SIGN_KEYS[i], doc);
+            signContext.setURIDereferencer(ud);
             sig.sign(signContext);
             validateContext = new DOMValidateContext
                 (VALIDATE_KEYS[i], doc.getDocumentElement());
+            validateContext.setURIDereferencer(ud);
             if (sig.validate(validateContext) == false) {
                 status = false;
                 TestUtils.dumpDocument(doc, "signatureTest_out"+i+".xml");
@@ -206,6 +211,7 @@ public class XMLSignatureTest extends TestCase {
             signContext = new DOMSignContext(SIGN_KEYS[i], doc);
             signContext.setProperty
                 ("org.jcp.xml.dsig.internal.dom.SignatureProvider", p);
+            signContext.setURIDereferencer(ud);
             try {
                 sig.sign(signContext);
                 fail("Should have failed because TestProvider does not " +
@@ -225,6 +231,7 @@ public class XMLSignatureTest extends TestCase {
         Document doc = TestUtils.newDocument();
         XMLSignContext signContext = new DOMSignContext(SIGN_KEYS[1], doc);
         signContext.putNamespacePrefix(XMLSignature.XMLNS, "");
+        signContext.setURIDereferencer(ud);
         sig.sign(signContext);
 /*
         StringWriter sw = new StringWriter();

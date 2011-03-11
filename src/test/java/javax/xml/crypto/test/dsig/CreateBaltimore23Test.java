@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2010 The Apache Software Foundation.
+ * Copyright 2006-2011 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -34,6 +34,7 @@ import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXParseException;
 import javax.xml.crypto.KeySelector;
+import javax.xml.crypto.URIDereferencer;
 import javax.xml.crypto.dsig.*;
 import javax.xml.crypto.dom.*;
 import javax.xml.crypto.dsig.dom.DOMSignContext;
@@ -70,6 +71,7 @@ public class CreateBaltimore23Test extends org.junit.Assert {
     private PublicKey validatingKey;
     private Certificate signingCert;
     private KeyStore ks;
+    private final URIDereferencer ud;
 
     static {
         Security.insertProviderAt
@@ -111,6 +113,7 @@ public class CreateBaltimore23Test extends org.junit.Assert {
         rsaSha1 = fac.newSignatureMethod(SignatureMethod.RSA_SHA1, null);
         sks = new KeySelectors.SecretKeySelector("secret".getBytes("ASCII"));
 
+        ud = new LocalHttpCacheURIDereferencer();
     }
 
     @org.junit.Test
@@ -528,6 +531,7 @@ public class CreateBaltimore23Test extends org.junit.Assert {
 
         DOMSignContext dsc = new DOMSignContext(signingKey, ys);
         dsc.setIdAttributeNS(notaries, null, "Id");
+        dsc.setURIDereferencer(ud);
 
         sig.sign(dsc);
 
@@ -570,6 +574,7 @@ public class CreateBaltimore23Test extends org.junit.Assert {
             "merlin-xmldsig-twenty-three" +
             System.getProperty("file.separator"));
         dvc.setBaseURI(f.toURI().toString());
+        dvc.setURIDereferencer(ud);
 
         // register Notaries ID
         //	Element notariesElem = 
@@ -617,6 +622,7 @@ public class CreateBaltimore23Test extends org.junit.Assert {
         XMLSignature sig = fac.newXMLSignature(si, ki);
 
         DOMSignContext dsc = new DOMSignContext(signingKey, doc);
+        dsc.setURIDereferencer(ud);
 
         sig.sign(dsc);
 
@@ -636,6 +642,7 @@ public class CreateBaltimore23Test extends org.junit.Assert {
             "baltimore" + fs + "merlin-examples" + fs +
             "merlin-xmldsig-twenty-three" + fs);
         dvc.setBaseURI(f.toURI().toString()); 
+        dvc.setURIDereferencer(ud);
             
         XMLSignature sig2 = fac.unmarshalXMLSignature(dvc);
 

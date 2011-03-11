@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2010 The Apache Software Foundation.
+ * Copyright 2006-2011 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -89,7 +89,7 @@ public class Baltimore23Test extends org.junit.Assert {
         String file = "signature-external-b64-dsa.xml";
        
         boolean coreValidity = validator.validate
-            (file, new KeySelectors.KeyValueKeySelector());
+            (file, new KeySelectors.KeyValueKeySelector(), ud);
         assertTrue("Signature failed core validation", coreValidity);
     }
 

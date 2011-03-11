@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 The Apache Software Foundation.
+ * Copyright 2010-2011 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,6 +18,8 @@ package javax.xml.crypto.test.dsig;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.HashMap;
+import java.util.Map;
 import javax.xml.crypto.Data;
 import javax.xml.crypto.OctetStreamData;
 import javax.xml.crypto.URIDereferencer;
@@ -29,29 +31,34 @@ import javax.xml.crypto.dsig.XMLSignatureFactory;
 /**
  * This URIDereferencer implementation retrieves http references used in
  * test signatures from local disk in order to avoid network requests. 
- * Currently only one file is cached but more can be added.
  */
 public class LocalHttpCacheURIDereferencer implements URIDereferencer {
 
     private final URIDereferencer ud;
-    private final File f;
     private final static String FS = System.getProperty("file.separator");
     private final static String BASEDIR = System.getProperty("basedir");
+    private final Map<String, File> uriMap;
 
     public LocalHttpCacheURIDereferencer() {
         ud = XMLSignatureFactory.getInstance().getURIDereferencer();
         String base = BASEDIR == null ? "./": BASEDIR;
         File dir = new File(base + FS + "src/test/resources" + FS + "javax" +
             FS + "xml" + FS + "crypto" + FS + "dsig");
-        f = new File(dir, "xml-stylesheet");
+        uriMap = new HashMap<String, File>();
+        uriMap.put("http://www.w3.org/TR/xml-stylesheet",
+                   new File(dir, "xml-stylesheet"));
+        uriMap.put("http://www.w3.org/Signature/2002/04/xml-stylesheet.b64",
+                   new File(dir, "xml-stylesheet.b64"));
+        uriMap.put("http://www.ietf.org/rfc/rfc3161.txt",
+                   new File(dir, "rfc3161.txt"));
     }
  
     public Data dereference(URIReference uriReference, XMLCryptoContext context)
         throws URIReferenceException {
         String uri = uriReference.getURI();
-        if (uri.equals("http://www.w3.org/TR/xml-stylesheet")) {
+        if (uriMap.containsKey(uri)) {
             try {
-                FileInputStream fis = new FileInputStream(f);
+                FileInputStream fis = new FileInputStream(uriMap.get(uri));
                 return new OctetStreamData(
                     fis, uriReference.getURI(), uriReference.getType());
             } catch (Exception e) { throw new URIReferenceException(e); }

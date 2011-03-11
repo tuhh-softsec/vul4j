@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2010 The Apache Software Foundation.
+ * Copyright 2006-2011 The Apache Software Foundation.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ package javax.xml.crypto.test.dsig;
 import java.io.File;
 import java.security.Security;
 import javax.xml.crypto.KeySelector;
+import javax.xml.crypto.URIDereferencer;
 import javax.xml.crypto.dsig.XMLSignatureException;
 import javax.xml.crypto.dsig.dom.DOMValidateContext;
 
@@ -37,6 +38,7 @@ public class PhaosXMLDSig3Test extends org.junit.Assert {
 
     private SignatureValidator validator;
     private File base;
+    private final URIDereferencer ud;
 
     static {
         Security.insertProviderAt
@@ -49,6 +51,7 @@ public class PhaosXMLDSig3Test extends org.junit.Assert {
         base = new File(basedir + fs + "src/test/resources" + fs +
                         "com" + fs + "phaos", "phaos-xmldsig-three");
         validator = new SignatureValidator(base);
+        ud = new LocalHttpCacheURIDereferencer();
     }
 
     @org.junit.Test
@@ -58,6 +61,7 @@ public class PhaosXMLDSig3Test extends org.junit.Assert {
         DOMValidateContext vc = validator.getValidateContext
         (file, new KeySelectors.RawX509KeySelector());
         vc.setProperty("javax.xml.crypto.dsig.cacheReference", Boolean.TRUE);
+        vc.setURIDereferencer(ud);
 
         boolean coreValidity = validator.validate(vc);
         assertTrue("Signature failed core validation", coreValidity);
@@ -129,7 +133,7 @@ public class PhaosXMLDSig3Test extends org.junit.Assert {
 
         KeySelector ks = new KeySelectors.SecretKeySelector
             ("test".getBytes("ASCII") );
-        boolean coreValidity = validator.validate(file, ks);
+        boolean coreValidity = validator.validate(file, ks, ud);
         assertTrue("Signature failed core validation", coreValidity);
     }
 
@@ -200,6 +204,7 @@ public class PhaosXMLDSig3Test extends org.junit.Assert {
         DOMValidateContext vc = validator.getValidateContext
             (file, new KeySelectors.RawX509KeySelector());
         vc.setProperty("javax.xml.crypto.dsig.cacheReference", Boolean.TRUE);
+        vc.setURIDereferencer(ud);
         boolean coreValidity = validator.validate(vc);
         assertTrue("Signature failed core validation", coreValidity);
     }
