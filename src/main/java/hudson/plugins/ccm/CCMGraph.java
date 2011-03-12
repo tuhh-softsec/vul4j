@@ -27,6 +27,7 @@ import hudson.model.AbstractBuild;
 import hudson.util.Graph;
 import hudson.util.ShiftedCategoryAxis;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 
 import org.jfree.chart.ChartFactory;
@@ -107,7 +108,7 @@ extends Graph
 	 */
 	protected JFreeChart createGraph()
 	{
-		final JFreeChart chart = ChartFactory.createStackedAreaChart(null,
+		final JFreeChart chart = ChartFactory.createLineChart(null,
 				null, yLabel, categoryDataset, PlotOrientation.VERTICAL, true,
 				true, false);
 
@@ -135,9 +136,30 @@ extends Graph
 		rangeAxis.setLowerBound(0);
 
 		final CategoryItemRenderer renderer = plot.getRenderer();
+		
+		renderer.setSeriesStroke(0, new BasicStroke(3.0f,
+                BasicStroke.CAP_BUTT,
+                BasicStroke.CAP_BUTT,
+                1.0f,
+                new float[] {1.0f, 1.0f},
+                0.0f));
 		renderer.setSeriesPaint( 0, new Color(0, 145, 0) ); // total complexity
+		
+		renderer.setSeriesStroke(1, new BasicStroke(3.0f,
+                BasicStroke.CAP_BUTT,
+                BasicStroke.CAP_BUTT,
+                1.0f,
+                new float[] {1.0f, 1.0f},
+                0.0f));
 		renderer.setSeriesPaint( 1, new Color(207, 69, 21) ); // number of methods
-		renderer.setSeriesPaint( 2, new Color(232, 174, 0) ); // average complexity
+		
+		renderer.setSeriesStroke(2, new BasicStroke(3.0f,
+                BasicStroke.CAP_BUTT,
+                BasicStroke.CAP_BUTT,
+                1.0f,
+                new float[] {1.0f, 1.0f},
+                0.0f));
+		renderer.setSeriesPaint( 2, new Color(0, 64, 128) ); // average complexity
 
 		plot.setInsets(new RectangleInsets(5.0, 0, 0, 5.0));
 
