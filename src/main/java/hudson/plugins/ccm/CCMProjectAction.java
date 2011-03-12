@@ -25,6 +25,7 @@ package hudson.plugins.ccm;
 
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
+import hudson.plugins.ccm.util.Messages;
 import hudson.util.ChartUtil;
 import hudson.util.Graph;
 
@@ -163,8 +164,8 @@ extends AbstractCCMAction
 		Graph g = new CCMGraph(
 				project.getLastBuild(), 
 				CCMGraphHelper.createDataSetForProject(this.project), 
-				"Number of metrics", 
-				"Build number");
+				Messages.CCM_ChartUtil_NumberOfMetrics(), 
+				Messages.CCM_ChartUtil_BuildNumber());
 		g.doPng( request, response );
 	}
 
