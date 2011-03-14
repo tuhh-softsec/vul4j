@@ -434,12 +434,12 @@ public final class Dn implements Iterable<Rdn>, Externalizable
         {
             normalized = false;
             
-            if ( this.schemaManager != null )
+            if ( this.schemaManager == null )
             {
-                normalize( schemaManager );
+                this.schemaManager = schemaManager;
             }
 
-            normalizeInternal();
+            normalize( this.schemaManager );
             toUpName();
         }
         catch( LdapInvalidDnException lide )

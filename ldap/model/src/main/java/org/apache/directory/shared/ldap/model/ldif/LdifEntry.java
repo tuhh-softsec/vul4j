@@ -61,7 +61,7 @@ import org.apache.directory.shared.util.Unicode;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class LdifEntry implements Cloneable
+public class LdifEntry implements Cloneable, Externalizable
 {
     /** Used in toArray() */
     public static final Modification[] EMPTY_MODS = new Modification[0];
@@ -989,12 +989,13 @@ public class LdifEntry implements Cloneable
         // Read the changeType
         int type = in.readInt();
         changeType = ChangeType.getChangeType( type );
-        entry = ( Entry ) in.readObject();
+        Entry entry = new DefaultEntry();
+        
+        entry.readExternal( in );
 
         switch ( changeType )
         {
             case Add:
-                // Fallback
             case Delete:
                 // we don't have anything to read, but the control
                 break;
