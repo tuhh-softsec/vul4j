@@ -518,6 +518,11 @@ public final class DefaultEntry implements Entry
      */
     private void initObjectClassAT()
     {
+        if ( schemaManager == null )
+        {
+            return;
+        }
+        
         try
         {
             if ( objectClassAttributeType == null )

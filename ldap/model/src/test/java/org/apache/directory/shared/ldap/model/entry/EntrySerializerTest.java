@@ -58,15 +58,14 @@ public class EntrySerializerTest
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        entry1.writeExternal( out );
+        EntrySerializer.serialize( entry1, out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        Entry entry2 = new DefaultEntry();
-        entry2.readExternal( in );
+        Entry entry2 = EntrySerializer.deserialize( null, in );
 
         assertEquals( entry1, entry2 );
         assertTrue( entry2.contains( "ObjectClass", "top", "domain" ) );
@@ -86,15 +85,14 @@ public class EntrySerializerTest
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        entry1.writeExternal( out );
+        EntrySerializer.serialize( entry1, out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        Entry entry2 = new DefaultEntry();
-        entry2.readExternal( in );
+        Entry entry2 = EntrySerializer.deserialize( null, in );
 
         assertEquals( entry1, entry2 );
         assertTrue( entry2.contains( "ObjectClass", "top", "domain" ) );
@@ -110,15 +108,36 @@ public class EntrySerializerTest
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        entry1.writeExternal( out );
+        EntrySerializer.serialize( entry1, out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        Entry entry2 = new DefaultEntry();
-        entry2.readExternal( in );
+        Entry entry2 = EntrySerializer.deserialize( null, in );
+
+        assertEquals( entry1, entry2 );
+        assertEquals( 0, entry2.size() );
+    }
+
+
+    @Test
+    public void testEntryNoAttributesNoDnSerialization() throws IOException, LdapException, ClassNotFoundException
+    {
+        Entry entry1 = LdifUtils.createEntry( "" ); 
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream out = new ObjectOutputStream( baos );
+
+        EntrySerializer.serialize( entry1, out );
+        
+        ObjectInputStream in = null;
+
+        byte[] data = baos.toByteArray();
+        in = new ObjectInputStream( new ByteArrayInputStream( data ) );
+
+        Entry entry2 = EntrySerializer.deserialize( null, in );
 
         assertEquals( entry1, entry2 );
         assertEquals( 0, entry2.size() );
