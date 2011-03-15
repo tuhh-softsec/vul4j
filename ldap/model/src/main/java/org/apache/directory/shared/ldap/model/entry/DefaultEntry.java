@@ -37,12 +37,9 @@ import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.name.DnSerializer;
-import org.apache.directory.shared.ldap.model.name.Rdn;
-import org.apache.directory.shared.ldap.model.name.RdnSerializer;
 import org.apache.directory.shared.ldap.model.schema.AttributeType;
 import org.apache.directory.shared.ldap.model.schema.SchemaManager;
 import org.apache.directory.shared.util.Strings;
-import org.apache.directory.shared.util.Unicode;
 import org.apache.directory.shared.util.exception.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -2575,148 +2572,6 @@ public class DefaultEntry implements Entry
             else
             {
                 attributes.put( attribute.getId(), attribute );
-            }
-        }
-    }
-
-
-    /**
-     * Serialize an Entry.
-     *
-     * The structure is the following :
-     * <b>[a byte]</b> : if the Dn is empty 0 will be written else 1
-     * <b>[Rdn]</b> : The entry's Rdn.
-     * <b>[numberAttr]</b> : the bumber of attributes. Can be 0
-     * <b>[attribute's oid]*</b> : The attribute's OID to get back
-     * the attributeType on deserialization
-     * <b>[Attribute]*</b> The attribute
-     *
-     * @param out the buffer in which the data will be serialized
-     * @throws IOException if the serialization failed
-     */
-    public void serialize( ObjectOutput out ) throws IOException
-    {
-        // First, the Dn
-        // Write the Rdn of the Dn
-        if ( dn.getRdn() == null )
-        {
-            out.writeByte( 0 );
-        }
-        else
-        {
-            out.writeByte( 1 );
-            RdnSerializer.serialize(dn.getRdn(), out);
-        }
-
-        // Then the attributes.
-        out.writeInt( attributes.size() );
-
-        if ( schemaManager != null )
-        {
-            // Iterate through the keys. We store the Attribute
-            // here, to be able to restore it in the readExternal :
-            // we need access to the registries, which are not available
-            // in the ServerAttribute class.
-            for ( AttributeType attributeType : getAttributeTypes() )
-            {
-                // Write the oid to be able to restore the AttributeType when deserializing
-                // the attribute
-                String oid = attributeType.getOid();
-
-                Unicode.writeUTF(out, oid);
-
-                // Get the attribute
-                DefaultEntryAttribute attribute = ( DefaultEntryAttribute ) attributes.get( attributeType.getOid() );
-
-                // Write the attribute
-                attribute.writeExternal( out );
-            }
-        }
-        else
-        {
-            // Loop on the Attribute ID
-            for ( String id : attributes.keySet() )
-            {
-                // Write the id to be able to restore the AttributeType when deserializing
-                // the attribute
-                Unicode.writeUTF(out, id);
-
-                // Get the attribute
-                DefaultEntryAttribute attribute = ( DefaultEntryAttribute ) attributes.get( id );
-
-                // Write the attribute
-                attribute.writeExternal( out );
-            }
-        }
-    }
-
-
-    /**
-     * Deserialize an entry.
-     *
-     * @param in The buffer containing the serialized serverEntry
-     * @throws IOException if there was a problem when deserializing
-     * @throws ClassNotFoundException if we can't deserialize an expected object
-     */
-    public void deserialize( ObjectInput in ) throws IOException, ClassNotFoundException, LdapInvalidDnException
-    {
-        // Read the Dn
-        dn = Dn.EMPTY_DN;
-
-        byte b = in.readByte();
-
-        if ( b == 1 )
-        {
-            Rdn rdn = RdnSerializer.deserialize( schemaManager, in );
-            dn = new Dn( rdn );
-        }
-
-        // Read the number of attributes
-        int nbAttributes = in.readInt();
-
-        if ( schemaManager != null )
-        {
-            // Read the attributes
-            for ( int i = 0; i < nbAttributes; i++ )
-            {
-                // Read the attribute's OID
-                String oid = Unicode.readUTF(in);
-
-                try
-                {
-                    AttributeType attributeType = schemaManager.lookupAttributeTypeRegistry( oid );
-
-                    // Create the attribute we will read
-                    EntryAttribute attribute = new DefaultEntryAttribute( attributeType );
-
-                    // Read the attribute
-                    attribute.readExternal( in );
-
-                    attributes.put( attributeType.getOid(), attribute );
-                }
-                catch ( LdapException ne )
-                {
-                    // We weren't able to find the OID. The attribute will not be added
-                    LOG.warn( I18n.err( I18n.ERR_04470, oid ) );
-
-                }
-            }
-        }
-        else
-        {
-            // Read the attributes
-            for ( int i = 0; i < nbAttributes; i++ )
-            {
-                // Read the attribute's ID
-                String id = Unicode.readUTF(in);
-
-                // Create the attribute we will read
-                EntryAttribute attribute = new DefaultEntryAttribute( id );
-
-                // Read the attribute
-                attribute.readExternal( in );
-
-                attributes.put( id, attribute );
             }
         }
     }
