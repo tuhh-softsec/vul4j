@@ -47,13 +47,13 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A default implementation of a ServerEntry which should suite most
- * use cases.
- *
+ * use cases.<br/>
+ * <br/>
  * This class is final, it should not be extended.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class DefaultEntry implements Entry
+public final class DefaultEntry implements Entry
 {
     /** Used for serialization */
     private static final long serialVersionUID = 2L;
@@ -455,6 +455,57 @@ public class DefaultEntry implements Entry
     // Helper methods
     //-------------------------------------------------------------------------
     /**
+     * Get the trimmed and lower cased entry ID
+     */
+    private String getId( String upId )
+    {
+        String id = Strings.trim( Strings.toLowerCase( upId ) );
+
+        // If empty, throw an error
+        if ( Strings.isEmpty( id ) )
+        {
+            String message = I18n.err( I18n.ERR_04133 );
+            LOG.error( message );
+            throw new IllegalArgumentException( message );
+        }
+
+        return id;
+    }
+
+
+    /**
+     * Get the UpId if it was null.
+     * 
+     * @param upId The ID
+     */
+    private String getUpId( String upId, AttributeType attributeType )
+    {
+        String normUpId = Strings.trim( upId );
+
+        if ( ( attributeType == null ) )
+        {
+            if ( Strings.isEmpty( normUpId ) )
+            {
+                String message = I18n.err( I18n.ERR_04458 );
+                LOG.error( message );
+                throw new IllegalArgumentException( message );
+            }
+        }
+        else if ( Strings.isEmpty( normUpId ) )
+        {
+            upId = attributeType.getName();
+
+            if ( Strings.isEmpty( upId ) )
+            {
+                upId = attributeType.getOid();
+            }
+        }
+
+        return upId;
+    }
+
+
+    /**
      * This method is used to initialize the OBJECT_CLASS_AT attributeType.
      *
      * We want to do it only once, so it's a synchronized method. Note that
@@ -484,54 +535,53 @@ public class DefaultEntry implements Entry
     }
 
 
-    private String getId( String upId )
+    /**
+     * normalizes the given Dn if it was not already normalized
+     *
+     * @param dn the Dn to be normalized
+     */
+    private void normalizeDN( Dn dn )
     {
-        String id = Strings.trim(Strings.toLowerCase(upId));
-
-        // If empty, throw an error
-        if ( ( id == null ) || ( id.length() == 0 ) )
+        if ( !dn.isNormalized() )
         {
-            String message = I18n.err( I18n.ERR_04133 );
-            LOG.error( message );
-            throw new IllegalArgumentException( message );
+            try
+            {
+                // The dn must be normalized
+                dn.normalize( schemaManager );
+            }
+            catch ( LdapException ne )
+            {
+                LOG.warn( "The Dn '{}' cannot be normalized", dn );
+            }
         }
-
-        return id;
     }
 
 
     /**
-     * Get the UpId if it was null.
-     * 
-     * @param upId The ID
+     * A helper method to recompute the hash code
      */
-    private static String getUpId( String upId, AttributeType attributeType )
+    private void rehash()
     {
-        String normUpId = Strings.trim(upId);
+        h = 37;
+        h = h * 17 + dn.hashCode();
 
-        if ( ( attributeType == null ) )
-        {
-            if ( Strings.isEmpty(normUpId) )
-            {
-                String message = I18n.err( I18n.ERR_04458 );
-                LOG.error( message );
-                throw new IllegalArgumentException( message );
-            }
-        }
-        else if ( Strings.isEmpty(normUpId) )
-        {
-            upId = attributeType.getName();
+        /*
+        // We have to sort the Attributes if we want to compare two entries
+        SortedMap<String, EntryAttribute> sortedMap = new TreeMap<String, EntryAttribute>();
 
-            if ( Strings.isEmpty(upId) )
-            {
-                upId = attributeType.getOid();
-            }
+        for ( String id:attributes.keySet() )
+        {
+            sortedMap.put( id, attributes.get( id ) );
         }
 
-        return upId;
+        for ( String id:sortedMap.keySet() )
+        {
+            h = h*17 + sortedMap.get( id ).hashCode();
+        }
+        */
     }
-
-
+    
+    
     /**
      * Add a new EntryAttribute, with its upId. If the upId is null,
      * default to the AttributeType name.
@@ -2578,31 +2628,6 @@ public class DefaultEntry implements Entry
 
 
     /**
-     * A helper method to recompute the hash code
-     */
-    private void rehash()
-    {
-        h = 37;
-        h = h * 17 + dn.hashCode();
-
-        /*
-        // We have to sort the Attributes if we want to compare two entries
-        SortedMap<String, EntryAttribute> sortedMap = new TreeMap<String, EntryAttribute>();
-
-        for ( String id:attributes.keySet() )
-        {
-            sortedMap.put( id, attributes.get( id ) );
-        }
-
-        for ( String id:sortedMap.keySet() )
-        {
-            h = h*17 + sortedMap.get( id ).hashCode();
-        }
-        */
-    }
-
-
-    /**
      * Get the hash code of this ClientEntry. The Attributes will be sorted
      * before the comparison can be done.
      *
@@ -2801,27 +2826,5 @@ public class DefaultEntry implements Entry
         }
 
         return sb.toString();
-    }
-
-
-    /**
-     * normalizes the given Dn if it was not already normalized
-     *
-     * @param dn the Dn to be normalized
-     */
-    private void normalizeDN( Dn dn )
-    {
-        if ( !dn.isNormalized() )
-        {
-            try
-            {
-                // The dn must be normalized
-                dn.normalize( schemaManager );
-            }
-            catch ( LdapException ne )
-            {
-                LOG.warn( "The Dn '{}' cannot be normalized", dn );
-            }
-        }
     }
 }

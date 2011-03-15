@@ -24,8 +24,6 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
-import org.apache.directory.shared.ldap.model.name.Dn;
-import org.apache.directory.shared.ldap.model.name.DnSerializer;
 import org.apache.directory.shared.ldap.model.schema.SchemaManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,19 +33,11 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class EntrySerializer
+public final class EntrySerializer
 {
     /** The LoggerFactory used by this class */
     protected static final Logger LOG = LoggerFactory.getLogger( EntrySerializer.class );
 
-    /**
-     * Private constructor.
-     */
-    private EntrySerializer()
-    {
-    }
-
-    
     /**
      * Serializes a Entry instance.
      * 
@@ -57,22 +47,7 @@ public class EntrySerializer
      */
     public static void serialize( Entry entry, ObjectOutput out ) throws IOException
     {
-        // First, the Dn
-        DnSerializer.serialize( entry.getDn(), out );
-
-        // Then the attributes.
-        int nbAttributes =  entry.size();
-        out.writeInt( nbAttributes );
-
-        // Iterate through the attributes
-        if ( nbAttributes > 0 )
-        {
-            for ( EntryAttribute attribute : entry )
-            {
-                EntryAttributeSerializer.serialize( attribute, out );
-            }
-        }
-        
+        entry.writeExternal( out );
         out.flush();
     }
     
@@ -87,26 +62,17 @@ public class EntrySerializer
      */
     public static Entry deserialize( SchemaManager schemaManager, ObjectInput in ) throws IOException, LdapInvalidDnException
     {
-        // The Dn
-        Dn dn = DnSerializer.deserialize( schemaManager, in );
-
-        // The attributes
-        int nbAttributes = in.readInt();
+        // The entry
+        Entry entry = new DefaultEntry( schemaManager );
         
-        EntryAttribute[] attributes = null;
-        
-        if ( nbAttributes > 0 )
+        try
         {
-            attributes = new EntryAttribute[ nbAttributes ];
-            
-            for ( int i = 0; i < nbAttributes; i++ )
-            {
-                EntryAttribute attribute = EntryAttributeSerializer.deserialize( schemaManager, in );
-                attributes[i] = attribute;
-            }
+            entry.readExternal( in );
         }
-        
-        Entry entry = new DefaultEntry( schemaManager, dn, attributes );
+        catch ( ClassNotFoundException cnfe )
+        {
+            throw new IOException( cnfe.getMessage() );
+        }
 
         return entry;
     }
