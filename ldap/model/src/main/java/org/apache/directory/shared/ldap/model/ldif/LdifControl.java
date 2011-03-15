@@ -20,6 +20,11 @@
 package org.apache.directory.shared.ldap.model.ldif;
 
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.util.Strings;
 
@@ -30,7 +35,7 @@ import org.apache.directory.shared.util.Strings;
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class LdifControl implements Control
+public class LdifControl implements Control, Externalizable
 {
     /** The control type */
     private String oid;
@@ -40,6 +45,14 @@ public class LdifControl implements Control
 
     /** Optional control value */
     protected byte[] value;
+
+
+    /**
+     * Create a new Control
+     */
+    public LdifControl()
+    {
+    }
 
 
     /**
@@ -116,6 +129,52 @@ public class LdifControl implements Control
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
+    public void writeExternal( ObjectOutput out ) throws IOException
+    {
+        out.writeUTF( oid );
+        out.writeBoolean( criticality );
+
+        if ( hasValue() )
+        {
+            out.writeBoolean( true );
+            out.writeInt( value.length );
+
+            if ( value.length > 0 )
+            {
+                out.write( value );
+            }
+        }
+        else
+        {
+            out.writeBoolean( false );
+        }
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException
+    {
+        oid = in.readUTF();
+        criticality = in.readBoolean();
+        
+        if ( in.readBoolean() )
+        {
+            int valueLength = in.readInt();
+
+            if ( valueLength > 0 )
+            {
+                value = new byte[valueLength];
+                in.read( value );
+            }
+        }
+    }
+
+    
     /**
      * @see Object#hashCode()
      */

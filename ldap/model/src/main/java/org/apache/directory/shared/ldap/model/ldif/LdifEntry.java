@@ -989,10 +989,13 @@ public class LdifEntry implements Cloneable, Externalizable
         // Read the changeType
         int type = in.readInt();
         changeType = ChangeType.getChangeType( type );
+        
+        // Read the entry
         Entry entry = new DefaultEntry();
         
         entry.readExternal( in );
 
+        // Read the modification
         switch ( changeType )
         {
             case Add:
@@ -1048,26 +1051,11 @@ public class LdifEntry implements Cloneable, Externalizable
 
                 for ( int i = 0; i < nbControls; i++ )
                 {
-                    String controlOid = in.readUTF();
-                    boolean isCritical = in.readBoolean();
-                    boolean hasValue = in.readBoolean();
-                    LdifControl control = new LdifControl( controlOid );
-                    control.setCritical( isCritical );
+                    LdifControl control = new LdifControl();
+                    
+                    control.readExternal( in );
 
-                    if ( hasValue )
-                    {
-                        int valueLength = in.readInt();
-                        byte[] value = new byte[valueLength];
-
-                        if ( valueLength > 0 )
-                        {
-                            in.read( value );
-                        }
-
-                        control.setValue( value );
-                    }
-
-                    controls.put( controlOid, control );
+                    controls.put( control.getOid(), control );
                 }
             }
         }
@@ -1085,7 +1073,7 @@ public class LdifEntry implements Cloneable, Externalizable
         out.writeInt( changeType.getChangeType() );
 
         // Write the entry
-        out.writeObject( entry );
+        entry.writeExternal( out );
 
         // Write the data
         switch ( changeType )
@@ -1104,7 +1092,7 @@ public class LdifEntry implements Cloneable, Externalizable
                 if ( newRdn != null )
                 {
                     out.writeBoolean( true );
-                    Unicode.writeUTF(out, newRdn);
+                    Unicode.writeUTF( out, newRdn );
                 }
                 else
                 {
@@ -1114,7 +1102,7 @@ public class LdifEntry implements Cloneable, Externalizable
                 if ( newSuperior != null )
                 {
                     out.writeBoolean( true );
-                    Unicode.writeUTF(out, newSuperior);
+                    Unicode.writeUTF( out, newSuperior );
                 }
                 else
                 {
@@ -1129,7 +1117,7 @@ public class LdifEntry implements Cloneable, Externalizable
                 for ( Modification modification : modificationList )
                 {
                     out.writeInt( modification.getOperation().getValue() );
-                    Unicode.writeUTF(out, modification.getAttribute().getId());
+                    Unicode.writeUTF( out, modification.getAttribute().getId() );
 
                     EntryAttribute attribute = modification.getAttribute();
                     out.writeObject( attribute );
@@ -1150,19 +1138,7 @@ public class LdifEntry implements Cloneable, Externalizable
 
             for ( LdifControl control : controls.values() )
             {
-                Unicode.writeUTF(out, control.getOid());
-                out.writeBoolean( control.isCritical() );
-                out.writeBoolean( control.hasValue() );
-
-                if ( control.hasValue() )
-                {
-                    out.writeInt( control.getValue().length );
-
-                    if ( control.getValue().length > 0 )
-                    {
-                        out.write( control.getValue() );
-                    }
-                }
+                control.writeExternal( out );
             }
         }
 
