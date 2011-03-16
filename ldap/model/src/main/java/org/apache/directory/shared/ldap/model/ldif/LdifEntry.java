@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.model.entry.DefaultEntry;
 import org.apache.directory.shared.ldap.model.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.model.entry.DefaultModification;
@@ -40,10 +41,14 @@ import org.apache.directory.shared.ldap.model.entry.ModificationOperation;
 import org.apache.directory.shared.ldap.model.entry.StringValue;
 import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
+import org.apache.directory.shared.ldap.model.exception.LdapInvalidAttributeValueException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.message.Control;
+import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.name.Rdn;
+import org.apache.directory.shared.util.Base64;
+import org.apache.directory.shared.util.Strings;
 import org.apache.directory.shared.util.Unicode;
 
 
@@ -87,6 +92,9 @@ public class LdifEntry implements Cloneable, Externalizable
     /** the entry */
     private Entry entry;
 
+    /** the DN */
+    private Dn entryDn;
+
     /** The controls */
     private Map<String, LdifControl> controls;
 
@@ -100,6 +108,7 @@ public class LdifEntry implements Cloneable, Externalizable
         modificationList = new LinkedList<Modification>();
         modificationItems = new HashMap<String, Modification>();
         entry = new DefaultEntry( (Dn) null );
+        entryDn = null;
         controls = null;
     }
 
@@ -113,7 +122,147 @@ public class LdifEntry implements Cloneable, Externalizable
         modificationList = new LinkedList<Modification>();
         modificationItems = new HashMap<String, Modification>();
         this.entry = entry;
+        entryDn = entry.getDn();
         controls = null;
+    }
+    
+    
+    /**
+     * Creates a LdifEntry using a list of strings representing the Ldif element
+     * 
+     * @param dn The LdifEntry DN
+     * @param avas The Ldif to convert to an LdifEntry
+     */
+    public LdifEntry( Dn dn, Object... avas ) throws LdapInvalidAttributeValueException, LdapLdifException
+    {
+        // First, convert the arguments to a full LDIF
+        StringBuilder sb = new StringBuilder();
+        int pos = 0;
+        boolean valueExpected = false;
+        String dnStr = null;
+        
+        if ( dn == null )
+        {
+            dnStr = "";
+        }
+        else
+        {
+            dnStr = dn.getName();
+        }
+        
+        if ( LdifUtils.isLDIFSafe( dnStr ) )
+        {
+            sb.append( "dn: " ).append( dnStr ).append( '\n' );
+        }
+        else
+        {
+            sb.append( "dn:: " ).append( Base64.encode( Strings.getBytesUtf8( dnStr ) ) ).append( '\n' );
+        }
+        
+        for ( Object ava : avas )
+        {
+            if ( !valueExpected )
+            {
+                if ( !( ava instanceof String ) )
+                {
+                    throw new LdapInvalidAttributeValueException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, I18n.err(
+                        I18n.ERR_12085, ( pos + 1 ) ) );
+                }
+
+                String attribute = ( String ) ava;
+                sb.append( attribute );
+
+                if ( attribute.indexOf( ':' ) != -1 )
+                {
+                    sb.append( '\n' );
+                }
+                else
+                {
+                    valueExpected = true;
+                }
+            }
+            else
+            {
+                if ( ava instanceof String )
+                {
+                    sb.append( ": " ).append( ( String ) ava ).append( '\n' );
+                }
+                else if ( ava instanceof byte[] )
+                {
+                    sb.append( ":: " );
+                    sb.append( new String( Base64.encode( ( byte[] ) ava ) ) );
+                    sb.append( '\n' );
+                }
+                else
+                {
+                    throw new LdapInvalidAttributeValueException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, I18n.err(
+                        I18n.ERR_12086, ( pos + 1 ) ) );
+                }
+
+                valueExpected = false;
+            }
+        }
+
+        if ( valueExpected )
+        {
+            throw new LdapInvalidAttributeValueException( ResultCodeEnum.INVALID_ATTRIBUTE_SYNTAX, I18n
+                .err( I18n.ERR_12087 ) );
+        }
+
+        // Now, parse the Ldif and convert it to a LdifEntry
+        LdifReader reader = new LdifReader();
+        List<LdifEntry> ldifEntries = reader.parseLdif( sb.toString() );
+
+        if ( ( ldifEntries != null ) && ( ldifEntries.size() == 1 ) )
+        {
+            LdifEntry ldifEntry = ldifEntries.get( 0 );
+            
+            changeType = ldifEntry.getChangeType();
+            controls = ldifEntry.getControls();
+            entryDn = ldifEntry.getDn();
+            
+            switch ( ldifEntry.getChangeType() )
+            {
+                case Add :
+                    // Fallback
+                case None :
+                    entry = ldifEntry.getEntry();
+                    break;
+                    
+                case Delete :
+                    break;
+                    
+                case ModDn :
+                case ModRdn :
+                    newRdn = ldifEntry.getNewRdn();
+                    newSuperior = ldifEntry.getNewSuperior();
+                    deleteOldRdn = ldifEntry.isDeleteOldRdn();
+                    break;
+                    
+                case Modify :
+                    modificationList = ldifEntry.getModificationItems();
+                    modificationItems = new HashMap<String, Modification>();
+                    
+                    for ( Modification modification : modificationList )
+                    {
+                        modificationItems.put( modification.getAttribute().getId(), modification );
+                    }
+                    break;
+            }
+        }
+    }
+    
+    
+    /**
+     * Creates a LdifEntry using a list of strings representing the Ldif element
+     * 
+     * @param dn The LdifEntry DN
+     * @param avas The Ldif to convert to an LdifEntry
+     */
+    public LdifEntry( String dn, Object... strings ) 
+        throws LdapInvalidAttributeValueException, LdapLdifException, LdapInvalidDnException
+    {
+        this( new Dn( dn ), strings );
     }
 
 
@@ -124,6 +273,7 @@ public class LdifEntry implements Cloneable, Externalizable
      */
     public void setDn( Dn dn )
     {
+        entryDn = dn;
         entry.setDn( dn );
     }
 
@@ -136,7 +286,8 @@ public class LdifEntry implements Cloneable, Externalizable
      */
     public void setDn( String dn ) throws LdapInvalidDnException
     {
-        entry.setDn( new Dn( dn ) );
+        entryDn = new Dn( dn );
+        entry.setDn( entryDn );
     }
 
 
@@ -383,7 +534,7 @@ public class LdifEntry implements Cloneable, Externalizable
      */
     public Dn getDn()
     {
-        return entry.getDn();
+        return entryDn;
     }
 
 

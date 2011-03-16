@@ -43,19 +43,19 @@ import java.util.NoSuchElementException;
 
 import org.apache.directory.shared.asn1.util.OID;
 import org.apache.directory.shared.i18n.I18n;
+import org.apache.directory.shared.ldap.model.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.model.entry.ModificationOperation;
+import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.message.Control;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.name.DnParser;
 import org.apache.directory.shared.ldap.model.name.Rdn;
-import org.apache.directory.shared.util.exception.NotImplementedException;
-import org.apache.directory.shared.ldap.model.entry.DefaultEntryAttribute;
-import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.util.Base64;
 import org.apache.directory.shared.util.Chars;
 import org.apache.directory.shared.util.Strings;
+import org.apache.directory.shared.util.exception.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -812,7 +812,16 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
             if ( Chars.isCharASCII(controlValue, criticalPos + 1, ':') )
             {
                 // Base 64 encoded value
-                byte[] value = Base64.decode( line.substring( criticalPos + 2 ).toCharArray() );
+                
+                // Skip the <fill>
+                pos = criticalPos + 2;
+                
+                while ( Chars.isCharASCII(controlValue, pos, ' ') )
+                {
+                    pos++;
+                }
+
+                byte[] value = Base64.decode( line.substring( pos ).toCharArray() );
                 control.setValue( value );
             }
             else if ( Chars.isCharASCII(controlValue, criticalPos + 1, '<') )
@@ -822,12 +831,20 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
             }
             else
             {
-                // Standard value
-                byte[] value = new byte[length - criticalPos - 1];
-
-                for ( int i = 0; i < length - criticalPos - 1; i++ )
+                // Skip the <fill>
+                pos = criticalPos + 1;
+                
+                while ( Chars.isCharASCII(controlValue, pos, ' ') )
                 {
-                    value[i] = ( byte ) controlValue[i + criticalPos + 1];
+                    pos++;
+                }
+
+                // Standard value
+                byte[] value = new byte[length - pos];
+
+                for ( int i = 0; i < length - pos; i++ )
+                {
+                    value[i] = ( byte ) controlValue[i + pos];
                 }
 
                 control.setValue( value );
@@ -1001,7 +1018,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
 
             if ( lowerLine.startsWith( "-" ) )
             {
-                if ( state != ATTRVAL_SPEC_OR_SEP )
+                if ( ( state != ATTRVAL_SPEC_OR_SEP ) && ( state != ATTRVAL_SPEC ) ) 
                 {
                     LOG.error( I18n.err( I18n.ERR_12040_BAD_MODIFY_SEPARATOR ) );
                     throw new LdapLdifException( I18n.err( I18n.ERR_12040_BAD_MODIFY_SEPARATOR ) );
@@ -1031,7 +1048,7 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
                     throw new LdapLdifException( I18n.err( I18n.ERR_12042_BAD_MODIFY_SEPARATOR_2 ) );
                 }
 
-                modified = Strings.trim(line.substring("add:".length()));
+                modified = Strings.trim( line.substring( "add:".length() ) );
                 modificationType = ModificationOperation.ADD_ATTRIBUTE;
                 attribute = new DefaultEntryAttribute( modified );
 
@@ -1107,6 +1124,12 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
                 state = ATTRVAL_SPEC_OR_SEP;
             }
         }
+
+        if ( state != MOD_SPEC )
+        {
+            LOG.error( I18n.err( I18n.ERR_12042_BAD_MODIFY_SEPARATOR_2 ) );
+            throw new LdapLdifException( I18n.err( I18n.ERR_12042_BAD_MODIFY_SEPARATOR_2 ) );
+        }
     }
 
 
@@ -1148,14 +1171,14 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
         // The changetype and operation has already been parsed.
         entry.setChangeType( operation );
 
-        switch ( operation.getChangeType() )
+        switch ( operation )
         {
-            case ChangeType.DELETE_ORDINAL:
+            case Delete:
                 // The change type will tell that it's a delete operation,
                 // the dn is used as a key.
                 return;
 
-            case ChangeType.ADD_ORDINAL:
+            case Add:
                 // We will iterate through all attribute/value pairs
                 while ( iter.hasNext() )
                 {
@@ -1166,16 +1189,16 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
 
                 return;
 
-            case ChangeType.MODIFY_ORDINAL:
+            case Modify:
                 parseModify( entry, iter );
                 return;
 
-            case ChangeType.MODRDN_ORDINAL:// They are supposed to have the same syntax ???
-            case ChangeType.MODDN_ORDINAL:
+            case ModDn:// They are supposed to have the same syntax ???
+            case ModRdn:
                 // First, parse the modrdn part
                 parseModRdn( entry, iter );
 
-                // The next line should be the new superior
+                // The next line should be the new superior, if we have one
                 if ( iter.hasNext() )
                 {
                     String line = iter.next();
@@ -1202,14 +1225,6 @@ public class LdifReader implements Iterable<LdifEntry>, Closeable
                             LOG.error( I18n.err( I18n.ERR_12046 ) );
                             throw new LdapLdifException( I18n.err( I18n.ERR_12047 ) );
                         }
-                    }
-                }
-                else
-                {
-                    if ( operation == ChangeType.ModDn )
-                    {
-                        LOG.error( I18n.err( I18n.ERR_12046 ) );
-                        throw new LdapLdifException( I18n.err( I18n.ERR_12047 ) );
                     }
                 }
 
