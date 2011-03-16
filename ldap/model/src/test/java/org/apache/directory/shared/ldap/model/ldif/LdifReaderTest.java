@@ -34,8 +34,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
-import com.mycila.junit.concurrent.Concurrency;
-import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
@@ -46,6 +44,9 @@ import org.apache.directory.shared.util.Strings;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 
 
 /**
@@ -345,7 +346,7 @@ public class LdifReaderTest
             "# field is \"true\" and the controlValue field is\n" + 
             "# absent, as required by [9].\n" +
             "dn: ou=Product Development, dc=airius, dc=com\n" + 
-            "control: 1.2.840.11A556.1.4.805 true\n" +
+            "control: 1.2.840.113556.1.4.805 true\n" +
             "changetype: delete\n";
 
         LdifReader reader = new LdifReader();
@@ -424,7 +425,7 @@ public class LdifReaderTest
             "# field is \"true\" and the controlValue field is\n" + 
             "# absent, as required by [9].\n" +
             "dn: ou=Product Development, dc=airius, dc=com\n" + 
-            "control: 1.2.840.11A556.1.4.805 true\n" +
+            "control: 1.2.840.113556.1.4.805 true\n" +
             "changetype: delete\n" + 
             "\n" + 
             "dn: cn=app1,ou=applications,ou=conf,dc=apache,dc=org\n" + 
@@ -1574,7 +1575,7 @@ public class LdifReaderTest
             "# field is \"true\" and the controlValue field is\n" + 
             "# absent, as required by [9].\n" +
             "dn: ou=Product Development, dc=airius, dc=com\n" + 
-            "control: 1.2.840.11A556.1.4.805 true\n" +
+            "control: 1.2.840.113A556.1.4.805 true\n" +
             "changetype: delete\n";
 
         LdifReader reader = new LdifReader();
