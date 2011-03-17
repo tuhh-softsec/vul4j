@@ -53,22 +53,7 @@ public class LdifControlSerializer
      */
     public static void serialize( LdifControl ldifControl, ObjectOutput out ) throws IOException
     {
-        // The OID
-        out.writeUTF( ldifControl.getOid() );
-        
-        // The criticality
-        out.writeBoolean( ldifControl.isCritical() );
-        
-        // The value if any
-        if ( ldifControl.hasValue() )
-        {
-            out.writeInt( ldifControl.getValue().length );
-            out.write( ldifControl.getValue() );
-        }
-        else
-        {
-            out.writeInt( -1 );
-        }
+        ldifControl.writeExternal( out );
         
         out.flush();
     }
@@ -83,20 +68,15 @@ public class LdifControlSerializer
      */
     public static LdifControl deserialize( ObjectInput in ) throws IOException
     {
-        // The OID
-        String oid = in.readUTF();
-        LdifControl ldifControl = new LdifControl( oid );
+        LdifControl ldifControl = new LdifControl();
         
-        // The criticality
-        ldifControl.setCritical( in.readBoolean() );
-        
-        int valueSize = in.readInt();
-        
-        if ( valueSize >=0 )
+        try
         {
-            byte[] value = new byte[ valueSize ];
-            in.read( value );
-            ldifControl.setValue( value );
+            ldifControl.readExternal( in );
+        }
+        catch ( ClassNotFoundException cnfe )
+        {
+            throw new IOException( cnfe.getMessage() );
         }
 
         return ldifControl;

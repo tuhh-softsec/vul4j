@@ -956,7 +956,7 @@ public class LdifEntry implements Cloneable, Externalizable
         LdifEntry otherEntry = ( LdifEntry ) o;
 
         // Check the Dn
-        Dn thisDn = entry.getDn();
+        Dn thisDn = entryDn;
         Dn dnEntry = otherEntry.getDn();
 
         if ( !thisDn.equals( dnEntry ) )
