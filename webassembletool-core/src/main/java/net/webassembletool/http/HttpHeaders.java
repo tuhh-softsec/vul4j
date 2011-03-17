@@ -6,7 +6,7 @@ package net.webassembletool.http;
  * Based on javax.ws.rs.core.HttpHeaders (which is only available on Java 6)
  * with additional headers used by ESIGate.
  * 
- * @see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html
+ * @see "http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html"
  * @author Nicolas Richeton
  * 
  */
