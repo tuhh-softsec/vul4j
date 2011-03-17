@@ -1,5 +1,8 @@
 package net.webassembletool;
 
+import java.io.IOException;
+import java.io.Writer;
+
 /**
  * Exception thrown when an error occurred retrieving a resource
  * 
@@ -27,7 +30,7 @@ public class HttpErrorPage extends Exception {
 		return statusMessage;
 	}
 
-	public String getErrorPageContent() {
-		return errorPageContent;
+	public void render(Writer writer) throws IOException {
+		writer.write(errorPageContent);
 	}
 }

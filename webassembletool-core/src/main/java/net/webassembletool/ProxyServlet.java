@@ -34,7 +34,8 @@ public class ProxyServlet extends HttpServlet {
 			DriverFactory.getInstance(provider)
 					.proxy(relUrl, request, response);
 		} catch (HttpErrorPage e) {
-			throw new ServletException(e);
+			response.setStatus(e.getStatusCode());
+			e.render(response.getWriter());
 		}
 	}
 

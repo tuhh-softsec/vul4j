@@ -59,6 +59,12 @@ public class Rfc2616Test extends TestCase {
 			public Collection<String> getHeaderNames() {
 				return null;
 			}
+
+			@Override
+			public String getStatusMessage() {
+				return "OK";
+			}
+
 		};
 
 		Date d = Rfc2616.getExpiration(r);
@@ -99,6 +105,12 @@ public class Rfc2616Test extends TestCase {
 
 			@Override
 			public Collection<String> getHeaderNames() {
+				return null;
+			}
+
+			@Override
+			public String getStatusMessage() {
+				// TODO Auto-generated method stub
 				return null;
 			}
 		};

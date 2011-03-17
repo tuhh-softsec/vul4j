@@ -12,8 +12,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.webassembletool.DriverConfiguration;
+import net.webassembletool.HttpErrorPage;
 import net.webassembletool.ResourceContext;
+import net.webassembletool.cache.CachedResponse;
 import net.webassembletool.output.Output;
+import net.webassembletool.output.StringOutput;
 import net.webassembletool.resource.Resource;
 
 import org.apache.commons.lang.StringUtils;
@@ -120,7 +123,9 @@ public class Rfc2616 {
 			String[] varyStringSplit = varyString.split(",");
 			for (String key : varyStringSplit) {
 				String value = resource.getRequestHeader(key);
+
 				result.put(key, value);
+
 			}
 			return result;
 		}
@@ -393,9 +398,25 @@ public class Rfc2616 {
 		return false;
 	}
 
-	public final static void renderResource(DriverConfiguration config, Resource resource, Output output) throws IOException {
-		if (HttpServletResponse.SC_NOT_MODIFIED == resource.getStatusCode()) {
+	public final static void renderResource(DriverConfiguration config, Resource resource, Output output)
+			throws IOException, HttpErrorPage {
+		if (resource.isError()) {
+			String errorPageContent;
+			StringOutput stringOutput = new StringOutput();
+			resource.render(stringOutput);
+			errorPageContent = stringOutput.toString();
 			output.setStatusCode(resource.getStatusCode());
+			output.setStatusMessage(resource.getStatusMessage());
+			copyHeaders(config, resource, output);
+			output.open();
+			output.write(errorPageContent);
+			output.close();
+			throw new HttpErrorPage(resource.getStatusCode(),
+					resource.getStatusMessage(), errorPageContent);
+		} else if (HttpServletResponse.SC_NOT_MODIFIED == resource
+				.getStatusCode()) {
+			output.setStatusCode(resource.getStatusCode());
+			output.setStatusMessage(resource.getStatusMessage());
 			copyHeaders(config, resource, output);
 			output.open();
 			output.getOutputStream();
@@ -417,5 +438,6 @@ public class Rfc2616 {
 			}
 		}
 	}
+
 
 }

@@ -23,6 +23,7 @@ public class CachedResponseSummary extends Resource {
 	private boolean responseBody;
 	private String cacheKey;
 	private Date localDate;
+	private String statusMessage;
 
 	@Override
 	public boolean equals(Object obj) {
@@ -123,5 +124,14 @@ public class CachedResponseSummary extends Resource {
 	@Override
 	public String toString() {
 		return cacheKey;
+	}
+
+	@Override
+	public String getStatusMessage() {
+		return statusMessage;
+	}
+
+	public void setStatusMessage(String statusMessage) {
+		this.statusMessage = statusMessage;
 	}
 }

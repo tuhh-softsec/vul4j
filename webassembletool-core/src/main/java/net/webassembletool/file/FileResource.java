@@ -79,4 +79,9 @@ public class FileResource extends Resource {
 		Object value = headersFile.getHeader(name);
 		return value != null ? value.toString() : null;
 	}
+
+	@Override
+	public String getStatusMessage() {
+		return headersFile.getStatusMessage();
+	}
 }

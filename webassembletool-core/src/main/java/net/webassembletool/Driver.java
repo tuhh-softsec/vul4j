@@ -502,7 +502,7 @@ public class Driver {
 	}
 
 	private final void renderResource(ResourceContext resourceContext,
-			Output output) {
+			Output output) throws HttpErrorPage {
 		String httpUrl = ResourceUtils
 				.getHttpUrlWithQueryString(resourceContext);
 		MultipleOutput multipleOutput = new MultipleOutput();
@@ -621,18 +621,22 @@ public class Driver {
 				Rfc2616.renderResource(config, new NullResource(), multipleOutput);
 			}
 		} catch (Throwable t) {
-			// In case there was a problem during rendering (client abort for
-			// exemple), all the output
-			// should have been gracefully closed in the render method but we
-			// must discard the entry inside the cache or the file system
-			// because it is not complete
-			if (memoryOutput != null) {
-				memoryOutput = null;
+			if (t instanceof HttpErrorPage) {
+				throw (HttpErrorPage) t;
+			} else {
+				// In case there was a problem during rendering (client abort for
+				// exemple), all the output
+				// should have been gracefully closed in the render method but we
+				// must discard the entry inside the cache or the file system
+				// because it is not complete
+				if (memoryOutput != null) {
+					memoryOutput = null;
+				}
+				if (fileOutput != null) {
+					fileOutput.delete();
+				}
+				throw new ResponseException(httpUrl + " could not be retrieved", t);
 			}
-			if (fileOutput != null) {
-				fileOutput.delete();
-			}
-			throw new ResponseException(httpUrl + " could not be retrieved", t);
 		} finally {
 			// Free all the resources
 			if (cachedResource != null) {
@@ -653,7 +657,7 @@ public class Driver {
 	/**
 	 * This method returns the content of an url as a StringOutput. The result
 	 * is cached into the request scope in order not to send several requests if
-	 * you need serveral blocks in the same page to build the final page.
+	 * you need several blocks in the same page to build the final page.
 	 * 
 	 * @param target
 	 *            the target resource
@@ -675,10 +679,6 @@ public class Driver {
 			if (cacheable) {
 				request.setAttribute(url, result);
 			}
-		}
-		if (result.getStatusCode() != HttpServletResponse.SC_OK) {
-			throw new HttpErrorPage(result.getStatusCode(),
-					result.getStatusMessage(), result.toString());
 		}
 		return result;
 	}

@@ -42,6 +42,13 @@ public abstract class Resource {
 	 */
 	public abstract int getStatusCode();
 
+	/**
+	 * Returns the HTTP status message for this resource
+	 * 
+	 * @return status message
+	 */
+	public abstract String getStatusMessage();
+
 	public boolean isError() {
 		int statusCode = getStatusCode();
 		return statusCode != HttpServletResponse.SC_OK

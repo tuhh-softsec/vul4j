@@ -39,4 +39,9 @@ public class NullResource extends Resource {
 		return null;
 	}
 
+	@Override
+	public String getStatusMessage() {
+		return "Not found";
+	}
+
 }

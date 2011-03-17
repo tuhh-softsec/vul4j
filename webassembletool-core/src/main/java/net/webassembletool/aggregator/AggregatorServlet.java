@@ -43,7 +43,8 @@ public class AggregatorServlet extends HttpServlet {
 					new EsiRenderer(request, response, DriverFactory
 							.getInstance(provider)));
 		} catch (HttpErrorPage e) {
-			throw new ServletException(e);
+			response.setStatus(e.getStatusCode());
+			e.render(response.getWriter());
 		}
 	}
 

@@ -391,7 +391,8 @@ public class RewriteProxyServlet extends HttpServlet {
 											response);
 							return;
 						} catch (HttpErrorPage e) {
-							throw new ServletException(e);
+							response.setStatus(e.getStatusCode());
+							e.render(response.getWriter());
 						}
 					} else {
 						// Create target

@@ -263,6 +263,11 @@ public class HttpResource extends Resource {
 		return httpClientResponse.getStatusCode();
 	}
 
+	@Override
+	public String getStatusMessage() {
+		return httpClientResponse.getStatusText();
+	}
+
 	/**
 	 * @see java.lang.Object#toString()
 	 */

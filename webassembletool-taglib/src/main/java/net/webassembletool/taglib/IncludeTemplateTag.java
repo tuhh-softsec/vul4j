@@ -38,7 +38,7 @@ public class IncludeTemplateTag extends BodyTagSupport implements
 		} catch (HttpErrorPage e) {
 			if (displayErrorPage)
 				try {
-					pageContext.getOut().append(e.getErrorPageContent());
+					e.render(pageContext.getOut());
 				} catch (IOException e1) {
 					throw new JspException(e1);
 				}
@@ -113,7 +113,7 @@ public class IncludeTemplateTag extends BodyTagSupport implements
 	public void setProvider(String provider) {
 		this.provider = provider;
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -146,4 +146,5 @@ public class IncludeTemplateTag extends BodyTagSupport implements
 	public void setDefaultMessage(String errorMessage) {
 		defaultErrorMessage = errorMessage;
 	}
+
 }
