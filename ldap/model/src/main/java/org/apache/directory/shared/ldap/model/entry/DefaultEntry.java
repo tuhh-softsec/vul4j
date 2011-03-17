@@ -34,9 +34,7 @@ import java.util.Set;
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
-import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.name.Dn;
-import org.apache.directory.shared.ldap.model.name.DnSerializer;
 import org.apache.directory.shared.ldap.model.schema.AttributeType;
 import org.apache.directory.shared.ldap.model.schema.SchemaManager;
 import org.apache.directory.shared.util.Strings;
@@ -2561,12 +2559,12 @@ public final class DefaultEntry implements Entry
         if ( dn == null )
         {
             // Write an empty Dn
-            DnSerializer.serialize( Dn.EMPTY_DN, out );
+            Dn.EMPTY_DN.writeExternal( out );
         }
         else
         {
             // Write the Dn
-            DnSerializer.serialize( dn, out );
+            dn.writeExternal( out );
         }
 
         // Then the attributes.
@@ -2577,7 +2575,7 @@ public final class DefaultEntry implements Entry
         for ( EntryAttribute attribute : attributes.values() )
         {
             // Store the attribute
-            out.writeObject( attribute );
+            attribute.writeExternal( out );
         }
 
         out.flush();
@@ -2590,14 +2588,8 @@ public final class DefaultEntry implements Entry
     public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException
     {
         // Read the Dn
-        try
-        {
-            dn = DnSerializer.deserialize( schemaManager, in );
-        }
-        catch( LdapInvalidDnException lide )
-        {
-            throw new IOException( lide.getMessage() );
-        }
+        dn = new Dn( schemaManager );
+        dn.readExternal( in );
             
 
         // Read the number of attributes
@@ -2607,13 +2599,15 @@ public final class DefaultEntry implements Entry
         for ( int i = 0; i < nbAttributes; i++ )
         {
             // Read each attribute
-            EntryAttribute attribute = ( DefaultEntryAttribute ) in.readObject();
+            EntryAttribute attribute = new DefaultEntryAttribute();
+            attribute.readExternal( in );
 
             if ( schemaManager != null )
             {
                 try
                 {
                     AttributeType attributeType = schemaManager.lookupAttributeTypeRegistry( attribute.getId() );
+                    attribute.setAttributeType( attributeType );
 
                     attributes.put( attributeType.getOid(), attribute );
                 }

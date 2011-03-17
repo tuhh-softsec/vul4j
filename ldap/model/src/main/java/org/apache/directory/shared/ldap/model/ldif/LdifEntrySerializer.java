@@ -23,16 +23,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.apache.directory.shared.ldap.model.entry.DefaultModification;
-import org.apache.directory.shared.ldap.model.entry.Entry;
-import org.apache.directory.shared.ldap.model.entry.EntrySerializer;
-import org.apache.directory.shared.ldap.model.entry.Modification;
-import org.apache.directory.shared.ldap.model.entry.ModificationSerializer;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
-import org.apache.directory.shared.ldap.model.name.Dn;
-import org.apache.directory.shared.ldap.model.name.DnSerializer;
 import org.apache.directory.shared.ldap.model.schema.SchemaManager;
-import org.apache.directory.shared.util.Unicode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,78 +56,7 @@ public class LdifEntrySerializer
     public static void serialize( LdifEntry ldifEntry, ObjectOutput out ) throws IOException
     {
         // The changeType
-        out.writeInt( ldifEntry.getChangeType().getChangeType() );
-
-        switch ( ldifEntry.getChangeType() )
-        {
-            case Add :
-                // We write the entry
-                EntrySerializer.serialize( ldifEntry.getEntry(), out );
-                
-                break;
-                
-            case Delete :
-                // We just have to store the deleted DN
-                DnSerializer.serialize( ldifEntry.getDn(), out );
-                
-                break;
-                
-            case ModDn :
-            case ModRdn :
-                DnSerializer.serialize( ldifEntry.getDn(), out );
-                out.writeBoolean( ldifEntry.isDeleteOldRdn() );
-
-                if ( ldifEntry.getNewRdn() != null )
-                {
-                    out.writeBoolean( true );
-                    Unicode.writeUTF( out, ldifEntry.getNewRdn() );
-                }
-                else
-                {
-                    out.writeBoolean( false );
-                }
-
-                if ( ldifEntry.getNewSuperior() != null )
-                {
-                    out.writeBoolean( true );
-                    Unicode.writeUTF( out, ldifEntry.getNewSuperior() );
-                }
-                else
-                {
-                    out.writeBoolean( false );
-                }
-
-                break;
-                
-            case Modify :
-                DnSerializer.serialize( ldifEntry.getDn(), out );
-                // Read the modification
-                out.writeInt( ldifEntry.getModificationItems().size() );
-
-                for ( Modification modification : ldifEntry.getModificationItems() )
-                {
-                    ModificationSerializer.serialize( modification, out );
-                }
-                
-                break;
-        }
-
-        
-        // The controls
-        if ( ldifEntry.hasControls() )
-        {
-            // Write the controls
-            out.writeInt( ldifEntry.getControls().size() );
-
-            for ( LdifControl ldifControl : ldifEntry.getControls().values() )
-            {
-                LdifControlSerializer.serialize( ldifControl, out );
-            }
-        }
-        else
-        {
-            out.writeInt( 0 );
-        }
+        ldifEntry.writeExternal( out );
         
         out.flush();
     }
@@ -152,93 +73,15 @@ public class LdifEntrySerializer
     public static LdifEntry deserialize( SchemaManager schemaManager, ObjectInput in )
         throws IOException, LdapInvalidDnException
     {
-        // The ChangeType 
-        ChangeType changeType = ChangeType.getChangeType( in.readInt() );
+        LdifEntry ldifEntry = new LdifEntry();
         
-        LdifEntry ldifEntry = null;
-        
-        switch ( changeType )
+        try
         {
-            case Add :
-                Entry entry = EntrySerializer.deserialize( schemaManager, in );
-                ldifEntry = new LdifEntry( entry );
-                ldifEntry.setChangeType( changeType );
-                
-                break;
-                
-            case Delete :
-                Dn dn = DnSerializer.deserialize( schemaManager, in );
-                ldifEntry = new LdifEntry();
-                ldifEntry.setChangeType( changeType );
-                ldifEntry.setDn( dn );
-                
-                break;
-                
-            case ModDn :
-            case ModRdn :
-                ldifEntry = new LdifEntry();
-
-                dn = DnSerializer.deserialize( schemaManager, in );
-                ldifEntry.setDn( dn );
-                boolean deleteOldRdn = in.readBoolean();
-                ldifEntry.setChangeType( changeType );
-                ldifEntry.setDeleteOldRdn( deleteOldRdn );
-
-                // The newRDN
-                if ( in.readBoolean() )
-                {
-                    String newRdn = Unicode.readUTF(in);
-                    ldifEntry.setNewRdn( newRdn );
-                }
-
-                // The newSuperior
-                if ( in.readBoolean() )
-                {
-                    String newSuperior = Unicode.readUTF(in);
-                    ldifEntry.setNewSuperior( newSuperior );
-                }
-                
-                break;
-                
-            case Modify :
-                ldifEntry = new LdifEntry();
-                dn = DnSerializer.deserialize( schemaManager, in );
-                ldifEntry.setDn( dn );
-
-                // Read the modification
-                int nbModifs = in.readInt();
-                ldifEntry.setChangeType( changeType );
-
-                for ( int i = 0; i < nbModifs; i++ )
-                {
-                    Modification modification = new DefaultModification();
-                    
-                    try
-                    {
-                        modification.readExternal( in );
-                    }
-                    catch ( ClassNotFoundException cnfe )
-                    {
-                        throw new IOException( cnfe.getMessage() );
-                    }
-
-                    ldifEntry.addModificationItem( modification );
-                }
-                
-                break;
+            ldifEntry.readExternal( in );
         }
-        
-        // The controls
-        int nbControls = in.readInt();
-        
-        if ( nbControls > 0 )
+        catch ( ClassNotFoundException cnfe )
         {
-            for ( int i = 0; i < nbControls; i++ )
-            {
-                LdifControl ldifControl = LdifControlSerializer.deserialize( in );
-                
-                ldifEntry.addControl( ldifControl );
-            }
+            throw new IOException( cnfe.getMessage() );
         }
 
         return ldifEntry;
