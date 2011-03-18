@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.model.name;
+package org.apache.directory.shared.ldap.name;
 
 import static org.junit.Assert.assertEquals;
 
@@ -28,6 +28,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import org.apache.directory.shared.ldap.model.exception.LdapException;
+import org.apache.directory.shared.ldap.model.name.Rdn;
+import org.apache.directory.shared.ldap.model.schema.SchemaManager;
+import org.apache.directory.shared.ldap.schemamanager.impl.DefaultSchemaManager;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -41,12 +45,24 @@ import com.mycila.junit.concurrent.ConcurrentJunitRunner;
  */
 @RunWith(ConcurrentJunitRunner.class)
 @Concurrency()
-public class RdnSerializerTest
+public class SchemaAwareRdnSerializationTest
 {
+    private static SchemaManager schemaManager;
+
+    /**
+     * Initialize OIDs maps for normalization
+     */
+    @BeforeClass
+    public static void setup() throws Exception
+    {
+        schemaManager = new DefaultSchemaManager();
+    }
+
+    
     @Test
     public void testRdnFullSerialization() throws IOException, LdapException, ClassNotFoundException
     {
-        Rdn rdn1 = new Rdn( "gn=john + cn=doe" );
+        Rdn rdn1 = new Rdn( schemaManager, "gn=john + cn=doe" );
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
@@ -58,7 +74,7 @@ public class RdnSerializerTest
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        Rdn rdn2 = new Rdn();
+        Rdn rdn2 = new Rdn( schemaManager );
         rdn2.readExternal( in );
 
         assertEquals( rdn1, rdn2 );
@@ -68,7 +84,7 @@ public class RdnSerializerTest
     @Test
     public void testRdnEmptySerialization() throws IOException, LdapException, ClassNotFoundException
     {
-        Rdn rdn1 = new Rdn();
+        Rdn rdn1 = new Rdn( schemaManager );
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
@@ -80,7 +96,7 @@ public class RdnSerializerTest
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        Rdn rdn2 = new Rdn();
+        Rdn rdn2 = new Rdn( schemaManager );
         rdn2.readExternal( in );
 
         assertEquals( rdn1, rdn2 );
@@ -90,7 +106,7 @@ public class RdnSerializerTest
     @Test
     public void testRdnSimpleSerialization() throws IOException, LdapException, ClassNotFoundException
     {
-        Rdn rdn1 = new Rdn( "cn=doe" );
+        Rdn rdn1 = new Rdn( schemaManager, "cn=Doe" );
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
@@ -102,9 +118,11 @@ public class RdnSerializerTest
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        Rdn rdn2 = new Rdn();
+        Rdn rdn2 = new Rdn( schemaManager );
         rdn2.readExternal( in );
 
         assertEquals( rdn1, rdn2 );
+        assertEquals( "doe", rdn2.getValue( "cn" ) );
+        assertEquals( "Doe", rdn2.getUpValue().getString() );
     }
 }
