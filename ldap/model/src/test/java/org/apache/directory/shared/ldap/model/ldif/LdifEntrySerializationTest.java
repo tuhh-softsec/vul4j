@@ -59,14 +59,15 @@ public class LdifEntrySerializationTest
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        LdifEntrySerializer.serialize( ldifEntry1, out );
+        ldifEntry1.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        LdifEntry ldifEntry2 = LdifEntrySerializer.deserialize( null, in );
+        LdifEntry ldifEntry2 = new LdifEntry();
+        ldifEntry2.readExternal( in );
 
         assertEquals( ldifEntry1, ldifEntry2 );
     }
@@ -92,14 +93,15 @@ public class LdifEntrySerializationTest
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        LdifEntrySerializer.serialize( ldifEntry1, out );
+        ldifEntry1.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        LdifEntry ldifEntry2 = LdifEntrySerializer.deserialize( null, in );
+        LdifEntry ldifEntry2 = new LdifEntry();
+        ldifEntry2.readExternal( in );
 
         assertEquals( ldifEntry1, ldifEntry2 );
     }
@@ -125,14 +127,15 @@ public class LdifEntrySerializationTest
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        LdifEntrySerializer.serialize( ldifEntry1, out );
+        ldifEntry1.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        LdifEntry ldifEntry2 = LdifEntrySerializer.deserialize( null, in );
+        LdifEntry ldifEntry2 = new LdifEntry();
+        ldifEntry2.readExternal( in );
 
         assertEquals( ldifEntry1, ldifEntry2 );
     }
@@ -159,14 +162,15 @@ public class LdifEntrySerializationTest
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        LdifEntrySerializer.serialize( ldifEntry1, out );
+        ldifEntry1.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        LdifEntry ldifEntry2 = LdifEntrySerializer.deserialize( null, in );
+        LdifEntry ldifEntry2 = new LdifEntry();
+        ldifEntry2.readExternal( in );
 
         assertEquals( ldifEntry1, ldifEntry2 );
     }
@@ -194,14 +198,15 @@ public class LdifEntrySerializationTest
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        LdifEntrySerializer.serialize( ldifEntry1, out );
+        ldifEntry1.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        LdifEntry ldifEntry2 = LdifEntrySerializer.deserialize( null, in );
+        LdifEntry ldifEntry2 = new LdifEntry();
+        ldifEntry2.readExternal( in );
 
         assertEquals( ldifEntry1, ldifEntry2 );
     }
@@ -228,14 +233,15 @@ public class LdifEntrySerializationTest
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        LdifEntrySerializer.serialize( ldifEntry1, out );
+        ldifEntry1.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        LdifEntry ldifEntry2 = LdifEntrySerializer.deserialize( null, in );
+        LdifEntry ldifEntry2 = new LdifEntry();
+        ldifEntry2.readExternal( in );
 
         assertEquals( ldifEntry1, ldifEntry2 );
     }
@@ -263,14 +269,15 @@ public class LdifEntrySerializationTest
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        LdifEntrySerializer.serialize( ldifEntry1, out );
+        ldifEntry1.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        LdifEntry ldifEntry2 = LdifEntrySerializer.deserialize( null, in );
+        LdifEntry ldifEntry2 = new LdifEntry();
+        ldifEntry2.readExternal( in );
 
         assertEquals( ldifEntry1, ldifEntry2 );
     }
@@ -299,14 +306,15 @@ public class LdifEntrySerializationTest
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        LdifEntrySerializer.serialize( ldifEntry1, out );
+        ldifEntry1.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        LdifEntry ldifEntry2 = LdifEntrySerializer.deserialize( null, in );
+        LdifEntry ldifEntry2 = new LdifEntry();
+        ldifEntry2.readExternal( in );
 
         assertEquals( ldifEntry1, ldifEntry2 );
     }
@@ -328,14 +336,15 @@ public class LdifEntrySerializationTest
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        LdifEntrySerializer.serialize( ldifEntry1, out );
+        ldifEntry1.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        LdifEntry ldifEntry2 = LdifEntrySerializer.deserialize( null, in );
+        LdifEntry ldifEntry2 = new LdifEntry();
+        ldifEntry2.readExternal( in );
 
         assertEquals( ldifEntry1, ldifEntry2 );
     }
@@ -358,14 +367,15 @@ public class LdifEntrySerializationTest
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        LdifEntrySerializer.serialize( ldifEntry1, out );
+        ldifEntry1.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        LdifEntry ldifEntry2 = LdifEntrySerializer.deserialize( null, in );
+        LdifEntry ldifEntry2 = new LdifEntry();
+        ldifEntry2.readExternal( in );
 
         assertEquals( ldifEntry1, ldifEntry2 );
     }
@@ -389,14 +399,15 @@ public class LdifEntrySerializationTest
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        LdifEntrySerializer.serialize( ldifEntry1, out );
+        ldifEntry1.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        LdifEntry ldifEntry2 = LdifEntrySerializer.deserialize( null, in );
+        LdifEntry ldifEntry2 = new LdifEntry();
+        ldifEntry2.readExternal( in );
 
         assertEquals( ldifEntry1, ldifEntry2 );
     }
@@ -421,14 +432,15 @@ public class LdifEntrySerializationTest
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        LdifEntrySerializer.serialize( ldifEntry1, out );
+        ldifEntry1.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        LdifEntry ldifEntry2 = LdifEntrySerializer.deserialize( null, in );
+        LdifEntry ldifEntry2 = new LdifEntry();
+        ldifEntry2.readExternal( in );
 
         assertEquals( ldifEntry1, ldifEntry2 );
     }
@@ -452,14 +464,15 @@ public class LdifEntrySerializationTest
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        LdifEntrySerializer.serialize( ldifEntry1, out );
+        ldifEntry1.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        LdifEntry ldifEntry2 = LdifEntrySerializer.deserialize( null, in );
+        LdifEntry ldifEntry2 = new LdifEntry();
+        ldifEntry2.readExternal( in );
 
         assertEquals( ldifEntry1, ldifEntry2 );
     }
@@ -481,14 +494,15 @@ public class LdifEntrySerializationTest
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        LdifEntrySerializer.serialize( ldifEntry1, out );
+        ldifEntry1.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        LdifEntry ldifEntry2 = LdifEntrySerializer.deserialize( null, in );
+        LdifEntry ldifEntry2 = new LdifEntry();
+        ldifEntry2.readExternal( in );
 
         assertEquals( ldifEntry1, ldifEntry2 );
     }
@@ -512,14 +526,15 @@ public class LdifEntrySerializationTest
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        LdifEntrySerializer.serialize( ldifEntry1, out );
+        ldifEntry1.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        LdifEntry ldifEntry2 = LdifEntrySerializer.deserialize( null, in );
+        LdifEntry ldifEntry2 = new LdifEntry();
+        ldifEntry2.readExternal( in );
 
         assertEquals( ldifEntry1, ldifEntry2 );
     }

@@ -47,126 +47,132 @@ public class EntryAttributeSerializerTest
     private static byte[] data3 = new byte[] {0x09, 0x0A, 0x0B, 0x0C};
 
     @Test
-    public void testEntryAttributeNoStringValueSerialization() throws IOException
+    public void testEntryAttributeNoStringValueSerialization() throws IOException, ClassNotFoundException
     {
         EntryAttribute attribute1 = new DefaultEntryAttribute( "CN" );
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        EntryAttributeSerializer.serialize( attribute1, out );
+        attribute1.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        EntryAttribute attribute2 = EntryAttributeSerializer.deserialize( null, in );
+        EntryAttribute attribute2 = new DefaultEntryAttribute();
+        attribute2.readExternal( in );
 
         assertEquals( attribute1, attribute2 );
     }
     
     
     @Test
-    public void testEntryAttributeOneStringValueSerialization() throws IOException
+    public void testEntryAttributeOneStringValueSerialization() throws IOException, ClassNotFoundException
     {
         EntryAttribute attribute1 = new DefaultEntryAttribute( "CN", "test" );
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        EntryAttributeSerializer.serialize( attribute1, out );
+        attribute1.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        EntryAttribute attribute2 = EntryAttributeSerializer.deserialize( null, in );
+        EntryAttribute attribute2 = new DefaultEntryAttribute();
+        attribute2.readExternal( in );
 
         assertEquals( attribute1, attribute2 );
     }
     
     
     @Test
-    public void testEntryAttributeManyStringValuesSerialization() throws IOException
+    public void testEntryAttributeManyStringValuesSerialization() throws IOException, ClassNotFoundException
     {
         EntryAttribute attribute1 = new DefaultEntryAttribute( "CN", "test1", "test2", "test3" );
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        EntryAttributeSerializer.serialize( attribute1, out );
+        attribute1.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        EntryAttribute attribute2 = EntryAttributeSerializer.deserialize( null, in );
+        EntryAttribute attribute2 = new DefaultEntryAttribute();
+        attribute2.readExternal( in );
 
         assertEquals( attribute1, attribute2 );
     }
 
 
     @Test
-    public void testEntryAttributeNoBinaryValueSerialization() throws IOException
+    public void testEntryAttributeNoBinaryValueSerialization() throws IOException, ClassNotFoundException
     {
         EntryAttribute attribute1 = new DefaultEntryAttribute( "UserCertificate" );
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        EntryAttributeSerializer.serialize( attribute1, out );
+        attribute1.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        EntryAttribute attribute2 = EntryAttributeSerializer.deserialize( null, in );
+        EntryAttribute attribute2 = new DefaultEntryAttribute();
+        attribute2.readExternal( in );
 
         assertEquals( attribute1, attribute2 );
     }
     
     
     @Test
-    public void testEntryAttributeOneBinaryValueSerialization() throws IOException
+    public void testEntryAttributeOneBinaryValueSerialization() throws IOException, ClassNotFoundException
     {
         EntryAttribute attribute1 = new DefaultEntryAttribute( "UserCertificate", data1 );
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        EntryAttributeSerializer.serialize( attribute1, out );
+        attribute1.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        EntryAttribute attribute2 = EntryAttributeSerializer.deserialize( null, in );
+        EntryAttribute attribute2 = new DefaultEntryAttribute();
+        attribute2.readExternal( in );
 
         assertEquals( attribute1, attribute2 );
     }
     
     
     @Test
-    public void testEntryAttributeManyBinaryValuesSerialization() throws IOException
+    public void testEntryAttributeManyBinaryValuesSerialization() throws IOException, ClassNotFoundException
     {
         EntryAttribute attribute1 = new DefaultEntryAttribute( "UserCertificate", data1, data2, data3 );
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        EntryAttributeSerializer.serialize( attribute1, out );
+        attribute1.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        EntryAttribute attribute2 = EntryAttributeSerializer.deserialize( null, in );
+        EntryAttribute attribute2 = new DefaultEntryAttribute();
+        attribute2.readExternal( in );
 
         assertEquals( attribute1, attribute2 );
     }

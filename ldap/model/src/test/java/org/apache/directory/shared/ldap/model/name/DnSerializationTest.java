@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.name;
+package org.apache.directory.shared.ldap.model.name;
 
 import static org.junit.Assert.assertEquals;
 
@@ -28,10 +28,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import org.apache.directory.shared.ldap.model.exception.LdapException;
-import org.apache.directory.shared.ldap.model.name.Dn;
-import org.apache.directory.shared.ldap.model.schema.SchemaManager;
-import org.apache.directory.shared.ldap.schemamanager.impl.DefaultSchemaManager;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -45,24 +41,12 @@ import com.mycila.junit.concurrent.ConcurrentJunitRunner;
  */
 @RunWith(ConcurrentJunitRunner.class)
 @Concurrency()
-public class SchemaAwareDnSerializerTest
+public class DnSerializationTest
 {
-    private static SchemaManager schemaManager;
-
-    /**
-     * Initialize OIDs maps for normalization
-     */
-    @BeforeClass
-    public static void setup() throws Exception
-    {
-        schemaManager = new DefaultSchemaManager();
-    }
-
-    
     @Test
     public void testDnFullSerialization() throws IOException, LdapException, ClassNotFoundException
     {
-        Dn dn1 = new Dn( schemaManager, "gn=john + cn=doe, dc=example, dc=com" );
+        Dn dn1 = new Dn( "gn=john + cn=doe, dc=example, dc=com" );
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
@@ -74,7 +58,7 @@ public class SchemaAwareDnSerializerTest
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        Dn dn2 = new Dn( schemaManager );
+        Dn dn2 = new Dn();
         dn2.readExternal( in );
 
         assertEquals( dn1, dn2 );
@@ -84,7 +68,7 @@ public class SchemaAwareDnSerializerTest
     @Test
     public void testDnEmptySerialization() throws IOException, LdapException, ClassNotFoundException
     {
-        Dn dn1 = new Dn( schemaManager );
+        Dn dn1 = new Dn();
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
@@ -96,7 +80,7 @@ public class SchemaAwareDnSerializerTest
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        Dn dn2 = new Dn( schemaManager );
+        Dn dn2 = new Dn();
         dn2.readExternal( in );
 
         assertEquals( dn1, dn2 );
@@ -106,7 +90,7 @@ public class SchemaAwareDnSerializerTest
     @Test
     public void testDnSimpleSerialization() throws IOException, LdapException, ClassNotFoundException
     {
-        Dn dn1 = new Dn( schemaManager, "Cn = Doe" );
+        Dn dn1 = new Dn( "Cn = Doe" );
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
@@ -118,11 +102,11 @@ public class SchemaAwareDnSerializerTest
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        Dn dn2 = new Dn( schemaManager );
+        Dn dn2 = new Dn();
         dn2.readExternal( in );
 
         assertEquals( dn1, dn2 );
         assertEquals( "Cn = Doe", dn2.getName() );
-        assertEquals( "2.5.4.3=doe", dn2.getNormName() );
+        assertEquals( "cn=Doe", dn2.getNormName() );
     }
 }

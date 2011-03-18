@@ -25,6 +25,7 @@ import java.util.Iterator;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidAttributeValueException;
 import org.apache.directory.shared.ldap.model.schema.AttributeType;
+import org.apache.directory.shared.ldap.model.schema.SchemaManager;
 import org.apache.directory.shared.ldap.model.schema.SyntaxChecker;
 
 
@@ -486,4 +487,10 @@ public interface EntryAttribute extends Iterable<Value<?>>, Cloneable, Externali
      * @throws LdapException if there is a failure to check syntaxes of values
      */
     boolean isValid( SyntaxChecker checker) throws LdapException;
+    
+    
+    /**
+     * Apply the give SchemaManager to make this EntryAttribute Schema aware
+     */
+    void applySchemaManager( SchemaManager schemaManager );
 }

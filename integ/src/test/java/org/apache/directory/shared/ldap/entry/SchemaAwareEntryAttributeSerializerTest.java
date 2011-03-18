@@ -29,7 +29,6 @@ import java.io.ObjectOutputStream;
 
 import org.apache.directory.shared.ldap.model.entry.DefaultEntryAttribute;
 import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
-import org.apache.directory.shared.ldap.model.entry.EntryAttributeSerializer;
 import org.apache.directory.shared.ldap.model.schema.AttributeType;
 import org.apache.directory.shared.ldap.model.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schemamanager.impl.DefaultSchemaManager;
@@ -71,42 +70,46 @@ public class SchemaAwareEntryAttributeSerializerTest
     
     
     @Test
-    public void testEntryAttributeNoStringValueSerialization() throws IOException
+    public void testEntryAttributeNoStringValueSerialization() throws IOException, ClassNotFoundException
     {
         EntryAttribute attribute1 = new DefaultEntryAttribute( cn );
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        EntryAttributeSerializer.serialize( attribute1, out );
+        attribute1.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        EntryAttribute attribute2 = EntryAttributeSerializer.deserialize( schemaManager, in );
+        EntryAttribute attribute2 = new DefaultEntryAttribute();
+        attribute2.readExternal( in );
+        attribute2.applySchemaManager( schemaManager );
 
         assertEquals( attribute1, attribute2 );
     }
     
     
     @Test
-    public void testEntryAttributeOneStringValueSerialization() throws IOException
+    public void testEntryAttributeOneStringValueSerialization() throws IOException, ClassNotFoundException
     {
         EntryAttribute attribute1 = new DefaultEntryAttribute( "CommonName", cn, "test" );
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        EntryAttributeSerializer.serialize( attribute1, out );
+        attribute1.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        EntryAttribute attribute2 = EntryAttributeSerializer.deserialize( schemaManager, in );
+        EntryAttribute attribute2 = new DefaultEntryAttribute();
+        attribute2.readExternal( in );
+        attribute2.applySchemaManager( schemaManager );
 
         assertEquals( attribute1, attribute2 );
         assertEquals( "CommonName", attribute2.getUpId() );
@@ -114,21 +117,23 @@ public class SchemaAwareEntryAttributeSerializerTest
     
     
     @Test
-    public void testEntryAttributeManyStringValuesSerialization() throws IOException
+    public void testEntryAttributeManyStringValuesSerialization() throws IOException, ClassNotFoundException
     {
         EntryAttribute attribute1 = new DefaultEntryAttribute( "CN", cn, "test1", "test2", "test3" );
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        EntryAttributeSerializer.serialize( attribute1, out );
+        attribute1.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        EntryAttribute attribute2 = EntryAttributeSerializer.deserialize( schemaManager, in );
+        EntryAttribute attribute2 = new DefaultEntryAttribute();
+        attribute2.readExternal( in );
+        attribute2.applySchemaManager( schemaManager );
 
         assertEquals( attribute1, attribute2 );
         assertEquals( "CN", attribute2.getUpId() );
@@ -136,63 +141,69 @@ public class SchemaAwareEntryAttributeSerializerTest
 
 
     @Test
-    public void testEntryAttributeNoBinaryValueSerialization() throws IOException
+    public void testEntryAttributeNoBinaryValueSerialization() throws IOException, ClassNotFoundException
     {
         EntryAttribute attribute1 = new DefaultEntryAttribute( userCertificate );
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        EntryAttributeSerializer.serialize( attribute1, out );
+        attribute1.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        EntryAttribute attribute2 = EntryAttributeSerializer.deserialize( schemaManager, in );
+        EntryAttribute attribute2 = new DefaultEntryAttribute();
+        attribute2.readExternal( in );
+        attribute2.applySchemaManager( schemaManager );
 
         assertEquals( attribute1, attribute2 );
     }
     
     
     @Test
-    public void testEntryAttributeOneBinaryValueSerialization() throws IOException
+    public void testEntryAttributeOneBinaryValueSerialization() throws IOException, ClassNotFoundException
     {
         EntryAttribute attribute1 = new DefaultEntryAttribute( userCertificate, data1 );
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        EntryAttributeSerializer.serialize( attribute1, out );
+        attribute1.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        EntryAttribute attribute2 = EntryAttributeSerializer.deserialize( schemaManager, in );
+        EntryAttribute attribute2 = new DefaultEntryAttribute();
+        attribute2.readExternal( in );
+        attribute2.applySchemaManager( schemaManager );
 
         assertEquals( attribute1, attribute2 );
     }
     
     
     @Test
-    public void testEntryAttributeManyBinaryValuesSerialization() throws IOException
+    public void testEntryAttributeManyBinaryValuesSerialization() throws IOException, ClassNotFoundException
     {
         EntryAttribute attribute1 = new DefaultEntryAttribute( "UserCertificate", userCertificate, data1, data2, data3 );
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        EntryAttributeSerializer.serialize( attribute1, out );
+        attribute1.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        EntryAttribute attribute2 = EntryAttributeSerializer.deserialize( schemaManager, in );
+        EntryAttribute attribute2 = new DefaultEntryAttribute();
+        attribute2.readExternal( in );
+        attribute2.applySchemaManager( schemaManager );
 
         assertEquals( attribute1, attribute2 );
         assertEquals( "UserCertificate", attribute2.getUpId() );

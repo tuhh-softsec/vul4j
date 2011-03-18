@@ -151,6 +151,8 @@ public class LdifControl implements Control, Externalizable
         {
             out.writeBoolean( false );
         }
+        
+        out.flush();
     }
 
 

@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.directory.shared.ldap.model.exception.LdapException;
-
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.schema.AttributeType;
 

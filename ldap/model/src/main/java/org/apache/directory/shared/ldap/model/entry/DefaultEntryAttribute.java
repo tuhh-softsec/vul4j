@@ -32,6 +32,7 @@ import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidAttributeValueException;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.model.schema.AttributeType;
+import org.apache.directory.shared.ldap.model.schema.SchemaManager;
 import org.apache.directory.shared.ldap.model.schema.SyntaxChecker;
 import org.apache.directory.shared.util.Strings;
 import org.slf4j.Logger;
@@ -2324,6 +2325,25 @@ public class DefaultEntryAttribute implements EntryAttribute
                 
                 values.add( value );
             }
+        }
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void applySchemaManager( SchemaManager schemaManager )
+    {
+        AttributeType attributeType = null;
+        
+        if ( schemaManager != null )
+        {
+            if ( !Strings.isEmpty( id ) )
+            { 
+                attributeType = schemaManager.getAttributeType( id );
+            }
+            
+            this.setAttributeType( attributeType );
         }
     }
 }

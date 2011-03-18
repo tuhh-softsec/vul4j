@@ -29,10 +29,6 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.List;
 
@@ -44,7 +40,6 @@ import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.shared.ldap.model.name.Ava;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.name.DnParser;
-import org.apache.directory.shared.ldap.model.name.DnSerializer;
 import org.apache.directory.shared.ldap.model.name.Rdn;
 import org.apache.directory.shared.ldap.model.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schemamanager.impl.DefaultSchemaManager;
@@ -2492,117 +2487,6 @@ public class DnTest
         assertFalse( Dn.isValid("=") );
         assertFalse( Dn.isValid(" = ") );
         assertFalse( Dn.isValid(" = a") );
-    }
-
-
-    /**
-     * Test the serialization of a Dn
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testNameSerialization() throws Exception
-    {
-        Dn dn = new Dn( "ou= Some   People   + dc=  And   Some anImAls,dc = eXample,dc= cOm" );
-        dn.normalize( schemaManager );
-
-        assertEquals( dn, DnSerializer.deserialize( schemaManager, DnSerializer.serialize( dn ) ) );
-    }
-
-
-    @Test
-    public void testSerializeEmptyDN() throws Exception
-    {
-        Dn dn = Dn.EMPTY_DN;
-
-        assertEquals( dn, DnSerializer.deserialize( schemaManager, DnSerializer.serialize( dn ) ) );
-    }
-
-
-    /**
-     * Test the serialization of a Dn
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testNameStaticSerialization() throws Exception
-    {
-        Dn dn = new Dn( "ou= Some   People   + dc=  And   Some anImAls,dc = eXample,dc= cOm" );
-        dn.normalize( schemaManager );
-
-        byte[] data = DnSerializer.serialize( dn );
-
-        ObjectInputStream in = new ObjectInputStream( new ByteArrayInputStream( data ) );
-
-        assertEquals( dn, DnSerializer.deserialize( schemaManager, in ) );
-    }
-
-
-    /*
-    @Test public void testSerializationPerfs() throws Exception
-    {
-        Dn dn = new Dn( "ou= Some   People   + dc=  And   Some anImAls,dc = eXample,dc= cOm" );
-        dn.normalize( oids );
-
-        long t0 = System.currentTimeMillis();
-
-        for ( int i = 0; i < 1000; i++ )
-        {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ObjectOutputStream out = new ObjectOutputStream( baos );
-
-            DnSerializer.serialize( dn, out );
-
-            byte[] data = baos.toByteArray();
-            ObjectInputStream in = new ObjectInputStream( new ByteArrayInputStream( data ) );
-
-            Dn dn1 = DnSerializer.deserialize( in );
-        }
-
-        long t1 = System.currentTimeMillis();
-
-        System.out.println( "delta :" + ( t1 - t0) );
-
-        long t2 = System.currentTimeMillis();
-
-        for ( int i = 0; i < 1000000; i++ )
-        {
-            //ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            //ObjectOutputStream out = new ObjectOutputStream( baos );
-
-            //DnSerializer.serializeString( dn, out );
-
-            //byte[] data = baos.toByteArray();
-            //ObjectInputStream in = new ObjectInputStream( new ByteArrayInputStream( data ) );
-
-            //Dn dn1 = DnSerializer.deserializeString( in, oids );
-            dn.normalize( oids );
-        }
-
-        long t3 = System.currentTimeMillis();
-
-        System.out.println( "delta :" + ( t3 - t2) );
-
-        //assertEquals( dn, DnSerializer.deserialize( in ) );
-    }
-    */
-
-    @Test
-    public void testStaticSerializeEmptyDN() throws Exception
-    {
-        Dn dn = Dn.EMPTY_DN;
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream( baos );
-
-        DnSerializer.serialize( dn, out );
-        out.flush();
-
-        byte[] data = baos.toByteArray();
-        ObjectInputStream in = new ObjectInputStream( new ByteArrayInputStream( data ) );
-
-        assertEquals( dn, DnSerializer.deserialize( schemaManager, in ) );
-        assertEquals( dn, DnSerializer.deserialize( schemaManager, DnSerializer.serialize( dn ) ) );
     }
 
 
