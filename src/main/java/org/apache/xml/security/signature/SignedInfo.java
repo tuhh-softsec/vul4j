@@ -266,7 +266,7 @@ public class SignedInfo extends Manifest {
      * @throws InvalidCanonicalizerException
      * @throws XMLSecurityException
      */
-    public void signInOctectStream(OutputStream os)            
+    public void signInOctetStream(OutputStream os)            
         throws CanonicalizationException, InvalidCanonicalizerException, XMLSecurityException {
         if (this.c14nizedBytes == null) {
             Canonicalizer c14nizer =
