@@ -43,7 +43,7 @@ import com.mycila.junit.concurrent.ConcurrentJunitRunner;
  */
 @RunWith(ConcurrentJunitRunner.class)
 @Concurrency()
-public class EntrySerializerTest
+public class EntrySerializationTest
 {
     @Test
     public void testEntryFullSerialization() throws IOException, LdapException, ClassNotFoundException
@@ -58,14 +58,15 @@ public class EntrySerializerTest
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        EntrySerializer.serialize( entry1, out );
+        entry1.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        Entry entry2 = EntrySerializer.deserialize( null, in );
+        Entry entry2 = new DefaultEntry();
+        entry2.readExternal( in );
 
         assertEquals( entry1, entry2 );
         assertTrue( entry2.contains( "ObjectClass", "top", "domain" ) );
@@ -85,14 +86,15 @@ public class EntrySerializerTest
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        EntrySerializer.serialize( entry1, out );
+        entry1.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        Entry entry2 = EntrySerializer.deserialize( null, in );
+        Entry entry2 = new DefaultEntry();
+        entry2.readExternal( in );
 
         assertEquals( entry1, entry2 );
         assertTrue( entry2.contains( "ObjectClass", "top", "domain" ) );
@@ -108,14 +110,15 @@ public class EntrySerializerTest
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        EntrySerializer.serialize( entry1, out );
+        entry1.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        Entry entry2 = EntrySerializer.deserialize( null, in );
+        Entry entry2 = new DefaultEntry();
+        entry2.readExternal( in );
 
         assertEquals( entry1, entry2 );
         assertEquals( 0, entry2.size() );
@@ -130,14 +133,15 @@ public class EntrySerializerTest
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
 
-        EntrySerializer.serialize( entry1, out );
+        entry1.writeExternal( out );
         
         ObjectInputStream in = null;
 
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        Entry entry2 = EntrySerializer.deserialize( null, in );
+        Entry entry2 = new DefaultEntry();
+        entry2.readExternal( in );
 
         assertEquals( entry1, entry2 );
         assertEquals( 0, entry2.size() );

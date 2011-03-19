@@ -33,7 +33,6 @@ import org.apache.directory.shared.ldap.model.entry.DefaultModification;
 import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
 import org.apache.directory.shared.ldap.model.entry.Modification;
 import org.apache.directory.shared.ldap.model.entry.ModificationOperation;
-import org.apache.directory.shared.ldap.model.entry.ModificationSerializer;
 import org.apache.directory.shared.ldap.model.schema.AttributeType;
 import org.apache.directory.shared.ldap.model.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schemamanager.impl.DefaultSchemaManager;
@@ -52,7 +51,7 @@ import com.mycila.junit.concurrent.ConcurrentJunitRunner;
  */
 @RunWith(ConcurrentJunitRunner.class)
 @Concurrency()
-public class SchemaAwareModificationTest
+public class SchemaAwareModificationSerializationTest
 {
     private static SchemaManager schemaManager;
     private static AttributeType CN_AT;
@@ -80,7 +79,7 @@ public class SchemaAwareModificationTest
         {
             oOut = new ObjectOutputStream( out );
             
-            ModificationSerializer.serialize( modification, oOut );
+            modification.writeExternal( oOut );
         }
         catch ( IOException ioe )
         {
@@ -117,7 +116,17 @@ public class SchemaAwareModificationTest
         try
         {
             oIn = new ObjectInputStream( in );
-            Modification modification = ModificationSerializer.deserialize( schemaManager, oIn );
+            Modification modification = new DefaultModification();
+            modification.readExternal( oIn );
+
+            EntryAttribute attribute = modification.getAttribute();
+            
+            if ( ( attribute != null ) && ( schemaManager != null ) )
+            {
+                AttributeType attributeType = schemaManager.getAttributeType( attribute.getId() );
+                
+                modification.applyAttributeType( attributeType );
+            }
 
             return modification;
         }

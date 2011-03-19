@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.entry;
+package org.apache.directory.shared.ldap.model.entry;
 
 import static org.junit.Assert.assertEquals;
 
@@ -27,14 +27,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import org.apache.directory.shared.ldap.model.entry.BinaryValue;
-import org.apache.directory.shared.ldap.model.entry.StringValue;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.schema.AttributeType;
-import org.apache.directory.shared.ldap.model.schema.SchemaManager;
-import org.apache.directory.shared.ldap.schemamanager.impl.DefaultSchemaManager;
 import org.apache.directory.shared.util.StringConstants;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -48,50 +43,22 @@ import com.mycila.junit.concurrent.ConcurrentJunitRunner;
  */
 @RunWith(ConcurrentJunitRunner.class)
 @Concurrency()
-public class SchemaAwareValueSerializerTest
+public class ValueSerializationTest
 {
     private static byte[] data = new byte[] {0x01, 0x02, 0x03, 0x04};
-    private static BinaryValue bv1;
-    private static BinaryValue bv2;
-    private static BinaryValue bv3;
-    private static BinaryValue bv1n;
-    private static BinaryValue bv2n;
-    private static BinaryValue bv3n;
-    private static StringValue sv1;
-    private static StringValue sv2;
-    private static StringValue sv3;
-    private static StringValue sv1n;
-    private static StringValue sv2n;
-    private static StringValue sv3n;
+    BinaryValue bv1 = new BinaryValue( data );
+    BinaryValue bv2 = new BinaryValue( StringConstants.EMPTY_BYTES );
+    BinaryValue bv3 = new BinaryValue();
+    BinaryValue bv1n = new BinaryValue( data );
+    BinaryValue bv2n = new BinaryValue( StringConstants.EMPTY_BYTES );
+    BinaryValue bv3n = new BinaryValue();
+    StringValue sv1 = new StringValue( "test" );
+    StringValue sv2 = new StringValue( "" );
+    StringValue sv3 = new StringValue();
+    StringValue sv1n = new StringValue( "test" );
+    StringValue sv2n = new StringValue( "" );
+    StringValue sv3n = new StringValue();
     
-    private static SchemaManager schemaManager;
-    private static AttributeType cn = null;
-    private static AttributeType userCertificate = null;
-
-    /**
-     * Initialize OIDs maps for normalization
-     */
-    @BeforeClass
-    public static void setup() throws Exception
-    {
-        schemaManager = new DefaultSchemaManager();
-        cn = schemaManager.getAttributeType( "cn" );
-        userCertificate = schemaManager.getAttributeType( "userCertificate" );
-        
-        bv1 = new BinaryValue( userCertificate, data );
-        bv2 = new BinaryValue( userCertificate, StringConstants.EMPTY_BYTES );
-        bv3 = new BinaryValue( userCertificate );
-        bv1n = new BinaryValue( userCertificate, data );
-        bv2n = new BinaryValue( userCertificate, StringConstants.EMPTY_BYTES );
-        bv3n = new BinaryValue( userCertificate );
-        sv1 = new StringValue( cn, "test" );
-        sv2 = new StringValue( cn, "" );
-        sv3 = new StringValue( cn );
-        sv1n = new StringValue( cn, "test" );
-        sv2n = new StringValue( cn, "" );
-        sv3n = new StringValue( cn );
-    }
-
     
     @Test
     public void testBinaryValueWithDataSerialization() throws IOException, ClassNotFoundException
@@ -227,7 +194,7 @@ public class SchemaAwareValueSerializerTest
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        BinaryValue bvDeser = new BinaryValue( userCertificate );
+        BinaryValue bvDeser = new BinaryValue( (AttributeType)null );
         bvDeser.readExternal( in );
 
         assertEquals( bv1n, bvDeser );
@@ -248,7 +215,7 @@ public class SchemaAwareValueSerializerTest
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        BinaryValue bvDeser = new BinaryValue( userCertificate );
+        BinaryValue bvDeser = new BinaryValue( (AttributeType)null );
         bvDeser.readExternal( in );
 
         assertEquals( bv2n, bvDeser );
@@ -269,7 +236,7 @@ public class SchemaAwareValueSerializerTest
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        BinaryValue bvDeser = new BinaryValue( userCertificate );
+        BinaryValue bvDeser = new BinaryValue( (AttributeType)null );
         bvDeser.readExternal( in );
 
         assertEquals( bv3n, bvDeser );
@@ -290,7 +257,7 @@ public class SchemaAwareValueSerializerTest
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        StringValue svDeser = new StringValue( cn );
+        StringValue svDeser = new StringValue( (AttributeType)null );
         svDeser.readExternal( in );
 
         assertEquals( sv1n, svDeser );
@@ -311,7 +278,7 @@ public class SchemaAwareValueSerializerTest
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        StringValue svDeser = new StringValue( cn );
+        StringValue svDeser = new StringValue( (AttributeType)null );
         svDeser.readExternal( in );
 
         assertEquals( sv2n, svDeser );
@@ -332,7 +299,7 @@ public class SchemaAwareValueSerializerTest
         byte[] data = baos.toByteArray();
         in = new ObjectInputStream( new ByteArrayInputStream( data ) );
 
-        StringValue svDeser = new StringValue( cn );
+        StringValue svDeser = new StringValue( (AttributeType)null );
         svDeser.readExternal( in );
 
         assertEquals( sv3n, svDeser );

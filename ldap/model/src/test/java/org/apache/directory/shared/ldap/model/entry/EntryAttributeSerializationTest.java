@@ -17,7 +17,7 @@
  *  under the License. 
  *  
  */
-package org.apache.directory.shared.ldap.entry;
+package org.apache.directory.shared.ldap.model.entry;
 
 import static org.junit.Assert.assertEquals;
 
@@ -27,12 +27,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import org.apache.directory.shared.ldap.model.entry.DefaultEntryAttribute;
-import org.apache.directory.shared.ldap.model.entry.EntryAttribute;
-import org.apache.directory.shared.ldap.model.schema.AttributeType;
-import org.apache.directory.shared.ldap.model.schema.SchemaManager;
-import org.apache.directory.shared.ldap.schemamanager.impl.DefaultSchemaManager;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -46,33 +40,16 @@ import com.mycila.junit.concurrent.ConcurrentJunitRunner;
  */
 @RunWith(ConcurrentJunitRunner.class)
 @Concurrency()
-public class SchemaAwareEntryAttributeSerializerTest
+public class EntryAttributeSerializationTest
 {
     private static byte[] data1 = new byte[] {0x01, 0x02, 0x03, 0x04};
     private static byte[] data2 = new byte[] {0x05, 0x06, 0x07, 0x08};
     private static byte[] data3 = new byte[] {0x09, 0x0A, 0x0B, 0x0C};
-    
-    private static AttributeType cn = null;
-    private static AttributeType userCertificate = null;
 
-    private static SchemaManager schemaManager;
-
-    /**
-     * Initialize OIDs maps for normalization
-     */
-    @BeforeClass
-    public static void setup() throws Exception
-    {
-        schemaManager = new DefaultSchemaManager();
-        cn = schemaManager.getAttributeType( "cn" );
-        userCertificate = schemaManager.getAttributeType( "userCertificate" );
-    }
-    
-    
     @Test
     public void testEntryAttributeNoStringValueSerialization() throws IOException, ClassNotFoundException
     {
-        EntryAttribute attribute1 = new DefaultEntryAttribute( cn );
+        EntryAttribute attribute1 = new DefaultEntryAttribute( "CN" );
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
@@ -86,7 +63,6 @@ public class SchemaAwareEntryAttributeSerializerTest
 
         EntryAttribute attribute2 = new DefaultEntryAttribute();
         attribute2.readExternal( in );
-        attribute2.applySchemaManager( schemaManager );
 
         assertEquals( attribute1, attribute2 );
     }
@@ -95,7 +71,7 @@ public class SchemaAwareEntryAttributeSerializerTest
     @Test
     public void testEntryAttributeOneStringValueSerialization() throws IOException, ClassNotFoundException
     {
-        EntryAttribute attribute1 = new DefaultEntryAttribute( "CommonName", cn, "test" );
+        EntryAttribute attribute1 = new DefaultEntryAttribute( "CN", "test" );
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
@@ -109,17 +85,15 @@ public class SchemaAwareEntryAttributeSerializerTest
 
         EntryAttribute attribute2 = new DefaultEntryAttribute();
         attribute2.readExternal( in );
-        attribute2.applySchemaManager( schemaManager );
 
         assertEquals( attribute1, attribute2 );
-        assertEquals( "CommonName", attribute2.getUpId() );
     }
     
     
     @Test
     public void testEntryAttributeManyStringValuesSerialization() throws IOException, ClassNotFoundException
     {
-        EntryAttribute attribute1 = new DefaultEntryAttribute( "CN", cn, "test1", "test2", "test3" );
+        EntryAttribute attribute1 = new DefaultEntryAttribute( "CN", "test1", "test2", "test3" );
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
@@ -133,17 +107,15 @@ public class SchemaAwareEntryAttributeSerializerTest
 
         EntryAttribute attribute2 = new DefaultEntryAttribute();
         attribute2.readExternal( in );
-        attribute2.applySchemaManager( schemaManager );
 
         assertEquals( attribute1, attribute2 );
-        assertEquals( "CN", attribute2.getUpId() );
     }
 
 
     @Test
     public void testEntryAttributeNoBinaryValueSerialization() throws IOException, ClassNotFoundException
     {
-        EntryAttribute attribute1 = new DefaultEntryAttribute( userCertificate );
+        EntryAttribute attribute1 = new DefaultEntryAttribute( "UserCertificate" );
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
@@ -157,7 +129,6 @@ public class SchemaAwareEntryAttributeSerializerTest
 
         EntryAttribute attribute2 = new DefaultEntryAttribute();
         attribute2.readExternal( in );
-        attribute2.applySchemaManager( schemaManager );
 
         assertEquals( attribute1, attribute2 );
     }
@@ -166,7 +137,7 @@ public class SchemaAwareEntryAttributeSerializerTest
     @Test
     public void testEntryAttributeOneBinaryValueSerialization() throws IOException, ClassNotFoundException
     {
-        EntryAttribute attribute1 = new DefaultEntryAttribute( userCertificate, data1 );
+        EntryAttribute attribute1 = new DefaultEntryAttribute( "UserCertificate", data1 );
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
@@ -180,7 +151,6 @@ public class SchemaAwareEntryAttributeSerializerTest
 
         EntryAttribute attribute2 = new DefaultEntryAttribute();
         attribute2.readExternal( in );
-        attribute2.applySchemaManager( schemaManager );
 
         assertEquals( attribute1, attribute2 );
     }
@@ -189,7 +159,7 @@ public class SchemaAwareEntryAttributeSerializerTest
     @Test
     public void testEntryAttributeManyBinaryValuesSerialization() throws IOException, ClassNotFoundException
     {
-        EntryAttribute attribute1 = new DefaultEntryAttribute( "UserCertificate", userCertificate, data1, data2, data3 );
+        EntryAttribute attribute1 = new DefaultEntryAttribute( "UserCertificate", data1, data2, data3 );
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( baos );
@@ -203,9 +173,7 @@ public class SchemaAwareEntryAttributeSerializerTest
 
         EntryAttribute attribute2 = new DefaultEntryAttribute();
         attribute2.readExternal( in );
-        attribute2.applySchemaManager( schemaManager );
 
         assertEquals( attribute1, attribute2 );
-        assertEquals( "UserCertificate", attribute2.getUpId() );
     }
 }
