@@ -133,7 +133,7 @@ public class AvaTest
      * test an empty AttributeTypeAndValue
      */
     @Test
-    public void testLdapRDNEmpty()
+    public void testAvaEmpty()
     {
         try
         {
@@ -151,12 +151,27 @@ public class AvaTest
      * test a simple AttributeTypeAndValue : a = b
      */
     @Test
-    public void testLdapRDNSimple() throws LdapException
+    public void testAvaSimple() throws LdapException
     {
         Ava atav = new Ava( schemaManager, "cn", "b" );
         assertEquals( "cn=b", atav.toString() );
         assertEquals( "2.5.4.3=b", atav.getNormName() );
         assertEquals( "cn=b", atav.getUpName() );
+    }
+
+
+
+
+    /**
+     * test a simple AttributeTypeAndValue : a = b
+     */
+    @Test
+    public void testAvaSimpleNorm() throws LdapException
+    {
+        Ava atav = new Ava( schemaManager, " CommonName ", " This is    a TEST " );
+        assertEquals( " CommonName = This is    a TEST ", atav.toString() );
+        assertEquals( "2.5.4.3=this is a test", atav.getNormName() );
+        assertEquals( " CommonName = This is    a TEST ", atav.getUpName() );
     }
 
 

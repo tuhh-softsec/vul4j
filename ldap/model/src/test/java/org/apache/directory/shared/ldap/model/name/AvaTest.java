@@ -243,4 +243,14 @@ public class AvaTest
         assertEquals( "a=a", atav.normalize() );
 
     }
+    
+    
+    @Test
+    public void testAvaSimpleNorm() throws LdapException
+    {
+        Ava atav = new Ava( schemaManager, " CommonName ", " This is    a TEST " );
+        assertEquals( " CommonName = This is    a TEST ", atav.toString() );
+        assertEquals( "commonname=\\ This is    a TEST\\ ", atav.getNormName() );
+        assertEquals( " CommonName = This is    a TEST ", atav.getUpName() );
+    }
 }
