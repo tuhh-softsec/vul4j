@@ -1348,7 +1348,7 @@ public final class Dn implements Iterable<Rdn>, Externalizable
         // instead this method should throw the LdapInvalidDnException
         try
         {
-            if ( clonedDn.isNormalized() && newRdn.isNormalized() )
+            if ( clonedDn.isNormalized() && newRdn.isSchemaAware() )
             {
                 clonedDn.normalizeInternal();
             }
@@ -1613,7 +1613,7 @@ public final class Dn implements Iterable<Rdn>, Externalizable
 
                 for ( Rdn rdn : rdns )
                 {
-                    rdn.normalize( schemaManager );
+                    rdn.applySchemaManager( schemaManager );
                 }
 
                 normalizeInternal();

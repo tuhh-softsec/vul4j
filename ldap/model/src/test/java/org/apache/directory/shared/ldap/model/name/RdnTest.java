@@ -1207,4 +1207,24 @@ public class RdnTest
         
         assertEquals( " A = b + C = d ", rdn.getName() );
     }
+
+
+    /**
+     * test the iterator over a RDN
+     */
+    @Test 
+    public void testIterator() throws LdapException
+    {
+        Rdn rdn = new Rdn( "cn=John + sn=Doe" );
+        
+        String[] expected = new String[]{ "cn=John", "sn=Doe" };
+        int i = 0;
+        
+        for ( Ava ava : rdn )
+        {
+            System.out.println( ava.toString() );
+            assertEquals( expected[i], ava.toString() );
+            i++;
+        }
+    }
 }

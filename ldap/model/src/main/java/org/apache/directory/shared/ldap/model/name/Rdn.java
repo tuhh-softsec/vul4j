@@ -237,7 +237,7 @@ public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
             if ( schemaManager != null )
             {
                 this.schemaManager = schemaManager;
-                normalize( schemaManager );
+                applySchemaManager( schemaManager );
                 normalized = true;
             }
             else
@@ -341,7 +341,7 @@ public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
         if( schemaManager != null )
         {
             this.schemaManager = schemaManager;
-            normalize( schemaManager );
+            applySchemaManager( schemaManager );
             normalized = true;
         }
         else
@@ -473,7 +473,7 @@ public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
      * @return this Rdn, normalized
      * @throws org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException if the Rdn is invalid
      */
-    public Rdn normalize( SchemaManager schemaManager ) throws LdapInvalidDnException
+    public Rdn applySchemaManager( SchemaManager schemaManager ) throws LdapInvalidDnException
     {
         if ( normalized )
         {
@@ -1408,11 +1408,11 @@ public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
 
 
     /**
-     * Tells if the Rdn has already been normalized or not
+     * Tells if the Rdn is schema aware.
      *
-     * @return <code>true</code> if the Rdn is already normalized.
+     * @return <code>true</code> if the Rdn is schema aware
      */
-    public boolean isNormalized()
+    public boolean isSchemaAware()
     {
         return normalized;
     }
