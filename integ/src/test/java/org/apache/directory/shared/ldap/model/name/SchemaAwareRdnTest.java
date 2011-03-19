@@ -1224,4 +1224,17 @@ public class SchemaAwareRdnTest
         
         assertEquals( " CN = b + SN = d ", rdn.getName() );
     }
+    
+    
+    @Test
+    public void testSchemaAware() throws LdapException
+    {
+        Rdn rdn = new Rdn( "cn=John" );
+        
+        assertFalse( rdn.isSchemaAware() );
+
+        rdn.applySchemaManager( schemaManager );
+
+        assertTrue( rdn.isSchemaAware() );
+    }
 }
