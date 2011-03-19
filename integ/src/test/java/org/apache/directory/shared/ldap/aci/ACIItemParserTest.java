@@ -27,14 +27,15 @@ import static org.junit.Assert.fail;
 
 import java.text.ParseException;
 
-import com.mycila.junit.concurrent.Concurrency;
-import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.model.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schemaloader.JarLdifSchemaLoader;
 import org.apache.directory.shared.ldap.schemamanager.impl.DefaultSchemaManager;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 
 /**
  * Unit tests class for ACIItem parser (wrapper).
@@ -120,7 +121,7 @@ public class ACIItemParserTest
             "      userClasses " +
             "        {" +
             "          allUsers  , " +
-            "          userGroup { \"1.2=y,z=t\"  , \"a=b,c=d\" } , " +
+            "          userGroup { \"2.5.4.3=y,dc=t\"  , \"cn=b,dc=d\" } , " +
             "          subtree { { base \"ou=people\" } } " +
             "        }   , " +
             "      grantsAndDenials  {  denyCompare  , grantModify } " +
@@ -130,7 +131,7 @@ public class ACIItemParserTest
             "      userClasses " +
             "      {" +
             "        allUsers  , " +
-            "        userGroup { \"1.2=y,z=t\"  , \"a=b,c=d\" } ," +
+            "        userGroup { \"2.5.4.3=y,dc=t\"  , \"cn=b,dc=d\" } ," +
             "        subtree { { base \"ou=people\" } } " +
             "      }   , " +
             "      grantsAndDenials  {  denyCompare  , grantModify } } " +
@@ -149,12 +150,42 @@ public class ACIItemParserTest
     @Test 
     public void testUserFirst() throws Exception
     {
-        String spec = "{ identificationTag \"id2\"   , precedence 14, authenticationLevel none  , "
-            + "itemOrUserFirst userFirst:  { userClasses {  allUsers  , name { \"ou=people,cn=ersin\" }, "
-            + "subtree {{ base \"ou=system\" }, { base \"ou=ORGANIZATIONUNIT\","
-            + "minimum  1, maximum   2 } } }  , "
-            + "userPermissions { { protectedItems{ entry  , attributeType { cn  , ou }  , attributeValue {x=y,m=n,k=l} , "
-            + "rangeOfValues (cn=ErsinEr) }  , grantsAndDenials { grantBrowse } } } }  }   ";
+        String spec = 
+            "{ " +
+            "  identificationTag \"id2\"   , " +
+            "  precedence 14, " +
+            "  authenticationLevel none  , " +
+            "  itemOrUserFirst userFirst:  " +
+            "  { " +
+            "    userClasses " +
+            "    {  " +
+            "      allUsers  , " +
+            "      name { \"ou=people,cn=ersin\" }, " +
+            "      subtree " +
+            "      {" +
+            "        { base \"ou=system\" }, " +
+            "        { " +
+            "          base \"ou=ORGANIZATIONUNIT\"," +
+            "          minimum  1, " +
+            "          maximum   2 " +
+            "        } " +
+            "      } " +
+            "    }  , " +
+            "    userPermissions " +
+            "    { " +
+            "      { " +
+            "        protectedItems" +
+            "        { " +
+            "          entry  , " +
+            "          attributeType { cn  , ou }  , " +
+            "          attributeValue {cn=y,sn=n,dc=l} , " +
+            "          rangeOfValues (cn=ErsinEr) " +
+            "        }  , " +
+            "        grantsAndDenials { grantBrowse } " +
+            "      } " +
+            "    } " +
+            "  }  " +
+            "}   ";
 
         ACIItem item = parser.parse( spec );
         checkItemToString( spec, item );
@@ -188,14 +219,54 @@ public class ACIItemParserTest
     @Test 
     public void testOrderOfProtectedItemsDoesNotMatter() throws Exception
     {
-        String spec = " {  identificationTag  \"id1\" , precedence 114  , authenticationLevel simple  , "
-            + "itemOrUserFirst itemFirst  :{ protectedItems  { attributeType { 1.2.3    , ou }, entry , "
-            + " rangeOfValues (cn=ErsinEr) , attributeValue { ou=people  , cn=Ersin  },"
-            + "classes and : { item: xyz , or:{item:X,item:Y}   }}  , "
-            + "itemPermissions { { userClasses {allUsers  , userGroup { \"1.2=y,z=t\"  , \"a=b,c=d\" } "
-            + " , subtree { { base \"ou=people\" } } }   , grantsAndDenials  {  denyCompare  , grantModify } },"
-            + "{ precedence 10, userClasses {allUsers  , userGroup { \"1.2=y,z=t\"  , \"a=b,c=d\" } "
-            + " , subtree { { base \"ou=people\" } } }   , grantsAndDenials  {  denyCompare  , grantModify } } } }}";
+        String spec = 
+            " {  " +
+            "   identificationTag  \"id1\" , " +
+            "   precedence 114  , " +
+            "   authenticationLevel simple  , " +
+            "   itemOrUserFirst itemFirst  :" +
+            "   { " +
+            "     protectedItems  " +
+            "     { " +
+            "       attributeType { 2.5.4.3    , ou }, " +
+            "       entry , " +
+            "       rangeOfValues (cn=ErsinEr) , " +
+            "       attributeValue { ou=people  , cn=Ersin  }," +
+            "       classes and : " +
+            "       { item: xyz , or:{item:X,item:Y}   }" +
+            "     }  , " +
+            "     itemPermissions " +
+            "     { " +
+            "       { " +
+            "         userClasses " +
+            "         {" +
+            "           allUsers  , " +
+            "           userGroup { \"2.5.4.3=y,dc=t\"  , \"cn=b,sn=d\" } " +
+            "           , " +
+            "           subtree " +
+            "           { " +
+            "             { base \"ou=people\" } " +
+            "           } " +
+            "         }   , " +
+            "         grantsAndDenials  " +
+            "         {  " +
+            "           denyCompare  , " +
+            "           grantModify " +
+            "         } " +
+            "       }," +
+            "       { " +
+            "         precedence 10, " +
+            "         userClasses " +
+            "         {" +
+            "           allUsers  , " +
+            "           userGroup { \"2.5.4.3=y,dc=t\"  , \"cn=b,dc=d\" } " +
+            "           , subtree { { base \"ou=people\" } } " +
+            "         }   , " +
+            "         grantsAndDenials  {  denyCompare  , grantModify } " +
+            "       } " +
+            "     } " +
+            "   }" +
+            " }";
 
         ACIItem item = parser.parse( spec );
         checkItemToString( spec, item );
@@ -205,12 +276,42 @@ public class ACIItemParserTest
     @Test 
     public void testOrderOfUserClassesDoesNotMatter() throws Exception
     {
-        String spec = "{ identificationTag \"id2\"   , precedence 14, authenticationLevel none  , "
-            + "itemOrUserFirst userFirst:  { userClasses {  name { \"ou=people,cn=ersin\" }, allUsers, "
-            + "subtree {{ base \"ou=system\" }, { base \"ou=ORGANIZATIONUNIT\","
-            + "minimum  1, maximum   2 } } }  , "
-            + "userPermissions { { protectedItems{ entry  , attributeType { cn  , ou }  , attributeValue {x=y,m=n,k=l} , "
-            + "rangeOfValues (cn=ErsinEr) }  , grantsAndDenials { grantBrowse } } } }  }   ";
+        String spec = 
+            "{ " +
+            "  identificationTag \"id2\"   , " +
+            "  precedence 14, " +
+            "  authenticationLevel none  , " +
+            "  itemOrUserFirst userFirst:  " +
+            "  { " +
+            "    userClasses " +
+            "    {  " +
+            "      name { \"ou=people,cn=ersin\" }, " +
+            "      allUsers, " +
+            "      subtree " +
+            "      {" +
+            "        { base \"ou=system\" }, " +
+            "        { " +
+            "          base \"ou=ORGANIZATIONUNIT\"," +
+            "          minimum  1, " +
+            "          maximum   2 " +
+            "        } " +
+            "      } " +
+            "    }  , " +
+            "    userPermissions " +
+            "    { " +
+            "      { " +
+            "        protectedItems" +
+            "        { " +
+            "          entry  , " +
+            "          attributeType { cn  , ou }  , " +
+            "          attributeValue {cn=y,sn=n,dc=l} , " +
+            "          rangeOfValues (cn=ErsinEr) " +
+            "        }  , " +
+            "        grantsAndDenials { grantBrowse } " +
+            "      } " +
+            "    } " +
+            "  }  " +
+            "}";
 
         ACIItem item = parser.parse( spec );
         checkItemToString( spec, item );
@@ -266,14 +367,48 @@ public class ACIItemParserTest
     @Test 
     public void testItemPermissionComponentsOrderDoesNotMatter() throws Exception
     {
-        String spec = " {  identificationTag  \"id1\" , precedence 114  , authenticationLevel simple  , "
-            + "itemOrUserFirst itemFirst  :{ protectedItems  { attributeType { 1.2.3    , ou }, entry , "
-            + " rangeOfValues (cn=ErsinEr) , attributeValue { ou=people  , cn=Ersin  },"
-            + "classes and : { item: xyz , or:{item:X,item:Y}   }}  , "
-            + "itemPermissions { { grantsAndDenials  {  denyCompare  , grantModify }, userClasses {allUsers  , userGroup { \"1.2=y,z=t\"  , \"a=b,c=d\" } "
-            + " , subtree { { base \"ou=people\" } } }   },"
-            + "{ precedence 10, userClasses {allUsers  , userGroup { \"1.2=y,z=t\"  , \"a=b,c=d\" } "
-            + " , subtree { { base \"ou=people\" } } }   , grantsAndDenials  {  denyCompare  , grantModify } } } }}";
+        String spec = 
+            " {  " +
+            "   identificationTag  \"id1\" , " +
+            "   precedence 114  , " +
+            "   authenticationLevel simple  , " +
+            "   itemOrUserFirst itemFirst  :" +
+            "   { " +
+            "     protectedItems  " +
+            "     { " +
+            "       attributeType { 2.5.4.3    , ou }, " +
+            "       entry , " +
+            "       rangeOfValues (cn=ErsinEr) , " +
+            "       attributeValue { ou=people  , cn=Ersin  }," +
+            "       classes and : { item: xyz , or:{item:X,item:Y}   }" +
+            "     }  , " +
+            "     itemPermissions " +
+            "     { " +
+            "       { " +
+            "         grantsAndDenials  " +
+            "         {  " +
+            "           denyCompare  , grantModify " +
+            "         }, " +
+            "         userClasses " +
+            "         {" +
+            "           allUsers  , " +
+            "           userGroup { \"2.5.4.3=y,dc=t\"  , \"cn=b,dc=d\" } " +
+            "           , subtree { { base \"ou=people\" } } " +
+            "         }   " +
+            "       }," +
+            "       { " +
+            "         precedence 10, " +
+            "         userClasses " +
+            "         {" +
+            "           allUsers  , " +
+            "           userGroup { \"2.5.4.3=y,dc=t\"  , \"cn=b,dc=d\" } " +
+            "           , subtree { { base \"ou=people\" } } " +
+            "         }   , " +
+            "         grantsAndDenials  {  denyCompare  , grantModify } " +
+            "       } " +
+            "     } " +
+            "   }" +
+            " }";
 
         ACIItem item = parser.parse( spec );
         checkItemToString( spec, item );
@@ -308,12 +443,42 @@ public class ACIItemParserTest
     @Test 
     public void testUserPermissionComponentsOrderDoesNotMatter() throws Exception
     {
-        String spec = "{ identificationTag \"id2\"   , precedence 14, authenticationLevel none  , "
-            + "itemOrUserFirst userFirst:  { userClasses {  allUsers  , name { \"ou=people,cn=ersin\" }, "
-            + "subtree {{ base \"ou=system\" }, { base \"ou=ORGANIZATIONUNIT\","
-            + "minimum  1, maximum   2 } } }  , "
-            + "userPermissions { { grantsAndDenials { grantBrowse }, protectedItems{ entry  , attributeType { cn  , ou }  , attributeValue {x=y,m=n,k=l} , "
-            + "rangeOfValues (cn=ErsinEr) }  } } }  }   ";
+        String spec = 
+            "{ " +
+            "  identificationTag \"id2\"   , " +
+            "  precedence 14, " +
+            "  authenticationLevel none  , " +
+            "  itemOrUserFirst userFirst:  " +
+            "  { " +
+            "    userClasses " +
+            "    {  " +
+            "      allUsers  , " +
+            "      name { \"ou=people,cn=ersin\" }, " +
+            "      subtree " +
+            "      {" +
+            "        { base \"ou=system\" }, " +
+            "        { " +
+            "          base \"ou=ORGANIZATIONUNIT\"," +
+            "          minimum  1, " +
+            "          maximum   2 " +
+            "        } " +
+            "      } " +
+            "    }  , " +
+            "    userPermissions " +
+            "    { " +
+            "      { " +
+            "        grantsAndDenials { grantBrowse }, " +
+            "        protectedItems" +
+            "        { " +
+            "          entry  , " +
+            "          attributeType { cn  , ou }  , " +
+            "          attributeValue {cn=y,sn=n,dc=l} , " +
+            "          rangeOfValues (cn=ErsinEr) " +
+            "        }  " +
+            "      } " +
+            "    } " +
+            "  }  " +
+            "}   ";
 
         ACIItem item = parser.parse( spec );
         checkItemToString( spec, item );
@@ -345,12 +510,42 @@ public class ACIItemParserTest
     @Test 
     public void testOrderOfMainACIComponentsDoesNotMatter() throws Exception
     {
-        String spec = "{   itemOrUserFirst userFirst:  { userClasses {  allUsers  , name { \"ou=people,cn=ersin\" }, "
-            + "subtree {{ base \"ou=system\" }, { base \"ou=ORGANIZATIONUNIT\","
-            + "minimum  1, maximum   2 } } }  , "
-            + "userPermissions { { protectedItems{ entry  , attributeType { cn  , ou }  , attributeValue {x=y,m=n,k=l} , "
-            + "rangeOfValues (cn=ErsinEr) }  , grantsAndDenials { grantBrowse } } } }, "
-            + " identificationTag \"id2\"   , authenticationLevel none, precedence 14 }   ";
+        String spec = 
+            "{   " +
+            "  itemOrUserFirst userFirst:  " +
+            "  { " +
+            "    userClasses " +
+            "    {  " +
+            "      allUsers  , " +
+            "      name { \"ou=people,cn=ersin\" }, " +
+            "      subtree " +
+            "      {" +
+            "        { base \"ou=system\" }, " +
+            "        { " +
+            "          base \"ou=ORGANIZATIONUNIT\"," +
+            "          minimum  1, " +
+            "          maximum   2 " +
+            "        } " +
+            "      } " +
+            "    }  , " +
+            "    userPermissions " +
+            "    { " +
+            "      { " +
+            "        protectedItems" +
+            "        { " +
+            "          entry  , " +
+            "          attributeType { cn  , ou }  , " +
+            "          attributeValue {cn=y,sn=n,dc=l} , " +
+            "          rangeOfValues (cn=ErsinEr) " +
+            "        }  , " +
+            "        grantsAndDenials { grantBrowse } " +
+            "      } " +
+            "    } " +
+            "  }, " +
+            "  identificationTag \"id2\"   , " +
+            "  authenticationLevel none, " +
+            "  precedence 14 " +
+            "}   ";
 
         ACIItem item = parser.parse( spec );
         checkItemToString( spec, item );
@@ -536,12 +731,42 @@ public class ACIItemParserTest
     @Test 
     public void testUserClassParentOfEntry() throws Exception
     {
-        String spec = "{ identificationTag \"id\"   , precedence 10, authenticationLevel none  , "
-            + "itemOrUserFirst userFirst:  { userClasses {  parentOfEntry  , name { \"cn=ersin,ou=people\" }, "
-            + "subtree {{ base \"ou=system\" }, { base \"ou=ORGANIZATIONUNIT\","
-            + "minimum  1, maximum   2 } } }  , "
-            + "userPermissions { { protectedItems{ entry  , attributeType { cn  , ou }  , attributeValue {x=y,m=n,k=l} , "
-            + "rangeOfValues (cn=ErsinEr) }  , grantsAndDenials { grantBrowse } } } }  }   ";
+        String spec = 
+            "{ " +
+            "  identificationTag \"id\"   , " +
+            "  precedence 10, " +
+            "  authenticationLevel none  , " +
+            "  itemOrUserFirst userFirst:  " +
+            "  { " +
+            "    userClasses " +
+            "    {  " +
+            "      parentOfEntry  , " +
+            "      name { \"cn=ersin,ou=people\" }, " +
+            "      subtree " +
+            "      {" +
+            "        { base \"ou=system\" }, " +
+            "        { " +
+            "          base \"ou=ORGANIZATIONUNIT\"," +
+            "          minimum  1, " +
+            "          maximum   2 " +
+            "        } " +
+            "      } " +
+            "    }  , " +
+            "    userPermissions " +
+            "    { " +
+            "      { " +
+            "        protectedItems" +
+            "        { " +
+            "          entry  , " +
+            "          attributeType { cn  , ou }  , " +
+            "          attributeValue {cn=y,sn=n,dc=l} , " +
+            "          rangeOfValues (cn=ErsinEr) " +
+            "        }  , " +
+            "        grantsAndDenials { grantBrowse } " +
+            "      } " +
+            "    } " +
+            "  } " +
+            "}   ";
 
         ACIItem item = parser.parse( spec );
         checkItemToString( spec, item );

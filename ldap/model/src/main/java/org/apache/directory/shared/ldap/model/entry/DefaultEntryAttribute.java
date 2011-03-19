@@ -212,7 +212,7 @@ public class DefaultEntryAttribute implements EntryAttribute
     {
         if ( attributeType == null ) 
         {
-            String message = I18n.err( I18n.ERR_04442_NULL_AT_NOT_ALLOWED );
+            String message = I18n.err( I18n.ERR_04460_ATTRIBUTE_TYPE_NULL_NOT_ALLOWED );
             LOG.error( message );
             throw new IllegalArgumentException( message );
         }
@@ -283,7 +283,7 @@ public class DefaultEntryAttribute implements EntryAttribute
     {
         if ( attributeType == null )
         {
-            String message = I18n.err( I18n.ERR_04442_NULL_AT_NOT_ALLOWED );
+            String message = I18n.err( I18n.ERR_04460_ATTRIBUTE_TYPE_NULL_NOT_ALLOWED );
             LOG.error( message );
             throw new IllegalArgumentException( message );
         }
@@ -311,7 +311,7 @@ public class DefaultEntryAttribute implements EntryAttribute
     {
         if ( attributeType == null )
         {
-            String message = I18n.err( I18n.ERR_04442_NULL_AT_NOT_ALLOWED );
+            String message = I18n.err( I18n.ERR_04460_ATTRIBUTE_TYPE_NULL_NOT_ALLOWED );
             LOG.error( message );
             throw new IllegalArgumentException( message );
         }
@@ -381,7 +381,7 @@ public class DefaultEntryAttribute implements EntryAttribute
     {
         if ( attributeType == null )
         {
-            throw new IllegalArgumentException( I18n.err( I18n.ERR_04442_NULL_AT_NOT_ALLOWED ) );
+            throw new IllegalArgumentException( I18n.err( I18n.ERR_04460_ATTRIBUTE_TYPE_NULL_NOT_ALLOWED ) );
         }
 
         setAttributeType( attributeType );

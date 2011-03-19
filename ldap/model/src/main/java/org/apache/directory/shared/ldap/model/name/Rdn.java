@@ -483,10 +483,11 @@ public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
         synchronized ( this )
         {
             String savedUpName = getName();
-            Dn.rdnOidToName( this, schemaManager.getNormalizerMapping() );
+            Dn.rdnOidToName( this, schemaManager );
             normalize();
             this.upName = savedUpName;
             normalized = true;
+            this.schemaManager = schemaManager;
     
             return this;
         }

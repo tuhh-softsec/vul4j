@@ -105,7 +105,7 @@ public abstract class DefaultSchemaObjectRegistry<T extends SchemaObject> implem
             return schemaObject.getSchemaName();
         }
 
-        String msg = I18n.err( I18n.ERR_04268, oid );
+        String msg = I18n.err( I18n.ERR_04268_OID_NOT_FOUND, oid );
         LOG.warn( msg );
         throw new LdapException( msg );
     }

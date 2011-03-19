@@ -474,7 +474,7 @@ public final class Dn implements Iterable<Rdn>, Externalizable
         for ( Rdn rdn : newDn.rdns )
         {
             String upName = rdn.getName();
-            rdnOidToName( rdn, schemaManager.getNormalizerMapping() );
+            rdnOidToName( rdn, schemaManager );
             rdn.normalize();
             rdn.setUpName( upName );
         }
@@ -1497,50 +1497,59 @@ public final class Dn implements Iterable<Rdn>, Externalizable
     private static Ava atavOidToName( Ava atav, Map<String, OidNormalizer> oidsMap )
         throws LdapInvalidDnException
     {
-        String type = Strings.trim(atav.getNormType());
+        String type = Strings.trim( atav.getNormType() );
 
         if ( ( type.startsWith( "oid." ) ) || ( type.startsWith( "OID." ) ) )
         {
             type = type.substring( 4 );
         }
 
-        if ( Strings.isNotEmpty(type) )
+        if ( Strings.isNotEmpty( type ) )
         {
             if ( oidsMap == null )
             {
                 return atav;
             }
+            
+            type = Strings.toLowerCase( type );
+            
+            // Check that we have an existing AttributeType for this type
+            if ( !oidsMap.containsKey( type ) )
+            {
+                // No AttributeType : this is an error
+                String msg = I18n.err( I18n.ERR_04268_OID_NOT_FOUND, atav.getUpType() );
+                LOG.error( msg );
+                throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, msg );
+            }
+
+            OidNormalizer oidNormalizer = oidsMap.get( type );
+
+            if ( oidNormalizer != null )
+            {
+                try
+                {
+                    return new Ava(
+                        atav.getUpType(),
+                        oidNormalizer.getAttributeTypeOid(),
+                        atav.getUpValue(),
+                        oidNormalizer.getNormalizer().normalize( atav.getNormValue() ),
+                        atav.getUpName() );
+                }
+                catch ( LdapException le )
+                {
+                    throw new LdapInvalidDnException( le.getMessage() );
+                }
+            }
             else
             {
-                OidNormalizer oidNormalizer = oidsMap.get( type.toLowerCase() );
-
-                if ( oidNormalizer != null )
-                {
-                    try
-                    {
-                        return new Ava(
-                            atav.getUpType(),
-                            oidNormalizer.getAttributeTypeOid(),
-                            atav.getUpValue(),
-                            oidNormalizer.getNormalizer().normalize( atav.getNormValue() ),
-                            atav.getUpName() );
-                    }
-                    catch ( LdapException le )
-                    {
-                        throw new LdapInvalidDnException( le.getMessage() );
-                    }
-                }
-                else
-                {
-                    // We don't have a normalizer for this OID : just do nothing.
-                    return atav;
-                }
+                // We don't have a normalizer for this OID : just do nothing.
+                return atav;
             }
         }
         else
         {
             // The type is empty : this is not possible...
-            String msg = I18n.err( I18n.ERR_04209 );
+            String msg = I18n.err( I18n.ERR_04209_EMPTY_TYPE_NOT_ALLOWED );
             LOG.error( msg );
             throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, msg );
         }
@@ -1556,7 +1565,7 @@ public final class Dn implements Iterable<Rdn>, Externalizable
      * @throws LdapInvalidDnException If the Rdn is invalid.
      */
     /** No qualifier */
-    static void rdnOidToName( Rdn rdn, Map<String, OidNormalizer> oidsMap ) throws LdapInvalidDnException
+    static void rdnOidToName( Rdn rdn, SchemaManager schemaManager ) throws LdapInvalidDnException
     {
         // We have more than one ATAV for this Rdn. We will loop on all
         // ATAVs
@@ -1565,8 +1574,8 @@ public final class Dn implements Iterable<Rdn>, Externalizable
 
         for ( Ava val : rdnCopy )
         {
-            Ava newAtav = atavOidToName( val, oidsMap );
-            rdn.addAVA( null, newAtav );
+            Ava newAtav = atavOidToName( val, schemaManager.getNormalizerMapping() );
+            rdn.addAVA( schemaManager, newAtav );
         }
     }
 

@@ -25,14 +25,15 @@ import static org.junit.Assert.fail;
 
 import java.text.ParseException;
 
-import com.mycila.junit.concurrent.Concurrency;
-import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 import org.apache.directory.shared.ldap.model.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schemaloader.JarLdifSchemaLoader;
 import org.apache.directory.shared.ldap.schemamanager.impl.DefaultSchemaManager;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.mycila.junit.concurrent.Concurrency;
+import com.mycila.junit.concurrent.ConcurrentJunitRunner;
 
 
 /**
@@ -93,7 +94,7 @@ public class ACIItemChekerTest
             "         userClasses " +
             "         {" +
             "           allUsers  , " +
-            "           userGroup { \"1.2=y,z=t\"  , \"a=b,c=d\" } ," +
+            "           userGroup { \"2.5.4.3=y,dc=t\"  , \"cn=b,dc=d\" } ," +
             "           subtree { { base \"ou=people\" } } " +
             "         }   , " +
             "         grantsAndDenials  {  denyCompare  , grantModify } " +
@@ -103,7 +104,7 @@ public class ACIItemChekerTest
             "         userClasses " +
             "         {" +
             "           allUsers  , " +
-            "           userGroup { \"1.2=y,z=t\"  , \"a=b,c=d\" } ," +
+            "           userGroup { \"2.5.4.3=y,dc=t\"  , \"cn=b,dc=d\" } ," +
             "           subtree { { base \"ou=people\" } } " +
             "         }   , " +
             "         grantsAndDenials  {  denyCompare  , grantModify } " +
@@ -126,7 +127,7 @@ public class ACIItemChekerTest
             + "itemOrUserFirst userFirst:  { userClasses {  allUsers  , name { \"ou=people,cn=ersin\" }, "
             + "subtree {{ base \"ou=system\" }, { base \"ou=ORGANIZATIONUNIT\","
             + "minimum  1, maximum   2 } } }  , "
-            + "userPermissions { { protectedItems{ entry  , attributeType { cn  , ou }  , attributeValue {x=y,m=n,k=l} , "
+            + "userPermissions { { protectedItems{ entry  , attributeType { cn  , ou }  , attributeValue {cn=y,sn=n,dc=l} , "
             + "rangeOfValues (cn=ErsinEr) }  , grantsAndDenials { grantBrowse } } } }  }   ";
 
         checker.parse( spec );
@@ -162,9 +163,9 @@ public class ACIItemChekerTest
             + "itemOrUserFirst itemFirst  :{ protectedItems  { attributeType { 1.2.3    , ou }, entry , "
             + " rangeOfValues (cn=ErsinEr) , attributeValue { ou=people  , cn=Ersin  },"
             + "classes and : { item: xyz , or:{item:X,item:Y}   }}  , "
-            + "itemPermissions { { userClasses {allUsers  , userGroup { \"1.2=y,z=t\"  , \"a=b,c=d\" } "
+            + "itemPermissions { { userClasses {allUsers  , userGroup { \"2.5.4.3=y,dc=t\"  , \"cn=b,dc=d\" } "
             + " , subtree { { base \"ou=people\" } } }   , grantsAndDenials  {  denyCompare  , grantModify } },"
-            + "{ precedence 10, userClasses {allUsers  , userGroup { \"1.2=y,z=t\"  , \"a=b,c=d\" } "
+            + "{ precedence 10, userClasses {allUsers  , userGroup { \"2.5.4.3=y,dc=t\"  , \"cn=b,dc=d\" } "
             + " , subtree { { base \"ou=people\" } } }   , grantsAndDenials  {  denyCompare  , grantModify } } } }}";
 
         checker.parse( spec );
@@ -178,7 +179,7 @@ public class ACIItemChekerTest
             + "itemOrUserFirst userFirst:  { userClasses {  name { \"ou=people,cn=ersin\" }, allUsers, "
             + "subtree {{ base \"ou=system\" }, { base \"ou=ORGANIZATIONUNIT\","
             + "minimum  1, maximum   2 } } }  , "
-            + "userPermissions { { protectedItems{ entry  , attributeType { cn  , ou }  , attributeValue {x=y,m=n,k=l} , "
+            + "userPermissions { { protectedItems{ entry  , attributeType { cn  , ou }  , attributeValue {dc=y,sn=n,dc=l} , "
             + "rangeOfValues (cn=ErsinEr) }  , grantsAndDenials { grantBrowse } } } }  }   ";
 
         checker.parse( spec );
@@ -192,9 +193,9 @@ public class ACIItemChekerTest
             + "itemOrUserFirst itemFirst  :{ protectedItems  { attributeType { 1.2.3    , ou }, entry , "
             + " rangeOfValues (cn=ErsinEr) , attributeValue { ou=people  , cn=Ersin  },"
             + "classes and : { item: xyz , or:{item:X,item:Y}   }}  , "
-            + "itemPermissions { { grantsAndDenials  {  denyCompare  , grantModify }, userClasses {allUsers  , userGroup { \"1.2=y,z=t\"  , \"a=b,c=d\" } "
+            + "itemPermissions { { grantsAndDenials  {  denyCompare  , grantModify }, userClasses {allUsers  , userGroup { \"2.5.4.3=y,dc=t\"  , \"cn=b,dc=d\" } "
             + " , subtree { { base \"ou=people\" } } }   },"
-            + "{ precedence 10, userClasses {allUsers  , userGroup { \"1.2=y,z=t\"  , \"a=b,c=d\" } "
+            + "{ precedence 10, userClasses {allUsers  , userGroup { \"2.5.4.3=y,dc=t\"  , \"cn=b,dc=d\" } "
             + " , subtree { { base \"ou=people\" } } }   , grantsAndDenials  {  denyCompare  , grantModify } } } }}";
 
         checker.parse( spec );
@@ -208,7 +209,7 @@ public class ACIItemChekerTest
             + "itemOrUserFirst userFirst:  { userClasses {  allUsers  , name { \"ou=people,cn=ersin\" }, "
             + "subtree {{ base \"ou=system\" }, { base \"ou=ORGANIZATIONUNIT\","
             + "minimum  1, maximum   2 } } }  , "
-            + "userPermissions { { grantsAndDenials { grantBrowse }, protectedItems{ entry  , attributeType { cn  , ou }  , attributeValue {x=y,m=n,k=l} , "
+            + "userPermissions { { grantsAndDenials { grantBrowse }, protectedItems{ entry  , attributeType { cn  , ou }  , attributeValue {cn=y,sn=n,dc=l} , "
             + "rangeOfValues (cn=ErsinEr) }  } } }  }   ";
 
         checker.parse( spec );
@@ -221,7 +222,7 @@ public class ACIItemChekerTest
         String spec = "{   itemOrUserFirst userFirst:  { userClasses {  allUsers  , name { \"ou=people,cn=ersin\" }, "
             + "subtree {{ base \"ou=system\" }, { base \"ou=ORGANIZATIONUNIT\","
             + "minimum  1, maximum   2 } } }  , "
-            + "userPermissions { { protectedItems{ entry  , attributeType { cn  , ou }  , attributeValue {x=y,m=n,k=l} , "
+            + "userPermissions { { protectedItems{ entry  , attributeType { cn  , ou }  , attributeValue {cn=y,sn=n,dc=l} , "
             + "rangeOfValues (cn=ErsinEr) }  , grantsAndDenials { grantBrowse } } } }, "
             + " identificationTag \"id2\"   , authenticationLevel none, precedence 14 }   ";
 

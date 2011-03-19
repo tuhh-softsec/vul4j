@@ -71,6 +71,7 @@ public class ComplexDnParser
     public void parseRdn( String name, Rdn rdn ) throws LdapInvalidDnException
     {
         AntlrDnParser dnParser = new AntlrDnParser( new AntlrDnLexer( new StringReader( name ) ) );
+        
         try
         {
             dnParser.relativeDistinguishedName( rdn );
@@ -82,5 +83,4 @@ public class ComplexDnParser
             throw ine;
         }
     }
-
 }
