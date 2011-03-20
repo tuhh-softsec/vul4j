@@ -153,7 +153,7 @@ public class Value
      */
     public byte[] getData()
     {
-        return data;
+        return data.clone();
     }
 
 
