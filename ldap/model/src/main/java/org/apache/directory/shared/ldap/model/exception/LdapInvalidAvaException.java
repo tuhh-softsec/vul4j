@@ -29,7 +29,7 @@ import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class LdapInvalidAvaException extends LdapOperationException
+public class LdapInvalidAvaException extends LdapInvalidDnException
 {
     /** The serial version UUID */
     static final long serialVersionUID = 1L;
@@ -67,7 +67,7 @@ public class LdapInvalidAvaException extends LdapOperationException
      */
     public LdapInvalidAvaException( ResultCodeEnum resultCode )
     {
-        super( null );
+        super( (String)null );
         checkResultCode( resultCode );
         this.resultCode = resultCode;
     }

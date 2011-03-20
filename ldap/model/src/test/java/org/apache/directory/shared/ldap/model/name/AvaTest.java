@@ -26,7 +26,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.apache.directory.shared.ldap.model.exception.LdapException;
-import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
+import org.apache.directory.shared.ldap.model.exception.LdapInvalidAvaException;
 import org.apache.directory.shared.ldap.model.schema.SchemaManager;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -116,7 +116,7 @@ public class AvaTest
             atav = new Ava( schemaManager, null, (String)null );
             fail();
         }
-        catch ( LdapInvalidDnException lide )
+        catch ( LdapInvalidAvaException lide )
         {
             assertTrue( true );
         }

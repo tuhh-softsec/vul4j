@@ -30,7 +30,7 @@ import org.apache.directory.shared.ldap.model.entry.BinaryValue;
 import org.apache.directory.shared.ldap.model.entry.StringValue;
 import org.apache.directory.shared.ldap.model.entry.Value;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
-import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
+import org.apache.directory.shared.ldap.model.exception.LdapInvalidAvaException;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.model.schema.AttributeType;
 import org.apache.directory.shared.ldap.model.schema.MatchingRule;
@@ -122,15 +122,17 @@ public final class Ava implements Externalizable, Cloneable
      *
      * @param upType The User Provided type
      * @param upValue The User Provided value
+     * 
+     * @throws LdapInvalidAvaException If the given type or value are invalid
      */
-    public Ava( String upType, byte[] upValue ) throws LdapInvalidDnException
+    public Ava( String upType, byte[] upValue ) throws LdapInvalidAvaException
     {
         this( null, upType, upValue );
     }
 
     
     /**
-     * Construct aschma aware Ava containing a binary value. The AttributeType
+     * Construct a schema aware Ava containing a binary value. The AttributeType
      * and value will be normalized accordingly to the given SchemaManager.
      * <p>
      * Note that the upValue should <b>not</b> be null or empty, or resolve
@@ -142,7 +144,7 @@ public final class Ava implements Externalizable, Cloneable
      * 
      * @throws LdapInvalidAvaException If the given type or value are invalid
      */
-    public Ava( SchemaManager schemaManager, String upType, byte[] upValue ) throws LdapInvalidDnException
+    public Ava( SchemaManager schemaManager, String upType, byte[] upValue ) throws LdapInvalidAvaException
     {
         if ( schemaManager != null )
         { 
@@ -154,7 +156,7 @@ public final class Ava implements Externalizable, Cloneable
             {
                 String message =  I18n.err( I18n.ERR_04188 );
                 LOG.error( message );
-                throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, message );
+                throw new LdapInvalidAvaException( ResultCodeEnum.INVALID_DN_SYNTAX, message );
             }
             
             createAva( schemaManager, upType, new BinaryValue( attributeType, upValue ) );
@@ -167,38 +169,35 @@ public final class Ava implements Externalizable, Cloneable
 
     
     /**
-     * Construct an Ava. The type and value are normalized :
-     * <li> the type is trimmed and lowercased </li>
-     * <li> the value is trimmed </li>
+     * Construct an Ava with a String value. 
      * <p>
-     * Note that the upValue should <b>not</b> be null or empty, or resolved
+     * Note that the upValue should <b>not</b> be null or empty, or resolve
      * to an empty string after having trimmed it. 
      *
      * @param upType The User Provided type
-     * @param normType The normalized type
      * @param upValue The User Provided value
-     * @param normValue The normalized value
+     * 
+     * @throws LdapInvalidAvaException If the given type or value are invalid
      */
-    public Ava( String upType, String upValue ) throws LdapInvalidDnException
+    public Ava( String upType, String upValue ) throws LdapInvalidAvaException
     {
         this( null, upType, upValue );
     }
     
     
     /**
-     * Construct an Ava. The type and value are normalized :
-     * <li> the type is trimmed and lowercased </li>
-     * <li> the value is trimmed </li>
+     * Construct a schema aware Ava with a String value.
      * <p>
-     * Note that the upValue should <b>not</b> be null or empty, or resolved
+     * Note that the upValue should <b>not</b> be null or empty, or resolve
      * to an empty string after having trimmed it. 
      *
+     * @param schemaManager The SchemaManager instance
      * @param upType The User Provided type
-     * @param normType The normalized type
      * @param upValue The User Provided value
-     * @param normValue The normalized value
+     * 
+     * @throws LdapInvalidAvaException If the given type or value are invalid
      */
-    public Ava( SchemaManager schemaManager, String upType, String upValue ) throws LdapInvalidDnException
+    public Ava( SchemaManager schemaManager, String upType, String upValue ) throws LdapInvalidAvaException
     {
         if ( schemaManager != null )
         { 
@@ -210,7 +209,7 @@ public final class Ava implements Externalizable, Cloneable
             {
                 String message =  I18n.err( I18n.ERR_04188 );
                 LOG.error( message );
-                throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, message );
+                throw new LdapInvalidAvaException( ResultCodeEnum.INVALID_DN_SYNTAX, message );
             }
             
             createAva( schemaManager, upType, new StringValue( attributeType, upValue ) );
@@ -223,19 +222,19 @@ public final class Ava implements Externalizable, Cloneable
 
     
     /**
-     * Construct an Ava. The type and value are normalized :
-     * <li> the type is trimmed and lowercased </li>
-     * <li> the value is trimmed </li>
+     * Construct a schema aware Ava. The AttributeType and value will be checked accordingly
+     * to the SchemaManager.
      * <p>
-     * Note that the upValue should <b>not</b> be null or empty, or resolved
+     * Note that the upValue should <b>not</b> be null or empty, or resolve
      * to an empty string after having trimmed it. 
      *
+     * @param schemaManager The SchemaManager instance
      * @param upType The User Provided type
-     * @param normType The normalized type
      * @param upValue The User Provided value
-     * @param normValue The normalized value
+     * 
+     * @throws LdapInvalidAvaException If the given type or value are invalid
      */
-    private void createAva( SchemaManager schemaManager, String upType, Value<?> upValue ) throws LdapInvalidDnException
+    private void createAva( SchemaManager schemaManager, String upType, Value<?> upValue ) throws LdapInvalidAvaException
     {
         normType = attributeType.getOid();
         this.upType = upType;
@@ -257,7 +256,7 @@ public final class Ava implements Externalizable, Cloneable
         {
             String message =  I18n.err( I18n.ERR_04188 );
             LOG.error( message );
-            throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, message );
+            throw new LdapInvalidAvaException( ResultCodeEnum.INVALID_DN_SYNTAX, message );
         }
 
         this.upValue = upValue;
@@ -267,19 +266,21 @@ public final class Ava implements Externalizable, Cloneable
 
     
     /**
-     * Construct an Ava. The type and value are normalized :
-     * <li> the type is trimmed and lowercased </li>
-     * <li> the value is trimmed </li>
+     * Construct a schema aware Ava with a String value.
      * <p>
      * Note that the upValue should <b>not</b> be null or empty, or resolved
      * to an empty string after having trimmed it. 
      *
+     * @param schemaManager The SchemaManager instance
      * @param upType The User Provided type
      * @param normType The normalized type
      * @param upValue The User Provided value
      * @param normValue The normalized value
+     * 
+     * @throws LdapInvalidAvaException If the given type or value are invalid
      */
-    /* No qualifier */ Ava( SchemaManager schemaManager, String upType, String normType, String upValue, String normValue ) throws LdapInvalidDnException
+    /* No qualifier */ Ava( SchemaManager schemaManager, String upType, String normType, String upValue, String normValue ) 
+        throws LdapInvalidAvaException
     {
         this( schemaManager, upType, normType, new StringValue( upValue ), new StringValue( normValue ) );
     }
@@ -297,8 +298,11 @@ public final class Ava implements Externalizable, Cloneable
      * @param normType The normalized type
      * @param upValue The User Provided value
      * @param normValue The normalized value
+     * 
+     * @throws LdapInvalidAvaException If the given type or value are invalid
      */
-    /* No qualifier */ Ava( SchemaManager schemaManager, String upType, String normType, byte[] upValue, byte[] normValue ) throws LdapInvalidDnException
+    /* No qualifier */ Ava( SchemaManager schemaManager, String upType, String normType, byte[] upValue, byte[] normValue ) 
+        throws LdapInvalidAvaException
     {
         this( schemaManager, upType, normType, new BinaryValue( upValue ), new BinaryValue( normValue ) );
     }
@@ -316,8 +320,10 @@ public final class Ava implements Externalizable, Cloneable
      * @param normType The normalized type
      * @param upValue The User Provided value
      * @param normValue The normalized value
+     * 
+     * @throws LdapInvalidAvaException If the given type or value are invalid
      */
-    private void createAva( String upType, Value<?> upValue ) throws LdapInvalidDnException
+    private void createAva( String upType, Value<?> upValue ) throws LdapInvalidAvaException
     {
         String upTypeTrimmed = Strings.trim(upType);
         String normTypeTrimmed = Strings.trim(normType);
@@ -328,7 +334,7 @@ public final class Ava implements Externalizable, Cloneable
             {
                 String message =  I18n.err( I18n.ERR_04188 );
                 LOG.error( message );
-                throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, message );
+                throw new LdapInvalidAvaException( ResultCodeEnum.INVALID_DN_SYNTAX, message );
             }
             else
             {
@@ -369,19 +375,21 @@ public final class Ava implements Externalizable, Cloneable
      * @param normType The normalized type
      * @param upValue The User Provided value
      * @param normValue The normalized value
+     * 
+     * @throws LdapInvalidAvaException If the given type or value are invalid
      */
-    /* No qualifier */ Ava( SchemaManager schemaManager, String upType, String normType, Value<?> upValue, Value<?> normValue ) throws LdapInvalidDnException
+    /* No qualifier */ Ava( SchemaManager schemaManager, String upType, String normType, Value<?> upValue, Value<?> normValue ) 
+        throws LdapInvalidAvaException
     {
         this.upType = upType;
         this.normType = normType;
         this.upValue = upValue;
         this.normValue = normValue;
         upName = this.upType + '=' + ( this.upValue == null ? "" : this.upValue.getString() );
-        this.schemaManager = schemaManager;
         
         if ( schemaManager != null )
         {
-            attributeType = schemaManager.getAttributeType( normType );
+            applySchemaManager( schemaManager );
         }
     }
 
@@ -399,9 +407,11 @@ public final class Ava implements Externalizable, Cloneable
      * @param upValue The User Provided value
      * @param normValue The normalized value
      * @param upName The User Provided name (may be escaped)
+     * 
+     * @throws LdapInvalidAvaException If the given type or value are invalid
      */
     /* No qualifier */ Ava( String upType, String normType, Value<?> upValue, Value<?> normValue, String upName )
-        throws LdapInvalidDnException
+        throws LdapInvalidAvaException
     {
         String upTypeTrimmed = Strings.trim(upType);
         String normTypeTrimmed = Strings.trim(normType);
@@ -412,7 +422,7 @@ public final class Ava implements Externalizable, Cloneable
             {
                 String message = I18n.err( I18n.ERR_04188 );
                 LOG.error( message );
-                throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, message );
+                throw new LdapInvalidAvaException( ResultCodeEnum.INVALID_DN_SYNTAX, message );
             }
             else
             {
@@ -436,7 +446,6 @@ public final class Ava implements Externalizable, Cloneable
 
         this.normValue = normValue;
         this.upValue = upValue;
-
         this.upName = upName;
     }
 
@@ -447,10 +456,12 @@ public final class Ava implements Externalizable, Cloneable
      * used instead.
      * 
      * @param schemaManager The SchemaManager instance to use
-     * @throws LdapInvalidDnException If the Ava can't be normalized accordingly
+     * @throws LdapInvalidAvaException If the Ava can't be normalized accordingly
      * to the given SchemaManager
+     * 
+     * @throws LdapInvalidAvaException If the given type or value are invalid
      */
-    public void applySchemaManager( SchemaManager schemaManager ) throws LdapInvalidDnException
+    public void applySchemaManager( SchemaManager schemaManager ) throws LdapInvalidAvaException
     {
         if ( schemaManager != null )
         { 
@@ -464,7 +475,7 @@ public final class Ava implements Externalizable, Cloneable
             {
                 String message =  I18n.err( I18n.ERR_04188 );
                 LOG.error( message );
-                throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, message );
+                throw new LdapInvalidAvaException( ResultCodeEnum.INVALID_DN_SYNTAX, message );
             }
             
             normType = attributeType.getOid();
@@ -487,7 +498,7 @@ public final class Ava implements Externalizable, Cloneable
             {
                 String message =  I18n.err( I18n.ERR_04188 );
                 LOG.error( message );
-                throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, message );
+                throw new LdapInvalidAvaException( ResultCodeEnum.INVALID_DN_SYNTAX, message );
             }
         }
     }
@@ -828,6 +839,8 @@ public final class Ava implements Externalizable, Cloneable
      * </ul>
      * 
      * @see Externalizable#readExternal(ObjectInput)
+     * 
+     * @throws IoException If the Ava can't be written in the stream
      */
     public void writeExternal( ObjectOutput out ) throws IOException
     {
@@ -911,6 +924,9 @@ public final class Ava implements Externalizable, Cloneable
      * method
      * 
      * @see Externalizable#readExternal(ObjectInput)
+     * 
+     * @throws IOException If the Ava can't b written to the stream
+     * @throws ClassNotFoundException If we can't deserialize an Ava from the stream
      */
     public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException
     {
@@ -971,7 +987,7 @@ public final class Ava implements Externalizable, Cloneable
     
     
     /**
-     * Tells if the Ava is schema aware or not
+     * Tells if the Ava is schema aware or not.
      * 
      * @return true if the Ava is schema aware
      */
@@ -982,26 +998,12 @@ public final class Ava implements Externalizable, Cloneable
     
     
     /**
-     * A String representation of a Ava.
+     * A String representation of an Ava, as provided by the user.
      *
-     * @return A string representing a Ava
+     * @return A string representing an Ava
      */
     public String toString()
     {
-        StringBuffer sb = new StringBuffer();
-
-        if ( Strings.isEmpty( normType) || Strings.isEmpty(normType.trim()) )
-        {
-            return "";
-        }
-
-        sb.append( upType ).append( "=" );
-
-        if ( upValue != null )
-        {
-            sb.append( upValue.getString() );
-        }
-
-        return sb.toString();
+        return upName;
     }
 }

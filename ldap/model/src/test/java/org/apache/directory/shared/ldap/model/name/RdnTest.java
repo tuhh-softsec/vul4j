@@ -1217,7 +1217,7 @@ public class RdnTest
     {
         Rdn rdn = new Rdn( "cn=John + sn=Doe" );
         
-        String[] expected = new String[]{ "cn=John", "sn=Doe" };
+        String[] expected = new String[]{ "cn=John ", " sn=Doe" };
         int i = 0;
         
         for ( Ava ava : rdn )

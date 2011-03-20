@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
+import org.apache.directory.shared.ldap.model.exception.LdapInvalidAvaException;
 import javax.naming.NameParser;
 import org.apache.directory.shared.ldap.model.entry.StringValue;
 import org.apache.directory.shared.ldap.model.entry.BinaryValue;
