@@ -294,7 +294,7 @@ public class RdnTest
     @Test
     public void testRDNCloningOneNameComponent() throws LdapException
     {
-        Rdn rdn = new Rdn( "a", "a", "b", "b" );
+        Rdn rdn = new Rdn( "a", "b" );
 
         Rdn rdnClone = (Rdn) rdn.clone();
 

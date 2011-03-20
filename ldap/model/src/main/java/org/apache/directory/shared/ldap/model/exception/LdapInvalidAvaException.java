@@ -19,29 +19,40 @@
  */
 package org.apache.directory.shared.ldap.model.exception;
 
-
 import org.apache.directory.shared.i18n.I18n;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 
 
 /**
- * Makes a {@link LdapOperationException} unambiguous with respect to the result code
- * it corresponds to by associating an LDAP specific result code with it.
+ * A subclass of {@link LdapOperationException} designed to hold an unequivocal LDAP
+ * result code. It's used to represent an error when dealing with a wrong Ava.
  * 
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
-public class LdapSchemaViolationException extends LdapOperationException
+public class LdapInvalidAvaException extends LdapOperationException
 {
     /** The serial version UUID */
     static final long serialVersionUID = 1L;
 
+    
     /**
-     * Creates a new instance of LdapSchemaViolationException.
+     * Creates a new instance of LdapInvalidAvaException.
+     * 
+     * @param message The exception message
+     */
+    public LdapInvalidAvaException( String message )
+    {
+        super( message );
+    }
+    
+    
+    /**
+     * Creates a new instance of LdapInvalidAvaException.
      *
      * @param resultCode the ResultCodeEnum for this exception
      * @param message The exception message
      */
-    public LdapSchemaViolationException( ResultCodeEnum resultCode, String message )
+    public LdapInvalidAvaException(  ResultCodeEnum resultCode, String message )
     {
         super( message );
         checkResultCode( resultCode );
@@ -50,11 +61,11 @@ public class LdapSchemaViolationException extends LdapOperationException
 
 
     /**
-     * Creates a new instance of LdapSchemaViolationException.
+     * Creates a new instance of LdapInvalidAvaException.
      * 
      * @param resultCode the ResultCodeEnum for this exception
      */
-    public LdapSchemaViolationException( ResultCodeEnum resultCode )
+    public LdapInvalidAvaException( ResultCodeEnum resultCode )
     {
         super( null );
         checkResultCode( resultCode );
@@ -68,17 +79,15 @@ public class LdapSchemaViolationException extends LdapOperationException
      * 
      * @throws IllegalArgumentException
      *             if the result code is not one of
-     *             {@link ResultCodeEnum#OBJECT_CLASS_VIOLATION},
-     *             {@link ResultCodeEnum#NOT_ALLOWED_ON_RDN}.
-     *             {@link org.apache.directory.shared.ldap.model.message.ResultCodeEnum#OBJECT_CLASS_MODS_PROHIBITED}.
+     *             {@link ResultCodeEnum#INVALID_DN_SYNTAX},
+     *             {@link ResultCodeEnum#NAMING_VIOLATION}.
      */
     private void checkResultCode( ResultCodeEnum resultCode )
     {
         switch ( resultCode )
         {
-            case OBJECT_CLASS_VIOLATION :
-            case NOT_ALLOWED_ON_RDN :
-            case OBJECT_CLASS_MODS_PROHIBITED :
+            case INVALID_DN_SYNTAX :
+            case NAMING_VIOLATION :
                 return;
                 
             default:

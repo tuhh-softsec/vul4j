@@ -46,11 +46,9 @@ import org.slf4j.LoggerFactory;
  * and trailing spaces MUST have been trimmed before. The value MUST be in UTF8
  * format, according to RFC 2253. If the type is in OID form, then the value
  * must be a hexadecimal string prefixed by a '#' character. Otherwise, the
- * string must respect the RC 2253 grammar. No further normalization will be
- * done, because we don't have any knowledge of the Schema definition in the
- * parser.
+ * string must respect the RC 2253 grammar. 
  *
- * We will also keep a User Provided form of the atav (Attribute Type And Value),
+ * We will also keep a User Provided form of the AVA (Attribute Type And Value),
  * called upName.
  *
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
@@ -72,9 +70,6 @@ public final class Ava implements Externalizable, Cloneable
     /** The normalized Name type */
     private String normType;
     
-    /** The attributeType if the Ava is schemaAware */
-    private AttributeType attributeType;
-
     /** The user provided Name type */
     private String upType;
 
@@ -87,6 +82,9 @@ public final class Ava implements Externalizable, Cloneable
     /** The user provided Ava */
     private String upName;
 
+    /** The attributeType if the Ava is schemaAware */
+    private AttributeType attributeType;
+
     /** the schema manager */
     private SchemaManager schemaManager;
 
@@ -95,16 +93,14 @@ public final class Ava implements Externalizable, Cloneable
      */
     public Ava()
     {
-        normType = null;
-        upType = null;
-        normValue = null;
-        upValue = null;
-        upName = "";
+        this( null );
     }
 
     
     /**
-     * Constructs an empty schema aware Ava
+     * Constructs an empty schema aware Ava.
+     * 
+     * @param schemaManager The SchemaManager instance
      */
     public Ava( SchemaManager schemaManager )
     {
@@ -114,21 +110,37 @@ public final class Ava implements Externalizable, Cloneable
         upValue = null;
         upName = "";
         this.schemaManager = schemaManager;
+        this.attributeType = null;
+    }
+    
+    
+    /**
+     * Construct an Ava containing a binary value. 
+     * <p>
+     * Note that the upValue should <b>not</b> be null or empty, or resolve
+     * to an empty string after having trimmed it. 
+     *
+     * @param upType The User Provided type
+     * @param upValue The User Provided value
+     */
+    public Ava( String upType, byte[] upValue ) throws LdapInvalidDnException
+    {
+        this( null, upType, upValue );
     }
 
     
     /**
-     * Construct an Ava. The type and value are normalized :
-     * <li> the type is trimmed and lowercased </li>
-     * <li> the value is trimmed </li>
+     * Construct aschma aware Ava containing a binary value. The AttributeType
+     * and value will be normalized accordingly to the given SchemaManager.
      * <p>
-     * Note that the upValue should <b>not</b> be null or empty, or resolved
+     * Note that the upValue should <b>not</b> be null or empty, or resolve
      * to an empty string after having trimmed it. 
      *
+     * @param schemaManager The SchemaManager instance
      * @param upType The User Provided type
-     * @param normType The normalized type
      * @param upValue The User Provided value
-     * @param normValue The normalized value
+     * 
+     * @throws LdapInvalidAvaException If the given type or value are invalid
      */
     public Ava( SchemaManager schemaManager, String upType, byte[] upValue ) throws LdapInvalidDnException
     {
@@ -153,6 +165,25 @@ public final class Ava implements Externalizable, Cloneable
         }
     }
 
+    
+    /**
+     * Construct an Ava. The type and value are normalized :
+     * <li> the type is trimmed and lowercased </li>
+     * <li> the value is trimmed </li>
+     * <p>
+     * Note that the upValue should <b>not</b> be null or empty, or resolved
+     * to an empty string after having trimmed it. 
+     *
+     * @param upType The User Provided type
+     * @param normType The normalized type
+     * @param upValue The User Provided value
+     * @param normValue The normalized value
+     */
+    public Ava( String upType, String upValue ) throws LdapInvalidDnException
+    {
+        this( null, upType, upValue );
+    }
+    
     
     /**
      * Construct an Ava. The type and value are normalized :
@@ -369,7 +400,7 @@ public final class Ava implements Externalizable, Cloneable
      * @param normValue The normalized value
      * @param upName The User Provided name (may be escaped)
      */
-    /* No qualifier */ Ava(String upType, String normType, Value<?> upValue, Value<?> normValue, String upName)
+    /* No qualifier */ Ava( String upType, String normType, Value<?> upValue, Value<?> normValue, String upName )
         throws LdapInvalidDnException
     {
         String upTypeTrimmed = Strings.trim(upType);
@@ -409,6 +440,58 @@ public final class Ava implements Externalizable, Cloneable
         this.upName = upName;
     }
 
+    
+    /**
+     * Apply a SchemaManager to the Ava. It will normalize the Ava.<br/>
+     * If the Ava already had a SchemaManager, then the new SchemaManager will be
+     * used instead.
+     * 
+     * @param schemaManager The SchemaManager instance to use
+     * @throws LdapInvalidDnException If the Ava can't be normalized accordingly
+     * to the given SchemaManager
+     */
+    public void applySchemaManager( SchemaManager schemaManager ) throws LdapInvalidDnException
+    {
+        if ( schemaManager != null )
+        { 
+            this.schemaManager = schemaManager;
+            
+            try
+            {
+                attributeType = schemaManager.lookupAttributeTypeRegistry( upType );
+            }
+            catch ( LdapException le )
+            {
+                String message =  I18n.err( I18n.ERR_04188 );
+                LOG.error( message );
+                throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, message );
+            }
+            
+            normType = attributeType.getOid();
+
+            try
+            {
+                // We use the Equality matching rule to normalize the value
+                MatchingRule equalityMatchingRule = attributeType.getEquality();
+                
+                if ( equalityMatchingRule != null )
+                {
+                    this.normValue = equalityMatchingRule.getNormalizer().normalize( upValue );
+                }
+                else
+                {
+                    this.normValue = upValue;
+                }
+            }
+            catch ( LdapException le )
+            {
+                String message =  I18n.err( I18n.ERR_04188 );
+                LOG.error( message );
+                throw new LdapInvalidDnException( ResultCodeEnum.INVALID_DN_SYNTAX, message );
+            }
+        }
+    }
+    
 
     /**
      * Get the normalized type of a Ava
@@ -888,13 +971,13 @@ public final class Ava implements Externalizable, Cloneable
     
     
     /**
-     * Get the associated SchemaManager if any.
+     * Tells if the Ava is schema aware or not
      * 
-     * @return The SchemaManager
+     * @return true if the Ava is schema aware
      */
-    public SchemaManager getSchemaManager()
+    public boolean isSchemaAware()
     {
-        return schemaManager;
+        return attributeType != null;
     }
     
     

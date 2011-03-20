@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -272,58 +271,6 @@ public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
     /**
      * A constructor that constructs a Rdn from a type and a value. Constructs
      * an Rdn from the given attribute type and value. The string attribute
-     * values are not interpreted as RFC 4514 formatted Rdn strings. That is,
-     * the values are used literally (not parsed) and assumed to be un-escaped.
-     *
-     * @param upType the user provided type of the Rdn
-     * @param upValue the user provided value of the Rdn
-     * @param normType the normalized provided type of the Rdn
-     * @param normValue the normalized provided value of the Rdn
-     * @param schemaManager the schema manager
-     * @throws LdapInvalidDnException if the Rdn is invalid
-     */
-    public Rdn( SchemaManager schemaManager, String upType, String normType, String upValue, String normValue ) throws LdapInvalidDnException
-    {
-        this.schemaManager = schemaManager;
-
-        addAVA( schemaManager, upType, normType, new StringValue( upValue ), new StringValue( normValue ) );
-
-        upName = upType + '=' + upValue;
-
-        // create the internal normalized form
-        normalize();
-
-        if( schemaManager != null )
-        {
-            normalized = true;
-        }
-        else
-        {
-            // As strange as it seems, the Rdn is *not* normalized against the schema at this point
-            normalized = false;
-        }
-    }
-
-
-    /**
-     * A constructor that constructs a Rdn from a type and a value.
-     *
-     * @param upType the user provided type of the Rdn
-     * @param upValue the user provided value of the Rdn
-     * @param normType the normalized provided type of the Rdn
-     * @param normValue the normalized provided value of the Rdn
-     * @throws LdapInvalidDnException if the Rdn is invalid
-     * @see #Rdn(String, String, String, String, SchemaManager)
-     */
-    public Rdn( String upType, String normType, String upValue, String normValue ) throws LdapInvalidDnException
-    {
-        this( null, upType, normType, upValue, normValue );
-    }
-
-
-    /**
-     * A constructor that constructs a Rdn from a type and a value. Constructs
-     * an Rdn from the given attribute type and value. The string attribute
      * values are not interpreted as RFC 414 formatted Rdn strings. That is,
      * the values are used literally (not parsed) and assumed to be un-escaped.
      *
@@ -377,12 +324,12 @@ public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
      */
     public Rdn( Rdn rdn )
     {
-        nbAtavs = rdn.getNbAtavs();
+        nbAtavs = rdn.size();
         this.normName = rdn.normName;
         this.upName = rdn.getName();
         normalized = rdn.normalized;
 
-        switch ( rdn.getNbAtavs() )
+        switch ( rdn.size() )
         {
             case 0:
                 return;
@@ -494,43 +441,6 @@ public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
     }
     
     
-    /* no qualifier */ Rdn( SchemaManager schemaManager, String upName, String normName, Ava... atavs )
-    {
-        this.upName = upName;
-        this.normName = normName;
-        this.schemaManager = schemaManager;
-        this.normalized = (schemaManager != null );
-        
-        if ( atavs != null )
-        {
-            nbAtavs = atavs.length;
-            
-            switch ( nbAtavs )
-            {
-                case 0 :
-                    break;
-                    
-                case 1 :
-                    atav = atavs[ 0 ];
-                    atavTypes.put( atav.getUpType(), atav );
-                    atavTypes.put( atav.getNormType(), atav );
-                    break;
-                    
-                default :
-                    this.atavs = Arrays.asList( atavs );
-                    
-                    for ( Ava ava : atavs )
-                    {
-                        atavTypes.put( ava.getUpType(), ava );
-                        atavTypes.put( ava.getNormType(), ava );
-                    }
-                    
-                    break;
-            }
-        }
-    }
-
-
     /**
      * Add a AttributeTypeAndValue to the current Rdn
      *
@@ -657,7 +567,7 @@ public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
     // WARNING : The protection level is left unspecified intentionally.
     // We need this method to be visible from the DnParser class, but not
     // from outside this package.
-    /* No protection */void clear()
+    /* No protection */ void clear()
     {
         atav = null;
         atavs = null;
@@ -745,7 +655,7 @@ public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
      *            The type of the NameArgument to be returned
      * @return The AttributeTypeAndValue, of null if none is found.
      */
-    public Ava getAttributeTypeAndValue( String type )
+    public Ava getAva( String type )
     {
         // First, let's normalize the type
         String normalizedType = Strings.lowerCaseAscii(Strings.trim(type));
@@ -833,7 +743,7 @@ public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
 
             // The AttributeTypeAndValue is immutable. We won't clone it
 
-            switch ( rdn.getNbAtavs() )
+            switch ( rdn.size() )
             {
                 case 0:
                     break;
@@ -894,15 +804,6 @@ public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
     void setUpName( String upName )
     {
         this.upName = upName;
-    }
-
-
-    /**
-     * @return Returns the nbAtavs.
-     */
-    public int getNbAtavs()
-    {
-        return nbAtavs;
     }
 
 
@@ -1591,18 +1492,8 @@ public final class Rdn implements Cloneable, Externalizable, Iterable<Ava>
     
     
     /**
-     * Get the associated SchemaManager if any.
-     * 
-     * @return The SchemaManager
-     */
-    public SchemaManager getSchemaManager()
-    {
-        return schemaManager;
-    }
-
-
-    /**
-     * @return a String representation of the Rdn
+     * @return a String representation of the Rdn. The caller will get back the user
+     * provided Rdn
      */
     public String toString()
     {

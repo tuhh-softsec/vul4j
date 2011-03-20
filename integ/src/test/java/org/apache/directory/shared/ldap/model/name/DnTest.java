@@ -37,10 +37,6 @@ import javax.naming.ldap.LdapName;
 
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidDnException;
-import org.apache.directory.shared.ldap.model.name.Ava;
-import org.apache.directory.shared.ldap.model.name.Dn;
-import org.apache.directory.shared.ldap.model.name.DnParser;
-import org.apache.directory.shared.ldap.model.name.Rdn;
 import org.apache.directory.shared.ldap.model.schema.SchemaManager;
 import org.apache.directory.shared.ldap.schemamanager.impl.DefaultSchemaManager;
 import org.apache.directory.shared.util.Strings;
@@ -906,7 +902,7 @@ public class DnTest
     {
         Dn dn = new Dn( "a=b, c=d,e = f" );
 
-        Dn res = dn.getAncestorOf( "a=z" );
+         dn.getAncestorOf( "a=z" );
     }
 
 
@@ -2612,7 +2608,7 @@ public class DnTest
         assertEquals( "cn=loopback+iphostnumber=127.0.0.1,ou=Hosts,dc=mygfs,dc=com", dn1.getNormName() );
         assertEquals( "cn=loopback+ipHostNumber=127.0.0.1", dn1.getRdn().getName() );
         assertEquals( "cn=loopback+iphostnumber=127.0.0.1", dn1.getRdn().getNormName() );
-        assertEquals( "127.0.0.1", dn1.getRdn().getAttributeTypeAndValue( "ipHostNumber" ).getUpValue().get() );
+        assertEquals( "127.0.0.1", dn1.getRdn().getAva( "ipHostNumber" ).getUpValue().get() );
 
         // numeric OID with suffix
         Dn dn2 = new Dn( "cn=loopback+ipHostNumber=X127.0.0.1,ou=Hosts,dc=mygfs,dc=com" );
@@ -2696,7 +2692,7 @@ public class DnTest
 
         assertEquals( "  ou  =  Example ", atav.getUpName() );
 
-        assertEquals( 2, rdn.getNbAtavs() );
+        assertEquals( 2, rdn.size() );
 
         // The second ATAV
         for ( Ava ava : rdn )
@@ -2781,7 +2777,7 @@ public class DnTest
         assertEquals( "Ex+mple", atav.getUpValue().get() );
         assertEquals( "Ex+mple", atav.getNormValue().get() );
 
-        assertEquals( 2, rdn.getNbAtavs() );
+        assertEquals( 2, rdn.size() );
 
         // The second ATAV
         for ( Ava ava : rdn )
@@ -2832,7 +2828,7 @@ public class DnTest
         assertEquals( "Ex+mple", atav.getUpValue().get() );
         assertEquals( "ex+mple", atav.getNormValue().get() );
 
-        assertEquals( 2, rdn.getNbAtavs() );
+        assertEquals( 2, rdn.size() );
 
         // The second ATAV
         for ( Ava ava : rdn )

@@ -303,7 +303,7 @@ public class SchemaAwareRdnTest
     @Test
     public void testRDNCloningOneNameComponent() throws LdapException
     {
-        Rdn rdn = new Rdn( schemaManager, "CN", "cn", "B", "b" );
+        Rdn rdn = new Rdn( schemaManager, "CN", "B" );
 
         Rdn rdnClone = (Rdn) rdn.clone();
 
