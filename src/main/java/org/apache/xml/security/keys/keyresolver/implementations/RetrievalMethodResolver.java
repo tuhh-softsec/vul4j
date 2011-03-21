@@ -305,11 +305,11 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
         return null;
     }
    
-    private static Element getDocumentElement(Set set) {
-        Iterator it = set.iterator();
+    private static Element getDocumentElement(Set<Node> set) {
+        Iterator<Node> it = set.iterator();
         Element e = null;
         while (it.hasNext()) {
-            Node currentNode = (Node) it.next();
+            Node currentNode = it.next();
             if (currentNode != null && Node.ELEMENT_NODE == currentNode.getNodeType()) {
                 e = (Element) currentNode;
                 break;

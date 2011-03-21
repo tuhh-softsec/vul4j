@@ -307,12 +307,12 @@ public class Manifest extends SignatureElementProxy {
                     try {
                         XMLSignatureInput signedManifestNodes =
                             currentRef.dereferenceURIandPerformTransforms(null);
-                        Set nl = signedManifestNodes.getNodeSet();
+                        Set<Node> nl = signedManifestNodes.getNodeSet();
                         Manifest referencedManifest = null;
-                        Iterator nlIterator = nl.iterator();
+                        Iterator<Node> nlIterator = nl.iterator();
 
                         findManifest: while (nlIterator.hasNext()) {
-                            Node n = (Node) nlIterator.next();
+                            Node n = nlIterator.next();
 
                             if ((n.getNodeType() == Node.ELEMENT_NODE) 
                                 && ((Element) n).getNamespaceURI().equals(Constants.SignatureSpecNS) 
