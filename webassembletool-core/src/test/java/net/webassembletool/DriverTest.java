@@ -1,6 +1,7 @@
 package net.webassembletool;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -150,6 +151,9 @@ public class DriverTest extends TestCase {
 		Properties props = new Properties();
 		props.setProperty("remoteUrlBase", "http://localhost:" + SERVER_PORT);
 		props.setProperty("putInCache", "true");
+		File localBase = new File("./target/localBase/");
+		localBase.mkdirs();
+		props.setProperty("localBase", localBase.getCanonicalPath());
 
 		MockDriver provider = new MockDriver("mockTestProxy", props);
 
