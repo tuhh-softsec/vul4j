@@ -17,7 +17,6 @@ package net.webassembletool.authentication;
 import java.io.IOException;
 import java.util.Properties;
 
-import net.webassembletool.Renderer;
 import net.webassembletool.ResourceContext;
 import net.webassembletool.extension.Extension;
 import net.webassembletool.http.HttpClientRequest;
@@ -37,7 +36,7 @@ import net.webassembletool.http.HttpClientResponse;
  * @author Nicolas Richeton
  * 
  */
-public interface AuthenticationHandler extends Renderer, Extension {
+public interface AuthenticationHandler extends Extension {
 
 	public void init(Properties properties);
 

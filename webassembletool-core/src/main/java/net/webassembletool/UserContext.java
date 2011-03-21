@@ -15,11 +15,11 @@
 package net.webassembletool;
 
 import java.io.Serializable;
+import java.util.List;
 
 import net.webassembletool.cookie.CustomCookieStore;
 import net.webassembletool.http.SerializableBasicHttpContext;
 
-import org.apache.http.client.CookieStore;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.protocol.HttpContext;
@@ -36,26 +36,28 @@ import org.apache.http.protocol.HttpContext;
 public class UserContext implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String user;
-	private CustomCookieStore cookieStore = null;
-	private HttpContext httpContext = null;
+	private final CustomCookieStore cookieStore;
+	private final HttpContext httpContext;
 
-	public void init() {
+	public UserContext(CustomCookieStore cookieStore) {
 		if (cookieStore == null) {
-			throw new IllegalArgumentException(
-					"cookieStore implementation not set");
+			throw new IllegalArgumentException("cookieStore implementation not set");
 		}
+
+		this.cookieStore = cookieStore;
 		// Create local HTTP context
 		httpContext = new SerializableBasicHttpContext();
 		// Bind custom cookie store to the local context
 		httpContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
 	}
 
-	public CookieStore getCookieStore() {
-		return cookieStore;
-	}
-
-	public void setCookieStore(CustomCookieStore cookieStore) {
-		this.cookieStore = cookieStore;
+	/**
+	 * Returns all cookies contained in this store.
+	 * 
+	 * @return all cookies
+	 */
+	public List<Cookie> getCookies() {
+		return cookieStore.getCookies();
 	}
 
 	public String getUser() {

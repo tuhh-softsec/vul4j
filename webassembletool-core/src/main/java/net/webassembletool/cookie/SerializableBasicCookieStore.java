@@ -16,7 +16,6 @@ package net.webassembletool.cookie;
 
 import java.util.Properties;
 
-
 import org.apache.http.client.CookieStore;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.BasicCookieStore;
@@ -26,12 +25,8 @@ import org.apache.http.impl.client.BasicCookieStore;
  * 
  * @author Nicolas Richeton
  */
-public class SerializableBasicCookieStore extends BasicCookieStore implements
-		CustomCookieStore {
-
-	/**
-	 * Serial Id
-	 */
+public class SerializableBasicCookieStore extends BasicCookieStore implements CustomCookieStore {
+	/** Serial Id */
 	private static final long serialVersionUID = 5884817839252416275L;
 
 	/**

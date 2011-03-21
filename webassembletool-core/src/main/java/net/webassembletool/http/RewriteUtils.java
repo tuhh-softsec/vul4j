@@ -1,6 +1,5 @@
 package net.webassembletool.http;
 
-import java.util.List;
 import java.util.regex.Pattern;
 
 import net.webassembletool.ResourceContext;
@@ -11,7 +10,6 @@ import org.apache.http.cookie.Cookie;
 public class RewriteUtils {
 
 	private RewriteUtils() {
-
 	}
 
 	public final static String removeSessionId(String sessionId, String page) {
@@ -23,8 +21,7 @@ public class RewriteUtils {
 		String jsessionid = null;
 		UserContext userContext = resourceContext.getUserContext(false);
 		if (userContext != null) {
-			List<Cookie> cookies = userContext.getCookieStore().getCookies();
-			for (Cookie cookie : cookies) {
+			for (Cookie cookie : userContext.getCookies()) {
 				if ("jsessionid".equalsIgnoreCase(cookie.getName())) {
 					jsessionid = cookie.getValue();
 					break;

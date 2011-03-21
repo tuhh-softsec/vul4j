@@ -15,11 +15,12 @@
 
 package net.webassembletool.filter;
 
+import java.util.Properties;
+
 import net.webassembletool.ResourceContext;
 import net.webassembletool.extension.Extension;
 import net.webassembletool.http.HttpClientRequest;
 import net.webassembletool.http.HttpClientResponse;
-import net.webassembletool.output.Output;
 
 /**
  * Interface for request filter.
@@ -29,9 +30,19 @@ import net.webassembletool.output.Output;
  */
 public interface Filter extends Extension {
 
-	void preRequest(HttpClientRequest httpClientRequest,
-			ResourceContext resourceContext);
+	void preRequest(HttpClientRequest request, ResourceContext context);
 
-	void postRequest(HttpClientResponse httpClientResponse, Output output,
-			ResourceContext resourceContext);
+	void postRequest(HttpClientResponse response, ResourceContext context);
+
+	Filter EMPTY = new Filter() {
+		public void init(Properties properties) {
+		}
+
+		public void preRequest(HttpClientRequest request, ResourceContext context) {
+		}
+
+		public void postRequest(HttpClientResponse response, ResourceContext context) {
+		}
+
+	};
 }

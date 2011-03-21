@@ -1,6 +1,7 @@
 package net.webassembletool.cache;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
@@ -16,7 +17,7 @@ import net.webassembletool.resource.Resource;
  * @author Nicolas Richeton
  * 
  */
-public class CachedResponseSummary extends Resource {
+public class CachedResponseSummary extends Resource implements Serializable {
 	private Map<String, Object> headers;
 	private int statusCode;
 	private Map<String, String> requestHeaders;

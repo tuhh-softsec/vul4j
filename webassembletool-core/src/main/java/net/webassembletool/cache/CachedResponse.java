@@ -1,6 +1,8 @@
 package net.webassembletool.cache;
 
 import java.io.IOException;
+import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
@@ -21,7 +23,8 @@ import net.webassembletool.util.Rfc2616;
  * @author Francois-Xavier Bonnet
  * 
  */
-public class CachedResponse extends Resource {
+public class CachedResponse extends Resource implements Serializable{
+	private static final long serialVersionUID = 8125407854908774093L;
 	private final byte[] byteArray;
 	private final Map<String, Object> headers;
 	private final String charset;
@@ -118,6 +121,66 @@ public class CachedResponse extends Resource {
 		return statusCode + " " + statusMessage + " age="
 				+ Rfc2616.getAge(this) + " stale=" + Rfc2616.isStale(this)
 				+ " hasBody=" + hasResponseBody();
+	}
+	
+	
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.hashCode(byteArray);
+		result = prime * result + ((charset == null) ? 0 : charset.hashCode());
+		result = prime * result + ((headers == null) ? 0 : headers.hashCode());
+		result = prime * result
+				+ ((localDate == null) ? 0 : localDate.hashCode());
+		result = prime * result
+				+ ((requestHeaders == null) ? 0 : requestHeaders.hashCode());
+		result = prime * result + statusCode;
+		result = prime * result
+				+ ((statusMessage == null) ? 0 : statusMessage.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CachedResponse other = (CachedResponse) obj;
+		if (!Arrays.equals(byteArray, other.byteArray))
+			return false;
+		if (charset == null) {
+			if (other.charset != null)
+				return false;
+		} else if (!charset.equals(other.charset))
+			return false;
+		if (headers == null) {
+			if (other.headers != null)
+				return false;
+		} else if (!headers.equals(other.headers))
+			return false;
+		if (localDate == null) {
+			if (other.localDate != null)
+				return false;
+		} else if (!localDate.equals(other.localDate))
+			return false;
+		if (requestHeaders == null) {
+			if (other.requestHeaders != null)
+				return false;
+		} else if (!requestHeaders.equals(other.requestHeaders))
+			return false;
+		if (statusCode != other.statusCode)
+			return false;
+		if (statusMessage == null) {
+			if (other.statusMessage != null)
+				return false;
+		} else if (!statusMessage.equals(other.statusMessage))
+			return false;
+		return true;
 	}
 
 	/**

@@ -15,6 +15,10 @@
 package net.webassembletool.filter;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 
 import javax.servlet.http.Cookie;
@@ -26,7 +30,6 @@ import net.webassembletool.extension.ExtensionFactory;
 import net.webassembletool.http.HttpClientRequest;
 import net.webassembletool.http.HttpClientResponse;
 import net.webassembletool.http.HttpHeaders;
-import net.webassembletool.output.Output;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,16 +41,16 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class CookieForwardingFilter implements Filter {
-	private static Logger logger = LoggerFactory.getLogger(ExtensionFactory.class);
-	public static final String PROP_ATTRIBUTE = "forwardCookies";
-	private final ArrayList<String> forwardCookies = new ArrayList<String>();
+	private static final Logger logger = LoggerFactory.getLogger(ExtensionFactory.class);
+	static final String PROP_ATTRIBUTE = "forwardCookies";
+	private final Collection<String> forwardCookies = new HashSet<String>();
 
 	/**
 	 * Get configured cookies.
 	 * 
 	 * @return list of names.
 	 */
-	public ArrayList<String> getForwardCookies() {
+	Collection<String> getForwardCookies() {
 		return forwardCookies;
 	}
 
@@ -58,7 +61,7 @@ public class CookieForwardingFilter implements Filter {
 	 */
 	public void init(Properties properties) {
 		// Cookies to forward
-		String cookiesProperty = (String) properties.get(PROP_ATTRIBUTE);
+		String cookiesProperty = properties.getProperty(PROP_ATTRIBUTE);
 		if (cookiesProperty != null) {
 			String attributes[] = cookiesProperty.split(",");
 			for (String cookieName : attributes) {
@@ -68,8 +71,7 @@ public class CookieForwardingFilter implements Filter {
 				}
 			}
 		} else {
-			throw new ConfigurationException("drivername." + PROP_ATTRIBUTE
-					+ " is empty : no cookie to forward.");
+			throw new ConfigurationException("drivername." + PROP_ATTRIBUTE + " is empty : no cookie to forward.");
 		}
 	}
 
@@ -79,78 +81,59 @@ public class CookieForwardingFilter implements Filter {
 	 * @see net.webassembletool.filter.Filter#postRequest(net.webassembletool.http.HttpClientResponse,
 	 *      net.webassembletool.output.Output)
 	 */
-	public void postRequest(HttpClientResponse httpClientResponse,
-			Output output, ResourceContext resourceContext) {
-
-		HttpServletResponse response = resourceContext.getOriginalResponse();
-		if (response == null) {
+	public void postRequest(HttpClientResponse response, ResourceContext context) {
+		HttpServletResponse dest = context.getOriginalResponse();
+		if (dest == null) {
 			return;
 		}
 
-		String[] cookies = httpClientResponse
-				.getHeaders(HttpHeaders.SET_COOKIE);
-		if (cookies != null) {
-			for (String v : cookies) {
-				for (String forwardCookie : forwardCookies) {
-					if (v.startsWith(forwardCookie + "=")) {
-
-						resourceContext.getOriginalResponse().addHeader(
-								HttpHeaders.SET_COOKIE, v);
-					}
+		String[] cookies = response.getHeaders(HttpHeaders.SET_COOKIE);
+		if (cookies != null && cookies.length != 0) {
+			for (String cookie : cookies) {
+				int idx = cookie.indexOf('=');
+				if (idx != -1 && forwardCookies.contains(cookie.substring(0, idx))) {
+					dest.addHeader(HttpHeaders.SET_COOKIE, cookie);
 				}
 			}
 		}
-
 	}
 
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * @see net.webassembletool.filter.Filter#preRequest(net.webassembletool
-	 *      .http.HttpClientRequest, net.webassembletool.ResourceContext)
+	 * @see net.webassembletool.filter.Filter#preRequest(net.webassembletool.http.HttpClientRequest,
+	 *      net.webassembletool.ResourceContext)
 	 */
-	public void preRequest(HttpClientRequest httpClientRequest,
-			ResourceContext resourceContext) {
+	public void preRequest(HttpClientRequest request, ResourceContext context) {
 		if (logger.isDebugEnabled()) {
 			logger.debug("preRequest");
 		}
 
-		ArrayList<Cookie> toForward = null;
+		List<Cookie> toForward = new ArrayList<Cookie>();
 
 		// Select the cookie to forward
-		Cookie[] cookies = resourceContext.getOriginalRequest().getCookies();
-		if (cookies != null) {
-			for (Cookie c : cookies) {
-				for (String forwardCookie : forwardCookies) {
-					if (forwardCookie.equals(c.getName())) {
-						if (toForward == null) {
-							toForward = new ArrayList<Cookie>();
-						}
-						toForward.add(c);
-					}
+		Cookie[] cookies = context.getOriginalRequest().getCookies();
+		if (cookies != null && cookies.length != 0) {
+			for (Cookie cookie : cookies) {
+				if (forwardCookies.contains(cookie.getName())) {
+					toForward.add(cookie);
 				}
 			}
 		}
 
 		// Create and add the headers.
-		if (toForward != null) {
+		if (!toForward.isEmpty()) {
 			StringBuilder headerValue = new StringBuilder();
-			boolean first = true;
-			for (Cookie c : toForward) {
-				// Handle separator.
-				if (first) {
-					first = false;
-				} else {
+			for (Iterator<Cookie> iter = toForward.iterator(); iter.hasNext();) {
+				Cookie cookie = iter.next();
+				headerValue.append(cookie.getName());
+				headerValue.append('=');
+				headerValue.append(cookie.getValue());
+				if (iter.hasNext()) {
 					headerValue.append("; ");
 				}
-
-				headerValue.append(c.getName());
-				headerValue.append("=");
-				headerValue.append(c.getValue());
 			}
-
-			httpClientRequest.addHeader(HttpHeaders.COOKIE,
-					headerValue.toString());
+			request.addHeader(HttpHeaders.COOKIE, headerValue.toString());
 		}
 
 	}

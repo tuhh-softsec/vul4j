@@ -1,13 +1,10 @@
 package net.webassembletool.cas;
 
-import java.io.IOException;
-import java.io.Writer;
 import java.security.Principal;
 import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.webassembletool.HttpErrorPage;
 import net.webassembletool.ResourceContext;
 import net.webassembletool.authentication.AuthenticationHandler;
 import net.webassembletool.http.HttpClientRequest;
@@ -77,8 +74,4 @@ public class CasAuthenticationHandler implements AuthenticationHandler {
 		httpServletRequest.setAttribute(SECOND_REQUEST, true);
 	}
 
-	public void render(ResourceContext requestContext, String src, Writer out) throws IOException, HttpErrorPage {
-		// Just copy src to out
-		out.write(src);
-	}
 }

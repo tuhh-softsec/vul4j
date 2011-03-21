@@ -9,7 +9,11 @@ public class MockDriver extends Driver {
 	private final HashMap<String, StringOutput> resources = new HashMap<String, StringOutput>();
 
 	public MockDriver(String name) {
-		super(name, new Properties());
+		this(name, new Properties());
+	}
+	
+	public MockDriver(String name, Properties props) {
+		super(name, props);
 		DriverFactory.put(name, this);
 	}
 

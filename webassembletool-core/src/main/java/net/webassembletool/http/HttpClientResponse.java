@@ -45,59 +45,68 @@ import org.slf4j.LoggerFactory;
  */
 public class HttpClientResponse {
 	private final static Logger LOG = LoggerFactory.getLogger(HttpClientResponse.class);
-	private HttpResponse httpResponse;
-	private HttpEntity httpEntity;
-	private int statusCode;
-	private String statusText;
-	private String currentLocation;
-	private Exception exception;
+	private final HttpResponse httpResponse;
+	private final HttpEntity httpEntity;
+	private final int statusCode;
+	private final String statusText;
+	private final String currentLocation;
+	private final boolean error;
 
-	public HttpClientResponse(HttpHost httpHost, HttpRequest basicHttpRequest,
+	public static HttpClientResponse create(HttpHost httpHost, HttpRequest basicHttpRequest,
 			HttpClient httpClient, HttpContext httpContext) {
 		try {
-			httpResponse = httpClient.execute(httpHost, basicHttpRequest, httpContext);
-			statusCode = httpResponse.getStatusLine().getStatusCode();
-			statusText = httpResponse.getStatusLine().getReasonPhrase();
-			httpEntity = httpResponse.getEntity();
-			if (statusCode == HttpServletResponse.SC_MOVED_PERMANENTLY
-					|| statusCode == HttpServletResponse.SC_MOVED_TEMPORARILY) {
-				currentLocation = httpResponse.getFirstHeader(
-						HttpHeaders.LOCATION).getValue();
+			HttpResponse httpResponse = httpClient.execute(httpHost, basicHttpRequest, httpContext);
+			int statusCode = httpResponse.getStatusLine().getStatusCode();
+			String currentLocation;
+			if (statusCode == HttpServletResponse.SC_MOVED_PERMANENTLY || statusCode == HttpServletResponse.SC_MOVED_TEMPORARILY) {
+				currentLocation = httpResponse.getFirstHeader(HttpHeaders.LOCATION).getValue();
 			} else {
 				// Calculating the URL we may have been redirected to, as
 				// automatic redirect following is activated
-				HttpRequest finalRequest = (HttpRequest) httpContext
-						.getAttribute(ExecutionContext.HTTP_REQUEST);
-				HttpHost host = (HttpHost) httpContext
-						.getAttribute(ExecutionContext.HTTP_TARGET_HOST);
-				currentLocation = host.getSchemeName() + "://";
-				currentLocation += host.getHostName();
-				if (host.getPort() != -1) {
-					currentLocation += ":" + host.getPort();
-				}
-				currentLocation += finalRequest.getRequestLine().getUri();
+				currentLocation = buildLocation(httpContext);
 			}
+			return new HttpClientResponse(httpResponse, currentLocation);
 		} catch (HttpHostConnectException e) {
-			exception = e;
-			statusCode = HttpServletResponse.SC_BAD_GATEWAY;
-			statusText = "Connection refused";
+			return new HttpClientResponse(HttpServletResponse.SC_BAD_GATEWAY, "Connection refused");
 		} catch (ConnectionPoolTimeoutException e) {
-			exception = e;
-			statusCode = HttpServletResponse.SC_GATEWAY_TIMEOUT;
-			statusText = "Connection pool timeout";
+			return new HttpClientResponse(HttpServletResponse.SC_GATEWAY_TIMEOUT, "Connection pool timeout");
 		} catch (ConnectTimeoutException e) {
-			exception = e;
-			statusCode = HttpServletResponse.SC_GATEWAY_TIMEOUT;
-			statusText = "Connect timeout";
+			return new HttpClientResponse(HttpServletResponse.SC_GATEWAY_TIMEOUT, "Connect timeout");
 		} catch (SocketTimeoutException e) {
-			exception = e;
-			statusCode = HttpServletResponse.SC_GATEWAY_TIMEOUT;
-			statusText = "Socket timeout";
+			return new HttpClientResponse(HttpServletResponse.SC_GATEWAY_TIMEOUT, "Socket timeout");
 		} catch (IOException e) {
-			exception = e;
-			statusCode = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-			statusText = "Error retrieving URL";
+			return new HttpClientResponse(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error retrieving URL");
 		}
+	}
+
+	static String buildLocation(HttpContext context) {
+		StringBuffer buf = new StringBuffer();
+		HttpHost host = (HttpHost) context.getAttribute(ExecutionContext.HTTP_TARGET_HOST);
+		buf.append(host.getSchemeName()).append("://").append(host.getHostName());
+		if (host.getPort() != -1) {
+			buf.append(':').append(host.getPort());
+		}
+		HttpRequest finalRequest = (HttpRequest) context.getAttribute(ExecutionContext.HTTP_REQUEST);
+		buf.append(finalRequest.getRequestLine().getUri());
+		return buf.toString();
+	}
+
+	protected HttpClientResponse(int statusCode, String statusText) {
+		this.httpResponse = null;
+		this.httpEntity = null;
+		this.currentLocation = null;
+		this.error = true;
+		this.statusCode = statusCode;
+		this.statusText = statusText;
+	}
+
+	HttpClientResponse(HttpResponse httpResponse, String currentLocation) {
+		this.httpResponse = httpResponse;
+		this.statusCode = httpResponse.getStatusLine().getStatusCode();
+		this.statusText = httpResponse.getStatusLine().getReasonPhrase();
+		this.httpEntity = httpResponse.getEntity();
+		this.currentLocation = currentLocation;
+		this.error = false;
 	}
 
 	public void finish() {
@@ -108,10 +117,6 @@ public class HttpClientResponse {
 				LOG.warn("Could not close response stream properly", e);
 			}
 		}
-	}
-
-	public Exception getException() {
-		return exception;
 	}
 
 	public String getCurrentLocation() {
@@ -162,10 +167,11 @@ public class HttpClientResponse {
 		}
 		return result;
 	}
+
 	public String[] getHeaders(String name) {
 		String[] result = null;
 		if (httpResponse != null) {
-			Header[] headers = httpResponse.getAllHeaders();
+			Header[] headers = httpResponse.getHeaders(name);
 			if (headers != null) {
 				result = new String[headers.length];
 				for (int i = 0; i < headers.length; i++) {
@@ -185,5 +191,9 @@ public class HttpClientResponse {
 			result += " -> " + currentLocation;
 		}
 		return result;
+	}
+
+	public boolean isError() {
+		return error;
 	}
 }

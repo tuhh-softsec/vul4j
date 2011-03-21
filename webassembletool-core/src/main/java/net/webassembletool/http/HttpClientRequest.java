@@ -23,8 +23,6 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpHost;
 import org.apache.http.client.HttpClient;
@@ -36,6 +34,8 @@ import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.apache.http.message.BasicHttpRequest;
 import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.protocol.HttpContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Request to a remote Http server.
@@ -100,7 +100,7 @@ public class HttpClientRequest {
 
 		long start = System.currentTimeMillis();
 		// Do the request
-		HttpClientResponse result = new HttpClientResponse(httpHost, httpRequest, httpClient, httpContext);
+		HttpClientResponse result = HttpClientResponse.create(httpHost, httpRequest, httpClient, httpContext);
 		long end = System.currentTimeMillis();
 		if (LOG.isDebugEnabled()) {
 			LOG.debug(toString() + " -> " + result.toString() + " ("

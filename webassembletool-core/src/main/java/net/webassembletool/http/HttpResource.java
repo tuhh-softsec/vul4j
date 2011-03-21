@@ -71,11 +71,9 @@ public class HttpResource extends Resource {
 			userContext = driver.getUserContext(originalRequest, false);
 			newUserContext = false;
 		}
-		HttpContext httpContext = null;
-		httpContext = userContext.getHttpContext();
+		HttpContext httpContext = userContext.getHttpContext();
 
 		// Proceed with request
-		AuthenticationHandler authenticationHandler = driver.getAuthenticationHandler();
 		boolean proxy = resourceContext.isProxy();
 		boolean preserveHost = resourceContext.isPreserveHost();
 		HttpClientRequest httpClientRequest = new HttpClientRequest(url,
@@ -88,19 +86,17 @@ public class HttpResource extends Resource {
 			}
 		}
 		// Auth handler
+		AuthenticationHandler authenticationHandler = driver.getAuthenticationHandler();
 		authenticationHandler.preRequest(httpClientRequest, resourceContext);
 
 		// Filter
 		Filter filter = driver.getFilter();
-		if (filter != null) {
-			filter.preRequest(httpClientRequest, resourceContext);
-		}
+		filter.preRequest(httpClientRequest, resourceContext);
+
 		httpClientResponse = httpClientRequest.execute(httpClient, httpContext);
-		// if (httpClientResponse != null
-		// && (httpClientResponse.getStatusCode() == HttpServletResponse.SC_MOVED_PERMANENTLY || httpClientResponse
-		// .getStatusCode() == HttpServletResponse.SC_MOVED_TEMPORARILY)) {
-		// if (!httpClientResponse.getCurrentLocation().startsWith(
-		// resourceContext.getDriver().getBaseURL())) {
+		// if (httpClientResponse.getStatusCode() == HttpServletResponse.SC_MOVED_PERMANENTLY
+		// || httpClientResponse.getStatusCode() == HttpServletResponse.SC_MOVED_TEMPORARILY) {
+		// if (!httpClientResponse.getCurrentLocation().startsWith(resourceContext.getDriver().getBaseURL())) {
 		// LOG.debug("Current location should be started with: "
 		// + resourceContext.getDriver().getBaseURL());
 		// throw new IOException("Current location should be started with: " + resourceContext.getDriver().getBaseURL()
@@ -109,7 +105,7 @@ public class HttpResource extends Resource {
 		// }
 
 		// Store context in session if cookies where created
-		if (newUserContext && !userContext.getCookieStore().getCookies().isEmpty()) {
+		if (newUserContext && !userContext.getCookies().isEmpty()) {
 			resourceContext.getDriver().setUserContext(userContext, originalRequest);
 		}
 
@@ -117,23 +113,17 @@ public class HttpResource extends Resource {
 			// We must first ensure that the connection is always released, if
 			// not the connection manager's pool may be exhausted soon !
 			httpClientResponse.finish();
-			httpClientRequest = new HttpClientRequest(url, originalRequest,
-					proxy, preserveHost);
+			httpClientRequest = new HttpClientRequest(url, originalRequest, proxy, preserveHost);
 			// Auth handler
-			authenticationHandler
-					.preRequest(httpClientRequest, resourceContext);
+			authenticationHandler.preRequest(httpClientRequest, resourceContext);
 			// Filter
-			if (filter != null) {
-				filter.preRequest(httpClientRequest, resourceContext);
-			}
-			httpClientResponse = httpClientRequest.execute(httpClient,
-					httpContext);
+			filter.preRequest(httpClientRequest, resourceContext);
+			httpClientResponse = httpClientRequest.execute(httpClient, httpContext);
 
 			// Store context if cookies where created
-			if (newUserContext && !userContext.getCookieStore().getCookies().isEmpty()) {
+			if (newUserContext && !userContext.getCookies().isEmpty()) {
 				resourceContext.getDriver().setUserContext(userContext, originalRequest);
 			}
-
 		}
 
 		if (isError()) {
@@ -147,10 +137,7 @@ public class HttpResource extends Resource {
 	public void render(Output output) throws IOException {
 		output.setStatus(httpClientResponse.getStatusCode(), httpClientResponse.getStatusText());
 		Rfc2616.copyHeaders(target.getDriver().getConfiguration(), this, output);
-		Filter filter = target.getDriver().getFilter();
-		if (filter != null) {
-			filter.postRequest(httpClientResponse, output, target);
-		}
+		target.getDriver().getFilter().postRequest(httpClientResponse, target);
 		String location = httpClientResponse.getHeader(HttpHeaders.LOCATION);
 		if (location != null) {
 			// In case of a redirect, we need to rewrite the location header to
@@ -166,7 +153,7 @@ public class HttpResource extends Resource {
 		}
 		try {
 			output.open();
-			if (httpClientResponse.getException() != null) {
+			if (httpClientResponse.isError()) {
 				output.write(httpClientResponse.getStatusText());
 			} else {
 				InputStream inputStream = httpClientResponse.openStream();

@@ -34,6 +34,7 @@ public class ResourceContext {
 	private boolean proxy = false;
 	private boolean preserveHost = false;
 	private boolean neededForTransformation = true;
+	private Map<String, String> validators = null;
 
 	public boolean isPreserveHost() {
 		return preserveHost;
@@ -59,6 +60,17 @@ public class ResourceContext {
 		}
 		this.originalRequest = originalRequest;
 		this.originalResponse = originalResponse;
+	}
+
+	@Override
+	public ResourceContext clone() {
+		ResourceContext ret = new ResourceContext(driver, relUrl, parameters,
+				originalRequest, originalResponse);
+		ret.setPreserveHost(preserveHost);
+		ret.setProxy(proxy);
+		ret.setNeededForTransformation(neededForTransformation);
+		ret.setValidators(validators);
+		return ret;
 	}
 
 	public String getRelUrl() {
@@ -93,4 +105,11 @@ public class ResourceContext {
 		return originalResponse;
 	}
 
+	public Map<String, String> getValidators() {
+		return validators;
+	}
+
+	public void setValidators(Map<String, String> validators) {
+		this.validators = validators;
+	}
 }

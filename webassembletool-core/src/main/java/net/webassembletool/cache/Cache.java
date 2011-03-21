@@ -20,11 +20,8 @@ import org.slf4j.LoggerFactory;
  */
 public class Cache {
 	private static Logger LOG = LoggerFactory.getLogger(Cache.class);
-	private final Storage storage;
+	private CacheStorage storage;
 
-	public Cache() {
-		storage = new Storage();
-	}
 
 	private CacheEntry getCacheEntry(ResourceContext resourceContext) {
 		String key = ResourceUtils.getHttpUrlWithQueryString(resourceContext);
@@ -103,5 +100,9 @@ public class Cache {
 		// Entry will be set to dirty during put.
 		entry.setDirty(false);
 		storage.put(entry.getUrl(), entry);
+	}
+
+	public void setStorage(CacheStorage storage) {
+		this.storage = storage;
 	}
 }

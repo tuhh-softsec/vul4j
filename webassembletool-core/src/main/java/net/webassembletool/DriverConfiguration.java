@@ -22,8 +22,13 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 import net.webassembletool.authentication.RemoteUserAuthenticationHandler;
+import net.webassembletool.cache.CacheStorage;
+import net.webassembletool.cache.DefaultCacheStorage;
 import net.webassembletool.cookie.SerializableBasicCookieStore;
 import net.webassembletool.renderers.ResourceFixupRenderer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Driver configuration parameters
@@ -32,6 +37,7 @@ import net.webassembletool.renderers.ResourceFixupRenderer;
  * @contributor Nicolas Richeton
  */
 public class DriverConfiguration {
+	private static final Logger log = LoggerFactory.getLogger(DriverConfiguration.class);
 	private final String instanceName;
 	private final String baseURL;
 	private String uriEncoding = "ISO-8859-1";
@@ -43,6 +49,7 @@ public class DriverConfiguration {
 	private boolean useCache = true;
 	private int cacheRefreshDelay = 0;
 	private int cacheMaxFileSize = 0;
+	private Class<? extends CacheStorage> cacheStorageClass;
 	private final String localBase;
 	private boolean putInCache = false;
 	private String proxyHost;
@@ -58,7 +65,7 @@ public class DriverConfiguration {
 
 	private static final String DEFAULT_PARSABLE_CONTENT_TYPES = "text/html, application/xhtml+xml";
 	private static final String DEFAULT_BLACK_LISTED_HEADERS = "Content-Length,Content-Encoding,Transfer-Encoding";
-
+	
 	public DriverConfiguration(String instanceName, Properties props) {
 		this.instanceName = instanceName;
 		// Remote application settings
@@ -81,6 +88,21 @@ public class DriverConfiguration {
 		if (props.getProperty("cacheMaxFileSize") != null) {
 			cacheMaxFileSize = Integer.parseInt(props
 					.getProperty("cacheMaxFileSize"));
+		}
+		if (props.getProperty("cacheStorageClassName") != null) {
+			String cacheStorageClassName = props.getProperty("cacheStorageClass");
+			try {
+				Class<? extends CacheStorage> cacheStorageClass =  (Class<? extends CacheStorage>) this.getClass().getClassLoader().loadClass(cacheStorageClassName);
+				if(cacheStorageClass != null)
+				{
+					this.cacheStorageClass =  cacheStorageClass; 
+				}
+			} catch (Exception e) {
+				throw new RuntimeException("Cashestorage insatnce can not be loaded", e);
+			}
+		}
+		if(null == this.cacheStorageClass){
+			this.cacheStorageClass = DefaultCacheStorage.class;
 		}
 		// Local file system settings
 		localBase = props.getProperty("localBase");
@@ -253,6 +275,11 @@ public class DriverConfiguration {
 
 	public String getCookieStore() {
 		return cookieStore;
+	}
+	
+
+	public Class<? extends CacheStorage> getCacheStorageClass() {
+		return cacheStorageClass;
 	}
 
 	/**

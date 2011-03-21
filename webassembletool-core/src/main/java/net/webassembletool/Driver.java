@@ -15,9 +15,13 @@
 package net.webassembletool;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -27,23 +31,17 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import net.webassembletool.authentication.AuthenticationHandler;
-import net.webassembletool.cache.Cache;
-import net.webassembletool.cache.CacheOutput;
-import net.webassembletool.cache.CachedResponse;
 import net.webassembletool.cookie.CustomCookieStore;
 import net.webassembletool.extension.ExtensionFactory;
-import net.webassembletool.file.FileOutput;
-import net.webassembletool.file.FileResource;
 import net.webassembletool.filter.Filter;
-import net.webassembletool.http.HttpResource;
+import net.webassembletool.http.CachedHttpResourceFactory;
+import net.webassembletool.http.HttpResourceFactory;
 import net.webassembletool.http.ResponseOutput;
-import net.webassembletool.output.MultipleOutput;
 import net.webassembletool.output.Output;
 import net.webassembletool.output.StringOutput;
 import net.webassembletool.output.TextOnlyStringOutput;
 import net.webassembletool.regexp.ReplaceRenderer;
 import net.webassembletool.renderers.ResourceFixupRenderer;
-import net.webassembletool.resource.NullResource;
 import net.webassembletool.resource.Resource;
 import net.webassembletool.resource.ResourceUtils;
 import net.webassembletool.tags.BlockRenderer;
@@ -83,12 +81,11 @@ import org.slf4j.LoggerFactory;
 public class Driver {
 	private static final Logger LOG = LoggerFactory.getLogger(Driver.class);
 	private final DriverConfiguration config;
-	private final Cache cache;
 	private final HttpClient httpClient;
 	private final AuthenticationHandler authenticationHandler;
 	private final Filter filter;
-
-	private ExtensionFactory extension = null;
+	private final ResourceFactory resourceFactory;
+	private final ExtensionFactory extension;
 
 	public Driver(String name, Properties props) {
 		LOG.debug("Initializing instance: " + name);
@@ -145,9 +142,10 @@ public class Driver {
 		}
 		// Cache
 		if (config.isUseCache()) {
-			cache = new Cache();
+			resourceFactory = new CachedHttpResourceFactory(
+					getHttpResourceFactory(), config);
 		} else {
-			cache = null;
+			resourceFactory = getHttpResourceFactory();
 		}
 
 		extension = new ExtensionFactory(config);
@@ -155,8 +153,13 @@ public class Driver {
 		// Authentication handler
 		authenticationHandler = extension
 				.getExtension(AuthenticationHandler.class);
-		filter = extension.getExtension(Filter.class);
+		// Filter
+		Filter f = extension.getExtension(Filter.class);
+		filter = (f != null) ? f : Filter.EMPTY;
+	}
 
+	protected ResourceFactory getHttpResourceFactory() {
+		return new HttpResourceFactory(httpClient);
 	}
 
 	public AuthenticationHandler getAuthenticationHandler() {
@@ -194,9 +197,8 @@ public class Driver {
 	 * @return UserContext
 	 */
 	public UserContext createNewUserContext() {
-		UserContext context = new UserContext();
-		context.setCookieStore(extension.getExtension(CustomCookieStore.class));
-		context.init();
+		UserContext context = new UserContext(
+				extension.getExtension(CustomCookieStore.class));
 		return context;
 	}
 
@@ -386,14 +388,6 @@ public class Driver {
 		StringOutput stringOutput = getResourceAsString(resourceContext);
 		String currentValue = stringOutput.toString();
 
-		// Call the AuthenticationHandler if any to filter the result
-		if (authenticationHandler != null) {
-			StringWriter filtered = new StringWriter();
-			authenticationHandler.render(resourceContext, currentValue,
-					filtered);
-			currentValue = filtered.toString();
-		}
-
 		// Fix resources
 		if (config.isFixResources()) {
 			ResourceFixupRenderer fixup = new ResourceFixupRenderer(
@@ -442,7 +436,7 @@ public class Driver {
 			return;
 		}
 
-		if (renderers.length == 0) {
+		if (renderers.length == 0 && !config.isFixResources()) {
 			// As we don't have any transformation to apply, we don't even
 			// have to retrieve the resource if it is already in browser's
 			// cache. So we can use conditional a request like
@@ -464,17 +458,17 @@ public class Driver {
 			LOG.debug("'" + relUrl + "' is text : will apply renderers.");
 			String currentValue = textOutput.toString();
 
-			// Fix resources
+			List<Renderer> listOfRenderers = new ArrayList<Renderer>(
+					renderers.length + 1);
 			if (config.isFixResources()) {
 				ResourceFixupRenderer fixup = new ResourceFixupRenderer(
 						config.getBaseURL(), config.getVisibleBaseURL(),
 						relUrl, config.getFixMode());
-				StringWriter stringWriter = new StringWriter();
-				fixup.render(resourceContext, currentValue, stringWriter);
-				currentValue = stringWriter.toString();
+				listOfRenderers.add(fixup);
 			}
+			listOfRenderers.addAll(Arrays.asList(renderers));
 
-			for (Renderer renderer : renderers) {
+			for (Renderer renderer : listOfRenderers) {
 				StringWriter stringWriter = new StringWriter();
 				renderer.render(resourceContext, currentValue, stringWriter);
 				currentValue = stringWriter.toString();
@@ -503,155 +497,26 @@ public class Driver {
 
 	private final void renderResource(ResourceContext resourceContext,
 			Output output) throws HttpErrorPage {
-		String httpUrl = ResourceUtils
-				.getHttpUrlWithQueryString(resourceContext);
-		MultipleOutput multipleOutput = new MultipleOutput();
-		multipleOutput.addOutput(output);
-		CachedResponse cachedResource = null;
-		Resource httpResource = null;
-		FileResource fileResource = null;
-		CacheOutput memoryOutput = null;
-		FileOutput fileOutput = null;
+		Resource resource = null;
 		try {
-			if (config.isUseCache() && Rfc2616.isCacheable(resourceContext)) {
-				// Try to load the resource from cache
-				cachedResource = cache.get(resourceContext);
-				boolean needsValidation = true;
-				if (cachedResource != null) {
-					needsValidation = false;
-					if (config.getCacheRefreshDelay() <= 0) {
-						// Auto http cache
-						if (Rfc2616.needsValidation(resourceContext,
-								cachedResource)) {
-							needsValidation = true;
-						}
-					} else {
-						// Forced expiration delay
-						if (Rfc2616.requiresRefresh(resourceContext)
-								|| Rfc2616.getAge(cachedResource) > config
-										.getCacheRefreshDelay() * 1000L) {
-							needsValidation = true;
-						}
-					}
-				}
-				if (LOG.isDebugEnabled()) {
-					String message = "Needs validation=" + needsValidation;
-					message += " cacheRefreshDelay="
-							+ config.getCacheRefreshDelay();
-					if (cachedResource != null) {
-						message += " cachedResource=" + cachedResource;
-					}
-					LOG.debug(message);
-				}
-				if (needsValidation) {
-					// Resource not in cache or stale, or refresh was forced by
-					// the user (hit refresh in the browser so the browser sent
-					// a pragma:no-cache header or something similar), prepare a
-					// memoryOutput to collect the new version
-					memoryOutput = new CacheOutput(config.getCacheMaxFileSize());
-					multipleOutput.addOutput(memoryOutput);
-				} else {
-					// Resource in cache, does not need validation, just render
-					// it
-					LOG.debug("Reusing cache entry for: " + httpUrl);
-					Rfc2616.renderResource(config, cachedResource, multipleOutput);
-					return;
-				}
-			}
-			// Try to load it from HTTP
-			if (config.getBaseURL() != null) {
-				// Prepare a FileOutput to store the result on the file system
-				if (config.isPutInCache()
-						&& Rfc2616.isCacheable(resourceContext)) {
-					fileOutput = ResourceUtils.createFileOutput(config.getLocalBase(), resourceContext);
-					multipleOutput.addOutput(fileOutput);
-				}
-				if (cache != null) {
-					Map<String, String> validators = cache.getValidators(
-							resourceContext, cachedResource);
-					httpResource = new HttpResource(httpClient,
-							resourceContext, validators);
-					httpResource = cache.select(resourceContext,
-							cachedResource, httpResource);
-				} else {
-					httpResource = new HttpResource(httpClient,
-							resourceContext, null);
-				}
-				// If there is an error, we will try to reuse an old cache entry
-				if (!httpResource.isError()) {
-					Rfc2616.renderResource(config, httpResource, multipleOutput);
-					return;
-				}
-			}
-			// Resource could not be loaded from HTTP, let's use the expired
-			// cache entry if not empty and not error.
-			if (cachedResource != null && !cachedResource.isError()) {
-				Rfc2616.renderResource(config, cachedResource, multipleOutput);
-				return;
-			}
-			// Resource could not be loaded neither from HTTP, nor from the
-			// cache, let's try from the file system
-			if (config.getLocalBase() != null
-					&& Rfc2616.isCacheable(resourceContext)) {
-				fileResource = ResourceUtils.createFileResource(config.getLocalBase(), resourceContext);
-				if (!fileResource.isError()) {
-					// on réinitialise l'output pour ne pas écraser le fichier
-					// stocké sur le disque
-					multipleOutput = new MultipleOutput();
-					multipleOutput.addOutput(output);
-					memoryOutput = new CacheOutput(config.getCacheMaxFileSize());
-					multipleOutput.addOutput(memoryOutput);
-					Rfc2616.renderResource(config, fileResource, multipleOutput);
-					return;
-				}
-			}
-			// No valid response could be found, let's render the response even
-			// if it is an error
-			if (httpResource != null) {
-				Rfc2616.renderResource(config, httpResource, multipleOutput);
-				return;
-			} else if (cachedResource != null) {
-				Rfc2616.renderResource(config, cachedResource, multipleOutput);
-				return;
-			} else if (fileResource != null) {
-				Rfc2616.renderResource(config, fileResource, multipleOutput);
-				return;
-			} else {
-				// Resource could not be loaded at all
-				Rfc2616.renderResource(config, new NullResource(), multipleOutput);
-			}
-		} catch (Throwable t) {
-			if (t instanceof HttpErrorPage) {
-				throw (HttpErrorPage) t;
-			} else {
-				// In case there was a problem during rendering (client abort for
-				// exemple), all the output
-				// should have been gracefully closed in the render method but we
-				// must discard the entry inside the cache or the file system
-				// because it is not complete
-				if (memoryOutput != null) {
-					memoryOutput = null;
-				}
-				if (fileOutput != null) {
-					fileOutput.delete();
-				}
-				throw new ResponseException(httpUrl + " could not be retrieved", t);
+			resource = this.resourceFactory.getResource(resourceContext);
+			try {
+				Rfc2616.renderResource(config, resource, output);
+			} catch (IOException e) {
+				StringWriter out = new StringWriter();
+				e.printStackTrace(new PrintWriter(out));
+				HttpErrorPage httpErrorPage = new HttpErrorPage(
+						HttpServletResponse.SC_BAD_GATEWAY, e.getMessage(),
+						out.toString());
+				httpErrorPage.initCause(e);
+				throw httpErrorPage;
 			}
 		} finally {
-			// Free all the resources
-			if (cachedResource != null) {
-				cachedResource.release();
-			}
-			if (memoryOutput != null && cache != null) {
-				cache.put(resourceContext, memoryOutput.toResource());
-			}
-			if (httpResource != null) {
-				httpResource.release();
-			}
-			if (fileResource != null) {
-				fileResource.release();
+			if (null != resource) {
+				resource.release();
 			}
 		}
+
 	}
 
 	/**
@@ -687,6 +552,10 @@ public class Driver {
 		return UserContext.class.getName() + "#" + config.getInstanceName();
 	}
 
+	/**
+	 * Returns {@linkplain Filter} instance configured for this driver. Never
+	 * returns <code>null</code>.
+	 */
 	public Filter getFilter() {
 		return filter;
 	}

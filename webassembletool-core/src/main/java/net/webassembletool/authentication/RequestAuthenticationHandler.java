@@ -15,13 +15,12 @@
 package net.webassembletool.authentication;
 
 import java.io.IOException;
-import java.io.Writer;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import javax.servlet.http.HttpSession;
 
-import net.webassembletool.HttpErrorPage;
 import net.webassembletool.ResourceContext;
 import net.webassembletool.http.HttpClientRequest;
 import net.webassembletool.http.HttpClientResponse;
@@ -35,18 +34,17 @@ import org.slf4j.LoggerFactory;
  * @author Nicolas Richeton
  */
 public class RequestAuthenticationHandler implements AuthenticationHandler {
+	private final static Logger logger = LoggerFactory.getLogger(RequestAuthenticationHandler.class);
+	private final List<String> sessionAttributes = new ArrayList<String>();
+	private final List<String> requestAttributes = new ArrayList<String>();
 	private String headerPrefix = "X-ATTR-";
-	private static Logger logger = LoggerFactory.getLogger(RequestAuthenticationHandler.class);
-	private final ArrayList<String> sessionAttributes = new ArrayList<String>();
-	private final ArrayList<String> requestAttributes = new ArrayList<String>();
 
 	/**
 	 * {@inheritDoc}
 	 * 
 	 * @see net.webassembletool.authentication.AuthenticationHandler#beforeProxy(net.webassembletool.ResourceContext)
 	 */
-	public boolean beforeProxy(ResourceContext requestContext)
-			throws IOException {
+	public boolean beforeProxy(ResourceContext requestContext) throws IOException {
 		return true;
 	}
 
@@ -57,8 +55,7 @@ public class RequestAuthenticationHandler implements AuthenticationHandler {
 	 */
 	public void init(Properties properties) {
 		// Attributes for session
-		String sessionAttributesProperty = (String) properties
-				.get("forwardSessionAttributes");
+		String sessionAttributesProperty = properties.getProperty("forwardSessionAttributes");
 		if (sessionAttributesProperty != null) {
 			String attributes[] = sessionAttributesProperty.split(",");
 			for (String attribute : attributes) {
@@ -114,10 +111,9 @@ public class RequestAuthenticationHandler implements AuthenticationHandler {
 			logger.debug("preRequest");
 		}
 		// Process session
-		HttpSession session = requestContext.getOriginalRequest().getSession(
-				false);
+		HttpSession session = requestContext.getOriginalRequest().getSession(false);
 
-		if (session != null && sessionAttributes != null) {
+		if (session != null) {
 			for (String attribute : sessionAttributes) {
 				String value = (String) session.getAttribute(attribute);
 				if (value != null) {
@@ -144,17 +140,6 @@ public class RequestAuthenticationHandler implements AuthenticationHandler {
 				request.addHeader(headerPrefix + attribute, value);
 			}
 		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * @see net.webassembletool.Renderer#render(net.webassembletool.ResourceContext,
-	 *      java.lang.String, java.io.Writer)
-	 */
-	public void render(ResourceContext requestContext, String src, Writer out)
-			throws IOException, HttpErrorPage {
-		out.write(src);
 	}
 
 }

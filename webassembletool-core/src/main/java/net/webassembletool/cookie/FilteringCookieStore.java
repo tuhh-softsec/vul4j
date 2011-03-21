@@ -14,12 +14,13 @@
  */
 package net.webassembletool.cookie;
 
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Properties;
 
+import org.apache.http.cookie.Cookie;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.http.cookie.Cookie;
 
 /**
  * Prevent specified cookies from being stored in the cookie store.
@@ -28,13 +29,11 @@ import org.apache.http.cookie.Cookie;
  * 
  */
 public class FilteringCookieStore extends SerializableBasicCookieStore {
-	private static Logger logger = LoggerFactory.getLogger(FilteringCookieStore.class);
-	/**
-	 * Serialization ID.
-	 */
+	/** Serialization ID. */
 	private static final long serialVersionUID = -2112501012354521287L;
+	private static final Logger logger = LoggerFactory.getLogger(FilteringCookieStore.class);
 
-	private final ArrayList<String> forwardCookies = new ArrayList<String>();
+	private final Collection<String> forwardCookies = new HashSet<String>();
 
 	/**
 	 * {@inheritDoc}
@@ -43,20 +42,12 @@ public class FilteringCookieStore extends SerializableBasicCookieStore {
 	 */
 	@Override
 	public void addCookie(Cookie cookie) {
-
-		boolean store = true;
-		for (String cookieName : forwardCookies) {
-			if (cookieName.equals(cookie.getName())) {
-				if (logger.isInfoEnabled()) {
-					logger.info("Not storing " + cookie.getName());
-				}
-				store = false;
-				break;
-			}
-		}
-
-		if (store) {
+		if (!forwardCookies.contains(cookie.getName())) {
 			super.addCookie(cookie);
+		} else {
+			if (logger.isInfoEnabled()) {
+				logger.info("Not storing " + cookie.getName());
+			}
 		}
 	}
 
@@ -65,7 +56,7 @@ public class FilteringCookieStore extends SerializableBasicCookieStore {
 	 * 
 	 * @return cookie name list.
 	 */
-	public ArrayList<String> getForwardCookies() {
+	Collection<String> getForwardCookies() {
 		return forwardCookies;
 	}
 
@@ -80,7 +71,7 @@ public class FilteringCookieStore extends SerializableBasicCookieStore {
 		super.init(properties);
 
 		// Cookies to discard
-		String cookiesProperty = (String) properties.get("discardCookies");
+		String cookiesProperty = properties.getProperty("discardCookies");
 		if (cookiesProperty != null) {
 			String attributes[] = cookiesProperty.split(",");
 			for (String cookieName : attributes) {

@@ -14,11 +14,8 @@
  */
 package net.webassembletool.authentication;
 
-import java.io.IOException;
-import java.io.Writer;
 import java.util.Properties;
 
-import net.webassembletool.HttpErrorPage;
 import net.webassembletool.ResourceContext;
 import net.webassembletool.UserContext;
 import net.webassembletool.http.HttpClientRequest;
@@ -61,9 +58,4 @@ public class RemoteUserAuthenticationHandler implements AuthenticationHandler {
 		return true;
 	}
 
-	public void render(ResourceContext requestContext, String src, Writer out)
-			throws IOException, HttpErrorPage {
-		// Just copy src to out
-		out.write(src);
-	}
 }

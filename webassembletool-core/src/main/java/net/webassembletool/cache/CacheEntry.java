@@ -1,5 +1,6 @@
 package net.webassembletool.cache;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,13 +28,14 @@ import org.slf4j.LoggerFactory;
  * @author Francois-Xavier Bonnet
  * @author Nicolas Richeton
  */
-class CacheEntry {
+class CacheEntry implements Serializable {
+	private static final long serialVersionUID = 7110248280110189961L;
 	private static final Logger LOG = LoggerFactory.getLogger(CacheEntry.class);
 	private static final long CLEAN_DELAY = 15 * 60 * 1000; // 15 minutes;
 	private static final Pattern ETAG_PATTERN = Pattern.compile(",?\\s*((W/)?\"[^\"]*\")");
 
 	private final String url;
-	private transient Storage storage;
+	private transient CacheStorage storage;
 	private transient boolean dirty;
 	private long lastClean = -1;
 
@@ -55,7 +57,7 @@ class CacheEntry {
 		return url;
 	}
 
-	public CacheEntry(String url, Storage storage) {
+	public CacheEntry(String url, CacheStorage storage) {
 		this.url = url;
 		this.storage = storage;
 		this.dirty = false;
@@ -397,6 +399,45 @@ class CacheEntry {
 			}
 		}
 	}
+	
+	
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (lastClean ^ (lastClean >>> 32));
+		result = prime
+				* result
+				+ ((responseSummaries == null) ? 0 : responseSummaries
+						.hashCode());
+		result = prime * result + ((url == null) ? 0 : url.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CacheEntry other = (CacheEntry) obj;
+		if (lastClean != other.lastClean)
+			return false;
+		if (responseSummaries == null) {
+			if (other.responseSummaries != null)
+				return false;
+		} else if (!responseSummaries.equals(other.responseSummaries))
+			return false;
+		if (url == null) {
+			if (other.url != null)
+				return false;
+		} else if (!url.equals(other.url))
+			return false;
+		return true;
+	}
 
 	public boolean isDirty() {
 		return dirty;
@@ -436,11 +477,7 @@ class CacheEntry {
 		return cacheKey.toString();
 	}
 
-	public Storage getStorage() {
-		return storage;
-	}
-
-	public void setStorage(Storage storage) {
+	public void setStorage(CacheStorage storage) {
 		this.storage = storage;
 	}
 }

@@ -29,7 +29,6 @@ import org.apache.http.client.CookieStore;
  * @author Nicolas Richeton
  * 
  */
-public interface CustomCookieStore extends CookieStore, Serializable,
-		Extension {
+public interface CustomCookieStore extends CookieStore, Serializable, Extension {
 
 }
