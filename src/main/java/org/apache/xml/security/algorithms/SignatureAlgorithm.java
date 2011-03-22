@@ -405,8 +405,8 @@ public class SignatureAlgorithm extends Algorithm {
      * @throws XMLSignatureException 
      */
     public static void register(String algorithmURI, String implementingClass)
-           throws AlgorithmAlreadyRegisteredException,XMLSignatureException {
-
+           throws AlgorithmAlreadyRegisteredException, ClassNotFoundException, 
+               XMLSignatureException {
         if (log.isDebugEnabled())
             log.debug("Try to register " + algorithmURI + " " + implementingClass);
 
@@ -426,10 +426,6 @@ public class SignatureAlgorithm extends Algorithm {
         try {	         	   			 
             SignatureAlgorithm._algorithmHash.put
                 (algorithmURI, Class.forName(implementingClass));
-        } catch (ClassNotFoundException ex) {
-            Object exArgs[] = { algorithmURI, ex.getMessage() };
-            throw new XMLSignatureException
-                ("algorithms.NoSuchAlgorithm", exArgs, ex);
         } catch (NullPointerException ex) {
             Object exArgs[] = { algorithmURI, ex.getMessage() };
             throw new XMLSignatureException

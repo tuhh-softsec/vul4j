@@ -54,7 +54,15 @@ public class MessageDigestAlgorithm extends Algorithm {
         EncryptionConstants.EncryptionSpecNS + "ripemd160";
 
     /** Field algorithm stores the actual {@link java.security.MessageDigest} */
-    java.security.MessageDigest algorithm = null;
+    private MessageDigest algorithm = null;
+    
+    private static ThreadLocal<Map<String, MessageDigest>> instances = 
+        new ThreadLocal<Map<String, MessageDigest>>() {
+        
+        protected Map<String, MessageDigest> initialValue() {
+            return new HashMap<String, MessageDigest>();
+        };
+    };
 
     /**
      * Constructor for the brave who pass their own message digest algorithms and the 
@@ -68,12 +76,6 @@ public class MessageDigestAlgorithm extends Algorithm {
 
         this.algorithm = messageDigest;
     }
-
-    static ThreadLocal instances=new ThreadLocal() {
-        protected Object initialValue() {
-            return new HashMap();
-        };
-    };
 
     /**
      * Factory method for constructing a message digest algorithm by name.
@@ -91,9 +93,11 @@ public class MessageDigestAlgorithm extends Algorithm {
     }
 
     private static MessageDigest getDigestInstance(String algorithmURI) throws XMLSignatureException {
-        MessageDigest result=(MessageDigest) ((Map)instances.get()).get(algorithmURI);
-        if (result!=null)
+        Map<String, MessageDigest> digestMap = instances.get();
+        MessageDigest result = digestMap.get(algorithmURI);
+        if (result != null) {
             return result;
+        }
         String algorithmID = JCEMapper.translateURItoJCEID(algorithmURI);
 
         if (algorithmID == null) {
@@ -102,25 +106,24 @@ public class MessageDigestAlgorithm extends Algorithm {
         }
 
         MessageDigest md;
-        String provider=JCEMapper.getProviderId();
+        String provider = JCEMapper.getProviderId();
         try {      	
-            if (provider==null) {
+            if (provider == null) {
                 md = MessageDigest.getInstance(algorithmID);
             } else {
-                md = MessageDigest.getInstance(algorithmID,provider);
+                md = MessageDigest.getInstance(algorithmID, provider);
             }
         } catch (java.security.NoSuchAlgorithmException ex) {
-            Object[] exArgs = { algorithmID,
-                                ex.getLocalizedMessage() };
+            Object[] exArgs = { algorithmID, ex.getLocalizedMessage() };
 
             throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs);
         } catch (NoSuchProviderException ex) {
-            Object[] exArgs = { algorithmID,
-                                ex.getLocalizedMessage() };
+            Object[] exArgs = { algorithmID, ex.getLocalizedMessage() };
 
             throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs);
         }
-        ((Map)instances.get()).put(algorithmURI, md);  
+        digestMap.put(algorithmURI, md);
+        
         return md;
     }
 

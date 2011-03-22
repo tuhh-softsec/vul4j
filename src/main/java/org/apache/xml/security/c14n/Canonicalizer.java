@@ -127,7 +127,7 @@ public class Canonicalizer {
      */
     @SuppressWarnings("unchecked")
     public static void register(String algorithmURI, String implementingClass)
-        throws AlgorithmAlreadyRegisteredException {
+        throws AlgorithmAlreadyRegisteredException, ClassNotFoundException {
         // check whether URI is already registered
         Class<CanonicalizerSpi> registeredClass = getImplementingClass(algorithmURI);
 
@@ -137,14 +137,10 @@ public class Canonicalizer {
             throw new AlgorithmAlreadyRegisteredException("algorithm.alreadyRegistered", exArgs);
         }
 
-        try {
-            canonicalizerHash.put(
-                algorithmURI, 
-                (Class<CanonicalizerSpi>)Class.forName(implementingClass)
-            );
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("c14n class not found");
-        }
+        canonicalizerHash.put(
+            algorithmURI, 
+            (Class<CanonicalizerSpi>)Class.forName(implementingClass)
+        );
     }
 
     /**

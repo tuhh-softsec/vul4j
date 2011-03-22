@@ -50,10 +50,11 @@ public class JCEMapper {
     }
 
     static void loadAlgorithms(Element algorithmsEl) {
-        Element[] algorithms = XMLUtils.selectNodes(algorithmsEl.getFirstChild(),Init.CONF_NS,"Algorithm");
-        uriToJCEName = new HashMap( algorithms.length * 2); 
-        algorithmsMap = new HashMap( algorithms.length * 2);
-        for (int i = 0 ;i < algorithms.length ;i ++) {
+        Element[] algorithms = 
+            XMLUtils.selectNodes(algorithmsEl.getFirstChild(), Init.CONF_NS, "Algorithm");
+        uriToJCEName = new HashMap<String, String>(algorithms.length * 2); 
+        algorithmsMap = new HashMap<String, Algorithm>(algorithms.length * 2);
+        for (int i = 0; i < algorithms.length; i++) {
             Element el = algorithms[i];
             String id = el.getAttribute("URI");
             String jceName = el.getAttribute("JCEName");

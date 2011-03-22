@@ -29,7 +29,7 @@ public class SampleTransform extends TransformSpi {
     public static final String uri =
         "http://org.apache.xml.security.test.transforms.SampleTransform";
 
-    public SampleTransform() throws InvalidTransformException {
+    public SampleTransform() throws Exception {
         try {
             Transform.register
                (uri, "org.apache.xml.security.test.transforms.SampleTransform");

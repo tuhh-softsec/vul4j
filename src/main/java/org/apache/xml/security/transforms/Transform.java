@@ -204,7 +204,8 @@ public final class Transform extends SignatureElementProxy {
      */
     @SuppressWarnings("unchecked")
     public static void register(String algorithmURI, String implementingClass)
-        throws AlgorithmAlreadyRegisteredException, InvalidTransformException {
+        throws AlgorithmAlreadyRegisteredException, ClassNotFoundException, 
+            InvalidTransformException {
         // are we already registered?
         TransformSpi transformSpi = transformSpiHash.get(algorithmURI);
         if ((transformSpi != null) ) {
@@ -226,12 +227,7 @@ public final class Transform extends SignatureElementProxy {
             throw new InvalidTransformException(
                 "signature.Transform.UnknownTransform", exArgs, ex
             );
-        } catch (ClassNotFoundException ex) {
-            Object exArgs[] = { algorithmURI };
-            throw new InvalidTransformException(
-                "signature.Transform.UnknownTransform", exArgs, ex
-            );
-        } 
+        }
     }
 
     /**
