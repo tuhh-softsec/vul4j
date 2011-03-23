@@ -205,9 +205,9 @@ public class X509KeySelector extends KeySelector {
      */
     private KeySelectorResult keyStoreSelect(CertSelector cs) 
         throws KeyStoreException {
-        Enumeration aliases = ks.aliases();
+        Enumeration<String> aliases = ks.aliases();
         while (aliases.hasMoreElements()) {
-            String alias = (String) aliases.nextElement();
+            String alias = aliases.nextElement();
             Certificate cert = ks.getCertificate(alias);
             if (cert != null && cs.match(cert)) {
                 return new SimpleKeySelectorResult(cert.getPublicKey());

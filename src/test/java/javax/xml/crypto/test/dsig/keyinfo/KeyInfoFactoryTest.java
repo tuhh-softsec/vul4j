@@ -98,6 +98,8 @@ public class KeyInfoFactoryTest extends org.junit.Assert {
     public void testnewKeyValue() {
         // test newKeyValue(PublicKey pk)
         PublicKey myPubKey = new PublicKey() {
+            private static final long serialVersionUID = 2756606866185189114L;
+            
                 public byte[] getEncoded() {
                     return new byte[20];
                 }

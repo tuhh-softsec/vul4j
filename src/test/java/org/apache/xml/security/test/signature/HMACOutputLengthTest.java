@@ -118,6 +118,7 @@ public class HMACOutputLengthTest extends org.junit.Assert {
 
     private SecretKey getSecretKey(final byte[] secret) {
         return new SecretKey() {
+            private static final long serialVersionUID = -6527915934685938837L;
             public String getFormat()   { return "RAW"; }
             public byte[] getEncoded()  { return secret; }
             public String getAlgorithm(){ return "SECRET"; }

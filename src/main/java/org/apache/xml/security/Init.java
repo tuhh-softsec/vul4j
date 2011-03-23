@@ -163,8 +163,6 @@ public class Init {
                 }
 
                 if (tag.equals("SignatureAlgorithms")) {
-                    SignatureAlgorithm.providerInit();
-
                     Element[] sigElems = 
                         XMLUtils.selectNodes(el.getFirstChild(), CONF_NS, "SignatureAlgorithm");
 

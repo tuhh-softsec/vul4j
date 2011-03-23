@@ -86,6 +86,7 @@ public class OldApiTest extends org.junit.Assert {
     }
     
     static class PublicKeyMock implements PublicKey {
+        private static final long serialVersionUID = 2072239246582775281L;
 
         public String getAlgorithm() {
             // TODO Auto-generated method stub

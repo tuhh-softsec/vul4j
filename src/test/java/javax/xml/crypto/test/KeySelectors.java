@@ -59,6 +59,8 @@ public class KeySelectors {
         
         private SecretKey wrapBytes(final byte[] bytes) {
             return new SecretKey() {
+                private static final long serialVersionUID = 3457835482691931082L;
+
                     public String getFormat() {
                         return "RAW";
                     }

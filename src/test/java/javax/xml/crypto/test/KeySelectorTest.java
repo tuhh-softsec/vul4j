@@ -36,6 +36,8 @@ public class KeySelectorTest extends org.junit.Assert {
     private KeySelector selector1;
 
     private class MyOwnKey implements Key {
+        private static final long serialVersionUID = -3288147894137347920L;
+        
         private String algo;
         private byte[] val;
         MyOwnKey(String algorithm, byte[] value) {
