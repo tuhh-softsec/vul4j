@@ -57,8 +57,73 @@ public class IncludeElement implements Element {
 			page = src.substring(endIndex + "})".length());
 			driver = DriverFactory.getInstance(provider);
 		}
-		driver.render(page, null, out, esiRenderer.getRequest(), esiRenderer
-				.getResponse(), new BlockRenderer(null, page));
+		try {
+			driver.render(page, null, getOut(out, stack), esiRenderer
+					.getRequest(), esiRenderer.getResponse(),
+					new BlockRenderer(null, page));
+		} catch (Exception e) {
+			// e.printStackTrace();
+			TryElement tre = getTryElement(stack);
+			if (tre != null) {
+				tre.setIncludeInside(true);
+			} else {
+				throw new HttpErrorPage(404, "Not found", "The page: " + src
+						+ " does not exist");
+			}
+
+		}
+	}
+
+	private TryElement getTryElement(ElementStack stack) {
+		TryElement res = null;
+		Element e3 = stack.pop();
+		if (stack.isEmpty()) {
+			stack.push(e3);
+			return res;
+		}
+		Element e1 = stack.pop();
+		if (stack.isEmpty()) {
+			stack.push(e1);
+			stack.push(e3);
+			return res;
+		}
+		if (e1 instanceof AttemptElement) {
+			Element e2 = stack.pop();
+			if (e2 instanceof TryElement) {
+				res = (TryElement) e2;
+			}
+			stack.push(e2);
+		}
+		stack.push(e1);
+		stack.push(e3);
+		return res;
+	}
+
+	private Appendable getOut(Appendable out, ElementStack stack) {
+		Appendable res = out;
+		TryElement tre = getTryElement(stack);
+
+		Element e3 = stack.pop();
+		if (stack.isEmpty()) {
+			stack.push(e3);
+			return res;
+		}
+		Element e1 = stack.pop();
+		if (stack.isEmpty()) {
+			stack.push(e1);
+			stack.push(e3);
+			return res;
+		}
+		if (e1 instanceof AttemptElement) {
+			Element e2 = stack.pop();
+			if (e2 instanceof TryElement) {
+				res = stack.getCurrentWriter();
+			}
+			stack.push(e2);
+		}
+		stack.push(e1);
+		stack.push(e3);
+		return res;
 	}
 
 	public ElementType getType() {

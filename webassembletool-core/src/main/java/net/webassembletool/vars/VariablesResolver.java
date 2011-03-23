@@ -23,6 +23,9 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+
 import net.webassembletool.ConfigurationException;
 import net.webassembletool.Driver;
 
@@ -36,7 +39,8 @@ import org.slf4j.LoggerFactory;
  */
 public class VariablesResolver {
 
-	private static final Logger LOG = LoggerFactory.getLogger(VariablesResolver.class);
+	private static final Logger LOG = LoggerFactory
+			.getLogger(VariablesResolver.class);
 
 	static {
 		// Load default settings
@@ -104,6 +108,19 @@ public class VariablesResolver {
 	 * @return The resulting String
 	 */
 	public static String replaceAllVariables(String strVars) {
+		return replaceAllVariables(strVars, null);
+	}
+
+	/**
+	 * Replace all ESI variables found in strVars by their matching value in
+	 * vars.properties
+	 * 
+	 * @param strVars
+	 *            a String containing variables.
+	 * @return The resulting String
+	 */
+	public static String replaceAllVariables(String strVars,
+			HttpServletRequest request) {
 		String result = strVars;
 		if (VariablesResolver.containsVariable(strVars)) {
 			Matcher matcher = VAR_PATTERN.matcher(strVars);
@@ -111,7 +128,14 @@ public class VariablesResolver {
 			while (matcher.find()) {
 				String group = matcher.group();
 				String var = group.substring(2, group.length() - 1);
-				String value = getProperty(var);
+				String arg = null;
+				// try to find argument
+				try {
+					arg = var.substring(var.indexOf('{') + 1, var.indexOf('}'));
+				} catch (Exception e) {
+				}
+
+				String value = getProperty(var, arg, request);
 				if (value != null) {
 					result = result.replace(group, value);
 				}
@@ -121,12 +145,96 @@ public class VariablesResolver {
 		return result;
 	}
 
-	private static String getProperty(String var) {
+	private static String getProperty(String var, String arg,
+			HttpServletRequest request) {
 		String result = null;
 		if (properties != null) {
-			result = properties.getProperty(var, null);
+			result = properties.getProperty(var, processVar(var, arg, request));
 		}
 		LOG.debug("Resolve property $(" + var + ")=" + result);
 		return result;
 	}
+
+	private static String processVar(String var, String arg,
+			HttpServletRequest request) {
+		String res = null;
+
+		if (request == null) {
+			return res;
+		}
+
+		if (var.indexOf("QUERY_STRING") != -1) {
+			if (arg == null) {
+				return res;
+			}
+			res = request.getParameter(arg);
+		}
+
+		else if (var.indexOf("HTTP_ACCEPT_LANGUAGE") != -1) {
+			if (arg == null) {
+				return res;
+			}
+
+			String langs = request.getHeader("Accept-Language");
+
+			if (langs.indexOf(arg) == -1) {
+				res = "false";
+			} else {
+				res = "true";
+			}
+		}
+
+		else if (var.indexOf("HTTP_HOST") != -1) {
+			res = request.getHeader("Host");
+		}
+
+		else if (var.indexOf("HTTP_REFERER") != -1) {
+			res = request.getHeader("Referer");
+		}
+
+		else if (var.indexOf("HTTP_COOKIE") != -1) {
+			if (arg == null) {
+				return res;
+			}
+			Cookie[] cookies = request.getCookies();
+			for (Cookie c : cookies) {
+				if (c.getName().equals(arg)) {
+					res = c.getValue();
+					break;
+				}
+			}
+		}
+
+		else if (var.indexOf("HTTP_USER_AGENT") != -1) {
+			if (arg == null) {
+				return res;
+			}
+			String userAgent = request.getHeader("User-Agent").toLowerCase();
+			if (arg.equals("os")) {
+				if (userAgent.indexOf("unix") != -1) {
+					res = "UNIX";
+				} else if (userAgent.indexOf("mac") != -1) {
+					res = "MAC";
+				} else if (userAgent.indexOf("windows") != -1) {
+					res = "WIN";
+				} else {
+					res = "OTHER";
+				}
+			} else if (arg.equals("browser")) {
+				if (userAgent.indexOf("msie") != -1) {
+					res = "MSIE";
+				} else {
+					res = "MOZILLA";
+				}
+			}
+
+		}
+
+		if (res == null) {
+			return "";
+		} else {
+			return res;
+		}
+	}
+
 }

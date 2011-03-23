@@ -26,7 +26,9 @@ public class EsiRenderer implements Renderer, Appendable {
 	private final static Parser PARSER = new Parser(Pattern
 			.compile("(<esi:[^>]*>)|(</esi:[^>]*>)|(<!--esi)|(-->)"),
 			IncludeElement.TYPE, Comment.TYPE, CommentElement.TYPE,
-			RemoveElement.TYPE);
+			RemoveElement.TYPE, VarsElement.TYPE, ChooseElement.TYPE,
+			WhenElement.TYPE, OtherwiseElement.TYPE, TryElement.TYPE,
+			AttemptElement.TYPE, ExceptElement.TYPE);
 	private Writer out;
 	private final HttpServletRequest request;
 	private final HttpServletResponse response;
@@ -46,6 +48,7 @@ public class EsiRenderer implements Renderer, Appendable {
 		if (content == null) {
 			return;
 		}
+		PARSER.setRequest(request);
 		PARSER.parse(content, this);
 	}
 

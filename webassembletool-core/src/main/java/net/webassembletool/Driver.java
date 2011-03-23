@@ -116,12 +116,12 @@ public class Driver {
 			HttpParams httpParams = new BasicHttpParams();
 			httpParams.setIntParameter(ConnManagerPNames.MAX_TOTAL_CONNECTIONS,
 					config.getMaxConnectionsPerHost());
-			httpParams.setLongParameter(ConnManagerPNames.TIMEOUT,
-					config.getTimeout());
+			httpParams.setLongParameter(ConnManagerPNames.TIMEOUT, config
+					.getTimeout());
 			httpParams.setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT,
 					config.getTimeout());
-			httpParams.setIntParameter(CoreConnectionPNames.SO_TIMEOUT,
-					config.getTimeout());
+			httpParams.setIntParameter(CoreConnectionPNames.SO_TIMEOUT, config
+					.getTimeout());
 			httpParams.setParameter(
 					ConnManagerPNames.MAX_CONNECTIONS_PER_ROUTE,
 					new ConnPerRouteBean(config.getMaxConnectionsPerHost()));
@@ -381,7 +381,8 @@ public class Driver {
 			Appendable writer, HttpServletRequest originalRequest,
 			HttpServletResponse response, Renderer... renderers)
 			throws IOException, HttpErrorPage {
-		String resultingpage = VariablesResolver.replaceAllVariables(page);
+		String resultingpage = VariablesResolver.replaceAllVariables(page,
+				originalRequest);
 		ResourceContext resourceContext = new ResourceContext(this,
 				resultingpage, parameters, originalRequest, response);
 		resourceContext.setPreserveHost(config.isPreserveHost());
@@ -390,9 +391,9 @@ public class Driver {
 
 		// Fix resources
 		if (config.isFixResources()) {
-			ResourceFixupRenderer fixup = new ResourceFixupRenderer(
-					config.getBaseURL(), config.getVisibleBaseURL(), page,
-					config.getFixMode());
+			ResourceFixupRenderer fixup = new ResourceFixupRenderer(config
+					.getBaseURL(), config.getVisibleBaseURL(), page, config
+					.getFixMode());
 			StringWriter stringWriter = new StringWriter();
 			fixup.render(resourceContext, currentValue, stringWriter);
 			currentValue = stringWriter.toString();

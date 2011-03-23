@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.servlet.http.HttpServletRequest;
+
 import net.webassembletool.HttpErrorPage;
 
 /**
@@ -20,6 +22,7 @@ import net.webassembletool.HttpErrorPage;
 public class Parser {
 	private final Pattern pattern;
 	private final ElementType[] elementTypes;
+	private HttpServletRequest request;
 
 	/**
 	 * Creates a Parser with a given regular expression pattern and
@@ -57,7 +60,15 @@ public class Parser {
 						matcher.start());
 				if (!stack.isEmpty() && stack.peek().getType().isEndTag(tag)) {
 					// check if this is the end tag for current element
-					stack.pop().doEndTag(tag);
+					Element e = stack.pop();
+					if (e instanceof BodyTagElement) {
+						Appendable parent = stack.getCurrentWriter();
+						String body = in.subSequence(currentPosition,
+								matcher.start()).toString();
+						((BodyTagElement) e).setRequest(request);
+						((BodyTagElement) e).doAfterBody(body, parent, stack);
+					}
+					e.doEndTag(tag);
 				} else {
 					// if not, it is an opening tag for a new element
 					Element newElement = null;
@@ -66,6 +77,10 @@ public class Parser {
 							newElement = elementType.newInstance();
 							Appendable parent = stack.getCurrentWriter();
 							stack.push(newElement);
+							if (newElement instanceof BodyTagElement) {
+								((BodyTagElement) newElement)
+										.setRequest(request);
+							}
 							newElement.doStartTag(tag, parent, stack);
 							if (newElement.isClosed()) {
 								newElement.doEndTag(tag);
@@ -76,8 +91,9 @@ public class Parser {
 					}
 					// if no element matches, we just ignore it and write it
 					// to the output
-					if (newElement == null)
+					if (newElement == null) {
 						stack.getCurrentWriter().append(tag);
+					}
 				}
 				currentPosition = matcher.end();
 			} else {
@@ -86,6 +102,14 @@ public class Parser {
 						in.length());
 			}
 		}
+	}
+
+	public HttpServletRequest getRequest() {
+		return request;
+	}
+
+	public void setRequest(HttpServletRequest request) {
+		this.request = request;
 	}
 
 }
