@@ -165,13 +165,7 @@ public class HttpClientRequest {
 		} else {
 			throw new UnsupportedHttpMethodException(method + " " + uri);
 		}
-		if (proxy) {
-			httpRequest.getParams().setParameter(ClientPNames.HANDLE_REDIRECTS,
-					false);
-		} else {
-			httpRequest.getParams().setParameter(ClientPNames.HANDLE_REDIRECTS,
-					true);
-		}
+		httpRequest.getParams().setParameter(ClientPNames.HANDLE_REDIRECTS, false);
 		// Use browser compatibility cookie policy. This policy is the closest
 		// to the behavior of a real browser.
 		httpRequest.getParams().setParameter(ClientPNames.COOKIE_POLICY,

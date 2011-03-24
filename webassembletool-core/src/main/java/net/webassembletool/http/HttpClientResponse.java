@@ -65,6 +65,7 @@ public class HttpClientResponse {
 				// automatic redirect following is activated
 				currentLocation = buildLocation(httpContext);
 			}
+			LOG.debug(" -> create: " + statusCode + ";" + currentLocation);
 			return new HttpClientResponse(httpResponse, currentLocation);
 		} catch (HttpHostConnectException e) {
 			return new HttpClientResponse(HttpServletResponse.SC_BAD_GATEWAY, "Connection refused");

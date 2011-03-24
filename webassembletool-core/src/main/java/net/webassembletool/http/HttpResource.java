@@ -17,6 +17,8 @@ package net.webassembletool.http;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -175,7 +177,8 @@ public class HttpResource extends Resource {
 		}
 	}
 
-	private String rewriteLocation(String location) {
+	private String rewriteLocation(String location) throws MalformedURLException {
+		location = new URL(new URL(url), location).toString();
 		// Location header rewriting
 		HttpServletRequest request = target.getOriginalRequest();
 
