@@ -29,8 +29,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.test.DSNamespaceContext;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
@@ -45,7 +43,8 @@ import org.w3c.dom.NodeList;
  * @author wglas
  */
 public class XPointerResourceResolver extends ResourceResolverSpi {
-    private static Log log = LogFactory.getLog(XPointerResourceResolver.class);
+    private static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(XPointerResourceResolver.class);
 
     private static final String XP_OPEN = "xpointer(";
     private static final String XNS_OPEN = "xmlns(";

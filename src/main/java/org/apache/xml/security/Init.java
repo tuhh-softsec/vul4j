@@ -130,7 +130,7 @@ public class Init {
                             }
                         } catch (ClassNotFoundException e) {
                             Object exArgs[] = { URI, JAVACLASS };
-                            log.fatal(I18n.translate("algorithm.classDoesNotExist", exArgs));
+                            log.error(I18n.translate("algorithm.classDoesNotExist", exArgs));
                         }
                     }
                 }
@@ -151,7 +151,7 @@ public class Init {
                         } catch (ClassNotFoundException e) {
                             Object exArgs[] = { URI, JAVACLASS };
 
-                            log.fatal(I18n.translate("algorithm.classDoesNotExist", exArgs));
+                            log.error(I18n.translate("algorithm.classDoesNotExist", exArgs));
                         } catch (NoClassDefFoundError ex) {
                             log.warn("Not able to found dependencies for algorithm, I'll keep working.");
                         }
@@ -182,7 +182,7 @@ public class Init {
                         } catch (ClassNotFoundException e) {
                             Object exArgs[] = { URI, JAVACLASS };
 
-                            log.fatal(I18n.translate("algorithm.classDoesNotExist", exArgs));
+                            log.error(I18n.translate("algorithm.classDoesNotExist", exArgs));
                         }
                     }
                 }
@@ -265,7 +265,7 @@ public class Init {
                 }
             }
         } catch (Exception e) {
-            log.fatal("Bad: ", e);
+            log.error("Bad: ", e);
             e.printStackTrace();
         }
         alreadyInitialized = true;

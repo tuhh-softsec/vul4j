@@ -36,8 +36,6 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.helper.C14nHelper;
 import org.apache.xml.security.signature.XMLSignatureInput;
@@ -57,7 +55,8 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
     static final String XMLNS_URI = Constants.NamespaceSpecNS;
     static final String XML_LANG_URI = Constants.XML_LANG_SPACE_SpecNS;
 
-    static Log log = LogFactory.getLog(Canonicalizer11.class.getName());
+    static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(Canonicalizer11.class.getName());
 
     static class XmlAttrStack {
         static class XmlsStackElement {
