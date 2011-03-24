@@ -90,7 +90,7 @@ public class DriverConfiguration {
 					.getProperty("cacheMaxFileSize"));
 		}
 		if (props.getProperty("cacheStorageClassName") != null) {
-			String cacheStorageClassName = props.getProperty("cacheStorageClass");
+			String cacheStorageClassName = props.getProperty("cacheStorageClassName");
 			try {
 				Class<? extends CacheStorage> cacheStorageClass =  (Class<? extends CacheStorage>) this.getClass().getClassLoader().loadClass(cacheStorageClassName);
 				if(cacheStorageClass != null)

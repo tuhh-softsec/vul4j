@@ -1,28 +1,34 @@
 package net.webassembletool.cache;
 
-import java.io.UnsupportedEncodingException;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.UUID;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
+import junit.framework.TestCase;
+
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 
-import net.webassembletool.MockDriver;
+import net.webassembletool.Driver;
+import net.webassembletool.DriverConfiguration;
+import net.webassembletool.HttpErrorPage;
 import net.webassembletool.ResourceContext;
+import net.webassembletool.cache.CacheEntry;
+import net.webassembletool.cache.CacheStorage;
+import net.webassembletool.cache.CachedResponse;
+import net.webassembletool.oscache.OSCacheStorage;
+import net.webassembletool.output.StringOutput;
 
-import junit.framework.TestCase;
+public class OSCacheStorageTest extends TestCase{
 
-public abstract class CacheStorageTest extends TestCase{
-	
-	abstract protected CacheStorage getCache();
+	protected CacheStorage getCache() {
+		return new OSCacheStorage();
+	}
 	
 	public void testPutGet(){
 		CacheStorage cache = getCache();
@@ -40,7 +46,6 @@ public abstract class CacheStorageTest extends TestCase{
 		assertNotNull(cache);
 		String key = UUID.randomUUID().toString();
 		cache.put(key, "test", 300);
-		cache.put(key+"_bla-bla-bla", "test2", 30000);
 		assertEquals("test", cache.get(key));
 		assertEquals("test", cache.get(key, String.class));
 		assertNull(cache.get(key+"_123"));
@@ -143,4 +148,54 @@ public abstract class CacheStorageTest extends TestCase{
 		assertEquals(cachedResponse, newCacheEntry.get(resourceContext));
 		
 	}
+	
+	public void testConfigaurationWithOsCache(){
+		Properties props = new Properties();
+		props.setProperty("remoteUrlBase", "http://localhost:8080");
+		props.setProperty("cacheRefreshDelay", "1");
+		props.setProperty("cacheStorageClassName", OSCacheStorage.class.getName()+"_abra-cadabra");
+		try{
+			new DriverConfiguration("test2", props);
+		 fail();
+		}catch (Exception e) {
+			
+		}
+		
+		props.setProperty("cacheStorageClassName", OSCacheStorage.class.getName());
+		assertEquals(OSCacheStorage.class, new DriverConfiguration("test2", props).getCacheStorageClass());
+	}
+	
+	private static class MockDriver extends Driver {
+		private final HashMap<String, StringOutput> resources = new HashMap<String, StringOutput>();
+
+		public MockDriver(String name) {
+			this(name, new Properties());
+		}
+		
+		public MockDriver(String name, Properties props) {
+			super(name, props);
+		}
+
+		public void addResource(String relUrl, String content) {
+			StringOutput stringOutput = new StringOutput();
+			stringOutput.setStatusCode(200);
+			stringOutput.setStatusMessage("OK");
+			stringOutput.setCharsetName("ISO-8859-1");
+			stringOutput.open();
+			stringOutput.write(content);
+			resources.put(relUrl, stringOutput);
+		}
+
+		@Override
+		protected StringOutput getResourceAsString(ResourceContext target)
+				throws HttpErrorPage {
+			StringOutput result = resources.get(target.getRelUrl());
+			if (result == null)
+				throw new HttpErrorPage(404, "Not found", "The page: "
+						+ target.getRelUrl() + " does not exist");
+			return result;
+		}
+
+	}
+
 }
