@@ -459,7 +459,6 @@ public class Driver {
 	 */
 	public final void proxy2(String relUrl, HttpServletRequest request, HttpServletResponse response) throws IOException,
 			HttpErrorPage {
-
 		ResourceContext resourceContext = new ResourceContext(this, relUrl, null, request, response);
 		request.setCharacterEncoding(config.getUriEncoding());
 		resourceContext.setProxy(true);
