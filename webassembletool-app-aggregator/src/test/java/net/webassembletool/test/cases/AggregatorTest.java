@@ -32,19 +32,16 @@ public class AggregatorTest extends TestCase {
 		doSimpleTest(page, page);
 	}
 
-	private void doSimpleTest(String page, String resultResource)
-			throws Exception {
+	private void doSimpleTest(String page, String resultResource) throws Exception {
 		WebRequest req = new GetMethodWebRequest(APPLICATION_PATH + page);
 		WebResponse resp = webConversation.getResponse(req);
-		assertEquals("Status should be 200", HttpServletResponse.SC_OK, resp
-				.getResponseCode());
-		assertEquals(getResource(resultResource).replaceAll("\r", ""), resp
-				.getText().replaceAll("\r", ""));
+		assertEquals("Status should be 200", HttpServletResponse.SC_OK, resp.getResponseCode());
+		assertEquals(getResource(resultResource).replaceAll("\r", "").replaceAll("\n", ""),
+				resp.getText().replaceAll("\r", "").replaceAll("\n", ""));
 	}
 
 	private String getResource(String file) throws IOException {
-		InputStream inputStream = this.getClass().getResourceAsStream(
-				RESOURCES_PATH + file);
+		InputStream inputStream = this.getClass().getResourceAsStream(RESOURCES_PATH + file);
 		String result = IOUtils.toString(inputStream, "UTF-8");
 		inputStream.close();
 		return result;
@@ -62,8 +59,7 @@ public class AggregatorTest extends TestCase {
 	}
 
 	public void testBarInUrlParam() throws Exception {
-		doSimpleTest("resource%20with%20spaces.html?bar=foo%7Cfoo%26bar",
-				"resource_with_spaces.html");
+		doSimpleTest("resource%20with%20spaces.html?bar=foo%7Cfoo%26bar", "resource_with_spaces.html");
 	}
 
 	public void testBinaryGzip() throws Exception {
@@ -88,13 +84,10 @@ public class AggregatorTest extends TestCase {
 	}
 
 	public void testChunkedEncoding() throws Exception {
-		WebRequest req = new GetMethodWebRequest(APPLICATION_PATH
-				+ "ChunkedEncodingServlet");
+		WebRequest req = new GetMethodWebRequest(APPLICATION_PATH + "ChunkedEncodingServlet");
 		WebResponse resp = webConversation.getResponse(req);
-		assertEquals("Status should be 200", HttpServletResponse.SC_OK, resp
-				.getResponseCode());
-		assertEquals("Response body did not match", "Bonjour Monde !", resp
-				.getText());
+		assertEquals("Status should be 200", HttpServletResponse.SC_OK, resp.getResponseCode());
+		assertEquals("Response body did not match", "Bonjour Monde !", resp.getText());
 	}
 
 	public void testCircularRedirect() throws Exception {
@@ -111,8 +104,7 @@ public class AggregatorTest extends TestCase {
 	}
 
 	public void testGetUnsafeCharacter() throws Exception {
-		doSimpleTest("get.jsp?myField={}|\\^~[]`&send=Post+this+form",
-				"getUnsafeCharacter.jsp");
+		doSimpleTest("get.jsp?myField={}|\\^~[]`&send=Post+this+form", "getUnsafeCharacter.jsp");
 	}
 
 	public void testMixedEncodings() throws Exception {
@@ -120,8 +112,8 @@ public class AggregatorTest extends TestCase {
 	}
 
 	/**
-	 * Test for a nested include : aggregated1 includes a block from aggregated2
-	 * and the block from aggregated2 includes a block from aggregated1
+	 * Test for a nested include : aggregated1 includes a block from aggregated2 and the block from aggregated2 includes
+	 * a block from aggregated1
 	 * 
 	 * @throws Exception
 	 */
@@ -135,59 +127,46 @@ public class AggregatorTest extends TestCase {
 
 	public void testPost() throws Exception {
 		// Post request with a e-acute urlencoded using UTF-8 charset
-		PostMethodWebRequest req = new PostMethodWebRequest(APPLICATION_PATH
-				+ "post.jsp", new ByteArrayInputStream("myField=%C3%A9"
-				.getBytes("UTF-8")), "application/x-www-form-urlencoded");
+		PostMethodWebRequest req = new PostMethodWebRequest(APPLICATION_PATH + "post.jsp", new ByteArrayInputStream(
+				"myField=%C3%A9".getBytes("UTF-8")), "application/x-www-form-urlencoded");
 		WebResponse resp = webConversation.getResponse(req);
-		assertEquals("Status should be 200", HttpServletResponse.SC_OK, resp
-				.getResponseCode());
+		assertEquals("Status should be 200", HttpServletResponse.SC_OK, resp.getResponseCode());
 		assertEquals(getResource("post.jsp"), resp.getText());
 	}
 
 	public void testRawPost() throws Exception {
-		PostMethodWebRequest req = new PostMethodWebRequest(APPLICATION_PATH
-				+ "post_raw.jsp", new ByteArrayInputStream("Hello smile!"
-				.getBytes("UTF-8")), "raw/post-data");
+		PostMethodWebRequest req = new PostMethodWebRequest(APPLICATION_PATH + "post_raw.jsp", new ByteArrayInputStream(
+				"Hello smile!".getBytes("UTF-8")), "raw/post-data");
 		WebResponse resp = webConversation.getResponse(req);
-		assertEquals("Response body did not match",
-				"Posted body data : Hello smile!", resp.getText());
+		assertEquals("Response body did not match", "Posted body data : Hello smile!", resp.getText());
 	}
 
 	public void testRawPostWithQueryString() throws Exception {
-		PostMethodWebRequest req = new PostMethodWebRequest(APPLICATION_PATH
-				+ "post_raw.jsp?param=smile", new ByteArrayInputStream(
-				"Hello !".getBytes("UTF-8")), "raw/post-data");
+		PostMethodWebRequest req = new PostMethodWebRequest(APPLICATION_PATH + "post_raw.jsp?param=smile",
+				new ByteArrayInputStream("Hello !".getBytes("UTF-8")), "raw/post-data");
 		WebResponse resp = webConversation.getResponse(req);
-		assertEquals("Response body did not match",
-				"Posted body data : Hello !smile", resp.getText());
+		assertEquals("Response body did not match", "Posted body data : Hello !smile", resp.getText());
 	}
 
 	public void testRedirect() throws Exception {
-		WebRequest req = new GetMethodWebRequest(APPLICATION_PATH
-				+ "redirect.jsp");
+		WebRequest req = new GetMethodWebRequest(APPLICATION_PATH + "redirect.jsp");
 		webConversation.getClientProperties().setAutoRedirect(false);
 		WebResponse resp = webConversation.getResponse(req);
-		assertEquals("Status should be "
-				+ HttpServletResponse.SC_MOVED_TEMPORARILY,
-				HttpServletResponse.SC_MOVED_TEMPORARILY, resp
-						.getResponseCode());
-		assertEquals(
-				"Redirect header did not match",
-				"http://localhost:8080/webassembletool-app-aggregator/redirected.jsp",
+		assertEquals("Status should be " + HttpServletResponse.SC_MOVED_TEMPORARILY, HttpServletResponse.SC_MOVED_TEMPORARILY,
+				resp.getResponseCode());
+		assertEquals("Redirect header did not match", "http://localhost:8080/webassembletool-app-aggregator/redirected.jsp",
 				resp.getHeaderField("Location"));
 	}
 
 	public void testSpaceInUrl() throws Exception {
-		doSimpleTest("resource%20with%20spaces.html",
-				"resource_with_spaces.html");
+		doSimpleTest("resource%20with%20spaces.html", "resource_with_spaces.html");
 	}
 
 	public void testSpecial404Error() throws Exception {
 		WebRequest req = new GetMethodWebRequest(APPLICATION_PATH + "whatever");
 		WebResponse resp = webConversation.getResponse(req);
 		// Should get a 404 error, not a 200 !
-		assertEquals("Status should be 404", HttpServletResponse.SC_NOT_FOUND,
-				resp.getResponseCode());
+		assertEquals("Status should be 404", HttpServletResponse.SC_NOT_FOUND, resp.getResponseCode());
 	}
 
 	public void testSpecialCharactersInUrl() throws Exception {
@@ -195,8 +174,7 @@ public class AggregatorTest extends TestCase {
 		WebResponse resp = webConversation.getResponse(req);
 		// Should get a 404 error but if the character is decoded to "[", it
 		// will generate an invalid URL and a 500 error
-		assertEquals("Status should be 404", HttpServletResponse.SC_NOT_FOUND,
-				resp.getResponseCode());
+		assertEquals("Status should be 404", HttpServletResponse.SC_NOT_FOUND, resp.getResponseCode());
 	}
 
 	public void testTemplate() throws Exception {
@@ -209,8 +187,7 @@ public class AggregatorTest extends TestCase {
 	}
 
 	public void testTemplateFromDiskMixedEncoding() throws Exception {
-		doSimpleTest("testTemplateFromDiskMixedEncoding",
-				"testTemplateFromDiskMixedEncoding.html");
+		doSimpleTest("testTemplateFromDiskMixedEncoding", "testTemplateFromDiskMixedEncoding.html");
 	}
 
 	// Test la récupération depuis le cache disque
@@ -222,9 +199,8 @@ public class AggregatorTest extends TestCase {
 
 	public void testTemplateWithParams() throws Exception {
 		/*
-		 * Ensure aggregator "template" params are not forwarded to the backend
-		 * template like it is the case for master/provider since these params
-		 * are processed aggregator-side.
+		 * Ensure aggregator "template" params are not forwarded to the backend template like it is the case for
+		 * master/provider since these params are processed aggregator-side.
 		 */
 		doSimpleTest("templatewithparams.html");
 	}
@@ -240,14 +216,12 @@ public class AggregatorTest extends TestCase {
 	public void testZipDownload() throws Exception {
 		WebRequest req = new GetMethodWebRequest(APPLICATION_PATH + "test.zip");
 		WebResponse resp = webConversation.getResponse(req);
-		InputStream inputStream = this.getClass().getResourceAsStream(
-				RESOURCES_PATH + "test.zip");
+		InputStream inputStream = this.getClass().getResourceAsStream(RESOURCES_PATH + "test.zip");
 		byte[] expected = IOUtils.toByteArray(inputStream);
 		inputStream.close();
 		byte[] result = IOUtils.toByteArray(resp.getInputStream());
 		inputStream.close();
-		assertTrue("Response body did not match", Arrays.equals(expected,
-				result));
+		assertTrue("Response body did not match", Arrays.equals(expected, result));
 	}
 
 }

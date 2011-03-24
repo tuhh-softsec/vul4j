@@ -14,9 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This renderer fixes links to resources, images and pages in pages retrieved
- * by the WAT. This enables use of WAT without any special modifications of the
- * generated urls on the provider side.
+ * This renderer fixes links to resources, images and pages in pages retrieved by the WAT. This enables use of WAT
+ * without any special modifications of the generated urls on the provider side.
  * 
  * All href and src attributes are processed, except javascript links.
  * 
@@ -38,19 +37,17 @@ public class ResourceFixupRenderer implements Renderer {
 	private String server = null;
 	private String baseUrl;
 	private String replacementUrl;
-	private int mode = ABSOLUTE;
+	private final boolean fixRelativeUrls;
+	private final int mode;
 
 	/**
-	 * Creates a renderer which fixes urls. The domain name and the url path are
-	 * computed from the full url made of baseUrl + pageFullPath.
+	 * Creates a renderer which fixes urls. The domain name and the url path are computed from the full url made of
+	 * baseUrl + pageFullPath.
 	 * 
-	 * If mode is ABSOLUTE, all relative urls will be replaced by the full urls
-	 * :
+	 * If mode is ABSOLUTE, all relative urls will be replaced by the full urls :
 	 * <ul>
-	 * <li>images/image.png is replaced by
-	 * http://server/context/images/image.png</li>
-	 * <li>/context/images/image.png is replaced by
-	 * http://server/context/images/image.png</li>
+	 * <li>images/image.png is replaced by http://server/context/images/image.png</li>
+	 * <li>/context/images/image.png is replaced by http://server/context/images/image.png</li>
 	 * </ul>
 	 * 
 	 * If mode is RELATIVE, context will be added to relative urls :
@@ -63,14 +60,45 @@ public class ResourceFixupRenderer implements Renderer {
 	 * @param pageFullPath
 	 *            Page as used in tag lib or using API
 	 * @param mode
-	 *            ResourceFixupRenderer.ABSOLUTE or
-	 *            ResourceFixupRenderer.RELATIVE
-	 * 
+	 *            ResourceFixupRenderer.ABSOLUTE or ResourceFixupRenderer.RELATIVE
+	 * @param fixRelativeUrls
+	 *            defines whether relative URLs should be fixed
 	 * @throws MalformedURLException
 	 */
-	public ResourceFixupRenderer(String baseUrl, String visibleBaseUrl,
-			String pageFullPath, int mode) throws MalformedURLException {
+	public ResourceFixupRenderer(String baseUrl, String visibleBaseUrl, String pageFullPath, int mode)
+			throws MalformedURLException {
+		this(baseUrl, visibleBaseUrl, pageFullPath, mode, true);
+	}
+
+	/**
+	 * Creates a renderer which fixes urls. The domain name and the url path are computed from the full url made of
+	 * baseUrl + pageFullPath.
+	 * 
+	 * If mode is ABSOLUTE, all relative urls will be replaced by the full urls :
+	 * <ul>
+	 * <li>images/image.png is replaced by http://server/context/images/image.png</li>
+	 * <li>/context/images/image.png is replaced by http://server/context/images/image.png</li>
+	 * </ul>
+	 * 
+	 * If mode is RELATIVE, context will be added to relative urls :
+	 * <ul>
+	 * <li>images/image.png is replaced by /context/images/image.png</li>
+	 * </ul>
+	 * 
+	 * @param visibleBaseUrl
+	 *            Base url (same as configured in provider).
+	 * @param pageFullPath
+	 *            Page as used in tag lib or using API
+	 * @param mode
+	 *            ResourceFixupRenderer.ABSOLUTE or ResourceFixupRenderer.RELATIVE
+	 * @param fixRelativeUrls
+	 *            defines whether relative URLs should be fixed
+	 * @throws MalformedURLException
+	 */
+	public ResourceFixupRenderer(String baseUrl, String visibleBaseUrl, String pageFullPath, int mode, boolean fixRelativeUrls)
+			throws MalformedURLException {
 		this.mode = mode;
+		this.fixRelativeUrls = fixRelativeUrls;
 
 		if (visibleBaseUrl != null && visibleBaseUrl.length() != 0) {
 			this.baseUrl = removeLeadingSlash(baseUrl);
@@ -143,8 +171,7 @@ public class ResourceFixupRenderer implements Renderer {
 			return url;
 		}
 		// Keep absolute and javascript urls untouched.
-		if (url.startsWith("http://") || url.startsWith("https://")
-				|| url.startsWith("#") || url.startsWith("javascript:")) {
+		if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("#") || url.startsWith("javascript:")) {
 			LOG.debug("keeping absolute url: " + url);
 			return url;
 		}
@@ -160,13 +187,13 @@ public class ResourceFixupRenderer implements Renderer {
 			if (mode == ABSOLUTE) {
 				url = server + url;
 			}
-			// } else {
-			// // Process relative urls
-			// if (mode == ABSOLUTE) {
-			// url = server + pagePath + SLASH + url;
-			// } else {
-			// url = pagePath + SLASH + url;
-			// }
+		} else if (fixRelativeUrls) {
+			// Process relative urls
+			if (mode == ABSOLUTE) {
+				url = server + pagePath + SLASH + url;
+			} else {
+				url = pagePath + SLASH + url;
+			}
 		}
 
 		LOG.debug("url fixed: " + urlParam + " -> " + url);

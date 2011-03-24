@@ -20,7 +20,6 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.zip.GZIPInputStream;
 
@@ -55,8 +54,7 @@ public class HttpResource extends Resource {
 	private final ResourceContext target;
 	private final String url;
 
-	public HttpResource(HttpClient httpClient, ResourceContext resourceContext,
-			Map<String, String> validators) throws IOException {
+	public HttpResource(HttpClient httpClient, ResourceContext resourceContext) throws IOException {
 		this.target = resourceContext;
 		this.url = ResourceUtils.getHttpUrlWithQueryString(resourceContext);
 
@@ -78,12 +76,10 @@ public class HttpResource extends Resource {
 		// Proceed with request
 		boolean proxy = resourceContext.isProxy();
 		boolean preserveHost = resourceContext.isPreserveHost();
-		HttpClientRequest httpClientRequest = new HttpClientRequest(url,
-				originalRequest, proxy, preserveHost);
-		if (validators != null) {
-			for (Entry<String, String> header : validators.entrySet()) {
-				LOG.debug("Adding validator: " + header.getKey() + ": "
-						+ header.getValue());
+		HttpClientRequest httpClientRequest = new HttpClientRequest(url, originalRequest, proxy, preserveHost);
+		if (resourceContext.getValidators() != null) {
+			for (Entry<String, String> header : resourceContext.getValidators().entrySet()) {
+				LOG.debug("Adding validator: " + header.getKey() + ": " + header.getValue());
 				httpClientRequest.addHeader(header.getKey(), header.getValue());
 			}
 		}
@@ -129,8 +125,7 @@ public class HttpResource extends Resource {
 		}
 
 		if (isError()) {
-			LOG.warn("Problem retrieving URL: " + url + ": "
-					+ httpClientResponse.getStatusCode() + " "
+			LOG.warn("Problem retrieving URL: " + url + ": " + httpClientResponse.getStatusCode() + " "
 					+ httpClientResponse.getStatusText());
 		}
 	}
@@ -162,11 +157,9 @@ public class HttpResource extends Resource {
 				// Unzip the stream if necessary
 				String contentEncoding = getHeader(HttpHeaders.CONTENT_ENCODING);
 				if (contentEncoding != null) {
-					if (!"gzip".equalsIgnoreCase(contentEncoding)
-							&& !"x-gzip".equalsIgnoreCase(contentEncoding)) {
-						throw new UnsupportedContentEncodingException(
-								"Content-encoding \"" + contentEncoding
-										+ "\" is not supported");
+					if (!"gzip".equalsIgnoreCase(contentEncoding) && !"x-gzip".equalsIgnoreCase(contentEncoding)) {
+						throw new UnsupportedContentEncodingException("Content-encoding \"" + contentEncoding
+								+ "\" is not supported");
 					}
 					inputStream = new GZIPInputStream(inputStream);
 				}
@@ -196,8 +189,7 @@ public class HttpResource extends Resource {
 			// Remove relUrl from originalBase.
 			originalBase = originalBase.substring(0, pos);
 			// Add '/' at the end if absent
-			if (originalBase.charAt(originalBase.length() - 1) != '/'
-					&& driverBaseUrl.charAt(driverBaseUrl.length() - 1) == '/') {
+			if (originalBase.charAt(originalBase.length() - 1) != '/' && driverBaseUrl.charAt(driverBaseUrl.length() - 1) == '/') {
 				originalBase += "/";
 			}
 		}
@@ -205,12 +197,10 @@ public class HttpResource extends Resource {
 		return location.replaceFirst(driverBaseUrl, originalBase);
 	}
 
-	private void removeSessionId(InputStream inputStream, Output output)
-			throws IOException {
+	private void removeSessionId(InputStream inputStream, Output output) throws IOException {
 		String jsessionid = RewriteUtils.getSessionId(target);
-		boolean textContentType = ResourceUtils.isTextContentType(
-				httpClientResponse.getHeader(HttpHeaders.CONTENT_TYPE), target
-						.getDriver().getConfiguration().getParsableContentTypes());
+		boolean textContentType = ResourceUtils.isTextContentType(httpClientResponse.getHeader(HttpHeaders.CONTENT_TYPE),
+				target.getDriver().getConfiguration().getParsableContentTypes());
 		if (jsessionid == null || !textContentType) {
 			IOUtils.copy(inputStream, output.getOutputStream());
 		} else {
@@ -221,8 +211,7 @@ public class HttpResource extends Resource {
 			String content = IOUtils.toString(inputStream, charset);
 			content = removeSessionId(jsessionid, content);
 			if (output.getHeader(HttpHeaders.CONTENT_LENGTH) != null) {
-				output.setHeader(HttpHeaders.CONTENT_LENGTH,
-						Integer.toString(content.length()));
+				output.setHeader(HttpHeaders.CONTENT_LENGTH, Integer.toString(content.length()));
 			}
 			OutputStream outputStream = output.getOutputStream();
 			IOUtils.write(content, outputStream, charset);

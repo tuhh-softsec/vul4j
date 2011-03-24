@@ -146,9 +146,15 @@ public class CachedHttpResourceFactory implements ResourceFactory {
 
 			Map<String, String> validators = cache.getValidators(
 					ret.getResourceContext(), ret.getCachedResource());
-			ResourceContext resourceContext = ret.getResourceContext().clone();
-			resourceContext.setValidators(validators);
-			ret.setHttpResource(httpResourceFactory.getResource(resourceContext));
+			// ResourceContext resourceContext = ret.getResourceContext().clone();
+			ResourceContext resourceContext = ret.getResourceContext();
+			Map<String, String> originalValidators = resourceContext.getValidators();
+			try {
+				resourceContext.setValidators(validators);
+				ret.setHttpResource(httpResourceFactory.getResource(resourceContext));
+			} finally {
+				resourceContext.setValidators(originalValidators);
+			}
 			ret.setHttpResource(cache.select(ret.getResourceContext(), ret.getCachedResource(),
 					ret.getHttpResource()));
 
@@ -279,11 +285,6 @@ public class CachedHttpResourceFactory implements ResourceFactory {
 
 		public void setFileResource(FileResource fileResource) {
 			this.fileResource = fileResource;
-		}
-
-
-		public CacheOutput getMemoryOutput() {
-			return memoryOutput;
 		}
 
 

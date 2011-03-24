@@ -35,7 +35,7 @@ public class HttpResourceTest extends TestCase {
 	public void doNotTestRedirect() throws Exception {
 		HttpClient httpClient = EasyMock.createMock(HttpClient.class);
 		HttpServletRequest originalRequest = EasyMock.createMock(HttpServletRequest.class);
-		HttpServletResponse originalResponse =  EasyMock.createMock(HttpServletResponse.class);
+		HttpServletResponse originalResponse = EasyMock.createMock(HttpServletResponse.class);
 		HttpResponse httpResponse = EasyMock.createMock(HttpResponse.class);
 		HttpEntity entity = EasyMock.createMock(HttpEntity.class);
 		StatusLine statusLine = EasyMock.createMock(StatusLine.class);
@@ -47,24 +47,29 @@ public class HttpResourceTest extends TestCase {
 		props.setProperty("timeout", "5000");
 		props.setProperty("useCache", "false");
 
-
 		Driver driver = new Driver("test", props);
-		ResourceContext resourceContext = new ResourceContext(driver, "/redirect.jsp", null , originalRequest, originalResponse);
+		ResourceContext resourceContext = new ResourceContext(driver, "/redirect.jsp", null, originalRequest, originalResponse);
 
 		EasyMock.expect(originalRequest.getCharacterEncoding()).andReturn("UTF-8").anyTimes();
-		EasyMock.expect(originalRequest.getQueryString()).andReturn("http://localhost:8080/webassembletool-app-aggregator/redirect.jsp").anyTimes();
-		EasyMock.expect(originalRequest.getRequestURL()).andReturn(new StringBuffer("http://localhost:8080/webassembletool-app-aggregator/redirect.jsp")).anyTimes();
+		EasyMock.expect(originalRequest.getQueryString()).andReturn(
+				"http://localhost:8080/webassembletool-app-aggregator/redirect.jsp").anyTimes();
+		EasyMock.expect(originalRequest.getRequestURL()).andReturn(
+				new StringBuffer("http://localhost:8080/webassembletool-app-aggregator/redirect.jsp")).anyTimes();
 		EasyMock.expect(originalRequest.getSession(false)).andReturn(null).anyTimes();
 		EasyMock.expect(originalRequest.getRemoteUser()).andReturn(null).anyTimes();
-		EasyMock.expect(originalRequest.getHeader("User-Agent")).andReturn("Mozilla/5.0 (Windows; U; Windows NT 6.1; ru; rv:1.9.2.13) Gecko/20101203 Firefox/3.6.13").anyTimes();
-		EasyMock.expect(originalRequest.getHeader("Accept")).andReturn("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8").anyTimes();
+		EasyMock.expect(originalRequest.getHeader("User-Agent")).andReturn(
+				"Mozilla/5.0 (Windows; U; Windows NT 6.1; ru; rv:1.9.2.13) Gecko/20101203 Firefox/3.6.13").anyTimes();
+		EasyMock.expect(originalRequest.getHeader("Accept")).andReturn(
+				"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8").anyTimes();
 		EasyMock.expect(originalRequest.getHeader("Accept-Encoding")).andReturn("gzip,deflate").anyTimes();
 		EasyMock.expect(originalRequest.getHeader("Accept-Language")).andReturn("ru-ru,ru;q=0.8,en-us;q=0.5,en;q=0.3").anyTimes();
 		EasyMock.expect(originalRequest.getHeader("Accept-Charset")).andReturn("windows-1251,utf-8;q=0.7,*;q=0.7").anyTimes();
 		EasyMock.expect(originalRequest.getHeader("Cache-Control")).andReturn(null).anyTimes();
 		EasyMock.expect(originalRequest.getHeader("Pragma")).andReturn(null).anyTimes();
 
-		EasyMock.expect(httpClient.execute((HttpHost)EasyMock.anyObject(), (HttpRequest)EasyMock.anyObject(), (HttpContext)EasyMock.anyObject())).andReturn(httpResponse).anyTimes();
+		EasyMock.expect(
+				httpClient.execute((HttpHost) EasyMock.anyObject(), (HttpRequest) EasyMock.anyObject(),
+						(HttpContext) EasyMock.anyObject())).andReturn(httpResponse).anyTimes();
 
 		EasyMock.expect(httpResponse.getStatusLine()).andReturn(statusLine).anyTimes();
 		EasyMock.expect(httpResponse.getEntity()).andReturn(entity).anyTimes();
@@ -79,7 +84,7 @@ public class HttpResourceTest extends TestCase {
 			}
 
 			public HeaderElement[] getElements() throws ParseException {
-				return new HeaderElement[]{};
+				return new HeaderElement[] {};
 			}
 		}).anyTimes();
 		EasyMock.expect(entity.getContent()).andReturn(new ByteArrayInputStream(new byte[1024]));
@@ -97,8 +102,7 @@ public class HttpResourceTest extends TestCase {
 
 		EasyMock.replay(httpClient, originalRequest, originalResponse, httpResponse, statusLine, header, entity);
 
-
-		HttpResource httpResource = new HttpResource(httpClient, resourceContext, null);
+		HttpResource httpResource = new HttpResource(httpClient, resourceContext);
 		assertEquals(HttpServletResponse.SC_MOVED_TEMPORARILY, httpResource.getStatusCode());
 		assertEquals(false, httpResource.hasResponseBody());
 
@@ -109,15 +113,13 @@ public class HttpResourceTest extends TestCase {
 		assertEquals(HttpServletResponse.SC_MOVED_TEMPORARILY, output.getStatusCode());
 		assertEquals("http://localhost:8080/webassembletool-app-aggregator/redirected.jsp", output.getHeader("Location"));
 
-
-		try{
-			httpResource = new HttpResource(httpClient, resourceContext, null);
+		try {
+			httpResource = new HttpResource(httpClient, resourceContext);
 			fail();
-		}catch (IOException e) {
+		} catch (IOException e) {
 			assertNotNull(e);
 			assertTrue(e.getMessage().contains(driver.getBaseURL()));
 		}
-
 
 	}
 

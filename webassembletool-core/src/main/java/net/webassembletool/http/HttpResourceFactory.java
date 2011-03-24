@@ -22,12 +22,12 @@ public class HttpResourceFactory implements ResourceFactory {
 
 	public Resource getResource(ResourceContext resourceContext) throws HttpErrorPage {
 		try {
-			return new HttpResource(httpClient, resourceContext, resourceContext.getValidators());
+			return new HttpResource(httpClient, resourceContext);
 		} catch (IOException e) {
 			StringWriter out = new StringWriter();
 			e.printStackTrace(new PrintWriter(out));
 			HttpErrorPage httpErrorPage = new HttpErrorPage(HttpServletResponse.SC_BAD_GATEWAY, e.getMessage(), out.toString());
-		    httpErrorPage.initCause(e);
+			httpErrorPage.initCause(e);
 			throw httpErrorPage;
 		}
 	}

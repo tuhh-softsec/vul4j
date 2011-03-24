@@ -49,7 +49,7 @@ public class HttpClientRequest {
 	private final static Logger LOG = LoggerFactory.getLogger(HttpClientRequest.class);
 	private String uri;
 	private final HttpServletRequest originalRequest;
-	private boolean proxy;
+	private final boolean proxy;
 	private BasicHttpRequest httpRequest;
 	private HashMap<String, String> headers;
 	private boolean preserveHost = false;
@@ -165,7 +165,7 @@ public class HttpClientRequest {
 		} else {
 			throw new UnsupportedHttpMethodException(method + " " + uri);
 		}
-		httpRequest.getParams().setParameter(ClientPNames.HANDLE_REDIRECTS, false);
+		httpRequest.getParams().setParameter(ClientPNames.HANDLE_REDIRECTS, !proxy);
 		// Use browser compatibility cookie policy. This policy is the closest
 		// to the behavior of a real browser.
 		httpRequest.getParams().setParameter(ClientPNames.COOKIE_POLICY,
@@ -220,14 +220,6 @@ public class HttpClientRequest {
 	@Override
 	public String toString() {
 		return httpRequest.getRequestLine().toString();
-	}
-
-	public boolean isProxy() {
-		return proxy;
-	}
-
-	public void setProxy(boolean proxy) {
-		this.proxy = proxy;
 	}
 
 	public boolean isPreserveHost() {

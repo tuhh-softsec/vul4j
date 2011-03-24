@@ -443,66 +443,6 @@ public class Driver {
 		}
 	}
 
-	/**
-	 * Retrieves a resource from the provider application and transforms it using the Renderer passed as a parameter.
-	 * 
-	 * @param relUrl
-	 *            the relative URL to the resource
-	 * @param request
-	 *            the request
-	 * @param response
-	 *            the response
-	 * @throws IOException
-	 *             If an IOException occurs while writing to the response
-	 * @throws HttpErrorPage
-	 *             If the page contains incorrect tags
-	 */
-	public final void proxy2(String relUrl, HttpServletRequest request, HttpServletResponse response) throws IOException,
-			HttpErrorPage {
-		ResourceContext resourceContext = new ResourceContext(this, relUrl, null, request, response);
-		request.setCharacterEncoding(config.getUriEncoding());
-		resourceContext.setProxy(true);
-		resourceContext.setPreserveHost(config.isPreserveHost());
-		if (!authenticationHandler.beforeProxy(resourceContext)) {
-			return;
-		}
-
-		// Directly stream out non text data
-		TextOnlyStringOutput textOutput = new TextOnlyStringOutput(response, this.config.getParsableContentTypes());
-		renderResource(resourceContext, textOutput);
-		// If data was binary, no text buffer is available and no rendering is needed.
-		if (!textOutput.hasTextBuffer()) {
-			LOG.debug("'" + relUrl + "' is binary : was forwarded without modification.");
-			return;
-		}
-		LOG.debug("'" + relUrl + "' is text : will apply renderers.");
-		String currentValue = textOutput.toString();
-
-		// Fix resources
-		if (config.isFixResources()) {
-			ResourceFixupRenderer fixup = new ResourceFixupRenderer(config.getBaseURL(), config.getVisibleBaseURL(), relUrl,
-					config.getFixMode());
-			StringWriter stringWriter = new StringWriter();
-			fixup.render(resourceContext, currentValue, stringWriter);
-			currentValue = stringWriter.toString();
-		}
-
-		// Write the result to the OutpuStream
-		String charsetName = textOutput.getCharsetName();
-		if (charsetName == null) {
-			// No charset was specified in the response, we assume this is ISO-8859-1
-			charsetName = "ISO-8859-1";
-			// We do not use the Writer because the container may add some unwanted headers like default content-type
-			// that may not be consistent with the original response
-			response.getOutputStream().write(currentValue.getBytes(charsetName));
-		} else {
-			// Even if Content-type header has been set, some containers like Jetty need the charsetName to be set,
-			// if not it will take default value ISO-8859-1
-			response.setCharacterEncoding(charsetName);
-			response.getWriter().write(currentValue);
-		}
-	}
-
 	private final void renderResource(ResourceContext resourceContext, Output output) throws HttpErrorPage {
 		Resource resource = null;
 		try {
