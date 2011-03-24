@@ -7,9 +7,11 @@ import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.webassembletool.HttpErrorPage;
 import net.webassembletool.Renderer;
 import net.webassembletool.ResourceContext;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This renderer fixes links to resources, images and pages in pages retrieved
@@ -22,19 +24,21 @@ import net.webassembletool.ResourceContext;
  * 
  */
 public class ResourceFixupRenderer implements Renderer {
+	private static final Logger LOG = LoggerFactory.getLogger(ResourceFixupRenderer.class);
 
 	public static final int ABSOLUTE = 0;
 	public static final int RELATIVE = 1;
 	public static final char SLASH = '/';
-	private final String attributeSeparator = "\"";
+	private static final Pattern URL_PATTERNS[] = new Pattern[] {
+			Pattern.compile("<([^>]+)(src|href|action)=\"([^\"]+)\"([^>]*)>"),
+			Pattern.compile("<([^>]+)(src|href|action)='([^']+)'([^>]*)>") };
 	private String contextAdd = null;
 	private String contextRemove = null;
-	private int mode = ABSOLUTE;
 	private String pagePath = null;
-	private final Pattern pHref = Pattern.compile("<([^>]+)(src|href|action)="
-			+ attributeSeparator + "([^" + attributeSeparator + "]+)"
-			+ attributeSeparator + "([^>]*)>");
 	private String server = null;
+	private String baseUrl;
+	private String replacementUrl;
+	private int mode = ABSOLUTE;
 
 	/**
 	 * Creates a renderer which fixes urls. The domain name and the url path are
@@ -68,15 +72,20 @@ public class ResourceFixupRenderer implements Renderer {
 			String pageFullPath, int mode) throws MalformedURLException {
 		this.mode = mode;
 
+		if (visibleBaseUrl != null && visibleBaseUrl.length() != 0) {
+			this.baseUrl = removeLeadingSlash(baseUrl);
+			this.replacementUrl = removeLeadingSlash(visibleBaseUrl);
+		} else {
+			this.baseUrl = null;
+			this.replacementUrl = null;
+		}
+
 		// Clean up input
 		String cleanBaseUrl = baseUrl;
 		if (visibleBaseUrl != null) {
 			cleanBaseUrl = visibleBaseUrl;
 		}
-
-		if (cleanBaseUrl.charAt(cleanBaseUrl.length() - 1) == SLASH) {
-			cleanBaseUrl = cleanBaseUrl.substring(0, cleanBaseUrl.length() - 1);
-		}
+		cleanBaseUrl = removeLeadingSlash(cleanBaseUrl);
 
 		String cleanPageFullPath = pageFullPath;
 		if (cleanPageFullPath.charAt(0) == SLASH) {
@@ -102,7 +111,15 @@ public class ResourceFixupRenderer implements Renderer {
 			contextRemove = new URL(baseUrl).getPath();
 			contextAdd = new URL(visibleBaseUrl).getPath();
 		}
+	}
 
+	private String removeLeadingSlash(String src) {
+		int lastCharPosition = src.length() - 1;
+		if (src.charAt(lastCharPosition) != SLASH) {
+			return src;
+		} else {
+			return src.substring(0, lastCharPosition);
+		}
 	}
 
 	/**
@@ -120,9 +137,15 @@ public class ResourceFixupRenderer implements Renderer {
 			return url;
 		}
 
+		if (replacementUrl != null && url.startsWith(baseUrl)) {
+			url = new StringBuffer(replacementUrl).append(url.substring(baseUrl.length())).toString();
+			LOG.debug("fix absolute url: " + urlParam + " -> " + url);
+			return url;
+		}
 		// Keep absolute and javascript urls untouched.
 		if (url.startsWith("http://") || url.startsWith("https://")
 				|| url.startsWith("#") || url.startsWith("javascript:")) {
+			LOG.debug("keeping absolute url: " + url);
 			return url;
 		}
 
@@ -137,52 +160,53 @@ public class ResourceFixupRenderer implements Renderer {
 			if (mode == ABSOLUTE) {
 				url = server + url;
 			}
-			return url;
+			// } else {
+			// // Process relative urls
+			// if (mode == ABSOLUTE) {
+			// url = server + pagePath + SLASH + url;
+			// } else {
+			// url = pagePath + SLASH + url;
+			// }
 		}
 
-		// Process relative urls
-		if (mode == ABSOLUTE) {
-			url = server + pagePath + SLASH + url;
-		} else {
-			url = pagePath + SLASH + url;
-		}
-
+		LOG.debug("url fixed: " + urlParam + " -> " + url);
 		return url;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void render(ResourceContext requestContext, String src, Writer out)
-			throws IOException, HttpErrorPage {
+	/** {@inheritDoc} */
+	public void render(ResourceContext requestContext, String src, Writer out) throws IOException {
 		out.write(replace(src).toString());
 	}
 
 	/**
 	 * Fix all resources urls and return the result.
 	 * 
-	 * @param charSequence
+	 * @param input
 	 *            The original charSequence to be processed.
 	 * 
 	 * 
 	 * @return the result of this renderer.
 	 */
-	private final CharSequence replace(CharSequence charSequence) {
-		StringBuffer resultBuffer = new StringBuffer();
-		Matcher m = pHref.matcher(charSequence);
-		String url = null;
-		String tagReplacement = null;
-		while (m.find()) {
-			url = fixUrl(m.group(3));
-			tagReplacement = "<" + m.group(1) + m.group(2) + "=\"" + url + "\"";
-			if (m.groupCount() > 3) {
-				tagReplacement += m.group(4);
+	CharSequence replace(CharSequence input) {
+		StringBuffer result = new StringBuffer(input);
+		CharSequence current = input;
+		for (Pattern pattern : URL_PATTERNS) {
+			result = new StringBuffer(current.length());
+			Matcher m = pattern.matcher(current);
+			while (m.find()) {
+				String url = fixUrl(m.group(3));
+				StringBuffer tagReplacement = new StringBuffer().append('<').append(m.group(1)).append(m.group(2)).append("=\"").append(
+						url).append('"');
+				if (m.groupCount() > 3) {
+					tagReplacement.append(m.group(4));
+				}
+				tagReplacement.append('>');
+				m.appendReplacement(result, tagReplacement.toString());
 			}
-			tagReplacement += ">";
-			m.appendReplacement(resultBuffer, tagReplacement);
+			m.appendTail(result);
+			current = result;
 		}
-		m.appendTail(resultBuffer);
-		return resultBuffer.toString();
+		return result;
 	}
 
 }
