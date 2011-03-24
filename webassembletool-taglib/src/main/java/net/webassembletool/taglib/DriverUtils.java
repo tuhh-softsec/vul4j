@@ -41,6 +41,18 @@ public class DriverUtils {
 		}
 	}
 
+	public final static void renderEsi(String provider, String source,
+			PageContext pageContext) throws JspException, HttpErrorPage {
+		try {
+			Driver driver = DriverFactory.getInstance(provider);
+			driver.render(source, null, pageContext.getOut(),
+					(HttpServletRequest) pageContext.getRequest(),
+					(HttpServletResponse) pageContext.getResponse());
+		} catch (IOException e) {
+			throw new JspException(e);
+		}
+	}
+
 	public final static void renderTemplate(String provider, String page,
 			String name, PageContext pageContext, Map<String, String> params,
 			Map<String, String> replaceRules, Map<String, String> parameters)
