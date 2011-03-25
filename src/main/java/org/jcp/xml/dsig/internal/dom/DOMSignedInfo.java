@@ -33,8 +33,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.security.Provider;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -49,7 +47,8 @@ import org.apache.xml.security.utils.UnsyncBufferedOutputStream;
  */
 public final class DOMSignedInfo extends DOMStructure implements SignedInfo {
 
-    private static Logger log = Logger.getLogger("org.jcp.xml.dsig.internal.dom");
+    private static org.apache.commons.logging.Log log =
+        org.apache.commons.logging.LogFactory.getLog(DOMSignedInfo.class);
     private List<Reference> references;
     private CanonicalizationMethod canonicalizationMethod;
     private SignatureMethod signatureMethod;
@@ -197,15 +196,14 @@ public final class DOMSignedInfo extends DOMStructure implements SignedInfo {
         byte[] signedInfoBytes = bos.toByteArray();
 
         // this whole block should only be done if logging is enabled
-        if (log.isLoggable(Level.FINE)) {
-            log.log(Level.FINE, "Canonicalized SignedInfo:"); 
-            StringBuffer sb = new StringBuffer(signedInfoBytes.length);
+        if (log.isDebugEnabled()) {
+            log.debug("Canonicalized SignedInfo:"); 
+            StringBuilder sb = new StringBuilder(signedInfoBytes.length);
             for (int i = 0; i < signedInfoBytes.length; i++) {
                 sb.append((char)signedInfoBytes[i]);
             }
-            log.log(Level.FINE, sb.toString());
-            log.log(Level.FINE, "Data to be signed/verified:" +
-                    Base64.encode(signedInfoBytes));
+            log.debug(sb.toString());
+            log.debug("Data to be signed/verified:" + Base64.encode(signedInfoBytes));
         }
 
         this.canonData = new ByteArrayInputStream(signedInfoBytes);

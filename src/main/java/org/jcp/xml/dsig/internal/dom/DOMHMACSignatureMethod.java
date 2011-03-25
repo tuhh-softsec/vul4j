@@ -34,8 +34,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.security.spec.AlgorithmParameterSpec;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import org.w3c.dom.Document;
@@ -50,8 +48,8 @@ import org.jcp.xml.dsig.internal.MacOutputStream;
  */
 public abstract class DOMHMACSignatureMethod extends AbstractDOMSignatureMethod {
 
-    private static Logger log = 
-        Logger.getLogger("org.jcp.xml.dsig.internal.dom");
+    private static org.apache.commons.logging.Log log =
+        org.apache.commons.logging.LogFactory.getLog(DOMHMACSignatureMethod.class);
 
     // see RFC 4051 for these algorithm definitions
     final static String HMAC_SHA256 =
@@ -106,10 +104,8 @@ public abstract class DOMHMACSignatureMethod extends AbstractDOMSignatureMethod 
             }
             outputLength = ((HMACParameterSpec)params).getOutputLength();
             outputLengthSet = true;
-            if (log.isLoggable(Level.FINE)) {
-                log.log(Level.FINE,
-                        "Setting outputLength from HMACParameterSpec to: " +
-                        outputLength);
+            if (log.isDebugEnabled()) {
+                log.debug("Setting outputLength from HMACParameterSpec to: " + outputLength);
             }
         }
     }
@@ -124,8 +120,8 @@ public abstract class DOMHMACSignatureMethod extends AbstractDOMSignatureMethod 
         outputLength = new Integer
             (paramsElem.getFirstChild().getNodeValue()).intValue();
         outputLengthSet = true;
-        if (log.isLoggable(Level.FINE)) {
-            log.log(Level.FINE, "unmarshalled outputLength: " + outputLength);
+        if (log.isDebugEnabled()) {
+            log.debug("unmarshalled outputLength: " + outputLength);
         }
         return new HMACParameterSpec(outputLength);
     }

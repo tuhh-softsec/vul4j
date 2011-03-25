@@ -29,8 +29,6 @@ import javax.xml.crypto.dsig.spec.SignatureMethodParameterSpec;
 import java.io.IOException;
 import java.security.*;
 import java.security.spec.AlgorithmParameterSpec;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.w3c.dom.Element;
 
 import org.apache.xml.security.algorithms.implementations.SignatureECDSA;
@@ -43,8 +41,8 @@ import org.jcp.xml.dsig.internal.SignerOutputStream;
  */
 public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
 
-    private static Logger log =
-        Logger.getLogger("org.jcp.xml.dsig.internal.dom");
+    private static org.apache.commons.logging.Log log =
+        org.apache.commons.logging.LogFactory.getLog(DOMSignatureMethod.class);
 
     // see RFC 4051 for these algorithm definitions
     final static String RSA_SHA256 =
@@ -164,9 +162,9 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
             }
         }
         signature.initVerify((PublicKey)key);
-        if (log.isLoggable(Level.FINE)) {
-            log.log(Level.FINE, "Signature provider:"+ signature.getProvider());
-            log.log(Level.FINE, "verifying with key: " + key);
+        if (log.isDebugEnabled()) {
+            log.debug("Signature provider:" + signature.getProvider());
+            log.debug("verifying with key: " + key);
         }
         ((DOMSignedInfo)si).canonicalize(context,
                                          new SignerOutputStream(signature));
@@ -207,9 +205,9 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
             }
         }
         signature.initSign((PrivateKey)key);
-        if (log.isLoggable(Level.FINE)) {
-            log.log(Level.FINE, "Signature provider:" +signature.getProvider());
-            log.log(Level.FINE, "Signing with key: " + key);
+        if (log.isDebugEnabled()) {
+            log.debug("Signature provider:" + signature.getProvider());
+            log.debug("Signing with key: " + key);
         }
 
         ((DOMSignedInfo)si).canonicalize(context,

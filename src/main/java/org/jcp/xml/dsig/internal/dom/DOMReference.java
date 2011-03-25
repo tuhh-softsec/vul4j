@@ -39,8 +39,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.*;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -76,8 +74,8 @@ public final class DOMReference extends DOMStructure
             }
         });
 
-    private static Logger log =
-        Logger.getLogger("org.jcp.xml.dsig.internal.dom");
+    private static org.apache.commons.logging.Log log =
+        org.apache.commons.logging.LogFactory.getLog(DOMReference.class);
 
     private final DigestMethod digestMethod;
     private final String id;
@@ -261,8 +259,8 @@ public final class DOMReference extends DOMStructure
     public void marshal(Node parent, String dsPrefix, DOMCryptoContext context)
         throws MarshalException
     {
-        if (log.isLoggable(Level.FINE)) {
-            log.log(Level.FINE, "Marshalling Reference");
+        if (log.isDebugEnabled()) {
+            log.debug("Marshalling Reference");
         }
         Document ownerDoc = DOMUtils.getOwnerDocument(parent);
 
@@ -291,8 +289,8 @@ public final class DOMReference extends DOMStructure
         ((DOMDigestMethod)digestMethod).marshal(refElem, dsPrefix, context);
 
         // create and append DigestValue element
-        if (log.isLoggable(Level.FINE)) {
-            log.log(Level.FINE, "Adding digestValueElem");
+        if (log.isDebugEnabled()) {
+            log.debug("Adding digestValueElem");
         }
         Element digestValueElem = DOMUtils.createElement(ownerDoc,
                                                          "DigestValue",
@@ -321,8 +319,8 @@ public final class DOMReference extends DOMStructure
 
         // insert digestValue into DigestValue element
         String encodedDV = Base64.encode(digestValue);
-        if (log.isLoggable(Level.FINE)) {
-            log.log(Level.FINE, "Reference object uri = " + uri);
+        if (log.isDebugEnabled()) {
+            log.debug("Reference object uri = " + uri);
         }
         Element digestElem = DOMUtils.getLastChildElement(refElem);
         if (digestElem == null) {
@@ -333,8 +331,8 @@ public final class DOMReference extends DOMStructure
             (refElem.getOwnerDocument().createTextNode(encodedDV));
 
         digested = true;
-        if (log.isLoggable(Level.FINE)) {
-            log.log(Level.FINE, "Reference digesting completed");
+        if (log.isDebugEnabled()) {
+            log.debug("Reference digesting completed");
         }
     }
 
@@ -350,11 +348,9 @@ public final class DOMReference extends DOMStructure
         Data data = dereference(validateContext);
         calcDigestValue = transform(data, validateContext);
 
-        if (log.isLoggable(Level.FINE)) {
-            log.log(Level.FINE, "Expected digest: " +
-                    Base64.encode(digestValue));
-            log.log(Level.FINE, "Actual digest: " +
-                    Base64.encode(calcDigestValue));
+        if (log.isDebugEnabled()) {
+            log.debug("Expected digest: " + Base64.encode(digestValue));
+            log.debug("Actual digest: " + Base64.encode(calcDigestValue));
         }
 
         validationStatus = Arrays.equals(digestValue, calcDigestValue);
@@ -382,11 +378,9 @@ public final class DOMReference extends DOMStructure
         }
         try {
             data = deref.dereference(this, context);
-            if (log.isLoggable(Level.FINE)) {
-                log.log(Level.FINE, "URIDereferencer class name: " +
-                        deref.getClass().getName());
-                log.log(Level.FINE, "Data class name: " +
-                        data.getClass().getName());
+            if (log.isDebugEnabled()) {
+                log.debug("URIDereferencer class name: " + deref.getClass().getName());
+                log.debug("Data class name: " + data.getClass().getName());
             }
         } catch (URIReferenceException ure) {
             throw new XMLSignatureException(ure);
@@ -557,8 +551,7 @@ public final class DOMReference extends DOMStructure
                     };
                 } catch (Exception e) {
                     // log a warning
-                    log.log(Level.WARNING,
-                            "cannot cache dereferenced data: " + e);
+                    log.warn("cannot cache dereferenced data: " + e);
                     return null;
                 }
             } else if (xsi.isElement()) {
@@ -571,8 +564,7 @@ public final class DOMReference extends DOMStructure
                          xsi.getMIMEType());
                 } catch (IOException ioe) {
                     // log a warning
-                    log.log(Level.WARNING,
-                            "cannot cache dereferenced data: " + ioe);
+                    log.warn("cannot cache dereferenced data: " + ioe);
                     return null;
                 }
             }

@@ -43,8 +43,6 @@ import java.util.Collections;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -61,8 +59,8 @@ import org.apache.xml.security.utils.Base64;
 public final class DOMXMLSignature extends DOMStructure 
     implements XMLSignature {
 
-    private static Logger log =
-        Logger.getLogger("org.jcp.xml.dsig.internal.dom");
+    private static org.apache.commons.logging.Log log =
+        org.apache.commons.logging.LogFactory.getLog(DOMXMLSignature.class);
     private String id;
     private SignatureValue sv;
     private KeyInfo ki;
@@ -262,15 +260,14 @@ public final class DOMXMLSignature extends DOMStructure
         for (int i = 0, size = refs.size(); validateRefs && i < size; i++) {
             Reference ref = refs.get(i);
             boolean refValid = ref.validate(vc);
-            if (log.isLoggable(Level.FINE)) {
-                log.log(Level.FINE, "Reference[" + ref.getURI() +
-                        "] is valid: " + refValid);
+            if (log.isDebugEnabled()) {
+                log.debug("Reference[" + ref.getURI() + "] is valid: " + refValid);
             }
             validateRefs &= refValid;
         }
         if (!validateRefs) {
-            if (log.isLoggable(Level.FINE)) {
-                log.log(Level.FINE, "Couldn't validate the References");
+            if (log.isDebugEnabled()) {
+                log.debug("Couldn't validate the References");
             }
             validationStatus = false;
             validated = true;
@@ -290,8 +287,8 @@ public final class DOMXMLSignature extends DOMStructure
                 for (int j = 0; validateMans && j < csize; j++) {
                     XMLStructure xs = content.get(j);
                     if (xs instanceof Manifest) {
-                        if (log.isLoggable(Level.FINE)) {
-                            log.log(Level.FINE, "validating manifest");
+                        if (log.isDebugEnabled()) {
+                            log.debug("validating manifest");
                         }
                         Manifest man = (Manifest)xs;
                         @SuppressWarnings("unchecked")
@@ -300,10 +297,10 @@ public final class DOMXMLSignature extends DOMStructure
                         for (int k = 0; validateMans && k < rsize; k++) {
                             Reference ref = manRefs.get(k);
                             boolean refValid = ref.validate(vc);
-                            if (log.isLoggable(Level.FINE)) {
-                                log.log(Level.FINE, "Manifest ref[" +
-                                        ref.getURI() + "] is valid: " +
-                                        refValid);
+                            if (log.isDebugEnabled()) {
+                                log.debug(
+                                    "Manifest ref[" + ref.getURI() + "] is valid: " + refValid
+                                );
                             }
                             validateMans &= refValid;
                         }
