@@ -35,13 +35,13 @@ public class GZipArchiver
     protected void execute()
         throws ArchiverException, IOException
     {
-    	if ( ! checkForced() )
-    	{
-    		return;
-    	}
-    	
-    	ResourceIterator iter = getResources();
-    	ArchiveEntry entry = iter.next();
+        if ( ! checkForced() )
+        {
+            return;
+        }
+
+        ResourceIterator iter = getResources();
+        ArchiveEntry entry = iter.next();
         if ( iter.hasNext() )
         {
             throw new ArchiverException( "There is more than one file in input." );
@@ -51,9 +51,9 @@ public class GZipArchiver
         compressor.compress();
     }
 
-	public boolean isSupportingForced() {
-		return true;
-	}
+    public boolean isSupportingForced() {
+        return true;
+    }
 
     protected void close()
     {

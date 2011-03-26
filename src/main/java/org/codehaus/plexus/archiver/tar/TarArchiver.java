@@ -35,6 +35,7 @@ import org.codehaus.plexus.archiver.util.EnumeratedAttribute;
 import org.codehaus.plexus.archiver.util.ResourceUtils;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
+import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringUtils;
 
 /**
@@ -147,12 +148,12 @@ public class TarArchiver
     protected void execute()
         throws ArchiverException, IOException
     {
-    	if ( ! checkForced() )
-    	{
-    		return;
-    	}
+        if ( ! checkForced() )
+        {
+            return;
+        }
 
-    	ResourceIterator iter = getResources();
+        ResourceIterator iter = getResources();
         if ( !iter.hasNext() )
         {
             throw new ArchiverException( "You must set at least one file." );
@@ -313,10 +314,7 @@ public class TarArchiver
         }
         finally
         {
-            if ( fIn != null )
-            {
-                fIn.close();
-            }
+            IOUtil.close( fIn );
         }
     }
 
@@ -573,22 +571,20 @@ public class TarArchiver
             {
                 return new GZIPOutputStream( ostream );
             }
-            else
+            else if ( BZIP2.equals( value ) )
             {
-                if ( BZIP2.equals( value ) )
-                {
-                    ostream.write( 'B' );
-                    ostream.write( 'Z' );
-                    return new CBZip2OutputStream( ostream );
-                }
+                ostream.write( 'B' );
+                ostream.write( 'Z' );
+                return new CBZip2OutputStream( ostream );
             }
             return ostream;
         }
     }
 
-	public boolean isSupportingForced() {
-		return true;
-	}
+    public boolean isSupportingForced()
+    {
+        return true;
+    }
 
     protected void cleanUp()
     {
@@ -599,18 +595,7 @@ public class TarArchiver
     protected void close()
         throws IOException
     {
-        if ( tOut != null )
-        {
-            try
-            {
-                // close up
-                tOut.close();
-            }
-            catch ( IOException e )
-            {
-                // ignore
-            }
-        }
+        IOUtil.close( tOut );
     }
 
     protected String getArchiveType()

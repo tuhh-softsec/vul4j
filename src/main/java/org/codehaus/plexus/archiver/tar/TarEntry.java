@@ -633,17 +633,7 @@ public class TarEntry
             return this.file.isDirectory();
         }
 
-        if ( this.linkFlag == LF_DIR )
-        {
-            return true;
-        }
-
-        if ( this.getName().endsWith( "/" ) )
-        {
-            return true;
-        }
-
-        return false;
+        return ( this.linkFlag == LF_DIR ) || this.getName().endsWith( "/" );
     }
 
     /**
@@ -750,6 +740,6 @@ public class TarEntry
 
     public long getLastModificationTime()
     {
-        return modTime == 0 ? -1 : (modTime * MILLIS_PER_SECOND);
+        return modTime == 0 ? -1 : ( modTime * MILLIS_PER_SECOND );
     }
 }

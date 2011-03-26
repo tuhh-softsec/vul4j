@@ -34,7 +34,7 @@ public class TarBZip2UnArchiver
 {
     public TarBZip2UnArchiver()
     {
-    	this.setupCompressionMethod();
+        this.setupCompressionMethod();
     }
 
     public TarBZip2UnArchiver( File sourceFile )
@@ -45,8 +45,8 @@ public class TarBZip2UnArchiver
 
     private void setupCompressionMethod()
     {
-    	UntarCompressionMethod untarCompressionMethod = new UntarCompressionMethod( UntarCompressionMethod.BZIP2 );
-    	this.setCompression( untarCompressionMethod );
+        UntarCompressionMethod untarCompressionMethod = new UntarCompressionMethod( UntarCompressionMethod.BZIP2 );
+        this.setCompression( untarCompressionMethod );
     }
     
 }

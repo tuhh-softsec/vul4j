@@ -19,6 +19,7 @@ package org.codehaus.plexus.archiver.bzip2;
 
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.util.Compressor;
+import org.codehaus.plexus.util.IOUtil;
 
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
@@ -56,19 +57,7 @@ public class BZip2Compressor
 
     public void close()
     {
-        if ( zOut != null )
-        {
-            try
-            {
-                // close up
-                zOut.close();
-            }
-            catch ( IOException e )
-            {
-                //ignore
-            }
-            
-            zOut = null;
-        }
+        IOUtil.close( zOut );
+        zOut = null;
     }
 }

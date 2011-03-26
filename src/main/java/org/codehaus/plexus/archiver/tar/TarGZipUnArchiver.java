@@ -29,7 +29,7 @@ public class TarGZipUnArchiver
 {
     public TarGZipUnArchiver()
     {
-    	this.setupCompressionMethod();
+        this.setupCompressionMethod();
     }
 
     public TarGZipUnArchiver( File sourceFile )
@@ -40,8 +40,8 @@ public class TarGZipUnArchiver
     
     private void setupCompressionMethod()
     {
-    	UntarCompressionMethod untarCompressionMethod = new UntarCompressionMethod( UntarCompressionMethod.GZIP );
-    	this.setCompression( untarCompressionMethod );
+        UntarCompressionMethod untarCompressionMethod = new UntarCompressionMethod( UntarCompressionMethod.GZIP );
+        this.setCompression( untarCompressionMethod );
     }
 
 }

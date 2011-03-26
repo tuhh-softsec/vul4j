@@ -17,6 +17,8 @@ package org.codehaus.plexus.archiver.zip;
  *
  */
 
+import org.codehaus.plexus.util.IOUtil;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilterOutputStream;

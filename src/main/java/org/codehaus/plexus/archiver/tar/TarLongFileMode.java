@@ -31,23 +31,11 @@ public class TarLongFileMode
      * permissible values for longfile attribute
      */
     public static final String
-        WARN = "warn"
-
-    ,
-
-    FAIL = "fail"
-
-    ,
-
-    TRUNCATE = "truncate"
-
-    ,
-
-    GNU = "gnu"
-
-    ,
-
-    OMIT = "omit";
+        WARN = "warn",
+        FAIL = "fail",
+        TRUNCATE = "truncate",
+        GNU = "gnu",
+        OMIT = "omit";
 
     private final String[] validModes = {WARN, FAIL, TRUNCATE, GNU, OMIT};
 

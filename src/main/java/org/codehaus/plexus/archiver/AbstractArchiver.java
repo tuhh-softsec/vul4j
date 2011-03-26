@@ -357,7 +357,7 @@ public abstract class AbstractArchiver
             throw new ArchiverException( inputFile.getAbsolutePath() + " isn't a file." );
         }
 
-        FileInputStream fileStream = null;
+        InputStream in = null;
 
         destFileName = destFileName.replace( '\\', '/' );
 
@@ -371,9 +371,9 @@ public abstract class AbstractArchiver
             // do a null check here, to avoid creating a file stream if there are no filters...
             if ( filterSupport != null )
             {
-                fileStream = new FileInputStream( inputFile );
+                in = new FileInputStream( inputFile );
 
-                if ( include( fileStream, destFileName ) )
+                if ( include( in, destFileName ) )
                 {
                     resources.add( ArchiveEntry.createFileEntry( destFileName, inputFile, permissions ) );
                 }
@@ -393,7 +393,7 @@ public abstract class AbstractArchiver
         }
         finally
         {
-            IOUtil.close( fileStream );
+            IOUtil.close( in );
         }
     }
 
@@ -545,8 +545,7 @@ public abstract class AbstractArchiver
 
         if ( destFile != null )
         {
-            destFile.getParentFile()
-                    .mkdirs();
+            destFile.getParentFile().mkdirs();
         }
     }
 

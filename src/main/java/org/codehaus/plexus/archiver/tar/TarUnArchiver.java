@@ -21,6 +21,7 @@ import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.bzip2.CBZip2InputStream;
 import org.codehaus.plexus.archiver.util.EnumeratedAttribute;
 import org.codehaus.plexus.archiver.zip.AbstractZipUnArchiver;
+import org.codehaus.plexus.util.IOUtil;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -101,17 +102,7 @@ public class TarUnArchiver
         }
         finally
         {
-            if ( tis != null )
-            {
-                try
-                {
-                    tis.close();
-                }
-                catch ( IOException e )
-                {
-                    // ignore
-                }
-            }
+            IOUtil.close( tis );
         }
     }
 

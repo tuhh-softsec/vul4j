@@ -27,6 +27,7 @@ import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.components.io.resources.PlexusIoFileResource;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
+import org.codehaus.plexus.util.IOUtil;
 
 /**
  * @version $Revision$ $Date$
@@ -189,14 +190,14 @@ public abstract class Compressor
     protected void compressFile( File file, OutputStream zOut )
         throws IOException
     {
-        FileInputStream fIn = new FileInputStream( file );
+        InputStream in = new FileInputStream( file );
         try
         {
-            compressFile( fIn, zOut );
+            compressFile( in, zOut );
         }
         finally
         {
-            fIn.close();
+            IOUtil.close( in );
         }
     }
 
@@ -206,14 +207,14 @@ public abstract class Compressor
     protected void compress( PlexusIoResource resource, OutputStream zOut )
         throws IOException
     {
-        InputStream fIn = resource.getContents();
+        InputStream in = resource.getContents();
         try
         {
-            compressFile( fIn, zOut );
+            compressFile( in, zOut );
         }
         finally
         {
-            fIn.close();
+            IOUtil.close( in );
         }
     }
 

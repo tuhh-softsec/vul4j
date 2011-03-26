@@ -84,10 +84,6 @@ public class ResourceUtils
             input = in.getContents();
             output = new FileOutputStream( outFile );
             IOUtil.copy( input, output );
-            input.close();
-            input = null;
-            output.close();
-            output = null;
         }
         finally
         {

@@ -26,11 +26,13 @@ public class PlexusIoZipFileResourceCollection
         }
         final ZipFile zipFile = new ZipFile( f );
         final Enumeration en = zipFile.getEntries();
-        return new Iterator(){
+        return new Iterator()
+        {
             public boolean hasNext()
             {
                 return en.hasMoreElements();
             }
+
             public Object next()
             {
                 final ZipEntry entry = (ZipEntry) en.nextElement();
@@ -38,6 +40,7 @@ public class PlexusIoZipFileResourceCollection
                 
                 return res;
             }
+
             public void remove()
             {
                 throw new UnsupportedOperationException( "Removing isn't implemented." );

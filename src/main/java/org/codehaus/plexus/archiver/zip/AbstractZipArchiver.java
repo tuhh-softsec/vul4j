@@ -43,6 +43,7 @@ import org.codehaus.plexus.archiver.util.ResourceUtils;
 import org.codehaus.plexus.components.io.resources.PlexusIoFileResource;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 import org.codehaus.plexus.util.FileUtils;
+import org.codehaus.plexus.util.IOUtil;
 
 /**
  * @version $Revision$ $Date$
@@ -587,16 +588,16 @@ public abstract class AbstractZipArchiver
             throw new ArchiverException( "A zip file cannot include itself" );
         }
 
-        InputStream fIn = entry.getInputStream();
+        InputStream in = entry.getInputStream();
         try
         {
             // ZIPs store time with a granularity of 2 seconds, round up
             final long lastModified = entry.getResource().getLastModified() + ( roundUp ? 1999 : 0 );
-            zipFile( fIn, zOut, vPath, lastModified, null, entry.getMode() );
+            zipFile( in, zOut, vPath, lastModified, null, entry.getMode() );
         }
         finally
         {
-            fIn.close();
+            IOUtil.close( in );
         }
     }
 
@@ -672,17 +673,7 @@ public abstract class AbstractZipArchiver
         }
         finally
         {
-            if ( os != null )
-            {
-                try
-                {
-                    os.close();
-                }
-                catch ( IOException e )
-                {
-                    //ignore
-                }
-            }
+            IOUtil.close( os );
         }
         return true;
     }

@@ -49,5 +49,5 @@ public interface ArchiveFile
     /**
      * Returns an {@link InputStream} with the given entries contents.
      */
-    InputStream getInputStream(Entry entry) throws IOException;
+    InputStream getInputStream( Entry entry ) throws IOException;
 }

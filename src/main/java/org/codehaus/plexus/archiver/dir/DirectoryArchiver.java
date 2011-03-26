@@ -124,12 +124,10 @@ public class DirectoryArchiver
 
         if ( !in.isDirectory() )
         {
-            if ( !outFile.getParentFile()
-                         .exists() )
+            if ( !outFile.getParentFile().exists() )
             {
                 // create the parent directory...
-                if ( !outFile.getParentFile()
-                             .mkdirs() )
+                if ( !outFile.getParentFile().mkdirs() )
                 {
                     // Failure, unable to create specified directory for some unknown reason.
                     throw new ArchiverException( "Unable to create directory or parent directory of " + outFile );

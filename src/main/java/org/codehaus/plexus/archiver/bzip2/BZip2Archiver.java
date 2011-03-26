@@ -35,15 +35,15 @@ public class BZip2Archiver
     public void execute()
         throws ArchiverException, IOException
     {
-    	if ( ! checkForced() )
-    	{
-    		return;
-    	}
+        if ( ! checkForced() )
+        {
+            return;
+        }
 
-    	ResourceIterator iter = getResources();
-    	ArchiveEntry entry = iter.next();
-    	if ( iter.hasNext() )
-    	{
+        ResourceIterator iter = getResources();
+        ArchiveEntry entry = iter.next();
+        if ( iter.hasNext() )
+        {
             throw new ArchiverException( "There is more than one file in input." );
         }
         compressor.setSource( entry.getResource() );
@@ -51,9 +51,10 @@ public class BZip2Archiver
         compressor.compress();
     }
 
-	public boolean isSupportingForced() {
-		return true;
-	}
+    public boolean isSupportingForced()
+    {
+        return true;
+    }
 
     protected void close()
     {

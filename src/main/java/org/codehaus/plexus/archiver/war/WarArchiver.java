@@ -60,7 +60,8 @@ public class WarArchiver
      */
     private boolean descriptorAdded;
 
-    public void setIgnoreWebxml( boolean ignore ) {
+    public void setIgnoreWebxml( boolean ignore )
+    {
         ignoreWebxml = ignore;
     }
 

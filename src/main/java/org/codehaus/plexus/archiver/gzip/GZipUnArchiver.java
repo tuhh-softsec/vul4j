@@ -19,6 +19,7 @@ package org.codehaus.plexus.archiver.gzip;
 
 import org.codehaus.plexus.archiver.AbstractUnArchiver;
 import org.codehaus.plexus.archiver.ArchiverException;
+import org.codehaus.plexus.util.IOUtil;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -74,39 +75,9 @@ public class GZipUnArchiver
             }
             finally
             {
-                if ( fis != null )
-                {
-                    try
-                    {
-                        fis.close();
-                    }
-                    catch ( IOException ioex )
-                    {
-                        //ignore
-                    }
-                }
-                if ( out != null )
-                {
-                    try
-                    {
-                        out.close();
-                    }
-                    catch ( IOException ioex )
-                    {
-                        //ignore
-                    }
-                }
-                if ( zIn != null )
-                {
-                    try
-                    {
-                        zIn.close();
-                    }
-                    catch ( IOException ioex )
-                    {
-                        //ignore
-                    }
-                }
+                IOUtil.close( fis );
+                IOUtil.close( out );
+                IOUtil.close( zIn );
             }
         }
     }

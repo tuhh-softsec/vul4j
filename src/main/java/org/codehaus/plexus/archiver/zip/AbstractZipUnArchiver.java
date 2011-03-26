@@ -23,12 +23,9 @@ import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.util.ArchiveEntryUtils;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 import org.codehaus.plexus.util.FileUtils;
+import org.codehaus.plexus.util.IOUtil;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
 import java.util.Date;
 import java.util.Enumeration;
@@ -217,32 +214,19 @@ public abstract class AbstractZipUnArchiver
             {
                 final byte[] buffer = new byte[1024];
                 int length;
-                FileOutputStream fos = null;
+                OutputStream out = null;
                 try
                 {
-                    fos = new FileOutputStream( f );
+                    out = new FileOutputStream( f );
 
                     while ( ( length = compressedInputStream.read( buffer ) ) >= 0 )
                     {
-                        fos.write( buffer, 0, length );
+                        out.write(buffer, 0, length);
                     }
-
-                    fos.close();
-                    fos = null;
                 }
                 finally
                 {
-                    if ( fos != null )
-                    {
-                        try
-                        {
-                            fos.close();
-                        }
-                        catch ( final IOException e )
-                        {
-                            // ignore
-                        }
-                    }
+                    IOUtil.close( out );
                 }
             }
 

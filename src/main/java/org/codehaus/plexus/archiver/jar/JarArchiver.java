@@ -29,16 +29,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.StringTokenizer;
-import java.util.TreeMap;
-import java.util.Vector;
+import java.util.*;
 
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.util.EnumeratedAttribute;
@@ -46,6 +37,7 @@ import org.codehaus.plexus.archiver.zip.ZipArchiver;
 import org.codehaus.plexus.archiver.zip.ZipEntry;
 import org.codehaus.plexus.archiver.zip.ZipFile;
 import org.codehaus.plexus.archiver.zip.ZipOutputStream;
+import org.codehaus.plexus.util.IOUtil;
 
 /**
  * Base class for tasks that build archives in JAR file format.
@@ -218,21 +210,20 @@ public class JarArchiver
     private Manifest getManifest( File manifestFile )
         throws ArchiverException
     {
-        Manifest newManifest = null;
-        FileInputStream fis;
-        InputStreamReader isr = null;
+        InputStream in = null;
         try
         {
-            fis = new FileInputStream( manifestFile );
+            in = new FileInputStream( manifestFile );
+            Reader reader;
             if ( manifestEncoding == null )
             {
-                isr = new InputStreamReader( fis );
+                reader = new InputStreamReader( in );
             }
             else
             {
-                isr = new InputStreamReader( fis, manifestEncoding );
+                reader = new InputStreamReader( in, manifestEncoding );
             }
-            newManifest = getManifest( isr );
+            return getManifest( reader );
         }
         catch ( UnsupportedEncodingException e )
         {
@@ -247,28 +238,16 @@ public class JarArchiver
         }
         finally
         {
-            if ( isr != null )
-            {
-                try
-                {
-                    isr.close();
-                }
-                catch ( IOException e )
-                {
-                    // do nothing
-                }
-            }
+            IOUtil.close( in );
         }
-        return newManifest;
     }
 
     private Manifest getManifest( Reader r )
         throws ArchiverException
     {
-        Manifest newManifest;
         try
         {
-            newManifest = new Manifest( r );
+            return new Manifest( r );
         }
         catch ( ManifestException e )
         {
@@ -281,7 +260,6 @@ public class JarArchiver
             throw new ArchiverException( "Unable to read manifest file"
                                          + " (" + e.getMessage() + ")", e );
         }
-        return newManifest;
     }
 
     /**
@@ -360,14 +338,11 @@ public class JarArchiver
         {
             Manifest finalManifest = Manifest.getDefaultManifest();
 
-            if ( manifest == null )
+            if ( ( manifest == null ) && ( manifestFile != null ) )
             {
-                if ( manifestFile != null )
-                {
-                    // if we haven't got the manifest yet, attempt to
-                    // get it now and have manifest be the final merge
-                    manifest = getManifest( manifestFile );
-                }
+                // if we haven't got the manifest yet, attempt to
+                // get it now and have manifest be the final merge
+                manifest = getManifest( manifestFile );
             }
 
             /*
@@ -399,8 +374,7 @@ public class JarArchiver
     private void writeManifest( ZipOutputStream zOut, Manifest manifest )
         throws IOException, ArchiverException
     {
-        for ( Enumeration e = manifest.getWarnings();
-              e.hasMoreElements(); )
+        for ( Enumeration e = manifest.getWarnings(); e.hasMoreElements(); )
         {
             getLogger().warn( "Manifest warning: " + e.nextElement() );
         }
@@ -413,8 +387,7 @@ public class JarArchiver
         manifest.write( writer );
         writer.flush();
 
-        ByteArrayInputStream bais =
-            new ByteArrayInputStream( baos.toByteArray() );
+        ByteArrayInputStream bais = new ByteArrayInputStream( baos.toByteArray() );
         super.zipFile( bais, zOut, MANIFEST_NAME,
                        System.currentTimeMillis(), null,
                        DEFAULT_FILE_MODE );
@@ -458,26 +431,29 @@ public class JarArchiver
 
         // filter out META-INF if it doesn't contain anything other than the index and manifest.
         // this is what sun.misc.JarIndex does, guess we ought to be consistent.
-        HashSet filteredDirs = new HashSet(addedDirs.keySet());
+        Set filteredDirs = new HashSet( addedDirs.keySet() );
         // our added dirs always have a trailing slash
-        if(filteredDirs.contains(META_INF_NAME+"/")) {
+        if ( filteredDirs.contains( META_INF_NAME + '/' ) )
+        {
             boolean add = false;
             Iterator i = entries.keySet().iterator();
-            while(i.hasNext()) {
-                String entry = (String)i.next();
-                if(entry.startsWith(META_INF_NAME+"/") &&
-                        !entry.equals(INDEX_NAME) && !entry.equals(MANIFEST_NAME)) {
+            while ( i.hasNext() )
+            {
+                String entry = (String) i.next();
+                if ( entry.startsWith( META_INF_NAME + '/' )
+                        && !entry.equals( INDEX_NAME )
+                        && !entry.equals( MANIFEST_NAME ) )
+                {
                     add = true;
                     break;
                 }
             }
-            if(!add)
+            if ( !add )
             {
-                filteredDirs.remove(META_INF_NAME+"/");
+                filteredDirs.remove( META_INF_NAME + '/' );
             }
         }
-        writeIndexLikeList( new ArrayList( filteredDirs ),
-                            rootEntries, writer );
+        writeIndexLikeList( new ArrayList( filteredDirs ), rootEntries, writer );
         writer.println();
 
         if ( indexJars != null )
@@ -488,8 +464,7 @@ public class JarArchiver
             String[] cpEntries = null;
             if ( classpath != null )
             {
-                StringTokenizer tok = new StringTokenizer( classpath.getValue(),
-                                                           " " );
+                StringTokenizer tok = new StringTokenizer( classpath.getValue(), " " );
                 cpEntries = new String[tok.countTokens()];
                 int c = 0;
                 while ( tok.hasMoreTokens() )
@@ -566,16 +541,16 @@ public class JarArchiver
             {
                 if ( is != null )
                 {
-                    InputStreamReader isr;
+                    Reader reader;
                     if ( manifestEncoding == null )
                     {
-                        isr = new InputStreamReader( is );
+                        reader = new InputStreamReader( is );
                     }
                     else
                     {
-                        isr = new InputStreamReader( is, manifestEncoding );
+                        reader = new InputStreamReader( is, manifestEncoding );
                     }
-                    manifest = getManifest( isr );
+                    manifest = getManifest( reader );
                 }
                 else
                 {
@@ -599,16 +574,16 @@ public class JarArchiver
                 Manifest newManifest;
                 if ( is != null )
                 {
-                    InputStreamReader isr;
+                    Reader reader;
                     if ( manifestEncoding == null )
                     {
-                        isr = new InputStreamReader( is );
+                        reader = new InputStreamReader( is );
                     }
                     else
                     {
-                        isr = new InputStreamReader( is, manifestEncoding );
+                        reader = new InputStreamReader( is, manifestEncoding );
                     }
-                    newManifest = getManifest( isr );
+                    newManifest = getManifest( reader );
                 }
                 else
                 {
@@ -750,16 +725,7 @@ public class JarArchiver
         finally
         {
             // Close the output stream.
-            try
-            {
-                if ( zOut != null )
-                {
-                    zOut.close();
-                }
-            }
-            catch ( IOException ex )
-            {
-            }
+            IOUtil.close( zOut );
             createEmpty = false;
         }
         return true;
@@ -806,7 +772,7 @@ public class JarArchiver
     {
         public String[] getValues()
         {
-            return new String[]{"skip", "merge", "mergewithoutmain"};
+            return new String[]{ "skip", "merge", "mergewithoutmain" };
         }
     }
 
@@ -877,7 +843,7 @@ public class JarArchiver
             return ( new File( fileName ) ).getName();
         }
         fileName = fileName.replace( File.separatorChar, '/' );
-        TreeMap matches = new TreeMap( new Comparator()
+        SortedMap matches = new TreeMap( new Comparator()
         {
             // longest match comes first
             public int compare( Object o1, Object o2 )
@@ -934,12 +900,11 @@ public class JarArchiver
             HashSet dirSet = new HashSet();
             while ( entries.hasMoreElements() )
             {
-                ZipEntry ze =
-                    (ZipEntry) entries.nextElement();
+                ZipEntry ze = (ZipEntry) entries.nextElement();
                 String name = ze.getName();
                 // avoid index for manifest-only jars.
-                if (!name.equals(META_INF_NAME) && !name.equals(META_INF_NAME+"/") &&
-                        !name.equals(INDEX_NAME) && !name.equals(MANIFEST_NAME))
+                if ( !name.equals( META_INF_NAME ) && !name.equals( META_INF_NAME + '/' )
+                        && !name.equals( INDEX_NAME ) && !name.equals( MANIFEST_NAME ) )
                 {
                     if ( ze.isDirectory() )
                     {

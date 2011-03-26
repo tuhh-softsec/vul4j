@@ -19,6 +19,7 @@ package org.codehaus.plexus.archiver.gzip;
 
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.util.Compressor;
+import org.codehaus.plexus.util.IOUtil;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -52,19 +53,7 @@ public class GZipCompressor
 
     public void close()
     {
-        if ( zOut != null )
-        {
-            try
-            {
-                // close up
-                zOut.close();
-            }
-            catch ( IOException e )
-            {
-                // do nothing
-            }
-            
-            zOut = null;
-        }
+        IOUtil.close( zOut );
+        zOut = null;
     }
 }

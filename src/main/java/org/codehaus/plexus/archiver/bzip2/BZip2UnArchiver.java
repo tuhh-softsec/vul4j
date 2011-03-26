@@ -26,6 +26,7 @@ import java.io.InputStream;
 
 import org.codehaus.plexus.archiver.AbstractUnArchiver;
 import org.codehaus.plexus.archiver.ArchiverException;
+import org.codehaus.plexus.util.IOUtil;
 
 /**
  * @author <a href="mailto:evenisse@codehaus.org">Emmanuel Venisse</a>
@@ -81,50 +82,10 @@ public class BZip2UnArchiver
             }
             finally
             {
-                if ( bis != null )
-                {
-                    try
-                    {
-                        bis.close();
-                    }
-                    catch ( IOException ioex )
-                    {
-                        // ignore
-                    }
-                }
-                if ( fis != null )
-                {
-                    try
-                    {
-                        fis.close();
-                    }
-                    catch ( IOException ioex )
-                    {
-                        // ignore
-                    }
-                }
-                if ( out != null )
-                {
-                    try
-                    {
-                        out.close();
-                    }
-                    catch ( IOException ioex )
-                    {
-                        // ignore
-                    }
-                }
-                if ( zIn != null )
-                {
-                    try
-                    {
-                        zIn.close();
-                    }
-                    catch ( IOException ioex )
-                    {
-                        // ignore
-                    }
-                }
+                IOUtil.close( bis );
+                IOUtil.close( fis );
+                IOUtil.close( out );
+                IOUtil.close( zIn );
             }
         }
     }

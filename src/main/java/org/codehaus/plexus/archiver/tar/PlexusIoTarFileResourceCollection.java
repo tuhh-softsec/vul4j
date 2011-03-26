@@ -15,11 +15,13 @@ public class PlexusIoTarFileResourceCollection extends AbstractPlexusIoArchiveRe
      */
     public static final String ROLE_HINT = "tar";
 
-    protected TarFile newTarFile( File file ) {
+    protected TarFile newTarFile( File file )
+    {
         return new TarFile( file );
     }
 
-    protected Iterator getEntries() throws IOException
+    protected Iterator getEntries()
+            throws IOException
     {
         final File f = getFile();
         if ( f == null )
@@ -28,11 +30,13 @@ public class PlexusIoTarFileResourceCollection extends AbstractPlexusIoArchiveRe
         }
         final TarFile tarFile = newTarFile( f );
         final Enumeration en = tarFile.getEntries();
-        return new Iterator(){
+        return new Iterator()
+        {
             public boolean hasNext()
             {
                 return en.hasMoreElements();
             }
+
             public Object next()
             {
                 final TarEntry entry = (TarEntry) en.nextElement();
@@ -40,6 +44,7 @@ public class PlexusIoTarFileResourceCollection extends AbstractPlexusIoArchiveRe
                 
                 return res;
             }
+
             public void remove()
             {
                 throw new UnsupportedOperationException( "Removing isn't implemented." );

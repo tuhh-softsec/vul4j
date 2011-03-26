@@ -22,7 +22,8 @@ public class GZipTarFile extends TarFile
     protected InputStream getInputStream( File file )
         throws IOException
     {
-        return new GZIPInputStream( super.getInputStream( file ) ){
+        return new GZIPInputStream( super.getInputStream( file ) )
+        {
             public void close()
                 throws IOException
             {
