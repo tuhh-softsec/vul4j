@@ -18,6 +18,7 @@ package org.codehaus.plexus.archiver.jar;
  */
 
 import org.codehaus.plexus.archiver.ArchiverException;
+import org.codehaus.plexus.util.IOUtil;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -880,6 +881,10 @@ public class Manifest
             catch ( UnsupportedEncodingException e )
             {
                 return new Manifest( new InputStreamReader( in ) );
+            }
+            finally
+            {
+                IOUtil.close( in );
             }
         }
         catch ( ManifestException e )
