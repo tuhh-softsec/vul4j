@@ -1,2 +1,6 @@
-.settings
+.settings/
+work/
 .project
+.classpath
+target/
+inject-tests/

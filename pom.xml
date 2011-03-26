@@ -18,7 +18,22 @@
 	<packaging>hpi</packaging>
 	<description>Integrates Jenkins to CCM</description>
 
+	<organization>
+		<name>Jenkins</name>
+		<url>http://www.jenkins-ci.org</url>
+	</organization>
+
 	<url>http://wiki.jenkins-ci.org/display/JENKINS/CCM+Plugin</url>
+
+	<issueManagement>
+		<system>JIRA</system>
+		<url>http://issues.jenkins-ci.org/browse/JENKINS/component/15753</url>
+	</issueManagement>
+
+	<ciManagement>
+		<system>Jenkins</system>
+		<url>http://ci.jenkins-ci.org/view/Plugins/job/plugins_ccm/</url>
+	</ciManagement>
 
 	<distributionManagement>
 		<repository>
