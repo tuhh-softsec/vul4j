@@ -141,8 +141,10 @@ public abstract class AbstractZipUnArchiver
                 {
                     continue;
                 }
-                extractFileIfIncluded( getSourceFile(), getDestDirectory(), zf.getInputStream( ze ), ze.getName(),
+                InputStream in = zf.getInputStream( ze );
+                extractFileIfIncluded( getSourceFile(), getDestDirectory(), in, ze.getName(),
                                        new Date( ze.getTime() ), ze.isDirectory(), null );
+                in.close();
             }
 
             getLogger().debug( "expand complete" );
