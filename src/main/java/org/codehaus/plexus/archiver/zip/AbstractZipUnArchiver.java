@@ -214,17 +214,12 @@ public abstract class AbstractZipUnArchiver
             }
             else
             {
-                final byte[] buffer = new byte[1024];
-                int length;
                 OutputStream out = null;
                 try
                 {
                     out = new FileOutputStream( f );
 
-                    while ( ( length = compressedInputStream.read( buffer ) ) >= 0 )
-                    {
-                        out.write(buffer, 0, length);
-                    }
+                    IOUtil.copy( compressedInputStream, out );
                 }
                 finally
                 {
