@@ -1,6 +1,7 @@
 package net.webassembletool.esi;
 
 import java.io.IOException;
+import java.util.Date;
 
 import net.webassembletool.Driver;
 import net.webassembletool.DriverFactory;
@@ -58,9 +59,16 @@ public class IncludeElement implements Element {
 			driver = DriverFactory.getInstance(provider);
 		}
 		try {
-			driver.render(page, null, getOut(out, stack), esiRenderer
-					.getRequest(), esiRenderer.getResponse(),
-					new BlockRenderer(null, page));
+			InlineCache ic = InlineCache.getFragment(src);
+			if (ic != null
+					&& (ic.getOutdate() == null || ic.getOutdate().after(
+							new Date()))) {
+				getOut(out, stack).append(ic.getFragment());
+			} else {
+				driver.render(page, null, getOut(out, stack), esiRenderer
+						.getRequest(), esiRenderer.getResponse(),
+						new BlockRenderer(null, page));
+			}
 		} catch (Exception e) {
 			// e.printStackTrace();
 			TryElement tre = getTryElement(stack);

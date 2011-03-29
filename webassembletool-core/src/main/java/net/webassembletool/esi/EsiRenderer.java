@@ -28,7 +28,7 @@ public class EsiRenderer implements Renderer, Appendable {
 			IncludeElement.TYPE, Comment.TYPE, CommentElement.TYPE,
 			RemoveElement.TYPE, VarsElement.TYPE, ChooseElement.TYPE,
 			WhenElement.TYPE, OtherwiseElement.TYPE, TryElement.TYPE,
-			AttemptElement.TYPE, ExceptElement.TYPE);
+			AttemptElement.TYPE, ExceptElement.TYPE, InlineElement.TYPE);
 	private Writer out;
 	private final HttpServletRequest request;
 	private final HttpServletResponse response;
