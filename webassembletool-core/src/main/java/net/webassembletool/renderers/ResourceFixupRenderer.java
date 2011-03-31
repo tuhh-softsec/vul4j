@@ -29,8 +29,8 @@ public class ResourceFixupRenderer implements Renderer {
 	public static final int RELATIVE = 1;
 	public static final char SLASH = '/';
 	private static final Pattern URL_PATTERNS[] = new Pattern[] {
-			Pattern.compile("<([^>]+)(src|href|action)=\"([^\"]+)\"([^>]*)>"),
-			Pattern.compile("<([^>]+)(src|href|action)='([^']+)'([^>]*)>") };
+			Pattern.compile("<([^>]+)(src|href|action)=\"([^\"]+)\"([^>]*)>", Pattern.CASE_INSENSITIVE),
+			Pattern.compile("<([^>]+)(src|href|action)='([^']+)'([^>]*)>", Pattern.CASE_INSENSITIVE) };
 	private String contextAdd = null;
 	private String contextRemove = null;
 	private String pagePath = null;

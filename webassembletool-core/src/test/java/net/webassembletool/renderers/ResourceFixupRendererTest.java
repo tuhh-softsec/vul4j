@@ -101,4 +101,17 @@ public class ResourceFixupRendererTest extends TestCase {
 		tested.render(null, input, out);
 		assertEquals(expectedOutputAbsolute, out.toString());
 	}
+
+	public void testCaseInsensitiveReplacement() throws IOException {
+		String base = "http://myapp/context/";
+		String visibleBase = "http://app2/";
+		String page = "/page/";
+		final String input = "  <a HREF=\"../styles/style.css\"/> <img SrC=\"images/logo.png\"/></a> <img src=\"http://www.google.com/logo.com\"/>";
+		final String expectedOutputAbsolute = "  <a HREF=\"http://app2/page/../styles/style.css\"/> <img SrC=\"http://app2/page/images/logo.png\"/></a> <img src=\"http://www.google.com/logo.com\"/>";
+
+		Writer out = new StringWriter();
+		ResourceFixupRenderer tested = new ResourceFixupRenderer(base, visibleBase, page, ResourceFixupRenderer.ABSOLUTE);
+		tested.render(null, input, out);
+		assertEquals(expectedOutputAbsolute, out.toString());
+	}
 }
