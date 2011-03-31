@@ -114,4 +114,17 @@ public class ResourceFixupRendererTest extends TestCase {
 		tested.render(null, input, out);
 		assertEquals(expectedOutputAbsolute, out.toString());
 	}
+
+	public void testBackgroundReplacement() throws IOException {
+		String base = "http://myapp/context/";
+		String visibleBase = "http://app2/";
+		String page = "/page/";
+		final String input = "  <a background=\"../styles/style.css\"/> <img background=\"images/logo.png\"/></a> <img background=\"http://www.google.com/logo.com\"/>";
+		final String expectedOutputAbsolute = "  <a background=\"http://app2/page/../styles/style.css\"/> <img background=\"http://app2/page/images/logo.png\"/></a> <img background=\"http://www.google.com/logo.com\"/>";
+
+		Writer out = new StringWriter();
+		ResourceFixupRenderer tested = new ResourceFixupRenderer(base, visibleBase, page, ResourceFixupRenderer.ABSOLUTE);
+		tested.render(null, input, out);
+		assertEquals(expectedOutputAbsolute, out.toString());
+	}
 }
