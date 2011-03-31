@@ -221,13 +221,15 @@ public class ResourceFixupRenderer implements Renderer {
 			result = new StringBuffer(current.length());
 			Matcher m = pattern.matcher(current);
 			while (m.find()) {
+				LOG.trace("found match: " + m);
 				String url = fixUrl(m.group(3));
-				StringBuffer tagReplacement = new StringBuffer().append('<').append(m.group(1)).append(m.group(2)).append("=\"").append(
-						url).append('"');
+				url = url.replaceAll("\\$", "\\\\\\$"); // replace '$' -> '\$' as it denotes group
+				StringBuffer tagReplacement = new StringBuffer("<$1$2=\"").append(url).append("\"");
 				if (m.groupCount() > 3) {
-					tagReplacement.append(m.group(4));
+					tagReplacement.append("$4");
 				}
 				tagReplacement.append('>');
+				LOG.trace("replacement: " + tagReplacement);
 				m.appendReplacement(result, tagReplacement.toString());
 			}
 			m.appendTail(result);
