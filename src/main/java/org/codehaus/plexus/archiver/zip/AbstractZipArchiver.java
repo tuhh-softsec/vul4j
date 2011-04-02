@@ -595,6 +595,10 @@ public abstract class AbstractZipArchiver
             final long lastModified = entry.getResource().getLastModified() + ( roundUp ? 1999 : 0 );
             zipFile( in, zOut, vPath, lastModified, null, entry.getMode() );
         }
+        catch ( IOException e )
+        {
+            throw new ArchiverException( "IOException when zipping " + entry.getName() + ": " + e.getMessage(), e );
+        }
         finally
         {
             IOUtil.close( in );
