@@ -19,6 +19,10 @@
     <developerConnection>scm:git:git@github.com:sonatype/plexus-archiver.git</developerConnection>
     <url>http://github.com/sonatype/plexus-archiver</url>
   </scm>
+  <issueManagement>
+    <system>jira</system>
+    <url>http://jira.codehaus.org/browse/PLXCOMP/component/12540</url>
+  </issueManagement>
 
   <properties>
     <useJvmChmod>false</useJvmChmod>
