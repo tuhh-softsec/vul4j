@@ -33,8 +33,7 @@ public class DotDirectiveArchiveFinalizer
         this( dotFileDirectory, DEFAULT_DOT_FILE_PREFIX );
     }
 
-    public DotDirectiveArchiveFinalizer( File dotFileDirectory,
-                                         String dotFilePrefix )
+    public DotDirectiveArchiveFinalizer( File dotFileDirectory, String dotFilePrefix )
     {
         this.dotFileDirectory = dotFileDirectory;
 
@@ -98,6 +97,5 @@ public class DotDirectiveArchiveFinalizer
     public List getVirtualFiles()
     {
         return Collections.EMPTY_LIST;
-
     }
 }

@@ -260,8 +260,7 @@ public abstract class AbstractZipUnArchiver
                     continue;
                 }
 
-                if ( ze.getName()
-                       .startsWith( path ) )
+                if ( ze.getName().startsWith( path ) )
                 {
                     extractFileIfIncluded( getSourceFile(), outputDirectory, zipFile.getInputStream( ze ),
                                            ze.getName(), new Date( ze.getTime() ), ze.isDirectory(), null );

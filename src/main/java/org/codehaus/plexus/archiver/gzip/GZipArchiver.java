@@ -35,7 +35,7 @@ public class GZipArchiver
     protected void execute()
         throws ArchiverException, IOException
     {
-        if ( ! checkForced() )
+        if ( !checkForced() )
         {
             return;
         }
@@ -51,7 +51,8 @@ public class GZipArchiver
         compressor.compress();
     }
 
-    public boolean isSupportingForced() {
+    public boolean isSupportingForced()
+    {
         return true;
     }
 

@@ -35,7 +35,7 @@ public class BZip2Archiver
     public void execute()
         throws ArchiverException, IOException
     {
-        if ( ! checkForced() )
+        if ( !checkForced() )
         {
             return;
         }

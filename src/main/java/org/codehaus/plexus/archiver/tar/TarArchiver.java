@@ -148,7 +148,7 @@ public class TarArchiver
     protected void execute()
         throws ArchiverException, IOException
     {
-        if ( ! checkForced() )
+        if ( !checkForced() )
         {
             return;
         }
@@ -255,8 +255,7 @@ public class TarArchiver
                 }
                 else if ( longFileMode.isWarnMode() )
                 {
-                    getLogger().warn( "Entry: " + vPath + " longer than "
-                                      + TarConstants.NAMELEN + " characters." );
+                    getLogger().warn( "Entry: " + vPath + " longer than " + TarConstants.NAMELEN + " characters." );
                     if ( !longWarningGiven )
                     {
                         getLogger().warn( "Resulting tar file can only be processed "
@@ -273,7 +272,8 @@ public class TarArchiver
 
             TarEntry te = new TarEntry( vPath );
             long teLastModified = entry.getResource().getLastModified();
-            te.setModTime( teLastModified == PlexusIoResource.UNKNOWN_MODIFICATION_DATE ? System.currentTimeMillis() : teLastModified );
+            te.setModTime( teLastModified == PlexusIoResource.UNKNOWN_MODIFICATION_DATE ? System.currentTimeMillis()
+                            : teLastModified );
 
             if ( !entry.getResource().isDirectory() )
             {
@@ -289,10 +289,14 @@ public class TarArchiver
             
             PlexusIoResourceAttributes attributes = entry.getResourceAttributes();
             
-            te.setUserName( ( attributes != null && attributes.getUserName() != null ) ? attributes.getUserName() : options.getUserName() );
-            te.setGroupName( ( attributes != null && attributes.getGroupName() != null ) ? attributes.getGroupName() : options.getGroup() );
-            te.setUserId( ( attributes != null && attributes.getUserId() != -1 ) ? attributes.getUserId() : options.getUid() );
-            te.setGroupId( ( attributes != null && attributes.getGroupId() != -1 ) ? attributes.getGroupId() : options.getGid() );
+            te.setUserName( ( attributes != null && attributes.getUserName() != null ) ? attributes.getUserName()
+                            : options.getUserName() );
+            te.setGroupName( ( attributes != null && attributes.getGroupName() != null ) ? attributes.getGroupName()
+                            : options.getGroup() );
+            te.setUserId( ( attributes != null && attributes.getUserId() != -1 ) ? attributes.getUserId()
+                            : options.getUid() );
+            te.setGroupId( ( attributes != null && attributes.getGroupId() != -1 ) ? attributes.getGroupId()
+                            : options.getGid() );
 
             tOut.putNextEntry( te );
 
@@ -602,5 +606,4 @@ public class TarArchiver
     {
         return "TAR";
     }
-
 }

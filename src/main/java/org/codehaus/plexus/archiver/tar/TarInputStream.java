@@ -203,11 +203,8 @@ public class TarInputStream
 
             if ( this.debug )
             {
-                System.err.println( "TarInputStream: SKIP currENTRY '"
-                                    + this.currEntry.getName() + "' SZ "
-                                    + this.entrySize + " OFF "
-                                    + this.entryOffset + "  skipping "
-                                    + numToSkip + " bytes" );
+                System.err.println( "TarInputStream: SKIP currENTRY '" + this.currEntry.getName() + "' SZ "
+                    + this.entrySize + " OFF " + this.entryOffset + "  skipping " + numToSkip + " bytes" );
             }
 
             if ( numToSkip > 0 )
@@ -247,10 +244,8 @@ public class TarInputStream
 
             if ( this.debug )
             {
-                System.err.println( "TarInputStream: SET CURRENTRY '"
-                                    + this.currEntry.getName()
-                                    + "' size = "
-                                    + this.currEntry.getSize() );
+                System.err.println( "TarInputStream: SET CURRENTRY '" + this.currEntry.getName() + "' size = "
+                    + this.currEntry.getSize() );
             }
 
             this.entryOffset = 0;
@@ -348,8 +343,7 @@ public class TarInputStream
 
         if ( this.readBuf != null )
         {
-            int sz = ( numToRead > this.readBuf.length ) ? this.readBuf.length
-                     : numToRead;
+            int sz = ( numToRead > this.readBuf.length ) ? this.readBuf.length : numToRead;
 
             System.arraycopy( this.readBuf, 0, buf, offset, sz );
 
@@ -379,8 +373,7 @@ public class TarInputStream
             if ( rec == null )
             {
                 // Unexpected EOF!
-                throw new IOException( "unexpected EOF with " + numToRead
-                                       + " bytes unread" );
+                throw new IOException( "unexpected EOF with " + numToRead + " bytes unread" );
             }
 
             int sz = numToRead;

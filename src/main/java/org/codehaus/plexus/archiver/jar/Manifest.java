@@ -185,9 +185,8 @@ public class Manifest
             Attribute rhsAttribute = (Attribute) rhs;
             String lhsKey = getKey();
             String rhsKey = rhsAttribute.getKey();
-            if ( ( lhsKey == null && rhsKey != null ) ||
-                 ( lhsKey != null && rhsKey == null ) ||
-                 !lhsKey.equals( rhsKey ) )
+            if ( ( lhsKey == null && rhsKey != null ) || ( lhsKey != null && rhsKey == null )
+                || !lhsKey.equals( rhsKey ) )
             {
                 return false;
             }
@@ -212,9 +211,8 @@ public class Manifest
             int index = line.indexOf( ": " );
             if ( index == -1 )
             {
-                throw new ManifestException( "Manifest line \"" + line
-                                             + "\" is not valid as it does not "
-                                             + "contain a name and a value separated by ': ' " );
+                throw new ManifestException( "Manifest line \"" + line + "\" is not valid as it does not "
+                    + "contain a name and a value separated by ': ' " );
             }
             name = line.substring( 0, index );
             setValue( line.substring( index + 2 ) );
@@ -521,12 +519,10 @@ public class Manifest
         public void merge( Section section )
             throws ManifestException
         {
-            if ( name == null && section.getName() != null
-                 || name != null
-                    && !( name.equalsIgnoreCase( section.getName() ) ) )
+            if ( name == null && section.getName() != null || name != null
+                && !( name.equalsIgnoreCase( section.getName() ) ) )
             {
-                throw new ManifestException( "Unable to merge sections "
-                                             + "with different names" );
+                throw new ManifestException( "Unable to merge sections with different names" );
             }
 
             Enumeration e = section.getAttributeKeys();
@@ -870,8 +866,7 @@ public class Manifest
             }
             try
             {
-                Manifest defaultManifest
-                    = new Manifest( new InputStreamReader( in, "UTF-8" ) );
+                Manifest defaultManifest = new Manifest( new InputStreamReader( in, "UTF-8" ) );
                 Attribute createdBy = new Attribute( "Created-By",
                                                      System.getProperty( "java.vm.version" ) + " ("
                                                      + System.getProperty( "java.vm.vendor" ) + ")" );
@@ -918,8 +913,7 @@ public class Manifest
         BufferedReader reader = new BufferedReader( r );
         // This should be the manifest version
         String nextSectionName = mainSection.read( reader );
-        String readManifestVersion
-            = mainSection.getAttributeValue( ATTRIBUTE_MANIFEST_VERSION );
+        String readManifestVersion = mainSection.getAttributeValue( ATTRIBUTE_MANIFEST_VERSION );
         if ( readManifestVersion != null )
         {
             manifestVersion = readManifestVersion;
@@ -940,10 +934,8 @@ public class Manifest
                 Attribute sectionName = new Attribute( line );
                 if ( !sectionName.getName().equalsIgnoreCase( ATTRIBUTE_NAME ) )
                 {
-                    throw new ManifestException( "Manifest sections should "
-                                                 + "start with a \"" + ATTRIBUTE_NAME
-                                                 + "\" attribute and not \""
-                                                 + sectionName.getName() + "\"" );
+                    throw new ManifestException( "Manifest sections should start with a \"" + ATTRIBUTE_NAME
+                        + "\" attribute and not \"" + sectionName.getName() + "\"" );
                 }
                 nextSectionName = sectionName.getValue();
             }
@@ -1052,8 +1044,7 @@ public class Manifest
             {
                 String sectionName = (String) e.nextElement();
                 Section ourSection = (Section) sections.get( sectionName );
-                Section otherSection
-                    = (Section) other.sections.get( sectionName );
+                Section otherSection = (Section) other.sections.get( sectionName );
                 if ( ourSection == null )
                 {
                     if ( otherSection != null )
@@ -1079,12 +1070,10 @@ public class Manifest
         throws IOException
     {
         writer.print( ATTRIBUTE_MANIFEST_VERSION + ": " + manifestVersion + EOL );
-        String signatureVersion
-            = mainSection.getAttributeValue( ATTRIBUTE_SIGNATURE_VERSION );
+        String signatureVersion = mainSection.getAttributeValue( ATTRIBUTE_SIGNATURE_VERSION );
         if ( signatureVersion != null )
         {
-            writer.print( ATTRIBUTE_SIGNATURE_VERSION + ": "
-                          + signatureVersion + EOL );
+            writer.print( ATTRIBUTE_SIGNATURE_VERSION + ": " + signatureVersion + EOL );
             mainSection.removeAttribute( ATTRIBUTE_SIGNATURE_VERSION );
         }
         mainSection.write( writer );
@@ -1094,8 +1083,7 @@ public class Manifest
         {
             try
             {
-                Attribute svAttr = new Attribute( ATTRIBUTE_SIGNATURE_VERSION,
-                                                  signatureVersion );
+                Attribute svAttr = new Attribute( ATTRIBUTE_SIGNATURE_VERSION, signatureVersion );
                 mainSection.addConfiguredAttribute( svAttr );
             }
             catch ( ManifestException e )

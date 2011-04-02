@@ -108,8 +108,7 @@ public class ExtraFieldUtils
             int length = ( new ZipShort( data, start + 2 ) ).getValue();
             if ( start + 4 + length > data.length )
             {
-                throw new ZipException( "data starting at " + start
-                                        + " is in unknown format" );
+                throw new ZipException( "data starting at " + start + " is in unknown format" );
             }
             try
             {
@@ -129,8 +128,7 @@ public class ExtraFieldUtils
         }
         if ( start != data.length )
         { // array not exhausted
-            throw new ZipException( "data starting at " + start
-                                    + " is in unknown format" );
+            throw new ZipException( "data starting at " + start + " is in unknown format" );
         }
 
         ZipExtraField[] result = new ZipExtraField[v.size()];
@@ -154,10 +152,8 @@ public class ExtraFieldUtils
         int start = 0;
         for ( int i = 0; i < data.length; i++ )
         {
-            System.arraycopy( data[ i ].getHeaderId().getBytes(),
-                              0, result, start, 2 );
-            System.arraycopy( data[ i ].getLocalFileDataLength().getBytes(),
-                              0, result, start + 2, 2 );
+            System.arraycopy( data[i].getHeaderId().getBytes(), 0, result, start, 2 );
+            System.arraycopy( data[i].getLocalFileDataLength().getBytes(), 0, result, start + 2, 2 );
             byte[] local = data[ i ].getLocalFileDataData();
             System.arraycopy( local, 0, result, start + 4, local.length );
             start += ( local.length + 4 );
@@ -181,10 +177,8 @@ public class ExtraFieldUtils
         int start = 0;
         for ( int i = 0; i < data.length; i++ )
         {
-            System.arraycopy( data[ i ].getHeaderId().getBytes(),
-                              0, result, start, 2 );
-            System.arraycopy( data[ i ].getCentralDirectoryLength().getBytes(),
-                              0, result, start + 2, 2 );
+            System.arraycopy( data[i].getHeaderId().getBytes(), 0, result, start, 2 );
+            System.arraycopy( data[i].getCentralDirectoryLength().getBytes(), 0, result, start + 2, 2 );
             byte[] local = data[ i ].getCentralDirectoryData();
             System.arraycopy( local, 0, result, start + 4, local.length );
             start += ( local.length + 4 );

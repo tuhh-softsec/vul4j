@@ -44,10 +44,12 @@ public interface ArchiveFile
      * Any element returned by the enumeration is an instance
      * of {@link Entry}.
      */
-    public Enumeration getEntries() throws IOException;
+    public Enumeration getEntries()
+        throws IOException;
 
     /**
      * Returns an {@link InputStream} with the given entries contents.
      */
-    InputStream getInputStream( Entry entry ) throws IOException;
+    InputStream getInputStream( Entry entry )
+        throws IOException;
 }

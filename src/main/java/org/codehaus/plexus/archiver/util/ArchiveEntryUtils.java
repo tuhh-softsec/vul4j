@@ -67,8 +67,7 @@ public final class ArchiveEntryUtils
         {
             final Commandline commandline = new Commandline();
 
-            commandline.setWorkingDirectory( file.getParentFile()
-                                                 .getAbsolutePath() );
+            commandline.setWorkingDirectory( file.getParentFile().getAbsolutePath() );
 
             if ( logger.isDebugEnabled() )
             {

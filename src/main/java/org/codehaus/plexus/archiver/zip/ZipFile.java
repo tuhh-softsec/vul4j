@@ -61,7 +61,8 @@ import org.codehaus.plexus.archiver.ArchiveFile;
  * @version $Revision$ $Date$
  *          from org.apache.ant.tools.zip.ZipFile v1.13
  */
-public class ZipFile implements ArchiveFile
+public class ZipFile
+    implements ArchiveFile
 {
 
     /**
@@ -215,8 +216,7 @@ public class ZipFile implements ArchiveFile
         {
             return null;
         }
-        BoundedInputStream bis =
-            new BoundedInputStream( start.longValue(), ze.getCompressedSize() );
+        BoundedInputStream bis = new BoundedInputStream( start.longValue(), ze.getCompressedSize() );
         switch ( ze.getMethod() )
         {
             case ZipEntry.STORED:
@@ -233,8 +233,7 @@ public class ZipFile implements ArchiveFile
                     }
                 };
             default:
-                throw new ZipException( "Found unsupported compression method "
-                                        + ze.getMethod() );
+                throw new ZipException( "Found unsupported compression method " + ze.getMethod() );
         }
     }
 

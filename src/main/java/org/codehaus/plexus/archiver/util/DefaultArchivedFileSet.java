@@ -9,7 +9,9 @@ import org.codehaus.plexus.archiver.ArchivedFileSet;
  * Default implementation of {@link ArchivedFileSet}.
  * @since 1.0-alpha-9
  */
-public class DefaultArchivedFileSet extends AbstractFileSet implements ArchivedFileSet
+public class DefaultArchivedFileSet
+    extends AbstractFileSet
+    implements ArchivedFileSet
 {
     private File archive;
 

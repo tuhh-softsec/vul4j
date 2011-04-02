@@ -17,12 +17,7 @@ package org.codehaus.plexus.archiver.tar;
  *  limitations under the License.
  */
 
-import org.codehaus.plexus.archiver.ArchiverException;
-import org.codehaus.plexus.archiver.bzip2.BZip2UnArchiver;
-import org.codehaus.plexus.archiver.tar.TarUnArchiver.UntarCompressionMethod;
-
 import java.io.File;
-import java.io.IOException;
 
 /**
  * Extract files in tar with bzip2 compression

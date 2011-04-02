@@ -152,13 +152,10 @@ public class AsiExtraField
         System.arraycopy( ( new ZipShort( getMode() ) ).getBytes(), 0, data, 0, 2 );
 
         byte[] linkArray = getLinkedFile().getBytes();
-        System.arraycopy( ( new ZipLong( linkArray.length ) ).getBytes(),
-                          0, data, 2, 4 );
+        System.arraycopy( ( new ZipLong( linkArray.length ) ).getBytes(), 0, data, 2, 4 );
 
-        System.arraycopy( ( new ZipShort( getUserId() ) ).getBytes(),
-                          0, data, 6, 2 );
-        System.arraycopy( ( new ZipShort( getGroupId() ) ).getBytes(),
-                          0, data, 8, 2 );
+        System.arraycopy( ( new ZipShort( getUserId() ) ).getBytes(), 0, data, 6, 2 );
+        System.arraycopy( ( new ZipShort( getGroupId() ) ).getBytes(), 0, data, 8, 2 );
 
         System.arraycopy( linkArray, 0, data, 10, linkArray.length );
 
@@ -315,10 +312,8 @@ public class AsiExtraField
         long realChecksum = crc.getValue();
         if ( givenChecksum != realChecksum )
         {
-            throw new ZipException( "bad CRC checksum "
-                                    + Long.toHexString( givenChecksum )
-                                    + " instead of "
-                                    + Long.toHexString( realChecksum ) );
+            throw new ZipException( "bad CRC checksum " + Long.toHexString( givenChecksum ) + " instead of "
+                + Long.toHexString( realChecksum ) );
         }
 
         int newMode = ( new ZipShort( tmp, 0 ) ).getValue();

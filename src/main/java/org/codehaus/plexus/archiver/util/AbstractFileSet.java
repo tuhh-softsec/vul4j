@@ -8,7 +8,8 @@ import org.codehaus.plexus.components.io.fileselectors.FileSelector;
  * Default implementation of {@link BaseFileSet}.
  * @since 1.0-alpha-9
  */
-public abstract class AbstractFileSet implements BaseFileSet
+public abstract class AbstractFileSet
+    implements BaseFileSet
 {
     private String prefix;
 

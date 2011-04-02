@@ -91,7 +91,7 @@ public class ArchiveEntry
     {
         if ( resource instanceof PlexusIoFileResource )
         {
-            return ((PlexusIoFileResource) resource).getFile();
+            return ( (PlexusIoFileResource) resource ).getFile();
         }
         return null;
     }
@@ -99,7 +99,8 @@ public class ArchiveEntry
     /**
      * @return The resource contents.
      */
-    public InputStream getInputStream() throws IOException
+    public InputStream getInputStream()
+        throws IOException
     {
         return resource.getContents();
     }
@@ -129,8 +130,8 @@ public class ArchiveEntry
             return attributes.getOctalMode();
         }
         
-        return ( ( type == FILE ? Archiver.DEFAULT_FILE_MODE : Archiver.DEFAULT_DIR_MODE ) & UnixStat.PERM_MASK ) |
-                ( type == FILE ? UnixStat.FILE_FLAG : UnixStat.DIR_FLAG );
+        return ( ( type == FILE ? Archiver.DEFAULT_FILE_MODE : Archiver.DEFAULT_DIR_MODE ) & UnixStat.PERM_MASK )
+            | ( type == FILE ? UnixStat.FILE_FLAG : UnixStat.DIR_FLAG );
     }
 
     public static ArchiveEntry createFileEntry( String target, PlexusIoResource resource, int permissions )
@@ -146,7 +147,7 @@ public class ArchiveEntry
     public static ArchiveEntry createFileEntry( String target, File file, int permissions )
         throws ArchiverException
     {
-        if ( ! file.isFile() )
+        if ( !file.isFile() )
         {
             throw new ArchiverException( "Not a file: " + file );
         }
@@ -168,7 +169,7 @@ public class ArchiveEntry
     public static ArchiveEntry createDirectoryEntry( String target, PlexusIoResource resource, int permissions )
         throws ArchiverException
     {
-        if ( ! resource.isDirectory() )
+        if ( !resource.isDirectory() )
         {
             throw new ArchiverException( "Not a directory: " + resource.getName() );
         }
@@ -178,7 +179,7 @@ public class ArchiveEntry
     public static ArchiveEntry createDirectoryEntry( String target, final File file, int permissions )
         throws ArchiverException
     {
-        if ( ! file.isDirectory() )
+        if ( !file.isDirectory() )
         {
             throw new ArchiverException( "Not a directory: " + file );
         }

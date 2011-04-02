@@ -63,7 +63,8 @@ public class FilePermissionUtils
             modes.add( String.valueOf( mode.charAt( i ) ) );
         }
 
-        boolean executable = false, ownerOnlyExecutable = true, ownerOnlyReadable = true, readable = false, ownerOnlyWritable = true, writable = false;
+        boolean executable = false, ownerOnlyExecutable = true, ownerOnlyReadable = true, readable = false,
+            ownerOnlyWritable = true, writable = false;
 
         // handle user perm
         try

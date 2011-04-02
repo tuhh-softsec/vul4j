@@ -376,7 +376,7 @@ public class TarEntry
      * Descendancy is determined by the name of the descendant
      * starting with this entry's name.
      *
-     * @param desc Entry to be checked as a descendent of this.
+     * @param desc Entry to be checked as a descendant of this.
      * @return True if entry is a descendant of this.
      */
     public boolean isDescendent( TarEntry desc )
@@ -617,8 +617,7 @@ public class TarEntry
      */
     public boolean isGNULongNameEntry()
     {
-        return linkFlag == LF_GNUTYPE_LONGNAME
-               && name.toString().equals( GNU_LONGLINK );
+        return linkFlag == LF_GNUTYPE_LONGNAME && name.toString().equals( GNU_LONGLINK );
     }
 
     /**
@@ -649,7 +648,7 @@ public class TarEntry
             return new TarEntry[0];
         }
 
-        String[]   list = this.file.list();
+        String[] list = this.file.list();
         TarEntry[] result = new TarEntry[list.length];
 
         for ( int i = 0; i < list.length; ++i )

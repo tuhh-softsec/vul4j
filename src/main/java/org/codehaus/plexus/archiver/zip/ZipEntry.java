@@ -498,15 +498,11 @@ public class ZipEntry
         catch ( InvocationTargetException ite )
         {
             Throwable nested = ite.getTargetException();
-            throw new RuntimeException( "Exception setting the compressed size "
-                                        + "of " + ze + ": "
-                                        + nested.getMessage() );
+            throw new RuntimeException( "Exception setting the compressed size of " + ze + ": " + nested.getMessage() );
         }
         catch ( Throwable other )
         {
-            throw new RuntimeException( "Exception setting the compressed size "
-                                        + "of " + ze + ": "
-                                        + other.getMessage() );
+            throw new RuntimeException( "Exception setting the compressed size of " + ze + ": " + other.getMessage() );
         }
     }
 
@@ -525,8 +521,7 @@ public class ZipEntry
                 try
                 {
                     setCompressedSizeMethod =
-                        java.util.zip.ZipEntry.class.getMethod( "setCompressedSize",
-                                                                new Class[]{Long.TYPE} );
+                        java.util.zip.ZipEntry.class.getMethod( "setCompressedSize", new Class[] { Long.TYPE } );
                 }
                 catch ( NoSuchMethodException nse )
                 {

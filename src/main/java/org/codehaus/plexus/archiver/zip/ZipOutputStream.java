@@ -17,8 +17,6 @@ package org.codehaus.plexus.archiver.zip;
  *
  */
 
-import org.codehaus.plexus.util.IOUtil;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilterOutputStream;
@@ -363,20 +361,14 @@ public class ZipOutputStream
         {
             if ( entry.getCrc() != realCrc )
             {
-                throw new ZipException( "bad CRC checksum for entry "
-                                        + entry.getName() + ": "
-                                        + Long.toHexString( entry.getCrc() )
-                                        + " instead of "
-                                        + Long.toHexString( realCrc ) );
+                throw new ZipException( "bad CRC checksum for entry " + entry.getName() + ": "
+                    + Long.toHexString( entry.getCrc() ) + " instead of " + Long.toHexString( realCrc ) );
             }
 
             if ( entry.getSize() != written - dataStart )
             {
-                throw new ZipException( "bad size for entry "
-                                        + entry.getName() + ": "
-                                        + entry.getSize()
-                                        + " instead of "
-                                        + ( written - dataStart ) );
+                throw new ZipException( "bad size for entry " + entry.getName() + ": " + entry.getSize()
+                    + " instead of " + ( written - dataStart ) );
             }
         }
         else
@@ -433,14 +425,12 @@ public class ZipOutputStream
         {
             if ( entry.getSize() == -1 )
             {
-                throw new ZipException( "uncompressed size is required for"
-                                        + " STORED method when not writing to a"
-                                        + " file" );
+                throw new ZipException( "uncompressed size is required for STORED method when not writing to a"
+                    + " file" );
             }
             if ( entry.getCrc() == -1 )
             {
-                throw new ZipException( "crc checksum is required for STORED"
-                                        + " method when not writing to a file" );
+                throw new ZipException( "crc checksum is required for STORED method when not writing to a file" );
             }
             entry.setComprSize( entry.getSize() );
         }

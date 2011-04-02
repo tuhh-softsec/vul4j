@@ -59,7 +59,8 @@ public class TarFile
             close();
         }
         open();
-        return new Enumeration() {
+        return new Enumeration()
+        {
             boolean currentEntryValid;
 
             public boolean hasMoreElements()
@@ -119,7 +120,8 @@ public class TarFile
         {
             return new FilterInputStream( inputStream )
             {
-                public void close() throws IOException
+                public void close()
+                    throws IOException
                 {
                     // Does nothing.
                 }

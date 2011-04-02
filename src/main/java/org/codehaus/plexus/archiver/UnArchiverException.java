@@ -6,13 +6,12 @@ package org.codehaus.plexus.archiver;
 public class UnArchiverException
     extends Exception
 {
-public UnArchiverException( String string )
+    public UnArchiverException( String string )
     {
         super( string );
     }
 
-    public UnArchiverException( String string,
-                                Throwable throwable )
+    public UnArchiverException( String string, Throwable throwable )
     {
         super( string, throwable );
     }

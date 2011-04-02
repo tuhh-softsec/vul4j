@@ -24,7 +24,7 @@ public class ResourceUtils
     }
 
     /**
-     * Queries, whether the given source is uptodate relative to
+     * Queries, whether the given source is up-to-date relative to
      * the given destination.
      */
     public static boolean isUptodate( PlexusIoResource source, File destination )
@@ -33,7 +33,7 @@ public class ResourceUtils
     }
 
     /**
-     * Queries, whether the given source is uptodate relative to
+     * Queries, whether the given source is up-to-date relative to
      * the given modification date.
      */
     public static boolean isUptodate( PlexusIoResource source, long destinationDate )
@@ -53,7 +53,7 @@ public class ResourceUtils
     }
 
     /**
-     * Queries, whether the given source is uptodate relative to
+     * Queries, whether the given source is up-to-date relative to
      * the given modification date.
      */
     public static boolean isUptodate( long sourceDate, long destinationDate )

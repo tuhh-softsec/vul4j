@@ -189,10 +189,9 @@ public class JarArchiver
     }
 
     /**
-     * The manifest file to use. This can be either the location of a manifest,
-     * or the name of a jar added through a fileset. If its the name of an added
-     * jar, the task expects the manifest to be in the jar at META-INF/MANIFEST.MF.
-     *
+     * The manifest file to use. This can be either the location of a manifest, or the name of a jar added through a
+     * fileset. If its the name of an added jar, the task expects the manifest to be in the jar at META-INF/MANIFEST.MF.
+     * 
      * @param manifestFile the manifest file to use.
      */
     public void setManifest( File manifestFile )
@@ -200,8 +199,7 @@ public class JarArchiver
     {
         if ( !manifestFile.exists() )
         {
-            throw new ArchiverException( "Manifest file: " + manifestFile
-                                         + " does not exist." );
+            throw new ArchiverException( "Manifest file: " + manifestFile + " does not exist." );
         }
 
         this.manifestFile = manifestFile;
@@ -227,14 +225,12 @@ public class JarArchiver
         }
         catch ( UnsupportedEncodingException e )
         {
-            throw new ArchiverException( "Unsupported encoding while reading manifest: "
-                                         + e.getMessage(), e );
+            throw new ArchiverException( "Unsupported encoding while reading manifest: " + e.getMessage(), e );
         }
         catch ( IOException e )
         {
-            throw new ArchiverException( "Unable to read manifest file: "
-                                         + manifestFile
-                                         + " (" + e.getMessage() + ")", e );
+            throw new ArchiverException( "Unable to read manifest file: " + manifestFile + " (" + e.getMessage() + ")",
+                                         e );
         }
         finally
         {
@@ -252,13 +248,11 @@ public class JarArchiver
         catch ( ManifestException e )
         {
             getLogger().error( "Manifest is invalid: " + e.getMessage() );
-            throw new ArchiverException( "Invalid Manifest: " + manifestFile,
-                                         e );
+            throw new ArchiverException( "Invalid Manifest: " + manifestFile, e );
         }
         catch ( IOException e )
         {
-            throw new ArchiverException( "Unable to read manifest file"
-                                         + " (" + e.getMessage() + ")", e );
+            throw new ArchiverException( "Unable to read manifest file" + " (" + e.getMessage() + ")", e );
         }
     }
 
@@ -280,8 +274,7 @@ public class JarArchiver
         filesetManifestConfig = config;
         mergeManifestsMain = "merge".equals( config.getValue() );
 
-        if ( ( filesetManifestConfig != null )
-             && !filesetManifestConfig.getValue().equals( "skip" ) )
+        if ( ( filesetManifestConfig != null ) && !filesetManifestConfig.getValue().equals( "skip" ) )
         {
 
             doubleFilePass = true;
@@ -315,7 +308,6 @@ public class JarArchiver
     protected void initZipOutputStream( ZipOutputStream zOut )
         throws IOException, ArchiverException
     {
-
         if ( !skipWriting )
         {
             Manifest jarManifest = createManifest();
@@ -328,7 +320,8 @@ public class JarArchiver
         getLogger().debug( "\n\n\nChecking for jar manifest virtual files...\n\n\n" );
         System.out.flush();
 
-        return ( configuredManifest != null ) || ( manifest != null ) || ( manifestFile != null ) || super.hasVirtualFiles();
+        return ( configuredManifest != null ) || ( manifest != null ) || ( manifestFile != null )
+            || super.hasVirtualFiles();
     }
 
     private Manifest createManifest()
@@ -362,7 +355,6 @@ public class JarArchiver
             finalManifest.merge( manifest, !mergeManifestsMain );
 
             return finalManifest;
-
         }
         catch ( ManifestException e )
         {
@@ -388,16 +380,13 @@ public class JarArchiver
         writer.flush();
 
         ByteArrayInputStream bais = new ByteArrayInputStream( baos.toByteArray() );
-        super.zipFile( bais, zOut, MANIFEST_NAME,
-                       System.currentTimeMillis(), null,
-                       DEFAULT_FILE_MODE );
+        super.zipFile( bais, zOut, MANIFEST_NAME, System.currentTimeMillis(), null, DEFAULT_FILE_MODE );
         super.initZipOutputStream( zOut );
     }
 
     protected void finalizeZipOutputStream( ZipOutputStream zOut )
         throws IOException, ArchiverException
     {
-
         if ( index )
         {
             createIndexList( zOut );
@@ -419,8 +408,7 @@ public class JarArchiver
     {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         // encoding must be UTF8 as specified in the specs.
-        PrintWriter writer = new PrintWriter( new OutputStreamWriter( baos,
-                                                                      "UTF8" ) );
+        PrintWriter writer = new PrintWriter( new OutputStreamWriter( baos, "UTF8" ) );
 
         // version-info blankline
         writer.println( "JarIndex-Version: 1.0" );
@@ -459,8 +447,7 @@ public class JarArchiver
         if ( indexJars != null )
         {
             Manifest mf = createManifest();
-            Manifest.Attribute classpath =
-                mf.getMainSection().getAttribute( Manifest.ATTRIBUTE_CLASSPATH );
+            Manifest.Attribute classpath = mf.getMainSection().getAttribute( Manifest.ATTRIBUTE_CLASSPATH );
             String[] cpEntries = null;
             if ( classpath != null )
             {
@@ -493,17 +480,17 @@ public class JarArchiver
         }
 
         writer.flush();
-        ByteArrayInputStream bais =
-            new ByteArrayInputStream( baos.toByteArray() );
-        super.zipFile( bais, zOut, INDEX_NAME, System.currentTimeMillis(), null,
-                       DEFAULT_FILE_MODE );
+
+        ByteArrayInputStream bais = new ByteArrayInputStream( baos.toByteArray() );
+
+        super.zipFile( bais, zOut, INDEX_NAME, System.currentTimeMillis(), null, DEFAULT_FILE_MODE );
     }
 
     /**
      * Overridden from Zip class to deal with manifests and index lists.
      */
-    protected void zipFile( InputStream is, ZipOutputStream zOut, String vPath,
-                            long lastModified, File fromArchive, int mode )
+    protected void zipFile( InputStream is, ZipOutputStream zOut, String vPath, long lastModified, File fromArchive,
+                            int mode )
         throws IOException, ArchiverException
     {
         if ( MANIFEST_NAME.equalsIgnoreCase( vPath ) )
@@ -515,9 +502,8 @@ public class JarArchiver
         }
         else if ( INDEX_NAME.equalsIgnoreCase( vPath ) && index )
         {
-            getLogger().warn( "Warning: selected " + archiveType
-                              + " files include a META-INF/INDEX.LIST which will"
-                              + " be replaced by a newly generated one." );
+            getLogger().warn( "Warning: selected " + archiveType + " files include a META-INF/INDEX.LIST which will"
+                                  + " be replaced by a newly generated one." );
         }
         else
         {
@@ -601,13 +587,11 @@ public class JarArchiver
             }
             catch ( UnsupportedEncodingException e )
             {
-                throw new ArchiverException( "Unsupported encoding while reading "
-                                             + "manifest: " + e.getMessage(), e );
+                throw new ArchiverException( "Unsupported encoding while reading manifest: " + e.getMessage(), e );
             }
             catch ( ManifestException e )
             {
-                getLogger().error( "Manifest in file " + file + " is invalid: "
-                                   + e.getMessage() );
+                getLogger().error( "Manifest in file " + file + " is invalid: " + e.getMessage() );
                 throw new ArchiverException( "Invalid Manifest", e );
             }
         }
@@ -701,8 +685,7 @@ public class JarArchiver
         ZipOutputStream zOut = null;
         try
         {
-            getLogger().debug( "Building MANIFEST-only jar: "
-                               + getDestFile().getAbsolutePath() );
+            getLogger().debug( "Building MANIFEST-only jar: " + getDestFile().getAbsolutePath() );
             zOut = new ZipOutputStream( new FileOutputStream( getDestFile() ) );
 
             zOut.setEncoding( getEncoding() );
@@ -719,8 +702,7 @@ public class JarArchiver
         }
         catch ( IOException ioe )
         {
-            throw new ArchiverException( "Could not create almost empty JAR archive"
-                                         + " (" + ioe.getMessage() + ")", ioe );
+            throw new ArchiverException( "Could not create almost empty JAR archive (" + ioe.getMessage() + ")", ioe );
         }
         finally
         {
@@ -780,8 +762,7 @@ public class JarArchiver
      * Writes the directory entries from the first and the filenames
      * from the second list to the given writer, one entry per line.
      */
-    protected final void writeIndexLikeList( List dirs, List files,
-                                             PrintWriter writer )
+    protected final void writeIndexLikeList( List dirs, List files, PrintWriter writer )
     {
         // JarIndex is sorting the directories by ascending order.
         // it has no value but cosmetic since it will be read into a
@@ -835,12 +816,11 @@ public class JarArchiver
      * <p>if there is a classpath and the given file doesn't match any
      * of its entries, return null.</p>
      */
-    protected static final String findJarName( String fileName,
-                                               String[] classpath )
+    protected static final String findJarName( String fileName, String[] classpath )
     {
         if ( classpath == null )
         {
-            return ( new File( fileName ) ).getName();
+            return new File( fileName ).getName();
         }
         fileName = fileName.replace( File.separatorChar, '/' );
         SortedMap matches = new TreeMap( new Comparator()
@@ -880,16 +860,14 @@ public class JarArchiver
             }
         }
 
-        return matches.size() == 0
-               ? null : (String) matches.get( matches.firstKey() );
+        return matches.size() == 0 ? null : (String) matches.get( matches.firstKey() );
     }
 
     /**
      * Grab lists of all root-level files and all directories
      * contained in the given archive.
      */
-    protected static final void grabFilesAndDirs( String file, List dirs,
-                                                  List files )
+    protected static final void grabFilesAndDirs( String file, List dirs, List files )
         throws IOException
     {
         ZipFile zf = null;
@@ -920,8 +898,7 @@ public class JarArchiver
                         // since the jar may be one without directory
                         // entries, add the parent dir of this file as
                         // well.
-                        dirSet.add( name.substring( 0,
-                                                    name.lastIndexOf( "/" ) + 1 ) );
+                        dirSet.add( name.substring( 0, name.lastIndexOf( "/" ) + 1 ) );
                     }
                 }
             }

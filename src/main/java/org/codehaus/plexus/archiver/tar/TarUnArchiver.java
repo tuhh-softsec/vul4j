@@ -190,20 +190,17 @@ public class TarUnArchiver
             {
                 return new GZIPInputStream( istream );
             }
-            else
+            else if ( BZIP2.equals( value ) )
             {
-                if ( BZIP2.equals( value ) )
+                final char[] magic = new char[]{'B', 'Z'};
+                for ( int i = 0; i < magic.length; i++ )
                 {
-                    final char[] magic = new char[]{'B', 'Z'};
-                    for ( int i = 0; i < magic.length; i++ )
+                    if ( istream.read() != magic[ i ] )
                     {
-                        if ( istream.read() != magic[ i ] )
-                        {
-                            throw new ArchiverException( "Invalid bz2 file." + file.toString() );
-                        }
+                        throw new ArchiverException( "Invalid bz2 file." + file.toString() );
                     }
-                    return new CBZip2InputStream( istream );
                 }
+                return new CBZip2InputStream( istream );
             }
             return istream;
         }

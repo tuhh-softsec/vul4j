@@ -55,9 +55,7 @@ public class EarArchiver
         deploymentDescriptor = descr;
         if ( !deploymentDescriptor.exists() )
         {
-            throw new ArchiverException( "Deployment descriptor: "
-                                         + deploymentDescriptor
-                                         + " does not exist." );
+            throw new ArchiverException( "Deployment descriptor: " + deploymentDescriptor + " does not exist." );
         }
 
         addFile( descr, "META-INF/application.xml" );
@@ -111,9 +109,8 @@ public class EarArchiver
                  || descriptorAdded )
             {
                 getLogger().warn( "Warning: selected " + archiveType
-                                  + " files include a META-INF/application.xml which will"
-                                  + " be ignored (please use appxml attribute to "
-                                  + archiveType + " task)" );
+                                      + " files include a META-INF/application.xml which will be ignored "
+                                      + "(please use appxml attribute to " + archiveType + " task)" );
             }
             else
             {

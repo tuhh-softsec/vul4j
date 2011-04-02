@@ -16,8 +16,8 @@ public class PlexusIoZipFileResourceCollection
      */
     public static final String ROLE_HINT = "zip";
 
-
-    protected Iterator getEntries() throws IOException
+    protected Iterator getEntries()
+        throws IOException
     {
         final File f = getFile();
         if ( f == null )
@@ -37,7 +37,7 @@ public class PlexusIoZipFileResourceCollection
             {
                 final ZipEntry entry = (ZipEntry) en.nextElement();
                 final ZipResource res = new ZipResource( zipFile, entry );
-                
+
                 return res;
             }
 

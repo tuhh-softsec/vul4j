@@ -13,22 +13,21 @@ import org.codehaus.plexus.util.SelectorUtils;
 public class JarSecurityFileFilter
     implements ArchiveFileFilter
 {
-    
     public static final String[] SECURITY_FILE_PATTERNS = JarSecurityFileSelector.SECURITY_FILE_PATTERNS;
-    
+
     public boolean include( InputStream dataStream, String entryName )
         throws ArchiveFilterException
     {
         for ( int i = 0; i < SECURITY_FILE_PATTERNS.length; i++ )
         {
             String pattern = SECURITY_FILE_PATTERNS[i];
-            
+
             if ( SelectorUtils.match( pattern, entryName ) )
             {
                 return false;
             }
         }
-        
+
         return true;
     }
 }

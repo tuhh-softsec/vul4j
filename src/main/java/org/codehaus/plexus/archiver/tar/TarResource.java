@@ -24,12 +24,12 @@ public class TarResource
         this.tarFile = tarFile;
         this.entry = entry;
         final boolean dir = entry.isDirectory();
-        
+
         setName( entry.getName() );
         setDirectory( dir );
         setExisting( true );
         setFile( !dir );
-        
+
         long l = entry.getLastModificationTime();
         setLastModified( l == -1 ? PlexusIoResource.UNKNOWN_MODIFICATION_DATE : l );
         setSize( dir ? PlexusIoResource.UNKNOWN_RESOURCE_SIZE : entry.getSize() );
@@ -46,7 +46,7 @@ public class TarResource
             attributes.setGroupName( entry.getGroupName() );
             attributes.setOctalMode( entry.getMode() );
         }
-        
+
         return attributes;
     }
 
@@ -66,5 +66,4 @@ public class TarResource
     {
         return tarFile.getInputStream( entry );
     }
-
 }

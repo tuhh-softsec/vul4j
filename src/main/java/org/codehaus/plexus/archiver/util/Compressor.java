@@ -88,7 +88,7 @@ public abstract class Compressor
         final PlexusIoResource res = getSource();
         if ( res instanceof PlexusIoFileResource )
         {
-            return ((PlexusIoFileResource) res).getFile();
+            return ( (PlexusIoFileResource) res ).getFile();
         }
         return null;
     }
@@ -108,8 +108,7 @@ public abstract class Compressor
 
         if ( destFile.isDirectory() )
         {
-            throw new ArchiverException( "Destination file attribute must not "
-                                         + "represent a directory!" );
+            throw new ArchiverException( "Destination file attribute must not represent a directory!" );
         }
 
         if ( source == null )
@@ -119,8 +118,7 @@ public abstract class Compressor
 
         if ( source.isDirectory() )
         {
-            throw new ArchiverException( "Source file attribute must not "
-                                         + "represent a directory!" );
+            throw new ArchiverException( "Source file attribute must not represent a directory!" );
         }
     }
 
@@ -144,9 +142,8 @@ public abstract class Compressor
             else
             {
                 final long l = source.getLastModified();
-                if ( l == PlexusIoResource.UNKNOWN_MODIFICATION_DATE
-                                ||  destFile.lastModified() == 0
-                                ||  destFile.lastModified() < l )
+                if ( l == PlexusIoResource.UNKNOWN_MODIFICATION_DATE || destFile.lastModified() == 0
+                    || destFile.lastModified() < l )
                 {
                     compress();
                 }

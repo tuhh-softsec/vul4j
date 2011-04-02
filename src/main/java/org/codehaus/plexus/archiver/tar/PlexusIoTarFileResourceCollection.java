@@ -8,7 +8,8 @@ import java.util.Iterator;
 import org.codehaus.plexus.components.io.resources.AbstractPlexusIoArchiveResourceCollection;
 
 
-public class PlexusIoTarFileResourceCollection extends AbstractPlexusIoArchiveResourceCollection
+public class PlexusIoTarFileResourceCollection
+    extends AbstractPlexusIoArchiveResourceCollection
 {
     /**
      * The zip file resource collections role hint.
@@ -21,7 +22,7 @@ public class PlexusIoTarFileResourceCollection extends AbstractPlexusIoArchiveRe
     }
 
     protected Iterator getEntries()
-            throws IOException
+        throws IOException
     {
         final File f = getFile();
         if ( f == null )

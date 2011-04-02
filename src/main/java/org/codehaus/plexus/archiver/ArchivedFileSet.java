@@ -8,7 +8,8 @@ import java.io.File;
  * an archive.
  * @since 1.0-alpha-9
  */
-public interface ArchivedFileSet extends BaseFileSet
+public interface ArchivedFileSet
+    extends BaseFileSet
 {
     /**
      * Returns the archive file.

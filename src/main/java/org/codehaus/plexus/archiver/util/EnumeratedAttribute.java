@@ -119,7 +119,6 @@ public abstract class EnumeratedAttribute
         return index;
     }
 
-
     /**
      * Convert the value to its string form.
      *

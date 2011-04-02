@@ -172,8 +172,7 @@ public class TarOutputStream
             {
                 // create a TarEntry for the LongLink, the contents
                 // of which are the entry's name
-                TarEntry longLinkEntry = new TarEntry( TarConstants.GNU_LONGLINK,
-                                                       TarConstants.LF_GNUTYPE_LONGNAME );
+                TarEntry longLinkEntry = new TarEntry( TarConstants.GNU_LONGLINK, TarConstants.LF_GNUTYPE_LONGNAME );
 
                 longLinkEntry.setSize( entry.getName().length() + 1 );
                 putNextEntry( longLinkEntry );
@@ -183,9 +182,8 @@ public class TarOutputStream
             }
             else if ( longFileMode != LONGFILE_TRUNCATE )
             {
-                throw new RuntimeException( "file name '" + entry.getName()
-                                            + "' is too long ( > "
-                                            + TarConstants.NAMELEN + " bytes)" );
+                throw new RuntimeException( "file name '" + entry.getName() + "' is too long ( > "
+                    + TarConstants.NAMELEN + " bytes)" );
             }
         }
 
@@ -231,9 +229,8 @@ public class TarOutputStream
 
         if ( this.currBytes < this.currSize )
         {
-            throw new IOException( "entry closed at '" + this.currBytes
-                                   + "' before the '" + this.currSize
-                                   + "' bytes specified in the header were written" );
+            throw new IOException( "entry closed at '" + this.currBytes + "' before the '" + this.currSize
+                + "' bytes specified in the header were written" );
         }
     }
 
@@ -283,9 +280,8 @@ public class TarOutputStream
     {
         if ( ( this.currBytes + numToWrite ) > this.currSize )
         {
-            throw new IOException( "request to write '" + numToWrite
-                                   + "' bytes exceeds size in header of '"
-                                   + this.currSize + "' bytes" );
+            throw new IOException( "request to write '" + numToWrite + "' bytes exceeds size in header of '"
+                + this.currSize + "' bytes" );
 
             //
             // We have to deal with assembly!!!
@@ -333,8 +329,7 @@ public class TarOutputStream
         {
             if ( numToWrite < this.recordBuf.length )
             {
-                System.arraycopy( wBuf, wOffset, this.assemBuf, this.assemLen,
-                                  numToWrite );
+                System.arraycopy( wBuf, wOffset, this.assemBuf, this.assemLen, numToWrite );
 
                 this.assemLen += numToWrite;
 
@@ -366,5 +361,3 @@ public class TarOutputStream
         this.buffer.writeRecord( this.recordBuf );
     }
 }
-
-
