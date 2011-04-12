@@ -38,7 +38,7 @@ public class X509CertificateResolver extends KeyResolverSpi {
 
     /** {@link org.apache.commons.logging} logging facility */
     private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(X509CertificateResolver.class.getName());
+        org.apache.commons.logging.LogFactory.getLog(X509CertificateResolver.class);
 
     /**
      * Method engineResolvePublicKey
@@ -98,8 +98,9 @@ public class X509CertificateResolver extends KeyResolverSpi {
             }
             return null;
         } catch (XMLSecurityException ex) {
-            log.debug("XMLSecurityException", ex);
-
+            if (log.isDebugEnabled()) {
+                log.debug("XMLSecurityException", ex);
+            }
             throw new KeyResolverException("generic.EmptyMessage", ex);
         }
     }

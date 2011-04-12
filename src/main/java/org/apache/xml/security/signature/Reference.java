@@ -119,7 +119,7 @@ public class Reference extends SignatureElementProxy {
 
     /** {@link org.apache.commons.logging} logging facility */
     private static final org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(Reference.class.getName());
+        org.apache.commons.logging.LogFactory.getLog(Reference.class);
 
     private Manifest manifest = null;
     private XMLSignatureInput transformsOutput;

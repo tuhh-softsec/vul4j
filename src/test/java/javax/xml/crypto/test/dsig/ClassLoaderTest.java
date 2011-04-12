@@ -33,9 +33,12 @@ import org.jcp.xml.dsig.internal.dom.XMLDSigRI;
  * loading issues with more than one classloader (see 6380953).
  */
 public class ClassLoaderTest extends org.junit.Assert {
+    
+    private static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(ClassLoaderTest.class);
 
     @org.junit.Test
-    public void test_multiple_loaders() throws Exception {
+    public void testMultipleLoaders() throws Exception {
 
         String baseDir = System.getProperty("basedir");
         String fs = System.getProperty("file.separator");
@@ -61,7 +64,7 @@ public class ClassLoaderTest extends org.junit.Assert {
 
     @org.junit.Test
     @SuppressWarnings("unchecked")
-    public void test_provider_multiple_loaders() throws Exception {
+    public void testProviderMultipleLoaders() throws Exception {
         String baseDir = System.getProperty("basedir");
         String fs = System.getProperty("file.separator");
         File file0 = new File(baseDir + fs + "build" + fs + "classes" + fs);
@@ -100,12 +103,13 @@ public class ClassLoaderTest extends org.junit.Assert {
         }
         long end = System.currentTimeMillis();
         long elapsed = end-start;
-        System.out.println("Elapsed:"+elapsed);
-        // System.out.println("dsig succeeded");
+        if (log.isDebugEnabled()) {
+            log.debug("Elapsed: " + elapsed);
+        }
     }
 
     @org.junit.Test
-    public void test_provider_multiple_loaders_two() throws Exception {
+    public void testProviderMultipleLoadersTwo() throws Exception {
 
         String baseDir = System.getProperty("basedir");
         String fs = System.getProperty("file.separator");

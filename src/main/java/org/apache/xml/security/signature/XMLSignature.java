@@ -142,7 +142,7 @@ public final class XMLSignature extends SignatureElementProxy {
 
     /** {@link org.apache.commons.logging} logging facility */
     private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(XMLSignature.class.getName());
+        org.apache.commons.logging.LogFactory.getLog(XMLSignature.class);
     
     /** ds:Signature.ds:SignedInfo element */
     private SignedInfo signedInfo = null;

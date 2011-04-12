@@ -47,7 +47,7 @@ public class IdResolver {
 
     /** {@link org.apache.commons.logging} logging facility */
     private static org.apache.commons.logging.Log log =
-        org.apache.commons.logging.LogFactory.getLog(IdResolver.class.getName());
+        org.apache.commons.logging.LogFactory.getLog(IdResolver.class);
 
     private static Map<Document, Map<String, WeakReference<Element>>> docMap = 
         new WeakHashMap<Document, Map<String, WeakReference<Element>>>();

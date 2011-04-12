@@ -57,7 +57,7 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
 
     /** {@link org.apache.commons.logging} logging facility */
     private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(ResolverDirectHTTP.class.getName());
+        org.apache.commons.logging.LogFactory.getLog(ResolverDirectHTTP.class);
 
     /** Field properties[] */
     private static final String properties[] = { 

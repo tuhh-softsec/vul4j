@@ -50,7 +50,7 @@ import org.xml.sax.SAXException;
  */
 public class XMLSignatureInput implements Cloneable {
     private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(XMLSignatureInput.class.getName());
+        org.apache.commons.logging.LogFactory.getLog(XMLSignatureInput.class);
 
     /*
      * The XMLSignature Input can be either:

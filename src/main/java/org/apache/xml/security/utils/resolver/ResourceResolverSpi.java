@@ -31,7 +31,7 @@ public abstract class ResourceResolverSpi {
 
     /** {@link org.apache.commons.logging} logging facility */
     private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(ResourceResolverSpi.class.getName());
+        org.apache.commons.logging.LogFactory.getLog(ResourceResolverSpi.class);
 
     /** Field properties */
     protected java.util.Map<String, String> properties = null;

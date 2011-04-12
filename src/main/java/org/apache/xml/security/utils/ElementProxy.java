@@ -38,8 +38,8 @@ import org.w3c.dom.Text;
 public abstract class ElementProxy {
 
     /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(ElementProxy.class.getName());
+    protected static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(ElementProxy.class);
 
     /** Field constructionElement */
     protected Element constructionElement = null;

@@ -36,7 +36,7 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
 
     /** {@link org.apache.commons.logging} logging facility */
     private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(X509Data.class.getName());
+        org.apache.commons.logging.LogFactory.getLog(X509Data.class);
 
     /**
      * Constructor X509Data

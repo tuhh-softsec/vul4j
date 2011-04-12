@@ -36,7 +36,7 @@ public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
 
     /** {@link org.apache.commons.logging} logging facility */
     private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(SignatureBaseRSA.class.getName());
+        org.apache.commons.logging.LogFactory.getLog(SignatureBaseRSA.class);
 
     /** @inheritDoc */
     public abstract String engineGetURI();

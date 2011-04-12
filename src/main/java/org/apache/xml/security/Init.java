@@ -50,7 +50,7 @@ public class Init {
 
     /** {@link org.apache.commons.logging} logging facility */
     private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(Init.class.getName());
+        org.apache.commons.logging.LogFactory.getLog(Init.class);
 
     /** Field _initialized */
     private static boolean alreadyInitialized = false;

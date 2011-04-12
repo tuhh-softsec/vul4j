@@ -42,8 +42,8 @@ import java.lang.reflect.Modifier;
  */
 public class CachedXPathFuncHereAPI {
 
-    static org.apache.commons.logging.Log log =
-        org.apache.commons.logging.LogFactory.getLog(CachedXPathFuncHereAPI.class.getName());
+    private static org.apache.commons.logging.Log log =
+        org.apache.commons.logging.LogFactory.getLog(CachedXPathFuncHereAPI.class);
     /**
      * XPathContext, and thus DTMManager and DTMs, persists through multiple
      *   calls to this object.
@@ -320,7 +320,9 @@ public class CachedXPathFuncHereAPI {
 
     private static void fixupFunctionTable() {
         boolean installed = false;
-        log.info("Registering Here function");
+        if (log.isDebugEnabled()) {
+            log.debug("Registering Here function");
+        }
         /**
          * Try to register our here() implementation as internal function.
          */

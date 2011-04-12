@@ -26,8 +26,8 @@ import org.apache.xml.security.algorithms.MessageDigestAlgorithm;
  */
 public class DigesterOutputStream extends ByteArrayOutputStream {
     final MessageDigestAlgorithm mda;
-    final static org.apache.commons.logging.Log log =
-        org.apache.commons.logging.LogFactory.getLog(DigesterOutputStream.class.getName());
+    private final static org.apache.commons.logging.Log log =
+        org.apache.commons.logging.LogFactory.getLog(DigesterOutputStream.class);
 
     /**
      * @param mda

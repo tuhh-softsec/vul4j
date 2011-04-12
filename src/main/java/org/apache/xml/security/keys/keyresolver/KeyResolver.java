@@ -36,7 +36,7 @@ public class KeyResolver {
 
     /** {@link org.apache.commons.logging} logging facility */
     private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(KeyResolver.class.getName());
+        org.apache.commons.logging.LogFactory.getLog(KeyResolver.class);
 
     /** Field resolverVector */
     private static List<KeyResolver> resolverVector = new ArrayList<KeyResolver>();

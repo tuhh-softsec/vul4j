@@ -40,7 +40,7 @@ public class SignatureAlgorithm extends Algorithm {
 
     /** {@link org.apache.commons.logging} logging facility */
     private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(SignatureAlgorithm.class.getName());
+        org.apache.commons.logging.LogFactory.getLog(SignatureAlgorithm.class);
 
     /** All available algorithm classes are registered here */
     private static Map<String, Class<?>> algorithmHash = new HashMap<String, Class<?>>(10);

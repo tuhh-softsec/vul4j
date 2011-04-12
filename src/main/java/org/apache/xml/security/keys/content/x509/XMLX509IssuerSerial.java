@@ -31,7 +31,7 @@ public class XMLX509IssuerSerial extends SignatureElementProxy implements XMLX50
 
     /** {@link org.apache.commons.logging} logging facility */
     private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(XMLX509IssuerSerial.class.getName());
+        org.apache.commons.logging.LogFactory.getLog(XMLX509IssuerSerial.class);
 
     /**
      * Constructor XMLX509IssuerSerial

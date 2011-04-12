@@ -80,7 +80,7 @@ import org.xml.sax.SAXException;
 public class XMLCipher {
 
     private static org.apache.commons.logging.Log logger = 
-        org.apache.commons.logging.LogFactory.getLog(XMLCipher.class.getName());
+        org.apache.commons.logging.LogFactory.getLog(XMLCipher.class);
 
     /** Triple DES EDE (192 bit key) in CBC mode */
     public static final String TRIPLEDES =                   

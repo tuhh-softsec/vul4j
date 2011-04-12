@@ -31,7 +31,7 @@ public class JCEMapper {
 
     /** {@link org.apache.commons.logging} logging facility */
     private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(JCEMapper.class.getName());
+        org.apache.commons.logging.LogFactory.getLog(JCEMapper.class);
 
     private static Map<String, String> uriToJCEName;
 

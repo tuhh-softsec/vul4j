@@ -40,7 +40,7 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
 
     /** {@link org.apache.commons.logging} logging facility */
     private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(IntegrityHmacSHA1.class.getName());
+        org.apache.commons.logging.LogFactory.getLog(IntegrityHmac.class);
 
     /** Field macAlgorithm */
     private Mac macAlgorithm = null;

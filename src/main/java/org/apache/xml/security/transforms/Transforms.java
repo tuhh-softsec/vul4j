@@ -105,7 +105,7 @@ public class Transforms extends SignatureElementProxy {
     
     /** {@link org.apache.commons.logging} logging facility */
     private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(Transforms.class.getName());
+        org.apache.commons.logging.LogFactory.getLog(Transforms.class);
 
     private Element[] transforms;
 

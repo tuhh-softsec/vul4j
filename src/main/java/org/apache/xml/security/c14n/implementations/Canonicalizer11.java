@@ -55,8 +55,8 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
     static final String XMLNS_URI = Constants.NamespaceSpecNS;
     static final String XML_LANG_URI = Constants.XML_LANG_SPACE_SpecNS;
 
-    static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(Canonicalizer11.class.getName());
+    protected static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(Canonicalizer11.class);
 
     static class XmlAttrStack {
         static class XmlsStackElement {

@@ -36,7 +36,7 @@ public class XMLX509SKI extends SignatureElementProxy implements XMLX509DataCont
 
     /** {@link org.apache.commons.logging} logging facility */
     private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(XMLX509SKI.class.getName());
+        org.apache.commons.logging.LogFactory.getLog(XMLX509SKI.class);
 
     /**
      * <CODE>SubjectKeyIdentifier (id-ce-subjectKeyIdentifier) (2.5.29.14)</CODE>:

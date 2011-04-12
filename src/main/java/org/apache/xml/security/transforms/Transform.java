@@ -54,7 +54,7 @@ public final class Transform extends SignatureElementProxy {
 
     /** {@link org.apache.commons.logging} logging facility */
     private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(Transform.class.getName());
+        org.apache.commons.logging.LogFactory.getLog(Transform.class);
 
     /** All available Transform classes are registered here */
     private static Map<String, TransformSpi> transformSpiHash = 

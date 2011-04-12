@@ -50,8 +50,8 @@ import org.xml.sax.SAXException;
 public class Manifest extends SignatureElementProxy {
 
     /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(Manifest.class.getName());
+    private static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(Manifest.class);
 
     /** Field references */
     private List<Reference> references;

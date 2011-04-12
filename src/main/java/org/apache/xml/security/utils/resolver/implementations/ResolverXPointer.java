@@ -43,7 +43,7 @@ public class ResolverXPointer extends ResourceResolverSpi {
 
     /** {@link org.apache.commons.logging} logging facility */
     private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(ResolverXPointer.class.getName());
+        org.apache.commons.logging.LogFactory.getLog(ResolverXPointer.class);
     
     private static final String XP = "#xpointer(id(";
     private static final int XP_LENGTH = XP.length();

@@ -37,7 +37,7 @@ public class SignatureDSA extends SignatureAlgorithmSpi {
 
     /** {@link org.apache.commons.logging} logging facility */
     private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(SignatureDSA.class.getName());
+        org.apache.commons.logging.LogFactory.getLog(SignatureDSA.class);
 
     /** Field URI */
     public static final String URI = Constants.SignatureSpecNS + "dsa-sha1";

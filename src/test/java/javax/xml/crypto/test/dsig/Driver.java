@@ -24,6 +24,9 @@ import javax.xml.crypto.dsig.spec.C14NMethodParameterSpec;
  * Used by ClassLoaderTest
  */
 public class Driver {
+    
+    private static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(Driver.class);
 
     public void dsig() throws Exception {
 
@@ -36,7 +39,9 @@ public class Driver {
         }
         long end = System.currentTimeMillis();
         long elapsed = end - start;
-        System.out.println("Elapsed: " + elapsed);
-        System.out.println("dsig succeeded");
+        if (log.isDebugEnabled()) {
+            log.debug("Elapsed: " + elapsed);
+            log.debug("dsig succeeded");
+        }
     }
 }

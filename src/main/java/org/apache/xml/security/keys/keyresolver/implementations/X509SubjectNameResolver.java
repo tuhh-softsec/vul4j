@@ -35,7 +35,7 @@ public class X509SubjectNameResolver extends KeyResolverSpi {
 
     /** {@link org.apache.commons.logging} logging facility */
     private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(X509SubjectNameResolver.class.getName());
+        org.apache.commons.logging.LogFactory.getLog(X509SubjectNameResolver.class);
 
 
     /**
@@ -80,8 +80,10 @@ public class X509SubjectNameResolver extends KeyResolverSpi {
         XMLX509SubjectName x509childObject[] = null;
 
         if (!XMLUtils.elementIsInSignatureSpace(element,
-                                                Constants._TAG_X509DATA) ) {      
-            log.debug("I can't");
+                                                Constants._TAG_X509DATA) ) {     
+            if (log.isDebugEnabled()) { 
+                log.debug("I can't");
+            }
             return null;
         }
         x509childNodes = 

@@ -45,7 +45,7 @@ import org.apache.xml.security.utils.Base64;
 public class XMLCipherInput {
 
     private static org.apache.commons.logging.Log logger = 
-        org.apache.commons.logging.LogFactory.getLog(XMLCipher.class.getName());
+        org.apache.commons.logging.LogFactory.getLog(XMLCipherInput.class);
 
     /** The data we are working with */
     private CipherData cipherData;

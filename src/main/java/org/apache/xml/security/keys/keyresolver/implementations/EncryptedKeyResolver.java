@@ -47,7 +47,7 @@ public class EncryptedKeyResolver extends KeyResolverSpi {
 
     /** {@link org.apache.commons.logging} logging facility */
     private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(RSAKeyValueResolver.class.getName());
+        org.apache.commons.logging.LogFactory.getLog(RSAKeyValueResolver.class);
 
     private Key kek;
     private String algorithm;
