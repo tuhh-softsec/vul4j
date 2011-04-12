@@ -1862,10 +1862,8 @@ public class XMLCipher {
             final String tagname = "fragment";
 
             // Create the context to parse the document against
-            StringBuilder sb;
-
-            sb = new StringBuilder();
-            sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?><"+tagname);
+            StringBuilder sb = new StringBuilder();
+            sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?><" + tagname);
 
             // Run through each node up to the document node and find any
             // xmlns: nodes

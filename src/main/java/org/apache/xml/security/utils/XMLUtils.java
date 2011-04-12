@@ -255,7 +255,7 @@ public class XMLUtils {
         if ((xencPrefix == null) || (xencPrefix.length() == 0)) {
             return doc.createElementNS(EncryptionConstants.EncryptionSpecNS, elementName);
         }
-        StringBuilder tag = new StringBuilder(dsPrefix);
+        StringBuilder tag = new StringBuilder(xencPrefix);
         tag.append(':');
         tag.append(elementName);
         return doc.createElementNS(EncryptionConstants.EncryptionSpecNS, tag.toString());
