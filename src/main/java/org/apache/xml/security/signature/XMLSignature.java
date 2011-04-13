@@ -16,6 +16,7 @@
  */
 package org.apache.xml.security.signature;
 
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.security.Key;
@@ -38,7 +39,6 @@ import org.apache.xml.security.utils.I18n;
 import org.apache.xml.security.utils.IdResolver;
 import org.apache.xml.security.utils.SignatureElementProxy;
 import org.apache.xml.security.utils.SignerOutputStream;
-import org.apache.xml.security.utils.UnsyncBufferedOutputStream;
 import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.utils.resolver.ResourceResolver;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
@@ -235,14 +235,14 @@ public final class XMLSignature extends SignatureElementProxy {
     ) throws XMLSecurityException {
         super(doc);
 
-        String xmlnsDsPrefix = getDefaultPrefixBindings(Constants.SignatureSpecNS);
-        if (xmlnsDsPrefix == null) {
+        String xmlnsDsPrefix = getDefaultPrefix(Constants.SignatureSpecNS);
+        if (xmlnsDsPrefix == null || xmlnsDsPrefix.length() == 0) {
             this.constructionElement.setAttributeNS(
                 Constants.NamespaceSpecNS, "xmlns", Constants.SignatureSpecNS
             );
         } else {
             this.constructionElement.setAttributeNS(
-                Constants.NamespaceSpecNS, xmlnsDsPrefix, Constants.SignatureSpecNS
+                Constants.NamespaceSpecNS, "xmlns:" + xmlnsDsPrefix, Constants.SignatureSpecNS
             );
         }
         XMLUtils.addReturnToElement(this.constructionElement);
@@ -280,14 +280,14 @@ public final class XMLSignature extends SignatureElementProxy {
     ) throws XMLSecurityException {
         super(doc);
 
-        String xmlnsDsPrefix = getDefaultPrefixBindings(Constants.SignatureSpecNS);
-        if (xmlnsDsPrefix == null) {
+        String xmlnsDsPrefix = getDefaultPrefix(Constants.SignatureSpecNS);
+        if (xmlnsDsPrefix == null || xmlnsDsPrefix.length() == 0) {
             this.constructionElement.setAttributeNS(
                 Constants.NamespaceSpecNS, "xmlns", Constants.SignatureSpecNS
             );
         } else {
             this.constructionElement.setAttributeNS(
-                Constants.NamespaceSpecNS, xmlnsDsPrefix, Constants.SignatureSpecNS
+                Constants.NamespaceSpecNS, "xmlns:" + xmlnsDsPrefix, Constants.SignatureSpecNS
             );
         }
         XMLUtils.addReturnToElement(this.constructionElement);
@@ -539,7 +539,7 @@ public final class XMLSignature extends SignatureElementProxy {
 
                 // generate digest values for all References in this SignedInfo
                 si.generateDigestValues();
-                OutputStream so = new UnsyncBufferedOutputStream(new SignerOutputStream(sa));
+                OutputStream so = new BufferedOutputStream(new SignerOutputStream(sa));
                 // get the canonicalized bytes from SignedInfo
                 si.signInOctetStream(so);
 
@@ -645,7 +645,7 @@ public final class XMLSignature extends SignatureElementProxy {
 
                 // Get the canonicalized (normalized) SignedInfo
                 SignerOutputStream so = new SignerOutputStream(sa);
-                OutputStream bos = new UnsyncBufferedOutputStream(so);
+                OutputStream bos = new BufferedOutputStream(so);
 
                 si.signInOctetStream(bos);
                 bos.close();

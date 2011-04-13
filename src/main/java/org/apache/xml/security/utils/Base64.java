@@ -17,6 +17,7 @@
 package org.apache.xml.security.utils;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -321,7 +322,7 @@ public class Base64 {
     public static final byte[] decode(BufferedReader reader)
         throws IOException, Base64DecodingException {
 
-        UnsyncByteArrayOutputStream baos = new UnsyncByteArrayOutputStream();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
         String line;
 
         while (null != (line = reader.readLine())) {

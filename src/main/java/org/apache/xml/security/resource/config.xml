@@ -341,14 +341,7 @@
 
       </Algorithms>
    </JCEAlgorithmMappings>
-   <ResourceBundles defaultLanguageCode="en" defaultCountryCode="US">
-      <ResourceBundle LanguageCode="en"
-                      CountryCode="US"
-                      LOCATION="org.apache.xml.security/resource/xmlsecurity_en.properties" />
-      <ResourceBundle LanguageCode="de"
-                      CountryCode="DE"
-                      LOCATION="org.apache.xml.security/resource/xmlsecurity_de.properties" />
-   </ResourceBundles>
+   <ResourceBundles defaultLanguageCode="en" defaultCountryCode="US"/>
    <ResourceResolvers>
       <Resolver JAVACLASS="org.apache.xml.security.utils.resolver.implementations.ResolverDirectHTTP"
                 DESCRIPTION="A simple resolver for requests to HTTP space" />
@@ -359,7 +352,6 @@
       <Resolver JAVACLASS="org.apache.xml.security.utils.resolver.implementations.ResolverXPointer"
                 DESCRIPTION="A simple resolver for requests of XPointer fragents" />
    </ResourceResolvers>
-   <!-- <defaultLocale languageCode="en" countryCode="US" /> -->
    <KeyInfo>
       <ContentHandler LOCALNAME="KeyName"
                       NAMESPACE="http://www.w3.org/2000/09/xmldsig#"

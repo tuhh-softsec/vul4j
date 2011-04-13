@@ -33,23 +33,11 @@ public class I18n {
         + "Call the static method \"org.apache.xml.security.Init.init();\" to do that "
         + "before you use any functionality from that library.";
 
-    /** Field defaultLanguageCode */
-    static String defaultLanguageCode;    // will be set in static{} block
-
-    /** Field defaultCountryCode */
-    static String defaultCountryCode;    // will be set in static{} block
-
     /** Field resourceBundle */
-    static ResourceBundle resourceBundle;
+    private static ResourceBundle resourceBundle;
 
     /** Field alreadyInitialized */
-    static boolean alreadyInitialized = false;
-
-    /** Field languageCode */
-    static String languageCode = null;
-
-    /** Field countryCode */
-    static String countryCode = null;
+    private static boolean alreadyInitialized = false;
 
     /**
      * Constructor I18n
@@ -116,8 +104,7 @@ public class I18n {
      * @param originalException
      * @return message translated
      */
-    public static String getExceptionMessage(String msgID,
-                                             Exception originalException) {
+    public static String getExceptionMessage(String msgID, Exception originalException) {
         try {
             Object exArgs[] = { originalException.getMessage() };
             return MessageFormat.format(resourceBundle.getString(msgID), exArgs);
@@ -142,7 +129,6 @@ public class I18n {
      * @return message translated
      */
     public static String getExceptionMessage(String msgID, Object exArgs[]) {
-
         try {
             return MessageFormat.format(resourceBundle.getString(msgID), exArgs);
         } catch (Throwable t) {
@@ -154,55 +140,23 @@ public class I18n {
             return I18n.NOT_INITIALIZED_MSG;
         }
     }
-
+    
     /**
      * Method init
      *
-     * @param newDefaultLanguageCode
-     * @param newDefaultCountryCode
+     * @param languageCode
+     * @param countryCode
      */
-    public static void init(String newDefaultLanguageCode,
-                            String newDefaultCountryCode) {
-
-        I18n.defaultLanguageCode = newDefaultLanguageCode;
-
-        if (I18n.defaultLanguageCode == null) {
-            I18n.defaultLanguageCode = Locale.getDefault().getLanguage();
-        }
-
-        I18n.defaultCountryCode = newDefaultCountryCode;
-
-        if (I18n.defaultCountryCode == null) {
-            I18n.defaultCountryCode = Locale.getDefault().getCountry();
-        }
-
-        initLocale(I18n.defaultLanguageCode, I18n.defaultCountryCode);
-    }
-
-    /**
-     * Method initLocale
-     *
-     * @param newLanguageCode
-     * @param newCountryCode
-     */
-    public static void initLocale(String newLanguageCode, String newCountryCode) {
-
-        if (alreadyInitialized && newLanguageCode.equals(languageCode)
-            && newCountryCode.equals(countryCode)) {
+    public synchronized static void init(String languageCode, String countryCode) {
+        if (alreadyInitialized) {
             return;
         }
 
-        if ((newLanguageCode != null) && (newCountryCode != null)
-            && (newLanguageCode.length() > 0) && (newCountryCode.length() > 0)) {
-            languageCode = newLanguageCode;
-            countryCode = newCountryCode;
-        } else {
-            countryCode = I18n.defaultCountryCode;
-            languageCode = I18n.defaultLanguageCode;
-        }
-
         I18n.resourceBundle =
-            ResourceBundle.getBundle(Constants.exceptionMessagesResourceBundleBase,
-                                     new Locale(languageCode, countryCode));
+            ResourceBundle.getBundle(
+                Constants.exceptionMessagesResourceBundleBase,
+                new Locale(languageCode, countryCode)
+            );
+        alreadyInitialized = true;
     }
 }

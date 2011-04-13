@@ -37,7 +37,6 @@ import org.apache.xml.security.c14n.helper.AttrCompare;
 import org.apache.xml.security.signature.NodeFilter;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.utils.Constants;
-import org.apache.xml.security.utils.UnsyncByteArrayOutputStream;
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
@@ -95,7 +94,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
      * in subtree canonicalizations.
      */
     Node excludeNode =null;
-    OutputStream writer = new UnsyncByteArrayOutputStream();//null;
+    OutputStream writer = new ByteArrayOutputStream();
 
     /**
      * Constructor CanonicalizerBase
@@ -199,15 +198,9 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
             this.canonicalizeSubTree(rootNode, ns, rootNode, nodeLevel);
             this.writer.close();
             if (this.writer instanceof ByteArrayOutputStream) {
-                byte []result = ((ByteArrayOutputStream)this.writer).toByteArray();
+                byte[] result = ((ByteArrayOutputStream)this.writer).toByteArray();
                 if (reset) {
                     ((ByteArrayOutputStream)this.writer).reset();        
-                }
-                return result;
-            }  else if (this.writer instanceof UnsyncByteArrayOutputStream) {
-                byte []result=((UnsyncByteArrayOutputStream)this.writer).toByteArray();
-                if (reset) {
-                    ((UnsyncByteArrayOutputStream)this.writer).reset();        
                 }
                 return result;
             }
@@ -343,17 +336,11 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
             this.canonicalizeXPathNodeSet(doc, doc);
             this.writer.close();
             if (this.writer instanceof ByteArrayOutputStream) {
-                byte [] sol = ((ByteArrayOutputStream)this.writer).toByteArray();
+                byte[] sol = ((ByteArrayOutputStream)this.writer).toByteArray();
                 if (reset) {
                     ((ByteArrayOutputStream)this.writer).reset();
                 }
                 return sol;
-            }  else if (this.writer instanceof UnsyncByteArrayOutputStream) {
-                byte []result = ((UnsyncByteArrayOutputStream)this.writer).toByteArray();
-                if (reset) {
-                    ((UnsyncByteArrayOutputStream)this.writer).reset();        
-                }
-                return result;
             }
             return null;
         } catch (UnsupportedEncodingException ex) {

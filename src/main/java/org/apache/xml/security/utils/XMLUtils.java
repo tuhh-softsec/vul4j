@@ -52,8 +52,8 @@ public class XMLUtils {
             }
         })).booleanValue();
     
-    static String dsPrefix = null;
-    static String xencPrefix = null;
+    private static volatile String dsPrefix = "ds";
+    private static volatile String xencPrefix = "xenc";
 
     /**
      * Constructor XMLUtils
@@ -61,6 +61,22 @@ public class XMLUtils {
      */
     private XMLUtils() {
         // we don't allow instantiation
+    }
+    
+    /**
+     * Set the prefix for the digital signature namespace
+     * @param prefix the new prefix for the digital signature namespace
+     */
+    public static void setDsPrefix(String prefix) {
+        dsPrefix = prefix;
+    }
+    
+    /**
+     * Set the prefix for the encryption namespace
+     * @param prefix the new prefix for the encryption namespace
+     */
+    public static void setXencPrefix(String prefix) {
+        xencPrefix = prefix;
     }
     
     public static Element getNextElement(Node el) {
@@ -234,10 +250,7 @@ public class XMLUtils {
         if ((dsPrefix == null) || (dsPrefix.length() == 0)) {
             return doc.createElementNS(Constants.SignatureSpecNS, elementName);
         } 
-        StringBuilder tag = new StringBuilder(dsPrefix);
-        tag.append(':');
-        tag.append(elementName);
-        return doc.createElementNS(Constants.SignatureSpecNS, tag.toString());
+        return doc.createElementNS(Constants.SignatureSpecNS, dsPrefix + ":" + elementName);
     }
 
     /**
@@ -255,10 +268,10 @@ public class XMLUtils {
         if ((xencPrefix == null) || (xencPrefix.length() == 0)) {
             return doc.createElementNS(EncryptionConstants.EncryptionSpecNS, elementName);
         }
-        StringBuilder tag = new StringBuilder(xencPrefix);
-        tag.append(':');
-        tag.append(elementName);
-        return doc.createElementNS(EncryptionConstants.EncryptionSpecNS, tag.toString());
+        return 
+            doc.createElementNS(
+                EncryptionConstants.EncryptionSpecNS, xencPrefix + ":" + elementName
+            );
     }
 
     /**

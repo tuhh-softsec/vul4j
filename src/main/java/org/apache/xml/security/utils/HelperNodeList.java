@@ -30,7 +30,7 @@ import org.w3c.dom.NodeList;
 public class HelperNodeList implements NodeList {
 
     /** Field nodes */
-    List<Node> nodes = new ArrayList<Node>(20);
+    List<Node> nodes = new ArrayList<Node>();
     boolean allNodesMustHaveSameParent = false;
 
     /**

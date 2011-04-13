@@ -48,7 +48,6 @@ import org.jcp.xml.dsig.internal.DigesterOutputStream;
 import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.utils.Base64;
-import org.apache.xml.security.utils.UnsyncBufferedOutputStream;
 
 /**
  * DOM-based implementation of Reference.
@@ -411,7 +410,7 @@ public final class DOMReference extends DOMStructure
         } else {
             dos = new DigesterOutputStream(md);
         }
-        OutputStream os = new UnsyncBufferedOutputStream(dos);
+        OutputStream os = new BufferedOutputStream(dos);
         Data data = dereferencedData;
         for (int i = 0, size = transforms.size(); i < size; i++) {
             DOMTransform transform = (DOMTransform)transforms.get(i);

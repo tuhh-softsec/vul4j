@@ -40,7 +40,6 @@ import org.w3c.dom.Node;
  * ID: We know that all <CODE>@Id</CODE> attributes in an Element from the XML
  * Signature namespace are of type <CODE>ID</CODE>.
  *
- * @author $Author$
  * @see <A HREF="http://www.xml.com/lpt/a/2001/11/07/id.html">"Identity Crisis" on xml.com</A>
  */
 public class IdResolver {

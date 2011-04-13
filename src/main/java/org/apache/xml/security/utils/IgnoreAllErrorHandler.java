@@ -33,11 +33,11 @@ public class IgnoreAllErrorHandler implements ErrorHandler {
         org.apache.commons.logging.LogFactory.getLog(IgnoreAllErrorHandler.class);
 
     /** Field throwExceptions */
-    static final boolean warnOnExceptions =
+    private static final boolean warnOnExceptions =
         System.getProperty("org.apache.xml.security.test.warn.on.exceptions", "false").equals("true");
 
     /** Field throwExceptions           */
-    static final boolean throwExceptions = 
+    private static final boolean throwExceptions = 
         System.getProperty("org.apache.xml.security.test.throw.exceptions", "false").equals("true");
 
 

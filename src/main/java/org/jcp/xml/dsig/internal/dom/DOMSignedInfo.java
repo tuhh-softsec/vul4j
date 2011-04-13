@@ -30,7 +30,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.security.Provider;
 import java.util.*;
 import org.w3c.dom.Document;
@@ -38,7 +37,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import org.apache.xml.security.utils.Base64;
-import org.apache.xml.security.utils.UnsyncBufferedOutputStream;
 
 /**
  * DOM-based implementation of SignedInfo.
@@ -49,6 +47,7 @@ public final class DOMSignedInfo extends DOMStructure implements SignedInfo {
 
     private static org.apache.commons.logging.Log log =
         org.apache.commons.logging.LogFactory.getLog(DOMSignedInfo.class);
+    
     private List<Reference> references;
     private CanonicalizationMethod canonicalizationMethod;
     private SignatureMethod signatureMethod;
@@ -72,15 +71,13 @@ public final class DOMSignedInfo extends DOMStructure implements SignedInfo {
      *    type <code>Reference</code>
      */
     public DOMSignedInfo(CanonicalizationMethod cm, SignatureMethod sm,
-                         List<Reference> references)
-    {
+                         List<Reference> references) {
         if (cm == null || sm == null || references == null) {
             throw new NullPointerException();
         }
         this.canonicalizationMethod = cm;
         this.signatureMethod = sm;
-        this.references = Collections.unmodifiableList
-            (new ArrayList<Reference>(references));
+        this.references = Collections.unmodifiableList(new ArrayList<Reference>(references));
         if (this.references.isEmpty()) {
             throw new IllegalArgumentException("list of references must " +
                 "contain at least one entry");
@@ -110,8 +107,7 @@ public final class DOMSignedInfo extends DOMStructure implements SignedInfo {
      *    type <code>Reference</code>
      */
     public DOMSignedInfo(CanonicalizationMethod cm, SignatureMethod sm, 
-                         List<Reference> references, String id)
-    {
+                         List<Reference> references, String id) {
         this(cm, sm, references);
         this.id = id;
     }
@@ -121,10 +117,8 @@ public final class DOMSignedInfo extends DOMStructure implements SignedInfo {
      *
      * @param siElem a SignedInfo element
      */
-    public DOMSignedInfo(Element siElem, XMLCryptoContext context,
-                         Provider provider)
-        throws MarshalException
-    {
+    public DOMSignedInfo(Element siElem, XMLCryptoContext context, Provider provider)
+        throws MarshalException {
         localSiElem = siElem;
         ownerDoc = siElem.getOwnerDocument();
 
@@ -133,8 +127,7 @@ public final class DOMSignedInfo extends DOMStructure implements SignedInfo {
 
         // unmarshal CanonicalizationMethod
         Element cmElem = DOMUtils.getFirstChildElement(siElem);
-        canonicalizationMethod = new DOMCanonicalizationMethod(cmElem, context,
-                                                               provider);
+        canonicalizationMethod = new DOMCanonicalizationMethod(cmElem, context, provider);
 
         // unmarshal SignatureMethod
         Element smElem = DOMUtils.getNextSiblingElement(cmElem);
@@ -170,16 +163,14 @@ public final class DOMSignedInfo extends DOMStructure implements SignedInfo {
         return canonData;
     }
 
-    public void canonicalize(XMLCryptoContext context,ByteArrayOutputStream bos)
-        throws XMLSignatureException
-    {
+    public void canonicalize(XMLCryptoContext context, ByteArrayOutputStream bos)
+        throws XMLSignatureException {
         if (context == null) {
             throw new NullPointerException("context cannot be null");
         }
 
-        OutputStream os = new UnsyncBufferedOutputStream(bos);
         try {
-            os.close();
+            bos.flush();
         } catch (IOException e) {
             // Impossible
         }
@@ -188,7 +179,7 @@ public final class DOMSignedInfo extends DOMStructure implements SignedInfo {
 
         try {
             ((DOMCanonicalizationMethod) 
-                canonicalizationMethod).canonicalize(subTree, context, os);
+                canonicalizationMethod).canonicalize(subTree, context, bos);
         } catch (TransformException te) {
             throw new XMLSignatureException(te);
         }

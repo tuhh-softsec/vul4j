@@ -19,6 +19,9 @@ package org.apache.xml.security;
 import java.io.InputStream;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -54,7 +57,21 @@ public class Init {
 
     /** Field _initialized */
     private static boolean alreadyInitialized = false;
-
+    
+    private static Map<String, String> defaultNamespacePrefixes = new HashMap<String, String>();
+    
+    static {
+        defaultNamespacePrefixes.put("http://www.w3.org/2000/09/xmldsig#", "ds");
+        defaultNamespacePrefixes.put("http://www.w3.org/2001/04/xmlenc#", "xenc");
+        defaultNamespacePrefixes.put("http://www.xmlsecurity.org/experimental#", "experimental");
+        defaultNamespacePrefixes.put("http://www.w3.org/2002/04/xmldsig-filter2", "dsig-xpath-old");
+        defaultNamespacePrefixes.put("http://www.w3.org/2002/06/xmldsig-filter2", "dsig-xpath");
+        defaultNamespacePrefixes.put("http://www.w3.org/2001/10/xml-exc-c14n#", "ec");
+        defaultNamespacePrefixes.put(
+            "http://www.nue.et-inf.uni-siegen.de/~geuer-pollmann/#xpathFilter", "xx"
+        );
+    }
+    
     /**
      * Method isInitialized
      * @return true if the library is already initialized.     
@@ -270,7 +287,35 @@ public class Init {
         }
         alreadyInitialized = true;
     }
-
+    
+    /**
+     * TODO
+     */
+    public synchronized static void dynamicInit() {
+        if (alreadyInitialized) {
+            return;
+        }
+        
+        //
+        // Load the Resource Bundle - the default is the English resource bundle.
+        // To load another resource bundle, call I18n.init(...) before calling this
+        // method.
+        //
+        I18n.init("en", "US");
+        
+        //
+        // Bind the default prefixes
+        // TODO possibly move the default Map into ElementProxy?
+        //
+        try {
+            for (String key : defaultNamespacePrefixes.keySet()) {
+                ElementProxy.setDefaultPrefix(key, defaultNamespacePrefixes.get(key));
+            }
+        } catch (Exception ex) {
+            log.error(ex);
+            ex.printStackTrace();
+        }
+    }
 
 }
 
