@@ -116,8 +116,8 @@ public abstract class ApacheTransform extends TransformService {
 
         if (apacheTransform == null) {
             try {
-                apacheTransform = Transform.getInstance
-                    (ownerDoc, getAlgorithm(), transformElem.getChildNodes());
+                apacheTransform = 
+                    new Transform(ownerDoc, getAlgorithm(), transformElem.getChildNodes());
                 apacheTransform.setElement(transformElem, xc.getBaseURI());
                 if (log.isDebugEnabled()) {
                     log.debug("Created transform for algorithm: " +

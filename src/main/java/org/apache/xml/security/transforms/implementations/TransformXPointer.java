@@ -17,6 +17,8 @@
  */
 package org.apache.xml.security.transforms.implementations;
 
+import java.io.OutputStream;
+
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.Transform;
 import org.apache.xml.security.transforms.TransformSpi;
@@ -46,10 +48,9 @@ public class TransformXPointer extends TransformSpi {
      * @param input
      * @return  {@link XMLSignatureInput} as the result of transformation
      * @throws TransformationException
-     *
      */
     protected XMLSignatureInput enginePerformTransform(
-        XMLSignatureInput input, Transform transformObject
+        XMLSignatureInput input, OutputStream os, Transform transformObject
     ) throws TransformationException {
 
         Object exArgs[] = { implementedTransformURI };

@@ -30,6 +30,19 @@ import org.apache.xml.security.algorithms.SignatureAlgorithm;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.keys.keyresolver.KeyResolver;
 import org.apache.xml.security.transforms.Transform;
+import org.apache.xml.security.transforms.TransformSpi;
+import org.apache.xml.security.transforms.Transforms;
+import org.apache.xml.security.transforms.implementations.TransformBase64Decode;
+import org.apache.xml.security.transforms.implementations.TransformC14N;
+import org.apache.xml.security.transforms.implementations.TransformC14N11;
+import org.apache.xml.security.transforms.implementations.TransformC14N11_WithComments;
+import org.apache.xml.security.transforms.implementations.TransformC14NExclusive;
+import org.apache.xml.security.transforms.implementations.TransformC14NExclusiveWithComments;
+import org.apache.xml.security.transforms.implementations.TransformC14NWithComments;
+import org.apache.xml.security.transforms.implementations.TransformEnvelopedSignature;
+import org.apache.xml.security.transforms.implementations.TransformXPath;
+import org.apache.xml.security.transforms.implementations.TransformXPath2Filter;
+import org.apache.xml.security.transforms.implementations.TransformXSLT;
 import org.apache.xml.security.utils.ElementProxy;
 import org.apache.xml.security.utils.I18n;
 import org.apache.xml.security.utils.XMLUtils;
@@ -59,8 +72,13 @@ public class Init {
     private static boolean alreadyInitialized = false;
     
     private static Map<String, String> defaultNamespacePrefixes = new HashMap<String, String>();
+    private static Map<String, Class<? extends TransformSpi>> defaultTransforms = 
+        new HashMap<String, Class<? extends TransformSpi>>();
     
     static {
+        //
+        // Default Namespace-prefix pairs
+        //
         defaultNamespacePrefixes.put("http://www.w3.org/2000/09/xmldsig#", "ds");
         defaultNamespacePrefixes.put("http://www.w3.org/2001/04/xmlenc#", "xenc");
         defaultNamespacePrefixes.put("http://www.xmlsecurity.org/experimental#", "experimental");
@@ -69,6 +87,46 @@ public class Init {
         defaultNamespacePrefixes.put("http://www.w3.org/2001/10/xml-exc-c14n#", "ec");
         defaultNamespacePrefixes.put(
             "http://www.nue.et-inf.uni-siegen.de/~geuer-pollmann/#xpathFilter", "xx"
+        );
+        
+        //
+        // Default URI-TransformSpi class pairs
+        //
+        defaultTransforms.put(
+            Transforms.TRANSFORM_BASE64_DECODE, TransformBase64Decode.class
+        );
+        defaultTransforms.put(
+            Transforms.TRANSFORM_C14N_OMIT_COMMENTS, TransformC14N.class
+        );
+        defaultTransforms.put(
+            Transforms.TRANSFORM_C14N_WITH_COMMENTS, TransformC14NWithComments.class
+        );
+        defaultTransforms.put(
+            Transforms.TRANSFORM_C14N11_OMIT_COMMENTS, TransformC14N11.class
+        );
+        defaultTransforms.put(
+            Transforms.TRANSFORM_C14N11_WITH_COMMENTS, TransformC14N11_WithComments.class
+        );
+        defaultTransforms.put(
+            Transforms.TRANSFORM_C14N_EXCL_OMIT_COMMENTS, TransformC14NExclusive.class
+        );
+        defaultTransforms.put(
+            Transforms.TRANSFORM_C14N_EXCL_WITH_COMMENTS, TransformC14NExclusiveWithComments.class
+        );
+        defaultTransforms.put(
+            Transforms.TRANSFORM_XPATH, TransformXPath.class
+        );
+        defaultTransforms.put(
+            Transforms.TRANSFORM_ENVELOPED_SIGNATURE, TransformEnvelopedSignature.class
+        );
+        defaultTransforms.put(
+            Transforms.TRANSFORM_XSLT, TransformXSLT.class
+        );
+        defaultTransforms.put(
+            Transforms.TRANSFORM_XPATH2FILTER, TransformXPath2Filter.class
+        );
+        defaultTransforms.put(
+            Transforms.TRANSFORM_XPATH2FILTER04, TransformXPath2Filter.class
         );
     }
     
@@ -291,6 +349,7 @@ public class Init {
     /**
      * TODO
      */
+    @SuppressWarnings("unchecked")
     public synchronized static void dynamicInit() {
         if (alreadyInitialized) {
             return;
@@ -303,14 +362,22 @@ public class Init {
         //
         I18n.init("en", "US");
         
-        //
-        // Bind the default prefixes
-        // TODO possibly move the default Map into ElementProxy?
-        //
         try {
+            //
+            // Bind the default prefixes
+            // TODO possibly move the default Map into ElementProxy?
+            //
             for (String key : defaultNamespacePrefixes.keySet()) {
                 ElementProxy.setDefaultPrefix(key, defaultNamespacePrefixes.get(key));
             }
+            
+            //
+            // Set the default Transforms
+            //
+            for (String key : defaultTransforms.keySet()) {
+                Transform.register(key, (Class<TransformSpi>)defaultTransforms.get(key));
+            }
+            
         } catch (Exception ex) {
             log.error(ex);
             ex.printStackTrace();

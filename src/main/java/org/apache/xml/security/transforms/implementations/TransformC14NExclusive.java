@@ -48,19 +48,6 @@ public class TransformC14NExclusive extends TransformSpi {
         return implementedTransformURI;
     }
 
-    /**
-     * Method enginePerformTransform
-     *
-     * @param input
-     * @return the transformed of the input
-     * @throws CanonicalizationException
-     */
-    protected XMLSignatureInput enginePerformTransform(
-        XMLSignatureInput input, Transform transformObject
-    ) throws CanonicalizationException {
-        return enginePerformTransform(input, null, transformObject);
-    }
-
     protected XMLSignatureInput enginePerformTransform(
         XMLSignatureInput input, OutputStream os, Transform transformObject
     ) throws CanonicalizationException {

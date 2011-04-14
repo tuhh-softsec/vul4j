@@ -16,6 +16,8 @@
  */
 package org.apache.xml.security.transforms.implementations;
 
+import java.io.OutputStream;
+
 import org.apache.xml.security.signature.NodeFilter;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.Transform;
@@ -52,7 +54,7 @@ public class TransformEnvelopedSignature extends TransformSpi {
      * @inheritDoc
      */
     protected XMLSignatureInput enginePerformTransform(
-        XMLSignatureInput input, Transform transformObject
+        XMLSignatureInput input, OutputStream os, Transform transformObject
     ) throws TransformationException {
         /**
          * If the actual input is an octet stream, then the application MUST

@@ -38,8 +38,8 @@ import org.w3c.dom.Element;
  */
 public abstract class KeyResolverSpi {
     
-    /** Field _properties */
-    protected java.util.Map<String, String> _properties = null;
+    /** Field properties */
+    protected java.util.Map<String, String> properties = null;
 
     protected boolean globalResolver = false;
     
@@ -205,10 +205,10 @@ public abstract class KeyResolverSpi {
      * @param value
      */
     public void engineSetProperty(String key, String value) {     
-        if (_properties == null) {
-            _properties = new HashMap<String, String>();
+        if (properties == null) {
+            properties = new HashMap<String, String>();
         }
-        this._properties.put(key, value);
+        properties.put(key, value);
     }
 
     /**
@@ -218,11 +218,11 @@ public abstract class KeyResolverSpi {
      * @return obtain the property appointed by key
      */
     public String engineGetProperty(String key) {
-        if (_properties == null) {
+        if (properties == null) {
             return null;
         }
 
-        return (String) this._properties.get(key);
+        return (String)properties.get(key);
     }
 
     /**
@@ -232,11 +232,11 @@ public abstract class KeyResolverSpi {
      * @return true if understood the property
      */
     public boolean understandsProperty(String propertyToTest) {
-        if (_properties == null) {
+        if (properties == null) {
             return false;
         }
 
-        return  this._properties.get(propertyToTest) != null;
+        return properties.get(propertyToTest) != null;
     }
     
     public void setGlobalResolver(boolean globalResolver) {

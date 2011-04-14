@@ -687,7 +687,7 @@ public class XMLCipherTester extends org.junit.Assert {
     @org.junit.Test
     public void testEncryptedKeyWithRecipient() throws Exception {
         String filename = 
-            "data/org/apache/xml/security/encryption/encryptedKey.xml";
+            "src/test/resources/org/apache/xml/security/encryption/encryptedKey.xml";
         if (basedir != null && !"".equals(basedir)) {
             filename = basedir + "/" + filename;
         }

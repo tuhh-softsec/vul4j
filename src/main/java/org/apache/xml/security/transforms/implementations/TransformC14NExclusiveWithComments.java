@@ -50,17 +50,8 @@ public class TransformC14NExclusiveWithComments extends TransformSpi {
         return implementedTransformURI;
     }
 
-    /**
-     * @inheritDoc 
-     */
     protected XMLSignatureInput enginePerformTransform(
-        XMLSignatureInput input, Transform transformObject
-    ) throws CanonicalizationException {
-        return enginePerformTransform(input, null, transformObject);
-    }
-
-    protected XMLSignatureInput enginePerformTransform(
-        XMLSignatureInput input,OutputStream os, Transform transformObject
+        XMLSignatureInput input, OutputStream os, Transform transformObject
     ) throws CanonicalizationException {
         try {
             String inclusiveNamespaces = null;

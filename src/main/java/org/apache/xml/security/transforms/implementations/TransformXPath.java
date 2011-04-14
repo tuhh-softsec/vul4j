@@ -16,6 +16,8 @@
  */
 package org.apache.xml.security.transforms.implementations;
 
+import java.io.OutputStream;
+
 import javax.xml.transform.TransformerException;
 
 import org.apache.xml.security.exceptions.XMLSecurityRuntimeException;
@@ -68,7 +70,7 @@ public class TransformXPath extends TransformSpi {
      * @throws TransformationException
      */
     protected XMLSignatureInput enginePerformTransform(
-        XMLSignatureInput input, Transform transformObject
+        XMLSignatureInput input, OutputStream os, Transform transformObject
     ) throws TransformationException {
         try {
             /**

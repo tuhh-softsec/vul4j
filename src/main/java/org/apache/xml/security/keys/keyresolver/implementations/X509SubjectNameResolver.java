@@ -79,8 +79,7 @@ public class X509SubjectNameResolver extends KeyResolverSpi {
         Element[] x509childNodes = null;	   
         XMLX509SubjectName x509childObject[] = null;
 
-        if (!XMLUtils.elementIsInSignatureSpace(element,
-                                                Constants._TAG_X509DATA) ) {     
+        if (!XMLUtils.elementIsInSignatureSpace(element, Constants._TAG_X509DATA)) {     
             if (log.isDebugEnabled()) { 
                 log.debug("I can't");
             }
@@ -113,8 +112,7 @@ public class X509SubjectNameResolver extends KeyResolverSpi {
             x509childObject = new XMLX509SubjectName[x509childNodes.length];
 
             for (int i = 0; i < x509childNodes.length; i++) {
-                x509childObject[i] =
-                    new XMLX509SubjectName(x509childNodes[i], BaseURI);
+                x509childObject[i] = new XMLX509SubjectName(x509childNodes[i], BaseURI);
             }
 
             Iterator<Certificate> storageIterator = storage.getIterator();

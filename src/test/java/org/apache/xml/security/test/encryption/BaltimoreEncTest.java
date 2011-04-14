@@ -585,7 +585,7 @@ public class BaltimoreEncTest extends org.junit.Assert {
      *
      * Retrieve the credit card number from the payment info document
      *
-     * @param doc The document to retreive the card number from
+     * @param doc The document to retrieve the card number from
      * @return The retrieved credit card number
      * @throws XPathExpressionException 
      */

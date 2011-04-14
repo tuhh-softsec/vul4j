@@ -88,8 +88,7 @@ public class X509SKIResolver extends KeyResolverSpi {
         Element x509childNodes[] = null;
         x509childNodes = XMLUtils.selectDsNodes(element.getFirstChild(), Constants._TAG_X509SKI);
 
-        if (!((x509childNodes != null)
-            && (x509childNodes.length > 0))) {
+        if (!((x509childNodes != null) && (x509childNodes.length > 0))) {
             if (log.isDebugEnabled()) {
                 log.debug("I can't");
             }
@@ -111,8 +110,7 @@ public class X509SKIResolver extends KeyResolverSpi {
             x509childObject = new XMLX509SKI[x509childNodes.length];
 
             for (int i = 0; i < x509childNodes.length; i++) {
-                x509childObject[i] =
-                    new XMLX509SKI(x509childNodes[i], BaseURI);
+                x509childObject[i] = new XMLX509SKI(x509childNodes[i], BaseURI);
             }
 
             Iterator<Certificate> storageIterator = storage.getIterator();
@@ -123,8 +121,7 @@ public class X509SKIResolver extends KeyResolverSpi {
                 for (int i = 0; i < x509childObject.length; i++) {
                     if (certSKI.equals(x509childObject[i])) {
                         if (log.isDebugEnabled()) {
-                            log.debug("Return PublicKey from "
-                                  + cert.getSubjectDN().getName());
+                            log.debug("Return PublicKey from " + cert.getSubjectDN().getName());
                         }
 
                         return cert;

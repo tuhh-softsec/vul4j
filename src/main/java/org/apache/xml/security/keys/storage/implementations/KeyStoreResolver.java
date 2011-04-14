@@ -33,7 +33,7 @@ import org.apache.xml.security.keys.storage.StorageResolverSpi;
 public class KeyStoreResolver extends StorageResolverSpi {
 
     /** Field keyStore */
-    KeyStore keyStore = null;
+    private KeyStore keyStore = null;
 
     /**
      * Constructor KeyStoreResolver

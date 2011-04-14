@@ -38,13 +38,6 @@ public class TransformC14N11_WithComments extends TransformSpi {
     }
 
     protected XMLSignatureInput enginePerformTransform(
-        XMLSignatureInput input, Transform transform
-    )
-        throws CanonicalizationException {
-        return enginePerformTransform(input, null, transform);
-    }
-
-    protected XMLSignatureInput enginePerformTransform(
         XMLSignatureInput input, OutputStream os, Transform transform
     ) throws CanonicalizationException {
       

@@ -36,7 +36,8 @@ import org.apache.xml.security.utils.Base64;
 
 /**
  * This {@link StorageResolverSpi} makes all raw (binary) {@link X509Certificate}s
- * which reside as files in a single directory available to the {@link org.apache.xml.security.keys.storage.StorageResolver}.
+ * which reside as files in a single directory available to the 
+ * {@link org.apache.xml.security.keys.storage.StorageResolver}.
  */
 public class CertsInFilesystemDirectoryResolver extends StorageResolverSpi {
 
@@ -47,7 +48,7 @@ public class CertsInFilesystemDirectoryResolver extends StorageResolverSpi {
         );
 
     /** Field merlinsCertificatesDir */
-    String merlinsCertificatesDir = null;
+    private String merlinsCertificatesDir = null;
 
     /** Field certs */
     private List<X509Certificate> certs = new ArrayList<X509Certificate>();
@@ -58,7 +59,6 @@ public class CertsInFilesystemDirectoryResolver extends StorageResolverSpi {
      */
     public CertsInFilesystemDirectoryResolver(String directoryName) 
         throws StorageResolverException {
-
         this.merlinsCertificatesDir = directoryName;
 
         this.readCertsFromHarddrive();

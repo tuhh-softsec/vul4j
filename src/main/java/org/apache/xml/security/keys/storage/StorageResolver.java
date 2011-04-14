@@ -37,7 +37,7 @@ public class StorageResolver {
         org.apache.commons.logging.LogFactory.getLog(StorageResolver.class);
 
     /** Field storageResolvers */
-    List<StorageResolverSpi> storageResolvers = null;
+    private List<StorageResolverSpi> storageResolvers = null;
 
     /**
      * Constructor StorageResolver

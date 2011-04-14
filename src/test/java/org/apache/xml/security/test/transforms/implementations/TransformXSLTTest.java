@@ -81,7 +81,7 @@ public class TransformXSLTTest extends org.junit.Assert {
             (Element) xpath.evaluate(expression, doc1, XPathConstants.NODE);
 
         Transform transform = 
-            Transform.getInstance(doc1, Transforms.TRANSFORM_XSLT, transformEl.getChildNodes());
+            new Transform(doc1, Transforms.TRANSFORM_XSLT, transformEl.getChildNodes());
 
         transform.performTransform(new XMLSignatureInput(doc2));
     }

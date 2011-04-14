@@ -321,7 +321,7 @@ public class XMLCipher {
         if (null == transformation) {
             throw new NullPointerException("Transformation unexpectedly null...");
         }
-        if(!isValidEncryptionAlgorithm(transformation)) {
+        if (!isValidEncryptionAlgorithm(transformation)) {
             logger.warn("Algorithm non-standard, expected one of " + ENC_ALGORITHMS);
         }
     }

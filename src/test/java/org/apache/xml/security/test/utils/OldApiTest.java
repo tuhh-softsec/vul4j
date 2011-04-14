@@ -16,53 +16,27 @@
  */
 package org.apache.xml.security.test.utils;
 
-import java.io.IOException;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 
 import javax.crypto.SecretKey;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.xml.security.Init;
-import org.apache.xml.security.c14n.CanonicalizationException;
-import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.keys.keyresolver.KeyResolver;
 import org.apache.xml.security.keys.keyresolver.KeyResolverException;
 import org.apache.xml.security.keys.keyresolver.KeyResolverSpi;
 import org.apache.xml.security.keys.storage.StorageResolver;
 import org.apache.xml.security.signature.XMLSignatureInput;
-import org.apache.xml.security.transforms.Transform;
-import org.apache.xml.security.transforms.TransformSpi;
-import org.apache.xml.security.transforms.TransformationException;
 import org.apache.xml.security.utils.resolver.ResourceResolver;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 
 public class OldApiTest extends org.junit.Assert {
 
-    public static class OldTransform extends TransformSpi {
-        static Transform compare;
-        
-        @SuppressWarnings("deprecation")
-        protected XMLSignatureInput enginePerformTransform(
-            XMLSignatureInput input
-        ) throws IOException, CanonicalizationException, InvalidCanonicalizerException,
-            TransformationException, ParserConfigurationException, SAXException {
-            assertEquals(compare, transformObject);
-            return null ;
-        }
-
-        protected String engineGetURI() {
-            return null;
-        };
-    }
-    
     public static class OldResourceResolverSpi extends ResourceResolverSpi {
         Attr uriCompare;
         String baseCompare;
@@ -152,17 +126,6 @@ public class OldApiTest extends org.junit.Assert {
         public OldKeyResolverNoPublicConsSpi(PublicKey pk) {
             this.pk = pk;
         }
-    }
-
-    @org.junit.Test
-    public void testOldTransformSpiApi() throws Exception {
-        Init.init();
-        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-        Transform.register("old", OldTransform.class.getName());
-
-        Transform a = new Transform(doc, "old", null);
-        OldTransform.compare = a;
-        a.performTransform(null);
     }
 
     @org.junit.Test

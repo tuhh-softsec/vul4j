@@ -57,7 +57,6 @@ public class RSAKeyValueResolver extends KeyResolverSpi {
             rsaKeyElement = element;		  
         }
 
-
         if (rsaKeyElement == null) {
             return null;         
         }

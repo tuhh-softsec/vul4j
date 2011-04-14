@@ -1,4 +1,3 @@
-
 /*
  * Copyright  1999-2004 The Apache Software Foundation.
  *
@@ -17,68 +16,62 @@
  */
 package org.apache.xml.security.keys.storage;
 
-
-
 import org.apache.xml.security.exceptions.XMLSecurityException;
 
 
-/**
- *
- * @author $Author$
- */
 public class StorageResolverException extends XMLSecurityException {
 
-   /**
-         * 
-         */
-        private static final long serialVersionUID = 1L;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
 
-   /**
-    * Constructor StorageResolverException
-    *
-    */
-   public StorageResolverException() {
-      super();
-   }
+    /**
+     * Constructor StorageResolverException
+     *
+     */
+    public StorageResolverException() {
+        super();
+    }
 
-   /**
-    * Constructor StorageResolverException
-    *
-    * @param msgID
-    */
-   public StorageResolverException(String msgID) {
-      super(msgID);
-   }
+    /**
+     * Constructor StorageResolverException
+     *
+     * @param msgID
+     */
+    public StorageResolverException(String msgID) {
+        super(msgID);
+    }
 
-   /**
-    * Constructor StorageResolverException
-    *
-    * @param msgID
-    * @param exArgs
-    */
-   public StorageResolverException(String msgID, Object exArgs[]) {
-      super(msgID, exArgs);
-   }
+    /**
+     * Constructor StorageResolverException
+     *
+     * @param msgID
+     * @param exArgs
+     */
+    public StorageResolverException(String msgID, Object exArgs[]) {
+        super(msgID, exArgs);
+    }
 
-   /**
-    * Constructor StorageResolverException
-    *
-    * @param msgID
-    * @param originalException
-    */
-   public StorageResolverException(String msgID, Exception originalException) {
-      super(msgID, originalException);
-   }
+    /**
+     * Constructor StorageResolverException
+     *
+     * @param msgID
+     * @param originalException
+     */
+    public StorageResolverException(String msgID, Exception originalException) {
+        super(msgID, originalException);
+    }
 
-   /**
-    * Constructor StorageResolverException
-    *
-    * @param msgID
-    * @param exArgs
-    * @param originalException
-    */
-   public StorageResolverException(String msgID, Object exArgs[],
-                                   Exception originalException) {
-      super(msgID, exArgs, originalException);
-   }
+    /**
+     * Constructor StorageResolverException
+     *
+     * @param msgID
+     * @param exArgs
+     * @param originalException
+     */
+    public StorageResolverException(String msgID, Object exArgs[],
+                                    Exception originalException) {
+        super(msgID, exArgs, originalException);
+    }
 }

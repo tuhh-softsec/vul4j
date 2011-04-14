@@ -69,26 +69,12 @@ public class TransformXSLT extends TransformSpi {
         return implementedTransformURI;
     }
 
-    /**
-     * Method enginePerformTransform
-     * 
-     * @param input the input for this transform
-     * @return the result of this Transform
-     * @throws IOException
-     * @throws TransformationException
-     */
-    protected XMLSignatureInput enginePerformTransform(
-        XMLSignatureInput input, Transform transformObject
-    ) throws IOException, TransformationException {
-        return enginePerformTransform(input, null, transformObject);
-    }
-
     protected XMLSignatureInput enginePerformTransform(
         XMLSignatureInput input, OutputStream baos, Transform transformObject
     ) throws IOException, TransformationException {
         try {
-            Element transformElement = transformObject.getElement();        
-
+            Element transformElement = transformObject.getElement();
+            
             Element xsltElement =
                 XMLUtils.selectNode(transformElement.getFirstChild(), XSLTSpecNS, "stylesheet", 0);
 
