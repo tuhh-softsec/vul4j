@@ -26,6 +26,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.apache.xml.security.Init;
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.keys.content.KeyValue;
 import org.apache.xml.security.signature.XMLSignature;
@@ -37,6 +38,10 @@ public class KeyValueTest extends org.junit.Assert {
     private static final String SEP = System.getProperty("file.separator");
 
     private DocumentBuilder db;
+    
+    static {
+        Init.init();
+    }
 
     public KeyValueTest() throws Exception {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();

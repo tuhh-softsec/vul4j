@@ -27,8 +27,14 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.algorithms.SignatureAlgorithm;
+import org.apache.xml.security.algorithms.SignatureAlgorithmSpi;
+import org.apache.xml.security.algorithms.implementations.IntegrityHmac;
+import org.apache.xml.security.algorithms.implementations.SignatureBaseRSA;
+import org.apache.xml.security.algorithms.implementations.SignatureDSA;
+import org.apache.xml.security.algorithms.implementations.SignatureECDSA;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.keys.keyresolver.KeyResolver;
+import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.transforms.Transform;
 import org.apache.xml.security.transforms.TransformSpi;
 import org.apache.xml.security.transforms.Transforms;
@@ -74,6 +80,8 @@ public class Init {
     private static Map<String, String> defaultNamespacePrefixes = new HashMap<String, String>();
     private static Map<String, Class<? extends TransformSpi>> defaultTransforms = 
         new HashMap<String, Class<? extends TransformSpi>>();
+    private static Map<String, Class<? extends SignatureAlgorithmSpi>> defaultSignatures = 
+        new HashMap<String, Class<? extends SignatureAlgorithmSpi>>();
     
     static {
         //
@@ -127,6 +135,61 @@ public class Init {
         );
         defaultTransforms.put(
             Transforms.TRANSFORM_XPATH2FILTER04, TransformXPath2Filter.class
+        );
+        
+        //
+        // default URI-SignatureAlgorithmSpi class pairs
+        //
+        defaultSignatures.put(SignatureDSA.URI, SignatureDSA.class);
+        defaultSignatures.put(
+            XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA1, SignatureBaseRSA.SignatureRSASHA1.class
+        );
+        defaultSignatures.put(
+            XMLSignature.ALGO_ID_MAC_HMAC_SHA1, IntegrityHmac.IntegrityHmacSHA1.class
+        );
+        defaultSignatures.put(
+            XMLSignature.ALGO_ID_SIGNATURE_NOT_RECOMMENDED_RSA_MD5, 
+            SignatureBaseRSA.SignatureRSAMD5.class
+        );
+        defaultSignatures.put(
+            XMLSignature.ALGO_ID_SIGNATURE_RSA_RIPEMD160, 
+            SignatureBaseRSA.SignatureRSARIPEMD160.class
+        );
+        defaultSignatures.put(
+            XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA256, SignatureBaseRSA.SignatureRSASHA256.class
+        );
+        defaultSignatures.put(
+            XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA384, SignatureBaseRSA.SignatureRSASHA384.class
+        );
+        defaultSignatures.put(
+            XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA512, SignatureBaseRSA.SignatureRSASHA512.class
+        );
+        defaultSignatures.put(
+            XMLSignature.ALGO_ID_SIGNATURE_ECDSA_SHA1, SignatureECDSA.SignatureECDSASHA1.class
+        );
+        defaultSignatures.put(
+            XMLSignature.ALGO_ID_SIGNATURE_ECDSA_SHA256, SignatureECDSA.SignatureECDSASHA256.class
+        );
+        defaultSignatures.put(
+            XMLSignature.ALGO_ID_SIGNATURE_ECDSA_SHA384, SignatureECDSA.SignatureECDSASHA384.class
+        );
+        defaultSignatures.put(
+            XMLSignature.ALGO_ID_SIGNATURE_ECDSA_SHA512, SignatureECDSA.SignatureECDSASHA512.class
+        );
+        defaultSignatures.put(
+            XMLSignature.ALGO_ID_MAC_HMAC_NOT_RECOMMENDED_MD5, IntegrityHmac.IntegrityHmacMD5.class
+        );
+        defaultSignatures.put(
+            XMLSignature.ALGO_ID_MAC_HMAC_RIPEMD160, IntegrityHmac.IntegrityHmacRIPEMD160.class
+        );
+        defaultSignatures.put(
+            XMLSignature.ALGO_ID_MAC_HMAC_SHA256, IntegrityHmac.IntegrityHmacSHA256.class
+        );
+        defaultSignatures.put(
+            XMLSignature.ALGO_ID_MAC_HMAC_SHA384, IntegrityHmac.IntegrityHmacSHA384.class
+        );
+        defaultSignatures.put(
+            XMLSignature.ALGO_ID_MAC_HMAC_SHA512, IntegrityHmac.IntegrityHmacSHA512.class
         );
     }
     
@@ -376,6 +439,15 @@ public class Init {
             //
             for (String key : defaultTransforms.keySet()) {
                 Transform.register(key, (Class<TransformSpi>)defaultTransforms.get(key));
+            }
+            
+            //
+            // Set the default signature algorithms
+            //
+            for (String key : defaultSignatures.keySet()) {
+                SignatureAlgorithm.register(
+                    key, (Class<SignatureAlgorithmSpi>)defaultSignatures.get(key)
+                );
             }
             
         } catch (Exception ex) {

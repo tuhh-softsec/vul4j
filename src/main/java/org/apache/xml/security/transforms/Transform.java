@@ -60,7 +60,7 @@ public final class Transform extends SignatureElementProxy {
     private static Map<String, Class<TransformSpi>> transformSpiHash = 
         new ConcurrentHashMap<String, Class<TransformSpi>>();
     
-    private TransformSpi transformSpi;
+    private final TransformSpi transformSpi;
     
     /**
      * Generates a Transform object that implements the specified 
@@ -102,7 +102,7 @@ public final class Transform extends SignatureElementProxy {
             XMLUtils.addReturnToElement(doc, contextNodes);
         }
 
-        initializeTransform(doc, algorithmURI, contextNodes);
+        transformSpi = initializeTransform(doc, algorithmURI, contextNodes);
     }
 
     /**
@@ -119,7 +119,7 @@ public final class Transform extends SignatureElementProxy {
     public Transform(Document doc, String algorithmURI, NodeList contextNodes)
         throws InvalidTransformException {
         super(doc);
-        initializeTransform(doc, algorithmURI, contextNodes);
+        transformSpi = initializeTransform(doc, algorithmURI, contextNodes);
     }
 
     /**
@@ -278,7 +278,7 @@ public final class Transform extends SignatureElementProxy {
     /**
      * Initialize the transform object.
      */
-    private void initializeTransform(Document doc, String algorithmURI, NodeList contextNodes)
+    private TransformSpi initializeTransform(Document doc, String algorithmURI, NodeList contextNodes)
         throws InvalidTransformException {
 
         this.constructionElement.setAttributeNS(null, Constants._ATT_ALGORITHM, algorithmURI);
@@ -288,8 +288,9 @@ public final class Transform extends SignatureElementProxy {
             Object exArgs[] = { algorithmURI };
             throw new InvalidTransformException("signature.Transform.UnknownTransform", exArgs);
         }
+        TransformSpi newTransformSpi = null;
         try {
-            transformSpi = transformSpiClass.newInstance();
+            newTransformSpi = transformSpiClass.newInstance();
         } catch (InstantiationException ex) {
             Object exArgs[] = { algorithmURI };
             throw new InvalidTransformException(
@@ -304,7 +305,7 @@ public final class Transform extends SignatureElementProxy {
 
         if (log.isDebugEnabled()) {
             log.debug("Create URI \"" + algorithmURI + "\" class \""
-                      + transformSpi.getClass() + "\"");
+                      + newTransformSpi.getClass() + "\"");
             log.debug("The NodeList is " + contextNodes);
         }
 
@@ -314,6 +315,7 @@ public final class Transform extends SignatureElementProxy {
                 this.constructionElement.appendChild(contextNodes.item(i).cloneNode(true));
             }
         }
+        return newTransformSpi;
     }
 
 }

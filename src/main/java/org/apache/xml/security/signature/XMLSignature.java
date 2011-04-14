@@ -545,10 +545,8 @@ public final class XMLSignature extends SignatureElementProxy {
 
                 so.close();
             } catch (IOException ex) {
-                // Impossible...but clear the signature cache anyway
-                sa.clearSignatureCache();
+                // Impossible...
             } catch (XMLSecurityException ex) {
-                sa.clearSignatureCache();
                 throw ex;
             }
 
@@ -652,10 +650,8 @@ public final class XMLSignature extends SignatureElementProxy {
                 // retrieve the byte[] from the stored signature
                 sigBytes = this.getSignatureValue();
             } catch (IOException ex) {
-                // Impossible...but clear the verification cache anyway
-                sa.clearVerificationCache();
+                // Impossible...
             } catch (XMLSecurityException ex) {
-                sa.clearVerificationCache();
                 throw ex;
             }
 
