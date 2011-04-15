@@ -174,7 +174,7 @@ public class TarArchiver
             throw new ArchiverException( tarFile + " is read-only." );
         }
 
-        getLogger().info( "Building tar : " + tarFile.getAbsolutePath() );
+        getLogger().info( "Building tar: " + tarFile.getAbsolutePath() );
 
         tOut = new TarOutputStream(
             compression.compress( new BufferedOutputStream( new FileOutputStream( tarFile ) ) ) );
