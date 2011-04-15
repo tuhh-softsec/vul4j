@@ -54,15 +54,15 @@ import org.xml.sax.SAXException;
  */
 public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
 
-    private static final String XML_LANG_URI=Constants.XML_LANG_SPACE_SpecNS;
+    private static final String XML_LANG_URI = Constants.XML_LANG_SPACE_SpecNS;
+    private static final String XMLNS_URI = Constants.NamespaceSpecNS;
 
     /**
       * This Set contains the names (Strings like "xmlns" or "xmlns:foo") of
       * the inclusive namespaces.
       */
-    TreeSet<String> inclusiveNSSet = new TreeSet<String>();
-    static final String XMLNS_URI = Constants.NamespaceSpecNS;
-    final SortedSet<Attr> result = new TreeSet<Attr>(COMPARE);
+    private TreeSet<String> inclusiveNSSet = new TreeSet<String>();
+    private final SortedSet<Attr> result = new TreeSet<Attr>(COMPARE);
 
     /**
      * Constructor Canonicalizer20010315Excl
@@ -137,7 +137,7 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
      * @throws CanonicalizationException
      */
     @SuppressWarnings("unchecked")
-    Iterator<Attr> handleAttributesSubtree(Element E, NameSpaceSymbTable ns)
+    protected Iterator<Attr> handleAttributesSubtree(Element E, NameSpaceSymbTable ns)
         throws CanonicalizationException {
         // result will contain the attrs which have to be outputted
         SortedSet<Attr> result = this.result;       
@@ -195,7 +195,7 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
         }
         visiblyUtilized.add(prefix);
 
-        // This can be optimezed by I don't have time
+        // This can be optimized by I don't have time
         Iterator<String> it = visiblyUtilized.iterator();
         while (it.hasNext()) {
             String s = it.next();
@@ -230,7 +230,7 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
      * @throws CanonicalizationException
      */
     @SuppressWarnings("unchecked")
-    final Iterator<Attr> handleAttributes(Element E, NameSpaceSymbTable ns)
+    protected final Iterator<Attr> handleAttributes(Element E, NameSpaceSymbTable ns)
         throws CanonicalizationException {
         // result will contain the attrs which have to be outputted
         SortedSet<Attr> result = this.result;       
@@ -294,7 +294,7 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
             }
 
             if (ns.addMapping(NName, NNodeValue, N)) {
-                // New definiton check if it is relative
+                // New definition check if it is relative
                 if (C14nHelper.namespaceIsRelative(NNodeValue)) {
                     Object exArgs[] = 
                         { E.getTagName(), NName, N.getNodeValue() };
@@ -339,7 +339,7 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
         return result.iterator(); 
     }
 
-    void circumventBugIfNeeded(XMLSignatureInput input) 
+    protected void circumventBugIfNeeded(XMLSignatureInput input) 
         throws CanonicalizationException, ParserConfigurationException, 
                IOException, SAXException {
         if (!input.isNeedsToBeExpanded() || inclusiveNSSet.isEmpty()) {

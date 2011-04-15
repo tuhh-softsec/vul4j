@@ -34,6 +34,13 @@ import org.apache.xml.security.algorithms.implementations.SignatureBaseRSA;
 import org.apache.xml.security.algorithms.implementations.SignatureDSA;
 import org.apache.xml.security.algorithms.implementations.SignatureECDSA;
 import org.apache.xml.security.c14n.Canonicalizer;
+import org.apache.xml.security.c14n.CanonicalizerSpi;
+import org.apache.xml.security.c14n.implementations.Canonicalizer11_OmitComments;
+import org.apache.xml.security.c14n.implementations.Canonicalizer11_WithComments;
+import org.apache.xml.security.c14n.implementations.Canonicalizer20010315ExclOmitComments;
+import org.apache.xml.security.c14n.implementations.Canonicalizer20010315ExclWithComments;
+import org.apache.xml.security.c14n.implementations.Canonicalizer20010315OmitComments;
+import org.apache.xml.security.c14n.implementations.Canonicalizer20010315WithComments;
 import org.apache.xml.security.encryption.XMLCipher;
 import org.apache.xml.security.keys.keyresolver.KeyResolver;
 import org.apache.xml.security.signature.XMLSignature;
@@ -86,6 +93,8 @@ public class Init {
         new HashMap<String, Class<? extends SignatureAlgorithmSpi>>();
     private static Map<String, JCEMapper.Algorithm> defaultAlgorithms = 
         new HashMap<String, JCEMapper.Algorithm>();
+    private static Map<String, Class<? extends CanonicalizerSpi>> defaultC14nAlgorithms = 
+        new HashMap<String, Class<? extends CanonicalizerSpi>>();
     
     static {
         //
@@ -334,6 +343,28 @@ public class Init {
         defaultAlgorithms.put(
              XMLCipher.AES_256_KeyWrap, 
              new JCEMapper.Algorithm("AES", "AESWrap")
+        );
+        
+        //
+        // Default IRI-Canonicalizer class pairs
+        //
+        defaultC14nAlgorithms.put(
+            Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS, Canonicalizer20010315OmitComments.class
+        );
+        defaultC14nAlgorithms.put(
+            Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS, Canonicalizer20010315WithComments.class
+        );
+        defaultC14nAlgorithms.put(
+            Canonicalizer.ALGO_ID_C14N_EXCL_OMIT_COMMENTS, Canonicalizer20010315ExclOmitComments.class
+        );
+        defaultC14nAlgorithms.put(
+            Canonicalizer.ALGO_ID_C14N_EXCL_WITH_COMMENTS, Canonicalizer20010315ExclWithComments.class
+        );
+        defaultC14nAlgorithms.put(
+            Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS, Canonicalizer11_OmitComments.class
+        );
+        defaultC14nAlgorithms.put(
+            Canonicalizer.ALGO_ID_C14N11_WITH_COMMENTS, Canonicalizer11_WithComments.class
         );
     }
     
@@ -610,6 +641,14 @@ public class Init {
                 JCEMapper.register(key, defaultAlgorithms.get(key));
             }
             
+            //
+            // Set the default c14n algorithms
+            //
+            for (String key : defaultC14nAlgorithms.keySet()) {
+                Canonicalizer.register(
+                    key, (Class<CanonicalizerSpi>)defaultC14nAlgorithms.get(key)
+                );
+            }
         } catch (Exception ex) {
             log.error(ex);
             ex.printStackTrace();

@@ -42,16 +42,13 @@ public abstract class CanonicalizerSpi {
     /**
      * Method canonicalize
      *
-     *
      * @param inputBytes
      * @return the c14n bytes. 
-     *
      *
      * @throws CanonicalizationException
      * @throws java.io.IOException
      * @throws javax.xml.parsers.ParserConfigurationException
      * @throws org.xml.sax.SAXException
-     *
      */
     public byte[] engineCanonicalize(byte[] inputBytes)
         throws javax.xml.parsers.ParserConfigurationException, java.io.IOException, 
@@ -61,39 +58,13 @@ public abstract class CanonicalizerSpi {
         InputSource in = new InputSource(bais);
         DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
 
-        // needs to validate for ID attribute nomalization
+        // needs to validate for ID attribute normalization
         dfactory.setNamespaceAware(true);
 
         DocumentBuilder db = dfactory.newDocumentBuilder();
 
-        /*
-         * for some of the test vectors from the specification,
-         * there has to be a validation parser for ID attributes, default
-         * attribute values, NMTOKENS, etc.
-         * Unfortunately, the test vectors do use different DTDs or
-         * even no DTD. So Xerces 1.3.1 fires many warnings about using
-         * ErrorHandlers.
-         *
-         * Text from the spec:
-         *
-         * The input octet stream MUST contain a well-formed XML document,
-         * but the input need not be validated. However, the attribute
-         * value normalization and entity reference resolution MUST be
-         * performed in accordance with the behaviors of a validating
-         * XML processor. As well, nodes for default attributes (declared
-         * in the ATTLIST with an AttValue but not specified) are created
-         * in each element. Thus, the declarations in the document type
-         * declaration are used to help create the canonical form, even
-         * though the document type declaration is not retained in the
-         * canonical form.
-         *
-         */
-
-        // ErrorHandler eh = new C14NErrorHandler();
-        // db.setErrorHandler(eh);
         Document document = db.parse(in);
-        byte result[] = this.engineCanonicalizeSubTree(document);
-        return result;
+        return this.engineCanonicalizeSubTree(document);
     }
 
     /**
@@ -125,13 +96,15 @@ public abstract class CanonicalizerSpi {
         );
     }
 
-    /** Returns the URI of this engine.
+    /** 
+     * Returns the URI of this engine.
      * @return the URI
      */
     public abstract String engineGetURI();
 
-    /** Returns the URI if include comments
-     * @return true if include.
+    /**
+     * Returns true if comments are included
+     * @return true if comments are included
      */
     public abstract boolean engineGetIncludeComments();
 

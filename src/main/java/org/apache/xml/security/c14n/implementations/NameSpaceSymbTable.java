@@ -33,8 +33,9 @@ import org.w3c.dom.Node;
  */
 public class NameSpaceSymbTable {
 
-    static final String XMLNS = "xmlns";
-    static final SymbMap initialMap = new SymbMap();
+    private static final String XMLNS = "xmlns";
+    private static final SymbMap initialMap = new SymbMap();
+    
     static {
         NameSpaceSymbEntry ne = new NameSpaceSymbEntry("", null, true, XMLNS);
         ne.lastrendered = "";		
@@ -42,14 +43,14 @@ public class NameSpaceSymbTable {
     }
     
     /**The map betwen prefix-> entry table. */
-    SymbMap symb;
+    private SymbMap symb;
     
     /**The level of nameSpaces (for Inclusive visibility).*/
-    int nameSpaces = 0;
+    private int nameSpaces = 0;
     
     /**The stacks for removing the definitions when doing pop.*/
-    List<SymbMap> level;
-    boolean cloned = true;
+    private List<SymbMap> level;
+    private boolean cloned = true;
     
     /**
      * Default constractor
@@ -65,7 +66,7 @@ public class NameSpaceSymbTable {
      * For Inclusive rendering
      * @param result the list where to fill the unrendered xmlns definitions.
      **/       
-    public  void getUnrenderedNodes(Collection<Attr> result) {		
+    public void getUnrenderedNodes(Collection<Attr> result) {		
         Iterator<NameSpaceSymbEntry> it = symb.entrySet().iterator();
         while (it.hasNext()) {	   	   
             NameSpaceSymbEntry n = it.next();

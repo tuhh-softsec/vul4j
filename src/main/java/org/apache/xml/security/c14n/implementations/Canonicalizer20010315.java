@@ -48,13 +48,13 @@ import org.xml.sax.SAXException;
  * @author Christian Geuer-Pollmann <geuerp@apache.org>
  */
 public abstract class Canonicalizer20010315 extends CanonicalizerBase {
-    boolean firstCall = true;
-    final SortedSet<Attr> result = new TreeSet<Attr>(COMPARE);
+    private static final String XMLNS_URI = Constants.NamespaceSpecNS;
+    private static final String XML_LANG_URI = Constants.XML_LANG_SPACE_SpecNS;
     
-    static final String XMLNS_URI = Constants.NamespaceSpecNS;
-    static final String XML_LANG_URI = Constants.XML_LANG_SPACE_SpecNS;
+    private boolean firstCall = true;
+    private final SortedSet<Attr> result = new TreeSet<Attr>(COMPARE);
     
-    static class XmlAttrStack {
+    private static class XmlAttrStack {
         static class XmlsStackElement {
             int level;
             boolean rendered = false;
@@ -138,7 +138,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
 
     }
 
-    XmlAttrStack xmlattrStack = new XmlAttrStack();
+    private XmlAttrStack xmlattrStack = new XmlAttrStack();
 
     /**
      * Constructor Canonicalizer20010315
@@ -163,7 +163,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
      * @return the Attr[]s to be output
      * @throws CanonicalizationException
      */
-    Iterator<Attr> handleAttributesSubtree(Element E,  NameSpaceSymbTable ns )
+    protected Iterator<Attr> handleAttributesSubtree(Element E,  NameSpaceSymbTable ns )
         throws CanonicalizationException {
         if (!E.hasAttributes() && !firstCall) {
             return null; 
@@ -229,7 +229,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
      * @return the Attr[]s to be outputted
      * @throws CanonicalizationException
      */
-    Iterator<Attr> handleAttributes(Element E,  NameSpaceSymbTable ns) 
+    protected Iterator<Attr> handleAttributes(Element E,  NameSpaceSymbTable ns) 
         throws CanonicalizationException {    
         // result will contain the attrs which have to be outputted
         xmlattrStack.push(ns.getLevel());
@@ -349,7 +349,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
         throw new CanonicalizationException("c14n.Canonicalizer.UnsupportedOperation");
     }
     
-    void circumventBugIfNeeded(XMLSignatureInput input) 
+    protected void circumventBugIfNeeded(XMLSignatureInput input) 
         throws CanonicalizationException, ParserConfigurationException, IOException, SAXException {
         if (!input.isNeedsToBeExpanded()) {
             return;
@@ -363,7 +363,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
         XMLUtils.circumventBug2650(doc);
     }
 
-    void handleParent(Element e, NameSpaceSymbTable ns) {
+    protected void handleParent(Element e, NameSpaceSymbTable ns) {
         if (!e.hasAttributes()) {
             return;
         }

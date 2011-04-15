@@ -21,8 +21,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.xml.security.c14n.CanonicalizationException;
@@ -43,14 +45,13 @@ import org.w3c.dom.Text;
  */
 public class XMLUtils {
 
-    @SuppressWarnings("unchecked")
-    private static boolean ignoreLineBreaks = ((Boolean)
-        AccessController.doPrivileged(new PrivilegedAction() {
-            public Object run() {
+    private static boolean ignoreLineBreaks =
+        AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+            public Boolean run() {
                 return Boolean.valueOf(Boolean.getBoolean
                     ("org.apache.xml.security.ignoreLineBreaks"));
             }
-        })).booleanValue();
+        }).booleanValue();
     
     private static volatile String dsPrefix = "ds";
     private static volatile String xencPrefix = "xenc";
@@ -99,7 +100,7 @@ public class XMLUtils {
         getSetRec(rootNode, result, exclude, com);
     }
     
-    static final void getSetRec(final Node rootNode, final Set<Node> result,
+    private static void getSetRec(final Node rootNode, final Set<Node> result,
                                 final Node exclude, final boolean com) {
         if (rootNode == exclude) {
             return;
@@ -109,7 +110,7 @@ public class XMLUtils {
             result.add(rootNode);
             Element el = (Element)rootNode;
             if (el.hasAttributes()) {
-                NamedNodeMap nl = ((Element)rootNode).getAttributes();
+                NamedNodeMap nl = el.getAttributes();
                 for (int i = 0;i < nl.getLength(); i++) {
                     result.add(nl.item(i));
                 }
@@ -162,8 +163,7 @@ public class XMLUtils {
      * @param os the {@link OutputStream}
      * @param addPreamble
      */
-    public static void outputDOM(Node contextNode, OutputStream os,
-                                 boolean addPreamble) {
+    public static void outputDOM(Node contextNode, OutputStream os, boolean addPreamble) {
         try {
             if (addPreamble) {
                 os.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n".getBytes());
@@ -194,23 +194,18 @@ public class XMLUtils {
      * @param os
      */
     public static void outputDOMc14nWithComments(Node contextNode, OutputStream os) {
-
         try {
             os.write(Canonicalizer.getInstance(
                 Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS).canonicalizeSubtree(contextNode)
             );
         } catch (IOException ex) {
-
             // throw new RuntimeException(ex.getMessage());
         } catch (InvalidCanonicalizerException ex) {
-
             // throw new RuntimeException(ex.getMessage());
         } catch (CanonicalizationException ex) {
-
             // throw new RuntimeException(ex.getMessage());
         }
     }
-
 
     /**
      * Method getFullTextChildrenFromElement
@@ -219,7 +214,6 @@ public class XMLUtils {
      * @return the string of children
      */
     public static String getFullTextChildrenFromElement(Element element) {
-
         StringBuilder sb = new StringBuilder();
         NodeList children = element.getChildNodes();
         int iMax = children.getLength();
@@ -228,7 +222,7 @@ public class XMLUtils {
             Node curr = children.item(i);
 
             if (curr.getNodeType() == Node.TEXT_NODE) {
-                sb.append(((Text) curr).getData());
+                sb.append(((Text)curr).getData());
             }
         }
 
@@ -332,7 +326,7 @@ public class XMLUtils {
     }
 
     /**
-     * This method returns the first non-null owner document of the Node's in this Set.
+     * This method returns the first non-null owner document of the Nodes in this Set.
      * This method is necessary because it <I>always</I> returns a
      * {@link Document}. {@link Node#getOwnerDocument} returns <CODE>null</CODE>
      * if the {@link Node} is a {@link Document}.
@@ -342,9 +336,7 @@ public class XMLUtils {
      */
     public static Document getOwnerDocument(Set<Node> xpathNodeSet) {
         NullPointerException npe = null;
-        Iterator<Node> iterator = xpathNodeSet.iterator();
-        while(iterator.hasNext()) {
-            Node node = iterator.next();
+        for (Node node : xpathNodeSet) {
             int nodeType = node.getNodeType();
             if (nodeType == Node.DOCUMENT_NODE) {
                 return (Document) node;
@@ -357,8 +349,8 @@ public class XMLUtils {
             } catch (NullPointerException e) {
                 npe = e;
             }
-
         }
+        
         throw new NullPointerException(I18n.translate("endorsed.jdk1.4.0")
                                        + " Original message was \""
                                        + (npe == null ? "" : npe.getMessage()) + "\"");
@@ -373,7 +365,6 @@ public class XMLUtils {
      * @return the element.
      */
     public static Element createDSctx(Document doc, String prefix, String namespace) {
-
         if ((prefix == null) || (prefix.trim().length() == 0)) {
             throw new IllegalArgumentException("You must supply a prefix");
         }
@@ -417,7 +408,6 @@ public class XMLUtils {
      * @return the set with the nodelist
      */
     public static Set<Node> convertNodelistToSet(NodeList xpathNodeSet) {
-
         if (xpathNodeSet == null) {
             return new HashSet<Node>();
         }
@@ -431,7 +421,6 @@ public class XMLUtils {
 
         return set;
     }
-
 
     /**
      * This method spreads all namespace attributes in a DOM document to their
@@ -549,9 +538,8 @@ public class XMLUtils {
      * @param number
      * @return nodes with the constrain
      */
-
     public static Element selectXencNode(Node sibling, String nodeName, int number) {
-        while (sibling!=null) {
+        while (sibling != null) {
             if (EncryptionConstants.EncryptionSpecNS.equals(sibling.getNamespaceURI()) 
                 && sibling.getLocalName().equals(nodeName)) {
                 if (number == 0){
@@ -609,7 +597,7 @@ public class XMLUtils {
      * @param number
      * @return nodes with the constrain
      */
-    public static Element selectNode(Node sibling, String uri,String nodeName, int number) {
+    public static Element selectNode(Node sibling, String uri, String nodeName, int number) {
         while (sibling != null) {
             if (sibling.getNamespaceURI() != null && sibling.getNamespaceURI().equals(uri) 
                 && sibling.getLocalName().equals(nodeName)) {
@@ -639,27 +627,15 @@ public class XMLUtils {
      * @return nodes with the constraint
      */
     public static Element[] selectNodes(Node sibling, String uri, String nodeName) {
-        int size = 20;
-        Element[] a = new Element[size];
-        int curr = 0;
-        //List list=new ArrayList();
+        List<Element> list = new ArrayList<Element>();
         while (sibling != null) {
             if (sibling.getNamespaceURI() != null && sibling.getNamespaceURI().equals(uri) 
                 && sibling.getLocalName().equals(nodeName)) {
-                a[curr++] = (Element)sibling;
-                if (size <= curr) {
-                    int cursize = size<<2;
-                    Element []cp = new Element[cursize];
-                    System.arraycopy(a, 0, cp, 0, size);
-                    a = cp;
-                    size = cursize;
-                }   
+                list.add((Element)sibling);
             }
             sibling = sibling.getNextSibling();
         }
-        Element[] af = new Element[curr];
-        System.arraycopy(a, 0, af, 0, curr);
-        return af;
+        return list.toArray(new Element[list.size()]);
     }
 
     /**
@@ -690,7 +666,6 @@ public class XMLUtils {
      * @return true if the node is descendant
      */
     static public boolean isDescendantOrSelf(Node ctx, Node descendantOrSelf) {
-
         if (ctx == descendantOrSelf) {
             return true;
         }

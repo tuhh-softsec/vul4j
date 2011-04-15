@@ -52,6 +52,12 @@ import org.xml.sax.SAXException;
  * @author Christian Geuer-Pollmann <geuerp@apache.org>
  */
 public abstract class CanonicalizerBase extends CanonicalizerSpi {
+    public static final String XML = "xml";
+    public static final String XMLNS = "xmlns";
+    
+    protected static final AttrCompare COMPARE = new AttrCompare();
+    protected static final Attr nullNode;
+    
     private static final byte[] END_PI = {'?','>'};
     private static final byte[] BEGIN_PI = {'<','?'};
     private static final byte[] END_COMM = {'-','-','>'};
@@ -64,18 +70,13 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     private static final byte[] LT = {'&','l','t',';'};
     private static final byte[] END_TAG = {'<','/'};
     private static final byte[] AMP = {'&','a','m','p',';'};
+    private static final byte[] equalsStr = {'=','\"'};
+    private static final int NODE_BEFORE_DOCUMENT_ELEMENT = -1;
+    private static final int NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT = 0;
+    private static final int NODE_AFTER_DOCUMENT_ELEMENT = 1;
     
-    static final AttrCompare COMPARE = new AttrCompare();
-    static final String XML = "xml";
-    static final String XMLNS = "xmlns";
-    static final byte[] equalsStr = {'=','\"'};
-    static final int NODE_BEFORE_DOCUMENT_ELEMENT = -1;
-    static final int NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT = 0;
-    static final int NODE_AFTER_DOCUMENT_ELEMENT = 1;
-    
-    //The null xmlns definiton.
-    protected static final Attr nullNode;
     static {
+        // The null xmlns definiton.
         try {
             nullNode = DocumentBuilderFactory.newInstance().
             newDocumentBuilder().newDocument().createAttributeNS(Constants.NamespaceSpecNS, XMLNS);
@@ -85,16 +86,16 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
         }
     }
 
-    List<NodeFilter> nodeFilter;
+    private List<NodeFilter> nodeFilter;
 
-    boolean includeComments;  
-    Set<Node> xpathNodeSet = null;
+    private boolean includeComments;  
+    private Set<Node> xpathNodeSet = null;
     /**
-     * The node to be skiped/excluded from the DOM tree 
+     * The node to be skipped/excluded from the DOM tree 
      * in subtree canonicalizations.
      */
-    Node excludeNode =null;
-    OutputStream writer = new ByteArrayOutputStream();
+    private Node excludeNode =null;
+    private OutputStream writer = new ByteArrayOutputStream();
 
     /**
      * Constructor CanonicalizerBase
@@ -184,7 +185,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
      * @return The canonicalize stream.
      * @throws CanonicalizationException
      */
-    byte[] engineCanonicalizeSubTree(Node rootNode, Node excludeNode)
+    protected byte[] engineCanonicalizeSubTree(Node rootNode, Node excludeNode)
         throws CanonicalizationException {
         this.excludeNode = excludeNode;
         try {
@@ -223,7 +224,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
      * @throws CanonicalizationException
      * @throws IOException
      */
-    final void canonicalizeSubTree(
+    protected final void canonicalizeSubTree(
         Node currentNode, NameSpaceSymbTable ns, Node endnode, int documentLevel
     ) throws CanonicalizationException, IOException {
         if (isVisibleInt(currentNode) == -1) {
@@ -330,7 +331,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     }
 
 
-    private  byte[] engineCanonicalizeXPathNodeSetInternal(Node doc)
+    private byte[] engineCanonicalizeXPathNodeSetInternal(Node doc)
         throws CanonicalizationException {   
         try { 
             this.canonicalizeXPathNodeSet(doc, doc);
@@ -359,15 +360,16 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
      * @throws CanonicalizationException
      * @throws IOException
      */
-    final void canonicalizeXPathNodeSet(Node currentNode, Node endnode)
+    protected final void canonicalizeXPathNodeSet(Node currentNode, Node endnode)
         throws CanonicalizationException, IOException {
         if (isVisibleInt(currentNode) == -1) {
             return;
         }
         boolean currentNodeIsVisible = false;	  
         NameSpaceSymbTable ns = new NameSpaceSymbTable();
-        if (currentNode != null && Node.ELEMENT_NODE == currentNode.getNodeType())
+        if (currentNode != null && Node.ELEMENT_NODE == currentNode.getNodeType()) {
             getParentNameSpaces((Element)currentNode, ns);
+        }
         Node sibling = null;
         Node parentNode = null;	
         OutputStream writer = this.writer;
@@ -499,7 +501,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
         } while(true);
     }
     
-    int isVisibleDO(Node currentNode, int level) {
+    protected int isVisibleDO(Node currentNode, int level) {
         if (nodeFilter != null) {
             Iterator<NodeFilter> it = nodeFilter.iterator();
             while (it.hasNext()) {   	
@@ -515,7 +517,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
         return 1;
     }
     
-    int isVisibleInt(Node currentNode) {
+    protected int isVisibleInt(Node currentNode) {
         if (nodeFilter != null) {
             Iterator<NodeFilter> it = nodeFilter.iterator();
             while (it.hasNext()) {   			
@@ -532,8 +534,8 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
         return 1;
     }
 
-    boolean isVisible(Node currentNode) {
-        if (nodeFilter!=null) {
+    protected boolean isVisible(Node currentNode) {
+        if (nodeFilter != null) {
             Iterator<NodeFilter> it = nodeFilter.iterator();
             while (it.hasNext()) {   			
                 if (it.next().isNodeInclude(currentNode) != 1) {
@@ -547,7 +549,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
         return true;
     }
 
-    void handleParent(Element e, NameSpaceSymbTable ns) {
+    protected void handleParent(Element e, NameSpaceSymbTable ns) {
         if (!e.hasAttributes()) {
             return;
         }
@@ -574,7 +576,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
      * @param el
      * @param ns
      */
-    final void getParentNameSpaces(Element el, NameSpaceSymbTable ns)  {
+    protected final void getParentNameSpaces(Element el, NameSpaceSymbTable ns)  {
         List<Element> parents = new ArrayList<Element>(10);
         Node n1 = el.getParentNode();
         if (n1 == null || Node.ELEMENT_NODE != n1.getNodeType()) {
@@ -611,7 +613,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
      * @return the attributes nodes to output.
      * @throws CanonicalizationException
      */
-    abstract Iterator<Attr> handleAttributes(Element E, NameSpaceSymbTable ns )
+    abstract Iterator<Attr> handleAttributes(Element E, NameSpaceSymbTable ns)
         throws CanonicalizationException;
 
     /**
@@ -647,7 +649,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
      * @param writer 
      * @throws IOException
      */
-    static final void outputAttrToWriter(
+    protected static final void outputAttrToWriter(
         final String name, final String value, 
         final OutputStream writer, final Map<String, byte[]> cache
     ) throws IOException {
@@ -707,7 +709,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
      * @param writer where to write the things
      * @throws IOException
      */
-    static final void outputPItoWriter(
+    protected static final void outputPItoWriter(
         ProcessingInstruction currentPI, OutputStream writer, int position
     ) throws IOException {   	  
         if (position == NODE_AFTER_DOCUMENT_ELEMENT) {
@@ -761,7 +763,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
      * @param writer writer where to write the things
      * @throws IOException
      */
-    static final void outputCommentToWriter(
+    protected static final void outputCommentToWriter(
         Comment currentComment, OutputStream writer, int position
     ) throws IOException {   	  
         if (position == NODE_AFTER_DOCUMENT_ELEMENT) {
@@ -798,7 +800,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
      * @param writer writer where to write the things
      * @throws IOException
      */
-    static final void outputTextToWriter(
+    protected static final void outputTextToWriter(
         final String text, final OutputStream writer
     ) throws IOException {
         final int length = text.length();
