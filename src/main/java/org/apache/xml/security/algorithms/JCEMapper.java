@@ -16,11 +16,9 @@
  */
 package org.apache.xml.security.algorithms;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.xml.security.Init;
-import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Element;
 
 
@@ -33,72 +31,37 @@ public class JCEMapper {
     private static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(JCEMapper.class);
 
-    private static Map<String, String> uriToJCEName;
-
-    private static Map<String, Algorithm> algorithmsMap;
+    private static Map<String, Algorithm> algorithmsMap = 
+        new ConcurrentHashMap<String, Algorithm>();
 
     private static String providerName = null;
     
     /**
-     * Method init
+     * Method register
      *
-     * @param mappingElement
+     * @param element
      * @throws Exception
      */
-    public static void init(Element mappingElement) throws Exception {
-        loadAlgorithms((Element)mappingElement.getElementsByTagName("Algorithms").item(0));
-    }
-
-    static void loadAlgorithms(Element algorithmsEl) {
-        Element[] algorithms = 
-            XMLUtils.selectNodes(algorithmsEl.getFirstChild(), Init.CONF_NS, "Algorithm");
-        uriToJCEName = new HashMap<String, String>(algorithms.length * 2); 
-        algorithmsMap = new HashMap<String, Algorithm>(algorithms.length * 2);
-        for (int i = 0; i < algorithms.length; i++) {
-            Element el = algorithms[i];
-            String id = el.getAttribute("URI");
-            String jceName = el.getAttribute("JCEName");
-            uriToJCEName.put(id, jceName);
-            algorithmsMap.put(id, new Algorithm(el));
-        }
-
+    public static void register(String id, Algorithm algorithm) throws Exception {
+        algorithmsMap.put(id, algorithm);
     }
 
     /**
      * Method translateURItoJCEID
      *
-     * @param AlgorithmURI
+     * @param algorithmURI
      * @return the JCE standard name corresponding to the given URI
      */
-    public static String translateURItoJCEID(String AlgorithmURI) {
+    public static String translateURItoJCEID(String algorithmURI) {
         if (log.isDebugEnabled()) {
-            log.debug("Request for URI " + AlgorithmURI);
+            log.debug("Request for URI " + algorithmURI);
         }
 
-        return uriToJCEName.get(AlgorithmURI);
-    }
-
-    /**
-     * Method getAlgorithmClassFromURI
-     * @param AlgorithmURI
-     * @return the class name that implements this algorithm
-     */
-    public static String getAlgorithmClassFromURI(String AlgorithmURI) {
-        if (log.isDebugEnabled()) {
-            log.debug("Request for URI " + AlgorithmURI);
+        Algorithm algorithm = algorithmsMap.get(algorithmURI);
+        if (algorithm != null) {
+            return algorithm.jceName;
         }
-
-        return (algorithmsMap.get(AlgorithmURI)).algorithmClass;
-    }
-
-    /**
-     * Returns the key length in bits for a particular algorithm.
-     *
-     * @param AlgorithmURI
-     * @return The length of the key used in the algorithm
-     */
-    public static int getKeyLengthFromURI(String AlgorithmURI) {
-        return Integer.parseInt((algorithmsMap.get(AlgorithmURI)).keyLength);
+        return null;
     }
 
     /**
@@ -107,8 +70,12 @@ public class JCEMapper {
      * @param AlgorithmURI
      * @return The KeyAlgorithm for the given URI.
      */
-    public static String getJCEKeyAlgorithmFromURI(String AlgorithmURI) {
-        return (algorithmsMap.get(AlgorithmURI)).requiredKey;
+    public static String getJCEKeyAlgorithmFromURI(String algorithmURI) {
+        Algorithm algorithm = algorithmsMap.get(algorithmURI);
+        if (algorithm != null) {
+            return algorithm.requiredKey;
+        }
+        return null;
     }
 
     /**
@@ -132,18 +99,21 @@ public class JCEMapper {
      */   
     public static class Algorithm {
         
-        String algorithmClass;
-        String keyLength;
-        String requiredKey;
+        final String requiredKey;
+        final String jceName;
         
         /**
          * Gets data from element
          * @param el
          */
         public Algorithm(Element el) {
-            algorithmClass = el.getAttribute("AlgorithmClass");
-            keyLength = el.getAttribute("KeyLength");
             requiredKey = el.getAttribute("RequiredKey");
+            jceName = el.getAttribute("JCEName");
+        }
+        
+        public Algorithm(String requiredKey, String jceName) {
+            this.requiredKey = requiredKey;
+            this.jceName = jceName;
         }
     }
     

@@ -26,6 +26,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.xml.security.algorithms.JCEMapper;
+import org.apache.xml.security.algorithms.MessageDigestAlgorithm;
 import org.apache.xml.security.algorithms.SignatureAlgorithm;
 import org.apache.xml.security.algorithms.SignatureAlgorithmSpi;
 import org.apache.xml.security.algorithms.implementations.IntegrityHmac;
@@ -33,6 +34,7 @@ import org.apache.xml.security.algorithms.implementations.SignatureBaseRSA;
 import org.apache.xml.security.algorithms.implementations.SignatureDSA;
 import org.apache.xml.security.algorithms.implementations.SignatureECDSA;
 import org.apache.xml.security.c14n.Canonicalizer;
+import org.apache.xml.security.encryption.XMLCipher;
 import org.apache.xml.security.keys.keyresolver.KeyResolver;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.transforms.Transform;
@@ -82,6 +84,8 @@ public class Init {
         new HashMap<String, Class<? extends TransformSpi>>();
     private static Map<String, Class<? extends SignatureAlgorithmSpi>> defaultSignatures = 
         new HashMap<String, Class<? extends SignatureAlgorithmSpi>>();
+    private static Map<String, JCEMapper.Algorithm> defaultAlgorithms = 
+        new HashMap<String, JCEMapper.Algorithm>();
     
     static {
         //
@@ -191,6 +195,146 @@ public class Init {
         defaultSignatures.put(
             XMLSignature.ALGO_ID_MAC_HMAC_SHA512, IntegrityHmac.IntegrityHmacSHA512.class
         );
+        
+        //
+        // Default URI-Algorithm object pairs
+        //
+        defaultAlgorithms.put(
+            MessageDigestAlgorithm.ALGO_ID_DIGEST_NOT_RECOMMENDED_MD5, 
+            new JCEMapper.Algorithm(null, "MD5")
+        );
+        defaultAlgorithms.put(
+            MessageDigestAlgorithm.ALGO_ID_DIGEST_RIPEMD160, 
+            new JCEMapper.Algorithm(null, "RIPEMD160")
+        );
+        defaultAlgorithms.put(
+            MessageDigestAlgorithm.ALGO_ID_DIGEST_SHA1, 
+            new JCEMapper.Algorithm(null, "SHA-1")
+        );
+        defaultAlgorithms.put(
+            MessageDigestAlgorithm.ALGO_ID_DIGEST_SHA256, 
+            new JCEMapper.Algorithm(null, "SHA-256")
+        );
+        defaultAlgorithms.put(
+            MessageDigestAlgorithm.ALGO_ID_DIGEST_SHA384, 
+            new JCEMapper.Algorithm(null, "SHA-384")
+        );
+        defaultAlgorithms.put(
+            MessageDigestAlgorithm.ALGO_ID_DIGEST_SHA512, 
+            new JCEMapper.Algorithm(null, "SHA-512")
+        );
+        defaultAlgorithms.put(
+            XMLSignature.ALGO_ID_SIGNATURE_DSA, 
+            new JCEMapper.Algorithm(null, "SHA1withDSA")
+        );
+        defaultAlgorithms.put(
+            XMLSignature.ALGO_ID_SIGNATURE_NOT_RECOMMENDED_RSA_MD5, 
+            new JCEMapper.Algorithm(null, "MD5withRSA")
+        );
+        defaultAlgorithms.put(
+            XMLSignature.ALGO_ID_SIGNATURE_RSA_RIPEMD160, 
+            new JCEMapper.Algorithm(null, "RIPEMD160withRSA")
+        );
+        defaultAlgorithms.put(
+            XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA1, 
+            new JCEMapper.Algorithm(null, "SHA1withRSA")
+        );
+        defaultAlgorithms.put(
+            XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA256, 
+            new JCEMapper.Algorithm(null, "SHA256withRSA")
+        );
+        defaultAlgorithms.put(
+            XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA384, 
+            new JCEMapper.Algorithm(null, "SHA384withRSA")
+        );
+        defaultAlgorithms.put(
+            XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA512, 
+            new JCEMapper.Algorithm(null, "SHA512withRSA")
+        );
+        defaultAlgorithms.put(
+            XMLSignature.ALGO_ID_SIGNATURE_ECDSA_SHA1, 
+            new JCEMapper.Algorithm(null, "SHA1withECDSA")
+        );
+        defaultAlgorithms.put(
+            XMLSignature.ALGO_ID_SIGNATURE_ECDSA_SHA256, 
+            new JCEMapper.Algorithm(null, "SHA256withECDSA")
+        );
+        defaultAlgorithms.put(
+            XMLSignature.ALGO_ID_SIGNATURE_ECDSA_SHA384, 
+            new JCEMapper.Algorithm(null, "SHA384withECDSA")
+        );
+        defaultAlgorithms.put(
+            XMLSignature.ALGO_ID_SIGNATURE_ECDSA_SHA512, 
+            new JCEMapper.Algorithm(null, "SHA512withECDSA")
+        );
+        defaultAlgorithms.put(
+            XMLSignature.ALGO_ID_MAC_HMAC_NOT_RECOMMENDED_MD5, 
+            new JCEMapper.Algorithm(null, "HmacMD5")
+        );
+        defaultAlgorithms.put(
+            XMLSignature.ALGO_ID_MAC_HMAC_RIPEMD160, 
+            new JCEMapper.Algorithm(null, "HMACRIPEMD160")
+        );
+        defaultAlgorithms.put(
+            XMLSignature.ALGO_ID_MAC_HMAC_SHA1, 
+            new JCEMapper.Algorithm(null, "HmacSHA1")
+        );
+        defaultAlgorithms.put(
+            XMLSignature.ALGO_ID_MAC_HMAC_SHA256, 
+            new JCEMapper.Algorithm(null, "HmacSHA256")
+        );
+        defaultAlgorithms.put(
+            XMLSignature.ALGO_ID_MAC_HMAC_SHA384, 
+            new JCEMapper.Algorithm(null, "HmacSHA384")
+        );
+        defaultAlgorithms.put(
+            XMLSignature.ALGO_ID_MAC_HMAC_SHA512, 
+            new JCEMapper.Algorithm(null, "HmacSHA512")
+        );
+        defaultAlgorithms.put(
+            XMLCipher.TRIPLEDES, 
+            new JCEMapper.Algorithm("DESede", "DESede/CBC/ISO10126Padding")
+        );
+        defaultAlgorithms.put(
+            XMLCipher.AES_128, 
+            new JCEMapper.Algorithm("AES", "AES/CBC/ISO10126Padding")
+        );
+        defaultAlgorithms.put(
+            XMLCipher.AES_192, 
+            new JCEMapper.Algorithm("AES", "AES/CBC/ISO10126Padding")
+        );
+        defaultAlgorithms.put(
+            XMLCipher.AES_256, 
+            new JCEMapper.Algorithm("AES", "AES/CBC/ISO10126Padding")
+        );
+        defaultAlgorithms.put(
+            XMLCipher.RSA_v1dot5, 
+            new JCEMapper.Algorithm("RSA", "RSA/ECB/PKCS1Padding")
+        );
+        defaultAlgorithms.put(
+            XMLCipher.RSA_OAEP, 
+            new JCEMapper.Algorithm("RSA", "RSA/ECB/OAEPWithSHA1AndMGF1Padding")
+        );
+        defaultAlgorithms.put(
+            XMLCipher.DIFFIE_HELLMAN, 
+            new JCEMapper.Algorithm(null, null)
+        );
+        defaultAlgorithms.put(
+             XMLCipher.TRIPLEDES_KeyWrap, 
+             new JCEMapper.Algorithm("DESede", "DESedeWrap")
+        );
+        defaultAlgorithms.put(
+             XMLCipher.AES_128_KeyWrap, 
+             new JCEMapper.Algorithm("AES", "AESWrap")
+        );
+        defaultAlgorithms.put(
+             XMLCipher.AES_192_KeyWrap, 
+             new JCEMapper.Algorithm("AES", "AESWrap")
+        );
+        defaultAlgorithms.put(
+             XMLCipher.AES_256_KeyWrap, 
+             new JCEMapper.Algorithm("AES", "AESWrap")
+        );
     }
     
     /**
@@ -297,7 +441,16 @@ public class Init {
                 }
 
                 if ("JCEAlgorithmMappings".equals(tag)) {
-                    JCEMapper.init((Element)el);
+                    Node algorithmsNode = ((Element)el).getElementsByTagName("Algorithms").item(0);
+                    if (algorithmsNode != null) {
+                        Element[] algorithms = 
+                            XMLUtils.selectNodes(algorithmsNode.getFirstChild(), CONF_NS, "Algorithm");
+                        for (int i = 0; i < algorithms.length; i++) {
+                            Element element = algorithms[i];
+                            String id = element.getAttribute("URI");
+                            JCEMapper.register(id, new JCEMapper.Algorithm(element));
+                        }
+                    }
                 }
 
                 if (tag.equals("SignatureAlgorithms")) {
@@ -448,6 +601,13 @@ public class Init {
                 SignatureAlgorithm.register(
                     key, (Class<SignatureAlgorithmSpi>)defaultSignatures.get(key)
                 );
+            }
+            
+            //
+            // Set the default JCE algorithms
+            //
+            for (String key : defaultAlgorithms.keySet()) {
+                JCEMapper.register(key, defaultAlgorithms.get(key));
             }
             
         } catch (Exception ex) {

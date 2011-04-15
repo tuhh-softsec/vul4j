@@ -54,7 +54,7 @@ public class MessageDigestAlgorithm extends Algorithm {
         EncryptionConstants.EncryptionSpecNS + "ripemd160";
 
     /** Field algorithm stores the actual {@link java.security.MessageDigest} */
-    private MessageDigest algorithm = null;
+    private final MessageDigest algorithm;
     
     private static ThreadLocal<Map<String, MessageDigest>> instances = 
         new ThreadLocal<Map<String, MessageDigest>>() {
@@ -68,13 +68,13 @@ public class MessageDigestAlgorithm extends Algorithm {
      * Constructor for the brave who pass their own message digest algorithms and the 
      * corresponding URI.
      * @param doc
-     * @param messageDigest
      * @param algorithmURI
      */
-    private MessageDigestAlgorithm(Document doc, MessageDigest messageDigest, String algorithmURI) {
+    private MessageDigestAlgorithm(Document doc, String algorithmURI) 
+        throws XMLSignatureException {
         super(doc, algorithmURI);
 
-        this.algorithm = messageDigest;
+        algorithm = getDigestInstance(algorithmURI);
     }
 
     /**
@@ -88,8 +88,7 @@ public class MessageDigestAlgorithm extends Algorithm {
     public static MessageDigestAlgorithm getInstance(
         Document doc, String algorithmURI
     ) throws XMLSignatureException {
-        MessageDigest md = getDigestInstance(algorithmURI);
-        return new MessageDigestAlgorithm(doc, md, algorithmURI);
+        return new MessageDigestAlgorithm(doc, algorithmURI);
     }
 
     private static MessageDigest getDigestInstance(String algorithmURI) throws XMLSignatureException {
@@ -133,7 +132,7 @@ public class MessageDigestAlgorithm extends Algorithm {
      * @return the actual {@link java.security.MessageDigest} algorithm object
      */
     public java.security.MessageDigest getAlgorithm() {
-        return this.algorithm;
+        return algorithm;
     }
 
     /**
@@ -155,7 +154,7 @@ public class MessageDigestAlgorithm extends Algorithm {
      * @return the result of the {@link java.security.MessageDigest#digest()} method
      */
     public byte[] digest() {
-        return this.algorithm.digest();
+        return algorithm.digest();
     }
 
     /**
@@ -166,7 +165,7 @@ public class MessageDigestAlgorithm extends Algorithm {
      * @return the result of the {@link java.security.MessageDigest#digest(byte[])} method
      */
     public byte[] digest(byte input[]) {
-        return this.algorithm.digest(input);
+        return algorithm.digest(input);
     }
 
     /**
@@ -180,7 +179,7 @@ public class MessageDigestAlgorithm extends Algorithm {
      * @throws java.security.DigestException
      */
     public int digest(byte buf[], int offset, int len) throws java.security.DigestException {
-        return this.algorithm.digest(buf, offset, len);
+        return algorithm.digest(buf, offset, len);
     }
 
     /**
@@ -190,7 +189,7 @@ public class MessageDigestAlgorithm extends Algorithm {
      * @return the result of the {@link java.security.MessageDigest#getAlgorithm} method
      */
     public String getJCEAlgorithmString() {
-        return this.algorithm.getAlgorithm();
+        return algorithm.getAlgorithm();
     }
 
     /**
@@ -200,7 +199,7 @@ public class MessageDigestAlgorithm extends Algorithm {
      * @return the result of the {@link java.security.MessageDigest#getProvider} method
      */
     public java.security.Provider getJCEProvider() {
-        return this.algorithm.getProvider();
+        return algorithm.getProvider();
     }
 
     /**
@@ -210,7 +209,7 @@ public class MessageDigestAlgorithm extends Algorithm {
      * @return the result of the {@link java.security.MessageDigest#getDigestLength} method
      */
     public int getDigestLength() {
-        return this.algorithm.getDigestLength();
+        return algorithm.getDigestLength();
     }
 
     /**
@@ -219,7 +218,7 @@ public class MessageDigestAlgorithm extends Algorithm {
      *
      */
     public void reset() {
-        this.algorithm.reset();
+        algorithm.reset();
     }
 
     /**
@@ -229,7 +228,7 @@ public class MessageDigestAlgorithm extends Algorithm {
      * @param input
      */
     public void update(byte[] input) {
-        this.algorithm.update(input);
+        algorithm.update(input);
     }
 
     /**
@@ -239,7 +238,7 @@ public class MessageDigestAlgorithm extends Algorithm {
      * @param input
      */
     public void update(byte input) {
-        this.algorithm.update(input);
+        algorithm.update(input);
     }
 
     /**
@@ -251,7 +250,7 @@ public class MessageDigestAlgorithm extends Algorithm {
      * @param len
      */
     public void update(byte buf[], int offset, int len) {
-        this.algorithm.update(buf, offset, len);
+        algorithm.update(buf, offset, len);
     }
 
     /** @inheritDoc */

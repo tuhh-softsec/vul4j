@@ -352,29 +352,6 @@
       <Resolver JAVACLASS="org.apache.xml.security.utils.resolver.implementations.ResolverXPointer"
                 DESCRIPTION="A simple resolver for requests of XPointer fragents" />
    </ResourceResolvers>
-   <KeyInfo>
-      <ContentHandler LOCALNAME="KeyName"
-                      NAMESPACE="http://www.w3.org/2000/09/xmldsig#"
-                      JAVACLASS="org.apache.xml.security.keys.content.KeyName" />
-      <ContentHandler LOCALNAME="KeyValue"
-                      NAMESPACE="http://www.w3.org/2000/09/xmldsig#"
-                      JAVACLASS="org.apache.xml.security.keys.content.KeyValue" />
-      <ContentHandler LOCALNAME="RetrievalMethod"
-                      NAMESPACE="http://www.w3.org/2000/09/xmldsig#"
-                      JAVACLASS="org.apache.xml.security.keys.content.RetrievalMethod" />
-      <ContentHandler LOCALNAME="X509Data"
-                      NAMESPACE="http://www.w3.org/2000/09/xmldsig#"
-                      JAVACLASS="org.apache.xml.security.keys.content.X509Data" />
-      <ContentHandler LOCALNAME="PGPData"
-                      NAMESPACE="http://www.w3.org/2000/09/xmldsig#"
-                      JAVACLASS="org.apache.xml.security.keys.content.PGPData" />
-      <ContentHandler LOCALNAME="SPKIData"
-                      NAMESPACE="http://www.w3.org/2000/09/xmldsig#"
-                      JAVACLASS="org.apache.xml.security.keys.content.SPKIData" />
-      <ContentHandler LOCALNAME="MgmtData"
-                      NAMESPACE="http://www.w3.org/2000/09/xmldsig#"
-                      JAVACLASS="org.apache.xml.security.keys.content.MgmtData" />
-   </KeyInfo>
    <KeyResolver>
       <!-- This section contains a list of KeyResolvers that are available in
            every KeyInfo object -->

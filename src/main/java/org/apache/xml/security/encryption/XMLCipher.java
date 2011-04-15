@@ -1728,7 +1728,7 @@ public class XMLCipher {
      * @return a new <code>EncryptionProperty</code>
      */
     public EncryptionProperty createEncryptionProperty() {
-        return (factory.newEncryptionProperty());
+        return factory.newEncryptionProperty();
     }
 
     /**
