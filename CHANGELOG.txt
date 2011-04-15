@@ -1,4 +1,8 @@
 Changelog for "Apache xml-security" <http://santuario.apache.org/>
+
+New in v1.5.0-SNAPSHOT
+    Fixed SANTUARIO-262: Invalid use of String.getBytes(). Thanks to Martin Koegler.
+
 New in v1.4.4
     Fixed Bug 50248: Concurrency problem on incomplete Init.init() calls. Thanks to Oliver Moehrke.
     Fixed Bug 50215: test_jsr105 target appears to fail certain tests because of changes to W3C xml-stylesheet spec

@@ -590,9 +590,9 @@ public class XMLSignatureInput implements Cloneable {
             // if a not-wellformed nodeset exists, put a container around it...
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-            baos.write("<container>".getBytes());
+            baos.write("<container>".getBytes("UTF-8"));
             baos.write(this.getBytes());
-            baos.write("</container>".getBytes());
+            baos.write("</container>".getBytes("UTF-8"));
 
             byte result[] = baos.toByteArray();
             Document document = db.parse(new ByteArrayInputStream(result));

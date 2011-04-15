@@ -1039,7 +1039,7 @@ public class XMLCipher {
                 encryptedBytes = c.doFinal(serializedOctets.getBytes("UTF-8"));
                 if (logger.isDebugEnabled()) {
                     logger.debug("Expected cipher.outputSize = " +
-                        Integer.toString(c.getOutputSize(serializedOctets.getBytes().length)));
+                        Integer.toString(c.getOutputSize(serializedOctets.getBytes("UTF-8").length)));
                 }
             }
             if (logger.isDebugEnabled()) {
@@ -2286,7 +2286,12 @@ public class XMLCipher {
                     EncryptionConstants.EncryptionSpecNS, 
                     EncryptionConstants._TAG_OAEPPARAMS).item(0);
             if (null != oaepParamsElement) {
-                result.setOAEPparams(oaepParamsElement.getNodeValue().getBytes());
+                try {
+                    result.setOAEPparams(
+                    oaepParamsElement.getNodeValue().getBytes("UTF-8"));
+                } catch(UnsupportedEncodingException e) {
+                    throw new RuntimeException("UTF-8 not supported", e);
+                }
             }
 
             // TODO: Make this mess work
@@ -3014,10 +3019,16 @@ public class XMLCipher {
                     ).appendChild(contextDocument.createTextNode(String.valueOf(keySize))));
                 }
                 if (null != oaepParams) {
-                    result.appendChild(
-                        XMLUtils.createElementInEncryptionSpace(
-                            contextDocument, EncryptionConstants._TAG_OAEPPARAMS
-                        ).appendChild(contextDocument.createTextNode(new String(oaepParams))));
+                    try {
+                        result.appendChild(
+                            XMLUtils.createElementInEncryptionSpace(
+                                contextDocument, EncryptionConstants._TAG_OAEPPARAMS
+                            ).appendChild(contextDocument.createTextNode(
+                                new String(oaepParams, "UTF-8")
+                            )));
+                    } catch(UnsupportedEncodingException e) {
+                        throw new RuntimeException("UTF-8 not supported", e);
+                    }
                 }
                 Iterator<Element> itr = encryptionMethodInformation.iterator();
                 while (itr.hasNext()) {

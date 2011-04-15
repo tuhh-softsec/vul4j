@@ -151,7 +151,7 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
 
                 if ((proxyUser != null) && (proxyPass != null)) {
                     String password = proxyUser + ":" + proxyPass;
-                    String encodedPassword = Base64.encode(password.getBytes());
+                    String encodedPassword = Base64.encode(password.getBytes("ISO-8859-1"));
 
                     // or was it Proxy-Authenticate ?
                     urlConnection.setRequestProperty("Proxy-Authorization", encodedPassword);
@@ -174,7 +174,7 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
                             urlConnection = url.openConnection();
 
                             String password = user + ":" + pass;
-                            String encodedPassword = Base64.encode(password.getBytes());
+                            String encodedPassword = Base64.encode(password.getBytes("ISO-8859-1"));
 
                             // set authentication property in the http header
                             urlConnection.setRequestProperty("Authorization",
