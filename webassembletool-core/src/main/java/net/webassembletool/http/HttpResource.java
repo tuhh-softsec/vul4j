@@ -161,7 +161,7 @@ public class HttpResource extends Resource {
 						throw new UnsupportedContentEncodingException("Content-encoding \"" + contentEncoding
 								+ "\" is not supported");
 					}
-					inputStream = new GZIPInputStream(inputStream);
+					inputStream = httpClientResponse.decompressStream();
 				}
 				removeSessionId(inputStream, output);
 			}

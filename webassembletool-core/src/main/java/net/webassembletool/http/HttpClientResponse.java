@@ -29,6 +29,7 @@ import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.GzipDecompressingEntity;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.conn.ConnectionPoolTimeoutException;
 import org.apache.http.conn.HttpHostConnectException;
@@ -44,7 +45,8 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class HttpClientResponse {
-	private final static Logger LOG = LoggerFactory.getLogger(HttpClientResponse.class);
+	private final static Logger LOG = LoggerFactory
+			.getLogger(HttpClientResponse.class);
 	private final HttpResponse httpResponse;
 	private final HttpEntity httpEntity;
 	private final int statusCode;
@@ -52,14 +54,18 @@ public class HttpClientResponse {
 	private final String currentLocation;
 	private final boolean error;
 
-	public static HttpClientResponse create(HttpHost httpHost, HttpRequest basicHttpRequest,
-			HttpClient httpClient, HttpContext httpContext) {
+	public static HttpClientResponse create(HttpHost httpHost,
+			HttpRequest basicHttpRequest, HttpClient httpClient,
+			HttpContext httpContext) {
 		try {
-			HttpResponse httpResponse = httpClient.execute(httpHost, basicHttpRequest, httpContext);
+			HttpResponse httpResponse = httpClient.execute(httpHost,
+					basicHttpRequest, httpContext);
 			int statusCode = httpResponse.getStatusLine().getStatusCode();
 			String currentLocation;
-			if (statusCode == HttpServletResponse.SC_MOVED_PERMANENTLY || statusCode == HttpServletResponse.SC_MOVED_TEMPORARILY) {
-				currentLocation = httpResponse.getFirstHeader(HttpHeaders.LOCATION).getValue();
+			if (statusCode == HttpServletResponse.SC_MOVED_PERMANENTLY
+					|| statusCode == HttpServletResponse.SC_MOVED_TEMPORARILY) {
+				currentLocation = httpResponse.getFirstHeader(
+						HttpHeaders.LOCATION).getValue();
 			} else {
 				// Calculating the URL we may have been redirected to, as
 				// automatic redirect following is activated
@@ -68,26 +74,36 @@ public class HttpClientResponse {
 			LOG.debug(" -> create: " + statusCode + ";" + currentLocation);
 			return new HttpClientResponse(httpResponse, currentLocation);
 		} catch (HttpHostConnectException e) {
-			return new HttpClientResponse(HttpServletResponse.SC_BAD_GATEWAY, "Connection refused");
+			return new HttpClientResponse(HttpServletResponse.SC_BAD_GATEWAY,
+					"Connection refused");
 		} catch (ConnectionPoolTimeoutException e) {
-			return new HttpClientResponse(HttpServletResponse.SC_GATEWAY_TIMEOUT, "Connection pool timeout");
+			return new HttpClientResponse(
+					HttpServletResponse.SC_GATEWAY_TIMEOUT,
+					"Connection pool timeout");
 		} catch (ConnectTimeoutException e) {
-			return new HttpClientResponse(HttpServletResponse.SC_GATEWAY_TIMEOUT, "Connect timeout");
+			return new HttpClientResponse(
+					HttpServletResponse.SC_GATEWAY_TIMEOUT, "Connect timeout");
 		} catch (SocketTimeoutException e) {
-			return new HttpClientResponse(HttpServletResponse.SC_GATEWAY_TIMEOUT, "Socket timeout");
+			return new HttpClientResponse(
+					HttpServletResponse.SC_GATEWAY_TIMEOUT, "Socket timeout");
 		} catch (IOException e) {
-			return new HttpClientResponse(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error retrieving URL");
+			return new HttpClientResponse(
+					HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+					"Error retrieving URL");
 		}
 	}
 
 	static String buildLocation(HttpContext context) {
 		StringBuffer buf = new StringBuffer();
-		HttpHost host = (HttpHost) context.getAttribute(ExecutionContext.HTTP_TARGET_HOST);
-		buf.append(host.getSchemeName()).append("://").append(host.getHostName());
+		HttpHost host = (HttpHost) context
+				.getAttribute(ExecutionContext.HTTP_TARGET_HOST);
+		buf.append(host.getSchemeName()).append("://")
+				.append(host.getHostName());
 		if (host.getPort() != -1) {
 			buf.append(':').append(host.getPort());
 		}
-		HttpRequest finalRequest = (HttpRequest) context.getAttribute(ExecutionContext.HTTP_REQUEST);
+		HttpRequest finalRequest = (HttpRequest) context
+				.getAttribute(ExecutionContext.HTTP_REQUEST);
 		buf.append(finalRequest.getRequestLine().getUri());
 		return buf.toString();
 	}
@@ -154,6 +170,13 @@ public class HttpClientResponse {
 		} else {
 			return null;
 		}
+	}
+
+	public InputStream decompressStream() throws IllegalStateException,
+			IOException {
+		GzipDecompressingEntity compressed = new GzipDecompressingEntity(
+				httpEntity);
+		return compressed.getContent();
 	}
 
 	public Collection<String> getHeaderNames() {
