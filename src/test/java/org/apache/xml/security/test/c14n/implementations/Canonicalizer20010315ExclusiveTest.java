@@ -353,6 +353,57 @@ public class Canonicalizer20010315ExclusiveTest extends org.junit.Assert {
         byte[] bytes = c14n.engineCanonicalize(input, "env ns0 xsi wsu");
         assertEquals(c14nXML,new String(bytes));
     }
+    
+    /**
+     * Method test24excl - a testcase for SANTUARIO-263 
+     * "Canonicalizer can't handle dynamical created DOM correctly"
+     * https://issues.apache.org/jira/browse/SANTUARIO-263
+     */
+    @org.junit.Test
+    public void test24excl() throws Exception {
+        Document doc =
+            this.db.parse(
+                getAbsolutePath(
+                    "src/test/resources/org/apache/xml/security/c14n/inExcl/example2_4.xml"));
+        Node root = 
+            doc.getElementsByTagNameNS("http://example.net", "elem2").item(0);
+        Canonicalizer20010315Excl c = new Canonicalizer20010315ExclWithComments();
+        byte[] reference = 
+            JavaUtils.getBytesFromFile(getAbsolutePath(
+                "src/test/resources/org/apache/xml/security/c14n/inExcl/example2_4_c14nized.xml"));
+        byte[] result = c.engineCanonicalizeSubTree(root);
+        boolean equals = java.security.MessageDigest.isEqual(reference, result);
+
+        assertTrue(equals);
+    }
+
+    /**
+     * Method test24Aexcl - a testcase for SANTUARIO-263 
+     * "Canonicalizer can't handle dynamical created DOM correctly"
+     * https://issues.apache.org/jira/browse/SANTUARIO-263
+     */
+    @org.junit.Test
+    public void test24Aexcl() throws Exception {
+        Document doc = dbf.newDocumentBuilder ().newDocument ();
+        Element local = doc.createElementNS("foo:bar", "dsig:local");
+        Element test = doc.createElementNS("http://example.net", "etsi:test");
+        Element elem2 = doc.createElementNS("http://example.net", "etsi:elem2");
+        Element stuff = doc.createElementNS("foo:bar", "dsig:stuff");
+        elem2.appendChild(stuff);
+        test.appendChild(elem2);
+        local.appendChild(test);
+        doc.appendChild(local);
+
+        Node root = doc.getElementsByTagNameNS("http://example.net", "elem2").item(0);
+        Canonicalizer20010315Excl c = new Canonicalizer20010315ExclWithComments();
+        byte[] reference = 
+            JavaUtils.getBytesFromFile(getAbsolutePath(
+                "src/test/resources/org/apache/xml/security/c14n/inExcl/example2_4_c14nized.xml"));
+        byte[] result = c.engineCanonicalizeSubTree(root);
+        boolean equals = java.security.MessageDigest.isEqual(reference, result);
+
+        assertTrue(equals);
+    }
 
     private String getAbsolutePath(String path) {
         String basedir = System.getProperty("basedir");

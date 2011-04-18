@@ -421,7 +421,7 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
     }
 
     protected void handleParent(Element e, NameSpaceSymbTable ns) {
-        if (!e.hasAttributes()) {
+        if (!e.hasAttributes() && e.getNamespaceURI() == null) {
             return;
         }
         xmlattrStack.push(-1);
@@ -443,6 +443,20 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
                 continue;
             }            
             ns.addMapping(NName,NValue,N);             
+        }
+        if (e.getNamespaceURI() != null) {
+            String NName = e.getPrefix();
+            String NValue = e.getNamespaceURI();
+            String Name;
+            if (NName == null || NName.equals("")) {
+                NName = "xmlns";
+                Name = "xmlns";
+            } else {
+                Name = "xmlns:" + NName;
+            }
+            Attr n = e.getOwnerDocument().createAttributeNS("http://www.w3.org/2000/xmlns/", Name);
+            n.setValue(NValue);
+            ns.addMapping(NName, NValue, n);
         }
     }
 
