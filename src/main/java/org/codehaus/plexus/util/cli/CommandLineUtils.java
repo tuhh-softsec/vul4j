@@ -27,8 +27,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
@@ -42,47 +40,6 @@ import java.util.Vector;
  */
 public abstract class CommandLineUtils
 {
-    private static Map processes = Collections.synchronizedMap( new HashMap() );
-
-    private static Thread shutdownHook = new Thread( "CommandlineUtil shutdown" )
-    {
-        public void run()
-        {
-            if ( ( processes != null ) && ( processes.size() > 0 ) )
-            {
-                System.err.println( "Destroying " + processes.size() + " processes" );
-                for ( Iterator it = processes.values().iterator(); it.hasNext(); )
-                {
-                    System.err.println( "Destroying process.." );
-                    ( (Process) it.next() ).destroy();
-
-                }
-                System.err.println( "Destroyed " + processes.size() + " processes" );
-            }
-        }
-    };
-
-    static
-    {
-        shutdownHook.setContextClassLoader( null );
-        addShutdownHook();
-    }
-
-    public static void addShutdownHook()
-    {
-        Runtime.getRuntime().addShutdownHook( shutdownHook );
-    }
-
-    public static void removeShutdownHook( boolean execute )
-    {
-        Runtime.getRuntime().removeShutdownHook( shutdownHook );
-
-        if ( execute )
-        {
-            shutdownHook.run();
-        }
-    }
-
     public static class StringStreamConsumer
         implements StreamConsumer
     {
@@ -100,6 +57,23 @@ public abstract class CommandLineUtils
             return string.toString();
         }
     }
+
+    private static class ProcessHook extends Thread {
+        private final Process process;
+
+        private ProcessHook( Process process )
+        {
+            super("CommandlineUtils process shutdown hook");
+            this.process = process;
+            this.setContextClassLoader(  null );
+        }
+
+        public void run()
+        {
+            process.destroy();
+        }
+    }
+
 
     public static int executeCommandLine( Commandline cl, StreamConsumer systemOut, StreamConsumer systemErr )
         throws CommandLineException
@@ -129,6 +103,7 @@ public abstract class CommandLineUtils
      * @param timeoutInSeconds Positive integer to specify timeout, zero and negative integers for no timeout.
      * @return A return value, see {@link Process#exitValue()}
      * @throws CommandLineException or CommandLineTimeOutException if time out occurs
+     * @noinspection ThrowableResultOfMethodCallIgnored
      */
     public static int executeCommandLine( Commandline cl, InputStream systemIn, StreamConsumer systemOut,
                                           StreamConsumer systemErr, int timeoutInSeconds )
@@ -143,7 +118,6 @@ public abstract class CommandLineUtils
 
         p = cl.execute();
 
-        processes.put( new Long( cl.getPid() ), p );
 
         StreamFeeder inputFeeder = null;
 
@@ -164,6 +138,10 @@ public abstract class CommandLineUtils
         outputPumper.start();
 
         errorPumper.start();
+
+        ProcessHook processHook = new ProcessHook( p );
+
+        ShutdownHookUtils.addShutDownHook( processHook );
 
         try
         {
@@ -190,8 +168,6 @@ public abstract class CommandLineUtils
 
             waitForAllPumpers( inputFeeder, outputPumper, errorPumper );
 
-            processes.remove( new Long( cl.getPid() ) );
-
             if ( outputPumper.getException() != null )
             {
                 throw new CommandLineException( "Error inside systemOut parser", outputPumper.getException() );
@@ -206,7 +182,6 @@ public abstract class CommandLineUtils
         }
         catch ( InterruptedException ex )
         {
-            killProcess( cl.getPid() );
             if ( inputFeeder != null )
             {
                 inputFeeder.disable();
@@ -217,6 +192,10 @@ public abstract class CommandLineUtils
         }
         finally
         {
+            ShutdownHookUtils.removeShutdownHook( processHook );
+
+            processHook.run();
+
             if ( inputFeeder != null )
             {
                 inputFeeder.close();
@@ -226,12 +205,6 @@ public abstract class CommandLineUtils
 
             errorPumper.close();
 
-            p.destroy();
-
-            if ( processes.get( new Long( cl.getPid() ) ) != null )
-            {
-                processes.remove( new Long( cl.getPid() ) );
-            }
         }
     }
 
@@ -375,33 +348,6 @@ public abstract class CommandLineUtils
                 p.destroy();
             }
         }
-    }
-
-    /**
-     * Kill a process launched by executeCommandLine methods.
-     * Doesn't work correctly on windows, only the cmd process will be destroy but not the sub process (<a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4770092">Bug ID 4770092</a>)
-     *
-     * @param pid The pid of command return by Commandline.getPid()
-     */
-    public static void killProcess( long pid )
-    {
-        Process p = (Process) processes.get( new Long( pid ) );
-
-        if ( p != null )
-        {
-            p.destroy();
-            System.out.println( "Process " + pid + " is killed." );
-            processes.remove( new Long( pid ) );
-        }
-        else
-        {
-            System.out.println( "don't exist." );
-        }
-    }
-
-    public static boolean isAlive( long pid )
-    {
-        return ( processes.get( new Long( pid ) ) != null );
     }
 
     public static boolean isAlive( Process p )
