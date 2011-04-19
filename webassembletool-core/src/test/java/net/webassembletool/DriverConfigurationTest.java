@@ -27,10 +27,8 @@ public class DriverConfigurationTest extends TestCase {
 		// Parsable contentTypes
 		assertTrue("text/html is not in default parsable cotent-types",
 				defaultConfig.getParsableContentTypes().contains("text/html"));
-		assertTrue(
-				"application/xhtml+xml is not in default parsable cotent-types",
-				defaultConfig.getParsableContentTypes().contains(
-						"application/xhtml+xml"));
+		assertTrue("application/xhtml+xml is not in default parsable cotent-types",
+				defaultConfig.getParsableContentTypes().contains("application/xhtml+xml"));
 
 	}
 
@@ -40,36 +38,26 @@ public class DriverConfigurationTest extends TestCase {
 	public void testParsableContentTypes() {
 		Properties properties = new Properties();
 		properties.put("parsableContentTypes", "text/plain");
-		DriverConfiguration config = new DriverConfiguration("test-parsable",
-				properties);
-		assertEquals("parsableContentTypes should contains only 1 element", 1,
-				config.getParsableContentTypes().size());
-		assertEquals("parsableContentTypes should contains text/plain",
-				"text/plain", config.getParsableContentTypes().get(0));
+		DriverConfiguration config = new DriverConfiguration("test-parsable", properties);
+		assertEquals("parsableContentTypes should contains only 1 element", 1, config.getParsableContentTypes().size());
+		assertEquals("parsableContentTypes should contains text/plain", "text/plain", config.getParsableContentTypes().get(0));
 
 		properties = new Properties();
 		properties.put("parsableContentTypes", "text/plain, text/html");
 		config = new DriverConfiguration("test-parsable", properties);
-		assertEquals("parsableContentTypes should contains only 2 elements", 2,
-				config.getParsableContentTypes().size());
-		assertEquals("parsableContentTypes should contains text/plain",
-				"text/plain", config.getParsableContentTypes().get(0));
+		assertEquals("parsableContentTypes should contains only 2 elements", 2, config.getParsableContentTypes().size());
+		assertEquals("parsableContentTypes should contains text/plain", "text/plain", config.getParsableContentTypes().get(0));
 
-		assertEquals("parsableContentTypes should contains text/html",
-				"text/html", config.getParsableContentTypes().get(1));
+		assertEquals("parsableContentTypes should contains text/html", "text/html", config.getParsableContentTypes().get(1));
 
 		properties = new Properties();
-		properties.put("parsableContentTypes",
-				"text/plain, text/html,application/x");
+		properties.put("parsableContentTypes", "text/plain, text/html,application/x");
 		config = new DriverConfiguration("test-parsable", properties);
-		assertEquals("parsableContentTypes should contains only 3 elements", 3,
-				config.getParsableContentTypes().size());
-		assertEquals("parsableContentTypes should contains text/plain",
-				"text/plain", config.getParsableContentTypes().get(0));
-		assertEquals("parsableContentTypes should contains text/html",
-				"text/html", config.getParsableContentTypes().get(1));
-		assertEquals("parsableContentTypes should contains application/x",
-				"application/x", config.getParsableContentTypes().get(2));
+		assertEquals("parsableContentTypes should contains only 3 elements", 3, config.getParsableContentTypes().size());
+		assertEquals("parsableContentTypes should contains text/plain", "text/plain", config.getParsableContentTypes().get(0));
+		assertEquals("parsableContentTypes should contains text/html", "text/html", config.getParsableContentTypes().get(1));
+		assertEquals("parsableContentTypes should contains application/x", "application/x",
+				config.getParsableContentTypes().get(2));
 
 	}
 
@@ -88,6 +76,7 @@ public class DriverConfigurationTest extends TestCase {
 				config.isBlackListed("Content-Length".toLowerCase()));
 		assertTrue("'Content-Encoding' header should be blacklisted", config.isBlackListed("Content-Encoding"));
 		assertTrue("'Transfer-Encoding' header should be blacklisted", config.isBlackListed("Transfer-Encoding"));
+		assertTrue("'Set-Cookie' header should be blacklisted", config.isBlackListed("Set-Cookie"));
 
 		// blacklisted headers are specified via 'blackListedHeaders' property
 		properties = new Properties();

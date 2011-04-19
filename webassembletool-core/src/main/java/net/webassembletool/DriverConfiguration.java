@@ -64,8 +64,8 @@ public class DriverConfiguration {
 	private final Set<String> blackListedHeaders;
 
 	private static final String DEFAULT_PARSABLE_CONTENT_TYPES = "text/html, application/xhtml+xml";
-	private static final String DEFAULT_BLACK_LISTED_HEADERS = "Content-Length,Content-Encoding,Transfer-Encoding";
-	
+	private static final String DEFAULT_BLACK_LISTED_HEADERS = "Content-Length,Content-Encoding,Transfer-Encoding,Set-Cookie";
+
 	public DriverConfiguration(String instanceName, Properties props) {
 		this.instanceName = instanceName;
 		// Remote application settings
@@ -74,34 +74,31 @@ public class DriverConfiguration {
 			uriEncoding = props.getProperty("uriEncoding");
 		}
 		if (props.getProperty("maxConnectionsPerHost") != null) {
-			maxConnectionsPerHost = Integer.parseInt(props
-					.getProperty("maxConnectionsPerHost"));
+			maxConnectionsPerHost = Integer.parseInt(props.getProperty("maxConnectionsPerHost"));
 		}
 		if (props.getProperty("timeout") != null) {
 			timeout = Integer.parseInt(props.getProperty("timeout"));
 		}
 		// Cache settings
 		if (props.getProperty("cacheRefreshDelay") != null) {
-			cacheRefreshDelay = Integer.parseInt(props
-					.getProperty("cacheRefreshDelay"));
+			cacheRefreshDelay = Integer.parseInt(props.getProperty("cacheRefreshDelay"));
 		}
 		if (props.getProperty("cacheMaxFileSize") != null) {
-			cacheMaxFileSize = Integer.parseInt(props
-					.getProperty("cacheMaxFileSize"));
+			cacheMaxFileSize = Integer.parseInt(props.getProperty("cacheMaxFileSize"));
 		}
 		if (props.getProperty("cacheStorageClassName") != null) {
 			String cacheStorageClassName = props.getProperty("cacheStorageClassName");
 			try {
-				Class<? extends CacheStorage> cacheStorageClass =  (Class<? extends CacheStorage>) this.getClass().getClassLoader().loadClass(cacheStorageClassName);
-				if(cacheStorageClass != null)
-				{
-					this.cacheStorageClass =  cacheStorageClass; 
+				Class<? extends CacheStorage> cacheStorageClass = (Class<? extends CacheStorage>) this.getClass().getClassLoader().loadClass(
+						cacheStorageClassName);
+				if (cacheStorageClass != null) {
+					this.cacheStorageClass = cacheStorageClass;
 				}
 			} catch (Exception e) {
 				throw new RuntimeException("Cashestorage insatnce can not be loaded", e);
 			}
 		}
-		if(null == this.cacheStorageClass){
+		if (null == this.cacheStorageClass) {
 			this.cacheStorageClass = DefaultCacheStorage.class;
 		}
 		// Local file system settings
@@ -110,8 +107,7 @@ public class DriverConfiguration {
 			putInCache = Boolean.parseBoolean(props.getProperty("putInCache"));
 		}
 		// proxy settings
-		if (props.getProperty("proxyHost") != null
-				&& props.getProperty("proxyPort") != null) {
+		if (props.getProperty("proxyHost") != null && props.getProperty("proxyPort") != null) {
 			proxyHost = props.getProperty("proxyHost");
 			proxyPort = Integer.parseInt(props.getProperty("proxyPort"));
 		}
@@ -119,8 +115,7 @@ public class DriverConfiguration {
 			useCache = Boolean.parseBoolean(props.getProperty("useCache"));
 		}
 		if (props.getProperty("filterJsessionid") != null) {
-			filterJsessionid = Boolean.parseBoolean(props
-					.getProperty("filterJsessionid"));
+			filterJsessionid = Boolean.parseBoolean(props.getProperty("filterJsessionid"));
 		}
 
 		// Authentification handler
@@ -139,14 +134,12 @@ public class DriverConfiguration {
 		}
 
 		if (props.getProperty("preserveHost") != null) {
-			preserveHost = Boolean.parseBoolean(props
-					.getProperty("preserveHost"));
+			preserveHost = Boolean.parseBoolean(props.getProperty("preserveHost"));
 		}
 
 		// Fix resources
 		if (props.getProperty("fixResources") != null) {
-			fixResources = Boolean.parseBoolean(props
-					.getProperty("fixResources"));
+			fixResources = Boolean.parseBoolean(props.getProperty("fixResources"));
 			// Fix resources mode
 			if (props.getProperty("fixMode") != null) {
 				if ("absolute".equalsIgnoreCase(props.getProperty("fixMode"))) {
@@ -276,15 +269,13 @@ public class DriverConfiguration {
 	public String getCookieStore() {
 		return cookieStore;
 	}
-	
 
 	public Class<? extends CacheStorage> getCacheStorageClass() {
 		return cacheStorageClass;
 	}
 
 	/**
-	 * List of parsable content types. Default is text/html,
-	 * application/xhtml+xml
+	 * List of parsable content types. Default is text/html, application/xhtml+xml
 	 * 
 	 * @return
 	 */
