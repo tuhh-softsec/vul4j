@@ -44,7 +44,7 @@ public class TransformC14NWithComments extends TransformSpi {
 
     /** @inheritDoc */
     protected XMLSignatureInput enginePerformTransform(
-        XMLSignatureInput input,OutputStream os, Transform transformObject
+        XMLSignatureInput input, OutputStream os, Transform transformObject
     ) throws CanonicalizationException {
 
         Canonicalizer20010315WithComments c14n = new Canonicalizer20010315WithComments();
